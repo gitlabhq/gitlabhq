@@ -91,23 +91,49 @@ module UsersHelper
     end
   end
 
-  def work_information(user)
+  def work_information(user, with_schema_markup: false)
     return unless user
 
     organization = user.organization
     job_title = user.job_title
 
     if organization.present? && job_title.present?
-      s_('Profile|%{job_title} at %{organization}') % { job_title: job_title, organization: organization }
+      render_job_title_and_organization(job_title, organization, with_schema_markup: with_schema_markup)
     elsif job_title.present?
-      job_title
+      render_job_title(job_title, with_schema_markup: with_schema_markup)
     elsif organization.present?
-      organization
+      render_organization(organization, with_schema_markup: with_schema_markup)
     end
   end
 
   def can_force_email_confirmation?(user)
     !user.confirmed?
+  end
+
+  def user_block_data(user, message)
+    {
+      path: block_admin_user_path(user),
+      method: 'put',
+      modal_attributes: {
+        title: s_('AdminUsers|Block user %{username}?') % { username: sanitize_name(user.name) },
+        messageHtml: message,
+        okVariant: 'warning',
+        okTitle: s_('AdminUsers|Block')
+      }.to_json
+    }
+  end
+
+  def user_block_effects
+    header = tag.p s_('AdminUsers|Blocking user has the following effects:')
+
+    list = tag.ul do
+      concat tag.li s_('AdminUsers|User will not be able to login')
+      concat tag.li s_('AdminUsers|User will not be able to access git repositories')
+      concat tag.li s_('AdminUsers|Personal projects will be left')
+      concat tag.li s_('AdminUsers|Owned groups will be left')
+    end
+
+    header + list
   end
 
   private
@@ -150,6 +176,35 @@ module UsersHelper
     items << :start_trial if trials_allowed?(current_user)
 
     items
+  end
+
+  def render_job_title(job_title, with_schema_markup: false)
+    if with_schema_markup
+      content_tag :span, itemprop: 'jobTitle' do
+        job_title
+      end
+    else
+      job_title
+    end
+  end
+
+  def render_organization(organization, with_schema_markup: false)
+    if with_schema_markup
+      content_tag :span, itemprop: 'worksFor' do
+        organization
+      end
+    else
+      organization
+    end
+  end
+
+  def render_job_title_and_organization(job_title, organization, with_schema_markup: false)
+    if with_schema_markup
+      job_title = '<span itemprop="jobTitle">'.html_safe + job_title + "</span>".html_safe
+      organization = '<span itemprop="worksFor">'.html_safe + organization + "</span>".html_safe
+    end
+
+    html_escape(s_('Profile|%{job_title} at %{organization}')) % { job_title: job_title, organization: organization }
   end
 end
 

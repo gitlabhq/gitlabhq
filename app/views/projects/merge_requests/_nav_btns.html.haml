@@ -1,5 +1,10 @@
+.btn-group
+  = render 'shared/issuable/csv_export/button', issuable_type: 'merge-requests'
+
 - if @can_bulk_update
-  = button_tag "Edit merge requests", class: "btn gl-mr-3 js-bulk-update-toggle"
+  = button_tag "Edit merge requests", class: "gl-button btn gl-mr-3 js-bulk-update-toggle"
 - if merge_project
-  = link_to new_merge_request_path, class: "btn btn-success", title: "New merge request" do
+  = link_to new_merge_request_path, class: "gl-button btn btn-success", title: "New merge request" do
     New merge request
+
+  = render 'shared/issuable/csv_export/modal', issuable_type: 'merge_requests'

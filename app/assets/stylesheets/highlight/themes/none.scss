@@ -59,6 +59,13 @@
       }
     }
 
+    .diff-grid-left:hover,
+    .diff-grid-right:hover {
+      .diff-line-num:not(.empty-cell) {
+        @include line-number-hover($none-over-bg);
+      }
+    }
+
     .diff-line-num {
       &.old {
         a {
@@ -74,12 +81,7 @@
 
       &.is-over,
       &.hll:not(.empty-cell).is-over {
-        background-color: $none-over-bg;
-        border-color: darken($none-over-bg, 5%);
-
-        a {
-          color: darken($none-over-bg, 15%);
-        }
+        @include line-number-hover($none-over-bg);
       }
 
       &.hll:not(.empty-cell) {

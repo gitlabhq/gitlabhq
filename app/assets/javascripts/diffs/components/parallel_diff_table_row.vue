@@ -55,26 +55,14 @@ export default {
         return utils.isHighlighted(state, line, this.isCommented);
       },
     }),
-    isContextLineLeft() {
-      return utils.isContextLine(this.line.left?.type);
-    },
-    isContextLineRight() {
-      return utils.isContextLine(this.line.right?.type);
-    },
     classNameMap() {
       return {
-        [CONTEXT_LINE_CLASS_NAME]: this.isContextLineLeft,
+        [CONTEXT_LINE_CLASS_NAME]: this.line.isContextLineLeft,
         [PARALLEL_DIFF_VIEW_TYPE]: true,
       };
     },
     parallelViewLeftLineType() {
       return utils.parallelViewLeftLineType(this.line, this.isHighlighted);
-    },
-    isMatchLineLeft() {
-      return utils.isMatchLine(this.line.left?.type);
-    },
-    isMatchLineRight() {
-      return utils.isMatchLine(this.line.right?.type);
     },
     coverageState() {
       return this.fileLineCoverage(this.filePath, this.line.right.new_line);
@@ -107,39 +95,18 @@ export default {
     shouldShowCommentButtonLeft() {
       return utils.shouldShowCommentButton(
         this.isLeftHover,
-        this.isContextLineLeft,
-        this.isMetaLineLeft,
-        this.hasDiscussionsLeft,
+        this.line.isContextLineLeft,
+        this.line.isMetaLineLeft,
+        this.line.hasDiscussionsLeft,
       );
     },
     shouldShowCommentButtonRight() {
       return utils.shouldShowCommentButton(
         this.isRightHover,
-        this.isContextLineRight,
-        this.isMetaLineRight,
-        this.hasDiscussionsRight,
+        this.line.isContextLineRight,
+        this.line.isMetaLineRight,
+        this.line.hasDiscussionsRight,
       );
-    },
-    hasDiscussionsLeft() {
-      return utils.hasDiscussions(this.line.left);
-    },
-    hasDiscussionsRight() {
-      return utils.hasDiscussions(this.line.right);
-    },
-    lineHrefOld() {
-      return utils.lineHref(this.line.left);
-    },
-    lineHrefNew() {
-      return utils.lineHref(this.line.right);
-    },
-    lineCode() {
-      return utils.lineCode(this.line);
-    },
-    isMetaLineLeft() {
-      return utils.isMetaLine(this.line.left?.type);
-    },
-    isMetaLineRight() {
-      return utils.isMetaLine(this.line.right?.type);
     },
   },
   mounted() {
@@ -203,7 +170,7 @@ export default {
     @mouseover="handleMouseMove"
     @mouseout="handleMouseMove"
   >
-    <template v-if="line.left && !isMatchLineLeft">
+    <template v-if="line.left && !line.isMatchLineLeft">
       <td ref="oldTd" :class="classNameMapCellLeft" class="diff-line-num old_line">
         <span
           v-if="shouldRenderCommentButton"
@@ -227,12 +194,12 @@ export default {
           v-if="line.left.old_line"
           ref="lineNumberRefOld"
           :data-linenumber="line.left.old_line"
-          :href="lineHrefOld"
-          @click="setHighlightedRow(lineCode)"
+          :href="line.lineHrefOld"
+          @click="setHighlightedRow(line.lineCode)"
         >
         </a>
         <diff-gutter-avatars
-          v-if="hasDiscussionsLeft"
+          v-if="line.hasDiscussionsLeft"
           :discussions="line.left.discussions"
           :discussions-expanded="line.left.discussionsExpanded"
           @toggleLineDiscussions="
@@ -259,7 +226,7 @@ export default {
       <td class="line-coverage left-side empty-cell"></td>
       <td class="line_content with-coverage parallel left-side empty-cell"></td>
     </template>
-    <template v-if="line.right && !isMatchLineRight">
+    <template v-if="line.right && !line.isMatchLineRight">
       <td ref="newTd" :class="classNameMapCellRight" class="diff-line-num new_line">
         <span
           v-if="shouldRenderCommentButton"
@@ -283,12 +250,12 @@ export default {
           v-if="line.right.new_line"
           ref="lineNumberRefNew"
           :data-linenumber="line.right.new_line"
-          :href="lineHrefNew"
-          @click="setHighlightedRow(lineCode)"
+          :href="line.lineHrefNew"
+          @click="setHighlightedRow(line.lineCode)"
         >
         </a>
         <diff-gutter-avatars
-          v-if="hasDiscussionsRight"
+          v-if="line.hasDiscussionsRight"
           :discussions="line.right.discussions"
           :discussions-expanded="line.right.discussionsExpanded"
           @toggleLineDiscussions="

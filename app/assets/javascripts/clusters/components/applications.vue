@@ -467,6 +467,17 @@ export default {
                         notebooks to a class of students, a corporate data science group,
                         or a scientific research group.`)
             }}
+            <gl-sprintf
+              :message="
+                s__(
+                  'ClusterIntegration|%{boldStart}Note:%{boldEnd} Requires Ingress to be installed.',
+                )
+              "
+            >
+              <template #bold="{ content }">
+                <b>{{ content }}</b>
+              </template>
+            </gl-sprintf>
           </p>
 
           <template v-if="ingressExternalEndpoint">
@@ -549,8 +560,8 @@ export default {
             @set="setKnativeDomain"
           />
         </template>
-        <template v-if="cloudRun" #installedVia>
-          <span data-testid="installedVia">
+        <template v-if="cloudRun" #installed-via>
+          <span data-testid="installed-via">
             <gl-sprintf
               :message="s__('ClusterIntegration|installed via %{linkStart}Cloud Run%{linkEnd}')"
             >

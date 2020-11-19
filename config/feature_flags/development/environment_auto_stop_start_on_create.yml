@@ -1,0 +1,8 @@
+---
+name: environment_auto_stop_start_on_create
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47239
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/281449
+milestone: '13.6'
+type: development
+group: group::release
+default_enabled: false

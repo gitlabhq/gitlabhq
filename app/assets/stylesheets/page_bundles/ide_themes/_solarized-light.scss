@@ -1,0 +1,57 @@
+// -------
+// Please see `app/assets/stylesheets/page_bundles/ide_themes/README.md` for a guide on contributing new themes
+// -------
+.ide.theme-solarized-light {
+  --ide-border-color: #dfd7bf;
+  --ide-border-color-alt: #dfd7bf;
+  --ide-highlight-accent: #5c4e21;
+  --ide-text-color: #616161;
+  --ide-text-color-secondary: #526f76;
+  --ide-background: #efe8d3;
+  --ide-background-hover: #ded6be;
+  --ide-highlight-background: #fef6e1;
+  --ide-link-color: #955800;
+  --ide-footer-background: #efe8d3;
+  --ide-empty-state-background: #fef6e1;
+
+  --ide-input-border: #c0b9a4;
+  --ide-input-background: transparent;
+
+  --ide-btn-default-background: transparent;
+  --ide-btn-default-border: #c0b9a4;
+  --ide-btn-default-hover-border: #c0b9a4;
+
+  --ide-btn-primary-background: #b16802;
+  --ide-btn-primary-border: #a35f00;
+  --ide-btn-primary-hover-border: #955800;
+  --ide-btn-primary-hover-border-width: 2px;
+  --ide-btn-primary-focus-box-shadow: 0 0 0 1px #dd8101;
+
+  --ide-btn-danger-secondary-background: transparent;
+
+  --ide-btn-disabled-background: transparent;
+  --ide-btn-disabled-border: rgba(192, 185, 64, 0.48);
+  --ide-btn-disabled-hover-border: rgba(192, 185, 64, 0.48);
+  --ide-btn-disabled-hover-border-width: 1px;
+  --ide-btn-disabled-focus-box-shadow: transparent;
+  --ide-btn-disabled-color: rgba(82, 82, 82, 0.48);
+
+  --ide-dropdown-background: #fef6e1;
+  --ide-dropdown-hover-background: #efe8d3;
+
+  --ide-dropdown-btn-hover-border: #dfd7bf;
+  --ide-dropdown-btn-hover-background: #efe8d3;
+
+  --ide-file-row-btn-hover-background: #ded6be;
+
+  --ide-animation-gradient-1: #d3cbb3;
+  --ide-animation-gradient-2: #efe8d3;
+
+  .ide-empty-state,
+  .ide-sidebar,
+  .ide-commit-empty-state {
+    img {
+      filter: sepia(1) brightness(0.7);
+    }
+  }
+}

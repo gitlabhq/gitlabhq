@@ -1,7 +1,8 @@
 ---
 name: force_autodevops_on_by_default
-introduced_by_url: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/21136
 rollout_issue_url: 
-group: 
+milestone: '11.3'
 type: development
+group: group::configure
 default_enabled: false

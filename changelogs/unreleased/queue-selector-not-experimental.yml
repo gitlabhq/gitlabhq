@@ -1,0 +1,5 @@
+---
+title: Mark Sidekiq queue selector as no longer experimental
+merge_request: 46562
+author:
+type: changed

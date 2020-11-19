@@ -19,7 +19,7 @@ import {
 } from '~/ide/stores/actions';
 import axios from '~/lib/utils/axios_utils';
 import * as types from '~/ide/stores/mutation_types';
-import { file } from '../helpers';
+import { file, createTriggerRenameAction, createTriggerChangeAction } from '../helpers';
 import testAction from '../../helpers/vuex_action_helper';
 import eventHub from '~/ide/eventhub';
 
@@ -522,7 +522,7 @@ describe('Multi-file store actions', () => {
         'path',
         store.state,
         [{ type: types.DELETE_ENTRY, payload: 'path' }],
-        [{ type: 'stageChange', payload: 'path' }, { type: 'triggerFilesChange' }],
+        [{ type: 'stageChange', payload: 'path' }, createTriggerChangeAction()],
         done,
       );
     });
@@ -551,7 +551,7 @@ describe('Multi-file store actions', () => {
         [{ type: types.DELETE_ENTRY, payload: 'testFolder/entry-to-delete' }],
         [
           { type: 'stageChange', payload: 'testFolder/entry-to-delete' },
-          { type: 'triggerFilesChange' },
+          createTriggerChangeAction(),
         ],
         done,
       );
@@ -614,7 +614,7 @@ describe('Multi-file store actions', () => {
             testEntry.path,
             store.state,
             [{ type: types.DELETE_ENTRY, payload: testEntry.path }],
-            [{ type: 'stageChange', payload: testEntry.path }, { type: 'triggerFilesChange' }],
+            [{ type: 'stageChange', payload: testEntry.path }, createTriggerChangeAction()],
             done,
           );
         });
@@ -754,7 +754,7 @@ describe('Multi-file store actions', () => {
               payload: origEntry,
             },
           ],
-          [{ type: 'triggerFilesChange' }],
+          [createTriggerRenameAction('renamed', 'orig')],
           done,
         );
       });
@@ -767,7 +767,7 @@ describe('Multi-file store actions', () => {
           { path: 'orig', name: 'renamed' },
           store.state,
           [expect.objectContaining({ type: types.RENAME_ENTRY })],
-          [{ type: 'triggerFilesChange' }],
+          [createTriggerRenameAction('orig', 'renamed')],
           done,
         );
       });

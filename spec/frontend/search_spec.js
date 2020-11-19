@@ -1,10 +1,10 @@
 import $ from 'jquery';
+import setHighlightClass from 'ee_else_ce/search/highlight_blob_search_result';
 import Api from '~/api';
 import Search from '~/pages/search/show/search';
-import setHighlightClass from '~/pages/search/show/highlight_blob_search_result';
 
 jest.mock('~/api');
-jest.mock('~/pages/search/show/highlight_blob_search_result');
+jest.mock('ee_else_ce/search/highlight_blob_search_result');
 
 describe('Search', () => {
   const fixturePath = 'search/show.html';
@@ -34,16 +34,6 @@ describe('Search', () => {
     beforeEach(() => {
       loadFixtures(fixturePath);
       new Search(); // eslint-disable-line no-new
-    });
-
-    it('requests groups from backend when filtering', () => {
-      jest.spyOn(Api, 'groups').mockImplementation(term => {
-        expect(term).toBe(searchTerm);
-      });
-
-      const inputElement = fillDropdownInput('.js-search-group-dropdown');
-
-      $(inputElement).trigger('input');
     });
 
     it('requests projects from backend when filtering', () => {

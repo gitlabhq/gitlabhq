@@ -7,60 +7,97 @@ RSpec.describe API::GroupLabels do
   let(:group) { create(:group) }
   let(:subgroup) { create(:group, parent: group) }
   let!(:group_member) { create(:group_member, group: group, user: user) }
-  let!(:group_label1) { create(:group_label, title: 'feature', group: group) }
+  let!(:group_label1) { create(:group_label, title: 'feature-label', group: group) }
   let!(:group_label2) { create(:group_label, title: 'bug', group: group) }
-  let!(:subgroup_label) { create(:group_label, title: 'support', group: subgroup) }
+  let!(:subgroup_label) { create(:group_label, title: 'support-label', group: subgroup) }
 
   describe 'GET :id/labels' do
-    it 'returns all available labels for the group' do
-      get api("/groups/#{group.id}/labels", user)
+    context 'get current group labels' do
+      let(:request) { get api("/groups/#{group.id}/labels", user) }
+      let(:expected_labels) { [group_label1.name, group_label2.name] }
 
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(response).to include_pagination_headers
-      expect(json_response).to be_an Array
-      expect(json_response).to all(match_schema('public_api/v4/labels/label'))
-      expect(json_response.size).to eq(2)
-      expect(json_response.map {|r| r['name'] }).to contain_exactly('feature', 'bug')
-    end
+      it_behaves_like 'fetches labels'
 
-    context 'when the with_counts parameter is set' do
-      it 'includes counts in the response' do
-        get api("/groups/#{group.id}/labels", user), params: { with_counts: true }
+      context 'when search param is provided' do
+        let(:request) { get api("/groups/#{group.id}/labels?search=lab", user) }
+        let(:expected_labels) { [group_label1.name] }
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response).to all(match_schema('public_api/v4/labels/label_with_counts'))
-        expect(json_response.size).to eq(2)
-        expect(json_response.map { |r| r['open_issues_count'] }).to contain_exactly(0, 0)
+        it_behaves_like 'fetches labels'
+      end
+
+      context 'when the with_counts parameter is set' do
+        it 'includes counts in the response' do
+          get api("/groups/#{group.id}/labels", user), params: { with_counts: true }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response).to all(match_schema('public_api/v4/labels/label_with_counts'))
+          expect(json_response.size).to eq(2)
+          expect(json_response.map { |r| r['open_issues_count'] }).to contain_exactly(0, 0)
+        end
+      end
+
+      context 'when include_descendant_groups param is provided' do
+        let!(:project) { create(:project, group: group) }
+        let!(:project_label1) { create(:label, title: 'project-label1', project: project, priority: 3) }
+        let!(:project_label2) { create(:label, title: 'project-bug', project: project) }
+
+        let(:request) { get api("/groups/#{group.id}/labels", user), params: { include_descendant_groups: true } }
+        let(:expected_labels) { [group_label1.name, group_label2.name, subgroup_label.name] }
+
+        it_behaves_like 'fetches labels'
+
+        context 'when search param is provided' do
+          let(:request) { get api("/groups/#{group.id}/labels", user), params: { search: 'lab', include_descendant_groups: true } }
+          let(:expected_labels) { [group_label1.name, subgroup_label.name] }
+
+          it_behaves_like 'fetches labels'
+        end
+
+        context 'when only_group_labels param is false' do
+          let(:request) { get api("/groups/#{group.id}/labels", user), params: { include_descendant_groups: true, only_group_labels: false } }
+          let(:expected_labels) { [group_label1.name, group_label2.name, subgroup_label.name, project_label1.name, project_label2.name] }
+
+          it_behaves_like 'fetches labels'
+
+          context 'when search param is provided' do
+            let(:request) { get api("/groups/#{group.id}/labels", user), params: { search: 'lab', include_descendant_groups: true, only_group_labels: false } }
+            let(:expected_labels) { [group_label1.name, subgroup_label.name, project_label1.name] }
+
+            it_behaves_like 'fetches labels'
+          end
+        end
       end
     end
-  end
 
-  describe 'GET :subgroup_id/labels' do
-    context 'when the include_ancestor_groups parameter is not set' do
-      it 'returns all available labels for the group and ancestor groups' do
-        get api("/groups/#{subgroup.id}/labels", user)
+    describe 'with subgroup labels' do
+      context 'when the include_ancestor_groups parameter is not set' do
+        let(:request) { get api("/groups/#{subgroup.id}/labels", user) }
+        let(:expected_labels) { [group_label1.name, group_label2.name, subgroup_label.name] }
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response).to all(match_schema('public_api/v4/labels/label'))
-        expect(json_response.size).to eq(3)
-        expect(json_response.map {|r| r['name'] }).to contain_exactly('feature', 'bug', 'support')
+        it_behaves_like 'fetches labels'
+
+        context 'when search param is provided' do
+          let(:request) { get api("/groups/#{subgroup.id}/labels?search=lab", user) }
+          let(:expected_labels) { [group_label1.name, subgroup_label.name] }
+
+          it_behaves_like 'fetches labels'
+        end
       end
-    end
 
-    context 'when the include_ancestor_groups parameter is set to false' do
-      it 'returns all available labels for the group but not for ancestor groups' do
-        get api("/groups/#{subgroup.id}/labels", user), params: { include_ancestor_groups: false }
+      context 'when the include_ancestor_groups parameter is set to false' do
+        let(:request) { get api("/groups/#{subgroup.id}/labels", user), params: { include_ancestor_groups: false } }
+        let(:expected_labels) { [subgroup_label.name] }
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response).to all(match_schema('public_api/v4/labels/label'))
-        expect(json_response.size).to eq(1)
-        expect(json_response.map {|r| r['name'] }).to contain_exactly('support')
+        it_behaves_like 'fetches labels'
+
+        context 'when search param is provided' do
+          let(:request) { get api("/groups/#{subgroup.id}/labels?search=lab", user), params: { include_ancestor_groups: false } }
+          let(:expected_labels) { [subgroup_label.name] }
+
+          it_behaves_like 'fetches labels'
+        end
       end
     end
   end
@@ -223,7 +260,7 @@ RSpec.describe API::GroupLabels do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(subgroup.labels[0].name).to eq('New Label')
-      expect(group_label1.name).to eq('feature')
+      expect(group_label1.name).to eq(group_label1.title)
     end
 
     it 'returns 404 if label does not exist' do
@@ -278,7 +315,7 @@ RSpec.describe API::GroupLabels do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(subgroup.labels[0].name).to eq('New Label')
-      expect(group_label1.name).to eq('feature')
+      expect(group_label1.name).to eq(group_label1.title)
     end
 
     it 'returns 404 if label does not exist' do

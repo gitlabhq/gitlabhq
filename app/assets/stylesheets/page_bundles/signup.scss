@@ -1,0 +1,75 @@
+@import 'mixins_and_variables_and_functions';
+
+.signup-page {
+  .devise-errors {
+    h2 {
+      font-size: $gl-font-size;
+      color: var(--red-700, $red-700);
+    }
+  }
+
+  .omniauth-divider {
+    &::before,
+    &::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid var(--gray-100, $gray-100);
+      margin: $gl-padding-24 0;
+    }
+
+    &::before {
+      margin-right: $gl-padding;
+    }
+
+    &::after {
+      margin-left: $gl-padding;
+    }
+  }
+
+  .omniauth-btn {
+    width: 48%;
+
+    @include media-breakpoint-down(md) {
+      width: 100%;
+    }
+
+    img {
+      width: $default-icon-size;
+      height: $default-icon-size;
+    }
+  }
+
+  .decline-page {
+    width: 350px;
+  }
+}
+
+.signup-page[data-page^='registrations:experience_levels'] {
+  $card-shadow-color: rgba(var(--black, $black), 0.2);
+
+  .page-wrap {
+    background-color: var(--white, $white);
+  }
+
+  .card-deck {
+    max-width: 828px;
+  }
+
+  .card {
+    transition: box-shadow 0.3s ease-in-out;
+  }
+
+  .card:hover {
+    box-shadow: 0 $gl-spacing-scale-3 $gl-spacing-scale-5 $card-shadow-color;
+  }
+
+  @media (min-width: $breakpoint-sm) {
+    .card-deck .card {
+      margin: 0 $gl-spacing-scale-3;
+    }
+  }
+
+  .stretched-link:hover {
+    text-decoration: none;
+  }
+}

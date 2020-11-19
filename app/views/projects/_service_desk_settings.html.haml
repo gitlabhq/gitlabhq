@@ -10,7 +10,7 @@
     - if ::Gitlab::ServiceDesk.supported?
       .js-service-desk-setting-root{ data: { endpoint: project_service_desk_path(@project),
         enabled: "#{@project.service_desk_enabled}",
-        incoming_email: (@project.service_desk_address if @project.service_desk_enabled),
+        incoming_email: (@project.service_desk_incoming_address if @project.service_desk_enabled),
         custom_email: (@project.service_desk_custom_address if @project.service_desk_enabled),
         selected_template: "#{@project.service_desk_setting&.issue_template_key}",
         outgoing_name: "#{@project.service_desk_setting&.outgoing_name}",

@@ -91,12 +91,25 @@ describe('Editor Service', () => {
   });
 
   describe('addImage', () => {
-    it('calls the exec method on the instance', () => {
-      const mockImage = { imageUrl: 'some/url.png', description: 'some description' };
+    const file = new File([], 'some-file.jpg');
+    const mockImage = { imageUrl: 'some/url.png', altText: 'some alt text' };
 
-      addImage(mockInstance, mockImage);
+    it('calls the insertElement method on the squire instance when in WYSIWYG mode', () => {
+      jest.spyOn(URL, 'createObjectURL');
+      mockInstance.editor.isWysiwygMode.mockReturnValue(true);
+      mockInstance.editor.getSquire.mockReturnValue({ insertElement: jest.fn() });
 
-      expect(mockInstance.editor.exec).toHaveBeenCalledWith('AddImage', mockImage);
+      addImage(mockInstance, mockImage, file);
+
+      expect(mockInstance.editor.getSquire().insertElement).toHaveBeenCalled();
+      expect(global.URL.createObjectURL).toHaveBeenLastCalledWith(file);
+    });
+
+    it('calls the insertText method on the instance when in Markdown mode', () => {
+      mockInstance.editor.isWysiwygMode.mockReturnValue(false);
+      addImage(mockInstance, mockImage, file);
+
+      expect(mockInstance.editor.insertText).toHaveBeenCalledWith('![some alt text](some/url.png)');
     });
   });
 

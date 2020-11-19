@@ -48,18 +48,14 @@ class Import::BaseController < ApplicationController
 
   private
 
-  def filter_attribute
-    :name
-  end
-
   def sanitized_filter_param
-    @filter ||= sanitize(params[:filter])
+    @filter ||= sanitize(params[:filter])&.downcase
   end
 
   def filtered(collection)
     return collection unless sanitized_filter_param
 
-    collection.select { |item| item[filter_attribute].include?(sanitized_filter_param) }
+    collection.select { |item| item[:name].to_s.downcase.include?(sanitized_filter_param) }
   end
 
   def serialized_provider_repos

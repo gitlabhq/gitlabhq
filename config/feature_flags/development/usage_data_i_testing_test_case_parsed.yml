@@ -1,7 +1,8 @@
 ---
 name: usage_data_i_testing_test_case_parsed
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41918
-rollout_issue_url:
-group: group::testing
+rollout_issue_url: 
+milestone: '13.5'
 type: development
+group: group::testing
 default_enabled: true

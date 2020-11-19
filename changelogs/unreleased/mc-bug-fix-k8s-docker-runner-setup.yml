@@ -1,0 +1,5 @@
+---
+title: Make register_instructions optional for RunnerSetup.
+merge_request: 47123
+author:
+type: fixed

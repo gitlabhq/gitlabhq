@@ -6,6 +6,9 @@ module Types
     class JobType < BaseObject
       graphql_name 'CiJob'
 
+      field :pipeline, Types::Ci::PipelineType, null: false,
+        description: 'Pipeline the job belongs to',
+        resolve: -> (build, _, _) { Gitlab::Graphql::Loaders::BatchModelLoader.new(::Ci::Pipeline, build.pipeline_id).find }
       field :name, GraphQL::STRING_TYPE, null: true,
         description: 'Name of the job'
       field :needs, JobType.connection_type, null: true,

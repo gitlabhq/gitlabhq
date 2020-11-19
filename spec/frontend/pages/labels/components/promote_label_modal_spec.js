@@ -32,10 +32,9 @@ describe('Promote label modal', () => {
     });
 
     it('contains a label span with the color', () => {
-      const labelFromTitle = vm.$el.querySelector('.modal-header .label.color-label');
-
-      expect(labelFromTitle.style.backgroundColor).not.toBe(null);
-      expect(labelFromTitle.textContent).toContain(vm.labelTitle);
+      expect(vm.labelColor).not.toBe(null);
+      expect(vm.labelColor).toBe(labelMockData.labelColor);
+      expect(vm.labelTitle).toBe(labelMockData.labelTitle);
     });
   });
 

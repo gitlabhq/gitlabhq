@@ -80,4 +80,16 @@ describe('Releases Store Mutations', () => {
       expect(stateCopy.graphQlPageInfo).toEqual({});
     });
   });
+
+  describe('SET_SORTING', () => {
+    it('should merge the sorting object with sort value', () => {
+      mutations[types.SET_SORTING](stateCopy, { sort: 'asc' });
+      expect(stateCopy.sorting).toEqual({ ...stateCopy.sorting, sort: 'asc' });
+    });
+
+    it('should merge the sorting object with order_by value', () => {
+      mutations[types.SET_SORTING](stateCopy, { orderBy: 'created_at' });
+      expect(stateCopy.sorting).toEqual({ ...stateCopy.sorting, orderBy: 'created_at' });
+    });
+  });
 });

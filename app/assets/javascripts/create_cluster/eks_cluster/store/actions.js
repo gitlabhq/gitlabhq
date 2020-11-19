@@ -1,4 +1,5 @@
 import * as types from './mutation_types';
+import { DEFAULT_REGION } from '../constants';
 import { setAWSConfig } from '../services/aws_services_facade';
 import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
@@ -25,12 +26,22 @@ export const setKubernetesVersion = ({ commit }, payload) => {
 export const createRole = ({ dispatch, state: { createRolePath } }, payload) => {
   dispatch('requestCreateRole');
 
+  const region = payload.selectedRegion || DEFAULT_REGION;
+
   return axios
     .post(createRolePath, {
       role_arn: payload.roleArn,
       role_external_id: payload.externalId,
+      region,
     })
-    .then(({ data }) => dispatch('createRoleSuccess', convertObjectPropsToCamelCase(data)))
+    .then(({ data }) => {
+      const awsData = {
+        ...convertObjectPropsToCamelCase(data),
+        region,
+      };
+
+      dispatch('createRoleSuccess', awsData);
+    })
     .catch(error => dispatch('createRoleError', { error }));
 };
 
@@ -38,7 +49,8 @@ export const requestCreateRole = ({ commit }) => {
   commit(types.REQUEST_CREATE_ROLE);
 };
 
-export const createRoleSuccess = ({ commit }, awsCredentials) => {
+export const createRoleSuccess = ({ dispatch, commit }, awsCredentials) => {
+  dispatch('setRegion', { region: awsCredentials.region });
   setAWSConfig({ awsCredentials });
   commit(types.CREATE_ROLE_SUCCESS);
 };

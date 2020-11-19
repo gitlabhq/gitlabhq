@@ -13,11 +13,39 @@ module QA
     end
   end
 
-  RSpec.describe 'Manage', :skip_signup_disabled do
-    describe 'standard', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/936' do
+  RSpec.describe 'Manage', :skip_signup_disabled, :requires_admin do
+    describe 'while LDAP is enabled', :orchestrated, :ldap_no_tls, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/935' do
+      before do
+        # When LDAP is enabled, a previous test might have created a token for the LDAP 'tanuki' user who is not an admin
+        # So we need to set it to nil in order to create a new token for admin user so that we are able to set_application_settings
+        # Also, when GITLAB_LDAP_USERNAME is provided, it is used to create a token. This also needs to be set to nil temporarily
+        # for the same reason as above.
+
+        @personal_access_token = Runtime::Env.personal_access_token
+        Runtime::Env.personal_access_token = nil
+        ldap_username = Runtime::Env.ldap_username
+        Runtime::Env.ldap_username = nil
+
+        disable_require_admin_approval_after_user_signup
+
+        Runtime::Env.ldap_username = ldap_username
+      end
+
       it_behaves_like 'registration and login'
 
-      context 'when user account is deleted', :requires_admin do
+      after do
+        Runtime::Env.personal_access_token = @personal_access_token
+      end
+    end
+
+    describe 'standard', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/936' do
+      before(:all) do
+        disable_require_admin_approval_after_user_signup
+      end
+
+      it_behaves_like 'registration and login'
+
+      context 'when user account is deleted' do
         let(:user) do
           Resource::User.fabricate_via_api! do |resource|
             resource.api_client = admin_api_client
@@ -61,11 +89,10 @@ module QA
         end
       end
     end
-  end
 
-  RSpec.describe 'Manage', :orchestrated, :ldap_no_tls, :skip_signup_disabled do
-    describe 'while LDAP is enabled', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/935' do
-      it_behaves_like 'registration and login'
+    def disable_require_admin_approval_after_user_signup
+      Runtime::ApplicationSettings.set_application_settings(require_admin_approval_after_user_signup: false)
+      sleep 10 # It takes a moment for the setting to come into effect
     end
   end
 end

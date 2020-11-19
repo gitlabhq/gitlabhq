@@ -13,6 +13,7 @@ RSpec.describe MergeRequests::ByApprovalsFinder do
       create(:approval, merge_request: mr, user: first_user)
     end
   end
+
   let_it_be(:merge_request_with_both_approvals) do
     create(:merge_request).tap do |mr|
       create(:approval, merge_request: mr, user: first_user)

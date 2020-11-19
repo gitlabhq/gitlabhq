@@ -27,7 +27,7 @@ A database review is required for:
   database review.
 - Changes in usage data metrics that use `count` and `distinct_count`.
   These metrics could have complex queries over large tables.
-  See the [Product Analytics Guide](product_analytics/usage_ping.md#implementing-usage-ping)
+  See the [Product Analytics Guide](https://about.gitlab.com/handbook/product/product-analytics-guide/)
   for implementation details.
 
 A database reviewer is expected to look out for obviously complex
@@ -106,7 +106,8 @@ test its execution using `CREATE INDEX CONCURRENTLY` in the `#database-lab` Slac
 
 - Write the raw SQL in the MR description. Preferably formatted
   nicely with [pgFormatter](https://sqlformat.darold.net) or
-  [paste.depesz.com](https://paste.depesz.com).
+  [paste.depesz.com](https://paste.depesz.com) and using regular quotes
+  (e.g. `"projects"."id"`) and avoiding smart quotes (e.g. `“projects”.“id”`).
 - Include the output of `EXPLAIN (ANALYZE, BUFFERS)` of the relevant
   queries in the description. If the output is too long, wrap it in
   `<details>` blocks, paste it in a GitLab Snippet, or provide the
@@ -201,8 +202,8 @@ estimated to keep migration timing to a minimum.
 NOTE: **Note:**
 Keep in mind that all runtimes should be measured against GitLab.com.
 
-| Migration Type | Execution Time Recommended | Notes |
+| Migration Type | Execution Time Recommended | Notes |
 |----|----|---|
 | Regular migrations on `db/migrate` | `3 minutes` | A valid exception are index creation as this can take a long time. |
-| Post migrations on `db/post_migrate` | `10 minutes` | |
-| Background migrations | --- | Since these are suitable for larger tables, it's not possible to set a precise timing guideline, however, any single query must stay below `1 second` execution time with cold caches. |
+| Post migrations on `db/post_migrate` | `10 minutes` | |
+| Background migrations | --- | Since these are suitable for larger tables, it's not possible to set a precise timing guideline, however, any single query must stay below `1 second` execution time with cold caches. |

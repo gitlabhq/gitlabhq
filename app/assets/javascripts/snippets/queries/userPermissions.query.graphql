@@ -1,7 +1,0 @@
-query CanCreatePersonalSnippet {
-  currentUser {
-    userPermissions {
-      createSnippet
-    }
-  }
-}

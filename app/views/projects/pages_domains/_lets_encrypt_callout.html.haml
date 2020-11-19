@@ -6,7 +6,7 @@
           .col-sm-10.offset-sm-2
             .bs-callout.bs-callout-warning.mt-0
               .row.align-items-center.mx-2
-                = icon('warning', class: 'mr-2')
+                = sprite_icon('warning-solid', css_class: ' mr-2 gl-text-orange-600')
                 = _("Something went wrong while obtaining the Let's Encrypt certificate.")
               .row.mx-0.mt-3
                 = link_to s_('GitLabPagesDomains|Retry'), retry_auto_ssl_project_pages_domain_path(@project, domain_presenter), class: "btn btn-sm btn-grouped btn-warning", method: :post

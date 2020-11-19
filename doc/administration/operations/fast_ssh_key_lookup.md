@@ -196,7 +196,8 @@ the database. The following instructions can be used to build OpenSSH 7.5:
    yes | cp pam-ssh-conf-$timestamp /etc/pam.d/sshd
    ```
 
-1. Verify the installed version. In another window, attempt to login to the server:
+1. Verify the installed version. In another window, attempt to sign in to the
+   server:
 
    ```shell
    ssh -v <your-centos-machine>
@@ -204,7 +205,7 @@ the database. The following instructions can be used to build OpenSSH 7.5:
 
    You should see a line that reads: "debug1: Remote protocol version 2.0, remote software version OpenSSH_7.5"
 
-   If not, you may need to restart `sshd` (e.g. `systemctl restart sshd.service`).
+   If not, you may need to restart `sshd` (for example, `systemctl restart sshd.service`).
 
 1. *IMPORTANT!* Open a new SSH session to your server before exiting to make
    sure everything is working! If you need to downgrade, simple install the

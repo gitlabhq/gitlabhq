@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: nb\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 6\n"
-"PO-Revision-Date: 2020-10-02 18:44\n"
+"PO-Revision-Date: 2020-11-03 22:44\n"
 
 msgid " %{project_name}#%{issue_iid} &middot; opened %{issue_created} by %{author}"
 msgstr ""
@@ -119,8 +119,8 @@ msgstr[1] ""
 
 msgid "%d code quality issue"
 msgid_plural "%d code quality issues"
-msgstr[0] "%d kodekvalitetsproblem"
-msgstr[1] "%d kodekvalitetsproblemer"
+msgstr[0] "%d kodekvalitetssak"
+msgstr[1] "%d kodekvalitetssaker"
 
 msgid "%d comment"
 msgid_plural "%d comments"
@@ -185,6 +185,11 @@ msgid_plural "%d failed"
 msgstr[0] "%d mislyktes"
 msgstr[1] "%d mislyktes"
 
+msgid "%d failed security job"
+msgid_plural "%d failed security jobs"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d fixed test result"
 msgid_plural "%d fixed test results"
 msgstr[0] "%d fikset testresultat"
@@ -207,18 +212,13 @@ msgstr[1] "%d utilgjengelige fletteforespørsler"
 
 msgid "%d issue"
 msgid_plural "%d issues"
-msgstr[0] "%d problem"
-msgstr[1] "%d problemer"
+msgstr[0] "%d sak"
+msgstr[1] "%d saker"
 
 msgid "%d issue in this group"
 msgid_plural "%d issues in this group"
 msgstr[0] "%d sak i denne gruppen"
 msgstr[1] "%d saker i denne gruppen"
-
-msgid "%d issue selected"
-msgid_plural "%d issues selected"
-msgstr[0] "%d sak valgt"
-msgstr[1] "%d saker valgt"
 
 msgid "%d issue successfully imported with the label"
 msgid_plural "%d issues successfully imported with the label"
@@ -407,6 +407,16 @@ msgstr "%{count} godkjennelser fra %{name}"
 msgid "%{count} files touched"
 msgstr "%{count} filer berørt"
 
+msgid "%{count} issue selected"
+msgid_plural "%{count} issues selected"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%{count} merge request selected"
+msgid_plural "%{count} merge requests selected"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{count} more"
 msgstr "%{count} mer"
 
@@ -445,6 +455,12 @@ msgid "%{deployLinkStart}Use a template to deploy to ECS%{deployLinkEnd}, or use
 msgstr "%{deployLinkStart}Bruke en mal for å distribuere til ECS%{deployLinkEnd}, eller benytt en dockerbilde til å %{commandsLinkStart}kjøre AWS.kommandoer i GitLab CI/CD%{commandsLinkEnd}."
 
 msgid "%{description}- Sentry event: %{errorUrl}- First seen: %{firstSeen}- Last seen: %{lastSeen} %{countLabel}: %{count}%{userCountLabel}: %{userCount}"
+msgstr ""
+
+msgid "%{doc_link_start}Advanced search%{doc_link_end} is disabled since %{ref_elem} is not the default branch; %{default_branch_link_start}search on %{default_branch} instead%{default_branch_link_end}."
+msgstr ""
+
+msgid "%{doc_link_start}Advanced search%{doc_link_end} is enabled."
 msgstr ""
 
 msgid "%{due_date} (Past due)"
@@ -490,6 +506,12 @@ msgid "%{group_name} uses group managed accounts. You need to create a new GitLa
 msgstr ""
 
 msgid "%{group_name}&%{epic_iid} &middot; opened %{epic_created} by %{author}"
+msgstr ""
+
+msgid "%{hook_type} was deleted"
+msgstr ""
+
+msgid "%{hook_type} was scheduled for deletion"
 msgstr ""
 
 msgid "%{host} sign-in from new location"
@@ -618,9 +640,6 @@ msgstr ""
 msgid "%{name_with_link} has run out of Shared Runner Pipeline minutes so no new jobs or pipelines in its projects will run."
 msgstr ""
 
-msgid "%{namespace_name} is now read-only. You cannot: %{base_message}"
-msgstr "%{namespace_name} er nå skrivebeskyttet. Du kan ikke: %{base_message}"
-
 msgid "%{name} contained %{resultsString}"
 msgstr "%{name} inneholdt %{resultsString}"
 
@@ -718,8 +737,8 @@ msgstr[1] "%{reportType} %{status} oppdaget %{other} sårbarheter."
 msgid "%{reportType} %{status} detected no vulnerabilities."
 msgstr "%{reportType} %{status} oppdaget ingen sårbarheter."
 
-msgid "%{retryButtonStart}Try again%{retryButtonEnd} or %{newFileButtonStart}attach a new file%{newFileButtonEnd}"
-msgstr "%{retryButtonStart}Prøv igjen%{retryButtonEnd} eller %{newFileButtonStart}legg med en ny fil%{newFileButtonEnd}"
+msgid "%{retryButtonStart}Try again%{retryButtonEnd} or %{newFileButtonStart}attach a new file%{newFileButtonEnd}."
+msgstr ""
 
 msgid "%{seconds}s"
 msgstr "%{seconds}s"
@@ -733,6 +752,9 @@ msgid "%{securityScanner} result is not available because a pipeline has not bee
 msgid_plural "%{securityScanner} results are not available because a pipeline has not been run since it was enabled. %{linkStart}Run a pipeline%{linkEnd}"
 msgstr[0] "%{securityScanner}-resultatet er ikke tilgjengelig fordi en rørledning ikke er kjørt siden den ble aktivert. %{linkStart}Kjør en rørledning%{linkEnd}"
 msgstr[1] "%{securityScanner}-resultater er ikke tilgjengelige fordi en rørledning ikke er kjørt siden den ble aktivert. %{linkStart}Kjør en rørledning%{linkEnd}"
+
+msgid "%{size} %{unit}"
+msgstr ""
 
 msgid "%{size} GiB"
 msgstr "%{size} GiB"
@@ -762,7 +784,7 @@ msgid "%{start} to %{end}"
 msgstr "%{start} til %{end}"
 
 msgid "%{state} epics"
-msgstr "%{state} epics"
+msgstr "%{state} eposer"
 
 msgid "%{strongStart}Deletes%{strongEnd} source branch"
 msgstr "%{strongStart}Sletter%{strongEnd} kildegrenen"
@@ -947,9 +969,6 @@ msgstr "(sjekk fremgang)"
 msgid "(deleted)"
 msgstr "(slettet)"
 
-msgid "(external source)"
-msgstr "(ekstern kilde)"
-
 msgid "(line: %{startLine})"
 msgstr "(linje: %{startLine})"
 
@@ -988,6 +1007,18 @@ msgstr[1] "+%d til"
 msgid "+%{approvers} more approvers"
 msgstr "+%{approvers} flere godkjennere"
 
+msgid "+%{more_assignees_count}"
+msgstr ""
+
+msgid "+%{more_assignees_count} more assignees"
+msgstr ""
+
+msgid "+%{more_reviewers_count}"
+msgstr ""
+
+msgid "+%{more_reviewers_count} more reviewers"
+msgstr ""
+
 msgid "+%{tags} more"
 msgstr "+%{tags} til"
 
@@ -1016,6 +1047,9 @@ msgstr "- av - vektlegging fullført"
 msgid "- show less"
 msgstr "- Vis mindre"
 
+msgid "."
+msgstr ""
+
 msgid "0 bytes"
 msgstr "0 byte"
 
@@ -1025,15 +1059,8 @@ msgstr "0 for ubegrenset"
 msgid "0 for unlimited, only effective with remote storage enabled."
 msgstr ""
 
-msgid "1 %{type} addition"
-msgid_plural "%{count} %{type} additions"
-msgstr[0] "1 %{type}-tillegging"
-msgstr[1] "%{count} %{type}-tillegginger"
-
-msgid "1 %{type} modification"
-msgid_plural "%{count} %{type} modifications"
-msgstr[0] "1 %{type} modifikasjon"
-msgstr[1] "%{count} %{type} modifikasjoner"
+msgid "0t1DgySidms"
+msgstr ""
 
 msgid "1 Day"
 msgid_plural "%d Days"
@@ -1087,8 +1114,8 @@ msgstr[1] "%d minutter"
 
 msgid "1 open issue"
 msgid_plural "%{issues} open issues"
-msgstr[0] "1 åpent problem"
-msgstr[1] "%{issues} åpne problemer"
+msgstr[0] "1 åpen sak"
+msgstr[1] "%{issues} åpne saker"
 
 msgid "1 open merge request"
 msgid_plural "%{merge_requests} open merge requests"
@@ -1294,6 +1321,9 @@ msgid "A user with write access to the source branch selected this option"
 msgstr ""
 
 msgid "ACTION REQUIRED: Something went wrong while obtaining the Let's Encrypt certificate for GitLab Pages domain '%{domain}'"
+msgstr ""
+
+msgid "API Fuzzing"
 msgstr ""
 
 msgid "API Help"
@@ -1595,6 +1625,9 @@ msgstr "Legg til ny tabell"
 msgid "Add a task list"
 msgstr "Legg til en oppgaveliste"
 
+msgid "Add a to do"
+msgstr ""
+
 msgid "Add additional text to appear in all email communications. %{character_limit} character limit"
 msgstr "Legge til ekstra tekst som skal vises i all e-postkommunikasjon. Begrensningen er på %{character_limit} tegn"
 
@@ -1748,8 +1781,8 @@ msgstr ""
 msgid "Added %{label_references} %{label_text}."
 msgstr "La til %{label_references} %{label_text}."
 
-msgid "Added a To Do."
-msgstr "La til et gjøremål."
+msgid "Added a to do."
+msgstr ""
 
 msgid "Added an issue to an epic."
 msgstr "La til en sak i en epos."
@@ -1784,11 +1817,11 @@ msgstr ""
 msgid "Adds %{labels} %{label_text}."
 msgstr "Legger til %{labels} %{label_text}."
 
-msgid "Adds a To Do."
-msgstr "Legger til et gjøremål."
-
 msgid "Adds a Zoom meeting"
 msgstr "Legger til et Zoom-møte"
+
+msgid "Adds a to do."
+msgstr ""
 
 msgid "Adds an issue to an epic."
 msgstr "Legger til en sak i en epos."
@@ -1874,6 +1907,9 @@ msgstr ""
 msgid "AdminArea|New user"
 msgstr ""
 
+msgid "AdminArea|Once the instance reaches the user cap, any user who is added or requests access will have to be approved by an admin. Leave the field empty for unlimited."
+msgstr ""
+
 msgid "AdminArea|Owner"
 msgstr "Eier"
 
@@ -1897,6 +1933,9 @@ msgstr "Stopp jobber som mislyktes"
 
 msgid "AdminArea|Total users"
 msgstr "Totalt antall brukere"
+
+msgid "AdminArea|User cap"
+msgstr ""
 
 msgid "AdminArea|Users statistics"
 msgstr "Statistikk over brukere"
@@ -2012,6 +2051,21 @@ msgstr "SSH-nøkler"
 msgid "AdminStatistics|Snippets"
 msgstr "Utdrag"
 
+msgid "AdminUsers|(Admin)"
+msgstr ""
+
+msgid "AdminUsers|(Blocked)"
+msgstr ""
+
+msgid "AdminUsers|(Deactivated)"
+msgstr ""
+
+msgid "AdminUsers|(Internal)"
+msgstr ""
+
+msgid "AdminUsers|(Pending approval)"
+msgstr ""
+
 msgid "AdminUsers|2FA Disabled"
 msgstr "2FA er skrudd av"
 
@@ -2020,6 +2074,12 @@ msgstr "2FA er skrudd på"
 
 msgid "AdminUsers|Access"
 msgstr "Tilgang"
+
+msgid "AdminUsers|Access Git repositories"
+msgstr ""
+
+msgid "AdminUsers|Access the API"
+msgstr ""
 
 msgid "AdminUsers|Active"
 msgstr "Aktiv"
@@ -2033,11 +2093,29 @@ msgstr "Administratorer har tilgang til alle grupper, prosjekter og brukere og k
 msgid "AdminUsers|Admins"
 msgstr "Administratorer"
 
+msgid "AdminUsers|Approve"
+msgstr ""
+
+msgid "AdminUsers|Approve user"
+msgstr ""
+
+msgid "AdminUsers|Approved users can:"
+msgstr ""
+
+msgid "AdminUsers|Are you sure?"
+msgstr ""
+
 msgid "AdminUsers|Automatically marked as default internal user"
+msgstr ""
+
+msgid "AdminUsers|Be added to groups and projects"
 msgstr ""
 
 msgid "AdminUsers|Block"
 msgstr "Blokker"
+
+msgid "AdminUsers|Block this user"
+msgstr ""
 
 msgid "AdminUsers|Block user"
 msgstr "Blokker bruker"
@@ -2093,6 +2171,9 @@ msgstr "Benytter setet"
 msgid "AdminUsers|It's you!"
 msgstr "Det er deg!"
 
+msgid "AdminUsers|Log in"
+msgstr ""
+
 msgid "AdminUsers|New user"
 msgstr "Ny bruker"
 
@@ -2101,6 +2182,9 @@ msgstr "Ingen brukere ble funnet"
 
 msgid "AdminUsers|Owned groups will be left"
 msgstr "Eide grupper vil bli forlatt"
+
+msgid "AdminUsers|Pending approval"
+msgstr ""
 
 msgid "AdminUsers|Personal projects will be left"
 msgstr "Personlige prosjekter vil bli forlatt"
@@ -2147,6 +2231,9 @@ msgstr "Brukeren vil ikke kunne bruke skråstrek-kommandoer"
 msgid "AdminUsers|The user will not receive any notifications"
 msgstr "Brukeren vil ikke motta noen varsler"
 
+msgid "AdminUsers|This user has requested access"
+msgstr ""
+
 msgid "AdminUsers|To confirm, type %{projectName}"
 msgstr "For å bekrefte, skriv %{projectName}"
 
@@ -2171,6 +2258,9 @@ msgstr ""
 msgid "AdminUsers|You are about to permanently delete the user %{username}. This will delete all of the issues, merge requests, and groups linked to them. To avoid data loss, consider using the %{strongStart}block user%{strongEnd} feature instead. Once you %{strongStart}Delete user%{strongEnd}, it cannot be undone or recovered."
 msgstr ""
 
+msgid "AdminUsers|You can always unblock their account, their data will remain intact."
+msgstr ""
+
 msgid "AdminUsers|You cannot remove your own admin rights."
 msgstr "Du kan ikke fjerne dine egne adminrettigheter."
 
@@ -2179,6 +2269,9 @@ msgstr ""
 
 msgid "Administration"
 msgstr "Administrasjon"
+
+msgid "Adoption"
+msgstr ""
 
 msgid "Advanced"
 msgstr "Avansert"
@@ -2195,23 +2288,23 @@ msgstr "Avanserte innstillinger"
 msgid "Advanced permissions, Large File Storage and Two-Factor authentication settings."
 msgstr "Avanserte tillatelser, stor fillagring, og 2-trinnsautentiseringsinnstillinger."
 
-msgid "Advanced search functionality"
-msgstr "Avansert søkefunksjonalitet"
-
 msgid "After a successful password update you will be redirected to login screen."
 msgstr "Etter en vellykket passordoppdatering vil du bli omdirigert til påloggingsskjermen."
 
 msgid "After a successful password update, you will be redirected to the login page where you can log in with your new password."
 msgstr "Etter en vellykket passordoppdatering, vil du bli omdirigert til påloggingssiden der du kan logge på med ditt nye passord."
 
-msgid "After that, you will not to be able to use merge approvals or code quality as well as many other features."
-msgstr "Etter det, vil du ikke kunne bruke flettegodkjenninger eller kodekvalitet, så vel som mange andre funksjoner."
+msgid "After sign-out path"
+msgstr ""
 
-msgid "After that, you will not to be able to use merge approvals or epics as well as many other features."
-msgstr "Etter det vil du ikke kunne bruke flettegodkjenninger eller eposer, så vel som mange andre funksjoner."
+msgid "After that, you will not be able to use merge approvals or code quality as well as many other features."
+msgstr ""
 
-msgid "After that, you will not to be able to use merge approvals or epics as well as many security features."
-msgstr "Etter det vil du ikke kunne bruke flettegodkjenninger eller eposer, så vel som mange andre sikkerhetsfunksjoner."
+msgid "After that, you will not be able to use merge approvals or epics as well as many other features."
+msgstr ""
+
+msgid "After that, you will not be able to use merge approvals or epics as well as many security features."
+msgstr ""
 
 msgid "Alert"
 msgid_plural "Alerts"
@@ -2275,11 +2368,11 @@ msgstr "Hendelser"
 msgid "AlertManagement|High"
 msgstr "Høy"
 
+msgid "AlertManagement|Incident"
+msgstr ""
+
 msgid "AlertManagement|Info"
 msgstr "Info"
-
-msgid "AlertManagement|Issue"
-msgstr "Sak"
 
 msgid "AlertManagement|Key"
 msgstr ""
@@ -2395,6 +2488,15 @@ msgstr "Gå gjennom dokumentasjonen til din eksterne tjeneste for å lære hvor 
 msgid "AlertService|You must provide this URL and authorization key to authorize an external service to send alerts to GitLab. You can provide this URL and key to multiple services. After configuring an external service, alerts from your service will display on the GitLab %{linkStart}Alerts%{linkEnd} page."
 msgstr "Du må oppgi denne URL-en og autorisasjonsnøkkelen for å autorisere en ekstern tjeneste til å sende varsler til GitLab. Du kan oppgi denne URL-en og nøkkelen til flere tjenester. Etter at du har konfigurert en ekstern tjeneste, vises varsler fra tjenesten din på GitLab sin %{linkStart}Alarmer%{linkEnd}-side."
 
+msgid "AlertSettings|1. Select integration type"
+msgstr ""
+
+msgid "AlertSettings|2. Name integration"
+msgstr ""
+
+msgid "AlertSettings|5. Map fields (optional)"
+msgstr ""
+
 msgid "AlertSettings|API URL"
 msgstr "API-URL"
 
@@ -2404,10 +2506,10 @@ msgstr "Aktiv"
 msgid "AlertSettings|Add URL and auth key to your Prometheus config file"
 msgstr "Legg til URL og autoriseringsnøkkel i din Prometheus-oppsettsfil"
 
-msgid "AlertSettings|Alert test payload"
+msgid "AlertSettings|Add new integrations"
 msgstr ""
 
-msgid "AlertSettings|Alerts endpoint successfully activated."
+msgid "AlertSettings|Alert test payload"
 msgstr ""
 
 msgid "AlertSettings|Authorization key"
@@ -2419,19 +2521,28 @@ msgstr ""
 msgid "AlertSettings|Copy"
 msgstr "Kopier"
 
+msgid "AlertSettings|Enter integration name"
+msgstr ""
+
 msgid "AlertSettings|Enter test alert JSON...."
 msgstr ""
 
 msgid "AlertSettings|External Prometheus"
 msgstr "Ekstern Prometheus"
 
-msgid "AlertSettings|Generic"
-msgstr "Generisk"
+msgid "AlertSettings|HTTP Endpoint"
+msgstr ""
 
-msgid "AlertSettings|Integrations"
-msgstr "Integreringer"
+msgid "AlertSettings|HTTP endpoint"
+msgstr ""
 
-msgid "AlertSettings|Learn more about our %{linkStart}upcoming integrations%{linkEnd}"
+msgid "AlertSettings|Integration"
+msgstr ""
+
+msgid "AlertSettings|Learn more about our our upcoming %{linkStart}integrations%{linkEnd}"
+msgstr ""
+
+msgid "AlertSettings|Learn more about our upcoming %{linkStart}integrations%{linkEnd}"
 msgstr ""
 
 msgid "AlertSettings|Opsgenie"
@@ -2446,6 +2557,12 @@ msgstr ""
 msgid "AlertSettings|Review your external service's documentation to learn where to provide this information to your external service, and the %{linkStart}GitLab documentation%{linkEnd} to learn more about configuring your endpoint."
 msgstr "Gå gjennom dokumentasjonen til din eksterne tjeneste for å lære hvor du kan gi denne informasjonen til din eksterne tjeneste, og %{linkStart}GitLab-dokumentasjonen%{linkEnd} for å lære mer om å sette opp ditt endepunkt."
 
+msgid "AlertSettings|Save integration"
+msgstr ""
+
+msgid "AlertSettings|Select integration type"
+msgstr ""
+
 msgid "AlertSettings|Test alert payload"
 msgstr ""
 
@@ -2455,8 +2572,11 @@ msgstr ""
 msgid "AlertSettings|Test failed. Do you still want to save your changes anyway?"
 msgstr ""
 
-msgid "AlertSettings|There was an error updating the alert settings"
-msgstr "Det oppstod en feil under oppdatering av alarminnstillingene"
+msgid "AlertSettings|The default GitLab alert keys are listed below. In the event an exact match could be found in the sample payload provided, that key will be mapped automatically. In all other cases, please define which payload key should map to the specified GitLab key. Any payload keys not shown in this list will not display in the alert list, but will display on the alert details page."
+msgstr ""
+
+msgid "AlertSettings|There was an error updating the alert settings."
+msgstr ""
 
 msgid "AlertSettings|There was an error while trying to reset the key. Please refresh the page to try again."
 msgstr "Det oppstod en feil under tilbakestilling av nøkkelen. Oppdater siden for å prøve igjen."
@@ -2473,14 +2593,35 @@ msgstr "Du kan nå sette opp varslings-endepunkter for manuelt konfigurerte Prom
 msgid "AlertSettings|You must provide this URL and authorization key to authorize an external service to send alerts to GitLab. You can provide this URL and key to multiple services. After configuring an external service, alerts from your service will display on the GitLab %{linkStart}Alerts%{linkEnd} page."
 msgstr "Du må oppgi denne URL-en og autorisasjonsnøkkelen for å autorisere en ekstern tjeneste til å sende varsler til GitLab. Du kan oppgi denne URL-en og nøkkelen til flere tjenester. Etter at du har konfigurert en ekstern tjeneste, vises varsler fra tjenesten din på GitLab sin %{linkStart}Alarmer%{linkEnd}-side."
 
-msgid "AlertSettings|Your changes were successfully updated."
-msgstr "Endringene dine ble vellykket oppdatert."
+msgid "AlertSettings|Your integration was successfully updated."
+msgstr ""
 
 msgid "Alerts"
 msgstr "Varsler"
 
 msgid "Alerts endpoint"
 msgstr "Alarm-endepunkt"
+
+msgid "AlertsIntegrations|Alerts will be created through this integration"
+msgstr ""
+
+msgid "AlertsIntegrations|Alerts will not be created through this integration"
+msgstr ""
+
+msgid "AlertsIntegrations|Current integrations"
+msgstr ""
+
+msgid "AlertsIntegrations|HTTP endpoint"
+msgstr ""
+
+msgid "AlertsIntegrations|Integration Name"
+msgstr ""
+
+msgid "AlertsIntegrations|No integrations have been added yet"
+msgstr ""
+
+msgid "AlertsIntegrations|Prometheus"
+msgstr ""
 
 msgid "Algorithm"
 msgstr "Algoritme"
@@ -2548,9 +2689,6 @@ msgstr "Alle sikkerhetsskanninger er aktivert fordi %{linkStart}Auto DevOps%{lin
 msgid "All threads resolved"
 msgstr "Alle tråder er oppklart"
 
-msgid "All users"
-msgstr "Alle brukere"
-
 msgid "All users must have a name."
 msgstr "Alle brukere må ha et navn."
 
@@ -2575,6 +2713,9 @@ msgstr ""
 msgid "Allow owners to manually add users outside of LDAP"
 msgstr "Tillat eiere å legge til brukere manuelt utenfor LDAP"
 
+msgid "Allow projects and subgroups to override the group setting"
+msgstr ""
+
 msgid "Allow projects within this group to use Git LFS"
 msgstr "Tillat prosjekter innenfor denne gruppen å bruke Git LFS"
 
@@ -2595,6 +2736,9 @@ msgstr "Tillat forespørsler til det lokale nettverket fra systemkroker"
 
 msgid "Allow requests to the local network from web hooks and services"
 msgstr "Tillat forespørsler til det lokale nettverket fra Webhooks og tjenester"
+
+msgid "Allow subgroups to set up their own two-factor authentication rules"
+msgstr ""
 
 msgid "Allow this key to push to repository as well? (Default only allows pull access.)"
 msgstr ""
@@ -2617,11 +2761,17 @@ msgstr "Tillatt"
 msgid "Allowed Geo IP"
 msgstr "Tillatt Geo-IP"
 
+msgid "Allowed domains for sign-ups"
+msgstr ""
+
 msgid "Allowed email domain restriction only permitted for top-level groups"
 msgstr ""
 
 msgid "Allowed to fail"
 msgstr "Tillatt å mislykkes"
+
+msgid "Allows projects or subgroups in this group to override the global setting."
+msgstr ""
 
 msgid "Allows you to add and manage Kubernetes clusters."
 msgstr "Lar deg legge til og behandle Kubernetes-klynger."
@@ -2671,6 +2821,9 @@ msgstr "En %{link_start}alarm%{link_end} med samme fingeravtrykk er allerede åp
 msgid "An administrator changed the password for your GitLab account on %{link_to}."
 msgstr "En administrator endret passordet til GitLab-kontoen din på %{link_to}."
 
+msgid "An alert has been resolved in %{project_path}."
+msgstr ""
+
 msgid "An alert has been triggered in %{project_path}."
 msgstr "En alarm har blitt utløst i %{project_path}."
 
@@ -2683,8 +2836,14 @@ msgstr ""
 msgid "An empty GitLab User field will add the FogBugz user's full name (e.g. \"By John Smith\") in the description of all issues and comments. It will also associate and/or assign these issues and comments with the project creator."
 msgstr "Et tomt GitLab-brukerfelt vil legge til FogBugz-brukerens fulle navn (f.eks. \"Av John Smith\") i beskrivelsen av alle saker og kommentarer. Det vil også knytte og/eller tildele disse sakene og kommentarene til prosjektskaperen."
 
+msgid "An empty index will be created if one does not already exist"
+msgstr ""
+
 msgid "An error has occurred"
 msgstr "En feil har oppstått"
+
+msgid "An error has occurred fetching instructions"
+msgstr ""
 
 msgid "An error occured while making the changes: %{error}"
 msgstr ""
@@ -2713,8 +2872,14 @@ msgstr "Det oppstod en feil under innhenting av prosjektskaperne."
 msgid "An error occurred previewing the blob"
 msgstr "En feil oppstod under forhåndsvisning av blobben"
 
+msgid "An error occurred when removing the label."
+msgstr ""
+
 msgid "An error occurred when toggling the notification subscription"
 msgstr "En feil oppstod under veksling av varslingsabonnement"
+
+msgid "An error occurred when updating the issue due date"
+msgstr ""
 
 msgid "An error occurred when updating the issue weight"
 msgstr "En feil oppstod under oppdatering av saksvektleggingen"
@@ -2803,9 +2968,6 @@ msgstr "Det oppstod en feil under innhenting av terraformingsrapporter."
 msgid "An error occurred while fetching the Service Desk address."
 msgstr "Det oppstod en feil under innhenting av Service Desk-adressen."
 
-msgid "An error occurred while fetching the board lists. Please reload the page."
-msgstr ""
-
 msgid "An error occurred while fetching the board lists. Please try again."
 msgstr ""
 
@@ -2878,9 +3040,6 @@ msgstr "En feil oppstod under innlasting av saker"
 msgid "An error occurred while loading merge requests."
 msgstr "Det oppstod en feil under innlasting av fletteforespørsler."
 
-msgid "An error occurred while loading milestones"
-msgstr "En feil oppstod under innlasting av milepæler"
-
 msgid "An error occurred while loading project creation UI"
 msgstr "En feil oppstod under innlasting av prosjektopprettings-grensesnittet"
 
@@ -2911,9 +3070,6 @@ msgstr "En feil oppstod under innlasting av fletteforespørselsen."
 msgid "An error occurred while loading the pipelines jobs."
 msgstr "En feil oppstod under innhenting av rørledningsjobbene."
 
-msgid "An error occurred while loading the subscription details."
-msgstr "Det oppstod en feil under innlasting av abonnementsdetaljene."
-
 msgid "An error occurred while making the request."
 msgstr "Det oppsto en feil under forespørselsforsøket."
 
@@ -2937,6 +3093,9 @@ msgstr ""
 
 msgid "An error occurred while rendering the editor"
 msgstr "En feil oppstod under rendring av redigereren"
+
+msgid "An error occurred while rendering the linter"
+msgstr ""
 
 msgid "An error occurred while reordering issues."
 msgstr "En feil oppstod under omsortering av saker."
@@ -2962,9 +3121,6 @@ msgstr ""
 msgid "An error occurred while saving assignees"
 msgstr "En feil oppstod under lagring av tilordnede"
 
-msgid "An error occurred while searching for milestones"
-msgstr "En feil oppstod under søking etter milepæler"
-
 msgid "An error occurred while subscribing to notifications."
 msgstr "En feil oppstod under abonnering på varsler."
 
@@ -2979,6 +3135,9 @@ msgstr "En feil oppstod under avabonnering på varsler."
 
 msgid "An error occurred while updating approvers"
 msgstr "En feil oppstod under oppdatering av godkjennere"
+
+msgid "An error occurred while updating configuration."
+msgstr ""
 
 msgid "An error occurred while updating labels."
 msgstr ""
@@ -3309,6 +3468,9 @@ msgstr "Arkiver jobber"
 msgid "Archive project"
 msgstr "Arkiver prosjekt"
 
+msgid "Archive test case"
+msgstr ""
+
 msgid "Archived"
 msgstr "Arkivert"
 
@@ -3325,7 +3487,7 @@ msgid "Archived projects"
 msgstr "Arkiverte prosjekter"
 
 msgid "Archiving the project will make it entirely read only. It is hidden from the dashboard and doesn't show up in searches. %{strong_start}The repository cannot be committed to, and no issues, comments, or other entities can be created.%{strong_end}"
-msgstr "Arkivering av prosjektet vil gjøre det helt skrivebeskyttet. Den er skjult fra kontrollpanelet og vises ikke i søk. %{strong_start}Datalageret kan ikke motta commiter, og ingen problemer, kommentarer eller andre enheter kan opprettes.%{strong_end}"
+msgstr "Arkivering av prosjektet vil gjøre det helt skrivebeskyttet. Den er skjult fra kontrollpanelet og vises ikke i søk. %{strong_start}Datalageret kan ikke motta commiter, og ingen saker, kommentarer eller andre enheter kan opprettes.%{strong_end}"
 
 msgid "Are you ABSOLUTELY SURE you wish to delete this project?"
 msgstr "Er du HELT SIKKER på at du vil slette dette prosjektet?"
@@ -3546,7 +3708,7 @@ msgid "Assigned %{assignee_users_sentence}."
 msgstr ""
 
 msgid "Assigned Issues"
-msgstr "Tilegnede rapporter"
+msgstr "Tilegnede saker"
 
 msgid "Assigned Merge Requests"
 msgstr "Tilordnede fletteforespørsel"
@@ -3556,6 +3718,9 @@ msgstr "Tilordnet til %{assigneeName}"
 
 msgid "Assigned to %{assignee_name}"
 msgstr "Tilordnet til %{assignee_name}"
+
+msgid "Assigned to %{name}"
+msgstr ""
 
 msgid "Assigned to me"
 msgstr "Tilordnet meg"
@@ -3801,8 +3966,29 @@ msgstr "Den vil automatisk bygge, teste og distribuere applikasjonen din basert 
 msgid "AutoDevOps|Learn more in the %{link_to_documentation}"
 msgstr "Lær mer i %{link_to_documentation}"
 
-msgid "AutoDevOps|The Auto DevOps pipeline has been enabled and will be used if no alternative CI configuration file is found. %{more_information_link}"
-msgstr "Auto DevOps-rørledningen har blitt aktivert og vil bli brukt hvis ingen alternative CI-konfigurasjonsfiler blir funnet. %{more_information_link}"
+msgid "AutoDevOps|The Auto DevOps pipeline has been enabled and will be used if no alternative CI configuration file is found."
+msgstr ""
+
+msgid "AutoRemediation|%{mrsCount} ready for review"
+msgstr ""
+
+msgid "AutoRemediation|Auto-fix solutions"
+msgstr ""
+
+msgid "AutoRemediation|If you're using dependency and/or container scanning, and auto-fix is enabled, auto-fix automatically creates merge requests with fixes to vulnerabilities."
+msgstr ""
+
+msgid "AutoRemediation|Introducing GitLab auto-fix"
+msgstr ""
+
+msgid "AutoRollback|Automatic rollbacks start when a critical alert is triggered. If the last successful deployment fails to roll back automatically, it can still be done manually."
+msgstr ""
+
+msgid "AutoRollback|Automatically roll back to the last successful deployment when a critical problem is detected."
+msgstr ""
+
+msgid "AutoRollback|Enable automatic rollbacks"
+msgstr ""
 
 msgid "Autocomplete"
 msgstr "Automatisk fullføring"
@@ -3822,6 +4008,9 @@ msgstr "Automatisk sertifikatshåndtering med %{lets_encrypt_link_start}Let's En
 msgid "Automatic certificate management using Let's Encrypt"
 msgstr "Automatisk sertifikatshåndtering med Let's Encrypt"
 
+msgid "Automatic deployment rollbacks"
+msgstr ""
+
 msgid "Automatically close incident issues when the associated Prometheus alert resolves."
 msgstr ""
 
@@ -3839,6 +4028,9 @@ msgstr ""
 
 msgid "Available"
 msgstr "Tilgjengelig"
+
+msgid "Available ID"
+msgstr ""
 
 msgid "Available Runners: %{runners}"
 msgstr ""
@@ -3896,9 +4088,6 @@ msgstr "Merkebilde nettadresse"
 
 msgid "Badges|Badge image preview"
 msgstr "Forhåndsvisning av merkebilde"
-
-msgid "Badges|Delete badge"
-msgstr "Slett merket"
 
 msgid "Badges|Delete badge?"
 msgstr "Slette badge?"
@@ -3979,6 +4168,12 @@ msgid "BambooService|Bamboo root URL like https://bamboo.example.com"
 msgstr ""
 
 msgid "BambooService|You must set up automatic revision labeling and a repository trigger in Bamboo."
+msgstr ""
+
+msgid "Based on"
+msgstr ""
+
+msgid "Basic Sample Data template with Issues, Merge Requests and Milestones."
 msgstr ""
 
 msgid "Be careful. Changing the project's namespace can have unintended side effects."
@@ -4065,6 +4260,18 @@ msgstr "Kontakt salgsavdelingen"
 msgid "BillingPlan|Upgrade"
 msgstr "Oppgrader"
 
+msgid "Billing|An error occurred while loading billable members list"
+msgstr ""
+
+msgid "Billing|No users to display."
+msgstr ""
+
+msgid "Billing|Updated live"
+msgstr ""
+
+msgid "Billing|Users occupying seats in %{namespaceName} Group (%{total})"
+msgstr ""
+
 msgid "Bitbucket Server Import"
 msgstr "Bitbucket-tjenerimportering"
 
@@ -4116,10 +4323,19 @@ msgstr ""
 msgid "Boards|An error occurred while fetching issues. Please reload the page."
 msgstr ""
 
+msgid "Boards|An error occurred while fetching labels. Please reload the page."
+msgstr ""
+
 msgid "Boards|An error occurred while fetching the board issues. Please reload the page."
 msgstr ""
 
+msgid "Boards|An error occurred while fetching the board lists. Please reload the page."
+msgstr ""
+
 msgid "Boards|An error occurred while fetching the board swimlanes. Please reload the page."
+msgstr ""
+
+msgid "Boards|An error occurred while generating lists. Please reload the page."
 msgstr ""
 
 msgid "Boards|An error occurred while moving the issue. Please try again."
@@ -4140,6 +4356,9 @@ msgstr "Utvid"
 msgid "Boards|View scope"
 msgstr "Vis omfang"
 
+msgid "Board|Load more issues"
+msgstr ""
+
 msgid "Both project and dashboard_path are required"
 msgstr ""
 
@@ -4151,6 +4370,9 @@ msgstr "Grenen %{branchName} ble ikke funnet i dette prosjektet sitt kodelager."
 
 msgid "Branch %{branch_name} was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}"
 msgstr "%{branch_name}-grenen ble opprettet. For å konfigurere automatisk distribusjon, velg en GitLab CI Yaml-mal og foreta endringene dine. %{link_to_autodeploy_doc}"
+
+msgid "Branch already exists"
+msgstr ""
 
 msgid "Branch changed"
 msgstr ""
@@ -4296,6 +4518,9 @@ msgstr "prosjektinnstillinger"
 msgid "Branches|protected"
 msgstr "beskyttet"
 
+msgid "Brief title about the change"
+msgstr ""
+
 msgid "Broadcast Message was successfully created."
 msgstr ""
 
@@ -4332,7 +4557,19 @@ msgstr "Innebygget"
 msgid "Bulk request concurrency"
 msgstr ""
 
+msgid "BulkImport|expected an associated Group but has an associated Project"
+msgstr ""
+
+msgid "BulkImport|expected an associated Project but has an associated Group"
+msgstr ""
+
+msgid "BulkImport|must be a group"
+msgstr ""
+
 msgid "Burndown chart"
+msgstr ""
+
+msgid "Burndown charts are now fixed. This means that removing issues from a milestone after it has expired won't affect the chart. You can view the old chart using the %{strongStart}Legacy burndown chart%{strongEnd} button."
 msgstr ""
 
 msgid "BurndownChartLabel|Open issue weight"
@@ -4365,8 +4602,8 @@ msgstr "Av %{user_name}"
 msgid "By URL"
 msgstr "Etter URL"
 
-msgid "By clicking Register, I agree that I have read and accepted the GitLab %{linkStart}Terms of Use and Privacy Policy%{linkEnd}"
-msgstr "Ved å klikke Registrer, godtar jeg at jeg har lest og godtatt GitLab sine %{linkStart}bruksvilkår og personvernregler%{linkEnd}"
+msgid "By clicking Register, I agree that I have read and accepted the %{company_name} %{linkStart}Terms of Use and Privacy Policy%{linkEnd}"
+msgstr ""
 
 msgid "By default GitLab sends emails in HTML and plain text formats so mail clients can choose what format to use. Disable this option if you only want to send emails in plain text format."
 msgstr "Som standard sender GitLab e-post i HTML- og rentekst-formater slik at e-postklienter kan velge hvilket format de skal bruke. Deaktiver dette alternativet hvis du bare vil sende e-post i rentekstformat."
@@ -4546,6 +4783,9 @@ msgid "Cannot create the abuse report. This user has been blocked."
 msgstr "Kan ikke opprette misbruksrapporten. Brukeren har blitt blokkert."
 
 msgid "Cannot enable shared runners because parent group does not allow it"
+msgstr ""
+
+msgid "Cannot find user key."
 msgstr ""
 
 msgid "Cannot have multiple Jira imports running at the same time"
@@ -4959,6 +5199,9 @@ msgstr ""
 msgid "Child epic doesn't exist."
 msgstr ""
 
+msgid "Chinese language support using"
+msgstr ""
+
 msgid "Choose %{strong_open}Create archive%{strong_close} and wait for archiving to complete."
 msgstr "Velg %{strong_open}Opprett arkiv%{strong_close} og vent til arkivering er fullført."
 
@@ -5142,9 +5385,6 @@ msgstr "Alle miljøer"
 msgid "CiVariable|Create wildcard"
 msgstr "Opprett jokertegn"
 
-msgid "CiVariable|Error occurred while saving variables"
-msgstr ""
-
 msgid "CiVariable|Masked"
 msgstr "Maskert"
 
@@ -5162,9 +5402,6 @@ msgstr ""
 
 msgid "CiVariable|Toggle protected"
 msgstr "Veksle beskyttelsesstatus"
-
-msgid "CiVariable|Validation failed"
-msgstr "Validering mislyktes"
 
 msgid "Classification Label (optional)"
 msgstr "Klassifiseringsetikett (valgfritt)"
@@ -5206,13 +5443,13 @@ msgid "Clear templates search input"
 msgstr ""
 
 msgid "Clear weight"
-msgstr "Tøm vekt"
+msgstr "Tøm vektlegging"
 
 msgid "Cleared weight."
-msgstr "Tømte vekt."
+msgstr "Tømte vektleggingen."
 
 msgid "Clears weight."
-msgstr "Tømmer vekten."
+msgstr "Tømmer vektleggingen."
 
 msgid "Click the %{strong_open}Download%{strong_close} button and wait for downloading to complete."
 msgstr "Klikk på %{strong_open}Last ned%{strong_close}-knappen og vent til nedlastingen er fullført."
@@ -5274,6 +5511,9 @@ msgstr "Lukk %{tabname}"
 msgid "Close epic"
 msgstr "Lukk epos"
 
+msgid "Close issue"
+msgstr ""
+
 msgid "Close milestone"
 msgstr "Lukk milepæl"
 
@@ -5293,13 +5533,13 @@ msgid "Closed epics"
 msgstr "Lukkede eposer"
 
 msgid "Closed issues"
-msgstr "Lukkede rapporter"
+msgstr "Lukkede saker"
 
 msgid "Closed this %{quick_action_target}."
 msgstr "Lukket denne %{quick_action_target}."
 
-msgid "Closed: %{closedIssuesCount}"
-msgstr "Lukket: %{closedIssuesCount}"
+msgid "Closed: %{closed}"
+msgstr ""
 
 msgid "Closes this %{quick_action_target}."
 msgstr "Lukker denne %{quick_action_target}."
@@ -5323,6 +5563,9 @@ msgid "Cluster level"
 msgstr "Klynge-nivå"
 
 msgid "Cluster type must be specificed for Stages::ClusterEndpointInserter"
+msgstr ""
+
+msgid "ClusterAgents|An error occurred while loading your GitLab Agents"
 msgstr ""
 
 msgid "ClusterAgents|Configuration"
@@ -5508,6 +5751,9 @@ msgstr ""
 msgid "ClusterIntegration|Clear the local cache of namespace and service accounts."
 msgstr ""
 
+msgid "ClusterIntegration|Cluster Region"
+msgstr ""
+
 msgid "ClusterIntegration|Cluster management project (alpha)"
 msgstr ""
 
@@ -5564,9 +5810,6 @@ msgstr "Klarte ikke å laste inn instanstyper"
 
 msgid "ClusterIntegration|Could not load networks"
 msgstr "Klarte ikke å laste inn nettverk"
-
-msgid "ClusterIntegration|Could not load regions from your AWS account"
-msgstr "Kunne ikke laste inn regioner fra AWS-kontoen din"
 
 msgid "ClusterIntegration|Could not load security groups for the selected VPC"
 msgstr "Kunne ikke laste inn sikkerhetsgrupper for den valgte VPC-en"
@@ -5823,9 +6066,6 @@ msgstr "Lær mer om %{help_link_start_machine_type}maskintyper%{help_link_end} o
 msgid "ClusterIntegration|Learn more about %{help_link_start}zones%{help_link_end}."
 msgstr "Lær mer om %{help_link_start}soner%{help_link_end}."
 
-msgid "ClusterIntegration|Learn more about %{linkStart}Regions%{linkEnd}."
-msgstr ""
-
 msgid "ClusterIntegration|Learn more about Kubernetes"
 msgstr "Lær mer om Kubernetes"
 
@@ -5840,9 +6080,6 @@ msgstr "Laster inn IAM-roller"
 
 msgid "ClusterIntegration|Loading Key Pairs"
 msgstr "Laster inn nøkkelpar"
-
-msgid "ClusterIntegration|Loading Regions"
-msgstr "Laster inn regioner"
 
 msgid "ClusterIntegration|Loading VPCs"
 msgstr "Laster inn VPC-er"
@@ -5910,9 +6147,6 @@ msgstr "Ingen prosjekter funnet"
 msgid "ClusterIntegration|No projects matched your search"
 msgstr "Ingen prosjekter samsvarte med søket ditt"
 
-msgid "ClusterIntegration|No region found"
-msgstr "Ingen region funnet"
-
 msgid "ClusterIntegration|No security group found"
 msgstr "Ingen sikkerhetsgruppe funnet"
 
@@ -5978,9 +6212,6 @@ msgstr "Les vår %{link_start}hjelpeside%{link_end} om Kubernetes-klyngeintegras
 
 msgid "ClusterIntegration|Real-time web application monitoring, logging and access control. %{linkStart}More information%{linkEnd}"
 msgstr ""
-
-msgid "ClusterIntegration|Region"
-msgstr "Region"
 
 msgid "ClusterIntegration|Remove Kubernetes cluster integration"
 msgstr "Fjern Kubernetes-klyngeintegrasjon"
@@ -6048,9 +6279,6 @@ msgstr "Søk blant nettverk"
 msgid "ClusterIntegration|Search projects"
 msgstr "Søk blant prosjekter"
 
-msgid "ClusterIntegration|Search regions"
-msgstr "Søk blant regioner"
-
 msgid "ClusterIntegration|Search security groups"
 msgstr "Søk blant sikkerhetsgrupper"
 
@@ -6109,6 +6337,9 @@ msgid "ClusterIntegration|Select project to choose zone"
 msgstr "Velg prosjekt for å velge sone"
 
 msgid "ClusterIntegration|Select the key pair name that will be used to create EC2 nodes. To use a new key pair name, first create one on %{linkStart}Amazon Web Services%{linkEnd}."
+msgstr ""
+
+msgid "ClusterIntegration|Select the region you want to create the new cluster in. Make sure you have access to this region for your role to be able to authenticate. If no region is selected, we will use %{codeStart}DEFAULT_REGION%{codeEnd}. Learn more about %{linkStart}Regions%{linkEnd}."
 msgstr ""
 
 msgid "ClusterIntegration|Select zone"
@@ -6193,6 +6424,9 @@ msgid "ClusterIntegration|The endpoint is in the process of being assigned. Plea
 msgstr ""
 
 msgid "ClusterIntegration|The namespace associated with your project. This will be used for deploy boards, logs, and Web terminals."
+msgstr ""
+
+msgid "ClusterIntegration|The region the new cluster will be created in. You must reauthenticate to change regions."
 msgstr ""
 
 msgid "ClusterIntegration|There was a problem authenticating with your cluster. Please ensure your CA Certificate and Token are valid."
@@ -6336,9 +6570,6 @@ msgstr "Velg en VPC"
 msgid "ClusterIntergation|Select a network"
 msgstr "Velg et nettverk"
 
-msgid "ClusterIntergation|Select a region"
-msgstr "Velg en region"
-
 msgid "ClusterIntergation|Select a security group"
 msgstr "Velg en sikkerhetsgruppe"
 
@@ -6449,9 +6680,6 @@ msgstr ""
 
 msgid "ComboSearch is not defined"
 msgstr "ComboSearch er ikke definert"
-
-msgid "Coming soon"
-msgstr "Kommer snart"
 
 msgid "Comma-separated, e.g. '1.1.1.1, 2.2.2.0/24'"
 msgstr "Kommaseparert, f.eks. '1.1.1.1, 2.2.2.0/24'"
@@ -6764,7 +6992,7 @@ msgstr "Confluence"
 msgid "ConfluenceService|Confluence Workspace"
 msgstr ""
 
-msgid "ConfluenceService|Connect a Confluence Cloud Workspace to your GitLab project"
+msgid "ConfluenceService|Connect a Confluence Cloud Workspace to GitLab"
 msgstr ""
 
 msgid "ConfluenceService|Enabling the Confluence Workspace will disable the default GitLab Wiki. Your GitLab Wiki data will be saved and you can always re-enable it later by turning off this integration"
@@ -6814,6 +7042,9 @@ msgstr "Tilkoblingen ble tidsavbrutt"
 
 msgid "Connection timeout"
 msgstr "Tidsavbrudd på tilkobling"
+
+msgid "Consistency guarantee method"
+msgstr ""
 
 msgid "Contact sales to upgrade"
 msgstr "Kontakt salgsavdelingen for å oppgradere"
@@ -6880,6 +7111,9 @@ msgid "ContainerRegistry|Cleanup policy successfully saved."
 msgstr ""
 
 msgid "ContainerRegistry|Cleanup policy:"
+msgstr ""
+
+msgid "ContainerRegistry|Cleanup timed out before it could delete all tags"
 msgstr ""
 
 msgid "ContainerRegistry|Configuration digest: %{digest}"
@@ -7259,6 +7493,9 @@ msgstr ""
 msgid "Copy the code below to implement tracking in your application:"
 msgstr ""
 
+msgid "Copy this value"
+msgstr ""
+
 msgid "Copy to clipboard"
 msgstr "Kopier til utklippstavle"
 
@@ -7319,6 +7556,9 @@ msgstr "Klarte ikke å slette chat-kallenavnet %{chat_name}."
 msgid "Could not delete wiki page"
 msgstr "Klarte ikke å slette wiki-side"
 
+msgid "Could not draw the lines for job relationships"
+msgstr ""
+
 msgid "Could not find design."
 msgstr "Klarte ikke å finne designet."
 
@@ -7326,6 +7566,9 @@ msgid "Could not find iteration"
 msgstr ""
 
 msgid "Could not load instance counts. Please refresh the page to try again."
+msgstr ""
+
+msgid "Could not load the user chart. Please refresh the page to try again."
 msgstr ""
 
 msgid "Could not remove the trigger."
@@ -7359,6 +7602,9 @@ msgid "Could not update wiki page"
 msgstr ""
 
 msgid "Could not upload your designs as one or more files uploaded are not supported."
+msgstr ""
+
+msgid "Couldn't calculate number of %{issuables}."
 msgstr ""
 
 msgid "Country"
@@ -7418,7 +7664,7 @@ msgid "Create a new file as there are no files yet. Afterwards, you'll be able t
 msgstr "Opprett en ny fil siden det ikke er noen filer ennå. Etterpå vil du kunne utføre endringene dine."
 
 msgid "Create a new issue"
-msgstr "Opprett et nytt problem"
+msgstr "Opprett et nytt sak"
 
 msgid "Create a new repository"
 msgstr "Opprett et nytt kodelager"
@@ -7609,6 +7855,9 @@ msgstr "Opprettet fletteforespørselen %{mergeRequestLink} hos %{projectLink}"
 msgid "Created on"
 msgstr "Opprettet den"
 
+msgid "Created on %{created_at}"
+msgstr ""
+
 msgid "Created on:"
 msgstr "Opprettet den:"
 
@@ -7700,6 +7949,9 @@ msgid "Custom CI configuration path"
 msgstr ""
 
 msgid "Custom Git clone URL for HTTP(S)"
+msgstr ""
+
+msgid "Custom analyzers: language support"
 msgstr ""
 
 msgid "Custom hostname (for private commit emails)"
@@ -7953,6 +8205,9 @@ msgstr "Oppgaver etter type"
 msgid "CycleAnalytics|The given date range is larger than 180 days"
 msgstr ""
 
+msgid "CycleAnalytics|The total time spent in the selected stage for the items that were completed on each date. Data limited to the last 500 items."
+msgstr ""
+
 msgid "CycleAnalytics|Total days to completion"
 msgstr ""
 
@@ -8010,6 +8265,15 @@ msgstr "%{firstProject}, %{rest}, og %{secondProject}"
 msgid "Dashboard|Unable to add %{invalidProjects}. This dashboard is available for public projects, and private projects in groups with a Silver plan."
 msgstr ""
 
+msgid "DastProfiles|A passive scan monitors all HTTP messages (requests and responses) sent to the target. An active scan attacks the target to find potential vulnerabilities."
+msgstr ""
+
+msgid "DastProfiles|AJAX spider"
+msgstr ""
+
+msgid "DastProfiles|Active"
+msgstr ""
+
 msgid "DastProfiles|Are you sure you want to delete this profile?"
 msgstr "Er du sikker på at du vil slette profilen?"
 
@@ -8049,6 +8313,12 @@ msgstr ""
 msgid "DastProfiles|Could not update the site profile. Please try again."
 msgstr "Klarte ikke å oppdatere nettstedsprofilen. Vennligst prøv igjen."
 
+msgid "DastProfiles|Debug messages"
+msgstr ""
+
+msgid "DastProfiles|Delete profile"
+msgstr ""
+
 msgid "DastProfiles|Do you want to discard this scanner profile?"
 msgstr "Vil du forkaste denne skannerprofilen?"
 
@@ -8069,6 +8339,12 @@ msgstr "Rediger nettstedsprofilen"
 
 msgid "DastProfiles|Error Details"
 msgstr "Detaljer om feilen"
+
+msgid "DastProfiles|Hide debug messages"
+msgstr ""
+
+msgid "DastProfiles|Include debug messages in the DAST console output."
+msgstr ""
 
 msgid "DastProfiles|Manage Profiles"
 msgstr "Behandle profiler"
@@ -8097,14 +8373,14 @@ msgstr "Ingen profiler er opprettet enda"
 msgid "DastProfiles|Passive"
 msgstr ""
 
-msgid "DastProfiles|Please enter a valid URL format, ex: http://www.example.com/home"
-msgstr ""
-
 msgid "DastProfiles|Please enter a valid timeout value"
 msgstr ""
 
 msgid "DastProfiles|Profile name"
 msgstr "Profilnavn"
+
+msgid "DastProfiles|Run the AJAX spider, in addition to the traditional spider, to crawl the target site."
+msgstr ""
 
 msgid "DastProfiles|Save commonly used configurations for target sites and scan specifications as profiles. Use these with an on-demand scan."
 msgstr ""
@@ -8120,6 +8396,9 @@ msgstr "Skannerprofil"
 
 msgid "DastProfiles|Scanner Profiles"
 msgstr "Skanner-profiler"
+
+msgid "DastProfiles|Show debug messages"
+msgstr ""
 
 msgid "DastProfiles|Site Profile"
 msgstr "Nettstedsprofil"
@@ -8160,6 +8439,9 @@ msgstr ""
 msgid "DastProfiles|The maximum number of seconds allowed for the site under test to respond to a request."
 msgstr ""
 
+msgid "DastProfiles|Turn on AJAX spider"
+msgstr ""
+
 msgid "DastProfiles|Validate"
 msgstr "Valider"
 
@@ -8172,6 +8454,12 @@ msgstr "Validerer …"
 msgid "DastProfiles|Validation failed, please make sure that you follow the steps above with the choosen method."
 msgstr ""
 
+msgid "DastProfiles|Validation failed. Please try again."
+msgstr ""
+
+msgid "DastProfiles|Validation is in progress..."
+msgstr ""
+
 msgid "DastProfiles|Validation must be turned off to change the target URL"
 msgstr ""
 
@@ -8179,6 +8467,9 @@ msgid "DastProfiles|Validation succeeded. Both active and passive scans can be r
 msgstr ""
 
 msgid "Data is still calculating..."
+msgstr ""
+
+msgid "Database update failed"
 msgstr ""
 
 msgid "Datasource name not found"
@@ -8337,9 +8628,6 @@ msgstr ""
 msgid "Delete Comment"
 msgstr "Slett kommentar"
 
-msgid "Delete Snippet"
-msgstr "Slett utdraget"
-
 msgid "Delete Value Stream"
 msgstr ""
 
@@ -8348,6 +8636,9 @@ msgstr "Slett konto"
 
 msgid "Delete artifacts"
 msgstr "Slett artefakter"
+
+msgid "Delete badge"
+msgstr ""
 
 msgid "Delete board"
 msgstr "Slett tavle"
@@ -8363,9 +8654,6 @@ msgstr "Slett stempel"
 
 msgid "Delete label: %{label_name} ?"
 msgstr ""
-
-msgid "Delete list"
-msgstr "Slett liste"
 
 msgid "Delete pipeline"
 msgstr ""
@@ -8387,6 +8675,9 @@ msgstr "Vil du slette utvalget?"
 
 msgid "Delete source branch"
 msgstr "Slett kildegrenen"
+
+msgid "Delete subscription"
+msgstr ""
 
 msgid "Delete this attachment"
 msgstr "Slett dette vedlegget"
@@ -8451,10 +8742,16 @@ msgstr "Avslått"
 msgid "Denied authorization of chat nickname %{user_name}."
 msgstr ""
 
+msgid "Denied domains for sign-ups"
+msgstr ""
+
 msgid "Deny"
 msgstr "Avvis"
 
 msgid "Deny access request"
+msgstr ""
+
+msgid "Denylist file"
 msgstr ""
 
 msgid "Dependencies"
@@ -8505,16 +8802,25 @@ msgstr "Eksporter som JSON"
 msgid "Dependencies|Job failed to generate the dependency list"
 msgstr ""
 
+msgid "Dependencies|Learn more about dependency paths"
+msgstr ""
+
 msgid "Dependencies|License"
 msgstr "Lisens"
 
 msgid "Dependencies|Location"
 msgstr "Sted"
 
+msgid "Dependencies|Location and dependency path"
+msgstr ""
+
 msgid "Dependencies|Packager"
 msgstr "Innpakker"
 
 msgid "Dependencies|The %{codeStartTag}dependency_scanning%{codeEndTag} job has failed and cannot generate the list. Please ensure the job is running properly and run the pipeline again."
+msgstr ""
+
+msgid "Dependencies|The component dependency path is based on the lock file. There may be several paths. In these cases, the longest path is displayed."
 msgstr ""
 
 msgid "Dependencies|There may be multiple paths"
@@ -8590,9 +8896,6 @@ msgid "Deploy progress not found. To see pods, ensure your environment matches %
 msgstr ""
 
 msgid "Deploy to..."
-msgstr ""
-
-msgid "DeployBoard|Matching on the %{appLabel} label has been removed for deploy boards. To see all instances on your board, you must update your chart and redeploy."
 msgstr ""
 
 msgid "DeployFreeze|Freeze end"
@@ -8760,6 +9063,12 @@ msgstr "Utstasjonert"
 msgid "Deployed to"
 msgstr "Utstasjonert til"
 
+msgid "Deployed-after"
+msgstr ""
+
+msgid "Deployed-before"
+msgstr ""
+
 msgid "Deploying to"
 msgstr ""
 
@@ -8806,6 +9115,9 @@ msgid "Description"
 msgstr "Beskrivelse"
 
 msgid "Description parsed with %{link_start}GitLab Flavored Markdown%{link_end}"
+msgstr ""
+
+msgid "Description template"
 msgstr ""
 
 msgid "Description templates allow you to define context-specific templates for issue and merge request description fields for your project."
@@ -8979,6 +9291,27 @@ msgstr "DevOps"
 msgid "DevOps Report"
 msgstr "DevOps-rapport"
 
+msgid "DevOps Score"
+msgstr ""
+
+msgid "DevopsAdoptionSegmentSelection|The maximum number of selections has been reached"
+msgstr ""
+
+msgid "DevopsAdoptionSegmentSelection|The selection cannot be configured for a project and for a group at the same time"
+msgstr ""
+
+msgid "DevopsAdoptionSegment|The maximum number of segments has been reached"
+msgstr ""
+
+msgid "DevopsAdoption|Add a segment to get started"
+msgstr ""
+
+msgid "DevopsAdoption|Add new segment"
+msgstr ""
+
+msgid "DevopsAdoption|DevOps adoption uses segments to track adoption across key features. Segments are a way to track multiple related projects and groups at once. For example, you could create a segment for the engineering department or a particular product team."
+msgstr ""
+
 msgid "Diff content limits"
 msgstr ""
 
@@ -9030,7 +9363,7 @@ msgstr ""
 msgid "Disable public access to Pages sites"
 msgstr ""
 
-msgid "Disable shared Runners"
+msgid "Disable shared runners"
 msgstr ""
 
 msgid "Disable two-factor authentication"
@@ -9179,6 +9512,9 @@ msgstr "Dokumentasjon"
 msgid "Documentation for popular identity providers"
 msgstr ""
 
+msgid "Documentation pages URL"
+msgstr ""
+
 msgid "Documents reindexed: %{processed_documents} (%{percentage}%%)"
 msgstr ""
 
@@ -9186,6 +9522,9 @@ msgid "Domain"
 msgstr "Domene"
 
 msgid "Domain cannot be deleted while associated to one or more clusters."
+msgstr ""
+
+msgid "Domain denylist"
 msgstr ""
 
 msgid "Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled"
@@ -9208,6 +9547,9 @@ msgstr "Ikke inkluder beskrivelsen i commit-meldingen"
 
 msgid "Don't paste the private part of the GPG key. Paste the public part which begins with '-----BEGIN PGP PUBLIC KEY BLOCK-----'."
 msgstr "Ikke lim inn den private delen av GPG-nøkkelen. Lim inn den offentlige delen som begynner med ' -----BEGIN PGP PUBLIC KEY BLOCK-----'."
+
+msgid "Don't send usage data"
+msgstr ""
 
 msgid "Don't show again"
 msgstr "Ikke vis igjen"
@@ -9235,9 +9577,6 @@ msgstr "Last ned som"
 
 msgid "Download as CSV"
 msgstr "Last ned som CSV"
-
-msgid "Download asset"
-msgstr ""
 
 msgid "Download codes"
 msgstr "Last ned koder"
@@ -9407,13 +9746,22 @@ msgstr ""
 msgid "Edit stage"
 msgstr "Rediger trinn"
 
+msgid "Edit this file only."
+msgstr ""
+
 msgid "Edit this release"
 msgstr "Rediger denne utgivelsen"
+
+msgid "Edit title and description"
+msgstr ""
 
 msgid "Edit wiki page"
 msgstr "Rediger wiki-side"
 
 msgid "Edit your most recent comment in a thread (from an empty textarea)"
+msgstr ""
+
+msgid "Edited"
 msgstr ""
 
 msgid "Edited %{timeago}"
@@ -9486,6 +9834,9 @@ msgid "Email sent"
 msgstr "E-post sendt"
 
 msgid "Email the pipelines status to a list of recipients."
+msgstr ""
+
+msgid "Email updates (optional)"
 msgstr ""
 
 msgid "EmailError|It appears that the email is blank. Make sure your reply is at the top of the email, we can't process inline replies."
@@ -9629,6 +9980,12 @@ msgstr ""
 msgid "Enable integration"
 msgstr "Skru på integrering"
 
+msgid "Enable kuromoji custom analyzer: Indexing"
+msgstr ""
+
+msgid "Enable kuromoji custom analyzer: Search"
+msgstr ""
+
 msgid "Enable maintenance mode"
 msgstr "Skru på vedlikeholdsmodus"
 
@@ -9656,7 +10013,19 @@ msgstr "Skru på mellomtjener"
 msgid "Enable reCAPTCHA or Akismet and set IP limits. For reCAPTCHA, we currently only support %{recaptcha_v2_link_start}v2%{recaptcha_v2_link_end}"
 msgstr ""
 
-msgid "Enable shared Runners"
+msgid "Enable shared runners"
+msgstr ""
+
+msgid "Enable shared runners for all projects and subgroups in this group."
+msgstr ""
+
+msgid "Enable shared runners for this group"
+msgstr ""
+
+msgid "Enable smartcn custom analyzer: Indexing"
+msgstr ""
+
+msgid "Enable smartcn custom analyzer: Search"
 msgstr ""
 
 msgid "Enable snowplow tracking"
@@ -9701,6 +10070,9 @@ msgstr ""
 msgid "Encountered an error while rendering: %{err}"
 msgstr ""
 
+msgid "End Time"
+msgstr ""
+
 msgid "Ends at (UTC)"
 msgstr "Slutter den (UTC)"
 
@@ -9728,8 +10100,11 @@ msgstr "Skriv inn IP-adresseområde"
 msgid "Enter a number"
 msgstr "Skriv inn et nummer"
 
-msgid "Enter a whole number between 0 and 100"
-msgstr "Skriv inn et helt tall mellom 0 og 100"
+msgid "Enter an integer number between 0 and 100"
+msgstr ""
+
+msgid "Enter an integer number number between 0 and 100"
+msgstr ""
 
 msgid "Enter at least three characters to search"
 msgstr "Skriv inn minst tre tegn for å søke"
@@ -9768,7 +10143,7 @@ msgid "Enter the issue description"
 msgstr "Skriv inn sakens beskrivelse"
 
 msgid "Enter the issue title"
-msgstr "Skriv inn problemets tittel"
+msgstr "Skriv inn sakstittelen"
 
 msgid "Enter the merge request description"
 msgstr ""
@@ -10490,11 +10865,17 @@ msgstr ""
 msgid "Except policy:"
 msgstr ""
 
+msgid "Excess storage"
+msgstr ""
+
 msgid "Excluding merge commits. Limited to %{limit} commits."
 msgstr "Ekskludert innflettings-commiter. Begrenset til %{limit} commiter."
 
 msgid "Excluding merge commits. Limited to 6,000 commits."
 msgstr "Ekskludert innflettings-commiter. Begrenset til 6 000 commiter."
+
+msgid "Execution time"
+msgstr ""
 
 msgid "Existing branch name, tag, or commit SHA"
 msgstr "Eksisterende greinnavn, etikett, eller commit-SHA"
@@ -10525,6 +10906,9 @@ msgstr ""
 
 msgid "Expand approvers"
 msgstr "Utvid godkjennere"
+
+msgid "Expand file"
+msgstr ""
 
 msgid "Expand milestones"
 msgstr "Utvid milepæler"
@@ -10600,6 +10984,9 @@ msgstr "Eksporter gruppe"
 
 msgid "Export issues"
 msgstr "Eksporter saker"
+
+msgid "Export merge requests"
+msgstr ""
 
 msgid "Export project"
 msgstr "Eksporter prosjekt"
@@ -10703,6 +11090,9 @@ msgstr ""
 msgid "Failed to create import label for jira import."
 msgstr ""
 
+msgid "Failed to create new project access token: %{token_response_message}"
+msgstr ""
+
 msgid "Failed to create repository"
 msgstr "Mislyktes i å opprette kodelager"
 
@@ -10766,6 +11156,9 @@ msgstr "Mislyktes i å laste inn stempler. Vennligst prøv igjen."
 msgid "Failed to load milestones. Please try again."
 msgstr "Mislyktes i å laste inn milepæler. Vennligst prøv igjen."
 
+msgid "Failed to load projects"
+msgstr ""
+
 msgid "Failed to load related branches"
 msgstr "Klarte ikke å laste inn relaterte grener"
 
@@ -10776,6 +11169,9 @@ msgid "Failed to load sidebar lock status"
 msgstr ""
 
 msgid "Failed to load stacktrace."
+msgstr ""
+
+msgid "Failed to make repository read-only. %{reason}"
 msgstr ""
 
 msgid "Failed to mark this issue as a duplicate because referenced issue was not found."
@@ -10915,6 +11311,18 @@ msgid_plural "FeatureFlags|%d users"
 msgstr[0] "%d bruker"
 msgstr[1] "%d brukere"
 
+msgid "FeatureFlags|%{percent} by available ID"
+msgstr ""
+
+msgid "FeatureFlags|%{percent} by session ID"
+msgstr ""
+
+msgid "FeatureFlags|%{percent} by user ID"
+msgstr ""
+
+msgid "FeatureFlags|%{percent} randomly"
+msgstr ""
+
 msgid "FeatureFlags|* (All Environments)"
 msgstr "* (Alle miljøer)"
 
@@ -10944,6 +11352,9 @@ msgstr "Sett opp"
 
 msgid "FeatureFlags|Configure feature flags"
 msgstr "Sett opp funksjonsflagg"
+
+msgid "FeatureFlags|Consider using the more flexible \"Percent rollout\" strategy instead."
+msgstr ""
 
 msgid "FeatureFlags|Create feature flag"
 msgstr "Opprett funksjonsflagg"
@@ -10994,6 +11405,9 @@ msgid "FeatureFlags|Feature flag %{name} will be removed. Are you sure?"
 msgstr ""
 
 msgid "FeatureFlags|Feature flags allow you to configure your code into different flavors by dynamically toggling certain functionality."
+msgstr ""
+
+msgid "FeatureFlags|Feature flags limit reached (%{featureFlagsLimit}). Delete one or more feature flags before adding new ones."
 msgstr ""
 
 msgid "FeatureFlags|Flag becomes read only soon"
@@ -11062,10 +11476,13 @@ msgstr ""
 msgid "FeatureFlags|Percent of users"
 msgstr ""
 
+msgid "FeatureFlags|Percent rollout"
+msgstr ""
+
 msgid "FeatureFlags|Percent rollout (logged in users)"
 msgstr ""
 
-msgid "FeatureFlags|Percent rollout must be a whole number between 0 and 100"
+msgid "FeatureFlags|Percent rollout must be an integer number between 0 and 100"
 msgstr ""
 
 msgid "FeatureFlags|Protected"
@@ -11078,6 +11495,9 @@ msgid "FeatureFlags|Rollout Percentage"
 msgstr ""
 
 msgid "FeatureFlags|Rollout Strategy"
+msgstr ""
+
+msgid "FeatureFlags|Select a user list"
 msgstr ""
 
 msgid "FeatureFlags|Set the Unleash client application name to the name of the environment your application runs in. This value is used to match environment scopes. See the %{linkStart}example client configuration%{linkEnd}."
@@ -11098,9 +11518,6 @@ msgstr ""
 msgid "FeatureFlags|There was an error fetching the user lists."
 msgstr ""
 
-msgid "FeatureFlags|There was an error retrieving user lists"
-msgstr ""
-
 msgid "FeatureFlags|To prevent accidental actions we ask you to confirm your intention. Please type %{projectName} to proceed or close this modal to cancel."
 msgstr ""
 
@@ -11116,14 +11533,14 @@ msgstr "Brukerliste"
 msgid "FeatureFlags|User Lists"
 msgstr ""
 
-msgid "FeatureFlag|List"
-msgstr ""
-
 msgid "FeatureFlag|Percentage"
 msgstr "Prosentandel"
 
 msgid "FeatureFlag|Select a user list"
 msgstr "Velg en brukerliste"
+
+msgid "FeatureFlag|Select the environment scope for this feature flag"
+msgstr ""
 
 msgid "FeatureFlag|There are no configured user lists"
 msgstr "Det er ingen oppsatte brukerlister"
@@ -11133,6 +11550,9 @@ msgstr "Type"
 
 msgid "FeatureFlag|User IDs"
 msgstr "Bruker-ID-er"
+
+msgid "FeatureFlag|User List"
+msgstr ""
 
 msgid "Feb"
 msgstr "Feb"
@@ -11191,10 +11611,16 @@ msgstr "Fil-maler"
 msgid "File upload error."
 msgstr "Filopplastingsfeil."
 
+msgid "Filename"
+msgstr ""
+
 msgid "Files"
 msgstr "Filer"
 
 msgid "Files breadcrumb"
+msgstr ""
+
+msgid "Files with large changes are collapsed by default."
 msgstr ""
 
 msgid "Files, directories, and submodules in the path %{path} for commit reference %{ref}"
@@ -11219,6 +11645,9 @@ msgid "Filter by Git revision"
 msgstr ""
 
 msgid "Filter by issues that are currently closed."
+msgstr ""
+
+msgid "Filter by issues that are currently opened."
 msgstr ""
 
 msgid "Filter by label"
@@ -11284,6 +11713,9 @@ msgstr "Filter..."
 msgid "Find File"
 msgstr "Finn fil"
 
+msgid "Find bugs in your code with API fuzzing."
+msgstr ""
+
 msgid "Find bugs in your code with coverage-guided fuzzing."
 msgstr ""
 
@@ -11317,9 +11749,6 @@ msgstr ""
 msgid "Finished"
 msgstr "Fullført"
 
-msgid "First Name is too long (maximum is %{max_length} characters)."
-msgstr "Fornavnet er for langt (Maksgrensen er %{max_length} tegn)."
-
 msgid "First Seen"
 msgstr "Først sett"
 
@@ -11329,8 +11758,14 @@ msgstr "Første dagen i uken"
 msgid "First name"
 msgstr "Fornavn"
 
+msgid "First name is too long (maximum is %{max_length} characters)."
+msgstr ""
+
 msgid "First seen"
 msgstr "Først sett"
+
+msgid "Fixed burndown chart"
+msgstr ""
 
 msgid "Fixed date"
 msgstr "Fast dato"
@@ -11386,7 +11821,7 @@ msgstr ""
 msgid "For help setting up the Service Desk for your instance, please contact an administrator."
 msgstr ""
 
-msgid "For internal projects, any logged in user can view pipelines and access job details (output logs and artifacts)"
+msgid "For internal projects, any logged in user except external users can view pipelines and access job details (output logs and artifacts)"
 msgstr ""
 
 msgid "For more info, read the documentation."
@@ -11932,7 +12367,7 @@ msgstr "Å sette i gang med utgivelser"
 msgid "Git LFS is not enabled on this GitLab server, contact your admin."
 msgstr ""
 
-msgid "Git LFS objects will be synced in pull mirrors if LFS is %{docs_link_start}enabled for the project%{docs_link_end}. They will %{strong_open}not%{strong_close} be synced in push mirrors."
+msgid "Git LFS objects will be synced if LFS is %{docs_link_start}enabled for the project%{docs_link_end}. Push mirrors will %{strong_open}not%{strong_close} sync LFS objects over SSH."
 msgstr ""
 
 msgid "Git LFS status:"
@@ -11951,6 +12386,9 @@ msgid "Git shallow clone"
 msgstr ""
 
 msgid "Git strategy for pipelines"
+msgstr ""
+
+msgid "Git transfer in progress"
 msgstr ""
 
 msgid "Git version"
@@ -11989,9 +12427,6 @@ msgstr ""
 msgid "GitLab Service Desk is a simple way to allow people to create issues in your GitLab instance without needing their own user account. It provides a unique email address for end users to create issues in a project, and replies can be sent either through the GitLab interface or by email. End users will only see the thread through email."
 msgstr "GitLab-tjenestedesken er en enkel måte å la folk opprette saksrapporter i din GitLab-forekomst uten å behøve sin egen brukerkonto. Det sørger for en unik e-postadresse for sluttbrukere til å opprette saksrapporter i et prosjekt, og svar kan sendes enten via GitLab-grensesnittet eller via e-post. Sluttbrukere vil bare se tråden via e-post."
 
-msgid "GitLab Shared Runners execute code of different projects on the same Runner unless you configure GitLab Runner Autoscale with MaxBuilds 1 (which it is on GitLab.com)."
-msgstr ""
-
 msgid "GitLab Shell"
 msgstr ""
 
@@ -12015,6 +12450,12 @@ msgstr "GitLab-eksport"
 
 msgid "GitLab for Slack"
 msgstr "GitLab for Slack"
+
+msgid "GitLab is a complete DevOps platform, delivered as a single application, fundamentally changing the way Development, Security, and Ops teams collaborate"
+msgstr ""
+
+msgid "GitLab is a complete DevOps platform, delivered as a single application, fundamentally changing the way%{br_tag}Development, Security, and Ops teams collaborate"
+msgstr ""
 
 msgid "GitLab is a single application for the entire software development lifecycle. From project planning and source code management to CI/CD, monitoring, and security."
 msgstr ""
@@ -12328,6 +12769,9 @@ msgstr "Gå til dine prosjekter"
 msgid "Go to your snippets"
 msgstr "Gå til utdragene dine"
 
+msgid "Goal of the changes and what reviewers should be aware of"
+msgstr ""
+
 msgid "Google Cloud Platform"
 msgstr ""
 
@@ -12433,8 +12877,8 @@ msgstr "Gruppe-URL"
 msgid "Group avatar"
 msgstr "Gruppeavatar"
 
-msgid "Group by:"
-msgstr "Gruppe av:"
+msgid "Group by"
+msgstr ""
 
 msgid "Group description"
 msgstr "Gruppebeskrivelse"
@@ -12592,6 +13036,12 @@ msgstr ""
 msgid "GroupRoadmap|To widen your search, change or remove filters; from %{startDate} to %{endDate}."
 msgstr ""
 
+msgid "GroupSAML|Active SAML Group Links (%{count})"
+msgstr ""
+
+msgid "GroupSAML|Are you sure you want to remove the SAML group link?"
+msgstr ""
+
 msgid "GroupSAML|Certificate fingerprint"
 msgstr "Sertifikat-fingeravtrykk"
 
@@ -12599,6 +13049,9 @@ msgid "GroupSAML|Configuration"
 msgstr "Oppsett"
 
 msgid "GroupSAML|Copy SAML Response XML"
+msgstr ""
+
+msgid "GroupSAML|Could not create SAML group link: %{errors}."
 msgstr ""
 
 msgid "GroupSAML|Default membership role"
@@ -12646,10 +13099,28 @@ msgstr ""
 msgid "GroupSAML|NameID Format"
 msgstr ""
 
+msgid "GroupSAML|New SAML group link saved."
+msgstr ""
+
+msgid "GroupSAML|No active SAML group links"
+msgstr ""
+
 msgid "GroupSAML|Prohibit outer forks"
 msgstr "Forby ytre utgreininger"
 
 msgid "GroupSAML|Prohibit outer forks for this group."
+msgstr ""
+
+msgid "GroupSAML|Role to assign members of this SAML group."
+msgstr ""
+
+msgid "GroupSAML|SAML Group Links"
+msgstr ""
+
+msgid "GroupSAML|SAML Group Name"
+msgstr ""
+
+msgid "GroupSAML|SAML Group Name: %{saml_group_name}"
 msgstr ""
 
 msgid "GroupSAML|SAML Response Output"
@@ -12664,6 +13135,9 @@ msgstr ""
 msgid "GroupSAML|SAML Single Sign On Settings"
 msgstr ""
 
+msgid "GroupSAML|SAML group link was successfully removed."
+msgstr ""
+
 msgid "GroupSAML|SCIM API endpoint URL"
 msgstr ""
 
@@ -12674,6 +13148,9 @@ msgid "GroupSAML|SHA1 fingerprint of the SAML token signing certificate. Get thi
 msgstr ""
 
 msgid "GroupSAML|The SCIM token is now hidden. To see the value of the token again, you need to "
+msgstr ""
+
+msgid "GroupSAML|The case-sensitive group name that will be sent by the SAML identity provider."
 msgstr ""
 
 msgid "GroupSAML|This will be set as the access level of users added to the group."
@@ -12699,6 +13176,9 @@ msgstr ""
 
 msgid "GroupSAML|Your SCIM token"
 msgstr "Din SCIM-sjetong"
+
+msgid "GroupSAML|as %{access_level}"
+msgstr ""
 
 msgid "GroupSAML|must match stored NameID of \"%{extern_uid}\" as we use this to identify users. If the NameID changes users will be unable to sign in."
 msgstr ""
@@ -13109,6 +13589,9 @@ msgstr ""
 msgid "HighlightBar|Original alert:"
 msgstr ""
 
+msgid "HighlightBar|Time to SLA:"
+msgstr ""
+
 msgid "History"
 msgstr "Historie"
 
@@ -13163,9 +13646,6 @@ msgstr "Hvordan oppgraderer man"
 msgid "However, you are already a member of this %{member_source}. Sign in using a different account to accept the invitation."
 msgstr "Du er imidlertid allerede et medlem av denne %{member_source}. Logg på med en annen konto for å godta invitasjonen."
 
-msgid "I accept the %{terms_link_start}Terms of Service and Privacy Policy%{terms_link_end}"
-msgstr ""
-
 msgid "I accept the %{terms_link}"
 msgstr "Jeg aksepterer %{terms_link}"
 
@@ -13178,7 +13658,7 @@ msgstr "Jeg glemte passordet mitt"
 msgid "I have read and agree to the Let's Encrypt %{link_start}Terms of Service%{link_end} (PDF)"
 msgstr ""
 
-msgid "I'd like to receive updates via email about GitLab"
+msgid "I'd like to receive updates about GitLab via email"
 msgstr ""
 
 msgid "ID"
@@ -13286,6 +13766,9 @@ msgstr ""
 msgid "If enabled, access to projects will be validated on an external service using their classification label."
 msgstr ""
 
+msgid "If the YouTube URL is https://www.youtube.com/watch?v=0t1DgySidms then the video ID is %{id}"
+msgstr ""
+
 msgid "If the number of active users exceeds the user limit, you will be charged for the number of %{users_over_license_link} at your next license reconciliation."
 msgstr ""
 
@@ -13310,9 +13793,6 @@ msgstr ""
 msgid "If you lose your recovery codes you can generate new ones, invalidating all previous codes."
 msgstr ""
 
-msgid "If you reach 100%% storage capacity, you will not be able to: %{base_message}"
-msgstr ""
-
 msgid "If you recently signed in and recognize the IP address, you may disregard this email."
 msgstr ""
 
@@ -13334,11 +13814,11 @@ msgstr "Ignorer"
 msgid "Ignored"
 msgstr "Ignorert"
 
-msgid "Image Details"
-msgstr "Bildedetaljer"
-
 msgid "Image URL"
 msgstr "Bilde URL"
+
+msgid "Image details"
+msgstr ""
 
 msgid "ImageDiffViewer|2-up"
 msgstr ""
@@ -13418,6 +13898,9 @@ msgstr ""
 
 msgid "Import project"
 msgstr "Importer prosjekt"
+
+msgid "Import project from"
+msgstr ""
 
 msgid "Import project members"
 msgstr "Importer prosjektmedlemmer"
@@ -13539,6 +14022,12 @@ msgstr ""
 msgid "Incident Management Limits"
 msgstr ""
 
+msgid "IncidentManagement|%{hours} hours, %{minutes} minutes remaining"
+msgstr ""
+
+msgid "IncidentManagement|%{minutes} minutes remaining"
+msgstr ""
+
 msgid "IncidentManagement|All"
 msgstr "Alle"
 
@@ -13599,6 +14088,9 @@ msgstr ""
 msgid "IncidentManagement|There was an error displaying the incidents."
 msgstr ""
 
+msgid "IncidentManagement|Time to SLA"
+msgstr ""
+
 msgid "IncidentManagement|Unassigned"
 msgstr "Utilordnet"
 
@@ -13608,10 +14100,16 @@ msgstr ""
 msgid "IncidentManagement|Unpublished"
 msgstr "Upublisert"
 
+msgid "IncidentSettings|Activate \"time to SLA\" countdown timer"
+msgstr ""
+
 msgid "IncidentSettings|Alert integration"
 msgstr ""
 
 msgid "IncidentSettings|Grafana integration"
+msgstr ""
+
+msgid "IncidentSettings|Incident settings"
 msgstr ""
 
 msgid "IncidentSettings|Incidents"
@@ -13621,6 +14119,30 @@ msgid "IncidentSettings|PagerDuty integration"
 msgstr ""
 
 msgid "IncidentSettings|Set up integrations with external tools to help better manage incidents."
+msgstr ""
+
+msgid "IncidentSettings|Time limit"
+msgstr ""
+
+msgid "IncidentSettings|Time limit must be a multiple of 15 minutes"
+msgstr ""
+
+msgid "IncidentSettings|Time limit must be a valid number"
+msgstr ""
+
+msgid "IncidentSettings|Time limit must be greater than 0"
+msgstr ""
+
+msgid "IncidentSettings|When activated, this will apply to all new incidents within the project"
+msgstr ""
+
+msgid "IncidentSettings|You may choose to introduce a countdown timer in incident issues to better track Service Level Agreements (SLAs). The timer is automatically started when the incident is created, and sets a time limit for the incident to be resolved in. When activated, \"time to SLA\" countdown will appear on all new incidents."
+msgstr ""
+
+msgid "IncidentSettings|hours"
+msgstr ""
+
+msgid "IncidentSettings|minutes"
 msgstr ""
 
 msgid "Incidents"
@@ -13633,6 +14155,9 @@ msgid "Incident|Summary"
 msgstr ""
 
 msgid "Incident|There was an issue loading alert data. Please try again."
+msgstr ""
+
+msgid "Incident|There was an issue loading incident data. Please try again."
 msgstr ""
 
 msgid "Include a Terms of Service agreement and Privacy Policy that all users must accept."
@@ -13710,14 +14235,14 @@ msgstr ""
 msgid "Input your repository URL"
 msgstr "Skriv inn din kodelager-URL"
 
-msgid "Insert"
-msgstr "Sett inn"
-
 msgid "Insert a code block"
 msgstr "Sett inn en kodeblokk"
 
 msgid "Insert a quote"
 msgstr "Sett inn et sitat"
+
+msgid "Insert a video"
+msgstr ""
 
 msgid "Insert an image"
 msgstr "Sett inn et bilde"
@@ -13725,11 +14250,17 @@ msgstr "Sett inn et bilde"
 msgid "Insert code"
 msgstr "Sett inn kode"
 
+msgid "Insert image"
+msgstr ""
+
 msgid "Insert inline code"
 msgstr ""
 
 msgid "Insert suggestion"
 msgstr "Sett inn forslag"
+
+msgid "Insert video"
+msgstr ""
 
 msgid "Insights"
 msgstr "Innsikter"
@@ -13747,6 +14278,9 @@ msgid "Install GitLab Runner"
 msgstr ""
 
 msgid "Install Runner on Kubernetes"
+msgstr ""
+
+msgid "Install a Runner"
 msgstr ""
 
 msgid "Install a soft token authenticator like %{free_otp_link} or Google Authenticator from your application repository and use that app to scan this QR code. More information is available in the %{help_link_start}documentation%{help_link_end}."
@@ -13778,6 +14312,51 @@ msgstr "Instansstatistikker"
 msgid "Instance administrators group already exists"
 msgstr ""
 
+msgid "InstanceAnalytics|Canceled"
+msgstr ""
+
+msgid "InstanceAnalytics|Could not load the issues and merge requests chart. Please refresh the page to try again."
+msgstr ""
+
+msgid "InstanceAnalytics|Could not load the pipelines chart. Please refresh the page to try again."
+msgstr ""
+
+msgid "InstanceAnalytics|Failed"
+msgstr ""
+
+msgid "InstanceAnalytics|Issues"
+msgstr ""
+
+msgid "InstanceAnalytics|Issues & Merge Requests"
+msgstr ""
+
+msgid "InstanceAnalytics|Items"
+msgstr ""
+
+msgid "InstanceAnalytics|Merge Requests"
+msgstr ""
+
+msgid "InstanceAnalytics|Month"
+msgstr ""
+
+msgid "InstanceAnalytics|Pipelines"
+msgstr ""
+
+msgid "InstanceAnalytics|Skipped"
+msgstr ""
+
+msgid "InstanceAnalytics|Succeeded"
+msgstr ""
+
+msgid "InstanceAnalytics|There is no data available."
+msgstr ""
+
+msgid "InstanceAnalytics|Total"
+msgstr ""
+
+msgid "InstanceStatistics|Could not load the projects and groups chart. Please refresh the page to try again."
+msgstr ""
+
 msgid "InstanceStatistics|Groups"
 msgstr ""
 
@@ -13787,10 +14366,28 @@ msgstr ""
 msgid "InstanceStatistics|Merge Requests"
 msgstr ""
 
+msgid "InstanceStatistics|No data available."
+msgstr ""
+
 msgid "InstanceStatistics|Pipelines"
 msgstr ""
 
 msgid "InstanceStatistics|Projects"
+msgstr ""
+
+msgid "InstanceStatistics|There was an error while loading the groups"
+msgstr ""
+
+msgid "InstanceStatistics|There was an error while loading the projects"
+msgstr ""
+
+msgid "InstanceStatistics|Total groups"
+msgstr ""
+
+msgid "InstanceStatistics|Total projects"
+msgstr ""
+
+msgid "InstanceStatistics|Total projects & groups"
 msgstr ""
 
 msgid "InstanceStatistics|Users"
@@ -13826,6 +14423,9 @@ msgstr ""
 msgid "Integrations|Connection successful."
 msgstr ""
 
+msgid "Integrations|Create new issue in Jira"
+msgstr ""
+
 msgid "Integrations|Default settings are inherited from the group level."
 msgstr ""
 
@@ -13841,7 +14441,13 @@ msgstr ""
 msgid "Integrations|Includes commit title and branch"
 msgstr "Inkluderer commit-tittelen og grenen"
 
+msgid "Integrations|Issues created in Jira are shown here once you have created the issues in project setup in Jira."
+msgstr ""
+
 msgid "Integrations|Projects using custom settings will not be impacted unless the project owner chooses to use instance-level defaults."
+msgstr ""
+
+msgid "Integrations|Return to GitLab for Jira"
 msgstr ""
 
 msgid "Integrations|Save settings?"
@@ -13850,8 +14456,17 @@ msgstr ""
 msgid "Integrations|Saving will update the default settings for all projects that are not using custom settings."
 msgstr ""
 
+msgid "Integrations|Search Jira issues"
+msgstr ""
+
 msgid "Integrations|Standard"
 msgstr "Standard "
+
+msgid "Integrations|To keep this project going, create a new issue."
+msgstr ""
+
+msgid "Integrations|Update your projects on Packagist, the main Composer repository"
+msgstr ""
 
 msgid "Integrations|Use custom settings"
 msgstr "Bruk tilpassede innstillinger"
@@ -13859,7 +14474,13 @@ msgstr "Bruk tilpassede innstillinger"
 msgid "Integrations|Use default settings"
 msgstr "Bruk forvalgte innstillinger"
 
+msgid "Integrations|Use the GitLab Slack application"
+msgstr ""
+
 msgid "Integrations|When a Jira issue is mentioned in a commit or merge request a remote link and comment (if enabled) will be created."
+msgstr ""
+
+msgid "Integrations|You can now close this window and return to the GitLab for Jira application."
 msgstr ""
 
 msgid "Interested parties can even contribute by pushing commits if they want to."
@@ -13868,10 +14489,10 @@ msgstr ""
 msgid "Internal"
 msgstr "Intern"
 
-msgid "Internal - The group and any internal projects can be viewed by any logged in user."
+msgid "Internal - The group and any internal projects can be viewed by any logged in user except external users."
 msgstr ""
 
-msgid "Internal - The project can be accessed by any logged in user."
+msgid "Internal - The project can be accessed by any logged in user except external users."
 msgstr ""
 
 msgid "Internal URL (optional)"
@@ -13879,6 +14500,9 @@ msgstr "Intern URL (valgfritt)"
 
 msgid "Internal users"
 msgstr "Interne brukere"
+
+msgid "Internal users cannot be deactivated"
+msgstr ""
 
 msgid "Interval Pattern"
 msgstr ""
@@ -13903,9 +14527,6 @@ msgstr "Ugyldig OS"
 
 msgid "Invalid URL"
 msgstr "Ugyldig URL"
-
-msgid "Invalid board"
-msgstr ""
 
 msgid "Invalid container_name"
 msgstr ""
@@ -14006,26 +14627,26 @@ msgstr "Inviter medlem"
 msgid "Invite teammates (optional)"
 msgstr ""
 
-msgid "InviteEmail|%{inviter} invited you"
-msgstr "%{inviter} inviterte deg"
+msgid "Invite your team"
+msgstr ""
 
-msgid "InviteEmail|%{project_or_group} as a %{role}"
-msgstr "%{project_or_group} som en %{role}"
+msgid "InviteEmail|%{inviter} invited you to join the %{project_or_group_name} %{project_or_group} as a %{role}"
+msgstr ""
+
+msgid "InviteEmail|%{inviter} invited you to join the %{strong_start}%{project_or_group_name}%{strong_end}%{br_tag}%{project_or_group} as a %{role}"
+msgstr ""
 
 msgid "InviteEmail|Join now"
 msgstr "Bli med nå"
 
+msgid "InviteEmail|You are invited to join the %{strong_start}%{project_or_group_name}%{strong_end}%{br_tag}%{project_or_group} as a %{role}"
+msgstr ""
+
 msgid "InviteEmail|You are invited!"
 msgstr "Du har blitt invitert!"
 
-msgid "InviteEmail|You have been invited"
-msgstr "Du har blitt invitert"
-
-msgid "InviteEmail|to join the %{project_or_group_name} %{project_or_group} as a %{role}"
-msgstr "til å bli med i %{project_or_group_name} %{project_or_group} som en %{role}"
-
-msgid "InviteEmail|to join the %{strong_start}%{project_or_group_name}%{strong_end}"
-msgstr "Til å bli med i %{strong_start}%{project_or_group_name}%{strong_end}"
+msgid "InviteEmail|You have been invited to join the %{project_or_group_name} %{project_or_group} as a %{role}"
+msgstr ""
 
 msgid "InviteMembersBanner|Collaborate with your team"
 msgstr "Samarbeid med teamet ditt"
@@ -14070,6 +14691,60 @@ msgid "InviteMembersModal|You're inviting members to the %{group_name} group"
 msgstr ""
 
 msgid "InviteMembers|Invite team members"
+msgstr ""
+
+msgid "InviteMember|Oops, this feature isn't ready yet"
+msgstr ""
+
+msgid "InviteMember|See who can invite members for you"
+msgstr ""
+
+msgid "InviteMember|Until then, ask an owner to invite new project members for you"
+msgstr ""
+
+msgid "InviteMember|We're working to allow everyone to invite new members, making it easier for teams to get started with GitLab"
+msgstr ""
+
+msgid "InviteReminderEmail|%{inviter} is still waiting for you to join GitLab"
+msgstr ""
+
+msgid "InviteReminderEmail|%{inviter} is waiting for you to join GitLab"
+msgstr ""
+
+msgid "InviteReminderEmail|%{inviter} is waiting for you to join the %{strong_start}%{project_or_group_name}%{strong_end} %{project_or_group} as a %{role}."
+msgstr ""
+
+msgid "InviteReminderEmail|%{inviter}'s invitation to GitLab is pending"
+msgstr ""
+
+msgid "InviteReminderEmail|Accept invitation"
+msgstr ""
+
+msgid "InviteReminderEmail|Accept invitation: %{invite_url}"
+msgstr ""
+
+msgid "InviteReminderEmail|Decline invitation"
+msgstr ""
+
+msgid "InviteReminderEmail|Decline invitation: %{decline_url}"
+msgstr ""
+
+msgid "InviteReminderEmail|Hey there %{wave_emoji}"
+msgstr ""
+
+msgid "InviteReminderEmail|Hey there!"
+msgstr ""
+
+msgid "InviteReminderEmail|In case you missed it..."
+msgstr ""
+
+msgid "InviteReminderEmail|Invitation pending"
+msgstr ""
+
+msgid "InviteReminderEmail|It's been %{invitation_age} days since %{inviter} invited you to join the %{strong_start}%{project_or_group_name}%{strong_end} %{project_or_group} as a %{role}. What would you like to do?"
+msgstr ""
+
+msgid "InviteReminderEmail|This is a friendly reminder that %{inviter} invited you to join the %{strong_start}%{project_or_group_name}%{strong_end} %{project_or_group} as a %{role}."
 msgstr ""
 
 msgid "Invited"
@@ -14119,6 +14794,9 @@ msgstr "Saksanalyse"
 
 msgid "Issue Boards"
 msgstr "Problemvegger"
+
+msgid "Issue actions"
+msgstr ""
 
 msgid "Issue already promoted to epic."
 msgstr ""
@@ -14336,6 +15014,9 @@ msgstr "Jan"
 msgid "January"
 msgstr "januar"
 
+msgid "Japanese language support using"
+msgstr ""
+
 msgid "Jira Issues"
 msgstr "Jira-saker"
 
@@ -14373,7 +15054,7 @@ msgid "JiraService|%{user_link} mentioned this issue in %{entity_link} of %{proj
 msgstr ""
 
 msgid "JiraService|Displaying Jira issues while leaving the GitLab issue functionality enabled might be confusing. Consider %{linkStart}disabling GitLab issues%{linkEnd} if they won’t otherwise be used."
-msgstr "Å vise Jira-saker mens GitLab-saksfunksjonaliteten er aktivert, kan være forvirrende. Vurder å %{linkStart}deaktivere GitLab-problemer%{linkEnd} hvis de ikke ellers blir brukt."
+msgstr "Å vise Jira-saker mens GitLab-saksfunksjonaliteten er aktivert, kan være forvirrende. Vurder å %{linkStart}deaktivere GitLab-saker%{linkEnd} hvis de ikke ellers blir brukt."
 
 msgid "JiraService|Enable Jira issues"
 msgstr "Skru på Jira-saker"
@@ -14591,6 +15272,9 @@ msgstr ""
 msgid "Keep divergent refs"
 msgstr ""
 
+msgid "Keep editing"
+msgstr ""
+
 msgid "Kerberos access denied"
 msgstr "Kerberos-tilgang ble nektet"
 
@@ -14607,6 +15291,12 @@ msgid "Keyboard shortcuts"
 msgstr "Tastatursnarveier"
 
 msgid "KeyboardKey|Ctrl+"
+msgstr ""
+
+msgid "KeyboardShortcuts|Global Shortcuts"
+msgstr ""
+
+msgid "KeyboardShortcuts|Toggle the Performance Bar"
 msgstr ""
 
 msgid "Keys"
@@ -14738,9 +15428,6 @@ msgstr ""
 msgid "Labels|Promoting %{labelTitle} will make it available for all projects inside %{groupName}. Existing project labels with the same title will be merged. If a group label with the same title exists, it will also be merged. This action cannot be reversed."
 msgstr "Å forfremme %{labelTitle} vil gjøre den tilgjengelig for alle prosjekter innenfor %{groupName}. Eksisterende prosjektstempler med samme tittel vil bli slått sammen. Hvis det finnes et gruppestempel med samme tittel, blir den også slått sammen. Denne handlingen kan ikke reverseres."
 
-msgid "Labels|and %{count} more"
-msgstr "and %{count} til"
-
 msgid "Language"
 msgstr "Språk"
 
@@ -14765,9 +15452,6 @@ msgid "Last 90 days"
 msgstr ""
 
 msgid "Last Accessed On"
-msgstr ""
-
-msgid "Last Name is too long (maximum is %{max_length} characters)."
 msgstr ""
 
 msgid "Last Pipeline"
@@ -14803,6 +15487,9 @@ msgstr ""
 msgid "Last name"
 msgstr "Etternavn"
 
+msgid "Last name is too long (maximum is %{max_length} characters)."
+msgstr ""
+
 msgid "Last reply by"
 msgstr "Siste svar fra"
 
@@ -14835,6 +15522,9 @@ msgstr "Sist oppdatert"
 
 msgid "Last used"
 msgstr "Sist brukt"
+
+msgid "Last used %{last_used_at} ago"
+msgstr ""
 
 msgid "Last used on:"
 msgstr "Senest brukt:"
@@ -14880,6 +15570,9 @@ msgstr "Lær hvordan man aktiverer synkronisering"
 
 msgid "Learn more"
 msgstr "Lær mer"
+
+msgid "Learn more about %{username}"
+msgstr ""
 
 msgid "Learn more about Auto DevOps"
 msgstr "Lær mer om Auto DevOps"
@@ -14955,6 +15648,9 @@ msgstr ""
 
 msgid "Leave zen mode"
 msgstr "Forlat zenmodus"
+
+msgid "Legacy burndown chart"
+msgstr ""
 
 msgid "Let's Encrypt does not accept emails on example.com"
 msgstr ""
@@ -15495,9 +16191,6 @@ msgstr "Mar"
 msgid "March"
 msgstr "mars"
 
-msgid "Mark To Do as done"
-msgstr ""
-
 msgid "Mark as done"
 msgstr "Marker som ferdig"
 
@@ -15515,6 +16208,9 @@ msgstr "Merk denne saken som et duplikat av en annet sak"
 
 msgid "Mark this issue as related to another issue"
 msgstr "Merk denne saken som relatert til en annen sak"
+
+msgid "Mark to do as done"
+msgstr ""
 
 msgid "Markdown"
 msgstr "Markdown"
@@ -15549,9 +16245,6 @@ msgstr ""
 msgid "Marked For Deletion At - %{deletion_time}"
 msgstr ""
 
-msgid "Marked To Do as done."
-msgstr ""
-
 msgid "Marked this %{noun} as Work In Progress."
 msgstr ""
 
@@ -15561,7 +16254,7 @@ msgstr ""
 msgid "Marked this issue as related to %{issue_ref}."
 msgstr ""
 
-msgid "Marks To Do as done."
+msgid "Marked to do as done."
 msgstr ""
 
 msgid "Marks this %{noun} as Work In Progress."
@@ -15571,6 +16264,9 @@ msgid "Marks this issue as a duplicate of %{duplicate_reference}."
 msgstr ""
 
 msgid "Marks this issue as related to %{issue_ref}."
+msgstr ""
+
+msgid "Marks to do as done."
 msgstr ""
 
 msgid "Mask variable"
@@ -15634,6 +16330,9 @@ msgid "Max role"
 msgstr ""
 
 msgid "Max size 15 MB"
+msgstr ""
+
+msgid "MaxBuilds"
 msgstr ""
 
 msgid "Maximum Conan package file size in bytes"
@@ -15756,6 +16455,12 @@ msgstr "Medlemslås"
 msgid "Member since %{date}"
 msgstr "Medlem siden %{date}"
 
+msgid "MemberInviteEmail|%{member_name} invited you to join GitLab"
+msgstr ""
+
+msgid "MemberInviteEmail|Invitation to join the %{project_or_group} %{project_or_group_name}"
+msgstr ""
+
 msgid "Members"
 msgstr "Medlemmer"
 
@@ -15783,13 +16488,88 @@ msgstr ""
 msgid "Members|%{time} by %{user}"
 msgstr ""
 
+msgid "Members|%{userName} is currently a LDAP user. Editing their permissions will override the settings from the LDAP group sync."
+msgstr ""
+
+msgid "Members|An error occurred while trying to enable LDAP override, please try again."
+msgstr ""
+
+msgid "Members|An error occurred while trying to revert to LDAP group sync settings, please try again."
+msgstr ""
+
+msgid "Members|An error occurred while updating the member's expiration date, please try again."
+msgstr ""
+
+msgid "Members|An error occurred while updating the member's role, please try again."
+msgstr ""
+
+msgid "Members|Are you sure you want to deny %{usersName}'s request to join \"%{source}\""
+msgstr ""
+
+msgid "Members|Are you sure you want to leave \"%{source}\"?"
+msgstr ""
+
+msgid "Members|Are you sure you want to remove \"%{groupName}\"?"
+msgstr ""
+
+msgid "Members|Are you sure you want to remove %{usersName} from \"%{source}\""
+msgstr ""
+
+msgid "Members|Are you sure you want to remove this orphaned member from \"%{source}\""
+msgstr ""
+
+msgid "Members|Are you sure you want to revoke the invitation for %{inviteEmail} to join \"%{source}\""
+msgstr ""
+
+msgid "Members|Are you sure you want to withdraw your access request for \"%{source}\""
+msgstr ""
+
+msgid "Members|Edit permissions"
+msgstr ""
+
+msgid "Members|Expiration date removed successfully."
+msgstr ""
+
+msgid "Members|Expiration date updated successfully."
+msgstr ""
+
 msgid "Members|Expired"
+msgstr ""
+
+msgid "Members|LDAP override enabled."
+msgstr ""
+
+msgid "Members|Leave \"%{source}\""
 msgstr ""
 
 msgid "Members|No expiration set"
 msgstr ""
 
+msgid "Members|Remove \"%{groupName}\""
+msgstr ""
+
+msgid "Members|Remove group"
+msgstr ""
+
+msgid "Members|Revert to LDAP group sync settings"
+msgstr ""
+
+msgid "Members|Reverted to LDAP group sync settings."
+msgstr ""
+
+msgid "Members|Role updated successfully."
+msgstr ""
+
 msgid "Members|in %{time}"
+msgstr ""
+
+msgid "Member|Deny access"
+msgstr ""
+
+msgid "Member|Remove member"
+msgstr ""
+
+msgid "Member|Revoke invite"
 msgstr ""
 
 msgid "Memory Usage"
@@ -16028,6 +16808,9 @@ msgstr ""
 
 msgid "Merged this merge request."
 msgstr "Innflettet denne fletteforespørselen."
+
+msgid "Merged: %{merged}"
+msgstr ""
 
 msgid "Merges this merge request immediately."
 msgstr ""
@@ -16432,6 +17215,27 @@ msgstr ""
 msgid "Milestone lists show all issues from the selected milestone."
 msgstr ""
 
+msgid "MilestoneCombobox|An error occurred while searching for milestones"
+msgstr ""
+
+msgid "MilestoneCombobox|Milestone"
+msgstr ""
+
+msgid "MilestoneCombobox|No matching results"
+msgstr ""
+
+msgid "MilestoneCombobox|No milestone"
+msgstr ""
+
+msgid "MilestoneCombobox|Project milestones"
+msgstr ""
+
+msgid "MilestoneCombobox|Search Milestones"
+msgstr ""
+
+msgid "MilestoneCombobox|Select milestone"
+msgstr ""
+
 msgid "MilestoneSidebar|Closed:"
 msgstr "Lukket:"
 
@@ -16747,7 +17551,13 @@ msgstr "Multi-prosjekt"
 msgid "Multi-project Runners cannot be removed"
 msgstr ""
 
+msgid "Multiple HTTP integrations are not supported for this project"
+msgstr ""
+
 msgid "Multiple IP address ranges are supported."
+msgstr ""
+
+msgid "Multiple Prometheus integrations are not supported"
 msgstr ""
 
 msgid "Multiple domains are supported."
@@ -16806,6 +17616,34 @@ msgstr "Navnefeltet er tomt"
 
 msgid "Namespace:"
 msgstr "Navneområde:"
+
+msgid "NamespaceStorageSize|%{namespace_name} contains %{locked_project_count} locked project"
+msgid_plural "NamespaceStorageSize|%{namespace_name} contains %{locked_project_count} locked projects"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "NamespaceStorageSize|%{namespace_name} is now read-only. You cannot: %{base_message}"
+msgstr ""
+
+msgid "NamespaceStorageSize|If you reach 100%% storage capacity, you will not be able to: %{base_message}"
+msgstr ""
+
+msgid "NamespaceStorageSize|Please purchase additional storage to unlock your projects over the free %{free_size_limit} project limit. You can't %{base_message}"
+msgstr ""
+
+msgid "NamespaceStorageSize|You have consumed all of your additional storage, please purchase more to unlock your projects over the free %{free_size_limit} limit. You can't %{base_message}"
+msgstr ""
+
+msgid "NamespaceStorageSize|You have reached %{usage_in_percent} of %{namespace_name}'s storage capacity (%{used_storage} of %{storage_limit})"
+msgstr ""
+
+msgid "NamespaceStorageSize|You have reached the free storage limit of %{free_size_limit} on %{locked_project_count} project. To unlock it, please purchase additional storage"
+msgid_plural "NamespaceStorageSize|You have reached the free storage limit of %{free_size_limit} on %{locked_project_count} projects. To unlock them, please purchase additional storage"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "NamespaceStorageSize|push to your repository, create pipelines, create issues or add comments. To reduce storage capacity, delete unused repositories, artifacts, wikis, issues, and pipelines."
+msgstr ""
 
 msgid "Namespaces"
 msgstr "Navnerom"
@@ -17062,6 +17900,9 @@ msgstr "Aldri"
 msgid "New"
 msgstr "Ny"
 
+msgid "New %{display_issuable_type}"
+msgstr ""
+
 msgid "New Application"
 msgstr "Ny applikasjon"
 
@@ -17091,8 +17932,8 @@ msgstr "Ny identitet"
 
 msgid "New Issue"
 msgid_plural "New Issues"
-msgstr[0] "Nytt problem"
-msgstr[1] "Nye problemer"
+msgstr[0] "Ny sak"
+msgstr[1] "Nye saker"
 
 msgid "New Jira import"
 msgstr "Ny Jira-import"
@@ -17173,7 +18014,7 @@ msgid "New identity"
 msgstr "Ny identitet"
 
 msgid "New issue"
-msgstr "Nytt problem"
+msgstr "Ny sak"
 
 msgid "New issue title"
 msgstr "Tittel på den nye saken"
@@ -17526,6 +18367,9 @@ msgstr ""
 msgid "None"
 msgstr "Ingen"
 
+msgid "None of the group milestones have the same project as the release"
+msgstr ""
+
 msgid "Not Implemented"
 msgstr "Ikke implementert"
 
@@ -17555,9 +18399,6 @@ msgstr "Ikke nok data"
 
 msgid "Not found."
 msgstr "Ikke funnet."
-
-msgid "Not now"
-msgstr "Ikke nå"
 
 msgid "Not ready yet. Try again later."
 msgstr "Ikke klar enda. Prøv igjen senere."
@@ -17793,6 +18634,9 @@ msgstr "OmniAuth"
 msgid "Omnibus Protected Paths throttle is active, and takes priority over these settings. From 12.4, Omnibus throttle is deprecated and will be removed in a future release. Please read the %{relative_url_link_start}Migrating Protected Paths documentation%{relative_url_link_end}."
 msgstr "Omnibus Protected Paths-pedalen er aktiv, og prioriterer disse innstillingene. Fra 12.4, avvikles Omnibus-pedalen og vil bli fjernet i en fremtidig utgivelse. Les dokumentasjonen for %{relative_url_link_start}Migrering av beskyttede filbaner%{relative_url_link_end}."
 
+msgid "On"
+msgstr ""
+
 msgid "On track"
 msgstr ""
 
@@ -17838,9 +18682,6 @@ msgstr "Kjør skanning"
 msgid "OnDemandScans|Scanner profile"
 msgstr ""
 
-msgid "OnDemandScans|Scanner settings"
-msgstr "Skannerinnstillinger"
-
 msgid "OnDemandScans|Schedule or run scans immediately against target sites. Currently available on-demand scan type: DAST. %{helpLinkStart}More information%{helpLinkEnd}"
 msgstr ""
 
@@ -17849,9 +18690,6 @@ msgstr "Velg en av de eksisterende profilene"
 
 msgid "OnDemandScans|Site profile"
 msgstr ""
-
-msgid "OnDemandScans|Site profiles"
-msgstr "Nettstedsprofiler"
 
 msgid "OnDemandScans|Use existing scanner profile"
 msgstr ""
@@ -17972,20 +18810,14 @@ msgstr "Åpne i filvisning"
 msgid "Open issues"
 msgstr "Åpne saker"
 
-msgid "Open projects"
-msgstr "Åpne prosjekter"
-
 msgid "Open raw"
 msgstr "Åpne råversjon"
 
 msgid "Open sidebar"
 msgstr "Åpne sidelinje"
 
-msgid "Open: %{openIssuesCount}"
-msgstr "Åpen: %{openIssuesCount}"
-
-msgid "Open: %{open} • Closed: %{closed}"
-msgstr "Åpen: %{open} • Lukket: %{closed}"
+msgid "Open: %{open}"
+msgstr ""
 
 msgid "Opened"
 msgstr "Åpnet"
@@ -17997,7 +18829,7 @@ msgid "Opened MRs"
 msgstr ""
 
 msgid "Opened issues"
-msgstr "Åpnede problemer"
+msgstr "Åpnede saker"
 
 msgid "OpenedNDaysAgo|Opened"
 msgstr "Åpnet"
@@ -18158,6 +18990,9 @@ msgstr ""
 msgid "PackageRegistry|Add NuGet Source"
 msgstr "Legg til NuGet-kilde"
 
+msgid "PackageRegistry|Add composer registry"
+msgstr ""
+
 msgid "PackageRegistry|App group: %{group}"
 msgstr "Appgruppe: %{group}"
 
@@ -18254,8 +19089,8 @@ msgstr ""
 msgid "PackageRegistry|If you haven't already done so, you will need to add the below to your %{codeStart}pom.xml%{codeEnd} file."
 msgstr ""
 
-msgid "PackageRegistry|Is your favorite package manager missing? We'd love your help in building first-class support for it into GitLab! %{contributionLinkStart}Visit the contribution documentation%{contributionLinkEnd} to learn more about how to build support for new package managers into GitLab. Below is a list of package managers that are on our radar."
-msgstr "Mangler din favorittpakkebehandler? Vi vil gjerne hjelpe deg med å bygge førsteklasses støtte til den i GitLab! %{contributionLinkStart}Gå til bidragsdokumentasjonen%{contributionLinkEnd} for å lære mer om hvordan du bygger støtte for nye pakkebehandlere i GitLab. Nedenfor er en liste over pakkebehandlere som er på radaren vår."
+msgid "PackageRegistry|Install package version"
+msgstr ""
 
 msgid "PackageRegistry|Learn how to %{noPackagesLinkStart}publish and share your packages%{noPackagesLinkEnd} with GitLab."
 msgstr ""
@@ -18278,9 +19113,6 @@ msgstr "Maven-XML"
 msgid "PackageRegistry|NPM"
 msgstr "NPM"
 
-msgid "PackageRegistry|No upcoming issues"
-msgstr "Ingen kommende saker"
-
 msgid "PackageRegistry|NuGet"
 msgstr "NuGet"
 
@@ -18302,8 +19134,8 @@ msgstr ""
 msgid "PackageRegistry|Published to the %{project} Package Registry %{datetime}"
 msgstr ""
 
-msgid "PackageRegistry|PyPi"
-msgstr "PyPi"
+msgid "PackageRegistry|PyPI"
+msgstr ""
 
 msgid "PackageRegistry|Recipe: %{recipe}"
 msgstr ""
@@ -18326,9 +19158,6 @@ msgstr ""
 msgid "PackageRegistry|There are no packages yet"
 msgstr "Det er ingen pakker enda"
 
-msgid "PackageRegistry|There are no upcoming issues to display."
-msgstr "Det er ingen kommende saker å vise."
-
 msgid "PackageRegistry|There was a problem fetching the details for this package."
 msgstr ""
 
@@ -18344,9 +19173,6 @@ msgstr ""
 msgid "PackageRegistry|Unable to load package"
 msgstr "Klarte ikke å laste inn pakke"
 
-msgid "PackageRegistry|Upcoming package managers"
-msgstr "Kommende pakkebehandlere"
-
 msgid "PackageRegistry|You are about to delete %{name}, this operation is irreversible, are you sure?"
 msgstr ""
 
@@ -18354,12 +19180,6 @@ msgid "PackageRegistry|You are about to delete version %{version} of %{name}. Ar
 msgstr ""
 
 msgid "PackageRegistry|You may also need to setup authentication using an auth token. %{linkStart}See the documentation%{linkEnd} to find out more."
-msgstr ""
-
-msgid "PackageRegistry|composer.json registry include"
-msgstr ""
-
-msgid "PackageRegistry|composer.json require package include"
 msgstr ""
 
 msgid "PackageRegistry|npm command"
@@ -18386,8 +19206,8 @@ msgstr "NPM"
 msgid "PackageType|NuGet"
 msgstr "NuGet"
 
-msgid "PackageType|PyPi"
-msgstr "PyPi"
+msgid "PackageType|PyPI"
+msgstr ""
 
 msgid "Packages"
 msgstr "Pakker"
@@ -18578,8 +19398,8 @@ msgstr ""
 msgid "People without permission will never get a notification."
 msgstr ""
 
-msgid "Percent of users"
-msgstr "Prosent av brukere"
+msgid "Percent rollout must be an integer number between 0 and 100"
+msgstr ""
 
 msgid "Percentage"
 msgstr "Prosent"
@@ -18588,9 +19408,6 @@ msgid "Perform advanced options such as changing path, transferring, exporting, 
 msgstr ""
 
 msgid "Perform common operations on GitLab project"
-msgstr ""
-
-msgid "Performance and resource management"
 msgstr ""
 
 msgid "Performance optimization"
@@ -18695,6 +19512,9 @@ msgstr "Suksessfrekvens:"
 msgid "PipelineCharts|Successful:"
 msgstr "Vellykket:"
 
+msgid "PipelineCharts|Total duration:"
+msgstr ""
+
 msgid "PipelineCharts|Total:"
 msgstr "Totalt:"
 
@@ -18776,6 +19596,9 @@ msgstr ""
 msgid "Pipelines|CI Lint"
 msgstr "CI Lint"
 
+msgid "Pipelines|CI file could not be loaded: %{reason}"
+msgstr ""
+
 msgid "Pipelines|Child pipeline"
 msgstr ""
 
@@ -18792,6 +19615,9 @@ msgid "Pipelines|Description"
 msgstr ""
 
 msgid "Pipelines|Edit"
+msgstr ""
+
+msgid "Pipelines|Editor"
 msgstr ""
 
 msgid "Pipelines|Get started with Pipelines"
@@ -18822,6 +19648,9 @@ msgid "Pipelines|No triggers have been created yet. Add one using the form above
 msgstr ""
 
 msgid "Pipelines|Owner"
+msgstr ""
+
+msgid "Pipelines|Pipeline Editor"
 msgstr ""
 
 msgid "Pipelines|Project cache successfully reset."
@@ -18858,6 +19687,12 @@ msgid "Pipelines|Token"
 msgstr ""
 
 msgid "Pipelines|Trigger user has insufficient permissions to project"
+msgstr ""
+
+msgid "Pipelines|Visualize"
+msgstr ""
+
+msgid "Pipelines|Write pipeline configuration"
 msgstr ""
 
 msgid "Pipelines|invalid"
@@ -19088,6 +19923,9 @@ msgstr "Vennligst skriv inn et nummer som ikke er negativt"
 msgid "Please enter a number greater than %{number} (from the project settings)"
 msgstr ""
 
+msgid "Please enter a valid URL format, ex: http://www.example.com/home"
+msgstr ""
+
 msgid "Please enter a valid number"
 msgstr "Vennligst skriv inn et gyldig nummer"
 
@@ -19096,6 +19934,9 @@ msgstr "Vennligst skriv inn eller last opp en lisens."
 
 msgid "Please fill in a descriptive name for your group."
 msgstr "Vennligst skriv inn et beskrivende navn på gruppen din."
+
+msgid "Please fill out this field."
+msgstr ""
 
 msgid "Please follow the %{link_start}Let's Encrypt troubleshooting instructions%{link_end} to re-obtain your Let's Encrypt certificate."
 msgstr ""
@@ -19109,11 +19950,17 @@ msgstr ""
 msgid "Please note that this application is not provided by GitLab and you should verify its authenticity before allowing access."
 msgstr ""
 
+msgid "Please only enable search after installing the plugin, enabling indexing and recreating the index"
+msgstr ""
+
 msgid "Please provide a name"
 msgstr "Vennligst angi et navn"
 
 msgid "Please provide a valid URL"
 msgstr "Vennligst skriv inn en gyldig URL"
+
+msgid "Please provide a valid YouTube URL or ID"
+msgstr ""
 
 msgid "Please provide a valid email address."
 msgstr "Vennligst oppgi en gyldig e-postadresse."
@@ -19152,7 +19999,7 @@ msgid "Please select at least one filter to see results"
 msgstr "Vennligst velg minst ett filter for å se resultatene"
 
 msgid "Please set a new password before proceeding."
-msgstr "Vennligst velg et nytt passord før du fortsetter."
+msgstr "Vennligst bestem et nytt passord før du fortsetter."
 
 msgid "Please share your feedback about %{featureName} %{linkStart}in this issue%{linkEnd} to help us improve the experience."
 msgstr ""
@@ -19317,9 +20164,6 @@ msgid "Prevent project forking outside current group"
 msgstr ""
 
 msgid "Prevent users from changing their profile name"
-msgstr ""
-
-msgid "Prevent users from modifying merge request approvers list"
 msgstr ""
 
 msgid "Prevent users from performing write operations on GitLab while performing maintenance."
@@ -20015,7 +20859,7 @@ msgstr "Hendelsen vil bli trigget dersom en commit er opprettet/oppdatert"
 msgid "ProjectService|Event will be triggered when a confidential issue is created/updated/closed"
 msgstr ""
 
-msgid "ProjectService|Event will be triggered when a deployment finishes"
+msgid "ProjectService|Event will be triggered when a deployment starts or finishes"
 msgstr ""
 
 msgid "ProjectService|Event will be triggered when a merge request is created/updated/merged"
@@ -20318,6 +21162,9 @@ msgstr ".NET Core"
 msgid "ProjectTemplates|Android"
 msgstr "Android"
 
+msgid "ProjectTemplates|Basic"
+msgstr ""
+
 msgid "ProjectTemplates|GitLab Cluster Management"
 msgstr ""
 
@@ -20371,6 +21218,9 @@ msgstr ""
 
 msgid "ProjectTemplates|SalesforceDX"
 msgstr "SalesforceDX"
+
+msgid "ProjectTemplates|Serenity Valley"
+msgstr ""
 
 msgid "ProjectTemplates|Serverless Framework/JS"
 msgstr ""
@@ -20828,6 +21678,9 @@ msgstr "Gren"
 msgid "ProtectedBranch|Code owner approval"
 msgstr ""
 
+msgid "ProtectedBranch|Does not apply to users allowed to push."
+msgstr ""
+
 msgid "ProtectedBranch|Protect"
 msgstr "Beskytt"
 
@@ -20954,6 +21807,9 @@ msgstr ""
 msgid "Purchase more minutes"
 msgstr "Kjøp flere minutter"
 
+msgid "Purchase more storage"
+msgstr ""
+
 msgid "Push"
 msgstr "Push"
 
@@ -21065,6 +21921,9 @@ msgstr ""
 msgid "Rake Tasks Help"
 msgstr ""
 
+msgid "Random"
+msgstr ""
+
 msgid "Raw blob request rate limit per minute"
 msgstr ""
 
@@ -21146,6 +22005,9 @@ msgstr "Referanser"
 msgid "Refresh"
 msgstr "Oppdater"
 
+msgid "Refresh the page and try again."
+msgstr ""
+
 msgid "Refreshing in a second to show the updated status..."
 msgid_plural "Refreshing in %d seconds to show the updated status..."
 msgstr[0] ""
@@ -21189,9 +22051,6 @@ msgstr ""
 
 msgid "Register device"
 msgstr ""
-
-msgid "Register for GitLab"
-msgstr "Registrer deg på GitLab"
 
 msgid "Register now"
 msgstr "Registrer deg nå"
@@ -21402,6 +22261,9 @@ msgstr "Fjern lisens"
 msgid "Remove limit"
 msgstr "Fjern grensen"
 
+msgid "Remove list"
+msgstr ""
+
 msgid "Remove member"
 msgstr "Fjern medlem"
 
@@ -21522,6 +22384,9 @@ msgstr "Fjerner måldatoen."
 msgid "Removes time estimate."
 msgstr "Fjerner tidsanslag."
 
+msgid "Removing integrations is not supported for this project"
+msgstr ""
+
 msgid "Removing this group also removes all child projects, including archived projects, and their resources."
 msgstr ""
 
@@ -21543,8 +22408,14 @@ msgstr "Gjenåpne %{display_issuable_type}"
 msgid "Reopen epic"
 msgstr "Gjenåpne epos"
 
+msgid "Reopen issue"
+msgstr ""
+
 msgid "Reopen milestone"
 msgstr "Gjenåpne milepæl"
+
+msgid "Reopen test case"
+msgstr ""
 
 msgid "Reopen this %{quick_action_target}"
 msgstr "Gjenåpne denne %{quick_action_target}"
@@ -21571,6 +22442,9 @@ msgid "Replaces the clone URL root."
 msgstr ""
 
 msgid "Replication"
+msgstr ""
+
+msgid "Replication details"
 msgstr ""
 
 msgid "Replication enabled"
@@ -21698,7 +22572,13 @@ msgstr "Kodelagre"
 msgid "Repositories Analytics"
 msgstr ""
 
-msgid "RepositoriesAnalytics|Download Historic Test Coverage Data"
+msgid "RepositoriesAnalytics|Coverage"
+msgstr ""
+
+msgid "RepositoriesAnalytics|Coverage Jobs"
+msgstr ""
+
+msgid "RepositoriesAnalytics|Download historic test coverage data"
 msgstr ""
 
 msgid "RepositoriesAnalytics|Download historic test coverage data (.csv)"
@@ -21708,6 +22588,18 @@ msgid "RepositoriesAnalytics|Download test coverage data (.csv)"
 msgstr ""
 
 msgid "RepositoriesAnalytics|Historic Test Coverage Data is available in raw format (.csv) for further analysis."
+msgstr ""
+
+msgid "RepositoriesAnalytics|Last Update"
+msgstr ""
+
+msgid "RepositoriesAnalytics|Latest test coverage results"
+msgstr ""
+
+msgid "RepositoriesAnalytics|Please select a project or multiple projects to display their most recent test coverage data."
+msgstr ""
+
+msgid "RepositoriesAnalytics|Please select projects to display."
 msgstr ""
 
 msgid "RepositoriesAnalytics|Test Code Coverage"
@@ -21727,6 +22619,9 @@ msgstr "Kodelagerdiagram"
 
 msgid "Repository Settings"
 msgstr "Kodelager-innstillinger"
+
+msgid "Repository already read-only"
+msgstr ""
 
 msgid "Repository check"
 msgstr ""
@@ -21824,7 +22719,7 @@ msgstr "Forespørsler til disse domenene/adressene i det lokale nettverket vil v
 msgid "Require admin approval for new sign-ups"
 msgstr ""
 
-msgid "Require all users in this group to setup Two-factor authentication"
+msgid "Require all users in this group to setup two-factor authentication"
 msgstr ""
 
 msgid "Require all users to accept Terms of Service and Privacy Policy when they access GitLab."
@@ -21855,6 +22750,9 @@ msgid "Requirement %{reference} has been reopened"
 msgstr "Kravet %{reference} har blitt gjenåpnet"
 
 msgid "Requirement %{reference} has been updated"
+msgstr ""
+
+msgid "Requirement title"
 msgstr ""
 
 msgid "Requirement title cannot have more than %{limit} characters."
@@ -22058,6 +22956,9 @@ msgstr "Vis app"
 msgid "Review App|View latest app"
 msgstr ""
 
+msgid "Review requested from %{name}"
+msgstr ""
+
 msgid "Review the process for configuring service providers in your identity provider — in this case, GitLab is the \"service provider\" or \"relying party\"."
 msgstr ""
 
@@ -22210,6 +23111,12 @@ msgstr ""
 msgid "Runners|Description"
 msgstr ""
 
+msgid "Runners|Download Latest Binary"
+msgstr ""
+
+msgid "Runners|Download and Install Binary"
+msgstr ""
+
 msgid "Runners|Group"
 msgstr ""
 
@@ -22235,6 +23142,9 @@ msgid "Runners|Property Name"
 msgstr ""
 
 msgid "Runners|Protected"
+msgstr ""
+
+msgid "Runners|Register Runner"
 msgstr ""
 
 msgid "Runners|Revision"
@@ -22306,6 +23216,9 @@ msgstr "SSH-vertsnøkler"
 msgid "SSH host keys are not available on this system. Please use %{ssh_keyscan} command or contact your GitLab administrator for more information."
 msgstr ""
 
+msgid "SSH key"
+msgstr ""
+
 msgid "SSH keys allow you to establish a secure connection between your computer and GitLab."
 msgstr ""
 
@@ -22314,6 +23227,12 @@ msgstr "Offentlig SSH-nøkkel"
 
 msgid "SSL Verification:"
 msgstr "SSL-verifisering:"
+
+msgid "Sample Data"
+msgstr ""
+
+msgid "Satisfied"
+msgstr ""
 
 msgid "Saturday"
 msgstr "Lørdag"
@@ -22328,6 +23247,9 @@ msgid "Save Changes"
 msgstr "Lagre endringene"
 
 msgid "Save Push Rules"
+msgstr ""
+
+msgid "Save and test payload"
 msgstr ""
 
 msgid "Save anyway"
@@ -22354,9 +23276,6 @@ msgstr ""
 msgid "Save space and find tags in the Container Registry more easily. Enable the cleanup policy to remove stale tags and keep only the ones you need."
 msgstr ""
 
-msgid "Save variables"
-msgstr "Lagre variabler"
-
 msgid "Saved scan settings and target site settings which are reusable."
 msgstr ""
 
@@ -22365,6 +23284,9 @@ msgstr "Lagrer"
 
 msgid "Saving project."
 msgstr "Lagrer prosjekt."
+
+msgid "Scanner"
+msgstr ""
 
 msgid "Schedule a new pipeline"
 msgstr "Planlegg en ny rørledning"
@@ -22405,6 +23327,9 @@ msgstr "Omfang"
 msgid "Scopes can't be blank"
 msgstr "Omfang kan ikke være tomme"
 
+msgid "Scopes: %{scope_list}"
+msgstr ""
+
 msgid "Score"
 msgstr "Score"
 
@@ -22435,8 +23360,8 @@ msgstr "Søk"
 msgid "Search Jira issues"
 msgstr "Søk blant Jira-saker"
 
-msgid "Search Milestones"
-msgstr "Søk blant milepæler"
+msgid "Search a group"
+msgstr ""
 
 msgid "Search an environment spec"
 msgstr ""
@@ -22491,9 +23416,6 @@ msgstr "Søk etter denne teksten"
 
 msgid "Search forks"
 msgstr "Velg utgreininger"
-
-msgid "Search groups"
-msgstr "Søk etter grupper"
 
 msgid "Search merge requests"
 msgstr "Søke i flettede forespørsler"
@@ -22576,9 +23498,6 @@ msgstr "Viser %{from} - %{to} av %{count} %{scope} for%{term_element}"
 msgid "SearchResults|Showing %{from} - %{to} of %{count} %{scope} for%{term_element} in your personal and project snippets"
 msgstr "Viser %{from} - %{to} av %{count} %{scope} for%{term_element} i dine personlige og prosjektmessige utdrag"
 
-msgid "SearchResults|We couldn't find any %{scope} matching %{term}"
-msgstr ""
-
 msgid "SearchResults|code result"
 msgid_plural "SearchResults|code results"
 msgstr[0] ""
@@ -22643,7 +23562,7 @@ msgstr ""
 msgid "Seat Link is disabled, and cannot be configured through this form."
 msgstr ""
 
-msgid "Seats usage data as of %{last_enqueue_time}"
+msgid "Seats usage data as of %{last_enqueue_time} (Updated daily)"
 msgstr ""
 
 msgid "Seats usage data is updated every day at 12:00pm UTC"
@@ -22688,10 +23607,10 @@ msgstr ""
 msgid "SecurityApprovals|One or more of the security scanners must be enabled. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
-msgid "SecurityApprovals|Requires approval for vulnerabilties of Critical, High, or Unknown severity. %{linkStart}More information%{linkEnd}"
+msgid "SecurityApprovals|Requires approval for Denied licenses. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
-msgid "SecurityApprovals|Requires license policy rules for licenses of Allowed, or Denied. %{linkStart}More information%{linkEnd}"
+msgid "SecurityApprovals|Requires approval for vulnerabilities of Critical, High, or Unknown severity. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
 msgid "SecurityConfiguration|An error occurred while creating the merge request."
@@ -22820,6 +23739,9 @@ msgstr ""
 msgid "SecurityReports|Error fetching the vulnerability list. Please check your network connection and try again."
 msgstr ""
 
+msgid "SecurityReports|Failed to get security report information. Please reload the page or try again later."
+msgstr ""
+
 msgid "SecurityReports|False positive"
 msgstr ""
 
@@ -22883,6 +23805,12 @@ msgstr "Sikkerhetskontrollpanel"
 msgid "SecurityReports|Security reports can only be accessed by authorized users."
 msgstr ""
 
+msgid "SecurityReports|Security reports help page link"
+msgstr ""
+
+msgid "SecurityReports|Security scans have run. Go to the %{linkStart}pipelines tab%{linkEnd} to download the security reports"
+msgstr ""
+
 msgid "SecurityReports|Select a project to add by using the project search field above."
 msgstr ""
 
@@ -22921,6 +23849,11 @@ msgstr "En feil oppstod under oppretting av fletteforespørselen."
 
 msgid "SecurityReports|There was an error deleting the comment."
 msgstr "Det oppstod en feil under sletting av kommentaren."
+
+msgid "SecurityReports|There was an error dismissing %d vulnerability. Please try again later."
+msgid_plural "SecurityReports|There was an error dismissing %d vulnerabilities. Please try again later."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "SecurityReports|There was an error dismissing the vulnerabilities."
 msgstr "Det oppstod en feil under avfeiing av sårbarhetene."
@@ -23102,6 +24035,9 @@ msgstr "Velg prosjekter du ønsker å importere."
 msgid "Select required regulatory standard"
 msgstr ""
 
+msgid "Select reviewer(s)"
+msgstr ""
+
 msgid "Select shards to replicate"
 msgstr "Velg skår å replikere"
 
@@ -23117,7 +24053,7 @@ msgstr "Velg startdato"
 msgid "Select status"
 msgstr "Velg status"
 
-msgid "Select strategy activation method."
+msgid "Select strategy activation method"
 msgstr ""
 
 msgid "Select subscription"
@@ -23130,9 +24066,6 @@ msgid "Select the branch you want to set as the default for this project. All me
 msgstr "Velg grenen du vil angi som standarden for dette prosjektet. Alle fletteforespørsler og commiter vil automatisk bli utført mot denne grenen med mindre du spesifiserer en annen en."
 
 msgid "Select the custom project template source group."
-msgstr ""
-
-msgid "Select the environment scope for this feature flag."
 msgstr ""
 
 msgid "Select timezone"
@@ -23227,6 +24160,9 @@ msgstr ""
 
 msgid "September"
 msgstr "September"
+
+msgid "Serenity Valley Sample Data template."
+msgstr ""
 
 msgid "SeriesFinalConjunction|and"
 msgstr ""
@@ -23341,6 +24277,9 @@ msgstr ""
 
 msgid "Service URL"
 msgstr "Tjeneste-URL"
+
+msgid "Session ID"
+msgstr ""
 
 msgid "Session duration (minutes)"
 msgstr "Øktvarighet (i minutter)"
@@ -23477,11 +24416,14 @@ msgstr "Sett opp nytt passord"
 msgid "Set up pipeline subscriptions for this project."
 msgstr ""
 
+msgid "Set up shared runner availability"
+msgstr ""
+
 msgid "Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically."
 msgstr ""
 
 msgid "Set weight"
-msgstr "Bestem vekt"
+msgstr "Bestem vektlegging"
 
 msgid "Set weight to %{weight}."
 msgstr "Sett vektlegging til %{weight}."
@@ -23535,7 +24477,7 @@ msgid "Sets time estimate to %{time_estimate}."
 msgstr ""
 
 msgid "Sets weight to %{weight}."
-msgstr "Setter vekten til %{weight}."
+msgstr "Setter vektleggingen til %{weight}."
 
 msgid "Setting this to 0 means using the system default timeout value."
 msgstr ""
@@ -23582,6 +24524,15 @@ msgstr ""
 msgid "Shared projects"
 msgstr "Delte prosjekter"
 
+msgid "Shared runners"
+msgstr ""
+
+msgid "Shared runners are disabled for the parent group"
+msgstr ""
+
+msgid "Shared runners disabled on group level"
+msgstr ""
+
 msgid "Shared runners help link"
 msgstr ""
 
@@ -23600,8 +24551,14 @@ msgstr ""
 msgid "Should you ever lose your phone or access to your one time password secret, each of these recovery codes can be used one time each to regain access to your account. Please save them in a safe place, or you %{b_start}will%{b_end} lose access to your account."
 msgstr "Hvis du noen gang mister telefonen eller tilgang til din éngangs passordhemmelighet, kan hver av disse gjenopprettingskodene brukes én gang hver for å få tilgang til kontoen din igjen. Vennligst lagre dem på et trygt sted, ellers vil du %{b_start}vil%{b_end} miste tilgang til kontoen din."
 
+msgid "Show Runner installation instructions"
+msgstr ""
+
 msgid "Show all activity"
 msgstr "Vis all aktivitet"
+
+msgid "Show all issues."
+msgstr ""
 
 msgid "Show all members"
 msgstr "Vis alle medlemmer"
@@ -23734,7 +24691,7 @@ msgid "Sidebar|Only numeral characters allowed"
 msgstr ""
 
 msgid "Sidebar|Weight"
-msgstr "Vekt"
+msgstr "Vektlegging"
 
 msgid "Sign in"
 msgstr "Logg på"
@@ -23744,6 +24701,9 @@ msgstr "Logg inn / Registrer"
 
 msgid "Sign in to \"%{group_name}\""
 msgstr "Logg inn hos «%{group_name}»"
+
+msgid "Sign in to GitLab"
+msgstr ""
 
 msgid "Sign in using smart card"
 msgstr "Logg på med smartkort"
@@ -23772,6 +24732,9 @@ msgstr ""
 msgid "Sign-in restrictions"
 msgstr "Påloggingsbegrensninger"
 
+msgid "Sign-in text"
+msgstr ""
+
 msgid "Sign-up restrictions"
 msgstr "Registreringsbegrensninger"
 
@@ -23781,9 +24744,6 @@ msgstr "Fornavnet er for langt (maksimumet er %{max_length} tegn)."
 msgid "SignUp|Last Name is too long (maximum is %{max_length} characters)."
 msgstr "Etternavnet er for langt (maksimumet er %{max_length} tegn)."
 
-msgid "SignUp|Name is too long (maximum is %{max_length} characters)."
-msgstr "Navnet er for langt (maksimumet er %{max_length} tegn)."
-
 msgid "SignUp|Username is too long (maximum is %{max_length} characters)."
 msgstr "Brukernavnet er for langt (maksimumet er %{max_length} tegn)."
 
@@ -23792,6 +24752,9 @@ msgstr "Brukernavnet er for kort (minimumet er %{min_length} tegn)."
 
 msgid "Signed in"
 msgstr "Pålogget"
+
+msgid "Signed in to GitLab as %{user_link}"
+msgstr ""
 
 msgid "Signed in with %{authentication} authentication"
 msgstr ""
@@ -23904,25 +24867,16 @@ msgstr ""
 msgid "Snippets|Add another file %{num}/%{total}"
 msgstr "Snippets|Legg til en annen fil %{num}/%{total}"
 
-msgid "Snippets|Authored %{time_ago} by %{author}"
-msgstr ""
-
 msgid "Snippets|Delete file"
 msgstr "Slett fil"
 
 msgid "Snippets|Description (optional)"
 msgstr "Beskrivelse (valgfritt)"
 
-msgid "Snippets|File"
-msgstr "Fil"
-
 msgid "Snippets|Files"
 msgstr "Filer"
 
 msgid "Snippets|Give your file a name to add code highlighting, e.g. example.rb for Ruby"
-msgstr ""
-
-msgid "Snippets|Optionally add a description about what your snippet does or how to use it..."
 msgstr ""
 
 msgid "Snippets|Optionally add a description about what your snippet does or how to use it…"
@@ -24159,6 +25113,9 @@ msgstr "Tilgangsnivå, stigende"
 msgid "SortOptions|Access level, descending"
 msgstr "Tilgangsnivå, synkende"
 
+msgid "SortOptions|Blocking"
+msgstr ""
+
 msgid "SortOptions|Created date"
 msgstr "Opprettelsesdato"
 
@@ -24199,7 +25156,7 @@ msgid "SortOptions|Least popular"
 msgstr "Minst populær"
 
 msgid "SortOptions|Less weight"
-msgstr "Mindre vekt"
+msgstr "Mindre vektlegging"
 
 msgid "SortOptions|Manual"
 msgstr ""
@@ -24214,7 +25171,7 @@ msgid "SortOptions|Milestone due soon"
 msgstr ""
 
 msgid "SortOptions|More weight"
-msgstr "Mere vekt"
+msgstr "Mere vektlegging"
 
 msgid "SortOptions|Most popular"
 msgstr "Mest populær"
@@ -24267,6 +25224,9 @@ msgstr "Nyligst logget inn"
 msgid "SortOptions|Recently starred"
 msgstr ""
 
+msgid "SortOptions|Relevant"
+msgstr ""
+
 msgid "SortOptions|Size"
 msgstr "Størrelse"
 
@@ -24295,7 +25255,7 @@ msgid "SortOptions|Version"
 msgstr "Versjon"
 
 msgid "SortOptions|Weight"
-msgstr "Vekt"
+msgstr "Vektlegging"
 
 msgid "Source"
 msgstr "Kilde"
@@ -24308,9 +25268,6 @@ msgstr ""
 
 msgid "Source branch: %{source_branch_open}%{source_branch}%{source_branch_close}"
 msgstr ""
-
-msgid "Source code"
-msgstr "Kildekode"
 
 msgid "Source code (%{fileExtension})"
 msgstr ""
@@ -24387,9 +25344,6 @@ msgstr ""
 msgid "Specify the following URL during the Runner setup:"
 msgstr ""
 
-msgid "Speed up your DevOps%{br_tag}with GitLab"
-msgstr ""
-
 msgid "Squash commit message"
 msgstr ""
 
@@ -24452,6 +25406,9 @@ msgstr "Stjerner"
 
 msgid "Start Date"
 msgstr "Startdato"
+
+msgid "Start Time"
+msgstr ""
 
 msgid "Start Web Terminal"
 msgstr "Start netterminal"
@@ -24609,6 +25566,9 @@ msgstr "Statistikk"
 msgid "Status"
 msgstr "Status"
 
+msgid "Status was retried."
+msgstr ""
+
 msgid "Status:"
 msgstr "Status:"
 
@@ -24738,6 +25698,9 @@ msgstr "Send inn som spam"
 msgid "Submit changes"
 msgstr ""
 
+msgid "Submit changes..."
+msgstr ""
+
 msgid "Submit feedback"
 msgstr "Send tilbakemelding"
 
@@ -24752,6 +25715,9 @@ msgstr "Send inn søk"
 
 msgid "Submit the current review."
 msgstr "Send inn nåværende vurdering."
+
+msgid "Submit your changes"
+msgstr ""
 
 msgid "Submitted the current review."
 msgstr "Sendte inn den nåværende vurderingen."
@@ -24794,6 +25760,12 @@ msgstr "Abonnementet ble vellykket opprettet."
 
 msgid "Subscription successfully deleted."
 msgstr "Abonnementet ble vellykket slettet."
+
+msgid "SubscriptionTable|An error occurred while loading billable members list"
+msgstr ""
+
+msgid "SubscriptionTable|An error occurred while loading the subscription details."
+msgstr ""
 
 msgid "SubscriptionTable|Billing"
 msgstr "Fakturering"
@@ -24879,6 +25851,9 @@ msgstr "Lyktes"
 msgid "Successfully activated"
 msgstr "Aktivering vellykket"
 
+msgid "Successfully approved"
+msgstr ""
+
 msgid "Successfully blocked"
 msgstr "Vellykket blokkert"
 
@@ -24898,6 +25873,9 @@ msgid "Successfully removed email."
 msgstr ""
 
 msgid "Successfully scheduled a pipeline to run. Go to the %{pipelines_link_start}Pipelines page%{pipelines_link_end} for details."
+msgstr ""
+
+msgid "Successfully synced %{synced_timeago}."
 msgstr ""
 
 msgid "Successfully unblocked"
@@ -25035,10 +26013,16 @@ msgstr "Symbolsk lenke"
 msgid "Sync information"
 msgstr "Synkroniseringsinformasjon"
 
+msgid "Sync now"
+msgstr ""
+
 msgid "Synced"
 msgstr "Synkronisert"
 
 msgid "Synchronization disabled"
+msgstr ""
+
+msgid "Syncing…"
 msgstr ""
 
 msgid "System"
@@ -25067,6 +26051,9 @@ msgstr "Systemmåltall (egendefinert)"
 
 msgid "System metrics (Kubernetes)"
 msgstr "Systemmåltall (Kubernetes)"
+
+msgid "System output"
+msgstr ""
 
 msgid "Table of Contents"
 msgstr "Innholdsfortegnelse"
@@ -25302,13 +26289,28 @@ msgstr ""
 msgid "TestCases|Search test cases"
 msgstr ""
 
+msgid "TestCases|Something went wrong while adding test case to Todo."
+msgstr ""
+
 msgid "TestCases|Something went wrong while creating a test case."
 msgstr ""
 
 msgid "TestCases|Something went wrong while fetching count of test cases."
 msgstr ""
 
+msgid "TestCases|Something went wrong while fetching test case."
+msgstr ""
+
 msgid "TestCases|Something went wrong while fetching test cases list."
+msgstr ""
+
+msgid "TestCases|Something went wrong while marking test case todo as done."
+msgstr ""
+
+msgid "TestCases|Something went wrong while updating the test case labels."
+msgstr ""
+
+msgid "TestCases|Something went wrong while updating the test case."
 msgstr ""
 
 msgid "TestCases|Submit test case"
@@ -25395,7 +26397,7 @@ msgstr "Takk for handelen!"
 msgid "Thanks! Don't show me this again"
 msgstr "Takk! Ikke vis meg dette igjen"
 
-msgid "That's it, well done!%{celebrate}"
+msgid "That's it, well done!"
 msgstr ""
 
 msgid "The \"%{group_path}\" group allows you to sign in with your Single Sign-On Account"
@@ -25418,9 +26420,6 @@ msgstr "Det avansert søket i GitLab er en kraftig søketjeneste som sparer deg 
 msgid "The CSV export will be created in the background. Once finished, it will be sent to %{strong_open}%{email}%{strong_close} in an attachment."
 msgstr ""
 
-msgid "The Git LFS objects will %{strong_open}not%{strong_close} be synced."
-msgstr ""
-
 msgid "The GitLab user to which the Jira user %{jiraDisplayName} will be mapped"
 msgstr ""
 
@@ -25433,7 +26432,13 @@ msgstr ""
 msgid "The Prometheus server responded with \"bad request\". Please check your queries are correct and are supported in your Prometheus version. %{documentationLink}"
 msgstr ""
 
+msgid "The Security Dashboard shows the results of the last successful pipeline run on the default branch."
+msgstr ""
+
 msgid "The URL defined on the primary node that secondary nodes should use to contact it."
+msgstr ""
+
+msgid "The URL defined on the primary node that secondary nodes should use to contact it. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
 msgid "The URL to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., \"http://localhost:9200, http://localhost:9201\")."
@@ -25532,6 +26537,12 @@ msgstr ""
 msgid "The following %{user} can also push to this branch: %{branch}"
 msgstr ""
 
+msgid "The following Personal Access Token was revoked by an administrator, %{username}."
+msgstr ""
+
+msgid "The following SSH key was deleted by an administrator, %{username}."
+msgstr ""
+
 msgid "The following items will NOT be exported:"
 msgstr "De følgende gjenstander vil IKKE bli eksportert:"
 
@@ -25555,7 +26566,7 @@ msgstr ""
 msgid "The global settings require you to enable Two-Factor Authentication for your account."
 msgstr ""
 
-msgid "The group and any internal projects can be viewed by any logged in user."
+msgid "The group and any internal projects can be viewed by any logged in user except external users."
 msgstr ""
 
 msgid "The group and any public projects can be viewed without any authentication."
@@ -25666,7 +26677,7 @@ msgstr ""
 msgid "The private key to use when a client certificate is provided. This value is encrypted at rest."
 msgstr ""
 
-msgid "The project can be accessed by any logged in user."
+msgid "The project can be accessed by any logged in user except external users."
 msgstr ""
 
 msgid "The project can be accessed by any user who is logged in."
@@ -25726,6 +26737,9 @@ msgstr ""
 msgid "The roadmap shows the progress of your epics along a timeline"
 msgstr ""
 
+msgid "The same shared runner executes code from multiple projects, unless you configure autoscaling with %{link} set to 1 (which it is on GitLab.com)."
+msgstr ""
+
 msgid "The schedule time must be in the future!"
 msgstr ""
 
@@ -25738,8 +26752,8 @@ msgstr "Utdraget er bare synlig for meg."
 msgid "The snippet is visible only to project members."
 msgstr "Utdraget er bare synlig for prosjektmedlemmer."
 
-msgid "The snippet is visible to any logged in user."
-msgstr "Utdraget er synlig for alle påloggede brukere."
+msgid "The snippet is visible to any logged in user except external users."
+msgstr ""
 
 msgid "The specified tab is invalid, please select another"
 msgstr ""
@@ -25776,6 +26790,9 @@ msgstr "Brukerkartet er et JSON-dokument som tilordner Google Code-brukere som d
 
 msgid "The user map is a mapping of the FogBugz users that participated on your projects to the way their email address and usernames will be imported into GitLab. You can change this by populating the table below."
 msgstr "Brukerkartet er en kartlegging av FogBugz-brukerne som deltok på prosjektene dine til måten deres e-postadresse og brukernavn blir importert til GitLab. Du kan endre dette ved å fylle ut tabellen nedenfor."
+
+msgid "The user you are trying to approve is not pending an approval"
+msgstr ""
 
 msgid "The user you are trying to deactivate has been active in the past %{minimum_inactive_days} days and cannot be deactivated"
 msgstr ""
@@ -25883,6 +26900,9 @@ msgid "There is already a repository with that name on disk"
 msgstr ""
 
 msgid "There is no chart data available."
+msgstr ""
+
+msgid "There is no data available."
 msgstr ""
 
 msgid "There is no data available. Please change your selection."
@@ -26080,6 +27100,9 @@ msgstr ""
 msgid "These existing issues have a similar title. It might be better to comment there instead of creating another similar issue."
 msgstr ""
 
+msgid "These paths are protected for POST requests."
+msgstr ""
+
 msgid "These variables are configured in the parent group settings, and will be active in the current project in addition to the project variables."
 msgstr ""
 
@@ -26131,7 +27154,7 @@ msgstr ""
 msgid "This action cannot be undone, and will permanently delete the %{key} SSH key"
 msgstr ""
 
-msgid "This action cannot be undone. You will lose the project's repository and all content: issues, merge requests, etc."
+msgid "This action cannot be undone. You will lose this project's repository and all content: issues, merge requests, etc."
 msgstr ""
 
 msgid "This action has been performed too many times. Try again later."
@@ -26155,8 +27178,14 @@ msgstr ""
 msgid "This application will be able to:"
 msgstr ""
 
+msgid "This attachment has been truncated to avoid exceeding the maximum allowed attachment size of 15MB. %{written_count} of %{count} issues have been included. Consider re-exporting with a narrower selection of issues."
+msgstr ""
+
 msgid "This attachment has been truncated to avoid exceeding the maximum allowed attachment size of 15MB. %{written_count} of %{issues_count} issues have been included. Consider re-exporting with a narrower selection of issues."
 msgstr "Dette vedlegget har blitt avkortet for å unngå å overskride den maksimalt tillatte størrelsen på vedlegg på 15 MB. %{written_count} av %{issues_count} saker har blitt inkludert. Vurder å eksportere på nytt med et smalere valg av saker."
+
+msgid "This attachment has been truncated to avoid exceeding the maximum allowed attachment size of 15MB. %{written_count} of %{merge_requests_count} issues have been included. Consider re-exporting with a narrower selection of issues."
+msgstr ""
 
 msgid "This block is self-referential"
 msgstr ""
@@ -26290,6 +27319,9 @@ msgstr ""
 msgid "This is a security log of important events involving your account."
 msgstr ""
 
+msgid "This is a self-managed instance of GitLab."
+msgstr ""
+
 msgid "This is the highest peak of users on your installation since the license started."
 msgstr ""
 
@@ -26298,6 +27330,9 @@ msgstr ""
 
 msgid "This is your current session"
 msgstr "Dette er din nåværende økt"
+
+msgid "This issue is currently blocked by the following issues:"
+msgstr ""
 
 msgid "This issue is currently blocked by the following issues: %{issues}."
 msgstr ""
@@ -26480,7 +27515,7 @@ msgid "This project will be removed on %{date} since its parent group '%{parent_
 msgstr ""
 
 msgid "This project will live in your group %{strong_open}%{namespace}%{strong_close}. A project is where you house your files (repository), plan your work (issues), publish your documentation (wiki), and so much more."
-msgstr "Prosjektet vil leve i gruppen din %{strong_open}%{namespace}%{strong_close}. Et prosjekt er der du huser filene dine (kodelager), planlegger arbeidet ditt (problemer), publiserer dokumentasjonen (wiki) og så mye mer."
+msgstr "Prosjektet vil leve i gruppen din %{strong_open}%{namespace}%{strong_close}. Et prosjekt er der du huser filene dine (kodelager), planlegger arbeidet ditt (saker), publiserer dokumentasjonen (wiki) og så mye mer."
 
 msgid "This repository"
 msgstr "Dette kodelageret"
@@ -26851,6 +27886,12 @@ msgstr "nå nettopp"
 msgid "Timeago|right now"
 msgstr "akkurat nå"
 
+msgid "Timeline|Turn timeline view off"
+msgstr ""
+
+msgid "Timeline|Turn timeline view on"
+msgstr ""
+
 msgid "Timeout"
 msgstr "Tidsavbrudd"
 
@@ -26885,7 +27926,7 @@ msgstr "Titler og beskrivelser"
 msgid "To"
 msgstr "Til"
 
-msgid "To %{link_to_help} of your domain, add the above key to a TXT record within to your DNS configuration."
+msgid "To %{link_to_help} of your domain, add the above key to a TXT record within your DNS configuration."
 msgstr ""
 
 msgid "To Do"
@@ -26936,8 +27977,8 @@ msgstr "For å komme i gang, skriv inn din Gitea-verts-URL og en %{link_to_perso
 msgid "To help improve GitLab and its user experience, GitLab will periodically collect usage information."
 msgstr "For å forbedre GitLab og brukeropplevelsen dens, vil GitLab med jevne mellomrom samle inn bruksinformasjon."
 
-msgid "To help improve GitLab, we would like to periodically collect usage information. This can be changed at any time in %{settings_link_start}Settings%{link_end}. %{info_link_start}More Information%{link_end}"
-msgstr "For å hjelpe til med å forbedre GitLab, vil vi periodisk samle inn bruksinformasjon. Dette kan endres når som helst i %{settings_link_start}Innstillinger%{link_end}. %{info_link_start}Mer informasjon%{link_end}"
+msgid "To help improve GitLab, we would like to periodically %{docs_link}. This can be changed at any time in %{settings_link}."
+msgstr ""
 
 msgid "To import an SVN repository, check out %{svn_link}."
 msgstr "For å importere et SVN-kodelager, sjekk ut %{svn_link}."
@@ -27065,6 +28106,9 @@ msgstr ""
 msgid "Toggle navigation"
 msgstr "Veksle navigasjon"
 
+msgid "Toggle project select"
+msgstr ""
+
 msgid "Toggle sidebar"
 msgstr "Veksle sidelinje"
 
@@ -27137,17 +28181,20 @@ msgstr "Totalt minne (GB)"
 msgid "Total test time for all commits/merges"
 msgstr "Total testtid for alle commits/innflettinger"
 
+msgid "Total users"
+msgstr ""
+
 msgid "Total weight"
-msgstr "Total vekt"
+msgstr "Totalvekt"
 
 msgid "Total: %{total}"
 msgstr "Totalt: %{total}"
 
-msgid "TotalRefCountIndicator|1000+"
+msgid "TotalMilestonesIndicator|1000+"
 msgstr ""
 
-msgid "Trace"
-msgstr "Spore"
+msgid "TotalRefCountIndicator|1000+"
+msgstr ""
 
 msgid "Tracing"
 msgstr "Sporing"
@@ -27323,6 +28370,9 @@ msgstr ""
 msgid "Tuesday"
 msgstr "Tirsdag"
 
+msgid "Tuning settings"
+msgstr ""
+
 msgid "Turn Off"
 msgstr "Slå av"
 
@@ -27472,6 +28522,9 @@ msgstr ""
 
 msgid "Unable to save your changes. Please try again."
 msgstr "Klarte ikke å lagre dine endringer. Vennligst prøv igjen."
+
+msgid "Unable to save your preference"
+msgstr ""
 
 msgid "Unable to schedule a pipeline to run immediately"
 msgstr ""
@@ -27698,6 +28751,9 @@ msgstr ""
 msgid "Update now"
 msgstr "Oppdater nå"
 
+msgid "Update username"
+msgstr ""
+
 msgid "Update variable"
 msgstr "Oppdater variabel"
 
@@ -27836,10 +28892,13 @@ msgstr "Bruksstatistikk"
 msgid "UsageQuota|%{help_link_start}Shared runners%{help_link_end} are disabled, so there are no limits set on pipeline usage"
 msgstr ""
 
+msgid "UsageQuota|%{percentageLeft} of purchased storage is available"
+msgstr ""
+
 msgid "UsageQuota|Artifacts"
 msgstr "Artifakter"
 
-msgid "UsageQuota|Build Artifacts"
+msgid "UsageQuota|Artifacts is a sum of build and pipeline artifacts."
 msgstr ""
 
 msgid "UsageQuota|Buy additional minutes"
@@ -27866,6 +28925,9 @@ msgstr "Rørledninger"
 msgid "UsageQuota|Purchase more storage"
 msgstr "Kjøp mer lagringsplass"
 
+msgid "UsageQuota|Purchased storage available"
+msgstr ""
+
 msgid "UsageQuota|Repositories"
 msgstr "Kodelagre"
 
@@ -27878,7 +28940,34 @@ msgstr "Utdrag"
 msgid "UsageQuota|Storage"
 msgstr "Lagring"
 
+msgid "UsageQuota|This is the total amount of storage used across your projects within this namespace."
+msgstr ""
+
+msgid "UsageQuota|This is the total amount of storage used by projects above the free %{actualRepositorySizeLimit} storage limit."
+msgstr ""
+
+msgid "UsageQuota|This namespace contains locked projects"
+msgstr ""
+
 msgid "UsageQuota|This namespace has no projects which use shared runners"
+msgstr ""
+
+msgid "UsageQuota|This project is at risk of being locked because purchased storage is running low."
+msgstr ""
+
+msgid "UsageQuota|This project is locked because it is using %{actualRepositorySizeLimit} of free storage and there is no purchased storage available."
+msgstr ""
+
+msgid "UsageQuota|This project is locked because it used %{actualRepositorySizeLimit} of free storage and all the purchased storage."
+msgstr ""
+
+msgid "UsageQuota|This project is near the free %{actualRepositorySizeLimit} limit and at risk of being locked."
+msgstr ""
+
+msgid "UsageQuota|Total excess storage used"
+msgstr ""
+
+msgid "UsageQuota|Total namespace storage used"
 msgstr ""
 
 msgid "UsageQuota|Unlimited"
@@ -27902,14 +28991,26 @@ msgstr ""
 msgid "UsageQuota|Usage since"
 msgstr "Benyttelse siden"
 
+msgid "UsageQuota|When you purchase additional storage, we automatically unlock projects that were locked when you reached the %{actualRepositorySizeLimit} limit."
+msgstr ""
+
 msgid "UsageQuota|Wiki"
 msgstr "Wiki"
 
 msgid "UsageQuota|Wikis"
 msgstr "Wikier"
 
+msgid "UsageQuota|You have consumed all of your additional storage, please purchase more to unlock your projects over the free %{actualRepositorySizeLimit} limit."
+msgstr ""
+
+msgid "UsageQuota|You have reached the free storage limit of %{actualRepositorySizeLimit} on %{projectsLockedText}. To unlock them, please purchase additional storage."
+msgstr ""
+
 msgid "UsageQuota|You used: %{usage} %{limit}"
 msgstr "Du har brukt: %{usage} %{limit}"
+
+msgid "UsageQuota|Your purchased storage is running low. To avoid locked projects, please purchase more storage."
+msgstr ""
 
 msgid "UsageQuota|out of %{formattedLimit} of your namespace storage"
 msgstr ""
@@ -27965,11 +29066,8 @@ msgstr ""
 msgid "User %{username} was successfully removed."
 msgstr ""
 
-msgid "User IDs"
-msgstr "Bruker-ID-er"
-
-msgid "User List"
-msgstr "Brukerliste"
+msgid "User ID"
+msgstr ""
 
 msgid "User OAuth applications"
 msgstr ""
@@ -28088,6 +29186,9 @@ msgstr "Allerede rapportert for misbruk"
 msgid "UserProfile|Blocked user"
 msgstr "Blokkert user"
 
+msgid "UserProfile|Bot activity"
+msgstr ""
+
 msgid "UserProfile|Contributed projects"
 msgstr "Bidratte prosjekter"
 
@@ -28183,9 +29284,6 @@ msgstr "Brukernavnet er opptatt."
 
 msgid "Username is available."
 msgstr "Brukernavnet er tilgjengelig."
-
-msgid "Username is too long (maximum is %{max_length} characters)."
-msgstr "Brukernavnet er for langt (maksimum er %{max_length} tegn)."
 
 msgid "Username or email"
 msgstr "Brukernavn eller E-postadresse"
@@ -28339,6 +29437,12 @@ msgstr "Versjon %{versionNumber} (nyeste)"
 
 msgid "View Documentation"
 msgstr "Vis dokumentasjon"
+
+msgid "View alert details at"
+msgstr ""
+
+msgid "View alert details."
+msgstr ""
 
 msgid "View all issues"
 msgstr "Vis alle saker"
@@ -28647,8 +29751,14 @@ msgstr "Klasse"
 msgid "Vulnerability|Comments"
 msgstr "Kommentarer"
 
-msgid "Vulnerability|Crash Address"
-msgstr "Krasjadresse"
+msgid "Vulnerability|Crash address"
+msgstr ""
+
+msgid "Vulnerability|Crash state"
+msgstr ""
+
+msgid "Vulnerability|Crash type"
+msgstr ""
 
 msgid "Vulnerability|Description"
 msgstr "Beskrivelse"
@@ -28731,6 +29841,15 @@ msgstr ""
 msgid "We could not determine the path to remove the issue"
 msgstr ""
 
+msgid "We couldn't find any %{scope} matching %{term}"
+msgstr ""
+
+msgid "We couldn't find any %{scope} matching %{term} in group %{group}"
+msgstr ""
+
+msgid "We couldn't find any %{scope} matching %{term} in project %{project}"
+msgstr ""
+
 msgid "We couldn't reach the Prometheus server. Either the server no longer exists or the configuration details need updating."
 msgstr ""
 
@@ -28807,7 +29926,7 @@ msgid "Webhooks Help"
 msgstr "Webhook-hjelp"
 
 msgid "Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group."
-msgstr "Webhooks lar deg trigge en URL hvis for eksempel ny kode blir pushet eller en ny sak opprettes. Du kan konfigurere webhooks til å lytte etter spesifikke hendelser som push, problemer eller fletteforespørsler. Gruppe-webhooker vil gjelde for alle prosjekter i en gruppe, slik at du kan standardisere webhook-funksjonalitet i hele gruppen."
+msgstr "Webhooks lar deg trigge en URL hvis for eksempel ny kode blir pushet eller en ny sak opprettes. Du kan konfigurere webhooks til å lytte etter spesifikke hendelser som push, saker eller fletteforespørsler. Gruppe-webhooker vil gjelde for alle prosjekter i en gruppe, slik at du kan standardisere webhook-funksjonalitet i hele gruppen."
 
 msgid "Webhooks have moved. They can now be found under the Settings menu."
 msgstr ""
@@ -28826,6 +29945,9 @@ msgstr ""
 
 msgid "Webhooks|Enable SSL verification"
 msgstr "Skru på SSL-verifisering"
+
+msgid "Webhooks|Feature Flag events"
+msgstr ""
 
 msgid "Webhooks|Issues events"
 msgstr ""
@@ -28851,13 +29973,16 @@ msgstr "Hemmelig sjetong"
 msgid "Webhooks|Tag push events"
 msgstr ""
 
+msgid "Webhooks|This URL is triggered when a deployment starts, finishes, fails, or is canceled"
+msgstr ""
+
+msgid "Webhooks|This URL is triggered when a feature flag is turned on or off"
+msgstr ""
+
 msgid "Webhooks|This URL will be triggered by a push to the repository"
 msgstr ""
 
 msgid "Webhooks|This URL will be triggered when a confidential issue is created/updated/merged"
-msgstr ""
-
-msgid "Webhooks|This URL will be triggered when a deployment is finished/failed/canceled"
 msgstr ""
 
 msgid "Webhooks|This URL will be triggered when a merge request is created/updated/merged"
@@ -28906,10 +30031,10 @@ msgid "Weeks"
 msgstr "Uker"
 
 msgid "Weight"
-msgstr "Vekt"
+msgstr "Vektlegging"
 
 msgid "Weight %{weight}"
-msgstr "Vekt %{weight}"
+msgstr "Vektlegging %{weight}"
 
 msgid "Welcome back! Your account had been deactivated due to inactivity but is now reactivated."
 msgstr "Velkommen tilbake! Kontoen din hadde blitt deaktivert på grunn av inaktivitet, men er nå aktivert på nytt."
@@ -28926,14 +30051,14 @@ msgstr "Velkommen til GitLab, %{first_name}!"
 msgid "Welcome to the guided GitLab tour"
 msgstr "Velkommen til den guidede GitLab-turen"
 
-msgid "Welcome to your issue board!"
-msgstr "Velkommen til sakspanelet ditt!"
-
 msgid "What are you searching for?"
 msgstr "Hva leter du etter?"
 
 msgid "What describes you best?"
 msgstr "Hva beskriver deg best?"
+
+msgid "What is squashing?"
+msgstr ""
 
 msgid "What's new at GitLab"
 msgstr "Hva er nytt hos GitLab"
@@ -28947,7 +30072,7 @@ msgstr ""
 msgid "When a runner is locked, it cannot be assigned to other projects"
 msgstr ""
 
-msgid "When enabled, any user visiting %{host} and creating an account will have to be explicitly approved by the admin before they can login. This setting is effective only if sign-ups are enabled."
+msgid "When enabled, any user visiting %{host} and creating an account will have to be explicitly approved by an admin before they can sign in. This setting is effective only if sign-ups are enabled."
 msgstr ""
 
 msgid "When enabled, any user visiting %{host} will be able to create an account."
@@ -29073,7 +30198,7 @@ msgid "WikiEmpty|You must be a project member in order to add wiki pages."
 msgstr "Du må være prosjektmedlem for å kunne legge til wiki-sider."
 
 msgid "WikiEmpty|You've enabled the Confluence Workspace integration. Your wiki will be viewable directly within Confluence. We are hard at work integrating Confluence more seamlessly into GitLab. If you'd like to stay up to date, follow our %{wiki_confluence_epic_link_start}Confluence epic%{wiki_confluence_epic_link_end}."
-msgstr "Du har aktivert Confluence Workspace-integrasjonen. Wikien din kan vises direkte i Confluence. Vi jobber hardt med å integrere Confluence mer sømløst i GitLab. Hvis du ønsker å holde deg oppdatert, følg vår %{wiki_confluence_epic_link_start}Confluence-epic%{wiki_confluence_epic_link_end}."
+msgstr "Du har aktivert Confluence Workspace-integrasjonen. Wikien din kan vises direkte i Confluence. Vi jobber hardt med å integrere Confluence mer sømløst i GitLab. Hvis du ønsker å holde deg oppdatert, følg vår %{wiki_confluence_epic_link_start}Confluence-epos%{wiki_confluence_epic_link_end}."
 
 msgid "WikiHistoricalPage|This is an old version of this page."
 msgstr "Dette er en gammel versjon av denne siden."
@@ -29189,10 +30314,10 @@ msgstr ""
 msgid "Work in progress Limit"
 msgstr ""
 
-msgid "Workflow Help"
+msgid "Would you like to create a new branch?"
 msgstr ""
 
-msgid "Would you like to create a new branch?"
+msgid "Would you like to try auto-generating a branch name?"
 msgstr ""
 
 msgid "Write"
@@ -29285,6 +30410,9 @@ msgstr ""
 msgid "You are going to turn on the confidentiality. This means that only team members with %{strongStart}at least Reporter access%{strongEnd} are able to see and leave comments on the %{issuableType}."
 msgstr "Du kommer til å slå på konfidensialitet. Dette betyr at bare gruppemedlemmer med %{strongStart}minst «Rapportør»-tilgang%{strongEnd} kan se og legge ut kommentarer på %{issuableType}."
 
+msgid "You are not allowed to approve a user"
+msgstr ""
+
 msgid "You are not allowed to push into this branch. Create another branch or open a merge request."
 msgstr ""
 
@@ -29306,6 +30434,9 @@ msgstr ""
 msgid "You are receiving this message because you are a GitLab administrator for %{url}."
 msgstr "Du mottar denne meldingen fordi du er en GitLab-administrator for %{url}."
 
+msgid "You are signed into GitLab as %{user_link}"
+msgstr ""
+
 msgid "You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico."
 msgstr ""
 
@@ -29318,11 +30449,11 @@ msgstr ""
 msgid "You can also create a project from the command line."
 msgstr "Du kan også opprette et prosjekt fra kommandolinjen."
 
-msgid "You can also press &#8984;-Enter"
-msgstr "Du kan også trykke &#8984;-Enter"
-
 msgid "You can also press Ctrl-Enter"
 msgstr "Du kan også trykke Ctrl-Enter"
+
+msgid "You can also press ⌘-Enter"
+msgstr ""
 
 msgid "You can also star a label to make it a priority label."
 msgstr ""
@@ -29335,6 +30466,15 @@ msgstr "Du kan også laste opp eksisterende filer fra datamaskinen din ved å f�
 
 msgid "You can always edit this later"
 msgstr "Du kan alltid redigere dette senere"
+
+msgid "You can create a new %{link}."
+msgstr ""
+
+msgid "You can create a new Personal Access Token by visiting %{link}"
+msgstr ""
+
+msgid "You can create a new SSH key by visiting %{link}"
+msgstr ""
 
 msgid "You can create a new one or check them in your %{pat_link_start}personal access tokens%{pat_link_end} settings"
 msgstr ""
@@ -29537,6 +30677,9 @@ msgstr "Du har blitt tildelt %{member_human_access}-tilgang til %{title} %{name}
 msgid "You have been invited"
 msgstr "Du har blitt invitert"
 
+msgid "You have been redirected to the only result; see the %{a_start}search results%{a_end} instead."
+msgstr ""
+
 msgid "You have been unsubscribed from this thread."
 msgstr "Du har blitt avabonnert på denne tråden."
 
@@ -29547,6 +30690,15 @@ msgid "You have imported from this project %{numberOfPreviousImports} times befo
 msgstr ""
 
 msgid "You have insufficient permissions to create a Todo for this alert"
+msgstr ""
+
+msgid "You have insufficient permissions to create an HTTP integration for this project"
+msgstr ""
+
+msgid "You have insufficient permissions to remove this HTTP integration"
+msgstr ""
+
+msgid "You have insufficient permissions to update this HTTP integration"
 msgstr ""
 
 msgid "You have no permissions"
@@ -29572,9 +30724,6 @@ msgstr "Du forlot «%{membershipable_human_name}»-%{source_type}."
 
 msgid "You may close the milestone now."
 msgstr "Du kan lukke milepælen nå."
-
-msgid "You must accept our Terms of Service and privacy policy in order to register an account"
-msgstr "Du må godta vilkårene for bruk og personvern for å kunne registrere en konto"
 
 msgid "You must be logged in to search across all of GitLab"
 msgstr ""
@@ -29631,9 +30780,6 @@ msgid "You need to upload a GitLab project export archive (ending in .gz)."
 msgstr ""
 
 msgid "You need to upload a Google Takeout archive."
-msgstr ""
-
-msgid "You reached %{usage_in_percent} of %{namespace_name}'s storage capacity (%{used_storage} of %{storage_limit})"
 msgstr ""
 
 msgid "You successfully declined the invitation"
@@ -29738,19 +30884,22 @@ msgstr "Du har allerede aktivert 2-trinnsautentisering ved hjelp av éngangspass
 msgid "YouTube"
 msgstr "YouTube"
 
+msgid "YouTube URL or ID"
+msgstr ""
+
 msgid "Your %{host} account was signed in to from a new location"
 msgstr ""
 
 msgid "Your %{strong}%{plan_name}%{strong_close} subscription for %{strong}%{namespace_name}%{strong_close} will expire on %{strong}%{expires_on}%{strong_close}."
 msgstr "Ditt %{strong}%{plan_name}%{strong_close} abonnement på %{strong}%{namespace_name}%{strong_close} vil utløpe den %{strong}%{expires_on}%{strong_close}."
 
-msgid "Your %{strong}%{plan_name}%{strong_close} subscription will expire on %{strong}%{expires_on}%{strong_close}. After that, you will not to be able to create issues or merge requests as well as many other features."
-msgstr "Ditt %{strong}%{plan_name}%{strong_close}-abonnement utløper den %{strong}%{expires_on}%{strong_close}. Etter det vil du ikke kunne lage saker eller fletteforespørsler, samt mange andre funksjoner."
+msgid "Your %{strong}%{plan_name}%{strong_close} subscription will expire on %{strong}%{expires_on}%{strong_close}. After that, you will not be able to create issues or merge requests as well as many other features."
+msgstr ""
 
 msgid "Your CSV export has started. It will be emailed to %{email} when complete."
 msgstr ""
 
-msgid "Your CSV export of %{issues_count} from project %{project_link} has been added to this email as an attachment."
+msgid "Your CSV export of %{count} from project %{project_link} has been added to this email as an attachment."
 msgstr ""
 
 msgid "Your CSV export of %{written_count} from project %{project_name} (%{project_url}) has been added to this email as an attachment."
@@ -29780,6 +30929,9 @@ msgstr "Dine grupper"
 msgid "Your License"
 msgstr "Din lisens"
 
+msgid "Your Personal Access Token was revoked"
+msgstr ""
+
 msgid "Your Personal Access Tokens will expire in %{days_to_expire} days or less"
 msgstr ""
 
@@ -29793,6 +30945,9 @@ msgid "Your Projects' Activity"
 msgstr ""
 
 msgid "Your Public Email will be displayed on your public profile."
+msgstr ""
+
+msgid "Your SSH key was deleted"
 msgstr ""
 
 msgid "Your SSH keys (%{count})"
@@ -30061,9 +31216,6 @@ msgstr "grennavn"
 msgid "by"
 msgstr "av"
 
-msgid "by %{user}"
-msgstr "av %{user}"
-
 msgid "cannot be a date in the past"
 msgstr ""
 
@@ -30190,9 +31342,6 @@ msgstr ""
 msgid "ciReport|Coverage Fuzzing"
 msgstr ""
 
-msgid "ciReport|Coverage Fuzzing Title"
-msgstr ""
-
 msgid "ciReport|Coverage fuzzing"
 msgstr ""
 
@@ -30238,9 +31387,6 @@ msgstr "Fant %{issuesWithCount}"
 msgid "ciReport|Investigate this vulnerability by creating an issue"
 msgstr "Undersøk dette sikkerhetsproblemet ved å opprette en sak"
 
-msgid "ciReport|Learn more about interacting with security reports"
-msgstr "Lær mer om samhandling med sikkerhetsrapporter"
-
 msgid "ciReport|Load performance test metrics: "
 msgstr ""
 
@@ -30260,7 +31406,7 @@ msgid "ciReport|No changes to code quality"
 msgstr "Ingen endringer i kodekvalitet"
 
 msgid "ciReport|No code quality issues found"
-msgstr "Ingen kodekvalitetsproblemer ble funnet"
+msgstr "Ingen kodekvalitetssaker ble funnet"
 
 msgid "ciReport|RPS"
 msgstr "RPS"
@@ -30323,6 +31469,9 @@ msgstr "Vis fullstendig rapport"
 
 msgid "closed issue"
 msgstr "lukket saksrapport"
+
+msgid "collect usage information"
+msgstr ""
 
 msgid "comment"
 msgstr "kommentar"
@@ -30562,8 +31711,8 @@ msgstr "er et ugyldig IP-adresseområde"
 msgid "is blocked by"
 msgstr "er blokkert av"
 
-msgid "is enabled."
-msgstr "er skrudd på."
+msgid "is forbidden by a top-level group"
+msgstr ""
 
 msgid "is invalid because there is downstream lock"
 msgstr ""
@@ -30579,6 +31728,9 @@ msgstr ""
 
 msgid "is not a valid X509 certificate."
 msgstr "er ikke et gyldig X509-sertifikat."
+
+msgid "is not allowed since the group is not top-level group."
+msgstr ""
 
 msgid "is not allowed. Try again with a different email address, or contact your GitLab admin."
 msgstr ""
@@ -30596,6 +31748,9 @@ msgid "is read only"
 msgstr "har kun lesetilgang"
 
 msgid "is too long (%{current_value}). The maximum size is %{max_size}."
+msgstr ""
+
+msgid "is too long (maximum is %{count} characters)"
 msgstr ""
 
 msgid "is too long (maximum is 100 entries)"
@@ -30632,6 +31787,9 @@ msgid "it is too large"
 msgstr "den er for stor"
 
 msgid "jigsaw is not defined"
+msgstr ""
+
+msgid "kuromoji custom analyzer"
 msgstr ""
 
 msgid "last commit:"
@@ -30695,6 +31853,9 @@ msgstr ""
 
 msgid "missing"
 msgstr "mangler"
+
+msgid "more information"
+msgstr ""
 
 msgid "most recent deployment"
 msgstr ""
@@ -31169,9 +32330,6 @@ msgstr "prosjektmedlemmer"
 msgid "projects"
 msgstr "prosjekter"
 
-msgid "push to your repository, create pipelines, create issues or add comments. To reduce storage capacity, delete unused repositories, artifacts, wikis, issues, and pipelines."
-msgstr ""
-
 msgid "quick actions"
 msgstr "hurtighandlinger"
 
@@ -31184,9 +32342,6 @@ msgstr "registrer"
 msgid "relates to"
 msgstr "relatert til"
 
-msgid "released %{time}"
-msgstr "utgitt %{time}"
-
 msgid "remaining"
 msgstr "gjenstår"
 
@@ -31197,7 +32352,7 @@ msgid "remove due date"
 msgstr "fjern forfallsdato"
 
 msgid "remove weight"
-msgstr "fjern vekt"
+msgstr "fjern vektlegging"
 
 msgid "removed a Zoom call from this issue"
 msgstr ""
@@ -31263,6 +32418,9 @@ msgstr "vis mindre"
 
 msgid "sign in"
 msgstr "logg inn"
+
+msgid "smartcn custom analyzer"
+msgstr ""
 
 msgid "sort:"
 msgstr "sorter:"
@@ -31444,9 +32602,6 @@ msgstr ""
 msgid "wiki page"
 msgstr "wikiside"
 
-msgid "will be released %{time}"
-msgstr "vil bli utgitt %{time}"
-
 msgid "with %{additions} additions, %{deletions} deletions."
 msgstr "med %{additions} tillegg, %{deletions} slettinger."
 
@@ -31458,4 +32613,7 @@ msgstr ""
 
 msgid "yaml invalid"
 msgstr "yaml er ugyldig"
+
+msgid "your settings"
+msgstr ""
 

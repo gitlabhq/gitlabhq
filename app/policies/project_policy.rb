@@ -546,8 +546,6 @@ class ProjectPolicy < BasePolicy
     prevent :create_pipeline
   end
 
-  rule { admin }.enable :change_repository_storage
-
   rule { can?(:read_issue) }.policy do
     enable :read_design
     enable :read_design_activity
@@ -570,6 +568,7 @@ class ProjectPolicy < BasePolicy
 
   rule { write_package_registry_deploy_token }.policy do
     enable :create_package
+    enable :read_package
     enable :read_project
   end
 

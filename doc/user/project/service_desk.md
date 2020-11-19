@@ -76,7 +76,7 @@ Follow these steps to do so:
    address's format. The older format is still supported, however, allowing existing aliases or
    contacts to continue working.
 
-   DANGER: **Danger:**
+   DANGER: **Warning:**
    This email address can be used by anyone to create an issue on this project, whether or not they
    have access to your GitLab instance. We recommend **putting this behind an alias** so it can be
    changed if needed, and **[enabling Akismet](../../integration/akismet.md)** on your GitLab
@@ -99,7 +99,7 @@ navigation's **Issues** menu.
 
 When a user submits a new issue using Service Desk, or when a new note is created on a Service Desk issue, an email is sent to the author.
 
-The body of these email messages can customized by using templates. To create a new customized template,
+The body of these email messages can be customized by using templates. To create a new customized template,
 create a new Markdown (`.md`) file inside the `.gitlab/service_desk_templates/`
 directory in your repository. Commit and push to your default branch.
 

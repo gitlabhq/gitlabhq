@@ -1,0 +1,5 @@
+---
+title: Fix when Feature Flags link is shown in search bar results
+merge_request: 45803
+author:
+type: fixed

@@ -3,7 +3,7 @@
 module Ci
   class ParseDotenvArtifactService < ::BaseService
     MAX_ACCEPTABLE_DOTENV_SIZE = 5.kilobytes
-    MAX_ACCEPTABLE_VARIABLES_COUNT = 10
+    MAX_ACCEPTABLE_VARIABLES_COUNT = 20
 
     SizeLimitError = Class.new(StandardError)
     ParserError = Class.new(StandardError)

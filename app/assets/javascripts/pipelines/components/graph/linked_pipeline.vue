@@ -2,6 +2,7 @@
 import { GlTooltipDirective, GlButton, GlLink, GlLoadingIcon } from '@gitlab/ui';
 import CiStatus from '~/vue_shared/components/ci_icon.vue';
 import { __, sprintf } from '~/locale';
+import { UPSTREAM, DOWNSTREAM } from './constants';
 
 export default {
   directives: {
@@ -14,6 +15,10 @@ export default {
     GlLoadingIcon,
   },
   props: {
+    columnTitle: {
+      type: String,
+      required: true,
+    },
     pipeline: {
       type: Object,
       required: true,
@@ -22,7 +27,7 @@ export default {
       type: Number,
       required: true,
     },
-    columnTitle: {
+    type: {
       type: String,
       required: true,
     },
@@ -50,12 +55,10 @@ export default {
       return this.childPipeline ? __('child-pipeline') : this.pipeline.project.name;
     },
     parentPipeline() {
-      // Refactor string match when BE returns Upstream/Downstream indicators
-      return this.projectId === this.pipeline.project.id && this.columnTitle === __('Upstream');
+      return this.isUpstream && this.isSameProject;
     },
     childPipeline() {
-      // Refactor string match when BE returns Upstream/Downstream indicators
-      return this.projectId === this.pipeline.project.id && this.isDownstream;
+      return this.isDownstream && this.isSameProject;
     },
     label() {
       if (this.parentPipeline) {
@@ -66,7 +69,13 @@ export default {
       return __('Multi-project');
     },
     isDownstream() {
-      return this.columnTitle === __('Downstream');
+      return this.type === DOWNSTREAM;
+    },
+    isUpstream() {
+      return this.type === UPSTREAM;
+    },
+    isSameProject() {
+      return this.projectId === this.pipeline.project.id;
     },
     sourceJobInfo() {
       return this.isDownstream
@@ -74,13 +83,13 @@ export default {
         : '';
     },
     expandedIcon() {
-      if (this.parentPipeline) {
+      if (this.isUpstream) {
         return this.expanded ? 'angle-right' : 'angle-left';
       }
       return this.expanded ? 'angle-left' : 'angle-right';
     },
     expandButtonPosition() {
-      return this.parentPipeline ? 'gl-left-0 gl-border-r-1!' : 'gl-right-0 gl-border-l-1!';
+      return this.isUpstream ? 'gl-left-0 gl-border-r-1!' : 'gl-right-0 gl-border-l-1!';
     },
   },
   methods: {
@@ -116,7 +125,7 @@ export default {
   >
     <div
       class="gl-relative gl-bg-white gl-p-3 gl-border-solid gl-border-gray-100 gl-border-1"
-      :class="{ 'gl-pl-9': parentPipeline }"
+      :class="{ 'gl-pl-9': isUpstream }"
     >
       <div class="gl-display-flex">
         <ci-status

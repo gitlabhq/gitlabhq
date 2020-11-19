@@ -1,0 +1,8 @@
+---
+name: test_failure_history
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45027
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/268249
+milestone: '13.6'
+type: development
+group: group::testing
+default_enabled: false

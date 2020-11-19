@@ -1,0 +1,15 @@
+---
+# Error: gitlab.AlertBoxNoteTip
+#
+# Makes sure NOTE: and TIP: alert boxes follow standard formatting.
+#
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+extends: substitution
+message: "NOTE: and TIP: alert boxes must be of the format 'NOTE: **Note:**' or 'TIP: **Tip:**"
+link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#alert-boxes
+level: warning
+nonword: true
+scope: raw
+swap:
+  'NOTE: *?\*\*.*\*\*': 'NOTE: \*\*Note:\*\*'
+  'TIP: *?\*\*.*\*\*': 'TIP: \*\*Tip:\*\*'

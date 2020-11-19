@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 
 import 'ee_else_ce/boards/models/issue';
 import 'ee_else_ce/boards/models/list';
@@ -86,10 +86,17 @@ export default () => {
       boardId: $boardApp.dataset.boardId,
       groupId: Number($boardApp.dataset.groupId),
       rootPath: $boardApp.dataset.rootPath,
+      currentUserId: gon.current_user_id || null,
       canUpdate: $boardApp.dataset.canUpdate,
       labelsFetchPath: $boardApp.dataset.labelsFetchPath,
       labelsManagePath: $boardApp.dataset.labelsManagePath,
       labelsFilterBasePath: $boardApp.dataset.labelsFilterBasePath,
+      timeTrackingLimitToHours: parseBoolean($boardApp.dataset.timeTrackingLimitToHours),
+      weightFeatureAvailable: parseBoolean($boardApp.dataset.weightFeatureAvailable),
+      boardWeight: $boardApp.dataset.boardWeight
+        ? parseInt($boardApp.dataset.boardWeight, 10)
+        : null,
+      scopedLabelsAvailable: parseBoolean($boardApp.dataset.scopedLabels),
     },
     store,
     apolloProvider,
@@ -108,6 +115,7 @@ export default () => {
     },
     computed: {
       ...mapState(['isShowingEpicsSwimlanes']),
+      ...mapGetters(['shouldUseGraphQL']),
       detailIssueVisible() {
         return Object.keys(this.detailIssue.issue).length;
       },
@@ -153,7 +161,7 @@ export default () => {
 
       boardsStore.disabled = this.disabled;
 
-      if (!gon.features.graphqlBoardLists) {
+      if (!this.shouldUseGraphQL) {
         this.initialBoardLoad();
       }
     },

@@ -5,6 +5,8 @@ module API
     class StateVersion < ::API::Base
       default_format :json
 
+      feature_category :infrastructure_as_code
+
       before do
         authenticate!
         authorize! :read_terraform_state, user_project

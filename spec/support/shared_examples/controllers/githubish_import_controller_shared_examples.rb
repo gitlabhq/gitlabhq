@@ -145,10 +145,22 @@ RSpec.shared_examples 'a GitHub-ish import controller: GET status' do
       group.add_owner(user)
       client = stub_client(repos: repos, orgs: [org], org_repos: [org_repo])
       allow(client).to receive(:each_page).and_return([OpenStruct.new(objects: repos)].to_enum)
+      # GitHub controller has filtering done using GitHub Search API
+      stub_feature_flags(remove_legacy_github_client: false)
     end
 
     it 'filters list of repositories by name' do
       get :status, params: { filter: 'emacs' }, format: :json
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response.dig("imported_projects").count).to eq(0)
+      expect(json_response.dig("provider_repos").count).to eq(1)
+      expect(json_response.dig("provider_repos", 0, "id")).to eq(repo_2.id)
+      expect(json_response.dig("namespaces", 0, "id")).to eq(group.id)
+    end
+
+    it 'filters the list, ignoring the case of the name' do
+      get :status, params: { filter: 'EMACS' }, format: :json
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response.dig("imported_projects").count).to eq(0)
@@ -165,6 +177,23 @@ RSpec.shared_examples 'a GitHub-ish import controller: GET status' do
         get :status, params: { filter: filter }, format: :json
 
         expect(assigns(:filter)).to eq(expected_filter)
+      end
+    end
+
+    context 'when the client returns a non-string name' do
+      before do
+        repos = [build(:project, name: 2, path: 'test')]
+
+        client = stub_client(repos: repos)
+        allow(client).to receive(:each_page).and_return([OpenStruct.new(objects: repos)].to_enum)
+      end
+
+      it 'does not raise an error' do
+        get :status, params: { filter: '2' }, format: :json
+
+        expect(response).to have_gitlab_http_status :ok
+
+        expect(json_response.dig("provider_repos").count).to eq(1)
       end
     end
   end

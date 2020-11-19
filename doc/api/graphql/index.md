@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # GraphQL API
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19008) in GitLab 11.0 (enabled by feature flag `graphql`).
@@ -75,6 +81,10 @@ The process is as follows:
 1. Removals are announced at least one release prior in the Deprecation Warnings section of the
    release post (at or prior to X.11 and X.5 releases).
 1. Fields meeting criteria are removed in X.0 or X.6.
+
+### List of removed items
+
+View the [fields, enums, and other items we removed](removed_items.md) from the GraphQL API.
 
 ## Available queries
 

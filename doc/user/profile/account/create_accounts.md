@@ -14,9 +14,9 @@ You can create users:
 
 ## Create users on sign in page
 
-If you have [sign-up enabled](../../admin_area/settings/sign_up_restrictions.md), users can create their own accounts using the **Register** tab on the sign in page.
+If you have [sign-up enabled](../../admin_area/settings/sign_up_restrictions.md), users can create their own accounts by selecting "Register now" on the sign-in page, or navigate to `https://gitlab.example.com/users/sign_up`.
 
-![Register Tab](img/register_tab.png)
+![Register Tab](img/register_v13_6.png)
 
 ## Create users in Admin Area
 

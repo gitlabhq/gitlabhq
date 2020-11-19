@@ -6,6 +6,8 @@ module API
 
     HTTP_GITLAB_EVENT_HEADER = "HTTP_#{WebHookService::GITLAB_EVENT_HEADER}".underscore.upcase
 
+    feature_category :continuous_integration
+
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end

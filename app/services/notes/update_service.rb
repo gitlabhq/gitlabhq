@@ -14,6 +14,8 @@ module Notes
         note.save
       end
 
+      track_note_edit_usage_for_issues(note) if note.for_issue?
+
       only_commands = false
 
       quick_actions_service = QuickActionsService.new(project, current_user)
@@ -88,6 +90,10 @@ module Notes
       return unless note.start_of_discussion? # don't update all notes if a response is being updated
 
       Note.id_in(note.discussion.notes.map(&:id)).update_all(confidential: params[:confidential])
+    end
+
+    def track_note_edit_usage_for_issues(note)
+      Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_comment_edited_action(author: note.author)
     end
   end
 end

@@ -68,6 +68,8 @@ module Types
           description: 'SHA of the merge request commit (set once merged)'
     field :user_notes_count, GraphQL::INT_TYPE, null: true,
           description: 'User notes count of the merge request'
+    field :user_discussions_count, GraphQL::INT_TYPE, null: true,
+          description: 'Number of user discussions in the merge request'
     field :should_remove_source_branch, GraphQL::BOOLEAN_TYPE, method: :should_remove_source_branch?, null: true,
           description: 'Indicates if the source branch of the merge request will be deleted after merge'
     field :force_remove_source_branch, GraphQL::BOOLEAN_TYPE, method: :force_remove_source_branch?, null: true,
@@ -86,9 +88,6 @@ module Types
           description: 'Rebase commit SHA of the merge request'
     field :rebase_in_progress, GraphQL::BOOLEAN_TYPE, method: :rebase_in_progress?, null: false, calls_gitaly: true,
           description: 'Indicates if there is a rebase currently in progress for the merge request'
-    field :merge_commit_message, GraphQL::STRING_TYPE, method: :default_merge_commit_message, null: true,
-          deprecated: { reason: 'Use `defaultMergeCommitMessage`', milestone: '11.8' },
-          description: 'Default merge commit message of the merge request'
     field :default_merge_commit_message, GraphQL::STRING_TYPE, null: true,
           description: 'Default merge commit message of the merge request'
     field :merge_ongoing, GraphQL::BOOLEAN_TYPE, method: :merge_ongoing?, null: false,
@@ -112,14 +111,13 @@ module Types
 
     field :head_pipeline, Types::Ci::PipelineType, null: true, method: :actual_head_pipeline,
           description: 'The pipeline running on the branch HEAD of the merge request'
-    field :pipelines, Types::Ci::PipelineType.connection_type,
+    field :pipelines,
           null: true,
           description: 'Pipelines for the merge request',
           resolver: Resolvers::MergeRequestPipelinesResolver
 
     field :milestone, Types::MilestoneType, null: true,
-          description: 'The milestone of the merge request',
-          resolve: -> (obj, _args, _ctx) { Gitlab::Graphql::Loaders::BatchModelLoader.new(Milestone, obj.milestone_id).find }
+          description: 'The milestone of the merge request'
     field :assignees, Types::UserType.connection_type, null: true, complexity: 5,
           description: 'Assignees of the merge request'
     field :author, Types::UserType, null: true,
@@ -159,17 +157,25 @@ module Types
       object.approved_by_users
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def user_notes_count
       BatchLoader::GraphQL.for(object.id).batch(key: :merge_request_user_notes_count) do |ids, loader, args|
-        counts = Note.where(noteable_type: 'MergeRequest', noteable_id: ids).user.group(:noteable_id).count
+        counts = Note.count_for_collection(ids, 'MergeRequest').index_by(&:noteable_id)
 
         ids.each do |id|
-          loader.call(id, counts[id] || 0)
+          loader.call(id, counts[id]&.count || 0)
         end
       end
     end
-    # rubocop: enable CodeReuse/ActiveRecord
+
+    def user_discussions_count
+      BatchLoader::GraphQL.for(object.id).batch(key: :merge_request_user_discussions_count) do |ids, loader, args|
+        counts = Note.count_for_collection(ids, 'MergeRequest', 'COUNT(DISTINCT discussion_id) as count').index_by(&:noteable_id)
+
+        ids.each do |id|
+          loader.call(id, counts[id]&.count || 0)
+        end
+      end
+    end
 
     def diff_stats(path: nil)
       stats = Array.wrap(object.diff_stats&.to_a)

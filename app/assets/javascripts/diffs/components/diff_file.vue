@@ -1,20 +1,31 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { escape } from 'lodash';
-import { GlLoadingIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { __, sprintf } from '~/locale';
+import { sprintf } from '~/locale';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { hasDiff } from '~/helpers/diffs_helper';
-import eventHub from '../../notes/event_hub';
+import notesEventHub from '../../notes/event_hub';
 import DiffFileHeader from './diff_file_header.vue';
 import DiffContent from './diff_content.vue';
 import { diffViewerErrors } from '~/ide/constants';
+import { collapsedType, isCollapsed } from '../diff_file';
+import {
+  DIFF_FILE_AUTOMATIC_COLLAPSE,
+  DIFF_FILE_MANUAL_COLLAPSE,
+  EVT_EXPAND_ALL_FILES,
+  EVT_PERF_MARK_DIFF_FILES_END,
+  EVT_PERF_MARK_FIRST_DIFF_FILE_SHOWN,
+} from '../constants';
+import { DIFF_FILE, GENERIC_ERROR } from '../i18n';
+import eventHub from '../event_hub';
 
 export default {
   components: {
     DiffFileHeader,
     DiffContent,
+    GlButton,
     GlLoadingIcon,
   },
   directives: {
@@ -25,6 +36,16 @@ export default {
     file: {
       type: Object,
       required: true,
+    },
+    isFirstFile: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isLastFile: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     canCurrentUserFork: {
       type: Boolean,
@@ -44,8 +65,12 @@ export default {
     return {
       isLoadingCollapsedDiff: false,
       forkMessageVisible: false,
-      isCollapsed: this.file.viewer.automaticallyCollapsed || false,
+      isCollapsed: isCollapsed(this.file),
     };
+  },
+  i18n: {
+    ...DIFF_FILE,
+    genericError: GENERIC_ERROR,
   },
   computed: {
     ...mapState('diffs', ['currentDiffFileId']),
@@ -53,7 +78,7 @@ export default {
     ...mapGetters('diffs', ['getDiffFileDiscussions']),
     viewBlobLink() {
       return sprintf(
-        __('You can %{linkStart}view the blob%{linkEnd} instead.'),
+        this.$options.i18n.blobView,
         {
           linkStart: `<a href="${escape(this.file.view_path)}">`,
           linkEnd: '</a>',
@@ -71,13 +96,11 @@ export default {
       return this.file.viewer.error === diffViewerErrors.too_large;
     },
     errorMessage() {
-      return this.file.viewer.error_message;
+      return !this.manuallyCollapsed ? this.file.viewer.error_message : '';
     },
     forkMessage() {
       return sprintf(
-        __(
-          "You're not allowed to %{tag_start}edit%{tag_end} files in this project directly. Please fork this project, make your changes there, and submit a merge request.",
-        ),
+        this.$options.i18n.editInFork,
         {
           tag_start: '<span class="js-file-fork-suggestion-section-action">',
           tag_end: '</span>',
@@ -85,62 +108,131 @@ export default {
         false,
       );
     },
-  },
-  watch: {
-    isCollapsed: function fileCollapsedWatch(newVal, oldVal) {
-      if (!newVal && oldVal && !this.hasDiff) {
-        this.handleLoadCollapsedDiff();
+    hasBodyClasses() {
+      const domParts = {
+        header: 'gl-rounded-base!',
+        contentByHash: '',
+        content: '',
+      };
+
+      if (this.showBody) {
+        domParts.header = 'gl-rounded-bottom-left-none gl-rounded-bottom-right-none';
+        domParts.contentByHash =
+          'gl-rounded-none gl-rounded-bottom-left-base gl-rounded-bottom-right-base gl-border-1 gl-border-t-0! gl-border-solid gl-border-gray-100';
+        domParts.content = 'gl-rounded-bottom-left-base gl-rounded-bottom-right-base';
       }
 
-      this.setFileCollapsed({ filePath: this.file.file_path, collapsed: newVal });
+      return domParts;
     },
+    automaticallyCollapsed() {
+      return collapsedType(this.file) === DIFF_FILE_AUTOMATIC_COLLAPSE;
+    },
+    manuallyCollapsed() {
+      return collapsedType(this.file) === DIFF_FILE_MANUAL_COLLAPSE;
+    },
+    showBody() {
+      return !this.isCollapsed || this.automaticallyCollapsed;
+    },
+    showWarning() {
+      return this.isCollapsed && (this.automaticallyCollapsed && !this.viewDiffsFileByFile);
+    },
+    showContent() {
+      return !this.isCollapsed && !this.isFileTooLarge;
+    },
+  },
+  watch: {
     'file.file_hash': {
-      handler: function watchFileHash() {
-        if (this.viewDiffsFileByFile && this.file.viewer.automaticallyCollapsed) {
-          this.isCollapsed = false;
-          this.handleLoadCollapsedDiff();
-        } else {
-          this.isCollapsed = this.file.viewer.automaticallyCollapsed || false;
+      handler: function hashChangeWatch(newHash, oldHash) {
+        this.isCollapsed = isCollapsed(this.file);
+
+        if (newHash && oldHash && !this.hasDiff) {
+          this.requestDiff();
         }
       },
       immediate: true,
     },
-    'file.viewer.automaticallyCollapsed': function setIsCollapsed(newVal) {
-      if (!this.viewDiffsFileByFile) {
-        this.isCollapsed = newVal;
-      }
+    'file.viewer.automaticallyCollapsed': {
+      handler: function autoChangeWatch(automaticValue) {
+        if (collapsedType(this.file) !== DIFF_FILE_MANUAL_COLLAPSE) {
+          this.isCollapsed = this.viewDiffsFileByFile ? false : automaticValue;
+        }
+      },
+      immediate: true,
+    },
+    'file.viewer.manuallyCollapsed': {
+      handler: function manualChangeWatch(manualValue) {
+        if (manualValue !== null) {
+          this.isCollapsed = manualValue;
+        }
+      },
+      immediate: true,
     },
   },
   created() {
-    eventHub.$on(`loadCollapsedDiff/${this.file.file_hash}`, this.handleLoadCollapsedDiff);
+    notesEventHub.$on(`loadCollapsedDiff/${this.file.file_hash}`, this.requestDiff);
+    eventHub.$on(EVT_EXPAND_ALL_FILES, this.expandAllListener);
+  },
+  mounted() {
+    if (this.hasDiff) {
+      this.postRender();
+    }
+  },
+  beforeDestroy() {
+    eventHub.$off(EVT_EXPAND_ALL_FILES, this.expandAllListener);
   },
   methods: {
     ...mapActions('diffs', [
       'loadCollapsedDiff',
       'assignDiscussionsToDiff',
       'setRenderIt',
-      'setFileCollapsed',
+      'setFileCollapsedByUser',
     ]),
-    handleToggle() {
-      if (!this.hasDiff) {
-        this.handleLoadCollapsedDiff();
-      } else {
-        this.isCollapsed = !this.isCollapsed;
-        this.setRenderIt(this.file);
+    expandAllListener() {
+      if (this.isCollapsed) {
+        this.handleToggle();
       }
     },
-    handleLoadCollapsedDiff() {
+    async postRender() {
+      const eventsForThisFile = [];
+
+      if (this.isFirstFile) {
+        eventsForThisFile.push(EVT_PERF_MARK_FIRST_DIFF_FILE_SHOWN);
+      }
+
+      if (this.isLastFile) {
+        eventsForThisFile.push(EVT_PERF_MARK_DIFF_FILES_END);
+      }
+
+      await this.$nextTick();
+
+      eventsForThisFile.forEach(event => {
+        eventHub.$emit(event);
+      });
+    },
+    handleToggle() {
+      const currentCollapsedFlag = this.isCollapsed;
+
+      this.setFileCollapsedByUser({
+        filePath: this.file.file_path,
+        collapsed: !currentCollapsedFlag,
+      });
+
+      if (!this.hasDiff && currentCollapsedFlag) {
+        this.requestDiff();
+      }
+    },
+    requestDiff() {
       this.isLoadingCollapsedDiff = true;
 
       this.loadCollapsedDiff(this.file)
         .then(() => {
           this.isLoadingCollapsedDiff = false;
-          this.isCollapsed = false;
           this.setRenderIt(this.file);
         })
         .then(() => {
           requestIdleCallback(
             () => {
+              this.postRender();
               this.assignDiscussionsToDiff(this.getDiffFileDiscussions(this.file));
             },
             { timeout: 1000 },
@@ -148,7 +240,7 @@ export default {
         })
         .catch(() => {
           this.isLoadingCollapsedDiff = false;
-          createFlash(__('Something went wrong on our end. Please try again!'));
+          createFlash(this.$options.i18n.genericError);
         });
     },
     showForkMessage() {
@@ -167,9 +259,10 @@ export default {
     :class="{
       'is-active': currentDiffFileId === file.file_hash,
       'comments-disabled': Boolean(file.brokenSymlink),
+      'has-body': showBody,
     }"
     :data-path="file.new_path"
-    class="diff-file file-holder"
+    class="diff-file file-holder gl-border-none"
   >
     <diff-file-header
       :can-current-user-fork="canCurrentUserFork"
@@ -178,7 +271,8 @@ export default {
       :expanded="!isCollapsed"
       :add-merge-request-buttons="true"
       :view-diffs-file-by-file="viewDiffsFileByFile"
-      class="js-file-title file-title"
+      class="js-file-title file-title gl-border-1 gl-border-solid gl-border-gray-100"
+      :class="hasBodyClasses.header"
       @toggleFile="handleToggle"
       @showForkMessage="showForkMessage"
     />
@@ -188,31 +282,50 @@ export default {
       <a
         :href="file.fork_path"
         class="js-fork-suggestion-button btn btn-grouped btn-inverted btn-success"
-        >{{ __('Fork') }}</a
+        >{{ $options.i18n.fork }}</a
       >
       <button
         class="js-cancel-fork-suggestion-button btn btn-grouped"
         type="button"
         @click="hideForkMessage"
       >
-        {{ __('Cancel') }}
+        {{ $options.i18n.cancel }}
       </button>
     </div>
-    <gl-loading-icon v-if="showLoadingIcon" class="diff-content loading" />
     <template v-else>
-      <div :id="`diff-content-${file.file_hash}`">
-        <div v-if="errorMessage" class="diff-viewer">
+      <div
+        :id="`diff-content-${file.file_hash}`"
+        :class="hasBodyClasses.contentByHash"
+        data-testid="content-area"
+      >
+        <gl-loading-icon
+          v-if="showLoadingIcon"
+          class="diff-content loading gl-my-0 gl-pt-3"
+          data-testid="loader-icon"
+        />
+        <div v-else-if="errorMessage" class="diff-viewer">
           <div v-safe-html="errorMessage" class="nothing-here-block"></div>
         </div>
         <template v-else>
-          <div v-show="isCollapsed" class="nothing-here-block diff-collapsed">
-            {{ __('This diff is collapsed.') }}
-            <a class="click-to-expand js-click-to-expand" href="#" @click.prevent="handleToggle">{{
-              __('Click to expand it.')
-            }}</a>
+          <div
+            v-show="showWarning"
+            class="collapsed-file-warning gl-p-7 gl-bg-orange-50 gl-text-center gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
+          >
+            <p class="gl-mb-8">
+              {{ $options.i18n.autoCollapsed }}
+            </p>
+            <gl-button
+              data-testid="expand-button"
+              category="secondary"
+              variant="warning"
+              @click.prevent="handleToggle"
+            >
+              {{ $options.i18n.expand }}
+            </gl-button>
           </div>
           <diff-content
-            v-show="!isCollapsed && !isFileTooLarge"
+            v-show="showContent"
+            :class="hasBodyClasses.content"
             :diff-file="file"
             :help-page-path="helpPagePath"
           />

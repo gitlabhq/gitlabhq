@@ -411,6 +411,8 @@ job B:
     - cat vendor/hello.txt
   cache:
     key: build-cache
+    paths:
+      - vendor/
 ```
 
 Here's what happens behind the scenes:

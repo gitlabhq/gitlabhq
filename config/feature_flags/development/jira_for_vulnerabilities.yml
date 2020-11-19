@@ -1,0 +1,7 @@
+---
+name: jira_for_vulnerabilities
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46982
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/276893
+type: development
+group: group::threat insights
+default_enabled: false

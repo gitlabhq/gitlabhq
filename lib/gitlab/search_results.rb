@@ -7,7 +7,7 @@ module Gitlab
     DEFAULT_PAGE = 1
     DEFAULT_PER_PAGE = 20
 
-    attr_reader :current_user, :query, :sort, :filters
+    attr_reader :current_user, :query, :order_by, :sort, :filters
 
     # Limit search results by passed projects
     # It allows us to search only for projects user has access to
@@ -19,11 +19,12 @@ module Gitlab
     # query
     attr_reader :default_project_filter
 
-    def initialize(current_user, query, limit_projects = nil, sort: nil, default_project_filter: false, filters: {})
+    def initialize(current_user, query, limit_projects = nil, order_by: nil, sort: nil, default_project_filter: false, filters: {})
       @current_user = current_user
       @query = query
       @limit_projects = limit_projects || Project.all
       @default_project_filter = default_project_filter
+      @order_by = order_by
       @sort = sort
       @filters = filters
     end
@@ -94,10 +95,6 @@ module Gitlab
       @limited_users_count ||= limited_count(users)
     end
 
-    def single_commit_result?
-      false
-    end
-
     def count_limit
       COUNT_LIMIT
     end
@@ -132,13 +129,15 @@ module Gitlab
 
     # rubocop: disable CodeReuse/ActiveRecord
     def apply_sort(scope)
-      case sort
-      when 'oldest'
+      # Due to different uses of sort param we prefer order_by when
+      # present
+      case ::Gitlab::Search::SortOptions.sort_and_direction(order_by, sort)
+      when :created_at_asc
         scope.reorder('created_at ASC')
-      when 'newest'
+      when :created_at_desc
         scope.reorder('created_at DESC')
       else
-        scope
+        scope.reorder('created_at DESC')
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
@@ -219,7 +218,7 @@ module Gitlab
 
         params[:state] = filters[:state] if filters.key?(:state)
 
-        if [true, false].include?(filters[:confidential]) && Feature.enabled?(:search_filter_by_confidential)
+        if [true, false].include?(filters[:confidential])
           params[:confidential] = filters[:confidential]
         end
       end

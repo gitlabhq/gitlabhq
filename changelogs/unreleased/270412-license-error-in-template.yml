@@ -1,0 +1,5 @@
+---
+title: Show error in pipeline when API Fuzzing not licensed
+merge_request: 46064
+author:
+type: changed

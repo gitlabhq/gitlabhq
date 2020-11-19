@@ -382,6 +382,17 @@ RSpec.describe AutocompleteController do
         sign_in(user)
       end
 
+      context 'and they cannot read the project' do
+        it 'returns a not found response' do
+          allow(Ability).to receive(:allowed?).and_call_original
+          allow(Ability).to receive(:allowed?).with(user, :read_project, project).and_return(false)
+
+          get(:deploy_keys_with_owners, params: { project_id: project.id })
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
       it 'renders the deploy key in a json payload, with its owner' do
         get(:deploy_keys_with_owners, params: { project_id: project.id })
 

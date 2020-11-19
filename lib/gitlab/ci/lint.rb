@@ -24,7 +24,7 @@ module Gitlab
       end
 
       def validate(content, dry_run: false)
-        if dry_run && Gitlab::Ci::Features.lint_creates_pipeline_with_dry_run?(@project)
+        if dry_run
           simulate_pipeline_creation(content)
         else
           static_validation(content)

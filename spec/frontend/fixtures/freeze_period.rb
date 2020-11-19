@@ -17,6 +17,15 @@ RSpec.describe 'Freeze Periods (JavaScript fixtures)' do
     remove_repository(project)
   end
 
+  around do |example|
+    freeze_time do
+      # Mock time to sept 19 (intl. talk like a pirate day)
+      Timecop.travel(2020, 9, 19)
+
+      example.run
+    end
+  end
+
   describe API::FreezePeriods, '(JavaScript fixtures)', type: :request do
     include ApiHelpers
 

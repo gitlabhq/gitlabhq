@@ -100,6 +100,13 @@ RSpec.describe FeatureFlags::UpdateService do
           include('Updated active from <strong>"true"</strong> to <strong>"false"</strong>.')
         )
       end
+
+      it 'executes hooks' do
+        hook = create(:project_hook, :all_events_enabled, project: project)
+        expect(WebHookWorker).to receive(:perform_async).with(hook.id, an_instance_of(Hash), 'feature_flag_hooks')
+
+        subject
+      end
     end
 
     context 'when scope active state is changed' do

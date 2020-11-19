@@ -78,7 +78,7 @@ describe('Board Column Component', () => {
     });
   });
 
-  describe('expanded / collaped column', () => {
+  describe('expanded / collapsed column', () => {
     it('has class is-collapsed when list is collapsed', () => {
       createComponent({ collapsed: false });
 

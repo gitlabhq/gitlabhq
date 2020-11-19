@@ -319,10 +319,10 @@ RSpec.describe GroupsController, factory_default: :keep do
           stub_experiment(onboarding_issues: false)
         end
 
-        it 'does not track anything' do
-          expect(Gitlab::Tracking).not_to receive(:event)
-
+        it 'does not track anything', :snowplow do
           create_namespace
+
+          expect_no_snowplow_event
         end
       end
 
@@ -336,15 +336,15 @@ RSpec.describe GroupsController, factory_default: :keep do
             stub_experiment_for_user(onboarding_issues: false)
           end
 
-          it 'tracks the event with the "created_namespace" action with the "control_group" property' do
-            expect(Gitlab::Tracking).to receive(:event).with(
-              'Growth::Conversion::Experiment::OnboardingIssues',
-              'created_namespace',
+          it 'tracks the event with the "created_namespace" action with the "control_group" property', :snowplow do
+            create_namespace
+
+            expect_snowplow_event(
+              category: 'Growth::Conversion::Experiment::OnboardingIssues',
+              action: 'created_namespace',
               label: anything,
               property: 'control_group'
             )
-
-            create_namespace
           end
         end
 
@@ -353,15 +353,15 @@ RSpec.describe GroupsController, factory_default: :keep do
             stub_experiment_for_user(onboarding_issues: true)
           end
 
-          it 'tracks the event with the "created_namespace" action with the "experimental_group" property' do
-            expect(Gitlab::Tracking).to receive(:event).with(
-              'Growth::Conversion::Experiment::OnboardingIssues',
-              'created_namespace',
+          it 'tracks the event with the "created_namespace" action with the "experimental_group" property', :snowplow do
+            create_namespace
+
+            expect_snowplow_event(
+              category: 'Growth::Conversion::Experiment::OnboardingIssues',
+              action: 'created_namespace',
               label: anything,
               property: 'experimental_group'
             )
-
-            create_namespace
           end
         end
       end
@@ -1211,6 +1211,62 @@ RSpec.describe GroupsController, factory_default: :keep do
       subject { get :merge_requests, params: { id: group.to_param } }
 
       it_behaves_like 'disabled when using an external authorization service'
+    end
+  end
+
+  describe 'GET #unfoldered_environment_names' do
+    it 'shows the environment names of a public project to an anonymous user' do
+      public_project = create(:project, :public, namespace: group)
+
+      create(:environment, project: public_project, name: 'foo')
+
+      get(
+        :unfoldered_environment_names,
+        params: { id: group, format: :json }
+      )
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to eq(%w[foo])
+    end
+
+    it 'does not show environment names of private projects to anonymous users' do
+      create(:environment, project: project, name: 'foo')
+
+      get(
+        :unfoldered_environment_names,
+        params: { id: group, format: :json }
+      )
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to be_empty
+    end
+
+    it 'shows environment names of a private project to a group member' do
+      create(:environment, project: project, name: 'foo')
+      sign_in(developer)
+
+      get(
+        :unfoldered_environment_names,
+        params: { id: group, format: :json }
+      )
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to eq(%w[foo])
+    end
+
+    it 'does not show environment names of private projects to a logged-in non-member' do
+      alice = create(:user)
+
+      create(:environment, project: project, name: 'foo')
+      sign_in(alice)
+
+      get(
+        :unfoldered_environment_names,
+        params: { id: group, format: :json }
+      )
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to be_empty
     end
   end
 end

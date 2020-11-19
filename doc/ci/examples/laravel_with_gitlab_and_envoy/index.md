@@ -632,7 +632,7 @@ After our code passed through the pipeline successfully, we can deploy to our pr
 
 ![pipelines page deploy button](img/pipelines_page_deploy_button.png)
 
-Once the deploy pipeline passed successfully, navigate to **Pipelines > Environments**.
+After the deploy pipeline passed successfully, navigate to **Pipelines > Environments**.
 
 ![environments page](img/environments_page.png)
 

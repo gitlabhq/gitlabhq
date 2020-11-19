@@ -3,13 +3,9 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import Sortable from 'sortablejs';
 import sortableConfig from 'ee_else_ce/sortable/sortable_config';
 import RelatedIssuableItem from '~/vue_shared/components/issue/related_issuable_item.vue';
-import tooltip from '~/vue_shared/directives/tooltip';
 
 export default {
   name: 'RelatedIssuesList',
-  directives: {
-    tooltip,
-  },
   components: {
     GlLoadingIcon,
     RelatedIssuableItem,
@@ -101,7 +97,11 @@ export default {
       class="related-issues-token-body bordered-box bg-white"
       :class="{ 'sortable-container': canReorder }"
     >
-      <div v-if="isFetching" class="related-issues-loading-icon qa-related-issues-loading-icon">
+      <div
+        v-if="isFetching"
+        class="related-issues-loading-icon"
+        data-qa-selector="related_issues_loading_placeholder"
+      >
         <gl-loading-icon ref="loadingIcon" label="Fetching linked issues" class="gl-mt-2" />
       </div>
       <ul ref="list" :class="{ 'content-list': !canReorder }" class="related-items-list">
@@ -136,7 +136,7 @@ export default {
             :is-locked="issue.lockIssueRemoval"
             :locked-message="issue.lockedMessage"
             event-namespace="relatedIssue"
-            class="qa-related-issuable-item"
+            data-qa-selector="related_issuable_content"
             @relatedIssueRemoveRequest="$emit('relatedIssueRemoveRequest', $event)"
           />
         </li>

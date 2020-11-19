@@ -11,6 +11,8 @@ class BulkCreateIntegrationService
     service_list = ServiceList.new(batch, service_hash, association).to_array
 
     Service.transaction do
+      run_callbacks(batch) if association == 'project'
+
       results = bulk_insert(*service_list)
 
       if integration.data_fields_present?
@@ -18,8 +20,6 @@ class BulkCreateIntegrationService
 
         bulk_insert(*data_list)
       end
-
-      run_callbacks(batch) if association == 'project'
     end
   end
 
@@ -35,11 +35,11 @@ class BulkCreateIntegrationService
 
   # rubocop: disable CodeReuse/ActiveRecord
   def run_callbacks(batch)
-    if integration.issue_tracker?
+    if integration.external_issue_tracker?
       Project.where(id: batch.select(:id)).update_all(has_external_issue_tracker: true)
     end
 
-    if integration.type == 'ExternalWikiService'
+    if integration.external_wiki?
       Project.where(id: batch.select(:id)).update_all(has_external_wiki: true)
     end
   end
@@ -49,7 +49,7 @@ class BulkCreateIntegrationService
     if integration.template?
       integration.to_service_hash
     else
-      integration.to_service_hash.tap { |json| json['inherit_from_id'] = integration.id }
+      integration.to_service_hash.tap { |json| json['inherit_from_id'] = integration.inherit_from_id || integration.id }
     end
   end
 

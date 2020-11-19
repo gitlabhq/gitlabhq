@@ -12,6 +12,8 @@ import fileTemplates from './modules/file_templates';
 import paneModule from './modules/pane';
 import clientsideModule from './modules/clientside';
 import routerModule from './modules/router';
+import editorModule from './modules/editor';
+import { setupFileEditorsSync } from './modules/editor/setup';
 
 Vue.use(Vuex);
 
@@ -29,7 +31,14 @@ export const createStoreOptions = () => ({
     rightPane: paneModule(),
     clientside: clientsideModule(),
     router: routerModule,
+    editor: editorModule,
   },
 });
 
-export const createStore = () => new Vuex.Store(createStoreOptions());
+export const createStore = () => {
+  const store = new Vuex.Store(createStoreOptions());
+
+  setupFileEditorsSync(store);
+
+  return store;
+};

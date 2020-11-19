@@ -109,6 +109,16 @@ FactoryBot.define do
       end
     end
 
+    trait :junit_with_duplicate_failed_test_names do
+      file_type { :junit }
+      file_format { :gzip }
+
+      after(:build) do |artifact, evaluator|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/junit/junit_with_duplicate_failed_test_names.xml.gz'), 'application/x-gzip')
+      end
+    end
+
     trait :junit_with_ant do
       file_type { :junit }
       file_format { :gzip }
@@ -136,6 +146,16 @@ FactoryBot.define do
       after(:build) do |artifact, evaluator|
         artifact.file = fixture_file_upload(
           Rails.root.join('spec/fixtures/junit/junit_with_corrupted_data.xml.gz'), 'application/x-gzip')
+      end
+    end
+
+    trait :junit_with_three_failures do
+      file_type { :junit }
+      file_format { :gzip }
+
+      after(:build) do |artifact, evaluator|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/junit/junit_with_three_failures.xml.gz'), 'application/x-gzip')
       end
     end
 

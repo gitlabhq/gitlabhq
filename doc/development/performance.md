@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Performance Guidelines
 
 This document describes various guidelines to follow to ensure good and
@@ -334,14 +340,48 @@ These results can also be placed into a PostgreSQL database by setting the
 `RSPEC_PROFILING_POSTGRES_URL` variable. This is used to profile the test suite
 when running in the CI environment.
 
-We store these results also when running CI jobs on the default branch on
-`gitlab.com`. Statistics of these profiling data are [available
-online](https://gitlab-org.gitlab.io/rspec_profiling_stats/). For example,
-you can find which tests take longest to run or which execute the most
+We store these results also when running nightly scheduled CI jobs on the
+default branch on `gitlab.com`. Statistics of these profiling data are
+[available online](https://gitlab-org.gitlab.io/rspec_profiling_stats/). For
+example, you can find which tests take longest to run or which execute the most
 queries. This can be handy for optimizing our tests or identifying performance
 issues in our code.
 
 ## Memory profiling
+
+We can use two approaches, often in combination, to track down memory issues:
+
+- Leaving the code intact and wrapping a profiler around it.
+- Monitor memory usage of the process while disabling/enabling different parts of the code we suspect could be problematic.
+
+### Using Memory Profiler
+
+We can use `memory_profiler` for profiling.
+
+The [`memory_profiler`](https://github.com/SamSaffron/memory_profiler) gem is already present in GitLab's `Gemfile`,
+you just need to require it:
+
+```ruby
+require 'sidekiq/testing'
+
+report = MemoryProfiler.report do
+  # Code you want to profile
+end
+
+output = File.open('/tmp/profile.txt','w')
+report.pretty_print(output)
+```
+
+The report breaks down 2 key concepts:
+
+- Retained: long lived memory use and object count retained due to the execution of the code block.
+- Allocated: all object allocation and memory allocation during code block.
+
+As a general rule, **retained** will always be smaller than or equal to allocated.
+
+The actual RSS cost will always be slightly higher as MRI heaps are not squashed to size and memory fragments.
+
+### Rbtrace
 
 One of the reasons of the increased memory footprint could be Ruby memory fragmentation.
 

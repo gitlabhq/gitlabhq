@@ -90,9 +90,13 @@ module Gitlab
     def can_collaborate?(ref)
       assert_project!
 
+      can_push? || branch_allows_collaboration_for?(ref)
+    end
+
+    def branch_allows_collaboration_for?(ref)
       # Checking for an internal project or group to prevent an infinite loop:
       # https://gitlab.com/gitlab-org/gitlab/issues/36805
-      can_push? || (!project.internal? && project.branch_allows_collaboration?(user, ref))
+      (!project.internal? && project.branch_allows_collaboration?(user, ref))
     end
 
     def permission_cache

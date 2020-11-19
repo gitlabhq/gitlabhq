@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.5.
 
 This page describes the project iterations API.
-There's a separate [group iterations API](./group_iterations.md) page.
+There's a separate [group iterations API](group_iterations.md) page.
 
 As of GitLab 13.5, we don't have project-level iterations, but you can use this endpoint to fetch the iterations of the project's ancestor groups.
 

@@ -5,10 +5,7 @@ module Gitlab
     module DuplicateJobs
       module Strategies
         # This strategy will never deduplicate a job
-        class None
-          def initialize(_duplicate_job)
-          end
-
+        class None < Base
           def schedule(_job)
             yield
           end

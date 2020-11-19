@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'User edits Release', :js do
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:release) { create(:release, project: project, name: 'The first release' ) }
+  let_it_be(:release) { create(:release, :with_milestones, milestones_count: 1, project: project, name: 'The first release' ) }
   let_it_be(:user) { create(:user) }
 
   before do

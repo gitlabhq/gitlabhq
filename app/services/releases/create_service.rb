@@ -52,6 +52,8 @@ module Releases
 
       notify_create_release(release)
 
+      execute_hooks(release, 'create')
+
       create_evidence!(release, evidence_pipeline)
 
       success(tag: tag, release: release)

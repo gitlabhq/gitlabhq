@@ -20,6 +20,8 @@ import HiddenFilesWarning from './hidden_files_warning.vue';
 import MergeConflictWarning from './merge_conflict_warning.vue';
 import CollapsedFilesWarning from './collapsed_files_warning.vue';
 
+import { diffsApp } from '../utils/performance';
+
 import {
   TREE_LIST_WIDTH_STORAGE_KEY,
   INITIAL_TREE_WIDTH,
@@ -124,7 +126,6 @@ export default {
     return {
       treeWidth,
       diffFilesLength: 0,
-      collapsedWarningDismissed: false,
     };
   },
   computed: {
@@ -153,7 +154,7 @@ export default {
       'canMerge',
       'hasConflicts',
     ]),
-    ...mapGetters('diffs', ['hasCollapsedFile', 'isParallelView', 'currentDiffIndex']),
+    ...mapGetters('diffs', ['whichCollapsedTypes', 'isParallelView', 'currentDiffIndex']),
     ...mapGetters(['isNotesFetched', 'getNoteableData']),
     diffs() {
       if (!this.viewDiffsFileByFile) {
@@ -206,11 +207,7 @@ export default {
         visible = this.$options.alerts.ALERT_OVERFLOW_HIDDEN;
       } else if (this.isDiffHead && this.hasConflicts) {
         visible = this.$options.alerts.ALERT_MERGE_CONFLICT;
-      } else if (
-        this.hasCollapsedFile &&
-        !this.collapsedWarningDismissed &&
-        !this.viewDiffsFileByFile
-      ) {
+      } else if (this.whichCollapsedTypes.automatic && !this.viewDiffsFileByFile) {
         visible = this.$options.alerts.ALERT_COLLAPSED_FILES;
       }
 
@@ -277,8 +274,12 @@ export default {
       );
     }
   },
+  beforeCreate() {
+    diffsApp.instrument();
+  },
   created() {
     this.adjustView();
+
     eventHub.$once('fetchDiffData', this.fetchData);
     eventHub.$on('refetchDiffData', this.refetchDiffData);
     this.CENTERED_LIMITED_CONTAINER_CLASSES = CENTERED_LIMITED_CONTAINER_CLASSES;
@@ -299,6 +300,8 @@ export default {
     );
   },
   beforeDestroy() {
+    diffsApp.deinstrument();
+
     eventHub.$off('fetchDiffData', this.fetchData);
     eventHub.$off('refetchDiffData', this.refetchDiffData);
     this.removeEventListeners();
@@ -429,9 +432,6 @@ export default {
         this.toggleShowTreeList(false);
       }
     },
-    dismissCollapsedWarning() {
-      this.collapsedWarningDismissed = true;
-    },
   },
   minTreeWidth: MIN_TREE_WIDTH,
   maxTreeWidth: MAX_TREE_WIDTH,
@@ -464,7 +464,6 @@ export default {
       <collapsed-files-warning
         v-if="visibleWarning == $options.alerts.ALERT_COLLAPSED_FILES"
         :limited="isLimitedContainer"
-        @dismiss="dismissCollapsedWarning"
       />
 
       <div
@@ -496,9 +495,11 @@ export default {
           <div v-if="isBatchLoading" class="loading"><gl-loading-icon size="lg" /></div>
           <template v-else-if="renderDiffFiles">
             <diff-file
-              v-for="file in diffs"
+              v-for="(file, index) in diffs"
               :key="file.newPath"
               :file="file"
+              :is-first-file="index === 0"
+              :is-last-file="index === diffs.length - 1"
               :help-page-path="helpPagePath"
               :can-current-user-fork="canCurrentUserFork"
               :view-diffs-file-by-file="viewDiffsFileByFile"

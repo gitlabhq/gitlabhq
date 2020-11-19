@@ -71,14 +71,34 @@ RSpec.describe 'Query.issue(id)' do
     end
 
     context 'selecting multiple fields' do
-      let(:issue_fields) { %w(title description) }
+      let(:issue_fields) { ['title', 'description', 'updatedBy { username }'] }
 
       it 'returns the Issue with the specified fields' do
         post_graphql(query, current_user: current_user)
 
-        expect(issue_data.keys).to eq( %w(title description) )
+        expect(issue_data.keys).to eq( %w(title description updatedBy) )
         expect(issue_data['title']).to eq(issue.title)
         expect(issue_data['description']).to eq(issue.description)
+        expect(issue_data['updatedBy']['username']).to eq(issue.author.username)
+      end
+    end
+
+    context 'when issue got moved' do
+      let_it_be(:issue_fields) { ['moved', 'movedTo { title }'] }
+      let_it_be(:new_issue) { create(:issue) }
+      let_it_be(:issue) { create(:issue, project: project, moved_to: new_issue) }
+      let_it_be(:issue_params) { { 'id' => issue.to_global_id.to_s } }
+
+      before_all do
+        new_issue.project.add_developer(current_user)
+      end
+
+      it 'returns correct attributes' do
+        post_graphql(query, current_user: current_user)
+
+        expect(issue_data.keys).to eq( %w(moved movedTo) )
+        expect(issue_data['moved']).to eq(true)
+        expect(issue_data['movedTo']['title']).to eq(new_issue.title)
       end
     end
 

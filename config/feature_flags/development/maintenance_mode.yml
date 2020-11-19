@@ -2,6 +2,7 @@
 name: maintenance_mode
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28158
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/217895
-group: group::geo
+milestone: '12.10'
 type: development
+group: group::geo
 default_enabled: false

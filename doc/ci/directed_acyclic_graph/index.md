@@ -79,26 +79,28 @@ are certain use cases that you may need to work around. For more information:
 - [`needs` requirements and limitations](../yaml/README.md#requirements-and-limitations).
 - Related epic [tracking planned improvements](https://gitlab.com/groups/gitlab-org/-/epics/1716).
 
-## DAG Visualization
+## Needs Visualization
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215517) in GitLab 13.1 as a [Beta feature](https://about.gitlab.com/handbook/product/#beta).
 > - It was deployed behind a feature flag, disabled by default.
 > - It became [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36802) in 13.2.
 > - It became a [standard feature](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38517) in 13.3.
 > - It's enabled on GitLab.com.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-dag-visualization).
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-needs-visualization).
 
-The DAG visualization makes it easier to visualize the relationships between dependent jobs in a DAG. This graph will display all the jobs in a pipeline that need or are needed by other jobs. Jobs with no relationships are not displayed in this view.
+The needs visualization makes it easier to visualize the relationships between dependent jobs in a DAG. This graph will display all the jobs in a pipeline that need or are needed by other jobs. Jobs with no relationships are not displayed in this view.
 
-![DAG visualization example](img/dag_graph_example_v13_1.png)
+To see the needs visualization, click on the **Needs** tab when viewing a pipeline that uses the `needs:` keyword.
+
+![Needs visualization example](img/dag_graph_example_v13_1.png)
 
 Clicking a node will highlight all the job paths it depends on.
 
-![DAG visualization with path highlight](img/dag_graph_example_clicked_v13_1.png)
+![Needs visualization with path highlight](img/dag_graph_example_clicked_v13_1.png)
 
-### Enable or disable DAG Visualization **(CORE ONLY)**
+### Enable or disable Needs Visualization **(CORE ONLY)**
 
-DAG Visualization is deployed behind a feature flag that is **enabled by default**.
+The needs visualization is deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
 can opt to disable it for your instance:
 

@@ -67,7 +67,7 @@ Set up the section with the following:
   ```
 
 - Include a screenshot of the result in the GraphiQL explorer. Follow the naming
-  convention described in the [Save the image](styleguide.md#save-the-image) section of the Documentation style guide.
+  convention described in the [Save the image](styleguide/index.md#save-the-image) section of the Documentation style guide.
 - Follow up with an example of what you can do with the output. Make sure the
   example is something that readers can do on their own deployments.
 - Include a link to the [GraphQL API resources](../../api/graphql/reference/index.md).

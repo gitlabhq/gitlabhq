@@ -10,7 +10,7 @@ module Groups
       feature_category :integrations
 
       def index
-        @integrations = Service.find_or_initialize_all(Service.for_group(group)).sort_by(&:title)
+        @integrations = Service.find_or_initialize_all_non_project_specific(Service.for_group(group)).sort_by(&:title)
       end
 
       def edit
@@ -21,12 +21,12 @@ module Groups
 
       private
 
-      def find_or_initialize_integration(name)
-        Service.find_or_initialize_integration(name, group_id: group.id)
+      def find_or_initialize_non_project_specific_integration(name)
+        Service.find_or_initialize_non_project_specific_integration(name, group_id: group.id)
       end
 
       def integrations_enabled?
-        Feature.enabled?(:group_level_integrations, group)
+        Feature.enabled?(:group_level_integrations, group, default_enabled: true)
       end
 
       def scoped_edit_integration_path(integration)

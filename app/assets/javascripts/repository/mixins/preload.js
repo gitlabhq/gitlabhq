@@ -1,4 +1,4 @@
-import filesQuery from '../queries/files.query.graphql';
+import filesQuery from 'shared_queries/repository/files.query.graphql';
 import getRefMixin from './get_ref';
 import projectPathQuery from '../queries/project_path.query.graphql';
 

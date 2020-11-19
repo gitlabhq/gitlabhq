@@ -10,6 +10,7 @@ RSpec.describe Types::UserStatusType do
       emoji
       message
       message_html
+      availability
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

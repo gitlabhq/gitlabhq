@@ -302,5 +302,82 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
         end
       end
     end
+
+    context 'when a valid project file is defined' do
+      let(:values) do
+        {
+          include: { project: another_project.full_path, file: '/templates/my-build.yml' },
+          image: 'ruby:2.7'
+        }
+      end
+
+      before do
+        another_project.add_developer(user)
+
+        allow_next_instance_of(Repository) do |repository|
+          allow(repository).to receive(:blob_data_at).with(another_project.commit.id, '/templates/my-build.yml') do
+            <<~HEREDOC
+              my_build:
+                script: echo Hello World
+            HEREDOC
+          end
+        end
+      end
+
+      it 'appends the file to the values' do
+        output = processor.perform
+        expect(output.keys).to match_array([:image, :my_build])
+      end
+    end
+
+    context 'when valid project files are defined in a single include' do
+      let(:values) do
+        {
+          include: {
+            project: another_project.full_path,
+            file: ['/templates/my-build.yml', '/templates/my-test.yml']
+          },
+          image: 'ruby:2.7'
+        }
+      end
+
+      before do
+        another_project.add_developer(user)
+
+        allow_next_instance_of(Repository) do |repository|
+          allow(repository).to receive(:blob_data_at).with(another_project.commit.id, '/templates/my-build.yml') do
+            <<~HEREDOC
+              my_build:
+                script: echo Hello World
+            HEREDOC
+          end
+
+          allow(repository).to receive(:blob_data_at).with(another_project.commit.id, '/templates/my-test.yml') do
+            <<~HEREDOC
+              my_test:
+                script: echo Hello World
+            HEREDOC
+          end
+        end
+      end
+
+      it 'appends the file to the values' do
+        output = processor.perform
+        expect(output.keys).to match_array([:image, :my_build, :my_test])
+      end
+
+      context 'when FF ci_include_multiple_files_from_project is disabled' do
+        before do
+          stub_feature_flags(ci_include_multiple_files_from_project: false)
+        end
+
+        it 'raises an error' do
+          expect { processor.perform }.to raise_error(
+            described_class::IncludeError,
+            'Included file `["/templates/my-build.yml", "/templates/my-test.yml"]` needs to be a string'
+          )
+        end
+      end
+    end
   end
 end

@@ -80,6 +80,7 @@ codebase.
 ## Edit content
 
 > - Support for modifying the default merge request title and description [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216861) in GitLab 13.5.
+> - Support for selecting a merge request template [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263252) in GitLab 13.6.
 
 After setting up your project, you can start editing content directly from the Static Site Editor.
 
@@ -91,7 +92,9 @@ To edit a file:
    wish to edit the raw Markdown instead, you can toggle the **Markdown** mode
    in the bottom-right corner.
 1. When you're done, click **Submit changes...**.
-1. (Optional) Adjust the default title and description of the merge request that will be submitted with your changes.
+1. (Optional) Adjust the default title and description of the merge request that will be submitted
+   with your changes. Alternatively, select a [merge request template](../../../user/project/description_templates.md#creating-merge-request-templates)
+   from the dropdown menu and edit it accordingly.
 1. Click **Submit changes**.
 1. A new merge request is automatically created and you can assign a colleague for review.
 
@@ -104,13 +107,36 @@ The Static Site Editors supports Markdown files (`.md`, `.md.erb`) for editing t
 ### Images
 
 > - Support for adding images through the WYSIWYG editor [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216640) in GitLab 13.1.
+> - Support for uploading images via the WYSIWYG editor [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218529) in GitLab 13.6.
 
-You can add image files on the WYSIWYG mode by clicking the image icon (**{doc-image}**).
-From there, link to a URL, add optional [ALT text](https://moz.com/learn/seo/alt-text),
-and you're done. The link can reference images already hosted in your project, an asset hosted
+#### Upload an image
+
+You can upload image files via the WYSIWYG editor directly to the repository to default upload directory
+`source/images`. To do so:
+
+1. Click the image icon (**{doc-image}**).
+1. Choose the **Upload file** tab.
+1. Click **Choose file** to select a file from your computer.
+1. Optional: add a description to the image for SEO and accessibility ([ALT text](https://moz.com/learn/seo/alt-text)).
+1. Click **Insert image**.
+
+The selected file can be any supported image file (`.png`, `.jpg`, `.jpeg`, `.gif`). The editor renders
+thumbnail previews so you can verify the correct image is included and there aren't any references to
+missing images.
+
+#### Link to an image
+
+You can also link to an image if you'd like:
+
+1. Click the image icon (**{doc-image}**).
+1. Choose the **Link to an image** tab.
+1. Add the link to the image into the **Image URL** field (use the full path; relative paths are not supported yet).
+1. Optional: add a description to the image for SEO and accessibility ([ALT text](https://moz.com/learn/seo/alt-text)).
+1. Click **Insert image**.
+
+The link can reference images already hosted in your project, an asset hosted
 externally on a content delivery network, or any other external URL. The editor renders thumbnail previews
 so you can verify the correct image is included and there aren't any references to missing images.
-default directory (`source/images/`).
 
 ### Videos
 

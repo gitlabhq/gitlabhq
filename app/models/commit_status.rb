@@ -205,13 +205,8 @@ class CommitStatus < ApplicationRecord
     # 'rspec:linux: 1/10' => 'rspec:linux'
     common_name = name.to_s.gsub(%r{\d+[\s:\/\\]+\d+\s*}, '')
 
-    if ::Gitlab::Ci::Features.one_dimensional_matrix_enabled?
-      # 'rspec:linux: [aws, max memory]' => 'rspec:linux', 'rspec:linux: [aws]' => 'rspec:linux'
-      common_name.gsub!(%r{: \[.*\]\s*\z}, '')
-    else
-      # 'rspec:linux: [aws, max memory]' => 'rspec:linux', 'rspec:linux: [aws]' => 'rspec:linux: [aws]'
-      common_name.gsub!(%r{: \[.*, .*\]\s*\z}, '')
-    end
+    # 'rspec:linux: [aws, max memory]' => 'rspec:linux', 'rspec:linux: [aws]' => 'rspec:linux'
+    common_name.gsub!(%r{: \[.*\]\s*\z}, '')
 
     common_name.strip!
     common_name

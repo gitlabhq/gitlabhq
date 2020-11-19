@@ -110,22 +110,6 @@ RSpec.describe API::Releases do
         expect(json_response.second['commit_path']).to eq("/#{release_1.project.full_path}/-/commit/#{release_1.commit.id}")
         expect(json_response.second['tag_path']).to eq("/#{release_1.project.full_path}/-/tags/#{release_1.tag}")
       end
-
-      it 'returns the merge requests and issues links, with correct query' do
-        get api("/projects/#{project.id}/releases", maintainer)
-
-        links = json_response.first['_links']
-        release = json_response.first['tag_name']
-        expected_query = "release_tag=#{release}&scope=all&state=opened"
-        path_base = "/#{project.namespace.path}/#{project.path}"
-        mr_uri = URI.parse(links['merge_requests_url'])
-        issue_uri = URI.parse(links['issues_url'])
-
-        expect(mr_uri.path).to eq("#{path_base}/-/merge_requests")
-        expect(issue_uri.path).to eq("#{path_base}/-/issues")
-        expect(mr_uri.query).to eq(expected_query)
-        expect(issue_uri.query).to eq(expected_query)
-      end
     end
 
     it 'returns an upcoming_release status for a future release' do
@@ -1011,6 +995,17 @@ RSpec.describe API::Releases do
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response['milestones']).to be_nil
+          end
+        end
+
+        context 'without milestones parameter' do
+          let(:params) { { name: 'some new name' } }
+
+          it 'does not change the milestone' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(returned_milestones).to match_array(['v1.0'])
           end
         end
 

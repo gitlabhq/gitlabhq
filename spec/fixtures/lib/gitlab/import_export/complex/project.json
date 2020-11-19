@@ -7211,5 +7211,23 @@
         }
       ]
     }
-  ]
+  ],
+  "push_rule": {
+    "force_push_regex": "MustContain",
+    "delete_branch_regex": "MustContain",
+    "commit_message_regex": "MustContain",
+    "author_email_regex": "MustContain",
+    "file_name_regex": "MustContain",
+    "branch_name_regex": "MustContain",
+    "commit_message_negative_regex": "MustNotContain",
+    "max_file_size": 1,
+    "deny_delete_tag": true,
+    "member_check": true,
+    "is_sample": true,
+    "prevent_secrets": true,
+    "reject_unsigned_commits": true,
+    "commit_committer_check": true,
+    "regexp_uses_re2": true
+  }
+
 }

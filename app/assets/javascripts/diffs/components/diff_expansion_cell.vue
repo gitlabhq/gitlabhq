@@ -6,7 +6,6 @@ import { s__, sprintf } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { UNFOLD_COUNT, INLINE_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE } from '../constants';
 import * as utils from '../store/utils';
-import tooltip from '../../vue_shared/directives/tooltip';
 
 const EXPAND_ALL = 0;
 const EXPAND_UP = 1;
@@ -28,9 +27,6 @@ const i18n = {
 
 export default {
   i18n,
-  directives: {
-    tooltip,
-  },
   components: {
     GlIcon,
   },
@@ -57,11 +53,6 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
-    colspan: {
-      type: Number,
-      required: false,
-      default: 4,
     },
   },
   computed: {
@@ -235,28 +226,26 @@ export default {
 </script>
 
 <template>
-  <td :colspan="colspan" class="text-center gl-font-regular">
-    <div class="content js-line-expansion-content">
-      <a
-        v-if="canExpandDown"
-        class="gl-mx-2 gl-cursor-pointer js-unfold-down gl-display-inline-block gl-py-4"
-        @click="handleExpandLines(EXPAND_DOWN)"
-      >
-        <gl-icon :size="12" name="expand-down" aria-hidden="true" />
-        <span>{{ $options.i18n.showMore }}</span>
-      </a>
-      <a class="gl-mx-2 cursor-pointer js-unfold-all" @click="handleExpandLines()">
-        <gl-icon :size="12" name="expand" aria-hidden="true" />
-        <span>{{ $options.i18n.showAll }}</span>
-      </a>
-      <a
-        v-if="canExpandUp"
-        class="gl-mx-2 gl-cursor-pointer js-unfold gl-display-inline-block gl-py-4"
-        @click="handleExpandLines(EXPAND_UP)"
-      >
-        <gl-icon :size="12" name="expand-up" aria-hidden="true" />
-        <span>{{ $options.i18n.showMore }}</span>
-      </a>
-    </div>
-  </td>
+  <div class="content js-line-expansion-content">
+    <a
+      v-if="canExpandDown"
+      class="gl-mx-2 gl-cursor-pointer js-unfold-down gl-display-inline-block gl-py-4"
+      @click="handleExpandLines(EXPAND_DOWN)"
+    >
+      <gl-icon :size="12" name="expand-down" aria-hidden="true" />
+      <span>{{ $options.i18n.showMore }}</span>
+    </a>
+    <a class="gl-mx-2 cursor-pointer js-unfold-all" @click="handleExpandLines()">
+      <gl-icon :size="12" name="expand" aria-hidden="true" />
+      <span>{{ $options.i18n.showAll }}</span>
+    </a>
+    <a
+      v-if="canExpandUp"
+      class="gl-mx-2 gl-cursor-pointer js-unfold gl-display-inline-block gl-py-4"
+      @click="handleExpandLines(EXPAND_UP)"
+    >
+      <gl-icon :size="12" name="expand-up" aria-hidden="true" />
+      <span>{{ $options.i18n.showMore }}</span>
+    </a>
+  </div>
 </template>

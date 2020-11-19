@@ -52,7 +52,7 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer do
       allow_any_instance_of(Octokit::Client).to receive(:milestones).and_return([milestone, milestone])
       allow_any_instance_of(Octokit::Client).to receive(:issues).and_return([issue1, issue2])
       allow_any_instance_of(Octokit::Client).to receive(:pull_requests).and_return([pull_request, pull_request])
-      allow_any_instance_of(Octokit::Client).to receive(:issues_comments).and_return([])
+      allow_any_instance_of(Octokit::Client).to receive(:issues_comments).and_raise(Octokit::NotFound)
       allow_any_instance_of(Octokit::Client).to receive(:pull_requests_comments).and_return([])
       allow_any_instance_of(Octokit::Client).to receive(:last_response).and_return(double(rels: { next: nil }))
       allow_any_instance_of(Octokit::Client).to receive(:releases).and_return([release1, release2])
@@ -169,6 +169,7 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer do
         errors: [
           { type: :label, url: "#{api_root}/repos/octocat/Hello-World/labels/bug", errors: "Validation failed: Title can't be blank, Title is invalid" },
           { type: :issue, url: "#{api_root}/repos/octocat/Hello-World/issues/1348", errors: "Validation failed: Title can't be blank" },
+          { type: :issues_comments, errors: 'Octokit::NotFound' },
           { type: :wiki, errors: "Gitlab::Git::CommandError" }
         ]
       }
@@ -274,7 +275,7 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer do
         allow(project).to receive(:import_data).and_return(double(credentials: credentials))
         expect(Gitlab::LegacyGithubImport::Client).to receive(:new).with(
           credentials[:user],
-          {}
+          **{}
         )
 
         subject.client

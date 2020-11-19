@@ -14,18 +14,16 @@ describe('preserve_url_fragment', () => {
     loadFixtures('sessions/new.html');
   });
 
-  it('adds the url fragment to all login and sign up form actions', () => {
+  it('adds the url fragment to the login form actions', () => {
     preserveUrlFragment('#L65');
 
     expect($('#new_user').attr('action')).toBe('http://test.host/users/sign_in#L65');
-    expect($('#new_new_user').attr('action')).toBe('http://test.host/users#L65');
   });
 
-  it('does not add an empty url fragment to login and sign up form actions', () => {
+  it('does not add an empty url fragment to the login form actions', () => {
     preserveUrlFragment();
 
     expect($('#new_user').attr('action')).toBe('http://test.host/users/sign_in');
-    expect($('#new_new_user').attr('action')).toBe('http://test.host/users');
   });
 
   it('does not add an empty query parameter to OmniAuth login buttons', () => {

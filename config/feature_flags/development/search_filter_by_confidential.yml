@@ -1,7 +1,0 @@
----
-name: search_filter_by_confidential
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40793
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/244923
-group: group::global search
-type: development
-default_enabled: false

@@ -43,7 +43,7 @@
             - case project.import_status
             - when 'finished'
               %span
-                %i.fa.fa-check
+                = sprite_icon('check')
                 = _("done")
             - when 'started'
               = loading_icon

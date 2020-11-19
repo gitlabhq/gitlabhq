@@ -26,7 +26,6 @@ export default {
 
 <template>
   <div class="gl-display-flex gl-flex-direction-column">
-    <label data-testid="assigneeLabel">{{ assigneesText }}</label>
     <div v-if="emptyUsers" data-testid="none">
       <span>
         {{ __('None') }}

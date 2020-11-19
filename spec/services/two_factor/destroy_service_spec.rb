@@ -85,7 +85,7 @@ RSpec.describe TwoFactor::DestroyService do
           it_behaves_like 'disables two-factor authentication'
         end
 
-        context 'admin disables the two-factor authentication of another user' do
+        context 'admin disables the two-factor authentication of another user', :enable_admin_mode do
           let(:current_user) { create(:admin) }
           let(:user) { create(:user, :two_factor) }
 

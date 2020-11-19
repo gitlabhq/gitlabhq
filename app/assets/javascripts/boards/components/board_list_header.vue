@@ -17,7 +17,6 @@ import eventHub from '../eventhub';
 import sidebarEventHub from '~/sidebar/event_hub';
 import { inactiveId, LIST, ListType } from '../constants';
 import { isScopedLabel } from '~/lib/utils/common_utils';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {
@@ -32,7 +31,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     list: {
       type: Object,
@@ -121,12 +119,9 @@ export default {
     collapsedTooltipTitle() {
       return this.listTitle || this.listAssignee;
     },
-    shouldDisplaySwimlanes() {
-      return this.glFeatures.boardsWithSwimlanes && this.isSwimlanesOn;
-    },
   },
   methods: {
-    ...mapActions(['updateList', 'setActiveId']),
+    ...mapActions(['setActiveId']),
     openSidebarSettings() {
       if (this.activeId === inactiveId) {
         sidebarEventHub.$emit('sidebar.closeAll');
@@ -160,11 +155,7 @@ export default {
       }
     },
     updateListFunction() {
-      if (this.shouldDisplaySwimlanes || this.glFeatures.graphqlBoardLists) {
-        this.updateList({ listId: this.list.id, collapsed: !this.list.isExpanded });
-      } else {
-        this.list.update();
-      }
+      this.list.update();
     },
   },
 };
@@ -188,8 +179,9 @@ export default {
         'gl-py-3 gl-h-full': !list.isExpanded && !isSwimlanesHeader,
         'gl-border-b-0': !list.isExpanded || isSwimlanesHeader,
         'gl-py-2': !list.isExpanded && isSwimlanesHeader,
+        'gl-flex-direction-column': !list.isExpanded,
       }"
-      class="board-title gl-m-0 gl-display-flex js-board-handle"
+      class="board-title gl-m-0 gl-display-flex gl-align-items-center gl-font-base gl-px-3 js-board-handle"
     >
       <gl-button
         v-if="list.isExpandable"
@@ -202,7 +194,15 @@ export default {
         @click="toggleExpanded"
       />
       <!-- The following is only true in EE and if it is a milestone -->
-      <span v-if="showMilestoneListDetails" aria-hidden="true" class="gl-mr-2 milestone-icon">
+      <span
+        v-if="showMilestoneListDetails"
+        aria-hidden="true"
+        class="milestone-icon"
+        :class="{
+          'gl-mt-3 gl-rotate-90': !list.isExpanded,
+          'gl-mr-2': list.isExpanded,
+        }"
+      >
         <gl-icon name="timer" />
       </span>
 
@@ -210,6 +210,9 @@ export default {
         v-if="showAssigneeListDetails"
         :href="list.assignee.path"
         class="user-avatar-link js-no-trigger"
+        :class="{
+          'gl-mt-3 gl-rotate-90': !list.isExpanded,
+        }"
       >
         <img
           v-gl-tooltip.hover.bottom
@@ -223,20 +226,28 @@ export default {
       </a>
       <div
         class="board-title-text"
-        :class="{ 'gl-display-none': !list.isExpanded && isSwimlanesHeader }"
+        :class="{
+          'gl-display-none': !list.isExpanded && isSwimlanesHeader,
+          'gl-flex-grow-0 gl-my-3 gl-mx-0': !list.isExpanded,
+          'gl-flex-grow-1': list.isExpanded,
+        }"
       >
         <span
           v-if="list.type !== 'label'"
           v-gl-tooltip.hover
           :class="{
-            'gl-display-inline-block': list.type === 'milestone',
+            'gl-display-block': !list.isExpanded || list.type === 'milestone',
           }"
           :title="listTitle"
-          class="board-title-main-text block-truncated"
+          class="board-title-main-text gl-text-truncate"
         >
           {{ list.title }}
         </span>
-        <span v-if="list.type === 'assignee'" class="board-title-sub-text gl-ml-2">
+        <span
+          v-if="list.type === 'assignee'"
+          class="gl-ml-2 gl-font-weight-normal gl-text-gray-500"
+          :class="{ 'gl-display-none': !list.isExpanded }"
+        >
           @{{ listAssignee }}
         </span>
         <gl-label
@@ -279,7 +290,10 @@ export default {
       <div
         v-if="showBoardListAndBoardInfo"
         class="issue-count-badge gl-display-inline-flex gl-pr-0 no-drag text-secondary"
-        :class="{ 'gl-display-none!': !list.isExpanded && isSwimlanesHeader }"
+        :class="{
+          'gl-display-none!': !list.isExpanded && isSwimlanesHeader,
+          'gl-p-0': !list.isExpanded,
+        }"
       >
         <span class="gl-display-inline-flex">
           <gl-tooltip :target="() => $refs.issueCount" :title="issuesTooltipLabel" />

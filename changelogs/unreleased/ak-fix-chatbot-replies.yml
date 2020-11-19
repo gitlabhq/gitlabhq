@@ -1,0 +1,5 @@
+---
+title: Fix chatbot replies not including job log
+merge_request: 42010
+author:
+type: fixed

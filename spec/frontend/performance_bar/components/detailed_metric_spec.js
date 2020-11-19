@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import { trimText } from 'helpers/text_helper';
 import DetailedMetric from '~/performance_bar/components/detailed_metric.vue';
@@ -13,6 +14,11 @@ describe('detailedMetric', () => {
       },
     });
   };
+
+  const findAllTraceBlocks = () => wrapper.findAll('pre');
+  const findTraceBlockAtIndex = index => findAllTraceBlocks().at(index);
+  const findExpandBacktraceBtns = () => wrapper.findAll('[data-testid="backtrace-expand-btn"]');
+  const findExpandedBacktraceBtnAtIndex = index => findExpandBacktraceBtns().at(index);
 
   afterEach(() => {
     wrapper.destroy();
@@ -37,7 +43,12 @@ describe('detailedMetric', () => {
   describe('when the current request has details', () => {
     const requestDetails = [
       { duration: '100', feature: 'find_commit', request: 'abcdef', backtrace: ['hello', 'world'] },
-      { duration: '23', feature: 'rebase_in_progress', request: '', backtrace: ['world', 'hello'] },
+      {
+        duration: '23',
+        feature: 'rebase_in_progress',
+        request: '',
+        backtrace: ['other', 'example'],
+      },
     ];
 
     describe('with a default metric name', () => {
@@ -82,7 +93,7 @@ describe('detailedMetric', () => {
             expect(request.text()).toContain(requestDetails[index].request);
           });
 
-        expect(wrapper.find('.text-expander.js-toggle-button')).not.toBeNull();
+        expect(wrapper.find('.js-toggle-button')).not.toBeNull();
 
         wrapper.findAll('.performance-bar-modal td:nth-child(2)').wrappers.forEach(request => {
           expect(request.text()).toContain('world');
@@ -95,6 +106,30 @@ describe('detailedMetric', () => {
 
       it('displays request warnings', () => {
         expect(wrapper.find(RequestWarning).exists()).toBe(true);
+      });
+
+      it('can open and close traces', async () => {
+        expect(findAllTraceBlocks()).toHaveLength(0);
+
+        // Each block click on a new trace and assert that the correct
+        // count is open and that the content is what we expect to ensure
+        // we opened or closed the right one
+        const secondExpandButton = findExpandedBacktraceBtnAtIndex(1);
+
+        findExpandedBacktraceBtnAtIndex(0).vm.$emit('click');
+        await nextTick();
+        expect(findAllTraceBlocks()).toHaveLength(1);
+        expect(findTraceBlockAtIndex(0).text()).toContain(requestDetails[0].backtrace[0]);
+
+        secondExpandButton.vm.$emit('click');
+        await nextTick();
+        expect(findAllTraceBlocks()).toHaveLength(2);
+        expect(findTraceBlockAtIndex(1).text()).toContain(requestDetails[1].backtrace[0]);
+
+        secondExpandButton.vm.$emit('click');
+        await nextTick();
+        expect(findAllTraceBlocks()).toHaveLength(1);
+        expect(findTraceBlockAtIndex(0).text()).toContain(requestDetails[0].backtrace[0]);
       });
     });
 
@@ -140,7 +175,11 @@ describe('detailedMetric', () => {
       });
     });
 
-    it('renders only the number of calls', () => {
+    it('renders only the number of calls', async () => {
+      expect(trimText(wrapper.text())).toEqual('456 notification bullet');
+
+      findExpandedBacktraceBtnAtIndex(0).vm.$emit('click');
+      await nextTick();
       expect(trimText(wrapper.text())).toEqual('456 notification backtrace bullet');
     });
   });

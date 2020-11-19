@@ -8,5 +8,5 @@
     = render_broadcast_message(message)
   .gl-flex-grow-1.gl-flex-basis-0.gl-text-right
     - if (message.notification? || message.dismissable?) && opts[:preview].blank?
-      %button.broadcast-message-dismiss.js-dismiss-current-broadcast-notification.btn.btn-link.gl-button{ 'aria-label' => _('Close'), :type => 'button', data: { id: message.id, expire_date: message.ends_at.iso8601 } }
-        = sprite_icon('close', size: 16, css_class: 'gl-icon gl-text-white gl-mx-3!')
+      %button.js-dismiss-current-broadcast-notification.btn.btn-link.gl-button{ 'aria-label' => _('Close'), :type => 'button', data: { id: message.id, expire_date: message.ends_at.iso8601 } }
+        = sprite_icon('close', size: 16, css_class: "gl-icon gl-mx-3! #{is_banner ? 'gl-text-white' : 'gl-text-gray-700'}")

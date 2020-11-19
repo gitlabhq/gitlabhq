@@ -1,0 +1,5 @@
+---
+title: Update whitelist/blacklist to allowlist/denylist in Signup restrictions window
+merge_request: 46168
+author:
+type: changed

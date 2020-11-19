@@ -45,8 +45,7 @@ Rails.application.routes.draw do
 
   # Sign up
   scope path: '/users/sign_up', module: :registrations, as: :users_sign_up do
-    get :welcome
-    patch :update_registration
+    resource :welcome, only: [:show, :update], controller: 'welcome'
     resource :experience_level, only: [:show, :update]
 
     Gitlab.ee do
@@ -122,7 +121,6 @@ Rails.application.routes.draw do
 
     get 'ide' => 'ide#index'
     get 'ide/*vueroute' => 'ide#index', format: false
-    get 'ide/project/:namespace/:project/merge_requests/:id' => 'ide#index', format: false, as: :ide_merge_request
 
     draw :operations
     draw :jira_connect
@@ -175,11 +173,11 @@ Rails.application.routes.draw do
     resources :abuse_reports, only: [:new, :create]
 
     # JWKS (JSON Web Key Set) endpoint
-    # Used by third parties to verify CI_JOB_JWT, placeholder route
-    # in case we decide to move away from doorkeeper-openid_connect
-    get 'jwks' => 'doorkeeper/openid_connect/discovery#keys'
+    # Used by third parties to verify CI_JOB_JWT
+    get 'jwks' => 'jwks#index'
 
     draw :snippets
+    draw :profile
 
     # Product analytics collector
     match '/collector/i', to: ProductAnalytics::CollectorApp.new, via: :all
@@ -266,7 +264,6 @@ Rails.application.routes.draw do
   draw :uploads
   draw :explore
   draw :admin
-  draw :profile
   draw :dashboard
   draw :user
   draw :project
@@ -274,14 +271,11 @@ Rails.application.routes.draw do
   # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/210024
   scope as: 'deprecated' do
     draw :snippets
+    draw :profile
   end
 
-  # Serve profile routes under /-/ scope.
-  # To ensure an old unscoped routing is used for the UI we need to
-  # add prefix 'as' to the scope routing and place it below original routing.
-  # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/210024
-  scope '-', as: :scoped do
-    draw :profile
+  Gitlab.ee do
+    get '/sitemap' => 'sitemap#show', format: :xml
   end
 
   root to: "root#index"

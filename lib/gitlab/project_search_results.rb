@@ -4,11 +4,11 @@ module Gitlab
   class ProjectSearchResults < SearchResults
     attr_reader :project, :repository_ref
 
-    def initialize(current_user, query, project:, repository_ref: nil, sort: nil, filters: {})
+    def initialize(current_user, query, project:, repository_ref: nil, order_by: nil, sort: nil, filters: {})
       @project = project
       @repository_ref = repository_ref.presence
 
-      super(current_user, query, [project], sort: sort, filters: filters)
+      super(current_user, query, [project], order_by: order_by, sort: sort, filters: filters)
     end
 
     def objects(scope, page: nil, per_page: DEFAULT_PER_PAGE, preload_method: nil)
@@ -73,15 +73,6 @@ module Gitlab
 
     def commits_count
       @commits_count ||= commits(limit: count_limit).count
-    end
-
-    def single_commit_result?
-      return false if commits_count != 1
-
-      counts = %i(limited_milestones_count limited_notes_count
-                  limited_merge_requests_count limited_issues_count
-                  limited_blobs_count wiki_blobs_count)
-      counts.all? { |count_method| public_send(count_method) == 0 } # rubocop:disable GitlabSecurity/PublicSend
     end
 
     private

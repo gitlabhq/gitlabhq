@@ -77,7 +77,7 @@ created.
 GitLab CI/CD will create 2 pipelines in this case. One for the
 branch push and one for the external pull request.
 
-Once the Pull Request is closed, no pipelines are created for the external pull
+After the Pull Request is closed, no pipelines are created for the external pull
 request, even if new changes are pushed to the same branch.
 
 ### Additional predefined variables

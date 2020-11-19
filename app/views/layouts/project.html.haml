@@ -2,6 +2,7 @@
 - page_description @project.description_html unless page_description
 - header_title     project_title(@project)   unless header_title
 - nav              "project"
+- page_itemtype    'http://schema.org/SoftwareSourceCode'
 - display_subscription_banner!
 - display_namespace_storage_limit_alert!
 - @left_sidebar = true

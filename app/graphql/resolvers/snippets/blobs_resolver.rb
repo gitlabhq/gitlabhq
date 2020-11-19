@@ -5,6 +5,8 @@ module Resolvers
     class BlobsResolver < BaseResolver
       include Gitlab::Graphql::Authorize::AuthorizeResource
 
+      type Types::Snippets::BlobType.connection_type, null: true
+
       alias_method :snippet, :object
 
       argument :paths, [GraphQL::STRING_TYPE],

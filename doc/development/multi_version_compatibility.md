@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Compatibility with multiple versions of the application running at the same time
 
 When adding or changing features, we must be aware that there may be multiple versions of the application running

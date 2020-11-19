@@ -130,12 +130,12 @@ module SystemNoteService
     ::SystemNotes::MergeRequestsService.new(noteable: noteable, project: project, author: author).abort_merge_when_pipeline_succeeds(reason)
   end
 
-  def handle_merge_request_wip(noteable, project, author)
-    ::SystemNotes::MergeRequestsService.new(noteable: noteable, project: project, author: author).handle_merge_request_wip
+  def handle_merge_request_draft(noteable, project, author)
+    ::SystemNotes::MergeRequestsService.new(noteable: noteable, project: project, author: author).handle_merge_request_draft
   end
 
-  def add_merge_request_wip_from_commit(noteable, project, author, commit)
-    ::SystemNotes::MergeRequestsService.new(noteable: noteable, project: project, author: author).add_merge_request_wip_from_commit(commit)
+  def add_merge_request_draft_from_commit(noteable, project, author, commit)
+    ::SystemNotes::MergeRequestsService.new(noteable: noteable, project: project, author: author).add_merge_request_draft_from_commit(commit)
   end
 
   def resolve_all_discussions(merge_request, project, author)

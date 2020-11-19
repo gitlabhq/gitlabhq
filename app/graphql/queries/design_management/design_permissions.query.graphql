@@ -1,0 +1,13 @@
+query permissions($fullPath: ID!, $iid: String!) {
+  project(fullPath: $fullPath) {
+    __typename
+    id
+    issue(iid: $iid) {
+      __typename
+      userPermissions {
+        __typename
+        createDesign
+      }
+    }
+  }
+}

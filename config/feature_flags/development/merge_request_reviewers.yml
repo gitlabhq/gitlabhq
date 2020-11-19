@@ -2,6 +2,7 @@
 name: merge_request_reviewers
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40488
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/245190
-group: group::source code
+milestone: '13.4'
 type: development
+group: group::source code
 default_enabled: false

@@ -1,3 +1,9 @@
+---
+stage: Manage
+group: Import
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Translating GitLab
 
 For managing the translation process we use [CrowdIn](https://crowdin.com).
@@ -94,7 +100,7 @@ To propose additions to the glossary please
 ### Inclusive language in French
 
 <!-- vale gitlab.Spelling = NO -->
-In French, the "écriture inclusive" is now over (see on [Legifrance](https://www.legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000036068906&categorieLien=id)).
+In French, the "écriture inclusive" is now over (see on [Legifrance](https://www.legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000036068906&categorieLien=id)).
 So, to include both genders, write “Utilisateurs et utilisatrices” instead of “Utilisateur·rice·s”.
 When space is missing, the male gender should be used alone.
 <!-- vale gitlab.Spelling = YES -->

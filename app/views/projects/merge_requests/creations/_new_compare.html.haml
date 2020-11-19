@@ -4,7 +4,6 @@
 = form_for [@project, @merge_request], url: project_new_merge_request_path(@project), method: :get, html: { class: "merge-request-form js-requires-input" } do |f|
   - if params[:nav_source].present?
     = hidden_field_tag(:nav_source, params[:nav_source])
-  .hide.alert.alert-danger.mr-compare-errors
   .js-merge-request-new-compare.row{ 'data-source-branch-url': project_new_merge_request_branch_from_path(@source_project), 'data-target-branch-url': project_new_merge_request_branch_to_path(@source_project) }
     .col-lg-6
       .card.card-new-merge-request
@@ -65,4 +64,4 @@
 
   - if @merge_request.errors.any?
     = form_errors(@merge_request)
-  = f.submit 'Compare branches and continue', class: "btn btn-success mr-compare-btn"
+  = f.submit 'Compare branches and continue', class: "gl-button btn btn-success mr-compare-btn"

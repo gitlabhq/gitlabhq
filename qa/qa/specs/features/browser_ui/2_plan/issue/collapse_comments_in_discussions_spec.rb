@@ -26,7 +26,7 @@ module QA
           expect(show).not_to have_content(my_first_reply)
 
           show.expand_replies
-          expect(show).to have_content(my_first_reply)
+          expect(show).to have_comment(my_first_reply)
           expect(show).not_to have_content(one_reply)
         end
       end

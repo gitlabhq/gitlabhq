@@ -1,10 +1,15 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Signing outgoing email with S/MIME
 
 Notification emails sent by GitLab can be signed with S/MIME for improved
 security.
 
-NOTE: **Note:**
-Please be aware that S/MIME certificates and TLS/SSL certificates are not the
+Be aware that S/MIME certificates and TLS/SSL certificates are not the
 same and are used for different purposes: TLS creates a secure channel, whereas
 S/MIME signs and/or encrypts the message itself
 
@@ -21,7 +26,7 @@ files must be provided:
 Optionally, you can also provide a bundle of CA certs (PEM-encoded) to be
 included on each signature. This will typically be an intermediate CA.
 
-NOTE: **Note:**
+CAUTION: **Caution:**
 Be mindful of the access levels for your private keys and visibility to
 third parties.
 
@@ -39,7 +44,6 @@ third parties.
 
 1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
-NOTE: **Note:**
 The key needs to be readable by the GitLab system user (`git` by default).
 
 **For installations from source:**
@@ -63,7 +67,6 @@ The key needs to be readable by the GitLab system user (`git` by default).
 
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 
-NOTE: **Note:**
 The key needs to be readable by the GitLab system user (`git` by default).
 
 ### How to convert S/MIME PKCS#12 / PFX format to PEM encoding

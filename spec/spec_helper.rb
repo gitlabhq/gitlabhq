@@ -1,7 +1,18 @@
 # frozen_string_literal: true
 
+#  $" is $LOADED_FEATURES, but RuboCop didn't like it
+if $".include?(File.expand_path('fast_spec_helper.rb', __dir__))
+  warn 'Detected fast_spec_helper is loaded first than spec_helper.'
+  warn 'If running test files using both spec_helper and fast_spec_helper,'
+  warn 'make sure test file with spec_helper is loaded first.'
+  abort 'Aborting...'
+end
+
 require './spec/simplecov_env'
 SimpleCovEnv.start!
+
+require './spec/crystalball_env'
+CrystalballEnv.start!
 
 ENV["RAILS_ENV"] = 'test'
 ENV["IN_MEMORY_APPLICATION_SETTINGS"] = 'true'
@@ -45,6 +56,7 @@ require_relative('../ee/spec/spec_helper') if Gitlab.ee?
 
 # Load these first since they may be required by other helpers
 require Rails.root.join("spec/support/helpers/git_helpers.rb")
+require Rails.root.join("spec/support/helpers/stub_requests.rb")
 
 # Then the rest
 Dir[Rails.root.join("spec/support/helpers/*.rb")].sort.each { |f| require f }
@@ -119,7 +131,6 @@ RSpec.configure do |config|
   config.include StubExperiments
   config.include StubGitlabCalls
   config.include StubGitlabData
-  config.include SnowplowHelpers
   config.include NextFoundInstanceOf
   config.include NextInstanceOf
   config.include TestEnv
@@ -273,12 +284,10 @@ RSpec.configure do |config|
       ./ee/spec/lib
       ./ee/spec/requests/admin
       ./ee/spec/serializers
-      ./ee/spec/services
       ./ee/spec/support/protected_tags
       ./ee/spec/support/shared_examples/features
       ./ee/spec/support/shared_examples/finders/geo
       ./ee/spec/support/shared_examples/graphql/geo
-      ./ee/spec/support/shared_examples/services
       ./spec/features
       ./spec/finders
       ./spec/frontend
@@ -286,7 +295,6 @@ RSpec.configure do |config|
       ./spec/lib
       ./spec/requests
       ./spec/serializers
-      ./spec/services
       ./spec/support/protected_tags
       ./spec/support/shared_examples/features
       ./spec/support/shared_examples/requests
@@ -358,7 +366,7 @@ RSpec.configure do |config|
   end
 
   config.before(:example, :prometheus) do
-    matching_files = File.join(::Prometheus::Client.configuration.multiprocess_files_dir, "*.db")
+    matching_files = File.join(::Prometheus::Client.configuration.multiprocess_files_dir, "**/*.db")
     Dir[matching_files].map { |filename| File.delete(filename) if File.file?(filename) }
 
     Gitlab::Metrics.reset_registry!

@@ -9,7 +9,7 @@ module Packages
     end
 
     def execute
-      package.package_files.create!(
+      package_file = package.package_files.build(
         file:        params[:file],
         size:        params[:size],
         file_name:   params[:file_name],
@@ -17,6 +17,13 @@ module Packages
         file_sha256: params[:file_sha256],
         file_md5:    params[:file_md5]
       )
+
+      if params[:build].present?
+        package_file.package_file_build_infos << package_file.package_file_build_infos.build(pipeline: params[:build].pipeline)
+      end
+
+      package_file.save!
+      package_file
     end
   end
 end

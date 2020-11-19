@@ -1,4 +1,4 @@
-import { commitActionTypes, FILE_VIEW_MODE_EDITOR } from '../constants';
+import { commitActionTypes } from '../constants';
 import {
   relativePathToAbsolute,
   isAbsolute,
@@ -25,10 +25,6 @@ export const dataStructure = () => ({
   rawPath: '',
   raw: '',
   content: '',
-  editorRow: 1,
-  editorColumn: 1,
-  fileLanguage: '',
-  viewMode: FILE_VIEW_MODE_EDITOR,
   size: 0,
   parentPath: null,
   lastOpenedAt: 0,

@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Groups API
 
 ## List groups
@@ -89,7 +95,7 @@ GET /groups?statistics=true
     "parent_id": null,
     "created_at": "2020-01-15T12:36:29.590Z",
     "statistics": {
-      "storage_size" : 212,
+      "storage_size" : 363,
       "repository_size" : 33,
       "wiki_size" : 100,
       "lfs_objects_size" : 123,
@@ -1037,6 +1043,7 @@ GET /groups/:id/hooks/:hook_id
   "pipeline_events": true,
   "wiki_page_events": true,
   "deployment_events": true,
+  "releases_events": true,
   "enable_ssl_verification": true,
   "created_at": "2012-10-12T17:04:47Z"
 }
@@ -1065,6 +1072,7 @@ POST /groups/:id/hooks
 | `pipeline_events`            | boolean        | no       | Trigger hook on pipeline events |
 | `wiki_page_events`           | boolean        | no       | Trigger hook on wiki events |
 | `deployment_events`          | boolean        | no       | Trigger hook on deployment events |
+| `releases_events`            | boolean        | no       | Trigger hook on release events |
 | `enable_ssl_verification`    | boolean        | no       | Do SSL verification when triggering the hook |
 | `token`                      | string         | no       | Secret token to validate received payloads; this will not be returned in the response |
 
@@ -1092,6 +1100,7 @@ PUT /groups/:id/hooks/:hook_id
 | `pipeline_events`            | boolean        | no       | Trigger hook on pipeline events |
 | `wiki_events`                | boolean        | no       | Trigger hook on wiki events |
 | `deployment_events`          | boolean        | no       | Trigger hook on deployment events |
+| `releases_events`            | boolean        | no       | Trigger hook on release events |
 | `enable_ssl_verification`    | boolean        | no       | Do SSL verification when triggering the hook |
 | `token`                      | string         | no       | Secret token to validate received payloads; this will not be returned in the response |
 
@@ -1113,7 +1122,7 @@ DELETE /groups/:id/hooks/:hook_id
 
 Group audit events can be accessed via the [Group Audit Events API](audit_events.md#group-audit-events)
 
-## Sync group with LDAP **(STARTER)**
+## Sync group with LDAP **(STARTER ONLY)**
 
 Syncs the group with its linked LDAP group. Only available to group owners and administrators.
 
@@ -1133,7 +1142,7 @@ Please consult the [Group Members](members.md) documentation.
 
 List, add, and delete LDAP group links.
 
-### List LDAP group links **(STARTER)**
+### List LDAP group links **(STARTER ONLY)**
 
 Lists LDAP group links.
 
@@ -1145,7 +1154,7 @@ GET /groups/:id/ldap_group_links
 | --------- | -------------- | -------- | ----------- |
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
 
-### Add LDAP group link with CN or filter **(STARTER)**
+### Add LDAP group link with CN or filter **(STARTER ONLY)**
 
 Adds an LDAP group link using a CN or filter. Adding a group link by filter is only supported in the Premium tier and above.
 
@@ -1164,7 +1173,7 @@ POST /groups/:id/ldap_group_links
 NOTE: **Note:**
 To define the LDAP group link, provide either a `cn` or a `filter`, but not both.
 
-### Delete LDAP group link **(STARTER)**
+### Delete LDAP group link **(STARTER ONLY)**
 
 Deletes an LDAP group link. Deprecated. Will be removed in a future release.
 
@@ -1189,7 +1198,7 @@ DELETE /groups/:id/ldap_group_links/:provider/:cn
 | `cn`      | string         | yes      | The CN of an LDAP group |
 | `provider` | string        | yes      | LDAP provider for the LDAP group link |
 
-### Delete LDAP group link with CN or filter **(STARTER)**
+### Delete LDAP group link with CN or filter **(STARTER ONLY)**
 
 Deletes an LDAP group link using a CN or filter. Deleting by filter is only supported in the Premium tier and above.
 

@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlModal, GlModalDirective } from '@gitlab/ui';
 import { escape } from 'lodash';
-import { s__, sprintf } from '~/locale';
+import { s__, __, sprintf } from '~/locale';
 
 export default {
   components: {
@@ -29,12 +29,6 @@ export default {
     },
   },
   computed: {
-    modalId() {
-      return 'delete-wiki-modal';
-    },
-    message() {
-      return s__('WikiPageConfirmDelete|Are you sure you want to delete this page?');
-    },
     title() {
       return sprintf(
         s__('WikiPageConfirmDelete|Delete page %{pageTitle}?'),
@@ -44,6 +38,21 @@ export default {
         false,
       );
     },
+    primaryProps() {
+      return {
+        text: this.$options.i18n.deletePageText,
+        attributes: {
+          variant: 'danger',
+          'data-qa-selector': 'confirm_deletion_button',
+          'data-testid': 'confirm_deletion_button',
+        },
+      };
+    },
+    cancelProps() {
+      return {
+        text: this.$options.i18n.cancelButtonText,
+      };
+    },
   },
   methods: {
     onSubmit() {
@@ -51,30 +60,36 @@ export default {
       this.$refs.form.submit();
     },
   },
+  i18n: {
+    deletePageText: s__('WikiPageConfirmDelete|Delete page'),
+    modalBody: s__('WikiPageConfirmDelete|Are you sure you want to delete this page?'),
+    cancelButtonText: __('Cancel'),
+  },
+  modal: {
+    modalId: 'delete-wiki-modal',
+  },
 };
 </script>
 
 <template>
   <div class="d-inline-block">
     <gl-button
-      v-gl-modal="modalId"
-      category="primary"
+      v-gl-modal="$options.modal.modalId"
+      category="secondary"
       variant="danger"
       data-qa-selector="delete_button"
     >
-      {{ __('Delete') }}
+      {{ $options.i18n.deletePageText }}
     </gl-button>
     <gl-modal
       :title="title"
-      :action-primary="{
-        text: s__('WikiPageConfirmDelete|Delete page'),
-        attributes: { variant: 'danger', 'data-qa-selector': 'confirm_deletion_button' },
-      }"
-      :modal-id="modalId"
-      title-tag="h4"
+      :action-primary="primaryProps"
+      :action-cancel="cancelProps"
+      :modal-id="$options.modal.modalId"
+      size="sm"
       @ok="onSubmit"
     >
-      {{ message }}
+      {{ $options.i18n.modalBody }}
       <form ref="form" :action="deleteWikiUrl" method="post" class="js-requires-input">
         <input ref="method" type="hidden" name="_method" value="delete" />
         <input :value="csrfToken" type="hidden" name="authenticity_token" />

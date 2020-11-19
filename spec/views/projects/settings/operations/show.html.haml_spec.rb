@@ -25,7 +25,7 @@ RSpec.describe 'projects/settings/operations/show' do
   end
 
   before_all do
-    project.add_reporter(user)
+    project.add_maintainer(user)
   end
 
   before do

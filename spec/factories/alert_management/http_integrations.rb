@@ -10,5 +10,11 @@ FactoryBot.define do
     trait :inactive do
       active { false }
     end
+
+    trait :legacy do
+      endpoint_identifier { 'legacy' }
+    end
+
+    initialize_with { new(**attributes) }
   end
 end

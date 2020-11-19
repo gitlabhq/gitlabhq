@@ -192,17 +192,7 @@ To delete a project, first navigate to the home page for that project.
 1. Click **Delete project**
 1. Confirm this action by typing in the expected text.
 
-### Delayed deletion **(PREMIUM)**
-
-By default, projects in a personal namespace are deleted after a seven day delay.
-
-Admins can restore the project during this period of time.
-This delay [may be changed by an admin](../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
-
-Admins can view all projects pending deletion. If you're an administrator, go to the top navigation bar, click **Projects > Your projects**, and then select the **Deleted projects** tab.
-From this tab an admin can restore any project.
-
-For information on delay deletion of projects within a group, please see [Enabling delayed Project removal](../group/index.md#enabling-delayed-project-removal)
+Projects in personal namespaces are deleted immediately on request. For information on delayed deletion of projects within a group, please see [Enabling delayed project removal](../group/index.md#enabling-delayed-project-removal).
 
 ## CI/CD for external repositories **(PREMIUM)**
 
@@ -249,6 +239,14 @@ For users without permissions to view the project's code:
 
 - The wiki homepage is displayed, if any.
 - The list of issues within the project is displayed.
+
+## GitLab Workflow - VS Code extension
+
+To avoid switching from the GitLab UI and VS Code while working in GitLab repositories, you can integrate
+the [VS Code](https://code.visualstudio.com/) editor with GitLab through the
+[GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
+
+To review or contribute to the extension's code, visit [its codebase in GitLab](https://gitlab.com/gitlab-org/gitlab-vscode-extension/).
 
 ## Redirects when changing repository paths
 

@@ -1,0 +1,10 @@
+- page_description issuable.description_html
+- page_card_attributes issuable.card_attributes
+- if issuable.relocation_target
+  - page_canonical_link issuable.relocation_target.present(current_user: current_user).web_url
+
+= render_if_exists "projects/issues/alert_blocked", issue: issuable, current_user: current_user
+= render "projects/issues/alert_moved_from_service_desk", issue: issuable
+
+= render 'shared/issue_type/details_header', issuable: issuable
+= render 'shared/issue_type/details_content', issuable: issuable

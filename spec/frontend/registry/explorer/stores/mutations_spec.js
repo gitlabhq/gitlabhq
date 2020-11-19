@@ -121,4 +121,13 @@ describe('Mutations Registry Explorer Store', () => {
       expect(mockState).toEqual(expectedState);
     });
   });
+
+  describe('SET_IMAGE_DETAILS', () => {
+    it('should set imageDetails', () => {
+      const expectedState = { ...mockState, imageDetails: { foo: 'bar' } };
+      mutations[types.SET_IMAGE_DETAILS](mockState, { foo: 'bar' });
+
+      expect(mockState).toEqual(expectedState);
+    });
+  });
 });

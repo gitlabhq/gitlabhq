@@ -579,18 +579,19 @@ in the Troubleshooting section before proceeding.
 
 ### Ensure GitLab is running
 
-At this point, your GitLab instance should be up and running. Verify you are
-able to login, and create issues and merge requests. If you have troubles check
+At this point, your GitLab instance should be up and running. Verify you're able
+to sign in, and create issues and merge requests. If you encounter issues, see
 the [Troubleshooting section](#troubleshooting).
 
 ## Example configuration
 
-Here we'll show you some fully expanded example configurations.
+This section describes several fully expanded example configurations.
 
 ### Example recommended setup
 
-This example uses 3 Consul servers, 3 PgBouncer servers (with associated internal load balancer),
-3 PostgreSQL servers, and 1 application node.
+This example uses three Consul servers, three PgBouncer servers (with an
+associated internal load balancer), three PostgreSQL servers, and one
+application node.
 
 We start with all servers on the same 10.6.0.0/16 private network range, they
 can connect to each freely other on those addresses.

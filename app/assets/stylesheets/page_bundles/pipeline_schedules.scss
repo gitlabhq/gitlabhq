@@ -1,0 +1,68 @@
+@import 'mixins_and_variables_and_functions';
+
+.pipeline-schedule-form {
+  .gl-field-error {
+    margin: 10px 0 0;
+  }
+}
+
+.interval-pattern-form-group {
+  label {
+    margin-right: 10px;
+    font-weight: $gl-font-weight-normal;
+
+    &[for='custom'] {
+      margin-right: 0;
+    }
+  }
+
+  .cron-interval-input-wrapper {
+    padding-left: 0;
+  }
+
+  .cron-interval-input {
+    margin: 10px 10px 0 0;
+  }
+}
+
+.pipeline-schedule-table-row {
+  .branch-name-cell {
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .next-run-cell {
+    color: var(--gray-500, $gray-500);
+  }
+
+  a {
+    color: var(--gl-text-color, $gl-text-color);
+  }
+
+  svg {
+    vertical-align: middle;
+  }
+}
+
+.pipeline-schedules-user-callout {
+  .bordered-box.content-block {
+    border: 1px solid var(--border-color, $border-color);
+    background-color: transparent;
+    padding: $gl-spacing-scale-5;
+  }
+}
+
+.cron-preset-radio-input {
+  display: inline-block;
+
+  @include media-breakpoint-down(md) {
+    display: block;
+    margin: 0 0 5px 5px;
+  }
+
+  input {
+    margin-right: 3px;
+  }
+}

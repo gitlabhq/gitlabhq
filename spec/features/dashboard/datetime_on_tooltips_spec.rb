@@ -49,7 +49,7 @@ RSpec.describe 'Tooltips on .timeago dates', :js do
   end
 
   def datetime_in_tooltip
-    datetime_text = page.find('.local-timeago').text
+    datetime_text = page.find('.tooltip').text
     DateTime.parse(datetime_text)
   end
 end

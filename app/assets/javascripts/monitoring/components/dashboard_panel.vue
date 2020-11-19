@@ -365,7 +365,7 @@ export default {
 <template>
   <div v-gl-resize-observer="onResize" class="prometheus-graph">
     <div class="d-flex align-items-center">
-      <slot name="topLeft"></slot>
+      <slot name="top-left"></slot>
       <h5
         ref="graphTitle"
         class="prometheus-graph-title gl-font-lg font-weight-bold text-truncate gl-mr-3"

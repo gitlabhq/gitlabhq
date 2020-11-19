@@ -11,14 +11,16 @@ RSpec.describe Clusters::Aws::AuthorizeRoleService do
   let(:credentials_service) { instance_double(Clusters::Aws::FetchCredentialsService, execute: credentials) }
 
   let(:role_arn) { 'arn:my-role' }
+  let(:region) { 'region' }
   let(:params) do
     params = ActionController::Parameters.new({
       cluster: {
-        role_arn: role_arn
+        role_arn: role_arn,
+        region: region
       }
     })
 
-    params.require(:cluster).permit(:role_arn)
+    params.require(:cluster).permit(:role_arn, :region)
   end
 
   before do

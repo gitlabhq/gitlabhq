@@ -46,7 +46,7 @@ RSpec.describe Groups::Settings::IntegrationsController do
   describe '#edit' do
     context 'when user is not owner' do
       it 'renders not_found' do
-        get :edit, params: { group_id: group, id: Service.available_services_names.sample }
+        get :edit, params: { group_id: group, id: Service.available_services_names(include_project_specific: false).sample }
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -61,13 +61,13 @@ RSpec.describe Groups::Settings::IntegrationsController do
         it 'returns not_found' do
           stub_feature_flags(group_level_integrations: false)
 
-          get :edit, params: { group_id: group, id: Service.available_services_names.sample }
+          get :edit, params: { group_id: group, id: Service.available_services_names(include_project_specific: false).sample }
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
-      Service.available_services_names.each do |integration_name|
+      Service.available_services_names(include_project_specific: false).each do |integration_name|
         context "#{integration_name}" do
           it 'successfully displays the template' do
             get :edit, params: { group_id: group, id: integration_name }

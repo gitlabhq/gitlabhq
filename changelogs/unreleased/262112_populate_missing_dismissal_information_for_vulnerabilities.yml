@@ -1,0 +1,5 @@
+---
+title: Populate missing `dismissed_at` and `dismissed_by_id` attributes of vulnerabilities
+merge_request: 46370
+author:
+type: fixed

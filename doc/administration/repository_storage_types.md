@@ -117,7 +117,7 @@ The output includes the project ID and the project name:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/1606) in GitLab 12.1.
 
-DANGER: **Danger:**
+DANGER: **Warning:**
 Do not run `git prune` or `git gc` in pool repositories! This can
 cause data loss in "real" repositories that depend on the pool in
 question.

@@ -535,6 +535,21 @@ RSpec.describe 'GFM autocomplete', :js do
       expect(find('.tribute-container ul', visible: true)).to have_text(user_xss.username)
     end
 
+    it 'opens autocomplete menu for Milestone when field starts with text with item escaping HTML characters' do
+      milestone_xss_title = 'alert milestone &lt;img src=x onerror="alert(\'Hello xss\');" a'
+      create(:milestone, project: project, title: milestone_xss_title)
+
+      page.within '.timeline-content-form' do
+        find('#note-body').native.send_keys('%')
+      end
+
+      wait_for_requests
+
+      expect(page).to have_selector('.tribute-container', visible: true)
+
+      expect(find('.tribute-container ul', visible: true)).to have_text('alert milestone')
+    end
+
     it 'selects the first item for assignee dropdowns' do
       page.within '.timeline-content-form' do
         find('#note-body').native.send_keys('@')
@@ -799,8 +814,36 @@ RSpec.describe 'GFM autocomplete', :js do
       end
     end
 
+    context 'issues' do
+      let(:object) { issue }
+      let(:expected_body) { object.to_reference }
+
+      it_behaves_like 'autocomplete suggestions'
+    end
+
     context 'merge requests' do
       let(:object) { create(:merge_request, source_project: project) }
+      let(:expected_body) { object.to_reference }
+
+      it_behaves_like 'autocomplete suggestions'
+    end
+
+    context 'project snippets' do
+      let!(:object) { create(:project_snippet, project: project, title: 'code snippet') }
+      let(:expected_body) { object.to_reference }
+
+      it_behaves_like 'autocomplete suggestions'
+    end
+
+    context 'label' do
+      let!(:object) { label }
+      let(:expected_body) { object.title }
+
+      it_behaves_like 'autocomplete suggestions'
+    end
+
+    context 'milestone' do
+      let!(:object) { create(:milestone, project: project) }
       let(:expected_body) { object.to_reference }
 
       it_behaves_like 'autocomplete suggestions'

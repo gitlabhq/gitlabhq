@@ -2,6 +2,7 @@
 name: track_unique_wiki_page_views
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44622
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/267162
+milestone: '13.5'
 type: development
 group: group::knowledge
 default_enabled: true

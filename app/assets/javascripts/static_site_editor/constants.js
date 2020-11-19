@@ -2,6 +2,7 @@ import { s__, __ } from '~/locale';
 
 export const BRANCH_SUFFIX_COUNT = 8;
 export const DEFAULT_TARGET_BRANCH = 'master';
+export const ISSUABLE_TYPE = 'merge_request';
 
 export const SUBMIT_CHANGES_BRANCH_ERROR = s__('StaticSiteEditor|Branch could not be created.');
 export const SUBMIT_CHANGES_COMMIT_ERROR = s__(
@@ -20,4 +21,4 @@ export const TRACKING_ACTION_CREATE_COMMIT = 'create_commit';
 export const TRACKING_ACTION_CREATE_MERGE_REQUEST = 'create_merge_request';
 export const TRACKING_ACTION_INITIALIZE_EDITOR = 'initialize_editor';
 
-export const DEFAULT_IMAGE_UPLOAD_PATH = 'source/images/uploads/';
+export const MR_META_LOCAL_STORAGE_KEY = 'sse-merge-request-meta-storage-key';

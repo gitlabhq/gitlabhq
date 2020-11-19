@@ -69,7 +69,13 @@ module Clusters
 
       def create_role_or_cluster_role_binding
         if namespace_creator
-          kubeclient.create_or_update_role_binding(role_binding_resource)
+          begin
+            kubeclient.delete_role_binding(role_binding_name, service_account_namespace)
+          rescue Kubeclient::ResourceNotFoundError
+            # Do nothing as we will create new role binding below
+          end
+
+          kubeclient.update_role_binding(role_binding_resource)
         else
           kubeclient.create_or_update_cluster_role_binding(cluster_role_binding_resource)
         end
@@ -117,11 +123,9 @@ module Clusters
       end
 
       def role_binding_resource
-        role_name = Feature.enabled?(:kubernetes_cluster_namespace_role_admin) ? 'admin' : Clusters::Kubernetes::PROJECT_CLUSTER_ROLE_NAME
-
         Gitlab::Kubernetes::RoleBinding.new(
           name: role_binding_name,
-          role_name: role_name,
+          role_name: Clusters::Kubernetes::PROJECT_CLUSTER_ROLE_NAME,
           role_kind: :ClusterRole,
           namespace: service_account_namespace,
           service_account_name: service_account_name

@@ -2,6 +2,6 @@
   = label_tag :mirror_direction, _('Mirror direction'), class: 'label-light'
   .select-wrapper
     = select_tag :mirror_direction, options_for_select([[_('Push'), 'push']]), class: 'form-control select-control js-mirror-direction qa-mirror-direction', disabled: true
-    = icon('chevron-down')
+    = sprite_icon('chevron-down', css_class: "gl-icon gl-absolute gl-top-3 gl-right-3 gl-text-gray-200")
 
 = render partial: "projects/mirrors/mirror_repos_push", locals: { f: f }

@@ -631,7 +631,7 @@ GET /projects/:id/repository/commits/:sha/statuses
 | `sha`     | string  | yes | The commit SHA
 | `ref`     | string  | no  | The name of a repository branch or tag or, if not given, the default branch
 | `stage`   | string  | no  | Filter by [build stage](../ci/yaml/README.md#stages), e.g., `test`
-| `name`    | string  | no  | Filter by [job name](../ci/yaml/README.md#introduction), e.g., `bundler:audit`
+| `name`    | string  | no  | Filter by [job name](../ci/yaml/README.md#job-keywords), e.g., `bundler:audit`
 | `all`     | boolean | no  | Return all statuses, not only the latest ones
 
 ```shell
@@ -842,7 +842,8 @@ Example response if commit is GPG signed:
   "gpg_key_primary_keyid": "8254AAB3FBD54AC9",
   "gpg_key_user_name": "John Doe",
   "gpg_key_user_email": "johndoe@example.com",
-  "gpg_key_subkey_id": null
+  "gpg_key_subkey_id": null,
+  "commit_source": "gitaly"
 }
 ```
 
@@ -865,7 +866,8 @@ Example response if commit is X.509 signed:
       "subject_key_identifier": "AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB",
       "crl_url": "http://example.com/pki.crl"
     }
-  }
+  },
+  "commit_source": "gitaly"
 }
 ```
 

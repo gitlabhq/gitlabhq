@@ -16,8 +16,8 @@ module Gitlab
         @in_memory_application_settings = nil
       end
 
-      def method_missing(name, *args, &block)
-        current_application_settings.send(name, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
+      def method_missing(name, *args, **kwargs, &block)
+        current_application_settings.send(name, *args, **kwargs, &block) # rubocop:disable GitlabSecurity/PublicSend
       end
 
       def respond_to_missing?(name, include_private = false)

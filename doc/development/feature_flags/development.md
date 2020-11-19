@@ -35,7 +35,6 @@ used so that unfinished code can be deployed in production.
 A `development` feature flag should have a rollout issue,
 ideally created using the [Feature Flag Roll Out template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20Flag%20Roll%20Out.md).
 
-NOTE: **Note:**
 This is the default type used when calling `Feature.enabled?`.
 
 ### `ops` type
@@ -59,30 +58,6 @@ Feature.disabled?(:my_ops_flag, project, type: :ops)
 
 # Push feature flag to Frontend
 push_frontend_feature_flag(:my_ops_flag, project, type: :ops)
-```
-
-### `licensed` type
-
-`licensed` feature flags are used to temporarily disable licensed features. There
-should be a one-to-one mapping of `licensed` feature flags to licensed features.
-
-`licensed` feature flags must be `default_enabled: true`, because that's the only
-supported option in the current implementation. This is under development as per
-the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/218667).
-
-The `licensed` type has a dedicated set of functions to check if a licensed
-feature is available for a project or namespace. This check validates
-if the license is assigned to the namespace and feature flag itself.
-The `licensed` feature flag has the same name as a licensed feature name:
-
-```ruby
-# Good: checks if feature flag is enabled
-project.feature_available?(:my_licensed_feature)
-namespace.feature_available?(:my_licensed_feature)
-
-# Bad: licensed flag must be accessed via `feature_available?`
-Feature.enabled?(:my_licensed_feature, type: :licensed)
-push_frontend_feature_flag(:my_licensed_feature, type: :licensed)
 ```
 
 ## Feature flag definition and validation
@@ -128,7 +103,7 @@ a YAML definition in `config/feature_flags` or `ee/config/feature_flags`.
 Only feature flags that have a YAML definition file can be used when running the development or testing environments.
 
 ```shell
-$ bin/feature-flag my-feature-flag
+$ bin/feature-flag my_feature_flag
 >> Specify the group introducing the feature flag, like `group::apm`:
 ?> group::memory
 
@@ -140,9 +115,9 @@ https://gitlab.com/gitlab-org/gitlab/-/issues/new?issue%5Btitle%5D=%5BFeature+fl
 
 >> URL of the rollout issue (enter to skip):
 ?> https://gitlab.com/gitlab-org/gitlab/-/issues/232533
-create config/feature_flags/development/test-flag.yml
+create config/feature_flags/development/my_feature_flag.yml
 ---
-name: test-flag
+name: my_feature_flag
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38602
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/232533
 group: group::memory
@@ -209,6 +184,30 @@ end
 
 if Feature.disabled?(:my_feature_flag, project, type: :ops)
   # execute code if feature flag is disabled
+end
+```
+
+DANGER: **Warning:**
+Don't use feature flags at application load time. For example, using the `Feature` class in
+`config/initializers/*` or at the class level could cause an unexpected error. This error occurs
+because a database that a feature flag adapter might depend on doesn't exist at load time
+(especially for fresh installations). Checking for the database's existence at the caller isn't
+recommended, as some adapters don't require a database at all (for example, the HTTP adapter). The
+feature flag setup check must be abstracted in the `Feature` namespace. This approach also requires
+application reload when the feature flag changes. You must therefore ask SREs to reload the
+Web/API/Sidekiq fleet on production, which takes time to fully rollout/rollback the changes. For
+these reasons, use environment variables (for example, `ENV['YOUR_FEATURE_NAME']`) or `gitlab.yml`
+instead.
+
+Here's an example of a pattern that you should avoid:
+
+```ruby
+class MyClass
+  if Feature.enabled?(:...)
+    new_process
+  else
+    legacy_process
+  end
 end
 ```
 
@@ -309,57 +308,16 @@ used as an actor for `Feature.enabled?`.
 
 ### Feature flags for licensed features
 
-If a feature is license-gated, there's no need to add an additional
-explicit feature flag check since the flag is checked as part of the
-`License.feature_available?` call. Similarly, there's no need to "clean up" a
-feature flag once the feature has reached general availability.
+You can't use a feature flag with the same name as a licensed feature name, because
+it would cause a naming collision. This was [widely discussed and removed](https://gitlab.com/gitlab-org/gitlab/-/issues/259611)
+because it is confusing.
 
-The [`Project#feature_available?`](https://gitlab.com/gitlab-org/gitlab/blob/4cc1c62918aa4c31750cb21dfb1a6c3492d71080/app/models/project_feature.rb#L63-68),
-[`Namespace#feature_available?`](https://gitlab.com/gitlab-org/gitlab/blob/4cc1c62918aa4c31750cb21dfb1a6c3492d71080/ee/app/models/ee/namespace.rb#L71-85) (EE), and
-[`License.feature_available?`](https://gitlab.com/gitlab-org/gitlab/blob/4cc1c62918aa4c31750cb21dfb1a6c3492d71080/ee/app/models/license.rb#L293-300) (EE) methods all implicitly check for
-a by default enabled feature flag with the same name as the provided argument.
+To check for licensed features, add a dedicated feature flag under a different name
+and check it explicitly, for example:
 
-**An important side-effect of the implicit feature flags mentioned above is that
-unless the feature is explicitly disabled or limited to a percentage of users,
-the feature flag check defaults to `true`.**
-
-NOTE: **Note:**
-Due to limitations with `feature_available?`, the YAML definition for `licensed` feature
-flags accepts only `default_enabled: true`. This is under development as per the
-[related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/218667).
-
-#### Alpha/beta licensed feature flags
-
-This is relevant when developing the feature using
-[several smaller merge requests](https://about.gitlab.com/handbook/values/#make-small-merge-requests), or when the feature is considered to be an
-[alpha or beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga), and
-should not be available by default.
-
-As an example, if you were to ship the frontend half of a feature without the
-backend, you'd want to disable the feature entirely until the backend half is
-also ready to be shipped. To make sure this feature is disabled for both
-GitLab.com and self-managed instances, you should use the
-[`Namespace#alpha_feature_available?`](https://gitlab.com/gitlab-org/gitlab/blob/458749872f4a8f27abe8add930dbb958044cb926/ee/app/models/ee/namespace.rb#L113) or
-[`Namespace#beta_feature_available?`](https://gitlab.com/gitlab-org/gitlab/blob/458749872f4a8f27abe8add930dbb958044cb926/ee/app/models/ee/namespace.rb#L100-112)
-method, according to our [definitions](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga). This ensures the feature is disabled unless the feature flag is
-_explicitly_ enabled.
-
-CAUTION: **Caution:**
-If `alpha_feature_available?` or `beta_feature_available?` is used, the YAML definition
-for the feature flag must use `default_enabled: [false, true]`, because the usage
-of the feature flag is undefined. These methods may change, as per the
-[related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/218667).
-
-The resulting YAML should be similar to:
-
-```yaml
-name: scoped_labels
-group: group::memory
-type: licensed
-# The `default_enabled:` is undefined
-# as `feature_available?` uses `default_enabled: true`
-# as `beta_feature_available?` uses `default_enabled: false`
-default_enabled: [false, true]
+```ruby
+Feature.enabled?(:licensed_feature_feature_flag, project) &&
+  project.feature_available?(:licensed_feature)
 ```
 
 ### Feature groups
@@ -397,7 +355,6 @@ Introducing a feature flag into the codebase creates an additional code path tha
 It is strongly advised to test all code affected by a feature flag, both when **enabled** and **disabled**
 to ensure the feature works properly.
 
-NOTE: **Note:**
 When using the testing environment, all feature flags are enabled by default.
 
 To disable a feature flag in a test, use the `stub_feature_flags`

@@ -1,0 +1,5 @@
+---
+title: Limit number of times a background migration is rescheduled
+merge_request: 45298
+author:
+type: fixed

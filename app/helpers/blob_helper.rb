@@ -26,6 +26,25 @@ module BlobHelper
     File.join(segments)
   end
 
+  def ide_merge_request_path(merge_request, path = '')
+    target_project = merge_request.target_project
+    source_project = merge_request.source_project
+
+    if merge_request.merged?
+      branch = merge_request.target_branch_exists? ? merge_request.target_branch : target_project.default_branch
+
+      return ide_edit_path(target_project, branch, path)
+    end
+
+    if target_project != source_project
+      params = { target_project: target_project.full_path }
+    end
+
+    result = File.join(ide_path, 'project', source_project.full_path, 'merge_requests', merge_request.to_param)
+    result += "?#{params.to_query}" unless params.nil?
+    result
+  end
+
   def ide_fork_and_edit_path(project = @project, ref = @ref, path = @path, options = {})
     fork_path_for_current_user(project, ide_edit_path(project, ref, path))
   end
@@ -49,7 +68,7 @@ module BlobHelper
   def edit_blob_button(project = @project, ref = @ref, path = @path, options = {})
     return unless blob = readable_blob(options, path, project, ref)
 
-    common_classes = "btn btn-primary js-edit-blob ml-2 #{options[:extra_class]}"
+    common_classes = "btn btn-primary js-edit-blob gl-mr-3 #{options[:extra_class]}"
     data = { track_event: 'click_edit', track_label: 'Edit' }
 
     if Feature.enabled?(:web_ide_primary_edit, project.group)
@@ -69,7 +88,7 @@ module BlobHelper
   def ide_edit_button(project = @project, ref = @ref, path = @path, blob:)
     return unless blob
 
-    common_classes = 'btn btn-primary ide-edit-button ml-2'
+    common_classes = 'btn btn-primary ide-edit-button gl-mr-3'
     data = { track_event: 'click_edit_ide', track_label: 'Web IDE' }
 
     unless Feature.enabled?(:web_ide_primary_edit, project.group)
@@ -363,7 +382,7 @@ module BlobHelper
   end
 
   def show_suggest_pipeline_creation_celebration?
-    experiment_enabled?(:suggest_pipeline) &&
+    Feature.enabled?(:suggest_pipeline, default_enabled: true) &&
       @blob.path == Gitlab::FileDetector::PATTERNS[:gitlab_ci] &&
       @blob.auxiliary_viewer&.valid?(project: @project, sha: @commit.sha, user: current_user) &&
       @project.uses_default_ci_config? &&

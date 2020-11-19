@@ -517,6 +517,8 @@ module TestEnv
 
     return false if component_matches_git_sha?(component_folder, expected_version)
 
+    return false if component_ahead_of_target?(component_folder, expected_version)
+
     version = File.read(File.join(component_folder, 'VERSION')).strip
 
     # Notice that this will always yield true when using branch versions
@@ -525,6 +527,20 @@ module TestEnv
     version != expected_version
   rescue Errno::ENOENT
     true
+  end
+
+  def component_ahead_of_target?(component_folder, expected_version)
+    # The HEAD of the component_folder will be used as heuristic for the version
+    # of the binaries, allowing to use Git to determine if HEAD is later than
+    # the expected version. Note: Git considers HEAD to be an anchestor of HEAD.
+    _out, exit_status = Gitlab::Popen.popen(%W[
+      #{Gitlab.config.git.bin_path}
+      -C #{component_folder}
+      merge-base --is-ancestor
+      #{expected_version} HEAD
+])
+
+    exit_status == 0
   end
 
   def component_matches_git_sha?(component_folder, expected_version)

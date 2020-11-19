@@ -22,7 +22,7 @@ describe('tags list row', () => {
   let wrapper;
   const [tag] = [...tagsListResponse.data];
 
-  const defaultProps = { tag, isDesktop: true, index: 0 };
+  const defaultProps = { tag, isMobile: false, index: 0 };
 
   const findCheckbox = () => wrapper.find(GlFormCheckbox);
   const findName = () => wrapper.find('[data-testid="name"]');
@@ -114,7 +114,7 @@ describe('tags list row', () => {
     });
 
     it('on mobile has mw-s class', () => {
-      mountComponent({ ...defaultProps, isDesktop: false });
+      mountComponent({ ...defaultProps, isMobile: true });
 
       expect(findName().classes('mw-s')).toBe(true);
     });

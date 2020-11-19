@@ -12,11 +12,19 @@ import { getLocationHash } from '../lib/utils/url_utility';
 $(() => {
   function toggleContainer(container, toggleState) {
     const $container = $(container);
+    const isExpanded = $container.data('is-expanded');
+    const $collapseIcon = $container.find('.js-sidebar-collapse');
+    const $expandIcon = $container.find('.js-sidebar-expand');
 
-    $container
-      .find('.js-toggle-button .fa-chevron-up, .js-toggle-button .fa-chevron-down')
-      .toggleClass('fa-chevron-up', toggleState)
-      .toggleClass('fa-chevron-down', toggleState !== undefined ? !toggleState : undefined);
+    if (isExpanded && !toggleState) {
+      $container.data('is-expanded', false);
+      $collapseIcon.addClass('hidden');
+      $expandIcon.removeClass('hidden');
+    } else {
+      $container.data('is-expanded', true);
+      $expandIcon.addClass('hidden');
+      $collapseIcon.removeClass('hidden');
+    }
 
     $container.find('.js-toggle-content').toggle(toggleState);
   }

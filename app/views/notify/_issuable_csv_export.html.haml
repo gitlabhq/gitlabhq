@@ -1,6 +1,6 @@
 %p{ style: 'font-size:18px; text-align:center;  line-height:30px;' }
   - project_link = link_to(@project.full_name, project_url(@project), style: "color:#3777b0; text-decoration:none; display:block;")
-  = _('Your CSV export of %{count} from project %{project_link} has been added to this email as an attachment.').html_safe % { count: pluralize(@written_count, type.to_s), project_link: project_link }
+  = _('Your CSV export of %{count} from project %{project_link} has been added to this email as an attachment.').html_safe % { count: pluralize(@written_count, type.to_s.titleize.downcase), project_link: project_link }
   - if @truncated
     %p
       = _('This attachment has been truncated to avoid exceeding the maximum allowed attachment size of 15MB. %{written_count} of %{count} issues have been included. Consider re-exporting with a narrower selection of issues.') % { written_count: @written_count, count: @count }

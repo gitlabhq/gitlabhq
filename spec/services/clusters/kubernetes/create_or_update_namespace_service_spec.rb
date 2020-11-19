@@ -28,6 +28,7 @@ RSpec.describe Clusters::Kubernetes::CreateOrUpdateNamespaceService, '#execute' 
     stub_kubeclient_get_secret_error(api_url, 'gitlab-token')
     stub_kubeclient_create_secret(api_url)
 
+    stub_kubeclient_delete_role_binding(api_url, "gitlab-#{namespace}", namespace: namespace)
     stub_kubeclient_put_role_binding(api_url, "gitlab-#{namespace}", namespace: namespace)
     stub_kubeclient_get_namespace(api_url, namespace: namespace)
     stub_kubeclient_get_service_account_error(api_url, "#{namespace}-service-account", namespace: namespace)

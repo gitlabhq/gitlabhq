@@ -8,7 +8,9 @@ module Ci
   # issue: https://gitlab.com/gitlab-org/gitlab/issues/34224
   class CompareReportsBaseService < ::BaseService
     def execute(base_pipeline, head_pipeline)
-      comparer = build_comparer(base_pipeline, head_pipeline)
+      base_report = get_report(base_pipeline)
+      head_report = get_report(head_pipeline)
+      comparer = build_comparer(base_report, head_report)
 
       {
         status: :parsed,
@@ -31,8 +33,8 @@ module Ci
 
     protected
 
-    def build_comparer(base_pipeline, head_pipeline)
-      comparer_class.new(get_report(base_pipeline), get_report(head_pipeline))
+    def build_comparer(base_report, head_report)
+      comparer_class.new(base_report, head_report)
     end
 
     private

@@ -32,22 +32,27 @@ RSpec.describe 'getting user information' do
       create(:merge_request, :unique_branches, :unique_author,
              source_project: project_a, assignees: [user])
     end
+
     let_it_be(:assigned_mr_b) do
       create(:merge_request, :unique_branches, :unique_author,
              source_project: project_b, assignees: [user])
     end
+
     let_it_be(:assigned_mr_c) do
       create(:merge_request, :unique_branches, :unique_author,
              source_project: project_b, assignees: [user])
     end
+
     let_it_be(:authored_mr) do
       create(:merge_request, :unique_branches,
              source_project: project_a, author: user)
     end
+
     let_it_be(:authored_mr_b) do
       create(:merge_request, :unique_branches,
              source_project: project_b, author: user)
     end
+
     let_it_be(:authored_mr_c) do
       create(:merge_request, :unique_branches,
              source_project: project_b, author: user)
@@ -59,6 +64,7 @@ RSpec.describe 'getting user information' do
     let(:user_params) { { username: user.username } }
 
     before do
+      create(:user_status, user: user)
       post_graphql(query, current_user: current_user)
     end
 
@@ -76,8 +82,14 @@ RSpec.describe 'getting user information' do
             'username' => presenter.username,
             'webUrl' => presenter.web_url,
             'avatarUrl' => presenter.avatar_url,
-            'status' => presenter.status,
             'email' => presenter.email
+          ))
+
+        expect(graphql_data['user']['status']).to match(
+          a_hash_including(
+            'emoji' => presenter.status.emoji,
+            'message' => presenter.status.message,
+            'availability' => presenter.status.availability.upcase
           ))
       end
 

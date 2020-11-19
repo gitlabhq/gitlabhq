@@ -12,7 +12,7 @@ module Resolvers
               required: false,
               default_value: 'created_desc'
 
-    type Types::IssueType, null: true
+    type Types::IssueType.connection_type, null: true
 
     NON_STABLE_CURSOR_SORTS = %i[priority_asc priority_desc
                                  label_priority_asc label_priority_desc

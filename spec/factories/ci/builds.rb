@@ -332,6 +332,18 @@ FactoryBot.define do
       end
     end
 
+    trait :test_reports_with_duplicate_failed_test_names do
+      after(:build) do |build|
+        build.job_artifacts << create(:ci_job_artifact, :junit_with_duplicate_failed_test_names, job: build)
+      end
+    end
+
+    trait :test_reports_with_three_failures do
+      after(:build) do |build|
+        build.job_artifacts << create(:ci_job_artifact, :junit_with_three_failures, job: build)
+      end
+    end
+
     trait :accessibility_reports do
       after(:build) do |build|
         build.job_artifacts << create(:ci_job_artifact, :accessibility, job: build)
@@ -492,9 +504,20 @@ FactoryBot.define do
       failure_reason { 10 }
     end
 
+    trait :forward_deployment_failure do
+      failed
+      failure_reason { 13 }
+    end
+
     trait :with_runner_session do
       after(:build) do |build|
         build.build_runner_session(url: 'https://localhost')
+      end
+    end
+
+    trait :interruptible do
+      after(:build) do |build|
+        build.metadata.interruptible = true
       end
     end
   end

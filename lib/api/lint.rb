@@ -2,6 +2,8 @@
 
 module API
   class Lint < ::API::Base
+    feature_category :pipeline_authoring
+
     namespace :ci do
       desc 'Validation of .gitlab-ci.yml content'
       params do
@@ -15,9 +17,9 @@ module API
         status 200
 
         response = if error.blank?
-                     { status: 'valid', errors: [] }
+                     { status: 'valid', errors: [], warnings: result.warnings }
                    else
-                     { status: 'invalid', errors: [error] }
+                     { status: 'invalid', errors: [error], warnings: result.warnings }
                    end
 
         response.tap do |response|
@@ -41,6 +43,26 @@ module API
           .new(project: user_project, current_user: current_user)
           .validate(content, dry_run: params[:dry_run])
 
+        present result, with: Entities::Ci::Lint::Result, current_user: current_user
+      end
+    end
+
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      desc 'Validation of .gitlab-ci.yml content' do
+        detail 'This feature was introduced in GitLab 13.6.'
+      end
+      params do
+        requires :content, type: String, desc: 'Content of .gitlab-ci.yml'
+        optional :dry_run, type: Boolean, default: false, desc: 'Run pipeline creation simulation, or only do static check.'
+      end
+      post ':id/ci/lint' do
+        authorize! :download_code, user_project
+
+        result = Gitlab::Ci::Lint
+          .new(project: user_project, current_user: current_user)
+          .validate(params[:content], dry_run: params[:dry_run])
+
+        status 200
         present result, with: Entities::Ci::Lint::Result, current_user: current_user
       end
     end

@@ -73,6 +73,29 @@ RSpec.describe 'Updating the container expiration policy' do
     end
   end
 
+  RSpec.shared_examples 'rejecting blank name_regex when enabled' do
+    context "for blank name_regex" do
+      let(:params) do
+        {
+          project_path: project.full_path,
+          name_regex: '',
+          enabled: true
+        }
+      end
+
+      it_behaves_like 'returning response status', :success
+
+      it_behaves_like 'not creating the container expiration policy'
+
+      it 'returns an error' do
+        subject
+
+        expect(graphql_data['updateContainerExpirationPolicy']['errors'].size).to eq(1)
+        expect(graphql_data['updateContainerExpirationPolicy']['errors']).to include("Name regex can't be blank")
+      end
+    end
+  end
+
   RSpec.shared_examples 'accepting the mutation request updating the container expiration policy' do
     it_behaves_like 'updating the container expiration policy attributes', mode: :update, from: { cadence: '1d', keep_n: 10, older_than: '90d' }, to: { cadence: '3month', keep_n: 100, older_than: '14d' }
 
@@ -80,6 +103,7 @@ RSpec.describe 'Updating the container expiration policy' do
 
     it_behaves_like 'rejecting invalid regex for', :name_regex
     it_behaves_like 'rejecting invalid regex for', :name_regex_keep
+    it_behaves_like 'rejecting blank name_regex when enabled'
   end
 
   RSpec.shared_examples 'accepting the mutation request creating the container expiration policy' do
@@ -89,6 +113,7 @@ RSpec.describe 'Updating the container expiration policy' do
 
     it_behaves_like 'rejecting invalid regex for', :name_regex
     it_behaves_like 'rejecting invalid regex for', :name_regex_keep
+    it_behaves_like 'rejecting blank name_regex when enabled'
   end
 
   RSpec.shared_examples 'denying the mutation request' do

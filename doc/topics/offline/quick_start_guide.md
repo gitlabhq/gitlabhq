@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Getting started with an offline GitLab Installation
 
 This is a step-by-step guide that helps you install, configure, and use a self-managed GitLab
@@ -7,9 +13,7 @@ instance entirely offline.
 
 NOTE: **Note:**
 This guide assumes the server is Ubuntu 18.04. Instructions for other servers may vary.
-
-NOTE: **Note:**
-This guide assumes the server host resolves as `my-host`, which you should replace with your
+This guide also assumes the server host resolves as `my-host`, which you should replace with your
 server's name.
 
 Follow the installation instructions [as outlined in the omnibus install

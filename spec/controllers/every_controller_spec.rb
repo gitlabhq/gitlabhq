@@ -17,7 +17,7 @@ RSpec.describe "Every controller" do
         .compact
         .select { |route| route[:controller].present? && route[:action].present? }
         .map { |route| [constantize_controller(route[:controller]), route[:action]] }
-        .select { |(controller, action)| controller&.include?(ControllerWithFeatureCategory) }
+        .select { |(controller, action)| controller&.include?(::Gitlab::WithFeatureCategory) }
         .reject { |(controller, action)| controller == ApplicationController || controller == Devise::UnlocksController }
     end
 

@@ -6,7 +6,7 @@
 
 - if verification_enabled && domain_presenter.unverified?
   = content_for :flash_message do
-    .alert.alert-warning
+    .gl-alert.gl-alert-warning
       .container-fluid.container-limited
         = _("This domain is not verified. You will need to verify ownership before access is enabled.")
 

@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # GitLab Performance Monitoring
 
 GitLab comes with its own application performance measuring system as of GitLab
-8.4, simply called "GitLab Performance Monitoring". GitLab Performance Monitoring is available in both the
+8.4, called "GitLab Performance Monitoring". GitLab Performance Monitoring is available in both the
 Community and Enterprise editions.
 
 Apart from this introduction, you are advised to read through the following
@@ -42,7 +42,7 @@ Two types of metrics are collected:
 
 Transaction metrics are metrics that can be associated with a single
 transaction. This includes statistics such as the transaction duration, timings
-of any executed SQL queries, time spent rendering HAML views, etc. These metrics
+of any executed SQL queries, time spent rendering HAML views, and so on. These metrics
 are collected for every Rack request and Sidekiq job processed.
 
 ### Sampled Metrics
@@ -59,5 +59,5 @@ parts:
 The actual interval can be anywhere between a half of the defined interval and a
 half above the interval. For example, for a user defined interval of 15 seconds
 the actual interval can be anywhere between 7.5 and 22.5. The interval is
-re-generated for every sampling run instead of being generated once and re-used
+re-generated for every sampling run instead of being generated one time and reused
 for the duration of the process' lifetime.

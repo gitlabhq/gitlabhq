@@ -171,6 +171,8 @@ RSpec.describe ApplicationController do
 
   describe '#route_not_found' do
     controller(described_class) do
+      skip_before_action :authenticate_user!, only: :index
+
       def index
         route_not_found
       end
@@ -178,6 +180,14 @@ RSpec.describe ApplicationController do
 
     it 'renders 404 if authenticated' do
       sign_in(user)
+
+      get :index
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    it 'renders 404 if client is a search engine crawler' do
+      request.env['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
 
       get :index
 

@@ -62,7 +62,7 @@ describe('vue_shared/components/awards_list', () => {
     findAwardButtons().wrappers.map(x => {
       return {
         classes: x.classes(),
-        title: x.attributes('data-original-title'),
+        title: x.attributes('title'),
         html: x.find('[data-testid="award-html"]').element.innerHTML,
         count: Number(x.find('.js-counter').text()),
       };

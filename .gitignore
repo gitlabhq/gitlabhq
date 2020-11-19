@@ -56,12 +56,15 @@ eslint-report.html
 /doc/code/*
 /dump.rdb
 /jsconfig.json
+/lefthook-local.yml
 /log/*.log*
 /node_modules
 /nohup.out
 /public/assets/
 /public/uploads.*
 /public/uploads/
+/public/sitemap.xml
+/public/sitemap.xml.gz
 /shared/artifacts/
 /spec/examples.txt
 /rails_best_practices_output.html
@@ -73,6 +76,7 @@ eslint-report.html
 /.gitlab_pages_secret
 /.gitlab_kas_secret
 /webpack-report/
+/crystalball/
 /knapsack/
 /rspec_flaky/
 /locale/**/LC_MESSAGES
@@ -97,3 +101,5 @@ apollo.config.js
 /tmp/matching_tests.txt
 ee/changelogs/unreleased-ee
 /sitespeed-result
+tags.lock
+tags.temp

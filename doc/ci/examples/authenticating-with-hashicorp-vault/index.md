@@ -22,7 +22,8 @@ This tutorial assumes you are familiar with GitLab CI/CD and Vault.
 To follow along, you will need:
 
 - An account on GitLab.
-- A running Vault server and the access required to configure authentication and create roles and policies.
+- A running Vault server and access to it is required to configure authentication and create roles
+  and policies. For HashiCorp Vaults, this can be the Open Source or Enterprise version.
 
 NOTE: **Note:**
 You will need to replace the `vault.example.com` URL below with the URL of your Vault server and `gitlab.example.com` with the URL of your GitLab instance.
@@ -55,7 +56,7 @@ The JWT's payload looks like this:
 }
 ```
 
-The JWT is encoded by using RS256 and signed with your GitLab instance's OpenID Connect private key. The expire time for the token will be set to job's timeout, if specified, or 5 minutes if it is not. The key used to sign this token may change without any notice. In such case retrying the job will generate new JWT using the current signing key.
+The JWT is encoded by using RS256 and signed with a dedicated private key. The expire time for the token will be set to job's timeout, if specified, or 5 minutes if it is not. The key used to sign this token may change without any notice. In such case retrying the job will generate new JWT using the current signing key.
 
 You can use this JWT and your instance's JWKS endpoint (`https://gitlab.example.com/-/jwks`) to authenticate with a Vault server that is configured to allow the JWT Authentication method for authentication.
 

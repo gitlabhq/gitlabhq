@@ -21,7 +21,7 @@
                     data: { text: _("Close %{display_issuable_type}") % { display_issuable_type: display_issuable_type }, url: close_issuable_path(issuable),
                     button_class: "#{button_class} btn-close", toggle_class: "#{toggle_class} btn-close-color" } }
       %button.btn.btn-transparent
-        = icon('check', class: 'icon')
+        = sprite_icon('check', css_class: 'icon')
         .description
           %strong.title
             = _('Close')
@@ -31,7 +31,7 @@
                      data: { text: _("Reopen %{display_issuable_type}") % { display_issuable_type: display_issuable_type }, url: reopen_issuable_path(issuable),
                      button_class: "#{button_class} btn-reopen", toggle_class: "#{toggle_class} btn-reopen-color" } }
       %button.btn.btn-transparent
-        = icon('check', class: 'icon')
+        = sprite_icon('check', css_class: 'icon')
         .description
           %strong.title
             = _('Reopen')

@@ -1,0 +1,5 @@
+---
+title: Fix project import search box and make it case insensitive
+merge_request: 45783
+author:
+type: fixed

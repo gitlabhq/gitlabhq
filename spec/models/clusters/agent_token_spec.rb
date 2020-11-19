@@ -14,5 +14,10 @@ RSpec.describe Clusters::AgentToken do
 
       expect(agent_token.token).to be_present
     end
+
+    it 'is at least 50 characters' do
+      agent_token = create(:cluster_agent_token)
+      expect(agent_token.token.length).to be >= 50
+    end
   end
 end

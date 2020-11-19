@@ -84,7 +84,6 @@ module Git
     end
 
     def enqueue_metrics_dashboard_sync
-      return unless Feature.enabled?(:sync_metrics_dashboards, project)
       return unless default_branch?
 
       ::Metrics::Dashboard::SyncDashboardsWorker.perform_async(project.id)

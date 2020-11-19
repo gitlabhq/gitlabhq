@@ -4,6 +4,8 @@ module API
   class BroadcastMessages < ::API::Base
     include PaginationParams
 
+    feature_category :navigation
+
     resource :broadcast_messages do
       helpers do
         def find_message

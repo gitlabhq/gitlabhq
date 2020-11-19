@@ -1,0 +1,5 @@
+---
+title: Fix secure MR widget colors in dark mode
+merge_request: 47352
+author:
+type: fixed

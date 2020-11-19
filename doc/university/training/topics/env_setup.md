@@ -1,4 +1,7 @@
 ---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 comments: false
 ---
 
@@ -6,22 +9,31 @@ comments: false
 
 ## Install
 
-- **Windows**
-  - Install 'Git for Windows' from <https://gitforwindows.org>
-
+- **Windows** - Install 'Git for Windows' from [Git for Windows](https://gitforwindows.org).
 - **Mac**
   - Type '`git`' in the Terminal application.
   - If it's not installed, it will prompt you to install it.
 
-- **Linux**
+- **GNU/Linux** - Enter `which git` in the Terminal application and press <kbd>Enter</kbd> to
+  determine if Git is installed on your system.
 
-  ```shell
-  sudo yum install git-all
-  ```
+  - If the output of that command gives you the path to the Git executable, similar to
+    `/usr/bin/git`, then Git is already installed on your system.
+  - If the output of the command displays "command not found" error, Git isn't installed on your system.
 
-  ```shell
-  sudo apt-get install git-all
-  ```
+  GitLab recommends installing Git with the default package manager of your distribution.
+  The following commands install Git on various GNU/Linux distributions using their
+  default package managers. After you run the command corresponding to your distribution
+  and complete the installation process, Git should be available on your system:
+
+  - **Arch Linux and its derivatives** - `sudo pacman -S git`
+  - **Fedora, RHEL, and CentOS** - For the `yum` package manager run `sudo yum install git-all`,
+    and for the `dnf` package manager run `sudo dnf install git`.
+  - **Debian/Ubuntu and their derivatives** - `sudo apt-get install git`
+  - **Gentoo** - `sudo emerge --ask --verbose dev-vcs/git`
+  - **openSUSE** - `sudo zypper install git`
+- **FreeBSD** - `sudo pkg install git`
+- **OpenBSD** - `doas pkg_add git`
 
 ## Configure Git
 

@@ -1,3 +1,9 @@
+---
+stage: Manage
+group: Optimize
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Value Stream Analytics development guide
 
 Value stream analytics calculates the time between two arbitrary events recorded on domain objects and provides aggregated statistics about the duration.
@@ -53,8 +59,8 @@ def timestamp_projection
 end
 ```
 
-NOTE: **Note:**
-More complex expressions are also possible (e.g. using `COALESCE`). Look at the existing event classes for examples.
+More complex expressions are also possible (for example, using `COALESCE`).
+Review the existing event classes for examples.
 
 In some cases, defining the `timestamp_projection` method is not enough. The calculation query should know which table contains the timestamp expression. Each `Event` class is responsible for making modifications to the calculation query to make the `timestamp_projection` work. This usually means joining an additional table.
 

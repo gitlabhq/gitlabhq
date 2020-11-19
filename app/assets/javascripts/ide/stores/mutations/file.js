@@ -95,17 +95,6 @@ export default {
       changed,
     });
   },
-  [types.SET_FILE_LANGUAGE](state, { file, fileLanguage }) {
-    Object.assign(state.entries[file.path], {
-      fileLanguage,
-    });
-  },
-  [types.SET_FILE_POSITION](state, { file, editorRow, editorColumn }) {
-    Object.assign(state.entries[file.path], {
-      editorRow,
-      editorColumn,
-    });
-  },
   [types.SET_FILE_MERGE_REQUEST_CHANGE](state, { file, mrChange }) {
     let diffMode = diffModes.replaced;
     if (mrChange.new_file) {
@@ -120,11 +109,6 @@ export default {
         ...mrChange,
         diffMode,
       },
-    });
-  },
-  [types.SET_FILE_VIEWMODE](state, { file, viewMode }) {
-    Object.assign(state.entries[file.path], {
-      viewMode,
     });
   },
   [types.DISCARD_FILE_CHANGES](state, path) {

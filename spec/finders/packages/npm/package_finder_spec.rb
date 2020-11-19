@@ -16,6 +16,12 @@ RSpec.describe ::Packages::Npm::PackageFinder do
 
       it { is_expected.to be_empty }
     end
+
+    context 'with nil project' do
+      let(:project) { nil }
+
+      it { is_expected.to be_empty }
+    end
   end
 
   describe '#find_by_version' do

@@ -10,6 +10,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
   let(:group_invite) { group.group_members.invite.last }
 
   before do
+    stub_application_setting(require_admin_approval_after_user_signup: false)
     project.add_maintainer(owner)
     group.add_owner(owner)
     group.add_developer('user@example.com', owner)
@@ -58,6 +59,8 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
     end
 
     it 'pre-fills the Email field on the sign up box  with the invite_email from the invite' do
+      click_link 'Register now'
+
       expect(find_field('Email').value).to eq(group_invite.invite_email)
     end
 
@@ -92,6 +95,22 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
       before do
         stub_application_setting(send_user_confirmation_email: send_email_confirmation)
         visit invite_path(group_invite.raw_invite_token)
+        click_link 'Register now'
+      end
+
+      context 'with admin appoval required enabled' do
+        before do
+          stub_application_setting(require_admin_approval_after_user_signup: true)
+        end
+
+        let(:send_email_confirmation) { true }
+
+        it 'does not sign the user in' do
+          fill_in_sign_up_form(new_user)
+
+          expect(current_path).to eq(new_user_session_path)
+          expect(page).to have_content('You have signed up successfully. However, we could not sign you in because your account is awaiting approval from your GitLab administrator')
+        end
       end
 
       context 'email confirmation disabled' do

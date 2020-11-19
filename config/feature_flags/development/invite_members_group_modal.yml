@@ -2,6 +2,7 @@
 name: invite_members_group_modal
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37906
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/247208
-group: group::expansion
+milestone: '13.5'
 type: development
+group: group::expansion
 default_enabled: false

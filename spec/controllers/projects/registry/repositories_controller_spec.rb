@@ -50,18 +50,17 @@ RSpec.describe Projects::Registry::RepositoriesController do
                                          tags: %w[rc1 latest])
           end
 
-          it 'successfully renders container repositories' do
-            expect(Gitlab::Tracking).not_to receive(:event)
-
+          it 'successfully renders container repositories', :snowplow do
             go_to_index
 
+            expect_no_snowplow_event
             expect(response).to have_gitlab_http_status(:ok)
           end
 
-          it 'tracks the event' do
-            expect(Gitlab::Tracking).to receive(:event).with(anything, 'list_repositories', {})
-
+          it 'tracks the event', :snowplow do
             go_to_index(format: :json)
+
+            expect_snowplow_event(category: anything, action: 'list_repositories')
           end
 
           it 'creates a root container repository' do
@@ -132,11 +131,12 @@ RSpec.describe Projects::Registry::RepositoriesController do
           expect(response).to have_gitlab_http_status(:no_content)
         end
 
-        it 'tracks the event' do
-          expect(Gitlab::Tracking).to receive(:event).with(anything, 'delete_repository', {})
+        it 'tracks the event', :snowplow do
           allow(DeleteContainerRepositoryWorker).to receive(:perform_async).with(user.id, repository.id)
 
           delete_repository(repository)
+
+          expect_snowplow_event(category: anything, action: 'delete_repository')
         end
       end
     end

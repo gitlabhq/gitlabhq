@@ -75,7 +75,7 @@ module QA
           end
         else
           Page::Main::Login.perform do |login|
-            login.switch_to_register_tab
+            login.switch_to_register_page
           end
           Page::Main::SignUp.perform do |signup|
             signup.sign_up!(self)

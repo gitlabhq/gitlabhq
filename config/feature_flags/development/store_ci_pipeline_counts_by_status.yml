@@ -1,7 +1,0 @@
----
-name: store_ci_pipeline_counts_by_status
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43027
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/254721
-type: development
-group: group::analytics
-default_enabled: true

@@ -13,6 +13,8 @@ class Projects::ServicesController < Projects::ApplicationController
   before_action :redirect_deprecated_prometheus_service, only: [:update]
   before_action only: :edit do
     push_frontend_feature_flag(:jira_issues_integration, @project, type: :licensed, default_enabled: true)
+    push_frontend_feature_flag(:jira_vulnerabilities_integration, @project, type: :licensed, default_enabled: true)
+    push_frontend_feature_flag(:jira_for_vulnerabilities, @project, type: :development, default_enabled: false)
   end
 
   respond_to :html
@@ -70,7 +72,7 @@ class Projects::ServicesController < Projects::ApplicationController
       return { error: true, message: s_('Integrations|Connection failed. Please check your settings.'), service_response: result[:message].to_s, test_failed: true }
     end
 
-    {}
+    result[:data].presence || {}
   rescue Gitlab::HTTP::BlockedUrlError => e
     { error: true, message: s_('Integrations|Connection failed. Please check your settings.'), service_response: e.message, test_failed: true }
   end

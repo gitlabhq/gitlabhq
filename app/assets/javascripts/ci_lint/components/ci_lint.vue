@@ -19,7 +19,11 @@ export default {
       type: String,
       required: true,
     },
-    helpPagePath: {
+    lintHelpPagePath: {
+      type: String,
+      required: true,
+    },
+    pipelineSimulationHelpPagePath: {
       type: String,
       required: true,
     },
@@ -27,6 +31,7 @@ export default {
   data() {
     return {
       content: '',
+      loading: false,
       valid: false,
       errors: null,
       warnings: null,
@@ -44,6 +49,7 @@ export default {
   },
   methods: {
     async lint() {
+      this.loading = true;
       try {
         const {
           data: {
@@ -62,6 +68,8 @@ export default {
       } catch (error) {
         this.apiError = error;
         this.isErrorDismissed = false;
+      } finally {
+        this.loading = false;
       }
     },
     clear() {
@@ -93,6 +101,7 @@ export default {
       <div class="gl-display-flex gl-align-items-center">
         <gl-button
           class="gl-mr-4"
+          :loading="loading"
           category="primary"
           variant="success"
           data-testid="ci-lint-validate"
@@ -101,7 +110,7 @@ export default {
         >
         <gl-form-checkbox v-model="dryRun"
           >{{ __('Simulate a pipeline created for the default branch') }}
-          <gl-link :href="helpPagePath" target="_blank"
+          <gl-link :href="pipelineSimulationHelpPagePath" target="_blank"
             ><gl-icon class="gl-text-blue-600" name="question-o"/></gl-link
         ></gl-form-checkbox>
       </div>
@@ -115,6 +124,7 @@ export default {
       :errors="errors"
       :warnings="warnings"
       :dry-run="dryRun"
+      :lint-help-page-path="lintHelpPagePath"
     />
   </div>
 </template>

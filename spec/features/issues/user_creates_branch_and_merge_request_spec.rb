@@ -250,7 +250,7 @@ RSpec.describe 'User creates branch and merge request on issue page', :js do
 
   def test_selection_mark(li_create_branch, li_create_merge_request, button_create_target, button_create_merge_request)
     page.within(li_create_merge_request) do
-      expect(page).to have_css('i.fa.fa-check')
+      expect(page).to have_selector('[data-testid="check-icon"]')
       expect(button_create_target).to have_text('Create merge request')
       expect(button_create_merge_request).to have_text('Create merge request')
     end
@@ -258,7 +258,7 @@ RSpec.describe 'User creates branch and merge request on issue page', :js do
     li_create_branch.click
 
     page.within(li_create_branch) do
-      expect(page).to have_css('i.fa.fa-check')
+      expect(page).to have_selector('[data-testid="check-icon"]')
       expect(button_create_target).to have_text('Create branch')
       expect(button_create_merge_request).to have_text('Create branch')
     end

@@ -10,7 +10,7 @@ description: What to include in GitLab documentation pages.
 Use these standards to contribute content to the GitLab documentation.
 
 Before getting started, familiarize yourself with [GitLab's Documentation guidelines](index.md)
-and the [Documentation Style Guide](styleguide.md).
+and the [Documentation Style Guide](styleguide/index.md).
 
 ## Components of a documentation page
 
@@ -39,7 +39,7 @@ pre-deployment and post-deployment tasks.
 
 ## Template for new docs
 
-Follow the [folder structure and file name guidelines](styleguide.md#folder-structure-overview)
+Follow the [folder structure and file name guidelines](styleguide/index.md#folder-structure-overview)
 and create a new topic by using this template:
 
 ```markdown
@@ -160,9 +160,9 @@ commented out to help encourage others to add to it in the future. -->
 
 Notes:
 
-- (1): Apply the [tier badges](styleguide.md#product-badges) accordingly.
+- (1): Apply the [tier badges](styleguide/index.md#product-badges) accordingly.
 - (2): Apply the correct format for the
-       [GitLab version that introduces the feature](styleguide.md#gitlab-versions-and-tiers).
+       [GitLab version that introduces the feature](styleguide/index.md#gitlab-versions-and-tiers).
 ```
 
 ## Help and feedback section
@@ -230,7 +230,6 @@ Consider the following guidelines when offering examples:
 - Better and best cases can be considered part of the good case(s) code block.
   In the same code block, precede each with comments: `# Better` and `# Best`.
 
-NOTE: **Note:**
 Although the bad-then-good approach is acceptable for the GitLab development
 guidelines, do not use it for user documentation. For user documentation, use
 *Do* and *Don't*. For examples, see the [Pajamas Design System](https://design.gitlab.com/content/punctuation/).

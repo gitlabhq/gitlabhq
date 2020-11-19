@@ -1,0 +1,5 @@
+---
+title: Fix viewing GitHub-imported diff notes in discussions
+merge_request: 45920
+author:
+type: fixed

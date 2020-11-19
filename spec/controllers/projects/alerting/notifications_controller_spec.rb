@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::Alerting::NotificationsController do
   let_it_be(:project) { create(:project) }
   let_it_be(:environment) { create(:environment, project: project) }
+  let(:params) { project_params }
 
   describe 'POST #create' do
     around do |example|
@@ -20,7 +21,7 @@ RSpec.describe Projects::Alerting::NotificationsController do
       end
 
       def make_request
-        post :create, params: project_params, body: payload.to_json, as: :json
+        post :create, params: params, body: payload.to_json, as: :json
       end
 
       context 'when notification service succeeds' do
@@ -53,26 +54,69 @@ RSpec.describe Projects::Alerting::NotificationsController do
 
       context 'bearer token' do
         context 'when set' do
-          it 'extracts bearer token' do
-            request.headers['HTTP_AUTHORIZATION'] = 'Bearer some token'
+          context 'when extractable' do
+            before do
+              request.headers['HTTP_AUTHORIZATION'] = 'Bearer some token'
+            end
 
-            expect(notify_service).to receive(:execute).with('some token')
+            it 'extracts bearer token' do
+              expect(notify_service).to receive(:execute).with('some token', nil)
 
-            make_request
+              make_request
+            end
+
+            context 'with a corresponding integration' do
+              context 'with integration parameters specified' do
+                let_it_be_with_reload(:integration) { create(:alert_management_http_integration, project: project) }
+                let(:params) { project_params(endpoint_identifier: integration.endpoint_identifier, name: integration.name) }
+
+                context 'the integration is active' do
+                  it 'extracts and finds the integration' do
+                    expect(notify_service).to receive(:execute).with('some token', integration)
+
+                    make_request
+                  end
+                end
+
+                context 'when the integration is inactive' do
+                  before do
+                    integration.update!(active: false)
+                  end
+
+                  it 'does not find an integration' do
+                    expect(notify_service).to receive(:execute).with('some token', nil)
+
+                    make_request
+                  end
+                end
+              end
+
+              context 'without integration parameters specified' do
+                let_it_be(:integration) { create(:alert_management_http_integration, :legacy, project: project) }
+
+                it 'extracts and finds the legacy integration' do
+                  expect(notify_service).to receive(:execute).with('some token', integration)
+
+                  make_request
+                end
+              end
+            end
           end
 
-          it 'pass nil if cannot extract a non-bearer token' do
-            request.headers['HTTP_AUTHORIZATION'] = 'some token'
+          context 'when inextractable' do
+            it 'passes nil for a non-bearer token' do
+              request.headers['HTTP_AUTHORIZATION'] = 'some token'
 
-            expect(notify_service).to receive(:execute).with(nil)
+              expect(notify_service).to receive(:execute).with(nil, nil)
 
-            make_request
+              make_request
+            end
           end
         end
 
         context 'when missing' do
           it 'passes nil' do
-            expect(notify_service).to receive(:execute).with(nil)
+            expect(notify_service).to receive(:execute).with(nil, nil)
 
             make_request
           end

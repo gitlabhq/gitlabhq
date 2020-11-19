@@ -2,6 +2,20 @@
 
 require_relative '../qa'
 
+scenario = ARGV.shift
+
+if scenario.to_s.empty?
+  puts <<~INFO
+    For instructions on how to run tests, please see https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/README.md
+
+    If you are using gitlab-qa, please see https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md
+
+    If you see this message after starting a docker container and you intended to launch an omnibus-gitlab instance, try removing `-qa` from the image name.
+  INFO
+
+  exit
+end
+
 QA::Scenario
-  .const_get(ARGV.shift)
+  .const_get(scenario)
   .launch!(ARGV)

@@ -95,12 +95,13 @@ While you can view and manage the full details of an issue on the [issue page](#
 you can also work with multiple issues at a time using the [Issues List](#issues-list),
 [Issue Boards](#issue-boards), Issue references, and [Epics](#epics)**(PREMIUM)**.
 
-Key actions for Issues include:
+Key actions for issues include:
 
 - [Creating issues](managing_issues.md#create-a-new-issue)
 - [Moving issues](managing_issues.md#moving-issues)
 - [Closing issues](managing_issues.md#closing-issues)
 - [Deleting issues](managing_issues.md#deleting-issues)
+- [Promoting issues](managing_issues.md#promote-an-issue-to-an-epic) **(PREMIUM)**
 
 ### Issue page
 
@@ -189,6 +190,8 @@ requires [GraphQL](../../../api/graphql/index.md) to be enabled.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36427) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.10.
 > - Health status of closed issues [can't be edited](https://gitlab.com/gitlab-org/gitlab/-/issues/220867) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.4 and later.
+> - Issue health status visible in issue lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45141) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.6.
+
 To help you track the status of your issues, you can assign a status to each issue to flag work
 that's progressing as planned or needs attention to keep on schedule:
 
@@ -201,7 +204,7 @@ that's progressing as planned or needs attention to keep on schedule:
 After an issue is closed, its health status can't be edited and the "Edit" button becomes disabled
 until the issue is reopened.
 
-You can then see issue statuses on the
+You can then see issue statuses in the [issue list](#issues-list) and the
 [Epic tree](../../group/epics/index.md#issue-health-status-in-epic-tree).
 
 #### Disable issue health status

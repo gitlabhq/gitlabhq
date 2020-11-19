@@ -23,7 +23,6 @@ module QA
           element :merge_button
           element :fast_forward_message, 'Fast-forward merge without a merge commit' # rubocop:disable QA/ElementWithPattern
           element :merge_moment_dropdown
-          element :merge_when_pipeline_succeeds_option
           element :merge_immediately_option
         end
 
@@ -178,6 +177,10 @@ module QA
           has_element?(:file_name_content, text: file_name)
         end
 
+        def has_no_file?(file_name)
+          has_no_element?(:file_name_content, text: file_name)
+        end
+
         def has_merge_button?
           refresh
 
@@ -217,6 +220,11 @@ module QA
           finished_loading?
 
           raise "Merge did not appear to be successful" unless merged?
+        end
+
+        def merge_immediately!
+          click_element(:merge_moment_dropdown)
+          click_element(:merge_immediately_option)
         end
 
         def merged?

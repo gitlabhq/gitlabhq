@@ -27,12 +27,17 @@ RSpec.describe TestCaseEntity do
     context 'when test case is failed' do
       let(:test_case) { create_test_case_rspec_failed }
 
+      before do
+        test_case.set_recent_failures(3, 'master')
+      end
+
       it 'contains correct test case details' do
         expect(subject[:status]).to eq('failed')
         expect(subject[:name]).to eq('Test#sum when a is 1 and b is 3 returns summary')
         expect(subject[:classname]).to eq('spec.test_spec')
         expect(subject[:file]).to eq('./spec/test_spec.rb')
         expect(subject[:execution_time]).to eq(2.22)
+        expect(subject[:recent_failures]).to eq({ count: 3, base_branch: 'master' })
       end
     end
 
@@ -42,7 +47,7 @@ RSpec.describe TestCaseEntity do
       end
 
       context 'when attachment is present' do
-        let(:test_case) { build(:test_case, :failed_with_attachment, job: job) }
+        let(:test_case) { build(:report_test_case, :failed_with_attachment, job: job) }
 
         it 'returns the attachment_url' do
           expect(subject).to include(:attachment_url)
@@ -50,7 +55,7 @@ RSpec.describe TestCaseEntity do
       end
 
       context 'when attachment is not present' do
-        let(:test_case) { build(:test_case, job: job) }
+        let(:test_case) { build(:report_test_case, job: job) }
 
         it 'returns a nil attachment_url' do
           expect(subject[:attachment_url]).to be_nil
@@ -64,7 +69,7 @@ RSpec.describe TestCaseEntity do
       end
 
       context 'when attachment is present' do
-        let(:test_case) { build(:test_case, :failed_with_attachment, job: job) }
+        let(:test_case) { build(:report_test_case, :failed_with_attachment, job: job) }
 
         it 'returns no attachment_url' do
           expect(subject).not_to include(:attachment_url)
@@ -72,7 +77,7 @@ RSpec.describe TestCaseEntity do
       end
 
       context 'when attachment is not present' do
-        let(:test_case) { build(:test_case, job: job) }
+        let(:test_case) { build(:report_test_case, job: job) }
 
         it 'returns no attachment_url' do
           expect(subject).not_to include(:attachment_url)

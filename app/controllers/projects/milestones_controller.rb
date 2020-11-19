@@ -7,7 +7,7 @@ class Projects::MilestonesController < Projects::ApplicationController
   before_action :check_issuables_available!
   before_action :milestone, only: [:edit, :update, :destroy, :show, :issues, :merge_requests, :participants, :labels, :promote]
   before_action do
-    push_frontend_feature_flag(:burnup_charts, @project)
+    push_frontend_feature_flag(:burnup_charts, @project, default_enabled: true)
   end
 
   # Allow read any milestone

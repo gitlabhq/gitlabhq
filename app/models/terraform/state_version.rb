@@ -6,6 +6,7 @@ module Terraform
 
     belongs_to :terraform_state, class_name: 'Terraform::State', optional: false
     belongs_to :created_by_user, class_name: 'User', optional: true
+    belongs_to :build, class_name: 'Ci::Build', optional: true, foreign_key: :ci_build_id
 
     scope :ordered_by_version_desc, -> { order(version: :desc) }
 

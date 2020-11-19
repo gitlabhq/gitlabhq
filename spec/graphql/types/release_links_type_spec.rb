@@ -8,8 +8,11 @@ RSpec.describe GitlabSchema.types['ReleaseLinks'] do
   it 'has the expected fields' do
     expected_fields = %w[
       selfUrl
-      mergeRequestsUrl
-      issuesUrl
+      openedMergeRequestsUrl
+      mergedMergeRequestsUrl
+      closedMergeRequestsUrl
+      openedIssuesUrl
+      closedIssuesUrl
       editUrl
     ]
 

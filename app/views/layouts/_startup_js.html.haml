@@ -25,7 +25,7 @@
       };
 
       gl.startup_graphql_calls = gl.startup_graphql_calls.map(call => ({
-        operationName: call.query.match(/^query (.+)\(/)[1],
+        ...call,
         fetchCall: fetch(url, {
           ...opts,
           credentials: 'same-origin',

@@ -12,7 +12,9 @@ module QA
           login_page.login('user1', 'user1pass')
         end
 
-        expect(page).to have_content('Welcome to GitLab')
+        Page::Dashboard::Welcome.perform do |welcome|
+          expect(welcome).to have_content('Welcome to GitLab')
+        end
       end
     end
   end

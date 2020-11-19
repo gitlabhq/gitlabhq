@@ -1,0 +1,5 @@
+---
+title: Expose moved and movedTo attributes in Issues query
+merge_request: 46447
+author:
+type: added

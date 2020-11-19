@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Vue
 
 To get started with Vue, read through [their documentation](https://vuejs.org/v2/guide/).
@@ -47,7 +53,7 @@ of the new feature should be.
 The Store and the Service should be imported and initialized in this file and
 provided as a prop to the main component.
 
-Be sure to read about [page-specific JavaScript](./performance.md#page-specific-javascript).
+Be sure to read about [page-specific JavaScript](performance.md#page-specific-javascript).
 
 ### Bootstrapping Gotchas
 
@@ -56,33 +62,36 @@ Be sure to read about [page-specific JavaScript](./performance.md#page-specific-
 While mounting a Vue application, you might need to provide data from Rails to JavaScript.
 To do that, you can use the `data` attributes in the HTML element and query them while mounting the application.
 
-_Note:_ You should only do this while initializing the application, because the mounted element will be replaced with Vue-generated DOM.
+You should only do this while initializing the application, because the mounted element will be replaced with Vue-generated DOM.
 
 The advantage of providing data from the DOM to the Vue instance through `props` in the `render` function
 instead of querying the DOM inside the main Vue component is avoiding the need to create a fixture or an HTML element in the unit test,
-which will make the tests easier. See the following example:
+which will make the tests easier.
+
+See the following example, also, please refer to our [Vue style guide](style/vue.md#basic-rules) for additional
+information on why we explicitly declare the data being passed into the Vue app;
 
 ```javascript
 // haml
 #js-vue-app{ data: { endpoint: 'foo' }}
 
 // index.js
-document.addEventListener('DOMContentLoaded', () => new Vue({
-  el: '#js-vue-app',
-  data() {
-    const dataset = this.$options.el.dataset;
-    return {
-      endpoint: dataset.endpoint,
-    };
-  },
+const el = document.getElementById('js-vue-app');
+
+if (!el) return false;
+
+const { endpoint } = el.dataset;
+
+return new Vue({
+  el,
   render(createElement) {
     return createElement('my-component', {
       props: {
-        endpoint: this.endpoint,
+        endpoint
       },
     });
   },
-}));
+}
 ```
 
 > When adding an `id` attribute to mount a Vue application, please make sure this `id` is unique across the codebase
@@ -94,7 +103,7 @@ By following this practice, we can avoid the need to mock the `gl` object, which
 It should be done while initializing our Vue instance, and the data should be provided as `props` to the main component:
 
 ```javascript
-document.addEventListener('DOMContentLoaded', () => new Vue({
+return new Vue({
   el: '.js-vue-app',
   render(createElement) {
     return createElement('my-component', {
@@ -103,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
       },
     });
   },
-}));
+});
 ```
 
 #### Accessing feature flags
@@ -111,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
 Use Vue's [provide/inject](https://vuejs.org/v2/api/#provide-inject) mechanism
 to make feature flags available to any descendant components in a Vue
 application. The `glFeatures` object is already provided in `commons/vue.js`, so
-only the mixin is required to utilize the flags:
+only the mixin is required to use the flags:
 
 ```javascript
 // An arbitrary descendant component
@@ -179,12 +188,39 @@ Check this [page](vuex.md) for more details.
 - It is acceptable for Vue to listen to existing jQuery events using jQuery event listeners.
 - It is not recommended to add new jQuery events for Vue to interact with jQuery.
 
+### Mixing Vue and JavaScript classes (in the data function)
+
+In the [Vue documentation](https://vuejs.org/v2/api/#Options-Data) the Data function/object is defined as follows:
+
+> The data object for the Vue instance. Vue will recursively convert its properties into getter/setters to make it “reactive”. The object must be plain: native objects such as browser API objects and prototype properties are ignored. A rule of thumb is that data should just be data - it is not recommended to observe objects with their own stateful behavior.
+
+Based on the Vue guidance:
+
+- **Do not** use or create a JavaScript class in your [data function](https://vuejs.org/v2/api/#data), such as `user: new User()`.
+- **Do not** add new JavaScript class implementations.
+- **Do** use [GraphQL](../api_graphql_styleguide.md), [Vuex](vuex.md) or a set of components if cannot use simple primitives or objects.
+- **Do** maintain existing implementations using such approaches.
+- **Do** Migrate components to a pure object model when there are substantial changes to it.
+- **Do** add business logic to helpers or utils, so you can test them separately from your component.
+
+#### Why
+
+There are additional reasons why having a JavaScript class presents maintainability issues on a huge codebase:
+
+- Once a class is created, it is easy to extend it in a way that can infringe Vue reactivity and best practices.
+- A class adds a layer of abstraction, which makes the component API and its inner workings less clear.
+- It makes it harder to test. Since the class is instantiated by the component data function, it is harder to 'manage' component and class separately.
+- Adding OOP to a functional codebase adds yet another way of writing code, reducing consistency and clarity.
+
 ## Style guide
 
 Please refer to the Vue section of our [style guide](style/vue.md)
-for best practices while writing your Vue components and templates.
+for best practices while writing and testing your Vue components and templates.
 
 ## Testing Vue Components
+
+Please refer to the [Vue testing style guide](style/vue.md#vue-testing)
+for guidelines and best practices for testing your Vue components.
 
 Each Vue component has a unique output. This output is always present in the render function.
 
@@ -226,7 +262,7 @@ describe('~/todos/app.vue', () => {
     mock.restore();
   });
 
-  // NOTE: It is very helpful to separate setting up the component from
+  // It is very helpful to separate setting up the component from
   // its collaborators (i.e. Vuex, axios, etc.)
   const createWrapper = (props = {}) => {
     wrapper = shallowMount(App, {
@@ -236,7 +272,7 @@ describe('~/todos/app.vue', () => {
       },
     });
   };
-  // NOTE: Helper methods greatly help test maintainability and readability.
+  // Helper methods greatly help test maintainability and readability.
   const findLoader = () => wrapper.find(GlLoadingIcon);
   const findAddButton = () => wrapper.find('[data-testid="add-button"]');
   const findTextInput = () => wrapper.find('[data-testid="text-input"]');

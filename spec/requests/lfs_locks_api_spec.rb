@@ -3,24 +3,38 @@
 require 'spec_helper'
 
 RSpec.describe 'Git LFS File Locking API' do
+  include LfsHttpHelpers
   include WorkhorseHelpers
 
-  let(:project) { create(:project) }
-  let(:maintainer) { create(:user) }
-  let(:developer) { create(:user) }
-  let(:guest)     { create(:user) }
-  let(:path)      { 'README.md' }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:maintainer) { create(:user) }
+  let_it_be(:developer) { create(:user) }
+  let_it_be(:reporter) { create(:user) }
+  let_it_be(:guest) { create(:user) }
+  let_it_be(:path) { 'README.md' }
+
+  let(:user) { developer }
   let(:headers) do
     {
-      'Authorization' => authorization
+      'Authorization' => authorize_user
     }.compact
   end
 
   shared_examples 'unauthorized request' do
-    context 'when user is not authorized' do
-      let(:authorization) { authorize_user(guest) }
+    context 'when user does not have download permission' do
+      let(:user) { guest }
 
-      it 'returns a forbidden 403 response' do
+      it 'returns a 404 response' do
+        post_lfs_json url, body, headers
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when user does not have upload permission' do
+      let(:user) { reporter }
+
+      it 'returns a 403 response' do
         post_lfs_json url, body, headers
 
         expect(response).to have_gitlab_http_status(:forbidden)
@@ -31,15 +45,15 @@ RSpec.describe 'Git LFS File Locking API' do
   before do
     allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
 
-    project.add_developer(maintainer)
+    project.add_maintainer(maintainer)
     project.add_developer(developer)
+    project.add_reporter(reporter)
     project.add_guest(guest)
   end
 
   describe 'Create File Lock endpoint' do
-    let(:url)           { "#{project.http_url_to_repo}/info/lfs/locks" }
-    let(:authorization) { authorize_user(developer) }
-    let(:body)          { { path: path } }
+    let(:url) { "#{project.http_url_to_repo}/info/lfs/locks" }
+    let(:body) { { path: path } }
 
     include_examples 'unauthorized request'
 
@@ -76,8 +90,7 @@ RSpec.describe 'Git LFS File Locking API' do
   end
 
   describe 'Listing File Locks endpoint' do
-    let(:url)           { "#{project.http_url_to_repo}/info/lfs/locks" }
-    let(:authorization) { authorize_user(developer) }
+    let(:url) { "#{project.http_url_to_repo}/info/lfs/locks" }
 
     include_examples 'unauthorized request'
 
@@ -95,8 +108,7 @@ RSpec.describe 'Git LFS File Locking API' do
   end
 
   describe 'List File Locks for verification endpoint' do
-    let(:url)           { "#{project.http_url_to_repo}/info/lfs/locks/verify" }
-    let(:authorization) { authorize_user(developer) }
+    let(:url) { "#{project.http_url_to_repo}/info/lfs/locks/verify" }
 
     include_examples 'unauthorized request'
 
@@ -116,9 +128,8 @@ RSpec.describe 'Git LFS File Locking API' do
   end
 
   describe 'Delete File Lock endpoint' do
-    let!(:lock)         { lock_file('README.md', developer) }
-    let(:url)           { "#{project.http_url_to_repo}/info/lfs/locks/#{lock[:id]}/unlock" }
-    let(:authorization) { authorize_user(developer) }
+    let!(:lock) { lock_file('README.md', developer) }
+    let(:url) { "#{project.http_url_to_repo}/info/lfs/locks/#{lock[:id]}/unlock" }
 
     include_examples 'unauthorized request'
 
@@ -136,7 +147,7 @@ RSpec.describe 'Git LFS File Locking API' do
       end
 
       context 'when a maintainer uses force' do
-        let(:authorization) { authorize_user(maintainer) }
+        let(:user) { maintainer }
 
         it 'deletes the lock' do
           project.add_maintainer(maintainer)
@@ -152,14 +163,6 @@ RSpec.describe 'Git LFS File Locking API' do
     result = Lfs::LockFileService.new(project, author, { path: path }).execute
 
     result[:lock]
-  end
-
-  def authorize_user(user)
-    ActionController::HttpAuthentication::Basic.encode_credentials(user.username, user.password)
-  end
-
-  def post_lfs_json(url, body = nil, headers = nil)
-    post(url, params: body.try(:to_json), headers: (headers || {}).merge('Content-Type' => LfsRequest::CONTENT_TYPE))
   end
 
   def do_get(url, params = nil, headers = nil)

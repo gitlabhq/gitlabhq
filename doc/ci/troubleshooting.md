@@ -225,7 +225,7 @@ should disable **Pipelines must succeed** so you can accept merge requests.
 
 Pipeline configuration warnings are shown when you:
 
-- [Validate configuration with the CI Lint tool](yaml/README.md#validate-the-gitlab-ciyml).
+- [Validate configuration with the CI Lint tool](yaml/README.md).
 - [Manually run a pipeline](pipelines/index.md#run-a-pipeline-manually).
 
 ### "Job may allow multiple pipelines to run for a single action" warning

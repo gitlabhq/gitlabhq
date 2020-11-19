@@ -3,6 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import FileRow from '~/vue_shared/components/file_row.vue';
 import FileHeader from '~/vue_shared/components/file_row_header.vue';
+import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { escapeFileUrl } from '~/lib/utils/url_utility';
 
 describe('File row component', () => {
@@ -150,5 +151,19 @@ describe('File row component', () => {
     });
 
     expect(wrapper.find('.file-row-name').classes()).toContain('font-weight-bold');
+  });
+
+  it('renders submodule icon', () => {
+    const submodule = true;
+
+    createComponent({
+      file: {
+        ...file(),
+        submodule,
+      },
+      level: 0,
+    });
+
+    expect(wrapper.find(FileIcon).props('submodule')).toBe(submodule);
   });
 });

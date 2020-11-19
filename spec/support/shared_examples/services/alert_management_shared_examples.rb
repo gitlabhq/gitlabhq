@@ -8,11 +8,11 @@ RSpec.shared_examples 'creates an alert management alert' do
   end
 
   it 'executes the alert service hooks' do
-    slack_service = create(:service, type: 'SlackService', project: project, alert_events: true, active: true)
+    expect_next_instance_of(AlertManagement::Alert) do |alert|
+      expect(alert).to receive(:execute_services)
+    end
 
     subject
-
-    expect(ProjectServiceWorker).to have_received(:perform_async).with(slack_service.id, an_instance_of(Hash))
   end
 end
 

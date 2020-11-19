@@ -1,9 +1,0 @@
-%label.label-bold#gitpod
-  = s_('Gitpod')
-= link_to sprite_icon('question-o'), help_page_path('integration/gitpod.md'), target: '_blank', class: 'has-tooltip', title: _('More information')
-.form-group.form-check
-  = f.check_box :gitpod_enabled, class: 'form-check-input'
-  = f.label :gitpod_enabled, class: 'form-check-label' do
-    = s_('Gitpod|Enable Gitpod integration').html_safe
-  .form-text.text-muted
-    = gitpod_enable_description

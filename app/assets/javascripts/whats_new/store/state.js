@@ -1,4 +1,9 @@
 export default {
   open: false,
-  features: null,
+  features: [],
+  fetching: false,
+  drawerBodyHeight: null,
+  pageInfo: {
+    nextPage: null,
+  },
 };

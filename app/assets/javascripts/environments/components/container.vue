@@ -69,7 +69,7 @@ export default {
   <div class="environments-container">
     <gl-loading-icon v-if="isLoading" size="md" class="gl-mt-3" label="Loading environments" />
 
-    <slot name="emptyState"></slot>
+    <slot name="empty-state"></slot>
 
     <div v-if="!isLoading && environments.length > 0" class="table-holder">
       <environment-table

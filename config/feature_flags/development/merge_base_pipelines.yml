@@ -1,7 +1,0 @@
----
-name: merge_base_pipelines
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44648
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/263724
-type: development
-group: group::testing
-default_enabled: false

@@ -18,6 +18,8 @@ RSpec.describe Mutations::MergeRequests::SetMilestone do
       expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
     end
 
+    it_behaves_like 'permission level for merge request mutation is correctly verified'
+
     context 'when the user can update the merge request' do
       before do
         project.add_developer(user)

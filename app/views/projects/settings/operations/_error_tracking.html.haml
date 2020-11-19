@@ -1,4 +1,4 @@
-- return unless can?(current_user, :read_environment, @project)
+- return unless can?(current_user, :admin_operations, @project)
 
 - setting = error_tracking_setting
 

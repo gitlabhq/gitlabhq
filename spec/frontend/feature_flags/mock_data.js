@@ -127,7 +127,7 @@ export const userListStrategy = {
   name: ROLLOUT_STRATEGY_GITLAB_USER_LIST,
   parameters: {},
   scopes: [],
-  userListId: userList.id,
+  userList,
 };
 
 export const percentRolloutStrategy = {

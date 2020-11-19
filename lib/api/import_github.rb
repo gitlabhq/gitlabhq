@@ -2,6 +2,8 @@
 
 module API
   class ImportGithub < ::API::Base
+    feature_category :importers
+
     rescue_from Octokit::Unauthorized, with: :provider_unauthorized
 
     before do
@@ -11,7 +13,7 @@ module API
     helpers do
       def client
         @client ||= if Feature.enabled?(:remove_legacy_github_client)
-                      Gitlab::GithubImport::Client.new(params[:personal_access_token])
+                      Gitlab::GithubImport::Client.new(params[:personal_access_token], host: params[:github_hostname])
                     else
                       Gitlab::LegacyGithubImport::Client.new(params[:personal_access_token], client_options)
                     end
@@ -22,7 +24,7 @@ module API
       end
 
       def client_options
-        {}
+        { host: params[:github_hostname] }
       end
 
       def provider
@@ -43,6 +45,7 @@ module API
       requires :repo_id, type: Integer, desc: 'GitHub repository ID'
       optional :new_name, type: String, desc: 'New repo name'
       requires :target_namespace, type: String, desc: 'Namespace to import repo into'
+      optional :github_hostname, type: String, desc: 'Custom GitHub enterprise hostname'
     end
     post 'import/github' do
       result = Import::GithubService.new(client, current_user, params).execute(access_params, provider)

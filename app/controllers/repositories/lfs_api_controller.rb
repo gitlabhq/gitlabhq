@@ -17,9 +17,9 @@ module Repositories
       end
 
       if download_request?
-        render json: { objects: download_objects! }
+        render json: { objects: download_objects! }, content_type: LfsRequest::CONTENT_TYPE
       elsif upload_request?
-        render json: { objects: upload_objects! }
+        render json: { objects: upload_objects! }, content_type: LfsRequest::CONTENT_TYPE
       else
         raise "Never reached"
       end
@@ -31,6 +31,7 @@ module Repositories
           message: _('Server supports batch API only, please update your Git LFS client to version 1.0.1 and up.'),
           documentation_url: "#{Gitlab.config.gitlab.url}/help"
         },
+        content_type: LfsRequest::CONTENT_TYPE,
         status: :not_implemented
       )
     end

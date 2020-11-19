@@ -6,7 +6,7 @@
 #       multiple nested contexts. This shouldn't count as a violation.
 module CycleAnalyticsHelpers
   module TestGeneration
-    # Generate the most common set of specs that all cycle analytics phases need to have.
+    # Generate the most common set of specs that all value stream analytics phases need to have.
     #
     # Arguments:
     #
@@ -14,10 +14,10 @@ module CycleAnalyticsHelpers
     #                data_fn: A function that returns a hash, constituting initial data for the test case
     #  start_time_conditions: An array of `conditions`. Each condition is an tuple of `condition_name` and `condition_fn`. `condition_fn` is called with
     #                         `context` (no lexical scope, so need to do `context.create` for factories, for example) and `data` (from the `data_fn`).
-    #                         Each `condition_fn` is expected to implement a case which consitutes the start of the given cycle analytics phase.
+    #                         Each `condition_fn` is expected to implement a case which consitutes the start of the given value stream analytics phase.
     #    end_time_conditions: An array of `conditions`. Each condition is an tuple of `condition_name` and `condition_fn`. `condition_fn` is called with
     #                         `context` (no lexical scope, so need to do `context.create` for factories, for example) and `data` (from the `data_fn`).
-    #                         Each `condition_fn` is expected to implement a case which consitutes the end of the given cycle analytics phase.
+    #                         Each `condition_fn` is expected to implement a case which consitutes the end of the given value stream analytics phase.
     #          before_end_fn: This function is run before calling the end time conditions. Used for setup that needs to be run between the start and end conditions.
     #                post_fn: Code that needs to be run after running the end time conditions.
 

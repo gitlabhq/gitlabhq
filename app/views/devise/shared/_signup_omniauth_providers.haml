@@ -1,0 +1,13 @@
+.omniauth-divider.d-flex.align-items-center.text-center
+  = _("or")
+%label.label-bold.d-block
+  = _("Create an account using:")
+- providers = enabled_button_based_providers
+.d-flex.justify-content-between.flex-wrap
+  - providers.each do |provider|
+    - has_icon = provider_has_icon?(provider)
+    = link_to omniauth_authorize_path(:user, provider), method: :post, class: "gl-button btn d-flex align-items-center omniauth-btn text-left oauth-login mb-2 p-2 #{qa_class_for_provider(provider)}", id: "oauth-login-#{provider}" do
+      - if has_icon
+        = provider_image_tag(provider)
+      %span.ml-2
+        = label_for_provider(provider)

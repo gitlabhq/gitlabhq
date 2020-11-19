@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Accessibility
 
 Using semantic HTML plays a key role when it comes to accessibility.
@@ -6,7 +12,7 @@ Using semantic HTML plays a key role when it comes to accessibility.
 
 WAI-ARIA (the Accessible Rich Internet Applications specification) defines a way to make Web content and Web applications more accessible to people with disabilities.
 
-> Note: It is [recommended](https://www.w3.org/TR/using-aria/#notes2) to use semantic elements as the primary method to achieve accessibility rather than adding aria attributes. Adding aria attributes should be seen as a secondary method for creating accessible elements.
+The W3C recommends [using semantic elements](https://www.w3.org/TR/using-aria/#notes2) as the primary method to achieve accessibility rather than adding aria attributes. Adding aria attributes should be seen as a secondary method for creating accessible elements.
 
 ### Role
 

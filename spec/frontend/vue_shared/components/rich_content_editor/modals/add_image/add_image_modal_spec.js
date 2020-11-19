@@ -15,10 +15,7 @@ describe('Add Image Modal', () => {
   const findDescriptionInput = () => wrapper.find({ ref: 'descriptionInput' });
 
   beforeEach(() => {
-    wrapper = shallowMount(AddImageModal, {
-      provide: { glFeatures: { sseImageUploads: true } },
-      propsData,
-    });
+    wrapper = shallowMount(AddImageModal, { propsData });
   });
 
   describe('when content is loaded', () => {

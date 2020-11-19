@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # How Git object deduplication works in GitLab
 
 When a GitLab user [forks a project](../user/project/repository/forking_workflow.md),
@@ -27,7 +33,7 @@ configuration. Objects in A that are not in B will remain in A. For this
 to work, it is of course critical that **no objects ever get deleted from
 B** because A might need them.
 
-DANGER: **Danger:**
+DANGER: **Warning:**
 Do not run `git prune` or `git gc` in pool repositories! This can
 cause data loss in "real" repositories that depend on the pool in
 question.
@@ -156,7 +162,7 @@ repository and a pool.
 
 ### Pool existence
 
-If GitLab thinks a pool repository exists (i.e. it exists according to
+If GitLab thinks a pool repository exists (i.e. it exists according to
 SQL), but it does not on the Gitaly server, then it will be created on
 the fly by Gitaly.
 

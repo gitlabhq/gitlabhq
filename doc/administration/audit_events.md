@@ -11,6 +11,8 @@ GitLab offers a way to view the changes made within the GitLab server for owners
 GitLab system administrators can also take advantage of the logs located on the
 file system. See [the logs system documentation](logs.md) for more details.
 
+You can generate an [Audit report](audit_reports.md) of audit events.
+
 ## Overview
 
 **Audit Events** is a tool for GitLab owners and administrators
@@ -96,9 +98,10 @@ From there, you can see the following actions:
 - Permission to approve merge requests by authors was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7531) in GitLab 12.9)
 - Number of required approvals was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7531) in GitLab 12.9)
 - Added or removed users and groups from project approval groups ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213603) in GitLab 13.2)
-- Project CI/CD variable added, removed, or protected status changed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30857) in GitLab 13.4.
+- Project CI/CD variable added, removed, or protected status changed ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30857) in GitLab 13.4)
+- User was approved via Admin Area ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276250) in GitLab 13.6)
 
-Project events can also be accessed via the [Project Audit Events API](../api/audit_events.md#project-audit-events)
+Project events can also be accessed via the [Project Audit Events API](../api/audit_events.md#project-audit-events).
 
 ### Instance events **(PREMIUM ONLY)**
 
@@ -113,8 +116,8 @@ To view the server-wide administrator log, visit **Admin Area > Monitoring > Aud
 In addition to the group and project events, the following user actions are also
 recorded:
 
-- Failed Logins
 - Sign-in events and the authentication type (such as standard, LDAP, or OmniAuth)
+- Failed sign-ins
 - Added SSH key
 - Added or removed email
 - Changed password
@@ -127,6 +130,8 @@ recorded:
 - User was blocked via Admin Area ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/251) in GitLab 12.8)
 - User was blocked via API ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25872) in GitLab 12.9)
 - Failed second-factor authentication attempt ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16826) in GitLab 13.5)
+- A user's personal access token was successfully created or revoked ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276921) in GitLab 13.6)
+- A failed attempt to create or revoke a user's personal access token ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276921) in GitLab 13.6)
 
 It's possible to filter particular actions by choosing an audit data type from
 the filter dropdown box. You can further filter by specific group, project, or user
@@ -134,7 +139,7 @@ the filter dropdown box. You can further filter by specific group, project, or u
 
 ![audit log](img/audit_log.png)
 
-Instance events can also be accessed via the [Instance Audit Events API](../api/audit_events.md#instance-audit-events)
+Instance events can also be accessed via the [Instance Audit Events API](../api/audit_events.md#instance-audit-events).
 
 ### Missing events
 
@@ -174,6 +179,12 @@ the steps bellow.
    ```ruby
    Feature.enable(:repository_push_audit_event)
    ```
+
+## Retention policy
+
+On GitLab.com, Audit Event records become subject to deletion after 400 days, or when your license is downgraded to a tier that does not include access to Audit Events. Data that is subject to deletion will be deleted at GitLab's discretion, possibly without additional notice.
+
+If you require a longer retention period, you should independently archive your Audit Event data, which you can retrieve through the [Audit Events API](../api/audit_events.md).
 
 ## Export to CSV **(PREMIUM ONLY)**
 
@@ -228,7 +239,7 @@ The first row contains the headers, which are listed in the following table alon
 
 ### Limitation
 
-The Audit Log CSV file size is limited to a maximum of `15 MB`.
+The Audit Log CSV file size is limited to a maximum of `100,000` events.
 The remaining records are truncated when this limit is reached.
 
 ### Enable or disable Audit Log Export to CSV

@@ -1,7 +1,0 @@
----
-name: one_dimensional_matrix
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42170
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/256062
-type: development
-group: group::pipeline authoring
-default_enabled: true

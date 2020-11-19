@@ -1,5 +1,12 @@
 # frozen_string_literal: true
 
+#  $" is $LOADED_FEATURES, but RuboCop didn't like it
+if $".include?(File.expand_path('spec_helper.rb', __dir__))
+  # There's no need to load anything here if spec_helper is already loaded
+  # because spec_helper is more extensive than fast_spec_helper
+  return
+end
+
 require 'bundler/setup'
 
 ENV['GITLAB_ENV'] = 'test'

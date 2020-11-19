@@ -489,6 +489,7 @@ ProjectHook:
 - confidential_issues_events
 - confidential_note_events
 - repository_update_events
+- releases_events
 ProtectedBranch:
 - id
 - project_id
@@ -575,6 +576,7 @@ ProjectFeature:
 - repository_access_level
 - pages_access_level
 - metrics_dashboard_access_level
+- requirements_access_level
 - created_at
 - updated_at
 ProtectedBranch::MergeAccessLevel:
@@ -683,6 +685,7 @@ ProjectCiCdSetting:
 ProjectSetting:
 - allow_merge_on_skipped_pipeline
 - has_confluence
+- has_vulnerabilities
 ProtectedEnvironment:
 - id
 - project_id
@@ -771,6 +774,7 @@ ExternalPullRequest:
 - target_sha
 DesignManagement::Design:
 - id
+- iid
 - project_id
 - filename
 - relative_position
@@ -858,3 +862,25 @@ ProjectSecuritySetting:
 IssuableSla:
   - issue_id
   - due_at
+PushRule:
+  - force_push_regex
+  - delete_branch_regex
+  - commit_message_regex
+  - author_email_regex
+  - file_name_regex
+  - branch_name_regex
+  - commit_message_negative_regex
+  - max_file_size
+  - deny_delete_tag
+  - member_check
+  - is_sample
+  - prevent_secrets
+  - reject_unsigned_commits
+  - commit_committer_check
+  - regexp_uses_re2
+MergeRequest::CleanupSchedule:
+- id
+- scheduled_at
+- completed_at
+- created_at
+- updated_at

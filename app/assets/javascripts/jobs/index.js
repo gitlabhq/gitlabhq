@@ -10,27 +10,31 @@ export default () => {
   // Let's start initializing the store (i.e. fetching data) right away
   store.dispatch('init', element.dataset);
 
+  const {
+    artifactHelpUrl,
+    deploymentHelpUrl,
+    runnerHelpUrl,
+    runnerSettingsUrl,
+    variablesSettingsUrl,
+    subscriptionsMoreMinutesUrl,
+    endpoint,
+    pagePath,
+    logState,
+    buildStatus,
+    projectPath,
+    retryOutdatedJobDocsUrl,
+  } = element.dataset;
+
   return new Vue({
     el: element,
     store,
     components: {
       JobApp,
     },
+    provide: {
+      retryOutdatedJobDocsUrl,
+    },
     render(createElement) {
-      const {
-        artifactHelpUrl,
-        deploymentHelpUrl,
-        runnerHelpUrl,
-        runnerSettingsUrl,
-        variablesSettingsUrl,
-        subscriptionsMoreMinutesUrl,
-        endpoint,
-        pagePath,
-        logState,
-        buildStatus,
-        projectPath,
-      } = element.dataset;
-
       return createElement('job-app', {
         props: {
           artifactHelpUrl,

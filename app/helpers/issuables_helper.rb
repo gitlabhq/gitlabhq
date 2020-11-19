@@ -76,7 +76,6 @@ module IssuablesHelper
                        when Issue
                          IssueSerializer
                        when MergeRequest
-                         opts[:experiment_enabled] = :suggest_pipeline if experiment_enabled?(:suggest_pipeline) && opts[:serializer] == 'widget'
                          MergeRequestSerializer
                        end
 
@@ -211,7 +210,7 @@ module IssuablesHelper
 
     output << content_tag(:span, (sprite_icon('first-contribution', css_class: 'gl-icon gl-vertical-align-middle') if issuable.first_contribution?), class: 'has-tooltip gl-ml-2', title: _('1st contribution!'))
 
-    output << content_tag(:span, (issuable.task_status if issuable.tasks?), id: "task_status", class: "d-none d-sm-none d-md-inline-block gl-ml-3")
+    output << content_tag(:span, (issuable.task_status if issuable.tasks?), id: "task_status", class: "d-none d-md-inline-block gl-ml-3")
     output << content_tag(:span, (issuable.task_status_short if issuable.tasks?), id: "task_status_short", class: "d-md-none")
 
     output.join.html_safe
@@ -275,7 +274,6 @@ module IssuablesHelper
       canUpdate: can?(current_user, :"update_#{issuable.to_ability_name}", issuable),
       canDestroy: can?(current_user, :"destroy_#{issuable.to_ability_name}", issuable),
       issuableRef: issuable.to_reference,
-      issuableStatus: issuable.state,
       markdownPreviewPath: preview_markdown_path(parent),
       markdownDocsPath: help_page_path('user/markdown'),
       lockVersion: issuable.lock_version,
@@ -379,7 +377,12 @@ module IssuablesHelper
   end
 
   def issuable_display_type(issuable)
-    issuable.model_name.human.downcase
+    case issuable
+    when Issue
+      issuable.issue_type.downcase
+    when MergeRequest
+      issuable.model_name.human.downcase
+    end
   end
 
   def has_filter_bar_param?
@@ -486,6 +489,21 @@ module IssuablesHelper
       iid: issuable[:iid],
       severity: issuable[:severity],
       timeTrackingLimitToHours: Gitlab::CurrentSettings.time_tracking_limit_to_hours
+    }
+  end
+
+  def sidebar_labels_data(issuable_sidebar, project)
+    {
+      allow_label_create: issuable_sidebar.dig(:current_user, :can_admin_label).to_s,
+      allow_scoped_labels: issuable_sidebar[:scoped_labels_available].to_s,
+      can_edit: issuable_sidebar.dig(:current_user, :can_edit).to_s,
+      iid: issuable_sidebar[:iid],
+      issuable_type: issuable_sidebar[:type],
+      labels_fetch_path: issuable_sidebar[:project_labels_path],
+      labels_manage_path: project_labels_path(project),
+      project_issues_path: issuable_sidebar[:project_issuables_path],
+      project_path: project.full_path,
+      selected_labels: issuable_sidebar[:labels].to_json
     }
   end
 

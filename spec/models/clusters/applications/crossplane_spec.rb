@@ -25,7 +25,7 @@ RSpec.describe Clusters::Applications::Crossplane do
 
     subject { crossplane.install_command }
 
-    it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::InstallCommand) }
+    it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::V3::InstallCommand) }
 
     it 'is initialized with crossplane arguments' do
       expect(subject.name).to eq('crossplane')

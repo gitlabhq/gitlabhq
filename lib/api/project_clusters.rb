@@ -6,6 +6,8 @@ module API
 
     before { authenticate! }
 
+    feature_category :kubernetes_management
+
     params do
       requires :id, type: String, desc: 'The ID of the project'
     end

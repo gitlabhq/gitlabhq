@@ -1,0 +1,10 @@
+#import "../fragments/design_note.fragment.graphql"
+
+mutation repositionImageDiffNote($input: RepositionImageDiffNoteInput!) {
+  repositionImageDiffNote(input: $input) {
+    errors
+    note {
+      ...DesignNote
+    }
+  }
+}

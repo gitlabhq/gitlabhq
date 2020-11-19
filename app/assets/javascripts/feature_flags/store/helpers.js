@@ -174,7 +174,7 @@ export const mapStrategiesToViewModel = strategiesFromRails =>
     id: s.id,
     name: s.name,
     parameters: mapStrategiesParametersToViewModel(s.parameters),
-    userListId: s.user_list?.id,
+    userList: s.user_list,
     // eslint-disable-next-line no-underscore-dangle
     shouldBeDestroyed: Boolean(s._destroy),
     scopes: mapStrategyScopesToView(s.scopes),
@@ -197,7 +197,7 @@ const mapStrategyToRails = strategy => {
   };
 
   if (strategy.name === ROLLOUT_STRATEGY_GITLAB_USER_LIST) {
-    mappedStrategy.user_list_id = strategy.userListId;
+    mappedStrategy.user_list_id = strategy.userList.id;
   }
   return mappedStrategy;
 };

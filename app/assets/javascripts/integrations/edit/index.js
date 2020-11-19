@@ -26,6 +26,7 @@ function parseDatasetToProps(data) {
     integrationLevel,
     cancelPath,
     testPath,
+    resetPath,
     ...booleanAttributes
   } = data;
   const {
@@ -49,6 +50,7 @@ function parseDatasetToProps(data) {
     editable,
     canTest,
     testPath,
+    resetPath,
     triggerFieldsProps: {
       initialTriggerCommit: commitEvents,
       initialTriggerMergeRequest: mergeRequestEvents,

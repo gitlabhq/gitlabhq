@@ -1,3 +1,9 @@
+- add_page_startup_graphql_call('snippet/snippet', { ids: [@snippet.to_global_id.uri] })
+- add_page_startup_graphql_call('snippet/snippet_blob_content', { ids: [@snippet.to_global_id.uri], rich: false, paths: [@snippet.file_name] })
+- if @snippet.project_id?
+  - add_page_startup_graphql_call('snippet/project_permissions', { fullPath: @snippet.project_id })
+- else
+  - add_page_startup_graphql_call('snippet/user_permissions')
 - @hide_top_links = true
 - @content_class = "limit-container-width limited-inner-width-container" unless fluid_layout
 - add_to_breadcrumbs _("Snippets"), dashboard_snippets_path

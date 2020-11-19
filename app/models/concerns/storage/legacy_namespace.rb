@@ -90,7 +90,7 @@ module Storage
     end
 
     def old_repository_storages
-      @old_repository_storage_paths ||= repository_storages
+      @old_repository_storage_paths ||= repository_storages(legacy_only: true)
     end
 
     def repository_storages(legacy_only: false)

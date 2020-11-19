@@ -415,9 +415,6 @@ internet connectivity is gated by a proxy. To use a proxy for GitLab Pages:
 
 ### Using a custom Certificate Authority (CA)
 
-NOTE: **Note:**
-[Before 13.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4411), when using Omnibus, a [workaround was required](https://docs.gitlab.com/13.1/ee/administration/pages/index.html#using-a-custom-certificate-authority-ca).
-
 When using certificates issued by a custom CA, [Access Control](../../user/project/pages/pages_access_control.md#gitlab-pages-access-control) and
 the [online view of HTML job artifacts](../../ci/pipelines/job_artifacts.md#browsing-artifacts)
 will fail to work if the custom CA is not recognized.
@@ -461,6 +458,34 @@ are stored.
    ```
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+Alternatively, if you have existing Pages deployed you can follow
+the below steps to do a no downtime transfer to a new storage location.
+
+1. Pause Pages deployments by setting the following in `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   sidekiq['experimental_queue_selector'] = true
+   sidekiq['queue_groups'] = [
+     "feature_category!=pages"
+   ]
+   ```
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. `rsync` contents from the current storage location to the new storage location: `sudo rsync -avzh --progress /var/opt/gitlab/gitlab-rails/shared/pages/ /mnt/storage/pages`
+1. Set the new storage location in `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['pages_path'] = "/mnt/storage/pages"
+   ```
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Verify Pages are still being served up as expected.
+1. Unpause Pages deployments by removing from `/etc/gitlab/gitlab.rb` the `sidekiq` setting set above.
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Trigger a new Pages deployment and verify it's working as expected.
+1. Remove the old Pages storage location: `sudo rm -rf /var/opt/gitlab/gitlab-rails/shared/pages`
+1. Verify Pages are still being served up as expected.
 
 ## Configure listener for reverse proxy requests
 
@@ -514,7 +539,7 @@ your main application server.
 
 To configure GitLab Pages on a separate server:
 
-DANGER: **Danger:**
+DANGER: **Warning:**
 The following procedure includes steps to back up and edit the
 `gitlab-secrets.json` file. This file contains secrets that control
 database encryption. Proceed with caution.
@@ -528,7 +553,6 @@ database encryption. Proceed with caution.
 1. On the **GitLab server**, to enable Pages, add the following to `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   gitlab_pages['enable'] = true
    pages_external_url "http://<pages_server_URL>"
    ```
 
@@ -559,18 +583,11 @@ database encryption. Proceed with caution.
    to include:
 
    ```ruby
-   external_url 'http://<gitlab_server_IP_or_URL>'
+   roles ['pages_role']
+
    pages_external_url "http://<pages_server_URL>"
-   postgresql['enable'] = false
-   redis['enable'] = false
-   prometheus['enable'] = false
-   puma['enable'] = false
-   sidekiq['enable'] = false
-   gitlab_workhorse['enable'] = false
-   gitaly['enable'] = false
-   alertmanager['enable'] = false
-   node_exporter['enable'] = false
-   gitlab_rails['auto_migrate'] = false
+
+   gitlab_pages['gitlab_server'] = 'http://<gitlab_server_IP_or_URL>'
    ```
 
 1. Create a backup of the secrets file on the **Pages server**:

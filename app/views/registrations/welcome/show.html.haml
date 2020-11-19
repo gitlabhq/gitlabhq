@@ -1,0 +1,25 @@
+- page_title _('Your profile')
+
+.row.gl-flex-grow-1
+  .d-flex.gl-flex-direction-column.gl-align-items-center.gl-w-full.gl-p-5
+    .edit-profile.login-page.d-flex.flex-column.gl-align-items-center.pt-lg-3
+      = render_if_exists "registrations/welcome/progress_bar"
+      %h2.gl-text-center= html_escape(_('Welcome to GitLab%{br_tag}%{name}!')) % { name: html_escape(current_user.first_name), br_tag: '<br/>'.html_safe }
+      %p
+        .gl-text-center= html_escape(_('In order to personalize your experience with GitLab%{br_tag}we would like to know a bit more about you.')) % { br_tag: '<br/>'.html_safe }
+
+      = form_for(current_user, url: users_sign_up_welcome_path, html: { class: 'card gl-w-full! gl-p-5', 'aria-live' => 'assertive' }) do |f|
+        .devise-errors
+          = render 'devise/shared/error_messages', resource: current_user
+        .row
+          .form-group.col-sm-12
+            = f.label :role, _('Role'), class: 'label-bold'
+            = f.select :role, ::User.roles.keys.map { |role| [role.titleize, role] }, {}, class: 'form-control', autofocus: true
+            .form-text.gl-text-gray-500.gl-mt-3= _('This will help us personalize your onboarding experience.')
+        = render_if_exists "registrations/welcome/setup_for_company", f: f
+        .row
+          .form-group.col-sm-12.gl-mb-0
+            - if partial_exists? "registrations/welcome/button"
+              = render "registrations/welcome/button"
+            - else
+              = f.submit _('Get started!'), class: 'btn-register gl-button btn btn-block gl-mb-0 gl-p-3', data: { qa_selector: 'get_started_button' }

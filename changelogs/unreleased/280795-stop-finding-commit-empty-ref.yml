@@ -1,0 +1,5 @@
+---
+title: Stop finding commit with empty ref
+merge_request: 47497
+author:
+type: fixed

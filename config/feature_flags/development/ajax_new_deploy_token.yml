@@ -2,6 +2,7 @@
 name: ajax_new_deploy_token
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27141
 rollout_issue_url: 
-group: group::progressive delivery
+milestone: '12.10'
 type: development
+group: group::progressive delivery
 default_enabled: false

@@ -5,8 +5,6 @@ module Issues
     def execute(issue)
       return issue unless can?(current_user, :reopen_issue, issue)
 
-      before_reopen(issue)
-
       if issue.reopen
         event_service.reopen_issue(issue, current_user)
         create_note(issue, 'reopened')
@@ -23,14 +21,8 @@ module Issues
 
     private
 
-    def before_reopen(issue)
-      # Overriden in EE
-    end
-
     def create_note(issue, state = issue.state)
       SystemNoteService.change_status(issue, issue.project, current_user, state, nil)
     end
   end
 end
-
-Issues::ReopenService.prepend_if_ee('EE::Issues::ReopenService')

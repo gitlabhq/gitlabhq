@@ -57,7 +57,7 @@ export default class Project {
       $('.project-refs-select').on('change', function() {
         return $(this)
           .parents('form')
-          .submit();
+          .trigger('submit');
       });
     }
 
@@ -156,11 +156,32 @@ export default class Project {
         },
         clicked(options) {
           const { e } = options;
-          if (!shouldVisit) {
-            e.preventDefault();
+          e.preventDefault();
+
+          // Since this page does not reload when changing directories in a repo
+          // the rendered links do not have the path to the current directory.
+          // This updates the path based on the current url and then opens
+          // the the url with the updated path parameter.
+          if (shouldVisit) {
+            const selectedUrl = new URL(e.target.href);
+            const loc = window.location.href;
+
+            if (loc.includes('/-/')) {
+              const refs = this.fullData.Branches.concat(this.fullData.Tags);
+              const currentRef = refs.find(ref => loc.indexOf(ref) > -1);
+              if (currentRef) {
+                const targetPath = loc.split(currentRef)[1].slice(1);
+                selectedUrl.searchParams.set('path', targetPath);
+              }
+            }
+
+            // Open in new window if "meta" key is pressed
+            if (e.metaKey) {
+              window.open(selectedUrl.href, '_blank');
+            } else {
+              window.location.href = selectedUrl.href;
+            }
           }
-          /* The actual process is removed since `link.href` in `RenderRow` contains the full target.
-           * It makes the visitable link can be visited when opening on a new tab of browser */
         },
       });
     });

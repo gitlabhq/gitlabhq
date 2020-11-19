@@ -1,6 +1,7 @@
 - add_to_breadcrumbs _("Groups"), admin_groups_path
 - breadcrumb_title @group.name
 - page_title @group.name, _("Groups")
+- current_user_is_group_owner = @group && @group.has_owner?(current_user)
 
 .js-remove-member-modal
 %h3.page-title
@@ -116,7 +117,7 @@
               = select_tag :access_level, options_for_select(@group.access_level_roles), class: "project-access-select select2"
             %hr
             = button_tag _('Add users to group'), class: "gl-button btn btn-success"
-      = render 'shared/members/requests', membership_source: @group, requesters: @requesters, force_mobile_view: true
+      = render 'shared/members/requests', membership_source: @group, group: @group, requesters: @requesters, force_mobile_view: true
 
     .card
       .card-header
@@ -127,6 +128,11 @@
             = sprite_icon('pencil-square', css_class: 'gl-icon')
             = _('Manage access')
       %ul.content-list.group-users-list.content-list.members-list
-        = render partial: 'shared/members/member', collection: @members, as: :member, locals: { show_controls: false }
+        = render partial: 'shared/members/member',
+                 collection: @members, as: :member,
+                 locals: { membership_source: @group,
+                           group: @group,
+                           show_controls: false,
+                           current_user_is_group_owner: current_user_is_group_owner }
       .card-footer
         = paginate @members, param_name: 'members_page', theme: 'gitlab'

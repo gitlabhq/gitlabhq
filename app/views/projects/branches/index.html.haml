@@ -24,7 +24,7 @@
         %button.dropdown-menu-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
           %span.light
             = branches_sort_options_hash[@sort]
-          = icon('chevron-down')
+          = sprite_icon('chevron-down', css_class: "dropdown-menu-toggle-icon gl-top-3")
         %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-selectable
           %li.dropdown-header
             = s_('Branches|Sort by')
@@ -40,7 +40,7 @@
         data: { confirm: s_('Branches|Deleting the merged branches cannot be undone. Are you sure?'),
           container: 'body' } do
         = s_('Branches|Delete merged branches')
-      = link_to new_project_branch_path(@project), class: 'btn btn-success' do
+      = link_to new_project_branch_path(@project), class: 'gl-button btn btn-success' do
         = s_('Branches|New branch')
 
 = render_if_exists 'projects/commits/mirror_status'

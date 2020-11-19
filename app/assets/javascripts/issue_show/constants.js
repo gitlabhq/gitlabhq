@@ -1,19 +1,26 @@
 import { __ } from '~/locale';
 
 export const IssuableStatus = {
-  Open: 'opened',
   Closed: 'closed',
+  Open: 'opened',
+  Reopened: 'reopened',
 };
 
 export const IssuableStatusText = {
-  [IssuableStatus.Open]: __('Open'),
   [IssuableStatus.Closed]: __('Closed'),
+  [IssuableStatus.Open]: __('Open'),
+  [IssuableStatus.Reopened]: __('Open'),
 };
 
 export const IssuableType = {
   Issue: 'issue',
   Epic: 'epic',
   MergeRequest: 'merge_request',
+};
+
+export const IssueStateEvent = {
+  Close: 'CLOSE',
+  Reopen: 'REOPEN',
 };
 
 export const STATUS_PAGE_PUBLISHED = __('Published on status page');

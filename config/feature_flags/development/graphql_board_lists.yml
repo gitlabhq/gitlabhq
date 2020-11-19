@@ -1,7 +1,8 @@
 ---
 name: graphql_board_lists
-introduced_by_url:
-rollout_issue_url:
-group: group::project management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37905
+rollout_issue_url: 
+milestone: '13.4'
 type: development
+group: group::project management
 default_enabled: false

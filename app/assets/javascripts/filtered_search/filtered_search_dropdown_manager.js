@@ -12,6 +12,7 @@ export default class FilteredSearchDropdownManager {
     runnerTagsEndpoint = '',
     labelsEndpoint = '',
     milestonesEndpoint = '',
+    iterationsEndpoint = '',
     releasesEndpoint = '',
     environmentsEndpoint = '',
     epicsEndpoint = '',
@@ -28,6 +29,7 @@ export default class FilteredSearchDropdownManager {
     this.runnerTagsEndpoint = removeTrailingSlash(runnerTagsEndpoint);
     this.labelsEndpoint = removeTrailingSlash(labelsEndpoint);
     this.milestonesEndpoint = removeTrailingSlash(milestonesEndpoint);
+    this.iterationsEndpoint = removeTrailingSlash(iterationsEndpoint);
     this.releasesEndpoint = removeTrailingSlash(releasesEndpoint);
     this.epicsEndpoint = removeTrailingSlash(epicsEndpoint);
     this.environmentsEndpoint = removeTrailingSlash(environmentsEndpoint);
@@ -107,7 +109,7 @@ export default class FilteredSearchDropdownManager {
     this.mapping[key].reference.setOffset(offset);
   }
 
-  load(key, firstLoad = false) {
+  load(key, firstLoad = false, dropdownKey = '') {
     const mappingKey = this.mapping[key];
     const glClass = mappingKey.gl;
     const { element } = mappingKey;
@@ -141,12 +143,12 @@ export default class FilteredSearchDropdownManager {
     }
 
     this.updateDropdownOffset(key);
-    mappingKey.reference.render(firstLoad, forceShowList);
+    mappingKey.reference.render(firstLoad, forceShowList, dropdownKey);
 
     this.currentDropdown = key;
   }
 
-  loadDropdown(dropdownName = '') {
+  loadDropdown(dropdownName = '', dropdownKey = '') {
     let firstLoad = false;
 
     if (!this.droplab) {
@@ -155,7 +157,7 @@ export default class FilteredSearchDropdownManager {
     }
 
     if (dropdownName === DROPDOWN_TYPE.operator) {
-      this.load(dropdownName, firstLoad);
+      this.load(dropdownName, firstLoad, dropdownKey);
       return;
     }
 
@@ -167,7 +169,7 @@ export default class FilteredSearchDropdownManager {
     if (shouldOpenFilterDropdown || shouldOpenHintDropdown) {
       const key = match && match.key ? match.key : DROPDOWN_TYPE.hint;
 
-      this.load(key, firstLoad);
+      this.load(key, firstLoad, dropdownKey);
     }
   }
 
@@ -200,11 +202,11 @@ export default class FilteredSearchDropdownManager {
         dropdownToOpen = hasOperator && lastOperatorToken ? dropdownName : DROPDOWN_TYPE.operator;
       }
 
-      this.loadDropdown(dropdownToOpen);
+      this.loadDropdown(dropdownToOpen, dropdownName);
     } else if (lastToken) {
       const lastOperator = FilteredSearchVisualTokens.getLastTokenOperator();
       // Token has been initialized into an object because it has a value
-      this.loadDropdown(lastOperator ? lastToken.key : DROPDOWN_TYPE.operator);
+      this.loadDropdown(lastOperator ? lastToken.key : DROPDOWN_TYPE.operator, lastToken.key);
     } else {
       this.loadDropdown(DROPDOWN_TYPE.hint);
     }

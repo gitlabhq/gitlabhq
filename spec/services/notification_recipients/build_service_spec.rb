@@ -44,7 +44,7 @@ RSpec.describe NotificationRecipients::BuildService do
     context 'when there are multiple subscribers' do
       def create_user
         subscriber = create(:user)
-        issue.subscriptions.create(user: subscriber, project: project, subscribed: true)
+        issue.subscriptions.create!(user: subscriber, project: project, subscribed: true)
       end
 
       include_examples 'no N+1 queries'
@@ -96,7 +96,7 @@ RSpec.describe NotificationRecipients::BuildService do
     context 'when there are multiple subscribers' do
       def create_user
         subscriber = create(:user)
-        merge_request.subscriptions.create(user: subscriber, project: project, subscribed: true)
+        merge_request.subscriptions.create!(user: subscriber, project: project, subscribed: true)
       end
 
       include_examples 'no N+1 queries'

@@ -9,10 +9,9 @@ RSpec.describe 'getting an issue list for a project' do
 
   let_it_be(:project) { create(:project, :repository, :public) }
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:issues, reload: true) do
-    [create(:issue, project: project, discussion_locked: true),
-     create(:issue, :with_alert, project: project)]
-  end
+  let_it_be(:issue_a, reload: true) { create(:issue, project: project, discussion_locked: true) }
+  let_it_be(:issue_b, reload: true) { create(:issue, :with_alert, project: project) }
+  let_it_be(:issues, reload: true) { [issue_a, issue_b] }
 
   let(:fields) do
     <<~QUERY
@@ -412,6 +411,44 @@ RSpec.describe 'getting an issue list for a project' do
       issues_data = Gitlab::Json.parse(response.body)['data']['project']['issues']['edges']
       expect(issues_data.count).to eq(3)
       expect(response_assignee_ids(issues_data)).to match_array(assignees_as_global_ids(new_issues))
+    end
+  end
+
+  describe 'N+1 query checks' do
+    let(:extra_iid_for_second_query) { issue_b.iid.to_s }
+    let(:search_params) { { iids: [issue_a.iid.to_s] } }
+
+    def execute_query
+      query = graphql_query_for(
+        :project,
+        { full_path: project.full_path },
+        query_graphql_field(:issues, search_params, [
+          query_graphql_field(:nodes, nil, requested_fields)
+        ])
+      )
+      post_graphql(query, current_user: current_user)
+    end
+
+    context 'when requesting `user_notes_count`' do
+      let(:requested_fields) { [:user_notes_count] }
+
+      before do
+        create_list(:note_on_issue, 2, noteable: issue_a, project: project)
+        create(:note_on_issue, noteable: issue_b, project: project)
+      end
+
+      include_examples 'N+1 query check'
+    end
+
+    context 'when requesting `user_discussions_count`' do
+      let(:requested_fields) { [:user_discussions_count] }
+
+      before do
+        create_list(:note_on_issue, 2, noteable: issue_a, project: project)
+        create(:note_on_issue, noteable: issue_b, project: project)
+      end
+
+      include_examples 'N+1 query check'
     end
   end
 end

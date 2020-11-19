@@ -1,10 +1,11 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
   components: {
     GlLoadingIcon,
+    GlIcon,
   },
   props: {
     isDisabled: {
@@ -39,8 +40,10 @@ export default {
       <slot v-if="$slots.default"></slot>
       <span v-else class="dropdown-toggle-text"> {{ toggleText }} </span>
     </template>
-    <span v-show="!isLoading" class="dropdown-toggle-icon">
-      <i class="fa fa-chevron-down" aria-hidden="true" data-hidden="true"></i>
-    </span>
+    <gl-icon
+      v-show="!isLoading"
+      class="gl-absolute gl-top-3 gl-right-3 gl-text-gray-500"
+      name="chevron-down"
+    />
   </button>
 </template>

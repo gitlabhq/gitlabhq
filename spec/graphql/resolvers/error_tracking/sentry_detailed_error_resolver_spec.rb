@@ -10,6 +10,10 @@ RSpec.describe Resolvers::ErrorTracking::SentryDetailedErrorResolver do
 
   let(:issue_details_service) { spy('ErrorTracking::IssueDetailsService') }
 
+  specify do
+    expect(described_class).to have_nullable_graphql_type(Types::ErrorTracking::SentryDetailedErrorType)
+  end
+
   before do
     project.add_developer(current_user)
 
@@ -61,7 +65,9 @@ RSpec.describe Resolvers::ErrorTracking::SentryDetailedErrorResolver do
     context 'blank id' do
       let(:args) { { id: '' } }
 
-      it_behaves_like 'it resolves to nil'
+      it 'responds with an error' do
+        expect { resolve_error(args) }.to raise_error(::GraphQL::CoercionError)
+      end
     end
   end
 

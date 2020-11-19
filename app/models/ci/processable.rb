@@ -103,5 +103,25 @@ module Ci
       pipeline.ensure_scheduling_type!
       reset
     end
+
+    def dependency_variables
+      return [] if all_dependencies.empty?
+
+      Gitlab::Ci::Variables::Collection.new.concat(
+        Ci::JobVariable.where(job: all_dependencies).dotenv_source
+      )
+    end
+
+    def all_dependencies
+      dependencies.all
+    end
+
+    private
+
+    def dependencies
+      strong_memoize(:dependencies) do
+        Ci::BuildDependencies.new(self)
+      end
+    end
   end
 end

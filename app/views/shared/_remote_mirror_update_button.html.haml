@@ -1,6 +1,6 @@
 - if remote_mirror.update_in_progress?
-  %button.btn.disabled{ type: 'button', data: { toggle: 'tooltip', container: 'body', qa_selector: 'updating_button' }, title: _('Updating') }
-    = icon("refresh spin")
+  %button.btn.btn-icon.gl-button.disabled{ type: 'button', data: { toggle: 'tooltip', container: 'body', qa_selector: 'updating_button' }, title: _('Updating') }
+    = sprite_icon("retry", css_class: "spin")
 - elsif remote_mirror.enabled?
-  = link_to update_now_project_mirror_path(@project, sync_remote: true), method: :post, class: "btn qa-update-now-button rspec-update-now-button", data: { toggle: 'tooltip', container: 'body' }, title: _('Update now') do
-    = icon("refresh")
+  = link_to update_now_project_mirror_path(@project, sync_remote: true), method: :post, class: "btn btn-icon gl-button qa-update-now-button rspec-update-now-button", data: { toggle: 'tooltip', container: 'body' }, title: _('Update now') do
+    = sprite_icon("retry")

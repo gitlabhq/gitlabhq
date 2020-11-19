@@ -13,10 +13,6 @@ export default {
       type: Array,
       required: true,
     },
-    rootPath: {
-      type: String,
-      required: true,
-    },
     issuableType: {
       type: String,
       required: false,
@@ -66,22 +62,20 @@ export default {
 <template>
   <assignee-avatar-link
     v-if="hasOneUser"
-    #default="{ user }"
     tooltip-placement="left"
     :tooltip-has-name="false"
     :user="firstUser"
-    :root-path="rootPath"
     :issuable-type="issuableType"
   >
     <div class="ml-2 gl-line-height-normal">
-      <div>{{ user.name }}</div>
+      <div>{{ firstUser.name }}</div>
       <div>{{ username }}</div>
     </div>
   </assignee-avatar-link>
   <div v-else>
     <div class="user-list">
       <div v-for="user in uncollapsedUsers" :key="user.id" class="user-item">
-        <assignee-avatar-link :user="user" :root-path="rootPath" :issuable-type="issuableType" />
+        <assignee-avatar-link :user="user" :issuable-type="issuableType" />
       </div>
     </div>
     <div v-if="renderShowMoreSection" class="user-list-more">

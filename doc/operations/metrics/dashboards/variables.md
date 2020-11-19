@@ -50,6 +50,8 @@ For example, if the dashboard time range is set to 8 hours, the value of
 
 [Variables can be defined](../../../operations/metrics/dashboards/yaml.md#templating-templating-properties) in a custom dashboard YAML file.
 
+Variable names are case-sensitive.
+
 ## Query variables from URL
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214500) in GitLab 13.0.

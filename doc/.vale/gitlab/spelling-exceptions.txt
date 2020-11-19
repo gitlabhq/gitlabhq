@@ -232,6 +232,7 @@ Laravel
 LDAP
 ldapsearch
 Leiningen
+Lefthook
 Libravatar
 liveness
 Lograge
@@ -347,6 +348,7 @@ proxied
 proxies
 proxyable
 proxying
+pseudocode
 pseudonymized
 pseudonymizer
 Puma

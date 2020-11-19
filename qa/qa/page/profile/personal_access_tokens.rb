@@ -6,8 +6,11 @@ module QA
   module Page
     module Profile
       class PersonalAccessTokens < Page::Base
-        view 'app/views/shared/access_tokens/_form.html.haml' do
+        view 'app/assets/javascripts/access_tokens/components/expires_at_field.vue' do
           element :expiry_date_field
+        end
+
+        view 'app/views/shared/access_tokens/_form.html.haml' do
           element :access_token_name_field
           element :create_token_button
         end

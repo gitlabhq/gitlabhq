@@ -1,10 +1,8 @@
 import $ from 'jquery';
-import 'mousetrap';
+import Mousetrap from 'mousetrap';
 import initCopyAsGFM, { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
 import { getSelectedFragment } from '~/lib/utils/common_utils';
-
-const FORM_SELECTOR = '.js-main-target-form .js-vue-comment-form';
 
 jest.mock('~/lib/utils/common_utils', () => ({
   ...jest.requireActual('~/lib/utils/common_utils'),
@@ -12,9 +10,10 @@ jest.mock('~/lib/utils/common_utils', () => ({
 }));
 
 describe('ShortcutsIssuable', () => {
-  const fixtureName = 'snippets/show.html';
+  const snippetShowFixtureName = 'snippets/show.html';
+  const mrShowFixtureName = 'merge_requests/merge_request_of_current_user.html';
 
-  preloadFixtures(fixtureName);
+  preloadFixtures(snippetShowFixtureName, mrShowFixtureName);
 
   beforeAll(done => {
     initCopyAsGFM();
@@ -27,25 +26,27 @@ describe('ShortcutsIssuable', () => {
       .catch(done.fail);
   });
 
-  beforeEach(() => {
-    loadFixtures(fixtureName);
-    $('body').append(
-      `<div class="js-main-target-form">
-        <textarea class="js-vue-comment-form"></textarea>
-      </div>`,
-    );
-    document.querySelector('.js-new-note-form').classList.add('js-main-target-form');
-
-    window.shortcut = new ShortcutsIssuable(true);
-  });
-
-  afterEach(() => {
-    $(FORM_SELECTOR).remove();
-
-    delete window.shortcut;
-  });
-
   describe('replyWithSelectedText', () => {
+    const FORM_SELECTOR = '.js-main-target-form .js-vue-comment-form';
+
+    beforeEach(() => {
+      loadFixtures(snippetShowFixtureName);
+      $('body').append(
+        `<div class="js-main-target-form">
+          <textarea class="js-vue-comment-form"></textarea>
+        </div>`,
+      );
+      document.querySelector('.js-new-note-form').classList.add('js-main-target-form');
+
+      window.shortcut = new ShortcutsIssuable(true);
+    });
+
+    afterEach(() => {
+      $(FORM_SELECTOR).remove();
+
+      delete window.shortcut;
+    });
+
     // Stub getSelectedFragment to return a node with the provided HTML.
     const stubSelection = (html, invalidNode) => {
       getSelectedFragment.mockImplementation(() => {
@@ -316,6 +317,57 @@ describe('ShortcutsIssuable', () => {
 
           done();
         });
+      });
+    });
+  });
+
+  describe('copyBranchName', () => {
+    let sidebarCollapsedBtn;
+    let sidebarExpandedBtn;
+
+    beforeEach(() => {
+      loadFixtures(mrShowFixtureName);
+
+      window.shortcut = new ShortcutsIssuable();
+
+      [sidebarCollapsedBtn, sidebarExpandedBtn] = document.querySelectorAll(
+        '.sidebar-source-branch button',
+      );
+
+      [sidebarCollapsedBtn, sidebarExpandedBtn].forEach(btn => jest.spyOn(btn, 'click'));
+    });
+
+    afterEach(() => {
+      delete window.shortcut;
+    });
+
+    describe('when the sidebar is expanded', () => {
+      beforeEach(() => {
+        // simulate the applied CSS styles when the
+        // sidebar is expanded
+        sidebarCollapsedBtn.style.display = 'none';
+
+        Mousetrap.trigger('b');
+      });
+
+      it('clicks the "expanded" version of the copy source branch button', () => {
+        expect(sidebarExpandedBtn.click).toHaveBeenCalled();
+        expect(sidebarCollapsedBtn.click).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when the sidebar is collapsed', () => {
+      beforeEach(() => {
+        // simulate the applied CSS styles when the
+        // sidebar is collapsed
+        sidebarExpandedBtn.style.display = 'none';
+
+        Mousetrap.trigger('b');
+      });
+
+      it('clicks the "collapsed" version of the copy source branch button', () => {
+        expect(sidebarCollapsedBtn.click).toHaveBeenCalled();
+        expect(sidebarExpandedBtn.click).not.toHaveBeenCalled();
       });
     });
   });

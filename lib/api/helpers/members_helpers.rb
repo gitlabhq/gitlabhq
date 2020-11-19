@@ -20,11 +20,22 @@ module API
 
       # rubocop: disable CodeReuse/ActiveRecord
       def retrieve_members(source, params:, deep: false)
-        members = deep ? find_all_members(source) : source.members.where.not(user_id: nil)
+        members = deep ? find_all_members(source) : source_members(source).where.not(user_id: nil)
         members = members.includes(:user)
         members = members.references(:user).merge(User.search(params[:query])) if params[:query].present?
         members = members.where(user_id: params[:user_ids]) if params[:user_ids].present?
         members
+      end
+
+      def retrieve_member_invitations(source, query = nil)
+        members = source_members(source).where.not(invite_token: nil)
+        members = members.includes(:user)
+        members = members.where(invite_email: query) if query.present?
+        members
+      end
+
+      def source_members(source)
+        source.members
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -47,6 +58,10 @@ module API
 
       def present_members(members)
         present members, with: Entities::Member, current_user: current_user, show_seat_info: params[:show_seat_info]
+      end
+
+      def present_member_invitations(invitations)
+        present invitations, with: Entities::Invitation, current_user: current_user
       end
     end
   end

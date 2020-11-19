@@ -1,0 +1,6 @@
+#!/usr/bin/make -f
+%:
+	dh $@
+override_dh_gencontrol:
+	dh_gencontrol -psample-dev -- -v'1.2.3~binary'
+	dh_gencontrol --remaining-packages

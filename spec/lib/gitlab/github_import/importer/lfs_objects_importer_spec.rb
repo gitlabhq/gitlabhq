@@ -15,7 +15,7 @@ RSpec.describe Gitlab::GithubImport::Importer::LfsObjectsImporter do
     }
   end
 
-  let(:lfs_download_object) { LfsDownloadObject.new(lfs_attributes) }
+  let(:lfs_download_object) { LfsDownloadObject.new(**lfs_attributes) }
 
   describe '#parallel?' do
     it 'returns true when running in parallel mode' do

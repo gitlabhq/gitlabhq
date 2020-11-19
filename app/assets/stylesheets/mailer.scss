@@ -143,4 +143,21 @@ tr.footer td {
     color: $mailer-link-color;
     text-decoration: none;
   }
+
+  .gitlab-info {
+    padding: $gl-padding-24 0;
+  }
+
+  .gitlab-info-text {
+    max-width: 640px;
+    margin: 0 auto;
+    text-align: center;
+    color: $gray-400;
+    font-size: $gl-font-size-small;
+  }
+
+  .footer-logo {
+    width: 90px;
+    height: 33px;
+  }
 }

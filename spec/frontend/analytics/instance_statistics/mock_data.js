@@ -33,10 +33,3 @@ export const roundedSortedCountsMonthlyChartData2 = [
   ['2020-06-01', 21], // average of 2020-06-x items
   ['2020-07-01', 10], // average of 2020-07-x items
 ];
-
-export const mockPageInfo = {
-  hasNextPage: false,
-  hasPreviousPage: false,
-  startCursor: null,
-  endCursor: null,
-};

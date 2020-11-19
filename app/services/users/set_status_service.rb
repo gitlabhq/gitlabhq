@@ -14,7 +14,7 @@ module Users
     def execute
       return false unless can?(current_user, :update_user_status, target_user)
 
-      if params[:emoji].present? || params[:message].present?
+      if params[:emoji].present? || params[:message].present? || params[:availability].present?
         set_status
       else
         remove_status
@@ -25,6 +25,9 @@ module Users
 
     def set_status
       params[:emoji] = UserStatus::DEFAULT_EMOJI if params[:emoji].blank?
+      params.delete(:availability) if params[:availability].blank?
+      return false if params[:availability].present? && UserStatus.availabilities.keys.exclude?(params[:availability])
+
       user_status.update(params)
     end
 

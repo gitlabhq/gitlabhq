@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# After Feature one_dimensional_matrix is removed, this can be changed back to fast_spec_helper
-require 'spec_helper'
+require 'fast_spec_helper'
 require_dependency 'active_model'
 
 RSpec.describe Gitlab::Ci::Config::Entry::Product::Variables do
@@ -46,70 +45,18 @@ RSpec.describe Gitlab::Ci::Config::Entry::Product::Variables do
       end
     end
 
-    context 'with one_dimensional_matrix feature flag enabled' do
-      context 'with only one variable' do
-        before do
-          stub_feature_flags(one_dimensional_matrix: true)
-        end
-        let(:config) { { VAR: 'test' } }
+    context 'with only one variable' do
+      let(:config) { { VAR: 'test' } }
 
-        describe '#valid?' do
-          it 'is valid' do
-            expect(entry).to be_valid
-          end
-        end
-
-        describe '#errors' do
-          it 'does not append errors' do
-            expect(entry.errors).to be_empty
-          end
+      describe '#valid?' do
+        it 'is valid' do
+          expect(entry).to be_valid
         end
       end
-    end
 
-    context 'with one_dimensional_matrix feature flag disabled' do
-      context 'when entry value is not correct' do
-        before do
-          stub_feature_flags(one_dimensional_matrix: false)
-        end
-        shared_examples 'invalid variables' do |message|
-          describe '#errors' do
-            it 'saves errors' do
-              expect(entry.errors).to include(message)
-            end
-          end
-
-          describe '#valid?' do
-            it 'is not valid' do
-              expect(entry).not_to be_valid
-            end
-          end
-        end
-
-        context 'with array' do
-          let(:config) { [:VAR, 'test'] }
-
-          it_behaves_like 'invalid variables', /should be a hash of key value pairs/
-        end
-
-        context 'with empty array' do
-          let(:config) { { VAR: 'test', VAR2: [] } }
-
-          it_behaves_like 'invalid variables', /should be a hash of key value pairs/
-        end
-
-        context 'with nested array' do
-          let(:config) { { VAR: 'test', VAR2: [1, [2]] } }
-
-          it_behaves_like 'invalid variables', /should be a hash of key value pairs/
-        end
-
-        context 'with one_dimensional_matrix feature flag disabled' do
-          context 'with only one variable' do
-            let(:config) { { VAR: 'test' } }
-
-            it_behaves_like 'invalid variables', /variables config requires at least 2 items/
-          end
+      describe '#errors' do
+        it 'does not append errors' do
+          expect(entry.errors).to be_empty
         end
       end
     end

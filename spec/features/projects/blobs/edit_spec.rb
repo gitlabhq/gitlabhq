@@ -179,12 +179,14 @@ RSpec.describe 'Editing file blob', :js do
       end
 
       context 'with protected branch' do
-        before do
-          visit project_edit_blob_path(project, tree_join(protected_branch, file_path))
-        end
-
         it 'shows blob editor with patch branch' do
-          expect(find('.js-branch-name').value).to eq('patch-1')
+          freeze_time do
+            visit project_edit_blob_path(project, tree_join(protected_branch, file_path))
+
+            epoch = Time.now.strftime('%s%L').last(5)
+
+            expect(find('.js-branch-name').value).to eq "#{user.username}-protected-branch-patch-#{epoch}"
+          end
         end
       end
     end

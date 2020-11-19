@@ -119,7 +119,7 @@ repository, you can run `git remote -v`.
 If there are [merge conflicts](#merge-conflicts), Git will prompt you to fix
 them before continuing the rebase.
 
-To learn more, check Git's documentation on [rebasing](ttps://git-scm.com/book/en/v2/Git-Branching-Rebasing)
+To learn more, check Git's documentation on [rebasing](https://git-scm.com/book/en/v2/Git-Branching-Rebasing)
 and [rebasing strategies](https://git-scm.com/book/en/v2/Git-Branching-Rebasing).
 
 ### Interactive rebase

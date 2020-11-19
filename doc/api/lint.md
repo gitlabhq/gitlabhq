@@ -36,7 +36,20 @@ Example responses:
   ```json
   {
     "status": "valid",
-    "errors": []
+    "errors": [],
+    "warnings": []
+  }
+  ```
+
+- Valid content with warnings:
+
+  ```json
+  {
+    "status": "valid",
+    "errors": [],
+    "warnings": ["jobs:job may allow multiple pipelines to run for a single action due to
+    `rules:when` clause with no `workflow:rules` - read more:
+    https://docs.gitlab.com/ee/ci/troubleshooting.html#pipeline-warnings"]
   }
   ```
 
@@ -47,7 +60,8 @@ Example responses:
     "status": "invalid",
     "errors": [
       "variables config should be a hash of key value pairs"
-    ]
+    ],
+    "warnings": []
   }
   ```
 
@@ -98,6 +112,54 @@ Example response:
   "merged_config": "---\n:another_test:\n  :stage: test\n  :script: echo 2\n:test:\n  :stage: test\n  :script: echo 1\n"
 }
 ```
+
+## Validate a CI YAML configuration with a namespace
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/231352) in GitLab 13.6.
+
+Checks if CI/CD YAML configuration is valid. This endpoint has namespace
+specific context.
+
+```plaintext
+POST /projects/:id/ci/lint
+```
+
+| Attribute  | Type    | Required | Description |
+| ---------- | ------- | -------- | -------- |
+| `content`  | string  | yes      | The CI/CD configuration content. |
+| `dry_run`  | boolean | no       | Run [pipeline creation simulation](../ci/lint.md#pipeline-simulation), or only do static check. This is false by default. |
+
+Example request:
+
+```shell
+curl --header "Content-Type: application/json" "https://gitlab.example.com/api/v4/projects/:id/ci/lint" --data '{"content": "{ \"image\": \"ruby:2.6\", \"services\": [\"postgres\"], \"before_script\": [\"bundle install\", \"bundle exec rake db:create\"], \"variables\": {\"DB_NAME\": \"postgres\"}, \"types\": [\"test\", \"deploy\", \"notify\"], \"rspec\": { \"script\": \"rake spec\", \"tags\": [\"ruby\", \"postgres\"], \"only\": [\"branches\"]}}"}'
+```
+
+Example responses:
+
+- Valid configuration:
+
+  ```json
+  {
+    "valid": true,
+    "merged_yaml": "---\n:test_job:\n  :script: echo 1\n",
+    "errors": [],
+    "warnings": []
+  }
+  ```
+
+- Invalid configuration:
+
+  ```json
+  {
+    "valid": false,
+    "merged_yaml": "---\n:test_job:\n  :script: echo 1\n",
+    "errors": [
+      "jobs config should contain at least one visible job"
+    ],
+    "warnings": []
+  }
+  ```
 
 ## Validate a project's CI configuration
 

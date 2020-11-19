@@ -252,11 +252,16 @@ RSpec.describe Member do
     end
 
     describe '.last_ten_days_excluding_today' do
-      let_it_be(:created_today) { create(:group_member, created_at: Date.today.beginning_of_day) }
-      let_it_be(:created_yesterday) { create(:group_member, created_at: 1.day.ago) }
-      let_it_be(:created_eleven_days_ago) { create(:group_member, created_at: 11.days.ago) }
+      let_it_be(:now) { Time.current }
+      let_it_be(:created_today) { create(:group_member, created_at: now.beginning_of_day) }
+      let_it_be(:created_yesterday) { create(:group_member, created_at: now - 1.day) }
+      let_it_be(:created_eleven_days_ago) { create(:group_member, created_at: now - 11.days) }
 
       subject { described_class.last_ten_days_excluding_today }
+
+      before do
+        travel_to now
+      end
 
       it { is_expected.to include(created_yesterday) }
       it { is_expected.not_to include(created_today, created_eleven_days_ago) }

@@ -15,7 +15,7 @@ class ProjectsController < Projects::ApplicationController
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show]
 
   before_action :whitelist_query_limiting, only: [:create]
-  before_action :authenticate_user!, except: [:index, :show, :activity, :refs, :resolve]
+  before_action :authenticate_user!, except: [:index, :show, :activity, :refs, :resolve, :unfoldered_environment_names]
   before_action :redirect_git_extension, only: [:show]
   before_action :project, except: [:index, :new, :create, :resolve]
   before_action :repository, except: [:index, :new, :create, :resolve]
@@ -317,8 +317,6 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def unfoldered_environment_names
-    return render_404 unless Feature.enabled?(:deployment_filters)
-
     respond_to do |format|
       format.json do
         render json: EnvironmentNamesFinder.new(@project, current_user).execute
@@ -383,6 +381,20 @@ class ProjectsController < Projects::ApplicationController
       .merge(import_url_params)
   end
 
+  def project_feature_attributes
+    %i[
+      builds_access_level
+      issues_access_level
+      forking_access_level
+      merge_requests_access_level
+      repository_access_level
+      snippets_access_level
+      wiki_access_level
+      pages_access_level
+      metrics_dashboard_access_level
+    ]
+  end
+
   def project_params_attributes
     [
       :allow_merge_on_skipped_pipeline,
@@ -420,23 +432,11 @@ class ProjectsController < Projects::ApplicationController
       :suggestion_commit_message,
       :packages_enabled,
       :service_desk_enabled,
-
-      project_feature_attributes: %i[
-        builds_access_level
-        issues_access_level
-        forking_access_level
-        merge_requests_access_level
-        repository_access_level
-        snippets_access_level
-        wiki_access_level
-        pages_access_level
-        metrics_dashboard_access_level
-      ],
       project_setting_attributes: %i[
         show_default_award_emojis
         squash_option
       ]
-    ]
+    ] + [project_feature_attributes: project_feature_attributes]
   end
 
   def project_params_create_attributes

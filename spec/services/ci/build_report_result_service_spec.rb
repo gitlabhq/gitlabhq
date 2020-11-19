@@ -26,18 +26,6 @@ RSpec.describe Ci::BuildReportResultService do
         expect(unique_test_cases_parsed).to eq(4)
       end
 
-      context 'when feature flag for tracking is disabled' do
-        before do
-          stub_feature_flags(track_unique_test_cases_parsed: false)
-        end
-
-        it 'creates the report but does not track the event' do
-          expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
-          expect(build_report_result.tests_name).to eq("test")
-          expect(Ci::BuildReportResult.count).to eq(1)
-        end
-      end
-
       context 'when data has already been persisted' do
         it 'raises an error and do not persist the same data twice' do
           expect { 2.times { described_class.new.execute(build) } }.to raise_error(ActiveRecord::RecordNotUnique)

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe NotePolicy do
-  describe '#rules' do
+  describe '#rules', :aggregate_failures do
     let(:user) { create(:user) }
     let(:project) { create(:project, :public) }
     let(:issue) { create(:issue, project: project) }
@@ -11,14 +11,15 @@ RSpec.describe NotePolicy do
     let(:policy) { described_class.new(user, note) }
     let(:note) { create(:note, noteable: noteable, author: user, project: project) }
 
+    shared_examples_for 'user cannot read or act on the note' do
+      specify do
+        expect(policy).to be_disallowed(:admin_note, :reposition_note, :resolve_note, :read_note, :award_emoji)
+      end
+    end
+
     shared_examples_for 'a discussion with a private noteable' do
       context 'when the note author can no longer see the noteable' do
-        it 'can not edit nor read the note' do
-          expect(policy).to be_disallowed(:admin_note)
-          expect(policy).to be_disallowed(:resolve_note)
-          expect(policy).to be_disallowed(:read_note)
-          expect(policy).to be_disallowed(:award_emoji)
-        end
+        it_behaves_like 'user cannot read or act on the note'
       end
 
       context 'when the note author can still see the noteable' do
@@ -28,10 +29,18 @@ RSpec.describe NotePolicy do
 
         it 'can edit the note' do
           expect(policy).to be_allowed(:admin_note)
+          expect(policy).to be_allowed(:reposition_note)
           expect(policy).to be_allowed(:resolve_note)
           expect(policy).to be_allowed(:read_note)
           expect(policy).to be_allowed(:award_emoji)
         end
+      end
+    end
+
+    shared_examples_for 'a note on a public noteable' do
+      it 'can only read and award emoji on the note' do
+        expect(policy).to be_allowed(:read_note, :award_emoji)
+        expect(policy).to be_disallowed(:reposition_note, :admin_note, :resolve_note)
       end
     end
 
@@ -42,6 +51,7 @@ RSpec.describe NotePolicy do
       it 'allows to read' do
         expect(policy).to be_allowed(:read_note)
         expect(policy).to be_disallowed(:admin_note)
+        expect(policy).to be_disallowed(:reposition_note)
         expect(policy).to be_disallowed(:resolve_note)
         expect(policy).to be_disallowed(:award_emoji)
       end
@@ -66,31 +76,60 @@ RSpec.describe NotePolicy do
       end
     end
 
-    context 'when the noteable is a personal snippet' do
-      let(:noteable) { create(:personal_snippet, :public) }
-      let(:note) { create(:note, noteable: noteable, author: user) }
+    context 'when the noteable is a Design' do
+      include DesignManagementTestHelpers
 
-      it 'can edit note' do
-        expect(policy).to be_allowed(:admin_note)
-        expect(policy).to be_allowed(:resolve_note)
-        expect(policy).to be_allowed(:read_note)
+      let(:note) { create(:note, noteable: noteable, project: project) }
+      let(:noteable) { create(:design, issue: issue) }
+
+      before do
+        enable_design_management
       end
 
-      context 'when it is private' do
-        let(:noteable) { create(:personal_snippet, :private) }
+      it 'can read, award emoji and reposition the note' do
+        expect(policy).to be_allowed(:reposition_note, :read_note, :award_emoji)
+        expect(policy).to be_disallowed(:admin_note, :resolve_note)
+      end
 
-        it 'can not edit nor read the note' do
-          expect(policy).to be_disallowed(:admin_note)
-          expect(policy).to be_disallowed(:resolve_note)
-          expect(policy).to be_disallowed(:read_note)
+      context 'when project is private' do
+        let(:project) { create(:project, :private) }
+
+        it_behaves_like 'user cannot read or act on the note'
+      end
+    end
+
+    context 'when the noteable is a personal snippet' do
+      let(:noteable) { create(:personal_snippet, :public) }
+      let(:note) { create(:note, noteable: noteable) }
+
+      it_behaves_like 'a note on a public noteable'
+
+      context 'when user is the author of the personal snippet' do
+        let(:note) { create(:note, noteable: noteable, author: user) }
+
+        it 'can edit note' do
+          expect(policy).to be_allowed(:read_note, :award_emoji, :admin_note, :reposition_note, :resolve_note)
+        end
+
+        context 'when it is private' do
+          let(:noteable) { create(:personal_snippet, :private) }
+
+          it_behaves_like 'user cannot read or act on the note'
         end
       end
     end
 
     context 'when the project is public' do
+      context 'when user is not the author of the note' do
+        let(:note) { create(:note, noteable: noteable, project: project) }
+
+        it_behaves_like 'a note on a public noteable'
+      end
+
       context 'when the note author is not a project member' do
         it 'can edit a note' do
           expect(policy).to be_allowed(:admin_note)
+          expect(policy).to be_allowed(:reposition_note)
           expect(policy).to be_allowed(:resolve_note)
           expect(policy).to be_allowed(:read_note)
         end
@@ -101,6 +140,7 @@ RSpec.describe NotePolicy do
 
         it 'can edit note' do
           expect(policy).to be_allowed(:admin_note)
+          expect(policy).to be_allowed(:reposition_note)
           expect(policy).to be_allowed(:resolve_note)
           expect(policy).to be_allowed(:read_note)
         end
@@ -132,6 +172,7 @@ RSpec.describe NotePolicy do
 
           it 'can edit a note' do
             expect(policy).to be_allowed(:admin_note)
+            expect(policy).to be_allowed(:reposition_note)
             expect(policy).to be_allowed(:resolve_note)
             expect(policy).to be_allowed(:read_note)
           end
@@ -140,6 +181,7 @@ RSpec.describe NotePolicy do
         context 'when the note author is not a project member' do
           it 'can not edit a note' do
             expect(policy).to be_disallowed(:admin_note)
+            expect(policy).to be_disallowed(:reposition_note)
             expect(policy).to be_disallowed(:resolve_note)
           end
 
@@ -154,6 +196,7 @@ RSpec.describe NotePolicy do
 
         it 'allows the author to manage the discussion' do
           expect(policy).to be_allowed(:admin_note)
+          expect(policy).to be_allowed(:reposition_note)
           expect(policy).to be_allowed(:resolve_note)
           expect(policy).to be_allowed(:read_note)
           expect(policy).to be_allowed(:award_emoji)
@@ -180,18 +223,10 @@ RSpec.describe NotePolicy do
 
         shared_examples_for 'user can act on the note' do
           it 'allows the user to read the note' do
-            expect(policy).not_to be_allowed(:admin_note)
+            expect(policy).to be_disallowed(:admin_note)
+            expect(policy).to be_disallowed(:reposition_note)
             expect(policy).to be_allowed(:resolve_note)
             expect(policy).to be_allowed(:award_emoji)
-          end
-        end
-
-        shared_examples_for 'user cannot read or act on the note' do
-          it 'allows user to read the note' do
-            expect(policy).not_to be_allowed(:admin_note)
-            expect(policy).not_to be_allowed(:resolve_note)
-            expect(policy).not_to be_allowed(:read_note)
-            expect(policy).not_to be_allowed(:award_emoji)
           end
         end
 
@@ -274,42 +309,42 @@ RSpec.describe NotePolicy do
 
         shared_examples_for 'confidential notes permissions' do
           it 'does not allow non members to read confidential notes and replies' do
-            expect(permissions(non_member, confidential_note)).to be_disallowed(:read_note, :admin_note, :resolve_note, :award_emoji)
+            expect(permissions(non_member, confidential_note)).to be_disallowed(:read_note, :admin_note, :reposition_note, :resolve_note, :award_emoji)
           end
 
           it 'does not allow guests to read confidential notes and replies' do
-            expect(permissions(guest, confidential_note)).to be_disallowed(:read_note, :admin_note, :resolve_note, :award_emoji)
+            expect(permissions(guest, confidential_note)).to be_disallowed(:read_note, :admin_note, :reposition_note, :resolve_note, :award_emoji)
           end
 
           it 'allows reporter to read all notes but not resolve and admin them' do
             expect(permissions(reporter, confidential_note)).to be_allowed(:read_note, :award_emoji)
-            expect(permissions(reporter, confidential_note)).to be_disallowed(:admin_note, :resolve_note)
+            expect(permissions(reporter, confidential_note)).to be_disallowed(:admin_note, :reposition_note, :resolve_note)
           end
 
           it 'allows developer to read and resolve all notes' do
             expect(permissions(developer, confidential_note)).to be_allowed(:read_note, :award_emoji, :resolve_note)
-            expect(permissions(developer, confidential_note)).to be_disallowed(:admin_note)
+            expect(permissions(developer, confidential_note)).to be_disallowed(:admin_note, :reposition_note)
           end
 
           it 'allows maintainers to read all notes and admin them' do
-            expect(permissions(maintainer, confidential_note)).to be_allowed(:read_note, :admin_note, :resolve_note, :award_emoji)
+            expect(permissions(maintainer, confidential_note)).to be_allowed(:read_note, :admin_note, :reposition_note, :resolve_note, :award_emoji)
           end
 
           context 'when admin mode is enabled', :enable_admin_mode do
             it 'allows admins to read all notes and admin them' do
-              expect(permissions(admin, confidential_note)).to be_allowed(:read_note, :admin_note, :resolve_note, :award_emoji)
+              expect(permissions(admin, confidential_note)).to be_allowed(:read_note, :admin_note, :reposition_note, :resolve_note, :award_emoji)
             end
           end
 
           context 'when admin mode is disabled' do
             it 'does not allow non members to read confidential notes and replies' do
-              expect(permissions(admin, confidential_note)).to be_disallowed(:read_note, :admin_note, :resolve_note, :award_emoji)
+              expect(permissions(admin, confidential_note)).to be_disallowed(:read_note, :admin_note, :reposition_note, :resolve_note, :award_emoji)
             end
           end
 
           it 'allows noteable author to read and resolve all notes' do
             expect(permissions(author, confidential_note)).to be_allowed(:read_note, :resolve_note, :award_emoji)
-            expect(permissions(author, confidential_note)).to be_disallowed(:admin_note)
+            expect(permissions(author, confidential_note)).to be_disallowed(:admin_note, :reposition_note)
           end
         end
 
@@ -321,7 +356,7 @@ RSpec.describe NotePolicy do
 
           it 'allows noteable assignees to read all notes' do
             expect(permissions(assignee, confidential_note)).to be_allowed(:read_note, :award_emoji)
-            expect(permissions(assignee, confidential_note)).to be_disallowed(:admin_note, :resolve_note)
+            expect(permissions(assignee, confidential_note)).to be_disallowed(:admin_note, :reposition_note, :resolve_note)
           end
         end
 
@@ -333,7 +368,7 @@ RSpec.describe NotePolicy do
 
           it 'allows noteable assignees to read all notes' do
             expect(permissions(assignee, confidential_note)).to be_allowed(:read_note, :award_emoji)
-            expect(permissions(assignee, confidential_note)).to be_disallowed(:admin_note, :resolve_note)
+            expect(permissions(assignee, confidential_note)).to be_disallowed(:admin_note, :reposition_note, :resolve_note)
           end
         end
 
@@ -350,11 +385,11 @@ RSpec.describe NotePolicy do
 
           it 'allows snippet author to read and resolve all notes' do
             expect(permissions(author, confidential_note)).to be_allowed(:read_note, :resolve_note, :award_emoji)
-            expect(permissions(author, confidential_note)).to be_disallowed(:admin_note)
+            expect(permissions(author, confidential_note)).to be_disallowed(:admin_note, :reposition_note)
           end
 
           it 'does not allow maintainers to read confidential notes and replies' do
-            expect(permissions(maintainer, confidential_note)).to be_disallowed(:read_note, :admin_note, :resolve_note, :award_emoji)
+            expect(permissions(maintainer, confidential_note)).to be_disallowed(:read_note, :admin_note, :reposition_note, :resolve_note, :award_emoji)
           end
         end
       end

@@ -16,4 +16,14 @@ build:
       fi
     - /build/build.sh
   rules:
+    - if: '$AUTO_DEVOPS_PLATFORM_TARGET == "EC2"'
+      when: never
     - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
+
+build_artifact:
+  stage: build
+  script:
+    - printf "To build your project, please create a build_artifact job into your .gitlab-ci.yml file.\nMore information at https://docs.gitlab.com/ee/ci/cloud_deployment\n"
+    - exit 1
+  rules:
+    - if: '$AUTO_DEVOPS_PLATFORM_TARGET == "EC2"'

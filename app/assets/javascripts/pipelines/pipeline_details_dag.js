@@ -10,12 +10,19 @@ const apolloProvider = new VueApollo({
 });
 
 const createDagApp = () => {
-  if (!window.gon?.features?.dagPipelineTab) {
+  const el = document.querySelector('#js-pipeline-dag-vue');
+
+  if (!window.gon?.features?.dagPipelineTab || !el) {
     return;
   }
 
-  const el = document.querySelector('#js-pipeline-dag-vue');
-  const { pipelineProjectPath, pipelineIid, emptySvgPath, dagDocPath } = el?.dataset;
+  const {
+    aboutDagDocPath,
+    dagDocPath,
+    emptySvgPath,
+    pipelineProjectPath,
+    pipelineIid,
+  } = el?.dataset;
 
   // eslint-disable-next-line no-new
   new Vue({
@@ -25,10 +32,11 @@ const createDagApp = () => {
     },
     apolloProvider,
     provide: {
+      aboutDagDocPath,
+      dagDocPath,
+      emptySvgPath,
       pipelineProjectPath,
       pipelineIid,
-      emptySvgPath,
-      dagDocPath,
     },
     render(createElement) {
       return createElement('dag', {});

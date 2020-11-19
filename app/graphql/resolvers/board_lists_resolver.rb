@@ -7,7 +7,7 @@ module Resolvers
 
     type Types::BoardListType, null: true
 
-    argument :id, GraphQL::ID_TYPE,
+    argument :id, Types::GlobalIDType[List],
              required: false,
              description: 'Find a list by its global ID'
 

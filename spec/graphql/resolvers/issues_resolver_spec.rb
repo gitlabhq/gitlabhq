@@ -20,6 +20,10 @@ RSpec.describe Resolvers::IssuesResolver do
   let_it_be(:label1)    { create(:label, project: project) }
   let_it_be(:label2)    { create(:label, project: project) }
 
+  specify do
+    expect(described_class).to have_nullable_graphql_type(Types::IssueType.connection_type)
+  end
+
   context "with a project" do
     before do
       project.add_developer(current_user)

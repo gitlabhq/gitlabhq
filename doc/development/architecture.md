@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # GitLab architecture overview
 
 ## Software delivery
@@ -252,6 +258,7 @@ Table description links:
 | [NGINX](#nginx)                                       | Routes requests to appropriate components, terminates SSL            |       ✅        |      ✅       |        ⚙         |     ✅      |   ⤓    |  ❌  | CE & EE |
 | [Node Exporter](#node-exporter)                       | Prometheus endpoint with system metrics                              |       ✅        |     N/A      |       N/A        |     ✅      |   ❌    |  ❌  | CE & EE |
 | [Outbound email (SMTP)](#outbound-email)              | Send email messages to users                                         |       ⤓        |      ⚙       |        ⤓         |     ✅      |   ⤓    |  ⤓  | CE & EE |
+| [Patroni](#patroni)                                   | Manage PostgreSQL HA cluster leader selection and replication        |       ⚙        |      ❌       |        ❌         |     ✅      |   ❌    |  ❌  | EE Only |
 | [PgBouncer Exporter](#pgbouncer-exporter)             | Prometheus endpoint with PgBouncer metrics                           |       ⚙        |      ❌       |        ❌         |     ✅      |   ❌    |  ❌  | CE & EE |
 | [PgBouncer](#pgbouncer)                               | Database connection pooling, failover                                |       ⚙        |      ❌       |        ❌         |     ✅      |   ❌    |  ❌  | EE Only |
 | [PostgreSQL Exporter](#postgresql-exporter)           | Prometheus endpoint with PostgreSQL metrics                          |       ✅        |      ✅       |        ✅         |     ✅      |   ❌    |  ❌  | CE & EE |
@@ -539,6 +546,15 @@ NGINX has an Ingress port for all HTTP requests and routes them to the appropria
 
 [Node Exporter](https://github.com/prometheus/node_exporter) is a Prometheus tool that gives us metrics on the underlying machine (think CPU/Disk/Load). It's just a packaged version of the common open source offering from the Prometheus project.
 
+#### Patroni
+
+- [Project Page](https://github.com/zalando/patroni)
+- Configuration:
+  - [Omnibus](../administration/postgresql/replication_and_failover.md#patroni)
+- Layer: Core Service (Data)
+- Process: `patroni`
+- GitLab.com: [Database Architecture](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/#database-architecture)
+
 #### PgBouncer
 
 - [Project page](https://github.com/pgbouncer/pgbouncer/blob/master/README.md)
@@ -681,7 +697,6 @@ Sidekiq is a Ruby background job processor that pulls jobs from the Redis queue 
 
 #### Puma
 
-NOTE: **Note:**
 Starting with GitLab 13.0, Puma is the default web server and Unicorn has been
 disabled by default.
 
@@ -699,7 +714,6 @@ disabled by default.
 
 #### Unicorn
 
-NOTE: **Note:**
 Starting with GitLab 13.0, Puma is the default web server and Unicorn has been
 disabled by default.
 
@@ -931,7 +945,7 @@ processes: `puma master` (1 process), `puma cluster worker`
 
 ### Repository access
 
-Repositories get accessed via HTTP or SSH. HTTP cloning/push/pull utilizes the GitLab API and SSH cloning is handled by GitLab Shell (previously explained).
+Repositories get accessed via HTTP or SSH. HTTP cloning/push/pull uses the GitLab API and SSH cloning is handled by GitLab Shell (previously explained).
 
 ## Troubleshooting
 
@@ -1015,9 +1029,9 @@ PostgreSQL:
 GitLab has configuration files located in `/home/git/gitlab/config/*`. Commonly referenced
 configuration files include:
 
-- `gitlab.yml` - GitLab configuration
-- `puma.rb` - Puma web server settings
-- `database.yml` - Database connection settings
+- `gitlab.yml`: GitLab configuration
+- `puma.rb`: Puma web server settings
+- `database.yml`: Database connection settings
 
 GitLab Shell has a configuration file at `/home/git/gitlab-shell/config.yml`.
 
@@ -1033,9 +1047,12 @@ bundle exec rake gitlab:env:info RAILS_ENV=production
 bundle exec rake gitlab:check RAILS_ENV=production
 ```
 
-Note: It is recommended to log into the `git` user using `sudo -i -u git` or `sudo su - git`. While
-the `sudo` commands provided by GitLab work in Ubuntu they do not always work in RHEL.
+It's recommended to sign in to the `git` user using either `sudo -i -u git` or
+`sudo su - git`. Although the `sudo` commands provided by GitLab work in Ubuntu,
+they don't always work in RHEL.
 
 ## GitLab.com
 
-We've also detailed [our architecture of GitLab.com](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/) but this is probably over the top unless you have millions of users.
+The [GitLab.com architecture](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/)
+is detailed for your reference, but this architecture is only useful if you have
+millions of users.

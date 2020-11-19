@@ -1,0 +1,7 @@
+---
+name: push_rules_supersede_code_owners
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44126
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/262019
+type: development
+group: group::source code
+default_enabled: true

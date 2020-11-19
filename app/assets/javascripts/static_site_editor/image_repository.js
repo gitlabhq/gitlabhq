@@ -12,9 +12,11 @@ const imageRepository = () => {
       .catch(() => flash(__('Something went wrong while inserting your image. Please try again.')));
   };
 
+  const get = path => images.get(path);
+
   const getAll = () => images;
 
-  return { add, getAll };
+  return { add, get, getAll };
 };
 
 export default imageRepository;

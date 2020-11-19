@@ -9,7 +9,7 @@ RSpec.describe Emails::ConfirmService do
 
   describe '#execute' do
     it 'enqueues a background job to send confirmation email again' do
-      email = user.emails.create(email: 'new@email.com')
+      email = user.emails.create!(email: 'new@email.com')
 
       expect { service.execute(email) }.to have_enqueued_job.on_queue('mailers')
     end

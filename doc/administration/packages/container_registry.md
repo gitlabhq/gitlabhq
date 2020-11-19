@@ -170,7 +170,7 @@ If your certificate provider provides the CA Bundle certificates, append them to
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
 1. Make the relevant changes in NGINX as well (domain, port, TLS certificates path).
 
-Users should now be able to login to the Container Registry with their GitLab
+Users should now be able to sign in to the Container Registry with their GitLab
 credentials using:
 
 ```shell
@@ -234,7 +234,7 @@ registry_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/certificate.key"
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
 1. Make the relevant changes in NGINX as well (domain, port, TLS certificates path).
 
-Users should now be able to login to the Container Registry using their GitLab
+Users should now be able to sign in to the Container Registry using their GitLab
 credentials:
 
 ```shell
@@ -397,6 +397,20 @@ To configure the `s3` storage driver in Omnibus:
    }
    ```
 
+   To avoid using static credentials, use an
+   [IAM role](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html)
+   and omit `accesskey` and `secretkey`. Make sure that your IAM profile follows
+   [the permissions documented by Docker](https://docs.docker.com/registry/storage-drivers/s3/#s3-permission-scopes).
+
+   ```ruby
+   registry['storage'] = {
+     's3' => {
+       'bucket' => 'your-s3-bucket',
+       'region' => 'your-s3-region'
+     }
+   }
+   ```
+
    - `regionendpoint` is only required when configuring an S3 compatible service such as MinIO. It takes a URL such as `http://127.0.0.1:9000`.
    - `your-s3-bucket` should be the name of a bucket that exists, and can't include subdirectories.
 
@@ -412,8 +426,8 @@ when you [deployed your Docker registry](https://docs.docker.com/registry/deploy
 ```yaml
 storage:
   s3:
-    accesskey: 's3-access-key'
-    secretkey: 's3-secret-key-for-access-key'
+    accesskey: 's3-access-key'                # Not needed if IAM role used
+    secretkey: 's3-secret-key-for-access-key' # Not needed if IAM role used
     bucket: 'your-s3-bucket'
     region: 'your-s3-region'
     regionendpoint: 'your-s3-regionendpoint'
@@ -471,7 +485,7 @@ you can pull from the Container Registry, but you cannot push.
    [`--dryrun`](https://docs.aws.amazon.com/cli/latest/reference/s3/sync.html)
    flag and run the command.
 
-   DANGER: **Danger:**
+   DANGER: **Warning:**
    The [`--delete`](https://docs.aws.amazon.com/cli/latest/reference/s3/sync.html)
    flag deletes files that exist in the destination but not in the source.
    If you swap the source and destination, all data in the Registry is deleted.
@@ -584,7 +598,7 @@ on how to achieve that.
 ## Use an external container registry with GitLab as an auth endpoint
 
 If you use an external container registry, some features associated with the
-container registry may be unavailable or have [inherent risks](./../../user/packages/container_registry/index.md#use-with-external-container-registries).
+container registry may be unavailable or have [inherent risks](../../user/packages/container_registry/index.md#use-with-external-container-registries).
 
 **Omnibus GitLab**
 
@@ -815,29 +829,31 @@ If you changed the location of the Container Registry `config.yml`:
 sudo gitlab-ctl registry-garbage-collect /path/to/config.yml
 ```
 
-You may also [remove all unreferenced manifests](#removing-unused-layers-not-referenced-by-manifests),
+You may also [remove all untagged manifests and unreferenced layers](#removing-untagged-manifests-and-unreferenced-layers),
 although this is a way more destructive operation, and you should first
 understand the implications.
 
-### Removing unused layers not referenced by manifests
+### Removing untagged manifests and unreferenced layers
 
 > [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/3097) in Omnibus GitLab 11.10.
 
-DANGER: **Danger:**
+DANGER: **Warning:**
 This is a destructive operation.
 
 The GitLab Container Registry follows the same default workflow as Docker Distribution:
-retain all layers, even ones that are unreferenced directly to allow all content
-to be accessed using context addressable identifiers.
+retain untagged manifests and all layers, even ones that are not referenced directly. All content
+can be accessed by using context addressable identifiers.
 
-However, in most workflows, you don't care about old layers if they are not directly
-referenced by the registry tag. The `registry-garbage-collect` command supports the
+However, in most workflows, you don't care about untagged manifests and old layers if they are not directly
+referenced by a tagged manifest. The `registry-garbage-collect` command supports the
 `-m` switch to allow you to remove all unreferenced manifests and layers that are
 not directly accessible via `tag`:
 
 ```shell
 sudo gitlab-ctl registry-garbage-collect -m
 ```
+
+Without the `-m` flag, the Container Registry only removes layers that are not referenced by any manifest, tagged or not.
 
 Since this is a way more destructive operation, this behavior is disabled by default.
 You are likely expecting this way of operation, but before doing that, ensure
@@ -931,6 +947,8 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 # Run every Sunday at 04:05am
 5 4 * * 0  root gitlab-ctl registry-garbage-collect
 ```
+
+You may want to add the `-m` flag to [remove untagged manifests and unreferenced layers](#removing-untagged-manifests-and-unreferenced-layers).
 
 ## Troubleshooting
 
@@ -1234,8 +1252,8 @@ This will launch the Docker daemon and proxy all connections through mitmproxy.
 
 #### Running the Docker client
 
-Now that we have mitmproxy and Docker running, we can attempt to login and push
-a container image. You may need to run as root to do this. For example:
+Now that we have mitmproxy and Docker running, we can attempt to sign in and
+push a container image. You may need to run as root to do this. For example:
 
 ```shell
 docker login s3-testing.myregistry.com:5050

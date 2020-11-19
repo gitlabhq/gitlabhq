@@ -8,6 +8,8 @@ class Projects::RepositoriesController < Projects::ApplicationController
 
   prepend_before_action(only: [:archive]) { authenticate_sessionless_user!(:archive) }
 
+  skip_before_action :default_cache_headers, only: :archive
+
   # Authorize
   before_action :require_non_empty_project, except: :create
   before_action :archive_rate_limit!, only: :archive

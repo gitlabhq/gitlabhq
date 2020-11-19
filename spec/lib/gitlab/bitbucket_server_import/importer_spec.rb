@@ -112,7 +112,13 @@ RSpec.describe Gitlab::BitbucketServerImport::Importer do
       allow(subject).to receive(:delete_temp_branches)
       allow(subject).to receive(:restore_branches)
 
-      allow(subject.client).to receive(:pull_requests).and_return([pull_request])
+      allow(subject.client).to receive(:pull_requests).and_return([pull_request], [])
+    end
+
+    # As we are using Caching with redis, it is best to clean the cache after each test run, else we need to wait for
+    # the expiration by the importer
+    after do
+      Gitlab::Cache::Import::Caching.expire(subject.already_imported_cache_key, 0)
     end
 
     it 'imports merge event' do
@@ -463,6 +469,47 @@ RSpec.describe Gitlab::BitbucketServerImport::Importer do
 
       subject.execute
     end
+
+    describe 'import pull requests with caching' do
+      let(:pull_request_already_imported) do
+        instance_double(
+          BitbucketServer::Representation::PullRequest,
+          iid: 11)
+      end
+
+      let(:pull_request_to_be_imported) do
+        instance_double(
+          BitbucketServer::Representation::PullRequest,
+          iid: 12,
+          source_branch_sha: sample.commits.last,
+          source_branch_name: Gitlab::Git::BRANCH_REF_PREFIX + sample.source_branch,
+          target_branch_sha: sample.commits.first,
+          target_branch_name: Gitlab::Git::BRANCH_REF_PREFIX + sample.target_branch,
+          title: 'This is a title',
+          description: 'This is a test pull request',
+          state: 'merged',
+          author: 'Test Author',
+          author_email: pull_request_author.email,
+          author_username: pull_request_author.username,
+          created_at: Time.now,
+          updated_at: Time.now,
+          raw: {},
+          merged?: true)
+      end
+
+      before do
+        Gitlab::Cache::Import::Caching.set_add(subject.already_imported_cache_key, pull_request_already_imported.iid)
+        allow(subject.client).to receive(:pull_requests).and_return([pull_request_to_be_imported, pull_request_already_imported], [])
+      end
+
+      it 'only imports one Merge Request, as the other on is in the cache' do
+        expect(subject.client).to receive(:activities).and_return([merge_event])
+        expect { subject.execute }.to change { MergeRequest.count }.by(1)
+
+        expect(Gitlab::Cache::Import::Caching.set_includes?(subject.already_imported_cache_key, pull_request_already_imported.iid)).to eq(true)
+        expect(Gitlab::Cache::Import::Caching.set_includes?(subject.already_imported_cache_key, pull_request_to_be_imported.iid)).to eq(true)
+      end
+    end
   end
 
   describe 'inaccessible branches' do
@@ -488,7 +535,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importer do
         updated_at: Time.now,
         merged?: true)
 
-      expect(subject.client).to receive(:pull_requests).and_return([pull_request])
+      expect(subject.client).to receive(:pull_requests).and_return([pull_request], [])
       expect(subject.client).to receive(:activities).and_return([])
       expect(subject).to receive(:import_repository).twice
     end
@@ -523,6 +570,38 @@ RSpec.describe Gitlab::BitbucketServerImport::Importer do
       expect(project.repository).to receive(:delete_branch).with(temp_branch_to)
 
       expect { subject.execute }.to change { MergeRequest.count }.by(1)
+    end
+  end
+
+  context "lfs files" do
+    before do
+      allow(project).to receive(:lfs_enabled?).and_return(true)
+      allow(subject).to receive(:import_repository)
+      allow(subject).to receive(:import_pull_requests)
+    end
+
+    it "downloads lfs objects if lfs_enabled is enabled for project" do
+      expect_next_instance_of(Projects::LfsPointers::LfsImportService) do |lfs_import_service|
+        expect(lfs_import_service).to receive(:execute).and_return(status: :success)
+      end
+
+      subject.execute
+    end
+
+    it "adds the error message when the lfs download fails" do
+      allow_next_instance_of(Projects::LfsPointers::LfsImportService) do |lfs_import_service|
+        expect(lfs_import_service).to receive(:execute).and_return(status: :error, message: "LFS server not reachable")
+      end
+
+      subject.execute
+
+      expect(project.import_state.reload.last_error).to eq(Gitlab::Json.dump({
+        message: "The remote data could not be fully imported.",
+        errors: [{
+          type: "lfs_objects",
+          errors: "The Lfs import process failed. LFS server not reachable"
+        }]
+      }))
     end
   end
 end

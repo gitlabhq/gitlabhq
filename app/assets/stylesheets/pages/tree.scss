@@ -62,7 +62,7 @@
     .tree-controls {
       margin-bottom: 10px;
 
-      .btn,
+      .btn:not(.dropdown-toggle-split),
       .dropdown,
       .btn-group {
         width: 100%;

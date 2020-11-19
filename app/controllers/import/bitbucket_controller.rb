@@ -132,8 +132,4 @@ class Import::BitbucketController < Import::BaseController
       refresh_token: session[:bitbucket_refresh_token]
     }
   end
-
-  def sanitized_filter_param
-    @filter ||= sanitize(params[:filter])
-  end
 end

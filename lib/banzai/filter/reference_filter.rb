@@ -119,12 +119,16 @@ module Banzai
 
       # Yields the link's URL and inner HTML whenever the node is a valid <a> tag.
       def yield_valid_link(node)
-        link = CGI.unescape(node.attr('href').to_s)
+        link = unescape_link(node.attr('href').to_s)
         inner_html = node.inner_html
 
         return unless link.force_encoding('UTF-8').valid_encoding?
 
         yield link, inner_html
+      end
+
+      def unescape_link(href)
+        CGI.unescape(href)
       end
 
       def replace_text_when_pattern_matches(node, index, pattern)

@@ -5,11 +5,13 @@ require 'spec_helper'
 RSpec.describe 'User page' do
   include ExternalAuthorizationServiceHelpers
 
-  let(:user) { create(:user, bio: '**Lorem** _ipsum_ dolor sit [amet](https://example.com)') }
+  let_it_be(:user) { create(:user, bio: '**Lorem** _ipsum_ dolor sit [amet](https://example.com)') }
+
+  subject { visit(user_path(user)) }
 
   context 'with public profile' do
     it 'shows all the tabs' do
-      visit(user_path(user))
+      subject
 
       page.within '.nav-links' do
         expect(page).to have_link('Overview')
@@ -22,14 +24,12 @@ RSpec.describe 'User page' do
     end
 
     it 'does not show private profile message' do
-      visit(user_path(user))
+      subject
 
       expect(page).not_to have_content("This user has a private profile")
     end
 
     context 'work information' do
-      subject { visit(user_path(user)) }
-
       it 'shows job title and organization details' do
         user.update(organization: 'GitLab - work info test', job_title: 'Frontend Engineer')
 
@@ -57,24 +57,24 @@ RSpec.describe 'User page' do
   end
 
   context 'with private profile' do
-    let(:user) { create(:user, private_profile: true) }
+    let_it_be(:user) { create(:user, private_profile: true) }
 
     it 'shows no tab' do
-      visit(user_path(user))
+      subject
 
       expect(page).to have_css("div.profile-header")
       expect(page).not_to have_css("ul.nav-links")
     end
 
     it 'shows private profile message' do
-      visit(user_path(user))
+      subject
 
       expect(page).to have_content("This user has a private profile")
     end
 
     it 'shows own tabs' do
       sign_in(user)
-      visit(user_path(user))
+      subject
 
       page.within '.nav-links' do
         expect(page).to have_link('Overview')
@@ -88,36 +88,36 @@ RSpec.describe 'User page' do
   end
 
   context 'with blocked profile' do
-    let(:user) { create(:user, state: :blocked) }
+    let_it_be(:user) { create(:user, state: :blocked) }
 
     it 'shows no tab' do
-      visit(user_path(user))
+      subject
 
       expect(page).to have_css("div.profile-header")
       expect(page).not_to have_css("ul.nav-links")
     end
 
     it 'shows blocked message' do
-      visit(user_path(user))
+      subject
 
       expect(page).to have_content("This user is blocked")
     end
 
     it 'shows user name as blocked' do
-      visit(user_path(user))
+      subject
 
       expect(page).to have_css(".cover-title", text: 'Blocked user')
     end
 
     it 'shows no additional fields' do
-      visit(user_path(user))
+      subject
 
       expect(page).not_to have_css(".profile-user-bio")
       expect(page).not_to have_css(".profile-link-holder")
     end
 
     it 'shows username' do
-      visit(user_path(user))
+      subject
 
       expect(page).to have_content("@#{user.username}")
     end
@@ -126,7 +126,7 @@ RSpec.describe 'User page' do
   it 'shows the status if there was one' do
     create(:user_status, user: user, message: "Working hard!")
 
-    visit(user_path(user))
+    subject
 
     expect(page).to have_content("Working hard!")
   end
@@ -135,7 +135,7 @@ RSpec.describe 'User page' do
     it 'shows the sign in link' do
       stub_application_setting(signup_enabled: false)
 
-      visit(user_path(user))
+      subject
 
       page.within '.navbar-nav' do
         expect(page).to have_link('Sign in')
@@ -147,7 +147,7 @@ RSpec.describe 'User page' do
     it 'shows the sign in and register link' do
       stub_application_setting(signup_enabled: true)
 
-      visit(user_path(user))
+      subject
 
       page.within '.navbar-nav' do
         expect(page).to have_link('Sign in / Register')
@@ -157,7 +157,7 @@ RSpec.describe 'User page' do
 
   context 'most recent activity' do
     it 'shows the most recent activity' do
-      visit(user_path(user))
+      subject
 
       expect(page).to have_content('Most Recent Activity')
     end
@@ -168,7 +168,7 @@ RSpec.describe 'User page' do
       end
 
       it 'hides the most recent activity' do
-        visit(user_path(user))
+        subject
 
         expect(page).not_to have_content('Most Recent Activity')
       end
@@ -177,14 +177,14 @@ RSpec.describe 'User page' do
 
   context 'page description' do
     before do
-      visit(user_path(user))
+      subject
     end
 
     it_behaves_like 'page meta description', 'Lorem ipsum dolor sit amet'
   end
 
   context 'with a bot user' do
-    let(:user) { create(:user, user_type: :security_bot) }
+    let_it_be(:user) { create(:user, user_type: :security_bot) }
 
     describe 'feature flag enabled' do
       before do
@@ -192,7 +192,7 @@ RSpec.describe 'User page' do
       end
 
       it 'only shows Overview and Activity tabs' do
-        visit(user_path(user))
+        subject
 
         page.within '.nav-links' do
           expect(page).to have_link('Overview')
@@ -211,7 +211,7 @@ RSpec.describe 'User page' do
       end
 
       it 'only shows Overview and Activity tabs' do
-        visit(user_path(user))
+        subject
 
         page.within '.nav-links' do
           expect(page).to have_link('Overview')
@@ -221,6 +221,26 @@ RSpec.describe 'User page' do
           expect(page).to have_link('Personal projects')
           expect(page).to have_link('Snippets')
         end
+      end
+    end
+  end
+
+  context 'structured markup' do
+    let_it_be(:user) { create(:user, website_url: 'https://gitlab.com', organization: 'GitLab', job_title: 'Frontend Engineer', email: 'public@example.com', public_email: 'public@example.com', location: 'Country', created_at: Time.now, updated_at: Time.now) }
+
+    it 'shows Person structured markup' do
+      subject
+
+      aggregate_failures do
+        expect(page).to have_selector('[itemscope][itemtype="http://schema.org/Person"]')
+        expect(page).to have_selector('img[itemprop="image"]')
+        expect(page).to have_selector('[itemprop="name"]')
+        expect(page).to have_selector('[itemprop="address"][itemscope][itemtype="https://schema.org/PostalAddress"]')
+        expect(page).to have_selector('[itemprop="addressLocality"]')
+        expect(page).to have_selector('[itemprop="url"]')
+        expect(page).to have_selector('[itemprop="email"]')
+        expect(page).to have_selector('span[itemprop="jobTitle"]')
+        expect(page).to have_selector('span[itemprop="worksFor"]')
       end
     end
   end

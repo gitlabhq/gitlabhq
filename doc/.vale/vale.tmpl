@@ -1,0 +1,51 @@
+{{- /* Modify Vale's output https://docs.errata.ai/vale/cli#--output */ -}}
+
+{{- /* Keep track of our various counts */ -}}
+
+{{- $e := 0 -}}
+{{- $w := 0 -}}
+{{- $s := 0 -}}
+{{- $f := 0 -}}
+
+{{- /* Range over the linted files */ -}}
+
+{{- range .Files}}
+
+{{- $f = add1 $f -}}
+{{- $path := .Path | underline -}}
+
+{{- /* Range over the file's alerts */ -}}
+
+{{- range .Alerts -}}
+
+{{- $error := "" -}}
+{{- if eq .Severity "error" -}}
+    {{- $error = .Severity | red -}}
+    {{- $e = add1 $e  -}}
+{{- else if eq .Severity "warning" -}}
+    {{- $error = .Severity | yellow -}}
+    {{- $w = add1 $w -}}
+{{- else -}}
+    {{- $error = .Severity | blue -}}
+    {{- $s = add1 $s -}}
+{{- end}}
+
+{{- /* Variables setup */ -}}
+
+{{- $path = $path -}}
+{{- $loc := printf "Line %d, position %d" .Line (index .Span 0) -}}
+{{- $check := printf "%s" .Check -}}
+{{- $message := printf "%s" .Message -}}
+{{- $link := printf "%s" .Link -}}
+
+{{- /* Output */ -}}
+
+{{ $path }}:
+ {{ $loc }} (rule {{ $check }})
+ {{ $error }}: {{ $message }}
+ More information: {{ $link }}
+
+{{end -}}
+{{end -}}
+
+{{- $e}} {{"errors" | red}}, {{$w}} {{"warnings" | yellow}}, and {{$s}} {{"suggestions" | blue}} found in {{$f}} {{$f | int | plural "file" "files"}}.

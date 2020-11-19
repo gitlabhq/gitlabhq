@@ -24,6 +24,7 @@ module Gitlab
         @api ||= ::Octokit::Client.new(
           access_token: access_token,
           api_endpoint: api_endpoint,
+          web_endpoint: web_endpoint,
           # If there is no config, we're connecting to github.com and we
           # should verify ssl.
           connection_options: {
@@ -83,6 +84,10 @@ module Gitlab
         else
           github_options[:site] || ::Octokit::Default.api_endpoint
         end
+      end
+
+      def web_endpoint
+        host.presence || ::Octokit::Default.web_endpoint
       end
 
       def config

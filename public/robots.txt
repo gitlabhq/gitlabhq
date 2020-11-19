@@ -14,6 +14,7 @@
 # Global routes
 User-Agent: *
 Disallow: /autocomplete/users
+Disallow: /autocomplete/projects
 Disallow: /search
 Disallow: /admin
 Disallow: /profile
@@ -21,8 +22,11 @@ Disallow: /dashboard
 Disallow: /users
 Disallow: /help
 Disallow: /s/
-# Only specifically allow the Sign In page to avoid very ugly search results
+Disallow: /-/profile
+Disallow: /-/ide/
+# Restrict allowed routes to avoid very ugly search results
 Allow: /users/sign_in
+Allow: /users/*/snippets
 
 # Generic resource routes like new, edit, raw
 # This will block routes like:
@@ -32,6 +36,7 @@ User-Agent: *
 Disallow: /*/new
 Disallow: /*/edit
 Disallow: /*/raw
+Disallow: /*/realtime_changes
 
 # Group details
 User-Agent: *
@@ -41,7 +46,7 @@ Disallow: /groups/*/group_members
 
 # Project details
 User-Agent: *
-Disallow: /*/*.git
+Disallow: /*/*.git$
 Disallow: /*/archive/
 Disallow: /*/repository/archive*
 Disallow: /*/activity
@@ -63,3 +68,16 @@ Disallow: /*/protected_branches
 Disallow: /*/uploads/
 Disallow: /*/project_members
 Disallow: /*/settings
+Disallow: /*/-/import
+Disallow: /*/-/environments
+Disallow: /*/-/jobs
+Disallow: /*/-/requirements_management
+Disallow: /*/-/pipelines
+Disallow: /*/-/pipeline_schedules
+Disallow: /*/-/dependencies
+Disallow: /*/-/licenses
+Disallow: /*/-/metrics
+Disallow: /*/-/incidents
+Disallow: /*/-/value_stream_analytics
+Disallow: /*/-/analytics
+Disallow: /*/insights

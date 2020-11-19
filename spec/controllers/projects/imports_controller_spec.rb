@@ -7,10 +7,21 @@ RSpec.describe Projects::ImportsController do
   let(:project) { create(:project) }
 
   before do
-    sign_in(user)
+    sign_in(user) if user
   end
 
   describe 'GET #show' do
+    context 'when user is not authenticated and the project is public' do
+      let(:user) { nil }
+      let(:project) { create(:project, :public) }
+
+      it 'returns 404 response' do
+        get :show, params: { namespace_id: project.namespace.to_param, project_id: project }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
     context 'when the user has maintainer rights' do
       before do
         project.add_maintainer(user)

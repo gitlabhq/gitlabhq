@@ -44,7 +44,7 @@ RSpec.describe DesignManagement::GenerateImageVersionsService do
     end
 
     it 'logs if the raw image cannot be found' do
-      version.designs.first.update(filename: 'foo.png')
+      version.designs.first.update!(filename: 'foo.png')
 
       expect(Gitlab::AppLogger).to receive(:error).with("No design file found for Action: #{action.id}")
 

@@ -1,7 +1,5 @@
 - page_title _("Merge Conflicts"), "#{@merge_request.title} (#{@merge_request.to_reference}", _("Merge Requests")
 - add_page_specific_style 'page_bundles/merge_conflicts'
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_tag('lib/ace.js')
 = render "projects/merge_requests/mr_title"
 
 .merge-request-details.issuable-details

@@ -122,6 +122,19 @@ RSpec.describe 'Runners' do
       end
     end
 
+    context 'when multiple runners are configured' do
+      let!(:specific_runner) { create(:ci_runner, :project, projects: [project]) }
+      let!(:specific_runner_2) { create(:ci_runner, :project, projects: [project]) }
+
+      it 'adds pagination to the runner list' do
+        stub_const('Projects::Settings::CiCdController::NUMBER_OF_RUNNERS_PER_PAGE', 1)
+
+        visit project_runners_path(project)
+
+        expect(find('.pagination')).not_to be_nil
+      end
+    end
+
     context 'when a specific runner exists in another project' do
       let(:another_project) { create(:project) }
       let!(:specific_runner) { create(:ci_runner, :project, projects: [another_project]) }

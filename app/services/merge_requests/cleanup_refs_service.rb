@@ -9,7 +9,7 @@ module MergeRequests
     attr_reader :merge_request
 
     def self.schedule(merge_request)
-      MergeRequestCleanupRefsWorker.perform_in(TIME_THRESHOLD, merge_request.id)
+      merge_request.create_cleanup_schedule(scheduled_at: TIME_THRESHOLD.from_now)
     end
 
     def initialize(merge_request)
@@ -22,6 +22,7 @@ module MergeRequests
     end
 
     def execute
+      return error("Merge request is not scheduled to be cleaned up yet.") unless scheduled?
       return error("Merge request has not been closed nor merged for #{TIME_THRESHOLD.inspect}.") unless eligible?
 
       # Ensure that commit shas of refs are kept around so we won't lose them when GC runs.
@@ -30,13 +31,20 @@ module MergeRequests
       return error('Failed to create keep around refs.') unless kept_around?
       return error('Failed to cache merge ref sha.') unless cache_merge_ref_sha
 
-      delete_refs
+      delete_refs if repository.exists?
+
+      return error('Failed to update schedule.') unless update_schedule
+
       success
     end
 
     private
 
     attr_reader :repository, :ref_path, :merge_ref_path, :ref_head_sha, :merge_ref_sha
+
+    def scheduled?
+      merge_request.cleanup_schedule.present? && merge_request.cleanup_schedule.scheduled_at <= Time.current
+    end
 
     def eligible?
       return met_time_threshold?(merge_request.metrics&.latest_closed_at) if merge_request.closed?
@@ -70,6 +78,10 @@ module MergeRequests
 
     def delete_refs
       repository.delete_refs(ref_path, merge_ref_path)
+    end
+
+    def update_schedule
+      merge_request.cleanup_schedule.update(completed_at: Time.current)
     end
   end
 end

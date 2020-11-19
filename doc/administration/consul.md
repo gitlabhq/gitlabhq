@@ -17,12 +17,9 @@ a service networking solution that you can manage by using `/etc/gitlab/gitlab.r
 
 ## Configure the Consul nodes
 
-NOTE: **Important:**
-Before proceeding, refer to the
-[available reference architectures](reference_architectures/index.md#available-reference-architectures)
-to find out how many Consul server nodes you should have.
-
-On **each** Consul server node perform the following:
+After you review the [reference architecture](reference_architectures/index.md#available-reference-architectures)
+documentation to determine the number of Consul server nodes you should have,
+on _each_ Consul server node:
 
 1. Follow the instructions to [install](https://about.gitlab.com/install/)
    GitLab by choosing your preferred platform, but do not supply the
@@ -87,16 +84,15 @@ Consul nodes communicate using the raft protocol. If the current leader goes
 offline, there needs to be a leader election. A leader node must exist to facilitate
 synchronization across the cluster. If too many nodes go offline at the same time,
 the cluster will lose quorum and not elect a leader due to
-[broken consensus](https://www.consul.io/docs/internals/consensus.html).
+[broken consensus](https://www.consul.io/docs/architecture/consensus).
 
 Consult the [troubleshooting section](#troubleshooting-consul) if the cluster is not
 able to recover after the upgrade. The [outage recovery](#outage-recovery) may
 be of particular interest.
 
-NOTE: **Note:**
-GitLab uses Consul to store only transient data that is easily regenerated. If
-the bundled Consul was not used by any process other than GitLab itself, then
-[rebuilding the cluster from scratch](#recreate-from-scratch) is fine.
+GitLab uses Consul to store only easily regenerated, transient data. If the
+bundled Consul wasn't used by any process other than GitLab itself, you can
+[rebuild the cluster from scratch](#recreate-from-scratch).
 
 ## Troubleshooting Consul
 

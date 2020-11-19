@@ -321,21 +321,40 @@ RSpec.describe Issues::MoveService do
 
     before do
       authorized_project.add_developer(user)
+      authorized_project.add_developer(admin)
       authorized_project2.add_developer(user)
+      authorized_project2.add_developer(admin)
     end
 
     context 'multiple related issues' do
-      it 'moves all related issues and retains permissions' do
-        new_issue = move_service.execute(old_issue, new_project)
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it 'moves all related issues and retains permissions' do
+          new_issue = move_service.execute(old_issue, new_project)
 
-        expect(new_issue.related_issues(admin))
-          .to match_array([authorized_issue_b, authorized_issue_c, authorized_issue_d, unauthorized_issue])
+          expect(new_issue.related_issues(admin))
+            .to match_array([authorized_issue_b, authorized_issue_c, authorized_issue_d, unauthorized_issue])
 
-        expect(new_issue.related_issues(user))
-          .to match_array([authorized_issue_b, authorized_issue_c, authorized_issue_d])
+          expect(new_issue.related_issues(user))
+            .to match_array([authorized_issue_b, authorized_issue_c, authorized_issue_d])
 
-        expect(authorized_issue_d.related_issues(user))
-          .to match_array([new_issue])
+          expect(authorized_issue_d.related_issues(user))
+            .to match_array([new_issue])
+        end
+      end
+
+      context 'when admin mode is disabled' do
+        it 'moves all related issues and retains permissions' do
+          new_issue = move_service.execute(old_issue, new_project)
+
+          expect(new_issue.related_issues(admin))
+              .to match_array([authorized_issue_b, authorized_issue_c, authorized_issue_d])
+
+          expect(new_issue.related_issues(user))
+              .to match_array([authorized_issue_b, authorized_issue_c, authorized_issue_d])
+
+          expect(authorized_issue_d.related_issues(user))
+              .to match_array([new_issue])
+        end
       end
     end
   end

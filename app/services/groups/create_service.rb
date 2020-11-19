@@ -34,7 +34,7 @@ module Groups
         if @group.save
           @group.add_owner(current_user)
           @group.create_namespace_settings
-          Service.create_from_active_default_integrations(@group, :group_id) if Feature.enabled?(:group_level_integrations)
+          Service.create_from_active_default_integrations(@group, :group_id) if Feature.enabled?(:group_level_integrations, default_enabled: true)
         end
       end
 

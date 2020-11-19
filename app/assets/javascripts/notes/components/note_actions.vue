@@ -1,6 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
-import { GlLoadingIcon, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { GlTooltipDirective, GlIcon, GlButton, GlDropdownItem } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import resolvedStatusMixin from '~/batch_comments/mixins/resolved_status';
 import ReplyButton from './note_actions/reply_button.vue';
@@ -14,7 +14,8 @@ export default {
   components: {
     GlIcon,
     ReplyButton,
-    GlLoadingIcon,
+    GlButton,
+    GlDropdownItem,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -170,6 +171,15 @@ export default {
         name: this.projectName,
       });
     },
+    resolveIcon() {
+      if (!this.isResolving) {
+        return this.isResolved ? 'check-circle-filled' : 'check-circle';
+      }
+      return null;
+    },
+    resolveVariant() {
+      return this.isResolved ? 'success' : 'default';
+    },
   },
   methods: {
     onEdit() {
@@ -233,24 +243,23 @@ export default {
       :title="displayContributorBadgeText"
       >{{ __('Contributor') }}</span
     >
-    <div v-if="canResolve" class="note-actions-item">
-      <button
+    <div v-if="canResolve" class="gl-ml-2">
+      <gl-button
         ref="resolveButton"
         v-gl-tooltip
+        size="small"
+        category="tertiary"
+        :variant="resolveVariant"
         :class="{ 'is-disabled': !resolvable, 'is-active': isResolved }"
         :title="resolveButtonTitle"
         :aria-label="resolveButtonTitle"
-        type="button"
+        :icon="resolveIcon"
+        :loading="isResolving"
         class="line-resolve-btn note-action-button"
         @click="onResolve"
-      >
-        <template v-if="!isResolving">
-          <gl-icon :name="isResolved ? 'check-circle-filled' : 'check-circle'" />
-        </template>
-        <gl-loading-icon v-else inline />
-      </button>
+      />
     </div>
-    <div v-if="canAwardEmoji" class="note-actions-item">
+    <div v-if="canAwardEmoji" class="gl-ml-3 gl-mr-2">
       <a
         v-gl-tooltip
         :class="{ 'js-user-authored': isAuthoredByCurrentUser }"
@@ -261,7 +270,7 @@ export default {
       >
         <gl-icon class="link-highlight award-control-icon-neutral" name="slight-smile" />
         <gl-icon class="link-highlight award-control-icon-positive" name="smiley" />
-        <gl-icon class="link-highlight award-control-icon-super-positive" name="smiley" />
+        <gl-icon class="link-highlight award-control-icon-super-positive" name="smile" />
       </a>
     </div>
     <reply-button
@@ -270,72 +279,57 @@ export default {
       class="js-reply-button"
       @startReplying="$emit('startReplying')"
     />
-    <div v-if="canEdit" class="note-actions-item">
-      <button
+    <div v-if="canEdit" class="gl-ml-2">
+      <gl-button
         v-gl-tooltip
-        type="button"
         title="Edit comment"
+        icon="pencil"
+        size="small"
+        category="tertiary"
         class="note-action-button js-note-edit btn btn-transparent"
         data-qa-selector="note_edit_button"
         @click="onEdit"
-      >
-        <gl-icon name="pencil" class="link-highlight" />
-      </button>
+      />
     </div>
-    <div v-if="showDeleteAction" class="note-actions-item">
-      <button
+    <div v-if="showDeleteAction" class="gl-ml-2">
+      <gl-button
         v-gl-tooltip
-        type="button"
         title="Delete comment"
+        size="small"
+        icon="remove"
+        category="tertiary"
         class="note-action-button js-note-delete btn btn-transparent"
         @click="onDelete"
-      >
-        <gl-icon name="remove" class="link-highlight" />
-      </button>
+      />
     </div>
-    <div v-else-if="shouldShowActionsDropdown" class="dropdown more-actions note-actions-item">
-      <button
+    <div v-else-if="shouldShowActionsDropdown" class="dropdown more-actions gl-ml-2">
+      <gl-button
         v-gl-tooltip
-        type="button"
         title="More actions"
+        icon="ellipsis_v"
+        size="small"
+        category="tertiary"
         class="note-action-button more-actions-toggle btn btn-transparent"
         data-toggle="dropdown"
         @click="closeTooltip"
-      >
-        <gl-icon class="icon" name="ellipsis_v" />
-      </button>
+      />
       <ul class="dropdown-menu more-actions-dropdown dropdown-open-left">
-        <li v-if="canReportAsAbuse">
-          <a :href="reportAbusePath">{{ __('Report abuse to admin') }}</a>
-        </li>
-        <li v-if="noteUrl">
-          <button
-            :data-clipboard-text="noteUrl"
-            type="button"
-            class="btn-default btn-transparent js-btn-copy-note-link"
-          >
-            {{ __('Copy link') }}
-          </button>
-        </li>
-        <li v-if="canAssign">
-          <button
-            class="btn-default btn-transparent"
-            data-testid="assign-user"
-            type="button"
-            @click="assignUser"
-          >
-            {{ displayAssignUserText }}
-          </button>
-        </li>
-        <li v-if="canEdit">
-          <button
-            class="btn btn-transparent js-note-delete js-note-delete"
-            type="button"
-            @click.prevent="onDelete"
-          >
-            <span class="text-danger">{{ __('Delete comment') }}</span>
-          </button>
-        </li>
+        <gl-dropdown-item v-if="canReportAsAbuse" :href="reportAbusePath">
+          {{ __('Report abuse to admin') }}
+        </gl-dropdown-item>
+        <gl-dropdown-item
+          v-if="noteUrl"
+          class="js-btn-copy-note-link"
+          :data-clipboard-text="noteUrl"
+        >
+          {{ __('Copy link') }}
+        </gl-dropdown-item>
+        <gl-dropdown-item v-if="canAssign" data-testid="assign-user" @click="assignUser">
+          {{ displayAssignUserText }}
+        </gl-dropdown-item>
+        <gl-dropdown-item v-if="canEdit" class="js-note-delete" @click.prevent="onDelete">
+          <span class="text-danger">{{ __('Delete comment') }}</span>
+        </gl-dropdown-item>
       </ul>
     </div>
   </div>

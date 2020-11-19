@@ -29,10 +29,10 @@ class ResourceTimeboxEvent < ResourceEvent
     case self
     when ResourceMilestoneEvent
       Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_milestone_changed_action(author: user)
-    when ResourceIterationEvent
-      Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_iteration_changed_action(author: user)
     else
       # no-op
     end
   end
 end
+
+ResourceTimeboxEvent.prepend_if_ee('EE::ResourceTimeboxEvent')

@@ -1,7 +1,8 @@
 ---
 name: bitbucket_server_user_mapping_by_username
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36885
-rollout_issue_url:
-group: group::import
+rollout_issue_url: 
+milestone: '13.4'
 type: development
+group: group::import
 default_enabled: false

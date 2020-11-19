@@ -32,6 +32,7 @@ RSpec.describe RelativePositioning::Mover do
   let_it_be(:one_free_space_set) do
     indices.drop(1).map { |iid| create(:issue, project: one_free_space, iid: iid.succ) }
   end
+
   let_it_be(:three_sibs_set) do
     [1, 2, 3].map { |iid| create(:issue, iid: iid, project: three_sibs) }
   end

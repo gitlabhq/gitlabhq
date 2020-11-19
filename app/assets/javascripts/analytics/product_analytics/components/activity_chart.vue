@@ -17,10 +17,13 @@ export default {
     },
   },
   computed: {
-    seriesData() {
-      return {
-        full: this.formattedData.keys.map((val, idx) => [val, this.formattedData.values[idx]]),
-      };
+    barSeriesData() {
+      return [
+        {
+          name: 'full',
+          data: this.formattedData.keys.map((val, idx) => [val, this.formattedData.values[idx]]),
+        },
+      ];
     },
   },
 };
@@ -30,7 +33,7 @@ export default {
   <div class="gl-xs-w-full">
     <gl-column-chart
       v-if="formattedData.keys"
-      :data="seriesData"
+      :bars="barSeriesData"
       :x-axis-title="__('Value')"
       :y-axis-title="__('Number of events')"
       :x-axis-type="'category'"

@@ -86,7 +86,7 @@ RSpec.describe SessionsController do
           post(:create, params: { user: { login: 'invalid', password: 'invalid' } })
 
           expect(response)
-            .to set_flash.now[:alert].to /Invalid Login or password/
+            .to set_flash.now[:alert].to(/Invalid Login or password/)
         end
       end
 
@@ -299,7 +299,7 @@ RSpec.describe SessionsController do
     context 'when using two-factor authentication via OTP' do
       let(:user) { create(:user, :two_factor) }
 
-      def authenticate_2fa(user_params, otp_user_id: user.id)
+      def authenticate_2fa(otp_user_id: user.id, **user_params)
         post(:create, params: { user: user_params }, session: { otp_user_id: otp_user_id })
       end
 
@@ -343,11 +343,12 @@ RSpec.describe SessionsController do
 
         it 'favors login over otp_user_id when password is present and does not authenticate the user' do
           authenticate_2fa(
-            { login: 'random_username', password: user.password },
+            login: 'random_username',
+            password: user.password,
             otp_user_id: user.id
           )
 
-          expect(response).to set_flash.now[:alert].to /Invalid Login or password/
+          expect(response).to set_flash.now[:alert].to(/Invalid Login or password/)
         end
       end
 
@@ -396,7 +397,7 @@ RSpec.describe SessionsController do
 
               it 'warns about invalid OTP code' do
                 expect(response).to set_flash.now[:alert]
-                  .to /Invalid two-factor code/
+                  .to(/Invalid two-factor code/)
               end
             end
           end

@@ -23,7 +23,7 @@ module API
         optional :search, type: String, desc: 'Return list of tags matching the search criteria'
         use :pagination
       end
-      get ':id/repository/tags' do
+      get ':id/repository/tags', feature_category: :source_code_management do
         tags = ::TagsFinder.new(user_project.repository,
                                 sort: "#{params[:order_by]}_#{params[:sort]}",
                                 search: params[:search]).execute
@@ -37,7 +37,7 @@ module API
       params do
         requires :tag_name, type: String, desc: 'The name of the tag'
       end
-      get ':id/repository/tags/:tag_name', requirements: TAG_ENDPOINT_REQUIREMENTS do
+      get ':id/repository/tags/:tag_name', requirements: TAG_ENDPOINT_REQUIREMENTS, feature_category: :source_code_management do
         tag = user_project.repository.find_tag(params[:tag_name])
         not_found!('Tag') unless tag
 
@@ -54,7 +54,7 @@ module API
         optional :message,             type: String, desc: 'Specifying a message creates an annotated tag'
         optional :release_description, type: String, desc: 'Specifying release notes stored in the GitLab database (deprecated in GitLab 11.7)'
       end
-      post ':id/repository/tags' do
+      post ':id/repository/tags', :release_orchestration do
         authorize_admin_tag
 
         result = ::Tags::CreateService.new(user_project, current_user)
@@ -86,7 +86,7 @@ module API
       params do
         requires :tag_name, type: String, desc: 'The name of the tag'
       end
-      delete ':id/repository/tags/:tag_name', requirements: TAG_ENDPOINT_REQUIREMENTS do
+      delete ':id/repository/tags/:tag_name', requirements: TAG_ENDPOINT_REQUIREMENTS, feature_category: :source_code_management do
         authorize_admin_tag
 
         tag = user_project.repository.find_tag(params[:tag_name])
@@ -112,7 +112,7 @@ module API
         requires :tag_name,    type: String, desc: 'The name of the tag', as: :tag
         requires :description, type: String, desc: 'Release notes with markdown support'
       end
-      post ':id/repository/tags/:tag_name/release', requirements: TAG_ENDPOINT_REQUIREMENTS do
+      post ':id/repository/tags/:tag_name/release', requirements: TAG_ENDPOINT_REQUIREMENTS, feature_category: :release_orchestration do
         authorize_create_release!
 
         ##
@@ -144,7 +144,7 @@ module API
         requires :tag_name,    type: String, desc: 'The name of the tag', as: :tag
         requires :description, type: String, desc: 'Release notes with markdown support'
       end
-      put ':id/repository/tags/:tag_name/release', requirements: TAG_ENDPOINT_REQUIREMENTS do
+      put ':id/repository/tags/:tag_name/release', requirements: TAG_ENDPOINT_REQUIREMENTS, feature_category: :release_orchestration do
         authorize_update_release!
 
         result = ::Releases::UpdateService

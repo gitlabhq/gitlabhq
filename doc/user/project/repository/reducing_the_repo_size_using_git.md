@@ -18,7 +18,7 @@ We **recommend [`git filter-repo`](https://github.com/newren/git-filter-repo/blo
 over [`git filter-branch`](https://git-scm.com/docs/git-filter-branch) and
 [BFG](https://rtyley.github.io/bfg-repo-cleaner/).
 
-DANGER: **Danger:**
+DANGER: **Warning:**
 Rewriting repository history is a destructive operation. Make sure to back up your repository before
 you begin. The best way back up a repository is to
 [export the project](../settings/import_export.md#exporting-a-project-and-its-data).
@@ -201,6 +201,12 @@ To purge files from GitLab storage:
 1. Run a [repository cleanup](#repository-cleanup).
 
 ## Repository cleanup
+
+NOTE: **Note:**
+Safely cleaning the repository requires it to be made read-only for the duration
+of the operation. This happens automatically, but submitting the cleanup request
+will fail if any writes are ongoing, so cancel any outstanding `git push`
+operations before continuing.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/19376) in GitLab 11.6.
 

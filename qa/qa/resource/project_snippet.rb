@@ -31,6 +31,14 @@ module QA
           new_snippet.click_create_snippet_button
         end
       end
+
+      def api_get_path
+        "/projects/#{project.id}/snippets/#{snippet_id}"
+      end
+
+      def api_post_path
+        "/projects/#{project.id}/snippets"
+      end
     end
   end
 end

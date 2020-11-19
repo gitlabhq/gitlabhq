@@ -101,9 +101,7 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Create do
           graphql_mutation(:create_annotation, variables)
         end
 
-        it_behaves_like 'a mutation that returns top-level errors' do
-          let(:match_errors) { include(/is not a valid Global ID/) }
-        end
+        it_behaves_like 'an invalid argument to the mutation', argument_name: :environment_id
       end
     end
   end
@@ -190,9 +188,7 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Create do
         graphql_mutation(:create_annotation, variables)
       end
 
-      it_behaves_like 'a mutation that returns top-level errors' do
-        let(:match_errors) { include(/is not a valid Global ID/) }
-      end
+      it_behaves_like 'an invalid argument to the mutation', argument_name: :cluster_id
     end
   end
 
@@ -213,35 +209,26 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Create do
     it_behaves_like 'a mutation that returns top-level errors', errors: [described_class::ANNOTATION_SOURCE_ARGUMENT_ERROR]
   end
 
-  context 'when a non-cluster or environment id is provided' do
-    let(:gid) { { environment_id: project.to_global_id.to_s } }
-    let(:mutation) do
-      variables = {
-        starting_at: starting_at,
-        ending_at: ending_at,
-        dashboard_path: dashboard_path,
-        description: description
-      }.merge!(gid)
+  [:environment_id, :cluster_id].each do |arg_name|
+    context "when #{arg_name} is given an ID of the wrong type" do
+      let(:gid) { global_id_of(project) }
+      let(:mutation) do
+        variables = {
+          starting_at: starting_at,
+          ending_at: ending_at,
+          dashboard_path: dashboard_path,
+          description: description,
+          arg_name => gid
+        }
 
-      graphql_mutation(:create_annotation, variables)
-    end
-
-    before do
-      project.add_developer(current_user)
-    end
-
-    describe 'non-environment id' do
-      it_behaves_like 'a mutation that returns top-level errors' do
-        let(:match_errors) { include(/does not represent an instance of Environment/) }
+        graphql_mutation(:create_annotation, variables)
       end
-    end
 
-    describe 'non-cluster id' do
-      let(:gid) { { cluster_id: project.to_global_id.to_s } }
-
-      it_behaves_like 'a mutation that returns top-level errors' do
-        let(:match_errors) { include(/does not represent an instance of Clusters::Cluster/) }
+      before do
+        project.add_developer(current_user)
       end
+
+      it_behaves_like 'an invalid argument to the mutation', argument_name: arg_name
     end
   end
 end

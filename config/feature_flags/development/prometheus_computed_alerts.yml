@@ -2,6 +2,7 @@
 name: prometheus_computed_alerts
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/13443
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/255304
-group: group::health
+milestone: '12.0'
 type: development
+group: group::health
 default_enabled: false

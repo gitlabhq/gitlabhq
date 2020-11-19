@@ -16,9 +16,9 @@ export default {
     },
   },
   i18n: {
-    rolloutPercentageDescription: __('Enter a whole number between 0 and 100'),
+    rolloutPercentageDescription: __('Enter an integer number between 0 and 100'),
     rolloutPercentageInvalid: s__(
-      'FeatureFlags|Percent rollout must be a whole number between 0 and 100',
+      'FeatureFlags|Percent rollout must be an integer number between 0 and 100',
     ),
     rolloutPercentageLabel: s__('FeatureFlag|Percentage'),
   },

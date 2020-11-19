@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::GitAccessSnippet do
   include ProjectHelpers
   include TermsHelper
+  include AdminModeHelper
   include_context 'ProjectPolicyTable context'
   using RSpec::Parameterized::TableSyntax
 
@@ -207,12 +208,13 @@ RSpec.describe Gitlab::GitAccessSnippet do
     let(:snippet) { create(:personal_snippet, snippet_level, :repository) }
     let(:user) { membership == :author ? snippet.author : create_user_from_membership(nil, membership) }
 
-    where(:snippet_level, :membership, :_expected_count) do
+    where(:snippet_level, :membership, :admin_mode, :_expected_count) do
       permission_table_for_personal_snippet_access
     end
 
     with_them do
       it "respects accessibility" do
+        enable_admin_mode!(user) if admin_mode
         error_class = described_class::ForbiddenError
 
         if Ability.allowed?(user, :update_snippet, snippet)

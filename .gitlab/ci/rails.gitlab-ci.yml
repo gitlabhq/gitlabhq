@@ -1,4 +1,4 @@
-######################
+#######################
 # rspec job base specs
 .rails-job-base:
   extends:
@@ -20,6 +20,7 @@
   variables:
     RUBY_GC_MALLOC_LIMIT: 67108864
     RUBY_GC_MALLOC_LIMIT_MAX: 134217728
+    CRYSTALBALL: "true"
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets"]
   script:
     - *base-script
@@ -29,6 +30,7 @@
     when: always
     paths:
       - coverage/
+      - crystalball/
       - knapsack/
       - rspec_flaky/
       - rspec_profiling/
@@ -284,6 +286,9 @@ db:migrate-from-v12.10.0:
     - '[[ -d "ee/" ]] || export TAG_TO_CHECKOUT="v12.10.0"'
     - git fetch https://gitlab.com/gitlab-org/$PROJECT_TO_CHECKOUT.git $TAG_TO_CHECKOUT
     - git checkout -f FETCH_HEAD
+    - sed -i -e "s/gem 'grpc', '~> 1.24.0'/gem 'grpc', '~> 1.30.2'/" Gemfile  # Update gRPC for Ruby 2.7
+    - sed -i -e "s/gem 'google-protobuf', '~> 3.8.0'/gem 'google-protobuf', '~> 3.12.0'/" Gemfile
+    - gem install bundler:1.17.3
     - bundle update google-protobuf grpc bootsnap
     - bundle install $BUNDLE_INSTALL_FLAGS
     - date
@@ -556,7 +561,7 @@ rspec-ee system pg12 geo:
 # EE: Canonical MR pipelines
 rspec fail-fast:
   extends:
-    - .rspec-ee-base-pg11 # This job also runs EE spec which needs elasticsearch
+    - .rspec-ee-base-pg11  # This job also runs EE spec which needs elasticsearch
     - .rails:rules:rspec fail-fast
   stage: test
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets", "detect-tests"]

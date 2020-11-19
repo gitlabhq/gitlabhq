@@ -1,6 +1,8 @@
 - breadcrumb_title _("Details")
-- page_title _("Groups")
 - @content_class = "limit-container-width" unless fluid_layout
+
+- if show_thanks_for_purchase_banner?
+  = render_if_exists 'shared/thanks_for_purchase_banner', plan_title: plan_title, quantity: params[:purchased_quantity].to_i
 
 - if show_invite_banner?(@group)
   = content_for :group_invite_members_banner do

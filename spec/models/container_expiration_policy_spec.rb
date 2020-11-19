@@ -38,9 +38,42 @@ RSpec.describe ContainerExpirationPolicy, type: :model do
       it { is_expected.not_to allow_value('foo').for(:keep_n) }
     end
 
+    describe '#disable!' do
+      let_it_be(:policy) { create(:container_expiration_policy) }
+
+      subject { policy.disable! }
+
+      it 'disables the container expiration policy' do
+        expect { subject }.to change { policy.reload.enabled }.from(true).to(false)
+      end
+    end
+
+    describe '#policy_params' do
+      let_it_be(:policy) { create(:container_expiration_policy) }
+
+      let(:expected) do
+        {
+          'older_than' => policy.older_than,
+          'keep_n' => policy.keep_n,
+          'name_regex' => policy.name_regex,
+          'name_regex_keep' => policy.name_regex_keep
+        }
+      end
+
+      subject { policy.policy_params }
+
+      it { is_expected.to eq(expected) }
+    end
+
     context 'with a set of regexps' do
+      let_it_be(:container_expiration_policy) { create(:container_expiration_policy) }
+
+      subject { container_expiration_policy }
+
       valid_regexps = %w[master .* v.+ v10.1.* (?:v.+|master|release)]
       invalid_regexps = ['[', '(?:v.+|master|release']
+
+      it { is_expected.to validate_presence_of(:name_regex) }
 
       valid_regexps.each do |valid_regexp|
         it { is_expected.to allow_value(valid_regexp).for(:name_regex) }
@@ -56,6 +89,8 @@ RSpec.describe ContainerExpirationPolicy, type: :model do
         let_it_be(:container_expiration_policy) { create(:container_expiration_policy, :disabled) }
 
         subject { container_expiration_policy }
+
+        it { is_expected.not_to validate_presence_of(:name_regex) }
 
         valid_regexps.each do |valid_regexp|
           it { is_expected.to allow_value(valid_regexp).for(:name_regex) }
@@ -104,25 +139,15 @@ RSpec.describe ContainerExpirationPolicy, type: :model do
     end
   end
 
-  describe '.executable' do
-    subject { described_class.executable }
+  describe '.with_container_repositories' do
+    subject { described_class.with_container_repositories }
 
-    let_it_be(:policy1) { create(:container_expiration_policy, :runnable) }
+    let_it_be(:policy1) { create(:container_expiration_policy) }
     let_it_be(:container_repository1) { create(:container_repository, project: policy1.project) }
-    let_it_be(:policy2) { create(:container_expiration_policy, :runnable) }
+    let_it_be(:policy2) { create(:container_expiration_policy) }
     let_it_be(:container_repository2) { create(:container_repository, project: policy2.project) }
-    let_it_be(:policy3) { create(:container_expiration_policy, :runnable) }
+    let_it_be(:policy3) { create(:container_expiration_policy) }
 
     it { is_expected.to contain_exactly(policy1, policy2) }
-  end
-
-  describe '#disable!' do
-    let_it_be(:container_expiration_policy) { create(:container_expiration_policy) }
-
-    subject { container_expiration_policy.disable! }
-
-    it 'disables the container expiration policy' do
-      expect { subject }.to change { container_expiration_policy.reload.enabled }.from(true).to(false)
-    end
   end
 end

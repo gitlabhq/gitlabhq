@@ -12,33 +12,37 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
   end
 
   describe '.uncached_data' do
-    describe '.usage_activity_by_stage' do
-      subject { described_class.uncached_data }
+    subject { described_class.uncached_data }
 
-      it 'includes usage_activity_by_stage data' do
-        is_expected.to include(:usage_activity_by_stage)
-        is_expected.to include(:usage_activity_by_stage_monthly)
-        expect(subject[:usage_activity_by_stage])
-          .to include(:configure, :create, :manage, :monitor, :plan, :release, :verify)
-        expect(subject[:usage_activity_by_stage_monthly])
-          .to include(:configure, :create, :manage, :monitor, :plan, :release, :verify)
-      end
+    it 'includes basic top and second level keys' do
+      is_expected.to include(:counts)
+      is_expected.to include(:counts_monthly)
+      is_expected.to include(:counts_weekly)
+      is_expected.to include(:license)
+      is_expected.to include(:settings)
 
-      it 'clears memoized values' do
-        allow(described_class).to receive(:clear_memoization)
+      # usage_activity_by_stage data
+      is_expected.to include(:usage_activity_by_stage)
+      is_expected.to include(:usage_activity_by_stage_monthly)
+      expect(subject[:usage_activity_by_stage])
+        .to include(:configure, :create, :manage, :monitor, :plan, :release, :verify)
+      expect(subject[:usage_activity_by_stage_monthly])
+        .to include(:configure, :create, :manage, :monitor, :plan, :release, :verify)
+      expect(subject[:usage_activity_by_stage][:create])
+        .not_to include(:merge_requests_users)
+      expect(subject[:usage_activity_by_stage_monthly][:create])
+        .to include(:merge_requests_users)
+      expect(subject[:counts_weekly]).to include(:aggregated_metrics)
+      expect(subject[:counts_monthly]).to include(:aggregated_metrics)
+    end
 
-        subject
+    it 'clears memoized values' do
+      allow(described_class).to receive(:clear_memoization)
 
-        described_class::CE_MEMOIZED_VALUES.each do |key|
-          expect(described_class).to have_received(:clear_memoization).with(key)
-        end
-      end
+      subject
 
-      it 'merge_requests_users is included only in montly counters' do
-        expect(subject[:usage_activity_by_stage][:create])
-          .not_to include(:merge_requests_users)
-        expect(subject[:usage_activity_by_stage_monthly][:create])
-          .to include(:merge_requests_users)
+      described_class::CE_MEMOIZED_VALUES.each do |key|
+        expect(described_class).to have_received(:clear_memoization).with(key)
       end
     end
 
@@ -48,7 +52,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       end
       expect(described_class).to receive(:recorded_at).and_raise(Exception.new('Stopped calculating recorded_at'))
 
-      expect { described_class.uncached_data }.to raise_error('Stopped calculating recorded_at')
+      expect { subject }.to raise_error('Stopped calculating recorded_at')
     end
   end
 
@@ -168,6 +172,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         omniauth:
           { providers: omniauth_providers }
       )
+      allow(Devise).to receive(:omniauth_providers).and_return(%w(ldapmain ldapsecondary group_saml))
 
       for_defined_days_back do
         user = create(:user)
@@ -186,14 +191,14 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         groups: 2,
         users_created: 6,
         omniauth_providers: ['google_oauth2'],
-        user_auth_by_provider: { 'group_saml' => 2, 'ldap' => 4 }
+        user_auth_by_provider: { 'group_saml' => 2, 'ldap' => 4, 'standard' => 0, 'two-factor' => 0, 'two-factor-via-u2f-device' => 0, "two-factor-via-webauthn-device" => 0 }
       )
       expect(described_class.usage_activity_by_stage_manage(described_class.last_28_days_time_period)).to include(
         events: 1,
         groups: 1,
         users_created: 3,
         omniauth_providers: ['google_oauth2'],
-        user_auth_by_provider: { 'group_saml' => 1, 'ldap' => 2 }
+        user_auth_by_provider: { 'group_saml' => 1, 'ldap' => 2, 'standard' => 0, 'two-factor' => 0, 'two-factor-via-u2f-device' => 0, "two-factor-via-webauthn-device" => 0 }
       )
     end
 
@@ -201,17 +206,25 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       for_defined_days_back do
         user = create(:user)
 
+        create(:bulk_import, user: user)
+
         %w(gitlab_project gitlab github bitbucket bitbucket_server gitea git manifest fogbugz phabricator).each do |type|
           create(:project, import_type: type, creator_id: user.id)
         end
 
         jira_project = create(:project, creator_id: user.id)
         create(:jira_import_state, :finished, project: jira_project)
+
+        create(:issue_csv_import, user: user)
       end
 
       expect(described_class.usage_activity_by_stage_manage({})).to include(
         {
+          bulk_imports: {
+            gitlab: 2
+          },
           projects_imported: {
+            total: 20,
             gitlab_project: 2,
             gitlab: 2,
             github: 2,
@@ -224,13 +237,18 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           issues_imported: {
             jira: 2,
             fogbugz: 2,
-            phabricator: 2
+            phabricator: 2,
+            csv: 2
           }
         }
       )
       expect(described_class.usage_activity_by_stage_manage(described_class.last_28_days_time_period)).to include(
         {
+          bulk_imports: {
+            gitlab: 1
+          },
           projects_imported: {
+            total: 10,
             gitlab_project: 1,
             gitlab: 1,
             github: 1,
@@ -243,7 +261,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           issues_imported: {
             jira: 1,
             fogbugz: 1,
-            phabricator: 1
+            phabricator: 1,
+            csv: 1
           }
         }
       )
@@ -280,19 +299,29 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         create(:project, creator: user)
         create(:clusters_applications_prometheus, :installed, cluster: cluster)
         create(:project_tracing_setting)
+        create(:project_error_tracking_setting)
+        create(:incident)
+        create(:incident, alert_management_alert: create(:alert_management_alert))
       end
 
       expect(described_class.usage_activity_by_stage_monitor({})).to include(
         clusters: 2,
         clusters_applications_prometheus: 2,
         operations_dashboard_default_dashboard: 2,
-        projects_with_tracing_enabled: 2
+        projects_with_tracing_enabled: 2,
+        projects_with_error_tracking_enabled: 2,
+        projects_with_incidents: 4,
+        projects_with_alert_incidents: 2
       )
+
       expect(described_class.usage_activity_by_stage_monitor(described_class.last_28_days_time_period)).to include(
         clusters: 1,
         clusters_applications_prometheus: 1,
         operations_dashboard_default_dashboard: 1,
-        projects_with_tracing_enabled: 1
+        projects_with_tracing_enabled: 1,
+        projects_with_error_tracking_enabled: 1,
+        projects_with_incidents: 2,
+        projects_with_alert_incidents: 1
       )
     end
   end
@@ -446,9 +475,11 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(count_data[:projects_with_error_tracking_enabled]).to eq(1)
       expect(count_data[:projects_with_tracing_enabled]).to eq(1)
       expect(count_data[:projects_with_alerts_service_enabled]).to eq(1)
+      expect(count_data[:projects_with_enabled_alert_integrations]).to eq(1)
       expect(count_data[:projects_with_prometheus_alerts]).to eq(2)
       expect(count_data[:projects_with_terraform_reports]).to eq(2)
       expect(count_data[:projects_with_terraform_states]).to eq(2)
+      expect(count_data[:projects_with_alerts_created]).to eq(1)
       expect(count_data[:protected_branches]).to eq(2)
       expect(count_data[:protected_branches_except_default]).to eq(1)
       expect(count_data[:terraform_reports]).to eq(6)
@@ -532,13 +563,13 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       subject { described_class.data[:counts] }
 
       it 'gathers usage data' do
-        expect(subject[:projects_with_expiration_policy_enabled]).to eq 22
-        expect(subject[:projects_with_expiration_policy_disabled]).to eq 1
+        expect(subject[:projects_with_expiration_policy_enabled]).to eq 18
+        expect(subject[:projects_with_expiration_policy_disabled]).to eq 5
 
         expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_unset]).to eq 1
         expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_set_to_1]).to eq 1
         expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_set_to_5]).to eq 1
-        expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_set_to_10]).to eq 16
+        expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_set_to_10]).to eq 12
         expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_set_to_25]).to eq 1
         expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_set_to_50]).to eq 1
 
@@ -546,9 +577,9 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         expect(subject[:projects_with_expiration_policy_enabled_with_older_than_set_to_7d]).to eq 1
         expect(subject[:projects_with_expiration_policy_enabled_with_older_than_set_to_14d]).to eq 1
         expect(subject[:projects_with_expiration_policy_enabled_with_older_than_set_to_30d]).to eq 1
-        expect(subject[:projects_with_expiration_policy_enabled_with_older_than_set_to_90d]).to eq 18
+        expect(subject[:projects_with_expiration_policy_enabled_with_older_than_set_to_90d]).to eq 14
 
-        expect(subject[:projects_with_expiration_policy_enabled_with_cadence_set_to_1d]).to eq 18
+        expect(subject[:projects_with_expiration_policy_enabled_with_cadence_set_to_1d]).to eq 14
         expect(subject[:projects_with_expiration_policy_enabled_with_cadence_set_to_7d]).to eq 1
         expect(subject[:projects_with_expiration_policy_enabled_with_cadence_set_to_14d]).to eq 1
         expect(subject[:projects_with_expiration_policy_enabled_with_cadence_set_to_1month]).to eq 1
@@ -577,9 +608,22 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
   describe '.system_usage_data_monthly' do
     let_it_be(:project) { create(:project) }
-    let!(:ud) { build(:usage_data) }
 
     before do
+      project = create(:project)
+      env = create(:environment)
+      create(:package, project: project, created_at: 3.days.ago)
+      create(:package, created_at: 2.months.ago, project: project)
+
+      [3, 31].each do |n|
+        deployment_options = { created_at: n.days.ago, project: env.project, environment: env }
+        create(:deployment, :failed, deployment_options)
+        create(:deployment, :success, deployment_options)
+        create(:project_snippet, project: project, created_at: n.days.ago)
+        create(:personal_snippet, created_at: n.days.ago)
+        create(:alert_management_alert, project: project, created_at: n.days.ago)
+      end
+
       stub_application_setting(self_monitoring_project: project)
 
       for_defined_days_back do
@@ -595,10 +639,11 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(counts_monthly[:deployments]).to eq(2)
       expect(counts_monthly[:successful_deployments]).to eq(1)
       expect(counts_monthly[:failed_deployments]).to eq(1)
-      expect(counts_monthly[:snippets]).to eq(3)
+      expect(counts_monthly[:snippets]).to eq(2)
       expect(counts_monthly[:personal_snippets]).to eq(1)
-      expect(counts_monthly[:project_snippets]).to eq(2)
-      expect(counts_monthly[:packages]).to eq(3)
+      expect(counts_monthly[:project_snippets]).to eq(1)
+      expect(counts_monthly[:projects_with_alerts_created]).to eq(1)
+      expect(counts_monthly[:packages]).to eq(1)
       expect(counts_monthly[:promoted_issues]).to eq(1)
     end
   end
@@ -1047,6 +1092,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     let(:user1) { build(:user, id: 1) }
     let(:user2) { build(:user, id: 2) }
     let(:user3) { build(:user, id: 3) }
+    let(:user4) { build(:user, id: 4) }
 
     before do
       counter = Gitlab::UsageDataCounters::TrackUniqueEvents
@@ -1061,6 +1107,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       counter.track_event(event_action: :pushed, event_target: project, author_id: 4, time: time - 3.days)
       counter.track_event(event_action: :created, event_target: wiki, author_id: 3)
       counter.track_event(event_action: :created, event_target: design, author_id: 3)
+      counter.track_event(event_action: :created, event_target: design, author_id: 4)
 
       counter = Gitlab::UsageDataCounters::EditorUniqueCounter
 
@@ -1080,9 +1127,10 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     it 'returns the distinct count of user actions within the specified time period' do
       expect(described_class.action_monthly_active_users(time_period)).to eq(
         {
-          action_monthly_active_users_design_management: 1,
+          action_monthly_active_users_design_management: 2,
           action_monthly_active_users_project_repo: 3,
           action_monthly_active_users_wiki_repo: 1,
+          action_monthly_active_users_git_write: 4,
           action_monthly_active_users_web_ide_edit: 2,
           action_monthly_active_users_sfe_edit: 2,
           action_monthly_active_users_snippet_editor_edit: 2,
@@ -1187,7 +1235,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     subject { described_class.redis_hll_counters }
 
     let(:categories) { ::Gitlab::UsageDataCounters::HLLRedisCounter.categories }
-    let(:ineligible_total_categories) { %w[source_code testing] }
+    let(:ineligible_total_categories) { %w[source_code testing ci_secrets_management] }
 
     it 'has all known_events' do
       expect(subject).to have_key(:redis_hll_counters)
@@ -1205,6 +1253,48 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
         expect(subject[:redis_hll_counters][category].keys).to match_array(metrics)
       end
+    end
+  end
+
+  describe 'aggregated_metrics' do
+    shared_examples 'aggregated_metrics_for_time_range' do
+      context 'with product_analytics_aggregated_metrics feature flag on' do
+        before do
+          stub_feature_flags(product_analytics_aggregated_metrics: true)
+        end
+
+        it 'uses ::Gitlab::UsageDataCounters::HLLRedisCounter#aggregated_metrics_data', :aggregate_failures do
+          expect(::Gitlab::UsageDataCounters::HLLRedisCounter).to receive(aggregated_metrics_data_method).and_return(global_search_gmau: 123)
+          expect(aggregated_metrics_payload).to eq(aggregated_metrics: { global_search_gmau: 123 })
+        end
+      end
+
+      context 'with product_analytics_aggregated_metrics feature flag off' do
+        before do
+          stub_feature_flags(product_analytics_aggregated_metrics: false)
+        end
+
+        it 'returns empty hash', :aggregate_failures do
+          expect(::Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(aggregated_metrics_data_method)
+          expect(aggregated_metrics_payload).to be {}
+        end
+      end
+    end
+
+    describe '.aggregated_metrics_weekly' do
+      subject(:aggregated_metrics_payload) { described_class.aggregated_metrics_weekly }
+
+      let(:aggregated_metrics_data_method) { :aggregated_metrics_weekly_data }
+
+      it_behaves_like 'aggregated_metrics_for_time_range'
+    end
+
+    describe '.aggregated_metrics_monthly' do
+      subject(:aggregated_metrics_payload) { described_class.aggregated_metrics_monthly }
+
+      let(:aggregated_metrics_data_method) { :aggregated_metrics_monthly_data }
+
+      it_behaves_like 'aggregated_metrics_for_time_range'
     end
   end
 

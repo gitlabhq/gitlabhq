@@ -1,13 +1,1 @@
-%div{ class: 'search-result-row gl-pb-3! gl-mt-5 gl-mb-0!' }
-  %span.gl-display-flex.gl-align-items-center
-    - if issue.closed?
-      %span.badge.badge-info.badge-pill.gl-badge.sm= _("Closed")
-    - else
-      %span.badge.badge-success.badge-pill.gl-badge.sm= _("Open")
-    = sprite_icon('eye-slash', css_class: 'gl-text-gray-500 gl-ml-2') if issue.confidential?
-    = link_to project_issue_path(issue.project, issue), data: { track_event: 'click_text', track_label: 'issue_title', track_property: 'search_result' }, class: 'gl-w-full' do
-      %span.term.str-truncated.gl-font-weight-bold.gl-ml-2= issue.title
-  .gl-text-gray-500.gl-my-3
-    = sprintf(s_(' %{project_name}#%{issue_iid} &middot; opened %{issue_created} by %{author}'), { project_name: issue.project.full_name, issue_iid: issue.iid, issue_created: time_ago_with_tooltip(issue.created_at, placement: 'bottom'), author: link_to_member(@project, issue.author, avatar: false) }).html_safe
-  .description.term.col-sm-10.gl-px-0
-    = highlight_and_truncate_issue(issue, @search_term, @search_highlight)
+= render partial: 'search/results/issuable', object: issue

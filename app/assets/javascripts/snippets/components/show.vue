@@ -9,8 +9,8 @@ import { SNIPPET_VISIBILITY_PUBLIC } from '~/snippets/constants';
 import {
   SNIPPET_MARK_VIEW_APP_START,
   SNIPPET_MEASURE_BLOBS_CONTENT,
-} from '~/performance_constants';
-import { performanceMarkAndMeasure } from '~/performance_utils';
+} from '~/performance/constants';
+import { performanceMarkAndMeasure } from '~/performance/utils';
 import eventHub from '~/blob/components/eventhub';
 
 import { getSnippetMixin } from '../mixins/snippets';

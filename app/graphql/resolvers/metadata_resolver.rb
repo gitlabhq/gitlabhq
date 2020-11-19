@@ -5,7 +5,7 @@ module Resolvers
     type Types::MetadataType, null: false
 
     def resolve(**args)
-      { version: Gitlab::VERSION, revision: Gitlab.revision }
+      ::InstanceMetadata.new
     end
   end
 end

@@ -13,8 +13,103 @@ RSpec.describe ObjectStorage::MigrateUploadsWorker do
     # swallow
   end
 
+  # Expects the calling spec to define:
+  # - model_class
+  # - mounted_as
+  # - to_store
+  RSpec.shared_examples 'uploads migration worker' do
+    describe '.enqueue!' do
+      def enqueue!
+        described_class.enqueue!(uploads, model_class, mounted_as, to_store)
+      end
+
+      it 'is guarded by .sanity_check!' do
+        expect(described_class).to receive(:perform_async)
+        expect(described_class).to receive(:sanity_check!)
+
+        enqueue!
+      end
+
+      context 'sanity_check! fails' do
+        before do
+          expect(described_class).to receive(:sanity_check!).and_raise(described_class::SanityCheckError)
+        end
+
+        it 'does not enqueue a job' do
+          expect(described_class).not_to receive(:perform_async)
+
+          expect { enqueue! }.to raise_error(described_class::SanityCheckError)
+        end
+      end
+    end
+
+    describe '.sanity_check!' do
+      shared_examples 'raises a SanityCheckError' do |expected_message|
+        let(:mount_point) { nil }
+
+        it do
+          expect { described_class.sanity_check!(uploads, model_class, mount_point) }
+            .to raise_error(described_class::SanityCheckError).with_message(expected_message)
+        end
+      end
+
+      context 'uploader types mismatch' do
+        let!(:outlier) { create(:upload, uploader: 'GitlabUploader') }
+
+        include_examples 'raises a SanityCheckError', /Multiple uploaders found/
+      end
+
+      context 'mount point not found' do
+        include_examples 'raises a SanityCheckError', /Mount point [a-z:]+ not found in/ do
+          let(:mount_point) { :potato }
+        end
+      end
+    end
+
+    describe '#perform' do
+      it 'migrates files to remote storage' do
+        expect(Gitlab::AppLogger).to receive(:info).with(%r{Migrated 1/1 files})
+
+        perform(uploads)
+
+        expect(Upload.where(store: ObjectStorage::Store::LOCAL).count).to eq(0)
+      end
+
+      context 'reversed' do
+        let(:to_store) { ObjectStorage::Store::LOCAL }
+
+        before do
+          perform(uploads, ObjectStorage::Store::REMOTE)
+        end
+
+        it 'migrates files to local storage' do
+          expect(Upload.where(store: ObjectStorage::Store::REMOTE).count).to eq(1)
+
+          perform(uploads)
+
+          expect(Upload.where(store: ObjectStorage::Store::LOCAL).count).to eq(1)
+        end
+      end
+
+      context 'migration is unsuccessful' do
+        before do
+          allow_any_instance_of(ObjectStorage::Concern)
+            .to receive(:migrate!).and_raise(CarrierWave::UploadError, 'I am a teapot.')
+        end
+
+        it 'does not migrate files to remote storage' do
+          expect(Gitlab::AppLogger).to receive(:warn).with(/Error .* I am a teapot/)
+
+          perform(uploads)
+
+          expect(Upload.where(store: ObjectStorage::Store::LOCAL).count).to eq(1)
+        end
+      end
+    end
+  end
+
   context "for AvatarUploader" do
-    let!(:projects) { create_list(:project, 10, :with_avatar) }
+    let!(:project_with_avatar) { create(:project, :with_avatar) }
     let(:mounted_as) { :avatar }
 
     before do
@@ -27,16 +122,15 @@ RSpec.describe ObjectStorage::MigrateUploadsWorker do
       it "to N*5" do
         query_count = ActiveRecord::QueryRecorder.new { perform(uploads) }
 
-        more_projects = create_list(:project, 3, :with_avatar)
+        create(:project, :with_avatar)
 
-        expected_queries_per_migration = 5 * more_projects.count
-        expect { perform(Upload.all) }.not_to exceed_query_limit(query_count).with_threshold(expected_queries_per_migration)
+        expect { perform(Upload.all) }.not_to exceed_query_limit(query_count).with_threshold(5)
       end
     end
   end
 
   context "for FileUploader" do
-    let!(:projects) { create_list(:project, 10) }
+    let!(:project_with_file) { create(:project) }
     let(:secret) { SecureRandom.hex }
     let(:mounted_as) { nil }
 
@@ -48,7 +142,7 @@ RSpec.describe ObjectStorage::MigrateUploadsWorker do
     before do
       stub_uploads_object_storage(FileUploader)
 
-      projects.map(&method(:upload_file))
+      upload_file(project_with_file)
     end
 
     it_behaves_like "uploads migration worker"
@@ -57,18 +151,16 @@ RSpec.describe ObjectStorage::MigrateUploadsWorker do
       it "to N*5" do
         query_count = ActiveRecord::QueryRecorder.new { perform(uploads) }
 
-        more_projects = create_list(:project, 3)
-        more_projects.map(&method(:upload_file))
+        upload_file(create(:project))
 
-        expected_queries_per_migration = 5 * more_projects.count
-        expect { perform(Upload.all) }.not_to exceed_query_limit(query_count).with_threshold(expected_queries_per_migration)
+        expect { perform(Upload.all) }.not_to exceed_query_limit(query_count).with_threshold(5)
       end
     end
   end
 
   context 'for DesignManagement::DesignV432x230Uploader' do
     let(:model_class) { DesignManagement::Action }
-    let!(:design_actions) { create_list(:design_action, 10, :with_image_v432x230) }
+    let!(:design_action) { create(:design_action, :with_image_v432x230) }
     let(:mounted_as) { :image_v432x230 }
 
     before do

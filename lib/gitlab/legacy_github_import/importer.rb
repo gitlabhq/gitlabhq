@@ -36,7 +36,7 @@ module Gitlab
           }
         end
 
-        @client = Client.new(credentials[:user], opts)
+        @client = Client.new(credentials[:user], **opts)
       end
 
       def execute
@@ -303,6 +303,8 @@ module Gitlab
         end
 
         imported!(resource_type)
+      rescue ::Octokit::NotFound => e
+        errors << { type: resource_type, errors: e.message }
       end
 
       def imported?(resource_type)

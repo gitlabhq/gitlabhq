@@ -24,6 +24,7 @@ RSpec.describe GitlabSchema.types['User'] do
       authoredMergeRequests
       assignedMergeRequests
       groupMemberships
+      groupCount
       projectMemberships
       starredProjects
     ]

@@ -57,6 +57,8 @@ class BasePolicy < DeclarativePolicy::Base
   rule { default }.enable :read_cross_project
 
   condition(:is_gitlab_com) { ::Gitlab.dev_env_or_com? }
+
+  rule { admin }.enable :change_repository_storage
 end
 
 BasePolicy.prepend_if_ee('EE::BasePolicy')

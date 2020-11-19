@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Back up and restore GitLab **(CORE ONLY)**
 
 GitLab provides Rake tasks for backing up and restoring GitLab instances.
@@ -329,7 +335,7 @@ sudo -u git -H GITLAB_ASSUME_YES=1 bundle exec rake gitlab:backup:restore RAILS_
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37158) in GitLab 13.3.
 
-Repositories can be backed up concurrently to help fully utilize CPU time. The
+Repositories can be backed up concurrently to help fully use CPU time. The
 following variables are available to modify the default behavior of the Rake
 task:
 

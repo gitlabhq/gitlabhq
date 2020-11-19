@@ -982,6 +982,22 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe '#has_running_deployments?' do
+    subject { environment.has_running_deployments? }
+
+    it 'return false when no deployments exist' do
+      is_expected.to eq(false)
+    end
+
+    context 'when deployment is running on the environment' do
+      let!(:deployment) { create(:deployment, :running, environment: environment) }
+
+      it 'return true' do
+        is_expected.to eq(true)
+      end
+    end
+  end
+
   describe '#metrics' do
     let(:project) { create(:prometheus_project) }
 

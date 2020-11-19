@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Vuex
 
 When there's a clear benefit to separating state management from components (e.g. due to state complexity) we recommend using [Vuex](https://vuex.vuejs.org) over any other Flux pattern. Otherwise, feel free to manage state within the components.
@@ -9,14 +15,14 @@ Vuex should be strongly considered when:
 - There are complex interactions with Backend, e.g. multiple API calls
 - The app involves interacting with backend via both traditional REST API and GraphQL (especially when moving the REST API over to GraphQL is a pending backend task)
 
-_Note:_ All of the below is explained in more detail in the official [Vuex documentation](https://vuex.vuejs.org).
+The information included in this page is explained in more detail in the
+official [Vuex documentation](https://vuex.vuejs.org).
 
 ## Separation of concerns
 
 Vuex is composed of State, Getters, Mutations, Actions, and Modules.
 
-When a user clicks on an action, we need to `dispatch` it. This action will `commit` a mutation that will change the state.
-_Note:_ The action itself will not update the state, only a mutation should update the state.
+When a user clicks on an action, we need to `dispatch` it. This action will `commit` a mutation that will change the state. The action itself will not update the state; only a mutation should update the state.
 
 ## File structure
 
@@ -60,7 +66,7 @@ export const createStore = () =>
 
 The first thing you should do before writing any code is to design the state.
 
-Often we need to provide data from haml to our Vue application. Let's store it in the state for better access.
+Often we need to provide data from HAML to our Vue application. Let's store it in the state for better access.
 
 ```javascript
   export default () => ({
@@ -354,8 +360,8 @@ export default initialState => ({
 ```
 
 We've made the conscious decision to avoid this pattern to aid in the
-discoverability and searchability of our frontend codebase. The reasoning for
-this is described in [this
+discoverability and searchability of our frontend codebase. The same applies
+when [providing data to a Vue app](vue.md#providing-data-from-haml-to-javascript). The reasoning for this is described in [this
 discussion](https://gitlab.com/gitlab-org/frontend/rfcs/-/issues/56#note_302514865):
 
 > Consider a `someStateKey` is being used in the store state. You _may_ not be

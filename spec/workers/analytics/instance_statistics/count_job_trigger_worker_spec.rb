@@ -6,7 +6,7 @@ RSpec.describe Analytics::InstanceStatistics::CountJobTriggerWorker do
   it_behaves_like 'an idempotent worker'
 
   context 'triggers a job for each measurement identifiers' do
-    let(:expected_count) { Analytics::InstanceStatistics::Measurement.identifiers.size }
+    let(:expected_count) { Analytics::InstanceStatistics::Measurement.identifier_query_mapping.keys.size }
 
     it 'triggers CounterJobWorker jobs' do
       subject.perform

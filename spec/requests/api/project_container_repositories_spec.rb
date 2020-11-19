@@ -299,7 +299,7 @@ RSpec.describe API::ProjectContainerRepositories do
     it_behaves_like 'rejected container repository access', :reporter, :forbidden
     it_behaves_like 'rejected container repository access', :anonymous, :not_found
 
-    context 'for developer' do
+    context 'for developer', :snowplow do
       let(:api_user) { developer }
 
       context 'when there are multiple tags' do
@@ -310,11 +310,11 @@ RSpec.describe API::ProjectContainerRepositories do
         it 'properly removes tag' do
           expect(service).to receive(:execute).with(root_repository) { { status: :success } }
           expect(Projects::ContainerRepository::DeleteTagsService).to receive(:new).with(root_repository.project, api_user, tags: %w[rootA]) { service }
-          expect(Gitlab::Tracking).to receive(:event).with(described_class.name, 'delete_tag', {})
 
           subject
 
           expect(response).to have_gitlab_http_status(:ok)
+          expect_snowplow_event(category: described_class.name, action: 'delete_tag')
         end
       end
 
@@ -326,11 +326,11 @@ RSpec.describe API::ProjectContainerRepositories do
         it 'properly removes tag' do
           expect(service).to receive(:execute).with(root_repository) { { status: :success } }
           expect(Projects::ContainerRepository::DeleteTagsService).to receive(:new).with(root_repository.project, api_user, tags: %w[rootA]) { service }
-          expect(Gitlab::Tracking).to receive(:event).with(described_class.name, 'delete_tag', {})
 
           subject
 
           expect(response).to have_gitlab_http_status(:ok)
+          expect_snowplow_event(category: described_class.name, action: 'delete_tag')
         end
       end
     end

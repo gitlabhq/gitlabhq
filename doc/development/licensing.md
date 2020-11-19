@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # GitLab Licensing and Compatibility
 
 [GitLab Community Edition](https://gitlab.com/gitlab-org/gitlab-foss/) (CE) is licensed [under the terms of the MIT License](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/LICENSE). [GitLab Enterprise Edition](https://gitlab.com/gitlab-org/gitlab/) (EE) is licensed under "[The GitLab Enterprise Edition (EE) license](https://gitlab.com/gitlab-org/gitlab/blob/master/LICENSE)" wherein there are more restrictions.
@@ -12,7 +18,8 @@ Some gems may not include their license information in their `gemspec` file, and
 
 ### License Finder commands
 
-> Note: License Finder currently uses GitLab misused terms of `whitelist` and `blacklist`. As a result, the commands below reference those terms. We've created an [issue on their project](https://github.com/pivotal/LicenseFinder/issues/745) to propose that they rename their commands.
+NOTE: **Note:**
+License Finder currently uses GitLab misused terms of `whitelist` and `blacklist`. As a result, the commands below reference those terms. We've created an [issue on their project](https://github.com/pivotal/LicenseFinder/issues/745) to propose that they rename their commands.
 
 There are a few basic commands License Finder provides that you'll need in order to manage license detection.
 

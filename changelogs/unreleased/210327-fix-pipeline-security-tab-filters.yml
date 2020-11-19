@@ -1,0 +1,5 @@
+---
+title: Fix pipeline security tab filters not showing
+merge_request: 47294
+author:
+type: fixed

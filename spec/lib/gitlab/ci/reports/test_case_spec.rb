@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Reports::TestCase do
+RSpec.describe Gitlab::Ci::Reports::TestCase, :aggregate_failures do
   describe '#initialize' do
     let(:test_case) { described_class.new(params) }
 
     context 'when required params are given' do
       let(:job) { build(:ci_build) }
-      let(:params) { attributes_for(:test_case).merge!(job: job) }
+      let(:params) { attributes_for(:report_test_case).merge!(job: job) }
 
       it 'initializes an instance', :aggregate_failures do
         expect { test_case }.not_to raise_error
@@ -31,7 +31,7 @@ RSpec.describe Gitlab::Ci::Reports::TestCase do
 
     shared_examples 'param is missing' do |param|
       let(:job) { build(:ci_build) }
-      let(:params) { attributes_for(:test_case).merge!(job: job) }
+      let(:params) { attributes_for(:report_test_case).merge!(job: job) }
 
       it 'raises an error' do
         params.delete(param)
@@ -55,7 +55,7 @@ RSpec.describe Gitlab::Ci::Reports::TestCase do
     context 'when attachment is present' do
       let_it_be(:job) { create(:ci_build) }
 
-      let(:attachment_test_case) { build(:test_case, :failed_with_attachment, job: job) }
+      let(:attachment_test_case) { build(:report_test_case, :failed_with_attachment, job: job) }
 
       it "initializes the attachment if present" do
         expect(attachment_test_case.attachment).to eq("some/path.png")
@@ -71,7 +71,7 @@ RSpec.describe Gitlab::Ci::Reports::TestCase do
     end
 
     context 'when attachment is missing' do
-      let(:test_case) { build(:test_case) }
+      let(:test_case) { build(:report_test_case) }
 
       it '#has_attachment?' do
         expect(test_case.has_attachment?).to be_falsy
@@ -80,6 +80,19 @@ RSpec.describe Gitlab::Ci::Reports::TestCase do
       it '#attachment_url' do
         expect(test_case.attachment_url).to be_nil
       end
+    end
+  end
+
+  describe '#set_recent_failures' do
+    it 'sets the recent_failures information' do
+      test_case = build(:report_test_case)
+
+      test_case.set_recent_failures(1, 'master')
+
+      expect(test_case.recent_failures).to eq(
+        count: 1,
+        base_branch: 'master'
+      )
     end
   end
 end

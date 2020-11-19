@@ -56,19 +56,24 @@ RSpec.describe PageLayoutHelper do
     end
 
     %w(project user group).each do |type|
-      context "with @#{type} assigned" do
-        it "uses #{type.titlecase} avatar if available" do
-          object = double(avatar_url: 'http://example.com/uploads/-/system/avatar.png')
-          assign(type, object)
+      let(:object) { build(type, trait) }
+      let(:trait) { :with_avatar }
 
-          expect(helper.page_image).to eq object.avatar_url
+      context "with @#{type} assigned" do
+        before do
+          assign(type, object)
         end
 
-        it 'falls back to the default when avatar_url is nil' do
-          object = double(avatar_url: nil)
-          assign(type, object)
+        it "uses #{type.titlecase} avatar full url" do
+          expect(helper.page_image).to eq object.avatar_url(only_path: false)
+        end
 
-          expect(helper.page_image).to match_asset_path 'assets/gitlab_logo.png'
+        context 'when avatar_url is nil' do
+          let(:trait) { nil }
+
+          it 'falls back to the default when avatar_url is nil' do
+            expect(helper.page_image).to match_asset_path 'assets/gitlab_logo.png'
+          end
         end
       end
 
@@ -129,6 +134,128 @@ RSpec.describe PageLayoutHelper do
                                                   project_metadata: {},
                                                   group_metadata: {},
                                                   search_url: '/search')
+      end
+    end
+  end
+
+  describe '#page_canonical_link' do
+    let(:user) { build(:user) }
+
+    subject { helper.page_canonical_link(link) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    context 'when link is passed' do
+      let(:link) { 'https://gitlab.com' }
+
+      it 'stores and returns the link value' do
+        expect(subject).to eq link
+        expect(helper.page_canonical_link(nil)).to eq link
+      end
+    end
+
+    context 'when no link is provided' do
+      let(:link) { nil }
+      let(:request) { ActionDispatch::Request.new(env) }
+      let(:env) do
+        {
+          'ORIGINAL_FULLPATH' => '/foo/',
+          'PATH_INFO' => '/foo',
+          'HTTP_HOST' => 'test.host',
+          'REQUEST_METHOD' => method,
+          'rack.url_scheme' => 'http'
+        }
+      end
+
+      before do
+        allow(helper).to receive(:request).and_return(request)
+      end
+
+      shared_examples 'generates the canonical url using the params in the context' do
+        specify { expect(subject).to eq 'http://test.host/foo' }
+      end
+
+      shared_examples 'does not return a canonical url' do
+        specify { expect(subject).to be_nil }
+      end
+
+      it_behaves_like 'generates the canonical url using the params in the context' do
+        let(:method) { 'GET' }
+      end
+
+      it_behaves_like 'generates the canonical url using the params in the context' do
+        let(:method) { 'HEAD' }
+      end
+
+      it_behaves_like 'does not return a canonical url' do
+        let(:method) { 'POST' }
+      end
+
+      it_behaves_like 'does not return a canonical url' do
+        let(:method) { 'PUT' }
+      end
+    end
+  end
+
+  describe '#page_itemtype' do
+    subject { helper.page_itemtype(itemtype) }
+
+    context 'when itemtype is passed' do
+      let(:itemtype) { 'http://schema.org/Person' }
+
+      it 'stores and returns the itemtype value' do
+        attrs = { itemscope: true, itemtype: itemtype }
+
+        expect(subject).to eq attrs
+        expect(helper.page_itemtype(nil)).to eq attrs
+      end
+    end
+
+    context 'when no itemtype is provided' do
+      let(:itemtype) { nil }
+
+      it 'returns an empty hash' do
+        expect(subject).to eq({})
+      end
+    end
+  end
+
+  describe '#user_status_properties' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:user) { build(:user) }
+
+    availability_types = Types::AvailabilityEnum.enum
+
+    where(:message, :emoji, :availability) do
+      "Some message" | UserStatus::DEFAULT_EMOJI | availability_types[:busy]
+      "Some message" | UserStatus::DEFAULT_EMOJI | availability_types[:not_set]
+      "Some message" | "basketball"              | availability_types[:busy]
+      "Some message" | "basketball"              | availability_types[:not_set]
+      "Some message" | ""                        | availability_types[:busy]
+      "Some message" | ""                        | availability_types[:not_set]
+      ""             | UserStatus::DEFAULT_EMOJI | availability_types[:busy]
+      ""             | UserStatus::DEFAULT_EMOJI | availability_types[:not_set]
+      ""             | "basketball"              | availability_types[:busy]
+      ""             | "basketball"              | availability_types[:not_set]
+      ""             | ""                        | availability_types[:busy]
+      ""             | ""                        | availability_types[:not_set]
+    end
+
+    with_them do
+      it "sets the default user status fields" do
+        user.status = UserStatus.new(message: message, emoji: emoji, availability: availability)
+        result = {
+          can_set_user_availability: true,
+          current_availability: availability,
+          current_emoji: emoji,
+          current_message: message,
+          default_emoji: UserStatus::DEFAULT_EMOJI
+        }
+
+        expect(helper.user_status_properties(user)).to eq(result)
       end
     end
   end

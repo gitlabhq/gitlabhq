@@ -37,15 +37,11 @@ RSpec.describe AuthenticationEvent do
 
   describe '.providers' do
     before do
-      create(:authentication_event, provider: :ldapmain)
-      create(:authentication_event, provider: :google_oauth2)
-      create(:authentication_event, provider: :standard)
-      create(:authentication_event, provider: :standard)
-      create(:authentication_event, provider: :standard)
+      allow(Devise).to receive(:omniauth_providers).and_return(%w(ldapmain google_oauth2))
     end
 
     it 'returns an array of distinct providers' do
-      expect(described_class.providers).to match_array %w(ldapmain google_oauth2 standard)
+      expect(described_class.providers).to match_array %w(ldapmain google_oauth2 standard two-factor two-factor-via-u2f-device two-factor-via-webauthn-device)
     end
   end
 end

@@ -48,6 +48,7 @@ function createComponent(options = {}) {
     provide: {
       portalName: 'fake target',
       alignSuggestions: function fakeAlignSuggestions() {},
+      suggestionsListClass: 'custom-class',
     },
     stubs,
   });
@@ -120,7 +121,9 @@ describe('MilestoneToken', () => {
         wrapper.vm.fetchMilestoneBySearchTerm('foo');
 
         return waitForPromises().then(() => {
-          expect(createFlash).toHaveBeenCalledWith('There was a problem fetching milestones.');
+          expect(createFlash).toHaveBeenCalledWith({
+            message: 'There was a problem fetching milestones.',
+          });
         });
       });
 

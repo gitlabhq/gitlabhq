@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Uploads sanitize Rake tasks **(CORE ONLY)**
 
 In GitLab 11.9 and later, EXIF data is automatically stripped from JPG or TIFF image uploads.

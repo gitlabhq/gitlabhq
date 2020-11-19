@@ -73,7 +73,23 @@ RSpec.shared_examples 'project access tokens available #create' do
       end
     end
 
-    it { expect(subject).to render_template(:index) }
+    it 'does not create the token' do
+      expect { subject }.not_to change { PersonalAccessToken.count }
+    end
+
+    it 'does not add the project bot as a member' do
+      expect { subject }.not_to change { Member.count }
+    end
+
+    it 'does not create the project bot user' do
+      expect { subject }.not_to change { User.count }
+    end
+
+    it 'shows a failure alert' do
+      subject
+
+      expect(response.flash[:alert]).to match("Failed to create new project access token: Failed!")
+    end
   end
 end
 

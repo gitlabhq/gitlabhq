@@ -29,9 +29,9 @@ module Gitlab
           json_decode(data)
         end
 
-        def consume_relation(importable_path, key)
+        def consume_relation(importable_path, key, mark_as_consumed: true)
           Enumerator.new do |documents|
-            next unless @consumed_relations.add?("#{importable_path}/#{key}")
+            next if mark_as_consumed && !@consumed_relations.add?("#{importable_path}/#{key}")
 
             # This reads from `tree/project/merge_requests.ndjson`
             path = file_path(importable_path, "#{key}.ndjson")
@@ -42,11 +42,6 @@ module Gitlab
               documents << [json_decode(line), line_num]
             end
           end
-        end
-
-        # TODO: Move clear logic into main comsume_relation method (see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41699#note_430465330)
-        def clear_consumed_relations
-          @consumed_relations.clear
         end
 
         private

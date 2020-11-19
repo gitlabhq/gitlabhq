@@ -5,6 +5,8 @@ module Ci
     include ApplicationWorker
     include PipelineBackgroundQueue
 
+    deduplicate :until_executed
+
     idempotent!
 
     # rubocop: disable CodeReuse/ActiveRecord

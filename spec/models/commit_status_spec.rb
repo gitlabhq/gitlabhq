@@ -493,104 +493,49 @@ RSpec.describe CommitStatus do
     end
   end
 
-  context 'with the one_dimensional_matrix feature flag disabled' do
-    describe '#group_name' do
-      before do
-        stub_feature_flags(one_dimensional_matrix: false)
-      end
+  describe '#group_name' do
+    using RSpec::Parameterized::TableSyntax
 
-      let(:commit_status) do
-        build(:commit_status, pipeline: pipeline, stage: 'test')
-      end
-
-      subject { commit_status.group_name }
-
-      tests = {
-        'rspec:windows' => 'rspec:windows',
-        'rspec:windows 0' => 'rspec:windows 0',
-        'rspec:windows 0 test' => 'rspec:windows 0 test',
-        'rspec:windows 0 1' => 'rspec:windows',
-        'rspec:windows 0 1 name' => 'rspec:windows name',
-        'rspec:windows 0/1' => 'rspec:windows',
-        'rspec:windows 0/1 name' => 'rspec:windows name',
-        'rspec:windows 0:1' => 'rspec:windows',
-        'rspec:windows 0:1 name' => 'rspec:windows name',
-        'rspec:windows 10000 20000' => 'rspec:windows',
-        'rspec:windows 0 : / 1' => 'rspec:windows',
-        'rspec:windows 0 : / 1 name' => 'rspec:windows name',
-        '0 1 name ruby' => 'name ruby',
-        '0 :/ 1 name ruby' => 'name ruby',
-        'rspec: [aws]' => 'rspec: [aws]',
-        'rspec: [aws] 0/1' => 'rspec: [aws]',
-        'rspec: [aws, max memory]' => 'rspec',
-        'rspec:linux: [aws, max memory, data]' => 'rspec:linux',
-        'rspec: [inception: [something, other thing], value]' => 'rspec',
-        'rspec:windows 0/1: [name, other]' => 'rspec:windows',
-        'rspec:windows: [name, other] 0/1' => 'rspec:windows',
-        'rspec:windows: [name, 0/1] 0/1' => 'rspec:windows',
-        'rspec:windows: [0/1, name]' => 'rspec:windows',
-        'rspec:windows: [, ]' => 'rspec:windows',
-        'rspec:windows: [name]' => 'rspec:windows: [name]',
-        'rspec:windows: [name,other]' => 'rspec:windows: [name,other]'
-      }
-
-      tests.each do |name, group_name|
-        it "'#{name}' puts in '#{group_name}'" do
-          commit_status.name = name
-
-          is_expected.to eq(group_name)
-        end
-      end
+    let(:commit_status) do
+      build(:commit_status, pipeline: pipeline, stage: 'test')
     end
-  end
 
-  context 'with one_dimensional_matrix feature flag enabled' do
-    describe '#group_name' do
-      before do
-        stub_feature_flags(one_dimensional_matrix: true)
-      end
+    subject { commit_status.group_name }
 
-      let(:commit_status) do
-        build(:commit_status, pipeline: pipeline, stage: 'test')
-      end
+    where(:name, :group_name) do
+      'rspec:windows'                                       | 'rspec:windows'
+      'rspec:windows 0'                                     | 'rspec:windows 0'
+      'rspec:windows 0 test'                                | 'rspec:windows 0 test'
+      'rspec:windows 0 1'                                   | 'rspec:windows'
+      'rspec:windows 0 1 name'                              | 'rspec:windows name'
+      'rspec:windows 0/1'                                   | 'rspec:windows'
+      'rspec:windows 0/1 name'                              | 'rspec:windows name'
+      'rspec:windows 0:1'                                   | 'rspec:windows'
+      'rspec:windows 0:1 name'                              | 'rspec:windows name'
+      'rspec:windows 10000 20000'                           | 'rspec:windows'
+      'rspec:windows 0 : / 1'                               | 'rspec:windows'
+      'rspec:windows 0 : / 1 name'                          | 'rspec:windows name'
+      '0 1 name ruby'                                       | 'name ruby'
+      '0 :/ 1 name ruby'                                    | 'name ruby'
+      'rspec: [aws]'                                        | 'rspec'
+      'rspec: [aws] 0/1'                                    | 'rspec'
+      'rspec: [aws, max memory]'                            | 'rspec'
+      'rspec:linux: [aws, max memory, data]'                | 'rspec:linux'
+      'rspec: [inception: [something, other thing], value]' | 'rspec'
+      'rspec:windows 0/1: [name, other]'                    | 'rspec:windows'
+      'rspec:windows: [name, other] 0/1'                    | 'rspec:windows'
+      'rspec:windows: [name, 0/1] 0/1'                      | 'rspec:windows'
+      'rspec:windows: [0/1, name]'                          | 'rspec:windows'
+      'rspec:windows: [, ]'                                 | 'rspec:windows'
+      'rspec:windows: [name]'                               | 'rspec:windows'
+      'rspec:windows: [name,other]'                         | 'rspec:windows'
+    end
 
-      subject { commit_status.group_name }
+    with_them do
+      it "#{params[:name]} puts in #{params[:group_name]}" do
+        commit_status.name = name
 
-      tests = {
-        'rspec:windows' => 'rspec:windows',
-        'rspec:windows 0' => 'rspec:windows 0',
-        'rspec:windows 0 test' => 'rspec:windows 0 test',
-        'rspec:windows 0 1' => 'rspec:windows',
-        'rspec:windows 0 1 name' => 'rspec:windows name',
-        'rspec:windows 0/1' => 'rspec:windows',
-        'rspec:windows 0/1 name' => 'rspec:windows name',
-        'rspec:windows 0:1' => 'rspec:windows',
-        'rspec:windows 0:1 name' => 'rspec:windows name',
-        'rspec:windows 10000 20000' => 'rspec:windows',
-        'rspec:windows 0 : / 1' => 'rspec:windows',
-        'rspec:windows 0 : / 1 name' => 'rspec:windows name',
-        '0 1 name ruby' => 'name ruby',
-        '0 :/ 1 name ruby' => 'name ruby',
-        'rspec: [aws]' => 'rspec',
-        'rspec: [aws] 0/1' => 'rspec',
-        'rspec: [aws, max memory]' => 'rspec',
-        'rspec:linux: [aws, max memory, data]' => 'rspec:linux',
-        'rspec: [inception: [something, other thing], value]' => 'rspec',
-        'rspec:windows 0/1: [name, other]' => 'rspec:windows',
-        'rspec:windows: [name, other] 0/1' => 'rspec:windows',
-        'rspec:windows: [name, 0/1] 0/1' => 'rspec:windows',
-        'rspec:windows: [0/1, name]' => 'rspec:windows',
-        'rspec:windows: [, ]' => 'rspec:windows',
-        'rspec:windows: [name]' => 'rspec:windows',
-        'rspec:windows: [name,other]' => 'rspec:windows'
-      }
-
-      tests.each do |name, group_name|
-        it "'#{name}' puts in '#{group_name}'" do
-          commit_status.name = name
-
-          is_expected.to eq(group_name)
-        end
+        is_expected.to eq(group_name)
       end
     end
   end

@@ -13,6 +13,7 @@ RSpec.describe ::API::Admin::InstanceClusters do
            user: admin_user,
            projects: [project])
   end
+
   let(:project_cluster_id) { project_cluster.id }
 
   describe "GET /admin/clusters" do

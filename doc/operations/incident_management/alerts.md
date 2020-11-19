@@ -63,7 +63,7 @@ Alerts contain one of the following icons:
 
 ## Alert details page
 
-Navigate to the Alert details view by visiting the [Alert list](./alerts.md)
+Navigate to the Alert details view by visiting the [Alert list](alerts.md)
 and selecting an alert from the list. You need least Developer [permissions](../../user/permissions.md)
 to access alerts.
 
@@ -142,7 +142,7 @@ There are different actions avilable in GitLab to help triage and respond to ale
 ### Update an alert's status
 
 The Alert detail view enables you to update the Alert Status.
-See [Create and manage alerts in GitLab](./alerts.md) for more details.
+See [Create and manage alerts in GitLab](alerts.md) for more details.
 
 ### Create an incident from an alert
 
@@ -168,11 +168,11 @@ To assign an alert:
 
 1. To display the list of current alerts, navigate to **Operations > Alerts**:
 
-   ![Alert List View Assignee(s)](./img/alert_list_assignees_v13_1.png)
+   ![Alert List View Assignee(s)](img/alert_list_assignees_v13_1.png)
 
 1. Select your desired alert to display its **Alert Details View**:
 
-   ![Alert Details View Assignee(s)](./img/alert_details_assignees_v13_1.png)
+   ![Alert Details View Assignee(s)](img/alert_details_assignees_v13_1.png)
 
 1. If the right sidebar is not expanded, select
    **{angle-double-right}** **Expand sidebar** to expand it.
@@ -180,29 +180,29 @@ To assign an alert:
    From the dropdown menu, select each user you want to assign to the alert.
    GitLab creates a [to-do item](../../user/todos.md) for each user.
 
-   ![Alert Details View Assignee(s)](./img/alert_todo_assignees_v13_1.png)
+   ![Alert Details View Assignee(s)](img/alert_todo_assignees_v13_1.png)
 
 After completing their portion of investigating or fixing the alert, users can
 unassign themselves from the alert. To remove an assignee, select **Edit** next to the **Assignee** dropdown menu
 and deselect the user from the list of assignees, or select **Unassigned**.
 
-### Create a to do from an alert
+### Create a to-do item from an alert
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.1.
 
 You can manually create [To-Do list items](../../user/todos.md) for yourself
 from the Alert details screen, and view them later on your **To-Do List**. To
-add a to do:
+add a to-do item:
 
 1. To display the list of current alerts, navigate to **Operations > Alerts**.
 1. Select your desired alert to display its **Alert Management Details View**.
 1. Select the **Add a To-Do** button in the right sidebar:
 
-   ![Alert Details Add A To Do](./img/alert_detail_add_todo_v13_1.png)
+   ![Alert Details Add a To-Do](img/alert_detail_add_todo_v13_1.png)
 
 Select the **To-Do List** **{todo-done}** in the navigation bar to view your current to-do list.
 
-![Alert Details Added to do](./img/alert_detail_added_todo_v13_1.png)
+![Alert Details Added to do](img/alert_detail_added_todo_v13_1.png)
 
 ## Link runbooks to alerts
 
@@ -219,46 +219,10 @@ the correct runbook:
 
 ## View the environment that generated the alert
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232492) in GitLab 13.5.
-> - It's [deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-environment-link-in-alert-details). **(CORE ONLY)**
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232492) in GitLab 13.5 behind a feature flag, disabled by default.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/232492) in GitLab 13.6.
 
 CAUTION: **Warning:**
 This feature might not be available to you. Check the **version history** note above for details.
 
 The environment information and the link are displayed in the [Alert Details tab](#alert-details-tab).
-
-### Enable or disable Environment Link in Alert Details **(CORE ONLY)**
-
-Viewing the environment is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:expose_environment_path_in_alert_details)
-```
-
-To enable for just a particular project:
-
-```ruby
-project = Project.find_by_full_path('your-group/your-project')
-Feature.enable(:expose_environment_path_in_alert_details, project)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:expose_environment_path_in_alert_details)
-```
-
-To disable for just a particular project:
-
-```ruby
-project = Project.find_by_full_path('your-group/your-project')
-Feature.disable(:expose_environment_path_in_alert_details, project)
-```

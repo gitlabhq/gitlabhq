@@ -99,6 +99,10 @@ const buildHTMLToMarkdownRender = (baseRenderer, formattingPreferences = {}) => 
         ? `\n\n${node.innerText}\n\n`
         : baseRenderer.convert(node, subContent);
     },
+    IMG(node) {
+      const { originalSrc } = node.dataset;
+      return `![${node.alt}](${originalSrc || node.src})`;
+    },
   };
 };
 

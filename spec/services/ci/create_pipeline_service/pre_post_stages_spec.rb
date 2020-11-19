@@ -3,8 +3,8 @@ require 'spec_helper'
 
 RSpec.describe Ci::CreatePipelineService do
   describe '.pre/.post stages' do
-    let_it_be(:user)    { create(:admin) }
-    let_it_be(:project) { create(:project, :repository, creator: user) }
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:user)    { project.owner }
 
     let(:source)   { :push }
     let(:service)  { described_class.new(project, user, { ref: ref }) }

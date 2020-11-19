@@ -1,4 +1,9 @@
 - project = wiki_blob.project
 - wiki_blob_link = project_wiki_path(project, wiki_blob.basename)
 
-= render partial: 'search/results/blob_data', locals: { blob: wiki_blob, project: project, path: wiki_blob.path, blob_link: wiki_blob_link }
+%div{ class: 'search-result-row gl-pb-3! gl-mt-5 gl-mb-0!' }
+  %span.gl-display-flex.gl-align-items-center
+    = link_to wiki_blob_link, data: { track_event: 'click_text', track_label: "wiki_title", track_property: 'search_result' }, class: 'gl-w-full' do
+      %span.term.str-truncated.gl-font-weight-bold= ::Gitlab::Git::Wiki::GollumSlug.canonicalize_filename(wiki_blob.path)
+  .description.term.col-sm-10.gl-px-0
+    = simple_search_highlight_and_truncate(wiki_blob.data, @search_term)

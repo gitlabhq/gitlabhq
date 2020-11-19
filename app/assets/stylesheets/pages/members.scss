@@ -225,8 +225,13 @@
     }
 
     .col-actions {
-      width: px-to-rem(50px);
+      width: px-to-rem(65px);
     }
+  }
+
+  .gl-datepicker-input {
+    width: px-to-rem(165px);
+    max-width: 100%;
   }
 }
 

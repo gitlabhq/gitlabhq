@@ -20,7 +20,7 @@ export const receiveLabelsFailure = ({ commit }) => {
 };
 export const fetchLabels = ({ state, dispatch }) => {
   dispatch('requestLabels');
-  axios
+  return axios
     .get(state.labelsFetchPath)
     .then(({ data }) => {
       dispatch('receiveLabelsSuccess', data);

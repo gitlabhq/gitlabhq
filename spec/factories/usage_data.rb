@@ -52,6 +52,11 @@ FactoryBot.define do
       create(:protected_branch, project: projects[0])
       create(:protected_branch, name: 'main', project: projects[0])
 
+      # Alert Management
+      create(:alert_management_http_integration, project: projects[0], name: 'DataDog')
+      create(:alert_management_http_integration, project: projects[0], name: 'DataCat')
+      create(:alert_management_http_integration, :inactive, project: projects[1], name: 'DataFox')
+
       # Tracing
       create(:project_tracing_setting, project: projects[0])
 

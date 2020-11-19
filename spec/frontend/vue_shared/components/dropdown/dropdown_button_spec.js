@@ -60,10 +60,9 @@ describe('DropdownButtonComponent', () => {
     });
 
     it('renders dropdown button icon', () => {
-      const dropdownIconEl = vm.$el.querySelector('.dropdown-toggle-icon i.fa');
+      const dropdownIconEl = vm.$el.querySelector('[data-testid="chevron-down-icon"]');
 
       expect(dropdownIconEl).not.toBeNull();
-      expect(dropdownIconEl.classList.contains('fa-chevron-down')).toBe(true);
     });
 
     it('renders slot, if default slot exists', () => {

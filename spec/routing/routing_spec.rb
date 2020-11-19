@@ -369,3 +369,10 @@ RSpec.describe RunnerSetupController, 'routing' do
     expect(get("/-/runner_setup/platforms")).to route_to('runner_setup#platforms')
   end
 end
+
+# jwks  GET /-/jwks(.:format)  jwks#index
+RSpec.describe JwksController, "routing" do
+  it "to #index" do
+    expect(get('/-/jwks')).to route_to('jwks#index')
+  end
+end

@@ -1,0 +1,8 @@
+---
+name: ci_jwt_signing_key
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34249
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/258546
+milestone: '13.6'
+type: development
+group: group::release management
+default_enabled: true

@@ -17,8 +17,8 @@ export default {
     },
   },
   i18n: {
-    percentageDescription: __('Enter a whole number between 0 and 100'),
-    percentageInvalid: __('Percent rollout must be a whole number between 0 and 100'),
+    percentageDescription: __('Enter an integer number number between 0 and 100'),
+    percentageInvalid: __('Percent rollout must be an integer number between 0 and 100'),
     percentageLabel: __('Percentage'),
     stickinessDescription: __('Consistency guarantee method'),
     stickinessLabel: __('Based on'),

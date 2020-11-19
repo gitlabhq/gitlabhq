@@ -139,8 +139,13 @@ RSpec.describe IssuePolicy do
       create(:project_group_link, group: group, project: project)
     end
 
+    it 'does not allow guest to create todos' do
+      expect(permissions(nil, issue)).to be_allowed(:read_issue)
+      expect(permissions(nil, issue)).to be_disallowed(:create_todo)
+    end
+
     it 'allows guests to read issues' do
-      expect(permissions(guest, issue)).to be_allowed(:read_issue, :read_issue_iid)
+      expect(permissions(guest, issue)).to be_allowed(:read_issue, :read_issue_iid, :create_todo)
       expect(permissions(guest, issue)).to be_disallowed(:update_issue, :admin_issue, :reopen_issue)
 
       expect(permissions(guest, issue_no_assignee)).to be_allowed(:read_issue, :read_issue_iid)

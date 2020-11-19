@@ -103,6 +103,10 @@ module Ci
       )
     end
 
+    scope :in_pipelines, ->(pipelines) do
+      where(pipeline: pipelines)
+    end
+
     scope :with_existing_job_artifacts, ->(query) do
       where('EXISTS (?)', ::Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').merge(query))
     end
@@ -571,14 +575,6 @@ module Ci
       end
     end
 
-    def dependency_variables
-      return [] if all_dependencies.empty?
-
-      Gitlab::Ci::Variables::Collection.new.concat(
-        Ci::JobVariable.where(job: all_dependencies).dotenv_source
-      )
-    end
-
     def features
       { trace_sections: true }
     end
@@ -828,10 +824,6 @@ module Ci
       Gitlab::Ci::Build::Credentials::Factory.new(self).create!
     end
 
-    def all_dependencies
-      dependencies.all
-    end
-
     def has_valid_build_dependencies?
       dependencies.valid?
     end
@@ -994,12 +986,6 @@ module Ci
       end
     end
 
-    def dependencies
-      strong_memoize(:dependencies) do
-        Ci::BuildDependencies.new(self)
-      end
-    end
-
     def build_data
       @build_data ||= Gitlab::DataBuilder::Build.build(self)
     end
@@ -1059,7 +1045,7 @@ module Ci
 
         jwt = Gitlab::Ci::Jwt.for_build(self)
         variables.append(key: 'CI_JOB_JWT', value: jwt, public: false, masked: true)
-      rescue OpenSSL::PKey::RSAError => e
+      rescue OpenSSL::PKey::RSAError, Gitlab::Ci::Jwt::NoSigningKeyError => e
         Gitlab::ErrorTracking.track_exception(e)
       end
     end

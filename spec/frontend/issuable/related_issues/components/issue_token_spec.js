@@ -137,9 +137,7 @@ describe('IssueToken', () => {
       });
 
       it('tooltip should not be escaped', () => {
-        expect(findRemoveBtn().attributes('data-original-title')).toBe(
-          `Remove ${displayReference}`,
-        );
+        expect(findRemoveBtn().attributes('aria-label')).toBe(`Remove ${displayReference}`);
       });
     });
   });

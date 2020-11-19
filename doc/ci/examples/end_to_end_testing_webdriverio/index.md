@@ -14,7 +14,7 @@ environment, reducing the effort to assess the impact of changes. Thus, when we 
 and it will immediately be clear that the application can still be properly built and deployed. After all, you can _see_ it
 running!
 
-<img src="img/deployed_dependency_update.png" alt="dependencies.io" class="image-noshadow">
+<img src="img/deployed_dependency_update.png" alt="dependencies.io">
 
 However, looking at the freshly deployed code to check whether it still looks and behaves as
 expected is repetitive manual work, which means it is a prime candidate for automation. This is
@@ -140,7 +140,7 @@ new browser window interacting with your app as you specified.
 Which brings us to the exciting part: how do we run this in GitLab CI/CD? There are two things we
 need to do for this:
 
-1. Set up [CI/CD jobs](../../yaml/README.md#introduction) that actually have a browser available.
+1. Set up [CI/CD jobs](../../yaml/README.md) that actually have a browser available.
 1. Update our WebdriverIO configuration to use those browsers to visit the review apps.
 
 For the scope of this article, we've defined an additional [CI/CD stage](../../yaml/README.md#stages)

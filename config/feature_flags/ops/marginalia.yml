@@ -2,6 +2,7 @@
 name: marginalia
 introduced_by_url: 
 rollout_issue_url: 
-group: 
+milestone: 
 type: ops
+group: 
 default_enabled: false

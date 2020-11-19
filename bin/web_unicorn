@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd $(dirname $0)/..
+cd $(dirname $0)/.. || exit 1
 app_root=$(pwd)
 
 unicorn_pidfile="$app_root/tmp/pids/unicorn.pid"
@@ -9,7 +9,8 @@ unicorn_cmd="bundle exec unicorn_rails -c $unicorn_config -E $RAILS_ENV"
 
 get_unicorn_pid()
 {
-  local pid=$(cat $unicorn_pidfile)
+  local pid
+  pid=$(cat $unicorn_pidfile)
   if [ -z "$pid" ] ; then
     echo "Could not find a PID in $unicorn_pidfile"
     exit 1

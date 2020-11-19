@@ -5,14 +5,21 @@ module QA
     class File < Base
       attr_accessor :author_email,
                     :author_name,
-                    :branch,
                     :content,
                     :commit_message,
                     :name
+      attr_writer :branch
 
       attribute :project do
         Project.fabricate! do |resource|
           resource.name = 'project-with-new-file'
+
+          # Creating the first file via the Wed IDE is tested in
+          # browser_ui/3_create/web_ide/create_first_file_in_web_ide_spec.rb
+          # So here we want to use the old blob viewer, which is not
+          # available via the UI unless at least one file exists, which
+          # is why we create the project with a readme file.
+          resource.initialize_with_readme = true
         end
       end
 
@@ -22,26 +29,21 @@ module QA
         @commit_message = 'QA Test - Commit message'
       end
 
+      def branch
+        @branch ||= "master"
+      end
+
       def fabricate!
         project.visit!
 
-        Page::Project::Show.perform(&:create_first_new_file!)
+        Page::Project::Show.perform(&:create_new_file!)
 
-        Page::Project::WebIDE::Edit.perform do |ide|
-          ide.add_file(@name, @content)
-          ide.commit_changes(@commit_message)
-          ide.go_to_project
+        Page::File::Form.perform do |form|
+          form.add_name(@name)
+          form.add_content(@content)
+          form.add_commit_message(@commit_message)
+          form.commit_changes
         end
-
-        Page::Project::Show.perform do |project|
-          project.click_file(@name)
-        end
-      end
-
-      def resource_web_url(resource)
-        super
-      rescue ResourceURLMissingError
-        # this particular resource does not expose a web_url property
       end
 
       def api_get_path
@@ -54,12 +56,19 @@ module QA
 
       def api_post_body
         {
-          branch: @branch || "master",
+          branch: branch,
           author_email: @author_email || Runtime::User.default_email,
           author_name: @author_name || Runtime::User.username,
           content: content,
           commit_message: commit_message
         }
+      end
+
+      private
+
+      def transform_api_resource(api_resource)
+        api_resource[:web_url] = "#{Runtime::Scenario.gitlab_address}/#{project.full_path}/-/tree/#{branch}/#{api_resource[:file_path]}"
+        api_resource
       end
     end
   end

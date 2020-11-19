@@ -18,6 +18,7 @@ const IS_DEV_SERVER = process.env.WEBPACK_DEV_SERVER === 'true';
 const IS_EE = require('./helpers/is_ee_env');
 const DEV_SERVER_HOST = process.env.DEV_SERVER_HOST || 'localhost';
 const DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3808;
+const DEV_SERVER_PUBLIC_ADDR = process.env.DEV_SERVER_PUBLIC_ADDR;
 const DEV_SERVER_HTTPS = process.env.DEV_SERVER_HTTPS && process.env.DEV_SERVER_HTTPS !== 'false';
 const DEV_SERVER_LIVERELOAD = IS_DEV_SERVER && process.env.DEV_SERVER_LIVERELOAD !== 'false';
 const WEBPACK_REPORT = process.env.WEBPACK_REPORT && process.env.WEBPACK_REPORT !== 'false';
@@ -82,6 +83,7 @@ function generateEntries() {
     // sentry: './sentry/index.js', Temporarily commented out to investigate performance: https://gitlab.com/gitlab-org/gitlab/-/issues/251179
     performance_bar: './performance_bar/index.js',
     chrome_84_icon_fix: './lib/chrome_84_icon_fix.js',
+    jira_connect_app: './jira_connect/index.js',
   };
 
   return Object.assign(manualEntries, autoEntries);
@@ -553,12 +555,8 @@ module.exports = {
   devServer: {
     host: DEV_SERVER_HOST,
     port: DEV_SERVER_PORT,
+    public: DEV_SERVER_PUBLIC_ADDR,
     https: DEV_SERVER_HTTPS,
-    disableHostCheck: true,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': '*',
-    },
     contentBase: false,
     stats: 'errors-only',
     hot: DEV_SERVER_LIVERELOAD,

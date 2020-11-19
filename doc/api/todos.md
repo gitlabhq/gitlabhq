@@ -26,7 +26,7 @@ Parameters:
 | `project_id` | integer | no | The ID of a project |
 | `group_id` | integer | no | The ID of a group |
 | `state` | string | no | The state of the to do. Can be either `pending` or `done` |
-| `type` | string | no | The type of a to do. Can be either `Issue`, `MergeRequest`, `DesignManagement::Design` or `AlertManagement::Alert` |
+| `type` | string | no | The type of to-do item. Can be either `Issue`, `MergeRequest`, `DesignManagement::Design` or `AlertManagement::Alert` |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/todos"
@@ -187,7 +187,7 @@ Example Response:
 ]
 ```
 
-## Mark a to do as done
+## Mark a to-do item as done
 
 Marks a single pending to do given by its ID for the current user as done. The
 to do marked as done is returned in the response.
@@ -200,7 +200,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a to do |
+| `id` | integer | yes | The ID of to-do item |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/todos/130/mark_as_done"

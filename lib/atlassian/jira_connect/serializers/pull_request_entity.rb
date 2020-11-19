@@ -20,7 +20,13 @@ module Atlassian
         end
         expose :title
         expose :author, using: JiraConnect::Serializers::AuthorEntity
-        expose :user_notes_count, as: :commentCount
+        expose :commentCount do |mr|
+          if options[:user_notes_count]
+            options[:user_notes_count].fetch(mr.id, 0)
+          else
+            mr.user_notes_count
+          end
+        end
         expose :source_branch, as: :sourceBranch
         expose :target_branch, as: :destinationBranch
         expose :lastUpdate do |mr|

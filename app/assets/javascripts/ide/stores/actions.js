@@ -5,7 +5,7 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import { deprecatedCreateFlash as flash } from '~/flash';
 import * as types from './mutation_types';
 import { decorateFiles } from '../lib/files';
-import { stageKeys } from '../constants';
+import { stageKeys, commitActionTypes } from '../constants';
 import service from '../services';
 import eventHub from '../eventhub';
 
@@ -242,7 +242,7 @@ export const renameEntry = ({ dispatch, commit, state, getters }, { path, name, 
     }
   }
 
-  dispatch('triggerFilesChange');
+  dispatch('triggerFilesChange', { type: commitActionTypes.move, path, newPath });
 };
 
 export const getBranchData = ({ commit, state }, { projectId, branchId, force = false } = {}) =>

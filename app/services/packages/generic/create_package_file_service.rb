@@ -28,7 +28,8 @@ module Packages
           file: params[:file],
           size: params[:file].size,
           file_sha256: params[:file].sha256,
-          file_name: params[:file_name]
+          file_name: params[:file_name],
+          build: params[:build]
         }
 
         ::Packages::CreatePackageFileService.new(package, file_params).execute

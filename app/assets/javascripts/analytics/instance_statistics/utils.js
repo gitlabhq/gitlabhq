@@ -1,5 +1,5 @@
 import { masks } from 'dateformat';
-import { mapKeys, mapValues, pick, sortBy } from 'lodash';
+import { get } from 'lodash';
 import { formatDate } from '~/lib/utils/datetime_utility';
 
 const { isoDate } = masks;
@@ -41,29 +41,28 @@ export function getAverageByMonth(items = [], options = {}) {
 }
 
 /**
- * Extracts values given a data set and a set of keys
- * @example
- * const data = { fooBar: { baz: 'quis' }, ignored: 'ignored' };
- * extractValues(data, ['fooBar'], 'foo', 'baz') => { bazBar: 'quis' }
- * @param  {Object} data set to extract values from
- * @param  {Array}  dataKeys keys describing where to look for values in the data set
- * @param  {String} replaceKey name key to be replaced in the data set
- * @param  {String} nestedKey key nested in the data set to be extracted,
- *                  this is also used to rename the newly created data set
- * @return {Object} the newly created data set with the extracted values
+ * Takes an array of instance counts and returns the last item in the list
+ * @param  {Array} arr array of instance counts in the form { count: Number, recordedAt: date String }
+ * @return {String} the 'recordedAt' value of the earliest item
  */
-export function extractValues(data, dataKeys = [], replaceKey, nestedKey) {
-  return mapKeys(pick(mapValues(data, nestedKey), dataKeys), (value, key) =>
-    key.replace(replaceKey, nestedKey),
-  );
-}
+export const getEarliestDate = (arr = []) => {
+  const len = arr.length;
+  return get(arr, `[${len - 1}].recordedAt`, null);
+};
 
 /**
- * Creates a new array of items sorted by the date string of each item
- * @param  {Array} items [description]
- * @param  {String} items[0] date string
- * @return {Array} the new sorted array.
+ * Takes an array of queries and produces an object with the query identifier as key
+ * and a supplied defaultValue as its value
+ * @param  {Array} queries array of chart query configs,
+ *                 see ./analytics/instance_statistics/components/charts_config.js
+ * @param  {any}   defaultValue value to set each identifier to
+ * @return {Object} key value pair of the form { queryIdentifier: defaultValue }
  */
-export function sortByDate(items = []) {
-  return sortBy(items, ({ recordedAt }) => new Date(recordedAt).getTime());
-}
+export const generateDataKeys = (queries, defaultValue) =>
+  queries.reduce(
+    (acc, { identifier }) => ({
+      ...acc,
+      [identifier]: defaultValue,
+    }),
+    {},
+  );

@@ -24,6 +24,13 @@ module Releases
                              format: format)
     end
 
+    def hook_attrs
+      {
+        format: format,
+        url: url
+      }
+    end
+
     private
 
     def archive_prefix

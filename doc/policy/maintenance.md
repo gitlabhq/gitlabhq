@@ -1,4 +1,7 @@
 ---
+stage: Enablement
+group: Distribution
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: concepts
 ---
 
@@ -54,21 +57,11 @@ one major version. For example, it is safe to:
 
   - `12.7.5` -> `12.10.5`
   - `11.3.4` -> `11.11.1`
-  - `10.6.6` -> `10.8.3`
-  - `11.3.4` -> `11.11.8`
-  - `10.6.6` -> `10.8.7`
-  - `9.2.3` -> `9.5.5`
-  - `8.9.4` -> `8.12.3`
 
 - Upgrade the *patch* version. For example:
 
   - `12.0.4` -> `12.0.12`
   - `11.11.1` -> `11.11.8`
-  - `10.6.3` -> `10.6.6`
-  - `11.11.1` -> `11.11.8`
-  - `10.6.3` -> `10.6.6`
-  - `9.5.5` -> `9.5.9`
-  - `8.9.2` -> `8.9.6`
 
 NOTE: **Note:**
 Version specific changes in Omnibus GitLab Linux packages can be found in [the Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/update/README.html#version-specific-changes).
@@ -79,74 +72,9 @@ Instructions are available for downloading an Omnibus GitLab Linux package local
 NOTE: **Note:**
 A step-by-step guide to [upgrading the Omnibus-bundled PostgreSQL is documented separately](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
 
-### Upgrading major versions
+## Upgrading major versions
 
-Upgrading the *major* version requires more attention.
-Backward-incompatible changes and migrations are reserved for major versions.
-We cannot guarantee that upgrading between major versions will be seamless.
-We suggest upgrading to the latest available *minor* version within
-your major version before proceeding to the next major version.
-Doing this will address any backward-incompatible changes or deprecations
-to help ensure a successful upgrade to the next major release.
-
-It's also important to ensure that any background migrations have been fully completed
-before upgrading to a new major version. To see the current size of the `background_migration` queue,
-[Check for background migrations before upgrading](../update/README.md#checking-for-background-migrations-before-upgrading).
-
-If your GitLab instance has any runners associated with it, it is very
-important to upgrade GitLab Runner to match the GitLab minor version that was
-upgraded to. This is to ensure [compatibility with GitLab versions](https://docs.gitlab.com/runner/#compatibility-with-gitlab-versions).
-
-### Version 12 onward: Extra step for major upgrades
-
-From version 12 onward, an additional step is required. More significant migrations
-may occur during major release upgrades.
-
-To ensure these are successful:
-
-1. Increment to the first minor version (`x.0.x`) during the major version jump.
-1. Proceed with upgrading to a newer release.
-
-**For example: `11.5.x` -> `11.11.x` -> `12.0.x` -> `12.10.x` -> `13.0.x`**
-
-### Example upgrade paths
-
-Please see the table below for some examples:
-
-| Target version | Your version | Recommended upgrade path | Note |
-| --------------------- | ------------ | ------------------------ | ---- |
-| `13.4.3`                | `12.9.2`      | `12.9.2` -> `12.10.14` -> `13.0.14` -> `13.4.3` | Two intermediate versions are required: the final `12.10` release, plus `13.0`. |
-| `13.2.10`                | `11.5.0`      | `11.5.0` -> `11.11.8` -> `12.0.12` -> `12.10.14` -> `13.0.14` -> `13.2.10` | Four intermediate versions are required: the final `11.11`, `12.0`, and `12.10` releases, plus `13.0`. |
-| `12.10.14`             | `11.3.4`       | `11.3.4` -> `11.11.8` -> `12.0.12` -> `12.10.14`             |  Two intermediate versions are required: the final `11.11` release and `12.0.12` |
-| `12.9.5`             | `10.4.5`       | `10.4.5` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.9.5`   | Three intermediate versions are required: `10.8`, `11.11`, and `12.0`, then `12.9.5` |
-| `12.2.5`              | `9.2.6`        | `9.2.6` -> `9.5.10` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.2.5` | Four intermediate versions are required: `9.5`, `10.8`, `11.11`, `12.0`, then `12.2`. |
-| `11.3.4`              | `8.13.4`       | `8.13.4` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> `11.3.4` | `8.17.7` is the last version in version 8, `9.5.10` is the last version in version 9, `10.8.7` is the last version in version 10. |
-
-### Upgrades from versions earlier than 8.12
-
-- `8.11.x` and earlier: you might have to upgrade to `8.12.0` specifically before you can upgrade to `8.17.7`. This was [reported in an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/207259).
-- [CI changes prior to version 8.0](https://docs.gitlab.com/omnibus/update/README.html#updating-gitlab-ci-from-prior-540-to-version-714-via-omnibus-gitlab)
-  when it was merged into GitLab.
-
-### Multi-step upgrade paths with GitLab all-in-one Linux package repository
-
-Linux package managers default to installing the latest available version of a package for installation and upgrades.
-Upgrading directly to the latest major version can be problematic for older GitLab versions that require a multi-stage upgrade path.
-
-When following an upgrade path spanning multiple versions, for each upgrade, specify the intended GitLab version number in your package manager's install or upgrade command.
-
-Examples:
-
-```shell
-# apt-get (Ubuntu/Debian)
-sudo apt-get upgrade gitlab-ee=12.0.12-ee.0
-# yum (RHEL/CentOS 6 and 7)
-yum install gitlab-ee-12.0.12-ee.0.el7
-# dnf (RHEL/CentOS 8)
-dnf install gitlab-ee-12.0.12-ee.0.el8
-# zypper (SUSE)
-zypper install gitlab-ee=12.0.12-ee.0
-```
+Backward-incompatible changes and migrations are reserved for major versions. See the [upgrade guide](../update/README.md#upgrading-to-a-new-major-version).
 
 ## Patch releases
 
@@ -220,19 +148,6 @@ to backport security fixes to even more monthly releases of GitLab.
 This decision is made on a case-by-case basis.
 
 ## More information
-
-Check [our release posts](https://about.gitlab.com/releases/categories/releases/).
-
-Each month, we publish either a major or minor release of GitLab. At the end
-of those release posts, there are three sections to look for: Deprecations, Removals, and Important notes on upgrading. These will include:
-
-- Steps you need to perform as part of an upgrade.
-  For example [8.12](https://about.gitlab.com/releases/2016/09/22/gitlab-8-12-released/#upgrade-barometer)
-  required the Elasticsearch index to be recreated. Any older version of GitLab upgrading to 8.12 or higher would require this.
-- Changes to the versions of software we support such as
-  [ceasing support for IE11 in GitLab 13](https://about.gitlab.com/releases/2020/03/22/gitlab-12-9-released/#ending-support-for-internet-explorer-11).
-
-You should check all the major and minor versions you're passing over.
 
 More information about the release procedures can be found in our
 [release documentation](https://gitlab.com/gitlab-org/release/docs). You may also want to read our

@@ -4,16 +4,16 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Issue Boards API
+# Project Issue Boards API
 
 Every API call to boards must be authenticated.
 
 If a user is not a member of a project and the project is private, a `GET`
 request on that project will result to a `404` status code.
 
-## Project Board
+## List project issue boards
 
-Lists Issue Boards in the given project.
+Lists project issue boards in the given project.
 
 ```plaintext
 GET /projects/:id/boards
@@ -33,6 +33,7 @@ Example response:
 [
   {
     "id" : 1,
+    "name": "board1",
     "project": {
       "id": 5,
       "name": "Diaspora Project Site",
@@ -88,9 +89,15 @@ Example response:
 ]
 ```
 
-## Single board
+Another example response when no board has been activated or exist in the project:
 
-Get a single board.
+```json
+[]
+```
+
+## Show a single issue board
+
+Get a single project issue board.
 
 ```plaintext
 GET /projects/:id/boards/:board_id
@@ -165,9 +172,9 @@ Example response:
   }
 ```
 
-## Create a board **(STARTER)**
+## Create an issue board
 
-Creates a board.
+Creates a project issue board.
 
 ```plaintext
 POST /projects/:id/boards
@@ -197,70 +204,34 @@ Example response:
       "web_url": "http://example.com/diaspora/diaspora-project-site"
     },
     "name": "newboard",
-    "milestone":   {
-      "id": 12
-      "title": "10.0"
-    },
-    "lists" : [
-      {
-        "id" : 1,
-        "label" : {
-          "name" : "Testing",
-          "color" : "#F0AD4E",
-          "description" : null
-        },
-        "position" : 1,
-        "max_issue_count": 0,
-        "max_issue_weight": 0,
-        "limit_metric":  null
-      },
-      {
-        "id" : 2,
-        "label" : {
-          "name" : "Ready",
-          "color" : "#FF0000",
-          "description" : null
-        },
-        "position" : 2,
-        "max_issue_count": 0,
-        "max_issue_weight": 0,
-        "limit_metric":  null
-      },
-      {
-        "id" : 3,
-        "label" : {
-          "name" : "Production",
-          "color" : "#FF5F00",
-          "description" : null
-        },
-        "position" : 3,
-        "max_issue_count": 0,
-        "max_issue_weight": 0,
-        "limit_metric":  null
-      }
-    ]
+    "lists" : [],
+    "group": null,
+    "milestone": null,
+    "assignee" : null,
+    "labels" : [],
+    "weight" : null
   }
 ```
 
-## Update a board **(STARTER)**
+## Update an issue board
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5954) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.1.
 
-Updates a board.
+Updates a project issue board.
 
 ```plaintext
 PUT /projects/:id/boards/:board_id
 ```
 
-| Attribute           | Type           | Required | Description |
-| ------------------- | -------------- | -------- | ----------- |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `board_id`          | integer        | yes      | The ID of a board |
-| `name`              | string         | no       | The new name of the board |
-| `assignee_id`       | integer        | no       | The assignee the board should be scoped to |
-| `milestone_id`      | integer        | no       | The milestone the board should be scoped to |
-| `labels`            | string         | no       | Comma-separated list of label names which the board should be scoped to |
-| `weight`            | integer        | no       | The weight range from 0 to 9, to which the board should be scoped to |
+| Attribute                    | Type           | Required | Description |
+| ---------------------------- | -------------- | -------- | ----------- |
+| `id`                         | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `board_id`                   | integer        | yes      | The ID of a board |
+| `name`                       | string         | no       | The new name of the board |
+| `assignee_id` **(STARTER)**  | integer        | no       | The assignee the board should be scoped to |
+| `milestone_id` **(STARTER)** | integer        | no       | The milestone the board should be scoped to |
+| `labels` **(STARTER)**       | string         | no       | Comma-separated list of label names which the board should be scoped to |
+| `weight` **(STARTER)**       | integer        | no       | The weight range from 0 to 9, to which the board should be scoped to |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/boards/1?name=new_name&milestone_id=43&assignee_id=1&labels=Doing&weight=4"
@@ -323,9 +294,9 @@ Example response:
   }
 ```
 
-## Delete a board **(STARTER)**
+## Delete an issue board
 
-Deletes a board.
+Deletes a project issue board.
 
 ```plaintext
 DELETE /projects/:id/boards/:board_id
@@ -340,10 +311,10 @@ DELETE /projects/:id/boards/:board_id
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/boards/1"
 ```
 
-## List board lists
+## List board lists in a project issue board
 
 Get a list of the board's lists.
-Does not include `open` and `closed` lists
+Does not include `open` and `closed` lists.
 
 ```plaintext
 GET /projects/:id/boards/:board_id/lists
@@ -401,7 +372,7 @@ Example response:
 ]
 ```
 
-## Single board list
+## Show a single board list
 
 Get a single board list.
 
@@ -436,9 +407,9 @@ Example response:
 }
 ```
 
-## New board list
+## Create a board list
 
-Creates a new Issue Board list.
+Creates a new issue board list.
 
 ```plaintext
 POST /projects/:id/boards/:board_id/lists
@@ -479,9 +450,9 @@ Example response:
 }
 ```
 
-## Edit board list
+## Reorder a list in a board
 
-Updates an existing Issue Board list. This call is used to change list position.
+Updates an existing issue board list. This call is used to change list position.
 
 ```plaintext
 PUT /projects/:id/boards/:board_id/lists/:list_id
@@ -515,7 +486,7 @@ Example response:
 }
 ```
 
-## Delete a board list
+## Delete a board list from a board
 
 Only for admins and project owners. Deletes the board list in question.
 

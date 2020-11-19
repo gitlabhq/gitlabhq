@@ -10,6 +10,7 @@ class TestCaseEntity < Grape::Entity
   expose :execution_time
   expose :system_output
   expose :stack_trace
+  expose :recent_failures
   expose :attachment_url, if: -> (*) { can_read_screenshots? } do |test_case|
     expose_url(test_case.attachment_url)
   end

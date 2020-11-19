@@ -79,6 +79,9 @@ module Clusters
     validates :cluster_type, presence: true
     validates :domain, allow_blank: true, hostname: { allow_numeric_hostname: true }
     validates :namespace_per_environment, inclusion: { in: [true, false] }
+    validates :helm_major_version, inclusion: { in: [2, 3] }
+
+    default_value_for :helm_major_version, 3
 
     validate :restrict_modification, on: :update
     validate :no_groups, unless: :group_type?

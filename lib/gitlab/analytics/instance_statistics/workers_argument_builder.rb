@@ -11,21 +11,36 @@ module Gitlab
 
         def execute
           measurement_identifiers.map do |measurement_identifier|
-            query_scope = ::Analytics::InstanceStatistics::Measurement::IDENTIFIER_QUERY_MAPPING[measurement_identifier]&.call
+            query_scope = query_mappings[measurement_identifier]&.call
 
             next if query_scope.nil?
 
-            # Determining the query range (id range) as early as possible in order to get more accurate counts.
-            start = query_scope.minimum(:id)
-            finish = query_scope.maximum(:id)
-
-            [measurement_identifier, start, finish, recorded_at]
+            [measurement_identifier, *determine_start_and_finish(measurement_identifier, query_scope), recorded_at]
           end.compact
         end
 
         private
 
         attr_reader :measurement_identifiers, :recorded_at
+
+        # Determining the query range (id range) as early as possible in order to get more accurate counts.
+        def determine_start_and_finish(measurement_identifier, query_scope)
+          queries = custom_min_max_queries[measurement_identifier]
+
+          if queries
+            [queries[:minimum_query].call, queries[:maximum_query].call]
+          else
+            [query_scope.minimum(:id), query_scope.maximum(:id)]
+          end
+        end
+
+        def custom_min_max_queries
+          ::Analytics::InstanceStatistics::Measurement.identifier_min_max_queries
+        end
+
+        def query_mappings
+          ::Analytics::InstanceStatistics::Measurement.identifier_query_mapping
+        end
       end
     end
   end

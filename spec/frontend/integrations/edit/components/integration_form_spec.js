@@ -5,10 +5,12 @@ import IntegrationForm from '~/integrations/edit/components/integration_form.vue
 import OverrideDropdown from '~/integrations/edit/components/override_dropdown.vue';
 import ActiveCheckbox from '~/integrations/edit/components/active_checkbox.vue';
 import ConfirmationModal from '~/integrations/edit/components/confirmation_modal.vue';
+import ResetConfirmationModal from '~/integrations/edit/components/reset_confirmation_modal.vue';
 import JiraTriggerFields from '~/integrations/edit/components/jira_trigger_fields.vue';
 import JiraIssuesFields from '~/integrations/edit/components/jira_issues_fields.vue';
 import TriggerFields from '~/integrations/edit/components/trigger_fields.vue';
 import DynamicField from '~/integrations/edit/components/dynamic_field.vue';
+import { integrationLevels } from '~/integrations/edit/constants';
 
 describe('IntegrationForm', () => {
   let wrapper;
@@ -43,6 +45,8 @@ describe('IntegrationForm', () => {
   const findOverrideDropdown = () => wrapper.find(OverrideDropdown);
   const findActiveCheckbox = () => wrapper.find(ActiveCheckbox);
   const findConfirmationModal = () => wrapper.find(ConfirmationModal);
+  const findResetConfirmationModal = () => wrapper.find(ResetConfirmationModal);
+  const findResetButton = () => wrapper.find('[data-testid="reset-button"]');
   const findJiraTriggerFields = () => wrapper.find(JiraTriggerFields);
   const findJiraIssuesFields = () => wrapper.find(JiraIssuesFields);
   const findTriggerFields = () => wrapper.find(TriggerFields);
@@ -69,20 +73,86 @@ describe('IntegrationForm', () => {
     describe('integrationLevel is instance', () => {
       it('renders ConfirmationModal', () => {
         createComponent({
-          integrationLevel: 'instance',
+          integrationLevel: integrationLevels.INSTANCE,
         });
 
         expect(findConfirmationModal().exists()).toBe(true);
       });
+
+      describe('resetPath is empty', () => {
+        it('does not render ResetConfirmationModal and button', () => {
+          createComponent({
+            integrationLevel: integrationLevels.INSTANCE,
+          });
+
+          expect(findResetButton().exists()).toBe(false);
+          expect(findResetConfirmationModal().exists()).toBe(false);
+        });
+      });
+
+      describe('resetPath is present', () => {
+        it('renders ResetConfirmationModal and button', () => {
+          createComponent({
+            integrationLevel: integrationLevels.INSTANCE,
+            resetPath: 'resetPath',
+          });
+
+          expect(findResetButton().exists()).toBe(true);
+          expect(findResetConfirmationModal().exists()).toBe(true);
+        });
+      });
     });
 
-    describe('integrationLevel is not instance', () => {
+    describe('integrationLevel is group', () => {
+      it('renders ConfirmationModal', () => {
+        createComponent({
+          integrationLevel: integrationLevels.GROUP,
+        });
+
+        expect(findConfirmationModal().exists()).toBe(true);
+      });
+
+      describe('resetPath is empty', () => {
+        it('does not render ResetConfirmationModal and button', () => {
+          createComponent({
+            integrationLevel: integrationLevels.GROUP,
+          });
+
+          expect(findResetButton().exists()).toBe(false);
+          expect(findResetConfirmationModal().exists()).toBe(false);
+        });
+      });
+
+      describe('resetPath is present', () => {
+        it('renders ResetConfirmationModal and button', () => {
+          createComponent({
+            integrationLevel: integrationLevels.GROUP,
+            resetPath: 'resetPath',
+          });
+
+          expect(findResetButton().exists()).toBe(true);
+          expect(findResetConfirmationModal().exists()).toBe(true);
+        });
+      });
+    });
+
+    describe('integrationLevel is project', () => {
       it('does not render ConfirmationModal', () => {
         createComponent({
           integrationLevel: 'project',
         });
 
         expect(findConfirmationModal().exists()).toBe(false);
+      });
+
+      it('does not render ResetConfirmationModal and button', () => {
+        createComponent({
+          integrationLevel: 'project',
+          resetPath: 'resetPath',
+        });
+
+        expect(findResetButton().exists()).toBe(false);
+        expect(findResetConfirmationModal().exists()).toBe(false);
       });
     });
 

@@ -1,10 +1,16 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Adding a new Service Component to GitLab
 
 The GitLab product is made up of several service components that run as independent system processes in communication with each other. These services can be run on the same instance, or spread across different instances. A list of the existing components can be found in the [GitLab architecture overview](architecture.md).
 
 ## Integration phases
 
-The following outline re-uses the [maturity metric](https://about.gitlab.com/direction/maturity) naming as an example of the various phases of integrating a component. These are only loosely coupled to a components actual maturity, and are intended as a guide for implementation order (for example, a component does not need to be enabled by default to be Lovable, and being enabled by default does not on its own cause a component to be Lovable).
+The following outline re-uses the [maturity metric](https://about.gitlab.com/direction/maturity/) naming as an example of the various phases of integrating a component. These are only loosely coupled to a components actual maturity, and are intended as a guide for implementation order (for example, a component does not need to be enabled by default to be Lovable, and being enabled by default does not on its own cause a component to be Lovable).
 
 - Proposed
   - [Proposing a new component](#proposing-a-new-component)
@@ -53,10 +59,8 @@ TIP: **Tip:**
 
 ## Bundling a service with GitLab
 
-NOTE: **Note:**
 Code shipped with GitLab needs to use a license approved by the Legal team. See the list of [existing approved licenses](https://about.gitlab.com/handbook/engineering/open-source/#using-open-source-libraries).
 
-NOTE: **Note:**
 Notify the [Distribution team](https://about.gitlab.com/handbook/engineering/development/enablement/distribution/) when adding a new dependency that must be compiled. We must be able to compile the dependency on all supported platforms.
 
 New services to be bundled with GitLab need to be available in the following environments.

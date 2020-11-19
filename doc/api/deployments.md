@@ -20,8 +20,8 @@ GET /projects/:id/deployments
 | `id`             | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `order_by`       | string         | no       | Return deployments ordered by `id` or `iid` or `created_at` or `updated_at` or `ref` fields. Default is `id`    |
 | `sort`           | string         | no       | Return deployments sorted in `asc` or `desc` order. Default is `asc`                                            |
-| `updated_after`  | datetime       | no       | Return deployments updated after the specified date                                                             |
-| `updated_before` | datetime       | no       | Return deployments updated before the specified date                                                            |
+| `updated_after`  | datetime       | no       | Return deployments updated after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
+| `updated_before` | datetime       | no       | Return deployments updated before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `environment`    | string         | no       | The [name of the environment](../ci/environments/index.md#defining-environments) to filter deployments by       |
 | `status`         | string         | no       | The status to filter deployments by                                                                             |
 
@@ -379,7 +379,7 @@ This API retrieves the list of merge requests shipped with a given deployment:
 GET /projects/:id/deployments/:deployment_id/merge_requests
 ```
 
-It supports the same parameters as the [Merge Requests API](./merge_requests.md#list-merge-requests) and will return a response using the same format:
+It supports the same parameters as the [Merge Requests API](merge_requests.md#list-merge-requests) and will return a response using the same format:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deployments/42"

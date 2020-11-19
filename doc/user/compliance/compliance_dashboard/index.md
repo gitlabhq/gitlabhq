@@ -17,7 +17,7 @@ for merging into production.
 
 To access the Compliance Dashboard for a group, navigate to **{shield}** **Security & Compliance > Compliance** on the group's menu.
 
-![Compliance Dashboard](img/compliance_dashboard_v13_3_1.png)
+![Compliance Dashboard](img/compliance_dashboard_v13_6.png)
 
 NOTE: **Note:**
 The Compliance Dashboard shows only the latest MR on each project.
@@ -63,13 +63,23 @@ This column has four states:
 If you do not see the success icon in your Compliance dashboard; please review the above criteria for the Merge Requests
 project to make sure it complies with the separation of duties described above.
 
-## Chain of Custody report
+## Chain of Custody report **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213364) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.3.
 
 The Chain of Custody report allows customers to export a list of merge commits within the group.
 The data provides a comprehensive view with respect to merge commits. It includes the merge commit SHA,
 merge request author, merge request ID, merge user, pipeline ID, group name, project name, and merge request approvers.
+Depending on the merge strategy, the merge commit SHA can either be a merge commit, squash commit or a diff head commit.
 
 To download the Chain of Custody report, navigate to **{shield}** **Security & Compliance > Compliance** on the group's menu and click **List of all merge commits**
+
+### Commit-specific Chain of Custody Report **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267629) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.6.
+
+You can generate a commit-specific Chain of Custody report for a given commit SHA. To do so, select
+the dropdown next to the **List of all merge commits** button at the top of the Compliance Dashboard.
 
 NOTE: **Note:**
 The Chain of Custody report download is a CSV file, with a maximum size of 15 MB.

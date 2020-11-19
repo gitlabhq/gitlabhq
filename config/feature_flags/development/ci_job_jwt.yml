@@ -1,7 +1,8 @@
 ---
 name: ci_job_jwt
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/207125
-rollout_issue_url: 
-group: group::release management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28063
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/207125
+milestone: '12.10'
 type: development
+group: group::release management
 default_enabled: true

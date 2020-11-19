@@ -1,16 +1,13 @@
 - page_title _("Sign up")
-- if experiment_enabled?(:signup_flow)
-  .row
-    .col-lg-7
-      %h1.mb-3.font-weight-bold.text-6.mt-0
-        = html_escape(_("Speed up your DevOps%{br_tag}with GitLab")) % { br_tag: '<br/>'.html_safe }
-      %p.text-3
-        = _("GitLab is a single application for the entire software development lifecycle. From project planning and source code management to CI/CD, monitoring, and security.")
-    .col-lg-5.order-12
-      .text-center.mb-3
-        %h2.font-weight-bold= _('Register for GitLab')
-      = render 'devise/shared/experimental_separate_sign_up_flow_box'
-      = render 'devise/shared/sign_in_link'
-- else
-  = render 'devise/shared/signup_box'
+- add_page_specific_style 'page_bundles/signup'
+- content_for :page_specific_javascripts do
+  = render "layouts/google_tag_manager_head"
+= render "layouts/google_tag_manager_body"
+
+.signup-page
+  = render 'devise/shared/signup_box',
+    url: registration_path(resource_name),
+    button_text: _('Register'),
+    show_omniauth_providers: omniauth_enabled? && button_based_providers_enabled?,
+    suggestion_path: nil
   = render 'devise/shared/sign_in_link'

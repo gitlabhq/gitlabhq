@@ -45,11 +45,6 @@
     }
 
     .file-actions {
-      position: absolute;
-      top: 5px;
-      right: 15px;
-      margin-left: auto;
-
       .btn:not(.btn-icon) {
         padding: 0 10px;
         font-size: 13px;
@@ -342,30 +337,14 @@ span.idiff {
     padding: $gl-padding-8 $gl-padding;
     margin: 0;
     border-radius: $border-radius-default $border-radius-default 0 0;
+
+    @include media-breakpoint-up(md) {
+      flex-wrap: nowrap;
+    }
   }
 
   .file-header-content {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     padding-right: 30px;
-    position: relative;
-    width: auto;
-
-    @media (max-width: map-get($grid-breakpoints, sm)-1) {
-      width: 100%;
-    }
-  }
-
-  .file-holder & {
-    .file-actions {
-      position: static;
-    }
-  }
-
-  .btn-clipboard {
-    position: absolute;
-    right: 0;
   }
 
   a {
@@ -384,15 +363,11 @@ span.idiff {
     z-index: 2;
   }
 
-  @include media-breakpoint-down(xs) {
+  @include media-breakpoint-down(sm) {
     display: block;
 
     .file-actions {
-      white-space: normal;
-
-      .btn-group {
-        padding-top: 5px;
-      }
+      margin-top: 5px;
     }
   }
 }

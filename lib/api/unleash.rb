@@ -4,6 +4,8 @@ module API
   class Unleash < ::API::Base
     include PaginationParams
 
+    feature_category :feature_flags
+
     namespace :feature_flags do
       resource :unleash, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         params do

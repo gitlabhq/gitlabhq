@@ -18,6 +18,8 @@ module Gitlab
 
       attr_reader :octokit
 
+      SEARCH_MAX_REQUESTS_PER_MINUTE = 30
+
       # A single page of data and the corresponding page number.
       Page = Struct.new(:objects, :number)
 
@@ -28,8 +30,11 @@ module Gitlab
       # rate limit at once. The threshold is put in place to not hit the limit
       # in most cases.
       RATE_LIMIT_THRESHOLD = 50
+      SEARCH_RATE_LIMIT_THRESHOLD = 3
 
       # token - The GitHub API token to use.
+      #
+      # host - The GitHub hostname. If nil, github.com will be used.
       #
       # per_page - The number of objects that should be displayed per page.
       #
@@ -39,11 +44,13 @@ module Gitlab
       #            this value to `true` for parallel importing is crucial as
       #            otherwise hitting the rate limit will result in a thread
       #            being blocked in a `sleep()` call for up to an hour.
-      def initialize(token, per_page: 100, parallel: true)
+      def initialize(token, host: nil, per_page: 100, parallel: true)
+        @host = host
         @octokit = ::Octokit::Client.new(
           access_token: token,
           per_page: per_page,
-          api_endpoint: api_endpoint
+          api_endpoint: api_endpoint,
+          web_endpoint: web_endpoint
         )
 
         @octokit.connection_options[:ssl] = { verify: verify_ssl }
@@ -148,13 +155,35 @@ module Gitlab
         end
       end
 
+      def search_repos_by_name(name)
+        each_page(:search_repositories, search_query(str: name, type: :name))
+      end
+
+      def search_query(str:, type:, include_collaborations: true, include_orgs: true)
+        query = "#{str} in:#{type} is:public,private user:#{octokit.user.login}"
+
+        query = [query, collaborations_subquery].join(' ') if include_collaborations
+        query = [query, organizations_subquery].join(' ') if include_orgs
+
+        query
+      end
+
       # Returns `true` if we're still allowed to perform API calls.
+      # Search API has rate limit of 30, use lowered threshold when search is used.
       def requests_remaining?
+        if requests_limit == SEARCH_MAX_REQUESTS_PER_MINUTE
+          return remaining_requests > SEARCH_RATE_LIMIT_THRESHOLD
+        end
+
         remaining_requests > RATE_LIMIT_THRESHOLD
       end
 
       def remaining_requests
         octokit.rate_limit.remaining
+      end
+
+      def requests_limit
+        octokit.rate_limit.limit
       end
 
       def raise_or_wait_for_rate_limit
@@ -181,7 +210,11 @@ module Gitlab
       end
 
       def api_endpoint
-        custom_api_endpoint || default_api_endpoint
+        @host || custom_api_endpoint || default_api_endpoint
+      end
+
+      def web_endpoint
+        @host || custom_api_endpoint || ::Octokit::Default.web_endpoint
       end
 
       def custom_api_endpoint
@@ -212,6 +245,20 @@ module Gitlab
           :github_importer_request_count,
           'The number of GitHub API calls performed when importing projects'
         )
+      end
+
+      private
+
+      def collaborations_subquery
+        each_object(:repos, nil, { affiliation: 'collaborator' })
+          .map { |repo| "repo:#{repo.full_name}" }
+          .join(' ')
+      end
+
+      def organizations_subquery
+        each_object(:organizations)
+          .map { |org| "org:#{org.login}" }
+          .join(' ')
       end
     end
   end

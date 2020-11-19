@@ -1,8 +1,7 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import { GlLoadingIcon, GlBadge } from '@gitlab/ui';
+import { GlLoadingIcon, GlBadge, GlTooltipDirective } from '@gitlab/ui';
 import { visitUrl } from '../../lib/utils/url_utility';
-import tooltip from '../../vue_shared/directives/tooltip';
 import identicon from '../../vue_shared/components/identicon.vue';
 import eventHub from '../event_hub';
 import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE } from '../constants';
@@ -17,7 +16,7 @@ import { showLearnGitLabGroupItemPopover } from '~/onboarding_issues';
 
 export default {
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   components: {
     GlBadge,
@@ -127,11 +126,10 @@ export default {
         <div class="group-text flex-grow-1 flex-shrink-1">
           <div class="d-flex align-items-center flex-wrap title namespace-title gl-mr-3">
             <a
-              v-tooltip
+              v-gl-tooltip.bottom
               :href="group.relativePath"
               :title="group.fullName"
               class="no-expand gl-mt-3 gl-mr-3 gl-text-gray-900!"
-              data-placement="bottom"
               >{{
                 // ending bracket must be by closing tag to prevent
                 // link hover text-decoration from over-extending

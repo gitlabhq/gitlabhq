@@ -19,6 +19,26 @@ describe('waitForCSSLoaded', () => {
     });
   });
 
+  describe('when gon features is not provided', () => {
+    let originalGon;
+
+    beforeEach(() => {
+      originalGon = window.gon;
+      window.gon = null;
+    });
+
+    afterEach(() => {
+      window.gon = originalGon;
+    });
+
+    it('should invoke the action right away', async () => {
+      const events = waitForCSSLoaded(mockedCallback);
+      await events;
+
+      expect(mockedCallback).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe('with startup css disabled', () => {
     gon.features = {
       startupCss: false,

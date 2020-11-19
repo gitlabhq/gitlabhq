@@ -9,19 +9,21 @@
           Sign-up enabled
           .form-text.text-muted
             = _("When enabled, any user visiting %{host} will be able to create an account.") % { host: "#{new_user_session_url(host: Gitlab.config.gitlab.host)}" }
-    - if Feature.enabled?(:admin_approval_for_new_user_signups, default_enabled: true)
-      .form-group
-        .form-check
-          = f.check_box :require_admin_approval_after_user_signup, class: 'form-check-input'
-          = f.label :require_admin_approval_after_user_signup, class: 'form-check-label' do
-            = _('Require admin approval for new sign-ups')
-            .form-text.text-muted
-              = _("When enabled, any user visiting %{host} and creating an account will have to be explicitly approved by an admin before they can sign in. This setting is effective only if sign-ups are enabled.") % { host: "#{new_user_session_url(host: Gitlab.config.gitlab.host)}" }
+    .form-group
+      .form-check
+        = f.check_box :require_admin_approval_after_user_signup, class: 'form-check-input'
+        = f.label :require_admin_approval_after_user_signup, class: 'form-check-label' do
+          = _('Require admin approval for new sign-ups')
+          .form-text.text-muted
+            = _("When enabled, any user visiting %{host} and creating an account will have to be explicitly approved by an admin before they can sign in. This setting is effective only if sign-ups are enabled.") % { host: "#{new_user_session_url(host: Gitlab.config.gitlab.host)}" }
     .form-group
       .form-check
         = f.check_box :send_user_confirmation_email, class: 'form-check-input'
         = f.label :send_user_confirmation_email, class: 'form-check-label' do
           Send confirmation email on sign-up
+
+    = render_if_exists 'admin/application_settings/new_user_signups_cap', form: f
+
     .form-group
       = f.label :minimum_password_length, _('Minimum password length (number of characters)'), class: 'label-bold'
       = f.number_field :minimum_password_length, class: 'form-control', rows: 4, min: ApplicationSetting::DEFAULT_MINIMUM_PASSWORD_LENGTH, max: Devise.password_length.max
@@ -29,33 +31,33 @@
       .form-text.text-muted
         = _("See GitLab's %{password_policy_guidelines}").html_safe % { password_policy_guidelines: password_policy_guidelines_link }
     .form-group
-      = f.label :domain_whitelist, 'Whitelisted domains for sign-ups', class: 'label-bold'
-      = f.text_area :domain_whitelist_raw, placeholder: 'domain.com', class: 'form-control', rows: 8
+      = f.label :domain_allowlist, _('Allowed domains for sign-ups'), class: 'label-bold'
+      = f.text_area :domain_allowlist_raw, placeholder: 'domain.com', class: 'form-control', rows: 8
       .form-text.text-muted ONLY users with e-mail addresses that match these domain(s) will be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com
     .form-group
-      = f.label :domain_blacklist_enabled, 'Domain Blacklist', class: 'label-bold'
+      = f.label :domain_denylist_enabled, _('Domain denylist'), class: 'label-bold'
       .form-check
-        = f.check_box :domain_blacklist_enabled, class: 'form-check-input'
-        = f.label :domain_blacklist_enabled, class: 'form-check-label' do
-          Enable domain blacklist for sign ups
+        = f.check_box :domain_denylist_enabled, class: 'form-check-input'
+        = f.label :domain_denylist_enabled, class: 'form-check-label' do
+          Enable domain denylist for sign ups
     .form-group
       .form-check
-        = radio_button_tag :blacklist_type, :file, false, class: 'form-check-input'
-        = label_tag :blacklist_type_file, class: 'form-check-label' do
+        = radio_button_tag :denylist_type, :file, false, class: 'form-check-input'
+        = label_tag :denylist_type_file, class: 'form-check-label' do
           .option-title
-            Upload blacklist file
+            Upload denylist file
       .form-check
-        = radio_button_tag :blacklist_type, :raw, @application_setting.domain_blacklist.present? || @application_setting.domain_blacklist.blank?, class: 'form-check-input'
-        = label_tag :blacklist_type_raw, class: 'form-check-label' do
+        = radio_button_tag :denylist_type, :raw, @application_setting.domain_denylist.present? || @application_setting.domain_denylist.blank?, class: 'form-check-input'
+        = label_tag :denylist_type_raw, class: 'form-check-label' do
           .option-title
-            Enter blacklist manually
-    .form-group.blacklist-file
-      = f.label :domain_blacklist_file, 'Blacklist file', class: 'label-bold'
-      = f.file_field :domain_blacklist_file, class: 'form-control', accept: '.txt,.conf'
+            Enter denylist manually
+    .form-group.js-denylist-file
+      = f.label :domain_denylist_file, _('Denylist file'), class: 'label-bold'
+      = f.file_field :domain_denylist_file, class: 'form-control', accept: '.txt,.conf'
       .form-text.text-muted Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines or commas for multiple entries.
-    .form-group.blacklist-raw
-      = f.label :domain_blacklist, 'Blacklisted domains for sign-ups', class: 'label-bold'
-      = f.text_area :domain_blacklist_raw, placeholder: 'domain.com', class: 'form-control', rows: 8
+    .form-group.js-denylist-raw
+      = f.label :domain_denylist, _('Denied domains for sign-ups'), class: 'label-bold'
+      = f.text_area :domain_denylist_raw, placeholder: 'domain.com', class: 'form-control', rows: 8
       .form-text.text-muted Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com
     .form-group
       = f.label :email_restrictions_enabled, _('Email restrictions'), class: 'label-bold'

@@ -20,6 +20,7 @@ RSpec.describe 'Updating an image DiffNote' do
       position_type: 'image'
     )
   end
+
   let_it_be(:updated_body) { 'Updated body' }
   let_it_be(:updated_width) { 50 }
   let_it_be(:updated_height) { 100 }
@@ -31,7 +32,7 @@ RSpec.describe 'Updating an image DiffNote' do
       height: updated_height,
       x: updated_x,
       y: updated_y
-    }
+    }.compact.presence
   end
 
   let!(:diff_note) do
@@ -45,9 +46,10 @@ RSpec.describe 'Updating an image DiffNote' do
   let(:mutation) do
     variables = {
       id: GitlabSchema.id_from_object(diff_note).to_s,
-      body: updated_body,
-      position: updated_position
+      body: updated_body
     }
+
+    variables[:position] = updated_position if updated_position
 
     graphql_mutation(:update_image_diff_note, variables)
   end

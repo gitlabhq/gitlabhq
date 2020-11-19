@@ -28,10 +28,7 @@ RSpec.describe 'User searches for code' do
       before do
         visit(search_path)
         find('.js-search-project-dropdown').click
-
-        page.within('.project-filter') do
-          click_link(project.full_name)
-        end
+        find('[data-testid="project-filter"]').click_link(project.full_name)
       end
 
       include_examples 'top right search form'

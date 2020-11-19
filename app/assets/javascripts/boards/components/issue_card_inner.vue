@@ -3,7 +3,7 @@ import { sortBy } from 'lodash';
 import { mapState } from 'vuex';
 import { GlLabel, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import issueCardInner from 'ee_else_ce/boards/mixins/issue_card_inner';
-import { sprintf, __ } from '~/locale';
+import { sprintf, __, n__ } from '~/locale';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import IssueDueDate from './issue_due_date.vue';
@@ -89,6 +89,12 @@ export default {
     orderedLabels() {
       return sortBy(this.issue.labels.filter(this.isNonListLabel), 'title');
     },
+    blockedLabel() {
+      if (this.issue.blockedByCount) {
+        return n__(`Blocked by %d issue`, `Blocked by %d issues`, this.issue.blockedByCount);
+      }
+      return __('Blocked issue');
+    },
   },
   methods: {
     isIndexLessThanlimit(index) {
@@ -133,15 +139,16 @@ export default {
 </script>
 <template>
   <div>
-    <div class="d-flex board-card-header" dir="auto">
+    <div class="gl-display-flex" dir="auto">
       <h4 class="board-card-title gl-mb-0 gl-mt-0">
         <gl-icon
           v-if="issue.blocked"
           v-gl-tooltip
           name="issue-block"
-          :title="__('Blocked issue')"
+          :title="blockedLabel"
           class="issue-blocked-icon gl-mr-2"
-          :aria-label="__('Blocked issue')"
+          :aria-label="blockedLabel"
+          data-testid="issue-blocked-icon"
         />
         <gl-icon
           v-if="issue.confidential"
@@ -156,7 +163,7 @@ export default {
         }}</a>
       </h4>
     </div>
-    <div v-if="showLabelFooter" class="board-card-labels gl-mt-2 d-flex flex-wrap">
+    <div v-if="showLabelFooter" class="board-card-labels gl-mt-2 gl-display-flex gl-flex-wrap">
       <template v-for="label in orderedLabels">
         <gl-label
           :key="label.id"
@@ -169,24 +176,26 @@ export default {
         />
       </template>
     </div>
-    <div class="board-card-footer d-flex justify-content-between align-items-end">
+    <div
+      class="board-card-footer gl-display-flex gl-justify-content-space-between gl-align-items-flex-end"
+    >
       <div
-        class="d-flex align-items-start flex-wrap-reverse board-card-number-container overflow-hidden js-board-card-number-container"
+        class="gl-display-flex align-items-start flex-wrap-reverse board-card-number-container gl-overflow-hidden js-board-card-number-container"
       >
         <span
           v-if="issue.referencePath"
-          class="board-card-number overflow-hidden d-flex gl-mr-3 gl-mt-3"
+          class="board-card-number gl-overflow-hidden gl-display-flex gl-mr-3 gl-mt-3"
         >
           <tooltip-on-truncate
             v-if="issueReferencePath"
             :title="issueReferencePath"
             placement="bottom"
-            class="board-issue-path block-truncated bold"
+            class="board-issue-path gl-text-truncate gl-font-weight-bold"
             >{{ issueReferencePath }}</tooltip-on-truncate
           >
           #{{ issue.iid }}
         </span>
-        <span class="board-info-items gl-mt-3 d-inline-block">
+        <span class="board-info-items gl-mt-3 gl-display-inline-block">
           <issue-due-date v-if="issue.dueDate" :date="issue.dueDate" :closed="issue.closed" />
           <issue-time-estimate v-if="issue.timeEstimate" :estimate="issue.timeEstimate" />
           <issue-card-weight
@@ -196,20 +205,20 @@ export default {
           />
         </span>
       </div>
-      <div class="board-card-assignee d-flex">
+      <div class="board-card-assignee gl-display-flex">
         <user-avatar-link
           v-for="(assignee, index) in issue.assignees"
           v-if="shouldRenderAssignee(index)"
           :key="assignee.id"
           :link-href="assigneeUrl(assignee)"
           :img-alt="avatarUrlTitle(assignee)"
-          :img-src="assignee.avatar || assignee.avatar_url"
+          :img-src="assignee.avatarUrl || assignee.avatar || assignee.avatar_url"
           :img-size="24"
           class="js-no-trigger"
           tooltip-placement="bottom"
         >
           <span class="js-assignee-tooltip">
-            <span class="bold d-block">{{ __('Assignee') }}</span>
+            <span class="gl-font-weight-bold gl-display-block">{{ __('Assignee') }}</span>
             {{ assignee.name }}
             <span class="text-white-50">@{{ assignee.username }}</span>
           </span>

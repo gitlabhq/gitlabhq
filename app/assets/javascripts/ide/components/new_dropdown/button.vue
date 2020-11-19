@@ -1,10 +1,9 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
-import tooltip from '~/vue_shared/directives/tooltip';
+import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 
 export default {
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   components: {
     GlIcon,
@@ -45,7 +44,7 @@ export default {
 
 <template>
   <button
-    v-tooltip
+    v-gl-tooltip
     :aria-label="label"
     :title="tooltipTitle"
     type="button"

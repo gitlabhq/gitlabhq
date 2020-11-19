@@ -1,7 +1,0 @@
-query CanCreateProjectSnippet($fullPath: ID!) {
-  project(fullPath: $fullPath) {
-    userPermissions {
-      createSnippet
-    }
-  }
-}

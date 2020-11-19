@@ -30,6 +30,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
     it { is_expected.to have_many(:resource_state_events) }
     it { is_expected.to have_many(:draft_notes) }
     it { is_expected.to have_many(:reviews).inverse_of(:merge_request) }
+    it { is_expected.to have_one(:cleanup_schedule).inverse_of(:merge_request) }
 
     context 'for forks' do
       let!(:project) { create(:project) }
@@ -77,6 +78,18 @@ RSpec.describe MergeRequest, factory_default: :keep do
     it 'returns MRs ordered by merged_at descending' do
       expect(described_class.order_merged_at_desc).to eq([newer_mr, older_mr])
     end
+  end
+
+  describe '.with_jira_issue_keys' do
+    let_it_be(:mr_with_jira_title) { create(:merge_request, :unique_branches, title: 'Fix TEST-123') }
+    let_it_be(:mr_with_jira_description) { create(:merge_request, :unique_branches, description: 'this closes TEST-321') }
+    let_it_be(:mr_without_jira_reference) { create(:merge_request, :unique_branches) }
+
+    subject { described_class.with_jira_issue_keys }
+
+    it { is_expected.to contain_exactly(mr_with_jira_title, mr_with_jira_description) }
+
+    it { is_expected.not_to include(mr_without_jira_reference) }
   end
 
   describe '#squash_in_progress?' do

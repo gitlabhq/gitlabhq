@@ -27,8 +27,9 @@ class RepositoryCleanupWorker # rubocop:disable Scalability/IdempotentWorker
     project = Project.find(project_id)
     user = User.find(user_id)
 
-    # Ensure the file is removed
-    project.bfg_object_map.remove!
+    # Ensure the file is removed and the repository is made read-write again
+    Projects::CleanupService.cleanup_after(project)
+
     notification_service.repository_cleanup_failure(project, user, error)
   end
 

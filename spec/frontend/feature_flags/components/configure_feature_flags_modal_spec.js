@@ -99,13 +99,13 @@ describe('Configure Feature Flags Modal', () => {
     });
 
     it('should display the api URL in an input box', () => {
-      const input = wrapper.find('#api_url');
-      expect(input.element.value).toBe('/api/url');
+      const input = wrapper.find('#api-url');
+      expect(input.attributes('value')).toBe('/api/url');
     });
 
     it('should display the instance ID in an input box', () => {
       const input = wrapper.find('#instance_id');
-      expect(input.element.value).toBe('instance-id-token');
+      expect(input.attributes('value')).toBe('instance-id-token');
     });
   });
 
@@ -129,7 +129,7 @@ describe('Configure Feature Flags Modal', () => {
       expect(findPrimaryAction()).toBe(null);
     });
 
-    it('shold not display regenerating instance ID', async () => {
+    it('should not display regenerating instance ID', async () => {
       expect(findDangerCallout().exists()).toBe(false);
     });
 

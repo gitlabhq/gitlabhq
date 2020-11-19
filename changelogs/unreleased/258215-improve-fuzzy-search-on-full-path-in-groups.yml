@@ -1,0 +1,5 @@
+---
+title: Fix problems with Groups API search query parameter
+merge_request: 46394
+author:
+type: fixed

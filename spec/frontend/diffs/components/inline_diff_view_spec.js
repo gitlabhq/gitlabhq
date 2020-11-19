@@ -1,54 +1,57 @@
-import Vue from 'vue';
 import '~/behaviors/markdown/render_gfm';
-import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
+import { mount } from '@vue/test-utils';
+import { getByText } from '@testing-library/dom';
 import { createStore } from '~/mr_notes/stores';
 import InlineDiffView from '~/diffs/components/inline_diff_view.vue';
+import { mapInline } from '~/diffs/components/diff_row_utils';
 import diffFileMockData from '../mock_data/diff_file';
 import discussionsMockData from '../mock_data/diff_discussions';
 
 describe('InlineDiffView', () => {
-  let component;
+  let wrapper;
   const getDiffFileMock = () => ({ ...diffFileMockData });
   const getDiscussionsMockData = () => [{ ...discussionsMockData }];
   const notesLength = getDiscussionsMockData()[0].notes.length;
 
-  beforeEach(done => {
-    const diffFile = getDiffFileMock();
+  const setup = (diffFile, diffLines) => {
+    const mockDiffContent = {
+      diffFile,
+      shouldRenderDraftRow: jest.fn(),
+    };
 
     const store = createStore();
 
     store.dispatch('diffs/setInlineDiffViewType');
-    component = createComponentWithStore(Vue.extend(InlineDiffView), store, {
-      diffFile,
-      diffLines: diffFile.highlighted_diff_lines,
-    }).$mount();
-
-    Vue.nextTick(done);
-  });
+    wrapper = mount(InlineDiffView, {
+      store,
+      propsData: {
+        diffFile,
+        diffLines: diffLines.map(mapInline(mockDiffContent)),
+      },
+    });
+  };
 
   describe('template', () => {
     it('should have rendered diff lines', () => {
-      const el = component.$el;
+      const diffFile = getDiffFileMock();
+      setup(diffFile, diffFile.highlighted_diff_lines);
 
-      expect(el.querySelectorAll('tr.line_holder').length).toEqual(8);
-      expect(el.querySelectorAll('tr.line_holder.new').length).toEqual(4);
-      expect(el.querySelectorAll('tr.line_expansion.match').length).toEqual(1);
-      expect(el.textContent.indexOf('Bad dates')).toBeGreaterThan(-1);
+      expect(wrapper.findAll('tr.line_holder').length).toEqual(8);
+      expect(wrapper.findAll('tr.line_holder.new').length).toEqual(4);
+      expect(wrapper.findAll('tr.line_expansion.match').length).toEqual(1);
+      getByText(wrapper.element, /Bad dates/i);
     });
 
-    it('should render discussions', done => {
-      const el = component.$el;
-      component.diffLines[1].discussions = getDiscussionsMockData();
-      component.diffLines[1].discussionsExpanded = true;
+    it('should render discussions', () => {
+      const diffFile = getDiffFileMock();
+      diffFile.highlighted_diff_lines[1].discussions = getDiscussionsMockData();
+      diffFile.highlighted_diff_lines[1].discussionsExpanded = true;
+      setup(diffFile, diffFile.highlighted_diff_lines);
 
-      Vue.nextTick(() => {
-        expect(el.querySelectorAll('.notes_holder').length).toEqual(1);
-        expect(el.querySelectorAll('.notes_holder .note').length).toEqual(notesLength + 1);
-        expect(el.innerText.indexOf('comment 5')).toBeGreaterThan(-1);
-        component.$store.dispatch('setInitialNotes', []);
-
-        done();
-      });
+      expect(wrapper.findAll('.notes_holder').length).toEqual(1);
+      expect(wrapper.findAll('.notes_holder .note').length).toEqual(notesLength + 1);
+      getByText(wrapper.element, 'comment 5');
+      wrapper.vm.$store.dispatch('setInitialNotes', []);
     });
   });
 });

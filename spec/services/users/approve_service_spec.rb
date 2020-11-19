@@ -19,85 +19,101 @@ RSpec.describe Users::ApproveService do
         end
       end
 
-      context 'when user is not in pending approval state' do
-        let(:user) { create(:user, state: 'active') }
-
+      context 'when the executor user is an admin not in admin mode' do
         it 'returns error result' do
           expect(subject[:status]).to eq(:error)
-          expect(subject[:message])
-            .to match(/The user you are trying to approve is not pending an approval/)
+          expect(subject[:message]).to match(/You are not allowed to approve a user/)
         end
       end
 
-      context 'when user cannot be activated' do
-        let(:user) do
-          build(:user, state: 'blocked_pending_approval', email: 'invalid email')
+      context 'when the executor user is an admin in admin mode', :enable_admin_mode do
+        context 'when user is not in pending approval state' do
+          let(:user) { create(:user, state: 'active') }
+
+          it 'returns error result' do
+            expect(subject[:status]).to eq(:error)
+            expect(subject[:message])
+              .to match(/The user you are trying to approve is not pending an approval/)
+          end
         end
 
-        it 'returns error result' do
-          expect(subject[:status]).to eq(:error)
-          expect(subject[:message]).to match(/Email is invalid/)
-        end
+        context 'when user cannot be activated' do
+          let(:user) do
+            build(:user, state: 'blocked_pending_approval', email: 'invalid email')
+          end
 
-        it 'does not change the state of the user' do
-          expect { subject }.not_to change { user.state }
+          it 'returns error result' do
+            expect(subject[:status]).to eq(:error)
+            expect(subject[:message]).to match(/Email is invalid/)
+          end
+
+          it 'does not change the state of the user' do
+            expect { subject }.not_to change { user.state }
+          end
         end
       end
     end
 
     context 'success' do
-      it 'activates the user' do
-        expect(subject[:status]).to eq(:success)
-        expect(user.reload).to be_active
-      end
+      context 'when the executor user is an admin in admin mode', :enable_admin_mode do
+        it 'activates the user' do
+          expect(subject[:status]).to eq(:success)
+          expect(user.reload).to be_active
+        end
 
-      context 'email confirmation status' do
-        context 'user is unconfirmed' do
-          let(:user) { create(:user, :blocked_pending_approval, :unconfirmed) }
+        it 'emails the user on approval' do
+          expect(DeviseMailer).to receive(:user_admin_approval).with(user).and_call_original
+          expect { subject }.to have_enqueued_mail(DeviseMailer, :user_admin_approval)
+        end
 
-          it 'sends confirmation instructions' do
-            expect { subject }
-              .to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
+        context 'email confirmation status' do
+          context 'user is unconfirmed' do
+            let(:user) { create(:user, :blocked_pending_approval, :unconfirmed) }
+
+            it 'sends confirmation instructions' do
+              expect { subject }
+                .to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
+            end
+          end
+
+          context 'user is confirmed' do
+            it 'does not send a confirmation email' do
+              expect { subject }
+                .not_to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
+            end
           end
         end
 
-        context 'user is confirmed' do
-          it 'does not send a confirmation email' do
-            expect { subject }
-              .not_to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
+        context 'pending invitations' do
+          let!(:project_member_invite) { create(:project_member, :invited, invite_email: user.email) }
+          let!(:group_member_invite) { create(:group_member, :invited, invite_email: user.email) }
+
+          context 'user is unconfirmed' do
+            let(:user) { create(:user, :blocked_pending_approval, :unconfirmed) }
+
+            it 'does not accept pending invites of the user' do
+              expect(subject[:status]).to eq(:success)
+
+              group_member_invite.reload
+              project_member_invite.reload
+
+              expect(group_member_invite).to be_invite
+              expect(project_member_invite).to be_invite
+            end
           end
-        end
-      end
 
-      context 'pending invitiations' do
-        let!(:project_member_invite) { create(:project_member, :invited, invite_email: user.email) }
-        let!(:group_member_invite) { create(:group_member, :invited, invite_email: user.email) }
+          context 'user is confirmed' do
+            it 'accepts pending invites of the user' do
+              expect(subject[:status]).to eq(:success)
 
-        context 'user is unconfirmed' do
-          let(:user) { create(:user, :blocked_pending_approval, :unconfirmed) }
+              group_member_invite.reload
+              project_member_invite.reload
 
-          it 'does not accept pending invites of the user' do
-            expect(subject[:status]).to eq(:success)
-
-            group_member_invite.reload
-            project_member_invite.reload
-
-            expect(group_member_invite).to be_invite
-            expect(project_member_invite).to be_invite
-          end
-        end
-
-        context 'user is confirmed' do
-          it 'accepts pending invites of the user' do
-            expect(subject[:status]).to eq(:success)
-
-            group_member_invite.reload
-            project_member_invite.reload
-
-            expect(group_member_invite).not_to be_invite
-            expect(project_member_invite).not_to be_invite
-            expect(group_member_invite.user).to eq(user)
-            expect(project_member_invite.user).to eq(user)
+              expect(group_member_invite).not_to be_invite
+              expect(project_member_invite).not_to be_invite
+              expect(group_member_invite.user).to eq(user)
+              expect(project_member_invite.user).to eq(user)
+            end
           end
         end
       end

@@ -1,0 +1,5 @@
+---
+title: Add Batch Support for Importing Pull Requests from Bitbucket
+merge_request: 46696
+author: Simon Schrottner
+type: performance

@@ -37,10 +37,7 @@ compliance report will be shown properly.
 
 ![License Compliance Widget](img/license_compliance_v13_0.png)
 
-If you are a project or group Maintainer, you can click on a license to be given
-the choice to allow it or deny it.
-
-![License approval decision](img/license_compliance_decision_v13_0.png)
+You can click on a license to see more information.
 
 When GitLab detects a **Denied** license, you can view it in the [license list](#license-list).
 
@@ -62,7 +59,6 @@ The following languages and package managers are supported.
 | .NET       | [Nuget](https://www.nuget.org/) | The .NET Framework is supported via the [mono project](https://www.mono-project.com/). There are, however, some limitations. The scanner doesn't support Windows-specific dependencies and doesn't report dependencies of your project's listed dependencies. Also, the scanner always marks detected licenses for all dependencies as `unknown`. | [License Finder](https://github.com/pivotal/LicenseFinder) |
 | Python     | [pip](https://pip.pypa.io/en/stable/) | Python is supported through [requirements.txt](https://pip.pypa.io/en/stable/user_guide/#requirements-files) and [Pipfile.lock](https://github.com/pypa/pipfile#pipfilelock). | [License Finder](https://github.com/pivotal/LicenseFinder) |
 | Ruby       | [gem](https://rubygems.org/) |  | [License Finder](https://github.com/pivotal/LicenseFinder)|
-| Objective-C, Swift | [Carthage](https://github.com/Carthage/Carthage) |  | [License Finder](https://github.com/pivotal/LicenseFinder) |
 
 NOTE: **Note:**
 Java 8 and Gradle 1.x projects are not supported.
@@ -78,6 +74,7 @@ which means that the reported licenses might be incomplete or inaccurate.
 | JavaScript | [Yarn](https://yarnpkg.com/)|[License Finder](https://github.com/pivotal/LicenseFinder)|
 | Go         | go get, gvt, glide, dep, trash, govendor |[License Finder](https://github.com/pivotal/LicenseFinder)|
 | Erlang     | [Rebar](https://www.rebar3.org/) |[License Finder](https://github.com/pivotal/LicenseFinder)|
+| Objective-C, Swift | [Carthage](https://github.com/Carthage/Carthage) |  | [License Finder](https://github.com/pivotal/LicenseFinder) |
 | Objective-C, Swift | [CocoaPods](https://cocoapods.org/) v0.39 and below |[License Finder](https://github.com/pivotal/LicenseFinder)|
 | Elixir     | [Mix](https://elixir-lang.org/getting-started/mix-otp/introduction-to-mix.html) |[License Finder](https://github.com/pivotal/LicenseFinder)|
 | C++/C      | [Conan](https://conan.io/) |[License Finder](https://github.com/pivotal/LicenseFinder)|
@@ -144,7 +141,7 @@ License Compliance can be configured using environment variables.
 | `ASDF_PYTHON_VERSION`       | no       | Version of Python to use for the scan. |
 | `ASDF_RUBY_VERSION`         | no       | Version of Ruby to use for the scan. |
 | `GRADLE_CLI_OPTS`           | no       | Additional arguments for the gradle executable. If not supplied, defaults to `--exclude-task=test`. |
-| `LICENSE_FINDER_CLI_OPTS`   | no       | Additional arguments for the `license_finder` executable. For example, if your project has both Golang and Ruby code stored in different directories and you want to only scan the Ruby code, you can update your `.gitlab-ci-yml` template to specify which project directories to scan, like `LICENSE_FINDER_CLI_OPTS: '--debug --aggregate-paths=. ruby'`. |
+| `LICENSE_FINDER_CLI_OPTS`   | no       | Additional arguments for the `license_finder` executable. For example, if you have multiple projects in nested directories, you can update your `.gitlab-ci-yml` template to specify a recursive scan, like `LICENSE_FINDER_CLI_OPTS: '--recursive'`. |
 | `LM_JAVA_VERSION`           | no       | Version of Java. If set to `11`, Maven and Gradle use Java 11 instead of Java 8. |
 | `LM_PYTHON_VERSION`         | no       | Version of Python. If set to `3`, dependencies are installed using Python 3 instead of Python 2.7. |
 | `MAVEN_CLI_OPTS`            | no       | Additional arguments for the mvn executable. If not supplied, defaults to `-DskipTests`. |
@@ -444,7 +441,7 @@ documentation for a list of settings that you can apply.
 The `license_scanning` job runs in a [Debian 10](https://www.debian.org/releases/buster/) Docker
 image. The supplied image ships with some build tools such as [CMake](https://cmake.org/) and [GCC](https://gcc.gnu.org/).
 However, not all project types are supported by default. To install additional tools needed to
-compile dependencies, use a [`before_script`](../../../ci/yaml/README.md#before_script-and-after_script)
+compile dependencies, use a [`before_script`](../../../ci/yaml/README.md#before_script)
 to install the necessary build tools using the [`apt`](https://wiki.debian.org/PackageManagementTools)
 package manager. For a comprehensive list, consult [the Conan documentation](https://docs.conan.io/en/latest/introduction.html#all-platforms-all-build-systems-and-compilers).
 
@@ -775,11 +772,11 @@ or using the appropriate [`ASDF_<tool>_VERSION`](https://asdf-vm.com/#/core-conf
 activate the appropriate version.
 
 For example, the following `.tool-versions` file will activate version `12.16.3` of [Node.js](https://nodejs.org/)
-and version `2.6.6` of [Ruby](https://www.ruby-lang.org/).
+and version `2.7.2` of [Ruby](https://www.ruby-lang.org/).
 
 ```plaintext
 nodejs 12.16.3
-ruby 2.6.6
+ruby 2.7.2
 ```
 
 The next example shows how to activate the same versions of the tools mentioned above by using environment variables defined in your
@@ -792,7 +789,7 @@ include:
 license_scanning:
   variables:
     ASDF_NODEJS_VERSION: '12.16.3'
-    ASDF_RUBY_VERSION: '2.6.6'
+    ASDF_RUBY_VERSION: '2.7.2'
 ```
 
 A full list of variables can be found in [environment variables](#available-variables).

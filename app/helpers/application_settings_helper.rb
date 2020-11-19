@@ -199,14 +199,14 @@ module ApplicationSettingsHelper
       :default_projects_limit,
       :default_snippet_visibility,
       :disabled_oauth_sign_in_sources,
-      :domain_blacklist,
-      :domain_blacklist_enabled,
-      # TODO Remove domain_blacklist_raw in APIv5 (See https://gitlab.com/gitlab-org/gitlab-foss/issues/67204)
-      :domain_blacklist_raw,
-      :domain_whitelist,
-      # TODO Remove domain_whitelist_raw in APIv5 (See https://gitlab.com/gitlab-org/gitlab-foss/issues/67204)
-      :domain_whitelist_raw,
-      :outbound_local_requests_whitelist_raw,
+      :domain_denylist,
+      :domain_denylist_enabled,
+      # TODO Remove domain_denylist_raw in APIv5 (See https://gitlab.com/gitlab-org/gitlab-foss/issues/67204)
+      :domain_denylist_raw,
+      :domain_allowlist,
+      # TODO Remove domain_allowlist_raw in APIv5 (See https://gitlab.com/gitlab-org/gitlab-foss/issues/67204)
+      :domain_allowlist_raw,
+      :outbound_local_requests_allowlist_raw,
       :dsa_key_restriction,
       :ecdsa_key_restriction,
       :ed25519_key_restriction,
@@ -393,6 +393,10 @@ module ApplicationSettingsHelper
 
   def show_documentation_base_url_field?
     Feature.enabled?(:help_page_documentation_redirect)
+  end
+
+  def signup_enabled?
+    !!Gitlab::CurrentSettings.signup_enabled
   end
 end
 

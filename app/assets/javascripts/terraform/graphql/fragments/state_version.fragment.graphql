@@ -1,0 +1,9 @@
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+
+fragment StateVersion on TerraformStateVersion {
+  updatedAt
+
+  createdByUser {
+    ...User
+  }
+}

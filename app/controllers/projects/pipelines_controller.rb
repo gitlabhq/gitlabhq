@@ -12,11 +12,11 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :authorize_create_pipeline!, only: [:new, :create, :config_variables]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
   before_action do
-    push_frontend_feature_flag(:filter_pipelines_search, project, default_enabled: true)
     push_frontend_feature_flag(:dag_pipeline_tab, project, default_enabled: true)
     push_frontend_feature_flag(:pipelines_security_report_summary, project)
-    push_frontend_feature_flag(:new_pipeline_form, project)
+    push_frontend_feature_flag(:new_pipeline_form, project, default_enabled: true)
     push_frontend_feature_flag(:graphql_pipeline_header, project, type: :development, default_enabled: false)
+    push_frontend_feature_flag(:graphql_pipeline_details, project, type: :development, default_enabled: false)
     push_frontend_feature_flag(:new_pipeline_form_prefilled_vars, project, type: :development)
   end
   before_action :ensure_pipeline, only: [:show]
@@ -194,6 +194,7 @@ class Projects::PipelinesController < Projects::ApplicationController
     @counts[:total] = @project.all_pipelines.count(:all)
     @counts[:success] = @project.all_pipelines.success.count(:all)
     @counts[:failed] = @project.all_pipelines.failed.count(:all)
+    @counts[:total_duration] = @project.all_pipelines.total_duration
   end
 
   def test_report
@@ -213,7 +214,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   def config_variables
     respond_to do |format|
       format.json do
-        render json: Ci::ListConfigVariablesService.new(@project).execute(params[:sha])
+        render json: Ci::ListConfigVariablesService.new(@project, current_user).execute(params[:sha])
       end
     end
   end

@@ -1,4 +1,4 @@
-FROM ruby:2.6-stretch
+FROM ruby:2.7-buster
 LABEL maintainer="GitLab Quality Department <quality@gitlab.com>"
 
 ENV DEBIAN_FRONTEND="noninteractive"
@@ -65,7 +65,7 @@ COPY VERSION ./ee/app/models/license.r[b] /home/gitlab/ee/app/models/
 COPY ./lib/gitlab.rb /home/gitlab/lib/
 COPY ./lib/gitlab/utils.rb /home/gitlab/lib/gitlab/
 COPY ./INSTALLATION_TYPE ./VERSION /home/gitlab/
-RUN cd /home/gitlab/qa/ && bundle install --jobs=$(nproc) --retry=3 --quiet
+RUN cd /home/gitlab/qa/ && bundle install --jobs=$(nproc) --retry=3 --without=development --quiet
 COPY ./qa /home/gitlab/qa
 
 ENTRYPOINT ["bin/test"]

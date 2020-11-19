@@ -105,7 +105,8 @@ RSpec.describe Projects::StaticSiteEditorController do
                   foo: 'bar'
                 }
               },
-              a_boolean: true
+              a_boolean: true,
+              a_nil: nil
             }
           end
 
@@ -129,6 +130,10 @@ RSpec.describe Projects::StaticSiteEditorController do
 
           it 'serializes data values which are hashes to JSON' do
             expect(assigns_data[:a_hash]).to eq('{"a_deeper_hash":{"foo":"bar"}}')
+          end
+
+          it 'serializes data values which are nil to an empty string' do
+            expect(assigns_data[:a_nil]).to eq('')
           end
         end
       end

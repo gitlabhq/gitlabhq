@@ -1,0 +1,46 @@
+@import 'mixins_and_variables_and_functions';
+
+.alert-management-details {
+  @include media-breakpoint-down(xs) {
+    .alert-details-incident-button {
+      @include gl-w-full;
+    }
+  }
+
+  .toggle-sidebar-mobile-button {
+    @include gl-right-0;
+  }
+
+  .dropdown-menu-toggle {
+    &:hover {
+      @include gl-bg-white;
+    }
+  }
+
+  .assignee-dropdown-item {
+    .dropdown-item {
+      @include gl-display-flex;
+      @include gl-align-items-center;
+
+      &::before {
+        top: 50% !important;
+      }
+
+      &.is-active {
+        &:last-child {
+          @include gl-border-b-gray-100;
+          @include gl-border-b-1;
+          @include gl-border-b-solid;
+        }
+      }
+    }
+  }
+
+  .main-notes-list::before {
+    left: $gl-spacing-scale-5 !important;
+  }
+
+  .note-header-info {
+    @include gl-mt-1;
+  }
+}

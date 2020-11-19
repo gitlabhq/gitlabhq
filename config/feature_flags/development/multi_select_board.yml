@@ -1,7 +1,0 @@
----
-name: multi_select_board
-introduced_by_url:
-rollout_issue_url:
-group: group::project management
-type: development
-default_enabled: true

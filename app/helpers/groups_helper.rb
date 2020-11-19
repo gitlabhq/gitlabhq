@@ -94,12 +94,19 @@ module GroupsHelper
       else
         full_title << breadcrumb_list_item(group_title_link(parent, hidable: false))
       end
+
+      push_to_schema_breadcrumb(simple_sanitize(parent.name), group_path(parent))
     end
 
     full_title << render("layouts/nav/breadcrumbs/collapsed_dropdown", location: :before, title: _("Show parent subgroups"))
 
     full_title << breadcrumb_list_item(group_title_link(group))
-    full_title << ' &middot; '.html_safe + link_to(simple_sanitize(name), url, class: 'group-path breadcrumb-item-text js-breadcrumb-item-text') if name
+    push_to_schema_breadcrumb(simple_sanitize(group.name), group_path(group))
+
+    if name
+      full_title << ' &middot; '.html_safe + link_to(simple_sanitize(name), url, class: 'group-path breadcrumb-item-text js-breadcrumb-item-text')
+      push_to_schema_breadcrumb(simple_sanitize(name), url)
+    end
 
     full_title.join.html_safe
   end
@@ -163,6 +170,10 @@ module GroupsHelper
       group_container_registry_nav?
   end
 
+  def group_dependency_proxy_nav?
+    @group.dependency_proxy_feature_available?
+  end
+
   def group_packages_list_nav?
     @group.packages_feature_enabled?
   end
@@ -172,6 +183,10 @@ module GroupsHelper
       can?(current_user, :admin_group, group) &&
       !just_created? &&
       !multiple_members?(group)
+  end
+
+  def show_thanks_for_purchase_banner?
+    params.key?(:purchased_quantity) && params[:purchased_quantity].to_i > 0
   end
 
   private

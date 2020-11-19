@@ -46,6 +46,7 @@ describe('Reports Store Mutations', () => {
               name: 'StringHelper#concatenate when a is git and b is lab returns summary',
               execution_time: 0.0092435,
               system_output: "Failure/Error: is_expected.to eq('gitlab')",
+              recent_failures: 4,
             },
           ],
           resolved_failures: [
@@ -82,6 +83,7 @@ describe('Reports Store Mutations', () => {
       expect(stateCopy.summary.total).toEqual(mockedResponse.summary.total);
       expect(stateCopy.summary.resolved).toEqual(mockedResponse.summary.resolved);
       expect(stateCopy.summary.failed).toEqual(mockedResponse.summary.failed);
+      expect(stateCopy.summary.recentlyFailed).toEqual(1);
     });
 
     it('should set reports', () => {

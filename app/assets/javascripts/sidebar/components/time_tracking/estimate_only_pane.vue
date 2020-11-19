@@ -11,7 +11,8 @@ export default {
 </script>
 
 <template>
-  <div class="time-tracking-estimate-only-pane">
-    <span class="bold"> {{ s__('TimeTracking|Estimated:') }} </span> {{ timeEstimateHumanReadable }}
+  <div data-testid="estimateOnlyPane">
+    <span class="gl-font-weight-bold">{{ s__('TimeTracking|Estimated:') }} </span
+    >{{ timeEstimateHumanReadable }}
   </div>
 </template>

@@ -2,6 +2,7 @@
 name: service_desk_custom_address
 introduced_by_url: 
 rollout_issue_url: 
-group: group::certify
+milestone: 
 type: development
+group: group::certify
 default_enabled: false

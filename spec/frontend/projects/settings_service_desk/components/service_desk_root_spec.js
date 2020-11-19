@@ -1,7 +1,8 @@
-import { shallowMount, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
 import ServiceDeskRoot from '~/projects/settings_service_desk/components/service_desk_root.vue';
+import ServiceDeskSetting from '~/projects/settings_service_desk/components/service_desk_setting.vue';
 import axios from '~/lib/utils/axios_utils';
 import httpStatusCodes from '~/lib/utils/http_status';
 
@@ -22,65 +23,6 @@ describe('ServiceDeskRoot', () => {
     if (spy) {
       spy.mockRestore();
     }
-  });
-
-  it('fetches incoming email when there is no incoming email provided', () => {
-    axiosMock.onGet(endpoint).replyOnce(httpStatusCodes.OK);
-
-    wrapper = shallowMount(ServiceDeskRoot, {
-      propsData: {
-        initialIsEnabled: true,
-        initialIncomingEmail: '',
-        endpoint,
-      },
-    });
-
-    return wrapper.vm
-      .$nextTick()
-      .then(waitForPromises)
-      .then(() => {
-        expect(axiosMock.history.get).toHaveLength(1);
-      });
-  });
-
-  it('does not fetch incoming email when there is an incoming email provided', () => {
-    axiosMock.onGet(endpoint).replyOnce(httpStatusCodes.OK);
-
-    wrapper = shallowMount(ServiceDeskRoot, {
-      propsData: {
-        initialIsEnabled: true,
-        initialIncomingEmail,
-        endpoint,
-      },
-    });
-
-    return wrapper.vm
-      .$nextTick()
-      .then(waitForPromises)
-      .then(() => {
-        expect(axiosMock.history.get).toHaveLength(0);
-      });
-  });
-
-  it('shows an error message when incoming email is not fetched correctly', () => {
-    axiosMock.onGet(endpoint).networkError();
-
-    wrapper = shallowMount(ServiceDeskRoot, {
-      propsData: {
-        initialIsEnabled: true,
-        initialIncomingEmail: '',
-        endpoint,
-      },
-    });
-
-    return wrapper.vm
-      .$nextTick()
-      .then(waitForPromises)
-      .then(() => {
-        expect(wrapper.html()).toContain(
-          'An error occurred while fetching the Service Desk address.',
-        );
-      });
   });
 
   it('sends a request to toggle service desk off when the toggle is clicked from the on state', () => {
@@ -220,5 +162,19 @@ describe('ServiceDeskRoot', () => {
       .then(() => {
         expect(wrapper.html()).toContain('An error occured while making the changes:');
       });
+  });
+
+  it('passes customEmail through updatedCustomEmail correctly', () => {
+    const customEmail = 'foo';
+
+    wrapper = mount(ServiceDeskRoot, {
+      propsData: {
+        initialIsEnabled: true,
+        endpoint,
+        customEmail,
+      },
+    });
+
+    expect(wrapper.find(ServiceDeskSetting).props('customEmail')).toEqual(customEmail);
   });
 });

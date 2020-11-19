@@ -19,14 +19,14 @@ class ProjectStatistics < ApplicationRecord
 
   before_save :update_storage_size
 
-  COLUMNS_TO_REFRESH = [:repository_size, :wiki_size, :lfs_objects_size, :commit_count, :snippets_size].freeze
+  COLUMNS_TO_REFRESH = [:repository_size, :wiki_size, :lfs_objects_size, :commit_count, :snippets_size, :uploads_size].freeze
   INCREMENTABLE_COLUMNS = {
     build_artifacts_size: %i[storage_size],
     packages_size: %i[storage_size],
     pipeline_artifacts_size: %i[storage_size],
     snippets_size: %i[storage_size]
   }.freeze
-  NAMESPACE_RELATABLE_COLUMNS = [:repository_size, :wiki_size, :lfs_objects_size].freeze
+  NAMESPACE_RELATABLE_COLUMNS = [:repository_size, :wiki_size, :lfs_objects_size, :uploads_size].freeze
 
   scope :for_project_ids, ->(project_ids) { where(project_id: project_ids) }
 
@@ -72,6 +72,12 @@ class ProjectStatistics < ApplicationRecord
     self.lfs_objects_size = project.lfs_objects.sum(:size)
   end
 
+  def update_uploads_size
+    return uploads_size unless Feature.enabled?(:count_uploads_size_in_storage_stats, project)
+
+    self.uploads_size = project.uploads.sum(:size)
+  end
+
   # `wiki_size` and `snippets_size` have no default value in the database
   # and the column can be nil.
   # This means that, when the columns were added, all rows had nil
@@ -97,6 +103,10 @@ class ProjectStatistics < ApplicationRecord
     # The `pipeline_artifacts_size` column was added on 20200817142800 but db/post_migrate/20190527194900_schedule_calculate_wiki_sizes.rb
     # might try to update project statistics before the `pipeline_artifacts_size` column has been created.
     storage_size += pipeline_artifacts_size if self.class.column_names.include?('pipeline_artifacts_size')
+
+    # The `uploads_size` column was added on 20201105021637 but db/post_migrate/20190527194900_schedule_calculate_wiki_sizes.rb
+    # might try to update project statistics before the `uploads_size` column has been created.
+    storage_size += uploads_size if self.class.column_names.include?('uploads_size')
 
     self.storage_size = storage_size
   end

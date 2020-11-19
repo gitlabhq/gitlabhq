@@ -8,8 +8,16 @@ export const isParallelView = state => state.diffViewType === PARALLEL_DIFF_VIEW
 
 export const isInlineView = state => state.diffViewType === INLINE_DIFF_VIEW_TYPE;
 
-export const hasCollapsedFile = state =>
-  state.diffFiles.some(file => file.viewer && file.viewer.automaticallyCollapsed);
+export const whichCollapsedTypes = state => {
+  const automatic = state.diffFiles.some(file => file.viewer?.automaticallyCollapsed);
+  const manual = state.diffFiles.some(file => file.viewer?.manuallyCollapsed);
+
+  return {
+    any: automatic || manual,
+    automatic,
+    manual,
+  };
+};
 
 export const commitId = state => (state.commit && state.commit.id ? state.commit.id : null);
 
@@ -157,10 +165,13 @@ export const fileLineCoverage = state => (file, line) => {
 export const currentDiffIndex = state =>
   Math.max(0, state.diffFiles.findIndex(diff => diff.file_hash === state.currentDiffFileId));
 
-export const diffLines = state => file => {
-  if (state.diffViewType === INLINE_DIFF_VIEW_TYPE) {
+export const diffLines = state => (file, unifiedDiffComponents) => {
+  if (!unifiedDiffComponents && state.diffViewType === INLINE_DIFF_VIEW_TYPE) {
     return null;
   }
 
-  return parallelizeDiffLines(file.highlighted_diff_lines || []);
+  return parallelizeDiffLines(
+    file.highlighted_diff_lines || [],
+    state.diffViewType === INLINE_DIFF_VIEW_TYPE,
+  );
 };

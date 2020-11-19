@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`~/releases/components/issuable_stats.vue matches snapshot 1`] = `
+"<div class=\\"gl-display-flex gl-flex-direction-column gl-flex-shrink-0 gl-mr-6 gl-mb-5\\"><span class=\\"gl-mb-2\\">
+    Items
+    <span class=\\"badge badge-muted badge-pill gl-badge sm\\"><!----> 10</span></span>
+  <div class=\\"gl-display-flex\\"><span data-testid=\\"open-stat\\" class=\\"gl-white-space-pre-wrap\\">Open: <a href=\\"path/to/opened/items\\" class=\\"gl-link\\">1</a></span> <span class=\\"gl-mx-2\\">•</span> <span data-testid=\\"merged-stat\\" class=\\"gl-white-space-pre-wrap\\">Merged: <a href=\\"path/to/merged/items\\" class=\\"gl-link\\">7</a></span> <span class=\\"gl-mx-2\\">•</span> <span data-testid=\\"closed-stat\\" class=\\"gl-white-space-pre-wrap\\">Closed: <a href=\\"path/to/closed/items\\" class=\\"gl-link\\">2</a></span></div>
+</div>"
+`;

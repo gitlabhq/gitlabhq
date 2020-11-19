@@ -2,11 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Project do
+RSpec.describe Project, factory_default: :keep do
   include ProjectForksHelper
   include GitHelpers
   include ExternalAuthorizationServiceHelpers
   using RSpec::Parameterized::TableSyntax
+
+  let_it_be(:namespace) { create_default(:namespace) }
 
   it_behaves_like 'having unique enum values'
 
@@ -3003,14 +3005,23 @@ RSpec.describe Project do
   describe '#set_repository_read_only!' do
     let(:project) { create(:project) }
 
-    it 'returns true when there is no existing git transfer in progress' do
-      expect(project.set_repository_read_only!).to be_truthy
+    it 'makes the repository read-only' do
+      expect { project.set_repository_read_only! }
+        .to change(project, :repository_read_only?)
+        .from(false)
+        .to(true)
     end
 
-    it 'returns false when there is an existing git transfer in progress' do
+    it 'raises an error if the project is already read-only' do
+      project.set_repository_read_only!
+
+      expect { project.set_repository_read_only! }.to raise_error(described_class::RepositoryReadOnlyError, /already read-only/)
+    end
+
+    it 'raises an error when there is an existing git transfer in progress' do
       allow(project).to receive(:git_transfer_in_progress?) { true }
 
-      expect(project.set_repository_read_only!).to be_falsey
+      expect { project.set_repository_read_only! }.to raise_error(described_class::RepositoryReadOnlyError, /in progress/)
     end
   end
 
@@ -3657,7 +3668,7 @@ RSpec.describe Project do
     let(:project) { create(:project) }
 
     before do
-      project.namespace_id = 7
+      project.namespace_id = project.namespace_id + 1
     end
 
     it { expect(project.parent_changed?).to be_truthy }
@@ -3985,8 +3996,16 @@ RSpec.describe Project do
       context 'when feature is private' do
         let(:project) { create(:project, :public, :merge_requests_private) }
 
-        it 'returns projects with the project feature private' do
-          is_expected.to include(project)
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it 'returns projects with the project feature private' do
+            is_expected.to include(project)
+          end
+        end
+
+        context 'when admin mode is disabled' do
+          it 'does not return projects with the project feature private' do
+            is_expected.not_to include(project)
+          end
         end
       end
     end
@@ -4009,7 +4028,7 @@ RSpec.describe Project do
     end
   end
 
-  describe '.filter_by_feature_visibility', :enable_admin_mode do
+  describe '.filter_by_feature_visibility' do
     include_context 'ProjectPolicyTable context'
     include ProjectHelpers
     using RSpec::Parameterized::TableSyntax
@@ -4021,12 +4040,13 @@ RSpec.describe Project do
     context 'reporter level access' do
       let(:feature) { MergeRequest }
 
-      where(:project_level, :feature_access_level, :membership, :expected_count) do
+      where(:project_level, :feature_access_level, :membership, :admin_mode, :expected_count) do
         permission_table_for_reporter_feature_access
       end
 
       with_them do
         it "respects visibility" do
+          enable_admin_mode!(user) if admin_mode
           update_feature_access_level(project, feature_access_level)
 
           expected_objects = expected_count == 1 ? [project] : []
@@ -4041,12 +4061,13 @@ RSpec.describe Project do
     context 'issues' do
       let(:feature) { Issue }
 
-      where(:project_level, :feature_access_level, :membership, :expected_count) do
+      where(:project_level, :feature_access_level, :membership, :admin_mode, :expected_count) do
         permission_table_for_guest_feature_access
       end
 
       with_them do
         it "respects visibility" do
+          enable_admin_mode!(user) if admin_mode
           update_feature_access_level(project, feature_access_level)
 
           expected_objects = expected_count == 1 ? [project] : []
@@ -4061,12 +4082,13 @@ RSpec.describe Project do
     context 'wiki' do
       let(:feature) { :wiki }
 
-      where(:project_level, :feature_access_level, :membership, :expected_count) do
+      where(:project_level, :feature_access_level, :membership, :admin_mode, :expected_count) do
         permission_table_for_guest_feature_access
       end
 
       with_them do
         it "respects visibility" do
+          enable_admin_mode!(user) if admin_mode
           update_feature_access_level(project, feature_access_level)
 
           expected_objects = expected_count == 1 ? [project] : []
@@ -4081,12 +4103,13 @@ RSpec.describe Project do
     context 'code' do
       let(:feature) { :repository }
 
-      where(:project_level, :feature_access_level, :membership, :expected_count) do
+      where(:project_level, :feature_access_level, :membership, :admin_mode, :expected_count) do
         permission_table_for_guest_feature_access_and_non_private_project_only
       end
 
       with_them do
         it "respects visibility" do
+          enable_admin_mode!(user) if admin_mode
           update_feature_access_level(project, feature_access_level)
 
           expected_objects = expected_count == 1 ? [project] : []
@@ -4207,6 +4230,27 @@ RSpec.describe Project do
       expect(project).to receive(:remove_pages).and_call_original
 
       expect { project.destroy }.not_to raise_error
+    end
+
+    context 'when there is an old pages deployment' do
+      let!(:old_deployment_from_another_project) { create(:pages_deployment) }
+      let!(:old_deployment) { create(:pages_deployment, project: project) }
+
+      it 'schedules a destruction of pages deployments' do
+        expect(DestroyPagesDeploymentsWorker).to(
+          receive(:perform_async).with(project.id)
+        )
+
+        project.remove_pages
+      end
+
+      it 'removes pages deployments', :sidekiq_inline do
+        expect do
+          project.remove_pages
+        end.to change { PagesDeployment.count }.by(-1)
+
+        expect(PagesDeployment.find_by_id(old_deployment.id)).to be_nil
+      end
     end
   end
 
@@ -5507,15 +5551,16 @@ RSpec.describe Project do
   end
 
   describe '#find_or_initialize_services' do
-    it 'returns only enabled services' do
+    before do
       allow(Service).to receive(:available_services_names).and_return(%w[prometheus pushover teamcity])
-      allow(Service).to receive(:project_specific_services_names).and_return(%w[asana])
       allow(subject).to receive(:disabled_services).and_return(%w[prometheus])
+    end
 
+    it 'returns only enabled services' do
       services = subject.find_or_initialize_services
 
-      expect(services.count).to eq(3)
-      expect(services.map(&:title)).to eq(['Asana', 'JetBrains TeamCity CI', 'Pushover'])
+      expect(services.count).to eq(2)
+      expect(services.map(&:title)).to eq(['JetBrains TeamCity CI', 'Pushover'])
     end
   end
 
@@ -5892,6 +5937,26 @@ RSpec.describe Project do
         project.mark_pages_as_not_deployed
       end.to change { pages_metadatum.reload.deployed }.from(true).to(false)
                .and change { pages_metadatum.reload.artifacts_archive }.from(artifacts_archive).to(nil)
+    end
+  end
+
+  describe '#update_pages_deployment!' do
+    let(:project) { create(:project) }
+    let(:deployment) { create(:pages_deployment, project: project) }
+
+    it "creates new metadata record if none exists yet and sets deployment" do
+      project.pages_metadatum.destroy!
+      project.reload
+
+      project.update_pages_deployment!(deployment)
+
+      expect(project.pages_metadatum.pages_deployment).to eq(deployment)
+    end
+
+    it "updates the existing metadara record with deployment" do
+      expect do
+        project.update_pages_deployment!(deployment)
+      end.to change { project.pages_metadatum.reload.pages_deployment }.from(nil).to(deployment)
     end
   end
 

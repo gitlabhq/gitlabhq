@@ -1,0 +1,5 @@
+---
+title: Block LFS requests on snippets
+merge_request: 45874
+author:
+type: fixed

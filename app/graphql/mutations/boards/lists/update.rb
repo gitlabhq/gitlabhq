@@ -6,7 +6,7 @@ module Mutations
       class Update < BaseMutation
         graphql_name 'UpdateBoardList'
 
-        argument :list_id, GraphQL::ID_TYPE,
+        argument :list_id, Types::GlobalIDType[List],
                   required: true,
                   loads: Types::BoardListType,
                   description: 'Global ID of the list.'

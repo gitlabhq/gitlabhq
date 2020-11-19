@@ -8,62 +8,67 @@ RSpec.describe Gitlab::Chat::Output do
   end
 
   let(:output) { described_class.new(build) }
+  let(:trace) { Gitlab::Ci::Trace.new(build) }
 
-  describe '#to_s' do
-    it 'returns the build output as a String' do
-      trace = Gitlab::Ci::Trace.new(build)
+  before do
+    trace.set("\e[0KRunning with gitlab-runner 13.4.0~beta.108.g2ed41114 (2ed41114)
+\e[0;m\e[0K  on GDK local runner g_XWCUS4
+\e[0;msection_start:1604068171:resolve_secrets\r\e[0K\e[0K\e[36;1mResolving secrets\e[0;m
+\e[0;msection_end:1604068171:resolve_secrets\r\e[0Ksection_start:1604068171:prepare_executor\r\e[0K\e[0K\e[36;1mPreparing the \"docker\" executor\e[0;m
+\e[0;m\e[0KUsing Docker executor with image ubuntu:20.04 ...
+\e[0;m\e[0KUsing locally found image version due to if-not-present pull policy
+\e[0;m\e[0KUsing docker image sha256:d70eaf7277eada08fca944de400e7e4dd97b1262c06ed2b1011500caa4decaf1 for ubuntu:20.04 with digest ubuntu@sha256:fff16eea1a8ae92867721d90c59a75652ea66d29c05294e6e2f898704bdb8cf1 ...
+\e[0;msection_end:1604068172:prepare_executor\r\e[0Ksection_start:1604068172:prepare_script\r\e[0K\e[0K\e[36;1mPreparing environment\e[0;m
+\e[0;mRunning on runner-gxwcus4-project-21-concurrent-0 via MacBook-Pro.local...
+section_end:1604068173:prepare_script\r\e[0Ksection_start:1604068173:get_sources\r\e[0K\e[0K\e[36;1mGetting source from Git repository\e[0;m
+\e[0;m\e[32;1mFetching changes with git depth set to 50...\e[0;m
+Initialized empty Git repository in /builds/267388-group-1/playground/.git/
+\e[32;1mCreated fresh repository.\e[0;m
+\e[32;1mChecking out 6c8eb7f4 as master...\e[0;m
 
-      trace.set("echo hello\nhello")
-
-      allow(build)
-        .to receive(:trace)
-        .and_return(trace)
-
-      allow(output)
-        .to receive(:read_offset_and_length)
-        .and_return([0, 13])
-
-      expect(output.to_s).to eq('he')
-    end
+\e[32;1mSkipping Git submodules setup\e[0;m
+section_end:1604068175:get_sources\r\e[0Ksection_start:1604068175:step_script\r\e[0K\e[0K\e[36;1mExecuting \"step_script\" stage of the job script\e[0;m
+\e[0;m\e[32;1m$ echo \"success!\"\e[0;m
+success!
+section_end:1604068175:step_script\r\e[0Ksection_start:1604068175:chat_reply\r\033[0K
+Chat Reply
+section_end:1604068176:chat_reply\r\033[0K\e[32;1mJob succeeded
+\e[0;m")
   end
 
-  describe '#read_offset_and_length' do
+  describe '#to_s' do
+    it 'returns the chat reply as a String' do
+      expect(output.to_s).to eq("Chat Reply")
+    end
+
     context 'without the chat_reply trace section' do
-      it 'falls back to using the build_script trace section' do
-        expect(output)
-          .to receive(:find_build_trace_section)
-          .with('chat_reply')
-          .and_return(nil)
-
-        expect(output)
-          .to receive(:find_build_trace_section)
-          .with('build_script')
-          .and_return({ name: 'build_script', byte_start: 1, byte_end: 4 })
-
-        expect(output.read_offset_and_length).to eq([1, 3])
+      before do
+        trace.set(trace.raw.gsub('chat_reply', 'not_found'))
       end
-    end
 
-    context 'without the build_script trace section' do
-      it 'raises MissingBuildSectionError' do
-        expect { output.read_offset_and_length }
-          .to raise_error(described_class::MissingBuildSectionError)
+      it 'falls back to using the step_script trace section' do
+        expect(output.to_s).to eq("\e[0;m\e[32;1m$ echo \"success!\"\e[0;m\nsuccess!")
       end
-    end
 
-    context 'with the chat_reply trace section' do
-      it 'returns the read offset and length as an Array' do
-        trace = Gitlab::Ci::Trace.new(build)
+      context 'without the step_script trace section' do
+        before do
+          trace.set(trace.raw.gsub('step_script', 'build_script'))
+        end
 
-        allow(build)
-          .to receive(:trace)
-          .and_return(trace)
+        it 'falls back to using the build_script trace section' do
+          expect(output.to_s).to eq("\e[0;m\e[32;1m$ echo \"success!\"\e[0;m\nsuccess!")
+        end
 
-        allow(trace)
-          .to receive(:extract_sections)
-          .and_return([{ name: 'chat_reply', byte_start: 1, byte_end: 4 }])
+        context 'without the build_script trace section' do
+          before do
+            trace.set(trace.raw.gsub('build_script', 'not_found'))
+          end
 
-        expect(output.read_offset_and_length).to eq([1, 3])
+          it 'raises MissingBuildSectionError' do
+            expect { output.to_s }
+              .to raise_error(described_class::MissingBuildSectionError)
+          end
+        end
       end
     end
   end

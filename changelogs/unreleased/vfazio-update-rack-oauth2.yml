@@ -1,0 +1,5 @@
+---
+title: Update rack-oauth2 to v1.16.0
+merge_request: 47839
+author: Vincent Fazio @vfazio
+type: changed

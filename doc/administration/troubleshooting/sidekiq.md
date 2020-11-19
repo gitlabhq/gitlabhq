@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Troubleshooting Sidekiq
 
 Sidekiq is the background job processor GitLab uses to asynchronously run
@@ -7,12 +13,10 @@ may be filling up. Users will notice when this happens because new branches
 may not show up and merge requests may not be updated. The following are some
 troubleshooting steps that will help you diagnose the bottleneck.
 
-NOTE: **Note:**
 GitLab administrators/users should consider working through these
 debug steps with GitLab Support so the backtraces can be analyzed by our team.
 It may reveal a bug or necessary improvement in GitLab.
 
-NOTE: **Note:**
 In any of the backtraces, be wary of suspecting cases where every
 thread appears to be waiting in the database, Redis, or waiting to acquire
 a mutex. This **may** mean there's contention in the database, for example,
@@ -22,19 +26,11 @@ preventing other threads from continuing.
 
 ## Log arguments to Sidekiq jobs
 
-If you want to see what arguments are being passed to Sidekiq jobs you can set
-the `SIDEKIQ_LOG_ARGUMENTS` [environment variable](https://docs.gitlab.com/omnibus/settings/environment-variables.html) to `1` (true).
-
-Example:
-
-```ruby
-gitlab_rails['env'] = {"SIDEKIQ_LOG_ARGUMENTS" => "1"}
-```
-
-This does not log all job arguments. To avoid logging sensitive
-information (for instance, password reset tokens), it logs numeric
-arguments for all workers, with overrides for some specific workers
-where their arguments are not sensitive.
+[In GitLab 13.6 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44853)
+some arguments passed to Sidekiq jobs are logged by default.
+To avoid logging sensitive information (for instance, password reset tokens),
+GitLab logs numeric arguments for all workers, with overrides for some specific
+workers where their arguments are not sensitive.
 
 Example log output:
 
@@ -48,6 +44,17 @@ When using [Sidekiq JSON logging](../logs.md#sidekiqlog),
 arguments logs are limited to a maximum size of 10 kilobytes of text;
 any arguments after this limit will be discarded and replaced with a
 single argument containing the string `"..."`.
+
+You can set `SIDEKIQ_LOG_ARGUMENTS` [environment variable](https://docs.gitlab.com/omnibus/settings/environment-variables.html)
+to `0` (false) to disable argument logging.
+
+Example:
+
+```ruby
+gitlab_rails['env'] = {"SIDEKIQ_LOG_ARGUMENTS" => "0"}
+```
+
+In GitLab 13.5 and earlier, set `SIDEKIQ_LOG_ARGUMENTS` to `1` to start logging arguments passed to Sidekiq.
 
 ## Thread dump
 
@@ -127,7 +134,6 @@ corresponding Ruby code where this is happening.
 `gdb` can be another effective tool for debugging Sidekiq. It gives you a little
 more interactive way to look at each thread and see what's causing problems.
 
-NOTE: **Note:**
 Attaching to a process with `gdb` will suspends the normal operation
 of the process (Sidekiq will not process jobs while `gdb` is attached).
 
@@ -278,15 +284,15 @@ end
 
 ### Remove Sidekiq jobs for given parameters (destructive)
 
-The general method to kill jobs conditionally is the following:
+The general method to kill jobs conditionally is the following command, which
+will remove jobs that are queued but not started. Running jobs will not be killed.
 
 ```ruby
 queue = Sidekiq::Queue.new('<queue name>')
 queue.each { |job| job.delete if <condition>}
 ```
 
-NOTE: **Note:**
-This will remove jobs that are queued but not started, running jobs will not be killed. Have a look at the section below for cancelling running jobs.
+Have a look at the section below for cancelling running jobs.
 
 In the method above, `<queue-name>` is the name of the queue that contains the job(s) you want to delete and `<condition>` will decide which jobs get deleted.
 
@@ -294,7 +300,6 @@ Commonly, `<condition>` references the job arguments, which depend on the type o
 
 For example, `repository_import` has `project_id` as the job argument, while `update_merge_requests` has `project_id, user_id, oldrev, newrev, ref`.
 
-NOTE: **Note:**
 Arguments need to be referenced by their sequence ID using `job.args[<id>]` because `job.args` is a list of all arguments provided to the Sidekiq job.
 
 Here are some examples:

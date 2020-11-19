@@ -581,5 +581,40 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
         )
       end
     end
+
+    context 'when downstream pipeline has workflow rule' do
+      before do
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      let(:config) do
+        <<-EOY
+          workflow:
+            rules:
+              - if: $my_var
+
+          regular-job:
+            script: 'echo Hello, World!'
+        EOY
+      end
+
+      context 'when passing the required variable' do
+        before do
+          bridge.yaml_variables = [{ key: 'my_var', value: 'var', public: true }]
+        end
+
+        it 'creates the pipeline' do
+          expect { service.execute(bridge) }.to change(downstream_project.ci_pipelines, :count).by(1)
+
+          expect(bridge.reload).to be_success
+        end
+      end
+
+      context 'when not passing the required variable' do
+        it 'does not create the pipeline' do
+          expect { service.execute(bridge) }.not_to change(downstream_project.ci_pipelines, :count)
+        end
+      end
+    end
   end
 end

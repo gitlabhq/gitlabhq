@@ -32,6 +32,8 @@ module Gitlab
           instance.milestone_url(object, **options)
         when Note
           note_url(object, **options)
+        when Release
+          instance.release_url(object, **options)
         when Project
           instance.project_url(object, **options)
         when Snippet

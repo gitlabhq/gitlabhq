@@ -29,7 +29,7 @@ module QA
         Flow::Login.sign_in
         add_ci_files
         project.visit!
-        view_the_last_pipeline
+        Flow::Pipeline.visit_latest_pipeline(pipeline_condition: 'success')
       end
 
       after do
@@ -62,12 +62,6 @@ module QA
             ]
           )
         end
-      end
-
-      def view_the_last_pipeline
-        Page::Project::Menu.perform(&:click_ci_cd_pipelines)
-        Page::Project::Pipeline::Index.perform(&:wait_for_latest_pipeline_success)
-        Page::Project::Pipeline::Index.perform(&:click_on_latest_pipeline)
       end
 
       def parent_ci_file

@@ -77,7 +77,7 @@ Prerequisites:
 - A [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `api`.
 
   NOTE: **Note:**
-  [Deploy tokens](./../../project/deploy_tokens/index.md) are
+  [Deploy tokens](../../project/deploy_tokens/index.md) are
   [not yet supported](https://gitlab.com/gitlab-org/gitlab/-/issues/240897) for use with Composer.
 
 To publish the package:
@@ -140,7 +140,7 @@ Prerequisites:
 - A [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to, at minimum, `read_api`.
 
   NOTE: **Note:**
-  [Deploy tokens](./../../project/deploy_tokens/index.md) are
+  [Deploy tokens](../../project/deploy_tokens/index.md) are
   [not yet supported](https://gitlab.com/gitlab-org/gitlab/-/issues/240897) for use with Composer.
 
 To install a package:

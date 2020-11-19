@@ -7,6 +7,8 @@ module API
 
     before { authenticate_non_get! }
 
+    feature_category :subgroups
+
     helpers Helpers::GroupsHelpers
 
     helpers do
@@ -46,7 +48,7 @@ module API
           find_params.fetch(:all_available, current_user&.can_read_all_resources?)
 
         groups = GroupsFinder.new(current_user, find_params).execute
-        groups = groups.search(params[:search]) if params[:search].present?
+        groups = groups.search(params[:search], include_parents: true) if params[:search].present?
         groups = groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
         order_options = { params[:order_by] => params[:sort] }
         order_options["id"] ||= "asc"

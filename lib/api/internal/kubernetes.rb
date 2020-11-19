@@ -4,6 +4,8 @@ module API
   # Kubernetes Internal API
   module Internal
     class Kubernetes < ::API::Base
+      feature_category :kubernetes_management
+
       before do
         check_feature_enabled
         authenticate_gitlab_kas_request!

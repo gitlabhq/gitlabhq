@@ -36,4 +36,12 @@ module NavbarStructureHelper
       new_sub_nav_item_name: _('Container Registry')
     )
   end
+
+  def insert_dependency_proxy_nav(within)
+    insert_after_sub_nav_item(
+      _('Package Registry'),
+      within: _('Packages & Registries'),
+      new_sub_nav_item_name: _('Dependency Proxy')
+    )
+  end
 end

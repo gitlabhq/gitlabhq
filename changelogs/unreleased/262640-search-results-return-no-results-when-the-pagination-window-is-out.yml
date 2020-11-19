@@ -1,0 +1,5 @@
+---
+title: Reset the pagination cursor when a search result filter changes.
+merge_request: 45708
+author:
+type: fixed

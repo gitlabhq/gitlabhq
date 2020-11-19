@@ -12,7 +12,7 @@ RSpec.describe PropagateIntegrationInheritWorker do
     it_behaves_like 'an idempotent worker' do
       let(:job_args) { [integration.id, integration1.id, integration3.id] }
 
-      it 'calls to BulkCreateIntegrationService' do
+      it 'calls to BulkUpdateIntegrationService' do
         expect(BulkUpdateIntegrationService).to receive(:new)
           .with(integration, match_array(integration1)).twice
           .and_return(double(execute: nil))

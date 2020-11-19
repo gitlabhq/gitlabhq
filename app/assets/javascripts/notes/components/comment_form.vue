@@ -3,7 +3,7 @@ import $ from 'jquery';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { isEmpty } from 'lodash';
 import Autosize from 'autosize';
-import { GlAlert, GlIntersperse, GlLink, GlSprintf, GlButton } from '@gitlab/ui';
+import { GlAlert, GlIntersperse, GlLink, GlSprintf, GlButton, GlIcon } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import { deprecatedCreateFlash as Flash } from '../../flash';
@@ -38,6 +38,7 @@ export default {
     GlIntersperse,
     GlLink,
     GlSprintf,
+    GlIcon,
   },
   mixins: [issuableStateMixin],
   props: {
@@ -342,7 +343,7 @@ export default {
     <ul v-else-if="canCreateNote" class="notes notes-form timeline">
       <timeline-entry-item class="note-form">
         <div class="flash-container error-alert timeline-content"></div>
-        <div class="timeline-icon d-none d-sm-none d-md-block">
+        <div class="timeline-icon d-none d-md-block">
           <user-avatar-link
             v-if="author"
             :link-href="author.path"
@@ -457,7 +458,7 @@ export default {
                       class="btn btn-transparent"
                       @click.prevent="setNoteType('comment')"
                     >
-                      <i aria-hidden="true" class="fa fa-check icon"></i>
+                      <gl-icon name="check" class="icon" />
                       <div class="description">
                         <strong>{{ __('Comment') }}</strong>
                         <p>
@@ -476,7 +477,7 @@ export default {
                       data-qa-selector="discussion_menu_item"
                       @click.prevent="setNoteType('discussion')"
                     >
-                      <i aria-hidden="true" class="fa fa-check icon"></i>
+                      <gl-icon name="check" class="icon" />
                       <div class="description">
                         <strong>{{ __('Start thread') }}</strong>
                         <p>{{ startDiscussionDescription }}</p>

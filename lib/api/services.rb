@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 module API
   class Services < ::API::Base
+    feature_category :integrations
+
     services = Helpers::ServicesHelpers.services
     service_classes = Helpers::ServicesHelpers.service_classes
 

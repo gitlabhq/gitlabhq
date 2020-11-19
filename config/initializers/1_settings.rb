@@ -198,7 +198,7 @@ Settings.gitlab.default_projects_features['snippets']           = true if Settin
 Settings.gitlab.default_projects_features['builds']             = true if Settings.gitlab.default_projects_features['builds'].nil?
 Settings.gitlab.default_projects_features['container_registry'] = true if Settings.gitlab.default_projects_features['container_registry'].nil?
 Settings.gitlab.default_projects_features['visibility_level']   = Settings.__send__(:verify_constant, Gitlab::VisibilityLevel, Settings.gitlab.default_projects_features['visibility_level'], Gitlab::VisibilityLevel::PRIVATE)
-Settings.gitlab['domain_whitelist'] ||= []
+Settings.gitlab['domain_allowlist'] ||= []
 Settings.gitlab['import_sources'] ||= Gitlab::ImportSources.values
 Settings.gitlab['trusted_proxies'] ||= []
 Settings.gitlab['content_security_policy'] ||= Gitlab::ContentSecurityPolicy::ConfigLoader.default_settings_hash
@@ -354,25 +354,24 @@ Settings.uploads['object_store']['remote_directory'] ||= 'uploads'
 # Packages
 #
 Settings['packages'] ||= Settingslogic.new({})
-Settings.packages['enabled']      = true if Settings.packages['enabled'].nil?
-Settings.packages['storage_path'] = Settings.absolute(Settings.packages['storage_path'] || File.join(Settings.shared['path'], "packages"))
-Settings.packages['object_store'] = ObjectStoreSettings.legacy_parse(Settings.packages['object_store'])
+Settings.packages['enabled']       = true if Settings.packages['enabled'].nil?
+Settings.packages['dpkg_deb_path'] = '/usr/bin/dpkg-deb' if Settings.packages['dpkg_deb_path'].nil?
+Settings.packages['storage_path']  = Settings.absolute(Settings.packages['storage_path'] || File.join(Settings.shared['path'], "packages"))
+Settings.packages['object_store']  = ObjectStoreSettings.legacy_parse(Settings.packages['object_store'])
 
 #
 # Dependency Proxy
 #
-Gitlab.ee do
-  Settings['dependency_proxy'] ||= Settingslogic.new({})
-  Settings.dependency_proxy['enabled']      = true if Settings.dependency_proxy['enabled'].nil?
-  Settings.dependency_proxy['storage_path'] = Settings.absolute(Settings.dependency_proxy['storage_path'] || File.join(Settings.shared['path'], "dependency_proxy"))
-  Settings.dependency_proxy['object_store'] = ObjectStoreSettings.legacy_parse(Settings.dependency_proxy['object_store'])
+Settings['dependency_proxy'] ||= Settingslogic.new({})
+Settings.dependency_proxy['enabled']      = true if Settings.dependency_proxy['enabled'].nil?
+Settings.dependency_proxy['storage_path'] = Settings.absolute(Settings.dependency_proxy['storage_path'] || File.join(Settings.shared['path'], "dependency_proxy"))
+Settings.dependency_proxy['object_store'] = ObjectStoreSettings.legacy_parse(Settings.dependency_proxy['object_store'])
 
-  # For first iteration dependency proxy uses Rails server to download blobs.
-  # To ensure acceptable performance we only allow feature to be used with
-  # multithreaded web-server Puma. This will be removed once download logic is moved
-  # to GitLab workhorse
-  Settings.dependency_proxy['enabled'] = false unless Gitlab::Runtime.puma?
-end
+# For first iteration dependency proxy uses Rails server to download blobs.
+# To ensure acceptable performance we only allow feature to be used with
+# multithreaded web-server Puma. This will be removed once download logic is moved
+# to GitLab workhorse
+Settings.dependency_proxy['enabled'] = false unless Gitlab::Runtime.puma?
 
 #
 # Terraform state
@@ -414,7 +413,7 @@ Settings.cron_jobs['pipeline_schedule_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['pipeline_schedule_worker']['cron'] ||= '19 * * * *'
 Settings.cron_jobs['pipeline_schedule_worker']['job_class'] = 'PipelineScheduleWorker'
 Settings.cron_jobs['expire_build_artifacts_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['expire_build_artifacts_worker']['cron'] ||= '50 * * * *'
+Settings.cron_jobs['expire_build_artifacts_worker']['cron'] ||= '*/7 * * * *'
 Settings.cron_jobs['expire_build_artifacts_worker']['job_class'] = 'ExpireBuildArtifactsWorker'
 Settings.cron_jobs['ci_schedule_delete_objects_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['ci_schedule_delete_objects_worker']['cron'] ||= '*/16 * * * *'
@@ -530,6 +529,9 @@ Settings.cron_jobs['analytics_instance_statistics_count_job_trigger_worker']['jo
 Settings.cron_jobs['member_invitation_reminder_emails_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['member_invitation_reminder_emails_worker']['cron'] ||= '0 0 * * *'
 Settings.cron_jobs['member_invitation_reminder_emails_worker']['job_class'] = 'MemberInvitationReminderEmailsWorker'
+Settings.cron_jobs['schedule_merge_request_cleanup_refs_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['schedule_merge_request_cleanup_refs_worker']['cron'] ||= '* * * * *'
+Settings.cron_jobs['schedule_merge_request_cleanup_refs_worker']['job_class'] = 'ScheduleMergeRequestCleanupRefsWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['active_user_count_threshold_worker'] ||= Settingslogic.new({})
@@ -604,6 +606,9 @@ Gitlab.ee do
   Settings.cron_jobs['elastic_remove_expired_namespace_subscriptions_from_index_cron_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['elastic_remove_expired_namespace_subscriptions_from_index_cron_worker']['cron'] ||= '10 3 * * *'
   Settings.cron_jobs['elastic_remove_expired_namespace_subscriptions_from_index_cron_worker']['job_class'] ||= 'ElasticRemoveExpiredNamespaceSubscriptionsFromIndexCronWorker'
+  Settings.cron_jobs['elastic_migration_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['elastic_migration_worker']['cron'] ||= '*/30 * * * *'
+  Settings.cron_jobs['elastic_migration_worker']['job_class'] ||= 'Elastic::MigrationWorker'
   Settings.cron_jobs['sync_seat_link_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['sync_seat_link_worker']['cron'] ||= "#{rand(60)} 0 * * *"
   Settings.cron_jobs['sync_seat_link_worker']['job_class'] = 'SyncSeatLinkWorker'

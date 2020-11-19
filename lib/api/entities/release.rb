@@ -30,8 +30,6 @@ module API
       expose :evidences, using: Entities::Releases::Evidence, expose_nil: false, if: ->(_, _) { can_download_code? }
       expose :_links do
         expose :self_url, as: :self, expose_nil: false
-        expose :merge_requests_url, expose_nil: false
-        expose :issues_url, expose_nil: false
         expose :edit_url, expose_nil: false
       end
 

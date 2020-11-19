@@ -9,7 +9,6 @@ module Gitlab
 
           def initialize(dates)
             @dates = dates.dup
-            @dates.flatten!
             @dates.compact!
             @dates.sort!
             @dates.map! { |date| date.to_time.to_f }

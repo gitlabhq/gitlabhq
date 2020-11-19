@@ -442,12 +442,6 @@ describe('feature flag form', () => {
       });
     });
 
-    it('should request the user lists on mount', () => {
-      return wrapper.vm.$nextTick(() => {
-        expect(Api.fetchFeatureFlagUserLists).toHaveBeenCalledWith('1');
-      });
-    });
-
     it('should show the strategy component', () => {
       const strategy = wrapper.find(Strategy);
       expect(strategy.exists()).toBe(true);
@@ -484,10 +478,6 @@ describe('feature flag form', () => {
         expect(wrapper.findAll(Strategy)).toHaveLength(1);
         expect(wrapper.find(Strategy).props('strategy')).not.toEqual(strategy);
       });
-    });
-
-    it('should provide the user lists to the strategy', () => {
-      expect(wrapper.find(Strategy).props('userLists')).toEqual([userList]);
     });
   });
 });

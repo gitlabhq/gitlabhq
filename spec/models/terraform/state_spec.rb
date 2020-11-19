@@ -97,10 +97,11 @@ RSpec.describe Terraform::State do
   end
 
   describe '#update_file!' do
-    let(:version) { 3 }
-    let(:data) { Hash[terraform_version: '0.12.21'].to_json }
+    let_it_be(:build) { create(:ci_build) }
+    let_it_be(:version) { 3 }
+    let_it_be(:data) { Hash[terraform_version: '0.12.21'].to_json }
 
-    subject { terraform_state.update_file!(CarrierWaveStringFile.new(data), version: version) }
+    subject { terraform_state.update_file!(CarrierWaveStringFile.new(data), version: version, build: build) }
 
     context 'versioning is enabled' do
       let(:terraform_state) { create(:terraform_state) }
@@ -109,6 +110,7 @@ RSpec.describe Terraform::State do
         expect { subject }.to change { Terraform::StateVersion.count }
 
         expect(terraform_state.latest_version.version).to eq(version)
+        expect(terraform_state.latest_version.build).to eq(build)
         expect(terraform_state.latest_version.file.read).to eq(data)
       end
     end

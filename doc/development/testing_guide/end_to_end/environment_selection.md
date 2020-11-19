@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Environment selection
 
 Some tests are designed to be run against specific environments or [pipelines](https://about.gitlab.com/handbook/engineering/quality/guidelines/debugging-qa-test-failures/#scheduled-qa-test-pipelines).
@@ -42,14 +48,13 @@ RSpec.describe 'Area' do
   it 'runs in dev environment', only: { tld: '.org', domain: 'gitlab', subdomain: 'dev' } do; end
 
   it 'runs in prod and staging environments', only: { subdomain: /(staging.)?/, domain: 'gitlab' } {}
-  
+
   it 'runs only in nightly pipeline', only: { pipeline: :nightly } do; end
-  
+
   it 'runs in nightly and canary pipelines', only: { pipeline: [:nightly, :canary] } do; end
 end
 ```
 
-NOTE: **Note:**
 If the test has a `before` or `after`, you must add the `only` metadata
 to the outer `RSpec.describe`.
 

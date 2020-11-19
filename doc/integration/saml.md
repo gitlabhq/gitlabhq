@@ -369,18 +369,18 @@ omniauth:
   auto_sign_in_with_provider: saml
 ```
 
-Please keep in mind that every sign in attempt will be redirected to the SAML server,
-so you will not be able to sign in using local credentials. Make sure that at least one
-of the SAML users has admin permissions.
+Keep in mind that every sign in attempt will be redirected to the SAML server;
+you won't be able to sign in using local credentials. Ensure at least one of the
+SAML users has admin permissions.
 
-You may also bypass the auto signin feature by browsing to
+You may also bypass the auto sign-in feature by browsing to
 `https://gitlab.example.com/users/sign_in?auto_sign_in=false`.
 
 ### `attribute_statements`
 
 NOTE: **Note:**
-This setting should only be used to map attributes that are part of the
-OmniAuth `info` hash schema.
+This setting should be used only to map attributes that are part of the OmniAuth
+`info` hash schema.
 
 `attribute_statements` is used to map Attribute Names in a SAMLResponse to entries
 in the OmniAuth [`info` hash](https://github.com/omniauth/omniauth/wiki/Auth-Hash-Schema#schema-10-and-later).
@@ -541,9 +541,14 @@ This integration uses the `certificate` and `private_key` settings for both asse
 
 ## Request signing (optional)
 
-Another optional configuration is to sign SAML authentication requests. GitLab SAML Requests uses the SAML redirect binding so this is not necessary, unlike the SAML POST binding where signing is required to prevent intermediaries tampering with the requests.
+Another optional configuration is to sign SAML authentication requests. GitLab
+SAML Requests use the SAML redirect binding, so this isn't necessary (unlike the
+SAML POST binding, where signing is required to prevent intermediaries from
+tampering with the requests).
 
-In order to sign, you need to create a private key and public certificate pair for your GitLab instance to use for SAML. The settings related to signing can be set in the `security` section of the configuration.
+To sign, you need to create a private key and public certificate pair for your
+GitLab instance to use for SAML. The settings for signing can be set in the
+`security` section of the configuration.
 
 For example:
 
@@ -636,7 +641,9 @@ Group SAML on a self-managed instance is limited when compared to the recommende
 
 ## Troubleshooting
 
-You can find the base64-encoded SAML Response in the [`production_json.log`](../administration/logs.md#production_jsonlog).
+### SAML Response
+
+You can find the base64-encoded SAML Response in the [`production_json.log`](../administration/logs.md#production_jsonlog). This response is sent from the IdP, and contains user information that is consumed by GitLab. Many errors in the SAML integration can be solved by decoding this response and comparing it to the SAML settings in the GitLab configuration file.
 
 ### GitLab+SAML Testing Environments
 
@@ -646,13 +653,14 @@ If you only need a SAML provider for testing, a [quick start guide to start a Do
 
 ### 500 error after login
 
-If you see a "500 error" in GitLab when you are redirected back from the SAML sign in page,
-this likely indicates that GitLab could not get the email address for the SAML user.
+If you see a "500 error" in GitLab when you are redirected back from the SAML
+sign-in page, this likely indicates that GitLab couldn't get the email address
+for the SAML user.
 
-Make sure the IdP provides a claim containing the user's email address, using claim name
-`email` or `mail`.
+Ensure the IdP provides a claim containing the user's email address, using the
+claim name `email` or `mail`.
 
-### Redirect back to login screen with no evident error
+### Redirect back to the login screen with no evident error
 
 If after signing in into your SAML server you are redirected back to the sign in page and
 no error is displayed, check your `production.log` file. It will most likely contain the
@@ -682,7 +690,7 @@ This error means that the IdP doesn't recognize GitLab as a valid sender and
 receiver of SAML requests. Make sure to add the GitLab callback URL to the approved
 audiences of the IdP server.
 
-### Missing claims
+### Missing claims, or `Email can't be blank` errors
 
 The IdP server needs to pass certain information in order for GitLab to either
 create an account, or match the login information to an existing account. `email`
@@ -710,3 +718,10 @@ For this you need take the following into account:
 
 Make sure that one of the above described scenarios is valid, or the requests will
 fail with one of the mentioned errors.
+
+### User is blocked when signing in through SAML
+
+The following are the most likely reasons that a user is blocked when signing in through SAML:
+
+- In the configuration, `gitlab_rails['omniauth_block_auto_created_users'] = true` is set and this is the user's first time signing in.
+- There are [`required_groups`](#required-groups) configured, but the user is not a member of one.

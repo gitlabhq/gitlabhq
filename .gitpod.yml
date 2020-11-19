@@ -7,15 +7,14 @@ tasks:
 
   - init: |
       echo "$(date) – Copying GDK" | tee -a /workspace/startup.log
+      rm -r /workspace/.rvm
       mv $HOME/.rvm-workspace /workspace/.rvm
       cp -r $HOME/gitlab-development-kit /workspace/
       (
         set -e
         cd /workspace/gitlab-development-kit
         [[ ! -L /workspace/gitlab-development-kit/gitlab ]] && ln -fs /workspace/gitlab /workspace/gitlab-development-kit/gitlab
-        # make webpack static, prevents that GitLab tries to connect to localhost webpack from browser outside the workspace
-        echo "webpack:" >> gdk.yml
-        echo "  static: true" >> gdk.yml
+        mv /workspace/gitlab-development-kit/secrets.yml /workspace/gitlab-development-kit/gitlab/config
         # reconfigure GDK
         echo "$(date) – Reconfiguring GDK" | tee -a /workspace/startup.log
         gdk reconfigure
@@ -41,20 +40,16 @@ tasks:
         fi
         # start GDK
         echo "$(date) – Starting GDK" | tee -a /workspace/startup.log
+        export DEV_SERVER_PUBLIC_ADDR=$(gp url 3808)
         export RAILS_HOSTS=$(gp url 3000 | sed -e 's+^http[s]*://++')
         gdk start
         # Run DB migrations
         if [ "$GITLAB_RUN_DB_MIGRATIONS" == true ]; then
           make gitlab-db-migrate
         fi
-        # Fix DB key
-        if [ "$GITLAB_FIX_DB_KEY" = true ]; then
-          echo "$(date) – Fixing DB key" | tee -a /workspace/startup.log
-          cd gitlab
-          # see https://gitlab.com/gitlab-org/gitlab-foss/-/issues/56403#note_132515069
-          printf 'ApplicationSetting.last.update_column(:runners_registration_token_encrypted, nil)\nexit\n' | bundle exec rails c
-          cd -
-        fi
+        cd ../gitlab
+        git checkout db/structure.sql
+        cd ../gitlab-development-kit
         # Waiting for GitLab ...
         gp await-port 3000
         printf "Waiting for GitLab at $(gp url 3000) ..."

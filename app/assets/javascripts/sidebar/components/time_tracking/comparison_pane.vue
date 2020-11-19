@@ -70,14 +70,19 @@ export default {
 </script>
 
 <template>
-  <div class="time-tracking-comparison-pane">
+  <div data-testid="timeTrackingComparisonPane">
     <div
       v-gl-tooltip
+      data-testid="compareMeter"
       :title="timeRemainingTooltip"
       :class="timeRemainingStatusClass"
       class="compare-meter"
     >
-      <gl-progress-bar :value="timeRemainingPercent" :variant="progressBarVariant" />
+      <gl-progress-bar
+        data-testid="timeRemainingProgress"
+        :value="timeRemainingPercent"
+        :variant="progressBarVariant"
+      />
       <div class="compare-display-container">
         <div class="compare-display float-left">
           <span class="compare-label">{{ s__('TimeTracking|Spent') }}</span>

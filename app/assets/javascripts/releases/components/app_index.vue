@@ -6,6 +6,7 @@ import { __ } from '~/locale';
 import ReleaseBlock from './release_block.vue';
 import ReleasesPagination from './releases_pagination.vue';
 import ReleaseSkeletonLoader from './release_skeleton_loader.vue';
+import ReleasesSort from './releases_sort.vue';
 
 export default {
   name: 'ReleasesApp',
@@ -16,6 +17,7 @@ export default {
     ReleaseBlock,
     ReleasesPagination,
     ReleaseSkeletonLoader,
+    ReleasesSort,
   },
   computed: {
     ...mapState('list', [
@@ -62,16 +64,20 @@ export default {
 </script>
 <template>
   <div class="flex flex-column mt-2">
-    <gl-button
-      v-if="newReleasePath"
-      :href="newReleasePath"
-      :aria-describedby="shouldRenderEmptyState && 'releases-description'"
-      category="primary"
-      variant="success"
-      class="align-self-end mb-2 js-new-release-btn"
-    >
-      {{ __('New release') }}
-    </gl-button>
+    <div class="gl-align-self-end gl-mb-3">
+      <releases-sort class="gl-mr-2" @sort:changed="fetchReleases" />
+
+      <gl-button
+        v-if="newReleasePath"
+        :href="newReleasePath"
+        :aria-describedby="shouldRenderEmptyState && 'releases-description'"
+        category="primary"
+        variant="success"
+        class="js-new-release-btn"
+      >
+        {{ __('New release') }}
+      </gl-button>
+    </div>
 
     <release-skeleton-loader v-if="isLoading" class="js-loading" />
 

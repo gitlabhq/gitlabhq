@@ -29,9 +29,7 @@ class PostReceiveService
       response.add_alert_message(message)
     end
 
-    broadcast_message = BroadcastMessage.current_banner_messages&.last&.message
     response.add_alert_message(broadcast_message)
-
     response.add_merge_request_urls(merge_request_urls)
 
     # Neither User nor Project are guaranteed to be returned; an orphaned write deploy
@@ -73,6 +71,24 @@ class PostReceiveService
     return [] unless repository&.repo_type&.project?
 
     ::MergeRequests::GetUrlsService.new(project).execute(params[:changes])
+  end
+
+  private
+
+  def broadcast_message
+    banner = nil
+
+    if project
+      scoped_messages = BroadcastMessage.current_banner_messages(project.full_path).select do |message|
+        message.target_path.present? && message.matches_current_path(project.full_path)
+      end
+
+      banner = scoped_messages.last
+    end
+
+    banner ||= BroadcastMessage.current_banner_messages.last
+
+    banner&.message
   end
 end
 

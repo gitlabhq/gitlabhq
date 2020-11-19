@@ -54,7 +54,7 @@ class Projects::ReleasesController < Projects::ApplicationController
   end
 
   def sanitized_filepath
-    CGI.unescape(params[:filepath])
+    "/#{CGI.unescape(params[:filepath])}"
   end
 
   def sanitized_tag_name

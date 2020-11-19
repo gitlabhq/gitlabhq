@@ -15,7 +15,7 @@ module ImportExport
       export_path = [prefix, 'spec', 'fixtures', 'lib', 'gitlab', 'import_export', name].compact
       export_path = File.join(*export_path)
 
-      allow_any_instance_of(Gitlab::ImportExport).to receive(:export_path) { export_path }
+      allow(Gitlab::ImportExport).to receive(:export_path) { export_path }
     end
 
     def setup_reader(reader)

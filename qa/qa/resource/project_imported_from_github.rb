@@ -6,6 +6,7 @@ module QA
   module Resource
     class ProjectImportedFromGithub < Resource::Project
       def fabricate!
+        self.import = true
         super
 
         group.visit!

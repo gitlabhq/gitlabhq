@@ -2,6 +2,7 @@
 name: feature_flag_permissions
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/10096
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/254981
-group: group::progressive delivery
+milestone: '11.10'
 type: development
+group: group::progressive delivery
 default_enabled: false

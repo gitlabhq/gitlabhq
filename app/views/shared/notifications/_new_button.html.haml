@@ -1,4 +1,5 @@
 - btn_class = local_assigns.fetch(:btn_class, '')
+- dropdown_container_class = local_assigns.fetch(:dropdown_container_class, '')
 - emails_disabled = local_assigns.fetch(:emails_disabled, false)
 
 - if notification_setting
@@ -8,8 +9,8 @@
   - else
     - button_title = _("Notification setting - %{notification_title}") % { notification_title: notification_title(notification_setting.level) }
 
-  .js-notification-dropdown.notification-dropdown.home-panel-action-button.gl-mt-3.gl-mr-3.dropdown.inline
-    = form_for notification_setting, remote: true, html: { class: "inline notification-form no-label" } do |f|
+  .js-notification-dropdown.notification-dropdown.home-panel-action-button.gl-mt-3.dropdown.inline{ class: dropdown_container_class }
+    = form_for notification_setting, remote: true, html: { class: "notification-form no-label" } do |f|
       = hidden_setting_source_input(notification_setting)
       = hidden_field_tag "hide_label", true
       = f.hidden_field :level, class: "notification_setting_level"

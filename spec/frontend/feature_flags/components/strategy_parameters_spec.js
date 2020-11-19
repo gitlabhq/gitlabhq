@@ -11,11 +11,10 @@ import GitlabUserList from '~/feature_flags/components/strategies/gitlab_user_li
 import PercentRollout from '~/feature_flags/components/strategies/percent_rollout.vue';
 import UsersWithId from '~/feature_flags/components/strategies/users_with_id.vue';
 import StrategyParameters from '~/feature_flags/components/strategy_parameters.vue';
-import { allUsersStrategy, userList } from '../mock_data';
+import { allUsersStrategy } from '../mock_data';
 
 const DEFAULT_PROPS = {
   strategy: allUsersStrategy,
-  userLists: [userList],
 };
 
 describe('~/feature_flags/components/strategy_parameters.vue', () => {
@@ -71,13 +70,14 @@ describe('~/feature_flags/components/strategy_parameters.vue', () => {
 
   describe('pass through props', () => {
     it('should pass through any extra props that might be needed', () => {
+      const strategy = {
+        name: ROLLOUT_STRATEGY_USER_ID,
+      };
       wrapper = factory({
-        strategy: {
-          name: ROLLOUT_STRATEGY_GITLAB_USER_LIST,
-        },
+        strategy,
       });
 
-      expect(wrapper.find(GitlabUserList).props('userLists')).toEqual([userList]);
+      expect(wrapper.find(UsersWithId).props('strategy')).toEqual(strategy);
     });
   });
 });

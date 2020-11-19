@@ -1,0 +1,5 @@
+---
+title: Add message in CI linter that it was validated with all the includes
+merge_request: 46713
+author:
+type: changed

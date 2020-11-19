@@ -166,4 +166,32 @@ RSpec.describe ApplicationSettingsHelper do
       it { is_expected.to eq(false) }
     end
   end
+
+  describe '.signup_enabled?' do
+    subject { helper.signup_enabled? }
+
+    context 'when signup is enabled' do
+      before do
+        stub_application_setting(signup_enabled: true)
+      end
+
+      it { is_expected.to be true }
+    end
+
+    context 'when signup is disabled' do
+      before do
+        stub_application_setting(signup_enabled: false)
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when `signup_enabled` is nil' do
+      before do
+        stub_application_setting(signup_enabled: nil)
+      end
+
+      it { is_expected.to be false }
+    end
+  end
 end

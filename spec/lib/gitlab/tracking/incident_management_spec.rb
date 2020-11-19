@@ -62,7 +62,7 @@ RSpec.describe Gitlab::Tracking::IncidentManagement do
       context 'param without label' do
         let(:params) { { create_issue: '1' } }
 
-        it_behaves_like 'a tracked event', "enabled_issue_auto_creation_on_alerts", {}
+        it_behaves_like 'a tracked event', "enabled_issue_auto_creation_on_alerts"
       end
     end
 

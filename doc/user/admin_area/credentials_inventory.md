@@ -40,10 +40,13 @@ If you see a **Revoke** button, you can revoke that user's PAT. Whether you see 
 | Revoked     | Yes                    | No                 | Not applicable; token is already revoked                                   |
 | Revoked     | No                     | No                 | Not applicable; token is already revoked                                   |
 
+When a PAT is revoked from the credentials inventory, the instance notifies the user by email.
+
 ## Delete a user's SSH key
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225248) in GitLab 13.5.
 
 You can **Delete** a user's SSH key by navigating to the credentials inventory's SSH Keys tab.
+The instance then notifies the user.
 
 ![Credentials inventory page - SSH keys](img/credentials_inventory_ssh_keys_v13_5.png)

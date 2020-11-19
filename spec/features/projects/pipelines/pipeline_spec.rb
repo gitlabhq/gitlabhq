@@ -14,6 +14,7 @@ RSpec.describe 'Pipeline', :js do
   before do
     sign_in(user)
     project.add_role(user, role)
+    stub_feature_flags(graphql_pipeline_details: false)
   end
 
   shared_context 'pipeline builds' do
@@ -345,7 +346,7 @@ RSpec.describe 'Pipeline', :js do
       it 'shows Pipeline, Jobs, DAG and Failed Jobs tabs with link' do
         expect(page).to have_link('Pipeline')
         expect(page).to have_link('Jobs')
-        expect(page).to have_link('DAG')
+        expect(page).to have_link('Needs')
         expect(page).to have_link('Failed Jobs')
       end
 
@@ -892,7 +893,7 @@ RSpec.describe 'Pipeline', :js do
       it 'shows Pipeline, Jobs and DAG tabs with link' do
         expect(page).to have_link('Pipeline')
         expect(page).to have_link('Jobs')
-        expect(page).to have_link('DAG')
+        expect(page).to have_link('Needs')
       end
 
       it 'shows counter in Jobs tab' do

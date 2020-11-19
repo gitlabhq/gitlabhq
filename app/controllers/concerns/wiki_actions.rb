@@ -103,9 +103,10 @@ module WikiActions
     @page = response.payload[:page]
 
     if response.success?
+      flash[:toast] = _('Wiki page was successfully updated.')
+
       redirect_to(
-        wiki_page_path(wiki, page),
-        notice: _('Wiki was successfully updated.')
+        wiki_page_path(wiki, page)
       )
     else
       render 'shared/wikis/edit'
@@ -122,9 +123,10 @@ module WikiActions
     @page = response.payload[:page]
 
     if response.success?
+      flash[:toast] = _('Wiki page was successfully created.')
+
       redirect_to(
-        wiki_page_path(wiki, page),
-        notice: _('Wiki was successfully updated.')
+        wiki_page_path(wiki, page)
       )
     else
       render 'shared/wikis/edit'
@@ -169,9 +171,10 @@ module WikiActions
     response = WikiPages::DestroyService.new(container: container, current_user: current_user).execute(page)
 
     if response.success?
+      flash[:toast] = _("Wiki page was successfully deleted.")
+
       redirect_to wiki_path(wiki),
-      status: :found,
-      notice: _("Page was successfully deleted")
+      status: :found
     else
       @error = response
       render 'shared/wikis/edit'

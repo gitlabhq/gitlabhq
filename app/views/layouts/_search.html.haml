@@ -6,14 +6,13 @@
           = search_field_tag 'search', nil, placeholder: _('Search or jump to…'),
                                             class: 'search-input dropdown-menu-toggle no-outline js-search-dashboard-options',
                                             spellcheck: false,
-                                            tabindex: '1',
                                             autocomplete: 'off',
                                             data: { issues_path: issues_dashboard_path,
                                               mr_path: merge_requests_dashboard_path,
                                               qa_selector: 'search_term_field' },
                                             aria: { label: _('Search or jump to…') }
           %button.hidden.js-dropdown-search-toggle{ type: 'button', data: { toggle: 'dropdown' } }
-          .dropdown-menu.dropdown-select.js-dashboard-search-options
+          .dropdown-menu.dropdown-select{ data: { testid: 'dashboard-search-options' } }
             = dropdown_content do
               %ul
                 %li.dropdown-menu-empty-item

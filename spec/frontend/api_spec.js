@@ -118,6 +118,24 @@ describe('Api', () => {
     });
   });
 
+  describe('container registry', () => {
+    describe('containerRegistryDetails', () => {
+      it('fetch container registry  details', async () => {
+        const expectedUrl = `foo`;
+        const apiResponse = {};
+
+        jest.spyOn(axios, 'get');
+        jest.spyOn(Api, 'buildUrl').mockReturnValueOnce(expectedUrl);
+        mock.onGet(expectedUrl).replyOnce(httpStatus.OK, apiResponse);
+
+        const { data } = await Api.containerRegistryDetails(1);
+
+        expect(data).toEqual(apiResponse);
+        expect(axios.get).toHaveBeenCalledWith(expectedUrl, {});
+      });
+    });
+  });
+
   describe('group', () => {
     it('fetches a group', done => {
       const groupId = '123456';
@@ -535,19 +553,63 @@ describe('Api', () => {
   });
 
   describe('issueTemplate', () => {
+    const namespace = 'some namespace';
+    const project = 'some project';
+    const templateKey = ' template #%?.key ';
+    const templateType = 'template type';
+    const expectedUrl = `${dummyUrlRoot}/${namespace}/${project}/templates/${templateType}/${encodeURIComponent(
+      templateKey,
+    )}`;
+
     it('fetches an issue template', done => {
-      const namespace = 'some namespace';
-      const project = 'some project';
-      const templateKey = ' template #%?.key ';
-      const templateType = 'template type';
-      const expectedUrl = `${dummyUrlRoot}/${namespace}/${project}/templates/${templateType}/${encodeURIComponent(
-        templateKey,
-      )}`;
       mock.onGet(expectedUrl).reply(httpStatus.OK, 'test');
 
       Api.issueTemplate(namespace, project, templateKey, templateType, (error, response) => {
         expect(response).toBe('test');
         done();
+      });
+    });
+
+    describe('when an error occurs while fetching an issue template', () => {
+      it('rejects the Promise', () => {
+        mock.onGet(expectedUrl).replyOnce(httpStatus.INTERNAL_SERVER_ERROR);
+
+        Api.issueTemplate(namespace, project, templateKey, templateType, () => {
+          expect(mock.history.get).toHaveLength(1);
+        });
+      });
+    });
+  });
+
+  describe('issueTemplates', () => {
+    const namespace = 'some namespace';
+    const project = 'some project';
+    const templateType = 'template type';
+    const expectedUrl = `${dummyUrlRoot}/${namespace}/${project}/templates/${templateType}`;
+
+    it('fetches all templates by type', done => {
+      const expectedData = [
+        { key: 'Template1', name: 'Template 1', content: 'This is template 1!' },
+      ];
+      mock.onGet(expectedUrl).reply(httpStatus.OK, expectedData);
+
+      Api.issueTemplates(namespace, project, templateType, (error, response) => {
+        expect(response.length).toBe(1);
+        const { key, name, content } = response[0];
+        expect(key).toBe('Template1');
+        expect(name).toBe('Template 1');
+        expect(content).toBe('This is template 1!');
+        done();
+      });
+    });
+
+    describe('when an error occurs while fetching issue templates', () => {
+      it('rejects the Promise', () => {
+        mock.onGet(expectedUrl).replyOnce(httpStatus.INTERNAL_SERVER_ERROR);
+
+        Api.issueTemplates(namespace, project, templateType, () => {
+          expect(mock.history.get).toHaveLength(1);
+        });
       });
     });
   });
@@ -692,24 +754,23 @@ describe('Api', () => {
   });
 
   describe('pipelineJobs', () => {
-    it('fetches the jobs for a given pipeline', done => {
-      const projectId = 123;
-      const pipelineId = 456;
-      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/pipelines/${pipelineId}/jobs`;
-      const payload = [
-        {
-          name: 'test',
-        },
-      ];
-      mock.onGet(expectedUrl).reply(httpStatus.OK, payload);
+    it.each([undefined, {}, { foo: true }])(
+      'fetches the jobs for a given pipeline given %p params',
+      async params => {
+        const projectId = 123;
+        const pipelineId = 456;
+        const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/pipelines/${pipelineId}/jobs`;
+        const payload = [
+          {
+            name: 'test',
+          },
+        ];
+        mock.onGet(expectedUrl, { params }).reply(httpStatus.OK, payload);
 
-      Api.pipelineJobs(projectId, pipelineId)
-        .then(({ data }) => {
-          expect(data).toEqual(payload);
-        })
-        .then(done)
-        .catch(done.fail);
-    });
+        const { data } = await Api.pipelineJobs(projectId, pipelineId, params);
+        expect(data).toEqual(payload);
+      },
+    );
   });
 
   describe('createBranch', () => {
@@ -1228,6 +1289,93 @@ describe('Api', () => {
         return Api.trackRedisHllUserEvent(event).then(({ data }) => {
           expect(data).toEqual(true);
           expect(axios.post).toHaveBeenCalledWith(expectedUrl, postData, { headers });
+        });
+      });
+    });
+  });
+
+  describe('Feature Flag User List', () => {
+    let expectedUrl;
+    let projectId;
+    let mockUserList;
+
+    beforeEach(() => {
+      projectId = 1000;
+      expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/feature_flags_user_lists`;
+      mockUserList = {
+        name: 'mock_user_list',
+        user_xids: '1,2,3,4',
+        project_id: 1,
+        id: 1,
+        iid: 1,
+      };
+    });
+
+    describe('fetchFeatureFlagUserLists', () => {
+      it('GETs the right url', () => {
+        mock.onGet(expectedUrl).replyOnce(httpStatus.OK, []);
+
+        return Api.fetchFeatureFlagUserLists(projectId).then(({ data }) => {
+          expect(data).toEqual([]);
+        });
+      });
+    });
+
+    describe('searchFeatureFlagUserLists', () => {
+      it('GETs the right url', () => {
+        mock.onGet(expectedUrl, { params: { search: 'test' } }).replyOnce(httpStatus.OK, []);
+
+        return Api.searchFeatureFlagUserLists(projectId, 'test').then(({ data }) => {
+          expect(data).toEqual([]);
+        });
+      });
+    });
+
+    describe('createFeatureFlagUserList', () => {
+      it('POSTs data to the right url', () => {
+        const mockUserListData = {
+          name: 'mock_user_list',
+          user_xids: '1,2,3,4',
+        };
+        mock.onPost(expectedUrl, mockUserListData).replyOnce(httpStatus.OK, mockUserList);
+
+        return Api.createFeatureFlagUserList(projectId, mockUserListData).then(({ data }) => {
+          expect(data).toEqual(mockUserList);
+        });
+      });
+    });
+
+    describe('fetchFeatureFlagUserList', () => {
+      it('GETs the right url', () => {
+        mock.onGet(`${expectedUrl}/1`).replyOnce(httpStatus.OK, mockUserList);
+
+        return Api.fetchFeatureFlagUserList(projectId, 1).then(({ data }) => {
+          expect(data).toEqual(mockUserList);
+        });
+      });
+    });
+
+    describe('updateFeatureFlagUserList', () => {
+      it('PUTs the right url', () => {
+        mock
+          .onPut(`${expectedUrl}/1`)
+          .replyOnce(httpStatus.OK, { ...mockUserList, user_xids: '5' });
+
+        return Api.updateFeatureFlagUserList(projectId, {
+          ...mockUserList,
+          user_xids: '5',
+        }).then(({ data }) => {
+          expect(data).toEqual({ ...mockUserList, user_xids: '5' });
+        });
+      });
+    });
+
+    describe('deleteFeatureFlagUserList', () => {
+      it('DELETEs the right url', () => {
+        mock.onDelete(`${expectedUrl}/1`).replyOnce(httpStatus.OK, 'deleted');
+
+        return Api.deleteFeatureFlagUserList(projectId, 1).then(({ data }) => {
+          expect(data).toBe('deleted');
         });
       });
     });

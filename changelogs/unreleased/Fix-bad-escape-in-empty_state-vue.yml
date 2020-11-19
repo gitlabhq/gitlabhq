@@ -1,0 +1,5 @@
+---
+title: Fix Bad Escape in Issue Board Empty State
+merge_request: 45465
+author: Kev @KevSlashNull
+type: fixed

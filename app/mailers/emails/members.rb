@@ -51,34 +51,20 @@ module Emails
 
       return unless member_exists?
 
-      subject_line = subject("Invitation to join the #{member_source.human_name} #{member_source.model_name.singular}")
-
-      if member.invite_to_unknown_user? && Feature.enabled?(:invite_email_experiment)
-        subject_line = subject("#{member.created_by.name} invited you to join GitLab") if member.created_by
-        @invite_url_params = { new_user_invite: 'experiment' }
-
-        member_email_with_layout(
-          to: member.invite_email,
-          subject: subject_line,
-          template: 'member_invited_email_experiment',
-          layout: 'experiment_mailer'
-        )
-
-        Gitlab::Tracking.event(Gitlab::Experimentation::EXPERIMENTS[:invite_email][:tracking_category], 'sent', property: 'experiment_group')
-      else
-        @invite_url_params = member.invite_to_unknown_user? ? { new_user_invite: 'control' } : {}
-
-        member_email_with_layout(
-          to: member.invite_email,
-          subject: subject_line
-        )
-
-        if member.invite_to_unknown_user?
-          Gitlab::Tracking.event(Gitlab::Experimentation::EXPERIMENTS[:invite_email][:tracking_category], 'sent', property: 'control_group')
+      subject_line =
+        if member.created_by
+          subject(s_("MemberInviteEmail|%{member_name} invited you to join GitLab") % { member_name: member.created_by.name })
+        else
+          subject(s_("MemberInviteEmail|Invitation to join the %{project_or_group} %{project_or_group_name}") % { project_or_group: member_source.human_name, project_or_group_name: member_source.model_name.singular })
         end
-      end
 
-      if member.invite_to_unknown_user? && Gitlab::Experimentation.enabled?(:invitation_reminders)
+      member_email_with_layout(
+        to: member.invite_email,
+        subject: subject_line,
+        layout: 'unknown_user_mailer'
+      )
+
+      if Gitlab::Experimentation.enabled?(:invitation_reminders)
         Gitlab::Tracking.event(
           Gitlab::Experimentation.experiment(:invitation_reminders).tracking_category,
           'sent',
@@ -105,7 +91,7 @@ module Emails
       subject_line = subjects[reminder_index] % { inviter: member.created_by.name }
 
       member_email_with_layout(
-        layout: 'experiment_mailer',
+        layout: 'unknown_user_mailer',
         to: member.invite_email,
         subject: subject(subject_line)
       )
@@ -162,15 +148,10 @@ module Emails
       @member_source_type.classify.constantize
     end
 
-    def member_email_with_layout(to:, subject:, template: nil, layout: 'mailer')
+    def member_email_with_layout(to:, subject:, layout: 'mailer')
       mail(to: to, subject: subject) do |format|
-        if template
-          format.html { render template, layout: layout }
-          format.text { render template, layout: layout }
-        else
-          format.html { render layout: layout }
-          format.text { render layout: layout }
-        end
+        format.html { render layout: layout }
+        format.text { render layout: layout }
       end
     end
   end

@@ -73,7 +73,7 @@ describe('Embed Group', () => {
       metricsWithDataGetter.mockReturnValue([1]);
       mountComponent({ shallow: false, stubs: { MetricEmbed: true } });
 
-      expect(wrapper.find('.card-body').classes()).not.toContain('d-none');
+      expect(wrapper.find('.gl-card-body').classes()).not.toContain('d-none');
     });
 
     it('collapses when clicked', done => {
@@ -83,7 +83,7 @@ describe('Embed Group', () => {
       wrapper.find(GlButton).trigger('click');
 
       wrapper.vm.$nextTick(() => {
-        expect(wrapper.find('.card-body').classes()).toContain('d-none');
+        expect(wrapper.find('.gl-card-body').classes()).toContain('d-none');
         done();
       });
     });

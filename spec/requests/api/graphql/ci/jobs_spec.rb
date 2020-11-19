@@ -34,6 +34,9 @@ RSpec.describe 'Query.project.pipeline.stages.groups.jobs' do
                     jobs {
                       nodes {
                         name
+                        pipeline {
+                          id
+                        }
                       }
                     }
                   }
@@ -53,7 +56,7 @@ RSpec.describe 'Query.project.pipeline.stages.groups.jobs' do
   end
 
   context 'when fetching jobs from the pipeline' do
-    it 'avoids N+1 queries' do
+    it 'avoids N+1 queries', :aggregate_failures do
       control_count = ActiveRecord::QueryRecorder.new do
         post_graphql(query, current_user: user)
       end
@@ -86,8 +89,27 @@ RSpec.describe 'Query.project.pipeline.stages.groups.jobs' do
       docker_jobs = docker_group.dig('jobs', 'nodes')
       rspec_jobs = rspec_group.dig('jobs', 'nodes')
 
-      expect(docker_jobs).to eq([{ 'name' => 'docker 1 2' }, { 'name' => 'docker 2 2' }])
-      expect(rspec_jobs).to eq([{ 'name' => 'rspec 1 2' }, { 'name' => 'rspec 2 2' }])
+      expect(docker_jobs).to eq([
+        {
+          'name' => 'docker 1 2',
+          'pipeline' => { 'id' => pipeline.to_global_id.to_s }
+        },
+        {
+          'name' => 'docker 2 2',
+          'pipeline' => { 'id' => pipeline.to_global_id.to_s }
+        }
+      ])
+
+      expect(rspec_jobs).to eq([
+        {
+          'name' => 'rspec 1 2',
+          'pipeline' => { 'id' => pipeline.to_global_id.to_s }
+        },
+        {
+          'name' => 'rspec 2 2',
+          'pipeline' => { 'id' => pipeline.to_global_id.to_s }
+        }
+      ])
     end
   end
 end

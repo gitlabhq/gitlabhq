@@ -1,0 +1,5 @@
+mutation cancelPipeline($id: CiPipelineID!) {
+  pipelineCancel(input: { id: $id }) {
+    errors
+  }
+}

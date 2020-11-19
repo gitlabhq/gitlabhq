@@ -1,7 +1,6 @@
 import { isEmpty } from 'lodash';
 import { sprintf, __ } from '~/locale';
 import { formatDate } from '~/lib/utils/datetime_utility';
-import tooltip from '~/vue_shared/directives/tooltip';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
 const mixins = {
@@ -98,9 +97,6 @@ const mixins = {
       required: false,
       default: () => ({}),
     },
-  },
-  directives: {
-    tooltip,
   },
   mixins: [timeagoMixin],
   computed: {

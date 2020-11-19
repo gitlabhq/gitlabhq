@@ -1,3 +1,21 @@
+[data-editor-loading] {
+  @include gl-relative;
+  @include gl-display-flex;
+  @include gl-justify-content-center;
+  @include gl-align-items-center;
+
+  &::before {
+    content: '';
+    @include spinner(32px, 3px);
+    @include gl-absolute;
+    @include gl-z-index-1;
+  }
+
+  pre {
+    opacity: 0;
+  }
+}
+
 [id^='editor-lite-'] {
   height: 500px;
 }

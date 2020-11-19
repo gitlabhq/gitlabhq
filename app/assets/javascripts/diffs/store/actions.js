@@ -8,7 +8,8 @@ import { __, s__ } from '~/locale';
 import { handleLocationHash, historyPushState, scrollToElement } from '~/lib/utils/common_utils';
 import { mergeUrlParams, getLocationHash } from '~/lib/utils/url_utility';
 import TreeWorker from '../workers/tree_worker';
-import eventHub from '../../notes/event_hub';
+import notesEventHub from '../../notes/event_hub';
+import eventHub from '../event_hub';
 import {
   getDiffPositionByLineCode,
   getNoteFormData,
@@ -40,8 +41,14 @@ import {
   DIFF_WHITESPACE_COOKIE_NAME,
   SHOW_WHITESPACE,
   NO_SHOW_WHITESPACE,
+  DIFF_FILE_MANUAL_COLLAPSE,
+  DIFF_FILE_AUTOMATIC_COLLAPSE,
+  EVT_PERF_MARK_FILE_TREE_START,
+  EVT_PERF_MARK_FILE_TREE_END,
+  EVT_PERF_MARK_DIFF_FILES_START,
 } from '../constants';
 import { diffViewerModes } from '~/ide/constants';
+import { isCollapsed } from '../diff_file';
 
 export const setBaseConfig = ({ commit }, options) => {
   const {
@@ -75,6 +82,7 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
 
   commit(types.SET_BATCH_LOADING, true);
   commit(types.SET_RETRIEVING_BATCHES, true);
+  eventHub.$emit(EVT_PERF_MARK_DIFF_FILES_START);
 
   const getBatch = (page = 1) =>
     axios
@@ -136,9 +144,11 @@ export const fetchDiffFilesMeta = ({ commit, state }) => {
   };
 
   commit(types.SET_LOADING, true);
+  eventHub.$emit(EVT_PERF_MARK_FILE_TREE_START);
 
   worker.addEventListener('message', ({ data }) => {
     commit(types.SET_TREE_DATA, data);
+    eventHub.$emit(EVT_PERF_MARK_FILE_TREE_END);
 
     worker.terminate();
   });
@@ -212,7 +222,7 @@ export const assignDiscussionsToDiff = (
   }
 
   Vue.nextTick(() => {
-    eventHub.$emit('scrollToDiscussion');
+    notesEventHub.$emit('scrollToDiscussion');
   });
 };
 
@@ -237,10 +247,17 @@ export const renderFileForDiscussionId = ({ commit, rootState, state }, discussi
       }
 
       if (file.viewer.automaticallyCollapsed) {
-        eventHub.$emit(`loadCollapsedDiff/${file.file_hash}`);
+        notesEventHub.$emit(`loadCollapsedDiff/${file.file_hash}`);
         scrollToElement(document.getElementById(file.file_hash));
+      } else if (file.viewer.manuallyCollapsed) {
+        commit(types.SET_FILE_COLLAPSED, {
+          filePath: file.file_path,
+          collapsed: false,
+          trigger: DIFF_FILE_AUTOMATIC_COLLAPSE,
+        });
+        notesEventHub.$emit('scrollToDiscussion');
       } else {
-        eventHub.$emit('scrollToDiscussion');
+        notesEventHub.$emit('scrollToDiscussion');
       }
     }
   }
@@ -252,8 +269,7 @@ export const startRenderDiffsQueue = ({ state, commit }) => {
       const nextFile = state.diffFiles.find(
         file =>
           !file.renderIt &&
-          (file.viewer &&
-            (!file.viewer.automaticallyCollapsed || file.viewer.name !== diffViewerModes.text)),
+          (file.viewer && (!isCollapsed(file) || file.viewer.name !== diffViewerModes.text)),
       );
 
       if (nextFile) {
@@ -354,10 +370,6 @@ export const loadCollapsedDiff = ({ commit, getters, state }, file) =>
         data: res.data,
       });
     });
-
-export const expandAllFiles = ({ commit }) => {
-  commit(types.EXPAND_ALL_FILES);
-};
 
 /**
  * Toggles the file discussions after user clicked on the toggle discussions button.
@@ -480,7 +492,7 @@ export const setShowWhitespace = ({ commit }, { showWhitespace, pushState = fals
     historyPushState(mergeUrlParams({ w }, window.location.href));
   }
 
-  eventHub.$emit('refetchDiffData');
+  notesEventHub.$emit('refetchDiffData');
 };
 
 export const toggleFileFinder = ({ commit }, visible) => {
@@ -531,15 +543,20 @@ export const setExpandedDiffLines = ({ commit, state }, { file, data }) => {
       }),
     }),
   };
+  const unifiedDiffLinesEnabled = window.gon?.features?.unifiedDiffLines;
   const currentDiffLinesKey =
-    state.diffViewType === INLINE_DIFF_VIEW_TYPE ? INLINE_DIFF_LINES_KEY : PARALLEL_DIFF_LINES_KEY;
+    state.diffViewType === INLINE_DIFF_VIEW_TYPE || unifiedDiffLinesEnabled
+      ? INLINE_DIFF_LINES_KEY
+      : PARALLEL_DIFF_LINES_KEY;
   const hiddenDiffLinesKey =
     state.diffViewType === INLINE_DIFF_VIEW_TYPE ? PARALLEL_DIFF_LINES_KEY : INLINE_DIFF_LINES_KEY;
 
-  commit(types.SET_HIDDEN_VIEW_DIFF_FILE_LINES, {
-    filePath: file.file_path,
-    lines: expandedDiffLines[hiddenDiffLinesKey],
-  });
+  if (!unifiedDiffLinesEnabled) {
+    commit(types.SET_HIDDEN_VIEW_DIFF_FILE_LINES, {
+      filePath: file.file_path,
+      lines: expandedDiffLines[hiddenDiffLinesKey],
+    });
+  }
 
   if (expandedDiffLines[currentDiffLinesKey].length > MAX_RENDERING_DIFF_LINES) {
     let index = START_RENDERING_INDEX;
@@ -621,7 +638,7 @@ export function switchToFullDiffFromRenamedFile({ commit, dispatch, state }, { d
     .then(({ data }) => {
       const lines = data.map((line, index) =>
         prepareLineForRenamedFile({
-          diffViewType: state.diffViewType,
+          diffViewType: window.gon?.features?.unifiedDiffLines ? 'inline' : state.diffViewType,
           line,
           diffFile,
           index,
@@ -633,6 +650,7 @@ export function switchToFullDiffFromRenamedFile({ commit, dispatch, state }, { d
         viewer: {
           ...diffFile.alternate_viewer,
           automaticallyCollapsed: false,
+          manuallyCollapsed: false,
         },
       });
       commit(types.SET_CURRENT_VIEW_DIFF_FILE_LINES, { filePath: diffFile.file_path, lines });
@@ -641,8 +659,9 @@ export function switchToFullDiffFromRenamedFile({ commit, dispatch, state }, { d
     });
 }
 
-export const setFileCollapsed = ({ commit }, { filePath, collapsed }) =>
-  commit(types.SET_FILE_COLLAPSED, { filePath, collapsed });
+export const setFileCollapsedByUser = ({ commit }, { filePath, collapsed }) => {
+  commit(types.SET_FILE_COLLAPSED, { filePath, collapsed, trigger: DIFF_FILE_MANUAL_COLLAPSE });
+};
 
 export const setSuggestPopoverDismissed = ({ commit, state }) =>
   axios

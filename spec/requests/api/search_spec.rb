@@ -23,6 +23,48 @@ RSpec.describe API::Search do
     end
   end
 
+  shared_examples 'orderable by created_at' do |scope:|
+    it 'allows ordering results by created_at asc' do
+      get api(endpoint, user), params: { scope: scope, search: 'sortable', order_by: 'created_at', sort: 'asc' }
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(json_response.count).to be > 1
+
+      created_ats = json_response.map { |r| Time.parse(r['created_at']) }
+      expect(created_ats.uniq.count).to be > 1
+
+      expect(created_ats).to eq(created_ats.sort)
+    end
+
+    it 'allows ordering results by created_at desc' do
+      get api(endpoint, user), params: { scope: scope, search: 'sortable', order_by: 'created_at', sort: 'desc' }
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(json_response.count).to be > 1
+
+      created_ats = json_response.map { |r| Time.parse(r['created_at']) }
+      expect(created_ats.uniq.count).to be > 1
+
+      expect(created_ats).to eq(created_ats.sort.reverse)
+    end
+  end
+
+  shared_examples 'issues orderable by created_at' do
+    before do
+      create_list(:issue, 3, title: 'sortable item', project: project)
+    end
+
+    it_behaves_like 'orderable by created_at', scope: :issues
+  end
+
+  shared_examples 'merge_requests orderable by created_at' do
+    before do
+      create_list(:merge_request, 3, :unique_branches, title: 'sortable item', target_project: repo_project, source_project: repo_project)
+    end
+
+    it_behaves_like 'orderable by created_at', scope: :merge_requests
+  end
+
   shared_examples 'pagination' do |scope:, search: ''|
     it 'returns a different result for each page' do
       get api(endpoint, user), params: { scope: scope, search: search, page: 1, per_page: 1 }
@@ -121,6 +163,8 @@ RSpec.describe API::Search do
 
           it_behaves_like 'ping counters', scope: :issues
 
+          it_behaves_like 'issues orderable by created_at'
+
           describe 'pagination' do
             before do
               create(:issue, project: project, title: 'another issue')
@@ -151,7 +195,6 @@ RSpec.describe API::Search do
 
         context 'filter by confidentiality' do
           before do
-            stub_feature_flags(search_filter_by_confidential: true)
             create(:issue, project: project, author: user, title: 'awesome non-confidential issue')
             create(:issue, :confidential, project: project, author: user, title: 'awesome confidential issue')
           end
@@ -181,6 +224,8 @@ RSpec.describe API::Search do
           it_behaves_like 'response is correct', schema: 'public_api/v4/merge_requests'
 
           it_behaves_like 'ping counters', scope: :merge_requests
+
+          it_behaves_like 'merge_requests orderable by created_at'
 
           describe 'pagination' do
             before do
@@ -355,6 +400,8 @@ RSpec.describe API::Search do
 
         it_behaves_like 'ping counters', scope: :issues
 
+        it_behaves_like 'issues orderable by created_at'
+
         describe 'pagination' do
           before do
             create(:issue, project: project, title: 'another issue')
@@ -374,6 +421,8 @@ RSpec.describe API::Search do
         it_behaves_like 'response is correct', schema: 'public_api/v4/merge_requests'
 
         it_behaves_like 'ping counters', scope: :merge_requests
+
+        it_behaves_like 'merge_requests orderable by created_at'
 
         describe 'pagination' do
           before do
@@ -507,12 +556,22 @@ RSpec.describe API::Search do
 
         it_behaves_like 'ping counters', scope: :issues
 
+        it_behaves_like 'issues orderable by created_at'
+
         describe 'pagination' do
           before do
             create(:issue, project: project, title: 'another issue')
           end
 
           include_examples 'pagination', scope: :issues
+        end
+      end
+
+      context 'when requesting basic search' do
+        it 'passes the parameter to search service' do
+          expect(SearchService).to receive(:new).with(user, hash_including(basic_search: 'true'))
+
+          get api(endpoint, user), params: { scope: 'issues', search: 'awesome', basic_search: 'true' }
         end
       end
 
@@ -528,6 +587,8 @@ RSpec.describe API::Search do
         it_behaves_like 'response is correct', schema: 'public_api/v4/merge_requests'
 
         it_behaves_like 'ping counters', scope: :merge_requests
+
+        it_behaves_like 'merge_requests orderable by created_at'
 
         describe 'pagination' do
           before do

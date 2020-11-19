@@ -70,61 +70,18 @@ RSpec.describe SendFileUpload do
         allow(uploader).to receive(:model).and_return(image_owner)
       end
 
-      context 'when boths FFs are enabled' do
+      it_behaves_like 'handles image resize requests allowed by FF'
+
+      context 'when FF is disabled' do
         before do
-          stub_feature_flags(dynamic_image_resizing_requester: image_requester)
-          stub_feature_flags(dynamic_image_resizing_owner: image_owner)
+          stub_feature_flags(dynamic_image_resizing: false)
         end
 
-        it_behaves_like 'handles image resize requests allowed by FFs'
-      end
-
-      context 'when boths FFs are enabled globally' do
-        before do
-          stub_feature_flags(dynamic_image_resizing_requester: true)
-          stub_feature_flags(dynamic_image_resizing_owner: true)
-        end
-
-        it_behaves_like 'handles image resize requests allowed by FFs'
-
-        context 'when current_user is nil' do
-          before do
-            allow(controller).to receive(:current_user).and_return(nil)
-          end
-
-          it_behaves_like 'handles image resize requests allowed by FFs'
-        end
-      end
-
-      context 'when only FF based on content requester is enabled for current user' do
-        before do
-          stub_feature_flags(dynamic_image_resizing_requester: image_requester)
-          stub_feature_flags(dynamic_image_resizing_owner: false)
-        end
-
-        it_behaves_like 'bypasses image resize requests not allowed by FFs'
-      end
-
-      context 'when only FF based on content owner is enabled for requested avatar owner' do
-        before do
-          stub_feature_flags(dynamic_image_resizing_requester: false)
-          stub_feature_flags(dynamic_image_resizing_owner: image_owner)
-        end
-
-        it_behaves_like 'bypasses image resize requests not allowed by FFs'
-      end
-
-      context 'when both FFs are disabled' do
-        before do
-          stub_feature_flags(dynamic_image_resizing_requester: false)
-          stub_feature_flags(dynamic_image_resizing_owner: false)
-        end
-
-        it_behaves_like 'bypasses image resize requests not allowed by FFs'
+        it_behaves_like 'bypasses image resize requests not allowed by FF'
       end
     end
 
-    shared_examples 'bypasses image resize requests not allowed by FFs' do
+    shared_examples 'bypasses image resize requests not allowed by FF' do
       it 'does not write workhorse command header' do
         expect(headers).not_to receive(:store).with(Gitlab::Workhorse::SEND_DATA_HEADER, /^send-scaled-img:/)
 
@@ -132,7 +89,7 @@ RSpec.describe SendFileUpload do
       end
     end
 
-    shared_examples 'handles image resize requests allowed by FFs' do
+    shared_examples 'handles image resize requests allowed by FF' do
       context 'with valid width parameter' do
         it 'renders OK with workhorse command header' do
           expect(controller).not_to receive(:send_file)

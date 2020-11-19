@@ -1,3 +1,9 @@
+# Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/api_fuzzing/
+
+# Configure the scanning tool through the environment variables.
+# List of the variables: https://docs.gitlab.com/ee/user/application_security/api_fuzzing/#available-variables
+# How to set: https://docs.gitlab.com/ee/ci/yaml/#variables
+
 stages:
     - build
     - test
@@ -7,7 +13,7 @@ stages:
 variables:
     FUZZAPI_PROFILE: Quick
     FUZZAPI_VERSION: latest
-    FUZZAPI_CONFIG: "/app/.gitlab-api-fuzzing.yml"
+    FUZZAPI_CONFIG: .gitlab-api-fuzzing.yml
     FUZZAPI_TIMEOUT: 30
     FUZZAPI_REPORT: gl-api-fuzzing-report.xml
     #
@@ -17,8 +23,69 @@ variables:
     # available (non 500 response to HTTP(s))
     FUZZAPI_SERVICE_START_TIMEOUT: "300"
     #
+    FUZZAPI_IMAGE: registry.gitlab.com/gitlab-org/security-products/analyzers/api-fuzzing:${FUZZAPI_VERSION}-engine
+    #
+
+apifuzzer_fuzz_unlicensed:
+    stage: fuzz
+    allow_failure: true
+    rules:
+        - if: '$GITLAB_FEATURES !~ /\bapi_fuzzing\b/ && $API_FUZZING_DISABLED == null'
+        - when: never
+    script:
+        - |
+            echo "Error: Your GitLab project is not licensed for API Fuzzing."
+        - exit 1
 
 apifuzzer_fuzz:
+    stage: fuzz
+    image:
+        name: $FUZZAPI_IMAGE
+        entrypoint: ["/bin/bash", "-l", "-c"]
+    variables:
+        FUZZAPI_PROJECT: $CI_PROJECT_PATH
+        FUZZAPI_API: http://apifuzzer:80
+        TZ: America/Los_Angeles
+    services:
+        - name: $FUZZAPI_IMAGE
+          alias: apifuzzer
+          entrypoint: ["dotnet", "/peach/Peach.Web.dll"]
+    allow_failure: true
+    rules:
+        - if: $FUZZAPI_D_TARGET_IMAGE
+          when: never
+        - if: $FUZZAPI_D_WORKER_IMAGE
+          when: never
+        - if: $API_FUZZING_DISABLED
+          when: never
+        - if: $API_FUZZING_DISABLED_FOR_DEFAULT_BRANCH &&
+                $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+          when: never
+        - if: $GITLAB_FEATURES =~ /\bapi_fuzzing\b/
+    script:
+        #
+        # Validate options
+        - |
+            if [ "$FUZZAPI_HAR$FUZZAPI_OPENAPI$FUZZAPI_POSTMAN_COLLECTION" == "" ]; then \
+                echo "Error: One of FUZZAPI_HAR, FUZZAPI_OPENAPI, or FUZZAPI_POSTMAN_COLLECTION must be provided."; \
+                echo "See https://docs.gitlab.com/ee/user/application_security/api_fuzzing/ for information on how to configure API Fuzzing."; \
+                exit 1; \
+            fi
+        #
+        # Run user provided pre-script
+        - sh -c "$FUZZAPI_PRE_SCRIPT"
+        #
+        # Start scanning
+        - worker-entry
+        #
+        # Run user provided post-script
+        - sh -c "$FUZZAPI_POST_SCRIPT"
+        #
+    artifacts:
+        reports:
+            junit: $FUZZAPI_REPORT
+
+apifuzzer_fuzz_dnd:
     stage: fuzz
     image: docker:19.03.12
     variables:
@@ -28,19 +95,18 @@ apifuzzer_fuzz:
         FUZZAPI_API: http://apifuzzer:80
     allow_failure: true
     rules:
+        - if: $FUZZAPI_D_TARGET_IMAGE == null && $FUZZAPI_D_WORKER_IMAGE == null
+          when: never
         - if: $API_FUZZING_DISABLED
           when: never
         - if: $API_FUZZING_DISABLED_FOR_DEFAULT_BRANCH &&
-              $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
-          when: never
-        - if: $FUZZAPI_HAR == null &&
-              $FUZZAPI_OPENAPI == null &&
-              $FUZZAPI_D_WORKER_IMAGE == null
+                $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
           when: never
         - if: $GITLAB_FEATURES =~ /\bapi_fuzzing\b/
     services:
         - docker:19.03.12-dind
     script:
+        #
         #
         - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
         #
@@ -56,30 +122,13 @@ apifuzzer_fuzz:
             --network $FUZZAPI_D_NETWORK \
             -e Proxy:Port=8000 \
             -e TZ=America/Los_Angeles \
-            -e FUZZAPI_API=http://127.0.0.1:80 \
-            -e FUZZAPI_PROJECT \
-            -e FUZZAPI_PROFILE \
-            -e FUZZAPI_CONFIG \
-            -e FUZZAPI_REPORT \
-            -e FUZZAPI_HAR \
-            -e FUZZAPI_OPENAPI \
-            -e FUZZAPI_TARGET_URL \
-            -e FUZZAPI_OVERRIDES_FILE \
-            -e FUZZAPI_OVERRIDES_ENV \
-            -e FUZZAPI_OVERRIDES_CMD \
-            -e FUZZAPI_OVERRIDES_INTERVAL \
-            -e FUZZAPI_TIMEOUT \
-            -e FUZZAPI_VERBOSE \
-            -e FUZZAPI_SERVICE_START_TIMEOUT \
-            -e FUZZAPI_HTTP_USERNAME \
-            -e FUZZAPI_HTTP_PASSWORD \
             -e GITLAB_FEATURES \
-            -v $CI_PROJECT_DIR:/app \
             -p 80:80 \
             -p 8000:8000 \
             -p 514:514 \
             --restart=no \
-            registry.gitlab.com/gitlab-org/security-products/analyzers/api-fuzzing:${FUZZAPI_VERSION}-engine
+            $FUZZAPI_IMAGE \
+            dotnet /peach/Peach.Web.dll
         #
         # Start target container
         - |
@@ -94,19 +143,31 @@ apifuzzer_fuzz:
                     $FUZZAPI_D_TARGET_IMAGE \
                 ; fi
         #
-        # Start worker container
+        # Start worker container if provided
         - |
             if [ "$FUZZAPI_D_WORKER_IMAGE" != "" ]; then \
-                echo "Starting worker image $FUZZAPI_D_WORKER_IMAGE" \
+                echo "Starting worker image $FUZZAPI_D_WORKER_IMAGE"; \
                 docker run \
                     --name worker \
                     --network $FUZZAPI_D_NETWORK \
                     -e FUZZAPI_API=http://apifuzzer:80 \
                     -e FUZZAPI_PROJECT \
                     -e FUZZAPI_PROFILE \
-                    -e FUZZAPI_AUTOMATION_CMD \
                     -e FUZZAPI_CONFIG \
                     -e FUZZAPI_REPORT \
+                    -e FUZZAPI_HAR \
+                    -e FUZZAPI_OPENAPI \
+                    -e FUZZAPI_POSTMAN_COLLECTION \
+                    -e FUZZAPI_TARGET_URL \
+                    -e FUZZAPI_OVERRIDES_FILE \
+                    -e FUZZAPI_OVERRIDES_ENV \
+                    -e FUZZAPI_OVERRIDES_CMD \
+                    -e FUZZAPI_OVERRIDES_INTERVAL \
+                    -e FUZZAPI_TIMEOUT \
+                    -e FUZZAPI_VERBOSE \
+                    -e FUZZAPI_SERVICE_START_TIMEOUT \
+                    -e FUZZAPI_HTTP_USERNAME \
+                    -e FUZZAPI_HTTP_PASSWORD \
                     -e CI_COMMIT_BRANCH=${CI_COMMIT_BRANCH} \
                     $FUZZAPI_D_WORKER_ENV \
                     $FUZZAPI_D_WORKER_PORTS \
@@ -115,13 +176,49 @@ apifuzzer_fuzz:
                     $FUZZAPI_D_WORKER_IMAGE \
                 ; fi
         #
-        # Wait for testing to complete if api fuzzer is scanning
-        - if [ "$FUZZAPI_HAR$FUZZAPI_OPENAPI" != "" ]; then echo "Waiting for API Fuzzer to exit"; docker wait apifuzzer; fi
+        # Start API Fuzzing provided worker if no other worker present
+        - |
+            if [ "$FUZZAPI_D_WORKER_IMAGE" == "" ]; then \
+                if [ "$FUZZAPI_HAR$FUZZAPI_OPENAPI$FUZZAPI_POSTMAN_COLLECTION" == "" ]; then \
+                    echo "Error: One of FUZZAPI_HAR, FUZZAPI_OPENAPI, or FUZZAPI_POSTMAN_COLLECTION must be provided."; \
+                    echo "See https://docs.gitlab.com/ee/user/application_security/api_fuzzing/ for information on how to configure API Fuzzing."; \
+                    exit 1; \
+                fi; \
+                docker run \
+                    --name worker \
+                    --network $FUZZAPI_D_NETWORK \
+                    -e TZ=America/Los_Angeles \
+                    -e FUZZAPI_API=http://apifuzzer:80 \
+                    -e FUZZAPI_PROJECT \
+                    -e FUZZAPI_PROFILE \
+                    -e FUZZAPI_CONFIG \
+                    -e FUZZAPI_REPORT \
+                    -e FUZZAPI_HAR \
+                    -e FUZZAPI_OPENAPI \
+                    -e FUZZAPI_POSTMAN_COLLECTION \
+                    -e FUZZAPI_TARGET_URL \
+                    -e FUZZAPI_OVERRIDES_FILE \
+                    -e FUZZAPI_OVERRIDES_ENV \
+                    -e FUZZAPI_OVERRIDES_CMD \
+                    -e FUZZAPI_OVERRIDES_INTERVAL \
+                    -e FUZZAPI_TIMEOUT \
+                    -e FUZZAPI_VERBOSE \
+                    -e FUZZAPI_SERVICE_START_TIMEOUT \
+                    -e FUZZAPI_HTTP_USERNAME \
+                    -e FUZZAPI_HTTP_PASSWORD \
+                    -v $CI_PROJECT_DIR:/app \
+                    -p 81:80 \
+                    -p 8001:8000 \
+                    -p 515:514 \
+                    --restart=no \
+                    $FUZZAPI_IMAGE \
+                    worker-entry \
+                ; fi
         #
-        # Propagate exit code from api fuzzer (if any)
-        - if [[ $(docker inspect apifuzzer --format='{{.State.ExitCode}}') != "0" ]]; then echo "API Fuzzing exited with an error. Logs are available as job artifacts."; docker logs apifuzzer; exit 1; fi
+        # Propagate exit code from api fuzzing scanner (if any)
+        - if [[ $(docker inspect apifuzzer --format='{{.State.ExitCode}}') != "0" ]]; then echo "API Fuzzing scanner exited with an error. Logs are available as job artifacts."; exit 1; fi
         #
-        # Run user provided pre-script
+        # Run user provided post-script
         - sh -c "$FUZZAPI_POST_SCRIPT"
         #
     after_script:
@@ -129,13 +226,13 @@ apifuzzer_fuzz:
         # Shutdown all containers
         - echo "Stopping all containers"
         - if [ "$FUZZAPI_D_TARGET_IMAGE" != "" ]; then docker stop target; fi
-        - if [ "$FUZZAPI_D_WORKER_IMAGE" != "" ]; then docker stop worker; fi
+        - docker stop worker
         - docker stop apifuzzer
         #
         # Save docker logs
         - docker logs apifuzzer &> gl-api_fuzzing-logs.log
         - if [ "$FUZZAPI_D_TARGET_IMAGE" != "" ]; then docker logs target &> gl-api_fuzzing-target-logs.log; fi
-        - if [ "$FUZZAPI_D_WORKER_IMAGE" != "" ]; then docker logs worker &> gl-api_fuzzing-worker-logs.log; fi
+        - docker logs worker &> gl-api_fuzzing-worker-logs.log
         #
     artifacts:
         when: always

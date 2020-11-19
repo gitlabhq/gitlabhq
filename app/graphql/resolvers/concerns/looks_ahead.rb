@@ -4,6 +4,7 @@ module LooksAhead
   extend ActiveSupport::Concern
 
   included do
+    extras [:lookahead]
     attr_accessor :lookahead
   end
 

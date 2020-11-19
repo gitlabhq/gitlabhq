@@ -72,7 +72,7 @@
               = image_tag note.attachment.url, class: 'note-image-attach'
           .attachment
             = link_to note.attachment.url, target: '_blank' do
-              = icon('paperclip')
+              = sprite_icon('paperclip')
               = note.attachment_identifier
               = link_to delete_attachment_project_note_path(note.project, note),
                 title: _('Delete this attachment'), method: :delete, remote: true, data: { confirm: _('Are you sure you want to remove the attachment?') }, class: 'danger js-note-attachment-delete' do

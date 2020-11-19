@@ -1,0 +1,40 @@
+{
+  "type": "object",
+  "required": ["id", "name", "path", "location", "createdAt", "updatedAt", "tagsCount", "canDelete", "expirationPolicyCleanupStatus"],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "path": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "string"
+    },
+    "updatedAt": {
+      "type": "string"
+    },
+    "expirationPolicyStartedAt": {
+      "type": ["string", "null"]
+    },
+    "status": {
+      "type": ["string", "null"]
+    },
+    "tagsCount": {
+      "type": "integer"
+    },
+    "canDelete": {
+      "type": "boolean"
+    },
+    "expirationPolicyCleanupStatus": {
+      "type": "string",
+      "enum": ["UNSCHEDULED", "SCHEDULED", "UNFINISHED", "ONGOING"]
+    }
+  }
+}

@@ -1,7 +1,8 @@
 ---
 name: group_import_export
-introduced_by_url:
-rollout_issue_url:
-group: group::import
+introduced_by_url: 
+rollout_issue_url: 
+milestone: 
 type: development
+group: group::import
 default_enabled: true

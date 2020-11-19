@@ -33,7 +33,7 @@
 
 = render_if_exists 'projects/settings/ci_cd/protected_environments', expanded: expanded
 
-%section.settings.no-animate#js-runners-settings{ class: ('expanded' if expanded), data: { qa_selector: 'runners_settings_content' } }
+%section.settings.no-animate#js-runners-settings{ class: ('expanded' if expanded || params[:expand_runners]), data: { qa_selector: 'runners_settings_content' } }
   .settings-header
     %h4
       = _("Runners")
@@ -74,6 +74,8 @@
         = link_to _('More information'), help_page_path('user/packages/container_registry/index', anchor: 'cleanup-policy', target: '_blank', rel: 'noopener noreferrer')
     .settings-content
       = render 'projects/registry/settings/index'
+
+= render_if_exists 'projects/settings/ci_cd/auto_rollback', expanded: expanded
 
 - if can?(current_user, :create_freeze_period, @project)
   %section.settings.no-animate#js-deploy-freeze-settings{ class: ('expanded' if expanded) }

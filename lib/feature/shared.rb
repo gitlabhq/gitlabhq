@@ -10,6 +10,8 @@ class Feature
     # rollout_issue: defines if `bin/feature-flag` asks for rollout issue
     # default_enabled: defines a default state of a feature flag when created by `bin/feature-flag`
     # ee_only: defines that a feature flag can only be created in a context of EE
+    # deprecated: defines if a feature flag type that is deprecated and to be removed,
+    #             the deprecated types are hidden from all interfaces
     # example: usage being shown when exception is raised
     TYPES = {
       development: {
@@ -37,6 +39,7 @@ class Feature
       },
       licensed: {
         description: 'Permanent feature flags used to temporarily disable licensed features.',
+        deprecated: true,
         optional: true,
         rollout_issue: false,
         ee_only: true,
@@ -54,6 +57,7 @@ class Feature
       name
       introduced_by_url
       rollout_issue_url
+      milestone
       type
       group
       default_enabled

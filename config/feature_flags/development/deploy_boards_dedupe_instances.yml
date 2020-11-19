@@ -1,7 +1,0 @@
----
-name: deploy_boards_dedupe_instances
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40768
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/258214
-type: development
-group: group::progressive delivery
-default_enabled: false

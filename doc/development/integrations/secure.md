@@ -1,7 +1,13 @@
+---
+stage: Protect
+group: Container Security
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Security scanner integration
 
 Integrating a security scanner into GitLab consists of providing end users
-with a [CI job definition](../../ci/yaml/README.md#introduction)
+with a [CI job definition](../../ci/yaml/README.md)
 they can add to their CI configuration files to scan their GitLab projects.
 This CI job should then output its results in a GitLab-specified format. These results are then
 automatically presented in various places in GitLab, such as the Pipeline view, Merge Request
@@ -40,12 +46,12 @@ Because the `script` entry can't be left empty, it must be set to the command th
 It is not possible to rely on the predefined `ENTRYPOINT` and `CMD` of the Docker image
 to perform the scan automatically, without passing any command.
 
-The [`before_script`](../../ci/yaml/README.md#before_script-and-after_script)
+The [`before_script`](../../ci/yaml/README.md#before_script)
 should not be used in the job definition because users may rely on this to prepare their projects before performing the scan.
 For instance, it is common practice to use `before_script` to install system libraries
 a particular project needs before performing SAST or Dependency Scanning.
 
-Similarly, [`after_script`](../../ci/yaml/README.md#before_script-and-after_script)
+Similarly, [`after_script`](../../ci/yaml/README.md#after_script)
 should not be used in the job definition, because it may be overridden by users.
 
 ### Stage
@@ -175,7 +181,9 @@ SAST and Dependency Scanning scanners must scan the files in the project directo
 
 In order to be consistent with the official Container Scanning for GitLab,
 scanners must scan the Docker image whose name and tag are given by
-`CI_APPLICATION_REPOSITORY` and `CI_APPLICATION_TAG`, respectively.
+`CI_APPLICATION_REPOSITORY` and `CI_APPLICATION_TAG`, respectively. If the `DOCKER_IMAGE`
+variable is provided, then the `CI_APPLICATION_REPOSITORY` and `CI_APPLICATION_TAG` variables
+are ignored, and the image specified in the `DOCKER_IMAGE` variable is scanned instead.
 
 If not provided, `CI_APPLICATION_REPOSITORY` should default to
 `$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG`, which is a combination of predefined CI variables.
@@ -248,6 +256,11 @@ It is recommended to use the `debug` level for verbose logging that could be
 useful when debugging. The default value for `SECURE_LOG_LEVEL` should be set
 to `info`.
 
+When executing command lines, scanners should use the `debug` level to log the command line and its output.
+For instance, the [bundler-audit](https://gitlab.com/gitlab-org/security-products/analyzers/bundler-audit) scanner
+uses the `debug` level to log the command line `bundle audit check --quiet`,
+and what `bundle audit` writes to the standard output.
+
 #### common logutil package
 
 If you are using [go](https://golang.org/) and
@@ -278,8 +291,7 @@ You can find the schemas for these scanners here:
 
 ### Version
 
-This field specifies the version of the report schema you are using. Please reference individual scanner
-pages for the specific versions to use.
+This field specifies the version of the [Security Report Schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas) you are using. Please refer to the [releases](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/releases) of the schemas for the specific versions to use.
 
 ### Vulnerabilities
 
@@ -287,7 +299,7 @@ The `vulnerabilities` field of the report is an array of vulnerability objects.
 
 #### ID
 
-The `id` field is the unique identifier of the vulnerability.
+The `id` field is the unique identifier of the vulnerability.
 It is used to reference a fixed vulnerability from a [remediation objects](#remediations).
 We recommend that you generate a UUID and use it as the `id` field's value.
 
@@ -532,7 +544,7 @@ of the available SAST Analyzers and what data is currently available.
 
 The `remediations` field of the report is an array of remediation objects.
 Each remediation describes a patch that can be applied to
-[automatically fix](../../user/application_security/#solutions-for-vulnerabilities-auto-remediation)
+[automatically fix](../../user/application_security/#automatic-remediation-for-vulnerabilities)
 a set of vulnerabilities.
 
 Here is an example of a report that contains remediations.

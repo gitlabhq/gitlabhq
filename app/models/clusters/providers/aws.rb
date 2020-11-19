@@ -5,9 +5,6 @@ module Clusters
     class Aws < ApplicationRecord
       include Gitlab::Utils::StrongMemoize
       include Clusters::Concerns::ProviderStatus
-      include IgnorableColumns
-
-      ignore_column :created_by_user_id, remove_with: '13.4', remove_after: '2020-08-22'
 
       self.table_name = 'cluster_providers_aws'
 

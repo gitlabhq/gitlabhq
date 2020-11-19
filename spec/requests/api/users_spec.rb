@@ -161,7 +161,7 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
             end
 
             context 'accesses the profile of another admin' do
-              let(:admin_2) {create(:admin, note: '2010-10-10 | 2FA added | admin requested | www.gitlab.com')}
+              let(:admin_2) { create(:admin, note: '2010-10-10 | 2FA added | admin requested | www.gitlab.com') }
 
               it 'contains the note of the user' do
                 get api("/user?private_token=#{admin_personal_access_token}&sudo=#{admin_2.id}")
@@ -772,11 +772,11 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
 
     it "does not create user with invalid email" do
       post api('/users', admin),
-           params: {
-             email: 'invalid email',
-             password: 'password',
-             name: 'test'
-           }
+        params: {
+          email: 'invalid email',
+          password: 'password',
+          name: 'test'
+        }
       expect(response).to have_gitlab_http_status(:bad_request)
     end
 
@@ -811,14 +811,14 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
 
     it 'returns 400 error if user does not validate' do
       post api('/users', admin),
-           params: {
-             password: 'pass',
-             email: 'test@example.com',
-             username: 'test!',
-             name: 'test',
-             bio: 'g' * 256,
-             projects_limit: -1
-           }
+        params: {
+          password: 'pass',
+          email: 'test@example.com',
+          username: 'test!',
+          name: 'test',
+          bio: 'g' * 256,
+          projects_limit: -1
+        }
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['message']['password'])
         .to eq(['is too short (minimum is 8 characters)'])
@@ -838,23 +838,23 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
     context 'with existing user' do
       before do
         post api('/users', admin),
-             params: {
-               email: 'test@example.com',
-               password: 'password',
-               username: 'test',
-               name: 'foo'
-             }
+          params: {
+            email: 'test@example.com',
+            password: 'password',
+            username: 'test',
+            name: 'foo'
+          }
       end
 
       it 'returns 409 conflict error if user with same email exists' do
         expect do
           post api('/users', admin),
-               params: {
-                 name: 'foo',
-                 email: 'test@example.com',
-                 password: 'password',
-                 username: 'foo'
-               }
+            params: {
+              name: 'foo',
+              email: 'test@example.com',
+              password: 'password',
+              username: 'foo'
+            }
         end.to change { User.count }.by(0)
         expect(response).to have_gitlab_http_status(:conflict)
         expect(json_response['message']).to eq('Email has already been taken')
@@ -863,12 +863,12 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
       it 'returns 409 conflict error if same username exists' do
         expect do
           post api('/users', admin),
-               params: {
-                 name: 'foo',
-                 email: 'foo@example.com',
-                 password: 'password',
-                 username: 'test'
-               }
+            params: {
+              name: 'foo',
+              email: 'foo@example.com',
+              password: 'password',
+              username: 'test'
+            }
         end.to change { User.count }.by(0)
         expect(response).to have_gitlab_http_status(:conflict)
         expect(json_response['message']).to eq('Username has already been taken')
@@ -877,12 +877,12 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
       it 'returns 409 conflict error if same username exists (case insensitive)' do
         expect do
           post api('/users', admin),
-               params: {
-                 name: 'foo',
-                 email: 'foo@example.com',
-                 password: 'password',
-                 username: 'TEST'
-               }
+            params: {
+              name: 'foo',
+              email: 'foo@example.com',
+              password: 'password',
+              username: 'TEST'
+            }
         end.to change { User.count }.by(0)
         expect(response).to have_gitlab_http_status(:conflict)
         expect(json_response['message']).to eq('Username has already been taken')
@@ -1185,14 +1185,14 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
 
     it 'returns 400 error if user does not validate' do
       put api("/users/#{user.id}", admin),
-          params: {
-            password: 'pass',
-            email: 'test@example.com',
-            username: 'test!',
-            name: 'test',
-            bio: 'g' * 256,
-            projects_limit: -1
-          }
+        params: {
+          password: 'pass',
+          email: 'test@example.com',
+          username: 'test!',
+          name: 'test',
+          bio: 'g' * 256,
+          projects_limit: -1
+        }
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['message']['password'])
         .to eq(['is too short (minimum is 8 characters)'])
@@ -1714,14 +1714,14 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
 
       context "hard delete disabled" do
         it "does not delete user" do
-          perform_enqueued_jobs { delete api("/users/#{user.id}", admin)}
+          perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
           expect(response).to have_gitlab_http_status(:conflict)
         end
       end
 
       context "hard delete enabled" do
         it "delete user and group", :sidekiq_might_not_need_inline do
-          perform_enqueued_jobs { delete api("/users/#{user.id}?hard_delete=true", admin)}
+          perform_enqueued_jobs { delete api("/users/#{user.id}?hard_delete=true", admin) }
           expect(response).to have_gitlab_http_status(:no_content)
           expect(Group.exists?(group.id)).to be_falsy
         end
@@ -1993,7 +1993,7 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
         delete api("/user/keys/#{key.id}", user)
 
         expect(response).to have_gitlab_http_status(:no_content)
-      end.to change { user.keys.count}.by(-1)
+      end.to change { user.keys.count }.by(-1)
     end
 
     it_behaves_like '412 response' do
@@ -2124,7 +2124,7 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
         post api("/user/gpg_keys/#{gpg_key.id}/revoke", user)
 
         expect(response).to have_gitlab_http_status(:accepted)
-      end.to change { user.gpg_keys.count}.by(-1)
+      end.to change { user.gpg_keys.count }.by(-1)
     end
 
     it 'returns 404 if key ID not found' do
@@ -2157,7 +2157,7 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
         delete api("/user/gpg_keys/#{gpg_key.id}", user)
 
         expect(response).to have_gitlab_http_status(:no_content)
-      end.to change { user.gpg_keys.count}.by(-1)
+      end.to change { user.gpg_keys.count }.by(-1)
     end
 
     it 'returns 404 if key ID not found' do
@@ -2279,7 +2279,7 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
         delete api("/user/emails/#{email.id}", user)
 
         expect(response).to have_gitlab_http_status(:no_content)
-      end.to change { user.emails.count}.by(-1)
+      end.to change { user.emails.count }.by(-1)
     end
 
     it_behaves_like '412 response' do
@@ -2753,6 +2753,124 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
 
       expect(response).to have_gitlab_http_status(:success)
       expect(user.reload.status).to be_nil
+    end
+  end
+
+  describe 'POST /users/:user_id/personal_access_tokens' do
+    let(:name) { 'new pat' }
+    let(:expires_at) { 3.days.from_now.to_date.to_s }
+    let(:scopes) { %w(api read_user) }
+
+    context 'when feature flag is enabled' do
+      before do
+        stub_feature_flags(pat_creation_api_for_admin: true)
+      end
+
+      it 'returns error if required attributes are missing' do
+        post api("/users/#{user.id}/personal_access_tokens", admin)
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('name is missing, scopes is missing, scopes does not have a valid value')
+      end
+
+      it 'returns a 404 error if user not found' do
+        post api("/users/#{non_existing_record_id}/personal_access_tokens", admin),
+          params: {
+            name: name,
+            scopes: scopes,
+            expires_at: expires_at
+          }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('404 User Not Found')
+      end
+
+      it 'returns a 401 error when not authenticated' do
+        post api("/users/#{user.id}/personal_access_tokens"),
+          params: {
+            name: name,
+            scopes: scopes,
+            expires_at: expires_at
+          }
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+        expect(json_response['message']).to eq('401 Unauthorized')
+      end
+
+      it 'returns a 403 error when authenticated as normal user' do
+        post api("/users/#{user.id}/personal_access_tokens", user),
+          params: {
+            name: name,
+            scopes: scopes,
+            expires_at: expires_at
+          }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['message']).to eq('403 Forbidden')
+      end
+
+      it 'creates a personal access token when authenticated as admin' do
+        post api("/users/#{user.id}/personal_access_tokens", admin),
+          params: {
+            name: name,
+            expires_at: expires_at,
+            scopes: scopes
+          }
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['name']).to eq(name)
+        expect(json_response['scopes']).to eq(scopes)
+        expect(json_response['expires_at']).to eq(expires_at)
+        expect(json_response['id']).to be_present
+        expect(json_response['created_at']).to be_present
+        expect(json_response['active']).to be_truthy
+        expect(json_response['revoked']).to be_falsey
+        expect(json_response['token']).to be_present
+      end
+
+      context 'when an error is thrown by the model' do
+        let!(:admin_personal_access_token) { create(:personal_access_token, user: admin) }
+        let(:error_message) { 'error message' }
+
+        before do
+          allow_next_instance_of(PersonalAccessToken) do |personal_access_token|
+            allow(personal_access_token).to receive_message_chain(:errors, :full_messages)
+                                                .and_return([error_message])
+
+            allow(personal_access_token).to receive(:save).and_return(false)
+          end
+        end
+
+        it 'returns the error' do
+          post api("/users/#{user.id}/personal_access_tokens", personal_access_token: admin_personal_access_token),
+              params: {
+                  name: name,
+                  expires_at: expires_at,
+                  scopes: scopes
+              }
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['message']).to eq(error_message)
+        end
+      end
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(pat_creation_api_for_admin: false)
+      end
+
+      it 'returns a 404' do
+        post api("/users/#{user.id}/personal_access_tokens", admin),
+          params: {
+            name: name,
+            expires_at: expires_at,
+            scopes: scopes
+          }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('404 Not Found')
+      end
     end
   end
 

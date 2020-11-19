@@ -18,7 +18,7 @@ RSpec.describe 'projects/merge_requests/show.html.haml' do
 
         render
 
-        expect(rendered).not_to have_css('.cannot-be-merged')
+        expect(rendered).not_to have_css('.merge-icon')
       end
     end
   end

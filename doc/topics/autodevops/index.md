@@ -1,3 +1,9 @@
+---
+stage: Configure
+group: Configure
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Auto DevOps
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/37115) in GitLab 10.0.
@@ -160,7 +166,7 @@ a base domain of `example.com`, you'd need a DNS entry like:
 ```
 
 In this case, the deployed applications are served from `example.com`, and `1.2.3.4`
-is the IP address of your load balancer; generally NGINX ([see requirements](#requirements)).
+is the IP address of your load balancer; generally NGINX ([see requirements](requirements.md)).
 Setting up the DNS record is beyond the scope of this document; check with your
 DNS provider for information.
 
@@ -177,7 +183,7 @@ See [Auto DevOps requirements for Amazon ECS](requirements.md#auto-devops-requir
 
 ## Enabling/Disabling Auto DevOps
 
-When first using Auto DevOps, review the [requirements](#requirements) to ensure
+When first using Auto DevOps, review the [requirements](requirements.md) to ensure
 all the necessary components to make full use of Auto DevOps are available. First-time
 users should follow the [quick start guide](quick_start_guide.md).
 
@@ -401,7 +407,7 @@ If you receive this error, you can do one of the following actions:
   database by setting `AUTO_DEVOPS_POSTGRES_DELETE_V1` to a non-empty value and
   redeploying.
 
-  DANGER: **Danger:**
+  DANGER: **Warning:**
   Deleting the channel 1 PostgreSQL database permanently deletes the existing
   channel 1 database and all its data. See
   [Upgrading PostgreSQL](upgrading_postgresql.md)
@@ -415,7 +421,7 @@ If you receive this error, you can do one of the following actions:
   and persisted by Helm, regardless of whether or not your chart uses the
   variable.
 
-DANGER: **Danger:**
+DANGER: **Warning:**
 Setting `POSTGRES_ENABLED` to `false` permanently deletes any existing
 channel 1 database for your environment.
 
@@ -466,6 +472,104 @@ that works for this problem. Follow these steps to use the tool in Auto DevOps:
    supplemental template `map-deprecated-api`.
 
 1. Continue the deployments as usual.
+
+### Error: error initializing: Looks like "https://kubernetes-charts.storage.googleapis.com" is not a valid chart repository or cannot be reached
+
+As [announced in the official CNCF blogpost](https://www.cncf.io/blog/2020/10/07/important-reminder-for-all-helm-users-stable-incubator-repos-are-deprecated-and-all-images-are-changing-location/),
+the stable Helm chart repository will be deprecated and removed on November 13th, 2020.
+You may encounter this error after that date.
+
+Some GitLab features had dependencies on the stable chart. To mitigate the impact, we changed them
+to use new official repositories or the [Helm Stable Archive repository maintained by GitLab](https://gitlab.com/gitlab-org/cluster-integration/helm-stable-archive).
+Auto Deploy contains [an example fix](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/merge_requests/127).
+
+In Auto Deploy, `v1.0.6+` of `auto-deploy-image` no longer adds the deprecated stable repository to
+the `helm` command. If you use a custom chart and it relies on the deprecated stable repository,
+specify an older `auto-deploy-image` like this example:
+
+```yaml
+include:
+  - template: Auto-DevOps.gitlab-ci.yml
+
+.auto-deploy:
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:v1.0.5"
+```
+
+Keep in mind that this approach will eventually stop working when the stable repository is removed,
+so you must eventually fix your custom chart.
+
+To fix your custom chart:
+
+1. In your chart directory, update the `repository` value in your `requirements.yaml` file from :
+
+   ```yaml
+   repository: "https://kubernetes-charts.storage.googleapis.com/"
+   ```
+
+   to:
+
+   ```yaml
+   repository: "https://charts.helm.sh/stable"
+   ```
+
+1. In your chart directory, run `helm dep update .` using the same Helm major version as Auto DevOps.
+1. Commit the changes for the `requirements.yaml` file.
+1. If you previously had a `requirements.lock` file, commit the changes to the file.
+   If you did not previously have a `requirements.lock` file in your chart,
+   you do not need to commit the new one. This file is optional, but when present,
+   it's used to verify the integrity of the downloaded dependencies.
+
+You can find more information in
+[issue #263778, "Migrate PostgreSQL from stable Helm repo"](https://gitlab.com/gitlab-org/gitlab/-/issues/263778).
+
+### Error: release .... failed: timed out waiting for the condition
+
+When getting started with Auto DevOps, you may encounter this error when first
+deploying your application:
+
+```plaintext
+INSTALL FAILED
+PURGING CHART
+Error: release staging failed: timed out waiting for the condition
+```
+
+This is most likely caused by a failed liveness (or readiness) probe attempted
+during the deployment process. By default, these probes are run against the root
+page of the deployed application on port 5000. If your application isn't configured
+to serve anything at the root page, or is configured to run on a specific port
+*other* than 5000, this check fails.
+
+If it fails, you should see these failures within the events for the relevant
+Kubernetes namespace. These events look like the following example:
+
+```plaintext
+LAST SEEN   TYPE      REASON                   OBJECT                                            MESSAGE
+3m20s       Warning   Unhealthy                pod/staging-85db88dcb6-rxd6g                      Readiness probe failed: Get http://10.192.0.6:5000/: dial tcp 10.192.0.6:5000: connect: connection refused
+3m32s       Warning   Unhealthy                pod/staging-85db88dcb6-rxd6g                      Liveness probe failed: Get http://10.192.0.6:5000/: dial tcp 10.192.0.6:5000: connect: connection refused
+```
+
+To change the port used for the liveness checks, pass
+[custom values to the Helm chart](customize.md#customize-values-for-helm-chart)
+used by Auto DevOps:
+
+1. Create a directory and file at the root of your repository named `.gitlab/auto-deploy-values.yaml`.
+
+1. Populate the file with the following content, replacing the port values with
+   the actual port number your application is configured to use:
+
+   ```yaml
+   service:
+     internalPort: <port_value>
+     externalPort: <port_value>
+   ```
+
+1. Commit your changes.
+
+After committing your changes, subsequent probes should use the newly-defined ports.
+The page that's probed can also be changed by overriding the `livenessProbe.path`
+and `readinessProbe.path` values (shown in the
+[default `values.yaml`](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/blob/master/assets/auto-deploy-app/values.yaml)
+file) in the same fashion.
 
 ## Development guides
 

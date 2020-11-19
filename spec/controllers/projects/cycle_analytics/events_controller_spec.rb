@@ -11,7 +11,7 @@ RSpec.describe Projects::CycleAnalytics::EventsController do
     project.add_maintainer(user)
   end
 
-  describe 'cycle analytics not set up flag' do
+  describe 'value stream analytics not set up flag' do
     context 'with no data' do
       it 'is empty' do
         get_issue

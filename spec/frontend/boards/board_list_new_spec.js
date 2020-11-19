@@ -77,6 +77,8 @@ const createComponent = ({
     provide: {
       groupId: null,
       rootPath: '/',
+      weightFeatureAvailable: false,
+      boardWeight: null,
     },
   });
 

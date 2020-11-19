@@ -447,7 +447,7 @@ For the project where it's defined, tags matching the regex pattern are removed.
 The underlying layers and images remain.
 
 To delete the underlying layers and images that aren't associated with any tags, administrators can use
-[garbage collection](../../../administration/packages/container_registry.md#removing-unused-layers-not-referenced-by-manifests) with the `-m` switch.
+[garbage collection](../../../administration/packages/container_registry.md#removing-untagged-manifests-and-unreferenced-layers) with the `-m` switch.
 
 ### Enable the cleanup policy
 
@@ -468,7 +468,7 @@ Cleanup policies can be run on all projects, with these exceptions:
   ```
 
   There are performance risks with enabling it for all projects, especially if you
-  are using an [external registry](./index.md#use-with-external-container-registries).
+  are using an [external registry](index.md#use-with-external-container-registries).
 - For self-managed GitLab instances, you can enable or disable the cleanup policy for a specific
   project.
 
@@ -522,7 +522,7 @@ To create a cleanup policy in the UI:
    | **Expiration interval**                                                   | How long tags are exempt from being deleted.                                                                      |
    | **Expiration schedule**                                                   | How often the policy should run.                                                                                  |
    | **Number of tags to retain**                                              | How many tags to _always_ keep for each image.                                                                    |
-   | **Tags with names matching this regex pattern expire:**              | The regex pattern that determines which tags to remove. For all tags, use `.*`. See other [regex pattern examples](#regex-pattern-examples). |
+   | **Tags with names matching this regex pattern expire:**              | The regex pattern that determines which tags to remove. This value cannot be blank. For all tags, use `.*`. See other [regex pattern examples](#regex-pattern-examples). |
    | **Tags with names matching this regex pattern are preserved:**        | The regex pattern that determines which tags to preserve. The `latest` tag is always preserved. For all tags, use `.*`. See other [regex pattern examples](#regex-pattern-examples). |
 
 1. Click **Set cleanup policy**.
@@ -543,6 +543,8 @@ Here are examples of regex patterns you may want to use:
   ```plaintext
   .*
   ```
+
+  This is the default value for the expiration regex.
 
 - Match tags that start with `v`:
 
@@ -578,7 +580,7 @@ See the API documentation for further details: [Edit project](../../../api/proje
 
 ### Use with external container registries
 
-When using an [external container registry](./../../../administration/packages/container_registry.md#use-an-external-container-registry-with-gitlab-as-an-auth-endpoint),
+When using an [external container registry](../../../administration/packages/container_registry.md#use-an-external-container-registry-with-gitlab-as-an-auth-endpoint),
 running a cleanup policy on a project may have some performance risks.
 If a project runs a policy to remove thousands of tags
 the GitLab background jobs may get backed up or fail completely.

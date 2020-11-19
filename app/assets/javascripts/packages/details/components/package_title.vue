@@ -1,6 +1,8 @@
 <script>
+/* eslint-disable vue/v-slot-style */
 import { mapState, mapGetters } from 'vuex';
-import { GlIcon, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
+import { GlIcon, GlSprintf, GlTooltipDirective, GlBadge } from '@gitlab/ui';
+import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import PackageTags from '../../shared/components/package_tags.vue';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
@@ -16,11 +18,20 @@ export default {
     GlSprintf,
     PackageTags,
     MetadataItem,
+    GlBadge,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [timeagoMixin],
+  i18n: {
+    packageInfo: __('v%{version} published %{timeAgo}'),
+  },
+  data() {
+    return {
+      isDesktop: true,
+    };
+  },
   computed: {
     ...mapState(['packageEntity', 'packageFiles']),
     ...mapGetters(['packageTypeDisplay', 'packagePipeline', 'packageIcon']),
@@ -31,8 +42,13 @@ export default {
       return numberToHumanSize(this.packageFiles.reduce((acc, p) => acc + p.size, 0));
     },
   },
-  i18n: {
-    packageInfo: __('v%{version} published %{timeAgo}'),
+  mounted() {
+    this.isDesktop = GlBreakpointInstance.isDesktop();
+  },
+  methods: {
+    dynamicSlotName(index) {
+      return `metadata-tag${index}`;
+    },
   },
 };
 </script>
@@ -75,8 +91,19 @@ export default {
       <metadata-item data-testid="package-ref" icon="branch" :text="packagePipeline.ref" />
     </template>
 
-    <template v-if="hasTagsToDisplay" #metadata-tags>
+    <template v-if="isDesktop && hasTagsToDisplay" #metadata-tags>
       <package-tags :tag-display-limit="2" :tags="packageEntity.tags" hide-label />
+    </template>
+
+    <!-- we need to duplicate the package tags on mobile to ensure proper styling inside the flex wrap -->
+    <template
+      v-for="(tag, index) in packageEntity.tags"
+      v-else-if="hasTagsToDisplay"
+      v-slot:[dynamicSlotName(index)]
+    >
+      <gl-badge :key="index" class="gl-my-1" data-testid="tag-badge" variant="info" size="sm">
+        {{ tag.name }}
+      </gl-badge>
     </template>
 
     <template #right-actions>

@@ -29,7 +29,7 @@ module Repositories
 
     def upload_finalize
       if store_file!(oid, size)
-        head 200
+        head 200, content_type: LfsRequest::CONTENT_TYPE
       else
         render plain: 'Unprocessable entity', status: :unprocessable_entity
       end
@@ -59,10 +59,17 @@ module Repositories
       params[:size].to_i
     end
 
+    def uploaded_file
+      params[:file]
+    end
+
     # rubocop: disable CodeReuse/ActiveRecord
     def store_file!(oid, size)
       object = LfsObject.find_by(oid: oid, size: size)
-      unless object&.file&.exists?
+
+      if object
+        replace_file!(object) unless object.file&.exists?
+      else
         object = create_file!(oid, size)
       end
 
@@ -73,10 +80,17 @@ module Repositories
     # rubocop: enable CodeReuse/ActiveRecord
 
     def create_file!(oid, size)
-      uploaded_file = params[:file]
       return unless uploaded_file.is_a?(UploadedFile)
 
       LfsObject.create!(oid: oid, size: size, file: uploaded_file)
+    end
+
+    def replace_file!(lfs_object)
+      raise UploadedFile::InvalidPathError unless uploaded_file.is_a?(UploadedFile)
+
+      Gitlab::AppJsonLogger.info(message: "LFS file replaced because it did not exist", oid: oid, size: size)
+      lfs_object.file = uploaded_file
+      lfs_object.save!
     end
 
     def link_to_project!(object)

@@ -6,6 +6,7 @@
 = render 'dashboard/groups_head'
 
 - if params[:filter].blank? && @groups.empty?
-  = render 'shared/groups/empty_state'
+  .empty-state
+    = render 'shared/groups/empty_state'
 - else
   = render 'groups'

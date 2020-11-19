@@ -1,0 +1,5 @@
+---
+title: Fix config variables when having includes
+merge_request: 47189
+author:
+type: fixed

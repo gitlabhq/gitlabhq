@@ -1,0 +1,28 @@
+- page_title _("Dependency Proxy")
+
+.settings-header
+  %h4= _('Dependency proxy')
+
+  %p
+    - link_start = '<a href="%{url}">'.html_safe % { url: help_page_path('user/packages/dependency_proxy/index') }
+    = _('Create a local proxy for storing frequently used upstream images. %{link_start}Learn more%{link_end} about dependency proxies.').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
+
+- if @group.public?
+  - if can?(current_user, :admin_dependency_proxy, @group)
+    = form_for(@dependency_proxy, method: :put, url: group_dependency_proxy_path(@group)) do |f|
+      .form-group
+        %h5.prepend-top-20= _('Enable proxy')
+        .js-dependency-proxy-toggle-area
+          = render "shared/buttons/project_feature_toggle", is_checked: @dependency_proxy.enabled?, label: s_("DependencyProxy|Toggle Dependency Proxy") do
+            = f.hidden_field :enabled, { class: 'js-project-feature-toggle-input'}
+
+      - if @dependency_proxy.enabled
+        = render 'groups/dependency_proxies/url'
+
+  - else
+    - if @dependency_proxy.enabled
+      = render 'groups/dependency_proxies/url'
+- else
+  .gl-alert.gl-alert-info
+    = sprite_icon('information-o', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+    = _('Dependency proxy feature is limited to public groups for now.')

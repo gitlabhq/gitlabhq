@@ -1,12 +1,12 @@
 ---
 # Warning: gitlab.CurlStringsQuoted
 #
-# Ensures all codeblocks using curl quote any URL strings.
+# Ensures all code blocks using curl quote any URL strings.
 #
 # For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: existence
-message: 'Curl commands must wrap URLs in double quotes ("): %s'
-link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#curl-commands
+message: 'For consistency across all cURL examples, always wrap the URL in double quotes ("): %s'
+link: https://docs.gitlab.com/ee/development/documentation/restful_api_styleguide.html#curl-commands
 level: warning
 scope: code
 raw:

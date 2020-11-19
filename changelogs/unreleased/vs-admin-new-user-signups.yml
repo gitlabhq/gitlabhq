@@ -1,0 +1,5 @@
+---
+title: Add migration to add a new configuration option for setting the new user signups count
+merge_request: 45643
+author:
+type: other

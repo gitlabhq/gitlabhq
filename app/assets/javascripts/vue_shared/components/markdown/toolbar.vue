@@ -61,43 +61,59 @@ export default {
     <span v-if="canAttachFile" class="uploading-container">
       <span class="uploading-progress-container hide">
         <template>
-          <gl-icon name="media" :size="16" class="gl-vertical-align-text-bottom" />
+          <gl-icon name="media" />
         </template>
         <span class="attaching-file-message"></span>
         <!-- eslint-disable-next-line @gitlab/vue-require-i18n-strings -->
         <span class="uploading-progress">0%</span>
-        <gl-loading-icon inline class="align-text-bottom" />
+        <gl-loading-icon inline />
       </span>
       <span class="uploading-error-container hide">
         <span class="uploading-error-icon">
-          <template>
-            <gl-icon name="media" :size="16" class="gl-vertical-align-text-bottom" />
-          </template>
+          <gl-icon name="media" />
         </span>
         <span class="uploading-error-message"></span>
 
         <gl-sprintf
           :message="
             __(
-              '%{retryButtonStart}Try again%{retryButtonEnd} or %{newFileButtonStart}attach a new file%{newFileButtonEnd}',
+              '%{retryButtonStart}Try again%{retryButtonEnd} or %{newFileButtonStart}attach a new file%{newFileButtonEnd}.',
             )
           "
         >
           <template #retryButton="{content}">
-            <button class="retry-uploading-link" type="button">{{ content }}</button>
+            <gl-button
+              variant="link"
+              category="primary"
+              class="retry-uploading-link gl-vertical-align-baseline"
+            >
+              {{ content }}
+            </gl-button>
           </template>
           <template #newFileButton="{content}">
-            <button class="attach-new-file markdown-selector" type="button">{{ content }}</button>
+            <gl-button
+              variant="link"
+              category="primary"
+              class="markdown-selector attach-new-file gl-vertical-align-baseline"
+            >
+              {{ content }}
+            </gl-button>
           </template>
         </gl-sprintf>
       </span>
-      <gl-button class="markdown-selector button-attach-file" variant="link">
-        <template>
-          <gl-icon name="media" :size="16" />
-        </template>
-        <span class="text-attach-file">{{ __('Attach a file') }}</span>
+      <gl-button
+        icon="media"
+        variant="link"
+        category="primary"
+        class="markdown-selector button-attach-file gl-vertical-align-text-bottom"
+      >
+        {{ __('Attach a file') }}
       </gl-button>
-      <gl-button class="btn btn-default btn-sm hide button-cancel-uploading-files" variant="link">
+      <gl-button
+        variant="link"
+        category="primary"
+        class="button-cancel-uploading-files gl-vertical-align-baseline hide"
+      >
         {{ __('Cancel') }}
       </gl-button>
     </span>

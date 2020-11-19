@@ -13,6 +13,10 @@ class DeviseMailer < Devise::Mailer
     devise_mail(record, :password_change_by_admin, opts)
   end
 
+  def user_admin_approval(record, opts = {})
+    devise_mail(record, :user_admin_approval, opts)
+  end
+
   protected
 
   def subject_for(key)

@@ -246,8 +246,8 @@ RSpec.describe DropdownsHelper do
       expect(content).to include('dropdown-loading')
     end
 
-    it 'returns an icon in the content' do
-      expect(content.scan('icon').count).to eq(1)
+    it 'returns a gl-spinner in the content' do
+      expect(content).to include('gl-spinner')
     end
   end
 end

@@ -22,6 +22,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Populate do
     [
       Gitlab::Ci::Pipeline::Chain::Config::Content.new(pipeline, command),
       Gitlab::Ci::Pipeline::Chain::Config::Process.new(pipeline, command),
+      Gitlab::Ci::Pipeline::Chain::SeedBlock.new(pipeline, command),
       Gitlab::Ci::Pipeline::Chain::Seed.new(pipeline, command)
     ]
   end
@@ -180,23 +181,21 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Populate do
         ->(pipeline) { pipeline.variables.create!(key: 'VAR', value: '123') }
       end
 
-      it 'wastes pipeline iid' do
-        expect { run_chain }.to raise_error(ActiveRecord::RecordNotSaved)
-
-        last_iid = InternalId.ci_pipelines
-          .where(project_id: project.id)
-          .last.last_value
-
-        expect(last_iid).to be > 0
+      it 'raises error' do
+        expect { run_chain }.to raise_error(ActiveRecord::RecordNotSaved,
+                                            'You cannot call create unless the parent is saved')
       end
     end
   end
 
   context 'when pipeline gets persisted during the process' do
-    let(:pipeline) { create(:ci_pipeline, project: project) }
+    before do
+      dependencies.each(&:perform!)
+      pipeline.save!
+    end
 
     it 'raises error' do
-      expect { run_chain }.to raise_error(described_class::PopulateError)
+      expect { step.perform! }.to raise_error(described_class::PopulateError)
     end
   end
 

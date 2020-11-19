@@ -1,9 +1,17 @@
-# Cohorts
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
+# Cohorts **(CORE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/23361) in GitLab 9.1.
 
 As a benefit of having the [usage ping active](../settings/usage_statistics.md),
 GitLab lets you analyze the users' activities over time of your GitLab installation.
+
+To see User Cohorts, go to **Admin Area > Analytics > Cohorts**.
 
 ## Overview
 

@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Uploads development documentation
 
 [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse) has special rules for handling uploads.
@@ -214,7 +220,6 @@ In this setup, an extra Rails route must be implemented in order to handle autho
   and [its routes](https://gitlab.com/gitlab-org/gitlab/blob/cc723071ad337573e0360a879cbf99bc4fb7adb9/config/routes/git_http.rb#L31-32).
 - [API endpoints for uploading packages](packages.md#file-uploads).
 
-Note: **Note:**
 This will fallback to _disk buffered upload_ when `direct_upload` is disabled inside the [object storage setting](../administration/uploads.md#object-storage-settings).
 The answer to the `/authorize` call will only contain a file system path.
 
@@ -273,8 +278,10 @@ Uploads routes belong to one of these categories:
 
 1. Rails controllers: uploads handled by Rails controllers.
 1. Grape API: uploads handled by a Grape API endpoint.
-1. GraphQL API: uploads handled by a GraphQL resolve function. In these cases, there is nothing else
-   to do apart from implementing the actual upload.
+1. GraphQL API: uploads handled by a GraphQL resolve function.
+
+CAUTION: **Warning:**
+GraphQL uploads do not support [direct upload](#direct-upload) yet. Depending on the use case, the feature may not work on installations without NFS (like GitLab.com or Kubernetes installations). Uploading to object storage inside the GraphQL resolve function may result in timeout errors. For more details please follow [issue #280819](https://gitlab.com/gitlab-org/gitlab/-/issues/280819).
 
 ### Update Workhorse for the new route
 

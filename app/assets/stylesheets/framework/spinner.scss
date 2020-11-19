@@ -20,7 +20,7 @@
   }
 }
 
-.spinner {
+@mixin spinner($size: 16px, $border-width: 2px, $color: $orange-400) {
   border-radius: 50%;
   position: relative;
   margin: 0 auto;
@@ -30,8 +30,12 @@
   animation-iteration-count: infinite;
   border-style: solid;
   display: inline-flex;
-  @include spinner-size(16px, 2px);
-  @include spinner-color($orange-400);
+  @include spinner-size($size, $border-width);
+  @include spinner-color($color);
+}
+
+.spinner {
+  @include spinner;
 
   &.spinner-md {
     @include spinner-size(32px, 3px);
@@ -55,4 +59,8 @@
   .gl-spinner {
     vertical-align: text-bottom;
   }
+}
+
+.spin {
+  animation: spinner-rotate 2s infinite linear;
 }

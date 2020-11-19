@@ -5,10 +5,6 @@ class ServiceDeskService {
     this.endpoint = endpoint;
   }
 
-  fetchIncomingEmail() {
-    return axios.get(this.endpoint);
-  }
-
   toggleServiceDesk(enable) {
     return axios.put(this.endpoint, { service_desk_enabled: enable });
   }

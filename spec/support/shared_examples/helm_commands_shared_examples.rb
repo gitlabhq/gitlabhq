@@ -15,6 +15,18 @@ RSpec.shared_examples 'helm command generator' do
 end
 
 RSpec.shared_examples 'helm command' do
+  describe 'HELM_VERSION' do
+    subject { command.class::HELM_VERSION }
+
+    it { is_expected.to match(/\d+\.\d+\.\d+/) }
+  end
+
+  describe '#env' do
+    subject { command.env }
+
+    it { is_expected.to be_a Hash }
+  end
+
   describe '#rbac?' do
     subject { command.rbac? }
 

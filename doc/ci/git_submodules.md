@@ -78,7 +78,7 @@ correctly with your CI jobs:
      GIT_SUBMODULE_STRATEGY: recursive
    ```
 
-   See the [`.gitlab-ci.yml` reference](yaml/README.md#git-submodule-strategy)
+   See the [GitLab Runner documentation](runners/README.md#git-submodule-strategy)
    for more details about `GIT_SUBMODULE_STRATEGY`.
 
 1. If you are using an older version of `gitlab-runner`, then use

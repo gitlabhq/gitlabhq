@@ -1,5 +1,4 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlIcon } from '@gitlab/ui';
 import ItemActions from '~/groups/components/item_actions.vue';
 import eventHub from '~/groups/event_hub';
 import { mockParentGroupItem, mockChildren } from '../mock_data';
@@ -20,18 +19,25 @@ describe('ItemActions', () => {
   };
 
   afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
+    wrapper.destroy();
+    wrapper = null;
   });
 
   const findEditGroupBtn = () => wrapper.find('[data-testid="edit-group-btn"]');
-  const findEditGroupIcon = () => findEditGroupBtn().find(GlIcon);
   const findLeaveGroupBtn = () => wrapper.find('[data-testid="leave-group-btn"]');
-  const findLeaveGroupIcon = () => findLeaveGroupBtn().find(GlIcon);
 
   describe('template', () => {
+    let group;
+
+    beforeEach(() => {
+      group = {
+        ...mockParentGroupItem,
+        canEdit: true,
+        canLeave: true,
+      };
+      createComponent({ group });
+    });
+
     it('renders component template correctly', () => {
       createComponent();
 
@@ -39,49 +45,46 @@ describe('ItemActions', () => {
     });
 
     it('renders "Edit group" button with correct attribute values', () => {
-      const group = {
-        ...mockParentGroupItem,
-        canEdit: true,
-      };
-
-      createComponent({ group });
-
-      expect(findEditGroupBtn().exists()).toBe(true);
-      expect(findEditGroupBtn().classes()).toContain('no-expand');
-      expect(findEditGroupBtn().attributes('href')).toBe(group.editPath);
-      expect(findEditGroupBtn().attributes('aria-label')).toBe('Edit group');
-      expect(findEditGroupBtn().attributes('data-original-title')).toBe('Edit group');
-      expect(findEditGroupIcon().exists()).toBe(true);
-      expect(findEditGroupIcon().props('name')).toBe('settings');
+      const button = findEditGroupBtn();
+      expect(button.exists()).toBe(true);
+      expect(button.props('icon')).toBe('pencil');
+      expect(button.attributes('aria-label')).toBe('Edit group');
     });
 
-    describe('`canLeave` is true', () => {
-      const group = {
-        ...mockParentGroupItem,
-        canLeave: true,
-      };
-
-      beforeEach(() => {
-        createComponent({ group });
-      });
-
-      it('renders "Leave this group" button with correct attribute values', () => {
-        expect(findLeaveGroupBtn().exists()).toBe(true);
-        expect(findLeaveGroupBtn().classes()).toContain('no-expand');
-        expect(findLeaveGroupBtn().attributes('href')).toBe(group.leavePath);
-        expect(findLeaveGroupBtn().attributes('aria-label')).toBe('Leave this group');
-        expect(findLeaveGroupBtn().attributes('data-original-title')).toBe('Leave this group');
-        expect(findLeaveGroupIcon().exists()).toBe(true);
-        expect(findLeaveGroupIcon().props('name')).toBe('leave');
-      });
-
-      it('emits event on "Leave this group" button click', () => {
-        jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
-
-        findLeaveGroupBtn().trigger('click');
-
-        expect(eventHub.$emit).toHaveBeenCalledWith('showLeaveGroupModal', group, parentGroup);
-      });
+    it('renders "Leave this group" button with correct attribute values', () => {
+      const button = findLeaveGroupBtn();
+      expect(button.exists()).toBe(true);
+      expect(button.props('icon')).toBe('leave');
+      expect(button.attributes('aria-label')).toBe('Leave this group');
     });
+
+    it('emits `showLeaveGroupModal` event in the event hub', () => {
+      jest.spyOn(eventHub, '$emit');
+      findLeaveGroupBtn().vm.$emit('click', { stopPropagation: () => {} });
+
+      expect(eventHub.$emit).toHaveBeenCalledWith('showLeaveGroupModal', group, parentGroup);
+    });
+  });
+
+  it('does not render leave button if group can not be left', () => {
+    createComponent({
+      group: {
+        ...mockParentGroupItem,
+        canLeave: false,
+      },
+    });
+
+    expect(findLeaveGroupBtn().exists()).toBe(false);
+  });
+
+  it('does not render edit button if group can not be edited', () => {
+    createComponent({
+      group: {
+        ...mockParentGroupItem,
+        canEdit: false,
+      },
+    });
+
+    expect(findEditGroupBtn().exists()).toBe(false);
   });
 });

@@ -1,9 +1,8 @@
 <script>
-import { mapActions } from 'vuex';
-
 import { GlAlert, GlButton } from '@gitlab/ui';
 
-import { CENTERED_LIMITED_CONTAINER_CLASSES } from '../constants';
+import { CENTERED_LIMITED_CONTAINER_CLASSES, EVT_EXPAND_ALL_FILES } from '../constants';
+import eventHub from '../event_hub';
 
 export default {
   components: {
@@ -36,13 +35,12 @@ export default {
   },
 
   methods: {
-    ...mapActions('diffs', ['expandAllFiles']),
     dismiss() {
       this.isDismissed = true;
       this.$emit('dismiss');
     },
     expand() {
-      this.expandAllFiles();
+      eventHub.$emit(EVT_EXPAND_ALL_FILES);
       this.dismiss();
     },
   },

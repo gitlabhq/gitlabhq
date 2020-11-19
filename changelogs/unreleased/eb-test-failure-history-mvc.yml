@@ -1,0 +1,5 @@
+---
+title: Store test failure data when build finishes
+merge_request: 45027
+author:
+type: added

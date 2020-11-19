@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Listing repository directories **(CORE ONLY)**
 
 You can print a list of all Git repositories on disk managed by GitLab.
@@ -13,7 +19,6 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:list_repos RAILS_ENV=production
 ```
 
-NOTE: **Note:**
 The results use the default ordering of the GitLab Rails application.
 
 ## Limit search results

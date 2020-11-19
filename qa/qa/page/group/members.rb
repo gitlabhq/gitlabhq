@@ -16,26 +16,29 @@ module QA
           element :invite_member_button
         end
 
-        view 'app/views/shared/members/_member.html.haml' do
+        view 'app/assets/javascripts/pages/groups/group_members/index.js' do
           element :member_row
+          element :groups_list
+          element :group_row
+        end
+
+        view 'app/assets/javascripts/vue_shared/components/members/table/role_dropdown.vue' do
           element :access_level_dropdown
+          element :access_level_link
+        end
+
+        view 'app/assets/javascripts/vue_shared/components/members/action_buttons/remove_member_button.vue' do
           element :delete_member_button
-          element :developer_access_level_link, 'qa_selector: "#{role.downcase}_access_level_link"' # rubocop:disable QA/ElementWithPattern, Lint/InterpolationCheck
         end
 
         view 'app/views/groups/group_members/index.html.haml' do
           element :invite_group_tab
           element :groups_list_tab
-          element :groups_list
         end
 
         view 'app/views/shared/members/_invite_group.html.haml' do
           element :group_select_field
           element :invite_group_button
-        end
-
-        view 'app/views/shared/members/_group.html.haml' do
-          element :group_row
         end
 
         def select_group(group_name)
@@ -57,7 +60,7 @@ module QA
         def update_access_level(username, access_level)
           within_element(:member_row, text: username) do
             click_element :access_level_dropdown
-            click_element "#{access_level.downcase}_access_level_link"
+            click_element :access_level_link, text: access_level
           end
         end
 

@@ -29,6 +29,7 @@ ignore_design_attributes:
   - id
   - issue_id
   - project_id
+  - iid
 
 ignore_version_attributes:
   - id

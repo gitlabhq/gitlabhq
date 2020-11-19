@@ -48,12 +48,49 @@ function update_tests_metadata() {
   fi
 }
 
+function retrieve_tests_mapping() {
+  mkdir -p crystalball/
+
+  if [[ ! -f "${RSPEC_PACKED_TESTS_MAPPING_PATH}" ]]; then
+    (wget -O "${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz" "http://${TESTS_METADATA_S3_BUCKET}.s3.amazonaws.com/${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz" && gzip -d "${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz") || echo "{}" > "${RSPEC_PACKED_TESTS_MAPPING_PATH}"
+  fi
+
+  scripts/unpack-test-mapping "${RSPEC_PACKED_TESTS_MAPPING_PATH}" "${RSPEC_TESTS_MAPPING_PATH}"
+}
+
+function update_tests_mapping() {
+  if ! crystalball_rspec_data_exists; then
+    echo "No crystalball rspec data found."
+    return 0
+  fi
+
+  scripts/generate-test-mapping "${RSPEC_TESTS_MAPPING_PATH}" crystalball/rspec*.yml
+
+  scripts/pack-test-mapping "${RSPEC_TESTS_MAPPING_PATH}" "${RSPEC_PACKED_TESTS_MAPPING_PATH}"
+
+  gzip "${RSPEC_PACKED_TESTS_MAPPING_PATH}"
+
+  if [[ -n "${TESTS_METADATA_S3_BUCKET}" ]]; then
+    if [[ "$CI_PIPELINE_SOURCE" == "schedule" ]]; then
+      scripts/sync-reports put "${TESTS_METADATA_S3_BUCKET}" "${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz"
+    else
+      echo "Not uploading report to S3 as the pipeline is not a scheduled one."
+    fi
+  fi
+
+  rm -f crystalball/rspec*.yml
+}
+
+function crystalball_rspec_data_exists() {
+  compgen -G "crystalball/rspec*.yml" > /dev/null;
+}
+
 function rspec_simple_job() {
   local rspec_opts="${1}"
 
   export NO_KNAPSACK="1"
 
-  bin/rspec --color --format documentation --format RspecJunitFormatter --out junit_rspec.xml ${rspec_opts}
+  bin/rspec -Ispec -rspec_helper --color --format documentation --format RspecJunitFormatter --out junit_rspec.xml ${rspec_opts}
 }
 
 function rspec_paralellized_job() {
@@ -106,7 +143,7 @@ function rspec_paralellized_job() {
 
   export MEMORY_TEST_PATH="tmp/memory_test/${report_name}_memory.csv"
 
-  knapsack rspec "-Ispec --color --format documentation --format RspecJunitFormatter --out junit_rspec.xml ${rspec_opts}"
+  knapsack rspec "-Ispec -rspec_helper --color --format documentation --format RspecJunitFormatter --out junit_rspec.xml ${rspec_opts}"
 
   date
 }

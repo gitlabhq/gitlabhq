@@ -308,6 +308,6 @@ export default {
       @input="handlePageChange"
     />
 
-    <slot v-if="!showItems" name="emtpy-state"></slot>
+    <slot v-if="!showItems" name="empty-state"></slot>
   </div>
 </template>

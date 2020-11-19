@@ -1,0 +1,5 @@
+---
+title: Add total count to Terraform state GraphQL API
+merge_request: 45798
+author:
+type: changed

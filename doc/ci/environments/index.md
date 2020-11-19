@@ -34,8 +34,7 @@ currently being deployed or has been deployed on your servers.
 It's important to know that:
 
 - Environments are like tags for your CI jobs, describing where code gets deployed.
-- Deployments are created when [jobs](../yaml/README.md#introduction) deploy versions of code to environments,
-  so every environment can have one or more deployments.
+- Deployments are created when [GitLab CI/CD](../yaml/README.md) is used to deploy versions of code to environments.
 
 GitLab:
 
@@ -219,10 +218,17 @@ You can also specify a static part of the URL at `environment:url:`, such as
 
 The assigned URL for the `review/your-branch-name` environment is [visible in the UI](#using-the-environment-url).
 
-> **Notes:**
->
-> - `stop_review` doesn't generate a dotenv report artifact, so it won't recognize the `DYNAMIC_ENVIRONMENT_URL` variable. Therefore you should not set `environment:url:` in the `stop_review` job.
-> - If the environment URL is not valid (for example, the URL is malformed), the system doesn't update the environment URL.
+Note the following:
+
+- `stop_review` doesn't generate a dotenv report artifact, so it won't recognize the
+  `DYNAMIC_ENVIRONMENT_URL` variable. Therefore you shouldn't set `environment:url:` in the
+  `stop_review` job.
+- If the environment URL isn't valid (for example, the URL is malformed), the system doesn't update
+  the environment URL.
+- If the script that runs in `stop_review` exists only in your repository and therefore can't use
+  `GIT_STRATEGY: none`, configure [pipelines for merge requests](../../ci/merge_request_pipelines/index.md)
+  for these jobs. This ensures that runners can fetch the repository even after a feature branch is
+  deleted. For more information, see [Ref Specs for Runners](../pipelines/index.md#ref-specs-for-runners).
 
 ### Configuring manual deployments
 
@@ -304,7 +310,7 @@ Dynamic environments are a fundamental part of [Review apps](../review_apps/inde
 
 #### Allowed variables
 
-The `name` and `url` parameters for dynamic environments can use most available CI/CD variables,
+The `name` and `url` keywords for dynamic environments can use most available CI/CD variables,
 including:
 
 - [Predefined environment variables](../variables/README.md#predefined-environment-variables)
@@ -436,7 +442,7 @@ The configuration in this section provides a full development workflow where you
 - Tested.
 - Built.
 - Deployed as a Review App.
-- Deployed to a staging server once the merge request is merged.
+- Deployed to a staging server after the merge request is merged.
 - Finally, able to be manually deployed to the production server.
 
 The following combines the previous configuration examples, including:
@@ -675,24 +681,23 @@ deploy_review:
     name: review/$CI_COMMIT_REF_NAME
     url: https://$CI_ENVIRONMENT_SLUG.example.com
     on_stop: stop_review
-  only:
-    - branches
-  except:
-    - master
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
 
 stop_review:
   stage: deploy
-  variables:
-    GIT_STRATEGY: none
   script:
     - echo "Remove review app"
-  when: manual
   environment:
     name: review/$CI_COMMIT_REF_NAME
     action: stop
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+      when: manual
 ```
 
-Setting the [`GIT_STRATEGY`](../yaml/README.md#git-strategy) to `none` is necessary in the
+If you can't use [Pipelines for merge requests](../merge_request_pipelines/index.md),
+setting the [`GIT_STRATEGY`](../runners/README.md#git-strategy) to `none` is necessary in the
 `stop_review` job so that the [runner](https://docs.gitlab.com/runner/) won't
 try to check out the code after the branch is deleted.
 
@@ -748,13 +753,17 @@ review_app:
     name: review/$CI_COMMIT_REF_NAME
     on_stop: stop_review_app
     auto_stop_in: 1 week
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
 
 stop_review_app:
   script: stop-review-app
   environment:
     name: review/$CI_COMMIT_REF_NAME
     action: stop
-  when: manual
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+      when: manual
 ```
 
 As long as a merge request is active and keeps getting new commits,
@@ -923,11 +932,10 @@ the [Kubernetes integration](../../user/project/clusters/index.md)), GitLab can 
 a terminal session to your environment.
 
 This is a powerful feature that allows you to debug issues without leaving the comfort
-of your web browser. To enable it, just follow the instructions given in the service integration
+of your web browser. To enable it, follow the instructions given in the service integration
 documentation.
 
-NOTE: **Note:**
-Container-based deployments often lack basic tools (like an editor), and may
+Note that container-based deployments often lack basic tools (like an editor), and may
 be stopped or restarted at any time. If this happens, you will lose all your
 changes. Treat this as a debugging tool, not a comprehensive online IDE.
 

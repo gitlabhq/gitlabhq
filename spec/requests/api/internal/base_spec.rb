@@ -253,6 +253,7 @@ RSpec.describe API::Internal::Base do
 
   describe "POST /internal/lfs_authenticate" do
     before do
+      stub_lfs_setting(enabled: true)
       project.add_developer(user)
     end
 
@@ -292,6 +293,33 @@ RSpec.describe API::Internal::Base do
         lfs_auth_user(non_existing_record_id, project)
 
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'returns a 404 when LFS is disabled on the project' do
+        project.update!(lfs_enabled: false)
+        lfs_auth_user(user.id, project)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      context 'other repository types' do
+        it 'returns the correct information for a project wiki' do
+          wiki = create(:project_wiki, project: project)
+          lfs_auth_user(user.id, wiki)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['username']).to eq(user.username)
+          expect(json_response['repository_http_path']).to eq(wiki.http_url_to_repo)
+          expect(json_response['expires_in']).to eq(Gitlab::LfsToken::DEFAULT_EXPIRE_TIME)
+          expect(Gitlab::LfsToken.new(user).token_valid?(json_response['lfs_token'])).to be_truthy
+        end
+
+        it 'returns a 404 when the container does not support LFS' do
+          snippet = create(:project_snippet)
+          lfs_auth_user(user.id, snippet)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
 

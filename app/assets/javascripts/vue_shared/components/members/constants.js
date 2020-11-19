@@ -51,6 +51,7 @@ export const FIELDS = [
     key: 'actions',
     thClass: 'col-actions',
     tdClass: 'col-actions',
+    showFunction: 'showActionsField',
   },
 ];
 

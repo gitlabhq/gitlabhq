@@ -19,11 +19,10 @@ From GitLab 13.0, using NFS for Git repositories is deprecated. In GitLab 14.0,
 support for NFS for Git repositories is scheduled to be removed. Upgrade to
 [Gitaly Cluster](gitaly/praefect.md) as soon as possible.
 
-NOTE: **Note:**
-Filesystem performance has a big impact on overall GitLab
-performance, especially for actions that read or write to Git repositories. See
-[Filesystem Performance Benchmarking](operations/filesystem_benchmarking.md)
-for steps to test filesystem performance.
+Filesystem performance can impact overall GitLab performance, especially for
+actions that read or write to Git repositories. For steps you can use to test
+filesystem performance, see
+[Filesystem Performance Benchmarking](operations/filesystem_benchmarking.md).
 
 ## Known kernel version incompatibilities
 
@@ -119,7 +118,7 @@ To disable NFS server delegation, do the following:
 
 1. Restart the NFS server process. For example, on CentOS run `service nfs restart`.
 
-NOTE: **Important note:**
+NOTE: **Note:**
 The kernel bug may be fixed in
 [more recent kernels with this commit](https://github.com/torvalds/linux/commit/95da1b3a5aded124dd1bda1e3cdb876184813140).
 Red Hat Enterprise 7 [shipped a kernel update](https://access.redhat.com/errata/RHSA-2019:2029)
@@ -250,9 +249,9 @@ gitlab_rails['shared_path'] = '/gitlab-nfs/gitlab-data/shared'
 gitlab_ci['builds_directory'] = '/gitlab-nfs/gitlab-data/builds'
 ```
 
-Run `sudo gitlab-ctl reconfigure` to start using the central location. Please
-be aware that if you had existing data you will need to manually copy/rsync it
-to these new locations and then restart GitLab.
+Run `sudo gitlab-ctl reconfigure` to start using the central location. Be aware
+that if you had existing data, you'll need to manually copy or rsync it to
+these new locations, and then restart GitLab.
 
 ### Bind mounts
 
@@ -307,8 +306,12 @@ by testing the following commands:
 ```shell
 sudo mkdir /gitlab-nfs/test-dir
 sudo chown git /gitlab-nfs/test-dir
-sudo chgrp gitlab-www /gitlab-nfs/test-dir
 sudo chgrp root /gitlab-nfs/test-dir
+sudo chmod 0700 /gitlab-nfs/test-dir
+sudo chgrp gitlab-www /gitlab-nfs/test-dir
+sudo chmod 0751 /gitlab-nfs/test-dir
+sudo chgrp git /gitlab-nfs/test-dir
+sudo chmod 2770 /gitlab-nfs/test-dir
 sudo chmod 2755 /gitlab-nfs/test-dir
 sudo -u git mkdir /gitlab-nfs/test-dir/test2
 sudo -u git chmod 2755 /gitlab-nfs/test-dir/test2
@@ -323,7 +326,7 @@ Any `Operation not permitted` errors means you should investigate your NFS serve
 If the traffic between your NFS server and NFS client(s) is subject to port filtering
 by a firewall, then you will need to reconfigure that firewall to allow NFS communication.
 
-[This guide from TDLP](http://tldp.org/HOWTO/NFS-HOWTO/security.html#FIREWALLS)
+[This guide from TDLP](https://tldp.org/HOWTO/NFS-HOWTO/security.html#FIREWALLS)
 covers the basics of using NFS in a firewalled environment. Additionally, we encourage you to
 search for and review the specific documentation for your operating system or distribution and your firewall software.
 
@@ -396,8 +399,8 @@ Additionally, this configuration is specifically warned against in the
 >system semantics, this can cause reliability problems. Specifically, delayed (asynchronous) writes
 >to the NFS server can cause data corruption problems.
 
-For supported database architecture, please see our documentation on
-[Configuring a Database for GitLab HA](postgresql/replication_and_failover.md).
+For supported database architecture, see our documentation about
+[configuring a database for replication and failover](postgresql/replication_and_failover.md).
 
 <!-- ## Troubleshooting
 

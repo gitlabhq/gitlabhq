@@ -145,12 +145,12 @@ RSpec.describe TodoService do
       end
 
       it 'creates correct todos for each valid user based on the type of mention' do
-        issue.update(description: directly_addressed_and_mentioned)
+        issue.update!(description: directly_addressed_and_mentioned)
 
         service.new_issue(issue, author)
 
         should_create_todo(user: member, target: issue, action: Todo::DIRECTLY_ADDRESSED)
-        should_create_todo(user: admin, target: issue, action: Todo::MENTIONED)
+        should_not_create_todo(user: admin, target: issue, action: Todo::MENTIONED)
         should_create_todo(user: guest, target: issue, action: Todo::MENTIONED)
       end
 
@@ -160,7 +160,7 @@ RSpec.describe TodoService do
         should_create_todo(user: assignee, target: confidential_issue, author: john_doe, action: Todo::ASSIGNED)
         should_create_todo(user: author, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
         should_create_todo(user: member, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
-        should_create_todo(user: admin, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
+        should_not_create_todo(user: admin, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
         should_not_create_todo(user: guest, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
         should_create_todo(user: john_doe, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
       end
@@ -171,7 +171,7 @@ RSpec.describe TodoService do
         should_create_todo(user: assignee, target: addressed_confident_issue, author: john_doe, action: Todo::ASSIGNED)
         should_create_todo(user: author, target: addressed_confident_issue, author: john_doe, action: Todo::DIRECTLY_ADDRESSED)
         should_create_todo(user: member, target: addressed_confident_issue, author: john_doe, action: Todo::DIRECTLY_ADDRESSED)
-        should_create_todo(user: admin, target: addressed_confident_issue, author: john_doe, action: Todo::DIRECTLY_ADDRESSED)
+        should_not_create_todo(user: admin, target: addressed_confident_issue, author: john_doe, action: Todo::DIRECTLY_ADDRESSED)
         should_not_create_todo(user: guest, target: addressed_confident_issue, author: john_doe, action: Todo::DIRECTLY_ADDRESSED)
         should_create_todo(user: john_doe, target: addressed_confident_issue, author: john_doe, action: Todo::DIRECTLY_ADDRESSED)
       end
@@ -222,13 +222,13 @@ RSpec.describe TodoService do
       end
 
       it 'creates a todo for each valid user not included in skip_users based on the type of mention' do
-        issue.update(description: directly_addressed_and_mentioned)
+        issue.update!(description: directly_addressed_and_mentioned)
 
         service.update_issue(issue, author, skip_users)
 
         should_create_todo(user: member, target: issue, action: Todo::DIRECTLY_ADDRESSED)
         should_create_todo(user: guest, target: issue, action: Todo::MENTIONED)
-        should_create_todo(user: admin, target: issue, action: Todo::MENTIONED)
+        should_not_create_todo(user: admin, target: issue, action: Todo::MENTIONED)
         should_not_create_todo(user: skipped, target: issue)
       end
 
@@ -273,7 +273,7 @@ RSpec.describe TodoService do
         should_create_todo(user: author, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
         should_create_todo(user: assignee, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
         should_create_todo(user: member, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
-        should_create_todo(user: admin, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
+        should_not_create_todo(user: admin, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
         should_not_create_todo(user: guest, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
         should_create_todo(user: john_doe, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
       end
@@ -284,14 +284,14 @@ RSpec.describe TodoService do
         should_create_todo(user: author, target: addressed_confident_issue, author: john_doe, action: Todo::DIRECTLY_ADDRESSED)
         should_create_todo(user: assignee, target: addressed_confident_issue, author: john_doe, action: Todo::DIRECTLY_ADDRESSED)
         should_create_todo(user: member, target: addressed_confident_issue, author: john_doe, action: Todo::DIRECTLY_ADDRESSED)
-        should_create_todo(user: admin, target: addressed_confident_issue, author: john_doe, action: Todo::DIRECTLY_ADDRESSED)
+        should_not_create_todo(user: admin, target: addressed_confident_issue, author: john_doe, action: Todo::DIRECTLY_ADDRESSED)
         should_not_create_todo(user: guest, target: addressed_confident_issue, author: john_doe, action: Todo::DIRECTLY_ADDRESSED)
         should_create_todo(user: john_doe, target: addressed_confident_issue, author: john_doe, action: Todo::DIRECTLY_ADDRESSED)
       end
 
       context 'issues with a task list' do
         it 'does not create todo when tasks are marked as completed' do
-          issue.update(description: "- [x] Task 1\n- [X] Task 2 #{mentions}")
+          issue.update!(description: "- [x] Task 1\n- [X] Task 2 #{mentions}")
 
           service.update_issue(issue, author)
 
@@ -304,7 +304,7 @@ RSpec.describe TodoService do
         end
 
         it 'does not create directly addressed todo when tasks are marked as completed' do
-          addressed_issue.update(description: "#{directly_addressed}\n- [x] Task 1\n- [x] Task 2\n")
+          addressed_issue.update!(description: "#{directly_addressed}\n- [x] Task 1\n- [x] Task 2\n")
 
           service.update_issue(addressed_issue, author)
 
@@ -317,7 +317,7 @@ RSpec.describe TodoService do
         end
 
         it 'does not raise an error when description not change' do
-          issue.update(title: 'Sample')
+          issue.update!(title: 'Sample')
 
           expect { service.update_issue(issue, author) }.not_to raise_error
         end
@@ -427,12 +427,12 @@ RSpec.describe TodoService do
       end
 
       it 'creates a todo for each valid user based on the type of mention' do
-        note.update(note: directly_addressed_and_mentioned)
+        note.update!(note: directly_addressed_and_mentioned)
 
         service.new_note(note, john_doe)
 
         should_create_todo(user: member, target: issue, author: john_doe, action: Todo::DIRECTLY_ADDRESSED, note: note)
-        should_create_todo(user: admin, target: issue, author: john_doe, action: Todo::MENTIONED, note: note)
+        should_not_create_todo(user: admin, target: issue, author: john_doe, action: Todo::MENTIONED, note: note)
         should_create_todo(user: guest, target: issue, author: john_doe, action: Todo::MENTIONED, note: note)
       end
 
@@ -452,7 +452,7 @@ RSpec.describe TodoService do
         should_create_todo(user: author, target: confidential_issue, author: john_doe, action: Todo::MENTIONED, note: note_on_confidential_issue)
         should_create_todo(user: assignee, target: confidential_issue, author: john_doe, action: Todo::MENTIONED, note: note_on_confidential_issue)
         should_create_todo(user: member, target: confidential_issue, author: john_doe, action: Todo::MENTIONED, note: note_on_confidential_issue)
-        should_create_todo(user: admin, target: confidential_issue, author: john_doe, action: Todo::MENTIONED, note: note_on_confidential_issue)
+        should_not_create_todo(user: admin, target: confidential_issue, author: john_doe, action: Todo::MENTIONED, note: note_on_confidential_issue)
         should_not_create_todo(user: guest, target: confidential_issue, author: john_doe, action: Todo::MENTIONED, note: note_on_confidential_issue)
         should_create_todo(user: john_doe, target: confidential_issue, author: john_doe, action: Todo::MENTIONED, note: note_on_confidential_issue)
       end
@@ -463,7 +463,7 @@ RSpec.describe TodoService do
         should_create_todo(user: author, target: confidential_issue, author: john_doe, action: Todo::DIRECTLY_ADDRESSED, note: addressed_note_on_confidential_issue)
         should_create_todo(user: assignee, target: confidential_issue, author: john_doe, action: Todo::DIRECTLY_ADDRESSED, note: addressed_note_on_confidential_issue)
         should_create_todo(user: member, target: confidential_issue, author: john_doe, action: Todo::DIRECTLY_ADDRESSED, note: addressed_note_on_confidential_issue)
-        should_create_todo(user: admin, target: confidential_issue, author: john_doe, action: Todo::DIRECTLY_ADDRESSED, note: addressed_note_on_confidential_issue)
+        should_not_create_todo(user: admin, target: confidential_issue, author: john_doe, action: Todo::DIRECTLY_ADDRESSED, note: addressed_note_on_confidential_issue)
         should_not_create_todo(user: guest, target: confidential_issue, author: john_doe, action: Todo::DIRECTLY_ADDRESSED, note: addressed_note_on_confidential_issue)
         should_create_todo(user: john_doe, target: confidential_issue, author: john_doe, action: Todo::DIRECTLY_ADDRESSED, note: addressed_note_on_confidential_issue)
       end
@@ -694,12 +694,12 @@ RSpec.describe TodoService do
       end
 
       it 'creates a todo for each valid user based on the type of mention' do
-        mr_assigned.update(description: directly_addressed_and_mentioned)
+        mr_assigned.update!(description: directly_addressed_and_mentioned)
 
         service.new_merge_request(mr_assigned, author)
 
         should_create_todo(user: member, target: mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
-        should_create_todo(user: admin, target: mr_assigned, action: Todo::MENTIONED)
+        should_not_create_todo(user: admin, target: mr_assigned, action: Todo::MENTIONED)
       end
 
       it 'creates a directly addressed todo for each valid addressed user' do
@@ -726,12 +726,12 @@ RSpec.describe TodoService do
       end
 
       it 'creates a todo for each valid user not included in skip_users based on the type of mention' do
-        mr_assigned.update(description: directly_addressed_and_mentioned)
+        mr_assigned.update!(description: directly_addressed_and_mentioned)
 
         service.update_merge_request(mr_assigned, author, skip_users)
 
         should_create_todo(user: member, target: mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
-        should_create_todo(user: admin, target: mr_assigned, action: Todo::MENTIONED)
+        should_not_create_todo(user: admin, target: mr_assigned, action: Todo::MENTIONED)
         should_not_create_todo(user: skipped, target: mr_assigned)
       end
 
@@ -772,7 +772,7 @@ RSpec.describe TodoService do
 
       context 'with a task list' do
         it 'does not create todo when tasks are marked as completed' do
-          mr_assigned.update(description: "- [x] Task 1\n- [X] Task 2 #{mentions}")
+          mr_assigned.update!(description: "- [x] Task 1\n- [X] Task 2 #{mentions}")
 
           service.update_merge_request(mr_assigned, author)
 
@@ -786,7 +786,7 @@ RSpec.describe TodoService do
         end
 
         it 'does not create directly addressed todo when tasks are marked as completed' do
-          addressed_mr_assigned.update(description: "#{directly_addressed}\n- [x] Task 1\n- [X] Task 2")
+          addressed_mr_assigned.update!(description: "#{directly_addressed}\n- [x] Task 1\n- [X] Task 2")
 
           service.update_merge_request(addressed_mr_assigned, author)
 
@@ -800,7 +800,7 @@ RSpec.describe TodoService do
         end
 
         it 'does not raise an error when description not change' do
-          mr_assigned.update(title: 'Sample')
+          mr_assigned.update!(title: 'Sample')
 
           expect { service.update_merge_request(mr_assigned, author) }.not_to raise_error
         end
@@ -883,7 +883,7 @@ RSpec.describe TodoService do
       end
 
       it 'creates a pending todo for each merge_participant' do
-        mr_unassigned.update(merge_when_pipeline_succeeds: true, merge_user: admin)
+        mr_unassigned.update!(merge_when_pipeline_succeeds: true, merge_user: admin)
         service.merge_request_became_unmergeable(mr_unassigned)
 
         merge_participants.each do |participant|
@@ -991,13 +991,13 @@ RSpec.describe TodoService do
     end
 
     it 'creates a todo for each valid user not included in skip_users based on the type of mention' do
-      note.update(note: directly_addressed_and_mentioned)
+      note.update!(note: directly_addressed_and_mentioned)
 
       service.update_note(note, author, skip_users)
 
       should_create_todo(user: member, target: noteable, action: Todo::DIRECTLY_ADDRESSED)
       should_create_todo(user: guest, target: noteable, action: Todo::MENTIONED)
-      should_create_todo(user: admin, target: noteable, action: Todo::MENTIONED)
+      should_not_create_todo(user: admin, target: noteable, action: Todo::MENTIONED)
       should_not_create_todo(user: skipped, target: noteable)
     end
 

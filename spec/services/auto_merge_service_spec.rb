@@ -148,7 +148,7 @@ RSpec.describe AutoMergeService do
   end
 
   describe '#update' do
-    subject { service.update(merge_request) }
+    subject { service.update(merge_request) } # rubocop:disable Rails/SaveBang
 
     context 'when auto merge is enabled' do
       let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }

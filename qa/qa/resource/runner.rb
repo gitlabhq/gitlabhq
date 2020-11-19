@@ -29,7 +29,7 @@ module QA
       end
 
       def executor_image
-        @executor_image || 'registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine-ruby-2.6'
+        @executor_image || 'registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine-ruby-2.7'
       end
 
       def fabricate_via_api!

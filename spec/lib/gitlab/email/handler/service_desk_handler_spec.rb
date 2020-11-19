@@ -11,13 +11,13 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
   end
 
   let(:email_raw) { email_fixture('emails/service_desk.eml') }
-  let_it_be(:namespace) { create(:namespace, name: "email") }
+  let_it_be(:group) { create(:group, :private, name: "email") }
   let(:expected_description) do
     "Service desk stuff!\n\n```\na = b\n```\n\n`/label ~label1`\n`/assign @user1`\n`/close`\n![image](uploads/image.png)"
   end
 
   context 'service desk is enabled for the project' do
-    let_it_be(:project) { create(:project, :repository, :public, namespace: namespace, path: 'test', service_desk_enabled: true) }
+    let_it_be(:project) { create(:project, :repository, :private, group: group, path: 'test', service_desk_enabled: true) }
 
     before do
       allow(Gitlab::ServiceDesk).to receive(:supported?).and_return(true)
@@ -99,6 +99,18 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
               expect(issue.description).to include('Text from template')
               expect(issue.label_ids).to include(label.id)
               expect(issue.milestone).to eq(milestone)
+            end
+
+            it 'applies group labels using quick actions' do
+              group_label = create(:group_label, group: project.group, title: 'label2')
+              file_content = %(Text from template \n/label ~#{group_label.title}"")
+              set_template_file('with_group_labels', file_content)
+
+              receiver.execute
+
+              issue = Issue.last
+              expect(issue.description).to include('Text from template')
+              expect(issue.label_ids).to include(group_label.id)
             end
 
             it 'redacts quick actions present on user email body' do
@@ -289,7 +301,8 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
   end
 
   context 'service desk is disabled for the project' do
-    let(:project) { create(:project, :public, namespace: namespace, path: 'test', service_desk_enabled: false) }
+    let(:group) { create(:group)}
+    let(:project) { create(:project, :public, group: group, path: 'test', service_desk_enabled: false) }
 
     it 'bounces the email' do
       expect { receiver.execute }.to raise_error(Gitlab::Email::ProcessingError)

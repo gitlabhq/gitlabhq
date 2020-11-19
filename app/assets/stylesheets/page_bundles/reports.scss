@@ -8,14 +8,14 @@
 
   .report-block-list-issue-parent {
     padding: $gl-padding-top $gl-padding;
-    border-top: 1px solid $border-color;
+    border-top: 1px solid var(--border-color, $border-color);
   }
 }
 
 .report-block-container {
-  border-top: 1px solid $border-color;
+  border-top: 1px solid var(--border-color, $border-color);
   padding: $gl-padding - 2;
-  background-color: $gray-light;
+  background-color: var(--gray-50, $gray-10);
 
   // Clean MR widget CSS
   line-height: 20px;

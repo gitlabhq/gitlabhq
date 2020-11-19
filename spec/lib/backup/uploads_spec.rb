@@ -32,7 +32,8 @@ RSpec.describe Backup::Uploads do
 
     it 'excludes tmp from backup tar' do
       expect(backup).to receive(:tar).and_return('blabla-tar')
-      expect(backup).to receive(:run_pipeline!).with([%w(blabla-tar --exclude=lost+found --exclude=./tmp -C /var/uploads -cf - .), 'gzip -c -1'], any_args)
+      expect(backup).to receive(:run_pipeline!).with([%w(blabla-tar --exclude=lost+found --exclude=./tmp -C /var/uploads -cf - .), 'gzip -c -1'], any_args).and_return([[true, true], ''])
+      expect(backup).to receive(:pipeline_succeeded?).and_return(true)
       backup.dump
     end
   end

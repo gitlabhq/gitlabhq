@@ -31,7 +31,8 @@ describe('Release block milestone info', () => {
 
   const milestoneProgressBarContainer = () => wrapper.find('.js-milestone-progress-bar-container');
   const milestoneListContainer = () => wrapper.find('.js-milestone-list-container');
-  const issuesContainer = () => wrapper.find('.js-issues-container');
+  const issuesContainer = () => wrapper.find('[data-testid="issue-stats"]');
+  const mergeRequestsContainer = () => wrapper.find('[data-testid="merge-request-stats"]');
 
   describe('with default props', () => {
     beforeEach(() => factory({ milestones }));
@@ -188,66 +189,32 @@ describe('Release block milestone info', () => {
     expectAllZeros();
   });
 
-  describe('Issue links', () => {
-    const findOpenIssuesLink = () => wrapper.find({ ref: 'openIssuesLink' });
-    const findOpenIssuesText = () => wrapper.find({ ref: 'openIssuesText' });
-    const findClosedIssuesLink = () => wrapper.find({ ref: 'closedIssuesLink' });
-    const findClosedIssuesText = () => wrapper.find({ ref: 'closedIssuesText' });
+  describe('if the API response is missing the "mr_stats" property', () => {
+    beforeEach(() => factory({ milestones }));
 
-    describe('when openIssuePath is provided', () => {
-      const openIssuesPath = '/path/to/open/issues';
+    it('does not render merge request stats', () => {
+      expect(mergeRequestsContainer().exists()).toBe(false);
+    });
+  });
 
-      beforeEach(() => {
-        return factory({ milestones, openIssuesPath });
-      });
+  describe('if the API response includes the "mr_stats" property', () => {
+    beforeEach(() => {
+      milestones = milestones.map(m => ({
+        ...m,
+        mrStats: {
+          total: 15,
+          merged: 12,
+          closed: 1,
+        },
+      }));
 
-      it('renders the open issues as a link', () => {
-        expect(findOpenIssuesLink().exists()).toBe(true);
-        expect(findOpenIssuesText().exists()).toBe(false);
-      });
-
-      it('renders the open issues link with the correct href', () => {
-        expect(findOpenIssuesLink().attributes().href).toBe(openIssuesPath);
-      });
+      return factory({ milestones });
     });
 
-    describe('when openIssuePath is not provided', () => {
-      beforeEach(() => {
-        return factory({ milestones });
-      });
-
-      it('renders the open issues as plain text', () => {
-        expect(findOpenIssuesLink().exists()).toBe(false);
-        expect(findOpenIssuesText().exists()).toBe(true);
-      });
-    });
-
-    describe('when closedIssuePath is provided', () => {
-      const closedIssuesPath = '/path/to/closed/issues';
-
-      beforeEach(() => {
-        return factory({ milestones, closedIssuesPath });
-      });
-
-      it('renders the closed issues as a link', () => {
-        expect(findClosedIssuesLink().exists()).toBe(true);
-        expect(findClosedIssuesText().exists()).toBe(false);
-      });
-
-      it('renders the closed issues link with the correct href', () => {
-        expect(findClosedIssuesLink().attributes().href).toBe(closedIssuesPath);
-      });
-    });
-
-    describe('when closedIssuePath is not provided', () => {
-      beforeEach(() => {
-        return factory({ milestones });
-      });
-
-      it('renders the closed issues as plain text', () => {
-        expect(findClosedIssuesLink().exists()).toBe(false);
-        expect(findClosedIssuesText().exists()).toBe(true);
-      });
+    it('renders merge request stats', () => {
+      expect(trimText(mergeRequestsContainer().text())).toBe(
+        'Merge Requests 30 Open: 4 • Merged: 24 • Closed: 2',
+      );
     });
   });
 });

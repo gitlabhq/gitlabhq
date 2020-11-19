@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :resource_label_event do
     action { :add }
     label
-    user { issuable&.author || create(:user) }
+    user { issuable&.author || association(:user) }
 
     after(:build) do |event, evaluator|
       event.issue = create(:issue) unless event.issuable

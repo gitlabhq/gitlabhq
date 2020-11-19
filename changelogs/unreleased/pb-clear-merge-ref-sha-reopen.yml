@@ -1,0 +1,5 @@
+---
+title: Clear cached merge_ref_sha on reopen
+merge_request: 47747
+author:
+type: fixed

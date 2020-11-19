@@ -127,4 +127,12 @@ RSpec.describe Gitlab::EtagCaching::Router do
     expect(result).to be_present
     expect(result.name).to eq 'project_pipeline'
   end
+
+  it 'has a valid feature category for every route', :aggregate_failures do
+    feature_categories = YAML.load_file(Rails.root.join('config', 'feature_categories.yml')).to_set
+
+    described_class::ROUTES.each do |route|
+      expect(feature_categories).to include(route.feature_category), "#{route.name} has a category of #{route.feature_category}, which is not valid"
+    end
+  end
 end

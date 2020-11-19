@@ -1,0 +1,5 @@
+mutation retryPipeline($id: CiPipelineID!) {
+  pipelineRetry(input: { id: $id }) {
+    errors
+  }
+}

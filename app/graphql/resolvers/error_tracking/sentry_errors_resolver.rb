@@ -3,6 +3,8 @@
 module Resolvers
   module ErrorTracking
     class SentryErrorsResolver < BaseResolver
+      type Types::ErrorTracking::SentryErrorType.connection_type, null: true
+
       def resolve(**args)
         args[:cursor] = args.delete(:after)
         project = object.project

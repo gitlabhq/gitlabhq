@@ -86,4 +86,20 @@ RSpec.describe AtomicInternalId do
       expect { subject }.to change { milestone.iid }.from(nil).to(iid.to_i)
     end
   end
+
+  describe '.with_project_iid_supply' do
+    let(:iid) { 100 }
+
+    it 'wraps generate and track_greatest in a concurrency-safe lock' do
+      expect_next_instance_of(InternalId::InternalIdGenerator) do |g|
+        expect(g).to receive(:with_lock).and_call_original
+        expect(g.record).to receive(:last_value).and_return(iid)
+        expect(g).to receive(:track_greatest).with(iid + 4)
+      end
+
+      ::Milestone.with_project_iid_supply(milestone.project) do |supply|
+        4.times { supply.next_value }
+      end
+    end
+  end
 end

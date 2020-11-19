@@ -1,0 +1,5 @@
+---
+title: Fixed multi line comment options in parallel mode
+merge_request: 45557
+author:
+type: fixed

@@ -1,0 +1,5 @@
+---
+title: Fix overly aggressive prevent call
+merge_request: 47455
+author:
+type: fixed

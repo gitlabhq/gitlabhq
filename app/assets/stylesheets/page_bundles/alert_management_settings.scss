@@ -1,0 +1,24 @@
+@import 'mixins_and_variables_and_functions';
+
+$stroke-size: 1px;
+
+.right-arrow {
+  @include gl-relative;
+  @include gl-w-full;
+  height: $stroke-size;
+  @include gl-display-inline-block;
+  background-color: var(--gray-400, $gray-400);
+  min-width: $gl-spacing-scale-5;
+
+  &-head {
+    @include gl-absolute;
+    top: -$gl-spacing-scale-2;
+    left: calc(100% - #{$gl-spacing-scale-3} - #{2 * $stroke-size});
+    border-color: var(--gray-400, $gray-400);
+    @include gl-border-solid;
+    border-width: 0 $stroke-size $stroke-size 0;
+    @include gl-display-inline-block;
+    @include gl-p-2;
+    transform: rotate(-45deg);
+  }
+}

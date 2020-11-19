@@ -1,11 +1,10 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlTab } from '@gitlab/ui';
 import { TEST_HOST } from 'helpers/test_constants';
 import { pipelines } from 'jest/ide/mock_data';
 import List from '~/ide/components/pipelines/list.vue';
 import JobsList from '~/ide/components/jobs/list.vue';
-import Tab from '~/vue_shared/components/tabs/tab.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import IDEServices from '~/ide/services';
 
@@ -167,7 +166,7 @@ describe('IDE pipelines list', () => {
         createComponent({}, { ...withLatestPipelineState, stages, isLoadingJobs });
 
         const jobProps = wrapper
-          .findAll(Tab)
+          .findAll(GlTab)
           .at(0)
           .find(JobsList)
           .props();
@@ -182,7 +181,7 @@ describe('IDE pipelines list', () => {
         createComponent({}, { ...withLatestPipelineState, isLoadingJobs });
 
         const jobProps = wrapper
-          .findAll(Tab)
+          .findAll(GlTab)
           .at(1)
           .find(JobsList)
           .props();

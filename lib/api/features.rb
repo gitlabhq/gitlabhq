@@ -4,6 +4,8 @@ module API
   class Features < ::API::Base
     before { authenticated_as_admin! }
 
+    feature_category :feature_flags
+
     helpers do
       def gate_value(params)
         case params[:value]
@@ -61,6 +63,8 @@ module API
         mutually_exclusive :key, :project
       end
       post ':name' do
+        validate_feature_flag_name!(params[:name])
+
         feature = Feature.get(params[:name]) # rubocop:disable Gitlab/AvoidFeatureGet
         targets = gate_targets(params)
         value = gate_value(params)
@@ -97,5 +101,13 @@ module API
         no_content!
       end
     end
+
+    helpers do
+      def validate_feature_flag_name!(name)
+        # no-op
+      end
+    end
   end
 end
+
+API::Features.prepend_if_ee('EE::API::Features')

@@ -46,6 +46,8 @@ module Gitlab
 
         # Returns any authorize metadata from @field
         def field_authorizations
+          return [] if @field.metadata[:authorize] == true
+
           Array.wrap(@field.metadata[:authorize])
         end
 
@@ -54,7 +56,7 @@ module Gitlab
             # The field is a built-in/scalar type, or a list of scalars
             # authorize using the parent's object
             parent_typed_object.object
-          elsif @field.connection? || resolved_type.is_a?(Array)
+          elsif @field.connection? || @field.type.list? || resolved_type.is_a?(Array)
             # The field is a connection or a list of non-built-in types, we'll
             # authorize each element when rendering
             nil
@@ -75,16 +77,25 @@ module Gitlab
             # no need to do anything
           elsif authorizing_object
             # Authorizing fields representing scalars, or a simple field with an object
-            resolved_type if allowed_access?(current_user, authorizing_object)
+            ::Gitlab::Graphql::Lazy.with_value(authorizing_object) do |object|
+              resolved_type if allowed_access?(current_user, object)
+            end
           elsif @field.connection?
-            # A connection with pagination, modify the visible nodes on the
-            # connection type in place
-            resolved_type.object.edge_nodes.to_a.keep_if { |node| allowed_access?(current_user, node) }
-            resolved_type
-          elsif resolved_type.is_a? Array
+            ::Gitlab::Graphql::Lazy.with_value(resolved_type) do |type|
+              # A connection with pagination, modify the visible nodes on the
+              # connection type in place
+              nodes = to_nodes(type)
+              nodes.keep_if { |node| allowed_access?(current_user, node) } if nodes
+              type
+            end
+          elsif @field.type.list? || resolved_type.is_a?(Array)
             # A simple list of rendered types  each object being an object to authorize
-            resolved_type.select do |single_object_type|
-              allowed_access?(current_user, realized(single_object_type).object)
+            ::Gitlab::Graphql::Lazy.with_value(resolved_type) do |items|
+              items.select do |single_object_type|
+                object_type = realized(single_object_type)
+                object = object_type.try(:object) || object_type
+                allowed_access?(current_user, object)
+              end
             end
           else
             raise "Can't authorize #{@field}"
@@ -93,18 +104,23 @@ module Gitlab
 
         # Ensure that we are dealing with realized objects, not delayed promises
         def realized(thing)
-          case thing
-          when BatchLoader::GraphQL
-            thing.sync
-          when GraphQL::Execution::Lazy
-            thing.value # part of the private api, but we need to unwrap it here.
+          ::Gitlab::Graphql::Lazy.force(thing)
+        end
+
+        # Try to get the connection
+        # can be at type.object or at type
+        def to_nodes(type)
+          if type.respond_to?(:nodes)
+            type.nodes
+          elsif type.respond_to?(:object)
+            to_nodes(type.object)
           else
-            thing
+            nil
           end
         end
 
         def allowed_access?(current_user, object)
-          object = object.sync if object.respond_to?(:sync)
+          object = realized(object)
 
           authorizations.all? do |ability|
             Ability.allowed?(current_user, ability, object)

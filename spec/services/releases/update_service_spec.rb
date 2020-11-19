@@ -32,6 +32,12 @@ RSpec.describe Releases::UpdateService do
       expect(result[:release].description).to eq(new_description)
     end
 
+    it 'executes hooks' do
+      expect(service.release).to receive(:execute_hooks).with('update')
+
+      service.execute
+    end
+
     context 'when the tag does not exists' do
       let(:tag_name) { 'foobar' }
 

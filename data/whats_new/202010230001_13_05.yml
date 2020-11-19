@@ -1,0 +1,61 @@
+---
+- title: Group wikis
+  body: For many teams, using GitLab wikis for planning and documentation is a critical part of their workflow. Wikis are so popular that they get over a million views each month on GitLab.com. Despite this popularity, teams have struggled with the limitation that wikis were only available at the project level. Teams working on multiple projects needed to create separate wikis for each repository, leading to a fragmented experience. In Gitlab 13.5, we are so excited to bring you group wikis! This was the most upvoted feature in the entire GitLab backlog. While highly requested, making a large project-only feature like wikis available at the group level has been a non-trivial operation. We’ve worked tirelessly over the past year to make it happen and now we can't wait to get it in your hands and hear your feedback.
+  stage: Create
+  self-managed: true
+  gitlab-com: true
+  packages: [Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/user/group/index.html#group-wikis
+  image_url: https://about.gitlab.com/images/13_5/cdybenko-group-wiki.png
+  published_at: 2020-10-22
+  release: 13.5
+- title: Install the GitLab Kubernetes Agent with Omnibus GitLab
+  body: "Last month we introduced the GitLab Kubernetes Agent for self-managed GitLab instances installed with Helm. This release adds support for the official Linux package. In this new Kubernetes integration, the Agent orchestrates deployments by pulling new changes from GitLab, rather than GitLab pushing updates to your cluster."
+  stage: Configure
+  self-managed: true
+  gitlab-com: false
+  packages: [Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/user/clusters/agent/
+  image_url: https://about.gitlab.com/images/13_5/gitops-header.png
+  published_at: 2020-10-22
+  release: 13.5
+- title: Snippets with multiple files
+  body: Engineers often use Snippets to share examples of code, reusable components, logs, and other items. These valuable pieces of information often require additional context and may require more than one file. Sharing a link to multiple files or multiple Snippets makes it challenging for users to piece this context together and understand the scope of what is being presented. GitLab now supports multiple files inside of a single Snippet, so you can create Snippets composed of multiple parts. It broadens its use to endless possibilities!
+  stage: Create
+  self-managed: true
+  gitlab-com: true
+  packages: [Core, Starter, Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/user/snippets.html#multiple-files-by-snippet
+  image_url: https://about.gitlab.com/images/13_5/phikai-snippets-multiple-files.png
+  published_at: 2020-10-22
+  release: 13.5
+- title: Enable instance-level shared runners when viewing groups
+  body: GitLab SaaS includes Linux and Windows runners, which are easy to use agents that run your GitLab CI/CD pipeline jobs. These runners, visible in the GitLab.com UI as "shared runners," are enabled by default and can be disabled for each project. However, some organizations require their CI/CD jobs to run only on self-managed runners, and so disabling the use of instance-level shared runners on each project resulted in unnecessary administrative overhead. Now administrators can enable or disable shared runners at the group level. Administrators can also allow groups to override the global setting and use shared runners on a project-by-project basis.
+  stage: Verify
+  self-managed: true
+  gitlab-com: true
+  packages: [Core, Starter, Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/ci/runners/README.html#disable-shared-runners
+  image_url: https://about.gitlab.com/images/13_5/enable_shared_runners_v2.png
+  published_at: 2020-10-22
+  release: 13.5
+- title: Feature Flags flexible rollout strategy
+  body: When you use the percent rollout strategy today, the stickiness, or the experience consistency, is determined only by the user ID. This can be limiting; as an example, anonymous users cannot be affected by this strategy. We have improved this rollout strategy by enabling you to define the stickiness based on session ID, user ID, or at random (no stickiness). This gives you more control over the rollout and allows you to support stickiness for anonymous users.
+  stage: Release
+  self-managed: true
+  gitlab-com: true
+  packages: [core, starter, premium, ultimate]
+  url: https://docs.gitlab.com/ee/operations/feature_flags.html#percent-rollout
+  image_url: https://about.gitlab.com/images/13_5/percent-rollout.png
+  published_at: 2020-10-22
+  release: 13.5
+- title: SAST support for iOS and Android mobile apps
+  body: GitLab SAST now supports mobile applications including iOS apps written in Objective-C and Swift as well as Android apps written in Java and Kotlin powered by the Mobile Security Framework (MobSF). Initially this analyzer supports source code analysis but we intend to expand support for binary scanning of .ipa and .apk files in the near future. This feature was a generous contribution by the H-E-B Digital team.
+  stage: Secure
+  self-managed: true
+  gitlab-com: true
+  packages: [core, starter, premium, ultimate]
+  url: https://docs.gitlab.com/ee/user/application_security/sast/#supported-languages-and-frameworks
+  image_url: https://about.gitlab.com/images/13_5/sast-gitlab-mobile.png
+  published_at: 2020-10-22
+  release: 13.5

@@ -407,7 +407,8 @@
         }
       }
 
-      &.droplab-item-selected i {
+      &.droplab-item-selected i,
+      &.droplab-item-selected svg {
         visibility: visible;
       }
 

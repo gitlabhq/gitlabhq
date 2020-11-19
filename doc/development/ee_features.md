@@ -1,9 +1,15 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Guidelines for implementing Enterprise Edition features
 
 - **Write the code and the tests.**: As with any code, EE features should have
   good test coverage to prevent regressions.
 - **Write documentation.**: Add documentation to the `doc/` directory. Describe
-  the feature and include screenshots, if applicable. Indicate [what editions](documentation/styleguide.md#product-badges)
+  the feature and include screenshots, if applicable. Indicate [what editions](documentation/styleguide/index.md#product-badges)
   the feature applies to.
 - **Submit a MR to the `www-gitlab-com` project.**: Add the new feature to the
   [EE features list](https://about.gitlab.com/features/).
@@ -426,6 +432,38 @@ module EE
 end
 ```
 
+### Code in `app/graphql/`
+
+EE-specific mutations, resolvers, and types should be added to
+`ee/app/graphql/{mutations,resolvers,types}`.
+
+To override a CE mutation, resolver, or type, create the file in
+`ee/app/graphql/ee/{mutations,resolvers,types}` and add new code to a
+`prepended` block.
+
+For example, if CE has a mutation called `Mutations::Tanukis::Create` and you
+wanted to add a new argument, place the EE override in
+`ee/app/graphql/ee/mutations/tanukis/create.rb`:
+
+```ruby
+module EE
+  module Mutations
+    module Tanukis
+      module Create
+        extend ActiveSupport::Concern
+
+        prepended do
+          argument :name,
+                   GraphQL::STRING_TYPE,
+                   required: false,
+                   description: 'Tanuki name'
+        end
+      end
+    end
+  end
+end
+```
+
 #### Using `render_if_exists`
 
 Instead of using regular `render`, we should use `render_if_exists`, which
@@ -535,7 +573,7 @@ constants.
 
 #### EE parameters
 
-We can define `params` and utilize `use` in another `params` definition to
+We can define `params` and use `use` in another `params` definition to
 include parameters defined in EE. However, we need to define the "interface" first
 in CE in order for EE to override it. We don't have to do this in other places
 due to `prepend_if_ee`, but Grape is complex internally and we couldn't easily

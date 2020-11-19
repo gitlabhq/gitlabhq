@@ -1,0 +1,5 @@
+---
+title: Add support for .md.erb files in Static Site Editor
+merge_request: 42353
+author:
+type: added

@@ -32,12 +32,16 @@ export default {
       default: false,
     },
   },
+  inject: ['blobHash'],
   computed: {
     downloadUrl() {
       return `${this.rawPath}?inline=false`;
     },
     copyDisabled() {
       return this.activeViewer === RICH_BLOB_VIEWER;
+    },
+    getBlobHashTarget() {
+      return `[data-blob-hash="${this.blobHash}"]`;
     },
   },
   BTN_COPY_CONTENTS_TITLE,
@@ -53,7 +57,7 @@ export default {
       :aria-label="$options.BTN_COPY_CONTENTS_TITLE"
       :title="$options.BTN_COPY_CONTENTS_TITLE"
       :disabled="copyDisabled"
-      data-clipboard-target="#blob-code-content"
+      :data-clipboard-target="getBlobHashTarget"
       data-testid="copyContentsButton"
       icon="copy-to-clipboard"
       category="primary"

@@ -378,13 +378,13 @@ RSpec.describe SystemNoteService do
     noteable_types.each do |type|
       context "when noteable is a #{type}" do
         it "blocks cross reference when #{type.underscore}_events is false" do
-          jira_tracker.update("#{type}_events" => false)
+          jira_tracker.update!("#{type}_events" => false)
 
           expect(cross_reference(type)).to eq(s_('JiraService|Events for %{noteable_model_name} are disabled.') % { noteable_model_name: type.pluralize.humanize.downcase })
         end
 
         it "creates cross reference when #{type.underscore}_events is true" do
-          jira_tracker.update("#{type}_events" => true)
+          jira_tracker.update!("#{type}_events" => true)
 
           expect(cross_reference(type)).to eq(success_message)
         end
@@ -566,25 +566,25 @@ RSpec.describe SystemNoteService do
     end
   end
 
-  describe '.handle_merge_request_wip' do
+  describe '.handle_merge_request_draft' do
     it 'calls MergeRequestsService' do
       expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
-        expect(service).to receive(:handle_merge_request_wip)
+        expect(service).to receive(:handle_merge_request_draft)
       end
 
-      described_class.handle_merge_request_wip(noteable, project, author)
+      described_class.handle_merge_request_draft(noteable, project, author)
     end
   end
 
-  describe '.add_merge_request_wip_from_commit' do
+  describe '.add_merge_request_draft_from_commit' do
     it 'calls MergeRequestsService' do
       commit = double
 
       expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
-        expect(service).to receive(:add_merge_request_wip_from_commit).with(commit)
+        expect(service).to receive(:add_merge_request_draft_from_commit).with(commit)
       end
 
-      described_class.add_merge_request_wip_from_commit(noteable, project, author, commit)
+      described_class.add_merge_request_draft_from_commit(noteable, project, author, commit)
     end
   end
 

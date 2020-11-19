@@ -1,17 +1,17 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import {
-  GlDeprecatedBadge as GlBadge,
+  GlBadge,
   GlLink,
   GlLoadingIcon,
   GlPagination,
   GlDeprecatedSkeletonLoading as GlSkeletonLoading,
   GlSprintf,
   GlTable,
+  GlTooltipDirective,
 } from '@gitlab/ui';
 import AncestorNotice from './ancestor_notice.vue';
 import NodeErrorHelpText from './node_error_help_text.vue';
-import tooltip from '~/vue_shared/directives/tooltip';
 import { CLUSTER_TYPES, STATUSES } from '../constants';
 import { __, sprintf } from '~/locale';
 
@@ -30,7 +30,7 @@ export default {
     NodeErrorHelpText,
   },
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   computed: {
     ...mapState([
@@ -227,7 +227,7 @@ export default {
 
           <gl-loading-icon
             v-if="item.status === 'deleting' || item.status === 'creating'"
-            v-tooltip
+            v-gl-tooltip
             :title="statusTitle(item.status)"
             size="sm"
           />
@@ -294,7 +294,7 @@ export default {
       </template>
 
       <template #cell(cluster_type)="{value}">
-        <gl-badge variant="light">
+        <gl-badge variant="muted">
           {{ value }}
         </gl-badge>
       </template>

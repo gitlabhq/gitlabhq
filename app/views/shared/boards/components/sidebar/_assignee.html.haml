@@ -23,7 +23,7 @@
         %button.dropdown-menu-toggle.js-user-search.js-author-search.js-multiselect.js-save-user-data.js-issue-board-sidebar{ type: 'button', ref: 'assigneeDropdown', data: board_sidebar_user_data,
           ":data-issuable-id" => "issue.iid" }
           = dropdown_options[:title]
-          = icon("chevron-down")
+          = sprite_icon('chevron-down', css_class: "dropdown-menu-toggle-icon gl-top-3")
         .dropdown-menu.dropdown-select.dropdown-menu-user.dropdown-menu-selectable.dropdown-menu-author
           = dropdown_title("Assign to")
           = dropdown_filter("Search users")

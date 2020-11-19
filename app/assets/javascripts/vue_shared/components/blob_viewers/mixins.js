@@ -1,4 +1,4 @@
-import { SNIPPET_MEASURE_BLOBS_CONTENT } from '~/performance_constants';
+import { SNIPPET_MEASURE_BLOBS_CONTENT } from '~/performance/constants';
 import eventHub from '~/blob/components/eventhub';
 
 export default {

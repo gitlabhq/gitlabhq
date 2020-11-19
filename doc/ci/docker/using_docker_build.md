@@ -90,7 +90,7 @@ GitLab Runner then executes job scripts as the `gitlab-runner` user.
 1. You can now use `docker` command (and **install** `docker-compose` if needed).
 
 By adding `gitlab-runner` to the `docker` group you are effectively granting `gitlab-runner` full root permissions.
-For more information please read [On Docker security: `docker` group considered harmful](https://www.andreas-jung.com/contents/on-docker-security-docker-group-considered-harmful).
+For more information please read [On Docker security: `docker` group considered harmful](https://blog.zopyx.com/on-docker-security-docker-group-considered-harmful/).
 
 ### Use Docker-in-Docker workflow with Docker executor
 
@@ -103,7 +103,7 @@ image in privileged mode.
 CI builds, follow the `docker-compose`
 [installation instructions](https://docs.docker.com/compose/install/).
 
-DANGER: **Danger:**
+DANGER: **Warning:**
 By enabling `--docker-privileged`, you are effectively disabling all of
 the security mechanisms of containers and exposing your host to privilege
 escalation which can lead to container breakout. For more information, check
@@ -302,7 +302,149 @@ build:
     - docker run my-docker-image /script/to/run/tests
 ```
 
-### Use Docker socket binding
+#### Enable registry mirror for `docker:dind` service
+
+When the Docker daemon starts inside of the service container, it uses
+the default configuration. You may want to configure a [registry
+mirror](https://docs.docker.com/registry/recipes/mirror/) for
+performance improvements and ensuring you don't reach DockerHub rate limits.
+
+##### Inside `.gitlab-ci.yml`
+
+You can append extra CLI flags to the `dind` service to set the registry
+mirror:
+
+```yaml
+services:
+   - name: docker:19.03.13-dind
+     command: ["--registry-mirror", "https://registry-mirror.example.com"] # Specify the registry mirror to use.
+```
+
+##### DinD service defined inside of GitLab Runner configuration
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27173) in GitLab Runner 13.6.
+
+If you are an administrator of GitLab Runner and you have the `dind`
+service defined for the [Docker
+executor](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnersdockerservices-section),
+or the [Kubernetes
+executor](https://docs.gitlab.com/runner/executors/kubernetes.html#using-services)
+you can specify the `command` to configure the registry mirror for the
+Docker daemon.
+
+Docker:
+
+```toml
+[[runners]]
+  ...
+  executor = "docker"
+  [runners.docker]
+    ...
+    privileged = true
+    [[runners.docker.services]]
+      name = "docker:19.03.13-dind"
+      command = ["--registry-mirror", "https://registry-mirror.example.com"]
+```
+
+Kubernetes:
+
+```toml
+[[runners]]
+  ...
+  name = "kubernetes"
+  [runners.kubernetes]
+    ...
+    privileged = true
+    [[runners.kubernetes.services]]
+      name = "docker:19.03.13-dind"
+      command = ["--registry-mirror", "https://registry-mirror.example.com"]
+```
+
+##### Docker executor inside GitLab Runner configuration
+
+If you are an administrator of GitLab Runner and you want to use
+the mirror for every `dind` service, update the
+[configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)
+to specify a [volume
+mount](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#volumes-in-the-runnersdocker-section).
+
+For example, if you have a `/opt/docker/daemon.json` file with the following
+content:
+
+```json
+{
+  "registry-mirrors": [
+    "https://registry-mirror.example.com"
+  ]
+}
+```
+
+Update the `config.toml` file to mount the file to
+`/etc/docker/daemon.json`. This would mount the file for **every**
+container that is created by GitLab Runner. The configuration will be
+picked up by the `dind` service.
+
+```toml
+[[runners]]
+  ...
+  executor = "docker"
+  [runners.docker]
+    image = "alpine:3.12"
+    privileged = true
+    volumes = ["/opt/docker/daemon.json:/etc/docker/daemon.json:ro"]
+```
+
+##### Kubernetes executor inside GitLab Runner configuration
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3223) in GitLab Runner 13.6.
+
+If you are an administrator of GitLab Runner and you want to use
+the mirror for every `dind` service, update the
+[configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)
+to specify a [ConfigMap volume
+mount](https://docs.gitlab.com/runner/executors/kubernetes.html#using-volumes).
+
+For example, if you have a `/tmp/daemon.json` file with the following
+content:
+
+```json
+{
+  "registry-mirrors": [
+    "https://registry-mirror.example.com"
+  ]
+}
+```
+
+Create a [ConfigMap](https://kubernetes.io/docs/concepts/configuration/configmap/) with the content
+of this file. You can do this with a command like:
+
+```shell
+kubectl create configmap docker-daemon --namespace gitlab-runner --from-file /tmp/daemon.json
+```
+
+NOTE: **Note:**
+Make sure to use the namespace that GitLab Runner Kubernetes executor uses
+to create job pods in.
+
+After the ConfigMap is created, you can update the `config.toml`
+file to mount the file to `/etc/docker/daemon.json`. This update
+mounts the file for **every** container that is created by GitLab Runner.
+The configuration is picked up by the `dind` service.
+
+```toml
+[[runners]]
+  ...
+  executor = "kubernetes"
+  [runners.kubernetes]
+    image = "alpine:3.12"
+    privileged = true
+    [[runners.kubernetes.volumes.config_map]]
+      name = "docker-daemon"
+      mount_path = "/etc/docker/daemon.json"
+      sub_path = "daemon.json"
+```
+
+#### Use Docker socket binding
 
 The third approach is to bind-mount `/var/run/docker.sock` into the
 container so that Docker is available in the context of that image.
@@ -502,7 +644,7 @@ and [using the OverlayFS storage driver](https://docs.docker.com/engine/userguid
 
 ## Using the GitLab Container Registry
 
-Once you've built a Docker image, you can push it up to the built-in
+After you've built a Docker image, you can push it up to the built-in
 [GitLab Container Registry](../../user/packages/container_registry/index.md#build-and-push-by-using-gitlab-cicd).
 
 ## Troubleshooting

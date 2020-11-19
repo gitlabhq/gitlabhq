@@ -3,9 +3,7 @@
 #
 # Makes sure alert boxes follow standard formatting.
 #
-# Checks for 4 known issues:
-# - Alert boxes with no colon, or colon outside the bold text
-# - Known incorrect capitalization of the most commonly used alert box text
+# Checks for 2 formatting issues:
 # - Alert boxes with the note text on the same line
 # - Alert boxes using blockquote formatting, like "> **Note:**"
 #
@@ -16,7 +14,5 @@ link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#alert
 level: error
 scope: raw
 raw:
-  - '((NOTE|TIP|CAUTION|DANGER): \*\*[^:]*\*\*)|'
-  - '((NOTE: \*\*(NOTE|note):\*\*)|(TIP: \*\*(TIP|tip):\*\*)|(CAUTION: \*\*(CAUTION|caution):\*\*)|(DANGER: \*\*(DANGER|danger):\*\*))|'
-  - '((NOTE|TIP|CAUTION|DANGER): \*\*.*\*\*.+)|'
+  - '(\n(NOTE|TIP|CAUTION|DANGER): \*\*.*\*\*.+)|'
   - '((\n[> ]*(\*){1,2}(NOTE|Note|note|TIP|Tip|tip|CAUTION|Caution|caution|DANGER|Danger|danger):(\*){1,2}))'

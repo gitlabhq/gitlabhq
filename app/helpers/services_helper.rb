@@ -35,13 +35,6 @@ module ServicesHelper
     "#{event}_events"
   end
 
-  def service_save_button(disabled: false)
-    button_tag(class: 'btn btn-success', type: 'submit', disabled: disabled, data: { qa_selector: 'save_changes_button' }) do
-      icon('spinner spin', class: 'hidden js-btn-spinner') +
-        content_tag(:span, 'Save changes', class: 'js-btn-label')
-    end
-  end
-
   def scoped_integrations_path
     if @project.present?
       project_settings_integrations_path(@project)
@@ -100,7 +93,8 @@ module ServicesHelper
       editable: integration.editable?.to_s,
       cancel_path: scoped_integrations_path,
       can_test: integration.can_test?.to_s,
-      test_path: scoped_test_integration_path(integration)
+      test_path: scoped_test_integration_path(integration),
+      reset_path: ''
     }
   end
 
@@ -121,7 +115,7 @@ module ServicesHelper
   end
 
   def group_level_integrations?
-    @group.present? && Feature.enabled?(:group_level_integrations, @group)
+    @group.present? && Feature.enabled?(:group_level_integrations, @group, default_enabled: true)
   end
 
   def instance_level_integrations?

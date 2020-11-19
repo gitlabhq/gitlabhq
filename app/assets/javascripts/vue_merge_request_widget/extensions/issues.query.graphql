@@ -1,0 +1,13 @@
+query getAllIssues($projectPath: ID!) {
+  project(fullPath: $projectPath) {
+    issues {
+      nodes {
+        id
+        title
+        webPath
+        webUrl
+        state
+      }
+    }
+  }
+}

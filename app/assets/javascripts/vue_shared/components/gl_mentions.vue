@@ -10,6 +10,8 @@ const AutoComplete = {
   Labels: 'labels',
   Members: 'members',
   MergeRequests: 'mergeRequests',
+  Milestones: 'milestones',
+  Snippets: 'snippets',
 };
 
 const groupType = 'Group'; // eslint-disable-line @gitlab/require-i18n-strings
@@ -120,6 +122,22 @@ const autoCompleteMap = {
       return `<small>${original.reference || original.iid}</small> ${escape(original.title)}`;
     },
   },
+  [AutoComplete.Milestones]: {
+    filterValues() {
+      return this[AutoComplete.Milestones];
+    },
+    menuItemTemplate({ original }) {
+      return escape(original.title);
+    },
+  },
+  [AutoComplete.Snippets]: {
+    filterValues() {
+      return this[AutoComplete.Snippets];
+    },
+    menuItemTemplate({ original }) {
+      return `<small>${original.id}</small> ${escape(original.title)}`;
+    },
+  },
 };
 
 export default {
@@ -157,8 +175,8 @@ export default {
           menuItemTemplate: autoCompleteMap[AutoComplete.Labels].menuItemTemplate,
           selectTemplate: ({ original }) =>
             NON_WORD_OR_INTEGER.test(original.title)
-              ? `~"${original.title}"`
-              : `~${original.title}`,
+              ? `~"${escape(original.title)}"`
+              : `~${escape(original.title)}`,
           values: this.getValues(AutoComplete.Labels),
         },
         {
@@ -167,6 +185,20 @@ export default {
           menuItemTemplate: autoCompleteMap[AutoComplete.MergeRequests].menuItemTemplate,
           selectTemplate: ({ original }) => original.reference || `!${original.iid}`,
           values: this.getValues(AutoComplete.MergeRequests),
+        },
+        {
+          trigger: '%',
+          lookup: 'title',
+          menuItemTemplate: autoCompleteMap[AutoComplete.Milestones].menuItemTemplate,
+          selectTemplate: ({ original }) => `%"${escape(original.title)}"`,
+          values: this.getValues(AutoComplete.Milestones),
+        },
+        {
+          trigger: '$',
+          fillAttr: 'id',
+          lookup: value => value.id + value.title,
+          menuItemTemplate: autoCompleteMap[AutoComplete.Snippets].menuItemTemplate,
+          values: this.getValues(AutoComplete.Snippets),
         },
       ],
     });

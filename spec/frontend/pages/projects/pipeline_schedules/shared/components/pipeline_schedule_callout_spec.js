@@ -1,109 +1,98 @@
-import Vue from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import { GlButton } from '@gitlab/ui';
 import Cookies from 'js-cookie';
 import PipelineSchedulesCallout from '~/pages/projects/pipeline_schedules/shared/components/pipeline_schedules_callout.vue';
 
-const PipelineSchedulesCalloutComponent = Vue.extend(PipelineSchedulesCallout);
 const cookieKey = 'pipeline_schedules_callout_dismissed';
 const docsUrl = 'help/ci/scheduled_pipelines';
-const imageUrl = 'pages/projects/pipeline_schedules/shared/icons/intro_illustration.svg';
+const illustrationUrl = 'pages/projects/pipeline_schedules/shared/icons/intro_illustration.svg';
 
 describe('Pipeline Schedule Callout', () => {
-  let calloutComponent;
+  let wrapper;
 
-  beforeEach(() => {
-    setFixtures(`
-      <div id='pipeline-schedules-callout' data-docs-url=${docsUrl} data-image-url=${imageUrl}></div>
-    `);
-  });
-
-  describe('independent of cookies', () => {
-    beforeEach(() => {
-      calloutComponent = new PipelineSchedulesCalloutComponent().$mount();
+  const createComponent = () => {
+    wrapper = shallowMount(PipelineSchedulesCallout, {
+      provide: {
+        docsUrl,
+        illustrationUrl,
+      },
     });
+  };
 
-    it('the component can be initialized', () => {
-      expect(calloutComponent).toBeDefined();
-    });
-
-    it('correctly sets docsUrl', () => {
-      expect(calloutComponent.docsUrl).toContain(docsUrl);
-    });
-
-    it('correctly sets imageUrl', () => {
-      expect(calloutComponent.imageUrl).toContain(imageUrl);
-    });
-  });
+  const findInnerContentOfCallout = () => wrapper.find('[data-testid="innerContent"]');
+  const findDismissCalloutBtn = () => wrapper.find(GlButton);
 
   describe(`when ${cookieKey} cookie is set`, () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       Cookies.set(cookieKey, true);
-      calloutComponent = new PipelineSchedulesCalloutComponent().$mount();
+      createComponent();
+
+      await wrapper.vm.$nextTick();
     });
 
-    it('correctly sets calloutDismissed to true', () => {
-      expect(calloutComponent.calloutDismissed).toBe(true);
+    afterEach(() => {
+      wrapper.destroy();
     });
 
     it('does not render the callout', () => {
-      expect(calloutComponent.$el.childNodes.length).toBe(0);
+      expect(findInnerContentOfCallout().exists()).toBe(false);
     });
   });
 
   describe('when cookie is not set', () => {
     beforeEach(() => {
       Cookies.remove(cookieKey);
-      calloutComponent = new PipelineSchedulesCalloutComponent().$mount();
+      createComponent();
     });
 
-    it('correctly sets calloutDismissed to false', () => {
-      expect(calloutComponent.calloutDismissed).toBe(false);
+    afterEach(() => {
+      wrapper.destroy();
     });
 
     it('renders the callout container', () => {
-      expect(calloutComponent.$el.querySelector('.bordered-box')).not.toBeNull();
-    });
-
-    it('renders the callout img', () => {
-      expect(calloutComponent.$el.outerHTML).toContain('<img');
+      expect(findInnerContentOfCallout().exists()).toBe(true);
     });
 
     it('renders the callout title', () => {
-      expect(calloutComponent.$el.outerHTML).toContain('Scheduling Pipelines');
+      expect(wrapper.find('h4').text()).toBe('Scheduling Pipelines');
     });
 
     it('renders the callout text', () => {
-      expect(calloutComponent.$el.outerHTML).toContain('runs pipelines in the future');
+      expect(wrapper.find('p').text()).toContain('runs pipelines in the future');
     });
 
     it('renders the documentation url', () => {
-      expect(calloutComponent.$el.outerHTML).toContain(docsUrl);
+      expect(wrapper.find('a').attributes('href')).toBe(docsUrl);
     });
 
-    it('updates calloutDismissed when close button is clicked', done => {
-      calloutComponent.$el.querySelector('#dismiss-callout-btn').click();
+    describe('methods', () => {
+      it('#dismissCallout sets calloutDismissed to true', async () => {
+        expect(wrapper.vm.calloutDismissed).toBe(false);
 
-      Vue.nextTick(() => {
-        expect(calloutComponent.calloutDismissed).toBe(true);
-        done();
+        findDismissCalloutBtn().vm.$emit('click');
+
+        await wrapper.vm.$nextTick();
+
+        expect(findInnerContentOfCallout().exists()).toBe(false);
+      });
+
+      it('sets cookie on dismiss', () => {
+        const setCookiesSpy = jest.spyOn(Cookies, 'set');
+
+        findDismissCalloutBtn().vm.$emit('click');
+
+        expect(setCookiesSpy).toHaveBeenCalledWith('pipeline_schedules_callout_dismissed', true, {
+          expires: 365,
+        });
       });
     });
 
-    it('#dismissCallout updates calloutDismissed', done => {
-      calloutComponent.dismissCallout();
+    it('is hidden when close button is clicked', async () => {
+      findDismissCalloutBtn().vm.$emit('click');
 
-      Vue.nextTick(() => {
-        expect(calloutComponent.calloutDismissed).toBe(true);
-        done();
-      });
-    });
+      await wrapper.vm.$nextTick();
 
-    it('is hidden when close button is clicked', done => {
-      calloutComponent.$el.querySelector('#dismiss-callout-btn').click();
-
-      Vue.nextTick(() => {
-        expect(calloutComponent.$el.childNodes.length).toBe(0);
-        done();
-      });
+      expect(findInnerContentOfCallout().exists()).toBe(false);
     });
   });
 });

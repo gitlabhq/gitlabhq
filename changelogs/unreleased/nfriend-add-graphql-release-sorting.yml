@@ -1,0 +1,5 @@
+---
+title: Allow sorting of releases from GraphQL
+merge_request: 45577
+author:
+type: added

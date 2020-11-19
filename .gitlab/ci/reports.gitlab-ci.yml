@@ -15,7 +15,7 @@ code_quality:
   stage: test
   needs: []
   variables:
-    CODE_QUALITY_IMAGE: "registry.gitlab.com/gitlab-org/ci-cd/codequality:0.85.10-gitlab.1"
+    CODE_QUALITY_IMAGE: "registry.gitlab.com/gitlab-org/ci-cd/codequality:0.85.18"
   script:
     - |
       if ! docker info &>/dev/null; then
@@ -145,6 +145,26 @@ dependency_scanning:
         --volume "$PWD:/code" \
         --volume /var/run/docker.sock:/var/run/docker.sock \
         "registry.gitlab.com/gitlab-org/security-products/dependency-scanning:$DS_MAJOR_VERSION" /code
+  artifacts:
+    paths:
+      - gl-dependency-scanning-report.json  # GitLab-specific
+    reports:
+      dependency_scanning: gl-dependency-scanning-report.json
+    expire_in: 1 week  # GitLab-specific
+
+# The job below analysis dependencies for malicous behavior
+package_hunter:
+  extends:
+    - .reports:schedule-dast
+  stage: test
+  image:
+    name: registry.gitlab.com/gitlab-com/gl-security/security-research/package-hunter-cli:latest
+    entrypoint: [""]
+  needs: []
+  script:
+    - rm -r spec locale .git app/assets/images doc/
+    - cd .. && tar -I "gzip --best" -cf gitlab.tgz gitlab/
+    - DEBUG=* HTR_user=$PACKAGE_HUNTER_USER HTR_pass=$PACKAGE_HUNTER_PASS node /usr/src/app/cli.js analyze --format gitlab gitlab.tgz | tee $CI_PROJECT_DIR/gl-dependency-scanning-report.json
   artifacts:
     paths:
       - gl-dependency-scanning-report.json  # GitLab-specific

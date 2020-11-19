@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
         new Diff();
       })
       .catch(() => {
-        flash(__('An error occurred while retrieving diff files'));
+        flash({ message: __('An error occurred while retrieving diff files') });
       });
   } else {
     new Diff();

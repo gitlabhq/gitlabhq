@@ -22,7 +22,7 @@ describe('releases/util.js', () => {
         tagName: 'tag-name',
         name: 'Release name',
         description: 'Release description',
-        milestones: [{ id: 1, title: '13.2' }, { id: 2, title: '13.3' }],
+        milestones: ['13.2', '13.3'],
         assets: {
           links: [{ url: 'https://gitlab.example.com/link', linkType: 'other' }],
         },
@@ -74,13 +74,13 @@ describe('releases/util.js', () => {
       });
     });
 
-    describe('when release.milestones is falsy', () => {
-      it('includes a "milestone" property in the returned result as an empty array', () => {
-        const release = {};
-
-        const expectedJson = {
-          milestones: [],
+    describe('when milestones contains full milestone objects', () => {
+      it('converts the milestone objects into titles', () => {
+        const release = {
+          milestones: [{ title: '13.2' }, { title: '13.3' }, '13.4'],
         };
+
+        const expectedJson = { milestones: ['13.2', '13.3', '13.4'] };
 
         expect(releaseToApiJson(release)).toMatchObject(expectedJson);
       });

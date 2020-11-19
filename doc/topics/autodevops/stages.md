@@ -1,3 +1,9 @@
+---
+stage: Configure
+group: Configure
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Stages of Auto DevOps
 
 The following sections describe the stages of [Auto DevOps](index.md).
@@ -161,10 +167,7 @@ see the documentation.
 > - [Select functionality made available in all tiers](../../user/application_security/secret_detection/#making-secret-detection-available-to-all-gitlab-tiers) in 13.3
 
 Secret Detection uses the
-[Secret Detection Docker image](https://gitlab.com/gitlab-org/security-products/analyzers/secrets) to run Secret Detection on the current code, and checks for leaked secrets. The
-Auto Secret Detection stage runs only on the
-[Ultimate](https://about.gitlab.com/pricing/) tier, and requires
-[GitLab Runner](https://docs.gitlab.com/runner/) 11.5 or above.
+[Secret Detection Docker image](https://gitlab.com/gitlab-org/security-products/analyzers/secrets) to run Secret Detection on the current code, and checks for leaked secrets. Auto Secret Detection requires [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 or above.
 
 After creating the report, it's uploaded as an artifact which you can later
 download and evaluate. The merge request widget also displays any security
@@ -285,7 +288,7 @@ see the documentation.
 To use a custom target instead of the auto-deployed review apps,
 set a `DAST_WEBSITE` environment variable to the URL for DAST to scan.
 
-DANGER: **Danger:**
+DANGER: **Warning:**
 If [DAST Full Scan](../../user/application_security/dast/index.md#full-scan) is
 enabled, GitLab strongly advises **not**
 to set `DAST_WEBSITE` to any staging or production environment. DAST Full Scan
@@ -428,7 +431,7 @@ To use Auto Deploy on a Kubernetes 1.16+ cluster:
 1. If you are deploying your application for the first time and are using
    GitLab 12.9 or 12.10, set `AUTO_DEVOPS_POSTGRES_CHANNEL` to `2`.
 
-DANGER: **Danger:**
+DANGER: **Warning:**
 On GitLab 12.9 and 12.10, opting into
 `AUTO_DEVOPS_POSTGRES_CHANNEL` version `2` deletes the version `1` PostgreSQL
 database. Follow the [guide to upgrading PostgreSQL](upgrading_postgresql.md)
@@ -668,4 +671,16 @@ To use Auto Monitoring:
 
 ## Auto Code Intelligence
 
-Code Intelligence is powered by [LSIF](https://lsif.dev/) and available for Go at this stage. We'll support more languages as they become available.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216438) in GitLab 13.5.
+
+[GitLab code intelligence](../../user/project/code_intelligence.md) adds
+code navigation features common to interactive development environments (IDE),
+including type signatures, symbol documentation, and go-to definition. It's powered by
+[LSIF](https://lsif.dev/) and available for Auto DevOps projects using Go language only.
+GitLab plans to add support for more languages as more LSIF indexers become available.
+You can follow the [code intelligence epic](https://gitlab.com/groups/gitlab-org/-/epics/4212)
+for updates.
+
+This stage is enabled by default. You can disable it by adding the
+`CODE_INTELLIGENCE_DISABLED` environment variable. Read more about
+[disabling Auto DevOps jobs](../../topics/autodevops/customize.md#disable-jobs).

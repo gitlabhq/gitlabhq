@@ -1,4 +1,4 @@
-import getDesignListQuery from '../graphql/queries/get_design_list.query.graphql';
+import getDesignListQuery from 'shared_queries/design_management/get_design_list.query.graphql';
 import { findVersionId } from '../utils/design_management_utils';
 
 export default {

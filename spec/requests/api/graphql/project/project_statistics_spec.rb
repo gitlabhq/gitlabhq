@@ -6,7 +6,7 @@ RSpec.describe 'rendering project statistics' do
   include GraphqlHelpers
 
   let(:project) { create(:project) }
-  let!(:project_statistics) { create(:project_statistics, project: project, packages_size: 5.gigabytes) }
+  let!(:project_statistics) { create(:project_statistics, project: project, packages_size: 5.gigabytes, uploads_size: 3.gigabytes) }
   let(:user) { create(:user) }
 
   let(:query) do
@@ -29,6 +29,12 @@ RSpec.describe 'rendering project statistics' do
     post_graphql(query, current_user: user)
 
     expect(graphql_data['project']['statistics']['packagesSize']).to eq(5.gigabytes)
+  end
+
+  it 'includes uploads size if the user can read the statistics' do
+    post_graphql(query, current_user: user)
+
+    expect(graphql_data_at(:project, :statistics, :uploadsSize)).to eq(3.gigabytes)
   end
 
   context 'when the project is public' do

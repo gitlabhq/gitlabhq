@@ -25,7 +25,7 @@ RSpec.describe MigrateDiscussionIdOnPromotedEpics do
   end
 
   def create_epic
-    epics.create!(author_id: user.id, iid: 1,
+    epics.create!(author_id: user.id, iid: epics.maximum(:iid).to_i + 1,
                   group_id: namespace.id,
                   title: 'Epic with discussion',
                   title_html: 'Epic with discussion')

@@ -68,7 +68,7 @@ module ExtractsRef
 
     raise InvalidPathError if @ref.match?(/\s/)
 
-    @commit = @repo.commit(@ref)
+    @commit = @repo.commit(@ref) if @ref.present?
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 

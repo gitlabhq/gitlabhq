@@ -1,7 +1,0 @@
----
-name: admin_approval_for_new_user_signups
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43827
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/258980
-type: development
-group: group::access
-default_enabled: true

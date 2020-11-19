@@ -43,6 +43,45 @@ To change the location where the job logs will be stored, follow the steps below
 1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the
    changes to take effect.
 
+Alternatively, if you have existing job logs you can follow
+these steps to move the logs to a new location without losing any data.
+
+1. Pause continuous integration data processing by updating this setting in `/etc/gitlab/gitlab.rb`.
+   Jobs in progress are not affected, based on how [data flow](#data-flow) works.
+
+   ```ruby
+   sidekiq['experimental_queue_selector'] = true
+   sidekiq['queue_groups'] = [
+     "feature_category!=continuous_integration"
+   ]
+   ```
+
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the
+   changes to take effect.
+1. Set the new storage location in `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_ci['builds_directory'] = '/mnt/to/gitlab-ci/builds'
+   ```
+
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the
+   changes to take effect.
+1. Use `rsync` to move job logs from the current location to the new location:
+
+   ```shell
+   sudo rsync -avzh --remove-source-files --ignore-existing --progress /var/opt/gitlab/gitlab-ci/builds/ /mnt/to/gitlab-ci/builds`
+   ```
+
+   Use `--ignore-existing` so you don't override new job logs with older versions of the same log.
+1. Unpause continuous integration data processing by editing `/etc/gitlab/gitlab.rb` and removing the `sidekiq` setting you updated earlier.
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the
+   changes to take effect.
+1. Remove the old job logs storage location:
+
+   ```shell
+   sudo rm -rf /var/opt/gitlab/gitlab-ci/builds`
+   ```
+
 **In installations from source:**
 
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following lines:
@@ -82,7 +121,7 @@ job output in the UI will be empty.
 
 For example, to delete all job logs older than 60 days, run the following from a shell in your GitLab instance:
 
-DANGER: **Danger:**
+DANGER: **Warning:**
 This command will permanently delete the log files and is irreversible.
 
 ```shell
@@ -104,7 +143,7 @@ The data flow is the same as described in the [data flow section](#data-flow)
 with one change: _the stored path of the first two phases is different_. This incremental
 log architecture stores chunks of logs in Redis and a persistent store (object storage or database) instead of
 file storage. Redis is used as first-class storage, and it stores up-to 128KB
-of data. Once the full chunk is sent, it is flushed to a persistent store, either object storage (temporary directory) or database.
+of data. After the full chunk is sent, it is flushed to a persistent store, either object storage (temporary directory) or database.
 After a while, the data in Redis and a persistent store will be archived to [object storage](#uploading-logs-to-object-storage).
 
 The data are stored in the following Redis namespace: `Gitlab::Redis::SharedState`.
@@ -114,9 +153,9 @@ Here is the detailed data flow:
 1. The runner picks a job from GitLab
 1. The runner sends a piece of log to GitLab
 1. GitLab appends the data to Redis
-1. Once the data in Redis reach 128KB, the data is flushed to a persistent store (object storage or the database).
+1. After the data in Redis reaches 128KB, the data is flushed to a persistent store (object storage or the database).
 1. The above steps are repeated until the job is finished.
-1. Once the job is finished, GitLab schedules a Sidekiq worker to archive the log.
+1. After the job is finished, GitLab schedules a Sidekiq worker to archive the log.
 1. The Sidekiq worker archives the log to object storage and cleans up the log
    in Redis and a persistent store (object storage or the database).
 

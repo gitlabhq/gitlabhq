@@ -1,4 +1,5 @@
 - has_impersonation_link = header_link?(:admin_impersonation)
+- user_status_data = user_status_properties(current_user)
 
 %header.navbar.navbar-gitlab.navbar-expand-sm.js-navbar{ data: { qa_selector: 'navbar' } }
   %a.sr-only.gl-accessibility{ href: "#content-body", tabindex: "1" } Skip to content
@@ -103,4 +104,4 @@
   #whats-new-app{ data: { storage_key: whats_new_storage_key } }
 
 - if can?(current_user, :update_user_status, current_user)
-  .js-set-status-modal-wrapper{ data: { current_emoji: current_user.status.present? ? current_user.status.emoji : '', current_message: current_user.status.present? ? current_user.status.message : '' } }
+  .js-set-status-modal-wrapper{ data: user_status_data }

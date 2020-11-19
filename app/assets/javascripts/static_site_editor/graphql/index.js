@@ -25,11 +25,15 @@ const createApolloProvider = appData => {
     },
   );
 
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  const mounts = appData.mounts.map(mount => ({ __typename: 'Mount', ...mount }));
+
   defaultClient.cache.writeData({
     data: {
       appData: {
         __typename: 'AppData',
         ...appData,
+        mounts,
       },
     },
   });

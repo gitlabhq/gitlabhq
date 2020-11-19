@@ -29,7 +29,8 @@ export default {
     },
     changing: {
       type: Boolean,
-      required: true,
+      required: false,
+      default: false,
     },
   },
   computed: {

@@ -14,7 +14,7 @@ describe('Tags List', () => {
   const findDeleteButton = () => wrapper.find(GlButton);
   const findListTitle = () => wrapper.find('[data-testid="list-title"]');
 
-  const mountComponent = (propsData = { tags, isDesktop: true }) => {
+  const mountComponent = (propsData = { tags, isMobile: false }) => {
     wrapper = shallowMount(component, {
       propsData,
     });
@@ -41,15 +41,15 @@ describe('Tags List', () => {
 
   describe('delete button', () => {
     it.each`
-      inputTags       | isDesktop | isVisible
-      ${tags}         | ${true}   | ${true}
-      ${tags}         | ${false}  | ${false}
-      ${readOnlyTags} | ${true}   | ${false}
-      ${readOnlyTags} | ${false}  | ${false}
+      inputTags       | isMobile | isVisible
+      ${tags}         | ${false} | ${true}
+      ${tags}         | ${true}  | ${false}
+      ${readOnlyTags} | ${false} | ${false}
+      ${readOnlyTags} | ${true}  | ${false}
     `(
-      'is $isVisible that delete button exists when tags is $inputTags and isDesktop is $isDesktop',
-      ({ inputTags, isDesktop, isVisible }) => {
-        mountComponent({ tags: inputTags, isDesktop });
+      'is $isVisible that delete button exists when tags is $inputTags and isMobile is $isMobile',
+      ({ inputTags, isMobile, isVisible }) => {
+        mountComponent({ tags: inputTags, isMobile });
 
         expect(findDeleteButton().exists()).toBe(isVisible);
       },
@@ -110,12 +110,6 @@ describe('Tags List', () => {
 
       expect(rows.at(0).attributes()).toMatchObject({
         first: 'true',
-        isdesktop: 'true',
-      });
-
-      // The list has only two tags and for some reasons .at(-1) does not work
-      expect(rows.at(1).attributes()).toMatchObject({
-        isdesktop: 'true',
       });
     });
 

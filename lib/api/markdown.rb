@@ -2,6 +2,8 @@
 
 module API
   class Markdown < ::API::Base
+    feature_category :not_owned
+
     params do
       requires :text, type: String, desc: "The markdown text to render"
       optional :gfm, type: Boolean, desc: "Render text using GitLab Flavored Markdown"

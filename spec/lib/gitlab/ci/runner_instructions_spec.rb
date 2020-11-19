@@ -75,6 +75,13 @@ RSpec.describe Gitlab::Ci::RunnerInstructions do
       with_them do
         let(:params) { { os: os, arch: arch } }
 
+        around do |example|
+          # puma in production does not run from Rails.root, ensure file loading does not assume this
+          Dir.chdir(Rails.root.join('tmp').to_s) do
+            example.run
+          end
+        end
+
         it 'returns string containing correct params' do
           result = subject.install_script
 

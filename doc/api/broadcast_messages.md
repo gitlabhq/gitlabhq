@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Broadcast Messages API
 
 > Introduced in GitLab 8.12.
@@ -92,8 +98,8 @@ Parameters:
 | Attribute       | Type     | Required | Description                                           |
 |:----------------|:---------|:---------|:------------------------------------------------------|
 | `message`       | string   | yes      | Message to display.                                   |
-| `starts_at`     | datetime | no       | Starting time (defaults to current time).             |
-| `ends_at`       | datetime | no       | Ending time (defaults to one hour from current time). |
+| `starts_at`     | datetime | no       | Starting time (defaults to current time). Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
+| `ends_at`       | datetime | no       | Ending time (defaults to one hour from current time). Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `color`         | string   | no       | Background color hex code.                            |
 | `font`          | string   | no       | Foreground color hex code.                            |
 | `target_path`   | string   | no       | Target path of the broadcast message.                 |
@@ -137,8 +143,8 @@ Parameters:
 |:----------------|:---------|:---------|:--------------------------------------|
 | `id`            | integer  | yes      | ID of broadcast message to update.    |
 | `message`       | string   | no       | Message to display.                   |
-| `starts_at`     | datetime | no       | Starting time.                        |
-| `ends_at`       | datetime | no       | Ending time.                          |
+| `starts_at`     | datetime | no       | Starting time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
+| `ends_at`       | datetime | no       | Ending time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `color`         | string   | no       | Background color hex code.            |
 | `font`          | string   | no       | Foreground color hex code.            |
 | `target_path`   | string   | no       | Target path of the broadcast message. |

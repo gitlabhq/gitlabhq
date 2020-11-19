@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import LinkedPipelinesColumn from '~/pipelines/components/graph/linked_pipelines_column.vue';
 import LinkedPipeline from '~/pipelines/components/graph/linked_pipeline.vue';
+import { UPSTREAM } from '~/pipelines/components/graph/constants';
 import mockData from './linked_pipelines_mock_data';
 
 describe('Linked Pipelines Column', () => {
@@ -9,6 +10,7 @@ describe('Linked Pipelines Column', () => {
     linkedPipelines: mockData.triggered,
     graphPosition: 'right',
     projectId: 19,
+    type: UPSTREAM,
   };
   let wrapper;
 

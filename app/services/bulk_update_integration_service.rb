@@ -9,7 +9,7 @@ class BulkUpdateIntegrationService
   # rubocop: disable CodeReuse/ActiveRecord
   def execute
     Service.transaction do
-      batch.update_all(service_hash)
+      Service.where(id: batch.select(:id)).update_all(service_hash)
 
       if integration.data_fields_present?
         integration.data_fields.class.where(service_id: batch.select(:id)).update_all(data_fields_hash)
@@ -23,7 +23,7 @@ class BulkUpdateIntegrationService
   attr_reader :integration, :batch
 
   def service_hash
-    integration.to_service_hash.tap { |json| json['inherit_from_id'] = integration.id }
+    integration.to_service_hash.tap { |json| json['inherit_from_id'] = integration.inherit_from_id || integration.id }
   end
 
   def data_fields_hash

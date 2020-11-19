@@ -95,6 +95,39 @@ RSpec.describe API::FeatureFlagsUserLists do
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response).to eq([])
     end
+
+    context 'when filtering' do
+      it 'returns lists matching the search term' do
+        create_list(name: 'test_list', user_xids: 'user1')
+        create_list(name: 'list_b', user_xids: 'user1,user2,user3')
+
+        get api("/projects/#{project.id}/feature_flags_user_lists?search=test", developer)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.map { |list| list['name'] }).to eq(['test_list'])
+      end
+
+      it 'returns lists matching multiple search terms' do
+        create_list(name: 'test_list', user_xids: 'user1')
+        create_list(name: 'list_b', user_xids: 'user1,user2,user3')
+        create_list(name: 'test_again', user_xids: 'user1,user2,user3')
+
+        get api("/projects/#{project.id}/feature_flags_user_lists?search=test list", developer)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.map { |list| list['name'] }).to eq(['test_list'])
+      end
+
+      it 'returns all lists with no query' do
+        create_list(name: 'list_a', user_xids: 'user1')
+        create_list(name: 'list_b', user_xids: 'user1,user2,user3')
+
+        get api("/projects/#{project.id}/feature_flags_user_lists?search=", developer)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.map { |list| list['name'] }.sort).to eq(%w[list_a list_b])
+      end
+    end
   end
 
   describe 'GET /projects/:id/feature_flags_user_lists/:iid' do

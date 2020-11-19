@@ -205,14 +205,6 @@ RSpec.describe SnippetsController do
         end
       end
     end
-
-    context 'when requesting JSON' do
-      it 'renders the blob from the repository' do
-        get :show, params: { id: public_snippet.to_param }, format: :json
-
-        expect(assigns(:blob)).to eq(public_snippet.blobs.first)
-      end
-    end
   end
 
   describe 'POST #mark_as_spam' do

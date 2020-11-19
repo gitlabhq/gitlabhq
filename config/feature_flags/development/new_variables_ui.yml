@@ -1,7 +1,0 @@
----
-name: new_variables_ui
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25260
-rollout_issue_url:
-group: group::continuous integration
-type: development
-default_enabled: true

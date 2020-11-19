@@ -2,6 +2,7 @@ import Vuex from 'vuex';
 import { createLocalVue, mount } from '@vue/test-utils';
 import DeployFreezeTable from '~/deploy_freeze/components/deploy_freeze_table.vue';
 import createStore from '~/deploy_freeze/store';
+import { freezePeriodsFixture, timezoneDataFixture } from '../helpers';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -9,7 +10,6 @@ localVue.use(Vuex);
 describe('Deploy freeze table', () => {
   let wrapper;
   let store;
-  const timezoneDataFixture = getJSONFixture('/api/freeze-periods/timezone_data.json');
 
   const createComponent = () => {
     store = createStore({
@@ -50,7 +50,6 @@ describe('Deploy freeze table', () => {
     });
 
     it('displays data', () => {
-      const freezePeriodsFixture = getJSONFixture('/api/freeze-periods/freeze_periods.json');
       store.state.freezePeriods = freezePeriodsFixture;
 
       return wrapper.vm.$nextTick(() => {

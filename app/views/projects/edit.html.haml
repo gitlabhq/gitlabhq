@@ -93,31 +93,9 @@
               %li= _('Your deployment services will be broken, you will need to manually fix the services after renaming.')
         = f.submit _('Change path'), class: "btn btn-warning qa-change-path-button"
 
-    - if can?(current_user, :change_namespace, @project)
-      .sub-section
-        %h4.danger-title= _('Transfer project')
-        = form_for @project, url: transfer_project_path(@project), method: :put, remote: true, html: { class: 'js-project-transfer-form' } do |f|
-          .form-group
-            = label_tag :new_namespace_id, nil, class: 'label-bold' do
-              %span= _('Select a new namespace')
-            .form-group
-              = select_tag :new_namespace_id, namespaces_options(nil), include_blank: true, class: 'select2'
-            %ul
-              %li= _("Be careful. Changing the project's namespace can have unintended side effects.")
-              %li= _('You can only transfer the project to namespaces you manage.')
-              %li= _('You will need to update your local repositories to point to the new location.')
-              %li= _('Project visibility level will be changed to match namespace rules when transferring to a group.')
-          = f.submit 'Transfer project', class: "gl-button btn btn-danger js-confirm-danger qa-transfer-button", data: { "confirm-danger-message" => transfer_project_message(@project) }
+    = render 'transfer', project: @project
 
-    - if @project.forked? && can?(current_user, :remove_fork_project, @project)
-      .sub-section
-        %h4.danger-title= _('Remove fork relationship')
-        %p= remove_fork_project_description_message(@project)
-
-        = form_for @project, url: remove_fork_project_path(@project), method: :delete, remote: true, html: { class: 'transfer-project' } do |f|
-          %p
-            %strong= _('Once removed, the fork relationship cannot be restored and you will no longer be able to send merge requests to the source.')
-          = button_to _('Remove fork relationship'), '#', class: "gl-button btn btn-danger js-confirm-danger", data: { "confirm-danger-message" => remove_fork_project_warning_message(@project) }
+    = render 'remove_fork', project: @project
 
     = render 'remove', project: @project
 

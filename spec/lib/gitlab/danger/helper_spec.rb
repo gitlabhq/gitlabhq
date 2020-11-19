@@ -236,13 +236,16 @@ RSpec.describe Gitlab::Danger::Helper do
 
       '.gitlab/ci/frontend.gitlab-ci.yml' | %i[frontend engineering_productivity]
 
-      'app/models/foo' | [:backend]
-      'bin/foo'        | [:backend]
-      'config/foo'     | [:backend]
-      'lib/foo'        | [:backend]
-      'rubocop/foo'    | [:backend]
-      'spec/foo'       | [:backend]
-      'spec/foo/bar'   | [:backend]
+      'app/models/foo'             | [:backend]
+      'bin/foo'                    | [:backend]
+      'config/foo'                 | [:backend]
+      'lib/foo'                    | [:backend]
+      'rubocop/foo'                | [:backend]
+      '.rubocop.yml'               | [:backend]
+      '.rubocop_todo.yml'          | [:backend]
+      '.rubocop_manual_todo.yml'   | [:backend]
+      'spec/foo'                   | [:backend]
+      'spec/foo/bar'               | [:backend]
 
       'ee/app/foo'      | [:backend]
       'ee/bin/foo'      | [:backend]
@@ -278,9 +281,9 @@ RSpec.describe Gitlab::Danger::Helper do
       'scripts/foo'                                           | [:engineering_productivity]
       'lib/gitlab/danger/foo'                                 | [:engineering_productivity]
       'ee/lib/gitlab/danger/foo'                              | [:engineering_productivity]
-      '.overcommit.yml.example'                               | [:engineering_productivity]
+      'lefthook.yml'                                          | [:engineering_productivity]
       '.editorconfig'                                         | [:engineering_productivity]
-      'tooling/overcommit/foo'                                | [:engineering_productivity]
+      'tooling/bin/find_foss_tests'                           | [:engineering_productivity]
       '.codeclimate.yml'                                      | [:engineering_productivity]
       '.gitlab/CODEOWNERS'                                    | [:engineering_productivity]
 
@@ -312,6 +315,8 @@ RSpec.describe Gitlab::Danger::Helper do
 
       'db/fixtures/foo.rb'                                 | [:backend]
       'ee/db/fixtures/foo.rb'                              | [:backend]
+      'doc/api/graphql/reference/gitlab_schema.graphql'    | [:backend]
+      'doc/api/graphql/reference/gitlab_schema.json'       | [:backend]
 
       'qa/foo' | [:qa]
       'ee/qa/foo' | [:qa]

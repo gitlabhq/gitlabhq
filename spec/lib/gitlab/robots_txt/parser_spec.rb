@@ -14,8 +14,13 @@ RSpec.describe Gitlab::RobotsTxt::Parser do
         <<~TXT
           User-Agent: *
           Disallow: /autocomplete/users
-          Disallow: /search
+          disallow: /search
           Disallow: /api
+          Allow: /users
+          Disallow: /help
+          allow: /help
+          Disallow: /test$
+          Disallow: /ex$mple$
         TXT
       end
 
@@ -28,6 +33,12 @@ RSpec.describe Gitlab::RobotsTxt::Parser do
         '/api/grapql' | true
         '/api/index.html' | true
         '/projects' | false
+        '/users' | false
+        '/help' | false
+        '/test' | true
+        '/testfoo' | false
+        '/ex$mple' | true
+        '/ex$mplefoo' | false
       end
 
       with_them do
@@ -47,6 +58,7 @@ RSpec.describe Gitlab::RobotsTxt::Parser do
           Disallow: /*/*.git
           Disallow: /*/archive/
           Disallow: /*/repository/archive*
+          Allow: /*/repository/archive/foo
         TXT
       end
 
@@ -61,6 +73,7 @@ RSpec.describe Gitlab::RobotsTxt::Parser do
         '/projects' | false
         '/git' | false
         '/projects/git' | false
+        '/project/repository/archive/foo' | false
       end
 
       with_them do

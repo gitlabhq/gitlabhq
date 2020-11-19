@@ -73,6 +73,8 @@ module Notes
       if note.for_merge_request? && note.diff_note? && note.start_of_discussion?
         Discussions::CaptureDiffNotePositionService.new(note.noteable, note.diff_file&.paths).execute(note.discussion)
       end
+
+      track_note_creation_usage_for_issues(note) if note.for_issue?
     end
 
     def do_commands(note, update_params, message, only_commands)
@@ -112,6 +114,10 @@ module Notes
       return unless note.noteable.is_a?(Issue) && note.noteable.incident?
 
       track_usage_event(:incident_management_incident_comment, user.id)
+    end
+
+    def track_note_creation_usage_for_issues(note)
+      Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_comment_added_action(author: note.author)
     end
   end
 end

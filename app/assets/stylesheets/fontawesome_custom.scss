@@ -92,53 +92,21 @@
   content: '\f0d7';
 }
 
-.fa-check::before {
-  content: '\f00c';
-}
-
 .fa-warning::before,
 .fa-exclamation-triangle::before {
   content: '\f071';
-}
-
-.fa-external-link::before {
-  content: '\f08e';
 }
 
 .fa-spinner::before {
   content: '\f110';
 }
 
-.fa-trash-o::before {
-  content: '\f014';
-}
-
 .fa-caret-right::before {
   content: '\f0da';
 }
 
-.fa-refresh::before {
-  content: '\f021';
-}
-
-.fa-chevron-up::before {
-  content: '\f077';
-}
-
-.fa-paperclip::before {
-  content: '\f0c6';
-}
-
-.fa-bug::before {
-  content: '\f188';
-}
-
 .fa-exclamation-circle::before {
   content: '\f06a';
-}
-
-.fa-bell::before {
-  content: '\f0f3';
 }
 
 .fa-file-o::before {
@@ -153,48 +121,12 @@
   content: '\f111';
 }
 
-.fa-git::before {
-  content: '\f1d3';
-}
-
 .fa-thumb-tack::before {
   content: '\f08d';
 }
 
 .fa-fire::before {
   content: '\f06d';
-}
-
-.fa-pause::before {
-  content: '\f04c';
-}
-
-.fa-play::before {
-  content: '\f04b';
-}
-
-.fa-share::before {
-  content: '\f064';
-}
-
-.fa-book::before {
-  content: '\f02d';
-}
-
-.fa-times-circle::before {
-  content: '\f057';
-}
-
-.fa-skype::before {
-  content: '\f17e';
-}
-
-.fa-linkedin-square::before {
-  content: '\f08c';
-}
-
-.fa-twitter-square::before {
-  content: '\f081';
 }
 
 .fa-file-pdf-o::before {
@@ -227,6 +159,14 @@
 
 .fa-file-video-o::before {
   content: '\f1c8';
+}
+
+.fa-square-o::before {
+  content: '\f096';
+}
+
+.fa-check-square-o::before {
+  content: '\f046';
 }
 
 .sr-only {

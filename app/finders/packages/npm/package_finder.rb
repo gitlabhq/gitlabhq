@@ -12,6 +12,8 @@ module Packages
       end
 
       def execute
+        return Packages::Package.none unless project
+
         packages
       end
 

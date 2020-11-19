@@ -8,7 +8,6 @@ import clusterDropdownStore from '~/create_cluster/store/cluster_dropdown';
 
 import {
   fetchRoles,
-  fetchRegions,
   fetchKeyPairs,
   fetchVpcs,
   fetchSubnets,
@@ -25,10 +24,6 @@ const createStore = ({ initialState }) =>
       roles: {
         namespaced: true,
         ...clusterDropdownStore({ fetchFn: fetchRoles }),
-      },
-      regions: {
-        namespaced: true,
-        ...clusterDropdownStore({ fetchFn: fetchRegions }),
       },
       keyPairs: {
         namespaced: true,

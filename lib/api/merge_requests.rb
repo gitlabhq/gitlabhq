@@ -8,6 +8,8 @@ module API
 
     before { authenticate_non_get! }
 
+    feature_category :code_review
+
     helpers Helpers::MergeRequestsHelpers
 
     # EE::API::MergeRequests would override the following helpers
@@ -350,7 +352,11 @@ module API
       get ':id/merge_requests/:merge_request_iid/changes' do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
-        present merge_request, with: Entities::MergeRequestChanges, current_user: current_user, project: user_project
+        present merge_request,
+          with: Entities::MergeRequestChanges,
+          current_user: current_user,
+          project: user_project,
+          access_raw_diffs: params.fetch(:access_raw_diffs, false)
       end
 
       desc 'Get the merge request pipelines' do

@@ -3,6 +3,14 @@
 module Gitlab
   module EtagCaching
     class Middleware
+      SKIP_HEADER_KEY = 'X-Gitlab-Skip-Etag'
+
+      class << self
+        def skip!(response)
+          response.set_header(SKIP_HEADER_KEY, '1')
+        end
+      end
+
       def initialize(app)
         @app = app
       end
@@ -22,9 +30,7 @@ module Gitlab
         else
           track_cache_miss(if_none_match, cached_value_present, route)
 
-          status, headers, body = @app.call(env)
-          headers['ETag'] = etag
-          [status, headers, body]
+          maybe_apply_etag(etag, *@app.call(env))
         end
       end
 
@@ -43,6 +49,13 @@ module Gitlab
         [weak_etag_format(current_value), cached_value_present]
       end
 
+      def maybe_apply_etag(etag, status, headers, body)
+        headers['ETag'] = etag unless
+          Gitlab::Utils.to_boolean(headers.delete(SKIP_HEADER_KEY))
+
+        [status, headers, body]
+      end
+
       def weak_etag_format(value)
         %Q{W/"#{value}"}
       end
@@ -54,7 +67,13 @@ module Gitlab
 
         add_instrument_for_cache_hit(status_code, route, request)
 
-        [status_code, { 'ETag' => etag, 'X-Gitlab-From-Cache' => 'true' }, []]
+        new_headers = {
+          'ETag' => etag,
+          'X-Gitlab-From-Cache' => 'true',
+          ::Gitlab::Metrics::RequestsRackMiddleware::FEATURE_CATEGORY_HEADER => route.feature_category
+        }
+
+        [status_code, new_headers, []]
       end
 
       def track_cache_miss(if_none_match, cached_value_present, route)

@@ -482,3 +482,7 @@
     @include build-trace();
   }
 }
+
+.progress-bar.bg-primary {
+  background-color: $blue-500 !important;
+}

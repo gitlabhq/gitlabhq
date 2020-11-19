@@ -7,6 +7,8 @@ module API
     ENVIRONMENT_SCOPE_ENDPOINT_REQUIREMENTS = FeatureFlags::FEATURE_FLAG_ENDPOINT_REQUIREMENTS
       .merge(environment_scope: API::NO_SLASH_URL_PART_REGEX)
 
+    feature_category :feature_flags
+
     before do
       authorize_read_feature_flags!
     end

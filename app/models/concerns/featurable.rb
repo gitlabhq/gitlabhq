@@ -37,7 +37,8 @@ module Featurable
 
   class_methods do
     def set_available_features(available_features = [])
-      @available_features = available_features
+      @available_features ||= []
+      @available_features += available_features
 
       class_eval do
         available_features.each do |feature|

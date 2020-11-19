@@ -1,0 +1,5 @@
+---
+title: Reject incomplete multibyte chars in UTF8 params
+merge_request: 47658
+author:
+type: fixed

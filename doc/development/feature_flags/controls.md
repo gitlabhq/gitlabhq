@@ -92,9 +92,7 @@ Guidelines:
 
 1. If the feature meets the requirements for creating a [Change Management](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#feature-flags-and-the-change-management-process) issue, create a Change Management issue per [criticality guidelines](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#change-request-workflows).
 1. For simple, low-risk, easily reverted features, proceed and [enable the feature in `#production`](#process).
-1. For features that impact the user experience, consider notifying
-  `#support_gitlab-com` first.
-  `#support_gitlab-com` beforehand.
+1. For features that impact the user experience, consider notifying `#support_gitlab-com` beforehand.
 
 #### Process
 
@@ -215,7 +213,6 @@ actors.
 Feature.enabled?(:some_feature, group)
 ```
 
-NOTE: **Note:**
 **Percentage of time** rollout is not a good idea if what you want is to make sure a feature
 is always on or off to the users. In that case, **Percentage of actors** rollout is a better method.
 

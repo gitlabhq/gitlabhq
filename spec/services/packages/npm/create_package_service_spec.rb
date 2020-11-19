@@ -48,7 +48,16 @@ RSpec.describe Packages::Npm::CreatePackageService do
     context 'scoped package' do
       it_behaves_like 'valid package'
 
-      it_behaves_like 'assigns build to package'
+      context 'with build info' do
+        let(:job) { create(:ci_build, user: user) }
+        let(:params) { super().merge(build: job) }
+
+        it_behaves_like 'assigns build to package'
+
+        it 'creates a package file build info' do
+          expect { subject }.to change { Packages::PackageFileBuildInfo.count }.by(1)
+        end
+      end
     end
 
     context 'invalid package name' do

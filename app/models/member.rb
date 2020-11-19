@@ -96,6 +96,8 @@ class Member < ApplicationRecord
   scope :owners, -> { active.where(access_level: OWNER) }
   scope :owners_and_maintainers, -> { active.where(access_level: [OWNER, MAINTAINER]) }
   scope :with_user, -> (user) { where(user: user) }
+  scope :with_user_by_email, -> (email) { left_join_users.where(users: { email: email } ) }
+
   scope :preload_user_and_notification_settings, -> { preload(user: :notification_settings) }
 
   scope :with_source_id, ->(source_id) { where(source_id: source_id) }
@@ -415,6 +417,10 @@ class Member < ApplicationRecord
 
   def invite_to_unknown_user?
     invite? && user_id.nil?
+  end
+
+  def created_by_name
+    created_by&.name
   end
 
   private

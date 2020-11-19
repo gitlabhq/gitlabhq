@@ -151,6 +151,13 @@ module AuthHelper
     current_user.allow_password_authentication_for_web? && !current_user.password_automatically_set?
   end
 
+  def google_tag_manager_enabled?
+    Gitlab.com? &&
+      extra_config.has_key?('google_tag_manager_id') &&
+      extra_config.google_tag_manager_id.present? &&
+      !current_user
+  end
+
   extend self
 end
 

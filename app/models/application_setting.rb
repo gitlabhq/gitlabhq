@@ -8,8 +8,6 @@ class ApplicationSetting < ApplicationRecord
   include IgnorableColumns
 
   ignore_column :namespace_storage_size_limit, remove_with: '13.5', remove_after: '2020-09-22'
-  ignore_column :instance_statistics_visibility_private, remove_with: '13.6', remove_after: '2020-10-22'
-  ignore_column :snowplow_iglu_registry_url, remove_with: '13.6', remove_after: '2020-11-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
@@ -42,8 +40,8 @@ class ApplicationSetting < ApplicationRecord
   serialize :restricted_visibility_levels # rubocop:disable Cop/ActiveRecordSerialize
   serialize :import_sources # rubocop:disable Cop/ActiveRecordSerialize
   serialize :disabled_oauth_sign_in_sources, Array # rubocop:disable Cop/ActiveRecordSerialize
-  serialize :domain_whitelist, Array # rubocop:disable Cop/ActiveRecordSerialize
-  serialize :domain_blacklist, Array # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :domain_allowlist, Array # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :domain_denylist, Array # rubocop:disable Cop/ActiveRecordSerialize
   serialize :repository_storages # rubocop:disable Cop/ActiveRecordSerialize
   serialize :asset_proxy_whitelist, Array # rubocop:disable Cop/ActiveRecordSerialize
 
@@ -186,9 +184,9 @@ class ApplicationSetting < ApplicationRecord
   validates :enabled_git_access_protocol,
             inclusion: { in: %w(ssh http), allow_blank: true }
 
-  validates :domain_blacklist,
-            presence: { message: 'Domain blacklist cannot be empty if Blacklist is enabled.' },
-            if: :domain_blacklist_enabled?
+  validates :domain_denylist,
+            presence: { message: 'Domain denylist cannot be empty if denylist is enabled.' },
+            if: :domain_denylist_enabled?
 
   validates :housekeeping_incremental_repack_period,
             presence: true,
@@ -294,6 +292,9 @@ class ApplicationSetting < ApplicationRecord
   validates :container_registry_delete_tags_service_timeout,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  validates :container_registry_expiration_policies_worker_capacity,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
   SUPPORTED_KEY_TYPES.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
   end
@@ -385,6 +386,9 @@ class ApplicationSetting < ApplicationRecord
   validates :raw_blob_request_limit,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  validates :ci_jwt_signing_key,
+            rsa_key: true, allow_nil: true
+
   attr_encrypted :asset_proxy_secret_key,
                  mode: :per_attribute_iv,
                  key: Settings.attr_encrypted_db_key_base_truncated,
@@ -410,6 +414,9 @@ class ApplicationSetting < ApplicationRecord
   attr_encrypted :recaptcha_site_key, encryption_options_base_truncated_aes_256_gcm
   attr_encrypted :slack_app_secret, encryption_options_base_truncated_aes_256_gcm
   attr_encrypted :slack_app_verification_token, encryption_options_base_truncated_aes_256_gcm
+  attr_encrypted :ci_jwt_signing_key, encryption_options_base_truncated_aes_256_gcm
+  attr_encrypted :secret_detection_token_revocation_token, encryption_options_base_truncated_aes_256_gcm
+  attr_encrypted :cloud_license_auth_token, encryption_options_base_truncated_aes_256_gcm
 
   before_validation :ensure_uuid!
 

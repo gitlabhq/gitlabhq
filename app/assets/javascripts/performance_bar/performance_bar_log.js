@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { getCLS, getFID, getLCP } from 'web-vitals';
-import { PERFORMANCE_TYPE_MARK, PERFORMANCE_TYPE_MEASURE } from '~/performance_constants';
+import { PERFORMANCE_TYPE_MARK, PERFORMANCE_TYPE_MEASURE } from '~/performance/constants';
 
 const initVitalsLog = () => {
   const reportVital = data => {

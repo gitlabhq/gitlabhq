@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Maintenance Rake tasks **(CORE ONLY)**
 
 GitLab provides Rake tasks for general maintenance.
@@ -124,7 +130,6 @@ sudo gitlab-rake gitlab:check
 bundle exec rake gitlab:check RAILS_ENV=production
 ```
 
-NOTE: **Note:**
 Use `SANITIZE=true` for `gitlab:check` if you want to omit project names from the output.
 
 Example output:
@@ -267,7 +272,7 @@ clear it.
 
 To clear all exclusive leases:
 
-DANGER: **Danger:**
+DANGER: **Warning:**
 Don't run it while GitLab or Sidekiq is running
 
 ```shell

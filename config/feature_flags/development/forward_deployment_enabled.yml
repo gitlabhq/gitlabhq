@@ -2,6 +2,7 @@
 name: forward_deployment_enabled
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24412
 rollout_issue_url: 
-group: group::progressive delivery
+milestone: '12.8'
 type: development
+group: group::progressive delivery
 default_enabled: true

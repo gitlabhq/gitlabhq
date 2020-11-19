@@ -34,7 +34,7 @@ module AlertManagement
     has_many :ordered_notes, -> { fresh }, as: :noteable, class_name: 'Note'
     has_many :user_mentions, class_name: 'AlertManagement::AlertUserMention', foreign_key: :alert_management_alert_id
 
-    has_internal_id :iid, scope: :project, init: ->(s) { s.project.alert_management_alerts.maximum(:iid) }
+    has_internal_id :iid, scope: :project
 
     sha_attribute :fingerprint
 

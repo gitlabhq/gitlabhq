@@ -1,0 +1,5 @@
+---
+title: Bump versions of secrets and klar in the Secure-Binaries template
+merge_request: 47531
+author:
+type: fixed

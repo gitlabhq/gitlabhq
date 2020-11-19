@@ -34,6 +34,20 @@ const buildVideoIframe = src => {
   return wrapper;
 };
 
+const buildImg = (alt, originalSrc, file) => {
+  const img = document.createElement('img');
+  const src = file ? URL.createObjectURL(file) : originalSrc;
+  const attributes = { alt, src };
+
+  if (file) {
+    img.dataset.originalSrc = originalSrc;
+  }
+
+  Object.assign(img, attributes);
+
+  return img;
+};
+
 export const generateToolbarItem = config => {
   const { icon, classes, event, command, tooltip, isDivider } = config;
 
@@ -59,7 +73,14 @@ export const addCustomEventListener = (editorApi, event, handler) => {
 export const removeCustomEventListener = (editorApi, event, handler) =>
   editorApi.eventManager.removeEventHandler(event, handler);
 
-export const addImage = ({ editor }, image) => editor.exec('AddImage', image);
+export const addImage = ({ editor }, { altText, imageUrl }, file) => {
+  if (editor.isWysiwygMode()) {
+    const img = buildImg(altText, imageUrl, file);
+    editor.getSquire().insertElement(img);
+  } else {
+    editor.insertText(`![${altText}](${imageUrl})`);
+  }
+};
 
 export const insertVideo = ({ editor }, url) => {
   const videoIframe = buildVideoIframe(url);

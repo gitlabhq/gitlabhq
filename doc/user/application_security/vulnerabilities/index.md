@@ -11,10 +11,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Each security vulnerability in a project's [Security Dashboard](../security_dashboard/index.md#project-security-dashboard) has an individual page which includes:
 
-- Details of the vulnerability.
+- Details for the vulnerability.
 - The status of the vulnerability within the project.
 - Available actions for the vulnerability.
-- Issues related to the vulnerability.
+- Any issues related to the vulnerability.
 
 On the vulnerability page, you can interact with the vulnerability in
 several different ways:
@@ -25,22 +25,22 @@ several different ways:
   title and description pre-populated with information from the vulnerability report.
   By default, such issues are [confidential](../../project/issues/confidential_issues.md).
 - [Link issues](#link-issues-to-the-vulnerability) - Link existing issues to vulnerability.
-- [Solution](#automatic-remediation-for-vulnerabilities) - For some vulnerabilities,
-  a solution is provided for how to fix the vulnerability.
+- [Automatic remediation](#automatic-remediation-for-vulnerabilities) - For some vulnerabilities,
+  a solution is provided for how to fix the vulnerability automatically.
 
 ## Changing vulnerability status
 
 You can switch the status of a vulnerability using the **Status** dropdown to one of
 the following values:
 
-| Status    | Description                                                       |
-|-----------|-------------------------------------------------------------------|
-| Detected  | The default state for a newly discovered vulnerability            |
-| Confirmed | A user has seen this vulnerability and confirmed it to be real    |
-| Dismissed | A user has seen this vulnerability and dismissed it               |
-| Resolved  | The vulnerability has been fixed and is no longer in the codebase |
+| Status    | Description                                                                                                      |
+|-----------|------------------------------------------------------------------------------------------------------------------|
+| Detected  | The default state for a newly discovered vulnerability                                                           |
+| Confirmed | A user has seen this vulnerability and confirmed it to be accurate                                               |
+| Dismissed | A user has seen this vulnerability and dismissed it because it is not accurate or otherwise will not be resolved |
+| Resolved  | The vulnerability has been fixed and is no longer valid                                                          |
 
-A timeline shows you when the vulnerability status has changed,
+A timeline shows you when the vulnerability status has changed
 and allows you to comment on a change.
 
 ## Creating an issue for a vulnerability
@@ -48,7 +48,7 @@ and allows you to comment on a change.
 You can create an issue for a vulnerability by selecting the **Create issue** button.
 
 This creates a [confidential issue](../../project/issues/confidential_issues.md) in the
-project the vulnerability came from, and pre-populates it with useful information from
+project the vulnerability came from and pre-populates it with useful information from
 the vulnerability report. After the issue is created, GitLab redirects you to the
 issue page so you can edit, assign, or comment on the issue.
 
@@ -61,4 +61,4 @@ that the resolution of one issue would resolve multiple vulnerabilities.
 ## Automatic remediation for vulnerabilities
 
 You can fix some vulnerabilities by applying the solution that GitLab automatically
-generates for you. [Read more about the automatic remediation for vulnerabilities feature](../index.md#solutions-for-vulnerabilities-auto-remediation).
+generates for you. [Read more about the automatic remediation for vulnerabilities feature](../index.md#automatic-remediation-for-vulnerabilities).

@@ -10,6 +10,7 @@ module UserCalloutsHelper
   WEBHOOKS_MOVED = 'webhooks_moved'
   CUSTOMIZE_HOMEPAGE = 'customize_homepage'
   FEATURE_FLAGS_NEW_VERSION = 'feature_flags_new_version'
+  REGISTRATION_ENABLED_CALLOUT = 'registration_enabled_callout'
 
   def show_admin_integrations_moved?
     !user_dismissed?(ADMIN_INTEGRATIONS_MOVED)
@@ -53,6 +54,10 @@ module UserCalloutsHelper
 
   def show_feature_flags_new_version?
     !user_dismissed?(FEATURE_FLAGS_NEW_VERSION)
+  end
+
+  def show_registration_enabled_user_callout?
+    current_user&.admin? && signup_enabled? && !user_dismissed?(REGISTRATION_ENABLED_CALLOUT)
   end
 
   private

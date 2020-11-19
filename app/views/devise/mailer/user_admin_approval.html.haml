@@ -1,0 +1,8 @@
+= email_default_heading(say_hi(@resource))
+
+%p
+  = _('Your GitLab account request has been approved!')
+%p
+  = _('Your username is %{username}.') % { username: @resource.username }
+%p
+  = _('Your sign-in page is %{url}.').html_safe % { url: link_to(Gitlab.config.gitlab.url, Gitlab.config.gitlab.url) }

@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, how-to
 ---
 
-# Web IDE
+# Web IDE **(CORE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4539) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/44157) to GitLab Core in 10.7.
@@ -25,9 +25,25 @@ and from merge requests.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18323) in [GitLab Core](https://about.gitlab.com/pricing/) 10.8.
 
 The file finder allows you to quickly open files in the current branch by
-searching. The file finder is launched using the keyboard shortcut `Command-p`,
-`Control-p`, or `t` (when editor is not in focus). Type the filename or
-file path fragments to start seeing results.
+searching for fragments of the file path. The file finder is launched using the keyboard shortcut
+<kbd>Cmd</kbd>+<kbd>p</kbd>, <kbd>Ctrl</kbd>+<kbd>p</kbd>, or <kbd>t</kbd>
+(when editor is not in focus). Type the filename or file path fragments to
+start seeing results.
+
+## Command palette
+
+You can see all available commands for manipulating editor content by pressing
+the <kbd>F1</kbd> key when the editor is in focus. After that,
+you'll see a complete list of available commands for
+manipulating editor content. The editor supports commands for multi-cursor
+editing, code block folding, commenting, searching and replacing, navigating
+editor warnings and suggestions, and more.
+
+Some commands have a keyboard shortcut assigned to them. The command palette
+displays this shortcut next to each command. You can use this shortcut to invoke
+the command without having to select it in the command palette.
+
+![Command palette](img/command_palette_v13_6.png)
 
 ## Syntax highlighting
 
@@ -243,6 +259,8 @@ to transfer the contents of the project into a public CodeSandbox project to
 quickly share your project with others.
 
 ### Enabling Live Preview
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/268288) in GitLab 12.9, third-party assets and libraries required for Live Preview are hosted at `https://sandbox-prod.gitlab-static.net` when it is enabled. However, some libraries are still served from other third-party services which may or may not be desirable in your environment.
 
 The Live Preview feature needs to be enabled in the GitLab instances
 admin settings. Live Preview is enabled for all projects on

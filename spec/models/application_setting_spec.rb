@@ -72,6 +72,7 @@ RSpec.describe ApplicationSetting do
     it { is_expected.not_to allow_value(nil).for(:push_event_activities_limit) }
 
     it { is_expected.to validate_numericality_of(:container_registry_delete_tags_service_timeout).only_integer.is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:container_registry_expiration_policies_worker_capacity).only_integer.is_greater_than_or_equal_to(0) }
 
     it { is_expected.to validate_numericality_of(:snippet_size_limit).only_integer.is_greater_than(0) }
     it { is_expected.to validate_numericality_of(:wiki_page_max_content_bytes).only_integer.is_greater_than_or_equal_to(1024) }
@@ -644,6 +645,37 @@ RSpec.describe ApplicationSetting do
           it 'sets multiple domains with commas' do
             setting.asset_proxy_whitelist = "example.com, *.example.com"
             expect(setting.asset_proxy_whitelist).to eq(['example.com', '*.example.com', 'localhost'])
+          end
+        end
+      end
+
+      describe '#ci_jwt_signing_key' do
+        it { is_expected.not_to allow_value('').for(:ci_jwt_signing_key) }
+        it { is_expected.not_to allow_value('invalid RSA key').for(:ci_jwt_signing_key) }
+        it { is_expected.to allow_value(nil).for(:ci_jwt_signing_key) }
+        it { is_expected.to allow_value(OpenSSL::PKey::RSA.new(1024).to_pem).for(:ci_jwt_signing_key) }
+
+        it 'is encrypted' do
+          subject.ci_jwt_signing_key = OpenSSL::PKey::RSA.new(1024).to_pem
+
+          aggregate_failures do
+            expect(subject.encrypted_ci_jwt_signing_key).to be_present
+            expect(subject.encrypted_ci_jwt_signing_key_iv).to be_present
+            expect(subject.encrypted_ci_jwt_signing_key).not_to eq(subject.ci_jwt_signing_key)
+          end
+        end
+      end
+
+      describe '#cloud_license_auth_token' do
+        it { is_expected.to allow_value(nil).for(:cloud_license_auth_token) }
+
+        it 'is encrypted' do
+          subject.cloud_license_auth_token = 'token-from-customers-dot'
+
+          aggregate_failures do
+            expect(subject.encrypted_cloud_license_auth_token).to be_present
+            expect(subject.encrypted_cloud_license_auth_token_iv).to be_present
+            expect(subject.encrypted_cloud_license_auth_token).not_to eq(subject.cloud_license_auth_token)
           end
         end
       end

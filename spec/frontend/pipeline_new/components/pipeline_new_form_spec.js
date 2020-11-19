@@ -1,5 +1,5 @@
 import { mount, shallowMount } from '@vue/test-utils';
-import { GlDropdown, GlDropdownItem, GlForm, GlSprintf } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlForm, GlSprintf, GlLoadingIcon } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
 import httpStatusCodes from '~/lib/utils/http_status';
@@ -35,6 +35,7 @@ describe('Pipeline New Form', () => {
   const findWarningAlert = () => wrapper.find('[data-testid="run-pipeline-warning-alert"]');
   const findWarningAlertSummary = () => findWarningAlert().find(GlSprintf);
   const findWarnings = () => wrapper.findAll('[data-testid="run-pipeline-warning"]');
+  const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
   const getExpectedPostParams = () => JSON.parse(mock.history.post[0].data);
 
   const createComponent = (term = '', props = {}, method = shallowMount) => {
@@ -205,6 +206,25 @@ describe('Pipeline New Form', () => {
 
     afterAll(() => {
       window.gon = origGon;
+    });
+
+    describe('loading state', () => {
+      it('loading icon is shown when content is requested and hidden when received', async () => {
+        createComponent('', mockParams, mount);
+
+        mock.onGet(configVariablesPath).reply(httpStatusCodes.OK, {
+          [mockYmlKey]: {
+            value: mockYmlValue,
+            description: mockYmlDesc,
+          },
+        });
+
+        expect(findLoadingIcon().exists()).toBe(true);
+
+        await waitForPromises();
+
+        expect(findLoadingIcon().exists()).toBe(false);
+      });
     });
 
     describe('when yml defines a variable with description', () => {

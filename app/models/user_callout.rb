@@ -25,7 +25,8 @@ class UserCallout < ApplicationRecord
     personal_access_token_expiry: 21,          # EE-only
     suggest_pipeline: 22,
     customize_homepage: 23,
-    feature_flags_new_version: 24
+    feature_flags_new_version: 24,
+    registration_enabled_callout: 25
   }
 
   validates :user, presence: true

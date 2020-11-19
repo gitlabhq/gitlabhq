@@ -1,11 +1,20 @@
 <script>
-import { GlFormSelect } from '@gitlab/ui';
+import { debounce } from 'lodash';
+import { createNamespacedHelpers } from 'vuex';
+import { GlDropdown, GlDropdownItem, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import ParameterFormGroup from './parameter_form_group.vue';
 
+const { mapActions, mapGetters, mapState } = createNamespacedHelpers('userLists');
+
+const { fetchUserLists, setFilter } = mapActions(['fetchUserLists', 'setFilter']);
+
 export default {
   components: {
-    GlFormSelect,
+    GlDropdown,
+    GlDropdownItem,
+    GlLoadingIcon,
+    GlSearchBoxByType,
     ParameterFormGroup,
   },
   props: {
@@ -13,33 +22,39 @@ export default {
       required: true,
       type: Object,
     },
-    userLists: {
-      required: false,
-      type: Array,
-      default: () => [],
-    },
   },
   translations: {
-    rolloutUserListLabel: s__('FeatureFlag|List'),
+    rolloutUserListLabel: s__('FeatureFlag|User List'),
     rolloutUserListDescription: s__('FeatureFlag|Select a user list'),
     rolloutUserListNoListError: s__('FeatureFlag|There are no configured user lists'),
+    defaultDropdownText: s__('FeatureFlags|No user list selected'),
   },
   computed: {
-    userListOptions() {
-      return this.userLists.map(({ name, id }) => ({ value: id, text: name }));
-    },
-    hasUserLists() {
-      return this.userListOptions.length > 0;
-    },
+    ...mapGetters(['hasUserLists', 'isLoading', 'hasError', 'userListOptions']),
+    ...mapState(['filter', 'userLists']),
     userListId() {
-      return this.strategy?.userListId ?? '';
+      return this.strategy?.userList?.id ?? '';
+    },
+    dropdownText() {
+      return this.strategy?.userList?.name ?? this.$options.translations.defaultDropdownText;
     },
   },
+  mounted() {
+    fetchUserLists.apply(this);
+  },
   methods: {
+    setFilter: debounce(setFilter, 250),
+    fetchUserLists: debounce(fetchUserLists, 250),
     onUserListChange(list) {
       this.$emit('change', {
-        userListId: list,
+        userList: list,
       });
+    },
+    isSelectedUserList({ id }) {
+      return id === this.userListId;
+    },
+    setFocus() {
+      this.$refs.searchBox.focusInput();
     },
   },
 };
@@ -52,12 +67,26 @@ export default {
     :description="hasUserLists ? $options.translations.rolloutUserListDescription : ''"
   >
     <template #default="{ inputId }">
-      <gl-form-select
-        :id="inputId"
-        :value="userListId"
-        :options="userListOptions"
-        @change="onUserListChange"
-      />
+      <gl-dropdown :id="inputId" :text="dropdownText" @shown="setFocus">
+        <gl-search-box-by-type
+          ref="searchBox"
+          class="gl-m-3"
+          :value="filter"
+          @input="setFilter"
+          @focus="fetchUserLists"
+          @keyup="fetchUserLists"
+        />
+        <gl-loading-icon v-if="isLoading" />
+        <gl-dropdown-item
+          v-for="list in userLists"
+          :key="list.id"
+          :is-checked="isSelectedUserList(list)"
+          is-check-item
+          @click="onUserListChange(list)"
+        >
+          {{ list.name }}
+        </gl-dropdown-item>
+      </gl-dropdown>
     </template>
   </parameter-form-group>
 </template>

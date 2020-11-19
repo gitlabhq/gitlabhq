@@ -38,7 +38,7 @@ RSpec.describe Gitlab::Config::Entry::Simplifiable do
       end
 
       it 'attemps to load a first strategy' do
-        expect(first).to receive(:new).with('something', anything)
+        expect(first).to receive(:new).with('something')
 
         entry.new('something')
       end
@@ -53,7 +53,7 @@ RSpec.describe Gitlab::Config::Entry::Simplifiable do
       end
 
       it 'attemps to load a second strategy' do
-        expect(second).to receive(:new).with('test', anything)
+        expect(second).to receive(:new).with('test')
 
         entry.new('test')
       end
@@ -68,7 +68,7 @@ RSpec.describe Gitlab::Config::Entry::Simplifiable do
       end
 
       it 'instantiates an unknown strategy' do
-        expect(unknown).to receive(:new).with('test', anything)
+        expect(unknown).to receive(:new).with('test')
 
         entry.new('test')
       end

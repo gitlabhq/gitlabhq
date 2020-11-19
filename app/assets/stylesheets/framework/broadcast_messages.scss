@@ -15,10 +15,6 @@
 
 .broadcast-banner-message {
   text-align: center;
-
-  .broadcast-message-dismiss {
-    color: inherit;
-  }
 }
 
 .broadcast-notification-message {
@@ -35,10 +31,6 @@
 
   &.preview {
     position: static;
-  }
-
-  .broadcast-message-dismiss {
-    color: $gray-700;
   }
 }
 

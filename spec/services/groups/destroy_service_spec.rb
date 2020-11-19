@@ -95,7 +95,7 @@ RSpec.describe Groups::DestroyService do
   context 'projects in pending_delete' do
     before do
       project.pending_delete = true
-      project.save
+      project.save!
     end
 
     it_behaves_like 'group destruction', false

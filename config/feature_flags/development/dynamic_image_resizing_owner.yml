@@ -1,7 +1,0 @@
----
-name: dynamic_image_resizing_owner
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40606
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/241533
-group: group::memory
-type: development
-default_enabled: false

@@ -15,6 +15,10 @@ export const DELETE_TAGS_SUCCESS_MESSAGE = s__(
   'ContainerRegistry|Tags successfully marked for deletion.',
 );
 
+export const FETCH_IMAGE_DETAILS_ERROR_MESSAGE = s__(
+  'ContainerRegistry|Something went wrong while fetching the image details.',
+);
+
 export const TAGS_LIST_TITLE = s__('ContainerRegistry|Image tags');
 export const DIGEST_LABEL = s__('ContainerRegistry|Digest: %{imageId}');
 export const CREATED_AT_LABEL = s__('ContainerRegistry|Published %{timeInfo}');

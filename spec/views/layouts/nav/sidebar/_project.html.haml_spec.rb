@@ -219,6 +219,22 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
     end
   end
 
+  describe 'pipeline editor link' do
+    it 'shows the pipeline editor link' do
+      render
+
+      expect(rendered).to have_link('Editor', href: project_ci_pipeline_editor_path(project))
+    end
+
+    it 'does not show the pipeline editor link' do
+      allow(view).to receive(:can_view_pipeline_editor?).and_return(false)
+
+      render
+
+      expect(rendered).not_to have_link('Editor', href: project_ci_pipeline_editor_path(project))
+    end
+  end
+
   describe 'operations settings tab' do
     describe 'archive projects' do
       before do

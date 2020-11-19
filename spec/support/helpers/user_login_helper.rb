@@ -1,18 +1,25 @@
 # frozen_string_literal: true
 
 module UserLoginHelper
-  def ensure_tab_pane_correctness(visit_path = true)
-    if visit_path
-      visit new_user_session_path
-    end
-
-    ensure_tab_pane_counts
+  def ensure_tab_pane_correctness(tab_names)
+    ensure_tab_pane_counts(tab_names.size)
+    ensure_tab_labels(tab_names)
     ensure_one_active_tab
     ensure_one_active_pane
   end
 
-  def ensure_tab_pane_counts
-    tabs_count = page.all('[role="tab"]').size
+  def ensure_no_tabs
+    expect(page.all('[role="tab"]').size).to eq(0)
+  end
+
+  def ensure_tab_labels(tab_names)
+    tab_labels = page.all('[role="tab"]').map(&:text)
+
+    expect(tab_names).to match_array(tab_labels)
+  end
+
+  def ensure_tab_pane_counts(tabs_count)
+    expect(page.all('[role="tab"]').size).to eq(tabs_count)
     expect(page).to have_selector('[role="tabpanel"]', visible: :all, count: tabs_count)
   end
 

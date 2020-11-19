@@ -1,9 +1,9 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { GlDropdownItem, GlDropdown } from '@gitlab/ui';
-import { secondsToHours } from '~/lib/utils/datetime_utility';
 import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown.vue';
 import createStore from '~/deploy_freeze/store';
+import { findTzByName, formatTz, timezoneDataFixture } from '../helpers';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -11,12 +11,6 @@ localVue.use(Vuex);
 describe('Deploy freeze timezone dropdown', () => {
   let wrapper;
   let store;
-  const timezoneDataFixture = getJSONFixture('/api/freeze-periods/timezone_data.json');
-
-  const findTzByName = (identifier = '') =>
-    timezoneDataFixture.find(({ name }) => name.toLowerCase() === identifier.toLowerCase());
-
-  const formatTz = ({ offset, name }) => `[UTC ${secondsToHours(offset)}] ${name}`;
 
   const createComponent = (searchTerm, selectedTimezone) => {
     store = createStore({

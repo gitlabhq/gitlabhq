@@ -61,6 +61,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory do
         'enable_ssl_verification' => true,
         'job_events' => false,
         'wiki_page_events' => true,
+        'releases_events' => false,
         'token' => token
       }
     end

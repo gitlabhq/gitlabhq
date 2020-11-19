@@ -1,8 +1,7 @@
 <script>
 import { mapActions } from 'vuex';
-import { GlModal, GlIcon } from '@gitlab/ui';
+import { GlModal, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
-import tooltip from '~/vue_shared/directives/tooltip';
 import ListItem from './list_item.vue';
 
 export default {
@@ -12,15 +11,11 @@ export default {
     GlModal,
   },
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     fileList: {
       type: Array,
-      required: true,
-    },
-    iconName: {
-      type: String,
       required: true,
     },
     stagedList: {
@@ -73,12 +68,11 @@ export default {
   <div class="ide-commit-list-container">
     <header class="multi-file-commit-panel-header d-flex mb-0">
       <div class="d-flex align-items-center flex-fill">
-        <gl-icon v-once :name="iconName" :size="18" class="gl-mr-3" />
         <strong> {{ titleText }} </strong>
         <div class="d-flex ml-auto">
           <button
             v-if="!stagedList"
-            v-tooltip
+            v-gl-tooltip
             :title="__('Discard all changes')"
             :aria-label="__('Discard all changes')"
             :disabled="!filesLength"

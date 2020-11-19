@@ -2,6 +2,7 @@
 name: unified_diff_lines
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40131
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/241188
-group: group::source code
+milestone: '13.4'
 type: development
+group: group::source code
 default_enabled: true

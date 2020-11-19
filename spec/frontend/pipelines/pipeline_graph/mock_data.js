@@ -91,3 +91,18 @@ export const pipelineData = {
     [jobId4]: {},
   },
 };
+
+export const singleStageData = {
+  stages: [
+    {
+      name: 'build',
+      groups: [
+        {
+          name: 'build_1',
+          jobs: [{ script: 'echo hello', stage: 'build' }],
+          id: jobId1,
+        },
+      ],
+    },
+  ],
+};

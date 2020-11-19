@@ -11,16 +11,6 @@ module Mutations
         id = ::Types::GlobalIDType[::Todo].coerce_isolated_input(id)
         GitlabSchema.find_by_gid(id)
       end
-
-      def map_to_global_ids(ids)
-        return [] if ids.blank?
-
-        ids.map { |id| to_global_id(id) }
-      end
-
-      def to_global_id(id)
-        Gitlab::GlobalId.as_global_id(id, model_name: Todo.name).to_s
-      end
     end
   end
 end

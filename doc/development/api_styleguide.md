@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # API style guide
 
 This style guide recommends best practices for API development.
@@ -201,6 +207,12 @@ guide on how you can add a new custom validator.
   checks if the value of the given parameter is either an `Array`, `None`, or `Any`.
   It allows only either of these mentioned values to move forward in the request.
 
+- `EmailOrEmailList`:
+
+  The [`EmailOrEmailList` validator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/validations/validators/email_or_email_list.rb)
+  checks if the value of a string or a list of strings contains only valid
+  email addresses. It allows only lists with all valid email addresses to move forward in the request.
+
 ### Adding a new custom validator
 
 Custom validators are a great way to validate parameters before sending
@@ -228,7 +240,7 @@ it's own file in the [`validators`](https://gitlab.com/gitlab-org/gitlab/-/blob/
 
 ## Internal API
 
-The [internal API](./internal_api.md) is documented for internal use. Please keep it up to date so we know what endpoints
+The [internal API](internal_api.md) is documented for internal use. Please keep it up to date so we know what endpoints
 different components are making use of.
 
 ## Avoiding N+1 problems
@@ -285,10 +297,15 @@ end
 
 ## Testing
 
-When writing tests for new API endpoints, consider using a schema [fixture](./testing_guide/best_practices.md#fixtures) located in `/spec/fixtures/api/schemas`. You can `expect` a response to match a given schema:
+When writing tests for new API endpoints, consider using a schema [fixture](testing_guide/best_practices.md#fixtures) located in `/spec/fixtures/api/schemas`. You can `expect` a response to match a given schema:
 
 ```ruby
 expect(response).to match_response_schema('merge_requests')
 ```
 
 Also see [verifying N+1 performance](#verifying-with-tests) in tests.
+
+## Include a changelog entry
+
+All client-facing changes **must** include a [changelog entry](changelog.md).
+This does not include internal APIs.

@@ -12,6 +12,8 @@ module API
 
     before { authenticate_non_get! }
 
+    feature_category :templates
+
     params do
       requires :id, type: String, desc: 'The ID of a project'
       requires :type, type: String, values: TEMPLATE_TYPES, desc: 'The type (dockerfiles|gitignores|gitlab_ci_ymls|licenses|metrics_dashboard_ymls|issues|merge_requests) of the template'

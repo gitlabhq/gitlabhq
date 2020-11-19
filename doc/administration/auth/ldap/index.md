@@ -17,7 +17,7 @@ This integration works with most LDAP-compliant directory servers, including:
 - Open LDAP
 - 389 Server
 
-Users added through LDAP take a [licensed seat](../../../subscriptions/self_managed/index.md#choose-the-number-of-users).
+Users added through LDAP take a [licensed seat](../../../subscriptions/self_managed/index.md#billable-users).
 
 GitLab Enterprise Editions (EE) include enhanced integration,
 including group membership syncing as well as multiple LDAP servers support.
@@ -97,7 +97,8 @@ library. `start_tls` corresponds to StartTLS, not to be confused with regular TL
 Normally, if you specify `simple_tls` it will be on port 636, while `start_tls` (StartTLS)
 would be on port 389. `plain` also operates on port 389. Removed values: `tls` was replaced with `start_tls` and `ssl` was replaced with `simple_tls`.
 
-LDAP users must have an email address set, regardless of whether it is used to sign-in.
+LDAP users must have a set email address, regardless of whether or not it's used
+to sign in.
 
 ### Example Configurations **(CORE ONLY)**
 
@@ -444,10 +445,10 @@ account control attribute (`userAccountControl:1.2.840.113556.1.4.803`)
 has bit 2 set.
 For more information, see <https://ctovswild.com/2009/09/03/bitmask-searches-in-ldap/>
 
-The user will be set to `ldap_blocked` state in GitLab if the above conditions
-fail. This means the user will not be able to sign-in or push/pull code.
+The user is set to an `ldap_blocked` state in GitLab if the previous conditions
+fail. This means the user won't be able to sign in or push/pull code.
 
-The process will also update the following user information:
+The process also updates the following user information:
 
 - Email address.
 - If `sync_ssh_keys` is set, SSH public keys.
@@ -460,16 +461,12 @@ The LDAP sync process:
 
 ### Adjusting LDAP user sync schedule **(STARTER ONLY)**
 
-NOTE: **Note:**
-These are cron formatted values. You can use a crontab generator to create
-these values, for example <http://www.crontabgenerator.com/>.
-
 By default, GitLab runs a worker once per day at 01:30 a.m. server time to
 check and update GitLab users against LDAP.
 
 You can manually configure LDAP user sync times by setting the
 following configuration values, in cron format. If needed, you can
-use a [crontab generator](http://crontabgenerator.com).
+use a [crontab generator](http://www.crontabgenerator.com).
 The example below shows how to set LDAP user
 sync to run once every 12 hours at the top of the hour.
 

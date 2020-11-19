@@ -21,5 +21,6 @@
     - else
       = render 'shared/issuable/close_reopen_report_toggle', issuable: issuable, warn_before_close: add_blocked_class
   - else
-    = link_to _('Report abuse'), new_abuse_report_path(user_id: issuable.author.id, ref_url: issuable_url(issuable)),
-              class: 'd-none d-md-block btn btn-grouped btn-close-color', title: _('Report abuse')
+    - unless issuable.is_a?(MergeRequest) && issuable.merged?
+      = link_to _('Report abuse'), new_abuse_report_path(user_id: issuable.author.id, ref_url: issuable_url(issuable)),
+                class: 'd-none d-md-block btn btn-grouped btn-close-color', title: _('Report abuse')

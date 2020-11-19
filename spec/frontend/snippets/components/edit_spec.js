@@ -1,7 +1,9 @@
-import { ApolloMutation } from 'vue-apollo';
+import VueApollo, { ApolloMutation } from 'vue-apollo';
 import { GlLoadingIcon } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
+import createMockApollo from 'jest/helpers/mock_apollo_helper';
+import GetSnippetQuery from 'shared_queries/snippet/snippet.query.graphql';
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import * as urlUtils from '~/lib/utils/url_utility';
 import SnippetEditApp from '~/snippets/components/edit.vue';
@@ -10,7 +12,11 @@ import SnippetVisibilityEdit from '~/snippets/components/snippet_visibility_edit
 import SnippetBlobActionsEdit from '~/snippets/components/snippet_blob_actions_edit.vue';
 import TitleField from '~/vue_shared/components/form/title.vue';
 import FormFooterActions from '~/vue_shared/components/form/form_footer_actions.vue';
-import { SNIPPET_VISIBILITY_PRIVATE } from '~/snippets/constants';
+import {
+  SNIPPET_VISIBILITY_PRIVATE,
+  SNIPPET_VISIBILITY_INTERNAL,
+  SNIPPET_VISIBILITY_PUBLIC,
+} from '~/snippets/constants';
 import UpdateSnippetMutation from '~/snippets/mutations/updateSnippet.mutation.graphql';
 import CreateSnippetMutation from '~/snippets/mutations/createSnippet.mutation.graphql';
 import { testEntries } from '../test_utils';
@@ -47,8 +53,12 @@ const createTestSnippet = () => ({
 
 describe('Snippet Edit app', () => {
   let wrapper;
+  let fakeApollo;
   const relativeUrlRoot = '/foo/';
   const originalRelativeUrlRoot = gon.relative_url_root;
+  const GetSnippetQuerySpy = jest.fn().mockResolvedValue({
+    data: { snippets: { nodes: [createTestSnippet()] } },
+  });
 
   const mutationTypes = {
     RESOLVE: jest.fn().mockResolvedValue({
@@ -78,12 +88,10 @@ describe('Snippet Edit app', () => {
     props = {},
     loading = false,
     mutationRes = mutationTypes.RESOLVE,
+    selectedLevel = SNIPPET_VISIBILITY_PRIVATE,
+    withApollo = false,
   } = {}) {
-    if (wrapper) {
-      throw new Error('wrapper already exists');
-    }
-
-    wrapper = shallowMount(SnippetEditApp, {
+    let componentData = {
       mocks: {
         $apollo: {
           queries: {
@@ -92,22 +100,34 @@ describe('Snippet Edit app', () => {
           mutate: mutationRes,
         },
       },
+    };
+
+    if (withApollo) {
+      const localVue = createLocalVue();
+      localVue.use(VueApollo);
+
+      const requestHandlers = [[GetSnippetQuery, GetSnippetQuerySpy]];
+      fakeApollo = createMockApollo(requestHandlers);
+      componentData = {
+        localVue,
+        apolloProvider: fakeApollo,
+      };
+    }
+
+    wrapper = shallowMount(SnippetEditApp, {
+      ...componentData,
       stubs: {
         ApolloMutation,
         FormFooterActions,
+      },
+      provide: {
+        selectedLevel,
       },
       propsData: {
         snippetGid: 'gid://gitlab/PersonalSnippet/42',
         markdownPreviewPath: 'http://preview.foo.bar',
         markdownDocsPath: 'http://docs.foo.bar',
         ...props,
-      },
-      data() {
-        return {
-          snippet: {
-            visibilityLevel: SNIPPET_VISIBILITY_PRIVATE,
-          },
-        };
       },
     });
   }
@@ -152,16 +172,13 @@ describe('Snippet Edit app', () => {
     if (nodes.length) {
       wrapper.setData({
         snippet: nodes[0],
+        newSnippet: false,
+      });
+    } else {
+      wrapper.setData({
+        newSnippet: true,
       });
     }
-
-    wrapper.vm.onSnippetFetch({
-      data: {
-        snippets: {
-          nodes,
-        },
-      },
-    });
   };
 
   describe('rendering', () => {
@@ -228,6 +245,28 @@ describe('Snippet Edit app', () => {
   });
 
   describe('functionality', () => {
+    it('does not fetch snippet when create a new snippet', async () => {
+      createComponent({ props: { snippetGid: '' }, withApollo: true });
+
+      jest.runOnlyPendingTimers();
+      await wrapper.vm.$nextTick();
+
+      expect(GetSnippetQuerySpy).not.toHaveBeenCalled();
+    });
+
+    describe('default visibility', () => {
+      it.each([SNIPPET_VISIBILITY_PRIVATE, SNIPPET_VISIBILITY_INTERNAL, SNIPPET_VISIBILITY_PUBLIC])(
+        'marks %s visibility by default',
+        async visibility => {
+          createComponent({
+            props: { snippetGid: '' },
+            selectedLevel: visibility,
+          });
+          expect(wrapper.vm.snippet.visibilityLevel).toEqual(visibility);
+        },
+      );
+    });
+
     describe('form submission handling', () => {
       it.each`
         snippetArg               | projectPath       | uploadedFiles          | input                                                                       | mutation

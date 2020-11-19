@@ -1,15 +1,15 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
-import tooltip from '~/vue_shared/directives/tooltip';
+import { GlTooltipDirective, GlButton, GlModalDirective } from '@gitlab/ui';
 import eventHub from '../event_hub';
 import { COMMON_STR } from '../constants';
 
 export default {
   components: {
-    GlIcon,
+    GlButton,
   },
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
+    GlModal: GlModalDirective,
   },
   props: {
     parentGroup: {
@@ -45,32 +45,28 @@ export default {
 
 <template>
   <div class="controls d-flex justify-content-end">
-    <a
+    <gl-button
       v-if="group.canLeave"
-      v-tooltip
-      :href="group.leavePath"
+      v-gl-tooltip.top
+      v-gl-modal.leave-group-modal
       :title="leaveBtnTitle"
       :aria-label="leaveBtnTitle"
-      data-container="body"
-      data-placement="bottom"
       data-testid="leave-group-btn"
-      class="leave-group btn btn-xs no-expand gl-text-gray-500 gl-ml-5"
-      @click.prevent="onLeaveGroup"
-    >
-      <gl-icon name="leave" class="position-top-0" />
-    </a>
-    <a
+      size="small"
+      icon="leave"
+      class="leave-group gl-ml-3"
+      @click.stop="onLeaveGroup"
+    />
+    <gl-button
       v-if="group.canEdit"
-      v-tooltip
+      v-gl-tooltip.top
       :href="group.editPath"
       :title="editBtnTitle"
       :aria-label="editBtnTitle"
-      data-container="body"
-      data-placement="bottom"
       data-testid="edit-group-btn"
-      class="edit-group btn btn-xs no-expand gl-text-gray-500 gl-ml-5"
-    >
-      <gl-icon name="settings" class="position-top-0 align-middle" />
-    </a>
+      size="small"
+      icon="pencil"
+      class="edit-group gl-ml-3"
+    />
   </div>
 </template>

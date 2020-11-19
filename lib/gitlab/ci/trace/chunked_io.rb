@@ -75,7 +75,7 @@ module Gitlab
 
           until length <= 0 || eof?
             data = chunk_slice_from_offset
-            raise FailedToGetChunkError if data.empty?
+            raise FailedToGetChunkError if data.to_s.empty?
 
             chunk_bytes = [CHUNK_SIZE - chunk_offset, length].min
             chunk_data_slice = data.byteslice(0, chunk_bytes)
@@ -100,7 +100,7 @@ module Gitlab
 
           until eof?
             data = chunk_slice_from_offset
-            raise FailedToGetChunkError if data.empty?
+            raise FailedToGetChunkError if data.to_s.empty?
 
             new_line = data.index("\n")
 

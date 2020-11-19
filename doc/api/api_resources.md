@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # API resources
 
 Available resources for the [GitLab API](README.md) can be grouped in the following contexts:
@@ -34,6 +40,7 @@ The following API resources are available in the project context:
 | [Events](events.md)                                                 | `/projects/:id/events` (also available for users and standalone)                                                                                                                                      |
 | [Feature Flags](feature_flags.md)                                   | `/projects/:id/feature_flags`                                                                                                                                                                         |
 | [Feature Flag User Lists](feature_flag_user_lists.md)               | `/projects/:id/feature_flags_user_lists`                                                                                                                                                              |
+| [Invitations](invitations.md)                                       | `/projects/:id/invitations` (also available for groups)                                                                                                                                              |
 | [Issues](issues.md)                                                 | `/projects/:id/issues` (also available for groups and standalone)                                                                                                                                     |
 | [Issues Statistics](issues_statistics.md)                           | `/projects/:id/issues_statistics` (also available for groups and standalone)                                                                                                                          |
 | [Issue boards](boards.md)                                           | `/projects/:id/boards`                                                                                                                                                                                |
@@ -102,6 +109,7 @@ The following API resources are available in the group context:
 | [Group labels](group_labels.md)                                  | `/groups/:id/labels`                                                             |
 | [Group-level variables](group_level_variables.md)                | `/groups/:id/variables`                                                          |
 | [Group milestones](group_milestones.md)                          | `/groups/:id/milestones`                                                         |
+| [Invitations](invitations.md)                                    | `/groups/:id/invitations` (also available for projects)                          |
 | [Issues](issues.md)                                              | `/groups/:id/issues` (also available for projects and standalone)                |
 | [Issues Statistics](issues_statistics.md)                        | `/groups/:id/issues_statistics` (also available for projects and standalone)     |
 | [Members](members.md)                                            | `/groups/:id/members` (also available for projects)                              |

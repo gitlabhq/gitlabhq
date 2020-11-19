@@ -1,10 +1,10 @@
 <script>
-import tooltip from '../../vue_shared/directives/tooltip';
+import { GlTooltipDirective } from '@gitlab/ui';
 
 export default {
   name: 'MrWidgetAuthor',
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     author: {
@@ -15,11 +15,6 @@ export default {
       type: Boolean,
       required: false,
       default: true,
-    },
-    showAuthorTooltip: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
   },
   computed: {
@@ -33,12 +28,7 @@ export default {
 };
 </script>
 <template>
-  <a
-    :href="authorUrl"
-    :v-tooltip="showAuthorTooltip"
-    :title="author.name"
-    class="author-link inline"
-  >
+  <a v-gl-tooltip :href="authorUrl" :title="author.name" class="author-link inline">
     <img :src="avatarUrl" class="avatar avatar-inline s16" />
     <span v-if="showAuthorName" class="author">{{ author.name }}</span>
   </a>

@@ -1,0 +1,5 @@
+---
+title: Fix linebreak issue in last commit anchor
+merge_request: 46643
+author:
+type: fixed

@@ -56,12 +56,12 @@ RSpec.shared_examples 'thread comments' do |resource_name|
 
       expect(items.first).to have_content 'Comment'
       expect(items.first).to have_content "Add a general comment to this #{resource_name}."
-      expect(items.first).to have_selector '.fa-check'
+      expect(items.first).to have_selector '[data-testid="check-icon"]'
       expect(items.first['class']).to match 'droplab-item-selected'
 
       expect(items.last).to have_content 'Start thread'
       expect(items.last).to have_content "Discuss a specific suggestion or question#{' that needs to be resolved' if resource_name == 'merge request'}."
-      expect(items.last).not_to have_selector '.fa-check'
+      expect(items.last).not_to have_selector '[data-testid="check-icon"]'
       expect(items.last['class']).not_to match 'droplab-item-selected'
     end
 
@@ -228,11 +228,11 @@ RSpec.shared_examples 'thread comments' do |resource_name|
           items = all("#{menu_selector} li")
 
           expect(items.first).to have_content 'Comment'
-          expect(items.first).not_to have_selector '.fa-check'
+          expect(items.first).not_to have_selector '[data-testid="check-icon"]'
           expect(items.first['class']).not_to match 'droplab-item-selected'
 
           expect(items.last).to have_content 'Start thread'
-          expect(items.last).to have_selector '.fa-check'
+          expect(items.last).to have_selector '[data-testid="check-icon"]'
           expect(items.last['class']).to match 'droplab-item-selected'
         end
 
@@ -274,11 +274,11 @@ RSpec.shared_examples 'thread comments' do |resource_name|
 
             aggregate_failures do
               expect(items.first).to have_content 'Comment'
-              expect(items.first).to have_selector '.fa-check'
+              expect(items.first).to have_selector '[data-testid="check-icon"]'
               expect(items.first['class']).to match 'droplab-item-selected'
 
               expect(items.last).to have_content 'Start thread'
-              expect(items.last).not_to have_selector '.fa-check'
+              expect(items.last).not_to have_selector '[data-testid="check-icon"]'
               expect(items.last['class']).not_to match 'droplab-item-selected'
             end
           end

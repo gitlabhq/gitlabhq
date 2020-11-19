@@ -76,6 +76,26 @@ RSpec.shared_examples 'AtomicInternalId' do |validate_presence: true|
       end
     end
 
+    describe 'supply of internal ids' do
+      let(:scope_value) { scope_attrs.each_value.first }
+      let(:method_name) { :"with_#{scope}_#{internal_id_attribute}_supply" }
+
+      it 'provides a persistent supply of IID values, sensitive to the current state' do
+        iid = rand(1..1000)
+        write_internal_id(iid)
+        instance.public_send(:"track_#{scope}_#{internal_id_attribute}!")
+
+        # Allocate 3 IID values
+        described_class.public_send(method_name, scope_value) do |supply|
+          3.times { supply.next_value }
+        end
+
+        current_value = described_class.public_send(method_name, scope_value, &:current_value)
+
+        expect(current_value).to eq(iid + 3)
+      end
+    end
+
     describe "#reset_scope_internal_id_attribute" do
       it 'rewinds the allocated IID' do
         expect { ensure_scope_attribute! }.not_to raise_error

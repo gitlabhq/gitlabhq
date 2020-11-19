@@ -8,7 +8,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 The [PostgreSQL Server Exporter](https://github.com/wrouesnel/postgres_exporter) allows you to export various PostgreSQL metrics.
 
-NOTE: **Note:**
 For installations from source you must install and configure it yourself.
 
 To enable the PostgreSQL Server Exporter:

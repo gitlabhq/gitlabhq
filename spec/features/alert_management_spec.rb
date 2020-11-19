@@ -41,21 +41,6 @@ RSpec.describe 'Alert management', :js do
             expect(page).to have_content(environment.name)
           end
         end
-
-        context 'when expose_environment_path_in_alert_details feature flag is disabled' do
-          before do
-            stub_feature_flags(expose_environment_path_in_alert_details: false)
-          end
-
-          it 'does not show the environment name' do
-            visit(details_project_alert_management_path(project, alert))
-
-            within('.alert-management-details-table') do
-              expect(page).to have_content(alert.title)
-              expect(page).not_to have_content(environment.name)
-            end
-          end
-        end
       end
     end
   end

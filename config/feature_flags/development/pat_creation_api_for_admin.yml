@@ -1,0 +1,7 @@
+---
+name: pat_creation_api_for_admin
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45152
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/267553
+type: development
+group: group::access
+default_enabled: false

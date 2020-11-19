@@ -1,0 +1,36 @@
+pre-push:
+  parallel: true
+  commands:
+    danger:
+      run: bundle exec danger dry_run
+    eslint:
+      tags: frontend style
+      files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
+      glob: "*.{js,vue}"
+      run: yarn eslint --cache --max-warnings 0 --report-unused-disable-directives {files}
+    haml-lint:
+      tags: view haml style
+      files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
+      glob: "*.html.haml"
+      run: bundle exec haml-lint --config .haml-lint.yml {files}
+    markdownlint:
+      tags: documentation style
+      files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
+      glob: "*.md"
+      run: yarn markdownlint {files}
+    scss-lint:
+      tags: stylesheet css style
+      files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
+      glob: "*.scss{,.css}"
+      exclude: "app/assets/stylesheets/pages/emojis.scss"
+      run: bundle exec scss-lint --config .scss-lint.yml {files}
+    rubocop:
+      tags: backend style
+      files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
+      glob: "*.rb"
+      run: bundle exec rubocop --parallel --force-exclusion {files}
+    vale:  # Requires Vale: https://docs.gitlab.com/ee/development/documentation/#install-linters
+      tags: documentation style
+      files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
+      glob: "*.md"
+      run: if command -v vale 2> /dev/null; then vale --config .vale.ini --minAlertLevel error {files}; else echo "Vale not found. Install Vale"; fi

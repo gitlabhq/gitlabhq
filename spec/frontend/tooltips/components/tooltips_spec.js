@@ -80,6 +80,14 @@ describe('tooltips/components/tooltips.vue', () => {
       expect(wrapper.find(GlTooltip).html()).toContain(target.getAttribute('title'));
     });
 
+    it('sets the configuration values passed in the config object', async () => {
+      const config = { show: true };
+      target = createTooltipTarget();
+      wrapper.vm.addTooltips([target], config);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find(GlTooltip).props()).toMatchObject(config);
+    });
+
     it.each`
       attribute           | value                 | prop
       ${'data-placement'} | ${'bottom'}           | ${'placement'}

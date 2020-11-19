@@ -3,12 +3,18 @@
 FactoryBot.define do
   factory :ci_daily_build_group_report_result, class: 'Ci::DailyBuildGroupReportResult' do
     ref_path { Gitlab::Git::BRANCH_REF_PREFIX + 'master' }
-    date { Time.zone.now.to_date }
+    date { Date.current }
     project
     last_pipeline factory: :ci_pipeline
     group_name { 'rspec' }
     data do
       { 'coverage' => 77.0 }
+    end
+    default_branch { true }
+
+    trait :on_feature_branch do
+      ref_path { Gitlab::Git::BRANCH_REF_PREFIX + 'feature' }
+      default_branch { false }
     end
   end
 end

@@ -279,6 +279,40 @@ RSpec.describe Ci::CreatePipelineService, '#execute' do
           end
         end
       end
+
+      context 'when specifying multiple files' do
+        let(:config) do
+          <<~YAML
+          test:
+            script: rspec
+          deploy:
+            variables:
+              CROSS: downstream
+            stage: deploy
+            trigger:
+              include:
+                - project: my-namespace/my-project
+                  file:
+                    - 'path/to/child1.yml'
+                    - 'path/to/child2.yml'
+          YAML
+        end
+
+        it_behaves_like 'successful creation' do
+          let(:expected_bridge_options) do
+            {
+              'trigger' => {
+                'include' => [
+                  {
+                    'file' => ["path/to/child1.yml", "path/to/child2.yml"],
+                    'project' => 'my-namespace/my-project'
+                  }
+                ]
+              }
+            }
+          end
+        end
+      end
     end
   end
 

@@ -141,6 +141,29 @@ RSpec.describe Gitlab::Database::BatchCount do
       described_class.batch_count(model)
     end
 
+    it 'does not use BETWEEN to define the range' do
+      batch_size = Gitlab::Database::BatchCounter::MIN_REQUIRED_BATCH_SIZE + 1
+      issue = nil
+
+      travel_to(Date.tomorrow) do
+        issue = create(:issue) # created_at: 00:00:00
+        create(:issue, created_at: issue.created_at + batch_size - 0.5) # created_at: 00:20:50.5
+        create(:issue, created_at: issue.created_at + batch_size) # created_at: 00:20:51
+      end
+
+      # When using BETWEEN, the range condition looks like:
+      # Batch 1: WHERE "issues"."created_at" BETWEEN "2020-10-09 00:00:00" AND "2020-10-09 00:20:50"
+      # Batch 2: WHERE "issues"."created_at" BETWEEN "2020-10-09 00:20:51" AND "2020-10-09 00:41:41"
+      # We miss the issue created at 00:20:50.5 because we prevent the batches from overlapping (start..(finish - 1))
+      # See https://wiki.postgresql.org/wiki/Don't_Do_This#Don.27t_use_BETWEEN_.28especially_with_timestamps.29
+
+      # When using >= AND <, we eliminate any gaps between batches (start...finish)
+      # This is useful when iterating over a timestamp column
+      # Batch 1: WHERE "issues"."created_at" >= "2020-10-09 00:00:00" AND "issues"."created_at" < "2020-10-09 00:20:51"
+      # Batch 1: WHERE "issues"."created_at" >= "2020-10-09 00:20:51" AND "issues"."created_at" < "2020-10-09 00:41:42"
+      expect(described_class.batch_count(model, :created_at, batch_size: batch_size, start: issue.created_at)).to eq(3)
+    end
+
     it_behaves_like 'when a transaction is open' do
       subject { described_class.batch_count(model) }
     end

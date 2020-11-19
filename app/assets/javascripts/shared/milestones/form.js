@@ -16,5 +16,6 @@ export default (initGFM = true) => {
     milestones: initGFM,
     labels: initGFM,
     snippets: initGFM,
+    vulnerabilities: initGFM,
   });
 };

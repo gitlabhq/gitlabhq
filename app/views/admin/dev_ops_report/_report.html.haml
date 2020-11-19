@@ -1,0 +1,30 @@
+- usage_ping_enabled = Gitlab::CurrentSettings.usage_ping_enabled
+
+- if usage_ping_enabled && show_callout?('dev_ops_report_intro_callout_dismissed')
+  = render 'callout'
+
+- if !usage_ping_enabled
+  #js-devops-empty-state{ data: { is_admin: current_user&.admin.to_s, empty_state_svg_path: image_path('illustrations/convdev/convdev_no_index.svg'), enable_usage_ping_link: metrics_and_profiling_admin_application_settings_path(anchor: 'js-usage-settings'), docs_link: help_page_path('development/product_analytics/usage_ping') } }
+- elsif @metric.blank?
+  = render 'no_data'
+- else
+  .devops
+    .devops-header
+      %h2.devops-header-title{ class: "devops-#{score_level(@metric.average_percentage_score)}-score" }
+        = number_to_percentage(@metric.average_percentage_score, precision: 1)
+      .devops-header-subtitle
+        = s_('DevopsReport|DevOps')
+        %br
+        = s_('DevopsReport|Score')
+        = link_to sprite_icon('question-o', css_class: 'devops-header-icon'), help_page_path('user/admin_area/analytics/dev_ops_report')
+
+    .devops-cards.board-card-container
+      - @metric.cards.each do |card|
+        = render 'card', card: card
+
+    .devops-steps.d-none.d-lg-block
+      - @metric.idea_to_production_steps.each_with_index do |step, index|
+        .devops-step{ class: "devops-#{score_level(step.percentage_score)}-score" }
+          = custom_icon("i2p_step_#{index + 1}")
+          %h4.devops-step-title
+            = step.title

@@ -1,0 +1,5 @@
+---
+title: Migrate .fa-spinner to .spinner for app/helpers
+merge_request: 25033
+author: nuwe1
+type: other

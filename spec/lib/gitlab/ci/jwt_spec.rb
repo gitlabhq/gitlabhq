@@ -93,32 +93,65 @@ RSpec.describe Gitlab::Ci::Jwt do
   end
 
   describe '.for_build' do
-    let(:rsa_key) { OpenSSL::PKey::RSA.new(Rails.application.secrets.openid_connect_signing_key) }
+    shared_examples 'generating JWT for build' do
+      context 'when signing key is present' do
+        let(:rsa_key) { OpenSSL::PKey::RSA.generate(1024) }
+        let(:rsa_key_data) { rsa_key.to_s }
+
+        it 'generates JWT with key id' do
+          _payload, headers = JWT.decode(jwt, rsa_key.public_key, true, { algorithm: 'RS256' })
+
+          expect(headers['kid']).to eq(rsa_key.public_key.to_jwk['kid'])
+        end
+
+        it 'generates JWT for the given job with ttl equal to build timeout' do
+          expect(build).to receive(:metadata_timeout).and_return(3_600)
+
+          payload, _headers = JWT.decode(jwt, rsa_key.public_key, true, { algorithm: 'RS256' })
+          ttl = payload["exp"] - payload["iat"]
+
+          expect(ttl).to eq(3_600)
+        end
+
+        it 'generates JWT for the given job with default ttl if build timeout is not set' do
+          expect(build).to receive(:metadata_timeout).and_return(nil)
+
+          payload, _headers = JWT.decode(jwt, rsa_key.public_key, true, { algorithm: 'RS256' })
+          ttl = payload["exp"] - payload["iat"]
+
+          expect(ttl).to eq(5.minutes.to_i)
+        end
+      end
+
+      context 'when signing key is missing' do
+        let(:rsa_key_data) { nil }
+
+        it 'raises NoSigningKeyError' do
+          expect { jwt }.to raise_error described_class::NoSigningKeyError
+        end
+      end
+    end
 
     subject(:jwt) { described_class.for_build(build) }
 
-    it 'generates JWT with key id' do
-      _payload, headers = JWT.decode(jwt, rsa_key.public_key, true, { algorithm: 'RS256' })
+    context 'when ci_jwt_signing_key feature flag is disabled' do
+      before do
+        stub_feature_flags(ci_jwt_signing_key: false)
 
-      expect(headers['kid']).to eq(rsa_key.public_key.to_jwk['kid'])
+        allow(Rails.application.secrets).to receive(:openid_connect_signing_key).and_return(rsa_key_data)
+      end
+
+      it_behaves_like 'generating JWT for build'
     end
 
-    it 'generates JWT for the given job with ttl equal to build timeout' do
-      expect(build).to receive(:metadata_timeout).and_return(3_600)
+    context 'when ci_jwt_signing_key feature flag is enabled' do
+      before do
+        stub_feature_flags(ci_jwt_signing_key: true)
 
-      payload, _headers = JWT.decode(jwt, rsa_key.public_key, true, { algorithm: 'RS256' })
-      ttl = payload["exp"] - payload["iat"]
+        stub_application_setting(ci_jwt_signing_key: rsa_key_data)
+      end
 
-      expect(ttl).to eq(3_600)
-    end
-
-    it 'generates JWT for the given job with default ttl if build timeout is not set' do
-      expect(build).to receive(:metadata_timeout).and_return(nil)
-
-      payload, _headers = JWT.decode(jwt, rsa_key.public_key, true, { algorithm: 'RS256' })
-      ttl = payload["exp"] - payload["iat"]
-
-      expect(ttl).to eq(5.minutes.to_i)
+      it_behaves_like 'generating JWT for build'
     end
   end
 end

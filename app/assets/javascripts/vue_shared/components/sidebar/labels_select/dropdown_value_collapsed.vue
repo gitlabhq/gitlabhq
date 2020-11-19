@@ -1,11 +1,10 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
-import tooltip from '~/vue_shared/directives/tooltip';
 
 export default {
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   components: {
     GlIcon,
@@ -45,12 +44,9 @@ export default {
 
 <template>
   <div
-    v-tooltip
+    v-gl-tooltip.left.viewport
     :title="labelsList"
     class="sidebar-collapsed-icon"
-    data-placement="left"
-    data-container="body"
-    data-boundary="viewport"
     @click="handleClick"
   >
     <gl-icon name="labels" />

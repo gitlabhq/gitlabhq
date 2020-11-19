@@ -1,17 +1,12 @@
 /* global DocumentTouch */
 
-import $ from 'jquery';
 import sortableConfig from 'ee_else_ce/sortable/sortable_config';
 
 export function sortableStart() {
-  $('.has-tooltip')
-    .tooltip('hide')
-    .tooltip('disable');
   document.body.classList.add('is-dragging');
 }
 
 export function sortableEnd() {
-  $('.has-tooltip').tooltip('enable');
   document.body.classList.remove('is-dragging');
 }
 

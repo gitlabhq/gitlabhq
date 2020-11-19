@@ -1,9 +1,21 @@
 <script>
-import { GlForm, GlFormGroup, GlFormInput, GlFormTextarea } from '@gitlab/ui';
-import AccessorUtilities from '~/lib/utils/accessor';
+import {
+  GlDropdown,
+  GlDropdownDivider,
+  GlDropdownItem,
+  GlForm,
+  GlFormGroup,
+  GlFormInput,
+  GlFormTextarea,
+} from '@gitlab/ui';
+
+import { __ } from '~/locale';
 
 export default {
   components: {
+    GlDropdown,
+    GlDropdownDivider,
+    GlDropdownItem,
     GlForm,
     GlFormGroup,
     GlFormInput,
@@ -18,56 +30,47 @@ export default {
       type: String,
       required: true,
     },
-  },
-  data() {
-    return {
-      editable: {
-        title: this.title,
-        description: this.description,
-      },
-    };
+    templates: {
+      type: Array,
+      required: false,
+      default: null,
+    },
+    currentTemplate: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   computed: {
-    editableStorageKey() {
-      return this.getId('local-storage', 'editable');
+    dropdownLabel() {
+      return this.currentTemplate ? this.currentTemplate.name : __('None');
     },
-    hasLocalStorage() {
-      return AccessorUtilities.isLocalStorageAccessSafe();
+    hasTemplates() {
+      return this.templates?.length > 0;
     },
   },
   mounted() {
-    this.initCachedEditable();
     this.preSelect();
   },
   methods: {
     getId(type, key) {
       return `sse-merge-request-meta-${type}-${key}`;
     },
-    initCachedEditable() {
-      if (this.hasLocalStorage) {
-        const cachedEditable = JSON.parse(localStorage.getItem(this.editableStorageKey));
-        if (cachedEditable) {
-          this.editable = cachedEditable;
-        }
-      }
-    },
     preSelect() {
       this.$nextTick(() => {
         this.$refs.title.$el.select();
       });
     },
-    resetCachedEditable() {
-      if (this.hasLocalStorage) {
-        window.localStorage.removeItem(this.editableStorageKey);
-      }
+    onChangeTemplate(template) {
+      this.$emit('changeTemplate', template || null);
     },
-    onUpdate() {
-      const payload = { ...this.editable };
+    onUpdate(field, value) {
+      const payload = {
+        title: this.title,
+        description: this.description,
+        [field]: value,
+      };
       this.$emit('updateSettings', payload);
-
-      if (this.hasLocalStorage) {
-        window.localStorage.setItem(this.editableStorageKey, JSON.stringify(payload));
-      }
     },
   },
 };
@@ -83,10 +86,33 @@ export default {
       <gl-form-input
         :id="getId('control', 'title')"
         ref="title"
-        v-model.lazy="editable.title"
+        :value="title"
         type="text"
-        @input="onUpdate"
+        @input="onUpdate('title', $event)"
       />
+    </gl-form-group>
+
+    <gl-form-group
+      v-if="hasTemplates"
+      key="template"
+      :label="__('Description template')"
+      :label-for="getId('control', 'template')"
+    >
+      <gl-dropdown :text="dropdownLabel">
+        <gl-dropdown-item key="none" @click="onChangeTemplate(null)">
+          {{ __('None') }}
+        </gl-dropdown-item>
+
+        <gl-dropdown-divider />
+
+        <gl-dropdown-item
+          v-for="template in templates"
+          :key="template.key"
+          @click="onChangeTemplate(template)"
+        >
+          {{ template.name }}
+        </gl-dropdown-item>
+      </gl-dropdown>
     </gl-form-group>
 
     <gl-form-group
@@ -96,8 +122,8 @@ export default {
     >
       <gl-form-textarea
         :id="getId('control', 'description')"
-        v-model.lazy="editable.description"
-        @input="onUpdate"
+        :value="description"
+        @input="onUpdate('description', $event)"
       />
     </gl-form-group>
   </gl-form>

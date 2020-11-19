@@ -68,7 +68,7 @@ package is to be uploaded to. If you set this to any project that you have
 access to and update any other configuration similarly depending on the package type,
 your packages are published to that project. This means you can publish
 multiple packages to one project, even if their code does not exist in the same
-place. See the [project registry workflow documentation](./project_registry.md)
+place. See the [project registry workflow documentation](project_registry.md)
 for more details.
 
 ## CI workflows for automating packaging

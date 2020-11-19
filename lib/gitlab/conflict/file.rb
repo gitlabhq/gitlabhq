@@ -9,6 +9,11 @@ module Gitlab
 
       CONTEXT_LINES = 3
 
+      CONFLICT_TYPES = {
+        "old" => "conflict_marker_their",
+        "new" => "conflict_marker_our"
+      }.freeze
+
       attr_reader :merge_request
 
       # 'raw' holds the Gitlab::Git::Conflict::File that this instance wraps
@@ -43,6 +48,34 @@ module Gitlab
             else
               our_highlight[line.new_line - 1].try(:html_safe)
             end
+        end
+      end
+
+      def diff_lines_for_serializer
+        # calculate sections and highlight lines before changing types
+        sections && highlight_lines!
+
+        sections.flat_map do |section|
+          if section[:conflict]
+            lines = []
+
+            initial_type = nil
+            section[:lines].each do |line|
+              if line.type != initial_type
+                lines << create_separator_line(line)
+                initial_type = line.type
+              end
+
+              line.type = CONFLICT_TYPES[line.type]
+              lines << line
+            end
+
+            lines << create_separator_line(lines.last)
+
+            lines
+          else
+            section[:lines]
+          end
         end
       end
 
@@ -93,9 +126,15 @@ module Gitlab
 
               lines = tail_lines
             elsif conflict_before
-              # We're at the end of the file (no conflicts after), so just remove extra
-              # trailing lines.
+              # We're at the end of the file (no conflicts after)
+              number_of_trailing_lines = lines.size
+
+              # Remove extra trailing lines
               lines = lines.first(CONTEXT_LINES)
+
+              if number_of_trailing_lines > CONTEXT_LINES
+                lines << create_match_line(lines.last)
+              end
             end
           end
 
@@ -115,6 +154,10 @@ module Gitlab
 
       def create_match_line(line)
         Gitlab::Diff::Line.new('', 'match', line.index, line.old_pos, line.new_pos)
+      end
+
+      def create_separator_line(line)
+        Gitlab::Diff::Line.new('', 'conflict_marker', line.index, nil, nil)
       end
 
       # Any line beginning with a letter, an underscore, or a dollar can be used in a

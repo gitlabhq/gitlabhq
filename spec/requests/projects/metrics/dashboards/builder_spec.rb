@@ -32,6 +32,7 @@ RSpec.describe 'Projects::Metrics::Dashboards::BuilderController' do
       label: Legend Label
     YML
   end
+
   let_it_be(:invalid_panel_yml) do
     <<~YML
     ---

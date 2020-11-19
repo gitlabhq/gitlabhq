@@ -100,6 +100,18 @@ describe('RepoTab', () => {
     expect(wrapper.find('.file-modified').exists()).toBe(true);
   });
 
+  it.each`
+    tabProps             | closeLabel
+    ${{}}                | ${'Close foo.txt'}
+    ${{ changed: true }} | ${'foo.txt changed'}
+  `('close button has label ($closeLabel) with tab ($tabProps)', ({ tabProps, closeLabel }) => {
+    const tab = { ...file('foo.txt'), ...tabProps };
+
+    createComponent({ tab });
+
+    expect(wrapper.find('button').attributes('aria-label')).toBe(closeLabel);
+  });
+
   describe('locked file', () => {
     let f;
 
@@ -122,9 +134,7 @@ describe('RepoTab', () => {
     });
 
     it('renders a tooltip', () => {
-      expect(wrapper.find('span:nth-child(2)').attributes('data-original-title')).toContain(
-        'Locked by testuser',
-      );
+      expect(wrapper.find('span:nth-child(2)').attributes('title')).toBe('Locked by testuser');
     });
   });
 

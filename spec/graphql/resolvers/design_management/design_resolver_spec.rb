@@ -6,6 +6,10 @@ RSpec.describe Resolvers::DesignManagement::DesignResolver do
   include GraphqlHelpers
   include DesignManagementTestHelpers
 
+  specify do
+    expect(described_class).to have_nullable_graphql_type(::Types::DesignManagement::DesignType)
+  end
+
   before do
     enable_design_management
   end
@@ -57,10 +61,19 @@ RSpec.describe Resolvers::DesignManagement::DesignResolver do
       end
 
       context 'the ID belongs to a design on another issue' do
-        let(:args) { { id: GitlabSchema.id_from_object(design_on_other_issue).to_s } }
+        let(:args) { { id: global_id_of(design_on_other_issue) } }
 
         it 'returns nothing' do
           expect(resolve_design).to be_nil
+        end
+      end
+
+      context 'the ID does not belong to a design at all' do
+        let(:args) { { id: global_id_of(issue) } }
+        let(:msg) { /does not represent an instance of DesignManagement::Design/ }
+
+        it 'complains meaningfully' do
+          expect { resolve_design }.to raise_error(msg)
         end
       end
     end

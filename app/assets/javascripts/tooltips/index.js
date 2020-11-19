@@ -96,6 +96,12 @@ export const initTooltips = (config = {}) => {
 
   return invokeBootstrapApi(document.body, config);
 };
+export const add = (elements, config = {}) => {
+  if (isGlTooltipsEnabled()) {
+    return addTooltips(elements, config);
+  }
+  return invokeBootstrapApi(elements, config);
+};
 export const dispose = tooltipApiInvoker({
   glHandler: element => tooltipsApp().dispose(element),
   bsHandler: elements => invokeBootstrapApi(elements, 'dispose'),

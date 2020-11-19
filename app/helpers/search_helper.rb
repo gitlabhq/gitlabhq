@@ -1,7 +1,16 @@
 # frozen_string_literal: true
 
 module SearchHelper
-  SEARCH_PERMITTED_PARAMS = [:search, :scope, :project_id, :group_id, :repository_ref, :snippets, :sort, :state, :confidential].freeze
+  SEARCH_GENERIC_PARAMS = [
+    :search,
+    :scope,
+    :project_id,
+    :group_id,
+    :repository_ref,
+    :snippets,
+    :sort,
+    :force_search_results
+  ].freeze
 
   def search_autocomplete_opts(term)
     return unless current_user
@@ -9,7 +18,8 @@ module SearchHelper
     resources_results = [
       recent_items_autocomplete(term),
       groups_autocomplete(term),
-      projects_autocomplete(term)
+      projects_autocomplete(term),
+      issue_autocomplete(term)
     ].flatten
 
     search_pattern = Regexp.new(Regexp.escape(term), "i")
@@ -82,11 +92,27 @@ module SearchHelper
     end
   end
 
-  def search_entries_empty_message(scope, term)
-    (s_("SearchResults|We couldn't find any %{scope} matching %{term}") % {
+  def search_entries_empty_message(scope, term, group, project)
+    options = {
       scope: search_entries_scope_label(scope, 0),
-      term: "<code>#{h(term)}</code>"
-    }).html_safe
+      term: "<code>#{h(term)}</code>".html_safe
+    }
+
+    # We check project first because we have 3 possible combinations here:
+    # - group && project
+    # - group
+    # - group: nil, project: nil
+    if project
+      html_escape(_("We couldn't find any %{scope} matching %{term} in project %{project}")) % options.merge(
+        project: link_to(project.full_name, project_path(project), target: '_blank', rel: 'noopener noreferrer').html_safe
+      )
+    elsif group
+      html_escape(_("We couldn't find any %{scope} matching %{term} in group %{group}")) % options.merge(
+        group: link_to(group.full_name, group_path(group), target: '_blank', rel: 'noopener noreferrer').html_safe
+      )
+    else
+      html_escape(_("We couldn't find any %{scope} matching %{term}")) % options
+    end
   end
 
   def repository_ref(project)
@@ -140,7 +166,7 @@ module SearchHelper
     if @project && @project.repository.root_ref
       ref = @ref || @project.repository.root_ref
 
-      [
+      result = [
         { category: "In this project", label: _("Files"),          url: project_tree_path(@project, ref) },
         { category: "In this project", label: _("Commits"),        url: project_commits_path(@project, ref) },
         { category: "In this project", label: _("Network"),        url: project_network_path(@project, ref) },
@@ -152,6 +178,12 @@ module SearchHelper
         { category: "In this project", label: _("Members"),        url: project_project_members_path(@project) },
         { category: "In this project", label: _("Wiki"),           url: project_wikis_path(@project) }
       ]
+
+      if can?(current_user, :read_feature_flag, @project)
+        result << { category: "In this project", label: _("Feature Flags"), url: project_feature_flags_path(@project) }
+      end
+
+      result
     else
       []
     end
@@ -171,6 +203,24 @@ module SearchHelper
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def issue_autocomplete(term)
+    return [] unless @project.present? && current_user && term =~ /\A#{Issue.reference_prefix}\d+\z/
+
+    iid = term.sub(Issue.reference_prefix, '').to_i
+    issue = @project.issues.find_by_iid(iid)
+    return [] unless issue && Ability.allowed?(current_user, :read_issue, issue)
+
+    [
+        {
+            category: 'In this project',
+            id: issue.id,
+            label: search_result_sanitize("#{issue.title} (#{issue.to_reference})"),
+            url: issue_path(issue),
+            avatar_url: issue.project.avatar_url || ''
+        }
+    ]
+  end
 
   # Autocomplete results for the current user's projects
   # rubocop: disable CodeReuse/ActiveRecord
@@ -225,7 +275,7 @@ module SearchHelper
     search_params = params
       .merge(search)
       .merge({ scope: scope })
-      .permit(SEARCH_PERMITTED_PARAMS)
+      .permit(SEARCH_GENERIC_PARAMS)
 
     if @scope == scope
       li_class = 'active'
@@ -317,10 +367,10 @@ module SearchHelper
   end
 
   # _search_highlight is used in EE override
-  def highlight_and_truncate_issue(issue, search_term, _search_highlight)
-    return unless issue.description.present?
+  def highlight_and_truncate_issuable(issuable, search_term, _search_highlight)
+    return unless issuable.description.present?
 
-    simple_search_highlight_and_truncate(issue.description, search_term, highlighter: '<span class="gl-text-black-normal gl-font-weight-bold">\1</span>')
+    simple_search_highlight_and_truncate(issuable.description, search_term, highlighter: '<span class="gl-text-black-normal gl-font-weight-bold">\1</span>')
   end
 
   def show_user_search_tab?
@@ -328,6 +378,36 @@ module SearchHelper
       project_search_tabs?(:members)
     else
       can?(current_user, :read_users_list)
+    end
+  end
+
+  def issuable_state_to_badge_class(issuable)
+    # Closed is considered "danger" for MR so we need to handle separately
+    if issuable.is_a?(::MergeRequest)
+      if issuable.merged?
+        :primary
+      elsif issuable.closed?
+        :danger
+      else
+        :success
+      end
+    else
+      if issuable.closed?
+        :info
+      else
+        :success
+      end
+    end
+  end
+
+  def issuable_state_text(issuable)
+    case issuable.state
+    when 'merged'
+      _("Merged")
+    when 'closed'
+      _("Closed")
+    else
+      _("Open")
     end
   end
 end

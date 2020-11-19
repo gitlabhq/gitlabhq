@@ -27,7 +27,8 @@ describe('PrometheusMetrics', () => {
       expect(prometheusMetrics.$monitoredMetricsEmpty).toBeDefined();
       expect(prometheusMetrics.$monitoredMetricsList).toBeDefined();
       expect(prometheusMetrics.$missingEnvVarPanel).toBeDefined();
-      expect(prometheusMetrics.$panelToggle).toBeDefined();
+      expect(prometheusMetrics.$panelToggleRight).toBeDefined();
+      expect(prometheusMetrics.$panelToggleDown).toBeDefined();
       expect(prometheusMetrics.$missingEnvVarMetricCount).toBeDefined();
       expect(prometheusMetrics.$missingEnvVarMetricsList).toBeDefined();
     });

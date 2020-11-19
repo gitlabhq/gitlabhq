@@ -9,9 +9,15 @@ export default {
   components: {
     GlDropdown,
     GlDropdownItem,
+    LdapDropdownItem: () =>
+      import('ee_component/vue_shared/components/members/ldap/ldap_dropdown_item.vue'),
   },
   props: {
     member: {
+      type: Object,
+      required: true,
+    },
+    permissions: {
       type: Object,
       required: true,
     },
@@ -22,8 +28,21 @@ export default {
       busy: false,
     };
   },
+  computed: {
+    disabled() {
+      return this.busy || (this.permissions.canOverride && !this.member.isOverridden);
+    },
+  },
   mounted() {
     this.isDesktop = bp.isDesktop();
+
+    // Bootstrap Vue and GlDropdown to not support adding attributes to the dropdown toggle
+    // This can be changed once https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1060 is implemented
+    const dropdownToggle = this.$refs.glDropdown.$el.querySelector('.dropdown-toggle');
+
+    if (dropdownToggle) {
+      dropdownToggle.setAttribute('data-qa-selector', 'access_level_dropdown');
+    }
   },
   methods: {
     ...mapActions(['updateMemberRole']),
@@ -52,19 +71,25 @@ export default {
 
 <template>
   <gl-dropdown
+    ref="glDropdown"
     :right="!isDesktop"
     :text="member.accessLevel.stringValue"
     :header-text="__('Change permissions')"
-    :disabled="busy"
+    :disabled="disabled"
   >
     <gl-dropdown-item
       v-for="(value, name) in member.validRoles"
       :key="value"
       is-check-item
       :is-checked="value === member.accessLevel.integerValue"
+      data-qa-selector="access_level_link"
       @click="handleSelect(value, name)"
     >
       {{ name }}
     </gl-dropdown-item>
+    <ldap-dropdown-item
+      v-if="permissions.canOverride && member.isOverridden"
+      :member-id="member.id"
+    />
   </gl-dropdown>
 </template>

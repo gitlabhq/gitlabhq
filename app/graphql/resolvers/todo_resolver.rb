@@ -2,7 +2,7 @@
 
 module Resolvers
   class TodoResolver < BaseResolver
-    type Types::TodoType, null: true
+    type Types::TodoType.connection_type, null: true
 
     alias_method :target, :object
 

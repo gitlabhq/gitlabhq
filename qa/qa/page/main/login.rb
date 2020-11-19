@@ -125,9 +125,9 @@ module QA
           click_element :sign_in_tab
         end
 
-        def switch_to_register_tab
+        def switch_to_register_page
           set_initial_password_if_present
-          click_element :register_tab
+          click_element :register_link
         end
 
         def switch_to_ldap_tab

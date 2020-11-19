@@ -100,15 +100,15 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
     subject { described_class.all_stores }
 
     it 'returns a correctly ordered array' do
-      is_expected.to eq(%w[redis database fog])
+      is_expected.to eq(%i[redis database fog])
     end
 
     it 'returns redis store as the lowest precedence' do
-      expect(subject.first).to eq('redis')
+      expect(subject.first).to eq(:redis)
     end
 
     it 'returns fog store as the highest precedence' do
-      expect(subject.last).to eq('fog')
+      expect(subject.last).to eq(:fog)
     end
   end
 
@@ -135,31 +135,39 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
     context 'when data_store is fog' do
       let(:data_store) { :fog }
 
-      context 'when legacy Fog is enabled' do
-        before do
-          stub_feature_flags(ci_trace_new_fog_store: false)
-          build_trace_chunk.send(:unsafe_set_data!, +'Sample data in fog')
-        end
-
-        it { is_expected.to eq('Sample data in fog') }
-
-        it 'returns a LegacyFog store' do
-          expect(described_class.get_store_class(data_store)).to be_a(Ci::BuildTraceChunks::LegacyFog)
-        end
+      before do
+        build_trace_chunk.send(:unsafe_set_data!, +'Sample data in fog')
       end
 
-      context 'when new Fog is enabled' do
-        before do
-          stub_feature_flags(ci_trace_new_fog_store: true)
-          build_trace_chunk.send(:unsafe_set_data!, +'Sample data in fog')
-        end
+      it { is_expected.to eq('Sample data in fog') }
 
-        it { is_expected.to eq('Sample data in fog') }
+      it 'returns a new Fog store' do
+        expect(described_class.get_store_class(data_store)).to be_a(Ci::BuildTraceChunks::Fog)
+      end
+    end
+  end
 
-        it 'returns a new Fog store' do
-          expect(described_class.get_store_class(data_store)).to be_a(Ci::BuildTraceChunks::Fog)
+  describe '#get_store_class' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:data_store, :expected_store) do
+      :redis | Ci::BuildTraceChunks::Redis
+      :database | Ci::BuildTraceChunks::Database
+      :fog | Ci::BuildTraceChunks::Fog
+    end
+
+    with_them do
+      context "with store" do
+        it 'returns an instance of the right class' do
+          expect(expected_store).to receive(:new).twice.and_call_original
+          expect(described_class.get_store_class(data_store.to_s)).to be_a(expected_store)
+          expect(described_class.get_store_class(data_store.to_sym)).to be_a(expected_store)
         end
       end
+    end
+
+    it 'raises an error' do
+      expect { described_class.get_store_class('unknown') }.to raise_error('Unknown store type: unknown')
     end
   end
 
@@ -614,23 +622,19 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
           context 'when the chunk is being locked by a different worker' do
             let(:metrics) { spy('metrics') }
 
-            it 'does not raise an exception' do
-              lock_chunk do
-                expect { build_trace_chunk.persist_data! }.not_to raise_error
-              end
-            end
-
             it 'increments stalled chunk trace metric' do
               allow(build_trace_chunk)
                 .to receive(:metrics)
                 .and_return(metrics)
 
-              lock_chunk { build_trace_chunk.persist_data! }
+              expect do
+                subject
 
-              expect(metrics)
-                .to have_received(:increment_trace_operation)
-                .with(operation: :stalled)
-                .once
+                expect(metrics)
+                  .to have_received(:increment_trace_operation)
+                    .with(operation: :stalled)
+                    .once
+              end.to raise_error(described_class::FailedToPersistDataError)
             end
 
             def lock_chunk(&block)

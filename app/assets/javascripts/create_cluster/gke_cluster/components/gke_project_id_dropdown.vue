@@ -1,6 +1,6 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
-import { GlSprintf, GlLink } from '@gitlab/ui';
+import { GlSprintf, GlLink, GlIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
 import gkeDropdownMixin from './gke_dropdown_mixin';
@@ -10,6 +10,7 @@ export default {
   components: {
     GlSprintf,
     GlLink,
+    GlIcon,
   },
   mixins: [gkeDropdownMixin],
   props: {
@@ -178,14 +179,14 @@ export default {
               'https://console.cloud.google.com/freetrial?utm_campaign=2018_cpanel&utm_source=gitlab&utm_medium=referral'
             "
             target="_blank"
-            >{{ content }} <i class="fa fa-external-link" aria-hidden="true"></i
-          ></gl-link>
+            >{{ content }} <gl-icon name="external-link" aria-hidden="true"
+          /></gl-link>
         </template>
 
         <template #docsLink="{ content }">
           <gl-link :href="docsUrl" target="_blank"
-            >{{ content }} <i class="fa fa-external-link" aria-hidden="true"></i
-          ></gl-link>
+            >{{ content }} <gl-icon name="external-link" aria-hidden="true"
+          /></gl-link>
         </template>
 
         <template #error>

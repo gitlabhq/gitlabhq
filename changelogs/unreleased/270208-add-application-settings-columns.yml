@@ -1,0 +1,5 @@
+---
+title: Add secret detection token revocation columns
+merge_request: 45912
+author:
+type: added

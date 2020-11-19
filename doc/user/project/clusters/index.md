@@ -22,6 +22,8 @@ Using the GitLab project Kubernetes integration, you can:
 - Use [Web terminals](#web-terminals).
 - Use [Deploy Boards](#deploy-boards). **(PREMIUM)**
 - Use [Canary Deployments](#canary-deployments). **(PREMIUM)**
+- Use [deployment variables](#deployment-variables).
+- Use [role-based or attribute-based access controls](add_remove_clusters.md#access-controls).
 - View [Logs](#viewing-pod-logs).
 - Run serverless workloads on [Kubernetes with Knative](serverless/index.md).
 
@@ -40,14 +42,15 @@ of memory and CPU usage.
 
 GitLab is committed to support at least two production-ready Kubernetes minor
 versions at any given time. We regularly review the versions we support, and
-provide a four-month deprecation period before we remove support of a specific
+provide a three-month deprecation period before we remove support of a specific
 version. The range of supported versions is based on the evaluation of:
 
 - Our own needs.
 - The versions supported by major managed Kubernetes providers.
 - The versions [supported by the Kubernetes community](https://kubernetes.io/docs/setup/release/version-skew-policy/#supported-versions).
 
-Currently, GitLab supports the following Kubernetes versions:
+GitLab supports the following Kubernetes versions, and you can upgrade your
+Kubernetes version to any supported version at any time:
 
 - 1.17
 - 1.16
@@ -241,9 +244,18 @@ A Kubernetes cluster can be the destination for a deployment job. If
 
 ### Deployment variables
 
+Deployment variables require a valid [Deploy Token](../deploy_tokens/index.md) named
+[`gitlab-deploy-token`](../deploy_tokens/index.md#gitlab-deploy-token), and the
+following command in your deployment job script, for Kubernetes to access the registry:
+
+```plaintext
+kubectl create secret docker-registry gitlab-registry --docker-server="$CI_REGISTRY" --docker-username="$CI_DEPLOY_USER" --docker-password="$CI_DEPLOY_PASSWORD" --docker-email="$GITLAB_USER_EMAIL" -o yaml --dry-run | kubectl apply -f -
+```
+
 The Kubernetes cluster integration exposes the following
 [deployment variables](../../../ci/variables/README.md#deployment-environment-variables) in the
-GitLab CI/CD build environment.
+GitLab CI/CD build environment to deployment jobs, which are jobs that have
+[defined a target environment](../../../ci/environments/index.md#defining-environments).
 
 | Variable | Description |
 | -------- | ----------- |

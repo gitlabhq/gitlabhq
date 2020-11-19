@@ -46,8 +46,15 @@ class ProjectRepositoryStorageMove < ApplicationRecord
       transition replicated: :cleanup_failed
     end
 
-    after_transition initial: :scheduled do |storage_move|
-      storage_move.project.update_column(:repository_read_only, true)
+    around_transition initial: :scheduled do |storage_move, block|
+      block.call
+
+      begin
+        storage_move.project.set_repository_read_only!
+      rescue => err
+        errors.add(:project, err.message)
+        next false
+      end
 
       storage_move.run_after_commit do
         ProjectUpdateRepositoryStorageWorker.perform_async(
@@ -56,17 +63,18 @@ class ProjectRepositoryStorageMove < ApplicationRecord
           storage_move.id
         )
       end
+
+      true
     end
 
-    after_transition started: :replicated do |storage_move|
-      storage_move.project.update_columns(
-        repository_read_only: false,
-        repository_storage: storage_move.destination_storage_name
-      )
+    before_transition started: :replicated do |storage_move|
+      storage_move.project.set_repository_writable!
+
+      storage_move.project.update_column(:repository_storage, storage_move.destination_storage_name)
     end
 
-    after_transition started: :failed do |storage_move|
-      storage_move.project.update_column(:repository_read_only, false)
+    before_transition started: :failed do |storage_move|
+      storage_move.project.set_repository_writable!
     end
 
     state :initial, value: 1

@@ -1,28 +1,3 @@
-// Details
-//--------
-.js-details-container {
-  .content {
-    display: none;
-    &.hide { display: block; }
-  }
-
-  &.open .content {
-    display: block;
-    &.hide { display: none; }
-  }
-}
-
-// Toggle between two states.
-.js-toggler-container {
-  .turn-on { display: block; }
-  .turn-off { display: none; }
-
-  &.on {
-    .turn-on { display: none; }
-    .turn-off { display: block; }
-  }
-}
-
 // Hide element if Vue is still working on rendering it fully.
 [v-cloak='true'] {
   display: none !important;

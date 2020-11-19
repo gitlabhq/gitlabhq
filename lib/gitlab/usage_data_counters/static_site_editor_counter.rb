@@ -3,7 +3,7 @@
 module Gitlab
   module UsageDataCounters
     class StaticSiteEditorCounter < BaseCounter
-      KNOWN_EVENTS = %w[views].freeze
+      KNOWN_EVENTS = %w[views commits merge_requests].freeze
       PREFIX = 'static_site_editor'
 
       class << self

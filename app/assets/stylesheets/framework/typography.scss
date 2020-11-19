@@ -453,11 +453,9 @@
   h4,
   h5,
   h6 {
-    position: relative;
-
     a.anchor {
-      left: -16px;
-      position: absolute;
+      float: left;
+      margin-left: -16px;
       text-decoration: none;
       outline: none;
 

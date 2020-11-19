@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'a Trackable Controller' do
-  describe '#track_event' do
+  describe '#track_event', :snowplow do
     before do
       sign_in user
     end
@@ -14,9 +14,10 @@ RSpec.shared_examples 'a Trackable Controller' do
         end
       end
 
-      it 'tracks the action name' do
-        expect(Gitlab::Tracking).to receive(:event).with('AnonymousController', 'index', {})
+      it 'tracks the action name', :snowplow do
         get :index
+
+        expect_snowplow_event(category: 'AnonymousController', action: 'index')
       end
     end
 
@@ -29,8 +30,9 @@ RSpec.shared_examples 'a Trackable Controller' do
       end
 
       it 'tracks with the specified param' do
-        expect(Gitlab::Tracking).to receive(:event).with('SomeCategory', 'some_event', label: 'errorlabel')
         get :index
+
+        expect_snowplow_event(category: 'SomeCategory', action: 'some_event', label: 'errorlabel')
       end
     end
   end

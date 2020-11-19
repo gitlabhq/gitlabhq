@@ -1,0 +1,5 @@
+---
+title: Replace fa-caret-down with chevron-down SVG in pipeline action buttons
+merge_request: 45881
+author:
+type: changed

@@ -1,6 +1,6 @@
 <script>
 import LinkedPipeline from './linked_pipeline.vue';
-import { __ } from '~/locale';
+import { UPSTREAM } from './constants';
 
 export default {
   components: {
@@ -15,7 +15,7 @@ export default {
       type: Array,
       required: true,
     },
-    graphPosition: {
+    type: {
       type: String,
       required: true,
     },
@@ -32,9 +32,12 @@ export default {
       };
       return `graph-position-${this.graphPosition} ${positionValues[this.graphPosition]}`;
     },
+    graphPosition() {
+      return this.isUpstream ? 'left' : 'right';
+    },
     // Refactor string match when BE returns Upstream/Downstream indicators
     isUpstream() {
-      return this.columnTitle === __('Upstream');
+      return this.type === UPSTREAM;
     },
   },
   methods: {
@@ -45,6 +48,11 @@ export default {
       this.$emit('downstreamHovered', jobName);
     },
     onPipelineExpandToggle(jobName, expanded) {
+      // Highlighting only applies to downstream pipelines
+      if (this.isUpstream) {
+        return;
+      }
+
       this.$emit('pipelineExpandToggle', jobName, expanded);
     },
   },
@@ -66,6 +74,7 @@ export default {
         :pipeline="pipeline"
         :column-title="columnTitle"
         :project-id="projectId"
+        :type="type"
         @pipelineClicked="onPipelineClick($event, pipeline, index)"
         @downstreamHovered="onDownstreamHovered"
         @pipelineExpandToggle="onPipelineExpandToggle"

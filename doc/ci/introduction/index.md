@@ -17,6 +17,14 @@ Out-of-the-box management systems can decrease hours spent on maintaining toolch
 Watch our ["Mastering continuous software development"](https://about.gitlab.com/webcast/mastering-ci-cd/)
 webcast to learn about continuous methods and how GitLab’s built-in CI can help you simplify and scale software development.
 
+> For some additional information about GitLab CI/CD:
+>
+> - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Watch the [CI/CD Ease of configuration](https://www.youtube.com/embed/opdLqwz6tcE) video.
+> - Watch the [Making the case for CI/CD in your organization](https://about.gitlab.com/compare/github-actions-alternative/)
+>   webcast to learn the benefits of CI/CD and how to measure the results of CI/CD automation.
+> - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Learn how [Verizon reduced rebuilds](https://about.gitlab.com/blog/2019/02/14/verizon-customer-story/)
+>   from 30 days to under 8 hours with GitLab.
+
 ## Introduction to CI/CD methodologies
 
 The continuous methodologies of software development are based on
@@ -93,7 +101,7 @@ In this file, you can define the scripts you want to run, define include and
 cache dependencies, choose commands you want to run in sequence
 and those you want to run in parallel, define where you want to
 deploy your app, and specify whether you will want to run the scripts automatically
-or trigger any of them manually. Once you're familiar with
+or trigger any of them manually. After you're familiar with
 GitLab CI/CD you can add more advanced steps into the configuration file.
 
 To add scripts to that file, you'll need to organize them in a
@@ -102,7 +110,7 @@ the tests you wish to perform. To visualize the process, imagine
 that all the scripts you add to the configuration file are the
 same as the commands you run on a terminal on your computer.
 
-Once you've added your `.gitlab-ci.yml` configuration file to your
+After you've added your `.gitlab-ci.yml` configuration file to your
 repository, GitLab will detect it and run your scripts with the
 tool called [GitLab Runner](https://docs.gitlab.com/runner/), which
 works similarly to your terminal.
@@ -149,7 +157,7 @@ Consider the following example for how GitLab CI/CD fits in a
 common development workflow.
 
 Assume that you have discussed a code implementation in an issue
-and worked locally on your proposed changes. Once you push your
+and worked locally on your proposed changes. After you push your
 commits to a feature branch in a remote repository in GitLab,
 the CI/CD pipeline set for your project is triggered. By doing
 so, GitLab CI/CD:
@@ -159,7 +167,7 @@ so, GitLab CI/CD:
   - Preview the changes per merge request with Review Apps, as you
     would see in your `localhost`.
 
-Once you're happy with your implementation:
+After you're happy with your implementation:
 
 - Get your code reviewed and approved.
 - Merge the feature branch into the default branch.

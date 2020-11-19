@@ -106,13 +106,17 @@ The following assumes you already have Vault installed and running.
    vault login -method=oidc port=8250 role=demo
    ```
 
-   Here is a short explanation of what this command does:
+   Here's a short explanation of what this command does:
 
-   1. In the **Write the OIDC Role Config** (step 4), we created a role called `demo`. We set `role=demo` so Vault knows which configuration we'd like to login in with.
+   1. In the **Write the OIDC Role Config** (step 4), we created a role called
+      `demo`. We set `role=demo` so Vault knows which configuration we'd like to
+      sign in with.
    1. To set Vault to use the `OIDC` sign-in method, we set `-method=oidc`.
-   1. To set the port that GitLab should redirect to, we set `port=8250` or another port number that matches the port given to GitLab when listing [Redirect URIs](https://www.vaultproject.io/docs/auth/jwt#redirect-uris).
+   1. To set the port that GitLab should redirect to, we set `port=8250` or
+      another port number that matches the port given to GitLab when listing
+      [Redirect URIs](https://www.vaultproject.io/docs/auth/jwt#redirect-uris).
 
-   Once you run the command above, it will present a link in the terminal.
+   After running the command, it will present a link in the terminal.
    Click the link in the terminal and a tab will open in the browser confirming you're signed into Vault via OIDC:
 
    ![Signed into Vault via OIDC](img/signed_into_vault_via_oidc_v12_6.png)

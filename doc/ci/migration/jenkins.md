@@ -258,7 +258,7 @@ stages:
 ```
 
 Setting a step to be performed before and after any job can be done via the
-[`before_script` and `after_script` keywords](../yaml/README.md#before_script-and-after_script):
+[`before_script`](../yaml/README.md#before_script) and [`after_script`](../yaml/README.md#after_script) keywords:
 
 ```yaml
 default:

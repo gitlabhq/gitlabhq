@@ -1,0 +1,10 @@
+#import "../fragments/integration_item.fragment.graphql"
+
+mutation createHttpIntegration($projectPath: ID!, $name: String!, $active: Boolean!) {
+  httpIntegrationCreate(input: { projectPath: $projectPath, name: $name, active: $active }) {
+    errors
+    integration {
+      ...IntegrationItem
+    }
+  }
+}

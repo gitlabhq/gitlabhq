@@ -1,0 +1,5 @@
+---
+title: Add auto_rollback_enabled column to project_ci_cd_settings table
+merge_request: 45816
+author:
+type: other

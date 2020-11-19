@@ -6,17 +6,17 @@ import {
   GlModal,
   GlAlert,
   GlLoadingIcon,
-  GlDeprecatedDropdown,
-  GlDeprecatedDropdownItem,
+  GlDropdown,
+  GlDropdownItem,
   GlButton,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import CanCreatePersonalSnippet from 'shared_queries/snippet/user_permissions.query.graphql';
+import CanCreateProjectSnippet from 'shared_queries/snippet/project_permissions.query.graphql';
 import { __ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 import DeleteSnippetMutation from '../mutations/deleteSnippet.mutation.graphql';
-import CanCreatePersonalSnippet from '../queries/userPermissions.query.graphql';
-import CanCreateProjectSnippet from '../queries/projectPermissions.query.graphql';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { fetchPolicies } from '~/lib/graphql';
 
@@ -28,8 +28,8 @@ export default {
     GlModal,
     GlAlert,
     GlLoadingIcon,
-    GlDeprecatedDropdown,
-    GlDeprecatedDropdownItem,
+    GlDropdown,
+    GlDropdownItem,
     TimeAgoTooltip,
     GlButton,
   },
@@ -120,7 +120,7 @@ export default {
             ? __('The snippet is visible only to project members.')
             : __('The snippet is visible only to me.');
         case 'internal':
-          return __('The snippet is visible to any logged in user.');
+          return __('The snippet is visible to any logged in user except external users.');
         default:
           return __('The snippet can be accessed without any authentication.');
       }
@@ -231,17 +231,17 @@ export default {
         </template>
       </div>
       <div class="d-block d-sm-none dropdown">
-        <gl-deprecated-dropdown :text="__('Options')" class="w-100" toggle-class="text-center">
-          <gl-deprecated-dropdown-item
+        <gl-dropdown :text="__('Options')" block>
+          <gl-dropdown-item
             v-for="(action, index) in personalSnippetActions"
             :key="index"
             :disabled="action.disabled"
             :title="action.title"
             :href="action.href"
             @click="action.click ? action.click() : undefined"
-            >{{ action.text }}</gl-deprecated-dropdown-item
+            >{{ action.text }}</gl-dropdown-item
           >
-        </gl-deprecated-dropdown>
+        </gl-dropdown>
       </div>
     </div>
 

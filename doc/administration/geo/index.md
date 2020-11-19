@@ -49,7 +49,7 @@ Geo provides:
 
 - Read-only **secondary** nodes: Maintain one **primary** GitLab node while still enabling read-only **secondary** nodes for each of your distributed teams.
 - Authentication system hooks: **Secondary** nodes receives all authentication data (like user accounts and logins) from the **primary** instance.
-- An intuitive UI: **Secondary** nodes utilize the same web interface your team has grown accustomed to. In addition, there are visual notifications that block write operations and make it clear that a user is on a **secondary** node.
+- An intuitive UI: **Secondary** nodes use the same web interface your team has grown accustomed to. In addition, there are visual notifications that block write operations and make it clear that a user is on a **secondary** node.
 
 ## How it works
 
@@ -116,6 +116,7 @@ The following are required to run Geo:
   - [Ubuntu](https://ubuntu.com) 16.04+
 - PostgreSQL 11+ with [Streaming Replication](https://wiki.postgresql.org/wiki/Streaming_Replication)
 - Git 2.9+
+- Git-lfs 2.4.2+ on the user side when using LFS
 - All nodes must run the same GitLab version.
 
 Additionally, check GitLab's [minimum requirements](../../install/requirements.md),
@@ -194,6 +195,12 @@ For information on how to update your Geo nodes to the latest GitLab version, se
 ### Pausing and resuming replication
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35913) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
+
+DANGER: **Warning:**
+In GitLab 13.2 and 13.3, promoting a secondary node to a primary while the
+secondary is paused fails. Do not pause replication before promoting a
+secondary. If the node is paused, be sure to resume before promoting. This
+issue has been fixed in GitLab 13.4 and later.
 
 CAUTION: **Caution:**
 Pausing and resuming of replication is currently only supported for Geo installations using an

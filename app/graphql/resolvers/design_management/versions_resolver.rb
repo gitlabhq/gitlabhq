@@ -7,12 +7,14 @@ module Resolvers
 
       alias_method :design_or_collection, :object
 
+      VersionID = ::Types::GlobalIDType[::DesignManagement::Version]
+
       argument :earlier_or_equal_to_sha, GraphQL::STRING_TYPE,
                as: :sha,
                required: false,
                description: 'The SHA256 of the most recent acceptable version'
 
-      argument :earlier_or_equal_to_id, GraphQL::ID_TYPE,
+      argument :earlier_or_equal_to_id, VersionID,
                as: :id,
                required: false,
                description: 'The Global ID of the most recent acceptable version'
@@ -23,6 +25,9 @@ module Resolvers
       end
 
       def resolve(parent: nil, id: nil, sha: nil)
+        # TODO: remove this line when the compatibility layer is removed
+        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
+        id &&= VersionID.coerce_isolated_input(id)
         version = cutoff(parent, id, sha)
 
         raise ::Gitlab::Graphql::Errors::ResourceNotAvailable, 'cutoff not found' unless version.present?
@@ -47,8 +52,7 @@ module Resolvers
         end
       end
 
-      def specific_version(id, sha)
-        gid = GitlabSchema.parse_gid(id, expected_type: ::DesignManagement::Version) if id
+      def specific_version(gid, sha)
         find(sha: sha, version_id: gid&.model_id).first
       end
 
@@ -58,8 +62,8 @@ module Resolvers
           .execute
       end
 
-      def by_id(id)
-        GitlabSchema.object_from_id(id, expected_type: ::DesignManagement::Version).sync
+      def by_id(gid)
+        ::Gitlab::Graphql::Lazy.force(GitlabSchema.find_by_gid(gid))
       end
 
       # Find an `at_version` argument passed to a parent node.
@@ -69,7 +73,11 @@ module Resolvers
       # for consistency we should only present versions up to the given
       # version here.
       def at_version_arg(parent)
-        ::Gitlab::Graphql::FindArgumentInParent.find(parent, :at_version, limit_depth: 4)
+        # TODO: remove coercion when the compatibility layer is removed
+        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
+        version_id = ::Gitlab::Graphql::FindArgumentInParent.find(parent, :at_version, limit_depth: 4)
+        version_id &&= VersionID.coerce_isolated_input(version_id)
+        version_id
       end
     end
   end

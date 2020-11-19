@@ -8,8 +8,8 @@ class Admin::IntegrationsController < Admin::ApplicationController
 
   private
 
-  def find_or_initialize_integration(name)
-    Service.find_or_initialize_integration(name, instance: true)
+  def find_or_initialize_non_project_specific_integration(name)
+    Service.find_or_initialize_non_project_specific_integration(name, instance: true)
   end
 
   def integrations_enabled?

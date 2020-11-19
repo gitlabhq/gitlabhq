@@ -73,11 +73,11 @@ test:
       cobertura: coverage/cobertura-coverage.xml
 ```
 
-### Java examples
+### Java and Kotlin examples
 
 #### Maven example
 
-The following [`gitlab-ci.yml`](../../../ci/yaml/README.md) example for Java uses [Maven](https://maven.apache.org/)
+The following [`gitlab-ci.yml`](../../../ci/yaml/README.md) example for Java or Kotlin uses [Maven](https://maven.apache.org/)
 to build the project and [Jacoco](https://www.eclemma.org/jacoco/) coverage-tooling to
 generate the coverage artifact.
 You can check the [Docker image configuration and scripts](https://gitlab.com/haynes/jacoco2cobertura) if you want to build your own image.
@@ -101,7 +101,7 @@ coverage-jdk11:
   # The `visualize` stage does not exist by default.
   # Please define it first, or chose an existing stage like `deploy`.
   stage: visualize
-  image: haynes/jacoco2cobertura:1.0.3
+  image: haynes/jacoco2cobertura:1.0.4
   script:
     # convert report from jacoco to cobertura
     - 'python /opt/cover2cover.py target/site/jacoco/jacoco.xml src/main/java > target/site/cobertura.xml'
@@ -117,7 +117,7 @@ coverage-jdk11:
 
 #### Gradle example
 
-The following [`gitlab-ci.yml`](../../../ci/yaml/README.md) example for Java uses [Gradle](https://gradle.org/)
+The following [`gitlab-ci.yml`](../../../ci/yaml/README.md) example for Java or Kotlin uses [Gradle](https://gradle.org/)
 to build the project and [Jacoco](https://www.eclemma.org/jacoco/) coverage-tooling to
 generate the coverage artifact.
 You can check the [Docker image configuration and scripts](https://gitlab.com/haynes/jacoco2cobertura) if you want to build your own image.
@@ -141,7 +141,7 @@ coverage-jdk11:
   # The `visualize` stage does not exist by default.
   # Please define it first, or chose an existing stage like `deploy`.
   stage: visualize
-  image: haynes/jacoco2cobertura:1.0.3
+  image: haynes/jacoco2cobertura:1.0.4
   script:
     # convert report from jacoco to cobertura
     - 'python /opt/cover2cover.py build/jacoco/jacoco.xml src/main/java > build/cobertura.xml'

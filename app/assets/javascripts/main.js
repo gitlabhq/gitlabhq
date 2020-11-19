@@ -40,6 +40,7 @@ import { initUserTracking, initDefaultTrackers } from './tracking';
 import { __ } from './locale';
 
 import * as tooltips from '~/tooltips';
+import * as popovers from '~/popovers';
 
 import 'ee_else_ce/main_ee';
 
@@ -81,7 +82,7 @@ document.addEventListener('beforeunload', () => {
   // Close any open tooltips
   tooltips.dispose(document.querySelectorAll('.has-tooltip, [data-toggle="tooltip"]'));
   // Close any open popover
-  $('[data-toggle="popover"]').popover('dispose');
+  popovers.dispose();
 });
 
 window.addEventListener('hashchange', handleLocationHash);
@@ -166,13 +167,7 @@ function deferredInitialisation() {
   });
 
   // Initialize popovers
-  $body.popover({
-    selector: '[data-toggle="popover"]',
-    trigger: 'focus',
-    // set the viewport to the main content, excluding the navigation bar, so
-    // the navigation can't overlap the popover
-    viewport: '.layout-page',
-  });
+  popovers.initPopovers();
 
   // Adding a helper class to activate animations only after all is rendered
   setTimeout(() => $body.addClass('page-initialised'), 1000);

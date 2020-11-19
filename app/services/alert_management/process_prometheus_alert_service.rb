@@ -9,6 +9,10 @@ module AlertManagement
       return bad_request unless incoming_payload.has_required_attributes?
 
       process_alert_management_alert
+      return bad_request unless alert.persisted?
+
+      process_incident_issues if process_issues?
+      send_alert_email if send_email?
 
       ServiceResponse.success
     end
@@ -30,8 +34,6 @@ module AlertManagement
       else
         create_alert_management_alert
       end
-
-      process_incident_issues if process_issues?
     end
 
     def reset_alert_management_alert_status
@@ -85,10 +87,15 @@ module AlertManagement
     end
 
     def process_incident_issues
-      return unless alert.persisted?
-      return if alert.issue
+      return if alert.issue || alert.resolved?
 
       IncidentManagement::ProcessAlertWorker.perform_async(nil, nil, alert.id)
+    end
+
+    def send_alert_email
+      notification_service
+        .async
+        .prometheus_alerts_fired(project, [alert])
     end
 
     def logger

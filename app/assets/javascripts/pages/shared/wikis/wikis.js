@@ -1,6 +1,7 @@
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { s__, sprintf } from '~/locale';
 import Tracking from '~/tracking';
+import showToast from '~/vue_shared/plugins/global_toast';
 
 const MARKDOWN_LINK_TEXT = {
   markdown: '[Link Title](page-slug)',
@@ -63,6 +64,7 @@ export default class Wikis {
     }
 
     Wikis.trackPageView();
+    Wikis.showToasts();
   }
 
   handleWikiTitleChange(e) {
@@ -115,5 +117,10 @@ export default class Wikis {
         data: JSON.parse(wikiPageContent.dataset.trackingContext),
       },
     });
+  }
+
+  static showToasts() {
+    const toasts = document.querySelectorAll('.js-toast-message');
+    toasts.forEach(toast => showToast(toast.dataset.message));
   }
 }

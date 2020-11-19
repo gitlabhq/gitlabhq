@@ -2,10 +2,10 @@
 require 'spec_helper'
 
 RSpec.describe Ci::CreatePipelineService do
-  let(:user)        { create(:admin) }
+  let(:project)     { create(:project, :repository) }
+  let(:user)        { project.owner }
   let(:ref)         { 'refs/heads/master' }
   let(:source)      { :push }
-  let(:project)     { create(:project, :repository) }
   let(:service)     { described_class.new(project, user, { ref: ref }) }
   let(:pipeline)    { service.execute(source) }
   let(:build_names) { pipeline.builds.pluck(:name) }

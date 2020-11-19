@@ -85,6 +85,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         namespace :ci do
           resource :lint, only: [:show, :create]
+          resource :pipeline_editor, only: [:show], controller: :pipeline_editor, path: 'editor'
           resources :daily_build_group_report_results, only: [:index], constraints: { format: /(csv|json)/ }
         end
 
@@ -264,6 +265,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           resources :functions, only: [:index]
         end
 
+        resources :terraform, only: [:index]
+
         resources :environments, except: [:destroy] do
           member do
             post :stop
@@ -400,6 +403,11 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       #
       # Templates
       #
+      get '/templates/:template_type' => 'templates#index', # rubocop:todo Cop/PutProjectRoutesUnderScope
+          as: :templates,
+          defaults: { format: 'json' },
+          constraints: { template_type: %r{issue|merge_request}, format: 'json' }
+
       get '/templates/:template_type/:key' => 'templates#show', # rubocop:todo Cop/PutProjectRoutesUnderScope
           as: :template,
           defaults: { format: 'json' },
@@ -436,6 +444,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       end
 
       post 'alerts/notify', to: 'alerting/notifications#create' # rubocop:todo Cop/PutProjectRoutesUnderScope
+      post 'alerts/notify/:name/:endpoint_identifier', # rubocop:todo Cop/PutProjectRoutesUnderScope
+            to: 'alerting/notifications#create',
+            as: :alert_http_integration,
+            constraints: { endpoint_identifier: /[A-Za-z0-9]+/ }
 
       draw :legacy_builds
 

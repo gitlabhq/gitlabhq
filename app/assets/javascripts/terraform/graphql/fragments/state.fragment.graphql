@@ -1,0 +1,17 @@
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+#import "./state_version.fragment.graphql"
+
+fragment State on TerraformState {
+  id
+  name
+  lockedAt
+  updatedAt
+
+  lockedByUser {
+    ...User
+  }
+
+  latestVersion {
+    ...StateVersion
+  }
+}

@@ -1,0 +1,5 @@
+---
+title: Remove graphql_lazy_authorization feature flag
+merge_request: 46819
+author:
+type: added

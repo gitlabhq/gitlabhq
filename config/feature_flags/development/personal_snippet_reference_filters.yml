@@ -2,6 +2,7 @@
 name: personal_snippet_reference_filters
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38571
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/235155
-group: group::editor
+milestone: '13.3'
 type: development
+group: group::editor
 default_enabled: false

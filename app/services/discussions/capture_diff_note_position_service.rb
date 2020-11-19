@@ -9,8 +9,7 @@ module Discussions
 
     def execute(discussion)
       # The service has been implemented for text only
-      # The impact of image notes on this service is being investigated in
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/213989
+      # We don't need to capture positions for images
       return unless discussion.on_text?
 
       result = tracer&.trace(discussion.position)

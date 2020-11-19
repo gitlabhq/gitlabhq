@@ -15,7 +15,7 @@ export const createFakeDateClass = ctorDefault => {
     apply: (target, thisArg, argArray) => {
       const ctorArgs = argArray.length ? argArray : ctorDefault;
 
-      return RealDate(...ctorArgs);
+      return new RealDate(...ctorArgs).toString();
     },
     // We want to overwrite the default 'now', but only if it's not already mocked
     get: (target, prop) => {

@@ -40,12 +40,6 @@ tests = [
   },
 
   {
-    explanation: 'EE lib should map to respective spec',
-    source: 'ee/lib/flipper_session.rb',
-    expected: ['ee/spec/lib/flipper_session_spec.rb']
-  },
-
-  {
     explanation: 'Tooling should map to respective spec',
     source: 'tooling/lib/tooling/test_file_finder.rb',
     expected: ['spec/tooling/lib/tooling/test_file_finder_spec.rb']

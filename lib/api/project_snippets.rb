@@ -6,6 +6,8 @@ module API
 
     before { check_snippets_enabled }
 
+    feature_category :snippets
+
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end

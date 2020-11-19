@@ -45,7 +45,7 @@ export default {
       return this.discussion.notes.filter(x => x.resolvable);
     },
     userCanResolveDiscussion() {
-      return this.resolvableNotes.every(note => note.current_user && note.current_user.can_resolve);
+      return this.resolvableNotes.every(note => note.current_user?.can_resolve_discussion);
     },
   },
 };

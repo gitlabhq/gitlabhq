@@ -40,16 +40,9 @@ module Types
     field :author, type: Types::UserType, null: true,
           description: 'Author of the commit'
 
-    field :pipelines, Types::Ci::PipelineType.connection_type,
+    field :pipelines,
           null: true,
           description: 'Pipelines of the commit ordered latest first',
           resolver: Resolvers::CommitPipelinesResolver
-
-    field :latest_pipeline,
-          type: Types::Ci::PipelineType,
-          null: true,
-          deprecated: { reason: 'Use `pipelines`', milestone: '12.5' },
-          description: 'Latest pipeline of the commit',
-          resolver: Resolvers::CommitPipelinesResolver.last
   end
 end

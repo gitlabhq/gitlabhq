@@ -11,24 +11,30 @@ export default {
     const isDiscussion = type === constants.DISCUSSION_NOTE || type === constants.DIFF_NOTE;
 
     if (!exists) {
-      const noteData = {
-        expanded: true,
-        id: discussion_id,
-        individual_note: !isDiscussion,
-        notes: [note],
-        reply_id: discussion_id,
-      };
+      let discussion = data.discussion || note.base_discussion;
 
-      if (isDiscussion && isInMRPage()) {
-        noteData.resolvable = note.resolvable;
-        noteData.resolved = false;
-        noteData.active = true;
-        noteData.resolve_path = note.resolve_path;
-        noteData.resolve_with_issue_path = note.resolve_with_issue_path;
-        noteData.diff_discussion = false;
+      if (!discussion) {
+        discussion = {
+          expanded: true,
+          id: discussion_id,
+          individual_note: !isDiscussion,
+          reply_id: discussion_id,
+        };
+
+        if (isDiscussion && isInMRPage()) {
+          discussion.resolvable = note.resolvable;
+          discussion.resolved = false;
+          discussion.active = true;
+          discussion.resolve_path = note.resolve_path;
+          discussion.resolve_with_issue_path = note.resolve_with_issue_path;
+          discussion.diff_discussion = false;
+        }
       }
 
-      state.discussions.push(noteData);
+      note.base_discussion = undefined; // No point keeping a reference to this
+      discussion.notes = [note];
+
+      state.discussions.push(discussion);
     }
   },
 

@@ -5,6 +5,8 @@ module API
     class InstanceClusters < ::API::Base
       include PaginationParams
 
+      feature_category :kubernetes_management
+
       before do
         authenticated_as_admin!
       end

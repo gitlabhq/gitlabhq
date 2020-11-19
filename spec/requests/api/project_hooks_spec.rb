@@ -41,6 +41,7 @@ RSpec.describe API::ProjectHooks, 'ProjectHooks' do
         expect(json_response.first['pipeline_events']).to eq(true)
         expect(json_response.first['wiki_page_events']).to eq(true)
         expect(json_response.first['deployment_events']).to eq(true)
+        expect(json_response.first['releases_events']).to eq(true)
         expect(json_response.first['enable_ssl_verification']).to eq(true)
         expect(json_response.first['push_events_branch_filter']).to eq('master')
       end
@@ -72,6 +73,7 @@ RSpec.describe API::ProjectHooks, 'ProjectHooks' do
         expect(json_response['job_events']).to eq(hook.job_events)
         expect(json_response['pipeline_events']).to eq(hook.pipeline_events)
         expect(json_response['wiki_page_events']).to eq(hook.wiki_page_events)
+        expect(json_response['releases_events']).to eq(hook.releases_events)
         expect(json_response['deployment_events']).to eq(true)
         expect(json_response['enable_ssl_verification']).to eq(hook.enable_ssl_verification)
       end
@@ -97,7 +99,7 @@ RSpec.describe API::ProjectHooks, 'ProjectHooks' do
         post(api("/projects/#{project.id}/hooks", user),
              params: { url: "http://example.com", issues_events: true,
                        confidential_issues_events: true, wiki_page_events: true,
-                       job_events: true, deployment_events: true,
+                       job_events: true, deployment_events: true, releases_events: true,
                        push_events_branch_filter: 'some-feature-branch' })
       end.to change {project.hooks.count}.by(1)
 
@@ -114,6 +116,7 @@ RSpec.describe API::ProjectHooks, 'ProjectHooks' do
       expect(json_response['pipeline_events']).to eq(false)
       expect(json_response['wiki_page_events']).to eq(true)
       expect(json_response['deployment_events']).to eq(true)
+      expect(json_response['releases_events']).to eq(true)
       expect(json_response['enable_ssl_verification']).to eq(true)
       expect(json_response['push_events_branch_filter']).to eq('some-feature-branch')
       expect(json_response).not_to include('token')
@@ -169,6 +172,7 @@ RSpec.describe API::ProjectHooks, 'ProjectHooks' do
       expect(json_response['job_events']).to eq(hook.job_events)
       expect(json_response['pipeline_events']).to eq(hook.pipeline_events)
       expect(json_response['wiki_page_events']).to eq(hook.wiki_page_events)
+      expect(json_response['releases_events']).to eq(hook.releases_events)
       expect(json_response['enable_ssl_verification']).to eq(hook.enable_ssl_verification)
     end
 

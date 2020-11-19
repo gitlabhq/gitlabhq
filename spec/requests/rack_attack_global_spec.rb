@@ -125,7 +125,8 @@ RSpec.describe 'Rack Attack global throttles' do
           env: :throttle,
           remote_ip: '127.0.0.1',
           request_method: 'GET',
-          path: '/users/sign_in'
+          path: '/users/sign_in',
+          matched: 'throttle_unauthenticated'
         }
 
         expect(Gitlab::AuthLogger).to receive(:error).with(arguments)
@@ -317,6 +318,64 @@ RSpec.describe 'Rack Attack global throttles' do
       end
 
       it_behaves_like 'rate-limited web authenticated requests'
+    end
+  end
+
+  describe 'throttle bypass header' do
+    let(:headers) { {} }
+    let(:bypass_header) { 'gitlab-bypass-rate-limiting' }
+
+    def do_request
+      get '/users/sign_in', headers: headers
+    end
+
+    before do
+      # Disabling protected paths throttle, otherwise requests to
+      # '/users/sign_in' are caught by this throttle.
+      settings_to_set[:throttle_protected_paths_enabled] = false
+
+      # Set low limits
+      settings_to_set[:throttle_unauthenticated_requests_per_period] = requests_per_period
+      settings_to_set[:throttle_unauthenticated_period_in_seconds] = period_in_seconds
+
+      stub_env('GITLAB_THROTTLE_BYPASS_HEADER', bypass_header)
+      settings_to_set[:throttle_unauthenticated_enabled] = true
+
+      stub_application_setting(settings_to_set)
+    end
+
+    shared_examples 'reject requests over the rate limit' do
+      it 'rejects requests over the rate limit' do
+        # At first, allow requests under the rate limit.
+        requests_per_period.times do
+          do_request
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        # the last straw
+        expect_rejection { do_request }
+      end
+    end
+
+    context 'without the bypass header set' do
+      it_behaves_like 'reject requests over the rate limit'
+    end
+
+    context 'with bypass header set to 1' do
+      let(:headers) { { bypass_header => '1' } }
+
+      it 'does not throttle' do
+        (1 + requests_per_period).times do
+          do_request
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+    end
+
+    context 'with bypass header set to some other value' do
+      let(:headers) { { bypass_header => 'some other value' } }
+
+      it_behaves_like 'reject requests over the rate limit'
     end
   end
 end

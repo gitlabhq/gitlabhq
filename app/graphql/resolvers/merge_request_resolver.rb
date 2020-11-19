@@ -6,6 +6,8 @@ module Resolvers
 
     alias_method :project, :synchronized_object
 
+    type ::Types::MergeRequestType, null: true
+
     argument :iid, GraphQL::STRING_TYPE,
               required: true,
               as: :iids,

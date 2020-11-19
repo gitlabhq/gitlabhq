@@ -30,6 +30,8 @@ class GitlabSchema < GraphQL::Schema
 
   default_max_page_size 100
 
+  lazy_resolve ::Gitlab::Graphql::Lazy, :force
+
   class << self
     def multiplex(queries, **kwargs)
       kwargs[:max_complexity] ||= max_query_complexity(kwargs[:context])
@@ -74,6 +76,13 @@ class GitlabSchema < GraphQL::Schema
       gid = parse_gid(global_id, ctx)
 
       find_by_gid(gid)
+    end
+
+    def resolve_type(type, object, ctx = :__undefined__)
+      tc = type.metadata[:type_class]
+      return if tc.respond_to?(:assignable?) && !tc.assignable?(object)
+
+      super
     end
 
     # Find an object by looking it up from its 'GlobalID'.

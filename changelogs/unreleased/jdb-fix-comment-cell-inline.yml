@@ -1,0 +1,5 @@
+---
+title: Fix comment cells not rendering in unified component inline view
+merge_request: 47693
+author:
+type: fixed

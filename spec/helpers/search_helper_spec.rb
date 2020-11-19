@@ -73,7 +73,7 @@ RSpec.describe SearchHelper do
         expect(result.keys).to match_array(%i[category id label url avatar_url])
       end
 
-      it 'includes the users recently viewed issues' do
+      it 'includes the users recently viewed issues', :aggregate_failures do
         recent_issues = instance_double(::Gitlab::Search::RecentIssues)
         expect(::Gitlab::Search::RecentIssues).to receive(:new).with(user: user).and_return(recent_issues)
         project1 = create(:project, :with_avatar, namespace: user.namespace)
@@ -104,7 +104,7 @@ RSpec.describe SearchHelper do
         })
       end
 
-      it 'includes the users recently viewed merge requests' do
+      it 'includes the users recently viewed merge requests', :aggregate_failures do
         recent_merge_requests = instance_double(::Gitlab::Search::RecentMergeRequests)
         expect(::Gitlab::Search::RecentMergeRequests).to receive(:new).with(user: user).and_return(recent_merge_requests)
         project1 = create(:project, :with_avatar, namespace: user.namespace)
@@ -143,11 +143,43 @@ RSpec.describe SearchHelper do
       context "with a current project" do
         before do
           @project = create(:project, :repository)
+          allow(self).to receive(:can?).with(user, :read_feature_flag, @project).and_return(false)
         end
 
-        it "includes project-specific sections" do
+        it "includes project-specific sections", :aggregate_failures do
           expect(search_autocomplete_opts("Files").size).to eq(1)
           expect(search_autocomplete_opts("Commits").size).to eq(1)
+        end
+
+        context 'when user does not have access to project' do
+          it 'does not include issues by iid' do
+            issue = create(:issue, project: @project)
+            results = search_autocomplete_opts("\##{issue.iid}")
+
+            expect(results.count).to eq(0)
+          end
+        end
+
+        context 'when user has project access' do
+          before do
+            @project = create(:project, :repository, namespace: user.namespace)
+            allow(self).to receive(:can?).with(user, :read_feature_flag, @project).and_return(true)
+          end
+
+          it 'includes issues by iid', :aggregate_failures do
+            issue = create(:issue, project: @project, title: 'test title')
+            results = search_autocomplete_opts("\##{issue.iid}")
+
+            expect(results.count).to eq(1)
+
+            expect(results.first).to include({
+              category: 'In this project',
+              id: issue.id,
+              label: 'test title (#1)',
+              url: ::Gitlab::Routing.url_helpers.project_issue_path(issue.project, issue),
+              avatar_url: '' # project has no avatar
+            })
+          end
         end
       end
     end
@@ -204,11 +236,34 @@ RSpec.describe SearchHelper do
   end
 
   describe 'search_entries_empty_message' do
-    it 'returns the formatted entry message' do
-      message = search_entries_empty_message('projects', '<h1>foo</h1>')
+    let!(:group) { build(:group) }
+    let!(:project) { build(:project, group: group) }
 
-      expect(message).to eq("We couldn't find any projects matching <code>&lt;h1&gt;foo&lt;/h1&gt;</code>")
-      expect(message).to be_html_safe
+    context 'global search' do
+      let(:message) { search_entries_empty_message('projects', '<h1>foo</h1>', nil, nil) }
+
+      it 'returns the formatted entry message' do
+        expect(message).to eq("We couldn&#39;t find any projects matching <code>&lt;h1&gt;foo&lt;/h1&gt;</code>")
+        expect(message).to be_html_safe
+      end
+    end
+
+    context 'group search' do
+      let(:message) { search_entries_empty_message('projects', '<h1>foo</h1>', group, nil) }
+
+      it 'returns the formatted entry message' do
+        expect(message).to start_with('We couldn&#39;t find any projects matching <code>&lt;h1&gt;foo&lt;/h1&gt;</code> in group <a')
+        expect(message).to be_html_safe
+      end
+    end
+
+    context 'project search' do
+      let(:message) { search_entries_empty_message('projects', '<h1>foo</h1>', group, project) }
+
+      it 'returns the formatted entry message' do
+        expect(message).to start_with('We couldn&#39;t find any projects matching <code>&lt;h1&gt;foo&lt;/h1&gt;</code> in project <a')
+        expect(message).to be_html_safe
+      end
     end
   end
 
@@ -343,6 +398,19 @@ RSpec.describe SearchHelper do
       expect(link).to have_link('Projects', href: search_path(scope: 'projects', search: 'hello', project_id: 23))
     end
 
+    it 'restricts the params' do
+      expect(self).to receive(:params).and_return(
+        ActionController::Parameters.new(
+          search: 'hello',
+          unknown: 42
+        )
+      )
+
+      link = search_filter_link('projects', 'Projects')
+
+      expect(link).to have_link('Projects', href: search_path(scope: 'projects', search: 'hello'))
+    end
+
     it 'assigns given data attributes on the list container' do
       link = search_filter_link('projects', 'Projects', data: { foo: 'bar' })
 
@@ -409,7 +477,7 @@ RSpec.describe SearchHelper do
     end
   end
 
-  describe '#highlight_and_truncate_issue' do
+  describe '#highlight_and_truncate_issuable' do
     let(:description) { 'hello world' }
     let(:issue) { create(:issue, description: description) }
     let(:user) { create(:user) }
@@ -418,7 +486,7 @@ RSpec.describe SearchHelper do
       allow(self).to receive(:current_user).and_return(user)
     end
 
-    subject { highlight_and_truncate_issue(issue, 'test', {}) }
+    subject { highlight_and_truncate_issuable(issue, 'test', {}) }
 
     context 'when description is not present' do
       let(:description) { nil }
@@ -474,6 +542,40 @@ RSpec.describe SearchHelper do
         expect(::SearchService).to receive(:new).with(:the_current_user, { confidential: expected })
 
         subject
+      end
+    end
+  end
+
+  describe '#issuable_state_to_badge_class' do
+    context 'with merge request' do
+      it 'returns correct badge based on status' do
+        expect(issuable_state_to_badge_class(build(:merge_request, :merged))).to eq(:primary)
+        expect(issuable_state_to_badge_class(build(:merge_request, :closed))).to eq(:danger)
+        expect(issuable_state_to_badge_class(build(:merge_request, :opened))).to eq(:success)
+      end
+    end
+
+    context 'with an issue' do
+      it 'returns correct badge based on status' do
+        expect(issuable_state_to_badge_class(build(:issue, :closed))).to eq(:info)
+        expect(issuable_state_to_badge_class(build(:issue, :opened))).to eq(:success)
+      end
+    end
+  end
+
+  describe '#issuable_state_text' do
+    context 'with merge request' do
+      it 'returns correct badge based on status' do
+        expect(issuable_state_text(build(:merge_request, :merged))).to eq(_('Merged'))
+        expect(issuable_state_text(build(:merge_request, :closed))).to eq(_('Closed'))
+        expect(issuable_state_text(build(:merge_request, :opened))).to eq(_('Open'))
+      end
+    end
+
+    context 'with an issue' do
+      it 'returns correct badge based on status' do
+        expect(issuable_state_text(build(:issue, :closed))).to eq(_('Closed'))
+        expect(issuable_state_text(build(:issue, :opened))).to eq(_('Open'))
       end
     end
   end

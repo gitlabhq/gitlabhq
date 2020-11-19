@@ -76,7 +76,7 @@ RSpec.describe 'Milestone' do
 
       wait_for_requests
 
-      page.within('.time-tracking-no-tracking-pane') do
+      page.within('[data-testid="noTrackingPane"]') do
         expect(page).to have_content 'No estimate or time spent'
       end
     end
@@ -94,7 +94,7 @@ RSpec.describe 'Milestone' do
 
       wait_for_requests
 
-      page.within('.time-tracking-spend-only-pane') do
+      page.within('[data-testid="spentOnlyPane"]') do
         expect(page).to have_content 'Spent: 3h'
       end
     end

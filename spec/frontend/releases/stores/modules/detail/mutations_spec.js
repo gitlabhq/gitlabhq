@@ -18,7 +18,6 @@ describe('Release detail mutations', () => {
       releasesPagePath: 'path/to/releases/page',
       markdownDocsPath: 'path/to/markdown/docs',
       markdownPreviewPath: 'path/to/markdown/preview',
-      updateReleaseApiDocsPath: 'path/to/api/docs',
     });
     release = convertObjectPropsToCamelCase(originalRelease);
   });

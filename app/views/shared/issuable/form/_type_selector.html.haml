@@ -8,7 +8,7 @@
         %button.dropdown-menu-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
           %span.dropdown-toggle-text.is-default
             = issuable.issue_type.capitalize || _("Select type")
-          = icon('chevron-down')
+          = sprite_icon('chevron-down', css_class: "dropdown-menu-toggle-icon gl-top-3")
         .dropdown-menu.dropdown-menu-selectable.dropdown-select
           .dropdown-title.gl-display-flex
             %span.gl-ml-auto

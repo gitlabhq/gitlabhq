@@ -35,18 +35,14 @@ export default {
     };
   },
   computed: {
-    chartData() {
-      const queryData = this.graphData.metrics.reduce((acc, query) => {
+    barChartData() {
+      return this.graphData.metrics.reduce((acc, query) => {
         const series = makeDataSeries(query.result || [], {
           name: this.formatLegendLabel(query),
         });
 
         return acc.concat(series);
       }, []);
-
-      return {
-        values: queryData[0].data,
-      };
     },
     chartOptions() {
       const xAxis = getTimeAxisOptions({ timezone: this.timezone });
@@ -109,7 +105,7 @@ export default {
     <gl-column-chart
       ref="columnChart"
       v-bind="$attrs"
-      :data="chartData"
+      :bars="barChartData"
       :option="chartOptions"
       :width="width"
       :height="height"

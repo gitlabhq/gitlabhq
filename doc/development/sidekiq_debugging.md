@@ -1,6 +1,5 @@
-# Sidekiq debugging
+---
+redirect_to: '../administration/troubleshooting/sidekiq.md'
+---
 
-## Log arguments to Sidekiq jobs
-
-This content has been moved to the
-[Troubleshooting Sidekiq docs](../administration/troubleshooting/sidekiq.md).
+This document was moved to [another location](../administration/troubleshooting/sidekiq.md).

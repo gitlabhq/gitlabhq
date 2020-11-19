@@ -17,6 +17,7 @@ export default () => {
           initialIsEnabled: parseBoolean(dataset.enabled),
           endpoint: dataset.endpoint,
           incomingEmail: dataset.incomingEmail,
+          customEmail: dataset.customEmail,
           selectedTemplate: dataset.selectedTemplate,
           outgoingName: dataset.outgoingName,
           projectKey: dataset.projectKey,
@@ -28,7 +29,8 @@ export default () => {
           props: {
             initialIsEnabled: this.initialIsEnabled,
             endpoint: this.endpoint,
-            initialIncomingEmail: this.incomingEmail,
+            incomingEmail: this.incomingEmail,
+            customEmail: this.customEmail,
             selectedTemplate: this.selectedTemplate,
             outgoingName: this.outgoingName,
             projectKey: this.projectKey,

@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # QueryRecorder
 
 QueryRecorder is a tool for detecting the [N+1 queries problem](https://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations) from tests.
@@ -20,17 +26,17 @@ end
 
 As an example you might create 5 issues in between counts, which would cause the query count to increase by 5 if an N+1 problem exists.
 
-NOTE: **Note:**
 In some cases the query count might change slightly between runs for unrelated reasons. In this case you might need to test `exceed_query_limit(control_count + acceptable_change)`, but this should be avoided if possible.
 
 ## Cached queries
 
-By default, QueryRecorder will ignore cached queries in the count. However, it may be better to count
-all queries to avoid introducing an N+1 query that may be masked by the statement cache. To do this,
-pass the `skip_cached` variable to `QueryRecorder` and use the `exceed_all_query_limit` matcher:
+By default, QueryRecorder will ignore [cached queries](merge_request_performance_guidelines.md#cached-queries) in the count. However, it may be better to count
+all queries to avoid introducing an N+1 query that may be masked by the statement cache.
+To do this, this requires the `:use_sql_query_cache` flag to be set.
+You should pass the `skip_cached` variable to `QueryRecorder` and use the `exceed_all_query_limit` matcher:
 
 ```ruby
-it "avoids N+1 database queries" do
+it "avoids N+1 database queries", :use_sql_query_cache do
   control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { visit_some_page }.count
   create_list(:issue, 5)
   expect { visit_some_page }.not_to exceed_all_query_limit(control_count)
@@ -118,4 +124,5 @@ There are multiple ways to find the source of queries.
 
 - [Bullet](profiling.md#bullet) For finding `N+1` query problems
 - [Performance guidelines](performance.md)
-- [Merge request performance guidelines](merge_request_performance_guidelines.md#query-counts)
+- [Merge request performance guidelines - Query counts](merge_request_performance_guidelines.md#query-counts)
+- [Merge request performance guidelines - Cached queries](merge_request_performance_guidelines.md#cached-queries)

@@ -73,6 +73,11 @@ export default {
       required: false,
       default: false,
     },
+    discussionResolvePath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -81,6 +86,7 @@ export default {
       isRequesting: false,
       isResolving: false,
       commentLineStart: {},
+      resolveAsThread: this.glFeatures.removeResolveNote,
     };
   },
   computed: {
@@ -133,6 +139,10 @@ export default {
       return this.note.isDraft;
     },
     canResolve() {
+      if (this.glFeatures.removeResolveNote && !this.discussionRoot) return false;
+
+      if (this.glFeatures.removeResolveNote) return this.note.current_user.can_resolve_discussion;
+
       return (
         this.note.current_user.can_resolve ||
         (this.note.isDraft && this.note.discussion_id !== null)
@@ -345,7 +355,8 @@ export default {
     :class="classNameBindings"
     :data-award-url="note.toggle_award_path"
     :data-note-id="note.id"
-    class="note note-wrapper qa-noteable-note-item"
+    class="note note-wrapper"
+    data-qa-selector="noteable_note_container"
   >
     <div
       v-if="showMultiLineComment"

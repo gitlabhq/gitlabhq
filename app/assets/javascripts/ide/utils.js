@@ -1,7 +1,7 @@
 import { languages } from 'monaco-editor';
 import { flatten, isString } from 'lodash';
 import { SIDE_LEFT, SIDE_RIGHT } from './constants';
-import { performanceMarkAndMeasure } from '~/performance_utils';
+import { performanceMarkAndMeasure } from '~/performance/utils';
 
 const toLowerCase = x => x.toLowerCase();
 

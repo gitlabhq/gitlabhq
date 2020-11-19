@@ -1,4 +1,5 @@
 - page_title _("Jobs")
+- add_page_specific_style 'page_bundles/ci_status'
 
 .top-area
   - build_path_proc = ->(scope) { project_jobs_path(@project, scope: scope) }

@@ -2,6 +2,7 @@
 name: container_registry_expiration_policies_throttling
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36319
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/238190
-group: group::package
+milestone: '13.4'
 type: development
+group: group::package
 default_enabled: false

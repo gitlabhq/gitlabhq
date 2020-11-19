@@ -44,6 +44,7 @@ groups:
    - Author
    - Assignee
    - [Milestone](../project/milestones/index.md)
+   - [Iteration](../group/iterations/index.md) ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.6)
    - Release
    - [Label](../project/labels.md)
    - My-reaction
@@ -116,6 +117,28 @@ To filter merge requests already approved by a specific individual, you can type
 the dropdown) **Approved-By** and select the user.
 
 ![Filter MRs by approved by](img/filter_approved_by_merge_requests_v13_0.png)
+
+### Filtering merge requests by environment or deployment date **(CORE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44041) in GitLab 13.6.
+
+To filter merge requests by deployment data, such as the environment or a date,
+you can type (or select from the dropdown) the following:
+
+- Environment
+- Deployed-before
+- Deployed-after
+
+When filtering by an environment, a dropdown presents all environments that
+you can choose from:
+
+![Filter MRs by their environment](img/filtering_merge_requests_by_environment_v13_6.png)
+
+When filtering by a deploy date, you must enter the date manually. Deploy dates
+use the format `YYYY-MM-DD`, and must be quoted if you wish to specify
+both a date and time (`"YYYY-MM-DD HH:MM"`):
+
+![Filter MRs by a deploy date](img/filtering_merge_requests_by_date_v13_6.png)
 
 ## Filters autocomplete
 
@@ -211,6 +234,7 @@ You can also type in this search bar to see autocomplete suggestions for:
 - Recently viewed issues (try and type some word from the title of a recently viewed issue)
 - Recently viewed merge requests (try and type some word from the title of a recently viewed merge request)
 - Recently viewed epics (try and type some word from the title of a recently viewed epic)
+- [GitLab Flavored Markdown](../markdown.md#special-gitlab-references) (GFM) for issues within a project (try and type a GFM reference for an issue)
 
 ## Basic search
 
@@ -247,6 +271,14 @@ the search field on the top-right of your screen while the project page is open.
 
 ![code search dropdown](img/project_search_dropdown.png)
 ![code search results](img/project_code_search.png)
+
+### SHA search
+
+You can quickly access a commit from within the project dashboard by entering the SHA
+into the search field on the top right of the screen. If a single result is found, you will be
+redirected to the commit result and given the option to return to the search results page.
+
+![project sha search redirect](img/project_search_sha_redirect.png)
 
 ## Advanced Search **(STARTER)**
 

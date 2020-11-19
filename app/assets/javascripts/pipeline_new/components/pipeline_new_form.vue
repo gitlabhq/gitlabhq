@@ -14,6 +14,7 @@ import {
   GlDropdownItem,
   GlSearchBoxByType,
   GlSprintf,
+  GlLoadingIcon,
 } from '@gitlab/ui';
 import { s__, __, n__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
@@ -45,6 +46,7 @@ export default {
     GlDropdownItem,
     GlSearchBoxByType,
     GlSprintf,
+    GlLoadingIcon,
   },
   props: {
     pipelinesPath: {
@@ -96,6 +98,7 @@ export default {
       warnings: [],
       totalWarnings: 0,
       isWarningDismissed: false,
+      isLoading: false,
     };
   },
   computed: {
@@ -209,6 +212,8 @@ export default {
 
     fetchConfigVariables(refValue) {
       if (gon?.features?.newPipelineFormPrefilledVars) {
+        this.isLoading = true;
+
         return axios
           .get(this.configVariablesPath, {
             params: {
@@ -225,6 +230,8 @@ export default {
                 descriptions[key] = description;
               }
             });
+
+            this.isLoading = false;
 
             return { params, descriptions };
           });
@@ -324,7 +331,9 @@ export default {
       >
     </gl-form-group>
 
-    <gl-form-group :label="s__('Pipeline|Variables')">
+    <gl-loading-icon v-if="isLoading" class="gl-mb-5" size="lg" />
+
+    <gl-form-group v-else :label="s__('Pipeline|Variables')">
       <div
         v-for="(variable, index) in variables"
         :key="variable.uniqueId"

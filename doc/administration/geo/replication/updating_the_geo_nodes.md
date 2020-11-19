@@ -8,7 +8,9 @@ type: howto
 # Updating the Geo nodes **(PREMIUM ONLY)**
 
 CAUTION: **Warning:**
-Please ensure you read these sections carefully before updating your Geo nodes! Not following version-specific update steps may result in unexpected downtime. Please [contact support](https://about.gitlab.com/support/#contact-support) if you have any specific questions.
+Read these sections carefully before updating your Geo nodes. Not following
+version-specific update steps may result in unexpected downtime. If you have
+any specific questions, [contact Support](https://about.gitlab.com/support/#contact-support).
 
 Updating Geo nodes involves performing:
 
@@ -47,4 +49,4 @@ everything is working correctly:
 1. Test the data replication by pushing code to the **primary** node and see if it
    is received by **secondary** nodes.
 
-If you encounter any issues, please consult the [Geo troubleshooting guide](troubleshooting.md).
+If you encounter any issues, see the [Geo troubleshooting guide](troubleshooting.md).

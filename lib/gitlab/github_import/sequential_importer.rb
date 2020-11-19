@@ -25,10 +25,11 @@ module Gitlab
 
       # project - The project to import the data into.
       # token - The token to use for the GitHub API.
-      def initialize(project, token: nil)
+      # host - The GitHub hostname. If nil, github.com will be used.
+      def initialize(project, token: nil, host: nil)
         @project = project
         @client = GithubImport
-          .new_client_for(project, token: token, parallel: false)
+          .new_client_for(project, token: token, host: host, parallel: false)
       end
 
       def execute

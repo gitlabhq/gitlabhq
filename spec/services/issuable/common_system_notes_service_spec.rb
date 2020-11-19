@@ -36,28 +36,28 @@ RSpec.describe Issuable::CommonSystemNotesService do
       context 'adding Draft note' do
         let(:issuable) { create(:merge_request, title: "merge request") }
 
-        it_behaves_like 'system note creation', { title: "Draft: merge request" }, 'marked as a **Work In Progress**'
+        it_behaves_like 'system note creation', { title: "Draft: merge request" }, 'marked this merge request as **draft**'
 
         context 'and changing title' do
           before do
             issuable.update_attribute(:title, "Draft: changed title")
           end
 
-          it_behaves_like 'draft notes creation', 'marked'
+          it_behaves_like 'draft notes creation', 'draft'
         end
       end
 
       context 'removing Draft note' do
         let(:issuable) { create(:merge_request, title: "Draft: merge request") }
 
-        it_behaves_like 'system note creation', { title: "merge request" }, 'unmarked as a **Work In Progress**'
+        it_behaves_like 'system note creation', { title: "merge request" }, 'marked this merge request as **ready**'
 
         context 'and changing title' do
           before do
             issuable.update_attribute(:title, "changed title")
           end
 
-          it_behaves_like 'draft notes creation', 'unmarked'
+          it_behaves_like 'draft notes creation', 'ready'
         end
       end
     end

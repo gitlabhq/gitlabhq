@@ -18,6 +18,11 @@ ALLOWED = [
   # Needed to detect Rugged enabled: https://gitlab.com/gitlab-org/gitlab/issues/35371
   'lib/gitlab/config_checker/puma_rugged_checker.rb',
 
+  # Needed for GPG/X509 commit signature API
+  #
+  'app/models/commit.rb',
+  'lib/api/entities/commit_signature.rb',
+
   # Needed for logging
   'config/initializers/peek.rb',
   'config/initializers/lograge.rb',

@@ -305,7 +305,7 @@ Some features are not implemented yet. For example, support for environments.
 - `when` (only with `on_success`, `on_failure`, and `always` values)
 - `extends`
 
-## Trigger a pipeline when an upstream project is rebuilt
+## Trigger a pipeline when an upstream project is rebuilt **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9045) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.8.
 
@@ -321,6 +321,9 @@ Any pipelines that complete successfully for new tags in the subscribed project
 will now trigger a pipeline on the current project's default branch. The maximum
 number of upstream pipeline subscriptions is 2 by default, for both the upstream and
 downstream projects. This [application limit](../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project) can be changed on self-managed instances by a GitLab administrator.
+
+The upstream project needs to be [public](../public_access/public_access.md) for
+pipeline subscription to work.
 
 ## Downstream private projects confidentiality concern
 

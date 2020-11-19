@@ -7,6 +7,8 @@ module API
 
     before { authenticate! }
 
+    feature_category :issue_tracking
+
     params do
       requires :id, type: String, desc: 'The ID of a group'
     end
@@ -20,10 +22,16 @@ module API
                  desc: 'Include issue and merge request counts'
         optional :include_ancestor_groups, type: Boolean, default: true,
                  desc: 'Include ancestor groups'
+        optional :include_descendant_groups, type: Boolean, default: false,
+                 desc: 'Include descendant groups. This feature was added in GitLab 13.6'
+        optional :only_group_labels, type: Boolean, default: true,
+                 desc: 'Toggle to include only group labels or also project labels. This feature was added in GitLab 13.6'
+        optional :search, type: String,
+                 desc: 'Keyword to filter labels by. This feature was added in GitLab 13.6'
         use :pagination
       end
       get ':id/labels' do
-        get_labels(user_group, Entities::GroupLabel, include_ancestor_groups: params[:include_ancestor_groups])
+        get_labels(user_group, Entities::GroupLabel, declared_params)
       end
 
       desc 'Get a single label' do
@@ -33,9 +41,13 @@ module API
       params do
         optional :include_ancestor_groups, type: Boolean, default: true,
                  desc: 'Include ancestor groups'
+        optional :include_descendant_groups, type: Boolean, default: false,
+                 desc: 'Include descendant groups. This feature was added in GitLab 13.6'
+        optional :only_group_labels, type: Boolean, default: true,
+                 desc: 'Toggle to include only group labels or also project labels. This feature was added in GitLab 13.6'
       end
       get ':id/labels/:name' do
-        get_label(user_group, Entities::GroupLabel, include_ancestor_groups: params[:include_ancestor_groups])
+        get_label(user_group, Entities::GroupLabel, declared_params)
       end
 
       desc 'Create a new label' do

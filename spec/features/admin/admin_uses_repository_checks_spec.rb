@@ -46,7 +46,7 @@ RSpec.describe 'Admin uses repository checks', :request_store, :clean_gitlab_red
       )
       visit_admin_project_page(project)
 
-      page.within('.gl-alert') do
+      page.within('[data-testid="last-repository-check-failed-alert"]') do
         expect(page.text).to match(/Last repository check \(just now\) failed/)
       end
     end

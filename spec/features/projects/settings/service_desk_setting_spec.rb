@@ -28,6 +28,6 @@ RSpec.describe 'Service Desk Setting', :js do
     project.reload
     expect(project.service_desk_enabled).to be_truthy
     expect(project.service_desk_address).to be_present
-    expect(find('.incoming-email').value).to eq(project.service_desk_address)
+    expect(find('[data-testid="incoming-email"]').value).to eq(project.service_desk_address)
   end
 end

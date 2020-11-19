@@ -1,4 +1,7 @@
 ---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: reference, index
 description: 'Read through the GitLab User documentation to learn how to use, configure, and customize GitLab and GitLab.com to your own needs.'
 ---
@@ -69,6 +72,17 @@ With GitLab Enterprise Edition, you can also:
 
 You can also [integrate](project/integrations/overview.md) GitLab with numerous third-party applications, such as Mattermost, Microsoft Teams, HipChat, Trello, Slack, Bamboo CI, Jira, and a lot more.
 
+## User types
+
+There are several types of users in GitLab:
+
+- Regular users and GitLab.com users. <!-- Note: further description TBA -->
+- [Groups](group/index.md) of users.
+- GitLab [admin area](admin_area/index.md) user.
+- [GitLab Administrator](../administration/index.md) with full access to
+  self-managed instances' features and settings.
+- [Internal users](../development/internal_users.md).
+
 ## Projects
 
 In GitLab, you can create [projects](project/index.md) to host
@@ -83,18 +97,6 @@ it all at once, from one single project.
   reviews, live preview changes per branch, and request approvals with Merge Requests.
 - [Milestones](project/milestones/index.md): Work on multiple issues and merge
   requests towards the same target date with Milestones.
-
-## GitLab CI/CD
-
-Use built-in [GitLab CI/CD](../ci/README.md) to test, build, and deploy your applications
-directly from GitLab. No third-party integrations needed.
-
-- [GitLab Auto Deploy](../topics/autodevops/stages.md#auto-deploy): Deploy your application out-of-the-box with GitLab Auto Deploy.
-- [Review Apps](../ci/review_apps/index.md): Live-preview the changes introduced by a merge request with Review Apps.
-- [GitLab Pages](project/pages/index.md): Publish your static site directly from
-  GitLab with GitLab Pages. You can build, test, and deploy any Static Site Generator with Pages.
-- [GitLab Container Registry](packages/container_registry/index.md): Build and deploy Docker
-  images with Container Registry.
 
 ## Account
 
@@ -150,6 +152,11 @@ requests you're assigned to.
 [Snippets](snippets.md) are code blocks that you want to store in GitLab, from which
 you have quick access to. You can also gather feedback on them through
 [Discussions](#discussions).
+
+## GitLab CI/CD
+
+Use built-in [GitLab CI/CD](../ci/README.md) to test, build, and deploy your applications
+directly from GitLab. No third-party integrations needed.
 
 ## Features behind feature flags
 

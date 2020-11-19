@@ -54,6 +54,10 @@ class DeployToken < ApplicationRecord
     !revoked && !expired?
   end
 
+  def deactivated?
+    !active?
+  end
+
   def scopes
     AVAILABLE_SCOPES.select { |token_scope| read_attribute(token_scope) }
   end

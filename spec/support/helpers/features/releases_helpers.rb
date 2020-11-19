@@ -66,7 +66,7 @@ module Spec
             focused_element.send_keys(:enter)
 
             # Wait for the dropdown to be rendered
-            page.find('.project-milestone-combobox .dropdown-menu')
+            page.find('.milestone-combobox .dropdown-menu')
 
             # Clear any existing input
             focused_element.attribute('value').length.times { focused_element.send_keys(:backspace) }
@@ -75,7 +75,7 @@ module Spec
             focused_element.send_keys(milestone_title, :enter)
 
             # Wait for the search to return
-            page.find('.project-milestone-combobox .dropdown-item', text: milestone_title, match: :first)
+            page.find('.milestone-combobox .dropdown-item', text: milestone_title, match: :first)
 
             focused_element.send_keys(:arrow_down, :arrow_down, :enter)
 

@@ -34,13 +34,13 @@ RSpec.describe Resolvers::MergeRequestsResolver do
 
     context 'no arguments' do
       it 'returns all merge requests' do
-        result = resolve_mr(project, {})
+        result = resolve_mr(project)
 
         expect(result).to contain_exactly(merge_request_1, merge_request_2, merge_request_3, merge_request_4, merge_request_5, merge_request_6, merge_request_with_milestone)
       end
 
       it 'returns only merge requests that the current user can see' do
-        result = resolve_mr(project, {}, user: build(:user))
+        result = resolve_mr(project, user: build(:user))
 
         expect(result).to be_empty
       end
@@ -236,10 +236,10 @@ RSpec.describe Resolvers::MergeRequestsResolver do
   end
 
   def resolve_mr_single(project, iid)
-    resolve_mr(project, { iids: iid }, resolver: described_class.single)
+    resolve_mr(project, resolver: described_class.single, iids: iid)
   end
 
-  def resolve_mr(project, args, resolver: described_class, user: current_user)
+  def resolve_mr(project, resolver: described_class, user: current_user, **args)
     resolve(resolver, obj: project, args: args, ctx: { current_user: user })
   end
 end

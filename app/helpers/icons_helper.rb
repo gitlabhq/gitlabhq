@@ -24,9 +24,11 @@ module IconsHelper
   end
 
   def custom_icon(icon_name, size: DEFAULT_ICON_SIZE)
-    # We can't simply do the below, because there are some .erb SVGs.
-    #  File.read(Rails.root.join("app/views/shared/icons/_#{icon_name}.svg")).html_safe
-    render "shared/icons/#{icon_name}.svg", size: size
+    memoized_icon("#{icon_name}_#{size}") do
+      # We can't simply do the below, because there are some .erb SVGs.
+      #  File.read(Rails.root.join("app/views/shared/icons/_#{icon_name}.svg")).html_safe
+      render "shared/icons/#{icon_name}.svg", size: size
+    end
   end
 
   def sprite_icon_path
@@ -46,21 +48,23 @@ module IconsHelper
   end
 
   def sprite_icon(icon_name, size: DEFAULT_ICON_SIZE, css_class: nil)
-    if known_sprites&.exclude?(icon_name)
-      exception = ArgumentError.new("#{icon_name} is not a known icon in @gitlab-org/gitlab-svg")
-      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(exception)
+    memoized_icon("#{icon_name}_#{size}_#{css_class}") do
+      if known_sprites&.exclude?(icon_name)
+        exception = ArgumentError.new("#{icon_name} is not a known icon in @gitlab-org/gitlab-svg")
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(exception)
+      end
+
+      css_classes = []
+      css_classes << "s#{size}" if size
+      css_classes << "#{css_class}" unless css_class.blank?
+
+      content_tag(
+        :svg,
+        content_tag(:use, '', { 'xlink:href' => "#{sprite_icon_path}##{icon_name}" } ),
+        class: css_classes.empty? ? nil : css_classes.join(' '),
+        data: { testid: "#{icon_name}-icon" }
+      )
     end
-
-    css_classes = []
-    css_classes << "s#{size}" if size
-    css_classes << "#{css_class}" unless css_class.blank?
-
-    content_tag(
-      :svg,
-      content_tag(:use, '', { 'xlink:href' => "#{sprite_icon_path}##{icon_name}" } ),
-      class: css_classes.empty? ? nil : css_classes.join(' '),
-      data: { testid: "#{icon_name}-icon" }
-    )
   end
 
   def loading_icon(container: false, color: 'orange', size: 'sm', css_class: nil)
@@ -76,26 +80,17 @@ module IconsHelper
     content_tag(:span, "", class: "gl-snippet-icon gl-snippet-icon-#{name}")
   end
 
-  def audit_icon(names, options = {})
-    case names
+  def audit_icon(name, css_class: nil)
+    case name
     when "standard"
-      names = "key"
+      name = "key"
     when "two-factor"
-      names = "key"
+      name = "key"
     when "google_oauth2"
-      names = "google"
+      name = "google"
     end
 
-    options.include?(:base) ? fa_stacked_icon(names, options) : fa_icon(names, options)
-  end
-
-  def spinner(text = nil, visible = false)
-    css_class = ['loading']
-    css_class << 'hide' unless visible
-
-    content_tag :div, class: css_class.join(' ') do
-      icon('spinner spin') + text
-    end
+    sprite_icon(name, css_class: css_class)
   end
 
   def boolean_to_icon(value)
@@ -177,5 +172,13 @@ module IconsHelper
     return if Rails.env.production?
 
     @known_sprites ||= Gitlab::Json.parse(File.read(Rails.root.join('node_modules/@gitlab/svgs/dist/icons.json')))['icons']
+  end
+
+  def memoized_icon(key)
+    @rendered_icons ||= {}
+
+    @rendered_icons[key] || (
+      @rendered_icons[key] = yield
+    )
   end
 end

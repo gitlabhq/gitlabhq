@@ -1,8 +1,7 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
-import { GlModal, GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlModal, GlSafeHtmlDirective, GlButton } from '@gitlab/ui';
 import { n__, __ } from '~/locale';
-import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import CommitMessageField from './message_field.vue';
 import Actions from './actions.vue';
 import SuccessMessage from './success_message.vue';
@@ -12,10 +11,10 @@ import { createUnexpectedCommitError } from '../../lib/errors';
 export default {
   components: {
     Actions,
-    LoadingButton,
     CommitMessageField,
     SuccessMessage,
     GlModal,
+    GlButton,
   },
   directives: {
     SafeHtml: GlSafeHtmlDirective,
@@ -156,12 +155,16 @@ export default {
         />
         <div class="clearfix gl-mt-5">
           <actions />
-          <loading-button
+          <gl-button
             :loading="submitCommitLoading"
-            :label="commitButtonText"
-            container-class="btn btn-success btn-sm float-left qa-commit-button"
+            class="float-left qa-commit-button"
+            size="small"
+            category="primary"
+            variant="success"
             @click="commit"
-          />
+          >
+            {{ __('Commit') }}
+          </gl-button>
           <button
             v-if="!discardDraftButtonDisabled"
             type="button"
@@ -170,14 +173,17 @@ export default {
           >
             {{ __('Discard draft') }}
           </button>
-          <button
+          <gl-button
             v-else
             type="button"
-            class="btn btn-default btn-sm float-right"
+            class="float-right"
+            category="secondary"
+            variant="default"
+            size="small"
             @click="toggleIsCompact"
           >
             {{ __('Collapse') }}
-          </button>
+          </gl-button>
         </div>
         <gl-modal
           ref="commitErrorModal"

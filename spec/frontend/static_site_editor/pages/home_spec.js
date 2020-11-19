@@ -12,7 +12,7 @@ import { SUCCESS_ROUTE } from '~/static_site_editor/router/constants';
 import { TRACKING_ACTION_INITIALIZE_EDITOR } from '~/static_site_editor/constants';
 
 import {
-  projectId as project,
+  project,
   returnUrl,
   sourceContentYAML as content,
   sourceContentTitle as title,
@@ -23,6 +23,10 @@ import {
   submitChangesError,
   trackingCategory,
   images,
+  mounts,
+  branch,
+  baseUrl,
+  imageRoot,
 } from '../mock_data';
 
 const localVue = createLocalVue();
@@ -41,6 +45,10 @@ describe('static_site_editor/pages/home', () => {
     project,
     username,
     sourcePath,
+    mounts,
+    branch,
+    baseUrl,
+    imageUploadPath: imageRoot,
   };
   const hasSubmittedChangesMutationPayload = {
     data: {
@@ -119,6 +127,7 @@ describe('static_site_editor/pages/home', () => {
     it('provides source content, returnUrl, and isSavingChanges to the edit area', () => {
       expect(findEditArea().props()).toMatchObject({
         title,
+        mounts,
         content,
         returnUrl,
         savingChanges: false,

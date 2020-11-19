@@ -18,24 +18,46 @@ module Gitlab
           end
 
           def timestamp_projection
-            issue_metrics_table[:first_mentioned_in_commit_at]
+            Arel::Nodes::NamedFunction.new('COALESCE', column_list)
           end
 
           override :column_list
           def column_list
-            [timestamp_projection]
+            [
+              issue_metrics_table[:first_mentioned_in_commit_at],
+              mr_metrics_table[:first_commit_at]
+            ]
           end
 
           # rubocop: disable CodeReuse/ActiveRecord
           def apply_query_customization(query)
-            issue_metrics_join = mr_closing_issues_table
-              .join(issue_metrics_table)
-              .on(mr_closing_issues_table[:issue_id].eq(issue_metrics_table[:issue_id]))
-              .join_sources
-
-            query.joins(:merge_requests_closing_issues).joins(issue_metrics_join)
+            query
+              .joins(merge_requests_closing_issues_join)
+              .joins(issue_metrics_join)
+              .joins(mr_metrics_join)
           end
           # rubocop: enable CodeReuse/ActiveRecord
+
+          def issue_metrics_join
+            mr_closing_issues_table
+              .join(issue_metrics_table, Arel::Nodes::OuterJoin)
+              .on(mr_closing_issues_table[:issue_id].eq(issue_metrics_table[:issue_id]))
+              .join_sources
+          end
+
+          def merge_requests_closing_issues_join
+            mr_table
+              .join(mr_closing_issues_table, Arel::Nodes::OuterJoin)
+              .on(mr_table[:id].eq(mr_closing_issues_table[:merge_request_id]))
+              .join_sources
+          end
+
+          def mr_metrics_join
+            mr_metrics_table
+              .join(mr_metrics_table, Arel::Nodes::OuterJoin)
+              .on(mr_metrics_table[:merge_request_id].eq(mr_table[:id]))
+              .join_sources
+          end
         end
       end
     end

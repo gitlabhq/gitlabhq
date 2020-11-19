@@ -8,6 +8,8 @@ module API
       message.is_a?(String) ? { message: message }.to_json : message.to_json
     }
 
+    feature_category :feature_flags
+
     before do
       authorize_admin_feature_flags_user_lists!
     end
@@ -22,10 +24,13 @@ module API
           success ::API::Entities::FeatureFlag::UserList
         end
         params do
+          optional :search, type: String, desc: 'Returns the list of user lists matching the search critiera'
+
           use :pagination
         end
         get do
-          present paginate(user_project.operations_feature_flags_user_lists),
+          user_lists = ::FeatureFlagsUserListsFinder.new(user_project, current_user, params).execute
+          present paginate(user_lists),
             with: ::API::Entities::FeatureFlag::UserList
         end
 

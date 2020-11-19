@@ -232,6 +232,49 @@ RSpec.describe PostReceiveService do
     end
   end
 
+  context "broadcast message has a target_path" do
+    let!(:older_scoped_message) do
+      create(:broadcast_message, message: "Old top secret", target_path: "/company/sekrit-project")
+    end
+
+    let!(:latest_scoped_message) do
+      create(:broadcast_message, message: "Top secret", target_path: "/company/sekrit-project")
+    end
+
+    let!(:unscoped_message) do
+      create(:broadcast_message, message: "Hi")
+    end
+
+    context "no project path matches" do
+      it "does not output the scoped broadcast messages" do
+        expect(subject).not_to include(build_alert_message(older_scoped_message.message))
+        expect(subject).not_to include(build_alert_message(latest_scoped_message.message))
+      end
+
+      it "does output another message that doesn't have a target_path" do
+        expect(subject).to include(build_alert_message(unscoped_message.message))
+      end
+    end
+
+    context "project path matches" do
+      before do
+        allow(project).to receive(:full_path).and_return("/company/sekrit-project")
+      end
+
+      it "does output the latest scoped broadcast message" do
+        expect(subject).to include(build_alert_message(latest_scoped_message.message))
+      end
+
+      it "does not output the older scoped broadcast message" do
+        expect(subject).not_to include(build_alert_message(older_scoped_message.message))
+      end
+
+      it "does not output another message that doesn't have a target_path" do
+        expect(subject).not_to include(build_alert_message(unscoped_message.message))
+      end
+    end
+  end
+
   context 'with a redirected data' do
     it 'returns redirected message on the response' do
       project_moved = Gitlab::Checks::ProjectMoved.new(project.repository, user, 'http', 'foo/baz')

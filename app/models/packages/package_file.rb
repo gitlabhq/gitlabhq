@@ -8,6 +8,8 @@ class Packages::PackageFile < ApplicationRecord
   belongs_to :package
 
   has_one :conan_file_metadatum, inverse_of: :package_file, class_name: 'Packages::Conan::FileMetadatum'
+  has_many :package_file_build_infos, inverse_of: :package_file, class_name: 'Packages::PackageFileBuildInfo'
+  has_many :pipelines, through: :package_file_build_infos
 
   accepts_nested_attributes_for :conan_file_metadatum
 

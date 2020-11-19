@@ -1,7 +1,8 @@
 ---
 name: multiline_comments
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/211255
-rollout_issue_url:
-group: group::source code
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37114
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/211255
+milestone: '13.2'
 type: development
+group: group::source code
 default_enabled: true

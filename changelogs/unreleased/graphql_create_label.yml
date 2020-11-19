@@ -1,0 +1,5 @@
+---
+title: Added GraphQL mutation for creating project and group labels
+merge_request: 46534
+author:
+type: added

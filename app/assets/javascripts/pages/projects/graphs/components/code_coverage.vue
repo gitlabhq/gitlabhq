@@ -153,10 +153,10 @@ export default {
       :option="chartOptions"
       :format-tooltip-text="formatTooltipText"
     >
-      <template v-if="canShowData" #tooltipTitle>
+      <template v-if="canShowData" #tooltip-title>
         {{ tooltipTitle }}
       </template>
-      <template v-if="canShowData" #tooltipContent>
+      <template v-if="canShowData" #tooltip-content>
         <gl-sprintf :message="__('Code Coverage: %{coveragePercentage}%{percentSymbol}')">
           <template #coveragePercentage>
             {{ coveragePercentage }}

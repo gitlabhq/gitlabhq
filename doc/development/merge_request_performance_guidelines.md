@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Merge Request Performance Guidelines
 
 Each new introduced merge request **should be performant by default**.
@@ -119,10 +125,10 @@ read this section on [how to prepare the merge request for a database review](da
 
 ## Query Counts
 
-**Summary:** a merge request **should not** increase the number of executed SQL
+**Summary:** a merge request **should not** increase the total number of executed SQL
 queries unless absolutely necessary.
 
-The number of queries executed by the code modified or added by a merge request
+The total number of queries executed by the code modified or added by a merge request
 must not increase unless absolutely necessary. When building features it's
 entirely possible you will need some extra queries, but you should try to keep
 this at a minimum.
@@ -141,7 +147,7 @@ end
 This will end up running one query for every object to update. This code can
 easily overload a database given enough rows to update or many instances of this
 code running in parallel. This particular problem is known as the
-["N+1 query problem"](https://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations). You can write a test with [QueryRecoder](query_recorder.md) to detect this and prevent regressions.
+["N+1 query problem"](https://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations). You can write a test with [QueryRecorder](query_recorder.md) to detect this and prevent regressions.
 
 In this particular case the workaround is fairly easy:
 
@@ -151,6 +157,63 @@ objects_to_update.update_all(some_field: some_value)
 
 This uses ActiveRecord's `update_all` method to update all rows in a single
 query. This in turn makes it much harder for this code to overload a database.
+
+## Cached Queries
+
+**Summary:** a merge request **should not** execute duplicated cached queries.
+
+Rails provides an [SQL Query Cache](cached_queries.md#cached-queries-guidelines), 
+used to cache the results of database queries for the duration of the request. 
+
+See [why cached queries are considered bad](cached_queries.md#why-cached-queries-are-considered-bad) and 
+[how to detect them](cached_queries.md#how-to-detect).
+
+The code introduced by a merge request, should not execute multiple duplicated cached queries.
+
+The total number of the queries (including cached ones) executed by the code modified or added by a merge request
+should not increase unless absolutely necessary.
+The number of executed queries (including cached queries) should not depend on
+collection size.
+You can write a test by passing the `skip_cached` variable to [QueryRecorder](query_recorder.md) to detect this and prevent regressions.
+
+As an example, say you have a CI pipeline. All pipeline builds belong to the same pipeline,
+thus they also belong to the same project (`pipeline.project`):
+
+```ruby
+pipeline_project = pipeline.project
+# Project Load (0.6ms)  SELECT "projects".* FROM "projects" WHERE "projects"."id" = $1 LIMIT $2
+build = pipeline.builds.first
+
+build.project == pipeline_project
+# CACHE Project Load (0.0ms)  SELECT "projects".* FROM "projects" WHERE "projects"."id" = $1 LIMIT $2
+# => true
+```
+
+When we call `build.project`, it will not hit the database, it will use the cached result, but it will re-instantiate
+same pipeline project object. It turns out that associated objects do not point to the same in-memory object.
+
+If we try to serialize each build:
+
+```ruby
+pipeline.builds.each do |build|
+  build.to_json(only: [:name], include: [project: { only: [:name]}])
+end
+```
+
+It will re-instantiate project object for each build, instead of using the same in-memory object.
+
+In this particular case the workaround is fairly easy:
+
+```ruby
+pipeline.builds.each do |build|
+  build.project = pipeline.project
+  build.to_json(only: [:name], include: [project: { only: [:name]}])
+end
+```
+
+We can assign `pipeline.project` to each `build.project`, since we know it should point to the same project.
+This will allow us that each build point to the same in-memory project,
+avoiding the cached SQL query and re-instantiation of the project object for each build.
 
 ## Executing Queries in Loops
 
@@ -464,7 +527,7 @@ end
 
 The usage of shared temporary storage is required if your intent
 is to persistent file for a disk-based storage, and not Object Storage.
-[Workhorse direct_upload](./uploads.md#direct-upload) when accepting file
+[Workhorse direct_upload](uploads.md#direct-upload) when accepting file
 can write it to shared storage, and later GitLab Rails can perform a move operation.
 The move operation on the same destination is instantaneous.
 The system instead of performing `copy` operation just re-attaches file into a new place.
@@ -488,7 +551,7 @@ that implements a seamless support for Shared and Object Storage-based persisten
 #### Data access
 
 Each feature that accepts data uploads or allows to download them needs to use
-[Workhorse direct_upload](./uploads.md#direct-upload). It means that uploads needs to be
+[Workhorse direct_upload](uploads.md#direct-upload). It means that uploads needs to be
 saved directly to Object Storage by Workhorse, and all downloads needs to be served
 by Workhorse.
 
@@ -500,5 +563,5 @@ can time out, which is especially problematic for slow clients. If clients take 
 to upload/download the processing slot might be killed due to request processing
 timeout (usually between 30s-60s).
 
-For the above reasons it is required that [Workhorse direct_upload](./uploads.md#direct-upload) is implemented
+For the above reasons it is required that [Workhorse direct_upload](uploads.md#direct-upload) is implemented
 for all file uploads and downloads.

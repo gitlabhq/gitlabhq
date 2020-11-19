@@ -1,5 +1,6 @@
 import { LOADING, ERROR, SUCCESS } from '../../constants';
 import { sprintf, __, s__, n__ } from '~/locale';
+import { spriteIcon } from '~/lib/utils/common_utils';
 
 export const hasCodequalityIssues = state =>
   Boolean(state.newIssues?.length || state.resolvedIssues?.length);
@@ -48,7 +49,7 @@ export const codequalityPopover = state => {
         s__('ciReport|%{linkStartTag}Learn more about codequality reports %{linkEndTag}'),
         {
           linkStartTag: `<a href="${state.helpPath}" target="_blank" rel="noopener noreferrer">`,
-          linkEndTag: '<i class="fa fa-external-link" aria-hidden="true"></i></a>',
+          linkEndTag: `${spriteIcon('external-link', 's16')}</a>`,
         },
         false,
       ),

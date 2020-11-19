@@ -22,6 +22,8 @@ module WebIdeSpecHelpers
     click_link('Web IDE')
 
     wait_for_requests
+
+    save_monaco_editor_reference
   end
 
   def ide_tree_body
@@ -36,8 +38,8 @@ module WebIdeSpecHelpers
     ".js-ide-#{mode}-mode"
   end
 
-  def ide_file_row_open?(row)
-    row.matches_css?('.is-open')
+  def ide_folder_row_open?(row)
+    row.matches_css?('.folder.is-open')
   end
 
   # Creates a file in the IDE by expanding directories
@@ -61,6 +63,17 @@ module WebIdeSpecHelpers
     end
 
     ide_set_editor_value(content)
+  end
+
+  def ide_rename_file(path, new_path)
+    container = ide_traverse_to_file(path)
+
+    click_file_action(container, 'Rename/Move')
+
+    within '#ide-new-entry' do
+      find('input').fill_in(with: new_path)
+      click_button('Rename file')
+    end
   end
 
   # Deletes a file by traversing to `path`
@@ -90,8 +103,22 @@ module WebIdeSpecHelpers
     container
   end
 
+  def ide_close_file(name)
+    within page.find('.multi-file-tabs') do
+      click_button("Close #{name}")
+    end
+  end
+
+  def ide_open_file(path)
+    row = ide_traverse_to_file(path)
+
+    ide_open_file_row(row)
+
+    wait_for_requests
+  end
+
   def ide_open_file_row(row)
-    return if ide_file_row_open?(row)
+    return if ide_folder_row_open?(row)
 
     row.click
   end
@@ -101,6 +128,10 @@ module WebIdeSpecHelpers
     uri = editor['data-uri']
 
     execute_script("monaco.editor.getModel('#{uri}').setValue('#{escape_javascript(value)}')")
+  end
+
+  def ide_set_editor_position(line, col)
+    execute_script("TEST_EDITOR.setPosition(#{{ lineNumber: line, column: col }.to_json})")
   end
 
   def ide_editor_value
@@ -148,5 +179,9 @@ module WebIdeSpecHelpers
 
       wait_for_requests
     end
+  end
+
+  def save_monaco_editor_reference
+    evaluate_script("monaco.editor.onDidCreateEditor(editor => { window.TEST_EDITOR = editor; })")
   end
 end

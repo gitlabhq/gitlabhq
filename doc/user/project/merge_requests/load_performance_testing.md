@@ -156,7 +156,7 @@ The best approach is to capture the dynamic URL in a [`.env` file](https://docs.
 as a job artifact to be shared, then use a custom environment variable we've provided named `K6_DOCKER_OPTIONS`
 to configure the k6 Docker container to use the file. With this, k6 can then use any
 environment variables from the `.env` file in scripts using standard JavaScript,
-such as: ``http.get(`${__ENV.ENVIRONMENT_URL`})``.
+such as: ``http.get(`${__ENV.ENVIRONMENT_URL}`)``.
 
 For example:
 

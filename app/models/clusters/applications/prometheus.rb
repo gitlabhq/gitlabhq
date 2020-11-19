@@ -67,7 +67,7 @@ module Clusters
       end
 
       def install_command
-        Gitlab::Kubernetes::Helm::InstallCommand.new(
+        helm_command_module::InstallCommand.new(
           name: name,
           repository: repository,
           version: VERSION,
@@ -79,7 +79,7 @@ module Clusters
       end
 
       def patch_command(values)
-        ::Gitlab::Kubernetes::Helm::PatchCommand.new(
+        helm_command_module::PatchCommand.new(
           name: name,
           repository: repository,
           version: version,
@@ -90,7 +90,7 @@ module Clusters
       end
 
       def uninstall_command
-        Gitlab::Kubernetes::Helm::DeleteCommand.new(
+        helm_command_module::DeleteCommand.new(
           name: name,
           rbac: cluster.platform_kubernetes_rbac?,
           files: files,

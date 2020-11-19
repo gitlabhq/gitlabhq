@@ -1,12 +1,11 @@
-- email = local_assigns.fetch(:email, false)
 - plain = local_assigns.fetch(:plain, false)
 - discussions = local_assigns.fetch(:discussions, nil)
-- type = line.type
 - line_code = diff_file.line_code(line)
 - if discussions && line.discussable?
   - line_discussions = discussions[line_code]
-%tr.line_holder{ class: type, id: (line_code unless plain) }
-  - case type
+
+%tr.line_holder{ class: line.type, id: (line_code unless plain) }
+  - case line.type
   - when 'match'
     = diff_match_line line.old_pos, line.new_pos, text: line.text
   - when 'old-nonewline', 'new-nonewline'
@@ -14,21 +13,21 @@
     %td.new_line.diff-line-num
     %td.line_content.match= line.text
   - else
-    %td.old_line.diff-line-num{ class: [type, ("js-avatar-container" if !plain)], data: { linenumber: line.old_pos } }
-      - link_text = type == "new" ? " " : line.old_pos
+    %td.old_line.diff-line-num{ class: [line.type, ("js-avatar-container" if !plain)], data: { linenumber: line.old_pos } }
       - if plain
-        = link_text
+        = diff_link_number(line.type, "new", line.old_pos)
       - else
-        = add_diff_note_button(line_code, diff_file.position(line), type)
-        %a{ href: "##{line_code}", data: { linenumber: link_text } }
-    %td.new_line.diff-line-num{ class: type, data: { linenumber: line.new_pos } }
-      - link_text = type == "old" ? " " : line.new_pos
+        = add_diff_note_button(line_code, diff_file.position(line), line.type)
+        %a{ href: "##{line_code}", data: { linenumber: diff_link_number(line.type, "new", line.old_pos) } }
+
+    %td.new_line.diff-line-num{ class: line.type, data: { linenumber: line.new_pos } }
       - if plain
-        = link_text
+        = diff_link_number(line.type, "old", line.new_pos)
       - else
-        %a{ href: "##{line_code}", data: { linenumber: link_text } }
-    %td.line_content{ class: type }<
-      - if email
+        %a{ href: "##{line_code}", data: { linenumber: diff_link_number(line.type, "old", line.new_pos) } }
+
+    %td.line_content{ class: line.type }<
+      - if local_assigns.fetch(:email, false)
         %pre= line.rich_text
       - else
         = diff_line_content(line.rich_text)

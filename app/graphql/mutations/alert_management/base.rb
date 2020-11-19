@@ -4,7 +4,6 @@ module Mutations
   module AlertManagement
     class Base < BaseMutation
       include Gitlab::Utils::UsageData
-      include ResolvesProject
 
       argument :project_path, GraphQL::ID_TYPE,
                required: true,
@@ -33,13 +32,12 @@ module Mutations
 
       private
 
-      def find_object(project_path:, iid:)
-        project = resolve_project(full_path: project_path)
+      def find_object(project_path:, **args)
+        project = Project.find_by_full_path(project_path)
 
         return unless project
 
-        resolver = Resolvers::AlertManagement::AlertResolver.single.new(object: project, context: context, field: nil)
-        resolver.resolve(iid: iid)
+        ::AlertManagement::AlertsFinder.new(current_user, project, args).execute.first
       end
     end
   end

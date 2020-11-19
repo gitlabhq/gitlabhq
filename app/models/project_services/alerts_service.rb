@@ -14,6 +14,8 @@ class AlertsService < Service
   before_validation :prevent_token_assignment
   before_validation :ensure_token, if: :activated?
 
+  after_save :update_http_integration
+
   def url
     return if instance? || template?
 
@@ -76,6 +78,14 @@ class AlertsService < Service
 
   def url_helpers
     Gitlab::Routing.url_helpers
+  end
+
+  def update_http_integration
+    return unless project_id && type == 'AlertsService'
+
+    AlertManagement::SyncAlertServiceDataService # rubocop: disable CodeReuse/ServiceClass
+      .new(self)
+      .execute
   end
 end
 

@@ -14,9 +14,6 @@ includes a few key metrics, but you can also define your own custom dashboards.
 You may create a [new dashboard from scratch](#add-a-new-dashboard-to-your-project)
 or [duplicate a GitLab-defined Prometheus dashboard](#duplicate-a-gitlab-defined-dashboard).
 
-The metrics as defined below do not support alerts, unlike
-[custom metrics](../index.md#adding-custom-metrics).
-
 ## Add a new dashboard to your project
 
 > UI option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/228856) in GitLab 13.3.
@@ -116,14 +113,9 @@ Your custom dashboard is available at `https://example.com/project/-/metrics/cus
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223204) in GitLab 13.2.
 
-To manage the settings for your metrics dashboard:
-
-1. Sign in as a user with project Maintainer or Administrator
-   [permissions](../../../user/permissions.md#project-members-permissions).
-1. Navigate to your dashboard at **Operations > Metrics**.
-1. In the top-right corner of your dashboard, click **Metrics Settings**:
-
-   ![Monitoring Dashboard actions menu with create new item](img/metrics_settings_button_v13_3.png)
+Users with project Maintainer or Administrator
+[permissions](../../../user/permissions.md#project-members-permissions)
+can manage [the settings](settings.md) for your metrics dashboard.
 
 ## Chart Context Menu
 
@@ -226,7 +218,7 @@ links:
 ## Troubleshooting
 
 When troubleshooting issues with a managed Prometheus app, it is often useful to
-[view the Prometheus UI](../../../development/prometheus.md#access-the-ui-of-a-prometheus-managed-application-in-kubernetes).
+[view the Prometheus UI](../../../user/project/integrations/prometheus.md#access-the-ui-of-a-prometheus-managed-application-in-kubernetes).
 
 ### "No data found" error on Metrics dashboard page
 

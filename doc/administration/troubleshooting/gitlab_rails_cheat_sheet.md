@@ -1,8 +1,11 @@
 ---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: reference
 ---
 
-# GitLab Rails Console Cheat Sheet
+# GitLab Rails Console Cheat Sheet **(CORE ONLY)**
 
 This is the GitLab Support Team's collection of information regarding the GitLab Rails
 console, for use while troubleshooting. It is listed here for transparency,
@@ -41,6 +44,40 @@ instance_of_object.method(:foo).source_location
 
 # Example for when we would call project.private?
 project.method(:private?).source_location
+```
+
+## Attributes
+
+View available attributes, formatted using pretty print (`pp`).
+
+For example, determine what attributes contain users' names and email addresses:
+
+```ruby
+u = User.find_by_username('someuser')
+pp u.attributes
+```
+
+Partial output:
+
+```plaintext
+{"id"=>1234,
+ "email"=>"someuser@example.com",
+ "sign_in_count"=>99,
+ "name"=>"S User",
+ "username"=>"someuser",
+ "first_name"=>nil,
+ "last_name"=>nil,
+ "bot_type"=>nil}
+```
+
+Then make use of the attributes, [testing SMTP, for example](https://docs.gitlab.com/omnibus/settings/smtp.html#testing-the-smtp-configuration):
+
+```ruby
+e = u.email
+n = u.name
+Notify.test_email(e, "Test email for #{n}", 'Test email').deliver_now
+#
+Notify.test_email(u.email, "Test email for #{u.name}", 'Test email').deliver_now
 ```
 
 ## Query the database using an ActiveRecord Model
@@ -145,7 +182,7 @@ project.repository.expire_exists_cache
 Project.update_all(visibility_level: 0)
 ```
 
-### Find & remove projects that are pending deletion
+### Find projects that are pending deletion
 
 ```ruby
 #
@@ -173,8 +210,6 @@ project = Project.find_by_full_path('group-changeme/project-changeme')
 # Immediately delete the project
 ::Projects::DestroyService.new(project, user, {}).execute
 ```
-
-Next, run `sudo gitlab-rake gitlab:cleanup:repos` on the command line to finish.
 
 ### Destroy a project
 
@@ -273,10 +308,10 @@ pp p.statistics  # compare with earlier values
 
 ### Recreate
 
-A Projects Wiki can be recreated by
-
-NOTE: **Note:**
+CAUTION: **Caution:**
 This is a destructive operation, the Wiki will be empty.
+
+A Projects Wiki can be recreated by this command:
 
 ```ruby
 p = Project.find_by_full_path('<username-or-group>/<project-name>')  ### enter your projects path
@@ -423,7 +458,7 @@ user.skip_reconfirmation!
 User.active.count
 
 # Users taking a seat on the instance
-License.current.current_active_users_count
+User.billable.count
 
 # The historical max on the instance as of the past year
 ::HistoricalData.max_historical_user_count
@@ -483,6 +518,16 @@ user.max_member_access_for_group group.id
 ```
 
 ## Groups
+
+### Transfer group to another location
+
+```ruby
+user = User.find_by_username('<username>')
+group = Group.find_by_name("<group_name>")
+parent_group = Group.find_by(id: "") # empty string amounts to root as parent
+service = ::Groups::TransferService.new(group, user)
+service.execute(parent_group)
+```
 
 ### Count unique users in a group and sub-groups
 
@@ -813,7 +858,7 @@ Find this content in the [Container Registry troubleshooting docs](../packages/c
 
 ## Sidekiq
 
-This content has been moved to the [Troubleshooting Sidekiq docs](./sidekiq.md).
+This content has been moved to the [Troubleshooting Sidekiq docs](sidekiq.md).
 
 ## Redis
 
@@ -953,4 +998,20 @@ Geo::ProjectRegistry.update_all(resync_repository: true, resync_wiki: true)
 project = Project.find_by_full_path('<group/project>')
 
 Geo::RepositorySyncService.new(project).execute
+```
+
+### Generate usage ping
+
+#### Generate or get the cached usage ping
+
+```ruby
+Gitlab::UsageData.to_json
+```
+
+#### Generate a fresh new usage ping
+
+This will also refresh the cached usage ping displayed in the admin area
+
+```ruby
+Gitlab::UsageData.to_json(force_refresh: true)
 ```

@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # GitLab.com settings
 
 In this page you will find information about the settings that are used on
@@ -85,6 +91,7 @@ which is part of [GitLab CI/CD](#gitlab-cicd).
 ## GitLab CI/CD
 
 Below are the current settings regarding [GitLab CI/CD](../../ci/README.md).
+Any settings or feature limits not listed here are using the defaults listed in the related documentation.
 
 | Setting                 | GitLab.com        | Default       |
 | -----------             | ----------------- | ------------- |
@@ -94,7 +101,6 @@ Below are the current settings regarding [GitLab CI/CD](../../ci/README.md).
 | [Max jobs in active pipelines](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines) | `500` for Free tier, unlimited otherwise | Unlimited
 | [Max CI/CD subscriptions to a project](../../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project) | `2` | Unlimited |
 | [Max pipeline schedules in projects](../../administration/instance_limits.md#number-of-pipeline-schedules) | `10` for Free tier, `50` for all paid tiers | Unlimited |
-| [Max number of instance level variables](../../administration/instance_limits.md#number-of-instance-level-variables) | `25` | `25` |
 | [Scheduled Job Archival](../../user/admin_area/settings/continuous_integration.md#archive-jobs) | 3 months | Never |
 | Max test cases per [unit test report](../../ci/unit_test_reports.md) | `500_000` | Unlimited |
 
@@ -107,7 +113,7 @@ or over the repository size limit, you can [reduce your repository size with Git
 
 | Setting                       | GitLab.com  | Default       |
 | -----------                   | ----------- | ------------- |
-| Repository size including LFS | 10 GB       | Unlimited     |
+| [Repository size including LFS](../admin_area/settings/account_and_limit_settings.md) | 10 GB       | Unlimited     |
 | Maximum import size           | 5 GB        | 50 MB         |
 
 NOTE: **Note:**
@@ -146,7 +152,7 @@ Shared runners provided by GitLab are **not** configurable. Consider [installing
 Linux shared runners on GitLab.com run in [autoscale mode](https://docs.gitlab.com/runner/configuration/autoscale.html) and are powered by Google Cloud Platform.
 Autoscaling means reduced waiting times to spin up CI/CD jobs, and isolated VMs for each project,
 thus maximizing security. They're free to use for public open source projects and limited
-to 2000 CI minutes per month per group for private projects. More minutes
+to 400 CI minutes per month per group for private projects. More minutes
 [can be purchased](../../subscriptions/gitlab_com/index.md#purchase-additional-ci-minutes), if
 needed. Read about all [GitLab.com plans](https://about.gitlab.com/pricing/).
 
@@ -264,26 +270,23 @@ sentry_dsn = "X"
 
 ### Windows shared runners (beta)
 
-The Windows shared runners are currently in
-[beta](https://about.gitlab.com/handbook/product/#beta) and should not be used
-for production workloads.
+The Windows shared runners are in [beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta)
+and shouldn't be used for production workloads.
 
-During the beta period, the
-[shared runner pipeline quota](../admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota)
-will apply for groups and projects in the same way as Linux runners.
-This may change when the beta period ends, as discussed in this
-[related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/30834).
+During this beta period, the [shared runner pipeline quota](../admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota)
+applies for groups and projects in the same manner as Linux runners. This may
+change when the beta period ends, as discussed in this [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/30834).
 
-Windows shared runners on GitLab.com automatically autoscale by
-launching virtual machines on the Google Cloud Platform. This solution uses
-a new [autoscaling driver](https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/autoscaler/tree/master/docs/readme.md)
+Windows shared runners on GitLab.com autoscale by launching virtual machines on
+the Google Cloud Platform. This solution uses an
+[autoscaling driver](https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/autoscaler/tree/master/docs/readme.md)
 developed by GitLab for the [custom executor](https://docs.gitlab.com/runner/executors/custom.html).
-Windows shared runners execute your CI/CD jobs on `n1-standard-2` instances with 2
-vCPUs and 7.5GB RAM. You can find a full list of available Windows packages in the
-[package documentation](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/blob/master/cookbooks/preinstalled-software/README.md).
+Windows shared runners execute your CI/CD jobs on `n1-standard-2` instances with
+2 vCPUs and 7.5 GB RAM. You can find a full list of available Windows packages in
+the [package documentation](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/blob/master/cookbooks/preinstalled-software/README.md).
 
 We want to keep iterating to get Windows shared runners in a stable state and
-[generally available](https://about.gitlab.com/handbook/product/#generally-available-ga).
+[generally available](https://about.gitlab.com/handbook/product/gitlab-the-product/#generally-available-ga).
 You can follow our work towards this goal in the
 [related epic](https://gitlab.com/groups/gitlab-org/-/epics/2162).
 
@@ -292,7 +295,7 @@ You can follow our work towards this goal in the
 The full contents of our `config.toml` are:
 
 NOTE: **Note:**
-Settings that are not public are shown as `X`.
+Settings that aren't public are shown as `X`.
 
 ```toml
 concurrent = X
@@ -406,7 +409,7 @@ test:
 - For the beta release, we have included a set of software packages in
   the base VM image. If your CI job requires additional software that's
   not included in this list, then you will need to add installation
-  commands to [`before_script`](../../ci/yaml/README.md#before_script-and-after_script) or [`script`](../../ci/yaml/README.md#script) to install the required
+  commands to [`before_script`](../../ci/yaml/README.md#before_script) or [`script`](../../ci/yaml/README.md#script) to install the required
   software. Note that each job runs on a new VM instance, so the
   installation of additional software packages needs to be repeated for
   each job in your pipeline.
@@ -429,7 +432,7 @@ and the following environment variables:
 | `SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL`     | -          | `3`       |
 | `SIDEKIQ_MEMORY_KILLER_GRACE_TIME`         | -          | `900`     |
 | `SIDEKIQ_MEMORY_KILLER_SHUTDOWN_WAIT`      | -          | `30`      |
-| `SIDEKIQ_LOG_ARGUMENTS`                    | `1`        | -         |
+| `SIDEKIQ_LOG_ARGUMENTS`                    | `1`        | `1`       |
 
 NOTE: **Note:**
 The `SIDEKIQ_MEMORY_KILLER_MAX_RSS` setting is `16000000` on Sidekiq import
@@ -626,6 +629,13 @@ You can view more information in our runbooks such as:
 - A [detailed list of what we're logging](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/logging#what-are-we-logging)
 - Our [current log retention policies](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/logging#retention)
 - A [diagram of our logging infrastructure](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/logging#logging-infrastructure-overview)
+
+### Job Logs
+
+By default, GitLab does not expire job logs. Job logs are retained indefinitely,
+and can't be configured on GitLab.com to expire. You can erase job logs
+[manually with the Jobs API](../../api/jobs.md#erase-a-job) or by
+[deleting a pipeline](../../ci/pipelines/index.md#delete-a-pipeline).
 
 ## GitLab.com at scale
 

@@ -1,5 +1,6 @@
 import { s__ } from '~/locale';
 
+// TODO: Remove this as part of the form old removal
 export const i18n = {
   usageSection: s__(
     'AlertSettings|You must provide this URL and authorization key to authorize an external service to send alerts to GitLab. You can provide this URL and key to multiple services. After configuring an external service, alerts from your service will display on the GitLab %{linkStart}Alerts%{linkEnd} page.',
@@ -17,11 +18,10 @@ export const i18n = {
   changesSaved: s__('AlertSettings|Your integration was successfully updated.'),
   prometheusInfo: s__('AlertSettings|Add URL and auth key to your Prometheus config file'),
   integrationsInfo: s__(
-    'AlertSettings|Learn more about our improvements for %{linkStart}integrations%{linkEnd}',
+    'AlertSettings|Learn more about our our upcoming %{linkStart}integrations%{linkEnd}',
   ),
   resetKey: s__('AlertSettings|Reset key'),
   copyToClipboard: s__('AlertSettings|Copy'),
-  integrationsLabel: s__('AlertSettings|Add new integrations'),
   apiBaseUrlLabel: s__('AlertSettings|API URL'),
   authKeyLabel: s__('AlertSettings|Authorization key'),
   urlLabel: s__('AlertSettings|Webhook URL'),
@@ -40,11 +40,25 @@ export const i18n = {
   integration: s__('AlertSettings|Integration'),
 };
 
-export const serviceOptions = [
-  { value: 'generic', text: s__('AlertSettings|HTTP Endpoint') },
-  { value: 'prometheus', text: s__('AlertSettings|External Prometheus') },
-  { value: 'opsgenie', text: s__('AlertSettings|Opsgenie') },
+// TODO: Delete as part of old form removal in 13.6
+export const integrationTypes = [
+  { value: 'HTTP', text: s__('AlertSettings|HTTP Endpoint') },
+  { value: 'PROMETHEUS', text: s__('AlertSettings|External Prometheus') },
+  { value: 'OPSGENIE', text: s__('AlertSettings|Opsgenie') },
 ];
+
+export const integrationTypesNew = [
+  { value: '', text: s__('AlertSettings|Select integration type') },
+  ...integrationTypes,
+];
+
+export const typeSet = {
+  http: 'HTTP',
+  prometheus: 'PROMETHEUS',
+  opsgenie: 'OPSGENIE',
+};
+
+export const integrationToDeleteDefault = { id: null, name: '' };
 
 export const JSON_VALIDATE_DELAY = 250;
 
@@ -56,9 +70,9 @@ export const sectionHash = 'js-alert-management-settings';
 /* eslint-disable @gitlab/require-i18n-strings */
 
 /**
- * Tracks snowplow event when user views alerts intergration list
+ * Tracks snowplow event when user views alerts integration list
  */
-export const trackAlertIntergrationsViewsOptions = {
-  category: 'Alert Intergrations',
+export const trackAlertIntegrationsViewsOptions = {
+  category: 'Alert Integrations',
   action: 'view_alert_integrations_list',
 };

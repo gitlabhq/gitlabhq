@@ -38,11 +38,15 @@ The following can be used as a template to get started:
 ````markdown
 ## Descriptive title
 
+> Version history note.
+
 One or two sentence description of what endpoint does.
 
 ```plaintext
 METHOD /endpoint
 ```
+
+Supported attributes:
 
 | Attribute   | Type     | Required | Description           |
 |:------------|:---------|:---------|:----------------------|
@@ -64,6 +68,9 @@ Example response:
 ]
 ```
 ````
+
+Adjust the [version history note accordingly](styleguide/index.md#version-text-in-the-version-history)
+to describe the GitLab release that introduced the API call.
 
 ## Method description
 
@@ -105,8 +112,8 @@ you can use in the API documentation.
 
 CAUTION: **Caution:**
 Do not use information for real users, URLs, or tokens. For documentation, refer to our
-relevant style guide sections on [Fake user information](styleguide.md#fake-user-information),
-[Fake URLs](styleguide.md#fake-urls), and [Fake tokens](styleguide.md#fake-tokens).
+relevant style guide sections on [Fake user information](styleguide/index.md#fake-user-information),
+[Fake URLs](styleguide/index.md#fake-urls), and [Fake tokens](styleguide/index.md#fake-tokens).
 
 ### Simple cURL command
 
@@ -136,12 +143,24 @@ curl --data "name=foo" --header "PRIVATE-TOKEN: <your_access_token>" "https://gi
 
 ### Post data using JSON content
 
-NOTE: **Note:**
-In this example we create a new group. Watch carefully the single and double
-quotes.
+This example creates a new group. Be aware of the use of single (`'`) and double
+(`"`) quotes.
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" --data '{"path": "my-group", "name": "My group"}' "https://gitlab.example.com/api/v4/groups"
+```
+
+For readability, you can also set up the `--data` by using the following format:
+
+```shell
+curl --request POST \
+--url "https://gitlab.example.com/api/v4/groups" \
+--header "content-type: application/json" \
+--header "PRIVATE-TOKEN: <your_access_token>" \
+--data '{
+  "path": "my-group",
+  "name": "My group"
+}'
 ```
 
 ### Post data using form-data

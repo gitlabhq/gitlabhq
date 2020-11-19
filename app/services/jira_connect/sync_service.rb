@@ -6,11 +6,11 @@ module JiraConnect
       self.project = project
     end
 
-    def execute(commits: nil, branches: nil, merge_requests: nil)
+    def execute(commits: nil, branches: nil, merge_requests: nil, update_sequence_id: nil)
       JiraConnectInstallation.for_project(project).each do |installation|
         client = Atlassian::JiraConnect::Client.new(installation.base_url, installation.shared_secret)
 
-        response = client.store_dev_info(project: project, commits: commits, branches: branches, merge_requests: merge_requests)
+        response = client.store_dev_info(project: project, commits: commits, branches: branches, merge_requests: merge_requests, update_sequence_id: update_sequence_id)
 
         log_response(response)
       end

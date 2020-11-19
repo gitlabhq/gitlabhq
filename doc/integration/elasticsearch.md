@@ -23,7 +23,9 @@ and the advantage of the following special searches:
 
 | GitLab version                              | Elasticsearch version         |
 |---------------------------------------------|-------------------------------|
-| GitLab Enterprise Edition 12.7 or greater   | Elasticsearch 6.x through 7.x |
+| GitLab Enterprise Edition 13.6 or greater   | Elasticsearch 7.x (6.4 - 6.x deprecated to be removed in 13.8) |
+| GitLab Enterprise Edition 13.2 through 13.5 | Elasticsearch 6.4 through 7.x |
+| GitLab Enterprise Edition 12.7 through 13.2 | Elasticsearch 6.x through 7.x |
 | GitLab Enterprise Edition 11.5 through 12.6 | Elasticsearch 5.6 through 6.x |
 | GitLab Enterprise Edition 9.0 through 11.4  | Elasticsearch 5.1 through 5.5 |
 | GitLab Enterprise Edition 8.4 through 8.17  | Elasticsearch 2.4 with [Delete By Query Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/2.4/plugins-delete-by-query.html) installed |
@@ -56,7 +58,7 @@ A few notes on CPU and storage:
   see boosts in both query and indexing performance.
 
 Keep in mind, these are **minimum requirements** for Elasticsearch.
-Heavily-utilized Elasticsearch clusters will likely require considerably more
+Heavily-used Elasticsearch clusters will likely require considerably more
 resources.
 
 ## Installing Elasticsearch
@@ -243,6 +245,29 @@ If you have already indexed your instance, you will have to regenerate the index
 for filtering to work correctly. To do this run the Rake tasks `gitlab:elastic:recreate_index` and
 `gitlab:elastic:clear_index_status`. Afterwards, removing a namespace or a project from the list will delete the data
 from the Elasticsearch index as expected.
+
+## Enabling custom language analyzers
+
+You can improve the language support for Chinese and Japanese languages by utilizing [smartcn](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html) and/or [kuromoji](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html) analysis plugins from Elastic.
+
+To enable language(s) support:
+
+1. Install the desired plugin(s), please refer to [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/plugins/7.9/installation.html) for plugins installation instructions. The plugin(s) must be installed on every node in the cluster, and each node must be restarted after installation. For a list of plugins, see the table later in this section.
+1. Navigate to the **Admin Area** (wrench icon), then **Settings > General**..
+1. Expand the **Advanced Search** section and locate **Custom analyzers: language support**.
+1. Enable plugin(s) support for **Indexing**.
+1. Click **Save changes** for the changes to take effect.
+1. Trigger [Zero downtime reindexing](#zero-downtime-reindexing) or reindex everything from scratch to create a new index with updated mappings.
+1. Enable plugin(s) support for **Searching** after the previous step is completed.
+
+For guidance on what to install, see the following Elasticsearch language plugin options:
+
+| Parameter                                             | Description |
+|-------------------------------------------------------|-------------|
+| `Enable Chinese (smartcn) custom analyzer: Indexing`   | Enables or disables Chinese language support using [smartcn](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html) custom analyzer for newly created indices.|
+| `Enable Chinese (smartcn) custom analyzer: Search`   | Enables or disables using [smartcn](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html) fields for Advanced Search. Please only enable this after [installing the plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html), enabling custom analyzer indexing and recreating the index.|
+| `Enable Japanese (kuromoji) custom analyzer: Indexing`   | Enables or disables Japanese language support using [kuromoji](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html) custom analyzer for newly created indices.|
+| `Enable Japanese (kuromoji) custom analyzer: Search`  | Enables or disables using [kuromoji](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html) fields for Advanced Search. Please only enable this after [installing the plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html), enabling custom analyzer indexing and recreating the index.|
 
 ## Disabling Advanced Search
 

@@ -64,7 +64,7 @@ describe('Base editor', () => {
     });
 
     it('creates model to be supplied to Monaco editor', () => {
-      editor.createInstance({ el: editorEl, blobPath, blobContent });
+      editor.createInstance({ el: editorEl, blobPath, blobContent, blobGlobalId: '' });
 
       expect(modelSpy).toHaveBeenCalledWith(blobContent, undefined, createUri(blobPath));
       expect(setModel).toHaveBeenCalledWith(fakeModel);

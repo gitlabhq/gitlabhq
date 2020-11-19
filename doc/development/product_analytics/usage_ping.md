@@ -15,7 +15,7 @@ This guide describes Usage Ping's purpose and how it's implemented.
 
 For more information about Product Analytics, see:
 
-- [Product Analytics Guide](index.md)
+- [Product Analytics Guide](https://about.gitlab.com/handbook/product/product-analytics-guide/)
 - [Snowplow Guide](snowplow.md)
 
 More useful links:
@@ -270,7 +270,7 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
 
 ##### Adding new events
 
-1. Define events in [`known_events.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events.yml).
+1. Define events in [`known_events`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/).
 
    Example event:
 
@@ -312,6 +312,7 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
    - `aggregation`: aggregation `:daily` or `:weekly`. The argument defines how we build the Redis
      keys for data storage. For `daily` we keep a key for metric per day of the year, for `weekly` we
      keep a key for metric per week of the year.
+   - `feature_flag`: optional. For details, see our [GitLab internal Feature flags](../feature_flags/) documentation.
 
 1. Track event in controller using `RedisTracking` module with `track_redis_hll_event(*controller_actions, name:, feature:, feature_default_enabled: false)`.
 
@@ -402,7 +403,7 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
    | `event` | string | yes | The event name it should be tracked |
 
    Response
-w
+
    Return 200 if tracking failed for any reason.
 
    - `200` if event was tracked or any errors
@@ -412,7 +413,7 @@ w
 
 1. Track events using JavaScript/Vue API helper which calls the API above
 
-   Example usage for an existing event already defined in  [known events](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events.yml):
+   Example usage for an existing event already defined in [known events](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/):
 
    Note that `usage_data_api` and `usage_data_#{event_name}` should be enabled in order to be able to track events
 
@@ -422,20 +423,46 @@ w
    api.trackRedisHllUserEvent('my_already_defined_event_name'),
    ```
 
-1. Track event using base module `Gitlab::UsageDataCounters::HLLRedisCounter.track_event(entity_id, event_name)`.
+1. Track event using base module `Gitlab::UsageDataCounters::HLLRedisCounter.track_event(values, event_name)`.
+
+   Arguments:
+
+   - `values`: One value or array of values we count. For example: user_id, visitor_id, user_ids.
+   - `event_name`: event name.
+
+1. Track event on context level using base module `Gitlab::UsageDataCounters::HLLRedisCounter.track_event_in_context(entity_id, event_name, context)`.
 
    Arguments:
 
    - `entity_id`: value we count. For example: user_id, visitor_id.
    - `event_name`: event name.
+   - `context`: context value. Allowed values are `default`, `free`, `bronze`, `silver`, `gold`, `starter`, `premium`, `ultimate`
 
-1. Get event data using `Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names:, start_date:, end_date)`.
+1. Get event data using `Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names:, start_date:, end_date:, context: '')`.
 
    Arguments:
 
    - `event_names`: the list of event names.
    - `start_date`: start date of the period for which we want to get event data.
    - `end_date`: end date of the period for which we want to get event data.
+   - `context`: context of the event. Allowed values are `default`, `free`, `bronze`, `silver`, `gold`, `starter`, `premium`, `ultimate`.
+
+1. Testing tracking and getting unique events
+
+Trigger events in rails console by using `track_event` method
+
+   ```ruby
+   Gitlab::UsageDataCounters::HLLRedisCounter.track_event(1, 'g_compliance_audit_events')
+   Gitlab::UsageDataCounters::HLLRedisCounter.track_event(2, 'g_compliance_audit_events')
+   ```
+
+Next, get the unique events for the current week.
+
+   ```ruby
+   # Get unique events for metric for current_week
+   Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: 'g_compliance_audit_events',
+   start_date: Date.current.beginning_of_week, end_date: Date.current.end_of_week)
+   ```
 
 Recommendations:
 
@@ -445,9 +472,23 @@ Recommendations:
 - Use a [feature flag](../../operations/feature_flags.md) to have a control over the impact when
   adding new metrics.
 
+##### Enable/Disable Redis HLL tracking
+
+Events are tracked behind [feature flags](../feature_flags/index.md) due to concerns for Redis performance and scalability.
+
+For a full list of events and coresponding feature flags see, [known_events](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/) files.
+
+To enable or disable tracking for specific event within <https://gitlab.com> or <https://staging.gitlab.com>, run commands such as the following to
+[enable or disable the corresponding feature](../feature_flags/index.md).
+
+```shell
+/chatops run feature set <feature_name> true
+/chatops run feature set <feature_name> false
+```
+
 ##### Known events in usage data payload
 
-All events added in [`known_events.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events.yml) are automatically added to usage data generation under the `redis_hll_counters` key. This column is stored in [version-app as a JSON](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/db/schema.rb#L209).
+All events added in [`known_events/common.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/common.yml) are automatically added to usage data generation under the `redis_hll_counters` key. This column is stored in [version-app as a JSON](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/db/schema.rb#L209).
 For each event we add metrics for the weekly and monthly time frames, and totals for each where applicable:
 
 - `#{event_name}_weekly`: Data for 7 days for daily [aggregation](#adding-new-events) events and data for the last complete week for weekly [aggregation](#adding-new-events) events.
@@ -493,7 +534,7 @@ Example usage:
 redis_usage_data(Gitlab::UsageDataCounters::WikiPageCounter)
 redis_usage_data { ::Gitlab::UsageCounters::PodLogs.usage_totals[:total] }
 
-# Define events in known_events.yml https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events.yml
+# Define events in common.yml https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/common.yml
 
 # Tracking events
 Gitlab::UsageDataCounters::HLLRedisCounter.track_event(visitor_id, 'expand_vulnerabilities')
@@ -548,7 +589,17 @@ for how to use its API to query for data.
 
 ## Developing and testing Usage Ping
 
-### 1. Use your Rails console to manually test counters
+### 1. Naming and placing the metrics
+
+Add the metric in one of the top level keys
+
+- `license`: for license related metrics.
+- `settings`: for settings related metrics.
+- `counts_weekly`: for counters that have data for the most recent 7 days.
+- `counts_monthly`: for counters that have data for the most recent 28 days.
+- `counts`: for counters that have data for all time.
+
+### 2. Use your Rails console to manually test counters
 
 ```ruby
 # count
@@ -560,7 +611,7 @@ Gitlab::UsageData.distinct_count(::Project, :creator_id)
 Gitlab::UsageData.distinct_count(::Note.with_suggestions.where(time_period), :author_id, start: ::User.minimum(:id), finish: ::User.maximum(:id))
 ```
 
-### 2. Generate the SQL query
+### 3. Generate the SQL query
 
 Your Rails console will return the generated SQL queries.
 
@@ -574,7 +625,7 @@ pry(main)> Gitlab::UsageData.count(User.active)
    (1.9ms)  SELECT COUNT("users"."id") FROM "users" WHERE ("users"."state" IN ('active')) AND ("users"."user_type" IS NULL OR "users"."user_type" IN (6, 4)) AND "users"."id" BETWEEN 1 AND 100000
 ```
 
-### 3. Optimize queries with #database-lab
+### 4. Optimize queries with #database-lab
 
 Paste the SQL query into `#database-lab` to see how the query performs at scale.
 
@@ -601,27 +652,27 @@ We also use `#database-lab` and [explain.depesz.com](https://explain.depesz.com/
 - Avoid joins and write the queries as simply as possible, [example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36316).
 - Set a custom `batch_size` for `distinct_count`, [example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38000).
 
-### 4. Add the metric definition
+### 5. Add the metric definition
 
-When adding, changing, or updating metrics, please update the [Event Dictionary's **Usage Ping** table](event_dictionary.md).
+When adding, changing, or updating metrics, please update the [Event Dictionary's **Usage Ping** table](https://about.gitlab.com/handbook/product/product-analytics-guide#event-dictionary).
 
-### 5. Add new metric to Versions Application
+### 6. Add new metric to Versions Application
 
 Check if new metrics need to be added to the Versions Application. See `usage_data` [schema](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/db/schema.rb#L147) and usage data [parameters accepted](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/app/services/usage_ping.rb). Any metrics added under the `counts` key are saved in the `stats` column.
 
-### 6. Add the feature label
+### 7. Add the feature label
 
 Add the `feature` label to the Merge Request for new Usage Ping metrics. These are user-facing changes and are part of expanding the Usage Ping feature.
 
-### 7. Add a changelog file
+### 8. Add a changelog file
 
 Ensure you comply with the [Changelog entries guide](../changelog.md).
 
-### 8. Ask for a Product Analytics Review
+### 9. Ask for a Product Analytics Review
 
 On GitLab.com, we have DangerBot setup to monitor Product Analytics related files and DangerBot will recommend a Product Analytics review. Mention `@gitlab-org/growth/product_analytics/engineers` in your MR for a review.
 
-### 9. Verify your metric
+### 10. Verify your metric
 
 On GitLab.com, the Product Analytics team regularly monitors Usage Ping. They may alert you that your metrics need further optimization to run quicker and with greater success. You may also use the [Usage Ping QA dashboard](https://app.periscopedata.com/app/gitlab/632033/Usage-Ping-QA) to check how well your metric performs. The dashboard allows filtering by GitLab version, by "Self-managed" & "Saas" and shows you how many failures have occurred for each metric. Whenever you notice a high failure rate, you may re-optimize your metric.
 
@@ -670,6 +721,59 @@ but with the following limitations:
 with any of the other services that are running. That is not how node metrics are reported in a production setup, where `node_exporter`
 always runs as a process alongside other GitLab components on any given node. From Usage Ping's perspective none of the node data would therefore
 appear to be associated to any of the services running, since they all appear to be running on different hosts. To alleviate this problem, the `node_exporter` in GCK was arbitrarily "assigned" to the `web` service, meaning only for this service `node_*` metrics will appear in Usage Ping.
+
+## Aggregated metrics
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45979) in GitLab 13.6.
+> - It's [deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
+> - It's enabled on GitLab.com.
+
+CAUTION: **Warning:**
+This feature is intended solely for internal GitLab use.
+
+In order to add data for aggregated metrics into Usage Ping payload you should add corresponding definition into  [`aggregated_metrics.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/aggregated_metrics.yml) file. Each aggregate definition includes following parts:
+
+- name: unique name under which aggregate metric will be added to Usage Ping payload
+- operator: operator that defines how aggregated metric data will be counted. Available operators are:
+  - `OR`: removes duplicates and counts all entries that triggered any of listed events
+  - `AND`: removes duplicates and counts all elements that were observed triggering all of following events
+- events: list of events names (from [`known_events.yml`](#known-events-in-usage-data-payload)) to aggregate into metric. All events in this list must have the same `redis_slot` and `aggregation` attributes.
+- feature_flag: name of [development feature flag](../feature_flags/development.md#development-type) that will be checked before
+metrics aggregation is performed. Corresponding feature flag should have `default_enabled` attribute set to `false`. 
+`feature_flag` attribute is **OPTIONAL**  and can be omitted, when `feature_flag` is missing no feature flag will be checked.
+
+Example aggregated metric entries:
+
+```yaml
+- name: product_analytics_test_metrics_union
+  operator: OR
+  events: ['i_search_total', 'i_search_advanced', 'i_search_paid']
+- name: product_analytics_test_metrics_intersection_with_feautre_flag
+  operator: AND
+  events: ['i_search_total', 'i_search_advanced', 'i_search_paid']
+  feature_flag: example_aggregated_metric
+```
+
+Aggregated metrics will be added under `aggregated_metrics` key in both `counts_weekly` and `counts_monthly` top level keys in Usage Ping payload.
+
+```ruby
+{
+  :counts_monthly => {
+    :deployments => 1003,
+    :successful_deployments => 78,
+    :failed_deployments => 275,
+    :packages => 155,
+    :personal_snippets => 2106,
+    :project_snippets => 407,
+    :promoted_issues => 719,
+    :aggregated_metrics => {
+      :product_analytics_test_metrics_union => 7,
+      :product_analytics_test_metrics_intersection_with_feautre_flag => 2
+    },
+    :snippets => 2513
+  }
+}
+```
 
 ## Example Usage Ping payload
 
@@ -935,3 +1039,7 @@ bin/rake gitlab:usage_data:dump_sql_in_json
 # You may pipe the output into a file
 bin/rake gitlab:usage_data:dump_sql_in_yaml > ~/Desktop/usage-metrics-2020-09-02.yaml
 ```
+
+## Generating and troubleshooting usage ping
+
+To get a usage ping, or to troubleshoot caching issues on your GitLab instance, please follow [instructions to generate usage ping](../../administration/troubleshooting/gitlab_rails_cheat_sheet.md#generate-usage-ping).

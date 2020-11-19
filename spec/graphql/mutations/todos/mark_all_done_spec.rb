@@ -28,7 +28,7 @@ RSpec.describe Mutations::Todos::MarkAllDone do
       expect(todo3.reload.state).to eq('done')
       expect(other_user_todo.reload.state).to eq('pending')
 
-      expect(updated_todo_ids).to contain_exactly(global_id_of(todo1), global_id_of(todo3))
+      expect(updated_todo_ids).to contain_exactly(todo1.id, todo3.id)
       expect(todos).to contain_exactly(todo1, todo3)
     end
 

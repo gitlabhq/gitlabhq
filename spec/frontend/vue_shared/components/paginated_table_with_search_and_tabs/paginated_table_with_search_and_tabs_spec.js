@@ -70,7 +70,7 @@ describe('AlertManagementEmptyState', () => {
         ...props,
       },
       slots: {
-        'emtpy-state': EmptyStateSlot,
+        'empty-state': EmptyStateSlot,
         'header-actions': HeaderActionsSlot,
         title: TitleSlot,
         table: TableSlot,

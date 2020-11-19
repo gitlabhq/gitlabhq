@@ -33,6 +33,11 @@ class BuildFinishedWorker # rubocop:disable Scalability/IdempotentWorker
     BuildCoverageWorker.new.perform(build.id)
     Ci::BuildReportResultWorker.new.perform(build.id)
 
+    # TODO: As per https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/194, it may be
+    # best to avoid creating more workers that we have no intention of calling async.
+    # Change the previous worker calls on top to also just call the service directly.
+    Ci::TestCasesService.new.execute(build)
+
     # We execute these async as these are independent operations.
     BuildHooksWorker.perform_async(build.id)
     ExpirePipelineCacheWorker.perform_async(build.pipeline_id) if build.pipeline.cacheable?

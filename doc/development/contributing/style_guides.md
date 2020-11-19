@@ -15,25 +15,49 @@ settings automatically by default. If your editor/IDE does not automatically sup
 we suggest investigating to see if a plugin exists. For instance here is the
 [plugin for vim](https://github.com/editorconfig/editorconfig-vim).
 
-## Pre-commit static analysis
+## Pre-push static analysis
 
-You should install [`overcommit`](https://github.com/sds/overcommit) to automatically check for
-static analysis offenses before committing locally.
+We strongly recommend installing [Lefthook](https://github.com/Arkweid/lefthook) to automatically check
+for static analysis offenses before pushing your changes.
 
-After installing `overcommit`, run the following in your GitLab source directory:
+To install `lefthook`, run the following in your GitLab source directory:
 
 ```shell
-make -C tooling/overcommit
+# 1. Make sure to uninstall Overcommit first
+overcommit --uninstall
+
+# If using rbenv, at this point you may need to do: rbenv rehash
+
+# 2. Install lefthook...
+
+## With Homebrew (macOS)
+brew install Arkweid/lefthook/lefthook
+
+## Or with Go
+go get github.com/Arkweid/lefthook
+
+## Or with Rubygems
+gem install lefthook
+
+# 3. Install the Git hooks
+lefthook install -f
 ```
 
-Then before a commit is created, `overcommit` automatically checks for RuboCop (and other checks)
-offenses on every modified file.
+Before you push your changes, Lefthook then automatically run Danger checks, and other checks
+for changed files. This saves you time as you don't have to wait for the same errors to be detected
+by CI/CD.
 
-This saves you time as you don't have to wait for the same errors to be detected by CI/CD.
+Lefthook relies on a pre-push hook to prevent commits that violate its ruleset.
+To override this behavior, pass the environment variable `LEFTHOOK=0`. That is,
+`LEFTHOOK=0 git push`.
 
-`overcommit` relies on a pre-commit hook to prevent commits that violate its ruleset. To override
-this behavior, pass the `OVERCOMMIT_DISABLE` environment variable. For example,
-`OVERCOMMIT_DISABLE=1 git rebase master` to rebase while disabling the Git hook.
+You can also:
+
+- Define [local configuration](https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md#local-config).
+- Skip [checks per tag on the fly](https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md#skip-some-tags-on-the-fly).
+  For example, `LEFTHOOK_EXCLUDE=frontend git push origin`.
+- Run [hooks manually](https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md#run-githook-group-directly).
+  For example, `lefthook run pre-push`.
 
 ## Ruby, Rails, RSpec
 
@@ -100,7 +124,7 @@ We're following [Ciro Santilli's Markdown Style Guide](https://cirosantilli.com/
 
 ## Documentation
 
-See the dedicated [Documentation Style Guide](../documentation/styleguide.md).
+See the dedicated [Documentation Style Guide](../documentation/styleguide/index.md).
 
 ## Python
 

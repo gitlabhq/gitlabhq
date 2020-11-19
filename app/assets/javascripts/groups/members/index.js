@@ -5,7 +5,7 @@ import { parseDataAttributes } from 'ee_else_ce/groups/members/utils';
 import App from './components/app.vue';
 import membersModule from '~/vuex_shared/modules/members';
 
-export const initGroupMembersApp = (el, tableFields, requestFormatter) => {
+export const initGroupMembersApp = (el, tableFields, tableAttrs, requestFormatter) => {
   if (!el) {
     return () => {};
   }
@@ -18,6 +18,7 @@ export const initGroupMembersApp = (el, tableFields, requestFormatter) => {
       ...parseDataAttributes(el),
       currentUserId: gon.current_user_id || null,
       tableFields,
+      tableAttrs,
       requestFormatter,
     }),
   });

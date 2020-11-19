@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Application settings API **(CORE ONLY)**
 
 These API calls allow you to read and modify GitLab instance
@@ -37,9 +43,9 @@ Example response:
    "home_page_url" : null,
    "default_snippet_visibility" : "private",
    "outbound_local_requests_whitelist": [],
-   "domain_whitelist" : [],
-   "domain_blacklist_enabled" : false,
-   "domain_blacklist" : [],
+   "domain_allowlist" : [],
+   "domain_denylist_enabled" : false,
+   "domain_denylist" : [],
    "created_at" : "2016-01-04T15:44:55.176Z",
    "default_ci_config_path" : null,
    "default_project_visibility" : "private",
@@ -73,7 +79,8 @@ Example response:
    "snippet_size_limit": 52428800,
    "issues_create_limit": 300,
    "raw_blob_request_limit": 300,
-   "wiki_page_max_content_bytes": 52428800
+   "wiki_page_max_content_bytes": 52428800,
+   "require_admin_approval_after_user_signup": false
 }
 ```
 
@@ -127,9 +134,9 @@ Example response:
   "default_snippet_visibility": "private",
   "default_group_visibility": "private",
   "outbound_local_requests_whitelist": [],
-  "domain_whitelist": [],
-  "domain_blacklist_enabled" : false,
-  "domain_blacklist" : [],
+  "domain_allowlist": [],
+  "domain_denylist_enabled" : false,
+  "domain_denylist" : [],
   "external_authorization_service_enabled": true,
   "external_authorization_service_url": "https://authorize.me",
   "external_authorization_service_default_label": "default",
@@ -164,7 +171,8 @@ Example response:
   "snippet_size_limit": 52428800,
   "issues_create_limit": 300,
   "raw_blob_request_limit": 300,
-  "wiki_page_max_content_bytes": 52428800
+  "wiki_page_max_content_bytes": 52428800,
+  "require_admin_approval_after_user_signup": false
 }
 ```
 
@@ -225,9 +233,9 @@ listed in the descriptions of the relevant settings.
 | `diff_max_patch_bytes`                   | integer          | no                                   | Maximum diff patch size (Bytes). |
 | `disabled_oauth_sign_in_sources`         | array of strings | no                                   | Disabled OAuth sign-in sources. |
 | `dns_rebinding_protection_enabled`       | boolean          | no                                   | Enforce DNS rebinding attack protection. |
-| `domain_blacklist_enabled`               | boolean          | no                                   | (**If enabled, requires:** `domain_blacklist`) Allows blocking sign-ups from emails from specific domains. |
-| `domain_blacklist`                       | array of strings | no                                   | Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: `domain.com`, `*.domain.com`. |
-| `domain_whitelist`                       | array of strings | no                                   | Force people to use only corporate emails for sign-up. Default is `null`, meaning there is no restriction. |
+| `domain_denylist_enabled`                | boolean          | no                                   | (**If enabled, requires:** `domain_denylist`) Allows blocking sign-ups from emails from specific domains. |
+| `domain_denylist`                        | array of strings | no                                   | Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: `domain.com`, `*.domain.com`. |
+| `domain_allowlist`                       | array of strings | no                                   | Force people to use only corporate emails for sign-up. Default is `null`, meaning there is no restriction. |
 | `dsa_key_restriction`                    | integer          | no                                   | The minimum allowed bit length of an uploaded DSA key. Default is `0` (no restriction). `-1` disables DSA keys. |
 | `ecdsa_key_restriction`                  | integer          | no                                   | The minimum allowed curve size (in bits) of an uploaded ECDSA key. Default is `0` (no restriction). `-1` disables ECDSA keys. |
 | `ed25519_key_restriction`                | integer          | no                                   | The minimum allowed curve size (in bits) of an uploaded ED25519 key. Default is `0` (no restriction). `-1` disables ED25519 keys. |
@@ -325,6 +333,7 @@ listed in the descriptions of the relevant settings.
 | `repository_size_limit`                  | integer          | no                                   | **(PREMIUM)** Size limit per repository (MB) |
 | `repository_storages_weighted`           | hash of strings to integers | no                        | (GitLab 13.1 and later) Hash of names of taken from `gitlab.yml` to [weights](../administration/repository_storage_paths.md#choose-where-new-repositories-will-be-stored). New projects are created in one of these stores, chosen by a weighted random selection. |
 | `repository_storages`                    | array of strings | no                                   | (GitLab 13.0 and earlier) List of names of enabled storage paths, taken from `gitlab.yml`. New projects are created in one of these stores, chosen at random. |
+| `require_admin_approval_after_user_signup`      | boolean          | no                                   | When enabled, any user that signs up for an account using the registration form is placed under a **Pending approval** state and has to be explicitly [approved](../user/admin_area/approving_users.md) by an administrator. |
 | `require_two_factor_authentication`      | boolean          | no                                   | (**If enabled, requires:** `two_factor_grace_period`) Require all users to set up Two-factor authentication. |
 | `restricted_visibility_levels`           | array of strings | no                                   | Selected levels cannot be used by non-admin users for groups, projects or snippets. Can take `private`, `internal` and `public` as a parameter. Default is `null` which means there is no restriction. |
 | `rsa_key_restriction`                    | integer          | no                                   | The minimum allowed bit length of an uploaded RSA key. Default is `0` (no restriction). `-1` disables RSA keys. |

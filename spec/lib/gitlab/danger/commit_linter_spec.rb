@@ -190,7 +190,9 @@ RSpec.describe Gitlab::Danger::CommitLinter do
       [
         '[ci skip] A commit message',
         '[Ci skip] A commit message',
-        '[API] A commit message'
+        '[API] A commit message',
+        'api: A commit message',
+        'API: A commit message'
       ].each do |message|
         context "when subject is '#{message}'" do
           let(:commit_message) { message }
@@ -207,6 +209,9 @@ RSpec.describe Gitlab::Danger::CommitLinter do
         '[ci skip]A commit message',
         '[Ci skip]  A commit message',
         '[ci skip] a commit message',
+        'API: a commit message',
+        'API: a commit message',
+        'api: a commit message',
         '! A commit message'
       ].each do |message|
         context "when subject is '#{message}'" do

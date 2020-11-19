@@ -8,9 +8,9 @@ import {
   GlLoadingIcon,
   GlTable,
   GlFormInput,
-  GlDeprecatedDropdown,
-  GlDeprecatedDropdownItem,
-  GlDeprecatedDropdownDivider,
+  GlDropdown,
+  GlDropdownItem,
+  GlDropdownDivider,
   GlTooltipDirective,
   GlPagination,
 } from '@gitlab/ui';
@@ -72,9 +72,9 @@ export default {
   components: {
     GlEmptyState,
     GlButton,
-    GlDeprecatedDropdown,
-    GlDeprecatedDropdownItem,
-    GlDeprecatedDropdownDivider,
+    GlDropdown,
+    GlDropdownItem,
+    GlDropdownDivider,
     GlIcon,
     GlLink,
     GlLoadingIcon,
@@ -233,30 +233,30 @@ export default {
       >
         <div class="search-box flex-fill mb-1 mb-md-0">
           <div class="filtered-search-box mb-0">
-            <gl-deprecated-dropdown
+            <gl-dropdown
               :text="__('Recent searches')"
               class="filtered-search-history-dropdown-wrapper"
-              toggle-class="filtered-search-history-dropdown-toggle-button"
+              toggle-class="filtered-search-history-dropdown-toggle-button gl-shadow-none! gl-border-r-gray-200! gl-border-1! gl-rounded-0!"
               :disabled="loading"
             >
               <div v-if="!$options.hasLocalStorage" class="px-3">
                 {{ __('This feature requires local storage to be enabled') }}
               </div>
               <template v-else-if="recentSearches.length > 0">
-                <gl-deprecated-dropdown-item
+                <gl-dropdown-item
                   v-for="searchQuery in recentSearches"
                   :key="searchQuery"
                   @click="setSearchText(searchQuery)"
                   >{{ searchQuery }}
-                </gl-deprecated-dropdown-item>
-                <gl-deprecated-dropdown-divider />
-                <gl-deprecated-dropdown-item ref="clearRecentSearches" @click="clearRecentSearches"
+                </gl-dropdown-item>
+                <gl-dropdown-divider />
+                <gl-dropdown-item ref="clearRecentSearches" @click="clearRecentSearches"
                   >{{ __('Clear recent searches') }}
-                </gl-deprecated-dropdown-item>
+                </gl-dropdown-item>
               </template>
               <div v-else class="px-3">{{ __("You don't have any recent searches") }}</div>
-            </gl-deprecated-dropdown>
-            <div class="filtered-search-input-container flex-fill">
+            </gl-dropdown>
+            <div class="filtered-search-input-container gl-flex-fill-1">
               <gl-form-input
                 v-model="errorSearchQuery"
                 class="pl-2 filtered-search"
@@ -280,49 +280,44 @@ export default {
           </div>
         </div>
 
-        <gl-deprecated-dropdown
+        <gl-dropdown
           :text="$options.statusFilters[statusFilter]"
           class="status-dropdown mx-md-1 mb-1 mb-md-0"
-          menu-class="dropdown"
           :disabled="loading"
+          right
         >
-          <gl-deprecated-dropdown-item
+          <gl-dropdown-item
             v-for="(label, status) in $options.statusFilters"
             :key="status"
             @click="filterErrors(status, label)"
           >
             <span class="d-flex">
               <gl-icon
-                class="flex-shrink-0 append-right-4"
+                class="gl-new-dropdown-item-check-icon"
                 :class="{ invisible: !isCurrentStatusFilter(status) }"
                 name="mobile-issue-close"
               />
               {{ label }}
             </span>
-          </gl-deprecated-dropdown-item>
-        </gl-deprecated-dropdown>
+          </gl-dropdown-item>
+        </gl-dropdown>
 
-        <gl-deprecated-dropdown
-          :text="$options.sortFields[sortField]"
-          left
-          :disabled="loading"
-          menu-class="dropdown"
-        >
-          <gl-deprecated-dropdown-item
+        <gl-dropdown :text="$options.sortFields[sortField]" right :disabled="loading">
+          <gl-dropdown-item
             v-for="(label, field) in $options.sortFields"
             :key="field"
             @click="sortByField(field)"
           >
             <span class="d-flex">
               <gl-icon
-                class="flex-shrink-0 append-right-4"
+                class="gl-new-dropdown-item-check-icon"
                 :class="{ invisible: !isCurrentSortField(field) }"
                 name="mobile-issue-close"
               />
               {{ label }}
             </span>
-          </gl-deprecated-dropdown-item>
-        </gl-deprecated-dropdown>
+          </gl-dropdown-item>
+        </gl-dropdown>
       </div>
 
       <div v-if="loading" class="py-3">

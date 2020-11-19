@@ -92,15 +92,30 @@ RSpec.describe API::MavenPackages do
   end
 
   shared_examples 'downloads with a deploy token' do
-    it 'allows download with deploy token' do
-      download_file(
-        package_file.file_name,
-        {},
-        Gitlab::Auth::AuthFinders::DEPLOY_TOKEN_HEADER => deploy_token.token
-      )
+    context 'successful download' do
+      subject do
+        download_file(
+          package_file.file_name,
+          {},
+          Gitlab::Auth::AuthFinders::DEPLOY_TOKEN_HEADER => deploy_token.token
+        )
+      end
 
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(response.media_type).to eq('application/octet-stream')
+      it 'allows download with deploy token' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.media_type).to eq('application/octet-stream')
+      end
+
+      it 'allows download with deploy token with only write_package_registry scope' do
+        deploy_token.update!(read_package_registry: false)
+
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.media_type).to eq('application/octet-stream')
+      end
     end
   end
 
@@ -355,6 +370,15 @@ RSpec.describe API::MavenPackages do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.media_type).to eq('application/octet-stream')
         end
+
+        it 'returns the file with only write_package_registry scope' do
+          deploy_token_for_group.update!(read_package_registry: false)
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.media_type).to eq('application/octet-stream')
+        end
       end
     end
 
@@ -601,7 +625,7 @@ RSpec.describe API::MavenPackages do
         upload_file(params: params.merge(job_token: job.token))
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(project.reload.packages.last.build_info.pipeline).to eq job.pipeline
+        expect(project.reload.packages.last.original_build_info.pipeline).to eq job.pipeline
       end
 
       it 'rejects upload without running job token' do

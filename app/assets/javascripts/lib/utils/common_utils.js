@@ -61,9 +61,6 @@ export const rstrip = val => {
   return val;
 };
 
-export const updateTooltipTitle = ($tooltipEl, newTitle) =>
-  $tooltipEl.attr('title', newTitle).tooltip('_fixTitle');
-
 export const disableButtonIfEmptyField = (fieldSelector, buttonSelector, eventName = 'input') => {
   const field = $(fieldSelector);
   const closestSubmit = field.closest('form').find(buttonSelector);
@@ -741,6 +738,24 @@ export const roundOffFloat = (number, precision = 0) => {
   // eslint-disable-next-line no-restricted-properties
   const multiplier = Math.pow(10, precision);
   return Math.round(number * multiplier) / multiplier;
+};
+
+/**
+ * Method to round down values with decimal places
+ * with provided precision.
+ *
+ * Eg; roundDownFloat(3.141592, 3) = 3.141
+ *
+ * Refer to spec/javascripts/lib/utils/common_utils_spec.js for
+ * more supported examples.
+ *
+ * @param {Float} number
+ * @param {Number} precision
+ */
+export const roundDownFloat = (number, precision = 0) => {
+  // eslint-disable-next-line no-restricted-properties
+  const multiplier = Math.pow(10, precision);
+  return Math.floor(number * multiplier) / multiplier;
 };
 
 /**

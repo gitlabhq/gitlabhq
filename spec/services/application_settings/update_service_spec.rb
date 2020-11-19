@@ -66,7 +66,7 @@ RSpec.describe ApplicationSettings::UpdateService do
     context 'when params is blank' do
       let(:params) { {} }
 
-      it 'does not add to whitelist' do
+      it 'does not add to allowlist' do
         expect { subject.execute }.not_to change {
           application_settings.outbound_local_requests_whitelist
         }
@@ -80,7 +80,7 @@ RSpec.describe ApplicationSettings::UpdateService do
 
       let(:params) { { add_to_outbound_local_requests_whitelist: ['example.com', ''] } }
 
-      it 'adds to whitelist' do
+      it 'adds to allowlist' do
         expect { subject.execute }.to change {
           application_settings.outbound_local_requests_whitelist
         }
@@ -91,14 +91,14 @@ RSpec.describe ApplicationSettings::UpdateService do
       end
     end
 
-    context 'when param outbound_local_requests_whitelist_raw is passed' do
+    context 'when param outbound_local_requests_allowlist_raw is passed' do
       before do
         application_settings.outbound_local_requests_whitelist = ['127.0.0.1']
       end
 
-      let(:params) { { outbound_local_requests_whitelist_raw: 'example.com;gitlab.com' } }
+      let(:params) { { outbound_local_requests_allowlist_raw: 'example.com;gitlab.com' } }
 
-      it 'overwrites the existing whitelist' do
+      it 'overwrites the existing allowlist' do
         expect { subject.execute }.to change {
           application_settings.outbound_local_requests_whitelist
         }

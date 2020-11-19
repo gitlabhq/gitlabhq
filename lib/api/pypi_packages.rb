@@ -12,6 +12,8 @@ module API
     helpers ::API::Helpers::Packages::BasicAuthHelpers
     include ::API::Helpers::Packages::BasicAuthHelpers::Constants
 
+    feature_category :package_registry
+
     default_format :json
 
     rescue_from ArgumentError do |e|

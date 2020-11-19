@@ -19,6 +19,7 @@ RSpec.describe 'query Jira import data' do
       total_issue_count: 4
     )
   end
+
   let_it_be(:jira_import2) do
     create(
       :jira_import_state, :finished,
@@ -31,6 +32,7 @@ RSpec.describe 'query Jira import data' do
       total_issue_count: 3
     )
   end
+
   let(:query) do
     %(
       query {

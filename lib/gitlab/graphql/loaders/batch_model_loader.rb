@@ -12,14 +12,11 @@ module Gitlab
 
         # rubocop: disable CodeReuse/ActiveRecord
         def find
-          BatchLoader::GraphQL.for({ model: model_class, id: model_id.to_i }).batch do |loader_info, loader|
-            per_model = loader_info.group_by { |info| info[:model] }
-            per_model.each do |model, info|
-              ids = info.map { |i| i[:id] }
-              results = model.where(id: ids)
+          BatchLoader::GraphQL.for(model_id.to_i).batch(key: model_class) do |ids, loader, args|
+            model = args[:key]
+            results = model.where(id: ids)
 
-              results.each { |record| loader.call({ model: model, id: record.id }, record) }
-            end
+            results.each { |record| loader.call(record.id, record) }
           end
         end
         # rubocop: enable CodeReuse/ActiveRecord

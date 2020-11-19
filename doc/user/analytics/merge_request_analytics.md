@@ -1,7 +1,7 @@
 ---
 description: "Merge Request Analytics help you understand the efficiency of your code review process, and the productivity of your team." # Up to ~200 chars long. They will be displayed in Google Search snippets. It may help to write the page intro first, and then reuse it here.
 stage: Manage
-group: Analytics
+group: Value Stream Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
@@ -57,9 +57,11 @@ Data table displaying a maximum of the 100 most recent merge requests merged for
 You can filter the data that is presented on the page based on the following parameters:
 
 - Author
-- Assignees
-- Labels
-- Milestones
+- Assignee
+- Label
+- Milestone
+- Source branch
+- Target branch
 
 To filter results:
 

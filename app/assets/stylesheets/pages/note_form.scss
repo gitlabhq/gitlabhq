@@ -2,6 +2,7 @@
  * Note Form
  */
 .diff-file .diff-content {
+  .diff-tr.line_holder:hover > .diff-td .line_note_link,
   tr.line_holder:hover > td .line_note_link {
     opacity: 1;
     filter: alpha(opacity = 100);
@@ -226,10 +227,6 @@ table {
   display: none;
 }
 
-.parallel-comment {
-  padding: 6px;
-}
-
 .error-alert > .alert {
   margin-top: 5px;
   margin-bottom: 5px;
@@ -311,29 +308,10 @@ table {
   }
 }
 
-.discussion-notes-count {
-  font-size: 16px;
-}
-
-.edit_note {
-  .markdown-area {
-    min-height: 140px;
-    max-height: 500px;
-  }
-
-  .note-form-actions {
-    background: transparent;
-  }
-}
-
 .comment-toolbar {
   padding-top: $gl-padding-top;
   color: $gl-text-color-secondary;
   border-top: 1px solid $border-color;
-}
-
-.md-helper {
-  padding-top: 10px;
 }
 
 .toolbar-button {
@@ -471,31 +449,6 @@ table {
 
 .uploading-progress {
   margin-right: 5px;
-}
-
-.attach-new-file,
-.button-attach-file,
-.retry-uploading-link {
-  color: $blue-600;
-  padding: 0;
-  background: none;
-  border: 0;
-  font-size: 14px;
-  line-height: 16px;
-  vertical-align: initial;
-
-  &:hover,
-  &:focus {
-    text-decoration: none;
-
-    .text-attach-file {
-      text-decoration: underline;
-    }
-  }
-
-  .gl-icon:not(:last-child) {
-    margin-right: 0;
-  }
 }
 
 .markdown-selector {

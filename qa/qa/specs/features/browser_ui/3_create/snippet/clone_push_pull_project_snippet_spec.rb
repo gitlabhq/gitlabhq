@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', quarantine: { only: { subdomain: :staging }, issue: 'https://gitlab.com/gitlab-org/gitaly/-/issues/3143', type: :bug } do
+  RSpec.describe 'Create' do
     describe 'Version control for project snippets' do
       let(:new_file) { 'new_snippet_file' }
       let(:changed_content) { 'changes' }
@@ -22,13 +22,13 @@ module QA
       end
 
       let(:repository_uri_http) do
-        snippet
+        snippet.visit!
         Page::Dashboard::Snippet::Show.perform(&:get_repository_uri_http)
       end
 
       let(:repository_uri_ssh) do
         ssh_key
-        snippet
+        snippet.visit!
         Page::Dashboard::Snippet::Show.perform(&:get_repository_uri_ssh)
       end
 

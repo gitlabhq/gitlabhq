@@ -2,22 +2,29 @@
 
 module PersonalAccessTokens
   class CreateService < BaseService
-    def initialize(current_user, params = {})
+    def initialize(current_user:, target_user:, params: {})
       @current_user = current_user
+      @target_user = target_user
       @params = params.dup
+      @ip_address = @params.delete(:ip_address)
     end
 
     def execute
-      personal_access_token = current_user.personal_access_tokens.create(params.slice(*allowed_params))
+      return ServiceResponse.error(message: 'Not permitted to create') unless creation_permitted?
 
-      if personal_access_token.persisted?
-        ServiceResponse.success(payload: { personal_access_token: personal_access_token })
+      token = target_user.personal_access_tokens.create(params.slice(*allowed_params))
+
+      if token.persisted?
+        log_event(token)
+        ServiceResponse.success(payload: { personal_access_token: token })
       else
-        ServiceResponse.error(message: personal_access_token.errors.full_messages.to_sentence)
+        ServiceResponse.error(message: token.errors.full_messages.to_sentence, payload: { personal_access_token: token })
       end
     end
 
     private
+
+    attr_reader :target_user, :ip_address
 
     def allowed_params
       [
@@ -27,5 +34,15 @@ module PersonalAccessTokens
         :expires_at
       ]
     end
+
+    def creation_permitted?
+      Ability.allowed?(current_user, :create_user_personal_access_token, target_user)
+    end
+
+    def log_event(token)
+      log_info("PAT CREATION: created_by: '#{current_user.username}', created_for: '#{token.user.username}', token_id: '#{token.id}'")
+    end
   end
 end
+
+PersonalAccessTokens::CreateService.prepend_if_ee('EE::PersonalAccessTokens::CreateService')

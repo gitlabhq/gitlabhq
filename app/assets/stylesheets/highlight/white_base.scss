@@ -113,6 +113,13 @@ pre.code,
     @include match-line;
   }
 
+  .diff-grid-left:hover,
+  .diff-grid-right:hover {
+    .diff-line-num:not(.empty-cell) {
+      @include line-number-hover($white-over-bg);
+    }
+  }
+
   .diff-line-num {
     &.old {
       background-color: $line-number-old;
@@ -134,12 +141,7 @@ pre.code,
 
     &.is-over,
     &.hll:not(.empty-cell).is-over {
-      background-color: $white-over-bg;
-      border-color: darken($white-over-bg, 5%);
-
-      a {
-        color: darken($white-over-bg, 15%);
-      }
+      @include line-number-hover($white-over-bg);
     }
 
     &.hll:not(.empty-cell) {

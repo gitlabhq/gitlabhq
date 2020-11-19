@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'cycle analytics stage' do
+RSpec.shared_examples 'value stream analytics stage' do
   let(:valid_params) do
     {
       name: 'My Stage',
@@ -111,7 +111,7 @@ RSpec.shared_examples 'cycle analytics stage' do
   end
 end
 
-RSpec.shared_examples 'cycle analytics label based stage' do
+RSpec.shared_examples 'value stream analytics label based stage' do
   context 'when creating label based event' do
     context 'when the label id is not passed' do
       it 'returns validation error when `start_event_label_id` is missing' do

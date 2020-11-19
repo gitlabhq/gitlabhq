@@ -463,8 +463,7 @@ $mr-widget-min-height: 69px;
 
 .mr-list {
   .merge-request {
-    padding: 10px 0 10px 15px;
-    position: relative;
+    padding: 10px $gl-padding;
     display: flex;
 
     .issuable-info-container {
@@ -735,14 +734,6 @@ $mr-widget-min-height: 69px;
   .content-block {
     padding: $gl-padding;
     border-bottom: 0;
-  }
-
-  .comments-disabled-notif {
-    line-height: 28px;
-
-    .btn {
-      margin-left: 5px;
-    }
   }
 
   .mr-version-dropdown,
@@ -1047,10 +1038,4 @@ $mr-widget-min-height: 69px;
 
 .diff-file-row.is-active {
   background-color: $gray-50;
-}
-
-.merge-request-container {
-  .flash-container {
-    @include gl-mb-4;
-  }
 }

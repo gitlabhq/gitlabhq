@@ -1,4 +1,7 @@
 ---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: reference, howto, concepts
 ---
 
@@ -80,7 +83,10 @@ By default, groups created in:
 - GitLab 12.2 or later allow both Owners and Maintainers to create subgroups.
 - GitLab 12.1 or earlier only allow Owners to create subgroups.
 
-This setting can be for any group by an Owner or Administrator.
+The setting can be changed for any group by:
+
+- A group owner. Select the group, and navigate to **Settings > General > Permissions, LFS, 2FA**.
+- An administrator. Navigate to **Admin Area > Overview > Groups**, select the group, and choose **Edit**.
 
 For more information check the
 [permissions table](../../permissions.md#group-members-permissions). For a list
@@ -93,10 +99,9 @@ creation is disabled by an administrator in their settings.
 
 To create a subgroup:
 
-1. In the group's dashboard expand the **New project** split button, select
-   **New subgroup** and click the **New subgroup** button.
+1. In the group's dashboard click the **New subgroup** button.
 
-   ![Subgroups page](img/create_subgroup_button.png)
+   ![Subgroups page](img/create_subgroup_button_v13_6.png)
 
 1. Create a new group like you would normally do. Notice that the immediate parent group
    namespace is fixed under **Group path**. The visibility level can differ from

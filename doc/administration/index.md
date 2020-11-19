@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
 description: 'Learn how to install, configure, update, and maintain your GitLab instance.'
 ---
 
@@ -143,7 +143,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 - [Container Registry](packages/container_registry.md): Configure Container Registry with GitLab.
 - [Package Registry](packages/index.md): Enable GitLab to act as an NPM Registry and a Maven Repository.
-- [Dependency Proxy](packages/dependency_proxy.md): Configure the Dependency Proxy, a local proxy for frequently used upstream images/packages. **(PREMIUM ONLY)**
+- [Dependency Proxy](packages/dependency_proxy.md): Configure the Dependency Proxy, a local proxy for frequently used upstream images/packages.
 
 ### Repository settings
 

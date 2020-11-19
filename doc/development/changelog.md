@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Changelog entries
 
 This guide contains instructions for when and how to generate a changelog entry
@@ -38,9 +44,10 @@ the `author` field. GitLab team members **should not**.
 - [Security fixes](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md)
   **must** have a changelog entry, without `merge_request` value
   and with `type` set to `security`.
-- Any user-facing change **should** have a changelog entry. This includes both visual changes (regardless of how minor), and changes to the rendered DOM which impact how a screen reader may announce the content.
+- Any user-facing change **must** have a changelog entry. This includes both visual changes (regardless of how minor), and changes to the rendered DOM which impact how a screen reader may announce the content.
+- Any client-facing change to our REST and GraphQL APIs **must** have a changelog entry.
 - Performance improvements **should** have a changelog entry.
-- Changes that need to be documented in the Product Analytics [Event Dictionary](product_analytics/event_dictionary.md)
+- Changes that need to be documented in the Product Analytics [Event Dictionary](https://about.gitlab.com/handbook/product/product-analytics-guide#event-dictionary)
   also require a changelog entry.
 - _Any_ contribution from a community member, no matter how small, **may** have
   a changelog entry regardless of these guidelines if the contributor wants one.
@@ -48,7 +55,8 @@ the `author` field. GitLab team members **should not**.
 - Any docs-only changes **should not** have a changelog entry.
 - Any change behind a disabled feature flag **should not** have a changelog entry.
 - Any change behind an enabled feature flag **should** have a changelog entry.
-- Any change that adds new usage data metrics and changes that needs to be documented in Product Analytics [Event Dictionary](telemetry/event_dictionary.md) **should** have a changelog entry.
+- Any change that adds new usage data metrics and changes that needs to be documented in Product Analytics [Event Dictionary](https://about.gitlab.com/handbook/product/product-analytics-guide#event-dictionary) **should** have a changelog entry.
+- A change that adds snowplow events **should** have a changelog entry -
 - A change that [removes a feature flag](feature_flags/development.md) **should** have a changelog entry -
   only if the feature flag did not default to true already.
 - A fix for a regression introduced and then fixed in the same release (i.e.,
@@ -117,7 +125,6 @@ the `--ee` option:
 bin/changelog --ee 'Hey DZ, I added a feature to GitLab!'
 ```
 
-NOTE: **Note:**
 All entries in the `CHANGELOG.md` file apply to all editions of GitLab.
 Changelog updates are based on a common [GitLab codebase](https://gitlab.com/gitlab-org/gitlab/),
 and are mirrored without proprietary code to [GitLab FOSS](https://gitlab.com/gitlab-org/gitlab-foss/) (also known as GitLab Community Edition).

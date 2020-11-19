@@ -25,5 +25,13 @@ swap:
   self hosted: self-managed
   self-hosted: self-managed
   styleguide: style guide
+  to login: to log in
+  can login: can log in
+  to log-in: to log in
+  can log-in: can log in
+  to signin: to sign in
+  can signin: can sign in
+  to sign-in: to sign in
+  can sign-in: can sign in
   x509: X.509
   yaml: YAML

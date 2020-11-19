@@ -1,7 +1,7 @@
 <script>
 import Vue from 'vue';
 import Cookies from 'js-cookie';
-import { GlIcon } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import Translate from '../../../../../vue_shared/translate';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
@@ -12,12 +12,11 @@ const cookieKey = 'pipeline_schedules_callout_dismissed';
 export default {
   name: 'PipelineSchedulesCallout',
   components: {
-    GlIcon,
+    GlButton,
   },
+  inject: ['docsUrl', 'illustrationUrl'],
   data() {
     return {
-      docsUrl: document.getElementById('pipeline-schedules-callout').dataset.docsUrl,
-      imageUrl: document.getElementById('pipeline-schedules-callout').dataset.imageUrl,
       calloutDismissed: parseBoolean(Cookies.get(cookieKey)),
     };
   },
@@ -31,12 +30,16 @@ export default {
 </script>
 <template>
   <div v-if="!calloutDismissed" class="pipeline-schedules-user-callout user-callout">
-    <div class="bordered-box landing content-block">
-      <button id="dismiss-callout-btn" class="btn btn-default close" @click="dismissCallout">
-        <gl-icon name="close" aria-hidden="true" />
-      </button>
-      <div class="svg-container">
-        <img :src="imageUrl" />
+    <div class="bordered-box landing content-block" data-testid="innerContent">
+      <gl-button
+        category="tertiary"
+        icon="close"
+        :aria-label="__('Dismiss')"
+        class="gl-absolute gl-top-2 gl-right-2"
+        @click="dismissCallout"
+      />
+      <div class="svg-content">
+        <img :src="illustrationUrl" />
       </div>
       <div class="user-callout-copy">
         <h4>{{ __('Scheduling Pipelines') }}</h4>

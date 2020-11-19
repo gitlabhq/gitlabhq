@@ -44,6 +44,8 @@
   - 3
 - - background_migration
   - 1
+- - bulk_import
+  - 1
 - - chaos
   - 2
 - - chat_notification
@@ -84,6 +86,8 @@
   - 1
 - - design_management_new_version
   - 1
+- - destroy_pages_deployments
+  - 1
 - - detect_repository_languages
   - 1
 - - disallow_two_factor_for_group
@@ -108,6 +112,8 @@
   - 2
 - - emails_on_push
   - 2
+- - environments_canary_ingress_update
+  - 1
 - - epics
   - 2
 - - error_tracking_issue_link
@@ -139,6 +145,8 @@
 - - group_export
   - 1
 - - group_import
+  - 1
+- - group_saml_group_sync
   - 1
 - - hashed_storage
   - 1
@@ -251,6 +259,8 @@
 - - propagate_integration_group
   - 1
 - - propagate_integration_inherit
+  - 1
+- - propagate_integration_inherit_descendant
   - 1
 - - propagate_integration_project
   - 1

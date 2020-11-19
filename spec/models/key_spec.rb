@@ -108,7 +108,7 @@ RSpec.describe Key, :mailer do
       expect(build(:key, key: 'ssh-rsa an-invalid-key==')).not_to be_valid
     end
 
-    where(:factory, :chars, :expected_sections) do
+    where(:factory, :characters, :expected_sections) do
       [
         [:key,                 ["\n", "\r\n"], 3],
         [:key,                 [' ', ' '],     3],
@@ -122,7 +122,7 @@ RSpec.describe Key, :mailer do
       let!(:original_fingerprint_sha256) { key.fingerprint_sha256 }
 
       it 'accepts a key with blank space characters after stripping them' do
-        modified_key = key.key.insert(100, chars.first).insert(40, chars.last)
+        modified_key = key.key.insert(100, characters.first).insert(40, characters.last)
         _, content = modified_key.split
 
         key.update!(key: modified_key)

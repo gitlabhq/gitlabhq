@@ -1,3 +1,9 @@
+---
+stage: Configure
+group: Configure
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Customizing Auto DevOps
 
 While [Auto DevOps](index.md) provides great defaults to get you started, you can customize
@@ -68,7 +74,6 @@ Docker image based on based on the `ruby:alpine` instead of the default `ruby:la
    # ... put your stuff here
    ```
 
-NOTE: **Note:**
 Use Base64 encoding if you need to pass complex values, such as newlines and
 spaces. Left unencoded, complex values like these can cause escaping issues
 due to how Auto DevOps uses the arguments.
@@ -117,7 +122,6 @@ to `CI_COMMIT_SHA,CI_ENVIRONMENT_NAME`.
      RUN --mount=type=secret,id=auto-devops-build-secrets . /run/secrets/auto-devops-build-secrets && $COMMAND
      ```
 
-NOTE: **Note:**
 When `AUTO_DEVOPS_BUILD_IMAGE_FORWARDED_CI_VARIABLES` is set, Auto DevOps
 enables the experimental [Docker BuildKit](https://docs.docker.com/develop/develop-images/build_enhancements/)
 feature to use the `--secret` flag.
@@ -447,7 +451,6 @@ the updated secrets. To update the secrets, either:
 - Manually delete running pods to cause Kubernetes to create new pods with updated
   secrets.
 
-NOTE: **Note:**
 Variables with multi-line values are not currently supported due to
 limitations with the current Auto DevOps scripting environment.
 
@@ -514,8 +517,7 @@ on the default branch. However, there are cases where you might want to use a
 staging environment, and deploy to production manually. For this scenario, the
 `STAGING_ENABLED` environment variable was introduced.
 
-If you define `STAGING_ENABLED`, such as setting `STAGING_ENABLED` to
-`1` as a CI/CD variable, then GitLab automatically deploys the application
+If you define `STAGING_ENABLED` with a non-empty value, then GitLab automatically deploys the application
 to a `staging` environment, and creates a `production_manual` job for
 you when you're ready to manually deploy to production.
 
@@ -526,8 +528,7 @@ you when you're ready to manually deploy to production.
 You can use a [canary environment](../../user/project/canary_deployments.md) before
 deploying any changes to production.
 
-If you define `CANARY_ENABLED` in your project, such as setting `CANARY_ENABLED` to
-`1` as a CI/CD variable, then two manual jobs are created:
+If you define `CANARY_ENABLED` with a non-empty value, then two manual jobs are created:
 
 - `canary` - Deploys the application to the canary environment.
 - `production_manual` - Manually deploys the application to production.

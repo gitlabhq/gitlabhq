@@ -117,12 +117,6 @@ body.modal-open {
       border-bottom-right-radius: $modal-border-radius;
     }
   }
-
-  @include media-breakpoint-up(sm) {
-    .modal-dialog {
-      margin: 64px auto;
-    }
-  }
 }
 
 .recaptcha-modal .recaptcha-form {
@@ -134,7 +128,7 @@ body.modal-open {
 }
 
 .issues-import-modal,
-.issues-export-modal {
+.issuable-export-modal {
   .modal-header {
     justify-content: flex-start;
 
@@ -165,9 +159,5 @@ body.modal-open {
       padding: $gl-padding-24 $gl-padding;
       min-height: $modal-body-height;
     }
-  }
-
-  .checkmark {
-    color: $green-400;
   }
 }

@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe Resolvers::Projects::ServicesResolver do
   include GraphqlHelpers
 
+  specify do
+    expect(described_class).to have_nullable_graphql_type(Types::Projects::ServiceType.connection_type)
+  end
+
   describe '#resolve' do
     let_it_be(:user) { create(:user) }
 

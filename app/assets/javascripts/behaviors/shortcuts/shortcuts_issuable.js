@@ -4,6 +4,8 @@ import Sidebar from '../../right_sidebar';
 import Shortcuts from './shortcuts';
 import { CopyAsGFM } from '../markdown/copy_as_gfm';
 import { getSelectedFragment } from '~/lib/utils/common_utils';
+import { isElementVisible } from '~/lib/utils/dom_utils';
+import { clickCopyToClipboardButton } from '~/behaviors/copy_to_clipboard';
 
 export default class ShortcutsIssuable extends Shortcuts {
   constructor() {
@@ -14,6 +16,7 @@ export default class ShortcutsIssuable extends Shortcuts {
     Mousetrap.bind('l', () => ShortcutsIssuable.openSidebarDropdown('labels'));
     Mousetrap.bind('r', ShortcutsIssuable.replyWithSelectedText);
     Mousetrap.bind('e', ShortcutsIssuable.editIssue);
+    Mousetrap.bind('b', ShortcutsIssuable.copyBranchName);
   }
 
   static replyWithSelectedText() {
@@ -97,5 +100,19 @@ export default class ShortcutsIssuable extends Shortcuts {
   static openSidebarDropdown(name) {
     Sidebar.instance.openDropdown(name);
     return false;
+  }
+
+  static copyBranchName() {
+    // There are two buttons - one that is shown when the sidebar
+    // is expanded, and one that is shown when it's collapsed.
+    const allCopyBtns = Array.from(document.querySelectorAll('.sidebar-source-branch button'));
+
+    // Select whichever button is currently visible so that
+    // the "Copied" tooltip is shown when a click is simulated.
+    const visibleBtn = allCopyBtns.find(isElementVisible);
+
+    if (visibleBtn) {
+      clickCopyToClipboardButton(visibleBtn);
+    }
   }
 }

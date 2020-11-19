@@ -370,6 +370,16 @@ class NotificationService
     end
   end
 
+  def new_instance_access_request(user)
+    recipients = User.instance_access_request_approvers_to_be_notified # https://gitlab.com/gitlab-org/gitlab/-/issues/277016 will change this
+
+    return true if recipients.empty?
+
+    recipients.each do |recipient|
+      mailer.instance_access_request_email(user, recipient).deliver_later
+    end
+  end
+
   # Members
   def new_access_request(member)
     return true unless member.notifiable?(:subscription)
@@ -601,7 +611,7 @@ class NotificationService
     return if project.emails_disabled?
 
     owners_and_maintainers_without_invites(project).to_a.product(alerts).each do |recipient, alert|
-      mailer.prometheus_alert_fired_email(project.id, recipient.user.id, alert).deliver_later
+      mailer.prometheus_alert_fired_email(project, recipient.user, alert).deliver_later
     end
   end
 

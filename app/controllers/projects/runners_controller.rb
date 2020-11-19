@@ -52,7 +52,7 @@ class Projects::RunnersController < Projects::ApplicationController
   end
 
   def toggle_shared_runners
-    if Feature.enabled?(:disable_shared_runners_on_group, default_enabled: true) && !project.shared_runners_enabled && project.group && project.group.shared_runners_setting == 'disabled_and_unoverridable'
+    if !project.shared_runners_enabled && project.group && project.group.shared_runners_setting == 'disabled_and_unoverridable'
       return redirect_to project_runners_path(@project), alert: _("Cannot enable shared runners because parent group does not allow it")
     end
 

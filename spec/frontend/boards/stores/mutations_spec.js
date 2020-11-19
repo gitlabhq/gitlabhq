@@ -82,7 +82,7 @@ describe('Board Store Mutations', () => {
       mutations.SET_ACTIVE_ID(state, expected);
     });
 
-    it('updates aciveListId to be the value that is passed', () => {
+    it('updates activeListId to be the value that is passed', () => {
       expect(state.activeId).toBe(expected.id);
     });
 
@@ -98,6 +98,34 @@ describe('Board Store Mutations', () => {
       mutations.SET_FILTERS(state, filterParams);
 
       expect(state.filterParams).toBe(filterParams);
+    });
+  });
+
+  describe('CREATE_LIST_FAILURE', () => {
+    it('sets error message', () => {
+      mutations.CREATE_LIST_FAILURE(state);
+
+      expect(state.error).toEqual('An error occurred while creating the list. Please try again.');
+    });
+  });
+
+  describe('RECEIVE_LABELS_FAILURE', () => {
+    it('sets error message', () => {
+      mutations.RECEIVE_LABELS_FAILURE(state);
+
+      expect(state.error).toEqual(
+        'An error occurred while fetching labels. Please reload the page.',
+      );
+    });
+  });
+
+  describe('GENERATE_DEFAULT_LISTS_FAILURE', () => {
+    it('sets error message', () => {
+      mutations.GENERATE_DEFAULT_LISTS_FAILURE(state);
+
+      expect(state.error).toEqual(
+        'An error occurred while generating lists. Please reload the page.',
+      );
     });
   });
 
@@ -156,16 +184,43 @@ describe('Board Store Mutations', () => {
     });
   });
 
-  describe('REQUEST_REMOVE_LIST', () => {
-    expectNotImplemented(mutations.REQUEST_REMOVE_LIST);
+  describe('REMOVE_LIST', () => {
+    it('removes list from boardLists', () => {
+      const [list, secondList] = mockListsWithModel;
+      const expected = {
+        [secondList.id]: secondList,
+      };
+      state = {
+        ...state,
+        boardLists: { ...initialBoardListsState },
+      };
+
+      mutations[types.REMOVE_LIST](state, list.id);
+
+      expect(state.boardLists).toEqual(expected);
+    });
   });
 
-  describe('RECEIVE_REMOVE_LIST_SUCCESS', () => {
-    expectNotImplemented(mutations.RECEIVE_REMOVE_LIST_SUCCESS);
-  });
+  describe('REMOVE_LIST_FAILURE', () => {
+    it('restores lists from backup', () => {
+      const backupLists = { ...initialBoardListsState };
 
-  describe('RECEIVE_REMOVE_LIST_ERROR', () => {
-    expectNotImplemented(mutations.RECEIVE_REMOVE_LIST_ERROR);
+      mutations[types.REMOVE_LIST_FAILURE](state, backupLists);
+
+      expect(state.boardLists).toEqual(backupLists);
+    });
+
+    it('sets error state', () => {
+      const backupLists = { ...initialBoardListsState };
+      state = {
+        ...state,
+        error: undefined,
+      };
+
+      mutations[types.REMOVE_LIST_FAILURE](state, backupLists);
+
+      expect(state.error).toEqual('An error occurred while removing the list. Please try again.');
+    });
   });
 
   describe('RESET_ISSUES', () => {
@@ -387,6 +442,14 @@ describe('Board Store Mutations', () => {
     expectNotImplemented(mutations.RECEIVE_UPDATE_ISSUE_ERROR);
   });
 
+  describe('CREATE_ISSUE_FAILURE', () => {
+    it('sets error message on state', () => {
+      mutations.CREATE_ISSUE_FAILURE(state);
+
+      expect(state.error).toBe('An error occurred while creating the issue. Please try again.');
+    });
+  });
+
   describe('ADD_ISSUE_TO_LIST', () => {
     it('adds issue to issues state and issue id in list in issuesByListId', () => {
       const listIssues = {
@@ -400,17 +463,21 @@ describe('Board Store Mutations', () => {
         ...state,
         issuesByListId: listIssues,
         issues,
+        boardLists: initialBoardListsState,
       };
 
-      mutations.ADD_ISSUE_TO_LIST(state, { list: mockLists[0], issue: mockIssue2 });
+      expect(state.boardLists['gid://gitlab/List/1'].issuesSize).toBe(1);
+
+      mutations.ADD_ISSUE_TO_LIST(state, { list: mockListsWithModel[0], issue: mockIssue2 });
 
       expect(state.issuesByListId['gid://gitlab/List/1']).toContain(mockIssue2.id);
       expect(state.issues[mockIssue2.id]).toEqual(mockIssue2);
+      expect(state.boardLists['gid://gitlab/List/1'].issuesSize).toBe(2);
     });
   });
 
   describe('ADD_ISSUE_TO_LIST_FAILURE', () => {
-    it('removes issue id from list in issuesByListId', () => {
+    it('removes issue id from list in issuesByListId and sets error message', () => {
       const listIssues = {
         'gid://gitlab/List/1': [mockIssue.id, mockIssue2.id],
       };
@@ -426,9 +493,34 @@ describe('Board Store Mutations', () => {
         boardLists: initialBoardListsState,
       };
 
-      mutations.ADD_ISSUE_TO_LIST_FAILURE(state, { list: mockLists[0], issue: mockIssue2 });
+      mutations.ADD_ISSUE_TO_LIST_FAILURE(state, { list: mockLists[0], issueId: mockIssue2.id });
 
       expect(state.issuesByListId['gid://gitlab/List/1']).not.toContain(mockIssue2.id);
+      expect(state.error).toBe('An error occurred while creating the issue. Please try again.');
+    });
+  });
+
+  describe('REMOVE_ISSUE_FROM_LIST', () => {
+    it('removes issue id from list in issuesByListId and deletes issue from state', () => {
+      const listIssues = {
+        'gid://gitlab/List/1': [mockIssue.id, mockIssue2.id],
+      };
+      const issues = {
+        '1': mockIssue,
+        '2': mockIssue2,
+      };
+
+      state = {
+        ...state,
+        issuesByListId: listIssues,
+        issues,
+        boardLists: initialBoardListsState,
+      };
+
+      mutations.ADD_ISSUE_TO_LIST_FAILURE(state, { list: mockLists[0], issueId: mockIssue2.id });
+
+      expect(state.issuesByListId['gid://gitlab/List/1']).not.toContain(mockIssue2.id);
+      expect(state.issues).not.toContain(mockIssue2);
     });
   });
 

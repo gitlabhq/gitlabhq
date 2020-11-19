@@ -2,6 +2,7 @@
 name: application_settings_tokens_optional_encryption
 introduced_by_url: 
 rollout_issue_url: 
-group: 
+milestone: 
 type: development
+group: 
 default_enabled: false

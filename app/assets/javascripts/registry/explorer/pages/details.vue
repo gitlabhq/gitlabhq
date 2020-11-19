@@ -11,7 +11,6 @@ import TagsList from '../components/details_page/tags_list.vue';
 import TagsLoader from '../components/details_page/tags_loader.vue';
 import EmptyTagsState from '../components/details_page/empty_tags_state.vue';
 
-import { decodeAndParse } from '../utils';
 import {
   ALERT_SUCCESS_TAG,
   ALERT_DANGER_TAG,
@@ -37,18 +36,15 @@ export default {
   data() {
     return {
       itemsToBeDeleted: [],
-      isDesktop: true,
+      isMobile: false,
       deleteAlertType: null,
       dismissPartialCleanupWarning: false,
     };
   },
   computed: {
-    ...mapState(['tagsPagination', 'isLoading', 'config', 'tags']),
-    queryParameters() {
-      return decodeAndParse(this.$route.params.id);
-    },
+    ...mapState(['tagsPagination', 'isLoading', 'config', 'tags', 'imageDetails']),
     showPartialCleanupWarning() {
-      return this.queryParameters.cleanup_policy_started_at && !this.dismissPartialCleanupWarning;
+      return this.imageDetails?.cleanup_policy_started_at && !this.dismissPartialCleanupWarning;
     },
     tracking() {
       return {
@@ -61,15 +57,20 @@ export default {
         return this.tagsPagination.page;
       },
       set(page) {
-        this.requestTagsList({ pagination: { page }, params: this.$route.params.id });
+        this.requestTagsList({ page });
       },
     },
   },
   mounted() {
-    this.requestTagsList({ params: this.$route.params.id });
+    this.requestImageDetailsAndTagsList(this.$route.params.id);
   },
   methods: {
-    ...mapActions(['requestTagsList', 'requestDeleteTag', 'requestDeleteTags']),
+    ...mapActions([
+      'requestTagsList',
+      'requestDeleteTag',
+      'requestDeleteTags',
+      'requestImageDetailsAndTagsList',
+    ]),
     deleteTags(toBeDeleted) {
       this.itemsToBeDeleted = this.tags.filter(tag => toBeDeleted[tag.name]);
       this.track('click_button');
@@ -78,7 +79,7 @@ export default {
     handleSingleDelete() {
       const [itemToDelete] = this.itemsToBeDeleted;
       this.itemsToBeDeleted = [];
-      return this.requestDeleteTag({ tag: itemToDelete, params: this.$route.params.id })
+      return this.requestDeleteTag({ tag: itemToDelete })
         .then(() => {
           this.deleteAlertType = ALERT_SUCCESS_TAG;
         })
@@ -92,7 +93,6 @@ export default {
 
       return this.requestDeleteTags({
         ids: itemsToBeDeleted.map(x => x.name),
-        params: this.$route.params.id,
       })
         .then(() => {
           this.deleteAlertType = ALERT_SUCCESS_TAGS;
@@ -110,7 +110,7 @@ export default {
       }
     },
     handleResize() {
-      this.isDesktop = GlBreakpointInstance.isDesktop();
+      this.isMobile = GlBreakpointInstance.getBreakpointSize() === 'xs';
     },
   },
 };
@@ -132,12 +132,12 @@ export default {
       @dismiss="dismissPartialCleanupWarning = true"
     />
 
-    <details-header :image-name="queryParameters.name" />
+    <details-header :image-name="imageDetails.name" />
 
     <tags-loader v-if="isLoading" />
     <template v-else>
       <empty-tags-state v-if="tags.length === 0" :no-containers-image="config.noContainersImage" />
-      <tags-list v-else :tags="tags" :is-desktop="isDesktop" @delete="deleteTags" />
+      <tags-list v-else :tags="tags" :is-mobile="isMobile" @delete="deleteTags" />
     </template>
 
     <gl-pagination

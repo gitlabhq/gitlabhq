@@ -34,7 +34,8 @@ RSpec.describe ProjectStatistics do
         lfs_objects_size: 2.exabytes,
         build_artifacts_size: 1.exabyte,
         snippets_size: 1.exabyte,
-        pipeline_artifacts_size: 1.exabyte - 1
+        pipeline_artifacts_size: 512.petabytes - 1,
+        uploads_size: 512.petabytes
       )
 
       statistics.reload
@@ -46,7 +47,8 @@ RSpec.describe ProjectStatistics do
       expect(statistics.build_artifacts_size).to eq(1.exabyte)
       expect(statistics.storage_size).to eq(8.exabytes - 1)
       expect(statistics.snippets_size).to eq(1.exabyte)
-      expect(statistics.pipeline_artifacts_size).to eq(1.exabyte - 1)
+      expect(statistics.pipeline_artifacts_size).to eq(512.petabytes - 1)
+      expect(statistics.uploads_size).to eq(512.petabytes)
     end
   end
 
@@ -57,6 +59,7 @@ RSpec.describe ProjectStatistics do
       statistics.lfs_objects_size = 3
       statistics.build_artifacts_size = 4
       statistics.snippets_size = 5
+      statistics.uploads_size = 3
 
       expect(statistics.total_repository_size).to eq 5
     end
@@ -98,6 +101,7 @@ RSpec.describe ProjectStatistics do
       allow(statistics).to receive(:update_lfs_objects_size)
       allow(statistics).to receive(:update_snippets_size)
       allow(statistics).to receive(:update_storage_size)
+      allow(statistics).to receive(:update_uploads_size)
     end
 
     context "without arguments" do
@@ -111,6 +115,7 @@ RSpec.describe ProjectStatistics do
         expect(statistics).to have_received(:update_wiki_size)
         expect(statistics).to have_received(:update_lfs_objects_size)
         expect(statistics).to have_received(:update_snippets_size)
+        expect(statistics).to have_received(:update_uploads_size)
       end
     end
 
@@ -125,6 +130,7 @@ RSpec.describe ProjectStatistics do
         expect(statistics).not_to have_received(:update_repository_size)
         expect(statistics).not_to have_received(:update_wiki_size)
         expect(statistics).not_to have_received(:update_snippets_size)
+        expect(statistics).not_to have_received(:update_uploads_size)
       end
     end
 
@@ -139,10 +145,12 @@ RSpec.describe ProjectStatistics do
         expect(statistics).to have_received(:update_repository_size)
         expect(statistics).to have_received(:update_wiki_size)
         expect(statistics).to have_received(:update_snippets_size)
+        expect(statistics).to have_received(:update_uploads_size)
         expect(statistics.repository_size).to eq(0)
         expect(statistics.commit_count).to eq(0)
         expect(statistics.wiki_size).to eq(0)
         expect(statistics.snippets_size).to eq(0)
+        expect(statistics.uploads_size).to eq(0)
       end
     end
 
@@ -163,10 +171,12 @@ RSpec.describe ProjectStatistics do
         expect(statistics).to have_received(:update_repository_size)
         expect(statistics).to have_received(:update_wiki_size)
         expect(statistics).to have_received(:update_snippets_size)
+        expect(statistics).to have_received(:update_uploads_size)
         expect(statistics.repository_size).to eq(0)
         expect(statistics.commit_count).to eq(0)
         expect(statistics.wiki_size).to eq(0)
         expect(statistics.snippets_size).to eq(0)
+        expect(statistics.uploads_size).to eq(0)
       end
     end
 
@@ -211,6 +221,7 @@ RSpec.describe ProjectStatistics do
         expect(statistics).not_to receive(:update_wiki_size)
         expect(statistics).not_to receive(:update_lfs_objects_size)
         expect(statistics).not_to receive(:update_snippets_size)
+        expect(statistics).not_to receive(:update_uploads_size)
         expect(statistics).not_to receive(:save!)
         expect(Namespaces::ScheduleAggregationWorker)
           .not_to receive(:perform_async)
@@ -295,6 +306,26 @@ RSpec.describe ProjectStatistics do
     end
   end
 
+  describe '#update_uploads_size' do
+    let!(:upload1) { create(:upload, model: project, size: 1.megabyte) }
+    let!(:upload2) { create(:upload, model: project, size: 2.megabytes) }
+
+    it 'stores the size of related uploaded files' do
+      expect(statistics.update_uploads_size).to eq(3.megabytes)
+    end
+
+    context 'with feature flag disabled' do
+      before do
+        statistics.update_columns(uploads_size: 0)
+        stub_feature_flags(count_uploads_size_in_storage_stats: false)
+      end
+
+      it 'does not store the size of related uploaded files' do
+        expect(statistics.update_uploads_size).to eq(0)
+      end
+    end
+  end
+
   describe '#update_storage_size' do
     it "sums all storage counters" do
       statistics.update!(
@@ -302,12 +333,13 @@ RSpec.describe ProjectStatistics do
         wiki_size: 4,
         lfs_objects_size: 3,
         snippets_size: 2,
-        pipeline_artifacts_size: 3
+        pipeline_artifacts_size: 3,
+        uploads_size: 5
       )
 
       statistics.reload
 
-      expect(statistics.storage_size).to eq 14
+      expect(statistics.storage_size).to eq 19
     end
 
     it 'works during wiki_size backfill' do

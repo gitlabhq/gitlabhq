@@ -17,13 +17,13 @@ RSpec.shared_examples 'system note creation' do |update_params, note_text|
   end
 end
 
-RSpec.shared_examples 'draft notes creation' do |wip_action|
+RSpec.shared_examples 'draft notes creation' do |action|
   subject { described_class.new(project, user).execute(issuable, old_labels: []) }
 
   it 'creates Draft toggle and title change notes' do
     expect { subject }.to change { Note.count }.from(0).to(2)
 
-    expect(Note.first.note).to match("#{wip_action} as a **Work In Progress**")
+    expect(Note.first.note).to match("marked this merge request as **#{action}**")
     expect(Note.second.note).to match('changed title')
   end
 end

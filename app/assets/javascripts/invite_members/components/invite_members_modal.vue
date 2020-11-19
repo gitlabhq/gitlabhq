@@ -6,13 +6,13 @@ import {
   GlDatepicker,
   GlLink,
   GlSprintf,
-  GlSearchBoxByType,
   GlButton,
   GlFormInput,
 } from '@gitlab/ui';
 import eventHub from '../event_hub';
-import { s__, sprintf } from '~/locale';
+import { s__, __, sprintf } from '~/locale';
 import Api from '~/api';
+import MembersTokenSelect from '~/invite_members/components/members_token_select.vue';
 
 export default {
   name: 'InviteMembersModal',
@@ -23,16 +23,20 @@ export default {
     GlDropdown,
     GlDropdownItem,
     GlSprintf,
-    GlSearchBoxByType,
     GlButton,
     GlFormInput,
+    MembersTokenSelect,
   },
   props: {
-    groupId: {
+    id: {
       type: String,
       required: true,
     },
-    groupName: {
+    isProject: {
+      type: Boolean,
+      required: true,
+    },
+    name: {
       type: String,
       required: true,
     },
@@ -59,9 +63,16 @@ export default {
     };
   },
   computed: {
+    inviteToName() {
+      return this.name.toUpperCase();
+    },
+    inviteToType() {
+      return this.isProject ? __('project') : __('group');
+    },
     introText() {
-      return sprintf(s__("InviteMembersModal|You're inviting members to the %{group_name} group"), {
-        group_name: this.groupName,
+      return sprintf(s__("InviteMembersModal|You're inviting members to the %{name} %{type}"), {
+        name: this.inviteToName,
+        type: this.inviteToType,
       });
     },
     toastOptions() {
@@ -110,13 +121,14 @@ export default {
       this.selectedAccessLevel = item;
     },
     submitForm(formData) {
-      return Api.inviteGroupMember(this.groupId, formData)
-        .then(() => {
-          this.showToastMessageSuccess();
-        })
-        .catch(error => {
-          this.showToastMessageError(error);
-        });
+      if (this.isProject) {
+        return Api.inviteProjectMembers(this.id, formData)
+          .then(this.showToastMessageSuccess)
+          .catch(this.showToastMessageError);
+      }
+      return Api.inviteGroupMember(this.id, formData)
+        .then(this.showToastMessageSuccess)
+        .catch(this.showToastMessageError);
     },
     showToastMessageSuccess() {
       this.$toast.show(this.$options.labels.toastMessageSuccessful, this.toastOptions);
@@ -129,44 +141,45 @@ export default {
   },
   labels: {
     modalTitle: s__('InviteMembersModal|Invite team members'),
-    userToInvite: s__('InviteMembersModal|GitLab member or Email address'),
+    newUsersToInvite: s__('InviteMembersModal|GitLab member or Email address'),
     userPlaceholder: s__('InviteMembersModal|Search for members to invite'),
     accessLevel: s__('InviteMembersModal|Choose a role permission'),
     accessExpireDate: s__('InviteMembersModal|Access expiration date (optional)'),
-    toastMessageSuccessful: s__('InviteMembersModal|Users were succesfully added'),
-    toastMessageUnsuccessful: s__('InviteMembersModal|User not invited. Feature coming soon!'),
+    toastMessageSuccessful: s__('InviteMembersModal|Members were successfully added'),
+    toastMessageUnsuccessful: s__('InviteMembersModal|Some of the members could not be added'),
     readMoreText: s__(`InviteMembersModal|%{linkStart}Read more%{linkEnd} about role permissions`),
     inviteButtonText: s__('InviteMembersModal|Invite'),
     cancelButtonText: s__('InviteMembersModal|Cancel'),
+    headerCloseLabel: s__('InviteMembersModal|Close invite team members'),
   },
+  membersTokenSelectLabelId: 'invite-members-input',
 };
 </script>
 <template>
-  <gl-modal :modal-id="modalId" size="sm" :title="$options.labels.modalTitle">
+  <gl-modal
+    :modal-id="modalId"
+    size="sm"
+    :title="$options.labels.modalTitle"
+    :header-close-label="$options.labels.headerCloseLabel"
+  >
     <div class="gl-ml-5 gl-mr-5">
       <div>{{ introText }}</div>
 
-      <label class="gl-font-weight-bold gl-mt-5">{{ $options.labels.userToInvite }}</label>
+      <label :id="$options.membersTokenSelectLabelId" class="gl-font-weight-bold gl-mt-5">{{
+        $options.labels.newUsersToInvite
+      }}</label>
       <div class="gl-mt-2">
-        <gl-search-box-by-type
+        <members-token-select
           v-model="newUsersToInvite"
+          :label="$options.labels.newUsersToInvite"
+          :aria-labelledby="$options.membersTokenSelectLabelId"
           :placeholder="$options.labels.userPlaceholder"
-          type="text"
-          autocomplete="off"
-          autocorrect="off"
-          autocapitalize="off"
-          spellcheck="false"
         />
       </div>
 
       <label class="gl-font-weight-bold gl-mt-5">{{ $options.labels.accessLevel }}</label>
       <div class="gl-mt-2 gl-w-half gl-xs-w-full">
-        <gl-dropdown
-          menu-class="dropdown-menu-selectable"
-          class="gl-shadow-none gl-w-full"
-          v-bind="$attrs"
-          :text="selectedRoleName"
-        >
+        <gl-dropdown class="gl-shadow-none gl-w-full" v-bind="$attrs" :text="selectedRoleName">
           <template v-for="(key, item) in accessLevels">
             <gl-dropdown-item
               :key="key"
@@ -215,9 +228,13 @@ export default {
           {{ $options.labels.cancelButtonText }}
         </gl-button>
         <div class="gl-mr-3"></div>
-        <gl-button ref="inviteButton" variant="success" @click="sendInvite">{{
-          $options.labels.inviteButtonText
-        }}</gl-button>
+        <gl-button
+          ref="inviteButton"
+          :disabled="!newUsersToInvite"
+          variant="success"
+          @click="sendInvite"
+          >{{ $options.labels.inviteButtonText }}</gl-button
+        >
       </div>
     </template>
   </gl-modal>

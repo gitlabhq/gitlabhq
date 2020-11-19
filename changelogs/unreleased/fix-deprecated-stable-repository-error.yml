@@ -1,0 +1,5 @@
+---
+title: Fix auto-deploy-image fetches deprecated stable repository and causes an error
+merge_request: 45984
+author:
+type: fixed

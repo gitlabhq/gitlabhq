@@ -1,0 +1,8 @@
+---
+name: ci_seed_block_run_before_workflow_rules
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45674
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/270439
+milestone: '13.6'
+type: development
+group: group::pipeline authoring
+default_enabled: true

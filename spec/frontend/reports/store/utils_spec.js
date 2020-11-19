@@ -168,6 +168,54 @@ describe('Reports store utils', () => {
     });
   });
 
+  describe('recentFailuresTextBuilder', () => {
+    it.each`
+      recentlyFailed | failed | expected
+      ${0}           | ${1}   | ${''}
+      ${1}           | ${1}   | ${'1 out of 1 failed test has failed more than once in the last 14 days'}
+      ${1}           | ${2}   | ${'1 out of 2 failed tests has failed more than once in the last 14 days'}
+      ${2}           | ${3}   | ${'2 out of 3 failed tests have failed more than once in the last 14 days'}
+    `(
+      'should render summary for $recentlyFailed out of $failed failures',
+      ({ recentlyFailed, failed, expected }) => {
+        const result = utils.recentFailuresTextBuilder({ recentlyFailed, failed });
+
+        expect(result).toBe(expected);
+      },
+    );
+  });
+
+  describe('countRecentlyFailedTests', () => {
+    it('counts tests with more than one recent failure in a report', () => {
+      const report = {
+        new_failures: [{ recent_failures: 2 }],
+        existing_failures: [{ recent_failures: 1 }],
+        resolved_failures: [{ recent_failures: 20 }, { recent_failures: 5 }],
+      };
+      const result = utils.countRecentlyFailedTests(report);
+
+      expect(result).toBe(3);
+    });
+
+    it('counts tests  with more than one recent failure in an array of reports', () => {
+      const reports = [
+        {
+          new_failures: [{ recent_failures: 2 }],
+          existing_failures: [{ recent_failures: 20 }, { recent_failures: 5 }],
+          resolved_failures: [{ recent_failures: 2 }],
+        },
+        {
+          new_failures: [{ recent_failures: 8 }, { recent_failures: 14 }],
+          existing_failures: [{ recent_failures: 1 }],
+          resolved_failures: [{ recent_failures: 7 }, { recent_failures: 5 }],
+        },
+      ];
+      const result = utils.countRecentlyFailedTests(reports);
+
+      expect(result).toBe(8);
+    });
+  });
+
   describe('statusIcon', () => {
     describe('with failed status', () => {
       it('returns ICON_WARNING', () => {

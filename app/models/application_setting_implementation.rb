@@ -60,7 +60,7 @@ module ApplicationSettingImplementation
         diff_max_patch_bytes: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES,
         disabled_oauth_sign_in_sources: [],
         dns_rebinding_protection_enabled: true,
-        domain_whitelist: Settings.gitlab['domain_whitelist'],
+        domain_allowlist: Settings.gitlab['domain_allowlist'],
         dsa_key_restriction: 0,
         ecdsa_key_restriction: 0,
         ed25519_key_restriction: 0,
@@ -120,7 +120,7 @@ module ApplicationSettingImplementation
         repository_checks_enabled: true,
         repository_storages_weighted: { default: 100 },
         repository_storages: ['default'],
-        require_admin_approval_after_user_signup: false,
+        require_admin_approval_after_user_signup: true,
         require_two_factor_authentication: false,
         restricted_visibility_levels: Settings.gitlab['restricted_visibility_levels'],
         rsa_key_restriction: 0,
@@ -167,7 +167,8 @@ module ApplicationSettingImplementation
         user_default_internal_regex: nil,
         user_show_add_ssh_key_message: true,
         wiki_page_max_content_bytes: 50.megabytes,
-        container_registry_delete_tags_service_timeout: 100
+        container_registry_delete_tags_service_timeout: 250,
+        container_registry_expiration_policies_worker_capacity: 0
       }
     end
 
@@ -201,38 +202,38 @@ module ApplicationSettingImplementation
     super(sources)
   end
 
-  def domain_whitelist_raw
-    array_to_string(self.domain_whitelist)
+  def domain_allowlist_raw
+    array_to_string(self.domain_allowlist)
   end
 
-  def domain_blacklist_raw
-    array_to_string(self.domain_blacklist)
+  def domain_denylist_raw
+    array_to_string(self.domain_denylist)
   end
 
-  def domain_whitelist_raw=(values)
-    self.domain_whitelist = strings_to_array(values)
+  def domain_allowlist_raw=(values)
+    self.domain_allowlist = strings_to_array(values)
   end
 
-  def domain_blacklist_raw=(values)
-    self.domain_blacklist = strings_to_array(values)
+  def domain_denylist_raw=(values)
+    self.domain_denylist = strings_to_array(values)
   end
 
-  def domain_blacklist_file=(file)
-    self.domain_blacklist_raw = file.read
+  def domain_denylist_file=(file)
+    self.domain_denylist_raw = file.read
   end
 
-  def outbound_local_requests_whitelist_raw
+  def outbound_local_requests_allowlist_raw
     array_to_string(self.outbound_local_requests_whitelist)
   end
 
-  def outbound_local_requests_whitelist_raw=(values)
-    clear_memoization(:outbound_local_requests_whitelist_arrays)
+  def outbound_local_requests_allowlist_raw=(values)
+    clear_memoization(:outbound_local_requests_allowlist_arrays)
 
     self.outbound_local_requests_whitelist = strings_to_array(values)
   end
 
   def add_to_outbound_local_requests_whitelist(values_array)
-    clear_memoization(:outbound_local_requests_whitelist_arrays)
+    clear_memoization(:outbound_local_requests_allowlist_arrays)
 
     self.outbound_local_requests_whitelist ||= []
     self.outbound_local_requests_whitelist += values_array
@@ -244,13 +245,13 @@ module ApplicationSettingImplementation
   # application_setting.outbound_local_requests_whitelist array into 2 arrays;
   # an array of IPAddr objects (`[IPAddr.new('127.0.0.1')]`), and an array of
   # domain strings (`['www.example.com']`).
-  def outbound_local_requests_whitelist_arrays
-    strong_memoize(:outbound_local_requests_whitelist_arrays) do
+  def outbound_local_requests_allowlist_arrays
+    strong_memoize(:outbound_local_requests_allowlist_arrays) do
       next [[], []] unless self.outbound_local_requests_whitelist
 
-      ip_whitelist, domain_whitelist = separate_whitelists(self.outbound_local_requests_whitelist)
+      ip_allowlist, domain_allowlist = separate_allowlists(self.outbound_local_requests_whitelist)
 
-      [ip_whitelist, domain_whitelist]
+      [ip_allowlist, domain_allowlist]
     end
   end
 
@@ -395,19 +396,19 @@ module ApplicationSettingImplementation
 
   private
 
-  def separate_whitelists(string_array)
-    string_array.reduce([[], []]) do |(ip_whitelist, domain_whitelist), string|
+  def separate_allowlists(string_array)
+    string_array.reduce([[], []]) do |(ip_allowlist, domain_allowlist), string|
       address, port = parse_addr_and_port(string)
 
       ip_obj = Gitlab::Utils.string_to_ip_object(address)
 
       if ip_obj
-        ip_whitelist << Gitlab::UrlBlockers::IpWhitelistEntry.new(ip_obj, port: port)
+        ip_allowlist << Gitlab::UrlBlockers::IpAllowlistEntry.new(ip_obj, port: port)
       else
-        domain_whitelist << Gitlab::UrlBlockers::DomainWhitelistEntry.new(address, port: port)
+        domain_allowlist << Gitlab::UrlBlockers::DomainAllowlistEntry.new(address, port: port)
       end
 
-      [ip_whitelist, domain_whitelist]
+      [ip_allowlist, domain_allowlist]
     end
   end
 

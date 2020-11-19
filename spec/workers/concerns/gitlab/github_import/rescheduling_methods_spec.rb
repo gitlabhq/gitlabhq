@@ -26,7 +26,7 @@ RSpec.describe Gitlab::GithubImport::ReschedulingMethods do
     end
 
     context 'with an existing project' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, import_url: 'https://t0ken@github.com/repo/repo.git') }
 
       it 'notifies any waiters upon successfully importing the data' do
         expect(worker)

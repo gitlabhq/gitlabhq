@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import Vue from 'vue';
 import { GlIcon } from '@gitlab/ui';
+import { hide } from '~/tooltips';
 
 export default (ModalStore, boardsStore) => {
   const issueBoardsContent = document.querySelector('.content-wrapper > .js-focus-mode-board');
@@ -17,7 +18,9 @@ export default (ModalStore, boardsStore) => {
     },
     methods: {
       toggleFocusMode() {
-        $(this.$refs.toggleFocusModeButton).tooltip('hide');
+        const $el = $(this.$refs.toggleFocusModeButton);
+        hide($el);
+
         issueBoardsContent.classList.toggle('is-focused');
 
         this.isFullscreen = !this.isFullscreen;

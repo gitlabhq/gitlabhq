@@ -1,8 +1,12 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { cloneDeep } from 'lodash';
+
+import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
+
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import FileIcon from '~/vue_shared/components/file_icon.vue';
 import diffDiscussionsMockData from '../mock_data/diff_discussions';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { diffViewerModes } from '~/ide/constants';
@@ -136,9 +140,25 @@ describe('DiffFileHeader component', () => {
     });
   });
 
-  it('displays a copy to clipboard button', () => {
-    createComponent();
-    expect(wrapper.find(ClipboardButton).exists()).toBe(true);
+  describe('copy to clipboard', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('displays a copy to clipboard button', () => {
+      expect(wrapper.find(ClipboardButton).exists()).toBe(true);
+    });
+
+    it('triggers the copy to clipboard tracking event', () => {
+      const trackingSpy = mockTracking('_category_', wrapper.vm.$el, jest.spyOn);
+
+      triggerEvent('[data-testid="diff-file-copy-clipboard"]');
+
+      expect(trackingSpy).toHaveBeenCalledWith('_category_', 'click_copy_file_button', {
+        label: 'diff_copy_file_path_button',
+        property: 'diff_copy_file',
+      });
+    });
   });
 
   describe('for submodule', () => {
@@ -187,6 +207,14 @@ describe('DiffFileHeader component', () => {
         addMergeRequestButtons: true,
       });
       expect(findFileActions().exists()).toBe(false);
+    });
+
+    it('renders submodule icon', () => {
+      createComponent({
+        diffFile: submoduleDiffFile,
+      });
+
+      expect(wrapper.find(FileIcon).props('submodule')).toBe(true);
     });
   });
 

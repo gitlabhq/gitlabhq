@@ -1,0 +1,37 @@
+.upload-dropzone-border {
+  border: 2px dashed $gray-100;
+}
+
+.upload-dropzone-card {
+  transition: border $gl-transition-duration-medium $general-hover-transition-curve;
+  color: $gl-text-color;
+
+  &:focus,
+  &:active {
+    outline: none;
+    border: 2px dashed $purple;
+    color: $gl-text-color;
+  }
+
+  &:hover {
+    border-color: $gray-300;
+  }
+}
+
+.upload-dropzone-overlay {
+  border: 2px dashed $purple;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  opacity: 1;
+}
+
+.upload-dropzone-fade-enter-active,
+.upload-dropzone-fade-leave-active {
+  transition: opacity $general-hover-transition-duration $general-hover-transition-curve;
+}
+
+.upload-dropzone-fade-enter,
+.upload-dropzone-fade-leave-to {
+  opacity: 0;
+}

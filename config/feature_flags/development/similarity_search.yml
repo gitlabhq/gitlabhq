@@ -2,6 +2,7 @@
 name: similarity_search
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37300/
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38675
-group: group::analytics
+milestone: '13.3'
 type: development
+group: group::analytics
 default_enabled: true

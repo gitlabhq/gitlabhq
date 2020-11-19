@@ -2,6 +2,7 @@
 name: block_anonymous_global_searches
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41041
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/244276
-group: group::global search
+milestone: '13.4'
 type: development
+group: group::global search
 default_enabled: false

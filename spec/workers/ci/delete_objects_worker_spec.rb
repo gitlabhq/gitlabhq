@@ -9,9 +9,14 @@ RSpec.describe Ci::DeleteObjectsWorker do
 
   describe '#perform' do
     it 'executes a service' do
+      allow(worker).to receive(:max_running_jobs).and_return(25)
+
       expect_next_instance_of(Ci::DeleteObjectsService) do |instance|
         expect(instance).to receive(:execute)
-        expect(instance).to receive(:remaining_batches_count).once.and_call_original
+        expect(instance).to receive(:remaining_batches_count)
+          .with(max_batch_count: 25)
+          .once
+          .and_call_original
       end
 
       worker.perform
@@ -23,7 +28,6 @@ RSpec.describe Ci::DeleteObjectsWorker do
 
     before do
       stub_feature_flags(
-        ci_delete_objects_low_concurrency: low,
         ci_delete_objects_medium_concurrency: medium,
         ci_delete_objects_high_concurrency: high
       )
@@ -31,13 +35,11 @@ RSpec.describe Ci::DeleteObjectsWorker do
 
     subject(:max_running_jobs) { worker.max_running_jobs }
 
-    where(:low, :medium, :high, :expected) do
-      false | false | false | 0
-      true  | true  | true  | 2
-      true  | false | false | 2
-      false | true  | false | 20
-      false | true  | true  | 20
-      false | false | true  | 50
+    where(:medium, :high, :expected) do
+      false | false | 2
+      true  | false | 20
+      true  | true  | 20
+      false | true  | 50
     end
 
     with_them do

@@ -197,8 +197,8 @@ class Note < ApplicationRecord
         .map(&:position)
     end
 
-    def count_for_collection(ids, type)
-      user.select('noteable_id', 'COUNT(*) as count')
+    def count_for_collection(ids, type, count_column = 'COUNT(*) as count')
+      user.select(:noteable_id, count_column)
         .group(:noteable_id)
         .where(noteable_type: type, noteable_id: ids)
     end

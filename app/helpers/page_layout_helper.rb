@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module PageLayoutHelper
+  include Gitlab::Utils::StrongMemoize
+
   def page_title(*titles)
     @page_title ||= []
 
@@ -44,7 +46,7 @@ module PageLayoutHelper
     if link
       @page_canonical_link = link
     else
-      @page_canonical_link
+      @page_canonical_link ||= generic_canonical_url
     end
   end
 
@@ -57,7 +59,7 @@ module PageLayoutHelper
 
     subject = @project || @user || @group
 
-    image = subject.avatar_url if subject.present?
+    image = subject.avatar_url(only_path: false) if subject.present?
     image || default
   end
 
@@ -146,5 +148,50 @@ module PageLayoutHelper
     end
 
     css_class.join(' ')
+  end
+
+  def page_itemtype(itemtype = nil)
+    if itemtype
+      @page_itemtype = { itemscope: true, itemtype: itemtype }
+    else
+      @page_itemtype || {}
+    end
+  end
+
+  def user_status_properties(user)
+    default_properties = { current_emoji: '', current_message: '', can_set_user_availability: Feature.enabled?(:set_user_availability_status, user), default_emoji: UserStatus::DEFAULT_EMOJI }
+    return default_properties unless user&.status
+
+    default_properties.merge({
+      current_emoji: user.status.emoji.to_s,
+      current_message: user.status.message.to_s,
+      current_availability: user.status.availability.to_s
+    })
+  end
+
+  private
+
+  def generic_canonical_url
+    strong_memoize(:generic_canonical_url) do
+      next unless request.get? || request.head?
+      next unless generate_generic_canonical_url?
+
+      # Request#url builds the url without the trailing slash
+      request.url
+    end
+  end
+
+  def generate_generic_canonical_url?
+    # For the main domain it doesn't matter whether there is
+    # a trailing slash or not, they're not considered different
+    # pages
+    return false if request.path == '/'
+
+    # We only need to generate the canonical url when the request has a trailing
+    # slash. In the request object, only the `original_fullpath` and
+    # `original_url` keep the slash if it's present. Both `path` and
+    # `fullpath` would return the path without the slash.
+    # Therefore, we need to process `original_fullpath`
+    request.original_fullpath.sub(request.path, '')[0] == '/'
   end
 end

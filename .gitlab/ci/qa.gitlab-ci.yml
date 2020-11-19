@@ -7,7 +7,7 @@
   before_script:
     - '[ "$FOSS_ONLY" = "1" ] && rm -rf ee/ qa/spec/ee/ qa/qa/specs/features/ee/ qa/qa/ee/ qa/qa/ee.rb'
     - cd qa/
-    - bundle install --clean --jobs=$(nproc) --path=vendor --retry=3 --quiet
+    - bundle install --clean --jobs=$(nproc) --path=vendor --retry=3 --without=development --quiet
     - bundle check
 
 qa:internal:
@@ -47,7 +47,7 @@ update-qa-cache:
     policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
 .package-and-qa-base:
-  image: ruby:2.6-alpine
+  image: ruby:2.7-alpine
   stage: qa
   retry: 0
   script:

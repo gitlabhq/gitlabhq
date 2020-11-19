@@ -3,6 +3,9 @@
 class ContainerRepository < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include Gitlab::SQL::Pattern
+  include EachBatch
+
+  WAITING_CLEANUP_STATUSES = %i[cleanup_scheduled cleanup_unfinished].freeze
 
   belongs_to :project
 
@@ -10,6 +13,7 @@ class ContainerRepository < ApplicationRecord
   validates :name, uniqueness: { scope: :project_id }
 
   enum status: { delete_scheduled: 0, delete_failed: 1 }
+  enum expiration_policy_cleanup_status: { cleanup_unscheduled: 0, cleanup_scheduled: 1, cleanup_unfinished: 2, cleanup_ongoing: 3 }
 
   delegate :client, to: :registry
 
@@ -24,7 +28,9 @@ class ContainerRepository < ApplicationRecord
     ContainerRepository
       .joins("INNER JOIN (#{project_scope.to_sql}) projects on projects.id=container_repositories.project_id")
   end
+  scope :for_project_id, ->(project_id) { where(project_id: project_id) }
   scope :search_by_name, ->(query) { fuzzy_search(query, [:name], use_minimum_char_limit: false) }
+  scope :waiting_for_cleanup, -> { where(expiration_policy_cleanup_status: WAITING_CLEANUP_STATUSES) }
 
   def self.exists_by_path?(path)
     where(

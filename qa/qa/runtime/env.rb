@@ -8,7 +8,7 @@ module QA
     module Env
       extend self
 
-      attr_writer :personal_access_token, :ldap_username, :ldap_password
+      attr_writer :personal_access_token
 
       ENV_VARIABLES = Gitlab::QA::Runtime::Env::ENV_VARIABLES
 
@@ -291,6 +291,11 @@ module QA
 
       def ldap_username
         @ldap_username ||= ENV['GITLAB_LDAP_USERNAME']
+      end
+
+      def ldap_username=(ldap_username)
+        @ldap_username = ldap_username # rubocop:disable Gitlab/ModuleWithInstanceVariables
+        ENV['GITLAB_LDAP_USERNAME'] = ldap_username
       end
 
       def ldap_password

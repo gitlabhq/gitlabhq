@@ -23,7 +23,8 @@ RSpec.describe JiraConnect::SyncService do
           project: project,
           commits: commits,
           branches: [instance_of(Gitlab::Git::Branch)],
-          merge_requests: merge_requests
+          merge_requests: merge_requests,
+          update_sequence_id: anything
         ).and_return(return_value)
       end
     end

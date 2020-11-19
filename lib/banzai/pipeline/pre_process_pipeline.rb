@@ -5,6 +5,7 @@ module Banzai
     class PreProcessPipeline < BasePipeline
       def self.filters
         FilterArray[
+          Filter::NormalizeSourceFilter,
           Filter::FrontMatterFilter,
           Filter::BlockquoteFenceFilter,
         ]

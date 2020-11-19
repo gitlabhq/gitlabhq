@@ -1,10 +1,20 @@
-# Dependency Proxy API **(PREMIUM)**
+---
+stage: Package
+group: Package
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
+# Dependency Proxy API
 
 ## Purge the dependency proxy for a group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11631) in GitLab 12.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11631) in GitLab 12.10.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/273655) to [GitLab Core](https://about.gitlab.com/pricing/) in GitLab 13.6.
 
 Deletes the cached blobs for a group. This endpoint requires group admin access.
+
+CAUTION: **Warning:**
+[A bug exists](https://gitlab.com/gitlab-org/gitlab/-/issues/277161) for this API.
 
 ```plaintext
 DELETE /groups/:id/dependency_proxy/cache

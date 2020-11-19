@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Topics
 
 Welcome to Topics! We have organized our content resources into topics
@@ -16,6 +22,3 @@ tutorials, technical overviews, blog posts) and videos.
 - [GitLab Installation](../install/README.md)
 - [GitLab Pages](../user/project/pages/index.md)
 - [Offline GitLab](offline/index.md)
-
-NOTE: **Note:**
-More topics will be available soon.

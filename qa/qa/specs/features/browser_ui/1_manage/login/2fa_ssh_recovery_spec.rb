@@ -22,7 +22,7 @@ module QA
       it 'allows 2FA code recovery via ssh' do
         recovery_code = Support::SSH.perform do |ssh|
           ssh.key = ssh_key
-          ssh.uri = address.gsub(uri.port.to_s, ssh_port)
+          ssh.uri = address.gsub(/(?<=:)(#{uri.port})/, ssh_port)
           ssh.setup
           output = ssh.reset_2fa_codes
           output.scan(/([A-Za-z0-9]{16})\n/).flatten.first

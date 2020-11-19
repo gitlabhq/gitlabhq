@@ -27,7 +27,7 @@ RSpec.describe Projects::UpdatePagesService do
 
   context 'for new artifacts' do
     context "for a valid job" do
-      let!(:artifacts_archive) { create(:ci_job_artifact, file: file, job: build) }
+      let!(:artifacts_archive) { create(:ci_job_artifact, :correct_checksum, file: file, job: build) }
 
       before do
         create(:ci_job_artifact, file_type: :metadata, file_format: :gzip, file: metadata, job: build)
@@ -66,7 +66,43 @@ RSpec.describe Projects::UpdatePagesService do
 
         expect(deployment.size).to eq(file.size)
         expect(deployment.file).to be
+        expect(deployment.file_count).to eq(3)
+        expect(deployment.file_sha256).to eq(artifacts_archive.file_sha256)
         expect(project.pages_metadatum.reload.pages_deployment_id).to eq(deployment.id)
+      end
+
+      it 'does not fail if pages_metadata is absent' do
+        project.pages_metadatum.destroy!
+        project.reload
+
+        expect do
+          expect(execute).to eq(:success)
+        end.to change { project.pages_deployments.count }.by(1)
+
+        expect(project.pages_metadatum.reload.pages_deployment).to eq(project.pages_deployments.last)
+      end
+
+      context 'when there is an old pages deployment' do
+        let!(:old_deployment_from_another_project) { create(:pages_deployment) }
+        let!(:old_deployment) { create(:pages_deployment, project: project) }
+
+        it 'schedules a destruction of older deployments' do
+          expect(DestroyPagesDeploymentsWorker).to(
+            receive(:perform_in).with(described_class::OLD_DEPLOYMENTS_DESTRUCTION_DELAY,
+                                      project.id,
+                                      instance_of(Integer))
+          )
+
+          execute
+        end
+
+        it 'removes older deployments', :sidekiq_inline do
+          expect do
+            execute
+          end.not_to change { PagesDeployment.count } # it creates one and deletes one
+
+          expect(PagesDeployment.find_by_id(old_deployment.id)).to be_nil
+        end
       end
 
       it 'does not create deployment when zip_pages_deployments feature flag is disabled' do
@@ -188,6 +224,25 @@ RSpec.describe Projects::UpdatePagesService do
     end
   end
 
+  # this situation should never happen in real life because all new archives have sha256
+  # and we only use new archives
+  # this test is here just to clarify that this behavior is intentional
+  context 'when artifacts archive does not have sha256' do
+    let!(:artifacts_archive) { create(:ci_job_artifact, file: file, job: build) }
+
+    before do
+      create(:ci_job_artifact, file_type: :metadata, file_format: :gzip, file: metadata, job: build)
+
+      build.reload
+    end
+
+    it 'fails with exception raised' do
+      expect do
+        execute
+      end.to raise_error("Validation failed: File sha256 can't be blank")
+    end
+  end
+
   it 'fails to remove project pages when no pages is deployed' do
     expect(PagesWorker).not_to receive(:perform_in)
     expect(project.pages_deployed?).to be_falsey
@@ -210,7 +265,7 @@ RSpec.describe Projects::UpdatePagesService do
       file = fixture_file_upload('spec/fixtures/pages.zip')
       metafile = fixture_file_upload('spec/fixtures/pages.zip.meta')
 
-      create(:ci_job_artifact, :archive, file: file, job: build)
+      create(:ci_job_artifact, :archive, :correct_checksum, file: file, job: build)
       create(:ci_job_artifact, :metadata, file: metafile, job: build)
 
       allow(build).to receive(:artifacts_metadata_entry)

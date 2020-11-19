@@ -25,7 +25,7 @@ module Gitlab
 
           # rubocop: disable CodeReuse/ActiveRecord
           def auto_cancelable_pipelines
-            project.ci_pipelines
+            pipelines
               .where(ref: pipeline.ref)
               .where.not(id: pipeline.same_family_pipeline_ids)
               .where.not(sha: project.commit(pipeline.ref).try(:id))
@@ -33,6 +33,14 @@ module Gitlab
               .with_only_interruptible_builds
           end
           # rubocop: enable CodeReuse/ActiveRecord
+
+          def pipelines
+            if ::Feature.enabled?(:ci_auto_cancel_all_pipelines, project, default_enabled: false)
+              project.all_pipelines.ci_and_parent_sources
+            else
+              project.ci_pipelines
+            end
+          end
         end
       end
     end

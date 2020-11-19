@@ -5,6 +5,8 @@ RSpec.describe Packages::PackageFile, type: :model do
   describe 'relationships' do
     it { is_expected.to belong_to(:package) }
     it { is_expected.to have_one(:conan_file_metadatum) }
+    it { is_expected.to have_many(:package_file_build_infos).inverse_of(:package_file) }
+    it { is_expected.to have_many(:pipelines).through(:package_file_build_infos) }
   end
 
   describe 'validations' do

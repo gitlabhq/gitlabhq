@@ -41,13 +41,13 @@ export default {
         this.mediator.poll.enable({ data: this.mediator.getExpandedParameters() });
       }
     },
-    resetTriggeredPipelines(parentPipeline, pipeline) {
+    resetDownstreamPipelines(parentPipeline, pipeline) {
       this.mediator.store.resetTriggeredPipelines(parentPipeline, pipeline);
     },
-    clickTriggeredByPipeline(pipeline) {
+    clickUpstreamPipeline(pipeline) {
       this.clickPipeline(pipeline, 'openPipeline', 'closePipeline');
     },
-    clickTriggeredPipeline(pipeline) {
+    clickDownstreamPipeline(pipeline) {
       this.clickPipeline(pipeline, 'openPipeline', 'closePipeline');
     },
     requestRefreshPipelineGraph() {

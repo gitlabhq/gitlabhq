@@ -1,4 +1,7 @@
 ---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: reference
 ---
 
@@ -18,6 +21,43 @@ IP rate limits**:
 These limits are disabled by default.
 
 ![user-and-ip-rate-limits](img/user_and_ip_rate_limits.png)
+
+## Use an HTTP header to bypass rate limiting
+
+> [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/622) in GitLab 13.6.
+
+Depending on the needs of your organization, you may want to enable rate limiting
+but have some requests bypass the rate limiter.
+
+You can do this by marking requests that should bypass the rate limiter with a custom
+header. You must do this somewhere in a load balancer or reverse proxy in front of
+GitLab. For example:
+
+1. Pick a name for your bypass header. For example, `Gitlab-Bypass-Rate-Limiting`.
+1. Configure your load balancer to set `Gitlab-Bypass-Rate-Limiting: 1` on requests
+   that should bypass GitLab rate limiting.
+1. Configure your load balancer to either:
+   - Erase `Gitlab-Bypass-Rate-Limiting`.
+   - Set `Gitlab-Bypass-Rate-Limiting` to a value other than `1` on all requests that
+     should be affected by rate limiting.
+1. Set the environment variable  `GITLAB_THROTTLE_BYPASS_HEADER`.
+   - For [Omnibus](https://docs.gitlab.com/omnibus/settings/environment-variables.html),
+     set `'GITLAB_THROTTLE_BYPASS_HEADER' => 'Gitlab-Bypass-Rate-Limiting'` in `gitlab_rails['env']`.
+   - For source installations, set `export GITLAB_THROTTLE_BYPASS_HEADER=Gitlab-Bypass-Rate-Limiting`
+     in `/etc/default/gitlab`.
+
+It is important that your load balancer erases or overwrites the bypass
+header on all incoming traffic, because otherwise you must trust your
+users to not set that header and bypass the GitLab rate limiter.
+
+Note that the bypass only works if the header is set to `1`.
+
+Requests that bypassed the rate limiter because of the bypass header
+will be marked with `"throttle_safelist":"throttle_bypass_header"` in
+[`production_json.log`](../../../administration/logs.md#production_jsonlog).
+
+To disable the bypass mechanism, make sure the environment variable
+`GITLAB_THROTTLE_BYPASS_HEADER` is unset or empty.
 
 <!-- ## Troubleshooting
 

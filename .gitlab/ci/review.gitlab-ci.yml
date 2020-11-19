@@ -25,7 +25,7 @@ review-build-cng:
   extends:
     - .default-retry
     - .review:rules:review-build-cng
-  image: ruby:2.6-alpine
+  image: ruby:2.7-alpine
   stage: review-prepare
   before_script:
     - source ./scripts/utils.sh
@@ -122,7 +122,7 @@ review-stop:
   extends:
     - .default-retry
     - .use-docker-in-docker
-  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine-ruby-2.6
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine-ruby-2.7
   stage: qa
   # This is needed so that manual jobs with needs don't block the pipeline.
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/199979.
@@ -199,7 +199,7 @@ review-performance:
 parallel-spec-reports:
   extends:
     - .review:rules:mr-only-manual
-  image: ruby:2.6-alpine
+  image: ruby:2.7-alpine
   stage: post-qa
   dependencies: ["review-qa-all"]
   variables:

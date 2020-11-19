@@ -1,6 +1,10 @@
 ---
 comments: false
-description: 'Learn how to contribute to GitLab.'
+type: index, dev
+stage: none
+group: Development
+info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines"
+description: "Development Guidelines: learn how to contribute to GitLab."
 ---
 
 # Contributor and Development Docs
@@ -60,6 +64,19 @@ Complementary reads:
 - [Patch release process for developers](https://gitlab.com/gitlab-org/release/docs/blob/master/general/patch/process.md#process-for-developers)
 - [Adding a new service component to GitLab](adding_service_component.md)
 
+### Development guidelines review
+
+When you submit a change to GitLab's development guidelines, request a review
+from:
+
+- A member of your team or group, to check for technical accuracy.
+- For **significant** changes or proposals, request review from:
+  - Engineering managers (FE, BE, DB, Security, UX, and others), according to the subject or process you're proposing.
+  - The VP of Development (DRI) ([@clefelhocz1](https://gitlab.com/clefelhocz1)), for
+  final approval of the new or changed guidelines.
+- The [Technical Writer assigned to dev guidelines](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines),
+  to review the content for consistency and adherence to documentation guidelines.
+
 ## UX and Frontend guides
 
 - [GitLab Design System](https://design.gitlab.com/) for building GitLab with existing CSS styles and elements
@@ -93,7 +110,6 @@ Complementary reads:
 - [Working with Merge Request diffs](diffs.md)
 - [Kubernetes integration guidelines](kubernetes.md)
 - [Permissions](permissions.md)
-- [Prometheus](prometheus.md)
 - [Guidelines for reusing abstractions](reusing_abstractions.md)
 - [DeclarativePolicy framework](policies.md)
 - [How Git object deduplication works in GitLab](git_object_deduplication.md)
@@ -117,17 +133,21 @@ Complementary reads:
 - [Approval Rules](approval_rules.md)
 - [Feature categorization](feature_categorization/index.md)
 - [Wikis development guide](wikis.md)
+- [Newlines style guide](newlines_styleguide.md)
+- [Image scaling guide](image_scaling.md)
 
 ## Performance guides
 
 - [Instrumentation](instrumentation.md) for Ruby code running in production
-  environments
+  environments.
 - [Performance guidelines](performance.md) for writing code, benchmarks, and
-  certain patterns to avoid
+  certain patterns to avoid.
 - [Merge request performance guidelines](merge_request_performance_guidelines.md)
   for ensuring merge requests do not negatively impact GitLab performance
 - [Profiling](profiling.md) a URL, measuring performance using Sherlock, or
-  tracking down N+1 queries using Bullet
+  tracking down N+1 queries using Bullet.
+- [Cached queries guidelines](cached_queries.md), for tracking down N+1 queries masked by query caching, memory profiling and why should
+  we avoid cached queries.
 
 ## Database guides
 
@@ -156,7 +176,7 @@ See [database guidelines](database/index.md).
 ## Documentation guides
 
 - [Writing documentation](documentation/index.md)
-- [Documentation style guide](documentation/styleguide.md)
+- [Documentation style guide](documentation/styleguide/index.md)
 - [Markdown](../user/markdown.md)
 
 ## Internationalization (i18n) guides
@@ -167,7 +187,7 @@ See [database guidelines](database/index.md).
 
 ## Product Analytics guides
 
-- [Product Analytics guide](product_analytics/index.md)
+- [Product Analytics guide](https://about.gitlab.com/handbook/product/product-analytics-guide/)
 - [Usage Ping guide](product_analytics/usage_ping.md)
 - [Snowplow guide](product_analytics/snowplow.md)
 
@@ -198,9 +218,9 @@ See [database guidelines](database/index.md).
 ## Other Development guides
 
 - [Defining relations between files using projections](projections.md)
-- [Reference processing](./reference_processing.md)
+- [Reference processing](reference_processing.md)
 - [Compatibility with multiple versions of the application running at the same time](multi_version_compatibility.md)
-- [Features inside `.gitlab/`](./features_inside_dot_gitlab.md)
+- [Features inside `.gitlab/`](features_inside_dot_gitlab.md)
 
 ## Other GitLab Development Kit (GDK) guides
 

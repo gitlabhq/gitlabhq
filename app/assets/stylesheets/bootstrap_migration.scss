@@ -115,26 +115,16 @@ code {
   background-color: $gray-50;
   border-radius: $border-radius-default;
 
-  .code > & {
-    background-color: inherit;
-    padding: unset;
-  }
-
+  .code > &,
   .build-trace & {
     background-color: inherit;
-    padding: inherit;
+    padding: unset;
   }
 }
 
 table {
   // Remove any table border lines
   border-spacing: 0;
-}
-
-.tooltip,
-.no-pointer-events {
-  // Fix bootstrap4 bug whereby tooltips flicker when they are hovered over their borders
-  pointer-events: none;
 }
 
 @each $breakpoint in map-keys($grid-breakpoints) {

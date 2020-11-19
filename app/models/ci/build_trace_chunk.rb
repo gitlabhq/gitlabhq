@@ -22,20 +22,26 @@ module Ci
 
     FailedToPersistDataError = Class.new(StandardError)
 
-    # Note: The ordering of this enum is related to the precedence of persist store.
+    # Note: The ordering of this hash is related to the precedence of persist store.
     # The bottom item takes the highest precedence, and the top item takes the lowest precedence.
-    enum data_store: {
+    DATA_STORES = {
       redis: 1,
       database: 2,
       fog: 3
-    }
+    }.freeze
+
+    STORE_TYPES = DATA_STORES.keys.map do |store|
+      [store, "Ci::BuildTraceChunks::#{store.capitalize}".constantize]
+    end.to_h.freeze
+
+    enum data_store: DATA_STORES
 
     scope :live, -> { redis }
     scope :persisted, -> { not_redis.order(:chunk_index) }
 
     class << self
       def all_stores
-        @all_stores ||= self.data_stores.keys
+        STORE_TYPES.keys
       end
 
       def persistable_store
@@ -44,12 +50,11 @@ module Ci
       end
 
       def get_store_class(store)
-        @stores ||= {}
+        store = store.to_sym
 
-        # Can't memoize this because the feature flag may alter this
-        return fog_store_class.new if store.to_sym == :fog
+        raise "Unknown store type: #{store}" unless STORE_TYPES.key?(store)
 
-        @stores[store] ||= "Ci::BuildTraceChunks::#{store.capitalize}".constantize.new
+        STORE_TYPES[store].new
       end
 
       ##
@@ -78,14 +83,6 @@ module Ci
       def metadata_attributes
         attribute_names - %w[raw_data]
       end
-
-      def fog_store_class
-        if Feature.enabled?(:ci_trace_new_fog_store, default_enabled: true)
-          Ci::BuildTraceChunks::Fog
-        else
-          Ci::BuildTraceChunks::LegacyFog
-        end
-      end
     end
 
     def data
@@ -108,7 +105,7 @@ module Ci
       raise ArgumentError, 'Offset is out of range' if offset < 0 || offset > size
       raise ArgumentError, 'Chunk size overflow' if CHUNK_SIZE < (offset + new_data.bytesize)
 
-      in_lock(*lock_params) { unsafe_append_data!(new_data, offset) }
+      in_lock(lock_key, **lock_params) { unsafe_append_data!(new_data, offset) }
 
       schedule_to_persist! if full?
     end
@@ -148,12 +145,13 @@ module Ci
     # We are using optimistic locking combined with Redis locking to ensure
     # that a chunk gets migrated properly.
     #
-    # We are catching an exception related to an exclusive lock not being
-    # acquired because it is creating a lot of noise, and is a result of
-    # duplicated workers running in parallel for the same build trace chunk.
+    # We are using until_executed deduplication strategy for workers,
+    # which should prevent duplicated workers running in parallel for the same build trace,
+    # and causing an exception related to an exclusive lock not being
+    # acquired
     #
     def persist_data!
-      in_lock(*lock_params) do         # exclusive Redis lock is acquired first
+      in_lock(lock_key, **lock_params) do # exclusive Redis lock is acquired first
         raise FailedToPersistDataError, 'Modifed build trace chunk detected' if has_changes_to_save?
 
         self.reset.then do |chunk|     # we ensure having latest lock_version
@@ -162,6 +160,8 @@ module Ci
       end
     rescue FailedToObtainLockError
       metrics.increment_trace_operation(operation: :stalled)
+
+      raise FailedToPersistDataError, 'Data migration failed due to a worker duplication'
     rescue ActiveRecord::StaleObjectError
       raise FailedToPersistDataError, <<~MSG
         Data migration race condition detected
@@ -289,11 +289,16 @@ module Ci
       build.trace_chunks.maximum(:chunk_index).to_i
     end
 
+    def lock_key
+      "trace_write:#{build_id}:chunks:#{chunk_index}"
+    end
+
     def lock_params
-      ["trace_write:#{build_id}:chunks:#{chunk_index}",
-       { ttl: WRITE_LOCK_TTL,
-         retries: WRITE_LOCK_RETRY,
-         sleep_sec: WRITE_LOCK_SLEEP }]
+      {
+        ttl: WRITE_LOCK_TTL,
+        retries: WRITE_LOCK_RETRY,
+        sleep_sec: WRITE_LOCK_SLEEP
+      }
     end
 
     def metrics

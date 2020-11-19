@@ -168,7 +168,7 @@ module Gitlab
 
         %r{\A(\.gitlab-ci\.yml\z|\.gitlab\/ci)} => :engineering_productivity,
         %r{\A\.codeclimate\.yml\z} => :engineering_productivity,
-        %r{\A\.overcommit\.yml\.example\z} => :engineering_productivity,
+        %r{\Alefthook.yml\z} => :engineering_productivity,
         %r{\A\.editorconfig\z} => :engineering_productivity,
         %r{Dangerfile\z} => :engineering_productivity,
         %r{\A(ee/)?(danger/|lib/gitlab/danger/)} => :engineering_productivity,
@@ -190,7 +190,7 @@ module Gitlab
         %r{\A(ee/)?vendor/} => :backend,
         %r{\A(Gemfile|Gemfile.lock|Rakefile)\z} => :backend,
         %r{\A[A-Z_]+_VERSION\z} => :backend,
-        %r{\A\.rubocop(_todo)?\.yml\z} => :backend,
+        %r{\A\.rubocop((_manual)?_todo)?\.yml\z} => :backend,
         %r{\Afile_hooks/} => :backend,
 
         %r{\A(ee/)?qa/} => :qa,
@@ -199,6 +199,9 @@ module Gitlab
         %r{\A(ee/)?changelogs/} => :none,
         %r{\Alocale/gitlab\.pot\z} => :none,
         %r{\Adata/whats_new/} => :none,
+
+        # GraphQL auto generated doc files and schema
+        %r{\Adoc/api/graphql/reference/} => :backend,
 
         # Fallbacks in case the above patterns miss anything
         %r{\.rb\z} => :backend,

@@ -87,14 +87,25 @@ RSpec.describe GroupsHelper do
   end
 
   describe 'group_title' do
-    let(:group) { create(:group) }
-    let(:nested_group) { create(:group, parent: group) }
-    let(:deep_nested_group) { create(:group, parent: nested_group) }
-    let!(:very_deep_nested_group) { create(:group, parent: deep_nested_group) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:nested_group) { create(:group, parent: group) }
+    let_it_be(:deep_nested_group) { create(:group, parent: nested_group) }
+    let_it_be(:very_deep_nested_group) { create(:group, parent: deep_nested_group) }
+
+    subject { helper.group_title(very_deep_nested_group) }
 
     it 'outputs the groups in the correct order' do
-      expect(helper.group_title(very_deep_nested_group))
+      expect(subject)
         .to match(%r{<li style="text-indent: 16px;"><a.*>#{deep_nested_group.name}.*</li>.*<a.*>#{very_deep_nested_group.name}</a>}m)
+    end
+
+    it 'enqueues the elements in the breadcrumb schema list' do
+      expect(helper).to receive(:push_to_schema_breadcrumb).with(group.name, group_path(group))
+      expect(helper).to receive(:push_to_schema_breadcrumb).with(nested_group.name, group_path(nested_group))
+      expect(helper).to receive(:push_to_schema_breadcrumb).with(deep_nested_group.name, group_path(deep_nested_group))
+      expect(helper).to receive(:push_to_schema_breadcrumb).with(very_deep_nested_group.name, group_path(very_deep_nested_group))
+
+      subject
     end
   end
 
@@ -367,6 +378,26 @@ RSpec.describe GroupsHelper do
       end
 
       it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#show_thanks_for_purchase_banner?' do
+    subject { helper.show_thanks_for_purchase_banner? }
+
+    it 'returns true with purchased_quantity present in params' do
+      allow(controller).to receive(:params) { { purchased_quantity: '1' } }
+
+      is_expected.to be_truthy
+    end
+
+    it 'returns false with purchased_quantity not present in params' do
+      is_expected.to be_falsey
+    end
+
+    it 'returns false with purchased_quantity is empty in params' do
+      allow(controller).to receive(:params) { { purchased_quantity: '' } }
+
+      is_expected.to be_falsey
     end
   end
 

@@ -7,10 +7,13 @@ RSpec.describe Resolvers::BaseResolver do
 
   let(:resolver) do
     Class.new(described_class) do
-      def resolve(**args)
+      argument :test, ::GraphQL::INT_TYPE, required: false
+      type [::GraphQL::INT_TYPE], null: true
+
+      def resolve(test: 100)
         process(object)
 
-        [args, args]
+        [test, test]
       end
 
       def process(obj); end
@@ -19,15 +22,73 @@ RSpec.describe Resolvers::BaseResolver do
 
   let(:last_resolver) do
     Class.new(described_class) do
+      type [::GraphQL::INT_TYPE], null: true
+
       def resolve(**args)
         [1, 2]
       end
     end
   end
 
+  describe '.singular_type' do
+    subject { resolver.singular_type }
+
+    context 'for a connection of scalars' do
+      let(:resolver) do
+        Class.new(described_class) do
+          type ::GraphQL::INT_TYPE.connection_type, null: true
+        end
+      end
+
+      it { is_expected.to eq(::GraphQL::INT_TYPE) }
+    end
+
+    context 'for a connection of objects' do
+      let(:object) do
+        Class.new(::Types::BaseObject) do
+          graphql_name 'Foo'
+        end
+      end
+
+      let(:resolver) do
+        conn = object.connection_type
+
+        Class.new(described_class) do
+          type conn, null: true
+        end
+      end
+
+      it { is_expected.to eq(object) }
+    end
+
+    context 'for a list type' do
+      let(:resolver) do
+        Class.new(described_class) do
+          type [::GraphQL::STRING_TYPE], null: true
+        end
+      end
+
+      it { is_expected.to eq(::GraphQL::STRING_TYPE) }
+    end
+
+    context 'for a scalar type' do
+      let(:resolver) do
+        Class.new(described_class) do
+          type ::GraphQL::BOOLEAN_TYPE, null: true
+        end
+      end
+
+      it { is_expected.to eq(::GraphQL::BOOLEAN_TYPE) }
+    end
+  end
+
   describe '.single' do
     it 'returns a subclass from the resolver' do
       expect(resolver.single.superclass).to eq(resolver)
+    end
+
+    it 'has the correct (singular) type' do
+      expect(resolver.single.type).to eq(::GraphQL::INT_TYPE)
     end
 
     it 'returns the same subclass every time' do
@@ -37,15 +98,106 @@ RSpec.describe Resolvers::BaseResolver do
     it 'returns a resolver that gives the first result from the original resolver' do
       result = resolve(resolver.single, args: { test: 1 })
 
-      expect(result).to eq(test: 1)
+      expect(result).to eq(1)
+    end
+  end
+
+  describe '.when_single' do
+    let(:resolver) do
+      Class.new(described_class) do
+        type [::GraphQL::INT_TYPE], null: true
+
+        when_single do
+          argument :foo, ::GraphQL::INT_TYPE, required: true
+        end
+
+        def resolve(foo: 1)
+          [foo * foo] # rubocop: disable Lint/BinaryOperatorWithIdenticalOperands
+        end
+      end
+    end
+
+    it 'does not apply the block to the resolver' do
+      expect(resolver.field_options).to include(
+        arguments: be_empty
+      )
+      result = resolve(resolver)
+
+      expect(result).to eq([1])
+    end
+
+    it 'applies the block to the single version of the resolver' do
+      expect(resolver.single.field_options).to include(
+        arguments: match('foo' => an_instance_of(::Types::BaseArgument))
+      )
+      result = resolve(resolver.single, args: { foo: 7 })
+
+      expect(result).to eq(49)
+    end
+
+    context 'multiple when_single blocks' do
+      let(:resolver) do
+        Class.new(described_class) do
+          type [::GraphQL::INT_TYPE], null: true
+
+          when_single do
+            argument :foo, ::GraphQL::INT_TYPE, required: true
+          end
+
+          when_single do
+            argument :bar, ::GraphQL::INT_TYPE, required: true
+          end
+
+          def resolve(foo: 1, bar: 2)
+            [foo * bar]
+          end
+        end
+      end
+
+      it 'applies both blocks to the single version of the resolver' do
+        expect(resolver.single.field_options).to include(
+          arguments: match('foo' => ::Types::BaseArgument, 'bar' => ::Types::BaseArgument)
+        )
+        result = resolve(resolver.single, args: { foo: 7, bar: 5 })
+
+        expect(result).to eq(35)
+      end
+    end
+
+    context 'inheritance' do
+      let(:subclass) do
+        Class.new(resolver) do
+          when_single do
+            argument :inc, ::GraphQL::INT_TYPE, required: true
+          end
+
+          def resolve(foo:, inc:)
+            super(foo: foo + inc)
+          end
+        end
+      end
+
+      it 'applies both blocks to the single version of the resolver' do
+        expect(resolver.single.field_options).to include(
+          arguments: match('foo' => ::Types::BaseArgument)
+        )
+        expect(subclass.single.field_options).to include(
+          arguments: match('foo' => ::Types::BaseArgument, 'inc' => ::Types::BaseArgument)
+        )
+        result = resolve(subclass.single, args: { foo: 7, inc: 1 })
+
+        expect(result).to eq(64)
+      end
     end
   end
 
   context 'when the resolver returns early' do
     let(:resolver) do
       Class.new(described_class) do
+        type [::GraphQL::STRING_TYPE], null: true
+
         def ready?(**args)
-          [false, %w(early return)]
+          [false, %w[early return]]
         end
 
         def resolve(**args)
@@ -119,30 +271,6 @@ RSpec.describe Resolvers::BaseResolver do
 
         resolve(resolver, obj: UserPresenter.new(user))
       end
-    end
-  end
-
-  describe '#synchronized_object' do
-    let(:object) { double(foo: :the_foo) }
-
-    let(:resolver) do
-      Class.new(described_class) do
-        def resolve(**args)
-          [synchronized_object.foo]
-        end
-      end
-    end
-
-    it 'handles raw objects' do
-      expect(resolve(resolver, obj: object)).to contain_exactly(:the_foo)
-    end
-
-    it 'handles lazy objects' do
-      delayed = BatchLoader::GraphQL.for(1).batch do |_, loader|
-        loader.call(1, object)
-      end
-
-      expect(resolve(resolver, obj: delayed)).to contain_exactly(:the_foo)
     end
   end
 end

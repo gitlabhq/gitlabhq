@@ -5,7 +5,7 @@ export default {
 </script>
 
 <template>
-  <div class="time-tracking-no-tracking-pane">
-    <span class="no-value"> {{ __('No estimate or time spent') }} </span>
+  <div data-testid="noTrackingPane">
+    <span class="no-value">{{ __('No estimate or time spent') }}</span>
   </div>
 </template>

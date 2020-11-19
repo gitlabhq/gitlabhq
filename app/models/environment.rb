@@ -305,6 +305,10 @@ class Environment < ApplicationRecord
     latest_opened_most_severe_alert.present?
   end
 
+  def has_running_deployments?
+    all_deployments.running.exists?
+  end
+
   def metrics
     prometheus_adapter.query(:environment, self) if has_metrics_and_can_query?
   end
@@ -395,7 +399,7 @@ class Environment < ApplicationRecord
 
   # Overrides ReactiveCaching default to activate limit checking behind a FF
   def reactive_cache_limit_enabled?
-    Feature.enabled?(:reactive_caching_limit_environment, project)
+    Feature.enabled?(:reactive_caching_limit_environment, project, default_enabled: true)
   end
 end
 

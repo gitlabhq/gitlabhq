@@ -10,7 +10,7 @@ module QA
           super
         end
 
-        def refresh
+        def refresh(skip_finished_loading_check: false)
           log("refreshing #{current_url}")
 
           super

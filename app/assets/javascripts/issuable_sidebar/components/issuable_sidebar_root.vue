@@ -29,6 +29,7 @@ export default {
   },
   mounted() {
     window.addEventListener('resize', this.handleWindowResize);
+    this.updatePageContainerClass();
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.handleWindowResize);

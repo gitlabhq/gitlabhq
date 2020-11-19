@@ -27,7 +27,7 @@
           data: label_dropdown_data(@project, namespace_path: @namespace_path, field_name: "issue[label_names][]") }
           %span.dropdown-toggle-text
             {{ labelDropdownTitle }}
-          = icon('chevron-down')
+          = sprite_icon('chevron-down', css_class: "dropdown-menu-toggle-icon gl-top-3")
         .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable.dropdown-extended-height
           = render partial: "shared/issuable/label_page_default"
           - if can?(current_user, :admin_label, current_board_parent)

@@ -4,7 +4,7 @@
 
 <!-- What is the problem and solution you're proposing? This content sets the overall vision for the feature and serves as the release notes that will populate in various places, including the [release post blog](https://about.gitlab.com/releases/categories/releases/) and [Gitlab project releases](https://gitlab.com/gitlab-org/gitlab/-/releases). " -->
 
-### Problem to solve
+### Problem to solve 
 
 <!-- What problem do we solve? Try to define the who/what/why of the opportunity as a user story. For example, "As a (who), I want (what), so I can (why/value)." -->
 
@@ -28,6 +28,7 @@ Personas are described at https://about.gitlab.com/handbook/marketing/product-ma
 * [Allison (Application Ops)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#allison-application-ops)
 * [Priyanka (Platform Engineer)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#priyanka-platform-engineer)
 * [Dana (Data Analyst)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#dana-data-analyst)
+* [Eddie (Content Editor)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#eddie-content-editor)
 -->
 
 ### User experience goal
@@ -95,7 +96,8 @@ In which enterprise tier should this feature go? See https://about.gitlab.com/ha
 
 ### Links / references
 
-<!--  Label reminders - you should have one of each of the following labels if you can figure out the correct ones -->
+<!--  Label reminders - you should have one of each of the following labels.
+Read the descriptions on https://gitlab.com/gitlab-org/gitlab/-/labels to find the correct ones -->
 /label ~devops:: ~group: ~Category:
 
 /label ~feature

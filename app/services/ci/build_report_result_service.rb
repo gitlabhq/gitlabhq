@@ -39,8 +39,6 @@ module Ci
     end
 
     def track_test_cases(build, test_suite)
-      return if Feature.disabled?(:track_unique_test_cases_parsed, build.project)
-
       track_usage_event(EVENT_NAME, test_case_hashes(build, test_suite))
     end
 

@@ -17,6 +17,7 @@ RSpec.describe 'Getting Metrics Dashboard Annotations' do
   let_it_be(:to_old_annotation) do
     create(:metrics_dashboard_annotation, environment: environment, starting_at: Time.parse(from).advance(minutes: -5), dashboard_path: path)
   end
+
   let_it_be(:to_new_annotation) do
     create(:metrics_dashboard_annotation, environment: environment, starting_at: to.advance(minutes: 5), dashboard_path: path)
   end

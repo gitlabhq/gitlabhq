@@ -1,11 +1,14 @@
 <script>
-import { GlModal } from '@gitlab/ui';
+import { GlModal, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import csrf from '~/lib/utils/csrf';
 
 export default {
   components: {
     GlModal,
+  },
+  directives: {
+    SafeHtml,
   },
   props: {
     selector: {
@@ -71,7 +74,8 @@ export default {
       -->
       <input type="hidden" name="_method" :value="method" />
       <input type="hidden" name="authenticity_token" :value="$options.csrf.token" />
-      <div>{{ modalAttributes.message }}</div>
+      <div v-if="modalAttributes.messageHtml" v-safe-html="modalAttributes.messageHtml"></div>
+      <div v-else>{{ modalAttributes.message }}</div>
     </form>
   </gl-modal>
 </template>

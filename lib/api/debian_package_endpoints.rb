@@ -26,6 +26,8 @@ module API
     }.freeze
 
     included do
+      feature_category :package_registry
+
       helpers ::API::Helpers::PackagesHelpers
       helpers ::API::Helpers::Packages::BasicAuthHelpers
 

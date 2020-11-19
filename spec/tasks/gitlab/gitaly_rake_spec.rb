@@ -89,7 +89,7 @@ RSpec.describe 'gitlab:gitaly namespace rake task' do
           let(:command) do
             %W[make
                BUNDLE_FLAGS=--no-deployment
-               BUNDLE_PATH=#{Bundler.bundle_path}]
+               GEM_HOME=#{Bundler.bundle_path}]
           end
 
           before do

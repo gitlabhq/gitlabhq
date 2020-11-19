@@ -158,7 +158,7 @@ module Gitlab
 
         if Service.available_services_names.include?(underscored_service)
           # We treat underscored_service as a trusted input because it is included
-          # in the Service.available_services_names whitelist.
+          # in the Service.available_services_names allowlist.
           service = project.public_send("#{underscored_service}_service") # rubocop:disable GitlabSecurity/PublicSend
 
           if service && service.activated? && service.valid_token?(password)

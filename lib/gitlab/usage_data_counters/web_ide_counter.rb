@@ -2,54 +2,43 @@
 
 module Gitlab
   module UsageDataCounters
-    class WebIdeCounter
-      extend RedisCounter
-      KNOWN_EVENTS = %i[commits views merge_requests previews terminals pipelines].freeze
+    class WebIdeCounter < BaseCounter
+      KNOWN_EVENTS = %w[commits views merge_requests previews terminals pipelines].freeze
       PREFIX = 'web_ide'
 
       class << self
         def increment_commits_count
-          increment(redis_key('commits'))
+          count('commits')
         end
 
         def increment_merge_requests_count
-          increment(redis_key('merge_requests'))
+          count('merge_requests')
         end
 
         def increment_views_count
-          increment(redis_key('views'))
+          count('views')
         end
 
         def increment_terminals_count
-          increment(redis_key('terminals'))
+          count('terminals')
         end
 
         def increment_pipelines_count
-          increment(redis_key('pipelines'))
+          count('pipelines')
         end
 
         def increment_previews_count
           return unless Gitlab::CurrentSettings.web_ide_clientside_preview_enabled?
 
-          increment(redis_key('previews'))
-        end
-
-        def totals
-          KNOWN_EVENTS.map { |event| [counter_key(event), total_count(redis_key(event))] }.to_h
-        end
-
-        def fallback_totals
-          KNOWN_EVENTS.map { |event| [counter_key(event), -1] }.to_h
+          count('previews')
         end
 
         private
 
         def redis_key(event)
-          "#{PREFIX}_#{event}_count".upcase
-        end
+          require_known_event(event)
 
-        def counter_key(event)
-          "#{PREFIX}_#{event}".to_sym
+          "#{prefix}_#{event}_count".upcase
         end
       end
     end

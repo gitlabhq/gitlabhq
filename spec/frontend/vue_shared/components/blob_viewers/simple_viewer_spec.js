@@ -5,9 +5,13 @@ import { HIGHLIGHT_CLASS_NAME } from '~/vue_shared/components/blob_viewers/const
 describe('Blob Simple Viewer component', () => {
   let wrapper;
   const contentMock = `<span id="LC1">First</span>\n<span id="LC2">Second</span>\n<span id="LC3">Third</span>`;
+  const blobHash = 'foo-bar';
 
   function createComponent(content = contentMock) {
     wrapper = shallowMount(SimpleViewer, {
+      provide: {
+        blobHash,
+      },
       propsData: {
         content,
         type: 'text',

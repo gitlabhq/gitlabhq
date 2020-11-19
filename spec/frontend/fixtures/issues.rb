@@ -16,6 +16,8 @@ RSpec.describe Projects::IssuesController, '(JavaScript fixtures)', type: :contr
   end
 
   before do
+    stub_feature_flags(vue_issue_header: false)
+
     sign_in(admin)
   end
 

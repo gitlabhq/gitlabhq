@@ -1,29 +1,35 @@
 <script>
-import { GlTooltipDirective } from '@gitlab/ui';
-import GlModal from '~/vue_shared/components/gl_modal.vue';
+import { GlTooltipDirective, GlModal } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import eventHub from '../event_hub';
 
 export default {
   id: 'delete-environment-modal',
   name: 'DeleteEnvironmentModal',
-
   components: {
     GlModal,
   },
-
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-
   props: {
     environment: {
       type: Object,
       required: true,
     },
   },
-
   computed: {
+    primaryProps() {
+      return {
+        text: s__('Environments|Delete environment'),
+        attributes: [{ variant: 'danger' }],
+      };
+    },
+    cancelProps() {
+      return {
+        text: s__('Cancel'),
+      };
+    },
     confirmDeleteMessage() {
       return sprintf(
         s__(
@@ -35,8 +41,12 @@ export default {
         false,
       );
     },
+    modalTitle() {
+      return sprintf(s__(`Environments|Delete '%{environmentName}'?`), {
+        environmentName: this.environment.name,
+      });
+    },
   },
-
   methods: {
     onSubmit() {
       eventHub.$emit('deleteEnvironment', this.environment);
@@ -47,20 +57,12 @@ export default {
 
 <template>
   <gl-modal
-    :id="$options.id"
-    :footer-primary-button-text="s__('Environments|Delete environment')"
-    footer-primary-button-variant="danger"
-    @submit="onSubmit"
+    :modal-id="$options.id"
+    :action-primary="primaryProps"
+    :action-cancel="cancelProps"
+    :title="modalTitle"
+    @primary="onSubmit"
   >
-    <template #header>
-      <h4 class="modal-title d-flex mw-100">
-        {{ __('Delete') }}
-        <span v-gl-tooltip :title="environment.name" class="text-truncate mx-1 flex-fill">
-          {{ environment.name }}?
-        </span>
-      </h4>
-    </template>
-
     <p>{{ confirmDeleteMessage }}</p>
   </gl-modal>
 </template>

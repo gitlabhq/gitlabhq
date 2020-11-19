@@ -1,6 +1,4 @@
 <script>
-import $ from 'jquery';
-import { mapActions, mapGetters } from 'vuex';
 import { GlButton } from '@gitlab/ui';
 import { getMilestone } from 'ee_else_ce/boards/boards_util';
 import ListIssue from 'ee_else_ce/boards/models/issue';
@@ -8,6 +6,8 @@ import eventHub from '../eventhub';
 import ProjectSelect from './project_select.vue';
 import boardsStore from '../stores/boards_store';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+
+// This component is being replaced in favor of './board_new_issue_new.vue' for GraphQL boards
 
 export default {
   name: 'BoardNewIssue',
@@ -31,15 +31,11 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['isSwimlanesOn']),
     disabled() {
       if (this.groupId) {
         return this.title === '' || !this.selectedProject.name;
       }
       return this.title === '';
-    },
-    shouldDisplaySwimlanes() {
-      return this.glFeatures.boardsWithSwimlanes && this.isSwimlanesOn;
     },
   },
   mounted() {
@@ -47,7 +43,6 @@ export default {
     eventHub.$on('setSelectedProject', this.setSelectedProject);
   },
   methods: {
-    ...mapActions(['addListIssue', 'addListIssueFailure']),
     submit(e) {
       e.preventDefault();
       if (this.title.trim() === '') return Promise.resolve();
@@ -74,31 +69,14 @@ export default {
       eventHub.$emit(`scroll-board-list-${this.list.id}`);
       this.cancel();
 
-      if (this.shouldDisplaySwimlanes || this.glFeatures.graphqlBoardLists) {
-        this.addListIssue({ list: this.list, issue, position: 0 });
-      }
-
       return this.list
         .newIssue(issue)
         .then(() => {
-          // Need this because our jQuery very kindly disables buttons on ALL form submissions
-          $(this.$refs.submitButton).enable();
-
-          if (!this.shouldDisplaySwimlanes && !this.glFeatures.graphqlBoardLists) {
-            boardsStore.setIssueDetail(issue);
-            boardsStore.setListDetail(this.list);
-          }
+          boardsStore.setIssueDetail(issue);
+          boardsStore.setListDetail(this.list);
         })
         .catch(() => {
-          // Need this because our jQuery very kindly disables buttons on ALL form submissions
-          $(this.$refs.submitButton).enable();
-
-          // Remove the issue
-          if (this.shouldDisplaySwimlanes || this.glFeatures.graphqlBoardLists) {
-            this.addListIssueFailure({ list: this.list, issue });
-          } else {
-            this.list.removeIssue(issue);
-          }
+          this.list.removeIssue(issue);
 
           // Show error message
           this.error = true;
@@ -137,7 +115,7 @@ export default {
           <gl-button
             ref="submitButton"
             :disabled="disabled"
-            class="float-left"
+            class="float-left js-no-auto-disable"
             variant="success"
             category="primary"
             type="submit"

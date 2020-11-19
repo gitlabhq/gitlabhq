@@ -1,0 +1,5 @@
+---
+title: Show "No user list selected" in feature flags
+merge_request: 46790
+author:
+type: fixed

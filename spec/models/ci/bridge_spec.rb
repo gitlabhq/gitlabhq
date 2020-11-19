@@ -55,6 +55,17 @@ RSpec.describe Ci::Bridge do
 
       expect(bridge.scoped_variables_hash.keys).to include(*variables)
     end
+
+    context 'when bridge has dependency which has dotenv variable' do
+      let(:test) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
+      let(:bridge) { create(:ci_bridge, pipeline: pipeline, stage_idx: 1, options: { dependencies: [test.name] }) }
+
+      let!(:job_variable) { create(:ci_job_variable, :dotenv_source, job: test) }
+
+      it 'includes inherited variable' do
+        expect(bridge.scoped_variables_hash).to include(job_variable.key => job_variable.value)
+      end
+    end
   end
 
   describe 'state machine transitions' do
@@ -355,6 +366,55 @@ RSpec.describe Ci::Bridge do
       subject { build_stubbed(:ci_bridge, :created).action? }
 
       it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#dependency_variables' do
+    subject { bridge.dependency_variables }
+
+    shared_context 'when ci_bridge_dependency_variables is disabled' do
+      before do
+        stub_feature_flags(ci_bridge_dependency_variables: false)
+      end
+
+      it { is_expected.to be_empty }
+    end
+
+    context 'when downloading from previous stages' do
+      let!(:prepare1) { create(:ci_build, name: 'prepare1', pipeline: pipeline, stage_idx: 0) }
+      let!(:bridge) { create(:ci_bridge, pipeline: pipeline, stage_idx: 1) }
+
+      let!(:job_variable_1) { create(:ci_job_variable, :dotenv_source, job: prepare1) }
+      let!(:job_variable_2) { create(:ci_job_variable, job: prepare1) }
+
+      it 'inherits only dependent variables' do
+        expect(subject.to_hash).to eq(job_variable_1.key => job_variable_1.value)
+      end
+
+      it_behaves_like 'when ci_bridge_dependency_variables is disabled'
+    end
+
+    context 'when using needs' do
+      let!(:prepare1) { create(:ci_build, name: 'prepare1', pipeline: pipeline, stage_idx: 0) }
+      let!(:prepare2) { create(:ci_build, name: 'prepare2', pipeline: pipeline, stage_idx: 0) }
+      let!(:prepare3) { create(:ci_build, name: 'prepare3', pipeline: pipeline, stage_idx: 0) }
+      let!(:bridge) do
+        create(:ci_bridge, pipeline: pipeline,
+                           stage_idx: 1,
+                           scheduling_type: 'dag',
+                           needs_attributes: [{ name: 'prepare1', artifacts: true },
+                                              { name: 'prepare2', artifacts: false }])
+      end
+
+      let!(:job_variable_1) { create(:ci_job_variable, :dotenv_source, job: prepare1) }
+      let!(:job_variable_2) { create(:ci_job_variable, :dotenv_source, job: prepare2) }
+      let!(:job_variable_3) { create(:ci_job_variable, :dotenv_source, job: prepare3) }
+
+      it 'inherits only needs with artifacts variables' do
+        expect(subject.to_hash).to eq(job_variable_1.key => job_variable_1.value)
+      end
+
+      it_behaves_like 'when ci_bridge_dependency_variables is disabled'
     end
   end
 end

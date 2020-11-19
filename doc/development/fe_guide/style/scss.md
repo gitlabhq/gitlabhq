@@ -1,4 +1,7 @@
 ---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 disqus_identifier: 'https://docs.gitlab.com/ee/development/fe_guide/style_guide_scss.html'
 ---
 
@@ -45,11 +48,6 @@ We recommend a "utility-first" approach.
 1. If composing utility classes into a component class removes code duplication and encapsulates a clear responsibility, do it.
 
 This encourages an organic growth of component classes and prevents the creation of one-off unreusable classes. Also, the kind of classes that emerge from "utility-first" tend to be design-centered (e.g. `.button`, `.alert`, `.card`) rather than domain-centered (e.g. `.security-report-widget`, `.commit-header-icon`).
-
-Examples of component classes that were created using "utility-first" include:
-
-- [`.circle-icon-container`](https://gitlab.com/gitlab-org/gitlab/blob/579fa8b8ec7eb38d40c96521f517c9dab8c3b97a/app/assets/stylesheets/framework/icons.scss#L85)
-- [`.d-flex-center`](https://gitlab.com/gitlab-org/gitlab/blob/900083d89cd6af391d26ab7922b3f64fa2839bef/app/assets/stylesheets/framework/common.scss#L425)
 
 Inspiration:
 

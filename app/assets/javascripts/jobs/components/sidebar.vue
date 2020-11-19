@@ -1,33 +1,40 @@
 <script>
 import { isEmpty } from 'lodash';
-import { mapActions, mapState } from 'vuex';
-import { GlLink, GlButton, GlIcon } from '@gitlab/ui';
-import { __, sprintf } from '~/locale';
-import timeagoMixin from '~/vue_shared/mixins/timeago';
+import { mapActions, mapGetters, mapState } from 'vuex';
+import { GlButton, GlIcon, GlLink } from '@gitlab/ui';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
-import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
-import DetailRow from './sidebar_detail_row.vue';
 import ArtifactsBlock from './artifacts_block.vue';
+import JobSidebarRetryButton from './job_sidebar_retry_button.vue';
+import JobRetryForwardDeploymentModal from './job_retry_forward_deployment_modal.vue';
 import TriggerBlock from './trigger_block.vue';
 import CommitBlock from './commit_block.vue';
 import StagesDropdown from './stages_dropdown.vue';
 import JobsContainer from './jobs_container.vue';
+import JobSidebarDetailsContainer from './sidebar_job_details_container.vue';
+import { JOB_SIDEBAR } from '../constants';
+
+export const forwardDeploymentFailureModalId = 'forward-deployment-failure';
 
 export default {
   name: 'JobSidebar',
+  i18n: {
+    ...JOB_SIDEBAR,
+  },
+  forwardDeploymentFailureModalId,
   components: {
     ArtifactsBlock,
     CommitBlock,
-    DetailRow,
-    GlIcon,
-    TriggerBlock,
-    StagesDropdown,
-    JobsContainer,
-    GlLink,
     GlButton,
+    GlLink,
+    GlIcon,
+    JobsContainer,
+    JobSidebarRetryButton,
+    JobRetryForwardDeploymentModal,
+    JobSidebarDetailsContainer,
+    StagesDropdown,
     TooltipOnTruncate,
+    TriggerBlock,
   },
-  mixins: [timeagoMixin],
   props: {
     artifactHelpUrl: {
       type: String,
@@ -41,53 +48,13 @@ export default {
     },
   },
   computed: {
+    ...mapGetters(['hasForwardDeploymentFailure']),
     ...mapState(['job', 'stages', 'jobs', 'selectedStage']),
-    coverage() {
-      return `${this.job.coverage}%`;
-    },
-    duration() {
-      return timeIntervalInWords(this.job.duration);
-    },
-    queued() {
-      return timeIntervalInWords(this.job.queued);
-    },
-    runnerId() {
-      return `${this.job.runner.description} (#${this.job.runner.id})`;
-    },
     retryButtonClass() {
-      let className = 'js-retry-button btn btn-retry';
+      let className = 'btn btn-retry';
       className +=
         this.job.status && this.job.recoverable ? ' btn-primary' : ' btn-inverted-secondary';
       return className;
-    },
-    hasTimeout() {
-      return this.job.metadata != null && this.job.metadata.timeout_human_readable !== null;
-    },
-    timeout() {
-      if (this.job.metadata == null) {
-        return '';
-      }
-
-      let t = this.job.metadata.timeout_human_readable;
-      if (this.job.metadata.timeout_source !== '') {
-        t += sprintf(__(` (from %{timeoutSource})`), {
-          timeoutSource: this.job.metadata.timeout_source,
-        });
-      }
-
-      return t;
-    },
-    renderBlock() {
-      return (
-        this.job.duration ||
-        this.job.finished_at ||
-        this.job.erased_at ||
-        this.job.queued ||
-        this.hasTimeout ||
-        this.job.runner ||
-        this.job.coverage ||
-        this.job.tags.length
-      );
     },
     hasArtifact() {
       return !isEmpty(this.job.artifact);
@@ -96,16 +63,13 @@ export default {
       return !isEmpty(this.job.trigger);
     },
     hasStages() {
-      return (
-        (this.job &&
-          this.job.pipeline &&
-          this.job.pipeline.stages &&
-          this.job.pipeline.stages.length > 0) ||
-        false
-      );
+      return this.job?.pipeline?.stages?.length > 0;
     },
     commit() {
-      return this.job.pipeline && this.job.pipeline.commit ? this.job.pipeline.commit : {};
+      return this.job?.pipeline?.commit || {};
+    },
+    shouldShowJobRetryForwardDeploymentModal() {
+      return this.job.retry_path && this.hasForwardDeploymentFailure;
     },
   },
   methods: {
@@ -124,29 +88,29 @@ export default {
             </h4>
           </tooltip-on-truncate>
           <div class="flex-grow-1 flex-shrink-0 text-right">
-            <gl-link
+            <job-sidebar-retry-button
               v-if="job.retry_path"
               :class="retryButtonClass"
               :href="job.retry_path"
-              data-method="post"
+              :modal-id="$options.forwardDeploymentFailureModalId"
               data-qa-selector="retry_button"
-              rel="nofollow"
-              >{{ __('Retry') }}</gl-link
-            >
+              data-testid="retry-button"
+            />
             <gl-link
               v-if="job.cancel_path"
               :href="job.cancel_path"
-              class="js-cancel-job btn btn-default"
+              class="btn btn-default"
               data-method="post"
+              data-testid="cancel-button"
               rel="nofollow"
-              >{{ __('Cancel') }}</gl-link
-            >
+              >{{ $options.i18n.cancel }}
+            </gl-link>
           </div>
 
           <gl-button
-            :aria-label="__('Toggle Sidebar')"
-            class="d-md-none gl-ml-2 js-sidebar-build-toggle"
+            :aria-label="$options.i18n.toggleSidebar"
             category="tertiary"
+            class="gl-display-md-none gl-ml-2 js-sidebar-build-toggle"
             icon="chevron-double-lg-right"
             @click="toggleSidebar"
           />
@@ -158,77 +122,43 @@ export default {
             :href="job.new_issue_path"
             class="btn btn-success btn-inverted float-left mr-2"
             data-testid="job-new-issue"
-            >{{ __('New issue') }}</gl-link
-          >
+            >{{ $options.i18n.newIssue }}
+          </gl-link>
           <gl-link
             v-if="job.terminal_path"
             :href="job.terminal_path"
-            class="js-terminal-link btn btn-primary btn-inverted visible-md-block visible-lg-block float-left"
+            class="btn btn-primary btn-inverted visible-md-block visible-lg-block float-left"
             target="_blank"
+            data-testid="terminal-link"
           >
-            {{ __('Debug') }} <gl-icon name="external-link" :size="14" />
+            {{ $options.i18n.debug }}
+            <gl-icon :size="14" name="external-link" />
           </gl-link>
         </div>
-
-        <div v-if="renderBlock" class="block">
-          <detail-row
-            v-if="job.duration"
-            :value="duration"
-            class="js-job-duration"
-            title="Duration"
-          />
-          <detail-row
-            v-if="job.finished_at"
-            :value="timeFormatted(job.finished_at)"
-            class="js-job-finished"
-            title="Finished"
-          />
-          <detail-row
-            v-if="job.erased_at"
-            :value="timeFormatted(job.erased_at)"
-            class="js-job-erased"
-            title="Erased"
-          />
-          <detail-row v-if="job.queued" :value="queued" class="js-job-queued" title="Queued" />
-          <detail-row
-            v-if="hasTimeout"
-            :help-url="runnerHelpUrl"
-            :value="timeout"
-            class="js-job-timeout"
-            title="Timeout"
-          />
-          <detail-row v-if="job.runner" :value="runnerId" class="js-job-runner" title="Runner" />
-          <detail-row
-            v-if="job.coverage"
-            :value="coverage"
-            class="js-job-coverage"
-            title="Coverage"
-          />
-          <p v-if="job.tags.length" class="build-detail-row js-job-tags">
-            <span class="font-weight-bold">{{ __('Tags:') }}</span>
-            <span v-for="(tag, i) in job.tags" :key="i" class="badge badge-primary mr-1">{{
-              tag
-            }}</span>
-          </p>
-        </div>
-
+        <job-sidebar-details-container :runner-help-url="runnerHelpUrl" />
         <artifacts-block v-if="hasArtifact" :artifact="job.artifact" :help-url="artifactHelpUrl" />
         <trigger-block v-if="hasTriggers" :trigger="job.trigger" />
         <commit-block
-          :is-last-block="hasStages"
           :commit="commit"
+          :is-last-block="hasStages"
           :merge-request="job.merge_request"
         />
 
         <stages-dropdown
-          :stages="stages"
+          v-if="job.pipeline"
           :pipeline="job.pipeline"
           :selected-stage="selectedStage"
+          :stages="stages"
           @requestSidebarStageDropdown="fetchJobsForStage"
         />
       </div>
 
-      <jobs-container v-if="jobs.length" :jobs="jobs" :job-id="job.id" />
+      <jobs-container v-if="jobs.length" :job-id="job.id" :jobs="jobs" />
     </div>
+    <job-retry-forward-deployment-modal
+      v-if="shouldShowJobRetryForwardDeploymentModal"
+      :modal-id="$options.forwardDeploymentFailureModalId"
+      :href="job.retry_path"
+    />
   </aside>
 </template>

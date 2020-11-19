@@ -10,6 +10,7 @@ module Clusters
       def initialize(provision_role, provider: nil)
         @provision_role = provision_role
         @provider = provider
+        @region = provider&.region || provision_role&.region || Clusters::Providers::Aws::DEFAULT_REGION
       end
 
       def execute
@@ -26,7 +27,7 @@ module Clusters
 
       private
 
-      attr_reader :provider
+      attr_reader :provider, :region
 
       def client
         ::Aws::STS::Client.new(credentials: gitlab_credentials, region: region)
@@ -42,10 +43,6 @@ module Clusters
 
       def secret_access_key
         Gitlab::CurrentSettings.eks_secret_access_key
-      end
-
-      def region
-        provider&.region || Clusters::Providers::Aws::DEFAULT_REGION
       end
 
       ##

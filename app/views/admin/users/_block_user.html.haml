@@ -2,10 +2,7 @@
   .card-header.bg-warning.text-white
     = s_('AdminUsers|Block this user')
   .card-body
-    = render partial: 'admin/users/user_block_effects'
+    = user_block_effects
     %br
-    %button.btn.gl-button.btn-warning{ data: { 'gl-modal-action': 'block',
-      content: s_('AdminUsers|You can always unblock their account, their data will remain intact.'),
-      url: block_admin_user_path(user),
-      username: sanitize_name(user.name) } }
+    %button.btn.gl-button.btn-warning.js-confirm-modal-button{ data: user_block_data(user, s_('AdminUsers|You can always unblock their account, their data will remain intact.')) }
       = s_('AdminUsers|Block user')

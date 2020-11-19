@@ -24,7 +24,7 @@ RSpec.describe Import::BulkImportsController do
             expect(session[:bulk_import_gitlab_url]).to be_nil
 
             expect(response).to have_gitlab_http_status(:found)
-            expect(response).to redirect_to(status_import_bulk_import_url)
+            expect(response).to redirect_to(status_import_bulk_imports_url)
           end
         end
 
@@ -37,7 +37,7 @@ RSpec.describe Import::BulkImportsController do
           expect(session[:bulk_import_gitlab_access_token]).to eq(token)
           expect(session[:bulk_import_gitlab_url]).to eq(url)
           expect(response).to have_gitlab_http_status(:found)
-          expect(response).to redirect_to(status_import_bulk_import_url)
+          expect(response).to redirect_to(status_import_bulk_imports_url)
         end
 
         it 'strips access token with spaces' do
@@ -46,19 +46,21 @@ RSpec.describe Import::BulkImportsController do
           post :configure, params: { bulk_import_gitlab_access_token: "  #{token} " }
 
           expect(session[:bulk_import_gitlab_access_token]).to eq(token)
-          expect(controller).to redirect_to(status_import_bulk_import_url)
+          expect(controller).to redirect_to(status_import_bulk_imports_url)
         end
       end
 
       describe 'GET status' do
-        let(:client) { Gitlab::BulkImport::Client.new(uri: 'http://gitlab.example', token: 'token') }
+        let(:client) { BulkImports::Clients::Http.new(uri: 'http://gitlab.example', token: 'token') }
 
         describe 'serialized group data' do
           let(:client_response) do
-            [
-              { 'id' => 1, 'full_name' => 'group1', 'full_path' => 'full/path/group1' },
-              { 'id' => 2, 'full_name' => 'group2', 'full_path' => 'full/path/group2' }
-            ]
+            double(
+              parsed_response: [
+                { 'id' => 1, 'full_name' => 'group1', 'full_path' => 'full/path/group1' },
+                { 'id' => 2, 'full_name' => 'group2', 'full_path' => 'full/path/group2' }
+              ]
+            )
           end
 
           before do
@@ -69,7 +71,7 @@ RSpec.describe Import::BulkImportsController do
           it 'returns serialized group data' do
             get :status, format: :json
 
-            expect(response.parsed_body).to eq({ importable_data: client_response }.as_json)
+            expect(json_response).to eq({ importable_data: client_response.parsed_response }.as_json)
           end
         end
 
@@ -111,7 +113,7 @@ RSpec.describe Import::BulkImportsController do
         context 'when connection error occurs' do
           before do
             allow(controller).to receive(:client).and_return(client)
-            allow(client).to receive(:get).and_raise(Gitlab::BulkImport::Client::ConnectionError)
+            allow(client).to receive(:get).and_raise(BulkImports::Clients::Http::ConnectionError)
           end
 
           it 'returns 422' do
@@ -128,9 +130,21 @@ RSpec.describe Import::BulkImportsController do
           end
         end
       end
+
+      describe 'POST create' do
+        it 'executes BulkImportService' do
+          expect_next_instance_of(BulkImportService) do |service|
+            expect(service).to receive(:execute)
+          end
+
+          post :create
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
     end
 
-    context 'when gitlab_api_imports feature flag is disabled' do
+    context 'when bulk_import feature flag is disabled' do
       before do
         stub_feature_flags(bulk_import: false)
       end

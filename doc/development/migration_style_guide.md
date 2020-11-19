@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Migration Style Guide
 
 When writing migrations for GitLab, you have to take into account that
@@ -376,8 +382,7 @@ Example changes:
 - `change_column_default`
 - `create_table` / `drop_table`
 
-NOTE: **Note:**
-`with_lock_retries` method **cannot** be used within the `change` method, you must manually define the `up` and `down` methods to make the migration reversible.
+The `with_lock_retries` method **cannot** be used within the `change` method, you must manually define the `up` and `down` methods to make the migration reversible.
 
 ### How the helper method works
 
@@ -437,7 +442,6 @@ the `with_multiple_threads` block, instead of re-using the global connection
 pool. This ensures each thread has its own connection object, and won't time
 out when trying to obtain one.
 
-NOTE: **Note:**
 PostgreSQL has a maximum amount of connections that it allows. This
 limit can vary from installation to installation. As a result, it's recommended
 you do not use more than 32 threads in a single migration. Usually, 4-8 threads
@@ -473,6 +477,12 @@ specifying the name is important to ensure the correct index is removed.
 For a small table (such as an empty one or one with less than `1,000` records),
 it is recommended to use `remove_index` in a single-transaction migration,
 combining it with other operations that don't require `disable_ddl_transaction!`.
+
+### Disabling an index
+
+There are certain situations in which you might want to disable an index before removing it.
+See the [maintenance operations guide](database/maintenance_operations.md#disabling-an-index)
+for more details.
 
 ## Adding indexes
 
@@ -612,7 +622,6 @@ Before PostgreSQL 11, adding a column with a default was problematic as it would
 have caused a full table rewrite. The corresponding helper `add_column_with_default`
 has been deprecated and will be removed in a later release.
 
-NOTE: **Note:**
 If a backport adding a column with a default value is needed for %12.9 or earlier versions,
 it should use `add_column_with_default` helper. If a [large table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3)
 is involved, backporting to %12.9 is contraindicated.
@@ -958,7 +967,6 @@ in a previous migration.
 
 ### Example: Add a column `my_column` to the users table
 
-NOTE: **Note:**
 It is important not to leave out the `User.reset_column_information` command, in order to ensure that the old schema is dropped from the cache and ActiveRecord loads the updated schema information.
 
 ```ruby

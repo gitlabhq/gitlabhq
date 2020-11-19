@@ -1,10 +1,13 @@
 # frozen_string_literal: true
+# rubocop:disable Graphql/ResolverType (inherited from MilestonesResolver)
 
 module Resolvers
   class GroupMilestonesResolver < MilestonesResolver
     argument :include_descendants, GraphQL::BOOLEAN_TYPE,
              required: false,
              description: 'Also return milestones in all subgroups and subprojects'
+
+    type Types::MilestoneType.connection_type, null: true
 
     private
 

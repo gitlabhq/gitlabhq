@@ -1,0 +1,5 @@
+---
+title: Add database view for partitioned tables
+merge_request: 45591
+author:
+type: other

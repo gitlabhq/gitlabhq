@@ -40,7 +40,6 @@ exports[`Repository last commit component renders commit widget 1`] = `
         >
           
             Test
-          
         </gl-link-stub>
         
           authored
@@ -147,7 +146,6 @@ exports[`Repository last commit component renders the signature HTML as returned
         >
           
             Test
-          
         </gl-link-stub>
         
           authored

@@ -1,5 +1,7 @@
 - project = local_assigns.fetch(:project)
 - members = local_assigns.fetch(:members)
+- group = local_assigns.fetch(:group)
+- current_user_is_group_owner = group && group.has_owner?(current_user)
 
 .card
   .card-header.flex-project-members-panel
@@ -14,5 +16,9 @@
             = sprite_icon('search', css_class: 'gl-vertical-align-middle!')
         = label_tag :sort_by, _('Sort by'), class: 'col-form-label label-bold px-2'
         = render 'shared/members/sort_dropdown'
-  %ul.content-list.members-list{ data: { qa_selector: 'members_list' } }
-    = render partial: 'shared/members/member', collection: members, as: :member
+  %ul.content-list.members-list{ data: { qa_selector: 'members_list', testid: 'members-table' } }
+    = render partial: 'shared/members/member',
+             collection: members, as: :member,
+             locals: { membership_source: project,
+                       group: group,
+                       current_user_is_group_owner: current_user_is_group_owner }

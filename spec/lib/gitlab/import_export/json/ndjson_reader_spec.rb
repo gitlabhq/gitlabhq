@@ -67,6 +67,14 @@ RSpec.describe Gitlab::ImportExport::JSON::NdjsonReader do
       it 'yields nothing to the Enumerator' do
         expect(subject.to_a).to eq([])
       end
+
+      context 'with mark_as_consumed: false' do
+        subject { ndjson_reader.consume_relation(importable_path, key, mark_as_consumed: false) }
+
+        it 'yields every relation value to the Enumerator' do
+          expect(subject.count).to eq(1)
+        end
+      end
     end
 
     context 'key has not been consumed' do
@@ -100,16 +108,6 @@ RSpec.describe Gitlab::ImportExport::JSON::NdjsonReader do
           expect(subject.to_a).to eq([[attr_1, 0], [attr_2, 1]])
         end
       end
-    end
-  end
-
-  describe '#clear_consumed_relations' do
-    let(:dir_path) { fixture }
-
-    subject { ndjson_reader.clear_consumed_relations }
-
-    it 'returns empty set' do
-      expect(subject).to be_empty
     end
   end
 end

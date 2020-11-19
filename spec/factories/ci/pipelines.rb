@@ -121,6 +121,14 @@ FactoryBot.define do
         end
       end
 
+      trait :with_test_reports_with_three_failures do
+        status { :success }
+
+        after(:build) do |pipeline, _evaluator|
+          pipeline.builds << build(:ci_build, :test_reports_with_three_failures, pipeline: pipeline, project: pipeline.project)
+        end
+      end
+
       trait :with_accessibility_reports do
         status { :success }
 

@@ -16,6 +16,7 @@ import {
   RECEIVE_NAMESPACES_SUCCESS,
   RECEIVE_NAMESPACES_ERROR,
   SET_PAGE,
+  SET_FILTER,
 } from '~/import_projects/store/mutation_types';
 import actionsFactory from '~/import_projects/store/actions';
 import { getImportTarget } from '~/import_projects/store/getters';
@@ -40,7 +41,7 @@ const {
   fetchImport,
   fetchJobs,
   fetchNamespaces,
-  setPage,
+  setFilter,
 } = actionsFactory({
   endpoints,
 });
@@ -68,6 +69,7 @@ describe('import_projects store actions', () => {
           importStatus: STATUSES.NONE,
         },
       ],
+      provider: 'provider',
     };
 
     localState.getImportTarget = getImportTarget(localState);
@@ -149,7 +151,28 @@ describe('import_projects store actions', () => {
       );
     });
 
-    describe('when /home/xanf/projects/gdk/gitlab/spec/frontend/import_projects/store/actions_spec.jsfiltered', () => {
+    describe('when rate limited', () => {
+      it('commits RECEIVE_REPOS_ERROR and shows rate limited error message', async () => {
+        mock.onGet(`${TEST_HOST}/endpoint.json?filter=filter`).reply(429);
+
+        await testAction(
+          fetchRepos,
+          null,
+          { ...localState, filter: 'filter' },
+          [
+            { type: SET_PAGE, payload: 1 },
+            { type: REQUEST_REPOS },
+            { type: SET_PAGE, payload: 0 },
+            { type: RECEIVE_REPOS_ERROR },
+          ],
+          [],
+        );
+
+        expect(createFlash).toHaveBeenCalledWith('Provider rate limit exceeded. Try again later');
+      });
+    });
+
+    describe('when filtered', () => {
       it('fetches repos with filter applied', () => {
         mock.onGet(`${TEST_HOST}/endpoint.json?filter=filter`).reply(200, payload);
 
@@ -359,21 +382,17 @@ describe('import_projects store actions', () => {
         ],
       );
     });
+  });
 
-    describe('setPage', () => {
-      it('dispatches fetchRepos and commits setPage when page number differs from current one', async () => {
-        await testAction(
-          setPage,
-          2,
-          { ...localState, pageInfo: { page: 1 } },
-          [{ type: SET_PAGE, payload: 2 }],
-          [{ type: 'fetchRepos' }],
-        );
-      });
-
-      it('does not perform any action if page equals to current one', async () => {
-        await testAction(setPage, 2, { ...localState, pageInfo: { page: 2 } }, [], []);
-      });
+  describe('setFilter', () => {
+    it('dispatches sets the filter value and dispatches fetchRepos', async () => {
+      await testAction(
+        setFilter,
+        'filteredRepo',
+        localState,
+        [{ type: SET_FILTER, payload: 'filteredRepo' }],
+        [{ type: 'fetchRepos' }],
+      );
     });
   });
 });

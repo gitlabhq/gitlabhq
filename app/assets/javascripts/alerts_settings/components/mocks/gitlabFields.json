@@ -1,0 +1,112 @@
+[
+  {
+    "name": "title",
+    "label": "Title",
+    "type": [
+      "String"
+    ],
+    "compatibleTypes": [
+      "String",
+      "Number",
+      "DateTime"
+    ],
+    "numberOfFallbacks": 1
+  },
+  {
+    "name": "description",
+    "label": "Description",
+    "type": [
+      "String"
+    ],
+    "compatibleTypes": [
+      "String",
+      "Number",
+      "DateTime"
+    ]
+  },
+  {
+    "name": "startTime",
+    "label": "Start time",
+    "type": [
+      "DateTime"
+    ],
+    "compatibleTypes": [
+      "Number",
+      "DateTime"
+    ]
+  },
+  {
+    "name": "service",
+    "label": "Service",
+    "type": [
+      "String"
+    ],
+    "compatibleTypes": [
+      "String",
+      "Number",
+      "DateTime"
+    ]
+  },
+  {
+    "name": "monitoringTool",
+    "label": "Monitoring tool",
+    "type": [
+      "String"
+    ],
+    "compatibleTypes": [
+      "String",
+      "Number",
+      "DateTime"
+    ]
+  },
+  {
+    "name": "hosts",
+    "label": "Hosts",
+    "type": [
+      "String",
+      "Array"
+    ],
+    "compatibleTypes": [
+      "String",
+      "Array",
+      "Number",
+      "DateTime"
+    ]
+  },
+  {
+    "name": "severity",
+    "label": "Severity",
+    "type": [
+      "String"
+    ],
+    "compatibleTypes": [
+      "String",
+      "Number",
+      "DateTime"
+    ]
+  },
+  {
+    "name": "fingerprint",
+    "label": "Fingerprint",
+    "type": [
+      "String"
+    ],
+    "compatibleTypes": [
+      "String",
+      "Number",
+      "DateTime"
+    ]
+  },
+  {
+    "name": "environment",
+    "label": "Environment",
+    "type": [
+      "String"
+    ],
+    "compatibleTypes": [
+      "String",
+      "Number",
+      "DateTime"
+    ]
+  }
+]

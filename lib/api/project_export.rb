@@ -4,6 +4,8 @@ module API
   class ProjectExport < ::API::Base
     helpers Helpers::RateLimiter
 
+    feature_category :importers
+
     before do
       not_found! unless Gitlab::CurrentSettings.project_export_enabled?
       authorize_admin_project

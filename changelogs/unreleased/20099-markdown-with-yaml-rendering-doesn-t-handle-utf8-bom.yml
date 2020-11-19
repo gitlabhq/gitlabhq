@@ -1,0 +1,5 @@
+---
+title: Tolerate UTF8 BOM character during frontmatter rendering
+merge_request: 46062
+author:
+type: fixed

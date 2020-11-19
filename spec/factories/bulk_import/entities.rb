@@ -17,5 +17,25 @@ FactoryBot.define do
     trait(:project_entity) do
       source_type { :project_entity }
     end
+
+    trait :created do
+      status { 0 }
+    end
+
+    trait :started do
+      status { 1 }
+
+      sequence(:jid) { |n| "bulk_import_entity_#{n}" }
+    end
+
+    trait :finished do
+      status { 2 }
+
+      sequence(:jid) { |n| "bulk_import_entity_#{n}" }
+    end
+
+    trait :failed do
+      status { -1 }
+    end
   end
 end

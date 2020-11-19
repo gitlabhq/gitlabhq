@@ -24,5 +24,5 @@ export default {
 </script>
 
 <template>
-  <gl-link :href="path" :class="cssClass" class="btn">{{ text }}</gl-link>
+  <gl-link :href="path" :class="cssClass" class="btn gl-button">{{ text }}</gl-link>
 </template>

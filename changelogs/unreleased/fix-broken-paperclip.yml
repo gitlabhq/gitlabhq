@@ -1,0 +1,5 @@
+---
+title: Fix dropzone paperclip and loading icons
+merge_request: 46093
+author:
+type: fixed

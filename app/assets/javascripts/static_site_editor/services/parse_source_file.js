@@ -1,15 +1,18 @@
 import { frontMatterify, stringify } from './front_matterify';
 
 const parseSourceFile = raw => {
-  const remake = source => frontMatterify(source);
-
-  let editable = remake(raw);
+  let editable;
 
   const syncContent = (newVal, isBody) => {
     if (isBody) {
       editable.content = newVal;
     } else {
-      editable = remake(newVal);
+      try {
+        editable = frontMatterify(newVal);
+        editable.isMatterValid = true;
+      } catch (e) {
+        editable.isMatterValid = false;
+      }
     }
   };
 
@@ -23,10 +26,15 @@ const parseSourceFile = raw => {
 
   const isModified = () => stringify(editable) !== raw;
 
-  const hasMatter = () => Boolean(editable.matter);
+  const hasMatter = () => editable.hasMatter;
+
+  const isMatterValid = () => editable.isMatterValid;
+
+  syncContent(raw);
 
   return {
     matter,
+    isMatterValid,
     syncMatter,
     content,
     syncContent,

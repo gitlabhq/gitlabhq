@@ -4,19 +4,44 @@ require 'spec_helper'
 
 RSpec.describe WhatsNewController do
   describe 'whats_new_path' do
-    before do
-      allow_any_instance_of(WhatsNewController).to receive(:whats_new_most_recent_release_items).and_return('items')
-    end
-
     context 'with whats_new_drawer feature enabled' do
+      let(:fixture_dir_glob) { Dir.glob(File.join('spec', 'fixtures', 'whats_new', '*.yml')) }
+
       before do
         stub_feature_flags(whats_new_drawer: true)
+        allow(Dir).to receive(:glob).with(Rails.root.join('data', 'whats_new', '*.yml')).and_return(fixture_dir_glob)
       end
 
-      it 'is successful' do
-        get whats_new_path, xhr: true
+      context 'with no page param' do
+        it 'responds with paginated data and headers' do
+          get whats_new_path, xhr: true
 
-        expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to eq([{ title: "bright and sunshinin' day", release: "01.05" }].to_json)
+          expect(response.headers['X-Next-Page']).to eq(2)
+        end
+      end
+
+      context 'with page param' do
+        it 'responds with paginated data and headers' do
+          get whats_new_path(page: 2), xhr: true
+
+          expect(response.body).to eq([{ title: 'bright' }].to_json)
+          expect(response.headers['X-Next-Page']).to eq(3)
+        end
+
+        it 'returns a 404 if page param is negative' do
+          get whats_new_path(page: -1), xhr: true
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+
+        context 'when there are no more paginated results' do
+          it 'responds with nil X-Next-Page header' do
+            get whats_new_path(page: 3), xhr: true
+            expect(response.body).to eq([{ title: "It's gonna be a bright" }].to_json)
+            expect(response.headers['X-Next-Page']).to be nil
+          end
+        end
       end
     end
 

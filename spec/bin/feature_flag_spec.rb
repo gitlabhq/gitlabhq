@@ -13,7 +13,7 @@ RSpec.describe 'bin/feature-flag' do
     let(:options) { FeatureFlagOptionParser.parse(argv) }
     let(:creator) { described_class.new(options) }
     let(:existing_flags) do
-      { 'existing-feature-flag' => File.join('config', 'feature_flags', 'development', 'existing-feature-flag.yml') }
+      { 'existing_feature_flag' => File.join('config', 'feature_flags', 'development', 'existing_feature_flag.yml') }
     end
 
     before do
@@ -32,12 +32,12 @@ RSpec.describe 'bin/feature-flag' do
 
     it 'properly creates a feature flag' do
       expect(File).to receive(:write).with(
-        File.join('config', 'feature_flags', 'development', 'feature-flag-name.yml'),
+        File.join('config', 'feature_flags', 'development', 'feature_flag_name.yml'),
         anything)
 
       expect do
         subject
-      end.to output(/name: feature-flag-name/).to_stdout
+      end.to output(/name: feature_flag_name/).to_stdout
     end
 
     context 'when running on master' do
@@ -120,6 +120,29 @@ RSpec.describe 'bin/feature-flag' do
 
         it 'returns that type' do
           expect(described_class.read_type).to eq(:development)
+        end
+      end
+
+      context 'when there is deprecated feature flag type' do
+        before do
+          stub_const('FeatureFlagOptionParser::TYPES',
+            development: { description: 'short' },
+            deprecated: { description: 'deprecated', deprecated: true }
+          )
+        end
+
+        context 'and deprecated type is given' do
+          let(:type) { 'deprecated' }
+
+          it 'shows error message and retries' do
+            expect($stdin).to receive(:gets).and_return(type)
+            expect($stdin).to receive(:gets).and_raise('EOF')
+
+            expect do
+              expect { described_class.read_type }.to raise_error(/EOF/)
+            end.to output(/Specify the feature flag type/).to_stdout
+              .and output(/Invalid type specified/).to_stderr
+          end
         end
       end
 

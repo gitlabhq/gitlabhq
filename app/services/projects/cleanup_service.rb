@@ -11,6 +11,24 @@ module Projects
 
     include Gitlab::Utils::StrongMemoize
 
+    class << self
+      def enqueue(project, current_user, bfg_object_map)
+        Projects::UpdateService.new(project, current_user, bfg_object_map: bfg_object_map).execute.tap do |result|
+          next unless result[:status] == :success
+
+          project.set_repository_read_only!
+          RepositoryCleanupWorker.perform_async(project.id, current_user.id)
+        end
+      rescue Project::RepositoryReadOnlyError => err
+        { status: :error, message: (_('Failed to make repository read-only. %{reason}') % { reason: err.message }) }
+      end
+
+      def cleanup_after(project)
+        project.bfg_object_map.remove!
+        project.set_repository_writable!
+      end
+    end
+
     # Attempt to clean up the project following the push. Warning: this is
     # destructive!
     #
@@ -22,14 +40,14 @@ module Projects
       apply_bfg_object_map!
 
       # Remove older objects that are no longer referenced
-      GitGarbageCollectWorker.new.perform(project.id, :gc, "project_cleanup:gc:#{project.id}")
+      GitGarbageCollectWorker.new.perform(project.id, :prune, "project_cleanup:gc:#{project.id}")
 
       # The cache may now be inaccurate, and holding onto it could prevent
       # bugs assuming the presence of some object from manifesting for some
       # time. Better to feel the pain immediately.
       project.repository.expire_all_method_caches
 
-      project.bfg_object_map.remove!
+      self.class.cleanup_after(project)
     end
 
     private

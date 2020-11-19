@@ -161,6 +161,12 @@ RSpec.describe BroadcastMessage do
 
       expect(subject.call('/group/issues/test').length).to eq(1)
     end
+
+    it "does not return message if the target path is set but no current path is provided" do
+      create(:broadcast_message, target_path: "*/issues/*", broadcast_type: broadcast_type)
+
+      expect(subject.call.length).to eq(0)
+    end
   end
 
   describe '.current', :use_clean_rails_memory_store_caching do

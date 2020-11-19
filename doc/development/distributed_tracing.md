@@ -178,6 +178,7 @@ This configuration string uses the Jaeger driver `opentracing://jaeger` with the
 | `udp_endpoint` | `localhost:6831` | This is the default. Configures Jaeger to send trace information to the UDP listener on port `6831` using compact thrift protocol. Note that we've experienced some issues with the [Jaeger Client for Ruby](https://github.com/salemove/jaeger-client-ruby) when using this protocol. |
 | `sampler` | `probabalistic` | Configures Jaeger to use a probabilistic random sampler. The rate of samples is configured by the `sampler_param` value. |
 | `sampler_param` | `0.01` | Use a ratio of `0.01` to configure the `probabalistic` sampler to randomly sample _1%_ of traces. |
+| `service_name` | `api` | Override the service name used by the Jaeger backend. This parameter will take precedence over the application-supplied value. |
 
 NOTE: **Note:**
 The same `GITLAB_TRACING` value should to be configured in the environment
@@ -185,7 +186,7 @@ variables for all GitLab processes, including Workhorse, Gitaly, Rails, and Side
 
 ### 3. Start the GitLab application
 
-Once the `GITLAB_TRACING` environment variable is exported to all GitLab services, start the
+After the `GITLAB_TRACING` environment variable is exported to all GitLab services, start the
 application.
 
 When `GITLAB_TRACING` is configured properly, the application will log this on startup:

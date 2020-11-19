@@ -1,10 +1,14 @@
 <script>
-/* eslint-disable vue/no-v-html */
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlButton, GlAlert, GlSafeHtmlDirective } from '@gitlab/ui';
 
 export default {
   components: {
     GlLoadingIcon,
+    GlButton,
+    GlAlert,
+  },
+  directives: {
+    SafeHtml: GlSafeHtmlDirective,
   },
   props: {
     isLoading: {
@@ -41,24 +45,26 @@ export default {
 };
 </script>
 <template>
-  <div class="text-center p-3">
+  <div class="gl-text-center gl-p-5">
     <div v-if="illustrationPath" class="svg-content svg-130"><img :src="illustrationPath" /></div>
     <h4>{{ __('Web Terminal') }}</h4>
     <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-3" />
     <template v-else>
       <p>{{ __('Run tests against your code live using the Web Terminal') }}</p>
       <p>
-        <button
+        <gl-button
           :disabled="!isValid"
-          class="btn btn-info"
-          type="button"
+          category="primary"
+          variant="info"
           data-qa-selector="start_web_terminal_button"
           @click="onStart"
         >
           {{ __('Start Web Terminal') }}
-        </button>
+        </gl-button>
       </p>
-      <div v-if="!isValid && message" class="bs-callout text-left" v-html="message"></div>
+      <gl-alert v-if="!isValid && message" variant="tip" :dismissible="false">
+        <span v-safe-html="message"></span>
+      </gl-alert>
       <p v-else>
         <a
           v-if="helpPath"

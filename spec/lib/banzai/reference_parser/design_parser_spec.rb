@@ -29,9 +29,11 @@ RSpec.describe Banzai::ReferenceParser::DesignParser do
       let_it_be(:other_project_link) do
         design_link(create(:design, :with_versions))
       end
+
       let_it_be(:public_link) do
         design_link(create(:design, :with_versions, issue: create(:issue, project: public_project)))
       end
+
       let_it_be(:public_but_confidential_link) do
         design_link(create(:design, :with_versions, issue: create(:issue, :confidential, project: public_project)))
       end

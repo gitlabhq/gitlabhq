@@ -1,0 +1,6 @@
+---
+title: Add usage ping for unique users importing groups and projects via the group
+  migration tool
+merge_request: 45536
+author:
+type: changed

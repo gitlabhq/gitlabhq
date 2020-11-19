@@ -29,4 +29,18 @@ module ProfilesHelper
   def user_profile?
     params[:controller] == 'users'
   end
+
+  def availability_values
+    Types::AvailabilityEnum.enum
+  end
+
+  def user_status_set_to_busy?(status)
+    status&.availability == availability_values[:busy]
+  end
+
+  def show_status_emoji?(status)
+    return false unless status
+
+    status.message.present? || status.emoji != UserStatus::DEFAULT_EMOJI
+  end
 end

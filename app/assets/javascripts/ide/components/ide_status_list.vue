@@ -14,6 +14,7 @@ export default {
   },
   computed: {
     ...mapGetters(['activeFile']),
+    ...mapGetters('editor', ['activeFileEditor']),
     activeFileEOL() {
       return getFileEOL(this.activeFile.content);
     },
@@ -33,8 +34,10 @@ export default {
         </gl-link>
       </div>
       <div>{{ activeFileEOL }}</div>
-      <div v-if="activeFileIsText">{{ activeFile.editorRow }}:{{ activeFile.editorColumn }}</div>
-      <div>{{ activeFile.fileLanguage }}</div>
+      <div v-if="activeFileIsText">
+        {{ activeFileEditor.editorRow }}:{{ activeFileEditor.editorColumn }}
+      </div>
+      <div>{{ activeFileEditor.fileLanguage }}</div>
     </template>
     <terminal-sync-status-safe />
   </div>

@@ -30,8 +30,13 @@ export default {
       metadataSlots: [],
     };
   },
-  mounted() {
-    this.metadataSlots = Object.keys(this.$slots).filter(k => k.startsWith('metadata-'));
+  async mounted() {
+    const METADATA_PREFIX = 'metadata-';
+    this.metadataSlots = Object.keys(this.$slots).filter(k => k.startsWith(METADATA_PREFIX));
+
+    // we need to wait for next tick to ensure that dynamic names slots are picked up
+    await this.$nextTick();
+    this.metadataSlots = Object.keys(this.$slots).filter(k => k.startsWith(METADATA_PREFIX));
   },
 };
 </script>

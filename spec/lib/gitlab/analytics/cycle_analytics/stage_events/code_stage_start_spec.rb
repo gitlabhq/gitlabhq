@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::StageEvents::CodeStageStart do
   let(:subject) { described_class.new({}) }
   let(:project) { create(:project) }
 
-  it_behaves_like 'cycle analytics event'
+  it_behaves_like 'value stream analytics event'
 
   it 'needs connection with an issue via merge_requests_closing_issues table' do
     issue = create(:issue, project: project)
@@ -15,7 +15,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::StageEvents::CodeStageStart do
 
     other_merge_request = create(:merge_request, source_project: project, source_branch: 'a', target_branch: 'master')
 
-    records = subject.apply_query_customization(MergeRequest.all)
+    records = subject.apply_query_customization(MergeRequest.all).where('merge_requests_closing_issues.issue_id IS NOT NULL')
     expect(records).to eq([merge_request])
     expect(records).not_to include(other_merge_request)
   end

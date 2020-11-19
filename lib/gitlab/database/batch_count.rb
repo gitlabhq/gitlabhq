@@ -128,9 +128,9 @@ module Gitlab
       end
 
       def between_condition(start, finish)
-        return @column.between(start..(finish - 1)) if @column.is_a?(Arel::Attributes::Attribute)
+        return @column.between(start...finish) if @column.is_a?(Arel::Attributes::Attribute)
 
-        { @column => start..(finish - 1) }
+        { @column => start...finish }
       end
 
       def actual_start(start)

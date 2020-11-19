@@ -15,11 +15,7 @@ RSpec.describe Mutations::Issues::SetSeverity do
 
     subject(:resolve) { mutation.resolve(project_path: issue.project.full_path, iid: issue.iid, severity: severity) }
 
-    context 'when the user cannot update the issue' do
-      it 'raises an error' do
-        expect { resolve }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
-      end
-    end
+    it_behaves_like 'permission level for issue mutation is correctly verified'
 
     context 'when the user can update the issue' do
       before do

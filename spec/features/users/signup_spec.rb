@@ -2,8 +2,50 @@
 
 require 'spec_helper'
 
-RSpec.shared_examples 'Signup' do
+RSpec.shared_examples 'Signup name validation' do |field, max_length, label|
+  before do
+    visit new_user_registration_path
+  end
+
+  describe "#{field} validation", :js do
+    it "does not show an error border if the user's fullname length is not longer than #{max_length} characters" do
+      fill_in field, with: 'u' * max_length
+
+      expect(find('.name')).not_to have_css '.gl-field-error-outline'
+    end
+
+    it 'shows an error border if the user\'s fullname contains an emoji' do
+      simulate_input("##{field}", 'Ehsan 🦋')
+
+      expect(find('.name')).to have_css '.gl-field-error-outline'
+    end
+
+    it "shows an error border if the user\'s fullname is longer than #{max_length} characters" do
+      fill_in field, with: 'n' * (max_length + 1)
+
+      expect(find('.name')).to have_css '.gl-field-error-outline'
+    end
+
+    it "shows an error message if the user\'s #{label} is longer than #{max_length} characters" do
+      fill_in field, with: 'n' * (max_length + 1)
+
+      expect(page).to have_content("#{label} is too long (maximum is #{max_length} characters).")
+    end
+
+    it 'shows an error message if the username contains emojis' do
+      simulate_input("##{field}", 'Ehsan 🦋')
+
+      expect(page).to have_content("Invalid input, please avoid emojis")
+    end
+  end
+end
+
+RSpec.describe 'Signup' do
   include TermsHelper
+
+  before do
+    stub_application_setting(require_admin_approval_after_user_signup: false)
+  end
 
   let(:new_user) { build_stubbed(:user) }
 
@@ -190,6 +232,22 @@ RSpec.shared_examples 'Signup' do
         expect(current_path).to eq users_sign_up_welcome_path
       end
     end
+
+    context 'with required admin approval enabled' do
+      before do
+        stub_application_setting(require_admin_approval_after_user_signup: true)
+      end
+
+      it 'creates the user but does not sign them in' do
+        visit new_user_registration_path
+
+        fill_in_signup_form
+
+        expect { click_button 'Register' }.to change { User.count }.by(1)
+        expect(current_path).to eq new_user_session_path
+        expect(page).to have_content("You have signed up successfully. However, we could not sign you in because your account is awaiting approval from your GitLab administrator")
+      end
+    end
   end
 
   context 'with errors' do
@@ -295,64 +353,7 @@ RSpec.shared_examples 'Signup' do
     expect(created_user.setup_for_company).to be_nil
     expect(page).to have_current_path(new_project_path)
   end
-end
 
-RSpec.shared_examples 'Signup name validation' do |field, max_length, label|
-  before do
-    visit new_user_registration_path
-  end
-
-  describe "#{field} validation", :js do
-    it "does not show an error border if the user's fullname length is not longer than #{max_length} characters" do
-      fill_in field, with: 'u' * max_length
-
-      expect(find('.name')).not_to have_css '.gl-field-error-outline'
-    end
-
-    it 'shows an error border if the user\'s fullname contains an emoji' do
-      simulate_input("##{field}", 'Ehsan 🦋')
-
-      expect(find('.name')).to have_css '.gl-field-error-outline'
-    end
-
-    it "shows an error border if the user\'s fullname is longer than #{max_length} characters" do
-      fill_in field, with: 'n' * (max_length + 1)
-
-      expect(find('.name')).to have_css '.gl-field-error-outline'
-    end
-
-    it "shows an error message if the user\'s #{label} is longer than #{max_length} characters" do
-      fill_in field, with: 'n' * (max_length + 1)
-
-      expect(page).to have_content("#{label} is too long (maximum is #{max_length} characters).")
-    end
-
-    it 'shows an error message if the username contains emojis' do
-      simulate_input("##{field}", 'Ehsan 🦋')
-
-      expect(page).to have_content("Invalid input, please avoid emojis")
-    end
-  end
-end
-
-RSpec.describe 'With original flow' do
-  before do
-    stub_experiment(signup_flow: false)
-    stub_experiment_for_user(signup_flow: false)
-  end
-
-  it_behaves_like 'Signup'
-  it_behaves_like 'Signup name validation', 'new_user_first_name', 127, 'First name'
-  it_behaves_like 'Signup name validation', 'new_user_last_name', 127, 'Last name'
-end
-
-RSpec.describe 'With experimental flow' do
-  before do
-    stub_experiment(signup_flow: true)
-    stub_experiment_for_user(signup_flow: true)
-  end
-
-  it_behaves_like 'Signup'
   it_behaves_like 'Signup name validation', 'new_user_first_name', 127, 'First name'
   it_behaves_like 'Signup name validation', 'new_user_last_name', 127, 'Last name'
 end

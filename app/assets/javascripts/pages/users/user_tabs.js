@@ -5,7 +5,6 @@ import Activities from '~/activities';
 import { localTimeAgo } from '~/lib/utils/datetime_utility';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import { __ } from '~/locale';
-import { deprecatedCreateFlash as flash } from '~/flash';
 import ActivityCalendar from './activity_calendar';
 import UserOverviewBlock from './user_overview_block';
 
@@ -63,9 +62,9 @@ import UserOverviewBlock from './user_overview_block';
  */
 
 const CALENDAR_TEMPLATE = `
-  <div class="clearfix calendar">
+  <div class="calendar">
     <div class="js-contrib-calendar"></div>
-    <div class="calendar-hint bottom-right"></div>
+    <div class="calendar-hint"></div>
   </div>
 `;
 
@@ -214,7 +213,17 @@ export default class UserTabs {
 
     AjaxCache.retrieve(calendarPath)
       .then(data => UserTabs.renderActivityCalendar(data, $calendarWrap))
-      .catch(() => flash(__('There was an error loading users activity calendar.')));
+      .catch(() => {
+        const cWrap = $calendarWrap[0];
+        cWrap.querySelector('.spinner').classList.add('invisible');
+        cWrap.querySelector('.user-calendar-error').classList.remove('invisible');
+        cWrap.querySelector('.user-calendar-error .js-retry-load').addEventListener('click', e => {
+          e.preventDefault();
+          cWrap.querySelector('.user-calendar-error').classList.add('invisible');
+          cWrap.querySelector('.spinner').classList.remove('invisible');
+          this.loadActivityCalendar();
+        });
+      });
   }
 
   static renderActivityCalendar(data, $calendarWrap) {

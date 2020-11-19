@@ -39,6 +39,10 @@ RSpec.describe DiscussionEntity do
     )
   end
 
+  it 'does not include base discussion in the notes' do
+    expect(subject[:notes].first.keys).not_to include(:base_discussion)
+  end
+
   it 'resolved_by matches note_user_entity schema' do
     Notes::ResolveService.new(note.project, user).execute(note)
 

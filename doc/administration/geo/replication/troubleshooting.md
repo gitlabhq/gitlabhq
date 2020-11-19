@@ -720,7 +720,8 @@ GitLab cannot find or doesn't have permission to access the `database_geo.yml` c
 In an Omnibus GitLab installation, the file should be in `/var/opt/gitlab/gitlab-rails/etc`.
 If it doesn't exist or inadvertent changes have been made to it, run `sudo gitlab-ctl reconfigure` to restore it to its correct state.
 
-If this path is mounted on a remote volume, please check your volume configuration and that it has correct permissions.
+If this path is mounted on a remote volume, ensure your volume configuration
+has the correct permissions.
 
 ### An existing tracking database cannot be reused
 
@@ -782,3 +783,13 @@ To resolve this issue:
   using IPv6 to send its status to the **primary** node. If it is, add an entry to
   the **primary** node using IPv4 in the `/etc/hosts` file. Alternatively, you should
   [enable IPv6 on the **primary** node](https://docs.gitlab.com/omnibus/settings/nginx.html#setting-the-nginx-listen-address-or-addresses).
+
+## Fixing client errors
+
+### Authorization errors from LFS HTTP(s) client requests
+
+You may have problems if you're running a version of [Git LFS](https://git-lfs.github.com/) before 2.4.2.
+As noted in [this authentication issue](https://github.com/git-lfs/git-lfs/issues/3025),
+requests redirected from the secondary to the primary node do not properly send the
+Authorization header. This may result in either an infinite `Authorization <-> Redirect`
+loop, or Authorization errors.

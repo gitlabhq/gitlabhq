@@ -11,6 +11,7 @@ RSpec.describe Metrics::Dashboard::PanelPreviewService do
     title: test panel
     YML
   end
+
   let_it_be(:dashboard) do
     {
       panel_groups: [

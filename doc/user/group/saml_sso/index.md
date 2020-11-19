@@ -88,8 +88,6 @@ We intend to add a similar SSO requirement for [Git and API activity](https://gi
 
 When SSO enforcement is enabled for a group, users cannot share a project in the group outside the top-level group, even if the project is forked.
 
-To disallow users to contribute outside of the top-level group, please see [Group Managed Accounts](group_managed_accounts.md).
-
 ## Providers
 
 NOTE: **Note:**
@@ -107,7 +105,7 @@ When [configuring your identify provider](#configuring-your-identity-provider), 
 ### Azure setup notes
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a demo of the Azure SAML setup including SCIM, see [SCIM Provisioning on Azure Using SAML SSO for Groups Demo](https://youtu.be/24-ZxmTeEBU).
+For a demo of the Azure SAML setup including SCIM, see [SCIM Provisioning on Azure Using SAML SSO for Groups Demo](https://youtu.be/24-ZxmTeEBU). Please note that the video is outdated in regards to objectID mapping and the [SCIM documentation should be followed](scim_setup.md#azure-configuration-steps).
 
 | GitLab Setting | Azure Field |
 |--------------|----------------|
@@ -136,7 +134,7 @@ For a demo of the Okta SAML setup including SCIM, see [Demo: Okta Group SAML & S
 
 Under Okta's **Single sign-on URL** field, check the option **Use this for Recipient URL and Destination URL**.
 
-We recommend:
+For NameID, the following settings are recommended; for SCIM, the following settings are required:
 
 - **Application username** (NameID) set to **Custom** `user.getInternalProperty("id")`.
 - **Name ID Format** set to **Persistent**.

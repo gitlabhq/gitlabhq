@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['IssueConnection'] do
+RSpec.describe GitlabSchema.types['MergeRequestConnection'] do
   it 'has the expected fields' do
     expected_fields = %i[count page_info edges nodes]
 

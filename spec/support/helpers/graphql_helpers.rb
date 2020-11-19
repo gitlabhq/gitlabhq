@@ -17,13 +17,22 @@ module GraphqlHelpers
   # ready, then the early return is returned instead.
   #
   # Then the resolve method is called.
-  def resolve(resolver_class, obj: nil, args: {}, ctx: {}, field: nil)
-    resolver = resolver_class.new(object: obj, context: ctx, field: field)
+  def resolve(resolver_class, args: {}, **resolver_args)
+    resolver = resolver_instance(resolver_class, **resolver_args)
     ready, early_return = sync_all { resolver.ready?(**args) }
 
     return early_return unless ready
 
     resolver.resolve(**args)
+  end
+
+  def resolver_instance(resolver_class, obj: nil, ctx: {}, field: nil, schema: GitlabSchema)
+    if ctx.is_a?(Hash)
+      q = double('Query', schema: schema)
+      ctx = GraphQL::Query::Context.new(query: q, object: obj, values: ctx)
+    end
+
+    resolver_class.new(object: obj, context: ctx, field: field)
   end
 
   # Eagerly run a loader's named resolver
@@ -110,6 +119,16 @@ module GraphqlHelpers
     else
       result
     end
+  end
+
+  def resolve_field(name, object, args = {})
+    context = double("Context",
+                    schema: GitlabSchema,
+                    query: GraphQL::Query.new(GitlabSchema),
+                    parent: nil)
+    field = described_class.fields[name]
+    instance = described_class.authorized_new(object, context)
+    field.resolve_field(instance, {}, context)
   end
 
   # Recursively convert a Hash with Ruby-style keys to GraphQL fieldname-style keys
@@ -467,6 +486,8 @@ module GraphqlHelpers
       use GraphQL::Pagination::Connections
       use Gitlab::Graphql::Authorize
       use Gitlab::Graphql::Pagination::Connections
+
+      lazy_resolve ::Gitlab::Graphql::Lazy, :force
 
       query(query_type)
     end

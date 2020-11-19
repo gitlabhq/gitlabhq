@@ -4,6 +4,7 @@ if Gitlab::Runtime.console?
   justify = 15
 
   puts '-' * 80
+  puts " Ruby:".ljust(justify) + RUBY_DESCRIPTION
   puts " GitLab:".ljust(justify) + "#{Gitlab::VERSION} (#{Gitlab.revision}) #{Gitlab.ee? ? 'EE' : 'FOSS'}"
   puts " GitLab Shell:".ljust(justify) + "#{Gitlab::VersionInfo.parse(Gitlab::Shell.version)}"
 
@@ -19,4 +20,15 @@ if Gitlab::Runtime.console?
   end
 
   puts '-' * 80
+
+  # Stop irb from writing a history file by default.
+  module IrbNoHistory
+    def init_config(*)
+      super
+
+      IRB.conf[:SAVE_HISTORY] = false
+    end
+  end
+
+  IRB.singleton_class.prepend(IrbNoHistory)
 end

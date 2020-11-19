@@ -1,0 +1,5 @@
+---
+title: Do not query snippet infromation on the new snippet's creation
+merge_request: 46355
+author:
+type: fixed

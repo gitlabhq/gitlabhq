@@ -24,7 +24,6 @@ module Gitlab
             validates :script, presence: true
 
             with_options allow_nil: true do
-              validates :allow_failure, boolean: true
               validates :when, inclusion: {
                 in: ALLOWED_WHEN,
                 message: "should be one of: #{ALLOWED_WHEN.join(', ')}"
@@ -118,7 +117,7 @@ module Gitlab
             description: 'Parallel configuration for this job.',
             inherit: false
 
-          attributes :script, :tags, :allow_failure, :when, :dependencies,
+          attributes :script, :tags, :when, :dependencies,
                      :needs, :retry, :parallel, :start_in,
                      :interruptible, :timeout, :resource_group, :release
 
@@ -141,16 +140,8 @@ module Gitlab
             end
           end
 
-          def manual_action?
-            self.when == 'manual'
-          end
-
           def delayed?
             self.when == 'delayed'
-          end
-
-          def ignored?
-            allow_failure.nil? ? manual_action? : allow_failure
           end
 
           def value

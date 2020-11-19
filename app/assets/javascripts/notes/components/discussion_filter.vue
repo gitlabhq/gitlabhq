@@ -116,7 +116,8 @@ export default {
   <gl-dropdown
     v-if="displayFilters"
     id="discussion-filter-dropdown"
-    class="gl-mr-3 full-width-mobile discussion-filter-container js-discussion-filter-container qa-discussion-filter"
+    class="gl-mr-3 full-width-mobile discussion-filter-container js-discussion-filter-container"
+    data-qa-selector="discussion_filter_dropdown"
     :text="currentFilter.title"
   >
     <div v-for="filter in filters" :key="filter.value" class="dropdown-item-wrapper">
@@ -125,7 +126,7 @@ export default {
         :is-checked="filter.value === currentValue"
         :class="{ 'is-active': filter.value === currentValue }"
         :data-filter-type="filterType(filter.value)"
-        class="qa-filter-options"
+        data-qa-selector="filter_menu_item"
         @click.prevent="selectFilter(filter.value)"
       >
         {{ filter.title }}

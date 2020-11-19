@@ -167,7 +167,7 @@ export const updateOrCreateNotes = ({ commit, state, getters, dispatch }, notes)
 
       if (discussion) {
         commit(types.ADD_NEW_REPLY_TO_DISCUSSION, note);
-      } else if (note.type === constants.DIFF_NOTE) {
+      } else if (note.type === constants.DIFF_NOTE && !note.base_discussion) {
         debouncedFetchDiscussions(state.currentlyFetchingDiscussions);
       } else {
         commit(types.ADD_NEW_NOTE, note);

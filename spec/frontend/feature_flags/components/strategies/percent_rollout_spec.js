@@ -63,7 +63,7 @@ describe('~/feature_flags/components/strategies/percent_rollout.vue', () => {
     });
   });
 
-  describe('with percentage that is not a whole number', () => {
+  describe('with percentage that is not an integer number', () => {
     beforeEach(() => {
       wrapper = factory({ strategy: { parameters: { percentage: '3.14' } } });
 

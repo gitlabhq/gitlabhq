@@ -22,6 +22,10 @@ module Gitlab
         @composer_package_version_regex ||= %r{^v?(\d+(\.(\d+|x))*(-.+)?)}.freeze
       end
 
+      def composer_dev_version_regex
+        @composer_dev_version_regex ||= %r{(^dev-)|(-dev$)}.freeze
+      end
+
       def package_name_regex
         @package_name_regex ||= %r{\A\@?(([\w\-\.\+]*)\/)*([\w\-\.]+)@?(([\w\-\.\+]*)\/)*([\w\-\.]*)\z}.freeze
       end

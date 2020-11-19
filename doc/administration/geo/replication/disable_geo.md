@@ -25,7 +25,7 @@ To disable Geo, follow these steps:
 ## Remove all secondary Geo nodes
 
 To disable Geo, you need to first remove all your secondary Geo nodes, which means replication will not happen
-anymore on these nodes. You can follow our docs to [remove your secondary Geo nodes](./remove_geo_node.md).
+anymore on these nodes. You can follow our docs to [remove your secondary Geo nodes](remove_geo_node.md).
 
 If the current node that you want to keep using is a secondary node, you need to first promote it to primary.
 You can use our steps on [how to promote a secondary node](../disaster_recovery/#step-3-promoting-a-secondary-node)

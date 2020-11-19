@@ -2,7 +2,7 @@
   extends:
     - .default-retry
     - .docs:rules:review-docs
-  image: ruby:2.6-alpine
+  image: ruby:2.7-alpine
   stage: review
   needs: []
   variables:
@@ -38,7 +38,18 @@ review-docs-cleanup:
   script:
     - ./scripts/trigger-build docs cleanup
 
-docs lint:
+docs-lint markdown:
+  extends:
+    - .default-retry
+    - .docs:rules:docs-lint
+  # When updating the image version here, update it in /scripts/lint-doc.sh too.
+  image: "registry.gitlab.com/gitlab-org/gitlab-docs/lint-markdown:alpine-3.12-vale-2.6.1-markdownlint-0.24.0"
+  stage: test
+  needs: []
+  script:
+    - scripts/lint-doc.sh
+
+docs-lint links:
   extends:
     - .default-retry
     - .docs:rules:docs-lint
@@ -46,7 +57,6 @@ docs lint:
   stage: test
   needs: []
   script:
-    - scripts/lint-doc.sh
     # Prepare docs for build
     # The path must be 'ee/' because we have hardcoded links relying on it
     # https://gitlab.com/gitlab-org/gitlab-docs/-/blob/887850752fc0e72856da6632db132f005ba77f16/content/index.erb#L44-63

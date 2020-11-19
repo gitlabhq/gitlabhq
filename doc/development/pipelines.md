@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Pipelines for the GitLab project
 
 Pipelines for <https://gitlab.com/gitlab-org/gitlab> and <https://gitlab.com/gitlab-org/gitlab-foss> (as well as the
@@ -618,7 +624,7 @@ each pipeline includes default variables defined in
 
 Most of the jobs [extend from a few CI definitions](../ci/yaml/README.md#extends)
 defined in [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/global.gitlab-ci.yml)
-that are scoped to a single [configuration parameter](../ci/yaml/README.md#configuration-parameters).
+that are scoped to a single [configuration keyword](../ci/yaml/README.md#job-keywords).
 
 | Job definitions  | Description |
 |------------------|-------------|

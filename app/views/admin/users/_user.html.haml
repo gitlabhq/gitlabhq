@@ -24,10 +24,10 @@
       .table-action-buttons
         = link_to _('Edit'), edit_admin_user_path(user), id: "edit_#{dom_id(user)}", class: 'btn gl-button btn-default'
         - unless user == current_user
-          %button.dropdown-new.btn.gl-button.btn-default{ type: 'button', data: { toggle: 'dropdown' } }
+          %button.dropdown-new.btn.gl-button.btn-default{ type: 'button', data: { testid: "user-action-button-#{user.id}", toggle: 'dropdown' } }
             = sprite_icon('settings')
             = sprite_icon('chevron-down')
-          %ul.dropdown-menu.dropdown-menu-right
+          %ul.dropdown-menu.dropdown-menu-right{ data: { testid: "user-action-dropdown-#{user.id}" } }
             %li.dropdown-header
               = _('Settings')
               %li
@@ -37,16 +37,12 @@
                 - elsif user.blocked?
                   - if user.blocked_pending_approval?
                     = link_to s_('AdminUsers|Approve'), approve_admin_user_path(user), method: :put
-                    %button.btn.btn-default-tertiary{ data: { 'gl-modal-action': 'block',
-                      url: block_admin_user_path(user),
-                      username: sanitize_name(user.name) } }
+                    %button.btn.btn-default-tertiary.js-confirm-modal-button{ data: user_block_data(user, user_block_effects) }
                       = s_('AdminUsers|Block')
                   - else
                     = link_to _('Unblock'), unblock_admin_user_path(user), method: :put
                 - else
-                  %button.btn.btn-default-tertiary{ data: { 'gl-modal-action': 'block',
-                    url: block_admin_user_path(user),
-                    username: sanitize_name(user.name) } }
+                  %button.btn.btn-default-tertiary.js-confirm-modal-button{ data: user_block_data(user, user_block_effects) }
                     = s_('AdminUsers|Block')
               - if user.can_be_deactivated?
                 %li

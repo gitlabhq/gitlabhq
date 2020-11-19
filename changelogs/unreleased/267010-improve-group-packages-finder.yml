@@ -1,0 +1,5 @@
+---
+title: Fix an N+1 issue in Packages::GroupPackagesFinder
+merge_request: 45875
+author:
+type: fixed

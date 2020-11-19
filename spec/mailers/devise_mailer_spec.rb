@@ -64,4 +64,34 @@ RSpec.describe DeviseMailer do
       is_expected.to have_body_text /#{Gitlab.config.gitlab.url}/
     end
   end
+
+  describe '#user_admin_approval' do
+    subject { described_class.user_admin_approval(user) }
+
+    let_it_be(:user) { create(:user) }
+
+    it_behaves_like 'an email sent from GitLab'
+    it_behaves_like 'it should not have Gmail Actions links'
+    it_behaves_like 'a user cannot unsubscribe through footer link'
+
+    it 'is sent to the user' do
+      is_expected.to deliver_to user.email
+    end
+
+    it 'has the correct subject' do
+      is_expected.to have_subject 'Welcome to GitLab!'
+    end
+
+    it 'greets the user' do
+      is_expected.to have_body_text /Hi #{user.name}!/
+    end
+
+    it 'includes the correct content' do
+      is_expected.to have_body_text /Your GitLab account request has been approved!/
+    end
+
+    it 'includes a link to GitLab' do
+      is_expected.to have_link(Gitlab.config.gitlab.url)
+    end
+  end
 end

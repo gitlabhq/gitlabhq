@@ -1,0 +1,5 @@
+---
+title: Add user info to Terraform State List
+merge_request: 46984
+author:
+type: changed

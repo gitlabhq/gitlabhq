@@ -7,15 +7,13 @@ import { FILTERED_SEARCH } from '~/pages/constants';
 
 const ISSUABLE_BULK_UPDATE_PREFIX = 'merge_request_';
 
-document.addEventListener('DOMContentLoaded', () => {
-  addExtraTokensForMergeRequests(IssuableFilteredSearchTokenKeys);
-  issuableInitBulkUpdateSidebar.init(ISSUABLE_BULK_UPDATE_PREFIX);
+addExtraTokensForMergeRequests(IssuableFilteredSearchTokenKeys);
+issuableInitBulkUpdateSidebar.init(ISSUABLE_BULK_UPDATE_PREFIX);
 
-  initFilteredSearch({
-    page: FILTERED_SEARCH.MERGE_REQUESTS,
-    isGroupDecendent: true,
-    useDefaultState: true,
-    filteredSearchTokenKeys: IssuableFilteredSearchTokenKeys,
-  });
-  projectSelect();
+initFilteredSearch({
+  page: FILTERED_SEARCH.MERGE_REQUESTS,
+  isGroupDecendent: true,
+  useDefaultState: true,
+  filteredSearchTokenKeys: IssuableFilteredSearchTokenKeys,
 });
+projectSelect();

@@ -9,7 +9,7 @@
   = succeed ':' do
     = link_to note.author_name, user_url(note.author)
     - if discussion.nil?
-      commented
+      = link_to 'commented', target_url
     - else
       - if note.start_of_discussion?
         started a new

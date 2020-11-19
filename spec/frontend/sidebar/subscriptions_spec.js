@@ -94,7 +94,7 @@ describe('Subscriptions', () => {
 
     it('sets the correct display text', () => {
       expect(wrapper.find('.issuable-header-text').text()).toContain(subscribeDisabledDescription);
-      expect(wrapper.find({ ref: 'tooltip' }).attributes('data-original-title')).toBe(
+      expect(wrapper.find({ ref: 'tooltip' }).attributes('title')).toBe(
         subscribeDisabledDescription,
       );
     });

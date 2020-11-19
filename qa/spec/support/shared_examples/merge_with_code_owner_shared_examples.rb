@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  shared_examples 'code owner merge request' do
+  RSpec.shared_examples 'code owner merge request' do
     let(:branch_name) { 'new-branch' }
 
     it 'is approved and merged' do

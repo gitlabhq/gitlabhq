@@ -1,15 +1,20 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import { GlFormInput, GlButton } from '@gitlab/ui';
+import { GlButton, GlFormGroup, GlFormInput, GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { mapState, mapActions } from 'vuex';
+import { DEFAULT_REGION } from '../constants';
 import { sprintf, s__, __ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
 export default {
   components: {
-    GlFormInput,
     GlButton,
+    GlFormGroup,
+    GlFormInput,
+    GlIcon,
+    GlLink,
+    GlSprintf,
     ClipboardButton,
   },
   props: {
@@ -26,9 +31,18 @@ export default {
       required: true,
     },
   },
+  i18n: {
+    regionInputLabel: s__('ClusterIntegration|Cluster Region'),
+    regionHelpPath: 'https://aws.amazon.com/about-aws/global-infrastructure/regions_az/',
+    regionHelpText: s__(
+      'ClusterIntegration|Select the region you want to create the new cluster in. Make sure you have access to this region for your role to be able to authenticate. If no region is selected, we will use %{codeStart}DEFAULT_REGION%{codeEnd}. Learn more about %{linkStart}Regions%{linkEnd}.',
+    ),
+    regionHelpTextDefaultRegion: DEFAULT_REGION,
+  },
   data() {
     return {
       roleArn: this.$store.state.roleArn,
+      selectedRegion: this.$store.state.selectedRegion,
     };
   },
   computed: {
@@ -130,13 +144,33 @@ export default {
       <gl-form-input id="eks-provision-role-arn" v-model="roleArn" />
       <p class="form-text text-muted" v-html="provisionRoleArnHelpText"></p>
     </div>
+
+    <gl-form-group :label="$options.i18n.regionInputLabel">
+      <gl-form-input id="eks-region" v-model="selectedRegion" type="text" />
+
+      <template #description>
+        <gl-sprintf :message="$options.i18n.regionHelpText">
+          <template #code>
+            <code>{{ $options.i18n.regionHelpTextDefaultRegion }}</code>
+          </template>
+
+          <template #link="{ content }">
+            <gl-link :href="$options.i18n.regionHelpPath" target="_blank">
+              {{ content }}
+              <gl-icon name="external-link" />
+            </gl-link>
+          </template>
+        </gl-sprintf>
+      </template>
+    </gl-form-group>
+
     <gl-button
       variant="success"
       category="primary"
       type="submit"
       :disabled="submitButtonDisabled"
       :loading="isCreatingRole"
-      @click.prevent="createRole({ roleArn, externalId })"
+      @click.prevent="createRole({ roleArn, selectedRegion, externalId })"
     >
       {{ submitButtonLabel }}
     </gl-button>

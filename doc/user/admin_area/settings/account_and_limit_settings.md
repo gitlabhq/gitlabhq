@@ -18,6 +18,12 @@ If you choose a size larger than what is currently configured for the web server
 you will likely get errors. See the [troubleshooting section](#troubleshooting) for more
 details.
 
+## Max push size
+
+You can change the maximum push size for your repository.
+Navigate to **Admin Area (wrench icon) > Settings > General**, then expand **Account and Limit**.
+From here, you can increase or decrease by changing the value in `Maximum push size (MB)`.
+
 ## Max import size
 
 You can change the maximum file size for imports in GitLab.
@@ -76,12 +82,13 @@ and **will** be rejected if the sum of their sizes exceeds the maximum allowed
 repository size.
 
 NOTE: **Note:**
-The repository size limit includes repository files and LFS, and does not include artifacts.
+The repository size limit includes repository files and LFS, but does not include artifacts, uploads,
+wiki, packages, or snippets.
 
 For details on manually purging files, see [reducing the repository size using Git](../../project/repository/reducing_the_repo_size_using_git.md).
 
 NOTE: **Note:**
-GitLab.com repository size [is set by GitLab](../../gitlab_com/index.md#account-and-limit-settings).
+For GitLab.com repository size limits, see [accounts and limit settings](../../gitlab_com/index.md#account-and-limit-settings).
 
 ## Troubleshooting
 

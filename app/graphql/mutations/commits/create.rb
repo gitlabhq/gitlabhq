@@ -13,7 +13,11 @@ module Mutations
 
       argument :branch, GraphQL::STRING_TYPE,
                required: true,
-               description: 'Name of the branch'
+               description: 'Name of the branch to commit into, it can be a new branch'
+
+      argument :start_branch, GraphQL::STRING_TYPE,
+               required: false,
+               description: 'If on a new branch, name of the original branch'
 
       argument :message,
                GraphQL::STRING_TYPE,
@@ -32,13 +36,13 @@ module Mutations
 
       authorize :push_code
 
-      def resolve(project_path:, branch:, message:, actions:)
+      def resolve(project_path:, branch:, message:, actions:, **args)
         project = authorized_find!(full_path: project_path)
 
         attributes = {
           commit_message: message,
           branch_name: branch,
-          start_branch: branch,
+          start_branch: args[:start_branch] || branch,
           actions: actions.map { |action| action.to_h }
         }
 

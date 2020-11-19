@@ -1,0 +1,121 @@
+{
+  "samplePayload": {
+    "body": "{\n  \"dashboardId\":1,\n  \"evalMatches\":[\n    {\n      \"value\":1,\n      \"metric\":\"Count\",\n      \"tags\":{}\n    }\n  ],\n  \"imageUrl\":\"https://grafana.com/static/assets/img/blog/mixed_styles.png\",\n  \"message\":\"Notification Message\",\n  \"orgId\":1,\n  \"panelId\":2,\n  \"ruleId\":1,\n  \"ruleName\":\"Panel Title alert\",\n  \"ruleUrl\":\"http://localhost:3000/d/hZ7BuVbWz/test-dashboard?fullscreen\\u0026edit\\u0026tab=alert\\u0026panelId=2\\u0026orgId=1\",\n  \"state\":\"alerting\",\n  \"tags\":{\n    \"tag name\":\"tag value\"\n  },\n  \"title\":\"[Alerting] Panel Title alert\"\n}\n",
+    "payloadAlerFields": {
+      "nodes": [
+        {
+          "name": "dashboardId",
+          "label": "Dashboard Id",
+          "type": [
+            "Number"
+          ]
+        },
+        {
+          "name": "evalMatches",
+          "label": "Eval Matches",
+          "type": [
+            "Array"
+          ]
+        },
+        {
+          "name": "createdAt",
+          "label": "Created At",
+          "type": [
+            "DateTime"
+          ]
+        },
+        {
+          "name": "imageUrl",
+          "label": "Image Url",
+          "type": [
+            "String"
+          ]
+        },
+        {
+          "name": "message",
+          "label": "Message",
+          "type": [
+            "String"
+          ]
+        },
+        {
+          "name": "orgId",
+          "label": "Org Id",
+          "type": [
+            "Number"
+          ]
+        },
+        {
+          "name": "panelId",
+          "label": "Panel Id",
+          "type": [
+            "String"
+          ]
+        },
+        {
+          "name": "ruleId",
+          "label": "Rule Id",
+          "type": [
+            "Number"
+          ]
+        },
+        {
+          "name": "ruleName",
+          "label": "Rule Name",
+          "type": [
+            "String"
+          ]
+        },
+        {
+          "name": "ruleUrl",
+          "label": "Rule Url",
+          "type": [
+            "String"
+          ]
+        },
+        {
+          "name": "state",
+          "label": "State",
+          "type": [
+            "String"
+          ]
+        },
+        {
+          "name": "title",
+          "label": "Title",
+          "type": [
+            "String"
+          ]
+        },
+        {
+          "name": "tags",
+          "label": "Tags",
+          "type": [
+            "Object"
+          ]
+        }
+      ]
+    }
+  },
+  "storedMapping": {
+    "nodes": [
+      {
+        "alertFieldName": "title",
+        "payloadAlertPaths": "title",
+        "fallbackAlertPaths": "ruleUrl"
+      },
+      {
+        "alertFieldName": "description",
+        "payloadAlertPaths": "message"
+      },
+      {
+        "alertFieldName": "hosts",
+        "payloadAlertPaths": "evalMatches"
+      },
+      {
+        "alertFieldName": "startTime",
+        "payloadAlertPaths": "createdAt"
+      }
+    ]
+  }
+}

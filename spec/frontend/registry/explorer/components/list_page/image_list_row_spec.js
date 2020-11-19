@@ -19,7 +19,7 @@ describe('Image List Row', () => {
   let wrapper;
   const item = imagesListResponse.data[0];
 
-  const findDetailsLink = () => wrapper.find('[data-testid="detailsLink"]');
+  const findDetailsLink = () => wrapper.find('[data-testid="details-link"]');
   const findTagsCount = () => wrapper.find('[data-testid="tagsCount"]');
   const findDeleteBtn = () => wrapper.find(DeleteButton);
   const findClipboardButton = () => wrapper.find(ClipboardButton);
@@ -67,7 +67,12 @@ describe('Image List Row', () => {
       mountComponent();
       const link = findDetailsLink();
       expect(link.html()).toContain(item.path);
-      expect(link.props('to').name).toBe('details');
+      expect(link.props('to')).toMatchObject({
+        name: 'details',
+        params: {
+          id: item.id,
+        },
+      });
     });
 
     it('contains a clipboard button', () => {

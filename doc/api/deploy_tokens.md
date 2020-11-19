@@ -96,7 +96,7 @@ POST /projects/:id/deploy_tokens
 | ---------  | ---- | -------- | ----------- |
 | `id`       | integer/string   | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `name`            | string    | yes | New deploy token's name |
-| `expires_at`      | datetime  | no  | Expiration date for the deploy token. Does not expire if no value is provided. |
+| `expires_at`      | datetime  | no  | Expiration date for the deploy token. Does not expire if no value is provided. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `username`        | string    | no  | Username for deploy token. Default is `gitlab+deploy-token-{n}` |
 | `scopes`   | array of strings | yes | Indicates the deploy token scopes. Must be at least one of `read_repository`, `read_registry`, `write_registry`, `read_package_registry`, or `write_package_registry`. |
 
@@ -198,7 +198,7 @@ POST /groups/:id/deploy_tokens
 | ---------  | ---- | -------- | ----------- |
 | `id`              | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `name`            | string    | yes | New deploy token's name |
-| `expires_at`      | datetime  | no  | Expiration date for the deploy token. Does not expire if no value is provided. |
+| `expires_at`      | datetime  | no  | Expiration date for the deploy token. Does not expire if no value is provided. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `username`        | string    | no  | Username for deploy token. Default is `gitlab+deploy-token-{n}` |
 | `scopes`   | array of strings | yes | Indicates the deploy token scopes. Must be at least one of `read_repository`, `read_registry`, `write_registry`, `read_package_registry`, or `write_package_registry`. |
 

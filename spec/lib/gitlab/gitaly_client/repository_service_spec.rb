@@ -38,7 +38,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService do
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
         .and_return(double(:garbage_collect_response))
 
-      client.garbage_collect(true)
+      client.garbage_collect(true, prune: true)
     end
   end
 

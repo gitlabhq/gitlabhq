@@ -1,3 +1,9 @@
+---
+stage: Enablement
+group: Database
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Ordering Table Columns in PostgreSQL
 
 For GitLab we require that columns of new tables are ordered to use the
@@ -45,7 +51,6 @@ In these examples, the `id` and `user_id` columns are packed together, which
 means we only need 8 bytes to store _both_ of them. This in turn means each row
 will require 8 bytes less space.
 
-Note: **NOTE:**
 Since Ruby on Rails 5.1, the default data type for IDs is `bigint`, which uses 8 bytes.
 We are using `integer` in the examples to showcase a more realistic reordering scenario.
 

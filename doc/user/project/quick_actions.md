@@ -40,6 +40,7 @@ The following quick actions are applicable to descriptions, discussions and thre
 | `/copy_metadata <#issue>`             | ✓     | ✓             |      | Copy labels and milestone from another issue in the project.                                                                     |
 | `/create_merge_request <branch name>` | ✓     |               |      | Create a new merge request starting from the current issue.                                                                      |
 | `/done`                               | ✓     | ✓             | ✓    | Mark to do as done.                                                                                                              |
+| `/draft`                              |       | ✓             |      | Toggle the draft status.                                                                                              |
 | `/due <date>`                         | ✓     |               |      | Set due date. Examples of valid `<date>` include `in 2 days`, `this Friday` and `December 31st`.                                 |
 | `/duplicate <#issue>`                 | ✓     |               |      | Close this issue and mark as a duplicate of another issue. **(CORE)** Also, mark both as related. **(STARTER)**                                          |
 | `/epic <epic>`                        | ✓     |               |      | Add to epic `<epic>`. The `<epic>` value should be in the format of `&epic`, `group&epic`, or a URL to an epic. **(PREMIUM)**  |
@@ -74,7 +75,7 @@ The following quick actions are applicable to descriptions, discussions and thre
 | `/tableflip <comment>`                | ✓     | ✓             | ✓    | Append the comment with `(╯°□°)╯︵ ┻━┻`.                                                                                        |
 | `/target_branch <local branch name>`  |       | ✓             |      | Set target branch.                                                                                                              |
 | `/title <new title>`                  | ✓     | ✓             | ✓    | Change title.                                                                                                                  |
-| `/todo`                               | ✓     | ✓             | ✓    | Add a to do.                                                                                                                   |
+| `/todo`                               | ✓     | ✓             | ✓    | Add a to-do item.                                                                                                                   |
 | `/unassign @user1 @user2`             | ✓     | ✓             |      | Remove specific assignees. **(STARTER)**                                                                                       |
 | `/unassign`                           | ✓     | ✓             |      | Remove all assignees.                                                                                                          |
 | `/unlabel ~label1 ~label2` or `/remove_label ~label1 ~label2` | ✓     | ✓             | ✓    | Remove specified labels.                                                                         |
@@ -82,7 +83,7 @@ The following quick actions are applicable to descriptions, discussions and thre
 | `/unlock`                             | ✓     | ✓             |      | Unlock the discussions.                                                                                                              |
 | `/unsubscribe`                        | ✓     | ✓             | ✓    | Unsubscribe from notifications.                                                                                                |
 | `/weight <value>`                     | ✓     |               |      | Set weight. Valid options for `<value>` include `0`, `1`, `2`, and so on. **(STARTER)**                                         |
-| `/wip`                                |       | ✓             |      | Toggle the Work In Progress status.                                                                                              |
+| `/wip`                                |       | ✓             |      | Toggle the draft status.                                                                                              |
 | `/zoom <Zoom URL>`                    | ✓     |               |      | Add Zoom meeting to this issue ([introduced in GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16609)).      |
 
 ## Autocomplete characters

@@ -4,12 +4,13 @@
   .content-wrapper{ class: "#{@content_wrapper_class}" }
     .mobile-overlay
     = yield :group_invite_members_banner
-    .alert-wrapper
+    .alert-wrapper.gl-force-block-formatting-context
       = render 'shared/outdated_browser'
       = render_if_exists "layouts/header/licensed_user_count_threshold"
       = render_if_exists "layouts/header/token_expiry_notification"
       = render "layouts/broadcast"
       = render "layouts/header/read_only_banner"
+      = render "layouts/header/registration_enabled_callout"
       = render "layouts/nav/classification_level_banner"
       = yield :flash_message
       = render "shared/ping_consent"
@@ -20,6 +21,6 @@
       - unless @hide_breadcrumbs
         = render "layouts/nav/breadcrumbs"
     %div{ class: "#{(container_class unless @no_container)} #{@content_class}" }
-      .content{ id: "content-body" }
+      .content{ id: "content-body", **page_itemtype }
         = render "layouts/flash", extra_flash_class: 'limit-container-width'
         = yield

@@ -18,7 +18,6 @@
 - authentication_and_authorization
 - auto_devops
 - backup_restore
-- behavior_analytics
 - boards
 - chatops
 - cloud_native_installation
@@ -56,7 +55,6 @@
 - gitaly
 - gitlab_docs
 - gitlab_handbook
-- gitter
 - global_search
 - helm_chart_registry
 - importers
@@ -101,6 +99,8 @@
 - secret_detection
 - secrets_management
 - security_benchmarking
+- security_orchestration
+- self_monitoring
 - serverless
 - service_desk
 - snippets
@@ -108,12 +108,13 @@
 - static_application_security_testing
 - static_site_editor
 - subgroups
+- synthetic_monitoring
 - templates
 - time_tracking
 - tracing
 - usability_testing
 - users
-- value_stream_management
+- value_stream_analytics
 - vulnerability_database
 - vulnerability_management
 - web_firewall

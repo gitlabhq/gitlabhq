@@ -14,9 +14,15 @@ describe('Milestones combobox Vuex store mutations', () => {
       expect(state).toEqual({
         projectId: null,
         groupId: null,
-        query: '',
+        groupMilestonesAvailable: false,
+        searchQuery: '',
         matches: {
           projectMilestones: {
+            list: [],
+            totalCount: 0,
+            error: null,
+          },
+          groupMilestones: {
             list: [],
             totalCount: 0,
             error: null,
@@ -37,6 +43,24 @@ describe('Milestones combobox Vuex store mutations', () => {
     });
   });
 
+  describe(`${types.SET_GROUP_ID}`, () => {
+    it('updates the group ID', () => {
+      const newGroupId = '8';
+      mutations[types.SET_GROUP_ID](state, newGroupId);
+
+      expect(state.groupId).toBe(newGroupId);
+    });
+  });
+
+  describe(`${types.SET_GROUP_MILESTONES_AVAILABLE}`, () => {
+    it('sets boolean indicating if group milestones are available', () => {
+      const groupMilestonesAvailable = true;
+      mutations[types.SET_GROUP_MILESTONES_AVAILABLE](state, groupMilestonesAvailable);
+
+      expect(state.groupMilestonesAvailable).toBe(groupMilestonesAvailable);
+    });
+  });
+
   describe(`${types.SET_SELECTED_MILESTONES}`, () => {
     it('sets the selected milestones', () => {
       const selectedMilestones = ['v1.2.3'];
@@ -46,7 +70,21 @@ describe('Milestones combobox Vuex store mutations', () => {
     });
   });
 
-  describe(`${types.ADD_SELECTED_MILESTONESs}`, () => {
+  describe(`${types.CLEAR_SELECTED_MILESTONES}`, () => {
+    it('clears the selected milestones', () => {
+      const selectedMilestones = ['v1.2.3'];
+
+      // Set state.selectedMilestones
+      mutations[types.SET_SELECTED_MILESTONES](state, selectedMilestones);
+
+      // Clear state.selectedMilestones
+      mutations[types.CLEAR_SELECTED_MILESTONES](state);
+
+      expect(state.selectedMilestones).toEqual([]);
+    });
+  });
+
+  describe(`${types.ADD_SELECTED_MILESTONES}`, () => {
     it('adds the selected milestones', () => {
       const selectedMilestone = 'v1.2.3';
       mutations[types.ADD_SELECTED_MILESTONE](state, selectedMilestone);
@@ -67,12 +105,12 @@ describe('Milestones combobox Vuex store mutations', () => {
     });
   });
 
-  describe(`${types.SET_QUERY}`, () => {
+  describe(`${types.SET_SEARCH_QUERY}`, () => {
     it('updates the search query', () => {
       const newQuery = 'hello';
-      mutations[types.SET_QUERY](state, newQuery);
+      mutations[types.SET_SEARCH_QUERY](state, newQuery);
 
-      expect(state.query).toBe(newQuery);
+      expect(state.searchQuery).toBe(newQuery);
     });
   });
 
@@ -149,6 +187,59 @@ describe('Milestones combobox Vuex store mutations', () => {
         mutations[types.RECEIVE_PROJECT_MILESTONES_ERROR](state, error);
 
         expect(state.matches.projectMilestones).toEqual({
+          list: [],
+          totalCount: 0,
+          error,
+        });
+      });
+    });
+  });
+
+  describe(`${types.RECEIVE_GROUP_MILESTONES_SUCCESS}`, () => {
+    it('updates state.matches.groupMilestones based on the provided API response', () => {
+      const response = {
+        data: [
+          {
+            title: 'group-0.1',
+          },
+          {
+            title: 'group-0.2',
+          },
+        ],
+        headers: {
+          'x-total': 2,
+        },
+      };
+
+      mutations[types.RECEIVE_GROUP_MILESTONES_SUCCESS](state, response);
+
+      expect(state.matches.groupMilestones).toEqual({
+        list: [
+          {
+            title: 'group-0.1',
+          },
+          {
+            title: 'group-0.2',
+          },
+        ],
+        error: null,
+        totalCount: 2,
+      });
+    });
+
+    describe(`${types.RECEIVE_GROUP_MILESTONES_ERROR}`, () => {
+      it('updates state.matches.groupMilestones to an empty state with the error object', () => {
+        const error = new Error('Something went wrong!');
+
+        state.matches.groupMilestones = {
+          list: [{ title: 'group-0.1' }],
+          totalCount: 1,
+          error: null,
+        };
+
+        mutations[types.RECEIVE_GROUP_MILESTONES_ERROR](state, error);
+
+        expect(state.matches.groupMilestones).toEqual({
           list: [],
           totalCount: 0,
           error,

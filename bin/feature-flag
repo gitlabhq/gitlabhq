@@ -35,6 +35,7 @@ class FeatureFlagOptionParser
     :name,
     :type,
     :group,
+    :milestone,
     :ee,
     :amend,
     :dry_run,
@@ -62,6 +63,10 @@ class FeatureFlagOptionParser
 
         opts.on('-m', '--introduced-by-url [string]', String, 'URL of Merge Request introducing the Feature Flag') do |value|
           options.introduced_by_url = value
+        end
+
+        opts.on('-M', '--milestone [string]', String, 'Milestone in which the Feature Flag was introduced') do |value|
+          options.milestone = value
         end
 
         opts.on('-i', '--rollout-issue-url [string]', String, 'URL of Issue rolling out the Feature Flag') do |value|
@@ -99,7 +104,7 @@ class FeatureFlagOptionParser
       end
 
       # Name is a first name
-      options.name = argv.first
+      options.name = argv.first.downcase.gsub(/-/, '_')
 
       options
     end
@@ -126,6 +131,8 @@ class FeatureFlagOptionParser
       $stdout.puts ">> Specify the feature flag type:"
       $stdout.puts
       TYPES.each do |type, data|
+        next if data[:deprecated]
+
         $stdout.puts "#{type.to_s.rjust(15)}#{' '*6}#{data[:description]}"
       end
 
@@ -133,7 +140,7 @@ class FeatureFlagOptionParser
         $stdout.print "?> "
 
         type = $stdin.gets.strip.to_sym
-        return type if TYPES[type]
+        return type if TYPES[type] && !TYPES[type][:deprecated]
 
         $stderr.puts "Invalid type specified '#{type}'"
       end
@@ -186,6 +193,11 @@ class FeatureFlagOptionParser
       end
     end
 
+    def read_milestone
+      milestone = File.read('VERSION')
+      milestone.gsub(/^(\d+\.\d+).*$/, '\1').chomp
+    end
+
     def read_default_enabled(options)
       TYPES.dig(options.type, :default_enabled)
     end
@@ -212,6 +224,7 @@ class FeatureFlagCreator
     options.group ||= FeatureFlagOptionParser.read_group
     options.introduced_by_url ||= FeatureFlagOptionParser.read_introduced_by_url
     options.rollout_issue_url ||= FeatureFlagOptionParser.read_rollout_issue_url(options)
+    options.milestone ||= FeatureFlagOptionParser.read_milestone
 
     $stdout.puts "\e[32mcreate\e[0m #{file_path}"
     $stdout.puts contents
@@ -241,6 +254,7 @@ class FeatureFlagCreator
       'name'              => options.name,
       'introduced_by_url' => options.introduced_by_url,
       'rollout_issue_url' => options.rollout_issue_url,
+      'milestone'         => options.milestone,
       'group'             => options.group,
       'type'              => options.type.to_s,
       'default_enabled'   => FeatureFlagOptionParser.read_default_enabled(options)

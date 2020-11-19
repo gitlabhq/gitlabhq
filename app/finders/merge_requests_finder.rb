@@ -66,6 +66,11 @@ class MergeRequestsFinder < IssuableFinder
     by_source_project_id(items)
   end
 
+  def filter_negated_items(items)
+    items = super(items)
+    by_negated_target_branch(items)
+  end
+
   private
 
   def by_commit(items)
@@ -95,6 +100,14 @@ class MergeRequestsFinder < IssuableFinder
     return items unless target_branch
 
     items.where(target_branch: target_branch)
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
+
+  # rubocop: disable CodeReuse/ActiveRecord
+  def by_negated_target_branch(items)
+    return items unless not_params[:target_branch]
+
+    items.where.not(target_branch: not_params[:target_branch])
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
@@ -142,19 +155,6 @@ class MergeRequestsFinder < IssuableFinder
       .or(table[:title].matches('(Draft)%'))
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
-  def by_deployment(items)
-    return items unless deployment_id
-
-    items.includes(:deployment_merge_requests)
-         .where(deployment_merge_requests: { deployment_id: deployment_id })
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
-
-  def deployment_id
-    @deployment_id ||= params[:deployment_id].presence
-  end
-
   # Filter by merge requests that had been approved by specific users
   # rubocop: disable CodeReuse/Finder
   def by_approvals(items)
@@ -165,10 +165,6 @@ class MergeRequestsFinder < IssuableFinder
   # rubocop: enable CodeReuse/Finder
 
   def by_deployments(items)
-    # Until this feature flag is enabled permanently, we retain the old
-    # filtering behaviour/code.
-    return by_deployment(items) unless Feature.enabled?(:deployment_filters)
-
     env = params[:environment]
     before = params[:deployed_before]
     after = params[:deployed_after]

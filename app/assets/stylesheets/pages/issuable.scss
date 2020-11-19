@@ -1,16 +1,12 @@
 .issuable-warning-icon {
   background-color: $orange-50;
   border-radius: $border-radius-default;
+  color: $orange-600;
   width: $issuable-warning-size;
   height: $issuable-warning-size;
   text-align: center;
   margin-right: $issuable-warning-icon-margin;
   line-height: $gl-line-height-24;
-
-  .icon {
-    fill: $orange-600;
-    vertical-align: text-bottom;
-  }
 }
 
 .limit-container-width {
@@ -74,14 +70,6 @@
     @include media-breakpoint-down(md) {
       padding: $gl-padding-8 0;
     }
-  }
-}
-
-.issuable-filter-count {
-  span {
-    display: block;
-    margin-bottom: -16px;
-    padding: 13px 0;
   }
 }
 
@@ -662,12 +650,6 @@
   }
 }
 
-.issuable-form-padding-top {
-  @include media-breakpoint-up(sm) {
-    padding-top: 7px;
-  }
-}
-
 .issuable-status-box {
   align-self: stretch;
   display: flex;
@@ -822,11 +804,7 @@
   }
 }
 
-.time_tracker {
-  padding-bottom: 0;
-  border-bottom: 0;
-
-
+.time-tracker {
   .sidebar-collapsed-icon {
     > .stopwatch-svg {
       display: inline-block;
@@ -936,6 +914,25 @@
 
   .dropdown-toggle > .icon {
     margin: 0 3px;
+  }
+}
+
+/*
+ * Following overrides are done to prevent
+ * legacy dropdown styles from influencing
+ * GitLab UI components used within GlDropdown
+ */
+.issuable-move-dropdown {
+  .b-dropdown-form {
+    @include gl-p-0;
+  }
+
+  .gl-search-box-by-type button.gl-clear-icon-button:hover {
+    @include gl-bg-transparent;
+  }
+
+  .issuable-move-button:not(.disabled):hover {
+    @include gl-text-white;
   }
 }
 

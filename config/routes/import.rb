@@ -69,7 +69,7 @@ namespace :import do
     post :authorize
   end
 
-  resource :bulk_import, only: [:create] do
+  resource :bulk_imports, only: [:create] do
     post :configure
     get :status
   end

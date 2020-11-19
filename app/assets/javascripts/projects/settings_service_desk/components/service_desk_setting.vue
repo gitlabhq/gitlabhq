@@ -26,6 +26,11 @@ export default {
       required: false,
       default: '',
     },
+    customEmail: {
+      type: String,
+      required: false,
+      default: '',
+    },
     initialSelectedTemplate: {
       type: String,
       required: false,
@@ -57,7 +62,6 @@ export default {
       selectedTemplate: this.initialSelectedTemplate,
       outgoingName: this.initialOutgoingName || __('GitLab Support Bot'),
       projectKey: this.initialProjectKey,
-      baseEmail: this.incomingEmail.replace(this.initialProjectKey, ''),
     };
   },
   computed: {
@@ -66,6 +70,12 @@ export default {
     },
     hasProjectKeySupport() {
       return Boolean(this.glFeatures.serviceDeskCustomAddress);
+    },
+    email() {
+      return this.customEmail || this.incomingEmail;
+    },
+    hasCustomEmail() {
+      return this.customEmail && this.customEmail !== this.incomingEmail;
     },
   },
   methods: {
@@ -101,30 +111,31 @@ export default {
         <strong id="incoming-email-describer" class="d-block mb-1">
           {{ __('Forward external support email address to') }}
         </strong>
-        <template v-if="incomingEmail">
+        <template v-if="email">
           <div class="input-group">
             <input
               ref="service-desk-incoming-email"
               type="text"
-              class="form-control incoming-email"
+              class="form-control"
+              data-testid="incoming-email"
               :placeholder="__('Incoming email')"
               :aria-label="__('Incoming email')"
               aria-describedby="incoming-email-describer"
-              :value="incomingEmail"
+              :value="email"
               disabled="true"
             />
             <div class="input-group-append">
               <clipboard-button
                 :title="__('Copy')"
-                :text="incomingEmail"
+                :text="email"
                 css-class="input-group-text qa-clipboard-button"
               />
             </div>
           </div>
-          <span v-if="projectKey" class="form-text text-muted">
+          <span v-if="hasCustomEmail" class="form-text text-muted">
             <gl-sprintf :message="__('Emails sent to %{email} will still be supported')">
               <template #email>
-                <code>{{ baseEmail }}</code>
+                <code>{{ incomingEmail }}</code>
               </template>
             </gl-sprintf>
           </span>

@@ -1,0 +1,294 @@
+@import 'mixins_and_variables_and_functions';
+
+.build-page {
+  .build-trace {
+    @include build-trace();
+  }
+
+  .archived-job {
+    top: $header-height;
+    border-radius: 2px 2px 0 0;
+    color: $orange-600;
+    background-color: $orange-50;
+    border: 1px solid $border-gray-normal;
+    padding: 3px 12px;
+    margin: auto;
+    align-items: center;
+    z-index: 1;
+
+    .with-performance-bar & {
+      top: $header-height + $performance-bar-height;
+    }
+  }
+
+  .top-bar {
+    @include build-trace-top-bar(50px);
+
+    &.has-archived-block {
+      top: $header-height + 28px;
+
+      .with-performance-bar & {
+        top: $header-height + $performance-bar-height + 28px;
+      }
+    }
+
+    &.affix {
+      top: $header-height;
+
+      // with sidebar
+      &.sidebar-expanded {
+        right: 306px;
+        left: 16px;
+      }
+
+      // without sidebar
+      &.sidebar-collapsed {
+        right: 16px;
+        left: 16px;
+      }
+    }
+
+    &.affix-top {
+      position: absolute;
+      right: 0;
+      left: 0;
+      top: 0;
+    }
+
+    .controllers {
+      @include build-controllers(15px, center, false, 0, inline, 0);
+    }
+  }
+
+  .environment-information {
+    border: 1px solid $border-color;
+    padding: 8px $gl-padding 12px;
+    border-radius: $border-radius-default;
+
+    svg {
+      position: relative;
+      top: 3px;
+      margin-right: 5px;
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  .build-loader-animation {
+    @include build-loader-animation;
+    float: left;
+    padding-left: $gl-padding-8;
+  }
+}
+
+.build-header {
+  .page-content-header {
+    padding: 10px 0 9px;
+  }
+
+  .header-action-buttons {
+    display: flex;
+
+    @include media-breakpoint-down(xs) {
+      .sidebar-toggle-btn {
+        margin-top: 0;
+        margin-left: 10px;
+        max-height: 34px;
+      }
+    }
+  }
+
+  .header-content {
+    a {
+      color: $gl-text-color;
+
+      &:hover {
+        color: $blue-600;
+        text-decoration: none;
+      }
+    }
+  }
+
+  code {
+    color: $code-color;
+  }
+
+  .avatar {
+    float: none;
+    margin-right: 2px;
+    margin-left: 2px;
+  }
+}
+
+.right-sidebar.build-sidebar {
+  padding: 0;
+
+  &.right-sidebar-collapsed {
+    display: none;
+  }
+
+  .sidebar-container {
+    padding-right: 100px;
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .blocks-container {
+    padding: 0 $gl-padding;
+    width: 289px;
+  }
+
+  .block {
+    width: 100%;
+    word-break: break-word;
+
+    &:last-child {
+      border-bottom: 1px solid $border-gray-normal;
+    }
+
+    &.coverage {
+      padding: 0 16px 11px;
+    }
+  }
+
+  .block-last {
+    padding: 16px 0;
+  }
+
+  .trigger-variables-btn-container {
+    justify-content: space-between;
+    align-items: center;
+
+    .trigger-variables-btn {
+      margin-top: -5px;
+      margin-bottom: -5px;
+    }
+  }
+
+  .trigger-build-variables {
+    margin: 0;
+    overflow-x: auto;
+    width: 100%;
+    -ms-overflow-style: scrollbar;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .trigger-build-variable {
+    font-weight: $gl-font-weight-normal;
+    color: $code-color;
+  }
+
+  .trigger-build-value {
+    padding: 2px 4px;
+    color: $black;
+  }
+
+  .trigger-variables-table-cell {
+    font-size: $gl-font-size-small;
+    line-height: $gl-line-height;
+    border: 1px solid $gray-100;
+    padding: $gl-padding-4 6px;
+    width: 50%;
+    vertical-align: top;
+  }
+
+  .badge.badge-pill {
+    margin-left: 2px;
+  }
+
+  .retry-link {
+    display: block;
+
+    .btn-inverted-secondary {
+      color: $blue-500;
+
+      &:hover {
+        color: $white;
+      }
+    }
+  }
+
+  .stage-item {
+    cursor: pointer;
+
+    &:hover {
+      color: $gl-text-color;
+    }
+  }
+
+  .builds-container {
+    background-color: $white;
+    border-top: 1px solid $border-color;
+    border-bottom: 1px solid $border-color;
+    max-height: 300px;
+    width: 289px;
+    overflow: auto;
+
+    svg {
+      margin-right: 3px;
+      height: 14px;
+      width: 14px;
+    }
+
+    a {
+      padding: $gl-padding 10px $gl-padding 40px;
+      width: 270px;
+
+      &:hover {
+        color: $gl-text-color;
+      }
+    }
+
+    .icon-arrow-right {
+      left: 15px;
+      top: 20px;
+    }
+
+    .build-job {
+      &.active {
+        font-weight: $gl-font-weight-bold;
+      }
+
+      &.retried {
+        background-color: $gray-lightest;
+      }
+
+      &:hover {
+        background-color: $gray-darker;
+      }
+    }
+  }
+
+  .link-commit {
+    color: $blue-600;
+  }
+}
+
+.build-sidebar {
+  .container-fluid.container-limited {
+    max-width: 100%;
+  }
+
+  .content-wrapper {
+    padding-bottom: 6px;
+  }
+}
+
+.build-detail-row {
+  margin-bottom: 5px;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
+
+@include media-breakpoint-down(md) {
+  .content-list {
+    &.builds-content-list {
+      width: 100%;
+      overflow: auto;
+    }
+  }
+}

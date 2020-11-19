@@ -6,7 +6,8 @@ RSpec.describe JiraImport::UsersImporter do
   include JiraServiceHelper
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project, reload: true) { create(:project, group: group) }
   let_it_be(:start_at) { 7 }
 
   let(:importer) { described_class.new(user, project, start_at) }
@@ -18,19 +19,15 @@ RSpec.describe JiraImport::UsersImporter do
       [
         {
           jira_account_id: 'acc1',
-          jira_display_name: 'user1',
+          jira_display_name: 'user-name1',
           jira_email: 'sample@jira.com',
-          gitlab_id: nil,
-          gitlab_username: nil,
-          gitlab_name: nil
+          gitlab_id: project_member.id
         },
         {
           jira_account_id: 'acc2',
-          jira_display_name: 'user2',
+          jira_display_name: 'user-name2',
           jira_email: nil,
-          gitlab_id: nil,
-          gitlab_username: nil,
-          gitlab_name: nil
+          gitlab_id: group_member.id
         }
       ]
     end
@@ -69,13 +66,22 @@ RSpec.describe JiraImport::UsersImporter do
           context 'when jira client returns an empty array' do
             let(:jira_users) { [] }
 
-            it 'retturns nil payload' do
+            it 'returns nil payload' do
               expect(subject.success?).to be_truthy
               expect(subject.payload).to be_empty
             end
           end
 
           context 'when jira client returns an results' do
+            let_it_be(:project_member) { create(:user, email: 'sample@jira.com') }
+            let_it_be(:group_member) { create(:user, name: 'user-name2') }
+            let_it_be(:other_user) { create(:user) }
+
+            before do
+              project.add_developer(project_member)
+              group.add_developer(group_member)
+            end
+
             it 'returns the mapped users' do
               expect(subject.success?).to be_truthy
               expect(subject.payload).to eq(mapped_users)
@@ -90,8 +96,8 @@ RSpec.describe JiraImport::UsersImporter do
       let(:url) { "/rest/api/2/user/search?username=''&maxResults=50&startAt=#{start_at}" }
       let(:jira_users) do
         [
-          { 'key' => 'acc1', 'name' => 'user1', 'emailAddress' => 'sample@jira.com' },
-          { 'key' => 'acc2', 'name' => 'user2' }
+          { 'key' => 'acc1', 'name' => 'user-name1', 'emailAddress' => 'sample@jira.com' },
+          { 'key' => 'acc2', 'name' => 'user-name2' }
         ]
       end
 
@@ -110,8 +116,8 @@ RSpec.describe JiraImport::UsersImporter do
       let(:url) { "/rest/api/2/users?maxResults=50&startAt=#{start_at}" }
       let(:jira_users) do
         [
-          { 'accountId' => 'acc1', 'displayName' => 'user1', 'emailAddress' => 'sample@jira.com' },
-          { 'accountId' => 'acc2', 'displayName' => 'user2' }
+          { 'accountId' => 'acc1', 'displayName' => 'user-name1', 'emailAddress' => 'sample@jira.com' },
+          { 'accountId' => 'acc2', 'displayName' => 'user-name2' }
         ]
       end
 

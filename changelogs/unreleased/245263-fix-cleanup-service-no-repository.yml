@@ -1,0 +1,5 @@
+---
+title: Do not fail when cleaning up MR with no repository
+merge_request: 47744
+author:
+type: fixed

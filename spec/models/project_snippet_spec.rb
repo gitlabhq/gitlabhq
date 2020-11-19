@@ -36,8 +36,7 @@ RSpec.describe ProjectSnippet do
   it_behaves_like 'model with repository' do
     let_it_be(:container) { create(:project_snippet, :repository) }
     let(:stubbed_container) { build_stubbed(:project_snippet) }
-    let(:expected_full_path) { "#{container.project.full_path}/@snippets/#{container.id}" }
+    let(:expected_full_path) { "#{container.project.full_path}/snippets/#{container.id}" }
     let(:expected_web_url_path) { "#{container.project.full_path}/-/snippets/#{container.id}" }
-    let(:expected_repo_url_path) { "#{container.project.full_path}/snippets/#{container.id}" }
   end
 end

@@ -1,0 +1,8 @@
+---
+name: count_uploads_size_in_storage_stats
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46941
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/281950
+milestone: '13.6'
+type: development
+group: group::project management
+default_enabled: false

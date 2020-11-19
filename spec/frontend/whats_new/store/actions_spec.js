@@ -30,7 +30,9 @@ describe('whats new actions', () => {
       axiosMock = new MockAdapter(axios);
       axiosMock
         .onGet('/-/whats_new')
-        .replyOnce(200, [{ title: 'Whats New Drawer', url: 'www.url.com' }]);
+        .replyOnce(200, [{ title: 'Whats New Drawer', url: 'www.url.com' }], {
+          'x-next-page': '2',
+        });
 
       await waitForPromises();
     });
@@ -39,10 +41,23 @@ describe('whats new actions', () => {
       axiosMock.restore();
     });
 
-    it('should commit setFeatures', () => {
+    it('if already fetching, does not fetch', () => {
+      testAction(actions.fetchItems, {}, { fetching: true }, []);
+    });
+
+    it('should commit fetching, setFeatures and setPagination', () => {
       testAction(actions.fetchItems, {}, {}, [
-        { type: types.SET_FEATURES, payload: [{ title: 'Whats New Drawer', url: 'www.url.com' }] },
+        { type: types.SET_FETCHING, payload: true },
+        { type: types.ADD_FEATURES, payload: [{ title: 'Whats New Drawer', url: 'www.url.com' }] },
+        { type: types.SET_PAGE_INFO, payload: { nextPage: 2 } },
+        { type: types.SET_FETCHING, payload: false },
       ]);
     });
+  });
+
+  describe('setDrawerBodyHeight', () => {
+    testAction(actions.setDrawerBodyHeight, 42, {}, [
+      { type: types.SET_DRAWER_BODY_HEIGHT, payload: 42 },
+    ]);
   });
 });

@@ -4,6 +4,11 @@ class EnvironmentEntity < Grape::Entity
   include RequestAwareEntity
 
   expose :id
+
+  expose :global_id do |environment|
+    environment.to_global_id.to_s
+  end
+
   expose :name
   expose :state
   expose :external_url

@@ -107,12 +107,12 @@ export const designUploadOptimisticResponse = files => {
  *  @param {Object} note
  *  @param {Object} position
  */
-export const updateImageDiffNoteOptimisticResponse = (note, { position }) => ({
+export const repositionImageDiffNoteOptimisticResponse = (note, { position }) => ({
   // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26
   // eslint-disable-next-line @gitlab/require-i18n-strings
   __typename: 'Mutation',
-  updateImageDiffNote: {
-    __typename: 'UpdateImageDiffNotePayload',
+  repositionImageDiffNote: {
+    __typename: 'RepositionImageDiffNotePayload',
     note: {
       ...note,
       position: {

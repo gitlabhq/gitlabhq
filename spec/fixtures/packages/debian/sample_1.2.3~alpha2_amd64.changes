@@ -1,0 +1,39 @@
+Format: 1.8
+Date: Thu, 01 Oct 2020 09:35:15 +0200
+Source: sample
+Binary: libsample0 sample-dev sample-udeb
+Architecture: source amd64
+Version: 1.2.3~alpha2
+Distribution: unstable
+Urgency: medium
+Maintainer: John Doe <john.doe@example.com>
+Changed-By: John Doe <john.doe@example.com>
+Description:
+ libsample0 - Some mostly empty lib
+ sample-dev - Some mostly empty developpement files
+ sample-udeb - Some mostly empty udeb (udeb)
+Changes:
+ sample (1.2.3~alpha2) unstable; urgency=medium
+ .
+   * Initial release
+Checksums-Sha1:
+ 32ecbd674f0bfd310df68484d87752490685a8d6 671 sample_1.2.3~alpha2.dsc
+ 5f8bba5574eb01ac3b1f5e2988e8c29307788236 864 sample_1.2.3~alpha2.tar.xz
+ 5248b95600e85bfe7f63c0dfce330a75f5777366 1124 libsample0_1.2.3~alpha2_amd64.deb
+ f81e4f66c8c6bb899653a3340c157965ee69634f 1164 sample-dev_1.2.3~binary_amd64.deb
+ e42e8f2fe04ed1bb73b44a187674480d0e49dcba 736 sample-udeb_1.2.3~alpha2_amd64.udeb
+ 0d47e899f3cc67a2253a4629456ff927e0db5c60 5280 sample_1.2.3~alpha2_amd64.buildinfo
+Checksums-Sha256:
+ 844f79825b7e8aaa191e514b58a81f9ac1e58e2180134b0c9512fa66d896d7ba 671 sample_1.2.3~alpha2.dsc
+ b5a599e88e7cbdda3bde808160a21ba1dd1ec76b2ec8d4912aae769648d68362 864 sample_1.2.3~alpha2.tar.xz
+ 1c383a525bfcba619c7305ccd106d61db501a6bbaf0003bf8d0c429fbdb7fcc1 1124 libsample0_1.2.3~alpha2_amd64.deb
+ 9fbeee2191ce4dab5288fad5ecac1bd369f58fef9a992a880eadf0caf25f086d 1164 sample-dev_1.2.3~binary_amd64.deb
+ 2b0c152b3ab4cc07663350424de972c2b7621d69fe6df2e0b94308a191e4632f 736 sample-udeb_1.2.3~alpha2_amd64.udeb
+ f9900d3c94e94b329232668dcbef3dba2d96c07147b15b6dc0533452e4dd8a43 5280 sample_1.2.3~alpha2_amd64.buildinfo
+Files:
+ 3b0817804f669e16cdefac583ad88f0e 671 libs optional sample_1.2.3~alpha2.dsc
+ d79b34f58f61ff4ad696d9bd0b8daa68 864 libs optional sample_1.2.3~alpha2.tar.xz
+ fb0842b21adc44207996296fe14439dd 1124 libs optional libsample0_1.2.3~alpha2_amd64.deb
+ d2afbd28e4d74430d22f9504e18bfdf5 1164 libdevel optional sample-dev_1.2.3~binary_amd64.deb
+ 72b1dd7d98229e2fb0355feda1d3a165 736 libs optional sample-udeb_1.2.3~alpha2_amd64.udeb
+ 4e085dd67c120ca967ec314f65770a42 5280 libs optional sample_1.2.3~alpha2_amd64.buildinfo

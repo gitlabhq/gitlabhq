@@ -17,8 +17,15 @@ module Terraform
     belongs_to :project
     belongs_to :locked_by_user, class_name: 'User'
 
-    has_many :versions, class_name: 'Terraform::StateVersion', foreign_key: :terraform_state_id
-    has_one :latest_version, -> { ordered_by_version_desc }, class_name: 'Terraform::StateVersion', foreign_key: :terraform_state_id
+    has_many :versions,
+      class_name: 'Terraform::StateVersion',
+      foreign_key: :terraform_state_id,
+      inverse_of: :terraform_state
+
+    has_one :latest_version, -> { ordered_by_version_desc },
+      class_name: 'Terraform::StateVersion',
+      foreign_key: :terraform_state_id,
+      inverse_of: :terraform_state
 
     scope :versioning_not_enabled, -> { where(versioning_enabled: false) }
     scope :ordered_by_name, -> { order(:name) }
@@ -48,11 +55,11 @@ module Terraform
       self.lock_xid.present?
     end
 
-    def update_file!(data, version:)
+    def update_file!(data, version:, build:)
       if versioning_enabled?
-        create_new_version!(data: data, version: version)
+        create_new_version!(data: data, version: version, build: build)
       elsif latest_version.present?
-        migrate_legacy_version!(data: data, version: version)
+        migrate_legacy_version!(data: data, version: version, build: build)
       else
         self.file = data
         save!
@@ -81,18 +88,18 @@ module Terraform
     # The code can be removed in the next major version (14.0), after
     # which any states that haven't been migrated will need to be
     # recreated: https://gitlab.com/gitlab-org/gitlab/-/issues/258960
-    def migrate_legacy_version!(data:, version:)
+    def migrate_legacy_version!(data:, version:, build:)
       current_file = latest_version.file.read
       current_version = parse_serial(current_file) || version - 1
 
       update!(versioning_enabled: true)
 
       reload_latest_version.update!(version: current_version, file: CarrierWaveStringFile.new(current_file))
-      create_new_version!(data: data, version: version)
+      create_new_version!(data: data, version: version, build: build)
     end
 
-    def create_new_version!(data:, version:)
-      new_version = versions.build(version: version, created_by_user: locked_by_user)
+    def create_new_version!(data:, version:, build:)
+      new_version = versions.build(version: version, created_by_user: locked_by_user, build: build)
       new_version.assign_attributes(file: data)
       new_version.save!
     end

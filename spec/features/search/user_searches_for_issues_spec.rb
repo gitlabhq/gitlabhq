@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe 'User searches for issues', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace) }
-  let!(:issue1) { create(:issue, title: 'Foo', project: project) }
-  let!(:issue2) { create(:issue, :closed, :confidential, title: 'Bar', project: project) }
+  let!(:issue1) { create(:issue, title: 'issue Foo', project: project, created_at: 1.hour.ago) }
+  let!(:issue2) { create(:issue, :closed, :confidential, title: 'issue Bar', project: project) }
 
   def search_for_issue(search)
     fill_in('dashboard_search', with: search)
@@ -67,13 +67,26 @@ RSpec.describe 'User searches for issues', :js do
       end
     end
 
+    it 'sorts by created date' do
+      search_for_issue('issue')
+
+      page.within('.results') do
+        expect(page.all('.search-result-row').first).to have_link(issue2.title)
+        expect(page.all('.search-result-row').last).to have_link(issue1.title)
+      end
+
+      find('.reverse-sort-btn').click
+
+      page.within('.results') do
+        expect(page.all('.search-result-row').first).to have_link(issue1.title)
+        expect(page.all('.search-result-row').last).to have_link(issue2.title)
+      end
+    end
+
     context 'when on a project page' do
       it 'finds an issue' do
         find('.js-search-project-dropdown').click
-
-        page.within('.project-filter') do
-          click_link(project.full_name)
-        end
+        find('[data-testid="project-filter"]').click_link(project.full_name)
 
         search_for_issue(issue1.title)
 

@@ -10,4 +10,4 @@ link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#links
 level: error
 scope: raw
 raw:
-  - '\[.+\]\((https?:){0}[\w\/\.-]+(\.html).*\)'
+  - '\[.+\]\((https?:){0}[\w\/\.-]+(\.html).*?\)'

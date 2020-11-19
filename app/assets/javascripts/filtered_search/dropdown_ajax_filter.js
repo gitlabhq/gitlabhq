@@ -22,7 +22,7 @@ export default class DropdownAjaxFilter extends FilteredSearchDropdown {
 
   ajaxFilterConfig() {
     return {
-      endpoint: `${gon.relative_url_root || ''}${this.endpoint}`,
+      endpoint: this.endpoint,
       searchKey: 'search',
       searchValueFunction: this.getSearchInput.bind(this),
       loadingTemplate: this.loadingTemplate,
@@ -33,9 +33,11 @@ export default class DropdownAjaxFilter extends FilteredSearchDropdown {
   }
 
   itemClicked(e) {
-    super.itemClicked(e, selected =>
-      selected.querySelector('.dropdown-light-content').innerText.trim(),
-    );
+    super.itemClicked(e, selected => {
+      const title = selected.querySelector('.dropdown-light-content').innerText.trim();
+
+      return DropdownUtils.getEscapedText(title);
+    });
   }
 
   renderContent(forceShowList = false) {

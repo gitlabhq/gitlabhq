@@ -164,26 +164,6 @@ export const changeFileContent = ({ commit, state, getters }, { path, content })
   }
 };
 
-export const setFileLanguage = ({ getters, commit }, { fileLanguage }) => {
-  if (getters.activeFile) {
-    commit(types.SET_FILE_LANGUAGE, { file: getters.activeFile, fileLanguage });
-  }
-};
-
-export const setEditorPosition = ({ getters, commit }, { editorRow, editorColumn }) => {
-  if (getters.activeFile) {
-    commit(types.SET_FILE_POSITION, {
-      file: getters.activeFile,
-      editorRow,
-      editorColumn,
-    });
-  }
-};
-
-export const setFileViewMode = ({ commit }, { file, viewMode }) => {
-  commit(types.SET_FILE_VIEWMODE, { file, viewMode });
-};
-
 export const restoreOriginalFile = ({ dispatch, state, commit }, path) => {
   const file = state.entries[path];
   const isDestructiveDiscard = file.tempFile || file.prevPath;
@@ -289,7 +269,7 @@ export const removePendingTab = ({ commit }, file) => {
   eventHub.$emit(`editor.update.model.dispose.${file.key}`);
 };
 
-export const triggerFilesChange = () => {
+export const triggerFilesChange = (ctx, payload = {}) => {
   // Used in EE for file mirroring
-  eventHub.$emit('ide.files.change');
+  eventHub.$emit('ide.files.change', payload);
 };

@@ -4,7 +4,7 @@ module Types
   class IssueType < BaseObject
     graphql_name 'Issue'
 
-    connection_type_class(Types::CountableConnectionType)
+    connection_type_class(Types::IssueConnectionType)
 
     implements(Types::Notes::NoteableType)
     implements(Types::CurrentUserTodos)
@@ -41,6 +41,9 @@ module Types
     field :assignees, Types::UserType.connection_type, null: true,
           description: 'Assignees of the issue'
 
+    field :updated_by, Types::UserType, null: true,
+          description: 'User that last updated the issue'
+
     field :labels, Types::LabelType.connection_type, null: true,
           description: 'Labels of the issue'
     field :milestone, Types::MilestoneType, null: true,
@@ -59,6 +62,8 @@ module Types
           description: 'Number of downvotes the issue has received'
     field :user_notes_count, GraphQL::INT_TYPE, null: false,
           description: 'Number of user notes of the issue'
+    field :user_discussions_count, GraphQL::INT_TYPE, null: false,
+          description: 'Number of user discussions in the issue'
     field :web_path, GraphQL::STRING_TYPE, null: false, method: :issue_path,
           description: 'Web path of the issue'
     field :web_url, GraphQL::STRING_TYPE, null: false,
@@ -68,12 +73,19 @@ module Types
 
     field :participants, Types::UserType.connection_type, null: true, complexity: 5,
           description: 'List of participants in the issue'
+    field :emails_disabled, GraphQL::BOOLEAN_TYPE, null: false,
+          method: :project_emails_disabled?,
+          description: 'Indicates if a project has email notifications disabled: `true` if email notifications are disabled'
     field :subscribed, GraphQL::BOOLEAN_TYPE, method: :subscribed?, null: false, complexity: 5,
           description: 'Indicates the currently logged in user is subscribed to the issue'
     field :time_estimate, GraphQL::INT_TYPE, null: false,
           description: 'Time estimate of the issue'
     field :total_time_spent, GraphQL::INT_TYPE, null: false,
           description: 'Total time reported as spent on the issue'
+    field :human_time_estimate, GraphQL::STRING_TYPE, null: true,
+          description: 'Human-readable time estimate of the issue'
+    field :human_total_time_spent, GraphQL::STRING_TYPE, null: true,
+          description: 'Human-readable total time reported as spent on the issue'
 
     field :closed_at, Types::TimeType, null: true,
           description: 'Timestamp of when the issue was closed'
@@ -85,11 +97,6 @@ module Types
 
     field :task_completion_status, Types::TaskCompletionStatus, null: false,
           description: 'Task completion status of the issue'
-
-    field :designs, Types::DesignManagement::DesignCollectionType, null: true,
-          method: :design_collection,
-          deprecated: { reason: 'Use `designCollection`', milestone: '12.2' },
-          description: 'The designs associated with this issue'
 
     field :design_collection, Types::DesignManagement::DesignCollectionType, null: true,
           description: 'Collection of design images associated with this issue'
@@ -106,12 +113,46 @@ module Types
     field :severity, Types::IssuableSeverityEnum, null: true,
           description: 'Severity level of the incident'
 
+    field :moved, GraphQL::BOOLEAN_TYPE, method: :moved?, null: true,
+          description: 'Indicates if issue got moved from other project'
+
+    field :moved_to, Types::IssueType, null: true,
+          description: 'Updated Issue after it got moved to another project'
+
+    def user_notes_count
+      BatchLoader::GraphQL.for(object.id).batch(key: :issue_user_notes_count) do |ids, loader, args|
+        counts = Note.count_for_collection(ids, 'Issue').index_by(&:noteable_id)
+
+        ids.each do |id|
+          loader.call(id, counts[id]&.count || 0)
+        end
+      end
+    end
+
+    def user_discussions_count
+      BatchLoader::GraphQL.for(object.id).batch(key: :issue_user_discussions_count) do |ids, loader, args|
+        counts = Note.count_for_collection(ids, 'Issue', 'COUNT(DISTINCT discussion_id) as count').index_by(&:noteable_id)
+
+        ids.each do |id|
+          loader.call(id, counts[id]&.count || 0)
+        end
+      end
+    end
+
     def author
       Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.author_id).find
     end
 
+    def updated_by
+      Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.updated_by_id).find
+    end
+
     def milestone
       Gitlab::Graphql::Loaders::BatchModelLoader.new(Milestone, object.milestone_id).find
+    end
+
+    def moved_to
+      Gitlab::Graphql::Loaders::BatchModelLoader.new(Issue, object.moved_to_id).find
     end
 
     def discussion_locked

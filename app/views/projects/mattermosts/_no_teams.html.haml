@@ -9,8 +9,8 @@
   To install this service,
   = link_to "#{Gitlab.config.mattermost.host}/select_team", target: '__blank' do
     join a team
-    = icon('external-link')
+    = sprite_icon('external-link')
   and try again.
 %hr
 .clearfix
-  = link_to 'Go back', edit_project_service_path(@project, @service), class: 'btn btn-lg float-right'
+  = link_to 'Go back', edit_project_service_path(@project, @service), class: 'gl-button btn btn-lg float-right'

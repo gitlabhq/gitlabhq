@@ -43,8 +43,8 @@ In any case, you require:
 - A working GitLab **secondary** node.
 - A Route53 Hosted Zone managing your domain.
 
-If you have not yet setup a Geo **primary** node and **secondary** node, please consult
-[the Geo setup instructions](../index.md#setup-instructions).
+If you haven't yet set up a Geo _primary_ node and _secondary_ node, see the
+[Geo setup instructions](../index.md#setup-instructions).
 
 ## Create a traffic policy
 

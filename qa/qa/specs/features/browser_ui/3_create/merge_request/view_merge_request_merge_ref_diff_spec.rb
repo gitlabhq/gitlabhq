@@ -3,8 +3,15 @@
 module QA
   RSpec.describe 'Create', :requires_admin do
     describe 'View merge request merge-ref diff' do
+      let(:project) do
+        Resource::Project.fabricate_via_api! do |project|
+          project.name = 'merge-ref-diff'
+        end
+      end
+
       let(:merge_request) do
         Resource::MergeRequest.fabricate_via_api! do |merge_request|
+          merge_request.project = project
           merge_request.title = 'This is a merge request'
           merge_request.description = '... for viewing merge-ref and merge-base diffs'
           merge_request.file_content = 'This exists on the source branch only'
@@ -13,16 +20,14 @@ module QA
 
       let(:new_file_name) { "added_file-#{SecureRandom.hex(8)}.txt" }
 
-      before do
-        commit_to_branch(merge_request.target_branch, new_file_name)
-        commit_to_branch(merge_request.source_branch, new_file_name)
-
-        Flow::Login.sign_in
-      end
-
       context 'when the feature flag default_merge_ref_for_diffs is enabled' do
         before do
-          Runtime::Feature.enable('default_merge_ref_for_diffs', project: merge_request.project)
+          Runtime::Feature.enable('default_merge_ref_for_diffs', project: project)
+
+          commit_to_branch(merge_request.target_branch, new_file_name)
+          commit_to_branch(merge_request.source_branch, new_file_name)
+
+          Flow::Login.sign_in
 
           merge_request.visit!
         end
@@ -42,7 +47,12 @@ module QA
 
       context 'when the feature flag default_merge_ref_for_diffs is disabled' do
         before do
-          Runtime::Feature.disable('default_merge_ref_for_diffs', project: merge_request.project)
+          Runtime::Feature.disable('default_merge_ref_for_diffs', project: project)
+
+          commit_to_branch(merge_request.target_branch, new_file_name)
+          commit_to_branch(merge_request.source_branch, new_file_name)
+
+          Flow::Login.sign_in
 
           merge_request.visit!
         end

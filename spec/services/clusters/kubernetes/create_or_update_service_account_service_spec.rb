@@ -141,6 +141,7 @@ RSpec.describe Clusters::Kubernetes::CreateOrUpdateServiceAccountService do
       before do
         cluster.platform_kubernetes.rbac!
 
+        stub_kubeclient_delete_role_binding(api_url, role_binding_name, namespace: namespace)
         stub_kubeclient_put_role_binding(api_url, role_binding_name, namespace: namespace)
         stub_kubeclient_put_role(api_url, Clusters::Kubernetes::GITLAB_KNATIVE_SERVING_ROLE_NAME, namespace: namespace)
         stub_kubeclient_put_role_binding(api_url, Clusters::Kubernetes::GITLAB_KNATIVE_SERVING_ROLE_BINDING_NAME, namespace: namespace)
@@ -160,60 +161,26 @@ RSpec.describe Clusters::Kubernetes::CreateOrUpdateServiceAccountService do
 
       it_behaves_like 'creates service account and token'
 
-      context 'kubernetes_cluster_namespace_role_admin FF is enabled' do
-        before do
-          stub_feature_flags(kubernetes_cluster_namespace_role_admin: true)
-        end
+      it 'creates a namespaced role binding with admin access' do
+        subject
 
-        it 'creates a namespaced role binding with admin access' do
-          subject
-
-          expect(WebMock).to have_requested(:put, api_url + "/apis/rbac.authorization.k8s.io/v1/namespaces/#{namespace}/rolebindings/#{role_binding_name}").with(
-            body: hash_including(
-              metadata: { name: "gitlab-#{namespace}", namespace: "#{namespace}" },
-              roleRef: {
-                apiGroup: 'rbac.authorization.k8s.io',
-                kind: 'ClusterRole',
-                name: 'admin'
-              },
-              subjects: [
-                {
-                  kind: 'ServiceAccount',
-                  name: service_account_name,
-                  namespace: namespace
-                }
-              ]
-            )
+        expect(WebMock).to have_requested(:put, api_url + "/apis/rbac.authorization.k8s.io/v1/namespaces/#{namespace}/rolebindings/#{role_binding_name}").with(
+          body: hash_including(
+            metadata: { name: "gitlab-#{namespace}", namespace: "#{namespace}" },
+            roleRef: {
+              apiGroup: 'rbac.authorization.k8s.io',
+              kind: 'ClusterRole',
+              name: 'admin'
+            },
+            subjects: [
+              {
+                kind: 'ServiceAccount',
+                name: service_account_name,
+                namespace: namespace
+              }
+            ]
           )
-        end
-      end
-
-      context 'kubernetes_cluster_namespace_role_admin FF is disabled' do
-        before do
-          stub_feature_flags(kubernetes_cluster_namespace_role_admin: false)
-        end
-
-        it 'creates a namespaced role binding with edit access' do
-          subject
-
-          expect(WebMock).to have_requested(:put, api_url + "/apis/rbac.authorization.k8s.io/v1/namespaces/#{namespace}/rolebindings/#{role_binding_name}").with(
-            body: hash_including(
-              metadata: { name: "gitlab-#{namespace}", namespace: "#{namespace}" },
-              roleRef: {
-                apiGroup: 'rbac.authorization.k8s.io',
-                kind: 'ClusterRole',
-                name: 'edit'
-              },
-              subjects: [
-                {
-                  kind: 'ServiceAccount',
-                  name: service_account_name,
-                  namespace: namespace
-                }
-              ]
-            )
-          )
-        end
+        )
       end
 
       it 'creates a role binding granting crossplane database permissions to the service account' do

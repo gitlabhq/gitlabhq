@@ -180,7 +180,7 @@ describe('Rich Content Editor', () => {
       wrapper.vm.$refs.editor = mockInstance;
 
       findAddImageModal().vm.$emit('addImage', mockImage);
-      expect(addImage).toHaveBeenCalledWith(mockInstance, mockImage);
+      expect(addImage).toHaveBeenCalledWith(mockInstance, mockImage, undefined);
     });
   });
 

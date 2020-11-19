@@ -19,6 +19,7 @@ RSpec.describe Gitlab::ImportExport::JSON::StreamingSerializer do
       group: group,
       approvals_before_merge: 1)
   end
+
   let_it_be(:issue) do
     create(:issue,
       assignees: [user],

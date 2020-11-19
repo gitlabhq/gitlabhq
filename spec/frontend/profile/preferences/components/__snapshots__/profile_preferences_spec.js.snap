@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ProfilePreferences component should render ProfilePreferences properly 1`] = `
+<div
+  class="row gl-mt-3 js-preferences-form"
+>
+  <div
+    class="col-sm-12"
+  >
+    <hr
+      data-testid="profile-preferences-integrations-rule"
+    />
+  </div>
+   
+  <div
+    class="col-lg-4 profile-settings-sidebar"
+  >
+    <h4
+      class="gl-mt-0"
+      data-testid="profile-preferences-integrations-heading"
+    >
+      
+      Integrations
+    
+    </h4>
+     
+    <p>
+      
+      Customize integrations with third party services.
+    
+    </p>
+  </div>
+   
+  <div
+    class="col-lg-8"
+  >
+    <integration-view-stub
+      config="[object Object]"
+      helplink="http://foo.com/help"
+      message="Click %{linkStart}Foo%{linkEnd}!"
+      messageurl="http://foo.com"
+    />
+    <integration-view-stub
+      config="[object Object]"
+      helplink="http://bar.com/help"
+      message="Click %{linkStart}Bar%{linkEnd}!"
+      messageurl="http://bar.com"
+    />
+  </div>
+</div>
+`;

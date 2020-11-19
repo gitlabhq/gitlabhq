@@ -5,9 +5,10 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Secret Detection **(ULTIMATE)**
+# Secret Detection
 
-> [Introduced](https://about.gitlab.com/releases/2019/03/22/gitlab-11-9-released/#detect-secrets-and-credentials-in-the-repository) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.9.
+> - [Introduced](https://about.gitlab.com/releases/2019/03/22/gitlab-11-9-released/#detect-secrets-and-credentials-in-the-repository) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.9.
+> - Made [available in all tiers](https://gitlab.com/gitlab-org/gitlab/-/issues/222788) in 13.3.
 
 A recurring problem when developing applications is that developers may unintentionally commit
 secrets and credentials to their remote repositories. If other people have access to the source,
@@ -29,6 +30,29 @@ GitLab displays identified secrets visibly in a few places:
 
 - Detecting unintentional commit of secrets like keys, passwords, and API tokens.
 - Performing a single or recurring scan of the full history of your repository for secrets.
+
+## Supported secrets
+
+Secret Detection detects a variety of common secrets by default. You can also customize the secret detection patterns using [custom rulesets](#custom-rulesets).
+
+The [default ruleset provided by Gitleaks](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/master/gitleaks/gitleaks.toml) includes the following key types:
+
+- Cloud services:
+  - Amazon Web Services (AWS)
+  - Google Cloud Platform (GCP)
+Encryption keys:
+  - PKCS8
+  - RSA
+  - SSH
+  - PGP
+- Social media platforms:
+  - Facebook API
+  - Twitter API
+- Cloud SaaS vendors:
+  - GitHub API
+  - Slack Token
+  - Stripe API
+  - Generic API key strings starting with `api-`
 
 ## Requirements
 
@@ -59,7 +83,7 @@ as shown in the following table:
 | [Configure Secret Detection Scanners](#configuration)                                 | **{check-circle}**  | **{check-circle}** |
 | [Customize Secret Detection Settings](#customizing-settings)                 | **{check-circle}**  | **{check-circle}** |
 | View [JSON Report](../sast/index.md#reports-json-format)                                  | **{check-circle}**  | **{check-circle}** |
-| [Presentation of JSON Report in Merge Request](#overview)                 | **{dotted-circle}** | **{check-circle}** |
+| Presentation of JSON Report in Merge Request                 | **{dotted-circle}** | **{check-circle}** |
 | [Interaction with Vulnerabilities](../vulnerabilities/index.md) | **{dotted-circle}** | **{check-circle}** |
 | [Access to Security Dashboard](../security_dashboard/index.md)                       | **{dotted-circle}** | **{check-circle}** |
 
@@ -102,6 +126,18 @@ The results are saved as a
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest Secret Detection artifact available.
 
+### Post-processing
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/46390) in GitLab 13.6.
+
+Upon detection of a secret, GitLab supports post processing hooks. These can be used to take actions like notifying the cloud service who issued the secret. The cloud provider can confirm the credentials and take remediation actions like revoking or reissuing a new secret and notifying the creator of the secret. Post-processing workflows vary by supported cloud providers. 
+
+GitLab currently supports post-processing for following service providers:
+
+- Amazon Web Services (AWS)
+
+Third party cloud and SaaS providers can [express integration interest by filling out this form](https://forms.gle/wWpvrtLRK21Q2WJL9). Learn more about the [technical details of post-processing secrets](https://gitlab.com/groups/gitlab-org/-/epics/4639). 
+
 ### Customizing settings
 
 The Secret Detection scan settings can be changed through [environment variables](#available-variables)
@@ -142,7 +178,7 @@ Secret Detection can be customized by defining available variables:
 | `SECRET_DETECTION_EXCLUDED_PATHS` | "" | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec` ). Parent directories also match patterns. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225273) in GitLab 13.3. |
 | `SECRET_DETECTION_HISTORIC_SCAN` | false | Flag to enable a historic Gitleaks scan. |
 
-### Custom rulesets
+### Custom rulesets **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211387) in GitLab 13.5.
 

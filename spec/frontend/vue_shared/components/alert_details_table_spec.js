@@ -23,14 +23,10 @@ const environmentPath = '/fake/path';
 
 describe('AlertDetails', () => {
   let environmentData = { name: environmentName, path: environmentPath };
-  let glFeatures = { exposeEnvironmentPathInAlertDetails: false };
   let wrapper;
 
   function mountComponent(propsData = {}) {
     wrapper = mount(AlertDetailsTable, {
-      provide: {
-        glFeatures,
-      },
       propsData: {
         alert: {
           ...mockAlert,
@@ -97,34 +93,19 @@ describe('AlertDetails', () => {
         expect(findTableField(fields, 'Severity').exists()).toBe(true);
         expect(findTableField(fields, 'Status').exists()).toBe(true);
         expect(findTableField(fields, 'Hosts').exists()).toBe(true);
-        expect(findTableField(fields, 'Environment').exists()).toBe(false);
+        expect(findTableField(fields, 'Environment').exists()).toBe(true);
       });
 
-      it('should not show disallowed and flaggedAllowed alert fields', () => {
+      it('should not show disallowed alert fields', () => {
         const fields = findTableKeys();
 
         expect(findTableField(fields, 'Typename').exists()).toBe(false);
         expect(findTableField(fields, 'Todos').exists()).toBe(false);
         expect(findTableField(fields, 'Notes').exists()).toBe(false);
         expect(findTableField(fields, 'Assignees').exists()).toBe(false);
-        expect(findTableField(fields, 'Environment').exists()).toBe(false);
-      });
-    });
-
-    describe('when exposeEnvironmentPathInAlertDetails is enabled', () => {
-      beforeEach(() => {
-        glFeatures = { exposeEnvironmentPathInAlertDetails: true };
-        mountComponent();
-      });
-
-      it('should show flaggedAllowed alert fields', () => {
-        const fields = findTableKeys();
-
-        expect(findTableField(fields, 'Environment').exists()).toBe(true);
       });
 
       it('should display only the name for the environment', () => {
-        expect(findTableFieldValueByKey('Iid').text()).toBe('1527542');
         expect(findTableFieldValueByKey('Environment').text()).toBe(environmentName);
       });
 

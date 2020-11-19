@@ -558,8 +558,9 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
       end
 
       before do
-        allow_any_instance_of(TestSuiteComparerEntity)
-          .to receive(:max_tests).and_return(2)
+        stub_const("Gitlab::Ci::Reports::TestSuiteComparer::DEFAULT_MAX_TESTS", 2)
+        stub_const("Gitlab::Ci::Reports::TestSuiteComparer::DEFAULT_MIN_TESTS", 1)
+
         allow_any_instance_of(MergeRequest)
           .to receive(:has_test_reports?).and_return(true)
         allow_any_instance_of(MergeRequest)

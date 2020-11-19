@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Rake tasks for developers
 
 Rake tasks are available for developers and others contributing to GitLab.
@@ -12,7 +18,7 @@ bundle exec rake setup
 
 The `setup` task is an alias for `gitlab:setup`.
 This tasks calls `db:reset` to create the database, and calls `db:seed_fu` to seed the database.
-Note: `db:setup` calls `db:seed` but this does nothing.
+`db:setup` calls `db:seed` but this does nothing.
 
 ### Environment variables
 

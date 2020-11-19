@@ -1,5 +1,6 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import PackageTitle from '~/packages/details/components/package_title.vue';
 import PackageTags from '~/packages/shared/components/package_tags.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
@@ -53,6 +54,7 @@ describe('PackageTitle', () => {
   const pipelineProject = () => wrapper.find('[data-testid="pipeline-project"]');
   const packageRef = () => wrapper.find('[data-testid="package-ref"]');
   const packageTags = () => wrapper.find(PackageTags);
+  const packageBadges = () => wrapper.findAll('[data-testid="tag-badge"]');
 
   afterEach(() => {
     wrapper.destroy();
@@ -69,6 +71,14 @@ describe('PackageTitle', () => {
       await createComponent({ packageEntity: { ...mavenPackage, tags: mockTags } });
 
       expect(wrapper.element).toMatchSnapshot();
+    });
+
+    it('with tags on mobile', async () => {
+      jest.spyOn(GlBreakpointInstance, 'isDesktop').mockReturnValue(false);
+      await createComponent({ packageEntity: { ...mavenPackage, tags: mockTags } });
+      await wrapper.vm.$nextTick();
+
+      expect(packageBadges()).toHaveLength(mockTags.length);
     });
   });
 

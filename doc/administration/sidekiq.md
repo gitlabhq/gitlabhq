@@ -1,4 +1,7 @@
 ---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: reference
 ---
 
@@ -92,7 +95,6 @@ you want using steps 1 and 2 from the GitLab downloads page.
 
 1. Run `gitlab-ctl reconfigure`.
 
-NOTE: **Note:**
 You will need to restart the Sidekiq nodes after an update has occurred and database
 migrations performed.
 
@@ -111,7 +113,6 @@ prometheus['enable'] = false
 gitlab_rails['auto_migrate'] = false
 alertmanager['enable'] = false
 gitaly['enable'] = false
-gitlab_monitor['enable'] = false
 gitlab_workhorse['enable'] = false
 nginx['enable'] = false
 postgres_exporter['enable'] = false

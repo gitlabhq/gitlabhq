@@ -1,0 +1,41 @@
+# Denies the use of ActiveRecord methods outside of configured
+# excluded directories
+# Directories that allow the use of the denied methods.
+# To start we provide a default configuration that matches
+# a standard Rails app and enable.
+# The default configuration can be overridden by
+# providing your own Exclusion list as follows:
+# CodeReuse/ActiveRecord:
+#  Enabled: true
+#  Exclude:
+#    - app/models/**/*.rb
+#    - config/**/*.rb
+#    - db/**/*.rb
+#    - lib/tasks/**/*.rb
+#    - spec/**/*.rb
+#    - lib/gitlab/**/*.rb
+CodeReuse/ActiveRecord:
+  Exclude:
+    - app/models/**/*.rb
+    - config/**/*.rb
+    - db/**/*.rb
+    - lib/tasks/**/*.rake
+    - spec/**/*.rb
+    - danger/**/*.rb
+    - lib/backup/**/*.rb
+    - lib/banzai/**/*.rb
+    - lib/gitlab/background_migration/**/*.rb
+    - lib/gitlab/cycle_analytics/**/*.rb
+    - lib/gitlab/database/**/*.rb
+    - lib/gitlab/database_importers/common_metrics/importer.rb
+    - lib/gitlab/import_export/**/*.rb
+    - lib/gitlab/project_authorizations.rb
+    - lib/gitlab/sql/**/*.rb
+    - lib/system_check/**/*.rb
+    - qa/**/*.rb
+    - rubocop/**/*.rb
+    - ee/app/models/**/*.rb
+    - ee/spec/**/*.rb
+    - ee/db/fixtures/**/*.rb
+    - ee/lib/tasks/**/*.rake
+    - ee/lib/ee/gitlab/background_migration/**/*.rb

@@ -26,7 +26,7 @@ RSpec.describe 'Issues > User sees live update', :js do
   end
 
   describe 'confidential issue#show' do
-    it 'shows confidential sibebar information as confidential and can be turned off' do
+    it 'shows confidential sibebar information as confidential and can be turned off', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/254644' do
       issue = create(:issue, :confidential, project: project)
 
       visit project_issue_path(project, issue)

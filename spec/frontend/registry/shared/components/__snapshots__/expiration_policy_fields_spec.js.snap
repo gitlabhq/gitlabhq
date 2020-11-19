@@ -123,7 +123,7 @@ exports[`Expiration Policy Form renders 1`] = `
       disabled="true"
       id="expiration-policy-name-matching"
       noresize="true"
-      placeholder=".*"
+      placeholder=""
       trim=""
       value=""
     />

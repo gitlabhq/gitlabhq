@@ -10,8 +10,10 @@ FactoryBot.define do
   factory :project, class: 'Project' do
     sequence(:name) { |n| "project#{n}" }
     path { name.downcase.gsub(/\s/, '_') }
-    # Behaves differently to nil due to cache_has_external_issue_tracker
+
+    # Behaves differently to nil due to cache_has_external_* methods.
     has_external_issue_tracker { false }
+    has_external_wiki { false }
 
     # Associations
     namespace

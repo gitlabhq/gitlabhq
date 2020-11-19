@@ -18,7 +18,7 @@ module Packages
         package = create_package!(:npm, name: name, version: version)
 
         if build.present?
-          package.create_build_info!(pipeline: build.pipeline)
+          package.build_infos.create!(pipeline: build.pipeline)
         end
 
         ::Packages::CreatePackageFileService.new(package, file_params).execute
@@ -75,7 +75,8 @@ module Packages
           file:      CarrierWaveStringFile.new(Base64.decode64(attachment['data'])),
           size:      attachment['length'],
           file_sha1: version_data[:dist][:shasum],
-          file_name: package_file_name
+          file_name: package_file_name,
+          build:     params[:build]
         }
       end
 

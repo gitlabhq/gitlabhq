@@ -1,0 +1,5 @@
+---
+title: Use Helm 3 by default for GitLab-managed apps in new clusters
+merge_request: 46267
+author:
+type: changed

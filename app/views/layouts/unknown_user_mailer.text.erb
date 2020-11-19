@@ -1,0 +1,9 @@
+<%= text_header_message %>
+
+<%= yield -%>
+
+-- <%# signature marker %>
+<%= _("GitLab is a complete DevOps platform, delivered as a single application, fundamentally changing the way Development, Security, and Ops teams collaborate") %>
+<%= render_if_exists 'layouts/mailer/additional_text' %>
+
+<%= text_footer_message %>

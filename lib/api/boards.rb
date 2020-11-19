@@ -9,6 +9,8 @@ module API
 
     before { authenticate! }
 
+    feature_category :boards
+
     helpers do
       def board_parent
         user_project
@@ -39,6 +41,43 @@ module API
         get '/:board_id' do
           authorize!(:read_board, user_project)
           present board, with: Entities::Board
+        end
+
+        desc 'Create a project board' do
+          detail 'This feature was introduced in 10.4'
+          success Entities::Board
+        end
+        params do
+          requires :name, type: String, desc: 'The board name'
+        end
+        post '/' do
+          authorize!(:admin_board, board_parent)
+
+          create_board
+        end
+
+        desc 'Update a project board' do
+          detail 'This feature was introduced in 11.0'
+          success Entities::Board
+        end
+        params do
+          use :update_params
+        end
+        put '/:board_id' do
+          authorize!(:admin_board, board_parent)
+
+          update_board
+        end
+
+        desc 'Delete a project board' do
+          detail 'This feature was introduced in 10.4'
+          success Entities::Board
+        end
+
+        delete '/:board_id' do
+          authorize!(:admin_board, board_parent)
+
+          delete_board
         end
       end
 

@@ -4,14 +4,15 @@ require 'spec_helper'
 
 RSpec.describe MergeRequests::CleanupRefsService do
   describe '.schedule' do
-    let(:merge_request) { build(:merge_request) }
+    let(:merge_request) { create(:merge_request) }
 
-    it 'schedules MergeRequestCleanupRefsWorker' do
-      expect(MergeRequestCleanupRefsWorker)
-        .to receive(:perform_in)
-        .with(described_class::TIME_THRESHOLD, merge_request.id)
+    it 'creates a merge request cleanup schedule' do
+      freeze_time do
+        described_class.schedule(merge_request)
 
-      described_class.schedule(merge_request)
+        expect(merge_request.reload.cleanup_schedule.scheduled_at)
+          .to eq(described_class::TIME_THRESHOLD.from_now)
+      end
     end
   end
 
@@ -20,6 +21,8 @@ RSpec.describe MergeRequests::CleanupRefsService do
       # Need to re-enable this as it's being stubbed in spec_helper for
       # performance reasons but is needed to run for this test.
       allow(Gitlab::Git::KeepAround).to receive(:execute).and_call_original
+
+      merge_request.create_cleanup_schedule(scheduled_at: described_class::TIME_THRESHOLD.ago)
     end
 
     subject(:result) { described_class.new(merge_request).execute }
@@ -32,6 +35,7 @@ RSpec.describe MergeRequests::CleanupRefsService do
           expect(result[:status]).to eq(:success)
           expect(kept_around?(old_ref_head)).to be_truthy
           expect(ref_head).to be_nil
+          expect(merge_request.cleanup_schedule.completed_at).to be_present
         end
       end
 
@@ -43,6 +47,7 @@ RSpec.describe MergeRequests::CleanupRefsService do
 
         it 'does not fail' do
           expect(result[:status]).to eq(:success)
+          expect(merge_request.cleanup_schedule.completed_at).to be_present
         end
       end
 
@@ -85,6 +90,44 @@ RSpec.describe MergeRequests::CleanupRefsService do
 
         it_behaves_like 'service that does not clean up merge request refs'
       end
+
+      context 'when cleanup schedule fails to update' do
+        before do
+          allow(merge_request.cleanup_schedule).to receive(:update).and_return(false)
+        end
+
+        it 'creates keep around ref and deletes merge request refs' do
+          old_ref_head = ref_head
+
+          aggregate_failures do
+            expect(result[:status]).to eq(:error)
+            expect(kept_around?(old_ref_head)).to be_truthy
+            expect(ref_head).to be_nil
+            expect(merge_request.cleanup_schedule.completed_at).not_to be_present
+          end
+        end
+      end
+
+      context 'when merge request is not scheduled to be cleaned up yet' do
+        before do
+          merge_request.cleanup_schedule.update!(scheduled_at: 1.day.from_now)
+        end
+
+        it_behaves_like 'service that does not clean up merge request refs'
+      end
+
+      context 'when repository no longer exists' do
+        before do
+          Repositories::DestroyService.new(merge_request.project.repository).execute
+        end
+
+        it 'does not fail and still mark schedule as complete' do
+          aggregate_failures do
+            expect(result[:status]).to eq(:success)
+            expect(merge_request.cleanup_schedule.completed_at).to be_present
+          end
+        end
+      end
     end
 
     shared_examples_for 'service that does not clean up merge request refs' do
@@ -92,6 +135,7 @@ RSpec.describe MergeRequests::CleanupRefsService do
         aggregate_failures do
           expect(result[:status]).to eq(:error)
           expect(ref_head).to be_present
+          expect(merge_request.cleanup_schedule.completed_at).not_to be_present
         end
       end
     end

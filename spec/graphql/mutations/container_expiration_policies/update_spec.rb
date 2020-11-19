@@ -35,7 +35,7 @@ RSpec.describe Mutations::ContainerExpirationPolicies::Update do
 
         it_behaves_like 'not creating the container expiration policy'
 
-        it "doesn't update the cadence" do
+        it 'doesn\'t update the cadence' do
           expect { subject }
             .not_to change { container_expiration_policy.reload.cadence }
         end
@@ -44,6 +44,24 @@ RSpec.describe Mutations::ContainerExpirationPolicies::Update do
           expect(subject).to eq(
             container_expiration_policy: nil,
             errors: ['Cadence is not included in the list']
+          )
+        end
+      end
+
+      context 'with blank regex' do
+        let_it_be(:params) { { project_path: project.full_path, name_regex: '', enabled: true } }
+
+        it_behaves_like 'not creating the container expiration policy'
+
+        it "doesn't update the cadence" do
+          expect { subject }
+            .not_to change { container_expiration_policy.reload.cadence }
+        end
+
+        it 'returns an error' do
+          expect(subject).to eq(
+            container_expiration_policy: nil,
+            errors: ['Name regex can\'t be blank']
           )
         end
       end

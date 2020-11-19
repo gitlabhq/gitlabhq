@@ -2,6 +2,7 @@
 name: track_editor_edit_actions
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39694
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/240928
-group: group::editor
+milestone: '13.4'
 type: development
+group: group::editor
 default_enabled: true

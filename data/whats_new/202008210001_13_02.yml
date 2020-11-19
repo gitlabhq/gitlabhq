@@ -6,7 +6,7 @@
   gitlab-com: true
   packages: [Starter, Premium, Ultimate]
   url: https://www.youtube.com/watch?v=31pNKjenlJY&feature=emb_title
-  image_url: http://i3.ytimg.com/vi/31pNKjenlJY/maxresdefault.jpg
+  image_url: https://img.youtube.com/vi/31pNKjenlJY/hqdefault.jpg
   published_at: 2020-07-22
   release: 13.2
 - title: Container Host Monitoring and Blocking
@@ -16,7 +16,7 @@
   gitlab-com: true
   packages: [All]
   url: https://www.youtube.com/watch?v=WxBzBz76FxU&feature=youtu.be
-  image_url: http://i3.ytimg.com/vi/WxBzBz76FxU/hqdefault.jpg
+  image_url: https://img.youtube.com/vi/WxBzBz76FxU/hqdefault.jpg
   published_at: 2020-07-22
   release: 13.2
 - title: Official GitLab-Figma Plugin

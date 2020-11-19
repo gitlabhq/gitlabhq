@@ -1,4 +1,7 @@
 ---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: index, reference
 ---
 
@@ -81,7 +84,7 @@ With the [Customers Portal](https://customers.gitlab.com/) you can:
 Your personal details are used on invoices. Your email address is used for the Customers Portal
 login and license-related email.
 
-To change your personal details, including name and billing address:
+To change your personal details, including name, billing address, and email address:
 
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
 1. Select **My account > Account details**.

@@ -11,16 +11,15 @@ RSpec.describe ResourceAccessTokens::CreateService do
 
   describe '#execute' do
     # Created shared_examples as it will easy to include specs for group bots in https://gitlab.com/gitlab-org/gitlab/-/issues/214046
-    shared_examples 'fails when user does not have the permission to create a Resource Bot' do
-      before_all do
-        resource.add_developer(user)
+    shared_examples 'token creation fails' do
+      let(:resource) { create(:project)}
+
+      it 'does not add the project bot as a member' do
+        expect { subject }.not_to change { resource.members.count }
       end
 
-      it 'returns error' do
-        response = subject
-
-        expect(response.error?).to be true
-        expect(response.message).to eq("User does not have permission to create #{resource_type} Access Token")
+      it 'immediately destroys the bot user if one was created', :sidekiq_inline do
+        expect { subject }.not_to change { User.bots.count }
       end
     end
 
@@ -47,8 +46,18 @@ RSpec.describe ResourceAccessTokens::CreateService do
         end
 
         context 'when created by an admin' do
-          it_behaves_like 'creates a user that has their email confirmed' do
-            let(:user) { create(:admin) }
+          let(:user) { create(:admin) }
+
+          context 'when admin mode is enabled', :enable_admin_mode do
+            it_behaves_like 'creates a user that has their email confirmed'
+          end
+
+          context 'when admin mode is disabled' do
+            it 'returns error' do
+              response = subject
+
+              expect(response.error?).to be true
+            end
           end
         end
 
@@ -154,24 +163,36 @@ RSpec.describe ResourceAccessTokens::CreateService do
           context 'when invalid scope is passed' do
             let_it_be(:params) { { scopes: [:invalid_scope] } }
 
-            it 'returns error' do
+            it_behaves_like 'token creation fails'
+
+            it 'returns the scope error message' do
               response = subject
 
               expect(response.error?).to be true
+              expect(response.errors).to include("Scopes can only contain available scopes")
             end
           end
         end
-      end
 
-      context 'when access provisioning fails' do
-        before do
-          allow(resource).to receive(:add_user).and_return(nil)
-        end
+        context "when access provisioning fails" do
+          let_it_be(:bot_user) { create(:user, :project_bot) }
+          let(:unpersisted_member) { build(:project_member, source: resource, user: bot_user) }
 
-        it 'returns error' do
-          response = subject
+          before do
+            allow_next_instance_of(ResourceAccessTokens::CreateService) do |service|
+              allow(service).to receive(:create_user).and_return(bot_user)
+              allow(service).to receive(:create_membership).and_return(unpersisted_member)
+            end
+          end
 
-          expect(response.error?).to be true
+          it_behaves_like 'token creation fails'
+
+          it 'returns the provisioning error message' do
+            response = subject
+
+            expect(response.error?).to be true
+            expect(response.errors).to include("Could not provision maintainer access to project access token")
+          end
         end
       end
     end
@@ -180,7 +201,16 @@ RSpec.describe ResourceAccessTokens::CreateService do
       let_it_be(:resource_type) { 'project' }
       let_it_be(:resource) { project }
 
-      it_behaves_like 'fails when user does not have the permission to create a Resource Bot'
+      context 'when user does not have permission to create a resource bot' do
+        it_behaves_like 'token creation fails'
+
+        it 'returns the permission error message' do
+          response = subject
+
+          expect(response.error?).to be true
+          expect(response.errors).to include("User does not have permission to create #{resource_type} Access Token")
+        end
+      end
 
       context 'user with valid permission' do
         before_all do

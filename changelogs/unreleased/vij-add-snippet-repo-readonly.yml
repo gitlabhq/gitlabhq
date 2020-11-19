@@ -1,0 +1,5 @@
+---
+title: Add repository_read_only column to Snippets
+merge_request: 45868
+author:
+type: added

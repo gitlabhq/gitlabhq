@@ -6,6 +6,8 @@ module API
 
     before { authenticate! }
 
+    feature_category :global_search
+
     helpers do
       SCOPE_ENTITY = {
         merge_requests: Entities::MergeRequestBasic,
@@ -35,8 +37,11 @@ module API
           state: params[:state],
           confidential: params[:confidential],
           snippets: snippets?,
+          basic_search: params[:basic_search],
           page: params[:page],
-          per_page: params[:per_page]
+          per_page: params[:per_page],
+          order_by: params[:order_by],
+          sort: params[:sort]
         }.merge(additional_params)
 
         results = SearchService.new(current_user, search_params).search_objects(preload_method)

@@ -15,9 +15,9 @@
 #
 # For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: existence
-message: '"%s" is not formatted correctly.'
+message: 'This introduced-in line is not formatted correctly.'
 link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#text-for-documentation-requiring-version-text
 level: error
 scope: raw
 raw:
-  - '> (- ){0}\[?Introduced.+\n.+'
+  - '> (- ){0}\[?Introduced.+\n[^\n`]'

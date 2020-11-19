@@ -62,6 +62,15 @@ RSpec.describe Route do
     end
   end
 
+  describe '.for_routable_type' do
+    let!(:nested_group) { create(:group, path: 'foo', name: 'foo', parent: group) }
+    let!(:project) { create(:project, path: 'other-project') }
+
+    it 'returns correct routes' do
+      expect(described_class.for_routable_type(Project.name)).to match_array([project.route])
+    end
+  end
+
   describe '#rename_descendants' do
     let!(:nested_group) { create(:group, path: 'test', name: 'test', parent: group) }
     let!(:deep_nested_group) { create(:group, path: 'foo', name: 'foo', parent: nested_group) }

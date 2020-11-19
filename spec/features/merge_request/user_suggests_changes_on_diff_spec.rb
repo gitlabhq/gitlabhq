@@ -304,7 +304,7 @@ RSpec.describe 'User comments on a diff', :js do
       wait_for_requests
     end
 
-    it 'suggestion is presented' do
+    it 'suggestion is presented', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/268240' do
       page.within('.diff-discussions') do
         expect(page).to have_button('Apply suggestion')
         expect(page).to have_content('Suggested change')

@@ -47,6 +47,22 @@ RSpec.describe Notes::UpdateService do
       end
     end
 
+    it 'does not track usage data when params is blank' do
+      expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_comment_edited_action)
+
+      update_note({})
+    end
+
+    it 'tracks usage data', :clean_gitlab_redis_shared_state do
+      event = Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_COMMENT_EDITED
+      counter = Gitlab::UsageDataCounters::HLLRedisCounter
+
+      expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_comment_edited_action).with(author: user).and_call_original
+      expect do
+        update_note(note: 'new text')
+      end.to change { counter.unique_events(event_names: event, start_date: 1.day.ago, end_date: 1.day.from_now) }.by(1)
+    end
+
     context 'with system note' do
       before do
         note.update_column(:system, true)
@@ -54,6 +70,12 @@ RSpec.describe Notes::UpdateService do
 
       it 'does not update the note' do
         expect { update_note(note: 'new text') }.not_to change { note.reload.note }
+      end
+
+      it 'does not track usage data' do
+        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_comment_edited_action)
+
+        update_note(note: 'new text')
       end
     end
 
@@ -219,6 +241,12 @@ RSpec.describe Notes::UpdateService do
       it 'does not create mentions' do
         expect(note).not_to receive(:create_new_cross_references!)
         update_note({ note: "Updated with new reference: #{issue.to_reference}" })
+      end
+
+      it 'does not track usage data' do
+        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_comment_edited_action)
+
+        update_note(note: 'new text')
       end
     end
   end

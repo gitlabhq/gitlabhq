@@ -65,7 +65,7 @@ export default {
         .then(({ data }) => {
           this.milestones = data;
         })
-        .catch(() => createFlash(__('There was a problem fetching milestones.')))
+        .catch(() => createFlash({ message: __('There was a problem fetching milestones.') }))
         .finally(() => {
           this.loading = false;
         });

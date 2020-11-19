@@ -272,6 +272,11 @@ RSpec.describe GitGarbageCollectWorker do
 
         expect(before_packs.count).to be >= 1
 
+        expect_any_instance_of(Gitlab::GitalyClient::RepositoryService)
+          .to receive(:garbage_collect)
+          .with(bitmaps_enabled, prune: false)
+          .and_call_original
+
         subject.perform(project.id, 'gc', lease_key, lease_uuid)
         after_packed_refs = packed_refs(project)
         after_packs = packs(project)
@@ -291,6 +296,15 @@ RSpec.describe GitGarbageCollectWorker do
         expect_any_instance_of(Project).to receive(:cleanup).and_call_original
 
         subject.perform(project.id, 'gc', lease_key, lease_uuid)
+      end
+
+      it 'prune calls garbage_collect with the option prune: true' do
+        expect_any_instance_of(Gitlab::GitalyClient::RepositoryService)
+          .to receive(:garbage_collect)
+          .with(bitmaps_enabled, prune: true)
+          .and_return(nil)
+
+        subject.perform(project.id, 'prune', lease_key, lease_uuid)
       end
     end
 

@@ -125,9 +125,6 @@ export default class ActivityCalendar {
     this.renderMonths();
     this.renderDayTitles();
     this.renderKey();
-
-    // Init tooltips
-    $(`${container} .js-tooltip`).tooltip({ html: true });
   }
 
   // Add extra padding for the last month label if it is also the last column
@@ -191,7 +188,8 @@ export default class ActivityCalendar {
         stamp.count !== 0 ? this.color(Math.min(stamp.count, 40)) : '#ededed',
       )
       .attr('title', stamp => formatTooltipText(stamp))
-      .attr('class', 'user-contrib-cell js-tooltip')
+      .attr('class', 'user-contrib-cell has-tooltip')
+      .attr('data-html', true)
       .attr('data-container', 'body')
       .on('click', this.clickDay);
   }
@@ -279,9 +277,10 @@ export default class ActivityCalendar {
       .attr('x', (color, i) => this.daySizeWithSpace * i)
       .attr('y', 0)
       .attr('fill', color => color)
-      .attr('class', 'js-tooltip')
+      .attr('class', 'has-tooltip')
       .attr('title', (color, i) => keyValues[i])
-      .attr('data-container', 'body');
+      .attr('data-container', 'body')
+      .attr('data-html', true);
   }
 
   initColor() {

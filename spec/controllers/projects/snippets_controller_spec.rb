@@ -180,16 +180,6 @@ RSpec.describe Projects::SnippetsController do
     end
   end
 
-  describe 'GET #show as JSON' do
-    it 'renders the blob from the repository' do
-      project_snippet = create(:project_snippet, :public, :repository, project: project, author: user)
-
-      get :show, params: { namespace_id: project.namespace, project_id: project, id: project_snippet.to_param }, format: :json
-
-      expect(assigns(:blob)).to eq(project_snippet.blobs.first)
-    end
-  end
-
   describe "GET #show for embeddable content" do
     let(:project_snippet) { create(:project_snippet, :repository, snippet_permission, project: project, author: user) }
     let(:extra_params) { {} }

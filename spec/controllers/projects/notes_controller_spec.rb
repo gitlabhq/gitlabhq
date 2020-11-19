@@ -113,6 +113,8 @@ RSpec.describe Projects::NotesController do
         end
 
         it 'returns the first page of notes' do
+          expect(Gitlab::EtagCaching::Middleware).to receive(:skip!)
+
           get :index, params: request_params
 
           expect(json_response['notes'].count).to eq(page_1.count)
@@ -122,6 +124,8 @@ RSpec.describe Projects::NotesController do
         end
 
         it 'returns the second page of notes' do
+          expect(Gitlab::EtagCaching::Middleware).to receive(:skip!)
+
           request.headers['X-Last-Fetched-At'] = page_1_boundary
 
           get :index, params: request_params
@@ -133,11 +137,26 @@ RSpec.describe Projects::NotesController do
         end
 
         it 'returns the final page of notes' do
+          expect(Gitlab::EtagCaching::Middleware).to receive(:skip!)
+
           request.headers['X-Last-Fetched-At'] = page_2_boundary
 
           get :index, params: request_params
 
           expect(json_response['notes'].count).to eq(page_3.count)
+          expect(json_response['more']).to be_falsy
+          expect(json_response['last_fetched_at']).to eq(microseconds(Time.zone.now))
+          expect(response.headers['Poll-Interval'].to_i).to be > 1
+        end
+
+        it 'returns an empty page of notes' do
+          expect(Gitlab::EtagCaching::Middleware).not_to receive(:skip!)
+
+          request.headers['X-Last-Fetched-At'] = microseconds(Time.zone.now)
+
+          get :index, params: request_params
+
+          expect(json_response['notes']).to be_empty
           expect(json_response['more']).to be_falsy
           expect(json_response['last_fetched_at']).to eq(microseconds(Time.zone.now))
           expect(response.headers['Poll-Interval'].to_i).to be > 1

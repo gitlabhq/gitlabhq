@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 # rubocop: disable RSpec/FactoriesInMigrationSpecs
-RSpec.describe Gitlab::BackgroundMigration::LegacyUploadMover do
+RSpec.describe Gitlab::BackgroundMigration::LegacyUploadMover, :aggregate_failures do
   let(:test_dir) { FileUploader.options['storage_path'] }
   let(:filename) { 'image.png' }
 
@@ -67,27 +67,35 @@ RSpec.describe Gitlab::BackgroundMigration::LegacyUploadMover do
     end
   end
 
-  shared_examples 'migrates the file correctly' do
-    before do
-      described_class.new(legacy_upload).execute
-    end
+  shared_examples 'migrates the file correctly' do |remote|
+    it 'creates a new upload record correctly, updates the legacy upload note so that it references the file in the markdown, removes the attachment from the note model, removes the file, moves legacy uploads to the correct location, removes the upload record' do
+      expect(File.exist?(legacy_upload.absolute_path)).to be_truthy unless remote
 
-    it 'creates a new uplaod record correctly' do
+      described_class.new(legacy_upload).execute
+
       expect(new_upload.secret).not_to be_nil
-      expect(new_upload.path).to end_with("#{new_upload.secret}/image.png")
+      expect(new_upload.path).to end_with("#{new_upload.secret}/#{filename}")
       expect(new_upload.model_id).to eq(project.id)
       expect(new_upload.model_type).to eq('Project')
       expect(new_upload.uploader).to eq('FileUploader')
-    end
 
-    it 'updates the legacy upload note so that it references the file in the markdown' do
-      expected_path = File.join('/uploads', new_upload.secret, 'image.png')
+      expected_path = File.join('/uploads', new_upload.secret, filename)
       expected_markdown = "some note \n ![image](#{expected_path})"
-      expect(note.reload.note).to eq(expected_markdown)
-    end
 
-    it 'removes the attachment from the note model' do
-      expect(note.reload.attachment.file).to be_nil
+      expect(note.reload.note).to eq(expected_markdown)
+      expect(note.attachment.file).to be_nil
+
+      if remote
+        expect(bucket.files.get(remote_file[:key])).to be_nil
+        connection = ::Fog::Storage.new(FileUploader.object_store_credentials)
+        expect(connection.get_object('uploads', new_upload.path)[:status]).to eq(200)
+      else
+        expect(File.exist?(legacy_upload.absolute_path)).to be_falsey
+        expected_path = File.join(test_dir, 'uploads', project.disk_path, new_upload.secret, filename)
+        expect(File.exist?(expected_path)).to be_truthy
+      end
+
+      expect { legacy_upload.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 
@@ -120,23 +128,6 @@ RSpec.describe Gitlab::BackgroundMigration::LegacyUploadMover do
   end
 
   context 'when the upload is in local storage' do
-    shared_examples 'legacy local file' do
-      it 'removes the file correctly' do
-        expect(File.exist?(legacy_upload.absolute_path)).to be_truthy
-
-        described_class.new(legacy_upload).execute
-
-        expect(File.exist?(legacy_upload.absolute_path)).to be_falsey
-      end
-
-      it 'moves legacy uploads to the correct location' do
-        described_class.new(legacy_upload).execute
-
-        expected_path = File.join(test_dir, 'uploads', project.disk_path, new_upload.secret, filename)
-        expect(File.exist?(expected_path)).to be_truthy
-      end
-    end
-
     context 'when the upload file does not exist on the filesystem' do
       let(:legacy_upload) { create_upload(note, filename, false) }
 
@@ -201,15 +192,11 @@ RSpec.describe Gitlab::BackgroundMigration::LegacyUploadMover do
                  path: "uploads/-/system/note/attachment/#{note.id}/#{filename}", model: note, mount_point: nil)
         end
 
-        it_behaves_like 'migrates the file correctly'
-        it_behaves_like 'legacy local file'
-        it_behaves_like 'legacy upload deletion'
+        it_behaves_like 'migrates the file correctly', false
       end
 
       context 'when the file can be handled correctly' do
-        it_behaves_like 'migrates the file correctly'
-        it_behaves_like 'legacy local file'
-        it_behaves_like 'legacy upload deletion'
+        it_behaves_like 'migrates the file correctly', false
       end
     end
 
@@ -217,17 +204,13 @@ RSpec.describe Gitlab::BackgroundMigration::LegacyUploadMover do
       context 'when the file belongs to a legacy project' do
         let(:project) { legacy_project }
 
-        it_behaves_like 'migrates the file correctly'
-        it_behaves_like 'legacy local file'
-        it_behaves_like 'legacy upload deletion'
+        it_behaves_like 'migrates the file correctly', false
       end
 
       context 'when the file belongs to a hashed project' do
         let(:project) { hashed_project }
 
-        it_behaves_like 'migrates the file correctly'
-        it_behaves_like 'legacy local file'
-        it_behaves_like 'legacy upload deletion'
+        it_behaves_like 'migrates the file correctly', false
       end
     end
 
@@ -244,17 +227,13 @@ RSpec.describe Gitlab::BackgroundMigration::LegacyUploadMover do
       context 'when the file belongs to a legacy project' do
         let(:project) { legacy_project }
 
-        it_behaves_like 'migrates the file correctly'
-        it_behaves_like 'legacy local file'
-        it_behaves_like 'legacy upload deletion'
+        it_behaves_like 'migrates the file correctly', false
       end
 
       context 'when the file belongs to a hashed project' do
         let(:project) { hashed_project }
 
-        it_behaves_like 'migrates the file correctly'
-        it_behaves_like 'legacy local file'
-        it_behaves_like 'legacy upload deletion'
+        it_behaves_like 'migrates the file correctly', false
       end
     end
   end
@@ -272,23 +251,6 @@ RSpec.describe Gitlab::BackgroundMigration::LegacyUploadMover do
       stub_uploads_object_storage(FileUploader)
     end
 
-    shared_examples 'legacy remote file' do
-      it 'removes the file correctly' do
-        # expect(bucket.files.get(remote_file[:key])).to be_nil
-
-        described_class.new(legacy_upload).execute
-
-        expect(bucket.files.get(remote_file[:key])).to be_nil
-      end
-
-      it 'moves legacy uploads to the correct remote location' do
-        described_class.new(legacy_upload).execute
-
-        connection = ::Fog::Storage.new(FileUploader.object_store_credentials)
-        expect(connection.get_object('uploads', new_upload.path)[:status]).to eq(200)
-      end
-    end
-
     context 'when the upload file does not exist on the filesystem' do
       it_behaves_like 'legacy upload deletion'
     end
@@ -300,9 +262,7 @@ RSpec.describe Gitlab::BackgroundMigration::LegacyUploadMover do
 
       let(:project) { legacy_project }
 
-      it_behaves_like 'migrates the file correctly'
-      it_behaves_like 'legacy remote file'
-      it_behaves_like 'legacy upload deletion'
+      it_behaves_like 'migrates the file correctly', true
     end
 
     context 'when the file belongs to a hashed project' do
@@ -312,9 +272,7 @@ RSpec.describe Gitlab::BackgroundMigration::LegacyUploadMover do
 
       let(:project) { hashed_project }
 
-      it_behaves_like 'migrates the file correctly'
-      it_behaves_like 'legacy remote file'
-      it_behaves_like 'legacy upload deletion'
+      it_behaves_like 'migrates the file correctly', true
     end
   end
 end

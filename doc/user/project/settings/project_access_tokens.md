@@ -54,7 +54,7 @@ Furthermore, the bot user can not be added to any other project.
 
 When the project access token is [revoked](#revoking-a-project-access-token) the bot user is then deleted and all records are moved to a system-wide user with the username "Ghost User". For more information, see [Associated Records](../../profile/account/delete_account.md#associated-records).
 
-Project bot users are [GitLab-created service accounts](../../../subscriptions/self_managed/index.md#choose-the-number-of-users) and do not count as licensed seats.
+Project bot users are [GitLab-created service accounts](../../../subscriptions/self_managed/index.md#billable-users) and do not count as licensed seats.
 
 ## Revoking a project access token
 

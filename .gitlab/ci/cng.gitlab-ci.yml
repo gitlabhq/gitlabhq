@@ -1,6 +1,6 @@
 cloud-native-image:
   extends: .cng:rules
-  image: ruby:2.6-alpine
+  image: ruby:2.7-alpine
   dependencies: []
   stage: post-test
   variables:

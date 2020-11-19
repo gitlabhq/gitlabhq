@@ -40,9 +40,9 @@ export default {
       type: Object,
       required: true,
     },
-    isDesktop: {
+    isMobile: {
       type: Boolean,
-      default: false,
+      default: true,
       required: false,
     },
     selected: {
@@ -69,7 +69,7 @@ export default {
       return this.tag.layers ? n__('%d layer', '%d layers', this.tag.layers) : '';
     },
     mobileClasses() {
-      return this.isDesktop ? '' : 'mw-s';
+      return this.isMobile ? 'mw-s' : '';
     },
     shortDigest() {
       // remove sha256: from the string, and show only the first 7 char

@@ -12,4 +12,22 @@ RSpec.describe Gitlab::Throttle do
       subject
     end
   end
+
+  describe '.bypass_header' do
+    subject { described_class.bypass_header }
+
+    it 'is nil' do
+      expect(subject).to be_nil
+    end
+
+    context 'when a header is configured' do
+      before do
+        stub_env('GITLAB_THROTTLE_BYPASS_HEADER', 'My-Custom-Header')
+      end
+
+      it 'is a funny upper case rack key' do
+        expect(subject).to eq('HTTP_MY_CUSTOM_HEADER')
+      end
+    end
+  end
 end

@@ -16,7 +16,7 @@ module Gitlab
         # Add process id params
         job['pid'] = ::Process.pid
 
-        job.delete('args') unless ENV['SIDEKIQ_LOG_ARGUMENTS']
+        job.delete('args') unless SidekiqLogArguments.enabled?
 
         job
       end

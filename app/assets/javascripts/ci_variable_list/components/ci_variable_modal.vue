@@ -236,6 +236,7 @@ export default {
           :label="__('Environment scope')"
           label-for="ci-variable-env"
           class="w-50"
+          data-testid="environment-scope"
         >
           <ci-environments-dropdown
             class="w-100"
@@ -247,7 +248,11 @@ export default {
       </div>
 
       <gl-form-group :label="__('Flags')" label-for="ci-variable-flags">
-        <gl-form-checkbox v-model="protected_variable" class="mb-0">
+        <gl-form-checkbox
+          v-model="protected_variable"
+          class="mb-0"
+          data-testid="ci-variable-protected-checkbox"
+        >
           {{ __('Protect variable') }}
           <gl-link target="_blank" :href="protectedEnvironmentVariablesLink">
             <gl-icon name="question" :size="12" />
@@ -261,6 +266,7 @@ export default {
           ref="masked-ci-variable"
           v-model="masked"
           data-qa-selector="ci_variable_masked_checkbox"
+          data-testid="ci-variable-masked-checkbox"
         >
           {{ __('Mask variable') }}
           <gl-link target="_blank" :href="maskedEnvironmentVariablesLink">

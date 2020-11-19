@@ -74,8 +74,16 @@ RSpec.describe Issues::RelatedBranchesService do
       context 'the user has access to otherwise unreadable pipelines' do
         let(:user) { create(:admin) }
 
-        it 'returns info a developer could not see' do
-          expect(branch_info.pluck(:pipeline_status)).to include(an_instance_of(Gitlab::Ci::Status::Running))
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it 'returns info a developer could not see' do
+            expect(branch_info.pluck(:pipeline_status)).to include(an_instance_of(Gitlab::Ci::Status::Running))
+          end
+        end
+
+        context 'when admin mode is disabled' do
+          it 'does not return info a developer could not see' do
+            expect(branch_info.pluck(:pipeline_status)).not_to include(an_instance_of(Gitlab::Ci::Status::Running))
+          end
         end
       end
 

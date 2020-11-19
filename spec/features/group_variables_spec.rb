@@ -11,7 +11,7 @@ RSpec.describe 'Group variables', :js do
   before do
     group.add_owner(user)
     gitlab_sign_in(user)
-    stub_feature_flags(new_variables_ui: false)
+    wait_for_requests
     visit page_path
   end
 

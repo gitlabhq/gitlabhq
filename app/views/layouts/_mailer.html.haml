@@ -34,13 +34,7 @@
 
         = render_if_exists 'layouts/mailer/additional_text'
 
-        %tr.footer
-          %td
-            %img{ alt: "GitLab", height: "33", width: "90", src: image_url('mailers/gitlab_footer_logo.gif') }
-            %div
-              - manage_notifications_link = link_to(_("Manage all notifications"), profile_notifications_url, class: 'mng-notif-link')
-              - help_link = link_to(_("Help"), help_url, class: 'help-link')
-              = _("You're receiving this email because of your account on %{host}. %{manage_notifications_link} &middot; %{help_link}").html_safe % { host: Gitlab.config.gitlab.host, manage_notifications_link: manage_notifications_link, help_link: help_link }
+        = yield :footer
 
         = yield :additional_footer
         %tr

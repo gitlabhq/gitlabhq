@@ -3,6 +3,7 @@ class Packages::Package < ApplicationRecord
   include Sortable
   include Gitlab::SQL::Pattern
   include UsageStatistics
+  include Gitlab::Utils::StrongMemoize
 
   belongs_to :project
   belongs_to :creator, class_name: 'User'
@@ -16,7 +17,8 @@ class Packages::Package < ApplicationRecord
   has_one :maven_metadatum, inverse_of: :package, class_name: 'Packages::Maven::Metadatum'
   has_one :nuget_metadatum, inverse_of: :package, class_name: 'Packages::Nuget::Metadatum'
   has_one :composer_metadatum, inverse_of: :package, class_name: 'Packages::Composer::Metadatum'
-  has_one :build_info, inverse_of: :package
+  has_many :build_infos, inverse_of: :package
+  has_many :pipelines, through: :build_infos
 
   accepts_nested_attributes_for :conan_metadatum
   accepts_nested_attributes_for :maven_metadatum
@@ -38,12 +40,13 @@ class Packages::Package < ApplicationRecord
   validates :name, format: { with: Gitlab::Regex.conan_recipe_component_regex }, if: :conan?
   validates :name, format: { with: Gitlab::Regex.generic_package_name_regex }, if: :generic?
   validates :name, format: { with: Gitlab::Regex.nuget_package_name_regex }, if: :nuget?
-  validates :version, format: { with: Gitlab::Regex.semver_regex }, if: :npm?
   validates :version, format: { with: Gitlab::Regex.nuget_version_regex }, if: :nuget?
   validates :version, format: { with: Gitlab::Regex.conan_recipe_component_regex }, if: :conan?
   validates :version, format: { with: Gitlab::Regex.maven_version_regex }, if: -> { version? && maven? }
   validates :version, format: { with: Gitlab::Regex.pypi_version_regex }, if: :pypi?
   validates :version, format: { with: Gitlab::Regex.prefixed_semver_regex }, if: :golang?
+  validates :version, format: { with: Gitlab::Regex.semver_regex }, if: -> { composer_tag_version? || npm? }
+
   validates :version,
     presence: true,
     format: { with: Gitlab::Regex.generic_package_version_regex },
@@ -58,7 +61,7 @@ class Packages::Package < ApplicationRecord
   scope :with_version, ->(version) { where(version: version) }
   scope :without_version_like, -> (version) { where.not(arel_table[:version].matches(version)) }
   scope :with_package_type, ->(package_type) { where(package_type: package_type) }
-  scope :including_build_info, -> { includes(build_info: { pipeline: :user }) }
+  scope :including_build_info, -> { includes(pipelines: :user) }
   scope :including_project_route, -> { includes(project: { namespace: :route }) }
   scope :including_tags, -> { includes(:tags) }
 
@@ -165,8 +168,16 @@ class Packages::Package < ApplicationRecord
            .order(:version)
   end
 
+  # Technical debt: to be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/281937
+  def original_build_info
+    strong_memoize(:original_build_info) do
+      build_infos.first
+    end
+  end
+
+  # Technical debt: to be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/281937
   def pipeline
-    build_info&.pipeline
+    original_build_info&.pipeline
   end
 
   def tag_names
@@ -174,6 +185,10 @@ class Packages::Package < ApplicationRecord
   end
 
   private
+
+  def composer_tag_version?
+    composer? && !Gitlab::Regex.composer_dev_version_regex.match(version.to_s)
+  end
 
   def valid_conan_package_recipe
     recipe_exists = project.packages

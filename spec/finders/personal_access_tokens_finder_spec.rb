@@ -62,6 +62,27 @@ RSpec.describe PersonalAccessTokensFinder do
           revoked_impersonation_token, expired_impersonation_token)
       end
 
+      describe 'with users' do
+        let(:user2) { create(:user) }
+
+        before do
+          create(:personal_access_token, user: user2)
+          create(:personal_access_token, :expired, user: user2)
+          create(:personal_access_token, :revoked, user: user2)
+          create(:personal_access_token, :impersonation, user: user2)
+          create(:personal_access_token, :expired, :impersonation, user: user2)
+          create(:personal_access_token, :revoked, :impersonation, user: user2)
+
+          params[:users] = [user]
+        end
+
+        it {
+          is_expected.to contain_exactly(active_personal_access_token, active_impersonation_token,
+                                         revoked_personal_access_token, expired_personal_access_token,
+                                         revoked_impersonation_token, expired_impersonation_token)
+        }
+      end
+
       describe 'with sort order' do
         before do
           params[:sort] = 'id_asc'

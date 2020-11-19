@@ -148,7 +148,7 @@ RSpec.describe Clusters::Applications::Prometheus do
 
     subject { prometheus.install_command }
 
-    it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::InstallCommand) }
+    it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::V3::InstallCommand) }
 
     it 'is initialized with 3 arguments' do
       expect(subject.name).to eq('prometheus')
@@ -195,7 +195,7 @@ RSpec.describe Clusters::Applications::Prometheus do
 
     subject { prometheus.uninstall_command }
 
-    it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::DeleteCommand) }
+    it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::V3::DeleteCommand) }
 
     it 'has the application name' do
       expect(subject.name).to eq('prometheus')
@@ -236,7 +236,7 @@ RSpec.describe Clusters::Applications::Prometheus do
     let(:prometheus) { build(:clusters_applications_prometheus) }
     let(:values) { prometheus.values }
 
-    it { is_expected.to be_an_instance_of(::Gitlab::Kubernetes::Helm::PatchCommand) }
+    it { is_expected.to be_an_instance_of(::Gitlab::Kubernetes::Helm::V3::PatchCommand) }
 
     it 'is initialized with 3 arguments' do
       expect(patch_command.name).to eq('prometheus')

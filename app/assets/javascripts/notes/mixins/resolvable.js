@@ -1,11 +1,17 @@
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import { __ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
+  mixins: [glFeatureFlagsMixin()],
   computed: {
     discussionResolved() {
       if (this.discussion) {
         const { notes, resolved } = this.discussion;
+
+        if (this.glFeatures.removeResolveNote) {
+          return Boolean(resolved);
+        }
 
         if (notes) {
           // Decide resolved state using store. Only valid for discussions.
@@ -38,7 +44,12 @@ export default {
       this.isResolving = true;
       const isResolved = this.discussionResolved || resolvedState;
       const discussion = this.resolveAsThread;
-      const endpoint = discussion ? this.discussion.resolve_path : `${this.note.path}/resolve`;
+      let endpoint =
+        discussion && this.discussion ? this.discussion.resolve_path : `${this.note.path}/resolve`;
+
+      if (this.glFeatures.removeResolveNote && this.discussionResolvePath) {
+        endpoint = this.discussionResolvePath;
+      }
 
       return this.toggleResolveNote({ endpoint, isResolved, discussion })
         .then(() => {

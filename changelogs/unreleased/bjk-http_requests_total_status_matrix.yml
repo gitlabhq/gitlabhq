@@ -1,0 +1,5 @@
+---
+title: Make sure the http_requests_total and http_request_duration_seconds metrics are not empty on application start
+merge_request: 45755
+author:
+type: fixed

@@ -27,7 +27,14 @@ RSpec.describe IssueLink do
                        .with_message(/already related/)
     end
 
-    context 'self relation' do
+    it 'is not valid if an opposite link already exists' do
+      issue_link = build(:issue_link, source: subject.target, target: subject.source)
+
+      expect(issue_link).to be_invalid
+      expect(issue_link.errors[:source]).to include('is already related to this issue')
+    end
+
+    context 'when it relates to itself' do
       let(:issue) { create :issue }
 
       context 'cannot be validated' do

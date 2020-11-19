@@ -4,21 +4,19 @@ import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
 import IdeTree from './ide_tree.vue';
 import ResizablePanel from './resizable_panel.vue';
 import ActivityBar from './activity_bar.vue';
-import RepoCommitSection from './repo_commit_section.vue';
 import CommitForm from './commit_sidebar/form.vue';
-import IdeReview from './ide_review.vue';
 import IdeProjectHeader from './ide_project_header.vue';
-import { SIDEBAR_INIT_WIDTH } from '../constants';
+import { SIDEBAR_INIT_WIDTH, leftSidebarViews } from '../constants';
 
 export default {
   components: {
     GlSkeletonLoading,
     ResizablePanel,
     ActivityBar,
-    RepoCommitSection,
     IdeTree,
+    [leftSidebarViews.review.name]: () => import('./ide_review.vue'),
+    [leftSidebarViews.commit.name]: () => import('./repo_commit_section.vue'),
     CommitForm,
-    IdeReview,
     IdeProjectHeader,
   },
   computed: {
@@ -49,7 +47,7 @@ export default {
         <div class="multi-file-commit-panel-inner" data-testid="ide-side-bar-inner">
           <div class="multi-file-commit-panel-inner-content">
             <keep-alive>
-              <component :is="currentActivityView" />
+              <component :is="currentActivityView" @tree-ready="$emit('tree-ready')" />
             </keep-alive>
           </div>
           <commit-form />

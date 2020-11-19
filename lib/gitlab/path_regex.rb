@@ -49,6 +49,9 @@ module Gitlab
       s
       search
       sent_notifications
+      sitemap
+      sitemap.xml
+      sitemap.xml.gz
       slash-command-logo.png
       snippets
       unsubscribes
@@ -249,6 +252,14 @@ module Gitlab
 
     def personal_and_project_snippets_path_regex
       %r{#{personal_snippet_path_regex}|#{project_snippet_path_regex}}
+    end
+
+    def container_image_regex
+      @container_image_regex ||= %r{([\w\.-]+\/){0,1}[\w\.-]+}.freeze
+    end
+
+    def container_image_blob_sha_regex
+      @container_image_blob_sha_regex ||= %r{[\w+.-]+:?\w+}.freeze
     end
 
     private

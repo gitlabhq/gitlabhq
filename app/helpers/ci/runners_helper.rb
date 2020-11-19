@@ -2,13 +2,15 @@
 
 module Ci
   module RunnersHelper
+    include IconsHelper
+
     def runner_status_icon(runner)
       status = runner.status
       case status
       when :not_connected
-        content_tag :i, nil,
-                    class: "fa fa-warning",
-                    title: "New runner. Has not connected yet"
+        content_tag(:span, title: "New runner. Has not connected yet") do
+          sprite_icon("warning-solid", size: 24, css_class: "gl-vertical-align-bottom!")
+        end
 
       when :online, :offline, :paused
         content_tag :i, nil,

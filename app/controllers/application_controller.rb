@@ -22,7 +22,7 @@ class ApplicationController < ActionController::Base
   include Impersonation
   include Gitlab::Logging::CloudflareHelper
   include Gitlab::Utils::StrongMemoize
-  include ControllerWithFeatureCategory
+  include ::Gitlab::WithFeatureCategory
 
   before_action :authenticate_user!, except: [:route_not_found]
   before_action :enforce_terms!, if: :should_enforce_terms?
@@ -121,7 +121,7 @@ class ApplicationController < ActionController::Base
   end
 
   def route_not_found
-    if current_user
+    if current_user || browser.bot.search_engine?
       not_found
     else
       store_location_for(:user, request.fullpath) unless request.xhr?
@@ -264,6 +264,12 @@ class ApplicationController < ActionController::Base
     DEFAULT_GITLAB_NO_CACHE_HEADERS.each do |k, v|
       headers[k] = v
     end
+  end
+
+  def stream_headers
+    headers['Content-Length'] = nil
+    headers['X-Accel-Buffering'] = 'no' # Disable buffering on Nginx
+    headers['Last-Modified'] = '0' # Prevent buffering via Rack::ETag middleware
   end
 
   def default_headers

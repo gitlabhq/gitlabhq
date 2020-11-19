@@ -7,6 +7,7 @@ export default () => {
     countsFailed,
     countsSuccess,
     countsTotal,
+    countsTotalDuration,
     successRatio,
     timesChartLabels,
     timesChartValues,
@@ -41,6 +42,7 @@ export default () => {
             success: countsSuccess,
             total: countsTotal,
             successRatio,
+            totalDuration: countsTotalDuration,
           },
           timesChartData: {
             labels: JSON.parse(timesChartLabels),

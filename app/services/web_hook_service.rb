@@ -120,6 +120,7 @@ class WebHookService
     @headers ||= begin
       {
         'Content-Type' => 'application/json',
+        'User-Agent' => "GitLab/#{Gitlab::VERSION}",
         GITLAB_EVENT_HEADER => self.class.hook_to_event(hook_name)
       }.tap do |hash|
         hash['X-Gitlab-Token'] = Gitlab::Utils.remove_line_breaks(hook.token) if hook.token.present?

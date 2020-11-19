@@ -322,4 +322,14 @@ RSpec.describe GitlabRoutingHelper do
       end
     end
   end
+
+  context 'releases' do
+    let(:release) { create(:release) }
+
+    describe '#release_url' do
+      it 'returns the url for the release page' do
+        expect(release_url(release)).to eq("http://test.host/#{release.project.full_path}/-/releases/#{release.tag}")
+      end
+    end
+  end
 end

@@ -3,36 +3,63 @@ import mutations from '~/vuex_shared/modules/members/mutations';
 import * as types from '~/vuex_shared/modules/members/mutation_types';
 
 describe('Vuex members mutations', () => {
-  describe(types.RECEIVE_MEMBER_ROLE_SUCCESS, () => {
-    it('updates member', () => {
-      const state = {
+  describe('update member mutations', () => {
+    let state;
+
+    beforeEach(() => {
+      state = {
         members,
-      };
-
-      const accessLevel = { integerValue: 30, stringValue: 'Developer' };
-
-      mutations[types.RECEIVE_MEMBER_ROLE_SUCCESS](state, {
-        memberId: members[0].id,
-        accessLevel,
-      });
-
-      expect(state.members[0].accessLevel).toEqual(accessLevel);
-    });
-  });
-
-  describe(types.RECEIVE_MEMBER_ROLE_ERROR, () => {
-    it('shows error message', () => {
-      const state = {
         showError: false,
         errorMessage: '',
       };
+    });
 
-      mutations[types.RECEIVE_MEMBER_ROLE_ERROR](state);
+    describe(types.RECEIVE_MEMBER_ROLE_SUCCESS, () => {
+      it('updates member', () => {
+        const accessLevel = { integerValue: 30, stringValue: 'Developer' };
 
-      expect(state.showError).toBe(true);
-      expect(state.errorMessage).toBe(
-        "An error occurred while updating the member's role, please try again.",
-      );
+        mutations[types.RECEIVE_MEMBER_ROLE_SUCCESS](state, {
+          memberId: members[0].id,
+          accessLevel,
+        });
+
+        expect(state.members[0].accessLevel).toEqual(accessLevel);
+      });
+    });
+
+    describe(types.RECEIVE_MEMBER_ROLE_ERROR, () => {
+      it('shows error message', () => {
+        mutations[types.RECEIVE_MEMBER_ROLE_ERROR](state);
+
+        expect(state.showError).toBe(true);
+        expect(state.errorMessage).toBe(
+          "An error occurred while updating the member's role, please try again.",
+        );
+      });
+    });
+
+    describe(types.RECEIVE_MEMBER_EXPIRATION_SUCCESS, () => {
+      it('updates member', () => {
+        const expiresAt = '2020-03-17T00:00:00Z';
+
+        mutations[types.RECEIVE_MEMBER_EXPIRATION_SUCCESS](state, {
+          memberId: members[0].id,
+          expiresAt,
+        });
+
+        expect(state.members[0].expiresAt).toEqual(expiresAt);
+      });
+    });
+
+    describe(types.RECEIVE_MEMBER_EXPIRATION_ERROR, () => {
+      it('shows error message', () => {
+        mutations[types.RECEIVE_MEMBER_EXPIRATION_ERROR](state);
+
+        expect(state.showError).toBe(true);
+        expect(state.errorMessage).toBe(
+          "An error occurred while updating the member's expiration date, please try again.",
+        );
+      });
     });
   });
 

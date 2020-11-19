@@ -45,9 +45,12 @@ export default {
   },
   data() {
     return {
-      timesChartTransformedData: {
-        full: this.mergeLabelsAndValues(this.timesChartData.labels, this.timesChartData.values),
-      },
+      timesChartTransformedData: [
+        {
+          name: 'full',
+          data: this.mergeLabelsAndValues(this.timesChartData.labels, this.timesChartData.values),
+        },
+      ],
     };
   },
   computed: {
@@ -128,7 +131,7 @@ export default {
         <gl-column-chart
           :height="$options.chartContainerHeight"
           :option="$options.timesChartOptions"
-          :data="timesChartTransformedData"
+          :bars="timesChartTransformedData"
           :y-axis-title="__('Minutes')"
           :x-axis-title="__('Commit')"
           x-axis-type="category"

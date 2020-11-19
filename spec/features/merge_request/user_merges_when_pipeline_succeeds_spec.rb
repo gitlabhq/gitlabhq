@@ -93,19 +93,6 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js do
         it_behaves_like 'Merge when pipeline succeeds activator'
       end
     end
-
-    describe 'enabling Merge when pipeline succeeds via dropdown' do
-      it 'activates the Merge when pipeline succeeds feature' do
-        wait_for_requests
-
-        find('.js-merge-moment').click
-        click_link 'Merge when pipeline succeeds'
-
-        expect(page).to have_content "Set by #{user.name} to be merged automatically when the pipeline succeeds"
-        expect(page).to have_content "The source branch will not be deleted"
-        expect(page).to have_link "Cancel automatic merge"
-      end
-    end
   end
 
   context 'when merge when pipeline succeeds is enabled' do

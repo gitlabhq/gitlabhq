@@ -345,42 +345,29 @@ RSpec.describe IssuablesHelper do
     end
   end
 
+  describe '#issuable_display_type' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:issuable_type, :issuable_display_type) do
+      :issue         | 'issue'
+      :incident      | 'incident'
+      :merge_request | 'merge request'
+    end
+
+    with_them do
+      let(:issuable) { build_stubbed(issuable_type) }
+
+      subject { helper.issuable_display_type(issuable) }
+
+      it { is_expected.to eq(issuable_display_type) }
+    end
+  end
+
   describe '#sidebar_milestone_tooltip_label' do
     it 'escapes HTML in the milestone title' do
       milestone = build(:milestone, title: '&lt;img onerror=alert(1)&gt;')
 
       expect(helper.sidebar_milestone_tooltip_label(milestone)).to eq('&lt;img onerror=alert(1)&gt;<br/>Milestone')
-    end
-  end
-
-  describe '#serialize_issuable' do
-    context 'when it is a merge request' do
-      let(:merge_request) { build(:merge_request) }
-      let(:user) { build(:user) }
-
-      before do
-        allow(helper).to receive(:current_user) { user }
-      end
-
-      it 'has suggest_pipeline experiment enabled' do
-        allow(helper).to receive(:experiment_enabled?).with(:suggest_pipeline) { true }
-
-        expect_next_instance_of(MergeRequestSerializer) do |serializer|
-          expect(serializer).to receive(:represent).with(merge_request, { serializer: 'widget', experiment_enabled: :suggest_pipeline })
-        end
-
-        helper.serialize_issuable(merge_request, serializer: 'widget')
-      end
-
-      it 'suggest_pipeline experiment disabled' do
-        allow(helper).to receive(:experiment_enabled?).with(:suggest_pipeline) { false }
-
-        expect_next_instance_of(MergeRequestSerializer) do |serializer|
-          expect(serializer).to receive(:represent).with(merge_request, { serializer: 'widget' })
-        end
-
-        helper.serialize_issuable(merge_request, serializer: 'widget')
-      end
     end
   end
 end

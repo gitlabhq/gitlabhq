@@ -65,7 +65,7 @@ RSpec.shared_examples 'boards create mutation' do
       let(:params) { { name: name } }
 
       it_behaves_like 'a mutation that returns top-level errors',
-        errors: ['group_path or project_path arguments are required']
+        errors: ['Exactly one of group_path or project_path arguments is required']
 
       it 'does not create the board' do
         expect { subject }.not_to change { Board.count }

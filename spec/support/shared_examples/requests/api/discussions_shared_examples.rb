@@ -117,15 +117,10 @@ RSpec.shared_examples 'discussions API' do |parent_type, noteable_type, id_name,
       expect(response).to have_gitlab_http_status(:unauthorized)
     end
 
-    it 'tracks a Notes::CreateService event' do
-      expect(Gitlab::Tracking).to receive(:event) do |category, action, data|
-        expect(category).to eq('Notes::CreateService')
-        expect(action).to eq('execute')
-        expect(data[:label]).to eq('note')
-        expect(data[:value]).to be_an(Integer)
-      end
-
+    it 'tracks a Notes::CreateService event', :snowplow do
       post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", user), params: { body: 'hi!' }
+
+      expect_snowplow_event(category: 'Notes::CreateService', action: 'execute', label: 'note', value: anything)
     end
 
     context 'with notes_create_service_tracking feature flag disabled' do
@@ -133,10 +128,10 @@ RSpec.shared_examples 'discussions API' do |parent_type, noteable_type, id_name,
         stub_feature_flags(notes_create_service_tracking: false)
       end
 
-      it 'does not track any events' do
-        expect(Gitlab::Tracking).not_to receive(:event)
-
+      it 'does not track any events', :snowplow do
         post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions"), params: { body: 'hi!' }
+
+        expect_no_snowplow_event
       end
     end
 

@@ -34,19 +34,26 @@ module QA
         @retry_later_backoff = QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME
       end
 
+      def inspect
+        # For prettier failure messages
+        # Eg.: "expected QA::Page::File::Show not to have file "QA Test - File name"
+        # Instead of "expected #<QA::Page::File::Show:0x000055c6511e07b8 @retry_later_backoff=60> not to have file "QA Test - File name"
+        self.class.to_s
+      end
+
       def assert_no_element(name)
         assert_no_selector(element_selector_css(name))
       end
 
-      def refresh
+      def refresh(skip_finished_loading_check: false)
         page.refresh
 
-        wait_for_requests
+        wait_for_requests(skip_finished_loading_check: skip_finished_loading_check)
       end
 
-      def wait_until(max_duration: 60, sleep_interval: 0.1, reload: true, raise_on_failure: true)
+      def wait_until(max_duration: 60, sleep_interval: 0.1, reload: true, raise_on_failure: true, skip_finished_loading_check_on_refresh: false)
         Support::Waiter.wait_until(max_duration: max_duration, sleep_interval: sleep_interval, raise_on_failure: raise_on_failure) do
-          yield || (reload && refresh && false)
+          yield || (reload && refresh(skip_finished_loading_check: skip_finished_loading_check_on_refresh) && false)
         end
       end
 

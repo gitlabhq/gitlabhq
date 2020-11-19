@@ -1,0 +1,4 @@
+- return unless issuable.sentry_issue.present?
+- add_page_specific_style 'page_bundles/error_tracking_details'
+
+#js-sentry-error-stack-trace{ data: error_details_data(@project, issuable.sentry_issue.sentry_issue_identifier) }

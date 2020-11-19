@@ -2,6 +2,7 @@
 name: gitaly_enforce_requests_limits
 introduced_by_url: 
 rollout_issue_url: 
-group: 
+milestone: 
 type: development
+group: 
 default_enabled: false

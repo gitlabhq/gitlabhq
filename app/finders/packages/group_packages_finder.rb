@@ -25,7 +25,7 @@ module Packages
         .including_build_info
         .including_project_route
         .including_tags
-        .for_projects(group_projects_visible_to_current_user)
+        .for_projects(group_projects_visible_to_current_user.select(:id))
         .processed
         .has_version
         .sort_by_attribute("#{params[:order_by]}_#{params[:sort]}")
@@ -36,11 +36,14 @@ module Packages
     end
 
     def group_projects_visible_to_current_user
+      # according to project_policy.rb
+      # access to packages is ruled by:
+      # - project is public or the current user has access to it with at least the reporter level
+      # - the repository feature is available to the current_user
       ::Project
         .in_namespace(groups)
         .public_or_visible_to_user(current_user, Gitlab::Access::REPORTER)
-        .with_project_feature
-        .select { |project| Ability.allowed?(current_user, :read_package, project) }
+        .with_feature_available_for_user(:repository, current_user)
     end
 
     def package_type

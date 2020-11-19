@@ -6,6 +6,7 @@ import {
   GlDeprecatedSkeletonLoading as GlSkeletonLoading,
   GlIcon,
 } from '@gitlab/ui';
+import UserAvailabilityStatus from '~/set_status_modal/components/user_availability_status.vue';
 import UserAvatarImage from '../user_avatar/user_avatar_image.vue';
 import { glEmojiTag } from '../../../emoji';
 
@@ -25,6 +26,7 @@ export default {
     GlPopover,
     GlSkeletonLoading,
     UserAvatarImage,
+    UserAvailabilityStatus,
   },
   props: {
     target: {
@@ -63,6 +65,9 @@ export default {
         websiteUrl.length
       );
     },
+    availabilityStatus() {
+      return this.user?.status?.availability || null;
+    },
   },
 };
 </script>
@@ -89,6 +94,10 @@ export default {
           <div class="gl-mb-3">
             <h5 class="gl-m-0">
               {{ user.name }}
+              <user-availability-status
+                v-if="availabilityStatus"
+                :availability="availabilityStatus"
+              />
             </h5>
             <span class="gl-text-gray-500">@{{ user.username }}</span>
           </div>

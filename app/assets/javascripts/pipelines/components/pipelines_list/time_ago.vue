@@ -1,6 +1,5 @@
 <script>
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import '~/lib/utils/datetime_utility';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
 export default {

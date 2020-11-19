@@ -8,6 +8,8 @@ module API
 
     helpers ::API::Helpers::MembersHelpers
 
+    feature_category :authentication_and_authorization
+
     %w[group project].each do |source_type|
       params do
         requires :id, type: String, desc: "The #{source_type} ID"

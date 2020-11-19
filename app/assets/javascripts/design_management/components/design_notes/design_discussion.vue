@@ -210,7 +210,7 @@ export default {
         :class="{ 'gl-bg-blue-50': isDiscussionActive }"
         @error="$emit('update-note-error', $event)"
       >
-        <template v-if="discussion.resolvable" #resolveDiscussion>
+        <template v-if="discussion.resolvable" #resolve-discussion>
           <button
             v-gl-tooltip
             :class="{ 'is-active': discussion.resolved }"
@@ -224,7 +224,7 @@ export default {
             <gl-loading-icon v-else inline />
           </button>
         </template>
-        <template v-if="discussion.resolved" #resolvedStatus>
+        <template v-if="discussion.resolved" #resolved-status>
           <p class="gl-text-gray-500 gl-font-sm gl-m-0 gl-mt-5" data-testid="resolved-message">
             {{ __('Resolved by') }}
             <gl-link
@@ -277,7 +277,7 @@ export default {
             @submit-form="mutate"
             @cancel-form="hideForm"
           >
-            <template v-if="discussion.resolvable" #resolveCheckbox>
+            <template v-if="discussion.resolvable" #resolve-checkbox>
               <label data-testid="resolve-checkbox">
                 <input v-model="shouldChangeResolvedStatus" type="checkbox" />
                 {{ resolveCheckboxText }}

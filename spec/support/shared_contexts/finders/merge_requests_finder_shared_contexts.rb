@@ -23,6 +23,7 @@ RSpec.shared_context 'MergeRequestsFinder multiple projects with merge requests 
   # We cannot use `let_it_be` here otherwise we get:
   #   Failure/Error: allow(RepositoryForkWorker).to receive(:perform_async).and_return(true)
   #   The use of doubles or partial doubles from rspec-mocks outside of the per-test lifecycle is not supported.
+
   let!(:project2) do
     allow_gitaly_n_plus_1 do
       fork_project(project1, user)
@@ -40,9 +41,11 @@ RSpec.shared_context 'MergeRequestsFinder multiple projects with merge requests 
   let_it_be(:project4, reload: true) do
     allow_gitaly_n_plus_1 { create(:project, :repository, group: subgroup) }
   end
+
   let_it_be(:project5, reload: true) do
     allow_gitaly_n_plus_1 { create(:project, group: subgroup) }
   end
+
   let_it_be(:project6, reload: true) do
     allow_gitaly_n_plus_1 { create(:project, group: subgroup) }
   end

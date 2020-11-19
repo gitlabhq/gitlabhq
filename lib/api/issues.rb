@@ -8,6 +8,8 @@ module API
 
     before { authenticate_non_get! }
 
+    feature_category :issue_tracking
+
     helpers do
       params :negatable_issue_filter_params do
         optional :labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
@@ -26,6 +28,8 @@ module API
                  coerce_with: Validations::Validators::CheckAssigneesCount.coerce,
                  desc: 'Return issues which are assigned to the user with the given username'
         mutually_exclusive :assignee_id, :assignee_username
+
+        use :negatable_issue_filter_params_ee
       end
 
       params :issues_stats_params do

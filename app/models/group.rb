@@ -71,6 +71,9 @@ class Group < Namespace
   has_many :group_deploy_tokens
   has_many :deploy_tokens, through: :group_deploy_tokens
 
+  has_one :dependency_proxy_setting, class_name: 'DependencyProxy::GroupSetting'
+  has_many :dependency_proxy_blobs, class_name: 'DependencyProxy::Blob'
+
   accepts_nested_attributes_for :variables, allow_destroy: true
 
   validate :visibility_level_allowed_by_projects
@@ -97,6 +100,19 @@ class Group < Namespace
   scope :with_users, -> { includes(:users) }
 
   scope :by_id, ->(groups) { where(id: groups) }
+
+  scope :for_authorized_group_members, -> (user_ids) do
+    joins(:group_members)
+      .where("members.user_id IN (?)", user_ids)
+      .where("access_level >= ?", Gitlab::Access::GUEST)
+  end
+
+  scope :for_authorized_project_members, -> (user_ids) do
+    joins(projects: :project_authorizations)
+      .where("project_authorizations.user_id IN (?)", user_ids)
+  end
+
+  delegate :default_branch_name, to: :namespace_settings
 
   class << self
     def sort_by_attribute(method)
@@ -188,6 +204,10 @@ class Group < Namespace
 
   def packages_feature_enabled?
     ::Gitlab.config.packages.enabled
+  end
+
+  def dependency_proxy_feature_available?
+    ::Gitlab.config.dependency_proxy.enabled
   end
 
   def notification_email_for(user)
@@ -571,12 +591,16 @@ class Group < Namespace
     ancestor_settings.allow_mfa_for_subgroups
   end
 
+  def has_project_with_service_desk_enabled?
+    Gitlab::ServiceDesk.supported? && all_projects.service_desk_enabled.exists?
+  end
+
   private
 
   def update_two_factor_requirement
     return unless saved_change_to_require_two_factor_authentication? || saved_change_to_two_factor_grace_period?
 
-    members_with_descendants.find_each(&:update_two_factor_requirement)
+    direct_and_indirect_members.find_each(&:update_two_factor_requirement)
   end
 
   def path_changed_hook

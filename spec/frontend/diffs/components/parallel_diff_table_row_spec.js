@@ -3,11 +3,22 @@ import { shallowMount } from '@vue/test-utils';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import { createStore } from '~/mr_notes/stores';
 import ParallelDiffTableRow from '~/diffs/components/parallel_diff_table_row.vue';
+import { mapParallel } from '~/diffs/components/diff_row_utils';
 import diffFileMockData from '../mock_data/diff_file';
 import DiffGutterAvatars from '~/diffs/components/diff_gutter_avatars.vue';
 import discussionsMockData from '../mock_data/diff_discussions';
 
 describe('ParallelDiffTableRow', () => {
+  const mockDiffContent = {
+    diffFile: diffFileMockData,
+    shouldRenderDraftRow: jest.fn(),
+    hasParallelDraftLeft: jest.fn(),
+    hasParallelDraftRight: jest.fn(),
+    draftForLine: jest.fn(),
+  };
+
+  const applyMap = mapParallel(mockDiffContent);
+
   describe('when one side is empty', () => {
     let wrapper;
     let vm;
@@ -18,7 +29,7 @@ describe('ParallelDiffTableRow', () => {
       wrapper = shallowMount(ParallelDiffTableRow, {
         store: createStore(),
         propsData: {
-          line: thisLine,
+          line: applyMap(thisLine),
           fileHash: diffFileMockData.file_hash,
           filePath: diffFileMockData.file_path,
           contextLinesPath: 'contextLinesPath',
@@ -67,7 +78,7 @@ describe('ParallelDiffTableRow', () => {
 
     beforeEach(() => {
       vm = createComponentWithStore(Vue.extend(ParallelDiffTableRow), createStore(), {
-        line: thisLine,
+        line: applyMap(thisLine),
         fileHash: diffFileMockData.file_hash,
         filePath: diffFileMockData.file_path,
         contextLinesPath: 'contextLinesPath',
@@ -243,7 +254,10 @@ describe('ParallelDiffTableRow', () => {
         ${{ ...thisLine, left: { type: 'old-nonewline', discussions: [] } }} | ${false}
         ${{ ...thisLine, left: { discussions: [{}] } }}                      | ${false}
       `('visible is $expectation - line ($line)', async ({ line, expectation }) => {
-        createComponent({ line }, store, { isLeftHover: true, isCommentButtonRendered: true });
+        createComponent({ line: applyMap(line) }, store, {
+          isLeftHover: true,
+          isCommentButtonRendered: true,
+        });
 
         expect(findNoteButton().isVisible()).toBe(expectation);
       });
@@ -320,7 +334,7 @@ describe('ParallelDiffTableRow', () => {
               Object.assign(thisLine.left, lineProps);
               Object.assign(thisLine.right, lineProps);
               createComponent({
-                line: { ...thisLine },
+                line: applyMap({ ...thisLine }),
               });
             });
 
@@ -357,7 +371,7 @@ describe('ParallelDiffTableRow', () => {
       beforeEach(() => {
         jest.spyOn(store, 'dispatch').mockImplementation();
 
-        line = {
+        line = applyMap({
           left: {
             line_code: TEST_LINE_CODE,
             type: 'new',
@@ -369,7 +383,7 @@ describe('ParallelDiffTableRow', () => {
             rich_text: '+<span id="LC1" class="line" lang="plaintext">  - Bad dates</span>\n',
             meta_data: null,
           },
-        };
+        });
       });
 
       describe('with showCommentButton', () => {
@@ -384,7 +398,7 @@ describe('ParallelDiffTableRow', () => {
 
         it('does notrender if line has no discussions', () => {
           line.left.discussions = [];
-          createComponent({ line });
+          createComponent({ line: applyMap(line) });
 
           expect(findAvatars().exists()).toEqual(false);
         });

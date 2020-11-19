@@ -1,0 +1,66 @@
+// -------
+// Please see `app/assets/stylesheets/page_bundles/ide_themes/README.md` for a guide on contributing new themes
+// -------
+.ide.theme-monokai {
+  --ide-border-color: #1a1a18;
+  --ide-border-color-alt: #3f4237;
+  --ide-highlight-accent: #fff;
+  --ide-text-color: #ccc;
+  --ide-text-color-secondary: #b7b7b7;
+  --ide-background: #282822;
+  --ide-background-hover: #2d2d2d;
+  --ide-highlight-background: #1f1f1d;
+  --ide-link-color: #428fdc;
+  --ide-footer-background: #404338;
+  --ide-empty-state-background: #1a1a18;
+
+  --ide-input-border: #7d8175;
+  --ide-input-background: transparent;
+  --ide-input-color: #fff;
+
+  --ide-btn-default-background: transparent;
+  --ide-btn-default-border: #7d8175;
+  --ide-btn-default-hover-border: #b5bda5;
+  --ide-btn-default-hover-border-width: 2px;
+  --ide-btn-default-focus-box-shadow: 0 0 0 1px #bfbfbf;
+
+  --ide-btn-primary-background: #1068bf;
+  --ide-btn-primary-border: #428fdc;
+  --ide-btn-primary-hover-border: #63a6e9;
+  --ide-btn-primary-hover-border-width: 2px;
+  --ide-btn-primary-focus-box-shadow: 0 0 0 1px #63a6e9;
+
+  --ide-btn-success-background: #217645;
+  --ide-btn-success-border: #108548;
+  --ide-btn-success-hover-border: #2da160;
+  --ide-btn-success-hover-border-width: 2px;
+  --ide-btn-success-focus-box-shadow: 0 0 0 1px #2da160;
+
+  // Danger styles should be the same as default styles in dark theme
+  --ide-btn-danger-secondary-background: var(--ide-btn-default-background);
+  --ide-btn-danger-secondary-border: var(--ide-btn-default-border);
+  --ide-btn-danger-secondary-hover-border: var(--ide-btn-default-hover-border);
+  --ide-btn-danger-secondary-hover-border-width: var(--ide-btn-default-hover-border-width);
+  --ide-btn-danger-secondary-focus-box-shadow: var(--ide-btn-default-focus-box-shadow);
+
+  --ide-btn-disabled-background: transparent;
+  --ide-btn-disabled-border: rgba(223, 223, 223, 0.24);
+  --ide-btn-disabled-hover-border: rgba(223, 223, 223, 0.24);
+  --ide-btn-disabled-hover-border-width: 1px;
+  --ide-btn-disabled-focus-box-shadow: 0 0 0 0 transparent;
+  --ide-btn-disabled-color: rgba(145, 145, 145, 0.48);
+
+  --ide-dropdown-background: #36382f;
+  --ide-dropdown-hover-background: #404338;
+
+  --ide-dropdown-btn-hover-border: #b5bda5;
+  --ide-dropdown-btn-hover-background: #3f4237;
+
+  --ide-file-row-btn-hover-background: #404338;
+
+  --ide-diff-insert: rgba(155, 185, 85, 0.2);
+  --ide-diff-remove: rgba(255, 0, 0, 0.2);
+
+  --ide-animation-gradient-1: #404338;
+  --ide-animation-gradient-2: #36382f;
+}

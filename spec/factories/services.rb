@@ -56,6 +56,10 @@ FactoryBot.define do
     trait :inactive do
       active { false }
     end
+
+    before(:create) do |service|
+      service.data = build(:alerts_service_data, service: service)
+    end
   end
 
   factory :drone_ci_service do
@@ -79,6 +83,8 @@ FactoryBot.define do
       jira_issue_transition_id { '56-1' }
       issues_enabled { false }
       project_key { nil }
+      vulnerabilities_enabled { false }
+      vulnerabilities_issuetype { nil }
     end
 
     before(:create) do |service, evaluator|
@@ -86,7 +92,8 @@ FactoryBot.define do
         create(:jira_tracker_data, service: service,
                url: evaluator.url, api_url: evaluator.api_url, jira_issue_transition_id: evaluator.jira_issue_transition_id,
                username: evaluator.username, password: evaluator.password, issues_enabled: evaluator.issues_enabled,
-               project_key: evaluator.project_key
+               project_key: evaluator.project_key, vulnerabilities_enabled: evaluator.vulnerabilities_enabled,
+               vulnerabilities_issuetype: evaluator.vulnerabilities_issuetype
         )
       end
     end
@@ -137,6 +144,13 @@ FactoryBot.define do
         )
       end
     end
+  end
+
+  factory :external_wiki_service do
+    project
+    type { ExternalWikiService }
+    active { true }
+    external_wiki_url { 'http://external-wiki-url.com' }
   end
 
   factory :open_project_service do

@@ -27,7 +27,7 @@ module Gitlab
         def container_specification
           {
             name: 'helm',
-            image: "registry.gitlab.com/gitlab-org/cluster-integration/helm-install-image/releases/#{Gitlab::Kubernetes::Helm::HELM_VERSION}-kube-#{Gitlab::Kubernetes::Helm::KUBECTL_VERSION}",
+            image: "registry.gitlab.com/gitlab-org/cluster-integration/helm-install-image/releases/#{command.class::HELM_VERSION}-kube-#{Gitlab::Kubernetes::Helm::KUBECTL_VERSION}-alpine-3.12",
             env: generate_pod_env(command),
             command: %w(/bin/sh),
             args: %w(-c $(COMMAND_SCRIPT))
@@ -50,11 +50,10 @@ module Gitlab
         end
 
         def generate_pod_env(command)
-          {
-            HELM_VERSION: Gitlab::Kubernetes::Helm::HELM_VERSION,
-            TILLER_NAMESPACE: namespace_name,
+          command.env.merge(
+            HELM_VERSION: command.class::HELM_VERSION,
             COMMAND_SCRIPT: command.generate_script
-          }.map { |key, value| { name: key, value: value } }
+          ).map { |key, value| { name: key, value: value } }
         end
 
         def volumes_specification

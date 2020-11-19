@@ -1,0 +1,5 @@
+---
+title: Add userDiscussionsCount to issues and merge requests GraphQL
+merge_request: 46311
+author:
+type: added

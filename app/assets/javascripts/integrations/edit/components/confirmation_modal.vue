@@ -8,14 +8,14 @@ export default {
     GlModal,
   },
   computed: {
-    ...mapGetters(['isSavingOrTesting']),
+    ...mapGetters(['isDisabled']),
     primaryProps() {
       return {
         text: __('Save'),
         attributes: [
           { variant: 'success' },
           { category: 'primary' },
-          { disabled: this.isSavingOrTesting },
+          { disabled: this.isDisabled },
         ],
       };
     },
@@ -52,7 +52,7 @@ export default {
     <p class="gl-mb-0">
       {{
         s__(
-          'Integrations|Projects using custom settings will not be impacted unless the project owner chooses to use instance-level defaults.',
+          'Integrations|Projects using custom settings will not be impacted unless the project owner chooses to use parent level defaults.',
         )
       }}
     </p>

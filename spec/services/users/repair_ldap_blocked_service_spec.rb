@@ -10,7 +10,7 @@ RSpec.describe Users::RepairLdapBlockedService do
 
   describe '#execute' do
     it 'changes to normal block after destroying last ldap identity' do
-      identity.destroy
+      identity.destroy!
       service.execute
 
       expect(user.reload).not_to be_ldap_blocked

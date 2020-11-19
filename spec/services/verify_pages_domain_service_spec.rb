@@ -189,7 +189,7 @@ RSpec.describe VerifyPagesDomainService do
         let(:domain) { build(:pages_domain, :expired, :with_missing_chain) }
 
         before do
-          domain.save(validate: false)
+          domain.save!(validate: false)
         end
 
         it 'can be disabled' do

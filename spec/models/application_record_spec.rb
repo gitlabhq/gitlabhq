@@ -67,13 +67,22 @@ RSpec.describe ApplicationRecord do
       end
 
       it 'raises a validation error if the record was not persisted' do
-        expect { Suggestion.find_or_create_by!(note: nil) }.to raise_error(ActiveRecord::RecordInvalid)
+        expect { Suggestion.safe_find_or_create_by!(note: nil) }
+          .to raise_error(ActiveRecord::RecordInvalid)
       end
 
       it 'passes a block to find_or_create_by' do
         expect do |block|
           Suggestion.safe_find_or_create_by!(suggestion_attributes, &block)
         end.to yield_with_args(an_object_having_attributes(suggestion_attributes))
+      end
+
+      it 'raises a record not found error in case of attributes mismatch' do
+        suggestion = Suggestion.safe_find_or_create_by!(suggestion_attributes)
+        attributes = suggestion_attributes.merge(outdated: !suggestion.outdated)
+
+        expect { Suggestion.safe_find_or_create_by!(attributes) }
+          .to raise_error(ActiveRecord::RecordNotFound)
       end
     end
   end

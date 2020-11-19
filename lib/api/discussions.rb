@@ -8,7 +8,7 @@ module API
 
     before { authenticate! }
 
-    Helpers::DiscussionsHelpers.noteable_types.each do |noteable_type|
+    Helpers::DiscussionsHelpers.feature_category_per_noteable_type.each do |noteable_type, feature_category|
       parent_type = noteable_type.parent_class.to_s.underscore
       noteables_str = noteable_type.to_s.underscore.pluralize
       noteables_path = noteable_type == Commit ? "repository/#{noteables_str}" : noteables_str
@@ -25,7 +25,7 @@ module API
           use :pagination
         end
 
-        get ":id/#{noteables_path}/:noteable_id/discussions" do
+        get ":id/#{noteables_path}/:noteable_id/discussions", feature_category: feature_category do
           noteable = find_noteable(noteable_type, params[:noteable_id])
 
           discussion_ids = paginate(noteable.discussion_ids_relation)
@@ -41,7 +41,7 @@ module API
           requires :discussion_id, type: String, desc: 'The ID of a discussion'
           requires :noteable_id, types: [Integer, String], desc: 'The ID of the noteable'
         end
-        get ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id" do
+        get ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id", feature_category: feature_category do
           noteable = find_noteable(noteable_type, params[:noteable_id])
           notes = readable_discussion_notes(noteable, params[:discussion_id])
 
@@ -91,7 +91,7 @@ module API
             end
           end
         end
-        post ":id/#{noteables_path}/:noteable_id/discussions" do
+        post ":id/#{noteables_path}/:noteable_id/discussions", feature_category: feature_category do
           noteable = find_noteable(noteable_type, params[:noteable_id])
           type = params[:position] ? 'DiffNote' : 'DiscussionNote'
           id_key = noteable.is_a?(Commit) ? :commit_id : :noteable_id
@@ -121,7 +121,7 @@ module API
           requires :discussion_id, type: String, desc: 'The ID of a discussion'
           requires :noteable_id, types: [Integer, String], desc: 'The ID of the noteable'
         end
-        get ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id/notes" do
+        get ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id/notes", feature_category: feature_category do
           noteable = find_noteable(noteable_type, params[:noteable_id])
           notes = readable_discussion_notes(noteable, params[:discussion_id])
 
@@ -141,7 +141,7 @@ module API
           requires :body, type: String, desc: 'The content of a note'
           optional :created_at, type: String, desc: 'The creation date of the note'
         end
-        post ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id/notes" do
+        post ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id/notes", feature_category: feature_category do
           noteable = find_noteable(noteable_type, params[:noteable_id])
           notes = readable_discussion_notes(noteable, params[:discussion_id])
           first_note = notes.first
@@ -175,7 +175,7 @@ module API
           requires :discussion_id, type: String, desc: 'The ID of a discussion'
           requires :note_id, type: Integer, desc: 'The ID of a note'
         end
-        get ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id/notes/:note_id" do
+        get ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id/notes/:note_id", feature_category: feature_category do
           noteable = find_noteable(noteable_type, params[:noteable_id])
 
           get_note(noteable, params[:note_id])
@@ -192,7 +192,7 @@ module API
           optional :resolved, type: Boolean, desc: 'Mark note resolved/unresolved'
           exactly_one_of :body, :resolved
         end
-        put ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id/notes/:note_id" do
+        put ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id/notes/:note_id", feature_category: feature_category do
           noteable = find_noteable(noteable_type, params[:noteable_id])
 
           if params[:resolved].nil?
@@ -210,7 +210,7 @@ module API
           requires :discussion_id, type: String, desc: 'The ID of a discussion'
           requires :note_id, type: Integer, desc: 'The ID of a note'
         end
-        delete ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id/notes/:note_id" do
+        delete ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id/notes/:note_id", feature_category: feature_category do
           noteable = find_noteable(noteable_type, params[:noteable_id])
 
           delete_note(noteable, params[:note_id])
@@ -225,7 +225,7 @@ module API
             requires :discussion_id, type: String, desc: 'The ID of a discussion'
             requires :resolved, type: Boolean, desc: 'Mark discussion resolved/unresolved'
           end
-          put ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id" do
+          put ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id", feature_category: feature_category do
             noteable = find_noteable(noteable_type, params[:noteable_id])
 
             resolve_discussion(noteable, params[:discussion_id], params[:resolved])

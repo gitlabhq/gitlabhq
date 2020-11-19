@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "required": [
+    "count",
+    "base_branch"
+  ],
+  "properties": {
+    "count": { "type": "integer" },
+    "base_branch": { "type": "string" }
+  },
+  "additionalProperties": false
+}

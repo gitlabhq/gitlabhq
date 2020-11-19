@@ -28,6 +28,7 @@ module Gitlab
       gon.sprite_icons           = IconsHelper.sprite_icon_path
       gon.sprite_file_icons      = IconsHelper.sprite_file_icons_path
       gon.emoji_sprites_css_path = ActionController::Base.helpers.stylesheet_path('emoji_sprites')
+      gon.select2_css_path       = ActionController::Base.helpers.stylesheet_path('lazy_bundles/select2.css')
       gon.test_env               = Rails.env.test?
       gon.disable_animations     = Gitlab.config.gitlab['disable_animations']
       gon.suggested_label_colors = LabelsHelper.suggested_colors
@@ -58,9 +59,13 @@ module Gitlab
     # args - Any additional arguments to pass to `Feature.enabled?`. This allows
     #        you to check if a flag is enabled for a particular user.
     def push_frontend_feature_flag(name, *args, **kwargs)
-      var_name = name.to_s.camelize(:lower)
       enabled = Feature.enabled?(name, *args, **kwargs)
 
+      push_to_gon_features(name, enabled)
+    end
+
+    def push_to_gon_features(name, enabled)
+      var_name = name.to_s.camelize(:lower)
       # Here the `true` argument signals gon that the value should be merged
       # into any existing ones, instead of overwriting them. This allows you to
       # use this method to push multiple feature flags.

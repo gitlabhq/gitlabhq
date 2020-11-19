@@ -1,3 +1,9 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Export Issues to CSV
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1126) in [GitLab Starter 9.0](https://about.gitlab.com/releases/2017/03/22/gitlab-9-0-released/#export-issues-ees-eep).

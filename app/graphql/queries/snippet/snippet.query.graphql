@@ -1,0 +1,65 @@
+query GetSnippetQuery($ids: [SnippetID!]) {
+  snippets(ids: $ids) {
+    __typename
+    nodes {
+      __typename
+      id
+      title
+      description
+      descriptionHtml
+      createdAt
+      updatedAt
+      visibilityLevel
+      webUrl
+      httpUrlToRepo
+      sshUrlToRepo
+      blobs {
+        __typename
+        nodes {
+          __typename
+          binary
+          name
+          path
+          rawPath
+          size
+          externalStorage
+          renderedAsText
+          simpleViewer {
+            __typename
+            collapsed
+            renderError
+            tooLarge
+            type
+            fileType
+          }
+          richViewer {
+            __typename
+            collapsed
+            renderError
+            tooLarge
+            type
+            fileType
+          }
+        }
+      }
+      userPermissions {
+        __typename
+        adminSnippet
+        updateSnippet
+      }
+      project {
+        __typename
+        fullPath
+        webUrl
+      }
+      author {
+        __typename
+        id
+        avatarUrl
+        name
+        username
+        webUrl
+      }
+    }
+  }
+}

@@ -62,7 +62,7 @@ To create the `.gitlab/issue_templates` directory:
  1. Click the `+` button next to `master` again and select **New directory**.This time, n
  1. Name your directory `issue_templates` and commit to your default branch.
 
-To check if this has worked correctly, [create a new issue](./issues/managing_issues.md#create-a-new-issue)
+To check if this has worked correctly, [create a new issue](issues/managing_issues.md#create-a-new-issue)
 and see if you can choose a description template.
 
 ## Creating merge request templates

@@ -1,0 +1,5 @@
+---
+title: Show error in pipeline when Coverage Fuzzing not licensed
+merge_request: 46652
+author:
+type: changed

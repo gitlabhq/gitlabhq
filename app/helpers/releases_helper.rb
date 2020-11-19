@@ -51,18 +51,25 @@ module ReleasesHelper
     )
   end
 
+  def group_milestone_project_releases_available?(project)
+    false
+  end
+
   private
 
   def new_edit_pages_shared_data
     {
       project_id: @project.id,
+      group_id: @project.group&.id,
+      group_milestones_available: group_milestone_project_releases_available?(@project),
       project_path: @project.full_path,
       markdown_preview_path: preview_markdown_path(@project),
       markdown_docs_path: help_page_path('user/markdown'),
-      update_release_api_docs_path: help_page_path('api/releases/index.md', anchor: 'update-a-release'),
       release_assets_docs_path: help_page(anchor: 'release-assets'),
       manage_milestones_path: project_milestones_path(@project),
       new_milestone_path: new_project_milestone_path(@project)
     }
   end
 end
+
+ReleasesHelper.prepend_if_ee('EE::ReleasesHelper')

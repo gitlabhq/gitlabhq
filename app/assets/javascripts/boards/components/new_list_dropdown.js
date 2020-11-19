@@ -7,6 +7,7 @@ import { deprecatedCreateFlash as flash } from '~/flash';
 import CreateLabelDropdown from '../../create_label';
 import boardsStore from '../stores/boards_store';
 import { fullLabelId } from '../boards_util';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import store from '~/boards/stores';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
@@ -61,7 +62,7 @@ export default function initNewListDropdown() {
         const active = boardsStore.findListByLabelId(label.id);
         const $li = $('<li />');
         const $a = $('<a />', {
-          class: active ? `is-active js-board-list-${active.id}` : '',
+          class: active ? `is-active js-board-list-${getIdFromGraphQLId(active.id)}` : '',
           text: label.title,
           href: '#',
         });

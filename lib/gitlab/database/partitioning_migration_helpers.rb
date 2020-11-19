@@ -5,6 +5,7 @@ module Gitlab
     module PartitioningMigrationHelpers
       include ForeignKeyHelpers
       include TableManagementHelpers
+      include IndexHelpers
     end
   end
 end

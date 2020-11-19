@@ -18,7 +18,6 @@ module Gitlab
             validates :config, allowed_keys: ALLOWED_KEYS + PROCESSABLE_ALLOWED_KEYS
 
             with_options allow_nil: true do
-              validates :allow_failure, boolean: true
               validates :when, inclusion: {
                 in: ALLOWED_WHEN,
                 message: "should be one of: #{ALLOWED_WHEN.join(', ')}"
@@ -48,7 +47,7 @@ module Gitlab
             inherit: false,
             metadata: { allowed_needs: %i[job bridge] }
 
-          attributes :when, :allow_failure
+          attributes :when
 
           def self.matching?(name, config)
             !name.to_s.start_with?('.') &&
@@ -58,14 +57,6 @@ module Gitlab
 
           def self.visible?
             true
-          end
-
-          def manual_action?
-            self.when == 'manual'
-          end
-
-          def ignored?
-            allow_failure.nil? ? manual_action? : allow_failure
           end
 
           def value

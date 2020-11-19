@@ -250,7 +250,7 @@ Atlassian has a more thorough explanation of the tradeoffs between merging and r
 A good way to prevent creating many merge commits is to not frequently merge `master` into the feature branch.
 There are three reasons to merge in `master`: utilizing new code, resolving merge conflicts, and updating long-running branches.
 
-If you need to utilize some code that was introduced in `master` after you created the feature branch, you can often solve this by just cherry-picking a commit.
+If you need to use some code that was introduced in `master` after you created the feature branch, you can often solve this by just cherry-picking a commit.
 
 If your feature branch has a merge conflict, creating a merge commit is a standard way of solving this.
 

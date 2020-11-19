@@ -19,24 +19,6 @@ describe('ServiceDeskService', () => {
     axiosMock.restore();
   });
 
-  describe('fetchIncomingEmail', () => {
-    it('makes a request to fetch incoming email', () => {
-      axiosMock.onGet(endpoint).replyOnce(httpStatusCodes.OK, dummyResponse);
-
-      return service.fetchIncomingEmail().then(response => {
-        expect(response.data).toEqual(dummyResponse);
-      });
-    });
-
-    it('fails on error response', () => {
-      axiosMock.onGet(endpoint).networkError();
-
-      return service.fetchIncomingEmail().catch(error => {
-        expect(error.message).toBe(errorMessage);
-      });
-    });
-  });
-
   describe('toggleServiceDesk', () => {
     it('makes a request to set service desk', () => {
       axiosMock.onPut(endpoint).replyOnce(httpStatusCodes.OK, dummyResponse);

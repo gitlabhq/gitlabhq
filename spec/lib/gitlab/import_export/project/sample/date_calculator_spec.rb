@@ -13,7 +13,7 @@ RSpec.describe Gitlab::ImportExport::Project::Sample::DateCalculator do
     end
 
     context 'when dates are not empty' do
-      let(:dates) { [[nil, '2020-01-01 00:00:00 +0000'], [nil, '2021-01-01 00:00:00 +0000'], [nil, '2022-01-01 23:59:59 +0000']] }
+      let(:dates) { [nil, '2020-01-01 00:00:00 +0000', '2021-01-01 00:00:00 +0000', nil, '2022-01-01 23:59:59 +0000'] }
 
       it { is_expected.to eq(Time.zone.parse('2021-01-01 00:00:00 +0000')) }
     end

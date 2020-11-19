@@ -1,0 +1,14 @@
+---
+# Error: gitlab.AlertBoxDanger
+#
+# Makes sure DANGER: alert boxes follow standard formatting.
+#
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+extends: substitution
+message: "DANGER: alert boxes must be of the format 'DANGER: **Warning:**'. 'Warning' can be replaced with 'Important', 'Deprecated', or 'Required'."
+link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#alert-boxes
+level: error
+nonword: true
+scope: raw
+swap:
+  'DANGER: *?\*\*.*\*\*': 'DANGER: \*\*(?:Warning|Important|Deprecated|Required):\*\*'

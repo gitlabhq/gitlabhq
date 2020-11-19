@@ -83,16 +83,16 @@ export default class FilteredSearchDropdown {
     }
   }
 
-  render(forceRenderContent = false, forceShowList = false) {
+  render(forceRenderContent = false, forceShowList = false, hideNotEqual = false) {
     this.setAsDropdown();
 
     const currentHook = this.getCurrentHook();
     const firstTimeInitialized = currentHook === null;
 
     if (firstTimeInitialized || forceRenderContent) {
-      this.renderContent(forceShowList);
+      this.renderContent(forceShowList, hideNotEqual);
     } else if (currentHook.list.list.id !== this.dropdown.id) {
-      this.renderContent(forceShowList);
+      this.renderContent(forceShowList, hideNotEqual);
     }
   }
 
