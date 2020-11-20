@@ -4,6 +4,7 @@ import LineNumber from '~/jobs/components/log/line_number.vue';
 
 const httpUrl = 'http://example.com';
 const httpsUrl = 'https://example.com';
+const queryUrl = 'https://example.com?param=val';
 
 const mockProps = ({ text = 'Running with gitlab-runner 12.1.0 (de7731dd)' } = {}) => ({
   line: {
@@ -33,10 +34,11 @@ describe('Job Log Line', () => {
 
   const findLine = () => wrapper.find('span');
   const findLink = () => findLine().find('a');
-  const findLinksAt = i =>
-    findLine()
-      .findAll('a')
-      .at(i);
+  const findLinks = () => findLine().findAll('a');
+  const findLinkAttributeByIndex = i =>
+    findLinks()
+      .at(i)
+      .attributes();
 
   beforeEach(() => {
     originalGon = window.gon;
@@ -116,15 +118,6 @@ describe('Job Log Line', () => {
       expect(findLink().attributes().href).toBe(httpsUrl);
     });
 
-    it('renders a multiple links surrounded by text', () => {
-      createComponent(mockProps({ text: `My HTTP url: ${httpUrl} and my HTTPS url: ${httpsUrl}` }));
-      expect(findLine().text()).toBe(
-        'My HTTP url: http://example.com and my HTTPS url: https://example.com',
-      );
-      expect(findLinksAt(0).attributes().href).toBe(httpUrl);
-      expect(findLinksAt(1).attributes().href).toBe(httpsUrl);
-    });
-
     it('renders a link with rel nofollow and noopener', () => {
       createComponent(mockProps({ text: httpsUrl }));
 
@@ -137,15 +130,49 @@ describe('Job Log Line', () => {
       expect(findLink().classes()).toEqual(['gl-reset-color!', 'gl-text-decoration-underline']);
     });
 
-    it('render links surrounded by text', () => {
+    it('renders a links with queries, surrounded by questions marks', () => {
+      createComponent(mockProps({ text: `Did you see my url ${queryUrl}??` }));
+
+      expect(findLine().text()).toBe('Did you see my url https://example.com?param=val??');
+      expect(findLinkAttributeByIndex(0).href).toBe(queryUrl);
+    });
+
+    it('renders a links with queries, surrounded by exclamation marks', () => {
+      createComponent(mockProps({ text: `No! The ${queryUrl}!?` }));
+
+      expect(findLine().text()).toBe('No! The https://example.com?param=val!?');
+      expect(findLinkAttributeByIndex(0).href).toBe(queryUrl);
+    });
+
+    it('renders a multiple links surrounded by text', () => {
       createComponent(
-        mockProps({ text: `My HTTP url: ${httpUrl} and my HTTPS url: ${httpsUrl} are here.` }),
+        mockProps({ text: `Well, my HTTP url: ${httpUrl} and my HTTPS url: ${httpsUrl}` }),
       );
       expect(findLine().text()).toBe(
-        'My HTTP url: http://example.com and my HTTPS url: https://example.com are here.',
+        'Well, my HTTP url: http://example.com and my HTTPS url: https://example.com',
       );
-      expect(findLinksAt(0).attributes().href).toBe(httpUrl);
-      expect(findLinksAt(1).attributes().href).toBe(httpsUrl);
+
+      expect(findLinks()).toHaveLength(2);
+
+      expect(findLinkAttributeByIndex(0).href).toBe(httpUrl);
+      expect(findLinkAttributeByIndex(1).href).toBe(httpsUrl);
+    });
+
+    it('renders a multiple links surrounded by text, with other symbols', () => {
+      createComponent(
+        mockProps({ text: `${httpUrl}, ${httpUrl}: ${httpsUrl}; ${httpsUrl}. ${httpsUrl}...` }),
+      );
+      expect(findLine().text()).toBe(
+        'http://example.com, http://example.com: https://example.com; https://example.com. https://example.com...',
+      );
+
+      expect(findLinks()).toHaveLength(5);
+
+      expect(findLinkAttributeByIndex(0).href).toBe(httpUrl);
+      expect(findLinkAttributeByIndex(1).href).toBe(httpUrl);
+      expect(findLinkAttributeByIndex(2).href).toBe(httpsUrl);
+      expect(findLinkAttributeByIndex(3).href).toBe(httpsUrl);
+      expect(findLinkAttributeByIndex(4).href).toBe(httpsUrl);
     });
 
     const jshref = 'javascript:doEvil();'; // eslint-disable-line no-script-url

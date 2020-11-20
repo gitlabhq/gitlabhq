@@ -110,6 +110,10 @@ The current method provides several attributes that are sent on each click event
 | property  | text    | false    | Any additional property of the element, or object being acted on. |
 | value     | decimal | false    | Describes a numeric value or something directly related to the event. This could be the value of an input (e.g. `10` when clicking `internal` visibility). |
 
+### Web-specific parameters
+
+Snowplow JS adds many [web-specific parameters](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/snowplow-tracker-protocol/#21_Web-specific_parameters) to all web events by default.
+
 ## Implementing Snowplow JS (Frontend) tracking
 
 GitLab provides `Tracking`, an interface that wraps the [Snowplow JavaScript Tracker](https://github.com/snowplow/snowplow/wiki/javascript-tracker) for tracking custom events. There are a few ways to use tracking, but each generally requires at minimum, a `category` and an `action`. Additional data can be provided that adheres to our [Structured event taxonomy](#structured-event-taxonomy).

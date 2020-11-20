@@ -23,8 +23,8 @@ and the advantage of the following special searches:
 
 | GitLab version                              | Elasticsearch version         |
 |---------------------------------------------|-------------------------------|
-| GitLab Enterprise Edition 13.6 or greater   | Elasticsearch 7.x (6.4 - 6.x deprecated to be removed in 13.8) |
-| GitLab Enterprise Edition 13.2 through 13.5 | Elasticsearch 6.4 through 7.x |
+| GitLab Enterprise Edition 13.9 or greater   | Elasticsearch 6.8 through 7.x |
+| GitLab Enterprise Edition 13.3 through 13.8 | Elasticsearch 6.4 through 7.x |
 | GitLab Enterprise Edition 12.7 through 13.2 | Elasticsearch 6.x through 7.x |
 | GitLab Enterprise Edition 11.5 through 12.6 | Elasticsearch 5.6 through 6.x |
 | GitLab Enterprise Edition 9.0 through 11.4  | Elasticsearch 5.1 through 5.5 |

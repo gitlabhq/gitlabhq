@@ -7,6 +7,7 @@ export const PackageType = {
   NUGET: 'nuget',
   PYPI: 'pypi',
   COMPOSER: 'composer',
+  GENERIC: 'generic',
 };
 
 export const TrackingActions = {

@@ -7,7 +7,7 @@ module Packages
         ::Gitlab::UsageDataCounters::HLLRedisCounter.track_event(current_user.id, redis_event_name)
       end
 
-      if Feature.enabled?(:collect_package_events)
+      if Feature.enabled?(:collect_package_events) && Gitlab::Database.read_write?
         ::Packages::Event.create!(
           event_type: event_name,
           originator: current_user&.id,

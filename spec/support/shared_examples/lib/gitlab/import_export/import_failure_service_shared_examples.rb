@@ -3,10 +3,10 @@
 RSpec.shared_examples 'log import failure' do |importable_column|
   it 'tracks error' do
     extra = {
-              source: action,
-              relation_key: relation_key,
-              relation_index: relation_index,
-              retry_count: retry_count
+      source: action,
+      relation_name: relation_key,
+      relation_index: relation_index,
+      retry_count: retry_count
     }
     extra[importable_column] = importable.id
 

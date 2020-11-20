@@ -6903,6 +6903,9 @@ msgstr ""
 msgid "Commit Message"
 msgstr ""
 
+msgid "Commit changes"
+msgstr ""
+
 msgid "Commit deleted"
 msgstr ""
 
@@ -19440,6 +19443,9 @@ msgstr ""
 msgid "PackageRegistry|For more information on the PyPi registry, %{linkStart}see the documentation%{linkEnd}."
 msgstr ""
 
+msgid "PackageRegistry|Generic"
+msgstr ""
+
 msgid "PackageRegistry|If you haven't already done so, you will need to add the below to your %{codeStart}.pypirc%{codeEnd} file."
 msgstr ""
 
@@ -19552,6 +19558,9 @@ msgid "PackageType|Composer"
 msgstr ""
 
 msgid "PackageType|Conan"
+msgstr ""
+
+msgid "PackageType|Generic"
 msgstr ""
 
 msgid "PackageType|Maven"
@@ -19950,9 +19959,6 @@ msgstr ""
 msgid "Pipelines|CI Lint"
 msgstr ""
 
-msgid "Pipelines|CI file could not be loaded: %{reason}"
-msgstr ""
-
 msgid "Pipelines|Child pipeline"
 msgstr ""
 
@@ -19998,6 +20004,9 @@ msgstr ""
 msgid "Pipelines|More Information"
 msgstr ""
 
+msgid "Pipelines|No CI file found in this repository, please add one."
+msgstr ""
+
 msgid "Pipelines|No triggers have been created yet. Add one using the form above."
 msgstr ""
 
@@ -20010,6 +20019,9 @@ msgstr ""
 msgid "Pipelines|Project cache successfully reset."
 msgstr ""
 
+msgid "Pipelines|Repository does not have a default branch, please set one."
+msgstr ""
+
 msgid "Pipelines|Revoke"
 msgstr ""
 
@@ -20017,6 +20029,12 @@ msgid "Pipelines|Run Pipeline"
 msgstr ""
 
 msgid "Pipelines|Something went wrong while cleaning runners cache."
+msgstr ""
+
+msgid "Pipelines|The CI configuration was not loaded, please try again."
+msgstr ""
+
+msgid "Pipelines|The GitLab CI configuration could not be updated."
 msgstr ""
 
 msgid "Pipelines|There are currently no finished pipelines."

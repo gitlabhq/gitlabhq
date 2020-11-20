@@ -2,7 +2,6 @@ FactoryBot/InlineAssociation:
   Exclude:
     - 'ee/spec/factories/analytics/cycle_analytics/group_stages.rb'
     - 'ee/spec/factories/geo/event_log.rb'
-    - 'ee/spec/factories/groups.rb'
     - 'ee/spec/factories/merge_request_blocks.rb'
     - 'ee/spec/factories/vulnerabilities/feedback.rb'
     - 'spec/factories/atlassian_identities.rb'
