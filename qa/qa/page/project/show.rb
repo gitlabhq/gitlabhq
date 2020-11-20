@@ -34,6 +34,7 @@ module QA
         view 'app/views/projects/_home_panel.html.haml' do
           element :forked_from_link
           element :project_name_content
+          element :project_id_content
         end
 
         view 'app/views/projects/_files.html.haml' do
@@ -155,6 +156,10 @@ module QA
 
         def project_name
           find_element(:project_name_content).text
+        end
+
+        def project_id
+          find_element(:project_id_content).text.delete('Project ID: ')
         end
 
         def switch_to_branch(branch_name)

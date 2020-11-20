@@ -200,6 +200,10 @@ module QA
         post_body
       end
 
+      def api_delete_path
+        "/projects/#{id}"
+      end
+
       def change_repository_storage(new_storage)
         put_body = { repository_storage: new_storage }
         response = put Runtime::API::Request.new(api_client, api_put_path).url, put_body

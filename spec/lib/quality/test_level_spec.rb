@@ -174,6 +174,10 @@ RSpec.describe Quality::TestLevel do
       expect(subject.level_for('spec/lib/gitlab/background_migration/archive_legacy_traces_spec.rb')).to eq(:migration)
     end
 
+    it 'returns the correct level for an EE file without passing a prefix' do
+      expect(subject.level_for('ee/spec/migrations/geo/migrate_ci_job_artifacts_to_separate_registry_spec.rb')).to eq(:migration)
+    end
+
     it 'returns the correct level for a geo migration test' do
       expect(described_class.new('ee/').level_for('ee/spec/migrations/geo/migrate_ci_job_artifacts_to_separate_registry_spec.rb')).to eq(:migration)
     end

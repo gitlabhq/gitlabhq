@@ -19,7 +19,7 @@
             = render_if_exists 'compliance_management/compliance_framework/compliance_framework_badge', project: @project
         .home-panel-metadata.d-flex.flex-wrap.text-secondary.gl-font-base.gl-font-weight-normal.gl-line-height-normal
           - if can?(current_user, :read_project, @project)
-            %span.text-secondary{ itemprop: 'identifier' }
+            %span.text-secondary{ itemprop: 'identifier', data: { qa_selector: 'project_id_content' } }
               = s_('ProjectPage|Project ID: %{project_id}') % { project_id: @project.id }
           - if current_user
             %span.access-request-links.gl-ml-3

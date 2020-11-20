@@ -41,8 +41,8 @@ class Deployment < ApplicationRecord
   scope :visible, -> { where(status: %i[running success failed canceled]) }
   scope :stoppable, -> { where.not(on_stop: nil).where.not(deployable_id: nil).success }
   scope :active, -> { where(status: %i[created running]) }
-  scope :older_than, -> (deployment) { where('id < ?', deployment.id) }
-  scope :with_deployable, -> { includes(:deployable).where('deployable_id IS NOT NULL') }
+  scope :older_than, -> (deployment) { where('deployments.id < ?', deployment.id) }
+  scope :with_deployable, -> { joins('INNER JOIN ci_builds ON ci_builds.id = deployments.deployable_id').preload(:deployable) }
 
   FINISHED_STATUSES = %i[success failed canceled].freeze
 
@@ -148,6 +148,10 @@ class Deployment < ApplicationRecord
       by_project.each do |project, ref_paths|
         project.repository.delete_refs(*ref_paths.flatten)
       end
+    end
+
+    def latest_for_sha(sha)
+      where(sha: sha).order(id: :desc).take
     end
   end
 

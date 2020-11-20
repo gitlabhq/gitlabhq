@@ -35,7 +35,6 @@ module Terraform
               format: { with: HEX_REGEXP, message: 'only allows hex characters' }
 
     default_value_for(:uuid, allows_nil: false) { SecureRandom.hex(UUID_LENGTH / 2) }
-    default_value_for(:versioning_enabled, true)
 
     mount_file_store_uploader StateUploader
 
