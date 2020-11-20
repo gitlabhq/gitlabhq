@@ -285,54 +285,34 @@ RSpec.describe MergeRequestWidgetEntity do
   end
 
   describe 'user callouts' do
-    context 'when suggest pipeline feature is enabled' do
-      subject { described_class.new(resource, request: request, experiment_enabled: :suggest_pipeline).as_json }
+    subject { described_class.new(resource, request: request).as_json }
 
-      it 'provides a valid path value for user callout path' do
-        expect(subject[:user_callouts_path]).to eq '/-/user_callouts'
+    it 'provides a valid path value for user callout path' do
+      expect(subject[:user_callouts_path]).to eq '/-/user_callouts'
+    end
+
+    it 'provides a valid value for suggest pipeline feature id' do
+      expect(subject[:suggest_pipeline_feature_id]).to eq described_class::SUGGEST_PIPELINE
+    end
+
+    it 'provides a valid value for if it is dismissed' do
+      expect(subject[:is_dismissed_suggest_pipeline]).to be(false)
+    end
+
+    context 'when the suggest pipeline has been dismissed' do
+      before do
+        create(:user_callout, user: user, feature_name: described_class::SUGGEST_PIPELINE)
       end
 
-      it 'provides a valid value for suggest pipeline feature id' do
-        expect(subject[:suggest_pipeline_feature_id]).to eq described_class::SUGGEST_PIPELINE
-      end
-
-      it 'provides a valid value for if it is dismissed' do
-        expect(subject[:is_dismissed_suggest_pipeline]).to be(false)
-      end
-
-      context 'when the suggest pipeline has been dismissed' do
-        before do
-          create(:user_callout, user: user, feature_name: described_class::SUGGEST_PIPELINE)
-        end
-
-        it 'indicates suggest pipeline has been dismissed' do
-          expect(subject[:is_dismissed_suggest_pipeline]).to be(true)
-        end
-      end
-
-      context 'when user is not logged in' do
-        let(:request) { double('request', current_user: nil, project: project) }
-
-        it 'returns a blank is dismissed value' do
-          expect(subject[:is_dismissed_suggest_pipeline]).to be_nil
-        end
+      it 'indicates suggest pipeline has been dismissed' do
+        expect(subject[:is_dismissed_suggest_pipeline]).to be(true)
       end
     end
 
-    context 'when suggest pipeline feature is not enabled' do
-      before do
-        stub_feature_flags(suggest_pipeline: false)
-      end
+    context 'when user is not logged in' do
+      let(:request) { double('request', current_user: nil, project: project) }
 
-      it 'provides no valid value for user callout path' do
-        expect(subject[:user_callouts_path]).to be_nil
-      end
-
-      it 'provides no valid value for suggest pipeline feature id' do
-        expect(subject[:suggest_pipeline_feature_id]).to be_nil
-      end
-
-      it 'provides no valid value for if it is dismissed' do
+      it 'returns a blank is dismissed value' do
         expect(subject[:is_dismissed_suggest_pipeline]).to be_nil
       end
     end

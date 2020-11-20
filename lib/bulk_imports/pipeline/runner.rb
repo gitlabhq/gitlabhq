@@ -20,6 +20,10 @@ module BulkImports
           @loaders ||= self.class.loaders.map(&method(:instantiate))
         end
 
+        def after_run
+          @after_run ||= self.class.after_run_callback
+        end
+
         def pipeline_name
           @pipeline ||= self.class.name
         end
@@ -47,6 +51,8 @@ module BulkImports
             end
           end
         end
+
+        after_run.call(context) if after_run.present?
       end
 
       private # rubocop:disable Lint/UselessAccessModifier

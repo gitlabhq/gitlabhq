@@ -126,8 +126,8 @@ For example, when we [dequarantine](https://about.gitlab.com/handbook/engineerin
 a flaky test we first want to make sure that it's no longer flaky.
 We can do that using the `ce:custom-parallel` and `ee:custom-parallel` jobs.
 Both are manual jobs that you can configure using custom variables.
-When you click the name (not the play icon) of one of the parallel jobs,
-you'll be prompted to enter variables. You can use any of [the variables
+When clicking the name (not the play icon) of one of the parallel jobs,
+you are prompted to enter variables. You can use any of [the variables
 that can be used with `gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#supported-gitlab-environment-variables)
 as well as these:
 
@@ -137,7 +137,7 @@ as well as these:
 | `QA_TESTS` | The test(s) to run (no default, which means run all the tests in the scenario). Use file paths as you would when running tests via RSpec, e.g., `qa/specs/features/ee/browser_ui` would include all the `EE` UI tests. |
 | `QA_RSPEC_TAGS` | The RSpec tags to add (no default) |
 
-For now [manual jobs with custom variables will not use the same variable
+For now [manual jobs with custom variables don't use the same variable
 when retried](https://gitlab.com/gitlab-org/gitlab/-/issues/31367), so if you want to run the same test(s) multiple times,
 specify the same variables in each `custom-parallel` job (up to as
 many of the 10 available jobs that you want to run).

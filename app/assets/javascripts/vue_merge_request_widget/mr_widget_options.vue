@@ -155,10 +155,7 @@ export default {
     },
     shouldSuggestPipelines() {
       return (
-        gon.features?.suggestPipeline &&
-        !this.mr.hasCI &&
-        this.mr.mergeRequestAddCiConfigPath &&
-        !this.mr.isDismissedSuggestPipeline
+        !this.mr.hasCI && this.mr.mergeRequestAddCiConfigPath && !this.mr.isDismissedSuggestPipeline
       );
     },
     shouldRenderCodeQuality() {

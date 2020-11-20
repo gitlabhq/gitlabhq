@@ -89,28 +89,28 @@ Go 1.12 introduced checksum databases and module proxies.
 
 ### Checksums
 
-In addition to `go.mod`, a module will have a `go.sum` file. This file records a
+In addition to `go.mod`, a module has a `go.sum` file. This file records a
 SHA-256 checksum of the code and the `go.mod` file of every version of every
 dependency that is referenced by the module or one of the module's dependencies.
 Go continually updates `go.sum` as new dependencies are referenced.
 
 When Go fetches the dependencies of a module, if those dependencies already have
-an entry in `go.sum`, Go will verify the checksum of these dependencies. If the
-checksum does not match what is in `go.sum`, the build will fail. This ensures
+an entry in `go.sum`, Go verifies the checksum of these dependencies. If the
+checksum does not match what is in `go.sum`, the build fails. This ensures
 that a given version of a module cannot be changed by its developers or by a
 malicious party without causing build failures.
 
 Go 1.12+ can be configured to use a checksum database. If configured to do so,
 when Go fetches a dependency and there is no corresponding entry in `go.sum`, Go
-will query the configured checksum database(s) for the checksum of the
+queries the configured checksum database(s) for the checksum of the
 dependency instead of calculating it from the downloaded dependency. If the
-dependency cannot be found in the checksum database, the build will fail. If the
+dependency cannot be found in the checksum database, the build fails. If the
 downloaded dependency's checksum does not match the result from the checksum
-database, the build will fail. The following environment variables control this:
+database, the build fails. The following environment variables control this:
 
 - `GOSUMDB` identifies the name, and optionally the public key and server URL,
   of the checksum database to query.
-  - A value of `off` will entirely disable checksum database queries.
+  - A value of `off` entirely disables checksum database queries.
   - Go 1.13+ uses `sum.golang.org` if `GOSUMDB` is not defined.
 - `GONOSUMDB` is a comma-separated list of module suffixes that checksum
   database queries should be disabled for. Wildcards are supported.
@@ -125,8 +125,8 @@ attempts to fetch the dependency from the configured proxies, in order. The
 following environment variables control this:
 
 - `GOPROXY` is a comma-separated list of module proxies to query.
-  - A value of `direct` will entirely disable module proxy queries.
-  - If the last entry in the list is `direct`, Go will fall back to the process
+  - A value of `direct` entirely disables module proxy queries.
+  - If the last entry in the list is `direct`, Go falls back to the process
     described [above](#fetching-packages) if none of the proxies can provide the
     dependency.
   - Go 1.13+ uses `proxy.golang.org,direct` if `GOPROXY` is not defined.
@@ -159,7 +159,7 @@ From Go 1.12 onward, the process for fetching a module or package is as follows:
 The downloaded source must contain a `go.mod` file. The `go.mod` file must
 contain a `module` directive that specifies the name of the module. If the
 module name as specified by `go.mod` does not match the name that was used to
-fetch the module, the module will fail to compile.
+fetch the module, the module fails to compile.
 
 If the module is being fetched directly and no version was specified, or if the
 module is being added as a dependency and no version was specified, Go uses the
@@ -172,9 +172,9 @@ latest that is also a valid semantic version.
 
 In versions prior to Go 1.13, support for authenticating requests made by Go was
 somewhat inconsistent. Go 1.13 improved support for `.netrc` authentication. If
-a request is made over HTTPS and a matching `.netrc` entry can be found, Go will
-add HTTP Basic authentication credentials to the request. Go will not
-authenticate requests made over HTTP. Go will reject HTTP-only entries in
+a request is made over HTTPS and a matching `.netrc` entry can be found, Go
+adds HTTP Basic authentication credentials to the request. Go does not
+authenticate requests made over HTTP. Go rejects HTTP-only entries in
 `GOPROXY` that have embedded credentials.
 
 In a future version, Go may add support for arbitrary authentication headers.

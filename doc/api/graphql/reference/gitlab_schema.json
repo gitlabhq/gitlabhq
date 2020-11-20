@@ -25140,7 +25140,7 @@
                 },
                 {
                   "name": "state",
-                  "description": "Filter iterations by state",
+                  "description": "Filter iterations by state.",
                   "type": {
                     "kind": "ENUM",
                     "name": "IterationState",
@@ -25150,7 +25150,7 @@
                 },
                 {
                   "name": "title",
-                  "description": "Fuzzy search by title",
+                  "description": "Fuzzy search by title.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -25160,7 +25160,7 @@
                 },
                 {
                   "name": "id",
-                  "description": "The ID of the Iteration to look up",
+                  "description": "Global ID of the Iteration to look up.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "ID",
@@ -25170,7 +25170,7 @@
                 },
                 {
                   "name": "iid",
-                  "description": "The internal ID of the Iteration to look up",
+                  "description": "Internal ID of the Iteration to look up.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "ID",
@@ -25180,7 +25180,7 @@
                 },
                 {
                   "name": "includeAncestors",
-                  "description": "Whether to include ancestor iterations. Defaults to true",
+                  "description": "Whether to include ancestor iterations. Defaults to true.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -46391,7 +46391,7 @@
                 },
                 {
                   "name": "state",
-                  "description": "Filter iterations by state",
+                  "description": "Filter iterations by state.",
                   "type": {
                     "kind": "ENUM",
                     "name": "IterationState",
@@ -46401,7 +46401,7 @@
                 },
                 {
                   "name": "title",
-                  "description": "Fuzzy search by title",
+                  "description": "Fuzzy search by title.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -46411,7 +46411,7 @@
                 },
                 {
                   "name": "id",
-                  "description": "The ID of the Iteration to look up",
+                  "description": "Global ID of the Iteration to look up.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "ID",
@@ -46421,7 +46421,7 @@
                 },
                 {
                   "name": "iid",
-                  "description": "The internal ID of the Iteration to look up",
+                  "description": "Internal ID of the Iteration to look up.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "ID",
@@ -46431,7 +46431,7 @@
                 },
                 {
                   "name": "includeAncestors",
-                  "description": "Whether to include ancestor iterations. Defaults to true",
+                  "description": "Whether to include ancestor iterations. Defaults to true.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -65527,7 +65527,7 @@
           "inputFields": [
             {
               "name": "groupPath",
-              "description": "The group of the iteration",
+              "description": "Group of the iteration.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -65541,7 +65541,7 @@
             },
             {
               "name": "id",
-              "description": "The id of the iteration",
+              "description": "Global ID of the iteration.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -65555,7 +65555,7 @@
             },
             {
               "name": "title",
-              "description": "The title of the iteration",
+              "description": "Title of the iteration.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -65565,7 +65565,7 @@
             },
             {
               "name": "description",
-              "description": "The description of the iteration",
+              "description": "Description of the iteration.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -65575,7 +65575,7 @@
             },
             {
               "name": "startDate",
-              "description": "The start date of the iteration",
+              "description": "Start date of the iteration.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -65585,7 +65585,7 @@
             },
             {
               "name": "dueDate",
-              "description": "The end date of the iteration",
+              "description": "End date of the iteration.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -65655,7 +65655,7 @@
             },
             {
               "name": "iteration",
-              "description": "The updated iteration",
+              "description": "Updated iteration.",
               "args": [
 
               ],

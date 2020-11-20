@@ -9159,17 +9159,17 @@ type Group {
     first: Int
 
     """
-    The ID of the Iteration to look up
+    Global ID of the Iteration to look up.
     """
     id: ID
 
     """
-    The internal ID of the Iteration to look up
+    Internal ID of the Iteration to look up.
     """
     iid: ID
 
     """
-    Whether to include ancestor iterations. Defaults to true
+    Whether to include ancestor iterations. Defaults to true.
     """
     includeAncestors: Boolean
 
@@ -9186,7 +9186,7 @@ type Group {
     startDate: Time
 
     """
-    Filter iterations by state
+    Filter iterations by state.
     """
     state: IterationState
 
@@ -9196,7 +9196,7 @@ type Group {
     timeframe: Timeframe
 
     """
-    Fuzzy search by title
+    Fuzzy search by title.
     """
     title: String
   ): IterationConnection
@@ -15843,17 +15843,17 @@ type Project {
     first: Int
 
     """
-    The ID of the Iteration to look up
+    Global ID of the Iteration to look up.
     """
     id: ID
 
     """
-    The internal ID of the Iteration to look up
+    Internal ID of the Iteration to look up.
     """
     iid: ID
 
     """
-    Whether to include ancestor iterations. Defaults to true
+    Whether to include ancestor iterations. Defaults to true.
     """
     includeAncestors: Boolean
 
@@ -15870,7 +15870,7 @@ type Project {
     startDate: Time
 
     """
-    Filter iterations by state
+    Filter iterations by state.
     """
     state: IterationState
 
@@ -15880,7 +15880,7 @@ type Project {
     timeframe: Timeframe
 
     """
-    Fuzzy search by title
+    Fuzzy search by title.
     """
     title: String
   ): IterationConnection
@@ -22557,32 +22557,32 @@ input UpdateIterationInput {
   clientMutationId: String
 
   """
-  The description of the iteration
+  Description of the iteration.
   """
   description: String
 
   """
-  The end date of the iteration
+  End date of the iteration.
   """
   dueDate: String
 
   """
-  The group of the iteration
+  Group of the iteration.
   """
   groupPath: ID!
 
   """
-  The id of the iteration
+  Global ID of the iteration.
   """
   id: ID!
 
   """
-  The start date of the iteration
+  Start date of the iteration.
   """
   startDate: String
 
   """
-  The title of the iteration
+  Title of the iteration.
   """
   title: String
 }
@@ -22602,7 +22602,7 @@ type UpdateIterationPayload {
   errors: [String!]!
 
   """
-  The updated iteration
+  Updated iteration.
   """
   iteration: Iteration
 }

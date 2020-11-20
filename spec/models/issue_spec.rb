@@ -369,6 +369,20 @@ RSpec.describe Issue do
       expect(link_types).not_to include(nil)
     end
 
+    it 'returns issues including the link creation time' do
+      dates = authorized_issue_a.related_issues(user).map(&:issue_link_created_at)
+
+      expect(dates).not_to be_empty
+      expect(dates).not_to include(nil)
+    end
+
+    it 'returns issues including the link update time' do
+      dates = authorized_issue_a.related_issues(user).map(&:issue_link_updated_at)
+
+      expect(dates).not_to be_empty
+      expect(dates).not_to include(nil)
+    end
+
     describe 'when a user cannot read cross project' do
       it 'only returns issues within the same project' do
         expect(Ability).to receive(:allowed?).with(user, :read_all_resources, :global).at_least(:once).and_call_original

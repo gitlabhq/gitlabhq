@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Whenever you add comment to the code that is expected to be addressed at any time
 in future, please create a technical debt issue for it. Then put a link to it
-to the code comment you've created. This will allow other developers to quickly
+to the code comment you've created. This allows other developers to quickly
 check if a comment is still relevant and what needs to be done to address it.
 
 Examples:

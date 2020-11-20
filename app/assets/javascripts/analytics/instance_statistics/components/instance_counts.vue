@@ -56,7 +56,7 @@ export default {
 
 <template>
   <metric-card
-    :title="__('Instance Statistics')"
+    :title="__('Usage Trends')"
     :metrics="counts"
     :is-loading="$apollo.queries.counts.loading"
     class="gl-mt-4"

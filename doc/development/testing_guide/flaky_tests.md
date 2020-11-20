@@ -26,14 +26,14 @@ it 'should succeed', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/
 end
 ```
 
-This means it will be skipped unless run with `--tag quarantine`:
+This means it is skipped unless run with `--tag quarantine`:
 
 ```shell
 bin/rspec --tag quarantine
 ```
 
 **Before putting a test in quarantine, you should make sure that a
-~"master:broken" issue exists for it so it won't stay in quarantine forever.**
+~"master:broken" issue exists for it so it doesn't stay in quarantine forever.**
 
 Once a test is in quarantine, there are 3 choices:
 

@@ -3,6 +3,13 @@ class ObjectStoreSettings
   SUPPORTED_TYPES = %w(artifacts external_diffs lfs uploads packages dependency_proxy terraform_state pages).freeze
   ALLOWED_OBJECT_STORE_OVERRIDES = %w(bucket enabled proxy_download).freeze
 
+  # To ensure the one Workhorse credential matches the Rails config, we
+  # enforce consolidated settings on those accelerated
+  # endpoints. Technically dependency_proxy and terraform_state fall
+  # into this category, but they will likely be handled by Workhorse in
+  # the future.
+  WORKHORSE_ACCELERATED_TYPES = SUPPORTED_TYPES - %w(pages)
+
   # pages may be enabled but use legacy disk storage
   # we don't need to raise an error in that case
   ALLOWED_INCOMPLETE_TYPES = %w(pages).freeze
@@ -123,6 +130,10 @@ class ObjectStoreSettings
         missing_bucket_for(store_type)
       end
 
+      # If a storage type such as Pages defines its own connection and does not
+      # use Workhorse acceleration, we allow it to override the consolidated form.
+      next if allowed_storage_specific_settings?(store_type, section)
+
       # Map bucket (external name) -> remote_directory (internal representation)
       target_config['remote_directory'] = target_config.delete('bucket')
       target_config['consolidated_settings'] = true
@@ -139,7 +150,7 @@ class ObjectStoreSettings
     return false unless settings.dig('object_store', 'enabled')
     return false unless settings.dig('object_store', 'connection').present?
 
-    SUPPORTED_TYPES.each do |store|
+    WORKHORSE_ACCELERATED_TYPES.each do |store|
       # to_h is needed because something strange happens to
       # Settingslogic#dig when stub_storage_settings is run in tests:
       #
@@ -167,5 +178,16 @@ class ObjectStoreSettings
     else
       raise message
     end
+  end
+
+  def allowed_storage_specific_settings?(store_type, section)
+    return false if WORKHORSE_ACCELERATED_TYPES.include?(store_type)
+
+    has_object_store_configured?(section)
+  end
+
+  def has_object_store_configured?(section)
+    # Omnibus defaults to an empty hash for connection
+    section.dig('object_store', 'enabled') && section.dig('object_store', 'connection').present?
   end
 end

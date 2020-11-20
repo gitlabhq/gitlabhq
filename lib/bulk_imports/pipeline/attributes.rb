@@ -19,6 +19,10 @@ module BulkImports
           add_attribute(:loaders, klass, options)
         end
 
+        def after_run(&block)
+          class_attributes[:after_run] = block
+        end
+
         def add_attribute(sym, klass, options)
           class_attributes[sym] ||= []
           class_attributes[sym] << { klass: klass, options: options }
@@ -34,6 +38,10 @@ module BulkImports
 
         def loaders
           class_attributes[:loaders]
+        end
+
+        def after_run_callback
+          class_attributes[:after_run]
         end
       end
     end

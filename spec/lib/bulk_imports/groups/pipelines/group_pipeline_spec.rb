@@ -90,13 +90,16 @@ RSpec.describe BulkImports::Groups::Pipelines::GroupPipeline do
     it 'has transformers' do
       expect(described_class.transformers)
         .to contain_exactly(
-          { klass: BulkImports::Common::Transformers::GraphqlCleanerTransformer, options: nil },
+          { klass: BulkImports::Common::Transformers::HashKeyDigger, options: { key_path: %w[data group] } },
           { klass: BulkImports::Common::Transformers::UnderscorifyKeysTransformer, options: nil },
-          { klass: BulkImports::Groups::Transformers::GroupAttributesTransformer, options: nil })
+          { klass: BulkImports::Groups::Transformers::GroupAttributesTransformer, options: nil }
+        )
     end
 
     it 'has loaders' do
-      expect(described_class.loaders).to contain_exactly({ klass: BulkImports::Groups::Loaders::GroupLoader, options: nil })
+      expect(described_class.loaders).to contain_exactly({
+        klass: BulkImports::Groups::Loaders::GroupLoader, options: nil
+      })
     end
   end
 end

@@ -23,8 +23,6 @@ FactoryBot/InlineAssociation:
 Graphql/IDType:
   Exclude:
     - 'ee/app/graphql/ee/mutations/issues/update.rb'
-    - 'ee/app/graphql/mutations/iterations/update.rb'
-    - 'ee/app/graphql/resolvers/iterations_resolver.rb'
     - 'app/graphql/mutations/boards/issues/issue_move_list.rb'
     - 'app/graphql/mutations/metrics/dashboard/annotations/delete.rb'
     - 'app/graphql/resolvers/design_management/design_at_version_resolver.rb'

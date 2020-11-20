@@ -94,7 +94,7 @@ needs a group to be created in.
 To define a resource attribute, you can use the `attribute` method with a
 block using the other resource class to fabricate the resource.
 
-That will allow access to the other resource from your resource object's
+That allows access to the other resource from your resource object's
 methods. You would usually use it in `#fabricate!`, `#api_get_path`,
 `#api_post_path`, `#api_post_body`.
 
@@ -144,7 +144,7 @@ end
 ```
 
 **Note that all the attributes are lazily constructed. This means if you want
-a specific attribute to be fabricated first, you'll need to call the
+a specific attribute to be fabricated first, you must call the
 attribute method first even if you're not using it.**
 
 #### Product data attributes
@@ -185,7 +185,7 @@ end
 ```
 
 **Note again that all the attributes are lazily constructed. This means if
-you call `shirt.brand` after moving to the other page, it'll not properly
+you call `shirt.brand` after moving to the other page, it doesn't properly
 retrieve the data because we're no longer on the expected page.**
 
 Consider this:
@@ -201,7 +201,7 @@ shirt.project.visit!
 shirt.brand # => FAIL!
 ```
 
-The above example will fail because now we're on the project page, trying to
+The above example fails because now we're on the project page, trying to
 construct the brand data from the shirt page, however we moved to the project
 page already. There are two ways to solve this, one is that we could try to
 retrieve the brand before visiting the project again:
@@ -219,8 +219,8 @@ shirt.project.visit!
 shirt.brand # => OK!
 ```
 
-The attribute will be stored in the instance therefore all the following calls
-will be fine, using the data previously constructed. If we think that this
+The attribute is stored in the instance, therefore all the following calls
+are fine, using the data previously constructed. If we think that this
 might be too brittle, we could eagerly construct the data right before
 ending fabrication:
 
@@ -249,12 +249,12 @@ module QA
 end
 ```
 
-The `populate` method will iterate through its arguments and call each
+The `populate` method iterates through its arguments and call each
 attribute respectively. Here `populate(:brand)` has the same effect as
 just `brand`. Using the populate method makes the intention clearer.
 
-With this, it will make sure we construct the data right after we create the
-shirt. The drawback is that this will always construct the data when the
+With this, it ensures we construct the data right after we create the
+shirt. The drawback is that this always constructs the data when the
 resource is fabricated even if we don't need to use the data.
 
 Alternatively, we could just make sure we're on the right page before
@@ -290,7 +290,7 @@ module QA
 end
 ```
 
-This will make sure it's on the shirt page before constructing brand, and
+This ensures it's on the shirt page before constructing brand, and
 move back to the previous page to avoid breaking the state.
 
 #### Define an attribute based on an API response
@@ -343,16 +343,16 @@ end
 - resource instance variables have the highest precedence
 - attributes from the API response take precedence over attributes from the
   block (usually from Browser UI)
-- attributes without a value will raise a `QA::Resource::Base::NoValueError` error
+- attributes without a value raises a `QA::Resource::Base::NoValueError` error
 
 ## Creating resources in your tests
 
 To create a resource in your tests, you can call the `.fabricate!` method on
 the resource class.
-Note that if the resource class supports API fabrication, this will use this
+Note that if the resource class supports API fabrication, this uses this
 fabrication by default.
 
-Here is an example that will use the API fabrication method under the hood
+Here is an example that uses the API fabrication method under the hood
 since it's supported by the `Shirt` resource class:
 
 ```ruby
@@ -389,8 +389,7 @@ my_shirt = Resource::Shirt.fabricate_via_api! do |shirt|
 end
 ```
 
-In this case, the result will be similar to calling
-`Resource::Shirt.fabricate!`.
+In this case, the result is similar to calling `Resource::Shirt.fabricate!`.
 
 ## Where to ask for help?
 

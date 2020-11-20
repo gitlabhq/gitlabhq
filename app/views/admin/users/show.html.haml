@@ -186,7 +186,8 @@
                 %li Log in
                 %li Access Git repositories
               %br
-              = link_to 'Unblock user', unblock_admin_user_path(@user), method: :put, class: "btn gl-button btn-info", data: { confirm: s_('AdminUsers|Are you sure?') }
+              %button.btn.gl-button.btn-info.js-confirm-modal-button{ data: unblock_user_modal_data(@user) }
+                = s_('AdminUsers|Unblock user')
       - elsif !@user.internal?
         = render 'admin/users/block_user', user: @user
 

@@ -2239,6 +2239,15 @@ msgstr ""
 msgid "AdminUsers|To confirm, type %{username}"
 msgstr ""
 
+msgid "AdminUsers|Unblock"
+msgstr ""
+
+msgid "AdminUsers|Unblock user"
+msgstr ""
+
+msgid "AdminUsers|Unblock user %{username}?"
+msgstr ""
+
 msgid "AdminUsers|User will not be able to access git repositories"
 msgstr ""
 
@@ -2255,6 +2264,9 @@ msgid "AdminUsers|You are about to permanently delete the user %{username}. Issu
 msgstr ""
 
 msgid "AdminUsers|You are about to permanently delete the user %{username}. This will delete all of the issues, merge requests, and groups linked to them. To avoid data loss, consider using the %{strongStart}block user%{strongEnd} feature instead. Once you %{strongStart}Delete user%{strongEnd}, it cannot be undone or recovered."
+msgstr ""
+
+msgid "AdminUsers|You can always block their account again if needed."
 msgstr ""
 
 msgid "AdminUsers|You can always unblock their account, their data will remain intact."
@@ -14544,9 +14556,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Instance Configuration"
-msgstr ""
-
-msgid "Instance Statistics"
 msgstr ""
 
 msgid "Instance administrators group already exists"
@@ -28958,9 +28967,6 @@ msgstr ""
 msgid "Unassigned"
 msgstr ""
 
-msgid "Unblock"
-msgstr ""
-
 msgid "Undo"
 msgstr ""
 
@@ -29286,6 +29292,9 @@ msgid "Upvotes"
 msgstr ""
 
 msgid "Usage"
+msgstr ""
+
+msgid "Usage Trends"
 msgstr ""
 
 msgid "Usage ping is off"

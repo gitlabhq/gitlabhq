@@ -40,7 +40,8 @@
                     %button.btn.btn-default-tertiary.js-confirm-modal-button{ data: user_block_data(user, user_block_effects) }
                       = s_('AdminUsers|Block')
                   - else
-                    = link_to _('Unblock'), unblock_admin_user_path(user), method: :put
+                    %button.btn.btn-default-tertiary.js-confirm-modal-button{ data: unblock_user_modal_data(user) }
+                      = s_('AdminUsers|Unblock')
                 - else
                   %button.btn.btn-default-tertiary.js-confirm-modal-button{ data: user_block_data(user, user_block_effects) }
                     = s_('AdminUsers|Block')

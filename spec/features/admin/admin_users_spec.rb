@@ -205,8 +205,8 @@ RSpec.describe "Admin::Users" do
       end
     end
 
-    context 'when blocking a user' do
-      it 'shows confirmation and allows blocking', :js do
+    context 'when blocking/unblocking a user' do
+      it 'shows confirmation and allows blocking and unblocking', :js do
         expect(page).to have_content(user.email)
 
         find("[data-testid='user-action-button-#{user.id}']").click
@@ -227,6 +227,30 @@ RSpec.describe "Admin::Users" do
         wait_for_requests
 
         expect(page).to have_content('Successfully blocked')
+        expect(page).not_to have_content(user.email)
+
+        click_link 'Blocked'
+
+        wait_for_requests
+
+        expect(page).to have_content(user.email)
+
+        find("[data-testid='user-action-button-#{user.id}']").click
+
+        within find("[data-testid='user-action-dropdown-#{user.id}']") do
+          find('li button', text: 'Unblock').click
+        end
+
+        wait_for_requests
+
+        expect(page).to have_content('Unblock user')
+        expect(page).to have_content('You can always block their account again if needed.')
+
+        find('.modal-footer button', text: 'Unblock').click
+
+        wait_for_requests
+
+        expect(page).to have_content('Successfully unblocked')
         expect(page).not_to have_content(user.email)
       end
     end
@@ -388,8 +412,8 @@ RSpec.describe "Admin::Users" do
       end
     end
 
-    context 'when blocking the user' do
-      it 'shows confirmation and allows blocking', :js do
+    context 'when blocking/unblocking the user' do
+      it 'shows confirmation and allows blocking and unblocking', :js do
         visit admin_user_path(user)
 
         find('button', text: 'Block user').click
@@ -405,6 +429,20 @@ RSpec.describe "Admin::Users" do
 
         expect(page).to have_content('Successfully blocked')
         expect(page).to have_content('This user is blocked')
+
+        find('button', text: 'Unblock user').click
+
+        wait_for_requests
+
+        expect(page).to have_content('Unblock user')
+        expect(page).to have_content('You can always block their account again if needed.')
+
+        find('.modal-footer button', text: 'Unblock').click
+
+        wait_for_requests
+
+        expect(page).to have_content('Successfully unblocked')
+        expect(page).to have_content('Block this user')
       end
     end
 

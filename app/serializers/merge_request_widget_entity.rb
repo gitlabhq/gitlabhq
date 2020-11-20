@@ -67,15 +67,15 @@ class MergeRequestWidgetEntity < Grape::Entity
     )
   end
 
-  expose :user_callouts_path, if: -> (*) { Feature.enabled?(:suggest_pipeline, default_enabled: true) } do |_merge_request|
+  expose :user_callouts_path do |_merge_request|
     user_callouts_path
   end
 
-  expose :suggest_pipeline_feature_id, if: -> (*) { Feature.enabled?(:suggest_pipeline, default_enabled: true) } do |_merge_request|
+  expose :suggest_pipeline_feature_id do |_merge_request|
     SUGGEST_PIPELINE
   end
 
-  expose :is_dismissed_suggest_pipeline, if: -> (*) { Feature.enabled?(:suggest_pipeline, default_enabled: true) } do |_merge_request|
+  expose :is_dismissed_suggest_pipeline do |_merge_request|
     current_user && current_user.dismissed_callout?(feature_name: SUGGEST_PIPELINE)
   end
 

@@ -236,53 +236,41 @@ RSpec.describe BlobHelper do
         let(:data) { File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml')) }
         let(:blob) { fake_blob(path: Gitlab::FileDetector::PATTERNS[:gitlab_ci], data: data) }
 
-        context 'feature enabled' do
-          it 'is true' do
-            expect(helper.show_suggest_pipeline_creation_celebration?).to be_truthy
-          end
+        it 'is true' do
+          expect(helper.show_suggest_pipeline_creation_celebration?).to be_truthy
+        end
 
-          context 'file is invalid format' do
-            let(:data) { 'foo' }
+        context 'file is invalid format' do
+          let(:data) { 'foo' }
 
-            it 'is false' do
-              expect(helper.show_suggest_pipeline_creation_celebration?).to be_falsey
-            end
-          end
-
-          context 'does not use the default ci config' do
-            before do
-              project.ci_config_path = 'something_bad'
-            end
-
-            it 'is false' do
-              expect(helper.show_suggest_pipeline_creation_celebration?).to be_falsey
-            end
-          end
-
-          context 'does not have the needed cookie' do
-            before do
-              helper.request.cookies.delete "suggest_gitlab_ci_yml_commit_#{project.id}"
-            end
-
-            it 'is false' do
-              expect(helper.show_suggest_pipeline_creation_celebration?).to be_falsey
-            end
-          end
-
-          context 'blob does not have auxiliary view' do
-            before do
-              allow(blob).to receive(:auxiliary_viewer).and_return(nil)
-            end
-
-            it 'is false' do
-              expect(helper.show_suggest_pipeline_creation_celebration?).to be_falsey
-            end
+          it 'is false' do
+            expect(helper.show_suggest_pipeline_creation_celebration?).to be_falsey
           end
         end
 
-        context 'feature disabled' do
+        context 'does not use the default ci config' do
           before do
-            stub_feature_flags(suggest_pipeline: false)
+            project.ci_config_path = 'something_bad'
+          end
+
+          it 'is false' do
+            expect(helper.show_suggest_pipeline_creation_celebration?).to be_falsey
+          end
+        end
+
+        context 'does not have the needed cookie' do
+          before do
+            helper.request.cookies.delete "suggest_gitlab_ci_yml_commit_#{project.id}"
+          end
+
+          it 'is false' do
+            expect(helper.show_suggest_pipeline_creation_celebration?).to be_falsey
+          end
+        end
+
+        context 'blob does not have auxiliary view' do
+          before do
+            allow(blob).to receive(:auxiliary_viewer).and_return(nil)
           end
 
           it 'is false' do
@@ -294,10 +282,8 @@ RSpec.describe BlobHelper do
       context 'when file is not a pipeline config file' do
         let(:blob) { fake_blob(path: 'LICENSE') }
 
-        context 'feature enabled' do
-          it 'is false' do
-            expect(helper.show_suggest_pipeline_creation_celebration?).to be_falsey
-          end
+        it 'is false' do
+          expect(helper.show_suggest_pipeline_creation_celebration?).to be_falsey
         end
       end
     end

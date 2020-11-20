@@ -14,7 +14,9 @@
      "link_type": {
        "type": "string",
        "enum": ["relates_to", "blocks", "is_blocked_by"]
-     }
+     },
+     "link_created_at": { "type": "date" },
+     "link_updated_at": { "type": "date" }
   },
   "required" : [ "source_issue", "target_issue", "link_type" ]
 }

@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 The [`jenkins_build_status_spec`](https://gitlab.com/gitlab-org/gitlab/blob/163c8a8c814db26d11e104d1cb2dcf02eb567dbe/qa/qa/specs/features/ee/browser_ui/3_create/jenkins/jenkins_build_status_spec.rb) spins up a Jenkins instance in a Docker container based on an image stored in the [GitLab-QA container registry](https://gitlab.com/gitlab-org/gitlab-qa/container_registry).
 The Docker image it uses is preconfigured with some base data and plugins.
-The test then configures the GitLab plugin in Jenkins with a URL of the GitLab instance that will be used
+The test then configures the GitLab plugin in Jenkins with a URL of the GitLab instance that are used
 to run the tests. Unfortunately, the GitLab Jenkins plugin does not accept ports so `http://localhost:3000` would
 not be accepted. Therefore, this requires us to run GitLab on port 80 or inside a Docker container.
 
@@ -30,7 +30,7 @@ To run the tests from the `/qa` directory:
 CHROME_HEADLESS=false bin/qa Test::Instance::All http://localhost -- qa/specs/features/ee/browser_ui/3_create/jenkins/jenkins_build_status_spec.rb
 ```
 
-The test will automatically spin up a Docker container for Jenkins and tear down once the test completes.
+The test automatically spins up a Docker container for Jenkins and tear down once the test completes.
 
 However, if you need to run Jenkins manually outside of the tests, use this command:
 
@@ -43,7 +43,7 @@ docker run \
   registry.gitlab.com/gitlab-org/gitlab-qa/jenkins-gitlab:version1
 ```
 
-Jenkins will be available on `http://localhost:8080`.
+Jenkins is available on `http://localhost:8080`.
 
 Admin username is `admin` and password is `password`.
 
@@ -59,19 +59,19 @@ the Docker Engine.
 
 The tests tagged `:gitaly_ha` are orchestrated tests that can only be run against a set of Docker containers as configured and started by [the `Test::Integration::GitalyCluster` GitLab QA scenario](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#testintegrationgitalycluster-ceeefull-image-address).
 
-As described in the documentation about the scenario noted above, the following command will run the tests:
+As described in the documentation about the scenario noted above, the following command runs the tests:
 
 ```shell
 gitlab-qa Test::Integration::GitalyCluster EE
 ```
 
-However, that will remove the containers after it finishes running the tests. If you would like to do further testing, for example, if you would like to run a single test via a debugger, you can use [the `--no-tests` option](https://gitlab.com/gitlab-org/gitlab-qa#command-line-options) to make `gitlab-qa` skip running the tests, and to leave the containers running so that you can continue to use them.
+However, that removes the containers after it finishes running the tests. If you would like to do further testing, for example, if you would like to run a single test via a debugger, you can use [the `--no-tests` option](https://gitlab.com/gitlab-org/gitlab-qa#command-line-options) to make `gitlab-qa` skip running the tests, and to leave the containers running so that you can continue to use them.
 
 ```shell
 gitlab-qa Test::Integration::GitalyCluster EE --no-tests
 ```
 
-When all the containers are running you will see the output of the `docker ps` command, showing on which ports the GitLab container can be accessed. For example:
+When all the containers are running, the output of the `docker ps` command shows which ports the GitLab container can be accessed on. For example:
 
 ```plaintext
 CONTAINER ID   ...     PORTS                                    NAMES
@@ -82,7 +82,7 @@ That shows that the GitLab instance running in the `gitlab-gitaly-ha` container 
 
 Another option is to use NGINX.
 
-In both cases you will need to configure your machine to translate `gitlab-gitlab-ha.test` into an appropriate IP address:
+In both cases you must configure your machine to translate `gitlab-gitlab-ha.test` into an appropriate IP address:
 
 ```shell
 echo '127.0.0.1 gitlab-gitaly-ha.test' | sudo tee -a /etc/hosts
@@ -205,7 +205,7 @@ You can now search through the logs for *Job log*, which matches delimited secti
 
 A Job log is a subsection within these logs, related to app deployment. We use two jobs: `build` and `production`.
 You can find the root causes of deployment failures in these logs, which can compromise the entire test.
-If a `build` job fails, the `production` job won't run, and the test fails.
+If a `build` job fails, the `production` job doesn't run, and the test fails.
 
 The long test setup does not take screenshots of failures, which is a known [issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/270).
 However, if the spec fails (after a successful deployment) then you should be able to find screenshots which display the feature failure.
@@ -286,7 +286,7 @@ CHROME_HEADLESS=false bundle exec bin/qa QA::EE::Scenario::Test::Geo --primary-a
 
 You can use [GitLab-QA Orchestrator](https://gitlab.com/gitlab-org/gitlab-qa) to orchestrate two GitLab containers and configure them as a Geo setup.
 
-Geo requires an EE license. To visit the Geo sites in your browser, you will need a reverse proxy server (for example, [NGINX](https://www.nginx.com/)).
+Geo requires an EE license. To visit the Geo sites in your browser, you need a reverse proxy server (for example, [NGINX](https://www.nginx.com/)).
 
 1. Export your EE license
 
@@ -296,7 +296,7 @@ Geo requires an EE license. To visit the Geo sites in your browser, you will nee
 
 1. (Optional) Pull the GitLab image
 
-   This step is optional because pulling the Docker image is part of the [`Test::Integration::Geo` orchestrated scenario](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/d8c5c40607c2be0eda58bbca1b9f534b00889a0b/lib/gitlab/qa/scenario/test/integration/geo.rb). However, it's easier to monitor the download progress if you pull the image first, and the scenario will skip this step after checking that the image is up to date.
+   This step is optional because pulling the Docker image is part of the [`Test::Integration::Geo` orchestrated scenario](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/d8c5c40607c2be0eda58bbca1b9f534b00889a0b/lib/gitlab/qa/scenario/test/integration/geo.rb). However, it's easier to monitor the download progress if you pull the image first, and the scenario skips this step after checking that the image is up to date.
 
    ```shell
    # For the most recent nightly image
@@ -309,7 +309,7 @@ Geo requires an EE license. To visit the Geo sites in your browser, you will nee
    docker pull registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:examplesha123456789
    ```
 
-1. Run the [`Test::Integration::Geo` orchestrated scenario](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/d8c5c40607c2be0eda58bbca1b9f534b00889a0b/lib/gitlab/qa/scenario/test/integration/geo.rb) with the `--no-teardown` option to build the GitLab containers, configure the Geo setup, and run Geo end-to-end tests. Running the tests after the Geo setup is complete is optional; the containers will keep running after you stop the tests.
+1. Run the [`Test::Integration::Geo` orchestrated scenario](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/d8c5c40607c2be0eda58bbca1b9f534b00889a0b/lib/gitlab/qa/scenario/test/integration/geo.rb) with the `--no-teardown` option to build the GitLab containers, configure the Geo setup, and run Geo end-to-end tests. Running the tests after the Geo setup is complete is optional; the containers keep running after you stop the tests.
 
    ```shell
    # Using the most recent nightly image
