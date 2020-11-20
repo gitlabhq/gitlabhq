@@ -70,6 +70,3 @@ export const collapseSystemNotes = notes => {
     return acc;
   }, []);
 };
-
-// for babel-rewire
-export default {};

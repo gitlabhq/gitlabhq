@@ -3968,6 +3968,12 @@ msgstr ""
 msgid "Authenticate with GitHub"
 msgstr ""
 
+msgid "Authenticated API request rate limit"
+msgstr ""
+
+msgid "Authenticated web request rate limit"
+msgstr ""
+
 msgid "Authenticating"
 msgstr ""
 
@@ -7240,6 +7246,9 @@ msgstr ""
 msgid "ContainerRegistry|%{toggleStatus} - Tags matching the patterns defined below will be scheduled for deletion"
 msgstr ""
 
+msgid "ContainerRegistry|%{toggleStatus} - Tags matching the rules defined below will be automatically scheduled for deletion."
+msgstr ""
+
 msgid "ContainerRegistry|Build an image"
 msgstr ""
 
@@ -7315,6 +7324,15 @@ msgstr ""
 msgid "ContainerRegistry|Invalid tag: missing manifest digest"
 msgstr ""
 
+msgid "ContainerRegistry|Keep tags matching:"
+msgstr ""
+
+msgid "ContainerRegistry|Keep the most recent:"
+msgstr ""
+
+msgid "ContainerRegistry|Keep these tags"
+msgstr ""
+
 msgid "ContainerRegistry|Login"
 msgstr ""
 
@@ -7322,6 +7340,15 @@ msgid "ContainerRegistry|Manifest digest: %{digest}"
 msgstr ""
 
 msgid "ContainerRegistry|Missing or insufficient permission, delete button disabled"
+msgstr ""
+
+msgid "ContainerRegistry|Next cleanup scheduled to run on:"
+msgstr ""
+
+msgid "ContainerRegistry|Not yet scheduled"
+msgstr ""
+
+msgid "ContainerRegistry|Note: Any policy update will result in a change to the scheduled run date and time"
 msgstr ""
 
 msgid "ContainerRegistry|Number of tags to retain:"
@@ -7347,7 +7374,16 @@ msgid_plural "ContainerRegistry|Remove tags"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "ContainerRegistry|Set cleanup policy"
+msgid "ContainerRegistry|Remove tags matching:"
+msgstr ""
+
+msgid "ContainerRegistry|Remove tags older than:"
+msgstr ""
+
+msgid "ContainerRegistry|Remove these tags"
+msgstr ""
+
+msgid "ContainerRegistry|Run cleanup every:"
 msgstr ""
 
 msgid "ContainerRegistry|Some tags were not deleted"
@@ -7389,10 +7425,22 @@ msgstr ""
 msgid "ContainerRegistry|Tags successfully marked for deletion."
 msgstr ""
 
+msgid "ContainerRegistry|Tags that match these rules will always be %{strongStart}kept%{strongEnd}, even if they match a removal rule below. The %{secondStrongStart}latest%{secondStrongEnd} tag will always be kept."
+msgstr ""
+
+msgid "ContainerRegistry|Tags that match these rules will be %{strongStart}removed%{strongEnd}, unless kept by a rule above."
+msgstr ""
+
 msgid "ContainerRegistry|Tags with names matching this regex pattern will %{italicStart}be preserved:%{italicEnd}"
 msgstr ""
 
 msgid "ContainerRegistry|Tags with names matching this regex pattern will %{italicStart}expire:%{italicEnd}"
+msgstr ""
+
+msgid "ContainerRegistry|Tags with names matching this regex pattern will be kept. %{linkStart}More information%{linkEnd}"
+msgstr ""
+
+msgid "ContainerRegistry|Tags with names matching this regex pattern will be removed. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
 msgid "ContainerRegistry|The cleanup policy timed out before it could delete all tags. An administrator can %{adminLinkStart}manually run cleanup now%{adminLinkEnd} or you can wait for the cleanup policy to automatically run again. %{docLinkStart}More information%{docLinkEnd}"
@@ -8428,9 +8476,6 @@ msgstr ""
 msgid "DastProfiles|Authentication URL"
 msgstr ""
 
-msgid "DastProfiles|Copy HTTP header to clipboard"
-msgstr ""
-
 msgid "DastProfiles|Could not create the scanner profile. Please try again."
 msgstr ""
 
@@ -8476,9 +8521,6 @@ msgstr ""
 msgid "DastProfiles|Do you want to discard your changes?"
 msgstr ""
 
-msgid "DastProfiles|Download validation text file"
-msgstr ""
-
 msgid "DastProfiles|Edit scanner profile"
 msgstr ""
 
@@ -8489,9 +8531,6 @@ msgid "DastProfiles|Enable Authentication"
 msgstr ""
 
 msgid "DastProfiles|Error Details"
-msgstr ""
-
-msgid "DastProfiles|Header validation"
 msgstr ""
 
 msgid "DastProfiles|Hide debug messages"
@@ -8566,34 +8605,13 @@ msgstr ""
 msgid "DastProfiles|Site Profiles"
 msgstr ""
 
-msgid "DastProfiles|Site is not validated yet, please follow the steps."
-msgstr ""
-
 msgid "DastProfiles|Spider timeout"
-msgstr ""
-
-msgid "DastProfiles|Step 1 - Choose site validation method"
-msgstr ""
-
-msgid "DastProfiles|Step 2 - Add following HTTP header to your site"
-msgstr ""
-
-msgid "DastProfiles|Step 2 - Add following text to the target site"
-msgstr ""
-
-msgid "DastProfiles|Step 3 - Confirm header location and validate"
-msgstr ""
-
-msgid "DastProfiles|Step 3 - Confirm text file location and validate"
 msgstr ""
 
 msgid "DastProfiles|Target URL"
 msgstr ""
 
 msgid "DastProfiles|Target timeout"
-msgstr ""
-
-msgid "DastProfiles|Text file validation"
 msgstr ""
 
 msgid "DastProfiles|The maximum number of minutes allowed for the spider to traverse the site."
@@ -8611,13 +8629,40 @@ msgstr ""
 msgid "DastProfiles|Username form field"
 msgstr ""
 
-msgid "DastProfiles|Validate"
+msgid "DastSiteValidation|Copy HTTP header to clipboard"
 msgstr ""
 
-msgid "DastProfiles|Validating..."
+msgid "DastSiteValidation|Could not create validation token. Please try again."
 msgstr ""
 
-msgid "DastProfiles|Validation failed, please make sure that you follow the steps above with the chosen method."
+msgid "DastSiteValidation|Download validation text file"
+msgstr ""
+
+msgid "DastSiteValidation|Header validation"
+msgstr ""
+
+msgid "DastSiteValidation|Step 1 - Choose site validation method"
+msgstr ""
+
+msgid "DastSiteValidation|Step 2 - Add following HTTP header to your site"
+msgstr ""
+
+msgid "DastSiteValidation|Step 2 - Add following text to the target site"
+msgstr ""
+
+msgid "DastSiteValidation|Step 3 - Confirm header location and validate"
+msgstr ""
+
+msgid "DastSiteValidation|Step 3 - Confirm text file location and validate"
+msgstr ""
+
+msgid "DastSiteValidation|Text file validation"
+msgstr ""
+
+msgid "DastSiteValidation|Validate"
+msgstr ""
+
+msgid "DastSiteValidation|Validate target site"
 msgstr ""
 
 msgid "Data is still calculating..."
@@ -28965,6 +29010,9 @@ msgid "Unassign from commenting user"
 msgstr ""
 
 msgid "Unassigned"
+msgstr ""
+
+msgid "Unauthenticated request rate limit"
 msgstr ""
 
 msgid "Undo"

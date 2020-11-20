@@ -404,5 +404,3 @@ export const barChartsDataParser = (data = []) =>
     }),
     {},
   );
-
-export default {};

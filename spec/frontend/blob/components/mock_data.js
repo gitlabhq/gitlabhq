@@ -55,5 +55,3 @@ export const SimpleBlobContentMock = {
   path: 'foo.js',
   plainData: 'Plain',
 };
-
-export default {};

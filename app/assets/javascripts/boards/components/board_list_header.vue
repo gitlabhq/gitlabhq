@@ -190,7 +190,8 @@ export default {
         :title="chevronTooltip"
         :icon="chevronIcon"
         class="board-title-caret no-drag gl-cursor-pointer"
-        variant="link"
+        category="tertiary"
+        size="small"
         @click="toggleExpanded"
       />
       <!-- The following is only true in EE and if it is a milestone -->
