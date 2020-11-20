@@ -42,7 +42,7 @@ export function membersBeforeSave(members) {
       title: sanitize(title),
       search: sanitize(`${member.username} ${member.name}`),
       icon: avatarIcon,
-      availability: member.availability,
+      availability: member?.availability,
     };
   });
 }

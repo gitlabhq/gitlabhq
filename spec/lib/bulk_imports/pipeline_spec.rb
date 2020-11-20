@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Pipeline::Attributes do
+RSpec.describe BulkImports::Pipeline do
   describe 'pipeline attributes' do
     before do
       stub_const('BulkImports::Extractor', Class.new)
@@ -10,7 +10,7 @@ RSpec.describe BulkImports::Pipeline::Attributes do
       stub_const('BulkImports::Loader', Class.new)
 
       klass = Class.new do
-        include BulkImports::Pipeline::Attributes
+        include BulkImports::Pipeline
 
         extractor BulkImports::Extractor, { foo: :bar }
         transformer BulkImports::Transformer, { foo: :bar }

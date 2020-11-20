@@ -72,7 +72,6 @@ RSpec.describe BulkImports::Groups::Pipelines::GroupPipeline do
 
   describe 'pipeline parts' do
     it { expect(described_class).to include_module(BulkImports::Pipeline) }
-    it { expect(described_class).to include_module(BulkImports::Pipeline::Attributes) }
     it { expect(described_class).to include_module(BulkImports::Pipeline::Runner) }
 
     it 'has extractors' do

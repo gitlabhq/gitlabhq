@@ -1,7 +1,6 @@
 <script>
 import { isNumber } from 'lodash';
 import ArtifactsApp from './artifacts_list_app.vue';
-import Deployment from './deployment/deployment.vue';
 import MrWidgetContainer from './mr_widget_container.vue';
 import MrWidgetPipeline from './mr_widget_pipeline.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -18,7 +17,7 @@ export default {
   name: 'MrWidgetPipelineContainer',
   components: {
     ArtifactsApp,
-    Deployment,
+    Deployment: () => import('./deployment/deployment.vue'),
     MrWidgetContainer,
     MrWidgetPipeline,
     MergeTrainPositionIndicator: () =>

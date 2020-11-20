@@ -16,7 +16,6 @@ import WidgetHeader from './components/mr_widget_header.vue';
 import WidgetSuggestPipeline from './components/mr_widget_suggest_pipeline.vue';
 import WidgetMergeHelp from './components/mr_widget_merge_help.vue';
 import MrWidgetPipelineContainer from './components/mr_widget_pipeline_container.vue';
-import Deployment from './components/deployment/deployment.vue';
 import WidgetRelatedLinks from './components/mr_widget_related_links.vue';
 import MrWidgetAlertMessage from './components/mr_widget_alert_message.vue';
 import MergedState from './components/states/mr_widget_merged.vue';
@@ -63,7 +62,6 @@ export default {
     'mr-widget-suggest-pipeline': WidgetSuggestPipeline,
     'mr-widget-merge-help': WidgetMergeHelp,
     MrWidgetPipelineContainer,
-    Deployment,
     'mr-widget-related-links': WidgetRelatedLinks,
     MrWidgetAlertMessage,
     'mr-widget-merged': MergedState,
