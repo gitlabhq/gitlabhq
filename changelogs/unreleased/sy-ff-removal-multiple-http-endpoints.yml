@@ -1,5 +1,0 @@
----
-title: Expose GraphQL API for managing HTTP alerting intergations
-merge_request: 47687
-author:
-type: added

@@ -435,3 +435,5 @@ module API
     end
   end
 end
+
+API::Issues.prepend_if_ee('EE::API::Issues')

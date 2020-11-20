@@ -1,5 +1,0 @@
----
-title: Add cloud_license_auth_token column to application_settings
-merge_request: 47396
-author:
-type: added

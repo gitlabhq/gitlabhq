@@ -1,5 +1,0 @@
----
-title: Fix workflow:rules not accessing passed-upstream and trigger variables
-merge_request: 47399
-author:
-type: fixed

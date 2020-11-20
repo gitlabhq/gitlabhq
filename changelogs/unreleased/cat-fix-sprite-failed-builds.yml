@@ -1,5 +1,0 @@
----
-title: Fix retried builds icon sprite to use css_class
-merge_request: 46955
-author:
-type: fixed

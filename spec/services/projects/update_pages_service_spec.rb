@@ -105,16 +105,6 @@ RSpec.describe Projects::UpdatePagesService do
         end
       end
 
-      it 'does not create deployment when zip_pages_deployments feature flag is disabled' do
-        stub_feature_flags(zip_pages_deployments: false)
-
-        expect do
-          expect(execute).to eq(:success)
-        end.not_to change { project.pages_deployments.count }
-
-        expect(project.pages_metadatum.reload.pages_deployment_id).to be_nil
-      end
-
       it 'limits pages size' do
         stub_application_setting(max_pages_size: 1)
         expect(execute).not_to eq(:success)

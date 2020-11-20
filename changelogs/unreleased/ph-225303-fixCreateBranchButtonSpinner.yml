@@ -1,5 +1,0 @@
----
-title: Fixed create branch button not hiding when issue is closed
-merge_request: 47187
-author:
-type: fixed

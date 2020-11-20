@@ -1,5 +1,0 @@
----
-title: Parallelize the removal of expired job artifacts
-merge_request: 46971
-author:
-type: performance

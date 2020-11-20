@@ -1,5 +1,0 @@
----
-title: Fix relative path not found on production web server
-merge_request: 47090
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Gracefully degrade when counting takes too long for a filtered search
-merge_request: 46350
-author:
-type: performance

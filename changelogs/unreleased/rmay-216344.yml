@@ -1,5 +1,0 @@
----
-title: Don't return target-specific broadcasts without a current path supplied
-merge_request: 46322
-author:
-type: fixed

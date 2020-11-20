@@ -7911,6 +7911,11 @@ type EpicIssue implements CurrentUserTodos & Noteable {
   ): LabelConnection
 
   """
+  Metric images associated to the issue.
+  """
+  metricImages: [MetricImage!]
+
+  """
   Milestone of the issue
   """
   milestone: Milestone
@@ -10521,6 +10526,11 @@ type Issue implements CurrentUserTodos & Noteable {
     """
     last: Int
   ): LabelConnection
+
+  """
+  Metric images associated to the issue.
+  """
+  metricImages: [MetricImage!]
 
   """
   Milestone of the issue
@@ -13487,6 +13497,36 @@ type Metadata {
   Version
   """
   version: String!
+}
+
+"""
+Represents a metric image upload
+"""
+type MetricImage {
+  """
+  File name of the metric image
+  """
+  fileName: String
+
+  """
+  File path of the metric image
+  """
+  filePath: String
+
+  """
+  ID of the metric upload
+  """
+  id: ID!
+
+  """
+  Internal ID of the metric upload
+  """
+  iid: ID!
+
+  """
+  URL of the metric source
+  """
+  url: String!
 }
 
 type MetricsDashboard {

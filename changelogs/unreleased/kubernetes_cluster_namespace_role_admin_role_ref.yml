@@ -1,6 +1,0 @@
----
-title: Switch to admin clusterRole for GitLab created environment Kubernetes service
-  account
-merge_request: 46417
-author:
-type: changed

@@ -1,5 +1,0 @@
----
-title: Add latest version field to Terraform state GraphQL type
-merge_request: 45848
-author:
-type: added

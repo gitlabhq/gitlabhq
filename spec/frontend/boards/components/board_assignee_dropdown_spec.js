@@ -1,5 +1,11 @@
 import { mount, createLocalVue } from '@vue/test-utils';
-import { GlDropdownItem, GlAvatarLink, GlAvatarLabeled, GlSearchBoxByType } from '@gitlab/ui';
+import {
+  GlDropdownItem,
+  GlAvatarLink,
+  GlAvatarLabeled,
+  GlSearchBoxByType,
+  GlLoadingIcon,
+} from '@gitlab/ui';
 import createMockApollo from 'jest/helpers/mock_apollo_helper';
 import VueApollo from 'vue-apollo';
 import BoardAssigneeDropdown from '~/boards/components/board_assignee_dropdown.vue';
@@ -26,7 +32,7 @@ describe('BoardCardAssigneeDropdown', () => {
   const activeIssueName = 'test';
   const anotherIssueName = 'hello';
 
-  const createComponent = (search = '') => {
+  const createComponent = (search = '', loading = false) => {
     wrapper = mount(BoardAssigneeDropdown, {
       data() {
         return {
@@ -39,6 +45,15 @@ describe('BoardCardAssigneeDropdown', () => {
       provide: {
         canUpdate: true,
         rootPath: '',
+      },
+      mocks: {
+        $apollo: {
+          queries: {
+            participants: {
+              loading,
+            },
+          },
+        },
       },
     });
   };
@@ -82,6 +97,8 @@ describe('BoardCardAssigneeDropdown', () => {
   const findByText = text => {
     return wrapper.findAll(GlDropdownItem).wrappers.find(node => node.text().indexOf(text) === 0);
   };
+
+  const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
 
   beforeEach(() => {
     store.state.activeId = '1';
@@ -244,6 +261,30 @@ describe('BoardCardAssigneeDropdown', () => {
       expect(wrapper.find(BoardEditableItem).props('title')).toBe(expected);
     },
   );
+
+  describe('when participants is loading', () => {
+    beforeEach(() => {
+      createComponent('', true);
+    });
+
+    it('finds a loading icon in the dropdown', () => {
+      expect(findLoadingIcon().exists()).toBe(true);
+    });
+  });
+
+  describe('when participants is loading is false', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('does not find GlLoading icon in the dropdown', () => {
+      expect(findLoadingIcon().exists()).toBe(false);
+    });
+
+    it('finds at least 1 GlDropdownItem', () => {
+      expect(wrapper.findAll(GlDropdownItem).length).toBeGreaterThan(0);
+    });
+  });
 
   describe('Apollo', () => {
     beforeEach(() => {

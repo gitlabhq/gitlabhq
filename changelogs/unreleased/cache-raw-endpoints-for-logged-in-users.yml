@@ -1,5 +1,0 @@
----
-title: Enable HTTP caching of repository raw, archive, and avatar endpoints
-merge_request: 47430
-author:
-type: performance

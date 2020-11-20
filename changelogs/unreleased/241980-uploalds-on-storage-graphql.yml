@@ -1,5 +1,0 @@
----
-title: 'GraphQL: Expose uploads_size for project_statistics and root_storage_statistics'
-merge_request: 47820
-author:
-type: added

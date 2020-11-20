@@ -1,5 +1,0 @@
----
-title: Add GraphQL endpoints to lock, unlock and delete Terraform states
-merge_request: 43955
-author:
-type: added

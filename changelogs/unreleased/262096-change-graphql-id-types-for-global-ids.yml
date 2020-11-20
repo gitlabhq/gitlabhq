@@ -1,5 +1,0 @@
----
-title: Update GraphQL input ids for Board Lists and Issues to be more type specific
-merge_request: 45398
-author:
-type: changed

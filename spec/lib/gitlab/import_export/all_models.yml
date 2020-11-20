@@ -28,6 +28,7 @@ issues:
 - events
 - merge_requests_closing_issues
 - metrics
+- metric_images
 - timelogs
 - issuable_severity
 - issuable_sla

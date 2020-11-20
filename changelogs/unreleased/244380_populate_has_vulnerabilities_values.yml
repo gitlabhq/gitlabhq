@@ -1,5 +1,0 @@
----
-title: Populate values for `has_vulnerabilities` column of `project_settings` table
-merge_request: 46890
-author:
-type: fixed

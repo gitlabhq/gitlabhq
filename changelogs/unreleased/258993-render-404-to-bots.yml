@@ -1,5 +1,0 @@
----
-title: Render 404 to search engine crawlers instead of redirecting to login
-merge_request: 45552
-author:
-type: changed

@@ -1,5 +1,0 @@
----
-title: Fix pipelines chart query timeout
-merge_request: 47069
-author:
-type: performance

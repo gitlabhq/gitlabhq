@@ -1,6 +1,0 @@
----
-title: Fixed create merge request dropdown not re-opening after typing invalid source
-  branch
-merge_request: 46802
-author:
-type: fixed

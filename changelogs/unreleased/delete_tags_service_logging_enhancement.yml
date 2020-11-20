@@ -1,6 +1,0 @@
----
-title: Improving Container Registry Delete Tags Service to log number of successfully
-  deleted tags even if deletion process was interrupted by a timeout
-merge_request: 46079
-author: Maksim Stankevic, @maksimstankevic
-type: changed

@@ -1,5 +1,0 @@
----
-title: Remove scanned_resources_count column from security scan
-merge_request: 46108
-author:
-type: changed

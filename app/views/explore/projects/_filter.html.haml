@@ -10,7 +10,7 @@
         = visibility_level_label(params[:visibility_level].to_i)
       - else
         = _('Any')
-      = icon('chevron-down')
+      = sprite_icon('chevron-down', css_class: 'dropdown-menu-toggle-icon gl-top-3')
     %ul.dropdown-menu.dropdown-menu-right
       %li
         = link_to filter_projects_path(visibility_level: nil) do

@@ -761,6 +761,17 @@ However, some larger installations may wish to tune the merge policy settings:
 
 ## Troubleshooting
 
+One of the most valuable tools for identifying issues with the Elasticsearch
+integration will be logs. The most relevant logs for this integration are:
+
+1. [`sidekiq.log`](../administration/logs.md#sidekiqlog) - All of the
+   indexing happens in Sidekiq, so much of the relevant logs for the
+   Elasticsearch integration can be found in this file.
+1. [`elasticsearch.log`](../administration/logs.md#elasticsearchlog) - There
+   are additional logs specific to Elasticsearch that are sent to this file
+   that may contain useful diagnostic information about searching,
+   indexing or migrations.
+
 Here are some common pitfalls and how to overcome them.
 
 ### How can I verify that my GitLab instance is using Elasticsearch?

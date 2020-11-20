@@ -1,5 +1,0 @@
----
-title: Allow project storage to be updated when no repositories exist
-merge_request: 46385
-author:
-type: fixed

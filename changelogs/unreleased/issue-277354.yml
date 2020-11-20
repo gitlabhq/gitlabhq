@@ -1,5 +1,0 @@
----
-title: Fix duplicate epic iids and add uniqueness constraint
-merge_request: 47081
-author:
-type: fixed

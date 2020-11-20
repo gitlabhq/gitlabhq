@@ -499,6 +499,8 @@ This experimental implementation has the following limitations:
 For instructions about how to set up Patroni on the primary node, see the
 [PostgreSQL replication and failover with Omnibus GitLab](../../postgresql/replication_and_failover.md#patroni) page.
 
+If you are currently using `repmgr` on your Geo primary, see [these instructions](#migrating-from-repmgr-to-patroni) for migrating from `repmgr` to Patroni.
+
 A production-ready and secure setup requires at least three Patroni instances on
 the primary, and a similar configuration on the secondary nodes. Be sure to use
 password credentials and other database best practices.
@@ -548,6 +550,13 @@ patroni['standby_cluster']['port'] = 5432
 patroni['standby_cluster']['primary_slot_name'] = 'geo_secondary' # or the unique replication slot name you setup before
 patroni['replication_password'] = 'PLAIN_TEXT_POSTGRESQL_REPLICATION_PASSWORD'
 ```
+
+## Migrating from repmgr to Patroni
+
+1. Before migrating, it is recommended that there is no replication lag between the primary and secondary sites and that replication is paused. In GitLab 13.2 and later, you can pause and resume replication with `gitlab-ctl geo-replication-pause` and `gitlab-ctl geo-replication-resume` on a Geo secondary database node.
+1. Follow the [instructions to migrate repmgr to Patroni](../../postgresql/replication_and_failover.md#switching-from-repmgr-to-patroni). When configuring Patroni on each primary site database node, add `patroni['replicaton_slots'] = { '<slot_name>' => 'physical' }`
+to `gitlab.rb` where `<slot_name>` is the name of the replication slot for your Geo secondary. This will ensure that Patroni recognizes the replication slot as permanent and will not drop it upon restarting.
+1. If database replication to the secondary was paused before migration, resume replication once Patroni is confirmed working on the primary.
 
 ## Troubleshooting
 

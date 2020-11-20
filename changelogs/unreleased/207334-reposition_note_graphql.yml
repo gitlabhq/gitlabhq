@@ -1,6 +1,0 @@
----
-title: Add repositionImageDiffNote GraphQL mutation to specifically reposition DiffNotes
-  on images
-merge_request: 45958
-author:
-type: added

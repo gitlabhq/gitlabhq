@@ -48,6 +48,7 @@ they are still not 100% standardized. You can see them below:
 | CI Artifacts (CE)                     | yes    | `shared/artifacts/:disk_hash[0..1]/:disk_hash[2..3]/:disk_hash/:year_:month_:date/:job_id/:job_artifact_id` (`:disk_hash` is SHA256 digest of `project_id`) | `JobArtifactUploader`  | Ci::JobArtifact  |
 | LFS Objects (CE)                      | yes    | `shared/lfs-objects/:hex/:hex/:object_hash`                   | `LfsObjectUploader`    | LfsObject  |
 | External merge request diffs          | yes    | `shared/external-diffs/merge_request_diffs/mr-:parent_id/diff-:id` | `ExternalDiffUploader` | MergeRequestDiff |
+| Issuable metric images                | yes    | `uploads/-/system/issuable_metric_image/file/:id/:filename` | `IssuableMetricImageUploader` | IssuableMetricImage |
 
 CI Artifacts and LFS Objects behave differently in CE and EE. In CE they inherit the `GitlabUploader`
 while in EE they inherit the `ObjectStorage` and store files in and S3 API compatible object store.

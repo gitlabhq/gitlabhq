@@ -1,5 +1,0 @@
----
-title: Fix example responses for Project Issue Board creation API in the docs
-merge_request: 46749
-author: Takuya Noguchi
-type: fixed

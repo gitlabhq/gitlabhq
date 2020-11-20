@@ -12,7 +12,7 @@
   %button.dropdown-menu-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
     %span.dropdown-label
       = options_hash[default_sort_by]
-    = icon('chevron-down')
+    = sprite_icon('chevron-down', css_class: 'dropdown-menu-toggle-icon gl-top-3')
   %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-selectable
     %li.dropdown-header
       = _("Sort by")

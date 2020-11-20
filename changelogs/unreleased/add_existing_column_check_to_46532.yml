@@ -1,5 +1,0 @@
----
-title: Guard against existence of project_features.requirement_access_level in migration
-merge_request: 47458
-author: Lee Tickett
-type: other

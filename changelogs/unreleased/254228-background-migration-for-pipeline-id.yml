@@ -1,5 +1,0 @@
----
-title: Add migration to populate pipeline_id in Vulnerability Feedback
-merge_request: 46266
-author:
-type: added

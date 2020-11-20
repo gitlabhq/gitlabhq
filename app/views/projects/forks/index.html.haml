@@ -15,7 +15,7 @@
           = sort_options_hash[@sort]
         - else
           = sort_title_recently_created
-        = icon('chevron-down')
+        = sprite_icon('chevron-down', css_class: 'dropdown-menu-toggle-icon gl-top-3')
       %ul.dropdown-menu.dropdown-menu-right
         %li
           - excluded_filters = [:state, :scope, :label_name, :milestone_id, :assignee_id, :author_id]
