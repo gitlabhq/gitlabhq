@@ -22,8 +22,8 @@ can select an older one from version dropdown.
 ![Merge request versions dropdown](img/versions_dropdown.png)
 
 Merge request versions are based on push not on commit. So, if you pushed 5
-commits in a single push, it will be a single option in the dropdown. If you
-pushed 5 times, that will count for 5 options.
+commits in a single push, it displays as a single option in the dropdown. If you
+pushed 5 times, that counts for 5 options.
 
 You can also compare the merge request version with an older one to see what has
 changed since then.
@@ -42,12 +42,12 @@ changes appears as a system note.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/2383) in GitLab 10.5.
 
-When viewing the commit details page, GitLab will link to the merge request (or
+When viewing the commit details page, GitLab links to the merge request (or
 merge requests, if it's in more than one) containing that commit.
 
 This only applies to commits that are in the most recent version of a merge
-request - if a commit was in a merge request, then rebased out of that merge
-request, they will not be linked.
+request - if commits were in a merge request, then rebased out of that merge
+request, they aren't linked.
 
 ## `HEAD` comparison mode for Merge Requests
 

@@ -72,9 +72,9 @@ of complexity, maintenance cost and enormous, negative impact on availability.
 
 ## New GitLab Pages Architecture
 
-- GitLab Pages is going to source domains' configuration from GitLab's internal
+- GitLab Pages sources domains' configuration from GitLab's internal
   API, instead of reading `config.json` files from a local shared storage.
-- GitLab Pages is going to serve static content from Object Storage.
+- GitLab Pages serves static content from Object Storage.
 
 ```mermaid
 graph TD

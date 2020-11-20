@@ -18,7 +18,7 @@ The instance level Kubernetes clusters can be found in the top menu by navigatin
 
 ## Cluster precedence
 
-GitLab will try to match clusters in the following order:
+GitLab tries to match clusters in the following order:
 
 - Project-level clusters.
 - Group-level clusters.

@@ -12,7 +12,7 @@ comments: false
 - **Windows** - Install 'Git for Windows' from [Git for Windows](https://gitforwindows.org).
 - **Mac**
   - Type '`git`' in the Terminal application.
-  - If it's not installed, it will prompt you to install it.
+  - If it's not installed, it prompts you to install it.
 
 - **GNU/Linux** - Enter `which git` in the Terminal application and press <kbd>Enter</kbd> to
   determine if Git is installed on your system.

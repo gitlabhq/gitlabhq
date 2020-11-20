@@ -13,13 +13,13 @@ please use [our project-based import/export](../user/project/settings/import_exp
 
 Note that:
 
-- The owner of the project will be the first administrator.
-- The groups will be created as needed, including subgroups.
-- The owner of the group will be the first administrator.
-- Existing projects will be skipped.
+- The owner of the project is the first administrator.
+- The groups are created as needed, including subgroups.
+- The owner of the group is the first administrator.
+- Existing projects are skipped.
 - Projects in hashed storage may be skipped. For more information, see
   [Importing bare repositories from hashed storage](#importing-bare-repositories-from-hashed-storage).
-- The existing Git repositories will be moved from disk (removed from the original path).
+- The existing Git repositories ware moved from disk (removed from the original path).
 
 To import bare repositories into a GitLab instance:
 
@@ -35,8 +35,8 @@ To import bare repositories into a GitLab instance:
 
 1. Copy your bare repositories inside this newly created folder. Note:
 
-   - Any `.git` repositories found on any of the subfolders will be imported as projects.
-   - Groups will be created as needed, these could be nested folders.
+   - Any `.git` repositories found on any of the subfolders are imported as projects.
+   - Groups are created as needed, these could be nested folders.
 
    For example, if we copy the repositories to `/var/opt/gitlab/git-data/repository-import-2020-08-22`,
    and repository `A` needs to be under the groups `G1` and `G2`, it must be created under those folders:

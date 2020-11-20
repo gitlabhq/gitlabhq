@@ -47,7 +47,7 @@ The available placeholders are:
 - `{{username}}`
 - `{{instance_id}}`
 
-If the user is not signed in, user related values will be empty.
+If the user is not signed in, user related values are empty.
 
 ![Broadcast Message Notification](img/broadcast_messages_notification_v12_10.png)
 

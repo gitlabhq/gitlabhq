@@ -16,7 +16,7 @@ of GitLab on which it was created. The best way to migrate your repositories
 from one server to another is through backup restore.
 
 CAUTION: **Warning:**
-GitLab won't back up items that aren't stored in the filesystem. If you're
+GitLab doesn't back up items that aren't stored in the filesystem. If you're
 using [object storage](../administration/object_storage.md), be sure to enable
 backups with your object storage provider, if desired.
 
@@ -38,8 +38,8 @@ system. If you installed GitLab:
 
 ## Backup timestamp
 
-The backup archive will be saved in `backup_path`, which is specified in the
-`config/gitlab.yml` file. The filename will be `[TIMESTAMP]_gitlab_backup.tar`,
+The backup archive is saved in `backup_path`, which is specified in the
+`config/gitlab.yml` file. The filename is `[TIMESTAMP]_gitlab_backup.tar`,
 where `TIMESTAMP` identifies the time at which each backup was created, plus
 the GitLab version. The timestamp is needed if you need to restore GitLab and
 multiple backups are available.
@@ -112,8 +112,8 @@ kubectl exec -it <gitlab task-runner pod> backup-utility
 ```
 
 Similar to the Kubernetes case, if you have scaled out your GitLab cluster to
-use multiple application servers, you should pick a designated node (that won't
-be auto-scaled away) for running the backup Rake task. Because the backup Rake
+use multiple application servers, you should pick a designated node (that isn't
+auto-scaled away) for running the backup Rake task. Because the backup Rake
 task is tightly coupled to the main Rails application, this is typically a node
 on which you're also running Unicorn/Puma or Sidekiq.
 
@@ -200,11 +200,11 @@ data locations to the backup using the Linux command `tar` and `gzip`. This work
 fine in most cases, but can cause problems when data is rapidly changing.
 
 When data changes while `tar` is reading it, the error `file changed as we read
-it` may occur, and will cause the backup process to fail. To combat this, 8.17
+it` may occur, and causes the backup process to fail. To combat this, 8.17
 introduces a new backup strategy called `copy`. The strategy copies data files
 to a temporary location before calling `tar` and `gzip`, avoiding the error.
 
-A side-effect is that the backup process will take up to an additional 1X disk
+A side-effect is that the backup process takes up to an additional 1X disk
 space. The process does its best to clean up the temporary files at each stage
 so the problem doesn't compound, but it could be a considerable change for large
 installations. This is why the `copy` strategy is not the default in 8.17.
@@ -221,7 +221,7 @@ Users of GitLab 12.1 and earlier should use the command `gitlab-rake gitlab:back
 #### Backup filename
 
 CAUTION: **Warning:**
-If you use a custom backup filename, you will not be able to
+If you use a custom backup filename, you can't
 [limit the lifetime of the backups](#limit-backup-lifetime-for-local-files-prune-old-backups).
 
 By default, a backup file is created according to the specification in the
@@ -235,8 +235,8 @@ sudo gitlab-backup create BACKUP=dump
 
 Users of GitLab 12.1 and earlier should use the command `gitlab-rake gitlab:backup:create` instead.
 
-The resulting file will then be `dump_gitlab_backup.tar`. This is useful for
-systems that make use of rsync and incremental backups, and will result in
+The resulting file is named `dump_gitlab_backup.tar`. This is useful for
+systems that make use of rsync and incremental backups, and results in
 considerably faster transfer speeds.
 
 #### Rsyncable
@@ -271,8 +271,8 @@ variable `SKIP`. The available options are:
 
 Use a comma to specify several options at the same time:
 
-All wikis will be backed up as part of the `repositories` group. Non-existent
-wikis will be skipped during a backup.
+All wikis are backed up as part of the `repositories` group. Non-existent
+wikis are skipped during a backup.
 
 For Omnibus GitLab packages:
 
@@ -297,7 +297,7 @@ harmful, so you can skip this step by adding `tar` to the `SKIP` environment
 variable.
 
 Adding `tar` to the `SKIP` variable leaves the files and directories containing the
-backup in the directory used for the intermediate files. These files will be
+backup in the directory used for the intermediate files. These files are
 overwritten when a new backup is created, so you should make sure they are copied
 elsewhere, because you can only have one backup on the system.
 
@@ -454,7 +454,7 @@ For installations from source:
 1. [Restart GitLab](../administration/restart_gitlab.md#installations-from-source)
    for the changes to take effect
 
-If you're uploading your backups to S3, you'll probably want to create a new
+If you're uploading your backups to S3, you should create a new
 IAM user with restricted access rights. To give the upload user access only for
 uploading backups create the following IAM profile, replacing `my.s3.bucket`
 with the name of your bucket:
@@ -620,7 +620,7 @@ as (for Omnibus packages, this is the `git` user).
 
 The `backup_upload_remote_directory` _must_ be set in addition to the
 `local_root` key. This is the sub directory inside the mounted directory that
-backups will be copied to, and will be created if it does not exist. If the
+backups are copied to, and is created if it does not exist. If the
 directory that you want to copy the tarballs to is the root of your mounted
 directory, use `.` instead.
 
@@ -667,7 +667,7 @@ For installations from source:
 #### Backup archive permissions
 
 The backup archives created by GitLab (`1393513186_2014_02_27_gitlab_backup.tar`)
-will have owner/group `git`/`git` and 0600 permissions by default. This is
+have the owner/group `git`/`git` and 0600 permissions by default. This is
 meant to avoid other system users reading GitLab's data. If you need the backup
 archives to have different permissions, you can use the `archive_permissions`
 setting.
@@ -741,7 +741,7 @@ output if there aren't any errors. This is recommended to reduce cron spam.
 ### Limit backup lifetime for local files (prune old backups)
 
 CAUTION: **Warning:**
-The process described in this section will not work if you used a [custom filename](#backup-filename)
+The process described in this section don't work if you used a [custom filename](#backup-filename)
 for your backups.
 
 To prevent regular backups from using all your disk space, you may want to set a limited lifetime
@@ -791,8 +791,8 @@ once before attempting to perform it in a production environment.
 You can restore a backup only to _the exact same version and type (CE/EE)_ of
 GitLab that you created it on (for example CE 9.1.0).
 
-If your backup is a different version than the current installation, you'll
-need to [downgrade your GitLab installation](https://docs.gitlab.com/omnibus/update/README.html#downgrade)
+If your backup is a different version than the current installation, you must
+[downgrade your GitLab installation](https://docs.gitlab.com/omnibus/update/README.html#downgrade)
 before restoring the backup.
 
 ### Restore prerequisites
@@ -800,17 +800,17 @@ before restoring the backup.
 You need to have a working GitLab installation before you can perform a
 restore. This is because the system user performing the restore actions (`git`)
 is usually not allowed to create or delete the SQL database needed to import
-data into (`gitlabhq_production`). All existing data will be either erased
+data into (`gitlabhq_production`). All existing data is either erased
 (SQL) or moved to a separate directory (such as repositories and uploads).
 
-To restore a backup, you'll also need to restore `/etc/gitlab/gitlab-secrets.json`
+To restore a backup, you must restore `/etc/gitlab/gitlab-secrets.json`
 (for Omnibus packages) or `/home/git/gitlab/.secret` (for installations from
 source). This file contains the database encryption key,
 [CI/CD variables](../ci/variables/README.md#gitlab-cicd-environment-variables), and
 variables used for [two-factor authentication](../user/profile/account/two_factor_authentication.md).
 If you fail to restore this encryption key file along with the application data
-backup, users with two-factor authentication enabled and GitLab Runner will
-lose access to your GitLab server.
+backup, users with two-factor authentication enabled and GitLab Runner
+loses access to your GitLab server.
 
 You may also want to restore any TLS keys, certificates, or
 [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
@@ -825,7 +825,7 @@ more of the following options:
 - `BACKUP=timestamp_of_backup`: Required if more than one backup exists.
   Read what the [backup timestamp is about](#backup-timestamp).
 - `force=yes`: Doesn't ask if the authorized_keys file should get regenerated,
-  and assumes 'yes' for warning that database tables will be removed,
+  and assumes 'yes' for warning about database tables being removed,
   enabling the "Write to authorized_keys file" setting, and updating LDAP
   providers.
 
@@ -1033,7 +1033,7 @@ Example: LVM snapshots + rsync
 > A GitLab server using Omnibus GitLab, with an LVM logical volume mounted at `/var/opt/gitlab`.
 > Replicating the `/var/opt/gitlab` directory using rsync would not be reliable because too many files would change while rsync is running.
 > Instead of rsync-ing `/var/opt/gitlab`, we create a temporary LVM snapshot, which we mount as a read-only filesystem at `/mnt/gitlab_backup`.
-> Now we can have a longer running rsync job which will create a consistent replica on the remote server.
+> Now we can have a longer running rsync job which creates a consistent replica on the remote server.
 > The replica includes all repositories, uploads and PostgreSQL data.
 
 If you're running GitLab on a virtualized server, you can possibly also create
@@ -1045,7 +1045,7 @@ practical use.
 
 Do NOT backup or restore GitLab through a PgBouncer connection. These
 tasks must [bypass PgBouncer and connect directly to the PostgreSQL primary database node](#bypassing-pgbouncer),
-or they will cause a GitLab outage.
+or they cause a GitLab outage.
 
 When the GitLab backup or restore task is used with PgBouncer, the
 following error message is shown:
@@ -1170,7 +1170,7 @@ unexpected behaviors, such as:
 In this case, you must reset all the tokens for CI/CD variables and
 runner authentication, which is described in more detail in the following
 sections. After resetting the tokens, you should be able to visit your project
-and the jobs will have started running again.
+and the jobs begin running again.
 
 Use the information in the following sections at your own risk.
 

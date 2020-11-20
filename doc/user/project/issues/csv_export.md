@@ -35,11 +35,11 @@ Among numerous use cases for exporting issues for CSV, we can name a few:
 
 ## Choosing which issues to include
 
-After selecting a project, from the issues page you can narrow down which issues to export using the search bar, along with the All/Open/Closed tabs. All issues returned will be exported, including those not shown on the first page.
+After selecting a project, from the issues page you can narrow down which issues to export using the search bar, along with the All/Open/Closed tabs. All issues returned are exported, including those not shown on the first page.
 
 ![CSV export button](img/csv_export_button_v12_9.png)
 
-You will be asked to confirm the number of issues and email address for the export, after which the email will begin being prepared.
+GitLab asks you to confirm the number of issues and email address for the export, after which the email is prepared.
 
 ![CSV export modal dialog](img/csv_export_modal.png)
 
@@ -53,7 +53,7 @@ Exported issues are always sorted by `Issue ID`.
 >
 > **Weight** and **Locked** columns were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5300) in GitLab Starter 10.8.
 
-Data will be encoded with a comma as the column delimiter, with `"` used to quote fields if needed, and newlines to separate rows. The first row will be the headers, which are listed in the following table along with a description of the values:
+Data wis encoded with a comma as the column delimiter, with `"` used to quote fields if needed, and newlines to separate rows. The first row contains the headers, which are listed in the following table along with a description of the values:
 
 | Column  | Description |
 |---------|-------------|
@@ -82,4 +82,4 @@ Data will be encoded with a comma as the column delimiter, with `"` used to quot
 ## Limitations
 
 - Export Issues to CSV is not available at the Group's Issues List.
-- As the issues will be sent as an email attachment, there is a limit on how much data can be exported. Currently this limit is 15MB to ensure successful delivery across a range of email providers. If this limit is reached we suggest narrowing the search before export, perhaps by exporting open and closed issues separately.
+- As the issues are sent as an email attachment, there is a limit on how much data can be exported. Currently this limit is 15MB to ensure successful delivery across a range of email providers. If this limit is reached we suggest narrowing the search before export, perhaps by exporting open and closed issues separately.

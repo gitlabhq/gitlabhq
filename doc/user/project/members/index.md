@@ -53,7 +53,7 @@ that you'd like to give the user. Note that you can select more than one user.
 
 ![Give user permissions](img/add_user_give_permissions.png)
 
-Once done, hit **Add users to project** and they will be immediately added to
+Once done, select **Add users to project** and they are immediately added to
 your project with the permissions you gave them above.
 
 ![List members](img/add_user_list_members.png)
@@ -71,7 +71,7 @@ In the dropdown menu, you can see only the projects you are Maintainer on.
 ![Import members from another project](img/add_user_import_members_from_another_project.png)
 
 Select the one you want and hit **Import project members**. A flash message
-notifying you that the import was successful will appear, and the new members
+displays, notifying you that the import was successful, and the new members
 are now in the project's members list. Notice that the permissions that they
 had on the project you imported from are retained.
 
@@ -96,7 +96,7 @@ invitation, change their access level, or even delete them.
 
 ![Invite user members list](img/add_user_email_accept.png)
 
-Once the user accepts the invitation, they will be prompted to create a new
+After the user accepts the invitation, they are prompted to create a new
 GitLab account using the same e-mail address the invitation was sent to.
 
 Note: **Note:**

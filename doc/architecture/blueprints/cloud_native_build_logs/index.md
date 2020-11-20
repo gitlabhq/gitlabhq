@@ -24,7 +24,7 @@ output to a file on a disk. This is simple, but this mechanism depends on
 shared local storage - the same file needs to be available on every GitLab web
 node machine, because GitLab Runner might connect to a different one every time
 it performs an API request. Sidekiq also needs access to the file because when
-a job is complete, a trace file contents will be sent to the object store.
+a job is complete, the trace file contents are sent to the object store.
 
 ## New architecture
 

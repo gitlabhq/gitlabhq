@@ -55,7 +55,7 @@ and we need to change to a different branch.
   ```
 
 - If we meet conflicts we need to either reset or commit our changes.
-- Conflicts through `pop` will not drop a stash afterwards.
+- Conflicts through `pop` doesn't drop a stash afterwards.
 
 ## Git Stash sample workflow
 
