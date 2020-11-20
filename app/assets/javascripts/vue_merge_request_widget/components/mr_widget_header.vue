@@ -7,12 +7,14 @@ import {
   GlDropdownSectionHeader,
   GlDropdownItem,
   GlTooltipDirective,
+  GlModalDirective,
 } from '@gitlab/ui';
 import { n__, s__, sprintf } from '~/locale';
 import { mergeUrlParams, webIDEUrl } from '~/lib/utils/url_utility';
 import clipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import MrWidgetIcon from './mr_widget_icon.vue';
+import MrWidgetHowToMergeModal from './mr_widget_how_to_merge_modal.vue';
 
 export default {
   name: 'MRWidgetHeader',
@@ -20,6 +22,7 @@ export default {
     clipboardButton,
     TooltipOnTruncate,
     MrWidgetIcon,
+    MrWidgetHowToMergeModal,
     GlButton,
     GlDropdown,
     GlDropdownSectionHeader,
@@ -27,6 +30,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    GlModalDirective,
   },
   props: {
     mr: {
@@ -81,6 +85,9 @@ export default {
             'mrWidget|You are not allowed to edit this project directly. Please fork to make changes.',
           )
         : '';
+    },
+    isFork() {
+      return this.mr.sourceProjectFullPath !== this.mr.targetProjectFullPath;
     },
   },
 };
@@ -140,13 +147,22 @@ export default {
             </gl-button>
           </span>
           <gl-button
+            v-gl-modal-directive="'modal-merge-info'"
             :disabled="mr.sourceBranchRemoved"
-            data-target="#modal_merge_info"
-            data-toggle="modal"
             class="js-check-out-branch gl-mr-3"
           >
             {{ s__('mrWidget|Check out branch') }}
           </gl-button>
+          <mr-widget-how-to-merge-modal
+            :is-fork="isFork"
+            :can-merge="mr.canMerge"
+            :source-branch="mr.sourceBranch"
+            :source-project="mr.sourceProject"
+            :source-project-path="mr.sourceProjectFullPath"
+            :target-branch="mr.targetBranch"
+            :source-project-default-url="mr.sourceProjectDefaultUrl"
+            :reviewing-docs-path="mr.reviewingDocsPath"
+          />
         </template>
         <gl-dropdown
           v-gl-tooltip

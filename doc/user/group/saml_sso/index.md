@@ -242,6 +242,42 @@ For example, to unlink the `MyOrg` account, the following **Disconnect** button 
 
 ![Unlink Group SAML](img/unlink_group_saml.png)
 
+## Group Sync
+
+When the SAML response includes a user and their group memberships from the SAML identity provider,
+GitLab uses that information to automatically manage that user's GitLab group memberships.
+
+Ensure your SAML identity provider sends an attribute statement named `Groups` or `groups` like the following:
+
+```xml
+<saml:AttributeStatement>
+  <saml:Attribute Name="Groups">
+    <saml:AttributeValue xsi:type="xs:string">Developers</saml:AttributeValue>
+    <saml:AttributeValue xsi:type="xs:string">Product Managers</saml:AttributeValue>
+  </saml:Attribute>
+</saml:AttributeStatement>
+```
+
+When SAML SSO is enabled for the top-level group, `Maintainer` and `Owner` level users
+see a new menu item in group **Settings -> SAML Group Links**. Each group can specify
+one or more group links to map a SAML identity provider group name to a GitLab access level.
+
+![SAML Group Links navigation](img/saml_group_links_nav_v13_6.png)
+
+To link the SAML `Freelancers` group in the attribute statement example above:
+
+1. Enter `Freelancers` in the `SAML Group Name` field.
+1. Choose the desired `Access Level`.
+1. **Save** the group link. 
+1. Repeat to add additional group links if desired. 
+
+![SAML Group Links](img/saml_group_links_v13_6.png)
+
+If a user is a member of multiple SAML groups mapped to the same GitLab group, 
+the user gets the highest access level from the groups. For example, if one group
+is linked as `Guest` and another `Maintainer`, a user in both groups gets `Maintainer` 
+access.
+
 ## Glossary
 
 | Term | Description |

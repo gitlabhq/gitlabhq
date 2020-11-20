@@ -785,6 +785,9 @@ msgstr ""
 msgid "%{strongStart}Note:%{strongEnd} Once a custom stage has been added you can re-order stages by dragging them into the desired position."
 msgstr ""
 
+msgid "%{strongStart}Tip:%{strongEnd} You can also checkout merge requests locally by %{linkStart}following these guidelines%{linkEnd}"
+msgstr ""
+
 msgid "%{strong_start}%{branch_count}%{strong_end} Branch"
 msgid_plural "%{strong_start}%{branch_count}%{strong_end} Branches"
 msgstr[0] ""
@@ -5147,6 +5150,9 @@ msgid "Check again"
 msgstr ""
 
 msgid "Check feature availability on namespace plan"
+msgstr ""
+
+msgid "Check out, review, and merge locally"
 msgstr ""
 
 msgid "Check the %{docs_link_start}documentation%{docs_link_end}."
@@ -11860,6 +11866,9 @@ msgstr ""
 msgid "February"
 msgstr ""
 
+msgid "Fetch and check out the branch for this merge request"
+msgstr ""
+
 msgid "Fetching incoming email"
 msgstr ""
 
@@ -16992,6 +17001,9 @@ msgstr ""
 msgid "Merge requests are read-only in a secondary Geo node"
 msgstr ""
 
+msgid "Merge the branch and fix any conflicts that come up"
+msgstr ""
+
 msgid "Merge when pipeline succeeds"
 msgstr ""
 
@@ -18749,6 +18761,9 @@ msgid "Note"
 msgstr ""
 
 msgid "Note parameters are invalid: %{errors}"
+msgstr ""
+
+msgid "Note that pushing to GitLab requires write access to this repository."
 msgstr ""
 
 msgid "Note that this invitation was sent to %{mail_to_invite_email}, but you are signed in as %{link_to_current_user} with email %{mail_to_current_user}."
@@ -22206,6 +22221,9 @@ msgstr ""
 msgid "Push project from command line"
 msgstr ""
 
+msgid "Push the result of the merge to GitLab"
+msgstr ""
+
 msgid "Push to create a project"
 msgstr ""
 
@@ -23350,6 +23368,9 @@ msgid "Review App|View latest app"
 msgstr ""
 
 msgid "Review requested from %{name}"
+msgstr ""
+
+msgid "Review the changes locally"
 msgstr ""
 
 msgid "Review the process for configuring service providers in your identity provider — in this case, GitLab is the \"service provider\" or \"relying party\"."
@@ -26014,6 +26035,18 @@ msgid "StatusPage|your status page frontend."
 msgstr ""
 
 msgid "Stay updated about the performance and health of your environment by configuring Prometheus to monitor your deployments."
+msgstr ""
+
+msgid "Step 1."
+msgstr ""
+
+msgid "Step 2."
+msgstr ""
+
+msgid "Step 3."
+msgstr ""
+
+msgid "Step 4."
 msgstr ""
 
 msgid "Still, we recommend keeping a backup saved somewhere. Otherwise, if you ever need it and have lost it, you will need to request GitLab Inc. to send it to you again."

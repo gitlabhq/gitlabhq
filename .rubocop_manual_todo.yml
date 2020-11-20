@@ -14,7 +14,6 @@ FactoryBot/InlineAssociation:
     - 'spec/factories/go_modules.rb'
     - 'spec/factories/group_group_links.rb'
     - 'spec/factories/import_export_uploads.rb'
-    - 'spec/factories/merge_requests.rb'
     - 'spec/factories/notes.rb'
     - 'spec/factories/uploads.rb'
     - 'spec/factories/wiki_pages.rb'

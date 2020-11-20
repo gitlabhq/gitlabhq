@@ -141,6 +141,12 @@ describe('MergeRequestStore', () => {
       expect(store.newPipelinePath).toBe('/group2/project2/pipelines/new');
     });
 
+    it('should set sourceProjectDefaultUrl', () => {
+      store.setPaths({ ...mockData });
+
+      expect(store.sourceProjectDefaultUrl).toBe('/gitlab-org/html5-boilerplate.git');
+    });
+
     it('should set securityReportsDocsPath', () => {
       store.setPaths({ ...mockData });
 

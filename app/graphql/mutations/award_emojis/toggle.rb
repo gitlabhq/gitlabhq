@@ -12,8 +12,6 @@ module Mutations
       def resolve(args)
         awardable = authorized_find!(id: args[:awardable_id])
 
-        check_object_is_awardable!(awardable)
-
         service = ::AwardEmojis::ToggleService.new(awardable, args[:name], current_user).execute
 
         toggled_on = awardable.awarded_emoji?(args[:name], current_user)

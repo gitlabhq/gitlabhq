@@ -83,6 +83,28 @@ RSpec.describe Projects::AlertManagementHelper do
       end
     end
 
+    context 'with http integration' do
+      let_it_be(:integration) { create(:alert_management_http_integration, project: project) }
+
+      context 'when integration is active' do
+        it 'enables alert management' do
+          expect(data).to include(
+            'alert-management-enabled' => 'true'
+          )
+        end
+      end
+
+      context 'when integration is inactive' do
+        it 'disables alert management' do
+          integration.update!(active: false)
+
+          expect(data).to include(
+            'alert-management-enabled' => 'false'
+          )
+        end
+      end
+    end
+
     context 'when user does not have requisite enablement permissions' do
       let(:user_can_enable_alert_management) { false }
 

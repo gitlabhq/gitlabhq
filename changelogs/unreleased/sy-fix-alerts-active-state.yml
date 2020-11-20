@@ -1,0 +1,5 @@
+---
+title: Ensure Alerts list loads when only HTTP integrations are enabled
+merge_request: 48247
+author:
+type: fixed

@@ -2,6 +2,9 @@
 
 class MergeRequestWidgetEntity < Grape::Entity
   include RequestAwareEntity
+  include ProjectsHelper
+  include ApplicationHelper
+  include ApplicationSettingsHelper
 
   SUGGEST_PIPELINE = 'suggest_pipeline'
 
@@ -48,6 +51,10 @@ class MergeRequestWidgetEntity < Grape::Entity
     help_page_path('user/project/merge_requests/resolve_conflicts.md')
   end
 
+  expose :reviewing_and_managing_merge_requests_docs_path do |merge_request|
+    help_page_path('user/project/merge_requests/reviewing_and_managing_merge_requests.md', anchor: "checkout-merge-requests-locally-through-the-head-ref")
+  end
+
   expose :merge_request_pipelines_docs_path do |merge_request|
     help_page_path('ci/merge_request_pipelines/index.md')
   end
@@ -85,6 +92,10 @@ class MergeRequestWidgetEntity < Grape::Entity
 
   expose :new_project_pipeline_path do |merge_request|
     new_project_pipeline_path(merge_request.project)
+  end
+
+  expose :source_project_default_url do |merge_request|
+    merge_request.source_project && default_url_to_repo(merge_request.source_project)
   end
 
   # Rendering and redacting Markdown can be expensive. These links are

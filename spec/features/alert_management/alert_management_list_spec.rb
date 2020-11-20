@@ -18,7 +18,7 @@ RSpec.describe 'Alert Management index', :js do
     wait_for_requests
   end
 
-  context 'when a developer displays the alert list and the alert service is not enabled' do
+  context 'when a developer displays the alert list and alert integrations are not enabled' do
     it 'shows the alert page title' do
       expect(page).to have_content('Alerts')
     end
@@ -38,8 +38,8 @@ RSpec.describe 'Alert Management index', :js do
     end
   end
 
-  context 'when a developer displays the alert list and the alert service is enabled' do
-    let_it_be(:alerts_service) { create(:alerts_service, project: project) }
+  context 'when a developer displays the alert list and an HTTP integration is enabled' do
+    let_it_be(:integration) { create(:alert_management_http_integration, project: project) }
 
     it 'shows the alert page title' do
       expect(page).to have_content('Alerts')

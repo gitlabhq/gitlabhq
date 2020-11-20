@@ -262,6 +262,15 @@ Individual users can follow the instructions in the ["SAML authentication failed
 
 Alternatively, users can be removed from the SCIM app which will delink all removed users. Sync can then be turned on for the new SCIM app to [link existing users](#user-access-and-linking-setup).
 
+### The SCIM app is throwing `"User has already been taken","status":409` error message
+
+Changing the SAML or SCIM configuration or provider can cause the following problems:
+
+| Problem                                                                      | Solution           |
+|------------------------------------------------------------------------------|--------------------|
+| SAML and SCIM identity mismatch. | First [verify that the user's SAML NameId matches the SCIM externalId](#how-do-i-verify-users-saml-nameid-matches-the-scim-externalid) and then [update or fix the mismatched SCIM externalId and SAML NameId](#update-or-fix-mismatched-scim-externalid-and-saml-nameid). |
+| SCIM identity mismatch between GitLab and the Identify Provider SCIM app. | You can confirm whether you're hitting the error because of your SCIM identity mismatch between your SCIM app and GitLab.com by using [SCIM API](../../../api/scim.md#update-a-single-saml-user) which shows up in the `id` key and compares it with the user `externalId` in the SCIM app. You can use the same [SCIM API](../../../api/scim.md#update-a-single-saml-user) to update the SCIM `id` for the user on GitLab.com. |
+
 ### Azure
 
 #### How do I verify my SCIM configuration is correct?

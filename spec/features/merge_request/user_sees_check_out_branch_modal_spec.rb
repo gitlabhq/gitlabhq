@@ -18,8 +18,8 @@ RSpec.describe 'Merge request > User sees check out branch modal', :js do
     expect(page).to have_content('Check out, review, and merge locally')
   end
 
-  it 'closes the check out branch modal with escape keypress' do
-    find('#modal_merge_info').send_keys(:escape)
+  it 'closes the check out branch modal with the close action' do
+    find('.modal button[aria-label="Close"]').click
 
     expect(page).not_to have_content('Check out, review, and merge locally')
   end

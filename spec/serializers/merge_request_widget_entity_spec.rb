@@ -351,4 +351,18 @@ RSpec.describe MergeRequestWidgetEntity do
   it 'has security_reports_docs_path' do
     expect(subject[:security_reports_docs_path]).not_to be_nil
   end
+
+  describe 'has source_project_default_url' do
+    it 'returns the default url to the source project' do
+      expect(subject[:source_project_default_url]).to eq project.http_url_to_repo
+    end
+
+    context 'when source project is nil' do
+      it 'returns nil' do
+        allow(resource).to receive(:source_project).and_return(nil)
+
+        expect(subject[:source_project_default_url]).to be_nil
+      end
+    end
+  end
 end
