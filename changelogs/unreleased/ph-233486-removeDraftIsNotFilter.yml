@@ -1,5 +1,0 @@
----
-title: Removed not equal filter option for drafts on merge requests
-merge_request: 45649
-author:
-type: fixed

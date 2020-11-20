@@ -1,5 +1,0 @@
----
-title: Assign new incoming diff lines for renamed files to the correct view type
-merge_request: 46823
-author:
-type: fixed

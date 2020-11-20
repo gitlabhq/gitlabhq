@@ -1,5 +1,0 @@
----
-title: Fix transaction usage in ContainerExpirationPolicyWorker
-merge_request: 46217
-author:
-type: fixed

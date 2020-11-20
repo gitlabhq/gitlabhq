@@ -1,6 +1,0 @@
----
-title: Render correct URLs for uploads in service desk issues when custom template
-  is used.
-merge_request: 45772
-author:
-type: fixed

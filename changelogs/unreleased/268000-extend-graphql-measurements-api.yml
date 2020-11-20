@@ -1,5 +1,0 @@
----
-title: Add filtering by recorded date to instance statistics measurements GraphQL API
-merge_request: 46344
-author:
-type: changed

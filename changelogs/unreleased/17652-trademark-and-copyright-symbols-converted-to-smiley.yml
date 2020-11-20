@@ -1,6 +1,0 @@
----
-title: Do not convert unicode versions of trademark, copyright,
-  and registered trademark to emoji
-merge_request: 45457
-author:
-type: fixed

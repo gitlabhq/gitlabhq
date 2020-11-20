@@ -1,5 +1,0 @@
----
-title: Don't refresh all discussions for a new diff note on a merge request
-merge_request: 43015
-author:
-type: performance

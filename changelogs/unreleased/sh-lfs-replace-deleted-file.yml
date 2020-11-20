@@ -1,5 +1,0 @@
----
-title: Gracefully recover from deleted LFS file
-merge_request: 45459
-author:
-type: fixed

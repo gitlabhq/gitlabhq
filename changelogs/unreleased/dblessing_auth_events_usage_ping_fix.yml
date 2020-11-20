@@ -1,5 +1,0 @@
----
-title: Replace poorly performing auth event providers query in usage ping
-merge_request: 47710
-author:
-type: fixed

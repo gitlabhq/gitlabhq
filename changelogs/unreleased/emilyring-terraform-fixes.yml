@@ -1,5 +1,0 @@
----
-title: Fix for missing user info for Terraform State
-merge_request: 47814
-author:
-type: fixed

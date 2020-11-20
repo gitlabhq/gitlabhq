@@ -1,5 +1,0 @@
----
-title: Add Support for Canary-Weight ingress annotation via API
-merge_request: 45637
-author:
-type: added

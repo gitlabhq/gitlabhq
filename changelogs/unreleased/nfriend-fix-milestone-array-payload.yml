@@ -1,5 +1,0 @@
----
-title: Fix error when updating releases with milestone associations through the UI
-merge_request: 47222
-author:
-type: fixed

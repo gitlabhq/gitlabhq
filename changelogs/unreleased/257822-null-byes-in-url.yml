@@ -1,5 +1,0 @@
----
-title: Handle malformed strings in URL
-merge_request: 45701
-author:
-type: fixed

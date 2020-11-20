@@ -1,5 +1,0 @@
----
-title: Use dedicated signing key for CI_JOB_JWT by default
-merge_request: 47336
-author:
-type: changed

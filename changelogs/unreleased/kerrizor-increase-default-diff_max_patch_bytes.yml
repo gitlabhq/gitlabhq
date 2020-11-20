@@ -1,5 +1,0 @@
----
-title: Update diff_max_patch_bytes from 100kb -> 200kb
-merge_request: 46276
-author:
-type: changed

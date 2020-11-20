@@ -1,5 +1,0 @@
----
-title: Add `has_vulnerabilities` column into project_settings table
-merge_request: 45944
-author:
-type: added

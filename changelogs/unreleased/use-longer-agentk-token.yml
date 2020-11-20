@@ -1,5 +1,0 @@
----
-title: Generate a longer Kuberntes Agent Token by default (was 20 characters, now 50)
-merge_request: 45620
-author:
-type: changed

@@ -1,5 +1,0 @@
----
-title: Fix group destroy not working with Gitaly Cluster
-merge_request: 46934
-author:
-type: fixed

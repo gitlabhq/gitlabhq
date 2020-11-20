@@ -1,5 +1,0 @@
----
-title: Fixed diff metadata endpoint being called twice
-merge_request: 47265
-author:
-type: fixed

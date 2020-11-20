@@ -1,5 +1,0 @@
----
-title: Skip disabled features when importing a project from Gitea
-merge_request: 46800
-author: John Kristensen (@jerrykan)
-type: fixed

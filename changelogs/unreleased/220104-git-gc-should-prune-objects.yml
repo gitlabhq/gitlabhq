@@ -1,5 +1,0 @@
----
-title: Prune loose objects during git garbage collection
-merge_request: 39592
-author:
-type: changed

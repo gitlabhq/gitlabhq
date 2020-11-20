@@ -1,5 +1,0 @@
----
-title: Allow semver versions in composer packages
-merge_request: 46301
-author:
-type: fixed

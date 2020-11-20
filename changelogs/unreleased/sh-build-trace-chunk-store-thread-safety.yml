@@ -1,5 +1,0 @@
----
-title: Improve thread safety of Ci::BuildTraceChunk data stores
-merge_request: 46717
-author:
-type: fixed

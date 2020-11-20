@@ -1,6 +1,0 @@
----
-title: Enable dashboard security discover button and ignore feature_filter_type column
-  cleanup
-merge_request: 45636
-author:
-type: added

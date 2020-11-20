@@ -1,5 +1,0 @@
----
-title: Fix bug accessing import route with no user
-merge_request: 46215
-author:
-type: fixed

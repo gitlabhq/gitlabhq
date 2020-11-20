@@ -1,5 +1,0 @@
----
-title: Replace existing Image Resizing FFs with a single of `ops` type enabled by default
-merge_request: 45050
-author:
-type: other

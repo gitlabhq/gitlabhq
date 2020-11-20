@@ -1,5 +1,0 @@
----
-title: Enable Sidekiq argument logging by default
-merge_request: 44853
-author:
-type: changed

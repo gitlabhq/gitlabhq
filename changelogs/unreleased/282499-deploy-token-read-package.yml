@@ -1,5 +1,0 @@
----
-title: Fix deploy token permissions for write_package_registry
-merge_request: 47675
-author:
-type: fixed

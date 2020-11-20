@@ -1,5 +1,0 @@
----
-title: 'GraphQL: Adds downstream, upstream, source job, path, and project to PipelineType'
-merge_request: 45212
-author:
-type: added

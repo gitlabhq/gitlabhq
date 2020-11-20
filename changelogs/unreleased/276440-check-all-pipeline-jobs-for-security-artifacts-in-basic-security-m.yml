@@ -1,5 +1,0 @@
----
-title: Ensure security report is displayed correctly in merge requests with a lot of CI jobs
-merge_request: 46870
-author:
-type: fixed

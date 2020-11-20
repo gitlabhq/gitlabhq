@@ -1,5 +1,0 @@
----
-title: Fix wide content overflow on Notebook output
-merge_request: 45971
-author:
-type: fixed

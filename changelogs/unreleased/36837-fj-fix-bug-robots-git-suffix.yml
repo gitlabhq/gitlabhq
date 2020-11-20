@@ -1,5 +1,0 @@
----
-title: Fix bug with robots and .git suffix
-merge_request: 45866
-author:
-type: fixed

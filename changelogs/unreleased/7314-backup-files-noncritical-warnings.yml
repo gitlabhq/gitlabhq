@@ -1,6 +1,0 @@
----
-title: Show tar warning message when file/folder changed during backup instead of
-  failing whole backup operation
-merge_request: 42197
-author:
-type: fixed

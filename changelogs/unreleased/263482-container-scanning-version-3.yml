@@ -1,5 +1,0 @@
----
-title: Update container_scanning to version 3 to support FIPS
-merge_request: 47099
-author:
-type: added

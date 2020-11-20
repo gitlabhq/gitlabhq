@@ -1,5 +1,0 @@
----
-title: Fix Rails/SaveBang offenses for spec/services/* and spec/sidekiq/*
-merge_request: 45391
-author: matthewbried
-type: other

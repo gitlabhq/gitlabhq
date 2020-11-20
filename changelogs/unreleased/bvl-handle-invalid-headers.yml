@@ -1,5 +1,0 @@
----
-title: Handle nullbytes in auth headers
-merge_request: 47206
-author:
-type: fixed

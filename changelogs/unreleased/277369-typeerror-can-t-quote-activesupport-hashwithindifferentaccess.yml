@@ -1,5 +1,0 @@
----
-title: Fix milestones param validation for releases API PUT method
-merge_request: 47169
-author:
-type: fixed

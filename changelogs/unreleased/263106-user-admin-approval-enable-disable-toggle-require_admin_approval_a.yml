@@ -1,6 +1,0 @@
----
-title: Allow setting the value of 'require_admin_approval_after_user_signup' via Settings
-  API
-merge_request: 46851
-author:
-type: added
