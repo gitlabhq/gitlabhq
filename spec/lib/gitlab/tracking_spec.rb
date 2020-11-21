@@ -36,8 +36,21 @@ RSpec.describe Gitlab::Tracking do
   end
 
   describe '.event' do
+    before do
+      allow_any_instance_of(Gitlab::Tracking::Destinations::Snowplow).to receive(:event)
+      allow_any_instance_of(Gitlab::Tracking::Destinations::ProductAnalytics).to receive(:event)
+    end
+
     it 'delegates to snowplow destination' do
       expect_any_instance_of(Gitlab::Tracking::Destinations::Snowplow)
+        .to receive(:event)
+        .with('category', 'action', label: 'label', property: 'property', value: 1.5, context: nil)
+
+      described_class.event('category', 'action', label: 'label', property: 'property', value: 1.5)
+    end
+
+    it 'delegates to ProductAnalytics destination' do
+      expect_any_instance_of(Gitlab::Tracking::Destinations::ProductAnalytics)
         .to receive(:event)
         .with('category', 'action', label: 'label', property: 'property', value: 1.5, context: nil)
 

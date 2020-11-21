@@ -26,6 +26,7 @@ module Gitlab
 
       def event(category, action, label: nil, property: nil, value: nil, context: nil)
         snowplow.event(category, action, label: label, property: property, value: value, context: context)
+        product_analytics.event(category, action, label: label, property: property, value: value, context: context)
       end
 
       def self_describing_event(schema_url, event_data_json, context: nil)
@@ -48,6 +49,10 @@ module Gitlab
 
       def snowplow
         @snowplow ||= Gitlab::Tracking::Destinations::Snowplow.new
+      end
+
+      def product_analytics
+        @product_analytics ||= Gitlab::Tracking::Destinations::ProductAnalytics.new
       end
     end
   end
