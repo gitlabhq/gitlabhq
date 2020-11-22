@@ -32,7 +32,7 @@ GitLab and GitLab Runner perform a [shallow clone](../pipelines/settings.md#git-
 by default.
 
 Ideally, you should always use `GIT_DEPTH` with a small number
-like 10. This will instruct GitLab Runner to perform shallow clones.
+like 10. This instructs GitLab Runner to perform shallow clones.
 Shallow clones make Git request only the latest set of changes for a given branch,
 up to desired number of commits as defined by the `GIT_DEPTH` variable.
 
@@ -152,7 +152,7 @@ concurrent = 4
 This `config.toml`:
 
 - Uses the `shell` executor,
-- Specifies a custom `/builds` directory where all clones will be stored.
+- Specifies a custom `/builds` directory where all clones are stored.
 - Enables the ability to specify `GIT_CLONE_PATH`,
 - Runs at most 4 jobs at once.
 
@@ -177,7 +177,7 @@ concurrent = 4
 This `config.toml`:
 
 - Uses the `docker` executor,
-- Specifies a custom `/builds` directory on disk where all clones will be stored.
+- Specifies a custom `/builds` directory on disk where all clones are stored.
    We host mount the `/builds` directory to make it reusable between subsequent runs
    and be allowed to override the cloning strategy.
 - Doesn't enable the ability to specify `GIT_CLONE_PATH` as it is enabled by default.
@@ -187,7 +187,7 @@ This `config.toml`:
 
 Once we have the executor configured, we need to fine tune our `.gitlab-ci.yml`.
 
-Our pipeline will be most performant if we use the following `.gitlab-ci.yml`:
+Our pipeline is most performant if we use the following `.gitlab-ci.yml`:
 
 ```yaml
 variables:
@@ -205,8 +205,8 @@ The above configures a:
   because we use the same clone path for all forks.
 
 Why use `$CI_CONCURRENT_ID`? The main reason is to ensure that worktrees used are not conflicting
-between projects. The `$CI_CONCURRENT_ID` represents a unique identifier within the given executor,
-so as long as we use it to construct the path, it is guaranteed that this directory will not conflict
+between projects. The `$CI_CONCURRENT_ID` represents a unique identifier within the given executor.
+When we use it to construct the path, this directory does not conflict
 with other concurrent jobs running.
 
 ### Store custom clone options in `config.toml`
@@ -220,7 +220,7 @@ In such cases, it might be desirable to keep the `.gitlab-ci.yml` clone path agn
 a configuration of the runner.
 
 We can extend our [`config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)
-with the following specification that will be used by the runner if `.gitlab-ci.yml` will not override it:
+with the following specification that is used by the runner if `.gitlab-ci.yml` does not override it:
 
 ```toml
 concurrent = 4
