@@ -128,7 +128,7 @@ always take the latest Secret Detection artifact available.
 
 ### Post-processing
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/46390) in GitLab 13.6.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4639) in GitLab 13.6.
 
 Upon detection of a secret, GitLab supports post processing hooks. These can be used to take actions like notifying the cloud service who issued the secret. The cloud provider can confirm the credentials and take remediation actions like revoking or reissuing a new secret and notifying the creator of the secret. Post-processing workflows vary by supported cloud providers. 
 

@@ -395,6 +395,10 @@ module QA
         ENV['DEPLOY_VERSION']
       end
 
+      def user_agent
+        ENV['GITLAB_QA_USER_AGENT']
+      end
+
       private
 
       def remote_grid_credentials

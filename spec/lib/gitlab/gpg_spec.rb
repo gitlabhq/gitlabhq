@@ -143,6 +143,11 @@ RSpec.describe Gitlab::Gpg do
     end
 
     it 'keeps track of created and removed keychains in counters' do
+      # Gitlab::Gpg may be memoizing stale counters if a preceding spec resets the Prometheus registry
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/286874
+      described_class.remove_instance_variable(:@tmp_keychains_created)
+      described_class.remove_instance_variable(:@tmp_keychains_removed)
+
       created = Gitlab::Metrics.counter(:gpg_tmp_keychains_created_total, 'The number of temporary GPG keychains')
       removed = Gitlab::Metrics.counter(:gpg_tmp_keychains_removed_total, 'The number of temporary GPG keychains')
 
