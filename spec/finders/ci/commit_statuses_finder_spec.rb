@@ -152,8 +152,8 @@ RSpec.describe Ci::CommitStatusesFinder, '#execute' do
         project.project_feature.update!(builds_access_level: ProjectFeature::PRIVATE)
       end
 
-      it 'returns nil' do
-        expect(subject).to be_empty
+      it 'returns a blank hash' do
+        expect(subject).to eq({})
       end
     end
 
@@ -170,8 +170,8 @@ RSpec.describe Ci::CommitStatusesFinder, '#execute' do
           status: :running)
       end
 
-      it 'returns nil' do
-        expect(private_subject).to be_empty
+      it 'returns a blank hash' do
+        expect(private_subject).to eq({})
       end
     end
   end

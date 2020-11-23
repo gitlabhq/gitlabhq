@@ -81,5 +81,14 @@ RSpec.describe 'projects/tags/index.html.haml' do
 
       expect(page.all('.tags .content-list li')).not_to have_css 'svg.s24'
     end
+
+    it 'shows no build status or placeholder when pipelines are private' do
+      project.project_feature.update!(builds_access_level: ProjectFeature::PRIVATE)
+      assign(:tag_pipeline_statuses, Ci::CommitStatusesFinder.new(project, project.repository, build(:user), tags).execute)
+
+      render
+
+      expect(page.all('.tags .content-list li')).not_to have_css 'svg.s24'
+    end
   end
 end

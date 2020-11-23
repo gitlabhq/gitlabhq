@@ -9,7 +9,7 @@ RSpec.describe Projects::TransferService do
   let_it_be(:group) { create(:group) }
   let(:project) { create(:project, :repository, :legacy_storage, namespace: user.namespace) }
 
-  subject(:execute_transfer) { described_class.new(project, user).execute(group) }
+  subject(:execute_transfer) { described_class.new(project, user).execute(group).tap { project.reload } }
 
   context 'with npm packages' do
     before do

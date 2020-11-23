@@ -12,7 +12,7 @@ module Ci
     end
 
     def execute
-      return [] unless Ability.allowed?(@current_user, :read_pipeline, @project)
+      return {} unless Ability.allowed?(@current_user, :read_pipeline, @project)
 
       commit_statuses
     end

@@ -1,0 +1,5 @@
+---
+title: Does not track package events on a read-only instance
+merge_request: 48257
+author:
+type: fixed

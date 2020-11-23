@@ -25,7 +25,7 @@ RSpec.describe Packages::CreateEventService do
           stub_feature_flags(collect_package_events: false)
         end
 
-        it 'does not create an event object' do
+        it 'does not create an event' do
           expect { subject }.not_to change { Packages::Event.count }
         end
       end
@@ -42,6 +42,16 @@ RSpec.describe Packages::CreateEventService do
           expect(subject.originator).to eq(user&.id)
           expect(subject.event_scope).to eq(expected_scope)
           expect(subject.event_type).to eq(event_name)
+        end
+
+        context 'on a read-only instance' do
+          before do
+            allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+          end
+
+          it 'does not create an event' do
+            expect { subject }.not_to change { Packages::Event.count }
+          end
         end
       end
     end

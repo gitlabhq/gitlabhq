@@ -1,3 +1,5 @@
 import initNewCluster from '~/clusters/new_cluster';
 
-initNewCluster();
+document.addEventListener('DOMContentLoaded', () => {
+  initNewCluster();
+});

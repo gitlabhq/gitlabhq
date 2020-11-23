@@ -46,8 +46,9 @@ module Users
         username: user.username,
         name: user.name,
         avatar_url: user.avatar_url,
-        availability: user&.status&.availability
+        availability: nil
       }
+      # Return nil for availability for now due to https://gitlab.com/gitlab-org/gitlab/-/issues/285442
     end
 
     def group_as_hash(group, group_counts)
