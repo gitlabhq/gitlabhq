@@ -725,7 +725,7 @@ To delete an existing site profile:
 
 1. From your project's home page, go to **Security & Compliance > Configuration**.
 1. Click **Manage** in the **DAST Profiles** row.
-1. Click **{remove}** in the row of the profile to delete.
+1. Click **{remove}** (Delete profile) in the row of the profile to delete.
 
 ## Scanner profile
 
@@ -767,7 +767,7 @@ To delete a scanner profile:
 
 1. From your project's home page, go to **Security & Compliance > Configuration**.
 1. Click **Manage** in the **DAST Profiles** row.
-1. Click **{remove}** in the scanner profile's row.
+1. Click **{remove}** (Delete profile) in the scanner profile's row.
 
 ## On-demand scans
 
