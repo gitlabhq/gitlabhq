@@ -4,7 +4,9 @@ require 'spec_helper'
 
 RSpec.describe 'Admin Broadcast Messages' do
   before do
-    sign_in(create(:admin))
+    admin = create(:admin)
+    sign_in(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
     create(:broadcast_message, :expired, message: 'Migration to new server')
     visit admin_broadcast_messages_path
   end

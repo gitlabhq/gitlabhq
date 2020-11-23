@@ -7,7 +7,9 @@ RSpec.describe 'admin deploy keys' do
   let!(:another_deploy_key) { create(:another_deploy_key, public: true) }
 
   before do
-    sign_in(create(:admin))
+    admin = create(:admin)
+    sign_in(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
   end
 
   it 'show all public deploy keys' do

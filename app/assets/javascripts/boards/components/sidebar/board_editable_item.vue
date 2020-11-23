@@ -50,6 +50,13 @@ export default {
       }
       window.removeEventListener('click', this.collapseWhenOffClick);
     },
+    toggle({ emitEvent = true } = {}) {
+      if (this.edit) {
+        this.collapse({ emitEvent });
+      } else {
+        this.expand();
+      }
+    },
   },
 };
 </script>
@@ -66,12 +73,12 @@ export default {
         variant="link"
         class="gl-text-gray-900! js-sidebar-dropdown-toggle"
         data-testid="edit-button"
-        @click="expand"
+        @click="toggle"
       >
         {{ __('Edit') }}
       </gl-button>
     </div>
-    <div v-show="!edit" class="gl-text-gray-400" data-testid="collapsed-content">
+    <div v-show="!edit" class="gl-text-gray-500" data-testid="collapsed-content">
       <slot name="collapsed">{{ __('None') }}</slot>
     </div>
     <div v-show="edit" data-testid="expanded-content">

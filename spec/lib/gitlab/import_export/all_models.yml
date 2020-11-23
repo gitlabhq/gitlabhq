@@ -554,6 +554,7 @@ project:
 - terraform_states
 - alert_management_http_integrations
 - exported_protected_branches
+- incident_management_oncall_schedules
 award_emoji:
 - awardable
 - user

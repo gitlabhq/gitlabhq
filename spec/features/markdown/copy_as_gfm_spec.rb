@@ -7,10 +7,6 @@ RSpec.describe 'Copy as GFM', :js do
   include RepoHelpers
   include ActionView::Helpers::JavaScriptHelper
 
-  before do
-    sign_in(create(:admin))
-  end
-
   describe 'Copying rendered GFM' do
     before do
       @feat = MarkdownFeature.new
@@ -18,6 +14,9 @@ RSpec.describe 'Copy as GFM', :js do
       # `markdown` helper expects a `@project` variable
       @project = @feat.project
 
+      user = create(:user)
+      @project.add_maintainer(user)
+      sign_in(user)
       visit project_issue_path(@project, @feat.issue)
     end
 
@@ -649,6 +648,10 @@ RSpec.describe 'Copy as GFM', :js do
 
   describe 'Copying code' do
     let(:project) { create(:project, :repository) }
+
+    before do
+      sign_in(project.owner)
+    end
 
     context 'from a diff' do
       shared_examples 'copying code from a diff' do

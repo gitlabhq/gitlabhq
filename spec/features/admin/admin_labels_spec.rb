@@ -7,7 +7,9 @@ RSpec.describe 'admin issues labels' do
   let!(:feature_label) { Label.create(title: 'feature', template: true) }
 
   before do
-    sign_in(create(:admin))
+    admin = create(:admin)
+    sign_in(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
   end
 
   describe 'list' do

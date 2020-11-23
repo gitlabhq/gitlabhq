@@ -4071,6 +4071,38 @@ RSpec.describe Ci::Build do
     end
   end
 
+  describe '#collect_codequality_reports!' do
+    subject(:codequality_report) { build.collect_codequality_reports!(Gitlab::Ci::Reports::CodequalityReports.new) }
+
+    it { expect(codequality_report.degradations).to eq({}) }
+
+    context 'when build has a codequality report' do
+      context 'when there is a codequality report' do
+        before do
+          create(:ci_job_artifact, :codequality, job: build, project: build.project)
+        end
+
+        it 'parses blobs and add the results to the codequality report' do
+          expect { codequality_report }.not_to raise_error
+
+          expect(codequality_report.degradations_count).to eq(3)
+        end
+      end
+
+      context 'when there is an codequality report without errors' do
+        before do
+          create(:ci_job_artifact, :codequality_without_errors, job: build, project: build.project)
+        end
+
+        it 'parses blobs and add the results to the codequality report' do
+          expect { codequality_report }.not_to raise_error
+
+          expect(codequality_report.degradations_count).to eq(0)
+        end
+      end
+    end
+  end
+
   describe '#collect_terraform_reports!' do
     let(:terraform_reports) { Gitlab::Ci::Reports::TerraformReports.new }
 

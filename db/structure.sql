@@ -12858,6 +12858,29 @@ CREATE SEQUENCE import_failures_id_seq
 
 ALTER SEQUENCE import_failures_id_seq OWNED BY import_failures.id;
 
+CREATE TABLE incident_management_oncall_schedules (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    iid integer NOT NULL,
+    name text NOT NULL,
+    description text,
+    timezone text,
+    CONSTRAINT check_7ed1fd5aa7 CHECK ((char_length(description) <= 1000)),
+    CONSTRAINT check_cc77cbb103 CHECK ((char_length(timezone) <= 100)),
+    CONSTRAINT check_e6ef43a664 CHECK ((char_length(name) <= 200))
+);
+
+CREATE SEQUENCE incident_management_oncall_schedules_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE incident_management_oncall_schedules_id_seq OWNED BY incident_management_oncall_schedules.id;
+
 CREATE TABLE index_statuses (
     id integer NOT NULL,
     project_id integer NOT NULL,
@@ -16884,6 +16907,26 @@ CREATE TABLE user_interacted_projects (
     project_id integer NOT NULL
 );
 
+CREATE TABLE user_permission_export_uploads (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    user_id bigint NOT NULL,
+    file_store integer,
+    status smallint DEFAULT 0 NOT NULL,
+    file text,
+    CONSTRAINT check_1956806648 CHECK ((char_length(file) <= 255))
+);
+
+CREATE SEQUENCE user_permission_export_uploads_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE user_permission_export_uploads_id_seq OWNED BY user_permission_export_uploads.id;
+
 CREATE TABLE user_preferences (
     id integer NOT NULL,
     user_id integer NOT NULL,
@@ -18011,6 +18054,8 @@ ALTER TABLE ONLY import_export_uploads ALTER COLUMN id SET DEFAULT nextval('impo
 
 ALTER TABLE ONLY import_failures ALTER COLUMN id SET DEFAULT nextval('import_failures_id_seq'::regclass);
 
+ALTER TABLE ONLY incident_management_oncall_schedules ALTER COLUMN id SET DEFAULT nextval('incident_management_oncall_schedules_id_seq'::regclass);
+
 ALTER TABLE ONLY index_statuses ALTER COLUMN id SET DEFAULT nextval('index_statuses_id_seq'::regclass);
 
 ALTER TABLE ONLY insights ALTER COLUMN id SET DEFAULT nextval('insights_id_seq'::regclass);
@@ -18356,6 +18401,8 @@ ALTER TABLE ONLY user_canonical_emails ALTER COLUMN id SET DEFAULT nextval('user
 ALTER TABLE ONLY user_custom_attributes ALTER COLUMN id SET DEFAULT nextval('user_custom_attributes_id_seq'::regclass);
 
 ALTER TABLE ONLY user_details ALTER COLUMN user_id SET DEFAULT nextval('user_details_user_id_seq'::regclass);
+
+ALTER TABLE ONLY user_permission_export_uploads ALTER COLUMN id SET DEFAULT nextval('user_permission_export_uploads_id_seq'::regclass);
 
 ALTER TABLE ONLY user_preferences ALTER COLUMN id SET DEFAULT nextval('user_preferences_id_seq'::regclass);
 
@@ -19193,6 +19240,9 @@ ALTER TABLE ONLY import_export_uploads
 ALTER TABLE ONLY import_failures
     ADD CONSTRAINT import_failures_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY incident_management_oncall_schedules
+    ADD CONSTRAINT incident_management_oncall_schedules_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY index_statuses
     ADD CONSTRAINT index_statuses_pkey PRIMARY KEY (id);
 
@@ -19807,6 +19857,9 @@ ALTER TABLE ONLY user_highest_roles
 
 ALTER TABLE ONLY user_interacted_projects
     ADD CONSTRAINT user_interacted_projects_pkey PRIMARY KEY (project_id, user_id);
+
+ALTER TABLE ONLY user_permission_export_uploads
+    ADD CONSTRAINT user_permission_export_uploads_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY user_preferences
     ADD CONSTRAINT user_preferences_pkey PRIMARY KEY (id);
@@ -21074,6 +21127,8 @@ CREATE INDEX index_identities_on_saml_provider_id ON identities USING btree (sam
 
 CREATE INDEX index_identities_on_user_id ON identities USING btree (user_id);
 
+CREATE UNIQUE INDEX index_im_oncall_schedules_on_project_id_and_iid ON incident_management_oncall_schedules USING btree (project_id, iid);
+
 CREATE UNIQUE INDEX index_import_export_uploads_on_group_id ON import_export_uploads USING btree (group_id) WHERE (group_id IS NOT NULL);
 
 CREATE INDEX index_import_export_uploads_on_project_id ON import_export_uploads USING btree (project_id);
@@ -21089,6 +21144,8 @@ CREATE INDEX index_import_failures_on_project_id_and_correlation_id_value ON imp
 CREATE INDEX index_import_failures_on_project_id_not_null ON import_failures USING btree (project_id) WHERE (project_id IS NOT NULL);
 
 CREATE INDEX index_imported_projects_on_import_type_creator_id_created_at ON projects USING btree (import_type, creator_id, created_at) WHERE (import_type IS NOT NULL);
+
+CREATE INDEX index_incident_management_oncall_schedules_on_project_id ON incident_management_oncall_schedules USING btree (project_id);
 
 CREATE UNIQUE INDEX index_index_statuses_on_project_id ON index_statuses USING btree (project_id);
 
@@ -22226,6 +22283,8 @@ CREATE INDEX index_user_highest_roles_on_user_id_and_highest_access_level ON use
 
 CREATE INDEX index_user_interacted_projects_on_user_id ON user_interacted_projects USING btree (user_id);
 
+CREATE INDEX index_user_permission_export_uploads_on_user_id_and_status ON user_permission_export_uploads USING btree (user_id, status);
+
 CREATE INDEX index_user_preferences_on_gitpod_enabled ON user_preferences USING btree (gitpod_enabled);
 
 CREATE UNIQUE INDEX index_user_preferences_on_user_id ON user_preferences USING btree (user_id);
@@ -22260,7 +22319,7 @@ CREATE INDEX index_users_on_name_trigram ON users USING gin (name gin_trgm_ops);
 
 CREATE INDEX index_users_on_public_email ON users USING btree (public_email) WHERE ((public_email)::text <> ''::text);
 
-CREATE INDEX index_users_on_require_two_factor_authentication_from_group ON users USING btree (require_two_factor_authentication_from_group);
+CREATE INDEX index_users_on_require_two_factor_authentication_from_group ON users USING btree (require_two_factor_authentication_from_group) WHERE (require_two_factor_authentication_from_group = true);
 
 CREATE UNIQUE INDEX index_users_on_reset_password_token ON users USING btree (reset_password_token);
 
@@ -23560,6 +23619,9 @@ ALTER TABLE ONLY open_project_tracker_data
 ALTER TABLE ONLY gpg_signatures
     ADD CONSTRAINT fk_rails_19d4f1c6f9 FOREIGN KEY (gpg_key_subkey_id) REFERENCES gpg_key_subkeys(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY incident_management_oncall_schedules
+    ADD CONSTRAINT fk_rails_19e83fdd65 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY vulnerability_user_mentions
     ADD CONSTRAINT fk_rails_1a41c485cd FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE CASCADE;
 
@@ -24297,6 +24359,9 @@ ALTER TABLE ONLY user_preferences
 
 ALTER TABLE ONLY sentry_issues
     ADD CONSTRAINT fk_rails_a6a9612965 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY user_permission_export_uploads
+    ADD CONSTRAINT fk_rails_a7130085e3 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY repository_languages
     ADD CONSTRAINT fk_rails_a750ec87a8 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

@@ -280,24 +280,18 @@ RSpec.configure do |config|
     # context 'some test in mocked dir', :do_not_mock_admin_mode do ... end
     admin_mode_mock_dirs = %w(
       ./ee/spec/elastic_integration
-      ./ee/spec/features
       ./ee/spec/finders
       ./ee/spec/lib
       ./ee/spec/requests/admin
       ./ee/spec/serializers
-      ./ee/spec/support/protected_tags
-      ./ee/spec/support/shared_examples/features
       ./ee/spec/support/shared_examples/finders/geo
       ./ee/spec/support/shared_examples/graphql/geo
-      ./spec/features
       ./spec/finders
       ./spec/frontend
       ./spec/helpers
       ./spec/lib
       ./spec/requests
       ./spec/serializers
-      ./spec/support/protected_tags
-      ./spec/support/shared_examples/features
       ./spec/support/shared_examples/requests
       ./spec/support/shared_examples/lib/gitlab
       ./spec/views

@@ -8,6 +8,7 @@ RSpec.describe 'Admin visits service templates' do
 
   before do
     sign_in(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
 
     visit(admin_application_settings_services_path)
   end

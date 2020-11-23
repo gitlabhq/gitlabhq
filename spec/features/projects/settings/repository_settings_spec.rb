@@ -289,13 +289,13 @@ RSpec.describe 'Projects > Settings > Repository settings' do
       visit project_settings_repository_path(project)
     end
 
-    context 'when project mirroring is enabled' do
+    context 'when project mirroring is enabled', :enable_admin_mode do
       let(:mirror_available) { true }
 
       include_examples 'shows mirror settings'
     end
 
-    context 'when project mirroring is disabled' do
+    context 'when project mirroring is disabled', :enable_admin_mode do
       let(:mirror_available) { false }
 
       include_examples 'shows mirror settings'

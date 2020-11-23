@@ -7,6 +7,7 @@ RSpec.describe 'Admin activates Prometheus', :js do
 
   before do
     sign_in(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
 
     visit(admin_application_settings_services_path)
 

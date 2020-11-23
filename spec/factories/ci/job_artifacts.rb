@@ -245,7 +245,17 @@ FactoryBot.define do
 
       after(:build) do |artifact, evaluator|
         artifact.file = fixture_file_upload(
-          Rails.root.join('spec/fixtures/codequality/codequality.json'), 'application/json')
+          Rails.root.join('spec/fixtures/codequality/codeclimate.json'), 'application/json')
+      end
+    end
+
+    trait :codequality_without_errors do
+      file_type { :codequality }
+      file_format { :raw }
+
+      after(:build) do |artifact, evaluator|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/codequality/codeclimate_without_errors.json'), 'application/json')
       end
     end
 

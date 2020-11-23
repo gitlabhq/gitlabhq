@@ -25,6 +25,7 @@ import issueCreateMutation from '../queries/issue_create.mutation.graphql';
 import issueSetLabels from '../queries/issue_set_labels.mutation.graphql';
 import issueSetDueDate from '../queries/issue_set_due_date.mutation.graphql';
 import issueSetSubscriptionMutation from '../graphql/mutations/issue_set_subscription.mutation.graphql';
+import issueSetMilestone from '../queries/issue_set_milestone.mutation.graphql';
 
 const notImplemented = () => {
   /* eslint-disable-next-line @gitlab/require-i18n-strings */
@@ -335,6 +336,30 @@ export default {
 
         return nodes;
       });
+  },
+
+  setActiveIssueMilestone: async ({ commit, getters }, input) => {
+    const { activeIssue } = getters;
+    const { data } = await gqlClient.mutate({
+      mutation: issueSetMilestone,
+      variables: {
+        input: {
+          iid: String(activeIssue.iid),
+          milestoneId: getIdFromGraphQLId(input.milestoneId),
+          projectPath: input.projectPath,
+        },
+      },
+    });
+
+    if (data.updateIssue.errors?.length > 0) {
+      throw new Error(data.updateIssue.errors);
+    }
+
+    commit(types.UPDATE_ISSUE_BY_ID, {
+      issueId: activeIssue.id,
+      prop: 'milestone',
+      value: data.updateIssue.issue.milestone,
+    });
   },
 
   createNewIssue: ({ commit, state }, issueInput) => {

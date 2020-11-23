@@ -61,7 +61,7 @@ RSpec.describe 'Project' do
     let(:path)    { project_path(project) }
 
     before do
-      sign_in(create(:admin))
+      sign_in(project.owner)
     end
 
     it 'parses Markdown' do
@@ -125,7 +125,7 @@ RSpec.describe 'Project' do
     let(:path)    { project_path(project) }
 
     before do
-      sign_in(create(:admin))
+      sign_in(project.owner)
       visit path
     end
 
@@ -156,7 +156,7 @@ RSpec.describe 'Project' do
     let(:path)    { project_path(project) }
 
     before do
-      sign_in(create(:admin))
+      sign_in(project.owner)
       visit path
     end
 

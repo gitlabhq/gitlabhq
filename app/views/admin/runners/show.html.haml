@@ -39,17 +39,18 @@
         %thead
           %tr
             %th Assigned projects
-            %th
         - @runner.runner_projects.each do |runner_project|
           - project = runner_project.project
           - if project
-            %tr.alert-info
+            %tr
               %td
-                %strong
-                  = project.full_name
-              %td
-                .float-right
-                  = link_to 'Disable', admin_namespace_project_runner_project_path(project.namespace, project, runner_project), method: :delete, class: 'gl-button btn btn-danger btn-sm'
+                .gl-alert.gl-alert-danger
+                  = sprite_icon('error', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+                  .gl-alert-body
+                    %strong
+                      = project.full_name
+                  .gl-alert-actions
+                    = link_to s_('Disable'), admin_namespace_project_runner_project_path(project.namespace, project, runner_project), method: :delete, class: 'btn gl-alert-action btn-info btn-md gl-button'
 
     %table.table.unassigned-projects
       %thead

@@ -3264,6 +3264,9 @@ msgstr ""
 msgid "An error occurred while updating the comment"
 msgstr ""
 
+msgid "An error occurred while updating the milestone."
+msgstr ""
+
 msgid "An error occurred while validating group path"
 msgstr ""
 
@@ -17674,6 +17677,9 @@ msgstr ""
 msgid "Milestones|Milestone %{milestoneTitle} was not found"
 msgstr ""
 
+msgid "Milestones|No milestones found"
+msgstr ""
+
 msgid "Milestones|Ongoing Issues (open and assigned)"
 msgstr ""
 
@@ -31265,6 +31271,9 @@ msgstr ""
 msgid "You have insufficient permissions to create an HTTP integration for this project"
 msgstr ""
 
+msgid "You have insufficient permissions to create an on-call schedule for this project"
+msgstr ""
+
 msgid "You have insufficient permissions to remove this HTTP integration"
 msgstr ""
 
@@ -31629,6 +31638,9 @@ msgid "Your issues are being imported. Once finished, you'll get a confirmation 
 msgstr ""
 
 msgid "Your issues will be imported in the background. Once finished, you'll get a confirmation email."
+msgstr ""
+
+msgid "Your license does not support on-call schedules"
 msgstr ""
 
 msgid "Your license is valid from"

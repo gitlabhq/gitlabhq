@@ -7,7 +7,9 @@ RSpec.describe 'Admin Serverless Domains', :js do
 
   before do
     allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
-    sign_in(create(:admin))
+    admin = create(:admin)
+    sign_in(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
   end
 
   it 'Add domain with certificate' do

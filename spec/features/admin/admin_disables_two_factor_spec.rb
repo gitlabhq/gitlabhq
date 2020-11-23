@@ -4,7 +4,9 @@ require 'spec_helper'
 
 RSpec.describe 'Admin disables 2FA for a user' do
   it 'successfully', :js do
-    sign_in(create(:admin))
+    admin = create(:admin)
+    sign_in(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
     user = create(:user, :two_factor)
 
     edit_user(user)
@@ -19,7 +21,9 @@ RSpec.describe 'Admin disables 2FA for a user' do
   end
 
   it 'for a user without 2FA enabled' do
-    sign_in(create(:admin))
+    admin = create(:admin)
+    sign_in(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
     user = create(:user)
 
     edit_user(user)

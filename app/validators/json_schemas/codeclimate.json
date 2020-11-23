@@ -1,0 +1,34 @@
+{
+  "description": "Codequality used by codeclimate parser",
+  "type": "object",
+  "required": ["description", "fingerprint", "severity", "location"],
+  "properties": {
+    "description": { "type": "string" },
+    "fingerprint": { "type": "string" },
+    "severity": { "type": "string" },
+    "location": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string" },
+        "lines": {
+          "type": "object",
+          "properties": {
+            "begin": { "type": "integer" }
+          }
+        },
+        "positions": {
+          "type": "object",
+          "properties": {
+            "begin": {
+              "type": "object",
+              "properties": {
+                "line": { "type": "integer" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}

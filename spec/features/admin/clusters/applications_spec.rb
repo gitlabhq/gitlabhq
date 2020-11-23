@@ -10,6 +10,7 @@ RSpec.describe 'Instance-level Cluster Applications', :js do
 
   before do
     sign_in(user)
+    gitlab_enable_admin_mode_sign_in(user)
   end
 
   describe 'Installing applications' do

@@ -9,7 +9,9 @@ RSpec.describe "Admin Runners" do
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
-    sign_in(create(:admin))
+    admin = create(:admin)
+    sign_in(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
   end
 
   describe "Runners page" do
