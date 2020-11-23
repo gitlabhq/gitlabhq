@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.6.1 (2020-11-23)
+
+### Fixed (5 changes)
+
+- Fix project transfer corrupting shared runners state. !48032
+- Fix project select split button bug. !48065
+- Fix tags pages erroring for projects with private pipelines. !48184
+- Ensure Alerts list loads when only HTTP integrations are enabled. !48247
+- Does not track package events on a read-only instance. !48257
+
+### Changed (1 change)
+
+- Re-name Instance Statistics as Usage Trends. !48183
+
+
 ## 13.6.0 (2020-11-22)
 
 ### Removed (3 changes)

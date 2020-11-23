@@ -1,5 +1,0 @@
----
-title: Fix tags pages erroring for projects with private pipelines
-merge_request: 48184
-author:
-type: fixed
