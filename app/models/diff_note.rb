@@ -19,7 +19,7 @@ class DiffNote < Note
   # EE might have added a type when the module was prepended
   validates :noteable_type, inclusion: { in: -> (_note) { noteable_types } }
   validate :positions_complete
-  validate :verify_supported
+  validate :verify_supported, unless: :importing?
 
   before_validation :set_line_code, if: :on_text?, unless: :importing?
   after_save :keep_around_commits, unless: :importing?

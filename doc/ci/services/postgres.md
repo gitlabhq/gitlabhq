@@ -7,7 +7,7 @@ type: reference
 
 # Using PostgreSQL
 
-As many applications depend on PostgreSQL as their database, you will
+As many applications depend on PostgreSQL as their database, you
 eventually need it in order for your tests to run. Below you are guided how to
 do this with the Docker and Shell executors of GitLab Runner.
 
@@ -70,7 +70,7 @@ The next step is to create a user, so sign in to PostgreSQL:
 sudo -u postgres psql -d template1
 ```
 
-Then create a user (in our case `runner`) which will be used by your
+Then create a user (in our case `runner`) which is used by your
 application. Change `$password` in the command below to a real strong password.
 
 NOTE: **Note:**
@@ -106,7 +106,7 @@ psql -U runner -h localhost -d nice_marmot -W
 ```
 
 This command explicitly directs `psql` to connect to localhost to use the md5
-authentication. If you omit this step, you'll be denied access.
+authentication. If you omit this step, you are denied access.
 
 Finally, configure your application to use the database, for example:
 
@@ -124,4 +124,4 @@ convenience that runs on [GitLab.com](https://gitlab.com) using our publicly
 available [shared runners](../runners/README.md).
 
 Want to hack on it? Fork it, commit, and push your changes. Within a few
-moments the changes will be picked by a public runner and the job will begin.
+moments the changes are picked by a public runner and the job begins.

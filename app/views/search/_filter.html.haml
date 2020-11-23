@@ -14,7 +14,7 @@
       = @project&.full_name || _("Any")
     - if @project.present?
       = link_to sprite_icon("clear"), url_for(safe_params.except(:project_id)), class: 'search-clear js-search-clear has-tooltip', title: _('Clear')
-    = icon("chevron-down")
+    = sprite_icon("chevron-down", css_class: 'dropdown-menu-toggle-icon gl-top-3')
   .dropdown-menu.dropdown-select.dropdown-menu-selectable.dropdown-menu-right
     = dropdown_title(_("Filter results by project"))
     = dropdown_filter(_("Search projects"))

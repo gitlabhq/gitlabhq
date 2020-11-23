@@ -36,7 +36,7 @@
     .col-sm-10
       .select-wrapper
         = f.select :format, options_for_select(Wiki::MARKUPS, {selected: @page.format}), {}, class: 'form-control select-control'
-        = icon('chevron-down')
+        = sprite_icon('chevron-down', css_class: 'gl-absolute gl-top-3 gl-right-3 gl-text-gray-200')
 
   .form-group.row
     .col-sm-2.col-form-label= f.label :content, class: 'control-label-full-width'

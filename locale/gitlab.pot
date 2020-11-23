@@ -8674,10 +8674,28 @@ msgstr ""
 msgid "DastSiteValidation|Text file validation"
 msgstr ""
 
+msgid "DastSiteValidation|The validation has failed. Please try again."
+msgstr ""
+
+msgid "DastSiteValidation|The validation is in progress. Please wait..."
+msgstr ""
+
 msgid "DastSiteValidation|Validate"
 msgstr ""
 
 msgid "DastSiteValidation|Validate target site"
+msgstr ""
+
+msgid "DastSiteValidation|Validated"
+msgstr ""
+
+msgid "DastSiteValidation|Validating..."
+msgstr ""
+
+msgid "DastSiteValidation|Validation failed"
+msgstr ""
+
+msgid "DastSiteValidation|Validation succeeded. Both active and passive scans can be run against the target site."
 msgstr ""
 
 msgid "Data is still calculating..."
@@ -23420,6 +23438,9 @@ msgstr[1] ""
 msgid "Reviewer(s)"
 msgstr ""
 
+msgid "Reviewers"
+msgstr ""
+
 msgid "Reviewing"
 msgstr ""
 
@@ -23983,6 +24004,9 @@ msgid "Seat Link"
 msgstr ""
 
 msgid "Seat Link is disabled, and cannot be configured through this form."
+msgstr ""
+
+msgid "SeatUsage|Seat usage"
 msgstr ""
 
 msgid "Seats usage data as of %{last_enqueue_time} (Updated daily)"
@@ -26254,6 +26278,9 @@ msgid "SubscriptionTable|Seats in subscription"
 msgstr ""
 
 msgid "SubscriptionTable|Seats owed"
+msgstr ""
+
+msgid "SubscriptionTable|See usage"
 msgstr ""
 
 msgid "SubscriptionTable|Subscription end date"

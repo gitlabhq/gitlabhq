@@ -46,6 +46,18 @@ RSpec.describe DiffNote do
 
       expect(note.errors[:noteable]).to include("doesn't support new-style diff notes")
     end
+
+    context 'when importing' do
+      it "does not check if it's supported" do
+        note = build(:diff_note_on_merge_request, project: project, noteable: nil)
+        note.importing = true
+        note.valid?
+
+        expect(note.errors.full_messages).not_to include(
+          "Noteable doesn't support new-style diff notes"
+        )
+      end
+    end
   end
 
   describe "#position=" do

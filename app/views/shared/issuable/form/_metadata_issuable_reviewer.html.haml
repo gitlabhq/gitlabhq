@@ -1,4 +1,4 @@
-= form.label :reviewer_id, "Reviewer", class: "col-form-label #{has_due_date ? "col-md-2 col-lg-4" : "col-sm-2"}"
+= form.label :reviewer_id, issuable.allows_multiple_reviewers? ? _('Reviewers') : _('Reviewer'), class: "col-form-label #{has_due_date ? "col-md-2 col-lg-4" : "col-sm-2"}"
 .col-sm-10{ class: ("col-md-8" if has_due_date) }
   .issuable-form-select-holder.selectbox
     - issuable.reviewers.each do |reviewer|
