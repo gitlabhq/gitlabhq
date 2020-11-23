@@ -264,6 +264,8 @@ export default {
   merge_trains_count: 3,
   merge_train_index: 1,
   security_reports_docs_path: 'security-reports-docs-path',
+  sast_comparison_path: '/sast_comparison_path',
+  secret_scanning_comparison_path: '/secret_scanning_comparison_path',
 };
 
 export const mockStore = {

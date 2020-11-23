@@ -58,9 +58,9 @@ sudo gitlab-rake gitlab:import:all_users_to_all_groups
 bundle exec rake gitlab:import:all_users_to_all_groups RAILS_ENV=production
 ```
 
-Admin users are added as owners so they can add additional users to the group.
+Administrators are added as owners so they can add additional users to the group.
 
-## Control the number of active users
+## Control the number of billable users
 
 Enable this setting to keep new users blocked until they have been cleared by the administrator.
 Defaults to `false`:

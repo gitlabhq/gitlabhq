@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # License **(CORE ONLY)**
 
 To interact with license endpoints, you need to authenticate yourself as an
-admin.
+administrator.
 
 ## Retrieve information about the current license
 
@@ -86,11 +86,11 @@ GET /licenses
 ]
 ```
 
-Overage is the difference between the number of active users and the licensed number of users.
+Overage is the difference between the number of billable users and the licensed number of users.
 This is calculated differently depending on whether the license has expired or not.
 
-- If the license has expired, it uses the historical maximum active user count (`historical_max`).
-- If the license has not expired, it uses the current active users count.
+- If the license has expired, it uses the historical maximum billable user count (`historical_max`).
+- If the license has not expired, it uses the current billable users count.
 
 Returns:
 

@@ -314,6 +314,31 @@ class MergeRequest < ApplicationRecord
 
   scope :with_jira_issue_keys, -> { where('title ~ :regex OR merge_requests.description ~ :regex', regex: Gitlab::Regex.jira_issue_key_regex.source) }
 
+  scope :review_requested, -> do
+    where(reviewers_subquery.exists)
+  end
+
+  scope :no_review_requested, -> do
+    where(reviewers_subquery.exists.not)
+  end
+
+  scope :review_requested_to, ->(user) do
+    where(
+      reviewers_subquery
+        .where(Arel::Table.new("#{to_ability_name}_reviewers")[:user_id].eq(user))
+        .exists
+    )
+  end
+
+  scope :no_review_requested_to, ->(user) do
+    where(
+      reviewers_subquery
+        .where(Arel::Table.new("#{to_ability_name}_reviewers")[:user_id].eq(user))
+        .exists
+        .not
+    )
+  end
+
   after_save :keep_around_commit, unless: :importing?
 
   alias_attribute :project, :target_project
@@ -359,6 +384,12 @@ class MergeRequest < ApplicationRecord
     else
       super
     end
+  end
+
+  def self.reviewers_subquery
+    MergeRequestReviewer.arel_table
+      .project('true')
+      .where(Arel::Nodes::SqlLiteral.new("#{to_ability_name}_id = #{to_ability_name}s.id"))
   end
 
   def rebase_in_progress?

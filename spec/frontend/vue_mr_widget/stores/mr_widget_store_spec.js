@@ -1,3 +1,4 @@
+import { convertToCamelCase } from '~/lib/utils/text_utility';
 import MergeRequestStore from '~/vue_merge_request_widget/stores/mr_widget_store';
 import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
 import mockData from '../mock_data';
@@ -152,5 +153,18 @@ describe('MergeRequestStore', () => {
 
       expect(store.securityReportsDocsPath).toBe('security-reports-docs-path');
     });
+
+    it.each(['sast_comparison_path', 'secret_scanning_comparison_path'])(
+      'should set %s path',
+      property => {
+        // Ensure something is set in the mock data
+        expect(property in mockData).toBe(true);
+        const expectedValue = mockData[property];
+
+        store.setPaths({ ...mockData });
+
+        expect(store[convertToCamelCase(property)]).toBe(expectedValue);
+      },
+    );
   });
 });

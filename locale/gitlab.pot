@@ -24171,6 +24171,9 @@ msgstr ""
 msgid "SecurityReports|Fuzzing artifacts"
 msgstr ""
 
+msgid "SecurityReports|Go to the %{linkStart}pipelines tab%{linkEnd} to download the security reports"
+msgstr ""
+
 msgid "SecurityReports|Hide dismissed"
 msgstr ""
 

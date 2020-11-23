@@ -54,7 +54,7 @@ GET /users?username=jack_smith
 ```
 
 In addition, you can filter users based on the states `blocked` and `active`.
-It does not support `active=false` or `blocked=false`. The list of active users
+It does not support `active=false` or `blocked=false`. The list of billable users
 is the total number of users minus the blocked users.
 
 ```plaintext

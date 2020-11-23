@@ -41,6 +41,8 @@ class MergeRequestsFinder < IssuableFinder
       :environment,
       :merged_after,
       :merged_before,
+      :reviewer_id,
+      :reviewer_username,
       :target_branch,
       :wip
     ]
@@ -54,6 +56,10 @@ class MergeRequestsFinder < IssuableFinder
     MergeRequest
   end
 
+  def params_class
+    MergeRequestsFinder::Params
+  end
+
   def filter_items(_items)
     items = by_commit(super)
     items = by_source_branch(items)
@@ -62,12 +68,14 @@ class MergeRequestsFinder < IssuableFinder
     items = by_merged_at(items)
     items = by_approvals(items)
     items = by_deployments(items)
+    items = by_reviewer(items)
 
     by_source_project_id(items)
   end
 
   def filter_negated_items(items)
     items = super(items)
+    items = by_negated_reviewer(items)
     by_negated_target_branch(items)
   end
 
@@ -185,6 +193,30 @@ class MergeRequestsFinder < IssuableFinder
     deploys = deploys.deployed_after(after) if after
 
     items.where_exists(deploys)
+  end
+
+  def by_reviewer(items)
+    return items unless params.reviewer_id? || params.reviewer_username?
+
+    if params.filter_by_no_reviewer?
+      items.no_review_requested
+    elsif params.filter_by_any_reviewer?
+      items.review_requested
+    elsif params.reviewer
+      items.review_requested_to(params.reviewer)
+    else # reviewer not found
+      items.none
+    end
+  end
+
+  def by_negated_reviewer(items)
+    return items unless not_params.reviewer_id? || not_params.reviewer_username?
+
+    if not_params.reviewer.present?
+      items.no_review_requested_to(not_params.reviewer)
+    else # reviewer not found
+      items.none
+    end
   end
 end
 

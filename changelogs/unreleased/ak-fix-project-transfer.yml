@@ -1,5 +1,0 @@
----
-title: Fix project transfer corrupting shared runners state
-merge_request: 48032
-author:
-type: fixed

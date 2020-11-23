@@ -161,7 +161,7 @@ We recommend following these steps during renewal:
    TIP: **Tip:**
    If you need to change your [GitLab tier](https://about.gitlab.com/pricing/), contact our sales team via `renewals@gitlab.com` for assistance as this can't be done in the Customers Portal.
 
-1. In the first box, enter the total number of user licenses you’ll need for the upcoming year. Be sure this number is at least **equal to, or greater than** the number of active users in the system at the time of performing the renewal.
+1. In the first box, enter the total number of user licenses you’ll need for the upcoming year. Be sure this number is at least **equal to, or greater than** the number of billable users in the system at the time of performing the renewal.
 1. Enter the number of [users over license](#users-over-license) in the second box for the user overage incurred in your previous subscription term.
 
    TIP: **Tip:**
@@ -172,8 +172,8 @@ We recommend following these steps during renewal:
    | Field | Description |
    |:------|:------------|
    | Users in License | The number of users you've paid for in the current license loaded on the system. This does not include the amount you've paid for `Users over license` during renewal. |
-   | Active users | The daily count of active users on your system. |
-   | Maximum users | The highest number of active users on your system during the term of the loaded license. If this number exceeds your users in license count at any point, you incur users over license. |
+   | Billable users | The daily count of billable users on your system. |
+   | Maximum users | The highest number of billable users on your system during the term of the loaded license. If this number exceeds your users in license count at any point, you incur users over license. |
    | Users over license | The number of users that exceed the `Users in License` for the current license term. Charges for this number of users are incurred at the next renewal. |
 
 1. Review your renewal details and complete the payment process.
@@ -195,7 +195,7 @@ Seat Link provides **only** the following information to GitLab:
 - Date
 - License key
 - Historical maximum user count
-- Active users count
+- Billable users count
 
 For offline or closed network customers, the existing [true-up model](#users-over-license) is used. Prorated charges are not possible without user count data.
 

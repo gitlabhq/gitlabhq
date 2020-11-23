@@ -25,3 +25,11 @@ export const status = {
 
 export const ACCESSIBILITY_ISSUE_ERROR = 'error';
 export const ACCESSIBILITY_ISSUE_WARNING = 'warning';
+
+/**
+ * Slot names for the ReportSection component, corresponding to the success,
+ * loading and error statuses.
+ */
+export const SLOT_SUCCESS = 'success';
+export const SLOT_LOADING = 'loading';
+export const SLOT_ERROR = 'error';

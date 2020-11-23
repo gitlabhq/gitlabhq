@@ -399,6 +399,7 @@
       when: never
     - <<: *if-merge-request
       changes: *code-backstage-patterns
+      when: always
     - <<: *if-master-refs
       changes: *code-backstage-patterns
 
@@ -651,8 +652,10 @@
       when: never
     - <<: *if-merge-request
       changes: *code-backstage-patterns
+      when: always
     - <<: *if-master-schedule-2-hourly
     - <<: *if-merge-request-title-run-all-rspec
+      when: always
 
 .rails:rules:rspec-feature-flags:
   rules:

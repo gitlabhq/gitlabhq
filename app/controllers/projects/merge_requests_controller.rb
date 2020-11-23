@@ -39,6 +39,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:highlight_current_diff_row, @project)
     push_frontend_feature_flag(:default_merge_ref_for_diffs, @project)
     push_frontend_feature_flag(:core_security_mr_widget, @project, default_enabled: true)
+    push_frontend_feature_flag(:core_security_mr_widget_counts, @project)
     push_frontend_feature_flag(:remove_resolve_note, @project, default_enabled: true)
     push_frontend_feature_flag(:test_failure_history, @project)
 

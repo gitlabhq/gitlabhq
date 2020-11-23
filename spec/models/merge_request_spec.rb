@@ -92,6 +92,39 @@ RSpec.describe MergeRequest, factory_default: :keep do
     it { is_expected.not_to include(mr_without_jira_reference) }
   end
 
+  context 'scopes' do
+    let_it_be(:user1) { create(:user) }
+    let_it_be(:user2) { create(:user) }
+
+    let_it_be(:merge_request1) { create(:merge_request, :unique_branches, reviewers: [user1])}
+    let_it_be(:merge_request2) { create(:merge_request, :unique_branches, reviewers: [user2])}
+    let_it_be(:merge_request3) { create(:merge_request, :unique_branches, reviewers: [])}
+
+    describe '.review_requested' do
+      it 'returns MRs that has any review requests' do
+        expect(described_class.review_requested).to eq([merge_request1, merge_request2])
+      end
+    end
+
+    describe '.no_review_requested' do
+      it 'returns MRs that has no review requests' do
+        expect(described_class.no_review_requested).to eq([merge_request3])
+      end
+    end
+
+    describe '.review_requested_to' do
+      it 'returns MRs that the user has been requested to review' do
+        expect(described_class.review_requested_to(user1)).to eq([merge_request1])
+      end
+    end
+
+    describe '.no_review_requested_to' do
+      it 'returns MRs that the user has been requested to review' do
+        expect(described_class.no_review_requested_to(user1)).to eq([merge_request2, merge_request3])
+      end
+    end
+  end
+
   describe '#squash_in_progress?' do
     let(:repo_path) do
       Gitlab::GitalyClient::StorageSettings.allow_disk_access do
