@@ -380,7 +380,7 @@ status.
 ## Actions you can take on an issue board
 
 - [Create a new list](#create-a-new-list).
-- [Delete an existing list](#delete-a-list).
+- [Remove an existing list](#remove-a-list).
 - [Add issues to a list](#add-issues-to-a-list).
 - [Remove an issue from a list](#remove-an-issue-from-a-list).
 - [Filter issues](#filter-issues) that appear across your issue board.
@@ -421,23 +421,36 @@ choosing **Create project label** or **Create group label**.
 This creates the label immediately and adds it to the dropdown.
 You can now choose it to create a list.
 
-### Delete a list
+### Remove a list
 
-To delete a list from the issue board, use the small trash icon present
-in the list's heading. A confirmation dialog appears for you to confirm.
-
-Deleting a list doesn't have any effect on issues and labels, as it's just the
+Removing a list doesn't have any effect on issues and labels, as it's just the
 list view that's removed. You can always restore it later if you need.
+
+To remove a list from an issue board:
+
+1. Select the **List settings** icon (**{settings}**) on the top of the list you want to remove. The
+   list settings sidebar opens on the right.
+1. Select **Remove list**. A confirmation dialog appears.
+1. Select **OK**.
 
 ### Add issues to a list
 
-You can add issues to a list by clicking the **Add issues** button
+You can add issues to a list in a project issue board by clicking the **Add issues** button
 in the top right corner of the issue board. This opens up a modal
 window where you can see all the issues that do not belong to any list.
 
 Select one or more issues by clicking the cards and then click **Add issues**
 to add them to the selected list. You can limit the issues you want to add to
-the list by filtering by author, assignee, milestone, and label.
+the list by filtering by the following:
+
+- Assignee
+- Author
+- Epic
+- Label
+- Milestone
+- My Reaction
+- Release
+- Weight
 
 ![Bulk adding issues to lists](img/issue_boards_add_issues_modal_v13_6.png)
 
@@ -455,7 +468,16 @@ You should be able to use the filters on top of your issue board to show only
 the results you want. It's similar to the filtering used in the issue tracker,
 as the metadata from the issues and labels is re-used in the issue board.
 
-You can filter by author, assignee, milestone, and label.
+You can filter by the following:
+
+- Assignee
+- Author
+- Epic
+- Label
+- Milestone
+- My Reaction
+- Release
+- Weight
 
 ### Create workflows
 
