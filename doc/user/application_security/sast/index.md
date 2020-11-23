@@ -107,7 +107,7 @@ as shown in the following table:
 | [Configure SAST Scanners](#configuration)                                          | **{check-circle}**  | **{check-circle}** |
 | [Customize SAST Settings](#customizing-the-sast-settings)                          | **{check-circle}**  | **{check-circle}** |
 | View [JSON Report](#reports-json-format)                                           | **{check-circle}**  | **{check-circle}** |
-| [Presentation of JSON Report in Merge Request](#overview)                          | **{dotted-circle}** | **{check-circle}** |
+| Presentation of JSON Report in Merge Request                          | **{dotted-circle}** | **{check-circle}** |
 | [Interaction with Vulnerabilities](#interacting-with-the-vulnerabilities) | **{dotted-circle}** | **{check-circle}** |
 | [Access to Security Dashboard](#security-dashboard)                       | **{dotted-circle}** | **{check-circle}** |
 | [Configure SAST in the UI](#configure-sast-in-the-ui)                     | **{dotted-circle}** | **{check-circle}** |

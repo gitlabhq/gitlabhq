@@ -59,7 +59,7 @@ as shown in the following table:
 | [Configure Secret Detection Scanners](#configuration)                                 | **{check-circle}**  | **{check-circle}** |
 | [Customize Secret Detection Settings](#customizing-settings)                 | **{check-circle}**  | **{check-circle}** |
 | View [JSON Report](../sast/index.md#reports-json-format)                                  | **{check-circle}**  | **{check-circle}** |
-| [Presentation of JSON Report in Merge Request](#overview)                 | **{dotted-circle}** | **{check-circle}** |
+| Presentation of JSON Report in Merge Request                 | **{dotted-circle}** | **{check-circle}** |
 | [Interaction with Vulnerabilities](../vulnerabilities/index.md) | **{dotted-circle}** | **{check-circle}** |
 | [Access to Security Dashboard](../security_dashboard/index.md)                       | **{dotted-circle}** | **{check-circle}** |
 
