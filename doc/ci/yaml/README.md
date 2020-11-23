@@ -1342,14 +1342,7 @@ if there is no `if:` statement that limits the job to branch or merge request pi
 ##### Variables in `rules:changes`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34272) in GitLab 13.6.
-> - It was [deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
-> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/267192) in GitLab 13.6.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-variables-support-in-ruleschanges). **(CORE ONLY)**
-
-CAUTION: **Warning:**
-This feature might not be available to you. Check the **version history** note above for details.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/267192) in GitLab 13.7.
 
 Environment variables can be used in `rules:changes` expressions to determine when
 to add jobs to a pipeline:
@@ -1367,25 +1360,6 @@ docker build:
 The `$` character can be used for both variables and paths. For example, if the
 `$DOCKERFILES_DIR` variable exists, its value is used. If it does not exist, the
 `$` is interpreted as being part of a path.
-
-###### Enable or disable variables support in `rules:changes` **(CORE ONLY)**
-
-Variables support in `rules:changes` is under development, but is ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:ci_variable_expansion_in_rules_changes)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:ci_variable_expansion_in_rules_changes)
-```
 
 #### `rules:exists`
 

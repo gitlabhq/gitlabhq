@@ -216,8 +216,12 @@ export default {
       return {
         name: this.currentIntegration?.name || '',
         active: this.currentIntegration?.active || false,
-        token: this.currentIntegration?.token || this.selectedIntegrationType.token,
-        url: this.currentIntegration?.url || this.selectedIntegrationType.url,
+        token:
+          this.currentIntegration?.token ||
+          (this.selectedIntegrationType !== this.generic ? this.selectedIntegrationType.token : ''),
+        url:
+          this.currentIntegration?.url ||
+          (this.selectedIntegrationType !== this.generic ? this.selectedIntegrationType.url : ''),
         apiUrl: this.currentIntegration?.apiUrl || '',
       };
     },
@@ -246,8 +250,20 @@ export default {
     canEditPayload() {
       return this.hasSamplePayload && !this.resetSamplePayloadConfirmed;
     },
+    isResetAuthKeyDisabled() {
+      return !this.active && !this.integrationForm.token !== '';
+    },
     isPayloadEditDisabled() {
-      return !this.active || this.canEditPayload;
+      return this.glFeatures.multipleHttpIntegrationsCustomMapping
+        ? !this.active || this.canEditPayload
+        : !this.active;
+    },
+    isSubmitTestPayloadDisabled() {
+      return (
+        !this.active ||
+        Boolean(this.integrationTestPayload.error) ||
+        this.integrationTestPayload.json === ''
+      );
     },
   },
   watch: {
@@ -257,7 +273,7 @@ export default {
       }
       this.selectedIntegration = val.type;
       this.active = val.active;
-      if (val.type === typeSet.http) this.getIntegrationMapping(val.id);
+      if (val.type === typeSet.http && this.showMappingBuilder) this.getIntegrationMapping(val.id);
       return this.integrationTypeSelect();
     },
   },
@@ -297,14 +313,8 @@ export default {
         });
     },
     submitWithTestPayload() {
-      return service
-        .updateTestAlert(this.testAlertPayload)
-        .then(() => {
-          this.submit();
-        })
-        .catch(() => {
-          this.$emit('test-payload-failure');
-        });
+      this.$emit('set-test-alert-payload', this.testAlertPayload);
+      this.submit();
     },
     submit() {
       // TODO: Will be removed in 13.7 as part of: https://gitlab.com/gitlab-org/gitlab/-/issues/273657
@@ -323,6 +333,7 @@ export default {
         return this.$emit('update-integration', integrationPayload);
       }
 
+      this.reset();
       return this.$emit('create-new-integration', integrationPayload);
     },
     reset() {
@@ -539,7 +550,7 @@ export default {
               </template>
             </gl-form-input-group>
 
-            <gl-button v-gl-modal.authKeyModal :disabled="!active">
+            <gl-button v-gl-modal.authKeyModal :disabled="isResetAuthKeyDisabled">
               {{ $options.i18n.integrationFormSteps.step3.reset }}
             </gl-button>
             <gl-modal
@@ -642,7 +653,7 @@ export default {
         <gl-button
           v-if="!isManagingOpsgenie"
           data-testid="integration-test-and-submit"
-          :disabled="Boolean(integrationTestPayload.error)"
+          :disabled="isSubmitTestPayloadDisabled"
           category="secondary"
           variant="success"
           class="gl-mx-3 js-no-auto-disable"

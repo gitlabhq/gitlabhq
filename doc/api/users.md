@@ -1275,8 +1275,8 @@ Parameters:
 Returns:
 
 - `201 OK` on success.
-- `404 User Not Found` if user cannot be found.
-- `403 Forbidden` when trying to activate a user blocked by admin or by LDAP synchronization.
+- `404 User Not Found` if the user cannot be found.
+- `403 Forbidden` if the user cannot be activated because they are blocked by an administrator or by LDAP synchronization.
 
 ### Get user contribution events
 
@@ -1335,6 +1335,44 @@ Example response:
       "expires_at" : "2017-04-14"
    }
 ]
+```
+
+## Approve user
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263107) in GitLab 13.7.
+
+Approves the specified user. Available only for administrators.
+
+```plaintext
+POST /users/:id/approve
+```
+
+Parameters:
+
+- `id` (required) - ID of specified user
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/42/approve"
+```
+
+Returns:
+
+- `201 OK` on success.
+- `404 User Not Found` if user cannot be found.
+- `403 Forbidden` if the user cannot be approved because they are blocked by an administrator or by LDAP synchronization.
+
+Example Responses:
+
+```json
+{ "message": "Success" }
+```
+
+```json
+{ "message": "404 User Not Found" }
+```
+
+```json
+{ "message": "The user you are trying to approve is not pending an approval" }
 ```
 
 ## Get an impersonation token of a user

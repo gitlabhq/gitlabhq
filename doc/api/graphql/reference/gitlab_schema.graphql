@@ -23031,6 +23031,11 @@ type User {
   id: ID!
 
   """
+  The location of the user.
+  """
+  location: String
+
+  """
   Human-readable name of the user
   """
   name: String!

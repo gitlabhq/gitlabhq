@@ -66795,6 +66795,20 @@
               "deprecationReason": null
             },
             {
+              "name": "location",
+              "description": "The location of the user.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "name",
               "description": "Human-readable name of the user",
               "args": [

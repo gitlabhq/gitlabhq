@@ -20038,6 +20038,8 @@ CREATE INDEX active_billable_users ON users USING btree (id) WHERE (((state)::te
 
 CREATE INDEX analytics_index_audit_events_on_created_at_and_author_id ON audit_events USING btree (created_at, author_id);
 
+CREATE INDEX analytics_index_audit_events_part_on_created_at_and_author_id ON ONLY audit_events_part_5fc467ac26 USING btree (created_at, author_id);
+
 CREATE INDEX analytics_index_events_on_created_at_and_author_id ON events USING btree (created_at, author_id);
 
 CREATE INDEX analytics_repository_languages_on_project_id ON analytics_language_trend_repository_languages USING btree (project_id);
@@ -20081,6 +20083,8 @@ CREATE UNIQUE INDEX epic_user_mentions_on_epic_id_index ON epic_user_mentions US
 CREATE INDEX finding_links_on_vulnerability_occurrence_id ON vulnerability_finding_links USING btree (vulnerability_occurrence_id);
 
 CREATE INDEX idx_audit_events_on_entity_id_desc_author_id_created_at ON audit_events USING btree (entity_id, entity_type, id DESC, author_id, created_at);
+
+CREATE INDEX idx_audit_events_part_on_entity_id_desc_author_id_created_at ON ONLY audit_events_part_5fc467ac26 USING btree (entity_id, entity_type, id DESC, author_id, created_at);
 
 CREATE INDEX idx_ci_pipelines_artifacts_locked ON ci_pipelines USING btree (ci_ref_id, id) WHERE (locked = 1);
 

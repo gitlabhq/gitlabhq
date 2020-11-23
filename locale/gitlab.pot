@@ -2733,6 +2733,9 @@ msgstr ""
 msgid "AlertsIntegrations|The integration token could not be reset. Please try again."
 msgstr ""
 
+msgid "AlertsIntegrations|The test alert has been successfully sent, and should now be visible on your alerts list."
+msgstr ""
+
 msgid "AlertsIntegrations|You have opted to delete the %{integrationName} integration. Do you want to proceed? It means you will no longer receive alerts from this endpoint in your alert list, and this action cannot be undone."
 msgstr ""
 

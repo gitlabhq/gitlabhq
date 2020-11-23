@@ -7,8 +7,9 @@ module Users
     end
 
     def execute(user)
-      return error(_('You are not allowed to approve a user')) unless allowed?
-      return error(_('The user you are trying to approve is not pending an approval')) unless approval_required?(user)
+      return error(_('You are not allowed to approve a user'), :forbidden) unless allowed?
+      return error(_('The user you are trying to approve is not pending an approval'), :conflict) if user.active?
+      return error(_('The user you are trying to approve is not pending an approval'), :conflict) unless approval_required?(user)
 
       if user.activate
         # Resends confirmation email if the user isn't confirmed yet.
@@ -18,9 +19,9 @@ module Users
         DeviseMailer.user_admin_approval(user).deliver_later
 
         after_approve_hook(user)
-        success
+        success(message: 'Success', http_status: :created)
       else
-        error(user.errors.full_messages.uniq.join('. '))
+        error(user.errors.full_messages.uniq.join('. '), :unprocessable_entity)
       end
     end
 

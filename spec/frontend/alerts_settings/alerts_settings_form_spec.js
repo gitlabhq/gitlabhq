@@ -8,7 +8,7 @@ import {
   GlFormTextarea,
 } from '@gitlab/ui';
 import waitForPromises from 'helpers/wait_for_promises';
-import AlertsSettingsForm from '~/alerts_settings/components/alerts_settings_form_new.vue';
+import AlertsSettingsForm from '~/alerts_settings/components/alerts_settings_form.vue';
 import { defaultAlertSettingsConfig } from './util';
 import { typeSet } from '~/alerts_settings/constants';
 

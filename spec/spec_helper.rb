@@ -8,6 +8,8 @@ if $".include?(File.expand_path('fast_spec_helper.rb', __dir__))
   abort 'Aborting...'
 end
 
+require './spec/deprecation_toolkit_env'
+
 require './spec/simplecov_env'
 SimpleCovEnv.start!
 

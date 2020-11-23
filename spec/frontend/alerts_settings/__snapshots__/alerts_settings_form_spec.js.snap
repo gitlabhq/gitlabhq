@@ -87,7 +87,7 @@ exports[`AlertsSettingsFormNew with default values renders the initial template 
     <div class=\\"gl-display-flex gl-justify-content-start gl-py-3\\"><button data-testid=\\"integration-form-submit\\" type=\\"submit\\" class=\\"btn js-no-auto-disable btn-success btn-md gl-button\\">
         <!---->
         <!----> <span class=\\"gl-button-text\\">Save integration
-      </span></button> <button data-testid=\\"integration-test-and-submit\\" type=\\"button\\" class=\\"btn gl-mx-3 js-no-auto-disable btn-success btn-md gl-button btn-success-secondary\\">
+      </span></button> <button data-testid=\\"integration-test-and-submit\\" type=\\"button\\" disabled=\\"disabled\\" class=\\"btn gl-mx-3 js-no-auto-disable btn-success btn-md disabled gl-button btn-success-secondary\\">
         <!---->
         <!----> <span class=\\"gl-button-text\\">Save and test payload</span></button> <button type=\\"reset\\" class=\\"btn js-no-auto-disable btn-default btn-md gl-button\\">
         <!---->

@@ -10,9 +10,9 @@ module Terraform
 
     scope :ordered_by_version_desc, -> { order(version: :desc) }
 
-    default_value_for(:file_store) { VersionedStateUploader.default_store }
+    default_value_for(:file_store) { StateUploader.default_store }
 
-    mount_file_store_uploader VersionedStateUploader
+    mount_file_store_uploader StateUploader
 
     delegate :project_id, :uuid, to: :terraform_state, allow_nil: true
 

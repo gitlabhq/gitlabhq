@@ -38,6 +38,8 @@ module Types
           feature_flag: :user_group_counts
     field :status, Types::UserStatusType, null: true,
            description: 'User status'
+    field :location, ::GraphQL::STRING_TYPE, null: true,
+          description: 'The location of the user.'
     field :project_memberships, Types::ProjectMemberType.connection_type, null: true,
           description: 'Project memberships of the user',
           method: :project_members

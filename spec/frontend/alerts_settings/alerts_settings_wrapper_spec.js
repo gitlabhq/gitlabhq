@@ -1,11 +1,13 @@
 import VueApollo from 'vue-apollo';
 import { mount, createLocalVue } from '@vue/test-utils';
+import AxiosMockAdapter from 'axios-mock-adapter';
 import createMockApollo from 'jest/helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
 import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
+import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
+import axios from '~/lib/utils/axios_utils';
 import AlertsSettingsWrapper from '~/alerts_settings/components/alerts_settings_wrapper.vue';
-import AlertsSettingsFormNew from '~/alerts_settings/components/alerts_settings_form_new.vue';
+import AlertsSettingsForm from '~/alerts_settings/components/alerts_settings_form.vue';
 import IntegrationsList from '~/alerts_settings/components/alerts_integrations_list.vue';
 import getIntegrationsQuery from '~/alerts_settings/graphql/queries/get_integrations.query.graphql';
 import createHttpIntegrationMutation from '~/alerts_settings/graphql/mutations/create_http_integration.mutation.graphql';
@@ -113,17 +115,15 @@ describe('AlertsSettingsWrapper', () => {
   }
 
   afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
+    wrapper.destroy();
+    wrapper = null;
   });
 
   describe('rendered via default permissions', () => {
     it('renders the GraphQL alerts integrations list and new form', () => {
       createComponent();
       expect(wrapper.find(IntegrationsList).exists()).toBe(true);
-      expect(wrapper.find(AlertsSettingsFormNew).exists()).toBe(true);
+      expect(wrapper.find(AlertsSettingsForm).exists()).toBe(true);
     });
 
     it('uses a loading state inside the IntegrationsList table', () => {
@@ -153,7 +153,7 @@ describe('AlertsSettingsWrapper', () => {
       jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue({
         data: { createHttpIntegrationMutation: { integration: { id: '1' } } },
       });
-      wrapper.find(AlertsSettingsFormNew).vm.$emit('create-new-integration', {
+      wrapper.find(AlertsSettingsForm).vm.$emit('create-new-integration', {
         type: typeSet.http,
         variables: createHttpVariables,
       });
@@ -175,7 +175,7 @@ describe('AlertsSettingsWrapper', () => {
       jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue({
         data: { updateHttpIntegrationMutation: { integration: { id: '1' } } },
       });
-      wrapper.find(AlertsSettingsFormNew).vm.$emit('update-integration', {
+      wrapper.find(AlertsSettingsForm).vm.$emit('update-integration', {
         type: typeSet.http,
         variables: updateHttpVariables,
       });
@@ -195,7 +195,7 @@ describe('AlertsSettingsWrapper', () => {
       jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue({
         data: { resetHttpTokenMutation: { integration: { id: '1' } } },
       });
-      wrapper.find(AlertsSettingsFormNew).vm.$emit('reset-token', {
+      wrapper.find(AlertsSettingsForm).vm.$emit('reset-token', {
         type: typeSet.http,
         variables: { id: ID },
       });
@@ -217,7 +217,7 @@ describe('AlertsSettingsWrapper', () => {
       jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue({
         data: { createPrometheusIntegrationMutation: { integration: { id: '2' } } },
       });
-      wrapper.find(AlertsSettingsFormNew).vm.$emit('create-new-integration', {
+      wrapper.find(AlertsSettingsForm).vm.$emit('create-new-integration', {
         type: typeSet.prometheus,
         variables: createPrometheusVariables,
       });
@@ -239,7 +239,7 @@ describe('AlertsSettingsWrapper', () => {
       jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue({
         data: { updatePrometheusIntegrationMutation: { integration: { id: '2' } } },
       });
-      wrapper.find(AlertsSettingsFormNew).vm.$emit('update-integration', {
+      wrapper.find(AlertsSettingsForm).vm.$emit('update-integration', {
         type: typeSet.prometheus,
         variables: updatePrometheusVariables,
       });
@@ -259,7 +259,7 @@ describe('AlertsSettingsWrapper', () => {
       jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue({
         data: { resetPrometheusTokenMutation: { integration: { id: '1' } } },
       });
-      wrapper.find(AlertsSettingsFormNew).vm.$emit('reset-token', {
+      wrapper.find(AlertsSettingsForm).vm.$emit('reset-token', {
         type: typeSet.prometheus,
         variables: { id: ID },
       });
@@ -279,7 +279,7 @@ describe('AlertsSettingsWrapper', () => {
       });
 
       jest.spyOn(wrapper.vm.$apollo, 'mutate').mockRejectedValue(ADD_INTEGRATION_ERROR);
-      wrapper.find(AlertsSettingsFormNew).vm.$emit('create-new-integration', {});
+      wrapper.find(AlertsSettingsForm).vm.$emit('create-new-integration', {});
 
       await waitForPromises();
 
@@ -294,7 +294,7 @@ describe('AlertsSettingsWrapper', () => {
 
       jest.spyOn(wrapper.vm.$apollo, 'mutate').mockRejectedValue(RESET_INTEGRATION_TOKEN_ERROR);
 
-      wrapper.find(AlertsSettingsFormNew).vm.$emit('reset-token', {});
+      wrapper.find(AlertsSettingsForm).vm.$emit('reset-token', {});
 
       await waitForPromises();
       expect(createFlash).toHaveBeenCalledWith({ message: RESET_INTEGRATION_TOKEN_ERROR });
@@ -308,23 +308,25 @@ describe('AlertsSettingsWrapper', () => {
 
       jest.spyOn(wrapper.vm.$apollo, 'mutate').mockRejectedValue(errorMsg);
 
-      wrapper.find(AlertsSettingsFormNew).vm.$emit('update-integration', {});
+      wrapper.find(AlertsSettingsForm).vm.$emit('update-integration', {});
 
       await waitForPromises();
       expect(createFlash).toHaveBeenCalledWith({ message: UPDATE_INTEGRATION_ERROR });
     });
 
     it('shows an error alert when integration test payload fails ', async () => {
+      const mock = new AxiosMockAdapter(axios);
+      mock.onPost(/(.*)/).replyOnce(403);
       createComponent({
         data: { integrations: { list: mockIntegrations }, currentIntegration: mockIntegrations[0] },
         loading: false,
       });
 
-      wrapper.find(AlertsSettingsFormNew).vm.$emit('test-payload-failure');
-
-      await waitForPromises();
-      expect(createFlash).toHaveBeenCalledWith({ message: INTEGRATION_PAYLOAD_TEST_ERROR });
-      expect(createFlash).toHaveBeenCalledTimes(1);
+      return wrapper.vm.validateAlertPayload({ endpoint: '', data: '', token: '' }).then(() => {
+        expect(createFlash).toHaveBeenCalledWith({ message: INTEGRATION_PAYLOAD_TEST_ERROR });
+        expect(createFlash).toHaveBeenCalledTimes(1);
+        mock.restore();
+      });
     });
   });
 

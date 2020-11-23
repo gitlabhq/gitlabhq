@@ -1,0 +1,6 @@
+---
+title: Update alert setting form to handle JSON payload submit when mapping builder
+  is not enabled
+merge_request: 48231
+author:
+type: fixed
