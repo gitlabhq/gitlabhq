@@ -250,6 +250,8 @@
   - 1
 - - project_service
   - 1
+- - project_template_export
+  - 1
 - - project_update_repository_storage
   - 1
 - - prometheus_create_default_alerts

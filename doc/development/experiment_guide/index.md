@@ -49,7 +49,6 @@ addressed.
      },
      # Add your experiment here:
      signup_flow: {
-       environment: ::Gitlab.dev_env_or_com?, # Target environment, defaults to enabled for development and GitLab.com
        tracking_category: 'Growth::Activation::Experiment::SignUpFlow' # Used for providing the category when setting up tracking data
      }
    }.freeze

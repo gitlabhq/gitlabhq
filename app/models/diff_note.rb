@@ -149,7 +149,7 @@ class DiffNote < Note
   end
 
   def supported?
-    for_commit? || for_design? || self.noteable.has_complete_diff_refs?
+    for_commit? || for_design? || self.noteable&.has_complete_diff_refs?
   end
 
   def set_line_code

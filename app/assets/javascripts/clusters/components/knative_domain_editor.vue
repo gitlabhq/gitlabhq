@@ -7,6 +7,7 @@ import {
   GlSearchBoxByType,
   GlSprintf,
   GlButton,
+  GlAlert,
 } from '@gitlab/ui';
 import ClipboardButton from '../../vue_shared/components/clipboard_button.vue';
 import { __, s__ } from '~/locale';
@@ -25,6 +26,7 @@ export default {
     GlDropdownItem,
     GlSearchBoxByType,
     GlSprintf,
+    GlAlert,
   },
   props: {
     knative: {
@@ -106,12 +108,13 @@ export default {
 
 <template>
   <div class="row">
-    <div
+    <gl-alert
       v-if="knative.updateFailed"
-      class="bs-callout bs-callout-danger cluster-application-banner col-12 mt-2 mb-2 js-cluster-knative-domain-name-failure-message"
+      class="gl-mb-5 col-12 js-cluster-knative-domain-name-failure-message"
+      variant="danger"
     >
       {{ s__('ClusterIntegration|Something went wrong while updating Knative domain name.') }}
-    </div>
+    </gl-alert>
 
     <div
       :class="{ 'col-md-6': knativeInstalled, 'col-12': !knativeInstalled }"

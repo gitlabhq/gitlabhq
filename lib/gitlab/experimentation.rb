@@ -4,7 +4,6 @@
 #
 # Utility module for A/B testing experimental features. Define your experiments in the `EXPERIMENTS` constant.
 # Experiment options:
-# - environment (optional, defaults to enabled for development and GitLab.com)
 # - tracking_category (optional, used to set the category when tracking an experiment event)
 # - use_backwards_compatible_subject_index (optional, set this to true if you need backwards compatibility)
 #
@@ -87,14 +86,13 @@ module Gitlab
 
     class << self
       def experiment(key)
-        Experiment.new(EXPERIMENTS[key].merge(key: key))
+        Gitlab::Experimentation::Experiment.new(key, **EXPERIMENTS[key])
       end
 
       def enabled?(experiment_key)
         return false unless EXPERIMENTS.key?(experiment_key)
 
-        experiment = experiment(experiment_key)
-        experiment.enabled_for_environment? && experiment.enabled?
+        experiment(experiment_key).enabled?
       end
 
       def enabled_for_attribute?(experiment_key, attribute)
@@ -104,37 +102,6 @@ module Gitlab
 
       def enabled_for_value?(experiment_key, value)
         enabled?(experiment_key) && experiment(experiment_key).enabled_for_index?(value)
-      end
-    end
-
-    Experiment = Struct.new(
-      :key,
-      :environment,
-      :tracking_category,
-      :use_backwards_compatible_subject_index,
-      keyword_init: true
-    ) do
-      def enabled?
-        experiment_percentage > 0
-      end
-
-      def enabled_for_environment?
-        return ::Gitlab.dev_env_or_com? if environment.nil?
-
-        environment
-      end
-
-      def enabled_for_index?(index)
-        return false if index.blank?
-
-        index <= experiment_percentage
-      end
-
-      private
-
-      # When a feature does not exist, the `percentage_of_time_value` method will return 0
-      def experiment_percentage
-        @experiment_percentage ||= Feature.get(:"#{key}_experiment_percentage").percentage_of_time_value # rubocop:disable Gitlab/AvoidFeatureGet
       end
     end
   end

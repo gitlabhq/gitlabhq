@@ -33,27 +33,25 @@ RSpec.describe Gitlab::Experimentation, :snowplow do
   before do
     stub_const('Gitlab::Experimentation::EXPERIMENTS', {
       backwards_compatible_test_experiment: {
-        environment: environment,
         tracking_category: 'Team',
         use_backwards_compatible_subject_index: true
       },
       test_experiment: {
-        environment: environment,
         tracking_category: 'Team'
       }
     })
 
     Feature.enable_percentage_of_time(:backwards_compatible_test_experiment_experiment_percentage, enabled_percentage)
     Feature.enable_percentage_of_time(:test_experiment_experiment_percentage, enabled_percentage)
+    allow(Gitlab).to receive(:com?).and_return(true)
   end
 
-  let(:environment) { Rails.env.test? }
   let(:enabled_percentage) { 10 }
 
   describe '.enabled?' do
     subject { described_class.enabled?(:test_experiment) }
 
-    context 'feature toggle is enabled, we are on the right environment and we are selected' do
+    context 'feature toggle is enabled and we are selected' do
       it { is_expected.to be_truthy }
     end
 
@@ -67,20 +65,6 @@ RSpec.describe Gitlab::Experimentation, :snowplow do
       let(:enabled_percentage) { 0 }
 
       it { is_expected.to be_falsey }
-    end
-
-    describe 'we are on the wrong environment' do
-      let(:environment) { ::Gitlab.com? }
-
-      it { is_expected.to be_falsey }
-
-      it 'ensures the typically less expensive environment is checked before the more expensive call to database for Feature' do
-        expect_next_instance_of(described_class::Experiment) do |experiment|
-          expect(experiment).not_to receive(:enabled?)
-        end
-
-        subject
-      end
     end
   end
 

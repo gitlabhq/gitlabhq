@@ -58,6 +58,8 @@
                   = render "projects/merge_requests/description"
               = render "projects/merge_requests/widget"
               = render "projects/merge_requests/awards_block"
+              - if mr_action === "show"
+                - add_page_startup_api_call discussions_path(@merge_request)
               #js-vue-mr-discussions{ data: { notes_data: notes_data(@merge_request).to_json,
                 noteable_data: serialize_issuable(@merge_request, serializer: 'noteable'),
                 noteable_type: 'MergeRequest',
