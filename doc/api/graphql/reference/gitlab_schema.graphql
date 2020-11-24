@@ -12781,6 +12781,11 @@ type MergeRequest implements CurrentUserTodos & Noteable {
   sourceBranchExists: Boolean!
 
   """
+  Indicates if the source branch is protected
+  """
+  sourceBranchProtected: Boolean!
+
+  """
   Source project of the merge request
   """
   sourceProject: Project

@@ -224,7 +224,7 @@ PUT /runners/:id
 | `run_untagged`| boolean | no       | Flag indicating the runner can execute untagged jobs |
 | `locked`      | boolean | no       | Flag indicating the runner is locked |
 | `access_level` | string | no       | The access_level of the runner; `not_protected` or `ref_protected` |
-| `maximum_timeout` | integer | no   | Maximum timeout set when this runner will handle the job |
+| `maximum_timeout` | integer | no   | Maximum timeout set when this runner handles the job |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/6" --form "description=test-1-20150125-test" --form "tag_list=ruby,mysql,tag1,tag2"
@@ -559,7 +559,7 @@ POST /runners
 | `run_untagged` | boolean | no     | Whether the runner should handle untagged jobs |
 | `tag_list`   | string array | no  | List of runner's tags |
 | `access_level`    | string | no   | The access_level of the runner; `not_protected` or `ref_protected` |
-| `maximum_timeout` | integer | no  | Maximum timeout set when this runner will handle the job |
+| `maximum_timeout` | integer | no  | Maximum timeout set when this runner handles the job |
 
 ```shell
 curl --request POST "https://gitlab.example.com/api/v4/runners" --form "token=<registration_token>" --form "description=test-1-20150125-test" --form "tag_list=ruby,mysql,tag1,tag2"

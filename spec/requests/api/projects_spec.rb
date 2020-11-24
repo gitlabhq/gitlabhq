@@ -254,7 +254,7 @@ RSpec.describe API::Projects do
 
         statistics = json_response.find { |p| p['id'] == project.id }['statistics']
         expect(statistics).to be_present
-        expect(statistics).to include('commit_count', 'storage_size', 'repository_size', 'wiki_size', 'lfs_objects_size', 'job_artifacts_size', 'snippets_size')
+        expect(statistics).to include('commit_count', 'storage_size', 'repository_size', 'wiki_size', 'lfs_objects_size', 'job_artifacts_size', 'snippets_size', 'packages_size')
       end
 
       it "does not include license by default" do
@@ -619,7 +619,7 @@ RSpec.describe API::Projects do
     end
 
     context 'sorting by project statistics' do
-      %w(repository_size storage_size wiki_size).each do |order_by|
+      %w(repository_size storage_size wiki_size packages_size).each do |order_by|
         context "sorting by #{order_by}" do
           before do
             ProjectStatistics.update_all(order_by => 100)

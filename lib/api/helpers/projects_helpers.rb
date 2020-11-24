@@ -6,7 +6,7 @@ module API
       extend ActiveSupport::Concern
       extend Grape::API::Helpers
 
-      STATISTICS_SORT_PARAMS = %w[storage_size repository_size wiki_size].freeze
+      STATISTICS_SORT_PARAMS = %w[storage_size repository_size wiki_size packages_size].freeze
 
       params :optional_project_params_ce do
         optional :description, type: String, desc: 'The description of the project'

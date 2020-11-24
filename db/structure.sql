@@ -21779,6 +21779,8 @@ CREATE UNIQUE INDEX index_project_settings_on_push_rule_id ON project_settings U
 
 CREATE INDEX index_project_statistics_on_namespace_id ON project_statistics USING btree (namespace_id);
 
+CREATE INDEX index_project_statistics_on_packages_size_and_project_id ON project_statistics USING btree (packages_size, project_id);
+
 CREATE UNIQUE INDEX index_project_statistics_on_project_id ON project_statistics USING btree (project_id);
 
 CREATE INDEX index_project_statistics_on_repository_size_and_project_id ON project_statistics USING btree (repository_size, project_id);

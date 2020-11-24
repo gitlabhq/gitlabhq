@@ -1,0 +1,5 @@
+---
+title: Add packages_size to ProjectStatistics API entity
+merge_request: 47156
+author: Roger Meier
+type: added

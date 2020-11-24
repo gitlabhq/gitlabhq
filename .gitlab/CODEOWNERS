@@ -194,12 +194,17 @@ Dangerfile @gl-quality/eng-prod
 
 # Secure & Threat Management ownership delineation
 # https://about.gitlab.com/handbook/engineering/development/threat-management/delineate-secure-threat-management.html#technical-boundaries
-[Secure]
+[Threat Insights]
 /ee/app/finders/security/ @gitlab-org/secure/threat-insights-backend-team
 /ee/app/models/security/ @gitlab-org/secure/threat-insights-backend-team
 /ee/app/models/vulnerabilities/ @gitlab-org/secure/threat-insights-backend-team
 /ee/app/models/vulnerability.rb @gitlab-org/secure/threat-insights-backend-team
+/ee/app/policies/vulnerabilities/ @gitlab-org/secure/threat-insights-backend-team
+/ee/app/policies/vulnerability*.rb @gitlab-org/secure/threat-insights-backend-team
 /ee/lib/api/vulnerabilit*.rb @gitlab-org/secure/threat-insights-backend-team
+/ee/spec/policies/vulnerabilities/ @gitlab-org/secure/threat-insights-backend-team
+/ee/spec/policies/vulnerabilities/vulnerability*.rb @gitlab-org/secure/threat-insights-backend-team
+[Secure]
 /ee/lib/gitlab/ci/parsers/license_compliance/ @gitlab-org/secure/composition-analysis-be
 /ee/lib/gitlab/ci/parsers/security/ @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/dynamic-analysis-be @gitlab-org/secure/static-analysis-be @gitlab-org/secure/fuzzing-be
 /ee/lib/gitlab/ci/reports/coverage_fuzzing/ @gitlab-org/secure/fuzzing-be

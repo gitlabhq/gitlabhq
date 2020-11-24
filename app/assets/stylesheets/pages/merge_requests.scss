@@ -1039,3 +1039,11 @@ $mr-widget-min-height: 69px;
 .diff-file-row.is-active {
   background-color: $gray-50;
 }
+
+.mr-conflict-loader {
+  max-width: 334px;
+
+  > svg {
+    vertical-align: middle;
+  }
+}
