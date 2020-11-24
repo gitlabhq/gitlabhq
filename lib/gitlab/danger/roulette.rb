@@ -24,7 +24,7 @@ module Gitlab
       #
       # @return [Array<Spin>]
       def spin(project, categories, timezone_experiment: false)
-        spins = categories.map do |category|
+        spins = categories.sort.map do |category|
           including_timezone = INCLUDE_TIMEZONE_FOR_CATEGORY.fetch(category, timezone_experiment)
 
           spin_for_category(project, category, timezone_experiment: including_timezone)

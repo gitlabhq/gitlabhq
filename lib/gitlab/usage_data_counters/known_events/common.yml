@@ -408,3 +408,8 @@
   redis_slot: ci_secrets_management
   aggregation: weekly
   feature_flag: usage_data_i_ci_secrets_management_vault_build_created
+- name: i_snippets_show
+  category: snippets
+  redis_slot: snippets
+  aggregation: weekly
+  feature_flag: usage_data_i_snippets_show

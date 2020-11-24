@@ -173,7 +173,7 @@ export default {
         members: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
         issues: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
         mergeRequests: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
-        epics: this.enableAutocomplete,
+        epics: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
         milestones: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
         labels: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
         snippets: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,

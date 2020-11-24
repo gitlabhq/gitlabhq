@@ -697,42 +697,6 @@ describe('Notes Store mutations', () => {
     });
   });
 
-  describe('TOGGLE_BLOCKED_ISSUE_WARNING', () => {
-    it('should set isToggleBlockedIssueWarning as true', () => {
-      const state = {
-        discussions: [],
-        targetNoteHash: null,
-        lastFetchedAt: null,
-        isToggleStateButtonLoading: false,
-        isToggleBlockedIssueWarning: false,
-        notesData: {},
-        userData: {},
-        noteableData: {},
-      };
-
-      mutations.TOGGLE_BLOCKED_ISSUE_WARNING(state, true);
-
-      expect(state.isToggleBlockedIssueWarning).toEqual(true);
-    });
-
-    it('should set isToggleBlockedIssueWarning as false', () => {
-      const state = {
-        discussions: [],
-        targetNoteHash: null,
-        lastFetchedAt: null,
-        isToggleStateButtonLoading: false,
-        isToggleBlockedIssueWarning: true,
-        notesData: {},
-        userData: {},
-        noteableData: {},
-      };
-
-      mutations.TOGGLE_BLOCKED_ISSUE_WARNING(state, false);
-
-      expect(state.isToggleBlockedIssueWarning).toEqual(false);
-    });
-  });
-
   describe('SET_APPLYING_BATCH_STATE', () => {
     const buildDiscussions = suggestionsInfo => {
       const suggestions = suggestionsInfo.map(({ suggestionId }) => ({ id: suggestionId }));

@@ -1,14 +1,14 @@
-import $ from 'jquery';
-import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
+import { mount, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import Autosize from 'autosize';
-import { trimText } from 'helpers/text_helper';
 import axios from '~/lib/utils/axios_utils';
 import createStore from '~/notes/stores';
 import CommentForm from '~/notes/components/comment_form.vue';
 import * as constants from '~/notes/constants';
+import eventHub from '~/notes/event_hub';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
-import { keyboardDownEvent } from '../../issue_show/helpers';
+import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import { loggedOutnoteableData, notesDataMock, userDataMock, noteableDataMock } from '../mock_data';
 
 jest.mock('autosize');
@@ -20,16 +20,32 @@ describe('issue_comment_form component', () => {
   let wrapper;
   let axiosMock;
 
-  const setupStore = (userData, noteableData) => {
-    store.dispatch('setUserData', userData);
-    store.dispatch('setNoteableData', noteableData);
-    store.dispatch('setNotesData', notesDataMock);
-  };
+  const findCloseReopenButton = () => wrapper.find('[data-testid="close-reopen-button"]');
 
-  const mountComponent = (noteableType = 'issue') => {
-    wrapper = mount(CommentForm, {
+  const findCommentButton = () => wrapper.find('[data-testid="comment-button"]');
+
+  const findTextArea = () => wrapper.find('[data-testid="comment-field"]');
+
+  const mountComponent = ({
+    initialData = {},
+    noteableType = 'issue',
+    noteableData = noteableDataMock,
+    notesData = notesDataMock,
+    userData = userDataMock,
+    mountFunction = shallowMount,
+  } = {}) => {
+    store.dispatch('setNoteableData', noteableData);
+    store.dispatch('setNotesData', notesData);
+    store.dispatch('setUserData', userData);
+
+    wrapper = mountFunction(CommentForm, {
       propsData: {
         noteableType,
+      },
+      data() {
+        return {
+          ...initialData,
+        };
       },
       store,
     });
@@ -46,168 +62,157 @@ describe('issue_comment_form component', () => {
   });
 
   describe('user is logged in', () => {
-    beforeEach(() => {
-      setupStore(userDataMock, noteableDataMock);
+    describe('avatar', () => {
+      it('should render user avatar with link', () => {
+        mountComponent({ mountFunction: mount });
 
-      mountComponent();
-    });
-
-    it('should render user avatar with link', () => {
-      expect(wrapper.find('.timeline-icon .user-avatar-link').attributes('href')).toEqual(
-        userDataMock.path,
-      );
+        expect(wrapper.find(UserAvatarLink).attributes('href')).toBe(userDataMock.path);
+      });
     });
 
     describe('handleSave', () => {
       it('should request to save note when note is entered', () => {
-        wrapper.vm.note = 'hello world';
-        jest.spyOn(wrapper.vm, 'saveNote').mockReturnValue(new Promise(() => {}));
+        mountComponent({ mountFunction: mount, initialData: { note: 'hello world' } });
+
+        jest.spyOn(wrapper.vm, 'saveNote').mockResolvedValue();
         jest.spyOn(wrapper.vm, 'resizeTextarea');
         jest.spyOn(wrapper.vm, 'stopPolling');
 
-        wrapper.vm.handleSave();
+        findCloseReopenButton().trigger('click');
 
-        expect(wrapper.vm.isSubmitting).toEqual(true);
-        expect(wrapper.vm.note).toEqual('');
+        expect(wrapper.vm.isSubmitting).toBe(true);
+        expect(wrapper.vm.note).toBe('');
         expect(wrapper.vm.saveNote).toHaveBeenCalled();
         expect(wrapper.vm.stopPolling).toHaveBeenCalled();
         expect(wrapper.vm.resizeTextarea).toHaveBeenCalled();
       });
 
       it('should toggle issue state when no note', () => {
+        mountComponent({ mountFunction: mount });
+
         jest.spyOn(wrapper.vm, 'toggleIssueState');
 
-        wrapper.vm.handleSave();
+        findCloseReopenButton().trigger('click');
 
         expect(wrapper.vm.toggleIssueState).toHaveBeenCalled();
       });
 
-      it('should disable action button while submitting', done => {
+      it('should disable action button while submitting', async () => {
+        mountComponent({ mountFunction: mount, initialData: { note: 'hello world' } });
+
         const saveNotePromise = Promise.resolve();
-        wrapper.vm.note = 'hello world';
+
         jest.spyOn(wrapper.vm, 'saveNote').mockReturnValue(saveNotePromise);
         jest.spyOn(wrapper.vm, 'stopPolling');
 
-        const actionButton = wrapper.find('.js-action-button');
+        const actionButton = findCloseReopenButton();
 
-        wrapper.vm.handleSave();
+        await actionButton.trigger('click');
 
-        wrapper.vm
-          .$nextTick()
-          .then(() => {
-            expect(actionButton.vm.disabled).toBeTruthy();
-          })
-          .then(saveNotePromise)
-          .then(wrapper.vm.$nextTick)
-          .then(() => {
-            expect(actionButton.vm.disabled).toBeFalsy();
-          })
-          .then(done)
-          .catch(done.fail);
+        expect(actionButton.props('disabled')).toBe(true);
+
+        await saveNotePromise;
+
+        await nextTick();
+
+        expect(actionButton.props('disabled')).toBe(false);
       });
     });
 
     describe('textarea', () => {
-      it('should render textarea with placeholder', () => {
-        expect(wrapper.find('.js-main-target-form textarea').attributes('placeholder')).toEqual(
-          'Write a comment or drag your files here…',
-        );
-      });
+      describe('general', () => {
+        it('should render textarea with placeholder', () => {
+          mountComponent({ mountFunction: mount });
 
-      it('should make textarea disabled while requesting', done => {
-        const $submitButton = $(wrapper.find('.js-comment-submit-button').element);
-        wrapper.vm.note = 'hello world';
-        jest.spyOn(wrapper.vm, 'stopPolling');
-        jest.spyOn(wrapper.vm, 'saveNote').mockReturnValue(new Promise(() => {}));
-
-        wrapper.vm.$nextTick(() => {
-          // Wait for wrapper.vm.note change triggered. It should enable $submitButton.
-          $submitButton.trigger('click');
-
-          wrapper.vm.$nextTick(() => {
-            // Wait for wrapper.isSubmitting triggered. It should disable textarea.
-            expect(wrapper.find('.js-main-target-form textarea').attributes('disabled')).toBe(
-              'disabled',
-            );
-            done();
-          });
+          expect(findTextArea().attributes('placeholder')).toBe(
+            'Write a comment or drag your files here…',
+          );
         });
-      });
 
-      it('should support quick actions', () => {
-        expect(
-          wrapper.find('.js-main-target-form textarea').attributes('data-supports-quick-actions'),
-        ).toBe('true');
-      });
+        it('should make textarea disabled while requesting', async () => {
+          mountComponent({ mountFunction: mount });
 
-      it('should link to markdown docs', () => {
-        const { markdownDocsPath } = notesDataMock;
+          jest.spyOn(wrapper.vm, 'stopPolling');
+          jest.spyOn(wrapper.vm, 'saveNote').mockResolvedValue();
 
-        expect(
-          wrapper
-            .find(`a[href="${markdownDocsPath}"]`)
-            .text()
-            .trim(),
-        ).toEqual('Markdown');
-      });
+          await wrapper.setData({ note: 'hello world' });
 
-      it('should link to quick actions docs', () => {
-        const { quickActionsDocsPath } = notesDataMock;
+          await findCommentButton().trigger('click');
 
-        expect(
-          wrapper
-            .find(`a[href="${quickActionsDocsPath}"]`)
-            .text()
-            .trim(),
-        ).toEqual('quick actions');
-      });
+          expect(findTextArea().attributes('disabled')).toBe('disabled');
+        });
 
-      it('should resize textarea after note discarded', done => {
-        jest.spyOn(wrapper.vm, 'discard');
+        it('should support quick actions', () => {
+          mountComponent({ mountFunction: mount });
 
-        wrapper.vm.note = 'foo';
-        wrapper.vm.discard();
+          expect(findTextArea().attributes('data-supports-quick-actions')).toBe('true');
+        });
 
-        wrapper.vm.$nextTick(() => {
+        it('should link to markdown docs', () => {
+          mountComponent({ mountFunction: mount });
+
+          const { markdownDocsPath } = notesDataMock;
+
+          expect(wrapper.find(`a[href="${markdownDocsPath}"]`).text()).toBe('Markdown');
+        });
+
+        it('should link to quick actions docs', () => {
+          mountComponent({ mountFunction: mount });
+
+          const { quickActionsDocsPath } = notesDataMock;
+
+          expect(wrapper.find(`a[href="${quickActionsDocsPath}"]`).text()).toBe('quick actions');
+        });
+
+        it('should resize textarea after note discarded', async () => {
+          mountComponent({ mountFunction: mount, initialData: { note: 'foo' } });
+
+          jest.spyOn(wrapper.vm, 'discard');
+
+          wrapper.vm.discard();
+
+          await nextTick();
+
           expect(Autosize.update).toHaveBeenCalled();
-          done();
         });
       });
 
       describe('edit mode', () => {
+        beforeEach(() => {
+          mountComponent();
+        });
+
         it('should enter edit mode when arrow up is pressed', () => {
           jest.spyOn(wrapper.vm, 'editCurrentUserLastNote');
-          wrapper.find('.js-main-target-form textarea').value = 'Foo';
-          wrapper
-            .find('.js-main-target-form textarea')
-            .element.dispatchEvent(keyboardDownEvent(38, true));
+
+          findTextArea().trigger('keydown.up');
 
           expect(wrapper.vm.editCurrentUserLastNote).toHaveBeenCalled();
         });
 
         it('inits autosave', () => {
           expect(wrapper.vm.autosave).toBeDefined();
-          expect(wrapper.vm.autosave.key).toEqual(`autosave/Note/Issue/${noteableDataMock.id}`);
+          expect(wrapper.vm.autosave.key).toBe(`autosave/Note/Issue/${noteableDataMock.id}`);
         });
       });
 
       describe('event enter', () => {
+        beforeEach(() => {
+          mountComponent();
+        });
+
         it('should save note when cmd+enter is pressed', () => {
           jest.spyOn(wrapper.vm, 'handleSave');
-          wrapper.find('.js-main-target-form textarea').value = 'Foo';
-          wrapper
-            .find('.js-main-target-form textarea')
-            .element.dispatchEvent(keyboardDownEvent(13, true));
+
+          findTextArea().trigger('keydown.enter', { metaKey: true });
 
           expect(wrapper.vm.handleSave).toHaveBeenCalled();
         });
 
         it('should save note when ctrl+enter is pressed', () => {
           jest.spyOn(wrapper.vm, 'handleSave');
-          wrapper.find('.js-main-target-form textarea').value = 'Foo';
-          wrapper
-            .find('.js-main-target-form textarea')
-            .element.dispatchEvent(keyboardDownEvent(13, false, true));
+
+          findTextArea().trigger('keydown.enter', { ctrlKey: true });
 
           expect(wrapper.vm.handleSave).toHaveBeenCalled();
         });
@@ -216,137 +221,147 @@ describe('issue_comment_form component', () => {
 
     describe('actions', () => {
       it('should be possible to close the issue', () => {
-        expect(
-          wrapper
-            .find('.btn-comment-and-close')
-            .text()
-            .trim(),
-        ).toEqual('Close issue');
+        mountComponent();
+
+        expect(findCloseReopenButton().text()).toBe('Close issue');
       });
 
       it('should render comment button as disabled', () => {
-        expect(wrapper.find('.js-comment-submit-button').attributes('disabled')).toEqual(
-          'disabled',
-        );
+        mountComponent();
+
+        expect(findCommentButton().props('disabled')).toBe(true);
       });
 
-      it('should enable comment button if it has note', done => {
-        wrapper.vm.note = 'Foo';
-        wrapper.vm.$nextTick(() => {
-          expect(wrapper.find('.js-comment-submit-button').attributes('disabled')).toBeFalsy();
-          done();
-        });
+      it('should enable comment button if it has note', async () => {
+        mountComponent();
+
+        await wrapper.setData({ note: 'Foo' });
+
+        expect(findCommentButton().props('disabled')).toBe(false);
       });
 
-      it('should update buttons texts when it has note', done => {
-        wrapper.vm.note = 'Foo';
-        wrapper.vm.$nextTick(() => {
-          expect(
-            wrapper
-              .find('.btn-comment-and-close')
-              .text()
-              .trim(),
-          ).toEqual('Comment & close issue');
+      it('should update buttons texts when it has note', () => {
+        mountComponent({ initialData: { note: 'Foo' } });
 
-          done();
-        });
+        expect(findCloseReopenButton().text()).toBe('Comment & close issue');
       });
 
-      it('updates button text with noteable type', done => {
-        wrapper.setProps({ noteableType: constants.MERGE_REQUEST_NOTEABLE_TYPE });
+      it('updates button text with noteable type', () => {
+        mountComponent({ noteableType: constants.MERGE_REQUEST_NOTEABLE_TYPE });
 
-        wrapper.vm.$nextTick(() => {
-          expect(
-            wrapper
-              .find('.btn-comment-and-close')
-              .text()
-              .trim(),
-          ).toEqual('Close merge request');
-          done();
-        });
+        expect(findCloseReopenButton().text()).toBe('Close merge request');
       });
 
       describe('when clicking close/reopen button', () => {
-        it('should disable button and show a loading spinner', () => {
-          const toggleStateButton = wrapper.find('.js-action-button');
-
-          toggleStateButton.trigger('click');
-
-          return wrapper.vm.$nextTick().then(() => {
-            expect(toggleStateButton.element.disabled).toEqual(true);
-            expect(toggleStateButton.props('loading')).toBe(true);
+        it('should show a loading spinner', async () => {
+          mountComponent({
+            noteableType: constants.MERGE_REQUEST_NOTEABLE_TYPE,
+            mountFunction: mount,
           });
+
+          await findCloseReopenButton().trigger('click');
+
+          expect(findCloseReopenButton().props('loading')).toBe(true);
         });
       });
 
       describe('when toggling state', () => {
-        it('should update MR count', done => {
-          jest.spyOn(wrapper.vm, 'closeIssue').mockResolvedValue();
+        describe('when issue', () => {
+          it('emits event to toggle state', () => {
+            mountComponent({ mountFunction: mount });
 
-          wrapper.vm.toggleIssueState();
+            jest.spyOn(eventHub, '$emit');
 
-          wrapper.vm.$nextTick(() => {
+            findCloseReopenButton().trigger('click');
+
+            expect(eventHub.$emit).toHaveBeenCalledWith('toggle.issuable.state');
+          });
+        });
+
+        describe('when merge request', () => {
+          describe('when open', () => {
+            it('makes an API call to open the merge request', () => {
+              mountComponent({
+                noteableType: constants.MERGE_REQUEST_NOTEABLE_TYPE,
+                noteableData: { ...noteableDataMock, state: constants.OPENED },
+                mountFunction: mount,
+              });
+
+              jest.spyOn(wrapper.vm, 'closeMergeRequest').mockResolvedValue();
+
+              findCloseReopenButton().trigger('click');
+
+              expect(wrapper.vm.closeMergeRequest).toHaveBeenCalled();
+            });
+          });
+
+          describe('when closed', () => {
+            it('makes an API call to close the merge request', () => {
+              mountComponent({
+                noteableType: constants.MERGE_REQUEST_NOTEABLE_TYPE,
+                noteableData: { ...noteableDataMock, state: constants.CLOSED },
+                mountFunction: mount,
+              });
+
+              jest.spyOn(wrapper.vm, 'reopenMergeRequest').mockResolvedValue();
+
+              findCloseReopenButton().trigger('click');
+
+              expect(wrapper.vm.reopenMergeRequest).toHaveBeenCalled();
+            });
+          });
+
+          it('should update MR count', async () => {
+            mountComponent({
+              noteableType: constants.MERGE_REQUEST_NOTEABLE_TYPE,
+              mountFunction: mount,
+            });
+
+            jest.spyOn(wrapper.vm, 'closeMergeRequest').mockResolvedValue();
+
+            await findCloseReopenButton().trigger('click');
+
             expect(refreshUserMergeRequestCounts).toHaveBeenCalled();
-
-            done();
           });
         });
       });
     });
 
     describe('issue is confidential', () => {
-      it('shows information warning', done => {
-        store.dispatch('setNoteableData', Object.assign(noteableDataMock, { confidential: true }));
-        wrapper.vm.$nextTick(() => {
-          expect(wrapper.find('.confidential-issue-warning')).toBeDefined();
-          done();
+      it('shows information warning', () => {
+        mountComponent({
+          noteableData: { ...noteableDataMock, confidential: true },
+          mountFunction: mount,
         });
+
+        expect(wrapper.find('[data-testid="confidential-warning"]').exists()).toBe(true);
       });
     });
   });
 
   describe('user is not logged in', () => {
     beforeEach(() => {
-      setupStore(null, loggedOutnoteableData);
-
-      mountComponent();
+      mountComponent({ userData: null, noteableData: loggedOutnoteableData, mountFunction: mount });
     });
 
     it('should render signed out widget', () => {
-      expect(trimText(wrapper.text())).toEqual('Please register or sign in to reply');
+      expect(wrapper.text()).toBe('Please register or sign in to reply');
     });
 
     it('should not render submission form', () => {
-      expect(wrapper.find('textarea').exists()).toBe(false);
+      expect(findTextArea().exists()).toBe(false);
     });
   });
 
-  describe('when issuable is open', () => {
-    beforeEach(() => {
-      setupStore(userDataMock, noteableDataMock);
-    });
+  describe('close/reopen button variants', () => {
+    it.each([
+      [constants.OPENED, 'warning'],
+      [constants.REOPENED, 'warning'],
+      [constants.CLOSED, 'default'],
+    ])('when %s, the variant of the btn is %s', (state, expected) => {
+      mountComponent({ noteableData: { ...noteableDataMock, state } });
 
-    it.each([['opened', 'warning'], ['reopened', 'warning']])(
-      'when %i, it changes the variant of the btn to %i',
-      (a, expected) => {
-        store.state.noteableData.state = a;
-
-        mountComponent();
-
-        expect(wrapper.find('.js-action-button').props('variant')).toBe(expected);
-      },
-    );
-  });
-
-  describe('when issuable is not open', () => {
-    beforeEach(() => {
-      setupStore(userDataMock, noteableDataMock);
-
-      mountComponent();
-    });
-
-    it('should render the "default" variant of the button', () => {
-      expect(wrapper.find('.js-action-button').props('variant')).toBe('warning');
+      expect(findCloseReopenButton().props('variant')).toBe(expected);
     });
   });
 });

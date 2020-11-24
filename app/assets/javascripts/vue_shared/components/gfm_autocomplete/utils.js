@@ -24,7 +24,7 @@ export const tributeConfig = {
   [GfmAutocompleteType.Issues]: {
     config: {
       trigger: '#',
-      lookup: value => value.iid + value.title,
+      lookup: value => `${value.iid}${value.title}`,
       menuItemTemplate: ({ original }) =>
         `<small>${original.reference || original.iid}</small> ${escape(original.title)}`,
       selectTemplate: ({ original }) => original.reference || `#${original.iid}`,
@@ -61,7 +61,7 @@ export const tributeConfig = {
       trigger: '@',
       fillAttr: 'username',
       lookup: value =>
-        value.type === groupType ? last(value.name.split(' / ')) : value.name + value.username,
+        value.type === groupType ? last(value.name.split(' / ')) : `${value.name}${value.username}`,
       menuItemTemplate: ({ original }) => {
         const commonClasses = 'gl-avatar gl-avatar-s24 gl-flex-shrink-0';
         const noAvatarClasses = `${commonClasses} gl-rounded-small
@@ -115,7 +115,7 @@ export const tributeConfig = {
   [GfmAutocompleteType.MergeRequests]: {
     config: {
       trigger: '!',
-      lookup: value => value.iid + value.title,
+      lookup: value => `${value.iid}${value.title}`,
       menuItemTemplate: ({ original }) =>
         `<small>${original.reference || original.iid}</small> ${escape(original.title)}`,
       selectTemplate: ({ original }) => original.reference || `!${original.iid}`,
@@ -135,7 +135,7 @@ export const tributeConfig = {
     config: {
       trigger: '$',
       fillAttr: 'id',
-      lookup: value => value.id + value.title,
+      lookup: value => `${value.id}${value.title}`,
       menuItemTemplate: ({ original }) => `<small>${original.id}</small> ${escape(original.title)}`,
     },
   },

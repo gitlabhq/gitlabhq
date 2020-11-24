@@ -25422,7 +25422,7 @@ msgstr ""
 msgid "Something went wrong while archiving a requirement."
 msgstr ""
 
-msgid "Something went wrong while closing the %{issuable}. Please try again later"
+msgid "Something went wrong while closing the merge request. Please try again later"
 msgstr ""
 
 msgid "Something went wrong while creating a requirement."
@@ -25509,7 +25509,7 @@ msgstr ""
 msgid "Something went wrong while reopening a requirement."
 msgstr ""
 
-msgid "Something went wrong while reopening the %{issuable}. Please try again later"
+msgid "Something went wrong while reopening the merge request. Please try again later"
 msgstr ""
 
 msgid "Something went wrong while resolving this discussion. Please try again."
