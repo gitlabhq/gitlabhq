@@ -10,7 +10,7 @@ description: 'Writing styles, markup, formatting, and other standards for GitLab
 This document defines the standards for GitLab's documentation content and
 files.
 
-For broader information about the documentation, see the [Documentation guidelines](index.md).
+For broader information about the documentation, see the [Documentation guidelines](../index.md).
 
 For guidelines specific to text in the GitLab interface, see the Pajamas [Content](https://design.gitlab.com/content/error-messages/) section.
 

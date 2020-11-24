@@ -32,6 +32,8 @@
   - 1
 - - analytics_instance_statistics_counter_job
   - 1
+- - approve_blocked_users
+  - 1
 - - authorized_keys
   - 2
 - - authorized_project_update

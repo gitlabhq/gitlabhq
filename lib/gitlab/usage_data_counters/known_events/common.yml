@@ -229,6 +229,12 @@
   category: incident_management
   aggregation: weekly
   feature_flag: usage_data_incident_management_incident_change_confidential
+# Incident management alerts
+- name: incident_management_alert_create_incident
+  redis_slot: incident_management
+  category: incident_management_alerts
+  aggregation: weekly
+  feature_flag: usage_data_incident_management_alert_create_incident
 # Testing category
 - name: i_testing_test_case_parsed
   category: testing

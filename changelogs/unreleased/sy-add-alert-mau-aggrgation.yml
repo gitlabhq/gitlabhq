@@ -1,0 +1,5 @@
+---
+title: Add metrics for count of unique users of alerts and incidents to usage ping
+merge_request: 48087
+author:
+type: changed

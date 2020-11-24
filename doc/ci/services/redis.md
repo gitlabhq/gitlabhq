@@ -7,7 +7,7 @@ type: reference
 
 # Using Redis
 
-As many applications depend on Redis as their key-value store, you will
+As many applications depend on Redis as their key-value store, you
 eventually need it in order for your tests to run. Below you are guided how to
 do this with the Docker and Shell executors of GitLab Runner.
 
@@ -30,7 +30,7 @@ example:
 Host: redis
 ```
 
-And that's it. Redis will now be available to be used within your testing
+And that's it. Redis is now available to be used within your testing
 framework.
 
 You can also use any other Docker image available on [Docker Hub](https://hub.docker.com/_/redis).
@@ -70,4 +70,4 @@ that runs on [GitLab.com](https://gitlab.com) using our publicly available
 [shared runners](../runners/README.md).
 
 Want to hack on it? Simply fork it, commit and push your changes. Within a few
-moments the changes will be picked by a public runner and the job will begin.
+moments the changes are picked by a public runner and the job begins.
