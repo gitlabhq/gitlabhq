@@ -32,8 +32,7 @@
         %ul
           - if can_update_merge_request
             %li= link_to 'Edit', edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
-          - if can_update_merge_request
-            - unless @merge_request.closed?
+            - if @merge_request.opened?
               %li
                 = link_to @merge_request.work_in_progress? ? _('Mark as ready') : _('Mark as draft'), toggle_draft_issuable_path(@merge_request), method: :put, class: "js-draft-toggle-button"
             %li{ class: [merge_request_button_visibility(@merge_request, true), 'js-close-item'] }

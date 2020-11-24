@@ -678,6 +678,7 @@ Example response:
   },
   "subscribed": true,
   "moved_to_id": null,
+  "service_desk_reply_to": "service.desk@gitlab.com",
   "epic_iid": null,
   "epic": null
 }

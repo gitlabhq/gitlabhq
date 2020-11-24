@@ -118,7 +118,7 @@ module Git
       commits_to_sync = limited_commits.select { |commit| Atlassian::JiraIssueKeyExtractor.has_keys?(commit.safe_message) }.map(&:sha)
 
       if branch_to_sync || commits_to_sync.any?
-        JiraConnect::SyncBranchWorker.perform_async(project.id, branch_to_sync, commits_to_sync)
+        JiraConnect::SyncBranchWorker.perform_async(project.id, branch_to_sync, commits_to_sync, Atlassian::JiraConnect::Client.generate_update_sequence_id)
       end
     end
 

@@ -1609,7 +1609,7 @@
   :urgency: :low
   :resource_boundary: :cpu
   :weight: 2
-  :idempotent:
+  :idempotent: true
   :tags: []
 - :name: invalid_gpg_signature_update
   :feature_category: :source_code_management

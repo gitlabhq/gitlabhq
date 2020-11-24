@@ -180,6 +180,11 @@ msgid_plural "%d errors"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d error found:"
+msgid_plural "%d errors found:"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d exporter"
 msgid_plural "%d exporters"
 msgstr[0] ""
@@ -27091,6 +27096,9 @@ msgstr ""
 msgid "The form contains the following error:"
 msgstr ""
 
+msgid "The form contains the following errors:"
+msgstr ""
+
 msgid "The form contains the following warning:"
 msgstr ""
 
@@ -32860,6 +32868,9 @@ msgid "on track"
 msgstr ""
 
 msgid "open issue"
+msgstr ""
+
+msgid "opened %{timeAgoString} by %{email} via %{user}"
 msgstr ""
 
 msgid "opened %{timeAgoString} by %{user}"

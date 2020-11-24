@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe ImportIssuesCsvWorker do
-  let(:project) { create(:project) }
-  let(:user) { create(:user) }
-  let(:upload) { create(:upload) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
+  let(:upload) { create(:upload, :with_file) }
 
   let(:worker) { described_class.new }
 
@@ -18,6 +18,10 @@ RSpec.describe ImportIssuesCsvWorker do
       worker.perform(user.id, project.id, upload.id)
 
       expect { upload.reload }.to raise_error ActiveRecord::RecordNotFound
+    end
+
+    it_behaves_like 'an idempotent worker' do
+      let(:job_args) { [user.id, project.id, upload.id] }
     end
   end
 end

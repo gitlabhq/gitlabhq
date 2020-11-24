@@ -121,6 +121,18 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle' do
 
       it_behaves_like 'an issuable close/reopen/report toggle'
 
+      context 'when the merge request is open' do
+        let(:issuable) { create(:merge_request, :opened, source_project: project) }
+
+        it 'shows the `Edit` and `Mark as draft` buttons' do
+          expect(container).to have_link('Edit')
+          expect(container).to have_link('Mark as draft')
+          expect(container).not_to have_button('Report abuse')
+          expect(container).not_to have_button('Close merge request')
+          expect(container).not_to have_link('Reopen merge request')
+        end
+      end
+
       context 'when the merge request is closed' do
         let(:issuable) { create(:merge_request, :closed, source_project: project) }
 

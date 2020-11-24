@@ -1,0 +1,5 @@
+---
+title: Make ImportIssuesCsvWorker idempotent
+merge_request: 47808
+author:
+type: changed

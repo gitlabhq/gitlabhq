@@ -1,0 +1,5 @@
+---
+title: Replace bootstrap alerts in ee/app/views/admin/licenses/new.html.haml
+merge_request: 41275
+author: Gilang Gumilar
+type: changed

@@ -236,7 +236,7 @@ Table description links:
 | [Certificate Management](#certificate-management)     | TLS Settings, Let's Encrypt                                          |       ✅        |      ✅       |        ⚙         |     ✅      |   ⚙    |  ⚙  | CE & EE |
 | [Consul](#consul)                                     | Database node discovery, failover                                    |       ⚙        |      ❌       |        ❌         |     ✅      |   ❌    |  ❌  | EE Only |
 | [Database Migrations](#database-migrations)           | Database migrations                                                  |       ✅        |      ✅       |        ✅         |     ✅      |   ⚙    |  ✅  | CE & EE |
-| [Elasticsearch](#elasticsearch)                       | Improved search within GitLab                                        |       ⤓        |      ⤓       |        ⤓         |     ❌      |   ⤓    |  ⤓  | EE Only |
+| [Elasticsearch](#elasticsearch)                       | Improved search within GitLab                                        |       ⤓        |      ⤓       |        ⤓         |     ✅      |   ⤓    |  ⤓  | EE Only |
 | [Gitaly](#gitaly)                                     | Git RPC service for handling all Git calls made by GitLab            |       ✅        |      ✅       |        ✅         |     ✅      |   ⚙    |  ✅  | CE & EE |
 | [GitLab Exporter](#gitlab-exporter)                   | Generates a variety of GitLab metrics                                |       ✅        |      ✅       |        ✅         |     ✅      |   ❌    |  ❌  | CE & EE |
 | [GitLab Geo Node](#gitlab-geo)                        | Geographically distributed GitLab nodes |       ⚙        |       ⚙      |        ❌         |     ✅      |   ❌    |  ⚙  | EE Only |
@@ -340,7 +340,7 @@ Consul is a tool for service discovery and configuration. Consul is distributed,
   - [Source](../integration/elasticsearch.md)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/elasticsearch.md)
 - Layer: Core Service (Data)
-- GitLab.com: [Get Advanced Search working on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/153) epic.
+- GitLab.com: [Get Advanced Search working on GitLab.com (Closed)](https://gitlab.com/groups/gitlab-org/-/epics/153) epic.
 
 Elasticsearch is a distributed RESTful search engine built for the cloud.
 

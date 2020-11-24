@@ -189,6 +189,10 @@ module IssuablesHelper
     output = []
     output << "Opened #{time_ago_with_tooltip(issuable.created_at)} by ".html_safe
 
+    if issuable.is_a?(Issue) && issuable.service_desk_reply_to
+      output << "#{html_escape(issuable.service_desk_reply_to)} via "
+    end
+
     output << content_tag(:strong) do
       author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "d-none d-sm-inline")
       author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "d-inline d-sm-none")
