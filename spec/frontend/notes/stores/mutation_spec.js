@@ -377,6 +377,16 @@ describe('Notes Store mutations', () => {
     });
   });
 
+  describe('SET_RESOLVING_DISCUSSION', () => {
+    it('should set resolving discussion state', () => {
+      const state = {};
+
+      mutations.SET_RESOLVING_DISCUSSION(state, true);
+
+      expect(state.isResolvingDiscussion).toEqual(true);
+    });
+  });
+
   describe('UPDATE_NOTE', () => {
     it('should update a note', () => {
       const state = {

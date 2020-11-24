@@ -46,12 +46,16 @@ def check_changelog_path(path)
   ee_changes = helper.all_ee_changes.dup
   ee_changes.delete(path)
 
-  if ee_changes.any? && !changelog.ee_changelog?
+  if ee_changes.any? && !changelog.ee_changelog? && !changelog.db_changes?
     warn "This MR has a Changelog file outside `ee/`, but code changes in `ee/`. Consider moving the Changelog file into `ee/`."
   end
 
   if ee_changes.empty? && changelog.ee_changelog?
     warn "This MR has a Changelog file in `ee/`, but no code changes in `ee/`. Consider moving the Changelog file outside `ee/`."
+  end
+
+  if ee_changes.any? && changelog.ee_changelog? && changelog.db_changes?
+    warn "This MR has a Changelog file inside `ee/`, but there are database changes which [requires](https://docs.gitlab.com/ee/development/changelog.html#what-warrants-a-changelog-entry) the Changelog placement to be outside of `ee/`. Consider moving the Changelog file outside `ee/`."
   end
 end
 
