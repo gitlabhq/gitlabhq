@@ -13351,6 +13351,12 @@ msgstr ""
 msgid "GroupRoadmap|No start date – %{dateWord}"
 msgstr ""
 
+msgid "GroupRoadmap|Roadmaps can display up to 1,000 epics. These appear in your selected sort order."
+msgstr ""
+
+msgid "GroupRoadmap|Some of your epics might not be visible"
+msgstr ""
+
 msgid "GroupRoadmap|Something went wrong while fetching epics"
 msgstr ""
 
@@ -25368,9 +25374,6 @@ msgstr ""
 msgid "Some of the designs you tried uploading did not change:"
 msgstr ""
 
-msgid "Some of your epics may not be visible. A roadmap is limited to the first 1,000 epics, in your selected sort order."
-msgstr ""
-
 msgid "Someone edited the issue at the same time you did. Please check out %{linkStart}the issue%{linkEnd} and make sure your changes will not unintentionally remove theirs."
 msgstr ""
 
@@ -27748,9 +27751,6 @@ msgstr ""
 msgid "This commit was signed with a %{strong_open}verified%{strong_close} signature and the committer email is verified to belong to the same user."
 msgstr ""
 
-msgid "This commit was signed with a <strong>verified</strong> signature and the committer email is verified to belong to the same user."
-msgstr ""
-
 msgid "This commit was signed with a different user's verified signature."
 msgstr ""
 
@@ -27758,9 +27758,6 @@ msgid "This commit was signed with a verified signature, but the committer email
 msgstr ""
 
 msgid "This commit was signed with an %{strong_open}unverified%{strong_close} signature."
-msgstr ""
-
-msgid "This commit was signed with an <strong>unverified</strong> signature."
 msgstr ""
 
 msgid "This content could not be displayed because %{reason}. You can %{options} instead."

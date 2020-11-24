@@ -44,15 +44,12 @@ RSpec.describe 'Breadcrumbs schema markup', :aggregate_failures do
 
     item_list = get_schema_content
 
-    expect(item_list.size).to eq 3
+    expect(item_list.size).to eq 2
     expect(item_list[0]['name']).to eq group.name
     expect(item_list[0]['item']).to eq group_url(group)
 
     expect(item_list[1]['name']).to eq subgroup.name
     expect(item_list[1]['item']).to eq group_url(subgroup)
-
-    expect(item_list[2]['name']).to eq 'Details'
-    expect(item_list[2]['item']).to eq group_url(subgroup)
   end
 
   it 'generates the breadcrumb schema for issues' do

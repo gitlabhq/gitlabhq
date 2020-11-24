@@ -83,3 +83,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::GonHelper.prepend_if_ee('EE::Gitlab::GonHelper')

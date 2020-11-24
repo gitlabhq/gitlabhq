@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['Project'] do
+  include GraphqlHelpers
+
   specify { expect(described_class).to expose_permissions_using(Types::PermissionTypes::Project) }
 
   specify { expect(described_class.graphql_name).to eq('Project') }
@@ -163,4 +165,25 @@ RSpec.describe GitlabSchema.types['Project'] do
   end
 
   it_behaves_like 'a GraphQL type with labels'
+
+  describe 'jira_imports' do
+    subject { resolve_field(:jira_imports, project) }
+
+    let_it_be(:project) { create(:project, :public) }
+
+    context 'when project has Jira imports' do
+      let_it_be(:jira_import1) { create(:jira_import_state, :finished, project: project, jira_project_key: 'AA', created_at: 2.days.ago) }
+      let_it_be(:jira_import2) { create(:jira_import_state, :finished, project: project, jira_project_key: 'BB', created_at: 5.days.ago) }
+
+      it 'retrieves the imports' do
+        expect(subject).to contain_exactly(jira_import1, jira_import2)
+      end
+    end
+
+    context 'when project does not have Jira imports' do
+      it 'returns an empty result' do
+        expect(subject).to be_empty
+      end
+    end
+  end
 end
