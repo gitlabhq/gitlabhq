@@ -38,13 +38,15 @@ GitLab.com uses the SAML NameID to identify users. The NameID element:
 - Must be unique to each user.
 - Must be a persistent value that will never change, such as a randomly generated unique user ID.
 - Is case sensitive. The NameID must match exactly on subsequent login attempts, so should not rely on user input that could change between upper and lower case.
-- Should not be an email address or username. We strongly recommend against these as it is hard to guarantee they will never change, for example when a person's name changes. Email addresses are also case-insensitive, which can result in users being unable to sign in.
+- Should not be an email address or username. We strongly recommend against these as it's hard to
+  guarantee it doesn't ever change, for example, when a person's name changes. Email addresses are
+  also case-insensitive, which can result in users being unable to sign in.
 
 The relevant field name and recommended value for supported providers are in the [provider specific notes](#providers).
 appropriate corresponding field.
 
 CAUTION: **Warning:**
-Once users have signed into GitLab using the SSO SAML setup, changing the `NameID` will break the configuration and potentially lock users out of the GitLab group.
+Once users have signed into GitLab using the SSO SAML setup, changing the `NameID` breaks the configuration and potentially locks users out of the GitLab group.
 
 #### NameID Format
 
@@ -56,11 +58,11 @@ GitLab provides metadata XML that can be used to configure your Identity Provide
 
 1. Navigate to the group and click **Settings > SAML SSO**.
 1. Copy the provided **GitLab metadata URL**.
-1. Follow your Identity Provider's documentation and paste the metadata URL when it is requested.
+1. Follow your Identity Provider's documentation and paste the metadata URL when it's requested.
 
 ## Configuring GitLab
 
-Once you've set up your identity provider to work with GitLab, you'll need to configure GitLab to use it for authentication:
+After you set up your identity provider to work with GitLab, you must configure GitLab to use it for authentication:
 
 1. Navigate to the group's **Settings > SAML SSO**.
 1. Find the SSO URL from your Identity Provider and enter it the **Identity provider single sign-on URL** field.
@@ -79,14 +81,14 @@ Please note that the certificate [fingerprint algorithm](#additional-providers-a
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5291) in GitLab 11.8.
 - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/9255) in GitLab 11.11 with ongoing enforcement in the GitLab UI.
 
-With this option enabled, users must go through your group's GitLab single sign-on URL. They may also be added via SCIM, if configured. Users cannot be added manually, and may only access project/group resources via the UI by signing in through the SSO URL.
+With this option enabled, users must go through your group's GitLab single sign-on URL. They may also be added via SCIM, if configured. Users can't be added manually, and may only access project/group resources via the UI by signing in through the SSO URL.
 
-However, users will not be prompted to sign in through SSO on each visit. GitLab will check whether a user has authenticated through SSO, and will only prompt the user to sign in via SSO if the session has expired.
+However, users are not prompted to sign in through SSO on each visit. GitLab checks whether a user has authenticated through SSO, and only prompts the user to sign in via SSO if the session has expired.
 You can see more information about how long a session is valid in our [user profile documentation](../../profile/#why-do-i-keep-getting-signed-out).
 
 We intend to add a similar SSO requirement for [Git and API activity](https://gitlab.com/gitlab-org/gitlab/-/issues/9152).
 
-When SSO enforcement is enabled for a group, users cannot share a project in the group outside the top-level group, even if the project is forked.
+When SSO enforcement is enabled for a group, users can't share a project in the group outside the top-level group, even if the project is forked.
 
 ## Providers
 
@@ -192,7 +194,7 @@ If the information you need isn't listed above you may wish to check our [troubl
 
 Once Group SSO is configured and enabled, users can access the GitLab.com group through the identity provider's dashboard. If [SCIM](scim_setup.md) is configured, please see the [user access and linking setup section on the SCIM page](scim_setup.md#user-access-and-linking-setup).
 
-When a user tries to sign in with Group SSO, they will need an account that's configured with one of the following:
+When a user tries to sign in with Group SSO, they need an account that's configured with one of the following:
 
 - [SCIM](scim_setup.md).
 - [Group-managed accounts](group_managed_accounts.md).
@@ -203,18 +205,18 @@ When a user tries to sign in with Group SSO, they will need an account that's co
 To link SAML to your existing GitLab.com account:
 
 1. Sign in to your GitLab.com account.
-1. Locate and visit the **GitLab single sign-on URL** for the group you are signing in to. A group Admin can find this on the group's **Settings > SAML SSO** page. If the sign-in URL is configured, users can connect to the GitLab app from the Identity Provider.
+1. Locate and visit the **GitLab single sign-on URL** for the group you're signing in to. A group Admin can find this on the group's **Settings > SAML SSO** page. If the sign-in URL is configured, users can connect to the GitLab app from the Identity Provider.
 1. Click **Authorize**.
 1. Enter your credentials on the Identity Provider if prompted.
-1. You will be redirected back to GitLab.com and should now have access to the group. In the future, you can use SAML to sign in to GitLab.com.
+1. You are then redirected back to GitLab.com and should now have access to the group. In the future, you can use SAML to sign in to GitLab.com.
 
-On subsequent visits, you should be able to go [sign in to GitLab.com with SAML](#signing-in-to-gitlabcom-with-saml) or by visiting links directly. If the **enforce SSO** option is turned on, you will be redirected to sign in through the identity provider.
+On subsequent visits, you should be able to go [sign in to GitLab.com with SAML](#signing-in-to-gitlabcom-with-saml) or by visiting links directly. If the **enforce SSO** option is turned on, you are then redirected to sign in through the identity provider.
 
 ### Signing in to GitLab.com with SAML
 
 1. Sign in to your identity provider.
 1. From the list of apps, click on the "GitLab.com" app (The name is set by the administrator of the identity provider).
-1. You will be signed in to GitLab.com and redirected to the group.
+1. You are then signed in to GitLab.com and redirected to the group.
 
 ### Role
 
@@ -238,7 +240,7 @@ Users can unlink SAML for a group from their profile page. This can be helpful i
 - You no longer want a group to be able to sign you in to GitLab.com.
 - Your SAML NameID has changed and so GitLab can no longer find your user.
 
-For example, to unlink the `MyOrg` account, the following **Disconnect** button will be available under **Profile > Accounts**:
+For example, to unlink the `MyOrg` account, the following **Disconnect** button is available under **Profile > Accounts**:
 
 ![Unlink Group SAML](img/unlink_group_saml.png)
 
@@ -286,7 +288,7 @@ access.
 | Service Provider | SAML considers GitLab to be a service provider. |
 | Assertion | A piece of information about a user's identity, such as their name or role. Also know as claims or attributes. |
 | SSO | Single Sign On. |
-| Assertion consumer service URL | The callback on GitLab where users will be redirected after successfully authenticating with the identity provider. |
+| Assertion consumer service URL | The callback on GitLab where users are redirected after successfully authenticating with the identity provider. |
 | Issuer | How GitLab identifies itself to the identity provider. Also known as a "Relying party trust identifier". |
 | Certificate fingerprint | Used to confirm that communications over SAML are secure by checking that the server is signing communications with the correct certificate. Also known as a certificate thumbprint. |
 

@@ -49,12 +49,12 @@ module ApplicationSettingsHelper
     all_protocols_enabled? || Gitlab::CurrentSettings.enabled_git_access_protocol == 'http'
   end
 
-  def enabled_project_button(project, protocol)
+  def enabled_protocol_button(container, protocol)
     case protocol
     when 'ssh'
-      ssh_clone_button(project, append_link: false)
+      ssh_clone_button(container, append_link: false)
     else
-      http_clone_button(project, append_link: false)
+      http_clone_button(container, append_link: false)
     end
   end
 

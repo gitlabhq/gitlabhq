@@ -89,7 +89,7 @@ RSpec.describe ButtonHelper do
       it 'shows a warning on the dropdown description' do
         description = element.search('.dropdown-menu-inner-content').first
 
-        expect(description.inner_text).to eq "You won't be able to pull or push project code via SSH until you add an SSH key to your profile"
+        expect(description.inner_text).to eq "You won't be able to pull or push repositories via SSH until you add an SSH key to your profile"
       end
     end
 

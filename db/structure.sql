@@ -17571,8 +17571,8 @@ CREATE TABLE webauthn_registrations (
     name text NOT NULL,
     public_key text NOT NULL,
     u2f_registration_id integer,
-    CONSTRAINT check_242f0cc65c CHECK ((char_length(credential_xid) <= 255)),
-    CONSTRAINT check_2f02e74321 CHECK ((char_length(name) <= 255))
+    CONSTRAINT check_2f02e74321 CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_e54008d9ce CHECK ((char_length(credential_xid) <= 340))
 );
 
 CREATE SEQUENCE webauthn_registrations_id_seq

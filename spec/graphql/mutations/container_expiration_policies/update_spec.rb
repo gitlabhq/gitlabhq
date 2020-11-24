@@ -14,7 +14,7 @@ RSpec.describe Mutations::ContainerExpirationPolicies::Update do
   specify { expect(described_class).to require_graphql_authorizations(:destroy_container_image) }
 
   describe '#resolve' do
-    subject { described_class.new(object: project, context: { current_user: user }, field: nil).resolve(params) }
+    subject { described_class.new(object: project, context: { current_user: user }, field: nil).resolve(**params) }
 
     RSpec.shared_examples 'returning a success' do
       it 'returns the container expiration policy with no errors' do

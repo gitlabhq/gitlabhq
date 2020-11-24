@@ -17794,7 +17794,7 @@ msgstr ""
 msgid "MissingSSHKeyWarningLink|Don't show again"
 msgstr ""
 
-msgid "MissingSSHKeyWarningLink|You won't be able to pull or push project code via SSH until you add an SSH key to your profile"
+msgid "MissingSSHKeyWarningLink|You won't be able to pull or push repositories via SSH until you add an SSH key to your profile"
 msgstr ""
 
 msgid "ModalButton|Add projects"
@@ -21111,9 +21111,6 @@ msgstr ""
 msgid "Project cannot be shared with the group it is in or one of its ancestors."
 msgstr ""
 
-msgid "Project clone URL"
-msgstr ""
-
 msgid "Project configuration, excluding integrations"
 msgstr ""
 
@@ -23088,6 +23085,9 @@ msgstr ""
 msgid "Repository cleanup has started. You will receive an email once the cleanup operation is complete."
 msgstr ""
 
+msgid "Repository clone URL"
+msgstr ""
+
 msgid "Repository files count over the limit"
 msgstr ""
 
@@ -24250,6 +24250,9 @@ msgid "SecurityReports|Remove project from dashboard"
 msgstr ""
 
 msgid "SecurityReports|Scan details"
+msgstr ""
+
+msgid "SecurityReports|Scanner"
 msgstr ""
 
 msgid "SecurityReports|Security Dashboard"
@@ -31430,10 +31433,7 @@ msgstr ""
 msgid "You won't be able to create new projects because you have reached your project limit."
 msgstr ""
 
-msgid "You won't be able to pull or push project code via %{protocol} until you %{set_password_link} on your account"
-msgstr ""
-
-msgid "You won't be able to pull or push project code via SSH until you add an SSH key to your profile"
+msgid "You won't be able to pull or push repositories via %{protocol} until you %{set_password_link} on your account"
 msgstr ""
 
 msgid "You'll be charged for %{true_up_link_start}users over license%{link_end} on a quarterly or annual basis, depending on the terms of your agreement."

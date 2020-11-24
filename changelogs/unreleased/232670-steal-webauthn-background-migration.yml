@@ -1,0 +1,5 @@
+---
+title: Cleanup webauthn background migration
+merge_request: 46179
+author: Jan Beckmann
+type: added

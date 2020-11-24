@@ -51,7 +51,7 @@ RSpec.describe Projects::MoveDeployKeysProjectsService do
       it 'does not remove remaining deploy keys projects' do
         target_project.deploy_keys << project_with_deploy_keys.deploy_keys.first
 
-        subject.execute(project_with_deploy_keys, options)
+        subject.execute(project_with_deploy_keys, **options)
 
         expect(project_with_deploy_keys.deploy_keys_projects.count).not_to eq 0
       end

@@ -18,7 +18,7 @@ RSpec.describe FeatureFlagsFinder do
   end
 
   describe '#execute' do
-    subject { finder.execute(args) }
+    subject { finder.execute(**args) }
 
     let!(:feature_flag_1) { create(:operations_feature_flag, name: 'flag-a', project: project) }
     let!(:feature_flag_2) { create(:operations_feature_flag, name: 'flag-b', project: project) }

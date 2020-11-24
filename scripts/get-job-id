@@ -1,0 +1,43 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'gitlab'
+require 'optparse'
+
+#
+# Configure credentials to be used with gitlab gem
+#
+Gitlab.configure do |config|
+  config.endpoint = 'https://gitlab.com/api/v4'
+  config.private_token = ENV['GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN']
+end
+
+options = {}
+OptionParser.new do |opts|
+  opts.on("-s", "--scope=SCOPE", "Find job with matching scope") do |scope|
+    options[:scope] = scope
+  end
+end.parse!
+
+class PipelineJobFinder
+  def initialize(project_id, pipeline_id, job_name, options)
+    @project_id = project_id
+    @pipeline_id = pipeline_id
+    @job_name = job_name
+    @options = options
+  end
+
+  def execute
+    Gitlab.pipeline_jobs(@project_id, @pipeline_id, @options).auto_paginate do |job|
+      break job if job.name == @job_name
+    end
+  end
+end
+
+project_id, pipeline_id, job_name = ARGV
+
+job = PipelineJobFinder.new(project_id, pipeline_id, job_name, options).execute
+
+return if job.nil?
+
+puts job.id

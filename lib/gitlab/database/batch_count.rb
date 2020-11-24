@@ -49,6 +49,8 @@ module Gitlab
       MAX_ALLOWED_LOOPS = 10_000
       SLEEP_TIME_IN_SECONDS = 0.01 # 10 msec sleep
       ALLOWED_MODES = [:itself, :distinct].freeze
+      FALLBACK_FINISH = 0
+      OFFSET_BY_ONE = 1
 
       # Each query should take < 500ms https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22705
       DEFAULT_DISTINCT_BATCH_SIZE = 10_000
@@ -65,7 +67,7 @@ module Gitlab
         (@operation == :count && batch_size <= MIN_REQUIRED_BATCH_SIZE) ||
           (@operation == :sum && batch_size < DEFAULT_SUM_BATCH_SIZE) ||
           (finish - start) / batch_size >= MAX_ALLOWED_LOOPS ||
-          start > finish
+          start >= finish
       end
 
       def count(batch_size: nil, mode: :itself, start: nil, finish: nil)
@@ -85,11 +87,13 @@ module Gitlab
         results = nil
         batch_start = start
 
-        while batch_start <= finish
-          batch_relation = build_relation_batch(batch_start, batch_start + batch_size, mode)
+        while batch_start < finish
+          batch_end = [batch_start + batch_size, finish].min
+          batch_relation = build_relation_batch(batch_start, batch_end, mode)
+
           begin
             results = merge_results(results, batch_relation.send(@operation, *@operation_args)) # rubocop:disable GitlabSecurity/PublicSend
-            batch_start += batch_size
+            batch_start = batch_end
           rescue ActiveRecord::QueryCanceled => error
             # retry with a safe batch size & warmer cache
             if batch_size >= 2 * MIN_REQUIRED_BATCH_SIZE
@@ -99,6 +103,7 @@ module Gitlab
               return FALLBACK
             end
           end
+
           sleep(SLEEP_TIME_IN_SECONDS)
         end
 
@@ -138,7 +143,7 @@ module Gitlab
       end
 
       def actual_finish(finish)
-        finish || @relation.unscope(:group, :having).maximum(@column) || 0
+        (finish || @relation.unscope(:group, :having).maximum(@column) || FALLBACK_FINISH) + OFFSET_BY_ONE
       end
 
       def check_mode!(mode)

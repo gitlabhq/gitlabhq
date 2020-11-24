@@ -357,7 +357,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
       end
 
       it 'sends an RPC request with the correct payload' do
-        expect(client.commits_by_message(query, options)).to match_array(wrap_commits(commits))
+        expect(client.commits_by_message(query, **options)).to match_array(wrap_commits(commits))
       end
     end
 

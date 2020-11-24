@@ -58,7 +58,7 @@ RSpec.describe Projects::MoveProjectMembersService do
         target_project.add_maintainer(developer_user)
         target_project.add_developer(reporter_user)
 
-        subject.execute(project_with_users, options)
+        subject.execute(project_with_users, **options)
 
         expect(project_with_users.project_members.count).not_to eq 0
       end

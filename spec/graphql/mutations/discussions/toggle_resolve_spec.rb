@@ -11,7 +11,7 @@ RSpec.describe Mutations::Discussions::ToggleResolve do
 
   describe '#resolve' do
     subject do
-      mutation.resolve({ id: id_arg, resolve: resolve_arg })
+      mutation.resolve(id: id_arg, resolve: resolve_arg)
     end
 
     let(:id_arg) { discussion.to_global_id.to_s }

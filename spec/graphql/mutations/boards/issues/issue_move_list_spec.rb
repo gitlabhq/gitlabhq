@@ -34,18 +34,18 @@ RSpec.describe Mutations::Boards::Issues::IssueMoveList do
   end
 
   subject do
-    mutation.resolve(params.merge(move_params))
+    mutation.resolve(**params.merge(move_params))
   end
 
   describe '#ready?' do
     it 'raises an error if required arguments are missing' do
-      expect { mutation.ready?(params) }
+      expect { mutation.ready?(**params) }
         .to raise_error(Gitlab::Graphql::Errors::ArgumentError, "At least one of the arguments " \
         "fromListId, toListId, afterId or beforeId is required")
     end
 
     it 'raises an error if only one of fromListId and toListId is present' do
-      expect { mutation.ready?(params.merge(from_list_id: list1.id)) }
+      expect { mutation.ready?(**params.merge(from_list_id: list1.id)) }
         .to raise_error(Gitlab::Graphql::Errors::ArgumentError,
           'Both fromListId and toListId must be present'
         )

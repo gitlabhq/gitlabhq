@@ -7,7 +7,7 @@ RSpec.describe Mutations::Notes::RepositionImageDiffNote do
 
   describe '#resolve' do
     subject do
-      mutation.resolve({ note: note, position: new_position })
+      mutation.resolve(note: note, position: new_position)
     end
 
     let_it_be(:noteable) { create(:merge_request) }

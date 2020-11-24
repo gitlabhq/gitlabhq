@@ -1,67 +1,66 @@
 -# DANGER: Any changes to this file need to be reflected in issuables_list/components/issuable.vue!
 %li{ id: dom_id(issue), class: issue_css_classes(issue), url: issue_path(issue), data: { labels: issue.label_ids, id: issue.id, qa_selector: 'issue_container', qa_issue_title: issue.title } }
-  .issue-box
+  .issuable-info-container
     - if @can_bulk_update
       .issue-check.hidden
         = check_box_tag dom_id(issue, "selected"), nil, false, 'data-id' => issue.id, class: "selected-issuable"
-    .issuable-info-container
-      .issuable-main-info
-        .issue-title.title
-          %span.issue-title-text.js-onboarding-issue-item{ dir: "auto" }
-            - if issue.confidential?
-              %span.has-tooltip{ title: _('Confidential') }
-                = confidential_icon(issue)
-            = link_to issue.title, issue_path(issue)
-          = render_if_exists 'projects/issues/subepic_flag', issue: issue
-          - if issue.tasks?
-            %span.task-status.d-none.d-sm-inline-block
-              &nbsp;
-              = issue.task_status
-
-        .issuable-info
-          %span.issuable-reference
-            #{issuable_reference(issue)}
-          %span.issuable-authored.d-none.d-sm-inline-block
-            &middot;
-            opened #{time_ago_with_tooltip(issue.created_at, placement: 'bottom')}
-            by #{link_to_member(@project, issue.author, avatar: false)}
-            = render_if_exists 'shared/issuable/gitlab_team_member_badge', {author: issue.author}
-          - if issue.milestone
-            %span.issuable-milestone.d-none.d-sm-inline-block
-              &nbsp;
-              = link_to project_issues_path(issue.project, milestone_title: issue.milestone.title), data: { html: 'true', toggle: 'tooltip', title: milestone_tooltip_due_date(issue.milestone) } do
-                = sprite_icon('clock', css_class: 'gl-vertical-align-text-bottom')
-                = issue.milestone.title
-          - if issue.due_date
-            %span.issuable-due-date.d-none.d-sm-inline-block.has-tooltip{ class: "#{'cred' if issue.overdue?}", title: _('Due date') }
-              &nbsp;
-              = sprite_icon('calendar')
-              = issue.due_date.to_s(:medium)
-
-          = render_if_exists "projects/issues/issue_weight", issue: issue
-          = render_if_exists "projects/issues/health_status", issue: issue
-
-          - if issue.labels.any?
+    .issuable-main-info
+      .issue-title.title
+        %span.issue-title-text.js-onboarding-issue-item{ dir: "auto" }
+          - if issue.confidential?
+            %span.has-tooltip{ title: _('Confidential') }
+              = confidential_icon(issue)
+          = link_to issue.title, issue_path(issue)
+        = render_if_exists 'projects/issues/subepic_flag', issue: issue
+        - if issue.tasks?
+          %span.task-status.d-none.d-sm-inline-block
             &nbsp;
-            - presented_labels_sorted_by_title(issue.labels, issue.project).each do |label|
-              = link_to_label(label, small: true)
+            = issue.task_status
 
-          = render "projects/issues/issue_estimate", issue: issue
+      .issuable-info
+        %span.issuable-reference
+          #{issuable_reference(issue)}
+        %span.issuable-authored.d-none.d-sm-inline-block
+          &middot;
+          opened #{time_ago_with_tooltip(issue.created_at, placement: 'bottom')}
+          by #{link_to_member(@project, issue.author, avatar: false)}
+          = render_if_exists 'shared/issuable/gitlab_team_member_badge', {author: issue.author}
+        - if issue.milestone
+          %span.issuable-milestone.d-none.d-sm-inline-block
+            &nbsp;
+            = link_to project_issues_path(issue.project, milestone_title: issue.milestone.title), data: { html: 'true', toggle: 'tooltip', title: milestone_tooltip_due_date(issue.milestone) } do
+              = sprite_icon('clock', css_class: 'gl-vertical-align-text-bottom')
+              = issue.milestone.title
+        - if issue.due_date
+          %span.issuable-due-date.d-none.d-sm-inline-block.has-tooltip{ class: "#{'cred' if issue.overdue?}", title: _('Due date') }
+            &nbsp;
+            = sprite_icon('calendar')
+            = issue.due_date.to_s(:medium)
 
-      .issuable-meta
-        %ul.controls
-          - if issue.closed? && issue.moved?
-            %li.issuable-status
-              = _('CLOSED (MOVED)')
-          - elsif issue.closed?
-            %li.issuable-status
-              = _('CLOSED')
-          - if issue.assignees.any?
-            %li.gl-display-flex
-              = render 'shared/issuable/assignees', project: @project, issuable: issue
+        = render_if_exists "projects/issues/issue_weight", issue: issue
+        = render_if_exists "projects/issues/health_status", issue: issue
 
-          = render 'shared/issuable_meta_data', issuable: issue
+        - if issue.labels.any?
+          &nbsp;
+          - presented_labels_sorted_by_title(issue.labels, issue.project).each do |label|
+            = link_to_label(label, small: true)
 
-        .float-right.issuable-updated-at.d-none.d-sm-inline-block
-          %span
-            = _('updated %{time_ago}').html_safe % { time_ago: time_ago_with_tooltip(issue.updated_at, placement: 'bottom', html_class: 'issue_update_ago') }
+        = render "projects/issues/issue_estimate", issue: issue
+
+    .issuable-meta
+      %ul.controls
+        - if issue.closed? && issue.moved?
+          %li.issuable-status
+            = _('CLOSED (MOVED)')
+        - elsif issue.closed?
+          %li.issuable-status
+            = _('CLOSED')
+        - if issue.assignees.any?
+          %li.gl-display-flex
+            = render 'shared/issuable/assignees', project: @project, issuable: issue
+
+        = render 'shared/issuable_meta_data', issuable: issue
+
+      .float-right.issuable-updated-at.d-none.d-sm-inline-block
+        %span
+          = _('updated %{time_ago}').html_safe % { time_ago: time_ago_with_tooltip(issue.updated_at, placement: 'bottom', html_class: 'issue_update_ago') }

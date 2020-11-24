@@ -130,6 +130,16 @@ RSpec.describe Gitlab::Database::BatchCount do
       expect(described_class.batch_count(model, start: model.minimum(:id), finish: model.maximum(:id))).to eq(5)
     end
 
+    it 'stops counting when finish value is reached' do
+      stub_const('Gitlab::Database::BatchCounter::MIN_REQUIRED_BATCH_SIZE', 0)
+
+      expect(described_class.batch_count(model,
+        start: model.minimum(:id),
+        finish: model.maximum(:id) - 1, # Do not count the last record
+        batch_size: model.count - 2 # Ensure there are multiple batches
+      )).to eq(model.count - 1)
+    end
+
     it "defaults the batch size to #{Gitlab::Database::BatchCounter::DEFAULT_BATCH_SIZE}" do
       min_id = model.minimum(:id)
       relation = instance_double(ActiveRecord::Relation)
@@ -240,6 +250,19 @@ RSpec.describe Gitlab::Database::BatchCount do
 
     it 'counts with a start and finish' do
       expect(described_class.batch_distinct_count(model, column, start: model.minimum(column), finish: model.maximum(column))).to eq(2)
+    end
+
+    it 'stops counting when finish value is reached' do
+      # Create a new unique author that should not be counted
+      create(:issue)
+
+      stub_const('Gitlab::Database::BatchCounter::MIN_REQUIRED_BATCH_SIZE', 0)
+
+      expect(described_class.batch_distinct_count(model, column,
+        start: User.minimum(:id),
+        finish: User.maximum(:id) - 1, # Do not count the newly created issue
+        batch_size: model.count - 2 # Ensure there are multiple batches
+      )).to eq(2)
     end
 
     it 'counts with User min and max as start and finish' do

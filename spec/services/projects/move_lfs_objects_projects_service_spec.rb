@@ -48,7 +48,7 @@ RSpec.describe Projects::MoveLfsObjectsProjectsService do
       it 'does not remove remaining lfs objects' do
         target_project.lfs_objects << project_with_lfs_objects.lfs_objects.first(2)
 
-        subject.execute(project_with_lfs_objects, options)
+        subject.execute(project_with_lfs_objects, **options)
 
         expect(project_with_lfs_objects.lfs_objects.count).not_to eq 0
       end
