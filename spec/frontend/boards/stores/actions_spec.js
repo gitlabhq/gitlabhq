@@ -4,8 +4,7 @@ import {
   mockLists,
   mockListsById,
   mockIssue,
-  mockIssueWithModel,
-  mockIssue2WithModel,
+  mockIssue2,
   rawIssue,
   mockIssues,
   mockMilestone,
@@ -500,8 +499,8 @@ describe('moveIssue', () => {
   };
 
   const issues = {
-    '436': mockIssueWithModel,
-    '437': mockIssue2WithModel,
+    '436': mockIssue,
+    '437': mockIssue2,
   };
 
   const state = {
@@ -537,7 +536,7 @@ describe('moveIssue', () => {
         {
           type: types.MOVE_ISSUE,
           payload: {
-            originalIssue: mockIssueWithModel,
+            originalIssue: mockIssue,
             fromListId: 'gid://gitlab/List/1',
             toListId: 'gid://gitlab/List/2',
           },
@@ -612,7 +611,7 @@ describe('moveIssue', () => {
         {
           type: types.MOVE_ISSUE,
           payload: {
-            originalIssue: mockIssueWithModel,
+            originalIssue: mockIssue,
             fromListId: 'gid://gitlab/List/1',
             toListId: 'gid://gitlab/List/2',
           },
@@ -620,7 +619,7 @@ describe('moveIssue', () => {
         {
           type: types.MOVE_ISSUE_FAILURE,
           payload: {
-            originalIssue: mockIssueWithModel,
+            originalIssue: mockIssue,
             fromListId: 'gid://gitlab/List/1',
             toListId: 'gid://gitlab/List/2',
             originalIndex: 0,

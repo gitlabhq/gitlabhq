@@ -188,21 +188,56 @@ To set your current status:
 1. Set the desired emoji and/or status message.
 1. Click **Set status**. Alternatively, you can click **Remove status** to remove your user status entirely.
 
-![Busy status indicator](img/busy_status_indicator_v13_6.png)
-
 or
 
 1. Click your avatar.
 1. Select **Profile**.
 1. Click **Edit profile** (pencil icon).
 1. Enter your status message in the **Your status** text field.
-   1. Alternatively, select the **Busy** checkbox ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259649) in GitLab 13.6}.
 1. Click **Add status emoji** (smiley face), and select the desired emoji.
 1. Click **Update profile settings**.
 
 You can also set your current status [using the API](../../api/users.md#user-status).
 
 If you previously selected the "Busy" checkbox, remember to deselect it when you become available again.
+
+## Busy status indicator
+
+> - Introduced in GitLab 13.6.
+> - It's [deployed behind a feature flag](../feature_flags.md), disabled by default.
+> - It's disabled on GitLab.com.
+> - It's not recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-busy-status-feature).
+
+To indicate to others that you are busy, you can set an indicator
+
+![Busy status indicator](img/busy_status_indicator_v13_6.png)
+
+To set the busy status indicator, either:
+
+- Set it directly:
+
+  1. Click your avatar.
+  1. Click **Set status**, or **Edit status** if you have already set a status.
+  1. Select the **Busy** checkbox
+
+- Set it on your profile:
+
+  1. Click your avatar.
+  1. Select **Profile**.
+  1. Click **Edit profile** (**{pencil}**).
+  1. Select the **Busy** checkbox
+
+### Enable busy status feature
+
+The busy status feature is deployed behind a feature flag and is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md) can enable it for your instance from the [rails console](../../administration/feature_flags.md#start-the-gitlab-rails-console).
+
+To enable it:
+
+```ruby
+Feature.enable(:set_user_availability_status)
+```
 
 ## Commit email
 

@@ -64,6 +64,8 @@ Feature.enable(:sourcegraph, Project.find_by_full_path('my_group/my_project'))
 
 If you are new to Sourcegraph, head over to the [Sourcegraph installation documentation](https://docs.sourcegraph.com/admin) and get your instance up and running.
 
+If you are using an HTTPS connection to GitLab, you will need to [configure HTTPS](https://docs.sourcegraph.com/admin/http_https_configuration) for your Sourcegraph instance. 
+
 ### Connect your Sourcegraph instance to your GitLab instance
 
 1. Navigate to the site admin area in Sourcegraph.

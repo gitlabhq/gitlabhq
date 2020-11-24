@@ -1,15 +1,7 @@
 import mutations from '~/boards/stores/mutations';
 import * as types from '~/boards/stores/mutation_types';
 import defaultState from '~/boards/stores/state';
-import {
-  mockListsWithModel,
-  mockLists,
-  rawIssue,
-  mockIssue,
-  mockIssue2,
-  mockIssueWithModel,
-  mockIssue2WithModel,
-} from '../mock_data';
+import { mockListsWithModel, mockLists, rawIssue, mockIssue, mockIssue2 } from '../mock_data';
 
 const expectNotImplemented = action => {
   it('is not implemented', () => {
@@ -355,8 +347,8 @@ describe('Board Store Mutations', () => {
       };
 
       const issues = {
-        '1': mockIssueWithModel,
-        '2': mockIssue2WithModel,
+        '1': mockIssue,
+        '2': mockIssue2,
       };
 
       state = {
@@ -367,7 +359,7 @@ describe('Board Store Mutations', () => {
       };
 
       mutations.MOVE_ISSUE(state, {
-        originalIssue: mockIssue2WithModel,
+        originalIssue: mockIssue2,
         fromListId: 'gid://gitlab/List/1',
         toListId: 'gid://gitlab/List/2',
       });
@@ -396,7 +388,7 @@ describe('Board Store Mutations', () => {
         issue: rawIssue,
       });
 
-      expect(state.issues).toEqual({ '436': { ...mockIssueWithModel, id: 436 } });
+      expect(state.issues).toEqual({ '436': { ...mockIssue, id: 436 } });
     });
   });
 

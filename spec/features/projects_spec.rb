@@ -16,7 +16,7 @@ RSpec.describe 'Project' do
 
     shared_examples 'creates from template' do |template, sub_template_tab = nil|
       it "is created from template", :js do
-        find('#create-from-template-tab').click
+        find('[data-qa-selector="create_from_template_link"]').click
         find(".project-template #{sub_template_tab}").click if sub_template_tab
         find("label[for=#{template.name}]").click
         fill_in("project_name", with: template.name)
@@ -47,9 +47,7 @@ RSpec.describe 'Project' do
     end
 
     it 'shows the command in a popover', :js do
-      page.within '.profile-settings-sidebar' do
-        click_link 'Show command'
-      end
+      click_link 'Show command'
 
       expect(page).to have_css('.popover .push-to-create-popover #push_to_create_tip')
       expect(page).to have_content 'Private projects can be created in your personal namespace with:'

@@ -158,9 +158,13 @@ export default {
           class="confidential-icon gl-mr-2"
           :aria-label="__('Confidential')"
         />
-        <a :href="issue.path" :title="issue.title" class="js-no-trigger" @mousemove.stop>{{
-          issue.title
-        }}</a>
+        <a
+          :href="issue.path || issue.webUrl || ''"
+          :title="issue.title"
+          class="js-no-trigger"
+          @mousemove.stop
+          >{{ issue.title }}</a
+        >
       </h4>
     </div>
     <div v-if="showLabelFooter" class="board-card-labels gl-mt-2 gl-display-flex gl-flex-wrap">
@@ -196,7 +200,11 @@ export default {
           #{{ issue.iid }}
         </span>
         <span class="board-info-items gl-mt-3 gl-display-inline-block">
-          <issue-due-date v-if="issue.dueDate" :date="issue.dueDate" :closed="issue.closed" />
+          <issue-due-date
+            v-if="issue.dueDate"
+            :date="issue.dueDate"
+            :closed="issue.closed || Boolean(issue.closedAt)"
+          />
           <issue-time-estimate v-if="issue.timeEstimate" :estimate="issue.timeEstimate" />
           <issue-card-weight
             v-if="validIssueWeight"

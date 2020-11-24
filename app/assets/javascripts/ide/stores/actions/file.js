@@ -166,6 +166,13 @@ export const getRawFileData = ({ state, commit, dispatch, getters }, { path }) =
 
 export const changeFileContent = ({ commit, state, getters }, { path, content }) => {
   const file = state.entries[path];
+
+  // It's possible for monaco to hit a race condition where it tries to update renamed files.
+  // See issue https://gitlab.com/gitlab-org/gitlab/-/issues/284930
+  if (!file) {
+    return;
+  }
+
   commit(types.UPDATE_FILE_CONTENT, {
     path,
     content,

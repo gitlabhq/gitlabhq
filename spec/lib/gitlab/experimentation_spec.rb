@@ -13,7 +13,6 @@ RSpec.describe Gitlab::Experimentation::EXPERIMENTS do
       :invite_members_version_a,
       :invite_members_version_b,
       :invite_members_empty_group_version_a,
-      :new_create_project_ui,
       :contact_sales_btn_in_app,
       :customize_homepage,
       :invite_email,
