@@ -292,6 +292,7 @@ RSpec.describe ObjectStorage::DirectUpload do
 
         context 'when IAM profile is true' do
           let(:use_iam_profile) { true }
+          let(:iam_credentials_v2_url) { "http://169.254.169.254/latest/api/token" }
           let(:iam_credentials_url) { "http://169.254.169.254/latest/meta-data/iam/security-credentials/" }
           let(:iam_credentials) do
             {
@@ -303,6 +304,9 @@ RSpec.describe ObjectStorage::DirectUpload do
           end
 
           before do
+            # If IMDSv2 is disabled, we should still fall back to IMDSv1
+            stub_request(:put, iam_credentials_v2_url)
+              .to_return(status: 404)
             stub_request(:get, iam_credentials_url)
               .to_return(status: 200, body: "somerole", headers: {})
             stub_request(:get, "#{iam_credentials_url}somerole")
@@ -310,6 +314,21 @@ RSpec.describe ObjectStorage::DirectUpload do
           end
 
           it_behaves_like 'a valid S3 upload without multipart data'
+
+          context 'when IMSDv2 is available' do
+            let(:iam_token) { 'mytoken' }
+
+            before do
+              stub_request(:put, iam_credentials_v2_url)
+                .to_return(status: 200, body: iam_token)
+              stub_request(:get, iam_credentials_url).with(headers: { "X-aws-ec2-metadata-token" => iam_token })
+                .to_return(status: 200, body: "somerole", headers: {})
+              stub_request(:get, "#{iam_credentials_url}somerole").with(headers: { "X-aws-ec2-metadata-token" => iam_token })
+                .to_return(status: 200, body: iam_credentials.to_json, headers: {})
+            end
+
+            it_behaves_like 'a valid S3 upload without multipart data'
+          end
         end
       end
 

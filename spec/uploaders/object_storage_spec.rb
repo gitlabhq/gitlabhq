@@ -515,7 +515,7 @@ RSpec.describe ObjectStorage do
         end
 
         context 'uses AWS' do
-          let(:storage_url) { "https://uploads.s3-eu-central-1.amazonaws.com/" }
+          let(:storage_url) { "https://uploads.s3.eu-central-1.amazonaws.com/" }
           let(:credentials) do
             {
               provider: "AWS",

@@ -87,65 +87,14 @@ function echosuccess() {
   fi
 }
 
-function get_job_id() {
-  local job_name="${1}"
-  local query_string="${2:+&${2}}"
-  local api_token="${API_TOKEN-${GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN}}"
-  if [ -z "${api_token}" ]; then
-    echoerr "Please provide an API token with \$API_TOKEN or \$GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN."
-    return
-  fi
-
-  local max_page=3
-  local page=1
-
-  while true; do
-    local url="https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/pipelines/${CI_PIPELINE_ID}/jobs?per_page=100&page=${page}${query_string}"
-    echoinfo "GET ${url}"
-
-    local job_id
-    job_id=$(curl --silent --show-error --header "PRIVATE-TOKEN: ${api_token}" "${url}" | jq "map(select(.name == \"${job_name}\")) | map(.id) | last")
-    [[ "${job_id}" == "null" && "${page}" -lt "$max_page" ]] || break
-
-    let "page++"
-  done
-
-  if [[ "${job_id}" == "null" ]]; then # jq prints "null" for non-existent attribute
-    echoerr "The '${job_name}' job ID couldn't be retrieved!"
-  else
-    echoinfo "The '${job_name}' job ID is ${job_id}"
-    echo "${job_id}"
-  fi
-}
-
-function play_job() {
-  local job_name="${1}"
-  local job_id
-  job_id=$(get_job_id "${job_name}" "scope=manual");
-  if [ -z "${job_id}" ]; then return; fi
-
-  local api_token="${API_TOKEN-${GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN}}"
-  if [ -z "${api_token}" ]; then
-    echoerr "Please provide an API token with \$API_TOKEN or \$GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN."
-    return
-  fi
-
-  local url="https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/jobs/${job_id}/play"
-  echoinfo "POST ${url}"
-
-  local job_url
-  job_url=$(curl --silent --show-error --request POST --header "PRIVATE-TOKEN: ${api_token}" "${url}" | jq ".web_url")
-  echoinfo "Manual job '${job_name}' started at: ${job_url}"
-}
-
 function fail_pipeline_early() {
   local dont_interrupt_me_job_id
-  dont_interrupt_me_job_id=$(get_job_id 'dont-interrupt-me' 'scope=success')
+  dont_interrupt_me_job_id=$(scripts/api/get_job_id --job-query "scope=success" --job-name "dont-interrupt-me")
 
   if [[ -n "${dont_interrupt_me_job_id}" ]]; then
     echoinfo "This pipeline cannot be interrupted due to \`dont-interrupt-me\` job ${dont_interrupt_me_job_id}"
   else
     echoinfo "Failing pipeline early for fast feedback due to test failures in rspec fail-fast."
-    curl --request POST --header "PRIVATE-TOKEN: ${GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN}" "https://${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/pipelines/${CI_PIPELINE_ID}/cancel"
+    scripts/api/cancel_pipeline
   fi
 }

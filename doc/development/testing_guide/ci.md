@@ -12,8 +12,8 @@ Our current CI parallelization setup is as follows:
 
 1. The `retrieve-tests-metadata` job in the `prepare` stage ensures we have a
    `knapsack/report-master.json` file:
-   - The `knapsack/report-master.json` file is fetched from S3, if it's not here
-     we initialize the file with `{}`.
+   - The `knapsack/report-master.json` file is fetched from the latest `master` pipeline which runs `update-tests-metadata`
+     (for now it's the 2-hourly scheduled master pipeline), if it's not here we initialize the file with `{}`.
 1. Each `[rspec|rspec-ee] [unit|integration|system|geo] n m` job are run with
    `knapsack rspec` and should have an evenly distributed share of tests:
    - It works because the jobs have access to the `knapsack/report-master.json`
@@ -25,7 +25,7 @@ Our current CI parallelization setup is as follows:
 1. The `update-tests-metadata` job (which only runs on scheduled pipelines for
    [the canonical project](https://gitlab.com/gitlab-org/gitlab) takes all the
    `knapsack/rspec*_pg_*.json` files and merge them all together into a single
-   `knapsack/report-master.json` file that is then uploaded to S3.
+   `knapsack/report-master.json` file that is saved as artifact.
 
 After that, the next pipeline will use the up-to-date `knapsack/report-master.json` file.
 
