@@ -142,13 +142,11 @@ module Gitlab
     end
 
     def tmp_keychains_created
-      @tmp_keychains_created ||= Gitlab::Metrics.counter(:gpg_tmp_keychains_created_total,
-                                                         'The number of temporary GPG keychains created')
+      Gitlab::Metrics.counter(:gpg_tmp_keychains_created_total, 'The number of temporary GPG keychains created')
     end
 
     def tmp_keychains_removed
-      @tmp_keychains_removed ||= Gitlab::Metrics.counter(:gpg_tmp_keychains_removed_total,
-                                                         'The number of temporary GPG keychains removed')
+      Gitlab::Metrics.counter(:gpg_tmp_keychains_removed_total, 'The number of temporary GPG keychains removed')
     end
   end
 end
