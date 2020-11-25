@@ -785,6 +785,8 @@ Settings.forti_authenticator['port'] = 443 if Settings.forti_authenticator['port
 # Extra customization
 #
 Settings['extra'] ||= Settingslogic.new({})
+Settings.extra['matomo_site_id'] ||= Settings.extra['piwik_site_id']
+Settings.extra['matomo_url'] ||= Settings.extra['piwik_url']
 
 #
 # Rack::Attack settings

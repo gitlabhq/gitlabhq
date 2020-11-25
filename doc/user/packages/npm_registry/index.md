@@ -105,7 +105,7 @@ To authenticate to the Package Registry, you must use one of the following:
 
 ### Authenticate with a personal access token or deploy token
 
-To authenticate with the Package Registry, you will need a [personal access token](../../profile/personal_access_tokens.md) or [deploy token](../../project/deploy_tokens/index.md).
+To authenticate with the Package Registry, you need a [personal access token](../../profile/personal_access_tokens.md) or [deploy token](../../project/deploy_tokens/index.md).
 
 #### Project-level NPM endpoint
 

@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29
 rollout_issue_url: 
 milestone: '12.1'
 type: development
-group: group::source code
+group: group::code review
 default_enabled: true

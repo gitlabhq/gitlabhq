@@ -79,7 +79,7 @@ GET /projects/:id/packages/generic/:package_name/:package_version/:file_name
 | `package_version`  | string          | yes      | The package version.                                                                |
 | `file_name`        | string          | yes      | The file name.                                                                      |
 
-The file context is served in the response body. The response content type will be `application/octet-stream`.
+The file context is served in the response body. The response content type is `application/octet-stream`.
 
 Example request that uses a personal access token:
 
