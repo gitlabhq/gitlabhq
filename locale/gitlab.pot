@@ -2142,10 +2142,10 @@ msgstr ""
 msgid "AdminUsers|Deactivate"
 msgstr ""
 
-msgid "AdminUsers|Deactivate User %{username}?"
+msgid "AdminUsers|Deactivate user"
 msgstr ""
 
-msgid "AdminUsers|Deactivate user"
+msgid "AdminUsers|Deactivate user %{username}?"
 msgstr ""
 
 msgid "AdminUsers|Deactivated"
@@ -2275,6 +2275,9 @@ msgid "AdminUsers|You are about to permanently delete the user %{username}. This
 msgstr ""
 
 msgid "AdminUsers|You can always block their account again if needed."
+msgstr ""
+
+msgid "AdminUsers|You can always re-activate their account, their data will remain intact."
 msgstr ""
 
 msgid "AdminUsers|You can always unblock their account, their data will remain intact."

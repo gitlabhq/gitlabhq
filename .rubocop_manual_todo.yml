@@ -228,7 +228,6 @@ Rails/SaveBang:
     - 'spec/features/admin/admin_sees_project_statistics_spec.rb'
     - 'spec/features/admin/admin_sees_projects_statistics_spec.rb'
     - 'spec/features/admin/admin_users_impersonation_tokens_spec.rb'
-    - 'spec/features/admin/admin_users_spec.rb'
     - 'spec/features/boards/sidebar_spec.rb'
     - 'spec/features/calendar_spec.rb'
     - 'spec/features/commits_spec.rb'

@@ -113,7 +113,7 @@ export default {
   methods: {
     ...mapActions(['toggleStateButtonLoading']),
     toggleIssueState() {
-      if (!this.isClosed && this.getBlockedByIssues.length) {
+      if (!this.isClosed && this.getBlockedByIssues?.length) {
         this.$refs.blockedByIssuesModal.show();
         return;
       }

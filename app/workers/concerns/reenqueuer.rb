@@ -52,7 +52,11 @@ module Reenqueuer
   private
 
   def reenqueue(*args)
-    self.class.perform_async(*args) if yield
+    result = yield
+
+    self.class.perform_async(*args) if result
+
+    result
   end
 
   # Override as needed
