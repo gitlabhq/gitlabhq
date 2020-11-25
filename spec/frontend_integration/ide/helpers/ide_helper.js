@@ -1,8 +1,4 @@
-import { TEST_HOST } from 'helpers/test_constants';
 import { findAllByText, fireEvent, getByLabelText, screen } from '@testing-library/dom';
-import { initIde } from '~/ide';
-import extendStore from '~/ide/stores/extend';
-import { IDE_DATASET } from './mock_data';
 
 const isFolderRowOpen = row => row.matches('.folder.is-open');
 
@@ -134,17 +130,4 @@ export const commit = async () => {
   await screen.findByLabelText(/Commit to .+ branch/).then(x => x.click());
 
   screen.getByText('Commit').click();
-};
-
-export const createIdeComponent = (container, { isRepoEmpty = false, path = '' } = {}) => {
-  global.jsdom.reconfigure({
-    url: `${TEST_HOST}/-/ide/project/gitlab-test/lorem-ipsum${
-      isRepoEmpty ? '-empty' : ''
-    }/tree/master/-/${path}`,
-  });
-
-  const el = document.createElement('div');
-  Object.assign(el.dataset, IDE_DATASET);
-  container.appendChild(el);
-  return initIde(el, { extendStore });
 };

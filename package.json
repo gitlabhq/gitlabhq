@@ -191,6 +191,7 @@
     "jest-canvas-mock": "^2.1.2",
     "jest-environment-jsdom": "^26.5.2",
     "jest-junit": "^12.0.0",
+    "jest-raw-loader": "^1.0.1",
     "jest-util": "^26.5.2",
     "jsdoc": "^3.5.5",
     "jsdoc-vue": "^1.0.0",
