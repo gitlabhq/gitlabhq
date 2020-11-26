@@ -1,0 +1,5 @@
+---
+title: Update Rake check and docs to require Ruby 2.7
+merge_request: 48552
+author:
+type: changed

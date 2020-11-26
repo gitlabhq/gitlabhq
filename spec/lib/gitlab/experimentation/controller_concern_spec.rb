@@ -418,6 +418,56 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
     end
   end
 
+  describe '#record_experiment_conversion_event' do
+    let(:user) { build(:user) }
+
+    before do
+      allow(controller).to receive(:dnt_enabled?).and_return(false)
+      allow(controller).to receive(:current_user).and_return(user)
+      stub_experiment(test_experiment: true)
+    end
+
+    subject(:record_conversion_event) do
+      controller.record_experiment_conversion_event(:test_experiment)
+    end
+
+    it 'records the conversion event for the experiment & user' do
+      expect(::Experiment).to receive(:record_conversion_event).with(:test_experiment, user)
+      record_conversion_event
+    end
+
+    shared_examples 'does not record the conversion event' do
+      it 'does not record the conversion event' do
+        expect(::Experiment).not_to receive(:record_conversion_event)
+        record_conversion_event
+      end
+    end
+
+    context 'when DNT is enabled' do
+      before do
+        allow(controller).to receive(:dnt_enabled?).and_return(true)
+      end
+
+      include_examples 'does not record the conversion event'
+    end
+
+    context 'when there is no current user' do
+      before do
+        allow(controller).to receive(:current_user).and_return(nil)
+      end
+
+      include_examples 'does not record the conversion event'
+    end
+
+    context 'when the experiment is not enabled' do
+      before do
+        stub_experiment(test_experiment: false)
+      end
+
+      include_examples 'does not record the conversion event'
+    end
+  end
+
   describe '#experiment_tracking_category_and_group' do
     let_it_be(:experiment_key) { :test_something }
 

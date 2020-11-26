@@ -1,0 +1,6 @@
+---
+title: Add `converted_at` timestamp column to `experiment_users` to record when
+  the user performs an experiment's conversion action
+merge_request: 47093
+author:
+type: changed
