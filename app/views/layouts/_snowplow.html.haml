@@ -1,6 +1,6 @@
 - return unless Gitlab::CurrentSettings.snowplow_enabled?
 
-= javascript_tag nonce: true do
+= javascript_tag do
   :plain
     ;(function(p,l,o,w,i,n,g){if(!p[i]){p.GlobalSnowplowNamespace=p.GlobalSnowplowNamespace||[];
     p.GlobalSnowplowNamespace.push(i);p[i]=function(){(p[i].q=p[i].q||[]).push(arguments)

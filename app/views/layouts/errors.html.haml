@@ -8,7 +8,7 @@
   %body
     .page-container
       = yield
-    = javascript_tag nonce: true do
+    = javascript_tag do
       :plain
         (function(){
           var goBackElement = document.querySelector('.js-go-back');

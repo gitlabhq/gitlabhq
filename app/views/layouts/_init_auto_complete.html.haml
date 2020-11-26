@@ -4,7 +4,7 @@
 - datasources = autocomplete_data_sources(object, noteable_type)
 
 - if object
-  = javascript_tag nonce: true do
+  = javascript_tag do
     :plain
       gl = window.gl || {};
       gl.GfmAutoComplete = gl.GfmAutoComplete || {};

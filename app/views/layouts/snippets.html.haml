@@ -4,7 +4,7 @@
 
 - content_for :page_specific_javascripts do
   - if snippets_upload_path
-    = javascript_tag nonce: true do
+    = javascript_tag do
       :plain
         window.uploads_path = "#{snippets_upload_path}";
 

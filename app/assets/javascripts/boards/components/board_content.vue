@@ -32,9 +32,9 @@ export default {
     ...mapState(['boardLists', 'error']),
     ...mapGetters(['isSwimlanesOn']),
     boardListsToUse() {
-      const lists =
-        this.glFeatures.graphqlBoardLists || this.isSwimlanesOn ? this.boardLists : this.lists;
-      return sortBy([...Object.values(lists)], 'position');
+      return this.glFeatures.graphqlBoardLists || this.isSwimlanesOn
+        ? sortBy([...Object.values(this.boardLists)], 'position')
+        : this.lists;
     },
   },
   mounted() {
@@ -53,11 +53,7 @@ export default {
     <gl-alert v-if="error" variant="danger" :dismissible="false">
       {{ error }}
     </gl-alert>
-    <div
-      v-if="!isSwimlanesOn"
-      class="boards-list gl-w-full gl-py-5 gl-px-3 gl-white-space-nowrap"
-      data-qa-selector="boards_list"
-    >
+    <div v-if="!isSwimlanesOn" class="boards-list gl-w-full gl-py-5 gl-px-3 gl-white-space-nowrap">
       <board-column
         v-for="list in boardListsToUse"
         :key="list.id"

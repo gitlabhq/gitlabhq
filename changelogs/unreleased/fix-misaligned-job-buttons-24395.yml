@@ -1,0 +1,5 @@
+---
+title: Fix misaligned buttons for CI Jobs page
+merge_request: 48332
+author: mgandres
+type: fixed

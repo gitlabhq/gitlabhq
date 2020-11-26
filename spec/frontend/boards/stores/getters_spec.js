@@ -51,52 +51,8 @@ describe('Boards - Getters', () => {
       window.gon = { features: {} };
     });
 
-    describe('when boardsWithSwimlanes is true', () => {
-      beforeEach(() => {
-        window.gon = { features: { boardsWithSwimlanes: true } };
-      });
-
-      describe('when isShowingEpicsSwimlanes is true', () => {
-        it('returns true', () => {
-          const state = {
-            isShowingEpicsSwimlanes: true,
-          };
-
-          expect(getters.isSwimlanesOn(state)).toBe(true);
-        });
-      });
-
-      describe('when isShowingEpicsSwimlanes is false', () => {
-        it('returns false', () => {
-          const state = {
-            isShowingEpicsSwimlanes: false,
-          };
-
-          expect(getters.isSwimlanesOn(state)).toBe(false);
-        });
-      });
-    });
-
-    describe('when boardsWithSwimlanes is false', () => {
-      describe('when isShowingEpicsSwimlanes is true', () => {
-        it('returns false', () => {
-          const state = {
-            isShowingEpicsSwimlanes: true,
-          };
-
-          expect(getters.isSwimlanesOn(state)).toBe(false);
-        });
-      });
-
-      describe('when isShowingEpicsSwimlanes is false', () => {
-        it('returns false', () => {
-          const state = {
-            isShowingEpicsSwimlanes: false,
-          };
-
-          expect(getters.isSwimlanesOn(state)).toBe(false);
-        });
-      });
+    it('returns false', () => {
+      expect(getters.isSwimlanesOn()).toBe(false);
     });
   });
 

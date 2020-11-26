@@ -29,7 +29,8 @@ namespace :gitlab do
                 "name" => name,
                 "category" => "#{event_scope}_packages",
                 "aggregation" => "weekly",
-                "redis_slot" => "package"
+                "redis_slot" => "package",
+                "feature_flag" => "collect_package_events_redis"
               }
             end
           end

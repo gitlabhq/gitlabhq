@@ -65,10 +65,16 @@ then
   echo "Merge request pipeline (detached) detected. Testing all files."
 else
   MERGE_BASE=$(git merge-base ${CI_MERGE_REQUEST_TARGET_BRANCH_SHA} ${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA})
-  MD_DOC_PATH=$(git diff --name-only "${MERGE_BASE}..${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}" 'doc/*.md')
-  if [ -n "${MD_DOC_PATH}" ]
+  if git diff --name-only "${MERGE_BASE}..${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}" | grep -E "\.vale|\.markdownlint|lint-doc\.sh"
   then
-    echo -e "Merged results pipeline detected. Testing only the following files:\n${MD_DOC_PATH}"
+    MD_DOC_PATH=${MD_DOC_PATH:-doc}
+    echo "Vale, Markdownlint, or lint-doc.sh configuration changed. Testing all files."
+  else
+    MD_DOC_PATH=$(git diff --name-only "${MERGE_BASE}..${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}" 'doc/*.md')
+    if [ -n "${MD_DOC_PATH}" ]
+    then
+      echo -e "Merged results pipeline detected. Testing only the following files:\n${MD_DOC_PATH}"
+    fi
   fi
 fi
 

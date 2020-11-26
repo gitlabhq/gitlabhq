@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+require 'set'
+
 class String
   def red
     "\e[31m#{self}\e[0m"
