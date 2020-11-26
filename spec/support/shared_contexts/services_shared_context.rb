@@ -16,6 +16,8 @@ Service.available_services_names.each do |service|
           hash.merge!(k => 'secrettoken')
         elsif service == 'confluence' && k == :confluence_url
           hash.merge!(k => 'https://example.atlassian.net/wiki')
+        elsif service == 'datadog' && k == :datadog_site
+          hash.merge!(k => 'datadoghq.com')
         elsif k =~ /^(.*_url|url|webhook)/
           hash.merge!(k => "http://example.com")
         elsif service_klass.method_defined?("#{k}?")

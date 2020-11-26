@@ -218,26 +218,36 @@ export const isMetaKey = e => e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
 export const isMetaClick = e => e.metaKey || e.ctrlKey || e.which === 2;
 
 export const contentTop = () => {
+  const isDesktop = breakpointInstance.isDesktop();
   const heightCalculators = [
     () => $('#js-peek').outerHeight(),
     () => $('.navbar-gitlab').outerHeight(),
+    ({ desktop }) => {
+      const container = document.querySelector('.line-resolve-all-container');
+      let size = 0;
+
+      if (!desktop && container) {
+        size = container.offsetHeight;
+      }
+
+      return size;
+    },
     () => $('.merge-request-tabs').outerHeight(),
     () => $('.js-diff-files-changed').outerHeight(),
-    () => {
-      const isDesktop = breakpointInstance.isDesktop();
+    ({ desktop }) => {
       const diffsTabIsActive = window.mrTabs?.currentAction === 'diffs';
       let size;
 
-      if (isDesktop && diffsTabIsActive) {
+      if (desktop && diffsTabIsActive) {
         size = $('.diff-file .file-title-flex-parent:visible').outerHeight();
       }
 
       return size;
     },
-    () => {
+    ({ desktop }) => {
       let size;
 
-      if (breakpointInstance.isDesktop()) {
+      if (desktop) {
         size = $('.mr-version-controls').outerHeight();
       }
 
@@ -246,7 +256,7 @@ export const contentTop = () => {
   ];
 
   return heightCalculators.reduce((totalHeight, calculator) => {
-    return totalHeight + (calculator() || 0);
+    return totalHeight + (calculator({ desktop: isDesktop }) || 0);
   }, 0);
 };
 

@@ -304,6 +304,38 @@ module API
               desc: 'Project URL'
             }
           ],
+          'datadog' => [
+            {
+              required: true,
+              name: :api_key,
+              type: String,
+              desc: 'API key used for authentication with Datadog'
+            },
+            {
+              required: false,
+              name: :datadog_site,
+              type: String,
+              desc: 'Choose the Datadog site to send data to. Set to "datadoghq.eu" to send data to the EU site'
+            },
+            {
+              required: false,
+              name: :api_url,
+              type: String,
+              desc: '(Advanced) Define the full URL for your Datadog site directly'
+            },
+            {
+              required: false,
+              name: :datadog_service,
+              type: String,
+              desc: 'Name of this GitLab instance that all data will be tagged with'
+            },
+            {
+              required: false,
+              name: :datadog_env,
+              type: String,
+              desc: 'The environment tag that traces will be tagged with'
+            }
+          ],
           'discord' => [
             {
               required: true,
@@ -784,6 +816,7 @@ module API
           ::ConfluenceService,
           ::CampfireService,
           ::CustomIssueTrackerService,
+          ::DatadogService,
           ::DiscordService,
           ::DroneCiService,
           ::EmailsOnPushService,

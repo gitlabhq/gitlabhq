@@ -5580,6 +5580,26 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#disabled_services' do
+    subject { build(:project).disabled_services }
+
+    context 'without datadog_ci_integration' do
+      before do
+        stub_feature_flags(datadog_ci_integration: false)
+      end
+
+      it { is_expected.to include('datadog') }
+    end
+
+    context 'with datadog_ci_integration' do
+      before do
+        stub_feature_flags(datadog_ci_integration: true)
+      end
+
+      it { is_expected.not_to include('datadog') }
+    end
+  end
+
   describe '#find_or_initialize_service' do
     it 'avoids N+1 database queries' do
       allow(Service).to receive(:available_services_names).and_return(%w[prometheus pushover])

@@ -59808,6 +59808,12 @@
               "deprecationReason": null
             },
             {
+              "name": "DATADOG_SERVICE",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "DISCORD_SERVICE",
               "description": null,
               "isDeprecated": false,
