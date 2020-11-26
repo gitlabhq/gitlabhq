@@ -18,4 +18,10 @@ RSpec.shared_examples 'shardable scopes' do
       expect(described_class.excluding_repository_storage('default')).to eq([record_2])
     end
   end
+
+  describe '.for_shard' do
+    it 'returns the objects for a given shard' do
+      expect(described_class.for_shard(record_1.shard)).to eq([record_1])
+    end
+  end
 end

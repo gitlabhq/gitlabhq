@@ -272,4 +272,65 @@ RSpec.describe UsersHelper do
       end
     end
   end
+
+  describe '#user_display_name' do
+    subject { helper.user_display_name(user) }
+
+    before do
+      stub_current_user(nil)
+    end
+
+    context 'for a confirmed user' do
+      let(:user) { create(:user) }
+
+      before do
+        stub_profile_permission_allowed(true)
+      end
+
+      it { is_expected.to eq(user.name) }
+    end
+
+    context 'for an unconfirmed user' do
+      let(:user) { create(:user, :unconfirmed) }
+
+      before do
+        stub_profile_permission_allowed(false)
+      end
+
+      it { is_expected.to eq('Unconfirmed user') }
+
+      context 'when current user is an admin' do
+        before do
+          admin_user = create(:admin)
+          stub_current_user(admin_user)
+          stub_profile_permission_allowed(true, admin_user)
+        end
+
+        it { is_expected.to eq(user.name) }
+      end
+
+      context 'when the current user is self' do
+        before do
+          stub_current_user(user)
+          stub_profile_permission_allowed(true, user)
+        end
+
+        it { is_expected.to eq(user.name) }
+      end
+    end
+
+    context 'for a blocked user' do
+      let(:user) { create(:user, :blocked) }
+
+      it { is_expected.to eq('Blocked user') }
+    end
+
+    def stub_current_user(user)
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    def stub_profile_permission_allowed(allowed, current_user = nil)
+      allow(helper).to receive(:can?).with(user, :read_user_profile, current_user).and_return(allowed)
+    end
+  end
 end

@@ -21771,6 +21771,8 @@ CREATE UNIQUE INDEX index_project_repositories_on_project_id ON project_reposito
 
 CREATE INDEX index_project_repositories_on_shard_id ON project_repositories USING btree (shard_id);
 
+CREATE INDEX index_project_repositories_on_shard_id_and_project_id ON project_repositories USING btree (shard_id, project_id);
+
 CREATE UNIQUE INDEX index_project_repository_states_on_project_id ON project_repository_states USING btree (project_id);
 
 CREATE INDEX index_project_repository_storage_moves_on_project_id ON project_repository_storage_moves USING btree (project_id);

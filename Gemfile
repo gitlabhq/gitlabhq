@@ -209,7 +209,7 @@ gem 'httparty', '~> 0.16.4'
 gem 'rainbow', '~> 3.0'
 
 # Progress bar
-gem 'ruby-progressbar'
+gem 'ruby-progressbar', '~> 1.10'
 
 # GitLab settings
 gem 'settingslogic', '~> 2.0.9'

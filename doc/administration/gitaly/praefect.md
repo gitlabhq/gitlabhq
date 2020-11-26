@@ -1255,23 +1255,27 @@ Gitaly Cluster automatically.
 
 Repositories may be moved from one storage location using the [Project repository storage moves API](../../api/project_repository_storage_moves.md):
 
+NOTE: **Note:**
+The Project repository storage moves API [cannot move all repository types](../../api/project_repository_storage_moves.md#limitations).
+
 To move repositories to Gitaly Cluster:
 
-1. [Schedule a move](../../api/project_repository_storage_moves.md#schedule-a-repository-storage-move-for-a-project)
-   for the first repository using the API. For example:
+1. [Schedule repository storage moves for all projects on a storage shard](../../api/project_repository_storage_moves.md#schedule-repository-storage-moves-for-all-projects-on-a-storage-shard) using the API. For example:
 
    ```shell
    curl --request POST --header "Private-Token: <your_access_token>" --header "Content-Type: application/json" \
-   --data '{"destination_storage_name":"praefect"}' "https://gitlab.example.com/api/v4/projects/123/repository_storage_moves"
+   --data '{"source_storage_name":"gitaly","destination_storage_name":"praefect"}' "https://gitlab.example.com/api/v4/project_repository_storage_moves"
    ```
 
-1. Using the ID that is returned, [query the repository move](../../api/project_repository_storage_moves.md#get-a-single-repository-storage-move-for-a-project)
+1. [Query the most recent repository moves](../../api/project_repository_storage_moves.md#retrieve-all-project-repository-storage-moves)
    using the API. The query indicates either:
-   - The move has completed successfully. The `state` field is `finished`.
-   - The move is in progress. Re-query the repository move until it completes successfully.
-   - The move has failed. Most failures are temporary and are solved by rescheduling the move.
+   - The moves have completed successfully. The `state` field is `finished`.
+   - The moves are in progress. Re-query the repository move until it completes successfully.
+   - The moves have failed. Most failures are temporary and are solved by rescheduling the move.
 
-1. Once the move is successful, repeat these steps for all repositories for your projects.
+1. Once the moves are complete, [query projects](../../api/projects.md#list-all-projects)
+   using the API to confirm that all projects have moved. No projects should be returned
+   with `repository_storage` field set to the old storage.
 
 ## Debugging Praefect
 

@@ -126,32 +126,6 @@ RSpec.describe Import::BitbucketServerController, 'routing' do
   end
 end
 
-#          status_import_google_code GET      /import/google_code/status(.:format)                                                          import/google_code#status
-#        callback_import_google_code POST     /import/google_code/callback(.:format)                                                        import/google_code#callback
-#            jobs_import_google_code GET      /import/google_code/jobs(.:format)                                                            import/google_code#jobs
-#    new_user_map_import_google_code GET      /import/google_code/user_map(.:format)                                                        import/google_code#new_user_map
-# create_user_map_import_google_code POST     /import/google_code/user_map(.:format)                                                        import/google_code#create_user_map
-#                 import_google_code POST     /import/google_code(.:format)                                                                 import/google_code#create
-#             new_import_google_code GET      /import/google_code/new(.:format)                                                             import/google_code#new
-RSpec.describe Import::GoogleCodeController, 'routing' do
-  it_behaves_like 'importer routing' do
-    let(:except_actions) { [:callback] }
-    let(:provider) { 'google_code' }
-  end
-
-  it 'to #callback' do
-    expect(post("/import/google_code/callback")).to route_to("import/google_code#callback")
-  end
-
-  it 'to #new_user_map' do
-    expect(get('/import/google_code/user_map')).to route_to('import/google_code#new_user_map')
-  end
-
-  it 'to #create_user_map' do
-    expect(post('/import/google_code/user_map')).to route_to('import/google_code#create_user_map')
-  end
-end
-
 #           status_import_fogbugz GET      /import/fogbugz/status(.:format)                                                             import/fogbugz#status
 #         callback_import_fogbugz POST     /import/fogbugz/callback(.:format)                                                           import/fogbugz#callback
 # realtime_changes_import_fogbugz GET      /import/fogbugz/realtime_changes(.:format)                                                   import/fogbugz#realtime_changes

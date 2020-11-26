@@ -10,11 +10,11 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
   let(:context) { GraphQL::Query::Context.new(query: OpenStruct.new(schema: schema), values: nil, object: nil) }
 
   subject(:connection) do
-    described_class.new(nodes, { context: context, max_page_size: 3 }.merge(arguments))
+    described_class.new(nodes, **{ context: context, max_page_size: 3 }.merge(arguments))
   end
 
   def encoded_cursor(node)
-    described_class.new(nodes, { context: context }).cursor_for(node)
+    described_class.new(nodes, context: context).cursor_for(node)
   end
 
   def decoded_cursor(cursor)

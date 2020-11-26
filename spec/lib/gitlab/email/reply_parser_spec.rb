@@ -6,7 +6,7 @@ require "spec_helper"
 RSpec.describe Gitlab::Email::ReplyParser do
   describe '#execute' do
     def test_parse_body(mail_string, params = {})
-      described_class.new(Mail::Message.new(mail_string), params).execute
+      described_class.new(Mail::Message.new(mail_string), **params).execute
     end
 
     it "returns an empty string if the message is blank" do

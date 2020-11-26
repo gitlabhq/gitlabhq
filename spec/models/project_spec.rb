@@ -3024,6 +3024,17 @@ RSpec.describe Project, factory_default: :keep do
 
       expect { project.set_repository_read_only! }.to raise_error(described_class::RepositoryReadOnlyError, /in progress/)
     end
+
+    context 'skip_git_transfer_check is true' do
+      it 'makes the project read-only when git transfers are in progress' do
+        allow(project).to receive(:git_transfer_in_progress?) { true }
+
+        expect { project.set_repository_read_only!(skip_git_transfer_check: true) }
+          .to change(project, :repository_read_only?)
+          .from(false)
+          .to(true)
+      end
+    end
   end
 
   describe '#set_repository_writable!' do

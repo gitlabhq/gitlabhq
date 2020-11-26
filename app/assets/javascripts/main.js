@@ -23,7 +23,6 @@ import { getLocationHash, visitUrl } from './lib/utils/url_utility';
 // everything else
 import { deprecatedCreateFlash as Flash, removeFlashClickListener } from './flash';
 import initTodoToggle from './header';
-import initImporterStatus from './importer_status';
 import initLayoutNav from './layout_nav';
 import initAlertHandler from './alert_handler';
 import './feature_highlight/feature_highlight_options';
@@ -107,7 +106,6 @@ function deferredInitialisation() {
   const $body = $('body');
 
   initBreadcrumbs();
-  initImporterStatus();
   initTodoToggle();
   initLogoAnimation();
   initUsagePingConsent();

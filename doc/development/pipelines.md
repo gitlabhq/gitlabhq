@@ -435,7 +435,7 @@ We are using a custom mapping between source file to test files, maintained in t
 
 We follow the [PostgreSQL versions shipped with Omnibus GitLab](https://docs.gitlab.com/omnibus/package-information/postgresql_versions.html):
 
-| PostgreSQL version | 13.0 (May 2020) | 13.1 (June 2020) | 13.2 (July 2020) | 13.3 (August 2020) | 13.4, 13.5   | 13.6 (November 2020) | 14.0 (May 2021?) |
+| PostgreSQL version | 13.0 (May 2020) | 13.1 (June 2020) | 13.2 (July 2020) | 13.3 (August 2020) | 13.4, 13.5   | [13.7 (December 2020)](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5722) | 14.0 (May 2021?) |
 | ------ | --------------- | ---------------- | ---------------- | ------------------ | ------------ | -------------------- | ---------------- |
 | PG11   | MRs/`master`/`2-hour`/`nightly` | MRs/`master`/`2-hour`/`nightly` | MRs/`master`/`2-hour`/`nightly` | MRs/`master`/`2-hour`/`nightly` | MRs/`master`/`2-hour`/`nightly` | `nightly` | - |
 | PG12   | - | - | `nightly` | `2-hour`/`nightly` | `2-hour`/`nightly` | MRs/`2-hour`/`nightly` | `2-hour`/`nightly`     |

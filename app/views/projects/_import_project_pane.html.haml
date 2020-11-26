@@ -41,12 +41,6 @@
           - unless gitlab_import_configured?
             = render 'projects/gitlab_import_modal'
 
-      - if google_code_import_enabled?
-        %div
-          = link_to new_import_google_code_path, class: 'btn import_google_code', **tracking_attrs(track_label, 'click_button', 'google_code') do
-            = sprite_icon('google')
-            Google Code
-
       - if fogbugz_import_enabled?
         %div
           = link_to new_import_fogbugz_path, class: 'btn import_fogbugz', **tracking_attrs(track_label, 'click_button', 'fogbugz') do

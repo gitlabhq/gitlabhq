@@ -370,18 +370,6 @@ msgstr ""
 msgid "%{authorsName}'s thread"
 msgstr ""
 
-msgid "%{code_open}\"johnsmith@example.com\": \"@johnsmith\"%{code_close} will add \"By %{link_open}@johnsmith%{link_close}\" to all issues and comments originally created by johnsmith@example.com, and will set %{link_open}@johnsmith%{link_close} as the assignee on all issues originally assigned to johnsmith@example.com."
-msgstr ""
-
-msgid "%{code_open}\"johnsmith@example.com\": \"John Smith\"%{code_close} will add \"By John Smith\" to all issues and comments originally created by johnsmith@example.com."
-msgstr ""
-
-msgid "%{code_open}\"johnsmith@example.com\": \"johnsm...@example.com\"%{code_close} will add \"By johnsm...@example.com\" to all issues and comments originally created by johnsmith@example.com. The email address or username is masked to ensure the user's privacy."
-msgstr ""
-
-msgid "%{code_open}\"johnsmith@example.com\": \"johnsmith@example.com\"%{code_close} will add \"By %{link_open}johnsmith@example.com%{link_close}\" to all issues and comments originally created by johnsmith@example.com. By default, the email address or username is masked to ensure the user's privacy. Use this option if you want to show the full email address."
-msgstr ""
-
 msgid "%{code_open}Masked%{code_close} variables are hidden in job logs (though they must match certain regexp requirements to do so)."
 msgstr ""
 
@@ -621,9 +609,6 @@ msgid "%{link_start}Start the title with %{draft_snippet} or %{wip_snippet}%{lin
 msgstr ""
 
 msgid "%{listToShow}, and %{awardsListLength} more."
-msgstr ""
-
-msgid "%{loadingIcon} Started"
 msgstr ""
 
 msgid "%{location} is missing required keys: %{keys}"
@@ -3128,9 +3113,6 @@ msgstr ""
 msgid "An error occurred while getting projects"
 msgstr ""
 
-msgid "An error occurred while importing project: %{details}"
-msgstr ""
-
 msgid "An error occurred while initializing path locks"
 msgstr ""
 
@@ -5361,12 +5343,6 @@ msgstr ""
 msgid "Chinese language support using"
 msgstr ""
 
-msgid "Choose %{strong_open}Create archive%{strong_close} and wait for archiving to complete."
-msgstr ""
-
-msgid "Choose %{strong_open}Next%{strong_close} at the bottom of the page."
-msgstr ""
-
 msgid "Choose a branch/tag (e.g. %{master}) or enter a commit (e.g. %{sha}) to see what's changed or to create a merge request."
 msgstr ""
 
@@ -5617,12 +5593,6 @@ msgid "Click %{link_start}here%{link_end} to view the request."
 msgstr ""
 
 msgid "Click %{link_to} to view the request."
-msgstr ""
-
-msgid "Click the %{strong_open}Download%{strong_close} button and wait for downloading to complete."
-msgstr ""
-
-msgid "Click the %{strong_open}Select none%{strong_close} button on the right, since we only need \"Google Code Project Hosting\"."
 msgstr ""
 
 msgid "Click the button below to begin the install process by navigating to the Kubernetes page"
@@ -8260,9 +8230,6 @@ msgstr ""
 msgid "Customize how FogBugz email addresses and usernames are imported into GitLab. In the next step, you'll be able to select the projects you want to import."
 msgstr ""
 
-msgid "Customize how Google Code email addresses and usernames are imported into GitLab. In the next step, you'll be able to select the projects you want to import."
-msgstr ""
-
 msgid "Customize icon"
 msgstr ""
 
@@ -8821,9 +8788,6 @@ msgid "Default projects limit"
 msgstr ""
 
 msgid "Default stages"
-msgstr ""
-
-msgid "Default: Directly import the Google Code email address or username"
 msgstr ""
 
 msgid "Default: Map a FogBugz account ID to a full name"
@@ -9801,9 +9765,6 @@ msgid "Display source"
 msgstr ""
 
 msgid "Do not display offers from third parties within GitLab"
-msgstr ""
-
-msgid "Do you want to customize how Google Code email addresses and usernames are imported into GitLab?"
 msgstr ""
 
 msgid "Dockerfile"
@@ -12073,12 +12034,6 @@ msgstr ""
 msgid "Find file"
 msgstr ""
 
-msgid "Find the downloaded ZIP file and decompress it."
-msgstr ""
-
-msgid "Find the newly extracted %{code_open}Takeout/Google Code Project Hosting/GoogleCodeProjectHosting.json%{code_close} file."
-msgstr ""
-
 msgid "Fingerprint"
 msgstr ""
 
@@ -12146,9 +12101,6 @@ msgid "FogBugz import"
 msgstr ""
 
 msgid "Folder/%{name}"
-msgstr ""
-
-msgid "Follow the steps below to export your Google Code project data."
 msgstr ""
 
 msgid "Font Color"
@@ -12260,9 +12212,6 @@ msgid "From %{code_open}%{source_title}%{code_close} into"
 msgstr ""
 
 msgid "From %{providerTitle}"
-msgstr ""
-
-msgid "From Google Code"
 msgstr ""
 
 msgid "From issue creation until deploy to production"
@@ -13003,9 +12952,6 @@ msgstr ""
 msgid "Go full screen"
 msgstr ""
 
-msgid "Go to %{link_to_google_takeout}."
-msgstr ""
-
 msgid "Go to %{strongStart}Issues%{strongEnd} &gt; %{strongStart}Boards%{strongEnd} to access your personalized learning issue board."
 msgstr ""
 
@@ -13118,12 +13064,6 @@ msgid "Goal of the changes and what reviewers should be aware of"
 msgstr ""
 
 msgid "Google Cloud Platform"
-msgstr ""
-
-msgid "Google Code import"
-msgstr ""
-
-msgid "Google Takeout"
 msgstr ""
 
 msgid "Google authentication is not %{link_start}properly configured%{link_end}. Ask your GitLab administrator if you want to use this service."
@@ -14205,12 +14145,6 @@ msgstr ""
 msgid "Import Projects from Gitea"
 msgstr ""
 
-msgid "Import all compatible projects"
-msgstr ""
-
-msgid "Import all projects"
-msgstr ""
-
 msgid "Import an exported GitLab project"
 msgstr ""
 
@@ -14260,9 +14194,6 @@ msgid "Import projects from FogBugz"
 msgstr ""
 
 msgid "Import projects from GitLab.com"
-msgstr ""
-
-msgid "Import projects from Google Code"
 msgstr ""
 
 msgid "Import repositories from Bitbucket Server"
@@ -14362,9 +14293,6 @@ msgid "In order to personalize your experience with GitLab%{br_tag}we would like
 msgstr ""
 
 msgid "In progress"
-msgstr ""
-
-msgid "In the next step, you'll be able to select the projects you want to import."
 msgstr ""
 
 msgid "Incident"
@@ -14542,9 +14470,6 @@ msgid "Incoming email"
 msgstr ""
 
 msgid "Incoming!"
-msgstr ""
-
-msgid "Incompatible Project"
 msgstr ""
 
 msgid "Incompatible options set!"
@@ -16030,9 +15955,6 @@ msgstr ""
 msgid "Leave project"
 msgstr ""
 
-msgid "Leave the \"File type\" and \"Delivery method\" options on their default values."
-msgstr ""
-
 msgid "Leave zen mode"
 msgstr ""
 
@@ -16488,9 +16410,6 @@ msgstr ""
 msgid "Make sure you save it - you won't be able to access it again."
 msgstr ""
 
-msgid "Make sure you're logged into the account that owns the projects you'd like to import."
-msgstr ""
-
 msgid "Make this epic confidential"
 msgstr ""
 
@@ -16552,15 +16471,6 @@ msgid "ManualOrdering|Couldn't save the order of the issues"
 msgstr ""
 
 msgid "Map a FogBugz account ID to a GitLab user"
-msgstr ""
-
-msgid "Map a Google Code user to a GitLab user"
-msgstr ""
-
-msgid "Map a Google Code user to a full email address"
-msgstr ""
-
-msgid "Map a Google Code user to a full name"
 msgstr ""
 
 msgid "Mar"
@@ -18736,9 +18646,6 @@ msgstr ""
 msgid "No worries, you can still use all the %{strong}%{plan_name}%{strong_close} features for now. You have %{remaining_days} to renew your subscription."
 msgstr ""
 
-msgid "No, directly import the existing email addresses and usernames."
-msgstr ""
-
 msgid "No. of commits"
 msgstr ""
 
@@ -19125,9 +19032,6 @@ msgstr ""
 msgid "One or more of your %{provider} projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
 msgstr ""
 
-msgid "One or more of your Google Code projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
-msgstr ""
-
 msgid "One or more of your dependency files are not supported, and the dependency list may be incomplete. Below is a list of supported file types."
 msgstr ""
 
@@ -19276,9 +19180,6 @@ msgid "Optional parameter \"variables\" must be a Hash. Ex: variables[key1]=valu
 msgstr ""
 
 msgid "Optionally, you can %{link_to_customize} how FogBugz email addresses and usernames are imported into GitLab."
-msgstr ""
-
-msgid "Optionally, you can %{link_to_customize} how Google Code email addresses and usernames are imported into GitLab."
 msgstr ""
 
 msgid "Options"
@@ -20311,9 +20212,6 @@ msgid "Please contact your administrator."
 msgstr ""
 
 msgid "Please convert %{linkStart}them to Git%{linkEnd}, and go through the %{linkToImportFlow} again."
-msgstr ""
-
-msgid "Please convert them to Git on Google Code, and go through the %{link_to_import_flow} again."
 msgstr ""
 
 msgid "Please create a password for your new account."
@@ -23799,9 +23697,6 @@ msgstr ""
 msgid "Scroll down"
 msgstr ""
 
-msgid "Scroll down to %{strong_open}Google Code Project Hosting%{strong_close} and enable the switch on the right."
-msgstr ""
-
 msgid "Scroll left"
 msgstr ""
 
@@ -24502,9 +24397,6 @@ msgid "Select project to choose zone"
 msgstr ""
 
 msgid "Select projects"
-msgstr ""
-
-msgid "Select projects you want to import."
 msgstr ""
 
 msgid "Select required regulatory standard"
@@ -27057,9 +26949,6 @@ msgstr ""
 msgid "The download link will expire in 24 hours."
 msgstr ""
 
-msgid "The entered user map is not a valid JSON user map."
-msgstr ""
-
 msgid "The errors we encountered were:"
 msgstr ""
 
@@ -27329,9 +27218,6 @@ msgstr ""
 msgid "The update action will time out after %{number_of_minutes} minutes. For big repositories, use a clone/push combination."
 msgstr ""
 
-msgid "The uploaded file is not a valid Google Takeout archive."
-msgstr ""
-
 msgid "The usage ping is disabled, and cannot be configured through this form."
 msgstr ""
 
@@ -27339,9 +27225,6 @@ msgid "The user is being deleted."
 msgstr ""
 
 msgid "The user map has been saved. Continue by selecting the projects you want to import."
-msgstr ""
-
-msgid "The user map is a JSON document mapping the Google Code users that participated on your projects to the way their email addresses and usernames will be imported into GitLab. You can change this by changing the value on the right hand side of %{code_open}:%{code_close}. Be sure to preserve the surrounding double quotes, other punctuation and the email address or username on the left hand side."
 msgstr ""
 
 msgid "The user map is a mapping of the FogBugz users that participated on your projects to the way their email address and usernames will be imported into GitLab. You can change this by populating the table below."
@@ -29388,9 +29271,6 @@ msgstr ""
 msgid "Upgrade your plan to improve Merge Requests."
 msgstr ""
 
-msgid "Upload %{code_open}GoogleCodeProjectHosting.json%{code_close} here:"
-msgstr ""
-
 msgid "Upload CSV file"
 msgstr ""
 
@@ -29833,6 +29713,9 @@ msgid "UserProfile|This user hasn't starred any projects"
 msgstr ""
 
 msgid "UserProfile|This user is blocked"
+msgstr ""
+
+msgid "UserProfile|Unconfirmed user"
 msgstr ""
 
 msgid "UserProfile|View all"
@@ -30972,9 +30855,6 @@ msgstr ""
 msgid "Yes, delete project"
 msgstr ""
 
-msgid "Yes, let me map Google Code users to full names or GitLab users."
-msgstr ""
-
 msgid "Yesterday"
 msgstr ""
 
@@ -31402,9 +31282,6 @@ msgid "You need to specify both an Access Token and a Host URL."
 msgstr ""
 
 msgid "You need to upload a GitLab project export archive (ending in .gz)."
-msgstr ""
-
-msgid "You need to upload a Google Takeout archive."
 msgstr ""
 
 msgid "You successfully declined the invitation"
@@ -32122,9 +31999,6 @@ msgstr ""
 msgid "committed"
 msgstr ""
 
-msgid "connecting"
-msgstr ""
-
 msgid "container_name can contain only lowercase letters, digits, '-', and '.' and must start and end with an alphanumeric character"
 msgstr ""
 
@@ -32138,9 +32012,6 @@ msgid "created"
 msgstr ""
 
 msgid "created %{timeAgo}"
-msgstr ""
-
-msgid "customize"
 msgstr ""
 
 msgid "data"
@@ -32179,9 +32050,6 @@ msgid "does not exist"
 msgstr ""
 
 msgid "does not have a supported extension. Only %{extension_list} are supported"
-msgstr ""
-
-msgid "done"
 msgstr ""
 
 msgid "download it"
@@ -32320,9 +32188,6 @@ msgid "impersonation tokens"
 msgstr ""
 
 msgid "import flow"
-msgstr ""
-
-msgid "importing"
 msgstr ""
 
 msgid "in group %{link_to_group}"
@@ -33096,9 +32961,6 @@ msgid "spendCommand|%{slash_command} will update the sum of the time spent."
 msgstr ""
 
 msgid "ssh:"
-msgstr ""
-
-msgid "started"
 msgstr ""
 
 msgid "started a discussion on %{design_link}"

@@ -2099,10 +2099,10 @@ class Project < ApplicationRecord
   # already in that state.
   #
   # @return nil. Failures will raise an exception
-  def set_repository_read_only!
+  def set_repository_read_only!(skip_git_transfer_check: false)
     with_lock do
       raise RepositoryReadOnlyError, _('Git transfer in progress') if
-        git_transfer_in_progress?
+        !skip_git_transfer_check && git_transfer_in_progress?
 
       raise RepositoryReadOnlyError, _('Repository already read-only') if
         self.class.where(id: id).pick(:repository_read_only)

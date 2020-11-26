@@ -11,7 +11,6 @@ RSpec.describe Gitlab::ImportSources do
           'Bitbucket Cloud'  => 'bitbucket',
           'Bitbucket Server' => 'bitbucket_server',
           'GitLab.com'       => 'gitlab',
-          'Google Code'      => 'google_code',
           'FogBugz'          => 'fogbugz',
           'Repo by URL'      => 'git',
           'GitLab export'    => 'gitlab_project',
@@ -32,7 +31,6 @@ RSpec.describe Gitlab::ImportSources do
           bitbucket
           bitbucket_server
           gitlab
-          google_code
           fogbugz
           git
           gitlab_project
@@ -53,7 +51,6 @@ RSpec.describe Gitlab::ImportSources do
           bitbucket
           bitbucket_server
           gitlab
-          google_code
           fogbugz
           gitlab_project
           gitea
@@ -70,7 +67,6 @@ RSpec.describe Gitlab::ImportSources do
       'bitbucket' => Gitlab::BitbucketImport::Importer,
       'bitbucket_server' => Gitlab::BitbucketServerImport::Importer,
       'gitlab' => Gitlab::GitlabImport::Importer,
-      'google_code' => Gitlab::GoogleCodeImport::Importer,
       'fogbugz' => Gitlab::FogbugzImport::Importer,
       'git' => nil,
       'gitlab_project' => Gitlab::ImportExport::Importer,
@@ -92,7 +88,6 @@ RSpec.describe Gitlab::ImportSources do
       'bitbucket' => 'Bitbucket Cloud',
       'bitbucket_server' => 'Bitbucket Server',
       'gitlab' => 'GitLab.com',
-      'google_code' => 'Google Code',
       'fogbugz' => 'FogBugz',
       'git' => 'Repo by URL',
       'gitlab_project' => 'GitLab export',

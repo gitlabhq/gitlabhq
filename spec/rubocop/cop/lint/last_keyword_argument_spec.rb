@@ -46,6 +46,9 @@ RSpec.describe RuboCop::Cop::Lint::LastKeywordArgument, type: :rubocop do
       ---
       test_api/projects_get_/projects_when_unauthenticated_behaves_like_projects_response_returns_an_array_of_projects:
       - |
+        DEPRECATION WARNING: /Users/tkuah/code/ee-gdk/gitlab/projects_spec.rb:1: warning: Using the last argument as keyword parameters is deprecated; maybe ** should be added to the call
+        /Users/tkuah/code/ee-gdk/gitlab/lib/gitlab/project.rb:15: warning: The called method `initialize' is defined here
+      - |
         DEPRECATION WARNING: /Users/tkuah/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/state_machines-activerecord-0.6.0/lib/state_machines/integrations/active_record.rb:511: warning: Using the last argument as keyword parameters is deprecated; maybe ** should be added to the call
         /Users/tkuah/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/activerecord-6.0.3.3/lib/active_record/suppressor.rb:43: warning: The called method `save' is defined here
       - |
@@ -67,6 +70,17 @@ RSpec.describe RuboCop::Cop::Lint::LastKeywordArgument, type: :rubocop do
 
       expect_correction(<<~SOURCE)
         users.call(**params)
+      SOURCE
+    end
+
+    it 'registers an offense for the new method call' do
+      expect_offense(<<~SOURCE, 'projects_spec.rb')
+        Project.new(params)
+                    ^^^^^^ Using the last argument as keyword parameters is deprecated
+      SOURCE
+
+      expect_correction(<<~SOURCE)
+        Project.new(**params)
       SOURCE
     end
 

@@ -165,6 +165,45 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Need do
     end
   end
 
+  context 'with cross pipeline artifacts needs' do
+    context 'when pipeline is provided' do
+      context 'when job is provided' do
+        let(:config) { { job: 'job_name', pipeline: '$THE_PIPELINE_ID' } }
+
+        it { is_expected.to be_valid }
+
+        it 'sets artifacts:true by default' do
+          expect(need.value).to eq(job: 'job_name', pipeline: '$THE_PIPELINE_ID', artifacts: true)
+        end
+
+        it 'sets the type as cross_dependency' do
+          expect(need.type).to eq(:cross_dependency)
+        end
+      end
+
+      context 'when artifacts is provided' do
+        let(:config) { { job: 'job_name', pipeline: '$THE_PIPELINE_ID', artifacts: false } }
+
+        it { is_expected.to be_valid }
+
+        it 'returns the correct value' do
+          expect(need.value).to eq(job: 'job_name', pipeline: '$THE_PIPELINE_ID', artifacts: false)
+        end
+      end
+    end
+
+    context 'when config contains not allowed keys' do
+      let(:config) { { job: 'job_name', pipeline: '$THE_PIPELINE_ID', something: 'else' } }
+
+      it { is_expected.not_to be_valid }
+
+      it 'returns an error' do
+        expect(need.errors)
+          .to contain_exactly('cross pipeline dependency config contains unknown keys: something')
+      end
+    end
+  end
+
   context 'when need config is not a string or a hash' do
     let(:config) { :job_name }
 

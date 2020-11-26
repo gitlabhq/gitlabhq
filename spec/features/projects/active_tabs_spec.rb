@@ -124,15 +124,15 @@ RSpec.describe 'Project active tab' do
 
   context 'on project Analytics' do
     before do
-      visit charts_project_graph_path(project, 'master')
+      visit project_cycle_analytics_path(project)
     end
 
-    context 'on project Analytics/Repository Analytics' do
+    context 'on project Analytics/Value Stream Analytics' do
       it_behaves_like 'page has active tab', _('Analytics')
-      it_behaves_like 'page has active sub tab', _('Repository')
+      it_behaves_like 'page has active sub tab', _('Value Stream')
     end
 
-    context 'on project Analytics/Cycle Analytics' do
+    context 'on project Analytics/"CI / CD"' do
       before do
         click_tab(_('CI / CD'))
       end

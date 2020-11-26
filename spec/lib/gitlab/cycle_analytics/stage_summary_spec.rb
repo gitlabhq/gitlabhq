@@ -11,7 +11,7 @@ RSpec.describe Gitlab::CycleAnalytics::StageSummary do
     project.add_maintainer(user)
   end
 
-  let(:stage_summary) { described_class.new(project, options).data }
+  let(:stage_summary) { described_class.new(project, **options).data }
 
   describe "#new_issues" do
     subject { stage_summary.first }
@@ -121,7 +121,7 @@ RSpec.describe Gitlab::CycleAnalytics::StageSummary do
       end
 
       it 'does not include commit stats' do
-        data = described_class.new(project, options).data
+        data = described_class.new(project, **options).data
         expect(includes_commits?(data)).to be_falsy
       end
 

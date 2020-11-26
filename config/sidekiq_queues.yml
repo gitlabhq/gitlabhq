@@ -250,6 +250,8 @@
   - 1
 - - project_import_schedule
   - 1
+- - project_schedule_bulk_repository_shard_moves
+  - 1
 - - project_service
   - 1
 - - project_template_export

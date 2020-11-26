@@ -76,7 +76,13 @@ export default {
     <div v-if="diffMode === $options.diffModes.replaced" class="diff-viewer">
       <div class="image js-replaced-image">
         <component :is="imageViewComponent" v-bind="$props">
-          <slot slot="image-overlay" name="image-overlay"> </slot>
+          <template #image-overlay="{ renderedWidth, renderedHeight }">
+            <slot
+              :rendered-width="renderedWidth"
+              :rendered-height="renderedHeight"
+              name="image-overlay"
+            ></slot>
+          </template>
         </component>
       </div>
       <div class="view-modes">
@@ -121,7 +127,13 @@ export default {
             },
           ]"
         >
-          <slot v-if="isNew || isRenamed" slot="image-overlay" name="image-overlay"> </slot>
+          <template v-if="isNew || isRenamed" #image-overlay="{ renderedWidth, renderedHeight }">
+            <slot
+              :rendered-width="renderedWidth"
+              :rendered-height="renderedHeight"
+              name="image-overlay"
+            ></slot>
+          </template>
         </image-viewer>
       </div>
     </div>

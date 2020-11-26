@@ -7,7 +7,7 @@ RSpec.describe 'User page' do
 
   let_it_be(:user) { create(:user, bio: '**Lorem** _ipsum_ dolor sit [amet](https://example.com)') }
 
-  subject { visit(user_path(user)) }
+  subject(:visit_profile) { visit(user_path(user)) }
 
   context 'with public profile' do
     it 'shows all the tabs' do
@@ -120,6 +120,32 @@ RSpec.describe 'User page' do
       subject
 
       expect(page).to have_content("@#{user.username}")
+    end
+  end
+
+  context 'with unconfirmed user' do
+    let_it_be(:user) { create(:user, :unconfirmed) }
+
+    before do
+      visit_profile
+    end
+
+    it 'shows user name as unconfirmed' do
+      expect(page).to have_css(".cover-title", text: 'Unconfirmed user')
+    end
+
+    it 'shows no tab' do
+      expect(page).to have_css("div.profile-header")
+      expect(page).not_to have_css("ul.nav-links")
+    end
+
+    it 'shows no additional fields' do
+      expect(page).not_to have_css(".profile-user-bio")
+      expect(page).not_to have_css(".profile-link-holder")
+    end
+
+    it 'shows private profile message' do
+      expect(page).to have_content("This user has a private profile")
     end
   end
 

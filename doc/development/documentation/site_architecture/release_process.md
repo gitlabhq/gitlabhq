@@ -48,7 +48,7 @@ this needs to happen when the stable branches for all products have been created
     committed.
 
 1. Push the newly created branch, but **don't create a merge request**.
-   After you push, the `image:docker-singe` job creates a new Docker image
+   After you push, the `image:docs-single` job creates a new Docker image
    tagged with the branch name you created in the first step. In the end, the
    image is uploaded in the [Container Registry](https://gitlab.com/gitlab-org/gitlab-docs/container_registry)
    and it is listed under the `registry` environment folder at
@@ -114,15 +114,15 @@ version and rotates the old one:
 
 The versions dropdown is in a way "hardcoded". When the site is built, it looks
 at the contents of `content/_data/versions.yaml` and based on that, the dropdown
-is populated. So, older branches have different content, which means the
-dropdown list one or more releases behind. Remember that the new changes of
+is populated. Older branches have different content, which means the
+dropdown list is one or more releases behind. Remember that the new changes of
 the dropdown are included in the unmerged `release-X-Y` branch.
 
 The content of `content/_data/versions.yaml` needs to change for all online
 versions (stable branches `X.Y` of the `gitlab-docs` project):
 
 1. Run the Rake task that creates all the respective merge requests needed to
-   update the dropdowns and are set to automatically be merged when their
+   update the dropdowns. Set these to automatically be merged when their
    pipelines succeed:
 
    NOTE: **Note:**
