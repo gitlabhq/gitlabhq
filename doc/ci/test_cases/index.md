@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Certify
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 description: Test cases in GitLab can help your teams create testing scenarios in their existing development platform.
 type: reference
 ---

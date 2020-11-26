@@ -2,7 +2,7 @@
 type: howto
 stage: Plan
 group: Product Planning
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 <!-- When adding a new h2 section here, remember to mention it in index.md#manage-epics -->

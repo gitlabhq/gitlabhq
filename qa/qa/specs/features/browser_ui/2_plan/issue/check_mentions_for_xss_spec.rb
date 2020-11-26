@@ -27,6 +27,10 @@ module QA
         end.visit!
       end
 
+      after do
+        user&.remove_via_api!
+      end
+
       it 'mentions a user in a comment', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/452' do
         Page::Project::Issue::Show.perform do |show|
           show.select_all_activities_filter
