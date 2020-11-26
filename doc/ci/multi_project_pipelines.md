@@ -301,6 +301,7 @@ Some features are not implemented yet. For example, support for environments.
 - `only` and `except`
 - `when` (only with `on_success`, `on_failure`, and `always` values)
 - `extends`
+- `needs`
 
 ## Trigger a pipeline when an upstream project is rebuilt **(PREMIUM)**
 
