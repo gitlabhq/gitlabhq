@@ -42,7 +42,7 @@
               = sprite_icon('close', size: 16, css_class: 'gl-icon')
         %li
           %span.light ID:
-          %strong
+          %strong{ data: { qa_selector: 'user_id_content' } }
             = @user.id
         %li
           %span.light= _('Namespace ID:')

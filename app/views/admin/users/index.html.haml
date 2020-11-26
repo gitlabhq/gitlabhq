@@ -31,7 +31,7 @@
         = s_('AdminUsers|Blocked')
         %small.badge.badge-pill= limited_counter_with_delimiter(User.blocked)
     = nav_link(html_options: { class: "#{active_when(params[:filter] == 'blocked_pending_approval')} filter-blocked-pending-approval" }) do
-      = link_to admin_users_path(filter: "blocked_pending_approval") do
+      = link_to admin_users_path(filter: "blocked_pending_approval"), data: { qa_selector: 'pending_approval_tab' } do
         = s_('AdminUsers|Pending approval')
         %small.badge.badge-pill= limited_counter_with_delimiter(User.blocked_pending_approval)
     = nav_link(html_options: { class: active_when(params[:filter] == 'deactivated') }) do

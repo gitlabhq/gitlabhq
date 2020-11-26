@@ -1,13 +1,13 @@
 <script>
 import { mapActions } from 'vuex';
-import { GlBadge } from '@gitlab/ui';
-import { n__ } from '~/locale';
+import { GlBadge, GlSprintf } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'TestIssueBody',
   components: {
     GlBadge,
+    GlSprintf,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -28,18 +28,15 @@ export default {
   },
   computed: {
     showRecentFailures() {
-      return this.glFeatures.testFailureHistory && this.issue.recent_failures;
+      return (
+        this.glFeatures.testFailureHistory &&
+        this.issue.recent_failures?.count &&
+        this.issue.recent_failures?.base_branch
+      );
     },
   },
   methods: {
     ...mapActions(['openModal']),
-    recentFailuresText(count) {
-      return n__(
-        'Failed %d time in the last 14 days',
-        'Failed %d times in the last 14 days',
-        count,
-      );
-    },
   },
 };
 </script>
@@ -53,7 +50,18 @@ export default {
       >
         <gl-badge v-if="isNew" variant="danger" class="gl-mr-2">{{ s__('New') }}</gl-badge>
         <gl-badge v-if="showRecentFailures" variant="warning" class="gl-mr-2">
-          {{ recentFailuresText(issue.recent_failures) }}
+          <gl-sprintf
+            :message="
+              n__(
+                'Reports|Failed %{count} time in %{base_branch} in the last 14 days',
+                'Reports|Failed %{count} times in %{base_branch} in the last 14 days',
+                issue.recent_failures.count,
+              )
+            "
+          >
+            <template #count>{{ issue.recent_failures.count }}</template>
+            <template #base_branch>{{ issue.recent_failures.base_branch }}</template>
+          </gl-sprintf>
         </gl-badge>
         {{ issue.name }}
       </button>

@@ -301,9 +301,9 @@ Be aware that:
   be deducted from your Additional Minutes quota immediately after your purchase of additional
   minutes.
 
-## Customers portal
+## Customers Portal
 
-GitLab provides a [customer portal](../index.md#customers-portal) where you can
+GitLab provides the [Customers Portal](../index.md#customers-portal) where you can
 manage your subscriptions and your account details.
 
 ## Contact Support

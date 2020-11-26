@@ -4,4 +4,4 @@
   .card-body
     = render partial: 'admin/users/user_approve_effects'
     %br
-    = link_to s_('AdminUsers|Approve user'), approve_admin_user_path(user), method: :put, class: "btn gl-button btn-info", data: { confirm: s_('AdminUsers|Are you sure?') }
+    = link_to s_('AdminUsers|Approve user'), approve_admin_user_path(user), method: :put, class: "btn gl-button btn-info", data: { confirm: s_('AdminUsers|Are you sure?'), qa_selector: 'approve_user_button' }

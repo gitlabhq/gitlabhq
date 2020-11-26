@@ -11375,11 +11375,6 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
-msgid "Failed %d time in the last 14 days"
-msgid_plural "Failed %d times in the last 14 days"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "Failed Jobs"
 msgstr ""
 
@@ -22939,10 +22934,9 @@ msgid "Reports|%{recentlyFailed} out of %{failed} failed test has failed more th
 msgstr ""
 
 msgid "Reports|%{recentlyFailed} out of %{failed} failed tests has failed more than once in the last 14 days"
-msgstr ""
-
-msgid "Reports|%{recentlyFailed} out of %{failed} failed tests have failed more than once in the last 14 days"
-msgstr ""
+msgid_plural "Reports|%{recentlyFailed} out of %{failed} failed tests have failed more than once in the last 14 days"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Reports|Accessibility scanning detected %d issue for the source branch only"
 msgid_plural "Reports|Accessibility scanning detected %d issues for the source branch only"
@@ -22975,6 +22969,11 @@ msgstr ""
 
 msgid "Reports|Execution time"
 msgstr ""
+
+msgid "Reports|Failed %{count} time in %{base_branch} in the last 14 days"
+msgid_plural "Reports|Failed %{count} times in %{base_branch} in the last 14 days"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Reports|Failure"
 msgstr ""
@@ -26697,9 +26696,6 @@ msgid "Team domain"
 msgstr ""
 
 msgid "Telephone number"
-msgstr ""
-
-msgid "Telephone number (Optional)"
 msgstr ""
 
 msgid "Template"
