@@ -1,0 +1,126 @@
+fragment PageInfo on PageInfo {
+  hasNextPage
+  hasPreviousPage
+  startCursor
+  endCursor
+}
+
+fragment RelatedTreeBaseEpic on Epic {
+  id
+  iid
+  title
+  webPath
+  relativePosition
+  userPermissions {
+    __typename
+    adminEpic
+    createEpic
+  }
+  descendantCounts {
+    __typename
+    openedEpics
+    closedEpics
+    openedIssues
+    closedIssues
+  }
+  healthStatus {
+    __typename
+    issuesAtRisk
+    issuesOnTrack
+    issuesNeedingAttention
+  }
+}
+
+fragment EpicNode on Epic {
+  ...RelatedTreeBaseEpic
+  state
+  reference(full: true)
+  relationPath
+  createdAt
+  closedAt
+  hasChildren
+  hasIssues
+  group {
+    __typename
+    fullPath
+  }
+}
+
+query childItems(
+  $fullPath: ID!
+  $iid: ID
+  $pageSize: Int = 100
+  $epicEndCursor: String = ""
+  $issueEndCursor: String = ""
+) {
+  group(fullPath: $fullPath) {
+    __typename
+    id
+    path
+    fullPath
+    epic(iid: $iid) {
+      __typename
+      ...RelatedTreeBaseEpic
+      children(first: $pageSize, after: $epicEndCursor) {
+        __typename
+        edges {
+          __typename
+          node {
+            __typename
+            ...EpicNode
+          }
+        }
+        pageInfo {
+          __typename
+          ...PageInfo
+        }
+      }
+      issues(first: $pageSize, after: $issueEndCursor) {
+        __typename
+        edges {
+          __typename
+          node {
+            __typename
+            iid
+            epicIssueId
+            title
+            closedAt
+            state
+            createdAt
+            confidential
+            dueDate
+            weight
+            webPath
+            reference(full: true)
+            relationPath
+            relativePosition
+            assignees {
+              __typename
+              edges {
+                __typename
+                node {
+                  __typename
+                  webUrl
+                  name
+                  username
+                  avatarUrl
+                }
+              }
+            }
+            milestone {
+              __typename
+              title
+              startDate
+              dueDate
+            }
+            healthStatus
+          }
+        }
+        pageInfo {
+          __typename
+          ...PageInfo
+        }
+      }
+    }
+  }
+}

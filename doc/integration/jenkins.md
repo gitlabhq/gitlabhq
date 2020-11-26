@@ -4,7 +4,7 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Jenkins CI service **(STARTER)**
+# Jenkins CI service
 
 NOTE: **Note:**
 This documentation focuses only on how to **configure** a Jenkins *integration* with
@@ -73,11 +73,11 @@ Create a personal access token to authorize Jenkins' access to GitLab.
 1. Click **Access Tokens** in the sidebar.
 1. Create a personal access token with the **API** scope checkbox checked. For more details, see
    [Personal access tokens](../user/profile/personal_access_tokens.md).
-1. Record the personal access token's value, because it's required in [Configure the Jenkins server](#configure-the-jenkins-server).
+1. Record the personal access token's value, because it's required in [Configure the Jenkins server](#configure-the-jenkins-server) section.
 
 ## Configure the Jenkins server
 
-Install and configure the Jenkins plugins. Both plugins must be installed and configured to
+Install and configure the Jenkins plugin. The plugin must be installed and configured to
 authorize the connection to GitLab.
 
 1. On the Jenkins server, go to **Manage Jenkins > Manage Plugins**.
@@ -137,6 +137,8 @@ Set up the Jenkins project you intend to run your build on.
 
 Configure the GitLab integration with Jenkins.
 
+### Option 1: Jenkins integration (recommended)
+
 1. Create a new GitLab project or choose an existing one.
 1. Go to **Settings > Integrations**, then select **Jenkins CI**.
 1. Turn on the **Active** toggle.
@@ -153,6 +155,14 @@ Configure the GitLab integration with Jenkins.
 1. Enter the **Username** and **Password** if your Jenkins server requires
    authentication.
 1. Click **Test settings and save changes**. GitLab tests the connection to Jenkins.
+
+### Option 2: Webhook
+
+1. In the configuration of your Jenkins job, in the GitLab configuration section, click **Advanced**.
+1. Click the **Generate** button under the **Secret Token** field.
+1. Copy the resulting token, and save the job configuration.
+1. In GitLab, create a webhook for your project, enter the trigger URL (e.g. `https://JENKINS_URL/project/YOUR_JOB`) and paste the token in the **Secret Token** field.
+1. After you add the webhook, click the **Test** button, and it should succeed.
 
 ## Troubleshooting
 

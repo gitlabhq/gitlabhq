@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'optparse'
+require_relative '../lib/tooling/parallel_rspec_runner'
+
+options = {}
+
+OptionParser.new do |opts|
+  opts.on("--rspec_args rspec_args", String, "Optional rspec arguments") do |value|
+    options[:rspec_args] = value
+  end
+
+  opts.on("--filter filter_tests_file", String, "Optional filename containing tests to be filtered") do |value|
+    options[:filter_tests_file] = value
+  end
+end.parse!
+
+Tooling::ParallelRSpecRunner.run(options)

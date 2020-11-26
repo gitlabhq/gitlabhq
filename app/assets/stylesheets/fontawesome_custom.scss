@@ -51,35 +51,6 @@
   text-align: center;
 }
 
-.fa-spin {
-  -webkit-animation: fa-spin 2s infinite linear;
-  animation: fa-spin 2s infinite linear;
-}
-
-@-webkit-keyframes fa-spin {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-
-  100% {
-    -webkit-transform: rotate(359deg);
-    transform: rotate(359deg);
-  }
-}
-
-@keyframes fa-spin {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-
-  100% {
-    -webkit-transform: rotate(359deg);
-    transform: rotate(359deg);
-  }
-}
-
 .fa-inverse {
   color: $white;
 }
@@ -95,10 +66,6 @@
 .fa-warning::before,
 .fa-exclamation-triangle::before {
   content: '\f071';
-}
-
-.fa-spinner::before {
-  content: '\f110';
 }
 
 .fa-caret-right::before {

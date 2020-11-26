@@ -47,7 +47,7 @@ export const parallelizeDiffLines = (diffLines, inline) => {
   for (let i = 0, diffLinesLength = diffLines.length, index = 0; i < diffLinesLength; i += 1) {
     const line = diffLines[i];
 
-    if (isRemoved(line)) {
+    if (isRemoved(line) || inline) {
       lines.push({
         [LINE_POSITION_LEFT]: line,
         [LINE_POSITION_RIGHT]: null,
@@ -59,7 +59,7 @@ export const parallelizeDiffLines = (diffLines, inline) => {
       }
       index += 1;
     } else if (isAdded(line)) {
-      if (freeRightIndex !== null && !inline) {
+      if (freeRightIndex !== null) {
         // If an old line came before this without a line on the right, this
         // line can be put to the right of it.
         lines[freeRightIndex].right = line;

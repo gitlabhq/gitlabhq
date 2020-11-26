@@ -307,14 +307,12 @@ module QA
 
         module Services
           autoload :Jira, 'qa/page/project/settings/services/jira'
+          autoload :Jenkins, 'qa/page/project/settings/services/jenkins'
+          autoload :Prometheus, 'qa/page/project/settings/services/prometheus'
         end
         autoload :Operations, 'qa/page/project/settings/operations'
         autoload :Incidents, 'qa/page/project/settings/incidents'
         autoload :Integrations, 'qa/page/project/settings/integrations'
-
-        module Services
-          autoload :Prometheus, 'qa/page/project/settings/services/prometheus'
-        end
       end
 
       module SubMenus

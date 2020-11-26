@@ -1,0 +1,6 @@
+---
+title: Consider design repositories when determining if there is a git transfer in
+  progress
+merge_request: 48304
+author:
+type: fixed

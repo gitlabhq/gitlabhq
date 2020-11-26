@@ -1888,6 +1888,54 @@ RSpec.describe API::MergeRequests do
         expect(response).to have_gitlab_http_status(:created)
       end
     end
+
+    describe 'SSE counter' do
+      let(:headers) { {} }
+      let(:params) do
+        {
+          title: 'Test merge_request',
+          source_branch: 'feature_conflict',
+          target_branch: 'master',
+          author_id: user.id,
+          milestone_id: milestone.id,
+          squash: true
+        }
+      end
+
+      subject { post api("/projects/#{project.id}/merge_requests", user), params: params, headers: headers }
+
+      it 'does not increase the SSE counter by default' do
+        expect(Gitlab::UsageDataCounters::EditorUniqueCounter).not_to receive(:track_sse_edit_action)
+
+        subject
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+
+      context 'when referer is not the SSE' do
+        let(:headers) { { 'HTTP_REFERER' => 'https://gitlab.com' } }
+
+        it 'does not increase the SSE counter by default' do
+          expect(Gitlab::UsageDataCounters::EditorUniqueCounter).not_to receive(:track_sse_edit_action)
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
+
+      context 'when referer is the SSE' do
+        let(:headers) { { 'HTTP_REFERER' => project_show_sse_url(project, 'master/README.md') } }
+
+        it 'increases the SSE counter by default' do
+          expect(Gitlab::UsageDataCounters::EditorUniqueCounter).to receive(:track_sse_edit_action).with(author: user)
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
+    end
   end
 
   describe 'PUT /projects/:id/merge_reuests/:merge_request_iid' do

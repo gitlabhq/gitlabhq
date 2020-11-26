@@ -2,7 +2,7 @@
 
 module Gitlab
   module SidekiqMiddleware
-    class Metrics
+    module MetricsHelper
       TRUE_LABEL = "yes"
       FALSE_LABEL = "no"
 

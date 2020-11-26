@@ -11,6 +11,7 @@ module API
     feature_category :code_review
 
     helpers Helpers::MergeRequestsHelpers
+    helpers Helpers::SSEHelpers
 
     # EE::API::MergeRequests would override the following helpers
     helpers do
@@ -215,6 +216,8 @@ module API
         merge_request = ::MergeRequests::CreateService.new(user_project, current_user, mr_params).execute
 
         handle_merge_request_errors!(merge_request)
+
+        Gitlab::UsageDataCounters::EditorUniqueCounter.track_sse_edit_action(author: current_user) if request_from_sse?(user_project)
 
         present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
       end

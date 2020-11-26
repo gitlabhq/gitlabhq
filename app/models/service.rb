@@ -17,6 +17,10 @@ class Service < ApplicationRecord
     pivotaltracker prometheus pushover redmine slack slack_slash_commands teamcity unify_circuit webex_teams youtrack
   ].freeze
 
+  PROJECT_SPECIFIC_SERVICE_NAMES = %w[
+    jenkins
+  ].freeze
+
   # Fake services to help with local development.
   DEV_SERVICE_NAMES = %w[
     mock_ci mock_deployment mock_monitoring
@@ -212,7 +216,7 @@ class Service < ApplicationRecord
   end
 
   def self.project_specific_services_names
-    []
+    PROJECT_SPECIFIC_SERVICE_NAMES
   end
 
   def self.available_services_types(include_project_specific: true, include_dev: true)

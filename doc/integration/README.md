@@ -43,7 +43,7 @@ GitLab also provides features to improve the security of your own application. F
 
 GitLab can be integrated with the following external service for continuous integration:
 
-- [Jenkins](jenkins.md) CI. **(STARTER)**
+- [Jenkins](jenkins.md) CI.
 
 ## Feature enhancements
 

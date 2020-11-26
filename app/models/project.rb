@@ -64,6 +64,8 @@ class Project < ApplicationRecord
   SORTING_PREFERENCE_FIELD = :projects_sort
   MAX_BUILD_TIMEOUT = 1.month
 
+  GL_REPOSITORY_TYPES = [Gitlab::GlRepository::PROJECT, Gitlab::GlRepository::WIKI, Gitlab::GlRepository::DESIGN].freeze
+
   cache_markdown_field :description, pipeline: :description
 
   default_value_for :packages_enabled, true
@@ -164,6 +166,7 @@ class Project < ApplicationRecord
   has_one :bamboo_service
   has_one :teamcity_service
   has_one :pushover_service
+  has_one :jenkins_service
   has_one :jira_service
   has_one :redmine_service
   has_one :youtrack_service
@@ -2275,7 +2278,9 @@ class Project < ApplicationRecord
   end
 
   def git_transfer_in_progress?
-    repo_reference_count > 0 || wiki_reference_count > 0
+    GL_REPOSITORY_TYPES.any? do |type|
+      reference_counter(type: type).value > 0
+    end
   end
 
   def storage_version=(value)
@@ -2606,14 +2611,6 @@ class Project < ApplicationRecord
     if self.new_record? && Gitlab::CurrentSettings.hashed_storage_enabled
       self.storage_version = LATEST_STORAGE_VERSION
     end
-  end
-
-  def repo_reference_count
-    reference_counter.value
-  end
-
-  def wiki_reference_count
-    reference_counter(type: Gitlab::GlRepository::WIKI).value
   end
 
   def check_repository_absence!

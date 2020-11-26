@@ -97,18 +97,18 @@ describe('DiffRow', () => {
     ${'right'}
   `('$side side', ({ side }) => {
     it(`renders empty cells if ${side} is unavailable`, () => {
-      const wrapper = createWrapper({ props: { line: testLines[2] } });
+      const wrapper = createWrapper({ props: { line: testLines[2], inline: false } });
       expect(wrapper.find(`[data-testid="${side}LineNumber"]`).exists()).toBe(false);
       expect(wrapper.find(`[data-testid="${side}EmptyCell"]`).exists()).toBe(true);
     });
 
     it('renders comment button', () => {
-      const wrapper = createWrapper({ props: { line: testLines[3] } });
+      const wrapper = createWrapper({ props: { line: testLines[3], inline: false } });
       expect(wrapper.find(`[data-testid="${side}CommentButton"]`).exists()).toBe(true);
     });
 
     it('renders avatars', () => {
-      const wrapper = createWrapper({ props: { line: testLines[0] } });
+      const wrapper = createWrapper({ props: { line: testLines[0], inline: false } });
       expect(wrapper.find(`[data-testid="${side}Discussions"]`).exists()).toBe(true);
     });
   });

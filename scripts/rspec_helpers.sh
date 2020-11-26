@@ -56,7 +56,7 @@ function update_tests_mapping() {
 }
 
 function crystalball_rspec_data_exists() {
-  compgen -G "crystalball/rspec*.yml" > /dev/null;
+  compgen -G "crystalball/rspec*.yml" >/dev/null
 }
 
 function rspec_simple_job() {
@@ -117,7 +117,13 @@ function rspec_paralellized_job() {
 
   export MEMORY_TEST_PATH="tmp/memory_test/${report_name}_memory.csv"
 
-  knapsack rspec "-Ispec -rspec_helper --color --format documentation --format RspecJunitFormatter --out junit_rspec.xml ${rspec_opts}"
+  local rspec_args="-Ispec -rspec_helper --color --format documentation --format RspecJunitFormatter --out junit_rspec.xml ${rspec_opts}"
+
+  if [[ -n $RSPEC_MATCHING_TESTS_ENABLED ]]; then
+    tooling/bin/parallel_rspec --rspec_args "${rspec_args}" --filter tmp/matching_tests.txt
+  else
+    tooling/bin/parallel_rspec --rspec_args "${rspec_args}"
+  fi
 
   date
 }

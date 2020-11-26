@@ -1,0 +1,5 @@
+---
+title: Fix incorrect line height in file header
+merge_request: 48117
+author:
+type: fixed

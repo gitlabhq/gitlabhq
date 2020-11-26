@@ -597,10 +597,6 @@ table.code {
   .diff-grid-right {
     display: grid;
     grid-template-columns: 50px 8px 1fr;
-
-    .diff-td:nth-child(2) {
-      display: none;
-    }
   }
 
   .diff-grid-comments {
@@ -631,20 +627,6 @@ table.code {
     .diff-grid-left,
     .diff-grid-right {
       grid-template-columns: 50px 50px 8px 1fr;
-
-      .diff-td:nth-child(2) {
-        display: block;
-      }
-    }
-
-    .diff-grid-left .old:nth-child(1) [data-linenumber],
-    .diff-grid-right .new:nth-child(2) [data-linenumber] {
-      display: inline;
-    }
-
-    .diff-grid-left .old:nth-child(2) [data-linenumber],
-    .diff-grid-right .new:nth-child(1) [data-linenumber] {
-      display: none;
     }
   }
 }

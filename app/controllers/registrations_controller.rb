@@ -6,8 +6,6 @@ class RegistrationsController < Devise::RegistrationsController
   include RecaptchaHelper
   include InvisibleCaptchaOnSignup
 
-  BLOCKED_PENDING_APPROVAL_STATE = 'blocked_pending_approval'.freeze
-
   layout 'devise'
 
   prepend_before_action :check_captcha, only: :create
@@ -167,12 +165,18 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def set_user_state
-    return unless Gitlab::CurrentSettings.require_admin_approval_after_user_signup
+    return unless set_blocked_pending_approval?
 
-    resource.state = BLOCKED_PENDING_APPROVAL_STATE
+    resource.state = User::BLOCKED_PENDING_APPROVAL_STATE
+  end
+
+  def set_blocked_pending_approval?
+    Gitlab::CurrentSettings.require_admin_approval_after_user_signup
   end
 
   def set_invite_params
     @invite_email = ActionController::Base.helpers.sanitize(params[:invite_email])
   end
 end
+
+RegistrationsController.prepend_if_ee('EE::RegistrationsController')

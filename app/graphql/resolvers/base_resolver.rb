@@ -109,6 +109,10 @@ module Resolvers
       [args[:iid], args[:iids]].any? ? 0 : 0.01
     end
 
+    def offset_pagination(relation)
+      ::Gitlab::Graphql::Pagination::OffsetActiveRecordRelationConnection.new(relation)
+    end
+
     override :object
     def object
       super.tap do |obj|

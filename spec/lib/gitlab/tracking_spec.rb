@@ -62,9 +62,9 @@ RSpec.describe Gitlab::Tracking do
     it 'delegates to snowplow destination' do
       expect_any_instance_of(Gitlab::Tracking::Destinations::Snowplow)
         .to receive(:self_describing_event)
-        .with('iglu:com.gitlab/foo/jsonschema/1-0-0', { foo: 'bar' }, context: nil)
+        .with('iglu:com.gitlab/foo/jsonschema/1-0-0', data: { foo: 'bar' }, context: nil)
 
-      described_class.self_describing_event('iglu:com.gitlab/foo/jsonschema/1-0-0', { foo: 'bar' })
+      described_class.self_describing_event('iglu:com.gitlab/foo/jsonschema/1-0-0', data: { foo: 'bar' })
     end
   end
 end

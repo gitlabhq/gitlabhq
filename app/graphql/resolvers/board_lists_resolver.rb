@@ -27,7 +27,7 @@ module Resolvers
         List.preload_preferences_for_user(lists, context[:current_user])
       end
 
-      Gitlab::Graphql::Pagination::OffsetActiveRecordRelationConnection.new(lists)
+      offset_pagination(lists)
     end
 
     private

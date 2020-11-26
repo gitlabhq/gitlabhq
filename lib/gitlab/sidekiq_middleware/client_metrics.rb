@@ -2,7 +2,9 @@
 
 module Gitlab
   module SidekiqMiddleware
-    class ClientMetrics < SidekiqMiddleware::Metrics
+    class ClientMetrics
+      include ::Gitlab::SidekiqMiddleware::MetricsHelper
+
       ENQUEUED = :sidekiq_enqueued_jobs_total
 
       def initialize

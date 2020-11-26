@@ -190,8 +190,7 @@ $note-form-margin-left: 72px;
         border: 1px solid darken($gray-100, 25%);
       }
 
-      .note-headline-light,
-      .fa-spinner {
+      .note-headline-light {
         margin-left: 3px;
       }
     }
@@ -249,16 +248,6 @@ $note-form-margin-left: 72px;
     .note-emoji-button {
       position: relative;
       line-height: 1;
-
-      .fa-spinner {
-        display: none;
-      }
-
-      &.is-loading {
-        .fa-spinner {
-          display: inline-block;
-        }
-      }
     }
   }
 
@@ -407,8 +396,6 @@ $note-form-margin-left: 72px;
 .discussion-body .diff-file {
   .file-title {
     cursor: default;
-    line-height: 42px;
-    padding: 0 $gl-padding;
     border-top: 1px solid $border-color;
     border-radius: 0;
 

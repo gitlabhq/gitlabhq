@@ -118,6 +118,12 @@
   expiry: 29
   aggregation: daily
   feature_flag: track_editor_edit_actions
+- name: g_edit_by_sse
+  category: ide_edit
+  redis_slot: edit
+  expiry: 29
+  aggregation: daily
+  feature_flag: track_editor_edit_actions
 - name: g_edit_by_snippet_ide
   category: ide_edit
   redis_slot: edit

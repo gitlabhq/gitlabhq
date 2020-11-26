@@ -255,10 +255,6 @@ $colors: (
     }
   }
 
-  .btn-success .fa-spinner {
-    color: var(--white, $white);
-  }
-
   .editor-wrap {
     &.is-loading {
       .editor {

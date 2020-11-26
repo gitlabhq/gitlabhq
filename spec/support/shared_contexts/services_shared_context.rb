@@ -34,8 +34,7 @@ Service.available_services_names.each do |service|
 
     let(:licensed_features) do
       {
-        'github' => :github_project_service_integration,
-        'jenkins' => :jenkins_integration
+        'github' => :github_project_service_integration
       }
     end
 
