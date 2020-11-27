@@ -1,0 +1,5 @@
+---
+title: Expose public email field for user in GraphQL
+merge_request: 48468
+author:
+type: changed

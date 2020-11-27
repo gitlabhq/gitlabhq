@@ -22,6 +22,8 @@ RSpec.describe Gitlab::RackAttack, :aggregate_failures do
       stub_const("Rack::Attack", fake_rack_attack)
       stub_const("Rack::Attack::Request", fake_rack_attack_request)
 
+      # Expect rather than just allow, because this is actually fairly important functionality
+      expect(fake_rack_attack).to receive(:throttled_response_retry_after_header=).with(true)
       allow(fake_rack_attack).to receive(:throttle)
       allow(fake_rack_attack).to receive(:track)
       allow(fake_rack_attack).to receive(:safelist)

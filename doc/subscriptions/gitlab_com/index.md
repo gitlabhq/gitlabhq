@@ -40,7 +40,7 @@ Applied only to groups.
 A GitLab.com subscription uses a concurrent (_seat_) model. You pay for a
 subscription according to the maximum number of users enabled at once. You can
 add and remove users during the subscription period, as long as the total users
-at any given time is within your subscription count.
+at any given time doesn't exceed the subscription count.
 
 Every occupied seat is counted in the subscription, with the following exception:
 
@@ -97,7 +97,7 @@ to the **Billing** section of the relevant namespace:
 
 - **For individuals**: Visit the [billing page](https://gitlab.com/profile/billings)
   under your profile.
-- **For groups**: From the group page (*not* from a project within the group), go to **Settings > Billing**.
+- **For groups**: From the group page (*not* from a project in the group), go to **Settings > Billing**.
 
   NOTE: **Note:**
   You must have Owner level [permissions](../../user/permissions.md) to view a group's billing page.
@@ -107,7 +107,7 @@ to the **Billing** section of the relevant namespace:
   | Field                   | Description                                                                                                                             |
   |-------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
   | **Seats in subscription**   | If this is a paid plan, represents the number of seats you've paid to support in your group.                                            |
-  | **Seats currently in use** | Number of active seats currently in use.                                                                                                |
+  | **Seats currently in use** | Number of seats in use.                                                                                                |
   | **Max seats used**          | Highest number of seats you've used. If this exceeds the seats in subscription, you may owe an additional fee for the additional users. |
   | **Seats owed**              | If your maximum seats used exceeds the seats in your subscription, you owe an additional fee for the users you've added.             |
   | **Subscription start date** | Date your subscription started. If this is for a Free plan, is the date you transitioned off your group's paid plan.                    |
@@ -147,7 +147,7 @@ It's important to regularly review your user accounts, because:
 A GitLab subscription is valid for a specific number of users. For details, see
 [Choose the number of users](#choose-the-number-of-users).
 
-If the active user count exceeds the number included in the subscription, known
+If the number of [billable users](#view-your-gitlabcom-subscription) exceeds the number included in the subscription, known
 as the number of _users over license_, you must pay for the excess number of
 users either before renewal, or at the time of renewal. This is also known the
 _true up_ process.
@@ -267,7 +267,7 @@ pipelines aren't blocked after you have used all your CI minutes from your
 main quota. You can find pricing for additional CI/CD minutes in the
 [GitLab Customers Portal](https://customers.gitlab.com/plans). Additional minutes:
 
-- Are only used once the shared quota included in your subscription runs out.
+- Are only used after the shared quota included in your subscription runs out.
 - Roll over month to month.
 
 To purchase additional minutes for your group on GitLab.com:
@@ -293,9 +293,9 @@ Be aware that:
 
 - If you have purchased extra CI minutes before the purchase of a paid plan,
   we calculate a pro-rated charge for your paid plan. That means you may
-  be charged for less than one year since your subscription was previously
+  be charged for less than one year because your subscription was previously
   created with the extra CI minutes.
-- Once the extra CI minutes have been assigned to a Group, they can't be transferred
+- After the extra CI minutes have been assigned to a Group, they can't be transferred
   to a different Group.
 - If you have used more minutes than your default quota, these minutes will
   be deducted from your Additional Minutes quota immediately after your purchase of additional

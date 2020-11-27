@@ -20,6 +20,8 @@ module Types
           description: 'State of the user'
     field :email, GraphQL::STRING_TYPE, null: true,
           description: 'User email'
+    field :public_email, GraphQL::STRING_TYPE, null: true,
+          description: "User's public email"
     field :avatar_url, GraphQL::STRING_TYPE, null: true,
           description: "URL of the user's avatar"
     field :web_url, GraphQL::STRING_TYPE, null: false,

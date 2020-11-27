@@ -67887,6 +67887,20 @@
               "deprecationReason": null
             },
             {
+              "name": "publicEmail",
+              "description": "User's public email",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "snippets",
               "description": "Snippets authored by the user",
               "args": [

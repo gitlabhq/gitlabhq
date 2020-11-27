@@ -7,6 +7,8 @@ module Gitlab
     def self.configure(rack_attack)
       # This adds some methods used by our throttles to the `Rack::Request`
       rack_attack::Request.include(Gitlab::RackAttack::Request)
+      # Send the Retry-After header so clients (e.g. python-gitlab) can make good choices about delays
+      Rack::Attack.throttled_response_retry_after_header = true
       # Configure the throttles
       configure_throttles(rack_attack)
     end

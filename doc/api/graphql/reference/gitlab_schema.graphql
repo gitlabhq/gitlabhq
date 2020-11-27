@@ -23370,6 +23370,11 @@ type User {
   ): ProjectMemberConnection
 
   """
+  User's public email
+  """
+  publicEmail: String
+
+  """
   Snippets authored by the user
   """
   snippets(
