@@ -286,7 +286,6 @@ linters:
       - 'app/views/shared/hook_logs/_content.html.haml'
       - 'app/views/shared/issuable/_assignees.html.haml'
       - 'app/views/shared/issuable/_board_create_list_dropdown.html.haml'
-      - 'app/views/shared/issuable/_close_reopen_report_toggle.html.haml'
       - 'app/views/shared/issuable/_form.html.haml'
       - 'app/views/shared/issuable/_search_bar.html.haml'
       - 'app/views/shared/issuable/_sidebar.html.haml'

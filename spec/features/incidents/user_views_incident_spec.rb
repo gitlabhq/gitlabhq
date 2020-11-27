@@ -13,8 +13,6 @@ RSpec.describe "User views incident" do
   end
 
   before do
-    stub_feature_flags(vue_issue_header: false)
-
     sign_in(user)
 
     visit(project_issues_incident_path(project, incident))
@@ -24,10 +22,12 @@ RSpec.describe "User views incident" do
 
   it_behaves_like 'page meta description', ' Description header Lorem ipsum dolor sit amet'
 
-  it 'shows the merge request and incident actions', :aggregate_failures do
-    expect(page).to have_link('New incident')
+  it 'shows the merge request and incident actions', :js, :aggregate_failures do
+    click_button 'Incident actions'
+
+    expect(page).to have_link('New incident', href: new_project_issue_path(project, { issuable_template: 'incident', issue: { issue_type: 'incident' } }))
     expect(page).to have_button('Create merge request')
-    expect(page).to have_link('Close incident')
+    expect(page).to have_button('Close incident')
   end
 
   context 'when the project is archived' do

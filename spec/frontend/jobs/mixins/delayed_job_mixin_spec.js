@@ -44,34 +44,84 @@ describe('DelayedJobMixin', () => {
     });
   });
 
-  describe('if job is delayed job', () => {
-    let remainingTimeInMilliseconds = 42000;
+  describe('in REST component', () => {
+    describe('if job is delayed job', () => {
+      let remainingTimeInMilliseconds = 42000;
 
-    beforeEach(() => {
-      jest
-        .spyOn(Date, 'now')
-        .mockImplementation(
-          () => new Date(delayedJobFixture.scheduled_at).getTime() - remainingTimeInMilliseconds,
-        );
+      beforeEach(() => {
+        jest
+          .spyOn(Date, 'now')
+          .mockImplementation(
+            () => new Date(delayedJobFixture.scheduled_at).getTime() - remainingTimeInMilliseconds,
+          );
 
-      vm = mountComponent(dummyComponent, {
-        job: delayedJobFixture,
+        vm = mountComponent(dummyComponent, {
+          job: delayedJobFixture,
+        });
+      });
+
+      describe('after mounting', () => {
+        beforeEach(() => vm.$nextTick());
+
+        it('sets remaining time', () => {
+          expect(vm.$el.innerText).toBe('00:00:42');
+        });
+
+        it('updates remaining time', () => {
+          remainingTimeInMilliseconds = 41000;
+          jest.advanceTimersByTime(1000);
+
+          return vm.$nextTick().then(() => {
+            expect(vm.$el.innerText).toBe('00:00:41');
+          });
+        });
       });
     });
+  });
 
-    describe('after mounting', () => {
-      beforeEach(() => vm.$nextTick());
+  describe('in GraphQL component', () => {
+    const mockGraphQlJob = {
+      name: 'build_b',
+      scheduledAt: new Date(delayedJobFixture.scheduled_at),
+      status: {
+        icon: 'status_success',
+        tooltip: 'passed',
+        hasDetails: true,
+        detailsPath: '/root/abcd-dag/-/jobs/1515',
+        group: 'success',
+        action: null,
+      },
+    };
 
-      it('sets remaining time', () => {
-        expect(vm.$el.innerText).toBe('00:00:42');
+    describe('if job is delayed job', () => {
+      let remainingTimeInMilliseconds = 42000;
+
+      beforeEach(() => {
+        jest
+          .spyOn(Date, 'now')
+          .mockImplementation(
+            () => mockGraphQlJob.scheduledAt.getTime() - remainingTimeInMilliseconds,
+          );
+
+        vm = mountComponent(dummyComponent, {
+          job: mockGraphQlJob,
+        });
       });
 
-      it('updates remaining time', () => {
-        remainingTimeInMilliseconds = 41000;
-        jest.advanceTimersByTime(1000);
+      describe('after mounting', () => {
+        beforeEach(() => vm.$nextTick());
 
-        return vm.$nextTick().then(() => {
-          expect(vm.$el.innerText).toBe('00:00:41');
+        it('sets remaining time', () => {
+          expect(vm.$el.innerText).toBe('00:00:42');
+        });
+
+        it('updates remaining time', () => {
+          remainingTimeInMilliseconds = 41000;
+          jest.advanceTimersByTime(1000);
+
+          return vm.$nextTick().then(() => {
+            expect(vm.$el.innerText).toBe('00:00:41');
+          });
         });
       });
     });

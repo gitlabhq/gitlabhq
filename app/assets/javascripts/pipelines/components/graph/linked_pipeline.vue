@@ -2,7 +2,8 @@
 import { GlTooltipDirective, GlButton, GlLink, GlLoadingIcon } from '@gitlab/ui';
 import CiStatus from '~/vue_shared/components/ci_icon.vue';
 import { __, sprintf } from '~/locale';
-import { UPSTREAM, DOWNSTREAM } from './constants';
+import { accessValue } from './accessors';
+import { DOWNSTREAM, REST, UPSTREAM } from './constants';
 
 export default {
   directives: {
@@ -13,6 +14,11 @@ export default {
     GlButton,
     GlLink,
     GlLoadingIcon,
+  },
+  inject: {
+    dataMethod: {
+      default: REST,
+    },
   },
   props: {
     columnTitle: {
@@ -46,7 +52,7 @@ export default {
       return `js-linked-pipeline-${this.pipeline.id}`;
     },
     pipelineStatus() {
-      return this.pipeline.details.status;
+      return accessValue(this.dataMethod, 'pipelineStatus', this.pipeline);
     },
     projectName() {
       return this.pipeline.project.name;
@@ -77,10 +83,11 @@ export default {
     isSameProject() {
       return this.projectId === this.pipeline.project.id;
     },
+    sourceJobName() {
+      return accessValue(this.dataMethod, 'sourceJob', this.pipeline);
+    },
     sourceJobInfo() {
-      return this.isDownstream
-        ? sprintf(__('Created by %{job}'), { job: this.pipeline.source_job.name })
-        : '';
+      return this.isDownstream ? sprintf(__('Created by %{job}'), { job: this.sourceJobName }) : '';
     },
     expandedIcon() {
       if (this.isUpstream) {

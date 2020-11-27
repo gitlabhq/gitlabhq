@@ -154,8 +154,8 @@ Remember:
 
 Ensure the following if skipping an initial Technical Writer review:
 
-- That [product badges](styleguide/index.md#product-badges) are applied.
-- That the GitLab [version](styleguide/index.md#text-for-documentation-requiring-version-text) that
+- That [product badges](styleguide/index.md#product-tier-badges) are applied.
+- That the GitLab [version](styleguide/index.md#gitlab-versions) that
   introduced the feature has been included.
 - That changes to headings don't affect in-app hyperlinks.
 - Specific [user permissions](../../user/permissions.md) are documented.
