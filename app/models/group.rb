@@ -402,6 +402,13 @@ class Group < Namespace
       .where(source_id: self_and_hierarchy.reorder(nil).select(:id))
   end
 
+  def direct_and_indirect_members_with_inactive
+    GroupMember
+      .non_request
+      .non_invite
+      .where(source_id: self_and_hierarchy.reorder(nil).select(:id))
+  end
+
   def users_with_parents
     User
       .where(id: members_with_parents.select(:user_id))
@@ -423,6 +430,20 @@ class Group < Namespace
     User.from_union([
       User
         .where(id: direct_and_indirect_members.select(:user_id))
+        .reorder(nil),
+      project_users_with_descendants
+    ])
+  end
+
+  # Returns all users (also inactive) that are members of the group because:
+  # 1. They belong to the group
+  # 2. They belong to a project that belongs to the group
+  # 3. They belong to a sub-group or project in such sub-group
+  # 4. They belong to an ancestor group
+  def direct_and_indirect_users_with_inactive
+    User.from_union([
+      User
+        .where(id: direct_and_indirect_members_with_inactive.select(:user_id))
         .reorder(nil),
       project_users_with_descendants
     ])

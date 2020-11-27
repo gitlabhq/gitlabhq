@@ -122,9 +122,7 @@ package (highly recommended), follow the steps below:
 Before beginning, you should already have a working GitLab instance. [Learn how
 to install GitLab](https://about.gitlab.com/install/).
 
-Provision a PostgreSQL server (PostgreSQL 11 or newer). Configuration through
-the Omnibus GitLab distribution is not yet supported. Follow this
-[issue](https://gitlab.com/gitlab-org/gitaly/-/issues/2476) for updates.
+Provision a PostgreSQL server (PostgreSQL 11 or newer). 
 
 Prepare all your new nodes by [installing
 GitLab](https://about.gitlab.com/install/).

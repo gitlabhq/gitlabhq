@@ -22513,19 +22513,11 @@ CREATE UNIQUE INDEX one_canonical_wiki_page_slug_per_metadata ON wiki_page_slugs
 
 CREATE INDEX package_name_index ON packages_packages USING btree (name);
 
-CREATE INDEX packages_packages_verification_checksum_partial ON packages_package_files USING btree (verification_checksum) WHERE (verification_checksum IS NOT NULL);
-
-CREATE INDEX packages_packages_verification_failure_partial ON packages_package_files USING btree (verification_failure) WHERE (verification_failure IS NOT NULL);
-
 CREATE INDEX partial_index_ci_builds_on_scheduled_at_with_scheduled_jobs ON ci_builds USING btree (scheduled_at) WHERE ((scheduled_at IS NOT NULL) AND ((type)::text = 'Ci::Build'::text) AND ((status)::text = 'scheduled'::text));
 
 CREATE INDEX partial_index_deployments_for_legacy_successful_deployments ON deployments USING btree (id) WHERE ((finished_at IS NULL) AND (status = 2));
 
 CREATE INDEX partial_index_deployments_for_project_id_and_tag ON deployments USING btree (project_id) WHERE (tag IS TRUE);
-
-CREATE INDEX snippet_repositories_verification_checksum_partial ON snippet_repositories USING btree (verification_checksum) WHERE (verification_checksum IS NOT NULL);
-
-CREATE INDEX snippet_repositories_verification_failure_partial ON snippet_repositories USING btree (verification_failure) WHERE (verification_failure IS NOT NULL);
 
 CREATE UNIQUE INDEX snippet_user_mentions_on_snippet_id_and_note_id_index ON snippet_user_mentions USING btree (snippet_id, note_id);
 
@@ -22536,10 +22528,6 @@ CREATE UNIQUE INDEX taggings_idx ON taggings USING btree (tag_id, taggable_id, t
 CREATE INDEX temporary_index_vulnerabilities_on_id ON vulnerabilities USING btree (id) WHERE ((state = 2) AND ((dismissed_at IS NULL) OR (dismissed_by_id IS NULL)));
 
 CREATE UNIQUE INDEX term_agreements_unique_index ON term_agreements USING btree (user_id, term_id);
-
-CREATE INDEX terraform_state_versions_verification_checksum_partial ON terraform_state_versions USING btree (verification_checksum) WHERE (verification_checksum IS NOT NULL);
-
-CREATE INDEX terraform_state_versions_verification_failure_partial ON terraform_state_versions USING btree (verification_failure) WHERE (verification_failure IS NOT NULL);
 
 CREATE INDEX tmp_build_stage_position_index ON ci_builds USING btree (stage_id, stage_idx) WHERE (stage_idx IS NOT NULL);
 
