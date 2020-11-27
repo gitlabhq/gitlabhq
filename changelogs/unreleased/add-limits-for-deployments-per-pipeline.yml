@@ -1,0 +1,5 @@
+---
+title: Limit maximum deployments per pipeline to 500
+merge_request: 46931
+author:
+type: added

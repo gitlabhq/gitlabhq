@@ -129,19 +129,23 @@ export default {
 };
 </script>
 <template>
-  <div class="ci-job-component" data-qa-selector="job_item_container">
+  <div
+    class="ci-job-component gl-display-flex gl-align-items-center gl-justify-content-space-between"
+    data-qa-selector="job_item_container"
+  >
     <gl-link
       v-if="status.has_details"
       v-gl-tooltip="{ boundary, placement: 'bottom', customClass: 'gl-pointer-events-none' }"
       :href="status.details_path"
       :title="tooltipText"
       :class="jobClasses"
-      class="js-pipeline-graph-job-link qa-job-link menu-item"
+      class="js-pipeline-graph-job-link qa-job-link menu-item gl-text-gray-900 gl-active-text-decoration-none
+      gl-focus-text-decoration-none"
       data-testid="job-with-link"
       @click.stop="hideTooltips"
       @mouseout="hideTooltips"
     >
-      <job-name-component :name="job.name" :status="job.status" />
+      <job-name-component :name="job.name" :status="job.status" :icon-size="24" />
     </gl-link>
 
     <div
@@ -153,7 +157,7 @@ export default {
       data-testid="job-without-link"
       @mouseout="hideTooltips"
     >
-      <job-name-component :name="job.name" :status="job.status" />
+      <job-name-component :name="job.name" :status="job.status" :icon-size="24" />
     </div>
 
     <action-component

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 class Packages::PackageFile < ApplicationRecord
   include UpdateProjectStatistics
+  include FileStoreMounter
 
   delegate :project, :project_id, to: :package
   delegate :conan_file_type, to: :conan_file_metadatum
@@ -35,19 +36,11 @@ class Packages::PackageFile < ApplicationRecord
       .where(packages_conan_file_metadata: { conan_package_reference: conan_package_reference })
   end
 
-  mount_uploader :file, Packages::PackageFileUploader
-
-  after_save :update_file_metadata, if: :saved_change_to_file?
+  mount_file_store_uploader Packages::PackageFileUploader
 
   update_project_statistics project_statistics_name: :packages_size
 
   before_save :update_size_from_file
-
-  def update_file_metadata
-    # The file.object_store is set during `uploader.store!`
-    # which happens after object is inserted/updated
-    self.update_column(:file_store, file.object_store)
-  end
 
   def download_path
     Gitlab::Routing.url_helpers.download_project_package_file_path(project, self)

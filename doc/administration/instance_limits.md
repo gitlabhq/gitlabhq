@@ -250,6 +250,29 @@ Plan.default.actual_limits.update!(ci_active_jobs: 500)
 
 Set the limit to `0` to disable it.
 
+### Maximum number of deployment jobs in a pipeline
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46931) in GitLab 13.7.
+
+You can limit the maximum number of deployment jobs in a pipeline. A deployment is
+any job with an [`environment`](../ci/environments/index.md) specified. The number
+of deployments in a pipeline is checked at pipeline creation. Pipelines that have
+too many deployments fail with a `deployments_limit_exceeded` error.
+
+The default limit is 500 for all [self-managed and GitLab.com plans](https://about.gitlab.com/pricing/).
+
+To change the limit on a self-managed installation, change the `default` plan limit with the following
+[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session) command:
+
+```ruby
+# If limits don't exist for the default plan, you can create one with:
+# Plan.default.create_limits!
+
+Plan.default.actual_limits.update!(ci_pipeline_deployments: 500)
+```
+
+Set the limit to `0` to disable it.
+
 ### Number of CI/CD subscriptions to a project
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9045) in GitLab 12.9.

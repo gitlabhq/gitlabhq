@@ -1,7 +1,7 @@
 <script>
 import { escape, capitalize } from 'lodash';
 import { GlLoadingIcon } from '@gitlab/ui';
-import StageColumnComponent from './stage_column_component.vue';
+import StageColumnComponentLegacy from './stage_column_component_legacy.vue';
 import GraphWidthMixin from '../../mixins/graph_width_mixin';
 import LinkedPipelinesColumn from './linked_pipelines_column.vue';
 import GraphBundleMixin from '../../mixins/graph_pipeline_bundle_mixin';
@@ -10,7 +10,7 @@ import { UPSTREAM, DOWNSTREAM, MAIN } from './constants';
 export default {
   name: 'PipelineGraphLegacy',
   components: {
-    StageColumnComponent,
+    StageColumnComponentLegacy,
     GlLoadingIcon,
     LinkedPipelinesColumn,
   },
@@ -220,7 +220,7 @@ export default {
           }"
           class="stage-column-list align-top"
         >
-          <stage-column-component
+          <stage-column-component-legacy
             v-for="(stage, index) in graph"
             :key="stage.name"
             :class="{

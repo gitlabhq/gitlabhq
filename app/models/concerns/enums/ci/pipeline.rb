@@ -9,7 +9,8 @@ module Enums
         {
           unknown_failure: 0,
           config_error: 1,
-          external_validation_failure: 2
+          external_validation_failure: 2,
+          deployments_limit_exceeded: 23
         }
       end
 

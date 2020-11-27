@@ -16,18 +16,22 @@ export default {
       type: String,
       required: true,
     },
-
     status: {
       type: Object,
       required: true,
+    },
+    iconSize: {
+      type: Number,
+      required: false,
+      default: 16,
     },
   },
 };
 </script>
 <template>
-  <span class="ci-job-name-component mw-100">
-    <ci-icon :status="status" />
-    <span class="gl-text-truncate mw-70p gl-pl-2 gl-display-inline-block gl-vertical-align-bottom">
+  <span class="ci-job-name-component mw-100 gl-display-flex gl-align-items-center">
+    <ci-icon :size="iconSize" :status="status" />
+    <span class="gl-text-truncate mw-70p gl-pl-3 gl-display-inline-block">
       {{ name }}
     </span>
   </span>

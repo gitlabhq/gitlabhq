@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils';
 import { setHTMLFixture } from 'helpers/fixtures';
 import PipelineStore from '~/pipelines/stores/pipeline_store';
 import GraphComponentLegacy from '~/pipelines/components/graph/graph_component_legacy.vue';
-import StageColumnComponent from '~/pipelines/components/graph/stage_column_component.vue';
+import StageColumnComponentLegacy from '~/pipelines/components/graph/stage_column_component_legacy.vue';
 import linkedPipelinesColumn from '~/pipelines/components/graph/linked_pipelines_column.vue';
 import graphJSON from './mock_data_legacy';
 import linkedPipelineJSON from './linked_pipelines_mock_data';
@@ -16,7 +16,7 @@ describe('graph component', () => {
 
   const findExpandPipelineBtn = () => wrapper.find('[data-testid="expandPipelineButton"]');
   const findAllExpandPipelineBtns = () => wrapper.findAll('[data-testid="expandPipelineButton"]');
-  const findStageColumns = () => wrapper.findAll(StageColumnComponent);
+  const findStageColumns = () => wrapper.findAll(StageColumnComponentLegacy);
   const findStageColumnAt = i => findStageColumns().at(i);
 
   beforeEach(() => {

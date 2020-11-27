@@ -2,6 +2,8 @@ test:
   variables:
     POSTGRES_VERSION: 9.6.16
     POSTGRES_DB: test
+    POSTGRES_USER: user
+    POSTGRES_PASSWORD: testing-password
   services:
     - "postgres:${POSTGRES_VERSION}"
   stage: test
