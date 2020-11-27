@@ -16,6 +16,7 @@ FactoryBot.define do
     transient { head_pipeline_of { nil } }
 
     transient { child_of { nil } }
+    transient { upstream_of { nil } }
 
     after(:build) do |pipeline, evaluator|
       if evaluator.child_of
@@ -30,9 +31,12 @@ FactoryBot.define do
 
       if evaluator.child_of
         bridge = create(:ci_bridge, pipeline: evaluator.child_of)
-        create(:ci_sources_pipeline,
-          source_job: bridge,
-          pipeline: pipeline)
+        create(:ci_sources_pipeline, source_job: bridge, pipeline: pipeline)
+      end
+
+      if evaluator.upstream_of
+        bridge = create(:ci_bridge, pipeline: pipeline)
+        create(:ci_sources_pipeline, source_job: bridge, pipeline: evaluator.upstream_of)
       end
     end
 

@@ -5,29 +5,26 @@ import {
   GlModal,
   GlModalDirective,
   GlTooltipDirective,
-  GlLink,
   GlEmptyState,
   GlTab,
   GlTabs,
-  GlTable,
   GlSprintf,
 } from '@gitlab/ui';
 import { mapActions, mapState } from 'vuex';
 import Tracking from '~/tracking';
+import { s__ } from '~/locale';
+import { objectToQueryString } from '~/lib/utils/common_utils';
+import { numberToHumanSize } from '~/lib/utils/number_utils';
 import PackageHistory from './package_history.vue';
 import PackageTitle from './package_title.vue';
 import PackagesListLoader from '../../shared/components/packages_list_loader.vue';
 import PackageListRow from '../../shared/components/package_list_row.vue';
+import { packageTypeToTrackCategory } from '../../shared/utils';
+import { PackageType, TrackingActions, SHOW_DELETE_SUCCESS_ALERT } from '../../shared/constants';
 import DependencyRow from './dependency_row.vue';
 import AdditionalMetadata from './additional_metadata.vue';
 import InstallationCommands from './installation_commands.vue';
-import { numberToHumanSize } from '~/lib/utils/number_utils';
-import timeagoMixin from '~/vue_shared/mixins/timeago';
-import FileIcon from '~/vue_shared/components/file_icon.vue';
-import { __, s__ } from '~/locale';
-import { PackageType, TrackingActions, SHOW_DELETE_SUCCESS_ALERT } from '../../shared/constants';
-import { packageTypeToTrackCategory } from '../../shared/utils';
-import { objectToQueryString } from '~/lib/utils/common_utils';
+import PackageFiles from './package_files.vue';
 
 export default {
   name: 'PackagesApp',
@@ -35,12 +32,9 @@ export default {
     GlBadge,
     GlButton,
     GlEmptyState,
-    GlLink,
     GlModal,
     GlTab,
     GlTabs,
-    GlTable,
-    FileIcon,
     GlSprintf,
     PackageTitle,
     PackagesListLoader,
@@ -49,12 +43,13 @@ export default {
     PackageHistory,
     AdditionalMetadata,
     InstallationCommands,
+    PackageFiles,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
     GlModal: GlModalDirective,
   },
-  mixins: [timeagoMixin, Tracking.mixin()],
+  mixins: [Tracking.mixin()],
   trackingActions: { ...TrackingActions },
   computed: {
     ...mapState([
@@ -71,14 +66,6 @@ export default {
     ]),
     isValidPackage() {
       return Boolean(this.packageEntity.name);
-    },
-    filesTableRows() {
-      return this.packageFiles.map(x => ({
-        name: x.file_name,
-        downloadPath: x.download_path,
-        size: this.formatSize(x.size),
-        created: x.created_at,
-      }));
     },
     tracking() {
       return {
@@ -128,22 +115,6 @@ export default {
       `PackageRegistry|You are about to delete version %{version} of %{name}. Are you sure?`,
     ),
   },
-  filesTableHeaderFields: [
-    {
-      key: 'name',
-      label: __('Name'),
-      tdClass: 'd-flex align-items-center',
-    },
-    {
-      key: 'size',
-      label: __('Size'),
-    },
-    {
-      key: 'created',
-      label: __('Created'),
-      class: 'text-right',
-    },
-  ],
 };
 </script>
 
@@ -185,35 +156,11 @@ export default {
           <additional-metadata :package-entity="packageEntity" />
         </div>
 
-        <template v-if="showFiles">
-          <h3 class="gl-font-lg gl-mt-5">{{ __('Files') }}</h3>
-          <gl-table
-            :fields="$options.filesTableHeaderFields"
-            :items="filesTableRows"
-            tbody-tr-class="js-file-row"
-          >
-            <template #cell(name)="{ item }">
-              <gl-link
-                :href="item.downloadPath"
-                class="js-file-download gl-relative"
-                @click="track($options.trackingActions.PULL_PACKAGE)"
-              >
-                <file-icon
-                  :file-name="item.name"
-                  css-classes="gl-relative file-icon"
-                  class="gl-mr-1 gl-relative"
-                />
-                <span class="gl-relative">{{ item.name }}</span>
-              </gl-link>
-            </template>
-
-            <template #cell(created)="{ item }">
-              <span v-gl-tooltip :title="tooltipTitle(item.created)">{{
-                timeFormatted(item.created)
-              }}</span>
-            </template>
-          </gl-table>
-        </template>
+        <package-files
+          v-if="showFiles"
+          :package-files="packageFiles"
+          @download-file="track($options.trackingActions.PULL_PACKAGE)"
+        />
       </gl-tab>
 
       <gl-tab v-if="showDependencies" title-item-class="js-dependencies-tab">

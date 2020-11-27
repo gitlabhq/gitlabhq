@@ -774,6 +774,15 @@ module Ci
           variables.append(key: 'CI_MERGE_REQUEST_EVENT_TYPE', value: merge_request_event_type.to_s)
           variables.append(key: 'CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', value: source_sha.to_s)
           variables.append(key: 'CI_MERGE_REQUEST_TARGET_BRANCH_SHA', value: target_sha.to_s)
+
+          if Feature.enabled?(:ci_mr_diff_variables, project)
+            diff = self.merge_request_diff
+            if diff.present?
+              variables.append(key: 'CI_MERGE_REQUEST_DIFF_ID', value: diff.id.to_s)
+              variables.append(key: 'CI_MERGE_REQUEST_DIFF_BASE_SHA', value: diff.base_commit_sha)
+            end
+          end
+
           variables.concat(merge_request.predefined_variables)
         end
 
@@ -845,9 +854,15 @@ module Ci
     end
 
     def same_family_pipeline_ids
-      ::Gitlab::Ci::PipelineObjectHierarchy.new(
-        base_and_ancestors(same_project: true), options: { same_project: true }
-      ).base_and_descendants.select(:id)
+      if Feature.enabled?(:ci_root_ancestor_for_pipeline_family, project, default_enabled: false)
+        ::Gitlab::Ci::PipelineObjectHierarchy.new(
+          self.class.where(id: root_ancestor), options: { same_project: true }
+        ).base_and_descendants.select(:id)
+      else
+        ::Gitlab::Ci::PipelineObjectHierarchy.new(
+          base_and_ancestors(same_project: true), options: { same_project: true }
+        ).base_and_descendants.select(:id)
+      end
     end
 
     def build_with_artifacts_in_self_and_descendants(name)
@@ -869,6 +884,15 @@ module Ci
         .base_and_descendants
     end
 
+    def root_ancestor
+      return self unless child?
+
+      Gitlab::Ci::PipelineObjectHierarchy
+        .new(self.class.unscoped.where(id: id), options: { same_project: true })
+        .base_and_ancestors(hierarchy_order: :desc)
+        .first
+    end
+
     def bridge_triggered?
       source_bridge.present?
     end
@@ -878,7 +902,8 @@ module Ci
     end
 
     def child?
-      parent_pipeline.present?
+      parent_pipeline? && # child pipelines have `parent_pipeline` source
+        parent_pipeline.present?
     end
 
     def parent?
@@ -1137,6 +1162,22 @@ module Ci
 
     def pipeline_data
       Gitlab::DataBuilder::Pipeline.build(self)
+    end
+
+    def merge_request_diff_sha
+      return unless merge_request?
+
+      if merge_request_pipeline?
+        source_sha
+      else
+        sha
+      end
+    end
+
+    def merge_request_diff
+      return unless merge_request?
+
+      merge_request.merge_request_diff_for(merge_request_diff_sha)
     end
 
     def push_details

@@ -1,0 +1,5 @@
+---
+title: Fix container_registry url for relative urls
+merge_request: 48661
+author:
+type: fixed

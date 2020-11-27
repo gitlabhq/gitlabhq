@@ -30349,6 +30349,9 @@ msgstr ""
 msgid "We are currently unable to fetch data for this graph."
 msgstr ""
 
+msgid "We are currently unable to fetch data for this pipeline."
+msgstr ""
+
 msgid "We could not determine the path to remove the epic"
 msgstr ""
 

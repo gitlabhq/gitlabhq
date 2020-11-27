@@ -1,0 +1,54 @@
+query getPipelineDetails($projectPath: ID!, $iid: ID!) {
+  project(fullPath: $projectPath) {
+    pipeline(iid: $iid) {
+      id: iid
+      stages {
+        nodes {
+          name
+          status: detailedStatus {
+            action {
+              icon
+              path
+              title
+            }
+          }
+          groups {
+            nodes {
+              status: detailedStatus {
+                label
+                group
+                icon
+              }
+              name
+              size
+              jobs {
+                nodes {
+                  name
+                  scheduledAt
+                  needs {
+                    nodes {
+                      name
+                    }
+                  }
+                  status: detailedStatus {
+                    icon
+                    tooltip
+                    hasDetails
+                    detailsPath
+                    group
+                    action {
+                      buttonTitle
+                      icon
+                      path
+                      title
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

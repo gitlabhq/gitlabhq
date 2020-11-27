@@ -149,7 +149,9 @@ export default async function() {
       const { createPipelinesDetailApp } = await import(
         /* webpackChunkName: 'createPipelinesDetailApp' */ './pipeline_details_graph'
       );
-      createPipelinesDetailApp();
+
+      const { pipelineProjectPath, pipelineIid } = dataset;
+      createPipelinesDetailApp(SELECTORS.PIPELINE_DETAILS, pipelineProjectPath, pipelineIid);
     } catch {
       Flash(__('An error occurred while loading the pipeline.'));
     }

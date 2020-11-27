@@ -29,11 +29,13 @@ export default {
     </div>
 
     <div class="col-12">
-      <div class="text-content">
+      <div class="gl-text-content">
         <template v-if="canSetCi">
-          <h4 class="text-center">{{ s__('Pipelines|Build with confidence') }}</h4>
+          <h4 class="gl-text-center" data-testid="header-text">
+            {{ s__('Pipelines|Build with confidence') }}
+          </h4>
 
-          <p>
+          <p data-testid="info-text">
             {{
               s__(`Pipelines|Continuous Integration can help
                 catch bugs by running your tests automatically,
@@ -42,12 +44,11 @@ export default {
             }}
           </p>
 
-          <div class="text-center">
+          <div class="gl-text-center">
             <gl-button
               :href="helpPagePath"
               variant="info"
               category="primary"
-              class="js-get-started-pipelines"
               data-testid="get-started-pipelines"
             >
               {{ s__('Pipelines|Get started with Pipelines') }}
@@ -55,7 +56,7 @@ export default {
           </div>
         </template>
 
-        <p v-else class="text-center">
+        <p v-else class="gl-text-center">
           {{ s__('Pipelines|This project is not currently set up to run pipelines.') }}
         </p>
       </div>

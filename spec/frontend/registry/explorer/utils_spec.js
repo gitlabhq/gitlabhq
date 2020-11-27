@@ -8,6 +8,10 @@ describe('Utils', () => {
       id: 1,
     };
 
+    beforeEach(() => {
+      window.gon.relative_url_root = null;
+    });
+
     it('returns the fetch url when no ending is passed', () => {
       expect(pathGenerator(imageDetails)).toBe('/foo/bar/registry/repository/1/tags?format=json');
     });
@@ -16,7 +20,7 @@ describe('Utils', () => {
       expect(pathGenerator(imageDetails, '/foo')).toBe('/foo/bar/registry/repository/1/tags/foo');
     });
 
-    it.each`
+    describe.each`
       path                     | name         | result
       ${'foo/foo'}             | ${''}        | ${'/foo/foo/registry/repository/1/tags?format=json'}
       ${'foo/foo/foo'}         | ${'foo'}     | ${'/foo/foo/registry/repository/1/tags?format=json'}
@@ -26,8 +30,15 @@ describe('Utils', () => {
       ${'foo/foo/baz/foo/bar'} | ${'foo/bar'} | ${'/foo/foo/baz/registry/repository/1/tags?format=json'}
       ${'baz/foo/foo'}         | ${'foo'}     | ${'/baz/foo/registry/repository/1/tags?format=json'}
       ${'baz/foo/bar'}         | ${'foo'}     | ${'/baz/foo/bar/registry/repository/1/tags?format=json'}
-    `('returns the correct path when path is $path and name is $name', ({ name, path, result }) => {
-      expect(pathGenerator({ id: 1, name, path })).toBe(result);
+    `('when path is $path and name is $name', ({ name, path, result }) => {
+      it('returns the correct value', () => {
+        expect(pathGenerator({ id: 1, name, path })).toBe(result);
+      });
+
+      it('produces a correct relative url', () => {
+        window.gon.relative_url_root = '/gitlab';
+        expect(pathGenerator({ id: 1, name, path })).toBe(`/gitlab${result}`);
+      });
     });
 
     it('returns the url unchanged when imageDetails have no name', () => {

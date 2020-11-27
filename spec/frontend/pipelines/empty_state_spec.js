@@ -1,58 +1,52 @@
-import Vue from 'vue';
-import emptyStateComp from '~/pipelines/components/pipelines_list/empty_state.vue';
-import mountComponent from '../helpers/vue_mount_component_helper';
+import { shallowMount } from '@vue/test-utils';
+import EmptyState from '~/pipelines/components/pipelines_list/empty_state.vue';
 
 describe('Pipelines Empty State', () => {
-  let component;
-  let EmptyStateComponent;
+  let wrapper;
 
-  beforeEach(() => {
-    EmptyStateComponent = Vue.extend(emptyStateComp);
-
-    component = mountComponent(EmptyStateComponent, {
-      helpPagePath: 'foo',
-      emptyStateSvgPath: 'foo',
-      canSetCi: true,
+  const findGetStartedButton = () => wrapper.find('[data-testid="get-started-pipelines"]');
+  const findInfoText = () => wrapper.find('[data-testid="info-text"]').text();
+  const createWrapper = () => {
+    wrapper = shallowMount(EmptyState, {
+      propsData: {
+        helpPagePath: 'foo',
+        emptyStateSvgPath: 'foo',
+        canSetCi: true,
+      },
     });
-  });
+  };
 
-  afterEach(() => {
-    component.$destroy();
-  });
+  describe('renders', () => {
+    beforeEach(() => {
+      createWrapper();
+    });
 
-  it('should render empty state SVG', () => {
-    expect(component.$el.querySelector('.svg-content svg')).toBeDefined();
-  });
+    afterEach(() => {
+      wrapper.destroy();
+      wrapper = null;
+    });
 
-  it('should render empty state information', () => {
-    expect(component.$el.querySelector('h4').textContent).toContain('Build with confidence');
+    it('should render empty state SVG', () => {
+      expect(wrapper.find('img').attributes('src')).toBe('foo');
+    });
 
-    expect(
-      component.$el
-        .querySelector('p')
-        .innerHTML.trim()
-        .replace(/\n+\s+/m, ' ')
-        .replace(/\s\s+/g, ' '),
-    ).toContain('Continuous Integration can help catch bugs by running your tests automatically,');
+    it('should render empty state header', () => {
+      expect(wrapper.find('[data-testid="header-text"]').text()).toBe('Build with confidence');
+    });
 
-    expect(
-      component.$el
-        .querySelector('p')
-        .innerHTML.trim()
-        .replace(/\n+\s+/m, ' ')
-        .replace(/\s\s+/g, ' '),
-    ).toContain(
-      'while Continuous Deployment can help you deliver code to your product environment',
-    );
-  });
+    it('should render a link with provided help path', () => {
+      expect(findGetStartedButton().attributes('href')).toBe('foo');
+    });
 
-  it('should render a link with provided help path', () => {
-    expect(component.$el.querySelector('.js-get-started-pipelines').getAttribute('href')).toEqual(
-      'foo',
-    );
+    it('should render empty state information', () => {
+      expect(findInfoText()).toContain(
+        'Continuous Integration can help catch bugs by running your tests automatically',
+        'while Continuous Deployment can help you deliver code to your product environment',
+      );
+    });
 
-    expect(component.$el.querySelector('.js-get-started-pipelines').textContent).toContain(
-      'Get started with Pipelines',
-    );
+    it('should render a button', () => {
+      expect(findGetStartedButton().text()).toBe('Get started with Pipelines');
+    });
   });
 });
