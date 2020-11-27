@@ -1,8 +1,8 @@
 import { shallowMount, mount } from '@vue/test-utils';
 import { GlTable, GlLink } from '@gitlab/ui';
-import CiLintResults from '~/ci_lint/components/ci_lint_results.vue';
+import CiLintResults from '~/pipeline_editor/components/lint/ci_lint_results.vue';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
-import { mockJobs, mockErrors, mockWarnings } from '../mock_data';
+import { mockJobs, mockErrors, mockWarnings } from '../../mock_data';
 
 describe('CI Lint Results', () => {
   let wrapper;

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`~/ci_lint/graphql/resolvers Mutation lintCI resolves lint data with type names 1`] = `
+exports[`~/pipeline_editor/graphql/resolvers Mutation lintCI lint data is as expected 1`] = `
 Object {
   "__typename": "CiLintContent",
   "errors": Array [],

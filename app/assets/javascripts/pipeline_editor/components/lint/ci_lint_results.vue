@@ -90,7 +90,7 @@ export default {
 </script>
 
 <template>
-  <div class="col-sm-12 gl-mt-5">
+  <div>
     <gl-alert
       class="gl-mb-5"
       :variant="status.variant"

@@ -8,6 +8,7 @@ class NamespacePolicy < BasePolicy
   condition(:owner) { @subject.owner == @user }
 
   rule { owner | admin }.policy do
+    enable :owner_access
     enable :create_projects
     enable :admin_namespace
     enable :read_namespace

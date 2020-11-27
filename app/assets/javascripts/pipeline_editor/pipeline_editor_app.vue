@@ -6,8 +6,8 @@ import { redirectTo, mergeUrlParams, refreshCurrentPage } from '~/lib/utils/url_
 import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
 import CommitForm from './components/commit/commit_form.vue';
 import TextEditor from './components/text_editor.vue';
-import commitCiFileMutation from './graphql/mutations/commit_ci_file.mutation.graphql';
 
+import commitCiFileMutation from './graphql/mutations/commit_ci_file.mutation.graphql';
 import getBlobContent from './graphql/queries/blob_content.graphql';
 
 const MR_SOURCE_BRANCH = 'merge_request[source_branch]';

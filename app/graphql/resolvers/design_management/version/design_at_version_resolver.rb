@@ -12,6 +12,8 @@ module Resolvers
 
         type Types::DesignManagement::DesignAtVersionType, null: true
 
+        requires_argument!
+
         authorize :read_design
 
         argument :id, DesignAtVersionID,

@@ -51,6 +51,11 @@ Geo provides:
 - Authentication system hooks: **Secondary** nodes receives all authentication data (like user accounts and logins) from the **primary** instance.
 - An intuitive UI: **Secondary** nodes use the same web interface your team has grown accustomed to. In addition, there are visual notifications that block write operations and make it clear that a user is on a **secondary** node.
 
+### Gitaly Cluster
+
+Geo should not be confused with [Gitaly Cluster](../gitaly/praefect.md). For more information about
+the difference between Geo and Gitaly Cluster, see [Gitaly Cluster compared to Geo](../gitaly/praefect.md#gitaly-cluster-compared-to-geo).
+
 ## How it works
 
 Your Geo instance can be used for cloning and fetching projects, in addition to reading any data. This will make working with large repositories over large distances much faster.

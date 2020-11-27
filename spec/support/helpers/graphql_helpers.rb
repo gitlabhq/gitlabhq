@@ -458,8 +458,18 @@ module GraphqlHelpers
     field_type(field).kind.enum?
   end
 
+  # There are a few non BaseField fields in our schema (pageInfo for one).
+  # None of them require arguments.
   def required_arguments?(field)
-    field.arguments.values.any? { |argument| argument.type.non_null? }
+    return field.requires_argument? if field.is_a?(::Types::BaseField)
+
+    if (meta = field.try(:metadata)) && meta[:type_class]
+      required_arguments?(meta[:type_class])
+    elsif args = field.try(:arguments)
+      args.values.any? { |argument| argument.type.non_null? }
+    else
+      false
+    end
   end
 
   def io_value?(value)

@@ -30,6 +30,7 @@ RSpec.shared_context 'GroupPolicy context' do
 
   let(:owner_permissions) do
     [
+      :owner_access,
       :admin_group,
       :admin_namespace,
       :admin_group_member,

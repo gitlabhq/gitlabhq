@@ -157,6 +157,7 @@
   - "{,ee/}fixtures/**/*"
   - "{,ee/}rubocop/**/*"
   - "{,ee/}spec/**/*"
+  - "{,spec/}tooling/**/*"
 
 .code-patterns: &code-patterns
   - "{package.json,yarn.lock}"
@@ -203,6 +204,7 @@
   - "{,ee/}fixtures/**/*"
   - "{,ee/}rubocop/**/*"
   - "{,ee/}spec/**/*"
+  - "{,spec/}tooling/**/*"
 
 .code-qa-patterns: &code-qa-patterns
   - "{package.json,yarn.lock}"
@@ -248,6 +250,7 @@
   - "{,ee/}fixtures/**/*"
   - "{,ee/}rubocop/**/*"
   - "{,ee/}spec/**/*"
+  - "{,spec/}tooling/**/*"
   # QA changes
   - ".dockerignore"
   - "qa/**/*"

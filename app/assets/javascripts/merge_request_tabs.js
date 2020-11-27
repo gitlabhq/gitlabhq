@@ -369,6 +369,9 @@ export default class MergeRequestTabs {
         projectId: pipelineTableViewEl.dataset.projectId,
         mergeRequestId: mrWidgetData ? mrWidgetData.iid : null,
       },
+      provide: {
+        targetProjectFullPath: mrWidgetData?.target_project_full_path || '',
+      },
     }).$mount();
 
     // $mount(el) replaces the el with the new rendered component. We need it in order to mount

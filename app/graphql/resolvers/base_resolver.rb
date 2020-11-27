@@ -8,6 +8,14 @@ module Resolvers
 
     argument_class ::Types::BaseArgument
 
+    def self.requires_argument!
+      @requires_argument = true
+    end
+
+    def self.field_options
+      super.merge(requires_argument: @requires_argument)
+    end
+
     def self.singular_type
       return unless type
 

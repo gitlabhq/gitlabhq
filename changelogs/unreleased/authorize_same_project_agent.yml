@@ -1,0 +1,5 @@
+---
+title: Authorize the project for the cluster agent if it is the agent's project
+merge_request: 48314
+author:
+type: changed

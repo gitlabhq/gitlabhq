@@ -47,17 +47,39 @@ The availability objectives for Gitaly clusters are:
   [Faster outage detection](https://gitlab.com/gitlab-org/gitaly/-/issues/2608)
   is planned to improve this to less than 1 second.
 
-The current version supports:
+Gitaly Cluster supports:
 
-- Eventual consistency of the secondary replicas.
-- Automatic failover from the primary to the secondary.
-- Reporting of possible data loss if replication queue is non empty.
-- Marking the newly promoted primary read only if possible data loss is
-  detected.
+- [Strong consistency](#strong-consistency) of the secondary replicas.
+- [Automatic failover](#automatic-failover-and-leader-election) from the primary to the secondary.
+- Reporting of possible data loss if replication queue is non-empty.
+- Marking repositories as [read only](#read-only-mode) if data loss is detected to prevent data inconsistencies.
 
 Follow the [HA Gitaly epic](https://gitlab.com/groups/gitlab-org/-/epics/1489)
 for improvements including
 [horizontally distributing reads](https://gitlab.com/groups/gitlab-org/-/epics/2013).
+
+## Gitaly Cluster compared to Geo
+
+Gitaly Cluster and [Geo](../geo/index.md) both provide redundancy. However the redundancy of:
+
+- Gitaly Cluster provides fault tolerance for data storage and is invisible to the user. Users are
+  not aware when Gitaly Cluster is used.
+- Geo provides [replication](../geo/index.md) and [disaster recovery](../geo/disaster_recovery/index.md) for
+  an entire instance of GitLab. Users know when they are using Geo for
+  [replication](../geo/index.md). Geo [replicates multiple datatypes](../geo/replication/datatypes.md#limitations-on-replicationverification),
+  including Git data.
+
+The following table outlines the major differences between Gitaly Cluster and Geo:
+
+| Tool           | Nodes    | Locations | Latency tolerance  | Failover                                             | Consistency                   | Provides redundancy for |
+|:---------------|:---------|:----------|:-------------------|:-----------------------------------------------------|:------------------------------|:------------------------|
+| Gitaly Cluster | Multiple | Single    | Approximately 1 ms | [Automatic](#automatic-failover-and-leader-election) | [Strong](#strong-consistency) | Data storage in Git     |
+| Geo            | Multiple | Multiple  | Up to one minute   | [Manual](../geo/disaster_recovery/index.md)          | Eventual                      | Entire GitLab instance  |
+
+For more information, see:
+
+- [Gitaly architecture](index.md#architecture).
+- Geo [use cases](../geo/index.md#use-cases) and [architecture](../geo/index.md#architecture).
 
 ## Cluster or shard
 
@@ -69,8 +91,8 @@ Gitaly supports multiple models of scaling:
 - Sharding using [repository storage paths](../repository_storage_paths.md), where each repository
   is stored on the assigned Gitaly node. All requests are routed to this node.
 
-| Cluster | Shard |
-|---|---|
+| Cluster                                           | Shard                                         |
+|:--------------------------------------------------|:----------------------------------------------|
 | ![Cluster example](img/cluster_example_v13_3.png) | ![Shard example](img/shard_example_v13_3.png) |
 
 Generally, Gitaly Cluster can replace sharded configurations, at the expense of additional storage
@@ -755,7 +777,7 @@ Big-IP LTM, and Citrix Net Scaler. This documentation outlines what ports
 and protocols you need configure.
 
 | LB Port | Backend Port | Protocol |
-|---------|--------------|----------|
+|:--------|:-------------|:---------|
 | 2305    | 2305         | TCP      |
 
 ### GitLab

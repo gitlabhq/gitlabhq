@@ -64,7 +64,7 @@ export default {
 </script>
 <template>
   <li :class="stageConnectorClass" class="stage-column">
-    <div class="stage-name position-relative">
+    <div class="stage-name position-relative" data-testid="stage-column-title">
       {{ title }}
       <action-component
         v-if="hasAction"

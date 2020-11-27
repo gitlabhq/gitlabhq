@@ -11,6 +11,9 @@ require 'knapsack'
 #
 # Only the test files allocated by Knapsack and listed in the file
 # would be executed in the CI node.
+#
+# Reference:
+# https://github.com/ArturT/knapsack/blob/v1.20.0/lib/knapsack/runners/rspec_runner.rb
 module Tooling
   class ParallelRSpecRunner
     def self.run(rspec_args: nil, filter_tests_file: nil)
@@ -54,7 +57,7 @@ module Tooling
     def tests_to_run
       return node_tests if filter_tests.empty?
 
-      node_tests & filter_tests
+      @tests_to_run ||= node_tests & filter_tests
     end
 
     def node_tests
@@ -62,7 +65,8 @@ module Tooling
     end
 
     def filter_tests
-      filter_tests_file ? tests_from_file(filter_tests_file) : []
+      @filter_tests ||=
+        filter_tests_file ? tests_from_file(filter_tests_file) : []
     end
 
     def tests_from_file(filter_tests_file)

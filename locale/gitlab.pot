@@ -4099,6 +4099,9 @@ msgstr ""
 msgid "AutoRemediation|%{mrsCount} ready for review"
 msgstr ""
 
+msgid "AutoRemediation|Auto-fix solution available"
+msgstr ""
+
 msgid "AutoRemediation|Auto-fix solutions"
 msgstr ""
 
@@ -8565,6 +8568,9 @@ msgstr ""
 msgid "DastProfiles|No profiles created yet"
 msgstr ""
 
+msgid "DastProfiles|Not Validated"
+msgstr ""
+
 msgid "DastProfiles|Passive"
 msgstr ""
 
@@ -8629,6 +8635,9 @@ msgid "DastProfiles|Username"
 msgstr ""
 
 msgid "DastProfiles|Username form field"
+msgstr ""
+
+msgid "DastProfiles|Validated"
 msgstr ""
 
 msgid "DastSiteValidation|Copy HTTP header to clipboard"
@@ -12191,6 +12200,9 @@ msgid "Found errors in your %{gitlab_ci_yml}:"
 msgstr ""
 
 msgid "Found errors in your .gitlab-ci.yml:"
+msgstr ""
+
+msgid "Framework successfully deleted"
 msgstr ""
 
 msgid "Free Trial"
@@ -18709,6 +18721,9 @@ msgstr ""
 msgid "Not found."
 msgstr ""
 
+msgid "Not permitted to destroy framework"
+msgstr ""
+
 msgid "Not ready yet. Try again later."
 msgstr ""
 
@@ -19004,6 +19019,12 @@ msgid "OnDemandScans|Use existing scanner profile"
 msgstr ""
 
 msgid "OnDemandScans|Use existing site profile"
+msgstr ""
+
+msgid "OnDemandScans|You can either choose a passive scan or validate the target site in your chosen site profile. %{docsLinkStart}Learn more about site validation.%{docsLinkEnd}"
+msgstr ""
+
+msgid "OnDemandScans|You cannot run an active scan against an unvalidated site."
 msgstr ""
 
 msgid "Once a project is permanently deleted it %{strongStart}cannot be recovered%{strongEnd}. Permanently deleting this project will %{strongStart}immediately delete%{strongEnd} its repositories and %{strongStart}all related resources%{strongEnd} including issues, merge requests etc."
@@ -19798,6 +19819,9 @@ msgid "Pipeline Schedules"
 msgstr ""
 
 msgid "Pipeline minutes quota"
+msgstr ""
+
+msgid "Pipeline ran in fork of project"
 msgstr ""
 
 msgid "Pipeline subscriptions"
@@ -28362,6 +28386,9 @@ msgstr ""
 msgid "Tip:"
 msgstr ""
 
+msgid "Tip: add a"
+msgstr ""
+
 msgid "Title"
 msgstr ""
 
@@ -32146,6 +32173,9 @@ msgstr ""
 msgid "for this project"
 msgstr ""
 
+msgid "fork"
+msgstr ""
+
 msgid "fork this project"
 msgstr ""
 
@@ -33021,6 +33051,9 @@ msgid "this document"
 msgstr ""
 
 msgid "time summary"
+msgstr ""
+
+msgid "to automatically add approvers based on file paths and file types."
 msgstr ""
 
 msgid "to help your contributors communicate effectively!"

@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { GlAlert, GlSprintf } from '@gitlab/ui';
 import { trimText } from 'helpers/text_helper';
-import CiLintWarnings from '~/ci_lint/components/ci_lint_warnings.vue';
+import CiLintWarnings from '~/pipeline_editor/components/lint/ci_lint_warnings.vue';
 
 const warnings = ['warning 1', 'warning 2', 'warning 3'];
 

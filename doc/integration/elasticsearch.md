@@ -83,6 +83,12 @@ After the data is added to the database or repository and [Elasticsearch is
 enabled in the Admin Area](#enabling-advanced-search) the search index will be
 updated automatically.
 
+## Upgrading to a new Elasticsearch major version
+
+Since Elasticsearch can read and use indices created in the previous major version, you don't need to change anything in GitLab's configuration when upgrading Elasticsearch.
+
+The only thing worth noting is that if you have created your current index before GitLab 13.0, you might want to [reclaim the production index name](#reclaiming-the-gitlab-production-index-name) or reindex from scratch (which will implicitly create an alias). The latter might be faster depending on the GitLab instance size. Once you do that, you'll be able to perform zero-downtime reindexing and you will benefit from any future features that will make use of the alias.
+
 ## Elasticsearch repository indexer
 
 For indexing Git repository data, GitLab uses an [indexer written in Go](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer).

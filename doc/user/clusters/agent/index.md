@@ -378,9 +378,12 @@ subjects:
 In a previous step, you configured a `config.yaml` to point to the GitLab projects
 the Agent should synchronize. In each of those projects, you must create a `manifest.yaml`
 file for the Agent to monitor. You can auto-generate this `manifest.yaml` with a
-templating engine or other means. Only public projects are supported as
-manifest projects. Support for private projects is planned in the issue
-[Agent authorization for private manifest projects](https://gitlab.com/gitlab-org/gitlab/-/issues/220912).
+templating engine or other means.
+
+The agent is authorized to download manifests for the configuration
+project, and public projects. Support for other private projects is
+planned in the issue [Agent authorization for private manifest
+projects](https://gitlab.com/gitlab-org/gitlab/-/issues/220912).
 
 Each time you commit and push a change to this file, the Agent logs the change:
 

@@ -9,7 +9,7 @@ exports[`Remove cluster confirmation modal renders splitbutton with modal includ
     menu-class="dropdown-menu-large"
   >
     <button
-      class="btn btn-danger btn-md gl-button split-content-button"
+      class="btn btn-danger btn-md gl-button split-content-button btn-danger-secondary"
       type="button"
     >
       <!---->
@@ -27,7 +27,7 @@ exports[`Remove cluster confirmation modal renders splitbutton with modal includ
     <button
       aria-expanded="false"
       aria-haspopup="true"
-      class="btn dropdown-toggle btn-danger btn-md gl-button gl-dropdown-toggle dropdown-toggle-split"
+      class="btn dropdown-toggle btn-danger btn-md gl-button gl-dropdown-toggle btn-danger-secondary dropdown-toggle-split"
       type="button"
     >
       <span

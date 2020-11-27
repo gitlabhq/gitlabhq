@@ -14,7 +14,7 @@ RSpec.describe LooksAhead do
 
   # Simplified schema to test lookahead
   let_it_be(:schema) do
-    issues_resolver = Class.new(Resolvers::BaseResolver) do
+    issues_resolver = Class.new(GraphQL::Schema::Resolver) do
       include LooksAhead
 
       def resolve_with_lookahead(**args)
@@ -41,7 +41,6 @@ RSpec.describe LooksAhead do
       field :issues, issue.connection_type,
         null: true
       field :issues_with_lookahead, issue.connection_type,
-        extras: [:lookahead],
         resolver: issues_resolver,
         null: true
     end

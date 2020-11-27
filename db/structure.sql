@@ -15126,7 +15126,8 @@ CREATE TABLE project_features (
     pages_access_level integer NOT NULL,
     forking_access_level integer,
     metrics_dashboard_access_level integer,
-    requirements_access_level integer DEFAULT 20 NOT NULL
+    requirements_access_level integer DEFAULT 20 NOT NULL,
+    operations_access_level integer DEFAULT 20 NOT NULL
 );
 
 CREATE SEQUENCE project_features_id_seq

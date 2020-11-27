@@ -25,12 +25,23 @@ export default {
       required: true,
     },
   },
+  inject: {
+    targetProjectFullPath: {
+      default: '',
+    },
+  },
   computed: {
     user() {
       return this.pipeline.user;
     },
     isScheduled() {
       return this.pipeline.source === SCHEDULE_ORIGIN;
+    },
+    isInFork() {
+      return Boolean(
+        this.targetProjectFullPath &&
+          this.pipeline?.project?.full_path !== `/${this.targetProjectFullPath}`,
+      );
     },
   },
 };
@@ -52,9 +63,8 @@ export default {
           :title="__('This pipeline was triggered by a schedule.')"
           class="badge badge-info"
           data-testid="pipeline-url-scheduled"
+          >{{ __('Scheduled') }}</span
         >
-          {{ __('Scheduled') }}
-        </span>
       </gl-link>
       <span
         v-if="pipeline.flags.latest"
@@ -62,27 +72,24 @@ export default {
         :title="__('Latest pipeline for the most recent commit on this branch')"
         class="js-pipeline-url-latest badge badge-success"
         data-testid="pipeline-url-latest"
+        >{{ __('latest') }}</span
       >
-        {{ __('latest') }}
-      </span>
       <span
         v-if="pipeline.flags.yaml_errors"
         v-gl-tooltip
         :title="pipeline.yaml_errors"
         class="js-pipeline-url-yaml badge badge-danger"
         data-testid="pipeline-url-yaml"
+        >{{ __('yaml invalid') }}</span
       >
-        {{ __('yaml invalid') }}
-      </span>
       <span
         v-if="pipeline.flags.failure_reason"
         v-gl-tooltip
         :title="pipeline.failure_reason"
         class="js-pipeline-url-failure badge badge-danger"
         data-testid="pipeline-url-failure"
+        >{{ __('error') }}</span
       >
-        {{ __('error') }}
-      </span>
       <gl-link
         v-if="pipeline.flags.auto_devops"
         :id="`pipeline-url-autodevops-${pipeline.id}`"
@@ -112,17 +119,16 @@ export default {
             </gl-sprintf>
           </div>
         </template>
-        <gl-link :href="autoDevopsHelpPath" target="_blank" rel="noopener noreferrer nofollow">
-          {{ __('Learn more about Auto DevOps') }}
-        </gl-link>
+        <gl-link :href="autoDevopsHelpPath" target="_blank" rel="noopener noreferrer nofollow">{{
+          __('Learn more about Auto DevOps')
+        }}</gl-link>
       </gl-popover>
       <span
         v-if="pipeline.flags.stuck"
         class="js-pipeline-url-stuck badge badge-warning"
         data-testid="pipeline-url-stuck"
+        >{{ __('stuck') }}</span
       >
-        {{ __('stuck') }}
-      </span>
       <span
         v-if="pipeline.flags.detached_merge_request_pipeline"
         v-gl-tooltip
@@ -133,9 +139,16 @@ export default {
         "
         class="js-pipeline-url-detached badge badge-info"
         data-testid="pipeline-url-detached"
+        >{{ __('detached') }}</span
       >
-        {{ __('detached') }}
-      </span>
+      <span
+        v-if="isInFork"
+        v-gl-tooltip
+        :title="__('Pipeline ran in fork of project')"
+        class="badge badge-info"
+        data-testid="pipeline-url-fork"
+        >{{ __('fork') }}</span
+      >
     </div>
   </div>
 </template>

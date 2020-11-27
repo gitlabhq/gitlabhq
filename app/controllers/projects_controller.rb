@@ -386,6 +386,7 @@ class ProjectsController < Projects::ApplicationController
       wiki_access_level
       pages_access_level
       metrics_dashboard_access_level
+      operations_access_level
     ]
   end
 
