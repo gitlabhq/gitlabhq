@@ -53,12 +53,12 @@ export default {
     <div class="table-mobile-header" role="rowheader">{{ s__('Pipeline|Duration') }}</div>
     <div class="table-mobile-content">
       <p v-if="hasDuration" class="duration">
-        <gl-icon name="timer" class="gl-vertical-align-baseline!" aria-hidden="true" />
+        <gl-icon name="timer" class="gl-vertical-align-baseline!" />
         {{ durationFormatted }}
       </p>
 
       <p v-if="hasFinishedTime" class="finished-at d-none d-md-block">
-        <gl-icon name="calendar" class="gl-vertical-align-baseline!" aria-hidden="true" />
+        <gl-icon name="calendar" class="gl-vertical-align-baseline!" />
 
         <time
           v-gl-tooltip

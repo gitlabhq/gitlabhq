@@ -179,13 +179,13 @@ export default {
               'https://console.cloud.google.com/freetrial?utm_campaign=2018_cpanel&utm_source=gitlab&utm_medium=referral'
             "
             target="_blank"
-            >{{ content }} <gl-icon name="external-link" aria-hidden="true"
+            >{{ content }} <gl-icon name="external-link"
           /></gl-link>
         </template>
 
         <template #docsLink="{ content }">
           <gl-link :href="docsUrl" target="_blank"
-            >{{ content }} <gl-icon name="external-link" aria-hidden="true"
+            >{{ content }} <gl-icon name="external-link"
           /></gl-link>
         </template>
 

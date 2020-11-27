@@ -142,7 +142,7 @@ export default {
         type="button"
         @click="handleToggle"
       >
-        <gl-icon ref="chevronIcon" :name="toggleChevronIconName" aria-hidden="true" />
+        <gl-icon ref="chevronIcon" :name="toggleChevronIconName" />
         {{ __('Toggle thread') }}
       </button>
     </div>

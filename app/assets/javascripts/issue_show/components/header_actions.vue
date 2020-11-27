@@ -242,7 +242,7 @@ export default {
       right
     >
       <template #button-content>
-        <gl-icon name="ellipsis_v" aria-hidden="true" />
+        <gl-icon name="ellipsis_v" />
         <span class="gl-sr-only">{{ dropdownText }}</span>
       </template>
 

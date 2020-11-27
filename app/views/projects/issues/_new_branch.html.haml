@@ -21,8 +21,8 @@
       %button.btn.js-create-merge-request.btn-success.btn-inverted{ type: 'button', data: { action: data_action } }
         = value
 
-      %button.btn.create-merge-request-dropdown-toggle.dropdown-toggle.btn-success.btn-inverted.js-dropdown-toggle.flex-grow-0{ type: 'button', data: { dropdown: { trigger: '#create-merge-request-dropdown' }, display: 'static' } }
-        = icon('caret-down')
+      %button.btn.gl-button.create-merge-request-dropdown-toggle.dropdown-toggle.btn-success.btn-inverted.js-dropdown-toggle.gl-flex-grow-0.gl-h-7{ type: 'button', data: { dropdown: { trigger: '#create-merge-request-dropdown' }, display: 'static' } }
+        = sprite_icon('chevron-down')
 
       .droplab-dropdown
         %ul#create-merge-request-dropdown.create-merge-request-dropdown-menu.dropdown-menu.dropdown-menu-right.gl-show-field-errors{ class: ("create-confidential-merge-request-dropdown-menu" if can_create_confidential_merge_request?), data: { dropdown: true } }

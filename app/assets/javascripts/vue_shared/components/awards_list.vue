@@ -174,13 +174,13 @@ export default {
         :aria-label="__('Add reaction')"
       >
         <span class="reaction-control-icon reaction-control-icon-neutral">
-          <gl-icon aria-hidden="true" name="slight-smile" />
+          <gl-icon name="slight-smile" />
         </span>
         <span class="reaction-control-icon reaction-control-icon-positive">
-          <gl-icon aria-hidden="true" name="smiley" />
+          <gl-icon name="smiley" />
         </span>
         <span class="reaction-control-icon reaction-control-icon-super-positive">
-          <gl-icon aria-hidden="true" name="smile" />
+          <gl-icon name="smile" />
         </span>
       </gl-button>
     </div>

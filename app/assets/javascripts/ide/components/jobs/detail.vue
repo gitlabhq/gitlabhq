@@ -92,7 +92,7 @@ export default {
           class="controllers-buttons"
           target="_blank"
         >
-          <gl-icon name="doc-text" aria-hidden="true" />
+          <gl-icon name="doc-text" />
         </a>
         <scroll-button :disabled="isScrolledToTop" direction="up" @click="scrollUp" />
         <scroll-button :disabled="isScrolledToBottom" direction="down" @click="scrollDown" />

@@ -86,7 +86,7 @@ export default {
           type="search"
           class="dropdown-input-field qa-dropdown-filter-input"
         />
-        <gl-icon name="search" class="dropdown-input-search" aria-hidden="true" />
+        <gl-icon name="search" class="dropdown-input-search" />
       </div>
       <div class="dropdown-content">
         <gl-loading-icon v-if="showLoading" size="lg" />
