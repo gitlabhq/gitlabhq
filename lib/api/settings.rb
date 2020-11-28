@@ -102,6 +102,10 @@ module API
       optional :performance_bar_allowed_group_id, type: String, desc: 'Deprecated: Use :performance_bar_allowed_group_path instead. Path of the group that is allowed to toggle the performance bar.' # support legacy names, can be removed in v6
       optional :performance_bar_allowed_group_path, type: String, desc: 'Path of the group that is allowed to toggle the performance bar.'
       optional :performance_bar_enabled, type: String, desc: 'Deprecated: Pass `performance_bar_allowed_group_path: nil` instead. Allow enabling the performance.' # support legacy names, can be removed in v6
+      optional :kroki_enabled, type: Boolean, desc: 'Enable Kroki'
+      given kroki_enabled: ->(val) { val } do
+        requires :kroki_url, type: String, desc: 'The Kroki server URL'
+      end
       optional :plantuml_enabled, type: Boolean, desc: 'Enable PlantUML'
       given plantuml_enabled: ->(val) { val } do
         requires :plantuml_url, type: String, desc: 'The PlantUML server URL'

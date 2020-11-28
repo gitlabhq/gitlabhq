@@ -57,6 +57,8 @@ Example response:
    "repository_storages_weighted": {"default": 100},
    "plantuml_enabled": false,
    "plantuml_url": null,
+   "kroki_enabled": false,
+   "kroki_url": null,
    "terminal_max_session_time": 0,
    "polling_interval_multiplier": 1.0,
    "rsa_key_restriction": 0,

@@ -162,6 +162,7 @@ Color written inside backticks is followed by a color "chip":
 ### Diagrams and flowcharts
 
 It's possible to generate diagrams and flowcharts from text in GitLab using [Mermaid](https://mermaidjs.github.io/) or [PlantUML](https://plantuml.com).
+It's also possible to use [Kroki](https://kroki.io) to create a wide variety of diagrams.
 
 #### Mermaid
 
@@ -230,6 +231,11 @@ end
 #### PlantUML
 
 To make PlantUML available in GitLab, a GitLab administrator needs to enable it first. Read more in [PlantUML & GitLab](../administration/integration/plantuml.md).
+
+#### Kroki
+
+To make Kroki available in GitLab, a GitLab administrator needs to enable it first.
+Read more in the [Kroki integration](../administration/integration/kroki.md) page.
 
 ### Emoji
 

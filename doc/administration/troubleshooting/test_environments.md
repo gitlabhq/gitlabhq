@@ -106,6 +106,11 @@ docker.elastic.co/elasticsearch/elasticsearch:5.5.1
 Then confirm it works in the browser at `curl http://<IP_ADDRESS>:9200/_cat/health`.
 Elasticsearch's default username is `elastic` and password is `changeme`.
 
+### Kroki
+
+See [our Kroki docs](../integration/kroki.md#docker)
+on running Kroki in Docker.
+
 ### PlantUML
 
 See [our PlantUML docs](../integration/plantuml.md#docker)

@@ -50,7 +50,8 @@ GitLab can be integrated with the following external service for continuous inte
 GitLab can be integrated with the following enhancements:
 
 - Add GitLab actions to [Gmail actions buttons](gmail_action_buttons_for_gitlab.md).
-- Configure [PlantUML](../administration/integration/plantuml.md) to use diagrams in AsciiDoc documents.
+- Configure [PlantUML](../administration/integration/plantuml.md)
+or [Kroki](../administration/integration/kroki.md) to use diagrams in AsciiDoc and Markdown documents.
 - Attach merge requests to [Trello](trello_power_up.md) cards.
 - Enable integrated code intelligence powered by [Sourcegraph](sourcegraph.md).
 - Add [Elasticsearch](elasticsearch.md) for [Advanced Search](../user/search/advanced_global_search.md),
