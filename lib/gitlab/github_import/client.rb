@@ -76,6 +76,10 @@ module Gitlab
         with_rate_limit { octokit.repo(name) }
       end
 
+      def pull_request(repo_name, iid)
+        with_rate_limit { octokit.pull_request(repo_name, iid) }
+      end
+
       def labels(*args)
         each_object(:labels, *args)
       end

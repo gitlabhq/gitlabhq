@@ -16,6 +16,7 @@ module Gitlab
 
       # The known importer stages and their corresponding Sidekiq workers.
       STAGES = {
+        pull_requests_merged_by: Stage::ImportPullRequestsMergedByWorker,
         issues_and_diff_notes: Stage::ImportIssuesAndDiffNotesWorker,
         notes: Stage::ImportNotesWorker,
         lfs_objects: Stage::ImportLfsObjectsWorker,

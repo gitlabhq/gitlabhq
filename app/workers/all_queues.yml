@@ -707,6 +707,14 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: github_importer:github_import_import_pull_request_merged_by
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
 - :name: github_importer:github_import_refresh_import_jid
   :feature_category: :importers
   :has_external_dependencies:
@@ -756,6 +764,14 @@
   :idempotent:
   :tags: []
 - :name: github_importer:github_import_stage_import_pull_requests
+  :feature_category: :importers
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
+- :name: github_importer:github_import_stage_import_pull_requests_merged_by
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low

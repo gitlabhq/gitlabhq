@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsWorker do
+RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsMergedByWorker do
   let(:project) { create(:project) }
   let(:import_state) { create(:import_state, project: project) }
   let(:worker) { described_class.new }
@@ -13,7 +13,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsWorker do
       client = double(:client)
       waiter = Gitlab::JobWaiter.new(2, '123')
 
-      expect(Gitlab::GithubImport::Importer::PullRequestsImporter)
+      expect(Gitlab::GithubImport::Importer::PullRequestsMergedByImporter)
         .to receive(:new)
         .with(project, client)
         .and_return(importer)
@@ -27,7 +27,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsWorker do
 
       expect(Gitlab::GithubImport::AdvanceStageWorker)
         .to receive(:perform_async)
-        .with(project.id, { '123' => 2 }, :pull_requests_merged_by)
+        .with(project.id, { '123' => 2 }, :issues_and_diff_notes)
 
       worker.import(client, project)
     end

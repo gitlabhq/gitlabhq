@@ -39,6 +39,17 @@ RSpec.describe Gitlab::GithubImport::Client do
     end
   end
 
+  describe '#pull_request' do
+    it 'returns the details of a pull_request' do
+      client = described_class.new('foo')
+
+      expect(client.octokit).to receive(:pull_request).with('foo/bar', 999)
+      expect(client).to receive(:with_rate_limit).and_yield
+
+      client.pull_request('foo/bar', 999)
+    end
+  end
+
   describe '#labels' do
     it 'returns the labels' do
       client = described_class.new('foo')
