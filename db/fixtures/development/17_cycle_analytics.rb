@@ -7,21 +7,21 @@ require './spec/support/helpers/test_env'
 #
 # Simple invocation always creates a new project:
 #
-# FILTER=cycle_analytics SEED_CYCLE_ANALYTICS=1 bundle exec rake db:seed_fu
+# FILTER=cycle_analytics SEED_VSA=1 bundle exec rake db:seed_fu
 #
 # Create more issues/MRs:
 #
-# CYCLE_ANALYTICS_ISSUE_COUNT=100 FILTER=cycle_analytics SEED_CYCLE_ANALYTICS=1 bundle exec rake db:seed_fu
+# VSA_ISSUE_COUNT=100 FILTER=cycle_analytics SEED_VSA=1 bundle exec rake db:seed_fu
 #
 # Run for an existing project
 #
-# CYCLE_ANALYTICS_SEED_PROJECT_ID=10 FILTER=cycle_analytics SEED_CYCLE_ANALYTICS=1 bundle exec rake db:seed_fu
+# VSA_SEED_PROJECT_ID=10 FILTER=cycle_analytics SEED_VSA=1 bundle exec rake db:seed_fu
 
 class Gitlab::Seeder::CycleAnalytics
   attr_reader :project, :issues, :merge_requests, :developers
 
-  FLAG = 'SEED_CYCLE_ANALYTICS'
-  PERF_TEST = 'CYCLE_ANALYTICS_PERF_TEST'
+  FLAG = 'SEED_VSA'
+  PERF_TEST = 'VSA_PERF_TEST'
 
   ISSUE_STAGE_MAX_DURATION_IN_HOURS = 72
   PLAN_STAGE_MAX_DURATION_IN_HOURS = 48
@@ -40,7 +40,7 @@ class Gitlab::Seeder::CycleAnalytics
 
   def initialize(project: nil, perf: false)
     @project = project || create_new_vsm_project
-    @issue_count = perf ? 1000 : ENV.fetch('CYCLE_ANALYTICS_ISSUE_COUNT', 5).to_i
+    @issue_count = perf ? 1000 : ENV.fetch('VSA_ISSUE_COUNT', 5).to_i
     @issues = []
     @merge_requests = []
     @developers = []
@@ -195,7 +195,7 @@ class Gitlab::Seeder::CycleAnalytics
 end
 
 Gitlab::Seeder.quiet do
-  project_id = ENV['CYCLE_ANALYTICS_SEED_PROJECT_ID']
+  project_id = ENV['VSA_SEED_PROJECT_ID']
   project = Project.find(project_id) if project_id
 
   seeder = Gitlab::Seeder::CycleAnalytics.seeder_based_on_env(project)

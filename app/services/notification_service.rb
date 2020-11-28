@@ -353,7 +353,7 @@ class NotificationService
     issue = note.noteable
     support_bot = User.support_bot
 
-    return unless issue.service_desk_reply_to.present?
+    return unless issue.external_author.present?
     return unless issue.project.service_desk_enabled?
     return if note.author == support_bot
     return unless issue.subscribed?(support_bot, issue.project)
