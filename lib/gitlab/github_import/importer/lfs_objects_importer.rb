@@ -28,11 +28,6 @@ module Gitlab
           lfs_objects.each do |object|
             yield object
           end
-        rescue StandardError => e
-          Gitlab::Import::Logger.error(
-            message: 'The Lfs import process failed',
-            error: e.message
-          )
         end
       end
     end

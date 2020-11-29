@@ -26,6 +26,8 @@ module Gitlab
       end
 
       def execute
+        info(project.id, message: "starting importer")
+
         retval =
           if parallel?
             parallel_import
@@ -43,8 +45,11 @@ module Gitlab
         # completed those jobs will just cycle through any remaining pages while
         # not scheduling anything.
         Gitlab::Cache::Import::Caching.expire(already_imported_cache_key, 15.minutes.to_i)
+        info(project.id, message: "importer finished")
 
         retval
+      rescue => e
+        error(project.id, e)
       end
 
       # Imports all the objects in sequence in the current thread.
@@ -156,6 +161,40 @@ module Gitlab
       # import.
       def collection_options
         {}
+      end
+
+      private
+
+      def info(project_id, extra = {})
+        logger.info(log_attributes(project_id, extra))
+      end
+
+      def error(project_id, exception)
+        logger.error(
+          log_attributes(
+            project_id,
+            message: 'importer failed',
+            'error.message': exception.message
+          )
+        )
+
+        Gitlab::ErrorTracking.track_and_raise_exception(
+          exception,
+          log_attributes(project_id)
+        )
+      end
+
+      def log_attributes(project_id, extra = {})
+        extra.merge(
+          import_source: :github,
+          project_id: project_id,
+          importer: importer_class.name,
+          parallel: parallel?
+        )
+      end
+
+      def logger
+        @logger ||= Gitlab::Import::Logger.build
       end
     end
   end

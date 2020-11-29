@@ -16848,6 +16848,9 @@ msgstr ""
 msgid "Members|Expired"
 msgstr ""
 
+msgid "Members|Filter members"
+msgstr ""
+
 msgid "Members|LDAP override enabled."
 msgstr ""
 
@@ -16870,6 +16873,9 @@ msgid "Members|Reverted to LDAP group sync settings."
 msgstr ""
 
 msgid "Members|Role updated successfully."
+msgstr ""
+
+msgid "Members|Search invited"
 msgstr ""
 
 msgid "Members|in %{time}"
@@ -30143,9 +30149,6 @@ msgid "VisualReviewApp|Review"
 msgstr ""
 
 msgid "VisualReviewApp|Steps 1 and 2 (and sometimes 3) are performed once by the developer before requesting feedback. Steps 3 (if necessary), 4 is performed by the reviewer each time they perform a review."
-msgstr ""
-
-msgid "Visualization"
 msgstr ""
 
 msgid "Vulnerabilities"

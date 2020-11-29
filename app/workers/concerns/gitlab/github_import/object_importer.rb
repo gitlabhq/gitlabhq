@@ -15,17 +15,25 @@ module Gitlab
 
         feature_category :importers
         worker_has_external_dependencies!
+
+        def logger
+          @logger ||= Gitlab::Import::Logger.build
+        end
       end
 
       # project - An instance of `Project` to import the data into.
       # client - An instance of `Gitlab::GithubImport::Client`
       # hash - A Hash containing the details of the object to import.
       def import(project, client, hash)
-        object = representation_class.from_json_hash(hash)
+        info(project.id, message: 'starting importer')
 
+        object = representation_class.from_json_hash(hash)
         importer_class.new(object, project, client).execute
 
         counter.increment
+        info(project.id, message: 'importer finished')
+      rescue => e
+        error(project.id, e)
       end
 
       def counter
@@ -51,6 +59,35 @@ module Gitlab
       # Returns the description (as a String) of the Prometheus counter.
       def counter_description
         raise NotImplementedError
+      end
+
+      private
+
+      def info(project_id, extra = {})
+        logger.info(log_attributes(project_id, extra))
+      end
+
+      def error(project_id, exception)
+        logger.error(
+          log_attributes(
+            project_id,
+            message: 'importer failed',
+            'error.message': exception.message
+          )
+        )
+
+        Gitlab::ErrorTracking.track_and_raise_exception(
+          exception,
+          log_attributes(project_id)
+        )
+      end
+
+      def log_attributes(project_id, extra = {})
+        extra.merge(
+          import_source: :github,
+          project_id: project_id,
+          importer: importer_class.name
+        )
       end
     end
   end

@@ -20,6 +20,7 @@ module Gitlab
         # project - An instance of Project.
         def import(client, project)
           IMPORTERS.each do |klass|
+            info(project.id, message: "starting importer", importer: klass.name)
             klass.new(project, client).execute
           end
 

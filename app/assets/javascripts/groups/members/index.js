@@ -5,7 +5,16 @@ import { parseDataAttributes } from 'ee_else_ce/groups/members/utils';
 import App from './components/app.vue';
 import membersStore from '~/members/store';
 
-export const initGroupMembersApp = (el, tableFields, tableAttrs, requestFormatter) => {
+export const initGroupMembersApp = (
+  el,
+  {
+    tableFields = [],
+    tableAttrs = {},
+    tableSortableFields = [],
+    requestFormatter = () => {},
+    filteredSearchBar = { show: false },
+  },
+) => {
   if (!el) {
     return () => {};
   }
@@ -19,7 +28,9 @@ export const initGroupMembersApp = (el, tableFields, tableAttrs, requestFormatte
       currentUserId: gon.current_user_id || null,
       tableFields,
       tableAttrs,
+      tableSortableFields,
       requestFormatter,
+      filteredSearchBar,
     }),
   );
 

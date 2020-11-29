@@ -7,7 +7,7 @@ RSpec.describe Gitlab::GithubImport::ImportDiffNoteWorker do
 
   describe '#import' do
     it 'imports a diff note' do
-      project = double(:project, full_path: 'foo/bar')
+      project = double(:project, full_path: 'foo/bar', id: 1)
       client = double(:client)
       importer = double(:importer)
       hash = {
