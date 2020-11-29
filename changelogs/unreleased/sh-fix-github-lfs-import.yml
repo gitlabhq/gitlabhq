@@ -1,0 +1,5 @@
+---
+title: Fix import of LFS files in GitHub import
+merge_request: 48722
+author:
+type: fixed

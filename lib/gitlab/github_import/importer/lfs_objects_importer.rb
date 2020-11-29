@@ -23,7 +23,7 @@ module Gitlab
         end
 
         def each_object_to_import
-          lfs_objects = Projects::LfsPointers::LfsImportService.new(project).execute
+          lfs_objects = Projects::LfsPointers::LfsObjectDownloadListService.new(project).execute
 
           lfs_objects.each do |object|
             yield object
