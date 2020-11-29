@@ -28,6 +28,17 @@ RSpec.describe Gitlab::GithubImport::Client do
     end
   end
 
+  describe '#pull_request_reviews' do
+    it 'returns the pull request reviews' do
+      client = described_class.new('foo')
+
+      expect(client.octokit).to receive(:pull_request_reviews).with('foo/bar', 999)
+      expect(client).to receive(:with_rate_limit).and_yield
+
+      client.pull_request_reviews('foo/bar', 999)
+    end
+  end
+
   describe '#repository' do
     it 'returns the details of a repository' do
       client = described_class.new('foo')
