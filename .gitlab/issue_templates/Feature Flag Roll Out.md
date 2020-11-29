@@ -18,7 +18,8 @@ Remove the `:feature_name` feature flag ...
 
 ### What can we monitor to detect problems with this?
 
-<!-- Which dashboards from https://dashboards.gitlab.net are most relevant? -->
+<!-- Which dashboards from https://dashboards.gitlab.net are most relevant? Sentry errors reports can alse be useful to review -->
+
 
 ## Beta groups/projects
 
