@@ -60,6 +60,7 @@ stateDiagram-v2
       "PG_Primary_Node"
       "PG_Secondary_Node_1..2"
     }
+
     state Redis {
       "R_Primary_Node"
       "R_Replica_Node_1..2"
@@ -90,7 +91,6 @@ stateDiagram-v2
     state PgBouncer {
       "Internal_Load_Balancer"
       "PgBouncer_1..3"
-
     }
 ```
 

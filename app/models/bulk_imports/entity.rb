@@ -30,6 +30,11 @@ class BulkImports::Entity < ApplicationRecord
     class_name: 'BulkImports::Tracker',
     foreign_key: :bulk_import_entity_id
 
+  has_many :failures,
+    class_name: 'BulkImports::Failure',
+    inverse_of: :entity,
+    foreign_key: :bulk_import_entity_id
+
   validates :project, absence: true, if: :group
   validates :group, absence: true, if: :project
   validates :source_type, :source_full_path, :destination_name,
@@ -52,6 +57,7 @@ class BulkImports::Entity < ApplicationRecord
 
     event :finish do
       transition started: :finished
+      transition failed: :failed
     end
 
     event :fail_op do

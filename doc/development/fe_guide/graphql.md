@@ -972,13 +972,99 @@ it('calls a mutation with correct parameters and reorders designs', async () => 
 
 #### Testing `@client` queries
 
-If your application contains `@client` queries, most probably you will have an Apollo Client warning saying that you have a local query but no resolvers are defined. In order to fix it, you need to pass resolvers to the mocked client with a second parameter (bare minimum is an empty object):
+##### Using mock resolvers
+
+If your application contains `@client` queries, you get
+the following Apollo Client warning when passing only handlers:
+
+```shell
+Unexpected call of console.warn() with:
+
+Warning: mock-apollo-client - The query is entirely client-side (using @client directives) and resolvers have been configured. The request handler will not be called.
+```
+
+To fix this you should define mock `resolvers` instead of
+mock `handlers`. For example, given the following `@client` query:
+
+```graphql
+query getBlobContent($path: String, $ref: String!) {
+  blobContent(path: $path, ref: $ref) @client {
+    rawData
+  }
+}
+```
+
+And its actual client-side resolvers:
 
 ```javascript
-import createMockApollo from 'jest/helpers/mock_apollo_helper';
-...
-const mockApollo = createMockApollo(requestHandlers, resolvers);
+import Api from '~/api';
+
+export const resolvers = {
+  Query: {
+    blobContent(_, { path, ref }) {
+      return {
+        __typename: 'BlobContent',
+        rawData: Api.getRawFile(path, { ref }).then(({ data }) => {
+          return data;
+        }),
+      };
+    },
+  },
+};
+
+export default resolvers;
 ```
+
+We can use a **mock resolver** that returns data with the
+same shape, while mock the result with a mock function:
+
+```javascript
+let mockApollo;
+let mockBlobContentData; // mock function, jest.fn();
+
+const mockResolvers = {
+  Query: {
+    blobContent() {
+      return {
+        __typename: 'BlobContent',
+        rawData: mockBlobContentData(), // the mock function can resolve mock data
+      };
+    },
+  },
+};
+
+const createComponentWithApollo = ({ props = {} } = {}) => {
+  mockApollo = createMockApollo([], mockResolvers); // resolvers are the second parameter
+
+  wrapper = shallowMount(MyComponent, {
+    localVue,
+    propsData: {},
+    apolloProvider: mockApollo,
+    // ...
+  })
+};
+
+```
+
+After which, you can resolve or reject the value needed.
+
+```javascript
+beforeEach(() => {
+  mockBlobContentData = jest.fn();
+});
+
+it('shows data', async() => {
+  mockBlobContentData.mockResolvedValue(data); // you may resolve or reject to mock the result
+
+  createComponentWithApollo();
+
+  await waitForPromises(); // wait on the resolver mock to execute
+
+  expect(findContent().text()).toBe(mockCiYml);
+});
+```
+
+##### Using `cache.writeQuery`
 
 Sometimes we want to test a `result` hook of the local query. In order to have it triggered, we need to populate a cache with correct data to be fetched with this query:
 

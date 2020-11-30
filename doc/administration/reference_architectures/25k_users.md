@@ -33,6 +33,81 @@ full list of reference architectures, see
 | Object storage                          | n/a         | n/a                     | n/a             | n/a         | n/a      |
 | NFS server                              | 1           | 4 vCPU, 3.6 GB memory   | n1-highcpu-4    | c5.xlarge   | F4s v2   |
 
+```mermaid
+stateDiagram-v2
+    [*] --> LoadBalancer
+    LoadBalancer --> ApplicationServer
+
+    ApplicationServer --> BackgroundJobs
+    ApplicationServer --> Gitaly
+    ApplicationServer --> Redis_Cache
+    ApplicationServer --> Redis_Queues
+    ApplicationServer --> PgBouncer
+    PgBouncer --> Database
+    ApplicationServer --> ObjectStorage
+    BackgroundJobs --> ObjectStorage
+
+    ApplicationMonitoring -->ApplicationServer
+    ApplicationMonitoring -->PgBouncer
+    ApplicationMonitoring -->Database
+    ApplicationMonitoring -->BackgroundJobs
+
+    ApplicationServer --> Consul
+
+    Consul --> Database
+    Consul --> PgBouncer
+    Redis_Cache --> Consul
+    Redis_Queues --> Consul
+    BackgroundJobs --> Consul
+
+    state Consul {
+      "Consul_1..3"
+    }
+
+    state Database {
+      "PG_Primary_Node"
+      "PG_Secondary_Node_1..2"
+    }
+
+    state Redis_Cache {
+      "R_Cache_Primary_Node"
+      "R_Cache_Replica_Node_1..2"
+      "R_Cache_Sentinel_1..3"
+    }
+
+    state Redis_Queues {
+      "R_Queues_Primary_Node"
+      "R_Queues_Replica_Node_1..2"
+      "R_Queues_Sentinel_1..3"
+    }
+
+    state Gitaly {
+      "Gitaly_1..2"
+    }
+
+    state BackgroundJobs {
+      "Sidekiq_1..4"
+    }
+
+    state ApplicationServer {
+      "GitLab_Rails_1..5"
+    }
+
+    state LoadBalancer {
+      "LoadBalancer_1"
+    }
+
+    state ApplicationMonitoring {
+      "Prometheus"
+      "Grafana"
+    }
+
+    state PgBouncer {
+      "Internal_Load_Balancer"
+      "PgBouncer_1..3"
+    }
+```
+
 The Google Cloud Platform (GCP) architectures were built and tested using the
 [Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
 CPU platform. On different hardware you may find that adjustments, either lower

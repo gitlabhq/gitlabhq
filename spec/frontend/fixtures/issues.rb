@@ -45,12 +45,6 @@ RSpec.describe Projects::IssuesController, '(JavaScript fixtures)', type: :contr
     render_issue(issue)
   end
 
-  it 'issues/issue_with_comment.html' do
-    issue = create(:issue, project: project)
-    create(:note, project: project, noteable: issue, note: '- [ ] Task List Item').save
-    render_issue(issue)
-  end
-
   it 'issues/issue_list.html' do
     create(:issue, project: project)
 

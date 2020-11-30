@@ -112,7 +112,7 @@ The current method provides several attributes that are sent on each click event
 
 ### Web-specific parameters
 
-Snowplow JS adds many [web-specific parameters](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/snowplow-tracker-protocol/#21_Web-specific_parameters) to all web events by default.
+Snowplow JS adds many [web-specific parameters](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/snowplow-tracker-protocol/#Web-specific_parameters) to all web events by default.
 
 ## Implementing Snowplow JS (Frontend) tracking
 

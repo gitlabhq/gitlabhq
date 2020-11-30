@@ -23,7 +23,7 @@ RSpec.describe BulkImports::Importers::GroupImporter do
   end
 
   describe '#execute' do
-    it "starts the entity and run its pipelines" do
+    it 'starts the entity and run its pipelines' do
       expect(bulk_import_entity).to receive(:start).and_call_original
       expect_to_run_pipeline BulkImports::Groups::Pipelines::GroupPipeline, context: context
       expect_to_run_pipeline BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline, context: context
@@ -31,6 +31,18 @@ RSpec.describe BulkImports::Importers::GroupImporter do
       subject.execute
 
       expect(bulk_import_entity.reload).to be_finished
+    end
+
+    context 'when failed' do
+      let(:bulk_import_entity) { create(:bulk_import_entity, :failed, bulk_import: bulk_import) }
+
+      it 'does not transition entity to finished state' do
+        allow(bulk_import_entity).to receive(:start!)
+
+        subject.execute
+
+        expect(bulk_import_entity.reload).to be_failed
+      end
     end
   end
 

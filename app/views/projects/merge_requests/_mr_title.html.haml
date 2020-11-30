@@ -2,7 +2,7 @@
 - can_update_merge_request = can?(current_user, :update_merge_request, @merge_request)
 - can_reopen_merge_request = can?(current_user, :reopen_merge_request, @merge_request)
 - state_human_name, state_icon_name = state_name_with_icon(@merge_request)
-- are_close_and_open_buttons_hidden = issuable_button_hidden?(@merge_request, true) && issuable_button_hidden?(@merge_request, false)
+- are_close_and_open_buttons_hidden = merge_request_button_hidden?(@merge_request, true) && merge_request_button_hidden?(@merge_request, false)
 
 - if @merge_request.closed_without_fork?
   .gl-alert.gl-alert-danger.gl-mb-5
@@ -19,7 +19,7 @@
 
     .issuable-meta
       #js-issuable-header-warnings
-      = issuable_meta(@merge_request, @project, "Merge request")
+      = issuable_meta(@merge_request, @project)
 
     %a.btn.btn-default.float-right.d-block.d-sm-none.gutter-toggle.issuable-gutter-toggle.js-sidebar-toggle{ href: "#" }
       = sprite_icon('chevron-double-lg-left')
@@ -50,4 +50,4 @@
       - if can_update_merge_request && !are_close_and_open_buttons_hidden
         = render 'shared/issuable/close_reopen_draft_report_toggle', issuable: @merge_request
       - elsif !@merge_request.merged?
-        = link_to _('Report abuse'), new_abuse_report_path(user_id: @merge_request.author.id, ref_url: issuable_url(@merge_request)), class: 'gl-display-none gl-display-md-block gl-button btn btn-warning-secondary', title: _('Report abuse')
+        = link_to _('Report abuse'), new_abuse_report_path(user_id: @merge_request.author.id, ref_url: merge_request_url(@merge_request)), class: 'gl-display-none gl-display-md-block gl-button btn btn-warning-secondary', title: _('Report abuse')

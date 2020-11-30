@@ -26,12 +26,16 @@ module BulkImports
         @after_run ||= self.class.after_run_callback
       end
 
-      def pipeline_name
+      def pipeline
         @pipeline ||= self.class.name
       end
 
       def instantiate(class_config)
         class_config[:klass].new(class_config[:options])
+      end
+
+      def abort_on_failure?
+        self.class.abort_on_failure?
       end
     end
 
@@ -66,6 +70,14 @@ module BulkImports
 
       def after_run_callback
         class_attributes[:after_run]
+      end
+
+      def abort_on_failure!
+        class_attributes[:abort_on_failure] = true
+      end
+
+      def abort_on_failure?
+        class_attributes[:abort_on_failure]
       end
 
       private

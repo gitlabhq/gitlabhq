@@ -30,7 +30,7 @@
           %li.divider.droplab-item-ignore
 
         %li.report-item
-          %a.report-abuse-link{ href: new_abuse_report_path(user_id: issuable.author.id, ref_url: issuable_url(issuable)) }
+          %a.report-abuse-link{ href: new_abuse_report_path(user_id: issuable.author.id, ref_url: merge_request_url(issuable)) }
             .description
               %strong.title= _('Report abuse')
               %p.text

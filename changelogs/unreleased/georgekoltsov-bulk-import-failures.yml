@@ -1,0 +1,6 @@
+---
+title: Add BulkImports::Failure to store import failures of the Group Migration (BulkImports)
+  process
+merge_request: 47526
+author:
+type: changed

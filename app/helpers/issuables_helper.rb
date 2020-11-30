@@ -61,16 +61,6 @@ module IssuablesHelper
     end
   end
 
-  def issuable_json_path(issuable)
-    project = issuable.project
-
-    if issuable.is_a?(MergeRequest)
-      project_merge_request_path(project, issuable.iid, :json)
-    else
-      project_issue_path(project, issuable.iid, :json)
-    end
-  end
-
   def serialize_issuable(issuable, opts = {})
     serializer_klass = case issuable
                        when Issue
@@ -174,18 +164,7 @@ module IssuablesHelper
     h(title || default_label)
   end
 
-  def to_url_reference(issuable)
-    case issuable
-    when Issue
-      link_to issuable.to_reference, issue_url(issuable)
-    when MergeRequest
-      link_to issuable.to_reference, merge_request_url(issuable)
-    else
-      issuable.to_reference
-    end
-  end
-
-  def issuable_meta(issuable, project, text)
+  def issuable_meta(issuable, project)
     output = []
     output << "Opened #{time_ago_with_tooltip(issuable.created_at)} by ".html_safe
 
@@ -340,10 +319,6 @@ module IssuablesHelper
     issuable_path(issuable, close_reopen_params(issuable, :reopen))
   end
 
-  def close_reopen_issuable_path(issuable, should_inverse = false)
-    issuable.closed? ^ should_inverse ? reopen_issuable_path(issuable) : close_issuable_path(issuable)
-  end
-
   def toggle_draft_issuable_path(issuable)
     wip_event = issuable.work_in_progress? ? 'unwip' : 'wip'
 
@@ -352,28 +327,6 @@ module IssuablesHelper
 
   def issuable_path(issuable, *options)
     polymorphic_path(issuable, *options)
-  end
-
-  def issuable_url(issuable, *options)
-    case issuable
-    when Issue
-      issue_url(issuable, *options)
-    when MergeRequest
-      merge_request_url(issuable, *options)
-    end
-  end
-
-  def issuable_button_visibility(issuable, closed)
-    return 'hidden' if issuable_button_hidden?(issuable, closed)
-  end
-
-  def issuable_button_hidden?(issuable, closed)
-    case issuable
-    when Issue
-      issue_button_hidden?(issuable, closed)
-    when MergeRequest
-      merge_request_button_hidden?(issuable, closed)
-    end
   end
 
   def issuable_author_is_current_user(issuable)
