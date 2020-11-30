@@ -6,12 +6,16 @@ import TextEditor from '~/pipeline_editor/components/text_editor.vue';
 
 describe('~/pipeline_editor/components/text_editor.vue', () => {
   let wrapper;
+  const editorReadyListener = jest.fn();
 
-  const createComponent = (props = {}, mountFn = shallowMount) => {
+  const createComponent = (attrs = {}, mountFn = shallowMount) => {
     wrapper = mountFn(TextEditor, {
-      propsData: {
+      attrs: {
         value: mockCiYml,
-        ...props,
+        ...attrs,
+      },
+      listeners: {
+        'editor-ready': editorReadyListener,
       },
     });
   };
@@ -28,14 +32,13 @@ describe('~/pipeline_editor/components/text_editor.vue', () => {
     expect(findEditor().props('value')).toBe(mockCiYml);
   });
 
-  it('editor is readony and configured for .yml', () => {
-    expect(findEditor().props('editorOptions')).toEqual({ readOnly: true });
+  it('editor is configured for .yml', () => {
     expect(findEditor().props('fileName')).toBe('*.yml');
   });
 
-  it('bubbles up editor-ready event', () => {
+  it('bubbles up events', () => {
     findEditor().vm.$emit('editor-ready');
 
-    expect(wrapper.emitted('editor-ready')).toHaveLength(1);
+    expect(editorReadyListener).toHaveBeenCalled();
   });
 });

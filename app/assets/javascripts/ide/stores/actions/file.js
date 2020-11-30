@@ -1,5 +1,11 @@
 import { joinPaths, escapeFileUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
+import { performanceMarkAndMeasure } from '~/performance/utils';
+import {
+  WEBIDE_MARK_FETCH_FILE_DATA_START,
+  WEBIDE_MARK_FETCH_FILE_DATA_FINISH,
+  WEBIDE_MEASURE_FETCH_FILE_DATA,
+} from '~/performance/constants';
 import eventHub from '../../eventhub';
 import service from '../../services';
 import * as types from '../mutation_types';
@@ -61,6 +67,7 @@ export const getFileData = (
   { state, commit, dispatch, getters },
   { path, makeFileActive = true, openFile = makeFileActive, toggleLoading = true },
 ) => {
+  performanceMarkAndMeasure({ mark: WEBIDE_MARK_FETCH_FILE_DATA_START });
   const file = state.entries[path];
   const fileDeletedAndReadded = getters.isFileDeletedAndReadded(path);
 
@@ -81,6 +88,15 @@ export const getFileData = (
   return service
     .getFileData(url)
     .then(({ data }) => {
+      performanceMarkAndMeasure({
+        mark: WEBIDE_MARK_FETCH_FILE_DATA_FINISH,
+        measures: [
+          {
+            name: WEBIDE_MEASURE_FETCH_FILE_DATA,
+            start: WEBIDE_MARK_FETCH_FILE_DATA_START,
+          },
+        ],
+      });
       if (data) commit(types.SET_FILE_DATA, { data, file });
       if (openFile) commit(types.TOGGLE_FILE_OPEN, path);
 
@@ -150,6 +166,13 @@ export const getRawFileData = ({ state, commit, dispatch, getters }, { path }) =
 
 export const changeFileContent = ({ commit, state, getters }, { path, content }) => {
   const file = state.entries[path];
+
+  // It's possible for monaco to hit a race condition where it tries to update renamed files.
+  // See issue https://gitlab.com/gitlab-org/gitlab/-/issues/284930
+  if (!file) {
+    return;
+  }
+
   commit(types.UPDATE_FILE_CONTENT, {
     path,
     content,

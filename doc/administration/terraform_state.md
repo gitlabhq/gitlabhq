@@ -68,7 +68,7 @@ The following settings are:
 | Setting | Description | Default |
 |---------|-------------|---------|
 | `enabled` | Enable/disable object storage | `false` |
-| `remote_directory` | The bucket name where Terraform state files will be stored | |
+| `remote_directory` | The bucket name where Terraform state files are stored | |
 | `connection` | Various connection options described below | |
 
 ### S3-compatible connection settings

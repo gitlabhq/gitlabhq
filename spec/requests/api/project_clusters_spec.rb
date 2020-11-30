@@ -88,6 +88,8 @@ RSpec.describe API::ProjectClusters do
         expect(json_response['environment_scope']).to eq('*')
         expect(json_response['cluster_type']).to eq('project_type')
         expect(json_response['domain']).to eq('example.com')
+        expect(json_response['enabled']).to be_truthy
+        expect(json_response['managed']).to be_truthy
       end
 
       it 'returns project information' do
@@ -171,6 +173,7 @@ RSpec.describe API::ProjectClusters do
         name: 'test-cluster',
         domain: 'domain.example.com',
         managed: false,
+        enabled: false,
         namespace_per_environment: false,
         platform_kubernetes_attributes: platform_kubernetes_attributes,
         management_project_id: management_project_id
@@ -202,6 +205,7 @@ RSpec.describe API::ProjectClusters do
           expect(cluster_result.name).to eq('test-cluster')
           expect(cluster_result.domain).to eq('domain.example.com')
           expect(cluster_result.managed).to be_falsy
+          expect(cluster_result.enabled).to be_falsy
           expect(cluster_result.management_project_id).to eq management_project_id
           expect(cluster_result.namespace_per_environment).to eq(false)
           expect(platform_kubernetes.rbac?).to be_truthy
@@ -337,7 +341,9 @@ RSpec.describe API::ProjectClusters do
       {
         domain: 'new-domain.com',
         platform_kubernetes_attributes: platform_kubernetes_attributes,
-        management_project_id: management_project_id
+        management_project_id: management_project_id,
+        managed: false,
+        enabled: false
       }
     end
 
@@ -373,6 +379,8 @@ RSpec.describe API::ProjectClusters do
         it 'updates cluster attributes' do
           expect(response).to have_gitlab_http_status(:ok)
           expect(cluster.domain).to eq('new-domain.com')
+          expect(cluster.managed).to be_falsy
+          expect(cluster.enabled).to be_falsy
           expect(cluster.platform_kubernetes.namespace).to eq('new-namespace')
           expect(cluster.management_project).to eq(management_project)
         end
@@ -384,6 +392,8 @@ RSpec.describe API::ProjectClusters do
         it 'does not update cluster attributes' do
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(cluster.domain).not_to eq('new_domain.com')
+          expect(cluster.managed).to be_truthy
+          expect(cluster.enabled).to be_truthy
           expect(cluster.platform_kubernetes.namespace).not_to eq('invalid_namespace')
           expect(cluster.management_project).not_to eq(management_project)
         end

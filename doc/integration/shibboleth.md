@@ -54,10 +54,10 @@ The following changes are needed to enable Shibboleth:
 
    NOTE: **Note:**
    Starting from GitLab 11.4, OmniAuth is enabled by default. If you're using an
-   earlier version, you'll need to explicitly enable it in `/etc/gitlab/gitlab.rb`.
+   earlier version, you must explicitly enable it in `/etc/gitlab/gitlab.rb`.
 
 1. In addition, add Shibboleth to `/etc/gitlab/gitlab.rb` as an OmniAuth provider.
-   User attributes will be sent from the
+   User attributes are sent from the
    Apache reverse proxy to GitLab as headers with the names from the Shibboleth
    attribute mapping. Therefore the values of the `args` hash
    should be in the form of `"HTTP_ATTRIBUTE"`. The keys in the hash are arguments
@@ -100,12 +100,12 @@ The following changes are needed to enable Shibboleth:
 1. [Reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) or [restart](../administration/restart_gitlab.md#installations-from-source) GitLab for the changes to take effect if you
    installed GitLab via Omnibus or from source respectively.
 
-On the sign in page, there should now be a "Sign in with: Shibboleth" icon below the regular sign in form. Click the icon to begin the authentication process. You will be redirected to IdP server (depends on your Shibboleth module configuration). If everything goes well the user will be returned to GitLab and will be signed in.
+On the sign in page, there should now be a "Sign in with: Shibboleth" icon below the regular sign in form. Click the icon to begin the authentication process. You are redirected to IdP server (depends on your Shibboleth module configuration). If everything goes well the user is returned to GitLab and is signed in.
 
 ## Apache 2.4 / GitLab 8.6 update
 
 The order of the first 2 Location directives is important. If they are reversed,
-you will not get a Shibboleth session!
+requesting a Shibboleth session fails!
 
 ```plaintext
 <Location />

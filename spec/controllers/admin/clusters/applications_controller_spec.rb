@@ -22,7 +22,7 @@ RSpec.describe Admin::Clusters::ApplicationsController do
       post :create, params: params
     end
 
-    let(:application) { 'helm' }
+    let(:application) { 'ingress' }
     let(:params) { { application: application, id: cluster.id } }
 
     describe 'functionality' do
@@ -37,7 +37,7 @@ RSpec.describe Admin::Clusters::ApplicationsController do
 
         expect { subject }.to change { current_application.count }
         expect(response).to have_gitlab_http_status(:no_content)
-        expect(cluster.application_helm).to be_scheduled
+        expect(cluster.application_ingress).to be_scheduled
       end
 
       context 'when cluster do not exists' do
@@ -61,7 +61,7 @@ RSpec.describe Admin::Clusters::ApplicationsController do
 
       context 'when application is already installing' do
         before do
-          create(:clusters_applications_helm, :installing, cluster: cluster)
+          create(:clusters_applications_ingress, :installing, cluster: cluster)
         end
 
         it 'returns 400' do

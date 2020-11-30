@@ -1,6 +1,7 @@
 <script>
 import $ from 'jquery';
 import { escape } from 'lodash';
+import { GlButton, GlModalDirective } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import { mouseenter, debouncedMouseleave, togglePopover } from '~/shared/popover';
 import StatusIcon from '../mr_widget_status_icon.vue';
@@ -9,6 +10,10 @@ export default {
   name: 'MRWidgetConflicts',
   components: {
     StatusIcon,
+    GlButton,
+  },
+  directives: {
+    GlModalDirective,
   },
   props: {
     /* TODO: This is providing all store and service down when it
@@ -89,22 +94,21 @@ To merge this request, first rebase locally.`)
           </span>
         </span>
         <span v-if="showResolveButton" ref="popover">
-          <a
+          <gl-button
             :href="mr.conflictResolutionPath"
             :disabled="mr.sourceBranchProtected"
-            class="js-resolve-conflicts-button btn btn-default btn-sm"
+            class="js-resolve-conflicts-button"
           >
             {{ s__('mrWidget|Resolve conflicts') }}
-          </a>
+          </gl-button>
         </span>
-        <button
+        <gl-button
           v-if="mr.canMerge"
-          class="js-merge-locally-button btn btn-default btn-sm"
-          data-toggle="modal"
-          data-target="#modal_merge_info"
+          v-gl-modal-directive="'modal-merge-info'"
+          class="js-merge-locally-button"
         >
           {{ s__('mrWidget|Merge locally') }}
-        </button>
+        </gl-button>
       </template>
     </div>
   </div>

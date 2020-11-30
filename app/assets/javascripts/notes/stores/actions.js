@@ -435,6 +435,10 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
 };
 
 const pollSuccessCallBack = (resp, commit, state, getters, dispatch) => {
+  if (state.isResolvingDiscussion) {
+    return null;
+  }
+
   if (resp.notes?.length) {
     dispatch('updateOrCreateNotes', resp.notes);
     dispatch('startTaskList');
@@ -574,6 +578,9 @@ export const submitSuggestion = (
   const dispatchResolveDiscussion = () =>
     dispatch('resolveDiscussion', { discussionId }).catch(() => {});
 
+  commit(types.SET_RESOLVING_DISCUSSION, true);
+  dispatch('stopPolling');
+
   return Api.applySuggestion(suggestionId)
     .then(() => commit(types.APPLY_SUGGESTION, { discussionId, noteId, suggestionId }))
     .then(dispatchResolveDiscussion)
@@ -587,6 +594,10 @@ export const submitSuggestion = (
       const flashMessage = errorMessage || defaultMessage;
 
       Flash(__(flashMessage), 'alert', flashContainer);
+    })
+    .finally(() => {
+      commit(types.SET_RESOLVING_DISCUSSION, false);
+      dispatch('restartPolling');
     });
 };
 
@@ -605,6 +616,8 @@ export const submitSuggestionBatch = ({ commit, dispatch, state }, { flashContai
     });
 
   commit(types.SET_APPLYING_BATCH_STATE, true);
+  commit(types.SET_RESOLVING_DISCUSSION, true);
+  dispatch('stopPolling');
 
   return Api.applySuggestionBatch(suggestionIds)
     .then(() => Promise.all(applyAllSuggestions()))
@@ -621,7 +634,11 @@ export const submitSuggestionBatch = ({ commit, dispatch, state }, { flashContai
 
       Flash(__(flashMessage), 'alert', flashContainer);
     })
-    .finally(() => commit(types.SET_APPLYING_BATCH_STATE, false));
+    .finally(() => {
+      commit(types.SET_APPLYING_BATCH_STATE, false);
+      commit(types.SET_RESOLVING_DISCUSSION, false);
+      dispatch('restartPolling');
+    });
 };
 
 export const addSuggestionInfoToBatch = ({ commit }, { suggestionId, noteId, discussionId }) =>

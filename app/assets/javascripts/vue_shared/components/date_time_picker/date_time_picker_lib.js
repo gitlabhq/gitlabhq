@@ -89,5 +89,3 @@ export const inputStringToIsoDate = (value, utc = false) => {
  */
 export const isoDateToInputString = (date, utc = false) =>
   dateformat(date, dateFormats.inputFormat, utc);
-
-export default {};

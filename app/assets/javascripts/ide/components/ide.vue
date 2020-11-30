@@ -5,10 +5,8 @@ import {
   WEBIDE_MARK_APP_START,
   WEBIDE_MARK_FILE_FINISH,
   WEBIDE_MARK_FILE_CLICKED,
-  WEBIDE_MARK_TREE_FINISH,
-  WEBIDE_MEASURE_TREE_FROM_REQUEST,
-  WEBIDE_MEASURE_FILE_FROM_REQUEST,
   WEBIDE_MEASURE_FILE_AFTER_INTERACTION,
+  WEBIDE_MEASURE_BEFORE_VUE,
 } from '~/performance/constants';
 import { performanceMarkAndMeasure } from '~/performance/utils';
 import { modalTypes } from '../constants';
@@ -19,12 +17,6 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import { measurePerformance } from '../utils';
 
-eventHub.$on(WEBIDE_MEASURE_TREE_FROM_REQUEST, () =>
-  measurePerformance(WEBIDE_MARK_TREE_FINISH, WEBIDE_MEASURE_TREE_FROM_REQUEST),
-);
-eventHub.$on(WEBIDE_MEASURE_FILE_FROM_REQUEST, () =>
-  measurePerformance(WEBIDE_MARK_FILE_FINISH, WEBIDE_MEASURE_FILE_FROM_REQUEST),
-);
 eventHub.$on(WEBIDE_MEASURE_FILE_AFTER_INTERACTION, () =>
   measurePerformance(
     WEBIDE_MARK_FILE_FINISH,
@@ -84,7 +76,14 @@ export default {
       document.querySelector('.navbar-gitlab').classList.add(`theme-${this.themeName}`);
   },
   beforeCreate() {
-    performanceMarkAndMeasure({ mark: WEBIDE_MARK_APP_START });
+    performanceMarkAndMeasure({
+      mark: WEBIDE_MARK_APP_START,
+      measures: [
+        {
+          name: WEBIDE_MEASURE_BEFORE_VUE,
+        },
+      ],
+    });
   },
   methods: {
     ...mapActions(['toggleFileFinder']),

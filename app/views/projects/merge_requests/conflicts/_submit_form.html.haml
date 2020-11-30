@@ -18,7 +18,7 @@
     .offset-md-4.col-md-8
       .row
         .col-6
-          %button.btn.btn-success.js-submit-button{ type: "button", "@click" => "commit()", ":disabled" => "!readyToCommit" }
+          %button.btn.gl-button.btn-success.js-submit-button{ type: "button", "@click" => "commit()", ":disabled" => "!readyToCommit" }
             %span {{commitButtonText}}
         .col-6.text-right
           = link_to "Cancel", project_merge_request_path(@merge_request.project, @merge_request), class: "gl-button btn btn-cancel"

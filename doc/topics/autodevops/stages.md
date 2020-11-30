@@ -64,7 +64,7 @@ value. The default builder is `heroku/buildpacks:18` but a different builder
 can be selected using the CI variable `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER`.
 
 Cloud Native Buildpacks (CNBs) are an evolution of Heroku buildpacks, and
-will eventually supersede Herokuish-based builds within Auto DevOps. For more
+GitLab expects them to eventually supersede Herokuish-based builds within Auto DevOps. For more
 information, see [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/212692).
 
 Builds using Cloud Native Buildpacks support the same options as builds using
@@ -150,7 +150,7 @@ out. The merge request widget also displays any
 Static Application Security Testing (SAST) uses the
 [SAST Docker image](https://gitlab.com/gitlab-org/security-products/sast) to run static
 analysis on the current code, and checks for potential security issues. The
-Auto SAST stage will be skipped on licenses other than
+Auto SAST stage is skipped on licenses other than
 [Ultimate](https://about.gitlab.com/pricing/), and requires
 [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 or above.
 
@@ -387,16 +387,16 @@ in the first place, and thus not realize that it needs to re-apply the old confi
 [GitLab Deploy Tokens](../../user/project/deploy_tokens/index.md#gitlab-deploy-token)
 are created for internal and private projects when Auto DevOps is enabled, and the
 Auto DevOps settings are saved. You can use a Deploy Token for permanent access to
-the registry. After you manually revoke the GitLab Deploy Token, it won't be
+the registry. After you manually revoke the GitLab Deploy Token, it isn't
 automatically created.
 
 If the GitLab Deploy Token can't be found, `CI_REGISTRY_PASSWORD` is
 used.
 
 NOTE: **Note:**
-`CI_REGISTRY_PASSWORD` is only valid during deployment. Kubernetes will be able
-to successfully pull the container image during deployment, but if the image must
-be pulled again, such as after pod eviction, Kubernetes will fail to do so
+`CI_REGISTRY_PASSWORD` is only valid during deployment. Kubernetes can
+successfully pull the container image during deployment, but if the image must
+be pulled again, such as after pod eviction, Kubernetes cannot do so
 as it attempts to fetch the image using `CI_REGISTRY_PASSWORD`.
 
 ### Kubernetes 1.16+
@@ -455,7 +455,7 @@ initialization completes, GitLab deploys a second release with the application
 deployment as normal.
 
 Note that a post-install hook means that if any deploy succeeds,
-`DB_INITIALIZE` won't be processed thereafter.
+`DB_INITIALIZE` isn't processed thereafter.
 
 If present, `DB_MIGRATE` is run as a shell command within an application pod as
 a Helm pre-upgrade hook.
@@ -492,7 +492,7 @@ the standard health checks, which expect a successful HTTP response on port
 the [`sidekiq_alive` gem](https://rubygems.org/gems/sidekiq_alive).
 
 To work with Sidekiq, you must also ensure your deployments have
-access to a Redis instance. Auto DevOps won't deploy this instance for you, so
+access to a Redis instance. Auto DevOps doesn't deploy this instance for you, so
 you must:
 
 - Maintain your own Redis instance.

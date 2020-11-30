@@ -2,10 +2,6 @@
 .diff-file {
   margin-bottom: $gl-padding;
 
-  &.conflict {
-    border-top: 1px solid $border-color;
-  }
-
   &.has-body {
     .file-title {
       box-shadow: 0 -2px 0 0 var(--white);

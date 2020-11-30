@@ -1,0 +1,14 @@
+- if @page
+  - wiki_page_title @page
+
+- add_page_specific_style 'page_bundles/wiki'
+
+- git_access_url = wiki_path(@wiki, action: :git_access)
+
+.wiki-page-header.top-area.gl-flex-direction-column.gl-lg-flex-direction-row
+  .gl-mt-5.gl-mb-3
+    .gl-display-flex.gl-justify-content-space-between
+      %h2.gl-mt-0.gl-mb-5{ data: { qa_selector: 'wiki_page_title', testid: 'wiki_page_title' } }= @page ? @page.human_title : _('Failed to retrieve page')
+    .js-wiki-page-content.md.gl-pt-2{ data: { qa_selector: 'wiki_page_content', testid: 'wiki_page_content' } }
+      = _('The page could not be displayed because it timed out.')
+      = html_escape(_('You can view the source or %{linkStart}%{cloneIcon} clone the repository%{linkEnd}')) % { linkStart: "<a href=\"#{git_access_url}\">".html_safe, linkEnd: '</a>'.html_safe, cloneIcon: sprite_icon('download', css_class: 'gl-mr-2').html_safe }

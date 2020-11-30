@@ -14,7 +14,7 @@ RSpec.describe 'Projects > Show > Schema Markup' do
       expect(page).to have_selector('img[itemprop="image"]')
       expect(page).to have_selector('[itemprop="name"]', text: project.name)
       expect(page).to have_selector('[itemprop="identifier"]', text: "Project ID: #{project.id}")
-      expect(page).to have_selector('[itemprop="abstract"]', text: project.description)
+      expect(page).to have_selector('[itemprop="description"]', text: project.description)
       expect(page).to have_selector('[itemprop="license"]', text: project.repository.license.name)
       expect(find_all('[itemprop="keywords"]').map(&:text)).to match_array(project.tag_list.map(&:capitalize))
       expect(page).to have_selector('[itemprop="about"]')

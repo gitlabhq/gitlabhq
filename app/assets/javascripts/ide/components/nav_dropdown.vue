@@ -45,7 +45,7 @@ export default {
 </script>
 
 <template>
-  <div ref="dropdown" class="btn-group ide-nav-dropdown dropdown">
+  <div ref="dropdown" class="btn-group ide-nav-dropdown dropdown" data-testid="ide-nav-dropdown">
     <nav-dropdown-button :show-merge-requests="canReadMergeRequests" />
     <div class="dropdown-menu dropdown-menu-left p-0">
       <nav-form v-if="isVisibleDropdown" :show-merge-requests="canReadMergeRequests" />

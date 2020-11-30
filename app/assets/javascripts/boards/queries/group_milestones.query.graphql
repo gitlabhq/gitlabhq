@@ -1,0 +1,17 @@
+query groupMilestones(
+  $fullPath: ID!
+  $state: MilestoneStateEnum
+  $includeDescendants: Boolean
+  $searchTitle: String
+) {
+  group(fullPath: $fullPath) {
+    milestones(state: $state, includeDescendants: $includeDescendants, searchTitle: $searchTitle) {
+      edges {
+        node {
+          id
+          title
+        }
+      }
+    }
+  }
+}

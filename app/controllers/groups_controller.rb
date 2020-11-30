@@ -329,6 +329,11 @@ class GroupsController < Groups::ApplicationController
   def markdown_service_params
     params.merge(group: group)
   end
+
+  override :has_project_list?
+  def has_project_list?
+    %w(details show index).include?(action_name)
+  end
 end
 
 GroupsController.prepend_if_ee('EE::GroupsController')

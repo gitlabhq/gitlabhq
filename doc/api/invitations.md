@@ -23,7 +23,7 @@ levels are defined in the `Gitlab::Access` module. Currently, these levels are v
 
 CAUTION: **Caution:**
 Due to [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/219299),
-projects in personal namespaces will not show owner (`50`) permission.
+projects in personal namespaces don't show owner (`50`) permission.
 
 ## Invite by email to group or project
 

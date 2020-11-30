@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Secure Partner Integration - Onboarding Process
 
 If you want to integrate your product with the [Secure Stage](https://about.gitlab.com/direction/secure/),
-this page will help you understand the developer workflow GitLab intends for
+this page describes the developer workflow GitLab intends for
 our users to follow with regards to security results. These should be used as
 guidelines so you can build an integration that fits with the workflow GitLab
 users are already familiar with.
@@ -29,7 +29,7 @@ tiers so that we can provide the most value to our mutual customers.
 ## What is the GitLab Developer Workflow?
 
 This workflow is how GitLab users interact with our product and expect it to
-function. Understanding how users use GitLab today will help you choose the
+function. Understanding how users use GitLab today helps you choose the
 best place to integrate your own product and its results into GitLab.
 
 - Developers want to write code without using a new tool to consume results
@@ -101,7 +101,7 @@ and complete an integration with the Secure stage.
    - Users can interact with the findings from your artifact within their workflow. They can dismiss the findings or accept them and create a backlog issue.
    - To automatically create issues without user interaction, use the [issue API](../../api/issues.md). This will be replaced by [Standalone Vulnerabilities](https://gitlab.com/groups/gitlab-org/-/epics/634) in the future.
 1. Optional: Provide auto-remediation steps:
-   - If you specified `remediations` in your artifact, it is proposed through our [auto-remediation](../../user/application_security/index.md#automatic-remediation-for-vulnerabilities)
+   - If you specified `remediations` in your artifact, it is proposed through our [automatic remediation](../../user/application_security/index.md#automatic-remediation-for-vulnerabilities)
      interface.
 1. Demo the integration to GitLab:
    - After you have tested and are ready to demo your integration please
@@ -112,7 +112,7 @@ and complete an integration with the Secure stage.
      to support your go-to-market as appropriate.
    - Examples of supported marketing could include being listed on our [Security Partner page](https://about.gitlab.com/partners/#security),
      doing an [Unfiltered blog post](https://about.gitlab.com/handbook/marketing/blog/unfiltered/),
-     doing a co-branded webinar, or producing a co-branded whitepaper.
+     doing a co-branded webinar, or producing a co-branded white paper.
 
 We have a [video playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KpMqYxJiOLz-uBIr5w-yP4A)
 that may be helpful as part of this process. This covers various topics related to integrating your

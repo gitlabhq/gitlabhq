@@ -20,7 +20,7 @@ This strategy is designed to allow configuration of the simple OmniAuth SSO proc
 
 ## Limitations of this Strategy
 
-- It can only be used for Single Sign on, and will not provide any other access granted by any OAuth provider
+- It can only be used for Single Sign on, and doesn't provide any other access granted by any OAuth provider
   (importing projects or users, etc)
 - It only supports the Authorization Grant flow (most common for client-server applications, like GitLab)
 - It is not able to fetch user information from more than one URL
@@ -37,7 +37,7 @@ This strategy is designed to allow configuration of the simple OmniAuth SSO proc
    ```
 
 1. You should now be able to get a Client ID and Client Secret.
-   Where this shows up will differ for each provider.
+   Where this shows up differs for each provider.
    This may also be called Application ID and Secret
 
 1. On your GitLab server, open the configuration file.
@@ -64,6 +64,6 @@ This strategy is designed to allow configuration of the simple OmniAuth SSO proc
 1. Restart GitLab for the changes to take effect
 
 On the sign in page there should now be a new button below the regular sign in form.
-Click the button to begin your provider's authentication process. This will direct
+Click the button to begin your provider's authentication process. This directs
 the browser to your OAuth2 Provider's authentication page. If everything goes well
-the user will be returned to your GitLab instance and will be signed in.
+the user is returned to your GitLab instance and is signed in.

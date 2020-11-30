@@ -1,0 +1,6 @@
+---
+title: Create `vulnerability_findings_remediations` and `vulnerability_remediations`
+  tables
+merge_request: 47166
+author:
+type: added

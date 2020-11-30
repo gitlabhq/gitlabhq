@@ -60,9 +60,7 @@ RSpec.describe Clusters::Aws::FetchCredentialsService do
         subject { described_class.new(provision_role, provider: provider).execute }
 
         before do
-          allow(File).to receive(:read)
-            .with(Rails.root.join('vendor', 'aws', 'iam', 'eks_cluster_read_only_policy.json'))
-            .and_return(session_policy)
+          stub_file_read(Rails.root.join('vendor', 'aws', 'iam', 'eks_cluster_read_only_policy.json'), content: session_policy)
         end
 
         it { is_expected.to eq assumed_role_credentials }

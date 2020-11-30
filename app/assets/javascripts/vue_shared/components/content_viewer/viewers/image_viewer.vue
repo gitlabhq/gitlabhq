@@ -77,7 +77,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div data-testid="image-viewer">
     <div :class="innerCssClasses" class="position-relative">
       <img ref="contentImg" :src="path" @load="onImgLoad" /> <slot name="image-overlay"></slot>
     </div>

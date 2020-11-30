@@ -91,7 +91,7 @@ RSpec.describe Projects::MoveAccessService do
       it 'does not remove remaining memberships' do
         target_project.add_maintainer(maintainer_user)
 
-        subject.execute(project_with_access, options)
+        subject.execute(project_with_access, **options)
 
         expect(project_with_access.project_members.count).not_to eq 0
       end
@@ -99,7 +99,7 @@ RSpec.describe Projects::MoveAccessService do
       it 'does not remove remaining group links' do
         target_project.project_group_links.create!(group: maintainer_group, group_access: Gitlab::Access::MAINTAINER)
 
-        subject.execute(project_with_access, options)
+        subject.execute(project_with_access, **options)
 
         expect(project_with_access.project_group_links.count).not_to eq 0
       end
@@ -107,7 +107,7 @@ RSpec.describe Projects::MoveAccessService do
       it 'does not remove remaining authorizations' do
         target_project.add_developer(developer_user)
 
-        subject.execute(project_with_access, options)
+        subject.execute(project_with_access, **options)
 
         expect(project_with_access.project_authorizations.count).not_to eq 0
       end

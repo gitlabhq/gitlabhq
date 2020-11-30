@@ -6,17 +6,33 @@ module Terraform
 
     storage_options Gitlab.config.terraform_state
 
-    delegate :project_id, to: :model
+    delegate :terraform_state, :project_id, to: :model
 
     # Use Lockbox to encrypt/decrypt the stored file (registers CarrierWave callbacks)
     encrypt(key: :key)
 
     def filename
-      "#{model.uuid}.tfstate"
+      # This check is required to maintain backwards compatibility with
+      # states that were created prior to versioning being supported.
+      # This can be removed in 14.0 when support for these states is dropped.
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/258960
+      if terraform_state.versioning_enabled?
+        "#{model.version}.tfstate"
+      else
+        "#{model.uuid}.tfstate"
+      end
     end
 
     def store_dir
-      project_id.to_s
+      # This check is required to maintain backwards compatibility with
+      # states that were created prior to versioning being supported.
+      # This can be removed in 14.0 when support for these states is dropped.
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/258960
+      if terraform_state.versioning_enabled?
+        Gitlab::HashedPath.new(model.uuid, root_hash: project_id)
+      else
+        project_id.to_s
+      end
     end
 
     def key

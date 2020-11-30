@@ -6,7 +6,9 @@ RSpec.describe 'Admin browse spam logs' do
   let!(:spam_log) { create(:spam_log, description: 'abcde ' * 20) }
 
   before do
-    sign_in(create(:admin))
+    admin = create(:admin)
+    sign_in(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
   end
 
   it 'Browse spam logs' do

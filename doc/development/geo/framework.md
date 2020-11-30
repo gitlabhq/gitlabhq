@@ -393,6 +393,8 @@ can track verification state.
 
      def change
        change_table(:widgets) do |t|
+         t.integer :verification_state, default: 0, limit: 2, null: false
+         t.column :verification_started_at, :datetime_with_timezone
          t.integer :verification_retry_count, limit: 2
          t.column :verification_retry_at, :datetime_with_timezone
          t.column :verified_at, :datetime_with_timezone
@@ -431,13 +433,12 @@ can track verification state.
    end
    ```
 
-1. Add a partial index on `verification_failure` and `verification_checksum` to ensure
-   re-verification can be performed efficiently:
+1. Add an index on `verification_state` to ensure verification can be performed efficiently:
 
    ```ruby
    # frozen_string_literal: true
 
-   class AddVerificationFailureIndexToWidgets < ActiveRecord::Migration[6.0]
+   class AddVerificationStateIndexToWidgets < ActiveRecord::Migration[6.0]
      include Gitlab::Database::MigrationHelpers
 
      DOWNTIME = false
@@ -445,22 +446,28 @@ can track verification state.
      disable_ddl_transaction!
 
      def up
-       add_concurrent_index :widgets, :verification_failure, where: "(verification_failure IS NOT NULL)", name: "widgets_verification_failure_partial"
-       add_concurrent_index :widgets, :verification_checksum, where: "(verification_checksum IS NOT NULL)", name: "widgets_verification_checksum_partial"
+       add_concurrent_index :widgets, :verification_state, name: "index_widgets_on_verification_state"
      end
 
      def down
-       remove_concurrent_index :widgets, :verification_failure
-       remove_concurrent_index :widgets, :verification_checksum
+       remove_concurrent_index :widgets, :verification_state
      end
+   end
+   ```
+
+1. Add the `Gitlab::Geo::VerificationState` concern to the `widget` model if it is not already included in `Gitlab::Geo::ReplicableModel`:
+
+   ```ruby
+   class Widget < ApplicationRecord
+     ...
+     include ::Gitlab::Geo::VerificationState
+     ...
    end
    ```
 
 ##### Option 2: Create a separate `widget_states` table with verification state fields
 
-1. Create a `widget_states` table and add a partial index on `verification_failure` and
-   `verification_checksum` to ensure re-verification can be performed efficiently. Order
-   the columns according to [the guidelines](../ordering_table_columns.md):
+1. Create a `widget_states` table and add an index on `verification_state` to ensure verification can be performed efficiently. Order the columns according to [the guidelines](../ordering_table_columns.md):
 
    ```ruby
    # frozen_string_literal: true
@@ -477,14 +484,15 @@ can track verification state.
          with_lock_retries do
            create_table :widget_states, id: false do |t|
              t.references :widget, primary_key: true, null: false, foreign_key: { on_delete: :cascade }
+             t.integer :verification_state, default: 0, limit: 2, null: false
+             t.column :verification_started_at, :datetime_with_timezone
              t.datetime_with_timezone :verification_retry_at
              t.datetime_with_timezone :verified_at
              t.integer :verification_retry_count, limit: 2
              t.binary :verification_checksum, using: 'verification_checksum::bytea'
              t.text :verification_failure
 
-             t.index :verification_failure, where: "(verification_failure IS NOT NULL)", name: "widgets_verification_failure_partial"
-             t.index :verification_checksum, where: "(verification_checksum IS NOT NULL)", name: "widgets_verification_checksum_partial"
+             t.index :verification_state, name: "index_widget_states_on_verification_state"
            end
          end
        end
@@ -495,6 +503,20 @@ can track verification state.
      def down
        drop_table :widget_states
      end
+   end
+   ```
+
+1. Add the following lines to the `widget_state.rb` model:
+
+   ```ruby
+   class WidgetState < ApplicationRecord
+     ...
+     self.primary_key = :widget_id
+
+     include ::Gitlab::Geo::VerificationState
+
+     belongs_to :widget, inverse_of: :widget_state
+     ...
    end
    ```
 
@@ -547,14 +569,16 @@ Metrics are gathered by `Geo::MetricsUpdateWorker`, persisted in
 1. Add the following to `spec/factories/widgets.rb`:
 
    ```ruby
-   trait(:checksummed) do
+   trait(:verification_succeeded) do
      with_file
      verification_checksum { 'abc' }
+     verification_state { Widget.verification_state_value(:verification_succeeded) }
    end
 
-   trait(:checksum_failure) do
+   trait(:verification_failed) do
      with_file
      verification_failure { 'Could not calculate the checksum' }
+     verification_state { Widget.verification_state_value(:verification_failed) }
    end
    ```
 

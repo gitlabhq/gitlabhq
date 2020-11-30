@@ -33,7 +33,7 @@ Note the following:
   created by GitLab are RBAC-enabled. Take a look at the [RBAC section](add_remove_clusters.md#rbac-cluster-resources) for
   more information.
 - Starting from [GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18341), the
-  cluster's pod address IP range will be set to /16 instead of the regular /14. /16 is a CIDR
+  cluster's pod address IP range is set to `/16` instead of the regular `/14`. `/16` is a CIDR
   notation.
 - GitLab requires basic authentication enabled and a client certificate issued for the cluster to
   set up an [initial service account](add_remove_clusters.md#access-controls). In [GitLab versions
@@ -57,20 +57,20 @@ To create and add a new Kubernetes cluster to your project, group, or instance:
    - **Kubernetes cluster name** - The name you wish to give the cluster.
    - **Environment scope** - The [associated environment](index.md#setting-the-environment-scope) to this cluster.
    - **Google Cloud Platform project** - Choose the project you created in your GCP
-     console that will host the Kubernetes cluster. Learn more about
+     console to host the Kubernetes cluster. Learn more about
      [Google Cloud Platform projects](https://cloud.google.com/resource-manager/docs/creating-managing-projects).
    - **Zone** - Choose the [region zone](https://cloud.google.com/compute/docs/regions-zones/)
-     under which the cluster will be created.
+     under which to create the cluster.
    - **Number of nodes** - Enter the number of nodes you wish the cluster to have.
    - **Machine type** - The [machine type](https://cloud.google.com/compute/docs/machine-types)
-     of the Virtual Machine instance that the cluster will be based on.
+     of the Virtual Machine instance to base the cluster on.
    - **Enable Cloud Run for Anthos** - Check this if you want to use Cloud Run for Anthos for this cluster.
      See the [Cloud Run for Anthos section](#cloud-run-for-anthos) for more information.
    - **GitLab-managed cluster** - Leave this checked if you want GitLab to manage namespaces and service accounts for this cluster.
      See the [Managed clusters section](index.md#gitlab-managed-clusters) for more information.
 1. Finally, click the **Create Kubernetes cluster** button.
 
-After a couple of minutes, your cluster will be ready to go. You can now proceed
+After a couple of minutes, your cluster is ready. You can now proceed
 to install some [pre-defined applications](index.md#installing-applications).
 
 ### Cloud Run for Anthos
@@ -79,7 +79,7 @@ to install some [pre-defined applications](index.md#installing-applications).
 
 You can choose to use Cloud Run for Anthos in place of installing Knative and Istio
 separately after the cluster has been created. This means that Cloud Run
-(Knative), Istio, and HTTP Load Balancing will be enabled on the cluster at
+(Knative), Istio, and HTTP Load Balancing are enabled on the cluster at
 create time and cannot be [installed or uninstalled](../../clusters/applications.md) separately.
 
 ## Existing GKE cluster

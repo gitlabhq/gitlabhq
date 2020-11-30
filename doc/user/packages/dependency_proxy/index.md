@@ -32,6 +32,11 @@ The following images and packages are supported.
 For a list of planned additions, view the
 [direction page](https://about.gitlab.com/direction/package/dependency_proxy/#top-vision-items).
 
+## Enable the Dependency Proxy
+
+The Dependency Proxy is disabled by default.
+[Learn how an administrator can enable it](../../../administration/packages/dependency_proxy.md).
+
 ## View the Dependency Proxy
 
 To view the Dependency Proxy:

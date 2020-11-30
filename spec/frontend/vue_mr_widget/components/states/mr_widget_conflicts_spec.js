@@ -194,7 +194,7 @@ describe('MRWidgetConflicts', () => {
     });
 
     it('sets resolve button as disabled', () => {
-      expect(vm.find('.js-resolve-conflicts-button').attributes('disabled')).toBe('disabled');
+      expect(vm.find('.js-resolve-conflicts-button').attributes('disabled')).toBe('true');
     });
 
     it('renders popover', () => {

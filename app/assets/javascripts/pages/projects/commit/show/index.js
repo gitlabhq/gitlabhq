@@ -15,35 +15,33 @@ import { __ } from '~/locale';
 import loadAwardsHandler from '~/awards_handler';
 import { initCommitBoxInfo } from '~/projects/commit_box/info';
 
-document.addEventListener('DOMContentLoaded', () => {
-  const hasPerfBar = document.querySelector('.with-performance-bar');
-  const performanceHeight = hasPerfBar ? 35 : 0;
-  initChangesDropdown(document.querySelector('.navbar-gitlab').offsetHeight + performanceHeight);
-  new ZenMode();
-  new ShortcutsNavigation();
+const hasPerfBar = document.querySelector('.with-performance-bar');
+const performanceHeight = hasPerfBar ? 35 : 0;
+initChangesDropdown(document.querySelector('.navbar-gitlab').offsetHeight + performanceHeight);
+new ZenMode();
+new ShortcutsNavigation();
 
-  initCommitBoxInfo();
+initCommitBoxInfo();
 
-  initNotes();
+initNotes();
 
-  const filesContainer = $('.js-diffs-batch');
+const filesContainer = $('.js-diffs-batch');
 
-  if (filesContainer.length) {
-    const batchPath = filesContainer.data('diffFilesPath');
+if (filesContainer.length) {
+  const batchPath = filesContainer.data('diffFilesPath');
 
-    axios
-      .get(batchPath)
-      .then(({ data }) => {
-        filesContainer.html($(data.html));
-        syntaxHighlight(filesContainer);
-        handleLocationHash();
-        new Diff();
-      })
-      .catch(() => {
-        flash({ message: __('An error occurred while retrieving diff files') });
-      });
-  } else {
-    new Diff();
-  }
-  loadAwardsHandler();
-});
+  axios
+    .get(batchPath)
+    .then(({ data }) => {
+      filesContainer.html($(data.html));
+      syntaxHighlight(filesContainer);
+      handleLocationHash();
+      new Diff();
+    })
+    .catch(() => {
+      flash({ message: __('An error occurred while retrieving diff files') });
+    });
+} else {
+  new Diff();
+}
+loadAwardsHandler();

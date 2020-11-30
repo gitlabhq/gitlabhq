@@ -158,8 +158,8 @@ test its execution using `CREATE INDEX CONCURRENTLY` in the `#database-lab` Slac
     - Maintainer: After the merge request is merged, notify Release Managers about it on `#f_upcoming_release` Slack channel.
   - Check consistency with `db/structure.sql` and that migrations are [reversible](migration_style_guide.md#reversibility)
   - Check that the relevant version files under `db/schema_migrations` were added or removed.
-  - Check queries timing (If any): Queries executed in a migration
-    need to fit comfortably within `15s` - preferably much less than that - on GitLab.com.
+  - Check queries timing (If any): In a single transaction, cumulative query time executed in a migration
+    needs to fit comfortably within `15s` - preferably much less than that - on GitLab.com.
   - For column removals, make sure the column has been [ignored in a previous release](what_requires_downtime.md#dropping-columns)
 - Check [background migrations](background_migrations.md):
   - Establish a time estimate for execution on GitLab.com. For historical purposes,
@@ -190,7 +190,7 @@ test its execution using `CREATE INDEX CONCURRENTLY` in the `#database-lab` Slac
   - For given queries, review parameters regarding data distribution
   - [Check query plans](understanding_explain_plans.md) and suggest improvements
     to queries (changing the query, schema or adding indexes and similar)
-  - General guideline is for queries to come in below 100ms execution time
+  - General guideline is for queries to come in below [100ms execution time](query_performance.md#timing-guidelines-for-queries)
   - Avoid N+1 problems and minimalize the [query count](merge_request_performance_guidelines.md#query-counts).
 
 ### Timing guidelines for migrations
@@ -206,4 +206,4 @@ Keep in mind that all runtimes should be measured against GitLab.com.
 |----|----|---|
 | Regular migrations on `db/migrate` | `3 minutes` | A valid exception are index creation as this can take a long time. |
 | Post migrations on `db/post_migrate` | `10 minutes` | |
-| Background migrations | --- | Since these are suitable for larger tables, it's not possible to set a precise timing guideline, however, any single query must stay below `1 second` execution time with cold caches. |
+| Background migrations | --- | Since these are suitable for larger tables, it's not possible to set a precise timing guideline, however, any single query must stay below [`1 second` execution time](query_performance.md#timing-guidelines-for-queries) with cold caches. |

@@ -220,6 +220,7 @@ export default class MergeRequestStore {
     this.sourceProjectFullPath = data.source_project_full_path;
     this.mergeRequestPipelinesHelpPath = data.merge_request_pipelines_docs_path;
     this.conflictsDocsPath = data.conflicts_docs_path;
+    this.reviewingDocsPath = data.reviewing_and_managing_merge_requests_docs_path;
     this.ciEnvironmentsStatusPath = data.ci_environments_status_path;
     this.securityApprovalsHelpPagePath = data.security_approvals_help_page_path;
     this.eligibleApproversDocsPath = data.eligible_approvers_docs_path;
@@ -229,6 +230,7 @@ export default class MergeRequestStore {
     this.pipelinesEmptySvgPath = data.pipelines_empty_svg_path;
     this.humanAccess = data.human_access;
     this.newPipelinePath = data.new_project_pipeline_path;
+    this.sourceProjectDefaultUrl = data.source_project_default_url;
     this.userCalloutsPath = data.user_callouts_path;
     this.suggestPipelineFeatureId = data.suggest_pipeline_feature_id;
     this.isDismissedSuggestPipeline = data.is_dismissed_suggest_pipeline;
@@ -240,6 +242,10 @@ export default class MergeRequestStore {
     this.baseBlobPath = blobPath.base_path || '';
     this.codequalityHelpPath = data.codequality_help_path;
     this.codeclimate = data.codeclimate;
+
+    // Security reports
+    this.sastComparisonPath = data.sast_comparison_path;
+    this.secretScanningComparisonPath = data.secret_scanning_comparison_path;
   }
 
   get isNothingToMergeState() {

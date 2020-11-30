@@ -9,7 +9,6 @@ RSpec.describe Pages::LookupPath do
 
   before do
     stub_pages_setting(access_control: true, external_https: ["1.1.1.1:443"])
-    stub_artifacts_object_storage
     stub_pages_object_storage(::Pages::DeploymentUploader)
   end
 
@@ -112,64 +111,6 @@ RSpec.describe Pages::LookupPath do
       context 'when pages_serve_from_deployments feature flag is disabled' do
         before do
           stub_feature_flags(pages_serve_from_deployments: false)
-        end
-
-        include_examples 'uses disk storage'
-      end
-    end
-
-    context 'when artifact_id from build job is present in pages metadata' do
-      let(:artifacts_archive) { create(:ci_job_artifact, :zip, :remote_store, project: project) }
-
-      before do
-        project.mark_pages_as_deployed(artifacts_archive: artifacts_archive)
-      end
-
-      it 'uses artifacts object storage' do
-        Timecop.freeze do
-          expect(source).to(
-            eq({
-                 type: 'zip',
-                 path: artifacts_archive.file.url(expire_at: 1.day.from_now),
-                 global_id: "gid://gitlab/Ci::JobArtifact/#{artifacts_archive.id}",
-                 sha256: artifacts_archive.file_sha256,
-                 file_size: artifacts_archive.size,
-                 file_count: nil
-               })
-          )
-        end
-      end
-
-      context 'when artifact is not uploaded to object storage' do
-        let(:artifacts_archive) { create(:ci_job_artifact, :zip) }
-
-        it 'uses file protocol', :aggregate_failures do
-          Timecop.freeze do
-            expect(source).to(
-              eq({
-                   type: 'zip',
-                   path: 'file://' + artifacts_archive.file.path,
-                   global_id: "gid://gitlab/Ci::JobArtifact/#{artifacts_archive.id}",
-                   sha256: artifacts_archive.file_sha256,
-                   file_size: artifacts_archive.size,
-                   file_count: nil
-                 })
-            )
-          end
-        end
-
-        context 'when pages_serve_with_zip_file_protocol feature flag is disabled' do
-          before do
-            stub_feature_flags(pages_serve_with_zip_file_protocol: false)
-          end
-
-          include_examples 'uses disk storage'
-        end
-      end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(pages_serve_from_artifacts_archive: false)
         end
 
         include_examples 'uses disk storage'

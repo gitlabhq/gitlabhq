@@ -2085,3 +2085,73 @@ Example response:
 
 To track which state was set, who did it, and when it happened, check out
 [Resource state events API](resource_state_events.md#issues).
+
+## Upload metric image
+
+Available only for Incident issues.
+
+```plaintext
+POST /projects/:id/issues/:issue_iid/metric_images
+```
+
+| Attribute   | Type    | Required | Description                          |
+|-------------|---------|----------|--------------------------------------|
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `issue_iid` | integer | yes      | The internal ID of a project's issue |
+| `file` | file | yes      | The image file to be uploaded |
+| `url` | string | no      | The URL to view more metric info |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" --form 'file=@/path/to/file.png' \
+--form 'url=http://example.com' "https://gitlab.example.com/api/v4/projects/5/issues/93/metric_images"
+```
+
+Example response:
+
+```json
+{
+    "id": 23,
+    "created_at": "2020-11-13T00:06:18.084Z",
+    "filename": "file.png",
+    "file_path": "/uploads/-/system/issuable_metric_image/file/23/file.png",
+    "url": "http://example.com"
+}
+```
+
+## List metric images
+
+Available only for Incident issues.
+
+```plaintext
+GET /projects/:id/issues/:issue_iid/metric_images
+```
+
+| Attribute   | Type    | Required | Description                          |
+|-------------|---------|----------|--------------------------------------|
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `issue_iid` | integer | yes      | The internal ID of a project's issue |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/93/metric_images"
+```
+
+Example response:
+
+```json
+[
+    {
+        "id": 17,
+        "created_at": "2020-11-12T20:07:58.156Z",
+        "filename": "sample_2054",
+        "file_path": "/uploads/-/system/issuable_metric_image/file/17/sample_2054.png",
+        "url": "example.com/metric"
+    },
+    {
+        "id": 18,
+        "created_at": "2020-11-12T20:14:26.441Z",
+        "filename": "sample_2054",
+        "file_path": "/uploads/-/system/issuable_metric_image/file/18/sample_2054.png",
+        "url": "example.com/metric"
+    }
+]
+```

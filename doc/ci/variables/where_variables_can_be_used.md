@@ -57,8 +57,8 @@ There are three expansion mechanisms:
 ### GitLab internal variable expansion mechanism
 
 The expanded part needs to be in a form of `$variable`, or `${variable}` or `%variable%`.
-Each form is handled in the same way, no matter which OS/shell will finally handle the job,
-since the expansion is done in GitLab before any runner will get the job.
+Each form is handled in the same way, no matter which OS/shell handles the job,
+because the expansion is done in GitLab before any runner gets the job.
 
 ### GitLab Runner internal variable expansion mechanism
 
@@ -66,7 +66,7 @@ since the expansion is done in GitLab before any runner will get the job.
   variables from triggers, pipeline schedules, and manual pipelines.
 - Not supported: variables defined inside of scripts (e.g., `export MY_VARIABLE="test"`).
 
-The runner uses Go's `os.Expand()` method for variable expansion. It means that it will handle
+The runner uses Go's `os.Expand()` method for variable expansion. It means that it handles
 only variables defined as `$variable` and `${variable}`. What's also important, is that
 the expansion is done only once, so nested variables may or may not work, depending on the
 ordering of variables definitions.
@@ -77,7 +77,7 @@ This is an expansion that takes place during the `script` execution.
 How it works depends on the used shell (`bash`, `sh`, `cmd`, PowerShell). For example, if the job's
 `script` contains a line `echo $MY_VARIABLE-${MY_VARIABLE_2}`, it should be properly handled
 by bash/sh (leaving empty strings or some values depending whether the variables were
-defined or not), but will not work with Windows' `cmd` or PowerShell, since these shells
+defined or not), but don't work with Windows' `cmd` or PowerShell, since these shells
 are using a different variables syntax.
 
 Supported:
@@ -87,10 +87,10 @@ Supported:
   `.gitlab-ci.yml` variables, `config.toml` variables, and variables from triggers and pipeline schedules).
 - The `script` may also use all variables defined in the lines before. So, for example, if you define
   a variable `export MY_VARIABLE="test"`:
-  - In `before_script`, it will work in the following lines of `before_script` and
+  - In `before_script`, it works in the following lines of `before_script` and
     all lines of the related `script`.
-  - In `script`, it will work in the following lines of `script`.
-  - In `after_script`, it will work in following lines of `after_script`.
+  - In `script`, it works in the following lines of `script`.
+  - In `after_script`, it works in following lines of `after_script`.
 
 In the case of `after_script` scripts, they can:
 
@@ -133,7 +133,7 @@ due to security reasons.
 Variables defined with an environment scope are supported. Given that
 there is a variable `$STAGING_SECRET` defined in a scope of
 `review/staging/*`, the following job that is using dynamic environments
-is going to be created, based on the matching variable expression:
+is created, based on the matching variable expression:
 
 ```yaml
 my-job:

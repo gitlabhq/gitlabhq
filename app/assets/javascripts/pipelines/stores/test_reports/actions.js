@@ -47,6 +47,7 @@ export const fetchTestSuite = ({ state, commit, dispatch }, index) => {
     });
 };
 
+export const setPage = ({ commit }, page) => commit(types.SET_PAGE, page);
 export const setSelectedSuiteIndex = ({ commit }, data) =>
   commit(types.SET_SELECTED_SUITE_INDEX, data);
 export const removeSelectedSuiteIndex = ({ commit }) =>

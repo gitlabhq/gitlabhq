@@ -11,7 +11,7 @@ in lieu of the standard Spec helper. Instead of `require 'spec_helper'`, use
 `require 'rake_helper'`. The helper includes `spec_helper` for you, and configures
 a few other things to make testing Rake tasks easier.
 
-At a minimum, requiring the Rake helper will redirect `stdout`, include the
+At a minimum, requiring the Rake helper redirects `stdout`, include the
 runtime task helpers, and include the `RakeHelpers` Spec support module.
 
 The `RakeHelpers` module exposes a `run_rake_task(<task>)` method to make

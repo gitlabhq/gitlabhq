@@ -57,7 +57,10 @@ module UserCalloutsHelper
   end
 
   def show_registration_enabled_user_callout?
-    current_user&.admin? && signup_enabled? && !user_dismissed?(REGISTRATION_ENABLED_CALLOUT)
+    !Gitlab.com? &&
+    current_user&.admin? &&
+    signup_enabled? &&
+    !user_dismissed?(REGISTRATION_ENABLED_CALLOUT)
   end
 
   private

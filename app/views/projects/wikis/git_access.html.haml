@@ -11,7 +11,7 @@
       %strong= @wiki.full_path
 
   .pt-3.pt-lg-0.w-100
-    = render "shared/clone_panel", project: @wiki
+    = render "shared/clone_panel", container: @wiki
 
 .wiki-git-access
   %h3= s_("WikiClone|Install Gollum")

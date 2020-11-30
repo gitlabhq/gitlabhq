@@ -4,7 +4,9 @@ require 'spec_helper'
 
 RSpec.describe 'admin manage applications' do
   before do
-    sign_in(create(:admin))
+    admin = create(:admin)
+    sign_in(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
   end
 
   it 'creates new oauth application' do

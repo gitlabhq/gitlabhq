@@ -21,6 +21,7 @@ RSpec.describe GitlabSchema.types['User'] do
       todos
       state
       status
+      location
       authoredMergeRequests
       assignedMergeRequests
       groupMemberships

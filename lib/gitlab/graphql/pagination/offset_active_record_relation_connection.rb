@@ -7,6 +7,8 @@ module Gitlab
   module Graphql
     module Pagination
       class OffsetActiveRecordRelationConnection < GraphQL::Pagination::ActiveRecordRelationConnection
+        prepend ::Gitlab::Graphql::ConnectionRedaction
+        include ::Gitlab::Graphql::ConnectionCollectionMethods
       end
     end
   end

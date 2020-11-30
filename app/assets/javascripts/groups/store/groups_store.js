@@ -1,11 +1,13 @@
 import { normalizeHeaders, parseIntPagination } from '../../lib/utils/common_utils';
+import { getGroupItemMicrodata } from './utils';
 
 export default class GroupsStore {
-  constructor(hideProjects) {
+  constructor({ hideProjects = false, showSchemaMarkup = false } = {}) {
     this.state = {};
     this.state.groups = [];
     this.state.pageInfo = {};
     this.hideProjects = hideProjects;
+    this.showSchemaMarkup = showSchemaMarkup;
   }
 
   setGroups(rawGroups) {
@@ -94,6 +96,7 @@ export default class GroupsStore {
       starCount: rawGroupItem.star_count,
       updatedAt: rawGroupItem.updated_at,
       pendingRemoval: rawGroupItem.marked_for_deletion,
+      microdata: this.showSchemaMarkup ? getGroupItemMicrodata(rawGroupItem) : {},
     };
   }
 

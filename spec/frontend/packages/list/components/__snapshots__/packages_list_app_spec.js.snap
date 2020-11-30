@@ -202,6 +202,67 @@ exports[`packages_list_app renders 1`] = `
       </b-tab-stub>
       <b-tab-stub
         tag="div"
+        title="Generic"
+        titlelinkclass="gl-tab-nav-item"
+      >
+        <template>
+          <div>
+            <section
+              class="row empty-state text-center"
+            >
+              <div
+                class="col-12"
+              >
+                <div
+                  class="svg-250 svg-content"
+                >
+                  <img
+                    alt="There are no Generic packages yet"
+                    class="gl-max-w-full"
+                    src="helpSvg"
+                  />
+                </div>
+              </div>
+               
+              <div
+                class="col-12"
+              >
+                <div
+                  class="text-content gl-mx-auto gl-my-0 gl-p-5"
+                >
+                  <h1
+                    class="h4"
+                  >
+                    There are no Generic packages yet
+                  </h1>
+                   
+                  <p>
+                    Learn how to 
+                    <b-link-stub
+                      class="gl-link"
+                      event="click"
+                      href="helpUrl"
+                      routertag="a"
+                      target="_blank"
+                    >
+                      publish and share your packages
+                    </b-link-stub>
+                     with GitLab.
+                  </p>
+                   
+                  <div>
+                    <!---->
+                     
+                    <!---->
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </template>
+      </b-tab-stub>
+      <b-tab-stub
+        tag="div"
         title="Maven"
         titlelinkclass="gl-tab-nav-item"
       >

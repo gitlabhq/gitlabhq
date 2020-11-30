@@ -35,6 +35,7 @@ Migration/UpdateLargeTable:
     - :taggings
     - :todos
     - :users
+    - :user_preferences
     - :web_hook_logs
   DeniedMethods:
     - :change_column_type_concurrently

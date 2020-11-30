@@ -49,7 +49,7 @@ RSpec.describe Projects::MoveNotificationSettingsService do
       let(:options) { { remove_remaining_elements: false } }
 
       it 'does not remove remaining notification settings' do
-        subject.execute(project_with_notifications, options)
+        subject.execute(project_with_notifications, **options)
 
         expect(project_with_notifications.notification_settings.count).not_to eq 0
       end

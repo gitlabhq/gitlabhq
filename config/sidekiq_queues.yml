@@ -32,6 +32,8 @@
   - 1
 - - analytics_instance_statistics_counter_job
   - 1
+- - approve_blocked_users
+  - 1
 - - authorized_keys
   - 2
 - - authorized_project_update
@@ -57,8 +59,6 @@
 - - container_repository
   - 1
 - - create_commit_signature
-  - 2
-- - create_evidence
   - 2
 - - create_github_webhook
   - 2
@@ -93,6 +93,8 @@
 - - disallow_two_factor_for_group
   - 1
 - - disallow_two_factor_for_subgroups
+  - 1
+- - elastic_association_indexer
   - 1
 - - elastic_commit_indexer
   - 1
@@ -250,6 +252,8 @@
   - 1
 - - project_service
   - 1
+- - project_template_export
+  - 1
 - - project_update_repository_storage
   - 1
 - - prometheus_create_default_alerts
@@ -289,6 +293,8 @@
 - - repository_update_mirror
   - 1
 - - repository_update_remote_mirror
+  - 1
+- - requirements_management_import_requirements_csv
   - 1
 - - requirements_management_process_requirements_reports
   - 1

@@ -15,8 +15,8 @@
           = image_tag 'novice.svg', width: '78', height: '78', alt: ''
         %div
           %p.gl-font-lg.gl-font-weight-bold.gl-mb-2= _('Novice')
-          %p= _('I’m not very familiar with the basics of project management and DevOps.')
-          = link_to _('Show me everything'), users_sign_up_experience_level_path(experience_level: :novice, namespace_path: params[:namespace_path]), method: :patch, class: 'stretched-link'
+          %p= _('I’m not familiar with the basics of DevOps.')
+          = link_to _('Show me the basics'), users_sign_up_experience_level_path(experience_level: :novice, namespace_path: params[:namespace_path]), method: :patch, class: 'stretched-link'
 
     .card
       .card-body.gl-display-flex.gl-py-8.gl-pr-5.gl-pl-7
@@ -24,5 +24,5 @@
           = image_tag 'experienced.svg', width: '78', height: '78', alt: ''
         %div
           %p.gl-font-lg.gl-font-weight-bold.gl-mb-2= _('Experienced')
-          %p= _('I’m familiar with the basics of project management and DevOps.')
-          = link_to _('Show me more advanced stuff'), users_sign_up_experience_level_path(experience_level: :experienced, namespace_path: params[:namespace_path]), method: :patch, class: 'stretched-link'
+          %p= _('I’m familiar with the basics of DevOps.')
+          = link_to _('Show me advanced features'), users_sign_up_experience_level_path(experience_level: :experienced, namespace_path: params[:namespace_path]), method: :patch, class: 'stretched-link'

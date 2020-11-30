@@ -136,8 +136,6 @@ class Feature
     end
 
     def register_definitions
-      return unless check_feature_flags_definition?
-
       Feature::Definition.reload!
     end
 

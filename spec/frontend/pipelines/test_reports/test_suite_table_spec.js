@@ -1,7 +1,7 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { getJSONFixture } from 'helpers/fixtures';
-import { GlButton, GlFriendlyWrap } from '@gitlab/ui';
+import { GlButton, GlFriendlyWrap, GlPagination } from '@gitlab/ui';
 import SuiteTable from '~/pipelines/components/test_reports/test_suite_table.vue';
 import * as getters from '~/pipelines/stores/test_reports/getters';
 import { TestStatus } from '~/pipelines/constants';
@@ -26,13 +26,17 @@ describe('Test reports suite table', () => {
   const findCaseRowAtIndex = index => wrapper.findAll('.js-case-row').at(index);
   const findIconForRow = (row, status) => row.find(`.ci-status-icon-${status}`);
 
-  const createComponent = (suite = testSuite) => {
+  const createComponent = (suite = testSuite, perPage = 20) => {
     store = new Vuex.Store({
       state: {
         testReports: {
           test_suites: [suite],
         },
         selectedSuiteIndex: 0,
+        pageInfo: {
+          page: 1,
+          perPage,
+        },
       },
       getters,
     });
@@ -84,6 +88,22 @@ describe('Test reports suite table', () => {
       expect(row.text()).toContain(file);
       expect(button.exists()).toBe(true);
       expect(button.attributes('data-clipboard-text')).toBe(file);
+    });
+  });
+
+  describe('when a test suite has more test cases than the pagination size', () => {
+    const perPage = 2;
+
+    beforeEach(() => {
+      createComponent(testSuite, perPage);
+    });
+
+    it('renders one page of test cases', () => {
+      expect(allCaseRows().length).toBe(perPage);
+    });
+
+    it('renders a pagination component', () => {
+      expect(wrapper.find(GlPagination).exists()).toBe(true);
     });
   });
 });

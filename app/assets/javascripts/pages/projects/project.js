@@ -9,47 +9,11 @@ import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as flash } from '~/flash';
 import projectSelect from '../../project_select';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
+import initClonePanel from '~/clone_panel';
 
 export default class Project {
   constructor() {
-    const $cloneOptions = $('ul.clone-options-dropdown');
-    if ($cloneOptions.length) {
-      const $projectCloneField = $('#project_clone');
-      const $cloneBtnLabel = $('.js-git-clone-holder .js-clone-dropdown-label');
-      const mobileCloneField = document.querySelector(
-        '.js-mobile-git-clone .js-clone-dropdown-label',
-      );
-
-      const selectedCloneOption = $cloneBtnLabel.text().trim();
-      if (selectedCloneOption.length > 0) {
-        $(`a:contains('${selectedCloneOption}')`, $cloneOptions).addClass('is-active');
-      }
-
-      $('a', $cloneOptions).on('click', e => {
-        e.preventDefault();
-        const $this = $(e.currentTarget);
-        const url = $this.attr('href');
-        const cloneType = $this.data('cloneType');
-
-        $('.is-active', $cloneOptions).removeClass('is-active');
-        $(`a[data-clone-type="${cloneType}"]`).each(function() {
-          const $el = $(this);
-          const activeText = $el.find('.dropdown-menu-inner-title').text();
-          const $container = $el.closest('.project-clone-holder');
-          const $label = $container.find('.js-clone-dropdown-label');
-
-          $el.toggleClass('is-active');
-          $label.text(activeText);
-        });
-
-        if (mobileCloneField) {
-          mobileCloneField.dataset.clipboardText = url;
-        } else {
-          $projectCloneField.val(url);
-        }
-        $('.js-git-empty .js-clone').text(url);
-      });
-    }
+    initClonePanel();
 
     // Ref switcher
     if (document.querySelector('.js-project-refs-dropdown')) {

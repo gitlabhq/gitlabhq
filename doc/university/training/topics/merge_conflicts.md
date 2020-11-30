@@ -42,7 +42,7 @@ git commit -am "add line6 and line7"
 git push origin master
 ```
 
-Create a merge request on the GitLab web UI. You'll see a conflict warning.
+Create a merge request on the GitLab web UI, and a conflict warning displays.
 
 ```shell
 git checkout conflicts_branch

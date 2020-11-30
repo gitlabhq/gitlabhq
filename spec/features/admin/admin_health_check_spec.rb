@@ -9,6 +9,7 @@ RSpec.describe "Admin Health Check", :feature do
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
     sign_in(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
   end
 
   describe '#show' do

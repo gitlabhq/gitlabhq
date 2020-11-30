@@ -94,7 +94,7 @@ The list of projects can be sorted by:
 
 A user can choose to hide or show archived projects in the list.
 
-In the **Filter by name** field, type the project name you want to find, and GitLab will filter
+In the **Filter by name** field, type the project name you want to find, and GitLab filters
 them as you type.
 
 Select from the **Namespace** dropdown to filter only projects in that namespace.

@@ -1,0 +1,5 @@
+---
+title: Fix project integration form validation when integration is inactive
+merge_request: 47201
+author:
+type: fixed

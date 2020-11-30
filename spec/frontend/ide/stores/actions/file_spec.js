@@ -510,8 +510,6 @@ describe('IDE store file actions', () => {
 
   describe('changeFileContent', () => {
     let tmpFile;
-    const callAction = (content = 'content\n') =>
-      store.dispatch('changeFileContent', { path: tmpFile.path, content });
 
     beforeEach(() => {
       tmpFile = file('tmpFile');
@@ -521,9 +519,21 @@ describe('IDE store file actions', () => {
     });
 
     it('updates file content', () => {
-      return callAction().then(() => {
+      const content = 'content\n';
+
+      return store.dispatch('changeFileContent', { path: tmpFile.path, content }).then(() => {
         expect(tmpFile.content).toBe('content\n');
       });
+    });
+
+    it('does nothing if path does not exist', () => {
+      const content = 'content\n';
+
+      return store
+        .dispatch('changeFileContent', { path: 'not/a/real_file.txt', content })
+        .then(() => {
+          expect(tmpFile.content).toBe('\n');
+        });
     });
 
     it('adds file into stagedFiles array', () => {

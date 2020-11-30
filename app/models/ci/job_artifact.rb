@@ -7,15 +7,13 @@ module Ci
     include UpdateProjectStatistics
     include UsageStatistics
     include Sortable
-    include IgnorableColumns
     include Artifactable
     include FileStoreMounter
     extend Gitlab::Ci::Model
 
-    ignore_columns :locked, remove_after: '2020-07-22', remove_with: '13.4'
-
     TEST_REPORT_FILE_TYPES = %w[junit].freeze
     COVERAGE_REPORT_FILE_TYPES = %w[cobertura].freeze
+    CODEQUALITY_REPORT_FILE_TYPES = %w[codequality].freeze
     ACCESSIBILITY_REPORT_FILE_TYPES = %w[accessibility].freeze
     NON_ERASABLE_FILE_TYPES = %w[trace].freeze
     TERRAFORM_REPORT_FILE_TYPES = %w[terraform].freeze
@@ -155,6 +153,10 @@ module Ci
 
     scope :coverage_reports, -> do
       with_file_types(COVERAGE_REPORT_FILE_TYPES)
+    end
+
+    scope :codequality_reports, -> do
+      with_file_types(CODEQUALITY_REPORT_FILE_TYPES)
     end
 
     scope :terraform_reports, -> do

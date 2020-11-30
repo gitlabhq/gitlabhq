@@ -27,3 +27,5 @@ class IssuablePolicy < BasePolicy
     prevent :award_emoji
   end
 end
+
+IssuablePolicy.prepend_if_ee('EE::IssuablePolicy')

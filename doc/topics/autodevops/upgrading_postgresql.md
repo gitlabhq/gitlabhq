@@ -79,7 +79,7 @@ being modified after the database dump is created.
     deployment.extensions/production scaled
     ```
 
-1. You also will need to set replicas to zero for workers if you have any.
+1. You must also set replicas to zero for workers if you have any.
 
 ## Backup
 
@@ -112,7 +112,7 @@ being modified after the database dump is created.
    - `USERNAME` is the username you have configured for PostgreSQL. The default is `user`.
    - `DATABASE_NAME` is usually the environment name.
 
-   - You will be asked for the database password, the default is `testing-password`.
+   - When prompted for the database password, the default is `testing-password`.
 
     ```shell
     ## Format is:
@@ -169,7 +169,7 @@ pvc-9085e3d3-5239-11ea-9c8d-42010a8e0096   8Gi        RWO            Retain     
 ## Install new PostgreSQL
 
 CAUTION: **Caution:**
-Using the newer version of PostgreSQL will delete
+Using the newer version of PostgreSQL deletes
 the older 0.7.1 PostgreSQL. To prevent the underlying data from being
 deleted, you can choose to retain the [persistent volume](#retain-persistent-volumes).
 
@@ -196,9 +196,9 @@ higher*. This is the
    `XDB_INITIALIZE` or the `XDB_MIGRATE` to effectively disable them.
 1. Run a new CI pipeline for the branch. In this case, we run a new CI
    pipeline for `master`.
-1. Once the pipeline is successful, your application will now be upgraded
-   with the new PostgreSQL installed. There will also be zero replicas
-   which means no traffic will be served for your application (to prevent
+1. After the pipeline is successful, your application is upgraded
+   with the new PostgreSQL installed. Zero replicas exist at this time, so
+   no traffic is served for your application (to prevent
    new data from coming in).
 
 ## Restore
@@ -226,7 +226,7 @@ higher*. This is the
 
 1. Once connected to the pod, run the following command to restore the database.
 
-   - You will be asked for the database password, the default is `testing-password`.
+   - When asked for the database password, the default is `testing-password`.
    - `USERNAME` is the username you have configured for PostgreSQL. The default is `user`.
    - `DATABASE_NAME` is usually the environment name.
 

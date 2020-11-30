@@ -230,9 +230,6 @@ export default {
       }
     },
     diffViewType() {
-      if (!this.glFeatures.unifiedDiffLines && (this.needsReload() || this.needsFirstLoad())) {
-        this.refetchDiffData();
-      }
       this.adjustView();
     },
     shouldShow() {

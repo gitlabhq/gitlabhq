@@ -26,9 +26,9 @@ To enable the PgBouncer exporter:
 1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
    for the changes to take effect.
 
-Prometheus will now begin collecting performance data from the PgBouncer exporter
+Prometheus begins collecting performance data from the PgBouncer exporter
 exposed at `localhost:9188`.
 
-The PgBouncer exporter will also be enabled by default if the
+The PgBouncer exporter is enabled by default if the
 [`pgbouncer_role`](https://docs.gitlab.com/omnibus/roles/#postgresql-roles)
 role is enabled.

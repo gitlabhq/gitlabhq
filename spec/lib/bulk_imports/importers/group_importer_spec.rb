@@ -18,8 +18,8 @@ RSpec.describe BulkImports::Importers::GroupImporter do
   subject { described_class.new(bulk_import_entity) }
 
   before do
+    allow(Gitlab).to receive(:ee?).and_return(false)
     allow(BulkImports::Pipeline::Context).to receive(:new).and_return(context)
-    stub_http_requests
   end
 
   describe '#execute' do
@@ -37,20 +37,6 @@ RSpec.describe BulkImports::Importers::GroupImporter do
   def expect_to_run_pipeline(klass, context:)
     expect_next_instance_of(klass) do |pipeline|
       expect(pipeline).to receive(:run).with(context)
-    end
-  end
-
-  def stub_http_requests
-    double_response = double(
-      code: 200,
-      success?: true,
-      parsed_response: {},
-      headers: {}
-    )
-
-    allow_next_instance_of(BulkImports::Clients::Http) do |client|
-      allow(client).to receive(:get).and_return(double_response)
-      allow(client).to receive(:post).and_return(double_response)
     end
   end
 end

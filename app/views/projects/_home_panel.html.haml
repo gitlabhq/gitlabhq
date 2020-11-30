@@ -19,7 +19,7 @@
             = render_if_exists 'compliance_management/compliance_framework/compliance_framework_badge', project: @project
         .home-panel-metadata.d-flex.flex-wrap.text-secondary.gl-font-base.gl-font-weight-normal.gl-line-height-normal
           - if can?(current_user, :read_project, @project)
-            %span.text-secondary{ itemprop: 'identifier' }
+            %span.text-secondary{ itemprop: 'identifier', data: { qa_selector: 'project_id_content' } }
               = s_('ProjectPage|Project ID: %{project_id}') % { project_id: @project.id }
           - if current_user
             %span.access-request-links.gl-ml-3
@@ -63,7 +63,7 @@
   .home-panel-home-desc.mt-1
     - if @project.description.present?
       .home-panel-description.text-break
-        .home-panel-description-markdown.read-more-container{ itemprop: 'abstract' }
+        .home-panel-description-markdown.read-more-container{ itemprop: 'description' }
           = markdown_field(@project, :description)
         %button.btn.btn-blank.btn-link.js-read-more-trigger.d-lg-none{ type: "button" }
           = _("Read more")

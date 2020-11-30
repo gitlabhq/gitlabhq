@@ -11,7 +11,7 @@ module Mutations
                required: false,
                description: copy_field_description(Types::IssueType, :title)
 
-      argument :milestone_id, GraphQL::ID_TYPE,
+      argument :milestone_id, GraphQL::ID_TYPE, # rubocop: disable Graphql/IDType
                required: false,
                description: 'The ID of the milestone to assign to the issue. On update milestone will be removed if set to null'
 

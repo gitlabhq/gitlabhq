@@ -17,7 +17,7 @@ To follow conventions of naming across GitLab, and to further move away from the
 release.
 
 Starting with GitLab 9.0, we have deprecated the `$CI_BUILD_*` variables. **You are
-strongly advised to use the new variables as we will remove the old ones in
+strongly advised to use the new variables as we might remove the old ones in
 future GitLab releases.**
 
 | 8.x name              | 9.0+ name               |

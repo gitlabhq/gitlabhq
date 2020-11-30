@@ -1,11 +1,13 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import { cloneDeep } from 'lodash';
 import {
   GlDropdownItem,
   GlDropdownDivider,
   GlAvatarLabeled,
   GlAvatarLink,
   GlSearchBoxByType,
+  GlLoadingIcon,
 } from '@gitlab/ui';
 import { __, n__ } from '~/locale';
 import IssuableAssignees from '~/sidebar/components/assignees/issuable_assignees.vue';
@@ -32,12 +34,13 @@ export default {
     GlAvatarLabeled,
     GlAvatarLink,
     GlSearchBoxByType,
+    GlLoadingIcon,
   },
   data() {
     return {
       search: '',
       participants: [],
-      selected: this.$store.getters.activeIssue.assignees,
+      selected: [],
     };
   },
   apollo: {
@@ -89,9 +92,20 @@ export default {
     isSearchEmpty() {
       return this.search === '';
     },
+    currentUser() {
+      return gon?.current_username;
+    },
+  },
+  created() {
+    this.selected = cloneDeep(this.activeIssue.assignees);
   },
   methods: {
     ...mapActions(['setAssignees']),
+    async assignSelf() {
+      const [currentUserObject] = await this.setAssignees(this.currentUser);
+
+      this.selectAssignee(currentUserObject);
+    },
     clearSelected() {
       this.selected = [];
     },
@@ -119,7 +133,7 @@ export default {
 <template>
   <board-editable-item :title="assigneeText" @close="saveAssignees">
     <template #collapsed>
-      <issuable-assignees :users="activeIssue.assignees" />
+      <issuable-assignees :users="selected" @assign-self="assignSelf" />
     </template>
 
     <template #default>
@@ -132,45 +146,48 @@ export default {
           <gl-search-box-by-type v-model.trim="search" />
         </template>
         <template #items>
-          <gl-dropdown-item
-            :is-checked="selectedIsEmpty"
-            data-testid="unassign"
-            class="mt-2"
-            @click="selectAssignee()"
-            >{{ $options.i18n.unassigned }}</gl-dropdown-item
-          >
-          <gl-dropdown-divider data-testid="unassign-divider" />
-          <gl-dropdown-item
-            v-for="item in selected"
-            :key="item.id"
-            :is-checked="isChecked(item.username)"
-            @click="unselect(item.username)"
-          >
-            <gl-avatar-link>
-              <gl-avatar-labeled
-                :size="32"
-                :label="item.name"
-                :sub-label="item.username"
-                :src="item.avatarUrl || item.avatar"
-              />
-            </gl-avatar-link>
-          </gl-dropdown-item>
-          <gl-dropdown-divider v-if="!selectedIsEmpty" data-testid="selected-user-divider" />
-          <gl-dropdown-item
-            v-for="unselectedUser in unSelectedFiltered"
-            :key="unselectedUser.id"
-            :data-testid="`item_${unselectedUser.name}`"
-            @click="selectAssignee(unselectedUser)"
-          >
-            <gl-avatar-link>
-              <gl-avatar-labeled
-                :size="32"
-                :label="unselectedUser.name"
-                :sub-label="unselectedUser.username"
-                :src="unselectedUser.avatarUrl || unselectedUser.avatar"
-              />
-            </gl-avatar-link>
-          </gl-dropdown-item>
+          <gl-loading-icon v-if="$apollo.queries.participants.loading" size="lg" />
+          <template v-else>
+            <gl-dropdown-item
+              :is-checked="selectedIsEmpty"
+              data-testid="unassign"
+              class="mt-2"
+              @click="selectAssignee()"
+              >{{ $options.i18n.unassigned }}</gl-dropdown-item
+            >
+            <gl-dropdown-divider data-testid="unassign-divider" />
+            <gl-dropdown-item
+              v-for="item in selected"
+              :key="item.id"
+              :is-checked="isChecked(item.username)"
+              @click="unselect(item.username)"
+            >
+              <gl-avatar-link>
+                <gl-avatar-labeled
+                  :size="32"
+                  :label="item.name"
+                  :sub-label="item.username"
+                  :src="item.avatarUrl || item.avatar"
+                />
+              </gl-avatar-link>
+            </gl-dropdown-item>
+            <gl-dropdown-divider v-if="!selectedIsEmpty" data-testid="selected-user-divider" />
+            <gl-dropdown-item
+              v-for="unselectedUser in unSelectedFiltered"
+              :key="unselectedUser.id"
+              :data-testid="`item_${unselectedUser.name}`"
+              @click="selectAssignee(unselectedUser)"
+            >
+              <gl-avatar-link>
+                <gl-avatar-labeled
+                  :size="32"
+                  :label="unselectedUser.name"
+                  :sub-label="unselectedUser.username"
+                  :src="unselectedUser.avatarUrl || unselectedUser.avatar"
+                />
+              </gl-avatar-link>
+            </gl-dropdown-item>
+          </template>
         </template>
       </multi-select-dropdown>
     </template>

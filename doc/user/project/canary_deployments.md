@@ -32,13 +32,13 @@ deployments right inside the [Deploy Board](deploy_boards.md), without the need 
 Canary deployments can be used when you want to ship features to only a portion of
 your pods fleet and watch their behavior as a percentage of your user base
 visits the temporarily deployed feature. If all works well, you can deploy the
-feature to production knowing that it won't cause any problems.
+feature to production knowing that it shouldn't cause any problems.
 
 Canary deployments are also especially useful for backend refactors, performance
 improvements, or other changes where the user interface doesn't change, but you
 want to make sure the performance stays the same, or improves. Developers need
 to be careful when using canaries with user-facing changes, because by default,
-requests from the same user will be randomly distributed between canary and
+requests from the same user are randomly distributed between canary and
 non-canary pods, which could result in confusion or even errors. If needed, you
 may want to consider [setting `service.spec.sessionAffinity` to `ClientIP` in
 your Kubernetes service definitions](https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies), but that is beyond the scope of
@@ -60,7 +60,7 @@ This allows GitLab to discover whether a deployment is stable or canary (tempora
 
 Once all of the above are set up and the pipeline has run at least once,
 navigate to the environments page under **Pipelines > Environments**.
-As the pipeline executes Deploy Boards will clearly mark canary pods, enabling
+As the pipeline executes, Deploy Boards clearly mark canary pods, enabling
 quick and easy insight into the status of each environment and deployment.
 
 Canary deployments are marked with a yellow dot in the Deploy Board so that you

@@ -166,7 +166,7 @@ Rails provides an [SQL Query Cache](cached_queries.md#cached-queries-guidelines)
 used to cache the results of database queries for the duration of the request. 
 
 See [why cached queries are considered bad](cached_queries.md#why-cached-queries-are-considered-bad) and 
-[how to detect them](cached_queries.md#how-to-detect).
+[how to detect them](cached_queries.md#how-to-detect-cached-queries).
 
 The code introduced by a merge request, should not execute multiple duplicated cached queries.
 

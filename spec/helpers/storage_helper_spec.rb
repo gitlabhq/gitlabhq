@@ -32,10 +32,12 @@ RSpec.describe StorageHelper do
                                wiki_size:            10.bytes,
                                lfs_objects_size:     20.gigabytes,
                                build_artifacts_size: 30.megabytes,
-                               snippets_size:        40.megabytes))
+                               snippets_size:        40.megabytes,
+                               packages_size:        12.megabytes,
+                               uploads_size:         15.megabytes))
     end
 
-    let(:message) { 'Repository: 10 KB / Wikis: 10 Bytes / Build Artifacts: 30 MB / LFS: 20 GB / Snippets: 40 MB' }
+    let(:message) { 'Repository: 10 KB / Wikis: 10 Bytes / Build Artifacts: 30 MB / LFS: 20 GB / Snippets: 40 MB / Packages: 12 MB / Uploads: 15 MB' }
 
     it 'works on ProjectStatistics' do
       expect(helper.storage_counters_details(project.statistics)).to eq(message)

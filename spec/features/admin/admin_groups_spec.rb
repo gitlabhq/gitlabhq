@@ -13,6 +13,7 @@ RSpec.describe 'Admin Groups' do
 
   before do
     sign_in(current_user)
+    gitlab_enable_admin_mode_sign_in(current_user)
     stub_application_setting(default_group_visibility: internal)
   end
 

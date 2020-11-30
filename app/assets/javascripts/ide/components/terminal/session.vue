@@ -1,5 +1,6 @@
 <script>
 import { mapActions, mapState } from 'vuex';
+import { GlButton } from '@gitlab/ui';
 import { __ } from '~/locale';
 import Terminal from './terminal.vue';
 import { isEndingStatus } from '../../stores/modules/terminal/utils';
@@ -7,6 +8,7 @@ import { isEndingStatus } from '../../stores/modules/terminal/utils';
 export default {
   components: {
     Terminal,
+    GlButton,
   },
   computed: {
     ...mapState('terminal', ['session']),
@@ -14,15 +16,17 @@ export default {
       if (isEndingStatus(this.session.status)) {
         return {
           action: () => this.restartSession(),
+          variant: 'info',
+          category: 'primary',
           text: __('Restart Terminal'),
-          class: 'btn-primary',
         };
       }
 
       return {
         action: () => this.stopSession(),
+        variant: 'danger',
+        category: 'secondary',
         text: __('Stop Terminal'),
-        class: 'btn-inverted btn-remove',
       };
     },
   },
@@ -37,15 +41,13 @@ export default {
     <header class="ide-job-header d-flex align-items-center">
       <h5>{{ __('Web Terminal') }}</h5>
       <div class="ml-auto align-self-center">
-        <button
+        <gl-button
           v-if="actionButton"
-          type="button"
-          class="btn btn-sm"
-          :class="actionButton.class"
+          :variant="actionButton.variant"
+          :category="actionButton.category"
           @click="actionButton.action"
+          >{{ actionButton.text }}</gl-button
         >
-          {{ actionButton.text }}
-        </button>
       </div>
     </header>
     <terminal :terminal-path="session.terminalPath" :status="session.status" />

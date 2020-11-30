@@ -21,6 +21,10 @@ class SnippetBlob
     data.bytesize
   end
 
+  def commit_id
+    nil
+  end
+
   def data
     snippet.content
   end

@@ -6,7 +6,7 @@ RSpec.describe 'Upload a git lfs object', :js do
   include_context 'file upload requests helpers'
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user, :admin) }
+  let_it_be(:user) { project.owner }
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
 
   let(:file) { fixture_file_upload('spec/fixtures/banana_sample.gif') }

@@ -109,7 +109,7 @@ To create a subgroup:
 
    ![Subgroups page](img/create_new_group.png)
 
-1. Click the **Create group** button and you will be taken to the new group's
+1. Click the **Create group** button to be redirected to the new group's
    dashboard page.
 
 Follow the same process to create any subsequent groups.
@@ -170,10 +170,10 @@ To override a user's membership of an ancestor group (the first group they were
 added to), add the user to the new subgroup again with a higher set of permissions.
 
 For example, if User0 was first added to group `group-1/group-1-1` with Developer
-permissions, then they will inherit those permissions in every other subgroup
+permissions, then they inherit those permissions in every other subgroup
 of `group-1/group-1-1`. To give them Maintainer access to `group-1/group-1-1/group1-1-1`,
 you would add them again in that group as Maintainer. Removing them from that group,
-the permissions will fallback to those of the ancestor group.
+the permissions fall back to those of the ancestor group.
 
 ## Mentioning subgroups
 

@@ -9,7 +9,9 @@ RSpec.describe "Admin Runners" do
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
-    sign_in(create(:admin))
+    admin = create(:admin)
+    sign_in(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
   end
 
   describe "Runners page" do
@@ -280,6 +282,12 @@ RSpec.describe "Admin Runners" do
       @project1 = create(:project)
       @project2 = create(:project)
       visit admin_runner_path(runner)
+    end
+
+    describe 'runner page breadcrumbs' do
+      it 'contains the current runner’s short sha' do
+        expect(page.find('h2')).to have_content(runner.short_sha)
+      end
     end
 
     describe 'projects' do

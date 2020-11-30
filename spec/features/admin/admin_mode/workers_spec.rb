@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 # Test an operation that triggers background jobs requiring administrative rights
-RSpec.describe 'Admin mode for workers', :do_not_mock_admin_mode, :request_store, :clean_gitlab_redis_shared_state do
+RSpec.describe 'Admin mode for workers', :request_store do
   let(:user) { create(:user) }
   let(:user_to_delete) { create(:user) }
 

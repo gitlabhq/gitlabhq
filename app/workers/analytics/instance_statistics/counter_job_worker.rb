@@ -5,7 +5,7 @@ module Analytics
     class CounterJobWorker
       include ApplicationWorker
 
-      feature_category :instance_statistics
+      feature_category :devops_reports
       urgency :low
 
       idempotent!

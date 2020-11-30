@@ -193,6 +193,12 @@ const applicationStateMachine = {
           uninstallSuccessful: true,
         },
       },
+      [NOT_INSTALLABLE]: {
+        target: NOT_INSTALLABLE,
+        effects: {
+          uninstallSuccessful: true,
+        },
+      },
       [UNINSTALL_ERRORED]: {
         target: INSTALLED,
         effects: {

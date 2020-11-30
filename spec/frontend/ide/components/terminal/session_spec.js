@@ -1,4 +1,5 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { GlButton } from '@gitlab/ui';
 import Vuex from 'vuex';
 import TerminalSession from '~/ide/components/terminal/session.vue';
 import Terminal from '~/ide/components/terminal/terminal.vue';
@@ -38,6 +39,8 @@ describe('IDE TerminalSession', () => {
     });
   };
 
+  const findButton = () => wrapper.find(GlButton);
+
   beforeEach(() => {
     state = {
       session: { status: RUNNING, terminalPath: TEST_TERMINAL_PATH },
@@ -69,8 +72,8 @@ describe('IDE TerminalSession', () => {
       state.session = { status };
       factory();
 
-      const button = wrapper.find('button');
-      button.trigger('click');
+      const button = findButton();
+      button.vm.$emit('click');
 
       return wrapper.vm.$nextTick().then(() => {
         expect(button.text()).toEqual('Stop Terminal');
@@ -84,8 +87,8 @@ describe('IDE TerminalSession', () => {
       state.session = { status };
       factory();
 
-      const button = wrapper.find('button');
-      button.trigger('click');
+      const button = findButton();
+      button.vm.$emit('click');
 
       return wrapper.vm.$nextTick().then(() => {
         expect(button.text()).toEqual('Restart Terminal');

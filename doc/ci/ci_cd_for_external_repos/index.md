@@ -18,7 +18,7 @@ GitLab CI/CD can be used with:
 Instead of moving your entire project to GitLab, you can connect your
 external repository to get the benefits of GitLab CI/CD.
 
-Connecting an external repository will set up [repository mirroring](../../user/project/repository/repository_mirroring.md)
+Connecting an external repository sets up [repository mirroring](../../user/project/repository/repository_mirroring.md)
 and create a lightweight project with issues, merge requests, wiki, and
 snippets disabled. These features
 [can be re-enabled later](../../user/project/settings/index.md#sharing-and-permissions).
@@ -74,7 +74,7 @@ If changes are pushed to the branch referenced by the Pull Request and the
 Pull Request is still open, a pipeline for the external pull request is
 created.
 
-GitLab CI/CD will create 2 pipelines in this case. One for the
+GitLab CI/CD creates 2 pipelines in this case. One for the
 branch push and one for the external pull request.
 
 After the Pull Request is closed, no pipelines are created for the external pull
@@ -89,10 +89,10 @@ The variable names are prefixed with `CI_EXTERNAL_PULL_REQUEST_`.
 
 ### Limitations
 
-This feature currently does not support Pull Requests from fork repositories. Any Pull Requests from fork repositories will be ignored.  [Read more](https://gitlab.com/gitlab-org/gitlab/-/issues/5667).
+This feature currently does not support Pull Requests from fork repositories. Any Pull Requests from fork repositories are ignored. [Read more](https://gitlab.com/gitlab-org/gitlab/-/issues/5667).
 
-Given that GitLab will create 2 pipelines, if changes are pushed to a remote branch that
-references an open Pull Request, both will contribute to the status of the Pull Request
+Given that GitLab creates 2 pipelines, if changes are pushed to a remote branch that
+references an open Pull Request, both contribute to the status of the Pull Request
 via GitHub integration. If you want to exclusively run pipelines on external pull
 requests and not on branches you can add `except: [branches]` to the job specs.
 [Read more](https://gitlab.com/gitlab-org/gitlab/-/issues/24089#workaround).

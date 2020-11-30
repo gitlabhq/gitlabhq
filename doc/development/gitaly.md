@@ -84,7 +84,7 @@ If your test-suite is failing with Gitaly issues, as a first step, try running:
 rm -rf tmp/tests/gitaly
 ```
 
-During RSpec tests, the Gitaly instance will write logs to `gitlab/log/gitaly-test.log`.
+During RSpec tests, the Gitaly instance writes logs to `gitlab/log/gitaly-test.log`.
 
 ## Legacy Rugged code
 
@@ -124,23 +124,23 @@ Most of this code exists in the `lib/gitlab/git/rugged_impl` directory.
 NOTE: **Note:**
 You should NOT need to add or modify code related to
 Rugged unless explicitly discussed with the [Gitaly
-Team](https://gitlab.com/groups/gl-gitaly/group_members). This code will
+Team](https://gitlab.com/groups/gl-gitaly/group_members). This code does
 NOT work on GitLab.com or other GitLab instances that do not use NFS.
 
 ## `TooManyInvocationsError` errors
 
 During development and testing, you may experience `Gitlab::GitalyClient::TooManyInvocationsError` failures.
-The `GitalyClient` will attempt to block against potential n+1 issues by raising this error
+The `GitalyClient` attempts to block against potential n+1 issues by raising this error
 when Gitaly is called more than 30 times in a single Rails request or Sidekiq execution.
 
-As a temporary measure, export `GITALY_DISABLE_REQUEST_LIMITS=1` to suppress the error. This will disable the n+1 detection
+As a temporary measure, export `GITALY_DISABLE_REQUEST_LIMITS=1` to suppress the error. This disables the n+1 detection
 in your development environment.
 
 Please raise an issue in the GitLab CE or EE repositories to report the issue. Include the labels ~Gitaly
 ~performance ~"technical debt". Please ensure that the issue contains the full stack trace and error message of the
 `TooManyInvocationsError`. Also include any known failing tests if possible.
 
-Isolate the source of the n+1 problem. This will normally be a loop that results in Gitaly being called for each
+Isolate the source of the n+1 problem. This is normally a loop that results in Gitaly being called for each
 element in an array. If you are unable to isolate the problem, please contact a member
 of the [Gitaly Team](https://gitlab.com/groups/gl-gitaly/group_members) for assistance.
 
@@ -154,7 +154,7 @@ Gitlab::GitalyClient.allow_n_plus_1_calls do
 end
 ```
 
-Once the code is wrapped in this block, this code-path will be excluded from n+1 detection.
+Once the code is wrapped in this block, this code path is excluded from n+1 detection.
 
 ## Request counts
 
@@ -184,12 +184,12 @@ branches and SHA to use a custom commit in <https://gitlab.com/gitlab-org/gitaly
 NOTE: **Note:**
 With the introduction of auto-deploy for Gitaly, the format of
 `GITALY_SERVER_VERSION` was aligned with Omnibus syntax.
-It no longer supports `=revision`, it will evaluate the file content as a Git
-reference (branch or SHA), only if it matches a semver it will prepend a `v`.
+It no longer supports `=revision`, it evaluates the file content as a Git
+reference (branch or SHA). Only if it matches a semver does it prepend a `v`.
 
 If you want to run tests locally against a modified version of Gitaly you
 can replace `tmp/tests/gitaly` with a symlink. This is much faster
-because if will avoid a Gitaly re-install each time you run `rspec`.
+because it avoids a Gitaly re-install each time you run `rspec`.
 
 ```shell
 rm -rf tmp/tests/gitaly
@@ -197,12 +197,12 @@ ln -s /path/to/gitaly tmp/tests/gitaly
 ```
 
 Make sure you run `make` in your local Gitaly directory before running
-tests. Otherwise, Gitaly will fail to boot.
+tests. Otherwise, Gitaly fails to boot.
 
 If you make changes to your local Gitaly in between test runs you need
 to manually run `make` again.
 
-Note that CI tests will not use your locally modified version of
+Note that CI tests do not use your locally modified version of
 Gitaly. To use a custom Gitaly version in CI you need to update
 GITALY_SERVER_VERSION as described at the beginning of this paragraph.
 

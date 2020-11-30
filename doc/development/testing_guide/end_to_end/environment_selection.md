@@ -65,4 +65,4 @@ If you want to run an `only: { :pipeline }` tagged test on your local GDK make s
 Similarly to specifying that a test should only run against a specific environment, it's also possible to quarantine a
 test only when it runs against a specific environment. The syntax is exactly the same, except that the `only: { ... }`
 hash is nested in the [`quarantine: { ... }`](https://about.gitlab.com/handbook/engineering/quality/guidelines/debugging-qa-test-failures/#quarantining-tests) hash.
-For instance, `quarantine: { only: { subdomain: :staging } }` will only quarantine the test when run against staging.
+For instance, `quarantine: { only: { subdomain: :staging } }` only quarantines the test when run against staging.

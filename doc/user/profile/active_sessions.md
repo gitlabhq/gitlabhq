@@ -34,7 +34,7 @@ exceeds 100, the oldest ones are deleted.
 
 NOTE: **Note:**
 When any session is revoked all **Remember me** tokens for all
-devices will be revoked. See ['Why do I keep getting signed out?'](index.md#why-do-i-keep-getting-signed-out)
+devices are revoked. See ['Why do I keep getting signed out?'](index.md#why-do-i-keep-getting-signed-out)
 for more information about the **Remember me** feature.
 
 <!-- ## Troubleshooting

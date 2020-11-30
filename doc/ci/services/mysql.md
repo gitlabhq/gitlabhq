@@ -78,7 +78,7 @@ GitLab Runner with the Shell executor.
    mysql -u root -p
    ```
 
-1. Create a user (in this case, `runner`) that will be used by your
+1. Create a user (in this case, `runner`) that is used by your
    application. Change `$password` in the command to a strong password.
 
    At the `mysql>` prompt, type:

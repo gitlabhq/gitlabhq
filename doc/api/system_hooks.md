@@ -55,9 +55,9 @@ POST /hooks
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `url` | string | yes | The hook URL |
-| `token` | string | no | Secret token to validate received payloads; this will not be returned in the response |
-| `push_events` | boolean |  no | When true, the hook will fire on push events |
-| `tag_push_events` | boolean | no | When true, the hook will fire on new tags being pushed |
+| `token` | string | no | Secret token to validate received payloads; this isn't returned in the response |
+| `push_events` | boolean |  no | When true, the hook fires on push events |
+| `tag_push_events` | boolean | no | When true, the hook fires on new tags being pushed |
 | `merge_requests_events` | boolean | no | Trigger hook on merge requests events |
 | `repository_update_events` | boolean | no | Trigger hook on repository update events |
 | `enable_ssl_verification` | boolean | no | Do SSL verification when triggering the hook |

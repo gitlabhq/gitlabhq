@@ -28,23 +28,26 @@ module Gitlab
       end
 
       def log_import_failure(source:, relation_key: nil, relation_index: nil, exception:, retry_count: 0)
-        extra = {
-          source: source,
-          relation_key: relation_key,
-          relation_index: relation_index,
-          retry_count: retry_count
-        }
-        extra[importable_column_name] = importable.id
-
-        Gitlab::ErrorTracking.track_exception(exception, extra)
-
         attributes = {
-          exception_class: exception.class.to_s,
-          exception_message: exception.message.truncate(255),
-          correlation_id_value: Labkit::Correlation::CorrelationId.current_or_new_id
-        }.merge(extra)
+          relation_index: relation_index,
+          source: source,
+          retry_count: retry_count,
+          importable_column_name => importable.id
+        }
 
-        ImportFailure.create(attributes)
+        Gitlab::ErrorTracking.track_exception(
+          exception,
+          attributes.merge(relation_name: relation_key)
+        )
+
+        ImportFailure.create(
+          attributes.merge(
+            exception_class: exception.class.to_s,
+            exception_message: exception.message.truncate(255),
+            correlation_id_value: Labkit::Correlation::CorrelationId.current_or_new_id,
+            relation_key: relation_key
+          )
+        )
       end
 
       private

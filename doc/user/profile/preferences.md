@@ -107,8 +107,8 @@ While `1280px` is the standard max width when using fixed layout, some pages sti
 
 For users who have access to a large number of projects but only keep up with a
 select few, the amount of activity on the default Dashboard page can be
-overwhelming. Changing this setting allows you to redefine what your default
-dashboard will be.
+overwhelming. Changing this setting allows you to redefine your default
+dashboard.
 
 You have 8 options here that you can use for your default dashboard view:
 
@@ -164,7 +164,7 @@ You can choose one of the following options as the first day of the week:
 - Sunday
 - Monday
 
-If you select **System Default**, the system-wide default setting will be used.
+If you select **System Default**, the system-wide default setting is used.
 
 ## Integrations
 

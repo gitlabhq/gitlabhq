@@ -17,7 +17,7 @@ RSpec.describe 'Alert integrations settings form', :js do
   end
 
   describe 'when viewing alert integrations as a maintainer' do
-    context 'with feature flag enabled' do
+    context 'with the default page permissions' do
       before do
         visit project_settings_operations_path(project, anchor: 'js-alert-management-settings')
         wait_for_requests
@@ -31,19 +31,6 @@ RSpec.describe 'Alert integrations settings form', :js do
 
       it 'shows the new alerts setting form' do
         expect(page).to have_content('1. Select integration type')
-      end
-    end
-
-    context 'with feature flag disabled' do
-      before do
-        stub_feature_flags(http_integrations_list: false)
-
-        visit project_settings_operations_path(project, anchor: 'js-alert-management-settings')
-        wait_for_requests
-      end
-
-      it 'shows the old alerts setting form' do
-        expect(page).to have_content('Webhook URL')
       end
     end
   end

@@ -21,7 +21,8 @@ export const getPackageTypeLabel = packageType => {
       return s__('PackageType|PyPI');
     case PackageType.COMPOSER:
       return s__('PackageType|Composer');
-
+    case PackageType.GENERIC:
+      return s__('PackageType|Generic');
     default:
       return null;
   }

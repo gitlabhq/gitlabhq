@@ -1,4 +1,4 @@
-image: ayufan/openshift-cli
+image: openshift/origin-cli
 
 stages:
   - build  # dummy stage to follow the template guidelines

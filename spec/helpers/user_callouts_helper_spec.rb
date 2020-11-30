@@ -167,8 +167,20 @@ RSpec.describe UserCalloutsHelper do
 
     subject { helper.show_registration_enabled_user_callout? }
 
+    context 'when on gitlab.com' do
+      before do
+        allow(::Gitlab).to receive(:com?).and_return(true)
+        allow(helper).to receive(:current_user).and_return(admin)
+        stub_application_setting(signup_enabled: true)
+        allow(helper).to receive(:user_dismissed?).with(described_class::REGISTRATION_ENABLED_CALLOUT) { false }
+      end
+
+      it { is_expected.to be false }
+    end
+
     context 'when `current_user` is not an admin' do
       before do
+        allow(::Gitlab).to receive(:com?).and_return(false)
         allow(helper).to receive(:current_user).and_return(user)
         stub_application_setting(signup_enabled: true)
         allow(helper).to receive(:user_dismissed?).with(described_class::REGISTRATION_ENABLED_CALLOUT) { false }
@@ -179,6 +191,7 @@ RSpec.describe UserCalloutsHelper do
 
     context 'when signup is disabled' do
       before do
+        allow(::Gitlab).to receive(:com?).and_return(false)
         allow(helper).to receive(:current_user).and_return(admin)
         stub_application_setting(signup_enabled: false)
         allow(helper).to receive(:user_dismissed?).with(described_class::REGISTRATION_ENABLED_CALLOUT) { false }
@@ -189,6 +202,7 @@ RSpec.describe UserCalloutsHelper do
 
     context 'when user has dismissed callout' do
       before do
+        allow(::Gitlab).to receive(:com?).and_return(false)
         allow(helper).to receive(:current_user).and_return(admin)
         stub_application_setting(signup_enabled: true)
         allow(helper).to receive(:user_dismissed?).with(described_class::REGISTRATION_ENABLED_CALLOUT) { true }
@@ -197,8 +211,9 @@ RSpec.describe UserCalloutsHelper do
       it { is_expected.to be false }
     end
 
-    context 'when `current_user` is an admin, signup is enabled, and user has not dismissed callout' do
+    context 'when not gitlab.com, `current_user` is an admin, signup is enabled, and user has not dismissed callout' do
       before do
+        allow(::Gitlab).to receive(:com?).and_return(false)
         allow(helper).to receive(:current_user).and_return(admin)
         stub_application_setting(signup_enabled: true)
         allow(helper).to receive(:user_dismissed?).with(described_class::REGISTRATION_ENABLED_CALLOUT) { false }

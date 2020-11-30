@@ -12,7 +12,7 @@ RSpec.describe Mutations::AlertManagement::UpdateAlertStatus do
   specify { expect(described_class).to require_graphql_authorizations(:update_alert_management_alert) }
 
   describe '#resolve' do
-    subject(:resolve) { mutation_for(project, current_user).resolve(args) }
+    subject(:resolve) { mutation_for(project, current_user).resolve(**args) }
 
     context 'user has access to project' do
       before do

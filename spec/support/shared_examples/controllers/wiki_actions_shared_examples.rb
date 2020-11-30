@@ -14,6 +14,22 @@ RSpec.shared_examples 'wiki controller actions' do
     sign_in(user)
   end
 
+  shared_examples 'recovers from git timeout' do
+    let(:method_name) { :page }
+
+    context 'when we encounter git command errors' do
+      it 'renders the appropriate template', :aggregate_failures do
+        expect(controller).to receive(method_name) do
+          raise ::Gitlab::Git::CommandTimedOut, 'Deadline Exceeded'
+        end
+
+        request
+
+        expect(response).to render_template('shared/wikis/git_error')
+      end
+    end
+  end
+
   describe 'GET #new' do
     subject(:request) { get :new, params: routing_params }
 
@@ -46,6 +62,12 @@ RSpec.shared_examples 'wiki controller actions' do
   describe 'GET #pages' do
     before do
       get :pages, params: routing_params.merge(id: wiki_title)
+    end
+
+    it_behaves_like 'recovers from git timeout' do
+      subject(:request) { get :pages, params: routing_params.merge(id: wiki_title) }
+
+      let(:method_name) { :wiki_pages }
     end
 
     it 'assigns the page collections' do
@@ -99,6 +121,12 @@ RSpec.shared_examples 'wiki controller actions' do
       end
     end
 
+    it_behaves_like 'recovers from git timeout' do
+      subject(:request) { get :history, params: routing_params.merge(id: wiki_title) }
+
+      let(:allow_read_wiki)   { true }
+    end
+
     it_behaves_like 'fetching history', :ok do
       let(:allow_read_wiki)   { true }
 
@@ -139,6 +167,10 @@ RSpec.shared_examples 'wiki controller actions' do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+
+    it_behaves_like 'recovers from git timeout' do
+      subject(:request) { get :diff, params: routing_params.merge(id: wiki_title, version_id: wiki.repository.commit.id) }
+    end
   end
 
   describe 'GET #show' do
@@ -151,6 +183,8 @@ RSpec.shared_examples 'wiki controller actions' do
     context 'when page exists' do
       let(:id) { wiki_title }
 
+      it_behaves_like 'recovers from git timeout'
+
       it 'renders the page' do
         request
 
@@ -159,6 +193,28 @@ RSpec.shared_examples 'wiki controller actions' do
         expect(assigns(:page).title).to eq(wiki_title)
         expect(assigns(:sidebar_wiki_entries)).to contain_exactly(an_instance_of(WikiPage))
         expect(assigns(:sidebar_limited)).to be(false)
+      end
+
+      context 'the sidebar fails to load' do
+        before do
+          allow(Wiki).to receive(:for_container).and_return(wiki)
+          wiki.wiki
+          expect(wiki).to receive(:find_sidebar) do
+            raise ::Gitlab::Git::CommandTimedOut, 'Deadline Exceeded'
+          end
+        end
+
+        it 'renders the page, and marks the sidebar as failed' do
+          request
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template('shared/wikis/_sidebar')
+          expect(assigns(:page).title).to eq(wiki_title)
+          expect(assigns(:sidebar_page)).to be_nil
+          expect(assigns(:sidebar_wiki_entries)).to be_nil
+          expect(assigns(:sidebar_limited)).to be_nil
+          expect(assigns(:sidebar_error)).to be_a_kind_of(::Gitlab::Git::CommandError)
+        end
       end
 
       context 'page view tracking' do
@@ -308,6 +364,7 @@ RSpec.shared_examples 'wiki controller actions' do
     subject(:request) { get(:edit, params: routing_params.merge(id: id_param)) }
 
     it_behaves_like 'edit action'
+    it_behaves_like 'recovers from git timeout'
 
     context 'when page content encoding is valid' do
       render_views

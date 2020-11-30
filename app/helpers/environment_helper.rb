@@ -52,6 +52,8 @@ module EnvironmentHelper
         s_('Deployment|failed')
       when 'canceled'
         s_('Deployment|canceled')
+      when 'skipped'
+        s_('Deployment|skipped')
       end
 
     klass = "ci-status ci-#{status.dasherize}"

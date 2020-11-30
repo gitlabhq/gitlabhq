@@ -13,6 +13,9 @@ RSpec.describe 'Raw files', '(JavaScript fixtures)' do
     clean_frontend_fixtures('blob/balsamiq/')
     clean_frontend_fixtures('blob/notebook/')
     clean_frontend_fixtures('blob/pdf/')
+    clean_frontend_fixtures('blob/text/')
+    clean_frontend_fixtures('blob/binary/')
+    clean_frontend_fixtures('blob/images/')
   end
 
   after do
@@ -37,5 +40,17 @@ RSpec.describe 'Raw files', '(JavaScript fixtures)' do
 
   it 'blob/pdf/test.pdf' do
     @blob = project.repository.blob_at('e774ebd33', 'files/pdf/test.pdf')
+  end
+
+  it 'blob/text/README.md' do
+    @blob = project.repository.blob_at('e774ebd33', 'README.md')
+  end
+
+  it 'blob/images/logo-white.png' do
+    @blob = project.repository.blob_at('e774ebd33', 'files/images/logo-white.png')
+  end
+
+  it 'blob/binary/Gemfile.zip' do
+    @blob = project.repository.blob_at('e774ebd33', 'Gemfile.zip')
   end
 end

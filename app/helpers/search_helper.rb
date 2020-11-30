@@ -31,7 +31,7 @@ module SearchHelper
     [
       resources_results,
       generic_results
-    ].flatten.uniq do |item|
+    ].flatten do |item|
       item[:label]
     end
   end

@@ -28,6 +28,7 @@ issues:
 - events
 - merge_requests_closing_issues
 - metrics
+- metric_images
 - timelogs
 - issuable_severity
 - issuable_sla
@@ -552,6 +553,8 @@ project:
 - pipeline_artifacts
 - terraform_states
 - alert_management_http_integrations
+- exported_protected_branches
+- incident_management_oncall_schedules
 award_emoji:
 - awardable
 - user

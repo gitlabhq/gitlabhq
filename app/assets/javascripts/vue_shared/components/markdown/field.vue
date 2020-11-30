@@ -10,14 +10,14 @@ import { deprecatedCreateFlash as Flash } from '~/flash';
 import GLForm from '~/gl_form';
 import MarkdownHeader from './header.vue';
 import MarkdownToolbar from './toolbar.vue';
-import GlMentions from '~/vue_shared/components/gl_mentions.vue';
+import GfmAutocomplete from '~/vue_shared/components/gfm_autocomplete/gfm_autocomplete.vue';
 import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import axios from '~/lib/utils/axios_utils';
 
 export default {
   components: {
-    GlMentions,
+    GfmAutocomplete,
     MarkdownHeader,
     MarkdownToolbar,
     GlIcon,
@@ -246,9 +246,9 @@ export default {
     />
     <div v-show="!previewMarkdown" class="md-write-holder">
       <div class="zen-backdrop">
-        <gl-mentions v-if="glFeatures.tributeAutocomplete">
+        <gfm-autocomplete v-if="glFeatures.tributeAutocomplete">
           <slot name="textarea"></slot>
-        </gl-mentions>
+        </gfm-autocomplete>
         <slot v-else name="textarea"></slot>
         <a
           class="zen-control zen-control-leave js-zen-leave gl-text-gray-500"

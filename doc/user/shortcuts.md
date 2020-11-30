@@ -54,7 +54,7 @@ other keyboard shortcuts are disabled as explained above.
 ## Project
 
 These shortcuts are available from any page within a project. You must type them
-relatively quickly to work, and they will take you to another page in the project.
+relatively quickly to work, and they take you to another page in the project.
 
 | Keyboard Shortcut           | Description |
 | --------------------------- | ----------- |
@@ -87,7 +87,7 @@ These shortcuts are available when viewing issues and merge requests.
 | <kbd>a</kbd>                 | Change assignee. |
 | <kbd>m</kbd>                 | Change milestone. |
 | <kbd>l</kbd>                 | Change label. |
-| <kbd>r</kbd>                 | Start writing a comment. If any text is selected, it will be quoted in the comment. Can't be used to reply within a thread. |
+| <kbd>r</kbd>                 | Start writing a comment. If any text is selected, it is quoted in the comment. Can't be used to reply within a thread. |
 | <kbd>n</kbd>                 | Move to next unresolved discussion (merge requests only). |
 | <kbd>p</kbd>                 | Move to previous unresolved discussion (merge requests only). |
 | <kbd>]</kbd> or <kbd>j</kbd> | Move to next file (merge requests only). |
@@ -153,6 +153,6 @@ These shortcuts are available when viewing [Epics](group/epics/index.md):
 
 | Keyboard Shortcut | Description |
 | ----------------- | ----------- |
-| <kbd>r</kbd>      | Start writing a comment. If any text is selected, it will be quoted in the comment. Can't be used to reply within a thread. |
+| <kbd>r</kbd>      | Start writing a comment. If any text is selected, it is quoted in the comment. Can't be used to reply within a thread. |
 | <kbd>e</kbd>      | Edit description. |
 | <kbd>l</kbd>      | Change label. |

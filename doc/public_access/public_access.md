@@ -17,19 +17,19 @@ public access directory (`/public` under your GitLab instance), like at <https:/
 
 Public projects can be cloned **without any** authentication over HTTPS.
 
-They will be listed in the public access directory (`/public`) for all users.
+They are listed in the public access directory (`/public`) for all users.
 
-**Any logged in user** will have [Guest permissions](../user/permissions.md)
+**Any logged in user** has [Guest permissions](../user/permissions.md)
 on the repository.
 
 ### Internal projects
 
 Internal projects can be cloned by any logged in user except [external users](../user/permissions.md#external-users).
 
-They will also be listed in the public access directory (`/public`), but only for logged
+They are also listed in the public access directory (`/public`), but only for logged
 in users.
 
-Any logged in user except [external users](../user/permissions.md#external-users) will have [Guest permissions](../user/permissions.md)
+Any logged in users except [external users](../user/permissions.md#external-users) have [Guest permissions](../user/permissions.md)
 on the repository.
 
 NOTE: **Note:**
@@ -42,7 +42,7 @@ visibility setting keep this setting. You can read more about the change in the
 
 Private projects can only be cloned and viewed by project members (except for guests).
 
-They will appear in the public access directory (`/public`) for project members only.
+They appear in the public access directory (`/public`) for project members only.
 
 ### How to change project visibility
 
@@ -59,7 +59,7 @@ In previous versions, a group's page was always visible to all users.
 Like with projects, the visibility of a group can be set to dictate whether
 anonymous users, all signed in users, or only explicit group members can view
 it. The restriction for visibility levels on the application setting level also
-applies to groups, so if that's set to internal, the explore page will be empty
+applies to groups, so if that's set to internal, the explore page is empty
 for anonymous users. The group page now has a visibility level icon.
 
 Admin users cannot create subgroups or projects with higher visibility level than that of the immediate parent group.
@@ -96,7 +96,7 @@ For details, see [Restricted visibility levels](../user/admin_area/settings/visi
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33358) in GitLab 12.6.
 
-Reducing a project's visibility level will remove the fork relationship between the project and
+Reducing a project's visibility level removes the fork relationship between the project and
 any forked project. This is a potentially destructive action which requires confirmation before
 this can be saved.
 

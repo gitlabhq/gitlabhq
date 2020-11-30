@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import Vue from 'vue';
+import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { deprecatedCreateFlash as createFlash } from '../flash';
 import initIssuableSidebar from '../init_issuable_sidebar';
 import './merge_conflict_store';
@@ -24,6 +25,7 @@ export default function initMergeConflicts() {
   gl.MergeConflictsResolverApp = new Vue({
     el: '#conflicts',
     components: {
+      FileIcon,
       'diff-file-editor': gl.mergeConflicts.diffFileEditor,
       'inline-conflict-lines': gl.mergeConflicts.inlineConflictLines,
       'parallel-conflict-lines': gl.mergeConflicts.parallelConflictLines,

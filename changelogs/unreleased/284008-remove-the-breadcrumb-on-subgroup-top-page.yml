@@ -1,0 +1,5 @@
+---
+title: Remove "Details" from breadcrumb and JSON+JD on Group top page
+merge_request: 47854
+author: Takuya Noguchi
+type: changed

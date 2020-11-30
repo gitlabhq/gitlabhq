@@ -11,7 +11,7 @@ Beginning with version 8.0 of GitLab Community Edition (CE) and Enterprise
 Edition (EE), GitLab CI is no longer its own application, but is instead built
 into the CE and EE applications.
 
-This guide will detail the process of migrating your CI installation and data
+This guide details the process of migrating your CI installation and data
 into your GitLab CE or EE installation. **You can only migrate CI data from
 GitLab CI 8.0 to GitLab 8.0; migrating between other versions (e.g.7.14 to 8.1)
 is not possible.**
@@ -28,9 +28,9 @@ The migration consists of three parts: updating GitLab and GitLab CI, moving
 data, and redirecting traffic.
 
 Please note that CI builds triggered on your GitLab server in the time between
-updating to 8.0 and finishing the migration will be lost. Your GitLab server
+updating to 8.0 and finishing the migration are lost. Your GitLab server
 can be online for most of the procedure; the only GitLab downtime (if any) is
-during the upgrade to 8.0. Your CI service will be offline from the moment you
+during the upgrade to 8.0. Your CI service remains offline from the moment you
 upgrade to 8.0 until you finish the migration procedure.
 
 ## Before upgrading
@@ -47,8 +47,8 @@ If you want to migrate your existing data, continue reading.
 
 ### 0. Updating Omnibus from versions prior to 7.13
 
-If you are updating from older versions you should first update to 7.14 and then to 8.0.
-Otherwise it's pretty likely that you will encounter problems described in the [Troubleshooting](#troubleshooting).
+If you are updating from older versions you should first update to 7.14 and then to 8.0
+to avoid the problems described in the [Troubleshooting](#troubleshooting) section.
 
 ### 1. Verify that backups work
 
@@ -123,7 +123,7 @@ store build traces on the same storage as your Git repositories.
 
 ## I. Upgrading
 
-From this point on, GitLab CI will be unavailable for your end users.
+From this point on, GitLab CI is unavailable for your end users.
 
 ### 1. Upgrade GitLab to 8.0
 
@@ -169,10 +169,10 @@ sudo -u gitlab_ci -H bundle exec whenever --clear-crontab RAILS_ENV=production
 ### 1. Database encryption key
 
 Move the database encryption key from your CI server to your GitLab
-  server. The command below will show you what you need to copy-paste to your
-GitLab server. On Omnibus GitLab servers you will have to add a line to
-`/etc/gitlab/gitlab.rb`. On GitLab servers installed from source you will have
-to replace the contents of `/home/git/gitlab/config/secrets.yml`.
+  server. The command below shows you what you need to copy-paste to your
+GitLab server. On Omnibus GitLab servers you must add a line to
+`/etc/gitlab/gitlab.rb`. On GitLab servers installed from source you must
+replace the contents of `/home/git/gitlab/config/secrets.yml`.
 
 ```shell
 # On your CI server:
@@ -188,8 +188,8 @@ sudo -u gitlab_ci -H bundle exec rake backup:show_secrets RAILS_ENV=production
 
 Create your final CI data export. If you are converting from MySQL to
 PostgreSQL, add `MYSQL_TO_POSTGRESQL=1` to the end of the Rake command. When
-the command finishes it will print the path to your data export archive; you
-will need this file later.
+the command finishes it prints the path to your data export archive; you
+need this file later.
 
 ```shell
 # On your CI server:
@@ -208,7 +208,7 @@ If you were running GitLab and GitLab CI on the same server you can skip this
 step.
 
 Copy your CI data archive to your GitLab server. There are many ways to do
-this, below we use SSH agent forwarding and `scp`, which will be easy and fast
+this, below we use SSH agent forwarding and `scp`, which is easy and fast
 for most setups. You can also copy the data archive first from the CI server to
 your laptop and then from your laptop to the GitLab server.
 
@@ -235,7 +235,7 @@ sudo mv /path/to/12345_gitlab_ci_backup.tar /home/git/gitlab/tmp/backups/
 
 ### 5. Import the CI data into GitLab
 
-This step will delete any existing CI data on your GitLab server. There should
+This step deletes any existing CI data on your GitLab server. There should
 be no CI data yet because you turned CI on the GitLab server off earlier.
 
 ```shell
@@ -274,8 +274,8 @@ so that existing links to your CI server keep working.
 ### 1. Update NGINX configuration
 
 To ensure that your existing CI runners are able to communicate with the
-migrated installation, and that existing build triggers still work, you'll need
-to update your NGINX configuration to redirect requests for the old locations to
+migrated installation, and that existing build triggers still work, you must
+update your NGINX configuration to redirect requests for the old locations to
 the new ones.
 
 Edit `/etc/nginx/sites-available/gitlab_ci` and paste:

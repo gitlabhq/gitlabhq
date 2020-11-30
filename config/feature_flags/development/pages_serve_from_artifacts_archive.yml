@@ -1,8 +1,0 @@
----
-name: pages_serve_from_artifacts_archive
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46320
-rollout_issue_url:
-group: group::release management
-milestone: '13.4'
-type: development
-default_enabled: false

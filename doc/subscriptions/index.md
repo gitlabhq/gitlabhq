@@ -152,7 +152,7 @@ With a linked GitLab.com account:
 1. Select the desired group from the **This subscription is for** dropdown.
 1. Click **Proceed to checkout**.
 
-Subscription charges are calculated based on the total number of users in a group, including its subgroups and nested projects. If the total number of users exceeds the number of seats in your subscription, you will be charged for the additional users.
+Subscription charges are calculated based on the total number of users in a group, including its subgroups and nested projects. If the total number of users exceeds the number of seats in your subscription, your account is charged for the additional users.
 
 ### Change customer portal account password
 

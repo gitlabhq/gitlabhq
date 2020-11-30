@@ -1,6 +1,15 @@
 # frozen_string_literal: true
 
 module OptimizedIssuableLabelFilter
+  extend ActiveSupport::Concern
+
+  prepended do
+    extend Gitlab::Cache::RequestCache
+
+    # Avoid repeating label queries times when the finder is instantiated multiple times during the request.
+    request_cache(:find_label_ids) { [root_namespace.id, params.label_names] }
+  end
+
   def by_label(items)
     return items unless params.labels?
 
@@ -41,7 +50,7 @@ module OptimizedIssuableLabelFilter
 
   def issuables_with_selected_labels(items, target_model)
     if root_namespace
-      all_label_ids = find_label_ids(root_namespace)
+      all_label_ids = find_label_ids
       # Found less labels in the DB than we were searching for. Return nothing.
       return items.none if all_label_ids.size != params.label_names.size
 
@@ -57,18 +66,20 @@ module OptimizedIssuableLabelFilter
     items
   end
 
-  def find_label_ids(root_namespace)
-    finder_params = {
-      include_subgroups: true,
-      include_ancestor_groups: true,
-      include_descendant_groups: true,
-      group: root_namespace,
-      title: params.label_names
-    }
+  def find_label_ids
+    group_labels = Label
+      .where(project_id: nil)
+      .where(title: params.label_names)
+      .where(group_id: root_namespace.self_and_descendants.select(:id))
 
-    LabelsFinder
-      .new(nil, finder_params)
-      .execute(skip_authorization: true)
+    project_labels = Label
+      .where(group_id: nil)
+      .where(title: params.label_names)
+      .where(project_id: Project.select(:id).where(namespace_id: root_namespace.self_and_descendants.select(:id)))
+
+    Label
+      .from_union([group_labels, project_labels], remove_duplicates: false)
+      .reorder(nil)
       .pluck(:title, :id)
       .group_by(&:first)
       .values

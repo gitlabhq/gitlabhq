@@ -1,0 +1,8 @@
+---
+name: ci_live_trace_use_fog_attributes
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47536
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/285079
+milestone: '13.6'
+type: development
+group: group::testing
+default_enabled: false

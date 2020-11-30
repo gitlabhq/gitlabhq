@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 To retrieve and import GitHub repositories, you need a [GitHub personal access token](https://github.com/settings/tokens).
 A username should be passed as the second argument to the Rake task,
-which will become the owner of the project. You can resume an import
+which becomes the owner of the project. You can resume an import
 with the same command.
 
 Bear in mind that the syntax is very specific. Remove any spaces within the argument block and
@@ -20,7 +20,7 @@ before/after the brackets. Also, some shells (for example, `zsh`) can interpret 
 ## Caveats
 
 If the GitHub [rate limit](https://developer.github.com/v3/#rate-limiting) is reached while importing,
-the importing process will wait (`sleep()`) until it can continue importing.
+the importing process waits (`sleep()`) until it can continue importing.
 
 ## Importing multiple projects
 
@@ -35,8 +35,8 @@ bundle exec rake "import:github[access_token,root,foo/bar]" RAILS_ENV=production
 ```
 
 In this case, `access_token` is your GitHub personal access token, `root`
-is your GitLab username, and  `foo/bar` is the new GitLab namespace/project that
-will get created from your GitHub project. Subgroups are also possible: `foo/foo/bar`.
+is your GitLab username, and `foo/bar` is the new GitLab namespace/project
+created from your GitHub project. Subgroups are also possible: `foo/foo/bar`.
 
 ## Importing a single project
 

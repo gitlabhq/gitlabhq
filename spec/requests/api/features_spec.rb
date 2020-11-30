@@ -6,6 +6,18 @@ RSpec.describe API::Features, stub_feature_flags: false do
   let_it_be(:user)  { create(:user) }
   let_it_be(:admin) { create(:admin) }
 
+  # Find any `development` feature flag name
+  let(:known_feature_flag) do
+    Feature::Definition.definitions
+      .values.find(&:development?)
+  end
+
+  let(:known_feature_flag_definition_hash) do
+    a_hash_including(
+      'type' => 'development'
+    )
+  end
+
   before do
     Feature.reset
     Flipper.unregister_groups
@@ -22,12 +34,14 @@ RSpec.describe API::Features, stub_feature_flags: false do
         {
           'name' => 'feature_1',
           'state' => 'on',
-          'gates' => [{ 'key' => 'boolean', 'value' => true }]
+          'gates' => [{ 'key' => 'boolean', 'value' => true }],
+          'definition' => nil
         },
         {
           'name' => 'feature_2',
           'state' => 'off',
-          'gates' => [{ 'key' => 'boolean', 'value' => false }]
+          'gates' => [{ 'key' => 'boolean', 'value' => false }],
+          'definition' => nil
         },
         {
           'name' => 'feature_3',
@@ -35,7 +49,14 @@ RSpec.describe API::Features, stub_feature_flags: false do
           'gates' => [
             { 'key' => 'boolean', 'value' => false },
             { 'key' => 'groups', 'value' => ['perf_team'] }
-          ]
+          ],
+          'definition' => nil
+        },
+        {
+          'name' => known_feature_flag.name,
+          'state' => 'on',
+          'gates' => [{ 'key' => 'boolean', 'value' => true }],
+          'definition' => known_feature_flag_definition_hash
         }
       ]
     end
@@ -44,6 +65,7 @@ RSpec.describe API::Features, stub_feature_flags: false do
       Feature.enable('feature_1')
       Feature.disable('feature_2')
       Feature.enable('feature_3', Feature.group(:perf_team))
+      Feature.enable(known_feature_flag.name)
     end
 
     it 'returns a 401 for anonymous users' do
@@ -67,7 +89,7 @@ RSpec.describe API::Features, stub_feature_flags: false do
   end
 
   describe 'POST /feature' do
-    let(:feature_name) { 'my_feature' }
+    let(:feature_name) { known_feature_flag.name }
 
     context 'when the feature does not exist' do
       it 'returns a 401 for anonymous users' do
@@ -87,43 +109,49 @@ RSpec.describe API::Features, stub_feature_flags: false do
           post api("/features/#{feature_name}", admin), params: { value: 'true' }
 
           expect(response).to have_gitlab_http_status(:created)
-          expect(json_response).to eq(
-            'name' => 'my_feature',
+          expect(json_response).to match(
+            'name' => feature_name,
             'state' => 'on',
-            'gates' => [{ 'key' => 'boolean', 'value' => true }])
+            'gates' => [{ 'key' => 'boolean', 'value' => true }],
+            'definition' => known_feature_flag_definition_hash
+          )
         end
 
         it 'creates an enabled feature for the given Flipper group when passed feature_group=perf_team' do
           post api("/features/#{feature_name}", admin), params: { value: 'true', feature_group: 'perf_team' }
 
           expect(response).to have_gitlab_http_status(:created)
-          expect(json_response).to eq(
-            'name' => 'my_feature',
+          expect(json_response).to match(
+            'name' => feature_name,
             'state' => 'conditional',
             'gates' => [
               { 'key' => 'boolean', 'value' => false },
               { 'key' => 'groups', 'value' => ['perf_team'] }
-            ])
+            ],
+            'definition' => known_feature_flag_definition_hash
+          )
         end
 
         it 'creates an enabled feature for the given user when passed user=username' do
           post api("/features/#{feature_name}", admin), params: { value: 'true', user: user.username }
 
           expect(response).to have_gitlab_http_status(:created)
-          expect(json_response).to eq(
-            'name' => 'my_feature',
+          expect(json_response).to match(
+            'name' => feature_name,
             'state' => 'conditional',
             'gates' => [
               { 'key' => 'boolean', 'value' => false },
               { 'key' => 'actors', 'value' => ["User:#{user.id}"] }
-            ])
+            ],
+            'definition' => known_feature_flag_definition_hash
+          )
         end
 
         it 'creates an enabled feature for the given user and feature group when passed user=username and feature_group=perf_team' do
           post api("/features/#{feature_name}", admin), params: { value: 'true', user: user.username, feature_group: 'perf_team' }
 
           expect(response).to have_gitlab_http_status(:created)
-          expect(json_response['name']).to eq('my_feature')
+          expect(json_response['name']).to eq(feature_name)
           expect(json_response['state']).to eq('conditional')
           expect(json_response['gates']).to contain_exactly(
             { 'key' => 'boolean', 'value' => false },
@@ -141,13 +169,15 @@ RSpec.describe API::Features, stub_feature_flags: false do
             post api("/features/#{feature_name}", admin), params: { value: 'true', project: project.full_path }
 
             expect(response).to have_gitlab_http_status(:created)
-            expect(json_response).to eq(
-              'name' => 'my_feature',
+            expect(json_response).to match(
+              'name' => feature_name,
               'state' => 'conditional',
               'gates' => [
                 { 'key' => 'boolean', 'value' => false },
                 { 'key' => 'actors', 'value' => ["Project:#{project.id}"] }
-              ])
+              ],
+              'definition' => known_feature_flag_definition_hash
+            )
           end
         end
 
@@ -156,12 +186,13 @@ RSpec.describe API::Features, stub_feature_flags: false do
             post api("/features/#{feature_name}", admin), params: { value: 'true', project: 'mep/to/the/mep/mep' }
 
             expect(response).to have_gitlab_http_status(:created)
-            expect(json_response).to eq(
-              "name" => "my_feature",
+            expect(json_response).to match(
+              "name" => feature_name,
               "state" => "off",
               "gates" => [
                 { "key" => "boolean", "value" => false }
-              ]
+              ],
+              'definition' => known_feature_flag_definition_hash
             )
           end
         end
@@ -175,13 +206,15 @@ RSpec.describe API::Features, stub_feature_flags: false do
             post api("/features/#{feature_name}", admin), params: { value: 'true', group: group.full_path }
 
             expect(response).to have_gitlab_http_status(:created)
-            expect(json_response).to eq(
-              'name' => 'my_feature',
+            expect(json_response).to match(
+              'name' => feature_name,
               'state' => 'conditional',
               'gates' => [
                 { 'key' => 'boolean', 'value' => false },
                 { 'key' => 'actors', 'value' => ["Group:#{group.id}"] }
-              ])
+              ],
+              'definition' => known_feature_flag_definition_hash
+            )
           end
         end
 
@@ -190,12 +223,13 @@ RSpec.describe API::Features, stub_feature_flags: false do
             post api("/features/#{feature_name}", admin), params: { value: 'true', group: 'not/a/group' }
 
             expect(response).to have_gitlab_http_status(:created)
-            expect(json_response).to eq(
-              "name" => "my_feature",
+            expect(json_response).to match(
+              "name" => feature_name,
               "state" => "off",
               "gates" => [
                 { "key" => "boolean", "value" => false }
-              ]
+              ],
+              'definition' => known_feature_flag_definition_hash
             )
           end
         end
@@ -205,26 +239,30 @@ RSpec.describe API::Features, stub_feature_flags: false do
         post api("/features/#{feature_name}", admin), params: { value: '50' }
 
         expect(response).to have_gitlab_http_status(:created)
-        expect(json_response).to eq(
-          'name' => 'my_feature',
+        expect(json_response).to match(
+          'name' => feature_name,
           'state' => 'conditional',
           'gates' => [
             { 'key' => 'boolean', 'value' => false },
             { 'key' => 'percentage_of_time', 'value' => 50 }
-          ])
+          ],
+          'definition' => known_feature_flag_definition_hash
+        )
       end
 
       it 'creates a feature with the given percentage of actors if passed an integer' do
         post api("/features/#{feature_name}", admin), params: { value: '50', key: 'percentage_of_actors' }
 
         expect(response).to have_gitlab_http_status(:created)
-        expect(json_response).to eq(
-          'name' => 'my_feature',
+        expect(json_response).to match(
+          'name' => feature_name,
           'state' => 'conditional',
           'gates' => [
             { 'key' => 'boolean', 'value' => false },
             { 'key' => 'percentage_of_actors', 'value' => 50 }
-          ])
+          ],
+          'definition' => known_feature_flag_definition_hash
+        )
       end
     end
 
@@ -238,36 +276,42 @@ RSpec.describe API::Features, stub_feature_flags: false do
           post api("/features/#{feature_name}", admin), params: { value: 'true' }
 
           expect(response).to have_gitlab_http_status(:created)
-          expect(json_response).to eq(
-            'name' => 'my_feature',
+          expect(json_response).to match(
+            'name' => feature_name,
             'state' => 'on',
-            'gates' => [{ 'key' => 'boolean', 'value' => true }])
+            'gates' => [{ 'key' => 'boolean', 'value' => true }],
+            'definition' => known_feature_flag_definition_hash
+          )
         end
 
         it 'enables the feature for the given Flipper group when passed feature_group=perf_team' do
           post api("/features/#{feature_name}", admin), params: { value: 'true', feature_group: 'perf_team' }
 
           expect(response).to have_gitlab_http_status(:created)
-          expect(json_response).to eq(
-            'name' => 'my_feature',
+          expect(json_response).to match(
+            'name' => feature_name,
             'state' => 'conditional',
             'gates' => [
               { 'key' => 'boolean', 'value' => false },
               { 'key' => 'groups', 'value' => ['perf_team'] }
-            ])
+            ],
+            'definition' => known_feature_flag_definition_hash
+          )
         end
 
         it 'enables the feature for the given user when passed user=username' do
           post api("/features/#{feature_name}", admin), params: { value: 'true', user: user.username }
 
           expect(response).to have_gitlab_http_status(:created)
-          expect(json_response).to eq(
-            'name' => 'my_feature',
+          expect(json_response).to match(
+            'name' => feature_name,
             'state' => 'conditional',
             'gates' => [
               { 'key' => 'boolean', 'value' => false },
               { 'key' => 'actors', 'value' => ["User:#{user.id}"] }
-            ])
+            ],
+            'definition' => known_feature_flag_definition_hash
+          )
         end
       end
 
@@ -279,10 +323,12 @@ RSpec.describe API::Features, stub_feature_flags: false do
           post api("/features/#{feature_name}", admin), params: { value: 'false' }
 
           expect(response).to have_gitlab_http_status(:created)
-          expect(json_response).to eq(
-            'name' => 'my_feature',
+          expect(json_response).to match(
+            'name' => feature_name,
             'state' => 'off',
-            'gates' => [{ 'key' => 'boolean', 'value' => false }])
+            'gates' => [{ 'key' => 'boolean', 'value' => false }],
+            'definition' => known_feature_flag_definition_hash
+          )
         end
 
         it 'disables the feature for the given Flipper group when passed feature_group=perf_team' do
@@ -292,10 +338,12 @@ RSpec.describe API::Features, stub_feature_flags: false do
           post api("/features/#{feature_name}", admin), params: { value: 'false', feature_group: 'perf_team' }
 
           expect(response).to have_gitlab_http_status(:created)
-          expect(json_response).to eq(
-            'name' => 'my_feature',
+          expect(json_response).to match(
+            'name' => feature_name,
             'state' => 'off',
-            'gates' => [{ 'key' => 'boolean', 'value' => false }])
+            'gates' => [{ 'key' => 'boolean', 'value' => false }],
+            'definition' => known_feature_flag_definition_hash
+          )
         end
 
         it 'disables the feature for the given user when passed user=username' do
@@ -305,10 +353,12 @@ RSpec.describe API::Features, stub_feature_flags: false do
           post api("/features/#{feature_name}", admin), params: { value: 'false', user: user.username }
 
           expect(response).to have_gitlab_http_status(:created)
-          expect(json_response).to eq(
-            'name' => 'my_feature',
+          expect(json_response).to match(
+            'name' => feature_name,
             'state' => 'off',
-            'gates' => [{ 'key' => 'boolean', 'value' => false }])
+            'gates' => [{ 'key' => 'boolean', 'value' => false }],
+            'definition' => known_feature_flag_definition_hash
+          )
         end
       end
 
@@ -321,13 +371,15 @@ RSpec.describe API::Features, stub_feature_flags: false do
           post api("/features/#{feature_name}", admin), params: { value: '30' }
 
           expect(response).to have_gitlab_http_status(:created)
-          expect(json_response).to eq(
-            'name' => 'my_feature',
+          expect(json_response).to match(
+            'name' => feature_name,
             'state' => 'conditional',
             'gates' => [
               { 'key' => 'boolean', 'value' => false },
               { 'key' => 'percentage_of_time', 'value' => 30 }
-            ])
+            ],
+            'definition' => known_feature_flag_definition_hash
+          )
         end
       end
 
@@ -340,13 +392,15 @@ RSpec.describe API::Features, stub_feature_flags: false do
           post api("/features/#{feature_name}", admin), params: { value: '74', key: 'percentage_of_actors' }
 
           expect(response).to have_gitlab_http_status(:created)
-          expect(json_response).to eq(
-            'name' => 'my_feature',
+          expect(json_response).to match(
+            'name' => feature_name,
             'state' => 'conditional',
             'gates' => [
               { 'key' => 'boolean', 'value' => false },
               { 'key' => 'percentage_of_actors', 'value' => 74 }
-            ])
+            ],
+            'definition' => known_feature_flag_definition_hash
+          )
         end
       end
     end

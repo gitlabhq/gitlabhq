@@ -1,0 +1,5 @@
+---
+title: Implement passing dotenv variables to bridge jobs
+merge_request: 47905
+author:
+type: fixed

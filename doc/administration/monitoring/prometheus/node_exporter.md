@@ -24,5 +24,5 @@ To enable the node exporter:
 1. Save the file, and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
    for the changes to take effect.
 
-Prometheus will now begin collecting performance data from the node exporter
+Prometheus begins collecting performance data from the node exporter
 exposed at `localhost:9100`.

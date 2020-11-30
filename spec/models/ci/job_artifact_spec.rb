@@ -96,6 +96,22 @@ RSpec.describe Ci::JobArtifact do
     end
   end
 
+  describe '.codequality_reports' do
+    subject { described_class.codequality_reports }
+
+    context 'when there is a codequality report' do
+      let!(:artifact) { create(:ci_job_artifact, :codequality) }
+
+      it { is_expected.to eq([artifact]) }
+    end
+
+    context 'when there are no codequality reports' do
+      let!(:artifact) { create(:ci_job_artifact, :archive) }
+
+      it { is_expected.to be_empty }
+    end
+  end
+
   describe '.terraform_reports' do
     context 'when there is a terraform report' do
       it 'return the job artifact' do

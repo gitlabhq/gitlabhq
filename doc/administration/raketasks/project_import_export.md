@@ -36,7 +36,7 @@ sudo gitlab-rake gitlab:import_export:version
 bundle exec rake gitlab:import_export:version RAILS_ENV=production
 ```
 
-The current list of DB tables that will be exported can be listed by using the following command:
+The current list of DB tables to export can be listed by using the following command:
 
 ```shell
 # Omnibus installations

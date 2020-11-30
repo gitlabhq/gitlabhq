@@ -19,35 +19,9 @@ RSpec.describe Clusters::Applications::Helm do
   end
 
   describe '#can_uninstall?' do
-    context "with other existing applications" do
-      Clusters::Cluster::APPLICATIONS.keys.each do |application_name|
-        next if application_name == 'helm'
+    subject(:application) { build(:clusters_applications_helm).can_uninstall? }
 
-        it "is false when #{application_name} is installed" do
-          cluster_application = create("clusters_applications_#{application_name}".to_sym)
-
-          helm = cluster_application.cluster.application_helm
-
-          expect(helm.allowed_to_uninstall?).to be_falsy
-        end
-      end
-
-      it 'executes a single query only' do
-        cluster_application = create(:clusters_applications_ingress)
-        helm = cluster_application.cluster.application_helm
-
-        query_count = ActiveRecord::QueryRecorder.new { helm.allowed_to_uninstall? }.count
-        expect(query_count).to eq(1)
-      end
-    end
-
-    context "without other existing applications" do
-      subject { helm.can_uninstall? }
-
-      let(:helm) { create(:clusters_applications_helm) }
-
-      it { is_expected.to be_truthy }
-    end
+    it { is_expected.to eq true }
   end
 
   describe '#issue_client_cert' do
@@ -133,16 +107,6 @@ RSpec.describe Clusters::Applications::Helm do
 
         it { expect(subject).not_to be_rbac }
       end
-    end
-  end
-
-  describe '#post_uninstall' do
-    let(:helm) { create(:clusters_applications_helm, :installed) }
-
-    it do
-      expect(helm.cluster.kubeclient).to receive(:delete_namespace).with('gitlab-managed-apps')
-
-      helm.post_uninstall
     end
   end
 end

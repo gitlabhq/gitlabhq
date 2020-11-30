@@ -49,7 +49,7 @@ runs on pipelines automatically only if a [`Dockerfile` or matching buildpack](s
 exists.
 
 If a [CI/CD configuration file](../../ci/yaml/README.md) is present in the project,
-it will continue to be used, whether or not Auto DevOps is enabled.
+it continues to be used, whether or not Auto DevOps is enabled.
 
 ## Quick start
 
@@ -146,7 +146,7 @@ any of the following places:
 The base domain variable `KUBE_INGRESS_BASE_DOMAIN` follows the same order of precedence
 as other environment [variables](../../ci/variables/README.md#priority-of-environment-variables).
 If the CI/CD variable is not set and the cluster setting is left blank, the instance-wide **Auto DevOps domain**
-setting will be used if set.
+setting is used if set.
 
 TIP: **Tip:**
 If you use the [GitLab managed app for Ingress](../../user/clusters/applications.md#ingress),
@@ -236,7 +236,7 @@ Auto DevOps at the group and project level, respectively.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38542) in GitLab 11.0.
 
-You can change the deployment strategy used by Auto DevOps by going to your
+You can change the deployment strategy used by Auto DevOps by visiting your
 project's **Settings > CI/CD > Auto DevOps**. The following options
 are available:
 
@@ -372,7 +372,7 @@ To fix this issue, you must either:
 
 ### Failure to create a Kubernetes namespace
 
-Auto Deploy will fail if GitLab can't create a Kubernetes namespace and
+Auto Deploy fails if GitLab can't create a Kubernetes namespace and
 service account for your project. For help debugging this issue, see
 [Troubleshooting failed deployment jobs](../../user/project/clusters/index.md#troubleshooting).
 
@@ -476,7 +476,7 @@ that works for this problem. Follow these steps to use the tool in Auto DevOps:
 ### Error: error initializing: Looks like "https://kubernetes-charts.storage.googleapis.com" is not a valid chart repository or cannot be reached
 
 As [announced in the official CNCF blogpost](https://www.cncf.io/blog/2020/10/07/important-reminder-for-all-helm-users-stable-incubator-repos-are-deprecated-and-all-images-are-changing-location/),
-the stable Helm chart repository will be deprecated and removed on November 13th, 2020.
+the stable Helm chart repository was deprecated and removed on November 13th, 2020.
 You may encounter this error after that date.
 
 Some GitLab features had dependencies on the stable chart. To mitigate the impact, we changed them
@@ -495,7 +495,7 @@ include:
   image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:v1.0.5"
 ```
 
-Keep in mind that this approach will eventually stop working when the stable repository is removed,
+Keep in mind that this approach stops working when the stable repository is removed,
 so you must eventually fix your custom chart.
 
 To fix your custom chart:

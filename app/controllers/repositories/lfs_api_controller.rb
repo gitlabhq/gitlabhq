@@ -92,14 +92,24 @@ module Repositories
       {
         upload: {
           href: "#{project.http_url_to_repo}/gitlab-lfs/objects/#{object[:oid]}/#{object[:size]}",
-          header: {
-            Authorization: authorization_header,
-            # git-lfs v2.5.0 sets the Content-Type based on the uploaded file. This
-            # ensures that Workhorse can intercept the request.
-            'Content-Type': LFS_TRANSFER_CONTENT_TYPE
-          }.compact
+          header: upload_headers
         }
       }
+    end
+
+    def upload_headers
+      headers = {
+        Authorization: authorization_header,
+        # git-lfs v2.5.0 sets the Content-Type based on the uploaded file. This
+        # ensures that Workhorse can intercept the request.
+        'Content-Type': LFS_TRANSFER_CONTENT_TYPE
+      }
+
+      if Feature.enabled?(:lfs_chunked_encoding, project)
+        headers['Transfer-Encoding'] = 'chunked'
+      end
+
+      headers
     end
 
     def lfs_check_batch_operation!

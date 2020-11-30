@@ -33,6 +33,8 @@ comparison_cmd = [
 
 comment = `cat #{markdown_result}`
 
-markdown(<<~MARKDOWN)
+unless comment.strip.empty?
+  markdown(<<~MARKDOWN)
     #{comment}
-MARKDOWN
+  MARKDOWN
+end

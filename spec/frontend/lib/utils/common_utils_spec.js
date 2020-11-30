@@ -220,6 +220,7 @@ describe('common_utils', () => {
     beforeEach(() => {
       elem = document.createElement('div');
       window.innerHeight = windowHeight;
+      window.mrTabs = { currentAction: 'show' };
       jest.spyOn($.fn, 'animate');
       jest.spyOn($.fn, 'offset').mockReturnValue({ top: elemTop });
     });

@@ -3,6 +3,10 @@
 module Mutations
   module AwardEmojis
     class Base < BaseMutation
+      include ::Mutations::FindsByGid
+
+      NOT_EMOJI_AWARDABLE = 'You cannot award emoji to this resource.'
+
       authorize :award_emoji
 
       argument :awardable_id,
@@ -22,20 +26,15 @@ module Mutations
 
       private
 
+      # TODO: remove this method when the compatibility layer is removed
+      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
       def find_object(id:)
-        # TODO: remove this line when the compatibility layer is removed
-        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
-        id = ::Types::GlobalIDType[::Awardable].coerce_isolated_input(id)
-        GitlabSchema.find_by_gid(id)
+        super(id: ::Types::GlobalIDType[::Awardable].coerce_isolated_input(id))
       end
 
-      # Called by mutations methods after performing an authorization check
-      # of an awardable object.
-      def check_object_is_awardable!(object)
-        unless object.is_a?(Awardable) && object.emoji_awardable?
-          raise Gitlab::Graphql::Errors::ResourceNotAvailable,
-                'Cannot award emoji to this resource'
-        end
+      def authorize!(object)
+        super
+        raise_resource_not_available_error!(NOT_EMOJI_AWARDABLE) unless object.emoji_awardable?
       end
     end
   end

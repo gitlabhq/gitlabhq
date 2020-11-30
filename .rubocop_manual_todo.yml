@@ -2,7 +2,6 @@ FactoryBot/InlineAssociation:
   Exclude:
     - 'ee/spec/factories/analytics/cycle_analytics/group_stages.rb'
     - 'ee/spec/factories/geo/event_log.rb'
-    - 'ee/spec/factories/groups.rb'
     - 'ee/spec/factories/merge_request_blocks.rb'
     - 'ee/spec/factories/vulnerabilities/feedback.rb'
     - 'spec/factories/atlassian_identities.rb'
@@ -14,19 +13,14 @@ FactoryBot/InlineAssociation:
     - 'spec/factories/go_modules.rb'
     - 'spec/factories/group_group_links.rb'
     - 'spec/factories/import_export_uploads.rb'
-    - 'spec/factories/merge_requests.rb'
     - 'spec/factories/notes.rb'
-    - 'spec/factories/sent_notifications.rb'
     - 'spec/factories/uploads.rb'
     - 'spec/factories/wiki_pages.rb'
 
 Graphql/IDType:
   Exclude:
     - 'ee/app/graphql/ee/mutations/issues/update.rb'
-    - 'ee/app/graphql/mutations/iterations/update.rb'
-    - 'ee/app/graphql/resolvers/iterations_resolver.rb'
     - 'app/graphql/mutations/boards/issues/issue_move_list.rb'
-    - 'app/graphql/mutations/issues/update.rb'
     - 'app/graphql/mutations/metrics/dashboard/annotations/delete.rb'
     - 'app/graphql/resolvers/design_management/design_at_version_resolver.rb'
     - 'app/graphql/resolvers/design_management/design_resolver.rb'
@@ -44,7 +38,6 @@ Graphql/ResolverType:
     - 'app/graphql/resolvers/base_resolver.rb'
     - 'app/graphql/resolvers/ci/jobs_resolver.rb'
     - 'app/graphql/resolvers/ci/pipeline_stages_resolver.rb'
-    - 'app/graphql/resolvers/error_tracking/sentry_error_stack_trace_resolver.rb'
     - 'app/graphql/resolvers/merge_requests_resolver.rb'
     - 'app/graphql/resolvers/users/group_count_resolver.rb'
     - 'ee/app/graphql/resolvers/geo/merge_request_diff_registries_resolver.rb'
@@ -113,7 +106,6 @@ Rails/SaveBang:
     - 'ee/spec/models/scim_oauth_access_token_spec.rb'
     - 'ee/spec/models/upload_spec.rb'
     - 'ee/spec/models/user_preference_spec.rb'
-    - 'ee/spec/models/user_spec.rb'
     - 'ee/spec/models/visible_approvable_spec.rb'
     - 'ee/spec/models/vulnerabilities/feedback_spec.rb'
     - 'ee/spec/models/vulnerabilities/issue_link_spec.rb'

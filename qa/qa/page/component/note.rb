@@ -122,13 +122,17 @@ module QA
 
         def select_all_activities_filter
           select_filter_with_text('Show all activity')
+
+          wait_until do
+            has_no_element?(:discussion_filter_container) && has_element?(:comment_field)
+          end
         end
 
         def select_comments_only_filter
           select_filter_with_text('Show comments only')
 
           wait_until do
-            has_no_element?(:system_note_content)
+            has_no_element?(:discussion_filter_container) && has_no_element?(:system_note_content)
           end
         end
 
@@ -145,6 +149,8 @@ module QA
           click_element :note_dropdown
           click_element :discussion_menu_item
           click_element :comment_button
+
+          has_comment?(text)
         end
 
         def toggle_comments(position)

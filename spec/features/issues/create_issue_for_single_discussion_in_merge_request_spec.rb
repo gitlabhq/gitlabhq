@@ -31,7 +31,8 @@ RSpec.describe 'Resolve an open thread in a merge request by creating an issue',
         visit project_merge_request_path(project, merge_request)
       end
 
-      it 'does not show a link to create a new issue' do
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/285453
+      xit 'does not show a link to create a new issue' do
         expect(page).not_to have_css resolve_discussion_selector
       end
     end

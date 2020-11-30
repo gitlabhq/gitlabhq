@@ -46,7 +46,7 @@ Use the tools at your disposal when you get stuck.
 
 - Mac: Type '`git`' in the Terminal application.
 
-> If it's not installed, it will prompt you to install it.
+> If it's not installed, it prompts you to install it.
 
 - Debian: '`sudo apt-get install git-all`' or Red Hat '`sudo yum install git-all`'
 
@@ -235,7 +235,7 @@ See GitLab merge requests for examples: <https://gitlab.com/gitlab-org/gitlab-fo
 
 - Useful for marking deployments and releases.
 - Annotated tags are an unchangeable part of Git history.
-- Soft/lightweight tags can be set and removed at will.
+- Soft/lightweight tags can be set and removed at any time.
 - Many projects combine an annotated release tag with a stable branch.
 - Consider setting deployment/release tags automatically.
 

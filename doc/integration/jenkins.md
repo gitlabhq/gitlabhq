@@ -54,9 +54,9 @@ Grant a GitLab user access to the select GitLab projects.
 
 1. Create a new GitLab user, or choose an existing GitLab user.
 
-   This account will be used by Jenkins to access the GitLab projects. We recommend creating a GitLab
+   This account is used by Jenkins to access the GitLab projects. We recommend creating a GitLab
    user for only this purpose. If you use a person's account, and their account is deactivated or
-   deleted, the GitLab-Jenkins integration will stop working.
+   deleted, the GitLab-Jenkins integration stops working.
 
 1. Grant the user permission to the GitLab projects.
 
@@ -96,12 +96,12 @@ For more information, see GitLab Plugin documentation about
 
 ## Configure the Jenkins project
 
-Set up the Jenkins project you’re going to run your build on.
+Set up the Jenkins project you intend to run your build on.
 
 1. On your Jenkins instance, go to **New Item**.
 1. Enter the project's name.
 1. Choose between **Freestyle** or **Pipeline** and click **OK**.
-    We recommend a Freestyle project, because the Jenkins plugin will update the build status on
+    We recommend a Freestyle project, because the Jenkins plugin updates the build status on
     GitLab. In a Pipeline project, you must configure a script to update the status on GitLab.
 1. Choose your GitLab connection from the dropdown.
 1. Check the **Build when a change is pushed to GitLab** checkbox.
@@ -186,7 +186,7 @@ If those are present, the request is exceeding the
 [webhook timeout](../user/project/integrations/webhooks.md#receiving-duplicate-or-multiple-webhook-requests-triggered-by-one-event),
 which is set to 10 seconds by default.
 
-To fix this the `gitlab_rails['webhook_timeout']` value will need to be increased
+To fix this the `gitlab_rails['webhook_timeout']` value must be increased
 in the `gitlab.rb` config file, followed by the [`gitlab-ctl reconfigure` command](../administration/restart_gitlab.md).
 
 If you don't find the errors above, but do find *duplicate* entries like below (in `/var/log/gitlab/gitlab-rail`), this

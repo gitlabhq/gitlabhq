@@ -51,6 +51,9 @@ Note the following:
   then new branches associated with such merge requests will be created
   within a project during the import/export. Thus, the number of branches
   in the exported project could be bigger than in the original project.
+- Deploy keys allowed to push to protected branches are not exported. Therefore,
+  you will need to recreate this association by first enabling these deploy keys in your
+  imported project and then updating your protected branches accordingly.
 
 ## Version history
 
@@ -114,6 +117,7 @@ The following items will be exported:
 - LFS objects
 - Issue boards
 - Pipelines history
+- Push Rules
 
 The following items will NOT be exported:
 
@@ -123,7 +127,6 @@ The following items will NOT be exported:
 - Webhooks
 - Any encrypted tokens
 - Merge Request Approvers
-- Push Rules
 - Awards
 
 NOTE: **Note:**

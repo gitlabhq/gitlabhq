@@ -35,7 +35,7 @@ module Gitlab
           # rubocop: enable CodeReuse/ActiveRecord
 
           def pipelines
-            if ::Feature.enabled?(:ci_auto_cancel_all_pipelines, project, default_enabled: false)
+            if ::Feature.enabled?(:ci_auto_cancel_all_pipelines, project, default_enabled: true)
               project.all_pipelines.ci_and_parent_sources
             else
               project.ci_pipelines

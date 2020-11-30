@@ -53,7 +53,7 @@ users to not set that header and bypass the GitLab rate limiter.
 Note that the bypass only works if the header is set to `1`.
 
 Requests that bypassed the rate limiter because of the bypass header
-will be marked with `"throttle_safelist":"throttle_bypass_header"` in
+are marked with `"throttle_safelist":"throttle_bypass_header"` in
 [`production_json.log`](../../../administration/logs.md#production_jsonlog).
 
 To disable the bypass mechanism, make sure the environment variable

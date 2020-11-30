@@ -23,6 +23,7 @@ import {
   commentLineOptions,
   formatLineRange,
 } from './multiline_comment_utils';
+import { INLINE_DIFF_LINES_KEY } from '~/diffs/constants';
 
 export default {
   name: 'NoteableNote',
@@ -169,12 +170,8 @@ export default {
       return this.line && this.startLineNumber !== this.endLineNumber;
     },
     commentLineOptions() {
-      const sideA = this.line.type === 'new' ? 'right' : 'left';
-      const sideB = sideA === 'left' ? 'right' : 'left';
-      const lines = this.diffFile.highlighted_diff_lines.length
-        ? this.diffFile.highlighted_diff_lines
-        : this.diffFile.parallel_diff_lines.map(l => l[sideA] || l[sideB]);
-      return commentLineOptions(lines, this.commentLineStart, this.line.line_code, sideA);
+      const lines = this.diffFile[INLINE_DIFF_LINES_KEY].length;
+      return commentLineOptions(lines, this.commentLineStart, this.line.line_code);
     },
     diffFile() {
       if (this.commentLineStart.line_code) {

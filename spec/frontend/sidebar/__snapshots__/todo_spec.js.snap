@@ -4,13 +4,8 @@ exports[`SidebarTodo template renders component container element with proper da
 <button
   aria-label="Mark as done"
   class="btn btn-default btn-todo issuable-header-btn float-right"
-  data-boundary="viewport"
-  data-container="body"
   data-issuable-id="1"
   data-issuable-type="epic"
-  data-original-title=""
-  data-placement="left"
-  title=""
   type="button"
 >
   <gl-icon-stub

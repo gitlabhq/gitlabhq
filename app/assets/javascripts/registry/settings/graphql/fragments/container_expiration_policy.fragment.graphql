@@ -5,4 +5,5 @@ fragment ContainerExpirationPolicyFields on ContainerExpirationPolicy {
   nameRegex
   nameRegexKeep
   olderThan
+  nextRunAt
 }

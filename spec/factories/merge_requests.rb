@@ -237,7 +237,7 @@ FactoryBot.define do
       target_branch { 'pages-deploy-target' }
 
       transient do
-        deployment { create(:deployment, :review_app) }
+        deployment { association(:deployment, :review_app) }
       end
 
       after(:build) do |merge_request, evaluator|

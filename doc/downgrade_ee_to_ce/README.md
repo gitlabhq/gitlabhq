@@ -24,8 +24,7 @@ alternative authentication methods to your users.
 ### Remove Service Integration entries from the database
 
 The `JenkinsService` and `GithubService` classes are only available in the Enterprise Edition codebase,
-so if you downgrade to the Community Edition, you'll come across the following
-error:
+so if you downgrade to the Community Edition, the following error displays:
 
 ```plaintext
 Completed 500 Internal Server Error in 497ms (ActiveRecord: 32.2ms)

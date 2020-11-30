@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { loadCSSFile } from '../lib/utils/css_utils';
 
 let instanceCount = 0;
 
@@ -13,10 +14,15 @@ class AutoWidthDropdownSelect {
     const { dropdownClass } = this;
     import(/* webpackChunkName: 'select2' */ 'select2/select2')
       .then(() => {
-        this.$selectElement.select2({
-          dropdownCssClass: dropdownClass,
-          ...AutoWidthDropdownSelect.selectOptions(this.dropdownClass),
-        });
+        // eslint-disable-next-line promise/no-nesting
+        loadCSSFile(gon.select2_css_path)
+          .then(() => {
+            this.$selectElement.select2({
+              dropdownCssClass: dropdownClass,
+              ...AutoWidthDropdownSelect.selectOptions(this.dropdownClass),
+            });
+          })
+          .catch(() => {});
       })
       .catch(() => {});
 

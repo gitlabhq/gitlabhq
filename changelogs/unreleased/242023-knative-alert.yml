@@ -1,0 +1,5 @@
+---
+title: Convert knative error alert to glalert
+merge_request: 47840
+author:
+type: changed

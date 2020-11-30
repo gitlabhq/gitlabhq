@@ -41,27 +41,6 @@ RSpec.describe ProjectsController do
           end
         end
       end
-
-      context 'with the new_create_project_ui experiment enabled and the user is part of the control group' do
-        before do
-          stub_experiment(new_create_project_ui: true)
-          stub_experiment_for_user(new_create_project_ui: false)
-          allow_any_instance_of(described_class).to receive(:experimentation_subject_id).and_return('uuid')
-        end
-
-        it 'passes the right tracking parameters to the frontend' do
-          get(:new)
-
-          expect(Gon.tracking_data).to eq(
-            {
-              category: 'Manage::Import::Experiment::NewCreateProjectUi',
-              action: 'click_tab',
-              label: 'uuid',
-              property: 'control_group'
-            }
-          )
-        end
-      end
     end
   end
 

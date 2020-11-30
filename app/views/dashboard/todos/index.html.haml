@@ -71,7 +71,7 @@
                 = sort_options_hash[@sort]
               - else
                 = sort_title_recently_created
-              = icon('chevron-down')
+              = sprite_icon('chevron-down', css_class: 'dropdown-menu-toggle-icon gl-top-3')
             %ul.dropdown-menu.dropdown-menu-sort.dropdown-menu-right
               %li
                 = link_to todos_filter_path(sort: sort_value_label_priority) do

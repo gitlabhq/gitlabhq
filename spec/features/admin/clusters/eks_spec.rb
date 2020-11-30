@@ -7,6 +7,7 @@ RSpec.describe 'Instance-level AWS EKS Cluster', :js do
 
   before do
     sign_in(user)
+    gitlab_enable_admin_mode_sign_in(user)
   end
 
   context 'when user does not have a cluster and visits group clusters page' do

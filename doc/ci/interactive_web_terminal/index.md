@@ -44,26 +44,26 @@ Not all executors are
 
 NOTE: **Note:**
 The `docker` executor does not keep running
-after the build script is finished. At that point, the terminal will automatically
-disconnect and will not wait for the user to finish. Please follow [this
+after the build script is finished. At that point, the terminal automatically
+disconnects and does not wait for the user to finish. Please follow [this
 issue](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3605) for updates on
 improving this behavior.
 
 Sometimes, when a job is running, things don't go as you would expect, and it
 would be helpful if one can have a shell to aid debugging. When a job is
-running, on the right panel you can see a button `debug` that will open the terminal
+running, on the right panel you can see a button `debug` that opens the terminal
 for the current job.
 
 ![Example of job running with terminal
 available](img/interactive_web_terminal_running_job.png)
 
-When clicked, a new tab will open to the terminal page where you can access
+When clicked, a new tab opens to the terminal page where you can access
 the terminal and type commands like a normal shell.
 
 ![terminal of the job](img/interactive_web_terminal_page.png)
 
 If you have the terminal open and the job has finished with its tasks, the
-terminal will block the job from finishing for the duration configured in
+terminal blocks the job from finishing for the duration configured in
 [`[session_server].session_timeout`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section) until you
 close the terminal window.
 

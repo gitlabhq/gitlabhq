@@ -46,7 +46,7 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow do
       it 'sends event to tracker' do
         allow(tracker).to receive(:track_self_describing_event).and_call_original
 
-        subject.self_describing_event('iglu:com.gitlab/foo/jsonschema/1-0-0', foo: 'bar')
+        subject.self_describing_event('iglu:com.gitlab/foo/jsonschema/1-0-0', { foo: 'bar' })
 
         expect(tracker).to have_received(:track_self_describing_event) do |event, context, timestamp|
           expect(event.to_json[:schema]).to eq('iglu:com.gitlab/foo/jsonschema/1-0-0')
@@ -71,7 +71,7 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow do
       it 'does not send event to tracker' do
         expect_any_instance_of(SnowplowTracker::Tracker).not_to receive(:track_self_describing_event)
 
-        subject.self_describing_event('iglu:com.gitlab/foo/jsonschema/1-0-0', foo: 'bar')
+        subject.self_describing_event('iglu:com.gitlab/foo/jsonschema/1-0-0', { foo: 'bar' })
       end
     end
   end

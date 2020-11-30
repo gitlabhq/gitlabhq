@@ -49,5 +49,3 @@ export const toggleDisableButton = ($button, disable) => {
   if (disable && $button.prop('disabled')) return;
   $button.prop('disabled', disable);
 };
-
-export default {};

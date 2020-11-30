@@ -27,6 +27,10 @@ class UploadsController < ApplicationController
 
   feature_category :not_owned
 
+  def self.model_classes
+    MODEL_CLASSES
+  end
+
   def uploader_class
     PersonalFileUploader
   end
@@ -99,7 +103,7 @@ class UploadsController < ApplicationController
   end
 
   def upload_model_class
-    MODEL_CLASSES[params[:model]] || raise(UnknownUploadModelError)
+    self.class.model_classes[params[:model]] || raise(UnknownUploadModelError)
   end
 
   def upload_model_class_has_mounts?
@@ -112,3 +116,5 @@ class UploadsController < ApplicationController
     upload_model_class.uploader_options.has_key?(upload_mount)
   end
 end
+
+UploadsController.prepend_if_ee('EE::UploadsController')

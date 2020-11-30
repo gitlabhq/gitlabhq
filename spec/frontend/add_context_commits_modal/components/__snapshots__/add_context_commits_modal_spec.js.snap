@@ -18,7 +18,9 @@ exports[`AddContextCommitsModal renders modal with 2 tabs 1`] = `
     theme="indigo"
     value="0"
   >
-    <gl-tab-stub>
+    <gl-tab-stub
+      titlelinkclass=""
+    >
        
       <div
         class="mt-2"
@@ -37,7 +39,9 @@ exports[`AddContextCommitsModal renders modal with 2 tabs 1`] = `
       </div>
     </gl-tab-stub>
      
-    <gl-tab-stub>
+    <gl-tab-stub
+      titlelinkclass=""
+    >
        
       <review-tab-container-stub
         commits=""

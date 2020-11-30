@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 require_relative '../../../../tooling/lib/tooling/test_map_generator'
+require_relative '../../../support/helpers/file_read_helpers'
 
 RSpec.describe Tooling::TestMapGenerator do
+  include FileReadHelpers
+
   subject { described_class.new }
 
   describe '#parse' do
@@ -39,8 +42,8 @@ RSpec.describe Tooling::TestMapGenerator do
     let(:pathname) { instance_double(Pathname) }
 
     before do
-      allow(File).to receive(:read).with('yaml1.yml').and_return(yaml1)
-      allow(File).to receive(:read).with('yaml2.yml').and_return(yaml2)
+      stub_file_read('yaml1.yml', content: yaml1)
+      stub_file_read('yaml2.yml', content: yaml2)
     end
 
     context 'with single yaml' do

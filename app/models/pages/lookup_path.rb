@@ -2,6 +2,8 @@
 
 module Pages
   class LookupPath
+    include Gitlab::Utils::StrongMemoize
+
     def initialize(project, trim_prefix: nil, domain: nil)
       @project = project
       @domain = domain
@@ -37,37 +39,28 @@ module Pages
 
     attr_reader :project, :trim_prefix, :domain
 
-    def artifacts_archive
-      return unless Feature.enabled?(:pages_serve_from_artifacts_archive, project)
-
-      project.pages_metadatum.artifacts_archive
-    end
-
     def deployment
-      return unless Feature.enabled?(:pages_serve_from_deployments, project)
+      strong_memoize(:deployment) do
+        next unless Feature.enabled?(:pages_serve_from_deployments, project)
 
-      project.pages_metadatum.pages_deployment
+        project.pages_metadatum.pages_deployment
+      end
     end
 
     def zip_source
-      source = deployment || artifacts_archive
+      return unless deployment&.file
 
-      return unless source&.file
+      return if deployment.file.file_storage? && !Feature.enabled?(:pages_serve_with_zip_file_protocol, project)
 
-      return if source.file.file_storage? && !Feature.enabled?(:pages_serve_with_zip_file_protocol, project)
-
-      # artifacts archive doesn't support this
-      file_count = source.file_count if source.respond_to?(:file_count)
-
-      global_id = ::Gitlab::GlobalId.build(source, id: source.id).to_s
+      global_id = ::Gitlab::GlobalId.build(deployment, id: deployment.id).to_s
 
       {
         type: 'zip',
-        path: source.file.url_or_file_path(expire_at: 1.day.from_now),
+        path: deployment.file.url_or_file_path(expire_at: 1.day.from_now),
         global_id: global_id,
-        sha256: source.file_sha256,
-        file_size: source.size,
-        file_count: file_count
+        sha256: deployment.file_sha256,
+        file_size: deployment.size,
+        file_count: deployment.file_count
       }
     end
 

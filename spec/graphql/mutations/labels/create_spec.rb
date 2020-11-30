@@ -58,7 +58,7 @@ RSpec.describe Mutations::Labels::Create do
   end
 
   describe '#ready?' do
-    subject { mutation.ready?(attributes.merge(extra_params)) }
+    subject { mutation.ready?(**attributes.merge(extra_params)) }
 
     context 'when passing both project_path and group_path' do
       let(:extra_params) { { project_path: 'foo', group_path: 'bar' } }

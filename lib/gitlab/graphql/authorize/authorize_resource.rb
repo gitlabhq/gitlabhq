@@ -62,8 +62,8 @@ module Gitlab
           end
         end
 
-        def raise_resource_not_available_error!
-          raise Gitlab::Graphql::Errors::ResourceNotAvailable, RESOURCE_ACCESS_ERROR
+        def raise_resource_not_available_error!(msg = RESOURCE_ACCESS_ERROR)
+          raise Gitlab::Graphql::Errors::ResourceNotAvailable, msg
         end
       end
     end

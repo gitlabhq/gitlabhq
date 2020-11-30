@@ -53,7 +53,7 @@ must [install GitLab Runner](https://docs.gitlab.com/runner/install/) and
 [register](https://docs.gitlab.com/runner/register/) at least one runner.
 
 If you are testing CI/CD, you can install GitLab Runner and register runners on your local machine.
-When your CI/CD jobs run, they will run on your local machine.
+When your CI/CD jobs run, they run on your local machine.
 
 ### Create a `.gitlab-ci.yml` file
 

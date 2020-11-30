@@ -42,9 +42,7 @@ RSpec.describe Clusters::Aws::ProvisionService do
       allow(provider).to receive(:api_client)
         .and_return(client)
 
-      allow(File).to receive(:read)
-        .with(Rails.root.join('vendor', 'aws', 'cloudformation', 'eks_cluster.yaml'))
-        .and_return(cloudformation_template)
+      stub_file_read(Rails.root.join('vendor', 'aws', 'cloudformation', 'eks_cluster.yaml'), content: cloudformation_template)
     end
 
     it 'updates the provider status to :creating and configures the provider with credentials' do

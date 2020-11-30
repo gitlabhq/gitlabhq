@@ -271,21 +271,21 @@ How this feature works:
 1. You set the _maximum job timeout_ for a runner to 24 hours
 1. You set the _CI/CD Timeout_ for a project to **2 hours**
 1. You start a job
-1. The job, if running longer, will be timed out after **2 hours**
+1. The job, if running longer, times out after **2 hours**
 
 **Example 2 - Runner timeout not configured**
 
 1. You remove the _maximum job timeout_ configuration from a runner
 1. You set the _CI/CD Timeout_ for a project to **2 hours**
 1. You start a job
-1. The job, if running longer, will be timed out after **2 hours**
+1. The job, if running longer, times out after **2 hours**
 
 **Example 3 - Runner timeout smaller than project timeout**
 
 1. You set the _maximum job timeout_ for a runner to **30 minutes**
 1. You set the _CI/CD Timeout_ for a project to 2 hours
 1. You start a job
-1. The job, if running longer, will be timed out after **30 minutes**
+1. The job, if running longer, times out after **30 minutes**
 
 ## Be careful with sensitive information
 
@@ -360,8 +360,8 @@ value of the new token.
 It may be useful to know the IP address of a runner so you can troubleshoot
 issues with that runner. GitLab stores and displays the IP address by viewing
 the source of the HTTP requests it makes to GitLab when polling for jobs. The
-IP address is always kept up to date so if the runner IP changes it will be
-automatically updated in GitLab.
+IP address is always kept up to date so if the runner IP changes it
+automatically updates in GitLab.
 
 The IP address for shared runners and specific runners can be found in
 different places.

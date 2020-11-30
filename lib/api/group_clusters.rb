@@ -75,10 +75,12 @@ module API
       params do
         requires :cluster_id, type: Integer, desc: 'The cluster ID'
         optional :name, type: String, desc: 'Cluster name'
+        optional :enabled, type: Boolean, desc: 'Determines if cluster is active or not'
         optional :domain, type: String, desc: 'Cluster base domain'
         optional :environment_scope, type: String, desc: 'The associated environment to the cluster'
         optional :namespace_per_environment, default: true, type: Boolean, desc: 'Deploy each environment to a separate Kubernetes namespace'
         optional :management_project_id, type: Integer, desc: 'The ID of the management project'
+        optional :managed, type: Boolean, desc: 'Determines if GitLab will manage namespaces and service accounts for this cluster'
         optional :platform_kubernetes_attributes, type: Hash, desc: %q(Platform Kubernetes data) do
           optional :api_url, type: String, desc: 'URL to access the Kubernetes API'
           optional :token, type: String, desc: 'Token to authenticate against Kubernetes'

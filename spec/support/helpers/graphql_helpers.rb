@@ -126,7 +126,7 @@ module GraphqlHelpers
                     schema: GitlabSchema,
                     query: GraphQL::Query.new(GitlabSchema),
                     parent: nil)
-    field = described_class.fields[name]
+    field = described_class.fields[::GraphqlHelpers.fieldnamerize(name)]
     instance = described_class.authorized_new(object, context)
     field.resolve_field(instance, {}, context)
   end

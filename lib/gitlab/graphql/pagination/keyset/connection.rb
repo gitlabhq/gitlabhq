@@ -31,6 +31,8 @@ module Gitlab
       module Keyset
         class Connection < GraphQL::Pagination::ActiveRecordRelationConnection
           include Gitlab::Utils::StrongMemoize
+          include ::Gitlab::Graphql::ConnectionCollectionMethods
+          prepend ::Gitlab::Graphql::ConnectionRedaction
 
           # rubocop: disable Naming/PredicateName
           # https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo.Fields

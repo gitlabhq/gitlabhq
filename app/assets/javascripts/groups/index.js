@@ -47,8 +47,9 @@ export default (containerId = 'js-groups-tree', endpoint, action = '') => {
     data() {
       const { dataset } = dataEl || this.$options.el;
       const hideProjects = parseBoolean(dataset.hideProjects);
+      const showSchemaMarkup = parseBoolean(dataset.showSchemaMarkup);
       const service = new GroupsService(endpoint || dataset.endpoint);
-      const store = new GroupsStore(hideProjects);
+      const store = new GroupsStore({ hideProjects, showSchemaMarkup });
 
       return {
         action,

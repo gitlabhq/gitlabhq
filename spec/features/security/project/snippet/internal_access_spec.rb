@@ -26,7 +26,8 @@ RSpec.describe "Internal Project Snippets Access" do
   describe "GET /:project_path/snippets/new" do
     subject { new_project_snippet_path(project) }
 
-    it { is_expected.to be_allowed_for(:admin) }
+    it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { is_expected.to be_allowed_for(:admin) }
+    it('is denied for admin when admin mode is disabled') { is_expected.to be_denied_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:maintainer).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -55,7 +56,8 @@ RSpec.describe "Internal Project Snippets Access" do
     context "for a private snippet" do
       subject { project_snippet_path(project, private_snippet) }
 
-      it { is_expected.to be_allowed_for(:admin) }
+      it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { is_expected.to be_allowed_for(:admin) }
+      it('is denied for admin when admin mode is disabled') { is_expected.to be_denied_for(:admin) }
       it { is_expected.to be_allowed_for(:owner).of(project) }
       it { is_expected.to be_allowed_for(:maintainer).of(project) }
       it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -85,7 +87,8 @@ RSpec.describe "Internal Project Snippets Access" do
     context "for a private snippet" do
       subject { raw_project_snippet_path(project, private_snippet) }
 
-      it { is_expected.to be_allowed_for(:admin) }
+      it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { is_expected.to be_allowed_for(:admin) }
+      it('is denied for admin when admin mode is disabled') { is_expected.to be_denied_for(:admin) }
       it { is_expected.to be_allowed_for(:owner).of(project) }
       it { is_expected.to be_allowed_for(:maintainer).of(project) }
       it { is_expected.to be_allowed_for(:developer).of(project) }

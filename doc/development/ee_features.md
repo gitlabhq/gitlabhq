@@ -122,10 +122,10 @@ This is also not just applied to models. Here's a list of other examples:
 
 To test an `EE` namespaced module that extends a CE class with EE features,
 create the spec file as you normally would in the `ee/spec` directory, including the second `ee/` subdirectory.
-For example, an extension `ee/app/models/ee/user.rb` would have its tests in `ee/app/models/ee/user_spec.rb`.
+For example, an extension `ee/app/models/ee/user.rb` would have its tests in `ee/spec/models/ee/user_spec.rb`.
 
 In the `RSpec.describe` call, use the CE class name where the EE module would be used.
-For example, in `ee/app/models/ee/user_spec.rb`, the test would start with:
+For example, in `ee/spec/models/ee/user_spec.rb`, the test would start with:
 
 ```ruby
 RSpec.describe User do

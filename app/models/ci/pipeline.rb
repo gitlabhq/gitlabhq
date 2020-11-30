@@ -956,6 +956,14 @@ module Ci
       end
     end
 
+    def codequality_reports
+      Gitlab::Ci::Reports::CodequalityReports.new.tap do |codequality_reports|
+        latest_report_builds(Ci::JobArtifact.codequality_reports).each do |build|
+          build.collect_codequality_reports!(codequality_reports)
+        end
+      end
+    end
+
     def terraform_reports
       ::Gitlab::Ci::Reports::TerraformReports.new.tap do |terraform_reports|
         latest_report_builds(::Ci::JobArtifact.terraform_reports).each do |build|

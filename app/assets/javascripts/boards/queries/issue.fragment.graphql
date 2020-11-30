@@ -11,6 +11,10 @@ fragment IssueNode on Issue {
   webUrl
   subscribed
   relativePosition
+  milestone {
+    id
+    title
+  }
   assignees {
     nodes {
       ...User

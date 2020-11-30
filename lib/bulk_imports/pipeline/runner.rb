@@ -5,30 +5,6 @@ module BulkImports
     module Runner
       extend ActiveSupport::Concern
 
-      included do
-        private
-
-        def extractors
-          @extractors ||= self.class.extractors.map(&method(:instantiate))
-        end
-
-        def transformers
-          @transformers ||= self.class.transformers.map(&method(:instantiate))
-        end
-
-        def loaders
-          @loaders ||= self.class.loaders.map(&method(:instantiate))
-        end
-
-        def pipeline_name
-          @pipeline ||= self.class.name
-        end
-
-        def instantiate(class_config)
-          class_config[:klass].new(class_config[:options])
-        end
-      end
-
       def run(context)
         info(context, message: "Pipeline started", pipeline: pipeline_name)
 
@@ -47,6 +23,8 @@ module BulkImports
             end
           end
         end
+
+        after_run.call(context) if after_run.present?
       end
 
       private # rubocop:disable Lint/UselessAccessModifier

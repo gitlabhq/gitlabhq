@@ -58,7 +58,7 @@ file or creating similar dashboard configuration files. To learn more, read abou
 
 #### Available metrics
 
-Metrics contain both instance and node labels. The instance label will be deprecated in a future version.
+Metrics contain both instance and node labels. The instance label is scheduled for deprecation in a future version.
 
 - `node_cpu_hourly_cost` - Hourly cost per vCPU on this node.
 - `node_gpu_hourly_cost` - Hourly cost per GPU on this node.

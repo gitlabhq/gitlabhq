@@ -189,6 +189,10 @@ module GroupsHelper
     params.key?(:purchased_quantity) && params[:purchased_quantity].to_i > 0
   end
 
+  def project_list_sort_by
+    @group_projects_sort || @sort || params[:sort] || sort_value_recently_created
+  end
+
   private
 
   def just_created?

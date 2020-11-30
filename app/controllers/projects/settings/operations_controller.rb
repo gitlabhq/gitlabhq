@@ -7,7 +7,6 @@ module Projects
       before_action :authorize_read_prometheus_alerts!, only: [:reset_alerting_token]
 
       before_action do
-        push_frontend_feature_flag(:http_integrations_list, @project)
         push_frontend_feature_flag(:multiple_http_integrations_custom_mapping, @project)
       end
 

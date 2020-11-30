@@ -1,0 +1,8 @@
+---
+name: user_search_secondary_email
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47587
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/282137
+milestone: '13.7'
+type: development
+group: group::access
+default_enabled: false

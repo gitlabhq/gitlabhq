@@ -46,6 +46,9 @@
 .if-security-merge-request: &if-security-merge-request
   if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_MERGE_REQUEST_IID'
 
+.if-security-schedule: &if-security-schedule
+  if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_PIPELINE_SOURCE == "schedule"'
+
 .if-dot-com-gitlab-org-schedule: &if-dot-com-gitlab-org-schedule
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule"'
 
@@ -255,6 +258,7 @@
 .shared:rules:update-cache:
   rules:
     - <<: *if-master-schedule-2-hourly
+    - <<: *if-security-schedule
     - <<: *if-merge-request-title-update-caches
 
 ######################
@@ -395,6 +399,7 @@
       when: never
     - <<: *if-merge-request
       changes: *code-backstage-patterns
+      when: always
     - <<: *if-master-refs
       changes: *code-backstage-patterns
 
@@ -647,8 +652,10 @@
       when: never
     - <<: *if-merge-request
       changes: *code-backstage-patterns
+      when: always
     - <<: *if-master-schedule-2-hourly
     - <<: *if-merge-request-title-run-all-rspec
+      when: always
 
 .rails:rules:rspec-feature-flags:
   rules:

@@ -96,6 +96,7 @@ GitLab CI/CD uses a number of concepts to describe and run your build and deploy
 | [Cache dependencies](caching/index.md)                  | Cache your dependencies for a faster execution.                                |
 | [GitLab Runner](https://docs.gitlab.com/runner/)        | Configure your own runners to execute your scripts.                            |
 | [Pipeline efficiency](pipelines/pipeline_efficiency.md) | Configure your pipelines to run quickly and efficiently.                       |
+| [Test cases](test_cases/index.md) | Configure your pipelines to run quickly and efficiently.                       |
 
 ## Configuration
 
@@ -121,38 +122,38 @@ Note that certain operations can only be performed according to the
 Use the vast GitLab CI/CD to easily configure it for specific purposes.
 Its feature set is listed on the table below according to DevOps stages.
 
-| Feature | Description |
-|:--------|:------------|
-| **Configure** ||
-| [Auto DevOps](../topics/autodevops/index.md) | Set up your app's entire lifecycle. |
-| [ChatOps](chatops/README.md) | Trigger CI jobs from chat, with results sent back to the channel. |
-|---+---|
-| **Verify** ||
-| [Browser Performance Testing](../user/project/merge_requests/browser_performance_testing.md) | Quickly determine the browser performance impact of pending code changes. |
-| [Load Performance Testing](../user/project/merge_requests/load_performance_testing.md) | Quickly determine the server performance impact of pending code changes. |
-| [CI services](services/README.md) | Link Docker containers with your base image.|
-| [Code Quality](../user/project/merge_requests/code_quality.md) | Analyze your source code quality. |
-| [GitLab CI/CD for external repositories](ci_cd_for_external_repos/index.md) **(PREMIUM)** | Get the benefits of GitLab CI/CD combined with repositories in GitHub and Bitbucket Cloud. |
-| [Interactive Web Terminals](interactive_web_terminal/index.md) **(CORE ONLY)** | Open an interactive web terminal to debug the running jobs. |
-| [Unit test reports](unit_test_reports.md) | Identify script failures directly on merge requests. |
-| [Using Docker images](docker/using_docker_images.md) | Use GitLab and GitLab Runner with Docker to build and test applications. |
-|---+---|
-| **Release** ||
-| [Auto Deploy](../topics/autodevops/stages.md#auto-deploy) | Deploy your application to a production environment in a Kubernetes cluster. |
-| [Building Docker images](docker/using_docker_build.md) | Maintain Docker-based projects using GitLab CI/CD. |
-| [Canary Deployments](../user/project/canary_deployments.md) **(PREMIUM)** | Ship features to only a portion of your pods and let a percentage of your user base to visit the temporarily deployed feature. |
-| [Deploy Boards](../user/project/deploy_boards.md) **(PREMIUM)** | Check the current health and status of each CI/CD environment running on Kubernetes. |
-| [Feature Flags](../operations/feature_flags.md) **(PREMIUM)** | Deploy your features behind Feature Flags. |
-| [GitLab Pages](../user/project/pages/index.md) | Deploy static websites. |
-| [GitLab Releases](../user/project/releases/index.md) | Add release notes to Git tags. |
-| [Review Apps](review_apps/index.md) | Configure GitLab CI/CD to preview code changes. |
-| [Cloud deployment](cloud_deployment/index.md) | Deploy your application to a main cloud provider. |
-|---+---|
-| **Secure** ||
-| [Container Scanning](../user/application_security/container_scanning/index.md) **(ULTIMATE)** | Check your Docker containers for known vulnerabilities.|
-| [Dependency Scanning](../user/application_security/dependency_scanning/index.md) **(ULTIMATE)** | Analyze your dependencies for known vulnerabilities. |
-| [License Compliance](../user/compliance/license_compliance/index.md) **(ULTIMATE)** | Search your project dependencies for their licenses. |
-| [Security Test reports](../user/application_security/index.md) **(ULTIMATE)** | Check for app vulnerabilities. |
+| Feature                                                                                         | Description                                                                                                                    |
+|:------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------|
+| **Configure**                                                                                   |                                                                                                                                |
+| [Auto DevOps](../topics/autodevops/index.md)                                                    | Set up your app's entire lifecycle.                                                                                            |
+| [ChatOps](chatops/README.md)                                                                    | Trigger CI jobs from chat, with results sent back to the channel.                                                              |
+|-------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------|
+| **Verify**                                                                                      |                                                                                                                                |
+| [Browser Performance Testing](../user/project/merge_requests/browser_performance_testing.md)    | Quickly determine the browser performance impact of pending code changes.                                                      |
+| [Load Performance Testing](../user/project/merge_requests/load_performance_testing.md)          | Quickly determine the server performance impact of pending code changes.                                                       |
+| [CI services](services/README.md)                                                               | Link Docker containers with your base image.                                                                                   |
+| [Code Quality](../user/project/merge_requests/code_quality.md)                                  | Analyze your source code quality.                                                                                              |
+| [GitLab CI/CD for external repositories](ci_cd_for_external_repos/index.md) **(PREMIUM)**       | Get the benefits of GitLab CI/CD combined with repositories in GitHub and Bitbucket Cloud.                                     |
+| [Interactive Web Terminals](interactive_web_terminal/index.md) **(CORE ONLY)**                  | Open an interactive web terminal to debug the running jobs.                                                                    |
+| [Unit test reports](unit_test_reports.md)                                                       | Identify script failures directly on merge requests.                                                                           |
+| [Using Docker images](docker/using_docker_images.md)                                            | Use GitLab and GitLab Runner with Docker to build and test applications.                                                       |
+|-------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------|
+| **Release**                                                                                     |                                                                                                                                |
+| [Auto Deploy](../topics/autodevops/stages.md#auto-deploy)                                       | Deploy your application to a production environment in a Kubernetes cluster.                                                   |
+| [Building Docker images](docker/using_docker_build.md)                                          | Maintain Docker-based projects using GitLab CI/CD.                                                                             |
+| [Canary Deployments](../user/project/canary_deployments.md) **(PREMIUM)**                       | Ship features to only a portion of your pods and let a percentage of your user base to visit the temporarily deployed feature. |
+| [Deploy Boards](../user/project/deploy_boards.md) **(PREMIUM)**                                 | Check the current health and status of each CI/CD environment running on Kubernetes.                                           |
+| [Feature Flags](../operations/feature_flags.md) **(PREMIUM)**                                   | Deploy your features behind Feature Flags.                                                                                     |
+| [GitLab Pages](../user/project/pages/index.md)                                                  | Deploy static websites.                                                                                                        |
+| [GitLab Releases](../user/project/releases/index.md)                                            | Add release notes to Git tags.                                                                                                 |
+| [Review Apps](review_apps/index.md)                                                             | Configure GitLab CI/CD to preview code changes.                                                                                |
+| [Cloud deployment](cloud_deployment/index.md)                                                   | Deploy your application to a main cloud provider.                                                                              |
+|-------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------|
+| **Secure**                                                                                      |                                                                                                                                |
+| [Container Scanning](../user/application_security/container_scanning/index.md) **(ULTIMATE)**   | Check your Docker containers for known vulnerabilities.                                                                        |
+| [Dependency Scanning](../user/application_security/dependency_scanning/index.md) **(ULTIMATE)** | Analyze your dependencies for known vulnerabilities.                                                                           |
+| [License Compliance](../user/compliance/license_compliance/index.md) **(ULTIMATE)**             | Search your project dependencies for their licenses.                                                                           |
+| [Security Test reports](../user/application_security/index.md) **(ULTIMATE)**                   | Check for app vulnerabilities.                                                                                                 |
 
 ## Examples
 

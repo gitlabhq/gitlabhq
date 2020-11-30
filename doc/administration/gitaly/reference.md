@@ -75,7 +75,7 @@ the `gitaly_authentications_total` metric.
 
 ### TLS
 
-Gitaly supports TLS encryption. You will need to bring your own certificates as
+Gitaly supports TLS encryption. You need to bring your own certificates as
 this isn't provided automatically.
 
 | Name | Type | Required | Description |
@@ -128,7 +128,7 @@ The following values can be set in the `[git]` section of the configuration file
 
 | Name | Type | Required | Description |
 | ---- | ---- | -------- | ----------- |
-| `bin_path` | string | no | Path to Git binary. If not set, will be resolved using `PATH`. |
+| `bin_path` | string | no | Path to Git binary. If not set, is resolved using `PATH`. |
 | `catfile_cache_size` | integer | no | Maximum number of cached [cat-file processes](#cat-file-cache). Default is `100`. |
 
 #### `cat-file` cache
@@ -192,8 +192,8 @@ For historical reasons
 [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell) contains
 the Git hooks that allow GitLab to validate and react to Git pushes.
 Because Gitaly "owns" Git pushes, GitLab Shell must therefore be
-installed alongside Gitaly. This will be [simplified in the
-future](https://gitlab.com/gitlab-org/gitaly/-/issues/1226).
+installed alongside Gitaly. We plan to
+[simplify this](https://gitlab.com/gitlab-org/gitaly/-/issues/1226).
 
 | Name | Type | Required | Description |
 | ---- | ---- | -------- | ----------- |
@@ -238,9 +238,11 @@ The following values configure logging in Gitaly under the `[logging]` section.
 
 While the main Gitaly application logs go to `stdout`, there are some extra log
 files that go to a configured directory, like the GitLab Shell logs.
-GitLab Shell does not support `panic` or `trace` level logs. `panic` will fall
-back to `error`, while `trace` will fall back to `debug`. Any other invalid log
-levels will default to `info`.
+GitLab Shell does not support `panic` or `trace` level logs:
+
+- `panic` falls back to `error`.
+- `trace` falls back to `debug`.
+- Any other invalid log levels default to `info`.
 
 Example:
 

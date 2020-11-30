@@ -86,7 +86,7 @@ RSpec.describe IconsHelper do
       it 'does not raise in production mode' do
         stub_rails_env('production')
 
-        expect(File).not_to receive(:read)
+        expect_file_not_to_read(Rails.root.join('node_modules/@gitlab/svgs/dist/icons.json'))
 
         expect { sprite_icon(non_existing) }.not_to raise_error
       end

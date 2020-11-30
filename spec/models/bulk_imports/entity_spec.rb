@@ -82,4 +82,68 @@ RSpec.describe BulkImports::Entity, type: :model do
       end
     end
   end
+
+  describe "#update_tracker_for" do
+    let(:entity) { create(:bulk_import_entity) }
+
+    it "inserts new tracker when it does not exist" do
+      expect do
+        entity.update_tracker_for(relation: :relation, has_next_page: false)
+      end.to change(BulkImports::Tracker, :count).by(1)
+
+      tracker = entity.trackers.last
+
+      expect(tracker.relation).to eq('relation')
+      expect(tracker.has_next_page).to eq(false)
+      expect(tracker.next_page).to eq(nil)
+    end
+
+    it "updates the tracker if it already exist" do
+      create(
+        :bulk_import_tracker,
+        relation: :relation,
+        has_next_page: false,
+        entity: entity
+      )
+
+      expect do
+        entity.update_tracker_for(relation: :relation, has_next_page: true, next_page: 'nextPage')
+      end.not_to change(BulkImports::Tracker, :count)
+
+      tracker = entity.trackers.last
+
+      expect(tracker.relation).to eq('relation')
+      expect(tracker.has_next_page).to eq(true)
+      expect(tracker.next_page).to eq('nextPage')
+    end
+  end
+
+  describe "#has_next_page?" do
+    it "queries for the given relation if it has more pages to be fetched" do
+      entity = create(:bulk_import_entity)
+      create(
+        :bulk_import_tracker,
+        relation: :relation,
+        has_next_page: false,
+        entity: entity
+      )
+
+      expect(entity.has_next_page?(:relation)).to eq(false)
+    end
+  end
+
+  describe "#next_page_for" do
+    it "queries for the next page of the given relation" do
+      entity = create(:bulk_import_entity)
+      create(
+        :bulk_import_tracker,
+        relation: :relation,
+        has_next_page: false,
+        next_page: 'nextPage',
+        entity: entity
+      )
+
+      expect(entity.next_page_for(:relation)).to eq('nextPage')
+    end
+  end
 end

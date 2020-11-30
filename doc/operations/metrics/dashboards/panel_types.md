@@ -39,7 +39,7 @@ Note the following properties:
 
 ![area panel chart](img/prometheus_dashboard_area_panel_type_v12_8.png)
 
-Starting in [version 12.8](https://gitlab.com/gitlab-org/gitlab/-/issues/202696), the y-axis values will automatically scale according to the data. Previously, it always started from 0.
+Starting in [version 12.8](https://gitlab.com/gitlab-org/gitlab/-/issues/202696), the y-axis values scale according to the data. Previously, it always started from 0.
 
 ## Anomaly chart
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Group' do
-  let(:user) { create(:admin) }
+  let(:user) { create(:user) }
 
   before do
     sign_in(user)
@@ -21,8 +21,6 @@ RSpec.describe 'Group' do
     end
 
     describe 'as a non-admin' do
-      let(:user) { create(:user) }
-
       it 'creates a group and persists visibility radio selection', :js do
         stub_application_setting(default_group_visibility: :private)
 
@@ -140,6 +138,8 @@ RSpec.describe 'Group' do
     let(:group) { create(:group, path: 'foo') }
 
     context 'as admin' do
+      let(:user) { create(:admin) }
+
       before do
         visit new_group_path(group, parent_id: group.id)
       end
@@ -190,6 +190,8 @@ RSpec.describe 'Group' do
     let(:new_name) { 'new-name' }
 
     before do
+      group.add_owner(user)
+
       visit path
     end
 
@@ -200,6 +202,8 @@ RSpec.describe 'Group' do
 
     it 'saves new settings' do
       page.within('.gs-general') do
+        # Have to reset it to '' so it overwrites rather than appends
+        fill_in('group_name', with: '')
         fill_in 'group_name', with: new_name
         click_button 'Save changes'
       end
@@ -228,6 +232,10 @@ RSpec.describe 'Group' do
   describe 'group page with markdown description' do
     let(:group) { create(:group) }
     let(:path)  { group_path(group) }
+
+    before do
+      group.add_owner(user)
+    end
 
     it 'parses Markdown' do
       group.update_attribute(:description, 'This is **my** group')
@@ -267,6 +275,10 @@ RSpec.describe 'Group' do
     let!(:nested_group) { create(:group, parent: group) }
     let!(:project) { create(:project, namespace: group) }
 
+    before do
+      group.add_owner(user)
+    end
+
     it 'renders projects and groups on the page' do
       visit group_path(group)
       wait_for_requests
@@ -293,6 +305,10 @@ RSpec.describe 'Group' do
 
   describe 'new subgroup / project button' do
     let(:group) { create(:group, project_creation_level: Gitlab::Access::NO_ONE_PROJECT_ACCESS, subgroup_creation_level: Gitlab::Access::OWNER_SUBGROUP_ACCESS) }
+
+    before do
+      group.add_owner(user)
+    end
 
     context 'when user has subgroup creation permissions but not project creation permissions' do
       it 'only displays "New subgroup" button' do

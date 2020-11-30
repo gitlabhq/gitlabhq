@@ -31,7 +31,7 @@ The requirement for adding a new metric is to make each query to have an unique 
 
 ### Update existing metrics
 
-After you add or change an existing common metric, you must [re-run the import script](../administration/raketasks/maintenance.md#import-common-metrics) that will query and update all existing metrics.
+After you add or change an existing common metric, you must [re-run the import script](../administration/raketasks/maintenance.md#import-common-metrics) that queries and updates all existing metrics.
 
 Or, you can create a database migration:
 
@@ -51,7 +51,7 @@ class ImportCommonMetrics < ActiveRecord::Migration[4.2]
 end
 ```
 
-If a query metric (which is identified by `id:`) is removed it will not be removed from database by default.
+If a query metric (which is identified by `id:`) is removed, it isn't removed from database by default.
 You might want to add additional database migration that makes a decision what to do with removed one.
 For example: you might be interested in migrating all dependent data to a different metric.
 
@@ -75,5 +75,5 @@ This section describes how to add new metrics for self-monitoring
 1. Select the appropriate name for your metric. Refer to the guidelines
    for [Prometheus metric names](https://prometheus.io/docs/practices/naming/#metric-names).
 1. Update the list of [GitLab Prometheus metrics](../administration/monitoring/prometheus/gitlab_metrics.md).
-1. Trigger the relevant page/code that will record the new metric.
+1. Trigger the relevant page or code that records the new metric.
 1. Check that the new metric appears at `/-/metrics`.

@@ -1356,19 +1356,17 @@ and improved designed.
 
 [Gitaly](../gitaly/index.md) server node requirements are dependent on data,
 specifically the number of projects and those projects' sizes. It's recommended
-that a Gitaly server node stores no more than 5 TB of data. Although this
-reference architecture includes a recommendation for the number of Gitaly server
-nodes to use, depending on your storage requirements, you may require additional
-Gitaly server nodes.
+that a Gitaly server node stores no more than 5 TB of data. Depending on your
+repository storage requirements, you may require additional Gitaly server nodes.
 
 Due to Gitaly having notable input and output requirements, we strongly
-recommend that all Gitaly nodes use solid-state drives (SSDs). These SSDs should
-have a throughput of at least 8,000 input/output operations per second (IOPS)
-for read operations and 2,000 IOPS for write operations. These IOPS values are
-initial recommendations, and may be adjusted to greater or lesser values
-depending on the scale of your environment's workload. If you're running the
-environment on a Cloud provider, refer to their documentation about how to
-configure IOPS correctly.
+recommend that all Gitaly nodes use solid-state drives (SSDs). These SSDs
+should have a throughput of at least 8,000
+input/output operations per second (IOPS) for read operations and 2,000 IOPS for
+write operations. These IOPS values are initial recommendations, and may be
+adjusted to greater or lesser values depending on the scale of your
+environment's workload. If you're running the environment on a Cloud provider,
+refer to their documentation about how to configure IOPS correctly.
 
 Be sure to note the following items:
 
@@ -1376,8 +1374,8 @@ Be sure to note the following items:
   [repository storage paths](../repository_storage_paths.md).
 - A Gitaly server can host one or more storage paths.
 - A GitLab server can use one or more Gitaly server nodes.
-- Gitaly addresses must be specified to be correctly resolvable for _all_
-  Gitaly clients.
+- Gitaly addresses must be specified to be correctly resolvable for all Gitaly
+  clients.
 - Gitaly servers must not be exposed to the public internet, as Gitaly's network
   traffic is unencrypted by default. The use of a firewall is highly recommended
   to restrict access to the Gitaly server. Another option is to
@@ -1406,8 +1404,8 @@ On each node:
 1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
    package of your choice. Be sure to follow _only_ installation steps 1 and 2
    on the page, and _do not_ provide the `EXTERNAL_URL` value.
-1. Edit `/etc/gitlab/gitlab.rb` to configure the storage paths, enable
-   the network listener, and configure the token:
+1. Edit the Gitaly server node's `/etc/gitlab/gitlab.rb` file to configure
+   storage paths, enable the network listener, and to configure the token:
 
    <!--
    updates to following example must also be made at

@@ -43,6 +43,7 @@ exports[`IncidentsSettingTabs should render the component 1`] = `
     >
       <gl-tab-stub
         title="Alert integration"
+        titlelinkclass=""
       >
         <alertssettingsform-stub
           class="gl-pt-3"
@@ -51,6 +52,7 @@ exports[`IncidentsSettingTabs should render the component 1`] = `
       </gl-tab-stub>
       <gl-tab-stub
         title="PagerDuty integration"
+        titlelinkclass=""
       >
         <pagerdutysettingsform-stub
           class="gl-pt-3"

@@ -9,12 +9,9 @@ RSpec.describe 'User creates new blob', :js do
   let(:project) { create(:project, :empty_repo) }
 
   shared_examples 'creating a file' do
-    before do
-      sign_in(user)
-      visit project_path(project)
-    end
-
     it 'allows the user to add a new file in Web IDE' do
+      visit project_path(project)
+
       click_link 'New file'
 
       wait_for_requests
@@ -31,6 +28,7 @@ RSpec.describe 'User creates new blob', :js do
   describe 'as a maintainer' do
     before do
       project.add_maintainer(user)
+      sign_in(user)
     end
 
     it_behaves_like 'creating a file'
@@ -38,6 +36,11 @@ RSpec.describe 'User creates new blob', :js do
 
   describe 'as an admin' do
     let(:user) { create(:user, :admin) }
+
+    before do
+      sign_in(user)
+      gitlab_enable_admin_mode_sign_in(user)
+    end
 
     it_behaves_like 'creating a file'
   end

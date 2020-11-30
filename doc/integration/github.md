@@ -12,9 +12,9 @@ with your GitHub account.
 
 ## Enabling GitHub OAuth
 
-To enable the GitHub OmniAuth provider, you'll need an OAuth 2 Client ID and Client Secret from GitHub. To get these credentials, sign into GitHub and follow their procedure for [Creating an OAuth App](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/).
+To enable the GitHub OmniAuth provider, you need an OAuth 2 Client ID and Client Secret from GitHub. To get these credentials, sign into GitHub and follow their procedure for [Creating an OAuth App](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/).
 
-When you create an OAuth 2 app in GitHub, you'll need the following information:
+When you create an OAuth 2 app in GitHub, you need the following information:
 
 - The URL of your GitLab instance, such as `https://gitlab.example.com`.
 - The authorization callback URL; in this case, `https://gitlab.example.com/users/auth`. Include the port number if your GitLab instance uses a non-default port.
@@ -24,7 +24,7 @@ To prevent an [OAuth2 covert redirect](https://oauth.net/advisories/2014-1-cover
 
 See [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration) for initial settings.
 
-Once you have configured the GitHub provider, you'll need the following information, which you'll need to substitute in the GitLab configuration file, in the steps shown next.
+After you have configured the GitHub provider, you need the following information, which you must substitute in the GitLab configuration file, in the steps shown next.
 
 | Setting from GitHub  | Substitute in the GitLab configuration file  | Description |
 |:---------------------|:---------------------------------------------|:------------|
@@ -101,12 +101,12 @@ Follow these steps to incorporate the GitHub OAuth 2 app in your GitLab server:
 
 1. Refresh the GitLab sign in page. You should now see a GitHub icon below the regular sign in form.
 
-1. Click the icon to begin the authentication process. GitHub will ask the user to sign in and authorize the GitLab application.
+1. Click the icon to begin the authentication process. GitHub asks the user to sign in and authorize the GitLab application.
 
 ## GitHub Enterprise with self-signed Certificate
 
 If you are attempting to import projects from GitHub Enterprise with a self-signed
-certificate and the imports are failing, you will need to disable SSL verification.
+certificate and the imports are failing, you must disable SSL verification.
 It should be disabled by adding `verify_ssl` to `false` in the provider configuration
 and changing the global Git `sslVerify` option to `false` in the GitLab server.
 
@@ -125,7 +125,7 @@ gitlab_rails['omniauth_providers'] = [
 ]
 ```
 
-You will also need to disable Git SSL verification on the server hosting GitLab.
+You must also disable Git SSL verification on the server hosting GitLab.
 
 ```ruby
 omnibus_gitconfig['system'] = { "http" => ["sslVerify = false"] }
@@ -142,7 +142,7 @@ For installation from source:
     args: { scope: 'user:email' } }
 ```
 
-You will also need to disable Git SSL verification on the server hosting GitLab.
+You must also disable Git SSL verification on the server hosting GitLab.
 
 ```shell
 git config --global http.sslVerify false

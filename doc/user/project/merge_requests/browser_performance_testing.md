@@ -47,8 +47,8 @@ For an example Performance job, see
 NOTE: **Note:**
 If the Browser Performance report has no data to compare, such as when you add the
 Browser Performance job in your `.gitlab-ci.yml` for the very first time,
-the Browser Performance report widget won't show. It must have run at least
-once on the target branch (`master`, for example), before it will display in a
+the Browser Performance report widget doesn't show. It must have run at least
+once on the target branch (`master`, for example), before it displays in a
 merge request targeting that branch.
 
 ![Browser Performance Widget](img/browser_performance_testing.png)
@@ -81,7 +81,7 @@ The above example creates a `performance` job in your CI/CD pipeline and runs
 sitespeed.io against the webpage you defined in `URL` to gather key metrics.
 
 The example uses a CI/CD template that is included in all GitLab installations since
-12.4, but it will not work with Kubernetes clusters. If you are using GitLab 12.3
+12.4, but it doesn't work with Kubernetes clusters. If you are using GitLab 12.3
 or older, you must [add the configuration manually](#gitlab-versions-123-and-older)
 
 The template uses the [GitLab plugin for sitespeed.io](https://gitlab.com/gitlab-org/gl-performance),
@@ -115,7 +115,7 @@ performance:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27599) in GitLab 13.0.
 
 You can configure the sensitivity of degradation alerts to avoid getting alerts for minor drops in metrics.
-This is done by setting the `DEGRADATION_THRESHOLD` variable. In the example below, the alert will only show up
+This is done by setting the `DEGRADATION_THRESHOLD` variable. In the example below, the alert only shows up
 if the `Total Score` metric degrades by 5 points or more:
 
 ```yaml
@@ -181,7 +181,7 @@ performance:
 ### GitLab versions 12.3 and older
 
 Browser Performance Testing has gone through several changes since it's introduction.
-In this section we'll detail these changes and how you can run the test based on your
+In this section we detail these changes and how you can run the test based on your
 GitLab version:
 
 - In GitLab 12.4 [a job template was made available](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Verify/Browser-Performance.gitlab-ci.yml).

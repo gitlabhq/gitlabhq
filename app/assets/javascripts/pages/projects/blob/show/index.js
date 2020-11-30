@@ -73,22 +73,20 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   }
 
-  if (gon.features?.suggestPipeline) {
-    const successPipelineEl = document.querySelector('.js-success-pipeline-modal');
+  const successPipelineEl = document.querySelector('.js-success-pipeline-modal');
 
-    if (successPipelineEl) {
-      // eslint-disable-next-line no-new
-      new Vue({
-        el: successPipelineEl,
-        render(createElement) {
-          return createElement(PipelineTourSuccessModal, {
-            props: {
-              ...successPipelineEl.dataset,
-            },
-          });
-        },
-      });
-    }
+  if (successPipelineEl) {
+    // eslint-disable-next-line no-new
+    new Vue({
+      el: successPipelineEl,
+      render(createElement) {
+        return createElement(PipelineTourSuccessModal, {
+          props: {
+            ...successPipelineEl.dataset,
+          },
+        });
+      },
+    });
   }
 
   if (gon?.features?.gitlabCiYmlPreview) {

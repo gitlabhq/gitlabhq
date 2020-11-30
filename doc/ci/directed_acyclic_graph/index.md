@@ -17,7 +17,7 @@ be set up.
 
 For example, you may have a specific tool or separate website that is built
 as part of your main project. Using a DAG, you can specify the relationship between
-these jobs and GitLab will then execute the jobs as soon as possible instead of waiting
+these jobs and GitLab executes the jobs as soon as possible instead of waiting
 for each stage to complete.
 
 Unlike other DAG solutions for CI/CD, GitLab does not require you to choose one or the
@@ -44,9 +44,9 @@ It has a pipeline that looks like the following:
 | build_d | test_d | deploy_d |
 
 Using a DAG, you can relate the `_a` jobs to each other separately from the `_b` jobs,
-and even if service `a` takes a very long time to build, service `b` will not
-wait for it and will finish as quickly as it can. In this very same pipeline, `_c` and
-`_d` can be left alone and will run together in staged sequence just like any normal
+and even if service `a` takes a very long time to build, service `b` doesn't
+wait for it and finishes as quickly as it can. In this very same pipeline, `_c` and
+`_d` can be left alone and run together in staged sequence just like any normal
 GitLab pipeline.
 
 ## Use cases
@@ -60,7 +60,7 @@ but related microservices.
 
 Additionally, a DAG can help with general speediness of pipelines and helping
 to deliver fast feedback. By creating dependency relationships that don't unnecessarily
-block each other, your pipelines will run as quickly as possible regardless of
+block each other, your pipelines run as quickly as possible regardless of
 pipeline stages, ensuring output (including errors) is available to developers
 as quickly as possible.
 
@@ -88,13 +88,13 @@ are certain use cases that you may need to work around. For more information:
 > - It's enabled on GitLab.com.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-needs-visualization).
 
-The needs visualization makes it easier to visualize the relationships between dependent jobs in a DAG. This graph will display all the jobs in a pipeline that need or are needed by other jobs. Jobs with no relationships are not displayed in this view.
+The needs visualization makes it easier to visualize the relationships between dependent jobs in a DAG. This graph displays all the jobs in a pipeline that need or are needed by other jobs. Jobs with no relationships are not displayed in this view.
 
 To see the needs visualization, click on the **Needs** tab when viewing a pipeline that uses the `needs:` keyword.
 
 ![Needs visualization example](img/dag_graph_example_v13_1.png)
 
-Clicking a node will highlight all the job paths it depends on.
+Clicking a node highlights all the job paths it depends on.
 
 ![Needs visualization with path highlight](img/dag_graph_example_clicked_v13_1.png)
 

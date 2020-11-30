@@ -97,7 +97,7 @@ RSpec.describe Gitlab::Webpack::Manifest do
   context "with dev server disabled" do
     before do
       allow(Gitlab.config.webpack.dev_server).to receive(:enabled).and_return(false)
-      allow(File).to receive(:read).with(::Rails.root.join("manifest_output/my_manifest.json")).and_return(manifest)
+      stub_file_read(::Rails.root.join("manifest_output/my_manifest.json"), content: manifest)
     end
 
     describe ".asset_paths" do
@@ -105,7 +105,7 @@ RSpec.describe Gitlab::Webpack::Manifest do
 
       it "errors if we can't find the manifest" do
         allow(Gitlab.config.webpack).to receive(:manifest_filename).and_return('broken.json')
-        allow(File).to receive(:read).with(::Rails.root.join("manifest_output/broken.json")).and_raise(Errno::ENOENT)
+        stub_file_read(::Rails.root.join("manifest_output/broken.json"), error: Errno::ENOENT)
         expect { Gitlab::Webpack::Manifest.asset_paths("entry1") }.to raise_error(Gitlab::Webpack::Manifest::ManifestLoadError)
       end
     end

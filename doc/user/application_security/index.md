@@ -1,6 +1,6 @@
 ---
-stage: none
-group: unassigned
+stage: secure
+group: secure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: reference, howto
 ---
@@ -92,7 +92,7 @@ rules:
 
 ## Security Scanning with Auto DevOps
 
-When [Auto DevOps](../../topics/autodevops/) is enabled, all GitLab Security scanning tools will be configured using default settings.
+When [Auto DevOps](../../topics/autodevops/) is enabled, all GitLab Security scanning tools are configured using default settings.
 
 - [Auto SAST](../../topics/autodevops/stages.md#auto-sast)
 - [Auto Secret Detection](../../topics/autodevops/stages.md#auto-secret-detection)
@@ -225,11 +225,11 @@ vulnerability as you learn more over time.
 > Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
 
 You can dismiss multiple vulnerabilities at once, providing an optional reason.
-Selecting the checkboxes on the side of each vulnerability in the list will select that individual vulnerability.
+Selecting the checkboxes on the side of each vulnerability in the list selects that individual vulnerability.
 Alternatively, you can select all the vulnerabilities in the list by selecting the checkbox in the table header.
-Deselecting the checkbox in the header will deselect all the vulnerabilities in the list.
+Deselecting the checkbox in the header deselects all the vulnerabilities in the list.
 Once you have selected some vulnerabilities, a menu appears at the top of the table that allows you to select a dismissal reason.
-Pressing the "Dismiss Selected" button will dismiss all the selected vulnerabilities at once, with the reason you chose.
+Pressing the "Dismiss Selected" button dismisses all the selected vulnerabilities at once, with the reason you chose.
 
 ![Multiple vulnerability dismissal](img/multi_select_v12_9.png)
 

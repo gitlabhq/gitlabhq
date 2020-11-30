@@ -55,7 +55,7 @@ RSpec.describe 'Toggling an AwardEmoji' do
       it_behaves_like 'a mutation that does not create or destroy an AwardEmoji'
 
       it_behaves_like 'a mutation that returns top-level errors',
-                      errors: ['Cannot award emoji to this resource']
+        errors: ['You cannot award emoji to this resource.']
     end
 
     context 'when the given awardable is an Awardable' do

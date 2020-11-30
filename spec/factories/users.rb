@@ -35,6 +35,10 @@ FactoryBot.define do
       user_type { :alert_bot }
     end
 
+    trait :deactivated do
+      after(:build) { |user, _| user.deactivate! }
+    end
+
     trait :project_bot do
       user_type { :project_bot }
     end

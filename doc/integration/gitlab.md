@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Import projects from GitLab.com and login to your GitLab instance with your GitLab.com account.
 
 To enable the GitLab.com OmniAuth provider you must register your application with GitLab.com.
-GitLab.com will generate an application ID and secret key for you to use.
+GitLab.com generates an application ID and secret key for you to use.
 
 1. Sign in to GitLab.com
 
@@ -85,5 +85,5 @@ GitLab.com will generate an application ID and secret key for you to use.
    installed GitLab via Omnibus or from source respectively.
 
 On the sign in page there should now be a GitLab.com icon below the regular sign in form.
-Click the icon to begin the authentication process. GitLab.com will ask the user to sign in and authorize the GitLab application.
-If everything goes well the user will be returned to your GitLab instance and will be signed in.
+Click the icon to begin the authentication process. GitLab.com asks the user to sign in and authorize the GitLab application.
+If everything goes well the user is returned to your GitLab instance and is signed in.

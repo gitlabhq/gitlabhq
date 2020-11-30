@@ -40,12 +40,11 @@ module Mutations
 
       authorize :create_release
 
-      def resolve(project_path:, milestones: nil, assets: nil, **scalars)
+      def resolve(project_path:, assets: nil, **scalars)
         project = authorized_find!(full_path: project_path)
 
         params = {
           **scalars,
-          milestones: milestones.presence || [],
           assets: assets.to_h
         }.with_indifferent_access
 

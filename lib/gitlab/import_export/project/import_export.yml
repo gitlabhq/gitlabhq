@@ -169,6 +169,7 @@ excluded_attributes:
     - :compliance_framework_setting
     - :show_default_award_emojis
     - :services
+    - :exported_protected_branches
   namespaces:
     - :runners_token
     - :runners_token_encrypted

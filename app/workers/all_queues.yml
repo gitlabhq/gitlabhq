@@ -124,7 +124,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:analytics_instance_statistics_count_job_trigger
-  :feature_category: :instance_statistics
+  :feature_category: :devops_reports
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -317,6 +317,22 @@
   :tags: []
 - :name: cronjob:prune_web_hook_logs
   :feature_category: :integrations
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
+- :name: cronjob:releases_create_evidence
+  :feature_category: :release_evidence
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
+- :name: cronjob:releases_manage_evidence
+  :feature_category: :release_evidence
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -1313,7 +1329,7 @@
   :idempotent: true
   :tags: []
 - :name: analytics_instance_statistics_counter_job
-  :feature_category: :instance_statistics
+  :feature_category: :devops_reports
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -1376,14 +1392,6 @@
   :resource_boundary: :unknown
   :weight: 2
   :idempotent: true
-  :tags: []
-- :name: create_evidence
-  :feature_category: :release_evidence
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 2
-  :idempotent:
   :tags: []
 - :name: create_note_diff_file
   :feature_category: :source_code_management

@@ -2,9 +2,7 @@
 
 gitlab_danger = GitlabDanger.new(helper.gitlab_helper)
 
-SCHEMA_NOT_UPDATED_MESSAGE_SHORT = <<~MSG
-New %<migrations>s added but %<schema>s wasn't updated.
-MSG
+SCHEMA_NOT_UPDATED_MESSAGE_SHORT = "New %<migrations>s added but %<schema>s wasn't updated"
 
 SCHEMA_NOT_UPDATED_MESSAGE_FULL = <<~MSG
 **#{SCHEMA_NOT_UPDATED_MESSAGE_SHORT}**

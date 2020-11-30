@@ -57,7 +57,7 @@ When you use this method, you have to specify `only: - merge_requests` for each 
 example, the pipeline contains a `test` job that is configured to run on merge requests.
 
 The `build` and `deploy` jobs don't have the `only: - merge_requests` keyword,
-so they will not run on merge requests.
+so they don't run on merge requests.
 
 ```yaml
 build:
@@ -82,7 +82,7 @@ deploy:
 #### Excluding certain jobs
 
 The behavior of the `only: [merge_requests]` keyword is such that _only_ jobs with
-that keyword are run in the context of a merge request; no other jobs will be run.
+that keyword are run in the context of a merge request; no other jobs run.
 
 However, you can invert this behavior and have all of your jobs run _except_
 for one or two.
@@ -120,8 +120,8 @@ C:
 
 Therefore:
 
-- Since `A` and `B` are getting the `only:` rule to execute in all cases, they will always run.
-- Since `C` specifies that it should only run for merge requests, it will not run for any pipeline
+- Since `A` and `B` are getting the `only:` rule to execute in all cases, they always run.
+- Since `C` specifies that it should only run for merge requests, it doesn't run for any pipeline
   except a merge request pipeline.
 
 This helps you avoid having to add the `only:` rule to all of your jobs to make
@@ -209,7 +209,7 @@ The variable names begin with the `CI_MERGE_REQUEST_` prefix.
 
 If you are experiencing duplicated pipelines when using `rules`, take a look at
 the [important differences between `rules` and `only`/`except`](../yaml/README.md#prevent-duplicate-pipelines),
-which will help you get your starting configuration correct.
+which helps you get your starting configuration correct.
 
 If you are seeing two pipelines when using `only/except`, please see the caveats
 related to using `only/except` above (or, consider moving to `rules`).

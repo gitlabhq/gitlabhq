@@ -10,7 +10,7 @@ description: 'Read through the GitLab User documentation to learn how to use, co
 
 Welcome to GitLab! We're glad to have you here!
 
-As a GitLab user you'll have access to all the features
+As a GitLab user you have access to all the features
 your [subscription](https://about.gitlab.com/pricing/)
 includes, except [GitLab administrator](../administration/index.md)
 settings, unless you have admin privileges to install, configure,
@@ -175,7 +175,7 @@ such as Trello, Jira, etc.
 ## Webhooks
 
 Configure [webhooks](project/integrations/webhooks.md) to listen for
-specific events like pushes, issues or merge requests. GitLab will send a
+specific events like pushes, issues or merge requests. GitLab sends a
 POST request with data to the webhook URL.
 
 ## API

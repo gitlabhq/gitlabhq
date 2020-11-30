@@ -15,16 +15,6 @@ RSpec.describe DashboardController do
     describe 'GET issues' do
       it_behaves_like 'issuables list meta-data', :issue, :issues
       it_behaves_like 'issuables requiring filter', :issues
-
-      it 'lists only incidents and issues' do
-        issue = create(:incident, project: project, author: user)
-        incident = create(:incident, project: project, author: user)
-        create(:quality_test_case, project: project, author: user)
-
-        get :issues, params: { author_id: user.id }
-
-        expect(assigns(:issues)).to match_array([issue, incident])
-      end
     end
 
     describe 'GET merge requests' do

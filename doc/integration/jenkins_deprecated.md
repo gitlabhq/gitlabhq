@@ -41,7 +41,7 @@ In GitLab, perform the following steps.
 
 Jenkins needs read access to the GitLab repository. We already specified a
 private key to use in Jenkins, now we need to add a public one to the GitLab
-project. For that case we will need a Deploy key. Read the documentation on
+project. For that case we need a Deploy key. Read the documentation on
 [how to set up a Deploy key](../ssh/README.md#deploy-keys).
 
 ### Jenkins service
@@ -50,14 +50,13 @@ Now navigate to GitLab services page and activate Jenkins
 
 ![screen](img/jenkins_gitlab_service.png)
 
-Done! Now when you push to GitLab - it will create a build for Jenkins.
-And also you will be able to see merge request build status with a link to the Jenkins build.
+Done! Now when you push to GitLab - it creates a build for Jenkins, and you can view the merge request build status with a link to the Jenkins build.
 
 ### Multi-project Configuration
 
 The GitLab Hook plugin in Jenkins supports the automatic creation of a project
-for each feature branch. After configuration GitLab will trigger feature branch
-builds and a corresponding project will be created in Jenkins.
+for each feature branch. After configuration GitLab triggers feature branch
+builds and a corresponding project is created in Jenkins.
 
 Configure the GitLab Hook plugin in Jenkins. Go to 'Manage Jenkins' and then
 'Configure System'. Find the 'GitLab Web Hook' section and configure as shown below.

@@ -13,7 +13,7 @@ RSpec.describe EventCreateService do
       tracking_params = { event_action: event_action, date_from: Date.yesterday, date_to: Date.today }
 
       expect { subject }
-        .to change { Gitlab::UsageDataCounters::TrackUniqueEvents.count_unique_events(tracking_params) }
+        .to change { Gitlab::UsageDataCounters::TrackUniqueEvents.count_unique_events(**tracking_params) }
         .by(1)
     end
   end
@@ -386,7 +386,7 @@ RSpec.describe EventCreateService do
         counter_class = Gitlab::UsageDataCounters::TrackUniqueEvents
         tracking_params = { event_action: event_action, date_from: Date.yesterday, date_to: Date.today }
 
-        expect { subject }.not_to change { counter_class.count_unique_events(tracking_params) }
+        expect { subject }.not_to change { counter_class.count_unique_events(**tracking_params) }
       end
     end
   end

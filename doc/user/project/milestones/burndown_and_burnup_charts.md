@@ -104,13 +104,7 @@ Reopened issues are considered as having been opened on the day after they were 
 ## Burnup charts
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6903) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.6.
-> - It's [deployed behind a feature flag](../../feature_flags.md), enabled by default.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-burnup-charts). **(STARTER ONLY)**
-
-CAUTION: **Warning:**
-This feature might not be available to you. Check the **version history** note above for details.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/268350) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.7.
 
 Burnup charts show the assigned and completed work for a milestone.
 
@@ -135,25 +129,6 @@ of issues closed.
 Burnup charts can show either the total number of issues or total weight for each
 day of the milestone. Use the toggle above the charts to switch between total
 and weight.
-
-### Enable or disable burnup charts **(STARTER ONLY)**
-
-Burnup charts is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:burnup_charts)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:burnup_charts)
-```
 
 <!-- ## Troubleshooting
 

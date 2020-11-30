@@ -1,9 +1,9 @@
 <script>
 import { mapState, mapMutations } from 'vuex';
 import { GlAlert } from '@gitlab/ui';
-import MembersTable from '~/vue_shared/components/members/table/members_table.vue';
+import MembersTable from '~/members/components/table/members_table.vue';
 import { scrollToElement } from '~/lib/utils/common_utils';
-import { HIDE_ERROR } from '~/vuex_shared/modules/members/mutation_types';
+import { HIDE_ERROR } from '~/members/store/mutation_types';
 
 export default {
   name: 'GroupMembersApp',

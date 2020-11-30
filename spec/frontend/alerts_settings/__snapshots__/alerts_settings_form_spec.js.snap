@@ -1,0 +1,97 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AlertsSettingsFormNew with default values renders the initial template 1`] = `
+"<form class=\\"gl-mt-6\\">
+  <h5 class=\\"gl-font-lg gl-my-5\\">Add new integrations</h5>
+  <div id=\\"integration-type\\" role=\\"group\\" class=\\"form-group gl-form-group\\"><label id=\\"integration-type__BV_label_\\" for=\\"integration-type\\" class=\\"d-block col-form-label\\">1. Select integration type</label>
+    <div class=\\"bv-no-focus-ring\\"><select class=\\"gl-form-select custom-select\\" id=\\"__BVID__8\\">
+        <option value=\\"\\">Select integration type</option>
+        <option value=\\"HTTP\\">HTTP Endpoint</option>
+        <option value=\\"PROMETHEUS\\">External Prometheus</option>
+        <option value=\\"OPSGENIE\\">Opsgenie</option>
+      </select>
+      <!---->
+      <!---->
+      <!---->
+      <!---->
+    </div>
+  </div>
+  <div class=\\"gl-mt-3 collapse\\" style=\\"display: none;\\" id=\\"__BVID__10\\">
+    <div>
+      <div id=\\"name-integration\\" role=\\"group\\" class=\\"form-group gl-form-group\\"><label id=\\"name-integration__BV_label_\\" for=\\"name-integration\\" class=\\"d-block col-form-label\\">2. Name integration</label>
+        <div class=\\"bv-no-focus-ring\\"><input type=\\"text\\" placeholder=\\"Enter integration name\\" class=\\"gl-form-input form-control\\" id=\\"__BVID__15\\">
+          <!---->
+          <!---->
+          <!---->
+        </div>
+      </div>
+      <div id=\\"integration-webhook\\" role=\\"group\\" class=\\"form-group gl-form-group\\"><label id=\\"integration-webhook__BV_label_\\" for=\\"integration-webhook\\" class=\\"d-block col-form-label\\">3. Set up webhook</label>
+        <div class=\\"bv-no-focus-ring\\"><span>Utilize the URL and authorization key below to authorize an external service to send alerts to GitLab. Review your external service's documentation to learn where to add these details, and the <a rel=\\"noopener noreferrer\\" target=\\"_blank\\" href=\\"https://docs.gitlab.com/ee/operations/incident_management/alert_integrations.html\\" class=\\"gl-link gl-display-inline-block\\">GitLab documentation</a> to learn more about configuring your endpoint.</span> <label class=\\"gl-display-flex gl-flex-direction-column gl-mb-0 gl-w-max-content gl-my-4 gl-font-weight-normal\\">
+            <div class=\\"gl-toggle-wrapper\\"><span class=\\"gl-toggle-label\\">Active</span>
+              <!----> <button aria-label=\\"Active\\" type=\\"button\\" class=\\"gl-toggle\\"><span class=\\"toggle-icon\\"><svg data-testid=\\"close-icon\\" aria-hidden=\\"true\\" class=\\"gl-icon s16\\"><use href=\\"#close\\"></use></svg></span></button></div>
+            <!---->
+          </label>
+          <!---->
+          <div class=\\"gl-my-4\\"><span class=\\"gl-font-weight-bold\\">
+            Webhook URL
+          </span>
+            <div id=\\"url\\" readonly=\\"readonly\\">
+              <div role=\\"group\\" class=\\"input-group\\">
+                <!---->
+                <!----> <input id=\\"url\\" type=\\"text\\" readonly=\\"readonly\\" class=\\"gl-form-input form-control\\">
+                <div class=\\"input-group-append\\"><button title=\\"Copy\\" data-clipboard-text=\\"\\" aria-label=\\"Copy this value\\" type=\\"button\\" class=\\"btn gl-m-0! btn-default btn-md gl-button btn-default-secondary btn-icon\\">
+                    <!----> <svg data-testid=\\"copy-to-clipboard-icon\\" aria-hidden=\\"true\\" class=\\"gl-button-icon gl-icon s16\\">
+                      <use href=\\"#copy-to-clipboard\\"></use>
+                    </svg>
+                    <!----></button></div>
+                <!---->
+              </div>
+            </div>
+          </div>
+          <div class=\\"gl-my-4\\"><span class=\\"gl-font-weight-bold\\">
+            Authorization key
+          </span>
+            <div id=\\"authorization-key\\" readonly=\\"readonly\\" class=\\"gl-mb-3\\">
+              <div role=\\"group\\" class=\\"input-group\\">
+                <!---->
+                <!----> <input id=\\"authorization-key\\" type=\\"text\\" readonly=\\"readonly\\" class=\\"gl-form-input form-control\\">
+                <div class=\\"input-group-append\\"><button title=\\"Copy\\" data-clipboard-text=\\"\\" aria-label=\\"Copy this value\\" type=\\"button\\" class=\\"btn gl-m-0! btn-default btn-md gl-button btn-default-secondary btn-icon\\">
+                    <!----> <svg data-testid=\\"copy-to-clipboard-icon\\" aria-hidden=\\"true\\" class=\\"gl-button-icon gl-icon s16\\">
+                      <use href=\\"#copy-to-clipboard\\"></use>
+                    </svg>
+                    <!----></button></div>
+                <!---->
+              </div>
+            </div> <button type=\\"button\\" disabled=\\"disabled\\" class=\\"btn btn-default btn-md disabled gl-button\\">
+              <!---->
+              <!----> <span class=\\"gl-button-text\\">
+            Reset Key
+          </span></button>
+            <!---->
+          </div>
+          <!---->
+          <!---->
+          <!---->
+        </div>
+      </div>
+      <div id=\\"test-integration\\" role=\\"group\\" class=\\"form-group gl-form-group\\"><label id=\\"test-integration__BV_label_\\" for=\\"test-integration\\" class=\\"d-block col-form-label\\">4. Sample alert payload (optional)</label>
+        <div class=\\"bv-no-focus-ring\\"><span>Provide an example payload from the monitoring tool you intend to integrate with. This payload can be used to test the integration (optional).</span> <textarea id=\\"test-payload\\" disabled=\\"disabled\\" placeholder=\\"{ &quot;events&quot;: [{ &quot;application&quot;: &quot;Name of application&quot; }] }\\" wrap=\\"soft\\" class=\\"gl-form-input gl-form-textarea gl-my-3 form-control is-valid\\" style=\\"resize: none; overflow-y: scroll;\\"></textarea>
+          <!---->
+          <!---->
+          <!---->
+        </div>
+      </div>
+      <!---->
+      <!---->
+    </div>
+    <div class=\\"gl-display-flex gl-justify-content-start gl-py-3\\"><button data-testid=\\"integration-form-submit\\" type=\\"submit\\" class=\\"btn js-no-auto-disable btn-success btn-md gl-button\\">
+        <!---->
+        <!----> <span class=\\"gl-button-text\\">Save integration
+      </span></button> <button data-testid=\\"integration-test-and-submit\\" type=\\"button\\" disabled=\\"disabled\\" class=\\"btn gl-mx-3 js-no-auto-disable btn-success btn-md disabled gl-button btn-success-secondary\\">
+        <!---->
+        <!----> <span class=\\"gl-button-text\\">Save and test payload</span></button> <button type=\\"reset\\" class=\\"btn js-no-auto-disable btn-default btn-md gl-button\\">
+        <!---->
+        <!----> <span class=\\"gl-button-text\\">Cancel</span></button></div>
+  </div>
+</form>"
+`;

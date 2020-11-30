@@ -4,11 +4,8 @@ import Vuex from 'vuex';
 import { GlAlert } from '@gitlab/ui';
 import App from '~/groups/members/components/app.vue';
 import * as commonUtils from '~/lib/utils/common_utils';
-import {
-  RECEIVE_MEMBER_ROLE_ERROR,
-  HIDE_ERROR,
-} from '~/vuex_shared/modules/members/mutation_types';
-import mutations from '~/vuex_shared/modules/members/mutations';
+import { RECEIVE_MEMBER_ROLE_ERROR, HIDE_ERROR } from '~/members/store/mutation_types';
+import mutations from '~/members/store/mutations';
 
 describe('GroupMembersApp', () => {
   const localVue = createLocalVue();

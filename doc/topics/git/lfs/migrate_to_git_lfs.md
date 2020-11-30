@@ -10,9 +10,8 @@ description: "How to migrate an existing Git repository to Git LFS with BFG."
 Using Git LFS can help you to reduce the size of your Git
 repository and improve its performance.
 
-However, simply adding the
-large files that are already in your repository to Git LFS,
-will not actually reduce the size of your repository because
+However, simply adding the large files that are already in your repository to Git LFS
+doesn't actually reduce the size of your repository because
 the files are still referenced by previous commits.
 
 Through the method described on this document, first migrate
@@ -41,7 +40,7 @@ Before beginning, make sure:
   Branches based on the repository before applying this method cannot be merged.
   Branches based on the repo before applying this method cannot be merged.
 
-To follow this tutorial, you'll need:
+To follow this tutorial, you need:
 
 - Maintainer permissions to the existing Git repository
   you'd like to migrate to LFS with access through the command line.
@@ -74,7 +73,7 @@ Consider an example upstream project, `git@gitlab.com:gitlab-tests/test-git-lfs-
 
 1. Clone `--mirror` the repository:
 
-   Cloning with the mirror flag will create a bare repository.
+   Cloning with the mirror flag creates a bare repository.
    This ensures you get all the branches within the repo.
 
    It creates a directory called `<repo-name>.git`
@@ -150,7 +149,7 @@ Consider an example upstream project, `git@gitlab.com:gitlab-tests/test-git-lfs-
    ```
 
    Now all existing the files you converted, as well as the new
-   ones you add, will be properly tracked with LFS.
+   ones you add, are properly tracked with LFS.
 
 1. [Re-protect the default branch](../../../user/project/protected_branches.md):
 

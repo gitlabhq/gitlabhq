@@ -37,7 +37,7 @@ the following values:
 |-----------|------------------------------------------------------------------------------------------------------------------|
 | Detected  | The default state for a newly discovered vulnerability                                                           |
 | Confirmed | A user has seen this vulnerability and confirmed it to be accurate                                               |
-| Dismissed | A user has seen this vulnerability and dismissed it because it is not accurate or otherwise will not be resolved |
+| Dismissed | A user has seen this vulnerability and dismissed it because it is not accurate or otherwise not to be resolved |
 | Resolved  | The vulnerability has been fixed and is no longer valid                                                          |
 
 A timeline shows you when the vulnerability status has changed

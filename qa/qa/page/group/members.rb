@@ -22,12 +22,12 @@ module QA
           element :group_row
         end
 
-        view 'app/assets/javascripts/vue_shared/components/members/table/role_dropdown.vue' do
+        view 'app/assets/javascripts/members/components/table/role_dropdown.vue' do
           element :access_level_dropdown
           element :access_level_link
         end
 
-        view 'app/assets/javascripts/vue_shared/components/members/action_buttons/remove_member_button.vue' do
+        view 'app/assets/javascripts/members/components/action_buttons/remove_member_button.vue' do
           element :delete_member_button
         end
 

@@ -833,7 +833,7 @@ If your application contains `@client` queries, most probably you will have an A
 ```javascript
 import createMockApollo from 'jest/helpers/mock_apollo_helper';
 ...
-fakeApollo = createMockApollo(requestHandlers, {});
+mockApollo = createMockApollo(requestHandlers, resolvers);
 ```
 
 Sometimes we want to test a `result` hook of the local query. In order to have it triggered, we need to populate a cache with correct data to be fetched with this query:
@@ -849,14 +849,14 @@ query fetchLocalUser {
 ```javascript
 import fetchLocalUserQuery from '~/design_management/graphql/queries/fetch_local_user.query.graphql';
 
-function createComponentWithApollo() {
+function createMockApolloProvider() {
   const requestHandlers = [
     [getDesignListQuery, jest.fn().mockResolvedValue(designListQueryResponse)],
     [permissionsQuery, jest.fn().mockResolvedValue(permissionsQueryResponse)],
   ];
 
-  fakeApollo = createMockApollo(requestHandlers, {});
-  fakeApollo.clients.defaultClient.cache.writeQuery({
+  mockApollo = createMockApollo(requestHandlers, {});
+  mockApollo.clients.defaultClient.cache.writeQuery({
     query: fetchLocalUserQuery,
     data: {
       fetchLocalUser: {
@@ -864,13 +864,105 @@ function createComponentWithApollo() {
         name: 'Test',
       },
     },
-  })
+  });
 
-  wrapper = shallowMount(Index, {
+  return mockApollo;
+}
+
+function createComponent(options = {}) {
+  const { mockApollo } = options;
+
+  return shallowMount(Index, {
     localVue,
-    apolloProvider: fakeApollo,
+    apolloProvider: mockApollo,
   });
 }
+```
+
+Sometimes it is necessary to control what the local resolver returns and inspect how it is called by the component. This can be done by mocking your local resolver:
+
+```javascript
+import fetchLocalUserQuery from '~/design_management/graphql/queries/fetch_local_user.query.graphql';
+
+function createMockApolloProvider(options = {}) {
+  const { fetchLocalUserSpy } = options;
+
+  mockApollo = createMockApollo([], {
+    Query: {
+      fetchLocalUser: fetchLocalUserSpy,
+    },
+  });
+
+  // Necessary for local resolvers to be activated
+  mockApollo.clients.defaultClient.cache.writeQuery({
+    query: fetchLocalUserQuery,
+    data: {},
+  });
+
+  return mockApollo;
+}
+```
+
+In the test you can then control what the spy is supposed to do and inspect the component after the request have returned:
+
+```javascript
+describe('My Index test with `createMockApollo`', () => {
+  let wrapper;
+  let fetchLocalUserSpy;
+
+  afterEach(() => {
+    wrapper.destroy();
+    wrapper = null;
+    fetchLocalUserSpy = null;
+  });
+
+  describe('when loading', () => {
+    beforeEach(() => {
+      const mockApollo = createMockApolloProvider();
+      wrapper = createComponent({ mockApollo });
+    });
+
+    it('displays the loader', () => {
+      // Assess that the loader is present
+    });
+  });
+
+  describe('with data', () => {
+    beforeEach(async () => {
+      fetchLocalUserSpy = jest.fn().mockResolvedValue(localUserQueryResponse);
+      const mockApollo = createMockApolloProvider(fetchLocalUserSpy);
+      wrapper = createComponent({ mockApollo });
+      await waitForPromises();
+    });
+
+    it('should fetch data once', () => {
+      expect(fetchLocalUserSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('displays data', () => {
+      // Assess that data is present
+    });
+  });
+
+  describe('with error', () => {
+    const error = 'Error!';
+
+    beforeEach(async () => {
+      fetchLocalUserSpy = jest.fn().mockRejectedValueOnce(error);
+      const mockApollo = createMockApolloProvider(fetchLocalUserSpy);
+      wrapper = createComponent({ mockApollo });
+      await waitForPromises();
+    });
+
+    it('should fetch data once', () => {
+      expect(fetchLocalUserSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('displays the error', () => {
+      // Assess that the error is displayed
+    });
+  });
+});
 ```
 
 ## Handling errors

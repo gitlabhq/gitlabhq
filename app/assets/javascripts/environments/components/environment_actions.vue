@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlIcon, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlIcon, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import { formatTime } from '~/lib/utils/datetime_utility';
 import eventHub from '../event_hub';
@@ -9,7 +9,8 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
-    GlButton,
+    GlDropdown,
+    GlDropdownItem,
     GlIcon,
     GlLoadingIcon,
   },
@@ -35,7 +36,7 @@ export default {
       if (action.scheduledAt) {
         const confirmationMessage = sprintf(
           s__(
-            "DelayedJobs|Are you sure you want to run %{jobName} immediately? Otherwise this job will run automatically after it's timer finishes.",
+            'DelayedJobs|Are you sure you want to run %{jobName} immediately? Otherwise this job will run automatically after its timer finishes.',
           ),
           { jobName: action.name },
         );
@@ -67,40 +68,32 @@ export default {
 };
 </script>
 <template>
-  <div class="btn-group" role="group">
-    <gl-button
-      v-gl-tooltip
-      :title="title"
-      :aria-label="title"
-      :disabled="isLoading"
-      class="dropdown dropdown-new js-environment-actions-dropdown"
-      data-container="body"
-      data-toggle="dropdown"
-      data-testid="environment-actions-button"
+  <gl-dropdown
+    v-gl-tooltip
+    :title="title"
+    :aria-label="title"
+    :disabled="isLoading"
+    right
+    data-container="body"
+    data-testid="environment-actions-button"
+  >
+    <template #button-content>
+      <gl-icon name="play" />
+      <gl-icon name="chevron-down" />
+      <gl-loading-icon v-if="isLoading" />
+    </template>
+    <gl-dropdown-item
+      v-for="(action, i) in actions"
+      :key="i"
+      :disabled="isActionDisabled(action)"
+      data-testid="manual-action-link"
+      @click="onClickAction(action)"
     >
-      <span>
-        <gl-icon name="play" />
-        <gl-icon name="chevron-down" />
-        <gl-loading-icon v-if="isLoading" />
+      <span class="gl-flex-fill-1">{{ action.name }}</span>
+      <span v-if="action.scheduledAt" class="gl-text-gray-500 float-right">
+        <gl-icon name="clock" />
+        {{ remainingTime(action) }}
       </span>
-    </gl-button>
-
-    <ul class="dropdown-menu dropdown-menu-right">
-      <li v-for="(action, i) in actions" :key="i" class="gl-display-flex">
-        <gl-button
-          :class="{ disabled: isActionDisabled(action) }"
-          :disabled="isActionDisabled(action)"
-          variant="link"
-          class="js-manual-action-link gl-flex-fill-1"
-          @click="onClickAction(action)"
-        >
-          <span class="gl-flex-fill-1">{{ action.name }}</span>
-          <span v-if="action.scheduledAt" class="text-secondary float-right">
-            <gl-icon name="clock" />
-            {{ remainingTime(action) }}
-          </span>
-        </gl-button>
-      </li>
-    </ul>
-  </div>
+    </gl-dropdown-item>
+  </gl-dropdown>
 </template>

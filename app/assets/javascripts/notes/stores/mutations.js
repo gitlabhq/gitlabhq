@@ -213,6 +213,10 @@ export default {
     }
   },
 
+  [types.SET_RESOLVING_DISCUSSION](state, isResolving) {
+    state.isResolvingDiscussion = isResolving;
+  },
+
   [types.UPDATE_NOTE](state, note) {
     const noteObj = utils.findNoteObjectById(state.discussions, note.discussion_id);
 

@@ -53,7 +53,7 @@ Import your projects from Bitbucket Server to GitLab via the API.
 NOTE: **Note:**
 The Bitbucket Project Key is only used for finding the repository in Bitbucket.
 You must specify a `target_namespace` if you want to import the repository to a GitLab group.
-If you do not specify `target_namespace`, the project will import to your personal user namespace.
+If you do not specify `target_namespace`, the project imports to your personal user namespace.
 
 ```plaintext
 POST /import/bitbucket_server

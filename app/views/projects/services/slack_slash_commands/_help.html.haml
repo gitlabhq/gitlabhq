@@ -1,4 +1,4 @@
-- pretty_name = @project&.full_name || _('&lt;project name&gt;')
+- pretty_name = @project&.full_name ? html_escape(@project&.full_name) : '<' + _('project name') + '>'
 - run_actions_text = html_escape_once(s_("ProjectService|Perform common operations on GitLab project: %{project_name}") % { project_name: pretty_name })
 
 .info-well

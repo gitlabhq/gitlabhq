@@ -11,7 +11,7 @@ module Gitlab
         def satisfied_by?(pipeline, context)
           return true if pipeline.modified_paths.nil?
 
-          expanded_globs = expand_globs(pipeline, context)
+          expanded_globs = expand_globs(context)
           pipeline.modified_paths.any? do |path|
             expanded_globs.any? do |glob|
               File.fnmatch?(glob, path, File::FNM_PATHNAME | File::FNM_DOTMATCH | File::FNM_EXTGLOB)
@@ -19,8 +19,7 @@ module Gitlab
           end
         end
 
-        def expand_globs(pipeline, context)
-          return @globs unless ::Feature.enabled?(:ci_variable_expansion_in_rules_changes, pipeline.project, default_enabled: true)
+        def expand_globs(context)
           return @globs unless context
 
           @globs.map do |glob|

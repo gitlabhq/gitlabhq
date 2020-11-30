@@ -849,7 +849,7 @@ describe('mrWidgetOptions', () => {
     });
   });
 
-  describe('suggestPipeline feature flag', () => {
+  describe('suggestPipeline', () => {
     beforeEach(() => {
       mock.onAny().reply(200);
 
@@ -860,8 +860,6 @@ describe('mrWidgetOptions', () => {
 
     describe('given feature flag is enabled', () => {
       beforeEach(() => {
-        gon.features = { suggestPipeline: true };
-
         createComponent();
 
         vm.mr.hasCI = false;
@@ -888,20 +886,6 @@ describe('mrWidgetOptions', () => {
 
         await vm.$nextTick();
 
-        expect(findSuggestPipeline()).toBeNull();
-      });
-    });
-
-    describe('given feature flag is not enabled', () => {
-      beforeEach(() => {
-        gon.features = { suggestPipeline: false };
-
-        createComponent();
-
-        vm.mr.hasCI = false;
-      });
-
-      it('should not suggest pipelines when none exist', () => {
         expect(findSuggestPipeline()).toBeNull();
       });
     });

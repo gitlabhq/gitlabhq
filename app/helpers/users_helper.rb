@@ -123,6 +123,19 @@ module UsersHelper
     }
   end
 
+  def unblock_user_modal_data(user)
+    {
+      path: unblock_admin_user_path(user),
+      method: 'put',
+      modal_attributes: {
+        title: s_('AdminUsers|Unblock user %{username}?') % { username: sanitize_name(user.name) },
+        message: s_('AdminUsers|You can always block their account again if needed.'),
+        okVariant: 'info',
+        okTitle: s_('AdminUsers|Unblock')
+      }.to_json
+    }
+  end
+
   def user_block_effects
     header = tag.p s_('AdminUsers|Blocking user has the following effects:')
 

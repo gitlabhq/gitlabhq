@@ -8,7 +8,7 @@ type: concepts
 
 # Introduction to CI/CD with GitLab
 
-In this document, we'll present an overview of the concepts of Continuous Integration,
+This document presents an overview of the concepts of Continuous Integration,
 Continuous Delivery, and Continuous Deployment, as well as an introduction to
 GitLab CI/CD.
 
@@ -100,18 +100,18 @@ located in the root path of your repository.
 In this file, you can define the scripts you want to run, define include and
 cache dependencies, choose commands you want to run in sequence
 and those you want to run in parallel, define where you want to
-deploy your app, and specify whether you will want to run the scripts automatically
+deploy your app, and specify whether you want to run the scripts automatically
 or trigger any of them manually. After you're familiar with
 GitLab CI/CD you can add more advanced steps into the configuration file.
 
-To add scripts to that file, you'll need to organize them in a
+To add scripts to that file, you need to organize them in a
 sequence that suits your application and are in accordance with
 the tests you wish to perform. To visualize the process, imagine
 that all the scripts you add to the configuration file are the
 same as the commands you run on a terminal on your computer.
 
 After you've added your `.gitlab-ci.yml` configuration file to your
-repository, GitLab will detect it and run your scripts with the
+repository, GitLab detects it and run your scripts with the
 tool called [GitLab Runner](https://docs.gitlab.com/runner/), which
 works similarly to your terminal.
 
@@ -191,7 +191,7 @@ lifecycle, as shown in the illustration below.
 ![Deeper look into the basic CI/CD workflow](img/gitlab_workflow_example_extended_v12_3.png)
 
 If you look at the image from the left to the right,
-you'll see some of the features available in GitLab
+you can see some of the features available in GitLab
 according to each stage (Verify, Package, Release).
 
 1. **Verify**:

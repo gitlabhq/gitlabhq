@@ -10,7 +10,10 @@ export default class TemplateSelector {
     this.dropdown = dropdown;
     this.$dropdownContainer = wrapper;
     this.$filenameInput = $input || $('#file_name');
-    this.$dropdownIcon = $('.fa-chevron-down', dropdown);
+    this.$dropdownIcon = $('.dropdown-menu-toggle-icon', dropdown);
+    this.$loadingIcon = $(
+      '<div class="gl-spinner gl-spinner-orange gl-spinner-sm gl-absolute gl-top-3 gl-right-3 gl-display-none"></div>',
+    ).insertAfter(this.$dropdownIcon);
 
     this.initDropdown(dropdown, data);
     this.listenForFilenameInput();
@@ -92,10 +95,12 @@ export default class TemplateSelector {
   }
 
   startLoadingSpinner() {
-    this.$dropdownIcon.addClass('spinner').removeClass('fa-chevron-down');
+    this.$loadingIcon.removeClass('gl-display-none');
+    this.$dropdownIcon.addClass('gl-display-none');
   }
 
   stopLoadingSpinner() {
-    this.$dropdownIcon.addClass('fa-chevron-down').removeClass('spinner');
+    this.$loadingIcon.addClass('gl-display-none');
+    this.$dropdownIcon.removeClass('gl-display-none');
   }
 }

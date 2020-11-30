@@ -23,7 +23,7 @@ We interpret user actions on the page to have some sort of effect. These actions
 
 ### Navigation
 
-When a page is navigated to, there are elements that will always appear on the page unconditionally.
+When a page is navigated to, there are elements that always appear on the page unconditionally.
 
 Dynamic element validation is instituted when using
 
@@ -100,7 +100,7 @@ Runtime::Browser.visit(:gitlab, Page::MyPage)
 execute_stuff
 ```
 
-will invoke GitLab QA to scan `MyPage` for `my_element` and `another_element` to be on the page before continuing to
+invokes GitLab QA to scan `MyPage` for `my_element` and `another_element` to be on the page before continuing to
 `execute_stuff`
 
 ### Clicking
@@ -113,7 +113,7 @@ def open_layer
 end
 ```
 
-will invoke GitLab QA to ensure that `message_content` appears on
+invokes GitLab QA to ensure that `message_content` appears on
 the Layer upon clicking `my_element`.
 
-This will imply that the Layer is indeed rendered before we continue our test.
+This implies that the Layer is indeed rendered before we continue our test.

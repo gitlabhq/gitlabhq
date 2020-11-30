@@ -6,12 +6,10 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
   before do
     stub_const('Gitlab::Experimentation::EXPERIMENTS', {
         backwards_compatible_test_experiment: {
-          environment: environment,
           tracking_category: 'Team',
           use_backwards_compatible_subject_index: true
         },
         test_experiment: {
-          environment: environment,
           tracking_category: 'Team'
         }
       }
@@ -21,7 +19,6 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
     Feature.enable_percentage_of_time(:test_experiment_experiment_percentage, enabled_percentage)
   end
 
-  let(:environment) { Rails.env.test? }
   let(:enabled_percentage) { 10 }
 
   controller(ApplicationController) do
@@ -391,10 +388,8 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
 
     context 'do not track' do
       before do
+        stub_experiment(test_experiment: true)
         allow(controller).to receive(:current_user).and_return(user)
-        allow_next_instance_of(described_class) do |instance|
-          allow(instance).to receive(:experiment_enabled?).with(:test_experiment).and_return(false)
-        end
       end
 
       context 'is disabled' do

@@ -9,6 +9,8 @@ RSpec.configure do |config|
     # WebMock is set up to allow requests to `localhost`
     host = 'localhost'
 
+    allow_any_instance_of(Gitlab::Tracking::Destinations::ProductAnalytics).to receive(:event)
+
     allow_any_instance_of(Gitlab::Tracking::Destinations::Snowplow)
       .to receive(:emitter)
       .and_return(SnowplowTracker::Emitter.new(host, buffer_size: buffer_size))

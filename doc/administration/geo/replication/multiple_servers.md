@@ -174,6 +174,12 @@ the **primary** database. Use the following as a guide.
    roles ['geo_secondary_role', 'postgres_role']
 
    ##
+   ## The unique identifier for the Geo node.
+   ## This should match the secondary's application node.
+   ##
+   gitlab_rails['geo_node_name'] = '<node_name_here>'
+
+   ##
    ## Secondary address
    ## - replace '<secondary_node_ip>' with the public or VPC address of your Geo secondary node
    ## - replace '<tracking_database_ip>' with the public or VPC address of your Geo tracking database node

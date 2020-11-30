@@ -1,0 +1,51 @@
+---
+- title: Auto Deploy to EC2
+  body: Auto DevOps has been expanded to support deployments to Amazon Web Services. You can now deploy to AWS Cloud Compute (EC2) and take advantage of Auto DevOps, even without Kubernetes. To enable this workflow, you must enable Auto DevOps and define the AWS-typed environment variables AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, and AWS_DEFAULT_REGION. This allows you to provision your own infrastructure by leveraging the AWS CloudFormation API. Then, you can push your previously built artifact to an AWS S3 bucket, and deploy the content to an AWS EC2 instance. Your EC2 deployment then automatically builds you a complete, automatic delivery pipeline without extra manual steps.
+  stage: Release
+  self-managed: true
+  gitlab-com: true
+  packages: [core, starter, premium, ultimate]
+  url: https://docs.gitlab.com/ee/ci/cloud_deployment/#custom-build-job-for-auto-devops
+  image_url: https://img.youtube.com/vi/4B-qSwKnacA/hqdefault.jpg
+  published_at: 2020-11-22
+  release: 13.6
+- title: Display Code Quality severity ratings
+  body: The Code Quality feature in GitLab is great at showing what quality violations exist in a project or are changing in the Merge Request. However, understanding which of those violations is the most important is not clear in the GitLab interface today. With the Full Code Quality Report and Merge Request Widget, now you can see the severity rating. This makes it easy for you to understand which code quality violations are most important to resolve before merging and reduces the technical debt in your project.
+  stage: Verify
+  self-managed: true
+  gitlab-com: true
+  packages: [core, starter, premium, ultimate]
+  url: https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#code-quality-widget
+  image_url: https://about.gitlab.com/images/13_6/code_quality_severity.png
+  published_at: 2020-11-22
+  release: 13.6
+- title: Display code coverage data for selected projects
+  body: In 13.4, we released the first iteration of Code Coverage data for Groups that enables you to compare the coverage of multiple projects and download the data in a single file from a single screen. However, to analyze the data, you had to open the file to check it manually, and probably imported it into a spreadsheet for further analysis. In GitLab 13.6, you can now select specific projects in a group to see their latest coverage values directly in GitLab itself without needing to download a file or waste development time accessing code coverage data.
+  stage: Verify
+  self-managed: true
+  gitlab-com: true
+  packages: [premium, ultimate]
+  url: https://docs.gitlab.com/ee/user/group/repositories_analytics/index.html#latest-project-test-coverage-list
+  image_url: https://about.gitlab.com/images/13_6/display_selected_coverage_projects_example.png
+  published_at: 2020-11-22
+  release: 13.6
+- title: Group-level management of project integrations
+  body: In GitLab 13.3, we added the ability to enable an integration across an entire instance. With GitLab 13.6, that feature is being expanded to allow integrations to be managed at the group level as well! Group owners can now add an integration to a group, and that integration will be inherited by all projects under that group. This has the potential for saving massive amounts of time, as many organizations have specific integrations that they want rolled out to every project they create. A great example of this is using our Jira integration. If you're using Jira, it's almost always across the whole company. Some of these companies have _thousands of projects_ and therefore had to configure each and every one of those integrations individually.With group-level management of project integrations, you can add the integration at each parent group, reducing the amount of configuration required by orders of magnitude!
+  stage: Create
+  self-managed: true
+  gitlab-com: true
+  packages: [core, starter, premium, ultimate]
+  url: https://docs.gitlab.com/ee/user/admin_area/settings/project_integration_management.html
+  image_url: https://about.gitlab.com/images/13_6/project-integration-inheriting-settings.png
+  published_at: 2020-11-22
+  release: 13.6
+- title: Milestone Burnup Charts and historically accurate reporting
+  body:  A milestone or iteration burndown chart helps track completion progress of total scope, but it doesn't provide insight into how the scope changed during the course of the timebox. Neither has it previously retained historical accuracy regarding how much of the initial committed scope of the milestone or iteration was actually completed. To solve these problems and help teams have better insights into scope creep, milestones and iterations now show a burnup chart that tracks the daily total count and weight of issues added to and completed within a given timebox. This change only applies to milestones and iterations created in GitLab 13.6 or later. Milestones created prior to 13.6 will still have access to legacy burndown charts.
+  stage: Plan
+  self-managed: true
+  gitlab-com: true
+  packages: [starter, premium, ultimate]
+  url: https://docs.gitlab.com/ee/user/project/milestones/burndown_and_burnup_charts.html#burnup-charts
+  image_url: https://about.gitlab.com/images/13_6/burnup-chart.png
+  published_at: 2020-11-22
+  release: 13.6

@@ -6,9 +6,10 @@ import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer
 import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
 import {
   WEBIDE_MARK_FILE_CLICKED,
-  WEBIDE_MARK_FILE_START,
+  WEBIDE_MARK_REPO_EDITOR_START,
+  WEBIDE_MARK_REPO_EDITOR_FINISH,
+  WEBIDE_MEASURE_REPO_EDITOR,
   WEBIDE_MEASURE_FILE_AFTER_INTERACTION,
-  WEBIDE_MEASURE_FILE_FROM_REQUEST,
 } from '~/performance/constants';
 import { performanceMarkAndMeasure } from '~/performance/utils';
 import eventHub from '../eventhub';
@@ -28,6 +29,7 @@ import { getRulesWithTraversal } from '../lib/editorconfig/parser';
 import mapRulesToMonaco from '../lib/editorconfig/rules_mapper';
 
 export default {
+  name: 'RepoEditor',
   components: {
     ContentViewer,
     DiffViewer,
@@ -175,9 +177,6 @@ export default {
       }
     },
   },
-  beforeCreate() {
-    performanceMarkAndMeasure({ mark: WEBIDE_MARK_FILE_START });
-  },
   beforeDestroy() {
     this.editor.dispose();
   },
@@ -204,6 +203,7 @@ export default {
     ]),
     ...mapActions('editor', ['updateFileEditor']),
     initEditor() {
+      performanceMarkAndMeasure({ mark: WEBIDE_MARK_REPO_EDITOR_START });
       if (this.shouldHideEditor && (this.file.content || this.file.raw)) {
         return;
       }
@@ -305,7 +305,15 @@ export default {
       if (performance.getEntriesByName(WEBIDE_MARK_FILE_CLICKED).length) {
         eventHub.$emit(WEBIDE_MEASURE_FILE_AFTER_INTERACTION);
       } else {
-        eventHub.$emit(WEBIDE_MEASURE_FILE_FROM_REQUEST);
+        performanceMarkAndMeasure({
+          mark: WEBIDE_MARK_REPO_EDITOR_FINISH,
+          measures: [
+            {
+              name: WEBIDE_MEASURE_REPO_EDITOR,
+              start: WEBIDE_MARK_REPO_EDITOR_START,
+            },
+          ],
+        });
       }
     },
     refreshEditorDimensions() {

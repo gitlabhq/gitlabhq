@@ -93,6 +93,11 @@ module ObjectStorage
 
     private
 
+    # This returns a Hash of HTTP encryption headers to send along to S3.
+    #
+    # They can also be passed in as Fog::AWS::Storage::File attributes, since there
+    # are aliases defined for them:
+    # https://github.com/fog/fog-aws/blob/ab288f29a0974d64fd8290db41080e5578be9651/lib/fog/aws/models/storage/file.rb#L24-L25
     def aws_server_side_encryption_headers
       {
         'x-amz-server-side-encryption' => server_side_encryption,

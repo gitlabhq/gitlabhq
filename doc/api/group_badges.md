@@ -10,15 +10,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Placeholder tokens
 
-Badges support placeholders that will be replaced in real time in both the link and image URL. The allowed placeholders are:
+Badges support placeholders that are replaced in real time in both the link and image URL. The allowed placeholders are:
 
-- **%{project_path}**: will be replaced by the project path.
-- **%{project_id}**: will be replaced by the project ID.
-- **%{default_branch}**: will be replaced by the project default branch.
-- **%{commit_sha}**: will be replaced by the last project's commit SHA.
+- **%{project_path}**: replaced by the project path.
+- **%{project_id}**: replaced by the project ID.
+- **%{default_branch}**: replaced by the project default branch.
+- **%{commit_sha}**: replaced by the last project's commit SHA.
 
-Because these endpoints aren't inside a project's context, the information used to replace the placeholders will be
-from the first group's project by creation date. If the group hasn't got any project the original URL with the placeholders will be returned.
+Because these endpoints aren't inside a project's context, the information used to replace the placeholders comes
+from the first group's project by creation date. If the group hasn't got any project the original URL with the placeholders is returned.
 
 ## List all badges of a group
 

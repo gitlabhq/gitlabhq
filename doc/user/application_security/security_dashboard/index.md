@@ -87,7 +87,7 @@ display all detected and confirmed vulnerabilities.
 
 The Vulnerability Report first displays the time at which the last pipeline completed on the project's
 default branch. There's also a link to view this in more detail. In the case of any pipeline failures,
-you will see the number of failures clearly indicated. The failure notification takes you directly to
+the number of failures is indicated. The failure notification takes you directly to
 the **Failed jobs** tab of the pipeline page.
 
 The Vulnerability Report next displays the total number of vulnerabilities by severity (for example,
@@ -142,7 +142,7 @@ Next to the timeline chart is a list of projects, grouped and sorted by the seve
 | B | One or more "low" |
 | A | Zero vulnerabilities |
 
-Projects with no vulnerability tests configured will not appear in the list. Additionally, dismissed
+Projects with no vulnerability tests configured don't appear in the list. Additionally, dismissed
 vulnerabilities are excluded.
 
 Navigate to the group's [vulnerability report](#vulnerability-report-1) to view the vulnerabilities found.
@@ -225,7 +225,7 @@ are discovered.
 
 To ensure the information on the Security Dashboard is regularly updated,
 [configure a scheduled pipeline](../../../ci/pipelines/schedules.md) to run a
-daily security scan. This will update the information displayed on the Security
+daily security scan. This updates the information displayed on the Security
 Dashboard regardless of how often the default branch is updated.
 
 That way, reports are created even if no code change happens.

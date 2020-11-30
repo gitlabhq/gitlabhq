@@ -55,13 +55,14 @@ dependencies, but the UI only shows one of the shortest paths.
 Dependency Paths are supported for the following package managers:
 
 - [NuGet](https://www.nuget.org/)
+- [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
 
 ## Licenses
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10536) in GitLab Ultimate 12.3.
 
 If the [License Compliance](../../compliance/license_compliance/index.md) CI job is configured,
-the [discovered licenses](../../compliance/license_compliance/index.md#supported-languages-and-package-managers) will be displayed on this page.
+the [discovered licenses](../../compliance/license_compliance/index.md#supported-languages-and-package-managers) are displayed on this page.
 
 ## Downloading the Dependency List
 

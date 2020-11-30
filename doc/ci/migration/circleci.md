@@ -200,7 +200,7 @@ deploy_prod:
 
 ### Filter job by branch
 
-[Rules](../yaml/README.md#rules) are a mechanism to determine if the job will or will not run for a specific branch.
+[Rules](../yaml/README.md#rules) are a mechanism to determine if the job runs for a specific branch.
 
 CircleCI example of a job filtered by branch:
 

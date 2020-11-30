@@ -10,11 +10,14 @@
           = sprite_icon('download', css_class: 'gl-mr-2')
           %span= _("Clone repository")
 
+    - if @sidebar_error.present?
+      = render 'shared/alert_info', body: s_('Wiki|The sidebar failed to load. You can reload the page to try again.')
+
     .blocks-container
       .block.block-first.w-100
         - if @sidebar_page
           = render_wiki_content(@sidebar_page)
-        - else
+        - elsif @sidebar_wiki_entries
           %ul.wiki-pages
             = render @sidebar_wiki_entries, context: 'sidebar'
       .block.w-100

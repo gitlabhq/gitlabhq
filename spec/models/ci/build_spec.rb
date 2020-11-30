@@ -1151,12 +1151,26 @@ RSpec.describe Ci::Build do
     end
 
     context 'when transits to skipped' do
-      before do
-        build.skip!
+      context 'when cd_skipped_deployment_status is disabled' do
+        before do
+          stub_feature_flags(cd_skipped_deployment_status: false)
+          build.skip!
+        end
+
+        it 'transits deployment status to canceled' do
+          expect(deployment).to be_canceled
+        end
       end
 
-      it 'transits deployment status to canceled' do
-        expect(deployment).to be_canceled
+      context 'when cd_skipped_deployment_status is enabled' do
+        before do
+          stub_feature_flags(cd_skipped_deployment_status: project)
+          build.skip!
+        end
+
+        it 'transits deployment status to skipped' do
+          expect(deployment).to be_skipped
+        end
       end
     end
 
@@ -4052,6 +4066,38 @@ RSpec.describe Ci::Build do
 
         it 'raises an error' do
           expect { subject }.to raise_error(Gitlab::Ci::Parsers::Coverage::Cobertura::CoberturaParserError)
+        end
+      end
+    end
+  end
+
+  describe '#collect_codequality_reports!' do
+    subject(:codequality_report) { build.collect_codequality_reports!(Gitlab::Ci::Reports::CodequalityReports.new) }
+
+    it { expect(codequality_report.degradations).to eq({}) }
+
+    context 'when build has a codequality report' do
+      context 'when there is a codequality report' do
+        before do
+          create(:ci_job_artifact, :codequality, job: build, project: build.project)
+        end
+
+        it 'parses blobs and add the results to the codequality report' do
+          expect { codequality_report }.not_to raise_error
+
+          expect(codequality_report.degradations_count).to eq(3)
+        end
+      end
+
+      context 'when there is an codequality report without errors' do
+        before do
+          create(:ci_job_artifact, :codequality_without_errors, job: build, project: build.project)
+        end
+
+        it 'parses blobs and add the results to the codequality report' do
+          expect { codequality_report }.not_to raise_error
+
+          expect(codequality_report.degradations_count).to eq(0)
         end
       end
     end

@@ -133,7 +133,7 @@ GitLab](https://about.gitlab.com/install/).
 - 3 Gitaly nodes (high CPU, high memory, fast storage)
 - 1 GitLab server
 
-You will need the IP/host address for each node.
+You need the IP/host address for each node.
 
 1. `LOAD_BALANCER_SERVER_ADDRESS`: the IP/host address of the load balancer
 1. `POSTGRESQL_SERVER_ADDRESS`: the IP/host address of the PostgreSQL server
@@ -149,7 +149,7 @@ If you are using Google Cloud Platform, SoftLayer, or any other vendor that prov
 
 The communication between components is secured with different secrets, which
 are described below. Before you begin, generate a unique secret for each, and
-make note of it. This will make it easy to replace these placeholder tokens
+make note of it. This makes it easy to replace these placeholder tokens
 with secure tokens as you complete the setup process.
 
 1. `GITLAB_SHELL_SECRET_TOKEN`: this is used by Git hooks to make callback HTTP
@@ -164,7 +164,7 @@ with secure tokens as you complete the setup process.
 1. `PRAEFECT_SQL_PASSWORD`: this password is used by Praefect to connect to
    PostgreSQL.
 
-We will note in the instructions below where these secrets are required.
+We note in the instructions below where these secrets are required.
 
 ### PostgreSQL
 
@@ -184,13 +184,13 @@ failure. For greater fault tolerance, the following options are available:
   - Use a cloud-managed PostgreSQL service. AWS
      [Relational Database Service](https://aws.amazon.com/rds/) is recommended.
 
-To complete this section you will need:
+To complete this section you need:
 
 - 1 Praefect node
 - 1 PostgreSQL server (PostgreSQL 11 or newer)
   - An SQL user with permissions to create databases
 
-During this section, we will configure the PostgreSQL server, from the Praefect
+During this section, we configure the PostgreSQL server, from the Praefect
 node, using `psql` which is installed by Omnibus GitLab.
 
 1. SSH into the **Praefect** node and login as root:
@@ -207,7 +207,7 @@ node, using `psql` which is installed by Omnibus GitLab.
    /opt/gitlab/embedded/bin/psql -U postgres -d template1 -h POSTGRESQL_SERVER_ADDRESS
    ```
 
-   Create a new user `praefect` which will be used by Praefect. Replace
+   Create a new user `praefect` to be used by Praefect. Replace
    `PRAEFECT_SQL_PASSWORD` with the strong password you generated in the
    preparation step.
 
@@ -281,11 +281,10 @@ PostgreSQL instances. Otherwise you should change the configuration parameter
 NOTE: **Note:**
 If there are multiple Praefect nodes, complete these steps for **each** node.
 
-To complete this section you will need:
+To complete this section you need a [configured PostgreSQL server](#postgresql), including:
 
-- [Configured PostgreSQL server](#postgresql), including:
-  - IP/host address (`POSTGRESQL_SERVER_ADDRESS`)
-  - password (`PRAEFECT_SQL_PASSWORD`)
+- IP/host address (`POSTGRESQL_SERVER_ADDRESS`)
+- Password (`PRAEFECT_SQL_PASSWORD`)
 
 Praefect should be run on a dedicated node. Do not run Praefect on the
 application server, or a Gitaly node.
@@ -331,8 +330,8 @@ application server, or a Gitaly node.
    ```
 
 1. Configure a strong `auth_token` for **Praefect** by editing
-   `/etc/gitlab/gitlab.rb`. This will be needed by clients outside the cluster
-   (like GitLab Shell) to communicate with the Praefect cluster :
+   `/etc/gitlab/gitlab.rb`. This is needed by clients outside the cluster
+   (like GitLab Shell) to communicate with the Praefect cluster:
 
    ```ruby
    praefect['auth_token'] = 'PRAEFECT_EXTERNAL_TOKEN'
@@ -341,7 +340,7 @@ application server, or a Gitaly node.
 1. Configure **Praefect** to connect to the PostgreSQL database by editing
    `/etc/gitlab/gitlab.rb`.
 
-   You will need to replace `POSTGRESQL_SERVER_ADDRESS` with the IP/host address
+   You need to replace `POSTGRESQL_SERVER_ADDRESS` with the IP/host address
    of the database, and `PRAEFECT_SQL_PASSWORD` with the strong password set
    above.
 
@@ -364,7 +363,7 @@ application server, or a Gitaly node.
    # praefect['database_sslrootcert'] = '/path/to/rootcert'
    ```
 
-   By default Praefect will refuse to make an unencrypted connection to
+   By default, Praefect refuses to make an unencrypted connection to
    PostgreSQL. You can override this by uncommenting the following line:
 
    ```ruby
@@ -377,7 +376,7 @@ application server, or a Gitaly node.
    The virtual storage's name must match the configured storage name in GitLab
    configuration. In a later step, we configure the storage name as `default`
    so we use `default` here as well. This cluster has three Gitaly nodes `gitaly-1`,
-   `gitaly-2`, and `gitaly-3`, which will be replicas of each other.
+   `gitaly-2`, and `gitaly-3`, which are intended to be replicas of each other.
 
    CAUTION: **Caution:**
    If you have data on an already existing storage called
@@ -385,7 +384,7 @@ application server, or a Gitaly node.
    [migrate the data to the Gitaly Cluster storage](#migrate-existing-repositories-to-gitaly-cluster)
    afterwards.
 
-   Replace `PRAEFECT_INTERNAL_TOKEN` with a strong secret, which will be used by
+   Replace `PRAEFECT_INTERNAL_TOKEN` with a strong secret, which is used by
    Praefect when communicating with Gitaly nodes in the cluster. This token is
    distinct from the `PRAEFECT_EXTERNAL_TOKEN`.
 
@@ -555,12 +554,12 @@ To configure Praefect with TLS:
 
    NOTE: **Note:**
    `/some/local/path` should be set to a local folder that exists, however no
-   data will be stored in this folder. This will no longer be necessary after
+   data is stored in this folder. This requirement is scheduled to be removed when
    [this issue](https://gitlab.com/gitlab-org/gitaly/-/issues/1282) is resolved.
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
 1. Copy all Praefect server certificates, or their certificate authority, to the system
-   trusted certificates on each Gitaly server so the Praefect server will trust the
+   trusted certificates on each Gitaly server so the Praefect server trusts the
    certificate when called by Gitaly servers:
 
    ```shell
@@ -585,7 +584,7 @@ To configure Praefect with TLS:
 NOTE: **Note:**
 Complete these steps for **each** Gitaly node.
 
-To complete this section you will need:
+To complete this section you need:
 
 - [Configured Praefect node](#praefect)
 - 3 (or more) servers, with GitLab installed, to be configured as Gitaly nodes.
@@ -595,19 +594,19 @@ Every Gitaly server assigned to the Praefect cluster needs to be configured. The
 configuration is the same as a normal [standalone Gitaly server](index.md),
 except:
 
-- the storage names are exposed to Praefect, not GitLab
-- the secret token is shared with Praefect, not GitLab
+- The storage names are exposed to Praefect, not GitLab
+- The secret token is shared with Praefect, not GitLab
 
 The configuration of all Gitaly nodes in the Praefect cluster can be identical,
 because we rely on Praefect to route operations correctly.
 
 Particular attention should be shown to:
 
-- the `gitaly['auth_token']` configured in this section must match the `token`
+- The `gitaly['auth_token']` configured in this section must match the `token`
   value under `praefect['virtual_storages']` on the Praefect node. This was set
   in the [previous section](#praefect). This document uses the placeholder
   `PRAEFECT_INTERNAL_TOKEN` throughout.
-- the storage names in `git_data_dirs` configured in this section must match the
+- The storage names in `git_data_dirs` configured in this section must match the
   storage names under `praefect['virtual_storages']` on the Praefect node. This
   was set in the [previous section](#praefect). This document uses `gitaly-1`,
   `gitaly-2`, and `gitaly-3` as Gitaly storage names.
@@ -659,8 +658,8 @@ documentation](index.md#configure-gitaly-servers).
    ```
 
 1. Configure a strong `auth_token` for **Gitaly** by editing
-   `/etc/gitlab/gitlab.rb`. This will be needed by clients to communicate with
-   this Gitaly nodes. Typically, this token will be the same for all Gitaly
+   `/etc/gitlab/gitlab.rb`. This is needed by clients to communicate with
+   this Gitaly nodes. Typically, this token is the same for all Gitaly
    nodes.
 
    ```ruby
@@ -754,7 +753,7 @@ We hope that if you’re managing HA systems like GitLab, you have a load balanc
 of choice already. Some examples include [HAProxy](https://www.haproxy.org/)
 (open-source), [Google Internal Load Balancer](https://cloud.google.com/load-balancing/docs/internal/),
 [AWS Elastic Load Balancer](https://aws.amazon.com/elasticloadbalancing/), F5
-Big-IP LTM, and Citrix Net Scaler. This documentation will outline what ports
+Big-IP LTM, and Citrix Net Scaler. This documentation outlines what ports
 and protocols you need configure.
 
 | LB Port | Backend Port | Protocol |
@@ -763,7 +762,7 @@ and protocols you need configure.
 
 ### GitLab
 
-To complete this section you will need:
+To complete this section you need:
 
 - [Configured Praefect node](#praefect)
 - [Configured Gitaly nodes](#gitaly)
@@ -787,15 +786,15 @@ Particular attention should be shown to:
 1. Configure the `external_url` so that files could be served by GitLab
    by proper endpoint access by editing `/etc/gitlab/gitlab.rb`:
 
-   You will need to replace `GITLAB_SERVER_URL` with the real external facing
+   You need to replace `GITLAB_SERVER_URL` with the real external facing
    URL on which current GitLab instance is serving:
 
    ```ruby
    external_url 'GITLAB_SERVER_URL'
    ```
 
-1. Disable the default Gitaly service running on the GitLab host. It won't be needed
-   as GitLab will connect to the configured cluster.
+1. Disable the default Gitaly service running on the GitLab host. It isn't needed
+   because GitLab connects to the configured cluster.
 
    CAUTION: **Caution:**
    If you have existing data stored on the default Gitaly storage,
@@ -809,7 +808,7 @@ Particular attention should be shown to:
 1. Add the Praefect cluster as a storage location by editing
    `/etc/gitlab/gitlab.rb`.
 
-   You will need to replace:
+   You need to replace:
 
    - `LOAD_BALANCER_SERVER_ADDRESS` with the IP address or hostname of the load
      balancer.
@@ -828,7 +827,7 @@ Particular attention should be shown to:
    nodes during a `git push` are properly authenticated by editing
    `/etc/gitlab/gitlab.rb`:
 
-   You will need to replace `GITLAB_SHELL_SECRET_TOKEN` with the real secret.
+   You need to replace `GITLAB_SHELL_SECRET_TOKEN` with the real secret.
 
    ```ruby
    gitlab_shell['secret_token'] = 'GITLAB_SHELL_SECRET_TOKEN'
@@ -837,7 +836,7 @@ Particular attention should be shown to:
 1. Add Prometheus monitoring settings by editing `/etc/gitlab/gitlab.rb`. If Prometheus
    is enabled on a different node, make edits on that node instead.
 
-   You will need to replace:
+   You need to replace:
 
    - `PRAEFECT_HOST` with the IP address or hostname of the Praefect node
    - `GITALY_HOST` with the IP address or hostname of each Gitaly node
@@ -922,7 +921,7 @@ To get started quickly:
    gitlab-ctl reconfigure
    ```
 
-1. Set the Grafana admin password. This command will prompt you to enter a new
+1. Set the Grafana admin password. This command prompts you to enter a new
    password:
 
    ```shell
@@ -966,7 +965,7 @@ _Up to date_ in this context means that:
 - The last replication operation is in _completed_ state.
 
 If there is no such nodes, or any other error occurs during node selection, the primary
-node will be chosen to serve the request.
+node is chosen to serve the request.
 
 To track distribution of read operations, you can use the `gitaly_praefect_read_distribution`
 Prometheus counter metric. It has two labels:
@@ -1040,9 +1039,9 @@ current primary node is found to be unhealthy.
 
 - **PostgreSQL (recommended):** Enabled by default, and equivalent to:
   `praefect['failover_election_strategy'] = sql`. This configuration
-  option will allow multiple Praefect nodes to coordinate via the
+  option allows multiple Praefect nodes to coordinate via the
   PostgreSQL database to elect a primary Gitaly node. This configuration
-  will cause Praefect nodes to elect a new primary, monitor its health,
+  causes Praefect nodes to elect a new primary, monitor its health,
   and elect a new primary if the current one has not been reachable in
   10 seconds by a majority of the Praefect nodes.
 - **Memory:** Enabled by setting `praefect['failover_election_strategy'] = 'local'`
@@ -1051,8 +1050,7 @@ current primary node is found to be unhealthy.
   be elected. **Do not use with multiple Praefect nodes!** Using with multiple
   Praefect nodes is likely to result in a split brain.
 
-It is likely that we will implement support for Consul, and a cloud native
-strategy in the future.
+We are likely to implement support for Consul, and a cloud native, strategy in the future.
 
 ## Primary Node Failure
 

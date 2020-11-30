@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Packages
 
-This document will guide you through adding another [package management system](../administration/packages/index.md) support to GitLab.
+This document guides you through adding another [package management system](../administration/packages/index.md) support to GitLab.
 
 See already supported package types in [Packages documentation](../administration/packages/index.md)
 
@@ -56,12 +56,12 @@ Group-level and instance-level endpoints are good to have but are optional.
 
 Packages are scoped within various levels of access, which is generally configured by setting your remote. A
 remote endpoint may be set at the project level, meaning when installing packages, only packages belonging to that
-project will be visible. Alternatively, a group-level endpoint may be used to allow visibility to all packages
+project are visible. Alternatively, a group-level endpoint may be used to allow visibility to all packages
 within a given group. Lastly, an instance-level endpoint can be used to allow visibility to all packages within an
 entire GitLab instance.
 
-Using group and project level endpoints will allow for more flexibility in package naming, however, more remotes
-will have to be managed. Using instance level endpoints requires [stricter naming conventions](#naming-conventions).
+Using group and project level endpoints allows for more flexibility in package naming, however, more remotes
+have to be managed. Using instance level endpoints requires [stricter naming conventions](#naming-conventions).
 
 The current state of existing package registries availability is:
 
@@ -86,12 +86,12 @@ Composer package naming scope is Instance Level.
 
 ### Naming conventions
 
-To avoid name conflict for instance-level endpoints you will need to define a package naming convention
+To avoid name conflict for instance-level endpoints you must define a package naming convention
 that gives a way to identify the project that the package belongs to. This generally involves using the project
 ID or full project path in the package name. See
 [Conan's naming convention](../user/packages/conan_repository/index.md#package-recipe-naming-convention-for-instance-remotes) as an example.
 
-For group and project-level endpoints, naming can be less constrained and it will be up to the group and project
+For group and project-level endpoints, naming can be less constrained and it is up to the group and project
 members to be certain that there is no conflict between two package names. However, the system should prevent
 a user from reusing an existing name within a given scope.
 
@@ -121,7 +121,7 @@ The way new package systems are integrated in GitLab is using an [MVC](https://a
 - Pulling a package
 - Required actions
 
-Required actions are all the additional requests that GitLab will need to handle so the corresponding package manager CLI can work properly. It could be a search feature or an endpoint providing meta information about a package. For example:
+Required actions are all the additional requests that GitLab needs to handle so the corresponding package manager CLI can work properly. It could be a search feature or an endpoint providing meta information about a package. For example:
 
 - For NuGet, the search request was implemented during the first MVC iteration, to support Visual Studio.
 - For NPM, there is a metadata endpoint used by `npm` to get the tarball URL.
@@ -146,22 +146,22 @@ process.
 During this phase, the idea is to collect as much information as possible about the API used by the package system. Here some aspects that can be useful to include:
 
 - **Authentication**: What authentication mechanisms are available (OAuth, Basic
-  Authorization, other). Keep in mind that GitLab users will often want to use their
+  Authorization, other). Keep in mind that GitLab users often want to use their
   [Personal Access Tokens](../user/profile/personal_access_tokens.md).
   Although not needed for the MVC first iteration, the [CI job tokens](../user/project/new_ci_build_permissions_model.md#job-token)
   have to be supported at some point in the future.
 - **Requests**: Which requests are needed to have a working MVC. Ideally, produce
   a list of all the requests needed for the MVC (including required actions). Further
   investigation could provide an example for each request with the request and the response bodies.
-- **Upload**: Carefully analyze how the upload process works. This will probably be the most
+- **Upload**: Carefully analyze how the upload process works. This is likely the most
   complex request to implement. A detailed analysis is desired here as uploads can be
   encoded in different ways (body or multipart) and can even be in a totally different
   format (for example, a JSON structure where the package file is a Base64 value of
   a particular field). These different encodings lead to slightly different implementations
   on GitLab and GitLab Workhorse. For more detailed information, review [file uploads](#file-uploads).
-- **Endpoints**: Suggest a list of endpoint URLs that will be implemented in GitLab.
+- **Endpoints**: Suggest a list of endpoint URLs to implement in GitLab.
 - **Split work**: Suggest a list of changes to do to incrementally build the MVC.
-  This will give a good idea of how much work there is to be done. Here is an example
+  This gives a good idea of how much work there is to be done. Here is an example
   list that would need to be adapted on a case by case basis:
   1. Empty file structure (API file, base service for this package)
   1. Authentication system for "logging in" to the package manager
@@ -177,7 +177,7 @@ In particular, the upload request can have some [requirements in the GitLab Work
 
 ### Implementation
 
-The implementation of the different Merge Requests will vary between different package system integrations. Contributors should take into account some important aspects of the implementation phase.
+The implementation of the different Merge Requests varies between different package system integrations. Contributors should take into account some important aspects of the implementation phase.
 
 #### Authentication
 
@@ -217,23 +217,23 @@ If there is package specific behavior for a given package manager, add those met
 delegate from the package model.
 
 Note that the existing package UI only displays information within the `packages_packages` and `packages_package_files`
-tables. If the data stored in the metadata tables need to be displayed, a ~frontend change will be required.
+tables. If the data stored in the metadata tables need to be displayed, a ~frontend change is required.
 
 #### File uploads
 
 File uploads should be handled by GitLab Workhorse using object accelerated uploads. What this means is that
-the workhorse proxy that checks all incoming requests to GitLab will intercept the upload request,
+the workhorse proxy that checks all incoming requests to GitLab intercept the upload request,
 upload the file, and forward a request to the main GitLab codebase only containing the metadata
 and file location rather than the file itself. An overview of this process can be found in the
 [development documentation](uploads.md#direct-upload).
 
-In terms of code, this means a route will need to be added to the
+In terms of code, this means a route must be added to the
 [GitLab Workhorse project](https://gitlab.com/gitlab-org/gitlab-workhorse) for each upload endpoint being added
 (instance, group, project). [This merge request](https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/412/diffs)
 demonstrates adding an instance-level endpoint for Conan to workhorse. You can also see the Maven project level endpoint
 implemented in the same file.
 
-Once the route has been added, you will need to add an additional `/authorize` version of the upload endpoint to your API file.
+Once the route has been added, you must add an additional `/authorize` version of the upload endpoint to your API file.
 [Here is an example](https://gitlab.com/gitlab-org/gitlab/blob/398fef1ca26ae2b2c3dc89750f6b20455a1e5507/ee/lib/api/maven_packages.rb#L164)
 of the additional endpoint added for Maven. The `/authorize` endpoint verifies and authorizes the request from workhorse,
 then the normal upload endpoint is implemented below, consuming the metadata that workhorse provides in order to
@@ -244,7 +244,7 @@ in your local development environment.
 
 ### Future Work
 
-While working on the MVC, contributors will probably find features that are not mandatory for the MVC but can provide a better user experience. It's generally a good idea to keep an eye on those and open issues.
+While working on the MVC, contributors might find features that are not mandatory for the MVC but can provide a better user experience. It's generally a good idea to keep an eye on those and open issues.
 
 Here are some examples
 

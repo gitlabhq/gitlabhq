@@ -32,8 +32,8 @@ On the left side we have the events that can trigger a pipeline based on various
 - When GitHub integration is used with [external pull requests](../../ci/ci_cd_for_external_repos/index.md#pipelines-for-external-pull-requests).
 - When an upstream pipeline contains a [bridge job](../../ci/yaml/README.md#trigger) which triggers a downstream pipeline.
 
-Triggering any of these events will invoke the [`CreatePipelineService`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/ci/create_pipeline_service.rb)
-which takes as input event data and the user triggering it, then will attempt to create a pipeline.
+Triggering any of these events invokes the [`CreatePipelineService`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/ci/create_pipeline_service.rb)
+which takes as input event data and the user triggering it, then attempts to create a pipeline.
 
 The `CreatePipelineService` relies heavily on the [`YAML Processor`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/yaml_processor.rb)
 component, which is responsible for taking in a YAML blob as input and returns the abstract data structure of a
@@ -65,20 +65,20 @@ the `Runner API Gateway`.
 
 We can register, delete, and verify runners, which also causes read/write queries to the database. After a runner is connected,
 it keeps asking for the next job to execute. This invokes the [`RegisterJobService`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/services/ci/register_job_service.rb)
-which will pick the next job and assign it to the runner. At this point the job will transition to a
+which picks the next job and assigns it to the runner. At this point the job transitions to a
 `running` state, which again triggers `ProcessPipelineService` due to the status change.
 For more details read [Job scheduling](#job-scheduling)).
 
 While a job is being executed, the runner sends logs back to the server as well any possible artifacts
 that need to be stored. Also, a job may depend on artifacts from previous jobs in order to run. In this
-case the runner will download them using a dedicated API endpoint.
+case the runner downloads them using a dedicated API endpoint.
 
 Artifacts are stored in object storage, while metadata is kept in the database. An important example of artifacts
 are reports (JUnit, SAST, DAST, etc.) which are parsed and rendered in the merge request.
 
 Job status transitions are not all automated. A user may run [manual jobs](../../ci/yaml/README.md#whenmanual), cancel a pipeline, retry
 specific failed jobs or the entire pipeline. Anything that
-causes a job to change status will trigger `ProcessPipelineService`, as it's responsible for
+causes a job to change status triggers `ProcessPipelineService`, as it's responsible for
 tracking the status of the entire pipeline.
 
 A special type of job is the [bridge job](../../ci/yaml/README.md#trigger) which is executed server-side
@@ -90,7 +90,7 @@ from the `CreatePipelineService` every time a downstream pipeline is triggered.
 
 When a Pipeline is created all its jobs are created at once for all stages, with an initial state of `created`. This makes it possible to visualize the full content of a pipeline.
 
-A job with the `created` state won't be seen by the runner yet. To make it possible to assign a job to a runner, the job must transition first into the `pending` state, which can happen if:
+A job with the `created` state isn't seen by the runner yet. To make it possible to assign a job to a runner, the job must transition first into the `pending` state, which can happen if:
 
 1. The job is created in the very first stage of the pipeline.
 1. The job required a manual start and it has been triggered.
@@ -135,7 +135,7 @@ There are 3 top level queries that this service uses to gather the majority of t
 This list of jobs is then filtered further by matching tags between job and runner tags.
 
 NOTE: **Note:**
-If a job contains tags, the runner will not pick the job if it does not match **all** the tags.
+If a job contains tags, the runner doesn't pick the job if it does not match **all** the tags.
 The runner may have more tags than defined for the job, but not vice-versa.
 
 Finally if the runner can only pick jobs that are tagged, all untagged jobs are filtered out.

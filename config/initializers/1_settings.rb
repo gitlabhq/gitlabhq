@@ -532,6 +532,9 @@ Settings.cron_jobs['member_invitation_reminder_emails_worker']['job_class'] = 'M
 Settings.cron_jobs['schedule_merge_request_cleanup_refs_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['schedule_merge_request_cleanup_refs_worker']['cron'] ||= '* * * * *'
 Settings.cron_jobs['schedule_merge_request_cleanup_refs_worker']['job_class'] = 'ScheduleMergeRequestCleanupRefsWorker'
+Settings.cron_jobs['manage_evidence_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['manage_evidence_worker']['cron'] ||= '0 * * * *'
+Settings.cron_jobs['manage_evidence_worker']['job_class'] = 'Releases::ManageEvidenceWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['active_user_count_threshold_worker'] ||= Settingslogic.new({})

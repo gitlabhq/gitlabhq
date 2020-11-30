@@ -30,13 +30,13 @@ need to rely on volatile helpers or invoke Capybara methods directly. Imagine
 invoking `fill_in :user_login` in every `*_spec.rb` file / test example.
 
 When someone later changes `t.text_field :login` in the view associated with
-this page to `t.text_field :username` it will generate a different field
+this page to `t.text_field :username` it generates a different field
 identifier, what would effectively break all tests.
 
 Because we are using `Page::Main::Login.perform(&:sign_in_using_credentials)`
 everywhere, when we want to sign in to GitLab, the page object is the single
-source of truth, and we will need to update `fill_in :user_login`
-to `fill_in :user_username` only in a one place.
+source of truth, and we must update `fill_in :user_login`
+to `fill_in :user_username` only in one place.
 
 ## What problems did we have in the past?
 
@@ -44,7 +44,7 @@ We do not run QA tests for every commit, because of performance reasons, and
 the time it would take to build packages and test everything.
 
 That is why when someone changes `t.text_field :login` to
-`t.text_field :username` in the _new session_ view we won't know about this
+`t.text_field :username` in the _new session_ view we don't know about this
 change until our GitLab QA nightly pipeline fails, or until someone triggers
 `package-and-qa` action in their merge request.
 
@@ -56,14 +56,14 @@ problem by introducing coupling between GitLab CE / EE views and GitLab QA.
 
 ## How did we solve fragile tests problem?
 
-Currently, when you add a new `Page::Base` derived class, you will also need to
+Currently, when you add a new `Page::Base` derived class, you must also
 define all selectors that your page objects depend on.
 
 Whenever you push your code to CE / EE repository, `qa:selectors` sanity test
-job is going to be run as a part of a CI pipeline.
+job runs as a part of a CI pipeline.
 
-This test is going to validate all page objects that we have implemented in
-`qa/page` directory. When it fails, you will be notified about missing
+This test validates all page objects that we have implemented in
+`qa/page` directory. When it fails, it notifies you about missing
 or invalid views/selectors definition.
 
 ## How to properly implement a page object?
@@ -95,10 +95,10 @@ end
 
 ### Defining Elements
 
-The `view` DSL method will correspond to the Rails view, partial, or Vue component that renders the elements.
+The `view` DSL method corresponds to the Rails view, partial, or Vue component that renders the elements.
 
 The `element` DSL method in turn declares an element for which a corresponding
-`data-qa-selector=element_name_snaked` data attribute will need to be added to the view file.
+`data-qa-selector=element_name_snaked` data attribute must be added to the view file.
 
 You can also define a value (String or Regexp) to match to the actual view
 code but **this is deprecated** in favor of the above method for two reasons:
@@ -257,7 +257,7 @@ These modules must:
 1. Include/prepend other modules and define their `view`/`elements` in a `base.class_eval` block to ensure they're
    defined in the class that prepends the module.
 
-These steps ensure the sanity selectors check will detect problems properly.
+These steps ensure the sanity selectors check detect problems properly.
 
 For example, `qa/qa/ee/page/merge_request/show.rb` adds EE-specific methods to `qa/qa/page/merge_request/show.rb` (with
 `QA::Page::MergeRequest::Show.prepend_if_ee('QA::EE::Page::MergeRequest::Show')`) and following is how it's implemented

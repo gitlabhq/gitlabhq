@@ -7,7 +7,9 @@ RSpec.describe "Admin::AbuseReports", :js do
 
   context 'as an admin' do
     before do
-      sign_in(create(:admin))
+      admin = create(:admin)
+      sign_in(admin)
+      gitlab_enable_admin_mode_sign_in(admin)
     end
 
     describe 'if a user has been reported for abuse' do

@@ -20,7 +20,7 @@ the two is best for the job.
 
 This page aims to define and organize our Go guidelines, based on our various
 experiences. Several projects were started with different standards and they
-can still have specifics. They will be described in their respective
+can still have specifics. They are described in their respective
 `README.md` or `PROCESS.md` files.
 
 ## Dependency Management
@@ -89,7 +89,7 @@ projects:
 
 ## Code style and format
 
-- Avoid global variables, even in packages. By doing so you will introduce side
+- Avoid global variables, even in packages. By doing so you introduce side
   effects if the package is included multiple times.
 - Use `goimports` before committing.
   [goimports](https://godoc.org/golang.org/x/tools/cmd/goimports)
@@ -97,7 +97,7 @@ projects:
   [Gofmt](https://golang.org/cmd/gofmt/), in addition to formatting import lines,
   adding missing ones and removing unreferenced ones.
 
-  Most editors/IDEs will allow you to run commands before/after saving a file, you can set it
+  Most editors/IDEs allow you to run commands before/after saving a file, you can set it
   up to run `goimports` so that it's applied to every file when saving.
 - Place private methods below the first caller method in the source file.
 
@@ -128,7 +128,7 @@ configuration of `golangci-lint`. All options for `golangci-lint` are listed in
 this [example](https://github.com/golangci/golangci-lint/blob/master/.golangci.example.yml).
 
 Once [recursive includes](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/56836)
-become available, you will be able to share job templates like this
+become available, you can share job templates like this
 [analyzer](https://gitlab.com/gitlab-org/security-products/ci-templates/raw/master/includes-dev/analyzer.yml).
 
 ## Dependencies
@@ -150,7 +150,7 @@ define and lock dependencies for reproducible builds. It should be used
 whenever possible.
 
 When Go Modules are in use, there should not be a `vendor/` directory. Instead,
-Go will automatically download dependencies when they are needed to build the
+Go automatically downloads dependencies when they are needed to build the
 project. This is in line with how dependencies are handled with Bundler in Ruby
 projects, and makes merge requests easier to review.
 
@@ -177,7 +177,7 @@ databases.
 In the rare event of managing a hosted database, it's necessary to use a
 migration system like ActiveRecord is providing. A simple library like
 [Journey](https://github.com/db-journey/journey), designed to be used in
-`postgres` containers, can be deployed as long-running pods. New versions will
+`postgres` containers, can be deployed as long-running pods. New versions
 deploy a new pod, migrating the data automatically.
 
 ## Testing
@@ -255,7 +255,7 @@ to make the test output easily readable.
   to use for naming subtests. In the Go standard library, this is commonly the
   `name string` field.
 - Use `want`/`expect`/`actual` when you are specifying something in the
-  test case that will be used for assertion.
+  test case that is used for assertion.
 
 #### Variable names
 
@@ -414,7 +414,7 @@ builds](https://docs.docker.com/develop/develop-images/multistage-build/):
 
 Generated Docker images should have the program at their `Entrypoint` to create
 portable commands. That way, anyone can run the image, and without parameters
-it will display its help message (if `cli` has been used).
+it displays its help message (if `cli` has been used).
 
 ## Distributing Go binaries
 
@@ -476,7 +476,7 @@ Example:
 
 In case we want to drop support for `go 1.11` in GitLab `12.10`, we need to verify which Go versions we are using in `12.9`, `12.8`, and `12.7`.
 
-We will not consider the active milestone, `12.10`, because a backport for `12.7` will be required in case of a critical security release.
+We do not consider the active milestone, `12.10`, because a backport for `12.7` is required in case of a critical security release.
 
 1. If both [Omnibus and CNG](#updating-go-version) were using Go `1.12` in GitLab `12.7` and later, then we safely drop support for `1.11`.
 1. If Omnibus or CNG were using `1.11` in GitLab `12.7`, then we still need to keep support for Go `1.11` for easier backporting of security fixes.
@@ -492,11 +492,11 @@ Use `goimports -local gitlab.com/gitlab-org` before committing.
 is a tool that automatically formats Go source code using
 [Gofmt](https://golang.org/cmd/gofmt/), in addition to formatting import lines,
 adding missing ones and removing unreferenced ones.
-By using the `-local gitlab.com/gitlab-org` option, `goimports` will group locally referenced
+By using the `-local gitlab.com/gitlab-org` option, `goimports` groups locally referenced
 packages separately from external ones. See
 [the imports section](https://github.com/golang/go/wiki/CodeReviewComments#imports)
 of the Code Review Comments page on the Go wiki for more details.
-Most editors/IDEs will allow you to run commands before/after saving a file, you can set it
+Most editors/IDEs allow you to run commands before/after saving a file, you can set it
 up to run `goimports -local gitlab.com/gitlab-org` so that it's applied to every file when saving.
 
 ---

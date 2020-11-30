@@ -19,7 +19,7 @@ locations that can be:
 - Accessed via [Gitaly](gitaly/index.md) on its own machine.
 
 In GitLab, this is configured in `/etc/gitlab/gitlab.rb` by the `git_data_dirs({})`
-configuration hash. The storage layouts discussed here will apply to any shard
+configuration hash. The storage layouts discussed here apply to any shard
 defined in it.
 
 The `default` repository shard that is available in any installations
@@ -30,22 +30,22 @@ Anything discussed below is expected to be part of that folder.
 
 NOTE: **Note:**
 In GitLab 13.0, hashed storage is enabled by default and the legacy storage is
-deprecated. Support for legacy storage will be removed in GitLab 14.0.
+deprecated. Support for legacy storage is scheduled to be removed in GitLab 14.0.
 If you haven't migrated yet, check the
 [migration instructions](raketasks/storage.md#migrate-to-hashed-storage).
 The option to choose between hashed and legacy storage in the admin area has
 been disabled.
 
 Hashed storage is the storage behavior we rolled out with 10.0. Instead
-of coupling project URL and the folder structure where the repository will be
+of coupling project URL and the folder structure where the repository is
 stored on disk, we are coupling a hash, based on the project's ID. This makes
 the folder structure immutable, and therefore eliminates any requirement to
 synchronize state from URLs to disk structure. This means that renaming a group,
-user, or project will cost only the database transaction, and will take effect
+user, or project costs only the database transaction, and takes effect
 immediately.
 
 The hash also helps to spread the repositories more evenly on the disk, so the
-top-level directory will contain less folders than the total amount of top-level
+top-level directory contains fewer folders than the total number of top-level
 namespaces.
 
 The hash format is based on the hexadecimal representation of SHA256:
@@ -64,7 +64,7 @@ by another folder with the next 2 characters. They are both stored in a special
 ### Translating hashed storage paths
 
 Troubleshooting problems with the Git repositories, adding hooks, and other
-tasks will require you translate between the human readable project name
+tasks requires you translate between the human readable project name
 and the hashed storage path.
 
 #### From project name to hashed path
@@ -102,7 +102,7 @@ To translate from a hashed storage path to a project name:
 ProjectRepository.find_by(disk_path: '@hashed/b1/7e/b17ef6d19c7a5b1ee83b907c595526dcb1eb06db8227d650d5dda0a9f4ce8cd9').project
 ```
 
-The quoted string in that command is the directory tree you'll find on your
+The quoted string in that command is the directory tree you can find on your
 GitLab server. For example, on a default Omnibus installation this would be
 `/var/opt/gitlab/git-data/repositories/@hashed/b1/7e/b17ef6d19c7a5b1ee83b907c595526dcb1eb06db8227d650d5dda0a9f4ce8cd9.git`
 with `.git` from the end of the directory name removed.
@@ -135,7 +135,7 @@ when housekeeping is run on the source project.
 
 ### Hashed storage coverage migration
 
-Files stored in an S3 compatible endpoint will not have the downsides
+Files stored in an S3-compatible endpoint do not have the downsides
 mentioned earlier, if they are not prefixed with `#{namespace}/#{project_name}`,
 which is true for CI Cache and LFS Objects.
 
@@ -183,7 +183,7 @@ NOTE: **Deprecated:**
 In GitLab 13.0, hashed storage is enabled by default and the legacy storage is
 deprecated. If you haven't migrated yet, check the
 [migration instructions](raketasks/storage.md#migrate-to-hashed-storage).
-Support for legacy storage will be removed in GitLab 14.0. If you're on GitLab
+Support for legacy storage is scheduled to be removed in GitLab 14.0. If you're on GitLab
 13.0 and later, switching new projects to legacy storage is not possible.
 The option to choose between hashed and legacy storage in the admin area has
 been disabled.
@@ -199,7 +199,7 @@ easy for Administrators to find where the repository is stored.
 
 On the other hand this has some drawbacks:
 
-Storage location will concentrate huge amount of top-level namespaces. The
+Storage location concentrates a huge number of top-level namespaces. The
 impact can be reduced by the introduction of
 [multiple storage paths](repository_storage_paths.md).
 
@@ -209,6 +209,6 @@ an old removed or renamed project sharing the same URL. This means that
 `mygroup/myproject` from your backup may not be the same original project that
 is at that same URL today.
 
-Any change in the URL will need to be reflected on disk (when groups / users or
+Any change in the URL needs to be reflected on disk (when groups / users or
 projects are renamed). This can add a lot of load in big installations,
 especially if using any type of network based filesystem.

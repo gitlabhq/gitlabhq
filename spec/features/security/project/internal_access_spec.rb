@@ -102,7 +102,8 @@ RSpec.describe "Internal Project Access" do
   describe "GET /:project_path/-/settings/ci_cd" do
     subject { project_settings_ci_cd_path(project) }
 
-    it { is_expected.to be_allowed_for(:admin) }
+    it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { is_expected.to be_allowed_for(:admin) }
+    it('is denied for admin when admin mode is disabled') { is_expected.to be_denied_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:maintainer).of(project) }
     it { is_expected.to be_denied_for(:developer).of(project) }
@@ -116,7 +117,8 @@ RSpec.describe "Internal Project Access" do
   describe "GET /:project_path/-/settings/repository" do
     subject { project_settings_repository_path(project) }
 
-    it { is_expected.to be_allowed_for(:admin) }
+    it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { is_expected.to be_allowed_for(:admin) }
+    it('is denied for admin when admin mode is disabled') { is_expected.to be_denied_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:maintainer).of(project) }
     it { is_expected.to be_denied_for(:developer).of(project) }
@@ -146,7 +148,8 @@ RSpec.describe "Internal Project Access" do
   describe "GET /:project_path/edit" do
     subject { edit_project_path(project) }
 
-    it { is_expected.to be_allowed_for(:admin) }
+    it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { is_expected.to be_allowed_for(:admin) }
+    it('is denied for admin when admin mode is disabled') { is_expected.to be_denied_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:maintainer).of(project) }
     it { is_expected.to be_denied_for(:developer).of(project) }
@@ -160,7 +163,8 @@ RSpec.describe "Internal Project Access" do
   describe "GET /:project_path/deploy_keys" do
     subject { project_deploy_keys_path(project) }
 
-    it { is_expected.to be_allowed_for(:admin) }
+    it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { is_expected.to be_allowed_for(:admin) }
+    it('is denied for admin when admin mode is disabled') { is_expected.to be_denied_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:maintainer).of(project) }
     it { is_expected.to be_denied_for(:developer).of(project) }
@@ -190,7 +194,8 @@ RSpec.describe "Internal Project Access" do
 
     subject { edit_project_issue_path(project, issue) }
 
-    it { is_expected.to be_allowed_for(:admin) }
+    it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { is_expected.to be_allowed_for(:admin) }
+    it('is denied for admin when admin mode is disabled') { is_expected.to be_denied_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:maintainer).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -218,7 +223,8 @@ RSpec.describe "Internal Project Access" do
   describe "GET /:project_path/snippets/new" do
     subject { new_project_snippet_path(project) }
 
-    it { is_expected.to be_allowed_for(:admin) }
+    it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { is_expected.to be_allowed_for(:admin) }
+    it('is denied for admin when admin mode is disabled') { is_expected.to be_denied_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:maintainer).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -246,7 +252,8 @@ RSpec.describe "Internal Project Access" do
   describe "GET /:project_path/-/merge_requests/new" do
     subject { project_new_merge_request_path(project) }
 
-    it { is_expected.to be_allowed_for(:admin) }
+    it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { is_expected.to be_allowed_for(:admin) }
+    it('is denied for admin when admin mode is disabled') { is_expected.to be_denied_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:maintainer).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -302,7 +309,8 @@ RSpec.describe "Internal Project Access" do
   describe "GET /:project_path/-/settings/integrations" do
     subject { project_settings_integrations_path(project) }
 
-    it { is_expected.to be_allowed_for(:admin) }
+    it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { is_expected.to be_allowed_for(:admin) }
+    it('is denied for admin when admin mode is disabled') { is_expected.to be_denied_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:maintainer).of(project) }
     it { is_expected.to be_denied_for(:developer).of(project) }
@@ -367,7 +375,8 @@ RSpec.describe "Internal Project Access" do
         project.update(public_builds: false)
       end
 
-      it { is_expected.to be_allowed_for(:admin) }
+      it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { is_expected.to be_allowed_for(:admin) }
+      it('is denied for admin when admin mode is disabled') { is_expected.to be_denied_for(:admin) }
       it { is_expected.to be_allowed_for(:owner).of(project) }
       it { is_expected.to be_allowed_for(:maintainer).of(project) }
       it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -406,7 +415,8 @@ RSpec.describe "Internal Project Access" do
         project.update(public_builds: false)
       end
 
-      it { is_expected.to be_allowed_for(:admin) }
+      it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { is_expected.to be_allowed_for(:admin) }
+      it('is denied for admin when admin mode is disabled') { is_expected.to be_denied_for(:admin) }
       it { is_expected.to be_allowed_for(:owner).of(project) }
       it { is_expected.to be_allowed_for(:maintainer).of(project) }
       it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -445,7 +455,8 @@ RSpec.describe "Internal Project Access" do
         project.update(public_builds: false)
       end
 
-      it { is_expected.to be_allowed_for(:admin) }
+      it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { is_expected.to be_allowed_for(:admin) }
+      it('is denied for admin when admin mode is disabled') { is_expected.to be_denied_for(:admin) }
       it { is_expected.to be_allowed_for(:owner).of(project) }
       it { is_expected.to be_allowed_for(:maintainer).of(project) }
       it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -460,7 +471,8 @@ RSpec.describe "Internal Project Access" do
   describe "GET /:project_path/pipeline_schedules" do
     subject { project_pipeline_schedules_path(project) }
 
-    it { is_expected.to be_allowed_for(:admin) }
+    it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { is_expected.to be_allowed_for(:admin) }
+    it('is allowed for admin when admin mode is disabled') { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:maintainer).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -474,7 +486,8 @@ RSpec.describe "Internal Project Access" do
   describe "GET /:project_path/-/environments" do
     subject { project_environments_path(project) }
 
-    it { is_expected.to be_allowed_for(:admin) }
+    it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { is_expected.to be_allowed_for(:admin) }
+    it('is allowed for admin when admin mode is disabled') { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:maintainer).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -490,7 +503,8 @@ RSpec.describe "Internal Project Access" do
 
     subject { project_environment_path(project, environment) }
 
-    it { is_expected.to be_allowed_for(:admin) }
+    it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { is_expected.to be_allowed_for(:admin) }
+    it('is allowed for admin when admin mode is disabled') { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:maintainer).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -506,7 +520,8 @@ RSpec.describe "Internal Project Access" do
 
     subject { project_environment_deployments_path(project, environment) }
 
-    it { is_expected.to be_allowed_for(:admin) }
+    it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { is_expected.to be_allowed_for(:admin) }
+    it('is allowed for admin when admin mode is disabled') { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:maintainer).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -520,7 +535,8 @@ RSpec.describe "Internal Project Access" do
   describe "GET /:project_path/-/environments/new" do
     subject { new_project_environment_path(project) }
 
-    it { is_expected.to be_allowed_for(:admin) }
+    it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { is_expected.to be_allowed_for(:admin) }
+    it('is denied for admin when admin mode is disabled') { is_expected.to be_denied_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:maintainer).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }

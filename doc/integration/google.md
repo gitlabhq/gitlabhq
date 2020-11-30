@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Google OAuth2 OmniAuth Provider
 
 To enable the Google OAuth2 OmniAuth provider you must register your application
-with Google. Google will generate a client ID and secret key for you to use.
+with Google. Google generates a client ID and secret key for you to use.
 
 ## Enabling Google OAuth
 
@@ -40,7 +40,7 @@ In Google's side:
      ```
 
 1. You should now be able to see a Client ID and Client secret. Note them down
-   or keep this page open as you will need them later.
+   or keep this page open as you need them later.
 1. To enable projects to access [Google Kubernetes Engine](../user/project/clusters/index.md), you must also
    enable these APIs:
    - Google Kubernetes Engine API
@@ -98,7 +98,7 @@ On your GitLab server:
 
 1. Change `YOUR_APP_ID` to the client ID from the Google Developer page
 1. Similarly, change `YOUR_APP_SECRET` to the client secret
-1. Make sure that you configure GitLab to use an FQDN as Google will not accept
+1. Make sure that you configure GitLab to use a fully-qualified domain name, as Google doesn't accept
    raw IP addresses.
 
    For Omnibus packages:
@@ -119,6 +119,6 @@ On your GitLab server:
    installed GitLab via Omnibus or from source respectively.
 
 On the sign in page there should now be a Google icon below the regular sign in
-form. Click the icon to begin the authentication process. Google will ask the
+form. Click the icon to begin the authentication process. Google asks the
 user to sign in and authorize the GitLab application. If everything goes well
-the user will be returned to GitLab and will be signed in.
+the user is returned to GitLab and is signed in.

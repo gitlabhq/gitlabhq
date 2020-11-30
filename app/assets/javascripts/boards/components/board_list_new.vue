@@ -1,12 +1,14 @@
 <script>
+import Draggable from 'vuedraggable';
 import { mapActions, mapState } from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
+import defaultSortableConfig from '~/sortable/sortable_config';
+import { sortableStart, sortableEnd } from '~/boards/mixins/sortable_default_options';
 import BoardNewIssue from './board_new_issue_new.vue';
 import BoardCard from './board_card.vue';
 import eventHub from '../eventhub';
 import boardsStore from '../stores/boards_store';
 import { sprintf, __ } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'BoardList',
@@ -15,7 +17,6 @@ export default {
     BoardNewIssue,
     GlLoadingIcon,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     disabled: {
       type: Boolean,
@@ -28,6 +29,11 @@ export default {
     issues: {
       type: Array,
       required: true,
+    },
+    canAdminList: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -55,12 +61,32 @@ export default {
     loading() {
       return this.listsFlags[this.list.id]?.isLoading;
     },
+    listRef() {
+      // When  list is draggable, the reference to the list needs to be accessed differently
+      return this.canAdminList ? this.$refs.list.$el : this.$refs.list;
+    },
+    treeRootWrapper() {
+      return this.canAdminList ? Draggable : 'ul';
+    },
+    treeRootOptions() {
+      const options = {
+        ...defaultSortableConfig,
+        fallbackOnBody: false,
+        group: 'boards-list',
+        tag: 'ul',
+        'ghost-class': 'board-card-drag-active',
+        'data-list-id': this.list.id,
+        value: this.issues,
+      };
+
+      return this.canAdminList ? options : {};
+    },
   },
   watch: {
     filters: {
       handler() {
         this.list.loadingMore = false;
-        this.$refs.list.scrollTop = 0;
+        this.listRef.scrollTop = 0;
       },
       deep: true,
     },
@@ -76,26 +102,26 @@ export default {
   },
   mounted() {
     // Scroll event on list to load more
-    this.$refs.list.addEventListener('scroll', this.onScroll);
+    this.listRef.addEventListener('scroll', this.onScroll);
   },
   beforeDestroy() {
     eventHub.$off(`toggle-issue-form-${this.list.id}`, this.toggleForm);
     eventHub.$off(`scroll-board-list-${this.list.id}`, this.scrollToTop);
-    this.$refs.list.removeEventListener('scroll', this.onScroll);
+    this.listRef.removeEventListener('scroll', this.onScroll);
   },
   methods: {
-    ...mapActions(['fetchIssuesForList']),
+    ...mapActions(['fetchIssuesForList', 'moveIssue']),
     listHeight() {
-      return this.$refs.list.getBoundingClientRect().height;
+      return this.listRef.getBoundingClientRect().height;
     },
     scrollHeight() {
-      return this.$refs.list.scrollHeight;
+      return this.listRef.scrollHeight;
     },
     scrollTop() {
-      return this.$refs.list.scrollTop + this.listHeight();
+      return this.listRef.scrollTop + this.listHeight();
     },
     scrollToTop() {
-      this.$refs.list.scrollTop = 0;
+      this.listRef.scrollTop = 0;
     },
     loadNextPage() {
       const loadingDone = () => {
@@ -120,6 +146,52 @@ export default {
         }
       });
     },
+    handleDragOnStart() {
+      sortableStart();
+    },
+    handleDragOnEnd(params) {
+      sortableEnd();
+      const { newIndex, oldIndex, from, to, item } = params;
+      const { issueId, issueIid, issuePath } = item.dataset;
+      const { children } = to;
+      let moveBeforeId;
+      let moveAfterId;
+
+      const getIssueId = el => Number(el.dataset.issueId);
+
+      // If issue is being moved within the same list
+      if (from === to) {
+        if (newIndex > oldIndex && children.length > 1) {
+          // If issue is being moved down we look for the issue that ends up before
+          moveBeforeId = getIssueId(children[newIndex]);
+        } else if (newIndex < oldIndex && children.length > 1) {
+          // If issue is being moved up we look for the issue that ends up after
+          moveAfterId = getIssueId(children[newIndex]);
+        } else {
+          // If issue remains in the same list at the same position we do nothing
+          return;
+        }
+      } else {
+        // We look for the issue that ends up before the moved issue if it exists
+        if (children[newIndex - 1]) {
+          moveBeforeId = getIssueId(children[newIndex - 1]);
+        }
+        // We look for the issue that ends up after the moved issue if it exists
+        if (children[newIndex]) {
+          moveAfterId = getIssueId(children[newIndex]);
+        }
+      }
+
+      this.moveIssue({
+        issueId,
+        issueIid,
+        issuePath,
+        fromListId: from.dataset.listId,
+        toListId: to.dataset.listId,
+        moveBeforeId,
+        moveAfterId,
+      });
+    },
   },
 };
 </script>
@@ -139,13 +211,18 @@ export default {
       <gl-loading-icon />
     </div>
     <board-new-issue v-if="list.type !== 'closed' && showIssueForm" :list="list" />
-    <ul
+    <component
+      :is="treeRootWrapper"
       v-show="!loading"
       ref="list"
+      v-bind="treeRootOptions"
       :data-board="list.id"
       :data-board-type="list.type"
       :class="{ 'bg-danger-100': issuesSizeExceedsMax }"
       class="board-list gl-w-full gl-h-full gl-list-style-none gl-mb-0 gl-p-2 js-board-list"
+      data-testid="tree-root-wrapper"
+      @start="handleDragOnStart"
+      @end="handleDragOnEnd"
     >
       <board-card
         v-for="(issue, index) in issues"
@@ -161,6 +238,6 @@ export default {
         <span v-if="issues.length === list.issuesSize">{{ __('Showing all issues') }}</span>
         <span v-else>{{ paginatedIssueText }}</span>
       </li>
-    </ul>
+    </component>
   </div>
 </template>

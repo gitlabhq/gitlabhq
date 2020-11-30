@@ -198,7 +198,8 @@ export default {
         :title="chevronTooltip"
         :icon="chevronIcon"
         class="board-title-caret no-drag gl-cursor-pointer"
-        variant="link"
+        category="tertiary"
+        size="small"
         @click="toggleExpanded"
       />
       <!-- EE start -->

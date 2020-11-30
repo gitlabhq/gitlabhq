@@ -10,7 +10,7 @@ To run a specific test with a feature flag enabled you can use the `QA::Runtime:
 enable and disable feature flags ([via the API](../../../api/features.md)).
 
 Note that administrator authorization is required to change feature flags. `QA::Runtime::Feature`
-will automatically authenticate as an administrator as long as you provide an appropriate access
+automatically authenticates as an administrator as long as you provide an appropriate access
 token via `GITLAB_QA_ADMIN_ACCESS_TOKEN` (recommended), or provide `GITLAB_ADMIN_USERNAME`
 and `GITLAB_ADMIN_PASSWORD`.
 
@@ -60,7 +60,7 @@ feature_group = "a_feature_group"
 Runtime::Feature.enable(:feature_flag_name, feature_group: feature_group)
 ```
 
-If no scope is provided, the feature flag will be set instance-wide:
+If no scope is provided, the feature flag is set instance-wide:
 
 ```ruby
 # This will affect all users!

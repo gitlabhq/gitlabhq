@@ -7,17 +7,17 @@ type: reference
 
 # Load Balancer for multi-node GitLab
 
-In an multi-node GitLab configuration, you will need a load balancer to route
+In an multi-node GitLab configuration, you need a load balancer to route
 traffic to the application servers. The specifics on which load balancer to use
 or the exact configuration is beyond the scope of GitLab documentation. We hope
 that if you're managing HA systems like GitLab you have a load balancer of
 choice already. Some examples including HAProxy (open-source), F5 Big-IP LTM,
-and Citrix Net Scaler. This documentation will outline what ports and protocols
+and Citrix Net Scaler. This documentation outlines what ports and protocols
 you need to use with GitLab.
 
 ## SSL
 
-How will you handle SSL in your multi-node environment? There are several different
+How do you want to handle SSL in your multi-node environment? There are several different
 options:
 
 - Each application node terminates SSL
@@ -29,8 +29,8 @@ options:
 ### Application nodes terminate SSL
 
 Configure your load balancer(s) to pass connections on port 443 as 'TCP' rather
-than 'HTTP(S)' protocol. This will pass the connection to the application nodes
-NGINX service untouched. NGINX will have the SSL certificate and listen on port 443.
+than 'HTTP(S)' protocol. This passes the connection to the application nodes
+NGINX service untouched. NGINX has the SSL certificate and listen on port 443.
 
 See [NGINX HTTPS documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
 for details on managing SSL certificates and configuring NGINX.
@@ -38,10 +38,10 @@ for details on managing SSL certificates and configuring NGINX.
 ### Load Balancer(s) terminate SSL without backend SSL
 
 Configure your load balancer(s) to use the 'HTTP(S)' protocol rather than 'TCP'.
-The load balancer(s) will then be responsible for managing SSL certificates and
+The load balancer(s) is be responsible for managing SSL certificates and
 terminating SSL.
 
-Since communication between the load balancer(s) and GitLab will not be secure,
+Since communication between the load balancer(s) and GitLab isn't secure,
 there is some additional configuration needed. See
 [NGINX Proxied SSL documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#supporting-proxied-ssl)
 for details.
@@ -49,12 +49,12 @@ for details.
 ### Load Balancer(s) terminate SSL with backend SSL
 
 Configure your load balancer(s) to use the 'HTTP(S)' protocol rather than 'TCP'.
-The load balancer(s) will be responsible for managing SSL certificates that
-end users will see.
+The load balancer(s) is responsible for managing SSL certificates that
+end users see.
 
-Traffic will also be secure between the load balancer(s) and NGINX in this
+Traffic is secure between the load balancer(s) and NGINX in this
 scenario. There is no need to add configuration for proxied SSL since the
-connection will be secure all the way. However, configuration will need to be
+connection is secure all the way. However, configuration must be
 added to GitLab to configure SSL certificates. See
 [NGINX HTTPS documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
 for details on managing SSL certificates and configuring NGINX.
@@ -75,13 +75,13 @@ for details on managing SSL certificates and configuring NGINX.
   to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the
   [web terminal](integration/terminal.md) integration guide for
   more details.
-- (*2*): When using HTTPS protocol for port 443, you will need to add an SSL
+- (*2*): When using HTTPS protocol for port 443, you must add an SSL
   certificate to the load balancers. If you wish to terminate SSL at the
   GitLab application server instead, use TCP protocol.
 
 ### GitLab Pages Ports
 
-If you're using GitLab Pages with custom domain support you will need some
+If you're using GitLab Pages with custom domain support you need some
 additional port configurations.
 GitLab Pages requires a separate virtual IP address. Configure DNS to point the
 `pages_external_url` from `/etc/gitlab/gitlab.rb` at the new virtual IP address. See the
@@ -103,7 +103,7 @@ GitLab Pages requires a separate virtual IP address. Configure DNS to point the
 
 Some organizations have policies against opening SSH port 22. In this case,
 it may be helpful to configure an alternate SSH hostname that allows users
-to use SSH on port 443. An alternate SSH hostname will require a new virtual IP address
+to use SSH on port 443. An alternate SSH hostname requires a new virtual IP address
 compared to the other GitLab HTTP configuration above.
 
 Configure DNS for an alternate SSH hostname such as `altssh.gitlab.example.com`.
@@ -114,7 +114,7 @@ Configure DNS for an alternate SSH hostname such as `altssh.gitlab.example.com`.
 
 ## Readiness check
 
-It is strongly recommend that multi-node deployments configure load balancers to use the [readiness check](../user/admin_area/monitoring/health_check.md#readiness) to ensure a node is ready to accept traffic, before routing traffic to it. This is especially important when utilizing Puma, as there is a brief period during a restart where Puma will not accept requests.
+It is strongly recommend that multi-node deployments configure load balancers to use the [readiness check](../user/admin_area/monitoring/health_check.md#readiness) to ensure a node is ready to accept traffic, before routing traffic to it. This is especially important when utilizing Puma, as there is a brief period during a restart where Puma doesn't accept requests.
 
 <!-- ## Troubleshooting
 

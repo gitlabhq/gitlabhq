@@ -15,3 +15,28 @@
 - name: product_analytics_test_metrics_intersection
   operator: AND
   events: ['i_search_total', 'i_search_advanced', 'i_search_paid']
+- name: incident_management_alerts_total_unique_counts
+  operator: OR
+  events: [
+    'incident_management_alert_status_changed',
+    'incident_management_alert_assigned',
+    'incident_management_alert_todo',
+    'incident_management_alert_create_incident'
+  ]
+  feature_flag: usage_data_incident_management_alerts_total_unique_counts
+- name: incident_management_incidents_total_unique_counts
+  operator: OR
+  events: [
+    'incident_management_incident_created',
+    'incident_management_incident_reopened',
+    'incident_management_incident_closed',
+    'incident_management_incident_assigned',
+    'incident_management_incident_todo',
+    'incident_management_incident_comment',
+    'incident_management_incident_zoom_meeting',
+    'incident_management_incident_published',
+    'incident_management_incident_relate',
+    'incident_management_incident_unrelate',
+    'incident_management_incident_change_confidential'
+  ]
+  feature_flag: usage_data_incident_management_incidents_total_unique_counts

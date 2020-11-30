@@ -253,3 +253,111 @@
     vertical-align: middle;
   }
 }
+
+
+// The following encompasses the "add reaction" button redesign to
+// align properly within GitLab UI's gl-button. The implementation
+// above will be deprecated once all instances of "award emoji" are
+// migrated to Vue.
+
+.gl-button .award-emoji-block gl-emoji {
+  top: -1px;
+  margin-top: -1px;
+  margin-bottom: -1px;
+}
+
+.add-reaction-button {
+  position: relative;
+
+  // This forces the height and width of the inner content to match
+  // other gl-buttons despite all child elements being set to
+  // `position:absolute`
+  &::after {
+    content: '\a0';
+    width: 1em;
+  }
+
+  .reaction-control-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+
+    // center the icon vertically and horizontally within the button
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    @include transition(opacity, transform);
+
+    .gl-icon {
+      height: $default-icon-size;
+      width: $default-icon-size;
+    }
+  }
+
+  .reaction-control-icon-neutral {
+    opacity: 1;
+  }
+
+  .reaction-control-icon-positive,
+  .reaction-control-icon-super-positive {
+    opacity: 0;
+  }
+
+  &:hover,
+  &.active,
+  &:active,
+  &.is-active {
+    // extra specificty added to override another selector
+    .reaction-control-icon .gl-icon {
+      color: $blue-500;
+      transform: scale(1.15);
+    }
+
+    .reaction-control-icon-neutral {
+      opacity: 0;
+    }
+  }
+
+  &:hover {
+    .reaction-control-icon-positive {
+      opacity: 1;
+    }
+  }
+
+  &.active,
+  &:active,
+  &.is-active {
+    .reaction-control-icon-positive {
+      opacity: 0;
+    }
+
+    .reaction-control-icon-super-positive {
+      opacity: 1;
+    }
+  }
+
+  &.disabled {
+    cursor: default;
+
+    &:hover,
+    &:focus,
+    &:active {
+      .reaction-control-icon .gl-icon {
+        color: inherit;
+        transform: scale(1);
+      }
+
+      .reaction-control-icon-neutral {
+        opacity: 1;
+      }
+
+      .reaction-control-icon-positive,
+      .reaction-control-icon-super-positive {
+        opacity: 0;
+      }
+    }
+  }
+}

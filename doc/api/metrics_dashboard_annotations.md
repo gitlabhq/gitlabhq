@@ -24,7 +24,7 @@ Parameters:
 |:---------------|:---------------|:---------|:-----------------------------------------------------------------------------|
 | `dashboard_path` | string        | yes      | ID of the dashboard which needs to be annotated. Treated as a CGI-escaped path, and automatically un-escaped.  |
 | `starting_at` | string        | yes      | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Timestamp marking start point of annotation.   |
-| `ending_at` | string        | no      | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Timestamp marking end point of annotation. When not supplied annotation will be displayed as single event at start point.  |
+| `ending_at` | string        | no      | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Timestamp marking end point of annotation. When not supplied, an annotation displays as a single event at the start point.  |
 | `description` | string        | yes      | Description of the annotation.  |
 
 ```shell

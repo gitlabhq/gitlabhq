@@ -20,7 +20,7 @@ RSpec.describe Suggestions::ApplyService do
     position_args = args.slice(:old_path, :new_path, :old_line, :new_line)
     content_args = args.slice(:from_content, :to_content)
 
-    position = build_position(position_args)
+    position = build_position(**position_args)
 
     diff_note = create(:diff_note_on_merge_request,
                        noteable: merge_request,

@@ -6,6 +6,7 @@ export const RUNNING = 'running';
 export const SUCCESS = 'success';
 export const FAILED = 'failed';
 export const CANCELED = 'canceled';
+export const SKIPPED = 'skipped';
 
 // ACTION STATUSES
 export const STOPPING = 'stopping';

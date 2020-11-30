@@ -33,7 +33,7 @@ For an example of how to convert a Jenkins pipeline into a GitLab CI/CD pipeline
 or how to use Auto DevOps to test your code automatically, watch the
 [Migrating from Jenkins to GitLab](https://www.youtube.com/watch?v=RlEVGOpYF5Y) video.
 
-Otherwise, read on for important information that will help you get the ball rolling. Welcome
+Otherwise, read on for important information that helps you get the ball rolling. Welcome
 to GitLab!
 
 If you have questions that are not answered here, the [GitLab community forum](https://forum.gitlab.com/)
@@ -46,22 +46,22 @@ changes that comes with the move, and successfully managing them. There are a fe
 things we have found that helps this:
 
 - Setting and communicating a clear vision of what your migration goals are helps
-  your users understand why the effort is worth it. The value will be clear when
+  your users understand why the effort is worth it. The value is clear when
   the work is done, but people need to be aware while it's in progress too.
 - Sponsorship and alignment from the relevant leadership team helps with the point above.
 - Spending time educating your users on what's different, sharing this document with them,
-  and so on will help ensure you are successful.
+  and so on helps ensure you are successful.
 - Finding ways to sequence or delay parts of the migration can help a lot, but you
   don't want to leave things in a non-migrated (or partially-migrated) state for too
   long. To gain all the benefits of GitLab, moving your existing Jenkins setup over
-  as-is, including any current problems, will not be enough. You need to take advantage
+  as-is, including any current problems, isn't enough. You need to take advantage
   of the improvements that GitLab offers, and this requires (eventually) updating
   your implementation as part of the transition.
 
 ## JenkinsFile Wrapper
 
-We are building a [JenkinsFile Wrapper](https://gitlab.com/gitlab-org/jfr-container-builder/) which will allow
-you to run a complete Jenkins instance inside of a GitLab job, including plugins. This can help ease the process
+We are building a [JenkinsFile Wrapper](https://gitlab.com/gitlab-org/jfr-container-builder/) which
+you can use to run a complete Jenkins instance inside of a GitLab job, including plugins. This can help ease the process
 of transition, by letting you delay the migration of less urgent pipelines for a period of time.
 
 If you are interested in helping GitLab test the wrapper, join our [public testing issue](https://gitlab.com/gitlab-org/gitlab/-/issues/215675) for instructions and to provide your feedback.
@@ -103,8 +103,8 @@ There are some high level differences between the products worth mentioning:
 - One important difference is that jobs run independently of each other and have a
   fresh environment in each job. Passing artifacts between jobs is controlled using the
   [`artifacts`](../yaml/README.md#artifacts) and [`dependencies`](../yaml/README.md#dependencies)
-  keywords. When finished, the planned [Workspaces](https://gitlab.com/gitlab-org/gitlab/-/issues/29265)
-  feature will allow you to more easily persist a common workspace between serial jobs.
+  keywords. When finished, use the planned [Workspaces](https://gitlab.com/gitlab-org/gitlab/-/issues/29265)
+  feature to more easily persist a common workspace between serial jobs.
 - The `.gitlab-ci.yml` file is checked in to the root of your repository, much like a Jenkinsfile, but
   is in the YAML format (see [complete reference](../yaml/README.md)) instead of a Groovy DSL. It's most
   analogous to the declarative Jenkinsfile format.
@@ -114,7 +114,7 @@ There are some high level differences between the products worth mentioning:
 - GitLab comes with a [container registry](../../user/packages/container_registry/index.md), and we recommend using
   container images to set up your build environment. For example, set up one pipeline that builds your build environment
   itself and publish that to the container registry. Then, have your pipelines use this instead of each building their
-  own environment, which will be slower and may be less consistent. We have extensive docs on [how to use the Container Registry](../../user/packages/container_registry/index.md).
+  own environment, which is slower and may be less consistent. We have extensive docs on [how to use the Container Registry](../../user/packages/container_registry/index.md).
 - A central utilities repository can be a great place to put assorted scheduled jobs
   or other manual jobs that function like utilities. Jenkins installations tend to
   have a few of these.
@@ -129,12 +129,12 @@ agents you were using.
 There are some important differences in the way runners work in comparison to agents:
 
 - Runners can be set up as [shared across an instance, be added at the group level, or set up at the project level](../runners/README.md#types-of-runners).
-  They will self-select jobs from the scopes you've defined automatically.
+  They self-select jobs from the scopes you've defined automatically.
 - You can also [use tags](../runners/README.md#use-tags-to-limit-the-number-of-jobs-using-the-runner) for finer control, and
   associate runners with specific jobs. For example, you can use a tag for jobs that
   require dedicated, more powerful, or specific hardware.
-- GitLab has [autoscaling for runners](https://docs.gitlab.com/runner/configuration/autoscale.html)
-  which will let you configure them to be provisioned as needed, and scaled down when not.
+- GitLab has [autoscaling for runners](https://docs.gitlab.com/runner/configuration/autoscale.html).
+  Use autoscaling to provision runners only when needed, and scale down when not needed.
   This is similar to ephemeral agents in Jenkins.
 
 If you are using `gitlab.com`, you can take advantage of our [shared runner fleet](../../user/gitlab_com/index.md#shared-runners)
@@ -227,15 +227,15 @@ and is meant to be a mapping of concepts there to concepts in GitLab.
 
 #### `agent`
 
-The agent section is used to define how a pipeline will be executed. For GitLab, we use [runners](../runners/README.md)
+The agent section is used to define how a pipeline executes. For GitLab, we use [runners](../runners/README.md)
 to provide this capability. You can configure your own runners in Kubernetes or on any host, or take advantage
-of our shared runner fleet (note that the shared runner fleet is only available for GitLab.com users.) The link above will bring you to the documentation which will describe how to get
-up and running quickly. We also support using [tags](../runners/README.md#use-tags-to-limit-the-number-of-jobs-using-the-runner) to direct different jobs
+of our shared runner fleet (note that the shared runner fleet is only available for GitLab.com users).
+We also support using [tags](../runners/README.md#use-tags-to-limit-the-number-of-jobs-using-the-runner) to direct different jobs
 to different runners (execution agents).
 
 The `agent` section also allows you to define which Docker images should be used for execution, for which we use
 the [`image`](../yaml/README.md#image) keyword. The `image` can be set on a single job or at the top level, in which
-case it will apply to all jobs in the pipeline:
+case it applies to all jobs in the pipeline:
 
 ```yaml
 my_job:
@@ -246,7 +246,7 @@ my_job:
 
 The `post` section defines the actions that should be performed at the end of the pipeline. GitLab also supports
 this through the use of stages. You can define your stages as follows, and any jobs assigned to the `before_pipeline`
-or `after_pipeline` stages will run as expected. You can call these stages anything you like:
+or `after_pipeline` stages run as expected. You can call these stages anything you like:
 
 ```yaml
 stages:

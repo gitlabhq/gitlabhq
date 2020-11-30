@@ -34,12 +34,6 @@ class ProjectsController < Projects::ApplicationController
   # Project Export Rate Limit
   before_action :export_rate_limit, only: [:export, :download_export, :generate_new_export]
 
-  # Experiments
-  before_action only: [:new, :create] do
-    frontend_experimentation_tracking_data(:new_create_project_ui, 'click_tab')
-    push_frontend_experiment(:new_create_project_ui)
-  end
-
   before_action only: [:edit] do
     push_frontend_feature_flag(:service_desk_custom_address, @project)
     push_frontend_feature_flag(:approval_suggestions, @project, default_enabled: true)

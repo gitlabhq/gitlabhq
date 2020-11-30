@@ -60,7 +60,7 @@ and you can [customize the payload](#customize-the-alert-payload-outside-of-gitl
    1. In the **Integration** dropdown menu, select **HTTP Endpoint**.
    1. Name the integration.
    1. Toggle the **Active** alert setting to display the **URL** and **Authorization Key**
-      for the webhook configuration. You will input the URL and Authorization Key
+      for the webhook configuration. You must also input the URL and Authorization Key
       in your external service.
    1. _(Optional)_ To generate a test alert to test the new integration, enter a
       sample payload, then click **Save and test alert payload**.Valid JSON is required.
@@ -174,7 +174,7 @@ DANGER: **Deprecated:**
 We are building deeper integration with Opsgenie and other alerting tools through
 [HTTP endpoint integrations](#generic-http-endpoint) so you can see alerts within
 the GitLab interface. As a result, the previous direct link to Opsgenie Alerts from
-the GitLab alerts list will be deprecated following the 13.7 release on December 22, 2020.
+the GitLab alerts list is scheduled for deprecation following the 13.7 release on December 22, 2020.
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
 

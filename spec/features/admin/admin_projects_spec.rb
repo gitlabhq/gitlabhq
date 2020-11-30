@@ -11,6 +11,7 @@ RSpec.describe "Admin::Projects" do
 
   before do
     sign_in(current_user)
+    gitlab_enable_admin_mode_sign_in(current_user)
   end
 
   describe "GET /admin/projects" do

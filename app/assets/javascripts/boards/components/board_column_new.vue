@@ -85,6 +85,7 @@ export default {
         :disabled="disabled"
         :issues="listIssues"
         :list="list"
+        :can-admin-list="canAdminList"
       />
 
       <!-- Will be only available in EE -->

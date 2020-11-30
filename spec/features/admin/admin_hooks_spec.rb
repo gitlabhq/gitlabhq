@@ -7,6 +7,7 @@ RSpec.describe 'Admin::Hooks' do
 
   before do
     sign_in(user)
+    gitlab_enable_admin_mode_sign_in(user)
   end
 
   describe 'GET /admin/hooks' do

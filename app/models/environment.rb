@@ -60,6 +60,7 @@ class Environment < ApplicationRecord
             addressable_url: true
 
   delegate :stop_action, :manual_actions, to: :last_deployment, allow_nil: true
+  delegate :auto_rollback_enabled?, to: :project
 
   scope :available, -> { with_state(:available) }
   scope :stopped, -> { with_state(:stopped) }
@@ -240,10 +241,6 @@ class Environment < ApplicationRecord
   def cancel_deployment_jobs!
     jobs = active_deployments.with_deployable
     jobs.each do |deployment|
-      # guard against data integrity issues,
-      # for example https://gitlab.com/gitlab-org/gitlab/-/issues/218659#note_348823660
-      next unless deployment.deployable
-
       Gitlab::OptimisticLocking.retry_lock(deployment.deployable) do |deployable|
         deployable.cancel! if deployable&.cancelable?
       end

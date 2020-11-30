@@ -238,8 +238,7 @@ module Types
     field :jira_imports,
           Types::JiraImportType.connection_type,
           null: true,
-          description: 'Jira imports into the project',
-          resolver: Resolvers::Projects::JiraImportsResolver
+          description: 'Jira imports into the project'
 
     field :services,
           Types::Projects::ServiceType.connection_type,

@@ -1,6 +1,14 @@
 import * as types from './mutation_types';
 
 export default {
+  [types.SET_PAGE](state, page) {
+    Object.assign(state, {
+      pageInfo: Object.assign(state.pageInfo, {
+        page,
+      }),
+    });
+  },
+
   [types.SET_SUITE](state, { suite = {}, index = null }) {
     state.testReports.test_suites[index] = { ...suite, hasFullSuite: true };
   },

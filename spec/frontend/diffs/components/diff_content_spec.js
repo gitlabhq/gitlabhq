@@ -12,7 +12,6 @@ import DiffDiscussions from '~/diffs/components/diff_discussions.vue';
 import { IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import diffFileMockData from '../mock_data/diff_file';
 import { diffViewerModes } from '~/ide/constants';
-import { diffLines } from '~/diffs/store/getters';
 import DiffView from '~/diffs/components/diff_view.vue';
 
 const localVue = createLocalVue();
@@ -74,7 +73,7 @@ describe('DiffContent', () => {
             isInlineView: isInlineViewGetterMock,
             isParallelView: isParallelViewGetterMock,
             getCommentFormForDiffFile: getCommentFormForDiffFileGetterMock,
-            diffLines,
+            diffLines: () => () => [...diffFileMockData.parallel_diff_lines],
           },
           actions: {
             saveDiffDiscussion: saveDiffDiscussionMock,
@@ -122,11 +121,11 @@ describe('DiffContent', () => {
       expect(wrapper.find(ParallelDiffView).exists()).toBe(true);
     });
 
-    it('should render diff view if `unifiedDiffLines` & `unifiedDiffComponents` are true', () => {
+    it('should render diff view if `unifiedDiffComponents` are true', () => {
       isParallelViewGetterMock.mockReturnValue(true);
       createComponent({
         props: { diffFile: textDiffFile },
-        provide: { glFeatures: { unifiedDiffLines: true, unifiedDiffComponents: true } },
+        provide: { glFeatures: { unifiedDiffComponents: true } },
       });
 
       expect(wrapper.find(DiffView).exists()).toBe(true);

@@ -20,7 +20,7 @@ You can sign up to the cloud hosted [Sentry](https://sentry.io), deploy your own
 
 ### Enabling Sentry
 
-GitLab provides an easy way to connect Sentry to your project. You will need at
+GitLab provides an easy way to connect Sentry to your project. You need at
 least Maintainer [permissions](../user/permissions.md) to enable the Sentry integration.
 
 1. Sign up to Sentry.io or [deploy your own](#deploying-sentry) Sentry instance.
@@ -31,7 +31,7 @@ least Maintainer [permissions](../user/permissions.md) to enable the Sentry inte
    click **Enable Error Tracking**.
 1. Navigate to your project’s **Settings > Operations**. In the **Error Tracking** section,
    ensure the **Active** checkbox is set.
-1. In the **Sentry API URL** field, enter your Sentry hostname. For example, enter `https://sentry.example.com` if this is the address at which your Sentry instance is available. For the SaaS version of Sentry, the hostname will be `https://sentry.io`.
+1. In the **Sentry API URL** field, enter your Sentry hostname. For example, enter `https://sentry.example.com` if this is the address at which your Sentry instance is available. For the SaaS version of Sentry, the hostname is `https://sentry.io`.
 1. In the **Auth Token** field, enter the token you previously generated.
 1. Click the **Connect** button to test the connection to Sentry and populate the **Project** dropdown.
 1. From the **Project** dropdown, choose a Sentry project to link to your GitLab project.
@@ -65,7 +65,7 @@ By default, a **Create issue** button is displayed:
 
 ![Error Details without Issue Link](img/error_details_v12_7.png)
 
-If you create a GitLab issue from the error, the **Create issue** button will change to a **View issue** button and a link to the GitLab issue will surface within the error detail section:
+If you create a GitLab issue from the error, the **Create issue** button changes to a **View issue** button and a link to the GitLab issue displays within the error detail section:
 
 ![Error Details with Issue Link](img/error_details_with_issue_v12_8.png)
 
@@ -79,7 +79,7 @@ You can take action on Sentry Errors from within the GitLab UI.
 
 From within the [Error Details](#error-details) page you can ignore a Sentry error by simply clicking the **Ignore** button near the top of the page.
 
-Ignoring an error will prevent it from appearing in the [Error Tracking List](#error-tracking-list), and will silence notifications that were set up within Sentry.
+Ignoring an error prevents it from appearing in the [Error Tracking List](#error-tracking-list), and silences notifications that were set up within Sentry.
 
 ### Resolving errors
 
@@ -88,6 +88,6 @@ Ignoring an error will prevent it from appearing in the [Error Tracking List](#e
 From within the [Error Details](#error-details) page you can resolve a Sentry error by
 clicking the **Resolve** button near the top of the page.
 
-Marking an error as resolved indicates that the error has stopped firing events. If a GitLab issue is linked to the error, then the issue will be closed.
+Marking an error as resolved indicates that the error has stopped firing events. If a GitLab issue is linked to the error, then the issue closes.
 
 If another event occurs, the error reverts to unresolved.
