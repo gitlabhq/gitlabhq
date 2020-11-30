@@ -33,7 +33,14 @@ export default {
   mixins: [glFeatureFlagsMixin()],
   computed: {
     ...mapGetters(['currentKey', 'propsSource', 'isDisabled']),
-    ...mapState(['defaultState', 'override', 'isSaving', 'isTesting', 'isResetting']),
+    ...mapState([
+      'defaultState',
+      'customState',
+      'override',
+      'isSaving',
+      'isTesting',
+      'isResetting',
+    ]),
     isEditable() {
       return this.propsSource.editable;
     },
@@ -42,8 +49,8 @@ export default {
     },
     isInstanceOrGroupLevel() {
       return (
-        this.propsSource.integrationLevel === integrationLevels.INSTANCE ||
-        this.propsSource.integrationLevel === integrationLevels.GROUP
+        this.customState.integrationLevel === integrationLevels.INSTANCE ||
+        this.customState.integrationLevel === integrationLevels.GROUP
       );
     },
     showJiraIssuesFields() {

@@ -30,6 +30,10 @@ export default {
       required: false,
       default: '',
     },
+    customEmailEnabled: {
+      type: Boolean,
+      required: false,
+    },
     selectedTemplate: {
       type: String,
       required: false,
@@ -140,6 +144,7 @@ export default {
       :is-enabled="isEnabled"
       :incoming-email="incomingEmail"
       :custom-email="updatedCustomEmail"
+      :custom-email-enabled="customEmailEnabled"
       :initial-selected-template="selectedTemplate"
       :initial-outgoing-name="outgoingName"
       :initial-project-key="projectKey"

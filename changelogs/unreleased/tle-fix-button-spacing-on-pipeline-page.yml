@@ -1,0 +1,5 @@
+---
+title: Fix spacing between buttons on pipeline header
+merge_request: 48660
+author:
+type: fixed

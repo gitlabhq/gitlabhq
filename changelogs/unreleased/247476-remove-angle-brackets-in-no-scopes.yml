@@ -1,0 +1,5 @@
+---
+title: Remove brackets in no scopes selected message in access and deploy tokens lists
+merge_request: 47628
+author:
+type: changed

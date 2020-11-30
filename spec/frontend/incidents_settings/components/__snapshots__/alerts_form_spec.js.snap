@@ -47,7 +47,7 @@ exports[`Alert integration settings form default state should match the default 
        
       <gl-dropdown-stub
         block="true"
-        category="tertiary"
+        category="primary"
         data-qa-selector="incident_templates_dropdown"
         headertext=""
         id="alert-integration-settings-issue-template"

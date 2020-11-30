@@ -1535,6 +1535,42 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '.service_desk_custom_address_enabled?' do
+    let_it_be(:project) { create(:project, service_desk_enabled: true) }
+
+    subject(:address_enabled) { project.service_desk_custom_address_enabled? }
+
+    context 'when service_desk_email is enabled' do
+      before do
+        allow(::Gitlab::ServiceDeskEmail).to receive(:enabled?).and_return(true)
+      end
+
+      it 'returns true' do
+        expect(address_enabled).to be_truthy
+      end
+
+      context 'when service_desk_custom_address flag is disabled' do
+        before do
+          stub_feature_flags(service_desk_custom_address: false)
+        end
+
+        it 'returns false' do
+          expect(address_enabled).to be_falsey
+        end
+      end
+    end
+
+    context 'when service_desk_email is disabled' do
+      before do
+        allow(::Gitlab::ServiceDeskEmail).to receive(:enabled?).and_return(false)
+      end
+
+      it 'returns false when service_desk_email is disabled' do
+        expect(address_enabled).to be_falsey
+      end
+    end
+  end
+
   describe '.find_by_service_desk_project_key' do
     it 'returns the correct project' do
       project1 = create(:project)

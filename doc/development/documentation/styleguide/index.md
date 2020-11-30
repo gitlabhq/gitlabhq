@@ -7,8 +7,7 @@ description: 'Writing styles, markup, formatting, and other standards for GitLab
 
 # Documentation Style Guide
 
-This document defines the standards for GitLab's documentation content and
-files.
+This document defines the standards for GitLab documentation.
 
 For broader information about the documentation, see the [Documentation guidelines](../index.md).
 
@@ -241,16 +240,16 @@ to update.
 
 Put files for a specific product area into the related folder:
 
-| Directory             | What belongs here                                                                                                                       |
-|:----------------------|:----------------------------------------------------------------------------------------------------------------------------------------|
-| `doc/user/`           | User related documentation. Anything that can be done within the GitLab user interface goes here, including usage of the `/admin` interface.        |
-| `doc/administration/` | Documentation that requires the user to have access to the server where GitLab is installed. The admin settings that can be accessed by using GitLab's interface exist under `doc/user/admin_area/`. |
-| `doc/api/`            | API related documentation.                                                                                                              |
+| Directory             | What belongs here |
+|:----------------------|:------------------|
+| `doc/user/`           | User related documentation. Anything that can be done within the GitLab user interface goes here, including usage of the `/admin` interface. |
+| `doc/administration/` | Documentation that requires the user to have access to the server where GitLab is installed. Administrator settings in the GitLab user interface are under `doc/user/admin_area/`. |
+| `doc/api/`            | API-related documentation. |
 | `doc/development/`    | Documentation related to the development of GitLab, whether contributing code or documentation. Related process and style guides should go here. |
-| `doc/legal/`          | Legal documents about contributing to GitLab.                                                                                           |
-| `doc/install/`        | Contains instructions for installing GitLab.                                                                                            |
-| `doc/update/`         | Contains instructions for updating GitLab.                                                                                              |
-| `doc/topics/`         | Indexes per topic (`doc/topics/topic_name/index.md`): all resources for that topic.                                                     |
+| `doc/legal/`          | Legal documents about contributing to GitLab. |
+| `doc/install/`        | Contains instructions for installing GitLab. |
+| `doc/update/`         | Contains instructions for updating GitLab. |
+| `doc/topics/`         | Indexes per topic (`doc/topics/topic_name/index.md`): all resources for that topic. |
 
 ### Work with directories and files
 
@@ -277,10 +276,10 @@ Refer to the following items when working with directories and files:
      Every page you would navigate under `/profile` should have its own document,
      for example, `account.md`, `applications.md`, or `emails.md`.
    - `doc/user/dashboard/` should contain all dashboard related documentation.
-   - `doc/user/admin_area/` should contain all admin related documentation
-     describing what can be achieved by accessing GitLab's admin interface
-     (_not to be confused with `doc/administration` where server access is
-     required_).
+   - `doc/user/admin_area/` should contain all administrator-related
+     documentation describing what can be achieved by accessing the GitLab
+     administrator interface (not to be confused with `doc/administration` where
+     server access is required).
      - Every category under `/admin/application_settings/` should have its
       own document located at `doc/user/admin_area/settings/`. For example,
       the **Visibility and Access Controls** category should have a document
@@ -567,9 +566,9 @@ tenses, words, and phrases:
 - Avoid using the word *currently* when talking about the product or its
   features. The documentation describes the product as it is, and not as it
   will be at some indeterminate point in the future.
-- Avoid the using the word *scalability* with increasing GitLab's performance
-  for additional users. Using the words *scale* or *scaling* in other cases is
-  acceptable, but references to increasing GitLab's performance for additional
+- Avoid using the word scalability when talking about increasing GitLab
+  performance for additional users. The words scale or scaling are sometimes
+  acceptable, but references to increasing GitLab performance for additional
   users should direct readers to the GitLab
   [reference architectures](../../../administration/reference_architectures/index.md)
   page.
@@ -577,8 +576,8 @@ tenses, words, and phrases:
   direct readers to the GitLab [reference architectures](../../../administration/reference_architectures/index.md)
   for information about configuring GitLab to have the performance needed for
   additional users over time.
-- Don't use profanity or obscenities. Doing so may negatively affect other
-  users and contributors, which is contrary to GitLab's value of
+- Don't use profanity or obscenities. Doing so may negatively affect other users
+  and contributors, which is contrary to the GitLab value of
   [Diversity, Inclusion, and Belonging](https://about.gitlab.com/handbook/values/#diversity-inclusion).
 - Avoid the use of [racially-insensitive terminology or phrases](https://www.marketplace.org/2020/06/17/tech-companies-update-language-to-avoid-offensive-terms/). For example:
   - Use *primary* and *secondary* for database and server relationships.
@@ -982,9 +981,9 @@ Important:
   tutorials, presentations, StackOverflow posts, and other sources.
 - Do not link to `h1` headings.
 
-Note that, with Kramdown, it is possible to add a custom ID to an HTML element
-with Markdown markup, but they _do not_ work in GitLab's `/help`. Therefore,
-do not use this option until further notice.
+Note that with Kramdown, it's possible to add a custom ID to an HTML element
+with Markdown markup, but they don't work in `/help`. Because of this, don't use
+this option.
 
 ## Links
 
@@ -1268,7 +1267,7 @@ request.
 
 ## Videos
 
-Adding GitLab's existing YouTube video tutorials to the documentation is highly
+Adding GitLab YouTube video tutorials to the documentation is highly
 encouraged, unless the video is outdated. Videos should not replace
 documentation, but complement or illustrate it. If content in a video is
 fundamental to a feature and its key use cases, but this is not adequately
@@ -1297,7 +1296,7 @@ You can link any up-to-date video that's useful to the GitLab user.
 The [GitLab documentation site](https://docs.gitlab.com) supports embedded
 videos.
 
-You can only embed videos from [GitLab's official YouTube account](https://www.youtube.com/channel/UCnMGQ8QHMAnVIsI3xJrihhg).
+You can embed videos from [the official YouTube account for GitLab](https://www.youtube.com/channel/UCnMGQ8QHMAnVIsI3xJrihhg) only.
 For videos from other sources, [link](#link-to-video) them instead.
 
 In most cases, it is better to [link to video](#link-to-video) instead, because
@@ -1341,9 +1340,9 @@ This is how it renders on the GitLab documentation site:
 > - The `figure` tag is required for semantic SEO and the `video_container`
 class is necessary to make sure the video is responsive and displays on
 different mobile devices.
-> - The `<div class="video-fallback">` is a fallback necessary for GitLab's
-`/help`, as GitLab's Markdown processor does not support iframes. It's hidden on
-the documentation site, but will be displayed on GitLab's `/help`.
+> - The `<div class="video-fallback">` is a fallback necessary for
+`/help`, because the GitLab Markdown processor doesn't support iframes. It's
+hidden on the documentation site, but is displayed by `/help`.
 
 ## Code blocks
 
@@ -1659,8 +1658,8 @@ elements:
 To help users be aware of recent product improvements or additions, we add
 GitLab version information to our documentation.
 
-The GitLab Technical Writing team determines which versions of GitLab's
-documentation to display on this site based on GitLab's
+The GitLab Technical Writing team determines which versions of
+documentation to display on this site based on the GitLab
 [Statement of Support](https://about.gitlab.com/support/statement-of-support.html#we-support-the-current-major-version-and-the-two-previous-major-versions).
 
 ### View older GitLab documentation versions

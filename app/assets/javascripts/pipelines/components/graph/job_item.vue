@@ -4,7 +4,7 @@ import ActionComponent from './action_component.vue';
 import JobNameComponent from './job_name_component.vue';
 import { sprintf } from '~/locale';
 import delayedJobMixin from '~/jobs/mixins/delayed_job_mixin';
-import { accessors } from './accessors';
+import { accessValue } from './accessors';
 import { REST } from './constants';
 
 /**
@@ -79,10 +79,10 @@ export default {
       return this.dropdownLength === 1 ? 'viewport' : 'scrollParent';
     },
     detailsPath() {
-      return this.status[accessors[this.dataMethod].detailsPath];
+      return accessValue(this.dataMethod, 'detailsPath', this.status);
     },
     hasDetails() {
-      return this.status[accessors[this.dataMethod].hasDetails];
+      return accessValue(this.dataMethod, 'hasDetails', this.status);
     },
     status() {
       return this.job && this.job.status ? this.job.status : {};

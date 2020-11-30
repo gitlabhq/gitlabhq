@@ -6,8 +6,8 @@ namespace :gitlab do
 
       result = User.where(id: group.direct_and_indirect_users_with_inactive.select(:id)).update_all(projects_limit: 0, can_create_group: false)
       ids_count = group.direct_and_indirect_users_with_inactive.count
-      puts "Done".green if result == ids_count
-      puts "Something went wrong".red if result != ids_count
+      puts "Done".color(:green) if result == ids_count
+      puts "Something went wrong".color(:red) if result != ids_count
     end
   end
 end

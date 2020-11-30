@@ -1042,6 +1042,10 @@ production: &base
   shared:
     # path: /mnt/gitlab # Default: shared
 
+  # Encrypted Settings configuration
+  encrypted_settings:
+    # path: /mnt/gitlab/encrypted_settings  # Default: shared/encrypted_settings
+
   # Gitaly settings
   gitaly:
     # Path to the directory containing Gitaly client executables.

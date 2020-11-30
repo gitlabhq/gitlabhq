@@ -2507,13 +2507,16 @@ class Project < ApplicationRecord
   end
 
   def service_desk_custom_address
-    return unless ::Gitlab::ServiceDeskEmail.enabled?
-    return unless ::Feature.enabled?(:service_desk_custom_address, self)
+    return unless service_desk_custom_address_enabled?
 
     key = service_desk_setting&.project_key
     return unless key.present?
 
     ::Gitlab::ServiceDeskEmail.address_for_key("#{full_path_slug}-#{key}")
+  end
+
+  def service_desk_custom_address_enabled?
+    ::Gitlab::ServiceDeskEmail.enabled? && ::Feature.enabled?(:service_desk_custom_address, self)
   end
 
   def root_namespace

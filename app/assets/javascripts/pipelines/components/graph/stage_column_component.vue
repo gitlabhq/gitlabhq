@@ -5,7 +5,7 @@ import JobItem from './job_item.vue';
 import JobGroupDropdown from './job_group_dropdown.vue';
 import ActionComponent from './action_component.vue';
 import { GRAPHQL } from './constants';
-import { accessors } from './accessors';
+import { accessValue } from './accessors';
 
 export default {
   components: {
@@ -39,7 +39,6 @@ export default {
       default: () => ({}),
     },
   },
-  accessors,
   titleClasses: [
     'gl-font-weight-bold',
     'gl-pipeline-job-width',
@@ -56,8 +55,8 @@ export default {
     },
   },
   methods: {
-    getAccessor(property) {
-      return accessors[GRAPHQL][property];
+    getGroupId(group) {
+      return accessValue(GRAPHQL, 'groupId', group);
     },
     groupId(group) {
       return `ci-badge-${escape(group.name)}`;
@@ -87,7 +86,7 @@ export default {
       <div
         v-for="group in groups"
         :id="groupId(group)"
-        :key="group[getAccessor('groupId')]"
+        :key="getGroupId(group)"
         data-testid="stage-column-group"
         class="gl-relative gl-mb-3 gl-white-space-normal gl-pipeline-job-width"
       >

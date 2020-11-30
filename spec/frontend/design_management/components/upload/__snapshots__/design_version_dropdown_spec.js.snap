@@ -2,7 +2,7 @@
 
 exports[`Design management design version dropdown component renders design version dropdown button 1`] = `
 <gl-dropdown-stub
-  category="tertiary"
+  category="primary"
   headertext=""
   issueiid=""
   projectpath=""
@@ -42,7 +42,7 @@ exports[`Design management design version dropdown component renders design vers
 
 exports[`Design management design version dropdown component renders design version list 1`] = `
 <gl-dropdown-stub
-  category="tertiary"
+  category="primary"
   headertext=""
   issueiid=""
   projectpath=""

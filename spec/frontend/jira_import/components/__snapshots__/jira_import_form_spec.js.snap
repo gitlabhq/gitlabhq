@@ -86,7 +86,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
           <button
             aria-expanded="false"
             aria-haspopup="true"
-            class="btn dropdown-toggle btn-default btn-md gl-button gl-dropdown-toggle btn-default-tertiary"
+            class="btn dropdown-toggle btn-default btn-md gl-button gl-dropdown-toggle"
             type="button"
           >
             <!---->
@@ -201,7 +201,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
           <button
             aria-expanded="false"
             aria-haspopup="true"
-            class="btn dropdown-toggle btn-default btn-md gl-button gl-dropdown-toggle btn-default-tertiary"
+            class="btn dropdown-toggle btn-default btn-md gl-button gl-dropdown-toggle"
             type="button"
           >
             <!---->

@@ -433,7 +433,13 @@ To remove a list from an issue board:
 1. Select **Remove list**. A confirmation dialog appears.
 1. Select **OK**.
 
-### Add issues to a list
+### Add issues to a list **(CORE ONLY)**
+
+> - Feature flag [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47898) in GitLab 13.7.
+> - It's [deployed behind a feature flag](../feature_flags.md), disabled by default.
+> - It's disabled on GitLab.com.
+> - It's recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-adding-issues-to-the-list). **(CORE ONLY)**
 
 You can add issues to a list in a project issue board by clicking the **Add issues** button
 in the top right corner of the issue board. This opens up a modal
@@ -453,7 +459,23 @@ the list by filtering by the following:
 - Release
 - Weight
 
-![Bulk adding issues to lists](img/issue_boards_add_issues_modal_v13_6.png)
+#### Enable or disable adding issues to the list **(CORE ONLY)**
+
+Adding issues to the list is deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:add_issues_button)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:add_issues_button)
+```
 
 ### Remove an issue from a list
 

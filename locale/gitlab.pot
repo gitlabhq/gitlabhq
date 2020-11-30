@@ -896,9 +896,6 @@ msgstr ""
 msgid "&lt; 1 hour"
 msgstr ""
 
-msgid "&lt;no scopes selected&gt;"
-msgstr ""
-
 msgid "'%{data}' at %{location} does not match format: %{format}"
 msgstr ""
 
@@ -32765,6 +32762,9 @@ msgid "no name set"
 msgstr ""
 
 msgid "no one can merge"
+msgstr ""
+
+msgid "no scopes selected"
 msgstr ""
 
 msgid "none"
