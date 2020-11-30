@@ -2,7 +2,7 @@ import Vue from 'vue';
 import mountComponent from 'helpers/vue_mount_component_helper';
 import banner from '~/cycle_analytics/components/banner.vue';
 
-describe('Cycle analytics banner', () => {
+describe('Value Stream Analytics banner', () => {
   let vm;
 
   beforeEach(() => {

@@ -254,7 +254,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
 
         new_issue = Issue.last
 
-        expect(new_issue.service_desk_reply_to).to eq('finn@adventuretime.ooo')
+        expect(new_issue.external_author).to eq('finn@adventuretime.ooo')
       end
     end
 

@@ -10,7 +10,6 @@ exports[`Confidential Issue Sidebar Block renders for confidential = false and i
     title="Not confidential"
   >
     <gl-icon-stub
-      aria-hidden="true"
       name="eye"
       size="16"
     />
@@ -35,7 +34,6 @@ exports[`Confidential Issue Sidebar Block renders for confidential = false and i
       data-testid="not-confidential"
     >
       <gl-icon-stub
-        aria-hidden="true"
         class="sidebar-item-icon inline"
         name="eye"
         size="16"
@@ -58,7 +56,6 @@ exports[`Confidential Issue Sidebar Block renders for confidential = false and i
     title="Not confidential"
   >
     <gl-icon-stub
-      aria-hidden="true"
       name="eye"
       size="16"
     />
@@ -91,7 +88,6 @@ exports[`Confidential Issue Sidebar Block renders for confidential = false and i
       data-testid="not-confidential"
     >
       <gl-icon-stub
-        aria-hidden="true"
         class="sidebar-item-icon inline"
         name="eye"
         size="16"
@@ -114,7 +110,6 @@ exports[`Confidential Issue Sidebar Block renders for confidential = true and is
     title="Confidential"
   >
     <gl-icon-stub
-      aria-hidden="true"
       name="eye-slash"
       size="16"
     />
@@ -138,7 +133,6 @@ exports[`Confidential Issue Sidebar Block renders for confidential = true and is
       class="value sidebar-item-value hide-collapsed"
     >
       <gl-icon-stub
-        aria-hidden="true"
         class="sidebar-item-icon inline is-active"
         name="eye-slash"
         size="16"
@@ -161,7 +155,6 @@ exports[`Confidential Issue Sidebar Block renders for confidential = true and is
     title="Confidential"
   >
     <gl-icon-stub
-      aria-hidden="true"
       name="eye-slash"
       size="16"
     />
@@ -193,7 +186,6 @@ exports[`Confidential Issue Sidebar Block renders for confidential = true and is
       class="value sidebar-item-value hide-collapsed"
     >
       <gl-icon-stub
-        aria-hidden="true"
         class="sidebar-item-icon inline is-active"
         name="eye-slash"
         size="16"

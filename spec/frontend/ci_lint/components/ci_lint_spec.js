@@ -3,8 +3,8 @@ import { shallowMount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import EditorLite from '~/vue_shared/components/editor_lite.vue';
 import CiLint from '~/ci_lint/components/ci_lint.vue';
-import CiLintResults from '~/ci_lint/components/ci_lint_results.vue';
-import lintCIMutation from '~/ci_lint/graphql/mutations/lint_ci.mutation.graphql';
+import CiLintResults from '~/pipeline_editor/components/lint/ci_lint_results.vue';
+import lintCIMutation from '~/pipeline_editor/graphql/mutations/lint_ci.mutation.graphql';
 import { mockLintDataValid } from '../mock_data';
 
 describe('CI Lint', () => {

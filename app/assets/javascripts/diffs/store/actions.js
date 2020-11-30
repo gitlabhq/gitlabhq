@@ -447,11 +447,11 @@ export const scrollToFile = ({ state, commit }, path) => {
   commit(types.VIEW_DIFF_FILE, fileHash);
 };
 
-export const toggleShowTreeList = ({ commit, state }, saving = true) => {
-  commit(types.TOGGLE_SHOW_TREE_LIST);
+export const setShowTreeList = ({ commit }, { showTreeList, saving = true }) => {
+  commit(types.SET_SHOW_TREE_LIST, showTreeList);
 
   if (saving) {
-    localStorage.setItem(MR_TREE_SHOW_KEY, state.showTreeList);
+    localStorage.setItem(MR_TREE_SHOW_KEY, showTreeList);
   }
 };
 

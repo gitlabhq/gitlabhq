@@ -4,22 +4,22 @@
 * @usage
 *  ### Active and Inactive text should be provided as data attributes:
 *  <button type="button" class="project-feature-toggle" data-enabled-text="Enabled" data-disabled-text="Disabled">
-*  <i class="fa fa-spinner fa-spin loading-icon hidden"></i>
+*  <span class="gl-spinner loading-icon hidden" aria-label="Loading"></span>
 *  </button>
 
 *  ### Checked should have `is-checked` class
 *  <button type="button" class="project-feature-toggle is-checked" data-enabled-text="Enabled" data-disabled-text="Disabled">
-*  <i class="fa fa-spinner fa-spin loading-icon hidden"></i>
+*  <span class="gl-spinner loading-icon hidden" aria-label="Loading"></span>
 *  </button>
 
 *  ### Disabled should have `is-disabled` class
 *  <button type="button" class="project-feature-toggle is-disabled" data-enabled-text="Enabled" data-disabled-text="Disabled" disabled="true">
-*  <i class="fa fa-spinner fa-spin loading-icon hidden"></i>
+*  <span class="gl-spinner loading-icon hidden" aria-label="Loading"></span>
 *  </button>
 
 *  ### Loading should have `is-loading` and an icon with `loading-icon` class
 *  <button type="button" class="project-feature-toggle is-loading" data-enabled-text="Enabled" data-disabled-text="Disabled">
-*  <i class="fa fa-spinner fa-spin loading-icon"></i>
+*  <span class="gl-spinner loading-icon" aria-label="Loading"></span>
 *  </button>
 */
 .project-feature-toggle {

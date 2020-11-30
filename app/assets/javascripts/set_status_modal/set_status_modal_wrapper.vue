@@ -1,8 +1,9 @@
 <script>
 /* eslint-disable vue/no-v-html */
 import $ from 'jquery';
+import Vue from 'vue';
 import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
-import { GlModal, GlTooltipDirective, GlIcon, GlFormCheckbox } from '@gitlab/ui';
+import { GlToast, GlModal, GlTooltipDirective, GlIcon, GlFormCheckbox } from '@gitlab/ui';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { __, s__ } from '~/locale';
 import Api from '~/api';
@@ -15,6 +16,8 @@ export const AVAILABILITY_STATUS = {
   BUSY: 'busy',
   NOT_SET: 'not_set',
 };
+
+Vue.use(GlToast);
 
 export default {
   components: {

@@ -129,6 +129,52 @@
   overflow: auto;
 }
 
+// Move to Gitlab UI
+.gl-font-weight-100 {
+  font-weight: 100;
+}
+
+.gl-active-text-decoration-none:active,
+.gl-focus-text-decoration-none:focus,
+.gl-hover-text-decoration-none:hover {
+  text-decoration: none;
+}
+
+// These are single-value classes to use with utility-class style CSS
+// but to still access this variable. Do not add other styles.
+.gl-pipeline-min-h {
+  min-height: $dropdown-max-height-lg;
+}
+
+.gl-pipeline-job-width {
+  width: 186px;
+}
+
+.gl-pipeline-title-width {
+  width: 176px;
+}
+
+.gl-build-content {
+  @include build-content();
+}
+
+.gl-ci-action-icon-container {
+  position: absolute;
+  right: 5px;
+  top: 50% !important;
+  transform: translateY(-50%);
+
+  // Action Icons in big pipeline-graph nodes
+  &.ci-action-icon-wrapper {
+    height: 30px;
+    width: 30px;
+    border-radius: 100%;
+    display: block;
+    padding: 0;
+    line-height: 0;
+  }
+}
+
 // Pipeline graph, used at
 // app/assets/javascripts/pipelines/components/graph/graph_component.vue
 .pipeline-graph {

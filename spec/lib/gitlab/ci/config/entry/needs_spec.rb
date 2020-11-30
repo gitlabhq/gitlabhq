@@ -6,7 +6,7 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Needs do
   subject(:needs) { described_class.new(config) }
 
   before do
-    needs.metadata[:allowed_needs] = %i[job]
+    needs.metadata[:allowed_needs] = %i[job cross_dependency]
   end
 
   describe 'validations' do
@@ -63,6 +63,27 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Needs do
         it 'returns error about incorrect type' do
           expect(needs.errors).to contain_exactly(
             'need config contains unknown keys: some')
+        end
+      end
+    end
+
+    context 'with too many cross pipeline dependencies' do
+      let(:limit) { described_class::NEEDS_CROSS_PIPELINE_DEPENDENCIES_LIMIT }
+
+      let(:config) do
+        Array.new(limit.next) do |index|
+          { pipeline: "$UPSTREAM_PIPELINE_#{index}", job: 'job-1' }
+        end
+      end
+
+      describe '#valid?' do
+        it { is_expected.not_to be_valid }
+      end
+
+      describe '#errors' do
+        it 'returns error about incorrect type' do
+          expect(needs.errors).to contain_exactly(
+            "needs config must be less than or equal to #{limit}")
         end
       end
     end

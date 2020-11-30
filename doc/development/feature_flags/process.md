@@ -32,7 +32,8 @@ should be leveraged:
   requests, you can use the following workflow:
 
   1. [Create a new feature flag](development.md#create-a-new-feature-flag)
-     which is **off** by default, in the first merge request.
+     which is **off** by default, in the first merge request which uses the flag.
+     Flags [should not be added separately](development.md#risk-of-a-broken-master-main-branch).
   1. Submit incremental changes via one or more merge requests, ensuring that any
      new code added can only be reached if the feature flag is **on**.
      You can keep the feature flag enabled on your local GDK during development.

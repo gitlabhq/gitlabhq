@@ -3,7 +3,7 @@
 class ProjectFeature < ApplicationRecord
   include Featurable
 
-  FEATURES = %i(issues forking merge_requests wiki snippets builds repository pages metrics_dashboard).freeze
+  FEATURES = %i(issues forking merge_requests wiki snippets builds repository pages metrics_dashboard operations).freeze
 
   set_available_features(FEATURES)
 
@@ -45,6 +45,7 @@ class ProjectFeature < ApplicationRecord
   default_value_for :wiki_access_level,              value: ENABLED, allows_nil: false
   default_value_for :repository_access_level,        value: ENABLED, allows_nil: false
   default_value_for :metrics_dashboard_access_level, value: PRIVATE, allows_nil: false
+  default_value_for :operations_access_level,        value: ENABLED, allows_nil: false
 
   default_value_for(:pages_access_level, allows_nil: false) do |feature|
     if ::Gitlab::Pages.access_control_is_forced?

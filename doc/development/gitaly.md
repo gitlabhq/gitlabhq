@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Gitaly
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -190,6 +190,10 @@ reference (branch or SHA). Only if it matches a semver does it prepend a `v`.
 If you want to run tests locally against a modified version of Gitaly you
 can replace `tmp/tests/gitaly` with a symlink. This is much faster
 because it avoids a Gitaly re-install each time you run `rspec`.
+
+Make sure this directory contains the files `config.toml` and `praefect.config.toml`.
+You can copy them from `config.toml.example` and `config.praefect.toml.example` respectively.
+After copying, make sure to edit them so everything points to the correct paths.
 
 ```shell
 rm -rf tmp/tests/gitaly

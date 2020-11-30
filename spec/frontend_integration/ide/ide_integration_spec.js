@@ -3,6 +3,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { useOverclockTimers } from 'test_helpers/utils/overclock_timers';
 import { createCommitId } from 'test_helpers/factories/commit_id';
 import * as ideHelper from './helpers/ide_helper';
+import startWebIDE from './helpers/start';
 
 describe('WebIDE', () => {
   useOverclockTimers();
@@ -21,7 +22,7 @@ describe('WebIDE', () => {
   });
 
   it('user commits changes', async () => {
-    vm = ideHelper.createIdeComponent(container);
+    vm = startWebIDE(container);
 
     await ideHelper.createFile('foo/bar/test.txt', 'Lorem ipsum dolar sit');
     await ideHelper.deleteFile('foo/bar/.gitkeep');
@@ -55,7 +56,7 @@ describe('WebIDE', () => {
   });
 
   it('user adds file that starts with +', async () => {
-    vm = ideHelper.createIdeComponent(container);
+    vm = startWebIDE(container);
 
     await ideHelper.createFile('+test', 'Hello world!');
     await ideHelper.openFile('+test');

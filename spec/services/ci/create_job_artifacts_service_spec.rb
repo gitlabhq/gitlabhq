@@ -24,7 +24,7 @@ RSpec.describe Ci::CreateJobArtifactsService do
     upload = Tempfile.new('upload')
     FileUtils.copy(path, upload.path)
 
-    UploadedFile.new(upload.path, params)
+    UploadedFile.new(upload.path, **params)
   end
 
   describe '#execute' do

@@ -17,22 +17,19 @@
     }
   }
 
-  .assignee-dropdown-item {
-    .dropdown-item {
-      @include gl-display-flex;
-      @include gl-align-items-center;
-
+  .dropdown-item {
+    &:first-child {
       &::before {
-        top: 50% !important;
+        @include gl-pt-0;
       }
+    }
 
-      &.is-active {
-        &:last-child {
-          @include gl-border-b-gray-100;
-          @include gl-border-b-1;
-          @include gl-border-b-solid;
-        }
-      }
+    &::before {
+      @include gl-pt-8;
+    }
+
+    .gl-new-dropdown-item-text-wrapper {
+      @include gl-py-0;
     }
   }
 

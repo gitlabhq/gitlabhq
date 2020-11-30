@@ -111,7 +111,6 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
           it 'shows resolved thread when toggled' do
             find(".timeline-content .discussion[data-discussion-id='#{note.discussion_id}'] .discussion-toggle-button").click
 
-            expect(page.find(".line-holder-placeholder")).to be_visible
             expect(page.find(".timeline-content #note_#{note.id}")).to be_visible
           end
 

@@ -35,13 +35,11 @@ RSpec.describe Projects::UpdatePagesService do
         build.reload
       end
 
-      describe 'pages artifacts' do
-        it "doesn't delete artifacts after deploying" do
-          expect(execute).to eq(:success)
+      it "doesn't delete artifacts after deploying" do
+        expect(execute).to eq(:success)
 
-          expect(project.pages_metadatum).to be_deployed
-          expect(build.artifacts?).to eq(true)
-        end
+        expect(project.pages_metadatum).to be_deployed
+        expect(build.artifacts?).to eq(true)
       end
 
       it 'succeeds' do

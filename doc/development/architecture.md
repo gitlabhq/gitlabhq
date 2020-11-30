@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # GitLab architecture overview
@@ -236,7 +236,7 @@ Table description links:
 | [Certificate Management](#certificate-management)     | TLS Settings, Let's Encrypt                                          |       ✅        |      ✅       |        ⚙         |     ✅      |   ⚙    |  ⚙  | CE & EE |
 | [Consul](#consul)                                     | Database node discovery, failover                                    |       ⚙        |      ❌       |        ❌         |     ✅      |   ❌    |  ❌  | EE Only |
 | [Database Migrations](#database-migrations)           | Database migrations                                                  |       ✅        |      ✅       |        ✅         |     ✅      |   ⚙    |  ✅  | CE & EE |
-| [Elasticsearch](#elasticsearch)                       | Improved search within GitLab                                        |       ⤓        |      ⤓       |        ⤓         |     ❌      |   ⤓    |  ⤓  | EE Only |
+| [Elasticsearch](#elasticsearch)                       | Improved search within GitLab                                        |       ⤓        |      ⤓       |        ⤓         |     ✅      |   ⤓    |  ⤓  | EE Only |
 | [Gitaly](#gitaly)                                     | Git RPC service for handling all Git calls made by GitLab            |       ✅        |      ✅       |        ✅         |     ✅      |   ⚙    |  ✅  | CE & EE |
 | [GitLab Exporter](#gitlab-exporter)                   | Generates a variety of GitLab metrics                                |       ✅        |      ✅       |        ✅         |     ✅      |   ❌    |  ❌  | CE & EE |
 | [GitLab Geo Node](#gitlab-geo)                        | Geographically distributed GitLab nodes |       ⚙        |       ⚙      |        ❌         |     ✅      |   ❌    |  ⚙  | EE Only |
@@ -282,8 +282,8 @@ When deployed, GitLab should be considered the amalgamation of the below process
 
 GitLab can be considered to have two layers from a process perspective:
 
-- **Monitoring**: Anything from this layer is not required to deliver GitLab the application, but will allow administrators more insight into their infrastructure and what the service as a whole is doing.
-- **Core**: Any process that is vital for the delivery of GitLab as a platform. If any of these processes halt there will be a GitLab outage. For the Core layer, you can further divide into:
+- **Monitoring**: Anything from this layer is not required to deliver GitLab the application, but allows administrators more insight into their infrastructure and what the service as a whole is doing.
+- **Core**: Any process that is vital for the delivery of GitLab as a platform. If any of these processes halt, a GitLab outage results. For the Core layer, you can further divide into:
   - **Processors**: These processes are responsible for actually performing operations and presenting the service.
   - **Data**: These services store/expose structured data for the GitLab service.
 
@@ -297,7 +297,7 @@ GitLab can be considered to have two layers from a process perspective:
 - Process: `alertmanager`
 - GitLab.com: [Monitoring of GitLab.com](https://about.gitlab.com/handbook/engineering/monitoring/)
 
-[Alert manager](https://prometheus.io/docs/alerting/latest/alertmanager/) is a tool provided by Prometheus that _"handles alerts sent by client applications such as the Prometheus server. It takes care of deduplicating, grouping, and routing them to the correct receiver integration such as email, PagerDuty, or Opsgenie. It also takes care of silencing and inhibition of alerts."_ You can read more in [issue #45740](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45740) about what we will be alerting on.
+[Alert manager](https://prometheus.io/docs/alerting/latest/alertmanager/) is a tool provided by Prometheus that _"handles alerts sent by client applications such as the Prometheus server. It takes care of deduplicating, grouping, and routing them to the correct receiver integration such as email, PagerDuty, or Opsgenie. It also takes care of silencing and inhibition of alerts."_ You can read more in [issue #45740](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45740) about what we alert on.
 
 #### Certificate management
 
@@ -340,7 +340,7 @@ Consul is a tool for service discovery and configuration. Consul is distributed,
   - [Source](../integration/elasticsearch.md)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/elasticsearch.md)
 - Layer: Core Service (Data)
-- GitLab.com: [Get Advanced Search working on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/153) epic.
+- GitLab.com: [Get Advanced Search working on GitLab.com (Closed)](https://gitlab.com/groups/gitlab-org/-/epics/153) epic.
 
 Elasticsearch is a distributed RESTful search engine built for the cloud.
 
@@ -600,7 +600,7 @@ GitLab packages the popular Database to provide storage for Application meta dat
 - Process: `postgres-exporter`
 - GitLab.com: [Monitoring of GitLab.com](https://about.gitlab.com/handbook/engineering/monitoring/)
 
-[`postgres_exporter`](https://github.com/wrouesnel/postgres_exporter) is the community provided Prometheus exporter that will deliver data about PostgreSQL to Prometheus for use in Grafana Dashboards.
+[`postgres_exporter`](https://github.com/wrouesnel/postgres_exporter) is the community provided Prometheus exporter that delivers data about PostgreSQL to Prometheus for use in Grafana Dashboards.
 
 #### Prometheus
 
@@ -656,10 +656,10 @@ Redis is packaged to provide a place to store:
 
 The registry is what users use to store their own Docker images. The bundled
 registry uses NGINX as a load balancer and GitLab as an authentication manager.
-Whenever a client requests to pull or push an image from the registry, it will
-return a `401` response along with a header detailing where to get an
-authentication token, in this case the GitLab instance. The client will then
-request a pull or push auth token from GitLab and retry the original request
+Whenever a client requests to pull or push an image from the registry, it
+returns a `401` response along with a header detailing where to get an
+authentication token, in this case the GitLab instance. The client then
+requests a pull or push auth token from GitLab and retries the original request
 to the registry. Learn more about [token authentication](https://docs.docker.com/registry/spec/auth/token/).
 
 An external registry can also be configured to use GitLab as an auth endpoint.
@@ -710,7 +710,7 @@ disabled by default.
 - Process: `puma`
 - GitLab.com: [Puma](../user/gitlab_com/index.md#puma)
 
-[Puma](https://puma.io/) is a Ruby application server that is used to run the core Rails Application that provides the user facing features in GitLab. Often process output you will see this as `bundle` or `config.ru` depending on the GitLab version.
+[Puma](https://puma.io/) is a Ruby application server that is used to run the core Rails Application that provides the user facing features in GitLab. Often this displays in process output as `bundle` or `config.ru` depending on the GitLab version.
 
 #### Unicorn
 
@@ -727,7 +727,7 @@ disabled by default.
 - Process: `unicorn`
 - GitLab.com: [Unicorn](../user/gitlab_com/index.md#unicorn)
 
-[Unicorn](https://yhbt.net/unicorn/) is a Ruby application server that is used to run the core Rails Application that provides the user facing features in GitLab. Often process output you will see this as `bundle` or `config.ru` depending on the GitLab version.
+[Unicorn](https://yhbt.net/unicorn/) is a Ruby application server that is used to run the core Rails Application that provides the user facing features in GitLab. Often this displays in process output as `bundle` or `config.ru` depending on the GitLab version.
 
 #### LDAP Authentication
 
@@ -792,16 +792,16 @@ It's important to understand the distinction as some processes are used in both 
 
 ### GitLab Web HTTP request cycle
 
-When making a request to an HTTP Endpoint (think `/users/sign_in`) the request will take the following path through the GitLab Service:
+When making a request to an HTTP Endpoint (think `/users/sign_in`) the request takes the following path through the GitLab Service:
 
 - NGINX - Acts as our first line reverse proxy.
 - GitLab Workhorse - This determines if it needs to go to the Rails application or somewhere else to reduce load on Puma.
-- Puma - Since this is a web request, and it needs to access the application it will go to Puma.
+- Puma - Since this is a web request, and it needs to access the application, it routes to Puma.
 - PostgreSQL/Gitaly/Redis - Depending on the type of request, it may hit these services to store or retrieve data.
 
 ### GitLab Git request cycle
 
-Below we describe the different paths that HTTP vs. SSH Git requests will take. There is some overlap with the Web Request Cycle but also some differences.
+Below we describe the different paths that HTTP vs. SSH Git requests take. There is some overlap with the Web Request Cycle but also some differences.
 
 ### Web request (80/443)
 

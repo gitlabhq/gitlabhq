@@ -221,7 +221,6 @@ export default {
         ref="collapseIcon"
         :name="collapseIcon"
         :size="16"
-        aria-hidden="true"
         class="diff-toggle-caret gl-mr-2"
         @click.stop="handleToggleFile"
       />

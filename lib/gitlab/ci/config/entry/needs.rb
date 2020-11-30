@@ -10,6 +10,8 @@ module Gitlab
         class Needs < ::Gitlab::Config::Entry::ComposableArray
           include ::Gitlab::Config::Entry::Validatable
 
+          NEEDS_CROSS_PIPELINE_DEPENDENCIES_LIMIT = 5
+
           validations do
             validate do
               unless config.is_a?(Hash) || config.is_a?(Array)
@@ -25,6 +27,15 @@ module Gitlab
               extra_keys = value.keys - opt(:allowed_needs)
               if extra_keys.any?
                 errors.add(:config, "uses invalid types: #{extra_keys.join(', ')}")
+              end
+            end
+
+            validate on: :composed do
+              cross_dependencies = value[:cross_dependency].to_a
+              cross_pipeline_dependencies = cross_dependencies.select { |dep| dep[:pipeline] }
+
+              if cross_pipeline_dependencies.size > NEEDS_CROSS_PIPELINE_DEPENDENCIES_LIMIT
+                errors.add(:config, "must be less than or equal to #{NEEDS_CROSS_PIPELINE_DEPENDENCIES_LIMIT}")
               end
             end
           end

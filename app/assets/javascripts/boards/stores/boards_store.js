@@ -302,11 +302,7 @@ const boardsStore = {
   onNewListIssueResponse(list, issue, data) {
     issue.refreshData(data);
 
-    if (
-      !gon.features.boardsWithSwimlanes &&
-      !gon.features.graphqlBoardLists &&
-      list.issues.length > 1
-    ) {
+    if (list.issues.length > 1) {
       const moveBeforeId = list.issues[1].id;
       this.moveIssue(issue.id, null, null, null, moveBeforeId);
     }

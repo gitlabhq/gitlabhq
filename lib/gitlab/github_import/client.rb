@@ -69,11 +69,19 @@ module Gitlab
         with_rate_limit { octokit.user(username) }
       end
 
+      def pull_request_reviews(repo_name, iid)
+        with_rate_limit { octokit.pull_request_reviews(repo_name, iid) }
+      end
+
       # Returns the details of a GitHub repository.
       #
       # name - The path (in the form `owner/repository`) of the repository.
       def repository(name)
         with_rate_limit { octokit.repo(name) }
+      end
+
+      def pull_request(repo_name, iid)
+        with_rate_limit { octokit.pull_request(repo_name, iid) }
       end
 
       def labels(*args)

@@ -26,7 +26,7 @@ Issue:
 - weight
 - time_estimate
 - relative_position
-- service_desk_reply_to
+- external_author
 - last_edited_at
 - last_edited_by_id
 - discussion_locked
@@ -577,6 +577,7 @@ ProjectFeature:
 - pages_access_level
 - metrics_dashboard_access_level
 - requirements_access_level
+- operations_access_level
 - created_at
 - updated_at
 ProtectedBranch::MergeAccessLevel:

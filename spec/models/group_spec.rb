@@ -798,20 +798,36 @@ RSpec.describe Group do
     end
   end
 
-  describe '#direct_and_indirect_members' do
+  context 'members-related methods' do
     let!(:group) { create(:group, :nested) }
     let!(:sub_group) { create(:group, parent: group) }
     let!(:maintainer) { group.parent.add_user(create(:user), GroupMember::MAINTAINER) }
     let!(:developer) { group.add_user(create(:user), GroupMember::DEVELOPER) }
     let!(:other_developer) { group.add_user(create(:user), GroupMember::DEVELOPER) }
 
-    it 'returns parents members' do
-      expect(group.direct_and_indirect_members).to include(developer)
-      expect(group.direct_and_indirect_members).to include(maintainer)
+    describe '#direct_and_indirect_members' do
+      it 'returns parents members' do
+        expect(group.direct_and_indirect_members).to include(developer)
+        expect(group.direct_and_indirect_members).to include(maintainer)
+      end
+
+      it 'returns descendant members' do
+        expect(group.direct_and_indirect_members).to include(other_developer)
+      end
     end
 
-    it 'returns descendant members' do
-      expect(group.direct_and_indirect_members).to include(other_developer)
+    describe '#direct_and_indirect_members_with_inactive' do
+      let!(:maintainer_blocked) { group.parent.add_user(create(:user, :blocked), GroupMember::MAINTAINER) }
+
+      it 'returns parents members' do
+        expect(group.direct_and_indirect_members_with_inactive).to include(developer)
+        expect(group.direct_and_indirect_members_with_inactive).to include(maintainer)
+        expect(group.direct_and_indirect_members_with_inactive).to include(maintainer_blocked)
+      end
+
+      it 'returns descendant members' do
+        expect(group.direct_and_indirect_members_with_inactive).to include(other_developer)
+      end
     end
   end
 
@@ -834,7 +850,7 @@ RSpec.describe Group do
     end
   end
 
-  describe '#direct_and_indirect_users' do
+  context 'user-related methods' do
     let(:user_a) { create(:user) }
     let(:user_b) { create(:user) }
     let(:user_c) { create(:user) }
@@ -853,14 +869,40 @@ RSpec.describe Group do
       project.add_developer(user_d)
     end
 
-    it 'returns member users on every nest level without duplication' do
-      expect(group.direct_and_indirect_users).to contain_exactly(user_a, user_b, user_c, user_d)
-      expect(nested_group.direct_and_indirect_users).to contain_exactly(user_a, user_b, user_c)
-      expect(deep_nested_group.direct_and_indirect_users).to contain_exactly(user_a, user_b, user_c)
+    describe '#direct_and_indirect_users' do
+      it 'returns member users on every nest level without duplication' do
+        expect(group.direct_and_indirect_users).to contain_exactly(user_a, user_b, user_c, user_d)
+        expect(nested_group.direct_and_indirect_users).to contain_exactly(user_a, user_b, user_c)
+        expect(deep_nested_group.direct_and_indirect_users).to contain_exactly(user_a, user_b, user_c)
+      end
+
+      it 'does not return members of projects belonging to ancestor groups' do
+        expect(nested_group.direct_and_indirect_users).not_to include(user_d)
+      end
     end
 
-    it 'does not return members of projects belonging to ancestor groups' do
-      expect(nested_group.direct_and_indirect_users).not_to include(user_d)
+    describe '#direct_and_indirect_users_with_inactive' do
+      let(:user_blocked_1) { create(:user, :blocked) }
+      let(:user_blocked_2) { create(:user, :blocked) }
+      let(:user_blocked_3) { create(:user, :blocked) }
+      let(:project_in_group) { create(:project, namespace: nested_group) }
+
+      before do
+        group.add_developer(user_blocked_1)
+        nested_group.add_developer(user_blocked_1)
+        deep_nested_group.add_developer(user_blocked_2)
+        project_in_group.add_developer(user_blocked_3)
+      end
+
+      it 'returns member users on every nest level without duplication' do
+        expect(group.direct_and_indirect_users_with_inactive).to contain_exactly(user_a, user_b, user_c, user_d, user_blocked_1, user_blocked_2, user_blocked_3)
+        expect(nested_group.direct_and_indirect_users_with_inactive).to contain_exactly(user_a, user_b, user_c, user_blocked_1, user_blocked_2, user_blocked_3)
+        expect(deep_nested_group.direct_and_indirect_users_with_inactive).to contain_exactly(user_a, user_b, user_c, user_blocked_1, user_blocked_2)
+      end
+
+      it 'returns members of projects belonging to group' do
+        expect(nested_group.direct_and_indirect_users_with_inactive).to include(user_blocked_3)
+      end
     end
   end
 

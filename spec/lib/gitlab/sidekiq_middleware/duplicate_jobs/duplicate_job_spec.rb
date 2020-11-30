@@ -131,31 +131,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
     end
   end
 
-  describe '#droppable?' do
-    where(:idempotent, :prevent_deduplication) do
-      # [true, false].repeated_permutation(2)
-      [[true, true],
-       [true, false],
-       [false, true],
-       [false, false]]
-    end
-
-    with_them do
-      before do
-        allow(AuthorizedProjectsWorker).to receive(:idempotent?).and_return(idempotent)
-        stub_feature_flags("disable_#{queue}_deduplication" => prevent_deduplication)
-      end
-
-      it 'is droppable when all conditions are met' do
-        if idempotent && !prevent_deduplication
-          expect(duplicate_job).to be_droppable
-        else
-          expect(duplicate_job).not_to be_droppable
-        end
-      end
-    end
-  end
-
   describe '#scheduled_at' do
     let(:scheduled_at) { 42 }
     let(:job) do
@@ -178,6 +153,46 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
         receive(:get_deduplication_options).and_return(worker_options))
 
       expect(duplicate_job.options).to eq(worker_options)
+    end
+  end
+
+  describe '#idempotent?' do
+    context 'when worker class does not exist' do
+      let(:job) { { 'class' => '' } }
+
+      it 'returns false' do
+        expect(duplicate_job).not_to be_idempotent
+      end
+    end
+
+    context 'when worker class does not respond to #idempotent?' do
+      before do
+        stub_const('AuthorizedProjectsWorker', Class.new)
+      end
+
+      it 'returns false' do
+        expect(duplicate_job).not_to be_idempotent
+      end
+    end
+
+    context 'when worker class is not idempotent' do
+      before do
+        allow(AuthorizedProjectsWorker).to receive(:idempotent?).and_return(false)
+      end
+
+      it 'returns false' do
+        expect(duplicate_job).not_to be_idempotent
+      end
+    end
+
+    context 'when worker class is idempotent' do
+      before do
+        allow(AuthorizedProjectsWorker).to receive(:idempotent?).and_return(true)
+      end
+
+      it 'returns true' do
+        expect(duplicate_job).to be_idempotent
+      end
     end
   end
 

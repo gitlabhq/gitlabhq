@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Gitaly
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -237,5 +237,37 @@ Example response:
     "path": "project1",
     "path_with_namespace": "namespace1/project1",
     "created_at": "2020-05-07T04:27:17.016Z"
+}
+```
+
+## Schedule repository storage moves for all projects on a storage shard
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47142) in GitLab 13.7.
+
+Schedules repository storage moves for each project repository stored on the source storage shard.
+
+```plaintext
+POST /project_repository_storage_moves
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `source_storage_name` | string | yes | Name of the source storage shard. |
+| `destination_storage_name` | string | no | Name of the destination storage shard. The storage is selected automatically if not provided. |
+
+Example request:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
+--data '{"source_storage_name":"default"}' "https://gitlab.example.com/api/v4/project_repository_storage_moves"
+```
+
+Example response:
+
+```json
+{
+  "message": "202 Accepted"
 }
 ```

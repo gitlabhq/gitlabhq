@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Changelog entries
@@ -118,7 +118,7 @@ Its simplest usage is to provide the value for `title`:
 bin/changelog 'Hey DZ, I added a feature to GitLab!'
 ```
 
-If you want to generate a changelog entry for GitLab EE, you will need to pass
+If you want to generate a changelog entry for GitLab EE, you must pass
 the `--ee` option:
 
 ```plaintext
@@ -144,10 +144,10 @@ At this point the script would ask you to select the category of the change (map
 ```
 
 The entry filename is based on the name of the current Git branch. If you run
-the command above on a branch called `feature/hey-dz`, it will generate a
+the command above on a branch called `feature/hey-dz`, it generates a
 `changelogs/unreleased/feature-hey-dz.yml` file.
 
-The command will output the path of the generated file and its contents:
+The command outputs the path of the generated file and its contents:
 
 ```plaintext
 create changelogs/unreleased/my-feature.yml
@@ -175,7 +175,7 @@ type:
 You can pass the **`--amend`** argument to automatically stage the generated
 file and amend it to the previous commit.
 
-If you use **`--amend`** and don't provide a title, it will automatically use
+If you use **`--amend`** and don't provide a title, it uses
 the "subject" of the previous commit, which is the first line of the commit
 message:
 

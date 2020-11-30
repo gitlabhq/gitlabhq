@@ -1,0 +1,5 @@
+---
+title: Hide Mark as draft button in a merged MR even on mobile
+merge_request: 47678
+author: Takuya Noguchi
+type: fixed

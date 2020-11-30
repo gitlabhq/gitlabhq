@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Testing
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference, howto
 ---
 
@@ -153,4 +153,24 @@ coverage-jdk11:
   artifacts:
     reports:
       cobertura: build/cobertura.xml
+```
+
+### Python example
+
+The following [`gitlab-ci.yml`](../../../ci/yaml/README.md) example for Python uses [pytest-cov](https://pytest-cov.readthedocs.io/) to collect test coverage data and [coverage.py](https://coverage.readthedocs.io/) to convert the report to use full relative paths.
+The information isn't displayed without the conversion.
+
+This example assumes that the code for your package is in `src/` and your tests are in `tests.py`:
+
+```yaml
+run tests:
+  stage: test
+  image: python:3
+  script:
+    - pip install pytest pytest-cov
+    - pytest --cov=src/ tests.py
+    - coverage xml
+  artifacts:
+    reports:
+      cobertura: coverage.xml
 ```

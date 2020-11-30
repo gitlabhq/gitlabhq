@@ -20,7 +20,7 @@ module Gitlab
         expected_asciidoc_opts = {
             safe: :secure,
             backend: :gitlab_html5,
-            attributes: described_class::DEFAULT_ADOC_ATTRS,
+            attributes: described_class::DEFAULT_ADOC_ATTRS.merge({ "kroki-server-url" => nil }),
             extensions: be_a(Proc)
         }
 
@@ -35,7 +35,7 @@ module Gitlab
           expected_asciidoc_opts = {
               safe: :secure,
               backend: :gitlab_html5,
-              attributes: described_class::DEFAULT_ADOC_ATTRS,
+              attributes: described_class::DEFAULT_ADOC_ATTRS.merge({ "kroki-server-url" => nil }),
               extensions: be_a(Proc)
           }
 
@@ -457,6 +457,34 @@ module Gitlab
           output = <<~HTML
             <pre data-mermaid-style="display" class="js-render-mermaid">classDiagram
             Class01 &lt;|-- AveryLongClass : Cool</pre>
+          HTML
+
+          expect(render(input, context)).to include(output.strip)
+        end
+      end
+
+      context 'with Kroki enabled' do
+        before do
+          allow_any_instance_of(ApplicationSetting).to receive(:kroki_enabled).and_return(true)
+          allow_any_instance_of(ApplicationSetting).to receive(:kroki_url).and_return('https://kroki.io')
+        end
+
+        it 'converts a graphviz diagram to image' do
+          input = <<~ADOC
+            [graphviz]
+            ....
+            digraph G {
+              Hello->World
+            }
+            ....
+          ADOC
+
+          output = <<~HTML
+            <div>
+            <div>
+            <a class="no-attachment-icon" href="https://kroki.io/graphviz/svg/eNpLyUwvSizIUHBXqOZSUPBIzcnJ17ULzy_KSeGqBQCEzQka" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Diagram" class="lazy" data-src="https://kroki.io/graphviz/svg/eNpLyUwvSizIUHBXqOZSUPBIzcnJ17ULzy_KSeGqBQCEzQka"></a>
+            </div>
+            </div>
           HTML
 
           expect(render(input, context)).to include(output.strip)

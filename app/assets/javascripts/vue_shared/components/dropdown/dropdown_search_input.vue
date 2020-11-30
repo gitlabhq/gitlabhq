@@ -44,6 +44,6 @@ export default {
       type="search"
       autocomplete="off"
     />
-    <gl-icon name="search" class="dropdown-input-search" aria-hidden="true" data-hidden="true" />
+    <gl-icon name="search" class="dropdown-input-search" data-hidden="true" />
   </div>
 </template>

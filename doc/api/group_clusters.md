@@ -1,12 +1,17 @@
 ---
 stage: Configure
 group: Configure
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Group clusters API
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30213) in GitLab 12.1.
+
+Similar to [project-level](../user/project/clusters/index.md) and
+[instance-level](../user/instance/clusters/index.md) Kubernetes clusters,
+group-level Kubernetes clusters allow you to connect a Kubernetes cluster to
+your group, enabling you to use the same cluster across multiple projects.
 
 Users need at least [Maintainer](../user/permissions.md) access for the group to use these endpoints.
 

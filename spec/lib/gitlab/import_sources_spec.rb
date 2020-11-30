@@ -53,7 +53,6 @@ RSpec.describe Gitlab::ImportSources do
           bitbucket
           bitbucket_server
           gitlab
-          google_code
           fogbugz
           gitlab_project
           gitea
@@ -70,7 +69,7 @@ RSpec.describe Gitlab::ImportSources do
       'bitbucket' => Gitlab::BitbucketImport::Importer,
       'bitbucket_server' => Gitlab::BitbucketServerImport::Importer,
       'gitlab' => Gitlab::GitlabImport::Importer,
-      'google_code' => Gitlab::GoogleCodeImport::Importer,
+      'google_code' => nil,
       'fogbugz' => Gitlab::FogbugzImport::Importer,
       'git' => nil,
       'gitlab_project' => Gitlab::ImportExport::Importer,

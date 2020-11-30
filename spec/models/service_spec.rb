@@ -916,5 +916,11 @@ RSpec.describe Service do
 
       described_class.available_services_names(include_dev: false)
     end
+
+    it { expect(described_class.available_services_names).to include('jenkins') }
+  end
+
+  describe '.project_specific_services_names' do
+    it { expect(described_class.project_specific_services_names).to include('jenkins') }
   end
 end

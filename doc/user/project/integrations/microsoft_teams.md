@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Ecosystem
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Microsoft Teams service
@@ -9,7 +9,21 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ## On Microsoft Teams
 
 To enable Microsoft Teams integration you must create an incoming webhook integration on Microsoft
-Teams by following the steps described in [Sending messages to Connectors and Webhooks](https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/connectors-using).
+Teams by following the steps below:
+
+1. Search for "incoming webhook" on the search bar in Microsoft Teams and select the
+   **Incoming Webhook** item.
+
+   ![Select Incoming Webhook](img/microsoft_teams_select_incoming_webhook.png)
+
+1. Click the **Add to a team** button.
+1. Select the team and channel you want to add the integration to.
+1. Add a name for the webhook. The name is displayed next to every message that
+   comes in through the webhook.
+1. Copy the webhook URL for the next steps.
+
+Learn more about
+[setting up an incoming webhook on Microsoft Teams](https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/connectors-using#setting-up-a-custom-incoming-webhook).
 
 ## On GitLab
 

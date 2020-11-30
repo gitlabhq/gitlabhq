@@ -23,4 +23,4 @@
 
   = render "projects/pipelines/with_tabs", pipeline: @pipeline, pipeline_has_errors: pipeline_has_errors
 
-.js-pipeline-details-vue{ data: { endpoint: project_pipeline_path(@project, @pipeline, format: :json) } }
+.js-pipeline-details-vue{ data: { endpoint: project_pipeline_path(@project, @pipeline, format: :json), pipeline_project_path: @project.full_path, pipeline_iid: @pipeline.iid } }

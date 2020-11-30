@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Style Guide
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 description: 'Writing styles, markup, formatting, and other standards for GitLab Documentation.'
 ---
 
@@ -928,7 +928,7 @@ For other punctuation rules, refer to the
   audit, thus preventing dead links and redirection issues when corrected.
 - Leave exactly one blank line before and after a heading.
 - Do not use links in headings.
-- Add the corresponding [product badge](#product-badges) according to the tier the
+- Add the corresponding [product badge](#product-tier-badges) according to the tier the
   feature belongs.
 - Our documentation site search engine prioritizes words used in headings and
   subheadings. Make you subheading titles clear, descriptive, and complete to help
@@ -961,8 +961,8 @@ the anchor `#this-is-an-example`.
 
 NOTE: **Note:**
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39717) in
-GitLab 13.4, [product badges](#product-badges) used in headings aren't included
-in the generated anchor links. For example, when you link to
+GitLab 13.4, [product badges](#product-tier-badges) used in headings aren't
+included in the generated anchor links. For example, when you link to
 `## This is an example **(CORE)**`, use the anchor `#this-is-an-example`.
 
 Keep in mind that the GitLab user interface links to many documentation pages
@@ -1004,7 +1004,7 @@ We include guidance for links in the following categories:
   for authoritative sources.
 - When to use [links requiring permissions](#links-requiring-permissions).
 - How to set up a [link to a video](#link-to-video).
-- How to [include links with version text](#text-for-documentation-requiring-version-text).
+- How to [include links with version text](#where-to-put-version-text).
 - How to [link to specific lines of code](#link-to-specific-lines-of-code)
 
 ### Basic link criteria
@@ -1654,36 +1654,42 @@ elements:
 |:------------|:--------------------------------|:----------------------|
 | _go to_     | making a browser go to location | "navigate to", "open" |
 
-## GitLab versions and tiers
+## GitLab versions
 
-Tagged and released versions of GitLab documentation are available:
+To help users be aware of recent product improvements or additions, we add
+GitLab version information to our documentation.
+
+The GitLab Technical Writing team determines which versions of GitLab's
+documentation to display on this site based on GitLab's
+[Statement of Support](https://about.gitlab.com/support/statement-of-support.html#we-support-the-current-major-version-and-the-two-previous-major-versions).
+
+### View older GitLab documentation versions
+
+If you're using an older version of GitLab whose version-specific information
+isn't available from `docs.gitlab.com`, use one of the following methods to view a
+tagged and released set of documentation for your installed version:
 
 - In the [documentation archives](https://docs.gitlab.com/archives/).
-- At the `/help` URL for any GitLab installation.
+- At the `/help` URL of your GitLab instance.
+- In the documentation repository based on the respective branch (for example,
+  the [13.2 branch](https://gitlab.com/gitlab-org/gitlab/-/tree/13-2-stable-ee/doc)).
 
-The version introducing a new feature is added to the top of the topic in the
-documentation to provide a link back to how the feature was developed.
+### Where to put version text
 
-TIP: **Tip:**
-Whenever you have documentation related to the `gitlab.rb` file, you're working
-with a self-managed installation. The section or page is therefore likely to
-apply only to self-managed instances. If so, the relevant "`TIER` ONLY"
-[Product badge](#product-badges) should be included at the highest applicable
-heading level.
+When a feature is added or updated, you can include its version information
+either as a **Version history** item or as an inline text reference.
 
-### Text for documentation requiring version text
-
-When a feature is new or updated, you can add version information as a bulleted
-item in the **Version history**, or as an inline reference with related text.
+Version text shouldn't include information about the tier in which the feature
+is available. This information is provided by the [product badge](#product-tier-badges)
+displayed for the page or feature.
 
 #### Version text in the **Version History**
 
-If all content in a section is related, add version text following the header for
-the section. Each entry should be on a single line. To render correctly, it must be on its
-own line and surrounded by blank lines.
+If all content in a section is related, add version text following the header
+for the section. The version information must be surrounded by blank lines, and
+each entry should be on its own line.
 
-Features should declare the GitLab version that introduced a feature in a blockquote
-following the header:
+Add the version history information as a blockquote:
 
 ```markdown
 ## Feature name
@@ -1693,36 +1699,20 @@ following the header:
 This feature does something.
 ```
 
-Whenever possible, version text should have a link to the _completed_ issue,
-merge request, or epic that introduced the feature. An issue is preferred over
-a merge request, and a merge request is preferred over an epic. For example:
+Whenever possible, version text should have a link to the completed issue, merge
+request, or epic that introduced the feature. An issue is preferred over a merge
+request, and a merge request is preferred over an epic. For example:
 
 ```markdown
 > [Introduced](<link-to-issue>) in GitLab 11.3.
 ```
 
-If the feature is only available in GitLab Enterprise Edition, mention
-the [paid tier](https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/)
-the feature is available in:
-
-```markdown
-> [Introduced](<link-to-issue>) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.3.
-```
-
-If listing information for multiple version as a feature evolves, add the
-information to a block-quoted bullet list. For example:
+If you're adding information about new features or changes in a release, update
+the blockquote to use a bulleted list:
 
 ```markdown
 > - [Introduced](<link-to-issue>) in GitLab 11.3.
 > - Enabled by default in GitLab 11.4.
-```
-
-If a feature is moved to another tier:
-
-```markdown
-> - [Introduced](<link-to-issue>) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.5.
-> - [Moved](<link-to-issue>) to [GitLab Starter](https://about.gitlab.com/pricing/) in 11.8.
-> - [Moved](<link-to-issue>) to GitLab Core in 12.0.
 ```
 
 If a feature is deprecated, include a link to a replacement (when available):
@@ -1731,16 +1721,18 @@ If a feature is deprecated, include a link to a replacement (when available):
 > - [Deprecated](<link-to-issue>) in GitLab 11.3. Replaced by [meaningful text](<link-to-appropriate-documentation>).
 ```
 
-You can also describe the replacement in surrounding text, if available.
-
-If the deprecation is not obvious in existing text, you may want to include a
-warning such as:
+You can also describe the replacement in surrounding text, if available. If the
+deprecation isn't obvious in existing text, you may want to include a warning,
+such as:
 
 ```markdown
 DANGER: **Deprecated:**
-This feature was [deprecated](link-to-issue) in GitLab 12.3
-and replaced by [Feature name](link-to-feature-documentation).
+This feature was [deprecated](link-to-issue) in GitLab 12.3 and replaced by
+[Feature name](link-to-feature-documentation).
 ```
+
+In the first major GitLab version after the feature was deprecated, be sure to
+remove information about that deprecated feature.
 
 #### Inline version text
 
@@ -1748,13 +1740,12 @@ If you're adding content to an existing topic, you can add version information
 inline with the existing text.
 
 In this case, add `([introduced/deprecated](<link-to-issue>) in GitLab X.X)`.
-If applicable, include the paid tier: `([introduced/deprecated](<link-to-issue>) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.4)`
 
 Including the issue link is encouraged, but isn't a requirement. For example:
 
 ```markdown
-The voting strategy (in GitLab 13.4 and later) requires
-the primary and secondary voters to agree.
+The voting strategy in GitLab 13.4 and later requires the primary and secondary
+voters to agree.
 ```
 
 #### End-of-life for features or products
@@ -1772,51 +1763,36 @@ This feature is in its end-of-life process. It is [deprecated](link-to-issue)
 for use in GitLab X.X, and is planned for [removal](link-to-issue) in GitLab X.X.
 ```
 
+After the feature or product is officially deprecated and removed, remove
+information about the product or feature from the GitLab documentation based on
+the GitLab version where it's actually removed.
+
 ### Versions in the past or future
 
 When describing functionality available in past or future versions, use:
 
-- _Earlier_, and not _older_ or _before_.
-- _Later_, and not _newer_ or _after_.
+- Earlier, and not older or before.
+- Later, and not newer or after.
 
 For example:
 
-- Available in GitLab 12.3 and earlier.
+- Available in GitLab 13.1 and earlier.
 - Available in GitLab 12.4 and later.
-- In GitLab 11.4 and earlier, ...
-- In GitLab 10.6 and later, ...
+- In GitLab 12.2 and earlier, ...
+- In GitLab 11.6 and later, ...
 
-### Importance of referencing GitLab versions and tiers
+### Removing versions after each major release
 
-Mentioning GitLab versions and tiers is important to all users and contributors
-to quickly have access to the issue or merge request that introduced the change.
-Also, they can know what features they have in their GitLab
-instance and version, given that the note has some key information.
+Whenever a major GitLab release occurs, we will remove all version references
+to now-unsupported versions of GitLab. Note that this includes the removal of
+specific instructions for users of non-supported GitLab versions. For example,
+if we're currently supporting GitLab versions 11.x through 13.x, special
+instructions for users of GitLab 10.2 and earlier to complete a task should be
+removed.
 
-`[Introduced](link-to-issue) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.7`
-links to the issue that introduced the feature, says which GitLab tier it
-belongs to, says the GitLab version that it became available in, and links to
-the pricing page in case the user wants to upgrade to a paid tier to use that
-feature.
-
-For example, if you're a regular user and you're looking at the documentation
-for a feature you haven't used before, you can immediately see if that feature
-is available to you or not. Alternatively, if you've been using a certain
-feature for a long time and it changed in some way, it's important to be able to
-determine when it changed and what's new in that feature.
-
-This is even more important as we don't have a perfect process for shipping
-documentation. Unfortunately, we still see features without documentation, and
-documentation without features. So, for now, we cannot rely 100% on the
-documentation site versions.
-
-Over time, version text will reference a progressively older version of GitLab.
-In cases where version text refers to versions of GitLab four or more major
-versions back, you can consider removing the text if it's irrelevant or confusing.
-
-For example, if the current major version is 12.x, version text referencing
-versions of GitLab 8.x and older are candidates for removal if necessary for
-clearer or cleaner documentation.
+To view information about the history of a feature, users can view GitLab
+[release posts](https://about.gitlab.com/releases/), or search for the issue or
+merge request where the work was done.
 
 ## Products and features
 
@@ -1846,7 +1822,7 @@ When entering a product or feature name that includes a space (such as
 GitLab Community Edition), don't split the product or feature name across lines.
 ```
 
-### Product badges
+### Product tier badges
 
 When a feature is available in paid tiers, add the corresponding tier to the
 header or other page element according to the feature's availability:
@@ -1871,6 +1847,11 @@ lowest tier that has information on the documentation page.
 
 If sections of a page apply to higher tier levels, they can be separately
 labeled with their own tier markup.
+
+Whenever you have documentation related to the `gitlab.rb` file, you're working
+with a self-managed installation. The section or page probably applies only to
+self-managed instances. If so, include the relevant "`TIER` ONLY"
+[product badge](#product-tier-badges) at the highest applicable heading level.
 
 #### Product badge display behavior
 

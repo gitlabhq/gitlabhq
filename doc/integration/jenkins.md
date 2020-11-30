@@ -1,15 +1,12 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+stage: Create
+group: Ecosystem
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Jenkins CI service **(STARTER)**
+# Jenkins CI service **(CORE)**
 
-NOTE: **Note:**
-This documentation focuses only on how to **configure** a Jenkins *integration* with
-GitLab. Learn how to **migrate** from Jenkins to GitLab CI/CD in our
-[Migrating from Jenkins](../ci/migration/jenkins.md) documentation.
+> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/246756) to Core in GitLab 13.7.
 
 From GitLab, you can trigger a Jenkins build when you push code to a repository, or when a merge
 request is created. In return, the Jenkins pipeline status is shown on merge requests widgets and
@@ -18,6 +15,7 @@ on the GitLab project's home page.
 To better understand GitLab's Jenkins integration, watch the following video:
 
 - [GitLab workflow with Jira issues and Jenkins pipelines](https://youtu.be/Jn-_fyra7xQ)
+
 Use the Jenkins integration with GitLab when:
 
 - You plan to migrate your CI from Jenkins to [GitLab CI/CD](../ci/README.md) in the future, but
@@ -30,6 +28,11 @@ For a real use case, read the blog post [Continuous integration: From Jenkins to
 Moving from a traditional CI plug-in to a single application for the entire software development
 life cycle can decrease hours spent on maintaining toolchains by 10% or more. For more details, see
 the ['GitLab vs. Jenkins' comparison page](https://about.gitlab.com/devops-tools/jenkins-vs-gitlab.html).
+
+NOTE: **Note:**
+This documentation focuses only on how to **configure** a Jenkins *integration* with
+GitLab. Learn how to **migrate** from Jenkins to GitLab CI/CD in our
+[Migrating from Jenkins](../ci/migration/jenkins.md) documentation.
 
 ## Configure GitLab integration with Jenkins
 
@@ -72,11 +75,11 @@ Create a personal access token to authorize Jenkins' access to GitLab.
 1. Click **Access Tokens** in the sidebar.
 1. Create a personal access token with the **API** scope checkbox checked. For more details, see
    [Personal access tokens](../user/profile/personal_access_tokens.md).
-1. Record the personal access token's value, because it's required in [Configure the Jenkins server](#configure-the-jenkins-server).
+1. Record the personal access token's value, because it's required in [Configure the Jenkins server](#configure-the-jenkins-server) section.
 
 ## Configure the Jenkins server
 
-Install and configure the Jenkins plugins. Both plugins must be installed and configured to
+Install and configure the Jenkins plugin. The plugin must be installed and configured to
 authorize the connection to GitLab.
 
 1. On the Jenkins server, go to **Manage Jenkins > Manage Plugins**.
@@ -136,6 +139,8 @@ Set up the Jenkins project you intend to run your build on.
 
 Configure the GitLab integration with Jenkins.
 
+### Option 1: Jenkins integration (recommended)
+
 1. Create a new GitLab project or choose an existing one.
 1. Go to **Settings > Integrations**, then select **Jenkins CI**.
 1. Turn on the **Active** toggle.
@@ -152,6 +157,14 @@ Configure the GitLab integration with Jenkins.
 1. Enter the **Username** and **Password** if your Jenkins server requires
    authentication.
 1. Click **Test settings and save changes**. GitLab tests the connection to Jenkins.
+
+### Option 2: Webhook
+
+1. In the configuration of your Jenkins job, in the GitLab configuration section, click **Advanced**.
+1. Click the **Generate** button under the **Secret Token** field.
+1. Copy the resulting token, and save the job configuration.
+1. In GitLab, create a webhook for your project, enter the trigger URL (e.g. `https://JENKINS_URL/project/YOUR_JOB`) and paste the token in the **Secret Token** field.
+1. After you add the webhook, click the **Test** button, and it should succeed.
 
 ## Troubleshooting
 

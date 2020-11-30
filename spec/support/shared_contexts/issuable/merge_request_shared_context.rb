@@ -1,8 +1,35 @@
 # frozen_string_literal: true
 
-RSpec.shared_context 'merge request show action' do
+RSpec.shared_context 'open merge request show action' do
+  include Spec::Support::Helpers::Features::MergeRequestHelpers
+
+  let(:user) { create(:user) }
+  let(:project) { create(:project, :public, :repository) }
+  let(:note) { create(:note_on_merge_request, project: project, noteable: open_merge_request) }
+
+  let(:open_merge_request) do
+    create(:merge_request, :opened, source_project: project, author: user)
+  end
+
+  before do
+    assign(:project, project)
+    assign(:merge_request, open_merge_request)
+    assign(:note, note)
+    assign(:noteable, open_merge_request)
+    assign(:notes, [])
+    assign(:pipelines, Ci::Pipeline.none)
+    assign(:issuable_sidebar, serialize_issuable_sidebar(user, project, open_merge_request))
+
+    preload_view_requirements(open_merge_request, note)
+
+    sign_in(user)
+  end
+end
+
+RSpec.shared_context 'closed merge request show action' do
   include Devise::Test::ControllerHelpers
   include ProjectForksHelper
+  include Spec::Support::Helpers::Features::MergeRequestHelpers
 
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
@@ -17,13 +44,6 @@ RSpec.shared_context 'merge request show action' do
            author: user)
   end
 
-  def preload_view_requirements
-    # This will load the status fields of the author of the note and merge request
-    # to avoid queries in when rendering the view being tested.
-    closed_merge_request.author.status
-    note.author.status
-  end
-
   before do
     assign(:project, project)
     assign(:merge_request, closed_merge_request)
@@ -34,16 +54,10 @@ RSpec.shared_context 'merge request show action' do
     assign(:pipelines, Ci::Pipeline.none)
     assign(:issuable_sidebar, serialize_issuable_sidebar(user, project, closed_merge_request))
 
-    preload_view_requirements
+    preload_view_requirements(closed_merge_request, note)
 
     allow(view).to receive_messages(current_user: user,
                                     can?: true,
                                     current_application_settings: Gitlab::CurrentSettings.current_application_settings)
-  end
-
-  def serialize_issuable_sidebar(user, project, merge_request)
-    MergeRequestSerializer
-      .new(current_user: user, project: project)
-      .represent(closed_merge_request, serializer: 'sidebar')
   end
 end

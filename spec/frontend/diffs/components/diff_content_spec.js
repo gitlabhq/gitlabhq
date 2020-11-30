@@ -6,7 +6,6 @@ import InlineDiffView from '~/diffs/components/inline_diff_view.vue';
 import NotDiffableViewer from '~/vue_shared/components/diff_viewer/viewers/not_diffable.vue';
 import NoPreviewViewer from '~/vue_shared/components/diff_viewer/viewers/no_preview.vue';
 import ParallelDiffView from '~/diffs/components/parallel_diff_view.vue';
-import ImageDiffOverlay from '~/diffs/components/image_diff_overlay.vue';
 import NoteForm from '~/notes/components/note_form.vue';
 import DiffDiscussions from '~/diffs/components/diff_discussions.vue';
 import { IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
@@ -165,14 +164,6 @@ describe('DiffContent', () => {
 
   describe('with image files', () => {
     const imageDiffFile = { ...defaultProps.diffFile, viewer: { name: diffViewerModes.image } };
-
-    it('should have image diff view in place', () => {
-      getCommentFormForDiffFileGetterMock.mockReturnValue(() => true);
-      createComponent({ props: { diffFile: imageDiffFile } });
-
-      expect(wrapper.find(InlineDiffView).exists()).toBe(false);
-      expect(wrapper.find(ImageDiffOverlay).exists()).toBe(true);
-    });
 
     it('renders diff file discussions', () => {
       getCommentFormForDiffFileGetterMock.mockReturnValue(() => true);

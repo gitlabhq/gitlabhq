@@ -70,10 +70,6 @@ module Gitlab
           jid != existing_jid
         end
 
-        def droppable?
-          idempotent? && ::Feature.disabled?("disable_#{queue_name}_deduplication", type: :ops)
-        end
-
         def scheduled_at
           job['at']
         end
@@ -83,6 +79,13 @@ module Gitlab
           return {} unless worker_klass.respond_to?(:get_deduplication_options)
 
           worker_klass.get_deduplication_options
+        end
+
+        def idempotent?
+          return false unless worker_klass
+          return false unless worker_klass.respond_to?(:idempotent?)
+
+          worker_klass.idempotent?
         end
 
         private
@@ -127,13 +130,6 @@ module Gitlab
 
         def idempotency_string
           "#{worker_class_name}:#{arguments.join('-')}"
-        end
-
-        def idempotent?
-          return false unless worker_klass
-          return false unless worker_klass.respond_to?(:idempotent?)
-
-          worker_klass.idempotent?
         end
       end
     end

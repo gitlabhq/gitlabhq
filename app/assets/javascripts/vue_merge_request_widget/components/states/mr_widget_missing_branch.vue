@@ -2,6 +2,9 @@
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import statusIcon from '../mr_widget_status_icon.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
+import missingBranchQuery from '../../queries/states/missing_branch.query.graphql';
 
 export default {
   name: 'MRWidgetMissingBranch',
@@ -12,15 +15,38 @@ export default {
     GlIcon,
     statusIcon,
   },
+  mixins: [glFeatureFlagMixin(), mergeRequestQueryVariablesMixin],
+  apollo: {
+    state: {
+      query: missingBranchQuery,
+      skip() {
+        return !this.glFeatures.mergeRequestWidgetGraphql;
+      },
+      variables() {
+        return this.mergeRequestQueryVariables;
+      },
+      update: data => data.project.mergeRequest,
+    },
+  },
   props: {
     mr: {
       type: Object,
       required: true,
     },
   },
+  data() {
+    return { state: {} };
+  },
   computed: {
+    sourceBranchRemoved() {
+      if (this.glFeatures.mergeRequestWidgetGraphql) {
+        return !this.state.sourceBranchExists;
+      }
+
+      return this.mr.sourceBranchRemoved;
+    },
     missingBranchName() {
-      return this.mr.sourceBranchRemoved ? 'source' : 'target';
+      return this.sourceBranchRemoved ? 'source' : 'target';
     },
     missingBranchNameMessage() {
       return sprintf(
@@ -49,7 +75,7 @@ export default {
 
     <div class="media-body space-children">
       <span class="bold js-branch-text">
-        <span class="capitalize"> {{ missingBranchName }} </span>
+        <span class="capitalize" data-testid="missingBranchName"> {{ missingBranchName }} </span>
         {{ s__('mrWidget|branch does not exist.') }} {{ missingBranchNameMessage }}
         <gl-icon v-gl-tooltip :title="message" :aria-label="message" name="question-o" />
       </span>

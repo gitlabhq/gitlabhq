@@ -1,11 +1,6 @@
-import {
-  preparePipelineGraphData,
-  createUniqueJobId,
-  generateJobNeedsDict,
-} from '~/pipelines/utils';
+import { createUniqueJobId, generateJobNeedsDict } from '~/pipelines/utils';
 
 describe('utils functions', () => {
-  const emptyResponse = { stages: [], jobs: {} };
   const jobName1 = 'build_1';
   const jobName2 = 'build_2';
   const jobName3 = 'test_1';
@@ -65,115 +60,6 @@ describe('utils functions', () => {
       [jobName4]: { ...job4, id: createUniqueJobId(job4.stage, jobName4) },
     },
   };
-
-  describe('preparePipelineGraphData', () => {
-    describe('returns an empty array of stages and empty job objects if', () => {
-      it('no data is passed', () => {
-        expect(preparePipelineGraphData({})).toEqual(emptyResponse);
-      });
-
-      it('no stages are found', () => {
-        expect(preparePipelineGraphData({ includes: 'template/myTemplate.gitlab-ci.yml' })).toEqual(
-          emptyResponse,
-        );
-      });
-    });
-
-    describe('returns the correct array of stages and object of jobs', () => {
-      it('when multiple jobs are in the same stage', () => {
-        const expectedData = {
-          stages: [
-            {
-              name: job1.stage,
-              groups: [
-                {
-                  name: jobName1,
-                  jobs: [{ ...job1 }],
-                  id: createUniqueJobId(job1.stage, jobName1),
-                },
-                {
-                  name: jobName2,
-                  jobs: [{ ...job2 }],
-                  id: createUniqueJobId(job2.stage, jobName2),
-                },
-              ],
-            },
-          ],
-          jobs: {
-            [jobName1]: { ...job1, id: createUniqueJobId(job1.stage, jobName1) },
-            [jobName2]: { ...job2, id: createUniqueJobId(job2.stage, jobName2) },
-          },
-        };
-        expect(
-          preparePipelineGraphData({ [jobName1]: { ...job1 }, [jobName2]: { ...job2 } }),
-        ).toEqual(expectedData);
-      });
-
-      it('when stages are defined by the user', () => {
-        const userDefinedStage2 = 'myStage2';
-
-        const expectedData = {
-          stages: [
-            {
-              name: userDefinedStage,
-              groups: [],
-            },
-            {
-              name: userDefinedStage2,
-              groups: [],
-            },
-          ],
-          jobs: {},
-        };
-
-        expect(preparePipelineGraphData({ stages: [userDefinedStage, userDefinedStage2] })).toEqual(
-          expectedData,
-        );
-      });
-
-      it('by combining user defined stage and job stages, it preserves user defined order', () => {
-        const userDefinedStageThatOverlaps = 'deploy';
-
-        expect(
-          preparePipelineGraphData({
-            stages: [userDefinedStage, userDefinedStageThatOverlaps],
-            [jobName1]: { ...job1 },
-            [jobName2]: { ...job2 },
-            [jobName3]: { ...job3 },
-            [jobName4]: { ...job4 },
-          }),
-        ).toEqual(pipelineGraphData);
-      });
-
-      it('with only unique values', () => {
-        const expectedData = {
-          stages: [
-            {
-              name: job1.stage,
-              groups: [
-                {
-                  name: jobName1,
-                  jobs: [{ ...job1 }],
-                  id: createUniqueJobId(job1.stage, jobName1),
-                },
-              ],
-            },
-          ],
-          jobs: {
-            [jobName1]: { ...job1, id: createUniqueJobId(job1.stage, jobName1) },
-          },
-        };
-
-        expect(
-          preparePipelineGraphData({
-            stages: ['build'],
-            [jobName1]: { ...job1 },
-            [jobName1]: { ...job1 },
-          }),
-        ).toEqual(expectedData);
-      });
-    });
-  });
 
   describe('generateJobNeedsDict', () => {
     it('generates an empty object if it receives no jobs', () => {

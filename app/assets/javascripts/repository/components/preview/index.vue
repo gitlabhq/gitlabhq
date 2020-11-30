@@ -52,7 +52,7 @@ export default {
   <article class="file-holder limited-width-container readme-holder">
     <div class="js-file-title file-title-flex-parent">
       <div class="file-header-content">
-        <gl-icon name="doc-text" aria-hidden="true" />
+        <gl-icon name="doc-text" />
         <gl-link :href="blob.webPath">
           <strong>{{ blob.name }}</strong>
         </gl-link>

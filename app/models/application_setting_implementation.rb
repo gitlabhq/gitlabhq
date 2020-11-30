@@ -168,7 +168,9 @@ module ApplicationSettingImplementation
         user_show_add_ssh_key_message: true,
         wiki_page_max_content_bytes: 50.megabytes,
         container_registry_delete_tags_service_timeout: 250,
-        container_registry_expiration_policies_worker_capacity: 0
+        container_registry_expiration_policies_worker_capacity: 0,
+        kroki_enabled: false,
+        kroki_url: nil
       }
     end
 

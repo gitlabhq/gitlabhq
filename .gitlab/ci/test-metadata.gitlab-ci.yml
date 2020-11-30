@@ -1,6 +1,5 @@
 .tests-metadata-state:
-  variables:
-    TESTS_METADATA_S3_BUCKET: "gitlab-ce-cache"
+  image: ruby:2.7
   before_script:
     - source scripts/utils.sh
   artifacts:
@@ -17,7 +16,8 @@ retrieve-tests-metadata:
     - .test-metadata:rules:retrieve-tests-metadata
   stage: prepare
   script:
-    - source scripts/rspec_helpers.sh
+    - install_gitlab_gem
+    - source ./scripts/rspec_helpers.sh
     - retrieve_tests_metadata
 
 update-tests-metadata:

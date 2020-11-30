@@ -70,7 +70,7 @@ RSpec.describe 'Projects::MetricsDashboardController' do
 
     context 'when query param environment does not exist' do
       it 'responds with 404' do
-        send_request(environment: 99)
+        send_request(environment: non_existing_record_id)
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
@@ -105,7 +105,7 @@ RSpec.describe 'Projects::MetricsDashboardController' do
 
     context 'when query param environment does not exist' do
       it 'responds with 404' do
-        send_request(dashboard_path: dashboard_path, environment: 99)
+        send_request(dashboard_path: dashboard_path, environment: non_existing_record_id)
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end

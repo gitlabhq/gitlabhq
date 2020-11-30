@@ -48,23 +48,15 @@ module Gitlab
         @finished_at ? (@finished_at - @started_at) : 0.0
       end
 
-      def thread_cpu_duration
-        System.thread_cpu_duration(@thread_cputime_start)
-      end
-
       def run
         Thread.current[THREAD_KEY] = self
 
         @started_at = System.monotonic_time
-        @thread_cputime_start = System.thread_cpu_time
 
         yield
       ensure
         @finished_at = System.monotonic_time
 
-        observe(:gitlab_transaction_cputime_seconds, thread_cpu_duration) do
-          buckets SMALL_BUCKETS
-        end
         observe(:gitlab_transaction_duration_seconds, duration) do
           buckets SMALL_BUCKETS
         end

@@ -6,6 +6,8 @@ module BulkImports
       class GroupPipeline
         include Pipeline
 
+        abort_on_failure!
+
         extractor Common::Extractors::GraphqlExtractor, query: Graphql::GetGroupQuery
 
         transformer Common::Transformers::HashKeyDigger, key_path: %w[data group]

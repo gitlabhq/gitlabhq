@@ -2111,6 +2111,71 @@ module Gitlab
         end
       end
 
+      describe 'cross pipeline needs' do
+        context 'when configuration is valid' do
+          let(:config) do
+            <<~YAML
+            rspec:
+              stage: test
+              script: rspec
+              needs:
+                - pipeline: $THE_PIPELINE_ID
+                  job: dependency-job
+            YAML
+          end
+
+          it 'returns a valid configuration and sets artifacts: true by default' do
+            expect(subject).to be_valid
+
+            rspec = subject.build_attributes(:rspec)
+            expect(rspec.dig(:options, :cross_dependencies)).to eq(
+              [{ pipeline: '$THE_PIPELINE_ID', job: 'dependency-job', artifacts: true }]
+            )
+          end
+
+          context 'when pipeline ID is hard-coded' do
+            let(:config) do
+              <<~YAML
+              rspec:
+                stage: test
+                script: rspec
+                needs:
+                  - pipeline: "123"
+                    job: dependency-job
+              YAML
+            end
+
+            it 'returns a valid configuration and sets artifacts: true by default' do
+              expect(subject).to be_valid
+
+              rspec = subject.build_attributes(:rspec)
+              expect(rspec.dig(:options, :cross_dependencies)).to eq(
+                [{ pipeline: '123', job: 'dependency-job', artifacts: true }]
+              )
+            end
+          end
+        end
+
+        context 'when configuration is not valid' do
+          let(:config) do
+            <<~YAML
+            rspec:
+              stage: test
+              script: rspec
+              needs:
+                - pipeline: $THE_PIPELINE_ID
+                  job: dependency-job
+                  something: else
+            YAML
+          end
+
+          it 'returns an error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors).to include(/:need config contains unknown keys: something/)
+          end
+        end
+      end
+
       describe "Hidden jobs" do
         let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config).execute }
 

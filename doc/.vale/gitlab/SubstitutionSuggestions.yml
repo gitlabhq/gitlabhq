@@ -11,6 +11,8 @@ link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#langu
 level: suggestion
 ignorecase: true
 swap:
+  active user: billable user
+  active users: billable users
   since: because
   once that: after that
   once the: after the

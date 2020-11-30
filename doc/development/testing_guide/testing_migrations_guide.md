@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -75,8 +75,9 @@ require_migration!('populate_foo_column')
 
 Use the `table` helper to create a temporary `ActiveRecord::Base`-derived model
 for a table. [FactoryBot](best_practices.md#factories)
-**should not** be used to create data for migration specs. For example, to
-create a record in the `projects` table:
+**should not** be used to create data for migration specs because it relies on
+application code which can change after the migration has run, and cause the test
+to fail. For example, to create a record in the `projects` table:
 
 ```ruby
 project = table(:projects).create!(id: 1, name: 'gitlab1', path: 'gitlab1')

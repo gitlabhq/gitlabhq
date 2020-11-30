@@ -226,11 +226,11 @@ export default {
       class="gl-mx-2 gl-cursor-pointer js-unfold-down gl-display-inline-block gl-py-4"
       @click="handleExpandLines(EXPAND_DOWN)"
     >
-      <gl-icon :size="12" name="expand-down" aria-hidden="true" />
+      <gl-icon :size="12" name="expand-down" />
       <span>{{ $options.i18n.showMore }}</span>
     </a>
     <a class="gl-mx-2 cursor-pointer js-unfold-all" @click="handleExpandLines()">
-      <gl-icon :size="12" name="expand" aria-hidden="true" />
+      <gl-icon :size="12" name="expand" />
       <span>{{ $options.i18n.showAll }}</span>
     </a>
     <a
@@ -238,7 +238,7 @@ export default {
       class="gl-mx-2 gl-cursor-pointer js-unfold gl-display-inline-block gl-py-4"
       @click="handleExpandLines(EXPAND_UP)"
     >
-      <gl-icon :size="12" name="expand-up" aria-hidden="true" />
+      <gl-icon :size="12" name="expand-up" />
       <span>{{ $options.i18n.showMore }}</span>
     </a>
   </div>

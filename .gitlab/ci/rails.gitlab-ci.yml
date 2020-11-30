@@ -384,6 +384,7 @@ rspec:feature-flags:
     - .coverage-base
     - .rails:rules:rspec-feature-flags
   stage: post-test
+  allow_failure: true
   # We cannot use needs since it would mean needing 84 jobs (since most are parallelized)
   # so we use `dependencies` here.
   dependencies:
@@ -403,7 +404,8 @@ rspec:feature-flags:
     - memory-on-boot
   script:
     - run_timed_command "bundle install --jobs=$(nproc) --path=vendor --retry=3 --quiet --without default development test production puma unicorn kerberos metrics omnibus ed25519"
-    - run_timed_command "bundle exec scripts/used-feature-flags"
+    - 'run_timed_command "bundle exec scripts/used-feature-flags" || (scripts/slack master-broken "☠️ \`${CI_JOB_NAME}\` failed! ☠️ See ${CI_JOB_URL}" ci_failing "GitLab Bot" && exit 1)'
+
 # EE/FOSS: default refs (MRs, master, schedules) jobs #
 #######################################################
 

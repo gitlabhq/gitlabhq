@@ -16,6 +16,7 @@ import DependencyRow from '~/packages/details/components/dependency_row.vue';
 import PackageHistory from '~/packages/details/components/package_history.vue';
 import AdditionalMetadata from '~/packages/details/components/additional_metadata.vue';
 import InstallationCommands from '~/packages/details/components/installation_commands.vue';
+import PackageFiles from '~/packages/details/components/package_files.vue';
 
 import {
   composerPackage,
@@ -23,7 +24,6 @@ import {
   mavenPackage,
   mavenFiles,
   npmPackage,
-  npmFiles,
   nugetPackage,
 } from '../../mock_data';
 
@@ -82,8 +82,6 @@ describe('PackagesApp', () => {
 
   const packageTitle = () => wrapper.find(PackageTitle);
   const emptyState = () => wrapper.find(GlEmptyState);
-  const allFileRows = () => wrapper.findAll('.js-file-row');
-  const firstFileDownloadLink = () => wrapper.find('.js-file-download');
   const deleteButton = () => wrapper.find('.js-delete-button');
   const deleteModal = () => wrapper.find(GlModal);
   const modalDeleteButton = () => wrapper.find({ ref: 'modal-delete-button' });
@@ -98,6 +96,7 @@ describe('PackagesApp', () => {
   const findPackageHistory = () => wrapper.find(PackageHistory);
   const findAdditionalMetadata = () => wrapper.find(AdditionalMetadata);
   const findInstallationCommands = () => wrapper.find(InstallationCommands);
+  const findPackageFiles = () => wrapper.find(PackageFiles);
 
   beforeEach(() => {
     delete window.location;
@@ -144,28 +143,7 @@ describe('PackagesApp', () => {
 
   it('hides the files table if package type is COMPOSER', () => {
     createComponent({ packageEntity: composerPackage });
-    expect(allFileRows().exists()).toBe(false);
-  });
-
-  it('renders a single file for an npm package as they only contain one file', () => {
-    createComponent({ packageEntity: npmPackage, packageFiles: npmFiles });
-
-    expect(allFileRows()).toExist();
-    expect(allFileRows()).toHaveLength(1);
-  });
-
-  it('renders multiple files for a package that contains more than one file', () => {
-    createComponent();
-
-    expect(allFileRows()).toExist();
-    expect(allFileRows()).toHaveLength(2);
-  });
-
-  it('allows the user to download a package file by rendering a download link', () => {
-    createComponent();
-
-    expect(allFileRows()).toExist();
-    expect(firstFileDownloadLink().vm.$attrs.href).toContain('download');
+    expect(findPackageFiles().exists()).toBe(false);
   });
 
   describe('deleting packages', () => {
@@ -331,7 +309,7 @@ describe('PackagesApp', () => {
       it(`file download link call event with ${TrackingActions.PULL_PACKAGE}`, () => {
         createComponent({ packageEntity: conanPackage });
 
-        firstFileDownloadLink().vm.$emit('click');
+        findPackageFiles().vm.$emit('download-file');
         expect(eventSpy).toHaveBeenCalledWith(
           category,
           TrackingActions.PULL_PACKAGE,

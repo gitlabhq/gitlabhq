@@ -1,0 +1,5 @@
+---
+title: Fix N+1 when looking up user's solo owned groups
+merge_request: 48340
+author:
+type: performance

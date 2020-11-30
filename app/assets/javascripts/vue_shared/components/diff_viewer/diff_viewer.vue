@@ -106,7 +106,13 @@ export default {
       :a-mode="aMode"
       :b-mode="bMode"
     >
-      <slot slot="image-overlay" name="image-overlay"></slot>
+      <template #image-overlay="{ renderedWidth, renderedHeight }">
+        <slot
+          :rendered-width="renderedWidth"
+          :rendered-height="renderedHeight"
+          name="image-overlay"
+        ></slot>
+      </template>
     </component>
     <slot></slot>
   </div>

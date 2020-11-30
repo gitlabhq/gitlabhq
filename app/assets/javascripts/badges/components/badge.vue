@@ -84,7 +84,7 @@ export default {
 
     <div v-show="hasError" class="btn-group">
       <div class="btn btn-default btn-sm disabled">
-        <gl-icon :size="16" class="gl-ml-3 gl-mr-3" name="doc-image" aria-hidden="true" />
+        <gl-icon :size="16" class="gl-ml-3 gl-mr-3" name="doc-image" />
       </div>
       <div class="btn btn-default btn-sm disabled">
         <span class="gl-ml-3 gl-mr-3">{{ s__('Badges|No badge image') }}</span>

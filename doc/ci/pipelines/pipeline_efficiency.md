@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Continuous Integration
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -189,8 +189,12 @@ be more efficient, but can also make pipelines harder to understand and analyze.
 
 ### Caching
 
-Another optimization method is to use [caching](../caching/index.md) between jobs and stages,
-for example [`/node_modules` for NodeJS](../caching/index.md#caching-nodejs-dependencies).
+Another optimization method is to [cache](../caching/index.md) dependencies. If your
+dependencies change rarely, like [NodeJS `/node_modules`](../caching/index.md#caching-nodejs-dependencies),
+caching can make pipeline execution much faster.
+
+You can use [`cache:when`](../yaml/README.md#cachewhen) to cache downloaded dependencies
+even when a job fails.
 
 ### Docker Images
 

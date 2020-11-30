@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -30,7 +30,7 @@ it would be `/home/git/gitlab`.
 
 ## Changing the job logs local location
 
-To change the location where the job logs will be stored, follow the steps below.
+To change the location where the job logs are stored, follow the steps below.
 
 **In Omnibus installations:**
 
@@ -117,12 +117,12 @@ you can do so using one of the following options:
 
 There isn't a way to automatically expire old job logs, but it's safe to remove
 them if they're taking up too much space. If you remove the logs manually, the
-job output in the UI will be empty.
+job output in the UI is empty.
 
 For example, to delete all job logs older than 60 days, run the following from a shell in your GitLab instance:
 
 DANGER: **Warning:**
-This command will permanently delete the log files and is irreversible.
+This command permanently deletes the log files and is irreversible.
 
 ```shell
 find /var/opt/gitlab/gitlab-rails/shared/artifacts -name "job.log" -mtime +60 -delete
@@ -144,7 +144,7 @@ with one change: _the stored path of the first two phases is different_. This in
 log architecture stores chunks of logs in Redis and a persistent store (object storage or database) instead of
 file storage. Redis is used as first-class storage, and it stores up-to 128KB
 of data. After the full chunk is sent, it is flushed to a persistent store, either object storage (temporary directory) or database.
-After a while, the data in Redis and a persistent store will be archived to [object storage](#uploading-logs-to-object-storage).
+After a while, the data in Redis and a persistent store is archived to [object storage](#uploading-logs-to-object-storage).
 
 The data are stored in the following Redis namespace: `Gitlab::Redis::SharedState`.
 
@@ -185,9 +185,9 @@ Feature.enable(:ci_enable_live_trace)
 ```
 
 NOTE: **Note:**
-The transition period will be handled gracefully. Upcoming logs will be
-generated with the incremental architecture, and on-going logs will stay with the
-legacy architecture, which means that on-going logs won't be forcibly
+The transition period is handled gracefully. Upcoming logs are 
+generated with the incremental architecture, and on-going logs stay with the
+legacy architecture, which means that on-going logs aren't forcibly
 re-generated with the incremental architecture.
 
 **To disable incremental logging (trace):**
@@ -197,9 +197,9 @@ Feature.disable('ci_enable_live_trace')
 ```
 
 NOTE: **Note:**
-The transition period will be handled gracefully. Upcoming logs will be generated
-with the legacy architecture, and on-going incremental logs will stay with the incremental
-architecture, which means that on-going incremental logs won't be forcibly re-generated
+The transition period is handled gracefully. Upcoming logs are generated
+with the legacy architecture, and on-going incremental logs stay with the incremental
+architecture, which means that on-going incremental logs aren't forcibly re-generated
 with the legacy architecture.
 
 ### Potential implications
@@ -209,13 +209,13 @@ In some cases, having data stored on Redis could incur data loss:
 1. **Case 1: When all data in Redis are accidentally flushed**
    - On going incremental logs could be recovered by re-sending logs (this is
      supported by all versions of GitLab Runner).
-   - Finished jobs which have not archived incremental logs will lose the last part
+   - Finished jobs which have not archived incremental logs lose the last part
      (~128KB) of log data.
 
 1. **Case 2: When Sidekiq workers fail to archive (e.g., there was a bug that
    prevents archiving process, Sidekiq inconsistency, etc.)**
-   - Currently all log data in Redis will be deleted after one week. If the
-     Sidekiq workers can't finish by the expiry date, the part of log data will be lost.
+   - All log data in Redis is deleted after one week. If the
+     Sidekiq workers can't finish by the expiry date, the part of log data is lost.
 
 Another issue that might arise is that it could consume all memory on the Redis
 instance. If the number of jobs is 1000, 128MB (128KB * 1000) is consumed.

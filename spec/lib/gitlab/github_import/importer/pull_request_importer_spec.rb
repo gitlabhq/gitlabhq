@@ -43,7 +43,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
 
   describe '#execute' do
     it 'imports the pull request' do
-      mr = double(:merge_request, id: 10)
+      mr = double(:merge_request, id: 10, merged?: false)
 
       expect(importer)
         .to receive(:create_merge_request)

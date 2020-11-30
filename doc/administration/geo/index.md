@@ -1,7 +1,7 @@
 ---
 stage: Enablement
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: howto
 ---
 
@@ -50,6 +50,11 @@ Geo provides:
 - Read-only **secondary** nodes: Maintain one **primary** GitLab node while still enabling read-only **secondary** nodes for each of your distributed teams.
 - Authentication system hooks: **Secondary** nodes receives all authentication data (like user accounts and logins) from the **primary** instance.
 - An intuitive UI: **Secondary** nodes use the same web interface your team has grown accustomed to. In addition, there are visual notifications that block write operations and make it clear that a user is on a **secondary** node.
+
+### Gitaly Cluster
+
+Geo should not be confused with [Gitaly Cluster](../gitaly/praefect.md). For more information about
+the difference between Geo and Gitaly Cluster, see [Gitaly Cluster compared to Geo](../gitaly/praefect.md#gitaly-cluster-compared-to-geo).
 
 ## How it works
 

@@ -621,15 +621,11 @@ describe('DiffsStoreMutations', () => {
     });
   });
 
-  describe('TOGGLE_SHOW_TREE_LIST', () => {
-    it('toggles showTreeList', () => {
+  describe('SET_SHOW_TREE_LIST', () => {
+    it('sets showTreeList', () => {
       const state = createState();
 
-      mutations[types.TOGGLE_SHOW_TREE_LIST](state);
-
-      expect(state.showTreeList).toBe(false, 'Failed to toggle showTreeList to false');
-
-      mutations[types.TOGGLE_SHOW_TREE_LIST](state);
+      mutations[types.SET_SHOW_TREE_LIST](state, true);
 
       expect(state.showTreeList).toBe(true, 'Failed to toggle showTreeList to true');
     });

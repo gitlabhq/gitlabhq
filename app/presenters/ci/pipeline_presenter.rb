@@ -10,7 +10,8 @@ module Ci
     def self.failure_reasons
       { unknown_failure: 'Unknown pipeline failure!',
         config_error: 'CI/CD YAML configuration error!',
-        external_validation_failure: 'External pipeline validation failed!' }
+        external_validation_failure: 'External pipeline validation failed!',
+        deployments_limit_exceeded: 'Pipeline deployments limit exceeded!' }
     end
 
     presents :pipeline

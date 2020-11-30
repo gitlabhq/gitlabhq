@@ -56,9 +56,9 @@ RSpec.describe Gitlab::GithubImport::Importer::LfsObjectsImporter do
       importer = described_class.new(project, client, parallel: false)
       lfs_object_importer = double(:lfs_object_importer)
 
-      allow(importer)
-        .to receive(:each_object_to_import)
-        .and_yield(lfs_download_object)
+      expect_next_instance_of(Projects::LfsPointers::LfsObjectDownloadListService) do |service|
+        expect(service).to receive(:execute).and_return([lfs_download_object])
+      end
 
       expect(Gitlab::GithubImport::Importer::LfsObjectImporter)
         .to receive(:new)
@@ -79,9 +79,9 @@ RSpec.describe Gitlab::GithubImport::Importer::LfsObjectsImporter do
     it 'imports each lfs object in parallel' do
       importer = described_class.new(project, client)
 
-      allow(importer)
-        .to receive(:each_object_to_import)
-        .and_yield(lfs_download_object)
+      expect_next_instance_of(Projects::LfsPointers::LfsObjectDownloadListService) do |service|
+        expect(service).to receive(:execute).and_return([lfs_download_object])
+      end
 
       expect(Gitlab::GithubImport::ImportLfsObjectWorker)
         .to receive(:perform_async)

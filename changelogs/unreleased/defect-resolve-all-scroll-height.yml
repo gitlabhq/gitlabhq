@@ -1,0 +1,5 @@
+---
+title: Fix overscroll for MR diffs in mobile view
+merge_request: 48091
+author:
+type: fixed

@@ -4,6 +4,7 @@ module GraphqlHelpers
   MutationDefinition = Struct.new(:query, :variables)
 
   NoData = Class.new(StandardError)
+  UnauthorizedObject = Class.new(StandardError)
 
   # makes an underscored string look like a fieldname
   # "merge_request" => "mergeRequest"
@@ -17,13 +18,25 @@ module GraphqlHelpers
   # ready, then the early return is returned instead.
   #
   # Then the resolve method is called.
-  def resolve(resolver_class, args: {}, **resolver_args)
+  def resolve(resolver_class, args: {}, lookahead: :not_given, parent: :not_given, **resolver_args)
+    args = aliased_args(resolver_class, args)
+    args[:parent] = parent unless parent == :not_given
+    args[:lookahead] = lookahead unless lookahead == :not_given
     resolver = resolver_instance(resolver_class, **resolver_args)
     ready, early_return = sync_all { resolver.ready?(**args) }
 
     return early_return unless ready
 
     resolver.resolve(**args)
+  end
+
+  # TODO: Remove this method entirely when GraphqlHelpers uses real resolve_field
+  def aliased_args(resolver, args)
+    definitions = resolver.arguments
+
+    args.transform_keys do |k|
+      definitions[GraphqlHelpers.fieldnamerize(k)]&.keyword || k
+    end
   end
 
   def resolver_instance(resolver_class, obj: nil, ctx: {}, field: nil, schema: GitlabSchema)
@@ -111,24 +124,25 @@ module GraphqlHelpers
   def variables_for_mutation(name, input)
     graphql_input = prepare_input_for_mutation(input)
 
-    result = { input_variable_name_for_mutation(name) => graphql_input }
-
-    # Avoid trying to serialize multipart data into JSON
-    if graphql_input.values.none? { |value| io_value?(value) }
-      result.to_json
-    else
-      result
-    end
+    { input_variable_name_for_mutation(name) => graphql_input }
   end
 
-  def resolve_field(name, object, args = {})
-    context = double("Context",
-                    schema: GitlabSchema,
-                    query: GraphQL::Query.new(GitlabSchema),
-                    parent: nil)
-    field = described_class.fields[::GraphqlHelpers.fieldnamerize(name)]
+  def serialize_variables(variables)
+    return unless variables
+    return variables if variables.is_a?(String)
+
+    ::Gitlab::Utils::MergeHash.merge(Array.wrap(variables).map(&:to_h)).to_json
+  end
+
+  def resolve_field(name, object, args = {}, current_user: nil)
+    q = GraphQL::Query.new(GitlabSchema)
+    context = GraphQL::Query::Context.new(query: q, object: object, values: { current_user: current_user })
+    allow(context).to receive(:parent).and_return(nil)
+    field = described_class.fields.fetch(GraphqlHelpers.fieldnamerize(name))
     instance = described_class.authorized_new(object, context)
-    field.resolve_field(instance, {}, context)
+    raise UnauthorizedObject unless instance
+
+    field.resolve_field(instance, args, context)
   end
 
   # Recursively convert a Hash with Ruby-style keys to GraphQL fieldname-style keys
@@ -165,10 +179,32 @@ module GraphqlHelpers
   end
 
   def query_graphql_field(name, attributes = {}, fields = nil)
-    <<~QUERY
-      #{field_with_params(name, attributes)}
-      #{wrap_fields(fields || all_graphql_fields_for(name.to_s.classify))}
-    QUERY
+    attributes, fields = [nil, attributes] if fields.nil? && !attributes.is_a?(Hash)
+
+    field = field_with_params(name, attributes)
+
+    field + wrap_fields(fields || all_graphql_fields_for(name.to_s.classify)).to_s
+  end
+
+  def page_info_selection
+    "pageInfo { hasNextPage hasPreviousPage endCursor startCursor }"
+  end
+
+  def query_nodes(name, fields = nil, args: nil, of: name, include_pagination_info: false, max_depth: 1)
+    fields ||= all_graphql_fields_for(of.to_s.classify, max_depth: max_depth)
+    node_selection = include_pagination_info ? "#{page_info_selection} nodes" : :nodes
+    query_graphql_path([[name, args], node_selection], fields)
+  end
+
+  # e.g:
+  #   query_graphql_path(%i[foo bar baz], all_graphql_fields_for('Baz'))
+  #   => foo { bar { baz { x y z } } }
+  def query_graphql_path(segments, fields = nil)
+    # we really want foldr here...
+    segments.reverse.reduce(fields) do |tail, segment|
+      name, args = Array.wrap(segment)
+      query_graphql_field(name, args, tail)
+    end
   end
 
   def wrap_fields(fields)
@@ -233,6 +269,14 @@ module GraphqlHelpers
     end.join(", ")
   end
 
+  def with_signature(variables, query)
+    %Q[query(#{variables.map(&:sig).join(', ')}) #{query}]
+  end
+
+  def var(type)
+    ::Graphql::Var.new(generate(:variable), type)
+  end
+
   # Fairly dumb Ruby => GraphQL rendering function. Only suitable for testing.
   # Use symbol for Enum values
   def as_graphql_literal(value)
@@ -245,7 +289,12 @@ module GraphqlHelpers
     when nil then 'null'
     when true then 'true'
     when false then 'false'
-    else raise ArgumentError, "Cannot represent #{value} as GraphQL literal"
+    else
+      if value.respond_to?(:to_graphql_value)
+        value.to_graphql_value
+      else
+        raise ArgumentError, "Cannot represent #{value} as GraphQL literal"
+      end
     end
   end
 
@@ -254,7 +303,7 @@ module GraphqlHelpers
   end
 
   def post_graphql(query, current_user: nil, variables: nil, headers: {})
-    params = { query: query, variables: variables&.to_json }
+    params = { query: query, variables: serialize_variables(variables) }
     post api('/', current_user, version: 'graphql'), params: params, headers: headers
   end
 
@@ -332,13 +381,19 @@ module GraphqlHelpers
     graphql_dig_at(graphql_data, *path)
   end
 
+  # Slightly more powerful than just `dig`:
+  # - also supports implicit flat-mapping (.e.g. :foo :nodes :bar :nodes)
   def graphql_dig_at(data, *path)
     keys = path.map { |segment| segment.is_a?(Integer) ? segment : GraphqlHelpers.fieldnamerize(segment) }
 
     # Allows for array indexing, like this
     # ['project', 'boards', 'edges', 0, 'node', 'lists']
     keys.reduce(data) do |memo, key|
-      memo.is_a?(Array) ? memo[key] : memo&.dig(key)
+      if memo.is_a?(Array)
+        key.is_a?(Integer) ? memo[key] : memo.flat_map { |e| Array.wrap(e[key]) }
+      else
+        memo&.dig(key)
+      end
     end
   end
 
@@ -403,8 +458,18 @@ module GraphqlHelpers
     field_type(field).kind.enum?
   end
 
+  # There are a few non BaseField fields in our schema (pageInfo for one).
+  # None of them require arguments.
   def required_arguments?(field)
-    field.arguments.values.any? { |argument| argument.type.non_null? }
+    return field.requires_argument? if field.is_a?(::Types::BaseField)
+
+    if (meta = field.try(:metadata)) && meta[:type_class]
+      required_arguments?(meta[:type_class])
+    elsif args = field.try(:arguments)
+      args.values.any? { |argument| argument.type.non_null? }
+    else
+      false
+    end
   end
 
   def io_value?(value)
@@ -497,6 +562,20 @@ module GraphqlHelpers
       context: { current_user: user },
       variables: {}
     )
+  end
+
+  # A lookahead that selects everything
+  def positive_lookahead
+    double(selects?: true).tap do |selection|
+      allow(selection).to receive(:selection).and_return(selection)
+    end
+  end
+
+  # A lookahead that selects nothing
+  def negative_lookahead
+    double(selects?: false).tap do |selection|
+      allow(selection).to receive(:selection).and_return(selection)
+    end
   end
 end
 

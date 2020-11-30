@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # GraphQL pagination
@@ -85,6 +85,20 @@ This was a conscious decision to support performance and data stability.
 However, there are some cases where we have to use the offset
 pagination connection, `OffsetActiveRecordRelationConnection`, such as when
 sorting by label priority in issues, due to the complexity of the sort.
+
+If you return a relation from a resolver that is not suitable for keyset
+pagination (due to the sort order for example), then you can use the
+`BaseResolver#offset_pagination` method to wrap the relation in the correct
+connection type. For example:
+
+```ruby
+def resolve(**args)
+  result = Finder.new(object, current_user, args).execute
+  result = offset_pagination(result) if needs_offset?(args[:sort])
+
+  result
+end
+```
 
 ### Keyset pagination
 
@@ -225,7 +239,7 @@ instead of an `ActiveRecord::Relation`:
       if non_stable_cursor_sort?(args[:sort])
         # Certain complex sorts are not supported by the stable cursor pagination yet.
         # In these cases, we use offset pagination, so we return the correct connection.
-        Gitlab::Graphql::Pagination::OffsetActiveRecordRelationConnection.new(issues)
+        offset_pagination(issues)
       else
         issues
       end

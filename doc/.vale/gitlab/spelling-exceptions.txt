@@ -252,6 +252,7 @@ Markdown
 markdownlint
 matcher
 matchers
+Matomo
 Mattermost
 mbox
 memoization

@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: index, reference
 ---
 
@@ -77,7 +77,7 @@ With the [Customers Portal](https://customers.gitlab.com/) you can:
 - [Change your payment method](#change-your-payment-method)
 - [Change the linked account](#change-the-linked-account)
 - [Change the associated namespace](#change-the-associated-namespace)
-- [Change customers portal account password](#change-customer-portal-account-password)
+- [Change customers portal account password](#change-customers-portal-account-password)
 
 ### Change your personal details
 
@@ -154,7 +154,7 @@ With a linked GitLab.com account:
 
 Subscription charges are calculated based on the total number of users in a group, including its subgroups and nested projects. If the total number of users exceeds the number of seats in your subscription, your account is charged for the additional users.
 
-### Change customer portal account password
+### Change Customers Portal account password
 
 To change the password for this customers portal account:
 

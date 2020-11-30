@@ -11,10 +11,14 @@ class Service < ApplicationRecord
   include EachBatch
 
   SERVICE_NAMES = %w[
-    alerts asana assembla bamboo bugzilla buildkite campfire confluence custom_issue_tracker discord
+    alerts asana assembla bamboo bugzilla buildkite campfire confluence custom_issue_tracker datadog discord
     drone_ci emails_on_push ewm external_wiki flowdock hangouts_chat hipchat irker jira
     mattermost mattermost_slash_commands microsoft_teams packagist pipelines_email
     pivotaltracker prometheus pushover redmine slack slack_slash_commands teamcity unify_circuit webex_teams youtrack
+  ].freeze
+
+  PROJECT_SPECIFIC_SERVICE_NAMES = %w[
+    jenkins
   ].freeze
 
   # Fake services to help with local development.
@@ -147,6 +151,10 @@ class Service < ApplicationRecord
     %w[commit push tag_push issue confidential_issue merge_request wiki_page]
   end
 
+  def self.default_test_event
+    'push'
+  end
+
   def self.event_description(event)
     ServicesHelper.service_event_description(event)
   end
@@ -212,7 +220,7 @@ class Service < ApplicationRecord
   end
 
   def self.project_specific_services_names
-    []
+    PROJECT_SPECIFIC_SERVICE_NAMES
   end
 
   def self.available_services_types(include_project_specific: true, include_dev: true)
@@ -384,6 +392,10 @@ class Service < ApplicationRecord
 
   def supported_events
     self.class.supported_events
+  end
+
+  def default_test_event
+    self.class.default_test_event
   end
 
   def execute(data)

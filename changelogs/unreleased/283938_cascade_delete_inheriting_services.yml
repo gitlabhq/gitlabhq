@@ -1,0 +1,5 @@
+---
+title: Change services.inherit_from_id foreign key to ON DELETE CASCADE
+merge_request: 48163
+author:
+type: fixed

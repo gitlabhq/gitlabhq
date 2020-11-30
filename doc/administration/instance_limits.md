@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -165,7 +165,7 @@ There is a limit when embedding metrics in GFM for performance reasons.
 
 On GitLab.com, the [maximum number of webhooks and their size](../user/gitlab_com/index.md#webhooks) per project, and per group, is limited.
 
-To set this limit on a self-managed installation, run the following in the
+To set this limit on a self-managed installation, where the default is `100` project webhooks and `50` group webhooks, run the following in the
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
 
 ```ruby
@@ -173,7 +173,7 @@ To set this limit on a self-managed installation, run the following in the
 # Plan.default.create_limits!
 
 # For project webhooks
-Plan.default.actual_limits.update!(project_hooks: 100)
+Plan.default.actual_limits.update!(project_hooks: 200)
 
 # For group webhooks
 Plan.default.actual_limits.update!(group_hooks: 100)
@@ -235,8 +235,8 @@ If a new pipeline would cause the total number of jobs to exceed the limit, the 
 will fail with a `job_activity_limit_exceeded` error.
 
 - On GitLab.com different [limits are defined per plan](../user/gitlab_com/index.md#gitlab-cicd) and they affect all projects under that plan.
-- On [GitLab Starter](https://about.gitlab.com/pricing/#self-managed) tier or higher self-managed installations, this limit is defined for the `default` plan that affects all projects.
-  This limit is disabled by default.
+- On [GitLab Starter](https://about.gitlab.com/pricing/#self-managed) tier or higher self-managed installations, this limit is defined under a `default` plan that affects all projects.
+  This limit is disabled (`0`) by default.
 
 To set this limit on a self-managed installation, run the following in the
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
@@ -246,6 +246,29 @@ To set this limit on a self-managed installation, run the following in the
 # Plan.default.create_limits!
 
 Plan.default.actual_limits.update!(ci_active_jobs: 500)
+```
+
+Set the limit to `0` to disable it.
+
+### Maximum number of deployment jobs in a pipeline
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46931) in GitLab 13.7.
+
+You can limit the maximum number of deployment jobs in a pipeline. A deployment is
+any job with an [`environment`](../ci/environments/index.md) specified. The number
+of deployments in a pipeline is checked at pipeline creation. Pipelines that have
+too many deployments fail with a `deployments_limit_exceeded` error.
+
+The default limit is 500 for all [self-managed and GitLab.com plans](https://about.gitlab.com/pricing/).
+
+To change the limit on a self-managed installation, change the `default` plan's limit with the following
+[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session) command:
+
+```ruby
+# If limits don't exist for the default plan, you can create one with:
+# Plan.default.create_limits!
+
+Plan.default.actual_limits.update!(ci_pipeline_deployments: 500)
 ```
 
 Set the limit to `0` to disable it.
@@ -261,7 +284,7 @@ If a new subscription would cause the total number of subscription to exceed the
 limit, the subscription will be considered invalid.
 
 - On GitLab.com different [limits are defined per plan](../user/gitlab_com/index.md#gitlab-cicd) and they affect all projects under that plan.
-- On [GitLab Starter](https://about.gitlab.com/pricing/#self-managed) tier or higher self-managed installations, this limit is defined for the `default` plan that affects all projects.
+- On [GitLab Starter](https://about.gitlab.com/pricing/#self-managed) tier or higher self-managed installations, this limit is defined under a `default` plan that affects all projects. By default, there is a limit of `2` subscriptions.
 
 To set this limit on a self-managed installation, run the following in the
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
@@ -285,8 +308,8 @@ On GitLab.com, different limits are [defined per plan](../user/gitlab_com/index.
 and they affect all projects under that plan.
 
 On self-managed instances ([GitLab Starter](https://about.gitlab.com/pricing/#self-managed)
-or higher tiers), this limit is defined for the `default` plan that affects all
-projects. By default, there is no limit.
+or higher tiers), this limit is defined under a `default` plan that affects all
+projects. By default, there is a limit of `10` pipeline schedules.
 
 To set this limit on a self-managed installation, run the following in the
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):

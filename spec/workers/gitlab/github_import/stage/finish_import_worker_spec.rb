@@ -26,7 +26,17 @@ RSpec.describe Gitlab::GithubImport::Stage::FinishImportWorker do
         .to receive(:increment)
         .and_call_original
 
-      expect(worker.logger).to receive(:info).with(an_instance_of(String))
+      expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+        expect(logger)
+          .to receive(:info)
+          .with(
+            message: 'GitHub project import finished',
+            import_stage: 'Gitlab::GithubImport::Stage::FinishImportWorker',
+            import_source: :github,
+            project_id: project.id,
+            duration_s: a_kind_of(Numeric)
+          )
+      end
 
       worker.report_import_time(project)
     end

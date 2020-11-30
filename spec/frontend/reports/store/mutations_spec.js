@@ -46,7 +46,10 @@ describe('Reports Store Mutations', () => {
               name: 'StringHelper#concatenate when a is git and b is lab returns summary',
               execution_time: 0.0092435,
               system_output: "Failure/Error: is_expected.to eq('gitlab')",
-              recent_failures: 4,
+              recent_failures: {
+                count: 4,
+                base_branch: 'master',
+              },
             },
           ],
           resolved_failures: [

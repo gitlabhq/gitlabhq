@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 description: "Learn how GitLab's documentation website is architectured."
 ---
 
@@ -46,7 +46,7 @@ from where content is sourced, the `gitlab-docs` project, and the published outp
     H -- symlink --> G
 ```
 
-You will not find any GitLab docs content in the `gitlab-docs` repository.
+GitLab docs content isn't kept in the `gitlab-docs` repository.
 All documentation files are hosted in the respective repository of each
 product, and all together are pulled to generate the docs website:
 
@@ -62,7 +62,7 @@ in order not to break any existing links throughout the internet, we still
 maintain the CE docs (`https://docs.gitlab.com/ce/`), although it is hidden
 from the website, and is now a symlink to the EE docs. When
 [Pages supports redirects](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/24),
-we will be able to remove this completely.
+we can remove this completely.
 
 ## Assets
 
@@ -179,7 +179,7 @@ we reference the array with a symbol (`:versions`).
 
 Whenever the custom CSS and JavaScript files under `content/assets/` change,
 make sure to bump their version in the front matter. This method guarantees that
-your changes will take effect by clearing the cache of previous files.
+your changes take effect by clearing the cache of previous files.
 
 Always use Nanoc's way of including those files, do not hardcode them in the
 layouts. For example use:
@@ -196,7 +196,7 @@ The links pointing to the files should be similar to:
 <%= @items['/path/to/assets/file.*'].path %>
 ```
 
-Nanoc will then build and render those links correctly according with what's
+Nanoc then builds and renders those links correctly according with what's
 defined in [`Rules`](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/Rules).
 
 ## Linking to source files
@@ -236,7 +236,7 @@ If you’re a GitLab team member, find credentials for the Algolia dashboard
 in the shared [GitLab 1Password account](https://about.gitlab.com/handbook/security/#1password-for-teams).
 To receive weekly reports of the search usage, search the Google doc with
 title `Email, Slack, and GitLab Groups and Aliases`, search for `docsearch`,
-and add a comment with your email. You'll be added to the alias that gets the weekly
+and add a comment with your email to be added to the alias that gets the weekly
 reports.
 
 ## Monthly release process (versions)

@@ -1,10 +1,13 @@
 <script>
 import Tribute from 'tributejs';
+import {
+  GfmAutocompleteType,
+  tributeConfig,
+} from 'ee_else_ce/vue_shared/components/gfm_autocomplete/utils';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
-import { GfmAutocompleteType, tributeConfig } from '~/vue_shared/components/gfm_autocomplete/utils';
 
 export default {
   errorMessage: __(

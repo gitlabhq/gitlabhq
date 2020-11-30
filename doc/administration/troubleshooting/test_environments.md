@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -105,6 +105,11 @@ docker.elastic.co/elasticsearch/elasticsearch:5.5.1
 
 Then confirm it works in the browser at `curl http://<IP_ADDRESS>:9200/_cat/health`.
 Elasticsearch's default username is `elastic` and password is `changeme`.
+
+### Kroki
+
+See [our Kroki docs](../integration/kroki.md#docker)
+on running Kroki in Docker.
 
 ### PlantUML
 

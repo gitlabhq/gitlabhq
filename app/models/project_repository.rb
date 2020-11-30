@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class ProjectRepository < ApplicationRecord
+  include EachBatch
   include Shardable
 
   belongs_to :project, inverse_of: :project_repository

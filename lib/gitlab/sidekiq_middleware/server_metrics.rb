@@ -2,7 +2,9 @@
 
 module Gitlab
   module SidekiqMiddleware
-    class ServerMetrics < SidekiqMiddleware::Metrics
+    class ServerMetrics
+      include ::Gitlab::SidekiqMiddleware::MetricsHelper
+
       # SIDEKIQ_LATENCY_BUCKETS are latency histogram buckets better suited to Sidekiq
       # timeframes than the DEFAULT_BUCKET definition. Defined in seconds.
       SIDEKIQ_LATENCY_BUCKETS = [0.1, 0.25, 0.5, 1, 2.5, 5, 10, 60, 300, 600].freeze

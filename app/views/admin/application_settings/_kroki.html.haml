@@ -1,0 +1,25 @@
+- expanded = integration_expanded?('kroki_')
+%section.settings.as-kroki.no-animate#js-kroki-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Kroki')
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Allow rendering of diagrams in AsciiDoc and Markdown documents using %{link}.').html_safe % { link: link_to('Kroki', 'https://kroki.io', target: '_blank') }
+  .settings-content
+    = form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-kroki-settings'), html: { class: 'fieldset-form' } do |f|
+      = form_errors(@application_setting) if expanded
+
+      %fieldset
+        .form-group
+          .form-check
+            = f.check_box :kroki_enabled, class: 'form-check-input'
+            = f.label :kroki_enabled, _('Enable Kroki'), class: 'form-check-label'
+        .form-group
+          = f.label :kroki_url, 'Kroki URL', class: 'label-bold'
+          = f.text_field :kroki_url, class: 'form-control', placeholder: 'http://your-kroki-instance:8000'
+          .form-text.text-muted
+            = (_('When Kroki is enabled, GitLab sends diagrams to an instance of Kroki to display them as images. You can use the free public cloud instance %{kroki_public_url} or you can %{install_link} on your own infrastructure. Once you\'ve installed Kroki, make sure to update the server URL to point to your instance.') % { kroki_public_url: '<code>https://kroki.io</code>', install_link: link_to('install Kroki', 'https://docs.kroki.io/kroki/setup/install/', target: '_blank') }).html_safe
+
+      = f.submit _('Save changes'), class: "btn gl-button btn-success"

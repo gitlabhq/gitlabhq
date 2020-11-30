@@ -115,7 +115,7 @@ gem 'carrierwave', '~> 1.3'
 gem 'mini_magick', '~> 4.10.1'
 
 # for backups
-gem 'fog-aws', '~> 3.5'
+gem 'fog-aws', '~> 3.6'
 # Locked until fog-google resolves https://github.com/fog/fog-google/issues/421.
 # Also see config/initializers/fog_core_patch.rb.
 gem 'fog-core', '= 2.1.0'
@@ -159,6 +159,7 @@ gem 'wikicloth', '0.8.1'
 gem 'asciidoctor', '~> 2.0.10'
 gem 'asciidoctor-include-ext', '~> 0.3.1', require: false
 gem 'asciidoctor-plantuml', '~> 0.0.12'
+gem 'asciidoctor-kroki', '~> 0.2.2', require: false
 gem 'rouge', '~> 3.25.0'
 gem 'truncato', '~> 0.7.11'
 gem 'bootstrap_form', '~> 4.2.0'
@@ -209,7 +210,7 @@ gem 'httparty', '~> 0.16.4'
 gem 'rainbow', '~> 3.0'
 
 # Progress bar
-gem 'ruby-progressbar'
+gem 'ruby-progressbar', '~> 1.10'
 
 # GitLab settings
 gem 'settingslogic', '~> 2.0.9'
@@ -465,7 +466,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC protocol definitions
-gem 'gitaly', '~> 13.5.0-rc2'
+gem 'gitaly', '~> 13.6.1'
 
 gem 'grpc', '~> 1.30.2'
 

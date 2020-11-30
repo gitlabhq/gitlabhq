@@ -20,14 +20,6 @@ RSpec.describe Gitlab::Metrics::Transaction do
     end
   end
 
-  describe '#thread_cpu_duration' do
-    it 'returns the duration of a transaction in seconds' do
-      transaction.run { }
-
-      expect(transaction.thread_cpu_duration).to be > 0
-    end
-  end
-
   describe '#run' do
     it 'yields the supplied block' do
       expect { |b| transaction.run(&b) }.to yield_control

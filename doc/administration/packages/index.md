@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # GitLab Package Registry administration
@@ -32,8 +32,8 @@ The Package Registry supports the following formats:
 
 ## Accepting contributions
 
-The below table lists formats that are not supported, but are accepting Community contributions for. Consider contributing to GitLab. This [development documentation](../../development/packages.md) will
-guide you through the process.
+The below table lists formats that are not supported, but are accepting Community contributions for. Consider contributing to GitLab. This [development documentation](../../development/packages.md)
+guides you through the process.
 
 | Format | Status |
 | ------ | ------ |
@@ -55,8 +55,8 @@ guide you through the process.
 
 NOTE: **Note:**
 After the Packages feature is enabled, the repositories are available
-for all new projects by default. To enable it for existing projects, users will
-have to explicitly do so in the project's settings.
+for all new projects by default. To enable it for existing projects, users 
+explicitly do so in the project's settings.
 
 To enable the Packages feature:
 
@@ -72,7 +72,7 @@ To enable the Packages feature:
 
 **Installations from source**
 
-1. After the installation is complete, you will have to configure the `packages`
+1. After the installation is complete, you configure the `packages`
    section in `config/gitlab.yml`. Set to `true` to enable it:
 
    ```yaml
@@ -84,7 +84,7 @@ To enable the Packages feature:
 
 **Helm Chart installations**
 
-1. After the installation is complete, you will have to configure the `packages`
+1. After the installation is complete, you configure the `packages`
    section in `global.appConfig.packages`. Set to `true` to enable it:
 
    ```yaml
@@ -214,7 +214,7 @@ We recommend using the [consolidated object storage settings](../object_storage.
 
 After [configuring the object storage](#using-object-storage), you may use the
 following task to migrate existing packages from the local storage to the remote one.
-The processing will be done in a background worker and requires **no downtime**.
+The processing is done in a background worker and requires **no downtime**.
 
 For Omnibus GitLab:
 

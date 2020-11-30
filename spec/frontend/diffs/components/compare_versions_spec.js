@@ -59,8 +59,8 @@ describe('CompareVersions', () => {
 
       expect(sourceDropdown.exists()).toBe(true);
       expect(targetDropdown.exists()).toBe(true);
-      expect(sourceDropdown.find('a span').html()).toContain('latest version');
-      expect(targetDropdown.find('a span').html()).toContain(targetBranchName);
+      expect(sourceDropdown.find('a p').html()).toContain('latest version');
+      expect(targetDropdown.find('button').html()).toContain(targetBranchName);
     });
 
     it('should not render comparison dropdowns if no mergeRequestDiffs are specified', () => {

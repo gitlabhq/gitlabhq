@@ -131,14 +131,18 @@ export default {
         :file-hash="discussion.diff_file.file_hash"
         :project-path="projectPath"
       >
-        <image-diff-overlay
-          slot="image-overlay"
-          :discussions="discussion"
-          :file-hash="discussion.diff_file.file_hash"
-          :show-comment-icon="true"
-          :should-toggle-discussion="false"
-          badge-class="image-comment-badge"
-        />
+        <template #image-overlay="{ renderedWidth, renderedHeight }">
+          <image-diff-overlay
+            v-if="renderedWidth"
+            :rendered-width="renderedWidth"
+            :rendered-height="renderedHeight"
+            :discussions="discussion"
+            :file-hash="discussion.diff_file.file_hash"
+            :show-comment-icon="true"
+            :should-toggle-discussion="false"
+            badge-class="image-comment-badge gl-text-gray-500"
+          />
+        </template>
       </diff-viewer>
       <slot></slot>
     </div>

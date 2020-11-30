@@ -61,11 +61,7 @@ export default {
       data-toggle="dropdown"
     >
       <span class="dropdown-toggle-text">{{ __('Choose a template') }}</span>
-      <gl-icon
-        name="chevron-down"
-        class="gl-absolute gl-top-3 gl-right-3 gl-text-gray-500"
-        aria-hidden="true"
-      />
+      <gl-icon name="chevron-down" class="gl-absolute gl-top-3 gl-right-3 gl-text-gray-500" />
     </button>
     <div class="dropdown-menu dropdown-select">
       <div class="dropdown-title gl-display-flex gl-justify-content-center">
@@ -75,7 +71,7 @@ export default {
           :aria-label="__('Close')"
           type="button"
         >
-          <gl-icon name="close" class="dropdown-menu-close-icon" :aria-hidden="true" />
+          <gl-icon name="close" class="dropdown-menu-close-icon" />
         </button>
       </div>
       <div class="dropdown-input">
@@ -85,7 +81,7 @@ export default {
           :placeholder="__('Filter')"
           autocomplete="off"
         />
-        <gl-icon name="search" class="dropdown-input-search" aria-hidden="true" />
+        <gl-icon name="search" class="dropdown-input-search" />
         <gl-icon
           name="close"
           class="dropdown-input-clear js-dropdown-input-clear"

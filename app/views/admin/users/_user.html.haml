@@ -47,9 +47,7 @@
                     = s_('AdminUsers|Block')
               - if user.can_be_deactivated?
                 %li
-                  %button.btn.btn-default-tertiary{ data: { 'gl-modal-action': 'deactivate',
-                    url: deactivate_admin_user_path(user),
-                    username: sanitize_name(user.name) } }
+                  %button.btn.btn-default-tertiary.js-confirm-modal-button{ data: user_deactivation_data(user, user_deactivation_effects) }
                     = s_('AdminUsers|Deactivate')
               - elsif user.deactivated?
                 %li

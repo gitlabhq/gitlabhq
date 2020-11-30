@@ -184,7 +184,6 @@ describe('List model', () => {
         }),
       );
       list.issues = [];
-      global.gon.features = { boardsWithSwimlanes: false };
     });
 
     it('adds new issue to top of list', done => {

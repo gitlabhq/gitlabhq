@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Redis guidelines
@@ -43,9 +43,9 @@ a single Redis server. This means that keys should **always** be
 globally unique across all categories.
 
 It is usually better to use immutable identifiers - project ID rather than
-full path, for instance - in Redis key names. If full path is used, the key will
-stop being consulted if the project is renamed. If the contents of the key are
-invalidated by a name change, it is better to include a hook that will expire
+full path, for instance - in Redis key names. If full path is used, the key
+stops being consulted if the project is renamed. If the contents of the key are
+invalidated by a name change, it is better to include a hook that expires
 the entry, instead of relying on the key changing.
 
 ### Multi-key commands
@@ -195,7 +195,7 @@ provides a convenient interface for adding and counting values in HyperLogLogs.
 For cases where we need to efficiently check the whether an item is in a group
 of items, we can use a Redis set.
 [`Gitlab::SetCache`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/set_cache.rb)
-provides an `#include?` method that will use the
+provides an `#include?` method that uses the
 [`SISMEMBER`](https://redis.io/commands/sismember) command, as well as `#read`
 to fetch all entries in the set.
 

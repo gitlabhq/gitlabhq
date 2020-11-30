@@ -22,11 +22,13 @@ exceptions:
   - AWS
   - BSD
   - CLI
+  - CNA
   - CNAME
   - CORE
   - CPU
   - CSS
   - CSV
+  - CVE
   - DAG
   - DAST
   - DHCP

@@ -9,7 +9,7 @@ module Ci
     end
 
     def all
-      (local + cross_pipeline).uniq
+      (local + cross_project).uniq
     end
 
     # Dependencies local to the given pipeline
@@ -23,8 +23,8 @@ module Ci
       deps
     end
 
-    # Dependencies that are defined in other pipelines
-    def cross_pipeline
+    # Dependencies that are defined by project and ref
+    def cross_project
       []
     end
 
@@ -33,7 +33,7 @@ module Ci
     end
 
     def valid?
-      valid_local? && valid_cross_pipeline?
+      valid_local? && valid_cross_project?
     end
 
     private
@@ -50,7 +50,7 @@ module Ci
       local.all?(&:valid_dependency?)
     end
 
-    def valid_cross_pipeline?
+    def valid_cross_project?
       true
     end
 

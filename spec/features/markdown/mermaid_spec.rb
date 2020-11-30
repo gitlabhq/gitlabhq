@@ -44,7 +44,7 @@ RSpec.describe 'Mermaid rendering', :js do
     expect(page.html.scan(expected).count).to be(4)
   end
 
-  it 'renders only 2 Mermaid blocks and ', :js, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/234081' } do
+  it 'renders only 2 Mermaid blocks and ', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/234081' do
     description = <<~MERMAID
     ```mermaid
     graph LR
@@ -71,7 +71,7 @@ RSpec.describe 'Mermaid rendering', :js do
     end
   end
 
-  it 'correctly sizes mermaid diagram inside <details> block', :js do
+  it 'correctly sizes mermaid diagram inside <details> block' do
     description = <<~MERMAID
       <details>
       <summary>Click to show diagram</summary>
@@ -102,7 +102,7 @@ RSpec.describe 'Mermaid rendering', :js do
     end
   end
 
-  it 'correctly sizes mermaid diagram block', :js do
+  it 'correctly sizes mermaid diagram block' do
     description = <<~MERMAID
       ```mermaid
       graph TD;
@@ -121,7 +121,7 @@ RSpec.describe 'Mermaid rendering', :js do
     expect(page).to have_css('svg.mermaid[style*="max-width"][width="100%"]')
   end
 
-  it 'display button when diagram exceeds length', :js do
+  it 'display button when diagram exceeds length', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/287806' do
     graph_edges = "A-->B;B-->A;" * 420
 
     description = <<~MERMAID

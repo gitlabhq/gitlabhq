@@ -8,7 +8,7 @@
 
 - content_for :page_specific_javascripts do
   - if current_user
-    = javascript_tag nonce: true do
+    = javascript_tag do
       :plain
         window.uploads_path = "#{group_uploads_path(@group)}";
 

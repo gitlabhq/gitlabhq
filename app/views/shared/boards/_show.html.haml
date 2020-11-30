@@ -17,23 +17,12 @@
 
 = render 'shared/issuable/search_bar', type: :boards, board: board
 #board-app.boards-app.position-relative{ "v-cloak" => "true", data: board_data, ":class" => "{ 'is-compact': detailIssueVisible }" }
-  - if Feature.enabled?(:boards_with_swimlanes, current_board_parent, default_enabled: true) || Feature.enabled?(:graphql_board_lists, current_board_parent)
-    %board-content{ "v-cloak" => "true",
-      "ref" => "board_content",
-      ":lists" => "state.lists",
-      ":can-admin-list" => can_admin_list,
-      ":disabled" => "disabled" }
-  - else
-    .boards-list.w-100.py-3.px-2.text-nowrap{ data: { qa_selector: "boards_list" } }
-      .boards-app-loading.w-100.text-center{ "v-if" => "loading" }
-        = loading_icon(css_class: 'gl-mb-3')
-      %board{ "v-cloak" => "true",
-        "v-for" => "list in state.lists",
-        "ref" => "board",
-        ":can-admin-list" => can_admin_list,
-        ":list" => "list",
-        ":disabled" => "disabled",
-        ":key" => "list.id" }
+  %board-content{ "v-cloak" => "true",
+    "ref" => "board_content",
+    ":lists" => "state.lists",
+    ":can-admin-list" => can_admin_list,
+    ":disabled" => "disabled",
+    data: { qa_selector: "boards_list" } }
   = render "shared/boards/components/sidebar", group: group
   %board-settings-sidebar{ ":can-admin-list" => can_admin_list }
   - if @project

@@ -72,7 +72,7 @@ RSpec.describe Ci::PipelinesFinder do
         create(:ci_sources_pipeline, pipeline: child_pipeline, source_pipeline: parent_pipeline)
       end
 
-      it 'filters out child pipelines and show only the parents' do
+      it 'filters out child pipelines and shows only the parents by default' do
         is_expected.to eq([parent_pipeline])
       end
     end
@@ -192,6 +192,21 @@ RSpec.describe Ci::PipelinesFinder do
 
       it 'returns deployments with matched updated_at' do
         is_expected.to match_array([pipeline1])
+      end
+    end
+
+    context 'when iids filter is specified' do
+      let(:params) { { iids: [pipeline1.iid, pipeline3.iid] } }
+      let!(:pipeline1) { create(:ci_pipeline, project: project) }
+      let!(:pipeline2) { create(:ci_pipeline, project: project) }
+      let!(:pipeline3) { create(:ci_pipeline, project: project, source: :parent_pipeline) }
+
+      it 'returns matches pipelines' do
+        is_expected.to match_array([pipeline1, pipeline3])
+      end
+
+      it 'does not fitler out child pipelines' do
+        is_expected.to include(pipeline3)
       end
     end
 

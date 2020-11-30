@@ -58,7 +58,7 @@ module MergeRequests
       return unless project.jira_subscription_exists?
 
       if Atlassian::JiraIssueKeyExtractor.has_keys?(merge_request.title, merge_request.description)
-        JiraConnect::SyncMergeRequestWorker.perform_async(merge_request.id)
+        JiraConnect::SyncMergeRequestWorker.perform_async(merge_request.id, Atlassian::JiraConnect::Client.generate_update_sequence_id)
       end
     end
 

@@ -707,6 +707,22 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: github_importer:github_import_import_pull_request_merged_by
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
+- :name: github_importer:github_import_import_pull_request_review
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
 - :name: github_importer:github_import_refresh_import_jid
   :feature_category: :importers
   :has_external_dependencies:
@@ -756,6 +772,22 @@
   :idempotent:
   :tags: []
 - :name: github_importer:github_import_stage_import_pull_requests
+  :feature_category: :importers
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
+- :name: github_importer:github_import_stage_import_pull_requests_merged_by
+  :feature_category: :importers
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
+- :name: github_importer:github_import_stage_import_pull_requests_reviews
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low
@@ -1609,7 +1641,7 @@
   :urgency: :low
   :resource_boundary: :cpu
   :weight: 2
-  :idempotent:
+  :idempotent: true
   :tags: []
 - :name: invalid_gpg_signature_update
   :feature_category: :source_code_management
@@ -1846,6 +1878,14 @@
   :resource_boundary: :memory
   :weight: 1
   :idempotent:
+  :tags: []
+- :name: project_schedule_bulk_repository_shard_moves
+  :feature_category: :gitaly
+  :has_external_dependencies:
+  :urgency: :throttled
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: project_service
   :feature_category: :integrations

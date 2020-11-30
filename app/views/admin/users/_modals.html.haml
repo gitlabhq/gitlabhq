@@ -1,10 +1,5 @@
 #user-modal
 #modal-texts.hidden{ "hidden": true, "aria-hidden": true }
-  %div{ data: { modal: "deactivate",
-    title: s_("AdminUsers|Deactivate User %{username}?"),
-    action: s_("AdminUsers|Deactivate") } }
-    = render partial: 'admin/users/user_deactivation_effects'
-
   %div{ data: { modal: "delete",
     title: s_("AdminUsers|Delete User %{username}?"),
     action: s_('AdminUsers|Delete user'),

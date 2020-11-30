@@ -42,10 +42,6 @@ class Projects::BranchesController < Projects::ApplicationController
     end
   end
 
-  def recent
-    @branches = @repository.recent_branches
-  end
-
   def diverging_commit_counts
     respond_to do |format|
       format.json do

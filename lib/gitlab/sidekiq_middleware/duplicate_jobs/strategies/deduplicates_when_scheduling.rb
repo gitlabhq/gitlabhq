@@ -13,7 +13,7 @@ module Gitlab
             if deduplicatable_job? && check! && duplicate_job.duplicate?
               job['duplicate-of'] = duplicate_job.existing_jid
 
-              if duplicate_job.droppable?
+              if duplicate_job.idempotent?
                 Gitlab::SidekiqLogging::DeduplicationLogger.instance.log(
                   job, "dropped #{strategy_name}", duplicate_job.options)
                 return false

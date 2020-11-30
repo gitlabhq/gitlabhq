@@ -49,6 +49,8 @@ module Types
           description: 'ID of the merge request target project'
     field :source_branch, GraphQL::STRING_TYPE, null: false,
           description: 'Source branch of the merge request'
+    field :source_branch_protected, GraphQL::BOOLEAN_TYPE, null: false, calls_gitaly: true,
+          description: 'Indicates if the source branch is protected'
     field :target_branch, GraphQL::STRING_TYPE, null: false,
           description: 'Target branch of the merge request'
     field :work_in_progress, GraphQL::BOOLEAN_TYPE, method: :work_in_progress?, null: false,
@@ -193,6 +195,10 @@ module Types
 
     def commit_count
       object&.metrics&.commits_count
+    end
+
+    def source_branch_protected
+      object.source_project.present? && ProtectedBranch.protected?(object.source_project, object.source_branch)
     end
   end
 end

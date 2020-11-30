@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rouge/plugins/common_mark'
+require "asciidoctor/extensions/asciidoctor_kroki/extension"
 
 # Generated HTML is transformed back to GFM by app/assets/javascripts/behaviors/markdown/nodes/code_block.js
 module Banzai
@@ -14,7 +15,7 @@ module Banzai
       LANG_PARAMS_ATTR = 'data-lang-params'
 
       def call
-        doc.search('pre:not([data-math-style]):not([data-mermaid-style]) > code').each do |node|
+        doc.search('pre:not([data-math-style]):not([data-mermaid-style]):not([data-kroki-style]) > code').each do |node|
           highlight_node(node)
         end
 
@@ -86,7 +87,7 @@ module Banzai
       end
 
       def use_rouge?(language)
-        %w(math mermaid plantuml suggestion).exclude?(language)
+        (%w(math suggestion) + ::AsciidoctorExtensions::Kroki::SUPPORTED_DIAGRAM_NAMES).exclude?(language)
       end
     end
   end

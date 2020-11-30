@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Continuous Integration
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -197,14 +197,14 @@ karma:
 
 ### `stages`
 
-`stages` is used to define stages that contain jobs and is defined
-globally for the pipeline.
+Use `stages` to define stages that contain groups of jobs. `stages` is defined globally
+for the pipeline. Use [`stage`](#stage) in a job to define which stage the job is
+part of.
 
 The order of the `stages` items defines the execution order for jobs:
 
-1. Jobs in the same stage are run in parallel.
-1. Jobs in the next stage are run after the jobs from the previous stage
-   complete successfully.
+- Jobs in the same stage run in parallel.
+- Jobs in the next stage run after the jobs from the previous stage complete successfully.
 
 For example:
 
@@ -215,18 +215,21 @@ stages:
   - deploy
 ```
 
-1. First, all jobs of `build` are executed in parallel.
-1. If all jobs of `build` succeed, the `test` jobs are executed in parallel.
-1. If all jobs of `test` succeed, the `deploy` jobs are executed in parallel.
-1. If all jobs of `deploy` succeed, the commit is marked as `passed`.
-1. If any of the previous jobs fails, the commit is marked as `failed` and no
-   jobs of further stage are executed.
+1. All jobs in `build` execute in parallel.
+1. If all jobs in `build` succeed, the `test` jobs execute in parallel.
+1. If all jobs in `test` succeed, the `deploy` jobs execute in parallel.
+1. If all jobs in `deploy` succeed, the pipeline is marked as `passed`.
 
-There are also two edge cases worth mentioning:
+If any job fails, the pipeline is marked as `failed` and jobs in later stages do not
+start. Jobs in the current stage are not stopped and continue to run.
 
-1. If no `stages` are defined in `.gitlab-ci.yml`, then the `build`,
-   `test` and `deploy` can be used as job's stage by default.
-1. If a job does not specify a `stage`, the job is assigned the `test` stage.
+If no `stages` are defined in `.gitlab-ci.yml`, then `build`, `test` and `deploy`
+are the default pipeline stages.
+
+If a job does not specify a [`stage`](#stage), the job is assigned the `test` stage.
+
+To make a job start earlier and ignore the stage order, use
+the [`needs`](#needs) keyword.
 
 ### `workflow:rules`
 

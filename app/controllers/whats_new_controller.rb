@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class WhatsNewController < ApplicationController
-  include Gitlab::WhatsNew
-
   skip_before_action :authenticate_user!
 
   before_action :check_feature_flag, :check_valid_page_param, :set_pagination_headers
@@ -12,7 +10,7 @@ class WhatsNewController < ApplicationController
   def index
     respond_to do |format|
       format.js do
-        render json: whats_new_release_items(page: current_page)
+        render json: most_recent_items
       end
     end
   end
@@ -27,18 +25,19 @@ class WhatsNewController < ApplicationController
     render_404 if current_page < 1
   end
 
-  def set_pagination_headers
-    response.set_header('X-Next-Page', next_page)
-  end
-
   def current_page
     params[:page]&.to_i || 1
   end
 
-  def next_page
-    next_page = current_page + 1
-    next_index = next_page - 1
+  def most_recent
+    @most_recent ||= ReleaseHighlight.paginated(page: current_page)
+  end
 
-    next_page if whats_new_file_paths[next_index]
+  def most_recent_items
+    most_recent[:items].map {|item| Gitlab::WhatsNew::ItemPresenter.present(item) }
+  end
+
+  def set_pagination_headers
+    response.set_header('X-Next-Page', most_recent[:next_page])
   end
 end

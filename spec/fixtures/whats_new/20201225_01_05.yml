@@ -1,3 +1,10 @@
 ---
 - title: bright and sunshinin' day
+  self-managed: true
+  gitlab-com: false
+  packages: ["Premium", "Ultimate"]
   release: '01.05'
+- title: I think I can make it now the pain is gone
+  self-managed: false
+  gitlab-com: true
+  packages: ["Premium", "Ultimate"]

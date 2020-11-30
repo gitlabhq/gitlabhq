@@ -188,9 +188,9 @@ describe('Reports store utils', () => {
   describe('countRecentlyFailedTests', () => {
     it('counts tests with more than one recent failure in a report', () => {
       const report = {
-        new_failures: [{ recent_failures: 2 }],
-        existing_failures: [{ recent_failures: 1 }],
-        resolved_failures: [{ recent_failures: 20 }, { recent_failures: 5 }],
+        new_failures: [{ recent_failures: { count: 2 } }],
+        existing_failures: [{ recent_failures: { count: 1 } }],
+        resolved_failures: [{ recent_failures: { count: 20 } }, { recent_failures: { count: 5 } }],
       };
       const result = utils.countRecentlyFailedTests(report);
 
@@ -200,14 +200,17 @@ describe('Reports store utils', () => {
     it('counts tests  with more than one recent failure in an array of reports', () => {
       const reports = [
         {
-          new_failures: [{ recent_failures: 2 }],
-          existing_failures: [{ recent_failures: 20 }, { recent_failures: 5 }],
-          resolved_failures: [{ recent_failures: 2 }],
+          new_failures: [{ recent_failures: { count: 2 } }],
+          existing_failures: [
+            { recent_failures: { count: 20 } },
+            { recent_failures: { count: 5 } },
+          ],
+          resolved_failures: [{ recent_failures: { count: 2 } }],
         },
         {
-          new_failures: [{ recent_failures: 8 }, { recent_failures: 14 }],
-          existing_failures: [{ recent_failures: 1 }],
-          resolved_failures: [{ recent_failures: 7 }, { recent_failures: 5 }],
+          new_failures: [{ recent_failures: { count: 8 } }, { recent_failures: { count: 14 } }],
+          existing_failures: [{ recent_failures: { count: 1 } }],
+          resolved_failures: [{ recent_failures: { count: 7 } }, { recent_failures: { count: 5 } }],
         },
       ];
       const result = utils.countRecentlyFailedTests(reports);

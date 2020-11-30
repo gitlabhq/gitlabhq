@@ -65,11 +65,7 @@ export default {
     polyfillSticky(this.$el);
   },
   methods: {
-    ...mapActions('diffs', [
-      'setInlineDiffViewType',
-      'setParallelDiffViewType',
-      'toggleShowTreeList',
-    ]),
+    ...mapActions('diffs', ['setInlineDiffViewType', 'setParallelDiffViewType', 'setShowTreeList']),
     expandAllFiles() {
       eventHub.$emit(EVT_EXPAND_ALL_FILES);
     },
@@ -92,7 +88,7 @@ export default {
         class="gl-mr-3 js-toggle-tree-list"
         :title="toggleFileBrowserTitle"
         :selected="showTreeList"
-        @click="toggleShowTreeList"
+        @click="setShowTreeList({ showTreeList: !showTreeList })"
       />
       <gl-sprintf
         v-if="showDropdowns"

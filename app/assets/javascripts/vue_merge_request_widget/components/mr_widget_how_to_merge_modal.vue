@@ -94,7 +94,13 @@ export default {
 </script>
 
 <template>
-  <gl-modal modal-id="modal-merge-info" :title="$options.i18n.title" no-fade hide-footer>
+  <gl-modal
+    modal-id="modal-merge-info"
+    :no-enforce-focus="true"
+    :title="$options.i18n.title"
+    no-fade
+    hide-footer
+  >
     <p>
       <strong>
         {{ $options.i18n.steps.step1.label }}

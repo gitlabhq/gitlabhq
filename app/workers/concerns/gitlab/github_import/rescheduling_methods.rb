@@ -6,7 +6,7 @@ module Gitlab
     # importing GitHub projects.
     module ReschedulingMethods
       # project_id - The ID of the GitLab project to import the note into.
-      # hash - A Hash containing the details of the GitHub object to imoprt.
+      # hash - A Hash containing the details of the GitHub object to import.
       # notify_key - The Redis key to notify upon completion, if any.
       # rubocop: disable CodeReuse/ActiveRecord
       def perform(project_id, hash, notify_key = nil)

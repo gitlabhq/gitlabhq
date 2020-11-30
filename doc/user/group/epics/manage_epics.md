@@ -2,7 +2,7 @@
 type: howto
 stage: Plan
 group: Product Planning
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 <!-- When adding a new h2 section here, remember to mention it in index.md#manage-epics -->
@@ -14,42 +14,28 @@ to them.
 
 ## Create an epic
 
-A paginated list of epics is available in each group from where you can create
-a new epic. The list of epics includes also epics from all subgroups of the
-selected group. From your group page:
+> - The New Epic form [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211533) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
+> - In [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/issues/229621) and later, the New Epic button on the Epics list opens the New Epic form.
 
-### Create an epic from the epic list
+To create an epic in the group you're in:
 
-To create an epic from the epic list, in a group:
+1. Get to the New Epic form:
+   - From the **Epics** list in your group, select the **New Epic** button.
+   - From an epic in your group, select the **New Epic** button.
+   - From anywhere, in the top menu, select **New...** (**{plus-square}**) **> New epic**.
 
-1. Go to **{epic}** **Epics**.
-1. Select **New epic**.
-1. Enter a descriptive title.
-1. Select **Create epic**.
+     ![New epic from an open epic](img/new_epic_from_groups_v13.7.png)
 
-### Access the New Epic form
+1. Fill in these fields:
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211533) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
+   - Title
+   - Description
+   - [Confidentiality checkbox](#make-an-epic-confidential)
+   - Labels
+   - Start date
+   - Due date
 
-There are two ways to get to the New Epic form and create an epic in the group you're in:
-
-- From an epic in your group, select **New Epic**.
-- From anywhere, in the top menu, select **plus** (**{plus-square}**) **> New epic**.
-
-  ![New epic from an open epic](img/new_epic_from_groups_v13.2.png)
-
-### Elements of the New Epic form
-
-When you're creating a new epic, these are the fields you can fill in:
-
-- Title
-- Description
-- Confidentiality checkbox
-- Labels
-- Start date
-- Due date
-
-![New epic form](img/new_epic_form_v13.2.png)
+1. Select **Create epic**. You are taken to view the newly created epic.
 
 ## Edit an epic
 

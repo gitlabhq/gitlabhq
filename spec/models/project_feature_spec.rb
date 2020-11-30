@@ -40,7 +40,7 @@ RSpec.describe ProjectFeature do
   end
 
   context 'public features' do
-    features = %w(issues wiki builds merge_requests snippets repository metrics_dashboard)
+    features = %w(issues wiki builds merge_requests snippets repository metrics_dashboard operations)
 
     features.each do |feature|
       it "does not allow public access level for #{feature}" do

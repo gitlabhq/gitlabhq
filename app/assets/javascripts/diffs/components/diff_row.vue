@@ -157,10 +157,10 @@ export default {
             "
           />
         </div>
-        <div :class="classNameMapCellLeft" class="diff-td diff-line-num old_line">
+        <div v-if="inline" :class="classNameMapCellLeft" class="diff-td diff-line-num old_line">
           <a
-            v-if="line.left.old_line"
-            :data-linenumber="line.left.old_line"
+            v-if="line.left.new_line"
+            :data-linenumber="line.left.new_line"
             :href="line.lineHrefOld"
             @click="setHighlightedRow(line.lineCode)"
           >
@@ -179,21 +179,14 @@ export default {
       </template>
       <template v-else>
         <div data-testid="leftEmptyCell" class="diff-td diff-line-num old_line empty-cell"></div>
-        <div class="diff-td diff-line-num old_line empty-cell"></div>
+        <div v-if="inline" class="diff-td diff-line-num old_line empty-cell"></div>
         <div class="diff-td line-coverage left-side empty-cell"></div>
         <div class="diff-td line_content with-coverage parallel left-side empty-cell"></div>
       </template>
     </div>
-    <div
-      v-if="!inline || (line.right && Boolean(line.right.type))"
-      class="diff-grid-right right-side"
-    >
+    <div v-if="!inline" class="diff-grid-right right-side">
       <template v-if="line.right">
-        <div
-          :class="classNameMapCellRight"
-          data-testid="rightLineNumber"
-          class="diff-td diff-line-num new_line"
-        >
+        <div :class="classNameMapCellRight" class="diff-td diff-line-num new_line">
           <span
             v-if="shouldRenderCommentButton"
             v-gl-tooltip
@@ -230,15 +223,6 @@ export default {
               })
             "
           />
-        </div>
-        <div :class="classNameMapCellRight" class="diff-td diff-line-num new_line">
-          <a
-            v-if="line.right.new_line"
-            :data-linenumber="line.right.new_line"
-            :href="line.lineHrefNew"
-            @click="setHighlightedRow(line.lineCode)"
-          >
-          </a>
         </div>
         <div
           v-gl-tooltip.hover

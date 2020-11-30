@@ -13,6 +13,9 @@ class ApplicationSetting < ApplicationRecord
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
     'Admin Area > Settings > Metrics and profiling > Metrics - Grafana'
 
+  KROKI_URL_ERROR_MESSAGE = 'Please check your Kroki URL setting in ' \
+    'Admin Area > Settings > General > Kroki'
+
   add_authentication_token_field :runners_registration_token, encrypted: -> { Feature.enabled?(:application_settings_tokens_optional_encryption) ? :optional : :required }
   add_authentication_token_field :health_check_access_token
   add_authentication_token_field :static_objects_external_storage_auth_token
@@ -127,6 +130,11 @@ class ApplicationSetting < ApplicationRecord
             numericality: { greater_than_or_equal_to: 0 },
             presence: true,
             if: :unique_ips_limit_enabled
+
+  validates :kroki_url,
+            presence: { if: :kroki_enabled }
+
+  validate :validate_kroki_url, if: :kroki_enabled
 
   validates :plantuml_url,
             presence: true,
@@ -429,16 +437,19 @@ class ApplicationSetting < ApplicationRecord
   after_commit :expire_performance_bar_allowed_user_ids_cache, if: -> { previous_changes.key?('performance_bar_allowed_group_id') }
 
   def validate_grafana_url
-    unless parsed_grafana_url
-      self.errors.add(
-        :grafana_url,
-        "must be a valid relative or absolute URL. #{GRAFANA_URL_ERROR_MESSAGE}"
-      )
-    end
+    validate_url(parsed_grafana_url, :grafana_url, GRAFANA_URL_ERROR_MESSAGE)
   end
 
   def grafana_url_absolute?
     parsed_grafana_url&.absolute?
+  end
+
+  def validate_kroki_url
+    validate_url(parsed_kroki_url, :kroki_url, KROKI_URL_ERROR_MESSAGE)
+  end
+
+  def kroki_url_absolute?
+    parsed_kroki_url&.absolute?
   end
 
   def sourcegraph_url_is_com?
@@ -502,6 +513,24 @@ class ApplicationSetting < ApplicationRecord
 
   def parsed_grafana_url
     @parsed_grafana_url ||= Gitlab::Utils.parse_url(grafana_url)
+  end
+
+  def parsed_kroki_url
+    @parsed_kroki_url ||= Gitlab::UrlBlocker.validate!(kroki_url, schemes: %w(http https), enforce_sanitization: true)[0]
+  rescue Gitlab::UrlBlocker::BlockedUrlError => error
+    self.errors.add(
+      :kroki_url,
+      "is not valid. #{error}"
+    )
+  end
+
+  def validate_url(parsed_url, name, error_message)
+    unless parsed_url
+      self.errors.add(
+        name,
+        "must be a valid relative or absolute URL. #{error_message}"
+      )
+    end
   end
 end
 

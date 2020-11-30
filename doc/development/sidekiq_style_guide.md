@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Sidekiq Style Guide
@@ -249,26 +249,6 @@ module AuthorizedProjectUpdate
     # ...
   end
 end
-```
-
-#### Troubleshooting
-
-If the automatic deduplication were to cause issues in certain
-queues. This can be temporarily disabled by enabling a feature flag
-named `disable_<queue name>_deduplication`. For example to disable
-deduplication for the `AuthorizedProjectsWorker`, we would enable the
-feature flag `disable_authorized_projects_deduplication`.
-
-From ChatOps:
-
-```shell
-/chatops run feature set disable_authorized_projects_deduplication true
-```
-
-From the rails console:
-
-```ruby
-Feature.enable!(:disable_authorized_projects_deduplication)
 ```
 
 ## Limited capacity worker

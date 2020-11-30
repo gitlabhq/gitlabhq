@@ -456,6 +456,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(count_data[:projects]).to eq(4)
       expect(count_data[:projects_asana_active]).to eq(0)
       expect(count_data[:projects_prometheus_active]).to eq(1)
+      expect(count_data[:projects_jenkins_active]).to eq(1)
       expect(count_data[:projects_jira_active]).to eq(4)
       expect(count_data[:projects_jira_server_active]).to eq(2)
       expect(count_data[:projects_jira_cloud_active]).to eq(2)
@@ -1122,6 +1123,12 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
       counter.track_web_ide_edit_action(author: user3, time: time - 3.days)
       counter.track_snippet_editor_edit_action(author: user3)
+
+      counter.track_sse_edit_action(author: user1)
+      counter.track_sse_edit_action(author: user1)
+      counter.track_sse_edit_action(author: user2)
+      counter.track_sse_edit_action(author: user3)
+      counter.track_sse_edit_action(author: user2, time: time - 3.days)
     end
 
     it 'returns the distinct count of user actions within the specified time period' do
@@ -1134,7 +1141,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           action_monthly_active_users_web_ide_edit: 2,
           action_monthly_active_users_sfe_edit: 2,
           action_monthly_active_users_snippet_editor_edit: 2,
-          action_monthly_active_users_ide_edit: 3
+          action_monthly_active_users_ide_edit: 3,
+          action_monthly_active_users_sse_edit: 3
         }
       )
     end
@@ -1235,7 +1243,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     subject { described_class.redis_hll_counters }
 
     let(:categories) { ::Gitlab::UsageDataCounters::HLLRedisCounter.categories }
-    let(:ineligible_total_categories) { %w[source_code testing ci_secrets_management incident_management_alerts] }
+    let(:ineligible_total_categories) { %w[source_code testing ci_secrets_management incident_management_alerts snippets] }
 
     it 'has all known_events' do
       expect(subject).to have_key(:redis_hll_counters)

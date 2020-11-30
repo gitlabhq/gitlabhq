@@ -4,7 +4,9 @@ require 'spec_helper'
 
 RSpec.describe 'Service Desk Issue Tracker', :js do
   let(:project) { create(:project, :private, service_desk_enabled: true) }
-  let(:user) { create(:user) }
+
+  let_it_be(:user) { create(:user) }
+  let_it_be(:support_bot) { User.support_bot }
 
   before do
     # The following two conditions equate to Gitlab::ServiceDesk.supported == true
@@ -24,6 +26,16 @@ RSpec.describe 'Service Desk Issue Tracker', :js do
 
     it 'can navigate to the service desk from link in the sidebar' do
       expect(page).to have_content('Use Service Desk to connect with your users')
+    end
+  end
+
+  context 'issue page' do
+    let(:service_desk_issue) { create(:issue, project: project, author: support_bot, service_desk_reply_to: 'service.desk@example.com') }
+
+    it 'shows service_desk_reply_to in issue header' do
+      visit project_issue_path(project, service_desk_issue)
+
+      expect(page).to have_text('by service.desk@example.com via GitLab Support Bot')
     end
   end
 
@@ -66,10 +78,10 @@ RSpec.describe 'Service Desk Issue Tracker', :js do
       end
 
       context 'when there are issues' do
-        let(:support_bot) { User.support_bot }
-        let(:other_user) { create(:user) }
-        let!(:service_desk_issue) { create(:issue, project: project, author: support_bot) }
-        let!(:other_user_issue) { create(:issue, project: project, author: other_user) }
+        let_it_be(:project) { create(:project, :private, service_desk_enabled: true) }
+        let_it_be(:other_user) { create(:user) }
+        let_it_be(:service_desk_issue) { create(:issue, project: project, author: support_bot, service_desk_reply_to: 'service.desk@example.com') }
+        let_it_be(:other_user_issue) { create(:issue, project: project, author: other_user) }
 
         describe 'service desk info content' do
           before do
@@ -93,6 +105,10 @@ RSpec.describe 'Service Desk Issue Tracker', :js do
 
           it 'only displays issues created by support bot' do
             expect(page).to have_selector('.issues-list .issue', count: 1)
+          end
+
+          it 'shows service_desk_reply_to in issues list' do
+            expect(page).to have_text('by service.desk@example.com via GitLab Support Bot')
           end
         end
 

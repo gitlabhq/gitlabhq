@@ -1,7 +1,7 @@
 ---
 stage: fulfillment
 group: fulfillment
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: index, reference
 ---
 
@@ -25,6 +25,8 @@ When applied to:
 - A **personal userspace**, all projects contain features with the
   subscription applied, but as it's not a group, group features aren't available.
 
+You can read more about [common misconceptions](https://about.gitlab.com/handbook/marketing/strategic-marketing/enablement/dotcom-subscriptions/#common-misconceptions) regarding a GitLab.com subscription to help avoid issues.
+
 ## Choose a GitLab.com tier
 
 Pricing is [tier-based](https://about.gitlab.com/pricing/), allowing you to choose
@@ -40,7 +42,7 @@ Applied only to groups.
 A GitLab.com subscription uses a concurrent (_seat_) model. You pay for a
 subscription according to the maximum number of users enabled at once. You can
 add and remove users during the subscription period, as long as the total users
-at any given time is within your subscription count.
+at any given time doesn't exceed the subscription count.
 
 Every occupied seat is counted in the subscription, with the following exception:
 
@@ -97,7 +99,7 @@ to the **Billing** section of the relevant namespace:
 
 - **For individuals**: Visit the [billing page](https://gitlab.com/profile/billings)
   under your profile.
-- **For groups**: From the group page (*not* from a project within the group), go to **Settings > Billing**.
+- **For groups**: From the group page (*not* from a project in the group), go to **Settings > Billing**.
 
   NOTE: **Note:**
   You must have Owner level [permissions](../../user/permissions.md) to view a group's billing page.
@@ -107,11 +109,12 @@ to the **Billing** section of the relevant namespace:
   | Field                   | Description                                                                                                                             |
   |-------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
   | **Seats in subscription**   | If this is a paid plan, represents the number of seats you've paid to support in your group.                                            |
-  | **Seats currently in use** | Number of active seats currently in use.                                                                                                |
+  | **Seats currently in use** | Number of seats in use.                                                                                                |
   | **Max seats used**          | Highest number of seats you've used. If this exceeds the seats in subscription, you may owe an additional fee for the additional users. |
   | **Seats owed**              | If your maximum seats used exceeds the seats in your subscription, you owe an additional fee for the users you've added.             |
   | **Subscription start date** | Date your subscription started. If this is for a Free plan, is the date you transitioned off your group's paid plan.                    |
   | **Subscription end date**   | Date your current subscription ends. Does not apply to Free plans.                                                                  |
+  | **Billable users list**   | List of users that belong to your group subscription. Does not apply to Free plans.                                                       |
 
 ## Renew your GitLab.com subscription
 
@@ -146,7 +149,7 @@ It's important to regularly review your user accounts, because:
 A GitLab subscription is valid for a specific number of users. For details, see
 [Choose the number of users](#choose-the-number-of-users).
 
-If the active user count exceeds the number included in the subscription, known
+If the number of [billable users](#view-your-gitlabcom-subscription) exceeds the number included in the subscription, known
 as the number of _users over license_, you must pay for the excess number of
 users either before renewal, or at the time of renewal. This is also known the
 _true up_ process.
@@ -215,6 +218,10 @@ To upgrade your [GitLab tier](https://about.gitlab.com/pricing/):
 
 When the purchase has been processed, you receive confirmation of your new subscription tier.
 
+## See your billable users list
+
+To see a list of your billable users on your GitLab group page go to **Settings > Billing**. This page provides information about your subscription and occupied seats for your group which is the list of billable users for your particular group.
+
 ## Subscription expiry
 
 When your subscription or trial expires, GitLab does not delete your data, but
@@ -262,7 +269,7 @@ pipelines aren't blocked after you have used all your CI minutes from your
 main quota. You can find pricing for additional CI/CD minutes in the
 [GitLab Customers Portal](https://customers.gitlab.com/plans). Additional minutes:
 
-- Are only used once the shared quota included in your subscription runs out.
+- Are only used after the shared quota included in your subscription runs out.
 - Roll over month to month.
 
 To purchase additional minutes for your group on GitLab.com:
@@ -288,17 +295,17 @@ Be aware that:
 
 - If you have purchased extra CI minutes before the purchase of a paid plan,
   we calculate a pro-rated charge for your paid plan. That means you may
-  be charged for less than one year since your subscription was previously
+  be charged for less than one year because your subscription was previously
   created with the extra CI minutes.
-- Once the extra CI minutes have been assigned to a Group, they can't be transferred
+- After the extra CI minutes have been assigned to a Group, they can't be transferred
   to a different Group.
 - If you have used more minutes than your default quota, these minutes will
   be deducted from your Additional Minutes quota immediately after your purchase of additional
   minutes.
 
-## Customers portal
+## Customers Portal
 
-GitLab provides a [customer portal](../index.md#customers-portal) where you can
+GitLab provides the [Customers Portal](../index.md#customers-portal) where you can
 manage your subscriptions and your account details.
 
 ## Contact Support

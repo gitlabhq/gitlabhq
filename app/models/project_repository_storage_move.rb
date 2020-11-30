@@ -50,7 +50,7 @@ class ProjectRepositoryStorageMove < ApplicationRecord
       block.call
 
       begin
-        storage_move.project.set_repository_read_only!
+        storage_move.project.set_repository_read_only!(skip_git_transfer_check: true)
       rescue => err
         errors.add(:project, err.message)
         next false

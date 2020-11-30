@@ -61,14 +61,14 @@ RSpec.describe Packages::PackageFile, type: :model do
     end
   end
 
-  describe '#update_file_metadata callback' do
+  describe '#update_file_store callback' do
     let_it_be(:package_file) { build(:package_file, :nuget, size: nil) }
 
     subject { package_file.save! }
 
     it 'updates metadata columns' do
       expect(package_file)
-        .to receive(:update_file_metadata)
+        .to receive(:update_file_store)
         .and_call_original
 
       # This expectation uses a stub because we can no longer test a change from

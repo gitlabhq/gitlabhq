@@ -1,0 +1,5 @@
+---
+title: Fix Jira Connect styles not loaded when startup_css is enabled
+merge_request: 47043
+author:
+type: fixed

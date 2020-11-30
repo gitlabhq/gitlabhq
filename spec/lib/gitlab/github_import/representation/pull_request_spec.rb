@@ -115,6 +115,7 @@ RSpec.describe Gitlab::GithubImport::Representation::PullRequest do
         milestone: double(:milestone, number: 4),
         user: double(:user, id: 4, login: 'alice'),
         assignee: double(:user, id: 4, login: 'alice'),
+        merged_by: double(:user, id: 4, login: 'alice'),
         created_at: created_at,
         updated_at: updated_at,
         merged_at: merged_at

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', :requires_admin do
+  RSpec.describe 'Create', :requires_admin, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/261793', type: :investigating } do
     describe 'View merge request merge-ref diff' do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|

@@ -174,12 +174,6 @@
 }
 
 .commit-actions {
-  @include media-breakpoint-up(sm) {
-    .fa-spinner {
-      font-size: 12px;
-    }
-  }
-
   .ci-status-icon svg {
     vertical-align: text-bottom;
   }

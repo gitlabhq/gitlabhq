@@ -88,5 +88,5 @@
   = yield :meta_tags
 
   = render 'layouts/google_analytics' if extra_config.has_key?('google_analytics_id')
-  = render 'layouts/piwik' if extra_config.has_key?('piwik_url') && extra_config.has_key?('piwik_site_id')
+  = render 'layouts/matomo' if extra_config.has_key?('matomo_url') && extra_config.has_key?('matomo_site_id')
   = render 'layouts/snowplow'

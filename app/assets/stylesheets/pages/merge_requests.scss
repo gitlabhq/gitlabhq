@@ -720,7 +720,7 @@ $mr-widget-min-height: 69px;
     z-index: 199;
     white-space: nowrap;
 
-    .dropdown-menu-toggle {
+    .gl-dropdown-toggle {
       width: auto;
       max-width: 170px;
 
@@ -1038,4 +1038,12 @@ $mr-widget-min-height: 69px;
 
 .diff-file-row.is-active {
   background-color: $gray-50;
+}
+
+.mr-conflict-loader {
+  max-width: 334px;
+
+  > svg {
+    vertical-align: middle;
+  }
 }

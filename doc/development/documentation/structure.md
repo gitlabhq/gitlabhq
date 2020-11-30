@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Style Guide
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 description: What to include in GitLab documentation pages.
 ---
 
@@ -53,7 +53,7 @@ in Google Search snippets. It may help to write the page intro first, and then r
 stage: Add the stage name here
 group: Add the group name here
 info: To determine the technical writer assigned to the Stage/Group associated with this page,
-see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Feature or Use Case Name **[TIER]** (1)

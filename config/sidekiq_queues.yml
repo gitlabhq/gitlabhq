@@ -250,6 +250,8 @@
   - 1
 - - project_import_schedule
   - 1
+- - project_schedule_bulk_repository_shard_moves
+  - 1
 - - project_service
   - 1
 - - project_template_export
@@ -305,6 +307,8 @@
 - - self_monitoring_project_delete
   - 2
 - - service_desk_email_receiver
+  - 1
+- - set_user_status_based_on_user_cap_setting
   - 1
 - - status_page_publish
   - 1

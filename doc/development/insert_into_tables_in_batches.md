@@ -1,7 +1,7 @@
 ---
 stage: Enablement
 group: Database
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 description: "Sometimes it is necessary to store large amounts of records at once, which can be inefficient
 when iterating collections and performing individual `save`s. With the arrival of `insert_all`
 in Rails 6, which operates at the row level (that is, using `Hash`es), GitLab has added a set

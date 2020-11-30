@@ -47,7 +47,7 @@ module Emails
     def service_desk_options(email_sender, email_type)
       {
         from: email_sender,
-        to: @issue.service_desk_reply_to
+        to: @issue.external_author
       }.tap do |options|
         next unless template_body = template_content(email_type)
 

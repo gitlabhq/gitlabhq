@@ -1,7 +1,7 @@
 ---
 stage: Enablement
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: howto
 ---
 
@@ -222,12 +222,6 @@ cd ruby-2.7.2
 ./configure --disable-install-rdoc
 make
 sudo make install
-```
-
-Then install the Bundler gem (a version below 2.x):
-
-```shell
-sudo gem install bundler --no-document --version '< 2'
 ```
 
 ## 3. Go

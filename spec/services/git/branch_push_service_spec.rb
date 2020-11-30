@@ -718,10 +718,10 @@ RSpec.describe Git::BranchPushService, services: true do
     end
 
     shared_examples 'enqueues Jira sync worker' do
-      specify do
+      specify :aggregate_failures do
         Sidekiq::Testing.fake! do
           expect(JiraConnect::SyncBranchWorker).to receive(:perform_async)
-                                                     .with(project.id, branch_to_sync, commits_to_sync)
+                                                     .with(project.id, branch_to_sync, commits_to_sync, kind_of(Numeric))
                                                      .and_call_original
 
           expect { subject.execute }.to change(JiraConnect::SyncBranchWorker.jobs, :size).by(1)

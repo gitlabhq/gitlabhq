@@ -4,6 +4,8 @@ import ActionComponent from './action_component.vue';
 import JobNameComponent from './job_name_component.vue';
 import { sprintf } from '~/locale';
 import delayedJobMixin from '~/jobs/mixins/delayed_job_mixin';
+import { accessors } from './accessors';
+import { REST } from './constants';
 
 /**
  * Renders the badge for the pipeline graph and the job's dropdown.
@@ -41,6 +43,11 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [delayedJobMixin],
+  inject: {
+    dataMethod: {
+      default: REST,
+    },
+  },
   props: {
     job: {
       type: Object,
@@ -71,10 +78,15 @@ export default {
     boundary() {
       return this.dropdownLength === 1 ? 'viewport' : 'scrollParent';
     },
+    detailsPath() {
+      return this.status[accessors[this.dataMethod].detailsPath];
+    },
+    hasDetails() {
+      return this.status[accessors[this.dataMethod].hasDetails];
+    },
     status() {
       return this.job && this.job.status ? this.job.status : {};
     },
-
     tooltipText() {
       const textBuilder = [];
       const { name: jobName } = this.job;
@@ -129,19 +141,23 @@ export default {
 };
 </script>
 <template>
-  <div class="ci-job-component" data-qa-selector="job_item_container">
+  <div
+    class="ci-job-component gl-display-flex gl-align-items-center gl-justify-content-space-between"
+    data-qa-selector="job_item_container"
+  >
     <gl-link
-      v-if="status.has_details"
+      v-if="hasDetails"
       v-gl-tooltip="{ boundary, placement: 'bottom', customClass: 'gl-pointer-events-none' }"
-      :href="status.details_path"
+      :href="detailsPath"
       :title="tooltipText"
       :class="jobClasses"
-      class="js-pipeline-graph-job-link qa-job-link menu-item"
+      class="js-pipeline-graph-job-link qa-job-link menu-item gl-text-gray-900 gl-active-text-decoration-none
+      gl-focus-text-decoration-none gl-hover-text-decoration-none"
       data-testid="job-with-link"
       @click.stop="hideTooltips"
       @mouseout="hideTooltips"
     >
-      <job-name-component :name="job.name" :status="job.status" />
+      <job-name-component :name="job.name" :status="job.status" :icon-size="24" />
     </gl-link>
 
     <div
@@ -153,7 +169,7 @@ export default {
       data-testid="job-without-link"
       @mouseout="hideTooltips"
     >
-      <job-name-component :name="job.name" :status="job.status" />
+      <job-name-component :name="job.name" :status="job.status" :icon-size="24" />
     </div>
 
     <action-component

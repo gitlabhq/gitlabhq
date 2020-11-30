@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: index, reference
 ---
 
@@ -315,9 +315,9 @@ only.
 However, if you remove the license, you immediately revert to Core
 features, and the instance become read / write again.
 
-## Customers portal
+## Customers Portal
 
-GitLab provides a [customer portal](../index.md#customers-portal) where you can
+GitLab provides the [Customers Portal](../index.md#customers-portal) where you can
 manage your subscriptions and your account details.
 
 ## Contact Support

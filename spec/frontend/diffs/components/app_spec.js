@@ -638,47 +638,47 @@ describe('diffs/components/app', () => {
     });
   });
 
-  describe('hideTreeListIfJustOneFile', () => {
-    let toggleShowTreeList;
+  describe('setTreeDisplay', () => {
+    let setShowTreeList;
 
     beforeEach(() => {
-      toggleShowTreeList = jest.fn();
+      setShowTreeList = jest.fn();
     });
 
     afterEach(() => {
       localStorage.removeItem('mr_tree_show');
     });
 
-    it('calls toggleShowTreeList when only 1 file', () => {
+    it('calls setShowTreeList when only 1 file', () => {
       createComponent({}, ({ state }) => {
         state.diffs.diffFiles.push({ sha: '123' });
       });
 
       wrapper.setMethods({
-        toggleShowTreeList,
+        setShowTreeList,
       });
 
-      wrapper.vm.hideTreeListIfJustOneFile();
+      wrapper.vm.setTreeDisplay();
 
-      expect(toggleShowTreeList).toHaveBeenCalledWith(false);
+      expect(setShowTreeList).toHaveBeenCalledWith({ showTreeList: false, saving: false });
     });
 
-    it('does not call toggleShowTreeList when more than 1 file', () => {
+    it('calls setShowTreeList with true when more than 1 file is in diffs array', () => {
       createComponent({}, ({ state }) => {
         state.diffs.diffFiles.push({ sha: '123' });
         state.diffs.diffFiles.push({ sha: '124' });
       });
 
       wrapper.setMethods({
-        toggleShowTreeList,
+        setShowTreeList,
       });
 
-      wrapper.vm.hideTreeListIfJustOneFile();
+      wrapper.vm.setTreeDisplay();
 
-      expect(toggleShowTreeList).not.toHaveBeenCalled();
+      expect(setShowTreeList).toHaveBeenCalledWith({ showTreeList: true, saving: false });
     });
 
-    it('does not call toggleShowTreeList when localStorage is set', () => {
+    it('calls setShowTreeList with localstorage value', () => {
       localStorage.setItem('mr_tree_show', 'true');
 
       createComponent({}, ({ state }) => {
@@ -686,12 +686,12 @@ describe('diffs/components/app', () => {
       });
 
       wrapper.setMethods({
-        toggleShowTreeList,
+        setShowTreeList,
       });
 
-      wrapper.vm.hideTreeListIfJustOneFile();
+      wrapper.vm.setTreeDisplay();
 
-      expect(toggleShowTreeList).not.toHaveBeenCalled();
+      expect(setShowTreeList).toHaveBeenCalledWith({ showTreeList: true, saving: false });
     });
   });
 

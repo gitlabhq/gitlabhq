@@ -8,6 +8,14 @@ module Resolvers
 
     argument_class ::Types::BaseArgument
 
+    def self.requires_argument!
+      @requires_argument = true
+    end
+
+    def self.field_options
+      super.merge(requires_argument: @requires_argument)
+    end
+
     def self.singular_type
       return unless type
 
@@ -107,6 +115,10 @@ module Resolvers
       # Complexity is not increased when searching by specific ID(s), because
       # complexity difference is minimal in this case.
       [args[:iid], args[:iids]].any? ? 0 : 0.01
+    end
+
+    def offset_pagination(relation)
+      ::Gitlab::Graphql::Pagination::OffsetActiveRecordRelationConnection.new(relation)
     end
 
     override :object

@@ -59,7 +59,7 @@ export default {
       href="#"
       role="button"
     >
-      <gl-icon aria-hidden="true" data-hidden="true" name="chevron-double-lg-right" :size="12" />
+      <gl-icon data-hidden="true" name="chevron-double-lg-right" :size="12" />
     </a>
   </div>
 </template>

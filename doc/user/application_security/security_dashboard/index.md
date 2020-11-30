@@ -2,7 +2,7 @@
 type: reference, howto
 stage: Secure
 group: Threat Insights
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # GitLab Security Dashboard, Security Center, and Vulnerability Reports **(ULTIMATE)**
@@ -249,7 +249,7 @@ to configure daily security scans.
 Each vulnerability report contains vulnerabilities from the latest scans that were merged
 into the default branch.
 
-![Vulnerability Report](img/group_vulnerability_report_v13_4.png)
+![Vulnerability Report](img/group_vulnerability_report_v13_7.png)
 
 You can filter which vulnerabilities the vulnerability report displays by:
 

@@ -341,7 +341,6 @@ export default {
             </select>
             <gl-icon
               name="chevron-down"
-              aria-hidden="true"
               data-hidden="true"
               class="gl-absolute gl-top-3 gl-right-3 gl-text-gray-500"
             />
@@ -573,7 +572,6 @@ export default {
             </select>
             <gl-icon
               name="chevron-down"
-              aria-hidden="true"
               data-hidden="true"
               class="gl-absolute gl-top-3 gl-right-3 gl-text-gray-500"
             />

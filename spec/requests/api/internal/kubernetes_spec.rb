@@ -137,9 +137,7 @@ RSpec.describe API::Internal::Kubernetes do
     include_examples 'agent authentication'
 
     context 'an agent is found' do
-      let!(:agent_token) { create(:cluster_agent_token) }
-
-      let(:agent) { agent_token.agent }
+      let_it_be(:agent_token) { create(:cluster_agent_token) }
 
       context 'project is public' do
         let(:project) { create(:project, :public) }
@@ -185,6 +183,16 @@ RSpec.describe API::Internal::Kubernetes do
           send_request(params: { id: project.id }, headers: { 'Authorization' => "Bearer #{agent_token.token}" })
 
           expect(response).to have_gitlab_http_status(:not_found)
+        end
+
+        context 'and agent belongs to project' do
+          let(:agent_token) { create(:cluster_agent_token, agent: create(:cluster_agent, project: project)) }
+
+          it 'returns 200' do
+            send_request(params: { id: project.id }, headers: { 'Authorization' => "Bearer #{agent_token.token}" })
+
+            expect(response).to have_gitlab_http_status(:success)
+          end
         end
       end
 

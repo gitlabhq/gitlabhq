@@ -16,6 +16,8 @@ module Gitlab
 
         # project - An instance of Project.
         def import(project)
+          info(project.id, message: "starting importer", importer: 'Importer::LfsObjectsImporter')
+
           waiter = Importer::LfsObjectsImporter
             .new(project, nil)
             .execute

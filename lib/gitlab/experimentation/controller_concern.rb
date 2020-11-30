@@ -67,6 +67,14 @@ module Gitlab
         ::Experiment.add_user(experiment_key, tracking_group(experiment_key), current_user)
       end
 
+      def record_experiment_conversion_event(experiment_key)
+        return if dnt_enabled?
+        return unless current_user
+        return unless Experimentation.enabled?(experiment_key)
+
+        ::Experiment.record_conversion_event(experiment_key, current_user)
+      end
+
       def experiment_tracking_category_and_group(experiment_key)
         "#{tracking_category(experiment_key)}:#{tracking_group(experiment_key, '_group')}"
       end

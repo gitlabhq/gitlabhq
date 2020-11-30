@@ -1,7 +1,7 @@
 ---
 stage: Growth
 group: Activation
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Experiment Guide
@@ -231,6 +231,39 @@ describe('event tracking', () => {
   });
 });
 ```
+
+### Record experiment user
+
+In addition to the anonymous tracking of events, we can also record which users have participated in which experiments and whether they were given the control experience or the experimental experience.
+
+The `record_experiment_user` helper method is available to all controllers, and it enables you to record these experiment participants (the current user) and which experience they were given:
+
+```ruby
+before_action do
+  record_experiment_user(:signup_flow)
+end
+```
+
+Subsequent calls to this method for the same experiment and the same user have no effect unless the user has gets enrolled into a different experience. This happens when we roll out the experimental experience to a greater percentage of users.
+
+Note that this data is completely separate from the [events tracking data](#implement-the-tracking-events). They are not linked together in any way.
+
+### Record experiment conversion event
+
+Along with the tracking of backend and frontend events and the [recording of experiment participants](#record-experiment-user), we can also record when a user performs the desired conversion event action. For example:
+
+- **Experimental experience:** Show an in-product nudge to see if it causes more people to sign up for trials.
+- **Conversion event:** The user starts a trial.
+
+The `record_experiment_conversion_event` helper method is available to all controllers, and enables us to easily record the conversion event for the current user, regardless of whether they are in the control or experimental group:
+
+```ruby
+before_action do
+  record_experiment_conversion_event(:signup_flow)
+end
+```
+
+Note that the use of this method requires that we have first [recorded the user as being part of the experiment](#record-experiment-user).
 
 ### Enable the experiment
 

@@ -14,8 +14,8 @@ module Gitlab
         Gitlab::Tracking.event(category, action.to_s, **args)
       end
 
-      def track_self_describing_event(schema_url, event_data_json, **args)
-        Gitlab::Tracking.self_describing_event(schema_url, event_data_json, **args)
+      def track_self_describing_event(schema_url, data:, **args)
+        Gitlab::Tracking.self_describing_event(schema_url, data: data, **args)
       end
     end
 
@@ -29,8 +29,8 @@ module Gitlab
         product_analytics.event(category, action, label: label, property: property, value: value, context: context)
       end
 
-      def self_describing_event(schema_url, event_data_json, context: nil)
-        snowplow.self_describing_event(schema_url, event_data_json, context: context)
+      def self_describing_event(schema_url, data:, context: nil)
+        snowplow.self_describing_event(schema_url, data: data, context: context)
       end
 
       def snowplow_options(group)

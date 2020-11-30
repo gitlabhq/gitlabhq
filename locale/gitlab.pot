@@ -180,6 +180,11 @@ msgid_plural "%d errors"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d error found:"
+msgid_plural "%d errors found:"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d exporter"
 msgid_plural "%d exporters"
 msgstr[0] ""
@@ -363,18 +368,6 @@ msgid "%{author_link} wrote:"
 msgstr ""
 
 msgid "%{authorsName}'s thread"
-msgstr ""
-
-msgid "%{code_open}\"johnsmith@example.com\": \"@johnsmith\"%{code_close} will add \"By %{link_open}@johnsmith%{link_close}\" to all issues and comments originally created by johnsmith@example.com, and will set %{link_open}@johnsmith%{link_close} as the assignee on all issues originally assigned to johnsmith@example.com."
-msgstr ""
-
-msgid "%{code_open}\"johnsmith@example.com\": \"John Smith\"%{code_close} will add \"By John Smith\" to all issues and comments originally created by johnsmith@example.com."
-msgstr ""
-
-msgid "%{code_open}\"johnsmith@example.com\": \"johnsm...@example.com\"%{code_close} will add \"By johnsm...@example.com\" to all issues and comments originally created by johnsmith@example.com. The email address or username is masked to ensure the user's privacy."
-msgstr ""
-
-msgid "%{code_open}\"johnsmith@example.com\": \"johnsmith@example.com\"%{code_close} will add \"By %{link_open}johnsmith@example.com%{link_close}\" to all issues and comments originally created by johnsmith@example.com. By default, the email address or username is masked to ensure the user's privacy. Use this option if you want to show the full email address."
 msgstr ""
 
 msgid "%{code_open}Masked%{code_close} variables are hidden in job logs (though they must match certain regexp requirements to do so)."
@@ -616,9 +609,6 @@ msgid "%{link_start}Start the title with %{draft_snippet} or %{wip_snippet}%{lin
 msgstr ""
 
 msgid "%{listToShow}, and %{awardsListLength} more."
-msgstr ""
-
-msgid "%{loadingIcon} Started"
 msgstr ""
 
 msgid "%{location} is missing required keys: %{keys}"
@@ -2137,10 +2127,10 @@ msgstr ""
 msgid "AdminUsers|Deactivate"
 msgstr ""
 
-msgid "AdminUsers|Deactivate User %{username}?"
+msgid "AdminUsers|Deactivate user"
 msgstr ""
 
-msgid "AdminUsers|Deactivate user"
+msgid "AdminUsers|Deactivate user %{username}?"
 msgstr ""
 
 msgid "AdminUsers|Deactivated"
@@ -2270,6 +2260,9 @@ msgid "AdminUsers|You are about to permanently delete the user %{username}. This
 msgstr ""
 
 msgid "AdminUsers|You can always block their account again if needed."
+msgstr ""
+
+msgid "AdminUsers|You can always re-activate their account, their data will remain intact."
 msgstr ""
 
 msgid "AdminUsers|You can always unblock their account, their data will remain intact."
@@ -2841,6 +2834,9 @@ msgstr ""
 msgid "Allow rendering of PlantUML diagrams in Asciidoc documents."
 msgstr ""
 
+msgid "Allow rendering of diagrams in AsciiDoc and Markdown documents using %{link}."
+msgstr ""
+
 msgid "Allow repository mirroring to be configured by project maintainers"
 msgstr ""
 
@@ -3118,9 +3114,6 @@ msgid "An error occurred while getting files for - %{branchId}"
 msgstr ""
 
 msgid "An error occurred while getting projects"
-msgstr ""
-
-msgid "An error occurred while importing project: %{details}"
 msgstr ""
 
 msgid "An error occurred while initializing path locks"
@@ -3451,6 +3444,12 @@ msgid "Apply changes"
 msgstr ""
 
 msgid "Apply suggestion"
+msgstr ""
+
+msgid "Apply suggestion commit message"
+msgstr ""
+
+msgid "Apply suggestion on %{fileName}"
 msgstr ""
 
 msgid "Apply suggestions"
@@ -4103,6 +4102,9 @@ msgstr ""
 msgid "AutoRemediation|%{mrsCount} ready for review"
 msgstr ""
 
+msgid "AutoRemediation|Auto-fix solution available"
+msgstr ""
+
 msgid "AutoRemediation|Auto-fix solutions"
 msgstr ""
 
@@ -4391,10 +4393,16 @@ msgstr ""
 msgid "BillingPlan|Upgrade"
 msgstr ""
 
+msgid "Billing|An email address is only visible for users managed through Group Managed Accounts."
+msgstr ""
+
 msgid "Billing|An error occurred while loading billable members list"
 msgstr ""
 
 msgid "Billing|No users to display."
+msgstr ""
+
+msgid "Billing|Private"
 msgstr ""
 
 msgid "Billing|Updated live"
@@ -5347,12 +5355,6 @@ msgstr ""
 msgid "Chinese language support using"
 msgstr ""
 
-msgid "Choose %{strong_open}Create archive%{strong_close} and wait for archiving to complete."
-msgstr ""
-
-msgid "Choose %{strong_open}Next%{strong_close} at the bottom of the page."
-msgstr ""
-
 msgid "Choose a branch/tag (e.g. %{master}) or enter a commit (e.g. %{sha}) to see what's changed or to create a merge request."
 msgstr ""
 
@@ -5605,12 +5607,6 @@ msgstr ""
 msgid "Click %{link_to} to view the request."
 msgstr ""
 
-msgid "Click the %{strong_open}Download%{strong_close} button and wait for downloading to complete."
-msgstr ""
-
-msgid "Click the %{strong_open}Select none%{strong_close} button on the right, since we only need \"Google Code Project Hosting\"."
-msgstr ""
-
 msgid "Click the button below to begin the install process by navigating to the Kubernetes page"
 msgstr ""
 
@@ -5654,9 +5650,6 @@ msgid "Clone with SSH"
 msgstr ""
 
 msgid "Close"
-msgstr ""
-
-msgid "Close %{display_issuable_type}"
 msgstr ""
 
 msgid "Close %{issueType}"
@@ -8246,9 +8239,6 @@ msgstr ""
 msgid "Customize how FogBugz email addresses and usernames are imported into GitLab. In the next step, you'll be able to select the projects you want to import."
 msgstr ""
 
-msgid "Customize how Google Code email addresses and usernames are imported into GitLab. In the next step, you'll be able to select the projects you want to import."
-msgstr ""
-
 msgid "Customize icon"
 msgstr ""
 
@@ -8578,6 +8568,9 @@ msgstr ""
 msgid "DastProfiles|No profiles created yet"
 msgstr ""
 
+msgid "DastProfiles|Not Validated"
+msgstr ""
+
 msgid "DastProfiles|Passive"
 msgstr ""
 
@@ -8642,6 +8635,9 @@ msgid "DastProfiles|Username"
 msgstr ""
 
 msgid "DastProfiles|Username form field"
+msgstr ""
+
+msgid "DastProfiles|Validated"
 msgstr ""
 
 msgid "DastSiteValidation|Copy HTTP header to clipboard"
@@ -8807,9 +8803,6 @@ msgid "Default projects limit"
 msgstr ""
 
 msgid "Default stages"
-msgstr ""
-
-msgid "Default: Directly import the Google Code email address or username"
 msgstr ""
 
 msgid "Default: Map a FogBugz account ID to a full name"
@@ -9789,9 +9782,6 @@ msgstr ""
 msgid "Do not display offers from third parties within GitLab"
 msgstr ""
 
-msgid "Do you want to customize how Google Code email addresses and usernames are imported into GitLab?"
-msgstr ""
-
 msgid "Dockerfile"
 msgstr ""
 
@@ -10228,6 +10218,9 @@ msgid "Enable HTML emails"
 msgstr ""
 
 msgid "Enable Incident Management inbound alert limit"
+msgstr ""
+
+msgid "Enable Kroki"
 msgstr ""
 
 msgid "Enable PlantUML"
@@ -11361,11 +11354,6 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
-msgid "Failed %d time in the last 14 days"
-msgid_plural "Failed %d times in the last 14 days"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "Failed Jobs"
 msgstr ""
 
@@ -12064,12 +12052,6 @@ msgstr ""
 msgid "Find file"
 msgstr ""
 
-msgid "Find the downloaded ZIP file and decompress it."
-msgstr ""
-
-msgid "Find the newly extracted %{code_open}Takeout/Google Code Project Hosting/GoogleCodeProjectHosting.json%{code_close} file."
-msgstr ""
-
 msgid "Fingerprint"
 msgstr ""
 
@@ -12137,9 +12119,6 @@ msgid "FogBugz import"
 msgstr ""
 
 msgid "Folder/%{name}"
-msgstr ""
-
-msgid "Follow the steps below to export your Google Code project data."
 msgstr ""
 
 msgid "Font Color"
@@ -12226,6 +12205,9 @@ msgstr ""
 msgid "Found errors in your .gitlab-ci.yml:"
 msgstr ""
 
+msgid "Framework successfully deleted"
+msgstr ""
+
 msgid "Free Trial"
 msgstr ""
 
@@ -12251,9 +12233,6 @@ msgid "From %{code_open}%{source_title}%{code_close} into"
 msgstr ""
 
 msgid "From %{providerTitle}"
-msgstr ""
-
-msgid "From Google Code"
 msgstr ""
 
 msgid "From issue creation until deploy to production"
@@ -12994,9 +12973,6 @@ msgstr ""
 msgid "Go full screen"
 msgstr ""
 
-msgid "Go to %{link_to_google_takeout}."
-msgstr ""
-
 msgid "Go to %{strongStart}Issues%{strongEnd} &gt; %{strongStart}Boards%{strongEnd} to access your personalized learning issue board."
 msgstr ""
 
@@ -13109,12 +13085,6 @@ msgid "Goal of the changes and what reviewers should be aware of"
 msgstr ""
 
 msgid "Google Cloud Platform"
-msgstr ""
-
-msgid "Google Code import"
-msgstr ""
-
-msgid "Google Takeout"
 msgstr ""
 
 msgid "Google authentication is not %{link_start}properly configured%{link_end}. Ask your GitLab administrator if you want to use this service."
@@ -14196,12 +14166,6 @@ msgstr ""
 msgid "Import Projects from Gitea"
 msgstr ""
 
-msgid "Import all compatible projects"
-msgstr ""
-
-msgid "Import all projects"
-msgstr ""
-
 msgid "Import an exported GitLab project"
 msgstr ""
 
@@ -14251,9 +14215,6 @@ msgid "Import projects from FogBugz"
 msgstr ""
 
 msgid "Import projects from GitLab.com"
-msgstr ""
-
-msgid "Import projects from Google Code"
 msgstr ""
 
 msgid "Import repositories from Bitbucket Server"
@@ -14353,9 +14314,6 @@ msgid "In order to personalize your experience with GitLab%{br_tag}we would like
 msgstr ""
 
 msgid "In progress"
-msgstr ""
-
-msgid "In the next step, you'll be able to select the projects you want to import."
 msgstr ""
 
 msgid "Incident"
@@ -14533,9 +14491,6 @@ msgid "Incoming email"
 msgstr ""
 
 msgid "Incoming!"
-msgstr ""
-
-msgid "Incompatible Project"
 msgstr ""
 
 msgid "Incompatible options set!"
@@ -15686,6 +15641,9 @@ msgstr ""
 msgid "Ki"
 msgstr ""
 
+msgid "Kroki"
+msgstr ""
+
 msgid "Kubernetes"
 msgstr ""
 
@@ -16019,9 +15977,6 @@ msgid "Leave group"
 msgstr ""
 
 msgid "Leave project"
-msgstr ""
-
-msgid "Leave the \"File type\" and \"Delivery method\" options on their default values."
 msgstr ""
 
 msgid "Leave zen mode"
@@ -16479,9 +16434,6 @@ msgstr ""
 msgid "Make sure you save it - you won't be able to access it again."
 msgstr ""
 
-msgid "Make sure you're logged into the account that owns the projects you'd like to import."
-msgstr ""
-
 msgid "Make this epic confidential"
 msgstr ""
 
@@ -16543,15 +16495,6 @@ msgid "ManualOrdering|Couldn't save the order of the issues"
 msgstr ""
 
 msgid "Map a FogBugz account ID to a GitLab user"
-msgstr ""
-
-msgid "Map a Google Code user to a GitLab user"
-msgstr ""
-
-msgid "Map a Google Code user to a full email address"
-msgstr ""
-
-msgid "Map a Google Code user to a full name"
 msgstr ""
 
 msgid "Mar"
@@ -16905,6 +16848,9 @@ msgstr ""
 msgid "Members|Expired"
 msgstr ""
 
+msgid "Members|Filter members"
+msgstr ""
+
 msgid "Members|LDAP override enabled."
 msgstr ""
 
@@ -16927,6 +16873,9 @@ msgid "Members|Reverted to LDAP group sync settings."
 msgstr ""
 
 msgid "Members|Role updated successfully."
+msgstr ""
+
+msgid "Members|Search invited"
 msgstr ""
 
 msgid "Members|in %{time}"
@@ -18284,9 +18233,6 @@ msgstr ""
 msgid "New"
 msgstr ""
 
-msgid "New %{display_issuable_type}"
-msgstr ""
-
 msgid "New %{issueType}"
 msgstr ""
 
@@ -18727,9 +18673,6 @@ msgstr ""
 msgid "No worries, you can still use all the %{strong}%{plan_name}%{strong_close} features for now. You have %{remaining_days} to renew your subscription."
 msgstr ""
 
-msgid "No, directly import the existing email addresses and usernames."
-msgstr ""
-
 msgid "No. of commits"
 msgstr ""
 
@@ -18785,6 +18728,9 @@ msgid "Not enough data"
 msgstr ""
 
 msgid "Not found."
+msgstr ""
+
+msgid "Not permitted to destroy framework"
 msgstr ""
 
 msgid "Not ready yet. Try again later."
@@ -19084,6 +19030,12 @@ msgstr ""
 msgid "OnDemandScans|Use existing site profile"
 msgstr ""
 
+msgid "OnDemandScans|You can either choose a passive scan or validate the target site in your chosen site profile. %{docsLinkStart}Learn more about site validation.%{docsLinkEnd}"
+msgstr ""
+
+msgid "OnDemandScans|You cannot run an active scan against an unvalidated site."
+msgstr ""
+
 msgid "Once a project is permanently deleted it %{strongStart}cannot be recovered%{strongEnd}. Permanently deleting this project will %{strongStart}immediately delete%{strongEnd} its repositories and %{strongStart}all related resources%{strongEnd} including issues, merge requests etc."
 msgstr ""
 
@@ -19114,9 +19066,6 @@ msgid "One or more of you personal access tokens were revoked"
 msgstr ""
 
 msgid "One or more of your %{provider} projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
-msgstr ""
-
-msgid "One or more of your Google Code projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
 msgstr ""
 
 msgid "One or more of your dependency files are not supported, and the dependency list may be incomplete. Below is a list of supported file types."
@@ -19267,9 +19216,6 @@ msgid "Optional parameter \"variables\" must be a Hash. Ex: variables[key1]=valu
 msgstr ""
 
 msgid "Optionally, you can %{link_to_customize} how FogBugz email addresses and usernames are imported into GitLab."
-msgstr ""
-
-msgid "Optionally, you can %{link_to_customize} how Google Code email addresses and usernames are imported into GitLab."
 msgstr ""
 
 msgid "Options"
@@ -19884,6 +19830,9 @@ msgstr ""
 msgid "Pipeline minutes quota"
 msgstr ""
 
+msgid "Pipeline ran in fork of project"
+msgstr ""
+
 msgid "Pipeline subscriptions"
 msgstr ""
 
@@ -20302,9 +20251,6 @@ msgid "Please contact your administrator."
 msgstr ""
 
 msgid "Please convert %{linkStart}them to Git%{linkEnd}, and go through the %{linkToImportFlow} again."
-msgstr ""
-
-msgid "Please convert them to Git on Google Code, and go through the %{link_to_import_flow} again."
 msgstr ""
 
 msgid "Please create a password for your new account."
@@ -22834,9 +22780,6 @@ msgstr ""
 msgid "Reopen"
 msgstr ""
 
-msgid "Reopen %{display_issuable_type}"
-msgstr ""
-
 msgid "Reopen %{issueType}"
 msgstr ""
 
@@ -22925,10 +22868,9 @@ msgid "Reports|%{recentlyFailed} out of %{failed} failed test has failed more th
 msgstr ""
 
 msgid "Reports|%{recentlyFailed} out of %{failed} failed tests has failed more than once in the last 14 days"
-msgstr ""
-
-msgid "Reports|%{recentlyFailed} out of %{failed} failed tests have failed more than once in the last 14 days"
-msgstr ""
+msgid_plural "Reports|%{recentlyFailed} out of %{failed} failed tests have failed more than once in the last 14 days"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Reports|Accessibility scanning detected %d issue for the source branch only"
 msgid_plural "Reports|Accessibility scanning detected %d issues for the source branch only"
@@ -22961,6 +22903,11 @@ msgstr ""
 
 msgid "Reports|Execution time"
 msgstr ""
+
+msgid "Reports|Failed %{count} time in %{base_branch} in the last 14 days"
+msgid_plural "Reports|Failed %{count} times in %{base_branch} in the last 14 days"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Reports|Failure"
 msgstr ""
@@ -23786,9 +23733,6 @@ msgstr ""
 msgid "Scroll down"
 msgstr ""
 
-msgid "Scroll down to %{strong_open}Google Code Project Hosting%{strong_close} and enable the switch on the right."
-msgstr ""
-
 msgid "Scroll left"
 msgstr ""
 
@@ -24489,9 +24433,6 @@ msgid "Select project to choose zone"
 msgstr ""
 
 msgid "Select projects"
-msgstr ""
-
-msgid "Select projects you want to import."
 msgstr ""
 
 msgid "Select required regulatory standard"
@@ -25422,7 +25363,7 @@ msgstr ""
 msgid "Something went wrong while archiving a requirement."
 msgstr ""
 
-msgid "Something went wrong while closing the %{issuable}. Please try again later"
+msgid "Something went wrong while closing the merge request. Please try again later"
 msgstr ""
 
 msgid "Something went wrong while creating a requirement."
@@ -25509,7 +25450,7 @@ msgstr ""
 msgid "Something went wrong while reopening a requirement."
 msgstr ""
 
-msgid "Something went wrong while reopening the %{issuable}. Please try again later"
+msgid "Something went wrong while reopening the merge request. Please try again later"
 msgstr ""
 
 msgid "Something went wrong while resolving this discussion. Please try again."
@@ -26685,9 +26626,6 @@ msgstr ""
 msgid "Telephone number"
 msgstr ""
 
-msgid "Telephone number (Optional)"
-msgstr ""
-
 msgid "Template"
 msgstr ""
 
@@ -27047,9 +26985,6 @@ msgstr ""
 msgid "The download link will expire in 24 hours."
 msgstr ""
 
-msgid "The entered user map is not a valid JSON user map."
-msgstr ""
-
 msgid "The errors we encountered were:"
 msgstr ""
 
@@ -27089,6 +27024,9 @@ msgid "The fork relationship has been removed."
 msgstr ""
 
 msgid "The form contains the following error:"
+msgstr ""
+
+msgid "The form contains the following errors:"
 msgstr ""
 
 msgid "The form contains the following warning:"
@@ -27316,9 +27254,6 @@ msgstr ""
 msgid "The update action will time out after %{number_of_minutes} minutes. For big repositories, use a clone/push combination."
 msgstr ""
 
-msgid "The uploaded file is not a valid Google Takeout archive."
-msgstr ""
-
 msgid "The usage ping is disabled, and cannot be configured through this form."
 msgstr ""
 
@@ -27326,9 +27261,6 @@ msgid "The user is being deleted."
 msgstr ""
 
 msgid "The user map has been saved. Continue by selecting the projects you want to import."
-msgstr ""
-
-msgid "The user map is a JSON document mapping the Google Code users that participated on your projects to the way their email addresses and usernames will be imported into GitLab. You can change this by changing the value on the right hand side of %{code_open}:%{code_close}. Be sure to preserve the surrounding double quotes, other punctuation and the email address or username on the left hand side."
 msgstr ""
 
 msgid "The user map is a mapping of the FogBugz users that participated on your projects to the way their email address and usernames will be imported into GitLab. You can change this by populating the table below."
@@ -28141,6 +28073,9 @@ msgstr ""
 msgid "Threat Monitoring"
 msgstr ""
 
+msgid "ThreatMonitoring|Alerts"
+msgstr ""
+
 msgid "ThreatMonitoring|All Environments"
 msgstr ""
 
@@ -28455,6 +28390,9 @@ msgid "Time|s"
 msgstr ""
 
 msgid "Tip:"
+msgstr ""
+
+msgid "Tip: add a"
 msgstr ""
 
 msgid "Title"
@@ -29372,9 +29310,6 @@ msgstr ""
 msgid "Upgrade your plan to improve Merge Requests."
 msgstr ""
 
-msgid "Upload %{code_open}GoogleCodeProjectHosting.json%{code_close} here:"
-msgstr ""
-
 msgid "Upload CSV file"
 msgstr ""
 
@@ -29819,6 +29754,9 @@ msgstr ""
 msgid "UserProfile|This user is blocked"
 msgstr ""
 
+msgid "UserProfile|Unconfirmed user"
+msgstr ""
+
 msgid "UserProfile|View all"
 msgstr ""
 
@@ -30213,9 +30151,6 @@ msgstr ""
 msgid "VisualReviewApp|Steps 1 and 2 (and sometimes 3) are performed once by the developer before requesting feedback. Steps 3 (if necessary), 4 is performed by the reviewer each time they perform a review."
 msgstr ""
 
-msgid "Visualization"
-msgstr ""
-
 msgid "Vulnerabilities"
 msgstr ""
 
@@ -30415,6 +30350,9 @@ msgid "We are currently unable to fetch data for the pipeline header."
 msgstr ""
 
 msgid "We are currently unable to fetch data for this graph."
+msgstr ""
+
+msgid "We are currently unable to fetch data for this pipeline."
 msgstr ""
 
 msgid "We could not determine the path to remove the epic"
@@ -30652,6 +30590,9 @@ msgid "What's new at GitLab"
 msgstr ""
 
 msgid "What’s your experience level?"
+msgstr ""
+
+msgid "When Kroki is enabled, GitLab sends diagrams to an instance of Kroki to display them as images. You can use the free public cloud instance %{kroki_public_url} or you can %{install_link} on your own infrastructure. Once you've installed Kroki, make sure to update the server URL to point to your instance."
 msgstr ""
 
 msgid "When a deployment job is successful, skip older deployment jobs that are still pending"
@@ -30954,9 +30895,6 @@ msgid "Yes, close issue"
 msgstr ""
 
 msgid "Yes, delete project"
-msgstr ""
-
-msgid "Yes, let me map Google Code users to full names or GitLab users."
 msgstr ""
 
 msgid "Yesterday"
@@ -31304,6 +31242,9 @@ msgstr ""
 msgid "You have insufficient permissions to create an on-call schedule for this project"
 msgstr ""
 
+msgid "You have insufficient permissions to remove an on-call schedule from this project"
+msgstr ""
+
 msgid "You have insufficient permissions to remove this HTTP integration"
 msgstr ""
 
@@ -31386,9 +31327,6 @@ msgid "You need to specify both an Access Token and a Host URL."
 msgstr ""
 
 msgid "You need to upload a GitLab project export archive (ending in .gz)."
-msgstr ""
-
-msgid "You need to upload a Google Takeout archive."
 msgstr ""
 
 msgid "You successfully declined the invitation"
@@ -32106,9 +32044,6 @@ msgstr ""
 msgid "committed"
 msgstr ""
 
-msgid "connecting"
-msgstr ""
-
 msgid "container_name can contain only lowercase letters, digits, '-', and '.' and must start and end with an alphanumeric character"
 msgstr ""
 
@@ -32122,9 +32057,6 @@ msgid "created"
 msgstr ""
 
 msgid "created %{timeAgo}"
-msgstr ""
-
-msgid "customize"
 msgstr ""
 
 msgid "data"
@@ -32163,9 +32095,6 @@ msgid "does not exist"
 msgstr ""
 
 msgid "does not have a supported extension. Only %{extension_list} are supported"
-msgstr ""
-
-msgid "done"
 msgstr ""
 
 msgid "download it"
@@ -32256,6 +32185,9 @@ msgstr ""
 msgid "for this project"
 msgstr ""
 
+msgid "fork"
+msgstr ""
+
 msgid "fork this project"
 msgstr ""
 
@@ -32304,9 +32236,6 @@ msgid "impersonation tokens"
 msgstr ""
 
 msgid "import flow"
-msgstr ""
-
-msgid "importing"
 msgstr ""
 
 msgid "in group %{link_to_group}"
@@ -32862,6 +32791,9 @@ msgstr ""
 msgid "open issue"
 msgstr ""
 
+msgid "opened %{timeAgoString} by %{email} via %{user}"
+msgstr ""
+
 msgid "opened %{timeAgoString} by %{user}"
 msgstr ""
 
@@ -33079,9 +33011,6 @@ msgstr ""
 msgid "ssh:"
 msgstr ""
 
-msgid "started"
-msgstr ""
-
 msgid "started a discussion on %{design_link}"
 msgstr ""
 
@@ -33134,6 +33063,9 @@ msgid "this document"
 msgstr ""
 
 msgid "time summary"
+msgstr ""
+
+msgid "to automatically add approvers based on file paths and file types."
 msgstr ""
 
 msgid "to help your contributors communicate effectively!"

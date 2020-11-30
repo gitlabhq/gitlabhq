@@ -35,7 +35,7 @@
   .settings-content
     = render 'diff_limits'
 
-%section.settings.as-signup.no-animate#js-signup-settings{ class: ('expanded' if expanded_by_default?) }
+%section.settings.as-signup.no-animate#js-signup-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'sign_up_restrictions_settings_content' } }
   .settings-header
     %h4
       = _('Sign-up restrictions')
@@ -117,6 +117,7 @@
 
 = render_if_exists 'admin/application_settings/elasticsearch_form'
 = render 'admin/application_settings/gitpod'
+= render 'admin/application_settings/kroki'
 = render 'admin/application_settings/plantuml'
 = render 'admin/application_settings/sourcegraph'
 = render_if_exists 'admin/application_settings/slack'

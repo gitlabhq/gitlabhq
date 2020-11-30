@@ -26,7 +26,8 @@ module Groups::GroupMembersHelper
     {
       members: members_data_json(group, members),
       member_path: group_group_member_path(group, ':id'),
-      group_id: group.id
+      group_id: group.id,
+      can_manage_members: can?(current_user, :admin_group_member, group).to_s
     }
   end
 

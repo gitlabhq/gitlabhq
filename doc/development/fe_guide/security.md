@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Security
@@ -31,7 +31,7 @@ GitLab's CSP is used for the following:
 
 Some exceptions include:
 
-- Scripts from Google Analytics and Piwik if either is enabled.
+- Scripts from Google Analytics and Matomo if either is enabled.
 - Connecting with GitHub, Bitbucket, GitLab.com, etc. to allow project importing.
 - Connecting with Google, Twitter, GitHub, etc. to allow OAuth authentication.
 
@@ -66,7 +66,7 @@ Some resources on implementing Subresource Integrity:
 ## Including external resources
 
 External fonts, CSS, and JavaScript should never be used with the exception of
-Google Analytics and Piwik - and only when the instance has enabled it. Assets
+Google Analytics and Matomo - and only when the instance has enabled it. Assets
 should always be hosted and served locally from the GitLab instance. Embedded
 resources via `iframes` should never be used except in certain circumstances
 such as with reCAPTCHA, which cannot be used without an `iframe`.

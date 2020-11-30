@@ -1,6 +1,5 @@
 import $ from 'jquery';
 import Vue from 'vue';
-import { GlToast } from '@gitlab/ui';
 import Translate from '~/vue_shared/translate';
 import { highCountTrim } from '~/lib/utils/text_utility';
 import Tracking from '~/tracking';
@@ -35,7 +34,6 @@ function initStatusTriggers() {
           const statusModalElement = document.createElement('div');
           setStatusModalWrapperEl.appendChild(statusModalElement);
 
-          Vue.use(GlToast);
           Vue.use(Translate);
 
           // eslint-disable-next-line no-new

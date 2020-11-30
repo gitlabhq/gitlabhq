@@ -1,12 +1,13 @@
 <script>
 import { GlButton, GlDropdown, GlDropdownItem, GlIcon, GlLink, GlModal } from '@gitlab/ui';
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import createFlash, { FLASH_TYPES } from '~/flash';
 import { IssuableType } from '~/issuable_show/constants';
 import { IssuableStatus, IssueStateEvent } from '~/issue_show/constants';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
+import eventHub from '~/notes/event_hub';
 import promoteToEpicMutation from '../queries/promote_to_epic.mutation.graphql';
 import updateIssueMutation from '../queries/update_issue.mutation.graphql';
 
@@ -72,15 +73,11 @@ export default {
       default: '',
     },
   },
-  data() {
-    return {
-      isUpdatingState: false,
-    };
-  },
   computed: {
-    ...mapGetters(['getNoteableData']),
+    ...mapState(['isToggleStateButtonLoading']),
+    ...mapGetters(['openState', 'getBlockedByIssues']),
     isClosed() {
-      return this.getNoteableData.state === IssuableStatus.Closed;
+      return this.openState === IssuableStatus.Closed;
     },
     buttonText() {
       return this.isClosed
@@ -107,9 +104,16 @@ export default {
       return canClose || canReopen;
     },
   },
+  created() {
+    eventHub.$on('toggle.issuable.state', this.toggleIssueState);
+  },
+  beforeDestroy() {
+    eventHub.$off('toggle.issuable.state', this.toggleIssueState);
+  },
   methods: {
+    ...mapActions(['toggleStateButtonLoading']),
     toggleIssueState() {
-      if (!this.isClosed && this.getNoteableData?.blocked_by_issues?.length) {
+      if (!this.isClosed && this.getBlockedByIssues?.length) {
         this.$refs.blockedByIssuesModal.show();
         return;
       }
@@ -117,7 +121,7 @@ export default {
       this.invokeUpdateIssueMutation();
     },
     invokeUpdateIssueMutation() {
-      this.isUpdatingState = true;
+      this.toggleStateButtonLoading(true);
 
       this.$apollo
         .mutate({
@@ -148,11 +152,11 @@ export default {
         })
         .catch(() => createFlash({ message: __('Update failed. Please try again.') }))
         .finally(() => {
-          this.isUpdatingState = false;
+          this.toggleStateButtonLoading(false);
         });
     },
     promoteToEpic() {
-      this.isUpdatingState = true;
+      this.toggleStateButtonLoading(true);
 
       this.$apollo
         .mutate({
@@ -179,7 +183,7 @@ export default {
         })
         .catch(() => createFlash({ message: this.$options.i18n.promoteErrorMessage }))
         .finally(() => {
-          this.isUpdatingState = false;
+          this.toggleStateButtonLoading(false);
         });
     },
   },
@@ -191,7 +195,7 @@ export default {
     <gl-dropdown class="gl-display-block gl-display-sm-none!" block :text="dropdownText">
       <gl-dropdown-item
         v-if="showToggleIssueStateButton"
-        :disabled="isUpdatingState"
+        :disabled="isToggleStateButtonLoading"
         @click="toggleIssueState"
       >
         {{ buttonText }}
@@ -199,7 +203,11 @@ export default {
       <gl-dropdown-item v-if="canCreateIssue" :href="newIssuePath">
         {{ newIssueTypeText }}
       </gl-dropdown-item>
-      <gl-dropdown-item v-if="canPromoteToEpic" :disabled="isUpdatingState" @click="promoteToEpic">
+      <gl-dropdown-item
+        v-if="canPromoteToEpic"
+        :disabled="isToggleStateButtonLoading"
+        @click="promoteToEpic"
+      >
         {{ __('Promote to epic') }}
       </gl-dropdown-item>
       <gl-dropdown-item v-if="!isIssueAuthor" :href="reportAbusePath">
@@ -220,7 +228,7 @@ export default {
       class="gl-display-none gl-display-sm-inline-flex!"
       category="secondary"
       :data-qa-selector="qaSelector"
-      :loading="isUpdatingState"
+      :loading="isToggleStateButtonLoading"
       :variant="buttonVariant"
       @click="toggleIssueState"
     >
@@ -234,7 +242,7 @@ export default {
       right
     >
       <template #button-content>
-        <gl-icon name="ellipsis_v" aria-hidden="true" />
+        <gl-icon name="ellipsis_v" />
         <span class="gl-sr-only">{{ dropdownText }}</span>
       </template>
 
@@ -243,7 +251,7 @@ export default {
       </gl-dropdown-item>
       <gl-dropdown-item
         v-if="canPromoteToEpic"
-        :disabled="isUpdatingState"
+        :disabled="isToggleStateButtonLoading"
         data-testid="promote-button"
         @click="promoteToEpic"
       >
@@ -272,7 +280,7 @@ export default {
     >
       <p>{{ __('This issue is currently blocked by the following issues:') }}</p>
       <ul>
-        <li v-for="issue in getNoteableData.blocked_by_issues" :key="issue.iid">
+        <li v-for="issue in getBlockedByIssues" :key="issue.iid">
           <gl-link :href="issue.web_url">#{{ issue.iid }}</gl-link>
         </li>
       </ul>

@@ -361,9 +361,13 @@ module ApplicationHelper
     }
   end
 
-  def add_page_specific_style(path)
+  def add_page_specific_style(path, defer: true)
     content_for :page_specific_styles do
-      stylesheet_link_tag_defer path
+      if defer
+        stylesheet_link_tag_defer path
+      else
+        stylesheet_link_tag path
+      end
     end
   end
 

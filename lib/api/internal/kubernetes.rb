@@ -85,9 +85,7 @@ module API
           get '/project_info' do
             project = find_project(params[:id])
 
-            # TODO sort out authorization for real
-            # https://gitlab.com/gitlab-org/gitlab/-/issues/220912
-            unless Ability.allowed?(nil, :download_code, project)
+            unless Guest.can?(:download_code, project) || agent.has_access_to?(project)
               not_found!
             end
 

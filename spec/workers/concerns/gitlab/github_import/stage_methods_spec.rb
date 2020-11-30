@@ -5,7 +5,13 @@ require 'spec_helper'
 RSpec.describe Gitlab::GithubImport::StageMethods do
   let(:project) { create(:project) }
   let(:worker) do
-    Class.new { include(Gitlab::GithubImport::StageMethods) }.new
+    Class.new do
+      def self.name
+        'DummyStage'
+      end
+
+      include(Gitlab::GithubImport::StageMethods)
+    end.new
   end
 
   describe '#perform' do
@@ -30,7 +36,71 @@ RSpec.describe Gitlab::GithubImport::StageMethods do
           an_instance_of(Project)
         )
 
+      expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+        expect(logger)
+          .to receive(:info)
+          .with(
+            message: 'starting stage',
+            import_source: :github,
+            project_id: project.id,
+            import_stage: 'DummyStage'
+          )
+        expect(logger)
+          .to receive(:info)
+          .with(
+            message: 'stage finished',
+            import_source: :github,
+            project_id: project.id,
+            import_stage: 'DummyStage'
+          )
+      end
+
       worker.perform(project.id)
+    end
+
+    it 'logs error when import fails' do
+      exception = StandardError.new('some error')
+
+      allow(worker)
+        .to receive(:find_project)
+        .with(project.id)
+        .and_return(project)
+
+      expect(worker)
+        .to receive(:try_import)
+        .and_raise(exception)
+
+      expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+        expect(logger)
+          .to receive(:info)
+          .with(
+            message: 'starting stage',
+            import_source: :github,
+            project_id: project.id,
+            import_stage: 'DummyStage'
+          )
+        expect(logger)
+          .to receive(:error)
+          .with(
+            message: 'stage failed',
+            import_source: :github,
+            project_id: project.id,
+            import_stage: 'DummyStage',
+            'error.message': 'some error'
+          )
+      end
+
+      expect(Gitlab::ErrorTracking)
+        .to receive(:track_and_raise_exception)
+        .with(
+          exception,
+          import_source: :github,
+          project_id: project.id,
+          import_stage: 'DummyStage'
+        )
+        .and_call_original
+
+      expect { worker.perform(project.id) }.to raise_error(exception)
     end
   end
 

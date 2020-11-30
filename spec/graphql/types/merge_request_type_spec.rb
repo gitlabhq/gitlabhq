@@ -27,7 +27,7 @@ RSpec.describe GitlabSchema.types['MergeRequest'] do
       upvotes downvotes head_pipeline pipelines task_completion_status
       milestone assignees participants subscribed labels discussion_locked time_estimate
       total_time_spent reference author merged_at commit_count current_user_todos
-      conflicts auto_merge_enabled approved_by
+      conflicts auto_merge_enabled approved_by source_branch_protected
     ]
 
     if Gitlab.ee?

@@ -70,6 +70,10 @@ module ProjectFeaturesCompatibility
     write_feature_attribute_string(:metrics_dashboard_access_level, value)
   end
 
+  def operations_access_level=(value)
+    write_feature_attribute_string(:operations_access_level, value)
+  end
+
   private
 
   def write_feature_attribute_boolean(field, value)

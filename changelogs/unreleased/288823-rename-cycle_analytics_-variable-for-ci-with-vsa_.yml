@@ -1,0 +1,5 @@
+---
+title: Rename "CYCLE_ANALYTICS_*" variables for CI with "VSA_*"
+merge_request: 48675
+author: Takuya Noguchi
+type: other

@@ -179,7 +179,7 @@ describe('Alert Details Sidebar Assignees', () => {
         findAssigned()
           .find('.dropdown-menu-user-username')
           .text(),
-      ).toBe('root');
+      ).toBe('@root');
     });
   });
 });

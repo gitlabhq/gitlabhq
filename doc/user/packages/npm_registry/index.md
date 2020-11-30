@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # NPM packages in the Package Registry
@@ -105,7 +105,7 @@ To authenticate to the Package Registry, you must use one of the following:
 
 ### Authenticate with a personal access token or deploy token
 
-To authenticate with the Package Registry, you will need a [personal access token](../../profile/personal_access_tokens.md) or [deploy token](../../project/deploy_tokens/index.md).
+To authenticate with the Package Registry, you need a [personal access token](../../profile/personal_access_tokens.md) or [deploy token](../../project/deploy_tokens/index.md).
 
 #### Project-level NPM endpoint
 

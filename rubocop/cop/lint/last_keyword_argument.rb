@@ -47,6 +47,8 @@ module RuboCop
         def known_match?(file_path, line_number, method_name)
           file_path_from_root = file_path.sub(File.expand_path('../../..', __dir__), '')
 
+          method_name = 'initialize' if method_name == 'new'
+
           self.class.keyword_warnings.any? do |warning|
             warning.include?("#{file_path_from_root}:#{line_number}") && warning.include?("called method `#{method_name}'")
           end

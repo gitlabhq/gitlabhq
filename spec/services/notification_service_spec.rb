@@ -353,7 +353,7 @@ RSpec.describe NotificationService, :mailer do
 
         context 'a service-desk issue' do
           before do
-            issue.update!(service_desk_reply_to: 'service.desk@example.com')
+            issue.update!(external_author: 'service.desk@example.com')
             project.update!(service_desk_enabled: true)
           end
 

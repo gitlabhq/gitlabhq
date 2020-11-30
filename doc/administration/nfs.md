@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -402,14 +402,19 @@ Additionally, this configuration is specifically warned against in the
 For supported database architecture, see our documentation about
 [configuring a database for replication and failover](postgresql/replication_and_failover.md).
 
-<!-- ## Troubleshooting
+## Troubleshooting
 
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
+### Finding the requests that are being made to NFS
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+In case of NFS-related problems, it can be helpful to trace
+the filesystem requests that are being made by using `perf`:
+
+```shell
+sudo perf trace -e 'nfs4:*' -p $(pgrep -fd ',' puma && pgrep -fd ',' unicorn)
+```
+
+On Ubuntu 16.04, use:
+
+```shell
+sudo perf trace --no-syscalls --event 'nfs4:*' -p $(pgrep -fd ',' puma && pgrep -fd ',' unicorn)
+```

@@ -67,7 +67,7 @@ module Projects
 
       @project
     rescue ActiveRecord::RecordInvalid => e
-      message = "Unable to save #{e.record.type}: #{e.record.errors.full_messages.join(", ")} "
+      message = "Unable to save #{e.inspect}: #{e.record.errors.full_messages.join(", ")}"
       fail(error: message)
     rescue => e
       @project.errors.add(:base, e.message) if @project
@@ -122,8 +122,9 @@ module Projects
                                                                        only_concrete_membership: true)
 
         if group_access_level > GroupMember::NO_ACCESS
-          current_user.project_authorizations.create!(project: @project,
-                                                      access_level: group_access_level)
+          current_user.project_authorizations.safe_find_or_create_by!(
+            project: @project,
+            access_level: group_access_level)
         end
 
         if Feature.enabled?(:specialized_project_authorization_workers)

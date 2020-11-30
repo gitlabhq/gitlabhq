@@ -19,6 +19,10 @@ class Projects::StaticSiteEditorController < Projects::ApplicationController
 
   feature_category :static_site_editor
 
+  def index
+    render_404
+  end
+
   def show
     service_response = ::StaticSiteEditor::ConfigService.new(
       container: project,

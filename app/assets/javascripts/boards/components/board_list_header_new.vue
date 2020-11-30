@@ -278,7 +278,7 @@ export default {
         v-if="isSwimlanesHeader && !list.isExpanded"
         ref="collapsedInfo"
         aria-hidden="true"
-        class="board-header-collapsed-info-icon gl-mt-2 gl-cursor-pointer gl-text-gray-500"
+        class="board-header-collapsed-info-icon gl-cursor-pointer gl-text-gray-500"
       >
         <gl-icon name="information" />
       </span>

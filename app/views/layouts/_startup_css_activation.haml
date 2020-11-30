@@ -1,6 +1,6 @@
 - return unless use_startup_css?
 
-= javascript_tag nonce: true do
+= javascript_tag do
   :plain
     document.querySelectorAll('link[media="print"]').forEach(linkTag => {
       linkTag.setAttribute('data-startupcss', 'loading');

@@ -10,7 +10,7 @@ RSpec.describe Gitlab::Ci::Ansi2json::Result do
     { lines: [], state: state, append: false, truncated: false, offset: offset, stream: stream }
   end
 
-  subject { described_class.new(params) }
+  subject { described_class.new(**params) }
 
   describe '#size' do
     before do

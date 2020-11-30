@@ -155,9 +155,9 @@ RSpec.describe Ci::BuildDependencies do
 
     subject { dependencies.all }
 
-    it 'returns the union of all local dependencies and any cross pipeline dependencies' do
+    it 'returns the union of all local dependencies and any cross project dependencies' do
       expect(dependencies).to receive(:local).and_return([1, 2, 3])
-      expect(dependencies).to receive(:cross_pipeline).and_return([3, 4])
+      expect(dependencies).to receive(:cross_project).and_return([3, 4])
 
       expect(subject).to contain_exactly(1, 2, 3, 4)
     end

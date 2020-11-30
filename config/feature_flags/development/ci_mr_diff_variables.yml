@@ -1,0 +1,8 @@
+---
+name: ci_mr_diff_variables
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46621
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/285468
+milestone: '13.7'
+type: development
+group: group::pipeline authoring
+default_enabled: false

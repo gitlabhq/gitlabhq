@@ -1,0 +1,19 @@
+# frozen_string_literal: true
+
+MESSAGE = <<~MESSAGE
+## Pipeline Changes
+
+This Merge Request contains changes to the pipeline configuration for the GitLab project.
+
+Please consider the effect of the changes in this Merge Request on the following:
+- Effects on different [pipeline types](https://docs.gitlab.com/ee/development/pipelines.html#pipelines-for-merge-requests)
+- Effects on non-canonical projects (`gitlab-foss`, `security`, etc)
+- Effects on [pipeline performance](https://about.gitlab.com/handbook/engineering/quality/performance-indicators/#average-merge-request-pipeline-duration-for-gitlab)
+- Effects on fork pipelines
+
+Please consider communicating these changes to the broader team following the [communication guideline for pipeline changes](https://about.gitlab.com/handbook/engineering/quality/engineering-productivity-team/#pipeline-changes)
+MESSAGE
+
+if helper.has_ci_changes?
+  markdown(MESSAGE)
+end

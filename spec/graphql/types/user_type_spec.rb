@@ -15,6 +15,7 @@ RSpec.describe GitlabSchema.types['User'] do
       name
       username
       email
+      publicEmail
       avatarUrl
       webUrl
       webPath
