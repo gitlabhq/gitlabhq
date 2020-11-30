@@ -190,14 +190,7 @@ The search filters you can see depends on which audit level you are at.
 ## Export to CSV **(PREMIUM ONLY)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1449) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.4.
-> - It's [deployed behind a feature flag](../user/feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-audit-log-export-to-csv). **(PREMIUM ONLY)**
-
-CAUTION: **Warning:**
-This feature might not be available to you. Check the **version history** note above for details.
-If available, you can enable it with a [feature flag](#enable-or-disable-audit-log-export-to-csv).
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/285441) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.7.
 
 Export to CSV allows customers to export the current filter view of your audit log as a
 CSV file, which stores tabular data in plain text. The data provides a comprehensive view with respect to
@@ -237,22 +230,3 @@ The first row contains the headers, which are listed in the following table alon
 
 The Audit Log CSV file is limited to a maximum of `100,000` events.
 The remaining records are truncated when this limit is reached.
-
-### Enable or disable Audit Log Export to CSV
-
-The Audit Log Export to CSV is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:audit_log_export_csv)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:audit_log_export_csv)
-```

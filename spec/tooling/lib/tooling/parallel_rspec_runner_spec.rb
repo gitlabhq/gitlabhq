@@ -43,6 +43,16 @@ RSpec.describe Tooling::ParallelRSpecRunner do # rubocop:disable RSpec/FilePath
 
         subject.run
       end
+
+      context 'when there is no intersect between allocated tests and filtered tests' do
+        let(:filter_tests) { '99_spec.rb' }
+
+        it 'does not run rspec' do
+          expect(subject).not_to receive(:exec)
+
+          subject.run
+        end
+      end
     end
 
     context 'with empty filter tests file' do
