@@ -34,7 +34,7 @@ To enable the dependency proxy feature:
 
 **Installations from source**
 
-1. After the installation is complete, you will have to configure the `dependency_proxy`
+1. After the installation is complete, configure the `dependency_proxy`
    section in `config/gitlab.yml`. Set to `true` to enable it:
 
    ```yaml
