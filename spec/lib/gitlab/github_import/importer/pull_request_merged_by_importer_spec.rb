@@ -28,7 +28,9 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestMergedByImporter, :cle
   end
 
   it 'adds a note referencing the merger user when the user cannot be mapped' do
-    expect { subject.execute }.to change(Note, :count).by(1)
+    expect { subject.execute }
+      .to change(Note, :count).by(1)
+      .and not_change(merge_request, :updated_at)
 
     last_note = merge_request.notes.last
 

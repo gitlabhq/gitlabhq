@@ -26,6 +26,7 @@ module Gitlab
             }, unique_by: :merge_request_id)
           else
             merge_request.notes.create!(
+              importing: true,
               note: "*Merged by: #{pull_request.merged_by.login}*",
               author_id: project.creator_id,
               project: project,

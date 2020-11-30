@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'User edit profile' do
+  include Spec::Support::Helpers::Features::NotesHelpers
+
   let(:user) { create(:user) }
 
   before do
@@ -395,6 +397,45 @@ RSpec.describe 'User edit profile' do
 
         within('.js-toggle-emoji-menu') do
           expect(page).to have_emoji('speech_balloon')
+        end
+      end
+
+      context 'note header' do
+        let(:project) { create(:project_empty_repo, :public) }
+        let(:issue) { create(:issue, project: project) }
+        let(:emoji) { "stuffed_flatbread" }
+
+        before do
+          project.add_guest(user)
+          create(:user_status, user: user, message: 'Taking notes', emoji: emoji)
+
+          visit(project_issue_path(project, issue))
+
+          add_note("This is a comment")
+          visit(project_issue_path(project, issue))
+
+          wait_for_requests
+        end
+
+        it 'displays the status emoji' do
+          first_note = page.find_all(".main-notes-list .timeline-entry").first
+
+          expect(first_note).to have_emoji(emoji)
+        end
+
+        it 'clears the status emoji' do
+          open_edit_status_modal
+
+          page.within "#set-user-status-modal" do
+            click_button 'Remove status'
+          end
+
+          visit(project_issue_path(project, issue))
+          wait_for_requests
+
+          first_note = page.find_all(".main-notes-list .timeline-entry").first
+
+          expect(first_note).not_to have_css('.user-status-emoji')
         end
       end
 

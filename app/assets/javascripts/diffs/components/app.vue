@@ -429,7 +429,7 @@ export default {
       let showTreeList = true;
 
       if (storedTreeShow !== null) {
-        showTreeList = Boolean(storedTreeShow);
+        showTreeList = parseBoolean(storedTreeShow);
       } else if (!bp.isDesktop() || (!this.isBatchLoading && this.diffFiles.length <= 1)) {
         showTreeList = false;
       }

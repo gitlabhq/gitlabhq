@@ -126,16 +126,7 @@ module MarkupHelper
     text = wiki_page.content
     return '' unless text.present?
 
-    context.merge!(
-      pipeline: :wiki,
-      project: @project,
-      wiki: @wiki,
-      repository: @wiki.repository,
-      page_slug: wiki_page.slug,
-      issuable_state_filter_enabled: true
-    )
-
-    html = markup_unsafe(wiki_page.path, text, context)
+    html = markup_unsafe(wiki_page.path, text, render_wiki_content_context(@wiki, wiki_page, context))
 
     prepare_for_rendering(html, context)
   end
@@ -181,6 +172,20 @@ module MarkupHelper
   end
 
   private
+
+  def render_wiki_content_context(wiki, wiki_page, context)
+    context.merge(
+      pipeline: :wiki,
+      wiki: wiki,
+      repository: wiki.repository,
+      page_slug: wiki_page.slug,
+      issuable_state_filter_enabled: true
+    ).merge(render_wiki_content_context_container(wiki))
+  end
+
+  def render_wiki_content_context_container(wiki)
+    { project: wiki.container }
+  end
 
   # Return +text+, truncated to +max_chars+ characters, excluding any HTML
   # tags.
@@ -311,3 +316,5 @@ module MarkupHelper
 
   extend self
 end
+
+MarkupHelper.prepend_if_ee('EE::MarkupHelper')

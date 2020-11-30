@@ -23,36 +23,8 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* makes the font 33% larger relative to the icon container */
-.fa-lg {
-  font-size: 1.33333333em;
-  line-height: 0.75em;
-  vertical-align: -15%;
-}
-
 .fa-2x {
   font-size: 2em;
-}
-
-.fa-3x {
-  font-size: 3em;
-}
-
-.fa-4x {
-  font-size: 4em;
-}
-
-.fa-5x {
-  font-size: 5em;
-}
-
-.fa-fw {
-  width: 1.28571429em;
-  text-align: center;
-}
-
-.fa-inverse {
-  color: $white;
 }
 
 .fa-chevron-down::before {
@@ -63,21 +35,12 @@
   content: '\f0d7';
 }
 
-.fa-warning::before,
 .fa-exclamation-triangle::before {
   content: '\f071';
 }
 
-.fa-caret-right::before {
-  content: '\f0da';
-}
-
 .fa-exclamation-circle::before {
   content: '\f06a';
-}
-
-.fa-file-o::before {
-  content: '\f016';
 }
 
 .fa-lightbulb-o::before {
@@ -94,38 +57,6 @@
 
 .fa-fire::before {
   content: '\f06d';
-}
-
-.fa-file-pdf-o::before {
-  content: '\f1c1';
-}
-
-.fa-file-word-o::before {
-  content: '\f1c2';
-}
-
-.fa-file-excel-o::before {
-  content: '\f1c3';
-}
-
-.fa-file-powerpoint-o::before {
-  content: '\f1c4';
-}
-
-.fa-file-image-o::before {
-  content: '\f1c5';
-}
-
-.fa-file-archive-o::before {
-  content: '\f1c6';
-}
-
-.fa-file-audio-o::before {
-  content: '\f1c7';
-}
-
-.fa-file-video-o::before {
-  content: '\f1c8';
 }
 
 .fa-square-o::before {

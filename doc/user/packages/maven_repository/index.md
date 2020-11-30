@@ -361,7 +361,7 @@ To use the GitLab endpoint for Maven packages, choose an option:
 - **Instance-level**: Use when you have many Maven packages in different
   GitLab groups or in their own namespace.
 
-The option you choose determines the settings you'll add to your `pom.xml` file.
+The option you choose determines the settings you add to your `pom.xml` file.
 
 In all cases, to publish a package, you need:
 

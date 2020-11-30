@@ -22528,6 +22528,8 @@ CREATE INDEX index_web_hooks_on_group_id ON web_hooks USING btree (group_id) WHE
 
 CREATE INDEX index_web_hooks_on_project_id ON web_hooks USING btree (project_id);
 
+CREATE INDEX index_web_hooks_on_service_id ON web_hooks USING btree (service_id);
+
 CREATE INDEX index_web_hooks_on_type ON web_hooks USING btree (type);
 
 CREATE UNIQUE INDEX index_webauthn_registrations_on_credential_xid ON webauthn_registrations USING btree (credential_xid);
@@ -23397,6 +23399,9 @@ ALTER TABLE ONLY environments
 
 ALTER TABLE ONLY ci_builds
     ADD CONSTRAINT fk_d3130c9a7f FOREIGN KEY (commit_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY web_hooks
+    ADD CONSTRAINT fk_d47999a98a FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY ci_sources_pipelines
     ADD CONSTRAINT fk_d4e29af7d7 FOREIGN KEY (source_pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;

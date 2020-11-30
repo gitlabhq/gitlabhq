@@ -1421,4 +1421,123 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
       end
     end
   end
+
+  describe '#rollout_status' do
+    let!(:cluster) { create(:cluster, :project, :provided_by_user, projects: [project]) }
+    let!(:environment) { create(:environment, project: project) }
+    let!(:deployment) { create(:deployment, :success, environment: environment, project: project) }
+
+    subject { environment.rollout_status }
+
+    context 'environment does not have a deployment board available' do
+      before do
+        allow(environment).to receive(:has_terminals?).and_return(false)
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'cached rollout status is present' do
+      let(:pods) { %w(pod1 pod2) }
+      let(:deployments) { %w(deployment1 deployment2) }
+
+      before do
+        stub_reactive_cache(environment, pods: pods, deployments: deployments)
+      end
+
+      it 'fetches the rollout status from the deployment platform' do
+        expect(environment.deployment_platform).to receive(:rollout_status)
+          .with(environment, pods: pods, deployments: deployments)
+          .and_return(:mock_rollout_status)
+
+        is_expected.to eq(:mock_rollout_status)
+      end
+    end
+
+    context 'cached rollout status is not present yet' do
+      before do
+        stub_reactive_cache(environment, nil)
+      end
+
+      it 'falls back to a loading status' do
+        expect(::Gitlab::Kubernetes::RolloutStatus).to receive(:loading).and_return(:mock_loading_status)
+
+        is_expected.to eq(:mock_loading_status)
+      end
+    end
+  end
+
+  describe '#ingresses' do
+    subject { environment.ingresses }
+
+    let(:deployment_platform) { double(:deployment_platform) }
+    let(:deployment_namespace) { 'production' }
+
+    before do
+      allow(environment).to receive(:deployment_platform) { deployment_platform }
+      allow(environment).to receive(:deployment_namespace) { deployment_namespace }
+    end
+
+    context 'when rollout status is available' do
+      before do
+        allow(environment).to receive(:rollout_status_available?) { true }
+      end
+
+      it 'fetches ingresses from the deployment platform' do
+        expect(deployment_platform).to receive(:ingresses).with(deployment_namespace)
+
+        subject
+      end
+    end
+
+    context 'when rollout status is not available' do
+      before do
+        allow(environment).to receive(:rollout_status_available?) { false }
+      end
+
+      it 'does nothing' do
+        expect(deployment_platform).not_to receive(:ingresses)
+
+        subject
+      end
+    end
+  end
+
+  describe '#patch_ingress' do
+    subject { environment.patch_ingress(ingress, data) }
+
+    let(:ingress) { double(:ingress) }
+    let(:data) { double(:data) }
+    let(:deployment_platform) { double(:deployment_platform) }
+    let(:deployment_namespace) { 'production' }
+
+    before do
+      allow(environment).to receive(:deployment_platform) { deployment_platform }
+      allow(environment).to receive(:deployment_namespace) { deployment_namespace }
+    end
+
+    context 'when rollout status is available' do
+      before do
+        allow(environment).to receive(:rollout_status_available?) { true }
+      end
+
+      it 'fetches ingresses from the deployment platform' do
+        expect(deployment_platform).to receive(:patch_ingress).with(deployment_namespace, ingress, data)
+
+        subject
+      end
+    end
+
+    context 'when rollout status is not available' do
+      before do
+        allow(environment).to receive(:rollout_status_available?) { false }
+      end
+
+      it 'does nothing' do
+        expect(deployment_platform).not_to receive(:patch_ingress)
+
+        subject
+      end
+    end
+  end
 end

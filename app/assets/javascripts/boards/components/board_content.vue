@@ -100,7 +100,6 @@ export default {
       ref="list"
       v-bind="draggableOptions"
       class="boards-list gl-w-full gl-py-5 gl-px-3 gl-white-space-nowrap"
-      data-qa-selector="boards_list"
       @start="handleDragOnStart"
       @end="handleDragOnEnd"
     >

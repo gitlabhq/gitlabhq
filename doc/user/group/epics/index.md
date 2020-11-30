@@ -127,9 +127,9 @@ These are dynamic dates which are recalculated if any of the following occur:
 
 If you select:
 
-- **Inherited** for the start date, GitLab will scan all child epics and issues assigned to the epic,
-  and will set the start date to match the earliest found start date or milestone.
-- **Inherited** for the due date, GitLab will set the due date to match the latest due date or
+- **Inherited** for the start date, GitLab scans all child epics and issues assigned to the epic,
+  and sets the start date to match the earliest found start date or milestone.
+- **Inherited** for the due date, GitLab sets the due date to match the latest due date or
   milestone found among its child epics and issues.
 
 These are dynamic dates and recalculated if any of the following occur:

@@ -241,7 +241,7 @@ requirements.
 1. Reviewed by relevant reviewers and all concerns are addressed for Availability, Regressions, Security. Documentation reviews should take place as soon as possible, but they should not block a merge request.
 1. Merged by a project maintainer.
 1. Create an issue in the [infrastructure issue tracker](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues) to inform the Infrastructure department when your contribution is changing default settings or introduces a new setting, if relevant.
-1. Confirmed to be working in the [Canary stage](https://about.gitlab.com/handbook/engineering/#canary-testing) or on GitLab.com once the contribution is deployed.
+1. Confirmed to be working in the [Canary stage](https://about.gitlab.com/handbook/engineering/#canary-testing) with no new [Sentry](https://about.gitlab.com/handbook/engineering/#sentry) errors or on GitLab.com once the contribution is deployed.
 1. Added to the [release post](https://about.gitlab.com/handbook/marketing/blog/release-posts/),
    if relevant.
 1. Added to [the website](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/features.yml), if relevant.

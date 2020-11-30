@@ -280,6 +280,10 @@ the user gets the highest access level from the groups. For example, if one grou
 is linked as `Guest` and another `Maintainer`, a user in both groups gets `Maintainer` 
 access.
 
+CAUTION: **Warning:**
+Unlinking an account removes all roles assigned to that user within the group. 
+If a user relinks their account, roles need to be reassigned.
+
 ## Glossary
 
 | Term | Description |

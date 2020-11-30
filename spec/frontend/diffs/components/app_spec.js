@@ -678,8 +678,12 @@ describe('diffs/components/app', () => {
       expect(setShowTreeList).toHaveBeenCalledWith({ showTreeList: true, saving: false });
     });
 
-    it('calls setShowTreeList with localstorage value', () => {
-      localStorage.setItem('mr_tree_show', 'true');
+    it.each`
+      showTreeList
+      ${true}
+      ${false}
+    `('calls setShowTreeList with localstorage $showTreeList', ({ showTreeList }) => {
+      localStorage.setItem('mr_tree_show', showTreeList);
 
       createComponent({}, ({ state }) => {
         state.diffs.diffFiles.push({ sha: '123' });
@@ -691,7 +695,7 @@ describe('diffs/components/app', () => {
 
       wrapper.vm.setTreeDisplay();
 
-      expect(setShowTreeList).toHaveBeenCalledWith({ showTreeList: true, saving: false });
+      expect(setShowTreeList).toHaveBeenCalledWith({ showTreeList, saving: false });
     });
   });
 
