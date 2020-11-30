@@ -17,7 +17,7 @@ module Tooling
         example_groups.each do |example_id, files|
           files.each do |file|
             spec_file = strip_example_uid(example_id)
-            @mapping[file] << spec_file
+            @mapping[file] << spec_file.delete_prefix('./')
           end
         end
       end

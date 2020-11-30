@@ -268,6 +268,10 @@ module Gitlab
       def has_database_scoped_labels?(current_mr_labels)
         current_mr_labels.any? { |label| label.start_with?('database::') }
       end
+
+      def has_ci_changes?
+        changed_files(%r{\A(\.gitlab-ci\.yml|\.gitlab/ci/)}).any?
+      end
     end
   end
 end

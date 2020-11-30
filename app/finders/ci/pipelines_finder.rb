@@ -18,7 +18,9 @@ module Ci
         return Ci::Pipeline.none
       end
 
-      items = pipelines.no_child
+      items = pipelines
+      items = items.no_child unless params[:iids].present?
+      items = by_iids(items)
       items = by_scope(items)
       items = by_status(items)
       items = by_ref(items)
@@ -50,6 +52,14 @@ module Ci
 
     def tags
       project.repository.tag_names
+    end
+
+    def by_iids(items)
+      if params[:iids].present?
+        items.for_iid(params[:iids])
+      else
+        items
+      end
     end
 
     def by_scope(items)

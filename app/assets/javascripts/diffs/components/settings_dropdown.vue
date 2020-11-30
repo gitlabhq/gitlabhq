@@ -1,7 +1,6 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlButtonGroup, GlButton, GlDropdown } from '@gitlab/ui';
-import { __ } from '~/locale';
 
 export default {
   components: {
@@ -13,12 +12,6 @@ export default {
     ...mapGetters('diffs', ['isInlineView', 'isParallelView']),
     ...mapState('diffs', ['renderTreeList', 'showWhitespace']),
   },
-  mounted() {
-    this.patchAriaLabel();
-  },
-  updated() {
-    this.patchAriaLabel();
-  },
   methods: {
     ...mapActions('diffs', [
       'setInlineDiffViewType',
@@ -26,17 +19,18 @@ export default {
       'setRenderTreeList',
       'setShowWhitespace',
     ]),
-    patchAriaLabel() {
-      this.$el
-        .querySelector('.js-show-diff-settings')
-        .setAttribute('aria-label', __('Diff view settings'));
-    },
   },
 };
 </script>
 
 <template>
-  <gl-dropdown icon="settings" toggle-class="js-show-diff-settings" right>
+  <gl-dropdown
+    icon="settings"
+    :text="__('Diff view settings')"
+    :text-sr-only="true"
+    toggle-class="js-show-diff-settings"
+    right
+  >
     <div class="gl-px-3">
       <span class="gl-font-weight-bold gl-display-block gl-mb-2">{{ __('File browser') }}</span>
       <gl-button-group class="gl-display-flex">

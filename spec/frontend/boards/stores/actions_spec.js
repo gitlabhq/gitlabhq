@@ -290,6 +290,33 @@ describe('moveList', () => {
       done,
     );
   });
+
+  it('should not commit MOVE_LIST or dispatch updateList if listId and replacedListId are the same', () => {
+    const initialBoardListsState = {
+      'gid://gitlab/List/1': mockListsWithModel[0],
+      'gid://gitlab/List/2': mockListsWithModel[1],
+    };
+
+    const state = {
+      endpoints: { fullPath: 'gitlab-org', boardId: '1' },
+      boardType: 'group',
+      disabled: false,
+      boardLists: initialBoardListsState,
+    };
+
+    testAction(
+      actions.moveList,
+      {
+        listId: 'gid://gitlab/List/1',
+        replacedListId: 'gid://gitlab/List/1',
+        newIndex: 1,
+        adjustmentValue: 1,
+      },
+      state,
+      [],
+      [],
+    );
+  });
 });
 
 describe('updateList', () => {

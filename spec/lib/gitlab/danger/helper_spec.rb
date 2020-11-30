@@ -591,4 +591,30 @@ RSpec.describe Gitlab::Danger::Helper do
       expect(helper.prepare_labels_for_mr([])).to eq('')
     end
   end
+
+  describe '#has_ci_changes?' do
+    context 'when .gitlab/ci is changed' do
+      it 'returns true' do
+        expect(helper).to receive(:all_changed_files).and_return(%w[migration.rb .gitlab/ci/test.yml])
+
+        expect(helper.has_ci_changes?).to be_truthy
+      end
+    end
+
+    context 'when .gitlab-ci.yml is changed' do
+      it 'returns true' do
+        expect(helper).to receive(:all_changed_files).and_return(%w[migration.rb .gitlab-ci.yml])
+
+        expect(helper.has_ci_changes?).to be_truthy
+      end
+    end
+
+    context 'when neither .gitlab/ci/ or .gitlab-ci.yml is changed' do
+      it 'returns false' do
+        expect(helper).to receive(:all_changed_files).and_return(%w[migration.rb nested/.gitlab-ci.yml])
+
+        expect(helper.has_ci_changes?).to be_falsey
+      end
+    end
+  end
 end

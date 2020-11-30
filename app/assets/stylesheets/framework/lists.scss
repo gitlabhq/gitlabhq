@@ -234,6 +234,8 @@ ul.content-list {
   }
 }
 
+ul.content-list.issuable-list > li,
+ul.content-list.todos-list > li,
 .card > .content-list > li {
   padding: $gl-padding-top $gl-padding;
 }

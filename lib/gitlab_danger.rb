@@ -14,6 +14,7 @@ class GitlabDanger
     product_analytics
     utility_css
     pajamas
+    pipeline
   ].freeze
 
   CI_ONLY_RULES ||= %w[
