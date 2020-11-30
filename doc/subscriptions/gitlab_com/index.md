@@ -25,6 +25,8 @@ When applied to:
 - A **personal userspace**, all projects contain features with the
   subscription applied, but as it's not a group, group features aren't available.
 
+You can read more about [common misconceptions](https://about.gitlab.com/handbook/marketing/strategic-marketing/enablement/dotcom-subscriptions/#common-misconceptions) regarding a GitLab.com subscription to help avoid issues.
+
 ## Choose a GitLab.com tier
 
 Pricing is [tier-based](https://about.gitlab.com/pricing/), allowing you to choose
