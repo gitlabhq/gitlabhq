@@ -50,6 +50,8 @@ module Gitlab
         retval
       rescue => e
         error(project.id, e)
+
+        raise e
       end
 
       # Imports all the objects in sequence in the current thread.
@@ -178,7 +180,7 @@ module Gitlab
           )
         )
 
-        Gitlab::ErrorTracking.track_and_raise_exception(
+        Gitlab::ErrorTracking.track_exception(
           exception,
           log_attributes(project_id)
         )

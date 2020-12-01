@@ -4275,6 +4275,14 @@ RSpec.describe MergeRequest, factory_default: :keep do
           expect(subject.diffable_merge_ref?).to eq(true)
         end
 
+        context 'merge request is merged' do
+          subject { build_stubbed(:merge_request, :merged, project: project) }
+
+          it 'returns false' do
+            expect(subject.diffable_merge_ref?).to eq(false)
+          end
+        end
+
         context 'merge request cannot be merged' do
           before do
             subject.mark_as_unchecked!

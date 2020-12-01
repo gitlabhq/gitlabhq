@@ -49,6 +49,57 @@ RSpec.describe Gitlab::GithubImport::Importer::LfsObjectsImporter do
         importer.execute
       end
     end
+
+    context 'when LFS list download fails' do
+      it 'rescues and logs the known exceptions' do
+        exception = StandardError.new('Invalid Project URL')
+        importer = described_class.new(project, client, parallel: false)
+
+        expect_next_instance_of(Projects::LfsPointers::LfsObjectDownloadListService) do |service|
+          expect(service)
+            .to receive(:execute)
+            .and_raise(exception)
+        end
+
+        expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+          expect(logger)
+            .to receive(:error)
+            .with(
+              message: 'importer failed',
+              import_source: :github,
+              project_id: project.id,
+              parallel: false,
+              importer: 'Gitlab::GithubImport::Importer::LfsObjectImporter',
+              'error.message': 'Invalid Project URL'
+            )
+        end
+
+        expect(Gitlab::ErrorTracking)
+          .to receive(:track_exception)
+          .with(
+            exception,
+            import_source: :github,
+            parallel: false,
+            project_id: project.id,
+            importer: 'Gitlab::GithubImport::Importer::LfsObjectImporter'
+          ).and_call_original
+
+        importer.execute
+      end
+
+      it 'raises and logs the unknown exceptions' do
+        exception = Exception.new('Really bad news')
+        importer = described_class.new(project, client, parallel: false)
+
+        expect_next_instance_of(Projects::LfsPointers::LfsObjectDownloadListService) do |service|
+          expect(service)
+            .to receive(:execute)
+            .and_raise(exception)
+        end
+
+        expect { importer.execute }.to raise_error(exception)
+      end
+    end
   end
 
   describe '#sequential_import' do
@@ -61,13 +112,11 @@ RSpec.describe Gitlab::GithubImport::Importer::LfsObjectsImporter do
       end
 
       expect(Gitlab::GithubImport::Importer::LfsObjectImporter)
-        .to receive(:new)
-        .with(
+        .to receive(:new).with(
           an_instance_of(Gitlab::GithubImport::Representation::LfsObject),
           project,
           client
-        )
-        .and_return(lfs_object_importer)
+        ).and_return(lfs_object_importer)
 
       expect(lfs_object_importer).to receive(:execute)
 

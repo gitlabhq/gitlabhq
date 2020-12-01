@@ -57,17 +57,45 @@ RSpec.describe Gitlab::Pagination::GitalyKeysetPager do
     end
 
     context 'with branch_list_keyset_pagination feature on' do
+      let(:fake_request) { double(url: "#{incoming_api_projects_url}?#{query.to_query}") }
+      let(:branch1) { double 'branch', name: 'branch1' }
+      let(:branch2) { double 'branch', name: 'branch2' }
+      let(:branch3) { double 'branch', name: 'branch3' }
+
       before do
         stub_feature_flags(branch_list_keyset_pagination: project)
       end
 
       context 'without keyset pagination option' do
-        it_behaves_like 'offset pagination'
+        context 'when first page is requested' do
+          let(:branches) { [branch1, branch2, branch3] }
+
+          it 'keyset pagination is used with offset headers' do
+            allow(request_context).to receive(:request).and_return(fake_request)
+            allow(project.repository).to receive(:branch_count).and_return(branches.size)
+
+            expect(finder).to receive(:execute).with(gitaly_pagination: true).and_return(branches)
+            expect(request_context).to receive(:header).with('X-Per-Page', '2')
+            expect(request_context).to receive(:header).with('X-Page', '1')
+            expect(request_context).to receive(:header).with('X-Next-Page', '2')
+            expect(request_context).to receive(:header).with('X-Prev-Page', '')
+            expect(request_context).to receive(:header).with('Link', kind_of(String))
+            expect(request_context).to receive(:header).with('X-Total', '3')
+            expect(request_context).to receive(:header).with('X-Total-Pages', '2')
+
+            pager.paginate(finder)
+          end
+        end
+
+        context 'when second page is requested' do
+          let(:base_query) { { per_page: 2, page: 2 } }
+
+          it_behaves_like 'offset pagination'
+        end
       end
 
       context 'with keyset pagination option' do
         let(:query) { base_query.merge(pagination: 'keyset') }
-        let(:fake_request) { double(url: "#{incoming_api_projects_url}?#{query.to_query}") }
 
         before do
           allow(request_context).to receive(:request).and_return(fake_request)
@@ -75,8 +103,6 @@ RSpec.describe Gitlab::Pagination::GitalyKeysetPager do
         end
 
         context 'when next page could be available' do
-          let(:branch1) { double 'branch', name: 'branch1' }
-          let(:branch2) { double 'branch', name: 'branch2' }
           let(:branches) { [branch1, branch2] }
 
           let(:expected_next_page_link) { %Q(<#{incoming_api_projects_url}?#{query.merge(page_token: branch2.name).to_query}>; rel="next") }
@@ -90,7 +116,6 @@ RSpec.describe Gitlab::Pagination::GitalyKeysetPager do
         end
 
         context 'when the current page is the last page' do
-          let(:branch1) { double 'branch', name: 'branch1' }
           let(:branches) { [branch1] }
 
           it 'uses keyset pagination without link headers' do

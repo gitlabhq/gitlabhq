@@ -3,16 +3,16 @@ import { escape, capitalize } from 'lodash';
 import { GlLoadingIcon } from '@gitlab/ui';
 import StageColumnComponentLegacy from './stage_column_component_legacy.vue';
 import GraphWidthMixin from '../../mixins/graph_width_mixin';
-import LinkedPipelinesColumn from './linked_pipelines_column.vue';
+import LinkedPipelinesColumnLegacy from './linked_pipelines_column_legacy.vue';
 import GraphBundleMixin from '../../mixins/graph_pipeline_bundle_mixin';
 import { UPSTREAM, DOWNSTREAM, MAIN } from './constants';
 
 export default {
   name: 'PipelineGraphLegacy',
   components: {
-    StageColumnComponentLegacy,
     GlLoadingIcon,
-    LinkedPipelinesColumn,
+    LinkedPipelinesColumnLegacy,
+    StageColumnComponentLegacy,
   },
   mixins: [GraphWidthMixin, GraphBundleMixin],
   props: {
@@ -204,7 +204,7 @@ export default {
           @refreshPipelineGraph="requestRefreshPipelineGraph"
         />
 
-        <linked-pipelines-column
+        <linked-pipelines-column-legacy
           v-if="hasUpstream"
           :type="$options.upstream"
           :linked-pipelines="upstreamPipelines"
@@ -240,7 +240,7 @@ export default {
           />
         </ul>
 
-        <linked-pipelines-column
+        <linked-pipelines-column-legacy
           v-if="hasDownstream"
           :type="$options.downstream"
           :linked-pipelines="downstreamPipelines"

@@ -1,0 +1,5 @@
+---
+title: Paginate first page of branches using Gitaly
+merge_request: 48595
+author:
+type: performance

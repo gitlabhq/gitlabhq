@@ -131,7 +131,7 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling do
       end
 
       expect(Gitlab::ErrorTracking)
-        .to receive(:track_and_raise_exception)
+        .to receive(:track_exception)
         .with(
           exception,
           import_source: :github,

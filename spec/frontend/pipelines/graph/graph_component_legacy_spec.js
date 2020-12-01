@@ -4,7 +4,7 @@ import { setHTMLFixture } from 'helpers/fixtures';
 import PipelineStore from '~/pipelines/stores/pipeline_store';
 import GraphComponentLegacy from '~/pipelines/components/graph/graph_component_legacy.vue';
 import StageColumnComponentLegacy from '~/pipelines/components/graph/stage_column_component_legacy.vue';
-import linkedPipelinesColumn from '~/pipelines/components/graph/linked_pipelines_column.vue';
+import LinkedPipelinesColumnLegacy from '~/pipelines/components/graph/linked_pipelines_column_legacy.vue';
 import graphJSON from './mock_data_legacy';
 import linkedPipelineJSON from './linked_pipelines_mock_data';
 import PipelinesMediator from '~/pipelines/pipeline_details_mediator';
@@ -146,14 +146,14 @@ describe('graph component', () => {
       });
 
       it('should render an upstream pipelines column at first position', () => {
-        expect(wrapper.find(linkedPipelinesColumn).exists()).toBe(true);
+        expect(wrapper.find(LinkedPipelinesColumnLegacy).exists()).toBe(true);
         expect(wrapper.find('.stage-column .stage-name').text()).toBe('Upstream');
       });
 
       it('should render a downstream pipelines column at last position', () => {
         const stageColumnNames = wrapper.findAll('.stage-column .stage-name');
 
-        expect(wrapper.find(linkedPipelinesColumn).exists()).toBe(true);
+        expect(wrapper.find(LinkedPipelinesColumnLegacy).exists()).toBe(true);
         expect(stageColumnNames.at(stageColumnNames.length - 1).text()).toBe('Downstream');
       });
 
