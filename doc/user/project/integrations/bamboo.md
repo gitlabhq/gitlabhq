@@ -7,8 +7,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Atlassian Bamboo CI Service
 
 GitLab provides integration with Atlassian Bamboo for continuous integration.
-When configured, pushes to a project will trigger a build in Bamboo automatically.
-Merge requests will also display CI status showing whether the build is pending,
+When configured, pushes to a project trigger a build in Bamboo automatically.
+Merge requests also display CI status showing whether the build is pending,
 failed, or completed successfully. It also provides a link to the Bamboo build
 page for more information.
 
@@ -56,7 +56,7 @@ service in GitLab.
    access to trigger the build plan. Leave these fields blank if you do not require
    authentication.
 1. Save or optionally click 'Test Settings'. Please note that 'Test Settings'
-   will actually trigger a build in Bamboo.
+   actually triggers a build in Bamboo.
 
 ## Troubleshooting
 

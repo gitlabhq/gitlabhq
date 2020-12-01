@@ -30,7 +30,7 @@ RSpec.describe GitlabSchema.types['Project'] do
       alert_management_alerts alert_management_alert alert_management_alert_status_counts
       container_expiration_policy service_desk_enabled service_desk_address
       issue_status_counts terraform_states alert_management_integrations
-
+      container_repositories container_repositories_count
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)

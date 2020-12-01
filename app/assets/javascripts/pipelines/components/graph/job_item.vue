@@ -165,7 +165,7 @@ export default {
       v-gl-tooltip="{ boundary, placement: 'bottom', customClass: 'gl-pointer-events-none' }"
       :title="tooltipText"
       :class="jobClasses"
-      class="js-job-component-tooltip non-details-job-component"
+      class="js-job-component-tooltip non-details-job-component menu-item"
       data-testid="job-without-link"
       @mouseout="hideTooltips"
     >

@@ -49,8 +49,7 @@ to configure pipelines to run for open pull requests.
 
 This makes it possible to mark these status checks as _Required_ on GitHub.
 With **Static status check names** enabled on the integration page, your
-GitLab instance host name is going to be appended to a status check name,
-whereas in case of dynamic status check names, a branch name is going to be
-appended.
+GitLab instance host name is appended to a status check name,
+whereas in case of dynamic status check names, a branch name is appended.
 
 ![Configure GitHub Project Integration](img/github_configuration.png)

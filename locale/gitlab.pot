@@ -9555,6 +9555,9 @@ msgstr ""
 msgid "DevopsAdoption|DevOps adoption uses segments to track adoption across key features. Segments are a way to track multiple related projects and groups at once. For example, you could create a segment for the engineering department or a particular product team."
 msgstr ""
 
+msgid "DevopsAdoption|Feature adoption is based on usage over the last 30 days. Last updated: %{timestamp}."
+msgstr ""
+
 msgid "DevopsAdoption|Issues"
 msgstr ""
 
@@ -9582,7 +9585,10 @@ msgstr ""
 msgid "DevopsAdoption|Segment"
 msgstr ""
 
-msgid "DevopsAdoption|There was an error fetching Groups"
+msgid "DevopsAdoption|There was an error fetching Groups. Please refresh the page to try again."
+msgstr ""
+
+msgid "DevopsAdoption|There was an error fetching Segments. Please refresh the page to try again."
 msgstr ""
 
 msgid "DevopsReport|Adoption"

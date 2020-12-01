@@ -31,7 +31,7 @@ After you set up Microsoft Teams, it's time to set up GitLab.
 
 Navigate to the [Integrations page](overview.md#accessing-integrations)
 and select the **Microsoft Teams Notification** service to configure it.
-There, you will see a checkbox with the following events that can be triggered:
+There, you see a checkbox with the following events that can be triggered:
 
 - Push
 - Issue

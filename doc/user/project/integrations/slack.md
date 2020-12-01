@@ -17,9 +17,9 @@ separately configured [Slack slash commands](slack_slash_commands.md).
 ## Slack configuration
 
 1. Sign in to your Slack team and [start a new Incoming WebHooks configuration](https://my.slack.com/services/new/incoming-webhook).
-1. Select the Slack channel where notifications will be sent to by default.
+1. Select the Slack channel where notifications should be sent to by default.
    Click the **Add Incoming WebHooks integration** button to add the configuration.
-1. Copy the **Webhook URL**, which we will use later in the GitLab configuration.
+1. Copy the **Webhook URL**, which we use later in the GitLab configuration.
 
 ## GitLab configuration
 
@@ -47,7 +47,7 @@ separately configured [Slack slash commands](slack_slash_commands.md).
    to send notifications for.
 1. Click **Test settings and save changes**.
 
-Your Slack team will now start receiving GitLab event notifications as configured.
+Your Slack team now starts receiving GitLab event notifications as configured.
 
 ### Triggers available for Slack notifications
 

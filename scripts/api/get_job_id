@@ -4,7 +4,6 @@
 require 'rubygems'
 require 'gitlab'
 require 'optparse'
-require 'cgi'
 
 class JobFinder
   DEFAULT_OPTIONS = {
@@ -21,14 +20,16 @@ class JobFinder
     @job_query = options.delete(:job_query)
     @pipeline_id = options.delete(:pipeline_id)
     @job_name = options.delete(:job_name)
-    @api_token = options.delete(:api_token)
+
+    # Force the token to be a string so that if api_token is nil, it's set to '', allowing unauthenticated requests (for forks).
+    api_token = options.delete(:api_token).to_s
+
+    warn "No API token given." if api_token.empty?
 
     Gitlab.configure do |config|
       config.endpoint = 'https://gitlab.com/api/v4'
-      config.private_token = api_token if api_token
+      config.private_token = api_token
     end
-
-    warn "No API token given." unless api_token
   end
 
   def execute
@@ -37,21 +38,13 @@ class JobFinder
 
   private
 
-  attr_reader :project, :pipeline_query, :job_query, :pipeline_id, :job_name, :api_token
+  attr_reader :project, :pipeline_query, :job_query, :pipeline_id, :job_name
 
   def find_job_with_filtered_pipelines
     return if pipeline_query.empty?
 
-    Gitlab.get(
-      "/projects/#{CGI.escape(project)}/pipelines",
-      query: pipeline_query_params,
-      unauthenticated: api_token.nil?
-    ).auto_paginate do |pipeline|
-      Gitlab.get(
-        "/projects/#{CGI.escape(project)}/pipelines/#{pipeline.id}/jobs",
-        query: job_query_params,
-        unauthenticated: api_token.nil?
-      ).auto_paginate do |job|
+    Gitlab.pipelines(project, pipeline_query_params).auto_paginate do |pipeline|
+      Gitlab.pipeline_jobs(project, pipeline.id, job_query_params).auto_paginate do |job|
         return job if job.name == job_name # rubocop:disable Cop/AvoidReturnFromBlocks
       end
     end
@@ -62,11 +55,7 @@ class JobFinder
   def find_job_in_pipeline
     return unless pipeline_id
 
-    Gitlab.get(
-      "/projects/#{CGI.escape(project)}/pipelines/#{pipeline_id}/jobs",
-      query: job_query_params,
-      unauthenticated: api_token.nil?
-    ).auto_paginate do |job|
+    Gitlab.pipeline_jobs(project, pipeline_id, job_query_params).auto_paginate do |job|
       return job if job.name == job_name # rubocop:disable Cop/AvoidReturnFromBlocks
     end
 

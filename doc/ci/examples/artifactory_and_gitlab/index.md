@@ -34,7 +34,7 @@ For this article you'll use a Maven app that can be cloned from our example
 project:
 
 1. Log in to your GitLab account
-1. Create a new project by selecting **Import project from ➔ Repo by URL**
+1. Create a new project by selecting **Import project from > Repo by URL**
 1. Add the following URL:
 
    ```plaintext

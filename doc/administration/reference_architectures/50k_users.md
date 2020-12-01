@@ -24,8 +24,8 @@ full list of reference architectures, see
 | Internal load balancing node            | 1           | 8 vCPU, 7.2 GB memory   | n1-highcpu-8    | c5.2xlarge   | F8s v2   |
 | Redis - Cache                           | 3           | 4 vCPU, 15 GB memory    | n1-standard-4   | m5.xlarge    | D4s v3   |
 | Redis - Queues / Shared State           | 3           | 4 vCPU, 15 GB memory    | n1-standard-4   | m5.xlarge    | D4s v3   |
-| Redis Sentinel - Cache                  | 3           | 1 vCPU, 1.7 GB memory   | g1-small        | t2.small     | B1MS     |
-| Redis Sentinel - Queues / Shared State  | 3           | 1 vCPU, 1.7 GB memory   | g1-small        | t2.small     | B1MS     |
+| Redis Sentinel - Cache                  | 3           | 1 vCPU, 1.7 GB memory   | g1-small        | t3.small     | B1MS     |
+| Redis Sentinel - Queues / Shared State  | 3           | 1 vCPU, 1.7 GB memory   | g1-small        | t3.small     | B1MS     |
 | Gitaly                                  | 2 (minimum) | 64 vCPU, 240 GB memory  | n1-standard-64  | m5.16xlarge  | D64s v3  |
 | Sidekiq                                 | 4           | 4 vCPU, 15 GB memory    | n1-standard-4   | m5.xlarge    | D4s v3   |
 | GitLab Rails                            | 12          | 32 vCPU, 28.8 GB memory | n1-highcpu-32   | c5.9xlarge   | F32s v2  |

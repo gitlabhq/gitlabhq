@@ -96,7 +96,7 @@ Read more about the [jobs API](../../api/job_artifacts.md#download-the-artifacts
 ## Adding a new trigger
 
 Go to your
-**Settings ➔ CI/CD** under **Triggers** to add a new trigger. The **Add trigger** button creates
+**Settings > CI/CD** under **Triggers** to add a new trigger. The **Add trigger** button creates
 a new token which you can then use to trigger a rerun of this
 particular project's pipeline.
 
@@ -109,7 +109,7 @@ overview of the time the triggers were last used.
 ## Revoking a trigger
 
 You can revoke a trigger any time by going at your project's
-**Settings ➔ CI/CD** under **Triggers** and hitting the **Revoke** button.
+**Settings > CI/CD** under **Triggers** and hitting the **Revoke** button.
 The action is irreversible.
 
 ## Triggering a pipeline

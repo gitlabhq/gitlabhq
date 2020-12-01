@@ -8,10 +8,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Project webhooks allow you to trigger a URL if for example new code is pushed or
 a new issue is created. You can configure webhooks to listen for specific events
-like pushes, issues or merge requests. GitLab will send a POST request with data
+like pushes, issues or merge requests. GitLab sends a POST request with data
 to the webhook URL.
 
-In most cases, you'll need to set up your own [webhook receiver](#example-webhook-receiver)
+In most cases, you need to set up your own [webhook receiver](#example-webhook-receiver)
 to receive information from GitLab, and send it to another app, according to your needs.
 We already have a [built-in receiver](slack.md)
 for sending [Slack](https://api.slack.com/incoming-webhooks) notifications _per project_.
@@ -31,8 +31,7 @@ update a backup mirror, or even deploy to your production server.
 They are available **per project** for GitLab Community Edition,
 and **per project and per group** for **GitLab Enterprise Edition**.
 
-Navigate to the webhooks page by going to your project's
-**Settings ➔ Webhooks**.
+Navigate to the webhooks page at your project's **Settings > Webhooks**.
 
 NOTE: **Note:**
 On GitLab.com, the [maximum number of webhooks and their size](../../../user/gitlab_com/index.md#webhooks) per project, and per group, is limited.
@@ -65,20 +64,20 @@ Starting from GitLab 11.2:
 
 ## Webhook endpoint tips
 
-If you are writing your own endpoint (web server) that will receive
-GitLab webhooks keep in mind the following things:
+If you are writing your own endpoint (web server) to receive
+GitLab webhooks, keep in mind the following things:
 
 - Your endpoint should send its HTTP response as fast as possible. If
   you wait too long, GitLab may decide the hook failed and retry it.
 - Your endpoint should ALWAYS return a valid HTTP response. If you do
-  not do this then GitLab will think the hook failed and retry it.
+  not do this then GitLab thinks the hook failed and retries it.
   Most HTTP libraries take care of this for you automatically but if
   you are writing a low-level hook this is important to remember.
 - GitLab ignores the HTTP status code returned by your endpoint.
 
 ## Secret token
 
-If you specify a secret token, it will be sent with the hook request in the
+If you specify a secret token, it is sent with the hook request in the
 `X-Gitlab-Token` HTTP header. Your webhook endpoint can check that to verify
 that the request is legitimate.
 
@@ -110,13 +109,13 @@ Triggered when you push to the repository except when pushing tags.
 
 NOTE: **Note:**
 When more than 20 commits are pushed at once, the `commits` webhook
-attribute will only contain the first 20 for performance reasons. Loading
+attribute only contains the first 20 for performance reasons. Loading
 detailed commit data is expensive. Note that despite only 20 commits being
-present in the `commits` attribute, the `total_commits_count` attribute will
-contain the actual total.
+present in the `commits` attribute, the `total_commits_count` attribute contains the actual total.
 
 Also, if a single push includes changes for more than three (by default, depending on
-[`push_event_hooks_limit` setting](../../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls)) branches, this hook won't be executed.
+[`push_event_hooks_limit` setting](../../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls))
+branches, this hook isn't executed.
 
 **Request header**:
 
@@ -205,7 +204,8 @@ Triggered when you create (or delete) tags to the repository.
 
 NOTE: **Note:**
 If a single push includes changes for more than three (by default, depending on
-[`push_event_hooks_limit` setting](../../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls)) tags, this hook won't be executed.
+[`push_event_hooks_limit` setting](../../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls))
+tags, this hook is not executed.
 
 **Request header**:
 
@@ -412,9 +412,9 @@ X-Gitlab-Event: Issue Hook
 ### Comment events
 
 Triggered when a new comment is made on commits, merge requests, issues, and code snippets.
-The note data will be stored in `object_attributes` (e.g. `note`, `noteable_type`). The
-payload will also include information about the target of the comment. For example,
-a comment on an issue will include the specific issue information under the `issue` key.
+The note data is stored in `object_attributes` (e.g. `note`, `noteable_type`). The
+payload also includes information about the target of the comment. For example,
+a comment on an issue includes the specific issue information under the `issue` key.
 Valid target types:
 
 - `commit`
@@ -1502,21 +1502,22 @@ its description:
 ![image](/uploads/$sha/image.png)
 ```
 
-It will appear in the webhook body as the below (assuming that GitLab is
-installed at `gitlab.example.com`, and the project is at
-`example-group/example-project`):
+It appears in the webhook body as follows assuming that:
+
+- GitLab is installed at `gitlab.example.com`.
+- The project is at `example-group/example-project`.
 
 ```markdown
 ![image](https://gitlab.example.com/example-group/example-project/uploads/$sha/image.png)
 ```
 
-This will not rewrite URLs that already are pointing to HTTP, HTTPS, or
-protocol-relative URLs. It will also not rewrite image URLs using advanced
+This doesn't rewrite URLs that already are pointing to HTTP, HTTPS, or
+protocol-relative URLs. It also doesn't rewrite image URLs using advanced
 Markdown features, like link labels.
 
 ## Testing webhooks
 
-You can trigger the webhook manually. Sample data from the project will be used.
+You can trigger the webhook manually. Sample data from the project is used.
 > For example: for triggering `Push Events` your project should have at least one commit.
 
 ![Webhook testing](img/webhook_testing.png)
@@ -1536,11 +1537,11 @@ On this page, you can see data that GitLab sends (request headers and body) and 
 From this page, you can repeat delivery with the same data by clicking `Resend Request` button.
 
 NOTE: **Note:**
-If URL or secret token of the webhook were updated, data will be delivered to the new address.
+If URL or secret token of the webhook were updated, data is delivered to the new address.
 
 ### Receiving duplicate or multiple webhook requests triggered by one event
 
-When GitLab sends a webhook it expects a response in 10 seconds (set default value). If it does not receive one, it'll retry the webhook.
+When GitLab sends a webhook, it expects a response in 10 seconds (set default value). If it does not receive one, it retries the webhook.
 If the endpoint doesn't send its HTTP response within those 10 seconds, GitLab may decide the hook failed and retry it.
 
 If you are receiving multiple requests, you can try increasing the default value to wait for the HTTP response after sending the webhook

@@ -330,7 +330,7 @@ RSpec.describe UsersHelper do
     end
 
     def stub_profile_permission_allowed(allowed, current_user = nil)
-      allow(helper).to receive(:can?).with(user, :read_user_profile, current_user).and_return(allowed)
+      allow(helper).to receive(:can?).with(current_user, :read_user_profile, user).and_return(allowed)
     end
   end
 end

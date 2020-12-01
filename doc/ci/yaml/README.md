@@ -747,14 +747,12 @@ job 5:
 
 #### Using your own runners
 
-When you use your own runners, GitLab Runner runs only one job at a time by default. See the
-`concurrent` flag in [runner global settings](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section)
-for more information.
+When you use your own runners, each runner runs only one job at a time by default.
+Jobs can run in parallel if they run on different runners.
 
-Jobs run on your own runners in parallel only if:
-
-- Run on different runners.
-- The runner's `concurrent` setting has been changed.
+If you have only one runner, jobs can run in parallel if the runner's
+[`concurrent` setting](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section)
+is greater than `1`.
 
 #### `.pre` and `.post`
 
@@ -1200,8 +1198,8 @@ or excluded from a pipeline. In plain English, `if` rules can be interpreted as 
 `rules:if` differs slightly from `only:variables` by accepting only a single
 expression string per rule, rather than an array of them. Any set of expressions to be
 evaluated can be [conjoined into a single expression](../variables/README.md#conjunction--disjunction)
-by using `&&` or `||`, and use
-the [variable matching syntax](../variables/README.md#syntax-of-environment-variable-expressions).
+by using `&&` or `||`, and the [variable matching operators (`==`, `!=`, `=~` and `!~`)](../variables/README.md#syntax-of-environment-variable-expressions).
+
 Unlike variables in [`script`](../variables/README.md#syntax-of-environment-variables-in-job-scripts)
 sections, variables in rules expressions are always formatted as `$VARIABLE`.
 
@@ -1496,6 +1494,10 @@ In addition, `only` and `except` can use special keywords:
 | `tags`                   | When the Git reference for a pipeline is a tag.                                                                                                                                                                                  |
 | `triggers`               | For pipelines created by using a [trigger token](../triggers/README.md#trigger-token).                                                                                                                                           |
 | `web`                    | For pipelines created by using **Run pipeline** button in the GitLab UI, from the project's **CI/CD > Pipelines** section.                                                                                                       |
+
+Scheduled pipelines run on specific branches, so jobs configured with `only: branches`
+run on scheduled pipelines too. Add `except: schedules` to prevent jobs with `only: branches`
+from running on scheduled pipelines.
 
 In the example below, `job` runs only for refs that start with `issue-`,
 whereas all branches are skipped:
@@ -3445,6 +3447,9 @@ job split into three separate jobs.
 Use `matrix:` to configure different variables for jobs that are running in parallel.
 There can be from 2 to 50 jobs.
 
+Jobs can only run in parallel if there are multiple runners, or a single runner is
+[configured to run multiple jobs concurrently](#using-your-own-runners).
+
 [In GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/26362) and later,
 you can have one-dimensional matrices with a single job.
 
@@ -4319,11 +4324,12 @@ into templates.
 
 ## Skip Pipeline
 
-If your commit message contains `[ci skip]` or `[skip ci]`, using any
-capitalization, the commit is created but the pipeline is skipped.
+To push a commit without triggering a pipeline, add `[ci skip]` or `[skip ci]`, using any
+capitalization, to your commit message.
 
-Alternatively, one can pass the `ci.skip` [Git push option](../../user/project/push_options.md#push-options-for-gitlab-cicd)
-if using Git 2.10 or newer.
+Alternatively, if you are using Git 2.10 or later, use the `ci.skip` [Git push option](../../user/project/push_options.md#push-options-for-gitlab-cicd).
+The `ci.skip` push option does not skip merge request
+pipelines.
 
 ## Processing Git pushes
 

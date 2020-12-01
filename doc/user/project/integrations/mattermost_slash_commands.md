@@ -37,7 +37,7 @@ commands in Mattermost and then enable the service in GitLab.
 
 ### Step 1. Enable custom slash commands in Mattermost
 
-This step is only required when using a source install, Omnibus installs will be
+This step is only required when using a source install. Omnibus installs are
 preconfigured with the right settings.
 
 The first thing to do in Mattermost is to enable custom slash commands from
@@ -61,13 +61,12 @@ the administrator console.
 1. Open a new tab for GitLab, go to your project's
    [Integrations page](overview.md#accessing-integrations)
    and select the **Mattermost command** service to configure it.
-   A screen will appear with all the values you need to copy in Mattermost as
+   A screen appears with all the values you need to copy in Mattermost as
    described in the next step. Leave the window open.
 
    NOTE: **Note:**
-   GitLab will propose some values for the Mattermost settings. The only one
-   required to copy-paste as-is is the **Request URL**, all the others are just
-   suggestions.
+   GitLab offers some values for the Mattermost settings. Only **Request URL** is required
+   as offered, all the others are just suggestions.
 
    ![Mattermost setup instructions](img/mattermost_config_help.png)
 
@@ -96,12 +95,12 @@ in a new slash command.
    NOTE: **Note:**
    If you plan on connecting multiple projects, pick a slash command trigger
    word that relates to your projects such as `/gitlab-project-name` or even
-   just `/project-name`. Only use `/gitlab` if you will only connect a single
+   just `/project-name`. Only use `/gitlab` if you plan to only connect a single
    project to your Mattermost team.
 
    ![Mattermost add command configuration](img/mattermost_slash_command_configuration.png)
 
-1. After you set up all the values, copy the token (we will use it below) and
+1. After you set up all the values, copy the token (we use it below) and
    click **Done**.
 
    ![Mattermost slash command token](img/mattermost_slash_command_token.png)
@@ -120,12 +119,12 @@ GitLab project you configured.
 
 ## Authorizing Mattermost to interact with GitLab
 
-The first time a user will interact with the newly created slash commands,
-Mattermost will trigger an authorization process.
+The first time a user interacts with the newly created slash commands,
+Mattermost triggers an authorization process.
 
 ![Mattermost bot authorize](img/mattermost_bot_auth.png)
 
-This will connect your Mattermost user with your GitLab user. You can
+This connects your Mattermost user with your GitLab user. You can
 see all authorized chat accounts in your profile's page under **Chat**.
 
 When the authorization process is complete, you can start interacting with
@@ -158,7 +157,7 @@ Mattermost webhooks do not have access to private channels.
 
 If a private channel is required, you can edit the webhook's channel in Mattermost and
 select a private channel. It is not possible to use different channels for
-different types of notifications - all events will be sent to the specified channel.
+different types of notifications. All events are sent to the specified channel.
 
 ## Further reading
 

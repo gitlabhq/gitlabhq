@@ -24514,7 +24514,7 @@
             },
             {
               "name": "containerRepositories",
-              "description": "Container repositories of the project",
+              "description": "Container repositories of the group",
               "args": [
                 {
                   "name": "name",
@@ -24571,6 +24571,24 @@
                 "kind": "OBJECT",
                 "name": "ContainerRepositoryConnection",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "containerRepositoriesCount",
+              "description": "Number of container repositories in the group",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -46297,6 +46315,24 @@
                 "kind": "OBJECT",
                 "name": "ContainerRepositoryConnection",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "containerRepositoriesCount",
+              "description": "Number of container repositories in the project",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null

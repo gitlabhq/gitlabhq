@@ -660,7 +660,7 @@ it('tests apollo component', () => {
   const vm = shallowMount(App);
 
   vm.setData({
-    ...mock data
+    ...mockData
   });
 });
 ```
@@ -732,7 +732,7 @@ function createComponent(props = {}) {
       ApolloMutation,
     },
     mocks: {
-      $apollo:
+      $apollo,
     }
   });
 }

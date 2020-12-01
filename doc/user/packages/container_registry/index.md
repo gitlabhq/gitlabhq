@@ -127,7 +127,7 @@ To build and push to the Container Registry:
    docker push registry.example.com/group/project/image
    ```
 
-You can also view these commands by going to your project's **Packages & Registries > Container Registry**.
+To view these commands, go to your project's **Packages & Registries > Container Registry**.
 
 ## Build and push by using GitLab CI/CD
 

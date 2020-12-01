@@ -116,7 +116,7 @@ You can publish a Composer package to the Package Registry as part of your CI/CD
 
 1. Run the pipeline.
 
-You can view the published package by going to **Packages & Registries > Package Registry** and selecting the **Composer** tab.
+To view the published package, go to **Packages & Registries > Package Registry** and select the **Composer** tab.
 
 ### Use a CI/CD template
 

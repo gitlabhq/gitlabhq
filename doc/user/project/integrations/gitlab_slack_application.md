@@ -25,8 +25,7 @@ The simplest way to enable the GitLab Slack application for your workspace is to
 install the [GitLab application](https://slack-platform.slack.com/apps/A676ADMV5-gitlab) from
 the [Slack App Directory](https://slack.com/apps).
 
-Clicking install will take you to the
-[GitLab Slack application landing page](https://gitlab.com/profile/slack/edit)
+Clicking install takes you to the [GitLab Slack application landing page](https://gitlab.com/profile/slack/edit)
 where you can select a project to enable the GitLab Slack application for.
 
 ![GitLab Slack application landing page](img/gitlab_slack_app_landing_page.png)
@@ -71,7 +70,7 @@ GitLab error: project or alias not found
 After confirming the installation, you, and everyone else in your Slack team,
 can use all the [slash commands](../../../integration/slash_commands.md).
 
-When you perform your first slash command you will be asked to authorize your
+When you perform your first slash command, you are asked to authorize your
 Slack user on GitLab.com.
 
 The only difference with the [manually configurable Slack slash commands](slack_slash_commands.md)

@@ -100,7 +100,7 @@ create and use a single-purpose `jira` user in GitLab.
    - Check **API** in the Scopes section and uncheck any other checkboxes.
 
 1. Click **Save application**. GitLab displays the generated **Application ID**
-   and **Secret** values. Copy these values, which you will use in Jira.
+   and **Secret** values. Copy these values, which you use in Jira.
 
 #### Jira DVCS Connector setup
 
@@ -165,7 +165,7 @@ This error message is generated in Jira, after completing the **Add New Account*
 form and authorizing access. It indicates a connectivity issue from Jira to
 GitLab. No other error messages appear in any logs.
 
-If there was an issue with SSL/TLS, this error message will be generated.
+If there was an issue with SSL/TLS, this error message is generated.
 
 - The [GitLab Jira integration](../user/project/integrations/jira.md) requires GitLab to connect to Jira. Any
   TLS issues that arise from a private certificate authority or self-signed
@@ -272,7 +272,7 @@ The GitLab user only needs access when adding a new namespace. For syncing with 
 
    ![Configure namespace on GitLab Jira App](img/jira_dev_panel_setup_com_3.png)
 
-After a namespace is added, all future commits, branches and merge requests of all projects under that namespace will be synced to Jira. Past data cannot be synced at the moment.
+After a namespace is added, all future commits, branches, and merge requests of all projects under that namespace are synced to Jira. Past data cannot be synced at the moment.
 
 For more information, see [Usage](#usage).
 

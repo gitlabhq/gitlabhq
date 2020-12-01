@@ -56,7 +56,8 @@ For more details, see [GitLab documentation about Jenkins CI](../../integration/
 
 ## Configure Jenkins Project
 
-Set up the Jenkins project you're going to run your build on. A **Freestyle** project is the easiest option because the Jenkins plugin will update the build status on GitLab. In a **Pipeline** project, updating the status on GitLab needs to be configured in a script.
+Set up the Jenkins project to run your build on. A **Freestyle** project is the easiest
+option because the Jenkins plugin updates the build status on GitLab. In a **Pipeline** project, updating the status on GitLab needs to be configured in a script.
 
 1. On your Jenkins instance, go to **New Item**.
 1. Pick a name, choose **Freestyle** or **Pipeline** and click **ok**.
@@ -97,4 +98,5 @@ To activate the Jenkins service you must have a Starter subscription or higher.
 
 ## Test your setup
 
-Make a change in your repository and open an MR. In your Jenkins project it should have triggered a new build and on your MR, there should be a widget saying **Pipeline #NUMBER passed**. It will also include a link to your Jenkins build.
+Make a change in your repository and open an MR. In your Jenkins project it should have triggered a new build and on your MR, there should be a widget saying **Pipeline #NUMBER passed**.
+It should also include a link to your Jenkins build.

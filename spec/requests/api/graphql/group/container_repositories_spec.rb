@@ -14,7 +14,7 @@ RSpec.describe 'getting container repositories in a group' do
   let_it_be(:container_repositories) { [container_repository, container_repositories_delete_scheduled, container_repositories_delete_failed].flatten }
   let_it_be(:container_expiration_policy) { project.container_expiration_policy }
 
-  let(:fields) do
+  let(:container_repositories_fields) do
     <<~GQL
       edges {
         node {
@@ -24,17 +24,25 @@ RSpec.describe 'getting container repositories in a group' do
     GQL
   end
 
+  let(:fields) do
+    <<~GQL
+      #{query_graphql_field('container_repositories', {}, container_repositories_fields)}
+      containerRepositoriesCount
+    GQL
+  end
+
   let(:query) do
     graphql_query_for(
       'group',
       { 'fullPath' => group.full_path },
-      query_graphql_field('container_repositories', {}, fields)
+      fields
     )
   end
 
   let(:user) { owner }
   let(:variables) { {} }
   let(:container_repositories_response) { graphql_data.dig('group', 'containerRepositories', 'edges') }
+  let(:container_repositories_count_response) { graphql_data.dig('group', 'containerRepositoriesCount') }
 
   before do
     group.add_owner(owner)
@@ -101,7 +109,7 @@ RSpec.describe 'getting container repositories in a group' do
       <<~GQL
         query($path: ID!, $n: Int) {
           group(fullPath: $path) {
-            containerRepositories(first: $n) { #{fields} }
+            containerRepositories(first: $n) { #{container_repositories_fields} }
           }
         }
       GQL
@@ -122,7 +130,7 @@ RSpec.describe 'getting container repositories in a group' do
       <<~GQL
         query($path: ID!, $name: String) {
           group(fullPath: $path) {
-            containerRepositories(name: $name) { #{fields} }
+            containerRepositories(name: $name) { #{container_repositories_fields} }
           }
         }
       GQL
@@ -142,5 +150,11 @@ RSpec.describe 'getting container repositories in a group' do
       expect(container_repositories_response.size).to eq(1)
       expect(container_repositories_response.first.dig('node', 'id')).to eq(container_repository.to_global_id.to_s)
     end
+  end
+
+  it 'returns the total count of container repositories' do
+    subject
+
+    expect(container_repositories_count_response).to eq(container_repositories.size)
   end
 end

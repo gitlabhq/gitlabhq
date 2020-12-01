@@ -187,7 +187,7 @@ module UsersHelper
   def user_display_name(user)
     return s_('UserProfile|Blocked user') if user.blocked?
 
-    can_read_profile = can?(user, :read_user_profile, current_user)
+    can_read_profile = can?(current_user, :read_user_profile, user)
     return s_('UserProfile|Unconfirmed user') unless user.confirmed? || can_read_profile
 
     user.name

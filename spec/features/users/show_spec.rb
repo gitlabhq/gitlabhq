@@ -126,26 +126,41 @@ RSpec.describe 'User page' do
   context 'with unconfirmed user' do
     let_it_be(:user) { create(:user, :unconfirmed) }
 
-    before do
-      visit_profile
+    shared_examples 'unconfirmed user profile' do
+      before do
+        visit_profile
+      end
+
+      it 'shows user name as unconfirmed' do
+        expect(page).to have_css(".cover-title", text: 'Unconfirmed user')
+      end
+
+      it 'shows no tab' do
+        expect(page).to have_css("div.profile-header")
+        expect(page).not_to have_css("ul.nav-links")
+      end
+
+      it 'shows no additional fields' do
+        expect(page).not_to have_css(".profile-user-bio")
+        expect(page).not_to have_css(".profile-link-holder")
+      end
+
+      it 'shows private profile message' do
+        expect(page).to have_content("This user has a private profile")
+      end
     end
 
-    it 'shows user name as unconfirmed' do
-      expect(page).to have_css(".cover-title", text: 'Unconfirmed user')
+    context 'when visited by an authenticated user' do
+      before do
+        authenticated_user = create(:user)
+        sign_in(authenticated_user)
+      end
+
+      it_behaves_like 'unconfirmed user profile'
     end
 
-    it 'shows no tab' do
-      expect(page).to have_css("div.profile-header")
-      expect(page).not_to have_css("ul.nav-links")
-    end
-
-    it 'shows no additional fields' do
-      expect(page).not_to have_css(".profile-user-bio")
-      expect(page).not_to have_css(".profile-link-holder")
-    end
-
-    it 'shows private profile message' do
-      expect(page).to have_content("This user has a private profile")
+    context 'when visited by an unauthenticated user' do
+      it_behaves_like 'unconfirmed user profile'
     end
   end
 

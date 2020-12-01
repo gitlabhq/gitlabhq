@@ -11,7 +11,7 @@ To enable the Custom Issue Tracker integration in a project:
 1. Go to **Settings > Integrations**.
 1. Click **Custom Issue Tracker**
 1. Fill in the tracker's details, such as title, description, and URLs.
-   You will be able to edit these fields later as well.
+   You can edit these fields later as well.
 
    These are some of the required fields:
 
@@ -19,11 +19,11 @@ To enable the Custom Issue Tracker integration in a project:
    | --------------- | ----------- |
    | **Project URL**   | The URL to the project in the custom issue tracker. |
    | **Issues URL**    | The URL to the issue in the issue tracker project that is linked to this GitLab project. Note that the `issues_url` requires `:id` in the URL. This ID is used by GitLab as a placeholder to replace the issue number. For example, `https://customissuetracker.com/project-name/:id`. |
-   | **New issue URL** | Currently unused. Will be changed in a future release. |
+   | **New issue URL** | Currently unused. Planned to be changed in a future release. |
 
 1. Click **Test settings and save changes**.
 
-After you configure and enable the Custom Issue Tracker service, you'll see a link on the GitLab
+After you configure and enable the Custom Issue Tracker service, you see a link on the GitLab
 project pages that takes you to that custom issue tracker.
 
 ## Referencing issues

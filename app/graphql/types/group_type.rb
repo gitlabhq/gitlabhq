@@ -88,9 +88,12 @@ module Types
     field :container_repositories,
           Types::ContainerRepositoryType.connection_type,
           null: true,
-          description: 'Container repositories of the project',
+          description: 'Container repositories of the group',
           resolver: Resolvers::ContainerRepositoriesResolver,
           authorize: :read_container_image
+
+    field :container_repositories_count, GraphQL::INT_TYPE, null: false,
+          description: 'Number of container repositories in the group'
 
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: group) do |titles, loader, args|
@@ -122,6 +125,10 @@ module Types
 
     def parent
       Gitlab::Graphql::Loaders::BatchModelLoader.new(Group, object.parent_id).find
+    end
+
+    def container_repositories_count
+      group.container_repositories.size
     end
 
     private
