@@ -214,7 +214,9 @@ class Projects::PipelinesController < Projects::ApplicationController
   def config_variables
     respond_to do |format|
       format.json do
-        render json: Ci::ListConfigVariablesService.new(@project, current_user).execute(params[:sha])
+        result = Ci::ListConfigVariablesService.new(@project, current_user).execute(params[:sha])
+
+        result.nil? ? head(:no_content) : render(json: result)
       end
     end
   end

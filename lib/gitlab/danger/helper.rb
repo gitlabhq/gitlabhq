@@ -64,7 +64,7 @@ module Gitlab
         # - respond_to?(:gitlab)
         # - respond_to?(:gitlab, true)
         gitlab
-      rescue NoMethodError
+      rescue NameError
         nil
       end
 

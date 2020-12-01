@@ -25,7 +25,7 @@ RSpec.describe ProjectFeatureUsage, type: :model do
     subject { project.feature_usage }
 
     it 'logs Jira DVCS Cloud last sync' do
-      Timecop.freeze do
+      freeze_time do
         subject.log_jira_dvcs_integration_usage
 
         expect(subject.jira_dvcs_server_last_sync_at).to be_nil
@@ -34,7 +34,7 @@ RSpec.describe ProjectFeatureUsage, type: :model do
     end
 
     it 'logs Jira DVCS Server last sync' do
-      Timecop.freeze do
+      freeze_time do
         subject.log_jira_dvcs_integration_usage(cloud: false)
 
         expect(subject.jira_dvcs_server_last_sync_at).to be_like_time(Time.current)

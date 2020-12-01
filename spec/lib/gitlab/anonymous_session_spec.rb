@@ -22,7 +22,7 @@ RSpec.describe Gitlab::AnonymousSession, :clean_gitlab_redis_shared_state do
     end
 
     it 'adds expiration time to key' do
-      Timecop.freeze do
+      freeze_time do
         subject.count_session_ip
 
         Gitlab::Redis::SharedState.with do |redis|

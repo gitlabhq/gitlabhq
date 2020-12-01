@@ -16,12 +16,6 @@
   }
 }
 
-@mixin chevron-active {
-  .fa-chevron-down {
-    color: $gray-darkest;
-  }
-}
-
 @mixin set-visible {
   transform: translateY(0);
   display: block;
@@ -56,7 +50,6 @@
 
   .dropdown-toggle,
   .dropdown-menu-toggle {
-    @include chevron-active;
     border-color: $gray-darkest;
   }
 
@@ -114,20 +107,11 @@
     color: $gray-darkest;
   }
 
-  .fa-chevron-down {
-    font-size: $dropdown-chevron-size;
-    position: relative;
-    top: -2px;
-    margin-left: 5px;
-  }
-
   &:hover {
-    @include chevron-active;
     border-color: $gray-darkest;
   }
 
   &:focus:active {
-    @include chevron-active;
     border-color: $dropdown-toggle-active-border-color;
     outline: 0;
   }
@@ -143,12 +127,6 @@
 
   .fa {
     position: absolute;
-  }
-
-  .fa-chevron-down {
-    position: absolute;
-    top: 11px;
-    right: 8px;
   }
 
   .spinner {

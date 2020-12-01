@@ -65,7 +65,7 @@ RSpec.describe Pages::LookupPath do
       end
 
       it 'uses deployment from object storage' do
-        Timecop.freeze do
+        freeze_time do
           expect(source).to(
             eq({
                  type: 'zip',
@@ -85,7 +85,7 @@ RSpec.describe Pages::LookupPath do
         end
 
         it 'uses file protocol' do
-          Timecop.freeze do
+          freeze_time do
             expect(source).to(
               eq({
                    type: 'zip',

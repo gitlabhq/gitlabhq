@@ -1,0 +1,5 @@
+---
+title: 'Search page: fix empty results status'
+merge_request: 48034
+author:
+type: fixed

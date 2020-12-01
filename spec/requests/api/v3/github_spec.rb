@@ -383,7 +383,7 @@ RSpec.describe API::V3::Github do
         it 'counts Jira Cloud integration as enabled' do
           user_agent = 'Jira DVCS Connector Vertigo/4.42.0'
 
-          Timecop.freeze do
+          freeze_time do
             jira_get v3_api("/repos/#{project.namespace.path}/#{project.path}/branches", user), user_agent
 
             expect(project.reload.jira_dvcs_cloud_last_sync_at).to be_like_time(Time.now)
@@ -393,7 +393,7 @@ RSpec.describe API::V3::Github do
         it 'counts Jira Server integration as enabled' do
           user_agent = 'Jira DVCS Connector/3.2.4'
 
-          Timecop.freeze do
+          freeze_time do
             jira_get v3_api("/repos/#{project.namespace.path}/#{project.path}/branches", user), user_agent
 
             expect(project.reload.jira_dvcs_server_last_sync_at).to be_like_time(Time.now)

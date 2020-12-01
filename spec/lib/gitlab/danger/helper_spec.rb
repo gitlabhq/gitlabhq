@@ -33,6 +33,16 @@ RSpec.describe Gitlab::Danger::Helper do
         expect(helper.gitlab_helper).to eq(fake_gitlab)
       end
     end
+
+    context 'when danger gitlab plugin is not available' do
+      it 'returns nil' do
+        invalid_danger = Class.new do
+          include Gitlab::Danger::Helper
+        end.new
+
+        expect(invalid_danger.gitlab_helper).to be_nil
+      end
+    end
   end
 
   describe '#release_automation?' do

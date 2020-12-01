@@ -3,17 +3,23 @@
 require 'spec_helper'
 
 RSpec.describe 'search/_results' do
+  let(:user) { create(:user) }
   let(:search_objects) { Issue.page(1).per(2) }
   let(:scope) { 'issues' }
+  let(:term) { 'foo' }
 
   before do
     controller.params[:action] = 'show'
+    controller.params[:search] = term
 
     create_list(:issue, 3)
 
     @search_objects = search_objects
     @scope = scope
-    @search_term = 'foo'
+    @search_term = term
+    @search_service = SearchServicePresenter.new(SearchService.new(user, search: term, scope: scope))
+
+    allow(@search_service).to receive(:search_objects).and_return(search_objects)
   end
 
   it 'displays the page size' do

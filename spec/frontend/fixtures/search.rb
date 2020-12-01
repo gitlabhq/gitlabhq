@@ -67,8 +67,8 @@ RSpec.describe SearchController, '(JavaScript fixtures)', type: :controller do
     end
 
     it 'search/blob_search_result.html' do
-      expect_next_instance_of(SearchService) do |search_service|
-        expect(search_service).to receive(:search_objects).and_return(blobs)
+      allow_next_instance_of(SearchServicePresenter) do |search_service|
+        allow(search_service).to receive(:search_objects).and_return(blobs)
       end
 
       get :show, params: {

@@ -1,6 +1,6 @@
 ---
 stage: Release
-group: Release Management
+group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 description: "How to secure GitLab Pages websites with Let's Encrypt (manual process, deprecated)."
 ---

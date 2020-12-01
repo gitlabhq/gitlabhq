@@ -300,8 +300,10 @@ RSpec.describe Gitlab::Danger::CommitLinter do
         end
       end
 
-      context 'when details exceeds the max line length including a URL' do
-        let(:commit_message) { "A B C\n\nhttps://gitlab.com" + 'D' * described_class::MAX_LINE_LENGTH }
+      context 'when details exceeds the max line length including URLs' do
+        let(:commit_message) do
+          "A B C\n\nsome message with https://example.com and https://gitlab.com" + 'D' * described_class::MAX_LINE_LENGTH
+        end
 
         it_behaves_like 'a valid commit'
       end

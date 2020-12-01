@@ -8,7 +8,7 @@ RSpec.describe Atlassian::JiraConnect::Client do
   subject { described_class.new('https://gitlab-test.atlassian.net', 'sample_secret') }
 
   around do |example|
-    Timecop.freeze { example.run }
+    freeze_time { example.run }
   end
 
   describe '.generate_update_sequence_id' do

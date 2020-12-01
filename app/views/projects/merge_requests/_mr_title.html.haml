@@ -50,4 +50,4 @@
       - if can_update_merge_request && !are_close_and_open_buttons_hidden
         = render 'shared/issuable/close_reopen_draft_report_toggle', issuable: @merge_request
       - elsif !@merge_request.merged?
-        = link_to _('Report abuse'), new_abuse_report_path(user_id: @merge_request.author.id, ref_url: merge_request_url(@merge_request)), class: 'gl-display-none gl-display-md-block gl-button btn btn-warning-secondary', title: _('Report abuse')
+        = link_to _('Report abuse'), new_abuse_report_path(user_id: @merge_request.author.id, ref_url: merge_request_url(@merge_request)), class: 'gl-display-none gl-display-md-block gl-button btn btn-warning-secondary float-right gl-ml-3', title: _('Report abuse')

@@ -26,6 +26,10 @@ module Gitlab
         end
 
         true
+      rescue GitAccess::ForbiddenError => e
+        Gitlab::ErrorTracking.log_exception(e, default_branch: @default_branch, branch_name: @branch_name, creation: creation?, deletion: deletion?)
+
+        raise e
       end
 
       private

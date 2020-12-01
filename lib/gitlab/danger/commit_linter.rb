@@ -114,15 +114,11 @@ module Gitlab
         end
 
         details&.each_line do |line|
-          line = line.strip
-
-          next unless line_too_long?(line)
-
-          url_size = line.scan(%r((https?://\S+))).sum { |(url)| url.length }
+          line_without_urls = line.strip.gsub(%r{https?://\S+}, '')
 
           # If the line includes a URL, we'll allow it to exceed MAX_LINE_LENGTH characters, but
           # only if the line _without_ the URL does not exceed this limit.
-          next unless line_too_long?(line.length - url_size)
+          next unless line_too_long?(line_without_urls)
 
           add_problem(:details_line_too_long)
           break
@@ -172,14 +168,7 @@ module Gitlab
       end
 
       def line_too_long?(line)
-        case line
-        when String
-          line.length > MAX_LINE_LENGTH
-        when Integer
-          line > MAX_LINE_LENGTH
-        else
-          raise ArgumentError, "The line argument (#{line}) should be a String or an Integer! #{line.class} given."
-        end
+        line.length > MAX_LINE_LENGTH
       end
 
       def subject_too_short?

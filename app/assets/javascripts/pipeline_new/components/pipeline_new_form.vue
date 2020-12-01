@@ -19,7 +19,9 @@ import {
 import { s__, __, n__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { redirectTo } from '~/lib/utils/url_utility';
-import { VARIABLE_TYPE, FILE_TYPE } from '../constants';
+import { VARIABLE_TYPE, FILE_TYPE, CONFIG_VARIABLES_TIMEOUT } from '../constants';
+import { backOff } from '~/lib/utils/common_utils';
+import httpStatusCodes from '~/lib/utils/http_status';
 
 export default {
   typeOptions: [
@@ -211,32 +213,49 @@ export default {
     },
 
     fetchConfigVariables(refValue) {
-      if (gon?.features?.newPipelineFormPrefilledVars) {
-        this.isLoading = true;
+      if (!gon?.features?.newPipelineFormPrefilledVars) {
+        return Promise.resolve({ params: {}, descriptions: {} });
+      }
 
-        return axios
+      this.isLoading = true;
+
+      return backOff((next, stop) => {
+        axios
           .get(this.configVariablesPath, {
             params: {
               sha: refValue,
             },
           })
-          .then(({ data }) => {
-            const params = {};
-            const descriptions = {};
-
-            Object.entries(data).forEach(([key, { value, description }]) => {
-              if (description !== null) {
-                params[key] = value;
-                descriptions[key] = description;
-              }
-            });
-
-            this.isLoading = false;
-
-            return { params, descriptions };
+          .then(({ data, status }) => {
+            if (status === httpStatusCodes.NO_CONTENT) {
+              next();
+            } else {
+              this.isLoading = false;
+              stop(data);
+            }
+          })
+          .catch(error => {
+            stop(error);
           });
-      }
-      return Promise.resolve({ params: {}, descriptions: {} });
+      }, CONFIG_VARIABLES_TIMEOUT)
+        .then(data => {
+          const params = {};
+          const descriptions = {};
+
+          Object.entries(data).forEach(([key, { value, description }]) => {
+            if (description !== null) {
+              params[key] = value;
+              descriptions[key] = description;
+            }
+          });
+
+          return { params, descriptions };
+        })
+        .catch(() => {
+          this.isLoading = false;
+
+          return { params: {}, descriptions: {} };
+        });
     },
     createPipeline() {
       const filteredVariables = this.variables

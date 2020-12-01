@@ -1149,11 +1149,17 @@ RSpec.describe Projects::PipelinesController do
     end
   end
 
-  describe 'GET config_variables.json' do
+  describe 'GET config_variables.json', :use_clean_rails_memory_store_caching do
+    include ReactiveCachingHelpers
+
     let(:result) { YAML.dump(ci_config) }
+    let(:service) { Ci::ListConfigVariablesService.new(project, user) }
 
     before do
       stub_gitlab_ci_yml_for_sha(sha, result)
+      allow(Ci::ListConfigVariablesService)
+        .to receive(:new)
+        .and_return(service)
     end
 
     context 'when sending a valid sha' do
@@ -1170,6 +1176,10 @@ RSpec.describe Projects::PipelinesController do
         }
       end
 
+      before do
+        synchronous_reactive_cache(service)
+      end
+
       it 'returns variable list' do
         get_config_variables
 
@@ -1181,6 +1191,10 @@ RSpec.describe Projects::PipelinesController do
     context 'when sending an invalid sha' do
       let(:sha) { 'invalid-sha' }
       let(:ci_config) { nil }
+
+      before do
+        synchronous_reactive_cache(service)
+      end
 
       it 'returns empty json' do
         get_config_variables
@@ -1204,11 +1218,36 @@ RSpec.describe Projects::PipelinesController do
         }
       end
 
+      before do
+        synchronous_reactive_cache(service)
+      end
+
       it 'returns empty result' do
         get_config_variables
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to eq({})
+      end
+    end
+
+    context 'when the cache is empty' do
+      let(:sha) { 'master' }
+      let(:ci_config) do
+        {
+          variables: {
+            KEY1: { value: 'val 1', description: 'description 1' }
+          },
+          test: {
+            stage: 'test',
+            script: 'echo'
+          }
+        }
+      end
+
+      it 'returns no content' do
+        get_config_variables
+
+        expect(response).to have_gitlab_http_status(:no_content)
       end
     end
 
