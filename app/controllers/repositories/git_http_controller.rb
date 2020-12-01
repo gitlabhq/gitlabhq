@@ -90,7 +90,6 @@ module Repositories
     def access
       @access ||= access_klass.new(access_actor, container, 'http',
         authentication_abilities: authentication_abilities,
-        namespace_path: params[:namespace_id],
         repository_path: repository_path,
         redirected_path: redirected_path,
         auth_result_type: auth_result_type)
@@ -111,10 +110,6 @@ module Repositories
 
     def access_klass
       @access_klass ||= repo_type.access_checker_class
-    end
-
-    def repository_path
-      @repository_path ||= params[:repository_id].sub(/\.git$/, '')
     end
 
     def log_user_activity

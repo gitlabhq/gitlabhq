@@ -11,8 +11,11 @@ module Types
       field :groups, Ci::GroupType.connection_type, null: true,
         description: 'Group of jobs for the stage'
       field :detailed_status, Types::Ci::DetailedStatusType, null: true,
-            description: 'Detailed status of the stage',
-            resolve: -> (obj, _args, ctx) { obj.detailed_status(ctx[:current_user]) }
+            description: 'Detailed status of the stage'
+
+      def detailed_status
+        object.detailed_status(context[:current_user])
+      end
     end
   end
 end

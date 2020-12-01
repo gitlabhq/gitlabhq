@@ -143,6 +143,10 @@ export default {
     Vue.set(state.issues[issueId], prop, value);
   },
 
+  [mutationTypes.SET_ASSIGNEE_LOADING](state, isLoading) {
+    state.isSettingAssignees = isLoading;
+  },
+
   [mutationTypes.REQUEST_ADD_ISSUE]: () => {
     notImplemented();
   },

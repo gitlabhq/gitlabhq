@@ -11,6 +11,7 @@ export default () => ({
   boardLists: {},
   listsFlags: {},
   issuesByListId: {},
+  isSettingAssignees: false,
   pageInfoByListId: {},
   issues: {},
   filterParams: {},

@@ -88,3 +88,6 @@
   = form.hidden_field :issue_type
 
 = form.hidden_field :lock_version
+
+- if @vulnerability_id
+  = hidden_field_tag 'vulnerability_id', @vulnerability_id

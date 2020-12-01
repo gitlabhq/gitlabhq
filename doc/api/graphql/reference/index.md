@@ -887,8 +887,8 @@ Represents a DAST Site Validation.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `id` | DastSiteValidationID! | ID of the site validation |
-| `status` | DastSiteProfileValidationStatusEnum! | The status of the validation |
+| `id` | DastSiteValidationID! | Global ID of the site validation |
+| `status` | DastSiteProfileValidationStatusEnum! | Status of the site validation |
 
 ### DastSiteValidationCreatePayload
 
@@ -1104,9 +1104,27 @@ Segment.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `groups` | GroupConnection | Assigned groups |
+| `groups` | Group! => Array | Assigned groups |
 | `id` | ID! | ID of the segment |
+| `latestSnapshot` | DevopsAdoptionSnapshot | The latest adoption metrics for the segment |
 | `name` | String! | Name of the segment |
+
+### DevopsAdoptionSnapshot
+
+Snapshot.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `deploySucceeded` | Boolean! | At least one deployment succeeded |
+| `endTime` | Time! | The end time for the snapshot where the data points were collected |
+| `issueOpened` | Boolean! | At least one issue was opened |
+| `mergeRequestApproved` | Boolean! | At least one merge request was approved |
+| `mergeRequestOpened` | Boolean! | At least one merge request was opened |
+| `pipelineSucceeded` | Boolean! | At least one pipeline succeeded |
+| `recordedAt` | Time! | The time the snapshot was recorded |
+| `runnerConfigured` | Boolean! | At least one runner was used |
+| `securityScanSucceeded` | Boolean! | At least one security scan succeeded |
+| `startTime` | Time! | The start time for the snapshot where the data points were collected |
 
 ### DiffPosition
 
@@ -1309,8 +1327,8 @@ Relationship between an epic and an issue.
 | `alertManagementAlert` | AlertManagementAlert | Alert associated to this issue |
 | `assignees` | UserConnection | Assignees of the issue |
 | `author` | User! | User that created the issue |
-| `blocked` | Boolean! | Indicates the issue is blocked |
-| `blockedByCount` | Int | Count of issues blocking this issue |
+| `blocked` | Boolean! | Indicates the issue is blocked. |
+| `blockedByCount` | Int | Count of issues blocking this issue. |
 | `closedAt` | Time | Timestamp of when the issue was closed |
 | `confidential` | Boolean! | Indicates the issue is confidential |
 | `createdAt` | Time! | Timestamp of when the issue was created |
@@ -1323,14 +1341,14 @@ Relationship between an epic and an issue.
 | `downvotes` | Int! | Number of downvotes the issue has received |
 | `dueDate` | Time | Due date of the issue |
 | `emailsDisabled` | Boolean! | Indicates if a project has email notifications disabled: `true` if email notifications are disabled |
-| `epic` | Epic | Epic to which this issue belongs |
+| `epic` | Epic | Epic to which this issue belongs. |
 | `epicIssueId` | ID! | ID of the epic-issue relation |
 | `healthStatus` | HealthStatus | Current health status. Returns null if `save_issuable_health_status` feature flag is disabled. |
 | `humanTimeEstimate` | String | Human-readable time estimate of the issue |
 | `humanTotalTimeSpent` | String | Human-readable total time reported as spent on the issue |
 | `id` | ID | Global ID of the epic-issue relation |
 | `iid` | ID! | Internal ID of the issue |
-| `iteration` | Iteration | Iteration of the issue |
+| `iteration` | Iteration | Iteration of the issue. |
 | `labels` | LabelConnection | Labels of the issue |
 | `metricImages` | MetricImage! => Array | Metric images associated to the issue. |
 | `milestone` | Milestone | Milestone of the issue |
@@ -1344,7 +1362,7 @@ Relationship between an epic and an issue.
 | `severity` | IssuableSeverity | Severity level of the incident |
 | `slaDueAt` | Time | Timestamp of when the issue SLA expires. |
 | `state` | IssueState! | State of the issue |
-| `statusPagePublishedIncident` | Boolean | Indicates whether an issue is published to the status page |
+| `statusPagePublishedIncident` | Boolean | Indicates whether an issue is published to the status page. |
 | `subscribed` | Boolean! | Indicates the currently logged in user is subscribed to the issue |
 | `taskCompletionStatus` | TaskCompletionStatus! | Task completion status of the issue |
 | `timeEstimate` | Int! | Time estimate of the issue |
@@ -1360,7 +1378,7 @@ Relationship between an epic and an issue.
 | `userPermissions` | IssuePermissions! | Permissions for the current user on the resource |
 | `webPath` | String! | Web path of the issue |
 | `webUrl` | String! | Web URL of the issue |
-| `weight` | Int | Weight of the issue |
+| `weight` | Int | Weight of the issue. |
 
 ### EpicPermissions
 
@@ -1608,8 +1626,8 @@ Represents a recorded measurement (object count) for the Admins.
 | `alertManagementAlert` | AlertManagementAlert | Alert associated to this issue |
 | `assignees` | UserConnection | Assignees of the issue |
 | `author` | User! | User that created the issue |
-| `blocked` | Boolean! | Indicates the issue is blocked |
-| `blockedByCount` | Int | Count of issues blocking this issue |
+| `blocked` | Boolean! | Indicates the issue is blocked. |
+| `blockedByCount` | Int | Count of issues blocking this issue. |
 | `closedAt` | Time | Timestamp of when the issue was closed |
 | `confidential` | Boolean! | Indicates the issue is confidential |
 | `createdAt` | Time! | Timestamp of when the issue was created |
@@ -1622,13 +1640,13 @@ Represents a recorded measurement (object count) for the Admins.
 | `downvotes` | Int! | Number of downvotes the issue has received |
 | `dueDate` | Time | Due date of the issue |
 | `emailsDisabled` | Boolean! | Indicates if a project has email notifications disabled: `true` if email notifications are disabled |
-| `epic` | Epic | Epic to which this issue belongs |
+| `epic` | Epic | Epic to which this issue belongs. |
 | `healthStatus` | HealthStatus | Current health status. Returns null if `save_issuable_health_status` feature flag is disabled. |
 | `humanTimeEstimate` | String | Human-readable time estimate of the issue |
 | `humanTotalTimeSpent` | String | Human-readable total time reported as spent on the issue |
 | `id` | ID! | ID of the issue |
 | `iid` | ID! | Internal ID of the issue |
-| `iteration` | Iteration | Iteration of the issue |
+| `iteration` | Iteration | Iteration of the issue. |
 | `labels` | LabelConnection | Labels of the issue |
 | `metricImages` | MetricImage! => Array | Metric images associated to the issue. |
 | `milestone` | Milestone | Milestone of the issue |
@@ -1641,7 +1659,7 @@ Represents a recorded measurement (object count) for the Admins.
 | `severity` | IssuableSeverity | Severity level of the incident |
 | `slaDueAt` | Time | Timestamp of when the issue SLA expires. |
 | `state` | IssueState! | State of the issue |
-| `statusPagePublishedIncident` | Boolean | Indicates whether an issue is published to the status page |
+| `statusPagePublishedIncident` | Boolean | Indicates whether an issue is published to the status page. |
 | `subscribed` | Boolean! | Indicates the currently logged in user is subscribed to the issue |
 | `taskCompletionStatus` | TaskCompletionStatus! | Task completion status of the issue |
 | `timeEstimate` | Int! | Time estimate of the issue |
@@ -1657,7 +1675,7 @@ Represents a recorded measurement (object count) for the Admins.
 | `userPermissions` | IssuePermissions! | Permissions for the current user on the resource |
 | `webPath` | String! | Web path of the issue |
 | `webUrl` | String! | Web URL of the issue |
-| `weight` | Int | Weight of the issue |
+| `weight` | Int | Weight of the issue. |
 
 ### IssueMoveListPayload
 

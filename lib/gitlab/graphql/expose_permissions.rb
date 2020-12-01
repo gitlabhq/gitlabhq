@@ -9,7 +9,7 @@ module Gitlab
           field :user_permissions, permission_type,
                 description: description,
                 null: false,
-                resolve: -> (obj, _, _) { obj }
+                method: :itself
         end
       end
     end

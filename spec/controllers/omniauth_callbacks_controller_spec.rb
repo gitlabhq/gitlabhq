@@ -367,8 +367,8 @@ RSpec.describe OmniauthCallbacksController, type: :controller do
 
     before do
       stub_last_request_id(last_request_id)
-      stub_omniauth_saml_config({ enabled: true, auto_link_saml_user: true, allow_single_sign_on: ['saml'],
-                                  providers: [saml_config] })
+      stub_omniauth_saml_config(enabled: true, auto_link_saml_user: true, allow_single_sign_on: ['saml'],
+                                  providers: [saml_config])
       mock_auth_hash_with_saml_xml('saml', +'my-uid', user.email, mock_saml_response)
       request.env['devise.mapping'] = Devise.mappings[:user]
       request.env['omniauth.auth'] = Rails.application.env_config['omniauth.auth']

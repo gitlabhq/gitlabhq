@@ -38,7 +38,6 @@
 - dependency_proxy
 - dependency_scanning
 - design_management
-- design_system
 - devops_reports
 - disaster_recovery
 - dynamic_application_security_testing
@@ -54,7 +53,6 @@
 - git_lfs
 - gitaly
 - gitlab_docs
-- gitlab_handbook
 - global_search
 - helm_chart_registry
 - importers
@@ -69,7 +67,6 @@
 - issue_tracking
 - jenkins_importer
 - jira_importer
-- jupyter_notebooks
 - kubernetes_management
 - license_compliance
 - live_preview

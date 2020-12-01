@@ -67,33 +67,25 @@ module Types
           description: 'E-mail address of the service desk.'
 
     field :avatar_url, GraphQL::STRING_TYPE, null: true, calls_gitaly: true,
-          description: 'URL to avatar image file of the project',
-          resolve: -> (project, args, ctx) do
-            project.avatar_url(only_path: false)
-          end
+          description: 'URL to avatar image file of the project'
 
     %i[issues merge_requests wiki snippets].each do |feature|
       field "#{feature}_enabled", GraphQL::BOOLEAN_TYPE, null: true,
-            description: "Indicates if #{feature.to_s.titleize.pluralize} are enabled for the current user",
-            resolve: -> (project, args, ctx) do
-              project.feature_available?(feature, ctx[:current_user])
-            end
+            description: "Indicates if #{feature.to_s.titleize.pluralize} are enabled for the current user"
+
+      define_method "#{feature}_enabled" do
+        object.feature_available?(feature, context[:current_user])
+      end
     end
 
     field :jobs_enabled, GraphQL::BOOLEAN_TYPE, null: true,
-          description: 'Indicates if CI/CD pipeline jobs are enabled for the current user',
-          resolve: -> (project, args, ctx) do
-            project.feature_available?(:builds, ctx[:current_user])
-          end
+          description: 'Indicates if CI/CD pipeline jobs are enabled for the current user'
 
     field :public_jobs, GraphQL::BOOLEAN_TYPE, method: :public_builds, null: true,
           description: 'Indicates if there is public access to pipelines and job details of the project, including output logs and artifacts'
 
     field :open_issues_count, GraphQL::INT_TYPE, null: true,
-          description: 'Number of open issues for the project',
-          resolve: -> (project, args, ctx) do
-            project.open_issues_count if project.feature_available?(:issues, ctx[:current_user])
-          end
+          description: 'Number of open issues for the project'
 
     field :import_status, GraphQL::STRING_TYPE, null: true,
           description: 'Status of import background job of the project'
@@ -123,8 +115,7 @@ module Types
 
     field :statistics, Types::ProjectStatisticsType,
           null: true,
-          description: 'Statistics of the project',
-          resolve: -> (obj, _args, _ctx) { Gitlab::Graphql::Loaders::BatchProjectStatisticsLoader.new(obj.id).find }
+          description: 'Statistics of the project'
 
     field :repository, Types::RepositoryType, null: true,
           description: 'Git repository of the project'
@@ -332,6 +323,22 @@ module Types
       LabelsFinder
         .new(current_user, project: project, search: search_term)
         .execute
+    end
+
+    def avatar_url
+      object.avatar_url(only_path: false)
+    end
+
+    def jobs_enabled
+      object.feature_available?(:builds, context[:current_user])
+    end
+
+    def open_issues_count
+      object.open_issues_count if object.feature_available?(:issues, context[:current_user])
+    end
+
+    def statistics
+      Gitlab::Graphql::Loaders::BatchProjectStatisticsLoader.new(object.id).find
     end
 
     private

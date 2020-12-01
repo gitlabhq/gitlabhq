@@ -21,7 +21,7 @@ class GroupMembersFinder < UnionFinder
     group_members = group_members_list
     relations = []
 
-    return group_members if include_relations == [:direct]
+    return filter_members(group_members) if include_relations == [:direct]
 
     relations << group_members if include_relations.include?(:direct)
 

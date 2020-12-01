@@ -507,19 +507,6 @@ $mr-widget-min-height: 69px;
   display: none;
 }
 
-#modal_merge_info .modal-dialog {
-  .dark {
-    margin-right: 40px;
-  }
-
-  .btn-clipboard {
-    margin-right: 20px;
-    margin-top: 5px;
-    position: absolute;
-    right: 0;
-  }
-}
-
 .mr-links {
   padding-left: $gl-padding-8 + $status-icon-size + $gl-btn-padding;
 

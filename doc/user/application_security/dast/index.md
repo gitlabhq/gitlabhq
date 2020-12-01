@@ -91,12 +91,22 @@ There are two ways to define the URL to be scanned by DAST:
 1. Set the `DAST_WEBSITE` [variable](../../../ci/yaml/README.md#variables).
 
 1. Add it in an `environment_url.txt` file at the root of your project.
-   This is great for testing in dynamic environments. In order to run DAST against
-   an app dynamically created during a GitLab CI/CD pipeline, have the app
-   persist its domain in an `environment_url.txt` file, and DAST
-   automatically parses that file to find its scan target.
-   You can see an [example](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml)
-   of this in our Auto DevOps CI YAML.
+   This is useful for testing in dynamic environments. To run DAST against an application
+   dynamically created during a GitLab CI/CD pipeline, a job that runs prior to the DAST scan must
+   persist the application's domain in an `environment_url.txt` file. DAST automatically parses the
+   `environment_url.txt` file to find its scan target.
+
+   For example, in a job that runs prior to DAST, you could include code that looks similar to:
+
+   ```yaml
+   script:
+     - echo http://${CI_PROJECT_ID}-${CI_ENVIRONMENT_SLUG}.domain.com > environment_url.txt
+   artifacts:
+     paths: [environment_url.txt]
+     when: always
+   ```
+  
+   You can see an example of this in our [Auto DevOps CI YAML](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml) file.
 
 If both values are set, the `DAST_WEBSITE` value takes precedence.
 

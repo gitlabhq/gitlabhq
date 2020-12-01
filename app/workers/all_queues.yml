@@ -1852,7 +1852,7 @@
   :urgency: :high
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent:
+  :idempotent: true
   :tags: []
 - :name: project_daily_statistics
   :feature_category: :source_code_management

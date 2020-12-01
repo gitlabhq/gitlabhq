@@ -81,7 +81,10 @@ namespace :gitlab do
 
       if head_assets_md5 != master_assets_md5 || !public_assets_webpack_dir_exists
         FileUtils.rm_r(Tasks::Gitlab::Assets::PUBLIC_ASSETS_WEBPACK_DIR) if public_assets_webpack_dir_exists
-        system('yarn webpack')
+
+        unless system('yarn webpack')
+          abort 'Error: Unable to compile webpack production bundle.'.color(:red)
+        end
       end
     end
 

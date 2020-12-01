@@ -215,10 +215,65 @@ RSpec.describe GraphqlHelpers do
       aFloat: 0.1,
       aString: "wibble",
       anEnum: LOW,
-      null: null,
       aBool: false,
       aVar: #{x.to_graphql_value}
       EXP
+    end
+  end
+
+  describe '.all_graphql_fields_for' do
+    it 'returns a FieldSelection' do
+      selection = all_graphql_fields_for('User', max_depth: 1)
+
+      expect(selection).to be_a(::Graphql::FieldSelection)
+    end
+
+    it 'returns nil if the depth is too shallow' do
+      selection = all_graphql_fields_for('User', max_depth: 0)
+
+      expect(selection).to be_nil
+    end
+
+    it 'can select just the scalar fields' do
+      selection = all_graphql_fields_for('User', max_depth: 1)
+      paths = selection.paths.map(&:join)
+
+      # A sample, tested using include to save churn as fields are added
+      expect(paths)
+        .to include(*%w[avatarUrl email groupCount id location name state username webPath webUrl])
+
+      expect(selection.paths).to all(have_attributes(size: 1))
+    end
+
+    it 'selects only as far as 3 levels by default' do
+      selection = all_graphql_fields_for('User')
+
+      expect(selection.paths).to all(have_attributes(size: (be <= 3)))
+
+      # Representative sample
+      expect(selection.paths).to include(
+        %w[userPermissions createSnippet],
+        %w[todos nodes id],
+        %w[starredProjects nodes name],
+        %w[authoredMergeRequests count],
+        %w[assignedMergeRequests pageInfo startCursor]
+      )
+    end
+
+    it 'selects only as far as requested' do
+      selection = all_graphql_fields_for('User', max_depth: 2)
+
+      expect(selection.paths).to all(have_attributes(size: (be <= 2)))
+    end
+
+    it 'omits fields that have required arguments' do
+      selection = all_graphql_fields_for('DesignCollection', max_depth: 3)
+
+      expect(selection.paths).not_to be_empty
+
+      expect(selection.paths).not_to include(
+        %w[designAtVersion id]
+      )
     end
   end
 

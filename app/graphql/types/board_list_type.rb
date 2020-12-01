@@ -19,8 +19,7 @@ module Types
     field :label, Types::LabelType, null: true,
           description: 'Label of the list'
     field :collapsed, GraphQL::BOOLEAN_TYPE, null: true,
-          description: 'Indicates if list is collapsed for this user',
-          resolve: -> (list, _args, ctx) { list.collapsed?(ctx[:current_user]) }
+          description: 'Indicates if list is collapsed for this user'
     field :issues_count, GraphQL::INT_TYPE, null: true,
           description: 'Count of issues in the list'
 
@@ -30,6 +29,10 @@ module Types
 
     def issues_count
       metadata[:size]
+    end
+
+    def collapsed
+      object.collapsed?(context[:current_user])
     end
 
     def metadata

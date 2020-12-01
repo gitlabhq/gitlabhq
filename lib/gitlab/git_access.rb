@@ -43,7 +43,7 @@ module Gitlab
     ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS
 
     attr_reader :actor, :protocol, :authentication_abilities,
-                :namespace_path, :redirected_path, :auth_result_type,
+                :repository_path, :redirected_path, :auth_result_type,
                 :cmd, :changes
     attr_accessor :container
 
@@ -57,19 +57,14 @@ module Gitlab
       raise ArgumentError, "No error message defined for #{key}"
     end
 
-    def initialize(actor, container, protocol, authentication_abilities:, namespace_path: nil, repository_path: nil, redirected_path: nil, auth_result_type: nil)
+    def initialize(actor, container, protocol, authentication_abilities:, repository_path: nil, redirected_path: nil, auth_result_type: nil)
       @actor     = actor
       @container = container
       @protocol  = protocol
       @authentication_abilities = Array(authentication_abilities)
-      @namespace_path = namespace_path
       @repository_path = repository_path
       @redirected_path = redirected_path
       @auth_result_type = auth_result_type
-    end
-
-    def repository_path
-      @repository_path ||= project&.path
     end
 
     def check(cmd, changes)

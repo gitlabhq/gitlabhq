@@ -6,6 +6,10 @@ module GraphqlHelpers
   NoData = Class.new(StandardError)
   UnauthorizedObject = Class.new(StandardError)
 
+  def graphql_args(**values)
+    ::Graphql::Arguments.new(values)
+  end
+
   # makes an underscored string look like a fieldname
   # "merge_request" => "mergeRequest"
   def self.fieldnamerize(underscored_field_name)
@@ -240,34 +244,10 @@ module GraphqlHelpers
     type = GitlabSchema.types[class_name.to_s]
     return "" unless type
 
-    type.fields.map do |name, field|
-      # We can't guess arguments, so skip fields that require them
-      next if required_arguments?(field)
-      next if excluded.include?(name)
+    # We can't guess arguments, so skip fields that require them
+    skip = ->(name, field) { excluded.include?(name) || required_arguments?(field) }
 
-      singular_field_type = field_type(field)
-
-      # If field type is the same as parent type, then we're hitting into
-      # mutual dependency. Break it from infinite recursion
-      next if parent_types.include?(singular_field_type)
-
-      if nested_fields?(field)
-        fields =
-          all_graphql_fields_for(singular_field_type, parent_types | [type], max_depth: max_depth - 1)
-
-        "#{name} { #{fields} }" unless fields.blank?
-      else
-        name
-      end
-    end.compact.join("\n")
-  end
-
-  def attributes_to_graphql(attributes)
-    attributes.map do |name, value|
-      value_str = as_graphql_literal(value)
-
-      "#{GraphqlHelpers.fieldnamerize(name.to_s)}: #{value_str}"
-    end.join(", ")
+    ::Graphql::FieldSelection.select_fields(type, skip, parent_types, max_depth)
   end
 
   def with_signature(variables, query)
@@ -278,25 +258,8 @@ module GraphqlHelpers
     ::Graphql::Var.new(generate(:variable), type)
   end
 
-  # Fairly dumb Ruby => GraphQL rendering function. Only suitable for testing.
-  # Use symbol for Enum values
-  def as_graphql_literal(value)
-    case value
-    when Array then "[#{value.map { |v| as_graphql_literal(v) }.join(',')}]"
-    when Hash then "{#{attributes_to_graphql(value)}}"
-    when Integer, Float then value.to_s
-    when String then "\"#{value.gsub(/"/, '\\"')}\""
-    when Symbol then value
-    when nil then 'null'
-    when true then 'true'
-    when false then 'false'
-    else
-      if value.respond_to?(:to_graphql_value)
-        value.to_graphql_value
-      else
-        raise ArgumentError, "Cannot represent #{value} as GraphQL literal"
-      end
-    end
+  def attributes_to_graphql(arguments)
+    ::Graphql::Arguments.new(arguments).to_s
   end
 
   def post_multiplex(queries, current_user: nil, headers: {})
@@ -370,12 +333,16 @@ module GraphqlHelpers
     { operations: operations.to_json, map: map.to_json }.merge(extracted_files)
   end
 
+  def fresh_response_data
+    Gitlab::Json.parse(response.body)
+  end
+
   # Raises an error if no data is found
-  def graphql_data
+  def graphql_data(body = json_response)
     # Note that `json_response` is defined as `let(:json_response)` and
     # therefore, in a spec with multiple queries, will only contain data
     # from the _first_ query, not subsequent ones
-    json_response['data'] || (raise NoData, graphql_errors)
+    body['data'] || (raise NoData, graphql_errors(body))
   end
 
   def graphql_data_at(*path)
@@ -398,14 +365,15 @@ module GraphqlHelpers
     end
   end
 
-  def graphql_errors
-    case json_response
+  # See note at graphql_data about memoization and multiple requests
+  def graphql_errors(body = json_response)
+    case body
     when Hash # regular query
-      json_response['errors']
+      body['errors']
     when Array # multiplexed queries
-      json_response.map { |response| response['errors'] }
+      body.map { |response| response['errors'] }
     else
-      raise "Unknown GraphQL response type #{json_response.class}"
+      raise "Unknown GraphQL response type #{body.class}"
     end
   end
 
@@ -448,15 +416,15 @@ module GraphqlHelpers
   end
 
   def nested_fields?(field)
-    !scalar?(field) && !enum?(field)
+    ::Graphql::FieldInspection.new(field).nested_fields?
   end
 
   def scalar?(field)
-    field_type(field).kind.scalar?
+    ::Graphql::FieldInspection.new(field).scalar?
   end
 
   def enum?(field)
-    field_type(field).kind.enum?
+    ::Graphql::FieldInspection.new(field).enum?
   end
 
   # There are a few non BaseField fields in our schema (pageInfo for one).
@@ -478,15 +446,7 @@ module GraphqlHelpers
   end
 
   def field_type(field)
-    field_type = field.type.respond_to?(:to_graphql) ? field.type.to_graphql : field.type
-
-    # The type could be nested. For example `[GraphQL::STRING_TYPE]`:
-    # - List
-    # - String!
-    # - String
-    field_type = field_type.of_type while field_type.respond_to?(:of_type)
-
-    field_type
+    ::Graphql::FieldInspection.new(field).type
   end
 
   # for most tests, we want to allow unlimited complexity

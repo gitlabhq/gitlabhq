@@ -15,13 +15,14 @@ module Types
       field :web_path, GraphQL::STRING_TYPE, null: true,
             description: 'Web path of the blob'
       field :lfs_oid, GraphQL::STRING_TYPE, null: true,
-            description: 'LFS ID of the blob',
-            resolve: -> (blob, args, ctx) do
-              Gitlab::Graphql::Loaders::BatchLfsOidLoader.new(blob.repository, blob.id).find
-            end
+            description: 'LFS ID of the blob'
       field :mode, GraphQL::STRING_TYPE, null: true,
             description: 'Blob mode in numeric format'
-      # rubocop: enable Graphql/AuthorizeTypes
+
+      def lfs_oid
+        Gitlab::Graphql::Loaders::BatchLfsOidLoader.new(object.repository, object.id).find
+      end
     end
+    # rubocop: enable Graphql/AuthorizeTypes
   end
 end

@@ -31,9 +31,8 @@ module Import
         project_name,
         target_namespace,
         current_user,
-        access_params,
-        type: provider
-      ).execute(extra_project_attrs)
+        type: provider,
+        **access_params).execute(extra_project_attrs)
     end
 
     def repo

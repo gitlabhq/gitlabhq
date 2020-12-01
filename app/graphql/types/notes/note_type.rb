@@ -16,13 +16,11 @@ module Types
 
       field :project, Types::ProjectType,
             null: true,
-            description: 'Project associated with the note',
-            resolve: -> (note, args, context) { Gitlab::Graphql::Loaders::BatchModelLoader.new(Project, note.project_id).find }
+            description: 'Project associated with the note'
 
       field :author, Types::UserType,
             null: false,
-            description: 'User who wrote this note',
-            resolve: -> (note, args, context) { Gitlab::Graphql::Loaders::BatchModelLoader.new(User, note.author_id).find }
+            description: 'User who wrote this note'
 
       field :system, GraphQL::BOOLEAN_TYPE,
             null: false,
@@ -51,6 +49,14 @@ module Types
 
       def system_note_icon_name
         SystemNoteHelper.system_note_icon_name(object) if object.system?
+      end
+
+      def project
+        Gitlab::Graphql::Loaders::BatchModelLoader.new(Project, object.project_id).find
+      end
+
+      def author
+        Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.author_id).find
       end
     end
   end

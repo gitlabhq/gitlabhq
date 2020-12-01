@@ -5298,12 +5298,12 @@ Represents a DAST Site Validation
 """
 type DastSiteValidation {
   """
-  ID of the site validation
+  Global ID of the site validation
   """
   id: DastSiteValidationID!
 
   """
-  The status of the validation
+  Status of the site validation
   """
   status: DastSiteProfileValidationStatusEnum!
 }
@@ -6539,32 +6539,17 @@ type DevopsAdoptionSegment {
   """
   Assigned groups
   """
-  groups(
-    """
-    Returns the elements in the list that come after the specified cursor.
-    """
-    after: String
-
-    """
-    Returns the elements in the list that come before the specified cursor.
-    """
-    before: String
-
-    """
-    Returns the first _n_ elements from the list.
-    """
-    first: Int
-
-    """
-    Returns the last _n_ elements from the list.
-    """
-    last: Int
-  ): GroupConnection
+  groups: [Group!]
 
   """
   ID of the segment
   """
   id: ID!
+
+  """
+  The latest adoption metrics for the segment
+  """
+  latestSnapshot: DevopsAdoptionSnapshot
 
   """
   Name of the segment
@@ -6605,6 +6590,61 @@ type DevopsAdoptionSegmentEdge {
   The item at the end of the edge.
   """
   node: DevopsAdoptionSegment
+}
+
+"""
+Snapshot
+"""
+type DevopsAdoptionSnapshot {
+  """
+  At least one deployment succeeded
+  """
+  deploySucceeded: Boolean!
+
+  """
+  The end time for the snapshot where the data points were collected
+  """
+  endTime: Time!
+
+  """
+  At least one issue was opened
+  """
+  issueOpened: Boolean!
+
+  """
+  At least one merge request was approved
+  """
+  mergeRequestApproved: Boolean!
+
+  """
+  At least one merge request was opened
+  """
+  mergeRequestOpened: Boolean!
+
+  """
+  At least one pipeline succeeded
+  """
+  pipelineSucceeded: Boolean!
+
+  """
+  The time the snapshot was recorded
+  """
+  recordedAt: Time!
+
+  """
+  At least one runner was used
+  """
+  runnerConfigured: Boolean!
+
+  """
+  At least one security scan succeeded
+  """
+  securityScanSucceeded: Boolean!
+
+  """
+  The start time for the snapshot where the data points were collected
+  """
+  startTime: Time!
 }
 
 input DiffImagePositionInput {
@@ -7803,12 +7843,12 @@ type EpicIssue implements CurrentUserTodos & Noteable {
   author: User!
 
   """
-  Indicates the issue is blocked
+  Indicates the issue is blocked.
   """
   blocked: Boolean!
 
   """
-  Count of issues blocking this issue
+  Count of issues blocking this issue.
   """
   blockedByCount: Int
 
@@ -7918,7 +7958,7 @@ type EpicIssue implements CurrentUserTodos & Noteable {
   emailsDisabled: Boolean!
 
   """
-  Epic to which this issue belongs
+  Epic to which this issue belongs.
   """
   epic: Epic
 
@@ -7953,7 +7993,7 @@ type EpicIssue implements CurrentUserTodos & Noteable {
   iid: ID!
 
   """
-  Iteration of the issue
+  Iteration of the issue.
   """
   iteration: Iteration
 
@@ -8088,7 +8128,7 @@ type EpicIssue implements CurrentUserTodos & Noteable {
   state: IssueState!
 
   """
-  Indicates whether an issue is published to the status page
+  Indicates whether an issue is published to the status page.
   """
   statusPagePublishedIncident: Boolean
 
@@ -8168,7 +8208,7 @@ type EpicIssue implements CurrentUserTodos & Noteable {
   webUrl: String!
 
   """
-  Weight of the issue
+  Weight of the issue.
   """
   weight: Int
 }
@@ -9873,41 +9913,6 @@ type Group {
 }
 
 """
-The connection type for Group.
-"""
-type GroupConnection {
-  """
-  A list of edges.
-  """
-  edges: [GroupEdge]
-
-  """
-  A list of nodes.
-  """
-  nodes: [Group]
-
-  """
-  Information to aid in pagination.
-  """
-  pageInfo: PageInfo!
-}
-
-"""
-An edge in a connection.
-"""
-type GroupEdge {
-  """
-  A cursor for use in pagination.
-  """
-  cursor: String!
-
-  """
-  The item at the end of the edge.
-  """
-  node: Group
-}
-
-"""
 Identifier of Group
 """
 scalar GroupID
@@ -10484,12 +10489,12 @@ type Issue implements CurrentUserTodos & Noteable {
   author: User!
 
   """
-  Indicates the issue is blocked
+  Indicates the issue is blocked.
   """
   blocked: Boolean!
 
   """
-  Count of issues blocking this issue
+  Count of issues blocking this issue.
   """
   blockedByCount: Int
 
@@ -10599,7 +10604,7 @@ type Issue implements CurrentUserTodos & Noteable {
   emailsDisabled: Boolean!
 
   """
-  Epic to which this issue belongs
+  Epic to which this issue belongs.
   """
   epic: Epic
 
@@ -10629,7 +10634,7 @@ type Issue implements CurrentUserTodos & Noteable {
   iid: ID!
 
   """
-  Iteration of the issue
+  Iteration of the issue.
   """
   iteration: Iteration
 
@@ -10759,7 +10764,7 @@ type Issue implements CurrentUserTodos & Noteable {
   state: IssueState!
 
   """
-  Indicates whether an issue is published to the status page
+  Indicates whether an issue is published to the status page.
   """
   statusPagePublishedIncident: Boolean
 
@@ -10839,7 +10844,7 @@ type Issue implements CurrentUserTodos & Noteable {
   webUrl: String!
 
   """
-  Weight of the issue
+  Weight of the issue.
   """
   weight: Int
 }

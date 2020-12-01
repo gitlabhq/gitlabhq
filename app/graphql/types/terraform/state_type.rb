@@ -20,8 +20,7 @@ module Types
       field :locked_by_user, Types::UserType,
             null: true,
             authorize: :read_user,
-            description: 'The user currently holding a lock on the Terraform state',
-            resolve: -> (state, _, _) { Gitlab::Graphql::Loaders::BatchModelLoader.new(User, state.locked_by_user_id).find }
+            description: 'The user currently holding a lock on the Terraform state'
 
       field :locked_at, Types::TimeType,
             null: true,
@@ -39,6 +38,10 @@ module Types
       field :updated_at, Types::TimeType,
             null: false,
             description: 'Timestamp the Terraform state was updated'
+
+      def locked_by_user
+        Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.locked_by_user_id).find
+      end
     end
   end
 end

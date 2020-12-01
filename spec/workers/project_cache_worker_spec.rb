@@ -5,8 +5,9 @@ require 'spec_helper'
 RSpec.describe ProjectCacheWorker do
   include ExclusiveLeaseHelpers
 
+  let_it_be(:project) { create(:project, :repository) }
+
   let(:worker) { described_class.new }
-  let(:project) { create(:project, :repository) }
   let(:lease_key) { ["project_cache_worker", project.id, *statistics.sort].join(":") }
   let(:lease_timeout) { ProjectCacheWorker::LEASE_TIMEOUT }
   let(:statistics) { [] }
@@ -124,6 +125,17 @@ RSpec.describe ProjectCacheWorker do
 
         worker.update_statistics(project, statistics)
       end
+    end
+  end
+
+  it_behaves_like 'an idempotent worker' do
+    let(:job_args) { [project.id, %w(readme), %w(repository_size)] }
+
+    it 'calls Projects::UpdateStatisticsService service twice', :clean_gitlab_redis_shared_state do
+      expect(Projects::UpdateStatisticsService).to receive(:new).once.and_return(double(execute: true))
+      expect(UpdateProjectStatisticsWorker).to receive(:perform_in).once
+
+      subject
     end
   end
 end

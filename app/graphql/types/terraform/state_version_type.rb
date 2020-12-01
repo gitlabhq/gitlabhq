@@ -14,14 +14,12 @@ module Types
       field :created_by_user, Types::UserType,
             null: true,
             authorize: :read_user,
-            description: 'The user that created this version',
-            resolve: -> (version, _, _) { Gitlab::Graphql::Loaders::BatchModelLoader.new(User, version.created_by_user_id).find }
+            description: 'The user that created this version'
 
       field :job, Types::Ci::JobType,
             null: true,
             authorize: :read_build,
-            description: 'The job that created this version',
-            resolve: -> (version, _, _) { Gitlab::Graphql::Loaders::BatchModelLoader.new(::Ci::Build, version.ci_build_id).find }
+            description: 'The job that created this version'
 
       field :created_at, Types::TimeType,
             null: false,
@@ -30,6 +28,14 @@ module Types
       field :updated_at, Types::TimeType,
             null: false,
             description: 'Timestamp the version was updated'
+
+      def created_by_user
+        Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.created_by_user_id).find
+      end
+
+      def job
+        Gitlab::Graphql::Loaders::BatchModelLoader.new(::Ci::Build, object.ci_build_id).find
+      end
     end
   end
 end

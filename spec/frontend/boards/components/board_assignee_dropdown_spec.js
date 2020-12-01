@@ -37,7 +37,7 @@ describe('BoardCardAssigneeDropdown', () => {
       data() {
         return {
           search,
-          selected: store.getters.activeIssue.assignees,
+          selected: [],
           participants,
         };
       },
@@ -63,14 +63,13 @@ describe('BoardCardAssigneeDropdown', () => {
       [getIssueParticipants, getIssueParticipantsSpy],
       [searchUsers, getSearchUsersSpy],
     ]);
-
     wrapper = mount(BoardAssigneeDropdown, {
       localVue,
       apolloProvider: fakeApollo,
       data() {
         return {
           search,
-          selected: store.getters.activeIssue.assignees,
+          selected: [],
           participants,
         };
       },
@@ -367,6 +366,20 @@ describe('BoardCardAssigneeDropdown', () => {
 
     it('adds the user to the selected list', async () => {
       expect(findByText(currentUser.username).exists()).toBe(true);
+    });
+  });
+
+  describe('when setting an assignee', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('passes loading state from Vuex to BoardEditableItem', async () => {
+      store.state.isSettingAssignees = true;
+
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.find(BoardEditableItem).props('loading')).toBe(true);
     });
   });
 });

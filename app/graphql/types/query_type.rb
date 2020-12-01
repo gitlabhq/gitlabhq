@@ -24,7 +24,6 @@ module Types
 
     field :current_user, Types::UserType,
           null: true,
-          resolve: -> (_obj, _args, context) { context[:current_user] },
           description: "Get information about current user"
 
     field :namespace, Types::NamespaceType,
@@ -115,6 +114,10 @@ module Types
       # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
       id = ::Types::GlobalIDType[::ContainerRepository].coerce_isolated_input(id)
       GitlabSchema.find_by_gid(id)
+    end
+
+    def current_user
+      context[:current_user]
     end
   end
 end

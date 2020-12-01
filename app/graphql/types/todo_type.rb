@@ -16,19 +16,16 @@ module Types
     field :project, Types::ProjectType,
           description: 'The project this todo is associated with',
           null: true,
-          authorize: :read_project,
-          resolve: -> (todo, args, context) { Gitlab::Graphql::Loaders::BatchModelLoader.new(Project, todo.project_id).find }
+          authorize: :read_project
 
     field :group, Types::GroupType,
           description: 'Group this todo is associated with',
           null: true,
-          authorize: :read_group,
-          resolve: -> (todo, args, context) { Gitlab::Graphql::Loaders::BatchModelLoader.new(Group, todo.group_id).find }
+          authorize: :read_group
 
     field :author, Types::UserType,
           description: 'The author of this todo',
-          null: false,
-          resolve: -> (todo, args, context) { Gitlab::Graphql::Loaders::BatchModelLoader.new(User, todo.author_id).find }
+          null: false
 
     field :action, Types::TodoActionEnum,
           description: 'Action of the todo',
@@ -50,5 +47,17 @@ module Types
     field :created_at, Types::TimeType,
           description: 'Timestamp this todo was created',
           null: false
+
+    def project
+      Gitlab::Graphql::Loaders::BatchModelLoader.new(Project, object.project_id).find
+    end
+
+    def group
+      Gitlab::Graphql::Loaders::BatchModelLoader.new(Group, object.group_id).find
+    end
+
+    def author
+      Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.author_id).find
+    end
   end
 end

@@ -35,7 +35,19 @@ module Gitlab
     end
 
     def namespace
-      @namespace ||= Namespace.find_by_full_path(namespace_path)
+      strong_memoize(:namespace) { Namespace.find_by_full_path(namespace_path) }
+    end
+
+    def namespace_path
+      strong_memoize(:namespace_path) { repository_path_match[:namespace_path] }
+    end
+
+    def project_path
+      strong_memoize(:project_path) { repository_path_match[:project_path] }
+    end
+
+    def repository_path_match
+      strong_memoize(:repository_path_match) { repository_path.match(Gitlab::PathRegex.full_project_git_path_regex) || {} }
     end
 
     def ensure_project_on_push!
@@ -44,7 +56,7 @@ module Gitlab
       return unless user&.can?(:create_projects, namespace)
 
       project_params = {
-        path: repository_path,
+        path: project_path,
         namespace_id: namespace.id,
         visibility_level: Gitlab::VisibilityLevel::PRIVATE
       }

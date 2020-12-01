@@ -73,6 +73,8 @@ class Projects::IssuesController < Projects::ApplicationController
   feature_category :service_desk, [:service_desk]
   feature_category :importers, [:import_csv, :export_csv]
 
+  attr_accessor :vulnerability_id
+
   def index
     @issues = @issuables
 
@@ -123,6 +125,8 @@ class Projects::IssuesController < Projects::ApplicationController
 
     service = ::Issues::CreateService.new(project, current_user, create_params)
     @issue = service.execute
+
+    create_vulnerability_issue_link(issue)
 
     if service.discussions_to_resolve.count(&:resolved?) > 0
       flash[:notice] = if service.discussion_to_resolve_id
@@ -384,6 +388,9 @@ class Projects::IssuesController < Projects::ApplicationController
   def service_desk?
     action_name == 'service_desk'
   end
+
+  # Overridden in EE
+  def create_vulnerability_issue_link(issue); end
 end
 
 Projects::IssuesController.prepend_if_ee('EE::Projects::IssuesController')

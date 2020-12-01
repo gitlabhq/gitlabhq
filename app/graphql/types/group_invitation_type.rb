@@ -11,7 +11,10 @@ module Types
     description 'Represents a Group Invitation'
 
     field :group, Types::GroupType, null: true,
-          description: 'Group that a User is invited to',
-          resolve: -> (obj, _args, _ctx) { Gitlab::Graphql::Loaders::BatchModelLoader.new(Group, obj.source_id).find }
+          description: 'Group that a User is invited to'
+
+    def group
+      Gitlab::Graphql::Loaders::BatchModelLoader.new(Group, object.source_id).find
+    end
   end
 end

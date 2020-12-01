@@ -5,7 +5,7 @@ module Gitlab
     NotFoundError = Class.new(StandardError)
 
     def self.parse(path)
-      repo_path = path.sub(/\.git\z/, '').sub(%r{\A/}, '')
+      repo_path = path.delete_prefix('/').delete_suffix('.git')
       redirected_path = nil
 
       # Detect the repo type based on the path, the first one tried is the project

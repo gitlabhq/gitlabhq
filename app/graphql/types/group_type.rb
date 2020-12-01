@@ -12,10 +12,7 @@ module Types
           description: 'Web URL of the group'
 
     field :avatar_url, GraphQL::STRING_TYPE, null: true,
-          description: 'Avatar URL of the group',
-          resolve: -> (group, args, ctx) do
-            group.avatar_url(only_path: false)
-          end
+          description: 'Avatar URL of the group'
 
     field :custom_emoji, Types::CustomEmojiType.connection_type, null: true,
           description: 'Custom emoji within this namespace',
@@ -44,8 +41,7 @@ module Types
           description: 'Indicates if a group is disabled from getting mentioned'
 
     field :parent, GroupType, null: true,
-          description: 'Parent group',
-          resolve: -> (obj, _args, _ctx) { Gitlab::Graphql::Loaders::BatchModelLoader.new(Group, obj.parent_id).find }
+          description: 'Parent group'
 
     field :issues,
           Types::IssueType.connection_type,
@@ -118,6 +114,14 @@ module Types
       LabelsFinder
         .new(current_user, group: group, search: search_term)
         .execute
+    end
+
+    def avatar_url
+      object.avatar_url(only_path: false)
+    end
+
+    def parent
+      Gitlab::Graphql::Loaders::BatchModelLoader.new(Group, object.parent_id).find
     end
 
     private

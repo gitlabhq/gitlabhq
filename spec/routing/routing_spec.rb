@@ -54,10 +54,6 @@ RSpec.describe "Mounted Apps", "routing" do
   it "to API" do
     expect(get("/api/issues")).to be_routable
   end
-
-  it "to Grack" do
-    expect(get("/gitlab/gitlabhq.git")).to be_routable
-  end
 end
 
 #     snippets GET    /snippets(.:format)          snippets#index

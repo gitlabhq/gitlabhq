@@ -40,11 +40,6 @@ RSpec.describe Projects::IssuesController, '(JavaScript fixtures)', type: :contr
     render_issue(create(:closed_issue, project: project))
   end
 
-  it 'issues/issue-with-task-list.html' do
-    issue = create(:issue, project: project, description: '- [ ] Task List Item')
-    render_issue(issue)
-  end
-
   it 'issues/issue_list.html' do
     create(:issue, project: project)
 

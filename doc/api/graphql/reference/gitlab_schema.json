@@ -14507,7 +14507,7 @@
           "fields": [
             {
               "name": "id",
-              "description": "ID of the site validation",
+              "description": "Global ID of the site validation",
               "args": [
 
               ],
@@ -14525,7 +14525,7 @@
             },
             {
               "name": "status",
-              "description": "The status of the validation",
+              "description": "Status of the site validation",
               "args": [
 
               ],
@@ -18042,51 +18042,20 @@
               "name": "groups",
               "description": "Assigned groups",
               "args": [
-                {
-                  "name": "after",
-                  "description": "Returns the elements in the list that come after the specified cursor.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "before",
-                  "description": "Returns the elements in the list that come before the specified cursor.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "first",
-                  "description": "Returns the first _n_ elements from the list.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "last",
-                  "description": "Returns the last _n_ elements from the list.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                }
+
               ],
               "type": {
-                "kind": "OBJECT",
-                "name": "GroupConnection",
-                "ofType": null
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "Group",
+                    "ofType": null
+                  }
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -18105,6 +18074,20 @@
                   "name": "ID",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "latestSnapshot",
+              "description": "The latest adoption metrics for the segment",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "DevopsAdoptionSnapshot",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -18235,6 +18218,199 @@
                 "kind": "OBJECT",
                 "name": "DevopsAdoptionSegment",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "DevopsAdoptionSnapshot",
+          "description": "Snapshot",
+          "fields": [
+            {
+              "name": "deploySucceeded",
+              "description": "At least one deployment succeeded",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "endTime",
+              "description": "The end time for the snapshot where the data points were collected",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Time",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "issueOpened",
+              "description": "At least one issue was opened",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "mergeRequestApproved",
+              "description": "At least one merge request was approved",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "mergeRequestOpened",
+              "description": "At least one merge request was opened",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "pipelineSucceeded",
+              "description": "At least one pipeline succeeded",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "recordedAt",
+              "description": "The time the snapshot was recorded",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Time",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "runnerConfigured",
+              "description": "At least one runner was used",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "securityScanSucceeded",
+              "description": "At least one security scan succeeded",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "startTime",
+              "description": "The start time for the snapshot where the data points were collected",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Time",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -21660,7 +21836,7 @@
             },
             {
               "name": "blocked",
-              "description": "Indicates the issue is blocked",
+              "description": "Indicates the issue is blocked.",
               "args": [
 
               ],
@@ -21678,7 +21854,7 @@
             },
             {
               "name": "blockedByCount",
-              "description": "Count of issues blocking this issue",
+              "description": "Count of issues blocking this issue.",
               "args": [
 
               ],
@@ -21976,7 +22152,7 @@
             },
             {
               "name": "epic",
-              "description": "Epic to which this issue belongs",
+              "description": "Epic to which this issue belongs.",
               "args": [
 
               ],
@@ -22082,7 +22258,7 @@
             },
             {
               "name": "iteration",
-              "description": "Iteration of the issue",
+              "description": "Iteration of the issue.",
               "args": [
 
               ],
@@ -22424,7 +22600,7 @@
             },
             {
               "name": "statusPagePublishedIncident",
-              "description": "Indicates whether an issue is published to the status page",
+              "description": "Indicates whether an issue is published to the status page.",
               "args": [
 
               ],
@@ -22696,7 +22872,7 @@
             },
             {
               "name": "weight",
-              "description": "Weight of the issue",
+              "description": "Weight of the issue.",
               "args": [
 
               ],
@@ -26954,118 +27130,6 @@
           "possibleTypes": null
         },
         {
-          "kind": "OBJECT",
-          "name": "GroupConnection",
-          "description": "The connection type for Group.",
-          "fields": [
-            {
-              "name": "edges",
-              "description": "A list of edges.",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "GroupEdge",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "nodes",
-              "description": "A list of nodes.",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Group",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "pageInfo",
-              "description": "Information to aid in pagination.",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "PageInfo",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [
-
-          ],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "GroupEdge",
-          "description": "An edge in a connection.",
-          "fields": [
-            {
-              "name": "cursor",
-              "description": "A cursor for use in pagination.",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "node",
-              "description": "The item at the end of the edge.",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "Group",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [
-
-          ],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
           "kind": "SCALAR",
           "name": "GroupID",
           "description": "Identifier of Group",
@@ -28744,7 +28808,7 @@
             },
             {
               "name": "blocked",
-              "description": "Indicates the issue is blocked",
+              "description": "Indicates the issue is blocked.",
               "args": [
 
               ],
@@ -28762,7 +28826,7 @@
             },
             {
               "name": "blockedByCount",
-              "description": "Count of issues blocking this issue",
+              "description": "Count of issues blocking this issue.",
               "args": [
 
               ],
@@ -29060,7 +29124,7 @@
             },
             {
               "name": "epic",
-              "description": "Epic to which this issue belongs",
+              "description": "Epic to which this issue belongs.",
               "args": [
 
               ],
@@ -29152,7 +29216,7 @@
             },
             {
               "name": "iteration",
-              "description": "Iteration of the issue",
+              "description": "Iteration of the issue.",
               "args": [
 
               ],
@@ -29480,7 +29544,7 @@
             },
             {
               "name": "statusPagePublishedIncident",
-              "description": "Indicates whether an issue is published to the status page",
+              "description": "Indicates whether an issue is published to the status page.",
               "args": [
 
               ],
@@ -29752,7 +29816,7 @@
             },
             {
               "name": "weight",
-              "description": "Weight of the issue",
+              "description": "Weight of the issue.",
               "args": [
 
               ],

@@ -691,8 +691,16 @@ describe('setAssignees', () => {
       { activeIssue: { iid, referencePath: refPath }, commit: () => {} },
       [
         {
+          type: 'SET_ASSIGNEE_LOADING',
+          payload: true,
+        },
+        {
           type: 'UPDATE_ISSUE_BY_ID',
           payload: { prop: 'assignees', issueId: undefined, value: [node] },
+        },
+        {
+          type: 'SET_ASSIGNEE_LOADING',
+          payload: false,
         },
       ],
       [],

@@ -1128,12 +1128,12 @@ RSpec.describe Projects::IssuesController do
         { merge_request_to_resolve_discussions_of: merge_request.iid }
       end
 
-      def post_issue(issue_params, other_params: {})
+      def post_issue(other_params: {}, **issue_params)
         post :create, params: { namespace_id: project.namespace.to_param, project_id: project, issue: issue_params, merge_request_to_resolve_discussions_of: merge_request.iid }.merge(other_params)
       end
 
       it 'creates an issue for the project' do
-        expect { post_issue({ title: 'Hello' }) }.to change { project.issues.reload.size }.by(1)
+        expect { post_issue(title: 'Hello') }.to change { project.issues.reload.size }.by(1)
       end
 
       it "doesn't overwrite given params" do
@@ -1157,7 +1157,7 @@ RSpec.describe Projects::IssuesController do
 
       describe "resolving a single discussion" do
         before do
-          post_issue({ title: 'Hello' }, other_params: { discussion_to_resolve: discussion.id })
+          post_issue(title: 'Hello', other_params: { discussion_to_resolve: discussion.id })
         end
         it 'resolves a single discussion' do
           discussion.first_note.reload

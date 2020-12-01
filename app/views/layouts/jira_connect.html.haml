@@ -9,6 +9,7 @@
 
     = javascript_include_tag 'https://connect-cdn.atl-paas.net/all.js'
     = javascript_include_tag 'https://unpkg.com/jquery@3.3.1/dist/jquery.min.js'
+    = Gon::Base.render_data(nonce: content_security_policy_nonce)
     = yield :head
   %body
     .ac-content

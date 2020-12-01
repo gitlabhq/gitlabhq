@@ -31,10 +31,7 @@ module Types
     field :author_name, type: GraphQL::STRING_TYPE, null: true,
           description: 'Commit authors name'
     field :author_gravatar, type: GraphQL::STRING_TYPE, null: true,
-          description: 'Commit authors gravatar',
-          resolve: -> (commit, args, context) do
-            GravatarService.new.execute(commit.author_email, 40)
-          end
+          description: 'Commit authors gravatar'
 
     # models/commit lazy loads the author by email
     field :author, type: Types::UserType, null: true,
@@ -44,5 +41,9 @@ module Types
           null: true,
           description: 'Pipelines of the commit ordered latest first',
           resolver: Resolvers::CommitPipelinesResolver
+
+    def author_gravatar
+      GravatarService.new.execute(object.author_email, 40)
+    end
   end
 end

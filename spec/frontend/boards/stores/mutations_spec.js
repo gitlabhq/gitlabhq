@@ -516,6 +516,14 @@ describe('Board Store Mutations', () => {
     });
   });
 
+  describe('SET_ASSIGNEE_LOADING', () => {
+    it('sets isSettingAssignees to the value passed', () => {
+      mutations.SET_ASSIGNEE_LOADING(state, true);
+
+      expect(state.isSettingAssignees).toBe(true);
+    });
+  });
+
   describe('SET_CURRENT_PAGE', () => {
     expectNotImplemented(mutations.SET_CURRENT_PAGE);
   });

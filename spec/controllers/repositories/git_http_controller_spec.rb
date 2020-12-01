@@ -9,28 +9,20 @@ RSpec.describe Repositories::GitHttpController do
   let_it_be(:personal_snippet) { create(:personal_snippet, :public, :repository) }
   let_it_be(:project_snippet) { create(:project_snippet, :public, :repository, project: project) }
 
-  let(:namespace_id) { project.namespace.to_param }
-  let(:repository_id) { project.path + '.git' }
-  let(:container_params) do
-    {
-      namespace_id: namespace_id,
-      repository_id: repository_id
-    }
-  end
+  shared_examples Repositories::GitHttpController do
+    let(:repository_path) { "#{container.full_path}.git" }
+    let(:params) { { repository_path: repository_path } }
 
-  let(:params) { container_params }
+    describe 'HEAD #info_refs' do
+      it 'returns 403' do
+        head :info_refs, params: params
 
-  describe 'HEAD #info_refs' do
-    it 'returns 403' do
-      head :info_refs, params: params
-
-      expect(response).to have_gitlab_http_status(:forbidden)
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
     end
-  end
 
-  shared_examples 'info_refs behavior' do
     describe 'GET #info_refs' do
-      let(:params) { container_params.merge(service: 'git-upload-pack') }
+      let(:params) { super().merge(service: 'git-upload-pack') }
 
       it 'returns 401 for unauthenticated requests to public repositories when http protocol is disabled' do
         stub_application_setting(enabled_git_access_protocol: 'ssh')
@@ -41,6 +33,26 @@ RSpec.describe Repositories::GitHttpController do
         get :info_refs, params: params
 
         expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+
+      it 'calls the right access checker class with the right object' do
+        allow(controller).to receive(:verify_workhorse_api!).and_return(true)
+
+        access_double = double
+        options = {
+          authentication_abilities: [:download_code],
+          repository_path: repository_path,
+          redirected_path: nil,
+          auth_result_type: :none
+        }
+
+        expect(access_checker_class).to receive(:new)
+          .with(nil, container, 'http', hash_including(options))
+          .and_return(access_double)
+
+        allow(access_double).to receive(:check).and_return(false)
+
+        get :info_refs, params: params
       end
 
       context 'with authorized user' do
@@ -97,54 +109,38 @@ RSpec.describe Repositories::GitHttpController do
         end
       end
     end
-  end
 
-  shared_examples 'git_upload_pack behavior' do |expected|
     describe 'POST #git_upload_pack' do
       before do
-        allow(controller).to receive(:authenticate_user).and_return(true)
         allow(controller).to receive(:verify_workhorse_api!).and_return(true)
-        allow(controller).to receive(:access_check).and_return(nil)
       end
 
-      def send_request
+      it 'returns 200' do
         post :git_upload_pack, params: params
-      end
 
-      context 'on a read-only instance' do
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+  end
+
+  context 'when repository container is a project' do
+    it_behaves_like Repositories::GitHttpController do
+      let(:container) { project }
+      let(:user) { project.owner }
+      let(:access_checker_class) { Gitlab::GitAccess }
+
+      describe 'POST #git_upload_pack' do
         before do
-          allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+          allow(controller).to receive(:verify_workhorse_api!).and_return(true)
         end
 
-        it 'does not update project statistics' do
-          expect(ProjectDailyStatisticsWorker).not_to receive(:perform_async)
-
-          send_request
+        def send_request
+          post :git_upload_pack, params: params
         end
-      end
 
-      if expected
-        context 'when project_statistics_sync feature flag is disabled' do
+        context 'on a read-only instance' do
           before do
-            stub_feature_flags(project_statistics_sync: false)
-          end
-
-          it 'updates project statistics async' do
-            expect(ProjectDailyStatisticsWorker).to receive(:perform_async)
-
-            send_request
-          end
-        end
-
-        it 'updates project statistics sync' do
-          expect { send_request }.to change {
-            Projects::DailyStatisticsFinder.new(project).total_fetch_count
-          }.from(0).to(1)
-        end
-      else
-        context 'when project_statistics_sync feature flag is disabled' do
-          before do
-            stub_feature_flags(project_statistics_sync: false)
+            allow(Gitlab::Database).to receive(:read_only?).and_return(true)
           end
 
           it 'does not update project statistics' do
@@ -154,68 +150,48 @@ RSpec.describe Repositories::GitHttpController do
           end
         end
 
-        it 'does not update project statistics' do
-          expect { send_request }.not_to change {
-            Projects::DailyStatisticsFinder.new(project).total_fetch_count
-          }.from(0)
+        context 'when project_statistics_sync feature flag is disabled' do
+          before do
+            stub_feature_flags(project_statistics_sync: false)
+          end
+
+          it 'updates project statistics async for projects' do
+            expect(ProjectDailyStatisticsWorker).to receive(:perform_async)
+
+            send_request
+          end
+        end
+
+        it 'updates project statistics sync for projects' do
+          expect { send_request }.to change {
+            Projects::DailyStatisticsFinder.new(container).total_fetch_count
+          }.from(0).to(1)
         end
       end
     end
   end
 
-  shared_examples 'access checker class' do
-    let(:params) { container_params.merge(service: 'git-upload-pack') }
-
-    it 'calls the right access class checker with the right object' do
-      allow(controller).to receive(:verify_workhorse_api!).and_return(true)
-
-      access_double = double
-      expect(expected_class).to receive(:new).with(anything, expected_object, 'http', anything).and_return(access_double)
-      allow(access_double).to receive(:check).and_return(false)
-
-      get :info_refs, params: params
-    end
-  end
-
-  context 'when repository container is a project' do
-    it_behaves_like 'info_refs behavior' do
+  context 'when repository container is a project wiki' do
+    it_behaves_like Repositories::GitHttpController do
+      let(:container) { create(:project_wiki, :empty_repo, project: project) }
       let(:user) { project.owner }
-    end
-
-    it_behaves_like 'git_upload_pack behavior', true
-    it_behaves_like 'access checker class' do
-      let(:expected_class) { Gitlab::GitAccess }
-      let(:expected_object) { project }
+      let(:access_checker_class) { Gitlab::GitAccessWiki }
     end
   end
 
   context 'when repository container is a personal snippet' do
-    let(:namespace_id) { 'snippets' }
-    let(:repository_id) { personal_snippet.to_param + '.git' }
-
-    it_behaves_like 'info_refs behavior' do
+    it_behaves_like Repositories::GitHttpController do
+      let(:container) { personal_snippet }
       let(:user) { personal_snippet.author }
-    end
-
-    it_behaves_like 'git_upload_pack behavior', false
-    it_behaves_like 'access checker class' do
-      let(:expected_class) { Gitlab::GitAccessSnippet }
-      let(:expected_object) { personal_snippet }
+      let(:access_checker_class) { Gitlab::GitAccessSnippet }
     end
   end
 
   context 'when repository container is a project snippet' do
-    let(:namespace_id) { project.full_path + '/snippets' }
-    let(:repository_id) { project_snippet.to_param + '.git' }
-
-    it_behaves_like 'info_refs behavior' do
+    it_behaves_like Repositories::GitHttpController do
+      let(:container) { project_snippet }
       let(:user) { project_snippet.author }
-    end
-
-    it_behaves_like 'git_upload_pack behavior', false
-    it_behaves_like 'access checker class' do
-      let(:expected_class) { Gitlab::GitAccessSnippet }
-      let(:expected_object) { project_snippet }
+      let(:access_checker_class) { Gitlab::GitAccessSnippet }
     end
   end
 end

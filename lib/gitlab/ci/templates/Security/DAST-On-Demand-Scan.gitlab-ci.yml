@@ -1,0 +1,24 @@
+stages:
+  - build
+  - test
+  - deploy
+  - dast
+
+variables:
+  DAST_VERSION: 1
+  # Setting this variable will affect all Security templates
+  # (SAST, Dependency Scanning, ...)
+  SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
+
+dast:
+  stage: dast
+  image:
+    name: "$SECURE_ANALYZERS_PREFIX/dast:$DAST_VERSION"
+  variables:
+    GIT_STRATEGY: none
+  allow_failure: true
+  script:
+    - /analyze
+  artifacts:
+    reports:
+      dast: gl-dast-report.json

@@ -139,7 +139,7 @@
           - if can?(current_user, :read_cross_project)
             %h4.prepend-top-20
               = s_('UserProfile|Most Recent Activity')
-            .content_list{ data: { href: user_path } }
+            .content_list{ data: { href: user_activity_path } }
             .loading
               .spinner.spinner-md
       - unless @user.bot?

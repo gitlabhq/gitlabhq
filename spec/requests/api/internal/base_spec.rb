@@ -722,8 +722,7 @@ RSpec.describe API::Internal::Base do
           'ssh',
           {
             authentication_abilities: [:read_project, :download_code, :push_code],
-            namespace_path: project.namespace.path,
-            repository_path: project.path,
+            repository_path: "#{project.full_path}.git",
             redirected_path: nil
           }
         ).and_return(access_checker)

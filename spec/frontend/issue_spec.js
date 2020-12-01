@@ -1,5 +1,3 @@
-/* eslint-disable one-var, no-use-before-define */
-
 import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
@@ -7,23 +5,16 @@ import Issue from '~/issue';
 import '~/lib/utils/text_utility';
 
 describe('Issue', () => {
+  let $boxClosed;
+  let $boxOpen;
   let testContext;
 
   beforeEach(() => {
     testContext = {};
   });
 
-  let $boxClosed, $boxOpen;
-
   preloadFixtures('issues/closed-issue.html');
-  preloadFixtures('issues/issue-with-task-list.html');
   preloadFixtures('issues/open-issue.html');
-  preloadFixtures('static/issue_with_mermaid_graph.html');
-
-  function expectIssueState(isIssueOpen) {
-    expectVisibility($boxClosed, !isIssueOpen);
-    expectVisibility($boxOpen, isIssueOpen);
-  }
 
   function expectVisibility($element, shouldBeVisible) {
     if (shouldBeVisible) {
@@ -31,6 +22,11 @@ describe('Issue', () => {
     } else {
       expect($element).toHaveClass('hidden');
     }
+  }
+
+  function expectIssueState(isIssueOpen) {
+    expectVisibility($boxClosed, !isIssueOpen);
+    expectVisibility($boxOpen, isIssueOpen);
   }
 
   function findElements() {
@@ -90,32 +86,6 @@ describe('Issue', () => {
         );
 
         expectIssueState(!isIssueInitiallyOpen);
-      });
-    });
-  });
-
-  describe('when not displaying blocked warning', () => {
-    describe('when clicking a mermaid graph inside an issue description', () => {
-      let mock;
-      let spy;
-
-      beforeEach(() => {
-        loadFixtures('static/issue_with_mermaid_graph.html');
-        mock = new MockAdapter(axios);
-        spy = jest.spyOn(axios, 'put');
-      });
-
-      afterEach(() => {
-        mock.restore();
-        jest.clearAllMocks();
-      });
-
-      it('does not make a PUT request', () => {
-        Issue.prototype.initIssueBtnEventListeners();
-
-        $('svg a.js-issuable-actions').trigger('click');
-
-        expect(spy).not.toHaveBeenCalled();
       });
     });
   });

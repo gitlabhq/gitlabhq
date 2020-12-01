@@ -13,8 +13,11 @@ module Types
       field :jobs, Ci::JobType.connection_type, null: true,
         description: 'Jobs in group'
       field :detailed_status, Types::Ci::DetailedStatusType, null: true,
-            description: 'Detailed status of the group',
-            resolve: -> (obj, _args, ctx) { obj.detailed_status(ctx[:current_user]) }
+            description: 'Detailed status of the group'
+
+      def detailed_status
+        object.detailed_status(context[:current_user])
+      end
     end
   end
 end
