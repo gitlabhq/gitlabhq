@@ -9,7 +9,7 @@ module Gitlab
         APPLICATION_JSON_TYPES = %W{#{APPLICATION_JSON} application/vnd.git-lfs+json}.freeze
         ERROR_MESSAGE = 'You cannot perform write operations on a read-only instance'
 
-        ALLOWLISTED_GIT_ROUTES = {
+        ALLOWLISTED_GIT_READ_ONLY_ROUTES = {
           'repositories/git_http' => %w{git_upload_pack}
         }.freeze
 
@@ -34,7 +34,7 @@ module Gitlab
         end
 
         def call
-          if disallowed_request? && Gitlab::Database.read_only?
+          if disallowed_request? && read_only?
             Gitlab::AppLogger.debug('GitLab ReadOnly: preventing possible non read-only operation')
 
             if json_request?
@@ -55,6 +55,11 @@ module Gitlab
         def disallowed_request?
           DISALLOWED_METHODS.include?(@env['REQUEST_METHOD']) &&
             !allowlisted_routes
+        end
+
+        # Overridden in EE module
+        def read_only?
+          Gitlab::Database.read_only?
         end
 
         def json_request?
@@ -97,7 +102,7 @@ module Gitlab
           return false unless request.post? &&
             request.path.end_with?('.git/git-upload-pack')
 
-          ALLOWLISTED_GIT_ROUTES[route_hash[:controller]]&.include?(route_hash[:action])
+          ALLOWLISTED_GIT_READ_ONLY_ROUTES[route_hash[:controller]]&.include?(route_hash[:action])
         end
 
         def internal_route?
