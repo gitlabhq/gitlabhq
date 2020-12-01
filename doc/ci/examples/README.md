@@ -41,8 +41,9 @@ The following table lists examples with step-by-step tutorials that are containe
 | Ruby on Heroku                | [Test and deploy a Ruby application with GitLab CI/CD](test-and-deploy-ruby-application-to-heroku.md).                     |
 | Scala on Heroku               | [Test and deploy a Scala application to Heroku](test-scala-application.md).                                                |
 | Parallel testing Ruby & JS    | [GitLab CI/CD parallel jobs testing for Ruby & JavaScript projects](https://docs.knapsackpro.com/2019/how-to-run-parallel-jobs-for-rspec-tests-on-gitlab-ci-pipeline-and-speed-up-ruby-javascript-testing). |
-| Secrets management with Vault | [Authenticating and Reading Secrets With Hashicorp Vault](authenticating-with-hashicorp-vault/index.md).                    |
-| Multi project pipeline | [Build, test deploy using multi project pipeline](https://gitlab.com/gitlab-examples/upstream-project).                    |
+| Secrets management with Vault | [Authenticating and Reading Secrets With Hashicorp Vault](authenticating-with-hashicorp-vault/index.md).                   |
+| Multi project pipeline        | [Build, test deploy using multi project pipeline](https://gitlab.com/gitlab-examples/upstream-project).                    |
+| NPM with semantic-release     | [Publish NPM packages to the GitLab Package Registry using semantic-release](semantic-release.md).                         |
 
 ### Contributing examples
 

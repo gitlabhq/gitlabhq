@@ -65786,7 +65786,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "The board global id.",
+              "description": "The board global ID",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -65830,7 +65830,7 @@
             },
             {
               "name": "assigneeId",
-              "description": "The id of user to be assigned to the board.",
+              "description": "The id of user to be assigned to the board",
               "type": {
                 "kind": "SCALAR",
                 "name": "UserID",
@@ -65840,7 +65840,7 @@
             },
             {
               "name": "milestoneId",
-              "description": "The id of milestone to be assigned to the board.",
+              "description": "The id of milestone to be assigned to the board",
               "type": {
                 "kind": "SCALAR",
                 "name": "MilestoneID",
@@ -65850,7 +65850,7 @@
             },
             {
               "name": "weight",
-              "description": "The weight value to be assigned to the board.",
+              "description": "The weight value to be assigned to the board",
               "type": {
                 "kind": "SCALAR",
                 "name": "Int",
@@ -65878,7 +65878,7 @@
             },
             {
               "name": "labelIds",
-              "description": "The IDs of labels to be added to the board.",
+              "description": "The IDs of labels to be added to the board",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -66038,7 +66038,7 @@
           "fields": [
             {
               "name": "board",
-              "description": "The board after mutation.",
+              "description": "The board after mutation",
               "args": [
 
               ],

@@ -139,6 +139,10 @@
   width: 186px;
 }
 
+.gl-w-90 {
+  width: 90%;
+}
+
 .gl-build-content {
   @include build-content();
 }

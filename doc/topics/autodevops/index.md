@@ -38,11 +38,14 @@ For requirements, see [Requirements for Auto DevOps](requirements.md) for more i
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41729) in GitLab 11.3.
 
-Auto DevOps is enabled by default for all projects and attempts to run on all pipelines
-in each project. An instance administrator can enable or disable this default in the
+On self-managed instances, Auto DevOps is enabled by default for all projects.
+It attempts to run on all pipelines in each project. An instance administrator can
+enable or disable this default in the
 [Auto DevOps settings](../../user/admin_area/settings/continuous_integration.md#auto-devops).
 Auto DevOps automatically disables in individual projects on their first pipeline failure,
-if it has not been explicitly enabled for the project.
+
+NOTE: **Note:**
+Auto DevOps is not enabled by default on GitLab.com.
 
 Since [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/issues/26655), Auto DevOps
 runs on pipelines automatically only if a [`Dockerfile` or matching buildpack](stages.md#auto-build)

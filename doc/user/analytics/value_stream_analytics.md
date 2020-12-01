@@ -4,7 +4,7 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Value Stream Analytics
+# Value Stream Analytics **(CORE)**
 
 > - Introduced as Cycle Analytics prior to GitLab 12.3 at the project level.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12077) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3 at the group level.
@@ -21,13 +21,9 @@ to uncover, triage, and identify the root cause of slowdowns in the software dev
 
 For information on how to contribute to the development of Value Stream Analytics, see our [contributor documentation](../../development/value_stream_analytics.md).
 
-## Project Level Value Stream Analytics **(CORE)**
+Project-level Value Stream Analytics is available via **Project > Analytics > Value Stream**.
 
-Project Level Value Stream Analytics is available via **Project > Analytics > Value Stream**.
-
-## Group Level Value Stream Analytics **(PREMIUM)**
-
-From GitLab 12.9, group level Value Stream Analytics is available via **Group > Analytics > Value Stream**.
+Note: [Group-level Value Stream Analytics](../group/value_stream_analytics) is also available.
 
 ## Default stages
 
@@ -46,38 +42,15 @@ The stages tracked by Value Stream Analytics by default represent the [GitLab fl
 - **Staging** (Continuous Deployment)
   - Time between merging and deploying to production
 
-## Filter the analytics data
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13216) in GitLab 13.3
-
-GitLab provides the ability to filter analytics based on the following parameters:
-
-- Milestones (Group level)
-- Labels (Group level)
-- Author
-- Assignees
-
-To filter results:
-
-1. Select a group.
-1. Click on the filter bar.
-1. Select a parameter to filter by.
-1. Select a value from the autocompleted results, or type to refine the results.
-
-![Value stream analytics filter bar](img/vsa_filter_bar_v13.3.png "Active filter bar for value stream analytics")
-
-NOTE: **Note:**
-Filtering is available only for group-level Value Stream Analytics.
-
 ### Date ranges
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13216) in GitLab 12.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/36300) in GitLab 10.0.
 
-GitLab provides the ability to filter analytics based on a date range. To filter results:
+GitLab provides the ability to filter analytics based on a date range. To filter results, select one of these options:
 
-1. Select a group.
-1. Optionally select a project.
-1. Select a date range using the available date pickers.
+1. Last 7 days
+1. Last 30 days (default)
+1. Last 90 days
 
 ## How Time metrics are measured
 
@@ -87,8 +60,6 @@ The "Time" metrics near the top of the page are measured as follows:
 - **Cycle time**: median time from first commit to issue closed.
 
 Note: A commit is associated with an issue by [crosslinking](../project/issues/crosslinking_issues.md) in the commit message or by manually linking the merge request containing the commit.
-
-![Value stream analytics time metrics](img/vsa_time_metrics_v13_0.png "Time metrics for value stream analytics")
 
 ## How the stages are measured
 
@@ -103,31 +74,30 @@ Each stage of Value Stream Analytics is further described in the table below.
 
 | **Stage** | **Description** |
 | --------- | --------------- |
-| Issue     | Measures the median time between creating an issue and taking action to solve it, by either labeling it or adding it to a milestone, whatever comes first. The label will be tracked only if it already has an [Issue Board list](../project/issue_board.md) created for it. |
-| Plan      | Measures the median time between the action you took for the previous stage, and pushing the first commit to the branch. The very first commit of the branch is the one that triggers the separation between **Plan** and **Code**, and at least one of the commits in the branch needs to contain the related issue number (e.g., `#42`). If none of the commits in the branch mention the related issue number, it is not considered to the measurement time of the stage. |
-| Code      | Measures the median time between pushing a first commit (previous stage) and creating a merge request (MR) related to that commit. The key to keep the process tracked is to include the [issue closing pattern](../project/issues/managing_issues.md#closing-issues-automatically) to the description of the merge request (for example, `Closes #xxx`, where `xxx` is the number of the issue related to this merge request). If the closing pattern is not present, then the calculation takes the creation time of the first commit in the merge request as the start time. |
-| Test      | Measures the median time to run the entire pipeline for that project. It's related to the time GitLab CI/CD takes to run every job for the commits pushed to that merge request defined in the previous stage. It is basically the start->finish time for all pipelines. |
-| Review    | Measures the median time taken to review the merge request that has a closing issue pattern, between its creation and until it's merged. |
-| Staging   | Measures the median time between merging the merge request with a closing issue pattern until the very first deployment to a [production environment](#how-the-production-environment-is-identified). If there isn't a production environment, this is not tracked. |
+| Issue     | Measures the median time between creating an issue and taking action to solve it, by either labeling it or adding it to a milestone, whichever comes first. The label is tracked only if it already includes an [Issue Board list](../project/issue_board.md) created for it. |
+| Plan      | Measures the median time between the action you took for the previous stage, and pushing the first commit to the branch. That first branch commit triggers the separation between **Plan** and **Code**, and at least one of the commits in the branch must include the related issue number (such as `#42`). If the issue number is *not* included in a commit, that data is not included in the measurement time of the stage. |
+| Code      | Measures the median time between pushing a first commit (previous stage) and creating a merge request (MR). The process is tracked with the [issue closing pattern](../project/issues/managing_issues.md#closing-issues-automatically) in the description of the merge request. For example, if the issue is closed with `Closes #xxx`, it's assumed that `xxx` is issue number for the merge request). If there is no closing pattern, the start time is set to the create time of the first commit. |
+| Test      | Essentially the start to finish time for all pipelines. Measures the median time to run the entire pipeline for that project. Related to the time required by GitLab CI/CD to run every job for the commits pushed to that merge request, as defined in the previous stage. |
+| Review    | Measures the median time taken to review merge requests with a closing issue pattern, from creation to merge. |
+| Staging   | Measures the median time between merging the merge request (with a closing issue pattern) to the first deployment to a [production environment](#how-the-production-environment-is-identified). Data not collected without a production environment. |
 
 How this works, behind the scenes:
 
-1. Issues and merge requests are grouped together in pairs, such that for each
-   `<issue, merge request>` pair, the merge request has the [issue closing pattern](../project/issues/managing_issues.md#closing-issues-automatically)
-   for the corresponding issue. All other issues and merge requests are **not**
-   considered.
-1. Then the `<issue, merge request>` pairs are filtered out by last XX days (specified
-   by the UI - default is 90 days). So it prohibits these pairs from being considered.
-1. For the remaining `<issue, merge request>` pairs, we check the information that
-   we need for the stages, like issue creation date, merge request merge time,
-   etc.
+1. Issues and merge requests are grouped in pairs, where the merge request has the
+   [closing pattern](../project/issues/managing_issues.md#closing-issues-automatically)
+   for the corresponding issue. Issue/merge request pairs without closing patterns are
+   **not** included.
+1. Issue/merge request pairs are filtered by the last XX days, specified through the UI
+   (default = 90 days). Pairs outside the filtered range are not included.
+1. For the remaining pairs, review information needed for stages, including
+   issue creation date, merge request merge time, and so on.
 
-To sum up, anything that doesn't follow [GitLab flow](../../topics/gitlab_flow.md) will not be tracked and the
-Value Stream Analytics dashboard will not present any data for:
+In short, the Value Stream Analytics dashboard tracks data related to [GitLab flow](../../topics/gitlab_flow.md). It does not include data for:
 
 - Merge requests that do not close an issue.
-- Issues not labeled with a label present in the Issue Board or for issues not assigned a milestone.
-- Staging stage, if the project has no [production environment](#how-the-production-environment-is-identified).
+- Issues that do not include labels present in the Issue Board
+- Issues without a milestone.
+- Staging stages, in projects without a [production environment](#how-the-production-environment-is-identified).
 
 ## How the production environment is identified
 
@@ -165,8 +135,7 @@ environments is configured.
 1. Now that the merge request is merged, a deployment to the `production`
    environment starts and finishes at 19:30 (stop of **Staging** stage).
 
-From the above example you can conclude the time it took each stage to complete
-as long as their total time:
+From the above example we see the time used for each stage:
 
 - **Issue**: 2h (11:00 - 09:00)
 - **Plan**: 1h (12:00 - 11:00)
@@ -175,212 +144,26 @@ as long as their total time:
 - **Review**: 5h (19:00 - 14:00)
 - **Staging**: 30min (19:30 - 19:00)
 
-A few notes:
-
-- In the above example we demonstrated that it doesn't matter if your first
-  commit doesn't mention the issue number, you can do this later in any commit
-  of the branch you are working on.
-- You can see that the **Test** stage is not calculated to the overall time of
-  the cycle since it is included in the **Review** process (every MR should be
-  tested).
-- The example above was just **one cycle** of the seven stages. Add multiple
-  cycles, calculate their median time and the result is what the dashboard of
-  Value Stream Analytics is showing.
-
-## Customizable Value Stream Analytics **(PREMIUM)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12196) in GitLab 12.9.
-
-The default stages are designed to work straight out of the box, but they might not be suitable for
-all teams. Different teams use different approaches to building software, so some teams might want
-to customize their Value Stream Analytics.
-
-GitLab allows users to create multiple value streams, hide default stages and create custom stages that align better to their development workflow.
-
-NOTE: **Note:**
-Customizability is [only available for group-level](https://gitlab.com/gitlab-org/gitlab/-/issues/35823#note_272558950) Value Stream Analytics.
-
-### Stage path
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210315) in GitLab 13.0.
-
-Stages are visually depicted as a horizontal process flow. Selecting a stage will update the
-the content below the value stream.
-
-This is disabled by default. If you have a self-managed instance, an
-administrator can [open a Rails console](../../administration/troubleshooting/navigating_gitlab_via_rails_console.md)
-and enable it with the following command:
-
-```ruby
-Feature.enable(:value_stream_analytics_path_navigation)
-```
-
-### Adding a stage
-
-In the following example we're creating a new stage that measures and tracks issues from creation
-time until they are closed.
-
-1. Navigate to your group's **Analytics > Value Stream**.
-1. Click the **Add a stage** button.
-1. Fill in the new stage form:
-   - Name: Issue start to finish.
-   - Start event: Issue created.
-   - End event: Issue closed.
-1. Click the **Add stage** button.
-
-![New Value Stream Analytics Stage](img/new_vsm_stage_v12_9.png "Form for creating a new stage")
-
-The new stage is persisted and it will always show up on the Value Stream Analytics page for your
-group.
-
-If you want to alter or delete the stage, you can easily do that for customized stages by:
-
-1. Hovering over the stage.
-1. Clicking the vertical ellipsis (**{ellipsis_v}**) button that appears.
-
-![Value Stream Analytics Stages](img/vsm_stage_list_v12_9.png)
-
-Creating a custom stage requires specifying two events:
-
-- A start.
-- An end.
-
-Be careful to choose a start event that occurs *before* your end event. For example, consider a
-stage that:
-
-- Started when an issue is added to a board.
-- Ended when the issue is created.
-
-This stage would not work because the end event has already happened when the start event occurs.
-To prevent such invalid stages, the UI prohibits incompatible start and end events. After you select
-the start event, the stop event dropdown will only list the compatible events.
-
-### Re-ordering stages
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196698) in GitLab 12.10.
-
-Once a custom stage has been added, you can "drag and drop" stages to rearrange their order. These changes are automatically saved to the system.
-
-### Label based stages
-
-The pre-defined start and end events can cover many use cases involving both issues and merge requests.
-
-For supporting more complex workflows, use stages based on group labels. These events are based on
-labels being added or removed. In particular, [scoped labels](../project/labels.md#scoped-labels)
-are useful for complex workflows.
-
-In this example, we'd like to measure more accurate code review times. The workflow is the following:
-
-- When the code review starts, the reviewer adds `workflow::code_review_start` label to the merge request.
-- When the code review is finished, the reviewer adds `workflow::code_review_complete` label to the merge request.
-
-Creating a new stage called "Code Review":
-
-![New Label Based Value Stream Analytics Stage](img/label_based_stage_vsm_v12_9.png "Creating a label based Value Stream Analytics Stage")
-
-### Hiding unused stages
-
-Sometimes certain default stages are not relevant to a team. In this case, you can easily hide stages
-so they no longer appear in the list. To hide stages:
-
-1. Add a custom stage to activate customizability.
-1. Hover over the default stage you want to hide.
-1. Click the vertical ellipsis (**{ellipsis_v}**) button that appears and select **Hide stage**.
-
-To recover a default stage that was previously hidden:
-
-1. Click **Add a stage** button.
-1. In the top right corner open the **Recover hidden stage** dropdown.
-1. Select a stage.
-
-### Creating a value stream
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221202) in GitLab 13.3
-
-A default value stream is readily available for each group. You can create additional value streams based on the different areas of work that you would like to measure.
-
-Once created, a new value stream includes the [seven stages](#default-stages) that follow
-[GitLab workflow](../../topics/gitlab_flow.md)
-best practices. You can customize this flow by adding, hiding or re-ordering stages.
-
-To create a value stream:
-
-1. Navigate to your group's **Analytics > Value Stream**.
-1. Click the Value stream dropdown and select **Create new Value Stream**
-1. Fill in a name for the new Value Stream
-1. Click the **Create Value Stream** button.
-
-![New value stream](img/new_value_stream_v13_3.png "Creating a new value stream")
-
-### Deleting a value stream
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221205) in GitLab 13.4.
-
-To delete a custom value stream:
-
-1. Navigate to your group's **Analytics > Value Stream**.
-1. Click the Value stream dropdown and select the value stream you would like to delete.
-1. Click the **Delete (name of value stream)**.
-1. Click the **Delete** button to confirm.
-
-![Delete value stream](img/delete_value_stream_v13.4.png "Deleting a custom value stream")
-
-### Disabling custom value streams
-
-Custom value streams are enabled by default. If you have a self-managed instance, an
-administrator can open a Rails console and disable them with the following command:
-
-```ruby
-Feature.disable(:value_stream_analytics_create_multiple_value_streams)
-```
-
-## Days to completion chart
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21631) in GitLab 12.6.
-> - [Chart median line removed](https://gitlab.com/gitlab-org/gitlab/-/issues/235455) in GitLab 13.4.
-
-This chart visually depicts the total number of days it takes for cycles to be completed. (Totals are being replaced with averages in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/262070).)
-
-This chart uses the global page filters for displaying data based on the selected
-group, projects, and timeframe. In addition, specific stages can be selected
-from within the chart itself.
-
-The chart data is limited to the last 500 items.
-
-### Disabling chart
-
-This chart is enabled by default. If you have a self-managed instance, an
-administrator can open a Rails console and disable it with the following command:
-
-```ruby
-Feature.disable(:cycle_analytics_scatterplot_enabled)
-```
-
-## Type of work - Tasks by type chart
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32421) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.10.
-
-This chart shows a cumulative count of issues and merge requests per day.
-
-This chart uses the global page filters for displaying data based on the selected
-group, projects, and timeframe. The chart defaults to showing counts for issues but can be
-toggled to show data for merge requests and further refined for specific group-level labels.
-
-By default the top group-level labels (max. 10) are pre-selected, with the ability to
-select up to a total of 15 labels.
+More information:
+
+- The above example specifies the issue number in a latter commit. The process
+  still collects analytics data for that issue.
+- The time required in the **Test** stage is not included in the overall time of
+  the cycle. It is included in the **Review** process, as every MR should be
+  tested.
+- The example above illustrates only **one cycle** of the multiple stages. Value
+  Stream Analytics, on its dashboard, shows the calculated median elapsed time
+  for these issues.
 
 ## Permissions
 
-The current permissions on the Project Value Stream Analytics dashboard are:
+The current permissions on the Project-level Value Stream Analytics dashboard are:
 
 - Public projects - anyone can access.
 - Internal projects - any authenticated user can access.
 - Private projects - any member Guest and above can access.
 
 You can [read more about permissions](../../user/permissions.md) in general.
-
-For Value Stream Analytics functionality introduced in GitLab 12.3 and later,
-users must have Reporter access or above.
 
 ## More resources
 

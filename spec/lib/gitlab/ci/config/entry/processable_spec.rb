@@ -361,7 +361,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
         context 'when root yaml variables are used' do
           let(:variables) do
             Gitlab::Ci::Config::Entry::Variables.new(
-              A: 'root', C: 'root', D: 'root'
+              { A: 'root', C: 'root', D: 'root' }
             ).value
           end
 

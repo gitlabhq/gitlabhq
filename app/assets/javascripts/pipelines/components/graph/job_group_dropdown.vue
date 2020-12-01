@@ -47,7 +47,7 @@ export default {
       class="dropdown-menu-toggle build-content gl-build-content"
     >
       <div class="gl-display-flex gl-align-items-center gl-justify-content-space-between">
-        <span class="gl-display-flex gl-align-items-center">
+        <span class="gl-display-flex gl-align-items-center gl-w-90">
           <ci-icon :status="group.status" :size="24" />
 
           <span class="gl-text-truncate mw-70p gl-pl-3 gl-display-inline-block">

@@ -31,7 +31,7 @@ describe('Pipelines', () => {
 
   const paths = {
     endpoint: 'twitter/flight/pipelines.json',
-    autoDevopsPath: '/help/topics/autodevops/index.md',
+    autoDevopsHelpPath: '/help/topics/autodevops/index.md',
     helpPagePath: '/help/ci/quick_start/README',
     emptyStateSvgPath: '/assets/illustrations/pipelines_empty.svg',
     errorStateSvgPath: '/assets/illustrations/pipelines_failed.svg',
@@ -43,7 +43,7 @@ describe('Pipelines', () => {
 
   const noPermissions = {
     endpoint: 'twitter/flight/pipelines.json',
-    autoDevopsPath: '/help/topics/autodevops/index.md',
+    autoDevopsHelpPath: '/help/topics/autodevops/index.md',
     helpPagePath: '/help/ci/quick_start/README',
     emptyStateSvgPath: '/assets/illustrations/pipelines_empty.svg',
     errorStateSvgPath: '/assets/illustrations/pipelines_failed.svg',

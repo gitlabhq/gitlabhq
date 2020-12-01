@@ -1,0 +1,5 @@
+---
+title: Fix flex overflow bug
+merge_request: 48931
+author:
+type: fixed

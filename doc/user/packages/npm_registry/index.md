@@ -277,6 +277,10 @@ deploy:
     - npm publish
 ```
 
+See the
+[Publish NPM packages to the GitLab Package Registry using semantic-release](../../../ci/examples/semantic-release.md)
+step-by-step guide and demo project for a complete example.
+
 ## Publishing packages with the same name or version
 
 You cannot publish a package if a package of the same name and version already exists.

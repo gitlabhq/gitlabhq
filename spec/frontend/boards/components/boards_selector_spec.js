@@ -1,6 +1,6 @@
 import { nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
-import { GlDeprecatedDropdown, GlLoadingIcon } from '@gitlab/ui';
+import { GlDropdown, GlLoadingIcon, GlDropdownSectionHeader } from '@gitlab/ui';
 import { TEST_HOST } from 'spec/test_constants';
 import BoardsSelector from '~/boards/components/boards_selector.vue';
 import boardsStore from '~/boards/stores/boards_store';
@@ -34,8 +34,9 @@ describe('BoardsSelector', () => {
   };
 
   const getDropdownItems = () => wrapper.findAll('.js-dropdown-item');
-  const getDropdownHeaders = () => wrapper.findAll('.dropdown-bold-header');
+  const getDropdownHeaders = () => wrapper.findAll(GlDropdownSectionHeader);
   const getLoadingIcon = () => wrapper.find(GlLoadingIcon);
+  const findDropdown = () => wrapper.find(GlDropdown);
 
   beforeEach(() => {
     const $apollo = {
@@ -103,7 +104,7 @@ describe('BoardsSelector', () => {
     });
 
     // Emits gl-dropdown show event to simulate the dropdown is opened at initialization time
-    wrapper.find(GlDeprecatedDropdown).vm.$emit('show');
+    findDropdown().vm.$emit('show');
   });
 
   afterEach(() => {

@@ -91,7 +91,7 @@ return new Vue({
       },
     });
   },
-}
+});
 ```
 
 > When adding an `id` attribute to mount a Vue application, please make sure this `id` is unique across the codebase
