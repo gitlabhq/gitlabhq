@@ -397,7 +397,9 @@ Not all vulnerabilities have CVEs, and a CVE can be identified multiple times. A
 isn't a stable identifier and you shouldn't assume it as such when tracking vulnerabilities.
 
 The maximum number of identifiers for a vulnerability is set as 20. If a vulnerability has more than 20 identifiers,
-the system will save only the first 20 of them.
+the system will save only the first 20 of them. Note that vulnerabilities in the [Pipeline
+Security](../../user/application_security/security_dashboard/#pipeline-security)
+tab do not enforce this limit and will show all identifiers present in the report artifact.
 
 ### Location
 

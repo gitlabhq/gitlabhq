@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Global search' do
+  include AfterNextHelpers
+
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace) }
 
@@ -22,9 +24,7 @@ RSpec.describe 'Global search' do
 
   describe 'I search through the issues and I see pagination' do
     before do
-      allow_next_instance_of(SearchService) do |instance|
-        allow(instance).to receive(:per_page).and_return(1)
-      end
+      allow_next(SearchService).to receive(:per_page).and_return(1)
       create_list(:issue, 2, project: project, title: 'initial')
     end
 
