@@ -31,6 +31,7 @@ module GraphqlHelpers
   end
 
   # TODO: Remove this method entirely when GraphqlHelpers uses real resolve_field
+  # see: https://gitlab.com/gitlab-org/gitlab/-/issues/287791
   def aliased_args(resolver, args)
     definitions = resolver.arguments
 

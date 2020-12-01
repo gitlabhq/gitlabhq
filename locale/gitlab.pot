@@ -27254,6 +27254,9 @@ msgstr ""
 msgid "The update action will time out after %{number_of_minutes} minutes. For big repositories, use a clone/push combination."
 msgstr ""
 
+msgid "The uploaded file was invalid. Supported file extensions are %{extensions}."
+msgstr ""
+
 msgid "The usage ping is disabled, and cannot be configured through this form."
 msgstr ""
 
@@ -31654,6 +31657,9 @@ msgid "Your request for access could not be processed: %{error_meesage}"
 msgstr ""
 
 msgid "Your request for access has been queued for review."
+msgstr ""
+
+msgid "Your requirements are being imported. Once finished, you'll receive a confirmation email."
 msgstr ""
 
 msgid "Your response has been recorded."

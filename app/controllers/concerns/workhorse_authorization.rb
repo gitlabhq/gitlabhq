@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module WorkhorseImportExportUpload
+module WorkhorseAuthorization
   extend ActiveSupport::Concern
   include WorkhorseRequest
 
@@ -12,10 +12,9 @@ module WorkhorseImportExportUpload
   def authorize
     set_workhorse_internal_api_content_type
 
-    authorized = ImportExportUploader.workhorse_authorize(
+    authorized = uploader_class.workhorse_authorize(
       has_length: false,
-      maximum_size: Gitlab::CurrentSettings.max_import_size.megabytes
-    )
+      maximum_size: Gitlab::CurrentSettings.max_attachment_size.megabytes.to_i)
 
     render json: authorized
   rescue SocketError
@@ -27,7 +26,14 @@ module WorkhorseImportExportUpload
   def file_is_valid?(file)
     return false unless file.is_a?(::UploadedFile)
 
+    file_extension_whitelist.include?(File.extname(file.original_filename).downcase.delete('.'))
+  end
+
+  def uploader_class
+    raise NotImplementedError
+  end
+
+  def file_extension_whitelist
     ImportExportUploader::EXTENSION_WHITELIST
-      .include?(File.extname(file.original_filename).delete('.'))
   end
 end
