@@ -245,8 +245,8 @@ group.
 | Browse group                                           | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View group wiki pages **(PREMIUM)**                    | ✓ (6) | ✓        | ✓         | ✓          | ✓     |
 | View Insights charts **(ULTIMATE)**                    | ✓     | ✓        | ✓         | ✓          | ✓     |
-| View group epic **(ULTIMATE)**                         | ✓     | ✓        | ✓         | ✓          | ✓     |
-| Create/edit group epic **(ULTIMATE)**                  |       | ✓        | ✓         | ✓          | ✓     |
+| View group epic **(PREMIUM)**                         | ✓     | ✓        | ✓         | ✓          | ✓     |
+| Create/edit group epic **(PREMIUM)**                  |       | ✓        | ✓         | ✓          | ✓     |
 | Manage group labels                                    |       | ✓        | ✓         | ✓          | ✓     |
 | See a container registry                               |       | ✓        | ✓         | ✓          | ✓     |
 | Pull [packages](packages/index.md)                     |       | ✓        | ✓         | ✓          | ✓     |
@@ -270,7 +270,7 @@ group.
 | Create/Delete group deploy tokens                      |       |          |           |            | ✓     |
 | Manage group members                                   |       |          |           |            | ✓     |
 | Delete group                                           |       |          |           |            | ✓     |
-| Delete group epic **(ULTIMATE)**                       |       |          |           |            | ✓     |
+| Delete group epic **(PREMIUM)**                       |       |          |           |            | ✓     |
 | Edit SAML SSO Billing **(SILVER ONLY)**                | ✓     | ✓        | ✓         | ✓          | ✓ (4) |
 | View group Audit Events                                |       |          |           |            | ✓     |
 | Disable notification emails                            |       |          |           |            | ✓     |

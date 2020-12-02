@@ -47,16 +47,10 @@ RSpec.shared_examples 'group and project boards query' do
     describe 'sorting and pagination' do
       let(:data_path) { [board_parent_type, :boards] }
 
-      def pagination_query(params, page_info)
-        graphql_query_for(
-          board_parent_type,
-          { 'fullPath' => board_parent.full_path },
-          query_graphql_field('boards', params, "#{page_info} edges { node { id } }")
+      def pagination_query(params)
+        graphql_query_for(board_parent_type, { full_path: board_parent.full_path },
+          query_nodes(:boards, :id, include_pagination_info: true, args: params)
         )
-      end
-
-      def pagination_results_data(data)
-        data.map { |board| board.dig('node', 'id') }
       end
 
       context 'when using default sorting' do
@@ -72,9 +66,9 @@ RSpec.shared_examples 'group and project boards query' do
             let(:first_param)      { 2 }
             let(:expected_results) do
               if board_parent.multiple_issue_boards_available?
-                boards.map { |board| board.to_global_id.to_s }
+                boards.map { |board| global_id_of(board) }
               else
-                [boards.first.to_global_id.to_s]
+                [global_id_of(boards.first)]
               end
             end
           end

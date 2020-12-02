@@ -1489,9 +1489,6 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
-msgid "Activate"
-msgstr ""
-
 msgid "Activate Service Desk"
 msgstr ""
 
@@ -2070,6 +2067,15 @@ msgstr ""
 msgid "AdminUsers|Access the API"
 msgstr ""
 
+msgid "AdminUsers|Activate"
+msgstr ""
+
+msgid "AdminUsers|Activate user"
+msgstr ""
+
+msgid "AdminUsers|Activate user %{username}?"
+msgstr ""
+
 msgid "AdminUsers|Active"
 msgstr ""
 
@@ -2257,6 +2263,9 @@ msgid "AdminUsers|You are about to permanently delete the user %{username}. This
 msgstr ""
 
 msgid "AdminUsers|You can always block their account again if needed."
+msgstr ""
+
+msgid "AdminUsers|You can always deactivate their account again if needed."
 msgstr ""
 
 msgid "AdminUsers|You can always re-activate their account, their data will remain intact."
@@ -26931,9 +26940,6 @@ msgstr ""
 msgid "The Prometheus server responded with \"bad request\". Please check your queries are correct and are supported in your Prometheus version. %{documentationLink}"
 msgstr ""
 
-msgid "The Security Dashboard shows the results of the last successful pipeline run on the default branch."
-msgstr ""
-
 msgid "The URL defined on the primary node that secondary nodes should use to contact it."
 msgstr ""
 
@@ -26941,6 +26947,9 @@ msgid "The URL defined on the primary node that secondary nodes should use to co
 msgstr ""
 
 msgid "The URL to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., \"http://localhost:9200, http://localhost:9201\")."
+msgstr ""
+
+msgid "The Vulnerability Report shows the results of the last successful pipeline run on the default branch."
 msgstr ""
 
 msgid "The X509 Certificate to use when mutual TLS is required to communicate with the external authorization service. If left blank, the server certificate is still validated when accessing over HTTPS."

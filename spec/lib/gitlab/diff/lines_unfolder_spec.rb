@@ -188,7 +188,7 @@ RSpec.describe Gitlab::Diff::LinesUnfolder do
   let(:old_blob) { Blob.decorate(Gitlab::Git::Blob.new(data: raw_old_blob, size: 10)) }
 
   let(:diff) do
-    Gitlab::Git::Diff.new(diff: raw_diff,
+    Gitlab::Git::Diff.new({ diff: raw_diff,
                           new_path: "build-aux/flatpak/org.gnome.Nautilus.json",
                           old_path: "build-aux/flatpak/org.gnome.Nautilus.json",
                           a_mode: "100644",
@@ -196,7 +196,7 @@ RSpec.describe Gitlab::Diff::LinesUnfolder do
                           new_file: false,
                           renamed_file: false,
                           deleted_file: false,
-                          too_large: false)
+                          too_large: false })
   end
 
   let(:diff_file) do

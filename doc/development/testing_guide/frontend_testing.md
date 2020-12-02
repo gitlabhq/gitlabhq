@@ -25,17 +25,19 @@ If you are looking for a guide on Vue component testing, you can jump right away
 
 ## Jest
 
-We have started to migrate frontend tests to the [Jest](https://jestjs.io) testing framework (see also the corresponding
-[epic](https://gitlab.com/groups/gitlab-org/-/epics/895)).
-
+We use Jest to write frontend unit and integration tests.
 Jest tests can be found in `/spec/frontend` and `/ee/spec/frontend` in EE.
-
-Most examples have a Jest and Karma example. See the Karma examples only as explanation to what's going on in the code, should you stumble over some use cases during your discovery. The Jest examples are the one you should follow.
 
 ## Karma test suite
 
-While GitLab is switching over to [Jest](https://jestjs.io) you'll still find Karma tests in our application. [Karma](http://karma-runner.github.io/) is a test runner which uses [Jasmine](https://jasmine.github.io/) as its test
-framework. Jest also uses Jasmine as foundation, that's why it's looking quite similar.
+While GitLab has switched over to [Jest](https://jestjs.io) you'll still find Karma tests in our
+application because some of our specs require a browser and can't be easiliy migrated to Jest.
+Those specs will eventually drop Karma in favor of either Jest or RSpec. You can track this migration
+in the [related epic](https://gitlab.com/groups/gitlab-org/-/epics/4900).
+
+[Karma](http://karma-runner.github.io/) is a test runner which uses
+[Jasmine](https://jasmine.github.io/) as its test framework. Jest also uses Jasmine as foundation,
+that's why it's looking quite similar.
 
 Karma tests live in `spec/javascripts/` and `/ee/spec/javascripts` in EE.
 
@@ -46,19 +48,6 @@ Keep in mind that in a CI environment, these tests are run in a headless
 browser and you will not have access to certain APIs, such as
 [`Notification`](https://developer.mozilla.org/en-US/docs/Web/API/notification),
 which have to be stubbed.
-
-### When should I use Jest over Karma?
-
-If you need to update an existing Karma test file (found in `spec/javascripts`), you do not
-need to migrate the whole spec to Jest. Simply updating the Karma spec to test your change
-is fine. It is probably more appropriate to migrate to Jest in a separate merge request.
-
-If you create a new test file, it needs to be created in Jest. This will
-help support our migration and we think you'll love using Jest.
-
-As always, please use discretion. Jest solves a lot of issues we experienced in Karma and
-provides a better developer experience, however there are potentially unexpected issues
-which could arise (especially with testing against browser specific features).
 
 ### Differences to Karma
 
@@ -776,11 +765,10 @@ Please consult the [official Jest docs](https://jestjs.io/docs/en/jest-object#mo
 
 For running the frontend tests, you need the following commands:
 
-- `rake frontend:fixtures` (re-)generates [fixtures](#frontend-test-fixtures).
-- `yarn test` executes the tests.
-- `yarn jest` executes only the Jest tests.
-
-As long as the fixtures don't change, `yarn test` is sufficient (and saves you some time).
+- `rake frontend:fixtures` (re-)generates [fixtures](#frontend-test-fixtures). Make sure that
+  fixtures are up-to-date before running tests that require them.
+- `yarn jest` runs Jest tests.
+- `yarn karma` runs Karma tests.
 
 ### Live testing and focused testing -- Jest
 

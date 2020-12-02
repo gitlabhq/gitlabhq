@@ -10,7 +10,7 @@ module Resolvers
     argument :sort, Types::IssueSortEnum,
               description: 'Sort issues by this criteria',
               required: false,
-              default_value: 'created_desc'
+              default_value: :created_desc
 
     type Types::IssueType.connection_type, null: true
 

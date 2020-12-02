@@ -224,6 +224,7 @@ Kibana
 Kinesis
 Knative
 Kramdown
+Kroki
 Kubecost
 kubectl
 Kubernetes

@@ -77,8 +77,8 @@ RSpec.describe 'Admin::Users::User' do
       end
     end
 
-    context 'when deactivating the user' do
-      it 'shows confirmation and allows blocking', :js do
+    context 'when deactivating/re-activating the user' do
+      it 'shows confirmation and allows deactivating/re-activating', :js do
         visit admin_user_path(user)
 
         find('button', text: 'Deactivate user').click
@@ -94,6 +94,20 @@ RSpec.describe 'Admin::Users::User' do
 
         expect(page).to have_content('Successfully deactivated')
         expect(page).to have_content('Reactivate this user')
+
+        find('button', text: 'Activate user').click
+
+        wait_for_requests
+
+        expect(page).to have_content('Activate user')
+        expect(page).to have_content('You can always deactivate their account again if needed.')
+
+        find('.modal-footer button', text: 'Activate').click
+
+        wait_for_requests
+
+        expect(page).to have_content('Successfully activated')
+        expect(page).to have_content('Deactivate this user')
       end
     end
 

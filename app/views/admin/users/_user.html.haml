@@ -40,7 +40,7 @@
                     %button.btn.btn-default-tertiary.js-confirm-modal-button{ data: user_block_data(user, user_block_effects) }
                       = s_('AdminUsers|Block')
                   - else
-                    %button.btn.btn-default-tertiary.js-confirm-modal-button{ data: unblock_user_modal_data(user) }
+                    %button.btn.btn-default-tertiary.js-confirm-modal-button{ data: user_unblock_data(user) }
                       = s_('AdminUsers|Unblock')
                 - else
                   %button.btn.btn-default-tertiary.js-confirm-modal-button{ data: user_block_data(user, user_block_effects) }
@@ -51,7 +51,8 @@
                     = s_('AdminUsers|Deactivate')
               - elsif user.deactivated?
                 %li
-                  = link_to _('Activate'), activate_admin_user_path(user), method: :put
+                  %button.btn.btn-default-tertiary.js-confirm-modal-button{ data: user_activation_data(user) }
+                    = s_('AdminUsers|Activate')
               - if user.access_locked?
                 %li
                   = link_to _('Unlock'), unlock_admin_user_path(user), method: :put, data: { confirm: _('Are you sure?') }

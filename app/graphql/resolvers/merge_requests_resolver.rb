@@ -52,7 +52,7 @@ module Resolvers
     argument :sort, Types::MergeRequestSortEnum,
              description: 'Sort merge requests by this criteria',
              required: false,
-             default_value: 'created_desc'
+             default_value: :created_desc
 
     def self.single
       ::Resolvers::MergeRequestResolver

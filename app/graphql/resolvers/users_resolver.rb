@@ -17,7 +17,7 @@ module Resolvers
     argument :sort, Types::SortEnum,
              description: 'Sort users by this criteria',
              required: false,
-             default_value: 'created_desc'
+             default_value: :created_desc
 
     argument :search, GraphQL::STRING_TYPE,
              required: false,

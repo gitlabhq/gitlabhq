@@ -228,8 +228,10 @@ existing gates (e.g. `--group=gitlab-org`) in the above processes.
 
 ### Feature flag change logging
 
-Any feature flag change that affects GitLab.com (production) will
-automatically be logged in an issue.
+#### Chatops level
+
+Any feature flag change that affects GitLab.com (production) via [Chatops](https://gitlab.com/gitlab-com/chatops)
+is automatically logged in an issue.
 
 The issue is created in the
 [gl-infra/feature-flag-log](https://gitlab.com/gitlab-com/gl-infra/feature-flag-log/-/issues?scope=all&utf8=%E2%9C%93&state=closed)
@@ -242,6 +244,12 @@ marker to make the change even more visible.
 
 Changes to the issue format can be submitted in the
 [Chatops project](https://gitlab.com/gitlab-com/chatops).
+
+#### Instance level
+
+Any feature flag change that affects any GitLab instance is automatically logged in
+[features_json.log](../../administration/logs.md#features_jsonlog).
+You can search the change history in [Kibana](https://about.gitlab.com/handbook/support/workflows/kibana.html).
 
 ## Cleaning up
 

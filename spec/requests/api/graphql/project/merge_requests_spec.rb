@@ -259,29 +259,19 @@ RSpec.describe 'getting merge request listings nested in a project' do
   describe 'sorting and pagination' do
     let(:data_path) { [:project, :mergeRequests] }
 
-    def pagination_query(params, page_info)
-      graphql_query_for(
-        :project,
-        { full_path: project.full_path },
+    def pagination_query(params)
+      graphql_query_for(:project, { full_path: project.full_path },
         <<~QUERY
         mergeRequests(#{params}) {
-          #{page_info} edges {
-            node {
-              id
-            }
-          }
+          #{page_info} nodes { id }
         }
         QUERY
       )
     end
 
-    def pagination_results_data(data)
-      data.map { |project| project.dig('node', 'id') }
-    end
-
     context 'when sorting by merged_at DESC' do
       it_behaves_like 'sorted paginated query' do
-        let(:sort_param) { 'MERGED_AT_DESC' }
+        let(:sort_param) { :MERGED_AT_DESC }
         let(:first_param) { 2 }
 
         let(:expected_results) do
@@ -291,7 +281,7 @@ RSpec.describe 'getting merge request listings nested in a project' do
             merge_request_c,
             merge_request_e,
             merge_request_a
-          ].map(&:to_gid).map(&:to_s)
+          ].map { |mr| global_id_of(mr) }
         end
 
         before do
@@ -303,33 +293,6 @@ RSpec.describe 'getting merge request listings nested in a project' do
           merge_request_c.metrics.update!(merged_at: five_days_ago)
 
           merge_request_b.metrics.update!(merged_at: 1.day.ago)
-        end
-
-        context 'when paginating backwards' do
-          let(:params) { 'first: 2, sort: MERGED_AT_DESC' }
-          let(:page_info) { 'pageInfo { startCursor endCursor }' }
-
-          before do
-            post_graphql(pagination_query(params, page_info), current_user: current_user)
-          end
-
-          it 'paginates backwards correctly' do
-            # first page
-            first_page_response_data = graphql_dig_at(Gitlab::Json.parse(response.body), :data, *data_path, :edges)
-            end_cursor = graphql_dig_at(Gitlab::Json.parse(response.body), :data, :project, :mergeRequests, :pageInfo, :endCursor)
-
-            # second page
-            params = "first: 2, after: \"#{end_cursor}\", sort: MERGED_AT_DESC"
-            post_graphql(pagination_query(params, page_info), current_user: current_user)
-            start_cursor = graphql_dig_at(Gitlab::Json.parse(response.body), :data, :project, :mergeRequests, :pageInfo, :start_cursor)
-
-            # going back to the first page
-
-            params = "last: 2, before: \"#{start_cursor}\", sort: MERGED_AT_DESC"
-            post_graphql(pagination_query(params, page_info), current_user: current_user)
-            backward_paginated_response_data = graphql_dig_at(Gitlab::Json.parse(response.body), :data, *data_path, :edges)
-            expect(first_page_response_data).to eq(backward_paginated_response_data)
-          end
         end
       end
     end

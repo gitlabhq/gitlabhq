@@ -300,7 +300,119 @@ RSpec.describe Feature, stub_feature_flags: false do
     end
   end
 
+  shared_examples_for 'logging' do
+    let(:expected_action) { }
+    let(:expected_extra) { }
+
+    it 'logs the event' do
+      expect(Feature.logger).to receive(:info).with(key: key, action: expected_action, **expected_extra)
+
+      subject
+    end
+  end
+
+  describe '.enable' do
+    subject { described_class.enable(key, thing) }
+
+    let(:key) { :awesome_feature }
+    let(:thing) { true }
+
+    it_behaves_like 'logging' do
+      let(:expected_action) { :enable }
+      let(:expected_extra) { { "extra.thing" => "true" } }
+    end
+
+    context 'when thing is an actor' do
+      let(:thing) { create(:project) }
+
+      it_behaves_like 'logging' do
+        let(:expected_action) { :enable }
+        let(:expected_extra) { { "extra.thing" => "#{thing.flipper_id}" } }
+      end
+    end
+  end
+
+  describe '.disable' do
+    subject { described_class.disable(key, thing) }
+
+    let(:key) { :awesome_feature }
+    let(:thing) { false }
+
+    it_behaves_like 'logging' do
+      let(:expected_action) { :disable }
+      let(:expected_extra) { { "extra.thing" => "false" } }
+    end
+
+    context 'when thing is an actor' do
+      let(:thing) { create(:project) }
+
+      it_behaves_like 'logging' do
+        let(:expected_action) { :disable }
+        let(:expected_extra) { { "extra.thing" => "#{thing.flipper_id}" } }
+      end
+    end
+  end
+
+  describe '.enable_percentage_of_time' do
+    subject { described_class.enable_percentage_of_time(key, percentage) }
+
+    let(:key) { :awesome_feature }
+    let(:percentage) { 50 }
+
+    it_behaves_like 'logging' do
+      let(:expected_action) { :enable_percentage_of_time }
+      let(:expected_extra) { { "extra.percentage" => "#{percentage}" } }
+    end
+  end
+
+  describe '.disable_percentage_of_time' do
+    subject { described_class.disable_percentage_of_time(key) }
+
+    let(:key) { :awesome_feature }
+
+    it_behaves_like 'logging' do
+      let(:expected_action) { :disable_percentage_of_time }
+      let(:expected_extra) { {} }
+    end
+  end
+
+  describe '.enable_percentage_of_actors' do
+    subject { described_class.enable_percentage_of_actors(key, percentage) }
+
+    let(:key) { :awesome_feature }
+    let(:percentage) { 50 }
+
+    it_behaves_like 'logging' do
+      let(:expected_action) { :enable_percentage_of_actors }
+      let(:expected_extra) { { "extra.percentage" => "#{percentage}" } }
+    end
+  end
+
+  describe '.disable_percentage_of_actors' do
+    subject { described_class.disable_percentage_of_actors(key) }
+
+    let(:key) { :awesome_feature }
+
+    it_behaves_like 'logging' do
+      let(:expected_action) { :disable_percentage_of_actors }
+      let(:expected_extra) { {} }
+    end
+  end
+
   describe '.remove' do
+    subject { described_class.remove(key) }
+
+    let(:key) { :awesome_feature }
+
+    before do
+      described_class.enable(key)
+    end
+
+    it_behaves_like 'logging' do
+      let(:expected_action) { :remove }
+      let(:expected_extra) { {} }
+    end
+
     context 'for a non-persisted feature' do
       it 'returns nil' do
         expect(described_class.remove(:non_persisted_feature_flag)).to be_nil

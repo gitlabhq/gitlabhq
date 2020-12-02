@@ -30,7 +30,6 @@
     "stylelint": "yarn stylelint-file 'app/assets/stylesheets/**/*.*'  'ee/app/assets/stylesheets/**/*.*' '!app/assets/stylesheets/startup/startup-*.scss' '!**/vendors/**'",
     "stylelint-file": "BROWSERSLIST_IGNORE_OLD_DATA=true node node_modules/stylelint/bin/stylelint.js",
     "stylelint-create-utility-map": "node scripts/frontend/stylelint/stylelint-utility-map.js",
-    "test": "node scripts/frontend/test",
     "webpack": "NODE_OPTIONS=\"--max-old-space-size=3584\" webpack --config config/webpack.config.js",
     "webpack-vendor": "NODE_OPTIONS=\"--max-old-space-size=3584\" webpack --config config/webpack.vendor.config.js",
     "webpack-prod": "NODE_OPTIONS=\"--max-old-space-size=3584\" NODE_ENV=production webpack --config config/webpack.config.js"

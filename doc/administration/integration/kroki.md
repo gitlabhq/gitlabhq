@@ -1,4 +1,4 @@
-# Kroki diagrams **(CORE)**
+# Kroki diagrams **(CORE ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241744) in GitLab 13.7.
 
@@ -10,7 +10,7 @@ GitLab you can use it to create diagrams in AsciiDoc and Markdown documents.
 When Kroki is enabled, GitLab sends diagrams to an instance of Kroki to display them as images.
 You can use the free public cloud instance `https://kroki.io` or you can [install Kroki](https://docs.kroki.io/kroki/setup/install/)
 on your own infrastructure.
-Once you've installed Kroki, make sure to update the server URL to point to your instance.
+After you've installed Kroki, make sure to update the server URL to point to your instance.
 
 ### Docker
 
@@ -38,12 +38,12 @@ The [`yuzutech/kroki`](https://hub.docker.com/r/yuzutech/kroki) image contains t
 - [WaveDrom](https://wavedrom.com/)
 
 If you want to use additional diagram libraries,
-read the [Kroki installation](https://docs.kroki.io/kroki/setup/install/#_images) to learn how to start Kroki companion containers. 
+read the [Kroki installation](https://docs.kroki.io/kroki/setup/install/#_images) to learn how to start Kroki companion containers.
 
-## Enable Kroki in GitLab **(CORE ONLY)**
+## Enable Kroki in GitLab
 
 You need to enable Kroki integration from Settings under Admin Area.
-To do that, log in with an Admin account and follow these steps:
+To do that, log in with an administrator account and follow these steps:
 
 1. Select the Admin Area (**{admin}**) icon.
 1. Navigate to **Settings > General**.

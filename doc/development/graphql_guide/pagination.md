@@ -294,28 +294,30 @@ The shared example requires certain `let` variables and methods to be set up:
 
 ```ruby
 describe 'sorting and pagination' do
-  let(:sort_project) { create(:project, :public) }
+  let_it_be(:sort_project) { create(:project, :public) }
   let(:data_path)    { [:project, :issues] }
 
-  def pagination_query(params, page_info)
-    graphql_query_for(
-      'project',
-      { 'fullPath' => sort_project.full_path },
-      query_graphql_field('issues', params, "#{page_info} edges { node { id } }")
+  def pagination_query(params)
+    graphql_query_for( :project, { full_path: sort_project.full_path },
+      query_nodes(:issues, :id, include_pagination_info: true, args: params))
     )
   end
 
-  def pagination_results_data(data)
-    data.map { |issue| issue.dig('node', 'iid').to_i }
+  def pagination_results_data(nodes)
+    nodes.map { |issue| issue['iid'].to_i }
   end
 
   context 'when sorting by weight' do
-    ...
+    let_it_be(:issues) { make_some_issues_with_weights }
+
     context 'when ascending' do
+      let(:ordered_issues) { issues.sort_by(&:weight) }
+
       it_behaves_like 'sorted paginated query' do
-        let(:sort_param)       { 'WEIGHT_ASC' }
+        let(:sort_param)       { :WEIGHT_ASC }
         let(:first_param)      { 2 }
-        let(:expected_results) { [weight_issue3.iid, weight_issue5.iid, weight_issue1.iid, weight_issue4.iid, weight_issue2.iid] }
+        let(:expected_results) { ordered_issues.map(&:iid) }
       end
     end
+  end
 ```

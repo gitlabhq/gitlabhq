@@ -129,7 +129,7 @@ module UsersHelper
     }
   end
 
-  def unblock_user_modal_data(user)
+  def user_unblock_data(user)
     {
       path: unblock_admin_user_path(user),
       method: 'put',
@@ -164,6 +164,19 @@ module UsersHelper
         messageHtml: message,
         okVariant: 'warning',
         okTitle: s_('AdminUsers|Deactivate')
+      }.to_json
+    }
+  end
+
+  def user_activation_data(user)
+    {
+      path: activate_admin_user_path(user),
+      method: 'put',
+      modal_attributes: {
+        title: s_('AdminUsers|Activate user %{username}?') % { username: sanitize_name(user.name) },
+        message: s_('AdminUsers|You can always deactivate their account again if needed.'),
+        okVariant: 'info',
+        okTitle: s_('AdminUsers|Activate')
       }.to_json
     }
   end
