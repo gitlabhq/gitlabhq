@@ -15527,6 +15527,18 @@ msgstr ""
 msgid "Jobs|Are you sure you want to retry this job?"
 msgstr ""
 
+msgid "Jobs|Create CI/CD configuration file"
+msgstr ""
+
+msgid "Jobs|Jobs are the building blocks of a GitLab CI/CD pipeline. Each job has a specific task, like testing code. To set up jobs in a CI/CD pipeline, add a CI/CD configuration file to your project."
+msgstr ""
+
+msgid "Jobs|No jobs to show"
+msgstr ""
+
+msgid "Jobs|Use jobs to automate your tasks"
+msgstr ""
+
 msgid "Jobs|You're about to retry a job that failed because it attempted to deploy code that is older than the latest deployment. Retrying this job could result in overwriting the environment with the older source code."
 msgstr ""
 
@@ -18847,7 +18859,13 @@ msgstr ""
 msgid "NotificationEvent|Fixed pipeline"
 msgstr ""
 
+msgid "NotificationEvent|Issue due"
+msgstr ""
+
 msgid "NotificationEvent|Merge merge request"
+msgstr ""
+
+msgid "NotificationEvent|Moved project"
 msgstr ""
 
 msgid "NotificationEvent|New epic"
@@ -18865,6 +18883,9 @@ msgstr ""
 msgid "NotificationEvent|New release"
 msgstr ""
 
+msgid "NotificationEvent|Push to merge request"
+msgstr ""
+
 msgid "NotificationEvent|Reassign issue"
 msgstr ""
 
@@ -18872,6 +18893,9 @@ msgid "NotificationEvent|Reassign merge request"
 msgstr ""
 
 msgid "NotificationEvent|Reopen issue"
+msgstr ""
+
+msgid "NotificationEvent|Reopen merge request"
 msgstr ""
 
 msgid "NotificationEvent|Successful pipeline"

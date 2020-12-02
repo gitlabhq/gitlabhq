@@ -77,6 +77,9 @@ module Gitlab
       default_to_issues_board: {
         tracking_category: 'Growth::Conversion::Experiment::DefaultToIssuesBoard',
         use_backwards_compatible_subject_index: true
+      },
+      jobs_empty_state: {
+        tracking_category: 'Growth::Activation::Experiment::JobsEmptyState'
       }
     }.freeze
 

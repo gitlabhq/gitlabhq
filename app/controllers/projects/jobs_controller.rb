@@ -17,6 +17,9 @@ class Projects::JobsController < Projects::ApplicationController
   before_action do
     push_frontend_feature_flag(:ci_job_line_links, @project)
   end
+  before_action only: :index do
+    frontend_experimentation_tracking_data(:jobs_empty_state, 'click_button')
+  end
 
   layout 'project'
 

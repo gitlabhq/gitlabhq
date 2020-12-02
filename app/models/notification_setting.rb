@@ -30,6 +30,7 @@ class NotificationSetting < ApplicationRecord
 
   scope :preload_source_route, -> { preload(source: [:route]) }
 
+  # NOTE: Applicable unfound_translations.rb also needs to be updated when below events are changed.
   EMAIL_EVENTS = [
     :new_release,
     :new_note,
@@ -51,7 +52,6 @@ class NotificationSetting < ApplicationRecord
     :moved_project
   ].freeze
 
-  # Update unfound_translations.rb when events are changed
   def self.email_events(source = nil)
     EMAIL_EVENTS
   end

@@ -2021,7 +2021,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent:
+  :idempotent: true
   :tags: []
 - :name: self_monitoring_project_create
   :feature_category: :metrics

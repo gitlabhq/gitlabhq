@@ -20,10 +20,19 @@ RSpec.describe NotificationsHelper do
   end
 
   describe '#notification_event_name' do
-    it { expect(notification_event_name(:success_pipeline)).to match('Successful pipeline') }
-    it { expect(notification_event_name(:failed_pipeline)).to match('Failed pipeline') }
-    it { expect(notification_event_name(:fixed_pipeline)).to match('Fixed pipeline') }
-    it { expect(notification_event_name(:moved_project)).to match('Moved project') }
+    context 'for success_pipeline' do
+      it 'returns the custom name' do
+        expect(FastGettext).to receive(:cached_find).with('NotificationEvent|Successful pipeline')
+        expect(notification_event_name(:success_pipeline)).to eq('Successful pipeline')
+      end
+    end
+
+    context 'for everything else' do
+      it 'returns a humanized name' do
+        expect(FastGettext).to receive(:cached_find).with('NotificationEvent|Failed pipeline')
+        expect(notification_event_name(:failed_pipeline)).to eq('Failed pipeline')
+      end
+    end
   end
 
   describe '#notification_icon_level' do

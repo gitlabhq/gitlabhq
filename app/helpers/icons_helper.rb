@@ -13,6 +13,7 @@ module IconsHelper
   # Right now this method simply delegates directly to `fa_icon` from the
   # font-awesome-rails gem, but should we ever use a different icon pack in the
   # future we won't have to change hundreds of method calls.
+  # @deprecated use sprite_icon to render a SVG icon
   def icon(names, options = {})
     if (options.keys & %w[aria-hidden aria-label data-hidden]).empty?
       # Add 'aria-hidden' and 'data-hidden' if they are not set in options.

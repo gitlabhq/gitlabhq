@@ -69,6 +69,16 @@ RSpec.describe Projects::UpdatePagesService do
         expect(project.pages_metadatum.reload.pages_deployment_id).to eq(deployment.id)
       end
 
+      it 'fails if another deployment is in progress' do
+        subject.try_obtain_lease do
+          expect do
+            execute
+          end.to raise_error("Failed to deploy pages - other deployment is in progress")
+
+          expect(GenericCommitStatus.last.description).to eq("Failed to deploy pages - other deployment is in progress")
+        end
+      end
+
       it 'does not fail if pages_metadata is absent' do
         project.pages_metadatum.destroy!
         project.reload

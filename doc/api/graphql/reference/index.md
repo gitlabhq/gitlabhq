@@ -827,6 +827,7 @@ Represents a DAST Site Profile.
 | ----- | ---- | ----------- |
 | `editPath` | String | Relative web path to the edit page of a site profile |
 | `id` | DastSiteProfileID! | ID of the site profile |
+| `normalizedTargetUrl` | String | Normalized URL of the target to be scanned |
 | `profileName` | String | The name of the site profile |
 | `targetUrl` | String | The URL of the target to be scanned |
 | `userPermissions` | DastSiteProfilePermissions! | Permissions for the current user on the resource |

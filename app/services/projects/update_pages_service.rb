@@ -4,6 +4,9 @@ module Projects
   class UpdatePagesService < BaseService
     InvalidStateError = Class.new(StandardError)
     FailedToExtractError = Class.new(StandardError)
+    ExclusiveLeaseTaken = Class.new(StandardError)
+
+    include ::Pages::LegacyStorageLease
 
     BLOCK_SIZE = 32.kilobytes
     PUBLIC_DIR = 'public'
@@ -109,6 +112,17 @@ module Projects
     end
 
     def deploy_page!(archive_public_path)
+      deployed = try_obtain_lease do
+        deploy_page_unsafe!(archive_public_path)
+        true
+      end
+
+      unless deployed
+        raise ExclusiveLeaseTaken, "Failed to deploy pages - other deployment is in progress"
+      end
+    end
+
+    def deploy_page_unsafe!(archive_public_path)
       # Do atomic move of pages
       # Move and removal may not be atomic, but they are significantly faster then extracting and removal
       # 1. We move deployed public to previous public path (file removal is slow)

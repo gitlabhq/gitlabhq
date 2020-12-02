@@ -5016,6 +5016,11 @@ type DastSiteProfile {
   id: DastSiteProfileID!
 
   """
+  Normalized URL of the target to be scanned
+  """
+  normalizedTargetUrl: String
+
+  """
   The name of the site profile
   """
   profileName: String
