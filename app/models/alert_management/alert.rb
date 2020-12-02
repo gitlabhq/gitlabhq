@@ -263,3 +263,5 @@ module AlertManagement
     end
   end
 end
+
+AlertManagement::Alert.prepend_if_ee('EE::AlertManagement::Alert')

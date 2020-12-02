@@ -11617,6 +11617,30 @@ CREATE SEQUENCE dependency_proxy_group_settings_id_seq
 
 ALTER SEQUENCE dependency_proxy_group_settings_id_seq OWNED BY dependency_proxy_group_settings.id;
 
+CREATE TABLE dependency_proxy_manifests (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    group_id bigint NOT NULL,
+    size bigint,
+    file_store smallint,
+    file_name text NOT NULL,
+    file text NOT NULL,
+    digest text NOT NULL,
+    CONSTRAINT check_079b293a7b CHECK ((char_length(file) <= 255)),
+    CONSTRAINT check_c579e3f586 CHECK ((char_length(file_name) <= 255)),
+    CONSTRAINT check_f5d9996bf1 CHECK ((char_length(digest) <= 255))
+);
+
+CREATE SEQUENCE dependency_proxy_manifests_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE dependency_proxy_manifests_id_seq OWNED BY dependency_proxy_manifests.id;
+
 CREATE TABLE deploy_keys_projects (
     id integer NOT NULL,
     deploy_key_id integer NOT NULL,
@@ -18014,6 +18038,8 @@ ALTER TABLE ONLY dependency_proxy_blobs ALTER COLUMN id SET DEFAULT nextval('dep
 
 ALTER TABLE ONLY dependency_proxy_group_settings ALTER COLUMN id SET DEFAULT nextval('dependency_proxy_group_settings_id_seq'::regclass);
 
+ALTER TABLE ONLY dependency_proxy_manifests ALTER COLUMN id SET DEFAULT nextval('dependency_proxy_manifests_id_seq'::regclass);
+
 ALTER TABLE ONLY deploy_keys_projects ALTER COLUMN id SET DEFAULT nextval('deploy_keys_projects_id_seq'::regclass);
 
 ALTER TABLE ONLY deploy_tokens ALTER COLUMN id SET DEFAULT nextval('deploy_tokens_id_seq'::regclass);
@@ -19135,6 +19161,9 @@ ALTER TABLE ONLY dependency_proxy_blobs
 
 ALTER TABLE ONLY dependency_proxy_group_settings
     ADD CONSTRAINT dependency_proxy_group_settings_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY dependency_proxy_manifests
+    ADD CONSTRAINT dependency_proxy_manifests_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY deploy_keys_projects
     ADD CONSTRAINT deploy_keys_projects_pkey PRIMARY KEY (id);
@@ -20875,6 +20904,8 @@ CREATE UNIQUE INDEX index_dast_sites_on_project_id_and_url ON dast_sites USING b
 CREATE INDEX index_dependency_proxy_blobs_on_group_id_and_file_name ON dependency_proxy_blobs USING btree (group_id, file_name);
 
 CREATE INDEX index_dependency_proxy_group_settings_on_group_id ON dependency_proxy_group_settings USING btree (group_id);
+
+CREATE INDEX index_dependency_proxy_manifests_on_group_id_and_digest ON dependency_proxy_manifests USING btree (group_id, digest);
 
 CREATE INDEX index_deploy_key_id_on_protected_branch_push_access_levels ON protected_branch_push_access_levels USING btree (deploy_key_id);
 
@@ -24473,6 +24504,9 @@ ALTER TABLE ONLY user_permission_export_uploads
 
 ALTER TABLE ONLY repository_languages
     ADD CONSTRAINT fk_rails_a750ec87a8 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY dependency_proxy_manifests
+    ADD CONSTRAINT fk_rails_a758021fb0 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY resource_milestone_events
     ADD CONSTRAINT fk_rails_a788026e85 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;

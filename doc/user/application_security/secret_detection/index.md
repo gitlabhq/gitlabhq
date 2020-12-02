@@ -115,7 +115,7 @@ Add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
 include:
-  - template: Secret-Detection.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
 ```
 
 The included template creates Secret Detection jobs in your CI/CD pipeline and scans
@@ -153,7 +153,7 @@ override the `secret_detection` job with the `SECRET_DETECTION_HISTORIC_SCAN` va
 
 ```yaml
 include:
-  - template: Secret-Detection.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
 
 secret_detection:
   variables:

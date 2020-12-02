@@ -1,0 +1,5 @@
+---
+title: Allow filtering project and group members by relationship in GraphQL
+merge_request: 48372
+author:
+type: changed

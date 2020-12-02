@@ -14,7 +14,9 @@ module Resolvers
     def resolve_with_lookahead(**args)
       authorize!(object)
 
-      apply_lookahead(finder_class.new(object, current_user, params: args).execute)
+      relations = args.delete(:relations)
+
+      apply_lookahead(finder_class.new(object, current_user, params: args).execute(include_relations: relations))
     end
 
     private

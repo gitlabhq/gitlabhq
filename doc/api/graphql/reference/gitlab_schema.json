@@ -25129,6 +25129,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "relations",
+                  "description": "Filter members by the given member relations",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "GroupMemberRelation",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": "[DIRECT, INHERITED]"
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -27422,6 +27440,35 @@
 
           ],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "GroupMemberRelation",
+          "description": "Group member relation",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "DIRECT",
+              "description": "Direct members",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "INHERITED",
+              "description": "Inherited members",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DESCENDANTS",
+              "description": "Descendants members",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {
@@ -48636,6 +48683,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "relations",
+                  "description": "Filter members by the given member relations",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "ProjectMemberRelation",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": "[DIRECT, INHERITED]"
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -50361,6 +50426,41 @@
 
           ],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "ProjectMemberRelation",
+          "description": "Project member relation",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "DIRECT",
+              "description": "Direct members",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "INHERITED",
+              "description": "Inherited members",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DESCENDANTS",
+              "description": "Descendants members",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "INVITED_GROUPS",
+              "description": "Invited Groups members",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {

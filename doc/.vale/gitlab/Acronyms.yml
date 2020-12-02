@@ -41,6 +41,7 @@ exceptions:
   - GCP
   - GDK
   - GET
+  - GIF
   - GKE
   - GNU
   - GPG
@@ -56,6 +57,8 @@ exceptions:
   - IMAP
   - IRC
   - ISO
+  - JPEG
+  - JPG
   - JSON
   - LAN
   - LDAP
@@ -76,6 +79,7 @@ exceptions:
   - PDF
   - PGP
   - PHP
+  - PNG
   - POST
   - PUT
   - RAM
@@ -92,6 +96,7 @@ exceptions:
   - SCP
   - SCSS
   - SDK
+  - SEO
   - SHA
   - SLA
   - SMTP

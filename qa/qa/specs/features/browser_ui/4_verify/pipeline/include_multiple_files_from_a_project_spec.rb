@@ -3,9 +3,8 @@
 require 'faker'
 
 module QA
-  RSpec.describe 'Verify', :runner, :requires_admin, :skip_live_env do
-    describe "Include multiple files from a project" do
-      let(:feature_flag) { :ci_include_multiple_files_from_project }
+  RSpec.describe 'Verify', :runner do
+    describe 'Include multiple files from a project' do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(8)}" }
       let(:expected_text) { Faker::Lorem.sentence }
       let(:unexpected_text) { Faker::Lorem.sentence }
@@ -31,7 +30,6 @@ module QA
       end
 
       before do
-        Runtime::Feature.enable(feature_flag)
         Flow::Login.sign_in
         add_included_files
         add_main_ci_file
@@ -40,7 +38,6 @@ module QA
       end
 
       after do
-        Runtime::Feature.disable(feature_flag)
         runner.remove_via_api!
       end
 

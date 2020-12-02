@@ -894,6 +894,32 @@ longer visible on the environment page.
 If the alert requires a [rollback](#retrying-and-rolling-back), you can select the
 deployment tab from the environment page and select which deployment to roll back to.
 
+#### Auto Rollback **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35404) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.7.
+
+In a typical Continuous Deployment workflow, the CI pipeline tests every commit before deploying to
+production. However, problematic code can still make it to production. For example, inefficient code
+that is logically correct can pass tests even though it causes severe performance degradation.
+Operators and SREs monitor the system to catch such problems as soon as possible. If they find a
+problematic deployment, they can roll back to a previous stable version.
+
+GitLab Auto Rollback eases this workflow by automatically triggering a rollback when a
+[critical alert](../../operations/incident_management/alerts.md)
+is detected. GitLab selects and redeploys the most recent successful deployment.
+
+Limitations of GitLab Auto Rollback:
+
+- The rollback is skipped if a deployment is running when the alert is detected.
+- A rollback can happen only once in three minutes. If multiple alerts are detected at once, only
+  one rollback is performed.
+
+GitLab Auto Rollback is turned off by default. To turn it on:
+
+1. Visit **Project > Settings > CI/CD > Automatic deployment rollbacks**.
+1. Select the checkbox for **Enable automatic rollbacks**.
+1. Click **Save changes**.
+
 ### Monitoring environments
 
 If you have enabled [Prometheus for monitoring system and response metrics](../../user/project/integrations/prometheus.md),

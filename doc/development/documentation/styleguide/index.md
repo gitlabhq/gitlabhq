@@ -129,7 +129,7 @@ of GitLab more efficient.
 
 New information that would be useful toward the future usage or troubleshooting
 of GitLab should not be written directly in a forum or other messaging system,
-but added to a documentation MR and then referenced, as described above. Note
+but added to a documentation merge request and then referenced, as described above. Note
 that among any other documentation changes, you can either:
 
 - Add a [Troubleshooting section](#troubleshooting) to a doc if none exists.
@@ -141,7 +141,7 @@ the documentation helps others efficiently accomplish
 tasks and solve problems.
 
 If you have questions when considering, authoring, or editing documentation, ask
-the Technical Writing team on Slack in `#docs` or in GitLab by mentioning the
+the Technical Writing team. They're available on Slack in `#docs` or in GitLab by mentioning the
 writer for the applicable [DevOps stage](https://about.gitlab.com/handbook/product/product-categories/#devops-stages).
 Otherwise, forge ahead with your best effort. It does not need to be perfect;
 the team is happy to review and improve upon your content. Review the
@@ -160,7 +160,7 @@ Markdown rendering engine. For a complete Kramdown reference, see the
 [GitLab Markdown Kramdown Guide](https://about.gitlab.com/handbook/markdown-guide/).
 
 The [`gitlab-kramdown`](https://gitlab.com/gitlab-org/gitlab_kramdown) Ruby gem
-will support all [GitLab Flavored Markdown](../../../user/markdown.md) in the future, which is
+plans to support all [GitLab Flavored Markdown](../../../user/markdown.md) in the future, which is
 all Markdown supported for display in the GitLab application itself. For now, use
 regular Markdown, following the rules in the linked style guide.
 
@@ -256,7 +256,7 @@ Put files for a specific product area into the related folder:
 Refer to the following items when working with directories and files:
 
 1. When you create a new directory, always start with an `index.md` file.
-   Don't use another file name and _do not_ create `README.md` files.
+   Don't use another filename and _do not_ create `README.md` files.
 1. _Do not_ use special characters and spaces, or capital letters in file
    names, directory names, branch names, and anything that generates a path.
 1. When creating or renaming a file or directory and it has more than one word
@@ -304,9 +304,9 @@ Do not include the same information in multiple places.
 
 ### References across documents
 
-- Give each folder an `index.md` page that introduces the topic, introduces the
-  pages within, and links to the pages within (including to the index pages of
-  any next-level subpaths).
+- Give each folder an `index.md` page that introduces the topic, and both introduces
+  and links to the child pages, including to the index pages of
+  any next-level sub-paths.
 - To ensure discoverability, ensure each new or renamed doc is linked from its
   higher-level index page and other related pages.
 - When making reference to other GitLab products and features, link to their
@@ -540,8 +540,8 @@ tenses, words, and phrases:
 - Don't overuse "that". In many cases, you can remove "that" from a sentence
   and improve readability.
 - Avoid use of the future tense:
-  - Instead of "after you execute this command, GitLab will display the
-    result", use "after you execute this command, GitLab displays the result".
+  - Instead of `after you execute this command, GitLab will display the result`, use
+    `after you execute this command, GitLab displays the result`.
   - Only use the future tense to convey when the action or result actually
     occurs at a future time.
 - Don't use slashes to clump different words together or as a replacement for
@@ -565,7 +565,7 @@ tenses, words, and phrases:
 <!-- vale gitlab.LatinTerms = YES -->
 - Avoid using the word *currently* when talking about the product or its
   features. The documentation describes the product as it is, and not as it
-  will be at some indeterminate point in the future.
+  is planned to be in some indeterminate point in the future.
 - Avoid using the word *scalability* when talking about increasing GitLab
   performance for additional users. The words scale or scaling are sometimes
   acceptable, but references to increasing GitLab performance for additional
@@ -690,12 +690,12 @@ cp <your_source_directory> <your_destination_directory>
 Use the HTML `<kbd>` tag when referring to keystroke presses. For example:
 
 ```plaintext
-To stop the command, press <kbd>Ctrl</kbd>+<kbd>C</kbd>.
+To stop the command, press <kbd>Control</kbd>+<kbd>C</kbd>.
 ```
 
 When the docs are generated, the output is:
 
-To stop the command, press <kbd>Ctrl</kbd>+<kbd>C</kbd>.
+To stop the command, press <kbd>Control</kbd>+<kbd>C</kbd>.
 
 ## Lists
 
@@ -732,7 +732,7 @@ This is a list of available features:
 
 - Use dashes (`-`) for unordered lists instead of asterisks (`*`).
 - Prefix `1.` to every item in an ordered list. When rendered, the list items
-  will appear with sequential numbering.
+  display with sequential numbering.
 
 ### Punctuation
 
@@ -805,7 +805,7 @@ indentation:
 - Unordered list item 3
 
   ```plaintext
-  a codeblock that will next inside list item 3
+  a code block that nests inside list item 3
   ```
 
 - Unordered list item 4
@@ -828,7 +828,7 @@ For ordered lists, use three spaces for each level of indentation:
 1. Ordered list item 3
 
    ```plaintext
-   a codeblock that will next inside list item 3
+   a code block that nests inside list item 3
    ```
 
 1. Ordered list item 4
@@ -863,7 +863,7 @@ that's best described by a matrix, tables are the best choice.
 
 ### Creation guidelines
 
-Due to accessibility and scannability requirements, tables should not have any
+To keep tables accessible and scannable, tables should not have any
 empty cells. If there is no otherwise meaningful value for a cell, consider entering
 *N/A* (for 'not applicable') or *none*.
 
@@ -909,7 +909,7 @@ For other punctuation rules, refer to the
 ## Headings
 
 - Add _only one H1_ in each document, by adding `#` at the beginning of
-  it (when using Markdown). The `h1` will be the document `<title>`.
+  it (when using Markdown). The `h1` becomes the document `<title>`.
 - Start with an `h2` (`##`), and respect the order `h2` > `h3` > `h4` > `h5` > `h6`.
   Never skip the hierarchy level, such as `h2` > `h4`
 - Avoid putting numbers in headings. Numbers shift, hence documentation anchor
@@ -974,7 +974,7 @@ sure to replace it with the new one.
 Important:
 
 - Avoid crosslinking documentation to headings unless you need to link to a
-  specific section of the document. This will avoid breaking anchors in the
+  specific section of the document. This avoids breaking anchors in the
   future in case the heading is changed.
 - If possible, avoid changing headings since they're not only linked internally.
   There are various links to GitLab documentation on the internet, such as
@@ -1023,7 +1023,7 @@ documentation in separate projects (for example, linking to Omnibus documentatio
 from GitLab documentation), you must use absolute URLs.
 
 Do not use absolute URLs like `https://docs.gitlab.com/ee/index.html` to
-crosslink to other documentation within the same project. Use relative links to
+cross-link to other documentation within the same project. Use relative links to
 the file, like `../index.md`. (These are converted to HTML when the site is
 rendered.)
 
@@ -1052,7 +1052,7 @@ To link to internal documentation:
 
   Do: `../../geo/replication/troubleshooting.md`
 
-- Always add the file name `file.md` at the end of the link with the `.md`
+- Always add the filename `file.md` at the end of the link with the `.md`
   extension, not `.html`.
 
   Don't:
@@ -1121,7 +1121,7 @@ Don't link directly to:
 - Project features that require [special permissions](../../../user/permissions.md)
   to view.
 
-These will fail for:
+These fail for:
 
 - Those without sufficient permissions.
 - Automated link checkers.
@@ -1205,9 +1205,9 @@ When you take screenshots:
 
 ### Save the image
 
-- Save the image with a lowercase file name that's descriptive of the feature
+- Save the image with a lowercase filename that's descriptive of the feature
   or concept in the image. If the image is of the GitLab interface, append the
-  GitLab version to the file name, based on the following format:
+  GitLab version to the filename, based on the following format:
   `image_name_vX_Y.png`. For example, for a screenshot taken from the pipelines
   page of GitLab 11.1, a valid name is `pipelines_v11_1.png`. If you're adding an
   illustration that doesn't include parts of the user interface, add the release
@@ -1217,10 +1217,10 @@ When you take screenshots:
   the `.md` document that you're working on is located.
 - Consider using PNG images instead of JPEG.
 - [Compress all PNG images](#compress-images).
-- Compress gifs with <https://ezgif.com/optimize> or similar tool.
+- Compress GIFs with <https://ezgif.com/optimize> or similar tool.
 - Images should be used (only when necessary) to _illustrate_ the description
   of a process, not to _replace_ it.
-- Max image size: 100KB (gifs included).
+- Max image size: 100KB (GIFs included).
 - See also how to link and embed [videos](#videos) to illustrate the
   documentation.
 
@@ -1360,7 +1360,7 @@ hidden on the documentation site, but is displayed by `/help`.
   and leave a blank line between the command and the output.
 - When providing a command without output, don't prefix the shell command with `$`.
 - If you need to include triple backticks inside a code block, use four backticks
-  for the codeblock fences instead of three.
+  for the code block fences instead of three.
 - For regular fenced code blocks, always use a highlighting class corresponding to
   the language for better readability. Examples:
 
@@ -1397,7 +1397,7 @@ of available language classes:
 | `graphql`               |                                                                              |
 | `haml`                  |                                                                              |
 | `html`                  |                                                                              |
-| `ini`                   | For some simple config files that are not in TOML format.                    |
+| `ini`                   | For some simple configuration files that are not in TOML format.             |
 | `javascript`            | Alias `js`.                                                                  |
 | `json`                  |                                                                              |
 | `markdown`              | Alias: `md`.                                                                 |
@@ -1405,7 +1405,7 @@ of available language classes:
 | `nginx`                 |                                                                              |
 | `perl`                  |                                                                              |
 | `php`                   |                                                                              |
-| `plaintext`             | Examples with no defined language, such as output from shell commands or API calls. If a codeblock has no language, it defaults to `plaintext`. Alias: `text`. |
+| `plaintext`             | Examples with no defined language, such as output from shell commands or API calls. If a code block has no language, it defaults to `plaintext`. Alias: `text`.|
 | `prometheus`            | Prometheus configuration examples.                                           |
 | `python`                |                                                                              |
 | `ruby`                  | Alias: `rb`.                                                                 |
@@ -1435,7 +1435,7 @@ Usage examples:
   Example: `**{tanuki}**` renders as: **{tanuki}**.
 - Icon with custom size: `**{icon-name, size}**`
 
-  Available sizes (in px): 8, 10, 12, 14, 16, 18, 24, 32, 48, and 72
+  Available sizes (in pixels): 8, 10, 12, 14, 16, 18, 24, 32, 48, and 72
 
   Example: `**{tanuki, 24}**` renders as: **{tanuki, 24}**.
 - Icon with custom size and class: `**{icon-name, size, class-name}**`.
@@ -1488,7 +1488,7 @@ When you need to call special attention to particular sentences, use the
 following markup to create highlighted alert boxes.
 
 Alert boxes work for one paragraph only. Multiple paragraphs, lists, and headers
-won't render correctly. For multiple lines, use [blockquotes](#blockquotes)
+don't render correctly. For multiple lines, use [blockquotes](#blockquotes)
 instead.
 
 Alert boxes render only on the GitLab documentation site (<https://docs.gitlab.com>).
@@ -1609,7 +1609,7 @@ documentation authors on agreed styles and usage of terms.
 ### Merge requests (MRs)
 
 Merge requests allow you to exchange changes you made to source code and
-collaborate with other people on the same project. You'll see this term used in
+collaborate with other people on the same project. This term is used in
 the following ways:
 
 - Use lowercase _merge requests_ regardless of whether referring to the feature
@@ -1782,7 +1782,7 @@ For example:
 
 ### Removing versions after each major release
 
-Whenever a major GitLab release occurs, we will remove all version references
+Whenever a major GitLab release occurs, we remove all version references
 to now-unsupported versions of GitLab. Note that this includes the removal of
 specific instructions for users of non-supported GitLab versions. For example,
 if we're currently supporting GitLab versions 11.x through 13.x, special
@@ -1854,12 +1854,12 @@ self-managed instances. If so, include the relevant "`TIER` ONLY"
 
 #### Product badge display behavior
 
-When using the tier markup with headers, the documentation page will display the
+When using the tier markup with headers, the documentation page displays the
 full tier badge with the header line.
 
 You can also use the tier markup with paragraphs, list items, and table cells.
-For these cases, the tier mention will be represented by an orange info icon
-**{information}** that will display the tiers when visitors point to the icon.
+For these cases, the tier mention is represented by an information icon
+that displays the tiers when visitors point to the icon.
 For example:
 
 - `**(STARTER)**` displays as **(STARTER)**
@@ -1869,9 +1869,9 @@ For example:
 #### How it works
 
 Introduced by [!244](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/244),
-the special markup `**(STARTER)**` will generate a `span` element to trigger the
+the special markup `**(STARTER)**` generates a `span` element to trigger the
 badges and tooltips (`<span class="badge-trigger starter">`). When the keyword
-_only_ is added, the corresponding GitLab.com badge will not be displayed.
+_only_ is added, the corresponding GitLab.com badge isn't displayed.
 
 ## Specific sections
 
@@ -1883,7 +1883,7 @@ sections are outlined in this section.
 There are many cases that a restart/reconfigure of GitLab is required. To avoid
 duplication, link to the special document that can be found in
 [`doc/administration/restart_gitlab.md`](../../../administration/restart_gitlab.md).
-Usually the text will read like:
+Usually the text reads like:
 
 ```markdown
 Save the file and [reconfigure GitLab](../../../administration/restart_gitlab.md)
@@ -1899,8 +1899,8 @@ If the document you are editing resides in a place other than the GitLab CE/EE
 
 **Ruby:**
 In [step 2 of the installation guide](../../../install/installation.md#2-ruby),
-we install Ruby from source. Whenever there is a new version that needs to
-be updated, remember to change it throughout the codeblock and also replace
+we install Ruby from source. When a version update is needed,
+remember to change it throughout the code block and also replace
 the sha256sum (it can be found in the [downloads page](https://www.ruby-lang.org/en/downloads/)
 of the Ruby website).
 
@@ -1954,7 +1954,7 @@ In this case:
   methods.
 - The code blocks are indented one or more spaces under the list item to render
   correctly.
-- Different highlighting languages are used for each config in the code block.
+- Different highlighting languages are used for each configuration in the code block.
 - The [GitLab Restart](#gitlab-restart) section is used to explain a required
   restart or reconfigure of GitLab.
 
