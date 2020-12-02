@@ -115,7 +115,7 @@ The following documentation relates to the DevOps **Plan** stage:
 
 | Plan topics                                                                  | Description                                                                                                                    |
 |:-----------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------|
-| [Burndown charts](user/project/milestones/burndown_charts.md) **(STARTER)**  | Watch your project's progress throughout a specific milestone.                                                                 |
+| [Burndown charts](user/project/milestones/burndown_and_burnup_charts.md) **(STARTER)** | Watch your project's progress throughout a specific milestone.                                                       |
 | [Discussions](user/discussions/index.md)                                     | Threads, comments, and resolvable threads in issues, commits, and merge requests.                                              |
 | [Due dates](user/project/issues/due_dates.md)                                | Keep track of issue deadlines.                                                                                                 |
 | [Epics](user/group/epics/index.md) **(ULTIMATE)**                            | Tracking groups of issues that share a theme.                                                                                  |

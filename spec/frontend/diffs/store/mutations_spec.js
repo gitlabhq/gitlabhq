@@ -892,4 +892,18 @@ describe('DiffsStoreMutations', () => {
       expect(state.showSuggestPopover).toBe(false);
     });
   });
+
+  describe('SET_FILE_BY_FILE', () => {
+    it.each`
+      value    | opposite
+      ${true}  | ${false}
+      ${false} | ${true}
+    `('sets viewDiffsFileByFile to $value', ({ value, opposite }) => {
+      const state = { viewDiffsFileByFile: opposite };
+
+      mutations[types.SET_FILE_BY_FILE](state, value);
+
+      expect(state.viewDiffsFileByFile).toBe(value);
+    });
+  });
 });

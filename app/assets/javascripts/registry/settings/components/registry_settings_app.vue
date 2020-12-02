@@ -1,6 +1,6 @@
 <script>
 import { GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
-import { isEqual, get } from 'lodash';
+import { isEqual, get, isEmpty } from 'lodash';
 import expirationPolicyQuery from '../graphql/queries/get_expiration_policy.graphql';
 import { FETCH_SETTINGS_ERROR_MESSAGE } from '../../shared/constants';
 
@@ -60,6 +60,9 @@ export default {
       return this.isAdmin ? UNAVAILABLE_ADMIN_FEATURE_TEXT : UNAVAILABLE_USER_FEATURE_TEXT;
     },
     isEdited() {
+      if (isEmpty(this.containerExpirationPolicy) && isEmpty(this.workingCopy)) {
+        return false;
+      }
       return !isEqual(this.containerExpirationPolicy, this.workingCopy);
     },
   },

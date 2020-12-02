@@ -21,12 +21,7 @@ export const mapComputedToEvent = (list, root) => {
   return result;
 };
 
-export const olderThanTranslationGenerator = variable =>
-  n__(
-    '%d day until tags are automatically removed',
-    '%d days until tags are automatically removed',
-    variable,
-  );
+export const olderThanTranslationGenerator = variable => n__('%d day', '%d days', variable);
 
 export const keepNTranslationGenerator = variable =>
   n__('%d tag per image name', '%d tags per image name', variable);

@@ -88,7 +88,7 @@ module HasRepository
 
     group_branch_default_name = group&.default_branch_name if respond_to?(:group)
 
-    group_branch_default_name || Gitlab::CurrentSettings.default_branch_name
+    (group_branch_default_name || Gitlab::CurrentSettings.default_branch_name).presence
   end
 
   def reload_default_branch

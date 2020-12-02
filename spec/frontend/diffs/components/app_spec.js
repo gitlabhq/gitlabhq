@@ -17,10 +17,14 @@ import axios from '~/lib/utils/axios_utils';
 import * as urlUtils from '~/lib/utils/url_utility';
 import diffsMockData from '../mock_data/merge_request_diffs';
 
+import { EVT_VIEW_FILE_BY_FILE } from '~/diffs/constants';
+
+import eventHub from '~/diffs/event_hub';
+
 const mergeRequestDiff = { version_index: 1 };
 const TEST_ENDPOINT = `${TEST_HOST}/diff/endpoint`;
-const COMMIT_URL = '[BASE URL]/OLD';
-const UPDATED_COMMIT_URL = '[BASE URL]/NEW';
+const COMMIT_URL = `${TEST_HOST}/COMMIT/OLD`;
+const UPDATED_COMMIT_URL = `${TEST_HOST}/COMMIT/NEW`;
 
 function getCollapsedFilesWarning(wrapper) {
   return wrapper.find(CollapsedFilesWarning);
@@ -61,7 +65,7 @@ describe('diffs/components/app', () => {
         changesEmptyStateIllustration: '',
         dismissEndpoint: '',
         showSuggestPopover: true,
-        viewDiffsFileByFile: false,
+        fileByFileUserPreference: false,
         ...props,
       },
       provide,
@@ -700,11 +704,13 @@ describe('diffs/components/app', () => {
   });
 
   describe('file-by-file', () => {
-    it('renders a single diff', () => {
-      createComponent({ viewDiffsFileByFile: true }, ({ state }) => {
+    it('renders a single diff', async () => {
+      createComponent({ fileByFileUserPreference: true }, ({ state }) => {
         state.diffs.diffFiles.push({ file_hash: '123' });
         state.diffs.diffFiles.push({ file_hash: '312' });
       });
+
+      await wrapper.vm.$nextTick();
 
       expect(wrapper.findAll(DiffFile).length).toBe(1);
     });
@@ -713,30 +719,36 @@ describe('diffs/components/app', () => {
       const fileByFileNav = () => wrapper.find('[data-testid="file-by-file-navigation"]');
       const paginator = () => fileByFileNav().find(GlPagination);
 
-      it('sets previous button as disabled', () => {
-        createComponent({ viewDiffsFileByFile: true }, ({ state }) => {
+      it('sets previous button as disabled', async () => {
+        createComponent({ fileByFileUserPreference: true }, ({ state }) => {
           state.diffs.diffFiles.push({ file_hash: '123' }, { file_hash: '312' });
         });
+
+        await wrapper.vm.$nextTick();
 
         expect(paginator().attributes('prevpage')).toBe(undefined);
         expect(paginator().attributes('nextpage')).toBe('2');
       });
 
-      it('sets next button as disabled', () => {
-        createComponent({ viewDiffsFileByFile: true }, ({ state }) => {
+      it('sets next button as disabled', async () => {
+        createComponent({ fileByFileUserPreference: true }, ({ state }) => {
           state.diffs.diffFiles.push({ file_hash: '123' }, { file_hash: '312' });
           state.diffs.currentDiffFileId = '312';
         });
+
+        await wrapper.vm.$nextTick();
 
         expect(paginator().attributes('prevpage')).toBe('1');
         expect(paginator().attributes('nextpage')).toBe(undefined);
       });
 
-      it("doesn't display when there's fewer than 2 files", () => {
-        createComponent({ viewDiffsFileByFile: true }, ({ state }) => {
+      it("doesn't display when there's fewer than 2 files", async () => {
+        createComponent({ fileByFileUserPreference: true }, ({ state }) => {
           state.diffs.diffFiles.push({ file_hash: '123' });
           state.diffs.currentDiffFileId = '123';
         });
+
+        await wrapper.vm.$nextTick();
 
         expect(fileByFileNav().exists()).toBe(false);
       });
@@ -748,10 +760,12 @@ describe('diffs/components/app', () => {
       `(
         'it calls navigateToDiffFileIndex with $index when $link is clicked',
         async ({ currentDiffFileId, targetFile }) => {
-          createComponent({ viewDiffsFileByFile: true }, ({ state }) => {
+          createComponent({ fileByFileUserPreference: true }, ({ state }) => {
             state.diffs.diffFiles.push({ file_hash: '123' }, { file_hash: '312' });
             state.diffs.currentDiffFileId = currentDiffFileId;
           });
+
+          await wrapper.vm.$nextTick();
 
           jest.spyOn(wrapper.vm, 'navigateToDiffFileIndex');
 
@@ -760,6 +774,25 @@ describe('diffs/components/app', () => {
           await wrapper.vm.$nextTick();
 
           expect(wrapper.vm.navigateToDiffFileIndex).toHaveBeenCalledWith(targetFile - 1);
+        },
+      );
+    });
+
+    describe('control via event stream', () => {
+      it.each`
+        setting
+        ${true}
+        ${false}
+      `(
+        'triggers the action with the new fileByFile setting - $setting - when the event with that setting is received',
+        async ({ setting }) => {
+          createComponent();
+          await wrapper.vm.$nextTick();
+
+          eventHub.$emit(EVT_VIEW_FILE_BY_FILE, { setting });
+          await wrapper.vm.$nextTick();
+
+          expect(store.state.diffs.viewDiffsFileByFile).toBe(setting);
         },
       );
     });

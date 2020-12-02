@@ -1,0 +1,5 @@
+---
+title: Manually trigger pipelines correctly when branches and tags have the same name. Separate tags and branches in trigger pipeline form.
+merge_request: 48142
+author:
+type: fixed

@@ -11,10 +11,7 @@ describe('Utils', () => {
         [{ variable: 1 }, { variable: 2 }],
         olderThanTranslationGenerator,
       );
-      expect(result).toEqual([
-        { variable: 1, label: '1 day until tags are automatically removed' },
-        { variable: 2, label: '2 days until tags are automatically removed' },
-      ]);
+      expect(result).toEqual([{ variable: 1, label: '1 day' }, { variable: 2, label: '2 days' }]);
     });
   });
 

@@ -1,4 +1,14 @@
-export const mockRefs = ['master', 'branch-1', 'tag-1'];
+export const mockBranches = [
+  { shortName: 'master', fullName: 'refs/heads/master' },
+  { shortName: 'branch-1', fullName: 'refs/heads/branch-1' },
+  { shortName: 'branch-2', fullName: 'refs/heads/branch-2' },
+];
+
+export const mockTags = [
+  { shortName: '1.0.0', fullName: 'refs/tags/1.0.0' },
+  { shortName: '1.1.0', fullName: 'refs/tags/1.1.0' },
+  { shortName: '1.2.0', fullName: 'refs/tags/1.2.0' },
+];
 
 export const mockParams = {
   refParam: 'tag-1',
@@ -31,3 +41,7 @@ export const mockError = {
   ],
   total_warnings: 7,
 };
+
+export const mockBranchRefs = ['master', 'dev', 'release'];
+
+export const mockTagRefs = ['1.0.0', '1.1.0', '1.2.0'];

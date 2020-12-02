@@ -4,7 +4,6 @@ import createMockApollo from 'jest/helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import Tracking from '~/tracking';
 import component from '~/registry/settings/components/settings_form.vue';
-import expirationPolicyFields from '~/registry/shared/components/expiration_policy_fields.vue';
 import updateContainerExpirationPolicyMutation from '~/registry/settings/graphql/mutations/update_container_expiration_policy.graphql';
 import expirationPolicyQuery from '~/registry/settings/graphql/queries/get_expiration_policy.graphql';
 import {
@@ -39,9 +38,15 @@ describe('Settings Form', () => {
   };
 
   const findForm = () => wrapper.find({ ref: 'form-element' });
-  const findFields = () => wrapper.find(expirationPolicyFields);
-  const findCancelButton = () => wrapper.find({ ref: 'cancel-button' });
-  const findSaveButton = () => wrapper.find({ ref: 'save-button' });
+
+  const findCancelButton = () => wrapper.find('[data-testid="cancel-button"');
+  const findSaveButton = () => wrapper.find('[data-testid="save-button"');
+  const findEnableToggle = () => wrapper.find('[data-testid="enable-toggle"]');
+  const findCadenceDropdown = () => wrapper.find('[data-testid="cadence-dropdown"]');
+  const findKeepNDropdown = () => wrapper.find('[data-testid="keep-n-dropdown"]');
+  const findKeepRegexTextarea = () => wrapper.find('[data-testid="keep-regex-textarea"]');
+  const findOlderThanDropdown = () => wrapper.find('[data-testid="older-than-dropdown"]');
+  const findRemoveRegexTextarea = () => wrapper.find('[data-testid="remove-regex-textarea"]');
 
   const mountComponent = ({
     props = defaultProps,
@@ -109,44 +114,135 @@ describe('Settings Form', () => {
     wrapper.destroy();
   });
 
-  describe('data binding', () => {
-    it('v-model change update the settings property', () => {
+  describe.each`
+    model              | finder                     | fieldName         | type          | defaultValue
+    ${'enabled'}       | ${findEnableToggle}        | ${'Enable'}       | ${'toggle'}   | ${false}
+    ${'cadence'}       | ${findCadenceDropdown}     | ${'Cadence'}      | ${'dropdown'} | ${'EVERY_DAY'}
+    ${'keepN'}         | ${findKeepNDropdown}       | ${'Keep N'}       | ${'dropdown'} | ${'TEN_TAGS'}
+    ${'nameRegexKeep'} | ${findKeepRegexTextarea}   | ${'Keep Regex'}   | ${'textarea'} | ${''}
+    ${'olderThan'}     | ${findOlderThanDropdown}   | ${'OlderThan'}    | ${'dropdown'} | ${'NINETY_DAYS'}
+    ${'nameRegex'}     | ${findRemoveRegexTextarea} | ${'Remove regex'} | ${'textarea'} | ${''}
+  `('$fieldName', ({ model, finder, type, defaultValue }) => {
+    it('matches snapshot', () => {
       mountComponent();
-      findFields().vm.$emit('input', { newValue: 'foo' });
-      expect(wrapper.emitted('input')).toEqual([['foo']]);
+
+      expect(finder().element).toMatchSnapshot();
     });
 
-    it('v-model change update the api error property', () => {
-      const apiErrors = { baz: 'bar' };
-      mountComponent({ data: { apiErrors } });
-      expect(findFields().props('apiErrors')).toEqual(apiErrors);
-      findFields().vm.$emit('input', { newValue: 'foo', modified: 'baz' });
-      expect(findFields().props('apiErrors')).toEqual({});
+    it('input event triggers a model update', () => {
+      mountComponent();
+
+      finder().vm.$emit('input', 'foo');
+      expect(wrapper.emitted('input')[0][0]).toMatchObject({
+        [model]: 'foo',
+      });
     });
 
     it('shows the default option when none are selected', () => {
       mountComponent({ props: { value: {} } });
-      expect(findFields().props('value')).toEqual({
-        cadence: 'EVERY_DAY',
-        keepN: 'TEN_TAGS',
-        olderThan: 'NINETY_DAYS',
-      });
+      expect(finder().props('value')).toEqual(defaultValue);
     });
+
+    if (type !== 'toggle') {
+      it.each`
+        isLoading | mutationLoading | enabledValue
+        ${false}  | ${false}        | ${false}
+        ${true}   | ${false}        | ${false}
+        ${true}   | ${true}         | ${true}
+        ${false}  | ${true}         | ${true}
+        ${false}  | ${false}        | ${false}
+      `(
+        'is disabled when is loading is $isLoading, mutationLoading is $mutationLoading and enabled is $enabledValue',
+        ({ isLoading, mutationLoading, enabledValue }) => {
+          mountComponent({
+            props: { isLoading, value: { enabled: enabledValue } },
+            data: { mutationLoading },
+          });
+          expect(finder().props('disabled')).toEqual(true);
+        },
+      );
+    } else {
+      it.each`
+        isLoading | mutationLoading
+        ${true}   | ${false}
+        ${true}   | ${true}
+        ${false}  | ${true}
+      `(
+        'is disabled when is loading is $isLoading and mutationLoading is $mutationLoading',
+        ({ isLoading, mutationLoading }) => {
+          mountComponent({
+            props: { isLoading, value: {} },
+            data: { mutationLoading },
+          });
+          expect(finder().props('disabled')).toEqual(true);
+        },
+      );
+    }
+
+    if (type === 'textarea') {
+      it('input event updates the api error property', async () => {
+        const apiErrors = { [model]: 'bar' };
+        mountComponent({ data: { apiErrors } });
+
+        finder().vm.$emit('input', 'foo');
+        expect(finder().props('error')).toEqual('bar');
+
+        await wrapper.vm.$nextTick();
+
+        expect(finder().props('error')).toEqual('');
+      });
+
+      it('validation event updates buttons disabled state', async () => {
+        mountComponent();
+
+        expect(findSaveButton().props('disabled')).toBe(false);
+
+        finder().vm.$emit('validation', false);
+
+        await wrapper.vm.$nextTick();
+
+        expect(findSaveButton().props('disabled')).toBe(true);
+      });
+    }
+
+    if (type === 'dropdown') {
+      it('has the correct formOptions', () => {
+        mountComponent();
+        expect(finder().props('formOptions')).toEqual(wrapper.vm.$options.formOptions[model]);
+      });
+    }
   });
 
   describe('form', () => {
     describe('form reset event', () => {
-      beforeEach(() => {
+      it('calls the appropriate function', () => {
         mountComponent();
 
         findForm().trigger('reset');
-      });
-      it('calls the appropriate function', () => {
+
         expect(wrapper.emitted('reset')).toEqual([[]]);
       });
 
       it('tracks the reset event', () => {
+        mountComponent();
+
+        findForm().trigger('reset');
+
         expect(Tracking.event).toHaveBeenCalledWith(undefined, 'reset_form', trackingPayload);
+      });
+
+      it('resets the errors objects', async () => {
+        mountComponent({
+          data: { apiErrors: { nameRegex: 'bar' }, localErrors: { nameRegexKeep: false } },
+        });
+
+        findForm().trigger('reset');
+
+        await wrapper.vm.$nextTick();
+
+        expect(findKeepRegexTextarea().props('error')).toBe('');
+        expect(findRemoveRegexTextarea().props('error')).toBe('');
+        expect(findSaveButton().props('disabled')).toBe(false);
       });
     });
 
@@ -209,6 +305,7 @@ describe('Settings Form', () => {
             });
           });
         });
+
         describe('global errors', () => {
           it('shows an error', async () => {
             const handlers = mountComponentWithApollo({
@@ -230,7 +327,7 @@ describe('Settings Form', () => {
               graphQLErrors: [
                 {
                   extensions: {
-                    problems: [{ path: ['name'], message: 'baz' }],
+                    problems: [{ path: ['nameRegexKeep'], message: 'baz' }],
                   },
                 },
               ],
@@ -241,7 +338,7 @@ describe('Settings Form', () => {
             await waitForPromises();
             await wrapper.vm.$nextTick();
 
-            expect(findFields().props('apiErrors')).toEqual({ name: 'baz' });
+            expect(findKeepRegexTextarea().props('error')).toEqual('baz');
           });
         });
       });
@@ -257,23 +354,21 @@ describe('Settings Form', () => {
       });
 
       it.each`
-        isLoading | isEdited | mutationLoading | isDisabled
-        ${true}   | ${true}  | ${true}         | ${true}
-        ${false}  | ${true}  | ${true}         | ${true}
-        ${false}  | ${false} | ${true}         | ${true}
-        ${true}   | ${false} | ${false}        | ${true}
-        ${false}  | ${false} | ${false}        | ${true}
-        ${false}  | ${true}  | ${false}        | ${false}
+        isLoading | isEdited | mutationLoading
+        ${true}   | ${true}  | ${true}
+        ${false}  | ${true}  | ${true}
+        ${false}  | ${false} | ${true}
+        ${true}   | ${false} | ${false}
+        ${false}  | ${false} | ${false}
       `(
-        'when isLoading is $isLoading and isEdited is $isEdited and mutationLoading is $mutationLoading is $isDisabled that the is disabled',
-        ({ isEdited, isLoading, mutationLoading, isDisabled }) => {
+        'when isLoading is $isLoading, isEdited is $isEdited and mutationLoading is $mutationLoading is disabled',
+        ({ isEdited, isLoading, mutationLoading }) => {
           mountComponent({
             props: { ...defaultProps, isEdited, isLoading },
             data: { mutationLoading },
           });
 
-          const expectation = isDisabled ? 'true' : undefined;
-          expect(findCancelButton().attributes('disabled')).toBe(expectation);
+          expect(findCancelButton().props('disabled')).toBe(true);
         },
       );
     });
@@ -284,24 +379,24 @@ describe('Settings Form', () => {
 
         expect(findSaveButton().attributes('type')).toBe('submit');
       });
+
       it.each`
-        isLoading | fieldsAreValid | mutationLoading | isDisabled
-        ${true}   | ${true}        | ${true}         | ${true}
-        ${false}  | ${true}        | ${true}         | ${true}
-        ${false}  | ${false}       | ${true}         | ${true}
-        ${true}   | ${false}       | ${false}        | ${true}
-        ${false}  | ${false}       | ${false}        | ${true}
-        ${false}  | ${true}        | ${false}        | ${false}
+        isLoading | localErrors       | mutationLoading
+        ${true}   | ${{}}             | ${true}
+        ${true}   | ${{}}             | ${false}
+        ${false}  | ${{}}             | ${true}
+        ${false}  | ${{ foo: false }} | ${true}
+        ${true}   | ${{ foo: false }} | ${false}
+        ${false}  | ${{ foo: false }} | ${false}
       `(
-        'when isLoading is $isLoading and fieldsAreValid is $fieldsAreValid and mutationLoading is $mutationLoading is $isDisabled that the is disabled',
-        ({ fieldsAreValid, isLoading, mutationLoading, isDisabled }) => {
+        'when isLoading is $isLoading, localErrors is $localErrors and mutationLoading is $mutationLoading is disabled',
+        ({ localErrors, isLoading, mutationLoading }) => {
           mountComponent({
             props: { ...defaultProps, isLoading },
-            data: { mutationLoading, fieldsAreValid },
+            data: { mutationLoading, localErrors },
           });
 
-          const expectation = isDisabled ? 'true' : undefined;
-          expect(findSaveButton().attributes('disabled')).toBe(expectation);
+          expect(findSaveButton().props('disabled')).toBe(true);
         },
       );
 

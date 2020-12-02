@@ -92,6 +92,17 @@ From there, when reviewing merge requests' **Changes** tab, you will see only on
 
 ![File-by-file diff navigation](img/file_by_file_v13_2.png)
 
+From [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/issues/233898) onwards, if you want to change
+this behavior, you can do so from your **User preferences** (as explained above) or directly in a
+merge request:
+
+1. Go to the merge request's **Changes** tab.
+1. Click the cog icon (**{settings}**) to reveal the merge request's settings dropdown.
+1. Select or unselect the checkbox **Show one file at a time** to change the setting accordingly.
+
+This change overrides the choice you made in your user preferences and persists until you clear your
+browser's cookies or change this behavior again.
+
 #### Enable or disable file-by-file diff navigation **(CORE ONLY)**
 
 File-by-file diff navigation is under development but ready for production use. It is

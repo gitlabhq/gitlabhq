@@ -86,6 +86,7 @@ label:
 - issues
 - merge_requests
 - priorities
+- epic_board_labels
 milestone:
 - group
 - project

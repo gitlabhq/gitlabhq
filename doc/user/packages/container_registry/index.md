@@ -513,24 +513,24 @@ You can create a cleanup policy in [the API](#use-the-cleanup-policy-api) or the
 To create a cleanup policy in the UI:
 
 1. For your project, go to **Settings > CI/CD**.
-1. Expand the **Cleanup policy for tags** section.
+1. Expand the **Clean up image tags** section.
 1. Complete the fields.
 
    | Field                                                                     | Description                                                                                                       |
    |---------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|
-   | **Cleanup policy**                                                        | Turn the policy on or off.                                                                                        |
-   | **Expiration interval**                                                   | How long tags are exempt from being deleted.                                                                      |
-   | **Expiration schedule**                                                   | How often the policy should run.                                                                                  |
-   | **Number of tags to retain**                                              | How many tags to _always_ keep for each image.                                                                    |
-   | **Tags with names matching this regex pattern expire:**              | The regex pattern that determines which tags to remove. This value cannot be blank. For all tags, use `.*`. See other [regex pattern examples](#regex-pattern-examples). |
-   | **Tags with names matching this regex pattern are preserved:**        | The regex pattern that determines which tags to preserve. The `latest` tag is always preserved. For all tags, use `.*`. See other [regex pattern examples](#regex-pattern-examples). |
+   | **Toggle** | Turn the policy on or off. |
+   | **Run cleanup** | How often the policy should run. |
+   | **Keep the most recent** | How many tags to _always_ keep for each image. |
+   | **Keep tags matching** | The regex pattern that determines which tags to preserve. The `latest` tag is always preserved. For all tags, use `.*`. See other [regex pattern examples](#regex-pattern-examples). |
+   | **Remove tags older than** | Remove only tags older than X days. |
+   | **Remove tags matching**  | The regex pattern that determines which tags to remove. This value cannot be blank. For all tags, use `.*`. See other [regex pattern examples](#regex-pattern-examples). |
 
-1. Click **Set cleanup policy**.
+1. Click **Save**.
 
 Depending on the interval you chose, the policy is scheduled to run.
 
 NOTE: **Note:**
-If you edit the policy and click **Set cleanup policy** again, the interval is reset.
+If you edit the policy and click **Save** again, the interval is reset.
 
 ### Regex pattern examples
 

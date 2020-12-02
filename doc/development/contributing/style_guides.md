@@ -39,6 +39,9 @@ go get github.com/Arkweid/lefthook
 ## Or with Rubygems
 gem install lefthook
 
+### You may need to run the following if you're using rbenv
+rbenv rehash
+
 # 3. Install the Git hooks
 lefthook install -f
 ```

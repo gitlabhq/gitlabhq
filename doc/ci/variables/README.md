@@ -259,7 +259,7 @@ To access environment variables, use the syntax for your runner's [shell](https:
 |----------------------|------------------------------------------|
 | bash/sh              | `$variable`                              |
 | PowerShell           | `$env:variable` (primary) or `$variable` |
-| Windows Batch        | `%variable%`                             |
+| Windows Batch        | `%variable%`, or `!variable!` for [delayed expansion](https://ss64.com/nt/delayedexpansion.html), which can be used for variables that contain white spaces or newlines. |
 
 ### Bash
 

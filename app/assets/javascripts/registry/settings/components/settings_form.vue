@@ -1,21 +1,43 @@
 <script>
-import { GlCard, GlButton } from '@gitlab/ui';
+import { GlCard, GlButton, GlSprintf } from '@gitlab/ui';
 import Tracking from '~/tracking';
 import {
   UPDATE_SETTINGS_ERROR_MESSAGE,
   UPDATE_SETTINGS_SUCCESS_MESSAGE,
-} from '../../shared/constants';
-import ExpirationPolicyFields from '../../shared/components/expiration_policy_fields.vue';
-import { SET_CLEANUP_POLICY_BUTTON, CLEANUP_POLICY_CARD_HEADER } from '../constants';
+} from '~/registry/shared/constants';
+import {
+  SET_CLEANUP_POLICY_BUTTON,
+  KEEP_HEADER_TEXT,
+  KEEP_INFO_TEXT,
+  KEEP_N_LABEL,
+  NAME_REGEX_KEEP_LABEL,
+  NAME_REGEX_KEEP_DESCRIPTION,
+  REMOVE_HEADER_TEXT,
+  REMOVE_INFO_TEXT,
+  EXPIRATION_SCHEDULE_LABEL,
+  NAME_REGEX_LABEL,
+  NAME_REGEX_PLACEHOLDER,
+  NAME_REGEX_DESCRIPTION,
+  CADENCE_LABEL,
+  EXPIRATION_POLICY_FOOTER_NOTE,
+} from '~/registry/settings/constants';
 import { formOptionsGenerator } from '~/registry/shared/utils';
-import updateContainerExpirationPolicyMutation from '../graphql/mutations/update_container_expiration_policy.graphql';
-import { updateContainerExpirationPolicy } from '../graphql/utils/cache_update';
+import updateContainerExpirationPolicyMutation from '~/registry/settings/graphql/mutations/update_container_expiration_policy.graphql';
+import { updateContainerExpirationPolicy } from '~/registry/settings/graphql/utils/cache_update';
+import ExpirationDropdown from './expiration_dropdown.vue';
+import ExpirationTextarea from './expiration_textarea.vue';
+import ExpirationToggle from './expiration_toggle.vue';
+import ExpirationRunText from './expiration_run_text.vue';
 
 export default {
   components: {
     GlCard,
     GlButton,
-    ExpirationPolicyFields,
+    GlSprintf,
+    ExpirationDropdown,
+    ExpirationTextarea,
+    ExpirationToggle,
+    ExpirationRunText,
   },
   mixins: [Tracking.mixin()],
   inject: ['projectPath'],
@@ -35,22 +57,31 @@ export default {
       default: false,
     },
   },
-  labelsConfig: {
-    cols: 3,
-    align: 'right',
-  },
+
   formOptions: formOptionsGenerator(),
   i18n: {
-    CLEANUP_POLICY_CARD_HEADER,
+    KEEP_HEADER_TEXT,
+    KEEP_INFO_TEXT,
+    KEEP_N_LABEL,
+    NAME_REGEX_KEEP_LABEL,
     SET_CLEANUP_POLICY_BUTTON,
+    NAME_REGEX_KEEP_DESCRIPTION,
+    REMOVE_HEADER_TEXT,
+    REMOVE_INFO_TEXT,
+    EXPIRATION_SCHEDULE_LABEL,
+    NAME_REGEX_LABEL,
+    NAME_REGEX_PLACEHOLDER,
+    NAME_REGEX_DESCRIPTION,
+    CADENCE_LABEL,
+    EXPIRATION_POLICY_FOOTER_NOTE,
   },
   data() {
     return {
       tracking: {
         label: 'docker_container_retention_and_expiration_policies',
       },
-      fieldsAreValid: true,
-      apiErrors: null,
+      apiErrors: {},
+      localErrors: {},
       mutationLoading: false,
     };
   },
@@ -66,11 +97,17 @@ export default {
     showLoadingIcon() {
       return this.isLoading || this.mutationLoading;
     },
+    fieldsAreValid() {
+      return Object.values(this.localErrors).every(error => error);
+    },
     isSubmitButtonDisabled() {
       return !this.fieldsAreValid || this.showLoadingIcon;
     },
     isCancelButtonDisabled() {
       return !this.isEdited || this.isLoading || this.mutationLoading;
+    },
+    isFieldDisabled() {
+      return this.showLoadingIcon || !this.value.enabled;
     },
     mutationVariables() {
       return {
@@ -90,7 +127,8 @@ export default {
     },
     reset() {
       this.track('reset_form');
-      this.apiErrors = null;
+      this.apiErrors = {};
+      this.localErrors = {};
       this.$emit('reset');
     },
     setApiErrors(response) {
@@ -101,9 +139,15 @@ export default {
         return acc;
       }, {});
     },
+    setLocalErrors(state, model) {
+      this.localErrors = {
+        ...this.localErrors,
+        [model]: state,
+      };
+    },
     submit() {
       this.track('submit_form');
-      this.apiErrors = null;
+      this.apiErrors = {};
       this.mutationLoading = true;
       return this.$apollo
         .mutate({
@@ -129,11 +173,9 @@ export default {
           this.mutationLoading = false;
         });
     },
-    onModelChange(changePayload) {
-      this.$emit('input', changePayload.newValue);
-      if (this.apiErrors) {
-        this.apiErrors[changePayload.modified] = undefined;
-      }
+    onModelChange(newValue, model) {
+      this.$emit('input', { ...this.value, [model]: newValue });
+      this.apiErrors[model] = undefined;
     },
   },
 };
@@ -141,42 +183,129 @@ export default {
 
 <template>
   <form ref="form-element" @submit.prevent="submit" @reset.prevent="reset">
-    <gl-card>
+    <expiration-toggle
+      :value="prefilledForm.enabled"
+      :disabled="showLoadingIcon"
+      class="gl-mb-0!"
+      data-testid="enable-toggle"
+      @input="onModelChange($event, 'enabled')"
+    />
+
+    <div class="gl-display-flex gl-mt-7">
+      <expiration-dropdown
+        v-model="prefilledForm.cadence"
+        :disabled="isFieldDisabled"
+        :form-options="$options.formOptions.cadence"
+        :label="$options.i18n.CADENCE_LABEL"
+        name="cadence"
+        class="gl-mr-7 gl-mb-0!"
+        data-testid="cadence-dropdown"
+        @input="onModelChange($event, 'cadence')"
+      />
+      <expiration-run-text :value="prefilledForm.nextRunAt" class="gl-mb-0!" />
+    </div>
+    <gl-card class="gl-mt-7">
       <template #header>
-        {{ $options.i18n.CLEANUP_POLICY_CARD_HEADER }}
+        {{ $options.i18n.KEEP_HEADER_TEXT }}
       </template>
       <template #default>
-        <expiration-policy-fields
-          :value="prefilledForm"
-          :form-options="$options.formOptions"
-          :is-loading="isLoading"
-          :api-errors="apiErrors"
-          @validated="fieldsAreValid = true"
-          @invalidated="fieldsAreValid = false"
-          @input="onModelChange"
-        />
-      </template>
-      <template #footer>
-        <gl-button
-          ref="cancel-button"
-          type="reset"
-          class="gl-mr-3 gl-display-block float-right"
-          :disabled="isCancelButtonDisabled"
-        >
-          {{ __('Cancel') }}
-        </gl-button>
-        <gl-button
-          ref="save-button"
-          type="submit"
-          :disabled="isSubmitButtonDisabled"
-          :loading="showLoadingIcon"
-          variant="success"
-          category="primary"
-          class="js-no-auto-disable"
-        >
-          {{ $options.i18n.SET_CLEANUP_POLICY_BUTTON }}
-        </gl-button>
+        <div>
+          <p>
+            <gl-sprintf :message="$options.i18n.KEEP_INFO_TEXT">
+              <template #strong="{content}">
+                <strong>{{ content }}</strong>
+              </template>
+              <template #secondStrong="{content}">
+                <strong>{{ content }}</strong>
+              </template>
+            </gl-sprintf>
+          </p>
+          <expiration-dropdown
+            v-model="prefilledForm.keepN"
+            :disabled="isFieldDisabled"
+            :form-options="$options.formOptions.keepN"
+            :label="$options.i18n.KEEP_N_LABEL"
+            name="keep-n"
+            data-testid="keep-n-dropdown"
+            @input="onModelChange($event, 'keepN')"
+          />
+          <expiration-textarea
+            v-model="prefilledForm.nameRegexKeep"
+            :error="apiErrors.nameRegexKeep"
+            :disabled="isFieldDisabled"
+            :label="$options.i18n.NAME_REGEX_KEEP_LABEL"
+            :description="$options.i18n.NAME_REGEX_KEEP_DESCRIPTION"
+            name="keep-regex"
+            data-testid="keep-regex-textarea"
+            @input="onModelChange($event, 'nameRegexKeep')"
+            @validation="setLocalErrors($event, 'nameRegexKeep')"
+          />
+        </div>
       </template>
     </gl-card>
+    <gl-card class="gl-mt-7">
+      <template #header>
+        {{ $options.i18n.REMOVE_HEADER_TEXT }}
+      </template>
+      <template #default>
+        <div>
+          <p>
+            <gl-sprintf :message="$options.i18n.REMOVE_INFO_TEXT">
+              <template #strong="{content}">
+                <strong>{{ content }}</strong>
+              </template>
+              <template #secondStrong="{content}">
+                <strong>{{ content }}</strong>
+              </template>
+            </gl-sprintf>
+          </p>
+          <expiration-dropdown
+            v-model="prefilledForm.olderThan"
+            :disabled="isFieldDisabled"
+            :form-options="$options.formOptions.olderThan"
+            :label="$options.i18n.EXPIRATION_SCHEDULE_LABEL"
+            name="older-than"
+            data-testid="older-than-dropdown"
+            @input="onModelChange($event, 'olderThan')"
+          />
+          <expiration-textarea
+            v-model="prefilledForm.nameRegex"
+            :error="apiErrors.nameRegex"
+            :disabled="isFieldDisabled"
+            :label="$options.i18n.NAME_REGEX_LABEL"
+            :placeholder="$options.i18n.NAME_REGEX_PLACEHOLDER"
+            :description="$options.i18n.NAME_REGEX_DESCRIPTION"
+            name="remove-regex"
+            data-testid="remove-regex-textarea"
+            @input="onModelChange($event, 'nameRegex')"
+            @validation="setLocalErrors($event, 'nameRegex')"
+          />
+        </div>
+      </template>
+    </gl-card>
+    <div class="gl-mt-7 gl-display-flex gl-align-items-center">
+      <gl-button
+        data-testid="save-button"
+        type="submit"
+        :disabled="isSubmitButtonDisabled"
+        :loading="showLoadingIcon"
+        variant="success"
+        category="primary"
+        class="js-no-auto-disable gl-mr-4"
+      >
+        {{ $options.i18n.SET_CLEANUP_POLICY_BUTTON }}
+      </gl-button>
+      <gl-button
+        data-testid="cancel-button"
+        type="reset"
+        :disabled="isCancelButtonDisabled"
+        class="gl-mr-4"
+      >
+        {{ __('Cancel') }}
+      </gl-button>
+      <span class="gl-font-style-italic gl-text-gray-400">{{
+        $options.i18n.EXPIRATION_POLICY_FOOTER_NOTE
+      }}</span>
+    </div>
   </form>
 </template>

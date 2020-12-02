@@ -50,6 +50,22 @@ bundle exec guard
 
 When using spring and guard together, use `SPRING=1 bundle exec guard` instead to make use of spring.
 
+### Ruby warnings
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47767) in GitLab 13.7.
+
+We've enabled [deprecation warnings](https://ruby-doc.org/core-2.7.2/Warning.html)
+by default when running specs. Making these warnings more visible to developers
+helps upgrading to newer Ruby versions.
+
+You can silence deprecation warnings by setting the environment variable
+`SILENCE_DEPRECATIONS`, for example:
+
+```shell
+# silence all deprecation warnings
+SILENCE_DEPRECATIONS=1 bin/rspec spec/models/project_spec.rb
+```
+
 ### Test speed
 
 GitLab has a massive test suite that, without [parallelization](ci.md#test-suite-parallelization-on-the-ci), can take hours

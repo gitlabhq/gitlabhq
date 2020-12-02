@@ -1,0 +1,5 @@
+---
+title: Ensure default_branch from settings is not blank
+merge_request: 49018
+author:
+type: fixed

@@ -17,7 +17,7 @@ class CustomEmoji < ApplicationRecord
     uniqueness: { scope: [:namespace_id, :name] },
     presence: true,
     length: { maximum: 36 },
-    format: { with: /\A([a-z0-9]+[-_]?)+[a-z0-9]+\z/ }
+    format: { with: /\A[a-z0-9][a-z0-9\-_]*[a-z0-9]\z/ }
 
   private
 

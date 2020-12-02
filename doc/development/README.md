@@ -98,7 +98,7 @@ from:
 - [Shell commands](shell_commands.md) in the GitLab codebase
 - [`Gemfile` guidelines](gemfile.md)
 - [Pry debugging](pry_debugging.md)
-- [Sidekiq debugging](sidekiq_debugging.md)
+- [Sidekiq debugging](../administration/troubleshooting/sidekiq.md)
 - [Accessing session data](session.md)
 - [Gotchas](gotchas.md) to avoid
 - [Avoid modules with instance variables](module_with_instance_variables.md) if possible

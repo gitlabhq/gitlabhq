@@ -44,6 +44,9 @@ import {
   EVT_PERF_MARK_FILE_TREE_START,
   EVT_PERF_MARK_FILE_TREE_END,
   EVT_PERF_MARK_DIFF_FILES_START,
+  DIFF_VIEW_FILE_BY_FILE,
+  DIFF_VIEW_ALL_FILES,
+  DIFF_FILE_BY_FILE_COOKIE_NAME,
 } from '../constants';
 import { diffViewerModes } from '~/ide/constants';
 import { isCollapsed } from '../diff_file';
@@ -57,6 +60,7 @@ export const setBaseConfig = ({ commit }, options) => {
     projectPath,
     dismissEndpoint,
     showSuggestPopover,
+    viewDiffsFileByFile,
   } = options;
   commit(types.SET_BASE_CONFIG, {
     endpoint,
@@ -66,6 +70,7 @@ export const setBaseConfig = ({ commit }, options) => {
     projectPath,
     dismissEndpoint,
     showSuggestPopover,
+    viewDiffsFileByFile,
   });
 };
 
@@ -693,4 +698,15 @@ export const navigateToDiffFileIndex = ({ commit, state }, index) => {
   document.location.hash = fileHash;
 
   commit(types.VIEW_DIFF_FILE, fileHash);
+};
+
+export const setFileByFile = ({ commit }, { fileByFile }) => {
+  const fileViewMode = fileByFile ? DIFF_VIEW_FILE_BY_FILE : DIFF_VIEW_ALL_FILES;
+  commit(types.SET_FILE_BY_FILE, fileByFile);
+
+  Cookies.set(DIFF_FILE_BY_FILE_COOKIE_NAME, fileViewMode);
+
+  historyPushState(
+    mergeUrlParams({ [DIFF_FILE_BY_FILE_COOKIE_NAME]: fileViewMode }, window.location.href),
+  );
 };

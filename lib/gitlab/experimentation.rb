@@ -80,6 +80,9 @@ module Gitlab
       },
       jobs_empty_state: {
         tracking_category: 'Growth::Activation::Experiment::JobsEmptyState'
+      },
+      remove_known_trial_form_fields: {
+        tracking_category: 'Growth::Conversion::Experiment::RemoveKnownTrialFormFields'
       }
     }.freeze
 
