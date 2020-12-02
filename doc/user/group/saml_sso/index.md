@@ -261,7 +261,7 @@ Ensure your SAML identity provider sends an attribute statement named `Groups` o
 ```
 
 When SAML SSO is enabled for the top-level group, `Maintainer` and `Owner` level users
-see a new menu item in group **Settings -> SAML Group Links**. Each group can specify
+see a new menu item in group **Settings -> SAML Group Links**. Each group (parent or subgroup) can specify
 one or more group links to map a SAML identity provider group name to a GitLab access level.
 
 ![SAML Group Links navigation](img/saml_group_links_nav_v13_6.png)

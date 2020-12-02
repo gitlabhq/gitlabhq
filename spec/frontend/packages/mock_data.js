@@ -76,6 +76,9 @@ export const npmFiles = [
     id: 2,
     size: 200,
     download_path: '/-/package_files/2/download',
+    pipelines: [
+      { id: 1, project: { commit_url: 'http://foo.bar' }, git_commit_message: 'foo bar baz?' },
+    ],
   },
 ];
 

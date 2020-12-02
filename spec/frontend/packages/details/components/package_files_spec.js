@@ -12,6 +12,7 @@ describe('Package Files', () => {
   const findAllRows = () => wrapper.findAll('[data-testid="file-row"');
   const findFirstRow = () => findAllRows().at(0);
   const findFirstRowDownloadLink = () => findFirstRow().find('[data-testid="download-link"');
+  const findFirstRowCommitLink = () => findFirstRow().find('[data-testid="commit-link"');
   const findFirstRowFileIcon = () => findFirstRow().find(FileIcon);
   const findFirstRowCreatedAt = () => findFirstRow().find(TimeAgoTooltip);
 
@@ -94,6 +95,37 @@ describe('Package Files', () => {
       createComponent();
 
       expect(findFirstRowCreatedAt().props('time')).toBe(npmFiles[0].created_at);
+    });
+  });
+
+  describe('commit', () => {
+    describe('when package file has a pipeline associated', () => {
+      it('exists', () => {
+        createComponent();
+
+        expect(findFirstRowCommitLink().exists()).toBe(true);
+      });
+
+      it('the link points to the commit url', () => {
+        createComponent();
+
+        expect(findFirstRowCommitLink().attributes('href')).toBe(
+          npmFiles[0].pipelines[0].project.commit_url,
+        );
+      });
+
+      it('the text is git_commit_message', () => {
+        createComponent();
+
+        expect(findFirstRowCommitLink().text()).toBe(npmFiles[0].pipelines[0].git_commit_message);
+      });
+    });
+    describe('when package file has no pipeline associated', () => {
+      it('does not exist', () => {
+        createComponent(mavenFiles);
+
+        expect(findFirstRowCommitLink().exists()).toBe(false);
+      });
     });
   });
 });

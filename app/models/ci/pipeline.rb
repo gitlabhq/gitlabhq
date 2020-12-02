@@ -775,12 +775,10 @@ module Ci
           variables.append(key: 'CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', value: source_sha.to_s)
           variables.append(key: 'CI_MERGE_REQUEST_TARGET_BRANCH_SHA', value: target_sha.to_s)
 
-          if Feature.enabled?(:ci_mr_diff_variables, project)
-            diff = self.merge_request_diff
-            if diff.present?
-              variables.append(key: 'CI_MERGE_REQUEST_DIFF_ID', value: diff.id.to_s)
-              variables.append(key: 'CI_MERGE_REQUEST_DIFF_BASE_SHA', value: diff.base_commit_sha)
-            end
+          diff = self.merge_request_diff
+          if diff.present?
+            variables.append(key: 'CI_MERGE_REQUEST_DIFF_ID', value: diff.id.to_s)
+            variables.append(key: 'CI_MERGE_REQUEST_DIFF_BASE_SHA', value: diff.base_commit_sha)
           end
 
           variables.concat(merge_request.predefined_variables)

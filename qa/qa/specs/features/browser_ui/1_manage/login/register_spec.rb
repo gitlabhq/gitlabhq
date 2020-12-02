@@ -122,6 +122,7 @@ module QA
         end
 
         after do
+          set_require_admin_approval_after_user_signup_via_api(false)
           @user.remove_via_api! if @user
         end
       end

@@ -755,10 +755,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
 
     context 'when pipeline is merge request' do
-      before do
-        stub_feature_flags(ci_mr_diff_variables: false)
-      end
-
       let(:pipeline) do
         create(:ci_pipeline, :detached_merge_request_pipeline, merge_request: merge_request)
       end
@@ -799,22 +795,13 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
             'CI_MERGE_REQUEST_MILESTONE' => milestone.title,
             'CI_MERGE_REQUEST_LABELS' => labels.map(&:title).sort.join(','),
             'CI_MERGE_REQUEST_EVENT_TYPE' => 'detached')
-        expect(subject.to_hash.keys).not_to include(
-          %w[CI_MERGE_REQUEST_DIFF_ID
-             CI_MERGE_REQUEST_DIFF_BASE_SHA])
       end
 
-      context 'when feature flag ci_mr_diff_variables is enabled' do
-        before do
-          stub_feature_flags(ci_mr_diff_variables: true)
-        end
-
-        it 'exposes diff variables' do
-          expect(subject.to_hash)
-            .to include(
-              'CI_MERGE_REQUEST_DIFF_ID' => merge_request.merge_request_diff.id.to_s,
-              'CI_MERGE_REQUEST_DIFF_BASE_SHA' => merge_request.merge_request_diff.base_commit_sha)
-        end
+      it 'exposes diff variables' do
+        expect(subject.to_hash)
+          .to include(
+            'CI_MERGE_REQUEST_DIFF_ID' => merge_request.merge_request_diff.id.to_s,
+            'CI_MERGE_REQUEST_DIFF_BASE_SHA' => merge_request.merge_request_diff.base_commit_sha)
       end
 
       context 'without assignee' do
@@ -867,22 +854,13 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
               'CI_MERGE_REQUEST_MILESTONE' => milestone.title,
               'CI_MERGE_REQUEST_LABELS' => labels.map(&:title).sort.join(','),
               'CI_MERGE_REQUEST_EVENT_TYPE' => 'merged_result')
-          expect(subject.to_hash.keys).not_to include(
-            %w[CI_MERGE_REQUEST_DIFF_ID
-               CI_MERGE_REQUEST_DIFF_BASE_SHA])
         end
 
-        context 'when feature flag ci_mr_diff_variables is enabled' do
-          before do
-            stub_feature_flags(ci_mr_diff_variables: true)
-          end
-
-          it 'exposes diff variables' do
-            expect(subject.to_hash)
-              .to include(
-                'CI_MERGE_REQUEST_DIFF_ID' => merge_request.merge_request_diff.id.to_s,
-                'CI_MERGE_REQUEST_DIFF_BASE_SHA' => merge_request.merge_request_diff.base_commit_sha)
-          end
+        it 'exposes diff variables' do
+          expect(subject.to_hash)
+            .to include(
+              'CI_MERGE_REQUEST_DIFF_ID' => merge_request.merge_request_diff.id.to_s,
+              'CI_MERGE_REQUEST_DIFF_BASE_SHA' => merge_request.merge_request_diff.base_commit_sha)
         end
       end
     end

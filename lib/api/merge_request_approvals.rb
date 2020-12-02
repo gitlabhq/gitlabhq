@@ -4,7 +4,7 @@ module API
   class MergeRequestApprovals < ::API::Base
     before { authenticate_non_get! }
 
-    feature_category :code_review
+    feature_category :source_code_management
 
     helpers do
       params :ee_approval_params do

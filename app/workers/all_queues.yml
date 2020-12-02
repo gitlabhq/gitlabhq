@@ -396,7 +396,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:schedule_merge_request_cleanup_refs
-  :feature_category: :source_code_management
+  :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -404,7 +404,7 @@
   :idempotent: true
   :tags: []
 - :name: cronjob:schedule_migrate_external_diffs
-  :feature_category: :source_code_management
+  :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -428,7 +428,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:stuck_merge_jobs
-  :feature_category: :source_code_management
+  :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -1426,7 +1426,7 @@
   :idempotent: true
   :tags: []
 - :name: create_note_diff_file
-  :feature_category: :source_code_management
+  :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -1442,7 +1442,7 @@
   :idempotent:
   :tags: []
 - :name: delete_diff_files
-  :feature_category: :source_code_management
+  :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -1700,7 +1700,7 @@
   :idempotent:
   :tags: []
 - :name: merge_request_cleanup_refs
-  :feature_category: :source_code_management
+  :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -1708,7 +1708,7 @@
   :idempotent: true
   :tags: []
 - :name: merge_request_mergeability_check
-  :feature_category: :source_code_management
+  :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -1732,7 +1732,7 @@
   :idempotent: true
   :tags: []
 - :name: migrate_external_diffs
-  :feature_category: :source_code_management
+  :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -1756,7 +1756,7 @@
   :idempotent:
   :tags: []
 - :name: new_merge_request
-  :feature_category: :source_code_management
+  :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :high
   :resource_boundary: :cpu
@@ -2072,7 +2072,7 @@
   :idempotent: true
   :tags: []
 - :name: update_merge_requests
-  :feature_category: :source_code_management
+  :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :high
   :resource_boundary: :cpu

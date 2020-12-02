@@ -8,14 +8,14 @@ module Ci
       status = runner.status
       case status
       when :not_connected
-        content_tag(:span, title: "New runner. Has not connected yet") do
+        content_tag(:span, title: _("New runner. Has not connected yet")) do
           sprite_icon("warning-solid", size: 24, css_class: "gl-vertical-align-bottom!")
         end
 
       when :online, :offline, :paused
-        content_tag :i, nil,
-                    class: "fa fa-circle runner-status-#{status}",
-                    title: "Runner is #{status}, last contact was #{time_ago_in_words(runner.contacted_at)} ago"
+        content_tag :span, nil,
+                    class: "gl-display-inline-block gl-avatar gl-avatar-s16 gl-avatar-circle runner-status runner-status-#{status}",
+                    title: _("Runner is %{status}, last contact was %{runner_contact} ago") % { status: status, runner_contact: time_ago_in_words(runner.contacted_at) }
       end
     end
 

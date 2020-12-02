@@ -9,7 +9,12 @@ module QA
         end
 
         def click_get_started_button_if_available
-          click_element :get_started_button if has_element?(:get_started_button)
+          if has_element?(:get_started_button)
+            Support::Retrier.retry_until do
+              click_element :get_started_button
+              has_no_element?(:get_started_button)
+            end
+          end
         end
       end
     end

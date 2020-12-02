@@ -41,3 +41,332 @@ User Load (0.7ms)  SELECT  "users"."id" FROM "users" WHERE ("users"."id" >= 4165
 The API of this method is similar to `in_batches`, though it doesn't support
 all of the arguments that `in_batches` supports. You should always use
 `each_batch` _unless_ you have a specific need for `in_batches`.
+
+## Column definition
+
+`EachBatch` uses the primary key of the model by default for the iteration. This works most of the cases, however in some cases, you might want to use a different column for the iteration.
+
+```ruby
+Project.distinct.each_batch(column: :creator_id, of: 10) do |relation|
+  puts User.where(id: relation.select(:creator_id)).map(&:id)
+end
+```
+
+The query above iterates over the project creators and prints them out without duplications.
+
+NOTE: **Note:**
+In case the column is not unique (no unique index definition), calling the `distinct` method on the relation is necessary.
+
+## `EachBatch` in data migrations
+
+When dealing with data migrations the preferred way to iterate over large volume of data is using `EachBatch`.
+
+A special case of data migration is a background migration where the actual data modification is executed in a background job. The migration code that determines the data ranges (slices) and schedules the background jobs uses `each_batch`. More info: [background migration scheduling](background_migrations.md#scheduling)
+
+## Efficient usage of `each_batch`
+
+`EachBatch` helps iterating over large tables. It's important to highlight that `EachBatch` is not going to magically solve all iteration related performance problems and it might not help at all in some scenarios. From the database point of view, correctly configured database indexes are also necessary to make `EachBatch` perform well.
+
+### Example 1: Simple iteration
+
+Let's consider that we want to iterate over the `users` table and print the `User` records to the standard output. The `users` table contains millions of records, thus running one query to fetch the users will likely time out.
+
+![Users table overview](img/each_batch_users_table_v13_7.png)
+
+This is a simplified version of the `users` table which contains several rows. We have a few smaller gaps in the `id` column to make the example a bit more realistic (a few records were already deleted). Currently we have one index on the `id` field.
+
+Loading all users into memory (avoid):
+
+```ruby
+users = User.all
+
+users.each { |user| puts user.inspect }
+```
+
+Use `each_batch`:
+
+```ruby
+# Note: for this example I picked 5 as the batch size, the default is 1_000
+User.each_batch(of: 5) do |relation|
+  relation.each { |user| puts user.inspect }
+end
+```
+
+#### How does `each_batch` work?
+
+As the first step, it finds the lowest `id` (start `id`) in the table by executing the following database query:
+
+```sql
+SELECT "users"."id" FROM "users" ORDER BY "users"."id" ASC LIMIT 1
+```
+
+![Reading the start id value](img/each_batch_users_table_iteration_1_v13_7.png)
+
+Notice that the query only reads data from the index (`INDEX ONLY SCAN`), the table is not accessed. Database indexes are sorted so taking out the first item is a very cheap operation.
+
+The next step is to find the next `id` (end `id`) which should respect the batch size configuration. In this example we used batch size of 5. `EachBatch` uses the `OFFSET` clause to get a "shifted" `id` value.
+
+```sql
+SELECT "users"."id" FROM "users" WHERE "users"."id" >= 1 ORDER BY "users"."id" ASC LIMIT 1 OFFSET 5
+```
+
+![Reading the end id value](img/each_batch_users_table_iteration_2_v13_7.png)
+
+Again, the query only looks into the index. The `OFFSET 5` takes out the sixth `id` value: this query reads a maximum of six items from the index regardless of the table size or the iteration count.
+
+At this point we know the `id` range for the first batch. Now it's time to construct the query for the `relation` block.
+
+```sql
+SELECT "users".* FROM "users" WHERE "users"."id" >= 1 AND "users"."id" < 302
+```
+
+![Reading the rows from the users table](img/each_batch_users_table_iteration_3_v13_7.png)
+
+Notice the `<` sign. Previously six items were read from the index and in this query the last value is "excluded". The query will look at the index to get the location of the five `user` rows on the disk and read the rows from the table. The returned array is processed in Ruby.
+
+The first iteration is done. For the next iteration, the last `id` value is reused from the previous iteration in order to find out the next end `id` value.
+
+```sql
+SELECT "users"."id" FROM "users" WHERE "users"."id" >= 302 ORDER BY "users"."id" ASC LIMIT 1 OFFSET 5
+```
+
+![Reading the second end id value](img/each_batch_users_table_iteration_4_v13_7.png)
+
+Now we can easily construct the `users` query for the second iteration.
+
+```sql
+SELECT "users".* FROM "users" WHERE "users"."id" >= 302 AND "users"."id" < 353
+```
+
+![Reading the rows for the second iteration from the users table](img/each_batch_users_table_iteration_5_v13_7.png)
+
+### Example 2: Iteration with filters
+
+Building on top of the previous example, we want to print users with zero sign-in count. We keep track of the number of sign-ins in the `sign_in_count` column so we write the following code:
+
+```ruby
+users = User.where(sign_in_count: 0)
+
+users.each_batch(of: 5) do |relation|
+  relation.each { |user| puts user.inspect }
+end
+```
+
+`each_batch` will produce the following SQL query for the start `id` value:
+
+```sql
+SELECT "users"."id" FROM "users" WHERE "users"."sign_in_count" = 0 ORDER BY "users"."id" ASC LIMIT 1
+```
+
+Selecting only the `id` column and ordering by `id` is going to "force" the database to use the index on the `id` (primary key index) column, however we also have an extra condition on the `sign_in_count` column. The column is not part of the index, so the database needs to look into the actual table to find the first matching row.
+
+![Reading the index with extra filter](img/each_batch_users_table_filter_v13_7.png)
+
+NOTE: **Important:**
+The number of scanned rows depends on the data distribution in the table.
+
+- Best case scenario: the first user was never logged in. The database reads only one row.
+- Worst case scenario: all users were logged in at least once. The database reads all rows.
+
+In this particular example the database had to read 10 rows (regardless of our batch size setting) to determine the first `id` value. In a "real-world" application it's hard to predict whether the filtering is going to cause problems or not. In case of GitLab, verifying the data on a production replica is a good start, but keep in mind that data distribution on GitLab.com can be different from self-managed instances.
+
+#### Improve filtering with `each_batch`
+
+##### Specialized conditinal index
+
+```sql
+CREATE INDEX index_on_users_never_logged_in ON users (id) WHERE sign_in_count = 0
+```
+
+This is how our table and the newly created index looks like:
+
+![Reading the specialized index](img/each_batch_users_table_filtered_index_v13_7.png)
+
+This index definition covers the conditions on the `id` and `sign_in_count` columns thus makes the `each_batch` queries very effective (similar to the simple iteration example).
+
+It's rare when a user was never signed in so we anticipate small index size. Including only the `id` in the index definition also helps keeping the index size small.
+
+##### Index on columns
+
+Later on we might want to iterate over the table filtering for different `sign_in_count` values, in those cases we cannot use the previously suggested conditional index because the `WHERE` condition does not match with our new filter (`sign_in_count > 10`).
+
+To address this problem, we have two options:
+
+- Create another, conditional index to cover the new query.
+- Replace the index with more generalized configuration.
+
+NOTE: **Note:**
+Having multiple indexes on the same table and on the same columns could be a performance bottleneck when writing data.
+
+Let's consider the following index (avoid):
+
+```sql
+CREATE INDEX index_on_users_never_logged_in ON users (id, sign_in_count)
+```
+
+The index definition starts with the `id` column which makes the index very inefficient from data selectivity point of view.
+
+```sql
+SELECT "users"."id" FROM "users" WHERE "users"."sign_in_count" = 0 ORDER BY "users"."id" ASC LIMIT 1
+```
+
+Executing the query above results in an `INDEX ONLY SCAN`. However, the query still needs to iterate over unknown number of entries in the index, and then find the first item where the `sign_in_count` is `0`.
+
+![Reading the an ineffective index](img/each_batch_users_table_bad_index_v13_7.png)
+
+We can improve the query significantly by swapping the columns in the index definition (prefer).
+
+```sql
+CREATE INDEX index_on_users_never_logged_in ON users (sign_in_count, id)
+```
+
+![Reading a good index](img/each_batch_users_table_good_index_v13_7.png)
+
+The following index definition is not going to work well with `each_batch` (avoid).
+
+```sql
+CREATE INDEX index_on_users_never_logged_in ON users (sign_in_count)
+```
+
+Since `each_batch` builds range queries based on the `id` column, this index cannot be used efficiently. The DB reads the rows from the table or uses a bitmap search where the primary key index is also read.
+
+##### "Slow" iteraton
+
+Slow iteration means that we use a good index configuration to iterate over the table and apply filtering on the yielded relation.
+
+```ruby
+User.each_batch(of: 5) do |relation|
+  relation.where(sign_in_count: 0).each { |user| puts user inspect }
+end
+```
+
+The iteration uses the primary key index (on the `id` column) which makes it safe from statement
+timeouts. The filter (`sign_in_count: 0`) is applied on the `relation` where the `id` is already constrained (range). The number of rows are limited.
+
+Slow iteration generally takes more time to finish. The iteration count is higher and 
+one iteration could yield fewer records than the batch size. Iterations may even yield 
+0 records. This is not an optimal solution; however, in some cases (especially when
+dealing with large tables) this is the only viable option.
+
+### Using Subqueries
+
+Using subqueries in your `each_batch` query does not work well in most cases. Consider the following example:
+
+```ruby
+projects = Project.where(creator_id: Issue.where(confidential: true).select(:author_id))
+
+projects.each_batch do |relation|
+  # do something
+end
+```
+
+The iteration uses the `id` column of the `projects` table. The batching does not affect the subquery.
+This means for each iteration, the subquery is executed by the database. This adds a constant "load"
+on the query which often ends up in statement timeouts. We have an unknown number of confidential
+issues, the execution time and the accessed database rows depends on the data distribution in the
+`issues` table.
+
+NOTE: **Note:**
+Using subqueries works only when the subquery returns a small number of rows.
+
+#### Improving Subqueries
+
+When dealing with subqueries, a slow iteration approach could work: the filter on `creator_id` can be part of the generated `relation` object.
+
+```ruby
+projects = Project.all
+
+projects.each_batch do |relation|
+  relation.where(creator_id: Issue.where(confidential: true).select(:author_id))
+end
+```
+
+If the query on the `issues` table itself is not performant enough, a nested loop could be constructed. Try to avoid it when possible.
+
+```ruby
+projects = Project.all
+
+projects.each_batch do |relation|
+  issues = Issue.where(confidential: true)
+
+  issues.each_batch do |issues_relation|
+    relation.where(creator_id: issues_relation.select(:author_id))
+  end
+end
+```
+
+If we know that the `issues` table has many more rows than `projects`, it would make sense to flip the queries, where the `issues` table is batched first.
+
+### Using `JOIN` and `EXISTS`
+
+When to use `JOINS`:
+
+- When there's a 1:1 or 1:N relationship between the tables where we know that the joined record
+(almost) always exists. This works well for "extension-like" tables:
+  - `projects` - `project_settings`
+  - `users` - `user_details`
+  - `users` - `user_statuses`
+- `LEFT JOIN` works well in this case. Conditions on the joined table need to go to the yielded relation so the iteration is not affected by the data distribution in the joined table.
+
+Example:
+
+```ruby
+users = User.joins("LEFT JOIN personal_access_tokens on personal_access_tokens.user_id = users.id")
+
+users.each_batch do |relation|
+  relation.where("personal_access_tokens.name = 'name'")
+end
+```
+
+`EXISTS` queries should be added only to the inner `relation` of the `each_batch` query:
+
+```ruby
+User.each_batch do |relation|
+  relation.where("EXISTS (SELECT 1 FROM ...")
+end
+```
+
+### Complex queries on the relation object
+
+When the `relation` object has several extra conditions, the execution plans might become "unstable".
+
+Example:
+
+```ruby
+Issue.each_batch do |relation|
+  relation
+    .joins(:metrics)
+    .joins(:merge_requests_closing_issues)
+    .where("id IN (SELECT ...)")
+    .where(confidential: true)
+end
+```
+
+Here, we expect that the `relation` query reads the `BATCH_SIZE` of user records and then
+filters down the results according to the provided queries. The planner might decide that
+using a bitmap index lookup with the index on the `confidential` column is a better way to
+execute the query. This can cause unexpectedly high amount of rows to be read and the query
+could time out. 
+
+Problem: we know for sure that the relation is returning maximum `BATCH_SIZE` of records, however the planner does not know this.
+
+Common table expression (CTE) trick to force the range query to execute first:
+
+```ruby
+Issue.each_batch(of: 1000) do |relation|
+  cte = Gitlab::SQL::CTE.new(:batched_relation, relation.limit(1000))
+
+  scope = cte
+    .apply_to(Issue.all)
+    .joins(:metrics)
+    .joins(:merge_requests_closing_issues)
+    .where("id IN (SELECT ...)")
+    .where(confidential: true)
+
+  puts scope.to_a
+end
+```
+
+### `EachBatch` vs `BatchCount`
+
+When adding new counters for usage ping, the preferred way to count records is using the `Gitlab::Database::BatchCount` class. The iteration logic implemented in `BatchCount` has similar performance characterisics like `EachBatch`. Most of the tips and suggestions for improving `BatchCount` mentioned above applies to `BatchCount` as well.
