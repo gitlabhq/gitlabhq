@@ -137,6 +137,7 @@ export default {
     ref="modal"
     modal-id="ide-new-entry"
     data-qa-selector="new_file_modal"
+    data-testid="ide-new-entry"
     :title="modalTitle"
     :ok-title="buttonLabel"
     ok-variant="success"

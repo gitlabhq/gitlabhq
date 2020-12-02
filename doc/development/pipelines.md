@@ -467,7 +467,7 @@ of the `gitlab-org/gitlab-foss` project. These jobs are only created in the foll
 The `* as-if-foss` jobs are run in addition to the regular EE-context jobs. They have the `FOSS_ONLY='1'` variable
 set and get their EE-specific folders removed before the tests start running.
 
-The intent is to ensure that a change won't introduce a failure once the `gitlab-org/gitlab` project will be synced to
+The intent is to ensure that a change doesn't introduce a failure after the `gitlab-org/gitlab` project is synced to
 the `gitlab-org/gitlab-foss` project.
 
 ## Performance
@@ -502,7 +502,7 @@ request, be sure to start the `dont-interrupt-me` job before pushing.
    - `update-assets-compile-production-cache`, defined in [`.gitlab/ci/frontend.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/frontend.gitlab-ci.yml).
    - `update-assets-compile-test-cache`, defined in [`.gitlab/ci/frontend.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/frontend.gitlab-ci.yml).
    - `update-yarn-cache`, defined in [`.gitlab/ci/frontend.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/frontend.gitlab-ci.yml).
-1. These jobs will run in merge requests whose title include `UPDATE CACHE`.
+1. These jobs run in merge requests whose title include `UPDATE CACHE`.
 
 ### Pre-clone step
 
@@ -546,8 +546,7 @@ on a scheduled pipeline, it does the following:
 1. Saves the data as a `.tar.gz`.
 1. Uploads it into the Google Cloud Storage bucket.
 
-When a CI job runs with this configuration, you'll see something like
-this:
+When a CI job runs with this configuration, the output looks something like this:
 
 ```shell
 $ eval "$CI_PRE_CLONE_SCRIPT"
@@ -568,7 +567,7 @@ GitLab Team Member, find credentials in the
 [GitLab shared 1Password account](https://about.gitlab.com/handbook/security/#1password-for-teams).
 
 Note that this bucket should be located in the same continent as the
-runner, or [network egress charges will apply](https://cloud.google.com/storage/pricing).
+runner, or [you can incur network egress charges](https://cloud.google.com/storage/pricing).
 
 ## CI configuration internals
 
@@ -662,7 +661,7 @@ and included in `rules` definitions via [YAML anchors](../ci/yaml/README.md#anch
 | `if-not-canonical-namespace`                                 | Matches if the project isn't in the canonical (`gitlab-org/`) or security (`gitlab-org/security`) namespace. | Use to create a job for forks (by using `when: on_success\|manual`), or **not** create a job for forks (by using `when: never`). |
 | `if-not-ee`                                                  | Matches if the project isn't EE (i.e. project name isn't `gitlab` or `gitlab-ee`). | Use to create a job only in the FOSS project (by using `when: on_success|manual`), or **not** create a job if the project is EE (by using `when: never`). |
 | `if-not-foss`                                                | Matches if the project isn't FOSS (i.e. project name isn't `gitlab-foss`, `gitlab-ce`, or `gitlabhq`). | Use to create a job only in the EE project (by using `when: on_success|manual`), or **not** create a job if the project is FOSS (by using `when: never`). |
-| `if-default-refs`                                            | Matches if the pipeline is for `master`, `/^[\d-]+-stable(-ee)?$/` (stable branches), `/^\d+-\d+-auto-deploy-\d+$/` (auto-deploy branches), `/^security\//` (security branches), merge requests, and tags. | Note that jobs won't be created for branches with this default configuration. |
+| `if-default-refs`                                            | Matches if the pipeline is for `master`, `/^[\d-]+-stable(-ee)?$/` (stable branches), `/^\d+-\d+-auto-deploy-\d+$/` (auto-deploy branches), `/^security\//` (security branches), merge requests, and tags. | Note that jobs aren't created for branches with this default configuration. |
 | `if-master-refs`                                             | Matches if the current branch is `master`. | |
 | `if-master-or-tag`                                           | Matches if the pipeline is for the `master` branch or for a tag. | |
 | `if-merge-request`                                           | Matches if the pipeline is for a merge request. | |

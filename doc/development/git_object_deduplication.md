@@ -11,7 +11,7 @@ GitLab creates a new Project with an associated Git repository that is a
 copy of the original project at the time of the fork. If a large project
 gets forked often, this can lead to a quick increase in Git repository
 storage disk use. To counteract this problem, we are adding Git object
-deduplication for forks to GitLab. In this document, we will describe how
+deduplication for forks to GitLab. In this document, we describe how
 GitLab implements Git object deduplication.
 
 ## Pool repositories
@@ -27,9 +27,9 @@ If we want repository A to borrow from repository B, we first write a
 path that resolves to `B.git/objects` in the special file
 `A.git/objects/info/alternates`. This establishes the alternates link.
 Next, we must perform a Git repack in A. After the repack, any objects
-that are duplicated between A and B will get deleted from A. Repository
+that are duplicated between A and B are deleted from A. Repository
 A is now no longer self-contained, but it still has its own refs and
-configuration. Objects in A that are not in B will remain in A. For this
+configuration. Objects in A that are not in B remain in A. For this
 to work, it is of course critical that **no objects ever get deleted from
 B** because A might need them.
 
@@ -49,7 +49,7 @@ repositories** which are hidden from the user. We then use Git
 alternates to let a collection of project repositories borrow from a
 single pool repository. We call such a collection of project
 repositories a pool. Pools form star-shaped networks of repositories
-that borrow from a single pool, which will resemble (but not be
+that borrow from a single pool, which resemble (but not be
 identical to) the fork networks that get formed when users fork
 projects.
 
@@ -72,9 +72,9 @@ across a collection of GitLab project repositories at the Git level:
 The effectiveness of Git object deduplication in GitLab depends on the
 amount of overlap between the pool repository and each of its
 participants. Each time garbage collection runs on the source project,
-Git objects from the source project will get migrated to the pool
+Git objects from the source project are migrated to the pool
 repository. One by one, as garbage collection runs, other member
-projects will benefit from the new objects that got added to the pool.
+projects benefit from the new objects that got added to the pool.
 
 ## SQL model
 
@@ -123,19 +123,19 @@ are as follows:
   the fork parent and the fork child project become members of the new
   pool.
 - Once project A has become the source project of a pool, all future
-  eligible forks of A will become pool members.
+  eligible forks of A become pool members.
 - If the fork source is itself a fork, the resulting repository will
-  neither join the repository nor will a new pool repository be
+  neither join the repository nor is a new pool repository
   seeded.
 
-  eg:
+  Such as:
 
   Suppose fork A is part of a pool repository, any forks created off
-  of fork A *will not* be a part of the pool repository that fork A is
+  of fork A *are not* a part of the pool repository that fork A is
   a part of.
 
   Suppose B is a fork of A, and A does not belong to an object pool.
-  Now C gets created as a fork of B. C will not be part of a pool
+  Now C gets created as a fork of B. C is not part of a pool
   repository.
 
 > TODO should forks of forks be deduplicated?
@@ -146,11 +146,11 @@ are as follows:
 - If a normal Project participating in a pool gets moved to another
   Gitaly storage shard, its "belongs to PoolRepository" relation will
   be broken. Because of the way moving repositories between shard is
-  implemented, we will automatically get a fresh self-contained copy
+  implemented, we get a fresh self-contained copy
   of the project's repository on the new storage shard.
 - If the source project of a pool gets moved to another Gitaly storage
   shard or is deleted the "source project" relation is not broken.
-  However, as of GitLab 12.0 a pool will not fetch from a source
+  However, as of GitLab 12.0 a pool does not fetch from a source
   unless the source is on the same Gitaly shard.
 
 ## Consistency between the SQL pool relation and Gitaly
@@ -163,7 +163,7 @@ repository and a pool.
 ### Pool existence
 
 If GitLab thinks a pool repository exists (i.e. it exists according to
-SQL), but it does not on the Gitaly server, then it will be created on
+SQL), but it does not on the Gitaly server, then it is created on
 the fly by Gitaly.
 
 ### Pool relation existence
@@ -173,27 +173,27 @@ There are three different things that can go wrong here.
 #### 1. SQL says repo A belongs to pool P but Gitaly says A has no alternate objects
 
 In this case, we miss out on disk space savings but all RPC's on A
-itself will function fine. The next time garbage collection runs on A,
+itself function fine. The next time garbage collection runs on A,
 the alternates connection gets established in Gitaly. This is done by
 `Projects::GitDeduplicationService` in GitLab Rails.
 
 #### 2. SQL says repo A belongs to pool P1 but Gitaly says A has alternate objects in pool P2
 
-In this case `Projects::GitDeduplicationService` will throw an exception.
+In this case `Projects::GitDeduplicationService` throws an exception.
 
 #### 3. SQL says repo A does not belong to any pool but Gitaly says A belongs to P
 
-In this case `Projects::GitDeduplicationService` will try to
+In this case `Projects::GitDeduplicationService` tries to
 "re-duplicate" the repository A using the DisconnectGitAlternates RPC.
 
 ## Git object deduplication and GitLab Geo
 
 When a pool repository record is created in SQL on a Geo primary, this
-will eventually trigger an event on the Geo secondary. The Geo secondary
-will then create the pool repository in Gitaly. This leads to an
+eventually triggers an event on the Geo secondary. The Geo secondary
+then creates the pool repository in Gitaly. This leads to an
 "eventually consistent" situation because as each pool participant gets
-synchronized, Geo will eventually trigger garbage collection in Gitaly on
-the secondary, at which stage Git objects will get deduplicated.
+synchronized, Geo eventually triggers garbage collection in Gitaly on
+the secondary, at which stage Git objects are deduplicated.
 
 > TODO How do we handle the edge case where at the time the Geo
 > secondary tries to create the pool repository, the source project does

@@ -1,4 +1,11 @@
-import { findAllByText, fireEvent, getByLabelText, screen } from '@testing-library/dom';
+import {
+  findAllByText,
+  fireEvent,
+  getByLabelText,
+  findByTestId,
+  getByText,
+  screen,
+} from '@testing-library/dom';
 
 const isFolderRowOpen = row => row.matches('.folder.is-open');
 
@@ -11,6 +18,11 @@ const clickOnLeftSidebarTab = name => {
 
   button.click();
 };
+
+export const getStatusBar = () => document.querySelector('.ide-status-bar');
+
+export const waitForMonacoEditor = () =>
+  new Promise(resolve => window.monaco.editor.onDidCreateEditor(resolve));
 
 export const findMonacoEditor = () =>
   screen.findByLabelText(/Editor content;/).then(x => x.closest('.monaco-editor'));
@@ -75,11 +87,13 @@ const clickFileRowAction = (row, name) => {
   dropdownAction.click();
 };
 
-const findAndSetFileName = async value => {
-  const nameField = await screen.findByTestId('file-name-field');
+const fillFileNameModal = async (value, submitText = 'Create file') => {
+  const modal = await screen.findByTestId('ide-new-entry');
+
+  const nameField = await findByTestId(modal, 'file-name-field');
   fireEvent.input(nameField, { target: { value } });
 
-  const createButton = screen.getByText('Create file');
+  const createButton = getByText(modal, submitText, { selector: 'button' });
   createButton.click();
 };
 
@@ -88,6 +102,10 @@ const findAndClickRootAction = async name => {
   const button = getByLabelText(container, name);
 
   button.click();
+};
+
+export const clickPreviewMarkdown = () => {
+  screen.getByText('Preview Markdown').click();
 };
 
 export const openFile = async path => {
@@ -110,7 +128,7 @@ export const createFile = async (path, content) => {
     await findAndClickRootAction('New file');
   }
 
-  await findAndSetFileName(path);
+  await fillFileNameModal(path);
   await findAndSetEditorValue(content);
 };
 
@@ -121,6 +139,21 @@ export const getFilesList = () => {
 export const deleteFile = async path => {
   const row = await findAndTraverseToPath(path);
   clickFileRowAction(row, 'Delete');
+};
+
+export const renameFile = async (path, newPath) => {
+  const row = await findAndTraverseToPath(path);
+  clickFileRowAction(row, 'Rename/Move');
+
+  await fillFileNameModal(newPath, 'Rename file');
+};
+
+export const closeFile = async path => {
+  const button = await screen.getByLabelText(`Close ${path}`, {
+    selector: '.multi-file-tabs button',
+  });
+
+  button.click();
 };
 
 export const commit = async () => {

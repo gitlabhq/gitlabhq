@@ -53,7 +53,7 @@ helpful to others and, when properly explained, its benefits outweigh the risks.
 If you think you have found an exception to this rule, contact the
 Technical Writing team.
 
-We will add all troubleshooting information to the documentation, no matter how
+GitLab adds all troubleshooting information to the documentation, no matter how
 unlikely a user is to encounter a situation. For the [Troubleshooting sections](#troubleshooting),
 people in GitLab Support can merge additions themselves.
 
@@ -83,7 +83,7 @@ different types. For example, [Divio recommends](https://www.divio.com/blog/docu
 
 At GitLab, we have so many product changes in our monthly releases that we can't
 afford to continuously update multiple types of information. If we have multiple
-types, the information will become outdated. Therefore, we have a
+types, the information becomes outdated. Therefore, we have a
 [single template](../structure.md) for documentation.
 
 We currently do not distinguish specific document types, although we are open to
@@ -93,8 +93,8 @@ improvement efforts, that point hasn't been reached.
 
 ### Link instead of summarize
 
-There is a temptation to summarize the information on another page. This will
-cause the information to live in two places. Instead, link to the single source
+There is a temptation to summarize the information on another page, which
+causes the information to live in two places. Instead, link to the single source
 of truth and explain why it is important to consume the information.
 
 ### Organize by topic, not by type
@@ -137,7 +137,7 @@ that among any other documentation changes, you can either:
   our [documentation template](../structure.md#template-for-new-docs), if present.
 
 The more we reflexively add useful information to the documentation, the more
-(and more successfully) the documentation will be used to efficiently accomplish
+the documentation helps others efficiently accomplish
 tasks and solve problems.
 
 If you have questions when considering, authoring, or editing documentation, ask
@@ -160,11 +160,11 @@ Markdown rendering engine. For a complete Kramdown reference, see the
 [GitLab Markdown Kramdown Guide](https://about.gitlab.com/handbook/markdown-guide/).
 
 The [`gitlab-kramdown`](https://gitlab.com/gitlab-org/gitlab_kramdown) Ruby gem
-will support all [GFM markup](../../../user/markdown.md) in the future, which is
-all markup supported for display in the GitLab application itself. For now, use
-regular Markdown markup, following the rules in the linked style guide.
+will support all [GitLab Flavored Markdown](../../../user/markdown.md) in the future, which is
+all Markdown supported for display in the GitLab application itself. For now, use
+regular Markdown, following the rules in the linked style guide.
 
-Note that Kramdown-specific markup (for example, `{:.class}`) doesn't render
+Kramdown-specific markup (for example, `{:.class}`) doesn't render
 properly on GitLab instances under [`/help`](../index.md#gitlab-help).
 
 ### HTML in Markdown
@@ -183,7 +183,7 @@ GitLab ensures that the Markdown used across all documentation is consistent, as
 well as easy to review and maintain, by [testing documentation changes](../testing.md)
 with [markdownlint](../testing.md#markdownlint). This lint test fails when any
 document has an issue with Markdown formatting that may cause the page to render
-incorrectly within GitLab. It will also fail when a document is using
+incorrectly within GitLab. It also fails when a document has
 non-standard Markdown (which may render correctly, but is not the current
 standard for GitLab documentation).
 
@@ -193,7 +193,7 @@ A rule that could cause confusion is `MD044/proper-names`, as it might not be
 immediately clear what caused markdownlint to fail, or how to correct the
 failure. This rule checks a list of known words, listed in the `.markdownlint.json`
 file in each project, to verify proper use of capitalization and backticks.
-Words in backticks will be ignored by markdownlint.
+Words in backticks are ignored by markdownlint.
 
 In general, product names should follow the exact capitalization of the official
 names of the products, protocols, and so on. See [`.markdownlint.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.markdownlint.json)
@@ -210,7 +210,7 @@ included in backticks. For example:
 
 - "Change the `needs` keyword in your `.gitlab.yml`..."
   - `needs` is a parameter, and `.gitlab.yml` is a file, so both need backticks.
-    Additionally, `.gitlab.yml` will fail markdownlint without backticks as it
+    Additionally, `.gitlab.yml` without backticks fails markdownlint because it
     does not have capital G or L.
 - "Run `git clone` to clone a Git repository..."
   - `git clone` is a command, so it must be lowercase, while Git is the product,
@@ -286,14 +286,14 @@ Refer to the following items when working with directories and files:
       located at `doc/user/admin_area/settings/visibility_and_access_controls.md`.
 1. The `doc/topics/` directory holds topic-related technical content. Create
    `doc/topics/topic_name/subtopic_name/index.md` when subtopics become necessary.
-   General user- and admin- related documentation, should be placed accordingly.
+   General user and administrator documentation should be placed accordingly.
 1. The `/university/` directory is *deprecated* and the majority of its documentation
    has been moved.
 
 If you're unsure where to place a document or a content addition, this shouldn't
 stop you from authoring and contributing. Use your best judgment, and then ask
 the reviewer of your MR to confirm your decision, or ask a technical writer at
-any stage in the process. The technical writing team will review all
+any stage in the process. The technical writing team reviews all
 documentation changes, regardless, and can move content if there is a better
 place for it.
 
@@ -542,8 +542,8 @@ tenses, words, and phrases:
 - Avoid use of the future tense:
   - Instead of "after you execute this command, GitLab will display the
     result", use "after you execute this command, GitLab displays the result".
-  - Only use the future tense to convey when the action or result will actually
-    occur at a future time.
+  - Only use the future tense to convey when the action or result actually
+    occurs at a future time.
 - Don't use slashes to clump different words together or as a replacement for
   the word "or":
   - Instead of "and/or," consider using "or," or use another sensible
@@ -566,7 +566,7 @@ tenses, words, and phrases:
 - Avoid using the word *currently* when talking about the product or its
   features. The documentation describes the product as it is, and not as it
   will be at some indeterminate point in the future.
-- Avoid using the word scalability when talking about increasing GitLab
+- Avoid using the word *scalability* when talking about increasing GitLab
   performance for additional users. The words scale or scaling are sometimes
   acceptable, but references to increasing GitLab performance for additional
   users should direct readers to the GitLab
@@ -673,8 +673,8 @@ Follow these guidelines for punctuation:
 
 ### Placeholder text
 
-Often in examples, a writer will provide a command or configuration that
-uses values specific to the reader.
+You might want to provide a command or configuration that
+uses specific values.
 
 In these cases, use [`<` and `>`](https://en.wikipedia.org/wiki/Usage_message#Pattern)
 to call out where a reader must replace text with their own value.

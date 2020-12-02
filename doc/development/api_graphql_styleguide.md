@@ -268,8 +268,8 @@ query($project_path: ID!) {
 }
 ```
 
-To ensure that we get consistent ordering, we will append an ordering on the primary
-key, in descending order. This is usually `id`, so basically we will add `order(id: :desc)`
+To ensure that we get consistent ordering, we append an ordering on the primary
+key, in descending order. This is usually `id`, so we add `order(id: :desc)`
 to the end of the relation. A primary key _must_ be available on the underlying table.
 
 #### Shortcut fields
@@ -315,7 +315,7 @@ class MergeRequestPermissionsType < BasePermissionType
 end
 ```
 
-- **`permission_field`**: Will act the same as `graphql-ruby`'s
+- **`permission_field`**: Acts the same as `graphql-ruby`'s
   `field` method but setting a default description and type and making
   them non-nullable. These options can still be overridden by adding
   them as arguments.
@@ -323,7 +323,7 @@ end
   behaves the same way as `permission_field` and the same
   arguments can be overridden.
 - **`abilities`**: Allows exposing several abilities defined in our
-  policies at once. The fields for these will all have be non-nullable
+  policies at once. The fields for these must all be non-nullable
   booleans with a default description.
 
 ## Feature flags
@@ -331,7 +331,7 @@ end
 Developers can add [feature flags](../development/feature_flags/index.md) to GraphQL
 fields in the following ways:
 
-- Add the `feature_flag` property to a field. This will allow the field to be _hidden_
+- Add the `feature_flag` property to a field. This allows the field to be _hidden_
   from the GraphQL schema when the flag is disabled.
 - Toggle the return value when resolving the field.
 
@@ -339,7 +339,7 @@ You can refer to these guidelines to decide which approach to use:
 
 - If your field is experimental, and its name or type is subject to
   change, use the `feature_flag` property.
-- If your field is stable and its definition will not change, even after the flag is
+- If your field is stable and its definition doesn't change, even after the flag is
   removed, toggle the return value of the field instead. Note that
   [all fields should be nullable](#nullable-fields) anyway.
 
@@ -347,15 +347,15 @@ You can refer to these guidelines to decide which approach to use:
 
 The `feature_flag` property allows you to toggle the field's
 [visibility](https://graphql-ruby.org/authorization/visibility.html)
-within the GraphQL schema. This will remove the field from the schema
+within the GraphQL schema. This removes the field from the schema
 when the flag is disabled.
 
 A description is [appended](https://gitlab.com/gitlab-org/gitlab/-/blob/497b556/app/graphql/types/base_field.rb#L44-53)
 to the field indicating that it is behind a feature flag.
 
 CAUTION: **Caution:**
-If a client queries for the field when the feature flag is disabled, the query will
-fail. Consider this when toggling the visibility of the feature on or off on
+If a client queries for the field when the feature flag is disabled, the query
+fails. Consider this when toggling the visibility of the feature on or off on
 production.
 
 The `feature_flag` property does not allow the use of
@@ -385,7 +385,7 @@ When applying a feature flag to toggle the value of a field, the
 
 - State that the value of the field can be toggled by a feature flag.
 - Name the feature flag.
-- State what the field will return when the feature flag is disabled (or
+- State what the field returns when the feature flag is disabled (or
   enabled, if more appropriate).
 
 Example:
@@ -424,8 +424,8 @@ field :token, GraphQL::STRING_TYPE, null: true,
 ```
 
 The original `description` of the things being deprecated should be maintained,
-and should _not_ be updated to mention the deprecation. Instead, the `reason` will
-be appended to the `description`.
+and should _not_ be updated to mention the deprecation. Instead, the `reason`
+is appended to the `description`.
 
 ### Deprecation reason style guide
 
@@ -484,13 +484,13 @@ module Types
 end
 ```
 
-If the enum will be used for a class property in Ruby that is not an uppercase string,
-you can provide a `value:` option that will adapt the uppercase value.
+If the enum is used for a class property in Ruby that is not an uppercase string,
+you can provide a `value:` option that adapts the uppercase value.
 
 In the following example:
 
-- GraphQL inputs of `OPENED` will be converted to `'opened'`.
-- Ruby values of `'opened'` will be converted to `"OPENED"` in GraphQL responses.
+- GraphQL inputs of `OPENED` are converted to `'opened'`.
+- Ruby values of `'opened'` are converted to `"OPENED"` in GraphQL responses.
 
 ```ruby
 module Types
@@ -536,7 +536,7 @@ When data to be returned by GraphQL is stored as
 GraphQL types whenever possible. Avoid using the `GraphQL::Types::JSON` type unless
 the JSON data returned is _truly_ unstructured.
 
-If the structure of the JSON data varies, but will be one of a set of known possible
+If the structure of the JSON data varies, but is one of a set of known possible
 structures, use a
 [union](https://graphql-ruby.org/type_definitions/unions.html).
 An example of the use of a union for this purpose is
@@ -605,7 +605,7 @@ descriptions:
   this field do?". Example: `'Indicates project has a Git repository'`.
 - Always include the word `"timestamp"` when describing an argument or
   field of type `Types::TimeType`. This lets the reader know that the
-  format of the property will be `Time`, rather than just `Date`.
+  format of the property is `Time`, rather than just `Date`.
 - No `.` at end of strings.
 
 Example:
@@ -618,7 +618,7 @@ field :closed_at, Types::TimeType, description: 'Timestamp of when the issue was
 
 ### `copy_field_description` helper
 
-Sometimes we want to ensure that two descriptions will always be identical.
+Sometimes we want to ensure that two descriptions are always identical.
 For example, to keep a type field description the same as a mutation argument
 when they both represent the same property.
 
@@ -641,8 +641,8 @@ abilities as in the Rails app.
 If the:
 
 - Currently authenticated user fails the authorization, the authorized
-  resource will be returned as `null`.
-- Resource is part of a collection, the collection will be filtered to
+  resource is returned as `null`.
+- Resource is part of a collection, the collection is filtered to
   exclude the objects that the user's authorization checks failed against.
 
 Also see [authorizing resources in a mutation](#authorizing-resources).
@@ -656,7 +656,7 @@ authorization checks of the loaded records.
 ### Type authorization
 
 Authorize a type by passing an ability to the `authorize` method. All
-fields with the same type will be authorized by checking that the
+fields with the same type is authorized by checking that the
 currently authenticated user has the required ability.
 
 For example, the following authorization ensures that the currently
@@ -922,7 +922,7 @@ before calling `resolve`! An example can be seen in our [`GraphQLHelpers`](https
 
 The full query is known in advance during execution, which means we can make use
 of [lookahead](https://graphql-ruby.org/queries/lookahead.html) to optimize our
-queries, and batch load associations we know we will need. Consider adding
+queries, and batch load associations we know we need. Consider adding
 lookahead support in your resolvers to avoid `N+1` performance issues.
 
 To enable support for common lookahead use-cases (pre-loading associations when
@@ -996,7 +996,7 @@ When using resolvers, they can and should serve as the SSoT for field metadata.
 All field options (apart from the field name) can be declared on the resolver.
 These include:
 
-- `type` (this is particularly important, and will soon be mandatory)
+- `type` (this is particularly important, and is planned to be mandatory)
 - `extras`
 - `description`
 
@@ -1164,7 +1164,7 @@ argument :my_arg, GraphQL::STRING_TYPE,
          description: "A description of the argument"
 ```
 
-Each GraphQL `argument` defined will be passed to the `#resolve` method
+Each GraphQL `argument` defined is passed to the `#resolve` method
 of a mutation as keyword arguments.
 
 Example:
@@ -1175,7 +1175,7 @@ def resolve(my_arg:)
 end
 ```
 
-`graphql-ruby` will automatically wrap up arguments into an
+`graphql-ruby` wraps up arguments into an
 [input type](https://graphql.org/learn/schema/#input-types).
 
 For example, the
@@ -1231,7 +1231,7 @@ single mutation when multiple are performed within a single request.
 ### The `resolve` method
 
 The `resolve` method receives the mutation's arguments as keyword arguments.
-From here, we can call the service that will modify the resource.
+From here, we can call the service that modifies the resource.
 
 The `resolve` method should then return a hash with the same field
 names as defined on the mutation including an `errors` array. For example,
@@ -1263,7 +1263,7 @@ should look like this:
 
 To make the mutation available it must be defined on the mutation
 type that lives in `graphql/types/mutation_types`. The
-`mount_mutation` helper method will define a field based on the
+`mount_mutation` helper method defines a field based on the
 GraphQL-name of the mutation:
 
 ```ruby
@@ -1278,7 +1278,7 @@ module Types
 end
 ```
 
-Will generate a field called `mergeRequestSetWip` that
+Generates a field called `mergeRequestSetWip` that
 `Mutations::MergeRequests::SetWip` to be resolved.
 
 ### Authorizing resources
@@ -1301,13 +1301,13 @@ end
 We can then call `authorize!` in the `resolve` method, passing in the resource we
 want to validate the abilities for.
 
-Alternatively, we can add a `find_object` method that will load the
+Alternatively, we can add a `find_object` method that loads the
 object on the mutation. This would allow you to use the
 `authorized_find!` helper method.
 
 When a user is not allowed to perform the action, or an object is not
 found, we should raise a
-`Gitlab::Graphql::Errors::ResourceNotAvailable` error. Which will be
+`Gitlab::Graphql::Errors::ResourceNotAvailable` error which is
 correctly rendered to the clients.
 
 ### Errors in mutations
@@ -1418,8 +1418,8 @@ of errors should be treated as internal, and not shown to the user in specific
 detail.
 
 We need to inform the user when the mutation fails, but we do not need to
-tell them why, since they cannot have caused it, and nothing they can do will
-fix it, although we may offer to retry the mutation.
+tell them why, since they cannot have caused it, and nothing they can do
+fixes it, although we may offer to retry the mutation.
 
 #### Categorizing errors
 
@@ -1483,7 +1483,7 @@ Sometimes a mutation or resolver may accept a number of optional
 arguments, but we still want to validate that at least one of the optional
 arguments is provided. In this situation, consider using the `#ready?`
 method within your mutation or resolver to provide the validation. The
-`#ready?` method will be called before any work is done within the
+`#ready?` method is called before any work is done within the
 `#resolve` method.
 
 Example:
@@ -1547,11 +1547,11 @@ visit [Testing](graphql_guide/pagination.md#testing) for details.
 
 To test GraphQL mutation requests, `GraphqlHelpers` provides 2
 helpers: `graphql_mutation` which takes the name of the mutation, and
-a hash with the input for the mutation. This will return a struct with
+a hash with the input for the mutation. This returns a struct with
 a mutation query, and prepared variables.
 
 This struct can then be passed to the `post_graphql_mutation` helper,
-that will post the request with the correct parameters, like a GraphQL
+that posts the request with the correct parameters, like a GraphQL
 client would do.
 
 To access the response of a mutation, the `graphql_mutation_response`
