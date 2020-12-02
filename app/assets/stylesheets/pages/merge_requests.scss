@@ -287,10 +287,6 @@ $mr-widget-min-height: 69px;
       margin-top: 0;
       margin-bottom: 0;
 
-      &.has-conflicts .fa-exclamation-triangle {
-        color: $orange-500;
-      }
-
       time {
         font-weight: $gl-font-weight-normal;
       }

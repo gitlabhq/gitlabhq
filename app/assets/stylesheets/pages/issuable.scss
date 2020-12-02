@@ -113,7 +113,7 @@
     position: absolute;
     bottom: 0;
     right: 0;
-    text-shadow: -1px -1px 2px $white, 1px -1px 2px $white, -1px 1px 2px $white, 1px 1px 2px $white;
+    filter: drop-shadow(0 0 0.5px $white) drop-shadow(0 0 1px $white) drop-shadow(0 0 2px $white);
   }
 }
 
@@ -392,6 +392,13 @@
       text-align: center;
     }
 
+    .merge-icon {
+      height: 12px;
+      width: 12px;
+      bottom: -5px;
+      right: 4px;
+    }
+
     .sidebar-collapsed-icon {
       display: flex;
       flex-direction: column;
@@ -402,7 +409,7 @@
       text-align: center;
       color: $gl-text-color-secondary;
 
-      svg {
+      > svg {
         fill: $gl-text-color-secondary;
       }
 
@@ -410,7 +417,7 @@
       &:hover .todo-undone {
         color: $gl-text-color;
 
-        svg {
+        > svg {
           fill: $gl-text-color;
         }
       }
@@ -480,10 +487,6 @@
 
     .issuable-header-btn {
       display: none;
-    }
-
-    .merge-icon {
-      font-size: 10px;
     }
 
     .multiple-users {

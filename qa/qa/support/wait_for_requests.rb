@@ -25,7 +25,7 @@ module QA
         # https://gitlab.com/groups/gitlab-org/-/epics/956
         # retry_on_exception added here due to `StaleElementReferenceError`. See: https://gitlab.com/gitlab-org/gitlab/-/issues/232485
         Support::Retrier.retry_on_exception do
-          Capybara.page.has_no_css?('.gl-spinner, .fa-spinner, .spinner', wait: wait)
+          Capybara.page.has_no_css?('.gl-spinner', wait: wait)
         end
       end
     end

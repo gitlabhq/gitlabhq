@@ -97,11 +97,12 @@ export default {
     <collapsed-reviewer v-for="user in collapsedUsers" :key="user.id" :user="user" />
     <button v-if="hasMoreThanTwoReviewers" class="btn-link" type="button">
       <span class="avatar-counter sidebar-avatar-counter"> {{ sidebarAvatarCounter }} </span>
-      <i
+      <gl-icon
         v-if="!allReviewersCanMerge"
+        name="warning-solid"
         aria-hidden="true"
-        class="fa fa-exclamation-triangle merge-icon"
-      ></i>
+        class="merge-icon"
+      />
     </button>
   </div>
 </template>

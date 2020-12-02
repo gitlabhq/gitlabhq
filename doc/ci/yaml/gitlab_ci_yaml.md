@@ -8,62 +8,81 @@ type: reference
 # The .gitlab-ci.yml file
 <!-- markdownlint-enable MD044 -->
 
-To use GitLab CI/CD, you need an application codebase hosted in a
-Git repository, and for your build, test, and deployment
-scripts to be specified in a file called [`.gitlab-ci.yml`](README.md),
-located in the root path of your repository.
+To use GitLab CI/CD, you need:
 
-In this file, you can define the scripts you want to run, define include and
-cache dependencies, choose commands you want to run in sequence
-and those you want to run in parallel, define where you want to
-deploy your app, and specify whether you want to run the scripts automatically
-or trigger any of them manually. After you're familiar with
-GitLab CI/CD you can add more advanced steps into the configuration file.
+- Application code hosted in a Git repository.
+- A file called [`.gitlab-ci.yml`](README.md) in the root of your repository, which
+  contains the CI/CD configuration.
 
-To add scripts to that file, you need to organize them in a
-sequence that suits your application and are in accordance with
-the tests you wish to perform. To visualize the process, imagine
-that all the scripts you add to the configuration file are the
-same as the commands you run on a terminal on your computer.
+In the `.gitlab-ci.yml` file, you can define:
 
-After you've added your `.gitlab-ci.yml` configuration file to your
-repository, GitLab detects it and run your scripts with the
-tool called [GitLab Runner](https://docs.gitlab.com/runner/), which
-works similarly to your terminal.
+- The scripts you want to run.
+- Other configuration files and templates you want to include.
+- Dependencies and caches.
+- The commands you want to run in sequence and those you want to run in parallel.
+- The location to deploy your application to.
+- Whether you want to run the scripts automatically or trigger any of them manually.
 
-The scripts are grouped into **jobs**, and together they compose
-a **pipeline**. A minimalist example of `.gitlab-ci.yml` file
-could contain:
+The scripts are grouped into **jobs**, and jobs run as part of a larger
+**pipeline**. You can group multiple independent jobs into **stages** that run in a defined order.
+
+You should organize your jobs in a sequence that suits your application and is in accordance with
+the tests you wish to perform. To [visualize](visualization.md) the process, imagine
+the scripts you add to jobs are the same as CLI commands you run on your computer.
+
+When you add a `.gitlab-ci.yml` file to your
+repository, GitLab detects it and an application called [GitLab Runner](https://docs.gitlab.com/runner/)
+runs the scripts defined in the jobs.
+
+A `.gitlab-ci.yml` file might contain:
 
 ```yaml
-before_script:
-  - apt-get install rubygems ruby-dev -y
+stages:
+  - build
+  - test
 
-run-test:
+build-code-job:
+  stage: build
   script:
-    - ruby --version
+    - echo "Check the ruby version, then build some Ruby project files:"
+    - ruby -v
+    - rake
+
+test-code-job1:
+  stage: test
+  script:
+    - echo "If the files are built successfully, test some files with one command:"
+    - rake test1
+
+test-code-job2:
+  stage: test
+  script:
+    - echo "If the files are built successfully, test other files with a different command:"
+    - rake test2
 ```
 
-The `before_script` attribute would install the dependencies
-for your app before running anything, and a  **job** called
-`run-test` would print the Ruby version of the current system.
-Both of them compose a **pipeline** triggered at every push
-to any branch of the repository.
+In this example, the `build-code-job` job in the `build` stage runs first. It outputs
+the Ruby version the job is using, then runs `rake` to build project files.
+If this job completes successfully, the two `test-code-job` jobs in the `test` stage start
+in parallel and run tests on the files.
 
-GitLab CI/CD not only executes the jobs you've
-set but also shows you what's happening during execution, as you
-would see in your terminal:
+The full pipeline in the example is composed of three jobs, grouped into two stages,
+`build` and `test`. The pipeline runs every time changes are pushed to any
+branch in the project.
+
+GitLab CI/CD not only executes the jobs but also shows you what's happening during execution,
+just as you would see in your terminal:
 
 ![job running](img/job_running.png)
 
 You create the strategy for your app and GitLab runs the pipeline
-for you according to what you've defined. Your pipeline status is also
+according to what you've defined. Your pipeline status is also
 displayed by GitLab:
 
 ![pipeline status](img/pipeline_status.png)
 
-At the end, if anything goes wrong, you can easily
-[roll back](../environments/index.md#retrying-and-rolling-back) all the changes:
+If anything goes wrong, you can
+[roll back](../environments/index.md#retrying-and-rolling-back) the changes:
 
 ![rollback button](img/rollback.png)
 

@@ -1,10 +1,17 @@
 <script>
 import { createNamespacedHelpers, mapState, mapActions, mapGetters } from 'vuex';
-import { GlFormGroup, GlFormInput, GlFormCheckbox, GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
+import {
+  GlFormGroup,
+  GlFormInput,
+  GlFormCheckbox,
+  GlIcon,
+  GlLink,
+  GlSprintf,
+  GlButton,
+} from '@gitlab/ui';
 import { s__ } from '~/locale';
 import ClusterFormDropdown from '~/create_cluster/components/cluster_form_dropdown.vue';
 import { KUBERNETES_VERSIONS } from '../constants';
-import LoadingButton from '~/vue_shared/components/loading_button.vue';
 
 const { mapState: mapRolesState, mapActions: mapRolesActions } = createNamespacedHelpers('roles');
 const { mapState: mapKeyPairsState, mapActions: mapKeyPairsActions } = createNamespacedHelpers(
@@ -29,7 +36,7 @@ export default {
     GlIcon,
     GlLink,
     GlSprintf,
-    LoadingButton,
+    GlButton,
   },
   props: {
     gitlabManagedClusterHelpPath: {
@@ -508,13 +515,16 @@ export default {
       </p>
     </div>
     <div class="form-group">
-      <loading-button
-        class="js-create-cluster btn-success"
+      <gl-button
+        variant="success"
+        category="primary"
+        class="js-create-cluster"
         :disabled="createClusterButtonDisabled"
         :loading="isCreatingCluster"
-        :label="createClusterButtonLabel"
         @click="createCluster()"
-      />
+      >
+        {{ createClusterButtonLabel }}
+      </gl-button>
     </div>
   </form>
 </template>

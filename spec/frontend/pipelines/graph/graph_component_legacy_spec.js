@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { mount } from '@vue/test-utils';
+import { GlLoadingIcon } from '@gitlab/ui';
 import { setHTMLFixture } from 'helpers/fixtures';
 import PipelineStore from '~/pipelines/stores/pipeline_store';
 import GraphComponentLegacy from '~/pipelines/components/graph/graph_component_legacy.vue';
@@ -42,7 +43,7 @@ describe('graph component', () => {
         },
       });
 
-      expect(wrapper.find('.gl-spinner').exists()).toBe(true);
+      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
     });
   });
 
@@ -85,7 +86,7 @@ describe('graph component', () => {
       });
 
       it('should not include the loading icon', () => {
-        expect(wrapper.find('.fa-spinner').exists()).toBe(false);
+        expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
       });
 
       it('should include the stage column', () => {

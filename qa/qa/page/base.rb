@@ -228,7 +228,7 @@ module QA
       def finished_loading_block?
         wait_for_requests
 
-        has_no_css?('.fa-spinner.block-loading', wait: Capybara.default_max_wait_time)
+        has_no_css?('.gl-spinner', wait: Capybara.default_max_wait_time)
       end
 
       def has_loaded_all_images?

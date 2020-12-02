@@ -22,7 +22,7 @@ RSpec.describe 'projects/commits/_commit.html.haml' do
       }
 
       within '.gpg-status-box' do
-        expect(page).not_to have_css('i.fa.fa-spinner.fa-spin')
+        expect(page).not_to have_css('.gl-spinner')
       end
     end
   end
