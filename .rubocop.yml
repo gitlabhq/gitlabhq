@@ -32,6 +32,7 @@ AllCops:
     - 'builds/**/*'
     - 'plugins/**/*'
     - 'file_hooks/**/*'
+    - 'workhorse/**/*'
   CacheRootDirectory: tmp
   MaxFilesInCache: 18000
 

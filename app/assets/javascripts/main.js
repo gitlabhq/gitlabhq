@@ -136,10 +136,9 @@ function deferredInitialisation() {
   $('.remove-row').on('ajax:success', function removeRowAjaxSuccessCallback() {
     tooltips.dispose(this);
 
-    // eslint-disable-next-line no-jquery/no-fade
     $(this)
       .closest('li')
-      .fadeOut();
+      .addClass('gl-display-none!');
   });
 
   $('.js-remove-tr').on('ajax:before', function removeTRAjaxBeforeCallback() {
@@ -147,10 +146,9 @@ function deferredInitialisation() {
   });
 
   $('.js-remove-tr').on('ajax:success', function removeTRAjaxSuccessCallback() {
-    // eslint-disable-next-line no-jquery/no-fade
     $(this)
       .closest('tr')
-      .fadeOut();
+      .addClass('gl-display-none!');
   });
 
   const glTooltipDelay = localStorage.getItem('gl-tooltip-delay');

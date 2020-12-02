@@ -395,7 +395,9 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
 
    API requests are protected by checking for a valid CSRF token.
 
-   In order to be able to increment the values the related feature `usage_data<event_name>` should be enabled.
+   In order to increment the values, the related feature `usage_data_<event_name>` should be
+   set to `default_enabled: true`. For more information, see
+   [Feature flags in development of GitLab](../feature_flags/index.md).
 
    ```plaintext
    POST /usage_data/increment_unique_users
@@ -418,7 +420,10 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
 
    Example usage for an existing event already defined in [known events](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/):
 
-   Note that `usage_data_api` and `usage_data_#{event_name}` should be enabled in order to be able to track events
+   Usage Data API is behind  `usage_data_api` feature flag which, as of GitLab 13.7, is
+   now set to `default_enabled: true`.
+
+   Each event tracked using Usage Data API is behind a feature flag `usage_data_#{event_name}` which should be `default_enabled: true`
 
    ```javascript
    import api from '~/api';

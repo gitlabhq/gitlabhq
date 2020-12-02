@@ -10,7 +10,7 @@ RSpec.shared_examples 'handle uploads authorize request' do
       subject
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+      expect(response.media_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
       expect(json_response['TempPath']).to eq(uploader_class.workhorse_local_upload_path)
     end
 
@@ -30,7 +30,7 @@ RSpec.shared_examples 'handle uploads authorize request' do
           subject
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+          expect(response.media_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
           expect(json_response).not_to have_key('TempPath')
           expect(json_response['RemoteObject']).to have_key('ID')
           expect(json_response['RemoteObject']).to have_key('GetURL')
@@ -49,7 +49,7 @@ RSpec.shared_examples 'handle uploads authorize request' do
           subject
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+          expect(response.media_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
           expect(json_response['TempPath']).to eq(uploader_class.workhorse_local_upload_path)
           expect(json_response['RemoteObject']).to be_nil
         end

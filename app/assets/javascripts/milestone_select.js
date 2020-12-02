@@ -53,8 +53,7 @@ export default class MilestoneSelect {
       const $block = $selectBox.closest('.block');
       const $sidebarCollapsedValue = $block.find('.sidebar-collapsed-icon');
       const $value = $block.find('.value');
-      // eslint-disable-next-line no-jquery/no-fade
-      const $loading = $block.find('.block-loading').fadeOut();
+      const $loading = $block.find('.block-loading').addClass('gl-display-none');
       selectedMilestoneDefault = showAny ? '' : null;
       selectedMilestoneDefault =
         showNo && defaultNo ? __('No milestone') : selectedMilestoneDefault;
@@ -255,34 +254,29 @@ export default class MilestoneSelect {
             }
 
             $dropdown.trigger('loading.gl.dropdown');
-            // eslint-disable-next-line no-jquery/no-fade
-            $loading.removeClass('hidden').fadeIn();
+            $loading.removeClass('gl-display-none');
 
             boardsStore.detail.issue
               .update($dropdown.attr('data-issue-update'))
               .then(() => {
                 $dropdown.trigger('loaded.gl.dropdown');
-                // eslint-disable-next-line no-jquery/no-fade
-                $loading.fadeOut();
+                $loading.addClass('gl-display-none');
               })
               .catch(() => {
-                // eslint-disable-next-line no-jquery/no-fade
-                $loading.fadeOut();
+                $loading.addClass('gl-display-none');
               });
           } else {
             selected = $selectBox.find('input[type="hidden"]').val();
             data = {};
             data[abilityName] = {};
             data[abilityName].milestone_id = selected != null ? selected : null;
-            // eslint-disable-next-line no-jquery/no-fade
-            $loading.removeClass('hidden').fadeIn();
+            $loading.removeClass('gl-display-none');
             $dropdown.trigger('loading.gl.dropdown');
             return axios
               .put(issueUpdateURL, data)
               .then(({ data }) => {
                 $dropdown.trigger('loaded.gl.dropdown');
-                // eslint-disable-next-line no-jquery/no-fade
-                $loading.fadeOut();
+                $loading.addClass('gl-display-none');
                 $selectBox.hide();
                 $value.css('display', '');
                 if (data.milestone != null) {
@@ -313,8 +307,7 @@ export default class MilestoneSelect {
                   .text(__('None'));
               })
               .catch(() => {
-                // eslint-disable-next-line no-jquery/no-fade
-                $loading.fadeOut();
+                $loading.addClass('gl-display-none');
               });
           }
         },

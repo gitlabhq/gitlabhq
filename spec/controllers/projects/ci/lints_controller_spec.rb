@@ -82,7 +82,7 @@ RSpec.describe Projects::Ci::LintsController do
       end
 
       it 'renders json' do
-        expect(response.content_type).to eq 'application/json'
+        expect(response.media_type).to eq 'application/json'
         expect(parsed_body).to include('errors', 'warnings', 'jobs', 'valid')
         expect(parsed_body).to match_schema('entities/lint_result_entity')
       end

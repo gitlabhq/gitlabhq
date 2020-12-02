@@ -4881,6 +4881,9 @@ msgstr ""
 msgid "Can't apply this suggestion."
 msgstr ""
 
+msgid "Can't be empty"
+msgstr ""
+
 msgid "Can't create snippet: %{err}"
 msgstr ""
 
@@ -9346,6 +9349,9 @@ msgid "Describe the requirement here"
 msgstr ""
 
 msgid "Description"
+msgstr ""
+
+msgid "Description (optional)"
 msgstr ""
 
 msgid "Description parsed with %{link_start}GitLab Flavored Markdown%{link_end}"
@@ -19033,10 +19039,22 @@ msgstr ""
 msgid "OnCallSchedules|Add a schedule"
 msgstr ""
 
+msgid "OnCallSchedules|Add schedule"
+msgstr ""
+
 msgid "OnCallSchedules|Create on-call schedules  in GitLab"
 msgstr ""
 
+msgid "OnCallSchedules|Failed to add schedule"
+msgstr ""
+
 msgid "OnCallSchedules|Route alerts directly to specific members of your team"
+msgstr ""
+
+msgid "OnCallSchedules|Select timezone"
+msgstr ""
+
+msgid "OnCallSchedules|Sets the default timezone for the schedule, for all participants"
 msgstr ""
 
 msgid "OnDemandScans|Could not fetch scanner profiles. Please refresh the page, or try again later."
@@ -28436,6 +28454,9 @@ msgstr ""
 msgid "Timeout connecting to the Google API. Please try again."
 msgstr ""
 
+msgid "Timezone"
+msgstr ""
+
 msgid "Time|hr"
 msgid_plural "Time|hrs"
 msgstr[0] ""
@@ -30647,6 +30668,9 @@ msgid "What describes you best?"
 msgstr ""
 
 msgid "What is squashing?"
+msgstr ""
+
+msgid "What is your job title? (optional)"
 msgstr ""
 
 msgid "What's new at GitLab"

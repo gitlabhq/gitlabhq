@@ -139,4 +139,12 @@ def warn_or_fail_commits(failed_linters, default_to_fail: true)
   end
 end
 
-lint_commits(git.commits)
+# As part of https://gitlab.com/groups/gitlab-org/-/epics/4826 we are
+# vendoring workhorse commits from the stand-alone gitlab-workhorse
+# repo. There is no point in linting commits that we want to vendor as
+# is.
+def workhorse_changes?
+  git.diff.any? { |file| file.path.start_with?('workhorse/') }
+end
+
+lint_commits(git.commits) unless workhorse_changes?

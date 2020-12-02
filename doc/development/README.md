@@ -135,6 +135,7 @@ from:
 - [Wikis development guide](wikis.md)
 - [Newlines style guide](newlines_styleguide.md)
 - [Image scaling guide](image_scaling.md)
+- [Export to CSV](export_csv.md)
 
 ## Performance guides
 

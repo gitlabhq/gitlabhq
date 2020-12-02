@@ -5,4 +5,4 @@ rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/29
 milestone: '13.6'
 type: development
 group: group::Release Management
-default_enabled: false
+default_enabled: true

@@ -83,7 +83,7 @@ RSpec.describe Projects::ReleasesController do
       let(:format) { :html }
 
       it 'returns a text/html content_type' do
-        expect(response.content_type).to eq 'text/html'
+        expect(response.media_type).to eq 'text/html'
       end
 
       it_behaves_like 'common access controls'
@@ -101,7 +101,7 @@ RSpec.describe Projects::ReleasesController do
       let(:format) { :json }
 
       it 'returns an application/json content_type' do
-        expect(response.content_type).to eq 'application/json'
+        expect(response.media_type).to eq 'application/json'
       end
 
       it "returns the project's releases as JSON, ordered by released_at" do

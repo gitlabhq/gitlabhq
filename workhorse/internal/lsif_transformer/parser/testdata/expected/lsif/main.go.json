@@ -1,0 +1,208 @@
+[
+    {
+        "start_line": 7,
+        "start_char": 1,
+        "definition_path": "main.go#L4",
+        "hover": [
+            {
+                "tokens": [
+                    [
+                        {
+                            "class": "kn",
+                            "value": "package"
+                        },
+                        {
+                            "value": " "
+                        },
+                        {
+                            "class": "s",
+                            "value": "\"github.com/user/hello/morestrings\""
+                        }
+                    ]
+                ],
+                "language": "go"
+            },
+            {
+                "value": "Package morestrings implements additional functions to manipulate UTF-8 encoded strings, beyond what is provided in the standard \"strings\" package. \n\n"
+            }
+        ],
+        "references": [
+            {
+                "path": "main.go#L8"
+            },
+            {
+                "path": "main.go#L9"
+            }
+        ]
+    },
+    {
+        "start_line": 7,
+        "start_char": 13,
+        "definition_path": "morestrings/reverse.go#L12",
+        "hover": [
+            {
+                "tokens": [
+                    [
+                        {
+                            "class": "kd",
+                            "value": "func"
+                        },
+                        {
+                            "value": " Reverse(s "
+                        },
+                        {
+                            "class": "kt",
+                            "value": "string"
+                        },
+                        {
+                            "value": ") "
+                        },
+                        {
+                            "class": "kt",
+                            "value": "string"
+                        }
+                    ]
+                ],
+                "language": "go"
+            },
+            {
+                "value": "This method reverses a string \n\n"
+            }
+        ],
+        "references": [
+            {
+                "path": "main.go#L8"
+            }
+        ]
+    },
+    {
+        "start_line": 8,
+        "start_char": 1,
+        "definition_path": "main.go#L4",
+        "hover": [
+            {
+                "tokens": [
+                    [
+                        {
+                            "class": "kn",
+                            "value": "package"
+                        },
+                        {
+                            "value": " "
+                        },
+                        {
+                            "class": "s",
+                            "value": "\"github.com/user/hello/morestrings\""
+                        }
+                    ]
+                ],
+                "language": "go"
+            },
+            {
+                "value": "Package morestrings implements additional functions to manipulate UTF-8 encoded strings, beyond what is provided in the standard \"strings\" package. \n\n"
+            }
+        ],
+        "references": [
+            {
+                "path": "main.go#L8"
+            },
+            {
+                "path": "main.go#L9"
+            }
+        ]
+    },
+    {
+        "start_line": 8,
+        "start_char": 13,
+        "definition_path": "morestrings/reverse.go#L5",
+        "hover": [
+            {
+                "tokens": [
+                    [
+                        {
+                            "class": "kd",
+                            "value": "func"
+                        },
+                        {
+                            "value": " Func2(i "
+                        },
+                        {
+                            "class": "kt",
+                            "value": "int"
+                        },
+                        {
+                            "value": ") "
+                        },
+                        {
+                            "class": "kt",
+                            "value": "string"
+                        }
+                    ]
+                ],
+                "language": "go"
+            }
+        ],
+        "references": [
+            {
+                "path": "main.go#L9"
+            }
+        ]
+    },
+    {
+        "start_line": 6,
+        "start_char": 5,
+        "definition_path": "main.go#L7",
+        "hover": [
+            {
+                "tokens": [
+                    [
+                        {
+                            "class": "kd",
+                            "value": "func"
+                        },
+                        {
+                            "value": " main()"
+                        }
+                    ]
+                ],
+                "language": "go"
+            }
+        ]
+    },
+    {
+        "start_line": 3,
+        "start_char": 2,
+        "definition_path": "main.go#L4",
+        "hover": [
+            {
+                "tokens": [
+                    [
+                        {
+                            "class": "kn",
+                            "value": "package"
+                        },
+                        {
+                            "value": " "
+                        },
+                        {
+                            "class": "s",
+                            "value": "\"github.com/user/hello/morestrings\""
+                        }
+                    ]
+                ],
+                "language": "go"
+            },
+            {
+                "value": "Package morestrings implements additional functions to manipulate UTF-8 encoded strings, beyond what is provided in the standard \"strings\" package. \n\n"
+            }
+        ],
+        "references": [
+            {
+                "path": "main.go#L8"
+            },
+            {
+                "path": "main.go#L9"
+            }
+        ]
+    }
+]

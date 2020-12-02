@@ -48,7 +48,6 @@ RSpec.describe Gitlab::ImportExport::Importer do
       [
         Gitlab::ImportExport::AvatarRestorer,
         Gitlab::ImportExport::RepoRestorer,
-        Gitlab::ImportExport::WikiRestorer,
         Gitlab::ImportExport::UploadsRestorer,
         Gitlab::ImportExport::LfsRestorer,
         Gitlab::ImportExport::StatisticsRestorer,
@@ -63,6 +62,20 @@ RSpec.describe Gitlab::ImportExport::Importer do
 
           importer.execute
         end
+      end
+
+      it 'calls RepoRestorer with project and wiki' do
+        wiki_repo_path = File.join(shared.export_path, Gitlab::ImportExport.wiki_repo_bundle_filename)
+        repo_path = File.join(shared.export_path, Gitlab::ImportExport.project_bundle_filename)
+        restorer = double(Gitlab::ImportExport::RepoRestorer)
+
+        expect(Gitlab::ImportExport::RepoRestorer).to receive(:new).with(path_to_bundle: repo_path, shared: shared, project: project).and_return(restorer)
+        expect(Gitlab::ImportExport::RepoRestorer).to receive(:new).with(path_to_bundle: wiki_repo_path, shared: shared, project: ProjectWiki.new(project)).and_return(restorer)
+        expect(Gitlab::ImportExport::RepoRestorer).to receive(:new).and_call_original
+
+        expect(restorer).to receive(:restore).and_return(true).twice
+
+        importer.execute
       end
 
       context 'with sample_data_template' do

@@ -1,0 +1,10 @@
+testdata/data
+testdata/scratch
+testdata/public
+/gitlab-workhorse
+/gitlab-resize-image
+/gitlab-zip-cat
+/gitlab-zip-metadata
+/_build
+coverage.html
+/*.toml

@@ -28,7 +28,7 @@ RSpec.describe Groups::ReleasesController do
         end
 
         it 'returns an application/json content_type' do
-          expect(response.content_type).to eq 'application/json'
+          expect(response.media_type).to eq 'application/json'
         end
 
         it 'returns OK' do

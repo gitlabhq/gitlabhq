@@ -22,7 +22,7 @@ RSpec.describe Boards::ListsController do
       read_board_list user: user, board: board
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(response.content_type).to eq 'application/json'
+      expect(response.media_type).to eq 'application/json'
     end
 
     it 'returns a list of board lists' do

@@ -21,6 +21,13 @@ module Gitlab
 
       private
 
+      def timestamps_data
+        {
+          created_at: object.created_at&.xmlschema,
+          updated_at: object.updated_at&.xmlschema
+        }
+      end
+
       def absolute_image_urls(markdown_text)
         return markdown_text unless markdown_text.present?
 

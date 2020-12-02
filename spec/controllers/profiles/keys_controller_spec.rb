@@ -44,7 +44,7 @@ RSpec.describe Profiles::KeysController do
       end
       it "responds with text/plain content type" do
         get :get_keys, params: { username: user.username }
-        expect(response.content_type).to eq("text/plain")
+        expect(response.media_type).to eq("text/plain")
       end
     end
 
@@ -84,7 +84,7 @@ RSpec.describe Profiles::KeysController do
         it "responds with text/plain content type" do
           get :get_keys, params: { username: user.username }
 
-          expect(response.content_type).to eq("text/plain")
+          expect(response.media_type).to eq("text/plain")
         end
       end
 
@@ -119,7 +119,7 @@ RSpec.describe Profiles::KeysController do
         it "responds with text/plain content type" do
           get :get_keys, params: { username: user.username }
 
-          expect(response.content_type).to eq("text/plain")
+          expect(response.media_type).to eq("text/plain")
         end
       end
     end

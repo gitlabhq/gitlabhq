@@ -177,7 +177,7 @@ RSpec.describe Groups::MilestonesController do
         expect(milestones.count).to eq(3)
         expect(milestones.collect { |m| m['title'] }).to match_array(['same name', 'same name', 'group milestone'])
         expect(response).to have_gitlab_http_status(:ok)
-        expect(response.content_type).to eq 'application/json'
+        expect(response.media_type).to eq 'application/json'
       end
 
       context 'with subgroup milestones' do

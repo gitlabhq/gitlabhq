@@ -80,7 +80,7 @@ RSpec.describe Projects::CommitsController do
 
           it "renders as atom" do
             expect(response).to be_successful
-            expect(response.content_type).to eq('application/atom+xml')
+            expect(response.media_type).to eq('application/atom+xml')
           end
 
           it 'renders summary with type=html' do
@@ -105,7 +105,7 @@ RSpec.describe Projects::CommitsController do
 
           it "renders as HTML" do
             expect(response).to be_successful
-            expect(response.content_type).to eq('text/html')
+            expect(response.media_type).to eq('text/html')
           end
         end
       end

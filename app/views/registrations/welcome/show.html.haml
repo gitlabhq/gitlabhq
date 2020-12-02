@@ -14,8 +14,16 @@
         .row
           .form-group.col-sm-12
             = f.label :role, _('Role'), class: 'label-bold'
-            = f.select :role, ::User.roles.keys.map { |role| [role.titleize, role] }, {}, class: 'form-control', autofocus: true
-            .form-text.gl-text-gray-500.gl-mt-3= _('This will help us personalize your onboarding experience.')
+            = f.select :role, ::User.roles.keys.map { |role| [role.titleize, role] }, {}, class: 'form-control js-user-role-dropdown', autofocus: true
+        - if Feature.enabled?(:user_other_role_details)
+          .row
+            .form-group.col-sm-12.js-other-role-group{ class: ("hidden") }
+              = f.label :other_role, _('What is your job title? (optional)'), class: 'form-check-label gl-mb-3'
+              = f.text_field :other_role, class: 'form-control'
+        - else
+        .row
+          .form-group.col-sm-12
+            .form-text.gl-text-gray-500.gl-mt-0.gl-line-height-normal.gl-px-1= _('This will help us personalize your onboarding experience.')
         = render_if_exists "registrations/welcome/setup_for_company", f: f
         .row
           .form-group.col-sm-12.gl-mb-0

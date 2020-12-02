@@ -203,6 +203,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/wiki.css"
     config.assets.precompile << "page_bundles/xterm.css"
     config.assets.precompile << "page_bundles/alert_management_settings.css"
+    config.assets.precompile << "page_bundles/oncall_schedules.css"
     config.assets.precompile << "lazy_bundles/cropper.css"
     config.assets.precompile << "lazy_bundles/select2.css"
     config.assets.precompile << "performance_bar.css"
