@@ -2273,9 +2273,6 @@ You can use [protected branches](../../user/project/protected_branches.md) to mo
 In [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/201938) and later, you
 can use `when:manual` in the same job as [`trigger`](#trigger). In GitLab 13.4 and
 earlier, using them together causes the error `jobs:#{job-name} when should be on_success, on_failure or always`.
-It is deployed behind the `:ci_manual_bridges` [feature flag](../../user/feature_flags.md), which is **enabled by default**.
-[GitLab administrators with access to the Rails console](../../administration/feature_flags.md)
-can opt to disable it.
 
 ##### Protecting manual jobs **(PREMIUM)**
 
@@ -3515,9 +3512,6 @@ hover over the downstream pipeline job.
 In [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/201938) and later, you
 can use [`when:manual`](#whenmanual) in the same job as `trigger`. In GitLab 13.4 and
 earlier, using them together causes the error `jobs:#{job-name} when should be on_success, on_failure or always`.
-It is deployed behind the `:ci_manual_bridges` [feature flag](../../user/feature_flags.md), which is **enabled by default**.
-[GitLab administrators with access to the Rails console](../../administration/feature_flags.md)
-can opt to disable it.
 
 #### Simple `trigger` syntax for multi-project pipelines
 

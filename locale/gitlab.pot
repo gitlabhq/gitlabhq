@@ -9568,6 +9568,9 @@ msgstr ""
 msgid "DevopsAdoption|Add new segment"
 msgstr ""
 
+msgid "DevopsAdoption|An error occured while saving the segment. Please try again."
+msgstr ""
+
 msgid "DevopsAdoption|Approvals"
 msgstr ""
 

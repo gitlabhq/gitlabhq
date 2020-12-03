@@ -3140,6 +3140,21 @@ Represents a ComplianceFramework associated with a Project
 """
 type ComplianceFramework {
   """
+  Hexadecimal representation of compliance framework's label color
+  """
+  color: String!
+
+  """
+  Description of the compliance framework
+  """
+  description: String!
+
+  """
+  Compliance framework ID
+  """
+  id: ID!
+
+  """
   Name of the compliance framework
   """
   name: String!
@@ -8824,6 +8839,32 @@ type Group {
   ): CodeCoverageActivityConnection
 
   """
+  Compliance frameworks available to projects in this namespace. Available only
+  when feature flag `ff_custom_compliance_frameworks` is enabled
+  """
+  complianceFrameworks(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): ComplianceFrameworkConnection
+
+  """
   Container repositories of the group
   """
   containerRepositories(
@@ -14191,6 +14232,32 @@ type Namespace {
   Additional storage purchased for the root namespace in bytes
   """
   additionalPurchasedStorageSize: Float
+
+  """
+  Compliance frameworks available to projects in this namespace. Available only
+  when feature flag `ff_custom_compliance_frameworks` is enabled
+  """
+  complianceFrameworks(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): ComplianceFrameworkConnection
 
   """
   Includes at least one project where the repository size exceeds the limit

@@ -207,11 +207,7 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def find_job_as_processable
-    if ::Gitlab::Ci::Features.manual_bridges_enabled?(project)
-      @build = project.processables.find(params[:id])
-    else
-      find_job_as_build
-    end
+    @build = project.processables.find(params[:id])
   end
 
   def build_path(build)

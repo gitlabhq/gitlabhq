@@ -854,18 +854,6 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
 
           expect(job.reload).to be_pending
         end
-
-        context 'when FF ci_manual_bridges is disabled' do
-          before do
-            stub_feature_flags(ci_manual_bridges: false)
-          end
-
-          it 'returns 404' do
-            post_play
-
-            expect(response).to have_gitlab_http_status(:not_found)
-          end
-        end
       end
     end
 

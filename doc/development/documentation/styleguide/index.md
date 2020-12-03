@@ -47,7 +47,7 @@ documentation.
 ### All information
 
 Include problem-solving actions that may address rare cases or be considered
-_risky_, so long as proper context is provided in the form of fully detailed
+_risky_, but provide proper context through fully-detailed
 warnings and caveats. This kind of content should be included as it could be
 helpful to others and, when properly explained, its benefits outweigh the risks.
 If you think you have found an exception to this rule, contact the
@@ -60,7 +60,7 @@ people in GitLab Support can merge additions themselves.
 ### All media types
 
 Include any media types/sources if the content is relevant to readers. You can
-freely include or link presentations, diagrams, videos, and so on; no matter who
+freely include or link presentations, diagrams, and videos. No matter who
 it was originally composed for, if it is helpful to any of our audiences, we can
 include it.
 
@@ -86,7 +86,7 @@ afford to continuously update multiple types of information. If we have multiple
 types, the information becomes outdated. Therefore, we have a
 [single template](../structure.md) for documentation.
 
-We currently do not distinguish specific document types, although we are open to
+GitLab documentation does not distinguish specific document types. We are open to
 reconsidering this policy after the documentation has reached a future stage of
 maturity and quality. If you are reading this, then despite our continuous
 improvement efforts, that point hasn't been reached.
@@ -99,9 +99,9 @@ of truth and explain why it is important to consume the information.
 
 ### Organize by topic, not by type
 
-Beyond top-level audience-type folders (for example, `administration`), we
-organize content by topic, not by type, so it can be located in the
-single-source-of-truth (SSOT) section for the subject matter.
+We organize content by topic, not by type, so it can be located in the
+single-source-of-truth (SSOT) section for the subject matter. Top-level audience-type
+folders, like `administration`, are exceptions.
 
 For example, do not create groupings of similar media types. For example:
 
@@ -116,8 +116,8 @@ cross-link between any related content.
 
 ### Docs-first methodology
 
-We employ a _documentation-first methodology_ to help ensure the documentation
-remains a complete and trusted resource, and to make communicating about the use
+We employ a _documentation-first methodology_. This method ensures the documentation
+remains a complete and trusted resource, and makes communicating about the use
 of GitLab more efficient.
 
 - If the answer to a question exists in documentation, share the link to the
@@ -127,18 +127,17 @@ of GitLab more efficient.
   should be to create a merge request (MR) to add this information to the
   documentation. You can then share the MR to communicate this information.
 
-New information that would be useful toward the future usage or troubleshooting
-of GitLab should not be written directly in a forum or other messaging system,
-but added to a documentation merge request and then referenced, as described above. Note
+New information about the future usage or troubleshooting
+of GitLab should not be written directly in a forum or other messaging system.
+Instead, add it to a documentation merge request, then reference it. Note
 that among any other documentation changes, you can either:
 
 - Add a [Troubleshooting section](#troubleshooting) to a doc if none exists.
 - Un-comment and use the placeholder Troubleshooting section included as part of
   our [documentation template](../structure.md#template-for-new-docs), if present.
 
-The more we reflexively add useful information to the documentation, the more
-the documentation helps others efficiently accomplish
-tasks and solve problems.
+The more we reflexively add information to the documentation, the more
+the documentation helps others efficiently accomplish tasks and solve problems.
 
 If you have questions when considering, authoring, or editing documentation, ask
 the Technical Writing team. They're available on Slack in `#docs` or in GitLab by mentioning the
@@ -147,7 +146,7 @@ Otherwise, forge ahead with your best effort. It does not need to be perfect;
 the team is happy to review and improve upon your content. Review the
 [Documentation guidelines](index.md) before you begin your first documentation MR.
 
-Having a knowledge base in any form that's separate from the documentation would
+Maintaining a knowledge base separate from the documentation would
 be against the documentation-first methodology, because the content would overlap with
 the documentation.
 
@@ -183,7 +182,7 @@ GitLab ensures that the Markdown used across all documentation is consistent, as
 well as easy to review and maintain, by [testing documentation changes](../testing.md)
 with [markdownlint](../testing.md#markdownlint). This lint test fails when any
 document has an issue with Markdown formatting that may cause the page to render
-incorrectly within GitLab. It also fails when a document has
+incorrectly in GitLab. It also fails when a document has
 non-standard Markdown (which may render correctly, but is not the current
 standard for GitLab documentation).
 
@@ -242,7 +241,7 @@ Put files for a specific product area into the related folder:
 
 | Directory             | What belongs here |
 |:----------------------|:------------------|
-| `doc/user/`           | User related documentation. Anything that can be done within the GitLab user interface goes here, including usage of the `/admin` interface. |
+| `doc/user/`           | User related documentation. Anything that can be done in the GitLab user interface goes here, including usage of the `/admin` interface. |
 | `doc/administration/` | Documentation that requires the user to have access to the server where GitLab is installed. Administrator settings in the GitLab user interface are under `doc/user/admin_area/`. |
 | `doc/api/`            | API-related documentation. |
 | `doc/development/`    | Documentation related to the development of GitLab, whether contributing code or documentation. Related process and style guides should go here. |
@@ -292,7 +291,7 @@ Refer to the following items when working with directories and files:
 
 If you're unsure where to place a document or a content addition, this shouldn't
 stop you from authoring and contributing. Use your best judgment, and then ask
-the reviewer of your MR to confirm your decision, or ask a technical writer at
+the reviewer of your MR to confirm your decision. You can also ask a technical writer at
 any stage in the process. The technical writing team reviews all
 documentation changes, regardless, and can move content if there is a better
 place for it.
@@ -314,7 +313,7 @@ Do not include the same information in multiple places.
 - When making reference to third-party products or technologies, link out to
   their external sites, documentation, and resources.
 
-### Structure within documents
+### Structure in documents
 
 - Include any and all applicable subsections as described on the
   [structure and template](../structure.md) page.
@@ -352,7 +351,7 @@ item, use the same capitalization that's displayed in the user interface.
 Standards for this content are listed in the [Pajamas Design System Content section](https://design.gitlab.com/content/punctuation/)
 and typically match what's called for in this Documentation Style Guide.
 
-If you think there's a mistake in the way the user interface text is styled,
+If you think the user interface text contains style mistakes,
 create an issue or an MR to propose a change to the user interface text.
 
 #### Feature names
@@ -560,12 +559,14 @@ tenses, words, and phrases:
   - Instead of _i.e._, use _that is_.
   - Instead of _via_, use _through_.
   - Instead of _e.g._, use _for example_, _such as_, _for instance_, or _like_.
-  - Instead of _etc._, either use _and so on_ or consider editing it out, since
+  - Instead of _etc._, either use _and so on_ or consider editing it out, as
     it can be vague.
 <!-- vale gitlab.LatinTerms = YES -->
+<!-- vale gitlab.CurrentStatus = NO -->
 - Avoid using the word *currently* when talking about the product or its
   features. The documentation describes the product as it is, and not as it
   is planned to be in some indeterminate point in the future.
+<!-- vale gitlab.CurrentStatus = YES -->
 - Avoid using the word *scalability* when talking about increasing GitLab
   performance for additional users. The words scale or scaling are sometimes
   acceptable, but references to increasing GitLab performance for additional
@@ -583,8 +584,10 @@ tenses, words, and phrases:
   - Use *primary* and *secondary* for database and server relationships.
   - Use *allowlist* and *denylist* to describe access control lists.
 - Avoid the word _please_. For details, see the [Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/p/please).
+<!-- vale gitlab.Simplicity = NO -->
 - Avoid words like _easily_, _simply_, _handy_, and _useful._ If the user
   doesn't find the process to be these things, we lose their trust.
+<!-- vale gitlab.Simplicity = NO -->
 
 ### Word usage clarifications
 
@@ -885,9 +888,9 @@ Consider installing a plugin or extension in your editor for formatting tables:
 
 ### Feature tables
 
-When creating tables of lists of features (such as whether or not features are
-available to certain roles on the [Permissions](../../../user/permissions.md#project-members-permissions)
-page), use the following phrases (based on the SVG icons):
+When creating tables of lists of features (such the features
+available to each role on the [Permissions](../../../user/permissions.md#project-members-permissions)
+page), use the following phrases:
 
 | Option | Markdown                 | Displayed result       |
 |--------|--------------------------|------------------------|
@@ -900,8 +903,8 @@ Valid for Markdown content only, not for front matter entries:
 
 - Standard quotes: double quotes (`"`). Example: "This is wrapped in double
   quotes".
-- Quote within a quote: double quotes (`"`) wrap single quotes (`'`). Example:
-  "I am 'quoting' something within a quote".
+- Quote inside a quote: double quotes (`"`) wrap single quotes (`'`). Example:
+  "I am 'quoting' something in a quote".
 
 For other punctuation rules, refer to the
 [GitLab UX guide](https://design.gitlab.com/content/punctuation/).
@@ -949,9 +952,8 @@ search engine optimization (SEO), use the imperative, where possible.
 For guidelines on capitalizing headings, see the section on [capitalization](#capitalization).
 
 NOTE: **Note:**
-If you change an existing title, be careful. These changes might affect not
-only [links](#anchor-links) within the page, but might also affect links to the
-GitLab documentation from both the GitLab application and external sites.
+If you change an existing title, be careful. In-page [anchor links](#anchor-links),
+links in the GitLab application, and links from external sites can break.
 
 ### Anchor links
 
@@ -965,18 +967,17 @@ included in the generated anchor links. For example, when you link to
 `## This is an example **(CORE)**`, use the anchor `#this-is-an-example`.
 
 Keep in mind that the GitLab user interface links to many documentation pages
-and anchor links to take the user to the right spot. Therefore, when you change
+and anchor links to take the user to the right spot. When you change
 a heading, search `doc/*`, `app/views/*`, and `ee/app/views/*` for the old
-anchor to make sure you're not breaking an anchor linked from other
-documentation nor from the GitLab user interface. If you find the old anchor, be
-sure to replace it with the new one.
+anchor. If you do not fix these links, the [`ui-docs-lint` job](../testing.md#ui-docs-links-test)
+in your merge request fails.
 
 Important:
 
 - Avoid crosslinking documentation to headings unless you need to link to a
   specific section of the document. This avoids breaking anchors in the
   future in case the heading is changed.
-- If possible, avoid changing headings since they're not only linked internally.
+- If possible, avoid changing headings, because they're not only linked internally.
   There are various links to GitLab documentation on the internet, such as
   tutorials, presentations, StackOverflow posts, and other sources.
 - Do not link to `h1` headings.
@@ -989,7 +990,7 @@ this option.
 
 Links are important in GitLab documentation. They allow you to [link instead of
 summarizing](#link-instead-of-summarize) to help preserve a [single source of truth](#why-a-single-source-of-truth)
-within GitLab documentation.
+in GitLab documentation.
 
 We include guidance for links in the following categories:
 
@@ -1023,7 +1024,7 @@ documentation in separate projects (for example, linking to Omnibus documentatio
 from GitLab documentation), you must use absolute URLs.
 
 Do not use absolute URLs like `https://docs.gitlab.com/ee/index.html` to
-cross-link to other documentation within the same project. Use relative links to
+cross-link to other documentation in the same project. Use relative links to
 the file, like `../index.md`. (These are converted to HTML when the site is
 rendered.)
 
@@ -1032,7 +1033,7 @@ Relative linking enables crosslinks to work:
 - in Review Apps, local previews, and `/help`.
 - when working on the documentation locally, so you can verify that they work as
   early as possible in the process.
-- within the GitLab user interface when browsing doc files in their respective
+- in the GitLab user interface when browsing doc files in their respective
   repositories. For example, the links displayed at
   `https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/README.md`.
 
@@ -1142,16 +1143,16 @@ For more information, see the [confidential issue](../../../user/project/issues/
 
 ### Link to specific lines of code
 
-When linking to specific lines within a file, link to a commit instead of to the
-branch. Lines of code change through time, therefore, linking to a line by using
+When linking to specific lines in a file, link to a commit instead of to the
+branch. Lines of code change over time. Linking to a line by using
 the commit link ensures the user lands on the line you're referring to. The
-**Permalink** button, which is available when viewing a file within a project,
-makes it easy to generate a link to the most recent commit of the given file.
+**Permalink** button, displayed when viewing a file in a project,
+provides a link to the most recent commit of that file.
 
 - _Do_: `[link to line 3](https://gitlab.com/gitlab-org/gitlab/-/blob/11f17c56d8b7f0b752562d78a4298a3a95b5ce66/.gitlab/issue_templates/Feature%20proposal.md#L3)`
 - _Don't_: `[link to line 3](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20proposal.md#L3).`
 
-If that linked expression is no longer in that line of the file due to additional
+If that linked expression has changed line numbers due to additional
 commits, you can still search the file for that query. In this case, update the
 document to ensure it links to the most recent version of the file.
 
@@ -1270,9 +1271,11 @@ request.
 Adding GitLab YouTube video tutorials to the documentation is highly
 encouraged, unless the video is outdated. Videos should not replace
 documentation, but complement or illustrate it. If content in a video is
-fundamental to a feature and its key use cases, but this is not adequately
-covered in the documentation, add this detail to the documentation text or
-create an issue to review the video and do so.
+fundamental to a feature and its key use cases, but isn't adequately
+covered in the documentation, you should:
+
+- Add this detail to the documentation text.
+- Create an issue to review the video and update the page.
 
 Do not upload videos to the product repositories. [Link](#link-to-video) or
 [embed](#embed-videos) them instead.
@@ -1299,8 +1302,8 @@ videos.
 You can embed videos from [the official YouTube account for GitLab](https://www.youtube.com/channel/UCnMGQ8QHMAnVIsI3xJrihhg) only.
 For videos from other sources, [link](#link-to-video) them instead.
 
-In most cases, it is better to [link to video](#link-to-video) instead, because
-an embed takes up a lot of space on the page and can be distracting to readers.
+In most cases, [link to a video](#link-to-video), because
+embedded videos take up a lot of space on the page and can be distracting to readers.
 
 To embed a video:
 
@@ -1507,10 +1510,8 @@ guidelines, but for consistency you should try to use these values:
 ### Note
 
 Notes indicate additional information that's of special use to the reader.
-Notes are most effective when used _sparingly_.
-
-Try to avoid them. Too many notes can impact the scannability of a topic and
-create an overly busy page.
+Notes are most effective when used _sparingly_. Try to avoid them. Too many notes
+can make topics difficult to scan, and create an overly busy page.
 
 Instead of adding a note, try one of these alternatives:
 
@@ -1569,7 +1570,7 @@ This is a breaking change, a bug, or something very important to note.
 
 ## Blockquotes
 
-For highlighting a text within a blue blockquote, use this format:
+For highlighting a text inside a blue blockquote, use this format:
 
 ```markdown
 > This is a blockquote.
@@ -1664,8 +1665,8 @@ documentation to display on this site based on the GitLab
 
 ### View older GitLab documentation versions
 
-If you're using an older version of GitLab whose version-specific information
-isn't available from `docs.gitlab.com`, use one of the following methods to view a
+Older versions of GitLab may no longer have documentation available from `docs.gitlab.com`.
+If documentation for your version is no longer available from `docs.gitlab.com`, you can still view a
 tagged and released set of documentation for your installed version:
 
 - In the [documentation archives](https://docs.gitlab.com/archives/).
@@ -1749,10 +1750,10 @@ voters to agree.
 
 #### End-of-life for features or products
 
-Whenever a feature or product enters the end-of-life process, indicate its
-status by using the `Danger` [alert](#alert-boxes) with the `**Important**`
-keyword directly below the feature or product's header (which can include H1
-page titles). Link to the deprecation and removal issues, if possible.
+When a feature or product enters the end-of-life process, indicate its
+status prominently. Use the `Danger` [alert](#alert-boxes) with the `**Important**`
+keyword directly below the page header, or the sub-header for the feature or product.
+Link to the deprecation and removal issues, if possible.
 
 For example:
 
@@ -1763,7 +1764,7 @@ for use in GitLab X.X, and is planned for [removal](link-to-issue) in GitLab X.X
 ```
 
 After the feature or product is officially deprecated and removed, remove
-information about the product or feature from the GitLab documentation based on
+its information from the GitLab documentation based on
 the GitLab version where it's actually removed.
 
 ### Versions in the past or future
@@ -1785,27 +1786,25 @@ For example:
 Whenever a major GitLab release occurs, we remove all version references
 to now-unsupported versions of GitLab. Note that this includes the removal of
 specific instructions for users of non-supported GitLab versions. For example,
-if we're currently supporting GitLab versions 11.x through 13.x, special
-instructions for users of GitLab 10.2 and earlier to complete a task should be
-removed.
+if GitLab versions 11.x and later are supported, special
+instructions for users of GitLab 10 should be removed.
 
-To view information about the history of a feature, users can view GitLab
+To view historical information about a feature, review GitLab
 [release posts](https://about.gitlab.com/releases/), or search for the issue or
 merge request where the work was done.
 
 ## Products and features
 
 Refer to the information in this section when describing products and features
-within the GitLab product documentation.
+in the GitLab product documentation.
 
 ### Avoid line breaks in names
 
-When entering a product or feature name that includes a space (such as
-GitLab Community Edition) or even other companies' products (such as
-Amazon Web Services), be sure to not split the product or feature name across
-lines with an inserted line break. Splitting product or feature names across
-lines makes searching for these items more difficult, and can cause problems if
-names change.
+Product names, feature names, and non-GitLab products that contain spaces
+shouldn't be split across lines.
+For example: GitLab Community Edition or Amazon Web Services.
+Splitting product or feature names across lines makes searching for these items
+more difficult, and can cause problems if names change.
 
 For example, the following Markdown content is _not_ formatted correctly:
 
@@ -1890,8 +1889,8 @@ Save the file and [reconfigure GitLab](../../../administration/restart_gitlab.md
 for the changes to take effect.
 ```
 
-If the document you are editing resides in a place other than the GitLab CE/EE
-`doc/` directory, instead of the relative link, use the full path:
+If the document resides outside of the GitLab CE/EE
+`doc/` directory, use the full path instead of the relative link:
 `https://docs.gitlab.com/ee/administration/restart_gitlab.html`. Replace
 `reconfigure` with `restart` where appropriate.
 
@@ -1901,12 +1900,12 @@ If the document you are editing resides in a place other than the GitLab CE/EE
 In [step 2 of the installation guide](../../../install/installation.md#2-ruby),
 we install Ruby from source. When a version update is needed,
 remember to change it throughout the code block and also replace
-the sha256sum (it can be found in the [downloads page](https://www.ruby-lang.org/en/downloads/)
-of the Ruby website).
+the sha256sum. You can find the sha256sum on the
+[downloads page](https://www.ruby-lang.org/en/downloads/) of the Ruby website.
 
 ### Configuration documentation for source and Omnibus installations
 
-GitLab currently officially supports two installation methods: installations
+GitLab officially supports two installation methods: installations
 from source and Omnibus packages installations.
 
 Whenever there's a setting that's configurable for both installation methods,
@@ -1960,8 +1959,8 @@ In this case:
 
 ### Troubleshooting
 
-For troubleshooting sections, you should provide as much context as possible so
-users can identify the problem they are facing and resolve it on their own. You
+For troubleshooting sections, provide as much context as possible so
+users can identify their problem and resolve it on their own. You
 can facilitate this by making sure the troubleshooting content addresses:
 
 1. The problem the user needs to solve.
@@ -1969,7 +1968,7 @@ can facilitate this by making sure the troubleshooting content addresses:
 1. Steps the user can take towards resolution of the problem.
 
 If the contents of each category can be summarized in one line and a list of
-steps aren't required, consider setting up a [table](#tables) with headers of
+steps aren't required, consider setting up a [table](#tables). Create headers of
 _Problem_ \| _Cause_ \| _Solution_ (or _Workaround_ if the fix is temporary), or
 _Error message_ \| _Solution_.
 

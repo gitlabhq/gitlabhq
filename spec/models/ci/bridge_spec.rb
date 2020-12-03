@@ -330,14 +330,6 @@ RSpec.describe Ci::Bridge do
       subject { build_stubbed(:ci_bridge, :manual).playable? }
 
       it { is_expected.to be_truthy }
-
-      context 'when FF ci_manual_bridges is disabled' do
-        before do
-          stub_feature_flags(ci_manual_bridges: false)
-        end
-
-        it { is_expected.to be_falsey }
-      end
     end
 
     context 'when build is not a manual action' do
@@ -352,14 +344,6 @@ RSpec.describe Ci::Bridge do
       subject { build_stubbed(:ci_bridge, :manual).action? }
 
       it { is_expected.to be_truthy }
-
-      context 'when FF ci_manual_bridges is disabled' do
-        before do
-          stub_feature_flags(ci_manual_bridges: false)
-        end
-
-        it { is_expected.to be_falsey }
-      end
     end
 
     context 'when build is not a manual action' do

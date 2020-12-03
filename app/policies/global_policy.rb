@@ -48,7 +48,7 @@ class GlobalPolicy < BasePolicy
     prevent :use_slash_commands
   end
 
-  rule { blocked | (internal & ~migration_bot & ~security_bot) }.policy do
+  rule { blocked | (internal & ~migration_bot) }.policy do
     prevent :access_git
   end
 

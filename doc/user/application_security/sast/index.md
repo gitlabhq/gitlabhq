@@ -7,7 +7,8 @@ type: reference, howto
 
 # Static Application Security Testing (SAST)
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3775) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3775) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.3.
+> - All open source (OSS) analyzers were moved to GitLab Core in GitLab 13.3.
 
 NOTE: **Note:**
 The whitepaper ["A Seismic Shift in Application Security"](https://about.gitlab.com/resources/whitepaper-seismic-shift-application-security/)

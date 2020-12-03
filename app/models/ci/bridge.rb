@@ -132,14 +132,10 @@ module Ci
     end
 
     def playable?
-      return false unless ::Gitlab::Ci::Features.manual_bridges_enabled?(project)
-
       action? && !archived? && manual?
     end
 
     def action?
-      return false unless ::Gitlab::Ci::Features.manual_bridges_enabled?(project)
-
       %w[manual].include?(self.when)
     end
 
