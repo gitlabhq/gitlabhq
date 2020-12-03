@@ -92,7 +92,7 @@ use this job:
 
 ```yaml
 shfmt:
-  image: mvdan/shfmt:v3.1.0-alpine
+  image: mvdan/shfmt:v3.2.0-alpine
   stage: test
   before_script:
     - shfmt -version

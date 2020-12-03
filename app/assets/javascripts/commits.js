@@ -31,7 +31,7 @@ export default class CommitsList {
     const search = this.searchField.val();
     if (search === this.lastSearch) return Promise.resolve();
     const commitsUrl = `${form.attr('action')}?${form.serialize()}`;
-    this.content.fadeTo('fast', 0.5);
+    this.content.addClass('gl-opacity-5');
     const params = form.serializeArray().reduce(
       (acc, obj) =>
         Object.assign(acc, {
@@ -47,7 +47,7 @@ export default class CommitsList {
       .then(({ data }) => {
         this.lastSearch = search;
         this.content.html(data.html);
-        this.content.fadeTo('fast', 1.0);
+        this.content.removeClass('gl-opacity-5');
 
         // Change url so if user reload a page - search results are saved
         window.history.replaceState(
@@ -59,7 +59,7 @@ export default class CommitsList {
         );
       })
       .catch(() => {
-        this.content.fadeTo('fast', 1.0);
+        this.content.removeClass('gl-opacity-5');
         this.lastSearch = null;
       });
   }

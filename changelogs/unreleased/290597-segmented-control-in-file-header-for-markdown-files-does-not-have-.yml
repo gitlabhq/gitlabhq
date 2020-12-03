@@ -1,0 +1,5 @@
+---
+title: Fix margin and selected state in file header
+merge_request: 49059
+author:
+type: fixed

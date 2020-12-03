@@ -472,7 +472,7 @@ A job cannot be both high urgency and have external dependencies.
 Workers that are constrained by CPU or memory resource limitations should be
 annotated with the `worker_resource_boundary` method.
 
-Most workers tend to spend most of their time blocked, wait on network responses
+Most workers tend to spend most of their time blocked, waiting on network responses
 from other services such as Redis, PostgreSQL, and Gitaly. Since Sidekiq is a
 multi-threaded environment, these jobs can be scheduled with high concurrency.
 

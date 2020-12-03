@@ -53,6 +53,7 @@ $mr-widget-min-height: 69px;
   position: relative;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
+  background: var(--white, $white);
 
   .gl-skeleton-loader {
     display: block;
@@ -61,7 +62,7 @@ $mr-widget-min-height: 69px;
 
 .mr-widget-extension {
   border-top: 1px solid $border-color;
-  background-color: $gray-light;
+  background-color: $gray-50;
 
   &.clickable:hover {
     background-color: $gray-100;
@@ -87,6 +88,7 @@ $mr-widget-min-height: 69px;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
   border-top: 0;
+  background: var(--white, $white);
 }
 
 .mr-widget-body,
@@ -543,6 +545,7 @@ $mr-widget-min-height: 69px;
   border-radius: $border-radius-default;
   padding: $gl-padding;
   border: 1px solid $border-color;
+  background: var(--white, $white);
   min-height: $mr-widget-min-height;
 
   @include media-breakpoint-up(md) {
@@ -761,7 +764,7 @@ $mr-widget-min-height: 69px;
 .epic-tabs-holder {
   top: $header-height;
   z-index: 250;
-  background-color: $white;
+  background-color: $body-bg;
   border-bottom: 1px solid $border-color;
 
   .with-system-header & {

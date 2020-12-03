@@ -132,16 +132,16 @@ export default class BlobViewer {
     const newViewer = this.$fileHolder[0].querySelector(`.blob-viewer[data-type='${name}']`);
     if (this.activeViewer === newViewer) return;
 
-    const oldButton = document.querySelector('.js-blob-viewer-switch-btn.active');
+    const oldButton = document.querySelector('.js-blob-viewer-switch-btn.selected');
     const newButton = document.querySelector(`.js-blob-viewer-switch-btn[data-viewer='${name}']`);
     const oldViewer = this.$fileHolder[0].querySelector(`.blob-viewer:not([data-type='${name}'])`);
 
     if (oldButton) {
-      oldButton.classList.remove('active');
+      oldButton.classList.remove('selected');
     }
 
     if (newButton) {
-      newButton.classList.add('active');
+      newButton.classList.add('selected');
       newButton.blur();
     }
 

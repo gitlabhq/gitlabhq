@@ -1015,3 +1015,39 @@ This will also refresh the cached usage ping displayed in the admin area
 ```ruby
 Gitlab::UsageData.to_json(force_refresh: true)
 ```
+
+## Elasticsearch
+
+### Configuration attributes
+
+Open the rails console (`gitlab rails c`) and run the following command to see all the available attributes:
+
+```ruby
+ApplicationSetting.last.attributes
+```
+
+Among other attributes, in the output you will notice that all the settings available in the [Elasticsearch Integration page](../../integration/elasticsearch.md), like: `elasticsearch_indexing`, `elasticsearch_url`, `elasticsearch_replicas`, `elasticsearch_pause_indexing`, etc.
+
+#### Setting attributes
+
+You can then set anyone of Elasticsearch integration settings by issuing a command similar to:
+
+```ruby
+ApplicationSetting.last.update_attributes(elasticsearch_url: '<your ES URL and port>')
+
+#or
+
+ApplicationSetting.last.update_attributes(elasticsearch_indexing: false)
+```
+
+#### Getting attributes
+
+You can then check if the settings have been set in the [Elasticsearch Integration page](../../integration/elasticsearch.md) or in the rails console by issuing:
+
+```ruby
+Gitlab::CurrentSettings.elasticsearch_url
+
+#or
+
+Gitlab::CurrentSettings.elasticsearch_indexing
+```

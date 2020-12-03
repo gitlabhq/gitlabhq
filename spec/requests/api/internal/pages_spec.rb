@@ -128,32 +128,38 @@ RSpec.describe API::Internal::Pages do
             )
           end
 
-          it 'responds with proxy configuration' do
+          it 'responds with 204 because of feature deprecation' do
             query_host(serverless_domain.uri.host)
 
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to match_response_schema('internal/serverless/virtual_domain')
+            expect(response).to have_gitlab_http_status(:no_content)
+            expect(response.body).to be_empty
 
-            expect(json_response['certificate']).to eq(pages_domain.certificate)
-            expect(json_response['key']).to eq(pages_domain.key)
-
-            expect(json_response['lookup_paths']).to eq(
-              [
-                {
-                  'source' => {
-                    'type' => 'serverless',
-                    'service' => "test-function.#{project.name}-#{project.id}-#{environment.slug}.#{serverless_domain_cluster.knative.hostname}",
-                    'cluster' => {
-                      'hostname' => serverless_domain_cluster.knative.hostname,
-                      'address' => serverless_domain_cluster.knative.external_ip,
-                      'port' => 443,
-                      'cert' => serverless_domain_cluster.certificate,
-                      'key' => serverless_domain_cluster.key
-                    }
-                  }
-                }
-              ]
-            )
+            ##
+            # Serverless serving and reverse proxy to Kubernetes / Knative has
+            #   been deprecated and disabled, as per
+            #   https://gitlab.com/gitlab-org/gitlab-pages/-/issues/467
+            #
+            # expect(response).to match_response_schema('internal/serverless/virtual_domain')
+            # expect(json_response['certificate']).to eq(pages_domain.certificate)
+            # expect(json_response['key']).to eq(pages_domain.key)
+            #
+            # expect(json_response['lookup_paths']).to eq(
+            #   [
+            #     {
+            #       'source' => {
+            #         'type' => 'serverless',
+            #         'service' => "test-function.#{project.name}-#{project.id}-#{environment.slug}.#{serverless_domain_cluster.knative.hostname}",
+            #         'cluster' => {
+            #           'hostname' => serverless_domain_cluster.knative.hostname,
+            #           'address' => serverless_domain_cluster.knative.external_ip,
+            #           'port' => 443,
+            #           'cert' => serverless_domain_cluster.certificate,
+            #           'key' => serverless_domain_cluster.key
+            #         }
+            #       }
+            #     }
+            #   ]
+            # )
           end
         end
       end

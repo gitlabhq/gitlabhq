@@ -154,7 +154,7 @@ describe('Blob viewer', () => {
 
       blob.switchToViewer('simple');
 
-      expect(simpleBtn.classList.contains('active')).toBeTruthy();
+      expect(simpleBtn.classList.contains('selected')).toBeTruthy();
 
       expect(simpleBtn.blur).toHaveBeenCalled();
     });
