@@ -23,7 +23,7 @@ access to your Jira projects. This is covered in the process below.
 1. The next step is to create a new user (e.g., `gitlab`) who has write access
    to projects in Jira. Enter the user's name and a _valid_ e-mail address
    since Jira sends a verification e-mail to set up the password.
-   
+
    Jira creates the username automatically by using the e-mail
    prefix. You can change it later, if needed. Our integration does not support SSO (such as SAML). You
    need to create an HTTP basic authentication password. You can do this by visiting the user

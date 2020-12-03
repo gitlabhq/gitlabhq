@@ -94,7 +94,7 @@ Upload a logo to your GitLab instance.
 
 To upload an avatar from your file system, use the `--form` argument. This causes
 cURL to post data using the header `Content-Type: multipart/form-data`. The
-`file=` parameter must point to an image file on your file system and be 
+`file=` parameter must point to an image file on your file system and be
 preceded by `@`.
 
 ```plaintext

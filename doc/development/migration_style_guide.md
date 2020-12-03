@@ -462,8 +462,9 @@ class MyMigration < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
   disable_ddl_transaction!
 
+  INDEX_NAME = 'index_name'
   def up
-    remove_concurrent_index :table_name, :column_name, name: :index_name
+    remove_concurrent_index :table_name, :column_name, name: INDEX_NAME
   end
 end
 ```

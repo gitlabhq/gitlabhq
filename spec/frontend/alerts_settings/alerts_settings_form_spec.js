@@ -93,16 +93,28 @@ describe('AlertsSettingsFormNew', () => {
       ).toBe(true);
     });
 
-    it('disabled the dropdown and shows help text when multi integrations are not supported', async () => {
+    it('disables the dropdown and shows help text when multi integrations are not supported', async () => {
       createComponent({ props: { canAddIntegration: false } });
       expect(findSelect().attributes('disabled')).toBe('disabled');
       expect(findMultiSupportText().exists()).toBe(true);
+    });
+
+    it('disabled the name input when the selected value is prometheus', async () => {
+      createComponent();
+      const options = findSelect().findAll('option');
+      await options.at(2).setSelected();
+
+      expect(
+        findFormFields()
+          .at(0)
+          .attributes('disabled'),
+      ).toBe('disabled');
     });
   });
 
   describe('submitting integration form', () => {
     it('allows for create-new-integration with the correct form values for HTTP', async () => {
-      createComponent({});
+      createComponent();
 
       const options = findSelect().findAll('option');
       await options.at(1).setSelected();
@@ -128,7 +140,7 @@ describe('AlertsSettingsFormNew', () => {
     });
 
     it('allows for create-new-integration with the correct form values for PROMETHEUS', async () => {
-      createComponent({});
+      createComponent();
 
       const options = findSelect().findAll('option');
       await options.at(2).setSelected();

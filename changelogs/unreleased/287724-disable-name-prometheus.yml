@@ -1,0 +1,5 @@
+---
+title: Prometheus integration name should not have a modifiable input field
+merge_request: 48437
+author:
+type: fixed

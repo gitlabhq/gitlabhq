@@ -79,7 +79,7 @@ To create a new release through the GitLab UI:
    [release notes](#release-notes-description), or [assets links](#links).
 1. Click **Create release**.
 
-### Create release from GitLab CI 
+### Create release from GitLab CI
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19298) in GitLab 12.7.
 

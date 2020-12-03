@@ -1,0 +1,9 @@
+mutation destroyContainerRepository($id: ContainerRepositoryID!) {
+  destroyContainerRepository(input: { id: $id }) {
+    containerRepository {
+      id
+      status
+    }
+    errors
+  }
+}

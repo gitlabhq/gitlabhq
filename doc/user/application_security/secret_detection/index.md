@@ -130,13 +130,13 @@ always take the latest Secret Detection artifact available.
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4639) in GitLab 13.6.
 
-Upon detection of a secret, GitLab supports post processing hooks. These can be used to take actions like notifying the cloud service who issued the secret. The cloud provider can confirm the credentials and take remediation actions like revoking or reissuing a new secret and notifying the creator of the secret. Post-processing workflows vary by supported cloud providers. 
+Upon detection of a secret, GitLab supports post processing hooks. These can be used to take actions like notifying the cloud service who issued the secret. The cloud provider can confirm the credentials and take remediation actions like revoking or reissuing a new secret and notifying the creator of the secret. Post-processing workflows vary by supported cloud providers.
 
 GitLab currently supports post-processing for following service providers:
 
 - Amazon Web Services (AWS)
 
-Third party cloud and SaaS providers can [express integration interest by filling out this form](https://forms.gle/wWpvrtLRK21Q2WJL9). Learn more about the [technical details of post-processing secrets](https://gitlab.com/groups/gitlab-org/-/epics/4639). 
+Third party cloud and SaaS providers can [express integration interest by filling out this form](https://forms.gle/wWpvrtLRK21Q2WJL9). Learn more about the [technical details of post-processing secrets](https://gitlab.com/groups/gitlab-org/-/epics/4639).
 
 ### Customizing settings
 
@@ -286,14 +286,14 @@ For information on this, see the [general Application Security troubleshooting s
 
 ### Error: `Couldn't run the gitleaks command: exit status 2`
 
-This error is usually caused by the `GIT_DEPTH` value of 50 that is set for all [projects by default](../../../ci/pipelines/settings.md#git-shallow-clone). 
+This error is usually caused by the `GIT_DEPTH` value of 50 that is set for all [projects by default](../../../ci/pipelines/settings.md#git-shallow-clone).
 
-For example, if a pipeline is triggered from a Merge Request containing 60 commits while the `GIT_DEPTH` is set to 50, the Secret Detection job will fail as the clone will not have been deep enough to contain all of the relevant commits. 
+For example, if a pipeline is triggered from a Merge Request containing 60 commits while the `GIT_DEPTH` is set to 50, the Secret Detection job will fail as the clone will not have been deep enough to contain all of the relevant commits.
 
 You can confirm this to be the cause of the error by implementing a [logging level](../../application_security/secret_detection/index.md#logging-level) of `debug`. Once implemented, the logs should look similar to the following example, wherein an "object not found" error can be seen:
 
 ```plaintext
-ERRO[2020-11-18T18:05:52Z] object not found                             
+ERRO[2020-11-18T18:05:52Z] object not found
 [ERRO] [secrets] [2020-11-18T18:05:52Z] ▶ Couldn't run the gitleaks command: exit status 2
 [ERRO] [secrets] [2020-11-18T18:05:52Z] ▶ Gitleaks analysis failed: exit status 2
 ```

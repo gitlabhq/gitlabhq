@@ -6,11 +6,11 @@ module API
       expose :name
       expose :description
       expose :active
-      expose :version, if: :feature_flags_new_version_enabled
+      expose :version
       expose :created_at
       expose :updated_at
       expose :scopes, using: FeatureFlag::LegacyScope
-      expose :strategies, using: FeatureFlag::Strategy, if: :feature_flags_new_version_enabled
+      expose :strategies, using: FeatureFlag::Strategy
     end
   end
 end

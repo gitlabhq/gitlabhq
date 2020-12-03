@@ -9,7 +9,7 @@ describe('Ajax Loading Spinner', () => {
     <a class="js-ajax-loading-spinner"
        data-remote
        href="http://goesnowhere.nothing/whereami">
-      <i class="fa fa-trash-o"></i>
+       Remove me
     </a></div>`;
     AjaxLoadingSpinner.init();
     ajaxLoadingSpinnerElement = document.querySelector('.js-ajax-loading-spinner');

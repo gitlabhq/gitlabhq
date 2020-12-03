@@ -1,0 +1,11 @@
+fragment ContainerRepositoryFields on ContainerRepository {
+  id
+  name
+  path
+  status
+  location
+  canDelete
+  createdAt
+  tagsCount
+  expirationPolicyStartedAt
+}

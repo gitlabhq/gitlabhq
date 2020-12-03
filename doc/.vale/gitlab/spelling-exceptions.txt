@@ -484,6 +484,7 @@ sudo
 swimlane
 swimlanes
 syslog
+tanuki
 tcpdump
 Thanos
 Tiller

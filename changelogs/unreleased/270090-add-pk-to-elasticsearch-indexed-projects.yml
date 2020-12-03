@@ -1,0 +1,5 @@
+---
+title: Add primary key to elasticsearch_indexed_projects
+merge_request: 48919
+author:
+type: changed

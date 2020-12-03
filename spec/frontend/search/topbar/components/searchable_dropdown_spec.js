@@ -1,41 +1,34 @@
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount, mount } from '@vue/test-utils';
 import { GlDropdown, GlDropdownItem, GlSearchBoxByType, GlSkeletonLoader } from '@gitlab/ui';
-import * as urlUtils from '~/lib/utils/url_utility';
-import GroupFilter from '~/search/group_filter/components/group_filter.vue';
-import { GROUP_QUERY_PARAM, PROJECT_QUERY_PARAM, ANY_GROUP } from '~/search/group_filter/constants';
-import { MOCK_GROUPS, MOCK_GROUP, MOCK_QUERY } from '../../mock_data';
+import { MOCK_GROUPS, MOCK_GROUP, MOCK_QUERY } from 'jest/search/mock_data';
+import SearchableDropdown from '~/search/topbar/components/searchable_dropdown.vue';
+import { ANY_OPTION, GROUP_DATA } from '~/search/topbar/constants';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
-jest.mock('~/flash');
-jest.mock('~/lib/utils/url_utility', () => ({
-  visitUrl: jest.fn(),
-  setUrlParams: jest.fn(),
-}));
-
-describe('Global Search Group Filter', () => {
+describe('Global Search Searchable Dropdown', () => {
   let wrapper;
 
-  const actionSpies = {
-    fetchGroups: jest.fn(),
-  };
-
   const defaultProps = {
-    initialGroup: null,
+    headerText: GROUP_DATA.headerText,
+    selectedDisplayValue: GROUP_DATA.selectedDisplayValue,
+    itemsDisplayValue: GROUP_DATA.itemsDisplayValue,
+    loading: false,
+    selectedItem: ANY_OPTION,
+    items: [],
   };
 
-  const createComponent = (initialState, props = {}, mountFn = shallowMount) => {
+  const createComponent = (initialState, props, mountFn = shallowMount) => {
     const store = new Vuex.Store({
       state: {
         query: MOCK_QUERY,
         ...initialState,
       },
-      actions: actionSpies,
     });
 
-    wrapper = mountFn(GroupFilter, {
+    wrapper = mountFn(SearchableDropdown, {
       localVue,
       store,
       propsData: {
@@ -78,22 +71,22 @@ describe('Global Search Group Filter', () => {
       });
 
       describe('onSearch', () => {
-        const groupSearch = 'test search';
+        const search = 'test search';
 
         beforeEach(() => {
-          findGlDropdownSearch().vm.$emit('input', groupSearch);
+          findGlDropdownSearch().vm.$emit('input', search);
         });
 
-        it('calls fetchGroups when input event is fired from GlSearchBoxByType', () => {
-          expect(actionSpies.fetchGroups).toHaveBeenCalledWith(expect.any(Object), groupSearch);
+        it('$emits @search when input event is fired from GlSearchBoxByType', () => {
+          expect(wrapper.emitted('search')[0]).toEqual([search]);
         });
       });
     });
 
     describe('findDropdownItems', () => {
-      describe('when fetchingGroups is false', () => {
+      describe('when loading is false', () => {
         beforeEach(() => {
-          createComponent({ groups: MOCK_GROUPS });
+          createComponent({}, { items: MOCK_GROUPS });
         });
 
         it('does not render loader', () => {
@@ -101,14 +94,14 @@ describe('Global Search Group Filter', () => {
         });
 
         it('renders an instance for each namespace', () => {
-          const groupsIncludingAny = ['Any'].concat(MOCK_GROUPS.map(n => n.full_name));
-          expect(findDropdownItemsText()).toStrictEqual(groupsIncludingAny);
+          const resultsIncludeAny = ['Any'].concat(MOCK_GROUPS.map(n => n.full_name));
+          expect(findDropdownItemsText()).toStrictEqual(resultsIncludeAny);
         });
       });
 
-      describe('when fetchingGroups is true', () => {
+      describe('when loading is true', () => {
         beforeEach(() => {
-          createComponent({ fetchingGroups: true, groups: MOCK_GROUPS });
+          createComponent({}, { loading: true, items: MOCK_GROUPS });
         });
 
         it('does render loader', () => {
@@ -119,26 +112,36 @@ describe('Global Search Group Filter', () => {
           expect(findDropdownItemsText()).toStrictEqual(['Any']);
         });
       });
+
+      describe('when item is selected', () => {
+        beforeEach(() => {
+          createComponent({}, { items: MOCK_GROUPS, selectedItem: MOCK_GROUPS[0] });
+        });
+
+        it('marks the dropdown as checked', () => {
+          expect(findFirstGroupDropdownItem().attributes('ischecked')).toBe('true');
+        });
+      });
     });
 
     describe('Dropdown Text', () => {
-      describe('when initialGroup is null', () => {
+      describe('when selectedItem is any', () => {
         beforeEach(() => {
           createComponent({}, {}, mount);
         });
 
         it('sets dropdown text to Any', () => {
-          expect(findDropdownText().text()).toBe(ANY_GROUP.name);
+          expect(findDropdownText().text()).toBe(ANY_OPTION.name);
         });
       });
 
-      describe('initialGroup is set', () => {
+      describe('selectedItem is set', () => {
         beforeEach(() => {
-          createComponent({}, { initialGroup: MOCK_GROUP }, mount);
+          createComponent({}, { selectedItem: MOCK_GROUP }, mount);
         });
 
-        it('sets dropdown text to group name', () => {
-          expect(findDropdownText().text()).toBe(MOCK_GROUP.name);
+        it('sets dropdown text to the selectedItem selectedDisplayValue', () => {
+          expect(findDropdownText().text()).toBe(MOCK_GROUP[GROUP_DATA.selectedDisplayValue]);
         });
       });
     });
@@ -146,27 +149,19 @@ describe('Global Search Group Filter', () => {
 
   describe('actions', () => {
     beforeEach(() => {
-      createComponent({ groups: MOCK_GROUPS });
+      createComponent({}, { items: MOCK_GROUPS });
     });
 
-    it('clicking "Any" dropdown item calls setUrlParams with group id null, project id null,and visitUrl', () => {
+    it('clicking "Any" dropdown item $emits @change with ANY_OPTION', () => {
       findAnyDropdownItem().vm.$emit('click');
 
-      expect(urlUtils.setUrlParams).toHaveBeenCalledWith({
-        [GROUP_QUERY_PARAM]: ANY_GROUP.id,
-        [PROJECT_QUERY_PARAM]: null,
-      });
-      expect(urlUtils.visitUrl).toHaveBeenCalled();
+      expect(wrapper.emitted('change')[0]).toEqual([ANY_OPTION]);
     });
 
-    it('clicking group dropdown item calls setUrlParams with group id, project id null, and visitUrl', () => {
+    it('clicking result dropdown item $emits @change with result', () => {
       findFirstGroupDropdownItem().vm.$emit('click');
 
-      expect(urlUtils.setUrlParams).toHaveBeenCalledWith({
-        [GROUP_QUERY_PARAM]: MOCK_GROUPS[0].id,
-        [PROJECT_QUERY_PARAM]: null,
-      });
-      expect(urlUtils.visitUrl).toHaveBeenCalled();
+      expect(wrapper.emitted('change')[0]).toEqual([MOCK_GROUPS[0]]);
     });
   });
 });

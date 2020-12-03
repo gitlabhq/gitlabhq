@@ -2619,6 +2619,9 @@ msgstr ""
 msgid "AlertSettings|Proceed with editing"
 msgstr ""
 
+msgid "AlertSettings|Prometheus"
+msgstr ""
+
 msgid "AlertSettings|Prometheus API base URL"
 msgstr ""
 
@@ -5662,6 +5665,9 @@ msgstr ""
 msgid "Clone repository"
 msgstr ""
 
+msgid "Clone this issue"
+msgstr ""
+
 msgid "Clone with %{http_label}"
 msgstr ""
 
@@ -5672,6 +5678,18 @@ msgid "Clone with KRB5"
 msgstr ""
 
 msgid "Clone with SSH"
+msgstr ""
+
+msgid "CloneIssue|Cannot clone issue due to insufficient permissions!"
+msgstr ""
+
+msgid "CloneIssue|Cannot clone issue to target project as it is pending deletion."
+msgstr ""
+
+msgid "Cloned this issue to %{path_to_project}."
+msgstr ""
+
+msgid "Clones this issue, without comments, to %{project}."
 msgstr ""
 
 msgid "Close"
@@ -11421,6 +11439,9 @@ msgstr ""
 msgid "Failed to check related branches."
 msgstr ""
 
+msgid "Failed to clone this issue because target project doesn't exist."
+msgstr ""
+
 msgid "Failed to create Merge Request. Please try again."
 msgstr ""
 
@@ -11754,9 +11775,6 @@ msgid "FeatureFlags|Feature Flag has no strategies"
 msgstr ""
 
 msgid "FeatureFlags|Feature Flags"
-msgstr ""
-
-msgid "FeatureFlags|Feature Flags will look different in the next milestone. No action is needed, but you may notice the functionality was changed to improve the workflow."
 msgstr ""
 
 msgid "FeatureFlags|Feature flag %{name} will be removed. Are you sure?"

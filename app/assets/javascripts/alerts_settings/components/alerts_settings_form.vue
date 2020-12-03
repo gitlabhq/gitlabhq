@@ -32,6 +32,75 @@ import {
 // feature rollout plan - https://gitlab.com/gitlab-org/gitlab/-/issues/262707#note_442529171
 import mockedCustomMapping from './mocks/parsedMapping.json';
 
+export const i18n = {
+  integrationFormSteps: {
+    step1: {
+      label: s__('AlertSettings|1. Select integration type'),
+      enterprise: s__(
+        'AlertSettings|In free versions of GitLab, only one integration for each type can be added. %{linkStart}Upgrade your subscription%{linkEnd} to add additional integrations.',
+      ),
+    },
+    step2: {
+      label: s__('AlertSettings|2. Name integration'),
+      placeholder: s__('AlertSettings|Enter integration name'),
+      prometheus: s__('AlertSettings|Prometheus'),
+    },
+    step3: {
+      label: s__('AlertSettings|3. Set up webhook'),
+      help: s__(
+        "AlertSettings|Utilize the URL and authorization key below to authorize an external service to send alerts to GitLab. Review your external service's documentation to learn where to add these details, and the %{linkStart}GitLab documentation%{linkEnd} to learn more about configuring your endpoint.",
+      ),
+      prometheusHelp: s__(
+        'AlertSettings|Utilize the URL and authorization key below to authorize Prometheus to send alerts to GitLab. Review the Prometheus documentation to learn where to add these details, and the %{linkStart}GitLab documentation%{linkEnd} to learn more about configuring your endpoint.',
+      ),
+      info: s__('AlertSettings|Authorization key'),
+      reset: s__('AlertSettings|Reset Key'),
+    },
+    step4: {
+      label: s__('AlertSettings|4. Sample alert payload (optional)'),
+      help: s__(
+        'AlertSettings|Provide an example payload from the monitoring tool you intend to integrate with. This payload can be used to create a custom mapping (optional), or to test the integration (also optional).',
+      ),
+      prometheusHelp: s__(
+        'AlertSettings|Provide an example payload from the monitoring tool you intend to integrate with. This payload can be used to test the integration (optional).',
+      ),
+      placeholder: s__('AlertSettings|{ "events": [{ "application": "Name of application" }] }'),
+      resetHeader: s__('AlertSettings|Reset the mapping'),
+      resetBody: s__(
+        "AlertSettings|If you edit the payload, the stored mapping will be reset, and you'll need to re-map the fields.",
+      ),
+      resetOk: s__('AlertSettings|Proceed with editing'),
+      editPayload: s__('AlertSettings|Edit payload'),
+      submitPayload: s__('AlertSettings|Submit payload'),
+      payloadParsedSucessMsg: s__(
+        'AlertSettings|Sample payload has been parsed. You can now map the fields.',
+      ),
+    },
+    step5: {
+      label: s__('AlertSettings|5. Map fields (optional)'),
+      intro: s__(
+        "AlertSettings|If you've provided a sample alert payload, you can create a custom mapping for your endpoint. The default GitLab alert keys are listed below. Please define which payload key should map to the specified GitLab key.",
+      ),
+    },
+    prometheusFormUrl: {
+      label: s__('AlertSettings|Prometheus API base URL'),
+      help: s__('AlertSettings|URL cannot be blank and must start with http or https'),
+    },
+    restKeyInfo: {
+      label: s__(
+        'AlertSettings|Resetting the authorization key for this project will require updating the authorization key in every alert source it is enabled in.',
+      ),
+    },
+    // TODO: Will be removed in 13.7 as part of: https://gitlab.com/gitlab-org/gitlab/-/issues/273657
+    opsgenie: {
+      label: s__('AlertSettings|2. Add link to your Opsgenie alert list'),
+      info: s__(
+        'AlertSettings|Utilizing this option will link the GitLab Alerts navigation item to your existing Opsgenie instance. By selecting this option, you cannot receive alerts from any other source in GitLab; it will effectively be turning Alerts within GitLab off as a feature.',
+      ),
+    },
+  },
+};
+
 export default {
   placeholders: {
     prometheus: targetPrometheusUrlPlaceholder,
@@ -39,73 +108,7 @@ export default {
   },
   JSON_VALIDATE_DELAY,
   typeSet,
-  i18n: {
-    integrationFormSteps: {
-      step1: {
-        label: s__('AlertSettings|1. Select integration type'),
-        enterprise: s__(
-          'AlertSettings|In free versions of GitLab, only one integration for each type can be added. %{linkStart}Upgrade your subscription%{linkEnd} to add additional integrations.',
-        ),
-      },
-      step2: {
-        label: s__('AlertSettings|2. Name integration'),
-        placeholder: s__('AlertSettings|Enter integration name'),
-      },
-      step3: {
-        label: s__('AlertSettings|3. Set up webhook'),
-        help: s__(
-          "AlertSettings|Utilize the URL and authorization key below to authorize an external service to send alerts to GitLab. Review your external service's documentation to learn where to add these details, and the %{linkStart}GitLab documentation%{linkEnd} to learn more about configuring your endpoint.",
-        ),
-        prometheusHelp: s__(
-          'AlertSettings|Utilize the URL and authorization key below to authorize Prometheus to send alerts to GitLab. Review the Prometheus documentation to learn where to add these details, and the %{linkStart}GitLab documentation%{linkEnd} to learn more about configuring your endpoint.',
-        ),
-        info: s__('AlertSettings|Authorization key'),
-        reset: s__('AlertSettings|Reset Key'),
-      },
-      step4: {
-        label: s__('AlertSettings|4. Sample alert payload (optional)'),
-        help: s__(
-          'AlertSettings|Provide an example payload from the monitoring tool you intend to integrate with. This payload can be used to create a custom mapping (optional), or to test the integration (also optional).',
-        ),
-        prometheusHelp: s__(
-          'AlertSettings|Provide an example payload from the monitoring tool you intend to integrate with. This payload can be used to test the integration (optional).',
-        ),
-        placeholder: s__('AlertSettings|{ "events": [{ "application": "Name of application" }] }'),
-        resetHeader: s__('AlertSettings|Reset the mapping'),
-        resetBody: s__(
-          "AlertSettings|If you edit the payload, the stored mapping will be reset, and you'll need to re-map the fields.",
-        ),
-        resetOk: s__('AlertSettings|Proceed with editing'),
-        editPayload: s__('AlertSettings|Edit payload'),
-        submitPayload: s__('AlertSettings|Submit payload'),
-        payloadParsedSucessMsg: s__(
-          'AlertSettings|Sample payload has been parsed. You can now map the fields.',
-        ),
-      },
-      step5: {
-        label: s__('AlertSettings|5. Map fields (optional)'),
-        intro: s__(
-          "AlertSettings|If you've provided a sample alert payload, you can create a custom mapping for your endpoint. The default GitLab alert keys are listed below. Please define which payload key should map to the specified GitLab key.",
-        ),
-      },
-      prometheusFormUrl: {
-        label: s__('AlertSettings|Prometheus API base URL'),
-        help: s__('AlertSettings|URL cannot be blank and must start with http or https'),
-      },
-      restKeyInfo: {
-        label: s__(
-          'AlertSettings|Resetting the authorization key for this project will require updating the authorization key in every alert source it is enabled in.',
-        ),
-      },
-      // TODO: Will be removed in 13.7 as part of: https://gitlab.com/gitlab-org/gitlab/-/issues/273657
-      opsgenie: {
-        label: s__('AlertSettings|2. Add link to your Opsgenie alert list'),
-        info: s__(
-          'AlertSettings|Utilizing this option will link the GitLab Alerts navigation item to your existing Opsgenie instance. By selecting this option, you cannot receive alerts from any other source in GitLab; it will effectively be turning Alerts within GitLab off as a feature.',
-        ),
-      },
-    },
-  },
+  i18n,
   components: {
     ClipboardButton,
     GlButton,
@@ -265,6 +268,9 @@ export default {
         this.integrationTestPayload.json === ''
       );
     },
+    isSelectDisabled() {
+      return this.currentIntegration !== null || !this.canAddIntegration;
+    },
   },
   watch: {
     currentIntegration(val) {
@@ -421,7 +427,8 @@ export default {
     >
       <gl-form-select
         v-model="selectedIntegration"
-        :disabled="currentIntegration !== null || !canAddIntegration"
+        :disabled="isSelectDisabled"
+        :class="{ 'gl-bg-gray-100!': isSelectDisabled }"
         :options="options"
         @change="integrationTypeSelect"
       />
@@ -472,8 +479,13 @@ export default {
         >
           <gl-form-input
             v-model="integrationForm.name"
+            :disabled="isPrometheus"
             type="text"
-            :placeholder="$options.i18n.integrationFormSteps.step2.placeholder"
+            :placeholder="
+              isPrometheus
+                ? $options.i18n.integrationFormSteps.step2.prometheus
+                : $options.i18n.integrationFormSteps.step2.placeholder
+            "
           />
         </gl-form-group>
         <gl-form-group

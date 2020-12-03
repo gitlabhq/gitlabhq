@@ -45,21 +45,32 @@ export const registryServerResponse = [
   },
 ];
 
-export const imagesListResponse = {
-  data: [
-    {
-      path: 'foo',
-      location: 'location',
-      destroy_path: 'path',
-    },
-    {
-      path: 'bar',
-      location: 'location-2',
-      destroy_path: 'path-2',
-    },
-  ],
-  headers,
-};
+export const imagesListResponse = [
+  {
+    __typename: 'ContainerRepository',
+    id: 'gid://gitlab/ContainerRepository/26',
+    name: 'rails-12009',
+    path: 'gitlab-org/gitlab-test/rails-12009',
+    status: null,
+    location: '0.0.0.0:5000/gitlab-org/gitlab-test/rails-12009',
+    canDelete: true,
+    createdAt: '2020-11-03T13:29:21Z',
+    tagsCount: 18,
+    expirationPolicyStartedAt: null,
+  },
+  {
+    __typename: 'ContainerRepository',
+    id: 'gid://gitlab/ContainerRepository/11',
+    name: 'rails-20572',
+    path: 'gitlab-org/gitlab-test/rails-20572',
+    status: null,
+    location: '0.0.0.0:5000/gitlab-org/gitlab-test/rails-20572',
+    canDelete: true,
+    createdAt: '2020-09-21T06:57:43Z',
+    tagsCount: 1,
+    expirationPolicyStartedAt: null,
+  },
+];
 
 export const tagsListResponse = {
   data: [
@@ -90,12 +101,12 @@ export const tagsListResponse = {
   headers,
 };
 
-export const imagePagination = {
-  perPage: 10,
-  page: 1,
-  total: 14,
-  totalPages: 2,
-  nextPage: 2,
+export const pageInfo = {
+  hasNextPage: true,
+  hasPreviousPage: true,
+  startCursor: 'eyJpZCI6IjI2In0',
+  endCursor: 'eyJpZCI6IjgifQ',
+  __typename: 'ContainerRepositoryConnection',
 };
 
 export const imageDetailsMock = {
@@ -107,4 +118,77 @@ export const imageDetailsMock = {
   created_at: '2020-06-29T10:23:47.838Z',
   cleanup_policy_started_at: null,
   delete_api_path: 'http://0.0.0.0:3000/api/v4/projects/1/registry/repositories/1',
+};
+
+export const graphQLImageListMock = {
+  data: {
+    project: {
+      __typename: 'Project',
+      containerRepositoriesCount: 2,
+      containerRepositories: {
+        __typename: 'ContainerRepositoryConnection',
+        nodes: imagesListResponse,
+        pageInfo,
+      },
+    },
+  },
+};
+
+export const graphQLEmptyImageListMock = {
+  data: {
+    project: {
+      __typename: 'Project',
+      containerRepositoriesCount: 2,
+      containerRepositories: {
+        __typename: 'ContainerRepositoryConnection',
+        nodes: [],
+        pageInfo,
+      },
+    },
+  },
+};
+
+export const graphQLEmptyGroupImageListMock = {
+  data: {
+    group: {
+      __typename: 'Group',
+      containerRepositoriesCount: 2,
+      containerRepositories: {
+        __typename: 'ContainerRepositoryConnection',
+        nodes: [],
+        pageInfo,
+      },
+    },
+  },
+};
+
+export const deletedContainerRepository = {
+  id: 'gid://gitlab/ContainerRepository/11',
+  status: 'DELETE_SCHEDULED',
+  path: 'gitlab-org/gitlab-test/rails-12009',
+  __typename: 'ContainerRepository',
+};
+
+export const graphQLImageDeleteMock = {
+  data: {
+    destroyContainerRepository: {
+      containerRepository: {
+        ...deletedContainerRepository,
+      },
+      errors: [],
+      __typename: 'DestroyContainerRepositoryPayload',
+    },
+  },
+};
+
+export const graphQLImageDeleteMockError = {
+  data: {
+    destroyContainerRepository: {
+      containerRepository: {
+        ...deletedContainerRepository,
+      },
+      errors: ['foo'],
+      __typename: 'DestroyContainerRepositoryPayload',
+    },
+  },
 };

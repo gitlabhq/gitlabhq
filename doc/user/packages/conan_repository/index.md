@@ -292,7 +292,7 @@ Prerequisites:
 - [Authentication](#authenticate-to-the-package-registry) with the
   Package Registry must be configured.
 
-1. In the project where you want to install the package as a dependency, open 
+1. In the project where you want to install the package as a dependency, open
    `conanfile.txt`. Or, in the root of your project, create a file called
    `conanfile.txt`.
 

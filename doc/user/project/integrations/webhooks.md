@@ -11,8 +11,8 @@ a new issue is created. You can configure webhooks to listen for specific events
 like pushes, issues or merge requests. GitLab sends a POST request with data
 to the webhook URL.
 
-In most cases, you need to set up your own [webhook receiver](#example-webhook-receiver)
-to receive information from GitLab, and send it to another app, according to your needs.
+You usually need to set up your own [webhook receiver](#example-webhook-receiver)
+to receive information from GitLab and send it to another app, according to your requirements.
 We already have a [built-in receiver](slack.md)
 for sending [Slack](https://api.slack.com/incoming-webhooks) notifications _per project_.
 
@@ -33,7 +33,7 @@ and **per project and per group** for **GitLab Enterprise Edition**.
 
 Navigate to the webhooks page at your project's **Settings > Webhooks**.
 
-NOTE: **Note:**
+NOTE:
 On GitLab.com, the [maximum number of webhooks and their size](../../../user/gitlab_com/index.md#webhooks) per project, and per group, is limited.
 
 ## Version history
@@ -54,7 +54,7 @@ Starting from GitLab 11.2:
   `![](/uploads/...)`) have their target URL changed to an absolute URL. See
   [image URL rewriting](#image-url-rewriting) for more details.
 
-## Use-cases
+## Possible uses for webhooks
 
 - You can set up a webhook in GitLab to send a notification to
   [Slack](https://api.slack.com/incoming-webhooks) every time a job fails.
@@ -65,12 +65,12 @@ Starting from GitLab 11.2:
 ## Webhook endpoint tips
 
 If you are writing your own endpoint (web server) to receive
-GitLab webhooks, keep in mind the following things:
+GitLab webhooks, keep in mind the following:
 
-- Your endpoint should send its HTTP response as fast as possible. If
-  you wait too long (by default, a timeout of 10 seconds), GitLab may decide
-  the hook failed and retry it. You can configure this timeout with
-  `gitlab_rails['webhook_timeout']`.
+- Your endpoint should send its HTTP response as fast as possible. If the response takes longer than
+  the configured timeout, GitLab decides the hook failed and retries it. For information on
+  customizing this timeout, see
+  [Webhook fails or multiple webhook requests are triggered](#webhook-fails-or-multiple-webhook-requests-are-triggered).
 - Your endpoint should ALWAYS return a valid HTTP response. If you do
   not do this then GitLab thinks the hook failed and retries it.
   Most HTTP libraries take care of this for you automatically but if
@@ -86,7 +86,7 @@ that the request is legitimate.
 ## SSL verification
 
 By default, the SSL certificate of the webhook endpoint is verified based on
-an internal list of Certificate Authorities, which means the certificate cannot
+an internal list of Certificate Authorities. This means the certificate cannot
 be self-signed.
 
 You can turn this off in the webhook settings in your GitLab projects.
@@ -109,7 +109,7 @@ Below are described the supported events.
 
 Triggered when you push to the repository except when pushing tags.
 
-NOTE: **Note:**
+NOTE:
 When more than 20 commits are pushed at once, the `commits` webhook
 attribute only contains the first 20 for performance reasons. Loading
 detailed commit data is expensive. Note that despite only 20 commits being
@@ -204,7 +204,7 @@ X-Gitlab-Event: Push Hook
 
 Triggered when you create (or delete) tags to the repository.
 
-NOTE: **Note:**
+NOTE:
 If a single push includes changes for more than three (by default, depending on
 [`push_event_hooks_limit` setting](../../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls))
 tags, this hook is not executed.
@@ -409,12 +409,12 @@ X-Gitlab-Event: Issue Hook
 }
 ```
 
-> **Note**: `assignee` and `assignee_id` keys are deprecated and now show the first assignee only.
+NOTE: `assignee` and `assignee_id` keys are deprecated and now show the first assignee only.
 
 ### Comment events
 
 Triggered when a new comment is made on commits, merge requests, issues, and code snippets.
-The note data is stored in `object_attributes` (e.g. `note`, `noteable_type`). The
+The note data is stored in `object_attributes` (for example, `note` or `noteable_type`). The
 payload also includes information about the target of the comment. For example,
 a comment on an issue includes the specific issue information under the `issue` key.
 Valid target types:
@@ -734,7 +734,7 @@ X-Gitlab-Event: Note Hook
 }
 ```
 
-> **Note**: `assignee_id` field is deprecated and now shows the first assignee only.
+NOTE: `assignee_id` field is deprecated and now shows the first assignee only.
 
 #### Comment on code snippet
 
@@ -1531,29 +1531,36 @@ You can find records for last 2 days in "Recent Deliveries" section on the edit 
 
 ![Recent deliveries](img/webhook_logs.png)
 
-In this section you can see HTTP status code (green for 200-299 codes, red for the others, `internal error` for failed deliveries ), triggered event, a time when the event was called, elapsed time of the request.
+In this section you can see:
+
+- HTTP status code (green for `200-299` codes, red for the others, `internal error` for failed deliveries).
+- Triggered event.
+- A time when the event was called.
+- Elapsed time of the request.
 
 If you need more information about execution, you can click `View details` link.
 On this page, you can see data that GitLab sends (request headers and body) and data that it received (response headers and body).
 
 From this page, you can repeat delivery with the same data by clicking `Resend Request` button.
 
-NOTE: **Note:**
+NOTE:
 If URL or secret token of the webhook were updated, data is delivered to the new address.
 
-### Receiving duplicate or multiple webhook requests triggered by one event
+### Webhook fails or multiple webhook requests are triggered
 
-When GitLab sends a webhook, it expects a response in 10 seconds (set default value). If it does not receive one, it retries the webhook.
-If the endpoint doesn't send its HTTP response within those 10 seconds, GitLab may decide the hook failed and retry it.
+When GitLab sends a webhook, it expects a response in 10 seconds by default. If it does not receive
+one, it retries the webhook. If the endpoint doesn't send its HTTP response within those 10 seconds,
+GitLab may decide the hook failed and retry it.
 
-If you are receiving multiple requests, you can try increasing the default value to wait for the HTTP response after sending the webhook
-by uncommenting or adding the following setting to your `/etc/gitlab/gitlab.rb`:
+If your webhooks are failing or you are receiving multiple requests, you can try changing the
+default value. You can do this by uncommenting or adding the following setting to your
+`/etc/gitlab/gitlab.rb` file:
 
 ```ruby
 gitlab_rails['webhook_timeout'] = 10
 ```
 
-### Troubleshooting: "Unable to get local issuer certificate"
+### Unable to get local issuer certificate
 
 When SSL verification is enabled, this error indicates that GitLab isn't able to verify the SSL certificate of the webhook endpoint.
 Typically, this is because the root certificate isn't issued by a trusted certification authority as
@@ -1584,7 +1591,7 @@ end
 server.start
 ```
 
-Pick an unused port (e.g. 8000) and start the script: `ruby print_http_body.rb
+Pick an unused port (for example, `8000`) and start the script: `ruby print_http_body.rb
 8000`. Then add your server as a webhook receiver in GitLab as
 `http://my.host:8000/`.
 
@@ -1597,5 +1604,6 @@ example.com - - [14/May/2014:07:45:26 EDT] "POST / HTTP/1.1" 200 0
 - -> /
 ```
 
-NOTE: **Note:**
-You may need to [allow requests to the local network](../../../security/webhooks.md) for this receiver to be added.
+NOTE:
+You may need to [allow requests to the local network](../../../security/webhooks.md) for this
+receiver to be added.

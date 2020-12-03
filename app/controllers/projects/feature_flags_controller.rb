@@ -14,7 +14,6 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:feature_flag_permissions)
-    push_frontend_feature_flag(:feature_flags_new_version, project, default_enabled: true)
     push_frontend_feature_flag(:feature_flags_legacy_read_only, project, default_enabled: true)
     push_frontend_feature_flag(:feature_flags_legacy_read_only_override, project)
   end
@@ -101,15 +100,7 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
   protected
 
   def feature_flag
-    @feature_flag ||= @noteable = if new_version_feature_flags_enabled?
-                                    project.operations_feature_flags.find_by_iid!(params[:iid])
-                                  else
-                                    project.operations_feature_flags.legacy_flag.find_by_iid!(params[:iid])
-                                  end
-  end
-
-  def new_version_feature_flags_enabled?
-    ::Feature.enabled?(:feature_flags_new_version, project, default_enabled: true)
+    @feature_flag ||= @noteable = project.operations_feature_flags.find_by_iid!(params[:iid])
   end
 
   def ensure_legacy_flags_writable!

@@ -44,5 +44,6 @@ export const EMPTY_RESULT_MESSAGE = s__(
 
 // Parameters
 
-export const IMAGE_DELETE_SCHEDULED_STATUS = 'delete_scheduled';
-export const IMAGE_FAILED_DELETED_STATUS = 'delete_failed';
+export const IMAGE_DELETE_SCHEDULED_STATUS = 'DELETE_SCHEDULED';
+export const IMAGE_FAILED_DELETED_STATUS = 'DELETE_FAILED';
+export const GRAPHQL_PAGE_SIZE = 10;

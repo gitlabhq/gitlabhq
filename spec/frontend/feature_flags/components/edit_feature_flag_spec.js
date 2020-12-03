@@ -4,7 +4,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { GlToggle, GlAlert } from '@gitlab/ui';
 import { TEST_HOST } from 'spec/test_constants';
 import { mockTracking } from 'helpers/tracking_helper';
-import { LEGACY_FLAG, NEW_VERSION_FLAG, NEW_FLAG_ALERT } from '~/feature_flags/constants';
+import { LEGACY_FLAG, NEW_VERSION_FLAG } from '~/feature_flags/constants';
 import Form from '~/feature_flags/components/form.vue';
 import createStore from '~/feature_flags/store/edit';
 import EditFeatureFlag from '~/feature_flags/components/edit_feature_flag.vue';
@@ -37,9 +37,6 @@ describe('Edit feature flag form', () => {
         showUserCallout: true,
         userCalloutId,
         userCalloutsPath,
-        glFeatures: {
-          featureFlagsNewVersion: true,
-        },
         ...opts,
       },
     });
@@ -149,35 +146,6 @@ describe('Edit feature flag form', () => {
       expect(spy).toHaveBeenCalledWith('_category_', 'click_button', {
         label: 'feature_flag_toggle',
       });
-    });
-  });
-
-  describe('without new version flags', () => {
-    beforeEach(() => factory({ glFeatures: { featureFlagsNewVersion: false } }));
-
-    it('should alert users that feature flags are changing soon', () => {
-      expect(findAlert().text()).toBe(NEW_FLAG_ALERT);
-    });
-  });
-
-  describe('dismissing new version alert', () => {
-    beforeEach(() => {
-      factory({ glFeatures: { featureFlagsNewVersion: false } });
-      mock.onPost(userCalloutsPath, { feature_name: userCalloutId }).reply(200);
-      findAlert().vm.$emit('dismiss');
-      return wrapper.vm.$nextTick();
-    });
-
-    afterEach(() => {
-      mock.restore();
-    });
-
-    it('should hide the alert', () => {
-      expect(findAlert().exists()).toBe(false);
-    });
-
-    it('should send the dismissal event', () => {
-      expect(mock.history.post.length).toBe(1);
     });
   });
 });

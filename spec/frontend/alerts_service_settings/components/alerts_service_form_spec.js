@@ -42,8 +42,8 @@ describe('AlertsServiceForm', () => {
     mockAxios = new MockAdapter(axios);
     setFixtures(`
     <div>
-      <span class="js-service-active-status fa fa-circle" data-value="true"></span>
-      <span class="js-service-active-status fa fa-power-off" data-value="false"></span>
+      <span class="js-service-active-status" data-value="true"><svg class="s16 cgreen" data-testid="check-icon"><use xlink:href="icons.svg#check" /></svg></span>
+      <span class="js-service-active-status" data-value="false"><svg class="s16 clgray" data-testid="power-icon"><use xlink:href="icons.svg#power" /></svg></span>
     </div>`);
   });
 

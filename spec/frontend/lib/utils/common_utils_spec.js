@@ -526,8 +526,8 @@ describe('common_utils', () => {
     });
 
     it('should set svg className when passed', () => {
-      expect(commonUtils.spriteIcon('test', 'fa fa-test')).toEqual(
-        '<svg class="fa fa-test"><use xlink:href="icons.svg#test" /></svg>',
+      expect(commonUtils.spriteIcon('test', 'first-icon-class second-icon-class')).toEqual(
+        '<svg class="first-icon-class second-icon-class"><use xlink:href="icons.svg#test" /></svg>',
       );
     });
   });

@@ -2,8 +2,8 @@ import { initSearchApp } from '~/search';
 import createStore from '~/search/store';
 
 jest.mock('~/search/store');
+jest.mock('~/search/topbar');
 jest.mock('~/search/sidebar');
-jest.mock('~/search/group_filter');
 
 describe('initSearchApp', () => {
   let defaultLocation;

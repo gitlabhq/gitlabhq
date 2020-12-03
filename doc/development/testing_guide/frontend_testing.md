@@ -106,7 +106,7 @@ Remember that the performance of each test depends on the environment.
 
 ### Timout error due to async components
 
-If your component is fetching some other components asynchroneously based on some conditions, it might happen so that your Jest suite for this component will become flaky timing out from time to time. 
+If your component is fetching some other components asynchroneously based on some conditions, it might happen so that your Jest suite for this component will become flaky timing out from time to time.
 
 ```javascript
 // ide.vue

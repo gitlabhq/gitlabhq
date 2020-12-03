@@ -241,7 +241,7 @@ Users can unlink SAML for a group from their profile page. This can be helpful i
 - Your SAML NameID has changed and so GitLab can no longer find your user.
 
 CAUTION: **Warning:**
-Unlinking an account removes all roles assigned to that user within the group. 
+Unlinking an account removes all roles assigned to that user within the group.
 If a user relinks their account, roles need to be reassigned.
 
 For example, to unlink the `MyOrg` account, the following **Disconnect** button is available under **Profile > Accounts**:
@@ -274,14 +274,14 @@ To link the SAML `Freelancers` group in the attribute statement example above:
 
 1. Enter `Freelancers` in the `SAML Group Name` field.
 1. Choose the desired `Access Level`.
-1. **Save** the group link. 
-1. Repeat to add additional group links if desired. 
+1. **Save** the group link.
+1. Repeat to add additional group links if desired.
 
 ![SAML Group Links](img/saml_group_links_v13_6.png)
 
-If a user is a member of multiple SAML groups mapped to the same GitLab group, 
+If a user is a member of multiple SAML groups mapped to the same GitLab group,
 the user gets the highest access level from the groups. For example, if one group
-is linked as `Guest` and another `Maintainer`, a user in both groups gets `Maintainer` 
+is linked as `Guest` and another `Maintainer`, a user in both groups gets `Maintainer`
 access.
 
 ## Glossary

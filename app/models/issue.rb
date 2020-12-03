@@ -308,6 +308,7 @@ class Issue < ApplicationRecord
     !moved? && persisted? &&
       user.can?(:admin_issue, self.project)
   end
+  alias_method :can_clone?, :can_move?
 
   def to_branch_name
     if self.confidential?

@@ -4,7 +4,7 @@ import { mapState, mapActions } from 'vuex';
 import axios from '~/lib/utils/axios_utils';
 import { sprintf, s__ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { LEGACY_FLAG, NEW_FLAG_ALERT } from '../constants';
+import { LEGACY_FLAG } from '../constants';
 import FeatureFlagForm from './form.vue';
 
 export default {
@@ -36,7 +36,6 @@ export default {
     legacyReadOnlyFlagAlert: s__(
       'FeatureFlags|GitLab is moving to a new way of managing feature flags. This feature flag is read-only, and it will be removed in 14.0. Please create a new feature flag.',
     ),
-    newFlagAlert: NEW_FLAG_ALERT,
   },
   computed: {
     ...mapState([
@@ -58,7 +57,7 @@ export default {
         : sprintf(s__('Edit %{name}'), { name: this.name });
     },
     deprecated() {
-      return this.hasNewVersionFlags && this.version === LEGACY_FLAG;
+      return this.version === LEGACY_FLAG;
     },
     deprecatedAndEditable() {
       return this.deprecated && !this.hasLegacyReadOnlyFlags;
@@ -66,17 +65,11 @@ export default {
     deprecatedAndReadOnly() {
       return this.deprecated && this.hasLegacyReadOnlyFlags;
     },
-    hasNewVersionFlags() {
-      return this.glFeatures.featureFlagsNewVersion;
-    },
     hasLegacyReadOnlyFlags() {
       return (
         this.glFeatures.featureFlagsLegacyReadOnly &&
         !this.glFeatures.featureFlagsLegacyReadOnlyOverride
       );
-    },
-    shouldShowNewFlagAlert() {
-      return !this.hasNewVersionFlags && this.userShouldSeeNewFlagAlert;
     },
   },
   created() {
@@ -95,14 +88,6 @@ export default {
 </script>
 <template>
   <div>
-    <gl-alert
-      v-if="shouldShowNewFlagAlert"
-      variant="warning"
-      class="gl-my-5"
-      @dismiss="dismissNewVersionFlagAlert"
-    >
-      {{ $options.translations.newFlagAlert }}
-    </gl-alert>
     <gl-loading-icon v-if="isLoading" size="xl" class="gl-mt-7" />
 
     <template v-else-if="!isLoading && !hasError">

@@ -162,7 +162,6 @@ module UsageDataHelpers
       git
       gitaly
       database
-      avg_cycle_analytics
       prometheus_metrics_enabled
       web_ide_clientside_preview_enabled
       ingress_modsecurity_enabled

@@ -65,26 +65,6 @@ RSpec.describe API::FeatureFlags do
         expect(json_response.map { |f| f['version'] }).to eq(%w[legacy_flag legacy_flag])
       end
 
-      it 'does not return the legacy flag version when the feature flag is disabled' do
-        stub_feature_flags(feature_flags_new_version: false)
-
-        subject
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to match_response_schema('public_api/v4/feature_flags')
-        expect(json_response.select { |f| f.key?('version') }).to eq([])
-      end
-
-      it 'does not return strategies if the new flag is disabled' do
-        stub_feature_flags(feature_flags_new_version: false)
-
-        subject
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to match_response_schema('public_api/v4/feature_flags')
-        expect(json_response.select { |f| f.key?('strategies') }).to eq([])
-      end
-
       it 'does not have N+1 problem' do
         control_count = ActiveRecord::QueryRecorder.new { subject }
 
@@ -134,16 +114,6 @@ RSpec.describe API::FeatureFlags do
           }]
         }])
       end
-
-      it 'does not return a version 2 flag when the feature flag is disabled' do
-        stub_feature_flags(feature_flags_new_version: false)
-
-        subject
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to match_response_schema('public_api/v4/feature_flags')
-        expect(json_response).to eq([])
-      end
     end
 
     context 'with version 1 and 2 feature flags' do
@@ -158,20 +128,6 @@ RSpec.describe API::FeatureFlags do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/feature_flags')
         expect(json_response.map { |f| f['name'] }).to eq(%w[legacy_flag new_version_flag])
-      end
-
-      it 'returns only version 1 flags when the feature flag is disabled' do
-        stub_feature_flags(feature_flags_new_version: false)
-        create(:operations_feature_flag, project: project, name: 'legacy_flag')
-        feature_flag = create(:operations_feature_flag, :new_version_flag, project: project, name: 'new_version_flag')
-        strategy = create(:operations_strategy, feature_flag: feature_flag, name: 'default', parameters: {})
-        create(:operations_scope, strategy: strategy, environment_scope: 'production')
-
-        subject
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to match_response_schema('public_api/v4/feature_flags')
-        expect(json_response.map { |f| f['name'] }).to eq(['legacy_flag'])
       end
     end
   end
@@ -223,18 +179,6 @@ RSpec.describe API::FeatureFlags do
             }]
           }]
         })
-      end
-
-      it 'returns a 404 when the feature is disabled' do
-        stub_feature_flags(feature_flags_new_version: false)
-        feature_flag = create(:operations_feature_flag, :new_version_flag, project: project, name: 'feature1')
-        strategy = create(:operations_strategy, feature_flag: feature_flag, name: 'default', parameters: {})
-        create(:operations_scope, strategy: strategy, environment_scope: 'production')
-
-        get api("/projects/#{project.id}/feature_flags/feature1", user)
-
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(json_response).to eq({ 'message' => '404 Not found' })
       end
     end
   end
@@ -288,16 +232,6 @@ RSpec.describe API::FeatureFlags do
       expect(response).to have_gitlab_http_status(:created)
       expect(response).to match_response_schema('public_api/v4/feature_flag')
       expect(json_response['version']).to eq('legacy_flag')
-    end
-
-    it 'does not return version when new version flags are disabled' do
-      stub_feature_flags(feature_flags_new_version: false)
-
-      subject
-
-      expect(response).to have_gitlab_http_status(:created)
-      expect(response).to match_response_schema('public_api/v4/feature_flag')
-      expect(json_response.key?('version')).to eq(false)
     end
 
     context 'with active set to false in the params for a legacy flag' do
@@ -504,20 +438,6 @@ RSpec.describe API::FeatureFlags do
         expect(feature_flag.strategies.first.scopes.map { |s| s.slice(:environment_scope).deep_symbolize_keys }).to eq([{
           environment_scope: 'staging'
         }])
-      end
-
-      it 'returns a 422 when the feature flag is disabled' do
-        stub_feature_flags(feature_flags_new_version: false)
-        params = {
-          name: 'new-feature',
-          version: 'new_version_flag'
-        }
-
-        post api("/projects/#{project.id}/feature_flags", user), params: params
-
-        expect(response).to have_gitlab_http_status(:unprocessable_entity)
-        expect(json_response).to eq({ 'message' => 'Version 2 flags are not enabled for this project' })
-        expect(project.operations_feature_flags.count).to eq(0)
       end
     end
 
@@ -744,16 +664,6 @@ RSpec.describe API::FeatureFlags do
                name: 'feature1', description: 'old description')
       end
 
-      it 'returns a 404 if the feature is disabled' do
-        stub_feature_flags(feature_flags_new_version: false)
-        params = { description: 'new description' }
-
-        put api("/projects/#{project.id}/feature_flags/feature1", user), params: params
-
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(feature_flag.reload.description).to eq('old description')
-      end
-
       it 'returns a 422' do
         params = { description: 'new description' }
 
@@ -769,16 +679,6 @@ RSpec.describe API::FeatureFlags do
       let!(:feature_flag) do
         create(:operations_feature_flag, :new_version_flag, project: project, active: true,
                name: 'feature1', description: 'old description')
-      end
-
-      it 'returns a 404 if the feature is disabled' do
-        stub_feature_flags(feature_flags_new_version: false)
-        params = { description: 'new description' }
-
-        put api("/projects/#{project.id}/feature_flags/feature1", user), params: params
-
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(feature_flag.reload.description).to eq('old description')
       end
 
       it 'returns a 404 if the feature flag does not exist' do
@@ -1100,15 +1000,6 @@ RSpec.describe API::FeatureFlags do
       expect(json_response['version']).to eq('legacy_flag')
     end
 
-    it 'does not return version when new version flags are disabled' do
-      stub_feature_flags(feature_flags_new_version: false)
-
-      subject
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response.key?('version')).to eq(false)
-    end
-
     context 'with a version 2 feature flag' do
       let!(:feature_flag) { create(:operations_feature_flag, :new_version_flag, project: project) }
 
@@ -1116,14 +1007,6 @@ RSpec.describe API::FeatureFlags do
         expect { subject }.to change { Operations::FeatureFlag.count }.by(-1)
 
         expect(response).to have_gitlab_http_status(:ok)
-      end
-
-      it 'returns a 404 if the feature is disabled' do
-        stub_feature_flags(feature_flags_new_version: false)
-
-        expect { subject }.not_to change { Operations::FeatureFlag.count }
-
-        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

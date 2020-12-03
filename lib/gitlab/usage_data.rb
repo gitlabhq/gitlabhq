@@ -47,7 +47,6 @@ module Gitlab
             .merge(system_usage_data_weekly)
             .merge(features_usage_data)
             .merge(components_usage_data)
-            .merge(cycle_analytics_usage_data)
             .merge(object_store_usage_data)
             .merge(topology_usage_data)
             .merge(usage_activity_by_stage)
@@ -248,12 +247,6 @@ module Gitlab
             aggregated_metrics_weekly
           )
         }
-      end
-
-      def cycle_analytics_usage_data
-        Gitlab::CycleAnalytics::UsageData.new.to_json
-      rescue ActiveRecord::StatementInvalid
-        { avg_cycle_analytics: {} }
       end
 
       # rubocop:disable CodeReuse/ActiveRecord

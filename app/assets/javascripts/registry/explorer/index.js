@@ -5,6 +5,7 @@ import RegistryExplorer from './pages/index.vue';
 import RegistryBreadcrumb from './components/registry_breadcrumb.vue';
 import { createStore } from './stores';
 import createRouter from './router';
+import { apolloProvider } from './graphql/index';
 
 Vue.use(Translate);
 Vue.use(GlToast);
@@ -27,6 +28,7 @@ export default () => {
       el,
       store,
       router,
+      apolloProvider,
       components: {
         RegistryExplorer,
       },

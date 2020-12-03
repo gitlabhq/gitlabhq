@@ -51,13 +51,6 @@ RSpec.describe 'Container Registry', :js do
       expect(page).to have_content 'my/image'
     end
 
-    it 'image repository delete is disabled' do
-      visit_container_registry
-
-      delete_btn = find('[title="Remove repository"]')
-      expect(delete_btn).to be_disabled
-    end
-
     it 'navigates to repo details' do
       visit_container_registry_details('my/image')
 

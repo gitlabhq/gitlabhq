@@ -118,7 +118,7 @@ sequenceDiagram
 1. `GitLab::UsageData.to_json` [cascades down](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb#L22) to ~400+ other counter method calls.
 1. The response of all methods calls are [merged together](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb#L14) into a single JSON payload in `GitLab::UsageData.to_json`.
 1. The JSON payload is then [posted to the Versions application]( https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/submit_usage_ping_service.rb#L20)
-   If a firewall exception is needed, the required URL depends on several things. If 
+   If a firewall exception is needed, the required URL depends on several things. If
    the hostname is `version.gitlab.com`, the protocol is `TCP`, and the port number is `443`,
    the required URL is <https://version.gitlab.com/>.
 
@@ -477,11 +477,11 @@ Next, get the unique events for the current week.
 We have the following recommendations for [Adding new events](#adding-new-events):
 
 - Event aggregation: weekly.
-- Key expiry time: 
+- Key expiry time:
   - Daily: 29 days.
   - Weekly: 42 days.
 - When adding new metrics, use a [feature flag](../../operations/feature_flags.md) to control the impact.
-- For feature flags triggered by another service, set `default_enabled: false`, 
+- For feature flags triggered by another service, set `default_enabled: false`,
   - Events can be triggered using the `UsageData` API, which helps when there are > 10 events per change
 
 ##### Enable/Disable Redis HLL tracking
@@ -868,44 +868,6 @@ The following is example content of the Usage Ping payload.
     "adapter": "postgresql",
     "version": "9.6.15",
     "pg_system_id": 6842684531675334351
-  },
-  "avg_cycle_analytics": {
-    "issue": {
-      "average": 999,
-      "sd": 999,
-      "missing": 999
-    },
-    "plan": {
-      "average": null,
-      "sd": 999,
-      "missing": 999
-    },
-    "code": {
-      "average": null,
-      "sd": 999,
-      "missing": 999
-    },
-    "test": {
-      "average": null,
-      "sd": 999,
-      "missing": 999
-    },
-    "review": {
-      "average": null,
-      "sd": 999,
-      "missing": 999
-    },
-    "staging": {
-      "average": null,
-      "sd": 999,
-      "missing": 999
-    },
-    "production": {
-      "average": null,
-      "sd": 999,
-      "missing": 999
-    },
-    "total": 999
   },
   "analytics_unique_visits": {
     "g_analytics_contribution": 999,

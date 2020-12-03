@@ -522,6 +522,67 @@ RSpec.describe ::SystemNotes::IssuablesService do
     end
   end
 
+  describe '#noteable_cloned' do
+    let(:new_project) { create(:project) }
+    let(:new_noteable) { create(:issue, project: new_project) }
+
+    subject do
+      service.noteable_cloned(new_noteable, direction)
+    end
+
+    shared_examples 'cross project mentionable' do
+      include MarkupHelper
+
+      it 'contains cross reference to new noteable' do
+        expect(subject.note).to include cross_project_reference(new_project, new_noteable)
+      end
+
+      it 'mentions referenced noteable' do
+        expect(subject.note).to include new_noteable.to_reference
+      end
+
+      it 'mentions referenced project' do
+        expect(subject.note).to include new_project.full_path
+      end
+    end
+
+    context 'cloned to' do
+      let(:direction) { :to }
+
+      it_behaves_like 'cross project mentionable'
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'cloned' }
+      end
+
+      it 'notifies about noteable being cloned to' do
+        expect(subject.note).to match('cloned to')
+      end
+    end
+
+    context 'cloned from' do
+      let(:direction) { :from }
+
+      it_behaves_like 'cross project mentionable'
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'cloned' }
+      end
+
+      it 'notifies about noteable being cloned from' do
+        expect(subject.note).to match('cloned from')
+      end
+    end
+
+    context 'invalid direction' do
+      let(:direction) { :invalid }
+
+      it 'raises error' do
+        expect { subject }.to raise_error StandardError, /Invalid direction/
+      end
+    end
+  end
+
   describe '#mark_duplicate_issue' do
     subject { service.mark_duplicate_issue(canonical_issue) }
 

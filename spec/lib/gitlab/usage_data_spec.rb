@@ -841,24 +841,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       end
     end
 
-    describe '.cycle_analytics_usage_data' do
-      subject { described_class.cycle_analytics_usage_data }
-
-      it 'works when queries time out in new' do
-        allow(Gitlab::CycleAnalytics::UsageData)
-          .to receive(:new).and_raise(ActiveRecord::StatementInvalid.new(''))
-
-        expect { subject }.not_to raise_error
-      end
-
-      it 'works when queries time out in to_json' do
-        allow_any_instance_of(Gitlab::CycleAnalytics::UsageData)
-          .to receive(:to_json).and_raise(ActiveRecord::StatementInvalid.new(''))
-
-        expect { subject }.not_to raise_error
-      end
-    end
-
     describe '.ingress_modsecurity_usage' do
       subject { described_class.ingress_modsecurity_usage }
 

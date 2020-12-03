@@ -137,14 +137,13 @@ export default {
       return this.glFeatures.featureFlagPermissions;
     },
     supportsStrategies() {
-      return this.glFeatures.featureFlagsNewVersion && this.version === NEW_VERSION_FLAG;
+      return this.version === NEW_VERSION_FLAG;
     },
     showRelatedIssues() {
       return this.featureFlagIssuesEndpoint.length > 0;
     },
     readOnly() {
       return (
-        this.glFeatures.featureFlagsNewVersion &&
         this.glFeatures.featureFlagsLegacyReadOnly &&
         !this.glFeatures.featureFlagsLegacyReadOnlyOverride &&
         this.version === LEGACY_FLAG

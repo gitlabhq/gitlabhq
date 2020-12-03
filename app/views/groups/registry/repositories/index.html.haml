@@ -16,4 +16,5 @@
         "cleanup_policies_help_page_path" => help_page_path('user/packages/container_registry/index', anchor: 'how-the-cleanup-policy-works'),
         "is_admin": current_user&.admin.to_s,
         is_group_page: "true",
+        "group_path": @group.full_path,
         character_error: @character_error.to_s } }

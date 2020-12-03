@@ -533,7 +533,9 @@ tenses, words, and phrases:
   content is accessible to more readers.
 - Don't write in the first person singular.
   (Tested in [`FirstPerson.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FirstPerson.yml).)
+  <!-- vale gitlab.FirstPerson = NO -->
   - Instead of _I_ or _me_, use _we_, _you_, _us_, or _one_.
+  <!-- vale gitlab.FirstPerson = YES -->
   - When possible, stay user focused by writing in the second person (_you_ or
     the imperative).
 - Don't overuse "that". In many cases, you can remove "that" from a sentence
@@ -795,6 +797,8 @@ Items nested in lists should always align with the first character of the list
 item. In unordered lists (using `-`), this means two spaces for each level of
 indentation:
 
+<!-- vale off -->
+
 ````markdown
 - Unordered list item 1
 
@@ -816,7 +820,11 @@ indentation:
   ![an image that will nest inside list item 4](image.png)
 ````
 
+<!-- vale on -->
+
 For ordered lists, use three spaces for each level of indentation:
+
+<!-- vale off -->
 
 ````markdown
 1. Ordered list item 1
@@ -838,6 +846,8 @@ For ordered lists, use three spaces for each level of indentation:
 
    ![an image that will nest inside list item 4](image.png)
 ````
+
+<!-- vale on -->
 
 You can nest full lists inside other lists using the same rules as above. If you
 want to mix types, that's also possible, if you don't mix items at the same
@@ -904,7 +914,7 @@ Valid for Markdown content only, not for front matter entries:
 - Standard quotes: double quotes (`"`). Example: "This is wrapped in double
   quotes".
 - Quote inside a quote: double quotes (`"`) wrap single quotes (`'`). Example:
-  "I am 'quoting' something in a quote".
+  "This sentence 'quotes' something in a quote".
 
 For other punctuation rules, refer to the
 [GitLab UX guide](https://design.gitlab.com/content/punctuation/).
@@ -1367,6 +1377,8 @@ hidden on the documentation site, but is displayed by `/help`.
 - For regular fenced code blocks, always use a highlighting class corresponding to
   the language for better readability. Examples:
 
+  <!-- vale off -->
+
   ````markdown
   ```ruby
   Ruby code
@@ -1384,6 +1396,8 @@ hidden on the documentation site, but is displayed by `/help`.
   Code or text for which no specific highlighting class is available.
   ```
   ````
+
+  <!-- vale on -->
 
 Syntax highlighting is required for fenced code blocks added to the GitLab
 documentation. Refer to the following table for the most common language classes,
@@ -1771,8 +1785,7 @@ for use in GitLab X.X, and is planned for [removal](link-to-issue) in GitLab X.X
 ```
 
 After the feature or product is officially deprecated and removed, remove
-its information from the GitLab documentation based on
-the GitLab version where it's actually removed.
+its information from the GitLab documentation.
 
 ### Versions in the past or future
 
@@ -1926,6 +1939,8 @@ Configuration settings include:
 When you document a list of steps, it may entail editing the configuration file
 and reconfiguring or restarting GitLab. In that case, use these styles:
 
+<!-- vale off -->
+
 ````markdown
 **For Omnibus installations**
 
@@ -1952,6 +1967,8 @@ and reconfiguring or restarting GitLab. In that case, use these styles:
 1. Save the file and [restart](path/to/administration/restart_gitlab.md#installations-from-source)
    GitLab for the changes to take effect.
 ````
+
+<!-- vale on -->
 
 In this case:
 

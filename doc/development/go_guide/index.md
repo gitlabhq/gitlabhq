@@ -131,6 +131,8 @@ Once [recursive includes](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/568
 become available, you can share job templates like this
 [analyzer](https://gitlab.com/gitlab-org/security-products/ci-templates/raw/master/includes-dev/analyzer.yml).
 
+Go GitLab linter plugins are maintained in the [`gitlab-org/language-tools/go/linters`](https://gitlab.com/gitlab-org/language-tools/go/linters/) namespace.
+
 ## Dependencies
 
 Dependencies should be kept to the minimum. The introduction of a new

@@ -32,7 +32,7 @@ You can also use the [API](../../api/packages.md) to administer the Package Regi
 
 ## Accepting contributions
 
-The below table lists formats that are not supported, but are accepting Community contributions for. Consider contributing to GitLab. This [development documentation](../../development/packages.md) 
+The below table lists formats that are not supported, but are accepting Community contributions for. Consider contributing to GitLab. This [development documentation](../../development/packages.md)
 guides you through the process.
 
 | Format | Status |

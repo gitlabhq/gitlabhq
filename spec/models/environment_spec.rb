@@ -19,6 +19,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
   it { is_expected.to have_many(:deployments) }
   it { is_expected.to have_many(:metrics_dashboard_annotations) }
   it { is_expected.to have_many(:alert_management_alerts) }
+  it { is_expected.to have_one(:upcoming_deployment) }
   it { is_expected.to have_one(:latest_opened_most_severe_alert) }
 
   it { is_expected.to delegate_method(:stop_action).to(:last_deployment) }
@@ -720,6 +721,22 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
           expect(last_pipeline).to eq(failed_pipeline)
         end
       end
+    end
+  end
+
+  describe '#upcoming_deployment' do
+    subject { environment.upcoming_deployment }
+
+    context 'when environment has a successful deployment' do
+      let!(:deployment) { create(:deployment, :success, environment: environment, project: project) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when environment has a running deployment' do
+      let!(:deployment) { create(:deployment, :running, environment: environment, project: project) }
+
+      it { is_expected.to eq(deployment) }
     end
   end
 

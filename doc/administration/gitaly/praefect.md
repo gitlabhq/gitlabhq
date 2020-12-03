@@ -144,7 +144,7 @@ package (highly recommended), follow the steps below:
 Before beginning, you should already have a working GitLab instance. [Learn how
 to install GitLab](https://about.gitlab.com/install/).
 
-Provision a PostgreSQL server (PostgreSQL 11 or newer). 
+Provision a PostgreSQL server (PostgreSQL 11 or newer).
 
 Prepare all your new nodes by [installing
 GitLab](https://about.gitlab.com/install/).

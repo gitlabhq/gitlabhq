@@ -968,6 +968,26 @@ RSpec.describe Issues::UpdateService, :mailer do
       end
     end
 
+    context 'clone an issue' do
+      context 'valid project' do
+        let(:target_project) { create(:project) }
+
+        before do
+          target_project.add_maintainer(user)
+        end
+
+        it 'calls the move service with the proper issue and project' do
+          clone_stub = instance_double(Issues::CloneService)
+          allow(Issues::CloneService).to receive(:new).and_return(clone_stub)
+          allow(clone_stub).to receive(:execute).with(issue, target_project).and_return(issue)
+
+          expect(clone_stub).to receive(:execute).with(issue, target_project)
+
+          update_issue(target_clone_project: target_project)
+        end
+      end
+    end
+
     context 'when moving an issue ' do
       it 'raises an error for invalid move ids within a project' do
         opts = { move_between_ids: [9000, non_existing_record_id] }

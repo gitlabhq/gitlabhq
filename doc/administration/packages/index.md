@@ -55,7 +55,7 @@ guides you through the process.
 
 NOTE: **Note:**
 After the Packages feature is enabled, the repositories are available
-for all new projects by default. To enable it for existing projects, users 
+for all new projects by default. To enable it for existing projects, users
 explicitly do so in the project's settings.
 
 To enable the Packages feature:

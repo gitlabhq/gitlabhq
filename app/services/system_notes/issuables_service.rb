@@ -242,6 +242,27 @@ module SystemNotes
       create_note(NoteSummary.new(noteable, project, author, body, action: 'moved'))
     end
 
+    # Called when noteable has been cloned
+    #
+    # noteable_ref - Referenced noteable
+    # direction    - symbol, :to or :from
+    #
+    # Example Note text:
+    #
+    #   "cloned to some_namespace/project_new#11"
+    #
+    # Returns the created Note object
+    def noteable_cloned(noteable_ref, direction)
+      unless [:to, :from].include?(direction)
+        raise ArgumentError, "Invalid direction `#{direction}`"
+      end
+
+      cross_reference = noteable_ref.to_reference(project)
+      body = "cloned #{direction} #{cross_reference}"
+
+      create_note(NoteSummary.new(noteable, project, author, body, action: 'cloned'))
+    end
+
     # Called when the confidentiality changes
     #
     # Example Note text:

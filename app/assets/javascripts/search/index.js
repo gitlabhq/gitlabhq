@@ -1,7 +1,7 @@
 import { queryToObject } from '~/lib/utils/url_utility';
 import createStore from './store';
+import { initTopbar } from './topbar';
 import { initSidebar } from './sidebar';
-import initGroupFilter from './group_filter';
 
 export const initSearchApp = () => {
   // Similar to url_utility.decodeUrlParameter
@@ -9,6 +9,6 @@ export const initSearchApp = () => {
   const sanitizedSearch = window.location.search.replace(/\+/g, '%20');
   const store = createStore({ query: queryToObject(sanitizedSearch) });
 
+  initTopbar(store);
   initSidebar(store);
-  initGroupFilter(store);
 };

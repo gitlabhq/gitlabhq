@@ -243,8 +243,8 @@ end
 The iteration uses the primary key index (on the `id` column) which makes it safe from statement
 timeouts. The filter (`sign_in_count: 0`) is applied on the `relation` where the `id` is already constrained (range). The number of rows are limited.
 
-Slow iteration generally takes more time to finish. The iteration count is higher and 
-one iteration could yield fewer records than the batch size. Iterations may even yield 
+Slow iteration generally takes more time to finish. The iteration count is higher and
+one iteration could yield fewer records than the batch size. Iterations may even yield
 0 records. This is not an optimal solution; however, in some cases (especially when
 dealing with large tables) this is the only viable option.
 
@@ -346,7 +346,7 @@ Here, we expect that the `relation` query reads the `BATCH_SIZE` of user records
 filters down the results according to the provided queries. The planner might decide that
 using a bitmap index lookup with the index on the `confidential` column is a better way to
 execute the query. This can cause unexpectedly high amount of rows to be read and the query
-could time out. 
+could time out.
 
 Problem: we know for sure that the relation is returning maximum `BATCH_SIZE` of records, however the planner does not know this.
 
