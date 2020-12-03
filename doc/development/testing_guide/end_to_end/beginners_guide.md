@@ -349,3 +349,9 @@ Where `<test_file>` is:
 
 - `qa/specs/features/browser_ui/1_manage/login/login_spec.rb` when running the Login example.
 - `qa/specs/features/browser_ui/2_plan/issues/issue_spec.rb` when running the Issue example.
+
+## End-to-end test merge request template
+
+When submitting a new end-to-end test, use the ["New End to End Test"](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/merge_request_templates/New%20End%20To%20End%20Test.md)
+merge request description template for additional
+steps that are required prior a successful merge.

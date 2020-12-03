@@ -1,0 +1,5 @@
+= email_default_heading(_('Hello %{name},') % { name: @name })
+%p
+  = _('Your request to join %{host} has been rejected.').html_safe % { host: link_to(root_url, root_url) }
+%p
+  = _('Please contact your GitLab administrator if you think this is an error.')

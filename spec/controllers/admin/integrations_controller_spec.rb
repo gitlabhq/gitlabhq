@@ -73,4 +73,20 @@ RSpec.describe Admin::IntegrationsController do
       end
     end
   end
+
+  describe '#reset' do
+    let(:integration) { create(:jira_service, :instance) }
+
+    before do
+      post :reset, params: { id: integration.class.to_param }
+    end
+
+    it 'returns 200 OK' do
+      expected_json = {}.to_json
+
+      expect(flash[:notice]).to eq('This integration, and inheriting projects were reset.')
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response.body).to eq(expected_json)
+    end
+  end
 end

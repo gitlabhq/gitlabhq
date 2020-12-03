@@ -64,11 +64,11 @@ module Emails
         layout: 'unknown_user_mailer'
       )
 
-      if Gitlab::Experimentation.enabled?(:invitation_reminders)
+      if Gitlab::Experimentation.active?(:invitation_reminders)
         Gitlab::Tracking.event(
-          Gitlab::Experimentation.experiment(:invitation_reminders).tracking_category,
+          Gitlab::Experimentation.get_experiment(:invitation_reminders).tracking_category,
           'sent',
-          property: Gitlab::Experimentation.enabled_for_attribute?(:invitation_reminders, member.invite_email) ? 'experimental_group' : 'control_group',
+          property: Gitlab::Experimentation.in_experiment_group?(:invitation_reminders, subject: member.invite_email) ? 'experimental_group' : 'control_group',
           label: Digest::MD5.hexdigest(member.to_global_id.to_s)
         )
       end

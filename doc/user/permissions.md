@@ -159,6 +159,7 @@ The following table depicts the various user permission levels in a project.
 | Manage Terraform state                            |         |            |             | ✓        | ✓      |
 | Manage license policy **(ULTIMATE)**              |         |            |             | ✓        | ✓      |
 | Edit comments (posted by any user)                |         |            |             | ✓        | ✓      |
+| Reposition comments on images (posted by any user)|✓ (*11*) | ✓ (*11*)   |  ✓ (*11*)   | ✓        | ✓      |
 | Manage Error Tracking                             |         |            |             | ✓        | ✓      |
 | Delete wiki pages                                 |         |            |             | ✓        | ✓      |
 | View project Audit Events                         |         |            |             | ✓        | ✓      |
@@ -188,6 +189,7 @@ The following table depicts the various user permission levels in a project.
 1. For information on eligible approvers for merge requests, see
    [Eligible approvers](project/merge_requests/merge_request_approvals.md#eligible-approvers).
 1. Owner permission is only available at the group or personal namespace level (and for instance admins) and is inherited by its projects.
+1. Applies only to comments on [Design Management](project/issues/design_management.md) designs.
 
 ## Project features permissions
 
@@ -404,6 +406,11 @@ automatically have access to projects and subgroups underneath. To support such 
 
 Users with minimal access can list the group in the UI and through the API. However, they cannot see
 details such as projects or subgroups. They do not have access to the group's page or list any of its subgroups or projects.
+
+### Minimal access users take license seats
+
+Users with even a "minimal access" role are counted against your number of license seats. This
+requirement does not apply for [GitLab Gold/Ultimate](https://about.gitlab.com/pricing/) subscriptions.
 
 ## Project features
 

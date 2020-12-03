@@ -2119,6 +2119,9 @@ msgstr ""
 msgid "AdminUsers|Blocking user has the following effects:"
 msgstr ""
 
+msgid "AdminUsers|Cannot sign in or access instance information"
+msgstr ""
+
 msgid "AdminUsers|Cannot unblock LDAP blocked users"
 msgstr ""
 
@@ -2155,6 +2158,9 @@ msgstr ""
 msgid "AdminUsers|External users cannot see internal or private projects unless access is explicitly granted. Also, external users cannot create projects, groups, or personal snippets."
 msgstr ""
 
+msgid "AdminUsers|For more information, please refer to the %{link_start}user account deletion documentation.%{link_end}"
+msgstr ""
+
 msgid "AdminUsers|Is using seat"
 msgstr ""
 
@@ -2189,6 +2195,15 @@ msgid "AdminUsers|Regular"
 msgstr ""
 
 msgid "AdminUsers|Regular users have access to their groups and projects"
+msgstr ""
+
+msgid "AdminUsers|Reject"
+msgstr ""
+
+msgid "AdminUsers|Reject request"
+msgstr ""
+
+msgid "AdminUsers|Rejected users:"
 msgstr ""
 
 msgid "AdminUsers|Restore user access to the account, including web, Git and API."
@@ -2246,6 +2261,9 @@ msgid "AdminUsers|User will not be able to login"
 msgstr ""
 
 msgid "AdminUsers|When the user logs back in, their account will reactivate as a fully active account"
+msgstr ""
+
+msgid "AdminUsers|Will be deleted"
 msgstr ""
 
 msgid "AdminUsers|Without projects"
@@ -12773,6 +12791,9 @@ msgstr ""
 msgid "GitLab Workhorse"
 msgstr ""
 
+msgid "GitLab account request rejected"
+msgstr ""
+
 msgid "GitLab commit"
 msgstr ""
 
@@ -13811,6 +13832,9 @@ msgstr ""
 msgid "HealthCheck|Unhealthy"
 msgstr ""
 
+msgid "Hello %{name},"
+msgstr ""
+
 msgid "Hello there"
 msgstr ""
 
@@ -14788,6 +14812,9 @@ msgid "Integrations|Search Jira issues"
 msgstr ""
 
 msgid "Integrations|Standard"
+msgstr ""
+
+msgid "Integrations|This integration, and inheriting projects were reset."
 msgstr ""
 
 msgid "Integrations|To keep this project going, create a new issue."
@@ -20315,6 +20342,9 @@ msgid "Please choose a group URL with no special characters."
 msgstr ""
 
 msgid "Please complete your profile with email address"
+msgstr ""
+
+msgid "Please contact your GitLab administrator if you think this is an error."
 msgstr ""
 
 msgid "Please contact your administrator with any questions."
@@ -28110,6 +28140,9 @@ msgstr ""
 msgid "This user cannot be unlocked manually from GitLab"
 msgstr ""
 
+msgid "This user does not have a pending request"
+msgstr ""
+
 msgid "This user has no active %{type}."
 msgstr ""
 
@@ -31045,6 +31078,9 @@ msgstr ""
 msgid "You are not allowed to push into this branch. Create another branch or open a merge request."
 msgstr ""
 
+msgid "You are not allowed to reject a user"
+msgstr ""
+
 msgid "You are not allowed to unlink your primary login account"
 msgstr ""
 
@@ -31513,6 +31549,9 @@ msgstr ""
 msgid "You've already enabled two-factor authentication using one time password authenticators. In order to register a different device, you must first disable two-factor authentication."
 msgstr ""
 
+msgid "You've rejected %{user}"
+msgstr ""
+
 msgid "YouTube"
 msgstr ""
 
@@ -31745,6 +31784,9 @@ msgid "Your request for access could not be processed: %{error_meesage}"
 msgstr ""
 
 msgid "Your request for access has been queued for review."
+msgstr ""
+
+msgid "Your request to join %{host} has been rejected."
 msgstr ""
 
 msgid "Your requirements are being imported. Once finished, you'll receive a confirmation email."

@@ -9,7 +9,7 @@ RSpec.describe 'Experience level screen' do
   before do
     group.add_owner(user)
     gitlab_sign_in(user)
-    stub_experiment_for_user(onboarding_issues: true)
+    stub_experiment_for_subject(onboarding_issues: true)
     visit users_sign_up_experience_level_path(namespace_path: group.to_param)
   end
 

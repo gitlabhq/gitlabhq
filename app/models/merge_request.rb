@@ -339,6 +339,13 @@ class MergeRequest < ApplicationRecord
     )
   end
 
+  def self.total_time_to_merge
+    join_metrics
+      .merge(MergeRequest::Metrics.with_valid_time_to_merge)
+      .pluck(MergeRequest::Metrics.time_to_merge_expression)
+      .first
+  end
+
   after_save :keep_around_commit, unless: :importing?
 
   alias_attribute :project, :target_project

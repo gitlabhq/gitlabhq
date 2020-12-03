@@ -46,6 +46,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       resources :integrations, only: [:index, :edit, :update] do
         member do
           put :test
+          post :reset
         end
       end
     end

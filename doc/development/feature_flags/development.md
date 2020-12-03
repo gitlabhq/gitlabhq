@@ -503,10 +503,6 @@ is persisted.
 
 Make sure behavior under feature flag doesn't go untested in some non-specific contexts.
 
-See the
-[testing guide](../testing_guide/best_practices.md#feature-flags-in-tests)
-for information and examples on how to stub feature flags in tests.
-
 ### `stub_feature_flags: false`
 
 This disables a memory-stubbed flipper, and uses `Flipper::Adapters::ActiveRecord`

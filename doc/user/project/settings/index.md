@@ -198,8 +198,8 @@ To rename a repository:
 
 1. Navigate to your project's **Settings > General**.
 1. Under **Advanced**, click **Expand**.
-1. Under "Rename repository", change the "Path" to your liking.
-1. Hit **Rename project**.
+1. Under **Change path**, update the repository's path.
+1. Click **Change path**.
 
 Remember that this can have unintended side effects since everyone with the
 old URL won't be able to push or pull. Read more about what happens with the

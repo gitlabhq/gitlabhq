@@ -434,7 +434,7 @@ GitLab CI/CD is the open-source continuous integration service included with Git
 
 #### GitLab Shell
 
-- [Project page](https://gitlab.com/gitlab-org/gitlab-shell/blob/master/README.md)
+- [Project page](https://gitlab.com/gitlab-org/gitlab-shell/-/blob/main/README.md)
 - Configuration:
   - [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template)
   - [Charts](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/)

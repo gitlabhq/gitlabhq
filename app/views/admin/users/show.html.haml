@@ -172,7 +172,7 @@
       - if @user.blocked?
         - if @user.blocked_pending_approval?
           = render 'admin/users/approve_user', user: @user
-          = render 'admin/users/block_user', user: @user
+          = render 'admin/users/reject_pending_user', user: @user
         - else
           .card.border-info
             .card-header.gl-bg-blue-500.gl-text-white
@@ -196,52 +196,52 @@
             %p This user has been temporarily locked due to excessive number of failed logins. You may manually unlock the account.
             %br
             = link_to 'Unlock user', unlock_admin_user_path(@user), method: :put, class: "btn gl-button btn-info", data: { confirm: 'Are you sure?' }
+      - if !@user.blocked_pending_approval?
+        .card.border-danger
+          .card-header.bg-danger.text-white
+            = s_('AdminUsers|Delete user')
+          .card-body
+            - if @user.can_be_removed? && can?(current_user, :destroy_user, @user)
+              %p Deleting a user has the following effects:
+              = render 'users/deletion_guidance', user: @user
+              %br
+              %button.delete-user-button.btn.gl-button.btn-danger{ data: { 'gl-modal-action': 'delete',
+                delete_user_url: admin_user_path(@user),
+                block_user_url: block_admin_user_path(@user),
+                username: sanitize_name(@user.name) } }
+                = s_('AdminUsers|Delete user')
+            - else
+              - if @user.solo_owned_groups.present?
+                %p
+                  This user is currently an owner in these groups:
+                  %strong= @user.solo_owned_groups.map(&:name).join(', ')
+                %p
+                  You must transfer ownership or delete these groups before you can delete this user.
+              - else
+                %p
+                  You don't have access to delete this user.
 
-      .card.border-danger
-        .card-header.bg-danger.text-white
-          = s_('AdminUsers|Delete user')
-        .card-body
-          - if @user.can_be_removed? && can?(current_user, :destroy_user, @user)
-            %p Deleting a user has the following effects:
-            = render 'users/deletion_guidance', user: @user
-            %br
-            %button.delete-user-button.btn.gl-button.btn-danger{ data: { 'gl-modal-action': 'delete',
-              delete_user_url: admin_user_path(@user),
-              block_user_url: block_admin_user_path(@user),
-              username: sanitize_name(@user.name) } }
-              = s_('AdminUsers|Delete user')
-          - else
-            - if @user.solo_owned_groups.present?
+        .card.border-danger
+          .card-header.bg-danger.text-white
+            = s_('AdminUsers|Delete user and contributions')
+          .card-body
+            - if can?(current_user, :destroy_user, @user)
               %p
-                This user is currently an owner in these groups:
-                %strong= @user.solo_owned_groups.map(&:name).join(', ')
-              %p
-                You must transfer ownership or delete these groups before you can delete this user.
+                This option deletes the user and any contributions that
+                would usually be moved to the
+                = succeed "." do
+                  = link_to "system ghost user", help_page_path("user/profile/account/delete_account")
+                As well as the user's personal projects, groups owned solely by
+                the user, and projects in them, will also be removed. Commits
+                to other projects are unaffected.
+              %br
+                %button.delete-user-button.btn.gl-button.btn-danger{ data: { 'gl-modal-action': 'delete-with-contributions',
+                  delete_user_url: admin_user_path(@user, hard_delete: true),
+                  block_user_url: block_admin_user_path(@user),
+                  username: @user.name } }
+                  = s_('AdminUsers|Delete user and contributions')
             - else
               %p
                 You don't have access to delete this user.
-
-      .card.border-danger
-        .card-header.bg-danger.text-white
-          = s_('AdminUsers|Delete user and contributions')
-        .card-body
-          - if can?(current_user, :destroy_user, @user)
-            %p
-              This option deletes the user and any contributions that
-              would usually be moved to the
-              = succeed "." do
-                = link_to "system ghost user", help_page_path("user/profile/account/delete_account")
-              As well as the user's personal projects, groups owned solely by
-              the user, and projects in them, will also be removed. Commits
-              to other projects are unaffected.
-            %br
-              %button.delete-user-button.btn.gl-button.btn-danger{ data: { 'gl-modal-action': 'delete-with-contributions',
-                delete_user_url: admin_user_path(@user, hard_delete: true),
-                block_user_url: block_admin_user_path(@user),
-                username: @user.name } }
-                = s_('AdminUsers|Delete user and contributions')
-          - else
-            %p
-              You don't have access to delete this user.
 
 = render partial: 'admin/users/modals'

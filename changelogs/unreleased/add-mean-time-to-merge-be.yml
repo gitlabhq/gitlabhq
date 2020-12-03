@@ -1,0 +1,5 @@
+---
+title: Add merge requests total time to merge field to the GraphQL API
+merge_request: 46040
+author:
+type: added

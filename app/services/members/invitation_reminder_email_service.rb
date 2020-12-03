@@ -25,7 +25,7 @@ module Members
     private
 
     def experiment_enabled?
-      Gitlab::Experimentation.enabled_for_attribute?(:invitation_reminders, invitation.invite_email)
+      Gitlab::Experimentation.in_experiment_group?(:invitation_reminders, subject: invitation.invite_email)
     end
 
     def days_after_invitation_sent

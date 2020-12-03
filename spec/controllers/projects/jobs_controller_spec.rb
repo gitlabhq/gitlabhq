@@ -18,7 +18,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
     describe 'pushing tracking_data to Gon' do
       before do
         stub_experiment(jobs_empty_state: experiment_active)
-        stub_experiment_for_user(jobs_empty_state: in_experiment_group)
+        stub_experiment_for_subject(jobs_empty_state: in_experiment_group)
 
         get_index
       end

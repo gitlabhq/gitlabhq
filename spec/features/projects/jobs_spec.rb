@@ -28,7 +28,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
     context 'with no jobs' do
       before do
         stub_experiment(jobs_empty_state: experiment_active)
-        stub_experiment_for_user(jobs_empty_state: in_experiment_group)
+        stub_experiment_for_subject(jobs_empty_state: in_experiment_group)
 
         visit project_jobs_path(project)
       end

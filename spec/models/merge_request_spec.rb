@@ -500,6 +500,77 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
   end
 
+  describe 'time to merge calculations' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project) }
+
+    let!(:mr1) do
+      create(
+        :merge_request,
+        :with_merged_metrics,
+        source_project: project,
+        target_project: project
+      )
+    end
+
+    let!(:mr2) do
+      create(
+        :merge_request,
+        :with_merged_metrics,
+        source_project: project,
+        target_project: project
+      )
+    end
+
+    let!(:mr3) do
+      create(
+        :merge_request,
+        :with_merged_metrics,
+        source_project: project,
+        target_project: project
+      )
+    end
+
+    let!(:unmerged_mr) do
+      create(
+        :merge_request,
+        source_project: project,
+        target_project: project
+      )
+    end
+
+    before do
+      project.add_user(user, :developer)
+    end
+
+    describe '.total_time_to_merge' do
+      it 'returns the sum of the time to merge for all merged MRs' do
+        mrs = project.merge_requests
+
+        expect(mrs.total_time_to_merge).to be_within(1).of(expected_total_time(mrs))
+      end
+
+      context 'when merged_at is earlier than created_at' do
+        before do
+          mr1.metrics.update!(merged_at: mr1.metrics.created_at - 1.week)
+        end
+
+        it 'returns nil' do
+          mrs = project.merge_requests.where(id: mr1.id)
+
+          expect(mrs.total_time_to_merge).to be_nil
+        end
+      end
+
+      def expected_total_time(mrs)
+        mrs = mrs.reject { |mr| mr.merged_at.nil? }
+        mrs.reduce(0.0) do |sum, mr|
+          (mr.merged_at - mr.created_at) + sum
+        end
+      end
+    end
+  end
+
   describe '#target_branch_sha' do
     let(:project) { create(:project, :repository) }
 

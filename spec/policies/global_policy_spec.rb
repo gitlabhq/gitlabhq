@@ -150,6 +150,24 @@ RSpec.describe GlobalPolicy do
     end
   end
 
+  describe 'rejecting users' do
+    context 'regular user' do
+      it { is_expected.not_to be_allowed(:reject_user) }
+    end
+
+    context 'admin' do
+      let(:current_user) { create(:admin) }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:reject_user) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { is_expected.to be_disallowed(:reject_user) }
+      end
+    end
+  end
+
   describe 'using project statistics filters' do
     context 'regular user' do
       it { is_expected.not_to be_allowed(:use_project_statistics_filters) }

@@ -9,5 +9,5 @@
 
 .service-settings
   - if @default_integration
-    .js-vue-default-integration-settings{ data: integration_form_data(@default_integration) }
-  .js-vue-integration-settings{ data: integration_form_data(integration) }
+    .js-vue-default-integration-settings{ data: integration_form_data(@default_integration, group: @group) }
+  .js-vue-integration-settings{ data: integration_form_data(integration, group: @group) }

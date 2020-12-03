@@ -11,7 +11,7 @@ RSpec.describe Members::InvitationReminderEmailService do
 
     context 'when the experiment is disabled' do
       before do
-        allow(Gitlab::Experimentation).to receive(:enabled_for_attribute?).and_return(false)
+        allow(Gitlab::Experimentation).to receive(:in_experiment_group?).and_return(false)
         invitation.expires_at = frozen_time + 2.days
       end
 
@@ -26,7 +26,7 @@ RSpec.describe Members::InvitationReminderEmailService do
 
     context 'when the experiment is enabled' do
       before do
-        allow(Gitlab::Experimentation).to receive(:enabled_for_attribute?).and_return(true)
+        allow(Gitlab::Experimentation).to receive(:in_experiment_group?).and_return(true)
         invitation.expires_at = frozen_time + expires_at_days.days if expires_at_days
       end
 

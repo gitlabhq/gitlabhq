@@ -109,15 +109,6 @@ class InvitesController < ApplicationController
   end
 
   def track_invitation_reminders_experiment(action)
-    return unless Gitlab::Experimentation.enabled?(:invitation_reminders)
-
-    property = Gitlab::Experimentation.enabled_for_attribute?(:invitation_reminders, member.invite_email) ? 'experimental_group' : 'control_group'
-
-    Gitlab::Tracking.event(
-      Gitlab::Experimentation.experiment(:invitation_reminders).tracking_category,
-      action,
-      property: property,
-      label: Digest::MD5.hexdigest(member.to_global_id.to_s)
-    )
+    track_experiment_event(:invitation_reminders, action, subject: member)
   end
 end

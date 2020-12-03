@@ -1453,7 +1453,7 @@ RSpec.describe Notify do
       shared_examples "tracks the 'sent' event for the invitation reminders experiment" do
         before do
           stub_experiment(invitation_reminders: true)
-          allow(Gitlab::Experimentation).to receive(:enabled_for_attribute?).with(:invitation_reminders, group_member.invite_email).and_return(experimental_group)
+          allow(Gitlab::Experimentation).to receive(:in_experiment_group?).with(:invitation_reminders, subject: group_member.invite_email).and_return(experimental_group)
         end
 
         it "tracks the 'sent' event", :snowplow do

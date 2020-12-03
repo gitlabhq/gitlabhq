@@ -3,7 +3,7 @@
 RSpec.shared_examples 'issuable invite members experiments' do
   context 'when invite_members_version_a experiment is enabled' do
     before do
-      stub_experiment_for_user(invite_members_version_a: true)
+      stub_experiment_for_subject(invite_members_version_a: true)
     end
 
     it 'shows a link for inviting members and follows through to the members page' do
@@ -28,7 +28,7 @@ RSpec.shared_examples 'issuable invite members experiments' do
 
   context 'when invite_members_version_b experiment is enabled' do
     before do
-      stub_experiment_for_user(invite_members_version_b: true)
+      stub_experiment_for_subject(invite_members_version_b: true)
     end
 
     it 'shows a link for inviting members and follows through to modal' do

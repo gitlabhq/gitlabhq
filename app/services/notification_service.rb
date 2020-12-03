@@ -380,6 +380,10 @@ class NotificationService
     end
   end
 
+  def user_admin_rejection(name, email)
+    mailer.user_admin_rejection_email(name, email).deliver_later
+  end
+
   # Members
   def new_access_request(member)
     return true unless member.notifiable?(:subscription)

@@ -56,59 +56,90 @@ addressed.
 
 1. Use the experiment in the code.
 
+   Experiments can be performed on a `subject`. The `subject` that gets provided needs to respond to `to_global_id` or `to_s`.
+   The resulting string is bucketed and assigned to either the control or the experimental group. It's therefore necessary to always provide the same `subject` for an experiment to have the same experience.
+
    - Use this standard for the experiment in a controller:
 
-      ```ruby
-      class RegistrationController < ApplicationController
+     Experiment run for a user:
+
+     ```ruby
+     class ProjectController < ApplicationController
        def show
          # experiment_enabled?(:experiment_key) is also available in views and helpers
+         if experiment_enabled?(:signup_flow, subject: current_user)
+           # render the experiment
+         else
+           # render the original version
+         end
+       end
+     end
+     ```
+
+     or experiment run for a namespace:
+
+     ```ruby
+     if experiment_enabled?(:signup_flow, subject: namespace)
+       # experiment code
+     else
+       # control code
+     end
+     ```
+
+     When no subject is given, it falls back to a cookie that gets set and is consistent until
+     the cookie gets deleted.
+
+     ```ruby
+     class RegistrationController < ApplicationController
+       def show
+         # falls back to a cookie
          if experiment_enabled?(:signup_flow)
            # render the experiment
          else
            # render the original version
          end
        end
-      end
-      ```
+     end
+     ```
 
    - Make the experiment available to the frontend in a controller:
 
-      ```ruby
-      before_action do
-        push_frontend_experiment(:signup_flow)
-      end
-      ```
+     ```ruby
+     before_action do
+       push_frontend_experiment(:signup_flow, subject: current_user)
+     end
+     ```
 
-      The above checks whether the experiment is enabled and push the result to the frontend.
+     The above checks whether the experiment is enabled and pushes the result to the frontend.
 
-      You can check the state of the feature flag in JavaScript:
+     You can check the state of the feature flag in JavaScript:
 
-      ```javascript
-      import { isExperimentEnabled } from '~/experimentation';
+     ```javascript
+     import { isExperimentEnabled } from '~/experimentation';
 
-      if ( isExperimentEnabled('signupFlow') ) {
-        // ...
-      }
-      ```
+     if ( isExperimentEnabled('signupFlow') ) {
+       // ...
+     }
+     ```
 
    - It is also possible to run an experiment outside of the controller scope, for example in a worker:
 
-      ```ruby
-      class SomeWorker
-        def perform
-          # Check if the experiment is enabled at all (the percentage_of_time_value > 0)
-          return unless Gitlab::Experimentation.enabled?(:experiment_key)
+     ```ruby
+     class SomeWorker
+       def perform
+         # Check if the experiment is active at all (the percentage_of_time_value > 0)
+         return unless Gitlab::Experimentation.active?(:experiment_key)
 
-          # Since we cannot access cookies in a worker, we need to bucket models based on a unique, unchanging attribute instead.
-          # Use the following method to check if the experiment is enabled for a certain attribute, for example a username or email address:
-          if Gitlab::Experimentation.enabled_for_attribute?(:experiment_key, some_attribute)
-            # execute experimental code
-          else
-            # execute control code
-          end
-        end
-      end
-      ```
+         # Since we cannot access cookies in a worker, we need to bucket models based on a unique, unchanging attribute instead.
+         # It is therefore necessery to always provide the same subject.
+         if Gitlab::Experimentation.in_experiment_group?(:experiment_key, subject: user)
+           # execute experimental code
+         else
+           # execute control code
+         end
+       end
+     end
+     ```
 
 ### Implement the tracking events
 
@@ -122,7 +153,7 @@ The framework provides the following helper method that is available in controll
 
 ```ruby
 before_action do
-  track_experiment_event(:signup_flow, 'action', 'value')
+  track_experiment_event(:signup_flow, 'action', 'value', subject: current_user)
 end
 ```
 
@@ -132,7 +163,7 @@ Which can be tested as follows:
 context 'when the experiment is active and the user is in the experimental group' do
   before do
     stub_experiment(signup_flow: true)
-    stub_experiment_for_user(signup_flow: true)
+    stub_experiment_for_subject(signup_flow: true)
   end
 
   it 'tracks an event', :snowplow do
@@ -155,8 +186,8 @@ The framework provides the following helper method that is available in controll
 
 ```ruby
 before_action do
-  push_frontend_experiment(:signup_flow)
-  frontend_experimentation_tracking_data(:signup_flow, 'action', 'value')
+  push_frontend_experiment(:signup_flow, subject: current_user)
+  frontend_experimentation_tracking_data(:signup_flow, 'action', 'value', subject: current_user)
 end
 ```
 
@@ -255,7 +286,7 @@ Along with the tracking of backend and frontend events and the [recording of exp
 - **Experimental experience:** Show an in-product nudge to see if it causes more people to sign up for trials.
 - **Conversion event:** The user starts a trial.
 
-The `record_experiment_conversion_event` helper method is available to all controllers, and enables us to easily record the conversion event for the current user, regardless of whether they are in the control or experimental group:
+The `record_experiment_conversion_event` helper method is available to all controllers. It enables us to record the conversion event for the current user, regardless of whether they are in the control or experimental group:
 
 ```ruby
 before_action do
@@ -296,7 +327,7 @@ context 'when the experiment is active' do
 
   context 'when the user is in the experimental group' do
     before do
-      stub_experiment_for_user(signup_flow: true)
+      stub_experiment_for_subject(signup_flow: true)
     end
 
     it { is_expected.to do_experimental_thing }
@@ -304,7 +335,7 @@ context 'when the experiment is active' do
 
   context 'when the user is in the control group' do
     before do
-      stub_experiment_for_user(signup_flow: false)
+      stub_experiment_for_subject(signup_flow: false)
     end
 
     it { is_expected.to do_control_thing }

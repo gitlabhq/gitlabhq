@@ -102,6 +102,57 @@ RSpec.describe Admin::UsersController do
     end
   end
 
+  describe 'DELETE #reject' do
+    subject { put :reject, params: { id: user.username } }
+
+    context 'when rejecting a pending user' do
+      let(:user) { create(:user, :blocked_pending_approval) }
+
+      it 'hard deletes the user', :sidekiq_inline do
+        subject
+
+        expect(User.exists?(user.id)).to be_falsy
+      end
+
+      it 'displays the rejection message' do
+        subject
+
+        expect(response).to redirect_to(admin_users_path)
+        expect(flash[:notice]).to eq("You've rejected #{user.name}")
+      end
+
+      it 'sends the user a rejection email' do
+        expect_next_instance_of(NotificationService) do |notification|
+          allow(notification).to receive(:user_admin_rejection).with(user.name, user.notification_email)
+        end
+
+        subject
+      end
+    end
+
+    context 'when user is not pending' do
+      let(:user) { create(:user, state: 'active') }
+
+      it 'does not reject and delete the user' do
+        subject
+
+        expect(User.exists?(user.id)).to be_truthy
+      end
+
+      it 'displays the error' do
+        subject
+
+        expect(flash[:alert]).to eq('This user does not have a pending request')
+      end
+
+      it 'does not email the user' do
+        expect(NotificationService).not_to receive(:new)
+
+        subject
+      end
+    end
+  end
+
   describe 'PUT #approve' do
     let(:user) { create(:user, :blocked_pending_approval) }
 

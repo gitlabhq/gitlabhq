@@ -43,6 +43,12 @@ module IntegrationsActions
     render json: {}, status: :ok
   end
 
+  def reset
+    flash[:notice] = s_('Integrations|This integration, and inheriting projects were reset.')
+
+    render json: {}, status: :ok
+  end
+
   private
 
   def integrations_enabled?

@@ -1,0 +1,5 @@
+---
+title: Add migration to populate remaining dismissal information for vulnerabilities
+merge_request: 48472
+author:
+type: added

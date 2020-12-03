@@ -87,23 +87,49 @@ module Gitlab
     }.freeze
 
     class << self
-      def experiment(key)
-        Gitlab::Experimentation::Experiment.new(key, **EXPERIMENTS[key])
+      def get_experiment(experiment_key)
+        return unless EXPERIMENTS.key?(experiment_key)
+
+        ::Gitlab::Experimentation::Experiment.new(experiment_key, **EXPERIMENTS[experiment_key])
       end
 
-      def enabled?(experiment_key)
-        return false unless EXPERIMENTS.key?(experiment_key)
+      def active?(experiment_key)
+        experiment = get_experiment(experiment_key)
+        return false unless experiment
 
-        experiment(experiment_key).enabled?
+        experiment.active?
       end
 
-      def enabled_for_attribute?(experiment_key, attribute)
-        index = Digest::SHA1.hexdigest(attribute).hex % 100
-        enabled_for_value?(experiment_key, index)
+      def in_experiment_group?(experiment_key, subject:)
+        return false if subject.blank?
+        return false unless active?(experiment_key)
+
+        experiment = get_experiment(experiment_key)
+        return false unless experiment
+
+        experiment.enabled_for_index?(index_for_subject(experiment, subject))
       end
 
-      def enabled_for_value?(experiment_key, value)
-        enabled?(experiment_key) && experiment(experiment_key).enabled_for_index?(value)
+      private
+
+      def index_for_subject(experiment, subject)
+        index = if experiment.use_backwards_compatible_subject_index
+                  Digest::SHA1.hexdigest(subject_id(subject)).hex
+                else
+                  Zlib.crc32("#{experiment.key}#{subject_id(subject)}")
+                end
+
+        index % 100
+      end
+
+      def subject_id(subject)
+        if subject.respond_to?(:to_global_id)
+          subject.to_global_id.to_s
+        elsif subject.respond_to?(:to_s)
+          subject.to_s
+        else
+          raise ArgumentError.new('Subject must respond to `to_global_id` or `to_s`')
+        end
       end
     end
   end

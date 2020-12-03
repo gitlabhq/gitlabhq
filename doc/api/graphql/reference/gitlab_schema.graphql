@@ -13050,6 +13050,11 @@ type MergeRequestConnection {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
+
+  """
+  Total sum of time to merge, in seconds, for the collection of merge requests
+  """
+  totalTimeToMerge: Float
 }
 
 """

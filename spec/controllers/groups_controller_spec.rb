@@ -333,7 +333,7 @@ RSpec.describe GroupsController, factory_default: :keep do
 
         context 'and the user is part of the control group' do
           before do
-            stub_experiment_for_user(onboarding_issues: false)
+            stub_experiment_for_subject(onboarding_issues: false)
           end
 
           it 'tracks the event with the "created_namespace" action with the "control_group" property', :snowplow do
@@ -350,7 +350,7 @@ RSpec.describe GroupsController, factory_default: :keep do
 
         context 'and the user is part of the experimental group' do
           before do
-            stub_experiment_for_user(onboarding_issues: true)
+            stub_experiment_for_subject(onboarding_issues: true)
           end
 
           it 'tracks the event with the "created_namespace" action with the "experimental_group" property', :snowplow do

@@ -3,7 +3,7 @@
 require 'zlib'
 
 # Controller concern that checks if an `experimentation_subject_id cookie` is present and sets it if absent.
-# Used for A/B testing of experimental features. Exposes the `experiment_enabled?(experiment_name)` method
+# Used for A/B testing of experimental features. Exposes the `experiment_enabled?(experiment_name, subject: nil)` method
 # to controllers and views. It returns true when the experiment is enabled and the user is selected as part
 # of the experimental group.
 #
@@ -28,55 +28,56 @@ module Gitlab
         }
       end
 
-      def push_frontend_experiment(experiment_key)
+      def push_frontend_experiment(experiment_key, subject: nil)
         var_name = experiment_key.to_s.camelize(:lower)
-        enabled = experiment_enabled?(experiment_key)
+
+        enabled = experiment_enabled?(experiment_key, subject: subject)
 
         gon.push({ experiments: { var_name => enabled } }, true)
       end
 
-      def experiment_enabled?(experiment_key)
+      def experiment_enabled?(experiment_key, subject: nil)
+        return true if forced_enabled?(experiment_key)
         return false if dnt_enabled?
 
-        return true if Experimentation.enabled_for_value?(experiment_key, experimentation_subject_index(experiment_key))
-        return true if forced_enabled?(experiment_key)
+        subject ||= fallback_experimentation_subject_index(experiment_key)
 
-        false
+        Experimentation.in_experiment_group?(experiment_key, subject: subject)
       end
 
-      def track_experiment_event(experiment_key, action, value = nil)
+      def track_experiment_event(experiment_key, action, value = nil, subject: nil)
         return if dnt_enabled?
 
-        track_experiment_event_for(experiment_key, action, value) do |tracking_data|
+        track_experiment_event_for(experiment_key, action, value, subject: subject) do |tracking_data|
           ::Gitlab::Tracking.event(tracking_data.delete(:category), tracking_data.delete(:action), **tracking_data)
         end
       end
 
-      def frontend_experimentation_tracking_data(experiment_key, action, value = nil)
+      def frontend_experimentation_tracking_data(experiment_key, action, value = nil, subject: nil)
         return if dnt_enabled?
 
-        track_experiment_event_for(experiment_key, action, value) do |tracking_data|
+        track_experiment_event_for(experiment_key, action, value, subject: subject) do |tracking_data|
           gon.push(tracking_data: tracking_data)
         end
       end
 
       def record_experiment_user(experiment_key)
         return if dnt_enabled?
-        return unless Experimentation.enabled?(experiment_key) && current_user
+        return unless Experimentation.active?(experiment_key) && current_user
 
-        ::Experiment.add_user(experiment_key, tracking_group(experiment_key), current_user)
+        ::Experiment.add_user(experiment_key, tracking_group(experiment_key, nil, subject: current_user), current_user)
       end
 
       def record_experiment_conversion_event(experiment_key)
         return if dnt_enabled?
         return unless current_user
-        return unless Experimentation.enabled?(experiment_key)
+        return unless Experimentation.active?(experiment_key)
 
         ::Experiment.record_conversion_event(experiment_key, current_user)
       end
 
-      def experiment_tracking_category_and_group(experiment_key)
-        "#{tracking_category(experiment_key)}:#{tracking_group(experiment_key, '_group')}"
+      def experiment_tracking_category_and_group(experiment_key, subject: nil)
+        "#{tracking_category(experiment_key)}:#{tracking_group(experiment_key, '_group', subject: subject)}"
       end
 
       private
@@ -89,46 +90,57 @@ module Gitlab
         cookies.signed[:experimentation_subject_id]
       end
 
-      def experimentation_subject_index(experiment_key)
+      def fallback_experimentation_subject_index(experiment_key)
         return if experimentation_subject_id.blank?
 
-        if Experimentation.experiment(experiment_key).use_backwards_compatible_subject_index
-          experimentation_subject_id.delete('-').hex % 100
+        if Experimentation.get_experiment(experiment_key).use_backwards_compatible_subject_index
+          experimentation_subject_id.delete('-')
         else
-          Zlib.crc32("#{experiment_key}#{experimentation_subject_id}") % 100
+          experimentation_subject_id
         end
       end
 
-      def track_experiment_event_for(experiment_key, action, value)
-        return unless Experimentation.enabled?(experiment_key)
+      def track_experiment_event_for(experiment_key, action, value, subject: nil)
+        return unless Experimentation.active?(experiment_key)
 
-        yield experimentation_tracking_data(experiment_key, action, value)
+        yield experimentation_tracking_data(experiment_key, action, value, subject: subject)
       end
 
-      def experimentation_tracking_data(experiment_key, action, value)
+      def experimentation_tracking_data(experiment_key, action, value, subject: nil)
         {
           category: tracking_category(experiment_key),
           action: action,
-          property: tracking_group(experiment_key, "_group"),
-          label: experimentation_subject_id,
+          property: tracking_group(experiment_key, "_group", subject: subject),
+          label: tracking_label(subject),
           value: value
         }.compact
       end
 
       def tracking_category(experiment_key)
-        Experimentation.experiment(experiment_key).tracking_category
+        Experimentation.get_experiment(experiment_key).tracking_category
       end
 
-      def tracking_group(experiment_key, suffix = nil)
-        return unless Experimentation.enabled?(experiment_key)
+      def tracking_group(experiment_key, suffix = nil, subject: nil)
+        return unless Experimentation.active?(experiment_key)
 
-        group = experiment_enabled?(experiment_key) ? GROUP_EXPERIMENTAL : GROUP_CONTROL
+        subject ||= fallback_experimentation_subject_index(experiment_key)
+        group = experiment_enabled?(experiment_key, subject: subject) ? GROUP_EXPERIMENTAL : GROUP_CONTROL
 
         suffix ? "#{group}#{suffix}" : group
       end
 
       def forced_enabled?(experiment_key)
         params.has_key?(:force_experiment) && params[:force_experiment] == experiment_key.to_s
+      end
+
+      def tracking_label(subject)
+        return experimentation_subject_id if subject.blank?
+
+        if subject.respond_to?(:to_global_id)
+          Digest::MD5.hexdigest(subject.to_global_id.to_s)
+        else
+          Digest::MD5.hexdigest(subject.to_s)
+        end
       end
     end
   end

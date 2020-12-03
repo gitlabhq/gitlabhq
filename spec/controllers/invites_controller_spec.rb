@@ -25,7 +25,7 @@ RSpec.describe InvitesController, :snowplow do
   shared_examples "tracks the 'accepted' event for the invitation reminders experiment" do
     before do
       stub_experiment(invitation_reminders: true)
-      allow(Gitlab::Experimentation).to receive(:enabled_for_attribute?).with(:invitation_reminders, member.invite_email).and_return(experimental_group)
+      stub_experiment_for_subject(invitation_reminders: experimental_group)
     end
 
     context 'when in the control group' do

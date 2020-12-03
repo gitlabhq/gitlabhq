@@ -61,7 +61,13 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['setOverride', 'setIsSaving', 'setIsTesting', 'setIsResetting']),
+    ...mapActions([
+      'setOverride',
+      'setIsSaving',
+      'setIsTesting',
+      'setIsResetting',
+      'fetchResetIntegration',
+    ]),
     onSaveClick() {
       this.setIsSaving(true);
       eventHub.$emit('saveIntegration');
@@ -70,7 +76,9 @@ export default {
       this.setIsTesting(true);
       eventHub.$emit('testIntegration');
     },
-    onResetClick() {},
+    onResetClick() {
+      this.fetchResetIntegration();
+    },
   },
 };
 </script>

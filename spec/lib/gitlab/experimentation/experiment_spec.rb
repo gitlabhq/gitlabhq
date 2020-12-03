@@ -20,14 +20,14 @@ RSpec.describe Gitlab::Experimentation::Experiment do
 
   subject(:experiment) { described_class.new(:experiment_key, **params) }
 
-  describe '#enabled?' do
+  describe '#active?' do
     before do
       allow(Gitlab).to receive(:dev_env_or_com?).and_return(on_gitlab_com)
     end
 
-    subject { experiment.enabled? }
+    subject { experiment.active? }
 
-    where(:on_gitlab_com, :percentage, :is_enabled) do
+    where(:on_gitlab_com, :percentage, :is_active) do
       true  | 0  | false
       true  | 10 | true
       false | 0  | false
@@ -35,7 +35,7 @@ RSpec.describe Gitlab::Experimentation::Experiment do
     end
 
     with_them do
-      it { is_expected.to eq(is_enabled) }
+      it { is_expected.to eq(is_active) }
     end
   end
 

@@ -149,6 +149,9 @@ belong either to the specific group or to one of its subgroups.
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Group Deploy Tokens](https://youtu.be/8kxTJvaD9ks).
 
+The Group Deploy Tokens UI is now accessible under **Settings > Repository**,
+not **Settings > CI/CD** as indicated in the video.
+
 To use a group deploy token:
 
 1. [Create](#creating-a-deploy-token) a deploy token for a group.

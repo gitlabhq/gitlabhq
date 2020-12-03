@@ -51,7 +51,7 @@ We require indication of when it is safe to remove the column ignore with:
 - `remove_with`: set to a GitLab release typically two releases (M+2) after adding the
   column ignore.
 - `remove_after`: set to a date after which we consider it safe to remove the column
-  ignore, typically last date of the development cycle of release M+2 - namely the release date.
+  ignore, typically after the M+1 release date, during the M+2 development cycle.
 
 This information allows us to reason better about column ignores and makes sure we
 don't remove column ignores too early for both regular releases and deployments to GitLab.com. For
