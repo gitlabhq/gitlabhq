@@ -167,6 +167,14 @@ RSpec.describe Repositories::GitHttpController do
             Projects::DailyStatisticsFinder.new(container).total_fetch_count
           }.from(0).to(1)
         end
+
+        it 'records a namespace onboarding progress action' do
+          expect_next_instance_of(OnboardingProgressService) do |service|
+            expect(service).to receive(:execute).with(action: :git_read)
+          end
+
+          send_request
+        end
       end
     end
   end

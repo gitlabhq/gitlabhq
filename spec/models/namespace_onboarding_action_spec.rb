@@ -5,7 +5,13 @@ require 'spec_helper'
 RSpec.describe NamespaceOnboardingAction do
   let(:namespace) { build(:namespace) }
 
-  it { is_expected.to belong_to :namespace }
+  describe 'associations' do
+    it { is_expected.to belong_to(:namespace).required }
+  end
+
+  describe 'validations' do
+    it { is_expected.to validate_presence_of(:action) }
+  end
 
   describe '.completed?' do
     let(:action) { :subscription_created }

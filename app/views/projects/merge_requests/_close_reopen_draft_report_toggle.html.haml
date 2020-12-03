@@ -1,0 +1,37 @@
+- display_issuable_type = issuable_display_type(@merge_request)
+- button_action_class = @merge_request.closed? ? 'btn-default' : 'btn-warning btn-warning-secondary'
+- button_class = "btn gl-button #{!@merge_request.closed? && 'js-draft-toggle-button'}"
+- toggle_class = "btn gl-button dropdown-toggle"
+
+.float-left.btn-group.gl-ml-3.gl-display-none.gl-display-md-flex
+  = link_to @merge_request.closed? ? reopen_issuable_path(@merge_request) : toggle_draft_merge_request_path(@merge_request), method: :put, class: "#{button_class} #{button_action_class}" do
+    - if @merge_request.closed?
+      = _('Reopen')
+      = display_issuable_type
+    - else
+      = @merge_request.work_in_progress? ? _('Mark as ready') : _('Mark as draft')
+
+  - if !@merge_request.closed? || !issuable_author_is_current_user(@merge_request)
+    = button_tag type: 'button', class: "#{toggle_class} #{button_action_class}", data: { 'toggle' => 'dropdown' } do
+      %span.gl-sr-only= _('Toggle dropdown')
+      = sprite_icon "angle-down", size: 12
+
+    %ul.dropdown-menu.dropdown-menu-right
+      - if @merge_request.open?
+        %li
+          = link_to close_issuable_path(@merge_request), method: :put do
+            .description
+              %strong.title
+                = _('Close')
+                = display_issuable_type
+
+      - unless issuable_author_is_current_user(@merge_request)
+        - unless @merge_request.closed?
+          %li.divider.droplab-item-ignore
+
+        %li
+          %a{ href: new_abuse_report_path(user_id: @merge_request.author.id, ref_url: merge_request_url(@merge_request)) }
+            .description
+              %strong.title= _('Report abuse')
+              %p.text.gl-mb-0
+                = _('Report %{display_issuable_type} that are abusive, inappropriate or spam.') % { display_issuable_type: display_issuable_type.pluralize }

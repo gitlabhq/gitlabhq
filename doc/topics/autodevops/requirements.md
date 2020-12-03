@@ -6,8 +6,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Requirements for Auto DevOps
 
-You can set up Auto DevOps for [Kubernetes](#auto-devops-requirements-for-kubernetes)
-or [Amazon Elastic Container Service (ECS)](#auto-devops-requirements-for-amazon-ecs).
+You can set up Auto DevOps for [Kubernetes](#auto-devops-requirements-for-kubernetes),
+[Amazon Elastic Container Service (ECS)](#auto-devops-requirements-for-amazon-ecs),
+or [Amazon Cloud Compute](#auto-devops-requirements-for-amazon-ecs).
 For more information about Auto DevOps, see [the main Auto DevOps page](index.md)
 or the [quick start guide](quick_start_guide.md).
 
@@ -140,3 +141,14 @@ it on its own. This template is designed to be used with Auto DevOps only. It ma
 unexpectedly causing your pipeline to fail if included on its own. Also, the job
 names within this template may also change. Do not override these jobs' names in your
 own pipeline, as the override stops working when the name changes.
+
+## Auto DevOps requirements for Amazon EC2
+
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216008) in GitLab 13.6.
+
+You can target [AWS EC2](../../ci/cloud_deployment/index.md)
+as a deployment platform instead of Kubernetes. To use Auto DevOps with AWS EC2, you must add a
+specific environment variable.
+
+For more details, see [Custom build job for Auto DevOps](../../ci/cloud_deployment/index.md#custom-build-job-for-auto-devops)
+for deployments to AWS EC2.

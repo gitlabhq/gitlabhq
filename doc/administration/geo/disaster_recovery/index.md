@@ -133,6 +133,7 @@ Note the following when promoting a secondary:
    ```
 
 1. Promote the **secondary** node to the **primary** node.
+
    DANGER: **Warning:**
    In GitLab 13.2 and 13.3, promoting a secondary node to a primary while the
    secondary is paused fails. Do not pause replication before promoting a

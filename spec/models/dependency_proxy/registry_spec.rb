@@ -54,4 +54,11 @@ RSpec.describe DependencyProxy::Registry, type: :model do
       end
     end
   end
+
+  describe '#authenticate_header' do
+    it 'returns the OAuth realm and service header' do
+      expect(described_class.authenticate_header)
+        .to eq("Bearer realm=\"#{Gitlab.config.gitlab.url}/jwt/auth\",service=\"dependency_proxy\"")
+    end
+  end
 end

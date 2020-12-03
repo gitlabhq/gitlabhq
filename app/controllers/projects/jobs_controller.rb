@@ -15,7 +15,7 @@ class Projects::JobsController < Projects::ApplicationController
   before_action :authorize_create_proxy_build!, only: :proxy_websocket_authorize
   before_action :verify_proxy_request!, only: :proxy_websocket_authorize
   before_action do
-    push_frontend_feature_flag(:ci_job_line_links, @project)
+    push_frontend_feature_flag(:ci_job_line_links, @project, default_enabled: true)
   end
   before_action only: :index do
     frontend_experimentation_tracking_data(:jobs_empty_state, 'click_button')

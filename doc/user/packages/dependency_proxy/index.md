@@ -8,6 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7934) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.11.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/273655) to [GitLab Core](https://about.gitlab.com/pricing/) in GitLab 13.6.
+> - [Support for private groups](https://gitlab.com/gitlab-org/gitlab/-/issues/11582) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.7.
+> - Anonymous access to images in public groups is no longer available starting in [GitLab Premium](https://about.gitlab.com/pricing/) 13.7.
 
 The GitLab Dependency Proxy is a local proxy you can use for your frequently-accessed
 upstream images.
@@ -17,9 +19,7 @@ upstream image from a registry, acting as a pull-through cache.
 
 ## Prerequisites
 
-To use the Dependency Proxy:
-
-- Your group must be public. Authentication for private groups is [not supported yet](https://gitlab.com/gitlab-org/gitlab/-/issues/11582).
+The Dependency Proxy must be [enabled by an administrator](../../../administration/packages/dependency_proxy.md).
 
 ### Supported images and packages
 
@@ -57,6 +57,56 @@ Prerequisites:
 - Your images must be stored on [Docker Hub](https://hub.docker.com/).
 - Docker Hub must be available. Follow [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/241639)
   for progress on accessing images when Docker Hub is down.
+
+### Authenticate with the Dependency Proxy
+
+Because the Dependency Proxy is storing Docker images in a space associated with your group,
+you must authenticate against the Dependency Proxy.
+
+Follow the [instructions for using images from a private registry](../../../ci/docker/using_docker_images.md#define-an-image-from-a-private-container-registry),
+but instead of using `registry.example.com:5000`, use your GitLab domain with no port `gitlab.example.com`.
+
+For example, to manually log in:
+
+```shell
+docker login gitlab.example.com --username my_username --password my_password
+```
+
+You can authenticate using:
+
+- Your GitLab username and password.
+- A [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `read_registry` and `write_registry`.
+
+#### Authenticate within CI/CD
+
+To work with the Dependency Proxy in [GitLab CI/CD](../../../ci/README.md), you can use
+`CI_REGISTRY_USER` and `CI_REGISTRY_PASSWORD`.
+
+```shell
+docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" gitlab.example.com
+```
+
+You can use other [predefined variables](../../../ci/variables/predefined_variables.md)
+to further generalize your CI script. For example:
+
+```yaml
+# .gitlab-ci.yml
+
+dependency-proxy-pull-master:
+  # Official docker image.
+  image: docker:latest
+  stage: build
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_SERVER_HOST":"$CI_SERVER_PORT"
+  script:
+    - docker pull "$CI_SERVER_HOST":"$CI_SERVER_PORT"/groupname/dependency_proxy/containers/alpine:latest
+```
+
+You can also use [custom environment variables](../../../ci/variables/README.md#custom-environment-variables) to store and access your personal access token or other valid credentials.
+
+### Store a Docker image in Dependency Proxy cache
 
 To store a Docker image in Dependency Proxy storage:
 

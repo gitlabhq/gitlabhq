@@ -31,3 +31,5 @@ class UserDetail < ApplicationRecord
     self.bio = '' if bio_changed? && bio.nil?
   end
 end
+
+UserDetail.prepend_if_ee('EE::UserDetail')

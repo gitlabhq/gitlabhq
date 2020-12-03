@@ -2,6 +2,7 @@
 set -e
 WORKHORSE_DIR=workhorse/
 WORKHORSE_REF="v$(cat GITLAB_WORKHORSE_VERSION)"
+WORKHORSE_URL=${GITLAB_WORKHORSE_URL:-https://gitlab.com/gitlab-org/gitlab-workhorse.git}
 
 if [ $# -gt 1 ] || ([ $# = 1 ] && [ x$1 != xcheck ]); then
   echo "Usage: update-workhorse [check]"
@@ -15,7 +16,7 @@ if [ -n "$clean" ] ; then
   exit 1
 fi
 
-git fetch https://gitlab.com/gitlab-org/gitlab-workhorse.git "$WORKHORSE_REF"
+git fetch "$WORKHORSE_URL" "$WORKHORSE_REF"
 git rm -rf --quiet -- "$WORKHORSE_DIR"
 git read-tree --prefix="$WORKHORSE_DIR" -u FETCH_HEAD
 

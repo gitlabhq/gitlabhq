@@ -587,7 +587,7 @@ tenses, words, and phrases:
 <!-- vale gitlab.Simplicity = NO -->
 - Avoid words like _easily_, _simply_, _handy_, and _useful._ If the user
   doesn't find the process to be these things, we lose their trust.
-<!-- vale gitlab.Simplicity = NO -->
+<!-- vale gitlab.Simplicity = YES -->
 
 ### Word usage clarifications
 

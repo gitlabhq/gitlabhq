@@ -890,24 +890,6 @@
   }
 }
 
-.issuable-close-dropdown {
-  .dropdown-menu {
-    min-width: 270px;
-    left: auto;
-    right: 0;
-  }
-
-  .description {
-    .text {
-      margin: 0;
-    }
-  }
-
-  .dropdown-toggle > .icon {
-    margin: 0 3px;
-  }
-}
-
 /*
  * Following overrides are done to prevent
  * legacy dropdown styles from influencing

@@ -19085,16 +19085,37 @@ msgstr ""
 msgid "OnCallSchedules|Add a schedule"
 msgstr ""
 
+msgid "OnCallSchedules|Add rotation"
+msgstr ""
+
 msgid "OnCallSchedules|Add schedule"
 msgstr ""
 
 msgid "OnCallSchedules|Create on-call schedules  in GitLab"
 msgstr ""
 
+msgid "OnCallSchedules|Failed to add rotation"
+msgstr ""
+
 msgid "OnCallSchedules|Failed to add schedule"
 msgstr ""
 
+msgid "OnCallSchedules|Rotation length"
+msgstr ""
+
+msgid "OnCallSchedules|Rotation name cannot be empty"
+msgstr ""
+
+msgid "OnCallSchedules|Rotation participants cannot be empty"
+msgstr ""
+
+msgid "OnCallSchedules|Rotation start date cannot be empty"
+msgstr ""
+
 msgid "OnCallSchedules|Route alerts directly to specific members of your team"
+msgstr ""
+
+msgid "OnCallSchedules|Select participant"
 msgstr ""
 
 msgid "OnCallSchedules|Select timezone"
@@ -19412,6 +19433,9 @@ msgid "Owned by:"
 msgstr ""
 
 msgid "Owner"
+msgstr ""
+
+msgid "PST"
 msgstr ""
 
 msgid "Package Registry"
@@ -25622,9 +25646,6 @@ msgstr ""
 msgid "Something went wrong, unable to search projects"
 msgstr ""
 
-msgid "Something went wrong."
-msgstr ""
-
 msgid "Something went wrong. Please try again."
 msgstr ""
 
@@ -26040,6 +26061,9 @@ msgid "Starts %{startsIn}"
 msgstr ""
 
 msgid "Starts at (UTC)"
+msgstr ""
+
+msgid "Starts on"
 msgstr ""
 
 msgid "State your message to activate"
@@ -31405,6 +31429,9 @@ msgstr ""
 msgid "You have insufficient permissions to remove this HTTP integration"
 msgstr ""
 
+msgid "You have insufficient permissions to update an on-call schedule for this project"
+msgstr ""
+
 msgid "You have insufficient permissions to update this HTTP integration"
 msgstr ""
 
@@ -31918,6 +31945,9 @@ msgid "as %{role}."
 msgstr ""
 
 msgid "assign yourself"
+msgstr ""
+
+msgid "at"
 msgstr ""
 
 msgid "at risk"

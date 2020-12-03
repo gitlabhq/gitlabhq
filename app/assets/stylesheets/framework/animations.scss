@@ -103,7 +103,8 @@
   @include transition(color);
 }
 
-a {
+a,
+.notification-dot {
   @include transition(background-color, color, border);
 }
 

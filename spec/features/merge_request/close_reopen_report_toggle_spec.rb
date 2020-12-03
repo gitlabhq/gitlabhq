@@ -7,44 +7,6 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle' do
 
   let(:user) { create(:user) }
 
-  shared_examples 'an issuable close/reopen/report toggle' do
-    let(:container) { find('.issuable-close-dropdown') }
-    let(:human_model_name) { issuable.model_name.human.downcase }
-
-    it 'shows toggle' do
-      expect(page).to have_button("Close #{human_model_name}")
-      expect(page).to have_selector('.issuable-close-dropdown')
-    end
-
-    it 'opens a dropdown when toggle is clicked' do
-      container.find('.dropdown-toggle').click
-
-      expect(container).to have_selector('.dropdown-menu')
-      expect(container).to have_content("Close #{human_model_name}")
-      expect(container).to have_content('Report abuse')
-      expect(container).to have_content("Report #{human_model_name.pluralize} that are abusive, inappropriate or spam.")
-
-      if issuable.is_a?(MergeRequest)
-        page.within('.js-issuable-close-dropdown') do
-          expect(page).to have_link('Close merge request')
-        end
-      else
-        expect(container).to have_selector('.close-item.droplab-item-selected')
-      end
-
-      expect(container).to have_selector('.report-item')
-      expect(container).not_to have_selector('.report-item.droplab-item-selected')
-      expect(container).not_to have_selector('.reopen-item')
-    end
-
-    it 'links to Report Abuse' do
-      container.find('.dropdown-toggle').click
-      container.find('.report-abuse-link').click
-
-      expect(page).to have_content('Report abuse to admin')
-    end
-  end
-
   context 'on a merge request' do
     let(:container) { find('.detail-page-header-actions') }
     let(:project) { create(:project, :repository) }
@@ -60,7 +22,22 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle' do
         visit project_merge_request_path(project, issuable)
       end
 
-      it_behaves_like 'an issuable close/reopen/report toggle'
+      context 'close/reopen/report toggle' do
+        it 'opens a dropdown when toggle is clicked' do
+          click_button 'Toggle dropdown'
+
+          expect(container).to have_link("Close merge request")
+          expect(container).to have_link('Report abuse')
+          expect(container).to have_text("Report merge requests that are abusive, inappropriate or spam.")
+        end
+
+        it 'links to Report Abuse' do
+          click_button 'Toggle dropdown'
+          click_link 'Report abuse'
+
+          expect(page).to have_content('Report abuse to admin')
+        end
+      end
 
       context 'when the merge request is open' do
         let(:issuable) { create(:merge_request, :opened, source_project: project) }

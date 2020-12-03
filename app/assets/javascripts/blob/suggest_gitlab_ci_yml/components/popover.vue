@@ -107,7 +107,7 @@ export default {
     v-if="!popoverDismissed"
     show
     :target="target"
-    placement="rightbottom"
+    placement="right"
     trigger="manual"
     container="viewport"
     :css-classes="['suggest-gitlab-ci-yml', 'ml-4']"

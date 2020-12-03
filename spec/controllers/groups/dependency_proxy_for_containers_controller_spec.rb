@@ -3,8 +3,77 @@
 require 'spec_helper'
 
 RSpec.describe Groups::DependencyProxyForContainersController do
+  include HttpBasicAuthHelpers
+  include DependencyProxyHelpers
+
+  let_it_be(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:token_response) { { status: :success, token: 'abcd1234' } }
+  let(:jwt) { build_jwt(user) }
+  let(:token_header) { "Bearer #{jwt.encoded}" }
+
+  shared_examples 'without a token' do
+    before do
+      request.headers['HTTP_AUTHORIZATION'] = nil
+    end
+
+    context 'feature flag disabled' do
+      before do
+        stub_feature_flags(dependency_proxy_for_private_groups: false)
+      end
+
+      it { is_expected.to have_gitlab_http_status(:ok) }
+    end
+
+    it { is_expected.to have_gitlab_http_status(:unauthorized) }
+  end
+
+  shared_examples 'feature flag disabled with private group' do
+    before do
+      stub_feature_flags(dependency_proxy_for_private_groups: false)
+    end
+
+    it 'redirects', :aggregate_failures do
+      group.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+
+      subject
+
+      expect(response).to have_gitlab_http_status(:redirect)
+      expect(response.location).to end_with(new_user_session_path)
+    end
+  end
+
+  shared_examples 'without permission' do
+    context 'with invalid user' do
+      before do
+        user = double('bad_user', id: 999)
+        token_header = "Bearer #{build_jwt(user).encoded}"
+        request.headers['HTTP_AUTHORIZATION'] = token_header
+      end
+
+      it { is_expected.to have_gitlab_http_status(:not_found) }
+    end
+
+    context 'with valid user that does not have access' do
+      let(:group) { create(:group, :private) }
+
+      before do
+        user = double('bad_user', id: 999)
+        token_header = "Bearer #{build_jwt(user).encoded}"
+        request.headers['HTTP_AUTHORIZATION'] = token_header
+      end
+
+      it { is_expected.to have_gitlab_http_status(:not_found) }
+    end
+
+    context 'when user is not found' do
+      before do
+        allow(User).to receive(:find).and_return(nil)
+      end
+
+      it { is_expected.to have_gitlab_http_status(:unauthorized) }
+    end
+  end
 
   shared_examples 'not found when disabled' do
     context 'feature disabled' do
@@ -27,6 +96,8 @@ RSpec.describe Groups::DependencyProxyForContainersController do
     allow_next_instance_of(DependencyProxy::RequestTokenService) do |instance|
       allow(instance).to receive(:execute).and_return(token_response)
     end
+
+    request.headers['HTTP_AUTHORIZATION'] = token_header
   end
 
   describe 'GET #manifest' do
@@ -45,6 +116,10 @@ RSpec.describe Groups::DependencyProxyForContainersController do
       before do
         enable_dependency_proxy
       end
+
+      it_behaves_like 'without a token'
+      it_behaves_like 'without permission'
+      it_behaves_like 'feature flag disabled with private group'
 
       context 'remote token request fails' do
         let(:token_response) do
@@ -112,6 +187,10 @@ RSpec.describe Groups::DependencyProxyForContainersController do
       before do
         enable_dependency_proxy
       end
+
+      it_behaves_like 'without a token'
+      it_behaves_like 'without permission'
+      it_behaves_like 'feature flag disabled with private group'
 
       context 'remote blob request fails' do
         let(:blob_response) do
