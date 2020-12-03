@@ -3,6 +3,7 @@ import { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { GlAlert } from '@gitlab/ui';
 import App from '~/groups/members/components/app.vue';
+import FilterSortContainer from '~/members/components/filter_sort/filter_sort_container.vue';
 import * as commonUtils from '~/lib/utils/common_utils';
 import { RECEIVE_MEMBER_ROLE_ERROR, HIDE_ERROR } from '~/members/store/mutation_types';
 import mutations from '~/members/store/mutations';
@@ -14,7 +15,7 @@ describe('GroupMembersApp', () => {
   let wrapper;
   let store;
 
-  const createComponent = (state = {}) => {
+  const createComponent = (state = {}, options = {}) => {
     store = new Vuex.Store({
       state: {
         showError: true,
@@ -27,10 +28,12 @@ describe('GroupMembersApp', () => {
     wrapper = shallowMount(App, {
       localVue,
       store,
+      ...options,
     });
   };
 
   const findAlert = () => wrapper.find(GlAlert);
+  const findFilterSortContainer = () => wrapper.find(FilterSortContainer);
 
   beforeEach(() => {
     commonUtils.scrollToElement = jest.fn();
@@ -83,4 +86,22 @@ describe('GroupMembersApp', () => {
       expect(findAlert().exists()).toBe(false);
     });
   });
+
+  describe.each`
+    featureFlagValue | exists
+    ${true}          | ${true}
+    ${false}         | ${false}
+  `(
+    'when `group_members_filtered_search` feature flag is $featureFlagValue',
+    ({ featureFlagValue, exists }) => {
+      it(`${exists ? 'renders' : 'does not render'} FilterSortContainer`, () => {
+        createComponent(
+          {},
+          { provide: { glFeatures: { groupMembersFilteredSearch: featureFlagValue } } },
+        );
+
+        expect(findFilterSortContainer().exists()).toBe(exists);
+      });
+    },
+  );
 });

@@ -50,7 +50,6 @@ RSpec.shared_examples 'Maintainer manages access requests' do
   def expect_visible_access_request(entity, user)
     if has_tabs
       expect(page).to have_content "Access requests 1"
-      expect(page).to have_content "Users requesting access to #{entity.name}"
     else
       expect(page).to have_content "Users requesting access to #{entity.name} 1"
     end

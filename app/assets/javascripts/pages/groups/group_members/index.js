@@ -6,7 +6,7 @@ import groupsSelect from '~/groups_select';
 import RemoveMemberModal from '~/vue_shared/components/remove_member_modal.vue';
 import { initGroupMembersApp } from '~/groups/members';
 import { memberRequestFormatter, groupLinkRequestFormatter } from '~/groups/members/utils';
-import { __ } from '~/locale';
+import { s__ } from '~/locale';
 
 function mountRemoveMemberModal() {
   const el = document.querySelector('.js-remove-member-modal');
@@ -33,7 +33,7 @@ initGroupMembersApp(document.querySelector('.js-group-members-list'), {
     show: true,
     tokens: ['two_factor', 'with_inherited_permissions'],
     searchParam: 'search',
-    placeholder: __('Members|Filter members'),
+    placeholder: s__('Members|Filter members'),
     recentSearchesStorageKey: 'group_members',
   },
 });
@@ -52,7 +52,7 @@ initGroupMembersApp(document.querySelector('.js-group-invited-members-list'), {
     show: true,
     tokens: [],
     searchParam: 'search_invited',
-    placeholder: __('Members|Search invited'),
+    placeholder: s__('Members|Search invited'),
     recentSearchesStorageKey: 'group_invited_members',
   },
 });

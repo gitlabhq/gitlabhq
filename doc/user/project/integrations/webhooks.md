@@ -68,7 +68,9 @@ If you are writing your own endpoint (web server) to receive
 GitLab webhooks, keep in mind the following things:
 
 - Your endpoint should send its HTTP response as fast as possible. If
-  you wait too long, GitLab may decide the hook failed and retry it.
+  you wait too long (by default, a timeout of 10 seconds), GitLab may decide
+  the hook failed and retry it. You can configure this timeout with
+  `gitlab_rails['webhook_timeout']`.
 - Your endpoint should ALWAYS return a valid HTTP response. If you do
   not do this then GitLab thinks the hook failed and retries it.
   Most HTTP libraries take care of this for you automatically but if

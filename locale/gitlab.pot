@@ -16864,6 +16864,9 @@ msgstr ""
 msgid "Members|%{userName} is currently an LDAP user. Editing their permissions will override the settings from the LDAP group sync."
 msgstr ""
 
+msgid "Members|2FA"
+msgstr ""
+
 msgid "Members|An error occurred while trying to enable LDAP override, please try again."
 msgstr ""
 
@@ -16897,7 +16900,16 @@ msgstr ""
 msgid "Members|Are you sure you want to withdraw your access request for \"%{source}\""
 msgstr ""
 
+msgid "Members|Direct"
+msgstr ""
+
+msgid "Members|Disabled"
+msgstr ""
+
 msgid "Members|Edit permissions"
+msgstr ""
+
+msgid "Members|Enabled"
 msgstr ""
 
 msgid "Members|Expiration date removed successfully."
@@ -16912,10 +16924,16 @@ msgstr ""
 msgid "Members|Filter members"
 msgstr ""
 
+msgid "Members|Inherited"
+msgstr ""
+
 msgid "Members|LDAP override enabled."
 msgstr ""
 
 msgid "Members|Leave \"%{source}\""
+msgstr ""
+
+msgid "Members|Membership"
 msgstr ""
 
 msgid "Members|No expiration set"

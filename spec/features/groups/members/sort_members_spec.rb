@@ -12,6 +12,8 @@ RSpec.describe 'Groups > Members > Sort members', :js do
   dropdown_toggle_selector = '[data-testid="user-sort-dropdown"] [data-testid="dropdown-toggle"]'
 
   before do
+    stub_feature_flags(group_members_filtered_search: false)
+
     create(:group_member, :owner, user: owner, group: group, created_at: 5.days.ago)
     create(:group_member, :developer, user: developer, group: group, created_at: 3.days.ago)
 

@@ -1,37 +1,41 @@
-import Vue from 'vue';
-import component from '~/jobs/components/unmet_prerequisites_block.vue';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import { shallowMount } from '@vue/test-utils';
+import { GlAlert, GlLink } from '@gitlab/ui';
+import UnmetPrerequisitesBlock from '~/jobs/components/unmet_prerequisites_block.vue';
 
 describe('Unmet Prerequisites Block Job component', () => {
-  const Component = Vue.extend(component);
-  let vm;
+  let wrapper;
   const helpPath = '/user/project/clusters/index.html#troubleshooting-failed-deployment-jobs';
 
-  beforeEach(() => {
-    vm = mountComponent(Component, {
-      hasNoRunnersForProject: true,
-      helpPath,
+  const createComponent = () => {
+    wrapper = shallowMount(UnmetPrerequisitesBlock, {
+      propsData: {
+        helpPath,
+      },
     });
+  };
+
+  beforeEach(() => {
+    createComponent();
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   it('renders an alert with the correct message', () => {
-    const container = vm.$el.querySelector('.js-failed-unmet-prerequisites');
+    const container = wrapper.find(GlAlert);
     const alertMessage =
       'This job failed because the necessary resources were not successfully created.';
 
     expect(container).not.toBeNull();
-    expect(container.innerHTML).toContain(alertMessage);
+    expect(container.text()).toContain(alertMessage);
   });
 
   it('renders link to help page', () => {
-    const helpLink = vm.$el.querySelector('.js-help-path');
+    const helpLink = wrapper.find(GlLink);
 
     expect(helpLink).not.toBeNull();
-    expect(helpLink.innerHTML).toContain('More information');
-    expect(helpLink.getAttribute('href')).toEqual(helpPath);
+    expect(helpLink.text()).toContain('More information');
+    expect(helpLink.attributes().href).toEqual(helpPath);
   });
 });

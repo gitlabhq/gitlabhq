@@ -21,9 +21,10 @@ RSpec.describe 'Search group member', :js do
   end
 
   it 'renders member users' do
-    page.within '[data-testid="user-search-form"]' do
-      fill_in 'search', with: member.name
-      find('[data-testid="user-search-submit"]').click
+    page.within '[data-testid="members-filtered-search-bar"]' do
+      find_field('Filter members').click
+      find('input').native.send_keys(member.name)
+      click_button 'Search'
     end
 
     expect(members_table).to have_content(member.name)
