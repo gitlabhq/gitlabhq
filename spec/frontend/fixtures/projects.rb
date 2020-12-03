@@ -30,15 +30,6 @@ RSpec.describe 'Projects (JavaScript fixtures)', type: :controller do
   end
 
   describe ProjectsController, '(JavaScript fixtures)', type: :controller do
-    it 'projects/dashboard.html' do
-      get :show, params: {
-        namespace_id: project.namespace.to_param,
-        id: project
-      }
-
-      expect(response).to be_successful
-    end
-
     it 'projects/overview.html' do
       get :show, params: {
         namespace_id: project_with_repo.namespace.to_param,

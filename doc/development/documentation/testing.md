@@ -7,34 +7,40 @@ description: Learn how to contribute to GitLab Documentation.
 
 # Documentation testing
 
-We treat documentation as code, and so use tests in our CI pipeline to maintain the
-standards and quality of the docs. The current tests, which run in CI jobs when a
-merge request with new or changed docs is submitted, are:
+GitLab documentation is stored in projects with code and treated like code. Therefore, we use
+processes similar to those used for code to maintain standards and quality of documentation.
 
-- [`docs lint`](https://gitlab.com/gitlab-org/gitlab/-/blob/0b562014f7b71f98540e682c8d662275f0011f2f/.gitlab/ci/docs.gitlab-ci.yml#L41):
-  Runs several tests on the content of the docs themselves:
-  - [`lint-doc.sh` script](https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/lint-doc.sh)
-    runs the following checks and linters:
-    - All cURL examples use the long flags (ex: `--header`, not `-H`).
-    - The `CHANGELOG.md` does not contain duplicate versions.
-    - No files in `doc/` are executable.
-    - No new `README.md` was added.
-    - [markdownlint](#markdownlint).
-    - [Vale](#vale).
-  - Nanoc tests:
-    - [`internal_links`](https://gitlab.com/gitlab-org/gitlab/-/blob/0b562014f7b71f98540e682c8d662275f0011f2f/.gitlab/ci/docs.gitlab-ci.yml#L58)
-      checks that all internal links (ex: `[link](../index.md)`) are valid.
-    - [`internal_anchors`](https://gitlab.com/gitlab-org/gitlab/-/blob/0b562014f7b71f98540e682c8d662275f0011f2f/.gitlab/ci/docs.gitlab-ci.yml#L60)
-      checks that all internal anchors (ex: `[link](../index.md#internal_anchor)`)
-      are valid.
-  - [`ui-docs-links lint`](https://gitlab.com/gitlab-org/gitlab/-/blob/0b562014f7b71f98540e682c8d662275f0011f2f/.gitlab/ci/docs.gitlab-ci.yml#L62)
-    checks that all links to docs from UI elements (`app/views` files, for example)
-    are linking to valid docs and anchors.
+We have tests:
+
+- To lint the words and structure of the documentation.
+- To check the validity of internal links within the documentation suite.
+- To check the validity of links from UI elements, such as files in `app/views` files.
+
+For the specifics of each test run in our CI/CD pipelines, see the configuration for those tests
+in the relevant projects:
+
+- <https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/docs.gitlab-ci.yml>
+- <https://gitlab.com/gitlab-org/gitlab-runner/-/blob/master/.gitlab/ci/docs.gitlab-ci.yml>
+- <https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/gitlab-ci-config/gitlab-com.yml>
+- <https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/.gitlab-ci.yml>
 
 ## Run tests locally
 
-Apart from [previewing your changes locally](index.md#previewing-the-changes-live), you can also run all lint checks
-and Nanoc tests locally.
+Similar to [previewing your changes locally](index.md#previewing-the-changes-live), you can also
+run these tests on your local computer. This has the advantage of:
+
+- Speeding up the feedback loop. You can know of any problems with the changes in your branch
+  without waiting for a CI/CD pipeline to run.
+- Lowering costs. Running tests locally is cheaper than running tests on GitLab's cloud
+  infrastructure.
+
+To run tests locally, it's important to:
+
+- [Install the tools](#install-linters), and [keep them up to date](#update-linters).
+- Run [linters](#lint-checks), [documentation link tests](#documentation-link-tests), and
+  [UI link tests](#ui-link-tests) the same way they are run in CI/CD pipelines. It's important to use
+  same configuration we use in CI/CD pipelines, which can be different than the default configuration
+  of the tool.
 
 ### Lint checks
 
@@ -66,15 +72,15 @@ The output should be similar to:
 
 This requires you to either:
 
-- Have the required lint tools installed on your machine.
+- Have the [required lint tools installed](#local-linters) on your computer.
 - A working Docker installation, in which case an image with these tools pre-installed is used.
 
-### Nanoc tests
+### Documentation link tests
 
-To execute Nanoc tests locally:
+To execute documentation link tests locally:
 
 1. Navigate to the [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs) directory.
-1. Run:
+1. Run the following commands:
 
    ```shell
    # Check for broken internal links
@@ -85,7 +91,7 @@ To execute Nanoc tests locally:
    bundle exec nanoc check internal_anchors
    ```
 
-### `ui-docs-links` test
+### UI link tests
 
 The `ui-docs-links lint` job uses `haml-lint` to test that all links to docs from
 UI elements (`app/views` files, for example) are linking to valid docs and anchors.
@@ -191,22 +197,15 @@ You can use Vale:
 At a minimum, install [markdownlint](#markdownlint) and [Vale](#vale) to match the checks run in
 build pipelines:
 
-1. Install `markdownlint-cli`, using either:
+1. Install `markdownlint-cli`:
 
-   - `npm`:
+   ```shell
+   yarn global add markdownlint-cli
+   ```
 
-     ```shell
-     npm install -g markdownlint-cli
-     ```
-
-   - `yarn`:
-
-     ```shell
-     yarn global add markdownlint-cli
-     ```
-
-     We recommend installing the version of `markdownlint-cli` currently used in the documentation
-     linting [Docker image](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/master/.gitlab-ci.yml#L420).
+   We recommend installing the version of `markdownlint-cli`
+   [used](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/master/.gitlab-ci.yml#L447) when building
+   the `image:docs-lint-markdown`.
 
 1. Install [`vale`](https://github.com/errata-ai/vale/releases). For example, to install using
    `brew` for macOS, run:
@@ -215,13 +214,28 @@ build pipelines:
    brew install vale
    ```
 
-   We recommend installing the version of Vale currently used in the documentation linting
-   [Docker image](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/master/.gitlab-ci.yml#L419).
+These tools can be [integrated with your code editor](#configure-editors).
 
-In addition to using markdownlint and Vale at the command line, these tools can be
-[integrated with your code editor](#configure-editors).
+### Update linters
+
+It's important to use linter versions that are the same or newer than those run in
+CI/CD. This provides access to new features and possible bug fixes.
+
+To match the versions of `markdownlint-cli` and `vale` used in the GitLab projects, refer to the
+[versions used](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/master/.gitlab-ci.yml#L447)
+when building the `image:docs-lint-markdown` Docker image containing these tools for CI/CD.
+
+| Tool               | Version  | Command                                   | Additional info |
+|--------------------|----------|-------------------------------------------|-----------------|
+| `markdownlint-cli` | Latest   | `yarn global add markdownlint-cli`        | n/a             |
+| `markdownlint-cli` | Specfic  | `yarn global add markdownlint-cli@0.23.2` | The `@` indicates a specific version, and this example updates the tool to version `0.23.2`. |
+| Vale               | Latest   | `brew update && brew upgrade vale`        | This command is for macOS only. |
+| Vale               | Specific | n/a                                       | Not possible using `brew`, but can be [directly downloaded](https://github.com/errata-ai/vale/releases). |
 
 ### Configure editors
+
+Using linters in your editor is more convenient than having to run the commands from the
+command line.
 
 To configure markdownlint within your editor, install one of the following as appropriate:
 

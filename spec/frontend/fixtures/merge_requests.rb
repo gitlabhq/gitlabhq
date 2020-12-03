@@ -13,7 +13,7 @@ RSpec.describe Projects::MergeRequestsController, '(JavaScript fixtures)', type:
   let(:description) do
     <<~MARKDOWN.strip_heredoc
     - [ ] Task List Item
-    - [ ]   
+    - [ ]
     - [ ] Task List Item 2
     MARKDOWN
   end
@@ -75,28 +75,10 @@ RSpec.describe Projects::MergeRequestsController, '(JavaScript fixtures)', type:
     render_merge_request(merge_request)
   end
 
-  it 'merge_requests/merged_merge_request.html' do
-    expect_next_instance_of(MergeRequest) do |merge_request|
-      allow(merge_request).to receive(:source_branch_exists?).and_return(true)
-      allow(merge_request).to receive(:can_remove_source_branch?).and_return(true)
-    end
-    render_merge_request(merged_merge_request)
-  end
-
   it 'merge_requests/diff_comment.html' do
     create(:diff_note_on_merge_request, project: project, author: admin, position: position, noteable: merge_request)
     create(:note_on_merge_request, author: admin, project: project, noteable: merge_request)
     render_merge_request(merge_request)
-  end
-
-  it 'merge_requests/merge_request_with_comment.html' do
-    create(:note_on_merge_request, author: admin, project: project, noteable: merge_request, note: '- [ ] Task List Item')
-    render_merge_request(merge_request)
-  end
-
-  it 'merge_requests/discussions.json' do
-    create(:discussion_note_on_merge_request, project: project, author: admin, position: position, noteable: merge_request)
-    render_discussions_json(merge_request)
   end
 
   it 'merge_requests/diff_discussion.json' do

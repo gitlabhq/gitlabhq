@@ -38,7 +38,7 @@ describe('MergeRequest', () => {
         .dispatchEvent(changeEvent);
       setImmediate(() => {
         expect($('.js-task-list-field').val()).toBe(
-          '- [x] Task List Item\n- [ ]   \n- [ ] Task List Item 2\n',
+          '- [x] Task List Item\n- [ ]\n- [ ] Task List Item 2\n',
         );
         done();
       });
@@ -55,7 +55,7 @@ describe('MergeRequest', () => {
         .dispatchEvent(changeEvent);
       setImmediate(() => {
         expect($('.js-task-list-field').val()).toBe(
-          '- [ ] Task List Item\n- [ ]   \n- [x] Task List Item 2\n',
+          '- [ ] Task List Item\n- [ ]\n- [x] Task List Item 2\n',
         );
         done();
       });
@@ -78,7 +78,7 @@ describe('MergeRequest', () => {
             `${TEST_HOST}/frontend-fixtures/merge-requests-project/-/merge_requests/1.json`,
             {
               merge_request: {
-                description: '- [ ] Task List Item\n- [ ]   \n- [ ] Task List Item 2\n',
+                description: '- [ ] Task List Item\n- [ ]\n- [ ] Task List Item 2\n',
                 lock_version: 0,
                 update_task: { line_number: lineNumber, line_source: lineSource, index, checked },
               },

@@ -71,6 +71,10 @@ To learn how to add an issue to an iteration, see the steps in
 You can track the progress of an iteration by reviewing iteration reports.
 An iteration report displays a list of all the issues assigned to an iteration and their status.
 
+The report also shows a breakdown of total issues in an iteration.
+Open iteration reports show a summary of completed, unstarted, and in-progress issues.
+Closed iteration reports show the total number of issues completed by the due date.
+
 To view an iteration report, go to the iterations list page and click an iteration's title.
 
 ### Iteration burndown and burnup charts

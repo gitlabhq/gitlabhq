@@ -40,18 +40,6 @@ RSpec.describe Projects::MergeRequests::DiffsController, '(JavaScript fixtures)'
     render_merge_request(merge_request, commit_id: project.commit.sha)
   end
 
-  it 'merge_request_diffs/inline_changes_tab_with_comments.json' do
-    create(:diff_note_on_merge_request, project: project, author: admin, position: position, noteable: merge_request)
-    create(:note_on_merge_request, author: admin, project: project, noteable: merge_request)
-    render_merge_request(merge_request)
-  end
-
-  it 'merge_request_diffs/parallel_changes_tab_with_comments.json' do
-    create(:diff_note_on_merge_request, project: project, author: admin, position: position, noteable: merge_request)
-    create(:note_on_merge_request, author: admin, project: project, noteable: merge_request)
-    render_merge_request(merge_request, view: 'parallel')
-  end
-
   private
 
   def render_merge_request(merge_request, view: 'inline', **extra_params)

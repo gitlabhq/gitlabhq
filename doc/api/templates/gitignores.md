@@ -7,13 +7,12 @@ type: reference
 
 # .gitignore API
 
-In GitLab, there is an API endpoint available for `.gitignore`. For more
-information on `gitignore`, see the
-[Git documentation](https://git-scm.com/docs/gitignore).
+In GitLab, the `/gitignores` endpoint returns a list of Git `.gitignore` templates. For more information,
+see the [Git documentation for `.gitignore`](https://git-scm.com/docs/gitignore).
 
-## List `.gitignore` templates
+## Get all `.gitignore` templates
 
-Get all `.gitignore` templates.
+Get a list of all `.gitignore` templates:
 
 ```plaintext
 GET /templates/gitignores
@@ -112,9 +111,9 @@ Example response:
 ]
 ```
 
-## Single `.gitignore` template
+## Get a single `.gitignore` template
 
-Get a single `.gitignore` template.
+Get a single `.gitignore` template:
 
 ```plaintext
 GET /templates/gitignores/:key

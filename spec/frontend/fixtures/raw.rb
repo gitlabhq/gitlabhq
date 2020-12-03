@@ -10,7 +10,6 @@ RSpec.describe 'Raw files', '(JavaScript fixtures)' do
   let(:response) { @blob.data.force_encoding('UTF-8') }
 
   before(:all) do
-    clean_frontend_fixtures('blob/balsamiq/')
     clean_frontend_fixtures('blob/notebook/')
     clean_frontend_fixtures('blob/pdf/')
     clean_frontend_fixtures('blob/text/')
@@ -20,10 +19,6 @@ RSpec.describe 'Raw files', '(JavaScript fixtures)' do
 
   after do
     remove_repository(project)
-  end
-
-  it 'blob/balsamiq/test.bmpr' do
-    @blob = project.repository.blob_at('b89b56d79', 'files/images/balsamiq.bmpr')
   end
 
   it 'blob/notebook/basic.json' do

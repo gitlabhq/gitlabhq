@@ -22,7 +22,6 @@ RSpec.describe Projects::JobsController, '(JavaScript fixtures)', type: :control
   render_views
 
   before(:all) do
-    clean_frontend_fixtures('builds/')
     clean_frontend_fixtures('jobs/')
   end
 
@@ -32,16 +31,6 @@ RSpec.describe Projects::JobsController, '(JavaScript fixtures)', type: :control
 
   after do
     remove_repository(project)
-  end
-
-  it 'builds/build-with-artifacts.html' do
-    get :show, params: {
-      namespace_id: project.namespace.to_param,
-      project_id: project,
-      id: build_with_artifacts.to_param
-    }
-
-    expect(response).to be_successful
   end
 
   it 'jobs/delayed.json' do
