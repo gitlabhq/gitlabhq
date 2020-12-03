@@ -1016,6 +1016,22 @@ This will also refresh the cached usage ping displayed in the admin area
 Gitlab::UsageData.to_json(force_refresh: true)
 ```
 
+#### Generate and print
+
+Generates usage ping data in JSON format.
+
+```shell
+rake gitlab:usage_data:generate
+```
+
+#### Generate and send usage ping
+
+Prints the metrics saved in `conversational_development_index_metrics`.
+
+```shell
+rake gitlab:usage_data:generate_and_send
+```
+
 ## Elasticsearch
 
 ### Configuration attributes

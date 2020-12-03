@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Checks::SnippetCheck do
   let(:creation) { false }
   let(:deletion) { false }
 
-  subject { Gitlab::Checks::SnippetCheck.new(changes, default_branch: default_branch, logger: logger) }
+  subject { Gitlab::Checks::SnippetCheck.new(changes, default_branch: default_branch, root_ref: snippet.repository.root_ref, logger: logger) }
 
   describe '#validate!' do
     it 'does not raise any error' do
@@ -45,10 +45,18 @@ RSpec.describe Gitlab::Checks::SnippetCheck do
         let(:branch_name) { 'feature' }
       end
 
-      context "when branch is 'master'" do
-        let(:ref) { 'refs/heads/master' }
+      context 'when branch is the same as the default branch' do
+        let(:ref) { "refs/heads/#{default_branch}" }
 
-        it "allows the operation" do
+        it 'allows the operation' do
+          expect { subject.validate! }.not_to raise_error
+        end
+      end
+
+      context 'when snippet has an empty repo' do
+        let_it_be(:snippet) { create(:personal_snippet, :empty_repo) }
+
+        it 'allows the operation' do
           expect { subject.validate! }.not_to raise_error
         end
       end

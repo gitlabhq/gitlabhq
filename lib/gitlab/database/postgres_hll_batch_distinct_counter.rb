@@ -28,13 +28,14 @@ module Gitlab
     #  for given implementation no higher value was reported (https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45673#accuracy-estimation) than 5.3%
     #  for the most of a cases this value is lower. However, if the exact value is necessary other tools has to be used.
     class PostgresHllBatchDistinctCounter
+      ERROR_RATE = 4.9 # max encountered empirical error rate, used in tests
       FALLBACK = -1
-      MIN_REQUIRED_BATCH_SIZE = 1_250
-      MAX_ALLOWED_LOOPS = 10_000
+      MIN_REQUIRED_BATCH_SIZE = 750
       SLEEP_TIME_IN_SECONDS = 0.01 # 10 msec sleep
+      MAX_DATA_VOLUME = 4_000_000_000
 
       # Each query should take < 500ms https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22705
-      DEFAULT_BATCH_SIZE = 100_000
+      DEFAULT_BATCH_SIZE = 10_000
 
       BIT_31_MASK = "B'0#{'1' * 31}'"
       BIT_9_MASK = "B'#{'0' * 23}#{'1' * 9}'"
@@ -49,7 +50,7 @@ module Gitlab
         SELECT (attr_hash_32_bits & #{BIT_9_MASK})::int AS bucket_num,
           (31 - floor(log(2, min((attr_hash_32_bits & #{BIT_31_MASK})::int))))::int as bucket_hash
         FROM hashed_attributes
-        GROUP BY 1 ORDER BY 1
+        GROUP BY 1
       SQL
 
       TOTAL_BUCKETS_NUMBER = 512
@@ -61,7 +62,7 @@ module Gitlab
 
       def unwanted_configuration?(finish, batch_size, start)
         batch_size <= MIN_REQUIRED_BATCH_SIZE ||
-          (finish - start) / batch_size >= MAX_ALLOWED_LOOPS ||
+          (finish - start) >= MAX_DATA_VOLUME ||
           start > finish
       end
 
@@ -101,7 +102,7 @@ module Gitlab
 
         num_uniques = (
           ((TOTAL_BUCKETS_NUMBER**2) * (0.7213 / (1 + 1.079 / TOTAL_BUCKETS_NUMBER))) /
-            (num_zero_buckets + hll_blob.values.sum { |bucket_hash, _| 2**(-1 * bucket_hash)} )
+            (num_zero_buckets + hll_blob.values.sum { |bucket_hash| 2**(-1 * bucket_hash)} )
         ).to_i
 
         if num_zero_buckets > 0 && num_uniques < 2.5 * TOTAL_BUCKETS_NUMBER

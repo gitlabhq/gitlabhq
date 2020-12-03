@@ -3305,7 +3305,7 @@
           "fields": [
             {
               "name": "assignee",
-              "description": "The board assignee.",
+              "description": "The board assignee",
               "args": [
 
               ],
@@ -3319,7 +3319,7 @@
             },
             {
               "name": "epics",
-              "description": "Epics associated with board issues.",
+              "description": "Epics associated with board issues",
               "args": [
                 {
                   "name": "issueFilters",
@@ -3382,7 +3382,7 @@
             },
             {
               "name": "hideBacklogList",
-              "description": "Whether or not backlog list is hidden.",
+              "description": "Whether or not backlog list is hidden",
               "args": [
 
               ],
@@ -3396,7 +3396,7 @@
             },
             {
               "name": "hideClosedList",
-              "description": "Whether or not closed list is hidden.",
+              "description": "Whether or not closed list is hidden",
               "args": [
 
               ],
@@ -3554,7 +3554,7 @@
             },
             {
               "name": "milestone",
-              "description": "The board milestone.",
+              "description": "The board milestone",
               "args": [
 
               ],
@@ -3582,7 +3582,7 @@
             },
             {
               "name": "weight",
-              "description": "Weight of the board.",
+              "description": "Weight of the board",
               "args": [
 
               ],
@@ -63179,6 +63179,20 @@
               "deprecationReason": null
             },
             {
+              "name": "downloadPath",
+              "description": "URL for downloading the version's JSON file",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "id",
               "description": "ID of the Terraform state version",
               "args": [
@@ -63205,6 +63219,20 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "CiJob",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "serial",
+              "description": "Serial number of the version",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -66098,7 +66126,7 @@
             },
             {
               "name": "hideBacklogList",
-              "description": "Whether or not backlog list is hidden.",
+              "description": "Whether or not backlog list is hidden",
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
@@ -66108,7 +66136,7 @@
             },
             {
               "name": "hideClosedList",
-              "description": "Whether or not closed list is hidden.",
+              "description": "Whether or not closed list is hidden",
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",

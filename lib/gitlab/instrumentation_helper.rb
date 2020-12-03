@@ -13,7 +13,8 @@ module Gitlab
                  :rugged_duration_s,
                  :elasticsearch_calls,
                  :elasticsearch_duration_s,
-                 *::Gitlab::Instrumentation::Redis.known_payload_keys]
+                 *::Gitlab::Instrumentation::Redis.known_payload_keys,
+                 *::Gitlab::Metrics::Subscribers::ActiveRecord::DB_COUNTERS]
     end
 
     def add_instrumentation_data(payload)
@@ -22,6 +23,7 @@ module Gitlab
       instrument_redis(payload)
       instrument_elasticsearch(payload)
       instrument_throttle(payload)
+      instrument_active_record(payload)
     end
 
     def instrument_gitaly(payload)
@@ -60,6 +62,12 @@ module Gitlab
     def instrument_throttle(payload)
       safelist = Gitlab::Instrumentation::Throttle.safelist
       payload[:throttle_safelist] = safelist if safelist.present?
+    end
+
+    def instrument_active_record(payload)
+      db_counters = ::Gitlab::Metrics::Subscribers::ActiveRecord.db_counter_payload
+
+      payload.merge!(db_counters)
     end
 
     # Returns the queuing duration for a Sidekiq job in seconds, as a float, if the

@@ -28903,6 +28903,9 @@ msgstr ""
 msgid "Trials|Go back to GitLab"
 msgstr ""
 
+msgid "Trials|Skip Trial"
+msgstr ""
+
 msgid "Trials|Skip Trial (Continue with Free Account)"
 msgstr ""
 

@@ -17539,7 +17539,8 @@ CREATE TABLE vulnerability_occurrences (
     name character varying NOT NULL,
     metadata_version character varying NOT NULL,
     raw_metadata text NOT NULL,
-    vulnerability_id bigint
+    vulnerability_id bigint,
+    details jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 CREATE SEQUENCE vulnerability_occurrences_id_seq

@@ -1,0 +1,5 @@
+---
+title: Fix failed group imports getting stuck by long error messages
+merge_request: 48989
+author:
+type: fixed

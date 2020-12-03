@@ -16,16 +16,14 @@ module Gitlab
           # using a connection.
           Thread.current[:uses_db_connection] = true
 
-          return unless current_transaction
-
           payload = event.payload
           return if payload[:name] == 'SCHEMA' || IGNORABLE_SQL.include?(payload[:sql])
 
-          current_transaction.observe(:gitlab_sql_duration_seconds, event.duration / 1000.0) do
+          increment_db_counters(payload)
+
+          current_transaction&.observe(:gitlab_sql_duration_seconds, event.duration / 1000.0) do
             buckets [0.05, 0.1, 0.25]
           end
-
-          increment_db_counters(payload)
         end
 
         def self.db_counter_payload
@@ -53,7 +51,7 @@ module Gitlab
         end
 
         def increment(counter)
-          current_transaction.increment("gitlab_transaction_#{counter}_total".to_sym, 1)
+          current_transaction&.increment("gitlab_transaction_#{counter}_total".to_sym, 1)
 
           if Gitlab::SafeRequestStore.active?
             Gitlab::SafeRequestStore[counter] = Gitlab::SafeRequestStore[counter].to_i + 1

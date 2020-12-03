@@ -66,8 +66,8 @@ RSpec.describe BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline do
 
     it 'has transformers' do
       expect(described_class.transformers).to contain_exactly(
-        klass: BulkImports::Groups::Transformers::SubgroupToEntityTransformer,
-        options: nil
+        { klass: BulkImports::Common::Transformers::ProhibitedAttributesTransformer, options: nil },
+        { klass: BulkImports::Groups::Transformers::SubgroupToEntityTransformer, options: nil }
       )
     end
 

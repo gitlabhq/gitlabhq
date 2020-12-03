@@ -692,7 +692,7 @@ to include the file.
       sub_path = "config.json"
 ```
 
-### Option 3: Use `DOCKER_ATUH_CONFIG`
+### Option 3: Use `DOCKER_AUTH_CONFIG`
 
 If you already have
 [`DOCKER_AUTH_CONFIG`](using_docker_images.md#determining-your-docker_auth_config-data)

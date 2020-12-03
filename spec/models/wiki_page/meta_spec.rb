@@ -25,13 +25,8 @@ RSpec.describe WikiPage::Meta do
     end
 
     it { is_expected.to validate_presence_of(:project_id) }
-    it { is_expected.to validate_presence_of(:title) }
-
-    it 'is forbidden to add extremely long titles' do
-      expect do
-        create(:wiki_page_meta, project: project, title: FFaker::Lorem.characters(300))
-      end.to raise_error(ActiveRecord::ValueTooLong)
-    end
+    it { is_expected.to validate_length_of(:title).is_at_most(255) }
+    it { is_expected.not_to allow_value(nil).for(:title) }
 
     it 'is forbidden to have two records for the same project with the same canonical_slug' do
       the_slug = generate(:sluggified_title)

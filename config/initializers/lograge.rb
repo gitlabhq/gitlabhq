@@ -2,7 +2,6 @@
 unless Gitlab::Runtime.sidekiq?
   Rails.application.reloader.to_prepare do
     filename = File.join(Rails.root, 'log', "#{Rails.env}_json.log")
-    db_counter = Gitlab::Metrics::Subscribers::ActiveRecord
 
     Rails.application.configure do
       config.lograge.enabled = true
@@ -17,7 +16,6 @@ unless Gitlab::Runtime.sidekiq?
         data[:db_duration_s] = Gitlab::Utils.ms_to_round_sec(data.delete(:db)) if data[:db]
         data[:view_duration_s] = Gitlab::Utils.ms_to_round_sec(data.delete(:view)) if data[:view]
         data[:duration_s] = Gitlab::Utils.ms_to_round_sec(data.delete(:duration)) if data[:duration]
-        data.merge!(db_counter.db_counter_payload)
 
         # Remove empty hashes to prevent type mismatches
         # These are set to empty hashes in Lograge's ActionCable subscriber

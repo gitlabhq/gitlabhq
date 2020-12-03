@@ -332,6 +332,13 @@ RSpec.configure do |config|
     Gitlab::WithRequestStore.with_request_store { example.run }
   end
 
+  config.before(:example, :request_store) do
+    # Clear request store before actually starting the spec (the
+    # `around` above will have the request store enabled for all
+    # `before` blocks)
+    RequestStore.clear!
+  end
+
   config.around do |example|
     # Wrap each example in it's own context to make sure the contexts don't
     # leak

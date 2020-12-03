@@ -21,10 +21,9 @@ GitLab has several features based on receiving incoming emails:
 
 ## Requirements
 
-NOTE: **Note:**
-It is **not** recommended to use an email address that receives or will receive any
+It is **not** recommended to use an email address that receives any
 messages not intended for the GitLab instance. Any incoming emails not intended
-for GitLab will receive a reject notice.
+for GitLab receive a reject notice.
 
 Handling incoming emails requires an [IMAP](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol)-enabled
 email account. GitLab requires one of the following three strategies:
@@ -38,7 +37,7 @@ Let's walk through each of these options.
 ### Email sub-addressing
 
 [Sub-addressing](https://en.wikipedia.org/wiki/Email_address#Sub-addressing) is
-a mail server feature where any email to `user+arbitrary_tag@example.com` will end up
+a mail server feature where any email to `user+arbitrary_tag@example.com` ends up
 in the mailbox for `user@example.com` . It is supported by providers such as
 Gmail, Google Apps, Yahoo! Mail, Outlook.com, and iCloud, as well as the
 [Postfix mail server](reply_by_email_postfix_setup.md), which you can run on-premises.
@@ -117,9 +116,9 @@ CAUTION: **Caution:**
 Use a mail server that has been configured to reduce
 spam.
 A Postfix mail server that is running on a default configuration, for example,
-can result in abuse. All messages received on the configured mailbox will be processed
-and messages that are not intended for the GitLab instance will receive a reject notice.
-If the sender's address is spoofed, the reject notice will be delivered to the spoofed
+can result in abuse. All messages received on the configured mailbox are processed
+and messages that are not intended for the GitLab instance receive a reject notice.
+If the sender's address is spoofed, the reject notice is delivered to the spoofed
 `FROM` address, which can cause the mail server's IP or domain to appear on a block
 list.
 
@@ -453,8 +452,8 @@ at the organization level in Office 365. This allows all mailboxes in the organi
 to receive sub-addressed mail:
 
 NOTE: **Note:**
-This series of commands will enable sub-addressing at the organization
-level in Office 365. This will allow all mailboxes in the organization
+This series of commands enables sub-addressing at the organization
+level in Office 365. This allows all mailboxes in the organization
 to receive sub-addressed mail.
 
 ```powershell

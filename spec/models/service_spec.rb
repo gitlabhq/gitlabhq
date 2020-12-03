@@ -245,7 +245,7 @@ RSpec.describe Service do
 
       context 'with a previous existing service (MockCiService) and a new service (Asana)' do
         before do
-          Service.insert(type: 'MockCiService', instance: true)
+          Service.insert({ type: 'MockCiService', instance: true })
           Service.delete_by(type: 'AsanaService', instance: true)
         end
 
@@ -291,7 +291,7 @@ RSpec.describe Service do
 
         context 'with a previous existing service (Previous) and a new service (Asana)' do
           before do
-            Service.insert(type: 'PreviousService', template: true)
+            Service.insert({ type: 'PreviousService', template: true })
             Service.delete_by(type: 'AsanaService', template: true)
           end
 

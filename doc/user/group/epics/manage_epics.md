@@ -116,7 +116,7 @@ that of Issues and Merge Requests) based on following parameters:
 ![epics search](img/epics_search.png)
 
 To search, go to the list of epics and select the field **Search or filter results**.
-It will display a dropdown menu, from which you can add an author. You can also enter plain
+It displays a dropdown menu, from which you can add an author. You can also enter plain
 text to search by epic title or description. When done, press <kbd>Enter</kbd> on your
 keyboard to filter the list.
 
@@ -197,7 +197,7 @@ To create an issue from an epic:
 ### Remove an issue from an epic
 
 You can remove issues from an epic when you're on the epic's details page.
-After you remove an issue from an epic, the issue will no longer be associated with this epic.
+After you remove an issue from an epic, the issue is no longer associated with this epic.
 
 To remove an issue from an epic:
 
@@ -239,8 +239,8 @@ To move an issue to another epic:
 If you have the necessary [permissions](../../permissions.md) to close an issue and create an
 epic in the immediate parent group, you can promote an issue to an epic with the `/promote`
 [quick action](../../project/quick_actions.md#quick-actions-for-issues-merge-requests-and-epics).
-Only issues from projects that are in groups can be promoted. When attempting to promote a confidential
-issue, a warning will display. Promoting a confidential issue to an epic will make all information
+Only issues from projects that are in groups can be promoted. When you attempt to promote a confidential
+issue, a warning is displayed. Promoting a confidential issue to an epic makes all information
 related to the issue public as epics are public to group members.
 
 When the quick action is executed:
@@ -248,7 +248,7 @@ When the quick action is executed:
 - An epic is created in the same group as the project of the issue.
 - Subscribers of the issue are notified that the epic was created.
 
-The following issue metadata will be copied to the epic:
+The following issue metadata is copied to the epic:
 
 - Title, description, activity/comment thread.
 - Upvotes/downvotes.

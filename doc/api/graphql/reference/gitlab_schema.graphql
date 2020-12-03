@@ -1230,12 +1230,12 @@ Represents a project or group board
 """
 type Board {
   """
-  The board assignee.
+  The board assignee
   """
   assignee: User
 
   """
-  Epics associated with board issues.
+  Epics associated with board issues
   """
   epics(
     """
@@ -1265,12 +1265,12 @@ type Board {
   ): BoardEpicConnection
 
   """
-  Whether or not backlog list is hidden.
+  Whether or not backlog list is hidden
   """
   hideBacklogList: Boolean
 
   """
-  Whether or not closed list is hidden.
+  Whether or not closed list is hidden
   """
   hideClosedList: Boolean
 
@@ -1340,7 +1340,7 @@ type Board {
   ): BoardListConnection
 
   """
-  The board milestone.
+  The board milestone
   """
   milestone: Milestone
 
@@ -1350,7 +1350,7 @@ type Board {
   name: String
 
   """
-  Weight of the board.
+  Weight of the board
   """
   weight: Int
 }
@@ -21692,6 +21692,11 @@ type TerraformStateVersion {
   createdByUser: User
 
   """
+  URL for downloading the version's JSON file
+  """
+  downloadPath: String
+
+  """
   ID of the Terraform state version
   """
   id: ID!
@@ -21700,6 +21705,11 @@ type TerraformStateVersion {
   The job that created this version
   """
   job: CiJob
+
+  """
+  Serial number of the version
+  """
+  serial: Int
 
   """
   Timestamp the version was updated
@@ -22648,12 +22658,12 @@ input UpdateBoardInput {
   clientMutationId: String
 
   """
-  Whether or not backlog list is hidden.
+  Whether or not backlog list is hidden
   """
   hideBacklogList: Boolean
 
   """
-  Whether or not closed list is hidden.
+  Whether or not closed list is hidden
   """
   hideClosedList: Boolean
 

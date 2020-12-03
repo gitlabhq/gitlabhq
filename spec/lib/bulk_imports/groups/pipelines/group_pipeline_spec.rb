@@ -91,6 +91,7 @@ RSpec.describe BulkImports::Groups::Pipelines::GroupPipeline do
         .to contain_exactly(
           { klass: BulkImports::Common::Transformers::HashKeyDigger, options: { key_path: %w[data group] } },
           { klass: BulkImports::Common::Transformers::UnderscorifyKeysTransformer, options: nil },
+          { klass: BulkImports::Common::Transformers::ProhibitedAttributesTransformer, options: nil },
           { klass: BulkImports::Groups::Transformers::GroupAttributesTransformer, options: nil }
         )
     end

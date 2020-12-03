@@ -7,6 +7,7 @@ module BulkImports
         include Pipeline
 
         extractor BulkImports::Groups::Extractors::SubgroupsExtractor
+        transformer Common::Transformers::ProhibitedAttributesTransformer
         transformer BulkImports::Groups::Transformers::SubgroupToEntityTransformer
         loader BulkImports::Common::Loaders::EntityLoader
       end

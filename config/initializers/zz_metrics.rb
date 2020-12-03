@@ -150,12 +150,6 @@ if Gitlab::Metrics.enabled? && !Rails.env.test? && !(Rails.env.development? && d
     config.middleware.use(Gitlab::Metrics::ElasticsearchRackMiddleware)
   end
 
-  Sidekiq.configure_server do |config|
-    config.server_middleware do |chain|
-      chain.add Gitlab::Metrics::SidekiqMiddleware
-    end
-  end
-
   # This instruments all methods residing in app/models that (appear to) use any
   # of the ActiveRecord methods. This has to take place _after_ initializing as
   # for some unknown reason calling eager_load! earlier breaks Devise.

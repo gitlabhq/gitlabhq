@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'query terraform states' do
   include GraphqlHelpers
+  include ::API::Helpers::RelatedResourcesHelpers
 
   let_it_be(:project) { create(:project) }
   let_it_be(:terraform_state) { create(:terraform_state, :with_version, :locked, project: project) }
@@ -23,6 +24,8 @@ RSpec.describe 'query terraform states' do
 
           latestVersion {
             id
+            downloadPath
+            serial
             createdAt
             updatedAt
 
@@ -62,6 +65,16 @@ RSpec.describe 'query terraform states' do
     expect(state.dig('lockedByUser', 'id')).to eq(terraform_state.locked_by_user.to_global_id.to_s)
 
     expect(version['id']).to eq(latest_version.to_global_id.to_s)
+    expect(version['serial']).to eq(latest_version.version)
+    expect(version['downloadPath']).to eq(
+      expose_path(
+        api_v4_projects_terraform_state_versions_path(
+          id: project.id,
+          name: terraform_state.name,
+          serial: latest_version.version
+        )
+      )
+    )
     expect(version['createdAt']).to eq(latest_version.created_at.iso8601)
     expect(version['updatedAt']).to eq(latest_version.updated_at.iso8601)
     expect(version.dig('createdByUser', 'id')).to eq(latest_version.created_by_user.to_global_id.to_s)

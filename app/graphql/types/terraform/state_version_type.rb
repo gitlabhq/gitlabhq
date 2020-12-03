@@ -3,6 +3,8 @@
 module Types
   module Terraform
     class StateVersionType < BaseObject
+      include ::API::Helpers::RelatedResourcesHelpers
+
       graphql_name 'TerraformStateVersion'
 
       authorize :read_terraform_state
@@ -16,10 +18,19 @@ module Types
             authorize: :read_user,
             description: 'The user that created this version'
 
+      field :download_path, GraphQL::STRING_TYPE,
+            null: true,
+            description: "URL for downloading the version's JSON file"
+
       field :job, Types::Ci::JobType,
             null: true,
             authorize: :read_build,
             description: 'The job that created this version'
+
+      field :serial, GraphQL::INT_TYPE,
+            null: true,
+            description: 'Serial number of the version',
+            method: :version
 
       field :created_at, Types::TimeType,
             null: false,
@@ -31,6 +42,14 @@ module Types
 
       def created_by_user
         Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.created_by_user_id).find
+      end
+
+      def download_path
+        expose_path api_v4_projects_terraform_state_versions_path(
+          id: object.project_id,
+          name: object.terraform_state.name,
+          serial: object.version
+        )
       end
 
       def job
