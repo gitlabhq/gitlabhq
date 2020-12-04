@@ -70,6 +70,7 @@ class Service < ApplicationRecord
   scope :by_type, -> (type) { where(type: type) }
   scope :by_active_flag, -> (flag) { where(active: flag) }
   scope :inherit_from_id, -> (id) { where(inherit_from_id: id) }
+  scope :inherit, -> { where.not(inherit_from_id: nil) }
   scope :for_group, -> (group) { where(group_id: group, type: available_services_types(include_project_specific: false)) }
   scope :for_template, -> { where(template: true, type: available_services_types(include_project_specific: false)) }
   scope :for_instance, -> { where(instance: true, type: available_services_types(include_project_specific: false)) }
@@ -278,7 +279,7 @@ class Service < ApplicationRecord
       active.where(instance: true),
       active.where(group_id: group_ids, inherit_from_id: nil)
     ]).order(Arel.sql("type ASC, array_position(#{array}::bigint[], services.group_id), instance DESC")).group_by(&:type).each do |type, records|
-      build_from_integration(records.first, association => scope.id).save!
+      build_from_integration(records.first, association => scope.id).save
     end
   end
 

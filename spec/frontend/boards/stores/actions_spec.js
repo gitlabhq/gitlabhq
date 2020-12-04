@@ -14,8 +14,8 @@ import {
 import actions, { gqlClient } from '~/boards/stores/actions';
 import * as types from '~/boards/stores/mutation_types';
 import { inactiveId } from '~/boards/constants';
-import issueMoveListMutation from '~/boards/queries/issue_move_list.mutation.graphql';
-import destroyBoardListMutation from '~/boards/queries/board_list_destroy.mutation.graphql';
+import issueMoveListMutation from '~/boards/graphql/issue_move_list.mutation.graphql';
+import destroyBoardListMutation from '~/boards/graphql/board_list_destroy.mutation.graphql';
 import updateAssignees from '~/vue_shared/components/sidebar/queries/updateAssignees.mutation.graphql';
 import { fullBoardId, formatListIssues, formatBoardLists } from '~/boards/boards_util';
 

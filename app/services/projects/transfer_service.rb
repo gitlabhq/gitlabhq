@@ -59,7 +59,7 @@ module Projects
         raise TransferError.new(s_("TransferProject|Root namespace can't be updated if project has NPM packages"))
       end
 
-      attempt_transfer_transaction
+      proceed_to_transfer
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -67,7 +67,7 @@ module Projects
       new_namespace.root_ancestor == project.namespace.root_ancestor
     end
 
-    def attempt_transfer_transaction
+    def proceed_to_transfer
       Project.transaction do
         project.expire_caches_before_rename(@old_path)
 
@@ -86,6 +86,8 @@ module Projects
 
         # Move uploads
         move_project_uploads(project)
+
+        update_integrations
 
         project.old_path_with_namespace = @old_path
 
@@ -213,6 +215,11 @@ module Projects
       if project.group && project.group.shared_runners_setting == 'disabled_and_unoverridable'
         project.shared_runners_enabled = false
       end
+    end
+
+    def update_integrations
+      project.services.inherit.delete_all
+      Service.create_from_active_default_integrations(project, :project_id)
     end
   end
 end

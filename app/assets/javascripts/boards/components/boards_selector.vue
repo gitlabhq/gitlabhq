@@ -12,8 +12,8 @@ import {
 import httpStatusCodes from '~/lib/utils/http_status';
 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import projectQuery from '../queries/project_boards.query.graphql';
-import groupQuery from '../queries/group_boards.query.graphql';
+import projectQuery from '../graphql/project_boards.query.graphql';
+import groupQuery from '../graphql/group_boards.query.graphql';
 
 import boardsStore from '../stores/boards_store';
 import BoardForm from './board_form.vue';

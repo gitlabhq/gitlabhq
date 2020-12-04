@@ -2,7 +2,6 @@ import { find } from 'lodash';
 import { inactiveId } from '../constants';
 
 export default {
-  labelToggleState: state => (state.isShowingLabels ? 'on' : 'off'),
   isSidebarOpen: state => state.activeId !== inactiveId,
   isSwimlanesOn: () => false,
   getIssueById: state => id => {

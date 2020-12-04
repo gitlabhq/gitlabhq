@@ -2,13 +2,15 @@
 import { mapState, mapActions } from 'vuex';
 import {
   GlDrawer,
-  GlBadge,
-  GlIcon,
-  GlLink,
   GlInfiniteScroll,
   GlResizeObserverDirective,
+  GlTabs,
+  GlTab,
+  GlBadge,
+  GlLoadingIcon,
 } from '@gitlab/ui';
 import SkeletonLoader from './skeleton_loader.vue';
+import Feature from './feature.vue';
 import Tracking from '~/tracking';
 import { getDrawerBodyHeight } from '../utils/get_drawer_body_height';
 
@@ -17,11 +19,13 @@ const trackingMixin = Tracking.mixin();
 export default {
   components: {
     GlDrawer,
-    GlBadge,
-    GlIcon,
-    GlLink,
     GlInfiniteScroll,
+    GlTabs,
+    GlTab,
     SkeletonLoader,
+    Feature,
+    GlBadge,
+    GlLoadingIcon,
   },
   directives: {
     GlResizeObserver: GlResizeObserverDirective,
@@ -31,11 +35,19 @@ export default {
     storageKey: {
       type: String,
       required: true,
-      default: null,
+    },
+    versions: {
+      type: Array,
+      required: true,
+    },
+    gitlabDotCom: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   computed: {
-    ...mapState(['open', 'features', 'pageInfo', 'drawerBodyHeight']),
+    ...mapState(['open', 'features', 'pageInfo', 'drawerBodyHeight', 'fetching']),
   },
   mounted() {
     this.openDrawer(this.storageKey);
@@ -49,13 +61,24 @@ export default {
   methods: {
     ...mapActions(['openDrawer', 'closeDrawer', 'fetchItems', 'setDrawerBodyHeight']),
     bottomReached() {
-      if (this.pageInfo.nextPage) {
-        this.fetchItems(this.pageInfo.nextPage);
+      const page = this.pageInfo.nextPage;
+      if (page) {
+        this.fetchItems({ page });
       }
     },
     handleResize() {
       const height = getDrawerBodyHeight(this.$refs.drawer.$el);
       this.setDrawerBodyHeight(height);
+    },
+    featuresForVersion(version) {
+      return this.features.filter(feature => {
+        return feature.release === parseFloat(version);
+      });
+    },
+    fetchVersion(version) {
+      if (this.featuresForVersion(version).length === 0) {
+        this.fetchItems({ version });
+      }
     },
   },
 };
@@ -73,64 +96,39 @@ export default {
       <template #header>
         <h4 class="page-title gl-my-2">{{ __("What's new at GitLab") }}</h4>
       </template>
-      <gl-infinite-scroll
-        v-if="features.length"
-        :fetched-items="features.length"
-        :max-list-height="drawerBodyHeight"
-        class="gl-p-0"
-        @bottomReached="bottomReached"
-      >
-        <template #items>
-          <div
-            v-for="feature in features"
-            :key="feature.title"
-            class="gl-pb-7 gl-pt-5 gl-px-5 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100"
+      <template v-if="features.length">
+        <gl-infinite-scroll
+          v-if="gitlabDotCom"
+          :fetched-items="features.length"
+          :max-list-height="drawerBodyHeight"
+          class="gl-p-0"
+          @bottomReached="bottomReached"
+        >
+          <template #items>
+            <feature v-for="feature in features" :key="feature.title" :feature="feature" />
+          </template>
+        </gl-infinite-scroll>
+        <gl-tabs v-else :style="{ height: `${drawerBodyHeight}px` }" class="gl-p-0">
+          <gl-tab
+            v-for="(version, index) in versions"
+            :key="version"
+            @click="fetchVersion(version)"
           >
-            <gl-link
-              :href="feature.url"
-              target="_blank"
-              class="whats-new-item-title-link"
-              data-track-event="click_whats_new_item"
-              :data-track-label="feature.title"
-              :data-track-property="feature.url"
-            >
-              <h5 class="gl-font-lg">{{ feature.title }}</h5>
-            </gl-link>
-            <div v-if="feature.packages" class="gl-mb-3">
-              <gl-badge
-                v-for="package_name in feature.packages"
-                :key="package_name"
-                size="sm"
-                class="whats-new-item-badge gl-mr-2"
-              >
-                <gl-icon name="license" />{{ package_name }}
-              </gl-badge>
-            </div>
-            <gl-link
-              :href="feature.url"
-              target="_blank"
-              data-track-event="click_whats_new_item"
-              :data-track-label="feature.title"
-              :data-track-property="feature.url"
-            >
-              <img
-                :alt="feature.title"
-                :src="feature.image_url"
-                class="img-thumbnail gl-px-8 gl-py-3 whats-new-item-image"
+            <template #title>
+              <span>{{ version }}</span>
+              <gl-badge v-if="index === 0">{{ __('Your Version') }}</gl-badge>
+            </template>
+            <gl-loading-icon v-if="fetching" size="lg" class="text-center" />
+            <template v-else>
+              <feature
+                v-for="feature in featuresForVersion(version)"
+                :key="feature.title"
+                :feature="feature"
               />
-            </gl-link>
-            <p class="gl-pt-3">{{ feature.body }}</p>
-            <gl-link
-              :href="feature.url"
-              target="_blank"
-              data-track-event="click_whats_new_item"
-              :data-track-label="feature.title"
-              :data-track-property="feature.url"
-              >{{ __('Learn more') }}</gl-link
-            >
-          </div>
-        </template>
-      </gl-infinite-scroll>
+            </template>
+          </gl-tab>
+        </gl-tabs>
+      </template>
       <div v-else class="gl-mt-5">
         <skeleton-loader />
         <skeleton-loader />

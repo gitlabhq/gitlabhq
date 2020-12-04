@@ -28,9 +28,11 @@ module Groups
       Group.transaction do
         update_group_attributes
         ensure_ownership
+        update_integrations
       end
 
       post_update_hooks(@updated_project_ids)
+      propagate_integrations
 
       true
     end
@@ -194,6 +196,17 @@ module Groups
         result = Groups::UpdateSharedRunnersService.new(@group, current_user, shared_runners_setting: parent_setting).execute
 
         raise TransferError, result[:message] unless result[:status] == :success
+      end
+    end
+
+    def update_integrations
+      @group.services.inherit.delete_all
+      Service.create_from_active_default_integrations(@group, :group_id)
+    end
+
+    def propagate_integrations
+      @group.services.inherit.each do |integration|
+        PropagateIntegrationWorker.perform_async(integration.id)
       end
     end
   end

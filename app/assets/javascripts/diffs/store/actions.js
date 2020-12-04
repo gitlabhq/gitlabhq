@@ -49,7 +49,7 @@ import {
   DIFF_FILE_BY_FILE_COOKIE_NAME,
 } from '../constants';
 import { diffViewerModes } from '~/ide/constants';
-import { isCollapsed } from '../diff_file';
+import { isCollapsed } from '../utils/diff_file';
 
 export const setBaseConfig = ({ commit }, options) => {
   const {

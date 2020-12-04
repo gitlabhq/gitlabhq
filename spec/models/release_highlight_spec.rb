@@ -3,21 +3,44 @@
 require 'spec_helper'
 
 RSpec.describe ReleaseHighlight do
-  describe '#paginated' do
-    let(:fixture_dir_glob) { Dir.glob(File.join('spec', 'fixtures', 'whats_new', '*.yml')) }
-    let(:cache_mock) { double(:cache_mock) }
+  let(:fixture_dir_glob) { Dir.glob(File.join('spec', 'fixtures', 'whats_new', '*.yml')) }
+  let(:cache_mock) { double(:cache_mock) }
+
+  before do
+    allow(Dir).to receive(:glob).with(Rails.root.join('data', 'whats_new', '*.yml')).and_return(fixture_dir_glob)
+    allow(cache_mock).to receive(:fetch).with('release_highlight:file_paths', expires_in: 1.hour).and_yield
+  end
+
+  after do
+    ReleaseHighlight.instance_variable_set(:@file_paths, nil)
+  end
+
+  describe '.for_version' do
+    subject { ReleaseHighlight.for_version(version: version) }
+
+    let(:version) { '1.1' }
+
+    context 'with version param that exists' do
+      it 'returns items from that version' do
+        expect(subject.items.first['title']).to eq("It's gonna be a bright")
+      end
+    end
+
+    context 'with version param that does NOT exist' do
+      let(:version) { '84.0' }
+
+      it 'returns nil' do
+        expect(subject).to be_nil
+      end
+    end
+  end
+
+  describe '.paginated' do
     let(:dot_com) { false }
 
     before do
       allow(Gitlab).to receive(:com?).and_return(dot_com)
-      allow(Dir).to receive(:glob).with(Rails.root.join('data', 'whats_new', '*.yml')).and_return(fixture_dir_glob)
-
       expect(Rails).to receive(:cache).twice.and_return(cache_mock)
-      expect(cache_mock).to receive(:fetch).with('release_highlight:file_paths', expires_in: 1.hour).and_yield
-    end
-
-    after do
-      ReleaseHighlight.instance_variable_set(:@file_paths, nil)
     end
 
     context 'with page param' do
@@ -90,35 +113,12 @@ RSpec.describe ReleaseHighlight do
     end
   end
 
-  describe '.most_recent_version' do
-    subject { ReleaseHighlight.most_recent_version }
-
-    context 'when version exist' do
-      let(:release_item) { double(:item) }
-
-      before do
-        allow(ReleaseHighlight).to receive(:paginated).and_return({ items: [release_item] })
-        allow(release_item).to receive(:[]).with('release').and_return(84.0)
-      end
-
-      it { is_expected.to eq(84.0) }
-    end
-
-    context 'when most recent release highlights do NOT exist' do
-      before do
-        allow(ReleaseHighlight).to receive(:paginated).and_return(nil)
-      end
-
-      it { is_expected.to be_nil }
-    end
-  end
-
-  describe '#most_recent_item_count' do
+  describe '.most_recent_item_count' do
     subject { ReleaseHighlight.most_recent_item_count }
 
     context 'when recent release items exist' do
       it 'returns the count from the most recent file' do
-        allow(ReleaseHighlight).to receive(:paginated).and_return({ items: [double(:item)] })
+        allow(ReleaseHighlight).to receive(:paginated).and_return(double(:paginated, items: [double(:item)]))
 
         expect(subject).to eq(1)
       end
@@ -130,6 +130,34 @@ RSpec.describe ReleaseHighlight do
 
         expect(subject).to be_nil
       end
+    end
+  end
+
+  describe '.versions' do
+    it 'returns versions from the file paths' do
+      expect(ReleaseHighlight.versions).to eq(['1.5', '1.2', '1.1'])
+    end
+
+    context 'when there are more than 12 versions' do
+      let(:file_paths) do
+        i = 0
+        Array.new(20) { "20201225_01_#{i += 1}.yml" }
+      end
+
+      it 'limits to 12 versions' do
+        allow(ReleaseHighlight).to receive(:file_paths).and_return(file_paths)
+        expect(ReleaseHighlight.versions.count).to eq(12)
+      end
+    end
+  end
+
+  describe 'QueryResult' do
+    subject { ReleaseHighlight::QueryResult.new(items: items, next_page: 2) }
+
+    let(:items) { [:item] }
+
+    it 'responds to map' do
+      expect(subject.map(&:to_s)).to eq(items.map(&:to_s))
     end
   end
 end

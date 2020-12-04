@@ -23,7 +23,7 @@ RSpec.describe 'Projects > Settings > For a forked project', :js do
 
   describe 'Settings > Operations' do
     describe 'Incidents' do
-      let(:create_issue) { 'Create an issue. Issues are created for each alert triggered.' }
+      let(:create_issue) { 'Create an incident. Incidents are created for each alert triggered.' }
       let(:send_email) { 'Send a separate email notification to Developers.' }
 
       before do

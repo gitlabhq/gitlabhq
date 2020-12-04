@@ -1,4 +1,4 @@
-#import "ee_else_ce/boards/queries/issue.fragment.graphql"
+#import "ee_else_ce/boards/graphql/issue.fragment.graphql"
 
 query ListIssues(
   $fullPath: ID!

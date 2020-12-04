@@ -16,7 +16,7 @@ import {
   SHOW_WHITESPACE,
   NO_SHOW_WHITESPACE,
 } from '../constants';
-import { prepareRawDiffFile } from '../diff_file';
+import { prepareRawDiffFile } from '../utils/diff_file';
 
 export const isAdded = line => ['new', 'new-nonewline'].includes(line.type);
 export const isRemoved = line => ['old', 'old-nonewline'].includes(line.type);

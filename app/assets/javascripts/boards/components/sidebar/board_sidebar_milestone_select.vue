@@ -10,7 +10,7 @@ import {
 } from '@gitlab/ui';
 import { fetchPolicies } from '~/lib/graphql';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
-import groupMilestones from '../../queries/group_milestones.query.graphql';
+import groupMilestones from '../../graphql/group_milestones.query.graphql';
 import createFlash from '~/flash';
 import { __, s__ } from '~/locale';
 

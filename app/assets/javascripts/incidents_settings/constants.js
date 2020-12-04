@@ -33,17 +33,17 @@ export const I18N_ALERT_SETTINGS_FORM = {
   saveBtnLabel: __('Save changes'),
   introText: __('Action to take when receiving an alert. %{docsLink}'),
   introLinkText: __('More information.'),
-  createIssue: {
-    label: __('Create an issue. Issues are created for each alert triggered.'),
+  createIncident: {
+    label: __('Create an incident. Incidents are created for each alert triggered.'),
   },
-  issueTemplate: {
-    label: __('Issue template (optional)'),
+  incidentTemplate: {
+    label: __('Incident template (optional)'),
   },
   sendEmail: {
     label: __('Send a separate email notification to Developers.'),
   },
   autoCloseIncidents: {
-    label: __('Automatically close incident issues when the associated Prometheus alert resolves.'),
+    label: __('Automatically close incidents when the associated Prometheus alert resolves.'),
   },
 };
 
@@ -57,17 +57,13 @@ export const ISSUE_TEMPLATES_DOCS_LINK =
 
 export const I18N_PAGERDUTY_SETTINGS_FORM = {
   introText: s__(
-    'PagerDutySettings|Setting up a webhook with PagerDuty will automatically create a GitLab issue for each PagerDuty incident.',
+    'PagerDutySettings|Create a GitLab incident for each PagerDuty incident by %{linkStart}configuring a webhook in PagerDuty%{linkEnd}',
   ),
   activeToggle: {
     label: s__('PagerDutySettings|Active'),
   },
   webhookUrl: {
     label: s__('PagerDutySettings|Webhook URL'),
-    helpText: s__(
-      'PagerDutySettings|Create a GitLab issue for each PagerDuty incident by %{docsLink}',
-    ),
-    helpDocsLink: s__('PagerDutySettings|configuring a webhook in PagerDuty'),
     resetWebhookUrl: s__('PagerDutySettings|Reset webhook URL'),
     copyToClipboard: __('Copy'),
     updateErrMsg: s__('PagerDutySettings|Failed to update Webhook URL'),

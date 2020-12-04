@@ -941,6 +941,9 @@ msgstr ""
 msgid "(No changes)"
 msgstr ""
 
+msgid "(UTC%{offset}) %{timezone}"
+msgstr ""
+
 msgid "(check progress)"
 msgstr ""
 
@@ -4169,7 +4172,7 @@ msgstr ""
 msgid "Automatic deployment rollbacks"
 msgstr ""
 
-msgid "Automatically close incident issues when the associated Prometheus alert resolves."
+msgid "Automatically close incidents when the associated Prometheus alert resolves."
 msgstr ""
 
 msgid "Automatically create merge requests for vulnerabilities that have fixes available."
@@ -7919,7 +7922,7 @@ msgstr ""
 msgid "Create an account using:"
 msgstr ""
 
-msgid "Create an issue. Issues are created for each alert triggered."
+msgid "Create an incident. Incidents are created for each alert triggered."
 msgstr ""
 
 msgid "Create and provide your GitHub %{link_start}Personal Access Token%{link_end}. You will need to select the %{code_open}repo%{code_close} scope, so we can display a list of your public and private repositories which are available to import."
@@ -14377,6 +14380,9 @@ msgstr ""
 msgid "Incident Management Limits"
 msgstr ""
 
+msgid "Incident template (optional)"
+msgstr ""
+
 msgid "IncidentManagement|%{hours} hours, %{minutes} minutes remaining"
 msgstr ""
 
@@ -15205,9 +15211,6 @@ msgid "Issue or Merge Request ID is required"
 msgstr ""
 
 msgid "Issue published on status page."
-msgstr ""
-
-msgid "Issue template (optional)"
 msgstr ""
 
 msgid "Issue update failed"
@@ -19112,6 +19115,12 @@ msgstr ""
 msgid "OnCallSchedules|Failed to add schedule"
 msgstr ""
 
+msgid "OnCallSchedules|On-call schedule"
+msgstr ""
+
+msgid "OnCallSchedules|On-call schedule for the %{tzShort}"
+msgstr ""
+
 msgid "OnCallSchedules|Rotation length"
 msgstr ""
 
@@ -19729,7 +19738,7 @@ msgstr ""
 msgid "PagerDutySettings|Active"
 msgstr ""
 
-msgid "PagerDutySettings|Create a GitLab issue for each PagerDuty incident by %{docsLink}"
+msgid "PagerDutySettings|Create a GitLab incident for each PagerDuty incident by %{linkStart}configuring a webhook in PagerDuty%{linkEnd}"
 msgstr ""
 
 msgid "PagerDutySettings|Failed to update Webhook URL"
@@ -19741,16 +19750,10 @@ msgstr ""
 msgid "PagerDutySettings|Resetting the webhook URL for this project will require updating this integration's settings in PagerDuty."
 msgstr ""
 
-msgid "PagerDutySettings|Setting up a webhook with PagerDuty will automatically create a GitLab issue for each PagerDuty incident."
-msgstr ""
-
 msgid "PagerDutySettings|Webhook URL"
 msgstr ""
 
 msgid "PagerDutySettings|Webhook URL update was successful"
-msgstr ""
-
-msgid "PagerDutySettings|configuring a webhook in PagerDuty"
 msgstr ""
 
 msgid "Pages"
@@ -25172,6 +25175,9 @@ msgid "Show file browser"
 msgstr ""
 
 msgid "Show file contents"
+msgstr ""
+
+msgid "Show labels"
 msgstr ""
 
 msgid "Show latest version"
@@ -31709,6 +31715,9 @@ msgid "Your U2F device did not send a valid JSON response."
 msgstr ""
 
 msgid "Your U2F device was registered!"
+msgstr ""
+
+msgid "Your Version"
 msgstr ""
 
 msgid "Your WebAuthn device did not send a valid JSON response."

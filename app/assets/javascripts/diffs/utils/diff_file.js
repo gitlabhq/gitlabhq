@@ -3,7 +3,7 @@ import {
   DIFF_FILE_DELETED_MODE,
   DIFF_FILE_MANUAL_COLLAPSE,
   DIFF_FILE_AUTOMATIC_COLLAPSE,
-} from './constants';
+} from '../constants';
 
 function fileSymlinkInformation(file, fileList) {
   const duplicates = fileList.filter(iteratedFile => iteratedFile.file_hash === file.file_hash);

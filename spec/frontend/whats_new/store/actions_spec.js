@@ -41,6 +41,23 @@ describe('whats new actions', () => {
       axiosMock.restore();
     });
 
+    it('passes arguments', () => {
+      axiosMock.reset();
+
+      axiosMock
+        .onGet('/-/whats_new', { params: { page: 8, version: 40 } })
+        .replyOnce(200, [{ title: 'GitLab Stories' }]);
+
+      testAction(
+        actions.fetchItems,
+        { page: 8, version: 40 },
+        {},
+        expect.arrayContaining([
+          { type: types.ADD_FEATURES, payload: [{ title: 'GitLab Stories' }] },
+        ]),
+      );
+    });
+
     it('if already fetching, does not fetch', () => {
       testAction(actions.fetchItems, {}, { fetching: true }, []);
     });

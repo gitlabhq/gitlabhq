@@ -59,6 +59,9 @@ export default {
     showReset() {
       return this.isInstanceOrGroupLevel && this.propsSource.resetPath;
     },
+    saveButtonKey() {
+      return `save-button-${this.isDisabled}`;
+    },
   },
   methods: {
     ...mapActions([
@@ -117,6 +120,7 @@ export default {
     <div v-if="isEditable" class="footer-block row-content-block">
       <template v-if="isInstanceOrGroupLevel">
         <gl-button
+          :key="saveButtonKey"
           v-gl-modal.confirmSaveIntegration
           category="primary"
           variant="success"
@@ -130,6 +134,7 @@ export default {
       </template>
       <gl-button
         v-else
+        :key="saveButtonKey"
         category="primary"
         variant="success"
         type="submit"

@@ -10,7 +10,7 @@ import notesEventHub from '../../notes/event_hub';
 import DiffFileHeader from './diff_file_header.vue';
 import DiffContent from './diff_content.vue';
 import { diffViewerErrors } from '~/ide/constants';
-import { collapsedType, isCollapsed } from '../diff_file';
+import { collapsedType, isCollapsed } from '../utils/diff_file';
 import {
   DIFF_FILE_AUTOMATIC_COLLAPSE,
   DIFF_FILE_MANUAL_COLLAPSE,

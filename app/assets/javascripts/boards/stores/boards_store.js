@@ -22,7 +22,7 @@ import ListLabel from '../models/label';
 import ListAssignee from '../models/assignee';
 import ListMilestone from '../models/milestone';
 
-import createBoardMutation from '../queries/board.mutation.graphql';
+import createBoardMutation from '../graphql/board.mutation.graphql';
 
 const PER_PAGE = 20;
 export const gqlClient = createDefaultClient();

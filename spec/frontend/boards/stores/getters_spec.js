@@ -10,24 +10,6 @@ import {
 } from '../mock_data';
 
 describe('Boards - Getters', () => {
-  describe('labelToggleState', () => {
-    it('should return "on" when isShowingLabels is true', () => {
-      const state = {
-        isShowingLabels: true,
-      };
-
-      expect(getters.labelToggleState(state)).toBe('on');
-    });
-
-    it('should return "off" when isShowingLabels is false', () => {
-      const state = {
-        isShowingLabels: false,
-      };
-
-      expect(getters.labelToggleState(state)).toBe('off');
-    });
-  });
-
   describe('isSidebarOpen', () => {
     it('returns true when activeId is not equal to 0', () => {
       const state = {

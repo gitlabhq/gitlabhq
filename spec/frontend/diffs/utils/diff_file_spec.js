@@ -1,4 +1,4 @@
-import { prepareRawDiffFile } from '~/diffs/diff_file';
+import { prepareRawDiffFile } from '~/diffs/utils/diff_file';
 
 const DIFF_FILES = [
   {

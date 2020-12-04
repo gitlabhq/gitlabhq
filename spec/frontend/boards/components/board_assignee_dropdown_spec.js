@@ -14,7 +14,7 @@ import MultiSelectDropdown from '~/vue_shared/components/sidebar/multiselect_dro
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
 import store from '~/boards/stores';
 import getIssueParticipants from '~/vue_shared/components/sidebar/queries/getIssueParticipants.query.graphql';
-import searchUsers from '~/boards/queries/users_search.query.graphql';
+import searchUsers from '~/boards/graphql/users_search.query.graphql';
 import { participants } from '../mock_data';
 
 const localVue = createLocalVue();
