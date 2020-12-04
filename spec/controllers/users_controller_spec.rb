@@ -247,32 +247,99 @@ RSpec.describe UsersController do
 
   describe 'GET #contributed' do
     let(:project) { create(:project, :public) }
-    let(:current_user) { create(:user) }
+
+    subject do
+      get :contributed, params: { username: author.username }, format: format
+    end
 
     before do
-      sign_in(current_user)
+      sign_in(user)
 
       project.add_developer(public_user)
       project.add_developer(private_user)
+      create(:push_event, project: project, author: author)
+
+      subject
     end
 
-    context 'with public profile' do
+    shared_examples_for 'renders contributed projects' do
       it 'renders contributed projects' do
-        create(:push_event, project: project, author: public_user)
-
-        get :contributed, params: { username: public_user.username }
-
         expect(assigns[:contributed_projects]).not_to be_empty
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 
-    context 'with private profile' do
-      it 'does not render contributed projects' do
-        create(:push_event, project: project, author: private_user)
+    %i(html json).each do |format|
+      context "format: #{format}" do
+        let(:format) { format }
 
-        get :contributed, params: { username: private_user.username }
+        context 'with public profile' do
+          let(:author) { public_user }
 
-        expect(assigns[:contributed_projects]).to be_empty
+          it_behaves_like 'renders contributed projects'
+        end
+
+        context 'with private profile' do
+          let(:author) { private_user }
+
+          it 'returns 404' do
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+
+          context 'with a user that has the ability to read private profiles', :enable_admin_mode do
+            let(:user) { create(:admin) }
+
+            it_behaves_like 'renders contributed projects'
+          end
+        end
+      end
+    end
+  end
+
+  describe 'GET #starred' do
+    let(:project) { create(:project, :public) }
+
+    subject do
+      get :starred, params: { username: author.username }, format: format
+    end
+
+    before do
+      author.toggle_star(project)
+
+      sign_in(user)
+      subject
+    end
+
+    shared_examples_for 'renders starred projects' do
+      it 'renders starred projects' do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(assigns[:starred_projects]).not_to be_empty
+      end
+    end
+
+    %i(html json).each do |format|
+      context "format: #{format}" do
+        let(:format) { format }
+
+        context 'with public profile' do
+          let(:author) { public_user }
+
+          it_behaves_like 'renders starred projects'
+        end
+
+        context 'with private profile' do
+          let(:author) { private_user }
+
+          it 'returns 404' do
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+
+          context 'with a user that has the ability to read private profiles', :enable_admin_mode do
+            let(:user) { create(:admin) }
+
+            it_behaves_like 'renders starred projects'
+          end
+        end
       end
     end
   end
