@@ -92,7 +92,7 @@ RSpec.shared_examples 'a mentionable' do
         end
       end
 
-      expect(subject).to receive(:cached_markdown_fields).at_least(:once).and_call_original
+      expect(subject).to receive(:cached_markdown_fields).at_least(1).and_call_original
 
       subject.all_references(author)
     end
@@ -151,7 +151,7 @@ RSpec.shared_examples 'an editable mentionable' do
       end
 
       it 'persists the refreshed cache so that it does not have to be refreshed every time' do
-        expect(subject).to receive(:refresh_markdown_cache).once.and_call_original
+        expect(subject).to receive(:refresh_markdown_cache).at_least(1).and_call_original
 
         subject.all_references(author)
 

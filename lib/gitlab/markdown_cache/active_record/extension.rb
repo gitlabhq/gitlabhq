@@ -10,6 +10,7 @@ module Gitlab
           # Using before_update here conflicts with elasticsearch-model somehow
           before_create :refresh_markdown_cache, if: :invalidated_markdown_cache?
           before_update :refresh_markdown_cache, if: :invalidated_markdown_cache?
+          after_save :store_mentions!, if: :mentionable_attributes_changed?
         end
 
         # Always exclude _html fields from attributes (including serialization).

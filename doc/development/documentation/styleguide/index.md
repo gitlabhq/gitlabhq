@@ -329,6 +329,13 @@ GitLab documentation should be clear and easy to understand.
 - Write in US English with US grammar. (Tested in [`British.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/British.yml).)
 - Use [inclusive language](#inclusive-language).
 
+### Trademark
+
+Only use the GitLab name and trademarks in accordance with
+[GitLab Brand Guidelines](https://about.gitlab.com/handbook/marketing/inbound-marketing/digital-experience/brand-guidelines/#trademark).
+
+Don't use the possessive form of the word GitLab (`GitLab's`).
+
 ### Point of view
 
 In most cases, it’s appropriate to use the second-person (you, yours) point of
@@ -608,11 +615,13 @@ especially in tutorials, instructional documentation, and
 
 Some contractions, however, should be avoided:
 
+- Do not use [the word GitLab in a contraction](#trademark).
+
 - Do not use contractions with a proper noun and a verb. For example:
 
   | Do                                       | Don't                                   |
   |------------------------------------------|-----------------------------------------|
-  | GitLab is creating X.                    | GitLab's creating X.                    |
+  | Canada is establishing X.                | Canada's establishing X.                |
 
 - Do not use contractions when you need to emphasize a negative. For example:
 

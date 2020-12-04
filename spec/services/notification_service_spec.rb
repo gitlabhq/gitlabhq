@@ -1549,6 +1549,37 @@ RSpec.describe NotificationService, :mailer do
       end
     end
 
+    describe '#issue_cloned' do
+      let(:new_issue) { create(:issue) }
+
+      it 'sends email to issue notification recipients' do
+        notification.issue_cloned(issue, new_issue, @u_disabled)
+
+        should_email(issue.assignees.first)
+        should_email(issue.author)
+        should_email(@u_watcher)
+        should_email(@u_guest_watcher)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
+        should_not_email(@u_lazy_participant)
+      end
+
+      it_behaves_like 'participating notifications' do
+        let(:participant) { create(:user, username: 'user-participant') }
+        let(:issuable) { issue }
+        let(:notification_trigger) { notification.issue_cloned(issue, new_issue, @u_disabled) }
+      end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { issue }
+        let(:notification_trigger) { notification.issue_cloned(issue, new_issue, @u_disabled) }
+      end
+    end
+
     describe '#issue_due' do
       before do
         issue.update!(due_date: Date.today)

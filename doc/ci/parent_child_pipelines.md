@@ -178,4 +178,5 @@ possible to trigger another level of child pipelines.
 
 ## Pass variables to a child pipeline
 
-You can [pass variables to a downstream pipeline](multi_project_pipelines.md#passing-variables-to-a-downstream-pipeline).
+You can [pass variables to a downstream pipeline](multi_project_pipelines.md#passing-variables-to-a-downstream-pipeline)
+the same way as for multi-project pipelines.

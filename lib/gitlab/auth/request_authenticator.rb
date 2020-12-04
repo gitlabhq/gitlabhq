@@ -49,9 +49,16 @@ module Gitlab
 
       private
 
+      def access_token
+        strong_memoize(:access_token) do
+          super || find_personal_access_token_from_http_basic_auth
+        end
+      end
+
       def route_authentication_setting
         @route_authentication_setting ||= {
-          job_token_allowed: api_request?
+          job_token_allowed: api_request?,
+          basic_auth_personal_access_token: api_request?
         }
       end
     end

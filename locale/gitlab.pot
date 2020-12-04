@@ -359,6 +359,12 @@ msgstr ""
 msgid "%{anchorOpen}Learn more%{anchorClose} about how you can customize / disable registration on your instance."
 msgstr ""
 
+msgid "%{author_link} cloned %{original_issue} to %{new_issue}."
+msgstr ""
+
+msgid "%{author_link} cloned %{original_issue}. You don't have access to the new project."
+msgstr ""
+
 msgid "%{author_link} wrote:"
 msgstr ""
 
@@ -19097,6 +19103,9 @@ msgstr ""
 msgid "On-call schedules"
 msgstr ""
 
+msgid "OnCallSchedules|Add a rotation"
+msgstr ""
+
 msgid "OnCallSchedules|Add a schedule"
 msgstr ""
 
@@ -19106,13 +19115,25 @@ msgstr ""
 msgid "OnCallSchedules|Add schedule"
 msgstr ""
 
+msgid "OnCallSchedules|Are you sure you want to delete the \"%{deleteSchedule}\" schedule? This action cannot be undone."
+msgstr ""
+
 msgid "OnCallSchedules|Create on-call schedules  in GitLab"
+msgstr ""
+
+msgid "OnCallSchedules|Delete schedule"
+msgstr ""
+
+msgid "OnCallSchedules|Edit schedule"
 msgstr ""
 
 msgid "OnCallSchedules|Failed to add rotation"
 msgstr ""
 
 msgid "OnCallSchedules|Failed to add schedule"
+msgstr ""
+
+msgid "OnCallSchedules|Failed to edit schedule"
 msgstr ""
 
 msgid "OnCallSchedules|On-call schedule"
@@ -19133,6 +19154,9 @@ msgstr ""
 msgid "OnCallSchedules|Rotation start date cannot be empty"
 msgstr ""
 
+msgid "OnCallSchedules|Rotations"
+msgstr ""
+
 msgid "OnCallSchedules|Route alerts directly to specific members of your team"
 msgstr ""
 
@@ -19143,6 +19167,12 @@ msgid "OnCallSchedules|Select timezone"
 msgstr ""
 
 msgid "OnCallSchedules|Sets the default timezone for the schedule, for all participants"
+msgstr ""
+
+msgid "OnCallSchedules|The schedule could not be deleted. Please try again."
+msgstr ""
+
+msgid "OnCallSchedules|The schedule could not be updated. Please try again."
 msgstr ""
 
 msgid "OnDemandScans|Could not fetch scanner profiles. Please refresh the page, or try again later."

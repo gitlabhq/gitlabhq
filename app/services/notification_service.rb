@@ -504,6 +504,16 @@ class NotificationService
     end
   end
 
+  def issue_cloned(issue, new_issue, current_user)
+    recipients = NotificationRecipients::BuildService.build_recipients(issue, current_user, action: 'cloned')
+
+    recipients.map do |recipient|
+      email = mailer.issue_cloned_email(recipient.user, issue, new_issue, current_user, recipient.reason)
+      email.deliver_later
+      email
+    end
+  end
+
   def project_exported(project, current_user)
     return true unless notifiable?(current_user, :mention, project: project)
 

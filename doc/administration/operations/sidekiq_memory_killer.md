@@ -35,7 +35,9 @@ The MemoryKiller is controlled using environment variables.
 - `SIDEKIQ_DAEMON_MEMORY_KILLER`: defaults to 1. When set to 0, the MemoryKiller
   works in _legacy_ mode. Otherwise, the MemoryKiller works in _daemon_ mode.
 
-  In _legacy_ mode, the MemoryKiller checks the Sidekiq process RSS after each job.
+  In _legacy_ mode, the MemoryKiller checks the Sidekiq process RSS
+  ([Resident Set Size](https://github.com/mperham/sidekiq/wiki/Memory#rss))
+  after each job.
 
   In _daemon_ mode, the MemoryKiller checks the Sidekiq process RSS every 3 seconds
   (defined by `SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL`).

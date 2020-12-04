@@ -69,7 +69,6 @@ class Snippet < ApplicationRecord
 
   validates :visibility_level, inclusion: { in: Gitlab::VisibilityLevel.values }
 
-  after_save :store_mentions!, if: :any_mentionable_attributes_changed?
   after_create :create_statistics
 
   # Scopes
