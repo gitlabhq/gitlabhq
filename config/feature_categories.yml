@@ -46,6 +46,7 @@
 - dynamic_application_security_testing
 - editor_extension
 - epics
+- epic_tracking
 - error_tracking
 - feature_flags
 - foundations
