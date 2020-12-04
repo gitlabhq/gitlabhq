@@ -16,6 +16,8 @@ module Packages
             composer_json: composer_json
           })
         end
+
+        created_package
       end
 
       private

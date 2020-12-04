@@ -27,7 +27,7 @@ For a real use case, read the blog post [Continuous integration: From Jenkins to
 
 Moving from a traditional CI plug-in to a single application for the entire software development
 life cycle can decrease hours spent on maintaining toolchains by 10% or more. For more details, see
-the ['GitLab vs. Jenkins' comparison page](https://about.gitlab.com/devops-tools/jenkins-vs-gitlab.html).
+the ['GitLab vs. Jenkins' comparison page](https://about.gitlab.com/devops-tools/jenkins-vs-gitlab/).
 
 NOTE: **Note:**
 This documentation focuses only on how to **configure** a Jenkins *integration* with
@@ -159,6 +159,9 @@ Configure the GitLab integration with Jenkins.
 1. Click **Test settings and save changes**. GitLab tests the connection to Jenkins.
 
 ### Option 2: Webhook
+
+If you are unable to provide GitLab with your Jenkins server login, you can use this option
+to integrate GitLab and Jenkins.
 
 1. In the configuration of your Jenkins job, in the GitLab configuration section, click **Advanced**.
 1. Click the **Generate** button under the **Secret Token** field.

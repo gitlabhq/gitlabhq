@@ -13,13 +13,13 @@ GitLab can integrate with [Kerberos](https://web.mit.edu/kerberos/) as an authen
 
 [Kerberos](https://web.mit.edu/kerberos/) is a secure method for authenticating a request for a service in a
 computer network. Kerberos was developed in the Athena Project at the
-[Massachusetts Institute of Technology (MIT)](http://web.mit.edu/). The name is taken from Greek
+[Massachusetts Institute of Technology (MIT)](https://web.mit.edu/). The name is taken from Greek
 mythology; Kerberos was a three-headed dog who guarded the gates of Hades.
 
 ## Use-cases
 
 - GitLab can be configured to allow your users to sign with their Kerberos credentials.
-- You can use Kerberos to [prevent](http://web.mit.edu/sipb/doc/working/guide/guide/node20.html) anyone from intercepting or eavesdropping on the transmitted password.
+- You can use Kerberos to [prevent](https://web.mit.edu/sipb/doc/working/guide/guide/node20.html) anyone from intercepting or eavesdropping on the transmitted password.
 
 ## Configuration
 

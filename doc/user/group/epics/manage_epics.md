@@ -263,7 +263,7 @@ You can create a spreadsheet template to manage a pattern of consistently repeat
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an introduction to epic templates, see [GitLab Epics and Epic Template Tip](https://www.youtube.com/watch?v=D74xKFNw8vg).
 
-For more on epic templates, see [Epic Templates - Repeatable sets of issues](https://about.gitlab.com/handbook/marketing/product-marketing/getting-started/104/).
+For more on epic templates, see [Epic Templates - Repeatable sets of issues](https://about.gitlab.com/handbook/marketing/strategic-marketing/getting-started/104/).
 
 ## Manage multi-level child epics **(ULTIMATE)**
 

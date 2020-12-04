@@ -489,6 +489,8 @@ Cleanup policies can be run on all projects, with these exceptions:
 The cleanup policy collects all tags in the Container Registry and excludes tags
 until only the tags to be deleted remain.
 
+The cleanup policy searches for images based on the tag name. Support for the full path [has not yet been implemented](https://gitlab.com/gitlab-org/gitlab/-/issues/281071), but would allow you to clean up dynamically-named tags.
+
 The cleanup policy:
 
 1. Collects all tags for a given repository in a list.
@@ -535,6 +537,8 @@ If you edit the policy and click **Save** again, the interval is reset.
 ### Regex pattern examples
 
 Cleanup policies use regex patterns to determine which tags should be preserved or removed, both in the UI and the API.
+
+Regex patterns are automatically surrounded with `\A` and `\Z` anchors. Do not include any `\A`, `\Z`, `^` or `$` token in the regex patterns as they are not necessary.
 
 Here are examples of regex patterns you may want to use:
 

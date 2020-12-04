@@ -20,12 +20,12 @@ module Mutations
           argument :environment_id,
             ::Types::GlobalIDType[::Environment],
             required: false,
-            description: 'The global id of the environment to add an annotation to'
+            description: 'The global ID of the environment to add an annotation to'
 
           argument :cluster_id,
             ::Types::GlobalIDType[::Clusters::Cluster],
             required: false,
-            description: 'The global id of the cluster to add an annotation to'
+            description: 'The global ID of the cluster to add an annotation to'
 
           argument :starting_at, Types::TimeType,
             required: true,

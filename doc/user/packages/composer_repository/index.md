@@ -70,7 +70,10 @@ so that anyone who can access the project can use the package as a dependency.
 
 Prerequisites:
 
-- A package in a GitLab repository.
+- A package in a GitLab repository. Composer packages should be versioned based on
+  the [Composer specification](https://getcomposer.org/doc/04-schema.md#version).
+  If the version is not valid, for example, it has three dots (`1.0.0.0`), an 
+  error (`Validation failed: Version is invalid`) occurs when you publish. 
 - A valid `composer.json` file.
 - The Packages feature is enabled in a GitLab repository.
 - The project ID, which is on the project's home page.

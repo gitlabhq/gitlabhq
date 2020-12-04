@@ -133,7 +133,7 @@ you will need to follow the Consul [outage recovery](#outage-recovery) process.
 To be safe, it's recommended that you only restart Consul in one node at a time to
 ensure the cluster remains intact. For larger clusters, it is possible to restart
 multiple nodes at a time. See the
-[Consul consensus document](https://www.consul.io/docs/internals/consensus.html#deployment-table)
+[Consul consensus document](https://www.consul.io/docs/architecture/consensus#deployment-table)
 for how many failures it can tolerate. This will be the number of simultaneous
 restarts it can sustain.
 

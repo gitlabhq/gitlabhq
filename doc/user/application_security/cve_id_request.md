@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41203) in GitLab 13.4, only for public projects on GitLab.com.
 
-As part of [GitLab's role as a CVE Numbering Authority](https://about.gitlab.com/security/cve)
+As part of [GitLab's role as a CVE Numbering Authority](https://about.gitlab.com/security/cve/)
 ([CNA](https://cve.mitre.org/cve/cna.html)), you may request
 [CVE](https://cve.mitre.org/index.html) identifiers from GitLab to track
 vulnerabilities found within your project.

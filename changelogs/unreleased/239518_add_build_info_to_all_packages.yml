@@ -1,0 +1,6 @@
+---
+title: Create package build_info records for Conan, NuGet, PyPI, and Composer packages
+  and package files
+merge_request: 48811
+author:
+type: added

@@ -232,7 +232,7 @@ Potential resolutions:
 - If you're using GitLab Core or GitLab Starter, be sure you're using
   GitLab 13.4 or later.
 
-[Contact GitLab Support](https://about.gitlab.com/support) if none of these reasons apply.
+[Contact GitLab Support](https://about.gitlab.com/support/) if none of these reasons apply.
 
 #### Fixing synchronization issues
 
@@ -245,11 +245,11 @@ resynchronize the information. To do so:
 1. For each project, there's a sync button displayed next to the **last activity** date.
    To perform a *soft resync*, click the button, or complete a *full sync* by shift clicking
    the button. For more information, see
-   [Atlassian's documentation](https://confluence.atlassian.com/adminjiracloud/synchronize-an-account-972332890.html).
+   [Atlassian's documentation](https://support.atlassian.com/jira-cloud-administration/docs/synchronize-jira-cloud-to-bitbucket/).
 
 ### GitLab for Jira app
 
-You can integrate GitLab.com and Jira Cloud using the [GitLab for Jira](https://marketplace.atlassian.com/apps/1221011/gitlab-for-jira) app in the Atlassian Marketplace.
+You can integrate GitLab.com and Jira Cloud using the [GitLab for Jira](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud) app in the Atlassian Marketplace.
 
 This method is recommended when using GitLab.com and Jira Cloud because data is synchronized in realtime, while the DVCS connector updates data only once per hour. If you are not using both of these environments, use the [Jira DVCS Connector](#jira-dvcs-configuration) method.
 
@@ -257,7 +257,7 @@ This method is recommended when using GitLab.com and Jira Cloud because data is 
 For a walkthrough of the integration with GitLab for Jira, watch [Configure GitLab Jira Integration using Marketplace App](https://youtu.be/SwR-g1s1zTo) on YouTube.
 
 1. Go to **Jira Settings > Apps > Find new apps**, then search for GitLab.
-1. Click **GitLab for Jira**, then click **Get it now**. Or go the [App in the marketplace directly](https://marketplace.atlassian.com/apps/1221011/gitlab-for-jira)
+1. Click **GitLab for Jira**, then click **Get it now**. Or go the [App in the marketplace directly](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud)
 
    ![Install GitLab App on Jira](img/jira_dev_panel_setup_com_1.png)
 1. After installing, click **Get started** to go to the configurations page. This page is always available under **Jira Settings > Apps > Manage apps**.

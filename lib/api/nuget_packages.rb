@@ -101,11 +101,16 @@ module API
             file_name: PACKAGE_FILENAME
           )
 
-          package = ::Packages::Nuget::CreatePackageService.new(authorized_user_project, current_user)
-                                                           .execute
+          package = ::Packages::Nuget::CreatePackageService.new(
+            authorized_user_project,
+            current_user,
+            declared_params.merge(build: current_authenticated_job)
+          ).execute
 
-          package_file = ::Packages::CreatePackageFileService.new(package, file_params)
-                                                             .execute
+          package_file = ::Packages::CreatePackageFileService.new(
+            package,
+            file_params.merge(build: current_authenticated_job)
+          ).execute
 
           track_package_event('push_package', :nuget)
 

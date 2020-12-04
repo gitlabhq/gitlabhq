@@ -33,7 +33,7 @@ The agent can help you perform tasks like these:
 ## Architecture of the Kubernetes Agent
 
 The GitLab Kubernetes Agent and the GitLab Kubernetes Agent Server use
-[bidirectional streaming](https://grpc.io/docs/guides/concepts/#bidirectional-streaming-rpc)
+[bidirectional streaming](https://grpc.io/docs/what-is-grpc/core-concepts/#bidirectional-streaming-rpc)
 to allow the connection acceptor (the gRPC server, GitLab Kubernetes Agent Server) to
 act as a client. The connection acceptor sends requests as gRPC replies. The client-server
 relationship is inverted because the connection must be initiated from inside the

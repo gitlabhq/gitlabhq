@@ -11,7 +11,7 @@ module Mutations
 
       argument :iid, GraphQL::STRING_TYPE,
                required: true,
-               description: "The iid of the merge request to mutate"
+               description: "The IID of the merge request to mutate"
 
       field :merge_request,
             Types::MergeRequestType,

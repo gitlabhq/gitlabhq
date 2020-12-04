@@ -20,8 +20,7 @@ export const init = ({ dispatch }, { endpoint, logState, pagePath }) => {
     logState,
     pagePath,
   });
-
-  return Promise.all([dispatch('fetchJob'), dispatch('fetchTrace')]);
+  dispatch('fetchJob');
 };
 
 export const setJobEndpoint = ({ commit }, endpoint) => commit(types.SET_JOB_ENDPOINT, endpoint);
@@ -39,6 +38,7 @@ export const toggleSidebar = ({ dispatch, state }) => {
 };
 
 let eTagPoll;
+let isTraceReadyForRender;
 
 export const clearEtagPoll = () => {
   eTagPoll = null;
@@ -70,7 +70,14 @@ export const fetchJob = ({ state, dispatch }) => {
   });
 
   if (!Visibility.hidden()) {
-    eTagPoll.makeRequest();
+    // eslint-disable-next-line promise/catch-or-return
+    eTagPoll.makeRequest().then(() => {
+      // if a job is canceled we still need to dispatch
+      // fetchTrace to get the trace so we check for has_trace
+      if (state.job.started || state.job.has_trace) {
+        dispatch('fetchTrace');
+      }
+    });
   } else {
     axios
       .get(state.jobEndpoint)
@@ -80,9 +87,15 @@ export const fetchJob = ({ state, dispatch }) => {
 
   Visibility.change(() => {
     if (!Visibility.hidden()) {
+      // This check is needed to ensure the loading icon
+      // is not shown for a finished job during a visibility change
+      if (!isTraceReadyForRender) {
+        dispatch('startPollingTrace');
+      }
       dispatch('restartPolling');
     } else {
       dispatch('stopPolling');
+      dispatch('stopPollingTrace');
     }
   });
 };
@@ -163,6 +176,8 @@ export const fetchTrace = ({ dispatch, state }) =>
       params: { state: state.traceState },
     })
     .then(({ data }) => {
+      isTraceReadyForRender = data.complete;
+
       dispatch('toggleScrollisInBottom', isScrolledToBottom());
       dispatch('receiveTraceSuccess', data);
 

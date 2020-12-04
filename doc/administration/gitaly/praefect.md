@@ -498,6 +498,7 @@ To configure Praefect with TLS:
 **For Omnibus GitLab**
 
 1. Create certificates for Praefect servers.
+
 1. On the Praefect servers, create the `/etc/gitlab/ssl` directory and copy your key
    and certificate there:
 
@@ -516,7 +517,8 @@ To configure Praefect with TLS:
    praefect['key_path'] = "/etc/gitlab/ssl/key.pem"
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Save the file and [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
 1. On the Praefect clients (including each Gitaly server), copy the certificates,
    or their certificate authority, into `/etc/gitlab/trusted-certs`:
 
@@ -529,8 +531,10 @@ To configure Praefect with TLS:
 
    ```ruby
    git_data_dirs({
-     'default' => { 'gitaly_address' => 'tls://praefect1.internal:3305' },
-     'storage1' => { 'gitaly_address' => 'tls://praefect2.internal:3305' },
+     "default" => {
+       "gitaly_address" => 'tls://LOAD_BALANCER_SERVER_ADDRESS:2305',
+       "gitaly_token" => 'PRAEFECT_EXTERNAL_TOKEN'
+     }
    })
    ```
 
@@ -565,10 +569,7 @@ To configure Praefect with TLS:
      repositories:
        storages:
          default:
-           gitaly_address: tls://praefect1.internal:3305
-           path: /some/local/path
-         storage1:
-           gitaly_address: tls://praefect2.internal:3305
+           gitaly_address: tls://LOAD_BALANCER_SERVER_ADDRESS:3305
            path: /some/local/path
    ```
 
@@ -833,6 +834,8 @@ Particular attention should be shown to:
    - `LOAD_BALANCER_SERVER_ADDRESS` with the IP address or hostname of the load
      balancer.
    - `PRAEFECT_EXTERNAL_TOKEN` with the real secret
+
+   If you are using TLS, the `gitaly_address` should begin with `tls://`.
 
    ```ruby
    git_data_dirs({

@@ -11,7 +11,7 @@ module Mutations
 
       argument :iid, GraphQL::ID_TYPE,
                required: true,
-               description: "The iid of the issue to modify designs for"
+               description: "The IID of the issue to modify designs for"
 
       private
 

@@ -41,6 +41,8 @@ RSpec.describe Packages::Composer::CreatePackageService do
         it_behaves_like 'assigns the package creator' do
           let(:package) { created_package }
         end
+
+        it_behaves_like 'assigns build to package'
       end
 
       context 'with a tag' do
@@ -62,6 +64,8 @@ RSpec.describe Packages::Composer::CreatePackageService do
         it_behaves_like 'assigns the package creator' do
           let(:package) { created_package }
         end
+
+        it_behaves_like 'assigns build to package'
       end
     end
 

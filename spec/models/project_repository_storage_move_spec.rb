@@ -73,6 +73,17 @@ RSpec.describe ProjectRepositoryStorageMove, type: :model do
 
           expect(project).to be_repository_read_only
         end
+
+        context 'when the transition fails' do
+          it 'does not trigger ProjectUpdateRepositoryStorageWorker and adds an error' do
+            allow(storage_move.project).to receive(:set_repository_read_only!).and_raise(StandardError, 'foobar')
+            expect(ProjectUpdateRepositoryStorageWorker).not_to receive(:perform_async)
+
+            storage_move.schedule!
+
+            expect(storage_move.errors[:project]).to include('foobar')
+          end
+        end
       end
 
       context 'and transits to started' do

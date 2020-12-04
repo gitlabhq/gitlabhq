@@ -31,7 +31,7 @@ The following outline re-uses the [maturity metric](https://about.gitlab.com/dir
 
 The initial step for integrating a new component with GitLab starts with creating a [Feature proposal in the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20proposal).
 
-Identify the [product category](https://about.gitlab.com/handbook/product/categories/) the component falls under and assign the Engineering Manager and Product Manager responsible for that category.
+Identify the [product category](https://about.gitlab.com/handbook/product/product-categories/) the component falls under and assign the Engineering Manager and Product Manager responsible for that category.
 
 The general steps for getting any GitLab feature from proposal to release can be found in the [Product development flow](https://about.gitlab.com/handbook/product-development-flow/).
 

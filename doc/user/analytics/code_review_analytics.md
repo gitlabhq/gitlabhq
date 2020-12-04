@@ -37,7 +37,7 @@ The table is sorted by:
 
 ## Use cases
 
-This feature is designed for [development team leaders](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#delaney-development-team-lead)
+This feature is designed for [development team leaders](https://about.gitlab.com/handbook/marketing/strategic-marketing/roles-personas/#delaney-development-team-lead)
 and others who want to understand broad code review dynamics, and identify patterns to explain them.
 
 You can use Code Review Analytics to:

@@ -49,6 +49,7 @@ export default {
 
   [types.SET_TRACE_TIMEOUT](state, id) {
     state.traceTimeout = id;
+    state.isTraceComplete = false;
   },
 
   /**

@@ -12,7 +12,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Publish NPM packages in your project's Package Registry. Then install the
 packages whenever you need to use them as a dependency.
 
-Only [scoped](https://docs.npmjs.com/misc/scope) packages are supported.
+Only [scoped](https://docs.npmjs.com/misc/scope/) packages are supported.
 
 ## Build an NPM package
 
@@ -25,7 +25,7 @@ the [next section](#authenticate-to-the-package-registry).
 ### Install NPM
 
 Install Node.js and NPM in your local development environment by following
-the instructions at [npmjs.com](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
+the instructions at [npmjs.com](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm/).
 
 When installation is complete, verify you can use NPM in your terminal by
 running:
@@ -360,7 +360,7 @@ In GitLab 12.6 and later, packages published to the Package Registry expose the 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9425) in GitLab Premium 12.8.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Core in 13.3.
 
-You can add [distribution tags](https://docs.npmjs.com/cli/dist-tag) to newly-published packages.
+You can add [distribution tags](https://docs.npmjs.com/cli/dist-tag/) to newly-published packages.
 Tags are optional and can be assigned to only one package at a time.
 
 When you publish a package without a tag, the `latest` tag is added by default.

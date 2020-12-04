@@ -50,7 +50,7 @@ change feature flags or you do not [have access](#access).
 
 ### Enabling a feature for preproduction testing
 
-As a first step in a feature rollout, you should enable the feature on <https://staging.gitlab.com>
+As a first step in a feature rollout, you should enable the feature on <https://about.staging.gitlab.com>
 and <https://dev.gitlab.org>.
 
 These two environments have different scopes.

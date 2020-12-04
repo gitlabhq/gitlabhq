@@ -168,7 +168,7 @@ application will be monitored by the WAF automatically.
 
 Now we can make sure that Ingress is running properly with ModSecurity and send
 a request to ensure our application is responding correctly. You must connect to
-your cluster either using [Cloud Shell](https://cloud.google.com/shell/) or the [Google Cloud SDK](https://cloud.google.com/sdk/install).
+your cluster either using [Cloud Shell](https://cloud.google.com/shell/) or the [Google Cloud SDK](https://cloud.google.com/sdk/docs/install).
 
 1. After connecting to your cluster, check if the Ingress-NGINX controller is running and ModSecurity is enabled.
 

@@ -31,5 +31,6 @@ RSpec.describe Packages::Nuget::CreatePackageService do
     end
 
     it_behaves_like 'assigns the package creator'
+    it_behaves_like 'assigns build to package'
   end
 end

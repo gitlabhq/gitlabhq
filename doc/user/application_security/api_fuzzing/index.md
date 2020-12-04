@@ -155,7 +155,7 @@ You can use various tools to generate HAR files:
 
 - [Fiddler](https://www.telerik.com/fiddler): Web debugging proxy
 - [Insomnia Core](https://insomnia.rest/): API client
-- [Chrome](https://www.google.com/chrome): Browser
+- [Chrome](https://www.google.com/chrome/): Browser
 - [Firefox](https://www.mozilla.org/en-US/firefox/): Browser
 
 DANGER: **Warning:**

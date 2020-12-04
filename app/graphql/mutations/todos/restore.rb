@@ -10,7 +10,7 @@ module Mutations
       argument :id,
                ::Types::GlobalIDType[::Todo],
                required: true,
-               description: 'The global id of the todo to restore'
+               description: 'The global ID of the todo to restore'
 
       field :todo, Types::TodoType,
             null: false,

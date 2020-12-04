@@ -8,7 +8,7 @@ module Mutations
 
         argument :id, Types::GlobalIDType[::PrometheusService],
                  required: true,
-                 description: "The id of the integration to mutate"
+                 description: "The ID of the integration to mutate"
 
         argument :active, GraphQL::BOOLEAN_TYPE,
                  required: false,

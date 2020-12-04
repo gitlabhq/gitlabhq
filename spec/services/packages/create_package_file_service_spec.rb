@@ -4,10 +4,11 @@ require 'spec_helper'
 RSpec.describe Packages::CreatePackageFileService do
   let_it_be(:package) { create(:maven_package) }
   let_it_be(:user) { create(:user) }
-
-  subject { described_class.new(package, params) }
+  let(:service) { described_class.new(package, params) }
 
   describe '#execute' do
+    subject { service.execute }
+
     context 'with valid params' do
       let(:params) do
         {
@@ -17,11 +18,13 @@ RSpec.describe Packages::CreatePackageFileService do
       end
 
       it 'creates a new package file' do
-        package_file = subject.execute
+        package_file = subject
 
         expect(package_file).to be_valid
         expect(package_file.file_name).to eq('foo.jar')
       end
+
+      it_behaves_like 'assigns build to package file'
     end
 
     context 'file is missing' do
@@ -32,17 +35,7 @@ RSpec.describe Packages::CreatePackageFileService do
       end
 
       it 'raises an error' do
-        expect { subject.execute }.to raise_error(ActiveRecord::RecordInvalid)
-      end
-    end
-
-    context 'with a build' do
-      let_it_be(:pipeline) { create(:ci_pipeline, user: user) }
-      let(:build) { double('build', pipeline: pipeline) }
-      let(:params) { { file: Tempfile.new, file_name: 'foo.jar', build: build } }
-
-      it 'creates a build_info' do
-        expect { subject.execute }.to change { Packages::PackageFileBuildInfo.count }.by(1)
+        expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
       end
     end
   end

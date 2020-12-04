@@ -23,7 +23,7 @@ To access Merge Request Analytics, from your project's menu, go to **Analytics >
 
 ## Use cases
 
-This feature is designed for [development team leaders](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#delaney-development-team-lead)
+This feature is designed for [development team leaders](https://about.gitlab.com/handbook/marketing/strategic-marketing/roles-personas/#delaney-development-team-lead)
 and others who want to understand broad patterns in code review and productivity.
 
 You can use Merge Request Analytics to expose when your team is most and least productive, and

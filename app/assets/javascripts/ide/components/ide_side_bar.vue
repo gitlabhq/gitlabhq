@@ -14,8 +14,10 @@ export default {
     ResizablePanel,
     ActivityBar,
     IdeTree,
-    [leftSidebarViews.review.name]: () => import('./ide_review.vue'),
-    [leftSidebarViews.commit.name]: () => import('./repo_commit_section.vue'),
+    [leftSidebarViews.review.name]: () =>
+      import(/* webpackChunkName: 'ide_runtime' */ './ide_review.vue'),
+    [leftSidebarViews.commit.name]: () =>
+      import(/* webpackChunkName: 'ide_runtime' */ './repo_commit_section.vue'),
     CommitForm,
     IdeProjectHeader,
   },

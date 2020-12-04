@@ -158,6 +158,32 @@ describe('Job State actions', () => {
         );
       });
     });
+
+    it('fetchTrace is called only if the job has started or has a trace', done => {
+      mock.onGet(`${TEST_HOST}/endpoint.json`).replyOnce(200, { id: 121212, name: 'karma' });
+
+      mockedState.job.started = true;
+
+      testAction(
+        fetchJob,
+        null,
+        mockedState,
+        [],
+        [
+          {
+            type: 'requestJob',
+          },
+          {
+            payload: { id: 121212, name: 'karma' },
+            type: 'receiveJobSuccess',
+          },
+          {
+            type: 'fetchTrace',
+          },
+        ],
+        done,
+      );
+    });
   });
 
   describe('receiveJobSuccess', () => {

@@ -1,0 +1,5 @@
+---
+title: Ensure job trace endpoint is not called if the current job has not started or the browser is not visible
+merge_request: 48516
+author:
+type: fixed

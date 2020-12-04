@@ -107,7 +107,7 @@ Rendered example:
 
 ## cURL Examples
 
-The following sections include a set of [cURL](https://curl.haxx.se) examples
+The following sections include a set of [cURL](https://curl.se/) examples
 you can use in the API documentation.
 
 CAUTION: **Caution:**

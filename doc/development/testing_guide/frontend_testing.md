@@ -104,37 +104,6 @@ describe('Component', () => {
 
 Remember that the performance of each test depends on the environment.
 
-### Timout error due to async components
-
-If your component is fetching some other components asynchroneously based on some conditions, it might happen so that your Jest suite for this component will become flaky timing out from time to time.
-
-```javascript
-// ide.vue
-export default {
-  components: {
-    'error-message': () => import('./error_message.vue'),
-    'gl-button': () => import('@gitlab/ui/src/components/base/button/button.vue'),
-    ...
-};
-```
-
-To address this issue, you can "help" Jest by stubbing the async components so that Jest would not need to fetch those asynchroneously at the run-time.
-
-```javascript
-// ide_spec.js
-import { GlButton } from '@gitlab/ui';
-import ErrorMessage from '~/ide/components/error_message.vue';
-...
-return shallowMount(ide, {
-  ...
-  stubs: {
-    ErrorMessage,
-    GlButton,
-    ...
-  },
-})
-```
-
 ## What and how to test
 
 Before jumping into more gritty details about Jest-specific workflows like mocks and spies, we should briefly cover what to test with Jest.
@@ -223,8 +192,8 @@ Following you'll find some general common practices you will find as part of our
 When it comes to querying DOM elements in your tests, it is best to uniquely and semantically target
 the element.
 
-Preferentially, this is done by targeting what the user actually sees using [DOM Testing Library](https://testing-library.com/docs/dom-testing-library/intro).
-When selecting by text it is best to use [`getByRole` or `findByRole`](https://testing-library.com/docs/dom-testing-library/api-queries#byrole)
+Preferentially, this is done by targeting what the user actually sees using [DOM Testing Library](https://testing-library.com/docs/dom-testing-library/intro/).
+When selecting by text it is best to use [`getByRole` or `findByRole`](https://testing-library.com/docs/dom-testing-library/api-queries/#byrole)
 as these enforce accessibility best practices as well. The examples below demonstrate the order of preference.
 
 When writing Vue component unit tests, it can be wise to query children by component, so that the unit test can focus on comprehensive value coverage

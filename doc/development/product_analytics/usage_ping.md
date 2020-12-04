@@ -488,9 +488,9 @@ We have the following recommendations for [Adding new events](#adding-new-events
 
 Events are tracked behind [feature flags](../feature_flags/index.md) due to concerns for Redis performance and scalability.
 
-For a full list of events and coresponding feature flags see, [known_events](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/) files.
+For a full list of events and corresponding feature flags see, [known_events](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/) files.
 
-To enable or disable tracking for specific event within <https://gitlab.com> or <https://staging.gitlab.com>, run commands such as the following to
+To enable or disable tracking for specific event within <https://gitlab.com> or <https://about.staging.gitlab.com>, run commands such as the following to
 [enable or disable the corresponding feature](../feature_flags/index.md).
 
 ```shell
@@ -666,7 +666,7 @@ We also use `#database-lab` and [explain.depesz.com](https://explain.depesz.com/
 
 ### 5. Add the metric definition
 
-When adding, changing, or updating metrics, please update the [Event Dictionary's **Usage Ping** table](https://about.gitlab.com/handbook/product/product-analytics-guide#event-dictionary).
+When adding, changing, or updating metrics, please update the [Event Dictionary's **Usage Ping** table](https://about.gitlab.com/handbook/product/product-analytics-guide/#event-dictionary).
 
 ### 6. Add new metric to Versions Application
 

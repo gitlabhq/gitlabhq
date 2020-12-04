@@ -411,7 +411,7 @@ handleClick() {
 
 ### Working with pagination
 
-GitLab's GraphQL API uses [Relay-style cursor pagination](https://www.apollographql.com/docs/react/data/pagination/#cursor-based)
+GitLab's GraphQL API uses [Relay-style cursor pagination](https://www.apollographql.com/docs/react/pagination/overview/#cursor-based)
 for connection types. This means a "cursor" is used to keep track of where in the data
 set the next items should be fetched from. [GraphQL Ruby Connection Concepts](https://graphql-ruby.org/pagination/connection_concepts.html)
 is a good overview and introduction to connections.

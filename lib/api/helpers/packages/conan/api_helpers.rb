@@ -164,7 +164,11 @@ module API
           end
 
           def find_or_create_package
-            package || ::Packages::Conan::CreatePackageService.new(project, current_user, params).execute
+            package || ::Packages::Conan::CreatePackageService.new(
+              project,
+              current_user,
+              params.merge(build: current_authenticated_job)
+            ).execute
           end
 
           def track_push_package_event
@@ -184,7 +188,11 @@ module API
           def create_package_file_with_type(file_type, current_package)
             unless params[:file].size == 0 # rubocop: disable Style/ZeroLengthPredicate
               # conan sends two upload requests, the first has no file, so we skip record creation if file.size == 0
-              ::Packages::Conan::CreatePackageFileService.new(current_package, params[:file], params.merge(conan_file_type: file_type)).execute
+              ::Packages::Conan::CreatePackageFileService.new(
+                current_package,
+                params[:file],
+                params.merge(conan_file_type: file_type, build: current_authenticated_job)
+              ).execute
             end
           end
 
