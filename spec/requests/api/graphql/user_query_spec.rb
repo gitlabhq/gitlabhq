@@ -250,7 +250,7 @@ RSpec.describe 'getting user information' do
 
     context 'the user is private' do
       before do
-        user.update(private_profile: true)
+        user.update!(private_profile: true)
         post_graphql(query, current_user: current_user)
       end
 
@@ -258,6 +258,50 @@ RSpec.describe 'getting user information' do
         let(:user_fields) { %i[id name username state web_url avatar_url] }
 
         it_behaves_like 'a working graphql query'
+      end
+
+      context 'we request the groupMemberships' do
+        let_it_be(:membership_a) { create(:group_member, user: user) }
+        let(:group_memberships) { graphql_data_at(:user, :group_memberships, :nodes) }
+        let(:user_fields) { 'groupMemberships { nodes { id } }' }
+
+        it_behaves_like 'a working graphql query'
+
+        it 'cannot be found' do
+          expect(group_memberships).to be_empty
+        end
+
+        context 'the current user is the user' do
+          let(:current_user) { user }
+
+          it 'can be found' do
+            expect(group_memberships).to include(
+              a_hash_including('id' => global_id_of(membership_a))
+            )
+          end
+        end
+      end
+
+      context 'we request the projectMemberships' do
+        let_it_be(:membership_a) { create(:project_member, user: user) }
+        let(:project_memberships) { graphql_data_at(:user, :project_memberships, :nodes) }
+        let(:user_fields) { 'projectMemberships { nodes { id } }' }
+
+        it_behaves_like 'a working graphql query'
+
+        it 'cannot be found' do
+          expect(project_memberships).to be_empty
+        end
+
+        context 'the current user is the user' do
+          let(:current_user) { user }
+
+          it 'can be found' do
+            expect(project_memberships).to include(
+              a_hash_including('id' => global_id_of(membership_a))
+            )
+          end
+        end
       end
 
       context 'we request the authoredMergeRequests' do

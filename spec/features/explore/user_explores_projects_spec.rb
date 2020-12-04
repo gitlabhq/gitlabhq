@@ -47,6 +47,14 @@ RSpec.describe 'User explores projects' do
         end
       end
 
+      shared_examples 'minimum search length' do
+        it 'shows a prompt to enter a longer search term', :js do
+          fill_in 'name', with: 'z'
+
+          expect(page).to have_content('Enter at least three characters to search')
+        end
+      end
+
       context 'when viewing public projects' do
         before do
           visit(explore_projects_path)
@@ -54,6 +62,7 @@ RSpec.describe 'User explores projects' do
 
         include_examples 'shows public and internal projects'
         include_examples 'empty search results'
+        include_examples 'minimum search length'
       end
 
       context 'when viewing most starred projects' do
@@ -63,6 +72,7 @@ RSpec.describe 'User explores projects' do
 
         include_examples 'shows public and internal projects'
         include_examples 'empty search results'
+        include_examples 'minimum search length'
       end
 
       context 'when viewing trending projects' do
@@ -76,6 +86,7 @@ RSpec.describe 'User explores projects' do
 
         include_examples 'shows public projects'
         include_examples 'empty search results'
+        include_examples 'minimum search length'
       end
     end
   end
