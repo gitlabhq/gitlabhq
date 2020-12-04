@@ -1255,13 +1255,46 @@ RSpec.describe API::Projects do
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
-    it 'returns projects filtered by user' do
-      get api("/users/#{user3.id}/starred_projects/", user)
+    context 'with a public profile' do
+      it 'returns projects filtered by user' do
+        get api("/users/#{user3.id}/starred_projects/", user)
 
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(response).to include_pagination_headers
-      expect(json_response).to be_an Array
-      expect(json_response.map { |project| project['id'] }).to contain_exactly(project.id, project2.id, project3.id)
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.map { |project| project['id'] })
+          .to contain_exactly(project.id, project2.id, project3.id)
+      end
+    end
+
+    context 'with a private profile' do
+      before do
+        user3.update!(private_profile: true)
+        user3.reload
+      end
+
+      context 'user does not have access to view the private profile' do
+        it 'returns no projects' do
+          get api("/users/#{user3.id}/starred_projects/", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response).to be_empty
+        end
+      end
+
+      context 'user has access to view the private profile' do
+        it 'returns projects filtered by user' do
+          get api("/users/#{user3.id}/starred_projects/", admin)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.map { |project| project['id'] })
+            .to contain_exactly(project.id, project2.id, project3.id)
+        end
+      end
     end
   end
 
