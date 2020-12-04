@@ -7,9 +7,10 @@ RSpec.describe 'Admin Groups' do
   include Spec::Support::Helpers::Features::MembersHelpers
 
   let(:internal) { Gitlab::VisibilityLevel::INTERNAL }
-  let(:user) { create :user }
-  let!(:group) { create :group }
-  let!(:current_user) { create(:admin) }
+
+  let_it_be(:user) { create :user }
+  let_it_be(:group) { create :group }
+  let_it_be(:current_user) { create(:admin) }
 
   before do
     sign_in(current_user)
@@ -26,6 +27,17 @@ RSpec.describe 'Admin Groups' do
   end
 
   describe 'create a group' do
+    describe 'with expected fields' do
+      it 'renders from as expected', :aggregate_failures do
+        visit new_admin_group_path
+
+        expect(page).to have_field('name')
+        expect(page).to have_field('group_path')
+        expect(page).to have_field('group_visibility_level_0')
+        expect(page).to have_field('description')
+      end
+    end
+
     it 'creates new group' do
       visit admin_groups_path
 

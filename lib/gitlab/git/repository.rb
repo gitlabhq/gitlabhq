@@ -467,6 +467,18 @@ module Gitlab
         empty_diff_stats
       end
 
+      def find_changed_paths(commits)
+        processed_commits = commits.reject { |ref| ref.blank? || Gitlab::Git.blank_ref?(ref) }
+
+        return [] if processed_commits.empty?
+
+        wrapped_gitaly_errors do
+          gitaly_commit_client.find_changed_paths(processed_commits)
+        end
+      rescue CommandError, TypeError, NoRepository
+        []
+      end
+
       # Returns a RefName for a given SHA
       def ref_name_for_sha(ref_path, sha)
         raise ArgumentError, "sha can't be empty" unless sha.present?

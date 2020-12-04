@@ -74,6 +74,8 @@ RSpec.describe Projects::MergeRequests::DiffsController do
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
 
   before do
+    stub_feature_flags(diffs_gradual_load: false)
+
     project.add_maintainer(user)
     sign_in(user)
   end

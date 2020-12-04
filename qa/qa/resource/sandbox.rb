@@ -31,7 +31,6 @@ module QA
 
             Page::Group::New.perform do |group|
               group.set_path(path)
-              group.set_description('GitLab QA Sandbox Group')
               group.set_visibility('Public')
               group.create
             end

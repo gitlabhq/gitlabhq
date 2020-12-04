@@ -160,10 +160,10 @@ describe('DiffsStoreActions', () => {
         .onGet(
           mergeUrlParams(
             {
-              per_page: DIFFS_PER_PAGE,
               w: '1',
               view: 'inline',
               page: 1,
+              per_page: DIFFS_PER_PAGE,
             },
             endpointBatch,
           ),
@@ -172,10 +172,10 @@ describe('DiffsStoreActions', () => {
         .onGet(
           mergeUrlParams(
             {
-              per_page: DIFFS_PER_PAGE,
               w: '1',
               view: 'inline',
               page: 2,
+              per_page: DIFFS_PER_PAGE,
             },
             endpointBatch,
           ),

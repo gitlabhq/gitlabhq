@@ -18,6 +18,10 @@ RSpec.describe Gitlab::Diff::FileCollection::MergeRequestDiffBatch do
 
   let(:diff_files) { subject.diff_files }
 
+  before do
+    stub_feature_flags(diffs_gradual_load: false)
+  end
+
   describe 'initialize' do
     it 'memoizes pagination_data' do
       expect(subject.pagination_data).to eq(current_page: 1, next_page: 2, total_pages: 2)
@@ -95,6 +99,18 @@ RSpec.describe Gitlab::Diff::FileCollection::MergeRequestDiffBatch do
         expected_batch_files = diff_files_relation.page(last_page).per(batch_size).map(&:new_path)
 
         expect(collection.diff_files.map(&:new_path)).to eq(expected_batch_files)
+      end
+    end
+
+    context 'with diffs gradual load feature flag enabled' do
+      let(:batch_page) { 0 }
+
+      before do
+        stub_feature_flags(diffs_gradual_load: true)
+      end
+
+      it 'returns correct diff files' do
+        expect(subject.diffs.map(&:new_path)).to eq(diff_files_relation.page(1).per(batch_size).map(&:new_path))
       end
     end
   end

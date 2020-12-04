@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Group' do
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   before do
     sign_in(user)
@@ -33,6 +33,15 @@ RSpec.describe 'Group' do
         expect(group.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
         expect(current_path).to eq(group_path(group))
         expect(page).to have_selector '.visibility-icon [data-testid="earth-icon"]'
+      end
+    end
+
+    describe 'with expected fields' do
+      it 'renders from as expected', :aggregate_failures do
+        expect(page).to have_field('name')
+        expect(page).to have_field('group_path')
+        expect(page).to have_field('group_visibility_level_0')
+        expect(page).not_to have_field('description')
       end
     end
 
@@ -135,7 +144,7 @@ RSpec.describe 'Group' do
   end
 
   describe 'create a nested group', :js do
-    let(:group) { create(:group, path: 'foo') }
+    let_it_be(:group) { create(:group, path: 'foo') }
 
     context 'as admin' do
       let(:user) { create(:admin) }
@@ -185,8 +194,8 @@ RSpec.describe 'Group' do
   end
 
   describe 'group edit', :js do
-    let(:group) { create(:group, :public) }
-    let(:path)  { edit_group_path(group) }
+    let_it_be(:group) { create(:group, :public) }
+    let(:path) { edit_group_path(group) }
     let(:new_name) { 'new-name' }
 
     before do
@@ -230,8 +239,8 @@ RSpec.describe 'Group' do
   end
 
   describe 'group page with markdown description' do
-    let(:group) { create(:group) }
-    let(:path)  { group_path(group) }
+    let_it_be(:group) { create(:group) }
+    let(:path) { group_path(group) }
 
     before do
       group.add_owner(user)
@@ -271,9 +280,9 @@ RSpec.describe 'Group' do
   end
 
   describe 'group page with nested groups', :js do
-    let!(:group) { create(:group) }
-    let!(:nested_group) { create(:group, parent: group) }
-    let!(:project) { create(:project, namespace: group) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:nested_group) { create(:group, parent: group) }
+    let_it_be(:project) { create(:project, namespace: group) }
 
     before do
       group.add_owner(user)
@@ -304,7 +313,11 @@ RSpec.describe 'Group' do
   end
 
   describe 'new subgroup / project button' do
-    let(:group) { create(:group, project_creation_level: Gitlab::Access::NO_ONE_PROJECT_ACCESS, subgroup_creation_level: Gitlab::Access::OWNER_SUBGROUP_ACCESS) }
+    let_it_be(:group, reload: true) do
+      create(:group,
+             project_creation_level: Gitlab::Access::NO_ONE_PROJECT_ACCESS,
+             subgroup_creation_level: Gitlab::Access::OWNER_SUBGROUP_ACCESS)
+    end
 
     before do
       group.add_owner(user)
@@ -341,6 +354,7 @@ RSpec.describe 'Group' do
     context 'when user has project and subgroup creation permissions' do
       it 'displays "New subgroup" and "New project" buttons' do
         group.update!(project_creation_level: Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
+
         visit group_path(group)
 
         page.within '[data-testid="group-buttons"]' do

@@ -216,6 +216,29 @@ cron worker sequentially.
 
 Any update to the Elastic index mappings should be replicated in [`Elastic::Latest::Config`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/elastic/latest/config.rb).
 
+### Migration options supported by the [`Elastic::MigrationWorker`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/workers/elastic/migration_worker.rb)
+
+- `batched!` - Allow the migration to run in batches. If set, the [`Elastic::MigrationWorker`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/workers/elastic/migration_worker.rb) 
+will re-enqueue itself with a delay which is set using the `throttle_delay` option described below. The batching
+must be handled within the `migrate` method, this setting controls the re-enqueuing only.  
+ 
+- `throttle_delay` - Sets the wait time in between batch runs. This time should be set high enough to allow each migration batch
+enough time to finish. Additionally, the time should be less than 30 minutes since that is how often the
+[`Elastic::MigrationWorker`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/workers/elastic/migration_worker.rb)
+cron worker runs. Default value is 5 minutes.
+
+```ruby
+# frozen_string_literal: true
+
+class BatchedMigrationName < Elastic::Migration
+  # Declares a migration should be run in batches
+  batched!
+  throttle_delay 10.minutes
+
+  # ...
+end
+```
+
 ## Performance Monitoring
 
 ### Prometheus

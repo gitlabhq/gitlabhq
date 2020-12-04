@@ -1,6 +1,7 @@
 = form_for [:admin, @group] do |f|
   = form_errors(@group)
   = render 'shared/group_form', f: f
+  = render 'shared/group_form_description', f: f
 
   = render_if_exists 'shared/old_repository_size_limit_setting', form: f, type: :group
   = render_if_exists 'admin/namespace_plan', f: f

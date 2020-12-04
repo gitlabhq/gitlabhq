@@ -173,7 +173,7 @@ nodejs-scan-sast:
     - if: $CI_COMMIT_BRANCH &&
           $SAST_DEFAULT_ANALYZERS =~ /nodejs-scan/
       exists:
-        - 'package.json'
+        - '**/package.json'
 
 phpcs-security-audit-sast:
   extends: .sast-analyzer

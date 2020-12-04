@@ -2,11 +2,6 @@
 = render 'shared/group_form', f: f, autofocus: true
 
 .row
-  .form-group.group-description-holder.col-sm-12
-    = f.label :avatar, _("Group avatar"), class: 'label-bold'
-    %div
-      = render 'shared/choose_avatar_button', f: f
-
   .form-group.col-sm-12
     %label.label-bold
       = _('Visibility level')

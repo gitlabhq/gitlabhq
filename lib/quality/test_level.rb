@@ -21,6 +21,8 @@ module Quality
         config
         db
         dependencies
+        elastic
+        elastic_integration
         factories
         finders
         frontend
@@ -46,7 +48,6 @@ module Quality
         validators
         views
         workers
-        elastic_integration
         tooling
       ],
       integration: %w[

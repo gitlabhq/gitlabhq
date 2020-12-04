@@ -539,6 +539,7 @@ export default {
                 <template #total>{{ diffFiles.length }}</template>
               </gl-sprintf>
             </div>
+            <gl-loading-icon v-else-if="retrievingBatches" size="lg" />
           </template>
           <no-changes v-else :changes-empty-state-illustration="changesEmptyStateIllustration" />
         </div>

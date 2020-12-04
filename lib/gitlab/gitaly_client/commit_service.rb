@@ -216,6 +216,23 @@ module Gitlab
         response.flat_map(&:stats)
       end
 
+      def find_changed_paths(commits)
+        request = Gitaly::FindChangedPathsRequest.new(
+          repository: @gitaly_repo,
+          commits: commits
+        )
+
+        response = GitalyClient.call(@repository.storage, :diff_service, :find_changed_paths, request, timeout: GitalyClient.medium_timeout)
+        response.flat_map do |msg|
+          msg.paths.map do |path|
+            OpenStruct.new(
+              status: path.status,
+              path:  EncodingHelper.encode!(path.path)
+            )
+          end
+        end
+      end
+
       def find_all_commits(opts = {})
         request = Gitaly::FindAllCommitsRequest.new(
           repository: @gitaly_repo,

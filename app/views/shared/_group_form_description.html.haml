@@ -1,0 +1,5 @@
+.row
+  .form-group.group-description-holder.col-sm-8
+    = f.label :description, _('Group description (optional)'), class: 'label-bold'
+    = f.text_area :description, maxlength: 250,
+        class: 'form-control js-gfm-input', rows: 4

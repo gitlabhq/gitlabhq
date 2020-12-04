@@ -9,6 +9,10 @@ RSpec.describe MergeRequestDiff do
 
   let(:diff_with_commits) { create(:merge_request).merge_request_diff }
 
+  before do
+    stub_feature_flags(diffs_gradual_load: false)
+  end
+
   describe 'validations' do
     subject { diff_with_commits }
 

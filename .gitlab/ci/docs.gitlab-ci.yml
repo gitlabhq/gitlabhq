@@ -70,8 +70,8 @@ docs-lint links:
     # Don't delete the documentation/index.md, which is a false positive for the simple grep.
     - grep -rl "redirect_to:" /tmp/gitlab-docs/content/ee/ | grep -v "development/documentation/index.md" | xargs rm -f
     - bundle exec nanoc
-    - echo -e "\e[96mThe following test fails when a doc links to a redirect file."
-    - echo -e "\e[96mMake sure all links point to the correct page."
+    - echo -e "\e[1;96mThe following test fails when a doc links to a redirect file."
+    - echo -e "\e[1;96mMake sure all links point to the correct page."
     - bundle exec nanoc check internal_links
     # Check the internal anchor links
     - bundle exec nanoc check internal_anchors
