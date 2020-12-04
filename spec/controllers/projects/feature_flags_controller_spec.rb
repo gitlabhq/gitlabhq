@@ -1511,6 +1511,40 @@ RSpec.describe Projects::FeatureFlagsController do
         expect(response).to have_gitlab_http_status(:not_found)
       end
 
+      it 'returns not found when trying to update a gitlabUserList strategy with a user list from another project' do
+        user_list = create(:operations_feature_flag_user_list, project: project, name: 'My List', user_xids: 'user1,user2')
+        strategy = create(:operations_strategy, feature_flag: new_version_flag, name: 'gitlabUserList', parameters: {}, user_list: user_list)
+        other_project = create(:project)
+        other_user_list = create(:operations_feature_flag_user_list, project: other_project, name: 'Other List', user_xids: 'some,one')
+
+        put_request(new_version_flag, strategies_attributes: [{
+          id: strategy.id,
+          user_list_id: other_user_list.id
+        }])
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(strategy.reload.user_list).to eq(user_list)
+      end
+
+      it 'allows setting multiple gitlabUserList strategies to the same user list' do
+        user_list_a = create(:operations_feature_flag_user_list, project: project, name: 'My List A', user_xids: 'user1,user2')
+        user_list_b = create(:operations_feature_flag_user_list, project: project, name: 'My List B', user_xids: 'user3,user4')
+        strategy_a = create(:operations_strategy, feature_flag: new_version_flag, name: 'gitlabUserList', parameters: {}, user_list: user_list_a)
+        strategy_b = create(:operations_strategy, feature_flag: new_version_flag, name: 'gitlabUserList', parameters: {}, user_list: user_list_a)
+
+        put_request(new_version_flag, strategies_attributes: [{
+          id: strategy_a.id,
+          user_list_id: user_list_b.id
+        }, {
+          id: strategy_b.id,
+          user_list_id: user_list_b.id
+        }])
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(strategy_a.reload.user_list).to eq(user_list_b)
+        expect(strategy_b.reload.user_list).to eq(user_list_b)
+      end
+
       it 'updates an existing strategy' do
         strategy = create(:operations_strategy, feature_flag: new_version_flag, name: 'default', parameters: {})
 
