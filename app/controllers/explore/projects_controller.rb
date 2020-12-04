@@ -8,6 +8,8 @@ class Explore::ProjectsController < Explore::ApplicationController
   include SortingHelper
   include SortingPreference
 
+  MIN_SEARCH_LENGTH = 3
+
   before_action :set_non_archived_param
   before_action :set_sorting
 
@@ -70,7 +72,7 @@ class Explore::ProjectsController < Explore::ApplicationController
   def load_projects
     load_project_counts
 
-    projects = ProjectsFinder.new(current_user: current_user, params: params).execute
+    projects = ProjectsFinder.new(current_user: current_user, params: params.merge(minimum_search_length: MIN_SEARCH_LENGTH)).execute
 
     projects = preload_associations(projects)
     projects = projects.page(params[:page]).without_count

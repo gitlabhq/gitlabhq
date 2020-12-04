@@ -1,0 +1,5 @@
+---
+title: Fix mermaid resource consumption in GFM fields
+merge_request:
+author:
+type: security

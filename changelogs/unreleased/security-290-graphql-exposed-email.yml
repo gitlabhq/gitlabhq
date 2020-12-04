@@ -1,0 +1,5 @@
+---
+title: 'GraphQL User: do not expose email if set to private'
+merge_request:
+author:
+type: security

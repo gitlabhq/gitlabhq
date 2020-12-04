@@ -23,6 +23,11 @@ module Operations
 
       before_destroy :ensure_no_associated_strategies
 
+      def self.belongs_to?(project_id, user_list_ids)
+        uniq_ids = user_list_ids.uniq
+        where(id: uniq_ids, project_id: project_id).count == uniq_ids.count
+      end
+
       private
 
       def ensure_no_associated_strategies
