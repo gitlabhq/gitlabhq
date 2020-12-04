@@ -10,6 +10,7 @@ module FeatureFlags
 
     def execute(feature_flag)
       return error('Access Denied', 403) unless can_update?(feature_flag)
+      return error('Not Found', 404) unless valid_user_list_ids?(feature_flag, user_list_ids(params))
 
       ActiveRecord::Base.transaction do
         feature_flag.assign_attributes(params)
@@ -86,6 +87,16 @@ module FeatureFlags
 
     def can_update?(feature_flag)
       Ability.allowed?(current_user, :update_feature_flag, feature_flag)
+    end
+
+    def user_list_ids(params)
+      params.fetch(:strategies_attributes, [])
+        .select { |s| s[:user_list_id].present? }
+        .map { |s| s[:user_list_id] }
+    end
+
+    def valid_user_list_ids?(feature_flag, user_list_ids)
+      user_list_ids.empty? || ::Operations::FeatureFlags::UserList.belongs_to?(feature_flag.project_id, user_list_ids)
     end
   end
 end

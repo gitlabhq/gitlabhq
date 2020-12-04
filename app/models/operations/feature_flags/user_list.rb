@@ -28,6 +28,11 @@ module Operations
         fuzzy_search(query, [:name], use_minimum_char_limit: false)
       end
 
+      def self.belongs_to?(project_id, user_list_ids)
+        uniq_ids = user_list_ids.uniq
+        where(id: uniq_ids, project_id: project_id).count == uniq_ids.count
+      end
+
       private
 
       def ensure_no_associated_strategies
