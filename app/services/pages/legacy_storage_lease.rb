@@ -12,7 +12,7 @@ module Pages
     # TODO: just remove this method after testing this in production
     # https://gitlab.com/gitlab-org/gitlab/-/issues/282464
     def try_obtain_lease
-      return yield unless Feature.enabled?(:pages_use_legacy_storage_lease, project)
+      return yield unless Feature.enabled?(:pages_use_legacy_storage_lease, project, default_enabled: true)
 
       super
     end

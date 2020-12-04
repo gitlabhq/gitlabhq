@@ -49,3 +49,32 @@ dast:
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdast\b/ &&
           $DAST_API_SPECIFICATION
+
+dast_unlicensed:
+  stage: dast
+  allow_failure: true
+  variables:
+    GIT_STRATEGY: none
+  rules:
+    - if: $DAST_DISABLED
+      when: never
+    - if: $DAST_DISABLED_FOR_DEFAULT_BRANCH &&
+          $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+      when: never
+    - if: $CI_DEFAULT_BRANCH != $CI_COMMIT_REF_NAME &&
+          $REVIEW_DISABLED && $DAST_WEBSITE == null &&
+          $DAST_API_SPECIFICATION == null
+      when: never
+    - if: $CI_COMMIT_BRANCH &&
+          $CI_KUBERNETES_ACTIVE &&
+          $GITLAB_FEATURES !~ /\bdast\b/
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES !~ /\bdast\b/ &&
+          $DAST_WEBSITE
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES !~ /\bdast\b/ &&
+          $DAST_API_SPECIFICATION
+  script:
+    - |
+        echo "Error: Your GitLab project is not licensed for DAST."
+    - exit 1

@@ -229,6 +229,16 @@ FactoryBot.define do
       end
     end
 
+    trait :coverage_with_paths_not_relative_to_project_root do
+      file_type { :cobertura }
+      file_format { :gzip }
+
+      after(:build) do |artifact, evaluator|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/cobertura/coverage_with_paths_not_relative_to_project_root.xml.gz'), 'application/x-gzip')
+      end
+    end
+
     trait :coverage_with_corrupted_data do
       file_type { :cobertura }
       file_format { :gzip }

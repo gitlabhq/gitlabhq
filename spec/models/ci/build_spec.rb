@@ -4059,13 +4059,40 @@ RSpec.describe Ci::Build do
         end
       end
 
+      context 'when there is a Cobertura coverage report with class filename paths not relative to project root' do
+        before do
+          allow(build.project).to receive(:full_path).and_return('root/javademo')
+          allow(build.pipeline).to receive(:all_worktree_paths).and_return(['src/main/java/com/example/javademo/User.java'])
+
+          create(:ci_job_artifact, :coverage_with_paths_not_relative_to_project_root, job: build, project: build.project)
+        end
+
+        it 'parses blobs and add the results to the coverage report with corrected paths' do
+          expect { subject }.not_to raise_error
+
+          expect(coverage_report.files.keys).to match_array(['src/main/java/com/example/javademo/User.java'])
+        end
+
+        context 'and smart_cobertura_parser feature flag is disabled' do
+          before do
+            stub_feature_flags(smart_cobertura_parser: false)
+          end
+
+          it 'parses blobs and add the results to the coverage report with unmodified paths' do
+            expect { subject }.not_to raise_error
+
+            expect(coverage_report.files.keys).to match_array(['com/example/javademo/User.java'])
+          end
+        end
+      end
+
       context 'when there is a corrupted Cobertura coverage report' do
         before do
           create(:ci_job_artifact, :coverage_with_corrupted_data, job: build, project: build.project)
         end
 
         it 'raises an error' do
-          expect { subject }.to raise_error(Gitlab::Ci::Parsers::Coverage::Cobertura::CoberturaParserError)
+          expect { subject }.to raise_error(Gitlab::Ci::Parsers::Coverage::Cobertura::InvalidLineInformationError)
         end
       end
     end

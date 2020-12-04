@@ -2578,6 +2578,14 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
           it 'receives a pending event once' do
             expect(WebMock).to have_requested_pipeline_hook('pending').once
           end
+
+          it 'builds hook data once' do
+            create(:pipelines_email_service, project: project)
+
+            expect(Gitlab::DataBuilder::Pipeline).to receive(:build).once.and_call_original
+
+            pipeline.execute_hooks
+          end
         end
 
         context 'when build is run' do
@@ -2638,6 +2646,12 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
       it 'did not execute pipeline_hook after touched' do
         expect(WebMock).not_to have_requested(:post, hook.url)
+      end
+
+      it 'does not build hook data' do
+        expect(Gitlab::DataBuilder::Pipeline).not_to receive(:build)
+
+        pipeline.execute_hooks
       end
     end
 
@@ -3402,6 +3416,16 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
           "auth/rpccredentials.go",
           "app/controllers/abuse_reports_controller.rb"
         ])
+      end
+
+      it 'does not execute N+1 queries' do
+        single_build_pipeline = create(:ci_empty_pipeline, status: :created, project: project)
+        single_rspec = create(:ci_build, :success, name: 'rspec', pipeline: single_build_pipeline, project: project)
+        create(:ci_job_artifact, :cobertura, job: single_rspec, project: project)
+
+        control = ActiveRecord::QueryRecorder.new { single_build_pipeline.coverage_reports }
+
+        expect { subject }.not_to exceed_query_limit(control)
       end
 
       context 'when builds are retried' do

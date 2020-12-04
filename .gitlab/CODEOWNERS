@@ -159,6 +159,7 @@
 /lib/gitlab/github_import/ @gitlab-org/maintainers/database
 /app/finders/ @gitlab-org/maintainers/database
 /ee/app/finders/ @gitlab-org/maintainers/database
+/rubocop/rubocop-migrations.yml @gitlab-org/maintainers/database
 
 [Engineering Productivity]
 /.gitlab-ci.yml @gl-quality/eng-prod

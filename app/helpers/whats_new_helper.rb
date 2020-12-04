@@ -6,14 +6,10 @@ module WhatsNewHelper
   end
 
   def whats_new_storage_key
-    most_recent_version = ReleaseHighlight.versions&.first
+    most_recent_version = ReleaseHighlight.most_recent_version
 
     return unless most_recent_version
 
     ['display-whats-new-notification', most_recent_version].join('-')
-  end
-
-  def whats_new_versions
-    ReleaseHighlight.versions
   end
 end

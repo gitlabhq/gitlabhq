@@ -13,7 +13,7 @@ export default {
       localStorage.setItem(storageKey, JSON.stringify(false));
     }
   },
-  fetchItems({ commit, state }, { page, version } = { page: null, version: null }) {
+  fetchItems({ commit, state }, page) {
     if (state.fetching) {
       return false;
     }
@@ -24,7 +24,6 @@ export default {
       .get('/-/whats_new', {
         params: {
           page,
-          version,
         },
       })
       .then(({ data, headers }) => {

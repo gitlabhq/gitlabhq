@@ -831,9 +831,8 @@ module Ci
     end
 
     def execute_hooks
-      data = pipeline_data
-      project.execute_hooks(data, :pipeline_hooks)
-      project.execute_services(data, :pipeline_hooks)
+      project.execute_hooks(pipeline_data, :pipeline_hooks) if project.has_active_hooks?(:pipeline_hooks)
+      project.execute_services(pipeline_data, :pipeline_hooks) if project.has_active_services?(:pipeline_hooks)
     end
 
     # All the merge requests for which the current pipeline runs/ran against
@@ -973,7 +972,7 @@ module Ci
 
     def coverage_reports
       Gitlab::Ci::Reports::CoverageReports.new.tap do |coverage_reports|
-        latest_report_builds(Ci::JobArtifact.coverage_reports).each do |build|
+        latest_report_builds(Ci::JobArtifact.coverage_reports).includes(:project).find_each do |build|
           build.collect_coverage_reports!(coverage_reports)
         end
       end
@@ -1159,7 +1158,9 @@ module Ci
     end
 
     def pipeline_data
-      Gitlab::DataBuilder::Pipeline.build(self)
+      strong_memoize(:pipeline_data) do
+        Gitlab::DataBuilder::Pipeline.build(self)
+      end
     end
 
     def merge_request_diff_sha
