@@ -37,11 +37,11 @@ export const NAME_REGEX_DESCRIPTION = s__(
   'ContainerRegistry|Tags with names that match this regex pattern are removed. %{linkStart}More information%{linkEnd}',
 );
 
-export const ENABLED_TEXT = __('Enabled');
-export const DISABLED_TEXT = __('Disabled');
-
-export const ENABLE_TOGGLE_DESCRIPTION = s__(
-  'ContainerRegistry|%{toggleStatus} - Tags that match the rules on this page are automatically scheduled for deletion.',
+export const ENABLED_TOGGLE_DESCRIPTION = s__(
+  'ContainerRegistry|%{strongStart}Enabled%{strongEnd} - Tags that match the rules on this page are automatically scheduled for deletion.',
+);
+export const DISABLED_TOGGLE_DESCRIPTION = s__(
+  'ContainerRegistry|%{strongStart}Disabled%{strongEnd} - Tags will not be automatically deleted.',
 );
 
 export const CADENCE_LABEL = s__('ContainerRegistry|Run cleanup:');

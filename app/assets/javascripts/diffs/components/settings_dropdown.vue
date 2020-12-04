@@ -14,25 +14,9 @@ export default {
     GlDropdown,
     GlFormCheckbox,
   },
-  data() {
-    return {
-      checked: false,
-    };
-  },
   computed: {
     ...mapGetters('diffs', ['isInlineView', 'isParallelView']),
     ...mapState('diffs', ['renderTreeList', 'showWhitespace', 'viewDiffsFileByFile']),
-  },
-  watch: {
-    viewDiffsFileByFile() {
-      this.checked = this.viewDiffsFileByFile;
-    },
-    checked() {
-      eventHub.$emit(EVT_VIEW_FILE_BY_FILE, { setting: this.checked });
-    },
-  },
-  created() {
-    this.checked = this.viewDiffsFileByFile;
   },
   methods: {
     ...mapActions('diffs', [
@@ -110,7 +94,12 @@ export default {
       </label>
     </div>
     <div class="gl-mt-3 gl-px-3">
-      <gl-form-checkbox v-model="checked" data-testid="file-by-file" class="gl-mb-0">
+      <gl-form-checkbox
+        data-testid="file-by-file"
+        class="gl-mb-0"
+        :checked="viewDiffsFileByFile"
+        @input="toggleFileByFile"
+      >
         {{ $options.i18n.fileByFile }}
       </gl-form-checkbox>
     </div>

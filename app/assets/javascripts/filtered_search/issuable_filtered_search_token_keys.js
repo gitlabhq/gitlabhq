@@ -22,6 +22,15 @@ export const tokenKeys = [
     tag: '@assignee',
   },
   {
+    formattedKey: __('Reviewer'),
+    key: 'reviewer',
+    type: 'string',
+    param: 'username',
+    symbol: '@',
+    icon: 'user',
+    tag: '@reviewer',
+  },
+  {
     formattedKey: __('Milestone'),
     key: 'milestone',
     type: 'string',
@@ -83,6 +92,16 @@ export const conditions = flattenDeep(
     {
       url: 'assignee_id=Any',
       tokenKey: 'assignee',
+      value: __('Any'),
+    },
+    {
+      url: 'reviewer_id=None',
+      tokenKey: 'reviewer',
+      value: __('None'),
+    },
+    {
+      url: 'reviewer_id=Any',
+      tokenKey: 'reviewer',
       value: __('Any'),
     },
     {

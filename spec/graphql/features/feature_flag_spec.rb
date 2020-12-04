@@ -23,7 +23,7 @@ RSpec.describe 'Graphql Field feature flags' do
 
     let(:query_type) do
       query_factory do |query|
-        query.field :item, type, null: true, feature_flag: feature_flag, resolve: ->(obj, args, ctx) { test_object }
+        query.field :item, type, null: true, feature_flag: feature_flag, resolver: simple_resolver(test_object)
       end
     end
 

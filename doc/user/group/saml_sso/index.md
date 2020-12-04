@@ -250,6 +250,9 @@ For example, to unlink the `MyOrg` account, the following **Disconnect** button 
 
 ## Group Sync
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a demo of Group Sync using Azure, see [Demo: SAML Group Sync](https://youtu.be/Iqvo2tJfXjg).
+
 When the SAML response includes a user and their group memberships from the SAML identity provider,
 GitLab uses that information to automatically manage that user's GitLab group memberships.
 

@@ -1,6 +1,6 @@
 <script>
 import { GlFormGroup, GlToggle, GlSprintf } from '@gitlab/ui';
-import { ENABLED_TEXT, DISABLED_TEXT, ENABLE_TOGGLE_DESCRIPTION } from '../constants';
+import { ENABLED_TOGGLE_DESCRIPTION, DISABLED_TOGGLE_DESCRIPTION } from '../constants';
 
 export default {
   components: {
@@ -20,9 +20,6 @@ export default {
       default: false,
     },
   },
-  i18n: {
-    ENABLE_TOGGLE_DESCRIPTION,
-  },
   computed: {
     enabled: {
       get() {
@@ -32,8 +29,8 @@ export default {
         this.$emit('input', value);
       },
     },
-    toggleStatusText() {
-      return this.enabled ? ENABLED_TEXT : DISABLED_TEXT;
+    toggleText() {
+      return this.enabled ? ENABLED_TOGGLE_DESCRIPTION : DISABLED_TOGGLE_DESCRIPTION;
     },
   },
 };
@@ -44,9 +41,9 @@ export default {
     <div class="gl-display-flex">
       <gl-toggle id="expiration-policy-toggle" v-model="enabled" :disabled="disabled" />
       <span class="gl-ml-5 gl-line-height-24" data-testid="description">
-        <gl-sprintf :message="$options.i18n.ENABLE_TOGGLE_DESCRIPTION">
-          <template #toggleStatus>
-            <strong>{{ toggleStatusText }}</strong>
+        <gl-sprintf :message="toggleText">
+          <template #strong="{content}">
+            <strong>{{ content }}</strong>
           </template>
         </gl-sprintf>
       </span>

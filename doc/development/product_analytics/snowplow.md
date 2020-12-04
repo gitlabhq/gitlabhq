@@ -370,47 +370,78 @@ Snowplow Micro is a Docker-based solution for testing frontend and backend event
 - Look at the [Snowplow Micro repository](https://github.com/snowplow-incubator/snowplow-micro)
 - Watch our [installation guide recording](https://www.youtube.com/watch?v=OX46fo_A0Ag)
 
-1. Install [Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro):
+1. Ensure Docker is installed and running.
+
+1. Install [Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro) by cloning the settings in [this project](https://gitlab.com/gitlab-org/snowplow-micro-configuration):
+1. Navigate to the directory with the cloned project, and start the appropriate Docker
+   container with the following script:
 
    ```shell
-   docker run --mount type=bind,source=$(pwd)/example,destination=/config -p 9090:9090 snowplow/snowplow-micro:latest --collector-config /config/micro.conf --iglu /config/iglu.json
-   ```
-
-1. Install Snowplow Micro by cloning the settings in [this project](https://gitlab.com/gitlab-org/snowplow-micro-configuration):
-
-   ```shell
-   git clone git@gitlab.com:gitlab-org/snowplow-micro-configuration.git
    ./snowplow-micro.sh
    ```
 
-1. Update port in SQL to set `9090`:
+1. Update your instance's settings to enable Snowplow events and point to the Snowplow Micro collector:
 
    ```shell
    gdk psql -d gitlabhq_development
    update application_settings set snowplow_collector_hostname='localhost:9090', snowplow_enabled=true, snowplow_cookie_domain='.gitlab.com';
    ```
 
-1. Update `app/assets/javascripts/tracking.js` to [remove this line](https://gitlab.com/snippets/1918635):
+1. Update `DEFAULT_SNOWPLOW_OPTIONS` in `app/assets/javascripts/tracking.js` to remove `forceSecureTracker: true`:
 
-   ```javascript
-   forceSecureTracker: true
+   ```diff
+   diff --git a/app/assets/javascripts/tracking.js b/app/assets/javascripts/tracking.js
+   index 0a1211d0a76..3b98c8f28f2 100644
+   --- a/app/assets/javascripts/tracking.js
+   +++ b/app/assets/javascripts/tracking.js
+   @@ -7,7 +7,6 @@ const DEFAULT_SNOWPLOW_OPTIONS = {
+      appId: '',
+      userFingerprint: false,
+      respectDoNotTrack: true,
+   -  forceSecureTracker: true,
+      eventMethod: 'post',
+      contexts: { webPage: true, performanceTiming: true },
+      formTracking: false,
+
    ```
 
-1. Update `lib/gitlab/tracking.rb` to [add these lines](https://gitlab.com/snippets/1918635):
+1. Update `snowplow_options` in `lib/gitlab/tracking.rb` to add `protocol` and `port`:
 
-   ```ruby
-   protocol: 'http',
-   port: 9090,
+   ```diff
+   diff --git a/lib/gitlab/tracking.rb b/lib/gitlab/tracking.rb
+   index 618e359211b..e9084623c43 100644
+   --- a/lib/gitlab/tracking.rb
+   +++ b/lib/gitlab/tracking.rb
+   @@ -41,7 +41,9 @@ def snowplow_options(group)
+              cookie_domain: Gitlab::CurrentSettings.snowplow_cookie_domain,
+              app_id: Gitlab::CurrentSettings.snowplow_app_id,
+              form_tracking: additional_features,
+   -          link_click_tracking: additional_features
+   +          link_click_tracking: additional_features,
+   +          protocol: 'http',
+   +          port: 9090
+            }.transform_keys! { |key| key.to_s.camelize(:lower).to_sym }
+          end
    ```
 
-1. Update `lib/gitlab/tracking.rb` to [change async emitter from https to http](https://gitlab.com/snippets/1918635):
+1. Update `emitter` in `lib/gitlab/tracking/destinations/snowplow.rb` to change `protocol`:
 
-   ```ruby
-   SnowplowTracker::AsyncEmitter.new(Gitlab::CurrentSettings.snowplow_collector_hostname, protocol: 'http'),
+   ```diff
+   diff --git a/lib/gitlab/tracking/destinations/snowplow.rb b/lib/gitlab/tracking/destinations/snowplow.rb
+   index 4fa844de325..5dd9d0eacfb 100644
+   --- a/lib/gitlab/tracking/destinations/snowplow.rb
+   +++ b/lib/gitlab/tracking/destinations/snowplow.rb
+   @@ -40,7 +40,7 @@ def tracker
+            def emitter
+              SnowplowTracker::AsyncEmitter.new(
+                Gitlab::CurrentSettings.snowplow_collector_hostname,
+   -            protocol: 'https'
+   +            protocol: 'http'
+              )
+            end
+          end
+
    ```
-
-1. Enable Snowplow in the admin area, Settings::Integrations::Snowplow to point to:
-   `http://localhost:3000/admin/application_settings/integrations#js-snowplow-settings`.
 
 1. Restart GDK:
 
@@ -423,6 +454,8 @@ Snowplow Micro is a Docker-based solution for testing frontend and backend event
    ```ruby
    Gitlab::Tracking.self_describing_event('iglu:com.gitlab/pageview_context/jsonschema/1-0-0', data: { page_type: 'MY_TYPE' }, context: nil)
    ```
+   
+1. Navigate to `localhost:9090/micro/good` to see the event.
 
 ### Snowplow Mini
 

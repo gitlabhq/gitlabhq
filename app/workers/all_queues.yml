@@ -1537,6 +1537,14 @@
   :weight: 2
   :idempotent:
   :tags: []
+- :name: environments_canary_ingress_update
+  :feature_category: :continuous_delivery
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: error_tracking_issue_link
   :feature_category: :error_tracking
   :has_external_dependencies: true

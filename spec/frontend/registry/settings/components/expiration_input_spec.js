@@ -1,10 +1,10 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlSprintf, GlFormTextarea, GlLink } from '@gitlab/ui';
+import { GlSprintf, GlFormInput, GlLink } from '@gitlab/ui';
 import { GlFormGroup } from 'jest/registry/shared/stubs';
-import component from '~/registry/settings/components/expiration_textarea.vue';
+import component from '~/registry/settings/components/expiration_input.vue';
 import { NAME_REGEX_LENGTH } from '~/registry/shared/constants';
 
-describe('ExpirationTextarea', () => {
+describe('ExpirationInput', () => {
   let wrapper;
 
   const defaultProps = {
@@ -16,7 +16,7 @@ describe('ExpirationTextarea', () => {
 
   const tagsRegexHelpPagePath = 'fooPath';
 
-  const findTextArea = () => wrapper.find(GlFormTextarea);
+  const findInput = () => wrapper.find(GlFormInput);
   const findFormGroup = () => wrapper.find(GlFormGroup);
   const findLabel = () => wrapper.find('[data-testid="label"]');
   const findDescription = () => wrapper.find('[data-testid="description"]');
@@ -53,7 +53,7 @@ describe('ExpirationTextarea', () => {
     it('has a textarea component', () => {
       mountComponent();
 
-      expect(findTextArea().exists()).toBe(true);
+      expect(findInput().exists()).toBe(true);
     });
 
     it('has a description', () => {
@@ -78,7 +78,7 @@ describe('ExpirationTextarea', () => {
 
       mountComponent({ value, disabled });
 
-      expect(findTextArea().attributes()).toMatchObject({
+      expect(findInput().attributes()).toMatchObject({
         id: defaultProps.name,
         value,
         placeholder: defaultProps.placeholder,
@@ -92,7 +92,7 @@ describe('ExpirationTextarea', () => {
 
       mountComponent();
 
-      findTextArea().vm.$emit('input', emittedValue);
+      findInput().vm.$emit('input', emittedValue);
       expect(wrapper.emitted('input')).toEqual([[emittedValue]]);
     });
   });
@@ -141,12 +141,12 @@ describe('ExpirationTextarea', () => {
             // since the component has no state we both emit the event and set the prop
             mountComponent({ value: invalidString });
 
-            findTextArea().vm.$emit('input', invalidString);
+            findInput().vm.$emit('input', invalidString);
           });
 
           it('textAreaValidation state is false', () => {
             expect(findFormGroup().props('state')).toBe(false);
-            expect(findTextArea().attributes('state')).toBeUndefined();
+            expect(findInput().attributes('state')).toBeUndefined();
           });
 
           it('emits the @validation event with false payload', () => {
@@ -157,10 +157,10 @@ describe('ExpirationTextarea', () => {
         it(`when user input is less than ${NAME_REGEX_LENGTH} state is "true"`, () => {
           mountComponent();
 
-          findTextArea().vm.$emit('input', 'foo');
+          findInput().vm.$emit('input', 'foo');
 
           expect(findFormGroup().props('state')).toBe(true);
-          expect(findTextArea().attributes('state')).toBe('true');
+          expect(findInput().attributes('state')).toBe('true');
           expect(wrapper.emitted('validation')).toEqual([[true]]);
         });
       });

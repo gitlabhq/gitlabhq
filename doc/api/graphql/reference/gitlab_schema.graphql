@@ -2237,6 +2237,101 @@ type BurnupChartDailyTotals {
   scopeWeight: Int!
 }
 
+type CiConfig {
+  """
+  Linting errors
+  """
+  errors: [String!]
+
+  """
+  Merged CI config YAML
+  """
+  mergedYaml: String
+
+  """
+  Stages of the pipeline
+  """
+  stages: [CiConfigStage!]
+
+  """
+  Status of linting, can be either valid or invalid
+  """
+  status: CiConfigStatus
+}
+
+type CiConfigGroup {
+  """
+  Jobs in group
+  """
+  jobs: [CiConfigJob!]
+
+  """
+  Name of the job group
+  """
+  name: String
+
+  """
+  Size of the job group
+  """
+  size: Int
+}
+
+type CiConfigJob {
+  """
+  Name of the job group
+  """
+  groupName: String
+
+  """
+  Name of the job
+  """
+  name: String
+
+  """
+  Builds that must complete before the jobs run
+  """
+  needs: [CiConfigNeed!]
+
+  """
+  Name of the job stage
+  """
+  stage: String
+}
+
+type CiConfigNeed {
+  """
+  Name of the need
+  """
+  name: String
+}
+
+type CiConfigStage {
+  """
+  Groups of jobs for the stage
+  """
+  groups: [CiConfigGroup!]
+
+  """
+  Name of the stage
+  """
+  name: String
+}
+
+"""
+Values for YAML processor result
+"""
+enum CiConfigStatus {
+  """
+  The configuration file is not valid
+  """
+  INVALID
+
+  """
+  The configuration file is valid
+  """
+  VALID
+}
+
 type CiGroup {
   """
   Detailed status of the group
@@ -5415,7 +5510,7 @@ input DeleteAnnotationInput {
   clientMutationId: String
 
   """
-  The global ID of the annotation to delete
+  Global ID of the annotation to delete
   """
   id: MetricsDashboardAnnotationID!
 }
@@ -17905,6 +18000,16 @@ type PromoteToEpicPayload {
 }
 
 type Query {
+  """
+  Get linted and processed contents of a CI config. Should not be requested more than once per request.
+  """
+  ciConfig(
+    """
+    Contents of .gitlab-ci.yml
+    """
+    content: String!
+  ): CiConfig
+
   """
   Find a container repository
   """

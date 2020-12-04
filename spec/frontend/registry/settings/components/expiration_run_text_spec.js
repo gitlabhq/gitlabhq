@@ -28,19 +28,12 @@ describe('ExpirationToggle', () => {
   describe('structure', () => {
     it('has an input component', () => {
       mountComponent();
+
       expect(findInput().exists()).toBe(true);
     });
   });
 
   describe('model', () => {
-    it('assigns the right props to the input component', () => {
-      mountComponent({ value, disabled: true });
-
-      expect(findInput().attributes()).toMatchObject({
-        value,
-      });
-    });
-
     it('assigns the right props to the form-group component', () => {
       mountComponent();
 
@@ -51,16 +44,19 @@ describe('ExpirationToggle', () => {
   });
 
   describe('formattedValue', () => {
-    it('displays the values when it exists', () => {
-      mountComponent({ value });
+    it.each`
+      valueProp    | enabled  | expected
+      ${value}     | ${true}  | ${value}
+      ${value}     | ${false} | ${NOT_SCHEDULED_POLICY_TEXT}
+      ${undefined} | ${false} | ${NOT_SCHEDULED_POLICY_TEXT}
+      ${undefined} | ${true}  | ${NOT_SCHEDULED_POLICY_TEXT}
+    `(
+      'when value is $valueProp and enabled is $enabled the input value is $expected',
+      ({ valueProp, enabled, expected }) => {
+        mountComponent({ value: valueProp, enabled });
 
-      expect(findInput().attributes('value')).toBe(value);
-    });
-
-    it('displays a placeholder when no value is present', () => {
-      mountComponent();
-
-      expect(findInput().attributes('value')).toBe(NOT_SCHEDULED_POLICY_TEXT);
-    });
+        expect(findInput().attributes('value')).toBe(expected);
+      },
+    );
   });
 });

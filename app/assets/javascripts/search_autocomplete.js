@@ -250,6 +250,10 @@ export class SearchAutocomplete {
         url: `${mrPath}/?assignee_username=${userName}`,
       },
       {
+        text: s__("SearchAutocomplete|Merge requests that I'm a reviewer"),
+        url: `${mrPath}/?reviewer_username=${userName}`,
+      },
+      {
         text: s__("SearchAutocomplete|Merge requests I've created"),
         url: `${mrPath}/?author_username=${userName}`,
       },

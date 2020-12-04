@@ -181,7 +181,7 @@ describe('Diff settings dropdown component', () => {
       ${true}    | ${true}
       ${false}   | ${false}
     `(
-      'sets { checked: $checked } if the fileByFile setting is $fileByFile',
+      'sets the checkbox to { checked: $checked } if the fileByFile setting is $fileByFile',
       async ({ fileByFile, checked }) => {
         createComponent(store => {
           Object.assign(store.state.diffs, {
@@ -191,7 +191,7 @@ describe('Diff settings dropdown component', () => {
 
         await vm.$nextTick();
 
-        expect(vm.checked).toBe(checked);
+        expect(getFileByFileCheckbox(wrapper).element.checked).toBe(checked);
       },
     );
 

@@ -1,0 +1,5 @@
+---
+title: 'Expose GraphQL resolver for processing CI config'
+merge_request: 46912
+author:
+type: added

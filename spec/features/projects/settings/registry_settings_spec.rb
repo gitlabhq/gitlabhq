@@ -84,7 +84,7 @@ RSpec.describe 'Project > Settings > CI/CD > Container registry tag expiration p
         within '#js-registry-policies' do
           case result
           when :available_section
-            expect(find('[data-testid="enable-toggle"]')).to have_content('Tags that match the rules on this page are automatically scheduled for deletion.')
+            expect(find('[data-testid="enable-toggle"]')).to have_content('Disabled - Tags will not be automatically deleted.')
           when :disabled_message
             expect(find('.gl-alert-title')).to have_content('Cleanup policy for tags is disabled')
           end

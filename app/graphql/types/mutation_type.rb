@@ -31,6 +31,7 @@ module Types
     mount_mutation Mutations::Commits::Create, calls_gitaly: true
     mount_mutation Mutations::CustomEmoji::Create, feature_flag: :custom_emoji
     mount_mutation Mutations::Discussions::ToggleResolve
+    mount_mutation Mutations::Environments::CanaryIngress::Update
     mount_mutation Mutations::Issues::Create
     mount_mutation Mutations::Issues::SetAssignees
     mount_mutation Mutations::Issues::SetConfidential

@@ -44,9 +44,9 @@ describe('Settings Form', () => {
   const findEnableToggle = () => wrapper.find('[data-testid="enable-toggle"]');
   const findCadenceDropdown = () => wrapper.find('[data-testid="cadence-dropdown"]');
   const findKeepNDropdown = () => wrapper.find('[data-testid="keep-n-dropdown"]');
-  const findKeepRegexTextarea = () => wrapper.find('[data-testid="keep-regex-textarea"]');
+  const findKeepRegexInput = () => wrapper.find('[data-testid="keep-regex-input"]');
   const findOlderThanDropdown = () => wrapper.find('[data-testid="older-than-dropdown"]');
-  const findRemoveRegexTextarea = () => wrapper.find('[data-testid="remove-regex-textarea"]');
+  const findRemoveRegexInput = () => wrapper.find('[data-testid="remove-regex-input"]');
 
   const mountComponent = ({
     props = defaultProps,
@@ -115,13 +115,13 @@ describe('Settings Form', () => {
   });
 
   describe.each`
-    model              | finder                     | fieldName         | type          | defaultValue
-    ${'enabled'}       | ${findEnableToggle}        | ${'Enable'}       | ${'toggle'}   | ${false}
-    ${'cadence'}       | ${findCadenceDropdown}     | ${'Cadence'}      | ${'dropdown'} | ${'EVERY_DAY'}
-    ${'keepN'}         | ${findKeepNDropdown}       | ${'Keep N'}       | ${'dropdown'} | ${'TEN_TAGS'}
-    ${'nameRegexKeep'} | ${findKeepRegexTextarea}   | ${'Keep Regex'}   | ${'textarea'} | ${''}
-    ${'olderThan'}     | ${findOlderThanDropdown}   | ${'OlderThan'}    | ${'dropdown'} | ${'NINETY_DAYS'}
-    ${'nameRegex'}     | ${findRemoveRegexTextarea} | ${'Remove regex'} | ${'textarea'} | ${''}
+    model              | finder                   | fieldName         | type          | defaultValue
+    ${'enabled'}       | ${findEnableToggle}      | ${'Enable'}       | ${'toggle'}   | ${false}
+    ${'cadence'}       | ${findCadenceDropdown}   | ${'Cadence'}      | ${'dropdown'} | ${'EVERY_DAY'}
+    ${'keepN'}         | ${findKeepNDropdown}     | ${'Keep N'}       | ${'dropdown'} | ${'TEN_TAGS'}
+    ${'nameRegexKeep'} | ${findKeepRegexInput}    | ${'Keep Regex'}   | ${'textarea'} | ${''}
+    ${'olderThan'}     | ${findOlderThanDropdown} | ${'OlderThan'}    | ${'dropdown'} | ${'NINETY_DAYS'}
+    ${'nameRegex'}     | ${findRemoveRegexInput}  | ${'Remove regex'} | ${'textarea'} | ${''}
   `('$fieldName', ({ model, finder, type, defaultValue }) => {
     it('matches snapshot', () => {
       mountComponent();
@@ -240,8 +240,8 @@ describe('Settings Form', () => {
 
         await wrapper.vm.$nextTick();
 
-        expect(findKeepRegexTextarea().props('error')).toBe('');
-        expect(findRemoveRegexTextarea().props('error')).toBe('');
+        expect(findKeepRegexInput().props('error')).toBe('');
+        expect(findRemoveRegexInput().props('error')).toBe('');
         expect(findSaveButton().props('disabled')).toBe(false);
       });
     });
@@ -338,7 +338,7 @@ describe('Settings Form', () => {
             await waitForPromises();
             await wrapper.vm.$nextTick();
 
-            expect(findKeepRegexTextarea().props('error')).toEqual('baz');
+            expect(findKeepRegexInput().props('error')).toEqual('baz');
           });
         });
       });

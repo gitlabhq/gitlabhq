@@ -367,6 +367,45 @@ Represents the total number of issues and their weights for a particular day.
 | `scopeCount` | Int! | Number of issues as of this day |
 | `scopeWeight` | Int! | Total weight of issues as of this day |
 
+### CiConfig
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `errors` | String! => Array | Linting errors |
+| `mergedYaml` | String | Merged CI config YAML |
+| `stages` | CiConfigStage! => Array | Stages of the pipeline |
+| `status` | CiConfigStatus | Status of linting, can be either valid or invalid |
+
+### CiConfigGroup
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `jobs` | CiConfigJob! => Array | Jobs in group |
+| `name` | String | Name of the job group |
+| `size` | Int | Size of the job group |
+
+### CiConfigJob
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `groupName` | String | Name of the job group |
+| `name` | String | Name of the job |
+| `needs` | CiConfigNeed! => Array | Builds that must complete before the jobs run |
+| `stage` | String | Name of the job stage |
+
+### CiConfigNeed
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `name` | String | Name of the need |
+
+### CiConfigStage
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `groups` | CiConfigGroup! => Array | Groups of jobs for the stage |
+| `name` | String | Name of the stage |
+
 ### CiGroup
 
 | Field | Type | Description |
@@ -3924,6 +3963,15 @@ Types of blob viewers.
 | `auxiliary` |  |
 | `rich` |  |
 | `simple` |  |
+
+### CiConfigStatus
+
+Values for YAML processor result.
+
+| Value | Description |
+| ----- | ----------- |
+| `INVALID` | The configuration file is not valid |
+| `VALID` | The configuration file is valid |
 
 ### CommitActionMode
 

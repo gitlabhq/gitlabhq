@@ -150,6 +150,14 @@ module GraphqlHelpers
     field.resolve_field(instance, args, context)
   end
 
+  def simple_resolver(resolved_value = 'Resolved value')
+    Class.new(Resolvers::BaseResolver) do
+      define_method :resolve do |**_args|
+        resolved_value
+      end
+    end
+  end
+
   # Recursively convert a Hash with Ruby-style keys to GraphQL fieldname-style keys
   #
   # prepare_input_for_mutation({ 'my_key' => 1 })

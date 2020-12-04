@@ -265,6 +265,45 @@ Examples of implementation:
 - Using Redis methods [`INCR`](https://redis.io/commands/incr), [`GET`](https://redis.io/commands/get), and [`Gitlab::UsageDataCounters::WikiPageCounter`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/wiki_page_counter.rb)
 - Using Redis methods [`HINCRBY`](https://redis.io/commands/hincrby), [`HGETALL`](https://redis.io/commands/hgetall), and [`Gitlab::UsageCounters::PodLogs`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_counters/pod_logs.rb)
 
+##### UsageData API Tracking
+
+<!-- There's nearly identical content in `##### Adding new events`. If you fix errors here, you may need to fix the same errors in the other location. -->
+
+1. Track event using `UsageData` API
+
+   Increment event count using ordinary Redis counter, for given event name.
+
+   Tracking events using the `UsageData` API requires the `usage_data_api` feature flag to be enabled, which is enabled by default.
+
+   API requests are protected by checking for a valid CSRF token.
+
+   In order to be able to increment the values the related feature `usage_data_<event_name>` should be enabled.
+
+   ```plaintext
+   POST /usage_data/increment_counter
+   ```
+
+   | Attribute | Type | Required | Description |
+   | :-------- | :--- | :------- | :---------- |
+   | `event` | string | yes | The event name it should be tracked |
+
+   Response
+
+   - `200` if event was tracked
+   - `400 Bad request` if event parameter is missing
+   - `401 Unauthorized` if user is not authenticated
+   - `403 Forbidden` for invalid CSRF token provided
+
+1. Track events using JavaScript/Vue API helper which calls the API above
+
+   Note that `usage_data_api` and `usage_data_#{event_name}` should be enabled in order to be able to track events
+
+   ```javascript
+   import api from '~/api';
+
+   api.trackRedisCounterEvent('my_already_defined_event_name'),
+   ```
+
 #### Redis HLL Counters
 
 With `Gitlab::UsageDataCounters::HLLRedisCounter` we have available data structures used to count unique values.
@@ -386,6 +425,8 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
    ```ruby
      track_usage_event(:incident_management_incident_created, current_user.id)
    ```
+
+<!-- There's nearly identical content in `##### UsageData API Tracking`. If you find / fix errors here, you may need to fix errors in that section too. -->
 
 1. Track event using `UsageData` API
 

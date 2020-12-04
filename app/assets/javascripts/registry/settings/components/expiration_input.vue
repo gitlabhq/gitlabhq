@@ -1,11 +1,11 @@
 <script>
-import { GlFormGroup, GlFormTextarea, GlSprintf, GlLink } from '@gitlab/ui';
+import { GlFormGroup, GlFormInput, GlSprintf, GlLink } from '@gitlab/ui';
 import { NAME_REGEX_LENGTH, TEXT_AREA_INVALID_FEEDBACK } from '../constants';
 
 export default {
   components: {
     GlFormGroup,
-    GlFormTextarea,
+    GlFormInput,
     GlSprintf,
     GlLink,
   },
@@ -48,7 +48,7 @@ export default {
     textAreaLengthErrorMessage() {
       return this.isInputValid(this.value) ? '' : TEXT_AREA_INVALID_FEEDBACK;
     },
-    textAreaValidation() {
+    inputValidation() {
       const nameRegexErrors = this.error || this.textAreaLengthErrorMessage;
       return {
         state: nameRegexErrors === null ? null : !nameRegexErrors,
@@ -77,8 +77,8 @@ export default {
   <gl-form-group
     :id="`${name}-form-group`"
     :label-for="name"
-    :state="textAreaValidation.state"
-    :invalid-feedback="textAreaValidation.message"
+    :state="inputValidation.state"
+    :invalid-feedback="inputValidation.message"
   >
     <template #label>
       <span data-testid="label">
@@ -89,11 +89,11 @@ export default {
         </gl-sprintf>
       </span>
     </template>
-    <gl-form-textarea
+    <gl-form-input
       :id="name"
       v-model="internalValue"
       :placeholder="placeholder"
-      :state="textAreaValidation.state"
+      :state="inputValidation.state"
       :disabled="disabled"
       trim
     />

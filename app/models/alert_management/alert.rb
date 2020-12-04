@@ -69,6 +69,11 @@ module AlertManagement
       unknown: 5
     }
 
+    enum domain: {
+      operations: 0,
+      threat_monitoring: 1
+    }
+
     state_machine :status, initial: :triggered do
       state :triggered, value: STATUSES[:triggered]
 

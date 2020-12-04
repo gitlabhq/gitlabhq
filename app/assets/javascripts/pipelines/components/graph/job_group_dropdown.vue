@@ -47,15 +47,14 @@ export default {
       class="dropdown-menu-toggle build-content gl-build-content"
     >
       <div class="gl-display-flex gl-align-items-center gl-justify-content-space-between">
-        <span class="gl-display-flex gl-align-items-center gl-w-90">
+        <span class="gl-display-flex gl-align-items-center gl-min-w-0">
           <ci-icon :status="group.status" :size="24" />
-
-          <span class="gl-text-truncate mw-70p gl-pl-3 gl-display-inline-block">
+          <span class="gl-text-truncate mw-70p gl-pl-3">
             {{ group.name }}
           </span>
         </span>
 
-        <span class="gl-font-weight-100 gl-font-size-lg gl-pr-2"> {{ group.size }} </span>
+        <span class="gl-font-weight-100 gl-font-size-lg"> {{ group.size }} </span>
       </div>
     </button>
 

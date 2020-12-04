@@ -1254,6 +1254,46 @@ describe('Api', () => {
     });
   });
 
+  describe('trackRedisCounterEvent', () => {
+    const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/usage_data/increment_counter`;
+
+    const event = 'dummy_event';
+    const postData = { event };
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+
+    describe('when usage data increment counter is called with feature flag disabled', () => {
+      beforeEach(() => {
+        gon.features = { ...gon.features, usageDataApi: false };
+      });
+
+      it('returns null', () => {
+        jest.spyOn(axios, 'post');
+        mock.onPost(expectedUrl).replyOnce(httpStatus.OK, true);
+
+        expect(axios.post).toHaveBeenCalledTimes(0);
+        expect(Api.trackRedisCounterEvent(event)).toEqual(null);
+      });
+    });
+
+    describe('when usage data increment counter is called', () => {
+      beforeEach(() => {
+        gon.features = { ...gon.features, usageDataApi: true };
+      });
+
+      it('resolves the Promise', () => {
+        jest.spyOn(axios, 'post');
+        mock.onPost(expectedUrl, { event }).replyOnce(httpStatus.OK, true);
+
+        return Api.trackRedisCounterEvent(event).then(({ data }) => {
+          expect(data).toEqual(true);
+          expect(axios.post).toHaveBeenCalledWith(expectedUrl, postData, { headers });
+        });
+      });
+    });
+  });
+
   describe('trackRedisHllUserEvent', () => {
     const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/usage_data/increment_unique_users`;
 

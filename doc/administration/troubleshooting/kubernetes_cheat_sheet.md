@@ -126,7 +126,7 @@ and they will assist you with any issues you are having.
   kubectl get pods | grep task-runner
 
   # enter it
-  kubectl exec -it <task-runner-pod-name> bash
+  kubectl exec -it <task-runner-pod-name> -- bash
 
   # open rails console
   # rails console can be also called from other GitLab pods
@@ -139,10 +139,10 @@ and they will assist you with any issues you are having.
   /usr/local/bin/gitlab-rake gitlab:check
 
   # open console without entering pod
-  kubectl exec -it <task-runner-pod-name> /srv/gitlab/bin/rails console
+  kubectl exec -it <task-runner-pod-name> -- /srv/gitlab/bin/rails console
 
   # check the status of DB migrations
-  kubectl exec -it <task-runner-pod-name> /usr/local/bin/gitlab-rake db:migrate:status
+  kubectl exec -it <task-runner-pod-name> -- /usr/local/bin/gitlab-rake db:migrate:status
   ```
 
   You can also use `gitlab-rake`, instead of `/usr/local/bin/gitlab-rake`.

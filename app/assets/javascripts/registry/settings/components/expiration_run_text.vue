@@ -13,6 +13,16 @@ export default {
       required: false,
       default: NOT_SCHEDULED_POLICY_TEXT,
     },
+    enabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
+  computed: {
+    parsedValue() {
+      return this.enabled ? this.value : NOT_SCHEDULED_POLICY_TEXT;
+    },
   },
   i18n: {
     NEXT_CLEANUP_LABEL,
@@ -26,6 +36,11 @@ export default {
     :label="$options.i18n.NEXT_CLEANUP_LABEL"
     label-for="expiration-policy-info-text"
   >
-    <gl-form-input id="expiration-policy-info-text" class="gl-pl-0!" plaintext :value="value" />
+    <gl-form-input
+      id="expiration-policy-info-text"
+      class="gl-pl-0!"
+      plaintext
+      :value="parsedValue"
+    />
   </gl-form-group>
 </template>

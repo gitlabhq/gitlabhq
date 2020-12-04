@@ -172,4 +172,25 @@ RSpec.describe 'Dashboard Merge Requests' do
       expect(find('.issues-filters')).to have_content('Created date')
     end
   end
+
+  context 'merge request review', :js do
+    let_it_be(:author_user) { create(:user) }
+    let!(:review_requested_merge_request) do
+      create(:merge_request,
+        reviewers: [current_user],
+        source_branch: 'review',
+        source_project: project,
+        author: author_user)
+    end
+
+    before do
+      visit merge_requests_dashboard_path(reviewer_username: current_user.username)
+    end
+
+    it 'displays review requested merge requests' do
+      expect(page).to have_content(review_requested_merge_request.title)
+
+      expect_tokens([reviewer_token(current_user.name)])
+    end
+  end
 end

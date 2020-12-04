@@ -3,9 +3,8 @@ import { GlToggle, GlSprintf } from '@gitlab/ui';
 import { GlFormGroup } from 'jest/registry/shared/stubs';
 import component from '~/registry/settings/components/expiration_toggle.vue';
 import {
-  ENABLE_TOGGLE_DESCRIPTION,
-  ENABLED_TEXT,
-  DISABLED_TEXT,
+  ENABLED_TOGGLE_DESCRIPTION,
+  DISABLED_TOGGLE_DESCRIPTION,
 } from '~/registry/settings/constants';
 
 describe('ExpirationToggle', () => {
@@ -39,9 +38,7 @@ describe('ExpirationToggle', () => {
     it('has a description', () => {
       mountComponent();
 
-      expect(findDescription().text()).toContain(
-        ENABLE_TOGGLE_DESCRIPTION.replace('%{toggleStatus}', ''),
-      );
+      expect(findDescription().exists()).toBe(true);
     });
   });
 
@@ -68,13 +65,13 @@ describe('ExpirationToggle', () => {
     it('says enabled when the toggle is on', () => {
       mountComponent({ value: true });
 
-      expect(findDescription().text()).toContain(ENABLED_TEXT);
+      expect(findDescription().text()).toMatchInterpolatedText(ENABLED_TOGGLE_DESCRIPTION);
     });
 
     it('says disabled when the toggle is off', () => {
       mountComponent({ value: false });
 
-      expect(findDescription().text()).toContain(DISABLED_TEXT);
+      expect(findDescription().text()).toMatchInterpolatedText(DISABLED_TOGGLE_DESCRIPTION);
     });
   });
 });

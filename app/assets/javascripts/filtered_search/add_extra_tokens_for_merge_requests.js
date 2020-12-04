@@ -91,7 +91,7 @@ export default (IssuableTokenKeys, disableTargetBranchFilter = false) => {
     ],
   };
 
-  const tokenPosition = 2;
+  const tokenPosition = 3;
   IssuableTokenKeys.tokenKeys.splice(tokenPosition, 0, ...[approvedBy.token]);
   IssuableTokenKeys.tokenKeysWithAlternative.splice(tokenPosition, 0, ...[approvedBy.token]);
   IssuableTokenKeys.conditions.push(...approvedBy.condition);
