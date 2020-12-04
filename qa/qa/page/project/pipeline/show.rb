@@ -72,6 +72,10 @@ module QA
             has_element? :child_pipeline
           end
 
+          def has_no_child_pipeline?
+            has_no_element? :child_pipeline
+          end
+
           def click_job(job_name)
             click_element(:job_link, text: job_name)
           end

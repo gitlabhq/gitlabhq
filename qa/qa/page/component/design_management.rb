@@ -108,6 +108,10 @@ module QA
           has_element?(:design_file_name, text: filename)
         end
 
+        def has_no_design?(filename)
+          has_no_element?(:design_file_name, text: filename)
+        end
+
         def has_created_icon?
           has_element?(:design_status_icon, status: 'file-addition-solid')
         end

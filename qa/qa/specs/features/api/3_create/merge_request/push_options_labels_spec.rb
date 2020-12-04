@@ -7,16 +7,18 @@ module QA
       #
       # git config --global receive.advertisepushoptions true
 
-      branch = "push-options-test-#{SecureRandom.hex(8)}"
-      title = "MR push options test #{SecureRandom.hex(8)}"
-      commit_message = 'Add README.md'
+      let(:branch) { "push-options-test-#{SecureRandom.hex(8)}" }
+      let(:title) { "MR push options test #{SecureRandom.hex(8)}" }
+      let(:commit_message) { 'Add README.md' }
 
-      project = Resource::Project.fabricate_via_api! do |project|
-        project.name = 'merge-request-push-options'
-        project.initialize_with_readme = true
+      let(:project) do
+        Resource::Project.fabricate_via_api! do |project|
+          project.name = 'merge-request-push-options'
+          project.initialize_with_readme = true
+        end
       end
 
-      it 'sets labels', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1032' do
+      def create_new_mr_via_push
         Resource::Repository::ProjectPush.fabricate! do |push|
           push.project = project
           push.commit_message = commit_message
@@ -27,6 +29,10 @@ module QA
             label: %w[one two three]
           }
         end
+      end
+
+      it 'sets labels', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1032' do
+        create_new_mr_via_push
 
         merge_request = project.merge_request_with_title(title)
 
@@ -35,7 +41,11 @@ module QA
       end
 
       context 'when labels are set already' do
-        it 'removes them', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1033' do
+        before do
+          create_new_mr_via_push
+        end
+
+        it 'removes them on subsequent push', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1033' do
           Resource::Repository::ProjectPush.fabricate! do |push|
             push.project = project
             push.file_content = "Unlabel test #{SecureRandom.hex(8)}"

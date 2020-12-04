@@ -12836,9 +12836,6 @@ msgstr ""
 msgid "GitLab is obtaining a Let's Encrypt SSL certificate for this domain. This process can take some time. Please try again later."
 msgstr ""
 
-msgid "GitLab is undergoing maintenance and is operating in a read-only mode."
-msgstr ""
-
 msgid "GitLab member or Email address"
 msgstr ""
 
@@ -27802,6 +27799,9 @@ msgid "This GitLab instance does not provide any shared Runners yet. Instance ad
 msgstr ""
 
 msgid "This GitLab instance is licensed at the %{insufficient_license} tier. Geo is only available for users who have at least a Premium license."
+msgstr ""
+
+msgid "This GitLab instance is undergoing maintenance and is operating in read-only mode."
 msgstr ""
 
 msgid "This Project is currently archived and read-only. Please unarchive the project first if you want to resume Pull mirroring"

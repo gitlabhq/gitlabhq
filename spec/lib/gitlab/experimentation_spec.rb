@@ -16,7 +16,6 @@ RSpec.describe Gitlab::Experimentation::EXPERIMENTS do
       :contact_sales_btn_in_app,
       :customize_homepage,
       :invite_email,
-      :invitation_reminders,
       :group_only_trials,
       :default_to_issues_board
     ]

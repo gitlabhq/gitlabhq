@@ -356,5 +356,5 @@ The state files attached to a project can be found under Operations / Terraform.
 You can only remove a state file by making a request to the API, like the following example:
 
 ```shell
-curl --header "Private-Token: <your_access_token>" --request DELETE "https://gitlab.example.com/api/v4/projects/<your_project_id/terraform/state/<your_state_name>"
+curl --header "Private-Token: <your_access_token>" --request DELETE "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>"
 ```

@@ -37,6 +37,7 @@ module Reenqueuer
     include ReenqueuerSleeper
 
     sidekiq_options retry: false
+    deduplicate :none
   end
 
   def perform(*args)

@@ -96,6 +96,9 @@ invitation, change their access level, or even delete them.
 
 ![Invite user members list](img/add_user_email_accept.png)
 
+While unaccepted, the system will automatically send reminder emails on the second, fifth,
+and tenth day after the invitation was initially sent.
+
 After the user accepts the invitation, they are prompted to create a new
 GitLab account using the same e-mail address the invitation was sent to.
 

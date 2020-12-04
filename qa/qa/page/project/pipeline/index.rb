@@ -49,6 +49,10 @@ module QA
             has_element? :pipeline_url_link
           end
 
+          def has_no_pipeline?
+            has_no_element? :pipeline_url_link
+          end
+
           def click_run_pipeline_button
             click_element :run_pipeline_button, Page::Project::Pipeline::New
           end

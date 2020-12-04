@@ -408,6 +408,11 @@
   redis_slot: project_management
   aggregation: daily
   feature_flag: track_issue_activity_actions
+- name: g_project_management_issue_cloned
+  category: issues_edit
+  redis_slot: project_management
+  aggregation: daily
+  feature_flag: track_issue_activity_actions
 # Secrets Management
 - name: i_ci_secrets_management_vault_build_created
   category: ci_secrets_management

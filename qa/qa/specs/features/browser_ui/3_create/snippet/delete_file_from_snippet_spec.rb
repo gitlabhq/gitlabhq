@@ -46,8 +46,8 @@ module QA
             aggregate_failures 'file names and contents' do
               expect(snippet).to have_file_name('Original file name')
               expect(snippet).to have_file_content('Original file content')
-              expect(snippet).to have_no_file_name('Second file name')
-              expect(snippet).to have_no_file_content('Second file content')
+              expect(snippet).not_to have_file_name('Second file name')
+              expect(snippet).not_to have_file_content('Second file content')
             end
           end
         end

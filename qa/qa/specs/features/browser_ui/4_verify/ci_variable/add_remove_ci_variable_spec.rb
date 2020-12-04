@@ -19,7 +19,7 @@ module QA
       it 'user adds a CI variable', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/395' do
         Page::Project::Settings::CiVariables.perform do |ci_variable|
           expect(ci_variable).to have_text('VARIABLE_KEY')
-          expect(ci_variable).to have_no_text('some_CI_variable')
+          expect(ci_variable).not_to have_text('some_CI_variable')
 
           ci_variable.click_reveal_ci_variable_value_button
 

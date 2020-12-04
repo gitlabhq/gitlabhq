@@ -66,10 +66,6 @@ module Gitlab
         tracking_category: 'Growth::Acquisition::Experiment::InviteEmail',
         use_backwards_compatible_subject_index: true
       },
-      invitation_reminders: {
-        tracking_category: 'Growth::Acquisition::Experiment::InvitationReminders',
-        use_backwards_compatible_subject_index: true
-      },
       group_only_trials: {
         tracking_category: 'Growth::Conversion::Experiment::GroupOnlyTrials',
         use_backwards_compatible_subject_index: true

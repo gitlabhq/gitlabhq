@@ -18,6 +18,7 @@ module Gitlab
       ISSUE_CROSS_REFERENCED = 'g_project_management_issue_cross_referenced'
       ISSUE_MOVED = 'g_project_management_issue_moved'
       ISSUE_RELATED = 'g_project_management_issue_related'
+      ISSUE_CLONED = 'g_project_management_issue_cloned'
       ISSUE_UNRELATED = 'g_project_management_issue_unrelated'
       ISSUE_MARKED_AS_DUPLICATE = 'g_project_management_issue_marked_as_duplicate'
       ISSUE_LOCKED = 'g_project_management_issue_locked'
@@ -135,6 +136,10 @@ module Gitlab
 
         def track_issue_comment_removed_action(author:, time: Time.zone.now)
           track_unique_action(ISSUE_COMMENT_REMOVED, author, time)
+        end
+
+        def track_issue_cloned_action(author:, time: Time.zone.now)
+          track_unique_action(ISSUE_CLONED, author, time)
         end
 
         private
