@@ -82,7 +82,7 @@ RSpec.describe 'getting user information' do
             'username' => presenter.username,
             'webUrl' => presenter.web_url,
             'avatarUrl' => presenter.avatar_url,
-            'email' => presenter.email
+            'email' => presenter.public_email
           ))
 
         expect(graphql_data['user']['status']).to match(
