@@ -278,7 +278,7 @@ sudo adduser --disabled-login --gecos 'GitLab' git
 
 ## 6. Database
 
-NOTE: **Note:**
+NOTE:
 In GitLab 12.1 and later, only PostgreSQL is supported. In GitLab 13.0 and later, we [require PostgreSQL 11+](requirements.md#postgresql-requirements).
 
 1. Install the database packages:
@@ -443,7 +443,7 @@ Make sure to replace `<X-Y-stable>` with the stable branch that matches the
 version you want to install. For example, if you want to install 11.8 you would
 use the branch name `11-8-stable`.
 
-CAUTION: **Caution:**
+WARNING:
 You can change `<X-Y-stable>` to `master` if you want the *bleeding edge* version, but never install `master` on a production server!
 
 ### Configure It
@@ -553,7 +553,7 @@ sudo -u git -H chmod o-rwx config/database.yml
 
 ### Install Gems
 
-NOTE: **Note:**
+NOTE:
 As of Bundler 1.5.2, you can invoke `bundle install -jN` (where `N` is the number of your processor cores) and enjoy parallel gems installation with measurable difference in completion time (~60% faster). Check the number of your cores with `nproc`. For more information, see this [post](https://thoughtbot.com/blog/parallel-gem-installing-using-bundler).
 
 Make sure you have `bundle` (run `bundle -v`):

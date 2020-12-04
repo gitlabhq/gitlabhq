@@ -18,7 +18,7 @@ can change often. The code should explain those things better. The components
 mentioned here are the major parts of the application for the approval rules
 feature to work.
 
-NOTE: **Note:**
+NOTE:
 This is a living document and should be updated accordingly when parts
 of the codebase touched in this document are changed or removed, or when new components
 are added.

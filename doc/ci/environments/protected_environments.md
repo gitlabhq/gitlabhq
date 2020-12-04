@@ -20,7 +20,7 @@ specific environments are "protected" to prevent unauthorized people from affect
 By default, a protected environment does one thing: it ensures that only people
 with the right privileges can deploy to it, thus keeping it safe.
 
-NOTE: **Note:**
+NOTE:
 A GitLab admin is always allowed to use environments, even if they are protected.
 
 To protect, update, or unprotect an environment, you need to have at least

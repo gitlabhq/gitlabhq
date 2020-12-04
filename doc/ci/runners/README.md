@@ -207,7 +207,7 @@ must be enabled for each project explicitly.
 
 Specific runners process jobs by using a first in, first out ([FIFO](https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics))) queue.
 
-NOTE: **Note:**
+NOTE:
 Specific runners do not get shared with forked projects automatically.
 A fork *does* copy the CI / CD settings of the cloned repository.
 
@@ -413,7 +413,7 @@ To make a runner pick untagged jobs:
 1. Check the **Run untagged jobs** option.
 1. Click the **Save changes** button for the changes to take effect.
 
-NOTE: **Note:**
+NOTE:
 The runner tags list can not be empty when it's not allowed to pick untagged jobs.
 
 Below are some example scenarios of different variations.

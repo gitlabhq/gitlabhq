@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Introduced in GitLab 9.4.
 > - Distributed to Slack App Directory in GitLab 10.2.
 
-NOTE: **Note:**
+NOTE:
 The GitLab Slack application is only configurable for GitLab.com. It will **not**
 work for on-premises installations where you can configure the
 [Slack slash commands](slack_slash_commands.md) service instead. We're planning

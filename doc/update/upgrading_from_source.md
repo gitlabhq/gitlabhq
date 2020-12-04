@@ -7,7 +7,7 @@ comments: false
 
 # Upgrading Community Edition and Enterprise Edition from source
 
-NOTE: **Note:**
+NOTE:
 Users wishing to upgrade to 12.0.0 will have to take some extra steps. See the
 version specific upgrade instructions for 12.0.0 for more details.
 
@@ -119,7 +119,7 @@ rm go1.13.5.linux-amd64.tar.gz
 
 ### 6. Update Git
 
-CAUTION: **Caution:**
+WARNING:
 From GitLab 13.1, you must use at least Git v2.24 (previous minimum version was v2.22).
 Git v2.28 is recommended.
 
@@ -163,7 +163,7 @@ sudo make prefix=/usr/local install
 
 ### 7. Update PostgreSQL
 
-CAUTION: **Caution:**
+WARNING:
 From GitLab 13.0, you must use at least PostgreSQL 11.
 
 The latest version of GitLab might depend on a more recent PostgreSQL version than what you are currently running (see the [PostgreSQL requirements](../install/requirements.md#postgresql-requirements)).

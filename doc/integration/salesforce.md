@@ -85,5 +85,5 @@ On the sign in page, there should now be a Salesforce icon below the regular sig
 Click the icon to begin the authentication process. Salesforce asks the user to sign in and authorize the GitLab application.
 If everything goes well, the user is returned to GitLab and is signed in.
 
-NOTE: **Note:**
+NOTE:
 GitLab requires the email address of each new user. Once the user is logged in using Salesforce, GitLab redirects the user to the profile page where they must provide the email and verify the email.

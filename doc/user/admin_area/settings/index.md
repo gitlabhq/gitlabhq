@@ -112,6 +112,6 @@ Access the default page for admin area settings by navigating to **Admin Area > 
 | [Gitaly timeouts](gitaly_timeouts.md) | Configure Gitaly timeouts. |
 | Localization | [Default first day of the week](../../profile/preferences.md) and [Time tracking](../../project/time_tracking.md#limit-displayed-units-to-hours). |
 
-NOTE: **Note:**
+NOTE:
 You can change the [Default first day of the week](../../profile/preferences.md) for the entire GitLab instance
 in the **Localization** section of **Admin Area > Settings > Preferences**.

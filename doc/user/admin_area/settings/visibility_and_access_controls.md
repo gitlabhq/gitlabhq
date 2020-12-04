@@ -43,7 +43,7 @@ To do this:
 
 1. Uncheck the **Allow owners to manage default branch protection per group** checkbox.
 
-NOTE: **Note:**
+NOTE:
 GitLab administrators can still update the default branch protection of a group.
 
 ## Default project creation protection
@@ -74,7 +74,7 @@ To ensure only admin users can delete projects:
 By default, a project marked for deletion will be permanently removed with immediate effect.
 By default, a group marked for deletion will be permanently removed after 7 days.
 
-CAUTION: **Warning:**
+WARNING:
 The default behavior of [Delayed Project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6 was changed to
 [Immediate deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) in GitLab 13.2.
 
@@ -180,7 +180,7 @@ When only one protocol is enabled:
 On top of these UI restrictions, GitLab will deny all Git actions on the protocol
 not selected.
 
-CAUTION: **Important:**
+WARNING:
 Starting with [GitLab 10.7](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18021),
 HTTP(S) protocol will be allowed for Git clone or fetch requests done by GitLab Runner
 from CI/CD jobs, even if _Only SSH_ was selected.
@@ -208,7 +208,7 @@ To specify a custom Git clone URL for HTTP(S):
 1. Enter a root URL for **Custom Git clone URL for HTTP(S)**.
 1. Click on **Save changes**.
 
-NOTE: **Note:**
+NOTE:
 SSH clone URLs can be customized in `gitlab.rb` by setting `gitlab_rails['gitlab_ssh_host']` and
 other related settings.
 

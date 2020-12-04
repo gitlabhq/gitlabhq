@@ -101,7 +101,7 @@ To change your `username`:
 1. Enter a new username under **Change username**.
 1. Click **Update username**.
 
-CAUTION: **Caution:**
+WARNING:
 It is currently not possible to change your username if it contains a
 project with [Container Registry](../packages/container_registry/index.md) tags,
 because the project cannot be moved.
@@ -135,7 +135,7 @@ To enable private profile:
 1. Check the **Private profile** option in the **Main settings** section.
 1. Click **Update profile settings**.
 
-NOTE: **Note:**
+NOTE:
 All your profile information can be seen by yourself, and GitLab admins, even if
 the **Private profile** option is enabled.
 
@@ -302,7 +302,7 @@ to get you a new `_gitlab_session` and keep you signed in through browser restar
 After your `remember_user_token` expires and your `_gitlab_session` is cleared/expired,
 you are asked to sign in again to verify your identity for security reasons.
 
-NOTE: **Note:**
+NOTE:
 When any session is signed out, or when a session is revoked
 via [Active Sessions](active_sessions.md), all **Remember me** tokens are revoked.
 While other sessions will remain active, the **Remember me** feature will not restore

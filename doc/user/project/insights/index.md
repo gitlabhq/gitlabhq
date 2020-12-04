@@ -14,7 +14,7 @@ requests to be merged and much more.
 
 ![Insights example bar chart](img/project_insights.png)
 
-NOTE: **Note:**
+NOTE:
 This feature is [also available at the group level](../../group/insights/index.md).
 
 ## View your project's Insights
@@ -32,11 +32,11 @@ a project. That file is used in the project's Insights page.
 See [Writing your `.gitlab/insights.yml`](#writing-your-gitlabinsightsyml) below
 for details about the content of this file.
 
-NOTE: **Note:**
+NOTE:
 After the configuration file is created, you can also
 [use it for your project's group](../../group/insights/index.md#configure-your-insights).
 
-NOTE: **Note:**
+NOTE:
 If the project doesn't have any configuration file, it attempts to use
 the group configuration if possible. If the group doesn't have any
 configuration, the default configuration is used.
@@ -46,7 +46,7 @@ configuration, the default configuration is used.
 If you have access to view a project, then you have access to view their
 Insights.
 
-NOTE: **Note:**
+NOTE:
 Issues or merge requests that you don't have access to (because you don't have
 access to the project they belong to, or because they are confidential) are
 filtered out of the Insights charts.
@@ -293,7 +293,7 @@ The `period_field` is automatically set to:
 - `merged_at` if `query.issuable_state` is `merged`
 - `created_at` otherwise
 
-NOTE: **Note:**
+NOTE:
 Until [this bug](https://gitlab.com/gitlab-org/gitlab/-/issues/26911), is resolved,
 you may see `created_at` in place of `merged_at`. `created_at` is used instead.
 

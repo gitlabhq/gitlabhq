@@ -132,7 +132,7 @@ find /var/opt/gitlab/gitlab-rails/shared/artifacts -name "job.log" -mtime +60 -d
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18169) in GitLab 10.4.
 
-NOTE: **Note:**
+NOTE:
 This beta feature is off by default. See below for how to [enable or disable](#enabling-incremental-logging) it.
 
 By combining the process with object storage settings, we can completely bypass
@@ -184,8 +184,8 @@ Feature.enabled?(:ci_enable_live_trace)
 Feature.enable(:ci_enable_live_trace)
 ```
 
-NOTE: **Note:**
-The transition period is handled gracefully. Upcoming logs are
+NOTE:
+The transition period is handled gracefully. Upcoming logs are 
 generated with the incremental architecture, and on-going logs stay with the
 legacy architecture, which means that on-going logs aren't forcibly
 re-generated with the incremental architecture.
@@ -196,7 +196,7 @@ re-generated with the incremental architecture.
 Feature.disable('ci_enable_live_trace')
 ```
 
-NOTE: **Note:**
+NOTE:
 The transition period is handled gracefully. Upcoming logs are generated
 with the legacy architecture, and on-going incremental logs stay with the incremental
 architecture, which means that on-going incremental logs aren't forcibly re-generated

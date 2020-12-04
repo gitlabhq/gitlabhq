@@ -17,7 +17,7 @@ The access levels are defined in the `Gitlab::Access` module. Currently, these l
 - Maintainer (`40`)
 - Owner (`50`) - Only valid to set for groups
 
-CAUTION: **Caution:**
+WARNING:
 Due to [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/219299),
 projects in personal namespaces don't show owner (`50`) permission
 for owner.
@@ -89,7 +89,7 @@ Example response:
 
 Gets a list of group or project members viewable by the authenticated user, including inherited members and permissions through ancestor groups.
 
-CAUTION: **Caution:**
+WARNING:
 Due to [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/249523), the users effective `access_level` may actually be higher than returned value when listing group members.
 
 This function takes pagination parameters `page` and `per_page` to restrict the list of users.

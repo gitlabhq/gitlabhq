@@ -23,7 +23,7 @@ GET /personal_access_tokens
 |-----------|---------|----------|---------------------|
 | `user_id` | integer/string | no | The ID of the user to filter by |
 
-NOTE: **Note:**
+NOTE:
 Administrators can use the `user_id` parameter to filter by a user. Non-administrators cannot filter by any user except themselves. Attempting to do so will result in a `401 Unauthorized` response.
 
 ```shell
@@ -82,7 +82,7 @@ DELETE /personal_access_tokens/:id
 |-----------|---------|----------|---------------------|
 | `id` | integer/string | yes | ID of personal access token |
 
-NOTE: **Note:**
+NOTE:
 Non-administrators can revoke their own tokens. Administrators can revoke tokens of any user.
 
 ```shell

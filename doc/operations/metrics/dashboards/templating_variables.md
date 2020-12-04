@@ -21,7 +21,7 @@ described [in Using Variables](variables.md).
 
 ## `text` variable type
 
-CAUTION: **Warning:**
+WARNING:
 This variable type is an _alpha_ feature, and is subject to change at any time
 without prior notice!
 
@@ -58,7 +58,7 @@ templating:
 
 ## `custom` variable type
 
-CAUTION: **Warning:**
+WARNING:
 This variable type is an _alpha_ feature, and is subject to change at any time
 without prior notice!
 
@@ -106,7 +106,7 @@ templating:
 
 ## `metric_label_values` variable type
 
-CAUTION: **Warning:**
+WARNING:
 This variable type is an _alpha_ feature, and is subject to change at any time
 without prior notice!
 

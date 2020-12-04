@@ -292,7 +292,7 @@ and the following syntax rules.
   an "information" icon on the nav to make the user aware that the feature is
   EE-only.
 
-CAUTION: **Caution:**
+WARNING:
 All links present on the data file must end in `.html`, not `.md`. Do not
 start any relative link with a forward slash `/`.
 

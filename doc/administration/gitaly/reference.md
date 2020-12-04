@@ -66,7 +66,7 @@ token = "the secret token"
 transitioning = true
 ```
 
-CAUTION: **Warning:**
+WARNING:
 Remember to disable `transitioning` when you are done
 changing your token settings.
 

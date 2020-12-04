@@ -13,7 +13,7 @@ for users with experience with these tools. If you are currently having an issue
 GitLab, you may want to check your [support options](https://about.gitlab.com/support/)
 first, before attempting to use this information.
 
-NOTE: **Note:**
+NOTE:
 This page was initially written for Support Engineers, so some of the links
 are only available internally at GitLab.
 

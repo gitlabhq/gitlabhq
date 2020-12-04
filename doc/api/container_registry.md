@@ -313,7 +313,7 @@ You can run this at most once an hour for a given container repository. This
 action doesn't delete blobs. To delete them and recycle disk space,
 [run the garbage collection](https://docs.gitlab.com/omnibus/maintenance/README.html#removing-unused-layers-not-referenced-by-manifests).
 
-NOTE: **Note:**
+NOTE:
 In GitLab 12.4 and later, individual tags are deleted.
 For more details, see the [discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/15737).
 

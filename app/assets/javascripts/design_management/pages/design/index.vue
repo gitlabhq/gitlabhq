@@ -4,6 +4,7 @@ import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
 import { ApolloMutation } from 'vue-apollo';
 import createFlash from '~/flash';
 import { fetchPolicies } from '~/lib/graphql';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import allVersionsMixin from '../../mixins/all_versions';
 import Toolbar from '../../components/toolbar/index.vue';
 import DesignDestroyer from '../../components/design_destroyer.vue';
@@ -37,7 +38,7 @@ import {
   TOGGLE_TODO_ERROR,
   designDeletionError,
 } from '../../utils/error_messages';
-import { trackDesignDetailView } from '../../utils/tracking';
+import { trackDesignDetailView, usagePingDesignDetailView } from '../../utils/tracking';
 import { DESIGNS_ROUTE_NAME } from '../../router/constants';
 import { ACTIVE_DISCUSSION_SOURCE_TYPES, DESIGN_DETAIL_LAYOUT_CLASSLIST } from '../../constants';
 
@@ -55,7 +56,7 @@ export default {
     GlAlert,
     DesignSidebar,
   },
-  mixins: [allVersionsMixin],
+  mixins: [allVersionsMixin, glFeatureFlagsMixin()],
   props: {
     id: {
       type: String,
@@ -150,7 +151,7 @@ export default {
   },
   mounted() {
     Mousetrap.bind('esc', this.closeDesign);
-    this.trackEvent();
+    this.trackPageViewEvent();
 
     // Set active discussion immediately.
     // This will ensure that, if a note is specified in the URL hash,
@@ -274,7 +275,7 @@ export default {
         query: this.$route.query,
       });
     },
-    trackEvent() {
+    trackPageViewEvent() {
       // TODO: This needs to be made aware of referers, or if it's rendered in a different context than a Issue
       trackDesignDetailView(
         'issue-design-collection',
@@ -282,6 +283,10 @@ export default {
         this.$route.query.version || this.latestVersionId,
         this.isLatestVersion,
       );
+
+      if (this.glFeatures.usageDataDesignAction) {
+        usagePingDesignDetailView();
+      }
     },
     updateActiveDiscussion(id, source = ACTIVE_DISCUSSION_SOURCE_TYPES.discussion) {
       this.$apollo.mutate({

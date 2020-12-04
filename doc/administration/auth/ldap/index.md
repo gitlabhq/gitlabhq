@@ -91,7 +91,7 @@ There is a Rake task to check LDAP configuration. After configuring LDAP
 using the documentation below, see [LDAP check Rake task](../../raketasks/check.md#ldap-check)
 for information on the LDAP check Rake task.
 
-NOTE: **Note:**
+NOTE:
 The `encryption` value `simple_tls` corresponds to 'Simple TLS' in the LDAP
 library. `start_tls` corresponds to StartTLS, not to be confused with regular TLS.
 Normally, if you specify `simple_tls` it is on port 636, while `start_tls` (StartTLS)
@@ -553,7 +553,7 @@ administrators. Specify a group CN for `admin_group` and all members of the
 LDAP group will be given administrator privileges. The configuration looks
 like the following.
 
-NOTE: **Note:**
+NOTE:
 Administrators are not synced unless `group_base` is also
 specified alongside `admin_group`. Also, only specify the CN of the admin
 group, as opposed to the full DN.
@@ -615,7 +615,7 @@ By default, GitLab runs a group sync process every hour, on the hour.
 The values shown are in cron format. If needed, you can use a
 [Crontab Generator](http://www.crontabgenerator.com).
 
-CAUTION: **Important:**
+WARNING:
 Do not start the sync process too frequently as this
 could lead to multiple syncs running concurrently. This is primarily a concern
 for installations with a large number of LDAP users. Please review the

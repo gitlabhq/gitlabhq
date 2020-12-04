@@ -7,13 +7,13 @@ type: howto
 
 # Geo database replication **(PREMIUM ONLY)**
 
-NOTE: **Note:**
+NOTE:
 If your GitLab installation uses external (not managed by Omnibus) PostgreSQL
 instances, the Omnibus roles will not be able to perform all necessary
 configuration steps. In this case,
 [follow the Geo with external PostgreSQL instances document instead](external_database.md).
 
-NOTE: **Note:**
+NOTE:
 The stages of the setup process must be completed in the documented order.
 Before attempting the steps in this stage, [complete all prior stages](../setup/index.md#using-omnibus-gitlab).
 
@@ -44,7 +44,7 @@ The following guide assumes that:
   you have a new **secondary** server set up with the same versions of the OS,
   PostgreSQL, and GitLab on all nodes.
 
-CAUTION: **Warning:**
+WARNING:
 Geo works with streaming replication. Logical replication is not supported at this time.
 There is an [issue where support is being discussed](https://gitlab.com/gitlab-org/gitlab/-/issues/7420).
 
@@ -79,7 +79,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 
 1. GitLab 10.4 and up only: Do the following to make sure the `gitlab` database user has a password defined:
 
-   NOTE: **Note:**
+   NOTE:
    Until FDW settings are removed in GitLab version 14.0, avoid using single or double quotes in the
    password for PostgreSQL as that will lead to errors when reconfiguring.
 
@@ -134,7 +134,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    connect to the **primary** node's database. For this reason, we need the address of
    each node.
 
-   NOTE: **Note:**
+   NOTE:
    For external PostgreSQL instances, see [additional instructions](external_database.md).
 
    If you are using a cloud provider, you can lookup the addresses for each
@@ -171,7 +171,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    corresponding to the given address. See [the PostgreSQL documentation](https://www.postgresql.org/docs/11/runtime-config-connection.html)
    for more details.
 
-   NOTE: **Note:**
+   NOTE:
    If you need to use `0.0.0.0` or `*` as the listen_address, you will also need to add
    `127.0.0.1/32` to the `postgresql['md5_auth_cidr_addresses']` setting, to allow Rails to connect through
    `127.0.0.1`. For more information, see [omnibus-5258](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5258).
@@ -290,7 +290,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    gitlab-ctl stop sidekiq
    ```
 
-   NOTE: **Note:**
+   NOTE:
    This step is important so we don't try to execute anything before the node is fully configured.
 
 1. [Check TCP connectivity](../../raketasks/maintenance.md) to the **primary** node's PostgreSQL server:
@@ -299,7 +299,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    gitlab-rake gitlab:tcp_check[<primary_node_ip>,5432]
    ```
 
-   NOTE: **Note:**
+   NOTE:
    If this step fails, you may be using the wrong IP address, or a firewall may
    be preventing access to the server. Check the IP address, paying close
    attention to the difference between public and private addresses and ensure
@@ -404,7 +404,7 @@ needed files for streaming replication.
 The directories used are the defaults that are set up in Omnibus. If you have
 changed any defaults, configure it as you see fit replacing the directories and paths.
 
-CAUTION: **Warning:**
+WARNING:
 Make sure to run this on the **secondary** server as it removes all PostgreSQL's
 data before running `pg_basebackup`.
 
@@ -421,7 +421,7 @@ data before running `pg_basebackup`.
 
 1. Execute the command below to start a backup/restore and begin the replication
 
-   CAUTION: **Warning:**
+   WARNING:
    Each Geo **secondary** node must have its own unique replication slot name.
    Using the same slot name between two secondaries will break PostgreSQL replication.
 
@@ -431,10 +431,10 @@ data before running `pg_basebackup`.
       --host=<primary_node_ip>
    ```
 
-   NOTE: **Note:**
+   NOTE:
    Replication slot names must only contain lowercase letters, numbers, and the underscore character.
 
-   NOTE: **Note:**
+   NOTE:
    In GitLab 13.4, a seed project is added when GitLab is first installed. This makes it necessary to pass `--force` even
    on a new Geo secondary node. There is an [issue to account for seed projects](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5618)
    when checking the database.

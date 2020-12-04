@@ -63,5 +63,5 @@ service in GitLab.
 If builds are not triggered, ensure you entered the right GitLab IP address in
 Bamboo under 'Trigger IP addresses'. Also check [service hook logs](overview.md#troubleshooting-integrations) for request failures.
 
-NOTE: **Note:**
+NOTE:
 Starting with GitLab 8.14.0, builds are triggered on push events.

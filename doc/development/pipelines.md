@@ -412,7 +412,7 @@ Merge Request. This prevents `rspec fail-fast` duration from exceeding the avera
 
 This number can be overridden by setting a CI variable named `RSPEC_FAIL_FAST_TEST_FILE_COUNT_THRESHOLD`.
 
-NOTE: **Note:**
+NOTE:
 This experiment is only enabled when the CI variable `RSPEC_FAIL_FAST_ENABLED=true` is set.
 
 #### Determining related test files in a Merge Request

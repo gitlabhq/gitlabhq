@@ -108,7 +108,7 @@ For more details, see the Git documentation for
 
 ## Filter by file path
 
-CAUTION: **Experimental:**
+WARNING:
 Partial Clone using `sparse` filters is experimental, slow, and will
 significantly increase Gitaly resource utilization when cloning and fetching.
 
@@ -169,7 +169,7 @@ For more details, see the Git documentation for
    git rev-list --all --quiet --objects --missing=print | wc -l
    ```
 
-   CAUTION: **IDE and Shell integrations:**
+   WARNING:
    Git integrations with `bash`, `zsh`, etc and editors that automatically
    show Git status information often run `git fetch` which will fetch the
    entire repository. You many need to disable or reconfigure these

@@ -58,7 +58,7 @@ or choose more than one. Single approval rules are available in GitLab Starter a
 while [multiple approval rules](#multiple-approval-rules) are available in
 [GitLab Premium](https://about.gitlab.com/pricing/) and above.
 
-NOTE: **Note:**
+NOTE:
 On GitLab.com, you can add a group as an approver if you're a member of that group or the
 group is public.
 
@@ -167,7 +167,7 @@ To add or edit the default merge request approval rule:
 Any merge requests that were created before changing the rules will not be changed.
 They will keep the original approval rules, unless manually [overridden](#editing--overriding-approval-rules-per-merge-request).
 
-NOTE: **Note:**
+NOTE:
 If a merge request targets a different project, such as from a fork to the upstream project,
 the default approval rules will be taken from the target (upstream) project, not the
 source (fork).
@@ -252,7 +252,7 @@ one of the following is possible:
 
   ![Remove approval](img/remove_approval.png)
 
-NOTE: **Note:**
+NOTE:
 The merge request author is not allowed to approve their own merge request if
 [**Prevent author approval**](#allowing-merge-request-authors-to-approve-their-own-merge-requests)
 is enabled in the project settings.
@@ -286,7 +286,7 @@ even if there are changes added to the merge request. To enable this feature:
    checkbox.
 1. Click **Save changes**.
 
-NOTE: **Note:**
+NOTE:
 Approvals do not get reset when [rebasing a merge request](fast_forward_merge.md)
 from the UI. However, approvals will be reset if the target branch is changed.
 
@@ -317,7 +317,7 @@ enable this feature:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5981) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.0.
 
-NOTE: **Note:**
+NOTE:
 To require authentication when approving a merge request, you must enable
 **Password authentication enabled for web interface** under [sign-in restrictions](../../admin_area/settings/sign_in_restrictions.md#password-authentication-enabled).
 in the Admin area.

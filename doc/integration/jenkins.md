@@ -29,7 +29,7 @@ Moving from a traditional CI plug-in to a single application for the entire soft
 life cycle can decrease hours spent on maintaining toolchains by 10% or more. For more details, see
 the ['GitLab vs. Jenkins' comparison page](https://about.gitlab.com/devops-tools/jenkins-vs-gitlab/).
 
-NOTE: **Note:**
+NOTE:
 This documentation focuses only on how to **configure** a Jenkins *integration* with
 GitLab. Learn how to **migrate** from Jenkins to GitLab CI/CD in our
 [Migrating from Jenkins](../ci/migration/jenkins.md) documentation.

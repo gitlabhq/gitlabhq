@@ -421,7 +421,7 @@ GitLab). There is a `git merge --squash` command which does exactly that
 (squashes commits on feature-branch to a single commit on target branch
 at merge).
 
-NOTE: **Note:**
+NOTE:
 Never modify the commit history of `master` or shared branch.
 
 ### How modifying history is done
@@ -457,7 +457,7 @@ pick <commit3-id> <commit3-commit-message>
 # Note that empty commits are commented out
 ```
 
-NOTE: **Note:**
+NOTE:
 It is important to notice that comment from the output clearly states that, if
 you decide to abort, then do not just close your editor (as that will in-fact
 modify history), but remove all uncommented lines and save.

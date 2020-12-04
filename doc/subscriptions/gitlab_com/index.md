@@ -36,7 +36,7 @@ at each tier, see the
 
 ## Choose the number of users
 
-NOTE: **Note:**
+NOTE:
 Applied only to groups.
 
 A GitLab.com subscription uses a concurrent (_seat_) model. You pay for a
@@ -101,7 +101,7 @@ to the **Billing** section of the relevant namespace:
   under your profile.
 - **For groups**: From the group page (*not* from a project in the group), go to **Settings > Billing**.
 
-  NOTE: **Note:**
+  NOTE:
   You must have Owner level [permissions](../../user/permissions.md) to view a group's billing page.
 
   The following table describes details of your subscription for groups:

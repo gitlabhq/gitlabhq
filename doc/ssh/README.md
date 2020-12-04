@@ -121,7 +121,7 @@ Enter file in which to save the key (/home/user/.ssh/id_rsa):
 
 For guidance, proceed to the [common steps](#common-steps-for-generating-an-ssh-key-pair).
 
-NOTE: **Note:**
+NOTE:
 If you have OpenSSH version 7.8 or below, consider the problems associated
 with [encoding](#rsa-keys-and-openssh-from-versions-65-to-78).
 
@@ -183,7 +183,7 @@ the following command:
 ssh-keygen -o -t rsa -b 4096 -C "email@example.com"
 ```
 
-NOTE: **Note:**
+NOTE:
 As noted in the `ssh-keygen` man page, ED25519 already encrypts keys to the more secure
 OpenSSH format.
 
@@ -228,7 +228,7 @@ SSH keys that have "expired" using this procedure are valid in GitLab workflows.
 As the GitLab-configured expiration date is not included in the SSH key itself,
 you can still export public SSH keys as needed.
 
-NOTE: **Note:**
+NOTE:
 If you manually copied your public SSH key make sure you copied the entire
 key starting with `ssh-ed25519` (or `ssh-rsa`) and ending with your email address.
 
@@ -253,7 +253,7 @@ Are you sure you want to continue connecting (yes/no)? yes
 Warning: Permanently added 'gitlab.com' (ECDSA) to the list of known hosts.
 ```
 
-NOTE: **Note:**
+NOTE:
 For GitLab.com, consult the
 [SSH host keys fingerprints](../user/gitlab_com/index.md#ssh-host-keys-fingerprints),
 section to make sure you're connecting to the correct server. For example, you can see
@@ -324,7 +324,7 @@ due to how SSH assembles `IdentityFile` entries and is not changed by
 setting `IdentitiesOnly` to `yes`. `IdentityFile` entries should point to
 the private key of an SSH key pair.
 
-NOTE: **Note:**
+NOTE:
 Private and public keys should be readable by the user only. Accomplish this
 on Linux and macOS by running: `chmod 0400 ~/.ssh/<example_ssh_key>` and
 `chmod 0400 ~/.ssh/<example_sh_key.pub>`.
@@ -343,7 +343,7 @@ Host <user_2.gitlab.com>
   IdentityFile ~/.ssh/<example_ssh_key2>
 ```
 
-NOTE: **Note:**
+NOTE:
 The example `Host` aliases are defined as `user_1.gitlab.com` and
 `user_2.gitlab.com` for efficiency and transparency. Advanced configurations
 are more difficult to maintain; using this type of alias makes it easier to

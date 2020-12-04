@@ -40,7 +40,7 @@ more details about the `.gitlab/insights.yml` configuration file.
 
 If you have access to view a group, then you have access to view their Insights.
 
-NOTE: **Note:**
+NOTE:
 Issues or merge requests that you don't have access to (because you don't have
 access to the project they belong to, or because they are confidential) are
 filtered out of the Insights charts.

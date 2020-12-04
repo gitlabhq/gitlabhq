@@ -23,7 +23,7 @@ To create a project in GitLab:
      if enabled on your GitLab instance. Contact your GitLab administrator if this is unavailable.
    - Run [CI/CD pipelines for external repositories](../ci/ci_cd_for_external_repos/index.md). **(PREMIUM)**
 
-NOTE: **Note:**
+NOTE:
 For a list of words that can't be used as project names see
 [Reserved project and group names](../user/reserved_names.md).
 

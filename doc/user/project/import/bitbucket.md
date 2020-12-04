@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Import your project from Bitbucket Cloud to GitLab
 
-NOTE: **Note:**
+NOTE:
 The Bitbucket Cloud importer works only with Bitbucket.org, not with Bitbucket
 Server (aka Stash). If you are trying to import projects from Bitbucket Server, use
 [the Bitbucket Server importer](bitbucket_server.md).

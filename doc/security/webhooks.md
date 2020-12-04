@@ -7,7 +7,7 @@ type: concepts, reference, howto
 
 # Webhooks and insecure internal web services
 
-NOTE: **Note:**
+NOTE:
 On GitLab.com, the [maximum number of webhooks and their size](../user/gitlab_com/index.md#webhooks) per project, and per group, is limited.
 
 If you have non-GitLab web services running on your GitLab server or within its
@@ -50,7 +50,7 @@ inside the **Admin Area > Settings** (`/admin/application_settings/network`):
 
 ![Outbound requests admin settings](img/outbound_requests_section_v12_2.png)
 
-NOTE: **Note:**
+NOTE:
 *System hooks* are enabled to make requests to local network by default since they are
 set up by administrators. However, you can turn this off by disabling the
 **Allow requests to the local network from system hooks** option.
@@ -90,7 +90,7 @@ example.com;gitlab.example.com
 example.com:8080
 ```
 
-NOTE: **Note:**
+NOTE:
 Wildcards (`*.example.com`) are not currently supported.
 
 <!-- ## Troubleshooting

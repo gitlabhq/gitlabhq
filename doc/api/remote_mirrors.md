@@ -47,7 +47,7 @@ Example response:
 ]
 ```
 
-NOTE: **Note:**
+NOTE:
 For security reasons, the `url` attribute will always be scrubbed of username
 and password information.
 

@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Dependencies API **(ULTIMATE)**
 
-CAUTION: **Caution:**
+WARNING:
 This API is in an alpha stage and considered unstable.
 The response payload may be subject to change or breakage
 across GitLab releases.

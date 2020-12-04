@@ -11,7 +11,7 @@ We need to create a user in Jira to have access to all projects that need to int
 As an example, we create a user named `gitlab` and add it to a new group
 named `gitlab-developers`.
 
-NOTE: **Note:**
+NOTE:
 It is important that the Jira user created for the integration is given 'write'
 access to your Jira projects. This is covered in the process below.
 

@@ -18,7 +18,7 @@ may be unavailable to you.
 
 In this case, you'll see a warning like this in the feature documentation:
 
-CAUTION: **Warning:**
+WARNING:
 This feature might not be available to you. Review the **version history** note
 on this page for details.
 

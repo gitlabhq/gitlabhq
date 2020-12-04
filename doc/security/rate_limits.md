@@ -7,7 +7,7 @@ type: reference, howto
 
 # Rate limits
 
-NOTE: **Note:**
+NOTE:
 For GitLab.com, please see
 [GitLab.com-specific rate limits](../user/gitlab_com/index.md#gitlabcom-specific-rate-limits).
 

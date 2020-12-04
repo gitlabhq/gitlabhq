@@ -55,7 +55,7 @@ product, and all together are pulled to generate the docs website:
 - [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/tree/master/docs)
 - [GitLab Chart](https://gitlab.com/charts/gitlab/tree/master/doc)
 
-NOTE: **Note:**
+NOTE:
 In September 2019, we [moved towards a single codebase](https://gitlab.com/gitlab-org/gitlab/-/issues/2952),
 as such the docs for CE and EE are now identical. For historical reasons and
 in order not to break any existing links throughout the internet, we still
@@ -114,7 +114,7 @@ located in the [Dockerfiles directory](https://gitlab.com/gitlab-org/gitlab-docs
 
 If you need to rebuild the Docker images immediately (must have maintainer level permissions):
 
-CAUTION: **Caution:**
+WARNING:
 If you change the dockerfile configuration and rebuild the images, you can break the master
 pipeline in the main `gitlab` repository as well as in `gitlab-docs`. Create an image with
 a different name first and test it to ensure you do not break the pipelines.

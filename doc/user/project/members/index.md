@@ -102,7 +102,7 @@ and tenth day after the invitation was initially sent.
 After the user accepts the invitation, they are prompted to create a new
 GitLab account using the same e-mail address the invitation was sent to.
 
-Note: **Note:**
+NOTE:
 Unaccepted invites are automatically deleted after 90 days.
 
 ## Project membership and requesting access
@@ -126,7 +126,7 @@ After access is requested:
   Email is sent to the most recently active project maintainers.
 - Any project maintainer can approve or decline the request on the members page.
 
-NOTE: **Note:**
+NOTE:
 If a project does not have any maintainers, the notification is sent to the
 most recently active owners of the project's group.
 

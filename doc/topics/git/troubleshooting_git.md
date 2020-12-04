@@ -51,7 +51,7 @@ There's another option where you can prevent session timeouts by configuring
 SSH 'keep alive' either on the client or on the server (if you are a GitLab
 admin and have access to the server).
 
-NOTE: **Note:**
+NOTE:
 Configuring *both* the client and the server is unnecessary.
 
 **To configure SSH on the client side**:
@@ -165,7 +165,7 @@ fatal: index-pack failed
 
 This can be fixed by increasing the existing `http.postBuffer` value to one greater than the repository size. For example, if `git clone` fails when cloning a 500M repository, the solution will be to set `http.postBuffer` to `524288000` so that the request only starts buffering after the first 524288000 bytes.
 
-NOTE: **Note:**
+NOTE:
 The default value of `http.postBuffer`, 1 MiB, is applied if the setting is not configured.
 
 ```shell

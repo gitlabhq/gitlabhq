@@ -78,7 +78,7 @@ Use Base64 encoding if you need to pass complex values, such as newlines and
 spaces. Left unencoded, complex values like these can cause escaping issues
 due to how Auto DevOps uses the arguments.
 
-CAUTION: **Warning:**
+WARNING:
 Avoid passing secrets as Docker build arguments if possible, as they may be
 persisted in your image. See
 [this discussion of best practices with secrets](https://github.com/moby/moby/issues/13490) for details.
@@ -154,7 +154,7 @@ You can override the default values in the `values.yaml` file in the
   `HELM_UPGRADE_VALUES_FILE` [environment variable](#environment-variables) with
   the path and name.
 
-NOTE: **Note:**
+NOTE:
 For GitLab 12.5 and earlier, use the `HELM_UPGRADE_EXTRA_ARGS` environment variable
 to override the default chart values by setting `HELM_UPGRADE_EXTRA_ARGS` to `--values <my-values.yaml>`.
 
@@ -268,7 +268,7 @@ postgres://user:password@postgres-host:postgres-port/postgres-database
 
 ### Upgrading PostgresSQL
 
-CAUTION: **Deprecation:**
+WARNING:
 The variable `AUTO_DEVOPS_POSTGRES_CHANNEL` that controls default provisioned
 PostgreSQL was changed to `2` in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/210499).
 To keep using the old PostgreSQL, set the `AUTO_DEVOPS_POSTGRES_CHANNEL` variable to
@@ -360,7 +360,7 @@ After you set up your replica variables using a
 [project variable](../../ci/variables/README.md#gitlab-cicd-environment-variables),
 you can scale your application by redeploying it.
 
-CAUTION: **Caution:**
+WARNING:
 You should *not* scale your application using Kubernetes directly. This can
 cause confusion with Helm not detecting the change, and subsequent deploys with
 Auto DevOps can undo your changes.

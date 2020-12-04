@@ -85,7 +85,7 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow the
 
 ### Security concerns
 
-CAUTION: **Caution:**
+WARNING:
 Be careful when choosing the domain used for receiving incoming email.
 
 For example, suppose your top-level company domain is `hooli.com`.
@@ -112,7 +112,7 @@ Alternatively, use a dedicated domain for GitLab email communications such as
 See GitLab issue [#30366](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30366)
 for a real-world example of this exploit.
 
-CAUTION: **Caution:**
+WARNING:
 Use a mail server that has been configured to reduce
 spam.
 A Postfix mail server that is running on a default configuration, for example,
@@ -253,7 +253,7 @@ incoming_email:
 
 Example configuration for Gmail/G Suite. Assumes mailbox `gitlab-incoming@gmail.com`.
 
-NOTE: **Note:**
+NOTE:
 `incoming_email_email` cannot be a Gmail alias account.
 
 Example for Omnibus installs:
@@ -442,7 +442,7 @@ Example configurations for Microsoft Office 365 with IMAP enabled.
 
 ##### Sub-addressing mailbox
 
-NOTE: **Note:**
+NOTE:
 As of September 2020 sub-addressing support
 [has been added to Office 365](https://office365.uservoice.com/forums/273493-office-365-admin/suggestions/18612754-support-for-dynamic-email-aliases-in-office-36). This feature is not
 enabled by default, and must be enabled through PowerShell.
@@ -451,7 +451,7 @@ This series of PowerShell commands enables [sub-addressing](#email-sub-addressin
 at the organization level in Office 365. This allows all mailboxes in the organization
 to receive sub-addressed mail:
 
-NOTE: **Note:**
+NOTE:
 This series of commands enables sub-addressing at the organization
 level in Office 365. This allows all mailboxes in the organization
 to receive sub-addressed mail.

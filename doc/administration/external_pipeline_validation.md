@@ -9,7 +9,7 @@ type: reference, howto
 
 You can use an external service for validating a pipeline before it's created.
 
-CAUTION: **Warning:**
+WARNING:
 This is an experimental feature and subject to change without notice.
 
 ## Usage

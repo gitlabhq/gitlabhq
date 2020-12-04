@@ -117,7 +117,7 @@ The ActionCable connection or channel class is used as the `controller`.
 }
 ```
 
-NOTE: **Note:**
+NOTE:
 Starting with GitLab 12.5, if an error occurs, an
 `exception` field is included with `class`, `message`, and
 `backtrace`. Previous versions included an `error` field instead of
@@ -383,7 +383,7 @@ only. For example:
 
 ## `audit_json.log`
 
-NOTE: **Note:**
+NOTE:
 Most log entries only exist in [GitLab Starter](https://about.gitlab.com/pricing/), however a few exist in GitLab Core.
 
 This file lives in `/var/log/gitlab/gitlab-rails/audit_json.log` for
@@ -1004,7 +1004,7 @@ When [troubleshooting](troubleshooting/index.md) issues that aren't localized to
 previously listed components, it's helpful to simultaneously gather multiple logs and statistics
 from a GitLab instance.
 
-NOTE: **Note:**
+NOTE:
 GitLab Support will often ask for one of these, and maintains the required tools.
 
 ### Briefly tail the main logs

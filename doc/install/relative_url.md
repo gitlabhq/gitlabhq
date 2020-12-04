@@ -47,7 +47,7 @@ See the [requirements](requirements.md) document for more information.
 
 ## Enable relative URL in GitLab
 
-NOTE: **Note:**
+NOTE:
 Do not make any changes to your web server configuration file regarding
 relative URL. The relative URL support is implemented by GitLab Workhorse.
 
@@ -111,7 +111,7 @@ Make sure to follow all steps below:
    -authBackend http://127.0.0.1:8080/gitlab
    ```
 
-   NOTE: **Note:**
+   NOTE:
    If you are using a custom init script, make sure to edit the above
    GitLab Workhorse setting as needed.
 

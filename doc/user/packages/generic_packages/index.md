@@ -13,7 +13,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - It's recommended for production use.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-generic-packages-in-the-package-registry).
 
-CAUTION: **Warning:**
+WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
 Publish generic files, like release binaries, in your project’s Package Registry. Then, install the packages whenever you need to use them as a dependency.

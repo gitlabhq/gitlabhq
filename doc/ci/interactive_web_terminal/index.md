@@ -15,7 +15,7 @@ shell access to the environment where [GitLab Runner](https://docs.gitlab.com/ru
 is deployed, some [security precautions](../../administration/integration/terminal.md#security) were
 taken to protect the users.
 
-NOTE: **Note:**
+NOTE:
 [Shared runners on GitLab.com](../runners/README.md#shared-runners) do not
 provide an interactive web terminal. Follow [this
 issue](https://gitlab.com/gitlab-org/gitlab/-/issues/24674) for progress on
@@ -31,18 +31,18 @@ Two things need to be configured for the interactive web terminal to work:
 - If you are using a reverse proxy with your GitLab instance, web terminals need to be
   [enabled](../../administration/integration/terminal.md#enabling-and-disabling-terminal-support)
 
-NOTE: **Note:**
+NOTE:
 Interactive web terminals are not yet supported by
 [`gitlab-runner` Helm chart](https://docs.gitlab.com/charts/charts/gitlab/gitlab-runner/index.html),
 but support [is planned](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/issues/79).
 
 ## Debugging a running job
 
-NOTE: **Note:**
+NOTE:
 Not all executors are
 [supported](https://docs.gitlab.com/runner/executors/#compatibility-chart).
 
-NOTE: **Note:**
+NOTE:
 The `docker` executor does not keep running
 after the build script is finished. At that point, the terminal automatically
 disconnects and does not wait for the user to finish. Please follow [this

@@ -12,7 +12,7 @@ GitLab University is a great place to start when learning about version control 
 
 If you're looking for a GitLab subscription for _your university_, see our [GitLab for Education](https://about.gitlab.com/solutions/education/) page.
 
-CAUTION: **Caution:**
+WARNING:
 Some of the content in GitLab University may be out of date and we plan to
 [evaluate](https://gitlab.com/gitlab-org/gitlab/-/issues/20403) it.
 
@@ -201,7 +201,7 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 
 ## 5. Resources for GitLab Team Members
 
-NOTE: **Note:**
+NOTE:
 Some content can only be accessed by GitLab team members.
 
 1. [Sales Path](https://about.gitlab.com/handbook/sales/onboarding/)

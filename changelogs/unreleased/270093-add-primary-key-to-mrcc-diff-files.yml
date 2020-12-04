@@ -1,0 +1,5 @@
+---
+title: Add primary key to merge_request_context_commit_diff_files
+merge_request: 49024
+author:
+type: changed

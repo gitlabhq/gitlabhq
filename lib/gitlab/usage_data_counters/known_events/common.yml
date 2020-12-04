@@ -151,6 +151,7 @@
 - name: design_action
   category: source_code
   aggregation: daily
+  feature_flag: usage_data_design_action
 - name: project_action
   category: source_code
   aggregation: daily

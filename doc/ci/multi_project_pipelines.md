@@ -121,7 +121,7 @@ In the example, `staging` is marked as successful as soon as a downstream pipeli
 gets created. If you want to display the downstream pipeline's status instead, see
 [Mirroring status from triggered pipeline](#mirroring-status-from-triggered-pipeline).
 
-NOTE: **Note:**
+NOTE:
 Bridge jobs [do not support every configuration keyword](#limitations) that can be used
 with other jobs. If a user tries to use unsupported configuration keywords, YAML
 validation fails on pipeline creation.
@@ -152,7 +152,7 @@ Use:
 GitLab uses a commit that is on the head of the branch when
 creating a downstream pipeline.
 
-NOTE: **Note:**
+NOTE:
 Pipelines triggered on a protected branch in a downstream project use the [permissions](../user/permissions.md)
 of the user that ran the trigger job in the upstream project. If the user does not
 have permission to run CI/CD pipelines against the protected branch, the pipeline fails. See

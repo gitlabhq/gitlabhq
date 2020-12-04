@@ -219,7 +219,7 @@ information useful for troubleshooting, but if you are experiencing trouble with
 GitLab instance, you should check your [support options](https://about.gitlab.com/support/)
 before referring to these documents.
 
-CAUTION: **Warning:**
+WARNING:
 Using the commands listed in the documentation below could result in data loss or
 other damage to a GitLab instance, and should only be used by experienced administrators
 who are aware of the risks.

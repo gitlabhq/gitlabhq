@@ -224,7 +224,7 @@ If there's an [environment](../../../ci/environments/index.md) and the applicati
 successfully deployed to it, the deployed environment and the link to the
 Review App will be shown as well.
 
-NOTE: **Note:**
+NOTE:
 When the default branch (for example, `main`) is red due to a failed CI pipeline, the `merge` button
 When the pipeline fails in a merge request but it can be merged nonetheless,
 the **Merge** button will be colored in red.
@@ -307,7 +307,7 @@ Merge Request again.
 Here are some tips that will help you be more efficient with merge requests in
 the command line.
 
-NOTE: **Note:**
+NOTE:
 This section might move in its own document in the future.
 
 ### Copy the branch name for local checkout

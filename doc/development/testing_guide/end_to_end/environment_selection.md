@@ -19,7 +19,7 @@ We can specify what environments or pipelines to run tests against using the `on
 | `production` | Match against production | `Static` |
 | `pipeline` | Match against a pipeline | `Array` or `Static`|
 
-CAUTION: **Caution:**
+WARNING:
 You cannot specify `:production` and `{ <switch>: 'value' }` simultaneously.
 These options are mutually exclusive. If you want to specify production, you
 can control the `tld` and `domain` independently.

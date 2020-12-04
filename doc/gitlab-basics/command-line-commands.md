@@ -102,7 +102,7 @@ might be asked for an administrator password.
 sudo RESTRICTED-COMMAND
 ```
 
-CAUTION: **Caution:**
+WARNING:
 Be careful of the commands you run with `sudo`. Certain commands may cause
 damage to your data or system.
 

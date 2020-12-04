@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7690) in GitLab 8.15.
 
-NOTE: **Note:**
+NOTE:
 Only project maintainers and owners can access web terminals.
 
 With the introduction of the [Kubernetes integration](../../user/project/clusters/index.md),
@@ -51,7 +51,7 @@ detail below.
 
 ## Enabling and disabling terminal support
 
-NOTE: **Note:**
+NOTE:
 AWS Elastic Load Balancers (ELBs) do not support web sockets.
 AWS Application Load Balancers (ALBs) must be used if you want web terminals
 to work. See [AWS Elastic Load Balancing Product Comparison](https://aws.amazon.com/elasticloadbalancing/features/#compare)

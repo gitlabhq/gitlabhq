@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > Introduced in GitLab 11.5.
 
-CAUTION: **Caution:**
+WARNING:
 Serverless is currently in [alpha](https://about.gitlab.com/handbook/product/#alpha).
 
 ## Overview
@@ -87,7 +87,7 @@ memory. **RBAC must be enabled.**
 1. After the Knative installation has finished, you can wait for the IP address or hostname to be displayed in the
    **Knative Endpoint** field or [retrieve the Istio Ingress Endpoint manually](../../../clusters/applications.md#determining-the-external-endpoint-manually).
 
-   NOTE: **Note:**
+   NOTE:
    Running `kubectl` commands on your cluster requires setting up access to the cluster first.
    For clusters created on GKE, see [GKE Cluster Access](https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-access-for-kubectl),
    for other platforms [Install kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/).
@@ -767,7 +767,7 @@ or with other versions of Python.
 1. Create a Kubernetes secret to hold your TLS certificate, `cert.pem`, and
    the private key `cert.pk`:
 
-   NOTE: **Note:**
+   NOTE:
    Running `kubectl` commands on your cluster requires setting up access to the cluster first.
    For clusters created on GKE, see
    [GKE Cluster Access](https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-access-for-kubectl).

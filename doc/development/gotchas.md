@@ -264,7 +264,7 @@ end
 By specifying `Projects::`, we tell Rails exactly what class we are referring
 to and we would avoid the issue.
 
-NOTE: **Note:**
+NOTE:
 This problem will disappear as soon as we upgrade to Rails 6 and use the Zeitwerk autoloader.
 
 ### Further reading

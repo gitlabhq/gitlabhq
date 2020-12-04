@@ -176,7 +176,7 @@ Example Response:
 
 Sometimes it's just not meant to be and you'll have to remove the award.
 
-NOTE: **Note:**
+NOTE:
 Only available to administrators or the author of the award.
 
 ```plaintext
@@ -201,7 +201,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 Comments (also known as notes) are a sub-resource of issues, merge requests, and snippets.
 
-NOTE: **Note:**
+NOTE:
 The examples below describe working with award emoji on comments for an issue, but can be
 easily adapted for comments on a merge request or on a snippet. Therefore, you have to replace
 `issue_iid` either with `merge_request_iid` or with the `snippet_id`.
@@ -343,7 +343,7 @@ Example response:
 
 Sometimes it's just not meant to be and you'll have to remove the award.
 
-NOTE: **Note:**
+NOTE:
 Only available to administrators or the author of the award.
 
 ```plaintext

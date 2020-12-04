@@ -49,7 +49,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 }
 ```
 
-NOTE: **Note:**
+NOTE:
 The upload request will be sent with `Content-Type: application/gzip` header. Ensure that your pre-signed URL includes this as part of the signature.
 
 ## Export status
@@ -192,7 +192,7 @@ requests.post(url, headers=headers, data=data, files=files)
 }
 ```
 
-NOTE: **Note:**
+NOTE:
 The maximum import file size can be set by the Administrator, default is 50MB.
 As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](settings.md#change-application-settings) or the [Admin UI](../user/admin_area/settings/account_and_limit_settings.md).
 
@@ -225,10 +225,10 @@ If the status is `failed`, `started` or `finished`, the `failed_relations` array
 be populated with any occurrences of relations that failed to import either due to
 unrecoverable errors or because retries were exhausted (a typical example are query timeouts.)
 
-NOTE: **Note:**
+NOTE:
 An element's `id` field in `failed_relations` references the failure record, not the relation.
 
-NOTE: **Note:**
+NOTE:
 The `failed_relations` array is currently capped to 100 items.
 
 ```json

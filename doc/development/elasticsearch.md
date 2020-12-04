@@ -68,7 +68,7 @@ The `whitespace` tokenizer was selected in order to have more control over how t
 
 Please see the `code` filter for an explanation on how tokens are split.
 
-NOTE: **Note:**
+NOTE:
 Currently the [Elasticsearch code_analyzer doesn't account for all code cases](../integration/elasticsearch.md#known-issues).
 
 #### `code_search_analyzer`
@@ -129,7 +129,7 @@ Patterns:
 
 ## Zero downtime reindexing with multiple indices
 
-NOTE: **Note:**
+NOTE:
 This is not applicable yet as multiple indices functionality is not fully implemented.
 
 Currently GitLab can only handle a single version of setting. Any setting/schema changes would require reindexing everything from scratch. Since reindexing can take a long time, this can cause search functionality downtime.
@@ -168,7 +168,7 @@ The global configurations per version are now in the `Elastic::(Version)::Config
 
 ### Creating new version of schema
 
-NOTE: **Note:**
+NOTE:
 This is not applicable yet as multiple indices functionality is not fully implemented.
 
 Folders like `ee/lib/elastic/v12p1` contain snapshots of search logic from different versions. To keep a continuous Git history, the latest version lives under `ee/lib/elastic/latest`, but its classes are aliased under an actual version (e.g. `ee/lib/elastic/v12p3`). When referencing these classes, never use the `Latest` namespace directly, but use the actual version (e.g. `V12p3`).
@@ -188,7 +188,7 @@ If the current version is `v12p1`, and we need to create a new version for `v12p
 
 > This functionality was introduced by [#234046](https://gitlab.com/gitlab-org/gitlab/-/issues/234046).
 
-NOTE: **Note:**
+NOTE:
 This only supported for indices created with GitLab 13.0 or greater.
 
 Migrations are stored in the [`ee/elastic/migrate/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/elastic/migrate) folder with `YYYYMMDDHHMMSS_migration_name.rb`

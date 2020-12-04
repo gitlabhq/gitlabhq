@@ -327,7 +327,7 @@ login <gitlab_user_name>
 password <personal_access_token>
 ```
 
-NOTE: **Note:**
+NOTE:
 On Windows, Go reads `~/_netrc` instead of `~/.netrc`.
 
 ### Authenticate Git fetches

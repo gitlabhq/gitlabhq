@@ -13,7 +13,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Deletes the cached blobs for a group. This endpoint requires group admin access.
 
-CAUTION: **Warning:**
+WARNING:
 [A bug exists](https://gitlab.com/gitlab-org/gitlab/-/issues/277161) for this API.
 
 ```plaintext

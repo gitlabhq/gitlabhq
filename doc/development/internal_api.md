@@ -25,7 +25,7 @@ To authenticate using that token, clients read the contents of that
 file, and include the token Base64 encoded in a `secret_token` parameter
 or in the `Gitlab-Shared-Secret` header.
 
-NOTE: **Note:**
+NOTE:
 The internal API used by GitLab Pages, and GitLab Kubernetes Agent Server (kas) uses JSON Web Token (JWT)
 authentication, which is different from GitLab Shell.
 
@@ -385,7 +385,7 @@ These endpoints are all authenticated using JWT. The JWT secret is stored in a f
 specified in `config/gitlab.yml`. By default, the location is in the root of the
 GitLab Rails app in a file called `.gitlab_kas_secret`.
 
-CAUTION: **Caution:**
+WARNING:
 The Kubernetes agent is under development and is not recommended for production use.
 
 ### Kubernetes agent information

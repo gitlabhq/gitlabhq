@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: tutorial
 ---
 
-NOTE: **Note:**
+NOTE:
 This document has not been updated recently and could be out of date. For the latest documentation, see the [GitLab CI/CD](../README.md) page and the [GitLab CI/CD Pipeline Configuration Reference](../yaml/README.md).
 
 # Test a Clojure application with GitLab CI/CD

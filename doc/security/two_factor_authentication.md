@@ -72,7 +72,7 @@ The following are important notes about 2FA:
 
 ## Disabling 2FA for everyone
 
-CAUTION: **Caution:**
+WARNING:
 Disabling 2FA for everyone does not disable the [enforce 2FA for all users](#enforcing-2fa-for-all-users)
 or [enforce 2FA for all users in a group](#enforcing-2fa-for-all-users-in-a-group)
 settings. In addition to the steps in this section, you will need to disable any enforced 2FA
@@ -94,7 +94,7 @@ sudo gitlab-rake gitlab:two_factor:disable_for_all_users
 sudo -u git -H bundle exec rake gitlab:two_factor:disable_for_all_users RAILS_ENV=production
 ```
 
-CAUTION: **Caution:**
+WARNING:
 This is a permanent and irreversible action. Users will have to
 reactivate 2FA from scratch if they want to use it again.
 

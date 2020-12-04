@@ -37,7 +37,7 @@ gitlab.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAA
 GitLab.com sends emails from the `mg.gitlab.com` domain via [Mailgun](https://www.mailgun.com/) and has
 its own dedicated IP address (`192.237.158.143`).
 
-NOTE: **Note:**
+NOTE:
 The IP address for `mg.gitlab.com` is subject to change at any time.
 
 ## Backups
@@ -84,7 +84,7 @@ Below are the settings for [GitLab Pages](https://about.gitlab.com/stages-devops
 | TLS certificates support    | yes               | no            |
 | Maximum size (compressed) | 1G                | 100M          |
 
-NOTE: **Note:**
+NOTE:
 The maximum size of your Pages site is regulated by the artifacts maximum size
 which is part of [GitLab CI/CD](#gitlab-cicd).
 
@@ -116,7 +116,7 @@ or over the repository size limit, you can [reduce your repository size with Git
 | [Repository size including LFS](../admin_area/settings/account_and_limit_settings.md) | 10 GB       | Unlimited     |
 | Maximum import size           | 5 GB        | 50 MB         |
 
-NOTE: **Note:**
+NOTE:
 `git push` and GitLab project imports are limited to 5 GB per request through Cloudflare. Git LFS and imports other than a file upload are not affected by this limit.
 
 ## IP range
@@ -144,7 +144,7 @@ A limit of:
 
 GitLab offers Linux and Windows shared runners hosted on GitLab.com for executing your pipelines.
 
-NOTE: **Note:**
+NOTE:
 Shared runners provided by GitLab are **not** configurable. Consider [installing your own runner](https://docs.gitlab.com/runner/install/) if you have specific configuration needs.
 
 ### Linux shared runners
@@ -200,7 +200,7 @@ directory.
 
 The full contents of our `config.toml` are:
 
-NOTE: **Note:**
+NOTE:
 Settings that are not public are shown as `X`.
 
 **Google Cloud Platform**
@@ -294,7 +294,7 @@ You can follow our work towards this goal in the
 
 The full contents of our `config.toml` are:
 
-NOTE: **Note:**
+NOTE:
 Settings that aren't public are shown as `X`.
 
 ```toml
@@ -434,7 +434,7 @@ and the following environment variables:
 | `SIDEKIQ_MEMORY_KILLER_SHUTDOWN_WAIT`      | -          | `30`      |
 | `SIDEKIQ_LOG_ARGUMENTS`                    | `1`        | `1`       |
 
-NOTE: **Note:**
+NOTE:
 The `SIDEKIQ_MEMORY_KILLER_MAX_RSS` setting is `16000000` on Sidekiq import
 nodes and Sidekiq export nodes.
 
@@ -506,7 +506,7 @@ Web front-ends:
 
 ## GitLab.com-specific rate limits
 
-NOTE: **Note:**
+NOTE:
 See [Rate limits](../../security/rate_limits.md) for administrator
 documentation.
 

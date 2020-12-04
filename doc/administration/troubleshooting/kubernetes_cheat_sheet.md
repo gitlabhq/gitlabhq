@@ -11,7 +11,7 @@ This is a list of useful information regarding Kubernetes that the GitLab Suppor
 Team sometimes uses while troubleshooting. GitLab is making this public, so that anyone
 can make use of the Support team's collected knowledge
 
-CAUTION: **Caution:**
+WARNING:
 These commands **can alter or break** your Kubernetes components so use these at your own risk.
 
 If you are on a [paid tier](https://about.gitlab.com/pricing/) and are not sure how

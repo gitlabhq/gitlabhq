@@ -94,7 +94,7 @@ Before you begin, ensure that any GitHub users who you want to map to GitLab use
 User-matching attempts occur in that order, and if a user is not identified either way, the activity is associated with
 the user account that is performing the import.
 
-NOTE: **Note:**
+NOTE:
 If you are using a self-managed GitLab instance or if you are importing from GitHub Enterprise, this process requires that you have configured
 [GitHub integration](../../../integration/github.md).
 
@@ -106,7 +106,7 @@ If you are using a self-managed GitLab instance or if you are importing from Git
 
 ### Using a GitHub token
 
-NOTE: **Note:**
+NOTE:
 Using a personal access token to import projects is not recommended. If you are a GitLab.com user,
 you can use a personal access token to import your project from GitHub, but this method cannot
 associate all user activity (such as issues and pull requests) with matching GitLab users.
@@ -154,7 +154,7 @@ of the above are automatically configured. **(PREMIUM)**
 
 ## Improving the speed of imports on self-managed instances
 
-NOTE: **Note:**
+NOTE:
 Admin access to the GitLab server is required.
 
 For large projects it may take a while to import all data. To reduce the time necessary, you can increase the number of

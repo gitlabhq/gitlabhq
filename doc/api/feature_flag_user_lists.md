@@ -13,7 +13,7 @@ API for accessing GitLab Feature Flag User Lists.
 
 Users with Developer or higher [permissions](../user/permissions.md) can access the Feature Flag User Lists API.
 
-NOTE: **Note:**
+NOTE:
 `GET` requests return twenty results at a time because the API results
 are [paginated](README.md#pagination). You can change this value.
 

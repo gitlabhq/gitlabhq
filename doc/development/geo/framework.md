@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Geo self-service framework
 
-NOTE: **Note:**
+NOTE:
 This document is subject to change as we continue to implement and iterate on the framework.
 Follow the progress in the [epic](https://gitlab.com/groups/gitlab-org/-/epics/2161).
 If you need to replicate a new data type, reach out to the Geo

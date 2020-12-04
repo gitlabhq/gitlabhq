@@ -53,7 +53,7 @@ several issues within the project.
 
 Please refer to [running GraphiQL](index.md#graphiql) for more information.
 
-NOTE: **Note:**
+NOTE:
 If you are running GitLab 11.0 to 12.0, enable the `graphql`
 [feature flag](../features.md#set-or-create-a-feature).
 
@@ -64,7 +64,7 @@ The GitLab GraphQL API can be used to perform:
 - Queries for data retrieval.
 - [Mutations](#mutations) for creating, updating, and deleting data.
 
-NOTE: **Note:**
+NOTE:
 In the GitLab GraphQL API, `id` refers to a
 [Global ID](https://graphql.org/learn/global-object-identification/),
 which is an object identifier in the format of `"gid://gitlab/Issue/123"`.

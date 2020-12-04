@@ -64,17 +64,17 @@ We need to make Docker Registry send notification events to the
    ]
    ```
 
-   NOTE: **Note:**
+   NOTE:
    Replace `<replace_with_a_secret_token>` with a case sensitive alphanumeric string
    that starts with a letter. You can generate one with `< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c 32 | sed "s/^[0-9]*//"; echo`
 
-   NOTE: **Note:**
+   NOTE:
    If you use an external Registry (not the one integrated with GitLab), you must add
    these settings to its configuration yourself. In this case, you will also have to specify
    notification secret in `registry.notification_secret` section of
    `/etc/gitlab/gitlab.rb` file.
 
-   NOTE: **Note:**
+   NOTE:
    If you use GitLab HA, you will also have to specify
    the notification secret in `registry.notification_secret` section of
    `/etc/gitlab/gitlab.rb` file for every web node.

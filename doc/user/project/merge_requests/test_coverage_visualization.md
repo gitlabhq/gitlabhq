@@ -51,7 +51,7 @@ from any job in any stage in the pipeline. The coverage will be displayed for ea
 Hovering over the coverage bar will provide further information, such as the number
 of times the line was checked by tests.
 
-NOTE: **Note:**
+NOTE:
 The Cobertura XML parser currently does not support the `sources` element and ignores it. It is assumed that
 the `filename` of a `class` element contains the full path relative to the project root.
 

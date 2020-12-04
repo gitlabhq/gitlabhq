@@ -44,7 +44,7 @@ denied access.
 System hooks can be used, for example, for logging or changing information in an
 LDAP server.
 
-NOTE: **Note:**
+NOTE:
 We follow the same structure and deprecations as [Webhooks](../user/project/integrations/webhooks.md)
 for Push and Tag events, but we never display commits.
 

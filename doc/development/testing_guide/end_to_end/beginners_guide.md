@@ -52,7 +52,7 @@ For information about the distribution of tests per level in GitLab, see
 - Finally, discuss the proposed test with the developer(s) involved in implementing
   the feature and the lower-level tests.
 
-CAUTION: **Caution:**
+WARNING:
 Check both [GitLab Community Edition](https://gitlab-org.gitlab.io/gitlab-foss/coverage-ruby/#_AllFiles) and
 [GitLab Enterprise Edition](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/#_AllFiles) coverage projects
 for previously-written tests for this feature. For analyzing the code coverage,
@@ -86,7 +86,7 @@ file `basic_login_spec.rb`.
 
 See the [`RSpec.describe` outer block](#the-outer-rspecdescribe-block)
 
-CAUTION: **Deprecation notice:**
+WARNING:
 The outer `context` [was deprecated](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/550) in `13.2`
 in adherence to RSpec 4.0 specifications. Use `RSpec.describe` instead.
 

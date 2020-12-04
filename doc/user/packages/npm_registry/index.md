@@ -228,7 +228,7 @@ This regex allows almost all of the characters that NPM allows, with a few excep
 The regex also allows for capital letters, while NPM does not. Capital letters are needed because the scope must be
 identical to the root namespace of the project.
 
-CAUTION: **Caution:**
+WARNING:
 When you update the path of a user or group, or transfer a subgroup or project,
 you must remove any NPM packages first. You cannot update the root namespace
 of a project with NPM packages. Make sure you update your `.npmrc` files to follow

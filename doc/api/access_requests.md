@@ -7,7 +7,7 @@ type: reference, api
 
 # Group and project access requests API
 
-> Introduced in GitLab 8.11.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/18583) in GitLab 8.11.
 
 ## Valid access levels
 

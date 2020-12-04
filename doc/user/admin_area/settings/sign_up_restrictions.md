@@ -63,7 +63,7 @@ their account.
 > - It's recommended for production use.
 > - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-soft-email-confirmation).
 
-CAUTION: **Warning:**
+WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
 The soft email confirmation improves the signup experience for new users by allowing

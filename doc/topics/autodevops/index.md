@@ -44,7 +44,7 @@ enable or disable this default in the
 [Auto DevOps settings](../../user/admin_area/settings/continuous_integration.md#auto-devops).
 Auto DevOps automatically disables in individual projects on their first pipeline failure,
 
-NOTE: **Note:**
+NOTE:
 Auto DevOps is not enabled by default on GitLab.com.
 
 Since [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/issues/26655), Auto DevOps
@@ -123,7 +123,7 @@ Auto DevOps provides great defaults for all the stages and makes use of
 For an overview on the creation of Auto DevOps, read more
 [in this blog post](https://about.gitlab.com/blog/2017/06/29/whats-next-for-gitlab-ci/).
 
-NOTE: **Note:**
+NOTE:
 Kubernetes clusters can [be used without](../../user/project/clusters/index.md)
 Auto DevOps.
 
@@ -156,7 +156,7 @@ If you use the [GitLab managed app for Ingress](../../user/clusters/applications
 the URL endpoint should be automatically configured for you. All you must do
 is use its value for the `KUBE_INGRESS_BASE_DOMAIN` variable.
 
-NOTE: **Note:**
+NOTE:
 `AUTO_DEVOPS_DOMAIN` was [deprecated in GitLab 11.8](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/52363)
 and replaced with `KUBE_INGRESS_BASE_DOMAIN`, and removed in
 [GitLab 12.0](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/56959).

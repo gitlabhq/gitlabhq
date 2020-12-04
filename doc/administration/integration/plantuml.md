@@ -137,7 +137,7 @@ that, login with an Admin account and do following:
 - Check **Enable PlantUML** checkbox.
 - Set the PlantUML instance as `https://gitlab.example.com/-/plantuml/`.
 
-NOTE: **Note:**
+NOTE:
 If you are using a PlantUML server running v1.2020.9 and
 above (for example, [plantuml.com](https://plantuml.com)), set the `PLANTUML_ENCODING`
 environment variable to enable the `deflate` compression. On Omnibus,

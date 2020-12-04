@@ -90,7 +90,7 @@ To enable merge trains for your project:
 In GitLab 13.5 and earlier, there is only one checkbox, named
 **Enable merge trains and pipelines for merged results**.
 
-CAUTION: **Caution:**
+WARNING:
 If you select the check box but don't configure your CI/CD to use
 pipelines for merge requests, your merge requests may become stuck in an
 unresolved state or your pipelines may be dropped.
@@ -143,7 +143,7 @@ This is the fastest option to get the change merged into the target branch.
 
 ![Merge Immediately](img/merge_train_immediate_merge_v12_6.png)
 
-CAUTION: **Caution:**
+WARNING:
 Each time you merge a merge request immediately, the current merge train
 is recreated and all pipelines restart.
 

@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 This API supports managing of [group labels](../user/project/labels.md#project-labels-and-group-labels). It allows to list, create, update, and delete group labels. Furthermore, users can subscribe and unsubscribe to and from group labels.
 
-NOTE: **Note:**
+NOTE:
 The `description_html` - was added to response JSON in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413).
 
 ## List group labels
@@ -175,7 +175,7 @@ Example response:
 }
 ```
 
-NOTE: **Note:**
+NOTE:
 An older endpoint `PUT /groups/:id/labels` with `name` in the parameters is still available, but deprecated.
 
 ## Delete a group label
@@ -195,7 +195,7 @@ DELETE /groups/:id/labels/:label_id
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/labels/bug"
 ```
 
-NOTE: **Note:**
+NOTE:
 An older endpoint `DELETE /groups/:id/labels` with `name` in the parameters is still available, but deprecated.
 
 ## Subscribe to a group label

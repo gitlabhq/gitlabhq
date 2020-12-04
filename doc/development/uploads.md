@@ -280,7 +280,7 @@ Uploads routes belong to one of these categories:
 1. Grape API: uploads handled by a Grape API endpoint.
 1. GraphQL API: uploads handled by a GraphQL resolve function.
 
-CAUTION: **Warning:**
+WARNING:
 GraphQL uploads do not support [direct upload](#direct-upload) yet. Depending on the use case, the feature may not work on installations without NFS (like GitLab.com or Kubernetes installations). Uploading to object storage inside the GraphQL resolve function may result in timeout errors. For more details please follow [issue #280819](https://gitlab.com/gitlab-org/gitlab/-/issues/280819).
 
 ### Update Workhorse for the new route
@@ -310,7 +310,7 @@ few things to do:
 1. Generally speaking, it's a good idea to check if the instance is from the [`UploadedFile`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/uploaded_file.rb) class. For example, see how we checked
 [that the parameter is indeed an `UploadedFile`](https://gitlab.com/gitlab-org/gitlab/-/commit/ea30fe8a71bf16ba07f1050ab4820607b5658719#51c0cc7a17b7f12c32bc41cfab3649ff2739b0eb_79_77).
 
-CAUTION: **Caution:**
+WARNING:
 **Do not** call `UploadedFile#from_params` directly! Do not build an [`UploadedFile`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/uploaded_file.rb)
 instance using `UploadedFile#from_params`! This method can be unsafe to use depending on the `params`
 passed. Instead, use the [`UploadedFile`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/uploaded_file.rb)
@@ -339,7 +339,7 @@ use `requires :file, type: ::API::Validations::Types::WorkhorseFile`.
    - The remaining code of the processing. This is where the code must be reading the parameter (for
 our example, it would be `params[:file]`).
 
-CAUTION: **Caution:**
+WARNING:
 **Do not** call `UploadedFile#from_params` directly! Do not build an [`UploadedFile`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/uploaded_file.rb)
 object using `UploadedFile#from_params`! This method can be unsafe to use depending on the `params`
 passed. Instead, use the [`UploadedFile`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/uploaded_file.rb)

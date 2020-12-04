@@ -46,7 +46,7 @@ The Advanced Search can be useful in various scenarios.
 If you are dealing with huge amount of data and want to keep GitLab's search
 fast, Advanced Search will help you achieve that.
 
-NOTE: **Note:**
+NOTE:
 Between versions 12.10 and 13.4, Advanced Search response times have improved by 80%.
 
 ### Promote innersourcing
@@ -66,7 +66,7 @@ project you have access to.
 You can also use the [Advanced Search Syntax](advanced_search_syntax.md) which
 provides some useful queries.
 
-NOTE: **Note:**
+NOTE:
 Elasticsearch has only data for the default branch. That means that if you go
 to the repository tree and switch the branch from the default to something else,
 then the "Code" tab in the search result page will be served by the basic

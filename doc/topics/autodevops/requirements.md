@@ -34,7 +34,7 @@ To make full use of Auto DevOps with Kubernetes, you need:
      [`nginx-ingress`](https://github.com/helm/charts/tree/master/stable/nginx-ingress)
      Helm chart to install Ingress manually.
 
-     NOTE: **Note:**
+     NOTE:
      If you use your own Ingress instead of the one provided by GitLab's managed
      apps, ensure you're running at least version 0.9.0 of NGINX Ingress and
      [enable Prometheus metrics](https://github.com/helm/charts/tree/master/stable/nginx-ingress#prometheus-metrics)
@@ -133,7 +133,7 @@ You must manually configure your application (such as Ingress or Help) on AWS EC
 If you have both a valid `AUTO_DEVOPS_PLATFORM_TARGET` variable and a Kubernetes cluster tied to your project,
 only the deployment to Kubernetes runs.
 
-CAUTION: **Warning:**
+WARNING:
 Setting the `AUTO_DEVOPS_PLATFORM_TARGET` variable to `ECS` triggers jobs
 defined in the [`Jobs/Deploy/ECS.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy/ECS.gitlab-ci.yml).
 However, it's not recommended to [include](../../ci/yaml/README.md#includetemplate)

@@ -69,7 +69,7 @@ the given reference name and job, provided the job finished successfully. This
 is the same as [getting the job's artifacts](#get-job-artifacts), but by
 defining the job's name instead of its ID.
 
-NOTE: **Note:**
+NOTE:
 If a pipeline is [parent of other child pipelines](../ci/parent_child_pipelines.md), artifacts
 are searched in hierarchical order from parent to child. For example, if both parent and
 child pipelines have a job with the same name, the artifact from the parent pipeline is returned.
@@ -275,7 +275,7 @@ Example request:
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/1/artifacts"
 ```
 
-NOTE: **Note:**
+NOTE:
 At least Maintainer role is required to delete artifacts.
 
 If the artifacts were deleted successfully, a response with status `204 No Content` is returned.

@@ -106,7 +106,7 @@ Apart from a local hard drive you can also mount a volume that supports the netw
 
 If you have enough RAM and a recent CPU the speed of GitLab is mainly limited by hard drive seek times. Having a fast drive (7200 RPM and up) or a solid state drive (SSD) will improve the responsiveness of GitLab.
 
-NOTE: **Note:**
+NOTE:
 Since file system performance may affect GitLab's overall performance, [we don't recommend using AWS EFS for storage](../administration/nfs.md#avoid-using-awss-elastic-file-system-efs).
 
 ### CPU
@@ -158,7 +158,7 @@ GitLab version | Minimum PostgreSQL version
 You must also ensure the `pg_trgm` and `btree_gist` extensions are [loaded into every
 GitLab database](postgresql_extensions.html).
 
-NOTE: **Note:**
+NOTE:
 Support for [PostgreSQL 9.6 and 10 has been removed in GitLab 13.0](https://about.gitlab.com/releases/2020/05/22/gitlab-13-0-released/#postgresql-11-is-now-the-minimum-required-version-to-install-gitlab) so that GitLab can benefit from PostgreSQL 11 improvements, such as partitioning. For the schedule of transitioning to PostgreSQL 12, see [the related epic](https://gitlab.com/groups/gitlab-org/-/epics/2184).
 
 #### Additional requirements for GitLab Geo
@@ -270,7 +270,7 @@ For reference, GitLab.com's [auto-scaling shared runner](../user/gitlab_com/inde
 
 ## Supported web browsers
 
-CAUTION: **Caution:**
+WARNING:
 With GitLab 13.0 (May 2020) we have removed official support for Internet Explorer 11.
 
 GitLab supports the following web browsers:
@@ -286,7 +286,7 @@ For the listed web browsers, GitLab supports:
 - The current and previous major versions of browsers.
 - The current minor version of a supported major version.
 
-NOTE: **Note:**
+NOTE:
 We don't support running GitLab with JavaScript disabled in the browser and have no plans of supporting that
 in the future because we have features such as Issue Boards which require JavaScript extensively.
 

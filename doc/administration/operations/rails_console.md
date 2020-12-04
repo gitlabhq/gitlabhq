@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 The [Rails console](https://guides.rubyonrails.org/command_line.html#rails-console).
 provides a way to interact with your GitLab instance from the command line.
 
-CAUTION: **Caution:**
+WARNING:
 The Rails console interacts directly with GitLab. In many cases,
 there are no handrails to prevent you from permanently modifying, corrupting
 or destroying production data. If you would like to explore the Rails console

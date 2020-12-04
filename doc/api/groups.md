@@ -338,7 +338,7 @@ Example response:
 ]
 ```
 
-NOTE: **Note:**
+NOTE:
 To distinguish between a project in the group and a project shared to the group, the `namespace` attribute can be used. When a project has been shared to the group, its `namespace` differs from the group the request is being made for.
 
 ## List a group's shared projects
@@ -493,7 +493,7 @@ Parameters:
 | `with_custom_attributes` | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (admins only). |
 | `with_projects`          | boolean        | no       | Include details from projects that belong to the specified group (defaults to `true`). (Deprecated, [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797). To get the details of all projects within a group, use the [list a group's projects endpoint](#list-a-groups-projects).)  |
 
-NOTE: **Note:**
+NOTE:
 The `projects` and `shared_projects` attributes in the response are deprecated and [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797).
 To get the details of all projects within a group, use either the [list a group's projects](#list-a-groups-projects) or the [list a group's shared projects](#list-a-groups-shared-projects) endpoint.
 
@@ -853,7 +853,7 @@ PUT /groups/:id
 | `extra_shared_runners_minutes_limit` | integer | no       | **(STARTER ONLY)** Extra pipeline minutes quota for this group (purchased in addition to the minutes included in the plan). |
 | `prevent_forking_outside_group`      | boolean | no       | **(PREMIUM)** When enabled, users can **not** fork projects from this group to external namespaces
 
-NOTE: **Note:**
+NOTE:
 The `projects` and `shared_projects` attributes in the response are deprecated and [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797).
 To get the details of all projects within a group, use either the [list a group's projects](#list-a-groups-projects) or the [list a group's shared projects](#list-a-groups-shared-projects) endpoint.
 
@@ -1170,7 +1170,7 @@ POST /groups/:id/ldap_group_links
 | `group_access` | integer   | yes      | Minimum [access level](members.md#valid-access-levels) for members of the LDAP group |
 | `provider` | string        | yes      | LDAP provider for the LDAP group link |
 
-NOTE: **Note:**
+NOTE:
 To define the LDAP group link, provide either a `cn` or a `filter`, but not both.
 
 ### Delete LDAP group link **(STARTER ONLY)**
@@ -1213,7 +1213,7 @@ DELETE /groups/:id/ldap_group_links
 | `filter`  | string         | no       | The LDAP filter for the group |
 | `provider` | string        | yes       | LDAP provider for the LDAP group link |
 
-NOTE: **Note:**
+NOTE:
 To delete the LDAP group link, provide either a `cn` or a `filter`, but not both.
 
 ## Namespaces in groups

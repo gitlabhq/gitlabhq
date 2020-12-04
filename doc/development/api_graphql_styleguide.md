@@ -353,7 +353,7 @@ when the flag is disabled.
 A description is [appended](https://gitlab.com/gitlab-org/gitlab/-/blob/497b556/app/graphql/types/base_field.rb#L44-53)
 to the field indicating that it is behind a feature flag.
 
-CAUTION: **Caution:**
+WARNING:
 If a client queries for the field when the feature flag is disabled, the query
 fails. Consider this when toggling the visibility of the feature on or off on
 production.
@@ -611,7 +611,7 @@ descriptions:
 Example:
 
 ```ruby
-field :id, GraphQL::ID_TYPE, description: 'ID of the Issue'
+field :id, GraphQL::ID_TYPE, description: 'ID of the issue'
 field :confidential, GraphQL::BOOLEAN_TYPE, description: 'Indicates the issue is confidential'
 field :closed_at, Types::TimeType, description: 'Timestamp of when the issue was closed'
 ```
@@ -1190,7 +1190,7 @@ argument :project_path, GraphQL::ID_TYPE,
 
 argument :iid, GraphQL::STRING_TYPE,
          required: true,
-         description: "The iid of the merge request to mutate"
+         description: "The IID of the merge request to mutate"
 
 argument :wip,
          GraphQL::BOOLEAN_TYPE,

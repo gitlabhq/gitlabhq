@@ -38,7 +38,7 @@ To report abuse from a user's comment:
 1. Complete an abuse report.
 1. Click the **Send report** button.
 
-NOTE: **Note:**
+NOTE:
 A URL to the reported user's comment is pre-filled in the abuse report's
 **Message** field.
 
@@ -58,7 +58,7 @@ With the **Report abuse** button displayed, to submit an abuse report:
 1. Submit an abuse report.
 1. Click the **Send report** button.
 
-NOTE: **Note:**
+NOTE:
 A URL to the reported user's issue or merge request is pre-filled
 in the abuse report's **Message** field.
 

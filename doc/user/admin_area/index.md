@@ -14,7 +14,7 @@ To access the Admin Area, either:
 - Click the Admin Area icon (**{admin}**).
 - Visit `/admin` on your self-managed instance.
 
-NOTE: **Note:**
+NOTE:
 Only admin users can access the Admin Area.
 
 ## Admin Area sections

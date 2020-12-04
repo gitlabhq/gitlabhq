@@ -13,7 +13,7 @@ You can change the maximum file size for attachments in comments and replies in 
 Navigate to **Admin Area (wrench icon) > Settings > General**, then expand **Account and Limit**.
 From here, you can increase or decrease by changing the value in `Maximum attachment size (MB)`.
 
-NOTE: **Note:**
+NOTE:
 If you choose a size larger than what is currently configured for the web server,
 you will likely get errors. See the [troubleshooting section](#troubleshooting) for more
 details.
@@ -30,7 +30,7 @@ You can change the maximum file size for imports in GitLab.
 Navigate to **Admin Area (wrench icon) > Settings > General**, then expand **Account and Limit**.
 From here, you can increase or decrease by changing the value in `Maximum import size (MB)`.
 
-NOTE: **Note:**
+NOTE:
 If you choose a size larger than what is currently configured for the web server,
 you will likely get errors. See the [troubleshooting section](#troubleshooting) for more
 details.
@@ -81,13 +81,13 @@ The first push of a new project, including LFS objects, will be checked for size
 and **will** be rejected if the sum of their sizes exceeds the maximum allowed
 repository size.
 
-NOTE: **Note:**
+NOTE:
 The repository size limit includes repository files and LFS, but does not include artifacts, uploads,
 wiki, packages, or snippets.
 
 For details on manually purging files, see [reducing the repository size using Git](../../project/repository/reducing_the_repo_size_using_git.md).
 
-NOTE: **Note:**
+NOTE:
 For GitLab.com repository size limits, see [accounts and limit settings](../../gitlab_com/index.md#account-and-limit-settings).
 
 ## Troubleshooting
@@ -182,5 +182,5 @@ To do this:
 1. Navigate to **Admin Area > Settings > General**, then expand **Account and Limit**.
 1. Check the **Prevent users from changing their profile name** checkbox.
 
-NOTE: **Note:**
+NOTE:
 When this ability is disabled, GitLab administrators will still be able to update the name of any user in their instance via the [Admin UI](../index.md#administering-users) or the [API](../../../api/users.md#user-modification)

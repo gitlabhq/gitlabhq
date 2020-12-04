@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223061) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.4.
 > - It's disabled on GitLab.com. Rolling this feature out to GitLab.com is [planned](https://gitlab.com/groups/gitlab-org/-/epics/3834).
 
-CAUTION: **Warning:**
+WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
 The [GitLab Kubernetes Agent](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent)
@@ -93,7 +93,7 @@ chart](https://gitlab.com/gitlab-org/charts/gitlab). If you don't already have
 GitLab installed, please refer to our [installation
 documentation](https://docs.gitlab.com/ee/install/README.html).
 
-NOTE: **Note:**
+NOTE:
 GitLab plans to include the KAS on [GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/3834).
 
 #### Install with Omnibus
@@ -209,7 +209,7 @@ the Agent in subsequent steps. You can create an Agent record either:
   }
   ```
 
-  NOTE: **Note:**
+  NOTE:
   GraphQL only displays the token one time after creating it.
 
   If you are new to using the GitLab GraphQL API, refer to the

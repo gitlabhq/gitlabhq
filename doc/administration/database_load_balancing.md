@@ -173,7 +173,7 @@ queried over UDP. To overcome this issue, you can use TCP for querying by settin
 
 ### Forking
 
-NOTE: **Note:**
+NOTE:
 Starting with GitLab 13.0, Puma is the default web server used in GitLab
 all-in-one package based installations as well as GitLab Helm chart deployments.
 

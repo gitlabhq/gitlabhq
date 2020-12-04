@@ -148,7 +148,7 @@ To create and add a new Kubernetes cluster to your project, group, or instance:
    - **Service role** - Select the **EKS IAM role** you created earlier to allow Amazon EKS
      and the Kubernetes control plane to manage AWS resources on your behalf.
 
-     NOTE: **Note:**
+     NOTE:
      This IAM role is _not_ the IAM role you created in the previous step. It should be
      the one you created much earlier by following the
      [Amazon EKS cluster IAM role](https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html)
@@ -170,7 +170,7 @@ To create and add a new Kubernetes cluster to your project, group, or instance:
 After about 10 minutes, your cluster is ready to go. You can now proceed
 to install some [pre-defined applications](index.md#installing-applications).
 
-NOTE: **Note:**
+NOTE:
 You must add your AWS external ID to the
 [IAM Role in the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-role.html#cli-configure-role-xaccount)
 to manage your cluster using `kubectl`.
@@ -205,7 +205,7 @@ If the `Cluster` resource failed with the error
 `The provided role doesn't have the Amazon EKS Managed Policies associated with it.`,
 the role specified in **Role name** is not configured correctly.
 
-NOTE: **Note:**
+NOTE:
 This role should be the role you created by following the
 [EKS cluster IAM role](https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html) guide.
 In addition to the policies that guide suggests, you must also include the

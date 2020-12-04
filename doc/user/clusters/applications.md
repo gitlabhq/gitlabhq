@@ -50,7 +50,7 @@ Support for installing these applications in a group-level cluster is
 planned for future releases.
 For updates, see the [issue tracking progress](https://gitlab.com/gitlab-org/gitlab/-/issues/24411).
 
-CAUTION: **Caution:**
+WARNING:
 If you have an existing Kubernetes cluster with Helm already installed,
 you should be careful as GitLab cannot detect it. In this case, installing
 Helm with the applications results in the cluster having it twice, which
@@ -599,7 +599,7 @@ to get started.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20822) in GitLab 12.6.
 
-CAUTION: **Warning:**
+WARNING:
 This is an _alpha_ feature, and is subject to change at any time without
 prior notice.
 
@@ -1010,14 +1010,14 @@ You can check Cilium's installation status on the cluster management page:
 - [Group-level cluster](../group/clusters/index.md): Navigate to your group's
   **Kubernetes** page.
 
-CAUTION: **Caution:**
+WARNING:
 Installation and removal of the Cilium requires a **manual**
 [restart](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-gke/#restart-unmanaged-pods)
 of all affected pods in all namespaces to ensure that they are
 [managed](https://docs.cilium.io/en/v1.8/operations/troubleshooting/#ensure-managed-pod)
 by the correct networking plugin.
 
-NOTE: **Note:**
+NOTE:
 Major upgrades might require additional setup steps. For more information, see
 the official [upgrade guide](https://docs.cilium.io/en/v1.8/operations/upgrade/).
 
@@ -1105,7 +1105,7 @@ management project. Refer to the
 [Falco chart](https://github.com/falcosecurity/charts/tree/master/falco)
 for the available configuration options.
 
-CAUTION: **Caution:**
+WARNING:
 By default eBPF support is enabled and Falco uses an
 [eBPF probe](https://falco.org/docs/event-sources/drivers/#using-the-ebpf-probe)
 to pass system calls to user space. If your cluster doesn't support this, you can
@@ -1363,7 +1363,7 @@ management project. Refer to the
 [chart](https://gitlab.com/gitlab-org/charts/elastic-stack) for all
 available configuration options.
 
-NOTE: **Note:**
+NOTE:
 In this alpha implementation of installing Elastic Stack through CI, reading the
 environment logs through Elasticsearch is unsupported. This is supported if
 [installed with the UI](#elastic-stack).

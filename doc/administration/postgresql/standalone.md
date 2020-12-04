@@ -59,7 +59,7 @@ together with Omnibus GitLab. This is recommended as part of our
    gitlab_rails['auto_migrate'] = false
    ```
 
-   NOTE: **Note:**
+   NOTE:
    The role `postgres_role` was introduced with GitLab 10.3
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.

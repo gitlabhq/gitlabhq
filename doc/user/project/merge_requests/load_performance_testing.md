@@ -43,7 +43,7 @@ The key performance metrics that the merge request widget shows after the test c
 - TTFB P95: The 95th percentile for TTFB.
 - RPS: The average requests per second (RPS) rate the test was able to achieve.
 
-NOTE: **Note:**
+NOTE:
 If the Load Performance report has no data to compare, such as when you add the
 Load Performance job in your `.gitlab-ci.yml` for the very first time,
 the Load Performance report widget won't show. It must have run at least
@@ -90,7 +90,7 @@ testing job in GitLab CI/CD. The easiest way to do this is to use the
 [`Verify/Load-Performance-Testing.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Verify/Load-Performance-Testing.gitlab-ci.yml)
 template that is included with GitLab.
 
-NOTE: **Note:**
+NOTE:
 For large scale k6 tests you need to ensure the GitLab Runner instance performing the actual
 test is able to handle running the test. Refer to [k6's guidance](https://k6.io/docs/testing-guides/running-large-tests#hardware-considerations)
 for spec details. The [default shared GitLab.com runners](../../gitlab_com/#linux-shared-runners)
@@ -119,7 +119,7 @@ An example configuration workflow:
 The above example creates a `load_performance` job in your CI/CD pipeline that runs
 the k6 test.
 
-NOTE: **Note:**
+NOTE:
 For Kubernetes setups a different template should be used: [`Jobs/Load-Performance-Testing.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Load-Performance-Testing.gitlab-ci.yml).
 
 k6 has [various options](https://k6.io/docs/using-k6/options) to configure how it will run tests, such as what throughput (RPS) to run with,

@@ -61,10 +61,10 @@ To run Secret Detection jobs, by default, you need GitLab Runner with the
 [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
 If you're using the shared runners on GitLab.com, this is enabled by default.
 
-CAUTION: **Caution:**
+WARNING:
 Our Secret Detection jobs expect a Linux container type. Windows containers are not supported.
 
-CAUTION: **Caution:**
+WARNING:
 If you use your own runners, make sure the Docker version installed
 is **not** `19.03.0`. See [troubleshooting information](../sast#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error) for details.
 
@@ -102,7 +102,7 @@ begins with a dollar sign (`$`), as this likely indicates the password is an env
 For example, `https://username:$password@example.com/path/to/repo` isn't detected, while
 `https://username:password@example.com/path/to/repo` is.
 
-NOTE: **Note:**
+NOTE:
 You don't have to configure Secret Detection manually as shown in this section if you're using
 [Auto Secret Detection](../../../topics/autodevops/stages.md#auto-secret-detection)
 provided by [Auto DevOps](../../../topics/autodevops/index.md).
@@ -163,7 +163,7 @@ secret_detection:
 Because the template is [evaluated before](../../../ci/yaml/README.md#include)
 the pipeline configuration, the last mention of the variable takes precedence.
 
-CAUTION: **Deprecation:**
+WARNING:
 Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/README.md#onlyexcept-basic)
 is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules) instead.
 

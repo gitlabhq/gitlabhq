@@ -9,7 +9,7 @@ type: reference
 
 GitLab provides syntax highlighting on all files through the [Rouge](https://rubygems.org/gems/rouge) Ruby gem. It will try to guess what language to use based on the file extension, which most of the time is sufficient.
 
-NOTE: **Note:**
+NOTE:
 The [Web IDE](web_ide/index.md) and [Snippets](../snippets.md) use [Monaco Editor](https://microsoft.github.io/monaco-editor/)
 for text editing, which internally uses the [Monarch](https://microsoft.github.io/monaco-editor/monarch.html)
 library for syntax highlighting.
@@ -40,5 +40,5 @@ To disable highlighting entirely, use `gitlab-language=text`. Lots more fun shen
 
 Please note that these configurations will only take effect when the `.gitattributes` file is in your default branch (usually `master`).
 
-NOTE: **Note:**
+NOTE:
 The Web IDE does not support `.gitattribute` files, but it's [planned for a future release](https://gitlab.com/gitlab-org/gitlab/-/issues/22014).

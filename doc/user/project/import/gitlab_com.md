@@ -13,7 +13,7 @@ mind that it is possible only if GitLab.com integration is enabled on your GitLa
 
 To get to the importer page you need to go to "New project" page.
 
-NOTE: **Note:**
+NOTE:
 If you are interested in importing Wiki and Merge Request data to your new instance,
 you'll need to follow the instructions for [exporting a project](../settings/import_export.md#exporting-a-project-and-its-data)
 

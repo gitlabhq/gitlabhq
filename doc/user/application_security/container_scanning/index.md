@@ -212,7 +212,7 @@ container_scanning:
     GIT_STRATEGY: fetch
 ```
 
-CAUTION: **Deprecated:**
+WARNING:
 GitLab 13.0 and later doesn't support [`only` and `except`](../../../ci/yaml/README.md#onlyexcept-basic).
 When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules)
 instead.

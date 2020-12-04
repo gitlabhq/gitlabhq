@@ -62,14 +62,14 @@ The report for each URL is saved as an artifact that can be [viewed directly in 
 A single `gl-accessibility.json` artifact is created and saved along with the individual HTML reports.
 It includes report data for all URLs scanned.
 
-NOTE: **Note:**
+NOTE:
 For GitLab 12.10 and earlier, the [artifact generated is named `accessibility.json`](https://gitlab.com/gitlab-org/ci-cd/accessibility/-/merge_requests/9).
 
-NOTE: **Note:**
+NOTE:
 For GitLab versions earlier than 12.9, you can use `include:remote` and use a
 link to the [current template in `master`](https://gitlab.com/gitlab-org/gitlab/-/raw/master/lib/gitlab/ci/templates/Verify/Accessibility.gitlab-ci.yml)
 
-NOTE: **Note:**
+NOTE:
 The job definition provided by the template does not support Kubernetes yet.
 
 It is not yet possible to pass configurations into Pa11y via CI configuration. To change anything,

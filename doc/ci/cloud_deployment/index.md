@@ -35,7 +35,7 @@ Some credentials are required to be able to run `aws` commands:
 1. Log in onto the console and create [a new IAM user](https://console.aws.amazon.com/iam/home#/home).
 1. Select your newly created user to access its details. Navigate to **Security credentials > Create a new access key**.
 
-   NOTE: **Note:**
+   NOTE:
    A new **Access key ID** and **Secret access key** pair will be generated. Please take a note of them right away.
 
 1. In your GitLab project, go to **Settings > CI / CD**. Set the following as
@@ -65,7 +65,7 @@ Some credentials are required to be able to run `aws` commands:
        - aws create-deployment ...
    ```
 
-   NOTE: **Note:**
+   NOTE:
    The image used in the example above
    (`registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest`) is hosted on the [GitLab
    Container Registry](../../user/packages/container_registry/index.md) and is
@@ -149,11 +149,11 @@ After you have these prerequisites ready, follow these steps:
    In both cases, make sure that the value for the `containerDefinitions[].name` attribute is
    the same as the `Container name` defined in your targeted ECS service.
 
-   CAUTION: **Warning:**
+   WARNING:
    `CI_AWS_ECS_TASK_DEFINITION_FILE` takes precedence over `CI_AWS_ECS_TASK_DEFINITION` if both these environment
    variables are defined within your project.
 
-   NOTE: **Note:**
+   NOTE:
    If the name of the task definition you wrote in your JSON file is the same name
    as an existing task definition on AWS, then a new revision is created for it.
    Otherwise, a brand new task definition is created, starting at revision 1.
@@ -181,7 +181,7 @@ After you have these prerequisites ready, follow these steps:
    task definition, making the cluster pull the newest version of your
    application.
 
-CAUTION: **Warning:**
+WARNING:
 The [`AWS/Deploy-ECS.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/AWS/Deploy-ECS.gitlab-ci.yml)
 template includes both the [`Jobs/Build.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Build.gitlab-ci.yml)
 and [`Jobs/Deploy/ECS.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy/ECS.gitlab-ci.yml)

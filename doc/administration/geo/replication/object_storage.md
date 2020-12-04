@@ -25,7 +25,7 @@ To have:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10586) in GitLab 12.4.
 
-CAUTION: **Caution:**
+WARNING:
 This is a [**beta** feature](https://about.gitlab.com/handbook/product/#beta) and is not ready yet for production use at any scale. The main limitations are a lack of testing at scale and no verification of any replicated data.
 
 **Secondary** nodes can replicate files stored on the **primary** node regardless of

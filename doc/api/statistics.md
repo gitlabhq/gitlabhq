@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 List the current statistics of the GitLab instance. You have to be an
 administrator in order to perform this action.
 
-NOTE: **Note:**
+NOTE:
 These statistics are approximate.
 
 ```plaintext

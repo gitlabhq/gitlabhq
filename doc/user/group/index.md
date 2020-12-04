@@ -226,7 +226,7 @@ To change this setting for a specific group:
 
 To change this setting globally, see [Default branch protection](../admin_area/settings/visibility_and_access_controls.md#default-branch-protection).
 
-NOTE: **Note:**
+NOTE:
 In [GitLab Premium or higher](https://about.gitlab.com/pricing/), GitLab administrators can choose to [disable group owners from updating the default branch protection](../admin_area/settings/visibility_and_access_controls.md#disable-group-owners-from-updating-default-branch-protection).
 
 ## Add projects to a group
@@ -342,7 +342,7 @@ Group links can be created using either a CN or a filter. These group links are 
 
 For more information on the administration of LDAP and group sync, refer to the [main LDAP documentation](../../administration/auth/ldap/index.md#group-sync).
 
-NOTE: **Note:**
+NOTE:
 If an LDAP user is a group member when LDAP Synchronization is added, and they are not part of the LDAP group, they will be removed from the group.
 
 ### Creating group links via CN **(STARTER ONLY)**
@@ -482,7 +482,7 @@ To change your group path (group URL):
 1. Enter a new name under **Change group URL**.
 1. Click **Change group URL**.
 
-CAUTION: **Caution:**
+WARNING:
 It is currently not possible to rename a namespace if it contains a
 project with [Container Registry](../packages/container_registry/index.md) tags,
 because the project cannot be moved.
@@ -716,7 +716,7 @@ To enable delayed deletion of projects:
 1. Expand the **Permissions, LFS, 2FA** section, and check **Enable delayed project removal**.
 1. Click **Save changes**.
 
-NOTE: **Note:**
+NOTE:
 The group setting for delayed deletion is not inherited by sub-groups and has to be individually defined for each group.
 
 #### Prevent project forking outside group **(PREMIUM)**

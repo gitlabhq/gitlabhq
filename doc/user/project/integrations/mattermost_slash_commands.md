@@ -64,7 +64,7 @@ the administrator console.
    A screen appears with all the values you need to copy in Mattermost as
    described in the next step. Leave the window open.
 
-   NOTE: **Note:**
+   NOTE:
    GitLab offers some values for the Mattermost settings. Only **Request URL** is required
    as offered, all the others are just suggestions.
 
@@ -92,7 +92,7 @@ in a new slash command.
 1. Fill in the options for the custom command as described in
    [step 2](#step-2-open-the-mattermost-slash-commands-service-in-gitlab).
 
-   NOTE: **Note:**
+   NOTE:
    If you plan on connecting multiple projects, pick a slash command trigger
    word that relates to your projects such as `/gitlab-project-name` or even
    just `/project-name`. Only use `/gitlab` if you plan to only connect a single

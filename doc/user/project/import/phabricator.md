@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/60562) in GitLab 12.0.
 
-CAUTION: **Caution:**
+WARNING:
 The Phabricator task importer is in
 [beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta) and is
 [**not** complete](https://gitlab.com/gitlab-org/gitlab/-/issues/284406). It imports

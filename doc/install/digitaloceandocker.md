@@ -31,7 +31,7 @@ locally on either macOS or Linux.
 
 - <https://docs.docker.com/machine/install-machine/>
 
-NOTE: **Note:**
+NOTE:
 The rest of the steps are identical for macOS and Linux.
 
 ## Create new Docker host
@@ -41,7 +41,7 @@ The rest of the steps are identical for macOS and Linux.
 
    This command will create a new DO droplet called `gitlab-test-env-do` that will act as a Docker host.
 
-   NOTE: **Note:**
+   NOTE:
    4GB is the minimum requirement for a Docker host that will run more than one GitLab instance.
 
    - RAM: 4GB

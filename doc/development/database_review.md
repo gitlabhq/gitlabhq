@@ -199,7 +199,7 @@ In general, migrations for a single deploy shouldn't take longer than
 1 hour for GitLab.com. The following guidelines are not hard rules, they were
 estimated to keep migration timing to a minimum.
 
-NOTE: **Note:**
+NOTE:
 Keep in mind that all runtimes should be measured against GitLab.com.
 
 | Migration Type | Execution Time Recommended | Notes |

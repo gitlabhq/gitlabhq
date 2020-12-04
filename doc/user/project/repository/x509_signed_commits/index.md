@@ -28,10 +28,10 @@ For a commit or tag to be *verified* by GitLab:
   which is usually up to three years.
 - The signing time is equal or later than commit time.
 
-NOTE: **Note:**
+NOTE:
 Certificate revocation lists are checked on a daily basis via background worker.
 
-NOTE: **Note:**
+NOTE:
 Self signed certificates without `authorityKeyIdentifier`,
 `subjectKeyIdentifier`, and `crlDistributionPoints` are not supported. We
 recommend using certificates from a PKI that are in line with

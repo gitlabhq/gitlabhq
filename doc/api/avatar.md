@@ -18,7 +18,7 @@ If:
   returned.
 - Public visibility is restricted, response is `403 Forbidden` when unauthenticated.
 
-NOTE: **Note:**
+NOTE:
 This endpoint can be accessed without authentication.
 
 ```plaintext

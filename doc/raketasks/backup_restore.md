@@ -15,7 +15,7 @@ You can only restore a backup to **exactly the same version and type (CE/EE)**
 of GitLab on which it was created. The best way to migrate your repositories
 from one server to another is through backup restore.
 
-CAUTION: **Warning:**
+WARNING:
 GitLab doesn't back up items that aren't stored in the filesystem. If you're
 using [object storage](../administration/object_storage.md), be sure to enable
 backups with your object storage provider, if desired.
@@ -62,7 +62,7 @@ including:
 - GitLab Pages content
 - Snippets
 
-CAUTION: **Warning:**
+WARNING:
 GitLab does not back up any configuration files, SSL certificates, or system
 files. You are highly advised to read about [storing configuration files](#storing-configuration-files).
 
@@ -154,7 +154,7 @@ items including encrypted information for two-factor authentication and the
 CI/CD _secure variables_. Storing encrypted information in the same location
 as its key defeats the purpose of using encryption in the first place.
 
-CAUTION: **Warning:**
+WARNING:
 The secrets file is essential to preserve your database encryption key.
 
 At the very **minimum**, you must backup:
@@ -220,7 +220,7 @@ Users of GitLab 12.1 and earlier should use the command `gitlab-rake gitlab:back
 
 #### Backup filename
 
-CAUTION: **Warning:**
+WARNING:
 If you use a custom backup filename, you can't
 [limit the lifetime of the backups](#limit-backup-lifetime-for-local-files-prune-old-backups).
 
@@ -269,9 +269,9 @@ You can exclude specific directories from the backup by adding the environment v
 - `repositories` (Git repositories data)
 
 All wikis will be backed up as part of the `repositories` group. Non-existent wikis will be skipped during a backup.
-
-NOTE: **Note:**
-When [backing up and restoring Helm Charts](https://docs.gitlab.com/charts/architecture/backup-restore.html), there is an additional option `packages`, which refers to any packages managed by the GitLab [package registry](../user/packages/package_registry/index.md).
+  
+NOTE:
+When [backing up and restoring Helm Charts](https://docs.gitlab.com/charts/architecture/backup-restore.html), there is an additional option `packages`, which refers to any packages managed by the GitLab [package registry](../user/packages/package_registry/index.md).   
 For more information see [command line arguments](https://docs.gitlab.com/charts/architecture/backup-restore.html#command-line-arguments).
 
 All wikis are backed up as part of the `repositories` group. Non-existent
@@ -700,7 +700,7 @@ For installations from source:
 
 #### Configuring cron to make daily backups
 
-CAUTION: **Warning:**
+WARNING:
 The following cron jobs do not [backup your GitLab configuration files](#storing-configuration-files)
 or [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
 
@@ -743,7 +743,7 @@ output if there aren't any errors. This is recommended to reduce cron spam.
 
 ### Limit backup lifetime for local files (prune old backups)
 
-CAUTION: **Warning:**
+WARNING:
 The process described in this section don't work if you used a [custom filename](#backup-filename)
 for your backups.
 
@@ -926,7 +926,7 @@ sudo gitlab-backup restore BACKUP=11493107454_2018_04_25_10.6.4-ce
 
 Users of GitLab 12.1 and earlier should use the command `gitlab-rake gitlab:backup:restore` instead.
 
-CAUTION: **Warning:**
+WARNING:
 `gitlab-rake gitlab:backup:restore` doesn't set the correct file system
 permissions on your Registry directory. This is a [known issue](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/62759).
 On GitLab 12.2 or later, you can use `gitlab-backup restore` to avoid this
@@ -948,7 +948,7 @@ installed version of GitLab, the restore command aborts with an error
 message. Install the [correct GitLab version](https://packages.gitlab.com/gitlab/),
 and then try again.
 
-NOTE: **Note:**
+NOTE:
 There is a known issue with restore not working with `pgbouncer`. [Read more about backup and restore with `pgbouncer`](#backup-and-restore-for-installations-using-pgbouncer).
 
 ### Restore for Docker image and GitLab Helm chart installations
@@ -988,7 +988,7 @@ docker exec -it <name of container> gitlab-rake gitlab:check SANITIZE=true
 
 Users of GitLab 12.1 and earlier should use the command `gitlab-rake gitlab:backup:create` instead.
 
-CAUTION: **Warning:**
+WARNING:
 `gitlab-rake gitlab:backup:restore` doesn't set the correct file system
 permissions on your Registry directory. This is a [known issue](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/62759).
 On GitLab 12.2 or later, you can use `gitlab-backup restore` to avoid this
@@ -1186,7 +1186,7 @@ You can determine if you have undecryptable values in the database by using the
 
 You must directly modify GitLab data to work around your lost secrets file.
 
-CAUTION: **Warning:**
+WARNING:
 Be sure to create a full database backup before attempting any changes.
 
 #### Disable user two-factor authentication (2FA)
@@ -1247,7 +1247,7 @@ You may need to reconfigure or restart GitLab for the changes to take effect.
 
 1. Clear all tokens for projects, groups, and the entire instance:
 
-   CAUTION: **Caution:**
+   WARNING:
    The final `UPDATE` operation stops the runners from being able to pick
    up new jobs. You must register new runners.
 

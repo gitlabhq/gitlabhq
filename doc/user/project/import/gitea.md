@@ -11,7 +11,7 @@ Import your projects from Gitea to GitLab with minimal effort.
 
 ## Overview
 
-NOTE: **Note:**
+NOTE:
 This requires Gitea `v1.0.0` or newer.
 
 - At its current state, Gitea importer can import:

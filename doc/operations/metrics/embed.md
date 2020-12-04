@@ -19,7 +19,7 @@ metrics to others, and you want to have relevant information directly available.
 
 This feature requires [Kubernetes](../../user/project/integrations/prometheus_library/kubernetes.md) metrics.
 
-Note: **Note:**
+NOTE:
 In GitLab versions 13.3 and earlier, metrics dashboard links were in the form
 `https://<root_url>/<project>/-/environments/<environment_id>/metrics`. These links
 are still supported, and can be used to embed metric charts.

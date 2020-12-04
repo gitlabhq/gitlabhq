@@ -54,7 +54,7 @@ end
 
 The query above iterates over the project creators and prints them out without duplications.
 
-NOTE: **Note:**
+NOTE:
 In case the column is not unique (no unique index definition), calling the `distinct` method on the relation is necessary.
 
 ## `EachBatch` in data migrations
@@ -162,7 +162,7 @@ Selecting only the `id` column and ordering by `id` is going to "force" the data
 
 ![Reading the index with extra filter](img/each_batch_users_table_filter_v13_7.png)
 
-NOTE: **Important:**
+NOTE:
 The number of scanned rows depends on the data distribution in the table.
 
 - Best case scenario: the first user was never logged in. The database reads only one row.
@@ -195,7 +195,7 @@ To address this problem, we have two options:
 - Create another, conditional index to cover the new query.
 - Replace the index with more generalized configuration.
 
-NOTE: **Note:**
+NOTE:
 Having multiple indexes on the same table and on the same columns could be a performance bottleneck when writing data.
 
 Let's consider the following index (avoid):
@@ -266,7 +266,7 @@ on the query which often ends up in statement timeouts. We have an unknown numbe
 issues, the execution time and the accessed database rows depends on the data distribution in the
 `issues` table.
 
-NOTE: **Note:**
+NOTE:
 Using subqueries works only when the subquery returns a small number of rows.
 
 #### Improving Subqueries

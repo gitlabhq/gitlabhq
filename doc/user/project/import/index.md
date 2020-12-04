@@ -47,7 +47,7 @@ All GitLab user associations (such as comment author) will be changed to the use
 If you need to migrate all data over, you can leverage our [API](../../../api/README.md) to migrate from self-managed to GitLab.com.
 The order of assets to migrate from a self-managed instance to GitLab.com is the following:
 
-NOTE: **Note:**
+NOTE:
 When migrating to GitLab.com, users would need to be manually created unless [SCIM](../../../user/group/saml_sso/scim_setup.md) is going to be used. Creating users with the API is limited to self-managed instances as it requires administrator access.
 
 1. [Groups](../../../api/groups.md)

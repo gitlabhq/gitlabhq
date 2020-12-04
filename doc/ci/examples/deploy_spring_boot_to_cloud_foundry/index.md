@@ -31,7 +31,7 @@ To follow along, you will need:
   other Cloud Foundry (CF) instance.
 - An account on GitLab.
 
-NOTE: **Note:**
+NOTE:
 You will need to replace the `api.run.pivotal.io` URL in the all below
 commands with the [API
 URL](https://docs.cloudfoundry.org/running/cf-api-endpoint.html) of your CF
@@ -116,7 +116,7 @@ After set up, GitLab CI/CD deploys your app to CF at every push to your
 repository's default branch. To review the build logs or watch your builds
 running live, navigate to **CI/CD > Pipelines**.
 
-CAUTION: **Caution:**
+WARNING:
 It's considered best practice for security to create a separate deploy user for
 your application and add its credentials to GitLab instead of using a
 developer's credentials.

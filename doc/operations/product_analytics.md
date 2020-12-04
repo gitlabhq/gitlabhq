@@ -70,7 +70,7 @@ database from growing too quickly.
 
 Product Analytics stores events are stored in GitLab database.
 
-CAUTION: **Caution:**
+WARNING:
 This data storage is experimental, and GitLab is likely to remove this data during
 future development.
 

@@ -7,7 +7,7 @@ description: "How to secure GitLab Pages websites with Let's Encrypt (manual pro
 
 # Let's Encrypt for GitLab Pages (manual process, deprecated)
 
-CAUTION: **Warning:**
+WARNING:
 This method is still valid but was **deprecated** in favor of the
 [Let's Encrypt integration](custom_domains_ssl_tls_certification/lets_encrypt_integration.md)
 introduced in GitLab 12.1.

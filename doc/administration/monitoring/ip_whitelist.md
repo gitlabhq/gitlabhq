@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > Introduced in GitLab 9.4.
 
-NOTE: **Note:**
+NOTE:
 We intend to [rename IP whitelist as `IP allowlist`](https://gitlab.com/gitlab-org/gitlab/-/issues/7554).
 
 GitLab provides some [monitoring endpoints](../../user/admin_area/monitoring/health_check.md)

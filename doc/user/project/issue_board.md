@@ -156,7 +156,7 @@ When finished with something, they move the card to **Frontend**. The Frontend t
 Cards finished by the UX team automatically appear in the **Frontend** column when they are ready
 for them.
 
-NOTE: **Note:**
+NOTE:
 For a broader use case, please see the blog post
 [GitLab Workflow, an Overview](https://about.gitlab.com/blog/2016/10/25/gitlab-workflow-an-overview/#gitlab-workflow-use-case-scenario).
 For a real use case example, you can read why

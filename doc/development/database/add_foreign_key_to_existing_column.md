@@ -79,7 +79,7 @@ class AddNotValidForeignKeyToEmailsUser < ActiveRecord::Migration[5.2]
 end
 ```
 
-CAUTION: **Caution:**
+WARNING:
 Avoid using the `add_foreign_key` constraint more than once per migration file, unless the source and target tables are identical.
 
 #### Data migration to fix existing records
@@ -119,7 +119,7 @@ end
 
 Validating the foreign key will scan the whole table and make sure that each relation is correct.
 
-NOTE: **Note:**
+NOTE:
 When using [background migrations](../background_migrations.md), foreign key validation should happen in the next GitLab release.
 
 Migration file for validating the foreign key:

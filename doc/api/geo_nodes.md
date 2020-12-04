@@ -240,7 +240,7 @@ Example response:
 
 Removes the Geo node.
 
-NOTE: **Note:**
+NOTE:
 Only a Geo primary node will accept this request.
 
 ```plaintext
@@ -548,7 +548,8 @@ Example response:
 }
 ```
 
-Note: The `health_status` parameter can only be in an "Healthy" or "Unhealthy" state, while the `health` parameter can be empty, "Healthy", or contain the actual error message.
+NOTE:
+The `health_status` parameter can only be in an "Healthy" or "Unhealthy" state, while the `health` parameter can be empty, "Healthy", or contain the actual error message.
 
 ## Retrieve project sync or verification failures that occurred on the current node
 

@@ -45,7 +45,7 @@ Watch a quick walkthrough of Code Quality in action:
   <iframe src="https://www.youtube.com/embed/B32LxtJKo9M" frameborder="0" allowfullscreen="true"> </iframe>
 </figure>
 
-NOTE: **Note:**
+NOTE:
 For one customer, the auditor found that having Code Quality, SAST, and Container Scanning all automated in GitLab CI/CD was almost better than a manual review! [Read more](https://about.gitlab.com/customers/bi_worldwide/).
 
 See also the Code Climate list of [Supported Languages for Maintainability](https://docs.codeclimate.com/docs/supported-languages-for-maintainability).
@@ -134,7 +134,7 @@ stages:
 TIP: **Tip:**
 This information is automatically extracted and shown right in the merge request widget.
 
-CAUTION: **Caution:**
+WARNING:
 On self-managed instances, if a malicious actor compromises the Code Quality job
 definition they could execute privileged Docker commands on the runner
 host. Having proper access control policies mitigates this attack vector by
@@ -250,7 +250,7 @@ Example:
 ]
 ```
 
-NOTE: **Note:**
+NOTE:
 Although the Code Climate spec supports more properties, those are ignored by
 GitLab.
 

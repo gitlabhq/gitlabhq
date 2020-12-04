@@ -62,7 +62,7 @@ item.
 
 To-do item triggers aren't affected by [GitLab notification email settings](profile/notifications.md).
 
-NOTE: **Note:**
+NOTE:
 When a user no longer has access to a resource related to a to-do item (such as
 an issue, merge request, project, or group), for security reasons GitLab
 deletes any related to-do items within the next hour. Deletion is delayed to

@@ -133,7 +133,7 @@ Adding text limits to existing database columns requires multiple steps split in
    - Add a post-deployment migration to add the limit to the text column with `validate: false`.
    - Add a post-deployment migration to fix the existing records.
 
-     NOTE: **Note:**
+     NOTE:
      Depending on the size of the table, a background migration for cleanup could be required in the next release.
      See [text limit constraints on large tables](strings_and_the_text_data_type.md#text-limit-constraints-on-large-tables) for more information.
 
@@ -154,7 +154,7 @@ other processes that try to access it while running the update.
 Also, after checking our production database, we know that there are `issues` with more characters in
 their title than the 1024 character limit, so we can not add and validate the constraint in one step.
 
-NOTE: **Note:**
+NOTE:
 Even if we did not have any record with a title larger than the provided limit, another
 instance of GitLab could have such records, so we would follow the same process either way.
 

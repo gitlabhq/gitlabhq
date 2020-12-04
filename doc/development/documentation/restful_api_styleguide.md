@@ -110,7 +110,7 @@ Rendered example:
 The following sections include a set of [cURL](https://curl.se/) examples
 you can use in the API documentation.
 
-CAUTION: **Caution:**
+WARNING:
 Do not use information for real users, URLs, or tokens. For documentation, refer to our
 relevant style guide sections on [Fake user information](styleguide/index.md#fake-user-information),
 [Fake URLs](styleguide/index.md#fake-urls), and [Fake tokens](styleguide/index.md#fake-tokens).

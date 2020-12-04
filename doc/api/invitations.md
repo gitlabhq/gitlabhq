@@ -21,7 +21,7 @@ levels are defined in the `Gitlab::Access` module. Currently, these levels are v
 - Maintainer (`40`)
 - Owner (`50`) - Only valid to set for groups
 
-CAUTION: **Caution:**
+WARNING:
 Due to [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/219299),
 projects in personal namespaces don't show owner (`50`) permission.
 

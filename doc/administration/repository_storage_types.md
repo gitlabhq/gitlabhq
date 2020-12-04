@@ -28,7 +28,7 @@ Anything discussed below is expected to be part of that folder.
 
 ## Hashed storage
 
-NOTE: **Note:**
+NOTE:
 In GitLab 13.0, hashed storage is enabled by default and the legacy storage is
 deprecated. Support for legacy storage is scheduled to be removed in GitLab 14.0.
 If you haven't migrated yet, check the

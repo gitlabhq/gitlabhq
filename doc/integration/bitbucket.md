@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Integrate your GitLab server with Bitbucket Cloud
 
-NOTE: **Note:**
+NOTE:
 Starting from GitLab 11.4, OmniAuth is enabled by default. If you're using an
 earlier version, you must explicitly enable it.
 

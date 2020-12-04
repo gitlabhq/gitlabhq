@@ -23,7 +23,8 @@ For information on how to contribute to the development of Value Stream Analytic
 
 Project-level Value Stream Analytics is available via **Project > Analytics > Value Stream**.
 
-Note: [Group-level Value Stream Analytics](../group/value_stream_analytics) is also available.
+NOTE:
+[Group-level Value Stream Analytics](../group/value_stream_analytics) is also available.
 
 ## Default stages
 
@@ -59,7 +60,8 @@ The "Time" metrics near the top of the page are measured as follows:
 - **Lead time**: median time from issue created to issue closed.
 - **Cycle time**: median time from first commit to issue closed.
 
-Note: A commit is associated with an issue by [crosslinking](../project/issues/crosslinking_issues.md) in the commit message or by manually linking the merge request containing the commit.
+NOTE:
+A commit is associated with an issue by [crosslinking](../project/issues/crosslinking_issues.md) in the commit message or by manually linking the merge request containing the commit.
 
 ## How the stages are measured
 

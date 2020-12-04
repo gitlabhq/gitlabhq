@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Place GitLab into a read-only state **(CORE ONLY)**
 
-CAUTION: **Warning:**
+WARNING:
 This document should be used as a temporary solution.
 There's work in progress to make this
 [possible with Geo](https://gitlab.com/groups/gitlab-org/-/epics/2149).

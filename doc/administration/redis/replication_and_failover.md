@@ -7,11 +7,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Redis replication and failover with Omnibus GitLab **(PREMIUM ONLY)**
 
-NOTE: **Note:**
+NOTE:
 This is the documentation for the Omnibus GitLab packages. For using your own
 non-bundled Redis, follow the [relevant documentation](replication_and_failover_external.md).
 
-NOTE: **Note:**
+NOTE:
 In Redis lingo, primary is called master. In this document, primary is used
 instead of master, except the settings where `master` is required.
 
@@ -162,7 +162,7 @@ is not achieved (see the odd number of nodes requirement above). In that case,
 a new attempt will be made after the amount of time defined in
 `sentinel['failover_timeout']` (in milliseconds).
 
-NOTE: **Note:**
+NOTE:
 We will see where `sentinel['failover_timeout']` is defined later.
 
 The `failover_timeout` variable has a lot of different use cases. According to
@@ -194,7 +194,7 @@ It is assumed that you have installed GitLab and all its components from scratch
 If you already have Redis installed and running, read how to
 [switch from a single-machine installation](#switching-from-an-existing-single-machine-installation).
 
-NOTE: **Note:**
+NOTE:
 Redis nodes (both primary and replica) will need the same password defined in
 `redis['password']`. At any time during a failover the Sentinels can
 reconfigure a node and change its status from primary to replica and vice versa.
@@ -277,7 +277,7 @@ If you fail to replicate first, you may loose data (unprocessed background jobs)
 
 1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
-NOTE: **Note:**
+NOTE:
 You can specify multiple roles like sentinel and Redis as:
 `roles ['redis_sentinel_role', 'redis_master_role']`.
 Read more about [roles](https://docs.gitlab.com/omnibus/roles/).
@@ -327,7 +327,7 @@ Read more about [roles](https://docs.gitlab.com/omnibus/roles/).
 1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 1. Go through the steps again for all the other replica nodes.
 
-NOTE: **Note:**
+NOTE:
 You can specify multiple roles like sentinel and Redis as:
 `roles ['redis_sentinel_role', 'redis_master_role']`.
 Read more about [roles](https://docs.gitlab.com/omnibus/roles/).
@@ -339,7 +339,7 @@ the same Sentinels.
 
 ### Step 3. Configuring the Redis Sentinel instances
 
-NOTE: **Note:**
+NOTE:
 If you are using an external Redis Sentinel instance, be sure
 to exclude the `requirepass` parameter from the Sentinel
 configuration. This parameter will cause clients to report `NOAUTH
@@ -465,7 +465,7 @@ the correct credentials for the Sentinel nodes.
 While it doesn't require a list of all Sentinel nodes, in case of a failure,
 it needs to access at least one of the listed.
 
-NOTE: **Note:**
+NOTE:
 The following steps should be performed in the GitLab application server
 which ideally should not have Redis or Sentinels on it for a HA setup.
 
@@ -690,7 +690,7 @@ To make this work with Sentinel:
    sudo gitlab-ctl reconfigure
    ```
 
-NOTE: **Note:**
+NOTE:
 For each persistence class, GitLab will default to using the
 configuration specified in `gitlab_rails['redis_sentinels']` unless
 overridden by the previously described settings.

@@ -9,7 +9,7 @@ type: howto
 
 ## Configuring a new **secondary** node
 
-NOTE: **Note:**
+NOTE:
 This is the final step in setting up a **secondary** Geo node. Stages of the
 setup process must be completed in the documented order.
 Before attempting the steps in this stage, [complete all prior stages](../setup/index.md#using-omnibus-gitlab).
@@ -23,7 +23,7 @@ The basic steps of configuring a **secondary** node are to:
 You are encouraged to first read through all the steps before executing them
 in your testing/production environment.
 
-NOTE: **Note:**
+NOTE:
 **Do not** set up any custom authentication for the **secondary** nodes. This will be handled by the **primary** node.
 Any change that requires access to the **Admin Area** needs to be done in the
 **primary** node because the **secondary** node is a read-only replica.
@@ -157,7 +157,7 @@ keys must be manually replicated to the **secondary** node.
    for file in /etc/ssh/ssh_host_*_key.pub; do ssh-keygen -lf $file; done
    ```
 
-   NOTE: **Note:**
+   NOTE:
    The output for private keys and public keys command should generate the same fingerprint.
 
 1. Restart `sshd` on your **secondary** node:

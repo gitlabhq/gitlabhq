@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20164) in GitLab 11.2.
 
-NOTE: **Note:**
+NOTE:
 The Bitbucket Server importer does not work with [Bitbucket Cloud](https://bitbucket.org).
 Use the [Bitbucket Cloud importer](bitbucket.md) for that.
 
@@ -70,7 +70,7 @@ namespace that started the import process.
 > - It's not recommended for production use.
 > - To use it in GitLab self-managed instances, ask a GitLab administrator to enable it.
 
-CAUTION: **Warning:**
+WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
 If you've enabled this feature, the importer tries to find a user in the GitLab user database with

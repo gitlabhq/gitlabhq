@@ -82,7 +82,7 @@ Here you'll find a guide on
 Since Annex files are stored as objects with symlinks and cannot be directly
 modified, we need to first remove those symlinks.
 
-NOTE: **Note:**
+NOTE:
 Make sure the you read about the [`direct` mode](https://git-annex.branchable.com/direct_mode/) as it contains
 useful information that may fit in your use case. Note that `annex direct` is
 deprecated in Git Annex version 6, so you may need to upgrade your repository

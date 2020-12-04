@@ -63,7 +63,7 @@ have been fixed on master.
 
 ## Recreate the GitLab integration in CrowdIn
 
-NOTE: **Note:**
+NOTE:
 These instructions work only for GitLab Team Members.
 
 If for some reason the GitLab integration in CrowdIn does not exist, it can be

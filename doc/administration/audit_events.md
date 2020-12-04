@@ -44,7 +44,7 @@ Impersonation is where an administrator uses credentials to perform an action as
 
 ### Group events **(STARTER)**
 
-NOTE: **Note:**
+NOTE:
 You need Owner [permissions](../user/permissions.md) to view the group Audit Events page.
 
 To view a group's audit events, navigate to **Group > Settings > Audit Events**.
@@ -74,7 +74,7 @@ Group events can also be accessed via the [Group Audit Events API](../api/audit_
 
 ### Project events **(STARTER)**
 
-NOTE: **Note:**
+NOTE:
 You need Maintainer [permissions](../user/permissions.md) or higher to view the project Audit Events page.
 
 To view a project's audit events, navigate to **Project > Settings > Audit Events**.

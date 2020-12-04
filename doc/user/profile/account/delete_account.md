@@ -12,7 +12,7 @@ Users can be deleted from a GitLab instance, either by:
 - The user themselves.
 - An administrator.
 
-NOTE: **Note:**
+NOTE:
 Deleting a user will delete all projects in that user namespace.
 
 ## As a user

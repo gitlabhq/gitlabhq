@@ -15,7 +15,7 @@ Admin page.
 
 Privacy note: GitLab submits the user's IP and user agent to Akismet.
 
-NOTE: **Note:**
+NOTE:
 In GitLab 8.11 and later, all issues are submitted to Akismet.
 In earlier GitLab versions, this only applied to API and non-project members.
 

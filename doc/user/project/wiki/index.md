@@ -34,7 +34,7 @@ message.
 
 ## Creating a new wiki page
 
-NOTE: **Note:**
+NOTE:
 Requires Developer [permissions](../../permissions.md).
 
 Create a new page by clicking the **New page** button that can be found
@@ -208,7 +208,7 @@ On the project's Wiki page, there is a right side navigation that renders the fu
 
 To customize the sidebar, you can create a file named `_sidebar` to fully replace the default navigation.
 
-CAUTION: **Warning:**
+WARNING:
 Unless you link the `_sidebar` file from your custom nav, to edit it you'll have to access it directly
 from the browser's address bar by typing: `https://gitlab.com/<namespace>/<project_name>/-/wikis/_sidebar` (for self-managed GitLab instances, replace `gitlab.com` with your instance's URL).
 

@@ -10,7 +10,7 @@ The Slack Notifications Service allows your GitLab project to send events
 (such as issue creation) to your existing Slack team as notifications. Setting up
 Slack notifications requires configuration changes for both Slack and GitLab.
 
-NOTE: **Note:**
+NOTE:
 You can also use Slack slash commands to control GitLab inside Slack. This is the
 separately configured [Slack slash commands](slack_slash_commands.md).
 
@@ -36,7 +36,7 @@ separately configured [Slack slash commands](slack_slash_commands.md).
    - To send messages to channels, enter the Slack channel names, separated by commas.
    - To send direct messages, use the Member ID found in the user's Slack profile.
 
-   NOTE: **Note:**
+   NOTE:
    Usernames and private channels are not supported.
 
 1. In **Webhook**, provide the webhook URL that you copied from the

@@ -47,7 +47,7 @@ for example comments, replies, issue descriptions, and merge request description
 | <kbd>⌘</kbd> (Mac) / <kbd>Ctrl</kbd> + <kbd>i</kbd>                    | Italicize the selected text (surround it with `_`). |
 | <kbd>⌘</kbd> (Mac) / <kbd>Ctrl</kbd> + <kbd>k</kbd>                    | Add a link (surround the selected text with `[]()`). |
 
-NOTE: **Note:**
+NOTE:
 The shortcuts for editing in text fields are always enabled, even when
 other keyboard shortcuts are disabled as explained above.
 

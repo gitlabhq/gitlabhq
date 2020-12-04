@@ -67,7 +67,7 @@ files and add the full paths of the alternative repository storage paths. In
 the example below, we add two more mount points that are named `nfs_1` and `nfs_2`
 respectively.
 
-NOTE: **Note:**
+NOTE:
 This example uses NFS. We do not recommend using EFS for storage as it may impact GitLab's performance. See the [relevant documentation](nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
 
 **For installations from source**
@@ -89,7 +89,7 @@ This example uses NFS. We do not recommend using EFS for storage as it may impac
 
 1. [Restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 
-NOTE: **Note:**
+NOTE:
 We plan to replace [`gitlab_shell: repos_path` entry](https://gitlab.com/gitlab-org/gitlab-foss/-/blob/8-9-stable/config/gitlab.yml.example#L457) in `gitlab.yml` with `repositories: storages`. If you
 are upgrading from a version prior to 8.10, make sure to add the configuration
 as described in the step above. After you make the changes and confirm they are

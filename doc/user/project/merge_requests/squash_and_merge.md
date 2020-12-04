@@ -27,7 +27,7 @@ Into a single commit on merge:
 
 ![A squashed commit followed by a merge commit](img/squash_squashed_commit.png)
 
-NOTE: **Note:**
+NOTE:
 The squashed commit in this example is followed by a merge commit, because the merge method for this repository uses a merge commit. You can disable merge commits in
 **Project Settings > General > Merge requests > Merge method > Fast-forward merge**.
 
@@ -36,7 +36,7 @@ The squashed commit's commit message will be either:
 - Taken from the first multi-line commit message in the merge.
 - The merge request's title if no multi-line commit message is found.
 
-NOTE: **Note:**
+NOTE:
 This only takes effect if there are at least 2 commits. As there is nothing to squash, the commit message does not change if there is only 1 commit.
 
 It can be customized before merging a merge request.
@@ -129,7 +129,7 @@ submitted to your project:
 
 The Squash and Merge checkbox is displayed when you create a merge request and when you edit the description of an existing one, except when Squash Commit Options is set to **Do not allow** or **Require**.
 
-NOTE: **Note:**
+NOTE:
 If your project is set to **Do not allow** Squash and Merge, the users still have the option to
 squash commits locally through the command line and force-push to their remote branch before merging.
 

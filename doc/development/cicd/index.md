@@ -99,7 +99,7 @@ A job with the `created` state isn't seen by the runner yet. To make it possible
 
 When the runner is connected, it requests the next `pending` job to run by polling the server continuously.
 
-NOTE: **Note:**
+NOTE:
 API endpoints used by the runner to interact with GitLab are defined in [`lib/api/ci/runner.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/api/ci/runner.rb)
 
 After the server receives the request it selects a `pending` job based on the [`Ci::RegisterJobService` algorithm](#ciregisterjobservice), then assigns and sends the job to the runner.
@@ -134,7 +134,7 @@ There are 3 top level queries that this service uses to gather the majority of t
 
 This list of jobs is then filtered further by matching tags between job and runner tags.
 
-NOTE: **Note:**
+NOTE:
 If a job contains tags, the runner doesn't pick the job if it does not match **all** the tags.
 The runner may have more tags than defined for the job, but not vice-versa.
 

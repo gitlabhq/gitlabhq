@@ -161,7 +161,7 @@ If the requested file matches the requested SHA256 sum, then the Geo
 feature, which allows NGINX to handle the file transfer without tying
 up Rails or Workhorse.
 
-NOTE: **Note:**
+NOTE:
 JWT requires synchronized clocks between the machines
 involved, otherwise it may fail with an encryption error.
 

@@ -18,7 +18,7 @@ delivery from customer launch.
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an example of feature flags in action, see [GitLab for Deploys, Feature Flags, and Error Tracking](https://www.youtube.com/embed/5tw2p6lwXxo).
 
-NOTE: **Note:**
+NOTE:
 The Feature Flags GitLab offer as a feature (described in this document) is not the same method
 used for the [development of GitLab](../development/feature_flags/index.md).
 
@@ -129,7 +129,7 @@ The rollout percentage can be from 0% to 100%.
 
 Selecting a consistency based on User IDs functions the same as the [percent of Users](#percent-of-users) rollout.
 
-CAUTION: **Caution:**
+WARNING:
 Selecting **Random** provides inconsistent application behavior for individual users.
 
 ### Percent of Users
@@ -147,7 +147,7 @@ but not anonymous users.
 Note that [percent rollout](#percent-rollout) with a consistency based on **User IDs** has the same
 behavior. We recommend using percent rollout because it's more flexible than percent of users
 
-CAUTION: **Caution:**
+WARNING:
 If the percent of users strategy is selected, then the Unleash client **must** be given a user
 ID for the feature to be enabled. See the [Ruby example](#ruby-application-example) below.
 
@@ -164,7 +164,7 @@ Enter user IDs as a comma-separated list of values (for example,
 `user@example.com, user2@example.com`, or `username1,username2,username3`, and so on). Note that
 user IDs are identifiers for your application users. They do not need to be GitLab users.
 
-CAUTION: **Caution:**
+WARNING:
 The Unleash client **must** be given a user ID for the feature to be enabled for
 target users. See the [Ruby example](#ruby-application-example) below.
 

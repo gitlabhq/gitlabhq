@@ -15,7 +15,7 @@ deployed, your application is exposed to a new category of possible attacks,
 such as cross-site scripting or broken authentication flaws. This is where
 Dynamic Application Security Testing (DAST) comes into place.
 
-NOTE: **Note:**
+NOTE:
 The whitepaper ["A Seismic Shift in Application Security"](https://about.gitlab.com/resources/whitepaper-seismic-shift-application-security/)
 explains how 4 of the top 6 attacks were application based. Download it to learn how to protect your
 organization.
@@ -171,7 +171,7 @@ headers whose values you want masked. For details on how to mask headers, see
 
 It's also possible to authenticate the user before performing the DAST checks.
 
-NOTE: **Note:**
+NOTE:
 We highly recommended that you configure the scanner to authenticate to the application,
 otherwise it cannot check most of the application for security risks, as most
 of your application is likely not accessible without authentication. It is also recommended
@@ -511,7 +511,7 @@ To perform a [full scan](#full-scan) on the listed paths, use the `DAST_FULL_SCA
 
 ### Customizing the DAST settings
 
-CAUTION: **Deprecation:**
+WARNING:
 Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/README.md#onlyexcept-basic)
 is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules) instead.
 
@@ -795,7 +795,7 @@ An on-demand DAST scan:
 
 ### Run an on-demand DAST scan
 
-NOTE: **Note:**
+NOTE:
 You must have permission to run an on-demand DAST scan against a protected branch.
 The default branch is automatically protected. For more information, see
 [Pipeline security on protected branches](../../../ci/pipelines/index.md#pipeline-security-on-protected-branches).
@@ -827,7 +827,7 @@ Click **View details** to view the web console output which includes the list of
 
 ### JSON
 
-CAUTION: **Caution:**
+WARNING:
 The JSON report artifacts are not a public API of DAST and their format is expected to change in the future.
 
 The DAST tool always emits a JSON report file called `gl-dast-report.json` and

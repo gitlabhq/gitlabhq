@@ -91,7 +91,7 @@ This can be shortened into a single-line shell command using the
 sudo gitlab-rails runner "token = User.find_by_username('automation-bot').personal_access_tokens.create(scopes: [:read_user, :read_repository], name: 'Automation token'); token.set_token('token-string-here123'); token.save!"
 ```
 
-NOTE: **Note:**
+NOTE:
 The token string must be 20 characters in length to be
 recognized as a valid personal access token.
 

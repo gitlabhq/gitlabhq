@@ -123,7 +123,7 @@ GET /templates/licenses/:key
 | `project`  | string | no       | The copyrighted project name |
 | `fullname` | string | no       | The full-name of the copyright holder |
 
-NOTE: **Note:**
+NOTE:
 If you omit the `fullname` parameter but authenticate your request, the name of
 the authenticated user replaces the copyright holder placeholder.
 

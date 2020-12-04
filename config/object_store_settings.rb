@@ -128,6 +128,7 @@ class ObjectStoreSettings
 
       if section['enabled'] && target_config['bucket'].blank?
         missing_bucket_for(store_type)
+        next
       end
 
       # If a storage type such as Pages defines its own connection and does not

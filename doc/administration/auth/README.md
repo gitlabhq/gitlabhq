@@ -36,5 +36,5 @@ providers:
 - [Smartcard](smartcard.md) **(PREMIUM ONLY)**
 - [Twitter](../../integration/twitter.md)
 
-NOTE: **Note:**
+NOTE:
 UltraAuth has removed their software which supports OmniAuth integration. We have therefore removed all references to UltraAuth integration.

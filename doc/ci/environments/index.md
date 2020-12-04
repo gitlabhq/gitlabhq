@@ -121,7 +121,7 @@ Note that the `environment` keyword defines where the app is deployed. The envir
 `url` is exposed in various places within GitLab. Each time a job that has an environment specified
 succeeds, a deployment is recorded along with the Git SHA and environment name.
 
-CAUTION: **Caution:**
+WARNING:
 Some characters are not allowed in environment names. Use only letters,
 numbers, spaces, and `-`, `_`, `/`, `{`, `}`, or `.`. Also, it must not start nor end with `/`.
 
@@ -386,7 +386,7 @@ If you are deploying to a [Kubernetes cluster](../../user/project/clusters/index
 associated with your project, you can configure these deployments from your
 `gitlab-ci.yml` file.
 
-NOTE: **Note:**
+NOTE:
 Kubernetes configuration isn't supported for Kubernetes clusters that are
 [managed by GitLab](../../user/project/clusters/index.md#gitlab-managed-clusters).
 To follow progress on support for GitLab-managed clusters, see the

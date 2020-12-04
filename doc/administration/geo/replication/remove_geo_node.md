@@ -42,7 +42,7 @@ Once GitLab has been uninstalled from the **secondary** node, the replication sl
    sudo gitlab-psql
    ```
 
-   NOTE: **Note:**
+   NOTE:
    Using `gitlab-rails dbconsole` will not work, because managing replication slots requires superuser permissions.
 
 1. Find the name of the relevant replication slot. This is the slot that is specified with `--slot-name` when running the replicate command: `gitlab-ctl replicate-geo-database`.

@@ -53,7 +53,7 @@ If the user is not signed in, user related values are empty.
 
 Broadcast messages can be managed using the [broadcast messages API](../../api/broadcast_messages.md).
 
-NOTE: **Note:**
+NOTE:
 If more than one banner message is active at one time, they are displayed in a stack in order of creation.
 If more than one notification message is active at one time, only the newest is shown.
 
@@ -70,12 +70,12 @@ To add a broadcast message:
 1. Select a date for the message to start and end.
 1. Click the **Add broadcast message** button.
 
-NOTE: **Note:**
+NOTE:
 The **Background color** field expects the value to be a hexadecimal code because
 the form uses the [color_field](https://api.rubyonrails.org/v6.0.3.4/classes/ActionView/Helpers/FormHelper.html#method-i-color_field)
 helper method, which generates the proper HTML to render.
 
-NOTE: **Note:**
+NOTE:
 Once a broadcast message has expired, it is no longer displayed in the UI but is still listed in the
 list of broadcast messages. User can also dismiss a broadcast message if the option **Dismissable** is set.
 
@@ -103,7 +103,7 @@ To delete a broadcast message:
 
 Once deleted, the broadcast message is removed from the list of broadcast messages.
 
-NOTE: **Note:**
+NOTE:
 Broadcast messages can be deleted while active.
 
 <!-- ## Troubleshooting

@@ -36,7 +36,7 @@ usernames. A GitLab administrator can configure the GitLab instance to
 
 ## Project members permissions
 
-NOTE: **Note:**
+NOTE:
 In GitLab 11.0, the Master role was renamed to Maintainer.
 
 While Maintainer is the highest project-level role, some actions can only be performed by a personal namespace or group owner,
@@ -235,7 +235,7 @@ read through the documentation on [permissions and access to confidential issues
 
 ## Group members permissions
 
-NOTE: **Note:**
+NOTE:
 In GitLab 11.0, the Master role was renamed to Maintainer.
 
 Any user can remove themselves from a group, unless they are the last Owner of
@@ -331,7 +331,7 @@ always take into account the
 [project's visibility and permissions settings](project/settings/index.md#sharing-and-permissions)
 as well as the permission level of the user.
 
-NOTE: **Note:**
+NOTE:
 External users still count towards a license seat.
 
 An administrator can flag a user as external by either of the following methods:
@@ -360,7 +360,7 @@ and the ignore case flag is set (`/regex pattern/i`). Here are some examples:
 - Use `^(?:(?!\.ext@domain\.com).)*$\r?` to mark users with email addresses
   NOT including `.ext@domain.com` as internal.
 
-CAUTION: **Warning:**
+WARNING:
 Be aware that this regex could lead to a
 [regular expression denial of service (ReDoS) attack](https://en.wikipedia.org/wiki/ReDoS).
 
@@ -424,7 +424,7 @@ which visibility level you select on project settings.
 
 ## GitLab CI/CD permissions
 
-NOTE: **Note:**
+NOTE:
 In GitLab 11.0, the Master role was renamed to Maintainer.
 
 GitLab CI/CD permissions rely on the role the user has in GitLab. There are four
@@ -458,10 +458,10 @@ instance and project. In addition, all admins can use the admin interface under
 
 ### Job permissions
 
-NOTE: **Note:**
+NOTE:
 In GitLab 11.0, the Master role was renamed to Maintainer.
 
-NOTE: **Note:**
+NOTE:
 GitLab 8.12 has a completely redesigned job permissions system.
 Read all about the [new model and its implications](project/new_ci_build_permissions_model.md).
 

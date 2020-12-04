@@ -14,7 +14,7 @@ Pages](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/196).
 For data objects such as LFS, Uploads, Artifacts, etc., an [Object Storage service](object_storage.md)
 is recommended over NFS where possible, due to better performance.
 
-CAUTION: **Caution:**
+WARNING:
 From GitLab 13.0, using NFS for Git repositories is deprecated. In GitLab 14.0,
 support for NFS for Git repositories is scheduled to be removed. Upgrade to
 [Gitaly Cluster](gitaly/praefect.md) as soon as possible.
@@ -118,7 +118,7 @@ To disable NFS server delegation, do the following:
 
 1. Restart the NFS server process. For example, on CentOS run `service nfs restart`.
 
-NOTE: **Note:**
+NOTE:
 The kernel bug may be fixed in
 [more recent kernels with this commit](https://github.com/torvalds/linux/commit/95da1b3a5aded124dd1bda1e3cdb876184813140).
 Red Hat Enterprise 7 [shipped a kernel update](https://access.redhat.com/errata/RHSA-2019:2029)
@@ -133,7 +133,7 @@ NFS performance with GitLab can in some cases be improved with
 [direct Git access](gitaly/index.md#direct-access-to-git-in-gitlab) using
 [Rugged](https://github.com/libgit2/rugged).
 
-NOTE: **Note:**
+NOTE:
 From GitLab 12.1, it will automatically be detected if Rugged can and should be used per storage.
 
 If you previously enabled Rugged using the feature flag, you will need to unset the feature flag by using:
@@ -146,7 +146,7 @@ If the Rugged feature flag is explicitly set to either `true` or `false`, GitLab
 
 #### Improving NFS performance with Puma
 
-NOTE: **Note:**
+NOTE:
 From GitLab 12.7, Rugged is not automatically enabled if Puma thread count is greater than `1`.
 
 If you want to use Rugged with Puma, [set Puma thread count to `1`](https://docs.gitlab.com/omnibus/settings/puma.html#puma-settings).
@@ -344,7 +344,7 @@ sudo ufw allow from <client_ip_address> to any port nfs
 
 ### Upgrade to Gitaly Cluster or disable caching if experiencing data loss
 
-CAUTION: **Caution:**
+WARNING:
 From GitLab 13.0, using NFS for Git repositories is deprecated. In GitLab 14.0,
 support for NFS for Git repositories is scheduled to be removed. Upgrade to
 [Gitaly Cluster](gitaly/praefect.md) as soon as possible.
@@ -358,7 +358,7 @@ For example, we have seen [inconsistent updates after a push](https://gitlab.com
 | `actimeo=0` | Sets the time to zero that the NFS client caches files and directories before requesting fresh information from a server. |
 | `noac` | Tells the NFS client not to cache file attributes and forces application writes to become synchronous so that local changes to a file become visible on the server immediately. |
 
-CAUTION: **Caution:**
+WARNING:
 The `actimeo=0` and `noac` options both result in a significant reduction in performance, possibly leading to timeouts.
 You may be able to avoid timeouts and data loss using `actimeo=0` and `lookupcache=positive` _without_ `noac`, however
 we expect the performance reduction will still be significant. As noted above, we strongly recommend upgrading to

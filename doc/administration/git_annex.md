@@ -8,7 +8,7 @@ disqus_identifier: 'https://docs.gitlab.com/ee/workflow/git_annex.html'
 
 # Git annex
 
-CAUTION: **Warning:**
+WARNING:
 [Git Annex support was removed](https://gitlab.com/gitlab-org/gitlab/-/issues/1648)
 in GitLab 9.0. Read through the [migration guide from git-annex to Git LFS](../topics/git/lfs/migrate_from_git_annex_to_git_lfs.md).
 
@@ -94,7 +94,7 @@ one is located in `config.yml` of GitLab Shell.
 
 ## Using GitLab git-annex
 
-NOTE: **Note:**
+NOTE:
 Your Git remotes must be using the SSH protocol, not HTTP(S).
 
 Here is an example workflow of uploading a very large file and then checking it

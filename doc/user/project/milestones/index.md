@@ -46,14 +46,14 @@ For information about project and group milestones API, see:
 - [Project Milestones API](../../../api/milestones.md)
 - [Group Milestones API](../../../api/group_milestones.md)
 
-NOTE: **Note:**
+NOTE:
 If you're in a group and click **Issues > Milestones**, you'll see group milestones and the milestones
 of projects in this group.
 If you're in a project and click **Issues > Milestones**, you'll only see this project's milestones.
 
 ## Creating milestones
 
-NOTE: **Note:**
+NOTE:
 A permission level of [Developer or higher](../../permissions.md) is required to create milestones.
 
 ### New project milestone
@@ -80,7 +80,7 @@ To create a **group milestone**:
 
 ## Editing milestones
 
-NOTE: **Note:**
+NOTE:
 A permission level of [Developer or higher](../../permissions.md) is required to edit milestones.
 
 To edit a milestone:
@@ -97,7 +97,7 @@ If you are expanding from a few projects to a larger number of projects within t
 
 From the project milestone list page, you can promote a project milestone to a group milestone. This will merge all project milestones across all projects in this group with the same name into a single group milestones. All issues and merge requests that previously were assigned one of these project milestones will now be assigned the new group milestones. This action cannot be reversed and the changes are permanent.
 
-CAUTION: **Caution:**
+WARNING:
 From GitLab 12.4 and earlier, some information is lost when you promote a project milestone to a group milestone. Not all features on the project milestone view are available on the group milestone view. If you promote a project milestone to a group milestone, you will lose these features. See [Milestone view](#milestone-view) to see which features are missing from the group milestone view.
 
 ![Promote milestone](img/milestones_promote_milestone.png)

@@ -168,7 +168,7 @@ GET /runners/:id
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/6"
 ```
 
-NOTE: **Note:**
+NOTE:
 The `token` attribute in the response was deprecated [in GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/issues/214320).
 and removed in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/214322).
 
@@ -230,7 +230,7 @@ PUT /runners/:id
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/6" --form "description=test-1-20150125-test" --form "tag_list=ruby,mysql,tag1,tag2"
 ```
 
-NOTE: **Note:**
+NOTE:
 The `token` attribute in the response was deprecated [in GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/issues/214320).
 and removed in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/214322).
 

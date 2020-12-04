@@ -381,7 +381,7 @@ on how the left-side navigation menu is built and updated.
 
 ## Previewing the changes live
 
-NOTE: **Note:**
+NOTE:
 To preview your changes to documentation locally, follow this
 [development guide](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/README.md#development-when-contributing-to-gitlab-documentation) or [these instructions for GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/gitlab_docs.md).
 

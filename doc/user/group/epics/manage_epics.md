@@ -65,7 +65,7 @@ You can edit multiple epics at once. To learn how to do it, visit
 
 ## Delete an epic
 
-NOTE: **Note:**
+NOTE:
 To delete an epic, you need to be an [Owner](../../permissions.md#group-members-permissions) of a group/subgroup.
 
 When editing the description of an epic, select the **Delete** button to delete the epic.
@@ -141,7 +141,7 @@ The sort option and order is saved and used wherever you browse epics, including
 
 If you're working on items that contain private information, you can make an epic confidential.
 
-NOTE: **Note:**
+NOTE:
 A confidential epic can only contain confidential issues and confidential child epics.
 
 To make an epic confidential:

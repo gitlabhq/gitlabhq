@@ -33,7 +33,7 @@ Pages domains are `*.gitlab.io`.
 | Project pages owned by a group | `projectname` | `http(s)://groupname.example.io/projectname`|
 | Project pages owned by a subgroup | `subgroup/projectname` | `http(s)://groupname.example.io/subgroup/projectname`|
 
-CAUTION: **Warning:**
+WARNING:
 There are some known [limitations](introduction.md#limitations)
 regarding namespaces served under the general domain name and HTTPS.
 Make sure to read that section.
@@ -80,7 +80,7 @@ To understand Pages domains clearly, read the examples below.
 
 ## URLs and baseurls
 
-NOTE: **Note:**
+NOTE:
 The `baseurl` option might be called named differently in some static site generators.
 
 Every Static Site Generator (SSG) default configuration expects

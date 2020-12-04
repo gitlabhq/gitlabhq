@@ -26,7 +26,7 @@ Classes in [`utilities.scss`](https://gitlab.com/gitlab-org/gitlab/blob/master/a
 
 Avoid [Bootstrap's Utility Classes](https://getbootstrap.com/docs/4.3/utilities/).
 
-NOTE: **Note:**
+NOTE:
 While migrating [Bootstrap's Utility Classes](https://getbootstrap.com/docs/4.3/utilities/)
 to the [GitLab UI](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/master/doc/css.md#utilities)
 utility classes, note both the classes for margin and padding differ. The size scale used at

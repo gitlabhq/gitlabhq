@@ -7,7 +7,7 @@ type: reference, howto
 
 # Project access tokens
 
-NOTE: **Note:**
+NOTE:
 Project access tokens are supported for self-managed instances on Core and above. They are also supported on GitLab.com Bronze and above.
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2587) in GitLab 13.0.
@@ -16,7 +16,7 @@ Project access tokens are supported for self-managed instances on Core and above
 > - [Became available on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/235765) in 13.5.
 > - It's recommended for production use.
 
-CAUTION: **Warning:**
+WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
 Project access tokens are scoped to a project and can be used to authenticate with the [GitLab API](../../../api/README.md#personalproject-access-tokens). You can also use project access tokens with Git to authenticate over HTTP.

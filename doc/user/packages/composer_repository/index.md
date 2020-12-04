@@ -79,7 +79,7 @@ Prerequisites:
 - The project ID, which is on the project's home page.
 - A [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `api`.
 
-  NOTE: **Note:**
+  NOTE:
   [Deploy tokens](../../project/deploy_tokens/index.md) are
   [not yet supported](https://gitlab.com/gitlab-org/gitlab/-/issues/240897) for use with Composer.
 
@@ -129,7 +129,7 @@ A more detailed Composer CI/CD file is also available as a `.gitlab-ci.yml` temp
 1. Above the file list, click **Set up CI/CD**. If this button is not available, select **CI/CD Configuration** and then **Edit**.
 1. From the **Apply a template** list, select **Composer**.
 
-CAUTION: **Warning:**
+WARNING:
 Do not save unless you want to overwrite the existing CI/CD file.
 
 ## Install a Composer package
@@ -142,7 +142,7 @@ Prerequisites:
 - The group ID, which is on the group's home page.
 - A [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to, at minimum, `read_api`.
 
-  NOTE: **Note:**
+  NOTE:
   [Deploy tokens](../../project/deploy_tokens/index.md) are
   [not yet supported](https://gitlab.com/gitlab-org/gitlab/-/issues/240897) for use with Composer.
 
@@ -251,14 +251,14 @@ To install a package:
    composer config --unset gitlab-domains
    ```
 
-   NOTE: **Note:**
+   NOTE:
    On GitLab.com, Composer uses the GitLab token from `auth.json` as a private token by default.
    Without the `gitlab-domains` definition in `composer.json`, Composer uses the GitLab token
    as basic-auth, with the token as a username and a blank password. This results in a 401 error.
 
 Output indicates that the package has been successfully installed.
 
-CAUTION: **Important:**
+WARNING:
 Never commit the `auth.json` file to your repository. To install packages from a CI/CD job,
 consider using the [`composer config`](https://getcomposer.org/doc/articles/handling-private-packages-with-satis.md#authentication) tool with your personal access token
 stored in a [GitLab CI/CD environment variable](../../../ci/variables/README.md) or in

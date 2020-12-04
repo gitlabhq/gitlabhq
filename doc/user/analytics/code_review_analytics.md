@@ -16,7 +16,7 @@ enables you to:
 1. Take action on individual merge requests.
 1. Reduce overall cycle time.
 
-NOTE: **Note:**
+NOTE:
 Initially, no data appears. Data is populated as users comment on open merge requests.
 
 ## Overview

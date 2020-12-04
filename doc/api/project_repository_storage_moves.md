@@ -197,7 +197,7 @@ Example response:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34119) in GitLab 13.1.
 > - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2618) in GitLab 13.3, original repository is automatically removed after successful move and integrity check.
 
-CAUTION: **Caution:**
+WARNING:
 Before GitLab 13.3, a repository move worked more like a repository copy as the
 original repository was not deleted from the original storage disk location and
 had to be manually cleaned up.

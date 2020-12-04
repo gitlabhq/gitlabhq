@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Pivotal Tile **(PREMIUM ONLY)**
 
-CAUTION: **Discontinued:**
+WARNING:
 As of September 13, 2017, the GitLab Enterprise Plus for Pivotal Cloud Foundry
 tile on Pivotal Network has reached its End of Availability (“EoA”) and is no
 longer available for download or sale through Pivotal. Current customers with

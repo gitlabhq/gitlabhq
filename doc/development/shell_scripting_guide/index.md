@@ -21,7 +21,7 @@ deviations from this guide, they should be described in the
 
 ## Avoid using shell scripts
 
-CAUTION: **Caution:**
+WARNING:
 This is a must-read section.
 
 Having said all of the above, we recommend staying away from shell scripts
@@ -107,7 +107,7 @@ and ignore files starting with a period. To override this, use `-ln` flag to spe
 
 ## Testing
 
-NOTE: **Note:**
+NOTE:
 This is a work in progress.
 
 It is an [ongoing effort](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/64016) to evaluate different tools for the

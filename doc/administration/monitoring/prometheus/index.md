@@ -53,7 +53,7 @@ To disable Prometheus and all of its exporters, as well as any added in the futu
 
 ### Changing the port and address Prometheus listens on
 
-CAUTION: **Caution:**
+WARNING:
 The following change was added in [Omnibus GitLab 8.17](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/1261). Although possible,
 it's not recommended to change the port Prometheus listens
 on, as this might affect or conflict with other services running on the GitLab
@@ -183,7 +183,7 @@ ensure that `prometheus['scrape_configs']` is not set in `/etc/gitlab/gitlab.rb`
 
 ### Using an external Prometheus server
 
-CAUTION: **Caution:**
+WARNING:
 Prometheus and most exporters don't support authentication. We don't recommend exposing them outside the local network.
 
 A few configuration changes are required to allow GitLab to be monitored by an external Prometheus server. External servers are recommended for [GitLab deployments with multiple nodes](../../reference_architectures/index.md).

@@ -38,7 +38,7 @@ metrics exposed by the [GitLab exporter](../prometheus/gitlab_metrics.md#metrics
 
 ## Deleting the self monitoring project
 
-CAUTION: **Warning:**
+WARNING:
 Deleting the self monitoring project removes any changes made to the project. If
 you create the project again, it's created in its default state.
 

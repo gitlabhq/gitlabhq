@@ -13,7 +13,7 @@ to disable those changes without having to revert an entire release.
 
 Before using feature flags for GitLab's development, review the following development guides:
 
-NOTE: **Note:**
+NOTE:
 The feature flags used by GitLab to deploy its own features **are not** the same
 as the [feature flags offered as part of the product](../../operations/feature_flags.md).
 

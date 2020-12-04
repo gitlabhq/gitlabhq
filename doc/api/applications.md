@@ -13,7 +13,7 @@ Applications API operates on OAuth applications for:
 - [Using GitLab as an authentication provider](../integration/oauth_provider.md).
 - [Allowing access to GitLab resources on a user's behalf](oauth2.md).
 
-NOTE: **Note:**
+NOTE:
 Only admin users can use the Applications API.
 
 ## Create an application
@@ -82,7 +82,7 @@ Example response:
 ]
 ```
 
-NOTE: **Note:**
+NOTE:
 The `secret` value will not be exposed by this API.
 
 ## Delete an application

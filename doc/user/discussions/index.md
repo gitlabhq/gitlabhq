@@ -31,7 +31,7 @@ You can also reply to a comment notification email to reply to the comment if
 creates another standard comment. Replying to a threaded comment creates a reply in the thread. Email replies support
 [Markdown](../markdown.md) and [quick actions](../project/quick_actions.md), just as if you replied from the web.
 
-NOTE: **Note:**
+NOTE:
 There is a limit of 5,000 comments for every object, for example: issue, epic, and merge request.
 
 ## Resolvable comments and threads
@@ -206,7 +206,7 @@ top-level resolvable threads are not automatically resolved.
 You can add comments and threads to a particular commit under your
 project's **Repository > Commits**.
 
-CAUTION: **Attention:**
+WARNING:
 Threads created this way will be lost if the commit ID changes after a
 force push.
 
@@ -248,7 +248,7 @@ After you click on the image, a comment form will be displayed that would be the
 of your thread. Once you save your comment, you will see a new badge displayed on
 top of your image. This badge represents your thread.
 
-NOTE: **Note:**
+NOTE:
 This thread badge is typically associated with a number that is only used as a visual
 reference for each thread. In the merge request thread tab,
 this badge will be indicated with a comment icon since each thread will render a new
@@ -444,7 +444,7 @@ to 4 lines _below_ the commented line, with the suggested change.
 
 ![Multi-line suggestion preview](img/multi-line-suggestion-preview.png)
 
-NOTE: **Note:**
+NOTE:
 Suggestions covering multiple lines are limited to 100 lines _above_ and 100
 lines _below_ the commented diff line, allowing up to 200 changed lines per
 suggestion.
@@ -491,7 +491,7 @@ For example, to customize the commit message to output
 **Addresses user_1's review**, set the custom text to
 `Addresses %{username}'s review`.
 
-NOTE: **Note:**
+NOTE:
 Custom commit messages for each applied Suggestion (and for batch Suggestions) will be
 introduced by [#25381](https://gitlab.com/gitlab-org/gitlab/-/issues/25381).
 

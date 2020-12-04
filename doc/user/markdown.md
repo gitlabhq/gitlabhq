@@ -15,7 +15,7 @@ website uses an extended Kramdown gem, [GitLab Kramdown](https://gitlab.com/gitl
 Consult the [GitLab Kramdown Guide](https://about.gitlab.com/handbook/markdown-guide/)
 for a complete Kramdown reference.
 
-NOTE: **Note:**
+NOTE:
 We encourage you to view this document as [rendered by GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md).
 
 ## GitLab Flavored Markdown (GFM)
@@ -477,7 +477,7 @@ In addition to this, links to some objects are also recognized and formatted. So
 
 ### Task lists
 
-> If this is not rendered correctly, [view it in GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#task-lists).
+If this section is not rendered correctly, [view it in GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#task-lists).
 
 You can add task lists anywhere Markdown is supported, but you can only "click"
 to toggle the boxes if they are in issues, merge requests, or comments. In other
@@ -780,6 +780,7 @@ But let's throw in a <b>tag</b>.
 
 There are multiple ways to emphasize text in Markdown. You can italicize, bold, strikethrough,
 as well as combine these emphasis styles together.
+Strikethrough is not part of the core Markdown standard, but is part of GFM.
 
 Examples:
 
@@ -800,9 +801,6 @@ Strong emphasis, aka bold, with double **asterisks** or __underscores__.
 Combined emphasis with **asterisks and _underscores_**.
 
 Strikethrough uses two tildes. ~~Scratch this.~~
-
-NOTE: **Note:**
-Strikethrough is not part of the core Markdown standard, but is part of GFM.
 
 #### Multiple underscores in words and mid-word emphasis
 
@@ -1269,7 +1267,7 @@ Do not change to reference style links.
 
 Some text to show that the reference links can follow later.
 
-NOTE: **Note:**
+NOTE:
 Relative links do not allow the referencing of project files in a wiki
 page, or a wiki page in a project file. The reason for this is that a wiki is always
 in a separate Git repository in GitLab. For example, `[I'm a reference-style link](style)`

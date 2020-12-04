@@ -11,7 +11,7 @@ This page describes GitLab reference architecture for up to 3,000 users. For a
 full list of reference architectures, see
 [Available reference architectures](index.md#available-reference-architectures).
 
-NOTE: **Note:**
+NOTE:
 This reference architecture is designed to help your organization achieve a
 highly-available GitLab deployment. If you do not have the expertise or need to
 maintain a highly-available environment, you can have a simpler and less
@@ -500,7 +500,7 @@ servers. The following IPs will be used as an example:
 - `10.6.0.12`: Consul/Sentinel 2
 - `10.6.0.13`: Consul/Sentinel 3
 
-NOTE: **Note:**
+NOTE:
 If you're using an external Redis Sentinel instance, be sure to exclude the
 `requirepass` parameter from the Sentinel configuration. This parameter causes
 clients to report `NOAUTH Authentication required.`.
@@ -1114,7 +1114,7 @@ Refer to your preferred Load Balancer's documentation for further guidance.
 
 ## Configure Gitaly
 
-NOTE: **Note:**
+NOTE:
 [Gitaly Cluster](../gitaly/praefect.md) support
 for the Reference Architectures is being
 worked on as a [collaborative effort](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/1) between the Quality Engineering and Gitaly teams. When this component has been verified
@@ -1148,7 +1148,7 @@ Be sure to note the following items:
   to restrict access to the Gitaly server. Another option is to
   [use TLS](#gitaly-tls-support).
 
-NOTE: **Note:**
+NOTE:
 The token referred to throughout the Gitaly documentation is an arbitrary
 password selected by the administrator. This token is unrelated to tokens
 created for the GitLab API or other similar web API tokens.
@@ -1298,7 +1298,7 @@ nodes (including the Gitaly node using the certificate) and on all client nodes
 that communicate with it following the procedure described in
 [GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
 
-NOTE: **Note:**
+NOTE:
 The self-signed certificate must specify the address you use to access the
 Gitaly server. If you are addressing the Gitaly server by a hostname, you can
 either use the Common Name field for this, or add it as a Subject Alternative

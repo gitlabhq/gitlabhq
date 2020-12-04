@@ -10,7 +10,7 @@ type: reference, howto
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3775) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.3.
 > - All open source (OSS) analyzers were moved to GitLab Core in GitLab 13.3.
 
-NOTE: **Note:**
+NOTE:
 The whitepaper ["A Seismic Shift in Application Security"](https://about.gitlab.com/resources/whitepaper-seismic-shift-application-security/)
 explains how 4 of the top 6 attacks were application based. Download it to learn how to protect your
 organization.
@@ -51,10 +51,10 @@ To run SAST jobs, by default, you need GitLab Runner with the
 [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
 If you're using the shared runners on GitLab.com, this is enabled by default.
 
-CAUTION: **Caution:**
+WARNING:
 Our SAST jobs require a Linux container type. Windows containers are not yet supported.
 
-CAUTION: **Caution:**
+WARNING:
 If you use your own runners, make sure the Docker version installed
 is **not** `19.03.0`. See [troubleshooting information](#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error) for details.
 
@@ -189,7 +189,7 @@ the pipeline configuration, the last mention of the variable takes precedence.
 
 ### Overriding SAST jobs
 
-CAUTION: **Deprecation:**
+WARNING:
 Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/README.md#onlyexcept-basic)
 is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules) instead.
 
@@ -452,7 +452,7 @@ all [custom environment variables](../../../ci/variables/README.md#custom-enviro
 to the underlying SAST analyzer images if
 [the SAST vendored template](#configuration) is used.
 
-CAUTION: **Caution:**
+WARNING:
 Variables having names starting with these prefixes are **not** propagated to the SAST Docker container and/or
 analyzer containers: `DOCKER_`, `CI`, `GITLAB_`, `FF_`, `HOME`, `PWD`, `OLDPWD`, `PATH`, `SHLVL`, `HOSTNAME`.
 

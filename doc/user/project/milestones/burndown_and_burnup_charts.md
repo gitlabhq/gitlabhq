@@ -66,7 +66,7 @@ and you follow this workflow:
 A burndown chart is available for every project or group milestone that has been attributed a **start
 date** and a **due date**.
 
-NOTE: **Note:**
+NOTE:
 You're able to [promote project](index.md#promoting-project-milestones-to-group-milestones) to group milestones and still see the **burndown chart** for them, respecting license limitations.
 
 The chart indicates the project's progress throughout that milestone (for issues assigned to it).

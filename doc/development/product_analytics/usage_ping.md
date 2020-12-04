@@ -137,7 +137,7 @@ There are several types of counters which are all found in `usage_data.rb`:
 - **Alternative Counters:** Used for settings and configurations
 - **Redis Counters:** Used for in-memory counts.
 
-NOTE: **Note:**
+NOTE:
 Only use the provided counter methods. Each counter method contains a built in fail safe to isolate each counter to avoid breaking the entire Usage Ping.
 
 ### Why batch counting
@@ -623,7 +623,7 @@ In those cases where operational metrics should be part of Usage Ping, a databas
 to provide useful data. Instead, Prometheus might be more appropriate, since most of GitLab's architectural
 components publish metrics to it that can be queried back, aggregated, and included as usage data.
 
-NOTE: **Note:**
+NOTE:
 Prometheus as a data source for Usage Ping is currently only available for single-node Omnibus installations
 that are running the [bundled Prometheus](../../administration/monitoring/prometheus/index.md) instance.
 
@@ -781,7 +781,7 @@ appear to be associated to any of the services running, since they all appear to
 > - It's [deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
 > - It's enabled on GitLab.com.
 
-CAUTION: **Warning:**
+WARNING:
 This feature is intended solely for internal GitLab use.
 
 In order to add data for aggregated metrics into Usage Ping payload you should add corresponding definition into  [`aggregated_metrics.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/aggregated_metrics.yml) file. Each aggregate definition includes following parts:

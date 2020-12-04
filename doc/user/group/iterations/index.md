@@ -38,7 +38,7 @@ From there you can create a new iteration or click an iteration to get a more de
 
 ## Create an iteration
 
-NOTE: **Note:**
+NOTE:
 You need Developer [permissions](../../permissions.md) or higher to create an iteration.
 
 To create an iteration:
@@ -52,7 +52,7 @@ To create an iteration:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218277) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.2.
 
-NOTE: **Note:**
+NOTE:
 You need Developer [permissions](../../permissions.md) or higher to edit an iteration.
 
 To edit an iteration, click the three-dot menu (**{ellipsis_v}**) > **Edit iteration**.

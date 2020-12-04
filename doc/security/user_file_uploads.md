@@ -18,7 +18,7 @@ notification emails, which are often read from email clients that are not
 authenticated with GitLab, such as Outlook, Apple Mail, or the Mail app on your
 mobile device.
 
-NOTE: **Note:**
+NOTE:
 Non-image attachments do require authentication to be viewed.
 
 <!-- ## Troubleshooting

@@ -222,7 +222,7 @@ the correct runbook:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232492) in GitLab 13.5 behind a feature flag, disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/232492) in GitLab 13.6.
 
-CAUTION: **Warning:**
+WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
 The environment information and the link are displayed in the [Alert Details tab](#alert-details-tab).

@@ -66,7 +66,7 @@ Visit `http://localhost:4000/12.0/` to see if everything works correctly.
 
 ## 3. Create the release merge request
 
-NOTE: **Note:**
+NOTE:
 To be [automated](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/750).
 
 Now it's time to create the monthly release merge request that adds the new
@@ -125,7 +125,7 @@ versions (stable branches `X.Y` of the `gitlab-docs` project):
    update the dropdowns. Set these to automatically be merged when their
    pipelines succeed:
 
-   NOTE: **Note:**
+   NOTE:
    The `release-X-Y` branch needs to be present locally,
    and you need to have switched to it, otherwise the Rake task fails.
 

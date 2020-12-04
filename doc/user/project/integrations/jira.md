@@ -89,7 +89,7 @@ To enable users to view Jira issues inside the GitLab project, select **Enable J
 
 You can only display issues from a single Jira project within a given GitLab project.
 
-CAUTION: **Caution:**
+WARNING:
 If you enable Jira issues with the setting above, all users that have access to this GitLab project
 are able to view all issues from the specified Jira project.
 

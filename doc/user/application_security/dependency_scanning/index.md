@@ -46,7 +46,7 @@ To run dependency scanning jobs, by default, you need GitLab Runner with the
 [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
 If you're using the shared runners on GitLab.com, this is enabled by default.
 
-CAUTION: **Caution:**
+WARNING:
 If you use your own runners, make sure your installed version of Docker
 is **not** `19.03.0`. See [troubleshooting information](#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error) for details.
 
@@ -123,7 +123,7 @@ configuration, the last mention of the variable takes precedence.
 
 ### Overriding dependency scanning jobs
 
-CAUTION: **Deprecation:**
+WARNING:
 Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/README.md#onlyexcept-basic)
 is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules) instead.
 

@@ -64,7 +64,7 @@ which is used by users. Internal URL does not need to be a private address.
 Internal URL defaults to External URL, but you can customize it under
 **Admin Area > Geo > Nodes**.
 
-CAUTION: **Warning:**
+WARNING:
 We recommend using an HTTPS connection while configuring the Geo nodes. To avoid
 breaking communication between **primary** and **secondary** nodes when using
 HTTPS, customize your Internal URL to point to a load balancer with TLS

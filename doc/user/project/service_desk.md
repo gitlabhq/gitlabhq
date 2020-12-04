@@ -59,7 +59,7 @@ users will only see the thread through email.
 
 ## Configuring Service Desk
 
-NOTE: **Note:**
+NOTE:
 Service Desk is enabled on GitLab.com.
 You can skip step 1 below; you only need to enable it per project.
 
@@ -131,7 +131,7 @@ this name in the `From` header. The default display name is `GitLab Support Bot`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2201) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.0.
 
-NOTE: **Note:**
+NOTE:
 This feature is disabled by default. For steps to enable it, see [Enable custom email address](#enable-custom-email-address).
 
 If the `service_desk_email` feature flag is enabled in your configuration,

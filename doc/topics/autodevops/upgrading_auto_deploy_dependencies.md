@@ -184,7 +184,7 @@ include:
   - remote: https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.latest.gitlab-ci.yml
 ```
 
-CAUTION: **Warning:**
+WARNING:
 Using a beta or unstable `auto-deploy-image` could cause unrecoverable damage to
 your environments. Do not test it with important projects or environments.
 

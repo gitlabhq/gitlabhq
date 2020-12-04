@@ -98,7 +98,7 @@ To display the Deploy Boards for a specific [environment](../../ci/environments/
    Kubernetes as well. The image below demonstrates how this is shown inside
    Kubernetes.
 
-   NOTE: **Note:**
+   NOTE:
    Matching based on the Kubernetes `app` label was removed in [GitLab
    12.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/14020).
    To migrate, please apply the required annotations (see above) and
@@ -143,7 +143,7 @@ spec:
 
 The annotations will be applied to the deployments, replica sets, and pods. By changing the number of replicas, like `kubectl scale --replicas=3 deploy APPLICATION_NAME -n ${KUBE_NAMESPACE}`, you can follow the instances' pods from the board.
 
-NOTE: **Note:**
+NOTE:
 The YAML file is static. If you apply it using `kubectl apply`, you must
 manually provide the project and environment slugs, or create a script to
 replace the variables in the YAML before applying.

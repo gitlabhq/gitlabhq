@@ -7,7 +7,7 @@ comments: false
 
 # Upgrading from Community Edition to Enterprise Edition from source
 
-NOTE: **Note:**
+NOTE:
 In the past we used separate documents for upgrading from
 Community Edition to Enterprise Edition. These documents can be found in the
 [`doc/update` directory of Enterprise Edition's source

@@ -84,7 +84,7 @@ server running on your instance).
 
 ![DNS A record pointing to GitLab.com Pages server](img/dns_add_new_a_record_example_updated_2018.png)
 
-CAUTION: **Caution:**
+WARNING:
 Note that if you use your root domain for your GitLab Pages website
 **only**, and if your domain registrar supports this feature, you can
 add a DNS apex `CNAME` record instead of an `A` record. The main
@@ -157,7 +157,7 @@ Once you have added all the DNS records:
 As soon as your domain becomes active, your website will be available
 through your domain name.
 
-CAUTION: **Caution:**
+WARNING:
 Considering GitLab instances with domain verification enabled,
 if the domain cannot be verified for 7 days, it will be removed
 from the GitLab project.

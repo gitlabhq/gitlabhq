@@ -25,7 +25,7 @@ This tutorial was inspired by the guide
 For more information on Git LFS, see the [references](#references)
 below.
 
-CAUTION: **Warning:**
+WARNING:
 The method described on this guide rewrites Git history. Make
 sure to back up your repository before beginning and use it at your
 own risk.
@@ -59,7 +59,7 @@ To follow this tutorial, you need:
    brew install git-lfs
    ```
 
-NOTE: **Note:**
+NOTE:
 This guide was tested on macOS Mojave.
 
 ## Steps

@@ -37,7 +37,7 @@ On a self-managed instance, a GitLab subscription provides the same set of
 features for _all_ users. On GitLab.com, you can apply a subscription to either
 a group or a personal namespace.
 
-NOTE: **Note:**
+NOTE:
 Subscriptions cannot be transferred between GitLab.com and GitLab self-managed.
 A new subscription must be purchased and applied as needed.
 

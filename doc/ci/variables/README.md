@@ -243,7 +243,7 @@ Some variables are listed in the UI so you can choose them more quickly.
 | `AWS_DEFAULT_REGION`    | Any                                                | 12.10         |
 | `AWS_SECRET_ACCESS_KEY` | Any                                                | 12.10         |
 
-CAUTION: **Caution:**
+WARNING:
 When you store credentials, there are security implications. If you are using AWS keys,
 for example, follow their [best practices](https://docs.aws.amazon.com/general/latest/gr/aws-access-keys-best-practices.html).
 
@@ -590,7 +590,7 @@ variables](../../topics/autodevops/customize.md#application-secret-variables) ar
 then available as environment variables on the running application
 container.
 
-CAUTION: **Caution:**
+WARNING:
 Variables with multi-line values are not supported due to
 limitations with the Auto DevOps scripting environment.
 
@@ -798,7 +798,7 @@ deploy_staging:
     - if: '$RELEASE =~ $STAGINGRELS'
 ```
 
-NOTE: **Note:**
+NOTE:
 The available regular expression syntax is limited. See [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/35438)
 for more details.
 
@@ -825,7 +825,7 @@ testvariable:
 
 > Introduced in GitLab Runner 1.7.
 
-CAUTION: **Warning:**
+WARNING:
 Enabling debug tracing can have severe security implications. The
 output **will** contain the content of all your variables and any other
 secrets! The output **will** be uploaded to the GitLab server and made visible

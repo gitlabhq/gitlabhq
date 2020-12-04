@@ -28,7 +28,7 @@ licenses in your project's license compliance policy section. If GitLab detects 
 in a new commit, GitLab blocks any merge requests containing that commit and instructs the developer
 to remove the license.
 
-NOTE: **Note:**
+NOTE:
 If the license compliance report doesn't have anything to compare to, no information
 is displayed in the merge request area. That is the case when you add the
 `license_scanning` job in your `.gitlab-ci.yml` for the first time.
@@ -60,7 +60,7 @@ The following languages and package managers are supported.
 | Python     | [pip](https://pip.pypa.io/en/stable/) | Python is supported through [requirements.txt](https://pip.pypa.io/en/stable/user_guide/#requirements-files) and [Pipfile.lock](https://github.com/pypa/pipfile#pipfilelock). | [License Finder](https://github.com/pivotal/LicenseFinder) |
 | Ruby       | [gem](https://rubygems.org/) |  | [License Finder](https://github.com/pivotal/LicenseFinder)|
 
-NOTE: **Note:**
+NOTE:
 Java 8 and Gradle 1.x projects are not supported.
 The minimum supported version of Maven is 3.2.5.
 
@@ -109,7 +109,7 @@ include:
 The included template creates a `license_scanning` job in your CI/CD pipeline and scans your
 dependencies to find their licenses.
 
-NOTE: **Note:**
+NOTE:
 Before GitLab 12.8, the `license_scanning` job was named `license_management`. GitLab 13.0 removes
 the `license_management` job, so you must migrate to the `license_scanning` job and use the new
 `License-Scanning.gitlab-ci.yml` template.
@@ -179,7 +179,7 @@ directory of your project.
 
 ### Overriding the template
 
-CAUTION: **Deprecation:**
+WARNING:
 Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/README.md#onlyexcept-basic)
 is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules) instead.
 
@@ -454,7 +454,7 @@ if a GitLab remote is specified in the `.conan/remotes.json` file.
 To override the default credentials specify a [`CONAN_LOGIN_USERNAME_{REMOTE_NAME}`](https://docs.conan.io/en/latest/reference/env_vars.html#conan-login-username-conan-login-username-remote-name)
 matching the name of the remote specified in the `.conan/remotes.json` file.
 
-NOTE: **Note:**
+NOTE:
 [MSBuild](https://github.com/mono/msbuild#microsoftbuild-msbuild) projects aren't supported. The
 `license_scanning` image ships with [Mono](https://www.mono-project.com/) and [MSBuild](https://github.com/mono/msbuild#microsoftbuild-msbuild).
 Additional setup may be required to build packages for this project configuration.
@@ -616,7 +616,7 @@ To use License Compliance in an offline environment, you need:
 - GitLab Runner with the [`docker` or `kubernetes` executor](#requirements).
 - Docker Container Registry with locally available copies of License Compliance [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
 
-NOTE: **Note:**
+NOTE:
 GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
 meaning the runner tries to pull Docker images from the GitLab container registry even if a local
 copy is available. The GitLab Runner [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
@@ -828,5 +828,5 @@ $ docker run -it --entrypoint='' registry.gitlab.com/gitlab-org/security-product
 root@6abb70e9f193:~#
 ```
 
-NOTE: **Note:**
+NOTE:
 Selecting a custom version of [Mono](https://www.mono-project.com/) or [.NET Core](https://dotnet.microsoft.com/download/dotnet-core) is currently not supported.

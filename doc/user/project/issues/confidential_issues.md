@@ -46,7 +46,7 @@ system note in the issue's comments.
 
 ## Indications of a confidential issue
 
-NOTE: **Note:**
+NOTE:
 If you don't have [enough permissions](#permissions-and-access-to-confidential-issues),
 you won't be able to see the confidential issues at all.
 

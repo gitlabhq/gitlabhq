@@ -316,7 +316,7 @@ The following IPs will be used as an example:
 - `10.6.0.12`: Consul 2
 - `10.6.0.13`: Consul 3
 
-NOTE: **Note:**
+NOTE:
 The configuration processes for the other servers in your reference architecture will
 use the `/etc/gitlab/gitlab-secrets.json` file from your Consul server to connect
 with the other servers.
@@ -1037,7 +1037,7 @@ servers. The following IPs will be used as an example:
 - `10.6.0.72`: Sentinel - Cache 2
 - `10.6.0.73`: Sentinel - Cache 3
 
-NOTE: **Note:**
+NOTE:
 If you're using an external Redis Sentinel instance, be sure to exclude the
 `requirepass` parameter from the Sentinel configuration. This parameter causes
 clients to report `NOAUTH Authentication required.`.
@@ -1301,7 +1301,7 @@ servers. The following IPs will be used as an example:
 - `10.6.0.82`: Sentinel - Queues 2
 - `10.6.0.83`: Sentinel - Queues 3
 
-NOTE: **Note:**
+NOTE:
 If you're using an external Redis Sentinel instance, be sure to exclude the
 `requirepass` parameter from the Sentinel configuration. This parameter causes
 clients to report `NOAUTH Authentication required.`.
@@ -1422,7 +1422,7 @@ To configure the Sentinel Queues server:
 
 ## Configure Gitaly
 
-NOTE: **Note:**
+NOTE:
 [Gitaly Cluster](../gitaly/praefect.md) support
 for the Reference Architectures is being
 worked on as a [collaborative effort](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/1) between the Quality Engineering and Gitaly teams. When this component has been verified
@@ -1456,7 +1456,7 @@ Be sure to note the following items:
   to restrict access to the Gitaly server. Another option is to
   [use TLS](#gitaly-tls-support).
 
-NOTE: **Note:**
+NOTE:
 The token referred to throughout the Gitaly documentation is an arbitrary
 password selected by the administrator. This token is unrelated to tokens
 created for the GitLab API or other similar web API tokens.
@@ -1574,7 +1574,7 @@ nodes (including the Gitaly node using the certificate) and on all client nodes
 that communicate with it following the procedure described in
 [GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
 
-NOTE: **Note:**
+NOTE:
 The self-signed certificate must specify the address you use to access the
 Gitaly server. If you are addressing the Gitaly server by a hostname, you can
 either use the Common Name field for this, or add it as a Subject Alternative

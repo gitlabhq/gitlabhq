@@ -159,10 +159,10 @@ this list using dropdown on the right side:
 
 ### Overriding the ancestor group membership
 
-NOTE: **Note:**
+NOTE:
 You must be an Owner of a group to be able to add members to it.
 
-NOTE: **Note:**
+NOTE:
 A user's permissions in a subgroup cannot be lower than in any of its ancestor groups.
 Therefore, you cannot reduce a user's permissions in a subgroup with respect to its ancestor groups.
 

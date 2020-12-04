@@ -23,7 +23,7 @@ The feature requires:
 
 You can find Repository Analytics in the project's sidebar. To access the page, go to **{chart}** **Analytics > Repository**.
 
-NOTE: **Note:**
+NOTE:
 Without a Git commit in the default branch, the menu item won't be visible.
 
 ### Charts

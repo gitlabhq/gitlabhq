@@ -12,7 +12,7 @@ These instructions assume you have a working instance of GitLab. They guide you 
 1. Making your existing instance the **primary** node.
 1. Adding **secondary** nodes.
 
-CAUTION: **Caution:**
+WARNING:
 The steps below should be followed in the order they appear. **Make sure the GitLab version is the same on all nodes.**
 
 ## Using Omnibus GitLab

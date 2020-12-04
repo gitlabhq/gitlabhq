@@ -16,7 +16,7 @@ up your Pages project with your custom (sub)domain, if you want
 it secured by HTTPS, you will have to issue a certificate for that
 (sub)domain and install it on your project.
 
-NOTE: **Note:**
+NOTE:
 Certificates are NOT required to add to your custom
 (sub)domain on your GitLab Pages project, though they are
 highly recommendable.

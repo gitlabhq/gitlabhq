@@ -26,7 +26,7 @@ The visibility level of a group can be changed only if all subgroups and
 sub-projects have the same or lower visibility level. For example, a group can be set
 to internal only if all subgroups and projects are internal or private.
 
-CAUTION: **Warning:**
+WARNING:
 If you migrate an existing group to a lower visibility level, that action does not migrate subgroups
 in the same way. This is a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/22406).
 
@@ -70,7 +70,7 @@ can still view the groups and their entities (like epics).
 Project membership (where the group membership is already taken into account)
 is stored in the `project_authorizations` table.
 
-CAUTION: **Caution:**
+WARNING:
 Due to [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/219299),
 projects in personal namespace will not show owner (`50`) permission in
 `project_authorizations` table. Note however that [`user.owned_projects`](https://gitlab.com/gitlab-org/gitlab/blob/0d63823b122b11abd2492bca47cc26858eee713d/app/models/user.rb#L906-916)

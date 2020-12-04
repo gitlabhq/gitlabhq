@@ -40,7 +40,7 @@ Minimum requirements (depending on the GitLab Manage Application you want to ins
 
 ### Understanding how GitLab Managed Apps are installed
 
-NOTE: **Note:**
+NOTE:
 These diagrams use the term _Kubernetes_ for simplicity. In practice, Sidekiq connects to a Helm
 command runner pod in the cluster.
 

@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) to [GitLab Starter](https://about.gitlab.com/pricing/) in 13.4.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) to [GitLab Core](https://about.gitlab.com/pricing/) in 13.5.
 
-CAUTION: **Deprecation:**
+WARNING:
 This API is deprecated and [scheduled for removal in GitLab 14.0](https://gitlab.com/gitlab-org/gitlab/-/issues/213369). Use [this API](feature_flags.md) instead.
 
 API for accessing resources of [GitLab Feature Flags](../operations/feature_flags.md).

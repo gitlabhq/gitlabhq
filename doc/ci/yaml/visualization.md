@@ -12,7 +12,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - It's not recommended for production use.
 > - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-cicd-configuration-visualization). **(CORE ONLY)**
 
-CAUTION: **Warning:**
+WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
 To see a visualization of your `gitlab-ci.yml` configuration, navigate to any CI/CD

@@ -413,5 +413,5 @@ tree
     └── 4352.json
 ```
 
-CAUTION: **Caution:**
+WARNING:
 When updating these fixtures, please ensure you update both `json` files and `tree` folder, as the tests apply to both.

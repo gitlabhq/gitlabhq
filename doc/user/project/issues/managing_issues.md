@@ -99,7 +99,7 @@ When you click this link, an email address is generated and displayed, which sho
 by **you only**, to create issues in this project. You can save this address as a
 contact in your email client for easy access.
 
-CAUTION: **Caution:**
+WARNING:
 This is a private email address, generated just for you. **Keep it to yourself**,
 as anyone who knows it can create issues or merge requests as if they
 were you. If the address is compromised, or you'd like it to be regenerated for
@@ -112,7 +112,7 @@ this project, where:
 - The email body becomes the issue description.
 - [Markdown](../../markdown.md) and [quick actions](../quick_actions.md) are supported.
 
-NOTE: **Note:**
+NOTE:
 In GitLab 11.7, we updated the format of the generated email address. However the
 older format is still supported, allowing existing aliases or contacts to continue working.
 
@@ -193,7 +193,7 @@ from its list and dropping it into the **Closed** list.
 
 ### Closing issues automatically
 
-NOTE: **Note:**
+NOTE:
 For performance reasons, automatic issue closing is disabled for the very first
 push from an existing repository.
 

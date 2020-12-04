@@ -59,12 +59,12 @@ Dark mode is available as a navigation theme, for MVC and compatibility reasons.
 the future, we plan to make it configurable in its own section along with support for
 [different navigation themes](https://gitlab.com/gitlab-org/gitlab/-/issues/219512).
 
-NOTE: **Note:**
+NOTE:
 Dark theme currently only works with the 'Dark' syntax highlighting.
 
 ## Syntax highlighting theme
 
-NOTE: **Note:**
+NOTE:
 GitLab uses the [rouge Ruby library](http://rouge.jneen.net/ "Rouge website")
 for syntax highlighting outside of any Editor context. The WebIDE (like Snippets)
 uses [Monaco Editor](https://microsoft.github.io/monaco-editor/) and it's provided [Monarch](https://microsoft.github.io/monaco-editor/monarch.html) library for
@@ -100,7 +100,7 @@ and default views of your dashboard and the projects' landing pages.
 GitLab can be set up to use different widths depending on your liking. Choose
 between the fixed (max. `1280px`) and the fluid (`100%`) application layout.
 
-NOTE: **Note:**
+NOTE:
 While `1280px` is the standard max width when using fixed layout, some pages still use 100% width, depending on the content.
 
 ### Default dashboard
@@ -142,7 +142,7 @@ see on a project’s home page.
 You can set the displayed width of tab characters across various parts of
 GitLab, for example, blobs, diffs, and snippets.
 
-NOTE: **Note:**
+NOTE:
 Some parts of GitLab do not respect this setting, including the WebIDE, file
 editor and Markdown editor.
 
@@ -172,7 +172,7 @@ Configure your preferences with third-party services which provide enhancements 
 
 ### Sourcegraph
 
-NOTE: **Note:**
+NOTE:
 This setting is only visible if Sourcegraph has been enabled by a GitLab administrator.
 
 Manage the availability of integrated code intelligence features powered by

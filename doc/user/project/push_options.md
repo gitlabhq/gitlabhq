@@ -17,7 +17,7 @@ Currently, there are push options available for:
 - [Skipping CI jobs](#push-options-for-gitlab-cicd)
 - [Merge requests](#push-options-for-merge-requests)
 
-NOTE: **Note:**
+NOTE:
 Git push options are only available with Git 2.10 or newer.
 
 For Git versions 2.10 to 2.17 use `--push-option`:

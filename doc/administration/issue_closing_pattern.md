@@ -7,7 +7,7 @@ type: reference
 
 # Issue closing pattern **(CORE ONLY)**
 
-NOTE: **Note:**
+NOTE:
 This is the administration documentation. There is a separate [user documentation](../user/project/issues/managing_issues.md#closing-issues-automatically)
 on issue closing pattern.
 

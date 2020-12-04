@@ -31,7 +31,7 @@ at their primary email address.
 
    ![compose an email](email2.png)
 
-NOTE: **Note:**
+NOTE:
 [Starting with GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/31509), email notifications can be sent only once every 10 minutes. This helps minimize performance issues.
 
 ## Unsubscribing from emails

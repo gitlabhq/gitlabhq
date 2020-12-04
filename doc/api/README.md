@@ -123,7 +123,7 @@ There are several methods you can use to authenticate with the GitLab API:
 - [Session cookie](#session-cookie)
 - [GitLab CI/CD job token](#gitlab-ci-job-token) **(Specific endpoints only)**
 
-NOTE: **Note:**
+NOTE:
 Project access tokens are supported for self-managed instances on Core and
 higher. They're also supported on GitLab.com Bronze and higher.
 
@@ -478,7 +478,7 @@ Status: 200 OK
 ...
 ```
 
-CAUTION: **Deprecation:**
+WARNING:
 The `Links` header is scheduled to be removed in GitLab 14.0 to be aligned with the
 [W3C `Link` specification](https://www.w3.org/wiki/LinkHeader). The `Link`
 header was [added in GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33714)

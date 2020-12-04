@@ -11,7 +11,7 @@ This document is relevant if you are using a PostgreSQL instance that is *not
 managed by Omnibus*. This includes cloud-managed instances like AWS RDS, or
 manually installed and configured PostgreSQL instances.
 
-NOTE: **Note:**
+NOTE:
 We strongly recommend running Omnibus-managed instances as they are actively
 developed and tested. We aim to be compatible with most external
 (not managed by Omnibus) databases but we do not guarantee compatibility.
@@ -186,7 +186,7 @@ to grant additional roles to your tracking database user (by default, this is
 If you have an external database ready to be used as the tracking database,
 follow the instructions below to use it:
 
-NOTE: **Note:**
+NOTE:
 If you want to use AWS RDS as a tracking database, make sure it has access to
 the secondary database. Unfortunately, just assigning the same security group is not enough as
 outbound rules do not apply to RDS PostgreSQL databases. Therefore, you need to explicitly add an inbound

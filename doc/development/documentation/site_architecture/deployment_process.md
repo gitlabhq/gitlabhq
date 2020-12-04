@@ -46,7 +46,7 @@ for the version in question.
 
 ## Porting new website changes to old versions
 
-CAUTION: **Warning:**
+WARNING:
 Porting changes to older branches can have unintended effects as we're constantly
 changing the backend of the website. Use only when you know what you're doing
 and make sure to test locally.

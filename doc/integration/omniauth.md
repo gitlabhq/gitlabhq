@@ -49,7 +49,7 @@ contains some settings that are common for all providers.
 Before configuring individual OmniAuth providers there are a few global settings
 that are in common for all providers that we need to consider.
 
-NOTE: **Note:**
+NOTE:
 Starting from GitLab 11.4, OmniAuth is enabled by default. If you're using an
 earlier version, you must explicitly enable it.
 
@@ -63,14 +63,14 @@ earlier version, you must explicitly enable it.
   be blocked by default and must be unblocked by an administrator before
   they are able to sign in.
 
-NOTE: **Note:**
+NOTE:
 If you set `block_auto_created_users` to `false`, make sure to only
 define providers under `allow_single_sign_on` that you are able to control, like
 SAML, Shibboleth, Crowd or Google, or set it to `false` otherwise any user on
 the Internet can successfully sign in to your GitLab without
 administrative approval.
 
-NOTE: **Note:**
+NOTE:
 `auto_link_ldap_user` requires the `uid` of the user to be the same in both LDAP
 and the OmniAuth provider.
 
@@ -176,7 +176,7 @@ access to internal projects. You must use the full name of the provider,
 like `google_oauth2` for Google. Refer to the examples for the full names of the
 supported providers.
 
-NOTE: **Note:**
+NOTE:
 If you decide to remove an OmniAuth provider from the external providers list,
 you must manually update the users that use this method to sign in if you want
 their accounts to be upgraded to full internal accounts.
@@ -196,7 +196,7 @@ omniauth:
 
 ## Using Custom OmniAuth Providers
 
-NOTE: **Note:**
+NOTE:
 The following information only applies for installations from source.
 
 GitLab uses [OmniAuth](https://github.com/omniauth/omniauth) for authentication and already ships
@@ -253,7 +253,7 @@ we'd like to at least help those with specific needs.
 
 Administrators are able to enable or disable Sign In via some OmniAuth providers.
 
-NOTE: **Note:**
+NOTE:
 By default Sign In is enabled via all the OAuth Providers that have been configured in `config/gitlab.yml`.
 
 In order to enable/disable an OmniAuth provider, go to Admin Area -> Settings -> Sign-in Restrictions section -> Enabled OAuth Sign-In sources and select the providers you want to enable or disable.

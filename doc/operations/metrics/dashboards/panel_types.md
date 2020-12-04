@@ -229,7 +229,7 @@ For example, if you have a query value of `53.6`, adding `%` as the unit results
 
 ## Gauge
 
-CAUTION: **Warning:**
+WARNING:
 This panel type is an _alpha_ feature, and is subject to change at any time
 without prior notice!
 
@@ -307,7 +307,7 @@ Note the following properties:
 
 ![heatmap panel type](img/heatmap_panel_type.png)
 
-CAUTION: **Warning:**
+WARNING:
 When a query returns too many data points, the heatmap data bucket dimensions tend downwards to 0, making the chart's data invisible, as shown in the image below. To fix this problem, limit the amount of data returned by changing the time range filter on the metrics dashboard UI, or adding the **step** property to your dashboard's YAML file.
 
 ![heatmap chart_too_much_data](img/heatmap_chart_too_much_data_v_13_2.png)

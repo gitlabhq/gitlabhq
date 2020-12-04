@@ -65,7 +65,7 @@ To create a new dashboard from the command line:
 
 Your custom dashboard is available at `https://example.com/project/-/metrics/custom_dashboard_name.yml`.
 
-NOTE: **Note:**
+NOTE:
 Configuration files nested under subdirectories of `.gitlab/dashboards` aren't
 supported or available in the UI.
 
@@ -81,7 +81,7 @@ with the **Add Panel** page:
    [permissions](../../../user/permissions.md#project-members-permissions).
 1. Click **Add panel** in the **{ellipsis_v}** **More actions** menu.
 
-   NOTE: **Note:**
+   NOTE:
    You can only add panels to custom dashboards.
 
    ![Monitoring Dashboard actions menu with add panel item](img/actions_menu_create_add_panel_v13_3.png)

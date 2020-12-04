@@ -15,7 +15,7 @@ Merge request dependencies allows a required order of merging
 between merge requests to be expressed. If a merge request "depends on" another,
 then it cannot be merged until its dependency is itself merged.
 
-NOTE: **Note:**
+NOTE:
 Merge requests dependencies are a **PREMIUM** feature, but this restriction is
 only enforced for the dependent merge request. A merge request in a **CORE** or
 **STARTER** project can be a dependency of a **PREMIUM** merge request, but not

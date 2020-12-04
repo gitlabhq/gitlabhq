@@ -101,7 +101,7 @@ performance impact this might have on your code. There is a trade-off between th
 
 ### Handling duplicate records
 
-NOTE: **Note:**
+NOTE:
 This parameter applies only to `bulk_insert!`. If you intend to update existing
 records, use `bulk_upsert!` instead.
 

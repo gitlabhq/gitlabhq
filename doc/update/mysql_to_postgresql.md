@@ -11,7 +11,7 @@ migrate it to a PostgreSQL database.
 
 ## Requirements
 
-NOTE: **Note:**
+NOTE:
 Support for MySQL was removed in GitLab 12.1. This procedure should be performed
 **before** installing GitLab 12.1.
 

@@ -45,7 +45,7 @@ Feature.enable(:go_proxy, Project.find(1))
 Feature.disable(:go_proxy, Project.find(2))
 ```
 
-NOTE: **Note:**
+NOTE:
 Even if it's enabled, GitLab doesn't display Go modules in the **Package Registry**.
 Follow [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/213770) for
 details.

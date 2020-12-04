@@ -119,7 +119,7 @@ It is also possible to manage multiple assignees:
 > - It's not recommended for production use.
 > - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-merge-request-reviewers). **(CORE ONLY)**
 
-CAUTION: **Warning:**
+WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
 Requesting a code review is an important part of contributing code. However, deciding who should review

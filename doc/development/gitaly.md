@@ -121,7 +121,7 @@ bundle exec rake gitlab:features:disable_rugged
 
 Most of this code exists in the `lib/gitlab/git/rugged_impl` directory.
 
-NOTE: **Note:**
+NOTE:
 You should NOT need to add or modify code related to
 Rugged unless explicitly discussed with the [Gitaly
 Team](https://gitlab.com/groups/gl-gitaly/group_members). This code does
@@ -181,7 +181,7 @@ Normally, GitLab CE/EE tests use a local clone of Gitaly in
 `GITALY_SERVER_VERSION`. The `GITALY_SERVER_VERSION` file supports also
 branches and SHA to use a custom commit in <https://gitlab.com/gitlab-org/gitaly>.
 
-NOTE: **Note:**
+NOTE:
 With the introduction of auto-deploy for Gitaly, the format of
 `GITALY_SERVER_VERSION` was aligned with Omnibus syntax.
 It no longer supports `=revision`, it evaluates the file content as a Git
@@ -316,7 +316,7 @@ Here are the steps to gate a new feature in Gitaly behind a feature flag.
 
 1. Test in a Rails console by setting the feature flag:
 
-   NOTE: **Note:**
+   NOTE:
    Pay attention to the name of the flag and the one used in the Rails console.
    There is a difference between them (dashes replaced by underscores and name
    prefix is changed). Make sure to prefix all flags with `gitaly_`.

@@ -122,7 +122,7 @@ of GitLab more efficient.
 
 - If the answer to a question exists in documentation, share the link to the
   documentation instead of rephrasing the information.
-- When you encounter new information not available in GitLab’s documentation (for
+- When you encounter new information not available in GitLab documentation (for
   example, when working on a support case or testing a feature), your first step
   should be to create a merge request (MR) to add this information to the
   documentation. You can then share the MR to communicate this information.
@@ -964,13 +964,13 @@ search engine optimization (SEO), use the imperative, where possible.
 | Do                                    | Don't                                                       |
 |:--------------------------------------|:------------------------------------------------------------|
 | Configure GDK                         | Configuring GDK                                             |
-| GitLab Release and Maintenance Policy | This section covers GitLab's Release and Maintenance Policy |
+| GitLab Release and Maintenance Policy | This section covers the GitLab Release and Maintenance Policy |
 | Backport to older releases            | Backporting to older releases                               |
 | GitLab Pages examples                 | Examples                                                    |
 
 For guidelines on capitalizing headings, see the section on [capitalization](#capitalization).
 
-NOTE: **Note:**
+NOTE:
 If you change an existing title, be careful. In-page [anchor links](#anchor-links),
 links in the GitLab application, and links from external sites can break.
 
@@ -979,7 +979,7 @@ links in the GitLab application, and links from external sites can break.
 Headings generate anchor links when rendered. `## This is an example` generates
 the anchor `#this-is-an-example`.
 
-NOTE: **Note:**
+NOTE:
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39717) in
 GitLab 13.4, [product badges](#product-tier-badges) used in headings aren't
 included in the generated anchor links. For example, when you link to
@@ -1037,7 +1037,7 @@ We include guidance for links in the following categories:
 
 ### Links to internal documentation
 
-NOTE: **Note:**
+NOTE:
 _Internal_ refers to documentation in the same project. When linking to
 documentation in separate projects (for example, linking to Omnibus documentation
 from GitLab documentation), you must use absolute URLs.
@@ -1087,7 +1087,7 @@ To link to internal documentation:
   - `../../issues/tags.md`
   - `../../issues/tags.md#stages`
 
-NOTE: **Note:**
+NOTE:
 Using the Markdown extension is necessary for the [`/help`](../index.md#gitlab-help)
 section of GitLab.
 
@@ -1128,7 +1128,7 @@ While many of these sources to avoid can help you learn skills and or features,
 they can become obsolete quickly. Nobody is obliged to maintain any of these
 sites. Therefore, we should avoid using them as reference literature.
 
-NOTE: **Note:**
+NOTE:
 Non-authoritative sources are acceptable only if there is no equivalent
 authoritative source. Even then, focus on non-authoritative sources that are
 extensively cited or peer-reviewed.
@@ -1510,100 +1510,72 @@ example:
 
 ## Alert boxes
 
-When you need to call special attention to particular sentences, use the
-following markup to create highlighted alert boxes.
+Use alert boxes to call attention to information.
 
-Alert boxes work for one paragraph only. Multiple paragraphs, lists, and headers
-don't render correctly. For multiple lines, use [blockquotes](#blockquotes)
-instead.
+Alert boxes are generated when the words `NOTE:` or `WARNING:` are followed by a
+line break. For example:
+
+```markdown
+NOTE:
+This is something to note.
+```
+
+To display an alert box for multiple paragraphs, lists, or headers, use
+[blockquotes](#blockquotes) instead.
 
 Alert boxes render only on the GitLab documentation site (<https://docs.gitlab.com>).
-In the GitLab product help, alert boxes appear as plain Markdown text.
-
-These alert boxes are used in the GitLab documentation. These aren't strict
-guidelines, but for consistency you should try to use these values:
-
-| Color  | Markup     | Default keyword | Alternative keywords                                                 |
-|--------|------------|-----------------|----------------------------------------------------------------------|
-| Blue   | `NOTE:`    | `**Note:**`     |                                                                      |
-| Yellow | `CAUTION:` | `**Caution:**`  | `**Warning:**`, `**Important:**`                                     |
-| Red    | `DANGER:`  | `**Danger:**`   | `**Warning:**`, `**Important:**`, `**Deprecated:**`, `**Required:**` |
-| Green  | `TIP:`     | `**Tip:**`      |                                                                      |
+In the GitLab product help, alert boxes appear as plain text.
 
 ### Note
 
-Notes indicate additional information that's of special use to the reader.
-Notes are most effective when used _sparingly_. Try to avoid them. Too many notes
-can make topics difficult to scan, and create an overly busy page.
+Use notes sparingly. Too many notes can make topics difficult to scan.
 
-Instead of adding a note, try one of these alternatives:
+Instead of adding a note:
 
-- Re-write the sentence as part of the most-relevant paragraph.
-- Put the information into its own standalone paragraph.
-- Put the content under a new subheading that introduces the topic, which makes
-  it more visible.
+- Re-write the sentence as part of a paragraph.
+- Put the information into its own paragraph.
+- Put the content under a new subheading.
 
-If you must use a note, use the following formatting:
+If you must use a note, use this format:
 
 ```markdown
-NOTE: **Note:**
+NOTE:
 This is something to note.
 ```
 
-How it renders on the GitLab documentation site:
+It renders on the GitLab documentation site as:
 
-NOTE: **Note:**
+NOTE:
 This is something to note.
 
-### Tip
+### Warning
+
+Use a warning to indicate deprecated features, or to provide a warning about
+procedures that have the potential for data loss. 
 
 ```markdown
-TIP: **Tip:**
-This is a tip.
+WARNING:
+This is something to be warned about.
 ```
 
-How it renders on the GitLab documentation site:
+It renders on the GitLab documentation site as:
 
-TIP: **Tip:**
-This is a tip.
-
-### Caution
-
-```markdown
-CAUTION: **Caution:**
-This is something to be cautious about.
-```
-
-How it renders on the GitLab documentation site:
-
-CAUTION: **Caution:**
-This is something to be cautious about.
-
-### Danger
-
-```markdown
-DANGER: **Warning:**
-This is a breaking change, a bug, or something very important to note.
-```
-
-How it renders on the GitLab documentation site:
-
-DANGER: **Warning:**
-This is a breaking change, a bug, or something very important to note.
+WARNING:
+This is something to be warned about.
 
 ## Blockquotes
 
-For highlighting a text inside a blue blockquote, use this format:
+For highlighting a text inside a blockquote, use this format:
 
 ```markdown
 > This is a blockquote.
 ```
 
-which renders on the [GitLab documentation site](https://docs.gitlab.com) as:
+It renders on the GitLab documentation site as:
 
 > This is a blockquote.
 
-If the text spans across multiple lines it's OK to split the line.
+If the text spans multiple lines, you can split them.
 
 For multiple paragraphs, use the symbol `>` before every line:
 
@@ -1616,7 +1588,7 @@ For multiple paragraphs, use the symbol `>` before every line:
 > - Second item in the list
 ```
 
-Which renders to:
+It renders on the GitLab documentation site as:
 
 > This is the first paragraph.
 >
@@ -1752,11 +1724,10 @@ If a feature is deprecated, include a link to a replacement (when available):
 ```
 
 You can also describe the replacement in surrounding text, if available. If the
-deprecation isn't obvious in existing text, you may want to include a warning,
-such as:
+deprecation isn't obvious in existing text, you may want to include a warning:
 
 ```markdown
-DANGER: **Deprecated:**
+WARNING:
 This feature was [deprecated](link-to-issue) in GitLab 12.3 and replaced by
 [Feature name](link-to-feature-documentation).
 ```
@@ -1780,15 +1751,14 @@ voters to agree.
 
 #### End-of-life for features or products
 
-When a feature or product enters the end-of-life process, indicate its
-status prominently. Use the `Danger` [alert](#alert-boxes) with the `**Important**`
-keyword directly below the page header, or the sub-header for the feature or product.
-Link to the deprecation and removal issues, if possible.
+When a feature or product enters its end-of-life, indicate its status by
+creating a [warning alert](#alert-boxes) directly following its relevant header.
+If possible, link to its deprecation and removal issues.
 
 For example:
 
 ```markdown
-DANGER: **Important:**
+WARNING:
 This feature is in its end-of-life process. It is [deprecated](link-to-issue)
 for use in GitLab X.X, and is planned for [removal](link-to-issue) in GitLab X.X.
 ```
@@ -1925,28 +1895,24 @@ If the document resides outside of the GitLab CE/EE
 
 ### Installation guide
 
-**Ruby:**
 In [step 2 of the installation guide](../../../install/installation.md#2-ruby),
-we install Ruby from source. When a version update is needed,
-remember to change it throughout the code block and also replace
-the sha256sum. You can find the sha256sum on the
-[downloads page](https://www.ruby-lang.org/en/downloads/) of the Ruby website.
+we install Ruby from source. To update the guide for a new Ruby version:
+
+- Change the version throughout the code block.
+- Replace the sha256sum. It's available on the
+  [downloads page](https://www.ruby-lang.org/en/downloads/) of the Ruby website.
 
 ### Configuration documentation for source and Omnibus installations
 
-GitLab officially supports two installation methods: installations
-from source and Omnibus packages installations.
-
-Whenever there's a setting that's configurable for both installation methods,
-the preference is to document it in the CE documentation to avoid duplication.
-
-Configuration settings include:
+GitLab supports two installation methods: installations from source, and Omnibus
+packages. Possible configuration settings include:
 
 - Settings that touch configuration files in `config/`.
-- NGINX settings and settings in `lib/support/` in general.
+- NGINX settings.
+- Other settings in `lib/support/`.
 
-When you document a list of steps, it may entail editing the configuration file
-and reconfiguring or restarting GitLab. In that case, use these styles:
+Configuration procedures can require users to edit configuration files, reconfigure
+GitLab, or restart GitLab. Use these styles to document these steps:
 
 <!-- vale off -->
 
@@ -1981,13 +1947,11 @@ and reconfiguring or restarting GitLab. In that case, use these styles:
 
 In this case:
 
-- Before each step list the installation method is declared in bold.
-- Three dashes (`---`) are used to create a horizontal line and separate the two
-  methods.
-- The code blocks are indented one or more spaces under the list item to render
-  correctly.
-- Different highlighting languages are used for each configuration in the code block.
-- The [GitLab Restart](#gitlab-restart) section is used to explain a required
+- Bold the installation method's name.
+- Separate the methods with three dashes (`---`) to create a horizontal line.
+- Indent the code blocks to line up with the list item they belong to..
+- Use the appropriate syntax highlighting for each code block.
+- Use the [GitLab Restart](#gitlab-restart) section to explain any required
   restart or reconfigure of GitLab.
 
 ### Troubleshooting

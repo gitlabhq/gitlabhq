@@ -52,7 +52,7 @@ part of the dropdown (**This project**).
 From there, add the **Title**, **Description**, and a **File** name with the
 appropriate extension (for example, `example.rb`, `index.html`).
 
-CAUTION: **Warning:**
+WARNING:
 Make sure to add the file name to get code highlighting and to avoid this
 [copy-pasting bug](https://gitlab.com/gitlab-org/gitlab/-/issues/22870).
 

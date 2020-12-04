@@ -98,7 +98,7 @@ CREATE TABLE audit_events (
 PARTITION BY RANGE(created_at);
 ```
 
-NOTE: **Note:**
+NOTE:
 The primary key of a partitioned table must include the partition key as
 part of the primary key definition.
 

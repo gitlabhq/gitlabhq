@@ -793,7 +793,7 @@ mvn deploy \
 -Dorg.slf4j.simpleLogger.log.org.apache.maven.wagon.providers.http.httpclient.wire=trace
 ```
 
-CAUTION: **Caution:**
+WARNING:
 When you set these options, all network requests are logged and a large amount of output is generated.
 
 ### Useful Maven command-line options

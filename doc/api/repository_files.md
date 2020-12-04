@@ -57,7 +57,7 @@ Parameters:
 - `file_path` (required) - URL encoded full path to new file. Ex. lib%2Fclass%2Erb
 - `ref` (required) - The name of branch, tag or commit
 
-NOTE: **Note:**
+NOTE:
 `blob_id` is the blob SHA, see [repositories - Get a blob from repository](repositories.md#get-a-blob-from-repository)
 
 In addition to the `GET` method, you can also use `HEAD` to get just file metadata.
@@ -132,7 +132,7 @@ Parameters:
 - `file_path` (required) - URL encoded full path to new file. Ex. lib%2Fclass%2Erb
 - `ref` (required) - The name of branch, tag or commit
 
-NOTE: **Note:**
+NOTE:
 `HEAD` method return just file metadata as in [Get file from repository](repository_files.md#get-file-from-repository).
 
 ```shell
@@ -171,7 +171,7 @@ Parameters:
 - `file_path` (required) - URL encoded full path to new file. Ex. lib%2Fclass%2Erb
 - `ref` (required) - The name of branch, tag or commit
 
-NOTE: **Note:**
+NOTE:
 Like [Get file from repository](repository_files.md#get-file-from-repository) you can use `HEAD` to get just file metadata.
 
 ## Create new file in repository

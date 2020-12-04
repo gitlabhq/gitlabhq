@@ -127,7 +127,7 @@ to our computer:
     Create one before cloning.
   - If you don't have 2FA enabled, use your account's password.
 
-NOTE: **Note:**
+NOTE:
 Authenticating via SSH is GitLab's recommended method. You can read more about credential storage
 in the [Git Credentials documentation](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage).
 
@@ -400,7 +400,7 @@ git add .
 git commit -m "COMMENT TO DESCRIBE THE INTENTION OF THE COMMIT"
 ```
 
-NOTE: **Note:**
+NOTE:
 The `.` character means _all file changes in the current directory and all subdirectories_.
 
 ### Send changes to GitLab.com
@@ -420,7 +420,7 @@ git push origin master
 On certain occasions, Git won't allow you to push to your repository, and then
 you'll need to [force an update](../topics/git/git_rebase.md#force-push).
 
-NOTE: **Note:**
+NOTE:
 To create a merge request from a fork to an upstream repository, see the
 [forking workflow](../user/project/repository/forking_workflow.md).
 
@@ -453,7 +453,7 @@ git reset HEAD~1
 
 This leaves the changed files and folders unstaged in your local repository.
 
-CAUTION: **Warning:**
+WARNING:
 A Git commit should not usually be reversed, particularly if you already pushed it
 to the remote repository. Although you can undo a commit, the best option is to avoid
 the situation altogether by working carefully.

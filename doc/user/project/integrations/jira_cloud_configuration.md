@@ -11,7 +11,7 @@ below to create one:
 
 1. Log in to [`id.atlassian.com`](https://id.atlassian.com/manage-profile/security/api-tokens) with your email address.
 
-   NOTE: **Note:**
+   NOTE:
    It is important that the user associated with this email address has *write* access
    to projects in Jira.
 

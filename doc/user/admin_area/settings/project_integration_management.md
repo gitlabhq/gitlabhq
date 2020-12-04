@@ -26,7 +26,7 @@ Only the complete settings for an integration can be inherited. Per-field inheri
 1. Select an integration.
 1. Enter configuration details and click **Save changes**.
 
-CAUTION: **Caution:**
+WARNING:
 This may affect all or most of the groups and projects on your GitLab instance. Please review the details
 below.
 
@@ -59,7 +59,7 @@ integration on all non-configured groups and projects by default.
 1. Select an integration.
 1. Enter configuration details and click **Save changes**.
 
-CAUTION: **Caution:**
+WARNING:
 This may affect all or most of the subgroups and projects belonging to the group. Please review the details below.
 
 If this is the first time you are setting up group-level settings for an integration:

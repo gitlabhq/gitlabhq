@@ -26,7 +26,7 @@ files must be provided:
 Optionally, you can also provide a bundle of CA certs (PEM-encoded) to be
 included on each signature. This will typically be an intermediate CA.
 
-CAUTION: **Caution:**
+WARNING:
 Be mindful of the access levels for your private keys and visibility to
 third parties.
 

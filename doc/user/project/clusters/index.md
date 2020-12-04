@@ -143,7 +143,7 @@ important considerations for configuring Kubernetes clusters with GitLab.
 
 ### Security implications
 
-CAUTION: **Important:**
+WARNING:
 The whole cluster security is based on a model where [developers](../../permissions.md)
 are trusted, so **only trusted users should be allowed to control your clusters**.
 
@@ -294,7 +294,7 @@ You can customize the deployment namespace in a few ways:
 When you customize the namespace, existing environments remain linked to their current
 namespaces until you [clear the cluster cache](#clearing-the-cluster-cache).
 
-CAUTION: **Warning:**
+WARNING:
 By default, anyone who can create a deployment job can access any CI variable within
 an environment's deployment job. This includes `KUBECONFIG`, which gives access to
 any secret available to the associated service account in your cluster.
@@ -378,7 +378,7 @@ Reasons for failure include:
   [`environment:name`](../../../ci/environments/index.md#defining-environments). If your job has no
   `environment:name` set, the Kubernetes credentials are not passed to it.
 
-NOTE: **Note:**
+NOTE:
 Project-level clusters upgraded from GitLab 12.0 or older may be configured
 in a way that causes this error. Ensure you deselect the
 [GitLab-managed cluster](#gitlab-managed-clusters) option if you want to manage

@@ -17,7 +17,7 @@ before the check result is visible on the project admin page. If the
 checks failed you can see their output on in the [`repocheck.log`
 file.](logs.md#repochecklog)
 
-NOTE: **Note:**
+NOTE:
 It is OFF by default because it still causes too many false alarms.
 
 ## Periodic checks

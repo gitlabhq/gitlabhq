@@ -15,7 +15,7 @@ commits are labeled **Verified** if the identity of the committer can be
 verified. To verify the identity of a committer, GitLab requires their public
 GPG key.
 
-NOTE: **Note:**
+NOTE:
 The term GPG is used for all OpenPGP/PGP/GPG related material and
 implementations.
 
@@ -53,7 +53,7 @@ started:
    gpg --full-gen-key
    ```
 
-   NOTE: **Note:**
+   NOTE:
    In some cases like Gpg4win on Windows and other macOS versions, the command
    here may be `gpg --gen-key`.
 
@@ -142,7 +142,7 @@ started:
 
 ## Adding a GPG key to your account
 
-NOTE: **Note:**
+NOTE:
 Once you add a key, you cannot edit it, only remove it. In case the paste
 didn't work, you'll have to remove the offending key and re-add it.
 

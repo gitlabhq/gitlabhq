@@ -75,7 +75,7 @@ See [server hooks](../administration/server_hooks.md) for more information.
 
 ## Enabling push rules
 
-NOTE: **Note:**
+NOTE:
 GitLab administrators can set push rules globally under
 **Admin Area > Push Rules** that all new projects will inherit. You can later
 override them in a project's settings. They can be also set on a [group level](../user/group/index.md#group-push-rules).
@@ -116,7 +116,7 @@ pushes to the repository when a file matches a regular expression as read from
 [`files_denylist.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/gitlab/checks/files_denylist.yml) (make sure you are at the right branch
 as your GitLab version when viewing this file).
 
-NOTE: **Note:**
+NOTE:
 Files already committed won't get restricted by this push rule.
 
 Below is an example list of what will be rejected by these regular expressions:

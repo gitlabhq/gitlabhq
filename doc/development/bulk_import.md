@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2771) in GitLab 13.7.
 
-CAUTION: **Caution:**
+WARNING:
 This feature is [under construction](https://gitlab.com/groups/gitlab-org/-/epics/2771) and its API/Architecture might change in the future.
 
 GitLab Group Migration is the evolution of Project and Group Import functionality. The

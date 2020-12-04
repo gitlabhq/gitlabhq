@@ -91,7 +91,7 @@ The instructions make the assumption that you will be using the email address `i
    quit
    ```
 
-   NOTE: **Note:**
+   NOTE:
    The `.` is a literal period on its own line.
 
    If you receive an error after entering `rcpt to: incoming@localhost`
@@ -272,7 +272,7 @@ Courier, which we will install later to add IMAP authentication, requires mailbo
       quit
       ```
 
-      NOTE: **Note:**
+      NOTE:
       The `.` is a literal period on its own line.
 
    1. Check if the `incoming` user received the email:

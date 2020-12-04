@@ -43,7 +43,7 @@ To schedule a pipeline for project:
 
 ![New Schedule Form](img/pipeline_schedules_new_form.png)
 
-NOTE: **Note:**
+NOTE:
 Pipelines execution [timing is dependent](#advanced-configuration) on Sidekiq's own schedule.
 
 In the **Schedules** index page you can see a list of the pipelines that are
@@ -115,7 +115,7 @@ To trigger a pipeline schedule manually, click the "Play" button:
 This schedules a background job to run the pipeline schedule. A flash
 message provides a link to the CI/CD Pipeline index page.
 
-NOTE: **Note:**
+NOTE:
 To help avoid abuse, users are rate limited to triggering a pipeline once per
 minute.
 

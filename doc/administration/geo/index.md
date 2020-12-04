@@ -17,7 +17,7 @@ Geo is the solution for widely distributed development teams and for providing a
 
 ## Overview
 
-CAUTION: **Caution:**
+WARNING:
 Geo undergoes significant changes from release to release. Upgrades **are** supported and [documented](#updating-geo), but you should ensure that you're using the right version of the documentation for your installation.
 
 Fetching large repositories can take a long time for teams located far from a single GitLab instance.
@@ -143,11 +143,11 @@ The following table lists basic ports that must be open between the **primary** 
 
 See the full list of ports used by GitLab in [Package defaults](https://docs.gitlab.com/omnibus/package-information/defaults.html)
 
-NOTE: **Note:**
+NOTE:
 [Web terminal](../../ci/environments/index.md#web-terminals) support requires your load balancer to correctly handle WebSocket connections.
 When using HTTP or HTTPS proxying, your load balancer must be configured to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the [web terminal](../integration/terminal.md) integration guide for more details.
 
-NOTE: **Note:**
+NOTE:
 When using HTTPS protocol for port 443, you will need to add an SSL certificate to the load balancers.
 If you wish to terminate SSL at the GitLab application server instead, use TCP protocol.
 
@@ -155,7 +155,7 @@ If you wish to terminate SSL at the GitLab application server instead, use TCP p
 
 We recommend that if you use LDAP on your **primary** node, you also set up secondary LDAP servers on each **secondary** node. Otherwise, users will not be able to perform Git operations over HTTP(s) on the **secondary** node using HTTP Basic Authentication. However, Git via SSH and personal access tokens will still work.
 
-NOTE: **Note:**
+NOTE:
 It is possible for all **secondary** nodes to share an LDAP server, but additional latency can be an issue. Also, consider what LDAP server will be available in a [disaster recovery](disaster_recovery/index.md) scenario if a **secondary** node is promoted to be a **primary** node.
 
 Check for instructions on how to set up replication in your LDAP service. Instructions will be different depending on the software or service used. For example, OpenLDAP provides [these instructions](https://www.openldap.org/doc/admin24/replication.html).
@@ -207,7 +207,7 @@ secondary is paused fails. Do not pause replication before promoting a
 secondary. If the node is paused, be sure to resume before promoting. This
 issue has been fixed in GitLab 13.4 and later.
 
-CAUTION: **Caution:**
+WARNING:
 Pausing and resuming of replication is currently only supported for Geo installations using an
 Omnibus GitLab-managed database. External databases are currently not supported.
 
@@ -267,7 +267,7 @@ To find out how to disable Geo, see [Disabling Geo](replication/disable_geo.md).
 
 ## Limitations
 
-CAUTION: **Caution:**
+WARNING:
 This list of limitations only reflects the latest version of GitLab. If you are using an older version, extra limitations may be in place.
 
 - Pushing directly to a **secondary** node redirects (for HTTP) or proxies (for SSH) the request to the **primary** node instead of [handling it directly](https://gitlab.com/gitlab-org/gitlab/-/issues/1381), except when using Git over HTTP with credentials embedded within the URI. For example, `https://user:password@secondary.tld`.

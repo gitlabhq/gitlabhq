@@ -152,7 +152,7 @@ git lfs unlock --id=123 --force
 
 You can normally push files to GitLab whether they're locked or unlocked.
 
-NOTE: **Note:**
+NOTE:
 Although multi-branch file locks can be created and managed through the Git LFS
 command line interface, file locks can be created for any file.
 
@@ -175,7 +175,7 @@ tracked by Git LFS plus a padlock icon on exclusively-locked files:
 
 You can also [view and remove existing locks](#view-and-remove-existing-locks) from the GitLab UI.
 
-NOTE: **Note:**
+NOTE:
 When you rename an exclusively-locked file, the lock is lost. You'll have to
 lock it again to keep it locked.
 

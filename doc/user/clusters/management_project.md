@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Cluster management project
 
-CAUTION: **Warning:**
+WARNING:
 This is an _alpha_ feature, and it is subject to change at any time without
 prior notice.
 

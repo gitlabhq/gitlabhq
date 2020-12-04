@@ -54,7 +54,7 @@ the recommended procedure, see the
 
 ## Updating to GitLab 12.9
 
-CAUTION: **Warning:**
+WARNING:
 GitLab 12.9.0 through GitLab 12.9.3 are affected by [a bug that stops
 repository verification](https://gitlab.com/gitlab-org/gitlab/-/issues/213523).
 The issue is fixed in GitLab 12.9.4. Upgrade to GitLab 12.9.4 or later.
@@ -203,14 +203,14 @@ For the recommended procedure, see the
 
 ## Updating to GitLab 12.0
 
-CAUTION: **Warning:**
+WARNING:
 This version is affected by a [bug that results in new LFS objects not being
 replicated to Geo secondary nodes](https://gitlab.com/gitlab-org/gitlab/-/issues/32696).
 The issue is fixed in GitLab 12.1; be sure to upgrade to GitLab 12.1 or later.
 
 ## Updating to GitLab 11.11
 
-CAUTION: **Warning:**
+WARNING:
 This version is affected by a [bug that results in new LFS objects not being
 replicated to Geo secondary nodes](https://gitlab.com/gitlab-org/gitlab/-/issues/32696).
 The issue is fixed in GitLab 12.1; be sure to upgrade to GitLab 12.1 or later.
@@ -376,7 +376,7 @@ the now-unused SSH keys from your secondaries, as they may cause problems if the
 
 ### Hashed Storage
 
-CAUTION: **Warning:**
+WARNING:
 Hashed storage is in **Alpha**. It is considered experimental and not
 production-ready. See [Hashed Storage](../../repository_storage_types.md) for more detail.
 
@@ -387,7 +387,7 @@ migrated we recommend leaving Hashed Storage enabled.
 
 ## Updating to GitLab 10.1
 
-CAUTION: **Warning:**
+WARNING:
 Hashed storage is in **Alpha**. It is considered experimental and not
 production-ready. See [Hashed Storage](../../repository_storage_types.md) for more detail.
 
