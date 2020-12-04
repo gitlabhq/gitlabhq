@@ -77,7 +77,7 @@ RSpec.describe 'getting user information' do
             'webUrl' => presenter.web_url,
             'avatarUrl' => presenter.avatar_url,
             'status' => presenter.status,
-            'email' => presenter.email
+            'email' => presenter.public_email
           ))
       end
 
