@@ -700,6 +700,77 @@ gitlab_pages['domain_config_source'] = nil
 For other common issues, see the [troubleshooting section](#failed-to-connect-to-the-internal-gitlab-api)
 or report an issue.
 
+## Using object storage
+
+> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5577) in GitLab 13.6.
+
+[Read more about using object storage with GitLab](../object_storage.md).
+
+### Object storage settings
+
+The following settings are:
+
+- Nested under `pages:` and then `object_store:` on source installations.
+- Prefixed by `pages_object_store_` on Omnibus GitLab installations.
+
+| Setting | Description | Default |
+|---------|-------------|---------|
+| `enabled` | Whether object storage is enabled. | `false` |
+| `remote_directory` | The name of the bucket where Pages site content is stored. | |
+| `connection` | Various connection options described below. | |
+
+#### S3-compatible connection settings
+
+See [the available connection settings for different providers](../object_storage.md#connection-settings).
+
+In Omnibus installations:
+
+1. Add the following lines to `/etc/gitlab/gitlab.rb` and replace the values with the ones you want:
+
+   ```ruby
+   gitlab_rails['pages_object_store_enabled'] = true
+   gitlab_rails['pages_object_store_remote_directory'] = "pages"
+   gitlab_rails['pages_object_store_connection'] = {
+     'provider' => 'AWS',
+     'region' => 'eu-central-1',
+     'aws_access_key_id' => 'AWS_ACCESS_KEY_ID',
+     'aws_secret_access_key' => 'AWS_SECRET_ACCESS_KEY'
+   }
+   ```
+
+   If you use AWS IAM profiles, be sure to omit the AWS access key and secret access key/value
+   pairs:
+
+   ```ruby
+   gitlab_rails['pages_object_store_connection'] = {
+     'provider' => 'AWS',
+     'region' => 'eu-central-1',
+     'use_iam_profile' => true
+   }
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure)
+   for the changes to take effect.
+
+In installations from source:
+
+1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following lines:
+
+   ```yaml
+   pages:
+     object_store:
+       enabled: true
+       remote_directory: "pages" # The bucket name
+       connection:
+         provider: AWS # Only AWS supported at the moment
+         aws_access_key_id: AWS_ACESS_KEY_ID
+         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+         region: eu-central-1
+   ```
+
+1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source)
+   for the changes to take effect.
+
 ## Backup
 
 GitLab Pages are part of the [regular backup](../../raketasks/backup_restore.md), so there is no separate backup to configure.
