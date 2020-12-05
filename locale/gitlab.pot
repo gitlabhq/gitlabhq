@@ -15012,9 +15012,6 @@ msgstr ""
 msgid "Invite Members"
 msgstr ""
 
-msgid "Invite another teammate"
-msgstr ""
-
 msgid "Invite group"
 msgstr ""
 
@@ -15022,9 +15019,6 @@ msgid "Invite member"
 msgstr ""
 
 msgid "Invite team members"
-msgstr ""
-
-msgid "Invite teammates (optional)"
 msgstr ""
 
 msgid "Invite your team"
@@ -15096,6 +15090,15 @@ msgstr ""
 msgid "InviteMembers|Invite team members"
 msgstr ""
 
+msgid "InviteMember|Invite Members (optional)"
+msgstr ""
+
+msgid "InviteMember|Invite another member"
+msgstr ""
+
+msgid "InviteMember|Invited users will be added with developer level permissions. %{linkStart}View the documentation%{linkEnd} to see how to change this later."
+msgstr ""
+
 msgid "InviteMember|Oops, this feature isn't ready yet"
 msgstr ""
 
@@ -15151,9 +15154,6 @@ msgid "InviteReminderEmail|This is a friendly reminder that %{inviter} invited y
 msgstr ""
 
 msgid "Invited"
-msgstr ""
-
-msgid "Invited users will be added with developer level permissions. You can always change this later."
 msgstr ""
 
 msgid "Invocations"
@@ -32646,6 +32646,9 @@ msgstr ""
 msgid "math|There was an error rendering this math block"
 msgstr ""
 
+msgid "member%{number}@company.com"
+msgstr ""
+
 msgid "merge request"
 msgid_plural "merge requests"
 msgstr[0] ""
@@ -33307,9 +33310,6 @@ msgid "syntax is incorrect."
 msgstr ""
 
 msgid "tag name"
-msgstr ""
-
-msgid "teammate%{number}@company.com"
 msgstr ""
 
 msgid "the correct format."
