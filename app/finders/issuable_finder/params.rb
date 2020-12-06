@@ -257,6 +257,10 @@ class IssuableFinder
       params.merge!(other)
     end
 
+    def parent
+      project || group
+    end
+
     private
 
     def projects_public_or_visible_to_user

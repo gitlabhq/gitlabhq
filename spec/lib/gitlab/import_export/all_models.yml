@@ -645,6 +645,7 @@ boards:
 - lists
 - destroyable_lists
 - milestone
+- iteration
 - board_labels
 - board_assignee
 - assignee

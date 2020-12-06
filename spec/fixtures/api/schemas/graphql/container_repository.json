@@ -1,6 +1,6 @@
 {
   "type": "object",
-  "required": ["id", "name", "path", "location", "createdAt", "updatedAt", "tagsCount", "canDelete", "expirationPolicyCleanupStatus"],
+  "required": ["id", "name", "path", "location", "createdAt", "updatedAt", "tagsCount", "canDelete", "expirationPolicyCleanupStatus", "project"],
   "properties": {
     "id": {
       "type": "string"
@@ -35,6 +35,9 @@
     "expirationPolicyCleanupStatus": {
       "type": "string",
       "enum": ["UNSCHEDULED", "SCHEDULED", "UNFINISHED", "ONGOING"]
+    },
+    "project": {
+      "type": "object"
     }
   }
 }

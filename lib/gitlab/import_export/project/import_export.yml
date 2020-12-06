@@ -342,6 +342,7 @@ excluded_attributes:
     - :protected_environment_id
   boards:
     - :milestone_id
+    - :iteration_id
   lists:
     - :board_id
     - :label_id

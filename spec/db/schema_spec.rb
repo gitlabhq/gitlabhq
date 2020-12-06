@@ -22,7 +22,7 @@ RSpec.describe 'Database schema' do
     audit_events_part_5fc467ac26: %w[author_id entity_id target_id],
     award_emoji: %w[awardable_id user_id],
     aws_roles: %w[role_external_id],
-    boards: %w[milestone_id],
+    boards: %w[milestone_id iteration_id],
     chat_names: %w[chat_id team_id user_id],
     chat_teams: %w[team_id],
     ci_builds: %w[erased_by_id runner_id trigger_request_id user_id],

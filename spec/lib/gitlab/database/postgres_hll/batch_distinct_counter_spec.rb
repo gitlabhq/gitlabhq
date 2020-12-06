@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::PostgresHllBatchDistinctCounter do
+RSpec.describe Gitlab::Database::PostgresHll::BatchDistinctCounter do
   let_it_be(:error_rate) { described_class::ERROR_RATE } # HyperLogLog is a probabilistic algorithm, which provides estimated data, with given error margin
   let_it_be(:fallback) { ::Gitlab::Database::BatchCounter::FALLBACK }
   let_it_be(:small_batch_size) { calculate_batch_size(described_class::MIN_REQUIRED_BATCH_SIZE) }
@@ -85,7 +85,7 @@ RSpec.describe Gitlab::Database::PostgresHllBatchDistinctCounter do
       end
 
       it 'counts with different number of batches and aggregates total result' do
-        stub_const('Gitlab::Database::PostgresHllBatchDistinctCounter::MIN_REQUIRED_BATCH_SIZE', 0)
+        stub_const('Gitlab::Database::PostgresHll::BatchDistinctCounter::MIN_REQUIRED_BATCH_SIZE', 0)
 
         [1, 2, 4, 5, 6].each { |i| expect(described_class.new(model).estimate_distinct_count(batch_size: i)).to be_within(error_rate).percent_of(5) }
       end
@@ -94,9 +94,9 @@ RSpec.describe Gitlab::Database::PostgresHllBatchDistinctCounter do
         expect(described_class.new(model, column).estimate_distinct_count(start: model.minimum(:id), finish: model.maximum(:id))).to be_within(error_rate).percent_of(2)
       end
 
-      it "defaults the batch size to #{Gitlab::Database::PostgresHllBatchDistinctCounter::DEFAULT_BATCH_SIZE}" do
+      it "defaults the batch size to #{Gitlab::Database::PostgresHll::BatchDistinctCounter::DEFAULT_BATCH_SIZE}" do
         min_id = model.minimum(:id)
-        batch_end_id = min_id + calculate_batch_size(Gitlab::Database::PostgresHllBatchDistinctCounter::DEFAULT_BATCH_SIZE)
+        batch_end_id = min_id + calculate_batch_size(Gitlab::Database::PostgresHll::BatchDistinctCounter::DEFAULT_BATCH_SIZE)
 
         expect(model).to receive(:where).with("id" => min_id..batch_end_id).and_call_original
 
@@ -112,14 +112,14 @@ RSpec.describe Gitlab::Database::PostgresHllBatchDistinctCounter do
       end
 
       context 'disallowed configurations' do
-        let(:default_batch_size) { Gitlab::Database::PostgresHllBatchDistinctCounter::DEFAULT_BATCH_SIZE }
+        let(:default_batch_size) { Gitlab::Database::PostgresHll::BatchDistinctCounter::DEFAULT_BATCH_SIZE }
 
         it 'returns fallback if start is bigger than finish' do
           expect(described_class.new(model, column).estimate_distinct_count(start: 1, finish: 0)).to eq(fallback)
         end
 
         it 'returns fallback if data volume exceeds upper limit' do
-          large_finish = Gitlab::Database::PostgresHllBatchDistinctCounter::MAX_DATA_VOLUME + 1
+          large_finish = Gitlab::Database::PostgresHll::BatchDistinctCounter::MAX_DATA_VOLUME + 1
           expect(described_class.new(model, column).estimate_distinct_count(start: 1, finish: large_finish)).to eq(fallback)
         end
 

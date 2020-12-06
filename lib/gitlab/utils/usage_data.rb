@@ -61,7 +61,7 @@ module Gitlab
       end
 
       def estimate_batch_distinct_count(relation, column = nil, batch_size: nil, start: nil, finish: nil)
-        Gitlab::Database::PostgresHllBatchDistinctCounter.new(relation, column).estimate_distinct_count(batch_size: batch_size, start: start, finish: finish)
+        Gitlab::Database::PostgresHll::BatchDistinctCounter.new(relation, column).estimate_distinct_count(batch_size: batch_size, start: start, finish: finish)
       rescue ActiveRecord::StatementInvalid
         FALLBACK
       # catch all rescue should be removed as a part of feature flag rollout issue

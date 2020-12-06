@@ -743,6 +743,7 @@ Board:
 - updated_at
 - group_id
 - milestone_id
+- iteration_id
 - weight
 - name
 - hide_backlog_list
