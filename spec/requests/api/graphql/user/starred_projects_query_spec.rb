@@ -70,4 +70,31 @@ RSpec.describe 'Getting starredProjects of the user' do
       )
     end
   end
+
+  context 'the user has a private profile' do
+    before do
+      user.update!(private_profile: true)
+      post_graphql(query, current_user: current_user)
+    end
+
+    context 'the current user does not have access to view the private profile of the user' do
+      let(:current_user) { create(:user) }
+
+      it 'finds no projects' do
+        expect(starred_projects).to be_empty
+      end
+    end
+
+    context 'the current user has access to view the private profile of the user' do
+      let(:current_user) { create(:admin) }
+
+      it 'finds all projects starred by the user, which the current user has access to' do
+        expect(starred_projects).to contain_exactly(
+          a_hash_including('id' => global_id_of(project_a)),
+          a_hash_including('id' => global_id_of(project_b)),
+          a_hash_including('id' => global_id_of(project_c))
+        )
+      end
+    end
+  end
 end

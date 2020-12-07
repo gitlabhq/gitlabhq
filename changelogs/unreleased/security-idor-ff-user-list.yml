@@ -1,5 +1,0 @@
----
-title: Forbid setting a gitlabUserList strategy to a list from another project
-merge_request:
-author:
-type: security
