@@ -3,7 +3,6 @@ import { mapState, mapActions, mapGetters } from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
 import AccessorUtilities from '~/lib/utils/accessor';
 import eventHub from '../event_hub';
-import store from '../store';
 import { FREQUENT_ITEMS, STORAGE_KEY } from '../constants';
 import { isMobile, updateExistingFrequentItem, sanitizeItem } from '../utils';
 import FrequentItemsSearchInput from './frequent_items_search_input.vue';
@@ -11,7 +10,6 @@ import FrequentItemsList from './frequent_items_list.vue';
 import frequentItemsMixin from './frequent_items_mixin';
 
 export default {
-  store,
   components: {
     FrequentItemsSearchInput,
     FrequentItemsList,

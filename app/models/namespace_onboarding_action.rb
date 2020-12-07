@@ -8,6 +8,7 @@ class NamespaceOnboardingAction < ApplicationRecord
   ACTIONS = {
     subscription_created: 1,
     git_write: 2,
+    merge_request_created: 3,
     git_read: 4
   }.freeze
 

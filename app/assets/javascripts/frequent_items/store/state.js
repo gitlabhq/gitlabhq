@@ -1,5 +1,6 @@
-export default () => ({
+export default ({ dropdownType = '' } = {}) => ({
   namespace: '',
+  dropdownType,
   storageKey: '',
   searchQuery: '',
   isLoadingItems: false,

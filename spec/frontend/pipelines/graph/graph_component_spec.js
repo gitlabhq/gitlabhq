@@ -1,9 +1,13 @@
-import { shallowMount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 import PipelineGraph from '~/pipelines/components/graph/graph_component.vue';
 import StageColumnComponent from '~/pipelines/components/graph/stage_column_component.vue';
 import LinkedPipelinesColumn from '~/pipelines/components/graph/linked_pipelines_column.vue';
-import { unwrapPipelineData } from '~/pipelines/components/graph/utils';
-import { mockPipelineResponse } from './mock_data';
+import { GRAPHQL } from '~/pipelines/components/graph/constants';
+import {
+  generateResponse,
+  mockPipelineResponse,
+  pipelineWithUpstreamDownstream,
+} from './mock_data';
 
 describe('graph component', () => {
   let wrapper;
@@ -11,10 +15,8 @@ describe('graph component', () => {
   const findLinkedColumns = () => wrapper.findAll(LinkedPipelinesColumn);
   const findStageColumns = () => wrapper.findAll(StageColumnComponent);
 
-  const generateResponse = raw => unwrapPipelineData(raw.data.project.pipeline.id, raw.data);
-
   const defaultProps = {
-    pipeline: generateResponse(mockPipelineResponse),
+    pipeline: generateResponse(mockPipelineResponse, 'root/fungi-xoxo'),
   };
 
   const createComponent = ({ mountFn = shallowMount, props = {} } = {}) => {
@@ -22,6 +24,9 @@ describe('graph component', () => {
       propsData: {
         ...defaultProps,
         ...props,
+      },
+      provide: {
+        dataMethod: GRAPHQL,
       },
     });
   };
@@ -33,7 +38,7 @@ describe('graph component', () => {
 
   describe('with data', () => {
     beforeEach(() => {
-      createComponent();
+      createComponent({ mountFn: mount });
     });
 
     it('renders the main columns in the graph', () => {
@@ -43,11 +48,24 @@ describe('graph component', () => {
 
   describe('when linked pipelines are not present', () => {
     beforeEach(() => {
-      createComponent();
+      createComponent({ mountFn: mount });
     });
 
     it('should not render a linked pipelines column', () => {
       expect(findLinkedColumns()).toHaveLength(0);
+    });
+  });
+
+  describe('when linked pipelines are present', () => {
+    beforeEach(() => {
+      createComponent({
+        mountFn: mount,
+        props: { pipeline: pipelineWithUpstreamDownstream(mockPipelineResponse) },
+      });
+    });
+
+    it('should render linked pipelines columns', () => {
+      expect(findLinkedColumns()).toHaveLength(2);
     });
   });
 });

@@ -54,7 +54,7 @@ module API
       end
 
       params do
-        requires :iid, type: String, desc: 'The internal id of the user list'
+        requires :iid, type: String, desc: 'The internal ID of the user list'
       end
       resource 'feature_flags_user_lists/:iid' do
         desc 'Get a single feature flag user list belonging to a project' do

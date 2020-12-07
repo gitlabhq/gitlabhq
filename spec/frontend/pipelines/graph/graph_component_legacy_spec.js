@@ -15,8 +15,8 @@ describe('graph component', () => {
   let mediator;
   let wrapper;
 
-  const findExpandPipelineBtn = () => wrapper.find('[data-testid="expandPipelineButton"]');
-  const findAllExpandPipelineBtns = () => wrapper.findAll('[data-testid="expandPipelineButton"]');
+  const findExpandPipelineBtn = () => wrapper.find('[data-testid="expand-pipeline-button"]');
+  const findAllExpandPipelineBtns = () => wrapper.findAll('[data-testid="expand-pipeline-button"]');
   const findStageColumns = () => wrapper.findAll(StageColumnComponentLegacy);
   const findStageColumnAt = i => findStageColumns().at(i);
 

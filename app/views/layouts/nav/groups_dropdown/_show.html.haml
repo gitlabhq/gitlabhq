@@ -3,10 +3,10 @@
   .frequent-items-dropdown-sidebar.qa-groups-dropdown-sidebar
     %ul
       = nav_link(path: 'dashboard/groups#index') do
-        = link_to dashboard_groups_path, class: 'qa-your-groups-link' do
+        = link_to dashboard_groups_path, class: 'qa-your-groups-link', data: { track_label: "groups_dropdown_your_groups", track_event: "click_link" } do
           = _('Your groups')
       = nav_link(path: 'groups#explore') do
-        = link_to explore_groups_path do
+        = link_to explore_groups_path, data: { track_label: "groups_dropdown_explore_groups", track_event: "click_link" } do
           = _('Explore groups')
   .frequent-items-dropdown-content
     #js-groups-dropdown{ data: { user_name: current_user.username, group: group_meta } }

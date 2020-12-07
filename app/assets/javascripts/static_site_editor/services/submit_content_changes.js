@@ -10,6 +10,8 @@ import {
   SUBMIT_CHANGES_MERGE_REQUEST_ERROR,
   TRACKING_ACTION_CREATE_COMMIT,
   TRACKING_ACTION_CREATE_MERGE_REQUEST,
+  USAGE_PING_TRACKING_ACTION_CREATE_COMMIT,
+  USAGE_PING_TRACKING_ACTION_CREATE_MERGE_REQUEST,
 } from '../constants';
 
 const createBranch = (projectId, branch) =>
@@ -47,6 +49,7 @@ const createImageActions = (images, markdown) => {
 
 const commitContent = (projectId, message, branch, sourcePath, content, images) => {
   Tracking.event(document.body.dataset.page, TRACKING_ACTION_CREATE_COMMIT);
+  Api.trackRedisCounterEvent(USAGE_PING_TRACKING_ACTION_CREATE_COMMIT);
 
   return Api.commitMultiple(
     projectId,
@@ -75,6 +78,7 @@ const createMergeRequest = (
   targetBranch = DEFAULT_TARGET_BRANCH,
 ) => {
   Tracking.event(document.body.dataset.page, TRACKING_ACTION_CREATE_MERGE_REQUEST);
+  Api.trackRedisCounterEvent(USAGE_PING_TRACKING_ACTION_CREATE_MERGE_REQUEST);
 
   return Api.createProjectMergeRequest(
     projectId,

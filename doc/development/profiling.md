@@ -24,7 +24,7 @@ When using the script, command-line documentation is available by passing no
 arguments.
 
 When using the method in an interactive console session, any changes to the
-application code within that console session will be reflected in the profiler
+application code within that console session is reflected in the profiler
 output.
 
 For example:
@@ -37,14 +37,14 @@ Gitlab::Profiler.profile('/my-user')
 # Returns a RubyProf::Profile where 100 seconds is spent in UsersController#show
 ```
 
-For routes that require authorization you will need to provide a user to
+For routes that require authorization you must provide a user to
 `Gitlab::Profiler`. You can do this like so:
 
 ```ruby
 Gitlab::Profiler.profile('/gitlab-org/gitlab-test', user: User.first)
 ```
 
-Passing a `logger:` keyword argument to `Gitlab::Profiler.profile` will send
+Passing a `logger:` keyword argument to `Gitlab::Profiler.profile` sends
 ActiveRecord and ActionController log output to that logger. Further options are
 documented with the method source.
 
@@ -123,7 +123,7 @@ starting GitLab. For example:
 ENABLE_BULLET=true bundle exec rails s
 ```
 
-Bullet will log query problems to both the Rails log as well as the Chrome
+Bullet logs query problems to both the Rails log as well as the Chrome
 console.
 
 As a follow up to finding `N+1` queries with Bullet, consider writing a [QueryRecoder test](query_recorder.md) to prevent a regression.

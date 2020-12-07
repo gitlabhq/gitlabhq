@@ -276,7 +276,7 @@ Edition, follow the guides below based on the installation method:
   to a version upgrade: stop the server, get the code, update configuration files for
   the new functionality, install libraries and do migrations, update the init
   script, start the application and check its status.
-- [Omnibus CE to EE](https://docs.gitlab.com/omnibus/update/README.html#updating-community-edition-to-enterprise-edition) - Follow this guide to update your Omnibus
+- [Omnibus CE to EE](https://docs.gitlab.com/omnibus/update/README.html#update-community-edition-to-enterprise-edition) - Follow this guide to update your Omnibus
   GitLab Community Edition to the Enterprise Edition.
 
 ### Enterprise to Community Edition

@@ -1,10 +1,14 @@
 <script>
+import getPipelineDetails from '../../graphql/queries/get_pipeline_details.query.graphql';
 import LinkedPipeline from './linked_pipeline.vue';
+import { LOAD_FAILURE } from '../../constants';
 import { UPSTREAM } from './constants';
+import { unwrapPipelineData } from './utils';
 
 export default {
   components: {
     LinkedPipeline,
+    PipelineGraph: () => import('./graph_component.vue'),
   },
   props: {
     columnTitle: {
@@ -19,11 +23,22 @@ export default {
       type: String,
       required: true,
     },
-    projectId: {
-      type: Number,
-      required: true,
-    },
   },
+  data() {
+    return {
+      currentPipeline: null,
+      loadingPipelineId: null,
+      pipelineExpanded: false,
+    };
+  },
+  titleClasses: [
+    'gl-font-weight-bold',
+    'gl-pipeline-job-width',
+    'gl-text-truncate',
+    'gl-line-height-36',
+    'gl-pl-3',
+    'gl-mb-5',
+  ],
   computed: {
     columnClass() {
       const positionValues = {
@@ -35,14 +50,66 @@ export default {
     graphPosition() {
       return this.isUpstream ? 'left' : 'right';
     },
-    // Refactor string match when BE returns Upstream/Downstream indicators
     isUpstream() {
       return this.type === UPSTREAM;
     },
+    computedTitleClasses() {
+      const positionalClasses = this.isUpstream
+        ? ['gl-w-full', 'gl-text-right', 'gl-linked-pipeline-padding']
+        : [];
+
+      return [...this.$options.titleClasses, ...positionalClasses];
+    },
   },
   methods: {
-    onPipelineClick(downstreamNode, pipeline, index) {
-      this.$emit('linkedPipelineClick', pipeline, index, downstreamNode);
+    getPipelineData(pipeline) {
+      const projectPath = pipeline.project.fullPath;
+
+      this.$apollo.addSmartQuery('currentPipeline', {
+        query: getPipelineDetails,
+        variables() {
+          return {
+            projectPath,
+            iid: pipeline.iid,
+          };
+        },
+        update(data) {
+          return unwrapPipelineData(projectPath, data);
+        },
+        result() {
+          this.loadingPipelineId = null;
+        },
+        error() {
+          this.$emit('error', LOAD_FAILURE);
+        },
+      });
+    },
+    isExpanded(id) {
+      return Boolean(this.currentPipeline?.id && id === this.currentPipeline.id);
+    },
+    isLoadingPipeline(id) {
+      return this.loadingPipelineId === id;
+    },
+    onPipelineClick(pipeline) {
+      /* If the clicked pipeline has been expanded already, close it, clear, exit */
+      if (this.currentPipeline?.id === pipeline.id) {
+        this.pipelineExpanded = false;
+        this.currentPipeline = null;
+        return;
+      }
+
+      /* Set the loading id */
+      this.loadingPipelineId = pipeline.id;
+
+      /*
+        Expand the pipeline.
+        If this was not a toggle close action, and
+        it was already showing a different pipeline, then
+        this will be a no-op, but that doesn't matter.
+      */
+      this.pipelineExpanded = true;
+
+      this.getPipelineData(pipeline);
     },
     onDownstreamHovered(jobName) {
       this.$emit('downstreamHovered', jobName);
@@ -60,25 +127,40 @@ export default {
 </script>
 
 <template>
-  <div :class="columnClass" class="stage-column linked-pipelines-column">
-    <div class="stage-name linked-pipelines-column-title">{{ columnTitle }}</div>
-    <div v-if="isUpstream" class="cross-project-triangle"></div>
-    <ul>
-      <linked-pipeline
-        v-for="(pipeline, index) in linkedPipelines"
-        :key="pipeline.id"
-        :class="{
-          active: pipeline.isExpanded,
-          'left-connector': pipeline.isExpanded && graphPosition === 'left',
-        }"
-        :pipeline="pipeline"
-        :column-title="columnTitle"
-        :project-id="projectId"
-        :type="type"
-        @pipelineClicked="onPipelineClick($event, pipeline, index)"
-        @downstreamHovered="onDownstreamHovered"
-        @pipelineExpandToggle="onPipelineExpandToggle"
-      />
-    </ul>
+  <div class="gl-display-flex">
+    <div :class="columnClass" class="linked-pipelines-column">
+      <div data-testid="linked-column-title" class="stage-name" :class="computedTitleClasses">
+        {{ columnTitle }}
+      </div>
+      <ul class="gl-pl-0">
+        <li
+          v-for="pipeline in linkedPipelines"
+          :key="pipeline.id"
+          class="gl-display-flex gl-mb-4"
+          :class="{ 'gl-flex-direction-row-reverse': isUpstream }"
+        >
+          <linked-pipeline
+            class="gl-display-inline-block"
+            :is-loading="isLoadingPipeline(pipeline.id)"
+            :pipeline="pipeline"
+            :column-title="columnTitle"
+            :type="type"
+            :expanded="isExpanded(pipeline.id)"
+            @downstreamHovered="onDownstreamHovered"
+            @pipelineClicked="onPipelineClick(pipeline)"
+            @pipelineExpandToggle="onPipelineExpandToggle"
+          />
+          <div v-if="isExpanded(pipeline.id)" class="gl-display-inline-block">
+            <pipeline-graph
+              v-if="currentPipeline"
+              :type="type"
+              class="d-inline-block gl-mt-n2"
+              :pipeline="currentPipeline"
+              :is-linked-pipeline="true"
+            />
+          </div>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>

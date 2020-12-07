@@ -1,10 +1,14 @@
 import { shallowMount } from '@vue/test-utils';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { trimText } from 'helpers/text_helper';
 import frequentItemsListItemComponent from '~/frequent_items/components/frequent_items_list_item.vue';
-import { mockProject } from '../mock_data'; // can also use 'mockGroup', but not useful to test here
+import { createStore } from '~/frequent_items/store';
+import { mockProject } from '../mock_data';
 
 describe('FrequentItemsListItemComponent', () => {
   let wrapper;
+  let trackingSpy;
+  let store = createStore();
 
   const findTitle = () => wrapper.find({ ref: 'frequentItemsItemTitle' });
   const findAvatar = () => wrapper.find({ ref: 'frequentItemsItemAvatar' });
@@ -18,6 +22,7 @@ describe('FrequentItemsListItemComponent', () => {
 
   const createComponent = (props = {}) => {
     wrapper = shallowMount(frequentItemsListItemComponent, {
+      store,
       propsData: {
         itemId: mockProject.id,
         itemName: mockProject.name,
@@ -29,7 +34,14 @@ describe('FrequentItemsListItemComponent', () => {
     });
   };
 
+  beforeEach(() => {
+    store = createStore({ dropdownType: 'project' });
+    trackingSpy = mockTracking('_category_', document, jest.spyOn);
+    trackingSpy.mockImplementation(() => {});
+  });
+
   afterEach(() => {
+    unmockTracking();
     wrapper.destroy();
     wrapper = null;
   });
@@ -96,6 +108,19 @@ describe('FrequentItemsListItemComponent', () => {
       ${'namespace'}          | ${findAllNamespace}          | ${1}
     `('should render $expected $name', ({ selector, expected }) => {
       expect(selector()).toHaveLength(expected);
+    });
+
+    it('tracks when item link is clicked', () => {
+      const link = wrapper.find('a');
+      // NOTE: this listener is required to prevent the click from going through and causing:
+      //   `Error: Not implemented: navigation ...`
+      link.element.addEventListener('click', e => {
+        e.preventDefault();
+      });
+      link.trigger('click');
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_link', {
+        label: 'project_dropdown_frequent_items_list_item',
+      });
     });
   });
 });

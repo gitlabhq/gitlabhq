@@ -1313,7 +1313,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
       context 'and product_analytics FF is enabled for it' do
         before do
-          stub_feature_flags(product_analytics: project)
+          stub_feature_flags(product_analytics_tracking: true)
 
           create(:product_analytics_event, project: project, se_category: 'epics', se_action: 'promote')
           create(:product_analytics_event, project: project, se_category: 'epics', se_action: 'promote', collector_tstamp: 2.days.ago)
@@ -1329,7 +1329,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
       context 'and product_analytics FF is disabled' do
         before do
-          stub_feature_flags(product_analytics: false)
+          stub_feature_flags(product_analytics_tracking: false)
         end
 
         it 'returns an empty hash' do

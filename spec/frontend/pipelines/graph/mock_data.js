@@ -1,10 +1,15 @@
+import { unwrapPipelineData } from '~/pipelines/components/graph/utils';
+
 export const mockPipelineResponse = {
   data: {
     project: {
       __typename: 'Project',
       pipeline: {
         __typename: 'Pipeline',
-        id: '22',
+        id: 163,
+        iid: '22',
+        downstream: null,
+        upstream: null,
         stages: {
           __typename: 'CiStageConnection',
           nodes: [
@@ -496,4 +501,165 @@ export const mockPipelineResponse = {
       },
     },
   },
+};
+
+export const downstream = {
+  nodes: [
+    {
+      id: 175,
+      iid: '31',
+      path: '/root/elemenohpee/-/pipelines/175',
+      status: {
+        group: 'success',
+        label: 'passed',
+        icon: 'status_success',
+        __typename: 'DetailedStatus',
+      },
+      sourceJob: {
+        name: 'test_c',
+        __typename: 'CiJob',
+      },
+      project: {
+        id: 'gid://gitlab/Project/25',
+        name: 'elemenohpee',
+        fullPath: 'root/elemenohpee',
+        __typename: 'Project',
+      },
+      __typename: 'Pipeline',
+      multiproject: true,
+    },
+    {
+      id: 181,
+      iid: '27',
+      path: '/root/abcd-dag/-/pipelines/181',
+      status: {
+        group: 'success',
+        label: 'passed',
+        icon: 'status_success',
+        __typename: 'DetailedStatus',
+      },
+      sourceJob: {
+        name: 'test_d',
+        __typename: 'CiJob',
+      },
+      project: {
+        id: 'gid://gitlab/Project/23',
+        name: 'abcd-dag',
+        fullPath: 'root/abcd-dag',
+        __typename: 'Project',
+      },
+      __typename: 'Pipeline',
+      multiproject: false,
+    },
+  ],
+};
+
+export const upstream = {
+  id: 161,
+  iid: '24',
+  path: '/root/abcd-dag/-/pipelines/161',
+  status: {
+    group: 'success',
+    label: 'passed',
+    icon: 'status_success',
+    __typename: 'DetailedStatus',
+  },
+  sourceJob: null,
+  project: {
+    id: 'gid://gitlab/Project/23',
+    name: 'abcd-dag',
+    fullPath: 'root/abcd-dag',
+    __typename: 'Project',
+  },
+  __typename: 'Pipeline',
+  multiproject: true,
+};
+
+export const wrappedPipelineReturn = {
+  data: {
+    project: {
+      pipeline: {
+        id: 'gid://gitlab/Ci::Pipeline/175',
+        iid: '38',
+        downstream: {
+          nodes: [],
+        },
+        upstream: {
+          id: 'gid://gitlab/Ci::Pipeline/174',
+          iid: '37',
+          path: '/root/elemenohpee/-/pipelines/174',
+          status: {
+            group: 'success',
+            label: 'passed',
+            icon: 'status_success',
+          },
+          sourceJob: {
+            name: 'test_c',
+          },
+          project: {
+            id: 'gid://gitlab/Project/25',
+            name: 'elemenohpee',
+            fullPath: 'root/elemenohpee',
+          },
+        },
+        stages: {
+          nodes: [
+            {
+              name: 'build',
+              status: {
+                action: null,
+              },
+              groups: {
+                nodes: [
+                  {
+                    status: {
+                      label: 'passed',
+                      group: 'success',
+                      icon: 'status_success',
+                    },
+                    name: 'build_n',
+                    size: 1,
+                    jobs: {
+                      nodes: [
+                        {
+                          name: 'build_n',
+                          scheduledAt: null,
+                          needs: {
+                            nodes: [],
+                          },
+                          status: {
+                            icon: 'status_success',
+                            tooltip: 'passed',
+                            hasDetails: true,
+                            detailsPath: '/root/elemenohpee/-/jobs/1662',
+                            group: 'success',
+                            action: {
+                              buttonTitle: 'Retry this job',
+                              icon: 'retry',
+                              path: '/root/elemenohpee/-/jobs/1662/retry',
+                              title: 'Retry',
+                            },
+                          },
+                        },
+                      ],
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+};
+
+export const generateResponse = (raw, mockPath) => unwrapPipelineData(mockPath, raw.data);
+
+export const pipelineWithUpstreamDownstream = base => {
+  const pip = { ...base };
+  pip.data.project.pipeline.downstream = downstream;
+  pip.data.project.pipeline.upstream = upstream;
+
+  return generateResponse(pip, 'root/abcd-dag');
 };

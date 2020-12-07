@@ -93,7 +93,7 @@ All the `GitlabUploader` derived classes should comply with this path segment sc
 |                         |                           | `ObjectStorage::Concern#upload_path                                    |
 ```
 
-The `RecordsUploads::Concern` concern will create an `Upload` entry for every file stored by a `GitlabUploader` persisting the dynamic parts of the path using
+The `RecordsUploads::Concern` concern creates an `Upload` entry for every file stored by a `GitlabUploader` persisting the dynamic parts of the path using
 `GitlabUploader#dynamic_path`. You may then use the `Upload#build_uploader` method to manipulate the file.
 
 ## Object Storage
@@ -108,9 +108,9 @@ The `CarrierWave::Uploader#store_dir` is overridden to
 
 ### Using `ObjectStorage::Extension::RecordsUploads`
 
-This concern will automatically include `RecordsUploads::Concern` if not already included.
+This concern includes `RecordsUploads::Concern` if not already included.
 
-The `ObjectStorage::Concern` uploader will search for the matching `Upload` to select the correct object store. The `Upload` is mapped using `#store_dirs + identifier` for each store (LOCAL/REMOTE).
+The `ObjectStorage::Concern` uploader searches for the matching `Upload` to select the correct object store. The `Upload` is mapped using `#store_dirs + identifier` for each store (LOCAL/REMOTE).
 
 ```ruby
 class SongUploader < GitlabUploader
@@ -130,7 +130,7 @@ end
 
 ### Using a mounted uploader
 
-The `ObjectStorage::Concern` will query the `model.<mount>_store` attribute to select the correct object store.
+The `ObjectStorage::Concern` queries the `model.<mount>_store` attribute to select the correct object store.
 This column must be present in the model schema.
 
 ```ruby

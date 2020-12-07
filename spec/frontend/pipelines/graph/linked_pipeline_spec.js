@@ -17,7 +17,7 @@ describe('Linked pipeline', () => {
   const findLinkedPipeline = () => wrapper.find({ ref: 'linkedPipeline' });
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
   const findPipelineLink = () => wrapper.find('[data-testid="pipelineLink"]');
-  const findExpandButton = () => wrapper.find('[data-testid="expandPipelineButton"]');
+  const findExpandButton = () => wrapper.find('[data-testid="expand-pipeline-button"]');
 
   const createWrapper = (propsData, data = []) => {
     wrapper = mount(LinkedPipelineComponent, {
@@ -40,18 +40,11 @@ describe('Linked pipeline', () => {
       projectId: invalidTriggeredPipelineId,
       columnTitle: 'Downstream',
       type: DOWNSTREAM,
+      expanded: false,
     };
 
     beforeEach(() => {
       createWrapper(props);
-    });
-
-    it('should render a list item as the containing element', () => {
-      expect(wrapper.element.tagName).toBe('LI');
-    });
-
-    it('should render a button', () => {
-      expect(findButton().exists()).toBe(true);
     });
 
     it('should render the project name', () => {
@@ -105,12 +98,14 @@ describe('Linked pipeline', () => {
       projectId: validTriggeredPipelineId,
       columnTitle: 'Downstream',
       type: DOWNSTREAM,
+      expanded: false,
     };
 
     const upstreamProps = {
       ...downstreamProps,
       columnTitle: 'Upstream',
       type: UPSTREAM,
+      expanded: false,
     };
 
     it('parent/child label container should exist', () => {
@@ -173,7 +168,7 @@ describe('Linked pipeline', () => {
     `(
       '$pipelineType.columnTitle pipeline button icon should be $anglePosition if expanded state is $expanded',
       ({ pipelineType, anglePosition, expanded }) => {
-        createWrapper(pipelineType, { expanded });
+        createWrapper({ ...pipelineType, expanded });
         expect(findExpandButton().props('icon')).toBe(anglePosition);
       },
     );
@@ -185,6 +180,7 @@ describe('Linked pipeline', () => {
       projectId: invalidTriggeredPipelineId,
       columnTitle: 'Downstream',
       type: DOWNSTREAM,
+      expanded: false,
     };
 
     beforeEach(() => {
@@ -202,6 +198,7 @@ describe('Linked pipeline', () => {
       projectId: validTriggeredPipelineId,
       columnTitle: 'Downstream',
       type: DOWNSTREAM,
+      expanded: false,
     };
 
     beforeEach(() => {
@@ -219,10 +216,7 @@ describe('Linked pipeline', () => {
       jest.spyOn(wrapper.vm.$root, '$emit');
       findButton().trigger('click');
 
-      expect(wrapper.vm.$root.$emit.mock.calls[0]).toEqual([
-        'bv::hide::tooltip',
-        'js-linked-pipeline-34993051',
-      ]);
+      expect(wrapper.vm.$root.$emit.mock.calls[0]).toEqual(['bv::hide::tooltip']);
     });
 
     it('should emit downstreamHovered with job name on mouseover', () => {

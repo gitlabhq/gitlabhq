@@ -12,13 +12,14 @@ namespace :gitlab do
 
     desc 'GitLab | UsageData | Generate usage ping in JSON'
     task generate: :environment do
-      puts Gitlab::UsageData.to_json(force_refresh: true)
+      puts Gitlab::Json.pretty_generate(Gitlab::UsageData.uncached_data)
     end
 
     desc 'GitLab | UsageData | Generate usage ping and send it to Versions Application'
     task generate_and_send: :environment do
       result = SubmitUsagePingService.new.execute
-      puts result.inspect
+
+      puts Gitlab::Json.pretty_generate(result.attributes)
     end
   end
 end

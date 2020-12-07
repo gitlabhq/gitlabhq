@@ -146,7 +146,7 @@ Remember:
   advance of a milestone release and for larger documentation changes.
 - You can request a post-merge Technical Writer review of documentation if it's important to get the
   code with which it ships merged as soon as possible. In this case, the author of the original MR
-  will address the feedback provided by the Technical Writer in a follow-up MR.
+  can address the feedback provided by the Technical Writer in a follow-up MR.
 - The Technical Writer can also help decide that documentation can be merged without Technical
   writer review, with the review to occur soon after merge.
 

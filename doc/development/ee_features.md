@@ -143,7 +143,7 @@ There are a few gotchas with it:
 
 - you should always [`extend ::Gitlab::Utils::Override`](utilities.md#override) and use `override` to
   guard the "overrider" method to ensure that if the method gets renamed in
-  CE, the EE override won't be silently forgotten.
+  CE, the EE override isn't silently forgotten.
 - when the "overrider" would add a line in the middle of the CE
   implementation, you should refactor the CE method and split it in
   smaller methods. Or create a "hook" method that is empty in CE,
@@ -284,7 +284,7 @@ wrap it in a self-descriptive method and use that method.
 For example, in GitLab-FOSS, the only user created by the system is `User.ghost`
 but in EE there are several types of bot-users that aren't really users. It would
 be incorrect to override the implementation of `User#ghost?`, so instead we add
-a method `#internal?` to `app/models/user.rb`. The implementation will be:
+a method `#internal?` to `app/models/user.rb`. The implementation:
 
 ```ruby
 def internal?
@@ -303,13 +303,13 @@ end
 
 ### Code in `config/routes`
 
-When we add `draw :admin` in `config/routes.rb`, the application will try to
+When we add `draw :admin` in `config/routes.rb`, the application tries to
 load the file located in `config/routes/admin.rb`, and also try to load the
 file located in `ee/config/routes/admin.rb`.
 
 In EE, it should at least load one file, at most two files. If it cannot find
-any files, an error will be raised. In CE, since we don't know if there will
-be an EE route, it will not raise any errors even if it cannot find anything.
+any files, an error is raised. In CE, since we don't know if an
+an EE route exists, it doesn't raise any errors even if it cannot find anything.
 
 This means if we want to extend a particular CE route file, just add the same
 file located in `ee/config/routes`. If we want to add an EE only route, we
@@ -467,7 +467,7 @@ end
 #### Using `render_if_exists`
 
 Instead of using regular `render`, we should use `render_if_exists`, which
-will not render anything if it cannot find the specific partial. We use this
+doesn't render anything if it cannot find the specific partial. We use this
 so that we could put `render_if_exists` in CE, keeping code the same between
 CE and EE.
 
@@ -482,7 +482,7 @@ The disadvantage of this:
 ##### Caveats
 
 The `render_if_exists` view path argument must be relative to `app/views/` and `ee/app/views`.
-Resolving an EE template path that is relative to the CE view path will not work.
+Resolving an EE template path that is relative to the CE view path doesn't work.
 
 ```haml
 - # app/views/projects/index.html.haml
@@ -577,7 +577,7 @@ We can define `params` and use `use` in another `params` definition to
 include parameters defined in EE. However, we need to define the "interface" first
 in CE in order for EE to override it. We don't have to do this in other places
 due to `prepend_if_ee`, but Grape is complex internally and we couldn't easily
-do that, so we'll follow regular object-oriented practices that we define the
+do that, so we follow regular object-oriented practices that we define the
 interface first here.
 
 For example, suppose we have a few more optional parameters for EE. We can move the
@@ -738,7 +738,7 @@ end
 
 It's very hard to extend this in an EE module, and this is simply storing
 some meta-data for a particular route. Given that, we could simply leave the
-EE `route_setting` in CE as it won't hurt and we are just not going to use
+EE `route_setting` in CE as it doesn't hurt and we don't use
 those meta-data in CE.
 
 We could revisit this policy when we're using `route_setting` more and whether
@@ -1039,7 +1039,7 @@ export default {
 
 `import MyComponent from 'ee_else_ce/path/my_component'.vue`
 
-- this way the correct component will be included for either the ce or ee implementation
+- this way the correct component is included for either the CE or EE implementation
 
 **For EE components that need different results for the same computed values, we can pass in props to the CE wrapper as seen in the example.**
 
@@ -1053,7 +1053,7 @@ export default {
 
 For regular JS files, the approach is similar.
 
-1. We will keep using the [`ee_else_ce`](../development/ee_features.md#javascript-code-in-assetsjavascripts) helper, this means that EE only code should be inside the `ee/` folder.
+1. We keep using the [`ee_else_ce`](../development/ee_features.md#javascript-code-in-assetsjavascripts) helper, this means that EE only code should be inside the `ee/` folder.
    1. An EE file should be created with the EE only code, and it should extend the CE counterpart.
    1. For code inside functions that can't be extended, the code should be moved into a new file and we should use `ee_else_ce` helper:
 

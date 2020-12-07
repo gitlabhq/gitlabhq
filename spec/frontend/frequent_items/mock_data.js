@@ -30,7 +30,6 @@ export const currentSession = {
 };
 
 export const mockNamespace = 'projects';
-
 export const mockStorageKey = 'test-user/frequent-projects';
 
 export const mockGroup = {

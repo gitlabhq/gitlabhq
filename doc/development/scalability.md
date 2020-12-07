@@ -16,7 +16,7 @@ scalability and reliability.
 _[diagram source - GitLab employees only](https://docs.google.com/drawings/d/1RTGtuoUrE0bDT-9smoHbFruhEMI4Ys6uNrufe5IA-VI/edit)_
 
 The diagram above shows a GitLab reference architecture scaled up for 50,000
-users. We will discuss each component below.
+users. We discuss each component below.
 
 ## Components
 
@@ -26,11 +26,10 @@ The PostgreSQL database holds all metadata for projects, issues, merge
 requests, users, etc. The schema is managed by the Rails application
 [db/structure.sql](https://gitlab.com/gitlab-org/gitlab/blob/master/db/structure.sql).
 
-GitLab Web/API servers and Sidekiq nodes talk directly to the database via a
-Rails object relational model (ORM). Most SQL queries are accessed via this
+GitLab Web/API servers and Sidekiq nodes talk directly to the database by using a
+Rails object relational model (ORM). Most SQL queries are accessed by using this
 ORM, although some custom SQL is also written for performance or for
-exploiting advanced PostgreSQL features (e.g. recursive CTEs, LATERAL JOINs,
-etc.).
+exploiting advanced PostgreSQL features (like recursive CTEs or LATERAL JOINs).
 
 The application has a tight coupling to the database schema. When the
 application starts, Rails queries the database schema, caching the tables and
@@ -42,8 +41,8 @@ no-downtime changes](what_requires_downtime.md).
 #### Multi-tenancy
 
 A single database is used to store all customer data. Each user can belong to
-many groups or projects, and the access level (e.g. guest, developer,
-maintainer, etc.) to groups and projects determines what users can see and
+many groups or projects, and the access level (including guest, developer, or
+maintainer) to groups and projects determines what users can see and
 what they can access.
 
 Users with admin access can access all projects and even impersonate
@@ -70,7 +69,7 @@ dates](https://gitlab.com/groups/gitlab-org/-/epics/2023). For example,
 the `events` and `audit_events` table are natural candidates for this
 kind of partitioning.
 
-Sharding is likely more difficult and will require significant changes
+Sharding is likely more difficult and requires significant changes
 to the schema and application. For example, if we have to store projects
 in many different databases, we immediately run into the question, "How
 can we retrieve data across different projects?" One answer to this is
@@ -78,7 +77,7 @@ to abstract data access into API calls that abstract the database from
 the application, but this is a significant amount of work.
 
 There are solutions that may help abstract the sharding to some extent
-from the application. For example, we will want to look at [Citus
+from the application. For example, we want to look at [Citus
 Data](https://www.citusdata.com/product/community) closely. Citus Data
 provides a Rails plugin that adds a [tenant ID to ActiveRecord
 models](https://www.citusdata.com/blog/2017/01/05/easily-scale-out-multi-tenant-apps/).
@@ -100,17 +99,16 @@ systems.
 
 A recent [database checkup shows a breakdown of the table sizes on
 GitLab.com](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/8022#master-1022016101-8).
-Since `merge_request_diff_files` contains over 1 TB of data, we will want to
+Since `merge_request_diff_files` contains over 1 TB of data, we want to
 reduce/eliminate this table first. GitLab has support for [storing diffs in
-object storage](../administration/merge_request_diffs.md), which we [will
-want to do on
+object storage](../administration/merge_request_diffs.md), which we [want to do on
 GitLab.com](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/7356).
 
 #### High availability
 
 There are several strategies to provide high-availability and redundancy:
 
-- Write-ahead logs (WAL) streamed to object storage (e.g. S3, Google Cloud
+- Write-ahead logs (WAL) streamed to object storage (for example, S3, or Google Cloud
   Storage).
 - Read-replicas (hot backups).
 - Delayed replicas.
@@ -126,11 +124,10 @@ the read replicas. [Omnibus ships with both repmgr and Patroni](../administratio
 #### Load-balancing
 
 GitLab EE has [application support for load balancing using read
-replicas](../administration/database_load_balancing.md). This load
-balancer does some smart things that are not traditionally available in
-standard load balancers. For example, the application will only consider a
-replica if its replication lag is low (e.g. WAL data behind by < 100
-megabytes).
+replicas](../administration/database_load_balancing.md). This load balancer does
+some actions that aren't traditionally available in standard load balancers. For
+example, the application considers a replica only if its replication lag is low
+(for example, WAL data behind by less than 100 MB).
 
 More [details are in a blog
 post](https://about.gitlab.com/blog/2017/10/02/scaling-the-gitlab-database/).
@@ -140,7 +137,7 @@ post](https://about.gitlab.com/blog/2017/10/02/scaling-the-gitlab-database/).
 As PostgreSQL forks a backend process for each request, PostgreSQL has a
 finite limit of connections that it can support, typically around 300 by
 default. Without a connection pooler like PgBouncer, it's quite possible to
-hit connection limits. Once the limits are reached, then GitLab will generate
+hit connection limits. Once the limits are reached, then GitLab generates
 errors or slow down as it waits for a connection to be available.
 
 #### High availability
@@ -151,7 +148,7 @@ background job and/or Web requests. There are two ways to address this
 limitation:
 
 - Run multiple PgBouncer instances.
-- Use a multi-threaded connection pooler (e.g.
+- Use a multi-threaded connection pooler (for example,
   [Odyssey](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/7776).
 
 On some Linux systems, it's possible to run [multiple PgBouncer instances on
@@ -192,9 +189,9 @@ connections gracefully.
 
 There are three ways Redis is used in GitLab:
 
-- Queues. Sidekiq jobs marshal jobs into JSON payloads.
-- Persistent state. Session data, exclusive leases, etc.
-- Cache. Repository data (e.g. Branch and tag names), view partials, etc.
+- Queues: Sidekiq jobs marshal jobs into JSON payloads.
+- Persistent state: Session data and exclusive leases.
+- Cache: Repository data (like Branch and tag names) and view partials.
 
 For GitLab instances running at scale, splitting Redis usage into
 separate Redis clusters helps for two reasons:
@@ -206,8 +203,8 @@ For example, the cache instance can behave like an least-recently used
 (LRU) cache by setting the `maxmemory` configuration option. That option
 should not be set for the queues or persistent clusters because data
 would be evicted from memory at random times. This would cause jobs to
-be dropped on the floor, which would cause many problems (e.g. merges
-not running, builds not updating, etc.).
+be dropped on the floor, which would cause many problems (like merges
+not running or builds not updating).
 
 Sidekiq also polls its queues quite frequently, and this activity can
 slow down other queries. For this reason, having a dedicated Redis
@@ -219,7 +216,7 @@ Redis process.
 Single-core: Like PgBouncer, a single Redis process can only use one
 core. It does not support multi-threading.
 
-Dumb secondaries: Redis secondaries (aka replicas) don't actually
+Dumb secondaries: Redis secondaries (also known as replicas) don't actually
 handle any load. Unlike PostgreSQL secondaries, they don't even serve
 read queries. They simply replicate data from the primary and take over
 only when the primary fails.
@@ -236,7 +233,7 @@ election to determine a new leader.
 No leader: A Redis cluster can get into a mode where there are no
 primaries. For example, this can happen if Redis nodes are misconfigured
 to follow the wrong node. Sometimes this requires forcing one node to
-become a primary via the [`REPLICAOF NO ONE`
+become a primary by using the [`REPLICAOF NO ONE`
 command](https://redis.io/commands/replicaof).
 
 ### Sidekiq
@@ -260,8 +257,8 @@ directories in the GitLab code base.
 
 As jobs are added to the Sidekiq queue, Sidekiq worker threads need to
 pull these jobs from the queue and finish them at a rate faster than
-they are added. When an imbalance occurs (e.g. delays in the database,
-slow jobs, etc.), Sidekiq queues can balloon and lead to runaway queues.
+they are added. When an imbalance occurs (for example, delays in the database
+or slow jobs), Sidekiq queues can balloon and lead to runaway queues.
 
 In recent months, many of these queues have ballooned due to delays in
 PostgreSQL, PgBouncer, and Redis. For example, PgBouncer saturation can
@@ -278,11 +275,11 @@ in a timely manner:
   used to process each commit message in the push, but now it farms out
   this to `ProcessCommitWorker`.
 - Redistribute/gerrymander Sidekiq processes by queue
-  types. Long-running jobs (e.g. relating to project import) can often
-  squeeze out jobs that run fast (e.g. delivering e-mail). [This technique
+  types. Long-running jobs (for example, relating to project import) can often
+  squeeze out jobs that run fast (for example, delivering e-mail). [This technique
   was used in to optimize our existing Sidekiq deployment](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/7219#note_218019483).
 - Optimize jobs. Eliminating unnecessary work, reducing network calls
-  (e.g. SQL, Gitaly, etc.), and optimizing processor time can yield significant
+  (including SQL and Gitaly), and optimizing processor time can yield significant
   benefits.
 
 From the Sidekiq logs, it's possible to see which jobs run the most

@@ -14,7 +14,7 @@ might encounter or should avoid during development of GitLab CE and EE.
 In GitLab 10.8 and later, Omnibus has [dropped the `app/assets` directory](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/2456),
 after asset compilation. The `ee/app/assets`, `vendor/assets` directories are dropped as well.
 
-This means that reading files from that directory will fail in Omnibus-installed GitLab instances:
+This means that reading files from that directory fails in Omnibus-installed GitLab instances:
 
 ```ruby
 file = Rails.root.join('app/assets/images/logo.svg')
@@ -243,8 +243,8 @@ end
 
 In this case, if for any reason the top level `ApplicationController`
 is loaded but `Projects::ApplicationController` is not, `ApplicationController`
-would be resolved to `::ApplicationController` and then the `project` method will
-be undefined and we will get an error.
+would be resolved to `::ApplicationController` and then the `project` method is
+undefined, causing an error.
 
 #### Solution
 
@@ -265,7 +265,7 @@ By specifying `Projects::`, we tell Rails exactly what class we are referring
 to and we would avoid the issue.
 
 NOTE:
-This problem will disappear as soon as we upgrade to Rails 6 and use the Zeitwerk autoloader.
+This problem disappears as soon as we upgrade to Rails 6 and use the Zeitwerk autoloader.
 
 ### Further reading
 

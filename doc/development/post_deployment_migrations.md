@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Post deployment migrations are regular Rails migrations that can optionally be
 executed after a deployment. By default these migrations are executed alongside
-the other migrations. To skip these migrations you will have to set the
+the other migrations. To skip these migrations you must set the
 environment variable `SKIP_POST_DEPLOYMENT_MIGRATIONS` to a non-empty value
 when running `rake db:migrate`.
 
@@ -19,7 +19,7 @@ migrations:
 bundle exec rake db:migrate
 ```
 
-This however will skip post deployment migrations:
+This however skips post deployment migrations:
 
 ```shell
 SKIP_POST_DEPLOYMENT_MIGRATIONS=true bundle exec rake db:migrate
@@ -40,7 +40,7 @@ Once all servers have been updated you can run `chef-client` again on a single
 server _without_ the environment variable.
 
 The process is similar for other deployment techniques: first you would deploy
-with the environment variable set, then you'll essentially re-deploy a single
+with the environment variable set, then you re-deploy a single
 server but with the variable _unset_.
 
 ## Creating Migrations
@@ -51,7 +51,7 @@ To create a post deployment migration you can use the following Rails generator:
 bundle exec rails g post_deployment_migration migration_name_here
 ```
 
-This will generate the migration file in `db/post_migrate`. These migrations
+This generates the migration file in `db/post_migrate`. These migrations
 behave exactly like regular Rails migrations.
 
 ## Use Cases

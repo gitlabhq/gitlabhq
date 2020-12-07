@@ -9,6 +9,8 @@ import {
   SUBMIT_CHANGES_MERGE_REQUEST_ERROR,
   TRACKING_ACTION_CREATE_COMMIT,
   TRACKING_ACTION_CREATE_MERGE_REQUEST,
+  USAGE_PING_TRACKING_ACTION_CREATE_COMMIT,
+  USAGE_PING_TRACKING_ACTION_CREATE_MERGE_REQUEST,
 } from '~/static_site_editor/constants';
 import generateBranchName from '~/static_site_editor/services/generate_branch_name';
 import submitContentChanges from '~/static_site_editor/services/submit_content_changes';
@@ -199,6 +201,28 @@ describe('submitContentChanges', () => {
         document.body.dataset.page,
         TRACKING_ACTION_CREATE_MERGE_REQUEST,
       );
+    });
+  });
+
+  describe('sends the correct Usage Ping tracking event', () => {
+    beforeEach(() => {
+      jest.spyOn(Api, 'trackRedisCounterEvent').mockResolvedValue({ data: '' });
+    });
+
+    it('for commiting changes', () => {
+      return submitContentChanges(buildPayload()).then(() => {
+        expect(Api.trackRedisCounterEvent).toHaveBeenCalledWith(
+          USAGE_PING_TRACKING_ACTION_CREATE_COMMIT,
+        );
+      });
+    });
+
+    it('for creating a merge request', () => {
+      return submitContentChanges(buildPayload()).then(() => {
+        expect(Api.trackRedisCounterEvent).toHaveBeenCalledWith(
+          USAGE_PING_TRACKING_ACTION_CREATE_MERGE_REQUEST,
+        );
+      });
     });
   });
 });

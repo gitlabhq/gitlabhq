@@ -10,7 +10,7 @@ The GitLab CI/CD pipeline includes a `danger-review` job that uses [Danger](http
 to perform a variety of automated checks on the code under test.
 
 Danger is a gem that runs in the CI environment, like any other analysis tool.
-What sets it apart from, e.g., RuboCop, is that it's designed to allow you to
+What sets it apart from (for example, RuboCop) is that it's designed to allow you to
 easily write arbitrary code to test properties of your code or changes. To this
 end, it provides a set of common helpers and access to information about what
 has actually changed in your environment, then simply runs your code!
@@ -32,7 +32,7 @@ from the start of the merge request.
 
 ### Disadvantages
 
-- It's not obvious Danger will update the old comment, thus you need to
+- It's not obvious Danger updates the old comment, thus you need to
   pay attention to it if it is updated or not.
 
 ## Run Danger locally
@@ -48,13 +48,12 @@ bin/rake danger_local
 On startup, Danger reads a [`Dangerfile`](https://gitlab.com/gitlab-org/gitlab/blob/master/Dangerfile)
 from the project root. GitLab's Danger code is decomposed into a set of helpers
 and plugins, all within the [`danger/`](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/danger/)
-subdirectory, so ours just tells Danger to load it all. Danger will then run
+subdirectory, so ours just tells Danger to load it all. Danger then runs
 each plugin against the merge request, collecting the output from each. A plugin
 may output notifications, warnings, or errors, all of which are copied to the
-CI job's log. If an error happens, the CI job (and so the entire pipeline) will
-be failed.
+CI job's log. If an error happens, the CI job (and so the entire pipeline) fails.
 
-On merge requests, Danger will also copy the output to a comment on the MR
+On merge requests, Danger also copies the output to a comment on the MR
 itself, increasing visibility.
 
 ## Development guidelines
@@ -75,17 +74,17 @@ often face similar challenges, after all. Think about how you could fulfill the
 same need while ensuring everyone can benefit from the work, and do that instead
 if you can.
 
-If a standard tool (e.g. `rubocop`) exists for a task, it is better to use it
-directly, rather than calling it via Danger. Running and debugging the results
-of those tools locally is easier if Danger isn't involved, and unless you're
-using some Danger-specific functionality, there's no benefit to including it in
-the Danger run.
+If a standard tool (for example, `rubocop`) exists for a task, it's better to
+use it directly, rather than calling it by using Danger. Running and debugging
+the results of those tools locally is easier if Danger isn't involved, and
+unless you're using some Danger-specific functionality, there's no benefit to
+including it in the Danger run.
 
 Danger is well-suited to prototyping and rapidly iterating on solutions, so if
 what we want to build is unclear, a solution in Danger can be thought of as a
 trial run to gather information about a product area. If you're doing this, make
 sure the problem you're trying to solve, and the outcomes of that prototyping,
-are captured in an issue or epic as you go along. This will help us to address
+are captured in an issue or epic as you go along. This helps us to address
 the need as part of the product in a future version of GitLab!
 
 ### Implementation details
@@ -110,16 +109,17 @@ At present, we do this by putting the code in a module in `lib/gitlab/danger/...
 and including it in the matching `danger/plugins/...` file. Specs can then be
 added in `spec/lib/gitlab/danger/...`.
 
-You'll only know if your `Dangerfile` works by pushing the branch that contains
-it to GitLab. This can be quite frustrating, as it significantly increases the
-cycle time when developing a new task, or trying to debug something in an
-existing one. If you've followed the guidelines above, most of your code can
-be exercised locally in RSpec, minimizing the number of cycles you need to go
-through in CI. However, you can speed these cycles up somewhat by emptying the
+To determine if your `Dangerfile` works, push the branch that contains it to
+GitLab. This can be quite frustrating, as it significantly increases the cycle
+time when developing a new task, or trying to debug something in an existing
+one. If you've followed the guidelines above, most of your code can be exercised
+locally in RSpec, minimizing the number of cycles you need to go through in CI.
+However, you can speed these cycles up somewhat by emptying the
 `.gitlab/ci/rails.gitlab-ci.yml` file in your merge request. Just don't forget
 to revert the change before merging!
 
-To enable the Dangerfile on another existing GitLab project, run the following extra steps, based on [this procedure](https://danger.systems/guides/getting_started.html#creating-a-bot-account-for-danger-to-use):
+To enable the Dangerfile on another existing GitLab project, run the following
+extra steps, based on [this procedure](https://danger.systems/guides/getting_started.html#creating-a-bot-account-for-danger-to-use):
 
 1. Add `@gitlab-bot` to the project as a `reporter`.
 1. Add the `@gitlab-bot`'s `GITLAB_API_PRIVATE_TOKEN` value as a value for a new CI/CD
@@ -156,10 +156,10 @@ at GitLab so far:
   To work around this, you can add an [environment
   variable](../ci/variables/README.md) called
   `DANGER_GITLAB_API_TOKEN` with a personal API token to your
-  fork. That way the danger comments will be made from CI using that
+  fork. That way the danger comments are made from CI using that
   API token instead.
   Making the variable
-  [masked](../ci/variables/README.md#mask-a-custom-variable) will make sure
+  [masked](../ci/variables/README.md#mask-a-custom-variable) makes sure
   it doesn't show up in the job logs. The variable cannot be
   [protected](../ci/variables/README.md#protect-a-custom-variable),
   as it needs to be present for all feature branches.

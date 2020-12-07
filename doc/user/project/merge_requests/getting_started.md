@@ -111,7 +111,7 @@ It is also possible to manage multiple assignees:
 - When creating a merge request.
 - Using [quick actions](../quick_actions.md#quick-actions-for-issues-merge-requests-and-epics).
 
-## Reviewer
+### Reviewer
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216054) in GitLab 13.5.
 > - It's [deployed behind a feature flag](../../../user/feature_flags.md), enabled by default.
@@ -134,7 +134,7 @@ This makes it easy to determine the relevant roles for the users involved in the
 
 To request it, open the **Reviewers** drop-down box to search for the user you wish to get a review from.
 
-### Enable or disable Merge Request Reviewers **(CORE ONLY)**
+#### Enable or disable Merge Request Reviewers **(CORE ONLY)**
 
 Merge Request Reviewers is under development and not ready for production use. It is
 deployed behind a feature flag that is **disabled by default**.

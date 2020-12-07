@@ -18,32 +18,34 @@ RSpec.describe MergeRequests::AfterCreateService do
       allow(after_create_service).to receive(:notification_service).and_return(notification_service)
     end
 
+    subject(:execute_service) { after_create_service.execute(merge_request) }
+
     it 'creates a merge request open event' do
       expect(event_service)
         .to receive(:open_mr).with(merge_request, merge_request.author)
 
-      after_create_service.execute(merge_request)
+      execute_service
     end
 
     it 'creates a new merge request notification' do
       expect(notification_service)
         .to receive(:new_merge_request).with(merge_request, merge_request.author)
 
-      after_create_service.execute(merge_request)
+      execute_service
     end
 
     it 'writes diffs to the cache' do
       expect(merge_request)
         .to receive_message_chain(:diffs, :write_cache)
 
-      after_create_service.execute(merge_request)
+      execute_service
     end
 
     it 'creates cross references' do
       expect(merge_request)
         .to receive(:create_cross_references!).with(merge_request.author)
 
-      after_create_service.execute(merge_request)
+      execute_service
     end
 
     it 'creates a pipeline and updates the HEAD pipeline' do
@@ -51,7 +53,14 @@ RSpec.describe MergeRequests::AfterCreateService do
         .to receive(:create_pipeline_for).with(merge_request, merge_request.author)
       expect(merge_request).to receive(:update_head_pipeline)
 
-      after_create_service.execute(merge_request)
+      execute_service
+    end
+
+    it 'records a namespace onboarding progress action' do
+      expect(NamespaceOnboardingAction).to receive(:create_action)
+        .with(merge_request.target_project.namespace, :merge_request_created).and_call_original
+
+      expect { execute_service }.to change(NamespaceOnboardingAction, :count).by(1)
     end
   end
 end

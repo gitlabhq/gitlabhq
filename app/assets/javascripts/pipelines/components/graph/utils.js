@@ -1,28 +1,42 @@
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { unwrapStagesWithNeeds } from '../unwrapping_utils';
 
-const addMulti = (mainId, pipeline) => {
-  return { ...pipeline, multiproject: mainId !== pipeline.id };
+const addMulti = (mainPipelineProjectPath, linkedPipeline) => {
+  return {
+    ...linkedPipeline,
+    multiproject: mainPipelineProjectPath !== linkedPipeline.project.fullPath,
+  };
 };
 
-const unwrapPipelineData = (mainPipelineId, data) => {
+const transformId = linkedPipeline => {
+  return { ...linkedPipeline, id: getIdFromGraphQLId(linkedPipeline.id) };
+};
+
+const unwrapPipelineData = (mainPipelineProjectPath, data) => {
   if (!data?.project?.pipeline) {
     return null;
   }
 
+  const { pipeline } = data.project;
+
   const {
-    id,
     upstream,
     downstream,
     stages: { nodes: stages },
-  } = data.project.pipeline;
+  } = pipeline;
 
   const nodes = unwrapStagesWithNeeds(stages);
 
   return {
-    id,
+    ...pipeline,
+    id: getIdFromGraphQLId(pipeline.id),
     stages: nodes,
-    upstream: upstream ? [upstream].map(addMulti.bind(null, mainPipelineId)) : [],
-    downstream: downstream ? downstream.map(addMulti.bind(null, mainPipelineId)) : [],
+    upstream: upstream
+      ? [upstream].map(addMulti.bind(null, mainPipelineProjectPath)).map(transformId)
+      : [],
+    downstream: downstream
+      ? downstream.nodes.map(addMulti.bind(null, mainPipelineProjectPath)).map(transformId)
+      : [],
   };
 };
 

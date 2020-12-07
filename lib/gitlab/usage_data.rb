@@ -769,7 +769,7 @@ module Gitlab
       end
 
       def report_snowplow_events?
-        self_monitoring_project && Feature.enabled?(:product_analytics, self_monitoring_project)
+        self_monitoring_project && Feature.enabled?(:product_analytics_tracking, type: :ops)
       end
 
       def distinct_count_service_desk_enabled_projects(time_period)

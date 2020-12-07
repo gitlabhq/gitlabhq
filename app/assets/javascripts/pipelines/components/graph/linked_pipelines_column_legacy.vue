@@ -35,7 +35,9 @@ export default {
     graphPosition() {
       return this.isUpstream ? 'left' : 'right';
     },
-    // Refactor string match when BE returns Upstream/Downstream indicators
+    isExpanded() {
+      return this.pipeline?.isExpanded || false;
+    },
     isUpstream() {
       return this.type === UPSTREAM;
     },
@@ -64,21 +66,22 @@ export default {
     <div class="stage-name linked-pipelines-column-title">{{ columnTitle }}</div>
     <div v-if="isUpstream" class="cross-project-triangle"></div>
     <ul>
-      <linked-pipeline
-        v-for="(pipeline, index) in linkedPipelines"
-        :key="pipeline.id"
-        :class="{
-          active: pipeline.isExpanded,
-          'left-connector': pipeline.isExpanded && graphPosition === 'left',
-        }"
-        :pipeline="pipeline"
-        :column-title="columnTitle"
-        :project-id="projectId"
-        :type="type"
-        @pipelineClicked="onPipelineClick($event, pipeline, index)"
-        @downstreamHovered="onDownstreamHovered"
-        @pipelineExpandToggle="onPipelineExpandToggle"
-      />
+      <li v-for="(pipeline, index) in linkedPipelines" :key="pipeline.id">
+        <linked-pipeline
+          :class="{
+            active: pipeline.isExpanded,
+            'left-connector': pipeline.isExpanded && graphPosition === 'left',
+          }"
+          :pipeline="pipeline"
+          :column-title="columnTitle"
+          :project-id="projectId"
+          :type="type"
+          :expanded="isExpanded"
+          @pipelineClicked="onPipelineClick($event, pipeline, index)"
+          @downstreamHovered="onDownstreamHovered"
+          @pipelineExpandToggle="onPipelineExpandToggle"
+        />
+      </li>
     </ul>
   </div>
 </template>

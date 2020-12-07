@@ -6,10 +6,10 @@ import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import appComponent from '~/frequent_items/components/app.vue';
 import eventHub from '~/frequent_items/event_hub';
-import store from '~/frequent_items/store';
 import { FREQUENT_ITEMS, HOUR_IN_MS } from '~/frequent_items/constants';
 import { getTopFrequentItems } from '~/frequent_items/utils';
 import { currentSession, mockFrequentProjects, mockSearchedProjects } from '../mock_data';
+import { createStore } from '~/frequent_items/store';
 
 useLocalStorageSpy();
 
@@ -18,6 +18,7 @@ const createComponentWithStore = (namespace = 'projects') => {
   session = currentSession[namespace];
   gon.api_version = session.apiVersion;
   const Component = Vue.extend(appComponent);
+  const store = createStore();
 
   return mountComponentWithStore(Component, {
     store,

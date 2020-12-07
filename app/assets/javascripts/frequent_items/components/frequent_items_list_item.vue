@@ -1,13 +1,18 @@
 <script>
 /* eslint-disable vue/require-default-prop, vue/no-v-html */
+import { mapState } from 'vuex';
 import Identicon from '~/vue_shared/components/identicon.vue';
 import highlight from '~/lib/utils/highlight';
 import { truncateNamespace } from '~/lib/utils/text_utility';
+import Tracking from '~/tracking';
+
+const trackingMixin = Tracking.mixin();
 
 export default {
   components: {
     Identicon,
   },
+  mixins: [trackingMixin],
   props: {
     matcher: {
       type: String,
@@ -37,6 +42,7 @@ export default {
     },
   },
   computed: {
+    ...mapState(['dropdownType']),
     truncatedNamespace() {
       return truncateNamespace(this.namespace);
     },
@@ -49,7 +55,11 @@ export default {
 
 <template>
   <li class="frequent-items-list-item-container">
-    <a :href="webUrl" class="clearfix">
+    <a
+      :href="webUrl"
+      class="clearfix"
+      @click="track('click_link', { label: `${dropdownType}_dropdown_frequent_items_list_item` })"
+    >
       <div
         ref="frequentItemsItemAvatarContainer"
         class="frequent-items-item-avatar-container avatar-container rect-avatar s32"

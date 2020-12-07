@@ -32,10 +32,10 @@ Rack Attack disabled.
 ## Behavior
 
 If set up as described in the [Settings](#settings) section below, two behaviors
-will be enabled:
+are enabled:
 
-- Protected paths will be throttled.
-- Failed authentications for Git and container registry requests will trigger a temporary IP ban.
+- Protected paths are throttled.
+- Failed authentications for Git and container registry requests trigger a temporary IP ban.
 
 ### Protected paths throttle
 
@@ -119,7 +119,7 @@ The following settings can be configured:
   specified time.
 - `findtime`: The maximum amount of time that failed requests can count against an IP
   before it's blacklisted (in seconds).
-- `bantime`: The total amount of time that a blacklisted IP will be blocked (in
+- `bantime`: The total amount of time that a blacklisted IP is blocked (in
   seconds).
 
 **Installations from source**
@@ -142,8 +142,8 @@ taken in order to enable protection for your GitLab instance:
 
 If you want more restrictive/relaxed throttle rules, edit
 `config/initializers/rack_attack.rb` and change the `limit` or `period` values.
-For example, more relaxed throttle rules will be if you set
-`limit: 3` and `period: 1.seconds` (this will allow 3 requests per second).
+For example, you can set more relaxed throttle rules with
+`limit: 3` and `period: 1.seconds`, allowing 3 requests per second.
 You can also add other paths to the protected list by adding to `paths_to_be_protected`
 variable. If you change any of these settings you must restart your
 GitLab instance.
@@ -185,10 +185,10 @@ In case you want to remove a blocked IP, follow these steps:
 ### Rack attack is blacklisting the load balancer
 
 Rack Attack may block your load balancer if all traffic appears to come from
-the load balancer. In that case, you will need to:
+the load balancer. In that case, you must:
 
 1. [Configure `nginx[real_ip_trusted_addresses]`](https://docs.gitlab.com/omnibus/settings/nginx.html#configuring-gitlab-trusted_proxies-and-the-nginx-real_ip-module).
-   This will keep users' IPs from being listed as the load balancer IPs.
+   This keeps users' IPs from being listed as the load balancer IPs.
 1. Whitelist the load balancer's IP address(es) in the Rack Attack [settings](#settings).
 1. Reconfigure GitLab:
 

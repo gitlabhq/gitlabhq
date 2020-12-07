@@ -1,0 +1,17 @@
+fragment LinkedPipelineData on Pipeline {
+  id
+  iid
+  path
+  status: detailedStatus {
+    group
+    label
+    icon
+  }
+  sourceJob {
+    name
+  }
+  project {
+    name
+    fullPath
+  }
+}
