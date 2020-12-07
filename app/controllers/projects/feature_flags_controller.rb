@@ -77,7 +77,7 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
       end
     else
       respond_to do |format|
-        format.json { render_error_json(result[:message]) }
+        format.json { render_error_json(result[:message], result[:http_status]) }
       end
     end
   end
@@ -167,8 +167,8 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
     render json: feature_flag_json(feature_flag), status: :ok
   end
 
-  def render_error_json(messages)
+  def render_error_json(messages, status = :bad_request)
     render json: { message: messages },
-           status: :bad_request
+           status: status
   end
 end

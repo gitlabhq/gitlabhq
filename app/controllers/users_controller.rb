@@ -19,7 +19,7 @@ class UsersController < ApplicationController
   prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
   before_action :user, except: [:exists, :suggests]
   before_action :authorize_read_user_profile!,
-                only: [:calendar, :calendar_activities, :groups, :projects, :contributed_projects, :starred_projects, :snippets]
+                only: [:calendar, :calendar_activities, :groups, :projects, :contributed, :starred, :snippets]
 
   feature_category :users
 
