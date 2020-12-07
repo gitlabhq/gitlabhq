@@ -1,5 +1,0 @@
----
-title: Ensure group and project memberships are not leaked via API for users with private profiles
-merge_request:
-author:
-type: security

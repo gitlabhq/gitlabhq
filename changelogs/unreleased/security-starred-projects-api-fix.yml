@@ -1,5 +1,0 @@
----
-title: Do not expose starred projects of users with private profile via API
-merge_request:
-author:
-type: security
