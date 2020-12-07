@@ -18,6 +18,7 @@
 #     personal: boolean
 #     search: string
 #     search_namespaces: boolean
+#     minimum_search_length: int
 #     non_archived: boolean
 #     archived: 'only' or boolean
 #     min_access_level: integer
@@ -177,6 +178,9 @@ class ProjectsFinder < UnionFinder
 
   def by_search(items)
     params[:search] ||= params[:name]
+
+    return items.none if params[:search].present? && params[:minimum_search_length].present? && params[:search].length < params[:minimum_search_length].to_i
+
     items.optionally_search(params[:search], include_namespace: params[:search_namespaces].present?)
   end
 

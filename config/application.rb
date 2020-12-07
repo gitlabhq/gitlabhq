@@ -135,6 +135,7 @@ module Gitlab
       hook
       import_url
       elasticsearch_url
+      search
       otp_attempt
       sentry_dsn
       trace

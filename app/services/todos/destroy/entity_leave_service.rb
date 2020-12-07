@@ -24,7 +24,7 @@ module Todos
         # if at least reporter, all entities including confidential issues can be accessed
         return if user_has_reporter_access?
 
-        remove_confidential_issue_todos
+        remove_confidential_resource_todos
 
         if entity.private?
           remove_project_todos
@@ -43,7 +43,7 @@ module Todos
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
-      def remove_confidential_issue_todos
+      def remove_confidential_resource_todos
         Todo.where(
           target_id: confidential_issues.select(:id), target_type: Issue.name, user_id: user.id
         ).delete_all
@@ -147,3 +147,5 @@ module Todos
     end
   end
 end
+
+Todos::Destroy::EntityLeaveService.prepend_if_ee('EE::Todos::Destroy::EntityLeaveService')

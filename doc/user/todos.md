@@ -64,7 +64,7 @@ To-do triggers aren't affected by [GitLab notification email settings](profile/n
 
 NOTE: **Note:**
 When a user no longer has access to a resource related to a to-do (such as an
-issue, merge request, project, or group), for security reasons GitLab deletes
+issue, merge request, epic, project, or group), for security reasons GitLab deletes
 any related to-do items within the next hour. Deletion is delayed to prevent
 data loss, in the case where a user's access is accidentally revoked.
 
