@@ -2,6 +2,22 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.6.2 (2020-12-07)
+
+### Security (10 changes)
+
+- Validate zoom links to start with https only. !1055
+- Require at least 3 characters when searching for project in the Explore page.
+- Do not show emails of users in confirmation page.
+- Forbid setting a gitlabUserList strategy to a list from another project.
+- Fix mermaid resource consumption in GFM fields.
+- Ensure group and project memberships are not leaked via API for users with private profiles.
+- GraphQL User: do not expose email if set to private.
+- Filter search parameter to prevent data leaks.
+- Do not expose starred projects of users with private profile via API.
+- Do not show starred & contributed projects of users with private profile.
+
+
 ## 13.6.1 (2020-11-23)
 
 ### Fixed (5 changes)
@@ -527,6 +543,22 @@ entry.
 - Update Workhorse version to 8.54.0. !47625
 - Update GitLab Shell to v13.13.0. !47875
 - Change wording on the project remove fork page. !47878
+
+
+## 13.5.5 (2020-12-07)
+
+### Security (10 changes)
+
+- Validate zoom links to start with https only. !1055
+- Require at least 3 characters when searching for project in the Explore page.
+- Do not show emails of users in confirmation page.
+- Forbid setting a gitlabUserList strategy to a list from another project.
+- Fix mermaid resource consumption in GFM fields.
+- Ensure group and project memberships are not leaked via API for users with private profiles.
+- GraphQL User: do not expose email if set to private.
+- Filter search parameter to prevent data leaks.
+- Do not expose starred projects of users with private profile via API.
+- Do not show starred & contributed projects of users with private profile.
 
 
 ## 13.5.4 (2020-11-13)
@@ -1146,6 +1178,22 @@ entry.
 - Fix documentation link, spacing, and error handling in alert integrations list. !45304
 - Replace tooltip with GLTooltip in epic sidebar datepicker. !45392
 - Bump cluster applications CI template. !45472
+
+
+## 13.4.7 (2020-12-07)
+
+### Security (10 changes)
+
+- Validate zoom links to start with https only. !1055
+- Require at least 3 characters when searching for project in the Explore page.
+- Do not show emails of users in confirmation page.
+- Forbid setting a gitlabUserList strategy to a list from another project.
+- Fix mermaid resource consumption in GFM fields.
+- Ensure group and project memberships are not leaked via API for users with private profiles.
+- GraphQL User: do not expose email if set to private.
+- Filter search parameter to prevent data leaks.
+- Do not expose starred projects of users with private profile via API.
+- Do not show starred & contributed projects of users with private profile.
 
 
 ## 13.4.6 (2020-11-03)

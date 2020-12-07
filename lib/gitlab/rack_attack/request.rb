@@ -7,8 +7,15 @@ module Gitlab
         !(authenticated_user_id([:api, :rss, :ics]) || authenticated_runner_id)
       end
 
-      def authenticated_user_id(request_formats)
-        request_authenticator.user(request_formats)&.id
+      def throttled_user_id(request_formats)
+        user_id = authenticated_user_id(request_formats)
+
+        if Gitlab::RackAttack.user_allowlist.include?(user_id)
+          Gitlab::Instrumentation::Throttle.safelist = 'throttle_user_allowlist'
+          return
+        end
+
+        user_id
       end
 
       def authenticated_runner_id
@@ -48,6 +55,10 @@ module Gitlab
       end
 
       private
+
+      def authenticated_user_id(request_formats)
+        request_authenticator.user(request_formats)&.id
+      end
 
       def request_authenticator
         @request_authenticator ||= Gitlab::Auth::RequestAuthenticator.new(self)

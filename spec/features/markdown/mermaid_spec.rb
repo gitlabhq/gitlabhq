@@ -19,6 +19,9 @@ RSpec.describe 'Mermaid rendering', :js do
 
     visit project_issue_path(project, issue)
 
+    wait_for_requests
+    wait_for_mermaid
+
     %w[A B C D].each do |label|
       expect(page).to have_selector('svg text', text: label)
     end
@@ -39,6 +42,7 @@ RSpec.describe 'Mermaid rendering', :js do
     visit project_issue_path(project, issue)
 
     wait_for_requests
+    wait_for_mermaid
 
     expected = '<text style=""><tspan xml:space="preserve" dy="1em" x="1">Line 1</tspan><tspan xml:space="preserve" dy="1em" x="1">Line 2</tspan></text>'
     expect(page.html.scan(expected).count).to be(4)
@@ -64,6 +68,9 @@ RSpec.describe 'Mermaid rendering', :js do
     issue = create(:issue, project: project, description: description)
 
     visit project_issue_path(project, issue)
+
+    wait_for_requests
+    wait_for_mermaid
 
     page.within('.description') do
       expect(page).to have_selector('svg')
@@ -92,6 +99,9 @@ RSpec.describe 'Mermaid rendering', :js do
 
     visit project_issue_path(project, issue)
 
+    wait_for_requests
+    wait_for_mermaid
+
     page.within('.description') do
       page.find('summary').click
       svg = page.find('svg.mermaid')
@@ -117,6 +127,9 @@ RSpec.describe 'Mermaid rendering', :js do
     issue = create(:issue, project: project, description: description)
 
     visit project_issue_path(project, issue)
+
+    wait_for_requests
+    wait_for_mermaid
 
     expect(page).to have_css('svg.mermaid[style*="max-width"][width="100%"]')
   end
@@ -147,6 +160,7 @@ RSpec.describe 'Mermaid rendering', :js do
     end
 
     wait_for_requests
+    wait_for_mermaid
 
     find('.js-lazy-render-mermaid').click
 
@@ -156,4 +170,55 @@ RSpec.describe 'Mermaid rendering', :js do
       expect(page).not_to have_selector('.js-lazy-render-mermaid-container')
     end
   end
+
+  it 'does not render more than 50 mermaid blocks', :js, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/234081' } do
+    graph_edges = "A-->B;B-->A;"
+
+    description = <<~MERMAID
+    ```mermaid
+    graph LR
+    #{graph_edges}
+    ```
+    MERMAID
+
+    description *= 51
+
+    project = create(:project, :public)
+
+    issue = create(:issue, project: project, description: description)
+
+    visit project_issue_path(project, issue)
+
+    wait_for_requests
+    wait_for_mermaid
+
+    page.within('.description') do
+      expect(page).to have_selector('svg')
+
+      expect(page).to have_selector('.lazy-alert-shown')
+
+      expect(page).to have_selector('.js-lazy-render-mermaid-container')
+    end
+  end
+end
+
+def wait_for_mermaid
+  run_idle_callback = <<~RUN_IDLE_CALLBACK
+  window.requestIdleCallback(() => {
+    window.__CAPYBARA_IDLE_CALLBACK_EXEC__ = 1;
+  })
+  RUN_IDLE_CALLBACK
+
+  page.evaluate_script(run_idle_callback)
+
+  Timeout.timeout(Capybara.default_max_wait_time) do
+    loop until finished_rendering?
+  end
+end
+
+def finished_rendering?
+  check_idle_callback = <<~CHECK_IDLE_CALLBACK
+    window.__CAPYBARA_IDLE_CALLBACK_EXEC__
+  CHECK_IDLE_CALLBACK
+  page.evaluate_script(check_idle_callback) == 1
 end

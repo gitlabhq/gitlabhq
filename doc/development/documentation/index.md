@@ -82,7 +82,7 @@ All values are treated as strings and are only used for the
 Each page should ideally have metadata related to the stage and group it
 belongs to, as well as an information block as described below:
 
-- `stage`: The [Stage](https://about.gitlab.com/handbook/product/product-categories/#devops-stages)
+- `stage`: The [Stage](https://about.gitlab.com/handbook/product/categories/#devops-stages)
   to which the majority of the page's content belongs.
 - `group`: The [Group](https://about.gitlab.com/company/team/structure/#product-groups)
   to which the majority of the page's content belongs.

@@ -1,0 +1,5 @@
+---
+title: Remove orphan service hooks
+merge_request: 48263
+author:
+type: fixed

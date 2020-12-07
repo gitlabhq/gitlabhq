@@ -422,7 +422,7 @@ it displays its help message (if `cli` has been used).
 
 With the exception of [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner),
 which publishes its own binaries, our Go binaries are created by projects
-managed by the [Distribution group](https://about.gitlab.com/handbook/product/product-categories/#distribution-group).
+managed by the [Distribution group](https://about.gitlab.com/handbook/product/categories/#distribution-group).
 
 The [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab) project creates a
 single, monolithic operating system package containing all the binaries, while

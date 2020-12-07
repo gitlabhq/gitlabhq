@@ -75,5 +75,22 @@ RSpec.describe Gitlab::RackAttack, :aggregate_failures do
         expect(fake_rack_attack).to have_received(:throttle).with(throttle.to_s, throttles[throttle])
       end
     end
+
+    context 'user allowlist' do
+      subject { described_class.user_allowlist }
+
+      it 'is empty' do
+        described_class.configure(fake_rack_attack)
+
+        expect(subject).to be_empty
+      end
+
+      it 'reflects GITLAB_THROTTLE_USER_ALLOWLIST' do
+        stub_env('GITLAB_THROTTLE_USER_ALLOWLIST', '123,456')
+        described_class.configure(fake_rack_attack)
+
+        expect(subject).to contain_exactly(123, 456)
+      end
+    end
   end
 end

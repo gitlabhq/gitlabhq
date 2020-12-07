@@ -59,6 +59,29 @@ are marked with `"throttle_safelist":"throttle_bypass_header"` in
 To disable the bypass mechanism, make sure the environment variable
 `GITLAB_THROTTLE_BYPASS_HEADER` is unset or empty.
 
+## Allowing specific users to bypass authenticated request rate limiting
+
+Similarly to the bypass header described above, it is possible to allow
+a certain set of users to bypass the rate limiter. This only applies
+to authenticated requests: with unauthenticated requests, by definition
+GitLab does not know who the user is.
+
+The allowlist is configured as a comma-separated list of user IDs in
+the `GITLAB_THROTTLE_USER_ALLOWLIST` environment variable. If you want
+users 1, 53 and 217 to bypass the authenticated request rate limiter,
+the allowlist configuration would be `1,53,217`.
+
+- For [Omnibus](https://docs.gitlab.com/omnibus/settings/environment-variables.html),
+  set `'GITLAB_THROTTLE_USER_ALLOWLIST' => '1,53,217'` in `gitlab_rails['env']`.
+- For source installations, set `export GITLAB_THROTTLE_USER_ALLOWLIST=1,53,217`
+  in `/etc/default/gitlab`.
+
+Requests that bypassed the rate limiter because of the user allowlist
+are marked with `"throttle_safelist":"throttle_user_allowlist"` in
+[`production_json.log`](../../../administration/logs.md#production_jsonlog).
+
+At application startup, the allowlist is logged in [`auth.log`](../../../administration/logs.md#authlog).
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

@@ -1,0 +1,5 @@
+---
+title: Add user ID based allowlist for Rack::Attack
+merge_request: 49127
+author:
+type: changed

@@ -252,6 +252,27 @@ module Gitlab
         end
       end
 
+      context 'with xrefs' do
+        it 'preserves ids' do
+          input = <<~ADOC
+            Learn how to xref:cross-references[use cross references].
+
+            [[cross-references]]A link to another location within an AsciiDoc document or between AsciiDoc documents is called a cross reference (also referred to as an xref).
+          ADOC
+
+          output = <<~HTML
+            <div>
+            <p>Learn how to <a href="#cross-references">use cross references</a>.</p>
+            </div>
+            <div>
+            <p><a id="user-content-cross-references"></a>A link to another location within an AsciiDoc document or between AsciiDoc documents is called a cross reference (also referred to as an xref).</p>
+            </div>
+          HTML
+
+          expect(render(input, context)).to include(output.strip)
+        end
+      end
+
       context 'with checklist' do
         it 'preserves classes' do
           input = <<~ADOC

@@ -19,6 +19,12 @@ module Gitlab
         %(<code#{id_attribute(node)} data-math-style="inline">#{node.text}</code>)
       end
 
+      def convert_inline_anchor(node)
+        node.id = "user-content-#{node.id}" if node.id && !node.id.start_with?('user-content-')
+
+        super(node)
+      end
+
       private
 
       def id_attribute(node)

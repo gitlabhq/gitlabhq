@@ -69304,7 +69304,7 @@
             },
             {
               "name": "email",
-              "description": "User email",
+              "description": "User email. Deprecated in 13.7: Use public_email",
               "args": [
 
               ],
@@ -69313,8 +69313,8 @@
                 "name": "String",
                 "ofType": null
               },
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use public_email. Deprecated in 13.7"
             },
             {
               "name": "groupCount",

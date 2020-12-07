@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Each Sidekiq worker, controller action, or API endpoint
 must declare a `feature_category` attribute. This attribute maps each
 of these to a [feature
-category](https://about.gitlab.com/handbook/product/product-categories/). This
+category](https://about.gitlab.com/handbook/product/categories/). This
 is done for error budgeting, alert routing, and team attribution.
 
 The list of feature categories can be found in the file `config/feature_categories.yml`.

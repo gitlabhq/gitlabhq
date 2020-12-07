@@ -23823,9 +23823,9 @@ type User {
   avatarUrl: String
 
   """
-  User email
+  User email. Deprecated in 13.7: Use public_email
   """
-  email: String
+  email: String @deprecated(reason: "Use public_email. Deprecated in 13.7")
 
   """
   Group count for the user. Available only when feature flag `user_group_counts` is enabled
