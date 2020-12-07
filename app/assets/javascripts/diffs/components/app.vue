@@ -283,10 +283,7 @@ export default {
   },
   created() {
     this.adjustView();
-
-    notesEventHub.$once('fetchDiffData', this.fetchData);
-    notesEventHub.$on('refetchDiffData', this.refetchDiffData);
-    eventHub.$on(EVT_VIEW_FILE_BY_FILE, this.fileByFileListener);
+    this.subscribeToEvents();
 
     this.CENTERED_LIMITED_CONTAINER_CLASSES = CENTERED_LIMITED_CONTAINER_CLASSES;
 
@@ -307,11 +304,7 @@ export default {
   },
   beforeDestroy() {
     diffsApp.deinstrument();
-
-    eventHub.$off(EVT_VIEW_FILE_BY_FILE, this.fileByFileListener);
-    notesEventHub.$off('refetchDiffData', this.refetchDiffData);
-    notesEventHub.$off('fetchDiffData', this.fetchData);
-
+    this.unsubscribeFromEvents();
     this.removeEventListeners();
   },
   methods: {
@@ -331,6 +324,16 @@ export default {
       'navigateToDiffFileIndex',
       'setFileByFile',
     ]),
+    subscribeToEvents() {
+      notesEventHub.$once('fetchDiffData', this.fetchData);
+      notesEventHub.$on('refetchDiffData', this.refetchDiffData);
+      eventHub.$on(EVT_VIEW_FILE_BY_FILE, this.fileByFileListener);
+    },
+    unsubscribeFromEvents() {
+      eventHub.$off(EVT_VIEW_FILE_BY_FILE, this.fileByFileListener);
+      notesEventHub.$off('refetchDiffData', this.refetchDiffData);
+      notesEventHub.$off('fetchDiffData', this.fetchData);
+    },
     fileByFileListener({ setting } = {}) {
       this.setFileByFile({ fileByFile: setting });
     },

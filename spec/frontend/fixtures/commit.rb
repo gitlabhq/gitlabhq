@@ -6,14 +6,12 @@ RSpec.describe 'Commit (JavaScript fixtures)' do
   include JavaScriptFixturesHelpers
 
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user)    { create(:user) }
+  let_it_be(:user)    { project.owner }
   let_it_be(:commit)  { project.commit("master") }
 
   before(:all) do
     clean_frontend_fixtures('commit/')
     clean_frontend_fixtures('api/commits/')
-
-    project.add_maintainer(user)
   end
 
   before do

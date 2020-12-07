@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe Projects::JobsController, '(JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
 
-  let(:admin) { create(:admin) }
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
   let(:project) { create(:project, :repository, namespace: namespace, path: 'builds-project') }
+  let(:user) { project.owner }
   let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.id) }
   let!(:build_with_artifacts) { create(:ci_build, :success, :artifacts, :trace_artifact, pipeline: pipeline, stage: 'test', artifacts_expire_at: Time.now + 18.months) }
   let!(:failed_build) { create(:ci_build, :failed, pipeline: pipeline, stage: 'build') }
@@ -26,7 +26,7 @@ RSpec.describe Projects::JobsController, '(JavaScript fixtures)', type: :control
   end
 
   before do
-    sign_in(admin)
+    sign_in(user)
   end
 
   after do

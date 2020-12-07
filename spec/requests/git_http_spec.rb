@@ -795,12 +795,24 @@ RSpec.describe 'Git HTTP requests' do
             context 'administrator' do
               let(:user) { create(:admin) }
 
-              it_behaves_like 'can download code only'
+              context 'when admin mode is enabled', :enable_admin_mode do
+                it_behaves_like 'can download code only'
 
-              it 'downloads from other project get status 403' do
-                clone_get "#{other_project.full_path}.git", user: 'gitlab-ci-token', password: build.token
+                it 'downloads from other project get status 403' do
+                  clone_get "#{other_project.full_path}.git", user: 'gitlab-ci-token', password: build.token
 
-                expect(response).to have_gitlab_http_status(:forbidden)
+                  expect(response).to have_gitlab_http_status(:forbidden)
+                end
+              end
+
+              context 'when admin mode is disabled' do
+                it_behaves_like 'can download code only'
+
+                it 'downloads from other project get status 404' do
+                  clone_get "#{other_project.full_path}.git", user: 'gitlab-ci-token', password: build.token
+
+                  expect(response).to have_gitlab_http_status(:not_found)
+                end
               end
             end
 

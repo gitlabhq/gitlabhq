@@ -341,7 +341,8 @@
 }
 
 .droplab-dropdown {
-  .dropdown-toggle > i {
+  .dropdown-toggle > i,
+  .dropdown-toggle > svg {
     pointer-events: none;
   }
 

@@ -61,7 +61,7 @@ apifuzzer_fuzz:
         - if: $API_FUZZING_DISABLED_FOR_DEFAULT_BRANCH &&
                 $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
           when: never
-        - if: $GITLAB_FEATURES =~ /\bapi_fuzzing\b/
+        - if: $CI_COMMIT_BRANCH && $GITLAB_FEATURES =~ /\bapi_fuzzing\b/
     script:
         #
         # Validate options
@@ -102,7 +102,7 @@ apifuzzer_fuzz_dnd:
         - if: $API_FUZZING_DISABLED_FOR_DEFAULT_BRANCH &&
                 $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
           when: never
-        - if: $GITLAB_FEATURES =~ /\bapi_fuzzing\b/
+        - if: $CI_COMMIT_BRANCH && $GITLAB_FEATURES =~ /\bapi_fuzzing\b/
     services:
         - docker:19.03.12-dind
     script:

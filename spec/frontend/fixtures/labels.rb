@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Labels (JavaScript fixtures)' do
   include JavaScriptFixturesHelpers
 
-  let(:admin) { create(:admin) }
+  let(:user) { create(:user) }
   let(:group) { create(:group, name: 'frontend-fixtures-group' )}
   let(:project) { create(:project_empty_repo, namespace: group, path: 'labels-project') }
 
@@ -29,8 +29,6 @@ RSpec.describe 'Labels (JavaScript fixtures)' do
     include JavaScriptFixturesHelpers
     include ApiHelpers
 
-    let(:user) { create(:user) }
-
     before do
       group.add_owner(user)
     end
@@ -46,7 +44,8 @@ RSpec.describe 'Labels (JavaScript fixtures)' do
     render_views
 
     before do
-      sign_in(admin)
+      group.add_owner(user)
+      sign_in(user)
     end
 
     it 'labels/project_labels.json' do

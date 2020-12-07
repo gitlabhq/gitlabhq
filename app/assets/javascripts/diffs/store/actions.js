@@ -114,7 +114,8 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
         }
 
         if (
-          (diffsGradualLoad && totalLoaded === pagination.total_pages) ||
+          (diffsGradualLoad &&
+            (totalLoaded === pagination.total_pages || pagination.total_pages === null)) ||
           (!diffsGradualLoad && !pagination.next_page)
         ) {
           commit(types.SET_RETRIEVING_BATCHES, false);

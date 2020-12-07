@@ -5,7 +5,7 @@
 
   - if @note.can_be_discussion_note?
     = button_tag type: 'button', class: 'btn btn-nr dropdown-toggle btn-success js-note-new-discussion js-disable-on-submit', data: { 'dropdown-trigger' => '#resolvable-comment-menu' }, 'aria-label' => _('Open comment type dropdown') do
-      = icon('caret-down', class: 'toggle-icon')
+      = sprite_icon('chevron-down')
 
     %ul#resolvable-comment-menu.dropdown-menu.dropdown-open-top{ data: { dropdown: true } }
       %li#comment.droplab-item-selected{ data: { value: '', 'submit-text' => _('Comment'), 'close-text' => _("Comment & close %{noteable_name}") % { noteable_name: noteable_name }, 'reopen-text' => _("Comment & reopen %{noteable_name}") % { noteable_name: noteable_name } } }

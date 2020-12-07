@@ -20,8 +20,8 @@
             %button.dropdown-new.btn.btn-default.btn-icon.gl-button.has-tooltip.notifications-btn.text-left#notifications-button{ type: "button", title: button_title, class: "#{btn_class}", "aria-label" => aria_label, data: { container: "body", toggle: "modal", target: "#" + notifications_menu_identifier("modal", notification_setting), display: 'static' } }
               = sprite_icon("notifications", css_class: "js-notification-loading")
               = notification_title(notification_setting.level)
-            %button.btn.dropdown-toggle.d-flex{ data: { toggle: "dropdown", target: notifications_menu_identifier("dropdown", notification_setting), flip: "false" } }
-              = icon('caret-down')
+            %button.btn.dropdown-toggle.gl-display-flex.gl-align-items-center{ data: { toggle: "dropdown", target: notifications_menu_identifier("dropdown", notification_setting), flip: "false" } }
+              = sprite_icon('chevron-down')
               .sr-only Toggle dropdown
           - else
             %button.dropdown-new.btn.btn-default.btn-icon.gl-button.has-tooltip.notifications-btn#notifications-button{ type: "button", title: button_title, class: "#{btn_class}", "aria-label" => aria_label, data: { container: "body", toggle: "dropdown", target: notifications_menu_identifier("dropdown", notification_setting), flip: "false" } }
@@ -29,7 +29,7 @@
                 = sprite_icon("notifications", css_class: "js-notification-loading")
                 = notification_title(notification_setting.level)
               .float-right
-                = icon("caret-down")
+                = sprite_icon("chevron-down")
 
           = render "shared/notifications/notification_dropdown", notification_setting: notification_setting
 

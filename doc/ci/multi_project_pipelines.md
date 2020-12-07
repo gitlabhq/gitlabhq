@@ -19,9 +19,10 @@ but also across projects with multi-project pipelines.
 Multi-project pipelines are useful for larger products that require cross-project inter-dependencies, such as those
 adopting a [microservices architecture](https://about.gitlab.com/blog/2016/08/16/trends-in-version-control-land-microservices/).
 
-For a demonstration of how cross-functional development teams can use cross-pipeline
-triggering to trigger multiple pipelines for different microservices projects, see
-[Cross-project Pipeline Triggering and Visualization](https://about.gitlab.com/handbook/marketing/product-marketing/demo/#cross-project-pipeline-triggering-and-visualization-may-2019---1110).
+Cross-functional development teams can use cross-pipeline
+triggering to trigger multiple pipelines for different microservices projects. Learn more
+in the [Cross-project Pipeline Triggering and Visualization demo](https://about.gitlab.com/learn/)
+at GitLab@learn, in the Continuous Integration (CI) section.
 
 Additionally, it's possible to visualize the entire pipeline, including all cross-project
 inter-dependencies. **(PREMIUM)**

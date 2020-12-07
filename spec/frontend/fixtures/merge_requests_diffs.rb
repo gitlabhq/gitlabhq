@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe Projects::MergeRequests::DiffsController, '(JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
 
-  let(:admin) { create(:admin) }
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
   let(:project) { create(:project, :repository, namespace: namespace, path: 'merge-requests-project') }
+  let(:user) { project.owner }
   let(:merge_request) { create(:merge_request, :with_diffs, source_project: project, target_project: project, description: '- [ ] Task List Item') }
   let(:path) { "files/ruby/popen.rb" }
   let(:position) do
@@ -25,7 +25,7 @@ RSpec.describe Projects::MergeRequests::DiffsController, '(JavaScript fixtures)'
   end
 
   before do
-    sign_in(admin)
+    sign_in(user)
   end
 
   after do

@@ -5,19 +5,19 @@ require 'spec_helper'
 RSpec.describe 'Groups (JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
 
-  let(:admin) { create(:admin) }
+  let(:user) { create(:user) }
   let(:group) { create(:group, name: 'frontend-fixtures-group', runners_token: 'runnerstoken:intabulasreferre')}
-
-  render_views
 
   before(:all) do
     clean_frontend_fixtures('groups/')
   end
 
   before do
-    group.add_maintainer(admin)
-    sign_in(admin)
+    group.add_owner(user)
+    sign_in(user)
   end
+
+  render_views
 
   describe GroupsController, '(JavaScript fixtures)', type: :controller do
     it 'groups/edit.html' do

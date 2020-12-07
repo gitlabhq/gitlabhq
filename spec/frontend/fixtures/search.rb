@@ -7,7 +7,7 @@ RSpec.describe SearchController, '(JavaScript fixtures)', type: :controller do
 
   render_views
 
-  let_it_be(:user) { create(:admin) }
+  let_it_be(:user) { create(:user) }
 
   before(:all) do
     clean_frontend_fixtures('search/')
@@ -64,6 +64,10 @@ RSpec.describe SearchController, '(JavaScript fixtures)', type: :controller do
      total_count: 4,
      limit: 4,
      offset: 0)
+    end
+
+    before do
+      project.add_developer(user)
     end
 
     it 'search/blob_search_result.html' do

@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
 
-  let(:admin) { create(:admin) }
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
   let(:project) { create(:project, :repository, namespace: namespace, path: 'merge-requests-project') }
+  let(:user) { project.owner }
 
   # rubocop: disable Layout/TrailingWhitespace
   let(:description) do
@@ -55,7 +55,7 @@ RSpec.describe Projects::MergeRequestsController, '(JavaScript fixtures)', type:
   end
 
   before do
-    sign_in(admin)
+    sign_in(user)
     allow(Discussion).to receive(:build_discussion_id).and_return(['discussionid:ceterumcenseo'])
   end
 
@@ -64,7 +64,7 @@ RSpec.describe Projects::MergeRequestsController, '(JavaScript fixtures)', type:
   end
 
   it 'merge_requests/merge_request_of_current_user.html' do
-    merge_request.update(author: admin)
+    merge_request.update(author: user)
 
     render_merge_request(merge_request)
   end
@@ -76,19 +76,19 @@ RSpec.describe Projects::MergeRequestsController, '(JavaScript fixtures)', type:
   end
 
   it 'merge_requests/diff_comment.html' do
-    create(:diff_note_on_merge_request, project: project, author: admin, position: position, noteable: merge_request)
-    create(:note_on_merge_request, author: admin, project: project, noteable: merge_request)
+    create(:diff_note_on_merge_request, project: project, author: user, position: position, noteable: merge_request)
+    create(:note_on_merge_request, author: user, project: project, noteable: merge_request)
     render_merge_request(merge_request)
   end
 
   it 'merge_requests/diff_discussion.json' do
-    create(:diff_note_on_merge_request, project: project, author: admin, position: position, noteable: merge_request)
+    create(:diff_note_on_merge_request, project: project, author: user, position: position, noteable: merge_request)
     render_discussions_json(merge_request)
   end
 
   it 'merge_requests/resolved_diff_discussion.json' do
-    note = create(:discussion_note_on_merge_request, :resolved, project: project, author: admin, position: position, noteable: merge_request)
-    create(:system_note, project: project, author: admin, noteable: merge_request, discussion_id: note.discussion.id)
+    note = create(:discussion_note_on_merge_request, :resolved, project: project, author: user, position: position, noteable: merge_request)
+    create(:system_note, project: project, author: user, noteable: merge_request, discussion_id: note.discussion.id)
 
     render_discussions_json(merge_request)
   end
@@ -111,7 +111,7 @@ RSpec.describe Projects::MergeRequestsController, '(JavaScript fixtures)', type:
 
   context 'with mentions' do
     let(:group) { create(:group) }
-    let(:description) { "@#{group.full_path} @all @#{admin.username}" }
+    let(:description) { "@#{group.full_path} @all @#{user.username}" }
 
     it 'merge_requests/merge_request_with_mentions.html' do
       render_merge_request(merge_request)

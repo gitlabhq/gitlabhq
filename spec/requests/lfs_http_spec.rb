@@ -195,7 +195,7 @@ RSpec.describe 'Git LFS API and storage' do
         end
       end
 
-      context 'administrator' do
+      context 'administrator', :enable_admin_mode do
         let(:user) { create(:admin) }
         let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
@@ -453,7 +453,7 @@ RSpec.describe 'Git LFS API and storage' do
           end
         end
 
-        context 'administrator' do
+        context 'administrator', :enable_admin_mode do
           let(:user) { create(:admin) }
           let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 

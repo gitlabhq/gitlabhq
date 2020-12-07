@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe Projects::PipelinesController, '(JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
 
-  let(:admin) { create(:admin) }
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
   let(:project) { create(:project, :repository, namespace: namespace, path: 'pipelines-project') }
   let(:commit) { create(:commit, project: project) }
@@ -22,7 +21,7 @@ RSpec.describe Projects::PipelinesController, '(JavaScript fixtures)', type: :co
   end
 
   before do
-    sign_in(admin)
+    sign_in(user)
   end
 
   it 'pipelines/pipelines.json' do

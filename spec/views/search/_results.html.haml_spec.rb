@@ -54,11 +54,22 @@ RSpec.describe 'search/_results' do
         let(:scope) { search_scope }
         let(:search_objects) { Gitlab::ProjectSearchResults.new(user, '*', project: project).objects(scope) }
 
-        it 'renders the click text event tracking attributes' do
-          render
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it 'renders the click text event tracking attributes' do
+            render
 
-          expect(rendered).to have_selector('[data-track-event=click_text]')
-          expect(rendered).to have_selector('[data-track-property=search_result]')
+            expect(rendered).to have_selector('[data-track-event=click_text]')
+            expect(rendered).to have_selector('[data-track-property=search_result]')
+          end
+        end
+
+        context 'when admin mode is disabled' do
+          it 'does not render the click text event tracking attributes' do
+            render
+
+            expect(rendered).not_to have_selector('[data-track-event=click_text]')
+            expect(rendered).not_to have_selector('[data-track-property=search_result]')
+          end
         end
 
         it 'does render the sidebar' do
@@ -74,11 +85,22 @@ RSpec.describe 'search/_results' do
         let(:scope) { search_scope }
         let(:search_objects) { Gitlab::ProjectSearchResults.new(user, '*', project: project).objects(scope) }
 
-        it 'renders the click text event tracking attributes' do
-          render
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it 'renders the click text event tracking attributes' do
+            render
 
-          expect(rendered).to have_selector('[data-track-event=click_text]')
-          expect(rendered).to have_selector('[data-track-property=search_result]')
+            expect(rendered).to have_selector('[data-track-event=click_text]')
+            expect(rendered).to have_selector('[data-track-property=search_result]')
+          end
+        end
+
+        context 'when admin mode is disabled' do
+          it 'does not render the click text event tracking attributes' do
+            render
+
+            expect(rendered).not_to have_selector('[data-track-event=click_text]')
+            expect(rendered).not_to have_selector('[data-track-property=search_result]')
+          end
         end
 
         it 'does not render the sidebar' do
