@@ -241,6 +241,10 @@ Unlike other API endpoints, billable members is updated once per day at 12:00 UT
 
 This function takes [pagination](README.md#pagination) parameters `page` and `per_page` to restrict the list of users.
 
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262875) in GitLab 13.7, the `search` and
+`sort` parameters allow you to search for billable group members by name and sort the results,
+respectively.
+
 ```plaintext
 GET /groups/:id/billable_members
 ```
@@ -248,6 +252,21 @@ GET /groups/:id/billable_members
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `search`  | string         | no  | A query string to search for group members by name, username, or email. |
+| `sort`    | string         | no  | A query string containing parameters that specify the sort attribute and order. See supported values below.|
+
+The supported values for the `sort` attribute are:
+
+| Value               | Description              |
+| ------------------- | ------------------------ |
+| `access_level_asc`  | Access level, ascending  |
+| `access_level_desc` | Access level, descending |
+| `last_joined`       | Last joined              |
+| `name_asc`          | Name, ascending          |
+| `name_desc`         | Name, descending         |
+| `oldest_joined`     | Oldest joined            |
+| `oldest_sign_in`    | Oldest sign in           |
+| `recent_sign_in`    | Recent sign in           |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/billable_members"
