@@ -591,13 +591,7 @@ class User < ApplicationRecord
 
       sanitized_order_sql = Arel.sql(sanitize_sql_array([order, query: query]))
 
-      search_query = if Feature.enabled?(:user_search_secondary_email)
-                       search_with_secondary_emails(query)
-                     else
-                       search_without_secondary_emails(query)
-                     end
-
-      search_query.reorder(sanitized_order_sql, :name)
+      search_with_secondary_emails(query).reorder(sanitized_order_sql, :name)
     end
 
     # Limits the result set to users _not_ in the given query/list of IDs.

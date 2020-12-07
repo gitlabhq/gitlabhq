@@ -2078,32 +2078,16 @@ RSpec.describe User do
     end
 
     describe 'secondary email matching' do
-      context 'feature flag :user_search_secondary_email is enabled' do
-        it 'returns users with a matching secondary email' do
-          expect(described_class.search(email.email)).to include(email.user)
-        end
-
-        it 'does not return users with a matching part of secondary email' do
-          expect(described_class.search(email.email[1...-1])).to be_empty
-        end
-
-        it 'returns users with a matching secondary email regardless of the casing' do
-          expect(described_class.search(email.email.upcase)).to include(email.user)
-        end
+      it 'returns users with a matching secondary email' do
+        expect(described_class.search(email.email)).to include(email.user)
       end
 
-      context 'feature flag :user_search_secondary_email is disabled' do
-        before do
-          stub_feature_flags(user_search_secondary_email: false)
-        end
+      it 'does not return users with a matching part of secondary email' do
+        expect(described_class.search(email.email[1...-1])).to be_empty
+      end
 
-        it 'does not return users with a matching secondary email' do
-          expect(described_class.search(email.email)).not_to include(email.user)
-        end
-
-        it 'does not return users with a matching part of secondary email' do
-          expect(described_class.search(email.email[1...-1])).to be_empty
-        end
+      it 'returns users with a matching secondary email regardless of the casing' do
+        expect(described_class.search(email.email.upcase)).to include(email.user)
       end
     end
 
