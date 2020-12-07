@@ -7,6 +7,7 @@ import {
   GlDropdownDivider,
   GlDropdownSectionHeader,
   GlDropdownItem,
+  GlModalDirective,
 } from '@gitlab/ui';
 
 import httpStatusCodes from '~/lib/utils/http_status';
@@ -30,6 +31,9 @@ export default {
     GlDropdownDivider,
     GlDropdownSectionHeader,
     GlDropdownItem,
+  },
+  directives: {
+    GlModalDirective,
   },
   props: {
     currentBoard: {
@@ -313,6 +317,7 @@ export default {
 
           <gl-dropdown-item
             v-if="multipleIssueBoardsAvailable"
+            v-gl-modal-directive="'board-config-modal'"
             data-qa-selector="create_new_board_button"
             @click.prevent="showPage('new')"
           >
@@ -321,6 +326,7 @@ export default {
 
           <gl-dropdown-item
             v-if="showDelete"
+            v-gl-modal-directive="'board-config-modal'"
             class="text-danger js-delete-board"
             @click.prevent="showPage('delete')"
           >

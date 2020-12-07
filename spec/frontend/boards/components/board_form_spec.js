@@ -1,9 +1,9 @@
 import { mount } from '@vue/test-utils';
 
 import { TEST_HOST } from 'jest/helpers/test_constants';
+import { GlModal } from '@gitlab/ui';
 import boardsStore from '~/boards/stores/boards_store';
 import boardForm from '~/boards/components/board_form.vue';
-import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
 
 describe('board_form.vue', () => {
   let wrapper;
@@ -14,7 +14,7 @@ describe('board_form.vue', () => {
     labelsWebUrl: `${TEST_HOST}/-/labels`,
   };
 
-  const findModal = () => wrapper.find(DeprecatedModal);
+  const findModal = () => wrapper.find(GlModal);
 
   beforeEach(() => {
     boardsStore.state.currentPage = 'edit';

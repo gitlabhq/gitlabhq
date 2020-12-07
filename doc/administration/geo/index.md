@@ -257,6 +257,16 @@ For more information on tuning Geo, see [Tuning Geo](replication/tuning.md).
 
 For an example of how to set up a location-aware Git remote URL with AWS Route53, see [Location-aware Git remote URL with AWS Route53](replication/location_aware_git_url.md).
 
+### Backfill
+
+Once a **secondary** node is set up, it will start replicating missing data from
+the **primary** node in a process known as **backfill**. You can monitor the
+synchronization process on each Geo node from the **primary** node's **Geo Nodes**
+dashboard in your browser.
+
+Failures that happen during a backfill are scheduled to be retried at the end
+of the backfill.
+
 ## Remove Geo node
 
 For more information on removing a Geo node, see [Removing **secondary** Geo nodes](replication/remove_geo_node.md).

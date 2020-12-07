@@ -82,7 +82,7 @@ export default {
     mergeInfo2() {
       return this.isFork
         ? `git fetch origin\ngit checkout "${this.targetBranch}"\ngit merge --no-ff "${this.sourceProjectPath}-${this.sourceBranch}"`
-        : `git fetch origin\ngit checkout "${this.targetBranch}"\ngit merge --no-ff " ${this.sourceBranch}"`;
+        : `git fetch origin\ngit checkout "${this.targetBranch}"\ngit merge --no-ff "${this.sourceBranch}"`;
     },
     mergeInfo3() {
       return this.canMerge

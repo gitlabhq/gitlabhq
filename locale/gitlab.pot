@@ -947,7 +947,7 @@ msgstr ""
 msgid "(No changes)"
 msgstr ""
 
-msgid "(UTC%{offset}) %{timezone}"
+msgid "(UTC %{offset}) %{timezone}"
 msgstr ""
 
 msgid "(check progress)"
@@ -1251,6 +1251,9 @@ msgid "A merge request approval is required when a security report contains a ne
 msgstr ""
 
 msgid "A merge request approval is required when the license compliance report contains a denied license."
+msgstr ""
+
+msgid "A merge request hasn't yet been merged"
 msgstr ""
 
 msgid "A new Auto DevOps pipeline has been created, go to %{pipelines_link_start}Pipelines page%{pipelines_link_end} for details"
@@ -3683,9 +3686,6 @@ msgstr ""
 msgid "Are you sure you want to delete this SSH key?"
 msgstr ""
 
-msgid "Are you sure you want to delete this board?"
-msgstr ""
-
 msgid "Are you sure you want to delete this device? This action cannot be undone."
 msgstr ""
 
@@ -4486,9 +4486,6 @@ msgstr ""
 msgid "Blog"
 msgstr ""
 
-msgid "Board scope"
-msgstr ""
-
 msgid "Board scope affects which issues are displayed for anyone who visits this board"
 msgstr ""
 
@@ -4541,6 +4538,30 @@ msgid "Boards|Expand"
 msgstr ""
 
 msgid "Boards|View scope"
+msgstr ""
+
+msgid "Board|Are you sure you want to delete this board?"
+msgstr ""
+
+msgid "Board|Board scope"
+msgstr ""
+
+msgid "Board|Create board"
+msgstr ""
+
+msgid "Board|Create new board"
+msgstr ""
+
+msgid "Board|Delete board"
+msgstr ""
+
+msgid "Board|Edit board"
+msgstr ""
+
+msgid "Board|Enter board name"
+msgstr ""
+
+msgid "Board|Failed to delete board. Please try again."
 msgstr ""
 
 msgid "Board|Load more issues"
@@ -7943,9 +7964,6 @@ msgstr ""
 msgid "Create and provide your GitHub %{link_start}Personal Access Token%{link_end}. You will need to select the %{code_open}repo%{code_close} scope, so we can display a list of your public and private repositories which are available to import."
 msgstr ""
 
-msgid "Create board"
-msgstr ""
-
 msgid "Create branch"
 msgstr ""
 
@@ -8001,9 +8019,6 @@ msgid "Create new"
 msgstr ""
 
 msgid "Create new Value Stream"
-msgstr ""
-
-msgid "Create new board"
 msgstr ""
 
 msgid "Create new branch"
@@ -8924,9 +8939,6 @@ msgid "Delete artifacts"
 msgstr ""
 
 msgid "Delete badge"
-msgstr ""
-
-msgid "Delete board"
 msgstr ""
 
 msgid "Delete comment"
@@ -10062,9 +10074,6 @@ msgstr ""
 msgid "Edit application"
 msgstr ""
 
-msgid "Edit board"
-msgstr ""
-
 msgid "Edit comment"
 msgstr ""
 
@@ -10477,9 +10486,6 @@ msgid "Enter an integer number number between 0 and 100"
 msgstr ""
 
 msgid "Enter at least three characters to search"
-msgstr ""
-
-msgid "Enter board name"
 msgstr ""
 
 msgid "Enter domain"
@@ -11488,9 +11494,6 @@ msgid "Failed to create resources"
 msgstr ""
 
 msgid "Failed to create wiki"
-msgstr ""
-
-msgid "Failed to delete board. Please try again."
 msgstr ""
 
 msgid "Failed to deploy to"
@@ -19185,6 +19188,12 @@ msgid "OnCallSchedules|The schedule could not be deleted. Please try again."
 msgstr ""
 
 msgid "OnCallSchedules|The schedule could not be updated. Please try again."
+msgstr ""
+
+msgid "OnCallSchedules|Try adding a rotation"
+msgstr ""
+
+msgid "OnCallSchedules|Your schedule has been successfully created and all alerts from this project will now be routed to this schedule. Currently, only one schedule can be created per project. More coming soon! To add individual users to this schedule, use the add a rotation button."
 msgstr ""
 
 msgid "OnDemandScans|Could not fetch scanner profiles. Please refresh the page, or try again later."
@@ -27113,6 +27122,9 @@ msgid "The Advanced Search in GitLab is a powerful search service that saves you
 msgstr ""
 
 msgid "The CSV export will be created in the background. Once finished, it will be sent to %{strong_open}%{email}%{strong_close} in an attachment."
+msgstr ""
+
+msgid "The Compliance Dashboard gives you the ability to see a group's merge request activity by providing a high-level view for all projects in the group."
 msgstr ""
 
 msgid "The GitLab user to which the Jira user %{jiraDisplayName} will be mapped"
