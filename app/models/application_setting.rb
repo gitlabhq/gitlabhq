@@ -426,6 +426,9 @@ class ApplicationSetting < ApplicationRecord
   attr_encrypted :secret_detection_token_revocation_token, encryption_options_base_truncated_aes_256_gcm
   attr_encrypted :cloud_license_auth_token, encryption_options_base_truncated_aes_256_gcm
 
+  validates :disable_feed_token,
+            inclusion: { in: [true, false], message: 'must be a boolean value' }
+
   before_validation :ensure_uuid!
 
   before_save :ensure_runners_registration_token

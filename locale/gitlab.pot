@@ -1963,6 +1963,9 @@ msgstr ""
 msgid "AdminSettings|Auto DevOps domain"
 msgstr ""
 
+msgid "AdminSettings|Disable feed token"
+msgstr ""
+
 msgid "AdminSettings|Elasticsearch, PlantUML, Slack application, Third party offers, Snowplow, Amazon EKS have moved to Settings &gt; General."
 msgstr ""
 
@@ -1970,6 +1973,9 @@ msgid "AdminSettings|Enable shared runners for new projects"
 msgstr ""
 
 msgid "AdminSettings|Environment variables are protected by default"
+msgstr ""
+
+msgid "AdminSettings|Feed token"
 msgstr ""
 
 msgid "AdminSettings|Go to General Settings"

@@ -1659,7 +1659,7 @@ class User < ApplicationRecord
   # we do this on read since migrating all existing users is not a feasible
   # solution.
   def feed_token
-    ensure_feed_token!
+    Gitlab::CurrentSettings.disable_feed_token ? nil : ensure_feed_token!
   end
 
   # Each existing user needs to have a `static_object_token`.

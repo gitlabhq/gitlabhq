@@ -32,22 +32,23 @@
         active_tokens: @active_personal_access_tokens,
         revoke_route_helper: ->(token) { revoke_profile_personal_access_token_path(token) }
 
-%hr
-.row.gl-mt-3
-  .col-lg-4.profile-settings-sidebar
-    %h4.gl-mt-0
-      = s_('AccessTokens|Feed token')
-    %p
-      = s_('AccessTokens|Your feed token is used to authenticate you when your RSS reader loads a personalized RSS feed or when your calendar application loads a personalized calendar, and is included in those feed URLs.')
-    %p
-      = s_('AccessTokens|It cannot be used to access any other data.')
-  .col-lg-8.feed-token-reset
-    = label_tag :feed_token, s_('AccessTokens|Feed token'), class: 'label-bold'
-    = text_field_tag :feed_token, current_user.feed_token, class: 'form-control js-select-on-focus', readonly: true
-    %p.form-text.text-muted
-      - reset_link = link_to s_('AccessTokens|reset it'), [:reset, :feed_token, :profile], method: :put, data: { confirm: s_('AccessTokens|Are you sure? Any RSS or calendar URLs currently in use will stop working.') }
-      - reset_message = s_('AccessTokens|Keep this token secret. Anyone who gets ahold of it can read activity and issue RSS feeds or your calendar feed as if they were you. You should %{link_reset_it} if that ever happens.') % { link_reset_it: reset_link }
-      = reset_message.html_safe
+- unless Gitlab::CurrentSettings.disable_feed_token
+  %hr
+  .row.gl-mt-3
+    .col-lg-4.profile-settings-sidebar
+      %h4.gl-mt-0
+        = s_('AccessTokens|Feed token')
+      %p
+        = s_('AccessTokens|Your feed token is used to authenticate you when your RSS reader loads a personalized RSS feed or when your calendar application loads a personalized calendar, and is included in those feed URLs.')
+      %p
+        = s_('AccessTokens|It cannot be used to access any other data.')
+    .col-lg-8.feed-token-reset
+      = label_tag :feed_token, s_('AccessTokens|Feed token'), class: 'label-bold'
+      = text_field_tag :feed_token, current_user.feed_token, class: 'form-control js-select-on-focus', readonly: true
+      %p.form-text.text-muted
+        - reset_link = link_to s_('AccessTokens|reset it'), [:reset, :feed_token, :profile], method: :put, data: { confirm: s_('AccessTokens|Are you sure? Any RSS or calendar URLs currently in use will stop working.') }
+        - reset_message = s_('AccessTokens|Keep this token secret. Anyone who gets ahold of it can read activity and issue RSS feeds or your calendar feed as if they were you. You should %{link_reset_it} if that ever happens.') % { link_reset_it: reset_link }
+        = reset_message.html_safe
 
 - if incoming_email_token_enabled?
   %hr

@@ -1523,6 +1523,16 @@ RSpec.describe User do
       expect(feed_token).not_to be_blank
       expect(user.reload.feed_token).to eq feed_token
     end
+
+    it 'ensures no feed token when disabled' do
+      allow(Gitlab::CurrentSettings).to receive(:disable_feed_token).and_return(true)
+
+      user = create(:user, feed_token: nil)
+      feed_token = user.feed_token
+
+      expect(feed_token).to be_blank
+      expect(user.reload.feed_token).to be_blank
+    end
   end
 
   describe 'static object token' do

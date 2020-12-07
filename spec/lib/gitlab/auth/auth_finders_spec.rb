@@ -147,6 +147,13 @@ RSpec.describe Gitlab::Auth::AuthFinders do
           expect(find_user_from_feed_token(:rss)).to eq user
         end
 
+        it 'returns nil if valid feed_token and disabled' do
+          allow(Gitlab::CurrentSettings).to receive(:disable_feed_token).and_return(true)
+          set_param(:feed_token, user.feed_token)
+
+          expect(find_user_from_feed_token(:rss)).to be_nil
+        end
+
         it 'returns nil if feed_token is blank' do
           expect(find_user_from_feed_token(:rss)).to be_nil
         end

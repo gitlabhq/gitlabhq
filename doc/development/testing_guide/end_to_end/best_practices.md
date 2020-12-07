@@ -372,8 +372,10 @@ end
 
 [See this merge request for a real example of adding a custom matcher](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46302).
 
+We are creating custom negatable matchers in `qa/spec/support/matchers`.
+
 NOTE:
-We need to create custom negatable matchers only for the predicate methods we've added to the test framework, and only if we're using `not_to`. If we use `to have_no_*` a negatable matcher is not necessary.
+We need to create custom negatable matchers only for the predicate methods we've added to the test framework, and only if we're using `not_to`. If we use `to have_no_*` a negatable matcher is not necessary but it increases code readability.
 
 ### Why we need negatable matchers
 

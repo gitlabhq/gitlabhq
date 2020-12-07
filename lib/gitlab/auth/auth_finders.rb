@@ -46,6 +46,7 @@ module Gitlab
 
       def find_user_from_feed_token(request_format)
         return unless valid_rss_format?(request_format)
+        return if Gitlab::CurrentSettings.disable_feed_token
 
         # NOTE: feed_token was renamed from rss_token but both needs to be supported because
         #       users might have already added the feed to their RSS reader before the rename

@@ -198,6 +198,7 @@ module ApplicationSettingsHelper
       :default_project_visibility,
       :default_projects_limit,
       :default_snippet_visibility,
+      :disable_feed_token,
       :disabled_oauth_sign_in_sources,
       :domain_denylist,
       :domain_denylist_enabled,
