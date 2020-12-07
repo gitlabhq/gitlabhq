@@ -14,7 +14,7 @@ module Gitlab
       private
 
       def can_push?
-        user_access.can_do_action?(:push_code) ||
+        user_access.can_push_to_branch?(ref) ||
           project.branch_allows_collaboration?(user_access.user, branch_name)
       end
     end

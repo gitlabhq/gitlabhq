@@ -1137,6 +1137,12 @@ and a simple solution would be to enable relative URLs in the Registry.
 
 ### Enable the Registry debug server
 
+You can use the Container Registry debug server to diagnose problems. The debug endpoint can monitor metrics and health, as well as do profiling.
+
+CAUTION: **Warning:**
+Sensitive information may be available from the debug endpoint.
+Access to the debug endpoint must be locked down in a production environment.
+
 The optional debug server can be enabled by setting the registry debug address
 in your `gitlab.rb` configuration.
 

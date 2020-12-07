@@ -23,7 +23,7 @@ You may create a new account or use any of their supported sign in services.
 GitLab is being translated into many languages.
 
 1. Select the language you would like to contribute translations to by clicking the flag
-1. You will see a list of files and folders.
+1. Next, you can view list of files and folders.
   Click `gitlab.pot` to open the translation editor.
 
 ### Translation Editor
@@ -34,7 +34,7 @@ The online translation editor is the easiest way to contribute translations.
 
 1. Strings for translation are listed in the left panel
 1. Translations are entered into the central panel.
-  Multiple translations will be required for strings that contains plurals.
+  Multiple translations are required for strings that contains plurals.
   The string to be translated is shown above with glossary terms highlighted.
   If the string to be translated is not clear, you can 'Request Context'
 

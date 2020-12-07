@@ -42,7 +42,7 @@ SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS = 3000000
 SIDEKIQ_MEMORY_KILLER_GRACE_TIME = 900
 ```
 
-An import status `started`, and the following Sidekiq logs will signal a memory issue:
+An import status `started`, and the following Sidekiq logs signal a memory issue:
 
 ```shell
 WARN: Work still in progress <struct with JID>
@@ -218,7 +218,7 @@ for compatibility when importing and exporting projects.
 
 ### When to bump the version up
 
-We will have to bump the version if we rename model/columns or perform any format
+If we rename model/columns or perform any format, we need to bump the version
 modifications in the JSON structure or the file structure of the archive file.
 
 We do not need to bump the version up in any of the following cases:
@@ -227,7 +227,7 @@ We do not need to bump the version up in any of the following cases:
 - Remove a column or model (unless there is a DB constraint)
 - Export new things (such as a new type of upload)
 
-Every time we bump the version, the integration specs will fail and can be fixed with:
+Every time we bump the version, the integration specs fail and can be fixed with:
 
 ```shell
 bundle exec rake gitlab:import_export:bump_version
@@ -355,7 +355,7 @@ The tools to generate the NDJSON tree from the human-readable JSON files live in
 
 **Please use `legacy-project-json-to-ndjson.sh` to generate the NDJSON tree.**
 
-The NDJSON tree will look like this:
+The NDJSON tree looks like:
 
 ```shell
 tree
@@ -389,7 +389,7 @@ tree
 
 **Please use `legacy-group-json-to-ndjson.rb` to generate the NDJSON tree.**
 
-The NDJSON tree will look like this:
+The NDJSON tree looks like this:
 
 ```shell
 tree

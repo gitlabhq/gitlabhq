@@ -18,7 +18,7 @@ RSpec.describe Clusters::Applications::PrometheusHealthCheckService, '#execute' 
   RSpec.shared_examples 'sends alert' do
     it 'sends an alert' do
       expect_next_instance_of(Projects::Alerting::NotifyService) do |notify_service|
-        expect(notify_service).to receive(:execute).with(alerts_service.token)
+        expect(notify_service).to receive(:execute).with(integration.token, integration)
       end
 
       subject
@@ -40,8 +40,8 @@ RSpec.describe Clusters::Applications::PrometheusHealthCheckService, '#execute' 
   end
 
   context 'when cluster is project_type' do
-    let_it_be(:alerts_service) { create(:alerts_service) }
-    let_it_be(:project) { create(:project, alerts_service: alerts_service) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:integration) { create(:alert_management_http_integration, project: project) }
     let(:applications_prometheus_healthy) { true }
     let(:prometheus) { create(:clusters_applications_prometheus, status: prometheus_status_value, healthy: applications_prometheus_healthy) }
     let(:cluster) { create(:cluster, :project, application_prometheus: prometheus, projects: [project]) }

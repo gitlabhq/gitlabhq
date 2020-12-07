@@ -305,7 +305,7 @@ you are asked to sign in again to verify your identity for security reasons.
 NOTE:
 When any session is signed out, or when a session is revoked
 via [Active Sessions](active_sessions.md), all **Remember me** tokens are revoked.
-While other sessions will remain active, the **Remember me** feature will not restore
+While other sessions remain active, the **Remember me** feature doesn't restore
 a session if the browser is closed or the existing session expires.
 
 ### Increased sign-in time

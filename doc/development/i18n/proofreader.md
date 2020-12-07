@@ -147,9 +147,9 @@ of contributing translations to the GitLab project.
    In the merge request description, include links to any projects you have
    previously translated.
 
-1. Your request to become a proofreader will be considered on the merits of
+1. Your request to become a proofreader is considered on the merits of
    your previous translations by [GitLab team members](https://about.gitlab.com/company/team/)
    or [Core team members](https://about.gitlab.com/community/core-team/) who are fluent in
    the language or current proofreaders.
    - When a request is made for the first proofreader for a language and there are no [GitLab team members](https://about.gitlab.com/company/team/)
-   or [Core team members](https://about.gitlab.com/community/core-team/) who speak the language, we will request links to previous translation work in other communities or projects.
+   or [Core team members](https://about.gitlab.com/community/core-team/) who speak the language, we shall request links to previous translation work in other communities or projects.

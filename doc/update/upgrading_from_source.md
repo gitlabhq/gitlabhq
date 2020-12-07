@@ -8,7 +8,7 @@ comments: false
 # Upgrading Community Edition and Enterprise Edition from source
 
 NOTE:
-Users wishing to upgrade to 12.0.0 will have to take some extra steps. See the
+Users wishing to upgrade to 12.0.0 must take some extra steps. See the
 version specific upgrade instructions for 12.0.0 for more details.
 
 Make sure you view this update guide from the branch (version) of GitLab you
@@ -284,12 +284,12 @@ longer handles setting it.
 
 If you are using Apache instead of NGINX see the updated [Apache templates](https://gitlab.com/gitlab-org/gitlab-recipes/tree/master/web-server/apache).
 Also note that because Apache does not support upstreams behind Unix sockets you
-will need to let GitLab Workhorse listen on a TCP port. You can do this
+must let GitLab Workhorse listen on a TCP port. You can do this
 via [`/etc/default/gitlab`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/support/init.d/gitlab.default.example#L38).
 
 #### SMTP configuration
 
-If you're installing from source and use SMTP to deliver mail, you will need to
+If you're installing from source and use SMTP to deliver mail, you must
 add the following line to `config/initializers/smtp_settings.rb`:
 
 ```ruby

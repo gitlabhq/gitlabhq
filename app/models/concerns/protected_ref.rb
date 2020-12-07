@@ -12,6 +12,10 @@ module ProtectedRef
     delegate :matching, :matches?, :wildcard?, to: :ref_matcher
 
     scope :for_project, ->(project) { where(project: project) }
+
+    def allow_multiple?(type)
+      false
+    end
   end
 
   def commit
@@ -29,7 +33,7 @@ module ProtectedRef
         # to fail.
         has_many :"#{type}_access_levels", inverse_of: self.model_name.singular
 
-        validates :"#{type}_access_levels", length: { is: 1, message: "are restricted to a single instance per #{self.model_name.human}." }
+        validates :"#{type}_access_levels", length: { is: 1, message: "are restricted to a single instance per #{self.model_name.human}." }, unless: -> { allow_multiple?(type) }
 
         accepts_nested_attributes_for :"#{type}_access_levels", allow_destroy: true
       end

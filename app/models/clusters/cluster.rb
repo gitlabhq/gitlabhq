@@ -149,8 +149,8 @@ module Clusters
 
     scope :for_project_namespace, -> (namespace_id) { joins(:projects).where(projects: { namespace_id: namespace_id }) }
     scope :with_application_prometheus, -> { includes(:application_prometheus).joins(:application_prometheus) }
-    scope :with_project_alert_service_data, -> (project_ids) do
-      conditions = { projects: { alerts_service: [:data] } }
+    scope :with_project_http_integrations, -> (project_ids) do
+      conditions = { projects: :alert_management_http_integrations }
       includes(conditions).joins(conditions).where(projects: { id: project_ids })
     end
 

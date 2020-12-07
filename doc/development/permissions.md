@@ -72,7 +72,7 @@ is stored in the `project_authorizations` table.
 
 WARNING:
 Due to [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/219299),
-projects in personal namespace will not show owner (`50`) permission in
+projects in personal namespace do not show owner (`50`) permission in
 `project_authorizations` table. Note however that [`user.owned_projects`](https://gitlab.com/gitlab-org/gitlab/blob/0d63823b122b11abd2492bca47cc26858eee713d/app/models/user.rb#L906-916)
 is calculated properly.
 
@@ -98,7 +98,7 @@ In the case of a complex resource, it should be broken into smaller pieces of in
 and each piece should be granted a different permission.
 
 A good example in this case is the _Merge Request widget_ and the _Security reports_.
-Depending on the visibility level of the _Pipelines_, the _Security reports_ will be either visible
+Depending on the visibility level of the _Pipelines_, the _Security reports_ are either visible
 in the widget or not. So, the _Merge Request widget_, the _Pipelines_, and the _Security reports_,
 have separate permissions. Moreover, the permissions for the _Merge Request widget_
 and the _Pipelines_ are dependencies of the _Security reports_.

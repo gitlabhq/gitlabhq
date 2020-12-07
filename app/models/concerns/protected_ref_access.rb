@@ -45,6 +45,7 @@ module ProtectedRefAccess
   end
 
   def check_access(user)
+    return false unless user
     return true if user.admin?
 
     user.can?(:push_code, project) &&

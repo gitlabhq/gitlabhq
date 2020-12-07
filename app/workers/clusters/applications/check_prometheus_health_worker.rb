@@ -20,7 +20,7 @@ module Clusters
         demo_project_ids = Gitlab::Monitor::DemoProjects.primary_keys
 
         clusters = Clusters::Cluster.with_application_prometheus
-          .with_project_alert_service_data(demo_project_ids)
+          .with_project_http_integrations(demo_project_ids)
 
         # Move to a seperate worker with scoped context if expanded to do work on customer projects
         clusters.each { |cluster| Clusters::Applications::PrometheusHealthCheckService.new(cluster).execute }

@@ -37,8 +37,6 @@ class ProtectedBranch::PushAccessLevel < ApplicationRecord
   end
 
   def enabled_deploy_key_for_user?(deploy_key, user)
-    return false unless deploy_key.user_id == user.id
-
-    DeployKey.with_write_access_for_project(protected_branch.project, deploy_key: deploy_key).any?
+    deploy_key.user_id == user.id && DeployKey.with_write_access_for_project(protected_branch.project, deploy_key: deploy_key).any?
   end
 end

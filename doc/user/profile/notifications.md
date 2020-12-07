@@ -21,7 +21,7 @@ You receive notifications for one of the following reasons:
 While notifications are enabled, you receive notification of actions occurring in that issue, merge request, or epic.
 
 NOTE:
-Notifications can be blocked by an admin, preventing them from being sent.
+Notifications can be blocked by an administrator, preventing them from being sent.
 
 ## Tuning your notifications
 

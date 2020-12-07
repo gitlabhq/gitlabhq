@@ -316,7 +316,7 @@ Prerequisites:
 1. Install the dependencies listed in `conanfile.txt`:
 
    ```shell
-   conan install <options>
+   conan install .. <options>
    ```
 
 NOTE:

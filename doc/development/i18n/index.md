@@ -9,13 +9,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 The text in GitLab's user interface is in American English by default.
 Each string can be translated to other languages.
 As each string is translated, it is added to the languages translation file,
-and will be available in future releases of GitLab.
+and is made available in future releases of GitLab.
 
 Contributions to translations are always needed.
 Many strings are not yet available for translation because they have not been externalized.
 Helping externalize strings benefits all languages.
 Some translations are incomplete or inconsistent.
-Translating strings will help complete and improve each language.
+Translating strings helps complete and improve each language.
 
 ## How to contribute
 
@@ -37,7 +37,7 @@ See [Externalization for GitLab](externalization.md).
 
 The translation process is managed at <https://translate.gitlab.com>
 using [CrowdIn](https://crowdin.com/).
-You will need to create an account before you can submit translations.
+You need to create an account before you can submit translations.
 Once you are signed in, select the language you wish to contribute translations to.
 
 Voting for translations is also valuable, helping to confirm good and flag inaccurate translations.
@@ -48,7 +48,7 @@ See [Translation guidelines](translation.md).
 
 Proofreading helps ensure the accuracy and consistency of translations. All
 translations are proofread before being accepted. If a translations requires
-changes, you will be notified with a comment explaining why.
+changes, you are notified with a comment explaining why.
 
 See [Proofreading Translations](proofreader.md) for more information on who's
 able to proofread and instructions on becoming a proofreader yourself.

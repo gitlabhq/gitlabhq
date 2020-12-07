@@ -11,12 +11,12 @@ to the latest version without the need for hours of downtime. This guide assumes
 you have two database servers: one database server running an older version of
 PostgreSQL (e.g. 9.2.18) and one server running a newer version (e.g. 9.6.0).
 
-For this process we'll use a PostgreSQL replication tool called
+For this process we use a PostgreSQL replication tool called
 ["Slony"](https://www.slony.info/). Slony allows replication between different
 PostgreSQL versions and as such can be used to upgrade a cluster with a minimal
 amount of downtime.
 
-In various places we'll refer to the user `gitlab-psql`. This user should be the
+In various places we refer to the user `gitlab-psql`. This user should be the
 user used to run the various PostgreSQL OS processes. If you're using a
 different user (e.g. `postgres`) you should replace `gitlab-psql` with the name
 of said user. This guide also assumes your database is called
@@ -28,8 +28,8 @@ change this accordingly.
 Slony only replicates data and not any schema changes. As a result we must
 ensure that all databases have the same database structure.
 
-To do so we'll generate a dump of our current database. This dump will only
-contain the structure, not any data. To generate this dump run the following
+To do so, generate a dump of the current database. This dump only
+contains the structure, not any data. To generate this dump run the following
 command on your active database server:
 
 ```shell
@@ -49,20 +49,20 @@ command on your active database server:
 sudo -u gitlab-psql /opt/gitlab/embedded/bin/pg_dump -h /var/opt/gitlab/postgresql/ -p 5432 -U gitlab-psql -a -t schema_migrations -f /tmp/migrations.sql gitlabhq_production
 ```
 
-Next we'll need to move these files somewhere accessible by the new database
-server. The easiest way is to simply download these files to your local system:
+Next, move these files somewhere accessible by the new database
+server. The easiest way is to download these files to your local system:
 
 ```shell
 scp your-user@production-database-host:/tmp/*.sql /tmp
 ```
 
-This will copy all the SQL files located in `/tmp` to your local system's
+This copies all the SQL files located in `/tmp` to your local system's
 `/tmp` directory. Once copied you can safely remove the files from the database
 server.
 
 ## Installing Slony
 
-Slony will be used to upgrade the database without requiring a long downtime.
+Use Slony to upgrade the database without requiring a long downtime.
 Slony can be downloaded from <https://www.slony.info/>. If you have installed
 PostgreSQL using your operating system's package manager you may also be able to
 install Slony using said package manager.
@@ -94,7 +94,7 @@ test -f /opt/gitlab/embedded/bin/slonik_init_cluster && echo 'Slony Perl tools a
 ```
 
 This assumes Slony was installed to `/opt/gitlab/embedded`. If Slony was
-installed properly the output of these commands will be (the mentioned `slonik`
+installed properly the output of these commands is (the mentioned `slonik`
 version may be different):
 
 ```plaintext
@@ -106,8 +106,8 @@ slonik version 2.2.5
 ## Slony User
 
 Next we must set up a PostgreSQL user that Slony can use to replicate your
-database. To do so, log in to your production database using `psql` using a
-super user account. Once done run the following SQL queries:
+database. To do so, sign in to your production database using `psql` using a
+super-user account. After signing in, run the following SQL queries:
 
 ```sql
 CREATE ROLE slony WITH SUPERUSER LOGIN REPLICATION ENCRYPTED PASSWORD 'password string here';
@@ -115,20 +115,20 @@ ALTER ROLE slony SET statement_timeout TO 0;
 ```
 
 Make sure you replace "password string here" with the actual password for the
-user. A password is *required*. This user must be created on _both_ the old and
+user. A password is required. This user must be created on both the old and
 new database server using the same password.
 
-Once the user has been created make sure you note down the password as we will
-need it later on.
+After creating the user, be sure to note the password, as the password is needed
+later.
 
 ## Configuring Slony
 
-Now we can finally start configuring Slony. Slony uses a configuration file for
-most of the work so we'll need to set this one up. This configuration file
+We can now start configuring Slony. Slony uses a configuration file for
+most of the work so we need to set this one up. This configuration file
 specifies where to put log files, how Slony should connect to the databases,
 etc.
 
-First we'll need to create some required directories and set the correct
+First, create some required directories and set the correct
 permissions. To do so, run the following commands on both the old and new
 database server:
 
@@ -199,8 +199,7 @@ appropriate path to the `psql` executable.
 
 The above command outputs a list of tables in a format that can be copy-pasted
 directly into the above configuration file. Make sure to _replace_ `TABLES` with
-this output, don't just append it below it. Once done you'll end up with
-something like this:
+this output, don't just append it below it. The result looks like this:
 
 ```perl
 "pkeyedtables" => [
@@ -251,14 +250,14 @@ following:
  ... more rows here ...
 ```
 
-Now we can initialize the required tables and what not that Slony will use for
+Now we can initialize the required tables and what not that Slony uses for
 its replication process. To do so, run the following on the old database:
 
 ```shell
 sudo -u gitlab-psql /opt/gitlab/embedded/bin/slonik_init_cluster --conf /var/opt/gitlab/postgresql/slony/slon_tools.conf | /opt/gitlab/embedded/bin/slonik
 ```
 
-If all went well this will produce something along the lines of:
+If all went well this produces something along the lines of:
 
 ```plaintext
 <stdin>:10: Set up replication nodes
@@ -274,7 +273,7 @@ following on the old database:
 sudo -u gitlab-psql /opt/gitlab/embedded/bin/slon_start 1 --conf /var/opt/gitlab/postgresql/slony/slon_tools.conf
 ```
 
-If all went well this will produce output such as:
+If all went well this produces output such as:
 
 ```plaintext
 Invoke slon for node 1 - /opt/gitlab/embedded/bin/slon -p /var/run/slony1/slony_replication_node1.pid -s 1000 -d2  slony_replication 'host=192.168.0.7 dbname=gitlabhq_production user=slony port=5432 password=hieng8ezohHuCeiqu0leeghai4aeyahp' > /var/log/gitlab/slony/node1/gitlabhq_production-2016-10-06.log 2>&1 &
@@ -289,7 +288,7 @@ Next we need to run the following command on the _new_ database server:
 sudo -u gitlab-psql /opt/gitlab/embedded/bin/slon_start 2 --conf /var/opt/gitlab/postgresql/slony/slon_tools.conf
 ```
 
-This will produce similar output if all went well.
+This produces similar output if all went well.
 
 Next we need to tell the new database server what it should replicate. This can
 be done by running the following command on the _new_ database server:
@@ -324,7 +323,7 @@ This should produce the following output:
 <stdin>:6: Subscribed nodes to set 1
 ```
 
-At this point the new database server will start replicating the data of the old
+At this point the new database server starts replicating the data of the old
 database server. This process can take anywhere from a few minutes to hours, if
 not days. Unfortunately Slony itself doesn't really provide a way of knowing
 when the two databases are in sync. To get an estimate of the progress you can
@@ -357,19 +356,19 @@ function main {
 main
 ```
 
-This script will compare the sizes of the old and new database every minute and
+This script compares the sizes of the old and new database every minute and
 print the result to STDOUT as well as logging it to a file. Make sure to replace
 `SLONY_PASSWORD`, `OLD_HOST`, and `NEW_HOST` with the correct values.
 
 ## Stopping Replication
 
-At some point the two databases are in sync. Once this is the case you'll need
-to plan for a few minutes of downtime. This small downtime window is used to
-stop the replication process, remove any Slony data from both databases, restart
-GitLab so it can use the new database, etc.
+At some point, the two databases are in sync. If this is the case, you must plan
+for a few minutes of downtime. This small downtime window is used to stop the
+replication process, remove any Slony data from both databases, and restart
+GitLab so it can use the new database.
 
 First, let's stop all of GitLab. Omnibus users can do so by running the
-following on their GitLab server(s):
+following on their GitLab servers:
 
 ```shell
 sudo gitlab-ctl stop unicorn
@@ -377,14 +376,14 @@ sudo gitlab-ctl stop sidekiq
 sudo gitlab-ctl stop mailroom
 ```
 
-If you have any other processes that use PostgreSQL you should also stop those.
+If you have any other processes that use PostgreSQL, you should also stop those.
 
-Once everything has been stopped you should update any configuration settings,
-DNS records, etc so they all point to the new database.
+After everything has been stopped, be sure to update any configuration settings
+and DNS records so they all point to the new database.
 
-Once the settings have been taken care of we need to stop the replication
-process. It's crucial that no new data is written to the databases at this point
-as this data will be lost.
+When the settings have been taken care of, we need to stop the replication
+process. It's crucial that no new data is written to the databases at this point,
+as this data is discarded.
 
 To stop replication, run the following on both database servers:
 
@@ -392,7 +391,7 @@ To stop replication, run the following on both database servers:
 sudo -u gitlab-psql /opt/gitlab/embedded/bin/slon_kill --conf /var/opt/gitlab/postgresql/slony/slon_tools.conf
 ```
 
-This will stop all the Slony processes on the host the command was executed on.
+This stops all the Slony processes on the host the command was executed on.
 
 ## Resetting Sequences
 
@@ -469,7 +468,7 @@ Upload this script to the _target_ server and execute it as follows:
 bash path/to/the/script/above.sh
 ```
 
-This will correct the ownership of sequences and reset the next value for the
+This corrects the ownership of sequences and reset the next value for the
 `id` column to the next available value.
 
 ## Removing Slony

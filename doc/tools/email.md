@@ -8,13 +8,13 @@ type: howto, reference
 # Email from GitLab **(STARTER ONLY)**
 
 GitLab provides a simple tool to administrators for emailing all users, or users of
-a chosen group or project, right from the Admin Area. Users will receive the email
+a chosen group or project, right from the Admin Area. Users receive the email
 at their primary email address.
 
 ## Use-cases
 
 - Notify your users about a new project, a new feature, or a new product launch.
-- Notify your users about a new deployment, or that will be downtime expected
+- Notify your users about a new deployment, or that downtime is expected
   for a particular reason.
 
 ## Sending emails to users from within GitLab
@@ -24,9 +24,9 @@ at their primary email address.
 
    ![admin users](email1.png)
 
-1. Compose an email and choose where it will be sent (all users or users of a
+1. Compose an email and choose where to send it (all users or users of a
    chosen group or project). The email body only supports plain text messages.
-   HTML, Markdown, and other rich text formats are not supported, and will be
+   HTML, Markdown, and other rich text formats are not supported, and is
    sent as plain text to users.
 
    ![compose an email](email2.png)
@@ -40,7 +40,7 @@ Users can choose to unsubscribe from receiving emails from GitLab by following
 the unsubscribe link in the email. Unsubscribing is unauthenticated in order
 to keep this feature simple.
 
-On unsubscribe, users will receive an email notification that unsubscribe happened.
+On unsubscribe, users receive an email notification that unsubscribe happened.
 The endpoint that provides the unsubscribe option is rate-limited.
 
 <!-- ## Troubleshooting

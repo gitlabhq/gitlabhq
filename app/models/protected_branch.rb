@@ -48,6 +48,10 @@ class ProtectedBranch < ApplicationRecord
 
     where(fuzzy_arel_match(:name, query.downcase))
   end
+
+  def allow_multiple?(type)
+    type == :push
+  end
 end
 
 ProtectedBranch.prepend_if_ee('EE::ProtectedBranch')

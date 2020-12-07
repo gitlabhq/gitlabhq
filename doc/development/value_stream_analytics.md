@@ -32,7 +32,7 @@ These events play a key role in the duration calculation.
 
 Formula: `duration = end_event_time - start_event_time`
 
-To make the duration calculation flexible, each `Event` is implemented as a separate class. They're responsible for defining a timestamp expression that will be used in the calculation query.
+To make the duration calculation flexible, each `Event` is implemented as a separate class. They're responsible for defining a timestamp expression that is used in the calculation query.
 
 #### Implementing an `Event` class
 
@@ -41,12 +41,12 @@ There are a few methods that are required to be implemented, the `StageEvent` ba
 - `object_type`
 - `timestamp_projection`
 
-The `object_type` method defines which domain object will be queried for the calculation. Currently two models are allowed:
+The `object_type` method defines which domain object is queried for the calculation. Currently two models are allowed:
 
 - `Issue`
 - `MergeRequest`
 
-For the duration calculation the `timestamp_projection` method will be used.
+For the duration calculation the `timestamp_projection` method is used.
 
 ```ruby
 def timestamp_projection
@@ -92,7 +92,7 @@ Some start/end event pairs are not "compatible" with each other. For example:
 The `StageEvents` module describes the allowed `start_event` and `end_event` pairings (`PAIRING_RULES` constant). If a new event is added, it needs to be registered in this module.
 ​To add a new event:​
 
-1. Add an entry in `ENUM_MAPPING` with a unique number, it'll be used in the `Stage` model as `enum`.
+1. Add an entry in `ENUM_MAPPING` with a unique number, which is used in the `Stage` model as `enum`.
 1. Define which events are compatible with the event in the `PAIRING_RULES` hash.
 
 Supported start/end event pairings:
@@ -185,19 +185,19 @@ Currently supported parents:
 1. User navigates to the value stream analytics page.
 1. User selects a group.
 1. Backend loads the defined stages for the selected group.
-1. Additions and modifications to the stages will be persisted within the selected group only.
+1. Additions and modifications to the stages are persisted within the selected group only.
 
 ### Default stages
 
 The [original implementation](https://gitlab.com/gitlab-org/gitlab/-/issues/847) of value stream analytics defined 7 stages. These stages are always available for each parent, however altering these stages is not possible.
 ​
-To make things efficient and reduce the number of records created, the default stages are expressed as in-memory objects (not persisted). When the user creates a custom stage for the first time, all the stages will be persisted. This behavior is implemented in the value stream analytics service objects.
+To make things efficient and reduce the number of records created, the default stages are expressed as in-memory objects (not persisted). When the user creates a custom stage for the first time, all the stages are persisted. This behavior is implemented in the value stream analytics service objects.
 ​
 The reason for this was that we'd like to add the abilities to hide and order stages later on.
 
 ## Data Collector
 
-`DataCollector` is the central point where the data will be queried from the database. The class always operates on a single stage and consists of the following components:
+`DataCollector` is the central point where the data is queried from the database. The class always operates on a single stage and consists of the following components:
 
 - `BaseQueryBuilder`:
   - Responsible for composing the initial query.
@@ -238,7 +238,7 @@ SELECT (START_EVENT_TIME-END_EVENT_TIME) as duration, END_EVENT.timestamp
 ## High-level overview
 
 - Rails Controller (`Analytics::CycleAnalytics` module): Value stream analytics exposes its data via JSON endpoints, implemented within the `analytics` workspace. Configuring the stages are also implements JSON endpoints (CRUD).
-- Services (`Analytics::CycleAnalytics` module): All `Stage` related actions will be delegated to respective service objects.
+- Services (`Analytics::CycleAnalytics` module): All `Stage` related actions are delegated to respective service objects.
 - Models (`Analytics::CycleAnalytics` module): Models are used to persist the `Stage` objects `ProjectStage` and `GroupStage`.
 - Feature classes (`Gitlab::Analytics::CycleAnalytics` module):
   - Responsible for composing queries and define feature specific business logic.
@@ -248,7 +248,7 @@ SELECT (START_EVENT_TIME-END_EVENT_TIME) as duration, END_EVENT.timestamp
 
 Since we have a lots of events and possible pairings, testing each pairing is not possible. The rule is to have at least one test case using an `Event` class.
 
-Writing a test case for a stage using a new `Event` can be challenging since data must be created for both events. To make this a bit simpler, each test case must be implemented in the `data_collector_spec.rb` where the stage is tested through the `DataCollector`. Each test case will be turned into multiple tests, covering the following cases:
+Writing a test case for a stage using a new `Event` can be challenging since data must be created for both events. To make this a bit simpler, each test case must be implemented in the `data_collector_spec.rb` where the stage is tested through the `DataCollector`. Each test case is turned into multiple tests, covering the following cases:
 
 - Different parents: `Group` or `Project`
 - Different calculations: `Median`, `RecordsFetcher` or `DataForDurationChart`

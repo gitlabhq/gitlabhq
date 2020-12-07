@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 The DeclarativePolicy framework is designed to assist in performance of policy checks, and to enable ease of extension for EE. The DSL code in `app/policies` is what `Ability.allowed?` uses to check whether a particular action is allowed on a subject.
 
-The policy used is based on the subject's class name - so `Ability.allowed?(user, :some_ability, project)` will create a `ProjectPolicy` and check permissions on that.
+The policy used is based on the subject's class name - so `Ability.allowed?(user, :some_ability, project)` creates a `ProjectPolicy` and check permissions on that.
 
 ## Managing Permission Rules
 
@@ -16,7 +16,7 @@ Permissions are broken into two parts: `conditions` and `rules`. Conditions are 
 
 ### Conditions
 
-Conditions are defined by the `condition` method, and are given a name and a block. The block will be executed in the context of the policy object - so it can access `@user` and `@subject`, as well as call any methods defined on the policy. Note that `@user` may be nil (in the anonymous case), but `@subject` is guaranteed to be a real instance of the subject class.
+Conditions are defined by the `condition` method, and are given a name and a block. The block is executed in the context of the policy object - so it can access `@user` and `@subject`, as well as call any methods defined on the policy. Note that `@user` may be nil (in the anonymous case), but `@subject` is guaranteed to be a real instance of the subject class.
 
 ```ruby
 class FooPolicy < BasePolicy
@@ -34,9 +34,9 @@ class FooPolicy < BasePolicy
 end
 ```
 
-When you define a condition, a predicate method is defined on the policy to check whether that condition passes - so in the above example, an instance of `FooPolicy` will also respond to `#is_public?` and `#thing?`.
+When you define a condition, a predicate method is defined on the policy to check whether that condition passes - so in the above example, an instance of `FooPolicy` also responds to `#is_public?` and `#thing?`.
 
-Conditions are cached according to their scope. Scope and ordering will be covered later.
+Conditions are cached according to their scope. Scope and ordering is covered later.
 
 ### Rules
 
@@ -69,7 +69,7 @@ Within the rule DSL, you can use:
 
 ## Scores, Order, Performance
 
-To see how the rules get evaluated into a judgment, it is useful in a console to use `policy.debug(:some_ability)`. This will print the rules in the order they are evaluated.
+To see how the rules get evaluated into a judgment, it is useful in a console to use `policy.debug(:some_ability)`. This prints the rules in the order they are evaluated.
 
 For example, let's say you wanted to debug `IssuePolicy`. You might run
 the debugger in this way:
@@ -109,9 +109,9 @@ When a policy is asked whether a particular ability is allowed
 compute all the conditions on the policy. First, only the rules relevant
 to that particular ability are selected. Then, the execution model takes
 advantage of short-circuiting, and attempts to sort rules based on a
-heuristic of how expensive they will be to calculate. The sorting is
-dynamic and cache-aware, so that previously calculated conditions will
-be considered first, before computing other conditions.
+heuristic of how expensive they are to calculate. The sorting is
+dynamic and cache-aware, so that previously calculated conditions are
+considered first, before computing other conditions.
 
 Note that the score is chosen by a developer via the `score:` parameter
 in a `condition` to denote how expensive evaluating this rule would be
@@ -119,7 +119,7 @@ relative to other rules.
 
 ## Scope
 
-Sometimes, a condition will only use data from `@user` or only from `@subject`. In this case, we want to change the scope of the caching, so that we don't recalculate conditions unnecessarily. For example, given:
+Sometimes, a condition only uses data from `@user` or only from `@subject`. In this case, we want to change the scope of the caching, so that we don't recalculate conditions unnecessarily. For example, given:
 
 ```ruby
 class FooPolicy < BasePolicy
@@ -135,10 +135,10 @@ Naively, if we call `Ability.allowed?(user1, :some_ability, foo)` and `Ability.a
   condition(:expensive_condition, scope: :subject) { @subject.expensive_query? }
 ```
 
-then the result of the condition will be cached globally only based on the subject - so it will not be calculated repeatedly for different users. Similarly, `scope: :user` will cache only based on the user.
+then the result of the condition is cached globally only based on the subject - so it is not calculated repeatedly for different users. Similarly, `scope: :user` caches only based on the user.
 
 **DANGER**: If you use a `:scope` option when the condition actually uses data from
-both user and subject (including a simple anonymous check!) your result will be cached at too global of a scope and will result in cache bugs.
+both user and subject (including a simple anonymous check!) your result is cached at too global of a scope and results in cache bugs.
 
 Sometimes we are checking permissions for a lot of users for one subject, or a lot of subjects for one user. In this case, we want to set a *preferred scope* - i.e. tell the system that we prefer rules that can be cached on the repeated parameter. For example, in `Ability.users_that_can_read_project`:
 
@@ -150,7 +150,7 @@ def users_that_can_read_project(users, project)
 end
 ```
 
-This will, for example, prefer checking `project.public?` to checking `user.admin?`.
+This, for example, prefers checking `project.public?` to checking `user.admin?`.
 
 ## Delegation
 
@@ -162,7 +162,7 @@ class FooPolicy < BasePolicy
 end
 ```
 
-will include all rules from `ProjectPolicy`. The delegated conditions will be evaluated with the correct delegated subject, and will be sorted along with the regular rules in the policy. Note that only the relevant rules for a particular ability will actually be considered.
+includes all rules from `ProjectPolicy`. The delegated conditions are evaluated with the correct delegated subject, and are sorted along with the regular rules in the policy. Note that only the relevant rules for a particular ability are actually considered.
 
 ### Overrides
 
@@ -203,7 +203,7 @@ end
 
 But the food preferences one is harder - because of the `prevent` call in the
 parent policy, if the parent dislikes it, even calling `enable` in the child
-will not enable `:eat_broccoli`.
+does not enable `:eat_broccoli`.
 
 We could remove the `prevent` call in the parent policy, but that still doesn't
 help us, since the rules are different: parents get to eat what they like, and
@@ -226,7 +226,7 @@ class ChildPolicy < BasePolicy
 end
 ```
 
-With this definition, the `ChildPolicy` will _never_ look in the `ParentPolicy` to
+With this definition, the `ChildPolicy` _never_ looks in the `ParentPolicy` to
 satisfy `:eat_broccoli`, but it _will_ use it for any other abilities. The child
 policy can then define `:eat_broccoli` in a way that makes sense for `Child` and not
 `Parent`.
@@ -243,7 +243,7 @@ Other approaches can include for example using different ability names. Choosing
 to eat a food and eating foods you are given are semantically distinct, and they
 could be named differently (perhaps `chooses_to_eat_broccoli` and
 `eats_what_is_given` in this case). It can depend on how polymorphic the call
-site is. If you know that we will always check the policy with a `Parent` or a
+site is. If you know that we always check the policy with a `Parent` or a
 `Child`, then we can choose the appropriate ability name. If the call site is
 polymorphic, then we cannot do that.
 
@@ -260,4 +260,4 @@ class Foo
 end
 ```
 
-This will use & check permissions on the `SomeOtherPolicy` class rather than the usual calculated `FooPolicy` class.
+This uses and checks permissions on the `SomeOtherPolicy` class rather than the usual calculated `FooPolicy` class.

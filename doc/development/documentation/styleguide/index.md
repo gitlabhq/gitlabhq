@@ -1551,7 +1551,7 @@ This is something to note.
 ### Warning
 
 Use a warning to indicate deprecated features, or to provide a warning about
-procedures that have the potential for data loss. 
+procedures that have the potential for data loss.
 
 ```markdown
 WARNING:
@@ -1799,25 +1799,8 @@ in the GitLab product documentation.
 
 ### Avoid line breaks in names
 
-Product names, feature names, and non-GitLab products that contain spaces
-shouldn't be split across lines.
-For example: GitLab Community Edition or Amazon Web Services.
-Splitting product or feature names across lines makes searching for these items
-more difficult, and can cause problems if names change.
-
-For example, the following Markdown content is _not_ formatted correctly:
-
-```markdown
-When entering a product or feature name that includes a space (such as GitLab
-Community Edition), don't split the product or feature name across lines.
-```
-
-Instead, it should appear similar to the following:
-
-```markdown
-When entering a product or feature name that includes a space (such as
-GitLab Community Edition), don't split the product or feature name across lines.
-```
+If a feature or product name contains spaces, don't split the name with a line break.
+When names change, it is more complicated to search or grep text that has line breaks.
 
 ### Product tier badges
 

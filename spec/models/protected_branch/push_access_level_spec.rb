@@ -75,4 +75,18 @@ RSpec.describe ProtectedBranch::PushAccessLevel do
       end
     end
   end
+
+  describe '#type' do
+    let(:push_level_access) { build(:protected_branch_push_access_level) }
+
+    it 'returns :deploy_key when a deploy key is tied to the protected branch' do
+      push_level_access.deploy_key = create(:deploy_key)
+
+      expect(push_level_access.type).to eq(:deploy_key)
+    end
+
+    it 'returns :role by default' do
+      expect(push_level_access.type).to eq(:role)
+    end
+  end
 end
