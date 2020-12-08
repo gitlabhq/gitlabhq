@@ -51,8 +51,8 @@ RSpec.describe AccessibilityReportsComparerEntity do
         expect(subject[:status]).to eq(Gitlab::Ci::Reports::AccessibilityReportsComparer::STATUS_FAILED)
         expect(subject[:resolved_errors].first).to include(:code, :type, :type_code, :message, :context, :selector, :runner, :runner_extras)
         expect(subject[:new_errors].first).to include(:code, :type, :type_code, :message, :context, :selector, :runner, :runner_extras)
-        expect(subject[:existing_errors].first).to include(:code, :type, :type_code, :message, :context, :selector, :runner, :runner_extras)
-        expect(subject[:summary]).to include(total: 2, resolved: 1, errored: 1)
+        expect(subject[:existing_errors]).to be_empty
+        expect(subject[:summary]).to include(total: 1, resolved: 1, errored: 1)
       end
     end
 

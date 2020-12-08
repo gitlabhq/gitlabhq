@@ -29,7 +29,7 @@ module Clusters
       rescue *ERRORS => e
         Gitlab::ErrorTracking.track_exception(e)
 
-        Response.new(:unprocessable_entity, {})
+        Response.new(:unprocessable_entity, response_details(e))
       end
 
       private
@@ -46,6 +46,28 @@ module Clusters
 
       def credentials
         Clusters::Aws::FetchCredentialsService.new(role).execute
+      end
+
+      def response_details(exception)
+        message =
+          case exception
+          when ::Aws::STS::Errors::AccessDenied
+            _("Access denied: %{error}") % { error: exception.message }
+          when ::Aws::STS::Errors::ServiceError
+            _("AWS service error: %{error}") % { error: exception.message }
+          when ActiveRecord::RecordNotFound
+            _("Error: Unable to find AWS role for current user")
+          when ActiveRecord::RecordInvalid
+            exception.message
+          when Clusters::Aws::FetchCredentialsService::MissingRoleError
+            _("Error: No AWS provision role found for user")
+          when ::Aws::Errors::MissingCredentialsError
+            _("Error: No AWS credentials were supplied")
+          else
+            _('An error occurred while authorizing your role')
+          end
+
+        { message: message }.compact
       end
     end
   end

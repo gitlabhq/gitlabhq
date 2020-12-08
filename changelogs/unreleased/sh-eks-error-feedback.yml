@@ -1,0 +1,5 @@
+---
+title: 'EKS: Provide user feedback on AWS authorization errors'
+merge_request: 49278
+author:
+type: changed

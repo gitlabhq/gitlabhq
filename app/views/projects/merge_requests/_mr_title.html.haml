@@ -4,7 +4,7 @@
 - state_human_name, state_icon_name = state_name_with_icon(@merge_request)
 - are_close_and_open_buttons_hidden = merge_request_button_hidden?(@merge_request, true) && merge_request_button_hidden?(@merge_request, false)
 
-- if @merge_request.closed_without_fork?
+- if @merge_request.closed_or_merged_without_fork?
   .gl-alert.gl-alert-danger.gl-mb-5
     = sprite_icon('error', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
     .gl-alert-body

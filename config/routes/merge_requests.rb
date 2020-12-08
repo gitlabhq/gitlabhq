@@ -17,6 +17,7 @@ resources :merge_requests, concerns: :awardable, except: [:new, :create, :show],
     get :accessibility_reports
     get :coverage_reports
     get :terraform_reports
+    get :codequality_reports
 
     scope constraints: ->(req) { req.format == :json }, as: :json do
       get :commits

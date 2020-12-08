@@ -2,7 +2,7 @@
 - project = local_assigns.fetch(:project)
 
 - return unless issuable.is_a?(MergeRequest)
-- return if issuable.closed_without_fork?
+- return if issuable.closed_or_merged_without_fork?
 
 .form-group.row
   .col-sm-2.col-form-label.pt-sm-0

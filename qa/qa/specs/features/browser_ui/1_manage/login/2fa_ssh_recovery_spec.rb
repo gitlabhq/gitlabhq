@@ -16,6 +16,7 @@ module QA
       end
 
       before do
+        Runtime::Feature.enable('vue_2fa_recovery_codes', user: user)
         enable_2fa_for_user(user)
       end
 
@@ -46,6 +47,10 @@ module QA
         expect(page).to have_text('Invalid two-factor code')
       end
 
+      after do
+        Runtime::Feature.disable('vue_2fa_recovery_codes', user: user)
+      end
+
       def enable_2fa_for_user(user)
         Flow::Login.while_signed_in(as: user) do
           Page::Main::Menu.perform(&:click_settings_link)
@@ -56,7 +61,7 @@ module QA
             otp = QA::Support::OTP.new(two_fa_auth.otp_secret_content)
             two_fa_auth.set_pin_code(otp.fresh_otp)
             two_fa_auth.click_register_2fa_app_button
-            two_fa_auth.click_proceed_button
+            two_fa_auth.click_copy_and_proceed
           end
         end
       end

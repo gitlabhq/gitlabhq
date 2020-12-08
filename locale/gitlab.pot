@@ -1334,6 +1334,9 @@ msgstr ""
 msgid "AWS Secret Access Key.  Only required if not using role instance credentials"
 msgstr ""
 
+msgid "AWS service error: %{error}"
+msgstr ""
+
 msgid "Abort"
 msgstr ""
 
@@ -1371,6 +1374,9 @@ msgid "Access denied for your LDAP account."
 msgstr ""
 
 msgid "Access denied! Please verify you can add deploy keys to this repository."
+msgstr ""
+
+msgid "Access denied: %{error}"
 msgstr ""
 
 msgid "Access expiration date"
@@ -3040,6 +3046,9 @@ msgid "An error occurred while adding approvers"
 msgstr ""
 
 msgid "An error occurred while adding formatted title for epic"
+msgstr ""
+
+msgid "An error occurred while authorizing your role"
 msgstr ""
 
 msgid "An error occurred while checking group path. Please refresh and try again."
@@ -7698,6 +7707,9 @@ msgstr ""
 msgid "Copy branch name"
 msgstr ""
 
+msgid "Copy codes"
+msgstr ""
+
 msgid "Copy command"
 msgstr ""
 
@@ -11079,7 +11091,16 @@ msgstr ""
 msgid "Error: %{error_message}"
 msgstr ""
 
+msgid "Error: No AWS credentials were supplied"
+msgstr ""
+
+msgid "Error: No AWS provision role found for user"
+msgstr ""
+
 msgid "Error: Unable to create deploy freeze"
+msgstr ""
+
+msgid "Error: Unable to find AWS role for current user"
 msgstr ""
 
 msgid "ErrorTracking|Active"
@@ -20470,6 +20491,9 @@ msgstr ""
 msgid "Please convert %{linkStart}them to Git%{linkEnd}, and go through the %{linkToImportFlow} again."
 msgstr ""
 
+msgid "Please copy, download, or print your recovery codes before proceeding."
+msgstr ""
+
 msgid "Please create a password for your new account."
 msgstr ""
 
@@ -20753,6 +20777,9 @@ msgid "Previous unresolved discussion"
 msgstr ""
 
 msgid "Primary"
+msgstr ""
+
+msgid "Print codes"
 msgstr ""
 
 msgid "Prioritize"
@@ -25180,6 +25207,9 @@ msgstr ""
 msgid "Should you ever lose your phone or access to your one time password secret, each of these recovery codes can be used one time each to regain access to your account. Please save them in a safe place, or you %{b_start}will%{b_end} lose access to your account."
 msgstr ""
 
+msgid "Should you ever lose your phone or access to your one time password secret, each of these recovery codes can be used one time each to regain access to your account. Please save them in a safe place, or you %{boldStart}will%{boldEnd} lose access to your account."
+msgstr ""
+
 msgid "Show all activity"
 msgstr ""
 
@@ -28153,6 +28183,9 @@ msgid "This means you can not push code until you create an empty repository or 
 msgstr ""
 
 msgid "This merge request does not have accessibility reports"
+msgstr ""
+
+msgid "This merge request does not have codequality reports"
 msgstr ""
 
 msgid "This merge request is closed. To apply this suggestion, edit this file directly."

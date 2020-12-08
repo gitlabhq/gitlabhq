@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Reports::AccessibilityReportsComparer do
-  let(:comparer) { described_class.new(base_reports, head_reports) }
-  let(:base_reports) { Gitlab::Ci::Reports::AccessibilityReports.new }
-  let(:head_reports) { Gitlab::Ci::Reports::AccessibilityReports.new }
+  let(:comparer) { described_class.new(base_report, head_report) }
+  let(:base_report) { Gitlab::Ci::Reports::AccessibilityReports.new }
+  let(:head_report) { Gitlab::Ci::Reports::AccessibilityReports.new }
   let(:url) { "https://gitlab.com" }
   let(:single_error) do
     [
@@ -38,233 +38,254 @@ RSpec.describe Gitlab::Ci::Reports::AccessibilityReportsComparer do
   end
 
   describe '#status' do
-    subject { comparer.status }
+    subject(:status) { comparer.status }
 
     context 'when head report has an error' do
       before do
-        head_reports.add_url(url, single_error)
+        head_report.add_url(url, single_error)
       end
 
       it 'returns status failed' do
-        expect(subject).to eq(described_class::STATUS_FAILED)
+        expect(status).to eq(described_class::STATUS_FAILED)
       end
     end
 
     context 'when head reports does not have errors' do
       before do
-        head_reports.add_url(url, [])
+        head_report.add_url(url, [])
       end
 
       it 'returns status success' do
-        expect(subject).to eq(described_class::STATUS_SUCCESS)
+        expect(status).to eq(described_class::STATUS_SUCCESS)
       end
     end
   end
 
   describe '#errors_count' do
-    subject { comparer.errors_count }
+    subject(:errors_count) { comparer.errors_count }
 
     context 'when head report has an error' do
       before do
-        head_reports.add_url(url, single_error)
+        head_report.add_url(url, single_error)
       end
 
       it 'returns the number of new errors' do
-        expect(subject).to eq(1)
+        expect(errors_count).to eq(1)
       end
     end
 
     context 'when head reports does not have an error' do
       before do
-        head_reports.add_url(url, [])
+        head_report.add_url(url, [])
       end
 
       it 'returns the number new errors' do
-        expect(subject).to eq(0)
+        expect(errors_count).to eq(0)
       end
     end
   end
 
   describe '#resolved_count' do
-    subject { comparer.resolved_count }
+    subject(:resolved_count) { comparer.resolved_count }
 
     context 'when base reports has an error and head has a different error' do
       before do
-        base_reports.add_url(url, single_error)
-        head_reports.add_url(url, different_error)
+        base_report.add_url(url, single_error)
+        head_report.add_url(url, different_error)
       end
 
       it 'returns the resolved count' do
-        expect(subject).to eq(1)
+        expect(resolved_count).to eq(1)
       end
     end
 
     context 'when base reports has errors head has no errors' do
       before do
-        base_reports.add_url(url, single_error)
-        head_reports.add_url(url, [])
+        base_report.add_url(url, single_error)
+        head_report.add_url(url, [])
       end
 
       it 'returns the resolved count' do
-        expect(subject).to eq(1)
+        expect(resolved_count).to eq(1)
       end
     end
 
     context 'when base reports has errors and head has the same error' do
       before do
-        base_reports.add_url(url, single_error)
-        head_reports.add_url(url, single_error)
+        base_report.add_url(url, single_error)
+        head_report.add_url(url, single_error)
       end
 
       it 'returns zero' do
-        expect(subject).to eq(0)
+        expect(resolved_count).to eq(0)
       end
     end
 
     context 'when base reports does not have errors and head has errors' do
       before do
-        head_reports.add_url(url, single_error)
+        head_report.add_url(url, single_error)
       end
 
       it 'returns the number of resolved errors' do
-        expect(subject).to eq(0)
+        expect(resolved_count).to eq(0)
       end
     end
   end
 
   describe '#total_count' do
-    subject { comparer.total_count }
+    subject(:total_count) { comparer.total_count }
 
     context 'when base reports has an error' do
       before do
-        base_reports.add_url(url, single_error)
+        base_report.add_url(url, single_error)
       end
 
-      it 'returns the error count' do
-        expect(subject).to eq(1)
+      it 'returns zero' do
+        expect(total_count).to be_zero
       end
     end
 
     context 'when head report has an error' do
       before do
-        head_reports.add_url(url, single_error)
+        head_report.add_url(url, single_error)
       end
 
-      it 'returns the error count' do
-        expect(subject).to eq(1)
+      it 'returns the total count' do
+        expect(total_count).to eq(1)
       end
     end
 
     context 'when base report has errors and head report has errors' do
       before do
-        base_reports.add_url(url, single_error)
-        head_reports.add_url(url, different_error)
+        base_report.add_url(url, single_error)
+        head_report.add_url(url, different_error)
       end
 
-      it 'returns the error count' do
-        expect(subject).to eq(2)
+      it 'returns the total count' do
+        expect(total_count).to eq(1)
+      end
+    end
+
+    context 'when base report has errors and head report has the same error' do
+      before do
+        base_report.add_url(url, single_error)
+        head_report.add_url(url, single_error + different_error)
+      end
+
+      it 'returns the total count' do
+        expect(total_count).to eq(2)
       end
     end
   end
 
   describe '#existing_errors' do
-    subject { comparer.existing_errors }
+    subject(:existing_errors) { comparer.existing_errors }
 
     context 'when base report has errors and head has a different error' do
       before do
-        base_reports.add_url(url, single_error)
-        head_reports.add_url(url, different_error)
+        base_report.add_url(url, single_error)
+        head_report.add_url(url, different_error)
       end
 
-      it 'returns the existing errors' do
-        expect(subject.size).to eq(1)
-        expect(subject.first["code"]).to eq("WCAG2AA.Principle4.Guideline4_1.4_1_2.H91.A.NoContent")
+      it 'returns an empty array' do
+        expect(existing_errors).to be_empty
       end
     end
 
     context 'when base report does not have errors and head has errors' do
       before do
-        base_reports.add_url(url, [])
-        head_reports.add_url(url, single_error)
+        base_report.add_url(url, [])
+        head_report.add_url(url, single_error)
       end
 
       it 'returns an empty array' do
-        expect(subject).to be_empty
+        expect(existing_errors).to be_empty
+      end
+    end
+
+    context 'when base report has errors and head report has the same error' do
+      before do
+        base_report.add_url(url, single_error)
+        head_report.add_url(url, single_error + different_error)
+      end
+
+      it 'returns the existing error' do
+        expect(existing_errors).to eq(single_error)
       end
     end
   end
 
   describe '#new_errors' do
-    subject { comparer.new_errors }
+    subject(:new_errors) { comparer.new_errors }
 
     context 'when base reports has errors and head has more errors' do
       before do
-        base_reports.add_url(url, single_error)
-        head_reports.add_url(url, single_error + different_error)
+        base_report.add_url(url, single_error)
+        head_report.add_url(url, single_error + different_error)
       end
 
       it 'returns new errors between base and head reports' do
-        expect(subject.size).to eq(1)
-        expect(subject.first["code"]).to eq("WCAG2AA.Principle1.Guideline1_4.1_4_3.G18.Fail")
+        expect(new_errors.size).to eq(1)
+        expect(new_errors.first["code"]).to eq("WCAG2AA.Principle1.Guideline1_4.1_4_3.G18.Fail")
       end
     end
 
     context 'when base reports has an error and head has no errors' do
       before do
-        base_reports.add_url(url, single_error)
-        head_reports.add_url(url, [])
+        base_report.add_url(url, single_error)
+        head_report.add_url(url, [])
       end
 
       it 'returns an empty array' do
-        expect(subject).to be_empty
+        expect(new_errors).to be_empty
       end
     end
 
     context 'when base reports does not have errors and head has errors' do
       before do
-        head_reports.add_url(url, single_error)
+        head_report.add_url(url, single_error)
       end
 
       it 'returns the new error' do
-        expect(subject.size).to eq(1)
-        expect(subject.first["code"]).to eq("WCAG2AA.Principle4.Guideline4_1.4_1_2.H91.A.NoContent")
+        expect(new_errors.size).to eq(1)
+        expect(new_errors.first["code"]).to eq("WCAG2AA.Principle4.Guideline4_1.4_1_2.H91.A.NoContent")
       end
     end
   end
 
   describe '#resolved_errors' do
-    subject { comparer.resolved_errors }
+    subject(:resolved_errors) { comparer.resolved_errors }
 
     context 'when base report has errors and head has more errors' do
       before do
-        base_reports.add_url(url, single_error)
-        head_reports.add_url(url, single_error + different_error)
+        base_report.add_url(url, single_error)
+        head_report.add_url(url, single_error + different_error)
       end
 
       it 'returns an empty array' do
-        expect(subject).to be_empty
+        expect(resolved_errors).to be_empty
       end
     end
 
     context 'when base reports has errors and head has a different error' do
       before do
-        base_reports.add_url(url, single_error)
-        head_reports.add_url(url, different_error)
+        base_report.add_url(url, single_error)
+        head_report.add_url(url, different_error)
       end
 
       it 'returns the resolved errors' do
-        expect(subject.size).to eq(1)
-        expect(subject.first["code"]).to eq("WCAG2AA.Principle4.Guideline4_1.4_1_2.H91.A.NoContent")
+        expect(resolved_errors.size).to eq(1)
+        expect(resolved_errors.first["code"]).to eq("WCAG2AA.Principle4.Guideline4_1.4_1_2.H91.A.NoContent")
       end
     end
 
     context 'when base reports does not have errors and head has errors' do
       before do
-        head_reports.add_url(url, single_error)
+        head_report.add_url(url, single_error)
       end
 
       it 'returns an empty array' do
-        expect(subject).to be_empty
+        expect(resolved_errors).to be_empty
       end
     end
   end

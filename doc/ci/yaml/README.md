@@ -3504,6 +3504,7 @@ hover over the downstream pipeline job.
 In [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/201938) and later, you
 can use [`when:manual`](#whenmanual) in the same job as `trigger`. In GitLab 13.4 and
 earlier, using them together causes the error `jobs:#{job-name} when should be on_success, on_failure or always`.
+You [cannot start `manual` trigger jobs with the API](https://gitlab.com/gitlab-org/gitlab/-/issues/284086).
 
 #### Basic `trigger` syntax for multi-project pipelines
 

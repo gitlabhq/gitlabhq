@@ -18,46 +18,33 @@ export default {
   render(h, { props }) {
     const { line, path } = props;
 
-    let chars;
-    if (gon?.features?.ciJobLineLinks) {
-      chars = line.content.map(content => {
-        return h(
-          'span',
-          {
-            class: ['gl-white-space-pre-wrap', content.style],
-          },
-          // Simple "tokenization": Split text in chunks of text
-          // which alternate between text and urls.
-          content.text.split(linkRegex).map(chunk => {
-            // Return normal string for non-links
-            if (!chunk.match(linkRegex)) {
-              return chunk;
-            }
-            return h(
-              'a',
-              {
-                attrs: {
-                  href: chunk,
-                  class: 'gl-reset-color! gl-text-decoration-underline',
-                  rel: 'nofollow noopener noreferrer', // eslint-disable-line @gitlab/require-i18n-strings
-                },
+    const chars = line.content.map(content => {
+      return h(
+        'span',
+        {
+          class: ['gl-white-space-pre-wrap', content.style],
+        },
+        // Simple "tokenization": Split text in chunks of text
+        // which alternate between text and urls.
+        content.text.split(linkRegex).map(chunk => {
+          // Return normal string for non-links
+          if (!chunk.match(linkRegex)) {
+            return chunk;
+          }
+          return h(
+            'a',
+            {
+              attrs: {
+                href: chunk,
+                class: 'gl-reset-color! gl-text-decoration-underline',
+                rel: 'nofollow noopener noreferrer', // eslint-disable-line @gitlab/require-i18n-strings
               },
-              chunk,
-            );
-          }),
-        );
-      });
-    } else {
-      chars = line.content.map(content => {
-        return h(
-          'span',
-          {
-            class: ['gl-white-space-pre-wrap', content.style],
-          },
-          content.text,
-        );
-      });
-    }
+            },
+            chunk,
+          );
+        }),
+      );
+    });
 
     return h('div', { class: 'js-line log-line' }, [
       h(LineNumber, {

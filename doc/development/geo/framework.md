@@ -433,24 +433,36 @@ can track verification state.
    end
    ```
 
-1. Add an index on `verification_state` to ensure verification can be performed efficiently:
+1. Add indexes on verification fields to ensure verification can be performed efficiently:
+
+   Some or all of these indexes can be omitted if the table is guaranteed to be small. Ask a database expert if you are unsure.
 
    ```ruby
    # frozen_string_literal: true
 
-   class AddVerificationStateIndexToWidgets < ActiveRecord::Migration[6.0]
+   class AddVerificationIndexesToWidgets < ActiveRecord::Migration[6.0]
      include Gitlab::Database::MigrationHelpers
 
      DOWNTIME = false
+     VERIFICATION_STATE_INDEX_NAME = "index_widgets_verification_state"
+     PENDING_VERIFICATION_INDEX_NAME = "index_widgets_pending_verification"
+     FAILED_VERIFICATION_INDEX_NAME = "index_widgets_failed_verification"
+     NEEDS_VERIFICATION_INDEX_NAME = "index_widgets_needs_verification"
 
      disable_ddl_transaction!
 
      def up
-       add_concurrent_index :widgets, :verification_state, name: "index_widgets_on_verification_state"
+       add_concurrent_index :widgets, :verification_state, name: VERIFICATION_STATE_INDEX_NAME
+       add_concurrent_index :widgets, :verified_at, where: "(verification_state = 0)", order: { verified_at: 'ASC NULLS FIRST' }, name: PENDING_VERIFICATION_INDEX_NAME
+       add_concurrent_index :widgets, :verification_retry_at, where: "(verification_state = 3)", order: { verification_retry_at: 'ASC NULLS FIRST' }, name: FAILED_VERIFICATION_INDEX_NAME
+       add_concurrent_index :widgets, :verification_state, where: "(verification_state = 0 OR verification_state = 3)", name: NEEDS_VERIFICATION_INDEX_NAME
      end
 
      def down
-       remove_concurrent_index :widgets, :verification_state
+       remove_concurrent_index_by_name :widgets, VERIFICATION_STATE_INDEX_NAME
+       remove_concurrent_index_by_name :widgets, PENDING_VERIFICATION_INDEX_NAME
+       remove_concurrent_index_by_name :widgets, FAILED_VERIFICATION_INDEX_NAME
+       remove_concurrent_index_by_name :widgets, NEEDS_VERIFICATION_INDEX_NAME
      end
    end
    ```

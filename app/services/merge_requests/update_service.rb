@@ -11,7 +11,7 @@ module MergeRequests
       params.delete(:target_project_id)
       params.delete(:source_branch)
 
-      if merge_request.closed_without_fork?
+      if merge_request.closed_or_merged_without_fork?
         params.delete(:target_branch)
         params.delete(:force_remove_source_branch)
       end

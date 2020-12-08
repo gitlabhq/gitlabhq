@@ -7,6 +7,14 @@
     .gl-alert-body
       = s_('Profiles|Some options are unavailable for LDAP accounts')
 
+- if params[:two_factor_auth_enabled_successfully]
+  .gl-alert.gl-alert-success.gl-my-5{ role: 'alert' }
+    = sprite_icon('check-circle', size: 16, css_class: 'gl-alert-icon gl-alert-icon-no-title')
+    %button.gl-alert-dismiss.js-close-2fa-enabled-success-alert{ type: 'button', aria: { label: _('Close') } }
+      = sprite_icon('close', size: 16)
+    .gl-alert-body
+      = _('Congratulations! You have enabled Two-factor Authentication!')
+
 .row.gl-mt-3
   .col-lg-4.profile-settings-sidebar
     %h4.gl-mt-0

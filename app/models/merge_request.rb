@@ -233,13 +233,13 @@ class MergeRequest < ApplicationRecord
     cannot_be_merged_rechecking? ? 'checking' : merge_status
   end
 
-  validates :source_project, presence: true, unless: [:allow_broken, :importing?, :closed_without_fork?]
+  validates :source_project, presence: true, unless: [:allow_broken, :importing?, :closed_or_merged_without_fork?]
   validates :source_branch, presence: true
   validates :target_project, presence: true
   validates :target_branch, presence: true
   validates :merge_user, presence: true, if: :auto_merge_enabled?, unless: :importing?
-  validate :validate_branches, unless: [:allow_broken, :importing?, :closed_without_fork?]
-  validate :validate_fork, unless: :closed_without_fork?
+  validate :validate_branches, unless: [:allow_broken, :importing?, :closed_or_merged_without_fork?]
+  validate :validate_fork, unless: :closed_or_merged_without_fork?
   validate :validate_target_project, on: :create
 
   scope :by_source_or_target_branch, ->(branch_name) do
@@ -883,8 +883,8 @@ class MergeRequest < ApplicationRecord
     !!merge_jid && !merged? && Gitlab::SidekiqStatus.running?(merge_jid)
   end
 
-  def closed_without_fork?
-    closed? && source_project_missing?
+  def closed_or_merged_without_fork?
+    (closed? || merged?) && source_project_missing?
   end
 
   def source_project_missing?
@@ -1459,6 +1459,20 @@ class MergeRequest < ApplicationRecord
     end
 
     compare_reports(Ci::GenerateCoverageReportsService)
+  end
+
+  def has_codequality_reports?
+    return false unless Feature.enabled?(:codequality_mr_diff, project)
+
+    actual_head_pipeline&.has_reports?(Ci::JobArtifact.codequality_reports)
+  end
+
+  def compare_codequality_reports
+    unless has_codequality_reports?
+      return { status: :error, status_reason: _('This merge request does not have codequality reports') }
+    end
+
+    compare_reports(Ci::CompareCodequalityReportsService)
   end
 
   def find_terraform_reports

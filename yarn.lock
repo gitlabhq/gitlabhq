@@ -8404,10 +8404,10 @@ mkdirp@1.x, mkdirp@^1.0.4, mkdirp@~1.0.3:
   dependencies:
     minimist "0.0.8"
 
-mock-apollo-client@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/mock-apollo-client/-/mock-apollo-client-0.4.0.tgz#556a6090b1816dbf07e51093b652aca84aee979e"
-  integrity sha512-cHznpkX8uUClkWWJMpgdDWzEgjacM85xt69S9gPLrssM8Vahas0QmEJkFUycrRQyBkaqxvRe58Bg3a5pOvj2zA==
+mock-apollo-client@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/mock-apollo-client/-/mock-apollo-client-0.5.0.tgz#8f0d6a1ba0d349ebde87a1dcd85c7fd353076922"
+  integrity sha512-qdMUt1NhmNXLjHd/IaHbvbX5LaEE91WZB4glfj7AfUUs413/z148kBuXKg6XpMZqvJr+XdR/9i1V+YGY7UnCKA==
 
 moment-mini@^2.22.1:
   version "2.22.1"

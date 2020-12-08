@@ -106,6 +106,10 @@
   - ".gitlab/ci/build-images.gitlab-ci.yml"
   - ".gitlab/ci/qa.gitlab-ci.yml"
 
+.workhorse-patterns: &workhorse-patterns
+  - "GITLAB_WORKHORSE_VERSION"
+  - "workhorse/**/*"
+
 .yaml-lint-patterns: &yaml-lint-patterns
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*.yml"
@@ -921,6 +925,14 @@
         - "scripts/rspec_helpers.sh"
     - <<: *if-dot-com-ee-schedule
       changes: *code-backstage-patterns
+
+###################
+# workhorse rules #
+###################
+.workhorse:rules:workhorse:
+  rules:
+    - <<: *if-default-refs
+      changes: *workhorse-patterns
 
 ###################
 # yaml-lint rules #
