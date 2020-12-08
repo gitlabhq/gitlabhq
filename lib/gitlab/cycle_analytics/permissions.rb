@@ -12,8 +12,8 @@ module Gitlab
         production: :read_issue
       }.freeze
 
-      def self.get(*args)
-        new(*args).get
+      def self.get(...)
+        new(...).get
       end
 
       def initialize(user:, project:)

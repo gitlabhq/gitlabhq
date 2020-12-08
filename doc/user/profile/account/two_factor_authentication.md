@@ -18,7 +18,7 @@ password secret.
 
 ## Overview
 
-TIP: **Tip:**
+NOTE:
 When you enable 2FA, don't forget to back up your [recovery codes](#recovery-codes)!
 
 In addition to time-based one time passwords (TOTP), GitLab supports U2F

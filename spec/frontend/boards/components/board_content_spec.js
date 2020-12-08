@@ -3,8 +3,8 @@ import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { GlAlert } from '@gitlab/ui';
 import Draggable from 'vuedraggable';
 import EpicsSwimlanes from 'ee_component/boards/components/epics_swimlanes.vue';
-import BoardColumn from 'ee_else_ce/boards/components/board_column.vue';
 import getters from 'ee_else_ce/boards/stores/getters';
+import BoardColumn from '~/boards/components/board_column.vue';
 import { mockListsWithModel } from '../mock_data';
 import BoardContent from '~/boards/components/board_content.vue';
 
@@ -13,7 +13,6 @@ localVue.use(Vuex);
 
 const actions = {
   moveList: jest.fn(),
-  showPromotionList: jest.fn(),
 };
 
 describe('BoardContent', () => {

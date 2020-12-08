@@ -426,7 +426,7 @@ delete_image:
     - master
 ```
 
-TIP: **Tip:**
+NOTE:
 You can download the latest `reg` release from
 [the releases page](https://github.com/genuinetools/reg/releases), then update
 the code example by changing the `REG_SHA256` and `REG_VERSION` variables

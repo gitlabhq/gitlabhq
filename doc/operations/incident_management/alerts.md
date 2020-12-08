@@ -37,7 +37,7 @@ The alert list displays the following information:
   - **Acknowledged**: Someone is actively investigating the problem.
   - **Resolved**: No further work is required.
 
-TIP: **Tip:**
+NOTE:
 Check out a live example available from the
 [`tanuki-inc` project page](https://gitlab-examples-ops-incident-setup-everyone-tanuki-inc.34.69.64.147.nip.io/)
 in GitLab to examine alerts in action.
@@ -67,7 +67,7 @@ Navigate to the Alert details view by visiting the [Alert list](alerts.md)
 and selecting an alert from the list. You need least Developer [permissions](../../user/permissions.md)
 to access alerts.
 
-TIP: **Tip:**
+NOTE:
 To review live examples of GitLab alerts, visit the
 [alert list](https://gitlab.com/gitlab-examples/ops/incident-setup/everyone/tanuki-inc/-/alert_management)
 for this demo project. Select any alert in the list to examine its alert details

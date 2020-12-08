@@ -100,7 +100,7 @@ The following options are available.
 | Prohibited file names | **Starter** 7.10 | Any committed filenames that match this regular expression and do not already exist in the repository are not allowed to be pushed. Leave empty to allow any filenames. See [common examples](#prohibited-file-names). |
 | Maximum file size | **Starter** 7.12 | Pushes that contain added or updated files that exceed this file size (in MB) are rejected. Set to 0 to allow files of any size. Files tracked by Git LFS are exempted. |
 
-TIP: **Tip:**
+NOTE:
 GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular expressions in push rules, and you can test them at the [regex101 regex tester](https://regex101.com/).
 
 ## Prevent pushing secrets to the repository

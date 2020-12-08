@@ -92,7 +92,7 @@ cache, when declaring `cache` in your jobs, use one or a mix of the following:
   different caches on each branch). For that, you can take advantage of the
   [CI/CD predefined variables](../variables/README.md#predefined-environment-variables).
 
-TIP: **Tip:**
+NOTE:
 Using the same runner for your pipeline, is the most simple and efficient way to
 cache files in one stage or pipeline, and pass this cache to subsequent stages
 or pipelines in a guaranteed manner.
@@ -108,7 +108,7 @@ of the following must be true:
   share a common network-mounted directory (using NFS or something similar)
   where the cache is stored.
 
-TIP: **Tip:**
+NOTE:
 Read about the [availability of the cache](#availability-of-the-cache)
 to learn more about the internals and get a better idea how cache works.
 

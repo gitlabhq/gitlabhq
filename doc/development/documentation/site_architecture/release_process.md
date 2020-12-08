@@ -26,7 +26,7 @@ To add a new charts version:
    version mapping. Note that only the `major.minor` version is needed.
 1. Create a new merge request and merge it.
 
-TIP: **Tip:**
+NOTE:
 It can be handy to create the future mappings since they are pretty much known.
 In that case, when a new GitLab version is released, you don't have to repeat
 this first step.
@@ -138,7 +138,7 @@ versions (stable branches `X.Y` of the `gitlab-docs` project):
    to check that their pipelines pass, and once all are merged, proceed to the
    following and final step.
 
-TIP: **Tip:**
+NOTE:
 In case a pipeline fails, see [troubleshooting](#troubleshooting).
 
 ## 5. Merge the release merge request

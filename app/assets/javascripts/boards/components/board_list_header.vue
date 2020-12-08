@@ -73,10 +73,7 @@ export default {
     },
     showListHeaderButton() {
       return (
-        !this.disabled &&
-        this.listType !== ListType.closed &&
-        this.listType !== ListType.blank &&
-        this.listType !== ListType.promotion
+        !this.disabled && this.listType !== ListType.closed && this.listType !== ListType.blank
       );
     },
     showMilestoneListDetails() {
@@ -110,7 +107,7 @@ export default {
       );
     },
     showBoardListAndBoardInfo() {
-      return this.listType !== ListType.blank && this.listType !== ListType.promotion;
+      return this.listType !== ListType.blank;
     },
     uniqueKey() {
       // eslint-disable-next-line @gitlab/require-i18n-strings

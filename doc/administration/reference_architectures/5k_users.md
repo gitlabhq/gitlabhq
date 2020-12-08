@@ -1466,7 +1466,7 @@ To configure the Sidekiq nodes, one each one:
    run: sidekiq: (pid 30142) 77351s; run: log: (pid 29638) 77386s
    ```
 
-TIP: **Tip:**
+NOTE:
 You can also run [multiple Sidekiq processes](../operations/extra_sidekiq_processes.md).
 
 <div align="right">

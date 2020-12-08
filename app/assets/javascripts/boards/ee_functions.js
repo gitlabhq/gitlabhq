@@ -1,5 +1,3 @@
-export const setPromotionState = () => {};
-
 export const setWeightFetchingState = () => {};
 export const setEpicFetchingState = () => {};
 

@@ -466,7 +466,7 @@ to start again from scratch, there are a few steps that can help you:
    chown git:git /var/opt/gitlab/git-data/repositories
    ```
 
-   TIP: **Tip:**
+   NOTE:
    You may want to remove the `/var/opt/gitlab/git-data/repositories.old` in the future
    as soon as you confirmed that you don't need it anymore, to save disk space.
 

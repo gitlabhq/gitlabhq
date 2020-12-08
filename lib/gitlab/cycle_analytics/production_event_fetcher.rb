@@ -5,7 +5,7 @@ module Gitlab
     class ProductionEventFetcher < BaseEventFetcher
       include ProductionHelper
 
-      def initialize(*args)
+      def initialize(...)
         @projections = [issue_table[:title],
                         issue_table[:iid],
                         issue_table[:id],
@@ -13,7 +13,7 @@ module Gitlab
                         issue_table[:author_id],
                         routes_table[:path]]
 
-        super(*args)
+        super(...)
       end
 
       private

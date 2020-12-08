@@ -54,6 +54,10 @@ module Enums
         sources.except(*dangling_sources.keys)
       end
 
+      def self.ci_branch_sources
+        ci_sources.except(:merge_request_event)
+      end
+
       def self.ci_and_parent_sources
         ci_sources.merge(sources.slice(:parent_pipeline))
       end

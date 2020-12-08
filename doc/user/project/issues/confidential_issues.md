@@ -100,7 +100,7 @@ confidential information prematurely. When the confidential commits are ready
 to be made public, this can be done by opening a merge request from the private
 fork to the public upstream project.
 
-TIP: **Best practice:**
+NOTE:
 If you create a long-lived private fork in the same group or in a sub-group of
 the original upstream, all the users with Developer membership to the public
 project will also have the same permissions in the private project. This way,

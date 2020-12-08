@@ -375,7 +375,7 @@ The files defined by `include` are:
 - Always evaluated first and merged with the content of `.gitlab-ci.yml`,
   regardless of the position of the `include` keyword.
 
-TIP: **Tip:**
+NOTE:
 Use merging to customize and override included CI/CD configurations with local
 definitions. Local definitions in `.gitlab-ci.yml` override included definitions.
 
@@ -1583,7 +1583,7 @@ that begin with `issue-`, but you can use `/issue-.*/`.
 
 Regular expression flags must be appended after the closing `/`.
 
-TIP: **Tip:**
+NOTE:
 Use anchors `^` and `$` to avoid the regular expression
 matching only a substring of the tag name or branch name.
 For example, `/^issue-.*$/` is equivalent to `/^issue-/`,

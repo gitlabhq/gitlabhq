@@ -129,7 +129,7 @@ message, squash (join multiple commits into one), edit, or delete
 commits. It is handy for changing past commit messages,
 as well as for organizing the commit history of your branch to keep it clean.
 
-TIP: **Tip:**
+NOTE:
 If you want to keep the default branch commit history clean, you don't need to
 manually squash all your commits before merging every merge request;
 with [Squash and Merge](../../user/project/merge_requests/squash_and_merge.md)

@@ -30,7 +30,7 @@ Google account (for example, one that you use to access Gmail, Drive, etc.) or c
 1. To enable the required APIs and related services, follow the steps in the ["Before you begin" section of the Kubernetes Engine docs](https://cloud.google.com/kubernetes-engine/docs/quickstart#before-you-begin).
 1. Make sure you have created a [billing account](https://cloud.google.com/billing/docs/how-to/manage-billing-account).
 
-TIP: **Tip:**
+NOTE:
 Every new Google Cloud Platform (GCP) account receives [$300 in credit](https://console.cloud.google.com/freetrial),
 and in partnership with Google, GitLab is able to offer an additional $200 for new GCP accounts to get started with GitLab's
 Google Kubernetes Engine integration. All you have to do is [follow this link](https://cloud.google.com/partners/partnercredit/?PCN=a0n60000006Vpz4AAC) and apply for credit.

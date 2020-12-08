@@ -5,8 +5,6 @@ module Ci
   class PipelinesForMergeRequestFinder
     include Gitlab::Utils::StrongMemoize
 
-    EVENT = 'merge_request_event'
-
     def initialize(merge_request, current_user)
       @merge_request = merge_request
       @current_user = current_user
@@ -36,7 +34,11 @@ module Ci
 
         pipelines =
           if merge_request.persisted?
-            pipelines_using_cte
+            if Feature.enabled?(:ci_pipelines_for_merge_request_finder_new_cte, target_project)
+              pipelines_using_cte
+            else
+              pipelines_using_legacy_cte
+            end
           else
             triggered_for_branch.for_sha(commit_shas)
           end
@@ -47,7 +49,7 @@ module Ci
 
     private
 
-    def pipelines_using_cte
+    def pipelines_using_legacy_cte
       cte = Gitlab::SQL::CTE.new(:shas, merge_request.all_commits.select(:sha))
 
       source_sha_join = cte.table[:sha].eq(Ci::Pipeline.arel_table[:source_sha])
@@ -57,6 +59,16 @@ module Ci
 
       Ci::Pipeline.with(cte.to_arel) # rubocop: disable CodeReuse/ActiveRecord
         .from_union([merged_result_pipelines, detached_merge_request_pipelines, pipelines_for_branch])
+    end
+
+    def pipelines_using_cte
+      cte = Gitlab::SQL::CTE.new(:shas, merge_request.all_commits.select(:sha))
+
+      pipelines_for_merge_requests = triggered_by_merge_request
+      pipelines_for_branch = filter_by_sha(triggered_for_branch, cte)
+
+      Ci::Pipeline.with(cte.to_arel) # rubocop: disable CodeReuse/ActiveRecord
+        .from_union([pipelines_for_merge_requests, pipelines_for_branch])
     end
 
     def filter_by_sha(pipelines, cte)
@@ -84,14 +96,7 @@ module Ci
     end
 
     def triggered_for_branch
-      source_project.ci_pipelines
-        .where(source: branch_pipeline_sources, ref: source_branch, tag: false) # rubocop: disable CodeReuse/ActiveRecord
-    end
-
-    def branch_pipeline_sources
-      strong_memoize(:branch_pipeline_sources) do
-        Ci::Pipeline.sources.reject { |source| source == EVENT }.values
-      end
+      source_project.all_pipelines.ci_branch_sources.for_branch(source_branch)
     end
 
     def sort(pipelines)

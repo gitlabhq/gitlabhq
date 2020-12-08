@@ -40,7 +40,7 @@ the `app/controllers/admin/deploy_keys_controller.rb` file.
 
 Using a fuzzy search, we start by typing letters that get us closer to the file.
 
-TIP: **Tip:**
+NOTE:
 To narrow down your search, include `/` in your search terms.
 
 ![Find file button](img/file_finder_find_file_v12_10.png)

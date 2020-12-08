@@ -102,7 +102,7 @@ can be a nested JSON object. For example:
 { "foo": { "bar": { "baz": 42 } } }
 ```
 
-TIP: **Tip:**
+NOTE:
 Ensure your requests are smaller than the
 [payload application limits](../../administration/instance_limits.md#generic-alert-json-payloads).
 

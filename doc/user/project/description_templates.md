@@ -79,7 +79,7 @@ This enables the `Bug` dropdown option when creating or editing issues. When
 to the issue description field. The **Reset template** button discards any
 changes you made after picking the template and returns it to its initial status.
 
-TIP: **Tip:**
+NOTE:
 You can create short-cut links to create an issue using a designated template. For example: `https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20proposal`.
 
 ![Description templates](img/description_templates.png)
@@ -117,7 +117,7 @@ We make use of Description Templates for Issues and Merge Requests within the Gi
 Edition project. Please refer to the [`.gitlab` folder](https://gitlab.com/gitlab-org/gitlab/tree/master/.gitlab)
 for some examples.
 
-TIP: **Tip:**
+NOTE:
 It's possible to use [quick actions](quick_actions.md) within description templates to quickly add
 labels, assignees, and milestones. The quick actions are only executed if the user submitting
 the issue or merge request has the permissions to perform the relevant actions.

@@ -14368,15 +14368,6 @@ msgstr ""
 msgid "Imported requirements"
 msgstr ""
 
-msgid "Improve Issue Boards"
-msgstr ""
-
-msgid "Improve Issue boards"
-msgstr ""
-
-msgid "Improve Issue boards with GitLab Enterprise Edition."
-msgstr ""
-
 msgid "Improve Merge Requests and customer support with GitLab Enterprise Edition."
 msgstr ""
 
@@ -18009,9 +18000,6 @@ msgid "Multiple Prometheus integrations are not supported"
 msgstr ""
 
 msgid "Multiple domains are supported."
-msgstr ""
-
-msgid "Multiple issue boards"
 msgstr ""
 
 msgid "Multiple model types found: %{model_types}"
@@ -23941,9 +23929,6 @@ msgstr ""
 msgid "Scope"
 msgstr ""
 
-msgid "Scoped issue boards"
-msgstr ""
-
 msgid "Scopes"
 msgstr ""
 
@@ -27101,9 +27086,6 @@ msgstr ""
 msgid "Thanks for your purchase!"
 msgstr ""
 
-msgid "Thanks! Don't show me this again"
-msgstr ""
-
 msgid "That's it, well done!"
 msgstr ""
 
@@ -29558,9 +29540,6 @@ msgid "Upgrade your plan to activate Group Webhooks."
 msgstr ""
 
 msgid "Upgrade your plan to enable this feature of the Jira Integration."
-msgstr ""
-
-msgid "Upgrade your plan to improve Issue boards."
 msgstr ""
 
 msgid "Upgrade your plan to improve Merge Requests."

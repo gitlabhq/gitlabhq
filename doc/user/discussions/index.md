@@ -85,7 +85,7 @@ Threads created this way will only appear in the original merge request
 and not when navigating to that commit under your project's
 **Repository > Commits** page.
 
-TIP: **Tip:**
+NOTE:
 When a link of a commit reference is found in a thread inside a merge
 request, it will be automatically converted to a link in the context of the
 current merge request.

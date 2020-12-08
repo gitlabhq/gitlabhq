@@ -418,7 +418,7 @@ working on. If you don't, the remote docs branch isn't removed either,
 and the server where the Review Apps are hosted can eventually run out of
 disk space.
 
-TIP: **Tip:**
+NOTE:
 Someone with no merge rights to the GitLab projects (think of forks from
 contributors) cannot run the manual job. In that case, you can
 ask someone from the GitLab team who has the permissions to do that for you.

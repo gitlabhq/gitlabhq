@@ -106,7 +106,7 @@ It is currently not possible to change your username if it contains a
 project with [Container Registry](../packages/container_registry/index.md) tags,
 because the project cannot be moved.
 
-TIP: **Tip:**
+NOTE:
 If you want to retain ownership over the original namespace and
 protect the URL redirects, then instead of changing a group's path or renaming a
 username, you can create a new group and transfer projects to it.

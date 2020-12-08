@@ -89,7 +89,7 @@ To edit a broadcast message:
 1. From the list of broadcast messages, click the appropriate button to edit the message.
 1. After making the required changes, click the **Update broadcast message** button.
 
-TIP: **Tip:**
+NOTE:
 Expired messages can be made active again by changing their end date.
 
 ## Deleting a broadcast message

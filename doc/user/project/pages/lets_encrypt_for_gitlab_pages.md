@@ -67,7 +67,7 @@ might be slightly different. Follow the
    sudo certbot certonly -a manual -d example.com --register-unsafely-without-email
    ```
 
-   TIP: **Tip:**
+   NOTE:
    Read through CertBot's documentation on their
    [command line options](https://certbot.eff.org/docs/using.html#certbot-command-line-options).
 

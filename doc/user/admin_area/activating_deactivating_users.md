@@ -65,5 +65,5 @@ NOTE:
 Activating a user changes the user's state to active and consumes a
 [seat](../../subscriptions/self_managed/index.md#billable-users).
 
-TIP: **Tip:**
+NOTE:
 A deactivated user can also activate their account themselves by simply logging back in via the UI.

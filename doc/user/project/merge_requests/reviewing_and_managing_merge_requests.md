@@ -132,7 +132,7 @@ specific commit page.
 
 ![MR diff](img/merge_request_diff.png)
 
-TIP: **Tip:**
+NOTE:
 You can append `?w=1` while on the diffs page of a merge request to ignore any
 whitespace changes.
 

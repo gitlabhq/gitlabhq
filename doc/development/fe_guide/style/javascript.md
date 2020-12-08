@@ -13,7 +13,7 @@ linter to manage most of our JavaScript style guidelines.
 In addition to the style guidelines set by Airbnb, we also have a few specific rules
 listed below.
 
-TIP: **Tip:**
+NOTE:
 You can run eslint locally by running `yarn eslint`
 
 ## Avoid forEach

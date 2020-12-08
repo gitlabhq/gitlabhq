@@ -18,7 +18,7 @@ Watch the webcast [Scalable app deployment with GitLab and Google Cloud Platform
 and learn how to spin up a Kubernetes cluster managed by Google Cloud Platform (GCP)
 in a few clicks.
 
-TIP: **Tip:**
+NOTE:
 Every new Google Cloud Platform (GCP) account receives
 [$300 in credit upon sign up](https://console.cloud.google.com/freetrial).
 In partnership with Google, GitLab is able to offer an additional $200 for new GCP

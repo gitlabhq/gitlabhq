@@ -1750,7 +1750,7 @@ To configure the Sidekiq nodes, on each one:
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
-TIP: **Tip:**
+NOTE:
 You can also run [multiple Sidekiq processes](../operations/extra_sidekiq_processes.md).
 
 <div align="right">

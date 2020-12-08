@@ -13,7 +13,6 @@
 - content_for :page_specific_javascripts do
 
   %script#js-board-modal-filter{ type: "text/x-template" }= render "shared/issuable/search_bar", type: :boards_modal, show_sorting_dropdown: false
-  %script#js-board-promotion{ type: "text/x-template" }= render_if_exists "shared/promotions/promote_issue_board"
 
 = render 'shared/issuable/search_bar', type: :boards, board: board
 #board-app.boards-app.position-relative{ "v-cloak" => "true", data: board_data, ":class" => "{ 'is-compact': detailIssueVisible }" }

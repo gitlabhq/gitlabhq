@@ -121,7 +121,7 @@ display an arrow next to the column name.
 
 Incidents share the [Issues API](../../user/project/issues/index.md).
 
-TIP: **Tip:**
+NOTE:
 For a live example of the incident list in action, visit this
 [demo project](https://gitlab.com/gitlab-examples/ops/incident-setup/everyone/tanuki-inc/-/incidents).
 

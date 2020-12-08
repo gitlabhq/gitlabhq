@@ -179,7 +179,7 @@ end
 
 ### Connection types
 
-TIP: **Tip:**
+NOTE:
 For specifics on implementation, see [Pagination implementation](#pagination-implementation).
 
 GraphQL uses [cursor based
@@ -647,7 +647,7 @@ If the:
 
 Also see [authorizing resources in a mutation](#authorizing-resources).
 
-TIP: **Tip:**
+NOTE:
 Try to load only what the currently authenticated user is allowed to
 view with our existing finders first, without relying on authorization
 to filter the records. This minimizes database queries and unnecessary

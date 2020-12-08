@@ -399,7 +399,7 @@ a bug that [prevents Sidekiq from processing jobs](https://gitlab.com/gitlab-org
 
 Since our GitLab instances will be in private subnets, we need a way to connect to these instances via SSH to make configuration changes, perform upgrades, etc. One way of doing this is via a [bastion host](https://en.wikipedia.org/wiki/Bastion_host), sometimes also referred to as a jump box.
 
-TIP: **Tip:**
+NOTE:
 If you do not want to maintain bastion hosts, you can set up [AWS Systems Manager Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html) for access to instances. This is beyond the scope of this document.
 
 ### Create Bastion Host A

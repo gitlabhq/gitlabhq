@@ -3,8 +3,8 @@
 module Gitlab
   module CycleAnalytics
     class Updater
-      def self.update!(*args)
-        new(*args).update!
+      def self.update!(...)
+        new(...).update!
       end
 
       def initialize(event_result, from:, to:, klass:)

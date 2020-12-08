@@ -29,7 +29,7 @@ must be configured to run the specs. The end-to-end tests:
 - Create [resources](resources.md) (such as project, issue, user) on an ad-hoc basis.
 - Test the UI and API interfaces, and use the API to efficiently set up the UI tests.
 
-TIP: **Tip:**
+NOTE:
 For more information, see [End-to-end testing Best Practices](best_practices.md).
 
 ## Determine if end-to-end tests are needed

@@ -10,7 +10,7 @@ type: reference
 
 > Introduced in GitLab 8.8.
 
-TIP: **Tip:**
+NOTE:
 Watch the
 ["Mastering continuous software development"](https://about.gitlab.com/webcast/mastering-ci-cd/)
 webcast to see a comprehensive demo of a GitLab CI/CD pipeline.

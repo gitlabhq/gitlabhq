@@ -46,7 +46,7 @@ the merge request.
 
 ![New Merge Request page](img/new_merge_request_page_v12_6.png)
 
-TIP: **Tip:**
+NOTE:
 You can push one or more times to your branch in GitLab before
 creating the merge request.
 

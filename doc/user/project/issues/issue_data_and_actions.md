@@ -93,7 +93,7 @@ The assignee(s) can be changed as often as needed. The idea is that the assignee
 responsible for that issue until it's reassigned to someone else to take it from there.
 When assigned to someone, it will appear in their assigned issues list.
 
-TIP: **Tip:**
+NOTE:
 If a user is not member of that project, it can only be
 assigned to them if they created the issue themselves.
 
@@ -136,7 +136,7 @@ Group Labels, which allow you to use the same labels for all projects within the
 group, can be also given to issues. They work exactly the same, but they are immediately
 available to all projects in the group.
 
-TIP: **Tip:**
+NOTE:
 If a label doesn't exist yet, you can click **Edit**, and it opens a dropdown menu
 from which you can select **Create new label**.
 
@@ -203,7 +203,7 @@ Mentions for yourself (the current logged in user), will be highlighted in a dif
 color, allowing you to easily see which comments involve you, helping you focus on
 them quickly.
 
-TIP: **Tip:**
+NOTE:
 Avoid mentioning `@all` in issues and merge requests, as it sends an email notification
 to all the members of that project's group, which can be interpreted as spam.
 
@@ -225,7 +225,7 @@ You can award an emoji to that issue. There are shortcuts to "thumbs_up" and "th
 or you can click on the light gray "face" to choose a different reaction from the
 dropdown list of available [GitLab Flavored Markdown Emoji](../../markdown.md#emoji).
 
-TIP: **Tip:**
+NOTE:
 Posting "+1" as a comment in a thread spams all subscribed participants of that issue,
 clutters the threads, and is not recommended. Awarding an emoji is a way
 to let them know your reaction without spamming them.

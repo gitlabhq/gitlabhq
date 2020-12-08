@@ -9,7 +9,6 @@ import boardConfigToggle from 'ee_else_ce/boards/config_toggle';
 import toggleLabels from 'ee_else_ce/boards/toggle_labels';
 import toggleEpicsSwimlanes from 'ee_else_ce/boards/toggle_epics_swimlanes';
 import {
-  setPromotionState,
   setWeightFetchingState,
   setEpicFetchingState,
   getMilestoneTitle,
@@ -131,7 +130,6 @@ export default () => {
         ...endpoints,
         boardType: this.parent,
         disabled: this.disabled,
-        showPromotion: parseBoolean($boardApp.getAttribute('data-show-promotion')),
       });
       boardsStore.setEndpoints(endpoints);
       boardsStore.rootPath = this.boardsEndpoint;
@@ -184,7 +182,6 @@ export default () => {
           .then(lists => {
             lists.forEach(list => boardsStore.addList(list));
             boardsStore.addBlankState();
-            setPromotionState(boardsStore);
             this.loading = false;
           })
           .catch(() => {

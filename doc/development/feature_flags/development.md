@@ -96,7 +96,7 @@ Each feature flag is defined in a separate YAML file consisting of a number of f
 | `rollout_issue_url` | no       | The URL to the Issue covering the feature flag rollout.        |
 | `group`             | no       | The [group](https://about.gitlab.com/handbook/product/categories/#devops-stages) that owns the feature flag. |
 
-TIP: **Tip:**
+NOTE:
 All validations are skipped when running in `RAILS_ENV=production`.
 
 ## Create a new feature flag
@@ -131,7 +131,7 @@ type: development
 default_enabled: false
 ```
 
-TIP: **Tip:**
+NOTE:
 To create a feature flag that is only used in EE, add the `--ee` flag: `bin/feature-flag --ee`
 
 ## Delete a feature flag

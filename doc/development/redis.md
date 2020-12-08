@@ -106,7 +106,7 @@ requests that read the most data from the cache, we can just sort by
 
 ### The slow log
 
-TIP: **Tip:**
+NOTE:
 There is a [video showing how to see the slow log](https://youtu.be/BBI68QuYRH8) (GitLab internal)
 on GitLab.com
 

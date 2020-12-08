@@ -99,7 +99,7 @@ Available Enterprise templates include:
 
 - HIPAA Audit Protocol template ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13756) in GitLab 12.10)
 
-TIP: **Tip:**
+NOTE:
 You can improve the existing built-in templates or contribute new ones in the
 [`project-templates`](https://gitlab.com/gitlab-org/project-templates) and
 [`pages`](https://gitlab.com/pages) groups by following [these steps](https://gitlab.com/gitlab-org/project-templates/contributing).

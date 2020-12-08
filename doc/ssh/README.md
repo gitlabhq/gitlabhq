@@ -44,7 +44,7 @@ GitLab supports the use of RSA, DSA, ECDSA, and ED25519 keys.
 - GitLab has [deprecated](https://about.gitlab.com/releases/2018/06/22/gitlab-11-0-released/#support-for-dsa-ssh-keys) DSA keys in GitLab 11.0.
 - As noted in [Practical Cryptography With Go](https://leanpub.com/gocrypto/read#leanpub-auto-ecdsa), the security issues related to DSA also apply to ECDSA.
 
-TIP: **Tip:**
+NOTE:
 Available documentation suggests that ED25519 is more secure. If you use an RSA key, the US National Institute of Science and Technology in [Publication 800-57 Part 3 (PDF)](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57Pt3r1.pdf) recommends a key size of at least 2048 bits.
 
 Therefore, our documentation focuses on the use of ED25519 and RSA keys.

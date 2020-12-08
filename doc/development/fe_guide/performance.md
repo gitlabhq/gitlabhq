@@ -82,7 +82,7 @@ Previously, GitLab encouraged the use of
 manually generated webpack bundles. However under this new system you should
 not ever need to manually add an entry point to the `webpack.config.js` file.
 
-TIP: **Tip:**
+NOTE:
 If you are unsure what controller and action corresponds to a given page, you
 can find this out by inspecting `document.body.dataset.page` within your
 browser's developer console while on any page within GitLab.

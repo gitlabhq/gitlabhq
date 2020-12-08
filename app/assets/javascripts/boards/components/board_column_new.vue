@@ -1,13 +1,11 @@
 <script>
 import { mapGetters, mapActions, mapState } from 'vuex';
 import BoardListHeader from 'ee_else_ce/boards/components/board_list_header_new.vue';
-import BoardPromotionState from 'ee_else_ce/boards/components/board_promotion_state';
 import BoardList from './board_list_new.vue';
 import { ListType } from '../constants';
 
 export default {
   components: {
-    BoardPromotionState,
     BoardListHeader,
     BoardList,
   },
@@ -35,9 +33,6 @@ export default {
   computed: {
     ...mapState(['filterParams']),
     ...mapGetters(['getIssuesByList']),
-    showBoardListAndBoardInfo() {
-      return this.list.type !== ListType.promotion;
-    },
     listIssues() {
       return this.getIssuesByList(this.list.id);
     },
@@ -80,16 +75,12 @@ export default {
     >
       <board-list-header :can-admin-list="canAdminList" :list="list" :disabled="disabled" />
       <board-list
-        v-if="showBoardListAndBoardInfo"
         ref="board-list"
         :disabled="disabled"
         :issues="listIssues"
         :list="list"
         :can-admin-list="canAdminList"
       />
-
-      <!-- Will be only available in EE -->
-      <board-promotion-state v-if="list.id === 'promotion'" />
     </div>
   </div>
 </template>

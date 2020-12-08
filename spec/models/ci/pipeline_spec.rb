@@ -222,6 +222,26 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
+  describe '.for_branch' do
+    subject { described_class.for_branch(branch) }
+
+    let(:branch) { 'master' }
+    let!(:pipeline) { create(:ci_pipeline, ref: 'master') }
+
+    it 'returns the pipeline' do
+      is_expected.to contain_exactly(pipeline)
+    end
+
+    context 'with tag pipeline' do
+      let(:branch) { 'v1.0' }
+      let!(:pipeline) { create(:ci_pipeline, ref: 'v1.0', tag: true) }
+
+      it 'returns nothing' do
+        is_expected.to be_empty
+      end
+    end
+  end
+
   describe '.ci_sources' do
     subject { described_class.ci_sources }
 
@@ -239,6 +259,27 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       expect(::Enums::Ci::Pipeline.ci_sources.keys).to contain_exactly(
         *%i[unknown push web trigger schedule api external pipeline chat
             merge_request_event external_pull_request_event])
+    end
+  end
+
+  describe '.ci_branch_sources' do
+    subject { described_class.ci_branch_sources }
+
+    let_it_be(:push_pipeline)   { create(:ci_pipeline, source: :push) }
+    let_it_be(:web_pipeline)    { create(:ci_pipeline, source: :web) }
+    let_it_be(:api_pipeline)    { create(:ci_pipeline, source: :api) }
+    let_it_be(:webide_pipeline) { create(:ci_pipeline, source: :webide) }
+    let_it_be(:child_pipeline)  { create(:ci_pipeline, source: :parent_pipeline) }
+    let_it_be(:merge_request_pipeline) { create(:ci_pipeline, :detached_merge_request_pipeline) }
+
+    it 'contains pipelines having CI only sources' do
+      expect(subject).to contain_exactly(push_pipeline, web_pipeline, api_pipeline)
+    end
+
+    it 'filters on expected sources' do
+      expect(::Enums::Ci::Pipeline.ci_branch_sources.keys).to contain_exactly(
+        *%i[unknown push web trigger schedule api external pipeline chat
+            external_pull_request_event])
     end
   end
 

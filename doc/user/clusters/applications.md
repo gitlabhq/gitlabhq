@@ -178,7 +178,7 @@ to determine the external endpoint and it should be available within a few minut
 
 After you install Ingress, the external endpoint should be available within a few minutes.
 
-TIP: **Tip:**
+NOTE:
 This endpoint can be used for the
 [Auto DevOps base domain](../../topics/autodevops/index.md#auto-devops-base-domain)
 using the `KUBE_INGRESS_BASE_DOMAIN` environment variable.

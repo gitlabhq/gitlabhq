@@ -23,7 +23,7 @@ The relationship only shows up in the UI if the user can see both issues.
 
 When you try to close an issue that has open blockers, a warning is displayed.
 
-TIP: **Tip:**
+NOTE:
 To manage related issues through our API, visit the [issue links API documentation](../../../api/issue_links.md).
 
 ## Adding a related issue

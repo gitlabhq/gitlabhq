@@ -17584,6 +17584,7 @@ CREATE TABLE vulnerability_remediations (
     summary text NOT NULL,
     file text NOT NULL,
     checksum bytea NOT NULL,
+    project_id bigint NOT NULL,
     CONSTRAINT check_ac0ccabff3 CHECK ((char_length(summary) <= 200)),
     CONSTRAINT check_fe3325e3ba CHECK ((char_length(file) <= 255))
 );
@@ -22669,7 +22670,7 @@ CREATE UNIQUE INDEX index_vulnerability_occurrences_on_uuid ON vulnerability_occ
 
 CREATE INDEX index_vulnerability_occurrences_on_vulnerability_id ON vulnerability_occurrences USING btree (vulnerability_id);
 
-CREATE UNIQUE INDEX index_vulnerability_remediations_on_checksum ON vulnerability_remediations USING btree (checksum);
+CREATE UNIQUE INDEX index_vulnerability_remediations_on_project_id_and_checksum ON vulnerability_remediations USING btree (project_id, checksum);
 
 CREATE UNIQUE INDEX index_vulnerability_scanners_on_project_id_and_external_id ON vulnerability_scanners USING btree (project_id, external_id);
 
@@ -23697,6 +23698,9 @@ ALTER TABLE ONLY ci_stages
 
 ALTER TABLE ONLY system_note_metadata
     ADD CONSTRAINT fk_fbd87415c9 FOREIGN KEY (description_version_id) REFERENCES description_versions(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY vulnerability_remediations
+    ADD CONSTRAINT fk_fc61a535a0 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_fd82eae0b9 FOREIGN KEY (head_pipeline_id) REFERENCES ci_pipelines(id) ON DELETE SET NULL;

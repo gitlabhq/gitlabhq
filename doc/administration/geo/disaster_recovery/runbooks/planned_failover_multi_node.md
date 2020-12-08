@@ -168,7 +168,7 @@ follow these steps to avoid unnecessary data loss:
    that has not been replicated to the **secondary** node. This data should be treated
    as lost if you proceed.
 
-   TIP: **Tip:**
+   NOTE:
    If you plan to [update the **primary** domain DNS record](../index.md#step-4-optional-updating-the-primary-domain-dns-record),
    you may wish to lower the TTL now to speed up propagation.
 

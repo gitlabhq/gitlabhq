@@ -62,7 +62,7 @@ To update GitLab documentation:
    - The [Markdown Guide](https://about.gitlab.com/handbook/markdown-guide/).
 1. Follow GitLab's [Merge Request Guidelines](../contributing/merge_request_workflow.md#merge-request-guidelines).
 
-TIP: **Tip:**
+NOTE:
 Work in a fork if you do not have Developer access to the GitLab project.
 
 Request help from the Technical Writing team if you:

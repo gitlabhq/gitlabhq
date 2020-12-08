@@ -129,7 +129,7 @@ Quoting from issue [#1](https://gitlab.com/gitlab-org/gitlab/-/issues/30528):
 
 > "If a deadlock is hit, and we resolve it through aborting the transaction after a short period, then the retry mechanisms we already have will make the deadlocked piece of work try again, and it's unlikely we'll deadlock multiple times in a row."
 
-TIP: **Tip:**
+NOTE:
 In Support, our general approach to reconfiguring timeouts (applies also to the
 HTTP stack) is that it's acceptable to do it temporarily as a workaround. If it
 makes GitLab usable for the customer, then it buys time to understand the

@@ -126,8 +126,6 @@ export default {
     );
   },
 
-  showPromotionList: () => {},
-
   fetchLabels: ({ state, commit }, searchTerm) => {
     const { endpoints, boardType } = state;
     const { fullPath } = endpoints;

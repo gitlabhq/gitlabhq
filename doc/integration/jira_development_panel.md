@@ -73,7 +73,7 @@ When configuring Jira DVCS Connector:
 
 #### GitLab account configuration for DVCS
 
-TIP: **Tip:**
+NOTE:
 To ensure that regular user account maintenance doesn't impact your integration,
 create and use a single-purpose `jira` user in GitLab.
 

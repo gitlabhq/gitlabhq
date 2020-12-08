@@ -172,13 +172,6 @@
   }
 }
 
-.board-promotion-state {
-  background-color: var(--white, $white);
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
 .board-list-component {
   min-height: 0; // firefox fix
 }

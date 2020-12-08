@@ -9,7 +9,6 @@ export const ListType = {
   backlog: 'backlog',
   closed: 'closed',
   label: 'label',
-  promotion: 'promotion',
   blank: 'blank',
 };
 

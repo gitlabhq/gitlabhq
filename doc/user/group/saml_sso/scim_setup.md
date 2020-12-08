@@ -132,7 +132,7 @@ configuration. Otherwise, the Okta SCIM app may not work properly.
 1. If you see an **Admin** button in the top right, click the button. This will
    ensure you are in the Admin area.
 
-   TIP: **Tip:**
+   NOTE:
    If you're using the Developer Console, click **Developer Console** in the top
    bar and select **Classic UI**. Otherwise, you may not see the buttons described
    in the following steps:

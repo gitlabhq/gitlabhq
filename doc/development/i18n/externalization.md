@@ -13,7 +13,7 @@ For working with internationalization (i18n),
 used tool for this task and there are a lot of applications that help us
 work with it.
 
-TIP: **Tip:**
+NOTE:
 All `rake` commands described on this page must be run on a GitLab instance, usually GDK.
 
 ## Setting up GitLab Development Kit (GDK)

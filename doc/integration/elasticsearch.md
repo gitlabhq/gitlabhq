@@ -317,7 +317,7 @@ buffered and caught up once unpaused.
 
 ### Setup
 
-TIP: **Tip:**
+NOTE:
 If your index was created with GitLab 13.0 or greater, you can directly
 [trigger the reindex](#trigger-the-reindex-via-the-advanced-search-administration).
 
@@ -404,7 +404,7 @@ To trigger the re-index from `primary` index:
     curl $CLUSTER_URL/$SECONDARY_INDEX/_count => 123123
     ```
 
-    TIP: **Tip:**
+    NOTE:
     Comparing the document count is more accurate than using the index size, as improvements to the storage might cause the new index to be smaller than the original one.
 
 1. After you are confident your `secondary` index is valid, you can process to
@@ -681,7 +681,7 @@ Sidekiq processes](../administration/operations/extra_sidekiq_processes.md).
    Where `ID_FROM` and `ID_TO` are project IDs. Both parameters are optional.
    The above example will index all projects from ID `1001` up to (and including) ID `2000`.
 
-   TIP: **Troubleshooting:**
+   NOTE:
    Sometimes the project indexing jobs queued by `gitlab:elastic:index_projects`
    can get interrupted. This may happen for many reasons, but it's always safe
    to run the indexing task again. It will skip repositories that have

@@ -23,7 +23,7 @@ is installed on.
 The default pattern can be located in [`gitlab.yml.example`](https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example)
 under the "Automatic issue closing" section.
 
-TIP: **Tip:**
+NOTE:
 You are advised to use <https://rubular.com> to test the issue closing pattern.
 Because Rubular doesn't understand `%{issue_ref}`, you can replace this by
 `#\d+` when testing your patterns, which matches only local issue references like `#123`.

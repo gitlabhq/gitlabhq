@@ -9,7 +9,6 @@ type: reference, api
 
 This API operates on [repository branches](../user/project/repository/branches/index.md).
 
-TIP: **Tip:**
 See also [Protected branches API](protected_branches.md).
 
 ## List repository branches

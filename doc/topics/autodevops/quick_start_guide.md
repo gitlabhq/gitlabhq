@@ -29,7 +29,7 @@ or Google Drive, or create a new one.
 1. Ensure you've created a [billing account](https://cloud.google.com/billing/docs/how-to/manage-billing-account)
    with Google Cloud Platform.
 
-TIP: **Tip:**
+NOTE:
 Every new Google Cloud Platform (GCP) account receives [$300 in credit](https://console.cloud.google.com/freetrial),
 and in partnership with Google, GitLab is able to offer an additional $200 for new
 GCP accounts to get started with GitLab's Google Kubernetes Engine Integration.
@@ -221,7 +221,7 @@ Kubernetes cluster, color-coded to show their status. Hovering over a square on
 the deploy board displays the state of the deployment, and clicking the square
 takes you to the pod's logs page.
 
-TIP: **Tip:**
+NOTE:
 The example shows only one pod hosting the application at the moment, but you can add
 more pods by defining the [`REPLICAS` variable](customize.md#environment-variables)
 in **Settings > CI/CD > Environment variables**.

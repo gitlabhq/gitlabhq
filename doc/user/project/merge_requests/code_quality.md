@@ -131,7 +131,7 @@ stages:
   - test
 ```
 
-TIP: **Tip:**
+NOTE:
 This information is automatically extracted and shown right in the merge request widget.
 
 WARNING:

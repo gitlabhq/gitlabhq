@@ -2,15 +2,12 @@
 // This component is being replaced in favor of './board_column_new.vue' for GraphQL boards
 import Sortable from 'sortablejs';
 import BoardListHeader from 'ee_else_ce/boards/components/board_list_header.vue';
-import EmptyComponent from '~/vue_shared/components/empty_component';
 import BoardList from './board_list.vue';
 import boardsStore from '../stores/boards_store';
 import { getBoardSortableDefaultOptions, sortableEnd } from '../mixins/sortable_default_options';
-import { ListType } from '../constants';
 
 export default {
   components: {
-    BoardPromotionState: EmptyComponent,
     BoardListHeader,
     BoardList,
   },
@@ -42,9 +39,6 @@ export default {
     };
   },
   computed: {
-    showBoardListAndBoardInfo() {
-      return this.list.type !== ListType.promotion;
-    },
     listIssues() {
       return this.list.issues;
     },
@@ -105,16 +99,7 @@ export default {
       class="board-inner gl-display-flex gl-flex-direction-column gl-relative gl-h-full gl-rounded-base"
     >
       <board-list-header :can-admin-list="canAdminList" :list="list" :disabled="disabled" />
-      <board-list
-        v-if="showBoardListAndBoardInfo"
-        ref="board-list"
-        :disabled="disabled"
-        :issues="listIssues"
-        :list="list"
-      />
-
-      <!-- Will be only available in EE -->
-      <board-promotion-state v-if="list.id === 'promotion'" />
+      <board-list ref="board-list" :disabled="disabled" :issues="listIssues" :list="list" />
     </div>
   </div>
 </template>

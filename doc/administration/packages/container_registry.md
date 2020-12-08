@@ -468,7 +468,7 @@ you can pull from the Container Registry, but you cannot push.
    sudo aws --endpoint-url https://your-object-storage-backend.com s3 sync registry s3://mybucket
    ```
 
-   TIP: **Tip:**
+   NOTE:
    If you have a lot of data, you may be able to improve performance by
    [running parallel sync operations](https://aws.amazon.com/premiumsupport/knowledge-center/s3-improve-transfer-sync-command/).
 
@@ -1139,7 +1139,7 @@ and a simple solution would be to enable relative URLs in the Registry.
 
 You can use the Container Registry debug server to diagnose problems. The debug endpoint can monitor metrics and health, as well as do profiling.
 
-CAUTION: **Warning:**
+WARNING:
 Sensitive information may be available from the debug endpoint.
 Access to the debug endpoint must be locked down in a production environment.
 

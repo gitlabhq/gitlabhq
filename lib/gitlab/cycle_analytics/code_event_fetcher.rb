@@ -5,7 +5,7 @@ module Gitlab
     class CodeEventFetcher < BaseEventFetcher
       include CodeHelper
 
-      def initialize(*args)
+      def initialize(...)
         @projections = [mr_table[:title],
                         mr_table[:iid],
                         mr_table[:id],
@@ -14,7 +14,7 @@ module Gitlab
                         mr_table[:author_id]]
         @order = mr_table[:created_at]
 
-        super(*args)
+        super(...)
       end
 
       private

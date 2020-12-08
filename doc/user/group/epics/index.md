@@ -105,35 +105,18 @@ steps to create, move, reorder, or delete child epics.
 
 To set a **Start date** and **Due date** for an epic, select one of the following:
 
-- **Fixed**: Enter a fixed value.
-- **From milestones**: Inherit a dynamic value from the milestones that are assigned to the epic's issues.
-  Note that GitLab 12.5 replaced this option with **Inherited**.
-- **Inherited**: Inherit a dynamic value from the epic's issues, child epics, and milestones ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7332) in GitLab 12.5 to replace **From milestones**).
-
-### From milestones
-
-> [Replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/7332) in GitLab 12.5 by **Inherited**.
-
-If you select **From milestones** for the start date, GitLab automatically sets the date to be earliest
-start date across all milestones that are assigned to the issues that belong to the epic.
-If you select **From milestones** for the due date, GitLab sets the date to be the latest due date across
-all milestones that are assigned to those issues.
-
-These are dynamic dates which are recalculated if any of the following occur:
-
-- Milestones are re-assigned to the issues.
-- Milestone dates change.
-- Issues are added or removed from the epic.
+- **Fixed**: enter a fixed value.
+- **Inherited**: inherit a dynamic value from the epic's issues, child epics, and milestones.
 
 ### Inherited
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7332) in GitLab 12.5 to replace **From milestones**.
 
-If you select:
+If you select **Inherited**:
 
-- **Inherited** for the start date, GitLab scans all child epics and issues assigned to the epic,
+- For the **start date**: GitLab scans all child epics and issues assigned to the epic,
   and sets the start date to match the earliest found start date or milestone.
-- **Inherited** for the due date, GitLab sets the due date to match the latest due date or
+- For the **due date**: GitLab sets the due date to match the latest due date or
   milestone found among its child epics and issues.
 
 These are dynamic dates and recalculated if any of the following occur:

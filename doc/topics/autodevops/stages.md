@@ -48,7 +48,7 @@ language:
 For the requirements of other languages and frameworks, read the
 [Heroku buildpacks documentation](https://devcenter.heroku.com/articles/buildpacks#officially-supported-buildpacks).
 
-TIP: **Tip:**
+NOTE:
 If Auto Build fails despite the project meeting the buildpack requirements, set
 a project variable `TRACE=true` to enable verbose logging, which may help you
 troubleshoot.

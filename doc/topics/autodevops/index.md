@@ -151,7 +151,7 @@ as other environment [variables](../../ci/variables/README.md#priority-of-enviro
 If the CI/CD variable is not set and the cluster setting is left blank, the instance-wide **Auto DevOps domain**
 setting is used if set.
 
-TIP: **Tip:**
+NOTE:
 If you use the [GitLab managed app for Ingress](../../user/clusters/applications.md#ingress),
 the URL endpoint should be automatically configured for you. All you must do
 is use its value for the `KUBE_INGRESS_BASE_DOMAIN` variable.
@@ -257,7 +257,7 @@ are available:
   - `master` branch is directly deployed to staging.
   - Manual actions are provided for incremental rollout to production.
 
-TIP: **Tip:**
+NOTE:
 Use the [blue-green deployment](../../ci/environments/incremental_rollouts.md#blue-green-deployment) technique
 to minimize downtime and risk.
 

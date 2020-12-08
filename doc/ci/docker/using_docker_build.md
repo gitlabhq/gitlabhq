@@ -37,7 +37,7 @@ during jobs, each with their own tradeoffs.
 An alternative to using `docker build` is to [use kaniko](using_kaniko.md).
 This avoids having to execute a runner in privileged mode.
 
-TIP: **Tip:**
+NOTE:
 To see how Docker and GitLab Runner are configured for shared runners on
 GitLab.com, see [GitLab.com shared
 runners](../../user/gitlab_com/index.md#shared-runners).

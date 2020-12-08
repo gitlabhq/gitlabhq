@@ -16,7 +16,7 @@ through the [continuous methodologies](introduction/index.md#introduction-to-cic
 - Continuous Delivery (CD)
 - Continuous Deployment (CD)
 
-TIP: **Tip:**
+NOTE:
 Out-of-the-box management systems can decrease hours spent on maintaining toolchains by 10% or more.
 Watch our ["Mastering continuous software development"](https://about.gitlab.com/webcast/mastering-ci-cd/)
 webcast to learn about continuous methods and how GitLab’s built-in CI can help you simplify and scale software development.

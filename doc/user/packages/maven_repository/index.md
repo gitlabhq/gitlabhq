@@ -653,7 +653,7 @@ The message should show that the package is downloading from the Package Registr
 Downloading from gitlab-maven: http://gitlab.example.com/api/v4/projects/PROJECT_ID/packages/maven/com/mycompany/mydepartment/my-project/1.0-SNAPSHOT/my-project-1.0-20200128.120857-1.pom
 ```
 
-TIP: **Tip:**
+NOTE:
 In the GitLab UI, on the Package Registry page for Maven, you can view and copy these commands.
 
 ### Use Gradle

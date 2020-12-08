@@ -79,7 +79,7 @@ To subscribe to GitLab through a self-managed installation:
 1. After purchase, a license file is sent to the email address associated to the Customers Portal account,
    which must be [uploaded to your GitLab instance](../../user/admin_area/license.md#uploading-your-license).
 
-TIP: **Tip:**
+NOTE:
 If you're purchasing a subscription for an existing **Core** self-managed
 instance, ensure you're purchasing enough seats to
 [cover your users](../../user/admin_area/index.md#administering-users).
@@ -109,7 +109,7 @@ log in and verify or update:
 - The invoice contact details on the **Account details** page.
 - The credit card on file on the **Payment Methods** page.
 
-TIP: **Tip:**
+NOTE:
 Contact our [support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293)
 if you need assistance accessing the Customers Portal or if you need to change
 the contact person who manages your subscription.
@@ -158,13 +158,13 @@ We recommend following these steps during renewal:
 1. Determine if you have a need for user growth in the upcoming subscription.
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) and select the **Renew** button beneath your existing subscription.
 
-   TIP: **Tip:**
+   NOTE:
    If you need to change your [GitLab tier](https://about.gitlab.com/pricing/), contact our sales team via `renewals@gitlab.com` for assistance as this can't be done in the Customers Portal.
 
 1. In the first box, enter the total number of user licenses you’ll need for the upcoming year. Be sure this number is at least **equal to, or greater than** the number of billable users in the system at the time of performing the renewal.
 1. Enter the number of [users over license](#users-over-license) in the second box for the user overage incurred in your previous subscription term.
 
-   TIP: **Tip:**
+   NOTE:
    You can find the _users over license_ in your instance's **Admin** dashboard by clicking on the **Admin Area** in the top bar, or navigating to `/admin`.
 
    The following table describes details of your admin dashboard and renewal terms:

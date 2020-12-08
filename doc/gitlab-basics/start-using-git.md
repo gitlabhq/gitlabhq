@@ -29,7 +29,7 @@ can download GitLab's [Git Cheat Sheet](https://about.gitlab.com/images/press/gi
 > - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Watch the [GitLab Source Code Management Walkthrough](https://www.youtube.com/watch?v=wTQ3aXJswtM) video.
 > - Learn how GitLab became the backbone of [Worldline](https://about.gitlab.com/customers/worldline/)’s development environment.
 
-TIP: **Tip:**
+NOTE:
 To help you visualize what you're doing locally, there are
 [Git GUI apps](https://git-scm.com/download/gui/) you can install.
 
@@ -234,7 +234,7 @@ To clone `https://gitlab.com/gitlab-tests/sample-project/` via HTTPS:
 git clone https://gitlab.com/gitlab-tests/sample-project.git
 ```
 
-TIP: **Troubleshooting:**
+NOTE:
 On Windows, if you entered incorrect passwords multiple times and GitLab is responding `Access denied`,
 you may have to add your namespace (user name or group name) to clone through HTTPS:
 `git clone https://namespace@gitlab.com/gitlab-org/gitlab.git`.
