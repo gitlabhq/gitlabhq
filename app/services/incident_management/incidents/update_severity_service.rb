@@ -12,7 +12,7 @@ module IncidentManagement
       end
 
       def execute
-        return unless issuable.incident?
+        return unless issuable.supports_severity?
 
         update_severity!
         add_system_note

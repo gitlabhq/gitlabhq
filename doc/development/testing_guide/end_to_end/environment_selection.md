@@ -35,7 +35,7 @@ can control the `tld` and `domain` independently.
 | `dev.gitlab.org`                         | `only: { tld: '.org', domain: 'gitlab', subdomain: 'dev' }` | `(dev).gitlab.org` |
 | `staging.gitlab.com & domain.gitlab.com` | `only: { subdomain: %i[staging domain] }` | `(staging|domain).+.com`             |
 | `nightly`                                | `only: { pipeline: :nightly }` | "nightly" |
-| `nightly`, `canary` | `only_run_in_pipeline: [:nightly, :canary]` | ["nightly"](https://gitlab.com/gitlab-org/quality/nightly) and ["canary"](https://gitlab.com/gitlab-org/quality/canary) |
+| `nightly`, `canary` | `only: { pipeline: [:nightly, :canary] }` | ["nightly"](https://gitlab.com/gitlab-org/quality/nightly) and ["canary"](https://gitlab.com/gitlab-org/quality/canary) |
 
 ```ruby
 RSpec.describe 'Area' do

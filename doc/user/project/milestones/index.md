@@ -76,7 +76,7 @@ To create a **group milestone**:
 1. Enter the title, an optional description, an optional start date, and an optional due date.
 1. Click **New milestone**.
 
-![New group milestone](img/milestones_new_group_milestone.png)
+![New group milestone](img/milestones_new_group_milestone_v13_5.png)
 
 ## Editing milestones
 

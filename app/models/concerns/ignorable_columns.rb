@@ -31,15 +31,13 @@ module IgnorableColumns
     alias_method :ignore_column, :ignore_columns
 
     def ignored_columns_details
-      unless defined?(@ignored_columns_details)
-        IGNORE_COLUMN_MUTEX.synchronize do
-          @ignored_columns_details ||= superclass.try(:ignored_columns_details)&.dup || {}
-        end
-      end
+      return @ignored_columns_details if defined?(@ignored_columns_details)
 
-      @ignored_columns_details
+      IGNORE_COLUMN_MONITOR.synchronize do
+        @ignored_columns_details ||= superclass.try(:ignored_columns_details)&.dup || {}
+      end
     end
 
-    IGNORE_COLUMN_MUTEX = Mutex.new
+    IGNORE_COLUMN_MONITOR = Monitor.new
   end
 end

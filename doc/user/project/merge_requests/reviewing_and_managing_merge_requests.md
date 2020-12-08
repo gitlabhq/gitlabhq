@@ -18,7 +18,7 @@ View all the merge requests within a project by navigating to **Project > Merge 
 When you access your project's merge requests, GitLab will present them in a list,
 and you can use the tabs available to quickly filter by open and closed. You can also [search and filter the results](../../search/index.md#filtering-issue-and-merge-request-lists).
 
-![Project merge requests list view](img/project_merge_requests_list_view.png)
+![Project merge requests list view](img/project_merge_requests_list_view_v13_5.png)
 
 ## View merge requests for all projects in a group
 

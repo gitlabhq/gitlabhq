@@ -197,7 +197,7 @@ module Issuable
     end
 
     def severity
-      return IssuableSeverity::DEFAULT unless incident?
+      return IssuableSeverity::DEFAULT unless supports_severity?
 
       issuable_severity&.severity || IssuableSeverity::DEFAULT
     end

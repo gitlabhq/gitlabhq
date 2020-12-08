@@ -3,6 +3,7 @@
 module Gitlab
   module UsageDataCounters
     COUNTERS = [
+      GuestPackageEventCounter,
       WikiPageCounter,
       WebIdeCounter,
       NoteCounter,
