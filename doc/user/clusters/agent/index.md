@@ -56,6 +56,12 @@ There are several components that work in concert for the Agent to accomplish Gi
 
 These repositories might be the same GitLab project or separate projects.
 
+NOTE:
+GitLab recommends you use the same GitLab project for the agent configuration
+and manifest repositories. Our backlog contains issues for adding support for
+[private manifest repositories outside of the configuration project](https://gitlab.com/gitlab-org/gitlab/-/issues/220912) and
+[group level agents](https://gitlab.com/gitlab-org/gitlab/-/issues/283885).
+
 For more details, please refer to our [full architecture documentation](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/architecture.md#high-level-architecture) in the Agent project.
 
 ## Get started with GitOps and the GitLab Agent

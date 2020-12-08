@@ -329,4 +329,24 @@ RSpec.describe Gitlab do
       expect(described_class.http_proxy_env?).to eq(false)
     end
   end
+
+  describe '.maintenance_mode?' do
+    it 'returns true when maintenance mode is enabled' do
+      stub_application_setting(maintenance_mode: true)
+
+      expect(described_class.maintenance_mode?).to eq(true)
+    end
+
+    it 'returns false when maintenance mode is disabled' do
+      stub_application_setting(maintenance_mode: false)
+
+      expect(described_class.maintenance_mode?).to eq(false)
+    end
+
+    it 'returns false when maintenance mode feature flag is disabled' do
+      stub_feature_flags(maintenance_mode: false)
+
+      expect(described_class.maintenance_mode?).to eq(false)
+    end
+  end
 end

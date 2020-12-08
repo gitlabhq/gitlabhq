@@ -72,12 +72,14 @@ export default class ImageFile {
       callback(e, left);
     };
 
+    // eslint-disable-next-line @gitlab/no-global-event-off
     $el
       .off('mousedown')
       .off('touchstart')
       .on('mousedown', dragStart)
       .on('touchstart', dragStart);
 
+    // eslint-disable-next-line @gitlab/no-global-event-off
     $body
       .off('mouseup')
       .off('mousemove')

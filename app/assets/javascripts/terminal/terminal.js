@@ -25,6 +25,7 @@ export default class GLTerminal {
     this.setSocketUrl();
     this.createTerminal();
 
+    // eslint-disable-next-line @gitlab/no-global-event-off
     $(window)
       .off('resize.terminal')
       .on('resize.terminal', () => {
@@ -104,6 +105,7 @@ export default class GLTerminal {
   }
 
   dispose() {
+    // eslint-disable-next-line @gitlab/no-global-event-off
     this.terminal.off('data');
     this.terminal.dispose();
     this.socket.close();

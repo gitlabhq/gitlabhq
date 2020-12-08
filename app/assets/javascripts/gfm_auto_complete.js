@@ -78,6 +78,7 @@ class GfmAutoComplete {
     this.input.each((i, input) => {
       const $input = $(input);
       if (!$input.hasClass('js-gfm-input-initialized')) {
+        // eslint-disable-next-line @gitlab/no-global-event-off
         $input.off('focus.setupAtWho').on('focus.setupAtWho', this.setupAtWho.bind(this, $input));
         $input.on('change.atwho', () => input.dispatchEvent(new Event('input')));
         // This triggers at.js again

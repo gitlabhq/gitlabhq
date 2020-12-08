@@ -72,6 +72,7 @@ export default {
   },
 
   initLoadMore() {
+    // eslint-disable-next-line @gitlab/no-global-event-off
     $(document).off('scroll');
     $(document).endlessScroll({
       bottomPixels: ENDLESS_SCROLL_BOTTOM_PX,

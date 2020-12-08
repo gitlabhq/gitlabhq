@@ -3,7 +3,6 @@ import { GlIcon, GlIntersectionObserver } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
 import { __, s__, sprintf } from '~/locale';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
-import { sanitize } from '~/lib/dompurify';
 import { visitUrl } from '~/lib/utils/url_utility';
 import Poll from '~/lib/utils/poll';
 import eventHub from '../event_hub';
@@ -179,7 +178,7 @@ export default {
     const store = new Store({
       titleHtml: this.initialTitleHtml,
       titleText: this.initialTitleText,
-      descriptionHtml: sanitize(this.initialDescriptionHtml),
+      descriptionHtml: this.initialDescriptionHtml,
       descriptionText: this.initialDescriptionText,
       updatedAt: this.updatedAt,
       updatedByName: this.updatedByName,

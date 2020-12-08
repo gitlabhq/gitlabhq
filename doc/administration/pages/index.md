@@ -210,7 +210,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | `external_https` |  Configure Pages to bind to one or more secondary IP addresses, serving HTTPS requests. Multiple addresses can be given as an array, along with exact ports, for example `['1.2.3.4', '1.2.3.5:8063']`. Sets value for `listen_https`.
 | `gitlab_client_http_timeout`  | GitLab API HTTP client connection timeout in seconds (default: 10s).
 | `gitlab_client_jwt_expiry`  | JWT Token expiry time in seconds (default: 30s).
-| `domain_config_source` | Domain configuration source (default: `disk`)
+| `domain_config_source` | Domain configuration source (default: `auto`)
 | `gitlab_id` |  The OAuth application public ID. Leave blank to automatically fill when Pages authenticates with GitLab.
 | `gitlab_secret` |  The OAuth application secret. Leave blank to automatically fill when Pages authenticates with GitLab.
 | `gitlab_server` |  Server to use for authentication when access control is enabled; defaults to GitLab `external_url`.
@@ -668,13 +668,14 @@ Pages server.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217912) in GitLab 13.3.
 
 GitLab Pages can use different sources to get domain configuration.
-The default value is `nil`; however, GitLab Pages will default to `disk`.
+The default value is `nil`; however, GitLab Pages will default to `auto`.
 
    ```ruby
    gitlab_pages['domain_config_source'] = nil
    ```
 
-You can specify `gitlab` to enable [API-based configuration](#gitlab-api-based-configuration).
+If left unchanged, GitLab Pages tries to use any available source (either `gitlab` or `disk`). The
+preferred source is `gitlab`, which uses [API-based configuration](#gitlab-api-based-configuration).
 
 For more details see this [blog post](https://about.gitlab.com/blog/2020/08/03/how-gitlab-pages-uses-the-gitlab-api-to-serve-content/).
 
@@ -691,10 +692,10 @@ was used prior to GitLab 13.0. Follow these steps to enable it:
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
-If you encounter an issue, you can disable it by choosing `disk` or `nil`:
+If you encounter an issue, you can disable it by choosing `disk`:
 
 ```ruby
-gitlab_pages['domain_config_source'] = nil
+gitlab_pages['domain_config_source'] = "disk"
 ```
 
 For other common issues, see the [troubleshooting section](#failed-to-connect-to-the-internal-gitlab-api)

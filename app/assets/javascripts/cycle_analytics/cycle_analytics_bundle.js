@@ -74,6 +74,7 @@ export default () => {
         const $dropdown = $('.js-ca-dropdown');
         const $label = $dropdown.find('.dropdown-label');
 
+        // eslint-disable-next-line @gitlab/no-global-event-off
         $dropdown
           .find('li a')
           .off('click')

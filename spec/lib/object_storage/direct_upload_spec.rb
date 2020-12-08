@@ -162,6 +162,10 @@ RSpec.describe ObjectStorage::DirectUpload do
         it 'enables the Workhorse client' do
           expect(subject[:UseWorkhorseClient]).to be true
         end
+
+        it 'omits the multipart upload URLs' do
+          expect(subject).not_to include(:MultipartUpload)
+        end
       end
 
       context 'when only server side encryption is used' do
@@ -338,6 +342,30 @@ RSpec.describe ObjectStorage::DirectUpload do
         it_behaves_like 'a valid S3 upload with multipart data' do
           before do
             stub_object_storage_multipart_init(storage_url, "myUpload")
+          end
+
+          context 'when maximum upload size is 0' do
+            let(:maximum_size) { 0 }
+
+            it 'returns maximum number of parts' do
+              expect(subject[:MultipartUpload][:PartURLs].length).to eq(100)
+            end
+
+            it 'part size is minimum, 5MB' do
+              expect(subject[:MultipartUpload][:PartSize]).to eq(5.megabyte)
+            end
+          end
+
+          context 'when maximum upload size is < 5 MB' do
+            let(:maximum_size) { 1024 }
+
+            it 'returns only 1 part' do
+              expect(subject[:MultipartUpload][:PartURLs].length).to eq(1)
+            end
+
+            it 'part size is minimum, 5MB' do
+              expect(subject[:MultipartUpload][:PartSize]).to eq(5.megabyte)
+            end
           end
 
           context 'when maximum upload size is 10MB' do

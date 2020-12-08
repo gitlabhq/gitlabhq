@@ -187,6 +187,7 @@ export default class Notes {
     this.$wrapperEl.off('click', '.js-discussion-reply-button');
     this.$wrapperEl.off('click', '.js-add-diff-note-button');
     this.$wrapperEl.off('click', '.js-add-image-diff-note-button');
+    // eslint-disable-next-line @gitlab/no-global-event-off
     this.$wrapperEl.off('visibilitychange');
     this.$wrapperEl.off('keyup input', '.js-note-text');
     this.$wrapperEl.off('click', '.js-note-target-reopen');

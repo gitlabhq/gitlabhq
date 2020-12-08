@@ -15,6 +15,7 @@ function shouldCreateListGraphQL(label) {
   return store.getters.shouldUseGraphQL && !store.getters.getListByLabelId(fullLabelId(label));
 }
 
+// eslint-disable-next-line @gitlab/no-global-event-off
 $(document)
   .off('created.label')
   .on('created.label', (e, label, addNewList) => {

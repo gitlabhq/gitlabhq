@@ -93,7 +93,9 @@ export default {
   },
 
   beforeDestroy() {
+    // eslint-disable-next-line @gitlab/no-global-event-off
     eventHub.$off('toggleFolder');
+    // eslint-disable-next-line @gitlab/no-global-event-off
     eventHub.$off('toggleDeployBoard');
   },
 

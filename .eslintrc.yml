@@ -42,6 +42,7 @@ rules:
   no-jquery/no-serialize: error
   promise/always-return: off
   promise/no-callback-in-promise: off
+  "@gitlab/no-global-event-off": error
 overrides:
   - files:
       - '**/spec/**/*'

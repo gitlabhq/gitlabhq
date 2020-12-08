@@ -1,0 +1,12 @@
+fragment PipelineStagesData on CiConfigStage {
+  name
+  groups {
+    name
+    jobs {
+      name
+      needs {
+        name
+      }
+    }
+  }
+}

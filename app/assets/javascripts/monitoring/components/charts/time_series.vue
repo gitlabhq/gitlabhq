@@ -367,6 +367,7 @@ export default {
         },
       );
 
+      // eslint-disable-next-line @gitlab/no-global-event-off
       eChart.off('datazoom');
       eChart.on('datazoom', this.throttledDatazoom);
     },

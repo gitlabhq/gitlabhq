@@ -12,6 +12,16 @@ job1:
     - echo 'test'
 `;
 
+export const mockCiConfigQueryResponse = {
+  data: {
+    ciConfig: {
+      errors: [],
+      stages: [],
+      status: '',
+    },
+  },
+};
+
 export const mockLintResponse = {
   valid: true,
   errors: [],

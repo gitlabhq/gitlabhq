@@ -39,6 +39,7 @@ export default class MirrorRepos {
 
   initMirrorSSH() {
     if (this.$password) {
+      // eslint-disable-next-line @gitlab/no-global-event-off
       this.$password.off('input.updateUrl');
     }
     this.$password = undefined;

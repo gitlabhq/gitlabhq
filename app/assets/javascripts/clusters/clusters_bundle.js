@@ -265,13 +265,21 @@ export default class Clusters {
   removeListeners() {
     eventHub.$off('installApplication', this.installApplication);
     eventHub.$off('updateApplication', this.updateApplication);
+    // eslint-disable-next-line @gitlab/no-global-event-off
     eventHub.$off('saveKnativeDomain');
+    // eslint-disable-next-line @gitlab/no-global-event-off
     eventHub.$off('setKnativeDomain');
+    // eslint-disable-next-line @gitlab/no-global-event-off
     eventHub.$off('setCrossplaneProviderStack');
+    // eslint-disable-next-line @gitlab/no-global-event-off
     eventHub.$off('uninstallApplication');
+    // eslint-disable-next-line @gitlab/no-global-event-off
     eventHub.$off('setIngressModSecurityEnabled');
+    // eslint-disable-next-line @gitlab/no-global-event-off
     eventHub.$off('setIngressModSecurityMode');
+    // eslint-disable-next-line @gitlab/no-global-event-off
     eventHub.$off('resetIngressModSecurityChanges');
+    // eslint-disable-next-line @gitlab/no-global-event-off
     eventHub.$off('setFluentdSettings');
   }
 

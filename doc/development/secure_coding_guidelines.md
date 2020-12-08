@@ -112,21 +112,43 @@ Here `params[:ip]` should not contain anything else but numbers and dots. Howeve
 
 In most cases the anchors `\A` for beginning of text and `\z` for end of text should be used instead of `^` and `$`.
 
-## Denial of Service (ReDoS)
+## Denial of Service (ReDoS) / Catastrophic Backtracking
 
-[ReDoS](https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS) is a possible attack if the attacker knows
-or controls the regular expression (regex) used, and is able to enter user input to match against the bad regular expression.
+When a regular expression (regex) is used to search for a string and can't find a match,
+it may then backtrack to try other possibilities.
+
+For example when the regex `.*!$` matches the string `hello!`, the `.*` first matches
+the entire string but then the `!` from the regex is unable to match because the
+character has already been used. In that case, the Ruby regex engine _backtracks_
+one character to allow the `!` to match.
+ 
+[ReDoS](https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS)
+is an attack in which the attacker knows or controls the regular expression used.
+The attacker may be able to enter user input that triggers this backtracking behavior in a
+way that increases execution time by several orders of magnitude.
 
 ### Impact
 
-The resource, for example Unicorn, Puma, or Sidekiq, can be made to hang as it takes a long time to evaluate the bad regex match.
+The resource, for example Unicorn, Puma, or Sidekiq, can be made to hang as it takes
+a long time to evaluate the bad regex match. The evaluation time may require manual
+termination of the resource.
 
 ### Examples
 
-GitLab-specific examples can be found in the following merge requests:
+Here are some GitLab-specific examples.
 
-- [MR25314](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25314)
-- [MR25122](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25122#note_289087459)
+User inputs used to create regular expressions:
+
+- [User-controlled filename](https://gitlab.com/gitlab-org/gitlab/-/issues/257497)
+- [User-controlled domain name](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25314)
+- [User-controlled email address](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25122#note_289087459)
+
+Hardcoded regular expressions with backtracking issues:
+
+- [Repository name validation](https://gitlab.com/gitlab-org/gitlab/-/issues/220019)
+- [Link validation](https://gitlab.com/gitlab-org/gitlab/-/issues/218753), and [a bypass](https://gitlab.com/gitlab-org/gitlab/-/issues/273771)
+- [Entity name validation](https://gitlab.com/gitlab-org/gitlab/-/issues/289934)
+- [Validating color codes](https://gitlab.com/gitlab-org/gitlab/commit/717824144f8181bef524592eab882dd7525a60ef)
 
 Consider the following example application, which defines a check using a regular expression. A user entering `user@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!.com` as the email on a form will hang the web server.
 
@@ -141,22 +163,32 @@ class Email < ApplicationRecord
   def domain_matches
     errors.add(:email, 'does not match') if email =~ DOMAIN_MATCH
   end
+end
 ```
 
 ### Mitigation
 
-GitLab has `Gitlab::UntrustedRegexp` which internally uses the [`re2`](https://github.com/google/re2/wiki/Syntax) library.
-By utilizing `re2`, we get a strict limit on total execution time, and a smaller subset of available regex features.
+#### Ruby
+
+GitLab has [`Gitlab::UntrustedRegexp`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/untrusted_regexp.rb)
+ which internally uses the [`re2`](https://github.com/google/re2/wiki/Syntax) library.
+`re2` does not support backtracking so we get constant execution time, and a smaller subset of available regex features.
 
 All user-provided regular expressions should use `Gitlab::UntrustedRegexp`.
 
 For other regular expressions, here are a few guidelines:
 
-- Remove unnecessary backtracking.
-- Avoid nested quantifiers if possible.
-- Try to be as precise as possible in your regex and avoid the `.` if something else can be used (e.g.: Use `_[^_]+_` instead of `_.*_` to match `_text here_`).
+- If there's a clean non-regex solution, such as `String#start_with?`, consider using it
+- Ruby supports some advanced regex features like [atomic groups](https://www.regular-expressions.info/atomic.html)
+and [possessive quantifiers](https://www.regular-expressions.info/possessive.html) that eleminate backtracking
+- Avoid nested quantifiers if possible (for example `(a+)+`)
+- Try to be as precise as possible in your regex and avoid the `.` if there's an alternative
+  - For example, Use `_[^_]+_` instead of `_.*_` to match `_text here_`
+- If in doubt, don't hesitate to ping `@gitlab-com/gl-security/appsec`
 
-An example can be found [in this commit](https://gitlab.com/gitlab-org/gitlab/commit/717824144f8181bef524592eab882dd7525a60ef).
+#### Go
+
+Go's [`regexp`](https://golang.org/pkg/regexp/) package uses `re2` and isn't vulnerable to backtracking issues.
 
 ## Further Links
 
@@ -466,7 +498,7 @@ where you can't avoid this:
   characters, for example).
 - Always use `--` to separate options from arguments.
 
-### Ruby
+#### Ruby
 
 Consider using `system("command", "arg0", "arg1", ...)` whenever you can. This prevents an attacker
 from concatenating commands.
@@ -475,7 +507,7 @@ For more examples on how to use shell commands securely, consult
 [Guidelines for shell commands in the GitLab codebase](shell_commands.md).
 It contains various examples on how to securely call OS commands.
 
-### Go
+#### Go
 
 Go has built-in protections that usually prevent an attacker from successfully injecting OS commands.
 

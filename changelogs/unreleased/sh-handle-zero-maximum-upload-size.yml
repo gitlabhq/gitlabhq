@@ -1,0 +1,5 @@
+---
+title: Fix division by error when upload max size is set to 0
+merge_request: 49482
+author:
+type: fixed

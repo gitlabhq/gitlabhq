@@ -77,6 +77,7 @@ if (process.env.NODE_ENV !== 'production' && gon?.test_env) {
 
 document.addEventListener('beforeunload', () => {
   // Unbind scroll events
+  // eslint-disable-next-line @gitlab/no-global-event-off
   $(document).off('scroll');
   // Close any open tooltips
   tooltips.dispose(document.querySelectorAll('.has-tooltip, [data-toggle="tooltip"]'));

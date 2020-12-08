@@ -154,6 +154,7 @@ export default {
       });
   },
   beforeDestroy() {
+    // eslint-disable-next-line @gitlab/no-global-event-off
     $(this.$refs.dropdown).off();
   },
   methods: {

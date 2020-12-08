@@ -1,0 +1,11 @@
+#import "~/pipelines/graphql/queries/pipeline_stages.fragment.graphql"
+
+query getCiConfigData($content: String!) {
+  ciConfig(content: $content) {
+    errors
+    status
+    stages {
+      ...PipelineStagesData
+    }
+  }
+}

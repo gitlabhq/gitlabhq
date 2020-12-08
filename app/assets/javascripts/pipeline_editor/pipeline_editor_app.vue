@@ -1,7 +1,7 @@
 <script>
 import { GlAlert, GlLoadingIcon, GlTab, GlTabs } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
-import { redirectTo, mergeUrlParams, refreshCurrentPage } from '~/lib/utils/url_utility';
+import { mergeUrlParams, redirectTo, refreshCurrentPage } from '~/lib/utils/url_utility';
 
 import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
 import CommitForm from './components/commit/commit_form.vue';
@@ -9,24 +9,25 @@ import TextEditor from './components/text_editor.vue';
 
 import commitCiFileMutation from './graphql/mutations/commit_ci_file.mutation.graphql';
 import getBlobContent from './graphql/queries/blob_content.graphql';
+import getCiConfigData from './graphql/queries/ci_config.graphql';
 
 const MR_SOURCE_BRANCH = 'merge_request[source_branch]';
 const MR_TARGET_BRANCH = 'merge_request[target_branch]';
 
-const LOAD_FAILURE_NO_REF = 'LOAD_FAILURE_NO_REF';
-const LOAD_FAILURE_NO_FILE = 'LOAD_FAILURE_NO_FILE';
-const LOAD_FAILURE_UNKNOWN = 'LOAD_FAILURE_UNKNOWN';
 const COMMIT_FAILURE = 'COMMIT_FAILURE';
 const DEFAULT_FAILURE = 'DEFAULT_FAILURE';
+const LOAD_FAILURE_NO_FILE = 'LOAD_FAILURE_NO_FILE';
+const LOAD_FAILURE_NO_REF = 'LOAD_FAILURE_NO_REF';
+const LOAD_FAILURE_UNKNOWN = 'LOAD_FAILURE_UNKNOWN';
 
 export default {
   components: {
+    CommitForm,
     GlAlert,
     GlLoadingIcon,
     GlTab,
     GlTabs,
     PipelineGraph,
-    CommitForm,
     TextEditor,
   },
   props: {
@@ -55,14 +56,15 @@ export default {
   },
   data() {
     return {
-      showFailureAlert: false,
-      failureType: null,
-      failureReasons: [],
-
-      isSaving: false,
-      editorIsReady: false,
+      ciConfigData: {},
       content: '',
       contentModel: '',
+      currentTabIndex: 0,
+      editorIsReady: false,
+      failureType: null,
+      failureReasons: [],
+      isSaving: false,
+      showFailureAlert: false,
     };
   },
   apollo: {
@@ -85,17 +87,34 @@ export default {
         this.handleBlobContentError(error);
       },
     },
+    ciConfigData: {
+      query: getCiConfigData,
+      // If content is not loaded, we can't lint the data
+      skip: ({ contentModel }) => {
+        return !contentModel;
+      },
+      variables() {
+        return {
+          content: this.contentModel,
+        };
+      },
+      update(data) {
+        return data?.ciConfig ?? {};
+      },
+      error() {
+        this.reportFailure(LOAD_FAILURE_UNKNOWN);
+      },
+    },
   },
   computed: {
-    isLoading() {
+    isBlobContentLoading() {
       return this.$apollo.queries.content.loading;
+    },
+    isVisualizeTabActive() {
+      return this.currentTabIndex === 1;
     },
     defaultCommitMessage() {
       return sprintf(this.$options.i18n.defaultCommitMessage, { sourcePath: this.ciConfigPath });
-    },
-    pipelineData() {
-      // Note data will loaded as part of https://gitlab.com/gitlab-org/gitlab/-/issues/263141
-      return {};
     },
     failure() {
       switch (this.failureType) {
@@ -233,17 +252,17 @@ export default {
       </ul>
     </gl-alert>
     <div class="gl-mt-4">
-      <gl-loading-icon v-if="isLoading" size="lg" class="gl-m-3" />
+      <gl-loading-icon v-if="isBlobContentLoading" size="lg" class="gl-m-3" />
       <div v-else class="file-editor gl-mb-3">
-        <gl-tabs>
+        <gl-tabs v-model="currentTabIndex">
           <!-- editor should be mounted when its tab is visible, so the container has a size -->
           <gl-tab :title="$options.i18n.tabEdit" :lazy="!editorIsReady">
             <!-- editor should be mounted only once, when the tab is displayed -->
             <text-editor v-model="contentModel" @editor-ready="editorIsReady = true" />
           </gl-tab>
 
-          <gl-tab :title="$options.i18n.tabGraph">
-            <pipeline-graph :pipeline-data="pipelineData" />
+          <gl-tab :title="$options.i18n.tabGraph" :lazy="!isVisualizeTabActive">
+            <pipeline-graph :pipeline-data="ciConfigData" />
           </gl-tab>
         </gl-tabs>
       </div>

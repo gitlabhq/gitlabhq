@@ -13,9 +13,10 @@ import waitForPromises from 'helpers/wait_for_promises';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'jest/helpers/mock_apollo_helper';
 
-import { redirectTo, refreshCurrentPage, objectToQuery } from '~/lib/utils/url_utility';
+import { objectToQuery, redirectTo, refreshCurrentPage } from '~/lib/utils/url_utility';
 import {
   mockCiConfigPath,
+  mockCiConfigQueryResponse,
   mockCiYml,
   mockCommitId,
   mockCommitMessage,
@@ -24,10 +25,11 @@ import {
   mockNewMergeRequestPath,
 } from './mock_data';
 
-import TextEditor from '~/pipeline_editor/components/text_editor.vue';
+import CommitForm from '~/pipeline_editor/components/commit/commit_form.vue';
+import getCiConfig from '~/pipeline_editor/graphql/queries/ci_config.graphql';
 import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
 import PipelineEditorApp from '~/pipeline_editor/pipeline_editor_app.vue';
-import CommitForm from '~/pipeline_editor/components/commit/commit_form.vue';
+import TextEditor from '~/pipeline_editor/components/text_editor.vue';
 
 const localVue = createLocalVue();
 localVue.use(VueApollo);
@@ -42,9 +44,10 @@ jest.mock('~/lib/utils/url_utility', () => ({
 describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
   let wrapper;
 
-  let mockMutate;
   let mockApollo;
   let mockBlobContentData;
+  let mockCiConfigData;
+  let mockMutate;
 
   const createComponent = ({
     props = {},
@@ -96,7 +99,8 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
   };
 
   const createComponentWithApollo = ({ props = {}, mountFn = shallowMount } = {}) => {
-    mockApollo = createMockApollo([], {
+    const handlers = [[getCiConfig, mockCiConfigData]];
+    const resolvers = {
       Query: {
         blobContent() {
           return {
@@ -105,7 +109,9 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
           };
         },
       },
-    });
+    };
+
+    mockApollo = createMockApollo(handlers, resolvers);
 
     const options = {
       localVue,
@@ -125,10 +131,12 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
 
   beforeEach(() => {
     mockBlobContentData = jest.fn();
+    mockCiConfigData = jest.fn().mockResolvedValue(mockCiConfigQueryResponse);
   });
 
   afterEach(() => {
     mockBlobContentData.mockReset();
+    mockCiConfigData.mockReset();
     refreshCurrentPage.mockReset();
     redirectTo.mockReset();
     mockMutate.mockReset();
@@ -177,12 +185,10 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
     beforeEach(async () => {
       createComponent({ mountFn: mount });
 
-      wrapper.setData({
+      await wrapper.setData({
         content: mockCiYml,
         contentModel: mockCiYml,
       });
-
-      await nextTick();
     });
 
     it('displays content after the query loads', () => {
@@ -347,7 +353,7 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
   });
 
   describe('displays fetch content errors', () => {
-    it('no error is show when data is set', async () => {
+    it('no error is shown when data is set', async () => {
       mockBlobContentData.mockResolvedValue(mockCiYml);
       createComponentWithApollo();
 
