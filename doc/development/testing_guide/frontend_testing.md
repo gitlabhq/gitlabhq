@@ -961,6 +961,45 @@ describe "Admin::AbuseReports", :js do
 end
 ```
 
+### Jest test timeout due to async imports
+
+If a module asynchronously imports some other modules at runtime, these modules will need to be
+transpiled by the Jest loaders at runtime. It's possible that this will cause [Jest to timeout](https://gitlab.com/gitlab-org/gitlab/-/issues/280809).
+
+If you run into this issue, consider eager importing the module so that Jest will compile
+and cache it at compile-time, fixing the runtime timeout.
+
+Consider the following example:
+
+```javascript
+// the_subject.js
+
+export default {
+  components: {
+    // Async import Thing because it is large and isn't always needed.
+    Thing: () => import(/* webpackChunkName: 'thing' */ './path/to/thing.vue'),
+  }
+};
+```
+
+Jest will not automatically transpile the `thing.vue` module, and depending on it's size, could 
+cause Jest to timeout. We can force Jest to transpile and cache this module by eagerly importing
+it like so:
+
+```javascript
+// the_subject_spec.js
+
+import Subject from '~/feature/the_subject.vue';
+
+// Force Jest to transpile and cache
+// eslint-disable-next-line import/order, no-unused-vars
+import _Thing from '~/feature/path/to/thing.vue';
+```
+
+**PLEASE NOTE:** Do not simply disregard test timeouts. This could be a sign that there's
+actually a production problem. Use this opportunity to analyze the production webpack bundles and
+chunks and confirm that there is not a production issue with the async imports.
+
 ## Overview of Frontend Testing Levels
 
 Main information on frontend testing levels can be found in the [Testing Levels page](testing_levels.md).

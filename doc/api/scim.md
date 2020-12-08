@@ -39,7 +39,7 @@ Pagination follows the [SCIM spec](https://tools.ietf.org/html/rfc7644#section-3
 Example request:
 
 ```shell
-curl 'https://gitlab.example.com/api/scim/v2/groups/test_group/Users?filter=id%20eq%20"0b1d561c-21ff-4092-beab-8154b17f82f2"' --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
+curl "https://gitlab.example.com/api/scim/v2/groups/test_group/Users?filter=id%20eq%20%220b1d561c-21ff-4092-beab-8154b17f82f2%22" --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
 ```
 
 Example response:

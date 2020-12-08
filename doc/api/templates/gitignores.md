@@ -21,7 +21,7 @@ GET /templates/gitignores
 Example request:
 
 ```shell
-curl https://gitlab.example.com/api/v4/templates/gitignores
+curl "https://gitlab.example.com/api/v4/templates/gitignores"
 ```
 
 Example response:
@@ -126,7 +126,7 @@ GET /templates/gitignores/:key
 Example request:
 
 ```shell
-curl https://gitlab.example.com/api/v4/templates/gitignores/Ruby
+curl "https://gitlab.example.com/api/v4/templates/gitignores/Ruby"
 ```
 
 Example response:

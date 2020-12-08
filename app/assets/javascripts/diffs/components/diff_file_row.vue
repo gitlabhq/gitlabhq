@@ -41,10 +41,6 @@ export default {
       return !this.hideFileStats && this.file.type === 'blob';
     },
     fileClasses() {
-      if (!this.glFeatures.highlightCurrentDiffRow) {
-        return '';
-      }
-
       return this.file.type === 'blob' && !this.viewedFiles[this.file.fileHash]
         ? 'gl-font-weight-bold'
         : '';

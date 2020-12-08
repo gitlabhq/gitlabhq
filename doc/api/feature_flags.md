@@ -103,7 +103,7 @@ GET /projects/:id/feature_flags/:feature_flag_name
 | `feature_flag_name` | string           | yes        | The name of the feature flag.                                                          |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/feature_flags/awesome_feature
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/feature_flags/awesome_feature"
 ```
 
 Example response:

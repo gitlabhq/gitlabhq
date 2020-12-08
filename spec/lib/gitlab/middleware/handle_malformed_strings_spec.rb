@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 require 'spec_helper'
 require "rack/test"
 
@@ -101,6 +100,12 @@ RSpec.describe Gitlab::Middleware::HandleMalformedStrings do
       expect(Base64.decode64(special_token)).to include(null_byte)
 
       env = env_for.merge('HTTP_AUTHORIZATION' => special_token)
+
+      expect(subject.call(env)).not_to eq error_400
+    end
+
+    it 'does not reject correct encoded password with special characters' do
+      env = env_for.merge(auth_env("username", "RçKszEwéC5kFnû∆f243fycGu§Gh9ftDj!U", nil))
 
       expect(subject.call(env)).not_to eq error_400
     end

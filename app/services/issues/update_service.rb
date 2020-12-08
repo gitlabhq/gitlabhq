@@ -34,7 +34,6 @@ module Issues
     end
 
     def after_update(issue)
-      add_incident_label(issue)
       IssuesChannel.broadcast_to(issue, event: 'updated') if Gitlab::ActionCable::Config.in_app? || Feature.enabled?(:broadcast_issue_updates, issue.project)
     end
 

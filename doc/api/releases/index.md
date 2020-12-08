@@ -376,7 +376,7 @@ Example request:
 ```shell
 curl --header 'Content-Type: application/json' --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" \
      --data '{ "name": "New release", "tag_name": "v0.3", "description": "Super nice release", "milestones": ["v1.0", "v1.0-rc"], "assets": { "links": [{ "name": "hoge", "url": "https://google.com", "filepath": "/binaries/linux-amd64", "link_type":"other" }] } }' \
-     --request POST https://gitlab.example.com/api/v4/projects/24/releases
+     --request POST "https://gitlab.example.com/api/v4/projects/24/releases"
 ```
 
 Example response:

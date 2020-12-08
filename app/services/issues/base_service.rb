@@ -73,22 +73,6 @@ module Issues
 
       Milestones::IssuesCountService.new(milestone).delete_cache
     end
-
-    # Applies label "incident" (creates it if missing) to incident issues.
-    # Please use in "after" hooks only to ensure we are not appyling
-    # labels prematurely.
-    def add_incident_label(issue)
-      return unless issue.incident?
-
-      label = ::IncidentManagement::CreateIncidentLabelService
-        .new(project, current_user)
-        .execute
-        .payload[:label]
-
-      return if issue.label_ids.include?(label.id)
-
-      issue.labels << label
-    end
   end
 end
 

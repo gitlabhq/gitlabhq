@@ -1,9 +1,21 @@
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
+
+const ACCOUNT_SORT_ASC_LABEL = s__('Members|Account, ascending');
 
 export const FIELDS = [
   {
     key: 'account',
     label: __('Account'),
+    sort: {
+      asc: {
+        param: 'name_asc',
+        label: ACCOUNT_SORT_ASC_LABEL,
+      },
+      desc: {
+        param: 'name_desc',
+        label: s__('Members|Account, descending'),
+      },
+    },
   },
   {
     key: 'source',
@@ -16,6 +28,16 @@ export const FIELDS = [
     label: __('Access granted'),
     thClass: 'col-meta',
     tdClass: 'col-meta',
+    sort: {
+      asc: {
+        param: 'last_joined',
+        label: s__('Members|Access granted, ascending'),
+      },
+      desc: {
+        param: 'oldest_joined',
+        label: s__('Members|Access granted, descending'),
+      },
+    },
   },
   {
     key: 'invited',
@@ -40,6 +62,16 @@ export const FIELDS = [
     label: __('Max role'),
     thClass: 'col-max-role',
     tdClass: 'col-max-role',
+    sort: {
+      asc: {
+        param: 'access_level_asc',
+        label: s__('Members|Max role, ascending'),
+      },
+      desc: {
+        param: 'access_level_desc',
+        label: s__('Members|Max role, descending'),
+      },
+    },
   },
   {
     key: 'expiration',
@@ -48,12 +80,31 @@ export const FIELDS = [
     tdClass: 'col-expiration',
   },
   {
+    key: 'lastSignIn',
+    sort: {
+      asc: {
+        param: 'recent_sign_in',
+        label: s__('Members|Last sign-in, ascending'),
+      },
+      desc: {
+        param: 'oldest_sign_in',
+        label: s__('Members|Last sign-in, descending'),
+      },
+    },
+  },
+  {
     key: 'actions',
     thClass: 'col-actions',
     tdClass: 'col-actions',
     showFunction: 'showActionsField',
   },
 ];
+
+export const DEFAULT_SORT = {
+  sortBy: 'account',
+  sortDesc: false,
+  sortByLabel: ACCOUNT_SORT_ASC_LABEL,
+};
 
 export const AVATAR_SIZE = 48;
 

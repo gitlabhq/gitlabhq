@@ -258,7 +258,7 @@ are paginated.
 Read more on [pagination](README.md#pagination).
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://primary.example.com/api/v4/projects/7/audit_events
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/projects/7/audit_events"
 ```
 
 Example response:
@@ -318,7 +318,7 @@ GET /projects/:id/audit_events/:audit_event_id
 | `audit_event_id` | integer | yes | The ID of the audit event |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://primary.example.com/api/v4/projects/7/audit_events/5
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/projects/7/audit_events/5"
 ```
 
 Example response:

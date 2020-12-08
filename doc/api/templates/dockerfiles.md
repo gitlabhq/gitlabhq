@@ -20,7 +20,7 @@ GET /templates/dockerfiles
 ```
 
 ```shell
-curl https://gitlab.example.com/api/v4/templates/dockerfiles
+curl "https://gitlab.example.com/api/v4/templates/dockerfiles"
 ```
 
 Example response:
@@ -119,7 +119,7 @@ GET /templates/dockerfiles/:key
 | `key`      | string | yes      | The key of the Dockerfile template |
 
 ```shell
-curl https://gitlab.example.com/api/v4/templates/dockerfiles/Binary
+curl "https://gitlab.example.com/api/v4/templates/dockerfiles/Binary"
 ```
 
 Example response:

@@ -63,6 +63,7 @@ RSpec.describe Issues::CreateService do
         subject { issue }
 
         it_behaves_like 'incident issue'
+        it_behaves_like 'has incident label'
         it_behaves_like 'an incident management tracked event', :incident_management_incident_created
 
         it 'does create an incident label' do

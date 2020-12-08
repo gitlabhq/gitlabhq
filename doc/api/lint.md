@@ -246,7 +246,7 @@ GitLab API using `curl` and `jq` in a one-line command:
 
 ```shell
 jq --null-input --arg yaml "$(<example-gitlab-ci.yml)" '.content=$yaml' \
-| curl 'https://gitlab.com/api/v4/ci/lint?include_merged_yaml=true' \
+| curl "https://gitlab.com/api/v4/ci/lint?include_merged_yaml=true" \
 --header 'Content-Type: application/json' \
 --data @-
 ```
@@ -293,7 +293,7 @@ With a one-line command, you can:
 
 ```shell
 jq --null-input --arg yaml "$(<example-gitlab-ci.yml)" '.content=$yaml' \
-| curl 'https://gitlab.com/api/v4/ci/lint?include_merged_yaml=true' \
+| curl "https://gitlab.com/api/v4/ci/lint?include_merged_yaml=true" \
 --header 'Content-Type: application/json' --data @- \
 | jq --raw-output '.merged_yaml | fromjson'
 ```

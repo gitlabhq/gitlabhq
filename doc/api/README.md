@@ -107,7 +107,7 @@ curl: (22) The requested URL returned error: 404
 ```
 
 The HTTP exit code can help you diagnose the success or failure of your REST call.
-  
+
 ## Authentication
 
 Most API requests require authentication, or only return public data when
@@ -591,7 +591,7 @@ We can call the API with `array` and `hash` types parameters as follows:
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 -d "import_sources[]=github" \
 -d "import_sources[]=bitbucket" \
-https://gitlab.example.com/api/v4/some_endpoint
+"https://gitlab.example.com/api/v4/some_endpoint"
 ```
 
 ### `hash`
@@ -605,7 +605,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 --form "file=@/path/to/somefile.txt"
 --form "override_params[visibility]=private" \
 --form "override_params[some_other_param]=some_value" \
-https://gitlab.example.com/api/v4/projects/import
+"https://gitlab.example.com/api/v4/projects/import"
 ```
 
 ### Array of hashes

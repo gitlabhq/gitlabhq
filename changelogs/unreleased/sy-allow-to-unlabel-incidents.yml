@@ -1,0 +1,5 @@
+---
+title: Do not automatically reapply incident label after user removes it
+merge_request: 49188
+author:
+type: fixed

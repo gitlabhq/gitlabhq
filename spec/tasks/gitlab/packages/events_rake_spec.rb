@@ -27,14 +27,14 @@ RSpec.describe 'gitlab:packages:events namespace rake task' do
     end
 
     Packages::Event::EVENT_SCOPES.keys.each do |event_scope|
-      it "includes includes `#{event_scope}` scope" do
+      it "includes `#{event_scope}` scope" do
         expect(subject.find { |event| event['name'].include?(event_scope) }).not_to be_nil
       end
     end
 
     it 'excludes some event types' do
-      expect(subject.find { |event| event['name'].include?("search_package") }).to be_nil
-      expect(subject.find { |event| event['name'].include?("list_package") }).to be_nil
+      expect(subject.grep(/search_package/)).to be_empty
+      expect(subject.grep(/list_package/)).to be_empty
     end
   end
 
@@ -42,7 +42,7 @@ RSpec.describe 'gitlab:packages:events namespace rake task' do
     let(:task) { 'generate_guest' }
 
     Packages::Event::EVENT_SCOPES.keys.each do |event_scope|
-      it "includes includes `#{event_scope}` scope" do
+      it "includes `#{event_scope}` scope" do
         expect(subject.find { |event| event.include?(event_scope) }).not_to be_nil
       end
     end

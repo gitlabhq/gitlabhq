@@ -4,7 +4,7 @@ module API
   module Entities
     class Invitation < Grape::Entity
       expose :access_level
-      expose :requested_at
+      expose :created_at
       expose :expires_at
       expose :invite_email
       expose :invite_token

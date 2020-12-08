@@ -33,6 +33,16 @@ RSpec.describe MembersHelper do
         expect(remove_member_message(group_member_invite)).to eq "Are you sure you want to remove this orphaned member from the #{group.name} group and any subresources?"
       end
     end
+
+    context 'a pending member invitation with no user associated' do
+      before do
+        project_member_invite.update_columns(invite_email: "#{SecureRandom.hex}@example.com", invite_token: 'some-token', user_id: nil)
+      end
+
+      it 'does not error when there is an invitation for the requestor' do
+        expect(remove_member_message(project_member_invite)).to eq "Are you sure you want to revoke the invitation for #{project_member_invite.invite_email} to join the #{project.full_name} project?"
+      end
+    end
   end
 
   describe '#remove_member_title' do

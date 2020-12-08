@@ -2195,6 +2195,11 @@ type BoardListUpdateLimitMetricsPayload {
   list: BoardList
 }
 
+"""
+Identifier of Boards::EpicBoard
+"""
+scalar BoardsEpicBoardID
+
 type Branch {
   """
   Commit for the branch
@@ -7944,6 +7949,56 @@ type EpicAddIssuePayload {
 }
 
 """
+Represents an epic board
+"""
+type EpicBoard {
+  """
+  Global ID of the board
+  """
+  id: BoardsEpicBoardID!
+
+  """
+  Name of the board
+  """
+  name: String
+}
+
+"""
+The connection type for EpicBoard.
+"""
+type EpicBoardConnection {
+  """
+  A list of edges.
+  """
+  edges: [EpicBoardEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [EpicBoard]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type EpicBoardEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: EpicBoard
+}
+
+"""
 The connection type for Epic.
 """
 type EpicConnection {
@@ -9236,6 +9291,41 @@ type Group {
     """
     timeframe: Timeframe
   ): Epic
+
+  """
+  Find a single epic board
+  """
+  epicBoard(
+    """
+    Find an epic board by ID
+    """
+    id: BoardsEpicBoardID!
+  ): EpicBoard
+
+  """
+  Find epic boards
+  """
+  epicBoards(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): EpicBoardConnection
 
   """
   Find epics

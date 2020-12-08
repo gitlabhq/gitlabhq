@@ -36,7 +36,7 @@ GET /projects/:id/feature_flags
 | `scope`             | string           | no         | The condition of feature flags, one of: `enabled`, `disabled`.                                                              |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/feature_flags
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/feature_flags"
 ```
 
 Example response:
@@ -174,7 +174,7 @@ POST /projects/:id/feature_flags
 | `scopes:strategies` | JSON             | no         | The [strategies](../operations/feature_flags.md#feature-flag-strategies) of the feature flag spec. |
 
 ```shell
-curl https://gitlab.example.com/api/v4/projects/1/feature_flags \
+curl "https://gitlab.example.com/api/v4/projects/1/feature_flags" \
      --header "PRIVATE-TOKEN: <your_access_token>" \
      --header "Content-type: application/json" \
      --data @- << EOF
@@ -244,7 +244,7 @@ GET /projects/:id/feature_flags/:name
 | `name`              | string           | yes        | The name of the feature flag.  |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/feature_flags/new_live_trace
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/feature_flags/new_live_trace"
 ```
 
 Example response:
@@ -320,5 +320,5 @@ DELETE /projects/:id/feature_flags/:name
 | `name`              | string           | yes        | The name of the feature flag.  |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" --request DELETE https://gitlab.example.com/api/v4/projects/1/feature_flags/awesome_feature
+curl --header "PRIVATE-TOKEN: <your_access_token>" --request DELETE "https://gitlab.example.com/api/v4/projects/1/feature_flags/awesome_feature"
 ```

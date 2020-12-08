@@ -16900,6 +16900,18 @@ msgstr ""
 msgid "Members|2FA"
 msgstr ""
 
+msgid "Members|Access granted, ascending"
+msgstr ""
+
+msgid "Members|Access granted, descending"
+msgstr ""
+
+msgid "Members|Account, ascending"
+msgstr ""
+
+msgid "Members|Account, descending"
+msgstr ""
+
 msgid "Members|An error occurred while trying to enable LDAP override, please try again."
 msgstr ""
 
@@ -16963,7 +16975,19 @@ msgstr ""
 msgid "Members|LDAP override enabled."
 msgstr ""
 
+msgid "Members|Last sign-in, ascending"
+msgstr ""
+
+msgid "Members|Last sign-in, descending"
+msgstr ""
+
 msgid "Members|Leave \"%{source}\""
+msgstr ""
+
+msgid "Members|Max role, ascending"
+msgstr ""
+
+msgid "Members|Max role, descending"
 msgstr ""
 
 msgid "Members|Membership"

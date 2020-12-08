@@ -58,7 +58,7 @@ RSpec.describe API::Invitations do
           it 'does not transform the requester into a proper member' do
             expect do
               post api("/#{source_type.pluralize}/#{source.id}/invitations", maintainer),
-                   params: { email: email, access_level: Member::MAINTAINER }
+                   params: { email: access_requester.email, access_level: Member::MAINTAINER }
 
               expect(response).to have_gitlab_http_status(:created)
             end.not_to change { source.members.count }
@@ -71,7 +71,7 @@ RSpec.describe API::Invitations do
                  params: { email: email, access_level: Member::DEVELOPER }
 
             expect(response).to have_gitlab_http_status(:created)
-          end.to change { source.requesters.count }.by(1)
+          end.to change { source.members.invite.count }.by(1)
         end
 
         it 'invites a list of new email addresses' do
@@ -82,7 +82,7 @@ RSpec.describe API::Invitations do
                  params: { email: email_list, access_level: Member::DEVELOPER }
 
             expect(response).to have_gitlab_http_status(:created)
-          end.to change { source.requesters.count }.by(2)
+          end.to change { source.members.invite.count }.by(2)
         end
       end
 
@@ -140,7 +140,7 @@ RSpec.describe API::Invitations do
           it 'invites a member' do
             expect do
               subject
-            end.to change { source.requesters.count }.by(1)
+            end.to change { source.members.invite.count }.by(1)
 
             expect(response).to have_gitlab_http_status(:created)
           end

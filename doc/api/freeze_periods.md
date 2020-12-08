@@ -101,7 +101,7 @@ Example request:
 ```shell
 curl --header 'Content-Type: application/json' --header "PRIVATE-TOKEN: <your_access_token>" \
      --data '{ "freeze_start": "0 23 * * 5", "freeze_end": "0 7 * * 1", "cron_timezone": "UTC" }' \
-     --request POST https://gitlab.example.com/api/v4/projects/19/freeze_periods
+     --request POST "https://gitlab.example.com/api/v4/projects/19/freeze_periods"
 ```
 
 Example response:

@@ -97,7 +97,7 @@ Example response:
    {
      "id": 1,
      "invite_email": "member@example.org",
-     "invited_at": "2020-10-22T14:13:35Z",
+     "created_at": "2020-10-22T14:13:35Z",
      "access_level": 30,
      "expires_at": "2020-11-22T14:13:35Z",
      "user_name": "Raymond Smith",
