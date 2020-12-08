@@ -2535,6 +2535,28 @@ RSpec.describe User do
     end
   end
 
+  context 'crowd synchronized user' do
+    describe '#crowd_user?' do
+      it 'is true if provider is crowd' do
+        user = create(:omniauth_user, provider: 'crowd')
+
+        expect(user.crowd_user?).to be_truthy
+      end
+
+      it 'is false for other providers' do
+        user = create(:omniauth_user, provider: 'other-provider')
+
+        expect(user.crowd_user?).to be_falsey
+      end
+
+      it 'is false if no extern_uid is provided' do
+        user = create(:omniauth_user, extern_uid: nil)
+
+        expect(user.crowd_user?).to be_falsey
+      end
+    end
+  end
+
   describe '#requires_ldap_check?' do
     let(:user) { described_class.new }
 

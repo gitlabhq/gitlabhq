@@ -66,17 +66,10 @@ export default {
     updateDiffFilesInState(state, files);
   },
 
-  [types.SET_DIFF_DATA](state, data) {
-    let files = state.diffFiles;
-
-    if (window.location.search.indexOf('diff_id') !== -1 && data.diff_files) {
-      files = prepareDiffData(data, files);
-    }
-
+  [types.SET_DIFF_METADATA](state, data) {
     Object.assign(state, {
       ...convertObjectPropsToCamelCase(data),
     });
-    updateDiffFilesInState(state, files);
   },
 
   [types.SET_DIFF_DATA_BATCH](state, data) {

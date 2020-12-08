@@ -36,9 +36,22 @@ point out specific queries for review and there are no obviously
 complex queries, it is enough to concentrate on reviewing the
 migration only.
 
-It is preferable to review queries in SQL form and generally accepted
-to ask the author to translate any ActiveRecord queries in SQL form
-for review.
+### Required
+
+The following artifacts are required prior to submitting for a ~database review.
+If your merge request description does not include these items, the review will be reassigned back to the author.
+
+If new migrations are introduced, in the MR **you are required to provide**:
+
+- The output of both migrating and rolling back for all migrations
+
+If new queries have been introduced or existing queries have been updated, **you are required to provide**:
+
+- [Query plans](#query-plans) for each raw SQL query included in the merge request along with the link to the query plan following each raw SQL snippet.
+- [Raw SQL](#raw-sql) for all queries (as translated from ActiveRecord queries).
+  - In case of updating an existing query, the raw SQL of both the old and the new version of the query should be provided together with their query plans.
+
+Refer to [Preparation when adding or modifying queries](#preparation-when-adding-or-modifying-queries) for how to provide this information.
 
 ### Roles and process
 
@@ -47,9 +60,11 @@ A Merge Request **author**'s role is to:
 - Decide whether a database review is needed.
 - If database review is needed, add the ~database label.
 - [Prepare the merge request for a database review](#how-to-prepare-the-merge-request-for-a-database-review).
+- Provide the [required](#required) artifacts prior to submitting the MR.
 
 A database **reviewer**'s role is to:
 
+- Ensure the [required](#required) artifacts are provided and in the proper format. If they are not, reassign the merge request back to the author.
 - Perform a first-pass review on the MR and suggest improvements to the author.
 - Once satisfied, relabel the MR with ~"database::reviewed", approve it, and
   reassign MR to the database **maintainer** suggested by Reviewer
@@ -104,23 +119,43 @@ test its execution using `CREATE INDEX CONCURRENTLY` in the `#database-lab` Slac
 
 #### Preparation when adding or modifying queries
 
+##### Raw SQL
+
 - Write the raw SQL in the MR description. Preferably formatted
   nicely with [pgFormatter](https://sqlformat.darold.net) or
   [paste.depesz.com](https://paste.depesz.com) and using regular quotes
   (e.g. `"projects"."id"`) and avoiding smart quotes (e.g. `“projects”.“id”`).
-- Include the output of `EXPLAIN (ANALYZE, BUFFERS)` of the relevant
-  queries in the description. If the output is too long, wrap it in
-  `<details>` blocks, paste it in a GitLab Snippet, or provide the
-  link to the plan at: [explain.depesz.com](https://explain.depesz.com).
+- In case of queries generated dynamically by using parameters, there should be one raw SQL query for each variation.
+
+  For example, a finder for issues that may take as a parameter an optional filter on projects,
+  should include both the version of the simple query over issues and the one that joins issues
+  and projects and applies the filter.
+
+  There are finders or other methods that can generate a very large amount of permutations.
+  There is no need to exhaustively add all the possible generated queries, just the one with
+  all the parameters included and one for each type of queries generated.
+
+  For example, if joins or a group by clause are optional, the versions without the group by clause
+  and with less joins should be also included, while keeping the appropriate filters for the remaining tables.
+
+- If a query is going to be always used with a limit and an offset, those should always be
+  included with the maximum allowed limit used and a non 0 offset.
+
+##### Query Plans
+
+- The query plan for each raw SQL query included in the merge request along with the link to the query plan following each raw SQL snippet.
+- Provide the link to the plan at: [explain.depesz.com](https://explain.depesz.com). Paste both the plan and the query used in the form.
 - When providing query plans, make sure it hits enough data:
   - You can use a GitLab production replica to test your queries on a large scale,
   through the `#database-lab` Slack channel or through [chatops](understanding_explain_plans.md#chatops).
   - Usually, the `gitlab-org` namespace (`namespace_id = 9970`) and the
   `gitlab-org/gitlab-foss` (`project_id = 13083`) or the `gitlab-org/gitlab` (`project_id = 278964`)
    projects provide enough data to serve as a good example.
-- For query changes, it is best to provide the SQL query along with a
-  plan _before_ and _after_ the change. This helps to spot differences
-  quickly.
+  - That means that no query plan should return 0 records or less records than the provided limit (if a limit is included). If a query is used in batching, a proper example batch with adequate included results should be identified and provided.
+  - If your queries belong to a new feature in GitLab.com and thus they don't return data in production, it's suggested to analyze the query and to provide the plan from a local environment.
+  - More info on how to find the number of actual returned records in [Understanding EXPLAIN plans](understanding_explain_plans.md)
+- For query changes, it is best to provide both the SQL queries along with the
+  plan _before_ and _after_ the change. This helps spot differences quickly.
 - Include data that shows the performance improvement, preferably in
   the form of a benchmark.
 

@@ -81,6 +81,36 @@ RSpec.describe Identity do
     end
   end
 
+  describe '.with_any_extern_uid' do
+    context 'provider with extern uid' do
+      let!(:test_entity) { create(:identity, provider: 'test_provider', extern_uid: 'test_uid') }
+
+      it 'finds any extern uids associated with a provider' do
+        identity = described_class.with_any_extern_uid('test_provider').first
+
+        expect(identity).to be
+      end
+    end
+
+    context 'provider with nil extern uid' do
+      let!(:nil_entity) { create(:identity, provider: 'nil_entity_provider', extern_uid: nil) }
+
+      it 'has no results when there are no extern uids' do
+        identity = described_class.with_any_extern_uid('nil_entity_provider').first
+
+        expect(identity).to be_nil
+      end
+    end
+
+    context 'no provider' do
+      it 'has no results when there is no associated provider' do
+        identity = described_class.with_any_extern_uid('nonexistent_provider').first
+
+        expect(identity).to be_nil
+      end
+    end
+  end
+
   context 'callbacks' do
     context 'before_save' do
       describe 'normalizes extern uid' do

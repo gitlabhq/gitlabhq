@@ -7336,9 +7336,6 @@ msgstr ""
 msgid "ContainerRegistry|%{title} was successfully scheduled for deletion"
 msgstr ""
 
-msgid "ContainerRegistry|%{toggleStatus} - Tags matching the patterns defined below will be scheduled for deletion"
-msgstr ""
-
 msgid "ContainerRegistry|Build an image"
 msgstr ""
 
@@ -7349,9 +7346,6 @@ msgid "ContainerRegistry|Cleanup policy for tags is disabled"
 msgstr ""
 
 msgid "ContainerRegistry|Cleanup policy successfully saved."
-msgstr ""
-
-msgid "ContainerRegistry|Cleanup policy:"
 msgstr ""
 
 msgid "ContainerRegistry|Cleanup timed out before it could delete all tags"
@@ -7384,9 +7378,6 @@ msgstr ""
 msgid "ContainerRegistry|Docker connection error"
 msgstr ""
 
-msgid "ContainerRegistry|Expiration interval:"
-msgstr ""
-
 msgid "ContainerRegistry|Expiration policies help manage the storage space used by the Container Registry, but the expiration policies for this registry are disabled. Contact your administrator to enable. %{docLinkStart}More information%{docLinkEnd}"
 msgstr ""
 
@@ -7394,9 +7385,6 @@ msgid "ContainerRegistry|Expiration policy is disabled"
 msgstr ""
 
 msgid "ContainerRegistry|Expiration policy will run in %{time}"
-msgstr ""
-
-msgid "ContainerRegistry|Expiration schedule:"
 msgstr ""
 
 msgid "ContainerRegistry|Filter by name"
@@ -7439,9 +7427,6 @@ msgid "ContainerRegistry|Not yet scheduled"
 msgstr ""
 
 msgid "ContainerRegistry|Note: Any policy update will result in a change to the scheduled run date and time"
-msgstr ""
-
-msgid "ContainerRegistry|Number of tags to retain:"
 msgstr ""
 
 msgid "ContainerRegistry|Published %{timeInfo}"
@@ -7518,12 +7503,6 @@ msgstr ""
 msgid "ContainerRegistry|Tags that match these rules are %{strongStart}removed%{strongEnd}, unless a rule above says to keep them."
 msgstr ""
 
-msgid "ContainerRegistry|Tags with names matching this regex pattern will %{italicStart}be preserved:%{italicEnd}"
-msgstr ""
-
-msgid "ContainerRegistry|Tags with names matching this regex pattern will %{italicStart}expire:%{italicEnd}"
-msgstr ""
-
 msgid "ContainerRegistry|Tags with names that match this regex pattern are kept. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
@@ -7561,12 +7540,6 @@ msgid "ContainerRegistry|To widen your search, change or remove the filters abov
 msgstr ""
 
 msgid "ContainerRegistry|We are having trouble connecting to the Registry, which could be due to an issue with your project name or path. %{docLinkStart}More information%{docLinkEnd}"
-msgstr ""
-
-msgid "ContainerRegistry|Wildcards such as %{codeStart}.*-master%{codeEnd} or %{codeStart}release-.*%{codeEnd} are supported"
-msgstr ""
-
-msgid "ContainerRegistry|Wildcards such as %{codeStart}.*-test%{codeEnd} or %{codeStart}dev-.*%{codeEnd} are supported. To select all tags, use %{codeStart}.*%{codeEnd}"
 msgstr ""
 
 msgid "ContainerRegistry|With the Container Registry, every project can have its own space to store its Docker images. %{docLinkStart}More Information%{docLinkEnd}"
@@ -9619,13 +9592,25 @@ msgstr ""
 msgid "DevopsAdoption|Add new segment"
 msgstr ""
 
+msgid "DevopsAdoption|An error occured while deleting the segment. Please try again."
+msgstr ""
+
 msgid "DevopsAdoption|An error occured while saving the segment. Please try again."
 msgstr ""
 
 msgid "DevopsAdoption|Approvals"
 msgstr ""
 
+msgid "DevopsAdoption|Are you sure that you would like to delete %{name}?"
+msgstr ""
+
+msgid "DevopsAdoption|Confirm delete segment"
+msgstr ""
+
 msgid "DevopsAdoption|Create new segment"
+msgstr ""
+
+msgid "DevopsAdoption|Delete segment"
 msgstr ""
 
 msgid "DevopsAdoption|Deploys"

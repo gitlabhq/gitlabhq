@@ -67,24 +67,24 @@ describe('DiffsStoreMutations', () => {
     });
   });
 
-  describe('SET_DIFF_DATA', () => {
-    it('should not modify the existing state', () => {
+  describe('SET_DIFF_METADATA', () => {
+    it('should overwrite state with the camelCased data that is passed in', () => {
       const state = {
-        diffFiles: [
-          {
-            content_sha: diffFileMockData.content_sha,
-            file_hash: diffFileMockData.file_hash,
-            [INLINE_DIFF_LINES_KEY]: [],
-          },
-        ],
+        diffFiles: [],
       };
       const diffMock = {
         diff_files: [diffFileMockData],
       };
+      const metaMock = {
+        other_key: 'value',
+      };
 
-      mutations[types.SET_DIFF_DATA](state, diffMock);
+      mutations[types.SET_DIFF_METADATA](state, diffMock);
+      expect(state.diffFiles[0]).toEqual(diffFileMockData);
 
-      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY]).toEqual([]);
+      mutations[types.SET_DIFF_METADATA](state, metaMock);
+      expect(state.diffFiles[0]).toEqual(diffFileMockData);
+      expect(state.otherKey).toEqual('value');
     });
   });
 

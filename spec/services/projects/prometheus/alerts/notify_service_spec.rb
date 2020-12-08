@@ -138,10 +138,10 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
       end
     end
 
-    context 'with generic alerts integration' do
+    context 'with HTTP integration' do
       using RSpec::Parameterized::TableSyntax
 
-      where(:alerts_service, :token, :result) do
+      where(:active, :token, :result) do
         :active   | :valid    | :success
         :active   | :invalid  | :failure
         :active   | nil       | :failure
@@ -150,15 +150,12 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
       end
 
       with_them do
-        let(:valid) { project.alerts_service.token }
+        let(:valid) { integration.token }
         let(:invalid) { 'invalid token' }
         let(:token_input) { public_send(token) if token }
+        let(:integration) { create(:alert_management_http_integration, active, project: project) if active }
 
-        before do
-          if alerts_service
-            create(:alerts_service, alerts_service, project: project)
-          end
-        end
+        let(:subject) { service.execute(token_input, integration) }
 
         case result = params[:result]
         when :success

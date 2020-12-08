@@ -4,8 +4,6 @@ import Tracking from '~/tracking';
 import {
   UPDATE_SETTINGS_ERROR_MESSAGE,
   UPDATE_SETTINGS_SUCCESS_MESSAGE,
-} from '~/registry/shared/constants';
-import {
   SET_CLEANUP_POLICY_BUTTON,
   KEEP_HEADER_TEXT,
   KEEP_INFO_TEXT,
@@ -21,7 +19,7 @@ import {
   CADENCE_LABEL,
   EXPIRATION_POLICY_FOOTER_NOTE,
 } from '~/registry/settings/constants';
-import { formOptionsGenerator } from '~/registry/shared/utils';
+import { formOptionsGenerator } from '~/registry/settings/utils';
 import updateContainerExpirationPolicyMutation from '~/registry/settings/graphql/mutations/update_container_expiration_policy.graphql';
 import { updateContainerExpirationPolicy } from '~/registry/settings/graphql/utils/cache_update';
 import ExpirationDropdown from './expiration_dropdown.vue';

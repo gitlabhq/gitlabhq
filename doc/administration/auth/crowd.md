@@ -7,7 +7,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Atlassian Crowd OmniAuth Provider
 
-Authenticate to GitLab using the Atlassian Crowd OmniAuth provider.
+Authenticate to GitLab using the Atlassian Crowd OmniAuth provider. Enabling
+this provider also allows Crowd authentication for Git-over-https requests.
 
 ## Configure a new Crowd application
 

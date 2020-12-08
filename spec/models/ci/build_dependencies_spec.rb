@@ -146,6 +146,204 @@ RSpec.describe Ci::BuildDependencies do
     end
   end
 
+  describe '#cross_pipeline' do
+    let!(:job) do
+      create(:ci_build,
+        pipeline: pipeline,
+        name: 'build_with_pipeline_dependency',
+        options: { cross_dependencies: dependencies })
+    end
+
+    subject { described_class.new(job) }
+
+    let(:cross_pipeline_deps) { subject.cross_pipeline }
+
+    context 'when dependency specifications are valid' do
+      context 'when pipeline exists in the hierarchy' do
+        let!(:pipeline) { create(:ci_pipeline, child_of: parent_pipeline) }
+        let!(:parent_pipeline) { create(:ci_pipeline, project: project) }
+
+        context 'when job exists' do
+          let(:dependencies) do
+            [{ pipeline: parent_pipeline.id.to_s, job: upstream_job.name, artifacts: true }]
+          end
+
+          let!(:upstream_job) { create(:ci_build, :success, pipeline: parent_pipeline) }
+
+          it { expect(cross_pipeline_deps).to contain_exactly(upstream_job) }
+          it { is_expected.to be_valid }
+
+          context 'when pipeline and job are specified via variables' do
+            let(:dependencies) do
+              [{ pipeline: '$parent_pipeline_ID', job: '$UPSTREAM_JOB', artifacts: true }]
+            end
+
+            before do
+              job.yaml_variables.push(key: 'parent_pipeline_ID', value: parent_pipeline.id.to_s, public: true)
+              job.yaml_variables.push(key: 'UPSTREAM_JOB', value: upstream_job.name, public: true)
+              job.save!
+            end
+
+            it { expect(cross_pipeline_deps).to contain_exactly(upstream_job) }
+            it { is_expected.to be_valid }
+          end
+
+          context 'when feature flag `ci_cross_pipeline_artifacts_download` is disabled' do
+            before do
+              stub_feature_flags(ci_cross_pipeline_artifacts_download: false)
+            end
+
+            it { expect(cross_pipeline_deps).to be_empty }
+            it { is_expected.to be_valid }
+          end
+        end
+
+        context 'when same job names exist in other pipelines in the hierarchy' do
+          let(:cross_pipeline_limit) do
+            ::Gitlab::Ci::Config::Entry::Needs::NEEDS_CROSS_PIPELINE_DEPENDENCIES_LIMIT
+          end
+
+          let(:sibling_pipeline) { create(:ci_pipeline, child_of: parent_pipeline) }
+
+          before do
+            cross_pipeline_limit.times do |index|
+              create(:ci_build, :success,
+                pipeline: parent_pipeline, name: "dependency-#{index}",
+                stage_idx: 1, stage: 'build', user: user
+              )
+
+              create(:ci_build, :success,
+                pipeline: sibling_pipeline, name: "dependency-#{index}",
+                stage_idx: 1, stage: 'build', user: user
+              )
+            end
+          end
+
+          let(:dependencies) do
+            [
+              { pipeline: parent_pipeline.id.to_s,  job: 'dependency-0', artifacts: true },
+              { pipeline: parent_pipeline.id.to_s,  job: 'dependency-1', artifacts: true },
+              { pipeline: parent_pipeline.id.to_s,  job: 'dependency-2', artifacts: true },
+              { pipeline: sibling_pipeline.id.to_s, job: 'dependency-3', artifacts: true },
+              { pipeline: sibling_pipeline.id.to_s, job: 'dependency-4', artifacts: true },
+              { pipeline: sibling_pipeline.id.to_s, job: 'dependency-5', artifacts: true }
+            ]
+          end
+
+          it 'returns a limited number of dependencies with the right match' do
+            expect(job.options[:cross_dependencies].size).to eq(cross_pipeline_limit.next)
+            expect(cross_pipeline_deps.size).to eq(cross_pipeline_limit)
+            expect(cross_pipeline_deps.map { |dep| [dep.pipeline_id, dep.name] }).to contain_exactly(
+              [parent_pipeline.id, 'dependency-0'],
+              [parent_pipeline.id, 'dependency-1'],
+              [parent_pipeline.id, 'dependency-2'],
+              [sibling_pipeline.id, 'dependency-3'],
+              [sibling_pipeline.id, 'dependency-4'])
+          end
+        end
+
+        context 'when job does not exist' do
+          let(:dependencies) do
+            [{ pipeline: parent_pipeline.id.to_s, job: 'non-existent', artifacts: true }]
+          end
+
+          it { expect(cross_pipeline_deps).to be_empty }
+          it { is_expected.not_to be_valid }
+        end
+      end
+
+      context 'when pipeline does not exist' do
+        let(:dependencies) do
+          [{ pipeline: '123', job: 'non-existent', artifacts: true }]
+        end
+
+        it { expect(cross_pipeline_deps).to be_empty }
+        it { is_expected.not_to be_valid }
+      end
+
+      context 'when jobs exist in different pipelines in the hierarchy' do
+        let!(:pipeline) { create(:ci_pipeline, child_of: parent_pipeline) }
+        let!(:parent_pipeline) { create(:ci_pipeline, project: project) }
+        let!(:parent_job) { create(:ci_build, :success, name: 'parent_job', pipeline: parent_pipeline) }
+
+        let!(:sibling_pipeline) { create(:ci_pipeline, child_of: parent_pipeline) }
+        let!(:sibling_job) { create(:ci_build, :success, name: 'sibling_job', pipeline: sibling_pipeline) }
+
+        context 'when pipeline and jobs dependencies are mismatched' do
+          let(:dependencies) do
+            [
+              { pipeline: parent_pipeline.id.to_s, job: sibling_job.name, artifacts: true },
+              { pipeline: sibling_pipeline.id.to_s, job: parent_job.name, artifacts: true }
+            ]
+          end
+
+          it { expect(cross_pipeline_deps).to be_empty }
+          it { is_expected.not_to be_valid }
+
+          context 'when dependencies contain a valid pair' do
+            let(:dependencies) do
+              [
+                { pipeline: parent_pipeline.id.to_s, job: sibling_job.name, artifacts: true },
+                { pipeline: sibling_pipeline.id.to_s, job: parent_job.name, artifacts: true },
+                { pipeline: sibling_pipeline.id.to_s, job: sibling_job.name, artifacts: true }
+              ]
+            end
+
+            it 'filters out the invalid ones' do
+              expect(cross_pipeline_deps).to contain_exactly(sibling_job)
+            end
+
+            it { is_expected.not_to be_valid }
+          end
+        end
+      end
+
+      context 'when job and pipeline exist outside the hierarchy' do
+        let!(:pipeline) { create(:ci_pipeline, project: project) }
+        let!(:another_pipeline) { create(:ci_pipeline, project: project) }
+        let!(:dependency) { create(:ci_build, :success, pipeline: another_pipeline) }
+
+        let(:dependencies) do
+          [{ pipeline: another_pipeline.id.to_s, job: dependency.name, artifacts: true }]
+        end
+
+        it 'ignores jobs outside the pipeline hierarchy' do
+          expect(cross_pipeline_deps).to be_empty
+        end
+
+        it { is_expected.not_to be_valid }
+      end
+
+      context 'when current pipeline is specified' do
+        let!(:pipeline) { create(:ci_pipeline, project: project) }
+        let!(:dependency) { create(:ci_build, :success, pipeline: pipeline) }
+
+        let(:dependencies) do
+          [{ pipeline: pipeline.id.to_s, job: dependency.name, artifacts: true }]
+        end
+
+        it 'ignores jobs from the current pipeline as simple needs should be used instead' do
+          expect(cross_pipeline_deps).to be_empty
+        end
+
+        it { is_expected.not_to be_valid }
+      end
+    end
+
+    context 'when artifacts:false' do
+      let!(:pipeline) { create(:ci_pipeline, child_of: parent_pipeline) }
+      let!(:parent_pipeline) { create(:ci_pipeline, project: project) }
+      let!(:parent_job) { create(:ci_build, :success, name: 'parent_job', pipeline: parent_pipeline) }
+
+      let(:dependencies) do
+        [{ pipeline: parent_pipeline.id.to_s, job: parent_job.name, artifacts: false }]
+      end
+
+      it { expect(cross_pipeline_deps).to be_empty }
+      it { is_expected.to be_valid } # we simply ignore it
+    end
+  end
+
   describe '#all' do
     let!(:job) do
       create(:ci_build, pipeline: pipeline, name: 'deploy', stage_idx: 3, stage: 'deploy')

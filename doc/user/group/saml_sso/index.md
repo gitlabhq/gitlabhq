@@ -194,11 +194,13 @@ If the information you need isn't listed above you may wish to check our [troubl
 
 Once Group SSO is configured and enabled, users can access the GitLab.com group through the identity provider's dashboard. If [SCIM](scim_setup.md) is configured, please see the [user access and linking setup section on the SCIM page](scim_setup.md#user-access-and-linking-setup).
 
-When a user tries to sign in with Group SSO, they need an account that's configured with one of the following:
+When a user tries to sign in with Group SSO, GitLab attempts to find or create a user based on the following:
 
-- [SCIM](scim_setup.md).
-- [Group-managed accounts](group_managed_accounts.md).
-- A GitLab.com account.
+- Find an existing user with a matching SAML identity. This would mean the user either had their account created by [SCIM](scim_setup.md) or they have previously signed in with the group's SAML IdP.
+- If there is no conflicting user with the same email address, create a new account automatically.
+- If there is a conflicting user with the same email address, redirect the user to the sign-in page to:
+  - Create a new account with another email address.
+  - Sign-in to their existing account to link the SAML identity.
 
 ### Linking SAML to your existing GitLab.com account
 

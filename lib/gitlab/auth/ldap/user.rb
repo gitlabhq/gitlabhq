@@ -11,16 +11,6 @@ module Gitlab
     module Ldap
       class User < Gitlab::Auth::OAuth::User
         extend ::Gitlab::Utils::Override
-        class << self
-          # rubocop: disable CodeReuse/ActiveRecord
-          def find_by_uid_and_provider(uid, provider)
-            identity = ::Identity.with_extern_uid(provider, uid).take
-
-            identity && identity.user
-          end
-          # rubocop: enable CodeReuse/ActiveRecord
-        end
-
         def save
           super('LDAP')
         end
@@ -28,10 +18,6 @@ module Gitlab
         # instance methods
         def find_user
           find_by_uid_and_provider || find_by_email || build_new_user
-        end
-
-        def find_by_uid_and_provider
-          self.class.find_by_uid_and_provider(auth_hash.uid, auth_hash.provider)
         end
 
         override :should_save?

@@ -464,7 +464,7 @@ export default {
       <security-reports-app
         v-if="shouldRenderSecurityReport"
         :pipeline-id="mr.pipeline.id"
-        :project-id="mr.targetProjectId"
+        :project-id="mr.sourceProjectId"
         :security-reports-docs-path="mr.securityReportsDocsPath"
       />
 

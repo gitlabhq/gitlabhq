@@ -11,6 +11,10 @@ FactoryBot.define do
       active { false }
     end
 
+    trait :active do
+      active { true }
+    end
+
     trait :legacy do
       endpoint_identifier { 'legacy' }
     end

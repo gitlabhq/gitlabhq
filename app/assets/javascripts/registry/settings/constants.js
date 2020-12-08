@@ -52,4 +52,40 @@ export const EXPIRATION_POLICY_FOOTER_NOTE = s__(
   'ContainerRegistry|Note: Any policy update will result in a change to the scheduled run date and time',
 );
 
+export const KEEP_N_OPTIONS = [
+  { key: 'ONE_TAG', variable: 1, default: false },
+  { key: 'FIVE_TAGS', variable: 5, default: false },
+  { key: 'TEN_TAGS', variable: 10, default: true },
+  { key: 'TWENTY_FIVE_TAGS', variable: 25, default: false },
+  { key: 'FIFTY_TAGS', variable: 50, default: false },
+  { key: 'ONE_HUNDRED_TAGS', variable: 100, default: false },
+];
+
+export const CADENCE_OPTIONS = [
+  { key: 'EVERY_DAY', label: __('Every day'), default: true },
+  { key: 'EVERY_WEEK', label: __('Every week'), default: false },
+  { key: 'EVERY_TWO_WEEKS', label: __('Every two weeks'), default: false },
+  { key: 'EVERY_MONTH', label: __('Every month'), default: false },
+  { key: 'EVERY_THREE_MONTHS', label: __('Every three months'), default: false },
+];
+
+export const OLDER_THAN_OPTIONS = [
+  { key: 'SEVEN_DAYS', variable: 7, default: false },
+  { key: 'FOURTEEN_DAYS', variable: 14, default: false },
+  { key: 'THIRTY_DAYS', variable: 30, default: false },
+  { key: 'NINETY_DAYS', variable: 90, default: true },
+];
+
+export const FETCH_SETTINGS_ERROR_MESSAGE = s__(
+  'ContainerRegistry|Something went wrong while fetching the cleanup policy.',
+);
+
+export const UPDATE_SETTINGS_ERROR_MESSAGE = s__(
+  'ContainerRegistry|Something went wrong while updating the cleanup policy.',
+);
+
+export const UPDATE_SETTINGS_SUCCESS_MESSAGE = s__(
+  'ContainerRegistry|Cleanup policy successfully saved.',
+);
+
 export const NAME_REGEX_LENGTH = 255;

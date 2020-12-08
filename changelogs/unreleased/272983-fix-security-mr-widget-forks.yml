@@ -1,0 +1,5 @@
+---
+title: Fix getting security report information on merge requests from forks
+merge_request: 49354
+author:
+type: fixed

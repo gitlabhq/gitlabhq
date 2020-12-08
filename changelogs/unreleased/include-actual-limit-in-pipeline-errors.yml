@@ -1,0 +1,5 @@
+---
+title: Include actual limit in pipeline limit errors
+merge_request: 48710
+author:
+type: changed

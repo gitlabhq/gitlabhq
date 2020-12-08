@@ -18,6 +18,9 @@ class Identity < ApplicationRecord
   scope :with_extern_uid, ->(provider, extern_uid) do
     iwhere(extern_uid: normalize_uid(provider, extern_uid)).with_provider(provider)
   end
+  scope :with_any_extern_uid, ->(provider) do
+    where.not(extern_uid: nil).with_provider(provider)
+  end
 
   def ldap?
     Gitlab::Auth::OAuth::Provider.ldap_provider?(provider)

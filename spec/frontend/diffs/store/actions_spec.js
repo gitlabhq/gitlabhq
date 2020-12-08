@@ -249,7 +249,7 @@ describe('DiffsStoreActions', () => {
           { type: types.SET_LOADING, payload: true },
           { type: types.SET_LOADING, payload: false },
           { type: types.SET_MERGE_REQUEST_DIFFS, payload: diffMetadata.merge_request_diffs },
-          { type: types.SET_DIFF_DATA, payload: noFilesData },
+          { type: types.SET_DIFF_METADATA, payload: noFilesData },
         ],
         [],
         () => {

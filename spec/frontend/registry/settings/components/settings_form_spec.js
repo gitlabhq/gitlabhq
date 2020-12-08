@@ -9,7 +9,7 @@ import expirationPolicyQuery from '~/registry/settings/graphql/queries/get_expir
 import {
   UPDATE_SETTINGS_ERROR_MESSAGE,
   UPDATE_SETTINGS_SUCCESS_MESSAGE,
-} from '~/registry/shared/constants';
+} from '~/registry/settings/constants';
 import { GlCard, GlLoadingIcon } from '../../shared/stubs';
 import { expirationPolicyPayload, expirationPolicyMutationPayload } from '../mock_data';
 

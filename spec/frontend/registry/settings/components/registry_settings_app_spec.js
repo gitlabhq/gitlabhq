@@ -5,8 +5,8 @@ import createMockApollo from 'jest/helpers/mock_apollo_helper';
 import component from '~/registry/settings/components/registry_settings_app.vue';
 import expirationPolicyQuery from '~/registry/settings/graphql/queries/get_expiration_policy.graphql';
 import SettingsForm from '~/registry/settings/components/settings_form.vue';
-import { FETCH_SETTINGS_ERROR_MESSAGE } from '~/registry/shared/constants';
 import {
+  FETCH_SETTINGS_ERROR_MESSAGE,
   UNAVAILABLE_FEATURE_INTRO_TEXT,
   UNAVAILABLE_USER_FEATURE_TEXT,
 } from '~/registry/settings/constants';

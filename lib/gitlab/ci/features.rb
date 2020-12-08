@@ -55,10 +55,6 @@ module Gitlab
         ::Feature.enabled?(:ci_trace_log_invalid_chunks, project, type: :ops, default_enabled: false)
       end
 
-      def self.auto_rollback_available?(project)
-        ::Feature.enabled?(:cd_auto_rollback, project) && project&.feature_available?(:auto_rollback)
-      end
-
       def self.seed_block_run_before_workflow_rules_enabled?(project)
         ::Feature.enabled?(:ci_seed_block_run_before_workflow_rules, project, default_enabled: true)
       end

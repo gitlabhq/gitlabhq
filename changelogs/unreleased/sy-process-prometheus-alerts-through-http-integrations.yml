@@ -1,0 +1,5 @@
+---
+title: Handle prometheus-formatted alert notifications through HTTP integrations
+merge_request: 49268
+author:
+type: fixed

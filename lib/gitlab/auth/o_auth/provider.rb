@@ -18,6 +18,8 @@ module Gitlab
 
           authenticator =
             case provider
+            when /crowd/
+              Gitlab::Auth::Crowd::Authentication
             when /^ldap/
               Gitlab::Auth::Ldap::Authentication
             when 'database'
