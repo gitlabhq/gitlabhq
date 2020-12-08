@@ -68,4 +68,8 @@ class Import::GitlabGroupsController < ApplicationController
   def uploader_class
     ImportExportUploader
   end
+
+  def maximum_size
+    Gitlab::CurrentSettings.max_import_size.megabytes
+  end
 end

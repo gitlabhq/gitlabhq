@@ -32,6 +32,34 @@ RSpec.shared_examples 'clone quick action' do
 
         expect(page).to have_content 'Issues 1'
       end
+
+      context 'when cloning with notes', :aggregate_failures do
+        it 'clones the issue with all notes' do
+          add_note("Some random note")
+          add_note("Another note")
+
+          add_note("/clone --with_notes #{target_project.full_path}")
+
+          expect(page).to have_content "Cloned this issue to #{target_project.full_path}."
+          expect(issue.reload).to be_open
+
+          visit project_issue_path(target_project, issue)
+
+          expect(page).to have_content 'Issues 1'
+          expect(page).to have_content 'Some random note'
+          expect(page).to have_content 'Another note'
+        end
+
+        it 'returns an error if the params are malformed' do
+          # Note that this is missing one `-`
+          add_note("/clone -with_notes #{target_project.full_path}")
+
+          wait_for_requests
+
+          expect(page).to have_content 'Failed to clone this issue: wrong parameters.'
+          expect(issue.reload).to be_open
+        end
+      end
     end
 
     context 'when the project is valid but the user not authorized' do

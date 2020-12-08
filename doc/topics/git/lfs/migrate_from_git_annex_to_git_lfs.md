@@ -7,7 +7,7 @@ type: reference, howto
 
 # Migration guide from Git Annex to Git LFS
 
-DANGER: **Deprecated:**
+WARNING:
 Git Annex support [has been removed](https://gitlab.com/gitlab-org/gitlab/-/issues/1648) in GitLab Enterprise
 Edition 9.0 (2017/03/22).
 

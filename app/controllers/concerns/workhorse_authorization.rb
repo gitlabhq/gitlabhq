@@ -14,7 +14,7 @@ module WorkhorseAuthorization
 
     authorized = uploader_class.workhorse_authorize(
       has_length: false,
-      maximum_size: Gitlab::CurrentSettings.max_attachment_size.megabytes.to_i)
+      maximum_size: maximum_size.to_i)
 
     render json: authorized
   rescue SocketError
@@ -30,6 +30,10 @@ module WorkhorseAuthorization
   end
 
   def uploader_class
+    raise NotImplementedError
+  end
+
+  def maximum_size
     raise NotImplementedError
   end
 

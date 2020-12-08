@@ -86,6 +86,7 @@ RSpec.describe Import::GitlabProjectsController do
   describe 'POST authorize' do
     it_behaves_like 'handle uploads authorize request' do
       let(:uploader_class) { ImportExportUploader }
+      let(:maximum_size) { Gitlab::CurrentSettings.max_import_size.megabytes }
 
       subject { post authorize_import_gitlab_project_path, headers: workhorse_headers }
     end

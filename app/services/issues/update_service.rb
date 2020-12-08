@@ -129,13 +129,14 @@ module Issues
 
     def clone_issue(issue)
       target_project = params.delete(:target_clone_project)
+      with_notes = params.delete(:clone_with_notes)
 
       return unless target_project &&
         issue.can_clone?(current_user, target_project)
 
       # we've pre-empted this from running in #execute, so let's go ahead and update the Issue now.
       update(issue)
-      Issues::CloneService.new(project, current_user).execute(issue, target_project)
+      Issues::CloneService.new(project, current_user).execute(issue, target_project, with_notes: with_notes)
     end
 
     def create_merge_request_from_quick_action

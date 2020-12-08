@@ -16,7 +16,7 @@ are paginated.
 
 Read more on [pagination](README.md#pagination).
 
-DANGER: **Deprecated:**
+WARNING:
 The `reference` attribute in responses is deprecated in favor of `references`.
 Introduced in [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354).
 
@@ -197,7 +197,7 @@ the `health_status` parameter:
 ]
 ```
 
-DANGER: **Deprecated:**
+WARNING:
 The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform
 to the GitLab EE API.
 
@@ -375,7 +375,7 @@ the `health_status` parameter:
 ]
 ```
 
-DANGER: **Deprecated:**
+WARNING:
 The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 NOTE:
@@ -558,7 +558,7 @@ the `health_status` parameter:
 ]
 ```
 
-DANGER: **Deprecated:**
+WARNING:
 The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 NOTE:
@@ -716,11 +716,11 @@ the `epic` property:
 }
 ```
 
-DANGER: **Deprecated:**
+WARNING:
 The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform
 to the GitLab EE API.
 
-DANGER: **Deprecated:**
+WARNING:
 The `epic_iid` attribute is deprecated, and [will be removed in version 5](https://gitlab.com/gitlab-org/gitlab/-/issues/35157).
 Please use `iid` of the `epic` attribute instead.
 
@@ -878,10 +878,10 @@ property:
 ]
 ```
 
-DANGER: **Deprecated:**
+WARNING:
 The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
-DANGER: **Deprecated:**
+WARNING:
 The `epic_iid` attribute is deprecated and [will be removed in version 5](https://gitlab.com/gitlab-org/gitlab/-/issues/35157).
 Please use `iid` of the `epic` attribute instead.
 
@@ -1006,7 +1006,7 @@ the `health_status` parameter:
 ]
 ```
 
-DANGER: **Deprecated:**
+WARNING:
 The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 NOTE:
@@ -1163,7 +1163,7 @@ NOTE:
 The `closed_by` attribute was [introduced in GitLab 10.6](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17042). This value is only present for issues closed after GitLab 10.6 and if the user account that closed
 the issue still exists.
 
-DANGER: **Deprecated:**
+WARNING:
 `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 ## Delete an issue
@@ -1324,7 +1324,7 @@ the `health_status` parameter:
 ]
 ```
 
-DANGER: **Deprecated:**
+WARNING:
 The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 NOTE:
@@ -1433,7 +1433,7 @@ the `weight` parameter:
 }
 ```
 
-DANGER: **Deprecated:**
+WARNING:
 The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 NOTE:
@@ -1623,7 +1623,7 @@ Example response:
 }
 ```
 
-DANGER: **Deprecated:**
+WARNING:
 The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 NOTE:

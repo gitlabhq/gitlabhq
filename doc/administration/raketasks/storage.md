@@ -74,7 +74,7 @@ To have a summary and then a list of projects and their attachments using hashed
 
 ## Migrate to hashed storage
 
-DANGER: **Deprecated:**
+WARNING:
 In GitLab 13.0, [hashed storage](../repository_storage_types.md#hashed-storage)
 is enabled by default and the legacy storage is deprecated.
 Support for legacy storage will be removed in GitLab 14.0. If you're on GitLab
@@ -123,7 +123,7 @@ commands below that helps you inspect projects and attachments in both legacy an
 
 ## Rollback from hashed storage to legacy storage
 
-DANGER: **Deprecated:**
+WARNING:
 In GitLab 13.0, [hashed storage](../repository_storage_types.md#hashed-storage)
 is enabled by default and the legacy storage is deprecated.
 Support for legacy storage will be removed in GitLab 14.0. If you're on GitLab

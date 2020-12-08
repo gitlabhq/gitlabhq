@@ -4,10 +4,11 @@ module Issues
   class CloneService < Issuable::Clone::BaseService
     CloneError = Class.new(StandardError)
 
-    def execute(issue, target_project)
+    def execute(issue, target_project, with_notes: false)
       @target_project = target_project
+      @with_notes = with_notes
 
-      unless issue.can_clone?(current_user, @target_project)
+      unless issue.can_clone?(current_user, target_project)
         raise CloneError, s_('CloneIssue|Cannot clone issue due to insufficient permissions!')
       end
 
@@ -17,6 +18,8 @@ module Issues
 
       super(issue, target_project)
 
+      notify_participants
+
       queue_copy_designs
 
       new_entity
@@ -25,12 +28,14 @@ module Issues
     private
 
     attr_reader :target_project
+    attr_reader :with_notes
 
     def update_new_entity
       # we don't call `super` because we want to be able to decide whether or not to copy all comments over.
       update_new_entity_description
       update_new_entity_attributes
       copy_award_emoji
+      copy_notes if with_notes
     end
 
     def update_old_entity
@@ -51,7 +56,7 @@ module Issues
 
       # Skip creation of system notes for existing attributes of the issue. The system notes of the old
       # issue are copied over so we don't want to end up with duplicate notes.
-      CreateService.new(@target_project, @current_user, new_params).execute(skip_system_notes: true)
+      CreateService.new(target_project, current_user, new_params).execute(skip_system_notes: true)
     end
 
     def queue_copy_designs
@@ -64,6 +69,10 @@ module Issues
       ).execute
 
       log_error(response.message) if response.error?
+    end
+
+    def notify_participants
+      notification_service.async.issue_cloned(original_entity, new_entity, current_user)
     end
 
     def add_note_from

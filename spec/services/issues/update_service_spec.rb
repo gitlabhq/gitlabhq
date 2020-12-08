@@ -979,11 +979,31 @@ RSpec.describe Issues::UpdateService, :mailer do
         it 'calls the move service with the proper issue and project' do
           clone_stub = instance_double(Issues::CloneService)
           allow(Issues::CloneService).to receive(:new).and_return(clone_stub)
-          allow(clone_stub).to receive(:execute).with(issue, target_project).and_return(issue)
+          allow(clone_stub).to receive(:execute).with(issue, target_project, with_notes: nil).and_return(issue)
 
-          expect(clone_stub).to receive(:execute).with(issue, target_project)
+          expect(clone_stub).to receive(:execute).with(issue, target_project, with_notes: nil)
 
           update_issue(target_clone_project: target_project)
+        end
+      end
+    end
+
+    context 'clone an issue with notes' do
+      context 'valid project' do
+        let(:target_project) { create(:project) }
+
+        before do
+          target_project.add_maintainer(user)
+        end
+
+        it 'calls the move service with the proper issue and project' do
+          clone_stub = instance_double(Issues::CloneService)
+          allow(Issues::CloneService).to receive(:new).and_return(clone_stub)
+          allow(clone_stub).to receive(:execute).with(issue, target_project, with_notes: true).and_return(issue)
+
+          expect(clone_stub).to receive(:execute).with(issue, target_project, with_notes: true)
+
+          update_issue(target_clone_project: target_project, clone_with_notes: true)
         end
       end
     end

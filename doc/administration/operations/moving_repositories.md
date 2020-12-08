@@ -48,7 +48,7 @@ We look at three scenarios:
 - The target directory contains an outdated copy of the repositories.
 - How to deal with thousands of repositories.
 
-DANGER: **Warning:**
+WARNING:
 Each of the approaches we list can or does overwrite data in the target directory
 `/mnt/gitlab/repositories`. Do not mix up the source and the target.
 
@@ -94,7 +94,7 @@ If you want to compress the data before it goes over the network
 
 ### The target directory contains an outdated copy of the repositories: use `rsync`
 
-DANGER: **Warning:**
+WARNING:
 Using `rsync` to migrate Git data can cause data loss and repository corruption.
 [These instructions are being reviewed](https://gitlab.com/gitlab-org/gitlab/-/issues/270422).
 
@@ -115,7 +115,7 @@ If you want to see progress, replace `-a` with `-av`.
 
 #### Single `rsync` to another server
 
-DANGER: **Warning:**
+WARNING:
 Using `rsync` to migrate Git data can cause data loss and repository corruption.
 [These instructions are being reviewed](https://gitlab.com/gitlab-org/gitlab/-/issues/270422).
 
@@ -129,7 +129,7 @@ sudo -u git sh -c 'rsync -a --delete /var/opt/gitlab/git-data/repositories/. \
 
 ### Thousands of Git repositories: use one `rsync` per repository
 
-DANGER: **Warning:**
+WARNING:
 Using `rsync` to migrate Git data can cause data loss and repository corruption.
 [These instructions are being reviewed](https://gitlab.com/gitlab-org/gitlab/-/issues/270422).
 
@@ -150,7 +150,7 @@ longer exist at the source.**
 
 #### Parallel `rsync` for all repositories known to GitLab
 
-DANGER: **Warning:**
+WARNING:
 Using `rsync` to migrate Git data can cause data loss and repository corruption.
 [These instructions are being reviewed](https://gitlab.com/gitlab-org/gitlab/-/issues/270422).
 
@@ -211,7 +211,7 @@ cat /home/git/transfer-logs/* | sort | uniq -u |\
 
 #### Parallel `rsync` only for repositories with recent activity
 
-DANGER: **Warning:**
+WARNING:
 Using `rsync` to migrate Git data can cause data loss and repository corruption.
 [These instructions are being reviewed](https://gitlab.com/gitlab-org/gitlab/-/issues/270422).
 

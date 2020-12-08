@@ -2,7 +2,9 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueRouter from 'vue-router';
 import { GlAlert } from '@gitlab/ui';
 import { ApolloMutation } from 'vue-apollo';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import createFlash from '~/flash';
+import Api from '~/api';
 import DesignIndex from '~/design_management/pages/design/index.vue';
 import DesignSidebar from '~/design_management/components/design_sidebar.vue';
 import DesignPresentation from '~/design_management/components/design_presentation.vue';
@@ -20,8 +22,14 @@ import design from '../../mock_data/design';
 import mockResponseWithDesigns from '../../mock_data/designs';
 import mockResponseNoDesigns from '../../mock_data/no_designs';
 import mockAllVersions from '../../mock_data/all_versions';
+import {
+  DESIGN_TRACKING_PAGE_NAME,
+  DESIGN_SNOWPLOW_EVENT_TYPES,
+  DESIGN_USAGE_PING_EVENT_TYPES,
+} from '~/design_management/utils/tracking';
 
 jest.mock('~/flash');
+jest.mock('~/api.js');
 
 const focusInput = jest.fn();
 const mutate = jest.fn().mockResolvedValue();
@@ -81,7 +89,10 @@ describe('Design management design index page', () => {
   const findSidebar = () => wrapper.find(DesignSidebar);
   const findDesignPresentation = () => wrapper.find(DesignPresentation);
 
-  function createComponent({ loading = false } = {}, { data = {}, intialRouteOptions = {} } = {}) {
+  function createComponent(
+    { loading = false } = {},
+    { data = {}, intialRouteOptions = {}, provide = {} } = {},
+  ) {
     const $apollo = {
       queries: {
         design: {
@@ -106,6 +117,7 @@ describe('Design management design index page', () => {
       provide: {
         issueIid: '1',
         projectPath: 'project-path',
+        ...provide,
       },
       data() {
         return {
@@ -340,6 +352,66 @@ describe('Design management design index page', () => {
       expect(mutate).toHaveBeenCalledWith({
         mutation: updateActiveDiscussion,
         variables: { id: 'gid://gitlab/DiffNote/123', source: 'url' },
+      });
+    });
+  });
+
+  describe('tracking', () => {
+    let trackingSpy;
+
+    beforeEach(() => {
+      trackingSpy = mockTracking('_category_', undefined, jest.spyOn);
+    });
+
+    afterEach(() => {
+      unmockTracking();
+    });
+
+    describe('on mount', () => {
+      it('tracks design view in snowplow', () => {
+        createComponent({ loading: true });
+
+        expect(trackingSpy).toHaveBeenCalledTimes(1);
+        expect(trackingSpy).toHaveBeenCalledWith(
+          DESIGN_TRACKING_PAGE_NAME,
+          DESIGN_SNOWPLOW_EVENT_TYPES.VIEW_DESIGN,
+          {
+            context: {
+              data: {
+                'design-collection-owner': 'issue',
+                'design-is-current-version': true,
+                'design-version-number': 1,
+                'internal-object-referrer': 'issue-design-collection',
+              },
+              schema: 'iglu:com.gitlab/design_management_context/jsonschema/1-0-0',
+            },
+            label: DESIGN_SNOWPLOW_EVENT_TYPES.VIEW_DESIGN,
+          },
+        );
+      });
+
+      describe('with usage_data_design_action enabled', () => {
+        it('tracks design view usage ping', () => {
+          createComponent(
+            { loading: true },
+            {
+              provide: {
+                glFeatures: { usageDataDesignAction: true },
+              },
+            },
+          );
+          expect(Api.trackRedisHllUserEvent).toHaveBeenCalledTimes(1);
+          expect(Api.trackRedisHllUserEvent).toHaveBeenCalledWith(
+            DESIGN_USAGE_PING_EVENT_TYPES.DESIGN_ACTION,
+          );
+        });
+      });
+
+      describe('with usage_data_design_action disabled', () => {
+        it("doesn't track design view usage ping", () => {
+          createComponent({ loading: true });
+          expect(Api.trackRedisHllUserEvent).toHaveBeenCalledTimes(0);
+        });
       });
     });
   });

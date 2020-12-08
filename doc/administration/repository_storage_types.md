@@ -117,7 +117,7 @@ The output includes the project ID and the project name:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/1606) in GitLab 12.1.
 
-DANGER: **Warning:**
+WARNING:
 Do not run `git prune` or `git gc` in pool repositories! This can
 cause data loss in "real" repositories that depend on the pool in
 question.
@@ -179,7 +179,7 @@ LFS objects are also [S3 compatible](lfs/index.md#storing-lfs-objects-in-remote-
 
 ## Legacy storage
 
-NOTE: **Deprecated:**
+WARNING:
 In GitLab 13.0, hashed storage is enabled by default and the legacy storage is
 deprecated. If you haven't migrated yet, check the
 [migration instructions](raketasks/storage.md#migrate-to-hashed-storage).

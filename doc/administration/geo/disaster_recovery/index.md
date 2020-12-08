@@ -134,7 +134,7 @@ Note the following when promoting a secondary:
 
 1. Promote the **secondary** node to the **primary** node.
 
-   DANGER: **Warning:**
+   WARNING:
    In GitLab 13.2 and 13.3, promoting a secondary node to a primary while the
    secondary is paused fails. Do not pause replication before promoting a
    secondary. If the node is paused, be sure to resume before promoting. This
@@ -174,7 +174,7 @@ conjunction with multiple servers, as it can only
 perform changes on a **secondary** with only a single machine. Instead, you must
 do this manually.
 
-DANGER: **Warning:**
+WARNING:
 In GitLab 13.2 and 13.3, promoting a secondary node to a primary while the
 secondary is paused fails. Do not pause replication before promoting a
 secondary. If the node is paused, be sure to resume before promoting. This

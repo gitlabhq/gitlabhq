@@ -31,7 +31,10 @@ import {
   moveDesignMutationResponseWithErrors,
 } from '../mock_data/apollo_mock';
 import moveDesignMutation from '~/design_management/graphql/mutations/move_design.mutation.graphql';
-import { DESIGN_TRACKING_PAGE_NAME } from '~/design_management/utils/tracking';
+import {
+  DESIGN_TRACKING_PAGE_NAME,
+  DESIGN_SNOWPLOW_EVENT_TYPES,
+} from '~/design_management/utils/tracking';
 
 jest.mock('~/flash.js');
 const mockPageEl = {
@@ -509,14 +512,20 @@ describe('Design management index page', () => {
         wrapper.vm.onUploadDesignDone(designUploadMutationCreatedResponse);
 
         expect(trackingSpy).toHaveBeenCalledTimes(1);
-        expect(trackingSpy).toHaveBeenCalledWith(DESIGN_TRACKING_PAGE_NAME, 'create_design');
+        expect(trackingSpy).toHaveBeenCalledWith(
+          DESIGN_TRACKING_PAGE_NAME,
+          DESIGN_SNOWPLOW_EVENT_TYPES.CREATE_DESIGN,
+        );
       });
 
       it('tracks design modification', () => {
         wrapper.vm.onUploadDesignDone(designUploadMutationUpdatedResponse);
 
         expect(trackingSpy).toHaveBeenCalledTimes(1);
-        expect(trackingSpy).toHaveBeenCalledWith(DESIGN_TRACKING_PAGE_NAME, 'update_design');
+        expect(trackingSpy).toHaveBeenCalledWith(
+          DESIGN_TRACKING_PAGE_NAME,
+          DESIGN_SNOWPLOW_EVENT_TYPES.UPDATE_DESIGN,
+        );
       });
     });
   });

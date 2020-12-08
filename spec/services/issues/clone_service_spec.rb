@@ -15,9 +15,11 @@ RSpec.describe Issues::CloneService do
   let_it_be(:old_project) { create(:project, namespace: sub_group_1) }
   let_it_be(:new_project) { create(:project, namespace: sub_group_2) }
 
-  let(:old_issue) do
+  let_it_be(:old_issue, reload: true) do
     create(:issue, title: title, description: description, project: old_project, author: author)
   end
+
+  let(:with_notes) { false }
 
   subject(:clone_service) do
     described_class.new(old_project, user)
@@ -35,7 +37,7 @@ RSpec.describe Issues::CloneService do
       include_context 'user can clone issue'
 
       context 'generic issue' do
-        let!(:new_issue) { clone_service.execute(old_issue, new_project) }
+        let!(:new_issue) { clone_service.execute(old_issue, new_project, with_notes: with_notes) }
 
         it 'creates a new issue in the selected project' do
           expect do
@@ -90,6 +92,16 @@ RSpec.describe Issues::CloneService do
 
         it 'does not set moved_issue' do
           expect(old_issue.moved?).to eq(false)
+        end
+
+        context 'when copying comments' do
+          let(:with_notes) { true }
+
+          it 'does not create extra system notes' do
+            new_issue = clone_service.execute(old_issue, new_project, with_notes: with_notes)
+
+            expect(new_issue.notes.count).to eq(old_issue.notes.count)
+          end
         end
       end
 
@@ -197,6 +209,34 @@ RSpec.describe Issues::CloneService do
           # actually get to the `after_commit` hook that queues these jobs.
           expect { clone_service.execute(old_issue, new_project) }
           .not_to raise_error # Sidekiq::Worker::EnqueueFromTransactionError
+        end
+      end
+
+      # These tests verify that notes are copied. More thorough tests are in
+      # the unit test for Notes::CopyService.
+      context 'issue with notes' do
+        let_it_be(:notes) do
+          [
+            create(:note, noteable: old_issue, project: old_project, created_at: 2.weeks.ago, updated_at: 1.week.ago),
+            create(:note, noteable: old_issue, project: old_project)
+          ]
+        end
+
+        let(:new_issue) { clone_service.execute(old_issue, new_project, with_notes: with_notes) }
+
+        let(:copied_notes) { new_issue.notes.limit(notes.size) } # Remove the system note added by the copy itself
+
+        it 'does not copy notes' do
+          # only the system note
+          expect(copied_notes.order('id ASC').pluck(:note).size).to eq(1)
+        end
+
+        context 'when copying comments' do
+          let(:with_notes) { true }
+
+          it 'copies existing notes in order' do
+            expect(copied_notes.order('id ASC').pluck(:note)).to eq(notes.map(&:note))
+          end
         end
       end
 

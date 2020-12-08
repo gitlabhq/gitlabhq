@@ -193,7 +193,7 @@ if Feature.disabled?(:my_feature_flag, project, type: :ops)
 end
 ```
 
-DANGER: **Warning:**
+WARNING:
 Don't use feature flags at application load time. For example, using the `Feature` class in
 `config/initializers/*` or at the class level could cause an unexpected error. This error occurs
 because a database that a feature flag adapter might depend on doesn't exist at load time

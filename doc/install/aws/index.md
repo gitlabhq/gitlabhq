@@ -312,7 +312,7 @@ We need a security group for our database that will allow inbound traffic from t
 
 ### Create the database
 
-DANGER: **Warning:**
+WARNING:
 Avoid using burstable instances (t class instances) for the database as this could lead to performance issues due to CPU credits running out during sustained periods of high load.
 
 Now, it's time to create the database:
@@ -349,7 +349,7 @@ Now that the database is created, let's move on to setting up Redis with ElastiC
 ElastiCache is an in-memory hosted caching solution. Redis maintains its own
 persistence and is used to store session data, temporary cache information, and background job queues for the GitLab application.
 
-DANGER: **Warning:**
+WARNING:
 GitLab recommends you use ElastiCache Redis version 5.0.x, because version 6.x contains
 a bug that [prevents Sidekiq from processing jobs](https://gitlab.com/gitlab-org/gitlab/-/issues/281683).
 

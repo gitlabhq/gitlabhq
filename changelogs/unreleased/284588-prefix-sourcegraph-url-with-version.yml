@@ -1,0 +1,5 @@
+---
+title: Make sure Sourcegraph asset always loads successfully
+merge_request: 49030
+author:
+type: fixed

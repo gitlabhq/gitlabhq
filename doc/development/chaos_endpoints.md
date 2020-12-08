@@ -24,7 +24,7 @@ Currently, there are four endpoints for simulating the following conditions:
 For obvious reasons, these endpoints are not enabled by default on `production`.
 They are enabled by default on **development** environments.
 
-DANGER: **Warning:**
+WARNING:
 It is required that you secure access to the chaos endpoints using a secret token.
 You should not enable them in production unless you absolutely know what you're doing.
 

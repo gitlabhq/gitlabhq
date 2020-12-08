@@ -204,7 +204,16 @@ export default {
     onInput({ untouchedRawReferences, touchedReference }) {
       this.store.addPendingReferences(untouchedRawReferences);
 
-      this.inputValue = `${touchedReference}`;
+      this.formatInput(touchedReference);
+    },
+    formatInput(touchedReference = '') {
+      const startsWithNumber = String(touchedReference).match(/^[0-9]/) !== null;
+
+      if (startsWithNumber) {
+        this.inputValue = `#${touchedReference}`;
+      } else {
+        this.inputValue = `${touchedReference}`;
+      }
     },
     onBlur(newValue) {
       this.processAllReferences(newValue);

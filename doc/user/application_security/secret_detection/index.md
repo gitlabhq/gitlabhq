@@ -40,19 +40,26 @@ The [default ruleset provided by Gitleaks](https://gitlab.com/gitlab-org/securit
 - Cloud services:
   - Amazon Web Services (AWS)
   - Google Cloud Platform (GCP)
-Encryption keys:
+  - Heroku API
+- Encryption keys:
   - PKCS8
   - RSA
   - SSH
   - PGP
+  - DSA
+  - EC
 - Social media platforms:
   - Facebook API
   - Twitter API
 - Cloud SaaS vendors:
   - GitHub API
   - Slack Token
+  - Slack Webhook
   - Stripe API
+  - Twilio API
   - Generic API key strings starting with `api-`
+- Password in URL
+- U.S. Social Security Number
 
 ## Requirements
 
@@ -252,6 +259,27 @@ We have created a [short video walkthrough](https://youtu.be/wDtc_K00Y0A) showca
   <iframe src="https://www.youtube.com/embed/wDtc_K00Y0A" frameborder="0" allowfullscreen="true"> </iframe>
 </figure>
 
+## Running Secret Detection in an offline environment
+
+For self-managed GitLab instances in an environment with limited, restricted, or intermittent access
+to external resources through the internet, some adjustments are required for the Secret Detection job to
+run successfully. For more information, see [Offline environments](../offline_deployments/index.md).
+
+### Requirements for offline Secret Detection
+
+To use Secret Detection in an offline environment, you need:
+
+- GitLab Runner with the [`docker` or `kubernetes` executor](#requirements).
+- A Docker Container Registry with locally available copy of Secret Detection [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
+- Configure certificate checking of packages (optional).
+
+GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
+meaning the runner tries to pull Docker images from the GitLab container registry even if a local
+copy is available. The GitLab Runner [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
+in an offline environment if you prefer using only locally available Docker images. However, we
+recommend keeping the pull policy setting to `always` if not in an offline environment, as this
+enables the use of updated scanners in your CI/CD pipelines.
+
 ### Make GitLab Secret Detection analyzer image available inside your Docker registry
 
 Import the following default Secret Detection analyzer images from `registry.gitlab.com` into your
@@ -277,6 +305,22 @@ Support for custom certificate authorities was introduced in the following versi
 | Analyzer | Version |
 | -------- | ------- |
 | secrets | [v3.0.0](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/releases/v3.0.0) |
+
+### Set Secret Detection CI job variables to use local Secret Detection analyzer
+
+Add the following configuration to your `.gitlab-ci.yml` file. You must replace
+`SECURE_ANALYZERS_PREFIX` to refer to your local Docker container registry:
+
+```yaml
+include:
+  - template: Security/Secret-Detection.gitlab-ci.yml
+
+variables:
+  SECURE_ANALYZERS_PREFIX: "localhost:5000/analyzers"
+```
+
+The Secret Detection job should now use local copies of the Secret Detection analyzer to scan your code and generate
+security reports without requiring internet access.
 
 ## Troubleshooting
 

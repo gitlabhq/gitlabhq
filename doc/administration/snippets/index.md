@@ -29,7 +29,7 @@ This setting is not available through the [Admin Area settings](../../user/admin
 In order to configure this setting, use either the Rails console
 or the [Application settings API](../../api/settings.md).
 
-NOTE: **IMPORTANT:**
+NOTE:
 The value of the limit **must** be in bytes.
 
 #### Through the Rails console

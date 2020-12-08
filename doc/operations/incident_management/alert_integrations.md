@@ -170,7 +170,7 @@ If the existing alert is already `resolved`, GitLab creates a new alert instead.
 
 ## Link to your Opsgenie Alerts
 
-DANGER: **Deprecated:**
+WARNING:
 We are building deeper integration with Opsgenie and other alerting tools through
 [HTTP endpoint integrations](#generic-http-endpoint) so you can see alerts within
 the GitLab interface. As a result, the previous direct link to Opsgenie Alerts from

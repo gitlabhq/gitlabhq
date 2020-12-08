@@ -163,7 +163,7 @@ Releasing a new version is a long process that involves many moving parts.
 
 ### `test_internal_links_and_anchors` failing on dropdown merge requests
 
-DANGER: **Deprecated:**
+WARNING:
 We now pin versions in the `.gitlab-ci.yml` of the respective branch,
 so the steps below are deprecated.
 

@@ -74,7 +74,7 @@ To display the Deploy Boards for a specific [environment](../../ci/environments/
 
 1. Have a Kubernetes cluster up and running.
 
-   NOTE: **Running on OpenShift:**
+   NOTE:
    If you are using OpenShift, ensure that you're using the `Deployment` resource
    instead of `DeploymentConfiguration`. Otherwise, the Deploy Boards won't render
    correctly. For more information, read the

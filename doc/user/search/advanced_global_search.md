@@ -9,7 +9,7 @@ type: reference
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109) in GitLab [Starter](https://about.gitlab.com/pricing/) 8.4.
 
-NOTE: **GitLab.com availability:**
+NOTE:
 Advanced Search (powered by Elasticsearch) is enabled for Bronze and above on GitLab.com since 2020-07-10.
 
 Leverage Elasticsearch for faster, more advanced code search across your entire

@@ -201,7 +201,7 @@ For information on how to update your Geo nodes to the latest GitLab version, se
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35913) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
 
-DANGER: **Warning:**
+WARNING:
 In GitLab 13.2 and 13.3, promoting a secondary node to a primary while the
 secondary is paused fails. Do not pause replication before promoting a
 secondary. If the node is paused, be sure to resume before promoting. This

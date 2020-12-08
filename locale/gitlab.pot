@@ -11469,6 +11469,9 @@ msgstr ""
 msgid "Failed to clone this issue because target project doesn't exist."
 msgstr ""
 
+msgid "Failed to clone this issue: wrong parameters."
+msgstr ""
+
 msgid "Failed to create Merge Request. Please try again."
 msgstr ""
 

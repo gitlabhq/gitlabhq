@@ -1,0 +1,6 @@
+---
+title: Implement a /clone_with_notes quick-action to quickly clone an Issue will all
+  its notes
+merge_request: 48539
+author:
+type: added

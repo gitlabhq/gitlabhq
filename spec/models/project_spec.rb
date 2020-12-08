@@ -4981,6 +4981,7 @@ RSpec.describe Project, factory_default: :keep do
       expect(project).to receive(:after_create_default_branch)
       expect(project).to receive(:refresh_markdown_cache!)
       expect(InternalId).to receive(:flush_records!).with(project: project)
+      expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], [:repository_size])
       expect(DetectRepositoryLanguagesWorker).to receive(:perform_async).with(project.id)
       expect(project).to receive(:write_repository_config)
 

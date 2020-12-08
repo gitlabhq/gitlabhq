@@ -73,7 +73,7 @@ module LimitedCapacity
       raise
     ensure
       job_tracker.remove(jid)
-      report_prometheus_metrics
+      report_prometheus_metrics(*args)
       re_enqueue(*args) unless exception
     end
 

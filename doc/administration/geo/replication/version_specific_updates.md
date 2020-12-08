@@ -28,7 +28,7 @@ DROP SERVER gitlab_secondary CASCADE;
 DROP EXTENSION IF EXISTS postgres_fdw;
 ```
 
-DANGER: **Warning:**
+WARNING:
 In GitLab 13.3, promoting a secondary node to a primary while the secondary is
 paused fails. Do not pause replication before promoting a secondary. If the
 node is paused, be sure to resume before promoting. To avoid this issue,
@@ -85,7 +85,7 @@ sudo touch /etc/gitlab/disable-postgresql-upgrade
 
 ## Updating to GitLab 12.7
 
-DANGER: **Warning:**
+WARNING:
 Only upgrade to GitLab 12.7.5 or later. Do not upgrade to versions 12.7.0
 through 12.7.4 because there is [an initialization order
 bug](https://gitlab.com/gitlab-org/gitlab/-/issues/199672) that causes Geo
@@ -145,7 +145,7 @@ sudo touch /etc/gitlab/disable-postgresql-upgrade
 
 ## Updating to GitLab 12.3
 
-DANGER: **Warning:**
+WARNING:
 If the existing PostgreSQL server version is 9.6.x, it is recommended to
 upgrade to GitLab 12.4 or later. By default, GitLab 12.3 attempts to update the
 embedded PostgreSQL server from 9.6 to 10.9. In certain circumstances, it will
@@ -159,7 +159,7 @@ For the recommended procedure, see the
 
 ## Updating to GitLab 12.2
 
-DANGER: **Warning:**
+WARNING:
 If the existing PostgreSQL server version is 9.6.x, it is recommended to
 upgrade to GitLab 12.4 or later. By default, GitLab 12.2 attempts to update the
 embedded PostgreSQL server from 9.6 to 10.9. In certain circumstances, it will
@@ -189,7 +189,7 @@ The restart avoids a version mismatch when PostgreSQL tries to load the FDW exte
 
 ## Updating to GitLab 12.1
 
-DANGER: **Warning:**
+WARNING:
 If the existing PostgreSQL server version is 9.6.x, it is recommended to
 upgrade to GitLab 12.4 or later. By default, GitLab 12.1 attempts to update the
 embedded PostgreSQL server from 9.6 to 10.9. In certain circumstances, it will

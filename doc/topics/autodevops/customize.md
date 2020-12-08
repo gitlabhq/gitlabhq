@@ -243,7 +243,7 @@ include:
 
 See the [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml) for information on available jobs.
 
-DANGER: **Deprecated:**
+WARNING:
 Auto DevOps templates using the [`only`](../../ci/yaml/README.md#onlyexcept-basic) or
 [`except`](../../ci/yaml/README.md#onlyexcept-basic) syntax have switched
 to the [`rules`](../../ci/yaml/README.md#rules) syntax, starting in

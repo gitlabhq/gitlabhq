@@ -629,6 +629,7 @@ RSpec.shared_examples 'workhorse recipe file upload endpoint' do
   it_behaves_like 'rejects invalid recipe'
   it_behaves_like 'rejects invalid file_name', 'conanfile.py.git%2fgit-upload-pack'
   it_behaves_like 'uploads a package file'
+  it_behaves_like 'creates build_info when there is a job'
 end
 
 RSpec.shared_examples 'workhorse package file upload endpoint' do
@@ -649,11 +650,26 @@ RSpec.shared_examples 'workhorse package file upload endpoint' do
   it_behaves_like 'rejects invalid recipe'
   it_behaves_like 'rejects invalid file_name', 'conaninfo.txttest'
   it_behaves_like 'uploads a package file'
+  it_behaves_like 'creates build_info when there is a job'
 
   context 'tracking the conan_package.tgz upload' do
     let(:file_name) { ::Packages::Conan::FileMetadatum::PACKAGE_BINARY }
 
     it_behaves_like 'a gitlab tracking event', 'API::ConanPackages', 'push_package'
+  end
+end
+
+RSpec.shared_examples 'creates build_info when there is a job' do
+  context 'with job token' do
+    let(:jwt) { build_jwt_from_job(job) }
+
+    it 'creates a build_info record' do
+      expect { subject }.to change { Packages::BuildInfo.count }.by(1)
+    end
+
+    it 'creates a package_file_build_info record' do
+      expect { subject }.to change { Packages::PackageFileBuildInfo.count }.by(1)
+    end
   end
 end
 

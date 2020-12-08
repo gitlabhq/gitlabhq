@@ -37,6 +37,7 @@ RSpec.shared_examples 'handle uploads authorize request' do
           expect(json_response['RemoteObject']).to have_key('StoreURL')
           expect(json_response['RemoteObject']).to have_key('DeleteURL')
           expect(json_response['RemoteObject']).to have_key('MultipartUpload')
+          expect(json_response['MaximumSize']).to eq(maximum_size)
         end
       end
 
@@ -52,6 +53,7 @@ RSpec.shared_examples 'handle uploads authorize request' do
           expect(response.media_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
           expect(json_response['TempPath']).to eq(uploader_class.workhorse_local_upload_path)
           expect(json_response['RemoteObject']).to be_nil
+          expect(json_response['MaximumSize']).to eq(maximum_size)
         end
       end
     end

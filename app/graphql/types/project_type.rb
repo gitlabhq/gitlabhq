@@ -304,6 +304,13 @@ module Types
           description: 'Terraform states associated with the project',
           resolver: Resolvers::Terraform::StatesResolver
 
+    field :pipeline_analytics, Types::Ci::AnalyticsType, null: true,
+          description: 'Pipeline analytics',
+          resolver: Resolvers::ProjectPipelineStatisticsResolver
+
+    field :total_pipeline_duration, GraphQL::INT_TYPE, null: true,
+          description: 'Total pipeline duration for all of the pipelines in a project'
+
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: project) do |titles, loader, args|
         LabelsFinder
@@ -346,6 +353,10 @@ module Types
 
     def container_repositories_count
       project.container_repositories.size
+    end
+
+    def total_pipeline_duration
+      object.all_pipelines.total_duration
     end
 
     private

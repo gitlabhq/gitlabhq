@@ -4332,13 +4332,13 @@ The following keywords are deprecated.
 
 ### Globally-defined `types`
 
-DANGER: **Deprecated:**
+WARNING:
 `types` is deprecated, and could be removed in a future release.
 Use [`stages`](#stages) instead.
 
 ### Job-defined `type`
 
-DANGER: **Deprecated:**
+WARNING:
 `type` is deprecated, and could be removed in one of the future releases.
 Use [`stage`](#stage) instead.
 

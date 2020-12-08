@@ -105,7 +105,7 @@ This check is being exempt from Rack Attack.
 
 ## Liveness
 
-DANGER: **Warning:**
+WARNING:
 In GitLab [12.4](https://about.gitlab.com/upcoming-releases/)
 the response body of the Liveness check was changed
 to match the example below.

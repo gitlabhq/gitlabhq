@@ -139,7 +139,7 @@ This is a minimal configuration for API Fuzzing. From here you can:
 - [Add authentication](#authentication).
 - Learn how to [handle false positives](#handling-false-positives).
 
-DANGER: **Warning:**
+WARNING:
 **NEVER** run fuzz testing against a production server. Not only can it perform *any* function that
 the API can, it may also trigger bugs in the API. This includes actions like modifying and deleting
 data. Only run fuzzing against a test server.
@@ -158,7 +158,7 @@ You can use various tools to generate HAR files:
 - [Chrome](https://www.google.com/chrome/): Browser
 - [Firefox](https://www.mozilla.org/en-US/firefox/): Browser
 
-DANGER: **Warning:**
+WARNING:
 HAR files may contain sensitive information such as authentication tokens, API keys, and session
 cookies. We recommend that you review the HAR file contents before adding them to a repository.
 
@@ -230,7 +230,7 @@ This is a minimal configuration for API Fuzzing. From here you can:
 - [Add authentication](#authentication).
 - Learn how to [handle false positives](#handling-false-positives).
 
-DANGER: **Warning:**
+WARNING:
 **NEVER** run fuzz testing against a production server. Not only can it perform *any* function that
 the API can, it may also trigger bugs in the API. This includes actions like modifying and deleting
 data. Only run fuzzing against a test server.
@@ -247,7 +247,7 @@ When used with GitLab's API fuzzer, Postman Collections must contain definitions
 test with valid data. The API fuzzer extracts all the API definitions and uses them to perform
 testing.
 
-DANGER: **Warning:**
+WARNING:
 Postman Collection files may contain sensitive information such as authentication tokens, API keys,
 and session cookies. We recommend that you review the Postman Collection file contents before adding
 them to a repository.
@@ -321,7 +321,7 @@ This is a minimal configuration for API Fuzzing. From here you can:
 - [Add authentication](#authentication).
 - Learn how to [handle false positives](#handling-false-positives).
 
-DANGER: **Warning:**
+WARNING:
 **NEVER** run fuzz testing against a production server. Not only can it perform *any* function that
 the API can, it may also trigger bugs in the API. This includes actions like modifying and deleting
 data. Only run fuzzing against a test server.

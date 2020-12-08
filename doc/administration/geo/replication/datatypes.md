@@ -163,7 +163,7 @@ To enable, such as for package file replication:
 Feature.enable(:geo_package_file_replication)
 ```
 
-DANGER: **Warning:**
+WARNING:
 Features not on this list, or with **No** in the **Replicated** column,
 are not replicated on the **secondary** node. Failing over without manually
 replicating data from those features will cause the data to be **lost**.

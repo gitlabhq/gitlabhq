@@ -33,7 +33,7 @@ configuration. Objects in A that are not in B remain in A. For this
 to work, it is of course critical that **no objects ever get deleted from
 B** because A might need them.
 
-DANGER: **Warning:**
+WARNING:
 Do not run `git prune` or `git gc` in pool repositories! This can
 cause data loss in "real" repositories that depend on the pool in
 question.

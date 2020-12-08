@@ -204,7 +204,7 @@ The results are saved as a
 that you can later download and analyze.
 Due to implementation limitations, we always take the latest DAST artifact available.
 
-DANGER: **Warning:**
+WARNING:
 **NEVER** run an authenticated scan against a production server. When an authenticated
 scan is run, it may perform *any* function that the authenticated user can. This
 includes actions like modifying and deleting data, submitting forms, and following links.
