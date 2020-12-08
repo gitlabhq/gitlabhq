@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 module BlobHelper
-  def no_highlight_files
-    %w(credits changelog news copying copyright license authors)
-  end
-
   def edit_blob_path(project = @project, ref = @ref, path = @path, options = {})
     project_edit_blob_path(project,
                            tree_join(ref, path),

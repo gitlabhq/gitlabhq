@@ -5,16 +5,16 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Secure and Defend terminology
+# Secure and Protect terminology
 
-This terminology list for GitLab Secure and Defend aims to:
+This terminology list for GitLab Secure and Protect aims to:
 
 - Promote a ubiquitous language for discussing application security.
-- Improve the effectiveness of communication regarding GitLab's application security features.
+- Improve the effectiveness of communication regarding GitLab application security features.
 - Get new contributors up to speed faster.
 
-This document defines application security terms in the specific context of GitLab's Secure and
-Defend products. Terms may therefore have different meanings outside of GitLab Secure and Defend.
+This document defines application security terms in the specific context of GitLab Secure and
+Protect features. Terms may therefore have different meanings outside that context.
 
 ## Terms
 
@@ -24,7 +24,7 @@ Software that performs a scan. The scan analyzes an attack surface for vulnerabi
 a report containing findings. Reports adhere to the [Secure report format](#secure-report-format).
 
 Analyzers integrate into GitLab using a CI job. The report produced by the analyzer is published as
-an artifact once the job is complete. GitLab ingests this report, allowing users to visualize and
+an artifact after the job is complete. GitLab ingests this report, allowing users to visualize and
 manage found vulnerabilities. For more information, see [Security Scanner Integration](../../../development/integrations/secure.md).
 
 Many GitLab analyzers follow a standard approach using Docker to run a wrapped scanner. For example,
@@ -74,7 +74,7 @@ or creating a merge request.
 
 ### Finding
 
-An asset that has the potential to be vulnerable, identified within a project by an analyzer. Assets
+An asset that has the potential to be vulnerable, identified in a project by an analyzer. Assets
 include but are not restricted to source code, binary packages, containers, dependencies, networks,
 applications, and infrastructure.
 
@@ -98,9 +98,9 @@ A finding's primary identifier is a value unique to that finding. The external t
 of the finding's [first identifier](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/v2.4.0-rc1/dist/sast-report-format.json#L228)
 combine to create the value.
 
-Examples of primary identifiers include ZAP's `PluginID`, or `CVE` for Klar. Note that the
-identifier must be stable. Subsequent scans must return the same value for the same finding, even if
-the location has slightly changed.
+Examples of primary identifiers include `PluginID` for OWASP Zed Attack Proxy (ZAP), or `CVE` for
+Klar. Note that the identifier must be stable. Subsequent scans must return the same value for the
+same finding, even if the location has slightly changed.
 
 ### Report finding
 

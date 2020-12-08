@@ -190,7 +190,7 @@ be more efficient, but can also make pipelines harder to understand and analyze.
 ### Caching
 
 Another optimization method is to [cache](../caching/index.md) dependencies. If your
-dependencies change rarely, like [NodeJS `/node_modules`](../caching/index.md#caching-nodejs-dependencies),
+dependencies change rarely, like [NodeJS `/node_modules`](../caching/index.md#cache-nodejs-dependencies),
 caching can make pipeline execution much faster.
 
 You can use [`cache:when`](../yaml/README.md#cachewhen) to cache downloaded dependencies
