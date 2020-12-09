@@ -27,7 +27,7 @@ RSpec.describe Gitlab::Database::PostgresIndex do
       expect(described_class.regular).to all(have_attributes(unique: false))
     end
 
-    it 'only non partitioned indexes ' do
+    it 'only non partitioned indexes' do
       expect(described_class.regular).to all(have_attributes(partitioned: false))
     end
 

@@ -4609,9 +4609,6 @@ msgstr ""
 msgid "Branch not loaded - %{branchId}"
 msgstr ""
 
-msgid "Branch prefix"
-msgstr ""
-
 msgid "BranchSwitcherPlaceholder|Search branches"
 msgstr ""
 
@@ -14943,9 +14940,6 @@ msgstr ""
 msgid "Introducing Your DevOps Report"
 msgstr ""
 
-msgid "Invalid Git ref"
-msgstr ""
-
 msgid "Invalid Insights config file detected"
 msgstr ""
 
@@ -17874,9 +17868,6 @@ msgid "Mirror settings are only available to GitLab administrators."
 msgstr ""
 
 msgid "Mirror user"
-msgstr ""
-
-msgid "Mirrored branches will have this prefix. If you enabled 'Only mirror protected branches' you need to include this prefix on protected branches in this project or nothing will be mirrored."
 msgstr ""
 
 msgid "Mirrored repositories"

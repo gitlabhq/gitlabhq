@@ -5,9 +5,6 @@ class ApplicationSetting < ApplicationRecord
   include CacheMarkdownField
   include TokenAuthenticatable
   include ChronicDurationAttribute
-  include IgnorableColumns
-
-  ignore_column :namespace_storage_size_limit, remove_with: '13.5', remove_after: '2020-09-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \

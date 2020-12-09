@@ -256,7 +256,7 @@ module EventsHelper
       end
     else
       content_tag :div, class: 'system-note-image user-avatar' do
-        author_avatar(event, size: 40)
+        author_avatar(event, size: 32)
       end
     end
   end

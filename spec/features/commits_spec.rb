@@ -125,7 +125,7 @@ RSpec.describe 'Commits' do
           visit pipeline_path(pipeline)
         end
 
-        it 'Renders header', :js do
+        it 'renders header', :js do
           expect(page).to have_content pipeline.sha[0..7]
           expect(page).to have_content pipeline.git_commit_message.gsub!(/\s+/, ' ')
           expect(page).to have_content pipeline.user.name

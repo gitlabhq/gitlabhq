@@ -164,7 +164,7 @@ need to add in project A's `.gitlab-ci.yml`:
 build_docs:
   stage: deploy
   script:
-    - "curl --request POST --form token=TOKEN --form ref=master https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"
+    - 'curl --request POST --form token=TOKEN --form ref=master "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"'
   only:
     - tags
 ```

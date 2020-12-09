@@ -1087,7 +1087,7 @@ RSpec.describe User do
         @user.update!(email: 'new_primary@example.com')
       end
 
-      it 'adds old primary to secondary emails when secondary is a new email ' do
+      it 'adds old primary to secondary emails when secondary is a new email' do
         @user.update!(email: 'new_primary@example.com')
         @user.reload
 

@@ -22,7 +22,7 @@ RSpec.describe 'Projects > Show > User sees setup shortcut buttons' do
         visit project_path(project)
       end
 
-      it 'Project buttons are not visible' do
+      it 'project buttons are not visible' do
         visit project_path(project)
 
         page.within('.project-buttons') do

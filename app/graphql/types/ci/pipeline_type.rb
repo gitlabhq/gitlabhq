@@ -94,6 +94,9 @@ module Types
       field :project, Types::ProjectType, null: true,
             description: 'Project the pipeline belongs to'
 
+      field :active, GraphQL::BOOLEAN_TYPE, null: false, method: :active?,
+            description: 'Indicates if the pipeline is active'
+
       def detailed_status
         object.detailed_status(context[:current_user])
       end

@@ -39,9 +39,6 @@ Graphql/ResolverType:
     - 'app/graphql/resolvers/ci/pipeline_stages_resolver.rb'
     - 'app/graphql/resolvers/merge_requests_resolver.rb'
     - 'app/graphql/resolvers/users/group_count_resolver.rb'
-    - 'ee/app/graphql/resolvers/geo/merge_request_diff_registries_resolver.rb'
-    - 'ee/app/graphql/resolvers/geo/package_file_registries_resolver.rb'
-    - 'ee/app/graphql/resolvers/geo/terraform_state_version_registries_resolver.rb'
     - 'ee/app/graphql/resolvers/vulnerabilities_base_resolver.rb'
 
 Rails/SaveBang:

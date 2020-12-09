@@ -82,7 +82,7 @@ RSpec.describe 'Resolve an open thread in a merge request by creating an issue',
                                             discussion_to_resolve: discussion.id)
     end
 
-    it 'Shows a notice to ask someone else to resolve the threads' do
+    it 'shows a notice to ask someone else to resolve the threads' do
       expect(page).to have_content("The thread at #{merge_request.to_reference}"\
                                    " (discussion #{discussion.first_note.id}) will stay unresolved."\
                                    " Ask someone with permission to resolve it.")

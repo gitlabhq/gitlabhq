@@ -112,7 +112,7 @@ RSpec.describe API::BroadcastMessages do
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
-      it 'accepts an active dismissable value ' do
+      it 'accepts an active dismissable value' do
         attrs = { message: 'new message', dismissable: true }
 
         post api('/broadcast_messages', admin), params: attrs
@@ -197,7 +197,7 @@ RSpec.describe API::BroadcastMessages do
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
-      it 'accepts a new dismissable value ' do
+      it 'accepts a new dismissable value' do
         attrs = { message: 'new message', dismissable: true }
 
         put api("/broadcast_messages/#{message.id}", admin), params: attrs

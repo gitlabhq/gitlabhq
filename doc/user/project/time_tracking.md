@@ -49,7 +49,7 @@ you need to enter an estimate of 3 days, 5 hours and 10 minutes, you would write
 `/estimate 3d 5h 10m`. Time units that we support are listed at the bottom of
 this help page.
 
-Every time you enter a new time estimate, any previous time estimates will be
+Every time you enter a new time estimate, any previous time estimates are
 overridden by this new value. There should only be one valid estimate in an
 issue or a merge request.
 
@@ -59,12 +59,12 @@ To remove an estimation entirely, use `/remove_estimate`.
 
 To enter a time spent, use `/spend 3d 5h 10m`.
 
-Every new time spent entry will be added to the current total time spent for the
+Every new time spent entry is added to the current total time spent for the
 issue or the merge request.
 
-You can remove time by entering a negative amount: `/spend -3d` will remove 3
+You can remove time by entering a negative amount: for example, `/spend -3d` removes three
 days from the total time spent. You can't go below 0 minutes of time spent,
-so GitLab will automatically reset the time spent if you remove a larger amount
+so GitLab automatically resets the time spent if you remove a larger amount
 of time compared to the time that was entered already.
 
 To remove all the time spent at once, use `/remove_time_spent`.

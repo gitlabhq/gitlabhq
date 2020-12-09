@@ -1584,7 +1584,7 @@ RSpec.describe QuickActions::InterpretService do
       end
     end
 
-    it 'limits to commands passed ' do
+    it 'limits to commands passed' do
       content = "/shrug test\n/close"
 
       text, commands = service.execute(content, issue, only: [:shrug])
@@ -1593,7 +1593,7 @@ RSpec.describe QuickActions::InterpretService do
       expect(text).to eq("test #{described_class::SHRUG}\n/close")
     end
 
-    it 'preserves leading whitespace ' do
+    it 'preserves leading whitespace' do
       content = " - list\n\n/close\n\ntest\n\n"
 
       text, _ = service.execute(content, issue)

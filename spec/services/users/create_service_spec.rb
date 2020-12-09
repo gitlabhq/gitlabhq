@@ -59,7 +59,7 @@ RSpec.describe Users::CreateService do
           service.execute
         end
 
-        it 'executes system hooks ' do
+        it 'executes system hooks' do
           system_hook_service = spy(:system_hook_service)
 
           expect(service).to receive(:system_hook_service).and_return(system_hook_service)

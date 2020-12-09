@@ -86,7 +86,7 @@ RSpec.describe Gitlab::UsageDataCounters::EditorUniqueCounter, :clean_gitlab_red
     end
   end
 
-  it 'can return the count of actions per user deduplicated ' do
+  it 'can return the count of actions per user deduplicated' do
     described_class.track_web_ide_edit_action(author: user1)
     described_class.track_snippet_editor_edit_action(author: user1)
     described_class.track_sfe_edit_action(author: user1)

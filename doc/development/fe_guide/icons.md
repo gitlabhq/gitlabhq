@@ -48,8 +48,6 @@ sprite_icon(icon_name, size: nil, css_class: '')
 </svg>
 ```
 
-**Please note:** The `icon(icon_name, options: {})` helper function is deprecated and should not be used anymore.
-
 ### Usage in Vue
 
 [GitLab UI](https://gitlab-org.gitlab.io/gitlab-ui/), our components library, provides a component to display sprite icons.

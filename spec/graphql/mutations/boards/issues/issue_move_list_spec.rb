@@ -73,18 +73,6 @@ RSpec.describe Mutations::Boards::Issues::IssueMoveList do
 
         it_behaves_like 'raises a resource not available error'
       end
-
-      context 'when user cannot access board' do
-        let(:board) { create(:board, group: create(:group, :private)) }
-
-        it_behaves_like 'raises a resource not available error'
-      end
-
-      context 'when passing board_id as nil' do
-        let(:board) { nil }
-
-        it_behaves_like 'raises a resource not available error'
-      end
     end
   end
 end

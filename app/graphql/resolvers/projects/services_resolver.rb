@@ -3,9 +3,11 @@
 module Resolvers
   module Projects
     class ServicesResolver < BaseResolver
+      prepend ManualAuthorization
       include Gitlab::Graphql::Authorize::AuthorizeResource
 
       type Types::Projects::ServiceType.connection_type, null: true
+      authorize :admin_project
 
       argument :active,
                GraphQL::BOOLEAN_TYPE,
@@ -22,10 +24,6 @@ module Resolvers
         authorize!(project)
 
         services(args[:active], args[:type])
-      end
-
-      def authorized_resource?(project)
-        Ability.allowed?(context[:current_user], :admin_project, project)
       end
 
       private

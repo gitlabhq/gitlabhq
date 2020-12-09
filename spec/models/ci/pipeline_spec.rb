@@ -2954,7 +2954,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         stub_feature_flags(ci_store_pipeline_messages: false)
       end
 
-      it ' does not add pipeline error message' do
+      it 'does not add pipeline error message' do
         pipeline.add_error_message('The error message')
 
         expect(pipeline.messages).to be_empty

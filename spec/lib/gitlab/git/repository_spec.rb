@@ -929,7 +929,7 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
       end
 
       context 'with max_count' do
-        it 'returns the number of commits with path ' do
+        it 'returns the number of commits with path' do
           options = { ref: 'master', max_count: 5 }
 
           expect(repository.count_commits(options)).to eq(5)
@@ -937,7 +937,7 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
       end
 
       context 'with path' do
-        it 'returns the number of commits with path ' do
+        it 'returns the number of commits with path' do
           options = { ref: 'master', path: 'encoding' }
 
           expect(repository.count_commits(options)).to eq(2)
@@ -965,7 +965,7 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
           end
 
           context 'with max_count' do
-            it 'returns the number of commits with path ' do
+            it 'returns the number of commits with path' do
               options = { from: 'fix-mode', to: 'fix-blob-path', left_right: true, max_count: 1 }
 
               expect(repository.count_commits(options)).to eq([1, 1])

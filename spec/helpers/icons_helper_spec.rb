@@ -5,21 +5,6 @@ require 'spec_helper'
 RSpec.describe IconsHelper do
   let(:icons_path) { ActionController::Base.helpers.image_path("icons.svg") }
 
-  describe 'icon' do
-    it 'returns aria-hidden by default' do
-      star = icon('star')
-
-      expect(star['aria-hidden']).to eq 'aria-hidden'
-    end
-
-    it 'does not return aria-hidden if aria-label is set' do
-      up = icon('up', 'aria-label' => 'up')
-
-      expect(up['aria-hidden']).to be_nil
-      expect(up['aria-label']).to eq 'aria-label'
-    end
-  end
-
   describe 'sprite_icon_path' do
     it 'returns relative path' do
       expect(sprite_icon_path).to eq(icons_path)

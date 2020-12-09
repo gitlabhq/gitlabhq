@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Graphql::Timeout do
-  it 'inherits from ' do
+  it 'inherits from' do
     expect(described_class.superclass).to eq GraphQL::Schema::Timeout
   end
 

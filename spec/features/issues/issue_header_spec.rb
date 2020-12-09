@@ -92,7 +92,7 @@ RSpec.describe 'issue header', :js do
         click_button 'Issue actions'
       end
 
-      it 'has "Submit as spam" item ' do
+      it 'has "Submit as spam" item' do
         expect(page).to have_link 'Submit as spam'
       end
     end

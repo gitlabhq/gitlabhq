@@ -105,7 +105,7 @@ RSpec.describe 'GraphQL' do
         stub_authentication_activity_metrics(debug: false)
       end
 
-      it 'Authenticates users with a PAT' do
+      it 'authenticates users with a PAT' do
         expect(authentication_metrics)
           .to increment(:user_authenticated_counter)
           .and increment(:user_session_override_counter)

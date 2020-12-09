@@ -25,7 +25,7 @@ RSpec.describe 'User creates snippet', :js do
     snippet_fill_in_form(title: title, content: file_content, description: md_description)
   end
 
-  it 'Authenticated user creates a snippet' do
+  it 'authenticated user creates a snippet' do
     fill_form
 
     click_button('Create snippet')

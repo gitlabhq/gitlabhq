@@ -131,7 +131,7 @@ RSpec.describe ClustersHelper do
     context 'other values' do
       let(:cluster_type) { 'not_supported' }
 
-      it 'Diplays generic cluster and reports error' do
+      it 'diplays generic cluster and reports error' do
         expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(
           an_instance_of(ArgumentError),
           cluster_error: { error: 'Cluster Type Missing', cluster_type: 'not_supported' }

@@ -11,7 +11,7 @@ RSpec.describe 'Admin Broadcast Messages' do
     visit admin_broadcast_messages_path
   end
 
-  it 'See broadcast messages list' do
+  it 'see broadcast messages list' do
     expect(page).to have_content 'Migration to new server'
   end
 
@@ -44,7 +44,7 @@ RSpec.describe 'Admin Broadcast Messages' do
     expect(page).to have_selector 'strong', text: '4:00 CST to 5:00 CST'
   end
 
-  it 'Edit an existing broadcast message' do
+  it 'edit an existing broadcast message' do
     click_link 'Edit'
     fill_in 'broadcast_message_message', with: 'Application update RIGHT NOW'
     click_button 'Update broadcast message'
@@ -53,7 +53,7 @@ RSpec.describe 'Admin Broadcast Messages' do
     expect(page).to have_content 'Application update RIGHT NOW'
   end
 
-  it 'Remove an existing broadcast message' do
+  it 'remove an existing broadcast message' do
     click_link 'Remove'
 
     expect(current_path).to eq admin_broadcast_messages_path

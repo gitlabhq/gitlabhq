@@ -105,7 +105,7 @@ RSpec.describe 'Resolving all open threads in a merge request from an issue', :j
       visit new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid)
     end
 
-    it 'Shows a notice to ask someone else to resolve the threads' do
+    it 'shows a notice to ask someone else to resolve the threads' do
       expect(page).to have_content("The threads at #{merge_request.to_reference} will stay unresolved. Ask someone with permission to resolve them.")
     end
   end

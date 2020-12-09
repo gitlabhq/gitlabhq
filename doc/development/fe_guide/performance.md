@@ -6,6 +6,200 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Performance
 
+Performance is an essential part and one of the main areas of concern for any modern application.
+
+## User Timing API
+
+[User Timing API](https://developer.mozilla.org/en-US/docs/Web/API/User_Timing_API) is a web API
+[available in all modern browsers](https://caniuse.com/?search=User%20timing). It allows measuring
+custom times and durations in your applications by placing special marks in your
+code. You can use the User Timing API in GitLab to measure any timing, regardless of the framework,
+including Rails, Vue, or vanilla JavaScript environments. For consistency and
+convenience of adoption, GitLab offers several ways to enable custom user timing metrics in
+your code.
+
+User Timing API introduces two important paradigms: `mark` and `measure`.
+
+**Mark** is the timestamp on the performance timeline. For example,
+`performance.mark('my-component-start');` makes a browser note the time this code
+is met. Then, you can obtain information about this mark by querying the global
+performance object again. For example, in your DevTools console:
+
+```javascript
+performance.getEntriesByName('my-component-start')
+```
+
+**Measure** is the duration between either:
+
+- Two marks
+- The start of navigation and a mark
+- The start of navigation and the moment the measurement is taken
+
+It takes several arguments of which the measurement’s name is the only one required. Examples:
+
+- Duration between the start and end marks:
+
+  ```javascript
+  performance.measure('My component', 'my-component-start', 'my-component-end')
+  ```
+
+- Duration between a mark and the moment the measurement is taken. The end mark is omitted in 
+  this case.
+
+  ```javascript
+  performance.measure('My component', 'my-component-start')
+  ```
+
+- Duration between [the navigation start](https://developer.mozilla.org/en-US/docs/Web/API/Performance/timeOrigin)
+  and the moment the actual measurement is taken.
+
+  ```javascript
+  performance.measure('My component')
+  ```
+
+- Duration between [the navigation start](https://developer.mozilla.org/en-US/docs/Web/API/Performance/timeOrigin)
+  and a mark. You cannot omit the start mark in this case but you can set it to `undefined`.
+
+  ```javascript
+  performance.measure('My component', undefined, 'my-component-end')
+  ```
+
+To query a particular `measure`, You can use the same API, as for `mark`:
+
+```javascript
+performance.getEntriesByName('My component')
+```
+
+You can also query for all captured marks and measurements:
+
+```javascript
+performance.getEntriesByType('mark');
+performance.getEntriesByType('measure');
+```
+
+Using `getEntriesByName()` or `getEntriesByType()` returns an Array of [the PerformanceMeasure
+objects](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceMeasure) which contain
+information about the measurement's start time and duration.
+
+### User Timing API utility
+
+You can use the `performanceMarkAndMeasure` utility anywhere in GitLab, as it's not tied to any
+particular environment.
+
+`performanceMarkAndMeasure` takes an object as an argument, where:
+
+| Attribute   | Type     | Required | Description           |
+|:------------|:---------|:---------|:----------------------|
+| `mark`      | `String` | no       | The name for the mark to set. Used for retrieving the mark later. If not specified, the mark is not set. |
+| `measures`  | `Array`  | no       | The list of the measurements to take at this point. |
+
+In return, the entries in the `measures` array are objects with the following API:
+
+| Attribute   | Type     | Required | Description           |
+|:------------|:---------|:---------|:----------------------|
+| `name`      | `String` | yes      | The name for the measurement. Used for retrieving the mark later. Must be specified for every measure object, otherwise JavaScript fails. |
+| `start`     | `String` | no       | The name of a mark **from** which the measurement should be taken. |
+| `end`       | `String` | no       | The name of a mark **to** which the measurement should be taken. |
+
+Example:
+
+```javascript
+import { performanceMarkAndMeasure } from '~/performance/utils';
+...
+performanceMarkAndMeasure({
+  mark: MR_DIFFS_MARK_DIFF_FILES_END,
+  measures: [
+    {
+      name: MR_DIFFS_MEASURE_DIFF_FILES_DONE,
+      start: MR_DIFFS_MARK_DIFF_FILES_START,
+      end: MR_DIFFS_MARK_DIFF_FILES_END,
+    },
+  ],
+});
+```
+
+### Vue performance plugin
+
+The plugin captures and measures the performance of the specified Vue components automatically
+leveraging the Vue lifecycle and the User Timing API.
+
+To use the Vue performance plugin:
+
+1. Import the plugin:
+
+  ```javascript
+  import PerformancePlugin from '~/performance/vue_performance_plugin';
+  ```
+
+1. Use it before initializing your Vue application:
+
+  ```javascript
+  Vue.use(PerformancePlugin, {
+    components: [
+      'IdeTreeList',
+      'FileTree',
+      'RepoEditor',
+    ]
+  });
+  ```
+
+The plugin accepts the list of components, performance of which should be measured. The components
+should be specified by their `name` option.
+
+You might need to explicitly set this option on the needed components, as
+most components in the codebase don't have this option set:
+
+```javascript
+export default {
+  name: 'IdeTreeList',
+  components: {
+    ...
+  ...
+}
+```
+
+The plugin captures and stores the following:
+
+- The start **mark** for when the component has been initialized (in `beforeCreate()` hook)
+- The end **mark** of the component when it has been rendered (next animation frame after `nextTick`
+  in `mounted()` hook). In most cases, this event does not wait for all sub-components to be
+  bootstrapped. To measure the sub-components, you should include those into the
+  plugin options.
+- **Measure** duration between the two marks above.
+
+### Access stored measurements
+
+To access stored measurements, you can use either:
+
+- **Performance bar**. If you have it enabled (`P` + `B` key-combo), you can see the metrics
+  output in your DevTools console.
+- **"Performance" tab** of the DevTools. You can get the measurements (not the marks, though) in
+  this tab when profiling performance.
+- **DevTools console**. As mentioned above, you can query for the entries:
+
+  ```javascript
+  performance.getEntriesByType('mark');
+  performance.getEntriesByType('measure');
+  ```
+
+## Naming convention
+
+All the marks and measures should be instantiated with the constants from
+`app/assets/javascripts/performance/constants.js`. When you’re ready to add a new mark’s or
+measurement’s label, you can follow the pattern.
+
+NOTE: **Note:**
+This pattern is a recommendation and not a hard rule.
+
+```javascript
+app-*-start // for a start ‘mark’
+app-*-end   // for an end ‘mark’
+app-*       // for ‘measure’
+```
+
+For example, `'webide-init-editor-start`, `mr-diffs-mark-file-tree-end`, and so on. We do it to 
+help identify marks and measures coming from the different apps on the same page.
+
 ## Best Practices
 
 ### Realtime Components
@@ -49,7 +243,7 @@ Only animate `opacity` & `transform` properties. Other properties (such as `top`
 Layout to be recalculated, which is much more expensive. For details on this, see "Styles that Affect Layout" in
 [High Performance Animations](https://www.html5rocks.com/en/tutorials/speed/high-performance-animations/).
 
-If you _do_ need to change layout (e.g. a sidebar that pushes main content over), prefer [FLIP](https://aerotwist.com/blog/flip-your-animations/) to change expensive
+If you _do_ need to change layout (for example, a sidebar that pushes main content over), prefer [FLIP](https://aerotwist.com/blog/flip-your-animations/) to change expensive
 properties once, and handle the actual animation with transforms.
 
 ## Reducing Asset Footprint
@@ -198,7 +392,7 @@ data is used for users with capped data plans.
 General tips:
 
 - Don't add new fonts.
-- Prefer font formats with better compression, e.g. WOFF2 is better than WOFF, which is better than TTF.
+- Prefer font formats with better compression, for example, WOFF2 is better than WOFF, which is better than TTF.
 - Compress and minify assets wherever possible (For CSS/JS, Sprockets and webpack do this for us).
 - If some functionality can reasonably be achieved without adding extra libraries, avoid them.
 - Use page-specific JavaScript as described above to load libraries that are only needed on certain pages.

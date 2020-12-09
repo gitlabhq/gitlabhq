@@ -853,15 +853,9 @@ module Ci
     end
 
     def same_family_pipeline_ids
-      if Feature.enabled?(:ci_root_ancestor_for_pipeline_family, project, default_enabled: false)
-        ::Gitlab::Ci::PipelineObjectHierarchy.new(
-          self.class.where(id: root_ancestor), options: { same_project: true }
-        ).base_and_descendants.select(:id)
-      else
-        ::Gitlab::Ci::PipelineObjectHierarchy.new(
-          base_and_ancestors(same_project: true), options: { same_project: true }
-        ).base_and_descendants.select(:id)
-      end
+      ::Gitlab::Ci::PipelineObjectHierarchy.new(
+        self.class.where(id: root_ancestor), options: { same_project: true }
+      ).base_and_descendants.select(:id)
     end
 
     def build_with_artifacts_in_self_and_descendants(name)

@@ -8,22 +8,6 @@ module IconsHelper
 
   DEFAULT_ICON_SIZE = 16
 
-  # Creates an icon tag given icon name(s) and possible icon modifiers.
-  #
-  # Right now this method simply delegates directly to `fa_icon` from the
-  # font-awesome-rails gem, but should we ever use a different icon pack in the
-  # future we won't have to change hundreds of method calls.
-  # @deprecated use sprite_icon to render a SVG icon
-  def icon(names, options = {})
-    if (options.keys & %w[aria-hidden aria-label data-hidden]).empty?
-      # Add 'aria-hidden' and 'data-hidden' if they are not set in options.
-      options['aria-hidden'] = true
-      options['data-hidden'] = true
-    end
-
-    options.include?(:base) ? fa_stacked_icon(names, options) : fa_icon(names, options)
-  end
-
   def custom_icon(icon_name, size: DEFAULT_ICON_SIZE)
     memoized_icon("#{icon_name}_#{size}") do
       # We can't simply do the below, because there are some .erb SVGs.

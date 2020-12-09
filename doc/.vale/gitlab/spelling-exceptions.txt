@@ -172,6 +172,8 @@ globals
 Gmail
 Gollum
 Google
+goroutine
+goroutines
 Gosec
 Gradle
 Grafana
@@ -212,6 +214,7 @@ JavaScript
 Jenkins
 Jenkinsfile
 Jira
+jq
 jQuery
 jsdom
 JupyterHub

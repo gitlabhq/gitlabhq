@@ -9,7 +9,7 @@ RSpec.describe 'Profile > Notifications > User changes notified_of_own_activity 
     sign_in(user)
   end
 
-  it 'User opts into receiving notifications about their own activity' do
+  it 'user opts into receiving notifications about their own activity' do
     visit profile_notifications_path
 
     expect(page).not_to have_checked_field('user[notified_of_own_activity]')
@@ -20,7 +20,7 @@ RSpec.describe 'Profile > Notifications > User changes notified_of_own_activity 
     expect(page).to have_checked_field('user[notified_of_own_activity]')
   end
 
-  it 'User opts out of receiving notifications about their own activity' do
+  it 'user opts out of receiving notifications about their own activity' do
     user.update!(notified_of_own_activity: true)
     visit profile_notifications_path
 

@@ -101,7 +101,7 @@ RSpec.describe 'Milestone' do
   end
 
   describe 'Deleting a milestone' do
-    it "The delete milestone button does not show for unauthorized users" do
+    it "the delete milestone button does not show for unauthorized users" do
       create(:milestone, project: project, title: 8.7)
       sign_out(user)
 

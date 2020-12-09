@@ -31,7 +31,7 @@ RSpec.describe 'seed production settings' do
         stub_env('GITLAB_PROMETHEUS_METRICS_ENABLED', 'true')
       end
 
-      it 'prometheus_metrics_enabled is set to true ' do
+      it 'prometheus_metrics_enabled is set to true' do
         load(settings_file)
 
         expect(settings.prometheus_metrics_enabled).to eq(true)

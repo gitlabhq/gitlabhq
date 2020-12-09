@@ -9,7 +9,7 @@ RSpec.describe 'Abuse reports' do
     sign_in(create(:user))
   end
 
-  it 'Report abuse' do
+  it 'report abuse' do
     visit user_path(another_user)
 
     click_link 'Report abuse'

@@ -218,7 +218,7 @@ RSpec.describe IssuablesHelper do
         assign(:project, issue.project)
       end
 
-      it 'sets sentryIssueIdentifier to nil with no sentry issue ' do
+      it 'sets sentryIssueIdentifier to nil with no sentry issue' do
         expect(helper.issuable_initial_data(issue)[:sentryIssueIdentifier])
           .to be_nil
       end

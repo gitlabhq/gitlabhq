@@ -6,7 +6,7 @@ RSpec.describe 'Admin Appearance' do
   let!(:appearance) { create(:appearance) }
   let(:admin) { create(:admin) }
 
-  it 'Create new appearance' do
+  it 'create new appearance' do
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)
     visit admin_appearances_path
@@ -27,7 +27,7 @@ RSpec.describe 'Admin Appearance' do
     expect(page).to have_content 'Last edit'
   end
 
-  it 'Preview sign-in page appearance' do
+  it 'preview sign-in page appearance' do
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)
 
@@ -37,7 +37,7 @@ RSpec.describe 'Admin Appearance' do
     expect_custom_sign_in_appearance(appearance)
   end
 
-  it 'Preview new project page appearance' do
+  it 'preview new project page appearance' do
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)
 
@@ -80,13 +80,13 @@ RSpec.describe 'Admin Appearance' do
     end
   end
 
-  it 'Custom sign-in page' do
+  it 'custom sign-in page' do
     visit new_user_session_path
 
     expect_custom_sign_in_appearance(appearance)
   end
 
-  it 'Custom new project page' do
+  it 'custom new project page' do
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)
     visit new_project_path
@@ -111,7 +111,7 @@ RSpec.describe 'Admin Appearance' do
     end
   end
 
-  it 'Appearance logo' do
+  it 'appearance logo' do
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)
     visit admin_appearances_path
@@ -124,7 +124,7 @@ RSpec.describe 'Admin Appearance' do
     expect(page).not_to have_css(logo_selector)
   end
 
-  it 'Header logos' do
+  it 'header logos' do
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)
     visit admin_appearances_path

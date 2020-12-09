@@ -8,8 +8,6 @@ end
 
 RSpec.shared_examples 'cannot access project services' do
   it 'raises error' do
-    expect do
-      resolve_services
-    end.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+    expect(resolve_services).to be_nil
   end
 end

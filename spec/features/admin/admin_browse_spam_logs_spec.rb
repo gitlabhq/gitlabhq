@@ -11,7 +11,7 @@ RSpec.describe 'Admin browse spam logs' do
     gitlab_enable_admin_mode_sign_in(admin)
   end
 
-  it 'Browse spam logs' do
+  it 'browse spam logs' do
     visit admin_spam_logs_path
 
     expect(page).to have_content('Spam Logs')

@@ -13,7 +13,7 @@ RSpec.describe 'Dashboard shortcuts', :js do
       visit root_dashboard_path
     end
 
-    it 'Navigate to tabs' do
+    it 'navigate to tabs' do
       find('body').send_keys([:shift, 'I'])
 
       check_page_title('Issues')
@@ -45,7 +45,7 @@ RSpec.describe 'Dashboard shortcuts', :js do
       visit explore_root_path
     end
 
-    it 'Navigate to tabs' do
+    it 'navigate to tabs' do
       find('body').send_keys([:shift, 'G'])
 
       find('.nothing-here-block')

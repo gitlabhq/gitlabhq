@@ -24,7 +24,7 @@ RSpec.describe Resolvers::MergeRequestPipelinesResolver do
   end
 
   def resolve_pipelines
-    resolve(described_class, obj: merge_request, ctx: { current_user: current_user })
+    sync(resolve(described_class, obj: merge_request, ctx: { current_user: current_user }))
   end
 
   it 'resolves only MRs for the passed merge request' do

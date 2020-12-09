@@ -16,7 +16,7 @@ RSpec.describe 'Group Boards' do
       visit group_boards_path(group)
     end
 
-    it 'Adds an issue to the backlog' do
+    it 'adds an issue to the backlog' do
       page.within(find('.board', match: :first)) do
         issue_title = 'New Issue'
         find(:css, '.issue-count-badge-add-button').click

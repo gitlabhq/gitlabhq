@@ -64,7 +64,7 @@ RSpec.describe 'Profile > SSH Keys' do
     end
   end
 
-  it 'User sees their keys' do
+  it 'user sees their keys' do
     key = create(:key, user: user)
     visit profile_keys_path
 

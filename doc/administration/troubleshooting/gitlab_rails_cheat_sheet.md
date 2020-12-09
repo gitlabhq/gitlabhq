@@ -464,8 +464,9 @@ User.billable.count
 ::HistoricalData.max_historical_user_count
 ```
 
+Using cURL and jq (up to a max 100, see the [pagination docs](../../api/README.md#pagination)):
+
 ```shell
-# Using curl and jq (up to a max 100, see pagination docs https://docs.gitlab.com/ee/api/#pagination
 curl --silent --header "Private-Token: ********************" "https://gitlab.example.com/api/v4/users?per_page=100&active" | jq --compact-output '.[] | [.id,.name,.username]'
 ```
 

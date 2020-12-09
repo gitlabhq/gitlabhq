@@ -34,7 +34,7 @@ RSpec.describe Files::UpdateService do
     context "when the file's last commit sha does not match the supplied last_commit_sha" do
       let(:last_commit_sha) { "foo" }
 
-      it "returns a hash with the correct error message and a :error status " do
+      it "returns a hash with the correct error message and a :error status" do
         expect { subject.execute }
           .to raise_error(Files::UpdateService::FileChangedError,
                          "You are attempting to update a file that has changed since you started editing it.")
@@ -44,7 +44,7 @@ RSpec.describe Files::UpdateService do
     context "when the file's last commit sha does match the supplied last_commit_sha" do
       let(:last_commit_sha) { Gitlab::Git::Commit.last_for_path(project.repository, project.default_branch, file_path).sha }
 
-      it "returns a hash with the :success status " do
+      it "returns a hash with the :success status" do
         results = subject.execute
 
         expect(results[:status]).to match(:success)
@@ -68,7 +68,7 @@ RSpec.describe Files::UpdateService do
     end
 
     context "when the last_commit_sha is not supplied" do
-      it "returns a hash with the :success status " do
+      it "returns a hash with the :success status" do
         results = subject.execute
 
         expect(results[:status]).to match(:success)

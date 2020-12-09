@@ -3,9 +3,11 @@
 module Resolvers
   module Snippets
     class BlobsResolver < BaseResolver
+      prepend ManualAuthorization
       include Gitlab::Graphql::Authorize::AuthorizeResource
 
       type Types::Snippets::BlobType.connection_type, null: true
+      authorize :read_snippet
 
       alias_method :snippet, :object
 
@@ -25,10 +27,6 @@ module Resolvers
         else
           snippet.repository.blobs_at(transformed_blob_paths(paths))
         end
-      end
-
-      def authorized_resource?(snippet)
-        Ability.allowed?(context[:current_user], :read_snippet, snippet)
       end
 
       private

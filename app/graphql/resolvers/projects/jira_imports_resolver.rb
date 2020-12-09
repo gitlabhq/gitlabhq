@@ -3,9 +3,10 @@
 module Resolvers
   module Projects
     class JiraImportsResolver < BaseResolver
-      type Types::JiraImportType.connection_type, null: true
-
+      prepend ::ManualAuthorization
       include Gitlab::Graphql::Authorize::AuthorizeResource
+
+      type Types::JiraImportType.connection_type, null: true
 
       alias_method :project, :object
 

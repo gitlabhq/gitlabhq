@@ -125,7 +125,7 @@ RSpec.describe 'Query.issue(id)' do
     let(:issue_params) { { 'id' => confidential_issue.to_global_id.to_s } }
 
     context 'when the user cannot see confidential issues' do
-      it 'returns nil ' do
+      it 'returns nil' do
         post_graphql(query, current_user: current_user)
 
         expect(issue_data).to be nil
