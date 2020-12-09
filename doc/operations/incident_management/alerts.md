@@ -78,7 +78,7 @@ amount of information you need.
 
 ### Alert details tab
 
-The **Alert details** tab has two sections. The top section provides a short list of critical details such as the severity, start time, number of events, and originating monitorting tool. The second section displays the full alert payload.
+The **Alert details** tab has two sections. The top section provides a short list of critical details such as the severity, start time, number of events, and originating monitoring tool. The second section displays the full alert payload.
 
 ### Metrics tab
 

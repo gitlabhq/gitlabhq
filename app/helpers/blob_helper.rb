@@ -328,8 +328,9 @@ module BlobHelper
   end
 
   def readable_blob(options, path, project, ref)
-    blob = options.delete(:blob)
-    blob ||= project.repository.blob_at(ref, path) rescue nil
+    blob = options.fetch(:blob) do
+      project.repository.blob_at(ref, path) rescue nil
+    end
 
     blob if blob&.readable_text?
   end

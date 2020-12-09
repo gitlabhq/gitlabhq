@@ -13,7 +13,8 @@ import {
   formatIssue,
 } from '../boards_util';
 import boardStore from '~/boards/stores/boards_store';
-
+import createFlash from '~/flash';
+import { __ } from '~/locale';
 import updateAssigneesMutation from '~/vue_shared/components/sidebar/queries/updateAssignees.mutation.graphql';
 import listsIssuesQuery from '../graphql/lists_issues.query.graphql';
 import boardLabelsQuery from '../graphql/board_labels.query.graphql';
@@ -339,6 +340,9 @@ export default {
         });
 
         return nodes;
+      })
+      .catch(() => {
+        createFlash({ message: __('An error occurred while updating assignees.') });
       })
       .finally(() => {
         commit(types.SET_ASSIGNEE_LOADING, false);

@@ -13,7 +13,7 @@ This method is still valid but was **deprecated** in favor of the
 introduced in GitLab 12.1.
 
 If you have a GitLab Pages website served under your own domain,
-you might want to secure it with a SSL/TSL certificate.
+you might want to secure it with a SSL/TLS certificate.
 
 [Let's Encrypt](https://letsencrypt.org) is a free, automated, and
 open source Certificate Authority.

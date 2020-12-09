@@ -43,7 +43,7 @@ preconfigured with the right settings.
 The first thing to do in Mattermost is to enable custom slash commands from
 the administrator console.
 
-1. Log in with an account that has admin privileges and navigate to the system
+1. Log in with an account that has administrator privileges and navigate to the system
    console.
 
    ![Mattermost go to console](img/mattermost_goto_console.png)

@@ -2335,7 +2335,7 @@ RSpec.describe Repository do
         end
 
         it 'caches the response' do
-          expect(repository).to receive(:readme).and_call_original.once
+          expect(repository.head_tree).to receive(:readme_path).and_call_original.once
 
           2.times do
             expect(repository.readme_path).to eq("README.md")

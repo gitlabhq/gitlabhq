@@ -22,7 +22,7 @@ By default, a protected branch does four simple things:
 - It prevents **anyone** from deleting the branch.
 
 NOTE:
-A GitLab admin is allowed to push to the protected branches.
+A GitLab administrator is allowed to push to the protected branches.
 
 See the [Changelog](#changelog) section for changes over time.
 

@@ -165,7 +165,7 @@ RSpec.describe 'Projects > Show > User sees setup shortcut buttons' do
 
         context 'when the project does not have a README' do
           it 'shows the single file editor "Add README" button' do
-            allow(project.repository).to receive(:readme).and_return(nil)
+            allow(project.repository).to receive(:readme_path).and_return(nil)
 
             visit project_path(project)
 

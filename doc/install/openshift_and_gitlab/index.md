@@ -32,7 +32,7 @@ This information is no longer up to date, as the current versions
 have changed and products have been renamed.
 
 OpenShift 3 is not yet deployed on RedHat's offered [Online platform](https://www.openshift.com/),
-so in order to test it, we will use an [all-in-one Virtualbox image](https://www.okd.io/minishift/) that is
+so in order to test it, we will use an [all-in-one VirtualBox image](https://www.okd.io/minishift/) that is
 offered by the OpenShift developers and managed by Vagrant. If you haven't done
 already, go ahead and install the following components as they are essential to
 test OpenShift easily:
@@ -464,7 +464,7 @@ OpenShift's website about [autoscaling](https://docs.okd.io/3.11/dev_guide/pod_a
 As stated in the [all-in-one VM](https://www.okd.io/minishift/) page:
 
 > By default, OpenShift will not allow a container to run as root or even a
-non-random container assigned userid. Most Docker images in the Dockerhub do not
+non-random container assigned userid. Most Docker images in Docker Hub do not
 follow this best practice and instead run as root.
 
 The all-in-one VM we are using has this security turned off so it will not

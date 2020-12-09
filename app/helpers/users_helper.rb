@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
 module UsersHelper
+  def admin_users_data_attributes(users)
+    {
+      users: Admin::UserSerializer.new.represent(users).to_json,
+      paths: admin_users_paths.to_json
+    }
+  end
+
   def user_link(user)
     link_to(user.name, user_path(user),
             title: user.email,
@@ -207,6 +214,22 @@ module UsersHelper
   end
 
   private
+
+  def admin_users_paths
+    {
+      edit: edit_admin_user_path(:id),
+      approve: approve_admin_user_path(:id),
+      reject: reject_admin_user_path(:id),
+      unblock: unblock_admin_user_path(:id),
+      block: block_admin_user_path(:id),
+      deactivate: deactivate_admin_user_path(:id),
+      activate: activate_admin_user_path(:id),
+      unlock: unlock_admin_user_path(:id),
+      delete: admin_user_path(:id),
+      delete_with_contributions: admin_user_path(:id),
+      admin_user: admin_user_path(:id)
+    }
+  end
 
   def blocked_user_badge(user)
     pending_approval_badge = { text: s_('AdminUsers|Pending approval'), variant: 'info' }

@@ -119,7 +119,7 @@ Patterns:
 - `'"((?:\\"|[^"]|\\")*)"'`: captures terms inside quotes, removing the quotes
 - `"'((?:\\'|[^']|\\')*)'"`: same as above, for single-quotes
 - `'\.([^.]+)(?=\.|\s|\Z)'`: separate terms with periods in-between
-- `'([\p{L}_.-]+)'`: some common chars in file names to keep the whole filename intact (eg. `my_file-ñame.txt`)
+- `'([\p{L}_.-]+)'`: some common chars in file names to keep the whole filename intact (for example `my_file-ñame.txt`)
 - `'([\p{L}\d_]+)'`: letters, numbers and underscores are the most common tokens in programming. Always capture them greedily regardless of context.
 
 ## Gotchas
@@ -218,10 +218,10 @@ Any update to the Elastic index mappings should be replicated in [`Elastic::Late
 
 ### Migration options supported by the [`Elastic::MigrationWorker`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/workers/elastic/migration_worker.rb)
 
-- `batched!` - Allow the migration to run in batches. If set, the [`Elastic::MigrationWorker`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/workers/elastic/migration_worker.rb) 
+- `batched!` - Allow the migration to run in batches. If set, the [`Elastic::MigrationWorker`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/workers/elastic/migration_worker.rb)
 will re-enqueue itself with a delay which is set using the `throttle_delay` option described below. The batching
-must be handled within the `migrate` method, this setting controls the re-enqueuing only.  
- 
+must be handled within the `migrate` method, this setting controls the re-enqueuing only.
+
 - `throttle_delay` - Sets the wait time in between batch runs. This time should be set high enough to allow each migration batch
 enough time to finish. Additionally, the time should be less than 30 minutes since that is how often the
 [`Elastic::MigrationWorker`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/workers/elastic/migration_worker.rb)

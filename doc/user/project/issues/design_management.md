@@ -37,7 +37,7 @@ to be enabled:
 
 Design Management also requires that projects are using
 [hashed storage](../../../administration/raketasks/storage.md#migrate-to-hashed-storage). Since
- GitLab 10.0, newly created projects use hashed storage by default. A GitLab admin can verify the storage type of a
+ GitLab 10.0, newly created projects use hashed storage by default. A GitLab administrator can verify the storage type of a
 project by navigating to **Admin Area > Projects** and then selecting the project in question.
 A project can be identified as hashed-stored if its *Gitaly relative path* contains `@hashed`.
 

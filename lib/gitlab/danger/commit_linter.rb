@@ -180,6 +180,8 @@ module Gitlab
       end
 
       def subject_starts_with_lowercase?
+        return false if ('A'..'Z').cover?(subject[0])
+
         first_char = subject.sub(/\A(\[.+\]|\w+:)\s/, '')[0]
         first_char_downcased = first_char.downcase
         return true unless ('a'..'z').cover?(first_char_downcased)

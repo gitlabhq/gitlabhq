@@ -79,10 +79,8 @@ CSS classes should use the `lowercase-hyphenated` format rather than
 ```
 
 Class names should be used instead of tag name selectors.
-Using tag name selectors are discouraged in CSS because
-they can affect unintended elements in the hierarchy.
-Also, since they are not meaningful names, they do not
-add meaning to the code.
+Using tag name selectors is discouraged because they can affect
+unintended elements in the hierarchy.
 
 ```scss
 // Bad
@@ -94,149 +92,14 @@ ul {
 .class-name {
   color: #fff;
 }
-```
 
-### Formatting
+// Best
+// prefer an existing utility class over adding existing styles
+```0
 
-You should always use a space before a brace, braces should be on the same
-line, each property should each get its own line, and there should be a space
-between the property and its value.
-
-```scss
-// Bad
-.container-item {
-  width: 100px; height: 100px;
-  margin-top: 0;
-}
-
-// Bad
-.container-item
-{
-  width: 100px;
-  height: 100px;
-  margin-top: 0;
-}
-
-// Bad
-.container-item{
-  width:100px;
-  height:100px;
-  margin-top:0;
-}
-
-// Good
-.container-item {
-  width: 100px;
-  height: 100px;
-  margin-top: 0;
-}
-```
-
-Note that there is an exception for single-line rulesets, although these are
-not typically recommended.
-
-```scss
-p { margin: 0; padding: 0; }
-```
-
-### Colors
-
-HEX (hexadecimal) colors should use shorthand where possible, and should use
-lower case letters to differentiate between letters and numbers, e.g. `#E3E3E3`
-vs. `#e3e3e3`.
-
-```scss
-// Bad
-p {
-  color: #ffffff;
-}
-
-// Bad
-p {
-  color: #FFFFFF;
-}
-
-// Good
-p {
-  color: #fff;
-}
-```
-
-### Indentation
-
-Indentation should always use two spaces for each indentation level.
-
-```scss
-// Bad, four spaces
-p {
-    color: #f00;
-}
-
-// Good
-p {
-  color: #f00;
-}
-```
-
-### Semicolons
-
-Always include semicolons after every property. When the stylesheets are
-minified, the semicolons will be removed automatically.
-
-```scss
-// Bad
-.container-item {
-  width: 100px;
-  height: 100px
-}
-
-// Good
-.container-item {
-  width: 100px;
-  height: 100px;
-}
-```
-
-### Shorthand
-
-The shorthand form should be used for properties that support it.
-
-```scss
-// Bad
-margin: 10px 15px 10px 15px;
-padding: 10px 10px 10px 10px;
-
-// Good
-margin: 10px 15px;
-padding: 10px;
-```
-
-### Zero Units
-
-Omit length units on zero values, they're unnecessary and not including them
-is slightly more performant.
-
-```scss
-// Bad
-.item-with-padding {
-  padding: 0px;
-}
-
-// Good
-.item-with-padding {
-  padding: 0;
-}
-```
-
-### Selectors with a `js-` Prefix
-
-Do not use any selector prefixed with `js-` for styling purposes. These
-selectors are intended for use only with JavaScript to allow for removal or
-renaming without breaking styling.
-
-### IDs
-
-Don't use ID selectors in CSS.
+Class names are also preferable to IDs. Rules that use IDs
+are not-reusable, as there can only be one affected element on
+the page.
 
 ```scss
 // Bad
@@ -250,11 +113,17 @@ Don't use ID selectors in CSS.
 }
 ```
 
+### Selectors with a `js-` Prefix
+
+Do not use any selector prefixed with `js-` for styling purposes. These
+selectors are intended for use only with JavaScript to allow for removal or
+renaming without breaking styling.
+
 ### Variables
 
 Before adding a new variable for a color or a size, guarantee:
 
-- There isn't already one
+- There isn't an existing one.
 - There isn't a similar one we can use instead.
 
 ## Linting
@@ -279,22 +148,3 @@ CSSComb globally (system-wide). Run it in the GitLab directory with
 `csscomb app/assets/stylesheets` to automatically fix issues with CSS/SCSS.
 
 Note that this won't fix every problem, but it should fix a majority.
-
-### Ignoring issues
-
-If you want a line or set of lines to be ignored by the linter, you can use
-`// scss-lint:disable RuleName` ([more information](https://github.com/sds/scss-lint#disabling-linters-via-source)):
-
-```scss
-// This lint rule is disabled because it is supported only in Chrome/Safari
-// scss-lint:disable PropertySpelling
-body {
-  text-decoration-skip: ink;
-}
-// scss-lint:enable PropertySpelling
-```
-
-Make sure a comment is added on the line above the `disable` rule, otherwise the
-linter will throw a warning. `DisableLinterReason` is enabled to make sure the
-style guide isn't being ignored, and to communicate to others why the style
-guide is ignored in this instance.

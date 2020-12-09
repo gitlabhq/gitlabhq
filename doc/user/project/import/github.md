@@ -157,7 +157,7 @@ of the above are automatically configured. **(PREMIUM)**
 ## Improving the speed of imports on self-managed instances
 
 NOTE:
-Admin access to the GitLab server is required.
+Administrator access to the GitLab server is required.
 
 For large projects it may take a while to import all data. To reduce the time necessary, you can increase the number of
 Sidekiq workers that process the following queues:

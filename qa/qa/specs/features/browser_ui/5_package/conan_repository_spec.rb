@@ -31,7 +31,7 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'publishes a conan package and deletes it', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1077' do
+      it 'publishes, installs, and deletes a Conan package', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1077' do
         Flow::Login.sign_in
 
         Resource::Repository::Commit.fabricate_via_api! do |commit|
@@ -43,13 +43,14 @@ module QA
                                     <<~YAML
                                       image: conanio/gcc7
 
-                                      create_package:
+                                      test_package:
                                         stage: deploy
                                         script:
                                           - "conan remote add gitlab #{gitlab_address_with_port}/api/v4/projects/#{project.id}/packages/conan"
                                           - "conan new #{package_name}/0.1 -t"
                                           - "conan create . mycompany/stable"
                                           - "CONAN_LOGIN_USERNAME=ci_user CONAN_PASSWORD=${CI_JOB_TOKEN} conan upload #{package_name}/0.1@mycompany/stable --all --remote=gitlab"
+                                          - "conan install conantest/0.1@mycompany/stable --remote=gitlab"
                                         tags:
                                            - "runner-for-#{project.name}"
                                     YAML
@@ -60,7 +61,7 @@ module QA
         Flow::Pipeline.visit_latest_pipeline
 
         Page::Project::Pipeline::Show.perform do |pipeline|
-          pipeline.click_job('create_package')
+          pipeline.click_job('test_package')
         end
 
         Page::Project::Job::Show.perform do |job|

@@ -28,7 +28,7 @@ The paths here are simply Git's built-in [`.gitattributes` interface](https://gi
 /Nicefile gitlab-language=ruby
 ```
 
-To disable highlighting entirely, use `gitlab-language=text`. Lots more fun shenanigans are available through CGI options, such as:
+To disable highlighting entirely, use `gitlab-language=text`. Lots more fun shenanigans are available through common gateway interface (CGI) options, such as:
 
 ``` conf
 # json with erb in it

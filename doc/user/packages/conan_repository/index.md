@@ -51,7 +51,7 @@ compilers. This example uses the CMake compiler.
 
 To install CMake:
 
-- For Mac, use [homebrew](https://brew.sh/) and run `brew install cmake`.
+- For Mac, use [Homebrew](https://brew.sh/) and run `brew install cmake`.
 - For other operating systems, follow the instructions at [cmake.org](https://cmake.org/install/).
 
 When installation is complete, verify you can use CMake in your terminal by

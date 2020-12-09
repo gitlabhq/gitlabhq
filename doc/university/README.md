@@ -29,7 +29,7 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 ### 1.1. Version Control and Git
 
 1. [Version Control Systems](https://docs.google.com/presentation/d/16sX7hUrCZyOFbpvnrAFrg6tVO5_yT98IgdAqOmXwBho/edit#slide=id.g72f2e4906_2_29)
-1. [Katakoda: Learn Git Version Control using Interactive Browser-Based Scenarios](https://www.katacoda.com/courses/git)
+1. [Katacoda: Learn Git Version Control using Interactive Browser-Based Scenarios](https://www.katacoda.com/courses/git)
 
 ### 1.2. GitLab Basics
 

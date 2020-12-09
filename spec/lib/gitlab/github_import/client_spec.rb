@@ -500,7 +500,7 @@ RSpec.describe Gitlab::GithubImport::Client do
       it 'searches for repositories based on name' do
         expected_search_query = 'test in:name is:public,private user:user repo:repo1 repo:repo2 org:org1 org:org2'
 
-        expect(client).to receive(:each_page).with(:search_repositories, expected_search_query)
+        expect(client.octokit).to receive(:search_repositories).with(expected_search_query, {})
 
         client.search_repos_by_name('test')
       end

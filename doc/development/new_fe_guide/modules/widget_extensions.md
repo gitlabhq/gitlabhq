@@ -17,7 +17,7 @@ into the widget that will match the existing design and interaction as other ext
 
 To use extensions you need to first create a new extension object that will be used to fetch the
 data that will be rendered in the extension. See the example file in
-app/assets/javascripts/vue_merge_request_widget/extensions/issues.js for a working example.
+`app/assets/javascripts/vue_merge_request_widget/extensions/issues.js` for a working example.
 
 The basic object structure is as below:
 

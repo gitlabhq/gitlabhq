@@ -85,7 +85,7 @@ scripts that GitLab CI/CD runs to accomplish this task is created from a file na
 
 You can either use GitLab's [default domain for GitLab Pages websites](getting_started_part_one.md#gitlab-pages-default-domain-names),
 `*.gitlab.io`, or your own domain (`example.com`). In that case, you'll
-need admin access to your domain's registrar (or control panel) to set it up with Pages.
+need administrator access to your domain's registrar (or control panel) to set it up with Pages.
 
 The following diagrams show the workflows you might follow to get started with Pages.
 
@@ -103,7 +103,7 @@ To restrict access to your website, enable [GitLab Pages Access Control](pages_a
 
 If you're using a self-managed instance (Core, Starter, Premium, or Ultimate),
 your websites will be published on your own server, according to the
-[Pages admin settings](../../../administration/pages/index.md) chosen by your sysadmin,
+[Pages settings](../../../administration/pages/index.md) chosen by your sysadmin,
 who can make them public or internal.
 
 ## Pages examples

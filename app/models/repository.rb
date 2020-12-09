@@ -618,7 +618,7 @@ class Repository
   end
 
   def readme_path
-    readme&.path
+    head_tree&.readme_path
   end
   cache_method :readme_path
 

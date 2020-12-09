@@ -163,8 +163,8 @@ module Gitlab
         end
       end
 
-      def search_repos_by_name(name)
-        each_page(:search_repositories, search_query(str: name, type: :name))
+      def search_repos_by_name(name, options = {})
+        octokit.search_repositories(search_query(str: name, type: :name), options)
       end
 
       def search_query(str:, type:, include_collaborations: true, include_orgs: true)

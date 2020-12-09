@@ -1,0 +1,5 @@
+---
+title: Create a new `ExperimentSubject` model, associated to the `Experiment` model, and related database migrations.
+merge_request: 47042
+author:
+type: added

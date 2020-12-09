@@ -11,7 +11,7 @@ info: "See the Technical Writers assigned to Development Guidelines: https://abo
 GitLab uses internal users (sometimes referred to as "bots") to perform
 actions or functions that cannot be attributed to a regular user.
 
-These users are created programatically throughout the codebase itself when
+These users are created programmatically throughout the codebase itself when
 necessary, and do not count towards a license limit.
 
 They are used when a traditional user account would not be applicable, for

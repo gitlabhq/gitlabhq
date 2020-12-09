@@ -134,7 +134,7 @@ export default {
 <template>
   <board-editable-item :loading="isSettingAssignees" :title="assigneeText" @close="saveAssignees">
     <template #collapsed>
-      <issuable-assignees :users="selected" @assign-self="assignSelf" />
+      <issuable-assignees :users="activeIssue.assignees" @assign-self="assignSelf" />
     </template>
 
     <template #default>

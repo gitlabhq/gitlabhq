@@ -18,7 +18,7 @@ The following table shows what attributes will be present in the CSV.
 
 | Column             | Description                                                  |
 |--------------------|--------------------------------------------------------------|
-| MR ID              | MR iid                                                       |
+| MR ID              | MR `iid`                                                     |
 | URL                | A link to the merge request on GitLab                        |
 | Title              | Merge request title                                          |
 | State              | Opened, Closed, Locked, or Merged                            |

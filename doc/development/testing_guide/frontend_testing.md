@@ -204,6 +204,7 @@ possible selectors include:
 
 - A semantic attribute like `name` (also verifies that `name` was setup properly)
 - A `data-testid` attribute ([recommended by maintainers of `@vue/test-utils`](https://github.com/vuejs/vue-test-utils/issues/1498#issuecomment-610133465))
+  optionally combined with [`findByTestId`](#extendedwrapper-and-findbytestid)
 - a Vue `ref` (if using `@vue/test-utils`)
 
 ```javascript
@@ -220,9 +221,10 @@ it('exists', () => {
   // Good (especially for unit tests)
   wrapper.find(FooComponent);
   wrapper.find('input[name=foo]');
-  wrapper.find('[data-testid="foo"]');
+  wrapper.find('[data-testid="my-foo-id"]');
+  wrapper.findByTestId('my-foo-id'); // with the extendedWrapper utility – check below
   wrapper.find({ ref: 'foo'});
-
+  
   // Bad
   wrapper.find('.js-foo');
   wrapper.find('.btn-primary');
@@ -230,6 +232,8 @@ it('exists', () => {
   wrapper.find('[data-qa-selector="foo"]');
 });
 ```
+
+It is recommended to use `kebab-case` for `data-testid` attribute.
 
 It is not recommended that you add `.js-*` classes just for testing purposes. Only do this if there are no other feasible options available.
 
@@ -1041,7 +1045,7 @@ testAction(
 );
 ```
 
-Check an example in [`spec/javascripts/ide/stores/actions_spec.jsspec/javascripts/ide/stores/actions_spec.js`](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/javascripts/ide/stores/actions_spec.js).
+Check an example in [`spec/frontend/ide/stores/actions_spec.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/fdc7197609dfa7caeb1d962042a26248e49f27da/spec/frontend/ide/stores/actions_spec.js#L392).
 
 ### Wait until Axios requests finish
 
@@ -1052,6 +1056,29 @@ These are very useful if you don't have a handle to the request's Promise, for e
 - `waitForAll(callback)`: Runs `callback` once all pending requests have finished. If no requests are pending, runs `callback` on the next tick.
 
 Both functions run `callback` on the next tick after the requests finish (using `setImmediate()`), to allow any `.then()` or `.catch()` handlers to run.
+
+### `extendedWrapper` and `findByTestId`
+
+Using `data-testid` is one of the [recommended ways to query DOM elements](#how-to-query-dom-elements).
+You can use the `extendedWrapper` utility on the `wrapper` returned by `shalowMount`/`mount`.
+By doing so, the `wrapper` provides you with the ability to perform a `findByTestId`,
+which is a shortcut to the more verbose `wrapper.find('[data-testid="my-test-id"]');`
+
+```javascript
+import { extendedWrapper } from 'jest/helpers/vue_test_utils_helper';
+
+describe('FooComponent', () => {
+  const wrapper = extendedWrapper(shallowMount({
+    template: `<div data-testid="my-test-id"></div>`,
+  }));
+  
+  it('exists', () => {
+    expect(wrapper.findByTestId('my-test-id').exists()).toBe(true);
+  });
+});
+```
+
+Check an example in [`spec/frontend/alert_management/components/alert_details_spec.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/ac1c9fa4c5b3b45f9566147b1c88fd1339cd7c25/spec/frontend/alert_management/components/alert_details_spec.js#L32).
 
 ## Testing with older browsers
 

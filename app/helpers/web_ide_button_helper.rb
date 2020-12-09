@@ -21,8 +21,8 @@ module WebIdeButtonHelper
     can_collaborate? || can_create_mr_from_fork?
   end
 
-  def show_edit_button?
-    readable_blob? && show_web_ide_button?
+  def show_edit_button?(options = {})
+    readable_blob?(options) && show_web_ide_button?
   end
 
   def show_gitpod_button?
@@ -37,8 +37,8 @@ module WebIdeButtonHelper
     !project_fork.nil? && !can_push_code?
   end
 
-  def readable_blob?
-    !readable_blob({}, @path, @project, @ref).nil?
+  def readable_blob?(options = {})
+    !readable_blob(options, @path, @project, @ref).nil?
   end
 
   def needs_to_fork?
@@ -49,8 +49,8 @@ module WebIdeButtonHelper
     ide_edit_path(project_to_use, @ref, @path || '')
   end
 
-  def edit_url
-    readable_blob? ? edit_blob_path(@project, @ref, @path || '') : ''
+  def edit_url(options = {})
+    readable_blob?(options) ? edit_blob_path(@project, @ref, @path || '') : ''
   end
 
   def gitpod_url

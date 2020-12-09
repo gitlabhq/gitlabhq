@@ -32,7 +32,7 @@ When you are satisfied with your new file, click **Commit Changes** at the botto
 ### Shortcuts
 
 You can use handy shortcuts when editing a file through the Web Editor, which are the same as
-the WEB IDE's. For details, see the documentation for [Command Palette](../web_ide/index.md#command-palette).
+the Web IDE's. For details, see the documentation for [Command Palette](../web_ide/index.md#command-palette).
 
 ### Template dropdowns
 

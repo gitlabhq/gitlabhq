@@ -159,7 +159,7 @@ later, can be written with `go env -w <var>=<value>`. For example,
 
 Go modules and module versions are defined by source repositories, such as Git,
 SVN, and Mercurial. A module is a repository that contains `go.mod` and Go
-files. Module versions are defined by VCS tags.
+files. Module versions are defined by version control system (VCS) tags.
 
 To publish a module, push `go.mod` and source files to a VCS repository. To
 publish a module version, push a VCS tag.

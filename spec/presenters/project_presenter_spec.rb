@@ -375,7 +375,7 @@ RSpec.describe ProjectPresenter do
         it 'returns anchor data' do
           project.add_developer(user)
 
-          allow(project.repository).to receive(:readme).and_return(nil)
+          allow(project.repository).to receive(:readme_path).and_return(nil)
 
           expect(presenter.readme_anchor_data).to have_attributes(
             is_link: false,
@@ -387,7 +387,7 @@ RSpec.describe ProjectPresenter do
 
       context 'when README exists' do
         it 'returns anchor data' do
-          allow(project.repository).to receive(:readme).and_return(double(name: 'readme'))
+          allow(project.repository).to receive(:readme_path).and_return('readme')
 
           expect(presenter.readme_anchor_data).to have_attributes(
             is_link: false,
@@ -561,7 +561,7 @@ RSpec.describe ProjectPresenter do
     let(:project) { build_stubbed(:project) }
 
     it 'orders the items correctly' do
-      allow(project.repository).to receive(:readme).and_return(double(name: 'readme'))
+      allow(project.repository).to receive(:readme_path).and_return('readme')
       allow(project.repository).to receive(:license_blob).and_return(nil)
       allow(project.repository).to receive(:changelog).and_return(nil)
       allow(project.repository).to receive(:contribution_guide).and_return(double(name: 'foo'))

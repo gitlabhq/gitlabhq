@@ -690,7 +690,7 @@ and included in `rules` definitions via [YAML anchors](../ci/yaml/README.md#anch
 | `if-cache-credentials-schedule`                              | Limits jobs to scheduled pipelines with the `$CI_REPO_CACHE_CREDENTIALS` variable set. | |
 | `if-rspec-fail-fast-disabled`                                | Limits jobs to pipelines with `$RSPEC_FAIL_FAST_ENABLED` variable not set to `"true"`. | |
 | `if-rspec-fail-fast-skipped`                                 | Matches if the pipeline is for a merge request and the MR title includes "SKIP RSPEC FAIL-FAST". | |
-| `if-security-pipeline-merge-result`                          | Matches if the pipeline is for a security merge request triggerred by `@gitlab-release-tools-bot`. | |
+| `if-security-pipeline-merge-result`                          | Matches if the pipeline is for a security merge request triggered by `@gitlab-release-tools-bot`. | |
 <!-- vale gitlab.Substitutions = YES -->
 
 #### `changes:` patterns

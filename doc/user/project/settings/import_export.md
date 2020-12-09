@@ -42,7 +42,7 @@ Note the following:
 - Exports are stored in a temporary [shared directory](../../../development/shared_files.md)
   and are deleted every 24 hours by a specific worker.
 - Group members are exported as project members, as long as the user has
-  maintainer or admin access to the group where the exported project lives.
+  maintainer or administrator access to the group where the exported project lives.
 - Project members with owner access will be imported as maintainers.
 - Imported users can be mapped by their primary email on self-managed instances, if an administrative user (not an owner) does the import.
   Otherwise, a supplementary comment is left to mention that the original author and
@@ -119,7 +119,7 @@ The following items will be exported:
 - Pipelines history
 - Push Rules
 
-The following items will NOT be exported:
+The following items will **not** be exported:
 
 - Build traces and artifacts
 - Container registry images
@@ -180,7 +180,7 @@ all imported projects are given the visibility of `Private`.
 
 NOTE:
 The maximum import file size can be set by the Administrator, default is 50MB.
-As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](../../../api/settings.md#change-application-settings) or the [Admin UI](../../admin_area/settings/account_and_limit_settings.md).
+As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](../../../api/settings.md#change-application-settings) or the [Admin Area UI](../../admin_area/settings/account_and_limit_settings.md).
 
 ### Project import status
 

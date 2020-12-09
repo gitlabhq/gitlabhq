@@ -202,18 +202,18 @@ To purge files from GitLab storage:
 
 ## Repository cleanup
 
-NOTE:
-Safely cleaning the repository requires it to be made read-only for the duration
-of the operation. This happens automatically, but submitting the cleanup request
-fails if any writes are ongoing, so cancel any outstanding `git push`
-operations before continuing.
-
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/19376) in GitLab 11.6.
 
 Repository cleanup allows you to upload a text file of objects and GitLab removes internal Git
 references to these objects. You can use
 [`git filter-repo`](https://github.com/newren/git-filter-repo) to produce a list of objects (in a
 `commit-map` file) that can be used with repository cleanup.
+
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45058) in GitLab 13.6,
+safely cleaning the repository requires it to be made read-only for the duration
+of the operation. This happens automatically, but submitting the cleanup request
+fails if any writes are ongoing, so cancel any outstanding `git push`
+operations before continuing.
 
 To clean up a repository:
 
@@ -233,7 +233,7 @@ To clean up a repository:
 This:
 
 - Removes any internal Git references to old commits.
-- Runs `git gc` against the repository to remove unreferenced objects. Repacking your repository temporarily
+- Runs `git gc --prune=30.minutes.ago` against the repository to remove unreferenced objects. Repacking your repository temporarily
   causes the size of your repository to increase significantly, because the old pack files are not removed until the
   new pack files have been created.
 - Unlinks any unused LFS objects currently attached to your project, freeing up storage space.
@@ -241,12 +241,17 @@ This:
 
 GitLab sends an email notification with the recalculated repository size after the cleanup has completed.
 
+If the repository size does not decrease, this may be caused by loose objects
+being kept around because they were referenced in a Git operation that happened
+in the last 30 minutes. Try re-running these steps once the repository has been
+dormant for at least 30 minutes.
+
 When using repository cleanup, note:
 
 - Project statistics are cached. You may need to wait 5-10 minutes to see a reduction in storage utilization.
-- Housekeeping prunes loose objects older than 2 weeks. This means objects added in the last 2 weeks
+- The cleanup prunes loose objects older than 30 minutes. This means objects added or referenced in the last 30 minutes
   are not be removed immediately. If you have access to the
-  [Gitaly](../../../administration/gitaly/index.md) server, you may run `git gc --prune=now` to
+  [Gitaly](../../../administration/gitaly/index.md) server, you may slip that delay and run `git gc --prune=now` to
   prune all loose objects immediately.
 - This process removes some copies of the rewritten commits from GitLab's cache and database,
   but there are still numerous gaps in coverage and some of the copies may persist indefinitely.

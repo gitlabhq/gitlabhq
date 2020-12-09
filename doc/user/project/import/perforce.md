@@ -35,7 +35,7 @@ Git:
 
 ## Why migrate
 
-Perforce Helix can be difficult to manage both from a user and an admin
+Perforce Helix can be difficult to manage both from a user and an administrator
 perspective. Migrating to Git/GitLab there is:
 
 - **No licensing costs**, Git is GPL while Perforce Helix is proprietary.

@@ -3297,6 +3297,9 @@ msgstr ""
 msgid "An error occurred while updating approvers"
 msgstr ""
 
+msgid "An error occurred while updating assignees."
+msgstr ""
+
 msgid "An error occurred while updating configuration."
 msgstr ""
 
@@ -9631,6 +9634,9 @@ msgstr ""
 msgid "DevopsAdoption|DevOps adoption uses segments to track adoption across key features. Segments are a way to track multiple related projects and groups at once. For example, you could create a segment for the engineering department or a particular product team."
 msgstr ""
 
+msgid "DevopsAdoption|Edit segment"
+msgstr ""
+
 msgid "DevopsAdoption|Feature adoption is based on usage in the last calendar month. Last updated: %{timestamp}."
 msgstr ""
 
@@ -9653,6 +9659,9 @@ msgid "DevopsAdoption|Pipelines"
 msgstr ""
 
 msgid "DevopsAdoption|Runners"
+msgstr ""
+
+msgid "DevopsAdoption|Save changes"
 msgstr ""
 
 msgid "DevopsAdoption|Scanning"
@@ -11308,6 +11317,9 @@ msgid "Expected documents: %{expected_documents}"
 msgstr ""
 
 msgid "Experienced"
+msgstr ""
+
+msgid "ExperimentSubject|Must have exactly one of User, Group, or Project."
 msgstr ""
 
 msgid "Expiration"
@@ -19555,10 +19567,7 @@ msgstr ""
 msgid "Package type must be PyPi"
 msgstr ""
 
-msgid "PackageRegistry|%{name} version %{version} was created %{datetime}"
-msgstr ""
-
-msgid "PackageRegistry|%{name} version %{version} was updated %{datetime}"
+msgid "PackageRegistry|%{name} version %{version} was first created %{datetime}"
 msgstr ""
 
 msgid "PackageRegistry|Add Conan Remote"
@@ -19576,7 +19585,7 @@ msgstr ""
 msgid "PackageRegistry|App name: %{name}"
 msgstr ""
 
-msgid "PackageRegistry|Commit %{link} on branch %{branch}"
+msgid "PackageRegistry|Built by pipeline %{link} triggered %{datetime} by %{author}"
 msgstr ""
 
 msgid "PackageRegistry|Composer"
@@ -19634,6 +19643,9 @@ msgid "PackageRegistry|Copy yarn command"
 msgstr ""
 
 msgid "PackageRegistry|Copy yarn setup command"
+msgstr ""
+
+msgid "PackageRegistry|Created by commit %{link} on branch %{branch}"
 msgstr ""
 
 msgid "PackageRegistry|Delete Package Version"
@@ -19702,10 +19714,16 @@ msgstr ""
 msgid "PackageRegistry|Package Registry"
 msgstr ""
 
-msgid "PackageRegistry|Pip Command"
+msgid "PackageRegistry|Package has %{number} archived update"
 msgstr ""
 
-msgid "PackageRegistry|Pipeline %{link} triggered %{datetime} by %{author}"
+msgid "PackageRegistry|Package has %{number} archived updates"
+msgstr ""
+
+msgid "PackageRegistry|Package updated by commit %{link} on branch %{branch}, built by pipeline %{pipeline}, and published to the registry %{datetime}"
+msgstr ""
+
+msgid "PackageRegistry|Pip Command"
 msgstr ""
 
 msgid "PackageRegistry|Publish and share packages for a variety of common package managers. %{docLinkStart}More information%{docLinkEnd}"

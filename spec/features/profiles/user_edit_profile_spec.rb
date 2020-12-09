@@ -228,7 +228,7 @@ RSpec.describe 'User edit profile' do
       end
 
       def open_edit_status_modal
-        open_modal  'Edit status'
+        open_modal 'Edit status'
       end
 
       def set_user_status_in_modal
@@ -291,6 +291,10 @@ RSpec.describe 'User edit profile' do
 
         toggle_busy_status
         set_user_status_in_modal
+
+        wait_for_requests
+        visit root_path(user)
+
         open_edit_status_modal
 
         expect(busy_status.checked?).to eq(true)
@@ -368,26 +372,37 @@ RSpec.describe 'User edit profile' do
         expect(page).not_to have_selector '.cover-status'
       end
 
-      it 'clears the user status with the "Remove status" button' do
-        user_status = create(:user_status, user: user, message: 'Eating bread', emoji: 'stuffed_flatbread')
+      context 'Remove status button' do
+        before do
+          user.status = UserStatus.new(message: 'Eating bread', emoji: 'stuffed_flatbread')
 
-        visit_user
-        wait_for_requests
+          visit_user
+          wait_for_requests
 
-        within('.cover-status') do
-          expect(page).to have_emoji(user_status.emoji)
-          expect(page).to have_content user_status.message
+          open_edit_status_modal
+
+          page.within "#set-user-status-modal" do
+            click_button 'Remove status'
+          end
+
+          wait_for_requests
         end
 
-        open_edit_status_modal
+        it 'clears the user status with the "Remove status" button' do
+          visit_user
 
-        page.within "#set-user-status-modal" do
-          click_button 'Remove status'
+          expect(page).not_to have_selector '.cover-status'
         end
 
-        visit_user
+        it 'shows the "Set status" menu item in the user menu' do
+          visit root_path(user)
 
-        expect(page).not_to have_selector '.cover-status'
+          find('.header-user-dropdown-toggle').click
+
+          page.within ".header-user" do
+            expect(page).to have_content('Set status')
+          end
+        end
       end
 
       it 'displays a default emoji if only message is entered' do

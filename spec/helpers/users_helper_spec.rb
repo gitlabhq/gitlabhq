@@ -333,4 +333,21 @@ RSpec.describe UsersHelper do
       allow(helper).to receive(:can?).with(current_user, :read_user_profile, user).and_return(allowed)
     end
   end
+
+  describe '#admin_users_data_attributes' do
+    subject(:data) { helper.admin_users_data_attributes([user]) }
+
+    it 'users matches the serialized json' do
+      entity = double
+      expect_next_instance_of(Admin::UserSerializer) do |instance|
+        expect(instance).to receive(:represent).with([user]).and_return(entity)
+      end
+      expect(entity).to receive(:to_json).and_return("{\"username\":\"admin\"}")
+      expect(data[:users]).to eq "{\"username\":\"admin\"}"
+    end
+
+    it 'paths matches the schema' do
+      expect(data[:paths]).to match_schema('entities/admin_users_data_attributes_paths')
+    end
+  end
 end

@@ -137,7 +137,7 @@ The repository will push soon. To force a push, click the **Update now** (**{ret
 
 AWS CodeCommit push mirroring is currently the best way to connect GitLab repositories to AWS CodePipeline, as GitLab is not yet supported as one of their Source Code Management (SCM) providers.
 
-Each new AWS Codepipeline needs significant AWS infrastructure setup. It also requires an individual pipeline per branch.
+Each new AWS CodePipeline needs significant AWS infrastructure setup. It also requires an individual pipeline per branch.
 
 If AWS CodeDeploy is the final step of a CodePipeline, you can, instead, leverage GitLab CI/CD pipelines and simply use the AWS CLI in the final job in `.gitlab-ci.yml` to deploy to CodeDeploy.
 

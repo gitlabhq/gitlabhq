@@ -15,6 +15,7 @@ RSpec.describe 'Admin::Users' do
 
   describe 'GET /admin/users' do
     before do
+      stub_feature_flags(vue_admin_users: false)
       visit admin_users_path
     end
 
@@ -418,6 +419,7 @@ RSpec.describe 'Admin::Users' do
 
   describe 'GET /admin/users/:id/edit' do
     before do
+      stub_feature_flags(vue_admin_users: false)
       visit admin_users_path
       click_link "edit_user_#{user.id}"
     end

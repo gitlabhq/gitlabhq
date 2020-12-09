@@ -31,11 +31,11 @@ The project description also partially supports [standard Markdown](../../markdo
 
 You can select a framework label to identify that your project has certain compliance requirements or needs additional oversight. Available labels include:
 
-- GDPR - General Data Protection Regulation
-- HIPAA - Health Insurance Portability and Accountability Act
-- PCI-DSS - Payment Card Industry-Data Security Standard
-- SOC 2 - Service Organization Control 2
-- SOX - Sarbanes-Oxley
+- GDPR (General Data Protection Regulation)
+- HIPAA (Health Insurance Portability and Accountability Act)
+- PCI-DSS (Payment Card Industry-Data Security Standard)
+- SOC 2 (Service Organization Control 2)
+- SOX (Sarbanes-Oxley)
 
 NOTE:
 Compliance framework labels do not affect your project settings.

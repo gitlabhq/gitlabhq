@@ -300,6 +300,7 @@ NGINX
 Nokogiri
 npm
 Nurtch
+nyc
 OAuth
 offboarded
 offboarding

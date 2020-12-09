@@ -23,7 +23,7 @@ GitLab Pages site.
 
 Note that **how to** add DNS records depends on which server your domain
 is hosted on. Every control panel has its own place to do it. If you are
-not an admin of your domain, and don't have access to your registrar,
+not an administrator of your domain, and don't have access to your registrar,
 you'll need to ask for the technical support of your hosting service
 to do it for you.
 

@@ -19,7 +19,7 @@ HipChat v1 API (legacy) supports "API Auth Tokens" in the Group API menu. A v1
 token is allowed to send messages to *any* room.
 
 HipChat v2 API has tokens that are can be created using the Integrations tab
-in the Group or Room admin page. By design, these are lightweight tokens that
+in the Group or Room administration page. By design, these are lightweight tokens that
 allow GitLab to send messages only to *one* room.
 
 ### Complete these steps in HipChat

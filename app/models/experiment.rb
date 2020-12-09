@@ -2,6 +2,7 @@
 
 class Experiment < ApplicationRecord
   has_many :experiment_users
+  has_many :experiment_subjects, inverse_of: :experiment
 
   validates :name, presence: true, uniqueness: true, length: { maximum: 255 }
 

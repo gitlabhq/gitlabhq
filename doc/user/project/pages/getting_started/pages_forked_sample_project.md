@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Create a Pages website from a forked sample
 
-GitLab provides [sample projects for the most popular Static Site Generators](https://gitlab.com/pages).
+GitLab provides [sample projects for the most popular Static Site Generators (SSG)](https://gitlab.com/pages).
 You can fork one of the sample projects and run the CI/CD pipeline to generate a Pages website.
 
 Fork a sample project when you want to test GitLab Pages or start a new project that's already

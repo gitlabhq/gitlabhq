@@ -9,6 +9,7 @@ RSpec.describe 'Admin::Users::User' do
   before do
     sign_in(current_user)
     gitlab_enable_admin_mode_sign_in(current_user)
+    stub_feature_flags(vue_admin_users: false)
   end
 
   describe 'GET /admin/users/:id' do

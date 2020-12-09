@@ -95,7 +95,7 @@ merge request:
 
 1. Go to the merge request's **Changes** tab.
 1. Click the cog icon (**{settings}**) to reveal the merge request's settings dropdown.
-1. Select or unselect the checkbox **Show one file at a time** to change the setting accordingly.
+1. Select or deselect the checkbox **Show one file at a time** to change the setting accordingly.
 
 This change overrides the choice you made in your user preferences and persists until you clear your
 browser's cookies or change this behavior again.

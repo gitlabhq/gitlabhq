@@ -60,7 +60,7 @@ the `filename` of a `class` element contains the full path relative to the proje
 ### JavaScript example
 
 The following [`gitlab-ci.yml`](../../../ci/yaml/README.md) example uses [Mocha](https://mochajs.org/)
-JavaScript testing and [NYC](https://github.com/istanbuljs/nyc) coverage-tooling to
+JavaScript testing and [nyc](https://github.com/istanbuljs/nyc) coverage-tooling to
 generate the coverage artifact:
 
 ```yaml
@@ -78,7 +78,7 @@ test:
 #### Maven example
 
 The following [`gitlab-ci.yml`](../../../ci/yaml/README.md) example for Java or Kotlin uses [Maven](https://maven.apache.org/)
-to build the project and [Jacoco](https://www.eclemma.org/jacoco/) coverage-tooling to
+to build the project and [JaCoCo](https://www.eclemma.org/jacoco/) coverage-tooling to
 generate the coverage artifact.
 You can check the [Docker image configuration and scripts](https://gitlab.com/haynes/jacoco2cobertura) if you want to build your own image.
 
@@ -118,7 +118,7 @@ coverage-jdk11:
 #### Gradle example
 
 The following [`gitlab-ci.yml`](../../../ci/yaml/README.md) example for Java or Kotlin uses [Gradle](https://gradle.org/)
-to build the project and [Jacoco](https://www.eclemma.org/jacoco/) coverage-tooling to
+to build the project and [JaCoCo](https://www.eclemma.org/jacoco/) coverage-tooling to
 generate the coverage artifact.
 You can check the [Docker image configuration and scripts](https://gitlab.com/haynes/jacoco2cobertura) if you want to build your own image.
 

@@ -42,7 +42,7 @@ call-out responsibilities for other team members or teams.
 -->
 
 - [ ] ~frontend Step 1
-  - [ ] @person Step 1a
+  - [ ] `@person` Step 1a
 - [ ] ~frontend Step 2
 
 

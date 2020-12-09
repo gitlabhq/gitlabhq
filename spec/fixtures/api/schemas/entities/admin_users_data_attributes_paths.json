@@ -1,0 +1,30 @@
+{
+  "type": "object",
+  "properties": {
+    "edit": { "type": "string" },
+    "approve": { "type": "string" },
+    "reject": { "type": "string" },
+    "unblock": { "type": "string" },
+    "block": { "type": "string" },
+    "deactivate": { "type": "string" },
+    "activate": { "type": "string" },
+    "unlock": { "type": "string" },
+    "delete": { "type": "string" },
+    "delete_with_contributions": { "type": "string" },
+    "admin_user": { "type": "string" }
+  },
+  "required": [
+    "edit",
+    "approve",
+    "reject",
+    "unblock",
+    "block",
+    "deactivate",
+    "activate",
+    "unlock",
+    "delete",
+    "delete_with_contributions",
+    "admin_user"
+  ],
+  "additionalProperties": false
+}

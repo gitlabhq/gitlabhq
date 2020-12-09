@@ -7,6 +7,7 @@ RSpec.describe Experiment do
 
   describe 'associations' do
     it { is_expected.to have_many(:experiment_users) }
+    it { is_expected.to have_many(:experiment_subjects) }
   end
 
   describe 'validations' do

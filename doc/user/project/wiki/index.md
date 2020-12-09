@@ -226,4 +226,4 @@ Example for `_sidebar` (using Markdown format):
 - [Sidebar](_sidebar)
 ```
 
-Support for displaying a generated TOC with a custom side navigation is planned.
+Support for displaying a generated table of contents with a custom side navigation is planned.
