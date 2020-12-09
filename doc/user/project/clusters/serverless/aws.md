@@ -157,7 +157,7 @@ Running the following `curl` command should trigger your function.
 Your URL should be the one retrieved from the GitLab deploy stage log:
 
 ```shell
-curl https://u768nzby1j.execute-api.us-east-1.amazonaws.com/production/hello
+curl "https://u768nzby1j.execute-api.us-east-1.amazonaws.com/production/hello"
 ```
 
 That should output:
@@ -200,7 +200,7 @@ The `serverless-offline` plugin allows to run your code locally. To run your cod
 Running the following `curl` command should trigger your function.
 
 ```shell
-curl http://localhost:3000/hello
+curl "http://localhost:3000/hello"
 ```
 
 It should output:
@@ -444,7 +444,7 @@ To test the application you deployed, please go to the build log and follow the 
 1. Use curl to test the API. For example:
 
    ```shell
-   curl https://py4rg7qtlg.execute-api.us-east-1.amazonaws.com/Prod/hello/
+   curl "https://py4rg7qtlg.execute-api.us-east-1.amazonaws.com/Prod/hello/"
    ```
 
 Output should be:
@@ -496,7 +496,7 @@ listening on `localhost:3000`.
 Call the `hello` API by running:
 
 ```shell
-curl http://127.0.0.1:3000/hello
+curl "http://127.0.0.1:3000/hello"
 ```
 
 Output again should be:

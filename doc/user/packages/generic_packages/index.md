@@ -49,7 +49,7 @@ Example request:
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --upload-file path/to/file.txt \
-     https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt
+     "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt"
 ```
 
 Example response:
@@ -85,7 +85,7 @@ Example request that uses a personal access token:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
-     https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt
+     "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt"
 ```
 
 ## Publish a generic package by using CI/CD
@@ -105,7 +105,7 @@ stages:
 upload:
   stage: upload
   script:
-    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file path/to/file.txt ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/my_package/0.0.1/file.txt'
+    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file path/to/file.txt "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/my_package/0.0.1/file.txt"'
 
 download:
   stage: download

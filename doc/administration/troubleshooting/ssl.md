@@ -24,7 +24,7 @@ following issues:
 - `curl` fails:
 
   ```shell
-  curl https://gitlab.domain.tld
+  curl "https://gitlab.domain.tld"
   curl: (60) SSL certificate problem: unable to get local issuer certificate
   More details here: https://curl.haxx.se/docs/sslcerts.html
   ```
@@ -125,7 +125,7 @@ The cause of the issue can be confirmed by checking if:
 - `curl` fails:
 
   ```shell
-  $ curl https://gitlab.domain.tld
+  $ curl "https://gitlab.domain.tld"
   curl: (60) SSL certificate problem: self signed certificate
   More details here: https://curl.haxx.se/docs/sslcerts.html
   ```

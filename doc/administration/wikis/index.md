@@ -65,11 +65,11 @@ The process to set the wiki page size limit through the Application Settings API
 exactly the same as you would do to [update any other setting](../../api/settings.md#change-application-settings).
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/application/settings?wiki_page_max_content_bytes=52428800
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/settings?wiki_page_max_content_bytes=52428800"
 ```
 
 You can also use the API to [retrieve the current value](../../api/settings.md#get-current-application-settings).
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/application/settings
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/settings"
 ```

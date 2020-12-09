@@ -1155,8 +1155,8 @@ After adding the setting, [reconfigure GitLab](../restart_gitlab.md#omnibus-gitl
 Use curl to request debug output from the debug server:
 
 ```shell
-curl localhost:5001/debug/health
-curl localhost:5001/debug/vars
+curl "localhost:5001/debug/health"
+curl "localhost:5001/debug/vars"
 ```
 
 ### Advanced Troubleshooting
@@ -1236,7 +1236,7 @@ mitmproxy --port 9000
 This command runs mitmproxy on port `9000`. In another window, run:
 
 ```shell
-curl --proxy http://localhost:9000 https://httpbin.org/status/200
+curl --proxy "http://localhost:9000" "https://httpbin.org/status/200"
 ```
 
 If everything is set up correctly, information is displayed on the mitmproxy window and

@@ -376,7 +376,7 @@ The sample function can now be triggered from any HTTP client using a simple `PO
      --header "Content-Type: application/json" \
      --request POST \
      --data '{"GitLab":"FaaS"}' \
-     http://functions-echo.functions-1.functions.example.com/
+     "http://functions-echo.functions-1.functions.example.com/"
      ```
 
   1. Using a web-based tool (such as Postman or Restlet)
@@ -443,7 +443,7 @@ To run a function locally:
 1. Invoke your function:
 
    ```shell
-   curl http://localhost:8080
+   curl "http://localhost:8080"
    ```
 
 ## Deploying Serverless applications

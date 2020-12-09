@@ -151,7 +151,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    ##
    ## Public address
    ##
-   echo "External address: $(curl --silent ipinfo.io/ip)"
+   echo "External address: $(curl --silent "ipinfo.io/ip")"
    ```
 
    In most cases, the following addresses will be used to configure GitLab

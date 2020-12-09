@@ -434,13 +434,13 @@ If the monitoring node is not receiving any data, check that the exporters are
 capturing data.
 
 ```shell
-curl http[s]://localhost:<EXPORTER LISTENING PORT>/metric
+curl "http[s]://localhost:<EXPORTER LISTENING PORT>/metric"
 ```
 
 or
 
 ```shell
-curl http[s]://localhost:<EXPORTER LISTENING PORT>/-/metric
+curl "http[s]://localhost:<EXPORTER LISTENING PORT>/-/metric"
 ```
 
 ## Troubleshooting PgBouncer

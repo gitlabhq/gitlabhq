@@ -103,7 +103,7 @@ docker run -d --name elasticsearch \
 docker.elastic.co/elasticsearch/elasticsearch:5.5.1
 ```
 
-Then confirm it works in the browser at `curl http://<IP_ADDRESS>:9200/_cat/health`.
+Then confirm it works in the browser at `curl "http://<IP_ADDRESS>:9200/_cat/health"`.
 Elasticsearch's default username is `elastic` and password is `changeme`.
 
 ### Kroki

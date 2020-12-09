@@ -345,7 +345,7 @@ the integration by using GDK:
    1. Check that the list of current metrics has the new counter for the feature flag:
 
       ```shell
-      curl --silent http://localhost:9236/metrics | grep go_find_all_tags
+      curl --silent "http://localhost:9236/metrics" | grep go_find_all_tags
       ```
 
 1. Once you observe the metrics for the new feature flag and it increments, you
@@ -375,5 +375,5 @@ the integration by using GDK:
    1. Verify the feature is on by observing the metrics for it:
 
       ```shell
-      curl --silent http://localhost:9236/metrics | grep go_find_all_tags
+      curl --silent "http://localhost:9236/metrics" | grep go_find_all_tags
       ```

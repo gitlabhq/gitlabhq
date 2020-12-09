@@ -59,7 +59,7 @@ interested in.
 If you're using `curl` then you can use the verbose option to show request and response headers, as well as other debug info.
 
 ```shell
-➜  ~ curl --verbose https://gitlab.example.com/api/v4/projects
+➜  ~ curl --verbose "https://gitlab.example.com/api/v4/projects"
 # look for a line that looks like this
 < x-request-id: 4rAMkV3gof4
 ```

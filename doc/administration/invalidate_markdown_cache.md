@@ -19,5 +19,5 @@ be done by [changing the application settings through
 the API](../api/settings.md#change-application-settings):
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/application/settings?local_markdown_version=<increased_number>
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/settings?local_markdown_version=<increased_number>"
 ```

@@ -324,8 +324,8 @@ properly forward the requests.**
 
 You should also make sure that you can:
 
-1. `curl https://YOUR_GITLAB_SERVER_FQDN/` from your previous GitLab CI server.
-1. `curl https://YOUR_CI_SERVER_FQDN/` from your GitLab CE (or EE) server.
+1. `curl "https://YOUR_GITLAB_SERVER_FQDN/"` from your previous GitLab CI server.
+1. `curl "https://YOUR_CI_SERVER_FQDN/"` from your GitLab CE (or EE) server.
 
 ### 2. Check NGINX configuration
 

@@ -110,7 +110,7 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
    esac
 
    echo "Pushing status to $BITBUCKET_STATUS_API..."
-   curl --request POST $BITBUCKET_STATUS_API \
+   curl --request POST "$BITBUCKET_STATUS_API" \
    --user $BITBUCKET_USERNAME:$BITBUCKET_ACCESS_TOKEN \
    --header "Content-Type:application/json" \
    --silent \

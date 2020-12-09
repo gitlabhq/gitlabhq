@@ -77,7 +77,7 @@ Identify any existing health issues in the cluster by running the following comm
 within each node. The command will return an empty array if the cluster is healthy:
 
 ```shell
-curl http://127.0.0.1:8500/v1/health/state/critical
+curl "http://127.0.0.1:8500/v1/health/state/critical"
 ```
 
 Consul nodes communicate using the raft protocol. If the current leader goes

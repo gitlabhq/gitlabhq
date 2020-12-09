@@ -26,7 +26,7 @@ Parameters:
 | `dashboard_path` | string        | yes      | URL-encoded path to file defining the dashboard which should be marked as favorite.   |
 
 ```shell
-curl --header 'Private-Token: <your_access_token>' https://gitlab.example.com/api/v4/projects/20/metrics/user_starred_dashboards \
+curl --header 'Private-Token: <your_access_token>' "https://gitlab.example.com/api/v4/projects/20/metrics/user_starred_dashboards" \
  --data-urlencode "dashboard_path=config/prometheus/dashboards/common_metrics.yml"
 ```
 
@@ -57,7 +57,7 @@ Parameters:
 | `dashboard_path` | string        | no      | URL-encoded path to file defining the dashboard which should no longer be marked as favorite. When not supplied, all dashboards within given projects are removed from favorites.   |
 
 ```shell
-curl --request DELETE --header 'Private-Token: <your_access_token>' https://gitlab.example.com/api/v4/projects/20/metrics/user_starred_dashboards \
+curl --request DELETE --header 'Private-Token: <your_access_token>' "https://gitlab.example.com/api/v4/projects/20/metrics/user_starred_dashboards" \
  --data-urlencode "dashboard_path=config/prometheus/dashboards/common_metrics.yml"
 ```
 

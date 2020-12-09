@@ -56,7 +56,7 @@ and it creates a dependent pipeline relation visible on the
 build_docs:
   stage: deploy
   script:
-    - curl --request POST --form "token=$CI_JOB_TOKEN" --form ref=master https://gitlab.example.com/api/v4/projects/9/trigger/pipeline
+    - curl --request POST --form "token=$CI_JOB_TOKEN" --form ref=master "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"
   only:
     - tags
 ```
@@ -143,7 +143,7 @@ By using cURL you can trigger a pipeline rerun with minimal effort, for example:
 curl --request POST \
      --form token=TOKEN \
      --form ref=master \
-     https://gitlab.example.com/api/v4/projects/9/trigger/pipeline
+     "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"
 ```
 
 In this case, the project with ID `9` gets rebuilt on `master` branch.
@@ -244,7 +244,7 @@ curl --request POST \
   --form token=TOKEN \
   --form ref=master \
   --form "variables[UPLOAD_TO_S3]=true" \
-  https://gitlab.example.com/api/v4/projects/9/trigger/pipeline
+  "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"
 ```
 
 Trigger variables have the [highest priority](../variables/README.md#priority-of-environment-variables)
@@ -257,7 +257,7 @@ in conjunction with cron. The example below triggers a job on the `master`
 branch of project with ID `9` every night at `00:30`:
 
 ```shell
-30 0 * * * curl --request POST --form token=TOKEN --form ref=master https://gitlab.example.com/api/v4/projects/9/trigger/pipeline
+30 0 * * * curl --request POST --form token=TOKEN --form ref=master "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"
 ```
 
 This behavior can also be achieved through GitLab's UI with

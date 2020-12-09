@@ -303,7 +303,7 @@ nslookup example.com 1.1.1.1
 whois <ip_address> | grep -i "orgname\|netname"
 
 # Curl headers with redirect
-curl --head --location https://example.com
+curl --head --location "https://example.com"
 ```
 
 ## Package Management
