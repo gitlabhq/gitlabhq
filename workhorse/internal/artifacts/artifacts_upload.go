@@ -12,6 +12,7 @@ import (
 	"syscall"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	"gitlab.com/gitlab-org/labkit/log"
 
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/api"
@@ -28,15 +29,11 @@ const (
 	ArtifactFormatDefault = ""
 )
 
-var zipSubcommandsErrorsCounter = prometheus.NewCounterVec(
+var zipSubcommandsErrorsCounter = promauto.NewCounterVec(
 	prometheus.CounterOpts{
 		Name: "gitlab_workhorse_zip_subcommand_errors_total",
 		Help: "Errors comming from subcommands used for processing ZIP archives",
 	}, []string{"error"})
-
-func init() {
-	prometheus.MustRegister(zipSubcommandsErrorsCounter)
-}
 
 type artifactsUploadProcessor struct {
 	opts   *filestore.SaveFileOpts

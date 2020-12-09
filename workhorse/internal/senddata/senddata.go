@@ -8,17 +8,18 @@ import (
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/senddata/contentprocessor"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 )
 
 var (
-	sendDataResponses = prometheus.NewCounterVec(
+	sendDataResponses = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_senddata_responses",
 			Help: "How many HTTP responses have been hijacked by a workhorse senddata injecter",
 		},
 		[]string{"injecter"},
 	)
-	sendDataResponseBytes = prometheus.NewCounterVec(
+	sendDataResponseBytes = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_senddata_response_bytes",
 			Help: "How many bytes have been written by workhorse senddata response injecters",
@@ -26,11 +27,6 @@ var (
 		[]string{"injecter"},
 	)
 )
-
-func init() {
-	prometheus.MustRegister(sendDataResponses)
-	prometheus.MustRegister(sendDataResponseBytes)
-}
 
 type sendDataResponseWriter struct {
 	rw        http.ResponseWriter

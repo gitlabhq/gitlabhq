@@ -90,6 +90,8 @@ func (u *uploader) Consume(outerCtx context.Context, reader io.Reader, deadline 
 		}
 	}
 
+	objectStorageUploadBytes.Add(float64(cr.n))
+
 	return cr.n, nil
 }
 

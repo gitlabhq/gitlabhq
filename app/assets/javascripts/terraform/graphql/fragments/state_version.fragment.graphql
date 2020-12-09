@@ -1,6 +1,8 @@
 #import "~/graphql_shared/fragments/user.fragment.graphql"
 
 fragment StateVersion on TerraformStateVersion {
+  downloadPath
+  serial
   updatedAt
 
   createdByUser {

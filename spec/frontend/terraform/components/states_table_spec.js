@@ -1,13 +1,14 @@
 import { GlIcon, GlTooltip } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { useFakeDate } from 'helpers/fake_date';
+import StateActions from '~/terraform/components/states_table_actions.vue';
 import StatesTable from '~/terraform/components/states_table.vue';
 
 describe('StatesTable', () => {
   let wrapper;
   useFakeDate([2020, 10, 15]);
 
-  const propsData = {
+  const defaultProps = {
     states: [
       {
         name: 'state-1',
@@ -52,9 +53,15 @@ describe('StatesTable', () => {
     ],
   };
 
-  beforeEach(() => {
+  const createComponent = (propsData = defaultProps) => {
     wrapper = mount(StatesTable, { propsData });
     return wrapper.vm.$nextTick();
+  };
+
+  const findActions = () => wrapper.findAll(StateActions);
+
+  beforeEach(() => {
+    return createComponent();
   });
 
   afterEach(() => {
@@ -98,5 +105,22 @@ describe('StatesTable', () => {
     const state = states.at(lineNumber);
 
     expect(state.text()).toMatchInterpolatedText(updateTime);
+  });
+
+  it('displays no actions dropdown', () => {
+    expect(findActions().length).toEqual(0);
+  });
+
+  describe('when user is a terraform administrator', () => {
+    beforeEach(() => {
+      return createComponent({
+        terraformAdmin: true,
+        ...defaultProps,
+      });
+    });
+
+    it('displays an actions dropdown for each state', () => {
+      expect(findActions().length).toEqual(defaultProps.states.length);
+    });
   });
 });

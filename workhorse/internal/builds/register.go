@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/redis"
@@ -20,14 +21,14 @@ const (
 )
 
 var (
-	registerHandlerRequests = prometheus.NewCounterVec(
+	registerHandlerRequests = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_builds_register_handler_requests",
 			Help: "Describes how many requests in different states hit a register handler",
 		},
 		[]string{"status"},
 	)
-	registerHandlerOpen = prometheus.NewGaugeVec(
+	registerHandlerOpen = promauto.NewGaugeVec(
 		prometheus.GaugeOpts{
 			Name: "gitlab_workhorse_builds_register_handler_open",
 			Help: "Describes how many requests is currently open in given state",
@@ -52,13 +53,6 @@ var (
 type largeBodyError struct{ error }
 
 type WatchKeyHandler func(key, value string, timeout time.Duration) (redis.WatchKeyStatus, error)
-
-func init() {
-	prometheus.MustRegister(
-		registerHandlerRequests,
-		registerHandlerOpen,
-	)
-}
 
 type runnerRequest struct {
 	Token      string `json:"token,omitempty"`

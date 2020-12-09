@@ -2,6 +2,7 @@ package filestore_test
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -426,6 +427,107 @@ func TestSaveMultipartInBodyFailure(t *testing.T) {
 	require.Nil(t, fh)
 	require.Error(t, err)
 	require.EqualError(t, err, test.MultipartUploadInternalError().Error())
+}
+
+func TestSaveRemoteFileWithLimit(t *testing.T) {
+	testhelper.ConfigureSecret()
+
+	type remote int
+	const (
+		notRemote remote = iota
+		remoteSingle
+		remoteMultipart
+	)
+
+	remoteTypes := []remote{remoteSingle, remoteMultipart}
+
+	tests := []struct {
+		name        string
+		objectSize  int64
+		maxSize     int64
+		expectedErr error
+		testData    string
+	}{
+		{
+			name:       "known size with no limit",
+			testData:   test.ObjectContent,
+			objectSize: test.ObjectSize,
+		},
+		{
+			name:       "unknown size with no limit",
+			testData:   test.ObjectContent,
+			objectSize: -1,
+		},
+		{
+			name:        "unknown object size with limit",
+			testData:    test.ObjectContent,
+			objectSize:  -1,
+			maxSize:     test.ObjectSize - 1,
+			expectedErr: filestore.ErrEntityTooLarge,
+		},
+		{
+			name:        "large object with unknown size with limit",
+			testData:    string(make([]byte, 20000)),
+			objectSize:  -1,
+			maxSize:     19000,
+			expectedErr: filestore.ErrEntityTooLarge,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			var opts filestore.SaveFileOpts
+
+			for _, remoteType := range remoteTypes {
+				tmpFolder, err := ioutil.TempDir("", "workhorse-test-tmp")
+				require.NoError(t, err)
+				defer os.RemoveAll(tmpFolder)
+
+				osStub, ts := test.StartObjectStore()
+				defer ts.Close()
+
+				switch remoteType {
+				case remoteSingle:
+					objectURL := ts.URL + test.ObjectPath
+
+					opts.RemoteID = "test-file"
+					opts.RemoteURL = objectURL
+					opts.PresignedPut = objectURL + "?Signature=ASignature"
+					opts.PresignedDelete = objectURL + "?Signature=AnotherSignature"
+					opts.Deadline = testDeadline()
+					opts.MaximumSize = tc.maxSize
+				case remoteMultipart:
+					objectURL := ts.URL + test.ObjectPath
+
+					opts.RemoteID = "test-file"
+					opts.RemoteURL = objectURL
+					opts.PresignedDelete = objectURL + "?Signature=AnotherSignature"
+					opts.PartSize = int64(len(tc.testData)/2) + 1
+					opts.PresignedParts = []string{objectURL + "?partNumber=1", objectURL + "?partNumber=2"}
+					opts.PresignedCompleteMultipart = objectURL + "?Signature=CompleteSignature"
+					opts.Deadline = testDeadline()
+					opts.MaximumSize = tc.maxSize
+
+					require.Less(t, int64(len(tc.testData)), int64(len(opts.PresignedParts))*opts.PartSize, "check part size calculation")
+
+					osStub.InitiateMultipartUpload(test.ObjectPath)
+				}
+
+				ctx, cancel := context.WithCancel(context.Background())
+				defer cancel()
+
+				fh, err := filestore.SaveFileFromReader(ctx, strings.NewReader(tc.testData), tc.objectSize, &opts)
+
+				if tc.expectedErr == nil {
+					require.NoError(t, err)
+					require.NotNil(t, fh)
+				} else {
+					require.True(t, errors.Is(err, tc.expectedErr))
+					require.Nil(t, fh)
+				}
+			}
+		})
+	}
 }
 
 func checkFileHandlerWithFields(t *testing.T, fh *filestore.FileHandler, fields map[string]string, prefix string) {

@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
@@ -40,14 +41,14 @@ func byteSizeBuckets() []float64 {
 }
 
 var (
-	httpInFlightRequests = prometheus.NewGauge(prometheus.GaugeOpts{
+	httpInFlightRequests = promauto.NewGauge(prometheus.GaugeOpts{
 		Namespace: namespace,
 		Subsystem: httpSubsystem,
 		Name:      "in_flight_requests",
 		Help:      "A gauge of requests currently being served by workhorse.",
 	})
 
-	httpRequestsTotal = prometheus.NewCounterVec(
+	httpRequestsTotal = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 			Namespace: namespace,
 			Subsystem: httpSubsystem,
@@ -57,7 +58,7 @@ var (
 		[]string{"code", "method", "route"},
 	)
 
-	httpRequestDurationSeconds = prometheus.NewHistogramVec(
+	httpRequestDurationSeconds = promauto.NewHistogramVec(
 		prometheus.HistogramOpts{
 			Namespace: namespace,
 			Subsystem: httpSubsystem,
@@ -68,7 +69,7 @@ var (
 		[]string{"code", "method", "route"},
 	)
 
-	httpRequestSizeBytes = prometheus.NewHistogramVec(
+	httpRequestSizeBytes = promauto.NewHistogramVec(
 		prometheus.HistogramOpts{
 			Namespace: namespace,
 			Subsystem: httpSubsystem,
@@ -79,7 +80,7 @@ var (
 		[]string{"code", "method", "route"},
 	)
 
-	httpResponseSizeBytes = prometheus.NewHistogramVec(
+	httpResponseSizeBytes = promauto.NewHistogramVec(
 		prometheus.HistogramOpts{
 			Namespace: namespace,
 			Subsystem: httpSubsystem,
@@ -90,7 +91,7 @@ var (
 		[]string{"code", "method", "route"},
 	)
 
-	httpTimeToWriteHeaderSeconds = prometheus.NewHistogramVec(
+	httpTimeToWriteHeaderSeconds = promauto.NewHistogramVec(
 		prometheus.HistogramOpts{
 			Namespace: namespace,
 			Subsystem: httpSubsystem,
@@ -101,14 +102,6 @@ var (
 		[]string{"code", "method", "route"},
 	)
 )
-
-func init() {
-	prometheus.MustRegister(httpInFlightRequests)
-	prometheus.MustRegister(httpRequestsTotal)
-	prometheus.MustRegister(httpRequestDurationSeconds)
-	prometheus.MustRegister(httpRequestSizeBytes)
-	prometheus.MustRegister(httpTimeToWriteHeaderSeconds)
-}
 
 func instrumentRoute(next http.Handler, method string, regexpStr string) http.Handler {
 	handler := next

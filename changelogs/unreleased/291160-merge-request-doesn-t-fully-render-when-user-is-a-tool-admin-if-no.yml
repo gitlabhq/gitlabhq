@@ -1,0 +1,5 @@
+---
+title: Fix MR rendering issue when user is tool admin and not project member
+merge_request: 49258
+author:
+type: fixed

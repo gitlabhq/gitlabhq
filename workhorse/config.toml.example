@@ -1,3 +1,5 @@
+# alt_document_root = '/home/git/public/assets'
+
 [redis]
 URL = "unix:/home/git/gitlab/redis/redis.socket"
 

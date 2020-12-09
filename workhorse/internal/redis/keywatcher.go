@@ -9,6 +9,7 @@ import (
 	"github.com/gomodule/redigo/redis"
 	"github.com/jpillora/backoff"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	"gitlab.com/gitlab-org/labkit/log"
 
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
@@ -24,26 +25,19 @@ var (
 		Factor: 2,
 		Jitter: true,
 	}
-	keyWatchers = prometheus.NewGauge(
+	keyWatchers = promauto.NewGauge(
 		prometheus.GaugeOpts{
 			Name: "gitlab_workhorse_keywatcher_keywatchers",
 			Help: "The number of keys that is being watched by gitlab-workhorse",
 		},
 	)
-	totalMessages = prometheus.NewCounter(
+	totalMessages = promauto.NewCounter(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_keywatcher_total_messages",
 			Help: "How many messages gitlab-workhorse has received in total on pubsub.",
 		},
 	)
 )
-
-func init() {
-	prometheus.MustRegister(
-		keyWatchers,
-		totalMessages,
-	)
-}
 
 const (
 	keySubChannel = "workhorse:notifications"

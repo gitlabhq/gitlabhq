@@ -18,6 +18,7 @@ import (
 	"github.com/golang/protobuf/proto" //lint:ignore SA1019 https://gitlab.com/gitlab-org/gitlab-workhorse/-/issues/274
 
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 
 	"gitlab.com/gitlab-org/gitaly/proto/go/gitalypb"
 
@@ -39,7 +40,7 @@ type archiveParams struct {
 
 var (
 	SendArchive     = &archive{"git-archive:"}
-	gitArchiveCache = prometheus.NewCounterVec(
+	gitArchiveCache = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_git_archive_cache",
 			Help: "Cache hits and misses for 'git archive' streaming",
@@ -47,10 +48,6 @@ var (
 		[]string{"result"},
 	)
 )
-
-func init() {
-	prometheus.MustRegister(gitArchiveCache)
-}
 
 func (a *archive) Inject(w http.ResponseWriter, r *http.Request, sendData string) {
 	var params archiveParams

@@ -147,16 +147,13 @@ out. The merge request widget also displays any
 > - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.3.
 > - Select functionality made available in all tiers beginning in 13.1
 
-Static Application Security Testing (SAST) uses the
-[SAST Docker image](https://gitlab.com/gitlab-org/security-products/sast) to run static
+Static Application Security Testing (SAST) runs static
 analysis on the current code, and checks for potential security issues. The
-Auto SAST stage is skipped on licenses other than
-[Ultimate](https://about.gitlab.com/pricing/), and requires
-[GitLab Runner](https://docs.gitlab.com/runner/) 11.5 or above.
+Auto SAST stage requires [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 or above.
 
 After creating the report, it's uploaded as an artifact which you can later
 download and check out. The merge request widget also displays any security
-warnings.
+warnings on [Ultimate](https://about.gitlab.com/pricing/) licenses.
 
 To learn more about [how SAST works](../../user/application_security/sast/index.md),
 see the documentation.
@@ -171,7 +168,7 @@ Secret Detection uses the
 
 After creating the report, it's uploaded as an artifact which you can later
 download and evaluate. The merge request widget also displays any security
-warnings.
+warnings on [Ultimate](https://about.gitlab.com/pricing/) licenses.
 
 To learn more, see [Secret Detection](../../user/application_security/secret_detection/index.md).
 
@@ -179,9 +176,7 @@ To learn more, see [Secret Detection](../../user/application_security/secret_det
 
 > Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.7.
 
-Dependency Scanning uses the
-[Dependency Scanning Docker image](https://gitlab.com/gitlab-org/security-products/dependency-scanning)
-to run analysis on the project dependencies and check for potential security issues.
+Dependency Scanning runs analysis on the project's dependencies and checks for potential security issues.
 The Auto Dependency Scanning stage is skipped on licenses other than
 [Ultimate](https://about.gitlab.com/pricing/) and requires
 [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 or above.

@@ -1,6 +1,7 @@
 <script>
 import { GlBadge, GlIcon, GlSprintf, GlTable, GlTooltip } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import StateActions from './states_table_actions.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
@@ -11,6 +12,7 @@ export default {
     GlSprintf,
     GlTable,
     GlTooltip,
+    StateActions,
     TimeAgoTooltip,
   },
   mixins: [timeagoMixin],
@@ -19,10 +21,15 @@ export default {
       required: true,
       type: Array,
     },
+    terraformAdmin: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     fields() {
-      return [
+      const columns = [
         {
           key: 'name',
           thClass: 'gl-display-none',
@@ -33,6 +40,16 @@ export default {
           tdClass: 'gl-text-right',
         },
       ];
+
+      if (this.terraformAdmin) {
+        columns.push({
+          key: 'actions',
+          thClass: 'gl-display-none',
+          tdClass: 'gl-w-10',
+        });
+      }
+
+      return columns;
     },
   },
   methods: {
@@ -96,6 +113,10 @@ export default {
           </template>
         </gl-sprintf>
       </p>
+    </template>
+
+    <template v-if="terraformAdmin" #cell(actions)="{ item }">
+      <state-actions :state="item" />
     </template>
   </gl-table>
 </template>

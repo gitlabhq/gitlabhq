@@ -143,6 +143,7 @@ func buildConfig(arg0 string, args []string) (*bootConfig, *config.Config, error
 	cfg.Redis = cfgFromFile.Redis
 	cfg.ObjectStorageCredentials = cfgFromFile.ObjectStorageCredentials
 	cfg.ImageResizerConfig = cfgFromFile.ImageResizerConfig
+	cfg.AltDocumentRoot = cfgFromFile.AltDocumentRoot
 
 	return boot, cfg, nil
 }

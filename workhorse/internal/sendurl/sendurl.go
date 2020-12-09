@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 
 	"gitlab.com/gitlab-org/labkit/correlation"
 	"gitlab.com/gitlab-org/labkit/log"
@@ -68,20 +69,20 @@ var httpClient = &http.Client{
 }
 
 var (
-	sendURLRequests = prometheus.NewCounterVec(
+	sendURLRequests = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_send_url_requests",
 			Help: "How many send URL requests have been processed",
 		},
 		[]string{"status"},
 	)
-	sendURLOpenRequests = prometheus.NewGauge(
+	sendURLOpenRequests = promauto.NewGauge(
 		prometheus.GaugeOpts{
 			Name: "gitlab_workhorse_send_url_open_requests",
 			Help: "Describes how many send URL requests are open now",
 		},
 	)
-	sendURLBytes = prometheus.NewCounter(
+	sendURLBytes = promauto.NewCounter(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_send_url_bytes",
 			Help: "How many bytes were passed with send URL",
@@ -92,13 +93,6 @@ var (
 	sendURLRequestsRequestFailed = sendURLRequests.WithLabelValues("request-failed")
 	sendURLRequestsSucceeded     = sendURLRequests.WithLabelValues("succeeded")
 )
-
-func init() {
-	prometheus.MustRegister(
-		sendURLRequests,
-		sendURLOpenRequests,
-		sendURLBytes)
-}
 
 func (e *entry) Inject(w http.ResponseWriter, r *http.Request, sendData string) {
 	var params entryParams

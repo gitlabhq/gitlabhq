@@ -21,6 +21,7 @@ func TestLoadEmptyConfig(t *testing.T) {
 	cfg, err := LoadConfig(config)
 	require.NoError(t, err)
 
+	require.Empty(t, cfg.AltDocumentRoot)
 	require.Equal(t, cfg.ImageResizerConfig.MaxFilesize, uint64(250000))
 	require.GreaterOrEqual(t, cfg.ImageResizerConfig.MaxScalerProcs, uint32(2))
 
@@ -96,4 +97,15 @@ max_filesize = 350000
 	}
 
 	require.Equal(t, expected, cfg.ImageResizerConfig)
+}
+
+func TestAltDocumentConfig(t *testing.T) {
+	config := `
+alt_document_root = "/path/to/documents"
+`
+
+	cfg, err := LoadConfig(config)
+	require.NoError(t, err)
+
+	require.Equal(t, "/path/to/documents", cfg.AltDocumentRoot)
 }

@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	"gitlab.com/gitlab-org/labkit/log"
 
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/api"
@@ -23,7 +24,7 @@ import (
 var ErrInjectedClientParam = errors.New("injected client parameter")
 
 var (
-	multipartUploadRequests = prometheus.NewCounterVec(
+	multipartUploadRequests = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 
 			Name: "gitlab_workhorse_multipart_upload_requests",
@@ -32,7 +33,7 @@ var (
 		[]string{"type"},
 	)
 
-	multipartFileUploadBytes = prometheus.NewCounterVec(
+	multipartFileUploadBytes = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_multipart_upload_bytes",
 			Help: "How many disk bytes of multipart file parts have been successfully written by gitlab-workhorse. Partitioned by type.",
@@ -40,7 +41,7 @@ var (
 		[]string{"type"},
 	)
 
-	multipartFiles = prometheus.NewCounterVec(
+	multipartFiles = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_multipart_upload_files",
 			Help: "How many multipart file parts have been processed by gitlab-workhorse. Partitioned by type.",
@@ -54,12 +55,6 @@ type rewriter struct {
 	preauth         *api.Response
 	filter          MultipartFormProcessor
 	finalizedFields map[string]bool
-}
-
-func init() {
-	prometheus.MustRegister(multipartUploadRequests)
-	prometheus.MustRegister(multipartFileUploadBytes)
-	prometheus.MustRegister(multipartFiles)
 }
 
 func rewriteFormFilesFromMultipart(r *http.Request, writer *multipart.Writer, preauth *api.Response, filter MultipartFormProcessor, opts *filestore.SaveFileOpts) error {

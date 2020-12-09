@@ -13,15 +13,15 @@ require (
 	github.com/disintegration/imaging v1.6.2
 	github.com/getsentry/raven-go v0.2.0
 	github.com/golang/gddo v0.0.0-20190419222130-af0f2af80721
-	github.com/golang/protobuf v1.4.2
+	github.com/golang/protobuf v1.4.3
 	github.com/gomodule/redigo v2.0.0+incompatible
 	github.com/gorilla/websocket v1.4.0
-	github.com/grpc-ecosystem/go-grpc-middleware v1.0.0
+	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/johannesboyne/gofakes3 v0.0.0-20200510090907-02d71f533bec
-	github.com/jpillora/backoff v0.0.0-20170918002102-8eab2debe79d
+	github.com/jpillora/backoff v1.0.0
 	github.com/mitchellh/copystructure v1.0.0
-	github.com/prometheus/client_golang v1.0.0
+	github.com/prometheus/client_golang v1.8.0
 	github.com/rafaeljusto/redigomock v0.0.0-20190202135759-257e089e14a1
 	github.com/sebest/xff v0.0.0-20160910043805-6c115e0ffa35
 	github.com/shabbyrobe/gocovmerge v0.0.0-20190829150210-3e036491d500 // indirect
@@ -32,7 +32,7 @@ require (
 	gitlab.com/gitlab-org/labkit v1.0.0
 	gocloud.dev v0.20.0
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b
-	golang.org/x/net v0.0.0-20200602114024-627f9648deb9
+	golang.org/x/net v0.0.0-20200625001655-4c5254603344
 	golang.org/x/tools v0.0.0-20200608174601-1b747fd94509
 	google.golang.org/grpc v1.29.1
 	honnef.co/go/tools v0.0.1-2020.1.5

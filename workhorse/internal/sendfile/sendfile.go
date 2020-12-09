@@ -14,6 +14,7 @@ import (
 	"regexp"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 
 	"gitlab.com/gitlab-org/labkit/log"
 	"gitlab.com/gitlab-org/labkit/mask"
@@ -23,7 +24,7 @@ import (
 )
 
 var (
-	sendFileRequests = prometheus.NewCounterVec(
+	sendFileRequests = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_sendfile_requests",
 			Help: "How many X-Sendfile requests have been processed by gitlab-workhorse, partitioned by sendfile type.",
@@ -31,7 +32,7 @@ var (
 		[]string{"type"},
 	)
 
-	sendFileBytes = prometheus.NewCounterVec(
+	sendFileBytes = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_sendfile_bytes",
 			Help: "How many X-Sendfile bytes have been sent by gitlab-workhorse, partitioned by sendfile type.",
@@ -47,11 +48,6 @@ type sendFileResponseWriter struct {
 	status   int
 	hijacked bool
 	req      *http.Request
-}
-
-func init() {
-	prometheus.MustRegister(sendFileRequests)
-	prometheus.MustRegister(sendFileBytes)
 }
 
 func SendFile(h http.Handler) http.Handler {

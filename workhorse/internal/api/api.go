@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 
 	"gitlab.com/gitlab-org/gitaly/proto/go/gitalypb"
 
@@ -34,25 +35,20 @@ type API struct {
 }
 
 var (
-	requestsCounter = prometheus.NewCounterVec(
+	requestsCounter = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_internal_api_requests",
 			Help: "How many internal API requests have been completed by gitlab-workhorse, partitioned by status code and HTTP method.",
 		},
 		[]string{"code", "method"},
 	)
-	bytesTotal = prometheus.NewCounter(
+	bytesTotal = promauto.NewCounter(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_internal_api_failure_response_bytes",
 			Help: "How many bytes have been returned by upstream GitLab in API failure/rejection response bodies.",
 		},
 	)
 )
-
-func init() {
-	prometheus.MustRegister(requestsCounter)
-	prometheus.MustRegister(bytesTotal)
-}
 
 func NewAPI(myURL *url.URL, version string, roundTripper http.RoundTripper) *API {
 	return &API{

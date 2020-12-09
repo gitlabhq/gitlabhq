@@ -198,6 +198,29 @@ func TestServeOriginalImageWhenSourceImageFormatIsNotAllowed(t *testing.T) {
 	require.Equal(t, svgImage, responseData, "expected original image")
 }
 
+func TestServeOriginalImageWhenSourceImageIsTooSmall(t *testing.T) {
+	content := []byte("PNG") // 3 bytes only, invalid as PNG/JPEG image
+
+	img, err := ioutil.TempFile("", "*.png")
+	require.NoError(t, err)
+
+	defer img.Close()
+	defer os.Remove(img.Name())
+
+	_, err = img.Write(content)
+	require.NoError(t, err)
+
+	cfg := config.DefaultImageResizerConfig
+	params := resizeParams{Location: img.Name(), ContentType: "image/png", Width: 64}
+
+	resp := requestScaledImage(t, nil, params, cfg)
+	require.Equal(t, http.StatusOK, resp.StatusCode)
+
+	responseData, err := ioutil.ReadAll(resp.Body)
+	require.NoError(t, err)
+	require.Equal(t, content, responseData, "expected original image")
+}
+
 // The Rails applications sends a Base64 encoded JSON string carrying
 // these parameters in an HTTP response header
 func encodeParams(t *testing.T, p *resizeParams) string {

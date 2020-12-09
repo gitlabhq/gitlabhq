@@ -26946,6 +26946,9 @@ msgstr ""
 msgid "Terraform|An error occurred while loading your Terraform States"
 msgstr ""
 
+msgid "Terraform|Download JSON"
+msgstr ""
+
 msgid "Terraform|Find out how to use the %{linkStart}GitLab managed Terraform State%{linkEnd}"
 msgstr ""
 

@@ -1,0 +1,5 @@
+---
+title: Add download action to the Terraform state listing
+merge_request: 48837
+author:
+type: added

@@ -10,6 +10,7 @@ import (
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	gitalyauth "gitlab.com/gitlab-org/gitaly/auth"
 	gitalyclient "gitlab.com/gitlab-org/gitaly/client"
 	"gitlab.com/gitlab-org/gitaly/proto/go/gitalypb"
@@ -43,7 +44,7 @@ var (
 		connections: make(map[cacheKey]*grpc.ClientConn),
 	}
 
-	connectionsTotal = prometheus.NewCounterVec(
+	connectionsTotal = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_gitaly_connections_total",
 			Help: "Number of Gitaly connections that have been established",
@@ -51,10 +52,6 @@ var (
 		[]string{"status"},
 	)
 )
-
-func init() {
-	prometheus.MustRegister(connectionsTotal)
-}
 
 func withOutgoingMetadata(ctx context.Context, features map[string]string) context.Context {
 	md := metadata.New(nil)

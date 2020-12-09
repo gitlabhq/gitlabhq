@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 )
 
 type errTooManyRequests struct{ error }
@@ -44,7 +45,7 @@ func newQueueMetrics(name string, timeout time.Duration) *queueMetrics {
 	}
 
 	metrics := &queueMetrics{
-		queueingLimit: prometheus.NewGauge(prometheus.GaugeOpts{
+		queueingLimit: promauto.NewGauge(prometheus.GaugeOpts{
 			Name: "gitlab_workhorse_queueing_limit",
 			Help: "Current limit set for the queueing mechanism",
 			ConstLabels: prometheus.Labels{
@@ -52,7 +53,7 @@ func newQueueMetrics(name string, timeout time.Duration) *queueMetrics {
 			},
 		}),
 
-		queueingQueueLimit: prometheus.NewGauge(prometheus.GaugeOpts{
+		queueingQueueLimit: promauto.NewGauge(prometheus.GaugeOpts{
 			Name: "gitlab_workhorse_queueing_queue_limit",
 			Help: "Current queueLimit set for the queueing mechanism",
 			ConstLabels: prometheus.Labels{
@@ -60,7 +61,7 @@ func newQueueMetrics(name string, timeout time.Duration) *queueMetrics {
 			},
 		}),
 
-		queueingQueueTimeout: prometheus.NewGauge(prometheus.GaugeOpts{
+		queueingQueueTimeout: promauto.NewGauge(prometheus.GaugeOpts{
 			Name: "gitlab_workhorse_queueing_queue_timeout",
 			Help: "Current queueTimeout set for the queueing mechanism",
 			ConstLabels: prometheus.Labels{
@@ -68,7 +69,7 @@ func newQueueMetrics(name string, timeout time.Duration) *queueMetrics {
 			},
 		}),
 
-		queueingBusy: prometheus.NewGauge(prometheus.GaugeOpts{
+		queueingBusy: promauto.NewGauge(prometheus.GaugeOpts{
 			Name: "gitlab_workhorse_queueing_busy",
 			Help: "How many queued requests are now processed",
 			ConstLabels: prometheus.Labels{
@@ -76,7 +77,7 @@ func newQueueMetrics(name string, timeout time.Duration) *queueMetrics {
 			},
 		}),
 
-		queueingWaiting: prometheus.NewGauge(prometheus.GaugeOpts{
+		queueingWaiting: promauto.NewGauge(prometheus.GaugeOpts{
 			Name: "gitlab_workhorse_queueing_waiting",
 			Help: "How many requests are now queued",
 			ConstLabels: prometheus.Labels{
@@ -84,7 +85,7 @@ func newQueueMetrics(name string, timeout time.Duration) *queueMetrics {
 			},
 		}),
 
-		queueingWaitingTime: prometheus.NewHistogram(prometheus.HistogramOpts{
+		queueingWaitingTime: promauto.NewHistogram(prometheus.HistogramOpts{
 			Name: "gitlab_workhorse_queueing_waiting_time",
 			Help: "How many time a request spent in queue",
 			ConstLabels: prometheus.Labels{
@@ -93,7 +94,7 @@ func newQueueMetrics(name string, timeout time.Duration) *queueMetrics {
 			Buckets: waitingTimeBuckets,
 		}),
 
-		queueingErrors: prometheus.NewCounterVec(
+		queueingErrors: promauto.NewCounterVec(
 			prometheus.CounterOpts{
 				Name: "gitlab_workhorse_queueing_errors",
 				Help: "How many times the TooManyRequests or QueueintTimedout errors were returned while queueing, partitioned by error type",
@@ -104,14 +105,6 @@ func newQueueMetrics(name string, timeout time.Duration) *queueMetrics {
 			[]string{"type"},
 		),
 	}
-
-	prometheus.MustRegister(metrics.queueingLimit)
-	prometheus.MustRegister(metrics.queueingQueueLimit)
-	prometheus.MustRegister(metrics.queueingQueueTimeout)
-	prometheus.MustRegister(metrics.queueingBusy)
-	prometheus.MustRegister(metrics.queueingWaiting)
-	prometheus.MustRegister(metrics.queueingWaitingTime)
-	prometheus.MustRegister(metrics.queueingErrors)
 
 	return metrics
 }

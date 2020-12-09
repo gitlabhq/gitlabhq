@@ -10,6 +10,7 @@ import (
 	"github.com/FZambia/sentinel"
 	"github.com/gomodule/redigo/redis"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	"gitlab.com/gitlab-org/labkit/log"
 
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/config"
@@ -45,14 +46,14 @@ const (
 )
 
 var (
-	totalConnections = prometheus.NewCounter(
+	totalConnections = promauto.NewCounter(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_redis_total_connections",
 			Help: "How many connections gitlab-workhorse has opened in total. Can be used to track Redis connection rate for this process",
 		},
 	)
 
-	errorCounter = prometheus.NewCounterVec(
+	errorCounter = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_redis_errors",
 			Help: "Counts different types of Redis errors encountered by workhorse, by type and destination (redis, sentinel)",
@@ -60,13 +61,6 @@ var (
 		[]string{"type", "dst"},
 	)
 )
-
-func init() {
-	prometheus.MustRegister(
-		totalConnections,
-		errorCounter,
-	)
-}
 
 func sentinelConn(master string, urls []config.TomlURL) *sentinel.Sentinel {
 	if len(urls) == 0 {

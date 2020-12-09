@@ -166,7 +166,13 @@ func SaveFileFromReader(ctx context.Context, reader io.Reader, size int64, opts 
 			return nil, SizeError(fmt.Errorf("the upload size %d is over maximum of %d bytes", size, opts.MaximumSize))
 		}
 
-		reader = &hardLimitReader{r: reader, n: opts.MaximumSize}
+		hlr := &hardLimitReader{r: reader, n: opts.MaximumSize}
+		reader = hlr
+		defer func() {
+			if hlr.n < 0 {
+				err = ErrEntityTooLarge
+			}
+		}()
 	}
 
 	fh.Size, err = uploadDestination.Consume(ctx, reader, opts.Deadline)

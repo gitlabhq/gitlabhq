@@ -192,6 +192,16 @@ func (u *upstream) configureRoutes() {
 	proxy := buildProxy(u.Backend, u.Version, u.RoundTripper, u.Config)
 	cableProxy := proxypkg.NewProxy(u.CableBackend, u.Version, u.CableRoundTripper)
 
+	assetsNotFoundHandler := NotFoundUnless(u.DevelopmentMode, proxy)
+	if u.AltDocumentRoot != "" {
+		altStatic := &staticpages.Static{DocumentRoot: u.AltDocumentRoot}
+		assetsNotFoundHandler = altStatic.ServeExisting(
+			u.URLPrefix,
+			staticpages.CacheExpireMax,
+			NotFoundUnless(u.DevelopmentMode, proxy),
+		)
+	}
+
 	signingTripper := secret.NewRoundTripper(u.RoundTripper, u.Version)
 	signingProxy := buildProxy(u.Backend, u.Version, signingTripper, u.Config)
 
@@ -283,7 +293,7 @@ func (u *upstream) configureRoutes() {
 			static.ServeExisting(
 				u.URLPrefix,
 				staticpages.CacheExpireMax,
-				NotFoundUnless(u.DevelopmentMode, proxy),
+				assetsNotFoundHandler,
 			),
 			withoutTracing(), // Tracing on assets is very noisy
 		),

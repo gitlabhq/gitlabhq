@@ -46,6 +46,11 @@ export default {
       required: true,
       type: String,
     },
+    terraformAdmin: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -111,7 +116,7 @@ export default {
 
         <div v-else-if="statesList">
           <div v-if="statesCount">
-            <states-table :states="statesList" />
+            <states-table :states="statesList" :terraform-admin="terraformAdmin" />
 
             <div v-if="showPagination" class="gl-display-flex gl-justify-content-center gl-mt-5">
               <gl-keyset-pagination

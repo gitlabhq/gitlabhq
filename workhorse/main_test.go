@@ -38,6 +38,7 @@ import (
 const scratchDir = "testdata/scratch"
 const testRepoRoot = "testdata/data"
 const testDocumentRoot = "testdata/public"
+const testAltDocumentRoot = "testdata/alt-public"
 
 var absDocumentRoot string
 
@@ -312,6 +313,72 @@ func TestGzipAssets(t *testing.T) {
 	}
 }
 
+func TestAltDocumentAssets(t *testing.T) {
+	path := "/assets/static.txt"
+	content := "asset"
+	require.NoError(t, setupAltStaticFile(path, content))
+
+	buf := &bytes.Buffer{}
+	gzipWriter := gzip.NewWriter(buf)
+	_, err := gzipWriter.Write([]byte(content))
+	require.NoError(t, err)
+	require.NoError(t, gzipWriter.Close())
+	contentGzip := buf.String()
+	require.NoError(t, setupAltStaticFile(path+".gz", contentGzip))
+
+	proxied := false
+	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
+		proxied = true
+		w.WriteHeader(404)
+	})
+	defer ts.Close()
+
+	upstreamConfig := newUpstreamConfig(ts.URL)
+	upstreamConfig.AltDocumentRoot = testAltDocumentRoot
+
+	ws := startWorkhorseServerWithConfig(upstreamConfig)
+	defer ws.Close()
+
+	testCases := []struct {
+		desc            string
+		path            string
+		content         string
+		acceptEncoding  string
+		contentEncoding string
+	}{
+		{desc: "plaintext asset", path: path, content: content},
+		{desc: "gzip asset available", path: path, content: contentGzip, acceptEncoding: "gzip", contentEncoding: "gzip"},
+		{desc: "non-existent file", path: "/assets/non-existent"},
+	}
+
+	for _, tc := range testCases {
+		req, err := http.NewRequest("GET", ws.URL+tc.path, nil)
+		require.NoError(t, err)
+
+		if tc.acceptEncoding != "" {
+			req.Header.Set("Accept-Encoding", tc.acceptEncoding)
+		}
+
+		resp, err := http.DefaultTransport.RoundTrip(req)
+		require.NoError(t, err)
+		defer resp.Body.Close()
+		b, err := ioutil.ReadAll(resp.Body)
+		require.NoError(t, err)
+
+		if tc.content != "" {
+			require.Equal(t, 200, resp.StatusCode, "%s: status code", tc.desc)
+			require.Equal(t, tc.content, string(b), "%s: response body", tc.desc)
+			require.False(t, proxied, "%s: should not have made it to backend", tc.desc)
+
+			if tc.contentEncoding != "" {
+				require.Equal(t, tc.contentEncoding, resp.Header.Get("Content-Encoding"))
+			}
+		} else {
+			require.Equal(t, 404, resp.StatusCode, "%s: status code", tc.desc)
+		}
+	}
+}
+
 var sendDataHeader = "Gitlab-Workhorse-Send-Data"
 
 func sendDataResponder(command string, literalJSON string) *httptest.Server {
@@ -576,11 +643,19 @@ func TestPropagateCorrelationIdHeader(t *testing.T) {
 }
 
 func setupStaticFile(fpath, content string) error {
+	return setupStaticFileHelper(fpath, content, testDocumentRoot)
+}
+
+func setupAltStaticFile(fpath, content string) error {
+	return setupStaticFileHelper(fpath, content, testAltDocumentRoot)
+}
+
+func setupStaticFileHelper(fpath, content, directory string) error {
 	cwd, err := os.Getwd()
 	if err != nil {
 		return err
 	}
-	absDocumentRoot = path.Join(cwd, testDocumentRoot)
+	absDocumentRoot = path.Join(cwd, directory)
 	if err := os.MkdirAll(path.Join(absDocumentRoot, path.Dir(fpath)), 0755); err != nil {
 		return err
 	}

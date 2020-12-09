@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
 )
@@ -15,12 +16,12 @@ const (
 )
 
 var (
-	gitHTTPSessionsActive = prometheus.NewGauge(prometheus.GaugeOpts{
+	gitHTTPSessionsActive = promauto.NewGauge(prometheus.GaugeOpts{
 		Name: "gitlab_workhorse_git_http_sessions_active",
 		Help: "Number of Git HTTP request-response cycles currently being handled by gitlab-workhorse.",
 	})
 
-	gitHTTPRequests = prometheus.NewCounterVec(
+	gitHTTPRequests = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_git_http_requests",
 			Help: "How many Git HTTP requests have been processed by gitlab-workhorse, partitioned by request type and agent.",
@@ -28,7 +29,7 @@ var (
 		[]string{"method", "code", "service", "agent"},
 	)
 
-	gitHTTPBytes = prometheus.NewCounterVec(
+	gitHTTPBytes = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_git_http_bytes",
 			Help: "How many Git HTTP bytes have been sent by gitlab-workhorse, partitioned by request type, agent and direction.",
@@ -36,12 +37,6 @@ var (
 		[]string{"method", "code", "service", "agent", "direction"},
 	)
 )
-
-func init() {
-	prometheus.MustRegister(gitHTTPSessionsActive)
-	prometheus.MustRegister(gitHTTPRequests)
-	prometheus.MustRegister(gitHTTPBytes)
-}
 
 type HttpResponseWriter struct {
 	helper.CountingResponseWriter

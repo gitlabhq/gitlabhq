@@ -21795,7 +21795,7 @@ CREATE INDEX index_notes_on_line_code ON notes USING btree (line_code);
 
 CREATE INDEX index_notes_on_note_trigram ON notes USING gin (note gin_trgm_ops);
 
-CREATE INDEX index_notes_on_noteable_id_and_noteable_type ON notes USING btree (noteable_id, noteable_type);
+CREATE INDEX index_notes_on_noteable_id_and_noteable_type_and_system ON notes USING btree (noteable_id, noteable_type, system);
 
 CREATE INDEX index_notes_on_project_id_and_id_and_system_false ON notes USING btree (project_id, id) WHERE (NOT system);
 
@@ -22836,12 +22836,6 @@ CREATE INDEX temporary_index_vulnerabilities_on_id ON vulnerabilities USING btre
 CREATE UNIQUE INDEX term_agreements_unique_index ON term_agreements USING btree (user_id, term_id);
 
 CREATE INDEX tmp_build_stage_position_index ON ci_builds USING btree (stage_id, stage_idx) WHERE (stage_idx IS NOT NULL);
-
-CREATE INDEX tmp_idx_blocked_by_type_links ON issue_links USING btree (target_id) WHERE (link_type = 2);
-
-CREATE INDEX tmp_idx_blocking_type_links ON issue_links USING btree (source_id) WHERE (link_type = 1);
-
-CREATE INDEX tmp_idx_index_issues_with_outdate_blocking_count ON issues USING btree (id) WHERE ((state_id = 1) AND (blocking_issues_count = 0));
 
 CREATE INDEX tmp_index_for_email_unconfirmation_migration ON emails USING btree (id) WHERE (confirmed_at IS NOT NULL);
 

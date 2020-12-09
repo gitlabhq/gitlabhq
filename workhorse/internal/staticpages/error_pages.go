@@ -8,12 +8,13 @@ import (
 	"path/filepath"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 
 	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
 )
 
 var (
-	staticErrorResponses = prometheus.NewCounterVec(
+	staticErrorResponses = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_static_error_responses",
 			Help: "How many HTTP responses have been changed to a static error page, by HTTP status code.",
@@ -29,10 +30,6 @@ const (
 	ErrorFormatJSON
 	ErrorFormatText
 )
-
-func init() {
-	prometheus.MustRegister(staticErrorResponses)
-}
 
 type errorPageResponseWriter struct {
 	rw       http.ResponseWriter

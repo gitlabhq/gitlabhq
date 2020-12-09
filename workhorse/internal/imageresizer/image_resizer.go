@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"math"
 	"net"
 	"net/http"
 	"os"
@@ -17,6 +16,7 @@ import (
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 
 	"gitlab.com/gitlab-org/labkit/correlation"
 	"gitlab.com/gitlab-org/labkit/log"
@@ -96,7 +96,7 @@ const (
 )
 
 var (
-	imageResizeConcurrencyLimitExceeds = prometheus.NewCounter(
+	imageResizeConcurrencyLimitExceeds = promauto.NewCounter(
 		prometheus.CounterOpts{
 			Namespace: namespace,
 			Subsystem: subsystem,
@@ -104,7 +104,7 @@ var (
 			Help:      "Amount of image resizing requests that exceeded the maximum allowed scaler processes",
 		},
 	)
-	imageResizeProcesses = prometheus.NewGauge(
+	imageResizeProcesses = promauto.NewGauge(
 		prometheus.GaugeOpts{
 			Namespace: namespace,
 			Subsystem: subsystem,
@@ -112,7 +112,7 @@ var (
 			Help:      "Amount of image scaler processes working now",
 		},
 	)
-	imageResizeMaxProcesses = prometheus.NewGauge(
+	imageResizeMaxProcesses = promauto.NewGauge(
 		prometheus.GaugeOpts{
 			Namespace: namespace,
 			Subsystem: subsystem,
@@ -120,7 +120,7 @@ var (
 			Help:      "The maximum amount of image scaler processes allowed to run concurrently",
 		},
 	)
-	imageResizeRequests = prometheus.NewCounterVec(
+	imageResizeRequests = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 			Namespace: namespace,
 			Subsystem: subsystem,
@@ -129,7 +129,7 @@ var (
 		},
 		[]string{"status"},
 	)
-	imageResizeDurations = prometheus.NewHistogramVec(
+	imageResizeDurations = promauto.NewHistogramVec(
 		prometheus.HistogramOpts{
 			Namespace: namespace,
 			Subsystem: subsystem,
@@ -153,14 +153,6 @@ const (
 	pngMagic    = "\x89PNG\r\n\x1a\n" // 8 bytes
 	maxMagicLen = 8                   // 8 first bytes is enough to detect PNG or JPEG
 )
-
-func init() {
-	prometheus.MustRegister(imageResizeConcurrencyLimitExceeds)
-	prometheus.MustRegister(imageResizeProcesses)
-	prometheus.MustRegister(imageResizeMaxProcesses)
-	prometheus.MustRegister(imageResizeRequests)
-	prometheus.MustRegister(imageResizeDurations)
-}
 
 func NewResizer(cfg config.Config) *Resizer {
 	imageResizeMaxProcesses.Set(float64(cfg.ImageResizerConfig.MaxScalerProcs))
@@ -279,6 +271,10 @@ func (r *Resizer) tryResizeImage(req *http.Request, f *imageFile, params *resize
 		return f.reader, nil, fmt.Errorf("%d bytes exceeds maximum file size of %d bytes", f.contentLength, cfg.MaxFilesize)
 	}
 
+	if f.contentLength < maxMagicLen {
+		return f.reader, nil, fmt.Errorf("file is too small to resize: %d bytes", f.contentLength)
+	}
+
 	if !r.numScalerProcs.tryIncrement(int32(cfg.MaxScalerProcs)) {
 		return f.reader, nil, fmt.Errorf("too many running scaler processes (%d / %d)", r.numScalerProcs.n, cfg.MaxScalerProcs)
 	}
@@ -289,11 +285,16 @@ func (r *Resizer) tryResizeImage(req *http.Request, f *imageFile, params *resize
 		r.numScalerProcs.decrement()
 	}()
 
-	// Prevents EOF if the file is smaller than 8 bytes
-	bufferSize := int(math.Min(maxMagicLen, float64(f.contentLength)))
-	buffered := bufio.NewReaderSize(f.reader, bufferSize)
+	// Creating buffered Reader is required for us to Peek into first bytes of the image file to detect the format
+	// without advancing the reader (we need to read from the file start in the Scaler binary).
+	// We set `8` as the minimal buffer size by the length of PNG magic bytes sequence (JPEG needs only 2).
+	// In fact, `NewReaderSize` will immediately override it with `16` using its `minReadBufferSize` -
+	// here we are just being explicit about the buffer size required for our code to operate correctly.
+	// Having a reader with such tiny buffer will not hurt the performance during further operations,
+	// because Golang `bufio.Read` avoids double copy: https://golang.org/src/bufio/bufio.go?s=1768:1804#L212
+	buffered := bufio.NewReaderSize(f.reader, maxMagicLen)
 
-	headerBytes, err := buffered.Peek(bufferSize)
+	headerBytes, err := buffered.Peek(maxMagicLen)
 	if err != nil {
 		return buffered, nil, fmt.Errorf("peek stream: %v", err)
 	}

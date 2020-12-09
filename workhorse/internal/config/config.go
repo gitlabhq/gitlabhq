@@ -105,6 +105,7 @@ type Config struct {
 	ObjectStorageCredentials ObjectStorageCredentials `toml:"object_storage"`
 	PropagateCorrelationID   bool                     `toml:"-"`
 	ImageResizerConfig       ImageResizerConfig       `toml:"image_resizer"`
+	AltDocumentRoot          string                   `toml:"alt_document_root"`
 }
 
 var DefaultImageResizerConfig = ImageResizerConfig{

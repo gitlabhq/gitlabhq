@@ -1,5 +1,21 @@
 # Changelog for gitlab-workhorse
 
+## v8.58.0
+
+### Added
+- Support alternate document root directory
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/626
+
+### Fixed
+- Fix uploader not returning 413 when artifact too large
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/663
+- Auto-register Prometheus metrics
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/660
+
+### Other
+- Do not resize when image is less than 8 bytes
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/666
+
 ## v8.57.0
 
 ### Added

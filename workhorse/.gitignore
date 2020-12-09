@@ -1,6 +1,7 @@
 testdata/data
 testdata/scratch
 testdata/public
+testdata/alt-public
 /gitlab-workhorse
 /gitlab-resize-image
 /gitlab-zip-cat
