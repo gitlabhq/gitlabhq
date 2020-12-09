@@ -264,7 +264,7 @@ Clicking any vulnerability in the table takes you to its
 [Vulnerability Details](../vulnerabilities) page to see more information on that vulnerability.
 To create an issue associated with the vulnerability, click the **Create Issue** button.
 
-![Create an issue for the vulnerability](img/vulnerability_page_v13_1.png)
+![Create an issue for the vulnerability](img/vulnerability_details_create_issue_v13_7.png)
 
 Once you create the issue, the linked issue icon in the vulnerability list:
 

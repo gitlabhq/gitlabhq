@@ -28362,10 +28362,28 @@ msgstr ""
 msgid "ThreatMonitoring|Container NetworkPolicies not detected"
 msgstr ""
 
+msgid "ThreatMonitoring|Date and time"
+msgstr ""
+
+msgid "ThreatMonitoring|Dismissed"
+msgstr ""
+
 msgid "ThreatMonitoring|Dropped Packets"
 msgstr ""
 
 msgid "ThreatMonitoring|Environment"
+msgstr ""
+
+msgid "ThreatMonitoring|In review"
+msgstr ""
+
+msgid "ThreatMonitoring|Name"
+msgstr ""
+
+msgid "ThreatMonitoring|No alerts available to display. See %{linkStart}enabling threat alerts%{linkEnd} for more information on adding alerts to the list."
+msgstr ""
+
+msgid "ThreatMonitoring|No alerts to display."
 msgstr ""
 
 msgid "ThreatMonitoring|No environments detected"
@@ -28383,6 +28401,9 @@ msgstr ""
 msgid "ThreatMonitoring|Requests"
 msgstr ""
 
+msgid "ThreatMonitoring|Resolved"
+msgstr ""
+
 msgid "ThreatMonitoring|Show last"
 msgstr ""
 
@@ -28395,10 +28416,16 @@ msgstr ""
 msgid "ThreatMonitoring|Statistics"
 msgstr ""
 
+msgid "ThreatMonitoring|Status"
+msgstr ""
+
 msgid "ThreatMonitoring|The firewall is not installed or has been disabled. To view this data, ensure the web application firewall is installed and enabled for your cluster."
 msgstr ""
 
 msgid "ThreatMonitoring|The graph below is an overview of traffic coming to your application as tracked by the Web Application Firewall (WAF). View the docs for instructions on how to access the WAF logs to see what type of malicious traffic is trying to access your app. The docs link is also accessible by clicking the \"?\" icon next to the title below."
+msgstr ""
+
+msgid "ThreatMonitoring|There was an error displaying the alerts. Confirm your endpoint's configuration details to ensure alerts appear."
 msgstr ""
 
 msgid "ThreatMonitoring|Threat Monitoring"
@@ -28417,6 +28444,9 @@ msgid "ThreatMonitoring|Total Packets"
 msgstr ""
 
 msgid "ThreatMonitoring|Total Requests"
+msgstr ""
+
+msgid "ThreatMonitoring|Unreviewed"
 msgstr ""
 
 msgid "ThreatMonitoring|View documentation"

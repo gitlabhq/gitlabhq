@@ -210,17 +210,12 @@ sudo -u git -H make build
 
 ### 10. Update GitLab Workhorse
 
-Install and compile GitLab Workhorse. GitLab Workhorse uses
-[GNU Make](https://www.gnu.org/software/make/).
-If you are not using Linux you may have to run `gmake` instead of
-`make` below.
+Install and compile GitLab Workhorse.
 
 ```shell
-cd /home/git/gitlab-workhorse
+cd /home/git/gitlab
 
-sudo -u git -H git fetch --all --tags --prune
-sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_WORKHORSE_VERSION)
-sudo -u git -H make
+sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
 ```
 
 ### 11. Update Gitaly

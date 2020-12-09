@@ -209,7 +209,8 @@ You can set pending or running pipelines to cancel automatically when a new pipe
 1. Check the **Auto-cancel redundant, pending pipelines** checkbox.
 1. Click **Save changes**.
 
-Note that only jobs with [interruptible](../yaml/README.md#interruptible) set to `true` are cancelled.
+Use the [`interruptible`](../yaml/README.md#interruptible) keyword to indicate if a
+running job can be cancelled before it completes.
 
 ## Skip outdated deployment jobs
 

@@ -1,0 +1,5 @@
+---
+title: Hide extra breadcrumb arrow that overlaps with last breadcrumb item
+merge_request: 49456
+author:
+type: fixed

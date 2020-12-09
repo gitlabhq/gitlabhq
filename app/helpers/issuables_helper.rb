@@ -164,6 +164,12 @@ module IssuablesHelper
     h(title || default_label)
   end
 
+  def issuable_meta_author_status(author)
+    return "" unless show_status_emoji?(author&.status) && status = user_status(author)
+
+    "#{status}".html_safe
+  end
+
   def issuable_meta(issuable, project)
     output = []
     output << "Opened #{time_ago_with_tooltip(issuable.created_at)} by ".html_safe
@@ -177,10 +183,7 @@ module IssuablesHelper
       author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "d-inline d-sm-none")
 
       author_output << issuable_meta_author_slot(issuable.author, css_class: 'ml-1')
-
-      if status = user_status(issuable.author)
-        author_output << "#{status}".html_safe
-      end
+      author_output << issuable_meta_author_status(issuable.author)
 
       author_output
     end

@@ -1,12 +1,17 @@
 #!/bin/sh
 set -e
 WORKHORSE_DIR=workhorse/
-WORKHORSE_REF="v$(cat GITLAB_WORKHORSE_VERSION)"
+WORKHORSE_REF="$(cat GITLAB_WORKHORSE_VERSION)"
 WORKHORSE_URL=${GITLAB_WORKHORSE_URL:-https://gitlab.com/gitlab-org/gitlab-workhorse.git}
 
 if [ $# -gt 1 ] || ([ $# = 1 ] && [ x$1 != xcheck ]); then
   echo "Usage: update-workhorse [check]"
   exit 1
+fi
+
+if echo "$WORKHORSE_REF" | grep -q '^[0-9]\+\.[0-9]\+\.[0-9]\+' ; then
+  # Assume this is a tagged release
+  WORKHORSE_REF="v${WORKHORSE_REF}"
 fi
 
 clean="$(git status --porcelain)"

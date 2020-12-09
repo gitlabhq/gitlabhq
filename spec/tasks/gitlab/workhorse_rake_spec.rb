@@ -10,7 +10,7 @@ RSpec.describe 'gitlab:workhorse namespace rake task' do
   describe 'install' do
     let(:repo) { 'https://gitlab.com/gitlab-org/gitlab-workhorse.git' }
     let(:clone_path) { Rails.root.join('tmp/tests/gitlab-workhorse').to_s }
-    let(:version) { File.read(Rails.root.join(Gitlab::Workhorse::VERSION_FILE)).chomp }
+    let(:workhorse_source) { Rails.root.join('workhorse').to_s }
 
     context 'no dir given' do
       it 'aborts and display a help message' do
@@ -30,13 +30,9 @@ RSpec.describe 'gitlab:workhorse namespace rake task' do
     end
 
     describe 'checkout or clone' do
-      before do
-        expect(Dir).to receive(:chdir).with(clone_path)
-      end
-
       it 'calls checkout_or_clone_version with the right arguments' do
         expect(main_object)
-          .to receive(:checkout_or_clone_version).with(version: version, repo: repo, target_dir: clone_path, clone_opts: %w[--depth 1])
+          .to receive(:checkout_or_clone_version).with(version: 'workhorse-move-notice', repo: repo, target_dir: clone_path, clone_opts: %w[--depth 1])
 
         run_rake_task('gitlab:workhorse:install', clone_path)
       end
@@ -45,7 +41,6 @@ RSpec.describe 'gitlab:workhorse namespace rake task' do
     describe 'gmake/make' do
       before do
         FileUtils.mkdir_p(clone_path)
-        expect(Dir).to receive(:chdir).with(clone_path).and_call_original
       end
 
       context 'gmake is available' do
@@ -56,7 +51,7 @@ RSpec.describe 'gitlab:workhorse namespace rake task' do
 
         it 'calls gmake in the gitlab-workhorse directory' do
           expect(Gitlab::Popen).to receive(:popen).with(%w[which gmake]).and_return(['/usr/bin/gmake', 0])
-          expect(main_object).to receive(:run_command!).with(['gmake']).and_return(true)
+          expect(main_object).to receive(:run_command!).with(["gmake", "-C", workhorse_source, "install", "PREFIX=#{clone_path}"]).and_return(true)
 
           run_rake_task('gitlab:workhorse:install', clone_path)
         end
@@ -70,7 +65,7 @@ RSpec.describe 'gitlab:workhorse namespace rake task' do
 
         it 'calls make in the gitlab-workhorse directory' do
           expect(Gitlab::Popen).to receive(:popen).with(%w[which gmake]).and_return(['', 42])
-          expect(main_object).to receive(:run_command!).with(['make']).and_return(true)
+          expect(main_object).to receive(:run_command!).with(["make", "-C", workhorse_source, "install", "PREFIX=#{clone_path}"]).and_return(true)
 
           run_rake_task('gitlab:workhorse:install', clone_path)
         end

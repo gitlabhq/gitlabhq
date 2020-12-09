@@ -1,0 +1,5 @@
+---
+title: Let `rake gitlab:workhorse:install` use vendored workhorse
+merge_request: 49250
+author:
+type: changed

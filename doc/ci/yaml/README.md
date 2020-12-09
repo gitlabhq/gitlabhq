@@ -1417,7 +1417,7 @@ same rule.
 
 In the following example:
 
-- If the `Dockerfile` file or any file in `/docker/scripts` has changed, and var=blah,
+- If the `Dockerfile` file or any file in `/docker/scripts` has changed, and `$VAR` == "string value",
   then the job runs manually
 - Otherwise, the job isn't included in the pipeline.
 
@@ -3655,18 +3655,18 @@ The trigger token is different than the [`trigger`](#trigger) keyword.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32022) in GitLab 12.3.
 
-`interruptible` is used to indicate that a job should be canceled if made redundant by a newer pipeline run. Defaults to `false`.
+`interruptible` is used to indicate that a running job should be canceled if made redundant by a newer pipeline run.
+Defaults to `false` (uninterruptible). Jobs that have not started yet (pending) are considered interruptible
+and safe to be cancelled.
 This value is used only if the [automatic cancellation of redundant pipelines feature](../pipelines/settings.md#auto-cancel-pending-pipelines)
 is enabled.
 
-When enabled, a pipeline on the same branch is canceled when:
+When enabled, a pipeline is immediately canceled when a new pipeline starts on the same branch if either of the following is true:
 
-- It's made redundant by a newer pipeline run.
-- Either all jobs are set as interruptible, or any uninterruptible jobs haven't started.
+- All jobs in the pipeline are set as interruptible.
+- Any uninterruptible jobs have not started yet.
 
 Set jobs as interruptible that can be safely canceled once started (for instance, a build job).
-
-Pending jobs are always considered interruptible.
 
 For example:
 
@@ -3699,7 +3699,7 @@ In the example above, a new pipeline run causes an existing running pipeline to 
 - Canceled, if only `step-1` is running or pending.
 - Not canceled, once `step-2` starts running.
 
-When an uninterruptible job is running, the pipeline can never be canceled, regardless of the final job's state.
+When an uninterruptible job is running, the pipeline cannot be canceled, regardless of the final job's state.
 
 ### `resource_group`
 

@@ -384,6 +384,10 @@
       text-overflow: ellipsis;
       flex: 0 1 auto;
     }
+
+    &:last-of-type > .breadcrumbs-list-angle {
+      display: none;
+    }
   }
 }
 
