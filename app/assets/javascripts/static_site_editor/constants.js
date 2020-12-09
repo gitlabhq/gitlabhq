@@ -15,6 +15,14 @@ export const LOAD_CONTENT_ERROR = __(
   'An error ocurred while loading your content. Please try again.',
 );
 
+export const DEFAULT_FORMATTING_CHANGES_COMMIT_MESSAGE = s__(
+  'StaticSiteEditor|Automatic formatting changes',
+);
+
+export const DEFAULT_FORMATTING_CHANGES_COMMIT_DESCRIPTION = s__(
+  'StaticSiteEditor|Markdown formatting preferences introduced by the Static Site Editor',
+);
+
 export const DEFAULT_HEADING = s__('StaticSiteEditor|Static site editor');
 
 export const TRACKING_ACTION_CREATE_COMMIT = 'create_commit';

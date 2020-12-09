@@ -656,6 +656,7 @@ boards:
 lists:
 - user
 - milestone
+- iteration
 - board
 - label
 - list_user_preferences

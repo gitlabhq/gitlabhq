@@ -250,4 +250,17 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
       expect(wrapper.emitted('submit').length).toBe(1);
     });
   });
+
+  describe('when RichContentEditor component triggers load event', () => {
+    it('stores formatted markdown provided in the event data', () => {
+      const data = { formattedMarkdown: 'formatted markdown' };
+
+      findRichContentEditor().vm.$emit('load', data);
+
+      // We can access the formatted markdown when submitting changes
+      findPublishToolbar().vm.$emit('submit');
+
+      expect(wrapper.emitted('submit')[0][0]).toMatchObject(data);
+    });
+  });
 });

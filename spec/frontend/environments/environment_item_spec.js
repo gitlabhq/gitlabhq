@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash';
 import { mount } from '@vue/test-utils';
 import { format } from 'timeago.js';
 import EnvironmentItem from '~/environments/components/environment_item.vue';
@@ -30,6 +31,11 @@ describe('Environment item', () => {
   });
 
   const findAutoStop = () => wrapper.find('.js-auto-stop');
+  const findUpcomingDeployment = () => wrapper.find('[data-testid="upcoming-deployment"]');
+  const findUpcomingDeploymentContent = () =>
+    wrapper.find('[data-testid="upcoming-deployment-content"]');
+  const findUpcomingDeploymentStatusLink = () =>
+    wrapper.find('[data-testid="upcoming-deployment-status-link"]');
 
   afterEach(() => {
     wrapper.destroy();
@@ -84,6 +90,72 @@ describe('Environment item', () => {
       describe('With commit information', () => {
         it('should render commit component', () => {
           expect(wrapper.find('.js-commit-component')).toBeDefined();
+        });
+      });
+
+      describe('When the envionment has an upcoming deployment', () => {
+        describe('When the upcoming deployment has a deployable', () => {
+          it('should render the build ID and user', () => {
+            expect(findUpcomingDeploymentContent().text()).toMatchInterpolatedText(
+              '#27 by upcoming-username',
+            );
+          });
+
+          it('should render a status icon with a link and tooltip', () => {
+            expect(findUpcomingDeploymentStatusLink().exists()).toBe(true);
+
+            expect(findUpcomingDeploymentStatusLink().attributes().href).toBe(
+              '/root/environment-test/-/jobs/892',
+            );
+
+            expect(findUpcomingDeploymentStatusLink().attributes().title).toBe(
+              'Deployment running',
+            );
+          });
+        });
+
+        describe('When the deployment does not have a deployable', () => {
+          beforeEach(() => {
+            const environmentWithoutDeployable = cloneDeep(environment);
+            delete environmentWithoutDeployable.upcoming_deployment.deployable;
+
+            factory({
+              propsData: {
+                model: environmentWithoutDeployable,
+                canReadEnvironment: true,
+                tableData,
+              },
+            });
+          });
+
+          it('should still renders the build ID and user', () => {
+            expect(findUpcomingDeploymentContent().text()).toMatchInterpolatedText(
+              '#27 by upcoming-username',
+            );
+          });
+
+          it('should not render the status icon', () => {
+            expect(findUpcomingDeploymentStatusLink().exists()).toBe(false);
+          });
+        });
+      });
+
+      describe('Without upcoming deployment', () => {
+        beforeEach(() => {
+          const environmentWithoutUpcomingDeployment = cloneDeep(environment);
+          delete environmentWithoutUpcomingDeployment.upcoming_deployment;
+
+          factory({
+            propsData: {
+              model: environmentWithoutUpcomingDeployment,
+              canReadEnvironment: true,
+              tableData,
+            },
+          });
+        });
+
+        it('should not render anything in the upcoming deployment column', () => {
+          expect(findUpcomingDeploymentContent().exists()).toBe(false);
         });
       });
 
@@ -208,6 +280,10 @@ describe('Environment item', () => {
 
     it('should render the number of children in a badge', () => {
       expect(wrapper.find('.folder-name .badge').text()).toContain(folder.size);
+    });
+
+    it('should not render the "Upcoming deployment" column', () => {
+      expect(findUpcomingDeployment().exists()).toBe(false);
     });
   });
 

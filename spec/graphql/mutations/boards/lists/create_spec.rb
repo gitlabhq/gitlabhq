@@ -68,9 +68,8 @@ RSpec.describe Mutations::Boards::Lists::Create do
         context 'when label not found' do
           let(:list_create_params) { { label_id: "gid://gitlab/Label/#{non_existing_record_id}" } }
 
-          it 'raises an error' do
-            expect { subject }
-              .to raise_error(Gitlab::Graphql::Errors::ArgumentError, 'Label not found!')
+          it 'returns an error' do
+            expect(subject[:errors]).to include 'Label not found'
           end
         end
       end

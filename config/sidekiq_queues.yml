@@ -142,6 +142,8 @@
   - 1
 - - github_importer
   - 1
+- - gitlab_performance_bar_stats
+  - 1
 - - gitlab_shell
   - 2
 - - group_destroy

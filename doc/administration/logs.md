@@ -998,6 +998,22 @@ For Omnibus GitLab installations, GitLab Exporter logs reside in `/var/log/gitla
 For Omnibus GitLab installations, GitLab Kubernetes Agent Server logs reside
 in `/var/log/gitlab/gitlab-kas/`.
 
+## Performance bar stats
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48149) in GitLab 13.7.
+
+This file lives in `/var/log/gitlab/gitlab-rails/performance_bar_json.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/performance_bar_json.log` for
+installations from source.
+
+Performance bar statistics (currently only duration of SQL queries) are recorded in that file. For example:
+
+```json
+{"severity":"INFO","time":"2020-12-04T09:29:44.592Z","correlation_id":"33680b1490ccd35981b03639c406a697","filename":"app/models/ci/pipeline.rb","filenum":"395","method":"each_with_object","request_id":"rYHomD0VJS4","duration_ms":26.889,"type": "sql"}
+```
+
+These statistics are logged on .com only, disabled on self-deployments.
+
 ## Gathering logs
 
 When [troubleshooting](troubleshooting/index.md) issues that aren't localized to one of the

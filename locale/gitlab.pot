@@ -371,6 +371,9 @@ msgstr ""
 msgid "%{authorsName}'s thread"
 msgstr ""
 
+msgid "%{board_target} not found"
+msgstr ""
+
 msgid "%{code_open}Masked%{code_close} variables are hidden in job logs (though they must match certain regexp requirements to do so)."
 msgstr ""
 
@@ -9640,6 +9643,9 @@ msgstr ""
 msgid "DevopsAdoption|Feature adoption is based on usage in the last calendar month. Last updated: %{timestamp}."
 msgstr ""
 
+msgid "DevopsAdoption|Filter by name"
+msgstr ""
+
 msgid "DevopsAdoption|Issues"
 msgstr ""
 
@@ -9653,6 +9659,9 @@ msgid "DevopsAdoption|Name"
 msgstr ""
 
 msgid "DevopsAdoption|New segment"
+msgstr ""
+
+msgid "DevopsAdoption|No filter results."
 msgstr ""
 
 msgid "DevopsAdoption|Pipelines"
@@ -10677,6 +10686,9 @@ msgstr ""
 msgid "Environments|Deployment"
 msgstr ""
 
+msgid "Environments|Deployment %{status}"
+msgstr ""
+
 msgid "Environments|Enable review app"
 msgstr ""
 
@@ -10792,6 +10804,12 @@ msgid "Environments|This action will run the job defined by %{environment_name} 
 msgstr ""
 
 msgid "Environments|This action will run the job defined by %{name} for commit %{linkStart}%{commitId}%{linkEnd} putting the environment in a previous version. You can revert it by re-deploying the latest version of your application. Are you sure you want to continue?"
+msgstr ""
+
+msgid "Environments|Upcoming"
+msgstr ""
+
+msgid "Environments|Upcoming deployment"
 msgstr ""
 
 msgid "Environments|Updated"
@@ -15397,6 +15415,9 @@ msgid "Iteration"
 msgstr ""
 
 msgid "Iteration changed to"
+msgstr ""
+
+msgid "Iteration lists not available with your current license"
 msgstr ""
 
 msgid "Iteration removed"
@@ -24383,7 +24404,13 @@ msgstr ""
 msgid "SecurityReports|Dismissed '%{vulnerabilityName}'. Turn off the hide dismissed toggle to view."
 msgstr ""
 
+msgid "SecurityReports|Download %{artifactName}"
+msgstr ""
+
 msgid "SecurityReports|Download Report"
+msgstr ""
+
+msgid "SecurityReports|Download results"
 msgstr ""
 
 msgid "SecurityReports|Either you don't have permission to view this dashboard or the dashboard has not been setup. Please check your permission settings with your administrator or check your dashboard configurations to proceed."
@@ -24468,6 +24495,9 @@ msgid "SecurityReports|Security reports can only be accessed by authorized users
 msgstr ""
 
 msgid "SecurityReports|Security reports help page link"
+msgstr ""
+
+msgid "SecurityReports|Security scans have run"
 msgstr ""
 
 msgid "SecurityReports|Security scans have run. Go to the %{linkStart}pipelines tab%{linkEnd} to download the security reports"
@@ -26204,6 +26234,9 @@ msgstr ""
 msgid "StaticSiteEditor|An error occurred while submitting your changes."
 msgstr ""
 
+msgid "StaticSiteEditor|Automatic formatting changes"
+msgstr ""
+
 msgid "StaticSiteEditor|Branch could not be created."
 msgstr ""
 
@@ -26220,6 +26253,9 @@ msgid "StaticSiteEditor|Creating your merge request"
 msgstr ""
 
 msgid "StaticSiteEditor|Incompatible file content"
+msgstr ""
+
+msgid "StaticSiteEditor|Markdown formatting preferences introduced by the Static Site Editor"
 msgstr ""
 
 msgid "StaticSiteEditor|Return to site"

@@ -604,10 +604,9 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-security-merge-request
+    - <<: *if-default-refs
       changes: *code-backstage-patterns
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *code-backstage-patterns
+    - <<: *if-merge-request-title-run-all-rspec
 
 .rails:rules:rspec-foss-impact:
   rules:

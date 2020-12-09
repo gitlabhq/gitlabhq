@@ -36,7 +36,7 @@ function install_gitlab_gem() {
 }
 
 function install_tff_gem() {
-  gem install test_file_finder --version 0.1.0
+  gem install test_file_finder --version 0.1.1
 }
 
 function run_timed_command() {

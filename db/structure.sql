@@ -13652,7 +13652,8 @@ CREATE TABLE lists (
     milestone_id integer,
     max_issue_count integer DEFAULT 0 NOT NULL,
     max_issue_weight integer DEFAULT 0 NOT NULL,
-    limit_metric character varying(20)
+    limit_metric character varying(20),
+    iteration_id bigint
 );
 
 CREATE SEQUENCE lists_id_seq
@@ -21617,6 +21618,8 @@ CREATE UNIQUE INDEX index_list_user_preferences_on_user_id_and_list_id ON list_u
 
 CREATE UNIQUE INDEX index_lists_on_board_id_and_label_id ON lists USING btree (board_id, label_id);
 
+CREATE INDEX index_lists_on_iteration_id ON lists USING btree (iteration_id);
+
 CREATE INDEX index_lists_on_label_id ON lists USING btree (label_id);
 
 CREATE INDEX index_lists_on_list_type ON lists USING btree (list_type);
@@ -22873,6 +22876,8 @@ CREATE INDEX tmp_build_stage_position_index ON ci_builds USING btree (stage_id, 
 
 CREATE INDEX tmp_index_for_email_unconfirmation_migration ON emails USING btree (id) WHERE (confirmed_at IS NOT NULL);
 
+CREATE INDEX tmp_index_on_vulnerabilities_non_dismissed ON vulnerabilities USING btree (id) WHERE (state <> 2);
+
 CREATE UNIQUE INDEX unique_merge_request_metrics_by_merge_request_id ON merge_request_metrics USING btree (merge_request_id);
 
 CREATE UNIQUE INDEX vulnerability_feedback_unique_idx ON vulnerability_feedback USING btree (project_id, category, feedback_type, project_fingerprint);
@@ -23262,6 +23267,9 @@ ALTER TABLE ONLY notes
 
 ALTER TABLE ONLY members
     ADD CONSTRAINT fk_2e88fb7ce9 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY lists
+    ADD CONSTRAINT fk_30f2a831f4 FOREIGN KEY (iteration_id) REFERENCES sprints(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY approvals
     ADD CONSTRAINT fk_310d714958 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;

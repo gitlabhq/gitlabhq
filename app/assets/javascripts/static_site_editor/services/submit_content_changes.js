@@ -12,6 +12,8 @@ import {
   TRACKING_ACTION_CREATE_MERGE_REQUEST,
   USAGE_PING_TRACKING_ACTION_CREATE_COMMIT,
   USAGE_PING_TRACKING_ACTION_CREATE_MERGE_REQUEST,
+  DEFAULT_FORMATTING_CHANGES_COMMIT_MESSAGE,
+  DEFAULT_FORMATTING_CHANGES_COMMIT_DESCRIPTION,
 } from '../constants';
 
 const createBranch = (projectId, branch) =>
@@ -47,7 +49,15 @@ const createImageActions = (images, markdown) => {
   return actions;
 };
 
-const commitContent = (projectId, message, branch, sourcePath, content, images) => {
+const createUpdateSourceFileAction = (sourcePath, content) => [
+  convertObjectPropsToSnakeCase({
+    action: 'update',
+    filePath: sourcePath,
+    content,
+  }),
+];
+
+const commit = (projectId, message, branch, actions) => {
   Tracking.event(document.body.dataset.page, TRACKING_ACTION_CREATE_COMMIT);
   Api.trackRedisCounterEvent(USAGE_PING_TRACKING_ACTION_CREATE_COMMIT);
 
@@ -56,14 +66,7 @@ const commitContent = (projectId, message, branch, sourcePath, content, images) 
     convertObjectPropsToSnakeCase({
       branch,
       commitMessage: message,
-      actions: [
-        convertObjectPropsToSnakeCase({
-          action: 'update',
-          filePath: sourcePath,
-          content,
-        }),
-        ...createImageActions(images, content),
-      ],
+      actions,
     }),
   ).catch(() => {
     throw new Error(SUBMIT_CHANGES_COMMIT_ERROR);
@@ -100,6 +103,7 @@ const submitContentChanges = ({
   content,
   images,
   mergeRequestMeta,
+  formattedMarkdown,
 }) => {
   const branch = generateBranchName(username);
   const { title: mergeRequestTitle, description: mergeRequestDescription } = mergeRequestMeta;
@@ -107,10 +111,25 @@ const submitContentChanges = ({
 
   return createBranch(projectId, branch)
     .then(({ data: { web_url: url } }) => {
+      const message = `${DEFAULT_FORMATTING_CHANGES_COMMIT_MESSAGE}\n\n${DEFAULT_FORMATTING_CHANGES_COMMIT_DESCRIPTION}`;
+
       Object.assign(meta, { branch: { label: branch, url } });
 
-      return commitContent(projectId, mergeRequestTitle, branch, sourcePath, content, images);
+      return formattedMarkdown
+        ? commit(
+            projectId,
+            message,
+            branch,
+            createUpdateSourceFileAction(sourcePath, formattedMarkdown),
+          )
+        : meta;
     })
+    .then(() =>
+      commit(projectId, mergeRequestTitle, branch, [
+        ...createUpdateSourceFileAction(sourcePath, content),
+        ...createImageActions(images, content),
+      ]),
+    )
     .then(({ data: { short_id: label, web_url: url } }) => {
       Object.assign(meta, { commit: { label, url } });
 

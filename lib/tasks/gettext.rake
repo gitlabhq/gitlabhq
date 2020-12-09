@@ -65,10 +65,10 @@ namespace :gettext do
     linters = files.map do |file|
       locale = File.basename(File.dirname(file))
 
-      Gitlab::I18n::PoLinter.new(po_path: file, html_todolist: html_todolist, locale: locale)
+      Gitlab::I18n::PoLinter.new(po_path: file, locale: locale)
     end
 
-    linters.unshift(Gitlab::I18n::PoLinter.new(po_path: pot_file_path, html_todolist: html_todolist))
+    linters.unshift(Gitlab::I18n::PoLinter.new(po_path: pot_file_path))
 
     failed_linters = linters.select { |linter| linter.errors.any? }
 

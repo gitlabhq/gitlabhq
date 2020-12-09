@@ -71,7 +71,7 @@ export default {
         // percent spacing for cols, should add up to 100
         name: {
           title: s__('Environments|Environment'),
-          spacing: 'section-15',
+          spacing: 'section-10',
         },
         deploy: {
           title: s__('Environments|Deployment'),
@@ -83,18 +83,23 @@ export default {
         },
         commit: {
           title: s__('Environments|Commit'),
-          spacing: 'section-20',
+          spacing: 'section-15',
         },
         date: {
           title: s__('Environments|Updated'),
           spacing: 'section-10',
         },
+        upcoming: {
+          title: s__('Environments|Upcoming'),
+          mobileTitle: s__('Environments|Upcoming deployment'),
+          spacing: 'section-10',
+        },
         autoStop: {
           title: s__('Environments|Auto stop in'),
-          spacing: 'section-5',
+          spacing: 'section-10',
         },
         actions: {
-          spacing: 'section-25',
+          spacing: 'section-20',
         },
       };
     },
@@ -159,6 +164,9 @@ export default {
       </div>
       <div class="table-section" :class="tableData.date.spacing" role="columnheader">
         {{ tableData.date.title }}
+      </div>
+      <div class="table-section" :class="tableData.upcoming.spacing" role="columnheader">
+        {{ tableData.upcoming.title }}
       </div>
       <div class="table-section" :class="tableData.autoStop.spacing" role="columnheader">
         {{ tableData.autoStop.title }}

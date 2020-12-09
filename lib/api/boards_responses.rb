@@ -47,12 +47,12 @@ module API
           create_list_service =
             ::Boards::Lists::CreateService.new(board_parent, current_user, create_list_params)
 
-          list = create_list_service.execute(board)
+          response = create_list_service.execute(board)
 
-          if list.valid?
-            present list, with: Entities::List
+          if response.success?
+            present response.payload[:list], with: Entities::List
           else
-            render_validation_error!(list)
+            render_api_error!({ error: response.errors.first }, 400)
           end
         end
 
@@ -79,14 +79,6 @@ module API
             end
           end
         end
-
-        # rubocop: disable CodeReuse/ActiveRecord
-        def authorize_list_type_resource!
-          unless available_labels_for(board_parent).exists?(params[:label_id])
-            render_api_error!({ error: 'Label not found!' }, 400)
-          end
-        end
-        # rubocop: enable CodeReuse/ActiveRecord
 
         params :list_creation_params do
           requires :label_id, type: Integer, desc: 'The ID of an existing label'

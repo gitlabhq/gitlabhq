@@ -20,6 +20,7 @@ class JobFinder
     @job_query = options.delete(:job_query)
     @pipeline_id = options.delete(:pipeline_id)
     @job_name = options.delete(:job_name)
+    @artifact_path = options.delete(:artifact_path)
 
     # Force the token to be a string so that if api_token is nil, it's set to '', allowing unauthenticated requests (for forks).
     api_token = options.delete(:api_token).to_s
@@ -33,19 +34,31 @@ class JobFinder
   end
 
   def execute
-    find_job_with_filtered_pipelines || find_job_in_pipeline
+    find_job_with_artifact || find_job_with_filtered_pipelines || find_job_in_pipeline
   end
 
   private
 
-  attr_reader :project, :pipeline_query, :job_query, :pipeline_id, :job_name
+  attr_reader :project, :pipeline_query, :job_query, :pipeline_id, :job_name, :artifact_path
+
+  def find_job_with_artifact
+    return if artifact_path.nil?
+
+    Gitlab.pipelines(project, pipeline_query_params).auto_paginate do |pipeline|
+      Gitlab.pipeline_jobs(project, pipeline.id, job_query_params).auto_paginate do |job|
+        return job if found_job_with_artifact?(job) # rubocop:disable Cop/AvoidReturnFromBlocks
+      end
+    end
+
+    raise 'Job not found!'
+  end
 
   def find_job_with_filtered_pipelines
     return if pipeline_query.empty?
 
     Gitlab.pipelines(project, pipeline_query_params).auto_paginate do |pipeline|
       Gitlab.pipeline_jobs(project, pipeline.id, job_query_params).auto_paginate do |job|
-        return job if job.name == job_name # rubocop:disable Cop/AvoidReturnFromBlocks
+        return job if found_job_by_name?(job) # rubocop:disable Cop/AvoidReturnFromBlocks
       end
     end
 
@@ -56,10 +69,20 @@ class JobFinder
     return unless pipeline_id
 
     Gitlab.pipeline_jobs(project, pipeline_id, job_query_params).auto_paginate do |job|
-      return job if job.name == job_name # rubocop:disable Cop/AvoidReturnFromBlocks
+      return job if found_job_by_name?(job) # rubocop:disable Cop/AvoidReturnFromBlocks
     end
 
     raise 'Job not found!'
+  end
+
+  def found_job_with_artifact?(job)
+    artifact_url = "https://gitlab.com/api/v4/projects/#{CGI.escape(project)}/jobs/#{job.id}/artifacts/#{artifact_path}"
+    response = HTTParty.head(artifact_url) # rubocop:disable Gitlab/HTTParty
+    response.success?
+  end
+
+  def found_job_by_name?(job)
+    job.name == job_name
   end
 
   def pipeline_query_params
@@ -93,6 +116,10 @@ if $0 == __FILE__
 
     opts.on("-j", "--job-name job_name", String, "A job name that needs to exist in the found pipeline") do |value|
       options[:job_name] = value
+    end
+
+    opts.on("-a", "--artifact-path ARTIFACT_PATH", String, "A valid artifact path") do |value|
+      options[:artifact_path] = value
     end
 
     opts.on("-t", "--api-token API_TOKEN", String, "A value API token with the `read_api` scope") do |value|

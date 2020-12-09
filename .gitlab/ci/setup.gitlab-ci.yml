@@ -61,15 +61,17 @@ verify-tests-yml:
     - scripts/verify-tff-mapping
 
 .detect-test-base:
-  image: ruby:2.7-alpine
+  image: ruby:2.7
   needs: []
   stage: prepare
   script:
-    - source scripts/utils.sh
+    - source ./scripts/utils.sh
+    - source ./scripts/rspec_helpers.sh
     - install_gitlab_gem
     - install_tff_gem
-    - tooling/bin/find_foss_tests ${MATCHED_TESTS_FILE}
-    - 'echo "test files affected: $(cat $MATCHED_TESTS_FILE)"'
+    - retrieve_tests_mapping
+    - 'if [ -n "$CI_MERGE_REQUEST_IID" ]; then tooling/bin/find_tests ${MATCHED_TESTS_FILE}; fi'
+    - 'if [ -n "$CI_MERGE_REQUEST_IID" ]; then echo "test files affected: $(cat $MATCHED_TESTS_FILE)"; fi'
   artifacts:
     expire_in: 7d
     paths:

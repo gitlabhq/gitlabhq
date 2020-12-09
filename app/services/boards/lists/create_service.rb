@@ -6,17 +6,21 @@ module Boards
       include Gitlab::Utils::StrongMemoize
 
       def execute(board)
-        List.transaction do
-          case type
-          when :backlog
-            create_backlog(board)
-          else
-            target = target(board)
-            position = next_position(board)
+        list = case type
+               when :backlog
+                 create_backlog(board)
+               else
+                 target = target(board)
+                 position = next_position(board)
 
-            create_list(board, type, target, position)
-          end
-        end
+                 return ServiceResponse.error(message: _('%{board_target} not found') % { board_target: type.to_s.capitalize }) if target.blank?
+
+                 create_list(board, type, target, position)
+               end
+
+        return ServiceResponse.error(message: list.errors.full_messages) unless list.persisted?
+
+        ServiceResponse.success(payload: { list: list })
       end
 
       private
@@ -33,7 +37,7 @@ module Boards
 
       def target(board)
         strong_memoize(:target) do
-          available_labels.find(params[:label_id])
+          available_labels.find_by(id: params[:label_id]) # rubocop: disable CodeReuse/ActiveRecord
         end
       end
 

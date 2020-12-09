@@ -11,6 +11,8 @@ import {
   TRACKING_ACTION_CREATE_MERGE_REQUEST,
   USAGE_PING_TRACKING_ACTION_CREATE_COMMIT,
   USAGE_PING_TRACKING_ACTION_CREATE_MERGE_REQUEST,
+  DEFAULT_FORMATTING_CHANGES_COMMIT_MESSAGE,
+  DEFAULT_FORMATTING_CHANGES_COMMIT_DESCRIPTION,
 } from '~/static_site_editor/constants';
 import generateBranchName from '~/static_site_editor/services/generate_branch_name';
 import submitContentChanges from '~/static_site_editor/services/submit_content_changes';
@@ -79,6 +81,36 @@ describe('submitContentChanges', () => {
     return expect(submitContentChanges(buildPayload())).rejects.toThrow(
       SUBMIT_CHANGES_BRANCH_ERROR,
     );
+  });
+
+  describe('committing markdown formatting changes', () => {
+    const formattedMarkdown = `formatted ${content}`;
+    const commitPayload = {
+      branch,
+      commit_message: `${DEFAULT_FORMATTING_CHANGES_COMMIT_MESSAGE}\n\n${DEFAULT_FORMATTING_CHANGES_COMMIT_DESCRIPTION}`,
+      actions: [
+        {
+          action: 'update',
+          file_path: sourcePath,
+          content: formattedMarkdown,
+        },
+      ],
+    };
+
+    it('commits markdown formatting changes in a separate commit', () => {
+      return submitContentChanges(buildPayload({ formattedMarkdown })).then(() => {
+        expect(Api.commitMultiple).toHaveBeenCalledWith(projectId, commitPayload);
+      });
+    });
+
+    it('does not commit markdown formatting changes when there are none', () => {
+      return submitContentChanges(buildPayload()).then(() => {
+        expect(Api.commitMultiple.mock.calls).toHaveLength(1);
+        expect(Api.commitMultiple.mock.calls[0][1]).not.toMatchObject({
+          actions: commitPayload.actions,
+        });
+      });
+    });
   });
 
   it('commits the content changes to the branch when creating branch succeeds', () => {

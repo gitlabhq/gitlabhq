@@ -19,7 +19,12 @@ mr_iid = ENV.fetch('CI_MERGE_REQUEST_IID')
 mr_changes = Gitlab.merge_request_changes(mr_project_path, mr_iid)
 changed_files = mr_changes.changes.map { |change| change['new_path'] }
 
-mapping = TestFileFinder::Mapping.load('tests.yml')
-test_files = TestFileFinder::FileFinder.new(paths: changed_files, mapping: mapping).test_files
+tff = TestFileFinder::FileFinder.new(paths: changed_files).tap do |file_finder|
+  file_finder.use TestFileFinder::MappingStrategies::PatternMatching.load('tests.yml')
 
-File.write(output_file, test_files.uniq.join(' '))
+  if ENV['RSPEC_TESTS_MAPPING_ENABLED']
+    file_finder.use TestFileFinder::MappingStrategies::DirectMatching.load_json(ENV['RSPEC_TESTS_MAPPING_PATH'])
+  end
+end
+
+File.write(output_file, tff.test_files.uniq.join(' '))

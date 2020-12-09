@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function retrieve_tests_metadata() {
-  mkdir -p crystalball/ knapsack/ rspec_flaky/ rspec_profiling/
+  mkdir -p knapsack/ rspec_flaky/ rspec_profiling/
 
   local project_path="gitlab-org/gitlab"
   local test_metadata_job_id
@@ -16,13 +16,6 @@ function retrieve_tests_metadata() {
   if [[ ! -f "${FLAKY_RSPEC_SUITE_REPORT_PATH}" ]]; then
     scripts/api/download_job_artifact --project "${project_path}" --job-id "${test_metadata_job_id}" --artifact-path "${FLAKY_RSPEC_SUITE_REPORT_PATH}" || echo "{}" > "${FLAKY_RSPEC_SUITE_REPORT_PATH}"
   fi
-
-  # FIXME: We will need to find a pipeline where the $RSPEC_PACKED_TESTS_MAPPING_PATH.gz actually exists (Crystalball only runs every two-hours, but the `update-tests-metadata` runs for all `master` pipelines...).
-  # if [[ ! -f "${RSPEC_PACKED_TESTS_MAPPING_PATH}" ]]; then
-  #   (scripts/api/download_job_artifact --project "${project_path}" --job-id "${test_metadata_job_id}" --artifact-path "${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz" && gzip -d "${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz") || echo "{}" > "${RSPEC_PACKED_TESTS_MAPPING_PATH}"
-  # fi
-  #
-  # scripts/unpack-test-mapping "${RSPEC_PACKED_TESTS_MAPPING_PATH}" "${RSPEC_TESTS_MAPPING_PATH}"
 }
 
 function update_tests_metadata() {
@@ -41,6 +34,21 @@ function update_tests_metadata() {
   else
     echo "Not inserting profiling data as the pipeline is not a scheduled one."
   fi
+}
+
+function retrieve_tests_mapping() {
+  mkdir -p crystalball/
+
+  local project_path="gitlab-org/gitlab"
+  local test_metadata_with_mapping_job_id
+
+  test_metadata_with_mapping_job_id=$(scripts/api/get_job_id --project "${project_path}" -q "status=success" -q "ref=master" -q "username=gitlab-bot" -Q "scope=success" --job-name "update-tests-metadata" --artifact-path "${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz")
+
+  if [[ ! -f "${RSPEC_PACKED_TESTS_MAPPING_PATH}" ]]; then
+   (scripts/api/download_job_artifact --project "${project_path}" --job-id "${test_metadata_with_mapping_job_id}" --artifact-path "${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz" && gzip -d "${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz") || echo "{}" > "${RSPEC_PACKED_TESTS_MAPPING_PATH}"
+  fi
+
+  scripts/unpack-test-mapping "${RSPEC_PACKED_TESTS_MAPPING_PATH}" "${RSPEC_TESTS_MAPPING_PATH}"
 }
 
 function update_tests_mapping() {
@@ -119,8 +127,8 @@ function rspec_paralellized_job() {
 
   local rspec_args="-Ispec -rspec_helper --color --format documentation --format RspecJunitFormatter --out junit_rspec.xml ${rspec_opts}"
 
-  if [[ -n $RSPEC_MATCHING_TESTS_ENABLED ]]; then
-    tooling/bin/parallel_rspec --rspec_args "${rspec_args}" --filter tmp/matching_tests.txt
+  if [[ -n $RSPEC_TESTS_MAPPING_ENABLED ]]; then
+    tooling/bin/parallel_rspec --rspec_args "${rspec_args}" --filter "tmp/matching_tests.txt"
   else
     tooling/bin/parallel_rspec --rspec_args "${rspec_args}"
   fi

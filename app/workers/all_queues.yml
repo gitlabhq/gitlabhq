@@ -1610,6 +1610,14 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: gitlab_performance_bar_stats
+  :feature_category: :metrics
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: gitlab_shell
   :feature_category: :source_code_management
   :has_external_dependencies:

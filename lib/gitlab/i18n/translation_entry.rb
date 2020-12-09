@@ -6,12 +6,11 @@ module Gitlab
       PERCENT_REGEX = /(?:^|[^%])%(?!{\w*}|[a-z%])/.freeze
       ANGLE_BRACKET_REGEX = /[<>]/.freeze
 
-      attr_reader :nplurals, :entry_data, :html_allowed
+      attr_reader :nplurals, :entry_data
 
-      def initialize(entry_data:, nplurals:, html_allowed:)
+      def initialize(entry_data:, nplurals:)
         @entry_data = entry_data
         @nplurals = nplurals
-        @html_allowed = html_allowed
       end
 
       def msgid
@@ -95,20 +94,6 @@ module Gitlab
 
       def translations_contain_potential_html?
         all_translations.any? { |translation| contains_angle_brackets?(translation) }
-      end
-
-      def msgid_html_allowed?
-        html_allowed.present?
-      end
-
-      def plural_id_html_allowed?
-        html_allowed.present? && html_allowed['plural_id'] == plural_id
-      end
-
-      def translations_html_allowed?
-        msgid_html_allowed? && html_allowed['translations'].present? && all_translations.all? do |translation|
-          html_allowed['translations'].include?(translation)
-        end
       end
 
       private

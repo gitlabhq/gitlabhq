@@ -24,6 +24,10 @@ RSpec.describe 'Environments page', :js do
     'button[title="Stop environment"]'
   end
 
+  def upcoming_deployment_content_selector
+    '[data-testid="upcoming-deployment-content"]'
+  end
+
   describe 'page tabs' do
     it 'shows "Available" and "Stopped" tab with links' do
       visit_environments(project)
@@ -360,6 +364,26 @@ RSpec.describe 'Environments page', :js do
         visit_environments(project)
 
         expect(page).to have_content('No deployments yet')
+      end
+    end
+
+    context 'when there is an upcoming deployment' do
+      let_it_be(:project) { create(:project, :repository) }
+
+      let!(:deployment) do
+        create(:deployment, :running,
+                            environment: environment,
+                            sha: project.commit.id)
+      end
+
+      it "renders the upcoming deployment", :aggregate_failures do
+        visit_environments(project)
+
+        within(upcoming_deployment_content_selector) do
+          expect(page).to have_content("##{deployment.iid}")
+          expect(page).to have_selector("a[href=\"#{project_job_path(project, deployment.deployable)}\"]")
+          expect(page).to have_link(href: /#{deployment.user.username}/)
+        end
       end
     end
   end

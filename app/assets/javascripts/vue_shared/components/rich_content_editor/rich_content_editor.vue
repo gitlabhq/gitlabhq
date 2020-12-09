@@ -105,6 +105,8 @@ export default {
       registerHTMLToMarkdownRenderer(editorApi);
 
       this.addListeners(editorApi);
+
+      this.$emit('load', { formattedMarkdown: editorApi.getMarkdown() });
     },
     onOpenAddImageModal() {
       this.$refs.addImageModal.show();

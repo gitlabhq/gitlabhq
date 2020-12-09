@@ -27,29 +27,15 @@ module Mutations
           board  = authorized_find!(id: args[:board_id])
           params = create_list_params(args)
 
-          authorize_list_type_resource!(board, params)
-
-          list = create_list(board, params)
+          response = create_list(board, params)
 
           {
-            list: list.valid? ? list : nil,
-            errors: errors_on_object(list)
+            list: response.success? ? response.payload[:list] : nil,
+            errors: response.errors
           }
         end
 
         private
-
-        # Overridden in EE
-        def authorize_list_type_resource!(board, params)
-          return unless params[:label_id]
-
-          labels = ::Labels::AvailableLabelsService.new(current_user, board.resource_parent, params)
-            .filter_labels_ids_in_param(:label_id)
-
-          unless labels.present?
-            raise Gitlab::Graphql::Errors::ArgumentError, 'Label not found!'
-          end
-        end
 
         def create_list(board, params)
           create_list_service =

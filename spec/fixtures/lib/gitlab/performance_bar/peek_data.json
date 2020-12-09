@@ -1,0 +1,104 @@
+{
+  "context": {},
+  "data": {
+    "host": {
+      "hostname": "pc",
+      "canary": null
+    },
+    "active-record": {
+      "duration": "6ms",
+      "calls": "7 (0 cached)",
+      "details": [
+        {
+          "duration": 1.096,
+          "sql": "SELECT COUNT(*) FROM ((SELECT \"badges\".* FROM \"badges\" WHERE \"badges\".\"type\" = 'ProjectBadge' AND \"badges\".\"project_id\" = 8)\nUNION\n(SELECT \"badges\".* FROM \"badges\" WHERE \"badges\".\"type\" = 'GroupBadge' AND \"badges\".\"group_id\" IN (SELECT \"namespaces\".\"id\" FROM \"namespaces\" WHERE \"namespaces\".\"type\" = 'Group' AND \"namespaces\".\"id\" = 28))) badges",
+          "backtrace": [
+            "lib/gitlab/pagination/offset_pagination.rb:53:in `add_pagination_headers'",
+            "lib/gitlab/pagination/offset_pagination.rb:15:in `block in paginate'",
+            "lib/gitlab/pagination/offset_pagination.rb:14:in `tap'",
+            "lib/gitlab/pagination/offset_pagination.rb:14:in `paginate'",
+            "lib/api/helpers/pagination.rb:7:in `paginate'",
+            "lib/api/badges.rb:42:in `block (3 levels) in <class:Badges>'",
+            "ee/lib/gitlab/ip_address_state.rb:10:in `with'",
+            "lib/api/api_guard.rb:208:in `call'",
+            "lib/gitlab/jira/middleware.rb:19:in `call'"
+          ],
+          "cached": "",
+          "warnings": []
+        },
+        {
+          "duration": 0.817,
+          "sql": "SELECT \"projects\".* FROM \"projects\" WHERE \"projects\".\"pending_delete\" = $1 AND \"projects\".\"id\" = $2 LIMIT $3",
+          "backtrace": [
+            "lib/api/helpers.rb:112:in `find_project'",
+            "ee/lib/ee/api/helpers.rb:88:in `find_project!'",
+            "lib/api/helpers/members_helpers.rb:14:in `public_send'",
+            "lib/api/helpers/members_helpers.rb:14:in `find_source'",
+            "lib/api/badges.rb:36:in `block (3 levels) in <class:Badges>'",
+            "ee/lib/gitlab/ip_address_state.rb:10:in `with'",
+            "lib/api/api_guard.rb:208:in `call'",
+            "lib/gitlab/jira/middleware.rb:19:in `call'"
+          ],
+          "cached": "",
+          "warnings": []
+        },
+        {
+          "duration": 0.817,
+          "sql": "SELECT \"projects\".* FROM \"projects\" WHERE \"projects\".\"pending_delete\" = $1 AND \"projects\".\"id\" = $2 LIMIT $3",
+          "backtrace": [
+            "lib/api/helpers.rb:112:in `find_project'",
+            "ee/lib/ee/api/helpers.rb:88:in `find_project!'",
+            "lib/api/helpers/members_helpers.rb:14:in `public_send'",
+            "lib/api/helpers/members_helpers.rb:14:in `find_source'",
+            "lib/api/badges.rb:36:in `block (3 levels) in <class:Badges>'",
+            "ee/lib/gitlab/ip_address_state.rb:10:in `with'",
+            "lib/api/api_guard.rb:208:in `call'",
+            "lib/gitlab/jira/middleware.rb:19:in `call'"
+          ],
+          "cached": "",
+          "warnings": []
+        }
+      ],
+      "warnings": []
+    },
+    "gitaly": {
+      "duration": "0ms",
+      "calls": 0,
+      "details": [],
+      "warnings": []
+    },
+    "redis": {
+      "duration": "0ms",
+      "calls": 1,
+      "details": [
+        {
+          "cmd": "get cache:gitlab:flipper/v1/feature/api_kaminari_count_with_limit",
+          "duration": 0.155,
+          "backtrace": [
+            "lib/gitlab/instrumentation/redis_interceptor.rb:30:in `call'",
+            "lib/feature.rb:81:in `enabled?'",
+            "lib/gitlab/pagination/offset_pagination.rb:30:in `paginate_with_limit_optimization'",
+            "lib/gitlab/pagination/offset_pagination.rb:14:in `paginate'",
+            "lib/api/helpers/pagination.rb:7:in `paginate'",
+            "lib/api/badges.rb:42:in `block (3 levels) in <class:Badges>'",
+            "ee/lib/gitlab/ip_address_state.rb:10:in `with'",
+            "lib/api/api_guard.rb:208:in `call'",
+            "lib/gitlab/jira/middleware.rb:19:in `call'"
+          ],
+          "storage": "Cache",
+          "warnings": [],
+          "instance": "Cache"
+        }
+      ],
+      "warnings": []
+    },
+    "es": {
+      "duration": "0ms",
+      "calls": 0,
+      "details": [],
+      "warnings": []
+    }
+  },
+  "has_warnings": false
+}
+

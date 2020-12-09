@@ -22,7 +22,7 @@
     RUBY_GC_MALLOC_LIMIT_MAX: 134217728
     CRYSTALBALL: "true"
     RECORD_DEPRECATIONS: "true"
-  needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets"]
+  needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets", "detect-tests"]
   script:
     - *base-script
     - rspec_paralellized_job "--tag ~quarantine --tag ~geo --tag ~level:migration"
@@ -64,7 +64,7 @@
     - .rspec-base
     - .as-if-foss
     - .use-pg11
-  needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets as-if-foss"]
+  needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets as-if-foss", "detect-tests"]
 
 .rspec-ee-base-pg11:
   extends:

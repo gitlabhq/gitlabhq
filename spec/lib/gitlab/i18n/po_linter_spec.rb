@@ -6,7 +6,7 @@ require 'simple_po_parser'
 # Disabling this cop to allow for multi-language examples in comments
 # rubocop:disable Style/AsciiComments
 RSpec.describe Gitlab::I18n::PoLinter do
-  let(:linter) { described_class.new(po_path: po_path, html_todolist: {}) }
+  let(:linter) { described_class.new(po_path: po_path) }
   let(:po_path) { 'spec/fixtures/valid.po' }
 
   def fake_translation(msgid:, translation:, plural_id: nil, plurals: [])
@@ -24,8 +24,7 @@ RSpec.describe Gitlab::I18n::PoLinter do
 
     Gitlab::I18n::TranslationEntry.new(
       entry_data: data,
-      nplurals: plurals.size + 1,
-      html_allowed: nil
+      nplurals: plurals.size + 1
     )
   end
 
@@ -160,53 +159,6 @@ RSpec.describe Gitlab::I18n::PoLinter do
         ]
       end
     end
-
-    context 'when an entry contains html on the todolist' do
-      subject(:linter) { described_class.new(po_path: po_path, html_todolist: todolist) }
-
-      let(:po_path) { 'spec/fixtures/potential_html.po' }
-      let(:todolist) do
-        {
-          'String with a legitimate < use' => {
-            'plural_id' => 'String with lots of < > uses',
-            'translations' => [
-              'Translated string with a legitimate < use',
-              'Translated string with lots of < > uses'
-            ]
-          }
-        }
-      end
-
-      it 'does not present an error' do
-        message_id = 'String with a legitimate < use'
-
-        expect(errors[message_id]).to be_nil
-      end
-    end
-
-    context 'when an entry on the html todolist has changed' do
-      subject(:linter) { described_class.new(po_path: po_path, html_todolist: todolist) }
-
-      let(:po_path) { 'spec/fixtures/potential_html.po' }
-      let(:todolist) do
-        {
-          'String with a legitimate < use' => {
-            'plural_id' => 'String with lots of < > uses',
-            'translations' => [
-              'Translated string with a different legitimate < use',
-              'Translated string with lots of < > uses'
-            ]
-          }
-        }
-      end
-
-      it 'presents an error for the changed component' do
-        message_id = 'String with a legitimate < use'
-
-        expect(errors[message_id])
-          .to include a_string_starting_with('translation contains < or >.')
-      end
-    end
   end
 
   describe '#parse_po' do
@@ -276,8 +228,7 @@ RSpec.describe Gitlab::I18n::PoLinter do
 
       fake_entry = Gitlab::I18n::TranslationEntry.new(
         entry_data: { msgid: 'the singular', msgid_plural: 'the plural', 'msgstr[0]' => 'the singular' },
-        nplurals: 2,
-        html_allowed: nil
+        nplurals: 2
       )
       errors = []
 

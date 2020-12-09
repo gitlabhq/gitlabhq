@@ -2,7 +2,6 @@
 import { escape, capitalize } from 'lodash';
 import { GlLoadingIcon } from '@gitlab/ui';
 import StageColumnComponentLegacy from './stage_column_component_legacy.vue';
-import GraphWidthMixin from '../../mixins/graph_width_mixin';
 import LinkedPipelinesColumnLegacy from './linked_pipelines_column_legacy.vue';
 import GraphBundleMixin from '../../mixins/graph_pipeline_bundle_mixin';
 import { UPSTREAM, DOWNSTREAM, MAIN } from './constants';
@@ -14,7 +13,7 @@ export default {
     LinkedPipelinesColumnLegacy,
     StageColumnComponentLegacy,
   },
-  mixins: [GraphWidthMixin, GraphBundleMixin],
+  mixins: [GraphBundleMixin],
   props: {
     isLoading: {
       type: Boolean,
@@ -183,87 +182,83 @@ export default {
       class="pipeline-visualization pipeline-graph"
       :class="{ 'pipeline-tab-content': !isLinkedPipeline }"
     >
-      <div
-        :style="{
-          paddingLeft: `${graphLeftPadding}px`,
-          paddingRight: `${graphRightPadding}px`,
-        }"
-      >
-        <gl-loading-icon v-if="isLoading" class="m-auto" size="lg" />
-
-        <pipeline-graph-legacy
-          v-if="pipelineTypeUpstream"
-          :type="$options.upstream"
-          class="d-inline-block upstream-pipeline"
-          :class="`js-upstream-pipeline-${expandedUpstream.id}`"
-          :is-loading="false"
-          :pipeline="expandedUpstream"
-          :is-linked-pipeline="true"
-          :mediator="mediator"
-          @onClickUpstreamPipeline="clickUpstreamPipeline"
-          @refreshPipelineGraph="requestRefreshPipelineGraph"
-        />
-
-        <linked-pipelines-column-legacy
-          v-if="hasUpstream"
-          :type="$options.upstream"
-          :linked-pipelines="upstreamPipelines"
-          :column-title="__('Upstream')"
-          :project-id="pipelineProjectId"
-          @linkedPipelineClick="$emit('onClickUpstreamPipeline', $event)"
-        />
-
-        <ul
-          v-if="!isLoading"
-          :class="{
-            'inline js-has-linked-pipelines': hasDownstream || hasUpstream,
-          }"
-          class="stage-column-list align-top"
-        >
-          <stage-column-component-legacy
-            v-for="(stage, index) in graph"
-            :key="stage.name"
-            :class="{
-              'has-upstream gl-ml-11': hasUpstreamColumn(index),
-              'has-only-one-job': hasOnlyOneJob(stage),
-              'gl-mr-26': shouldAddRightMargin(index),
-            }"
-            :title="capitalizeStageName(stage.name)"
-            :groups="stage.groups"
-            :stage-connector-class="stageConnectorClass(index, stage)"
-            :is-first-column="isFirstColumn(index)"
-            :has-upstream="hasUpstream"
-            :action="stage.status.action"
-            :job-hovered="jobName"
-            :pipeline-expanded="pipelineExpanded"
-            @refreshPipelineGraph="refreshPipelineGraph"
+      <div class="gl-w-full">
+        <div class="container-fluid container-limited">
+          <gl-loading-icon v-if="isLoading" class="m-auto" size="lg" />
+          <pipeline-graph-legacy
+            v-if="pipelineTypeUpstream"
+            :type="$options.upstream"
+            class="d-inline-block upstream-pipeline"
+            :class="`js-upstream-pipeline-${expandedUpstream.id}`"
+            :is-loading="false"
+            :pipeline="expandedUpstream"
+            :is-linked-pipeline="true"
+            :mediator="mediator"
+            @onClickUpstreamPipeline="clickUpstreamPipeline"
+            @refreshPipelineGraph="requestRefreshPipelineGraph"
           />
-        </ul>
 
-        <linked-pipelines-column-legacy
-          v-if="hasDownstream"
-          :type="$options.downstream"
-          :linked-pipelines="downstreamPipelines"
-          :column-title="__('Downstream')"
-          :project-id="pipelineProjectId"
-          @linkedPipelineClick="handleClickedDownstream"
-          @downstreamHovered="setJob"
-          @pipelineExpandToggle="setPipelineExpanded"
-        />
+          <linked-pipelines-column-legacy
+            v-if="hasUpstream"
+            :type="$options.upstream"
+            :linked-pipelines="upstreamPipelines"
+            :column-title="__('Upstream')"
+            :project-id="pipelineProjectId"
+            @linkedPipelineClick="$emit('onClickUpstreamPipeline', $event)"
+          />
 
-        <pipeline-graph-legacy
-          v-if="pipelineTypeDownstream"
-          :type="$options.downstream"
-          class="d-inline-block"
-          :class="`js-downstream-pipeline-${expandedDownstream.id}`"
-          :is-loading="false"
-          :pipeline="expandedDownstream"
-          :is-linked-pipeline="true"
-          :style="{ 'margin-top': downstreamMarginTop }"
-          :mediator="mediator"
-          @onClickDownstreamPipeline="clickDownstreamPipeline"
-          @refreshPipelineGraph="requestRefreshPipelineGraph"
-        />
+          <ul
+            v-if="!isLoading"
+            :class="{
+              'inline js-has-linked-pipelines': hasDownstream || hasUpstream,
+            }"
+            class="stage-column-list align-top"
+          >
+            <stage-column-component-legacy
+              v-for="(stage, index) in graph"
+              :key="stage.name"
+              :class="{
+                'has-upstream gl-ml-11': hasUpstreamColumn(index),
+                'has-only-one-job': hasOnlyOneJob(stage),
+                'gl-mr-26': shouldAddRightMargin(index),
+              }"
+              :title="capitalizeStageName(stage.name)"
+              :groups="stage.groups"
+              :stage-connector-class="stageConnectorClass(index, stage)"
+              :is-first-column="isFirstColumn(index)"
+              :has-upstream="hasUpstream"
+              :action="stage.status.action"
+              :job-hovered="jobName"
+              :pipeline-expanded="pipelineExpanded"
+              @refreshPipelineGraph="refreshPipelineGraph"
+            />
+          </ul>
+
+          <linked-pipelines-column-legacy
+            v-if="hasDownstream"
+            :type="$options.downstream"
+            :linked-pipelines="downstreamPipelines"
+            :column-title="__('Downstream')"
+            :project-id="pipelineProjectId"
+            @linkedPipelineClick="handleClickedDownstream"
+            @downstreamHovered="setJob"
+            @pipelineExpandToggle="setPipelineExpanded"
+          />
+
+          <pipeline-graph-legacy
+            v-if="pipelineTypeDownstream"
+            :type="$options.downstream"
+            class="d-inline-block"
+            :class="`js-downstream-pipeline-${expandedDownstream.id}`"
+            :is-loading="false"
+            :pipeline="expandedDownstream"
+            :is-linked-pipeline="true"
+            :style="{ 'margin-top': downstreamMarginTop }"
+            :mediator="mediator"
+            @onClickDownstreamPipeline="clickDownstreamPipeline"
+            @refreshPipelineGraph="requestRefreshPipelineGraph"
+          />
+        </div>
       </div>
     </div>
   </div>

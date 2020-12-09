@@ -53,6 +53,7 @@ export default {
     return {
       content: null,
       images: null,
+      formattedMarkdown: null,
       submitChangesError: null,
       isSavingChanges: false,
     };
@@ -79,9 +80,10 @@ export default {
     onDismissError() {
       this.submitChangesError = null;
     },
-    onPrepareSubmit({ content, images }) {
+    onPrepareSubmit({ formattedMarkdown, content, images }) {
       this.content = content;
       this.images = images;
+      this.formattedMarkdown = formattedMarkdown;
 
       this.isSavingChanges = true;
       this.$refs.editMetaModal.show();
@@ -110,6 +112,7 @@ export default {
               username: this.appData.username,
               sourcePath: this.appData.sourcePath,
               content: this.content,
+              formattedMarkdown: this.formattedMarkdown,
               images: this.images,
               mergeRequestMeta,
             },
