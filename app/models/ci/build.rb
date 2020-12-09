@@ -190,6 +190,8 @@ module Ci
 
     scope :with_coverage, -> { where.not(coverage: nil) }
 
+    scope :for_project, -> (project_id) { where(project_id: project_id) }
+
     acts_as_taggable
 
     add_authentication_token_field :token, encrypted: :optional
@@ -535,6 +537,7 @@ module Ci
       strong_memoize(:variables) do
         Gitlab::Ci::Variables::Collection.new
           .concat(persisted_variables)
+          .concat(dependency_proxy_variables)
           .concat(job_jwt_variables)
           .concat(scoped_variables)
           .concat(job_variables)
@@ -580,6 +583,15 @@ module Ci
 
         variables.append(key: 'CI_DEPLOY_USER', value: gitlab_deploy_token.username)
         variables.append(key: 'CI_DEPLOY_PASSWORD', value: gitlab_deploy_token.token, public: false, masked: true)
+      end
+    end
+
+    def dependency_proxy_variables
+      Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        break variables unless Gitlab.config.dependency_proxy.enabled
+
+        variables.append(key: 'CI_DEPENDENCY_PROXY_USER', value: ::Gitlab::Auth::CI_JOB_USER)
+        variables.append(key: 'CI_DEPENDENCY_PROXY_PASSWORD', value: token.to_s, public: false, masked: true)
       end
     end
 

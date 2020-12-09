@@ -20593,6 +20593,8 @@ CREATE INDEX index_approval_rules_code_owners_rule_type ON approval_merge_reques
 
 CREATE INDEX index_approvals_on_merge_request_id ON approvals USING btree (merge_request_id);
 
+CREATE INDEX index_approvals_on_merge_request_id_and_created_at ON approvals USING btree (merge_request_id, created_at);
+
 CREATE UNIQUE INDEX index_approvals_on_user_id_and_merge_request_id ON approvals USING btree (user_id, merge_request_id);
 
 CREATE INDEX index_approver_groups_on_group_id ON approver_groups USING btree (group_id);

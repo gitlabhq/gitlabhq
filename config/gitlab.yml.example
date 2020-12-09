@@ -475,6 +475,10 @@ production: &base
   # GitLab EE only jobs. These jobs are automatically enabled for an EE
   # installation, and ignored for a CE installation.
   ee_cron_jobs:
+    # Schedule snapshots for all devops adoption segments
+    analytics_devops_adoption_create_all_snapshots_worker:
+      cron: 0 0 1 * *
+
     # Snapshot active users statistics
     historical_data_worker:
       cron: "0 12 * * *"

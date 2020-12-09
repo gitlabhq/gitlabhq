@@ -18,29 +18,29 @@ When writing code for realtime features we have to keep a couple of things in mi
 Thus, we must strike a balance between sending requests and the feeling of realtime.
 Use the following rules when creating realtime solutions.
 
-1. The server will tell you how much to poll by sending `Poll-Interval` in the header.
-   Use that as your polling interval. This way it is [easy for system administrators to change the
-   polling rate](../../administration/polling.md).
+1. The server tells you how much to poll by sending `Poll-Interval` in the header.
+   Use that as your polling interval. This enables system administrators to change the
+   [polling rate](../../administration/polling.md).
    A `Poll-Interval: -1` means you should disable polling, and this must be implemented.
 1. A response with HTTP status different from 2XX should disable polling as well.
 1. Use a common library for polling.
 1. Poll on active tabs only. Please use [Visibility](https://github.com/ai/visibilityjs).
-1. Use regular polling intervals, do not use backoff polling, or jitter, as the interval will be
+1. Use regular polling intervals, do not use backoff polling, or jitter, as the interval is
    controlled by the server.
-1. The backend code will most likely be using etags. You do not and should not check for status
-   `304 Not Modified`. The browser will transform it for you.
+1. The backend code is likely to be using etags. You do not and should not check for status
+   `304 Not Modified`. The browser transforms it for you.
 
 ### Lazy Loading Images
 
 To improve the time to first render we are using lazy loading for images. This works by setting
 the actual image source on the `data-src` attribute. After the HTML is rendered and JavaScript is loaded,
-the value of `data-src` will be moved to `src` automatically if the image is in the current viewport.
+the value of `data-src` is moved to `src` automatically if the image is in the current viewport.
 
 - Prepare images in HTML for lazy loading by renaming the `src` attribute to `data-src` AND adding the class `lazy`.
-- If you are using the Rails `image_tag` helper, all images will be lazy-loaded by default unless `lazy: false` is provided.
+- If you are using the Rails `image_tag` helper, all images are lazy-loaded by default unless `lazy: false` is provided.
 
 If you are asynchronously adding content which contains lazy images then you need to call the function
-`gl.lazyLoader.searchLazyImages()` which will search for lazy images and load them if needed.
+`gl.lazyLoader.searchLazyImages()` which searches for lazy images and loads them if needed.
 But in general it should be handled automatically through a `MutationObserver` in the lazy loading function.
 
 ### Animations
@@ -56,7 +56,7 @@ properties once, and handle the actual animation with transforms.
 
 ### Universal code
 
-Code that is contained within `main.js` and `commons/index.js` are loaded and
+Code that is contained in `main.js` and `commons/index.js` is loaded and
 run on _all_ pages. **DO NOT ADD** anything to these files unless it is truly
 needed _everywhere_. These bundles include ubiquitous libraries like `vue`,
 `axios`, and `jQuery`, as well as code for the main navigation and sidebar.
@@ -66,26 +66,26 @@ code footprint.
 ### Page-specific JavaScript
 
 Webpack has been configured to automatically generate entry point bundles based
-on the file structure within `app/assets/javascripts/pages/*`. The directories
-within the `pages` directory correspond to Rails controllers and actions. These
-auto-generated bundles will be automatically included on the corresponding
+on the file structure in `app/assets/javascripts/pages/*`. The directories
+in the `pages` directory correspond to Rails controllers and actions. These
+auto-generated bundles are automatically included on the corresponding
 pages.
 
 For example, if you were to visit <https://gitlab.com/gitlab-org/gitlab/-/issues>,
 you would be accessing the `app/controllers/projects/issues_controller.rb`
 controller with the `index` action. If a corresponding file exists at
-`pages/projects/issues/index/index.js`, it will be compiled into a webpack
+`pages/projects/issues/index/index.js`, it is compiled into a webpack
 bundle and included on the page.
 
 Previously, GitLab encouraged the use of
-`content_for :page_specific_javascripts` within HAML files, along with
+`content_for :page_specific_javascripts` in HAML files, along with
 manually generated webpack bundles. However under this new system you should
 not ever need to manually add an entry point to the `webpack.config.js` file.
 
 NOTE:
 If you are unsure what controller and action corresponds to a given page, you
-can find this out by inspecting `document.body.dataset.page` within your
-browser's developer console while on any page within GitLab.
+can find this out by inspecting `document.body.dataset.page` in your
+browser's developer console while on any page in GitLab.
 
 #### Important Considerations
 
@@ -97,7 +97,7 @@ browser's developer console while on any page within GitLab.
   instantiate, and nothing else.
 
 - **`DOMContentLoaded` should not be used:**
-  All of GitLab's JavaScript files are added with the `defer` attribute.
+  All GitLab JavaScript files are added with the `defer` attribute.
   According to the [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-defer),
   this implies that "the script is meant to be executed after the document has
   been parsed, but before firing `DOMContentLoaded`". Since the document is already
@@ -150,21 +150,21 @@ browser's developer console while on any page within GitLab.
 
 - **Supporting Module Placement:**
   - If a class or a module is _specific to a particular route_, try to locate
-    it close to the entry point it will be used. For instance, if
-    `my_widget.js` is only imported within `pages/widget/show/index.js`, you
+    it close to the entry point in which it is used. For instance, if
+    `my_widget.js` is only imported in `pages/widget/show/index.js`, you
     should place the module at `pages/widget/show/my_widget.js` and import it
-    with a relative path (e.g. `import initMyWidget from './my_widget';`).
-  - If a class or module is _used by multiple routes_, place it within a
+    with a relative path (for example, `import initMyWidget from './my_widget';`).
+  - If a class or module is _used by multiple routes_, place it in a
     shared directory at the closest common parent directory for the entry
-    points that import it. For example, if `my_widget.js` is imported within
+    points that import it. For example, if `my_widget.js` is imported in
     both `pages/widget/show/index.js` and `pages/widget/run/index.js`, then
     place the module at `pages/widget/shared/my_widget.js` and import it with
-    a relative path if possible (e.g. `../shared/my_widget`).
+    a relative path if possible (for example, `../shared/my_widget`).
 
 - **Enterprise Edition Caveats:**
-  For GitLab Enterprise Edition, page-specific entry points will override their
+  For GitLab Enterprise Edition, page-specific entry points override their
   Community Edition counterparts with the same name, so if
-  `ee/app/assets/javascripts/pages/foo/bar/index.js` exists, it will take
+  `ee/app/assets/javascripts/pages/foo/bar/index.js` exists, it takes
   precedence over `app/assets/javascripts/pages/foo/bar/index.js`. If you want
   to minimize duplicate code, you can import one entry point from the other.
   This is not done automatically to allow for flexibility in overriding
@@ -172,10 +172,10 @@ browser's developer console while on any page within GitLab.
 
 ### Code Splitting
 
-For any code that does not need to be run immediately upon page load, (e.g.
+For any code that does not need to be run immediately upon page load, (for example,
 modals, dropdowns, and other behaviors that can be lazy-loaded), you can split
 your module into asynchronous chunks with dynamic import statements. These
-imports return a Promise which will be resolved once the script has loaded:
+imports return a Promise which is resolved after the script has loaded:
 
 ```javascript
 import(/* webpackChunkName: 'emoji' */ '~/emoji')
@@ -184,7 +184,7 @@ import(/* webpackChunkName: 'emoji' */ '~/emoji')
 ```
 
 Please try to use `webpackChunkName` when generating these dynamic imports as
-it will provide a deterministic filename for the chunk which can then be cached
+it provides a deterministic filename for the chunk which can then be cached
 the browser across GitLab versions.
 
 More information is available in [webpack's code splitting documentation](https://webpack.js.org/guides/code-splitting/#dynamic-imports).

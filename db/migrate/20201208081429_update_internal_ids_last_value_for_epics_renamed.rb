@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class UpdateInternalIdsLastValueForEpics < ActiveRecord::Migration[6.0]
+class UpdateInternalIdsLastValueForEpicsRenamed < ActiveRecord::Migration[6.0]
   DOWNTIME = false
 
   def up

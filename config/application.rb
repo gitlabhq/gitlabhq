@@ -198,6 +198,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/pipeline_schedules.css"
     config.assets.precompile << "page_bundles/productivity_analytics.css"
     config.assets.precompile << "page_bundles/profile_two_factor_auth.css"
+    config.assets.precompile << "page_bundles/security_dashboard.css"
     config.assets.precompile << "page_bundles/terminal.css"
     config.assets.precompile << "page_bundles/todos.css"
     config.assets.precompile << "page_bundles/reports.css"

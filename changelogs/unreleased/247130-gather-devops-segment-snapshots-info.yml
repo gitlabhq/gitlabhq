@@ -1,0 +1,5 @@
+---
+title: Add approvals created_at index
+merge_request: 48684
+author:
+type: performance

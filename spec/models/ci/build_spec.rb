@@ -2406,6 +2406,7 @@ RSpec.describe Ci::Build do
 
     before do
       stub_container_registry_config(enabled: container_registry_enabled, host_port: 'registry.example.com')
+      stub_config(dependency_proxy: { enabled: true })
     end
 
     subject { build.variables }
@@ -2423,6 +2424,8 @@ RSpec.describe Ci::Build do
           { key: 'CI_REGISTRY_USER', value: 'gitlab-ci-token', public: true, masked: false },
           { key: 'CI_REGISTRY_PASSWORD', value: 'my-token', public: false, masked: true },
           { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false, masked: false },
+          { key: 'CI_DEPENDENCY_PROXY_USER', value: 'gitlab-ci-token', public: true, masked: false },
+          { key: 'CI_DEPENDENCY_PROXY_PASSWORD', value: 'my-token', public: false, masked: true },
           { key: 'CI_JOB_JWT', value: 'ci.job.jwt', public: false, masked: true },
           { key: 'CI_JOB_NAME', value: 'test', public: true, masked: false },
           { key: 'CI_JOB_STAGE', value: 'test', public: true, masked: false },
@@ -2455,6 +2458,11 @@ RSpec.describe Ci::Build do
           { key: 'CI_DEFAULT_BRANCH', value: project.default_branch, public: true, masked: false },
           { key: 'CI_PAGES_DOMAIN', value: Gitlab.config.pages.host, public: true, masked: false },
           { key: 'CI_PAGES_URL', value: project.pages_url, public: true, masked: false },
+          { key: 'CI_DEPENDENCY_PROXY_SERVER', value: "#{Gitlab.config.gitlab.host}:#{Gitlab.config.gitlab.port}", public: true, masked: false },
+          { key: 'CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX',
+            value: "#{Gitlab.config.gitlab.host}:#{Gitlab.config.gitlab.port}/#{project.namespace.root_ancestor.path}#{DependencyProxy::URL_SUFFIX}",
+            public: true,
+            masked: false },
           { key: 'CI_API_V4_URL', value: 'http://localhost/api/v4', public: true, masked: false },
           { key: 'CI_PIPELINE_IID', value: pipeline.iid.to_s, public: true, masked: false },
           { key: 'CI_PIPELINE_SOURCE', value: pipeline.source, public: true, masked: false },
@@ -2516,6 +2524,7 @@ RSpec.describe Ci::Build do
           let(:project_pre_var) { { key: 'project', value: 'value', public: true, masked: false } }
           let(:pipeline_pre_var) { { key: 'pipeline', value: 'value', public: true, masked: false } }
           let(:build_yaml_var) { { key: 'yaml', value: 'value', public: true, masked: false } }
+          let(:dependency_proxy_var) { { key: 'dependency_proxy', value: 'value', public: true, masked: false } }
           let(:job_jwt_var) { { key: 'CI_JOB_JWT', value: 'ci.job.jwt', public: false, masked: true } }
           let(:job_dependency_var) { { key: 'job_dependency', value: 'value', public: true, masked: false } }
 
@@ -2525,6 +2534,7 @@ RSpec.describe Ci::Build do
             allow(build).to receive(:persisted_variables) { [] }
             allow(build).to receive(:job_jwt_variables) { [job_jwt_var] }
             allow(build).to receive(:dependency_variables) { [job_dependency_var] }
+            allow(build).to receive(:dependency_proxy_variables) { [dependency_proxy_var] }
 
             allow(build.project)
               .to receive(:predefined_variables) { [project_pre_var] }
@@ -2537,7 +2547,8 @@ RSpec.describe Ci::Build do
 
           it 'returns variables in order depending on resource hierarchy' do
             is_expected.to eq(
-              [job_jwt_var,
+              [dependency_proxy_var,
+               job_jwt_var,
                build_pre_var,
                project_pre_var,
                pipeline_pre_var,

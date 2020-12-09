@@ -24,25 +24,26 @@ RSpec.describe Banzai::Filter::AsciiDocSanitizationFilter do
 
   it 'preserves user-content- prefixed ids on div (blocks)' do
     html_content = <<~HTML
-<div id="user-content-open-block" class="openblock">
-  <div class="content">
-    <div class="paragraph">
-      <p>This is an open block</p>
-    </div>
-  </div>
-</div>
+      <div id="user-content-open-block" class="openblock">
+        <div class="content">
+          <div class="paragraph">
+            <p>This is an open block</p>
+          </div>
+        </div>
+      </div>
     HTML
     output = <<~SANITIZED_HTML
- <div id="user-content-open-block">
-   <div>
-     <div>
-       <p>This is an open block</p>
-     </div>
-   </div>
- </div>
+      <div id="user-content-open-block">
+        <div>
+          <div>
+            <p>This is an open block</p>
+          </div>
+        </div>
+      </div>
     SANITIZED_HTML
     expect(filter(html_content).to_html).to eq(output)
   end
+
   it 'preserves section anchor ids' do
     result = filter(%(<h2 id="user-content-first-section">
 <a class="anchor" href="#user-content-first-section"></a>First section</h2>)).to_html
