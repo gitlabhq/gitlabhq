@@ -11,6 +11,12 @@ module Atlassian
 
         expose :update_sequence_id, as: :updateSequenceId
 
+        def eql(other)
+          other.is_a?(self.class) && to_json == other.to_json
+        end
+
+        alias_method :==, :eql
+
         private
 
         def update_sequence_id

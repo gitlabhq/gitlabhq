@@ -259,7 +259,18 @@ RSpec.describe ApplicationSetting do
         it { is_expected.to allow_value('access-key-id-12').for(:eks_access_key_id) }
         it { is_expected.not_to allow_value('a' * 129).for(:eks_access_key_id) }
         it { is_expected.not_to allow_value('short-key').for(:eks_access_key_id) }
-        it { is_expected.not_to allow_value(nil).for(:eks_access_key_id) }
+        it { is_expected.to allow_value(nil).for(:eks_access_key_id) }
+
+        it { is_expected.to allow_value('secret-access-key').for(:eks_secret_access_key) }
+        it { is_expected.to allow_value(nil).for(:eks_secret_access_key) }
+      end
+
+      context 'access key is specified' do
+        let(:eks_enabled) { true }
+
+        before do
+          setting.eks_access_key_id = '123456789012'
+        end
 
         it { is_expected.to allow_value('secret-access-key').for(:eks_secret_access_key) }
         it { is_expected.not_to allow_value(nil).for(:eks_secret_access_key) }

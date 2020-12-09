@@ -71,8 +71,6 @@ class ProjectsController < Projects::ApplicationController
     @project = ::Projects::CreateService.new(current_user, project_params(attributes: project_params_create_attributes)).execute
 
     if @project.saved?
-      cookies[:issue_board_welcome_hidden] = { path: project_path(@project), value: nil, expires: Time.zone.at(0) }
-
       redirect_to(
         project_path(@project, custom_import_params),
         notice: _("Project '%{project_name}' was successfully created.") % { project_name: @project.name }

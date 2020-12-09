@@ -72,9 +72,7 @@ export default {
       return this.list?.label?.description || this.list.title || '';
     },
     showListHeaderButton() {
-      return (
-        !this.disabled && this.listType !== ListType.closed && this.listType !== ListType.blank
-      );
+      return !this.disabled && this.listType !== ListType.closed;
     },
     showMilestoneListDetails() {
       return (
@@ -105,9 +103,6 @@ export default {
       return (
         this.listType !== ListType.backlog && this.showListHeaderButton && this.list.isExpanded
       );
-    },
-    showBoardListAndBoardInfo() {
-      return this.listType !== ListType.blank;
     },
     uniqueKey() {
       // eslint-disable-next-line @gitlab/require-i18n-strings
@@ -286,7 +281,6 @@ export default {
       </gl-tooltip>
 
       <div
-        v-if="showBoardListAndBoardInfo"
         class="issue-count-badge gl-display-inline-flex gl-pr-0 no-drag text-secondary"
         :class="{
           'gl-display-none!': !list.isExpanded && isSwimlanesHeader,

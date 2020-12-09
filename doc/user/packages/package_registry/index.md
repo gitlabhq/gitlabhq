@@ -33,20 +33,19 @@ CI/CD templates, which you can use to get started, are in [this repo](https://gi
 
 Learn more about using CI/CD to build:
 
-- [Maven packages](../maven_repository/index.md#create-maven-packages-with-gitlab-cicd)
-- [NPM packages](../npm_registry/index.md#publish-an-npm-package-by-using-cicd)
 - [Composer packages](../composer_repository/index.md#publish-a-composer-package-by-using-cicd)
-- [NuGet packages](../nuget_repository/index.md#publish-a-nuget-package-by-using-cicd)
 - [Conan packages](../conan_repository/index.md#publish-a-conan-package-by-using-cicd)
 - [Generic packages](../generic_packages/index.md#publish-a-generic-package-by-using-cicd)
+- [Maven packages](../maven_repository/index.md#create-maven-packages-with-gitlab-cicd)
+- [NPM packages](../npm_registry/index.md#publish-an-npm-package-by-using-cicd)
+- [NuGet packages](../nuget_repository/index.md#publish-a-nuget-package-by-using-cicd)
 
 If you use CI/CD to build a package, extended activity information is displayed
 when you view the package details:
 
 ![Package CI/CD activity](img/package_activity_v12_10.png)
 
-When using Maven and NPM, you can view which pipeline published the package, and
-the commit and user who triggered it.
+You can view which pipeline published the package, and the commit and user who triggered it. However, the history is limited to five updates of a given package.
 
 ## Download a package
 

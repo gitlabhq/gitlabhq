@@ -18,7 +18,7 @@ describe('StatisticsList', () => {
     wrapper = null;
   });
 
-  it('matches the snapshot', () => {
+  it('displays the counts data with labels', () => {
     expect(wrapper.element).toMatchSnapshot();
   });
 });

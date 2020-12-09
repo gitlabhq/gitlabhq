@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe JiraConnect::SyncBranchWorker do
+  include AfterNextHelpers
+
   describe '#perform' do
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, :repository, group: group) }
@@ -67,7 +69,7 @@ RSpec.describe JiraConnect::SyncBranchWorker do
 
     context 'with update_sequence_id' do
       let(:update_sequence_id) { 1 }
-      let(:request_url) { 'https://sample.atlassian.net/rest/devinfo/0.10/bulk' }
+      let(:request_path) { '/rest/devinfo/0.10/bulk' }
       let(:request_body) do
         {
           repositories: [
@@ -78,14 +80,13 @@ RSpec.describe JiraConnect::SyncBranchWorker do
               update_sequence_id: update_sequence_id
             )
           ]
-        }.to_json
+        }
       end
 
       subject { described_class.new.perform(project_id, branch_name, commit_shas, update_sequence_id) }
 
       it 'sends the reqeust with custom update_sequence_id' do
-        expect(Atlassian::JiraConnect::Client).to receive(:post)
-          .with(URI(request_url), headers: anything, body: request_body)
+        expect_next(Atlassian::JiraConnect::Client).to receive(:post).with(request_path, request_body)
 
         subject
       end

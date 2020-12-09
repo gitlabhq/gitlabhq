@@ -3,7 +3,6 @@
 /* global ListIssue */
 import { sortBy, pick } from 'lodash';
 import Vue from 'vue';
-import Cookies from 'js-cookie';
 import BoardsStoreEE from 'ee_else_ce/boards/stores/boards_store_ee';
 import {
   urlParamsToObject,
@@ -125,20 +124,6 @@ const boardsStore = {
       .querySelector(`.js-board-list-${getIdFromGraphQLId(listId)}`)
       ?.classList.remove('is-active');
   },
-  shouldAddBlankState() {
-    // Decide whether to add the blank state
-    return !this.state.lists.filter(list => list.type !== 'backlog' && list.type !== 'closed')[0];
-  },
-  addBlankState() {
-    if (!this.shouldAddBlankState() || this.welcomeIsHidden()) return;
-
-    this.generateDefaultLists()
-      .then(res => res.data)
-      .then(data => Promise.all(data.map(list => this.addList(list))))
-      .catch(() => {
-        this.removeList(undefined, 'label');
-      });
-  },
 
   findIssueLabel(issue, findLabel) {
     return issue.labels.find(label => label.id === findLabel.id);
@@ -202,9 +187,6 @@ const boardsStore = {
     return list.issues.find(issue => issue.id === id);
   },
 
-  welcomeIsHidden() {
-    return parseBoolean(Cookies.get('issue_board_welcome_hidden'));
-  },
   removeList(id, type = 'blank') {
     const list = this.findList('id', id, type);
 
@@ -560,10 +542,6 @@ const boardsStore = {
 
   all() {
     return axios.get(this.state.endpoints.listsEndpoint);
-  },
-
-  generateDefaultLists() {
-    return axios.post(this.state.endpoints.listsEndpointGenerate, {});
   },
 
   createList(entityId, entityType) {

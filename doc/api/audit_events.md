@@ -132,7 +132,8 @@ Example response:
 
 The Group Audit Events API allows you to retrieve [group audit events](../administration/audit_events.md#group-events).
 
-To retrieve group audit events using the API, you must [authenticate yourself](README.md#authentication) as an Administrator or an owner of the group.
+A user with a Owner role (or above) can retrieve group audit events of all users.
+A user with a Developer or Maintainer role is limited to group audit events based on their individual actions.
 
 ### Retrieve all group audit events
 
@@ -238,7 +239,8 @@ Example response:
 
 The Project Audit Events API allows you to retrieve [project audit events](../administration/audit_events.md#project-events).
 
-To retrieve project audit events using the API, you must [authenticate yourself](README.md#authentication) as a Maintainer or an Owner of the project.
+A user with a Maintainer role (or above) can retrieve project audit events of all users.
+A user with a Developer role is limited to project audit events based on their individual actions.
 
 ### Retrieve all project audit events
 

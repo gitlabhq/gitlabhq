@@ -123,7 +123,7 @@ describe('fetchLists', () => {
           payload: formattedLists,
         },
       ],
-      [{ type: 'generateDefaultLists' }],
+      [],
       done,
     );
   });
@@ -153,34 +153,9 @@ describe('fetchLists', () => {
           payload: formattedLists,
         },
       ],
-      [{ type: 'createList', payload: { backlog: true } }, { type: 'generateDefaultLists' }],
+      [{ type: 'createList', payload: { backlog: true } }],
       done,
     );
-  });
-});
-
-describe('generateDefaultLists', () => {
-  let store;
-  beforeEach(() => {
-    const state = {
-      endpoints: { fullPath: 'gitlab-org', boardId: '1' },
-      boardType: 'group',
-      disabled: false,
-      boardLists: [{ type: 'backlog' }, { type: 'closed' }],
-    };
-
-    store = {
-      commit: jest.fn(),
-      dispatch: jest.fn(() => Promise.resolve()),
-      state,
-    };
-  });
-
-  it('should dispatch fetchLabels', () => {
-    return actions.generateDefaultLists(store).then(() => {
-      expect(store.dispatch.mock.calls[0]).toEqual(['fetchLabels', 'to do']);
-      expect(store.dispatch.mock.calls[1]).toEqual(['fetchLabels', 'doing']);
-    });
   });
 });
 

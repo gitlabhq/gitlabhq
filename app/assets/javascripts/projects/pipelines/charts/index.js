@@ -1,8 +1,20 @@
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createDefaultClient from '~/lib/graphql';
+import ProjectPipelinesChartsLegacy from './components/app_legacy.vue';
 import ProjectPipelinesCharts from './components/app.vue';
 
-export default () => {
-  const el = document.querySelector('#js-project-pipelines-charts-app');
+Vue.use(VueApollo);
+
+const apolloProvider = new VueApollo({
+  defaultClient: createDefaultClient(),
+});
+
+const mountPipelineChartsApp = el => {
+  // Not all of the values will be defined since some them will be
+  // empty depending on the value of the graphql_pipeline_analytics
+  // feature flag, once the rollout of the feature flag is completed
+  // the undefined values will be deleted
   const {
     countsFailed,
     countsSuccess,
@@ -20,22 +32,48 @@ export default () => {
     lastYearChartLabels,
     lastYearChartTotals,
     lastYearChartSuccess,
+    projectPath,
   } = el.dataset;
 
-  const parseAreaChartData = (labels, totals, success) => ({
-    labels: JSON.parse(labels),
-    totals: JSON.parse(totals),
-    success: JSON.parse(success),
-  });
+  const parseAreaChartData = (labels, totals, success) => {
+    let parsedData = {};
+
+    try {
+      parsedData = {
+        labels: JSON.parse(labels),
+        totals: JSON.parse(totals),
+        success: JSON.parse(success),
+      };
+    } catch {
+      parsedData = {};
+    }
+
+    return parsedData;
+  };
+
+  if (gon?.features?.graphqlPipelineAnalytics) {
+    return new Vue({
+      el,
+      name: 'ProjectPipelinesChartsApp',
+      components: {
+        ProjectPipelinesCharts,
+      },
+      apolloProvider,
+      provide: {
+        projectPath,
+      },
+      render: createElement => createElement(ProjectPipelinesCharts, {}),
+    });
+  }
 
   return new Vue({
     el,
-    name: 'ProjectPipelinesChartsApp',
+    name: 'ProjectPipelinesChartsAppLegacy',
     components: {
-      ProjectPipelinesCharts,
+      ProjectPipelinesChartsLegacy,
     },
     render: createElement =>
-      createElement(ProjectPipelinesCharts, {
+      createElement(ProjectPipelinesChartsLegacy, {
         props: {
           counts: {
             failed: countsFailed,
@@ -66,4 +104,9 @@ export default () => {
         },
       }),
   });
+};
+
+export default () => {
+  const el = document.querySelector('#js-project-pipelines-charts-app');
+  return !el ? {} : mountPipelineChartsApp(el);
 };

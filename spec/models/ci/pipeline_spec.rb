@@ -1206,6 +1206,40 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       end
     end
 
+    describe 'synching status to Jira' do
+      let(:worker) { ::JiraConnect::SyncBuildsWorker }
+
+      %i[prepare! run! skip! drop! succeed! cancel! block! delay!].each do |event|
+        context "when we call pipeline.#{event}" do
+          it 'triggers a Jira synch worker' do
+            expect(worker).to receive(:perform_async).with(pipeline.id, Integer)
+
+            pipeline.send(event)
+          end
+
+          context 'the feature is disabled' do
+            it 'does not trigger a worker' do
+              stub_feature_flags(jira_sync_builds: false)
+
+              expect(worker).not_to receive(:perform_async)
+
+              pipeline.send(event)
+            end
+          end
+
+          context 'the feature is enabled for this project' do
+            it 'does trigger a worker' do
+              stub_feature_flags(jira_sync_builds: pipeline.project)
+
+              expect(worker).to receive(:perform_async)
+
+              pipeline.send(event)
+            end
+          end
+        end
+      end
+    end
+
     describe '#duration', :sidekiq_inline do
       context 'when multiple builds are finished' do
         before do

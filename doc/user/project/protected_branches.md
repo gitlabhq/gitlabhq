@@ -74,6 +74,33 @@ dropdown list in the "Already protected" area.
 If you don't choose any of those options while creating a protected branch,
 they are set to "Maintainers" by default.
 
+### Allow Deploy Keys to push to a protected branch
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30769) in GitLab 13.7.
+> - This feature is being selectively deployed in GitLab.com 13.7, and may not be available for all users.
+
+You can allow specific machines to access protected branches in your repository with
+[Deploy Keys](deploy_keys/index.md). This can be useful for your CI/CD workflow,
+for example.
+
+Deploy keys can be selected in the **Allowed to push** dropdown when:
+
+- Defining a protected branch.
+- Updating an existing branch.
+
+Select a deploy key to allow the owner of the key to push to the chosen protected branch,
+even if they aren't a member of the related project. The owner of the selected deploy
+key must have at least read access to the given project.
+
+For a deploy key to be selectable:
+
+- It must be [enabled for your project](deploy_keys/index.md#how-to-enable-deploy-keys).
+- It must have [write access](deploy_keys/index.md#deploy-keys-permissions) to your project repository.
+
+Deploy Keys are not available in the **Allowed to merge** dropdown.
+
+![Deploy Keys on protected branches](img/protected_branches_deploy_keys_v13_5.png)
+
 ## Restricting push and merge access to certain users **(STARTER)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5081) in [GitLab Starter](https://about.gitlab.com/pricing/) 8.11.
@@ -196,6 +223,10 @@ See [Security on protected branches](../../ci/pipelines/index.md#pipeline-securi
 for details about the pipelines security model.
 
 ## Changelog
+
+**13.5**
+
+- [Allow Deploy keys to push to protected branches once more](https://gitlab.com/gitlab-org/gitlab/-/issues/30769).
 
 **11.9**
 

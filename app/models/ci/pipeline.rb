@@ -259,6 +259,16 @@ module Ci
         end
       end
 
+      after_transition any => any do |pipeline|
+        next unless Feature.enabled?(:jira_sync_builds, pipeline.project)
+
+        pipeline.run_after_commit do
+          # Passing the seq-id ensures this is idempotent
+          seq_id = ::Atlassian::JiraConnect::Client.generate_update_sequence_id
+          ::JiraConnect::SyncBuildsWorker.perform_async(pipeline.id, seq_id)
+        end
+      end
+
       after_transition any => [:success, :failed] do |pipeline|
         ref_status = pipeline.ci_ref&.update_status_by!(pipeline)
 

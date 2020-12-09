@@ -3,7 +3,7 @@ import { pick } from 'lodash';
 import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { BoardType, ListType, inactiveId, DEFAULT_LABELS } from '~/boards/constants';
+import { BoardType, ListType, inactiveId } from '~/boards/constants';
 import * as types from './mutation_types';
 import {
   formatBoardLists,
@@ -89,7 +89,6 @@ export default {
         if (!lists.nodes.find(l => l.listType === ListType.backlog) && !hideBacklogList) {
           dispatch('createList', { backlog: true });
         }
-        dispatch('generateDefaultLists');
       })
       .catch(() => commit(types.RECEIVE_BOARD_LISTS_FAILURE));
   },
@@ -148,31 +147,6 @@ export default {
         return labels.nodes;
       })
       .catch(() => commit(types.RECEIVE_LABELS_FAILURE));
-  },
-
-  generateDefaultLists: async ({ state, commit, dispatch }) => {
-    if (state.disabled) {
-      return;
-    }
-    if (
-      Object.entries(state.boardLists).find(
-        ([, list]) => list.type !== ListType.backlog && list.type !== ListType.closed,
-      )
-    ) {
-      return;
-    }
-
-    const fetchLabelsAndCreateList = label => {
-      return dispatch('fetchLabels', label)
-        .then(res => {
-          if (res.length > 0) {
-            dispatch('createList', { labelId: res[0].id });
-          }
-        })
-        .catch(() => commit(types.GENERATE_DEFAULT_LISTS_FAILURE));
-    };
-
-    await Promise.all(DEFAULT_LABELS.map(fetchLabelsAndCreateList));
   },
 
   moveList: (

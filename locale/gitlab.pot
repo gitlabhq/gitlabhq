@@ -20104,6 +20104,15 @@ msgstr ""
 msgid "Pipeline: %{status}"
 msgstr ""
 
+msgid "PipelineCharts|An error has ocurred when retrieving the analytics data"
+msgstr ""
+
+msgid "PipelineCharts|An error has ocurred when retrieving the pipelines data"
+msgstr ""
+
+msgid "PipelineCharts|An unknown error occurred while processing CI/CD analytics."
+msgstr ""
+
 msgid "PipelineCharts|CI / CD Analytics"
 msgstr ""
 
@@ -20117,6 +20126,9 @@ msgid "PipelineCharts|Success ratio:"
 msgstr ""
 
 msgid "PipelineCharts|Successful:"
+msgstr ""
+
+msgid "PipelineCharts|There was an error parsing the data for the charts."
 msgstr ""
 
 msgid "PipelineCharts|Total duration:"

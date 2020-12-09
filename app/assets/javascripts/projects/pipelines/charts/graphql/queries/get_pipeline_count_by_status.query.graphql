@@ -1,0 +1,14 @@
+query getPipelineCountByStatus($projectPath: ID!) {
+  project(fullPath: $projectPath) {
+    totalPipelines: pipelines {
+      count
+    }
+    successfulPipelines: pipelines(status: SUCCESS) {
+      count
+    }
+    failedPipelines: pipelines(status: FAILED) {
+      count
+    }
+    totalPipelineDuration
+  }
+}

@@ -367,11 +367,11 @@ class ApplicationSetting < ApplicationRecord
 
   validates :eks_access_key_id,
             length: { in: 16..128 },
-            if: :eks_integration_enabled?
+            if: -> (setting) { setting.eks_integration_enabled? && setting.eks_access_key_id.present? }
 
   validates :eks_secret_access_key,
             presence: true,
-            if: :eks_integration_enabled?
+            if: -> (setting) { setting.eks_integration_enabled? && setting.eks_access_key_id.present? }
 
   validates_with X509CertificateCredentialsValidator,
                  certificate: :external_auth_client_cert,

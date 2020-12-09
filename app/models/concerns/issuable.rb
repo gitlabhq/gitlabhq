@@ -304,14 +304,12 @@ module Issuable
     end
 
     def order_labels_priority(direction = 'ASC', excluded_labels: [], extra_select_columns: [], with_cte: false)
-      params = {
+      highest_priority = highest_label_priority(
         target_type: name,
         target_column: "#{table_name}.id",
         project_column: "#{table_name}.#{project_foreign_key}",
         excluded_labels: excluded_labels
-      }
-
-      highest_priority = highest_label_priority(params).to_sql
+      ).to_sql
 
       # When using CTE make sure to select the same columns that are on the group_by clause.
       # This prevents errors when ignored columns are present in the database.

@@ -135,11 +135,12 @@ module Git
       # We only need the last commit for the event push, and we don't
       # need the full deltas either.
       @event_push_data ||= Gitlab::DataBuilder::Push.build(
-        push_data_params(commits: commits.last, with_changed_files: false))
+        **push_data_params(commits: commits.last, with_changed_files: false)
+      )
     end
 
     def push_data
-      @push_data ||= Gitlab::DataBuilder::Push.build(push_data_params(commits: limited_commits))
+      @push_data ||= Gitlab::DataBuilder::Push.build(**push_data_params(commits: limited_commits))
 
       # Dependent code may modify the push data, so return a duplicate each time
       @push_data.dup

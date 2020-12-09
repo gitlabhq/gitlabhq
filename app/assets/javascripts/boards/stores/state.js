@@ -4,7 +4,6 @@ export default () => ({
   endpoints: {},
   boardType: null,
   disabled: false,
-  showPromotion: false,
   isShowingLabels: true,
   activeId: inactiveId,
   sidebarType: '',

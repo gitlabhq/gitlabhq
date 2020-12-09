@@ -24,6 +24,14 @@ FactoryBot.define do
     trait :with_diffs do
     end
 
+    trait :jira_title do
+      title { generate(:jira_title) }
+    end
+
+    trait :jira_branch do
+      source_branch { generate(:jira_branch) }
+    end
+
     trait :with_image_diffs do
       source_branch { "add_images_and_changes" }
       target_branch { "master" }

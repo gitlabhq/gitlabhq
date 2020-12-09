@@ -181,7 +181,6 @@ export default () => {
           .then(res => res.data)
           .then(lists => {
             lists.forEach(list => boardsStore.addList(list));
-            boardsStore.addBlankState();
             this.loading = false;
           })
           .catch(() => {

@@ -1,5 +1,10 @@
 <script>
+import UsersTable from './users_table.vue';
+
 export default {
+  components: {
+    UsersTable,
+  },
   props: {
     users: {
       type: Array,
@@ -16,6 +21,6 @@ export default {
 
 <template>
   <div>
-    <!-- Temporary empty app -->
+    <users-table :users="users" :paths="paths" />
   </div>
 </template>

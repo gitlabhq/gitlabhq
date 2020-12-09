@@ -3,30 +3,23 @@
 require 'spec_helper'
 
 RSpec.describe JiraConnect::SyncService do
+  include AfterNextHelpers
+
   describe '#execute' do
     let_it_be(:project) { create(:project, :repository) }
-    let(:branches) { [project.repository.find_branch('master')] }
-    let(:commits) { project.commits_by(oids: %w[b83d6e3 5a62481]) }
-    let(:merge_requests) { [create(:merge_request, source_project: project, target_project: project)] }
+    let(:client) { Atlassian::JiraConnect::Client }
+    let(:info) { { a: 'Some', b: 'Info' } }
 
     subject do
-      described_class.new(project).execute(commits: commits, branches: branches, merge_requests: merge_requests)
+      described_class.new(project).execute(**info)
     end
 
     before do
       create(:jira_connect_subscription, namespace: project.namespace)
     end
 
-    def expect_jira_client_call(return_value = { 'status': 'success' })
-      expect_next_instance_of(Atlassian::JiraConnect::Client) do |instance|
-        expect(instance).to receive(:store_dev_info).with(
-          project: project,
-          commits: commits,
-          branches: [instance_of(Gitlab::Git::Branch)],
-          merge_requests: merge_requests,
-          update_sequence_id: anything
-        ).and_return(return_value)
-      end
+    def store_info(return_values = [{ 'status': 'success' }])
+      receive(:send_info).with(project: project, **info).and_return(return_values)
     end
 
     def expect_log(type, message)
@@ -41,20 +34,22 @@ RSpec.describe JiraConnect::SyncService do
     end
 
     it 'calls Atlassian::JiraConnect::Client#store_dev_info and logs the response' do
-      expect_jira_client_call
+      expect_next(client).to store_info
 
       expect_log(:info, { 'status': 'success' })
 
       subject
     end
 
-    context 'when request returns an error' do
+    context 'when a request returns an error' do
       it 'logs the response as an error' do
-        expect_jira_client_call({
-          'errorMessages' => ['some error message']
-        })
+        expect_next(client).to store_info([
+          { 'errorMessages' => ['some error message'] },
+          { 'rejectedBuilds' => ['x'] }
+        ])
 
         expect_log(:error, { 'errorMessages' => ['some error message'] })
+        expect_log(:error, { 'rejectedBuilds' => ['x'] })
 
         subject
       end

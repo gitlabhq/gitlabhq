@@ -30,7 +30,11 @@ module AfterNextHelpers
       msg = asserted ? :to : :not_to
       case level
       when :expect
-        expect_next_instance_of(klass, *args) { |instance| expect(instance).send(msg, condition) }
+        if asserted
+          expect_next_instance_of(klass, *args) { |instance| expect(instance).send(msg, condition) }
+        else
+          allow_next_instance_of(klass, *args) { |instance| expect(instance).send(msg, condition) }
+        end
       when :allow
         allow_next_instance_of(klass, *args) { |instance| allow(instance).send(msg, condition) }
       else

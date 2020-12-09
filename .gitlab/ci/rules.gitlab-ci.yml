@@ -602,8 +602,6 @@
 
 .rails:rules:detect-tests:
   rules:
-    - <<: *if-not-ee
-      when: never
     - <<: *if-default-refs
       changes: *code-backstage-patterns
     - <<: *if-merge-request-title-run-all-rspec

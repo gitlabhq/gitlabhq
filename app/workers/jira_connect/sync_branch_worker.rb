@@ -7,6 +7,7 @@ module JiraConnect
     queue_namespace :jira_connect
     feature_category :integrations
     loggable_arguments 1, 2
+    worker_has_external_dependencies!
 
     def perform(project_id, branch_name, commit_shas, update_sequence_id = nil)
       project = Project.find_by_id(project_id)

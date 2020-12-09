@@ -5,7 +5,7 @@ export const users = [
     createdAt: '2020-11-13T12:26:54.177Z',
     email: 'nikki@example.com',
     username: 'nikki',
-    lastActivityOn: null,
+    lastActivityOn: '2020-12-09',
     avatarUrl:
       'https://secure.gravatar.com/avatar/054f062d8b1a42b123f17e13a173cda8?s=80\\u0026d=identicon',
     badges: [],

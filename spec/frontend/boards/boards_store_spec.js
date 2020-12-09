@@ -66,23 +66,6 @@ describe('boardsStore', () => {
     });
   });
 
-  describe('generateDefaultLists', () => {
-    const listsEndpointGenerate = `${endpoints.listsEndpoint}/generate.json`;
-
-    it('makes a request to generate default lists', () => {
-      axiosMock.onPost(listsEndpointGenerate).replyOnce(200, dummyResponse);
-      const expectedResponse = expect.objectContaining({ data: dummyResponse });
-
-      return expect(boardsStore.generateDefaultLists()).resolves.toEqual(expectedResponse);
-    });
-
-    it('fails for error response', () => {
-      axiosMock.onPost(listsEndpointGenerate).replyOnce(500);
-
-      return expect(boardsStore.generateDefaultLists()).rejects.toThrow();
-    });
-  });
-
   describe('createList', () => {
     const entityType = 'moorhen';
     const entityId = 'quack';
@@ -725,24 +708,6 @@ describe('boardsStore', () => {
             }),
           );
         });
-      });
-
-      it('check for blank state adding', () => {
-        expect(boardsStore.shouldAddBlankState()).toBe(true);
-      });
-
-      it('check for blank state not adding', () => {
-        boardsStore.addList(listObj);
-
-        expect(boardsStore.shouldAddBlankState()).toBe(false);
-      });
-
-      it('check for blank state adding when closed list exist', () => {
-        boardsStore.addList({
-          list_type: 'closed',
-        });
-
-        expect(boardsStore.shouldAddBlankState()).toBe(true);
       });
 
       it('removes list from state', () => {

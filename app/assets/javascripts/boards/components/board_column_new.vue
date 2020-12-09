@@ -2,7 +2,6 @@
 import { mapGetters, mapActions, mapState } from 'vuex';
 import BoardListHeader from 'ee_else_ce/boards/components/board_list_header_new.vue';
 import BoardList from './board_list_new.vue';
-import { ListType } from '../constants';
 
 export default {
   components: {
@@ -36,16 +35,11 @@ export default {
     listIssues() {
       return this.getIssuesByList(this.list.id);
     },
-    shouldFetchIssues() {
-      return this.list.type !== ListType.blank;
-    },
   },
   watch: {
     filterParams: {
       handler() {
-        if (this.shouldFetchIssues) {
-          this.fetchIssuesForList({ listId: this.list.id });
-        }
+        this.fetchIssuesForList({ listId: this.list.id });
       },
       deep: true,
       immediate: true,
