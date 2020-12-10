@@ -5,13 +5,14 @@ import {
   findByTestId,
   getByText,
   screen,
+  findByText,
 } from '@testing-library/dom';
 
 const isFolderRowOpen = row => row.matches('.folder.is-open');
 
 const getLeftSidebar = () => screen.getByTestId('left-sidebar');
 
-const clickOnLeftSidebarTab = name => {
+export const switchLeftSidebarTab = name => {
   const sidebar = getLeftSidebar();
 
   const button = getByLabelText(sidebar, name);
@@ -25,7 +26,10 @@ export const waitForMonacoEditor = () =>
   new Promise(resolve => window.monaco.editor.onDidCreateEditor(resolve));
 
 export const findMonacoEditor = () =>
-  screen.findByLabelText(/Editor content;/).then(x => x.closest('.monaco-editor'));
+  screen.findAllByLabelText(/Editor content;/).then(([x]) => x.closest('.monaco-editor'));
+
+export const findMonacoDiffEditor = () =>
+  screen.findAllByLabelText(/Editor content;/).then(([x]) => x.closest('.monaco-diff-editor'));
 
 export const findAndSetEditorValue = async value => {
   const editor = await findMonacoEditor();
@@ -114,6 +118,9 @@ export const openFile = async path => {
   openFileRow(row);
 };
 
+export const waitForTabToOpen = fileName =>
+  findByText(document.querySelector('.multi-file-edit-pane'), fileName);
+
 export const createFile = async (path, content) => {
   const parentPath = path
     .split('/')
@@ -157,7 +164,7 @@ export const closeFile = async path => {
 };
 
 export const commit = async () => {
-  clickOnLeftSidebarTab('Commit');
+  switchLeftSidebarTab('Commit');
   screen.getByTestId('begin-commit-button').click();
 
   await screen.findByLabelText(/Commit to .+ branch/).then(x => x.click());

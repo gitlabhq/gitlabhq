@@ -1,5 +1,5 @@
 import { useOverclockTimers } from 'test_helpers/utils/overclock_timers';
-import { findByText, screen } from '@testing-library/dom';
+import { screen } from '@testing-library/dom';
 import * as ideHelper from './helpers/ide_helper';
 import startWebIDE from './helpers/start';
 
@@ -79,8 +79,7 @@ describe('IDE: User opens IDE', () => {
     beforeEach(async () => {
       vm = startWebIDE(container, { path: 'README.md' });
 
-      // a new tab is open for README.md
-      await findByText(document.querySelector('.multi-file-edit-pane'), 'README.md');
+      await ideHelper.waitForTabToOpen('README.md');
     });
 
     it('opens the file and its contents are shown in Monaco', async () => {
@@ -92,8 +91,7 @@ describe('IDE: User opens IDE', () => {
     beforeEach(async () => {
       vm = startWebIDE(container, { path: 'Gemfile.zip' });
 
-      // a new tab is open for Gemfile.zip
-      await findByText(document.querySelector('.multi-file-edit-pane'), 'Gemfile.zip');
+      await ideHelper.waitForTabToOpen('Gemfile.zip');
     });
 
     it('shows download viewer', async () => {
@@ -108,8 +106,7 @@ describe('IDE: User opens IDE', () => {
     beforeEach(async () => {
       vm = startWebIDE(container, { path: 'files/images/logo-white.png' });
 
-      // a new tab is open for logo-white.png
-      await findByText(document.querySelector('.multi-file-edit-pane'), 'logo-white.png');
+      await ideHelper.waitForTabToOpen('logo-white.png');
     });
 
     it('shows image viewer', async () => {
@@ -147,8 +144,7 @@ describe('IDE: User opens IDE', () => {
     beforeEach(async () => {
       vm = startWebIDE(container, { path: 'abracadabra/hocus-focus.txt' });
 
-      // a new tab is open for hocus-focus.txt
-      await findByText(document.querySelector('.multi-file-edit-pane'), 'hocus-focus.txt');
+      await ideHelper.waitForTabToOpen('hocus-focus.txt');
     });
 
     it('create new folders and file in the left sidebar', () => {
