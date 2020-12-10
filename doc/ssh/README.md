@@ -234,8 +234,9 @@ key starting with `ssh-ed25519` (or `ssh-rsa`) and ending with your email addres
 
 ## Testing that everything is set up correctly
 
-To test whether your SSH key was added correctly, run the following command in
-your terminal (replacing `gitlab.com` with your GitLab's instance domain):
+To test whether your SSH key was added correctly, run the following
+command in your terminal (replace `gitlab.com` with the domain of
+your GitLab instance):
 
 ```shell
 ssh -T git@gitlab.com
@@ -260,8 +261,8 @@ section to make sure you're connecting to the correct server. For example, you c
 the ECDSA key fingerprint shown above in the linked section.
 
 Once added to the list of known hosts, you should validate the
-authenticity of GitLab's host again. Run the above command once more, and
-you should only receive a _Welcome to GitLab, `@username`!_ message.
+authenticity of the GitLab host, once again. Run the above command
+again, and you should receive a _Welcome to GitLab, `@username`!_ message.
 
 If the welcome message doesn't appear, you can troubleshoot the problem by running `ssh`
 in verbose mode with the following command:

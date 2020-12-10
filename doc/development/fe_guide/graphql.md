@@ -143,7 +143,7 @@ More about fragments:
 
 ## Global IDs
 
-GitLab's GraphQL API expresses `id` fields as Global IDs rather than the PostgreSQL
+The GitLab GraphQL API expresses `id` fields as Global IDs rather than the PostgreSQL
 primary key `id`. Global ID is [a convention](https://graphql.org/learn/global-object-identification/)
 used for caching and fetching in client-side libraries.
 
@@ -411,7 +411,7 @@ handleClick() {
 
 ### Working with pagination
 
-GitLab's GraphQL API uses [Relay-style cursor pagination](https://www.apollographql.com/docs/react/pagination/overview/#cursor-based)
+The GitLab GraphQL API uses [Relay-style cursor pagination](https://www.apollographql.com/docs/react/pagination/overview/#cursor-based)
 for connection types. This means a "cursor" is used to keep track of where in the data
 set the next items should be fetched from. [GraphQL Ruby Connection Concepts](https://graphql-ruby.org/pagination/connection_concepts.html)
 is a good overview and introduction to connections.
@@ -1200,7 +1200,7 @@ describe('My Index test with `createMockApollo`', () => {
 
 ## Handling errors
 
-GitLab's GraphQL mutations currently have two distinct error modes: [Top-level](#top-level-errors) and [errors-as-data](#errors-as-data).
+The GitLab GraphQL mutations currently have two distinct error modes: [Top-level](#top-level-errors) and [errors-as-data](#errors-as-data).
 
 When utilising a GraphQL mutation, we must consider handling **both of these error modes** to ensure that the user receives the appropriate feedback when an error occurs.
 

@@ -71,8 +71,8 @@ The following example shows a basic request/response flow between the following 
 
 - Snowplow JS / Ruby Trackers on GitLab.com
 - [GitLab.com Snowplow Collector](https://gitlab.com/gitlab-com/gl-infra/readiness/-/blob/master/library/snowplow/index.md)
-- GitLab's S3 Bucket
-- GitLab's Snowflake Data Warehouse
+- The GitLab S3 Bucket
+- The GitLab Snowflake Data Warehouse
 - Sisense:
 
 ```mermaid
@@ -465,7 +465,7 @@ Snowplow Micro is a Docker-based solution for testing frontend and backend event
    ```ruby
    Gitlab::Tracking.self_describing_event('iglu:com.gitlab/pageview_context/jsonschema/1-0-0', data: { page_type: 'MY_TYPE' }, context: nil)
    ```
-   
+
 1. Navigate to `localhost:9090/micro/good` to see the event.
 
 ### Snowplow Mini

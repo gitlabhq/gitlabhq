@@ -26,7 +26,7 @@
           - if issue.service_desk_reply_to
             #{issue.service_desk_reply_to} via
           #{link_to_member(@project, issue.author, avatar: false)}
-          = render_if_exists 'shared/issuable/gitlab_team_member_badge', {author: issue.author}
+          = render_if_exists 'shared/issuable/gitlab_team_member_badge', author: issue.author
         - if issue.milestone
           %span.issuable-milestone.d-none.d-sm-inline-block
             &nbsp;

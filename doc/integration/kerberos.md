@@ -162,7 +162,7 @@ enabled, your users will be linked to their LDAP accounts on their first sign-in
 For this to work, some prerequisites must be met:
 
 The Kerberos username must match the LDAP user's UID. You can choose which LDAP
-attribute is used as the UID in GitLab's [LDAP configuration](../administration/auth/ldap/index.md#configuration)
+attribute is used as the UID in the GitLab [LDAP configuration](../administration/auth/ldap/index.md#configuration)
 but for Active Directory, this should be `sAMAccountName`.
 
 The Kerberos realm must match the domain part of the LDAP user's Distinguished

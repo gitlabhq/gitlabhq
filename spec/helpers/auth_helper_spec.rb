@@ -99,6 +99,22 @@ RSpec.describe AuthHelper do
     end
   end
 
+  describe 'experiment_enabled_button_based_providers' do
+    it 'returns the intersection set of github & google_oauth2 with enabled providers' do
+      allow(helper).to receive(:enabled_button_based_providers) { %w(twitter github google_oauth2) }
+
+      expect(helper.experiment_enabled_button_based_providers).to eq(%w(github google_oauth2))
+
+      allow(helper).to receive(:enabled_button_based_providers) { %w(google_oauth2 bitbucket) }
+
+      expect(helper.experiment_enabled_button_based_providers).to eq(%w(google_oauth2))
+
+      allow(helper).to receive(:enabled_button_based_providers) { %w(bitbucket) }
+
+      expect(helper.experiment_enabled_button_based_providers).to be_empty
+    end
+  end
+
   describe 'button_based_providers_enabled?' do
     before do
       allow(helper).to receive(:auth_providers) { [:twitter, :github] }

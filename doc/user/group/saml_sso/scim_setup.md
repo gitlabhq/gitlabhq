@@ -13,7 +13,7 @@ System for Cross-domain Identity Management (SCIM), is an open standard that ena
 automation of user provisioning. When SCIM is provisioned for a GitLab group, membership of
 that group is synchronized between GitLab and the identity provider.
 
-GitLab's [SCIM API](../../../api/scim.md) implements part of [the RFC7644 protocol](https://tools.ietf.org/html/rfc7644).
+The GitLab [SCIM API](../../../api/scim.md) implements part of [the RFC7644 protocol](https://tools.ietf.org/html/rfc7644).
 
 ## Features
 
@@ -240,7 +240,7 @@ To see how the `external_uid` compares to the value returned as the SAML NameId,
 
 Whether the value was changed or you need to map to a different field, ensure `id`, `externalId`, and `NameId` all map to the same field.
 
-If GitLab's `externalId` doesn't match the SAML NameId, it will need to be updated in order for the user to log in. Ideally your identity provider will be configured to do such an update, but in some cases it may be unable to do so, such as when looking up a user fails due to an ID change.
+If the GitLab `externalId` doesn't match the SAML NameId, it needs to be updated in order for the user to sign in. Ideally your identity provider is configured to do such an update, but in some cases it may be unable to do so, such as when looking up a user fails due to an ID change.
 
 Be cautious if you revise the fields used by your SCIM identity provider, typically `id` and `externalId`.
 We use these IDs to look up users. If the identity provider does not know the current values for these fields,

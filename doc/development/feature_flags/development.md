@@ -46,11 +46,11 @@ This is the default type used when calling `Feature.enabled?`.
 ### `ops` type
 
 `ops` feature flags are long-lived feature flags that control operational aspects
-of GitLab's behavior. For example, feature flags that disable features that might
+of GitLab product behavior. For example, feature flags that disable features that might
 have a performance impact, like special Sidekiq worker behavior.
 
 `ops` feature flags likely do not have rollout issues, as it is hard to
-predict when they will be enabled or disabled.
+predict when they are enabled or disabled.
 
 To use `ops` feature flags, you must append `type: :ops` to `Feature.enabled?`
 invocations:

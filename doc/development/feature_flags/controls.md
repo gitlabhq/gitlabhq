@@ -34,7 +34,7 @@ _before_ the code is being deployed.
 This allows you to separate rolling out a feature from a deploy, making it
 easier to measure the impact of both separately.
 
-GitLab's feature library (using
+The GitLab feature library (using
 [Flipper](https://github.com/jnunemaker/flipper), and covered in the [Feature
 Flags process](process.md) guide) supports rolling out changes to a percentage of
 time to users. This in turn can be controlled using [GitLab Chatops](../../ci/chatops/README.md).
@@ -238,7 +238,7 @@ The issue is created in the
 project, and it will at minimum log the Slack handle of person enabling
 a feature flag, the time, and the name of the flag being changed.
 
-The issue is then also posted to GitLab's internal
+The issue is then also posted to the GitLab internal
 [Grafana dashboard](https://dashboards.gitlab.net/) as an annotation
 marker to make the change even more visible.
 

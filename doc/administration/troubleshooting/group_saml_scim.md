@@ -9,7 +9,7 @@ type: reference
 
 These are notes and screenshots regarding Group SAML and SCIM that the GitLab Support Team sometimes uses while troubleshooting, but which do not fit into the official documentation. GitLab is making this public, so that anyone can make use of the Support team’s collected knowledge.
 
-Please refer to GitLab's [Group SAML](../../user/group/saml_sso/index.md) docs for information on the feature and how to set it up.
+Please refer to the GitLab [Group SAML](../../user/group/saml_sso/index.md) docs for information on the feature and how to set it up.
 
 When troubleshooting a SAML configuration, GitLab team members will frequently start with the [SAML troubleshooting section](../../user/group/saml_sso/index.md#troubleshooting).
 

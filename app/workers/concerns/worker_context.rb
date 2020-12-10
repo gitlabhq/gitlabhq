@@ -5,7 +5,7 @@ module WorkerContext
 
   class_methods do
     def worker_context(attributes)
-      @worker_context = Gitlab::ApplicationContext.new(attributes)
+      @worker_context = Gitlab::ApplicationContext.new(**attributes)
     end
 
     def get_worker_context
@@ -60,6 +60,6 @@ module WorkerContext
   end
 
   def with_context(context, &block)
-    Gitlab::ApplicationContext.new(context).use { yield(**context) }
+    Gitlab::ApplicationContext.new(**context).use { yield(**context) }
   end
 end

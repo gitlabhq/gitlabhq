@@ -64,33 +64,4 @@ RSpec.describe Ci::GenerateTerraformReportsService do
       end
     end
   end
-
-  describe '#latest?' do
-    let_it_be(:head_pipeline) { create(:ci_pipeline, :with_test_reports, project: project) }
-
-    subject { described_class.new(project) }
-
-    it 'returns true when cache key is latest' do
-      cache_key = subject.send(:key, nil, head_pipeline)
-
-      result = subject.latest?(nil, head_pipeline, key: cache_key)
-
-      expect(result).to eq(true)
-    end
-
-    it 'returns false when cache key is outdated' do
-      cache_key = subject.send(:key, nil, head_pipeline)
-      head_pipeline.update_column(:updated_at, 10.minutes.ago)
-
-      result = subject.latest?(nil, head_pipeline, key: cache_key)
-
-      expect(result).to eq(false)
-    end
-
-    it 'returns false when cache key is nil' do
-      result = subject.latest?(nil, head_pipeline, key: nil)
-
-      expect(result).to eq(false)
-    end
-  end
 end

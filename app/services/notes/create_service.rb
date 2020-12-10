@@ -67,7 +67,7 @@ module Notes
       track_event(note, current_user)
 
       if Feature.enabled?(:notes_create_service_tracking, project)
-        Gitlab::Tracking.event('Notes::CreateService', 'execute', tracking_data_for(note))
+        Gitlab::Tracking.event('Notes::CreateService', 'execute', **tracking_data_for(note))
       end
 
       if note.for_merge_request? && note.diff_note? && note.start_of_discussion?

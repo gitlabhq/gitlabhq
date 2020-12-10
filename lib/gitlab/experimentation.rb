@@ -81,6 +81,9 @@ module Gitlab
       },
       trimmed_skip_trial_copy: {
         tracking_category: 'Growth::Conversion::Experiment::TrimmedSkipTrialCopy'
+      },
+      trial_registration_with_social_signin: {
+        tracking_category: 'Growth::Conversion::Experiment::TrialRegistrationWithSocialSigning'
       }
     }.freeze
 

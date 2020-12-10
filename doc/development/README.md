@@ -16,13 +16,13 @@ Content specific to the GitLab Team should instead be included in the [Handbook]
 
 For information on using GitLab to work on your own software projects, see the [GitLab user documentation](../user/index.md).
 
-For information on working with GitLab's API, see the [API documentation](../api/README.md).
+For information on working with the GitLab APIs, see the [API documentation](../api/README.md).
 
 For information on how to install, configure, update, and upgrade your own GitLab instance, see the [administration documentation](../administration/index.md).
 
 ## Get started
 
-- Set up GitLab's development environment with [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/README.md)
+- Set up the GitLab development environment with [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/README.md)
 - [GitLab contributing guide](contributing/index.md)
   - [Issues workflow](contributing/issue_workflow.md) for more information on:
     - Issue tracker guidelines.
@@ -66,7 +66,7 @@ Complementary reads:
 
 ### Development guidelines review
 
-When you submit a change to GitLab's development guidelines, request a review
+When you submit a change to the GitLab development guidelines, request a review
 from:
 
 - A member of your team or group, to check for technical accuracy.

@@ -219,7 +219,7 @@ the contribution acceptance criteria below:
    instructions for help if the "license-finder" test fails with a
    `Dependencies that need approval` error. Also, make the reviewer aware of the new
    library and explain why you need it.
-1. The merge request meets GitLab's [definition of done](#definition-of-done), below.
+1. The merge request meets the GitLab [definition of done](#definition-of-done), below.
 
 ## Definition of done
 

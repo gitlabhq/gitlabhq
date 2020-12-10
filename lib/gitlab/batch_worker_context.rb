@@ -23,7 +23,7 @@ module Gitlab
     def context_by_arguments
       @context_by_arguments ||= objects.each_with_object({}) do |object, result|
         arguments = Array.wrap(arguments_proc.call(object))
-        context = Gitlab::ApplicationContext.new(context_proc.call(object))
+        context = Gitlab::ApplicationContext.new(**context_proc.call(object))
 
         result[arguments] = context
       end

@@ -8,8 +8,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16647) in GitLab 12.7.
 
-Appearance API allows you to maintain GitLab's appearance as if using the GitLab UI at
-`/admin/appearance`. The API requires administrator privileges.
+The appearance API allows you to maintain the appearance of GitLab as if
+you're using the GitLab UI at `/admin/appearance`. The API requires
+administrator privileges.
 
 ## Get current appearance configuration
 

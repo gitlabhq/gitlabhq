@@ -277,7 +277,7 @@ applications and U2F / WebAuthn devices.
 
 When 2FA is enabled, you can no longer use your normal account password to
 authenticate with Git over HTTPS on the command line or when using
-[GitLab's API](../../../api/README.md). You must use a
+the [GitLab API](../../../api/README.md). You must use a
 [personal access token](../personal_access_tokens.md) instead.
 
 ## Recovery options

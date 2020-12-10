@@ -40,13 +40,12 @@ module Issuable
         csv_data = @csv_io.open(&:read).force_encoding(Encoding::UTF_8)
         validate_headers_presence!(csv_data.lines.first)
 
-        csv_parsing_params = {
+        CSV.new(
+          csv_data,
           col_sep: detect_col_sep(csv_data.lines.first),
           headers: true,
           header_converters: :symbol
-        }
-
-        CSV.new(csv_data, csv_parsing_params).each.with_index(2)
+        ).each.with_index(2)
       end
 
       def validate_headers_presence!(headers)

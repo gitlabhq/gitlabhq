@@ -6,15 +6,17 @@ class UploadService
   end
 
   def execute
-    return unless @file && @file.size <= max_attachment_size
+    return unless file && file.size <= max_attachment_size
 
-    uploader = @uploader_class.new(@model, nil, @uploader_context)
-    uploader.store!(@file)
+    uploader = uploader_class.new(model, nil, **uploader_context)
+    uploader.store!(file)
 
     uploader
   end
 
   private
+
+  attr_reader :model, :file, :uploader_class, :uploader_context
 
   def max_attachment_size
     Gitlab::CurrentSettings.max_attachment_size.megabytes.to_i

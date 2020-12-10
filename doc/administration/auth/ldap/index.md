@@ -67,7 +67,7 @@ in the application settings.
 When a user signs in to GitLab with LDAP for the first time, and their LDAP
 email address is the primary email address of an existing GitLab user, then
 the LDAP DN is associated with the existing user. If the LDAP email
-attribute is not found in GitLab's database, a new user is created.
+attribute is not found in the GitLab user database, a new user is created.
 
 In other words, if an existing GitLab user wants to enable LDAP sign-in for
 themselves, they should check that their GitLab email address matches their
