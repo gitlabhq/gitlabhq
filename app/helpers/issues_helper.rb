@@ -32,14 +32,6 @@ module IssuesHelper
     end
   end
 
-  def issue_button_visibility(issue, closed)
-    return 'hidden' if issue_button_hidden?(issue, closed)
-  end
-
-  def issue_button_hidden?(issue, closed)
-    issue.closed? == closed || (!closed && issue.discussion_locked)
-  end
-
   def confidential_icon(issue)
     sprite_icon('eye-slash', css_class: 'gl-vertical-align-text-bottom') if issue.confidential?
   end

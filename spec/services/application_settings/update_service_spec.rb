@@ -350,4 +350,28 @@ RSpec.describe ApplicationSettings::UpdateService do
       expect(application_settings.issues_create_limit).to eq(600)
     end
   end
+
+  context 'when require_admin_approval_after_user_signup changes' do
+    context 'when it goes from enabled to disabled' do
+      let(:params) { { require_admin_approval_after_user_signup: false } }
+
+      it 'calls ApproveBlockedPendingApprovalUsersWorker' do
+        expect(ApproveBlockedPendingApprovalUsersWorker).to receive(:perform_async)
+
+        subject.execute
+      end
+    end
+
+    context 'when it goes from disabled to enabled' do
+      let(:params) { { require_admin_approval_after_user_signup: true } }
+
+      it 'does not call ApproveBlockedPendingApprovalUsersWorker' do
+        application_settings.update!(require_admin_approval_after_user_signup: false)
+
+        expect(ApproveBlockedPendingApprovalUsersWorker).not_to receive(:perform_async)
+
+        subject.execute
+      end
+    end
+  end
 end

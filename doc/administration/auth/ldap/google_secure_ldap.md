@@ -210,6 +210,11 @@ values obtained during the LDAP client configuration earlier:
 
 1. Save the file and [restart](../../restart_gitlab.md#installations-from-source) GitLab for the changes to take effect.
 
+## Using encrypted credentials
+
+You can optionally store the `bind_dn` and `password` in a separate encrypted configuration file using the
+[same steps as the regular LDAP integration](index.md#using-encrypted-credentials).
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

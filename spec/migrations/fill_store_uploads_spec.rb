@@ -9,7 +9,7 @@ RSpec.describe FillStoreUploads do
 
   context 'when store is nil' do
     it 'updates store to local' do
-      uploads.create(size: 100.kilobytes,
+      uploads.create!(size: 100.kilobytes,
                      uploader: 'AvatarUploader',
                      path: path,
                      store: nil)
@@ -22,7 +22,7 @@ RSpec.describe FillStoreUploads do
 
   context 'when store is set to local' do
     it 'does not update store' do
-      uploads.create(size: 100.kilobytes,
+      uploads.create!(size: 100.kilobytes,
                      uploader: 'AvatarUploader',
                      path: path,
                      store: 1)
@@ -35,7 +35,7 @@ RSpec.describe FillStoreUploads do
 
   context 'when store is set to object storage' do
     it 'does not update store' do
-      uploads.create(size: 100.kilobytes,
+      uploads.create!(size: 100.kilobytes,
                      uploader: 'AvatarUploader',
                      path: path,
                      store: 2)

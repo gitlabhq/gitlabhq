@@ -77,10 +77,10 @@ in a pod within the `gitlab-managed-apps` namespace inside the cluster.
   with a local [Tiller](https://v2.helm.sh/docs/glossary/#tiller) server. Prior
   to [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/209736), GitLab
   used an in-cluster Tiller server in the `gitlab-managed-apps` namespace. You
-  can safely uninstall the server from GitLab's application page if you have
+  can safely uninstall the server from the GitLab application page if you have
   previously installed it. This doesn't affect your other applications.
 
-GitLab's Helm integration does not support installing applications behind a proxy,
+The GitLab Helm integration does not support installing applications behind a proxy,
 but a [workaround](../../topics/autodevops/index.md#install-applications-behind-a-proxy)
 is available.
 
@@ -286,7 +286,7 @@ of a WAF are:
 
 By default, GitLab provides you with a WAF known as [`ModSecurity`](https://www.modsecurity.org/),
 which is a toolkit for real-time web application monitoring, logging, and access
-control. GitLab's offering applies the [OWASP's Core Rule Set](https://www.modsecurity.org/CRS/Documentation/),
+control. GitLab applies the [OWASP's Core Rule Set](https://www.modsecurity.org/CRS/Documentation/),
 which provides generic attack detection capabilities.
 
 This feature:
@@ -301,7 +301,7 @@ This feature:
 
 To enable WAF, switch its respective toggle to the enabled position when installing or updating [Ingress application](#ingress).
 
-If this is your first time using GitLab's WAF, we recommend you follow the
+If this is your first time using the GitLab WAF, we recommend you follow the
 [quick start guide](../../topics/web_application_firewall/quick_start_guide.md).
 
 There is a small performance overhead by enabling ModSecurity. If this is

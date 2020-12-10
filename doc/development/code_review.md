@@ -40,7 +40,7 @@ For approvals, we use the approval functionality found in the merge request
 widget. Reviewers can add their approval by [approving additionally](../user/project/merge_requests/merge_request_approvals.md#adding-or-removing-an-approval).
 
 Getting your merge request **merged** also requires a maintainer. If it requires
-more than one approval, the last maintainer to review and approve it will also merge it.
+more than one approval, the last maintainer to review and approve merges it.
 
 ### Domain experts
 
@@ -69,7 +69,7 @@ It picks reviewers and maintainers from the list at the
 [engineering projects](https://about.gitlab.com/handbook/engineering/projects/)
 page, with these behaviors:
 
-1. It will not pick people whose [GitLab status](../user/profile/index.md#current-status)
+1. It doesn't pick people whose [GitLab status](../user/profile/index.md#current-status)
    contains the string 'OOO', or the emoji is `:palm_tree:` or `:beach:`.
 1. [Trainee maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#trainee-maintainer)
    are three times as likely to be picked as other reviewers.
@@ -156,9 +156,9 @@ up confusion or verify that the end result matches what they had in mind, to
 database specialists to get input on the data model or specific queries, or to
 any other developer to get an in-depth review of the solution.
 
-If an author is unsure if a merge request needs a [domain expert's](#domain-experts) opinion, that's
-usually a pretty good sign that it does, since without it the required level of
-confidence in their solution will not have been reached.
+If an author is unsure if a merge request needs a [domain expert's](#domain-experts) opinion,
+that indicates it does. Without it it's unlikely they have the required level of confidence in their
+solution.
 
 Before the review, the author is requested to submit comments on the merge
 request diff alerting the reviewer to anything important as well as for anything
@@ -197,18 +197,18 @@ however, if one isn't available or you think the merge request doesn't need a re
 Maintainers are responsible for the overall health, quality, and consistency of
 the GitLab codebase, across domains and product areas.
 
-Consequently, their reviews will focus primarily on things like overall
+Consequently, their reviews focus primarily on things like overall
 architecture, code organization, separation of concerns, tests, DRYness,
 consistency, and readability.
 
-Since a maintainer's job only depends on their knowledge of the overall GitLab
+Because a maintainer's job only depends on their knowledge of the overall GitLab
 codebase, and not that of any specific domain, they can review, approve, and merge
 merge requests from any team and in any product area.
 
-Maintainers will do their best to also review the specifics of the chosen solution
+Maintainers do their best to also review the specifics of the chosen solution
 before merging, but as they are not necessarily [domain experts](#domain-experts), they may be poorly
 placed to do so without an unreasonable investment of time. In those cases, they
-will defer to the judgment of the author and earlier reviewers, in favor of focusing on their primary responsibilities.
+defer to the judgment of the author and earlier reviewers, in favor of focusing on their primary responsibilities.
 
 If a maintainer feels that an MR is substantial enough that it warrants a review from a [domain expert](#domain-experts),
 and it is unclear whether a domain expert have been involved in the reviews to date,
@@ -259,8 +259,8 @@ Instead these should be sent to the [Release Manager](https://about.gitlab.com/c
   understand" or "Alternative solution:" comments. Post a follow-up comment
   summarizing one-on-one discussion.
 - If you ask a question to a specific person, always start the comment by
-  mentioning them; this will ensure they see it if their notification level is
-  set to "mentioned" and other people will understand they don't have to respond.
+  mentioning them; this ensures they see it if their notification level is
+  set to "mentioned" and other people understand they don't have to respond.
 
 ### Having your merge request reviewed
 
@@ -272,8 +272,10 @@ first time.
   of your shiny new branch, read through the entire diff. Does it make sense?
   Did you include something unrelated to the overall purpose of the changes? Did
   you forget to remove any debugging code?
+<!-- vale gitlab.FutureTense = NO -->
 - Be grateful for the reviewer's suggestions. ("Good call. I'll make that
   change.")
+<!-- vale gitlab.FutureTense = YES -->
 - Don't take it personally. The review is of the code, not of you.
 - Explain why the code exists. ("It's like that because of these reasons. Would
   it be more clear if I rename this class/file/method/variable?")
@@ -361,7 +363,7 @@ your own suggestions to the merge request. Note that:
 - **Before applying suggestions**, edit the merge request to make sure
   [squash and
   merge](../user/project/merge_requests/squash_and_merge.md#squash-and-merge)
-  is enabled, otherwise, the pipeline's Danger job will fail.
+  is enabled, otherwise, the pipeline's Danger job fails.
   - If a merge request does not have squash and merge enabled, and it
     has more than one commit, then see the note below about rewriting
     commit history.
@@ -390,10 +392,10 @@ When ready to merge:
 - When you set the MR to "Merge When Pipeline Succeeds", you should take over
   subsequent revisions for anything that would be spotted after that.
 
-Thanks to **Pipeline for Merged Results**, authors won't have to rebase their
-branch as frequently anymore (only when there are conflicts) since the Merge
-Results Pipeline will already incorporate the latest changes from `master`.
-This results in faster review/merge cycles since maintainers don't have to ask
+Thanks to **Pipeline for Merged Results**, authors no longer have to rebase their
+branch as frequently anymore (only when there are conflicts) because the Merge
+Results Pipeline already incorporate the latest changes from `master`.
+This results in faster review/merge cycles because maintainers don't have to ask
 for a final rebase: instead, they only have to start a MR pipeline and set MWPS.
 This step brings us very close to the actual Merge Trains feature by testing the
 Merge Results against the latest `master` at the time of the pipeline creation.
@@ -451,7 +453,7 @@ Enterprise Edition instance. This has some implications:
    1. Reversible.
    1. Performant at the scale of GitLab.com - ask a maintainer to test the
       migration on the staging environment if you aren't sure.
-   1. Categorised correctly:
+   1. Categorized correctly:
       - Regular migrations run before the new code is running on the instance.
       - [Post-deployment migrations](post_deployment_migrations.md) run _after_
         the new code is deployed, when the instance is configured to do that.
@@ -459,12 +461,12 @@ Enterprise Edition instance. This has some implications:
         should only be done for migrations that would take an extreme amount of
         time at GitLab.com scale.
 1. **Sidekiq workers** [cannot change in a backwards-incompatible way](sidekiq_style_guide.md#sidekiq-compatibility-across-updates):
-   1. Sidekiq queues are not drained before a deploy happens, so there will be
+   1. Sidekiq queues are not drained before a deploy happens, so there are
       workers in the queue from the previous version of GitLab.
    1. If you need to change a method signature, try to do so across two releases,
       and accept both the old and new arguments in the first of those.
    1. Similarly, if you need to remove a worker, stop it from being scheduled in
-      one release, then remove it in the next. This will allow existing jobs to
+      one release, then remove it in the next. This allows existing jobs to
       execute.
    1. Don't forget, not every instance will upgrade to every intermediate version
       (some people may go from X.1.0 to X.10.0, or even try bigger upgrades!), so
@@ -496,15 +498,15 @@ To ensure swift feedback to ready-to-review code, we maintain a `Review-response
 
 > - review-response SLO = (time when first review response is provided) - (time MR is assigned to reviewer) < 2 business days
 
-If you don't think you'll be able to review a merge request within the `Review-response` SLO
+If you don't think you can review a merge request in the `Review-response` SLO
 time frame, let the author know as soon as possible and try to help them find
-another reviewer or maintainer who will be able to, so that they can be unblocked
+another reviewer or maintainer who is able to, so that they can be unblocked
 and get on with their work quickly.
 
 If you think you are at capacity and are unable to accept any more reviews until
 some have been completed, communicate this through your GitLab status by setting
 the `:red_circle:` emoji and mentioning that you are at capacity in the status
-text. This will guide contributors to pick a different reviewer, helping us to
+text. This guides contributors to pick a different reviewer, helping us to
 meet the SLO.
 
 Of course, if you are out of office and have
@@ -522,13 +524,13 @@ A merge request may benefit from being considered a customer critical priority b
 
 Properties of customer critical merge requests:
 
-- The [Senior Director of Development](https://about.gitlab.com/job-families/engineering/engineering-management/#senior-director-engineering) ([@clefelhocz1](https://gitlab.com/clefelhocz1)) is the DRI for deciding if a merge request will be customer critical.
-- The DRI will assign the `customer-critical-merge-request` label to the merge request.
+- The [Senior Director of Development](https://about.gitlab.com/job-families/engineering/engineering-management/#senior-director-engineering) ([@clefelhocz1](https://gitlab.com/clefelhocz1)) is the DRI for deciding if a merge request is customer critical.
+- The DRI assigns the `customer-critical-merge-request` label to the merge request.
 - It is required that the reviewer(s) and maintainer(s) involved with a customer critical merge request are engaged as soon as this decision is made.
 - It is required to prioritize work for those involved on a customer critical merge request so that they have the time available necessary to focus on it.
 - It is required to adhere to GitLab [values](https://about.gitlab.com/handbook/values/) and processes when working on customer critical merge requests, taking particular note of family and friends first/work second, definition of done, iteration, and release when it's ready.
 - Customer critical merge requests are required to not reduce security, introduce data-loss risk, reduce availability, nor break existing functionality per the process for [prioritizing technical decisions](https://about.gitlab.com/handbook/engineering/#prioritizing-technical-decisions.md).
-- On customer critical requests, it is _recommended_ that those involved _consider_ coordinating synchronously (Zoom, Slack) in addition to asynchronously (merge requests comments) if they believe this will reduce elapsed time to merge even though this _may_ sacrifice [efficiency](https://about.gitlab.com/company/culture/all-remote/asynchronous/#evaluating-efficiency.md).
+- On customer critical requests, it is _recommended_ that those involved _consider_ coordinating synchronously (Zoom, Slack) in addition to asynchronously (merge requests comments) if they believe this may reduce the elapsed time to merge even though this _may_ sacrifice [efficiency](https://about.gitlab.com/company/culture/all-remote/asynchronous/#evaluating-efficiency.md).
 - After a customer critical merge request is merged, a retrospective must be completed with the intention of reducing the frequency of future customer critical merge requests.
 
 ## Examples

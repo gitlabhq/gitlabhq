@@ -394,10 +394,10 @@ export default {
         data-qa-selector="prometheus_graph_widgets"
       >
         <div data-testid="dropdown-wrapper" class="d-flex align-items-center">
-          <!-- 
+          <!--
             This component should be replaced with a variant developed
             as part of https://gitlab.com/gitlab-org/gitlab-ui/-/issues/936
-            The variant will create a dropdown with an icon, no text and no caret    
+            The variant will create a dropdown with an icon, no text and no caret
            -->
           <gl-dropdown
             v-gl-tooltip

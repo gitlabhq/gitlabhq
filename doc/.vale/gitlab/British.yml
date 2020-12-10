@@ -22,6 +22,10 @@ swap:
   behaviour: behavior
   busses: buses
   calibre: caliber
+  categorise: categorize
+  categorised: categorized
+  categorises: categorizes
+  categorising: categorizing
   centre: center
   cheque: check
   civilisation: civilization

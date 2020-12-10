@@ -13,7 +13,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migrat
   let(:user_name) { 'Test' }
 
   let!(:user) do
-    users.create(id: 1,
+    users.create!(id: 1,
                  email: 'user@example.com',
                  projects_limit: 10,
                  username: 'test',
@@ -25,7 +25,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migrat
   end
 
   let!(:migration_bot) do
-    users.create(id: 100,
+    users.create!(id: 100,
                  email:  "noreply+gitlab-migration-bot%s@#{Settings.gitlab.host}",
                  user_type: HasUserType::USER_TYPES[:migration_bot],
                  name: 'GitLab Migration Bot',
@@ -33,9 +33,9 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migrat
                  username: 'bot')
   end
 
-  let!(:snippet_with_repo) { snippets.create(id: 1, type: 'PersonalSnippet', author_id: user.id, file_name: file_name, content: content) }
-  let!(:snippet_with_empty_repo) { snippets.create(id: 2, type: 'PersonalSnippet', author_id: user.id, file_name: file_name, content: content) }
-  let!(:snippet_without_repo) { snippets.create(id: 3, type: 'PersonalSnippet', author_id: user.id, file_name: file_name, content: content) }
+  let!(:snippet_with_repo) { snippets.create!(id: 1, type: 'PersonalSnippet', author_id: user.id, file_name: file_name, content: content) }
+  let!(:snippet_with_empty_repo) { snippets.create!(id: 2, type: 'PersonalSnippet', author_id: user.id, file_name: file_name, content: content) }
+  let!(:snippet_without_repo) { snippets.create!(id: 3, type: 'PersonalSnippet', author_id: user.id, file_name: file_name, content: content) }
 
   let(:file_name) { 'file_name.rb' }
   let(:content) { 'content' }
@@ -197,8 +197,8 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migrat
       end
 
       with_them do
-        let!(:snippet_with_invalid_path) { snippets.create(id: 4, type: 'PersonalSnippet', author_id: user.id, file_name: invalid_file_name, content: content) }
-        let!(:snippet_with_valid_path) { snippets.create(id: 5, type: 'PersonalSnippet', author_id: user.id, file_name: file_name, content: content) }
+        let!(:snippet_with_invalid_path) { snippets.create!(id: 4, type: 'PersonalSnippet', author_id: user.id, file_name: invalid_file_name, content: content) }
+        let!(:snippet_with_valid_path) { snippets.create!(id: 5, type: 'PersonalSnippet', author_id: user.id, file_name: file_name, content: content) }
         let(:ids) { [4, 5] }
 
         after do
@@ -241,7 +241,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migrat
 
     context 'when user name is invalid' do
       let(:user_name) { '.' }
-      let!(:snippet) { snippets.create(id: 4, type: 'PersonalSnippet', author_id: user.id, file_name: file_name, content: content) }
+      let!(:snippet) { snippets.create!(id: 4, type: 'PersonalSnippet', author_id: user.id, file_name: file_name, content: content) }
       let(:ids) { [4, 4] }
 
       after do
@@ -254,7 +254,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migrat
     context 'when both user name and snippet file_name are invalid' do
       let(:user_name) { '.' }
       let!(:other_user) do
-        users.create(id: 2,
+        users.create!(id: 2,
                      email: 'user2@example.com',
                      projects_limit: 10,
                      username: 'test2',
@@ -265,8 +265,8 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migrat
                      confirmed_at: 1.day.ago)
       end
 
-      let!(:invalid_snippet) { snippets.create(id: 4, type: 'PersonalSnippet', author_id: user.id, file_name: '.', content: content) }
-      let!(:snippet) { snippets.create(id: 5, type: 'PersonalSnippet', author_id: other_user.id, file_name: file_name, content: content) }
+      let!(:invalid_snippet) { snippets.create!(id: 4, type: 'PersonalSnippet', author_id: user.id, file_name: '.', content: content) }
+      let!(:snippet) { snippets.create!(id: 5, type: 'PersonalSnippet', author_id: other_user.id, file_name: file_name, content: content) }
       let(:ids) { [4, 5] }
 
       after do

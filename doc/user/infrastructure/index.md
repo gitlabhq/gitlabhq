@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ## Motivation
 
 The Terraform integration features within GitLab enable your GitOps / Infrastructure-as-Code (IaC)
-workflows to tie into GitLab's authentication and authorization. These features focus on
+workflows to tie into GitLab authentication and authorization. These features focus on
 lowering the barrier to entry for teams to adopt Terraform, collaborate effectively within
 GitLab, and support Terraform best practices.
 

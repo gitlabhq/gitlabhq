@@ -10,7 +10,7 @@ GitLab supports adding new and existing GKE clusters.
 
 ## GKE requirements
 
-Before creating your first cluster on Google GKE with GitLab's integration, make sure the following
+Before creating your first cluster on Google GKE with GitLab integration, make sure the following
 requirements are met:
 
 - A [billing account](https://cloud.google.com/billing/docs/how-to/manage-billing-account)

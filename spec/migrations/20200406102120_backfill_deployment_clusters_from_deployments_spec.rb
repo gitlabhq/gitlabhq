@@ -8,10 +8,10 @@ RSpec.describe BackfillDeploymentClustersFromDeployments, :migration, :sidekiq, 
     it 'schedules BackfillDeploymentClustersFromDeployments background jobs' do
       stub_const("#{described_class}::BATCH_SIZE", 2)
 
-      namespace = table(:namespaces).create(name: 'the-namespace', path: 'the-path')
-      project = table(:projects).create(name: 'the-project', namespace_id: namespace.id)
-      environment = table(:environments).create(name: 'the-environment', project_id: project.id, slug: 'slug')
-      cluster = table(:clusters).create(name: 'the-cluster')
+      namespace = table(:namespaces).create!(name: 'the-namespace', path: 'the-path')
+      project = table(:projects).create!(name: 'the-project', namespace_id: namespace.id)
+      environment = table(:environments).create!(name: 'the-environment', project_id: project.id, slug: 'slug')
+      cluster = table(:clusters).create!(name: 'the-cluster')
 
       deployment_data = { cluster_id: cluster.id, project_id: project.id, environment_id: environment.id, ref: 'abc', tag: false, sha: 'sha', status: 1 }
 
@@ -44,7 +44,7 @@ RSpec.describe BackfillDeploymentClustersFromDeployments, :migration, :sidekiq, 
     def create_deployment(**data)
       @iid ||= 0
       @iid += 1
-      table(:deployments).create(iid: @iid, **data)
+      table(:deployments).create!(iid: @iid, **data)
     end
   end
 end

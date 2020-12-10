@@ -11,8 +11,7 @@ Repository mirroring allows for mirroring of repositories to and from external s
 used to mirror branches, tags, and commits between repositories.
 
 A repository mirror at GitLab will be updated automatically. You can also manually trigger an update
-at most once every 5 minutes. Follow [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/237891)
-for discussions on how to potentially reduce the delay.
+at most once every 5 minutes on GitLab.com with [the limit set by the administrator on self-managed instances](../../../administration/instance_limits.md#pull-mirroring-interval).
 
 ## Overview
 
@@ -30,7 +29,7 @@ Users with at least [Developer access](../../permissions.md) to the project can 
 immediate update, unless:
 
 - The mirror is already being updated.
-- 5 minutes haven't elapsed since its last update.
+- The [limit for pull mirroring interval seconds](../../../administration/instance_limits.md#pull-mirroring-interval) has not elapsed since its last update.
 
 For security reasons, in [GitLab 12.10 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27166),
 the URL to the original repository is only displayed to users with

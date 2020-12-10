@@ -16,7 +16,7 @@ RSpec.describe PopulateProjectStatisticsPackagesSize do
   let(:artifacts_size) { 4.terabytes }
   let(:storage_size)   { repo_size + lfs_size + artifacts_size }
 
-  let(:namespace)  { namespaces.create(name: 'foo', path: 'foo') }
+  let(:namespace)  { namespaces.create!(name: 'foo', path: 'foo') }
   let(:package)    { packages.create!(project_id: project.id, name: 'a package', package_type: 1) }
   let(:project)    { projects.create!(namespace_id: namespace.id) }
 

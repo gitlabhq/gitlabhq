@@ -97,7 +97,7 @@ RSpec.describe Gitlab::BackgroundMigration::MigrateIssueTrackersSensitiveData, s
 
   context 'with Jira service' do
     let!(:service) do
-      services.create(id: 10, type: 'JiraService', title: nil, properties: jira_properties.to_json, category: 'issue_tracker')
+      services.create!(id: 10, type: 'JiraService', title: nil, properties: jira_properties.to_json, category: 'issue_tracker')
     end
 
     it_behaves_like 'handle properties'
@@ -119,7 +119,7 @@ RSpec.describe Gitlab::BackgroundMigration::MigrateIssueTrackersSensitiveData, s
 
   context 'with bugzilla service' do
     let!(:service) do
-      services.create(id: 11, type: 'BugzillaService', title: nil, properties: tracker_properties.to_json, category: 'issue_tracker')
+      services.create!(id: 11, type: 'BugzillaService', title: nil, properties: tracker_properties.to_json, category: 'issue_tracker')
     end
 
     it_behaves_like 'handle properties'
@@ -140,7 +140,7 @@ RSpec.describe Gitlab::BackgroundMigration::MigrateIssueTrackersSensitiveData, s
 
   context 'with youtrack service' do
     let!(:service) do
-      services.create(id: 12, type: 'YoutrackService', title: nil, properties: tracker_properties_no_url.to_json, category: 'issue_tracker')
+      services.create!(id: 12, type: 'YoutrackService', title: nil, properties: tracker_properties_no_url.to_json, category: 'issue_tracker')
     end
 
     it_behaves_like 'handle properties'
@@ -161,7 +161,7 @@ RSpec.describe Gitlab::BackgroundMigration::MigrateIssueTrackersSensitiveData, s
 
   context 'with gitlab service with no properties' do
     let!(:service) do
-      services.create(id: 13, type: 'GitlabIssueTrackerService', title: nil, properties: {}, category: 'issue_tracker')
+      services.create!(id: 13, type: 'GitlabIssueTrackerService', title: nil, properties: {}, category: 'issue_tracker')
     end
 
     it_behaves_like 'handle properties'
@@ -173,7 +173,7 @@ RSpec.describe Gitlab::BackgroundMigration::MigrateIssueTrackersSensitiveData, s
 
   context 'with redmine service already with data fields' do
     let!(:service) do
-      services.create(id: 14, type: 'RedmineService', title: nil, properties: tracker_properties_no_url.to_json, category: 'issue_tracker').tap do |service|
+      services.create!(id: 14, type: 'RedmineService', title: nil, properties: tracker_properties_no_url.to_json, category: 'issue_tracker').tap do |service|
         IssueTrackerData.create!(service_id: service.id, project_url: url, new_issue_url: new_issue_url, issues_url: issues_url)
       end
     end
@@ -187,7 +187,7 @@ RSpec.describe Gitlab::BackgroundMigration::MigrateIssueTrackersSensitiveData, s
 
   context 'with custom issue tracker which has data fields record inconsistent with properties field' do
     let!(:service) do
-      services.create(id: 15, type: 'CustomIssueTrackerService', title: 'Existing title', properties: jira_properties.to_json, category: 'issue_tracker').tap do |service|
+      services.create!(id: 15, type: 'CustomIssueTrackerService', title: 'Existing title', properties: jira_properties.to_json, category: 'issue_tracker').tap do |service|
         IssueTrackerData.create!(service_id: service.id, project_url: 'http://other_url', new_issue_url: 'http://other_url/new_issue', issues_url: 'http://other_url/issues')
       end
     end
@@ -209,7 +209,7 @@ RSpec.describe Gitlab::BackgroundMigration::MigrateIssueTrackersSensitiveData, s
 
   context 'with Jira service which has data fields record inconsistent with properties field' do
     let!(:service) do
-      services.create(id: 16, type: 'CustomIssueTrackerService', description: 'Existing description', properties: jira_properties.to_json, category: 'issue_tracker').tap do |service|
+      services.create!(id: 16, type: 'CustomIssueTrackerService', description: 'Existing description', properties: jira_properties.to_json, category: 'issue_tracker').tap do |service|
         JiraTrackerData.create!(service_id: service.id, url: 'http://other_jira_url')
       end
     end
@@ -232,7 +232,7 @@ RSpec.describe Gitlab::BackgroundMigration::MigrateIssueTrackersSensitiveData, s
 
   context 'non issue tracker service' do
     let!(:service) do
-      services.create(id: 17, title: nil, description: nil, type: 'OtherService', properties: tracker_properties.to_json)
+      services.create!(id: 17, title: nil, description: nil, type: 'OtherService', properties: tracker_properties.to_json)
     end
 
     it_behaves_like 'handle properties'
@@ -248,7 +248,7 @@ RSpec.describe Gitlab::BackgroundMigration::MigrateIssueTrackersSensitiveData, s
 
   context 'Jira service with empty properties' do
     let!(:service) do
-      services.create(id: 18, type: 'JiraService', properties: '', category: 'issue_tracker')
+      services.create!(id: 18, type: 'JiraService', properties: '', category: 'issue_tracker')
     end
 
     it_behaves_like 'handle properties'
@@ -260,7 +260,7 @@ RSpec.describe Gitlab::BackgroundMigration::MigrateIssueTrackersSensitiveData, s
 
   context 'Jira service with nil properties' do
     let!(:service) do
-      services.create(id: 18, type: 'JiraService', properties: nil, category: 'issue_tracker')
+      services.create!(id: 18, type: 'JiraService', properties: nil, category: 'issue_tracker')
     end
 
     it_behaves_like 'handle properties'
@@ -272,7 +272,7 @@ RSpec.describe Gitlab::BackgroundMigration::MigrateIssueTrackersSensitiveData, s
 
   context 'Jira service with invalid properties' do
     let!(:service) do
-      services.create(id: 18, type: 'JiraService', properties: 'invalid data', category: 'issue_tracker')
+      services.create!(id: 18, type: 'JiraService', properties: 'invalid data', category: 'issue_tracker')
     end
 
     it_behaves_like 'handle properties'
@@ -284,15 +284,15 @@ RSpec.describe Gitlab::BackgroundMigration::MigrateIssueTrackersSensitiveData, s
 
   context 'with Jira service with invalid properties, valid Jira service and valid bugzilla service' do
     let!(:jira_service_invalid) do
-      services.create(id: 19, title: 'invalid - title', description: 'invalid - description', type: 'JiraService', properties: 'invalid data', category: 'issue_tracker')
+      services.create!(id: 19, title: 'invalid - title', description: 'invalid - description', type: 'JiraService', properties: 'invalid data', category: 'issue_tracker')
     end
 
     let!(:jira_service_valid) do
-      services.create(id: 20, type: 'JiraService', properties: jira_properties.to_json, category: 'issue_tracker')
+      services.create!(id: 20, type: 'JiraService', properties: jira_properties.to_json, category: 'issue_tracker')
     end
 
     let!(:bugzilla_service_valid) do
-      services.create(id: 11, type: 'BugzillaService', title: nil, properties: tracker_properties.to_json, category: 'issue_tracker')
+      services.create!(id: 11, type: 'BugzillaService', title: nil, properties: tracker_properties.to_json, category: 'issue_tracker')
     end
 
     it 'migrates data for the valid service' do

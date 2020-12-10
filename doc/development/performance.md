@@ -104,7 +104,7 @@ In short:
 - Never make claims based on just benchmarks, always measure in production to
    confirm your findings.
 - X being N times faster than Y is meaningless if you don't know what impact it
-   will actually have on your production environment.
+   has on your production environment.
 - A production environment is the _only_ benchmark that always tells the truth
    (unless your performance monitoring systems are not set up correctly).
 - If you must write a benchmark use the benchmark-ips Gem instead of Ruby's
@@ -119,7 +119,7 @@ allowing you to profile which code is running on CPU in detail.
 
 It's important to note that profiling an application *alters its performance*.
 Different profiling strategies have different overheads. Stackprof is a sampling
-profiler. It will sample stack traces from running threads at a configurable
+profiler. It samples stack traces from running threads at a configurable
 frequency (e.g. 100hz, that is 100 stacks per second). This type of profiling
 has quite a low (albeit non-zero) overhead and is generally considered to be
 safe for production.
@@ -241,7 +241,7 @@ BasePolicy#abilities (/Users/lupine/dev/gitlab.com/gitlab-org/gitlab-development
 Since the profile includes the work done by the test suite as well as the
 application code, these profiles can be used to investigate slow tests as well.
 However, for smaller runs (like this example), this means that the cost of
-setting up the test suite will tend to dominate.
+setting up the test suite tends to dominate.
 
 ### Production
 
@@ -256,7 +256,7 @@ The following configuration options can be configured:
 - `STACKPROF_MODE`: See [sampling modes](https://github.com/tmm1/stackprof#sampling).
   Defaults to `cpu`.
 - `STACKPROF_INTERVAL`: Sampling interval. Unit semantics depend on `STACKPROF_MODE`.
-  For `object` mode this is a per-event interval (every `n`th event will be sampled)
+  For `object` mode this is a per-event interval (every `n`th event is sampled)
   and defaults to `1000`.
   For other modes such as `cpu` this is a frequency and defaults to `10000` μs (100hz).
 - `STACKPROF_FILE_PREFIX`: File path prefix where profiles are stored. Defaults
@@ -268,8 +268,8 @@ The following configuration options can be configured:
   and disk overhead. Defaults to `true`.
 
 Once enabled, profiling can be triggered by sending a `SIGUSR2` signal to the
-Ruby process. The process will begin sampling stacks. Profiling can be stopped
-by sending another `SIGUSR2`. Alternatively, it will automatically stop after
+Ruby process. The process begins sampling stacks. Profiling can be stopped
+by sending another `SIGUSR2`. Alternatively, it stops automatically after
 the timeout.
 
 Once profiling stops, the profile is written out to disk at
@@ -284,7 +284,7 @@ Currently supported profiling targets are:
 
 NOTE:
 The Puma master process is not supported. Neither is Unicorn.
-Sending SIGUSR2 to either of those will trigger restarts. In the case of Puma,
+Sending SIGUSR2 to either of those triggers restarts. In the case of Puma,
 take care to only send the signal to Puma workers.
 
 This can be done via `pkill -USR2 puma:`. The `:` disambiguates between `puma
@@ -292,7 +292,7 @@ This can be done via `pkill -USR2 puma:`. The `:` disambiguates between `puma
 worker processes), selecting the latter.
 
 For Sidekiq, the signal can be sent to the `sidekiq-cluster` process via `pkill
--USR2 bin/sidekiq-cluster`, which will forward the signal to all Sidekiq
+-USR2 bin/sidekiq-cluster`, which forwards the signal to all Sidekiq
 children. Alternatively, you can also select a specific pid of interest.
 
 Production profiles can be especially noisy. It can be helpful to visualize them
@@ -377,9 +377,9 @@ The report breaks down 2 key concepts:
 - Retained: long lived memory use and object count retained due to the execution of the code block.
 - Allocated: all object allocation and memory allocation during code block.
 
-As a general rule, **retained** will always be smaller than or equal to allocated.
+As a general rule, **retained** is always smaller than or equal to **allocated**.
 
-The actual RSS cost will always be slightly higher as MRI heaps are not squashed to size and memory fragments.
+The actual RSS cost is always slightly higher as MRI heaps are not squashed to size and memory fragments.
 
 ### Rbtrace
 
@@ -444,11 +444,11 @@ Slow operations, like merging branches, or operations that are prone to errors
 directly in a web request as much as possible. This has numerous benefits such
 as:
 
-1. An error won't prevent the request from completing.
-1. The process being slow won't affect the loading time of a page.
-1. In case of a failure it's easy to re-try the process (Sidekiq takes care of
+1. An error doesn't prevent the request from completing.
+1. The process being slow doesn't affect the loading time of a page.
+1. In case of a failure you can retry the process (Sidekiq takes care of
    this automatically).
-1. By isolating the code from a web request it will hopefully be easier to test
+1. By isolating the code from a web request it should be easier to test
    and maintain.
 
 It's especially important to use Sidekiq as much as possible when dealing with
@@ -480,7 +480,7 @@ end
 
 ## Caching
 
-Operations that will often return the same result should be cached using Redis,
+Operations that often return the same result should be cached using Redis,
 in particular Git operations. When caching data in Redis, make sure the cache is
 flushed whenever needed. For example, a cache for the list of tags should be
 flushed whenever a new tag is pushed or a tag is removed.
@@ -494,7 +494,7 @@ the Repository class instead of leaking into other classes.
 When caching data, make sure to also memoize the result in an instance variable.
 While retrieving data from Redis is much faster than raw Git operations, it still
 has overhead. By caching the result in an instance variable, repeated calls to
-the same method won't end up retrieving data from Redis upon every call. When
+the same method don't retrieve data from Redis upon every call. When
 memoizing cached data in an instance variable, make sure to also reset the
 instance variable when flushing the cache. An example:
 
@@ -512,7 +512,7 @@ end
 ## String Freezing
 
 In recent Ruby versions calling `freeze` on a String leads to it being allocated
-only once and re-used. For example, on Ruby 2.3 or later this will only allocate the
+only once and re-used. For example, on Ruby 2.3 or later this only allocates the
 "foo" String once:
 
 ```ruby
@@ -523,10 +523,10 @@ end
 
 Depending on the size of the String and how frequently it would be allocated
 (before the `.freeze` call was added), this _may_ make things faster, but
-there's no guarantee it will.
+this isn't guaranteed.
 
-Strings will be frozen by default in Ruby 3.0. To prepare our code base for
-this eventuality, we will be adding the following header to all Ruby files:
+Strings are frozen by default in Ruby 3.0. To prepare our codebase for
+this eventuality, we are adding the following header to all Ruby files:
 
 ```ruby
 # frozen_string_literal: true
@@ -549,8 +549,8 @@ Ruby offers several convenience functions that deal with file contents specifica
 or I/O streams in general. Functions such as `IO.read` and `IO.readlines` make
 it easy to read data into memory, but they can be inefficient when the
 data grows large. Because these functions read the entire contents of a data
-source into memory, memory use will grow by _at least_ the size of the data source.
-In the case of `readlines`, it will grow even further, due to extra bookkeeping
+source into memory, memory use grows by _at least_ the size of the data source.
+In the case of `readlines`, it grows even further, due to extra bookkeeping
 the Ruby VM has to perform to represent each line.
 
 Consider the following program, which reads a text file that is 750MB on disk:
@@ -588,12 +588,12 @@ which is roughly two orders of magnitude more compared to reading the file line 
 line instead. It was not just the raw memory usage that increased, but also how the garbage collector (GC)
 responded to this change in anticipation of future memory use. We can see that `malloc_increase_bytes` jumped
 to ~30MB, which compares to just ~4kB for a "fresh" Ruby program. This figure specifies how
-much additional heap space the Ruby GC will claim from the operating system next time it runs out of memory.
+much additional heap space the Ruby GC claims from the operating system next time it runs out of memory.
 Not only did we occupy more memory, we also changed the behavior of the application
 to increase memory use at a faster rate.
 
-The `IO.read` function exhibits similar behavior, with the difference that no extra memory will
-be allocated for each line object.
+The `IO.read` function exhibits similar behavior, with the difference that no extra memory is
+allocated for each line object.
 
 ### Recommendations
 
@@ -630,7 +630,7 @@ production environments.
 ### Moving Allocations to Constants
 
 Storing an object as a constant so you only allocate it once _may_ improve
-performance, but there's no guarantee this will. Looking up constants has an
+performance, but this is not guaranteed. Looking up constants has an
 impact on runtime performance, and as such, using a constant instead of
 referencing an object directly may even slow code down. For example:
 

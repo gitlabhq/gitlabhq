@@ -7,7 +7,7 @@ RSpec.describe Gitlab::BackgroundMigration::FixProjectsWithoutProjectFeature, sc
   let(:projects) { table(:projects) }
   let(:project_features) { table(:project_features) }
 
-  let(:namespace) { namespaces.create(name: 'foo', path: 'foo') }
+  let(:namespace) { namespaces.create!(name: 'foo', path: 'foo') }
 
   let!(:project) { projects.create!(namespace_id: namespace.id) }
   let(:private_project_without_feature) { projects.create!(namespace_id: namespace.id, visibility_level: 0) }
@@ -15,7 +15,7 @@ RSpec.describe Gitlab::BackgroundMigration::FixProjectsWithoutProjectFeature, sc
   let!(:projects_without_feature) { [private_project_without_feature, public_project_without_feature] }
 
   before do
-    project_features.create({ project_id: project.id, pages_access_level: 20 })
+    project_features.create!({ project_id: project.id, pages_access_level: 20 })
   end
 
   subject { described_class.new.perform(Project.minimum(:id), Project.maximum(:id)) }

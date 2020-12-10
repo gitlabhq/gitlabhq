@@ -56,7 +56,7 @@ agent uses this token to authenticate with GitLab. This token is a random string
 and does not encode any information in it, but it is secret and must
 be treated with care. Store it as a `Secret` in Kubernetes.
 
-Each agent can have 0 or more tokens in GitLab's database. Having several valid
+Each agent can have 0 or more tokens in a GitLab database. Having several valid
 tokens helps you rotate tokens without needing to re-register an agent. Each token
 record in the database has the following fields:
 

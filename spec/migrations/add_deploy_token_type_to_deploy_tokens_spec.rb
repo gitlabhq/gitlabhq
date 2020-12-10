@@ -6,7 +6,7 @@ require Rails.root.join('db', 'migrate', '20200122161638_add_deploy_token_type_t
 RSpec.describe AddDeployTokenTypeToDeployTokens do
   let(:deploy_tokens) { table(:deploy_tokens) }
   let(:deploy_token) do
-    deploy_tokens.create(name: 'token_test',
+    deploy_tokens.create!(name: 'token_test',
                          username: 'gitlab+deploy-token-1',
                          token_encrypted: 'dr8rPXwM+Mbs2p3Bg1+gpnXqrnH/wu6vaHdcc7A3isPR67WB',
                          read_repository: true,

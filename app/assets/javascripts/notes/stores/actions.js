@@ -244,7 +244,7 @@ export const toggleResolveNote = ({ commit, dispatch }, { endpoint, isResolved, 
   });
 };
 
-export const closeMergeRequest = ({ commit, dispatch, state }) => {
+export const closeIssuable = ({ commit, dispatch, state }) => {
   dispatch('toggleStateButtonLoading', true);
   return axios.put(state.notesData.closePath).then(({ data }) => {
     commit(types.CLOSE_ISSUE);
@@ -253,7 +253,7 @@ export const closeMergeRequest = ({ commit, dispatch, state }) => {
   });
 };
 
-export const reopenMergeRequest = ({ commit, dispatch, state }) => {
+export const reopenIssuable = ({ commit, dispatch, state }) => {
   dispatch('toggleStateButtonLoading', true);
   return axios.put(state.notesData.reopenPath).then(({ data }) => {
     commit(types.REOPEN_ISSUE);

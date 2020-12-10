@@ -22,7 +22,7 @@ NOTE:
 Every new Google Cloud Platform (GCP) account receives
 [$300 in credit upon sign up](https://console.cloud.google.com/freetrial).
 In partnership with Google, GitLab is able to offer an additional $200 for new GCP
-accounts to get started with GitLab's Google Kubernetes Engine Integration.
+accounts to get started with the GitLab integration with Google Kubernetes Engine.
 [Follow this link](https://cloud.google.com/partners/partnercredit/?pcn_code=0014M00001h35gDQAQ#contact-form)
 to apply for credit.
 

@@ -7,11 +7,11 @@ RSpec.describe MoveLimitsFromPlans do
   let(:plans) { table(:plans) }
   let(:plan_limits) { table(:plan_limits) }
 
-  let!(:gold_plan) { plans.create(name: 'gold', title: 'Gold', active_pipelines_limit: 20, pipeline_size_limit: 21, active_jobs_limit: 22) }
-  let!(:silver_plan) { plans.create(name: 'silver', title: 'Silver', active_pipelines_limit: 30, pipeline_size_limit: 31, active_jobs_limit: 32) }
-  let!(:bronze_plan) { plans.create(name: 'bronze', title: 'Bronze', active_pipelines_limit: 40, pipeline_size_limit: 41, active_jobs_limit: 42) }
-  let!(:free_plan) { plans.create(name: 'free', title: 'Free', active_pipelines_limit: 50, pipeline_size_limit: 51, active_jobs_limit: 52) }
-  let!(:other_plan) { plans.create(name: 'other', title: 'Other', active_pipelines_limit: nil, pipeline_size_limit: nil, active_jobs_limit: 0) }
+  let!(:gold_plan) { plans.create!(name: 'gold', title: 'Gold', active_pipelines_limit: 20, pipeline_size_limit: 21, active_jobs_limit: 22) }
+  let!(:silver_plan) { plans.create!(name: 'silver', title: 'Silver', active_pipelines_limit: 30, pipeline_size_limit: 31, active_jobs_limit: 32) }
+  let!(:bronze_plan) { plans.create!(name: 'bronze', title: 'Bronze', active_pipelines_limit: 40, pipeline_size_limit: 41, active_jobs_limit: 42) }
+  let!(:free_plan) { plans.create!(name: 'free', title: 'Free', active_pipelines_limit: 50, pipeline_size_limit: 51, active_jobs_limit: 52) }
+  let!(:other_plan) { plans.create!(name: 'other', title: 'Other', active_pipelines_limit: nil, pipeline_size_limit: nil, active_jobs_limit: 0) }
 
   describe 'migrate' do
     it 'populates plan_limits from all the records in plans' do

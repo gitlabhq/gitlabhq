@@ -8,8 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7934) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.11.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/273655) to [GitLab Core](https://about.gitlab.com/pricing/) in GitLab 13.6.
-> - [Support for private groups](https://gitlab.com/gitlab-org/gitlab/-/issues/11582) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.7.
-> - Anonymous access to images in public groups is no longer available starting in [GitLab Premium](https://about.gitlab.com/pricing/) 13.7.
+> - [Support for private groups](https://gitlab.com/gitlab-org/gitlab/-/issues/11582) in [GitLab Core](https://about.gitlab.com/pricing/) 13.7.
+> - Anonymous access to images in public groups is no longer available starting in [GitLab Core](https://about.gitlab.com/pricing/) 13.7.
 
 The GitLab Dependency Proxy is a local proxy you can use for your frequently-accessed
 upstream images.
@@ -78,6 +78,8 @@ You can authenticate using:
 - A [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `read_registry` and `write_registry`.
 
 #### Authenticate within CI/CD
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/280582) in 13.7.
 
 To work with the Dependency Proxy in [GitLab CI/CD](../../../ci/README.md), you can use:
 

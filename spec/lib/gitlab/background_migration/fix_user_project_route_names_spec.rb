@@ -8,10 +8,10 @@ RSpec.describe Gitlab::BackgroundMigration::FixUserProjectRouteNames, schema: 20
   let(:routes) { table(:routes) }
   let(:projects) { table(:projects) }
 
-  let(:user) { users.create(name: "The user's full name", projects_limit: 10, username: 'not-null', email: '1') }
+  let(:user) { users.create!(name: "The user's full name", projects_limit: 10, username: 'not-null', email: '1') }
 
   let(:namespace) do
-    namespaces.create(
+    namespaces.create!(
       owner_id: user.id,
       name: "Should eventually be the user's name",
       path: user.username
@@ -19,11 +19,11 @@ RSpec.describe Gitlab::BackgroundMigration::FixUserProjectRouteNames, schema: 20
   end
 
   let(:project) do
-    projects.create(namespace_id: namespace.id, name: 'Project Name')
+    projects.create!(namespace_id: namespace.id, name: 'Project Name')
   end
 
   it "updates the route for a project if it did not match the user's name" do
-    route = routes.create(
+    route = routes.create!(
       id: 1,
       path: "#{user.username}/#{project.path}",
       source_id: project.id,
@@ -37,7 +37,7 @@ RSpec.describe Gitlab::BackgroundMigration::FixUserProjectRouteNames, schema: 20
   end
 
   it 'updates the route for a project if the name was nil' do
-    route = routes.create(
+    route = routes.create!(
       id: 1,
       path: "#{user.username}/#{project.path}",
       source_id: project.id,
@@ -51,7 +51,7 @@ RSpec.describe Gitlab::BackgroundMigration::FixUserProjectRouteNames, schema: 20
   end
 
   it 'does not update routes that were are out of the range' do
-    route = routes.create(
+    route = routes.create!(
       id: 6,
       path: "#{user.username}/#{project.path}",
       source_id: project.id,
@@ -64,14 +64,14 @@ RSpec.describe Gitlab::BackgroundMigration::FixUserProjectRouteNames, schema: 20
   end
 
   it 'does not update routes for projects in groups owned by the user' do
-    group = namespaces.create(
+    group = namespaces.create!(
       owner_id: user.id,
       name: 'A group',
       path: 'a-path',
       type: ''
     )
-    project = projects.create(namespace_id: group.id, name: 'Project Name')
-    route = routes.create(
+    project = projects.create!(namespace_id: group.id, name: 'Project Name')
+    route = routes.create!(
       id: 1,
       path: "#{group.path}/#{project.path}",
       source_id: project.id,
@@ -84,7 +84,7 @@ RSpec.describe Gitlab::BackgroundMigration::FixUserProjectRouteNames, schema: 20
   end
 
   it 'does not update routes for namespaces' do
-    route = routes.create(
+    route = routes.create!(
       id: 1,
       path: namespace.path,
       source_id: namespace.id,

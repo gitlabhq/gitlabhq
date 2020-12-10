@@ -15751,11 +15751,6 @@ type Pipeline {
     before: String
 
     """
-    Filter query for given domain
-    """
-    domain: AlertManagementDomainFilter! = operations
-
-    """
     Returns the first _n_ elements from the list.
     """
     first: Int
@@ -16106,6 +16101,11 @@ type Project {
     Returns the elements in the list that come before the specified cursor.
     """
     before: String
+
+    """
+    Filter query for given domain
+    """
+    domain: AlertManagementDomainFilter! = operations
 
     """
     Returns the first _n_ elements from the list.

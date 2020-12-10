@@ -138,8 +138,8 @@ export default {
         ? __('merge request')
         : __('issue');
     },
-    isMergeRequest() {
-      return this.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE;
+    isIssue() {
+      return this.noteableDisplayName === constants.ISSUE_NOTEABLE_TYPE;
     },
     trackingLabel() {
       return slugifyWithUnderscore(`${this.commentButtonTitle} button`);
@@ -167,8 +167,8 @@ export default {
       'stopPolling',
       'restartPolling',
       'removePlaceholderNotes',
-      'closeMergeRequest',
-      'reopenMergeRequest',
+      'closeIssuable',
+      'reopenIssuable',
       'toggleIssueLocalState',
     ]),
     setIsSubmitButtonDisabled(note, isSubmitting) {
@@ -229,22 +229,18 @@ export default {
       }
     },
     toggleIssueState() {
-      if (!this.isMergeRequest) {
+      if (this.isIssue) {
+        // We want to invoke the close/reopen logic in the issue header
+        // since that is where the blocked-by issues modal logic is also defined
         eventHub.$emit('toggle.issuable.state');
         return;
       }
 
-      const toggleMergeRequestState = this.isOpen
-        ? this.closeMergeRequest
-        : this.reopenMergeRequest;
+      const toggleState = this.isOpen ? this.closeIssuable : this.reopenIssuable;
 
-      const errorMessage = this.isOpen
-        ? __('Something went wrong while closing the merge request. Please try again later')
-        : __('Something went wrong while reopening the merge request. Please try again later');
-
-      toggleMergeRequestState()
+      toggleState()
         .then(refreshUserMergeRequestCounts)
-        .catch(() => Flash(errorMessage));
+        .catch(() => Flash(constants.toggleStateErrorMessage[this.noteableType][this.openState]));
     },
     discard(shouldClear = true) {
       // `blur` is needed to clear slash commands autocomplete cache if event fired.

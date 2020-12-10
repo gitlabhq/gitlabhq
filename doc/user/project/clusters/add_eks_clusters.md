@@ -10,7 +10,7 @@ GitLab supports adding new and existing EKS clusters.
 
 ## EKS requirements
 
-Before creating your first cluster on Amazon EKS with GitLab's integration, make sure the following
+Before creating your first cluster on Amazon EKS with the GitLab integration, make sure the following
 requirements are met:
 
 - An [Amazon Web Services](https://aws.amazon.com/) account is set up and you are able to log in.

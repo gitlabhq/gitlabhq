@@ -36,14 +36,6 @@
     }
   }
 
-  .btn-remove {
-    width: 100%;
-
-    @include media-breakpoint-up(sm) {
-      width: auto;
-    }
-  }
-
   &.existing-title {
     @include media-breakpoint-up(sm) {
       float: left;

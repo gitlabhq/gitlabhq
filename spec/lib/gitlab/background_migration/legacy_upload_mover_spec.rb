@@ -32,7 +32,7 @@ RSpec.describe Gitlab::BackgroundMigration::LegacyUploadMover, :aggregate_failur
 
     if with_file
       upload = create(:upload, :with_file, :attachment_upload, params)
-      model.update(attachment: upload.retrieve_uploader)
+      model.update!(attachment: upload.retrieve_uploader)
       model.attachment.upload
     else
       create(:upload, :attachment_upload, params)
@@ -245,7 +245,7 @@ RSpec.describe Gitlab::BackgroundMigration::LegacyUploadMover, :aggregate_failur
     end
 
     let(:connection) { ::Fog::Storage.new(FileUploader.object_store_credentials) }
-    let(:bucket) { connection.directories.create(key: 'uploads') }
+    let(:bucket) { connection.directories.create(key: 'uploads') } # rubocop:disable Rails/SaveBang
 
     before do
       stub_uploads_object_storage(FileUploader)
@@ -257,7 +257,7 @@ RSpec.describe Gitlab::BackgroundMigration::LegacyUploadMover, :aggregate_failur
 
     context 'when the file belongs to a legacy project' do
       before do
-        bucket.files.create(remote_file)
+        bucket.files.create(remote_file) # rubocop:disable Rails/SaveBang
       end
 
       let(:project) { legacy_project }
@@ -267,7 +267,7 @@ RSpec.describe Gitlab::BackgroundMigration::LegacyUploadMover, :aggregate_failur
 
     context 'when the file belongs to a hashed project' do
       before do
-        bucket.files.create(remote_file)
+        bucket.files.create(remote_file) # rubocop:disable Rails/SaveBang
       end
 
       let(:project) { hashed_project }

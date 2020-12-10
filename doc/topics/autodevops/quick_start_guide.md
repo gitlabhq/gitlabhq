@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 This step-by-step guide helps you use [Auto DevOps](index.md) to
 deploy a project hosted on GitLab.com to Google Kubernetes Engine.
 
-You are using GitLab's native Kubernetes integration, so you don't need
+You are using the GitLab native Kubernetes integration, so you don't need
 to create a Kubernetes cluster manually using the Google Cloud Platform console.
 You are creating and deploying a simple application that you create from a GitLab template.
 
@@ -32,13 +32,13 @@ or Google Drive, or create a new one.
 NOTE:
 Every new Google Cloud Platform (GCP) account receives [$300 in credit](https://console.cloud.google.com/freetrial),
 and in partnership with Google, GitLab is able to offer an additional $200 for new
-GCP accounts to get started with GitLab's Google Kubernetes Engine Integration.
+GCP accounts to get started with the GitLab integration with Google Kubernetes Engine.
 [Follow this link](https://cloud.google.com/partners/partnercredit/?pcn_code=0014M00001h35gDQAQ#contact-form)
 and apply for credit.
 
 ## Create a new project from a template
 
-We are using one of GitLab's project templates to get started. As the name suggests,
+We are using a GitLab project template to get started. As the name suggests,
 those projects provide a bare-bones application built on some well-known frameworks.
 
 1. In GitLab, click the plus icon (**{plus-square}**) at the top of the navigation bar, and select

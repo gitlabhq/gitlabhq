@@ -17,7 +17,7 @@ RSpec.describe SeedRepositoryStoragesWeighted do
     allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
   end
 
-  let(:application_setting) { application_settings.create }
+  let(:application_setting) { application_settings.create! }
   let(:repository_storages) { ["foo"] }
 
   it 'correctly schedules background migrations' do

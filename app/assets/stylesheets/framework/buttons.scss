@@ -166,8 +166,7 @@
     line-height: $gl-btn-xs-line-height;
   }
 
-  &.btn-success,
-  &.btn-register {
+  &.btn-success {
     @include btn-green;
   }
 
@@ -176,7 +175,6 @@
       @include btn-outline($white, $green-600, $green-500, $green-100, $green-700, $green-500, $green-200, $green-600, $green-800);
     }
 
-    &.btn-remove,
     &.btn-danger {
       @include btn-outline($white, $red-500, $red-500, $red-100, $red-700, $red-500, $red-200, $red-600, $red-800);
     }
@@ -204,23 +202,12 @@
     @include btn-outline($white, $orange-500, $orange-500, $orange-50, $orange-600, $orange-600, $orange-100, $orange-700, $orange-700);
   }
 
-  &.btn-spam {
-    @include btn-outline($white, $red-500, $red-500, $red-100, $red-700, $red-500, $red-200, $red-600, $red-800);
-  }
-
-  &.btn-danger,
-  &.btn-remove,
-  &.btn-red {
+  &.btn-danger {
     @include btn-red;
   }
 
   &.btn-cancel {
     float: right;
-  }
-
-  &.btn-reopen,
-  .btn-reopen-color {
-    /* should be same as parent class for now */
   }
 
   &.btn-grouped {

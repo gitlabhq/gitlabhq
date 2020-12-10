@@ -618,7 +618,7 @@ may require commands to be wrapped as follows:
 Some of the reasons you may need to wrap commands:
 
 - Attaching using `kubectl exec`.
-- Using GitLab's [Web Terminal](../../ci/environments/index.md#web-terminals).
+- Using the GitLab [Web Terminal](../../ci/environments/index.md#web-terminals).
 
 For example, to start a Rails console from the application root directory, run:
 

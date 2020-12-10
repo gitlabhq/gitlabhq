@@ -2,6 +2,7 @@ import { nextTick } from 'vue';
 import { mount, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import Autosize from 'autosize';
+import { deprecatedCreateFlash as flash } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import createStore from '~/notes/stores';
 import CommentForm from '~/notes/components/comment_form.vue';
@@ -13,6 +14,7 @@ import { loggedOutnoteableData, notesDataMock, userDataMock, noteableDataMock } 
 
 jest.mock('autosize');
 jest.mock('~/commons/nav/user_merge_requests');
+jest.mock('~/flash');
 jest.mock('~/gl_form');
 
 describe('issue_comment_form component', () => {
@@ -28,7 +30,7 @@ describe('issue_comment_form component', () => {
 
   const mountComponent = ({
     initialData = {},
-    noteableType = 'issue',
+    noteableType = 'Issue',
     noteableData = noteableDataMock,
     notesData = notesDataMock,
     userData = userDataMock,
@@ -278,51 +280,91 @@ describe('issue_comment_form component', () => {
           });
         });
 
-        describe('when merge request', () => {
+        describe.each`
+          type               | noteableType
+          ${'merge request'} | ${'MergeRequest'}
+          ${'epic'}          | ${'Epic'}
+        `('when $type', ({ type, noteableType }) => {
           describe('when open', () => {
-            it('makes an API call to open the merge request', () => {
+            it(`makes an API call to open it`, () => {
               mountComponent({
-                noteableType: constants.MERGE_REQUEST_NOTEABLE_TYPE,
+                noteableType,
                 noteableData: { ...noteableDataMock, state: constants.OPENED },
                 mountFunction: mount,
               });
 
-              jest.spyOn(wrapper.vm, 'closeMergeRequest').mockResolvedValue();
+              jest.spyOn(wrapper.vm, 'closeIssuable').mockResolvedValue();
 
               findCloseReopenButton().trigger('click');
 
-              expect(wrapper.vm.closeMergeRequest).toHaveBeenCalled();
+              expect(wrapper.vm.closeIssuable).toHaveBeenCalled();
+            });
+
+            it(`shows an error when the API call fails`, async () => {
+              mountComponent({
+                noteableType,
+                noteableData: { ...noteableDataMock, state: constants.OPENED },
+                mountFunction: mount,
+              });
+
+              jest.spyOn(wrapper.vm, 'closeIssuable').mockRejectedValue();
+
+              await findCloseReopenButton().trigger('click');
+
+              await wrapper.vm.$nextTick;
+
+              expect(flash).toHaveBeenCalledWith(
+                `Something went wrong while closing the ${type}. Please try again later.`,
+              );
             });
           });
 
           describe('when closed', () => {
-            it('makes an API call to close the merge request', () => {
+            it('makes an API call to close it', () => {
               mountComponent({
-                noteableType: constants.MERGE_REQUEST_NOTEABLE_TYPE,
+                noteableType,
                 noteableData: { ...noteableDataMock, state: constants.CLOSED },
                 mountFunction: mount,
               });
 
-              jest.spyOn(wrapper.vm, 'reopenMergeRequest').mockResolvedValue();
+              jest.spyOn(wrapper.vm, 'reopenIssuable').mockResolvedValue();
 
               findCloseReopenButton().trigger('click');
 
-              expect(wrapper.vm.reopenMergeRequest).toHaveBeenCalled();
+              expect(wrapper.vm.reopenIssuable).toHaveBeenCalled();
             });
           });
 
-          it('should update MR count', async () => {
+          it(`shows an error when the API call fails`, async () => {
             mountComponent({
-              noteableType: constants.MERGE_REQUEST_NOTEABLE_TYPE,
+              noteableType,
+              noteableData: { ...noteableDataMock, state: constants.CLOSED },
               mountFunction: mount,
             });
 
-            jest.spyOn(wrapper.vm, 'closeMergeRequest').mockResolvedValue();
+            jest.spyOn(wrapper.vm, 'reopenIssuable').mockRejectedValue();
 
             await findCloseReopenButton().trigger('click');
 
-            expect(refreshUserMergeRequestCounts).toHaveBeenCalled();
+            await wrapper.vm.$nextTick;
+
+            expect(flash).toHaveBeenCalledWith(
+              `Something went wrong while reopening the ${type}. Please try again later.`,
+            );
           });
+        });
+
+        it('when merge request, should update MR count', async () => {
+          mountComponent({
+            noteableType: constants.MERGE_REQUEST_NOTEABLE_TYPE,
+            mountFunction: mount,
+          });
+
+          jest.spyOn(wrapper.vm, 'closeIssuable').mockResolvedValue();
+
+          await findCloseReopenButton().trigger('click');
+
+          expect(refreshUserMergeRequestCounts).toHaveBeenCalled();
         });
       });
     });

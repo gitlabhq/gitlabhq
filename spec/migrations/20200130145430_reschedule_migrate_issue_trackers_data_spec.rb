@@ -15,35 +15,35 @@ RSpec.describe RescheduleMigrateIssueTrackersData do
   end
 
   let!(:jira_service) do
-    services.create(id: 10, type: 'JiraService', properties: properties, category: 'issue_tracker')
+    services.create!(id: 10, type: 'JiraService', properties: properties, category: 'issue_tracker')
   end
 
   let!(:jira_service_nil) do
-    services.create(id: 11, type: 'JiraService', properties: nil, category: 'issue_tracker')
+    services.create!(id: 11, type: 'JiraService', properties: nil, category: 'issue_tracker')
   end
 
   let!(:bugzilla_service) do
-    services.create(id: 12, type: 'BugzillaService', properties: properties, category: 'issue_tracker')
+    services.create!(id: 12, type: 'BugzillaService', properties: properties, category: 'issue_tracker')
   end
 
   let!(:youtrack_service) do
-    services.create(id: 13, type: 'YoutrackService', properties: properties, category: 'issue_tracker')
+    services.create!(id: 13, type: 'YoutrackService', properties: properties, category: 'issue_tracker')
   end
 
   let!(:youtrack_service_empty) do
-    services.create(id: 14, type: 'YoutrackService', properties: '', category: 'issue_tracker')
+    services.create!(id: 14, type: 'YoutrackService', properties: '', category: 'issue_tracker')
   end
 
   let!(:gitlab_service) do
-    services.create(id: 15, type: 'GitlabIssueTrackerService', properties: properties, category: 'issue_tracker')
+    services.create!(id: 15, type: 'GitlabIssueTrackerService', properties: properties, category: 'issue_tracker')
   end
 
   let!(:gitlab_service_empty) do
-    services.create(id: 16, type: 'GitlabIssueTrackerService', properties: {}, category: 'issue_tracker')
+    services.create!(id: 16, type: 'GitlabIssueTrackerService', properties: {}, category: 'issue_tracker')
   end
 
   let!(:other_service) do
-    services.create(id: 17, type: 'OtherService', properties: properties, category: 'other_category')
+    services.create!(id: 17, type: 'OtherService', properties: properties, category: 'other_category')
   end
 
   before do
@@ -69,7 +69,7 @@ RSpec.describe RescheduleMigrateIssueTrackersData do
     let(:jira_tracker_data) { table(:jira_tracker_data) }
 
     let!(:valid_issue_tracker_data) do
-      issue_tracker_data.create(
+      issue_tracker_data.create!(
         service_id: bugzilla_service.id,
         encrypted_issues_url: 'http://url.com',
         encrypted_issues_url_iv: 'somevalue'
@@ -77,7 +77,7 @@ RSpec.describe RescheduleMigrateIssueTrackersData do
     end
 
     let!(:invalid_issue_tracker_data) do
-      issue_tracker_data.create(
+      issue_tracker_data.create!(
         service_id: bugzilla_service.id,
         encrypted_issues_url: 'http:url.com',
         encrypted_issues_url_iv: nil
@@ -85,7 +85,7 @@ RSpec.describe RescheduleMigrateIssueTrackersData do
     end
 
     let!(:valid_jira_tracker_data) do
-      jira_tracker_data.create(
+      jira_tracker_data.create!(
         service_id: bugzilla_service.id,
         encrypted_url: 'http://url.com',
         encrypted_url_iv: 'somevalue'
@@ -93,7 +93,7 @@ RSpec.describe RescheduleMigrateIssueTrackersData do
     end
 
     let!(:invalid_jira_tracker_data) do
-      jira_tracker_data.create(
+      jira_tracker_data.create!(
         service_id: bugzilla_service.id,
         encrypted_url: 'http://url.com',
         encrypted_url_iv: nil

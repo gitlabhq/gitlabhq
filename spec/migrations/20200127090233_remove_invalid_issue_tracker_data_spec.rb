@@ -7,7 +7,7 @@ RSpec.describe RemoveInvalidIssueTrackerData do
   let(:issue_tracker_data) { table(:issue_tracker_data) }
   let(:services) { table(:services) }
 
-  let(:service) { services.create(id: 1) }
+  let(:service) { services.create!(id: 1) }
   let(:data) do
     {
       service_id: service.id,
@@ -20,38 +20,38 @@ RSpec.describe RemoveInvalidIssueTrackerData do
     }
   end
 
-  let!(:valid_data) { issue_tracker_data.create(data) }
-  let!(:empty_data) { issue_tracker_data.create(service_id: service.id) }
+  let!(:valid_data) { issue_tracker_data.create!(data) }
+  let!(:empty_data) { issue_tracker_data.create!(service_id: service.id) }
   let!(:invalid_issues_url) do
     data[:encrypted_issues_url_iv] = nil
-    issue_tracker_data.create(data)
+    issue_tracker_data.create!(data)
   end
 
   let!(:missing_issues_url) do
     data[:encrypted_issues_url] = ''
     data[:encrypted_issues_url_iv] = nil
-    issue_tracker_data.create(data)
+    issue_tracker_data.create!(data)
   end
 
   let!(:invalid_new_isue_url) do
     data[:encrypted_new_issue_url_iv] = nil
-    issue_tracker_data.create(data)
+    issue_tracker_data.create!(data)
   end
 
   let!(:missing_new_issue_url) do
     data[:encrypted_new_issue_url] = ''
-    issue_tracker_data.create(data)
+    issue_tracker_data.create!(data)
   end
 
   let!(:invalid_project_url) do
     data[:encrypted_project_url_iv] = nil
-    issue_tracker_data.create(data)
+    issue_tracker_data.create!(data)
   end
 
   let!(:missing_project_url) do
     data[:encrypted_project_url] = nil
     data[:encrypted_project_url_iv] = nil
-    issue_tracker_data.create(data)
+    issue_tracker_data.create!(data)
   end
 
   it 'removes the invalid data' do

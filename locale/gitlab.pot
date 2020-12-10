@@ -9676,6 +9676,9 @@ msgstr ""
 msgid "DevopsAdoption|MRs"
 msgstr ""
 
+msgid "DevopsAdoption|Maximum %{maxSegments} segments allowed"
+msgstr ""
+
 msgid "DevopsAdoption|My segment"
 msgstr ""
 
@@ -25685,7 +25688,10 @@ msgstr ""
 msgid "Something went wrong while archiving a requirement."
 msgstr ""
 
-msgid "Something went wrong while closing the merge request. Please try again later"
+msgid "Something went wrong while closing the epic. Please try again later."
+msgstr ""
+
+msgid "Something went wrong while closing the merge request. Please try again later."
 msgstr ""
 
 msgid "Something went wrong while creating a requirement."
@@ -25772,7 +25778,10 @@ msgstr ""
 msgid "Something went wrong while reopening a requirement."
 msgstr ""
 
-msgid "Something went wrong while reopening the merge request. Please try again later"
+msgid "Something went wrong while reopening the epic. Please try again later."
+msgstr ""
+
+msgid "Something went wrong while reopening the merge request. Please try again later."
 msgstr ""
 
 msgid "Something went wrong while resolving this discussion. Please try again."

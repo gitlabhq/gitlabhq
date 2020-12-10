@@ -28,15 +28,15 @@ To make full use of Auto DevOps with Kubernetes, you need:
      [Auto Deploy for Kubernetes 1.16+](stages.md#kubernetes-116).
   1. NGINX Ingress. You can deploy it to your Kubernetes cluster by installing
      the [GitLab-managed app for Ingress](../../user/clusters/applications.md#ingress),
-     after configuring GitLab's Kubernetes integration in the previous step.
+     after configuring the GitLab integration with Kubernetes in the previous step.
 
      Alternatively, you can use the
      [`nginx-ingress`](https://github.com/helm/charts/tree/master/stable/nginx-ingress)
      Helm chart to install Ingress manually.
 
      NOTE:
-     If you use your own Ingress instead of the one provided by GitLab's managed
-     apps, ensure you're running at least version 0.9.0 of NGINX Ingress and
+     If you use your own Ingress instead of the one provided by GitLab Managed
+     Apps, ensure you're running at least version 0.9.0 of NGINX Ingress and
      [enable Prometheus metrics](https://github.com/helm/charts/tree/master/stable/nginx-ingress#prometheus-metrics)
      for the response metrics to appear. You must also
      [annotate](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/)
@@ -64,7 +64,7 @@ To make full use of Auto DevOps with Kubernetes, you need:
   You can configure Docker-based runners to autoscale as well, using
   [Docker Machine](https://docs.gitlab.com/runner/install/autoscaling.html).
 
-  If you've configured GitLab's Kubernetes integration in the first step, you
+  If you've configured the GitLab integration with Kubernetes in the first step, you
   can deploy it to your cluster by installing the
   [GitLab-managed app for GitLab Runner](../../user/clusters/applications.md#gitlab-runner).
 
@@ -77,7 +77,7 @@ To make full use of Auto DevOps with Kubernetes, you need:
 
   To enable Auto Monitoring, you need Prometheus installed either inside or
   outside your cluster, and configured to scrape your Kubernetes cluster.
-  If you've configured GitLab's Kubernetes integration, you can deploy it to
+  If you've configured the GitLab integration with Kubernetes, you can deploy it to
   your cluster by installing the
   [GitLab-managed app for Prometheus](../../user/clusters/applications.md#prometheus).
 
@@ -95,8 +95,8 @@ To make full use of Auto DevOps with Kubernetes, you need:
   a native Kubernetes certificate management controller that helps with issuing
   certificates. Installing cert-manager on your cluster issues a
   [Let’s Encrypt](https://letsencrypt.org/) certificate and ensures the
-  certificates are valid and up-to-date. If you've configured GitLab's Kubernetes
-  integration, you can deploy it to your cluster by installing the
+  certificates are valid and up-to-date. If you've configured the GitLab integration
+  with Kubernetes, you can deploy it to your cluster by installing the
   [GitLab-managed app for cert-manager](../../user/clusters/applications.md#cert-manager).
 
 If you don't have Kubernetes or Prometheus installed, then

@@ -25,7 +25,7 @@ pre-written code blocks or database queries against a given environment.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45912) in GitLab 11.4.
 
-The JupyterHub app offered via GitLab’s Kubernetes integration now ships
+The JupyterHub app offered via the GitLab Kubernetes integration now ships
 with Nurtch’s Rubix library, providing a simple way to create DevOps
 runbooks. A sample runbook is provided, showcasing common operations. While
 Rubix makes it simple to create common Kubernetes and AWS workflows, you can
@@ -41,7 +41,7 @@ To create an executable runbook, you need:
 
 - **Kubernetes** - A Kubernetes cluster is required to deploy the rest of the
   applications. The simplest way to get started is to add a cluster using one
-  of [GitLab's integrations](../add_remove_clusters.md#create-new-cluster).
+  of the [GitLab integrations](../add_remove_clusters.md#create-new-cluster).
 - **Ingress** - Ingress can provide load balancing, SSL termination, and name-based
   virtual hosting. It acts as a web proxy for your applications.
 - **JupyterHub** - [JupyterHub](https://jupyterhub.readthedocs.io/) is a multi-user

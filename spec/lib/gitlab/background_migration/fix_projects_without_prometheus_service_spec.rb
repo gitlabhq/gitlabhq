@@ -33,8 +33,8 @@ RSpec.describe Gitlab::BackgroundMigration::FixProjectsWithoutPrometheusService,
   let(:clusters) { table(:clusters) }
   let(:cluster_groups) { table(:cluster_groups) }
   let(:clusters_applications_prometheus) { table(:clusters_applications_prometheus) }
-  let(:namespace) { namespaces.create(name: 'user', path: 'user') }
-  let(:project) { projects.create(namespace_id: namespace.id) }
+  let(:namespace) { namespaces.create!(name: 'user', path: 'user') }
+  let(:project) { projects.create!(namespace_id: namespace.id) }
 
   let(:application_statuses) do
     {
@@ -71,7 +71,7 @@ RSpec.describe Gitlab::BackgroundMigration::FixProjectsWithoutPrometheusService,
       context 'non prometheus services' do
         it 'does not change them' do
           other_type = 'SomeOtherService'
-          services.create(service_params_for(project.id, active: true, type: other_type))
+          services.create!(service_params_for(project.id, active: true, type: other_type))
 
           expect { subject.perform(project.id, project.id + 1) }.not_to change { services.where(type: other_type).order(:id).map { |row| row.attributes } }
         end
@@ -85,7 +85,7 @@ RSpec.describe Gitlab::BackgroundMigration::FixProjectsWithoutPrometheusService,
 
         context 'template is present for prometheus services' do
           it 'creates missing services entries', :aggregate_failures do
-            services.create(service_params_for(nil, template: true, properties: { 'from_template' => true }.to_json))
+            services.create!(service_params_for(nil, template: true, properties: { 'from_template' => true }.to_json))
 
             expect { subject.perform(project.id, project.id + 1) }.to change { services.count }.by(1)
             updated_rows = services.where(template: false).order(:id).map { |row| row.attributes.slice(*columns).symbolize_keys }
@@ -97,7 +97,7 @@ RSpec.describe Gitlab::BackgroundMigration::FixProjectsWithoutPrometheusService,
       context 'prometheus integration services exist' do
         context 'in active state' do
           it 'does not change them' do
-            services.create(service_params_for(project.id, active: true))
+            services.create!(service_params_for(project.id, active: true))
 
             expect { subject.perform(project.id, project.id + 1) }.not_to change { services.order(:id).map { |row| row.attributes } }
           end
@@ -105,7 +105,7 @@ RSpec.describe Gitlab::BackgroundMigration::FixProjectsWithoutPrometheusService,
 
         context 'not in active state' do
           it 'sets active attribute to true' do
-            service = services.create(service_params_for(project.id, active: false))
+            service = services.create!(service_params_for(project.id, active: false))
 
             expect { subject.perform(project.id, project.id + 1) }.to change { service.reload.active? }.from(false).to(true)
           end
@@ -113,7 +113,7 @@ RSpec.describe Gitlab::BackgroundMigration::FixProjectsWithoutPrometheusService,
           context 'prometheus services are configured manually ' do
             it 'does not change them' do
               properties = '{"api_url":"http://test.dev","manual_configuration":"1"}'
-              services.create(service_params_for(project.id, properties: properties, active: false))
+              services.create!(service_params_for(project.id, properties: properties, active: false))
 
               expect { subject.perform(project.id, project.id + 1) }.not_to change { services.order(:id).map { |row| row.attributes } }
             end
@@ -123,11 +123,11 @@ RSpec.describe Gitlab::BackgroundMigration::FixProjectsWithoutPrometheusService,
     end
 
     context 'k8s cluster shared on instance level' do
-      let(:cluster) { clusters.create(name: 'cluster', cluster_type: cluster_types[:instance_type]) }
+      let(:cluster) { clusters.create!(name: 'cluster', cluster_type: cluster_types[:instance_type]) }
 
       context 'with installed prometheus application' do
         before do
-          clusters_applications_prometheus.create(cluster_id: cluster.id, status: application_statuses[:installed], version: '123')
+          clusters_applications_prometheus.create!(cluster_id: cluster.id, status: application_statuses[:installed], version: '123')
         end
 
         it_behaves_like 'fix services entries state'
@@ -135,7 +135,7 @@ RSpec.describe Gitlab::BackgroundMigration::FixProjectsWithoutPrometheusService,
 
       context 'with updated prometheus application' do
         before do
-          clusters_applications_prometheus.create(cluster_id: cluster.id, status: application_statuses[:updated], version: '123')
+          clusters_applications_prometheus.create!(cluster_id: cluster.id, status: application_statuses[:updated], version: '123')
         end
 
         it_behaves_like 'fix services entries state'
@@ -143,7 +143,7 @@ RSpec.describe Gitlab::BackgroundMigration::FixProjectsWithoutPrometheusService,
 
       context 'with errored prometheus application' do
         before do
-          clusters_applications_prometheus.create(cluster_id: cluster.id, status: application_statuses[:errored], version: '123')
+          clusters_applications_prometheus.create!(cluster_id: cluster.id, status: application_statuses[:errored], version: '123')
         end
 
         it 'does not change services entries' do
@@ -153,26 +153,26 @@ RSpec.describe Gitlab::BackgroundMigration::FixProjectsWithoutPrometheusService,
     end
 
     context 'k8s cluster shared on group level' do
-      let(:cluster) { clusters.create(name: 'cluster', cluster_type: cluster_types[:group_type]) }
+      let(:cluster) { clusters.create!(name: 'cluster', cluster_type: cluster_types[:group_type]) }
 
       before do
-        cluster_groups.create(cluster_id: cluster.id, group_id: project.namespace_id)
+        cluster_groups.create!(cluster_id: cluster.id, group_id: project.namespace_id)
       end
 
       context 'with installed prometheus application' do
         before do
-          clusters_applications_prometheus.create(cluster_id: cluster.id, status: application_statuses[:installed], version: '123')
+          clusters_applications_prometheus.create!(cluster_id: cluster.id, status: application_statuses[:installed], version: '123')
         end
 
         it_behaves_like 'fix services entries state'
 
         context 'second k8s cluster without application available' do
-          let(:namespace_2) { namespaces.create(name: 'namespace2', path: 'namespace2') }
-          let(:project_2) { projects.create(namespace_id: namespace_2.id) }
+          let(:namespace_2) { namespaces.create!(name: 'namespace2', path: 'namespace2') }
+          let(:project_2) { projects.create!(namespace_id: namespace_2.id) }
 
           before do
-            cluster_2 = clusters.create(name: 'cluster2', cluster_type: cluster_types[:group_type])
-            cluster_groups.create(cluster_id: cluster_2.id, group_id: project_2.namespace_id)
+            cluster_2 = clusters.create!(name: 'cluster2', cluster_type: cluster_types[:group_type])
+            cluster_groups.create!(cluster_id: cluster_2.id, group_id: project_2.namespace_id)
           end
 
           it 'changed only affected services entries' do
@@ -184,7 +184,7 @@ RSpec.describe Gitlab::BackgroundMigration::FixProjectsWithoutPrometheusService,
 
       context 'with updated prometheus application' do
         before do
-          clusters_applications_prometheus.create(cluster_id: cluster.id, status: application_statuses[:updated], version: '123')
+          clusters_applications_prometheus.create!(cluster_id: cluster.id, status: application_statuses[:updated], version: '123')
         end
 
         it_behaves_like 'fix services entries state'
@@ -192,7 +192,7 @@ RSpec.describe Gitlab::BackgroundMigration::FixProjectsWithoutPrometheusService,
 
       context 'with errored prometheus application' do
         before do
-          clusters_applications_prometheus.create(cluster_id: cluster.id, status: application_statuses[:errored], version: '123')
+          clusters_applications_prometheus.create!(cluster_id: cluster.id, status: application_statuses[:errored], version: '123')
         end
 
         it 'does not change services entries' do
@@ -207,7 +207,7 @@ RSpec.describe Gitlab::BackgroundMigration::FixProjectsWithoutPrometheusService,
 
         context 'with inactive service' do
           it 'does not change services entries' do
-            services.create(service_params_for(project.id))
+            services.create!(service_params_for(project.id))
 
             expect { subject.perform(project.id, project.id + 1) }.not_to change { services.order(:id).map { |row| row.attributes } }
           end
@@ -216,13 +216,13 @@ RSpec.describe Gitlab::BackgroundMigration::FixProjectsWithoutPrometheusService,
     end
 
     context 'k8s cluster for single project' do
-      let(:cluster) { clusters.create(name: 'cluster', cluster_type: cluster_types[:project_type]) }
+      let(:cluster) { clusters.create!(name: 'cluster', cluster_type: cluster_types[:project_type]) }
       let(:cluster_projects) { table(:cluster_projects) }
 
       context 'with installed prometheus application' do
         before do
-          cluster_projects.create(cluster_id: cluster.id, project_id: project.id)
-          clusters_applications_prometheus.create(cluster_id: cluster.id, status: application_statuses[:installed], version: '123')
+          cluster_projects.create!(cluster_id: cluster.id, project_id: project.id)
+          clusters_applications_prometheus.create!(cluster_id: cluster.id, status: application_statuses[:installed], version: '123')
         end
 
         it 'does not change services entries' do

@@ -59,6 +59,6 @@
 
         - if can?(current_user, :admin_milestone, milestone)
           - if milestone.closed?
-            = link_to s_('Milestones|Reopen Milestone'), milestone_path(milestone, milestone: { state_event: :activate }), method: :put, class: "btn gl-button btn-sm btn-grouped btn-reopen"
+            = link_to s_('Milestones|Reopen Milestone'), milestone_path(milestone, milestone: { state_event: :activate }), method: :put, class: "btn gl-button btn-sm btn-grouped"
           - else
             = link_to s_('Milestones|Close Milestone'), milestone_path(milestone, milestone: { state_event: :close }), method: :put, class: "btn gl-button btn-warning-secondary btn-sm btn-grouped btn-close"

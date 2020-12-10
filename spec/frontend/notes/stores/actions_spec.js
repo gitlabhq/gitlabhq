@@ -177,7 +177,7 @@ describe('Actions Notes Store', () => {
     describe('closeMergeRequest', () => {
       it('sets state as closed', done => {
         store
-          .dispatch('closeMergeRequest', { notesData: { closeIssuePath: '' } })
+          .dispatch('closeIssuable', { notesData: { closeIssuePath: '' } })
           .then(() => {
             expect(store.state.noteableData.state).toEqual('closed');
             expect(store.state.isToggleStateButtonLoading).toEqual(false);
@@ -190,7 +190,7 @@ describe('Actions Notes Store', () => {
     describe('reopenMergeRequest', () => {
       it('sets state as reopened', done => {
         store
-          .dispatch('reopenMergeRequest', { notesData: { reopenIssuePath: '' } })
+          .dispatch('reopenIssuable', { notesData: { reopenIssuePath: '' } })
           .then(() => {
             expect(store.state.noteableData.state).toEqual('reopened');
             expect(store.state.isToggleStateButtonLoading).toEqual(false);

@@ -977,12 +977,12 @@ body.navless {
   border-color: #e3e3e3;
   color: #303030;
 }
-.btn.btn-success, .btn.btn-register {
+.btn.btn-success {
   background-color: #108548;
   border-color: #217645;
   color: #fff;
 }
-.btn.btn-success:active, .btn.btn-success.active, .btn.btn-register:active, .btn.btn-register.active {
+.btn.btn-success:active, .btn.btn-success.active {
   box-shadow: rgba(0, 0, 0, 0.16);
   background-color: #24663b;
   border-color: #0d532a;

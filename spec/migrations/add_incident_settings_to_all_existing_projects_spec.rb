@@ -38,7 +38,7 @@ RSpec.describe AddIncidentSettingsToAllExistingProjects, :migration do
   RSpec.shared_context 'with incident settings' do
     let(:existing_create_issue) { false }
     before do
-      project_incident_management_settings.create(
+      project_incident_management_settings.create!(
         project_id: project.id,
         create_issue: existing_create_issue
       )

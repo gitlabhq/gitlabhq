@@ -1,3 +1,5 @@
+import { __ } from '~/locale';
+
 export const DISCUSSION_NOTE = 'DiscussionNote';
 export const DIFF_NOTE = 'DiffNote';
 export const DISCUSSION = 'discussion';
@@ -35,4 +37,17 @@ export const DISCUSSION_FILTER_TYPES = {
   ALL: 'all',
   COMMENTS: 'comments',
   HISTORY: 'history',
+};
+
+export const toggleStateErrorMessage = {
+  Epic: {
+    [CLOSED]: __('Something went wrong while reopening the epic. Please try again later.'),
+    [OPENED]: __('Something went wrong while closing the epic. Please try again later.'),
+    [REOPENED]: __('Something went wrong while closing the epic. Please try again later.'),
+  },
+  MergeRequest: {
+    [CLOSED]: __('Something went wrong while reopening the merge request. Please try again later.'),
+    [OPENED]: __('Something went wrong while closing the merge request. Please try again later.'),
+    [REOPENED]: __('Something went wrong while closing the merge request. Please try again later.'),
+  },
 };

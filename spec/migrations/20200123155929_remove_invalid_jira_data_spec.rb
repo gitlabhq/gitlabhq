@@ -7,7 +7,7 @@ RSpec.describe RemoveInvalidJiraData do
   let(:jira_tracker_data) { table(:jira_tracker_data) }
   let(:services) { table(:services) }
 
-  let(:service) { services.create(id: 1) }
+  let(:service) { services.create!(id: 1) }
   let(:data) do
     {
       service_id: service.id,
@@ -22,49 +22,49 @@ RSpec.describe RemoveInvalidJiraData do
     }
   end
 
-  let!(:valid_data) { jira_tracker_data.create(data) }
-  let!(:empty_data) { jira_tracker_data.create(service_id: service.id) }
+  let!(:valid_data) { jira_tracker_data.create!(data) }
+  let!(:empty_data) { jira_tracker_data.create!(service_id: service.id) }
   let!(:invalid_api_url) do
     data[:encrypted_api_url_iv] = nil
-    jira_tracker_data.create(data)
+    jira_tracker_data.create!(data)
   end
 
   let!(:missing_api_url) do
     data[:encrypted_api_url] = ''
     data[:encrypted_api_url_iv] = nil
-    jira_tracker_data.create(data)
+    jira_tracker_data.create!(data)
   end
 
   let!(:invalid_url) do
     data[:encrypted_url_iv] = nil
-    jira_tracker_data.create(data)
+    jira_tracker_data.create!(data)
   end
 
   let!(:missing_url) do
     data[:encrypted_url] = ''
-    jira_tracker_data.create(data)
+    jira_tracker_data.create!(data)
   end
 
   let!(:invalid_username) do
     data[:encrypted_username_iv] = nil
-    jira_tracker_data.create(data)
+    jira_tracker_data.create!(data)
   end
 
   let!(:missing_username) do
     data[:encrypted_username] = nil
     data[:encrypted_username_iv] = nil
-    jira_tracker_data.create(data)
+    jira_tracker_data.create!(data)
   end
 
   let!(:invalid_password) do
     data[:encrypted_password_iv] = nil
-    jira_tracker_data.create(data)
+    jira_tracker_data.create!(data)
   end
 
   let!(:missing_password) do
     data[:encrypted_password] = nil
     data[:encrypted_username_iv] = nil
-    jira_tracker_data.create(data)
+    jira_tracker_data.create!(data)
   end
 
   it 'removes the invalid data' do

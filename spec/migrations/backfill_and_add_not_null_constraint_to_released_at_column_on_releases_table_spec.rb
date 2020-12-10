@@ -13,7 +13,7 @@ RSpec.describe BackfillAndAddNotNullConstraintToReleasedAtColumnOnReleasesTable 
   it 'fills released_at with the value of created_at' do
     created_at_a = Time.zone.parse('2019-02-10T08:00:00Z')
     created_at_b = Time.zone.parse('2019-03-10T18:00:00Z')
-    namespace = namespaces.create(name: 'foo', path: 'foo')
+    namespace = namespaces.create!(name: 'foo', path: 'foo')
     project = projects.create!(namespace_id: namespace.id)
     release_a = releases.create!(project_id: project.id, created_at: created_at_a)
     release_b = releases.create!(project_id: project.id, created_at: created_at_b)

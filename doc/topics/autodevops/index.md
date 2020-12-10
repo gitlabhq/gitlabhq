@@ -76,7 +76,7 @@ innovative work done by [Heroku](https://www.heroku.com/) and goes beyond it
 in multiple ways:
 
 - Auto DevOps works with any Kubernetes cluster; you're not limited to running
-  on GitLab's infrastructure. (Note that many features also work without Kubernetes).
+  on infrastructure managed by GitLab. (Note that many features also work without Kubernetes).
 - There is no additional cost (no markup on the infrastructure costs), and you
   can use a Kubernetes cluster you host or Containers as a Service on any
   public cloud (for example, [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine/)).
@@ -316,7 +316,7 @@ simplify configuration and prevent any unforeseen issues.
 
 ### Install applications behind a proxy
 
-GitLab's Helm integration does not support installing applications when
+The GitLab integration with Helm does not support installing applications when
 behind a proxy. Users who want to do so must inject their proxy settings
 into the installation pods at runtime, such as by using a
 [`PodPreset`](https://kubernetes.io/docs/concepts/workloads/pods/podpreset/):
