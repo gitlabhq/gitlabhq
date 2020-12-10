@@ -1,5 +1,0 @@
----
-title: Fix error 500s creating projects concurrently
-merge_request: 48571
-author:
-type: fixed

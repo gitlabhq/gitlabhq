@@ -591,6 +591,21 @@ type AlertManagementAlertStatusCountsType {
 }
 
 """
+Filters the alerts based on given domain
+"""
+enum AlertManagementDomainFilter {
+  """
+  Alerts for operations domain 
+  """
+  operations
+
+  """
+  Alerts for threat monitoring domain
+  """
+  threat_monitoring
+}
+
+"""
 An endpoint and credentials used to accept alerts for a project
 """
 type AlertManagementHttpIntegration implements AlertManagementIntegration {
@@ -15736,6 +15751,11 @@ type Pipeline {
     before: String
 
     """
+    Filter query for given domain
+    """
+    domain: AlertManagementDomainFilter! = operations
+
+    """
     Returns the first _n_ elements from the list.
     """
     first: Int
@@ -16026,6 +16046,11 @@ type Project {
     Username of a user assigned to the issue
     """
     assigneeUsername: String
+
+    """
+    Filter query for given domain
+    """
+    domain: AlertManagementDomainFilter! = operations
 
     """
     IID of the alert. For example, "1"
@@ -24957,6 +24982,11 @@ type Vulnerability implements Noteable {
   COVERAGE_FUZZING, API_FUZZING)
   """
   reportType: VulnerabilityReportType
+
+  """
+  Timestamp of when the vulnerability state was changed to resolved
+  """
+  resolvedAt: Time
 
   """
   Indicates whether the vulnerability is fixed on the default branch or not

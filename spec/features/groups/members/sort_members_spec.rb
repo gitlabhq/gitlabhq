@@ -17,14 +17,20 @@ RSpec.describe 'Groups > Members > Sort members', :js do
   end
 
   context 'when `group_members_filtered_search` feature flag is enabled' do
-    dropdown_toggle_selector = '[data-testid="members-sort-dropdown"] > button'
+    def expect_sort_by(text, sort_direction)
+      within('[data-testid="members-sort-dropdown"]') do
+        expect(page).to have_css('button[aria-haspopup="true"]', text: text)
+        expect(page).to have_button("Sorting Direction: #{sort_direction == :asc ? 'Ascending' : 'Descending'}")
+      end
+    end
 
-    it 'sorts account by default' do
+    it 'sorts by account by default' do
       visit_members_list(sort: nil)
 
       expect(first_row.text).to include(owner.name)
       expect(second_row.text).to include(developer.name)
-      expect(page).to have_css(dropdown_toggle_selector, text: 'Account, ascending')
+
+      expect_sort_by('Account', :asc)
     end
 
     it 'sorts by max role ascending' do
@@ -32,7 +38,8 @@ RSpec.describe 'Groups > Members > Sort members', :js do
 
       expect(first_row.text).to include(developer.name)
       expect(second_row.text).to include(owner.name)
-      expect(page).to have_css(dropdown_toggle_selector, text: 'Max role, ascending')
+
+      expect_sort_by('Max role', :asc)
     end
 
     it 'sorts by max role descending' do
@@ -40,7 +47,8 @@ RSpec.describe 'Groups > Members > Sort members', :js do
 
       expect(first_row.text).to include(owner.name)
       expect(second_row.text).to include(developer.name)
-      expect(page).to have_css(dropdown_toggle_selector, text: 'Max role, descending')
+
+      expect_sort_by('Max role', :desc)
     end
 
     it 'sorts by access granted ascending' do
@@ -48,7 +56,8 @@ RSpec.describe 'Groups > Members > Sort members', :js do
 
       expect(first_row.text).to include(developer.name)
       expect(second_row.text).to include(owner.name)
-      expect(page).to have_css(dropdown_toggle_selector, text: 'Access granted, ascending')
+
+      expect_sort_by('Access granted', :asc)
     end
 
     it 'sorts by access granted descending' do
@@ -56,7 +65,8 @@ RSpec.describe 'Groups > Members > Sort members', :js do
 
       expect(first_row.text).to include(owner.name)
       expect(second_row.text).to include(developer.name)
-      expect(page).to have_css(dropdown_toggle_selector, text: 'Access granted, descending')
+
+      expect_sort_by('Access granted', :desc)
     end
 
     it 'sorts by account ascending' do
@@ -64,7 +74,8 @@ RSpec.describe 'Groups > Members > Sort members', :js do
 
       expect(first_row.text).to include(owner.name)
       expect(second_row.text).to include(developer.name)
-      expect(page).to have_css(dropdown_toggle_selector, text: 'Account, ascending')
+
+      expect_sort_by('Account', :asc)
     end
 
     it 'sorts by account descending' do
@@ -72,7 +83,8 @@ RSpec.describe 'Groups > Members > Sort members', :js do
 
       expect(first_row.text).to include(developer.name)
       expect(second_row.text).to include(owner.name)
-      expect(page).to have_css(dropdown_toggle_selector, text: 'Account, descending')
+
+      expect_sort_by('Account', :desc)
     end
 
     it 'sorts by last sign-in ascending', :clean_gitlab_redis_shared_state do
@@ -80,7 +92,8 @@ RSpec.describe 'Groups > Members > Sort members', :js do
 
       expect(first_row.text).to include(owner.name)
       expect(second_row.text).to include(developer.name)
-      expect(page).to have_css(dropdown_toggle_selector, text: 'Last sign-in, ascending')
+
+      expect_sort_by('Last sign-in', :asc)
     end
 
     it 'sorts by last sign-in descending', :clean_gitlab_redis_shared_state do
@@ -88,7 +101,8 @@ RSpec.describe 'Groups > Members > Sort members', :js do
 
       expect(first_row.text).to include(developer.name)
       expect(second_row.text).to include(owner.name)
-      expect(page).to have_css(dropdown_toggle_selector, text: 'Last sign-in, descending')
+
+      expect_sort_by('Last sign-in', :desc)
     end
   end
 

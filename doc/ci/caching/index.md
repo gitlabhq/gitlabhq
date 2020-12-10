@@ -541,7 +541,7 @@ next run of the pipeline, the cache is stored in a different location.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41249) in GitLab 10.4.
 
 If you want to avoid editing `.gitlab-ci.yml`, you can clear the cache
-via GitLab's UI:
+via the GitLab UI:
 
 1. Navigate to your project's **CI/CD > Pipelines** page.
 1. Click on the **Clear runner caches** button to clean up the cache.

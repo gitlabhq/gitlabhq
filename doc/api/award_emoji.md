@@ -10,21 +10,22 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 An [awarded emoji](../user/award_emojis.md) tells a thousand words.
 
-Emoji can be awarded on the following (known as "awardables"):
+We call GitLab objects on which you can award an emoji "awardables". You can award emojis on the following:
 
+- [Epics](../user/group/epics/index.md) ([API](epics.md)).
 - [Issues](../user/project/issues/index.md) ([API](issues.md)).
 - [Merge requests](../user/project/merge_requests/index.md) ([API](merge_requests.md)).
 - [Snippets](../user/snippets.md) ([API](snippets.md)).
 
-Emoji can also [be awarded](../user/award_emojis.md#award-emoji-for-comments) on comments (also known as notes). See also [Notes API](notes.md).
+Emojis can also [be awarded](../user/award_emojis.md#award-emoji-for-comments) on comments (also known as notes). See also [Notes API](notes.md).
 
 ## Issues, merge requests, and snippets
 
 See [Award Emoji on Comments](#award-emoji-on-comments) for information on using these endpoints with comments.
 
-### List an awardable's award emoji
+### List an awardable's award emojis
 
-Get a list of all award emoji for a specified awardable.
+Get a list of all award emojis for a specified awardable.
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/award_emoji
@@ -174,10 +175,9 @@ Example Response:
 
 ### Delete an award emoji
 
-Sometimes it's just not meant to be and you'll have to remove the award.
+Sometimes it's just not meant to be and you need to remove the award.
 
-NOTE:
-Only available to administrators or the author of the award.
+Only an administrator or the author of the award can delete an award emoji.
 
 ```plaintext
 DELETE /projects/:id/issues/:issue_iid/award_emoji/:award_id
@@ -202,13 +202,13 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 Comments (also known as notes) are a sub-resource of issues, merge requests, and snippets.
 
 NOTE:
-The examples below describe working with award emoji on comments for an issue, but can be
-easily adapted for comments on a merge request or on a snippet. Therefore, you have to replace
+The examples below describe working with award emojis on an issue's comments, but can be
+adapted to comments on merge requests and snippets. Therefore, you have to replace
 `issue_iid` either with `merge_request_iid` or with the `snippet_id`.
 
-### List a comment's award emoji
+### List a comment's award emojis
 
-Get all award emoji for a comment (note).
+Get all award emojis for a comment (note).
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji
@@ -341,10 +341,9 @@ Example response:
 
 ### Delete an award emoji from a comment
 
-Sometimes it's just not meant to be and you'll have to remove the award.
+Sometimes it's just not meant to be and you need to remove the award.
 
-NOTE:
-Only available to administrators or the author of the award.
+Only an administrator or the author of the award can delete an award emoji.
 
 ```plaintext
 DELETE /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji/:award_id

@@ -1481,6 +1481,29 @@
           "possibleTypes": null
         },
         {
+          "kind": "ENUM",
+          "name": "AlertManagementDomainFilter",
+          "description": "Filters the alerts based on given domain",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "operations",
+              "description": "Alerts for operations domain ",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "threat_monitoring",
+              "description": "Alerts for threat monitoring domain",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
           "name": "AlertManagementHttpIntegration",
           "description": "An endpoint and credentials used to accept alerts for a project",
@@ -47849,6 +47872,20 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "domain",
+                  "description": "Filter query for given domain",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "AlertManagementDomainFilter",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": "operations"
+                },
+                {
                   "name": "search",
                   "description": "Search query for title, description, service, or monitoring_tool.",
                   "type": {
@@ -47951,6 +47988,20 @@
                     "ofType": null
                   },
                   "defaultValue": null
+                },
+                {
+                  "name": "domain",
+                  "description": "Filter query for given domain",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "AlertManagementDomainFilter",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": "operations"
                 },
                 {
                   "name": "search",
@@ -72619,6 +72670,20 @@
               "type": {
                 "kind": "ENUM",
                 "name": "VulnerabilityReportType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "resolvedAt",
+              "description": "Timestamp of when the vulnerability state was changed to resolved",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
                 "ofType": null
               },
               "isDeprecated": false,

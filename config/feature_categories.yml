@@ -43,7 +43,6 @@
 - dynamic_application_security_testing
 - editor_extension
 - epics
-- epic_tracking
 - error_tracking
 - feature_flags
 - five_minute_production_app
@@ -73,7 +72,6 @@
 - live_preview
 - load_testing
 - logging
-- malware_scanning
 - memory
 - merge_trains
 - metrics
@@ -84,7 +82,6 @@
 - package_registry
 - pages
 - pipeline_authoring
-- pki_management
 - planning_analytics
 - product_analytics
 - projects

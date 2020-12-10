@@ -58,7 +58,7 @@ For more examples on artifacts, follow the [artifacts reference in
 > - Requires GitLab Runner 11.2 and above.
 
 The `artifacts:reports` keyword is used for collecting test reports, code quality
-reports, and security reports from jobs. It also exposes these reports in GitLab's
+reports, and security reports from jobs. It also exposes these reports in the GitLab
 UI (merge requests, pipeline views, and security dashboards).
 
 The test reports are collected regardless of the job results (success or failure).

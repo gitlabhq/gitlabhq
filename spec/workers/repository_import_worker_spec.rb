@@ -58,6 +58,7 @@ RSpec.describe RepositoryImportWorker do
           subject.perform(project.id)
         end.to raise_error(RuntimeError, error)
         expect(import_state.reload.jid).not_to be_nil
+        expect(import_state.status).to eq('failed')
       end
 
       it 'updates the error on Import/Export' do
@@ -74,6 +75,7 @@ RSpec.describe RepositoryImportWorker do
         end.to raise_error(RuntimeError, error)
 
         expect(import_state.reload.last_error).not_to be_nil
+        expect(import_state.status).to eq('failed')
       end
     end
 

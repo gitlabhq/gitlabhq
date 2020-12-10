@@ -1,0 +1,5 @@
+---
+title: Fail import state whenever repository import fails
+merge_request: 49682
+author:
+type: fixed

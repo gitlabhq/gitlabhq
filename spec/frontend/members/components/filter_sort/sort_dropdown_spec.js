@@ -1,8 +1,8 @@
 import { mount, createLocalVue } from '@vue/test-utils';
-import { within } from '@testing-library/dom';
 import Vuex from 'vuex';
-import { GlDropdownItem } from '@gitlab/ui';
+import { GlSorting, GlSortingItem } from '@gitlab/ui';
 import SortDropdown from '~/members/components/filter_sort/sort_dropdown.vue';
+import * as urlUtilities from '~/lib/utils/url_utility';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -34,10 +34,13 @@ describe('SortDropdown', () => {
     });
   };
 
+  const findSortingComponent = () => wrapper.find(GlSorting);
+  const findSortDirectionToggle = () =>
+    findSortingComponent().find('button[title="Sort direction"]');
   const findDropdownToggle = () => wrapper.find('button[aria-haspopup="true"]');
   const findDropdownItemByText = text =>
     wrapper
-      .findAll(GlDropdownItem)
+      .findAll(GlSortingItem)
       .wrappers.find(dropdownItemWrapper => dropdownItemWrapper.text() === text);
 
   describe('dropdown options', () => {
@@ -54,36 +57,20 @@ describe('SortDropdown', () => {
 
       const expectedDropdownItems = [
         {
-          label: 'Account, ascending',
+          label: 'Account',
           url: `${EXPECTED_BASE_URL}name_asc`,
         },
         {
-          label: 'Account, descending',
-          url: `${EXPECTED_BASE_URL}name_desc`,
-        },
-        {
-          label: 'Access granted, ascending',
+          label: 'Access granted',
           url: `${EXPECTED_BASE_URL}last_joined`,
         },
         {
-          label: 'Access granted, descending',
-          url: `${EXPECTED_BASE_URL}oldest_joined`,
-        },
-        {
-          label: 'Max role, ascending',
+          label: 'Max role',
           url: `${EXPECTED_BASE_URL}access_level_asc`,
         },
         {
-          label: 'Max role, descending',
-          url: `${EXPECTED_BASE_URL}access_level_desc`,
-        },
-        {
-          label: 'Last sign-in, ascending',
+          label: 'Last sign-in',
           url: `${EXPECTED_BASE_URL}recent_sign_in`,
-        },
-        {
-          label: 'Last sign-in, descending',
-          url: `${EXPECTED_BASE_URL}oldest_sign_in`,
         },
       ];
 
@@ -102,7 +89,7 @@ describe('SortDropdown', () => {
 
       createComponent();
 
-      expect(findDropdownItemByText('Max role, ascending').props('isChecked')).toBe(true);
+      expect(findDropdownItemByText('Max role').vm.$attrs.active).toBe(true);
     });
   });
 
@@ -112,10 +99,11 @@ describe('SortDropdown', () => {
       window.location = new URL(URL_HOST);
     });
 
-    it('defaults to sorting by "Account, ascending"', () => {
+    it('defaults to sorting by "Account" in ascending order', () => {
       createComponent();
 
-      expect(findDropdownToggle().text()).toBe('Account, ascending');
+      expect(findSortingComponent().props('isAscending')).toBe(true);
+      expect(findDropdownToggle().text()).toBe('Account');
     });
 
     it('sets text as selected sort option', () => {
@@ -123,13 +111,52 @@ describe('SortDropdown', () => {
 
       createComponent();
 
-      expect(findDropdownToggle().text()).toBe('Max role, ascending');
+      expect(findDropdownToggle().text()).toBe('Max role');
     });
   });
 
-  it('renders dropdown label', () => {
-    createComponent();
+  describe('sort direction toggle', () => {
+    beforeEach(() => {
+      delete window.location;
+      window.location = new URL(URL_HOST);
 
-    expect(within(wrapper.element).queryByText('Sort by')).not.toBe(null);
+      jest.spyOn(urlUtilities, 'visitUrl');
+    });
+
+    describe('when current sort direction is ascending', () => {
+      beforeEach(() => {
+        window.location.search = '?sort=access_level_asc';
+
+        createComponent();
+      });
+
+      describe('when sort direction toggle is clicked', () => {
+        beforeEach(() => {
+          findSortDirectionToggle().trigger('click');
+        });
+
+        it('sorts in descending order', () => {
+          expect(urlUtilities.visitUrl).toHaveBeenCalledWith(`${URL_HOST}?sort=access_level_desc`);
+        });
+      });
+    });
+
+    describe('when current sort direction is descending', () => {
+      beforeEach(() => {
+        window.location.search = '?sort=access_level_desc';
+
+        createComponent();
+      });
+
+      describe('when sort direction toggle is clicked', () => {
+        beforeEach(() => {
+          findSortDirectionToggle().trigger('click');
+        });
+
+        it('sorts in ascending order', () => {
+          expect(urlUtilities.visitUrl).toHaveBeenCalledWith(`${URL_HOST}?sort=access_level_asc`);
+        });
+      });
+    });
   });
 });

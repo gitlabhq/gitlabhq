@@ -63,5 +63,7 @@ export default {
 };
 </script>
 <template>
-  <span :class="cssClass"> <gl-icon :name="icon" :size="size" :class="cssClasses" /> </span>
+  <span :class="cssClass">
+    <gl-icon :name="icon" :size="size" :class="cssClasses" :aria-label="status.icon" />
+  </span>
 </template>

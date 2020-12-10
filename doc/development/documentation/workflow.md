@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Documentation process
 
 The process for creating and maintaining GitLab product documentation allows
-anyone to contribute a merge request or create an issue for GitLab's
+anyone to contribute a merge request or create an issue for GitLab
 documentation.
 
 Documentation updates relating to new features or feature enhancements must
@@ -60,7 +60,7 @@ To update GitLab documentation:
    - The [Structure and template](structure.md) page.
    - The [Style Guide](styleguide/index.md).
    - The [Markdown Guide](https://about.gitlab.com/handbook/markdown-guide/).
-1. Follow GitLab's [Merge Request Guidelines](../contributing/merge_request_workflow.md#merge-request-guidelines).
+1. Follow the [Merge Request Guidelines](../contributing/merge_request_workflow.md#merge-request-guidelines).
 
 NOTE:
 Work in a fork if you do not have Developer access to the GitLab project.
@@ -79,7 +79,7 @@ To request help:
    - If urgent help is required, directly assign the Technical Writer in the issue or in the merge request.
    - If non-urgent help is required, ping the Technical Writer in the issue or merge request.
 
-If you are a member of GitLab's Slack workspace, you can request help in `#docs`.
+If you are a member of the GitLab Slack workspace, you can request help in `#docs`.
 
 ### Reviewing and merging
 

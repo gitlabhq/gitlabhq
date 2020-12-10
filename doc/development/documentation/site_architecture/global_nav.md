@@ -101,11 +101,11 @@ The global nav has 3 components:
 
 The available sections are described on the table below:
 
-| Section       | Description                                |
-| ------------- | ------------------------------------------ |
-| User          | Documentation for the GitLab's user UI.    |
-| Administrator | Documentation for the GitLab's Admin Area. |
-| Contributor   | Documentation for developing GitLab.       |
+| Section       | Description                          |
+| ------------- | ------------------------------------ |
+| User          | Documentation for the GitLab UI.     |
+| Administrator | Documentation for the Admin Area.    |
+| Contributor   | Documentation for developing GitLab. |
 
 The majority of the links available on the nav were added according to the UI.
 The match is not perfect, as for some UI nav items the documentation doesn't
@@ -250,7 +250,7 @@ below the doc link:
 ```
 
 All nav links are clickable. If the higher-level link does not have a link
-of its own, it must link to its first sub-item link, mimicking GitLab's navigation.
+of its own, it must link to its first sub-item link, mimicking the navigation in GitLab.
 This must be avoided so that we don't have duplicated links nor two `.active` links
 at the same time.
 

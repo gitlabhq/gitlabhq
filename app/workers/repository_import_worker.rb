@@ -30,7 +30,7 @@ class RepositoryImportWorker # rubocop:disable Scalability/IdempotentWorker
     return if service.async?
 
     if result[:status] == :error
-      fail_import(result[:message]) if template_import?
+      fail_import(result[:message])
 
       raise result[:message]
     end

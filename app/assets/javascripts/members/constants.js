@@ -1,20 +1,12 @@
-import { __, s__ } from '~/locale';
-
-const ACCOUNT_SORT_ASC_LABEL = s__('Members|Account, ascending');
+import { __ } from '~/locale';
 
 export const FIELDS = [
   {
     key: 'account',
     label: __('Account'),
     sort: {
-      asc: {
-        param: 'name_asc',
-        label: ACCOUNT_SORT_ASC_LABEL,
-      },
-      desc: {
-        param: 'name_desc',
-        label: s__('Members|Account, descending'),
-      },
+      asc: 'name_asc',
+      desc: 'name_desc',
     },
   },
   {
@@ -29,14 +21,8 @@ export const FIELDS = [
     thClass: 'col-meta',
     tdClass: 'col-meta',
     sort: {
-      asc: {
-        param: 'last_joined',
-        label: s__('Members|Access granted, ascending'),
-      },
-      desc: {
-        param: 'oldest_joined',
-        label: s__('Members|Access granted, descending'),
-      },
+      asc: 'last_joined',
+      desc: 'oldest_joined',
     },
   },
   {
@@ -63,14 +49,8 @@ export const FIELDS = [
     thClass: 'col-max-role',
     tdClass: 'col-max-role',
     sort: {
-      asc: {
-        param: 'access_level_asc',
-        label: s__('Members|Max role, ascending'),
-      },
-      desc: {
-        param: 'access_level_desc',
-        label: s__('Members|Max role, descending'),
-      },
+      asc: 'access_level_asc',
+      desc: 'access_level_desc',
     },
   },
   {
@@ -81,15 +61,10 @@ export const FIELDS = [
   },
   {
     key: 'lastSignIn',
+    label: __('Last sign-in'),
     sort: {
-      asc: {
-        param: 'recent_sign_in',
-        label: s__('Members|Last sign-in, ascending'),
-      },
-      desc: {
-        param: 'oldest_sign_in',
-        label: s__('Members|Last sign-in, descending'),
-      },
+      asc: 'recent_sign_in',
+      desc: 'oldest_sign_in',
     },
   },
   {
@@ -101,9 +76,8 @@ export const FIELDS = [
 ];
 
 export const DEFAULT_SORT = {
-  sortBy: 'account',
+  sortByKey: 'account',
   sortDesc: false,
-  sortByLabel: ACCOUNT_SORT_ASC_LABEL,
 };
 
 export const AVATAR_SIZE = 48;

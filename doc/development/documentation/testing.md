@@ -31,8 +31,8 @@ run these tests on your local computer. This has the advantage of:
 
 - Speeding up the feedback loop. You can know of any problems with the changes in your branch
   without waiting for a CI/CD pipeline to run.
-- Lowering costs. Running tests locally is cheaper than running tests on GitLab's cloud
-  infrastructure.
+- Lowering costs. Running tests locally is cheaper than running tests on the cloud
+  infrastructure GitLab uses.
 
 To run tests locally, it's important to:
 
@@ -106,9 +106,9 @@ To run the `ui-docs-links` test locally:
    ```
 
 If you receive an error the first time you run this test, run `bundle install`, which
-installs GitLab's dependencies, and try again.
+installs the dependencies for GitLab, and try again.
 
-If you don't want to install all of GitLab's dependencies to test the links, you can:
+If you don't want to install all of the dependencies to test the links, you can:
 
 1. Open the `gitlab` directory in a terminal window.
 1. Install `haml-lint`:

@@ -203,18 +203,17 @@ To properly configure submodules with GitLab CI/CD, read the
 With the update permission model we also extended the support for accessing
 Container Registries for private projects.
 
-> **Notes:**
->
-> - GitLab Runner versions prior to 1.8 don't incorporate the introduced changes
->   for permissions. This makes the `image:` directive not work with private
->   projects automatically and it needs to be configured manually on the GitLab Runner host
->   with a predefined account (for example administrator's personal account with
->   access token created explicitly for this purpose). This issue is resolved with
->   latest changes in GitLab Runner 1.8 which receives GitLab credentials with
->   build data.
-> - Starting from GitLab 8.12, if you have [2FA](../profile/account/two_factor_authentication.md) enabled in your account, you need
->   to pass a [personal access token](../profile/personal_access_tokens.md) instead of your password in order to
->   login to GitLab's Container Registry.
+GitLab Runner versions prior to 1.8 don't incorporate the introduced changes
+for permissions. This makes the `image:` directive not work with private
+projects automatically and it needs to be configured manually on the GitLab Runner host
+with a predefined account (for example administrator's personal account with
+access token created explicitly for this purpose). This issue is resolved with
+latest changes in GitLab Runner 1.8 which receives GitLab credentials with
+build data.
+
+Starting from GitLab 8.12, if you have [2FA](../profile/account/two_factor_authentication.md) enabled in your account, you need
+to pass a [personal access token](../profile/personal_access_tokens.md) instead of your password in order to
+login to the Container Registry.
 
 Your jobs can access all container images that you would normally have access
 to. The only implication is that you can push to the Container Registry of the

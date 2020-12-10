@@ -51,23 +51,20 @@ export const parseSortParam = sortableFields => {
   const sortParam = getParameterByName('sort');
 
   const sortedField = FIELDS.filter(field => sortableFields.includes(field.key)).find(
-    field => field.sort?.asc?.param === sortParam || field.sort?.desc?.param === sortParam,
+    field => field.sort?.asc === sortParam || field.sort?.desc === sortParam,
   );
 
   if (!sortedField) {
     return DEFAULT_SORT;
   }
 
-  const isDesc = sortedField?.sort?.desc?.param === sortParam;
-
   return {
-    sortBy: sortedField.key,
-    sortDesc: isDesc,
-    sortByLabel: isDesc ? sortedField?.sort?.desc?.label : sortedField?.sort?.asc?.label,
+    sortByKey: sortedField.key,
+    sortDesc: sortedField?.sort?.desc === sortParam,
   };
 };
 
-export const buildSortUrl = ({
+export const buildSortHref = ({
   sortBy,
   sortDesc,
   filteredSearchBarTokens,
@@ -79,7 +76,7 @@ export const buildSortUrl = ({
     return '';
   }
 
-  const sortParam = sortDesc ? sortDefinition.desc.param : sortDefinition.asc.param;
+  const sortParam = sortDesc ? sortDefinition.desc : sortDefinition.asc;
 
   const filterParams =
     filteredSearchBarTokens?.reduce((accumulator, token) => {

@@ -91,6 +91,6 @@ export default {
     @click.stop="onClickAction"
   >
     <gl-loading-icon v-if="isLoading" class="js-action-icon-loading" />
-    <gl-icon v-else :name="actionIcon" class="gl-mr-0!" />
+    <gl-icon v-else :name="actionIcon" class="gl-mr-0!" :aria-label="actionIcon" />
   </gl-button>
 </template>

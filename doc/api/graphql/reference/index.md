@@ -3754,6 +3754,7 @@ Represents a vulnerability.
 | `primaryIdentifier` | VulnerabilityIdentifier | Primary identifier of the vulnerability. |
 | `project` | Project | The project on which the vulnerability was found |
 | `reportType` | VulnerabilityReportType | Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION, COVERAGE_FUZZING, API_FUZZING) |
+| `resolvedAt` | Time | Timestamp of when the vulnerability state was changed to resolved |
 | `resolvedOnDefaultBranch` | Boolean! | Indicates whether the vulnerability is fixed on the default branch or not |
 | `scanner` | VulnerabilityScanner | Scanner metadata for the vulnerability. |
 | `severity` | VulnerabilitySeverity | Severity of the vulnerability (INFO, UNKNOWN, LOW, MEDIUM, HIGH, CRITICAL) |
@@ -4017,6 +4018,15 @@ Values for sorting alerts.
 | `created_desc` **{warning-solid}** | **Deprecated:** Use CREATED_DESC. Deprecated in 13.5 |
 | `updated_asc` **{warning-solid}** | **Deprecated:** Use UPDATED_ASC. Deprecated in 13.5 |
 | `updated_desc` **{warning-solid}** | **Deprecated:** Use UPDATED_DESC. Deprecated in 13.5 |
+
+### AlertManagementDomainFilter
+
+Filters the alerts based on given domain.
+
+| Value | Description |
+| ----- | ----------- |
+| `operations` | Alerts for operations domain  |
+| `threat_monitoring` | Alerts for threat monitoring domain |
 
 ### AlertManagementIntegrationType
 

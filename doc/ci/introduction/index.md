@@ -116,7 +116,7 @@ After you're happy with your implementation:
 ![GitLab workflow example](img/gitlab_workflow_example_11_9.png)
 
 GitLab CI/CD is capable of doing a lot more, but this workflow
-exemplifies GitLab's ability to track the entire process,
+exemplifies the ability of GitLab to track the entire process,
 without the need for an external tool to deliver your software.
 And, most usefully, you can visualize all the steps through
 the GitLab UI.

@@ -1,0 +1,5 @@
+---
+title: Fix outline on selected button in Snippets Rendered/Source buttons
+merge_request: 49676
+author:
+type: fixed

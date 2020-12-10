@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.6.3 (2020-12-10)
+
+### Fixed (5 changes)
+
+- Fix error 500s creating projects concurrently. !48571
+- Fix container_registry url for relative urls. !48661
+- Resolve Members page 500 error after Invitation sent via API. !48937
+- Add different string encoding method in rack middleware. !49044
+- Fix MR rendering issue when user is tool admin and not project member. !49258
+
+### Changed (1 change)
+
+- Update Rake check and docs to require Ruby 2.7. !48552
+
+
 ## 13.6.2 (2020-12-07)
 
 ### Security (10 changes)

@@ -785,7 +785,7 @@ end
 
 You should never re-use resolvers directly. Resolvers have a complex life-cycle, with
 authorization, readiness and resolution orchestrated by the framework, and at
-each stage lazy values can be returned to take advantage of batching
+each stage [lazy values](#laziness) can be returned to take advantage of batching
 opportunities. Never instantiate a resolver or a mutation in application code.
 
 Instead, the units of code reuse are much the same as in the rest of the
@@ -1262,7 +1262,7 @@ should look like this:
 ### Mounting the mutation
 
 To make the mutation available it must be defined on the mutation
-type that lives in `graphql/types/mutation_types`. The
+type that is stored in `graphql/types/mutation_types`. The
 `mount_mutation` helper method defines a field based on the
 GraphQL-name of the mutation:
 
@@ -1532,32 +1532,66 @@ field :created_at, Types::TimeType, null: true, description: 'Timestamp of when 
 
 ## Testing
 
-_full stack_ tests for a graphql query or mutation live in
+### Writing unit tests
+
+Before creating unit tests, review the following examples:
+
+- [`spec/graphql/resolvers/users_resolver_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/graphql/resolvers/users_resolver_spec.rb)
+- [`spec/graphql/mutations/issues/create_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/graphql/mutations/issues/create_spec.rb)
+
+It's faster to test as much of the logic from your GraphQL queries and mutations
+with unit tests, which are stored in `spec/graphql`.
+
+Use unit tests to verify that:
+
+- Types have the expected fields.
+- Resolvers and mutations apply authorizations and return expected data.
+- Edge cases are handled correctly.
+
+### Writing integration tests
+
+Integration tests check the full stack for a GraphQL query or mutation and are stored in
 `spec/requests/api/graphql`.
 
-When adding a query, the `a working graphql query` shared example can
-be used to test if the query renders valid results.
+For speed, you should test most logic in unit tests instead of integration tests.
+However, integration tests that check if data is returned verify the following
+additional items:
 
-Using the `GraphqlHelpers#all_graphql_fields_for`-helper, a query
-including all available fields can be constructed. This makes it easy
-to add a test rendering all possible fields for a query.
+- The mutation is actually queryable within the schema (was mounted in `MutationType`).
+- The data returned by a resolver or mutation correctly matches the
+  [return types](https://graphql-ruby.org/fields/introduction.html#field-return-type) of
+  the fields and resolves without errors.
+
+Integration tests can also verify the following items, because they invoke the
+full stack:
+
+- An argument or scalar's [`prepare`](#validating-arguments) applies correctly.
+- Logic in a resolver or mutation's [`#ready?` method](#correct-use-of-resolverready) applies correctly.
+- An [argument's `default_value`](https://graphql-ruby.org/fields/arguments.html) applies correctly.
+- Objects resolve performantly and there are no N+1 issues.
+
+When adding a query, you can use the `a working graphql query` shared example to test if the query
+renders valid results.
+
+You can construct a query including all available fields using the `GraphqlHelpers#all_graphql_fields_for`
+helper. This makes it easy to add a test rendering all possible fields for a query.
 
 If you're adding a field to a query that supports pagination and sorting,
 visit [Testing](graphql_guide/pagination.md#testing) for details.
 
-To test GraphQL mutation requests, `GraphqlHelpers` provides 2
+To test GraphQL mutation requests, `GraphqlHelpers` provides two
 helpers: `graphql_mutation` which takes the name of the mutation, and
 a hash with the input for the mutation. This returns a struct with
 a mutation query, and prepared variables.
 
-This struct can then be passed to the `post_graphql_mutation` helper,
+You can then pass this struct to the `post_graphql_mutation` helper,
 that posts the request with the correct parameters, like a GraphQL
 client would do.
 
-To access the response of a mutation, the `graphql_mutation_response`
-helper is available.
+To access the response of a mutation, you can use the `graphql_mutation_response`
+helper.
 
-Using these helpers, we can build specs like this:
+Using these helpers, you can build specs like this:
 
 ```ruby
 let(:mutation) do
@@ -1629,7 +1663,7 @@ end
 - Mimic the folder structure of `app/graphql/types`:
 
   For example, tests for fields on `Types::Ci::PipelineType`
-  in `app/graphql/types/ci/pipeline_type.rb` should live in
+  in `app/graphql/types/ci/pipeline_type.rb` should be stored in
   `spec/requests/api/graphql/ci/pipeline_spec.rb` regardless of the query being
   used to fetch the pipeline data.
 
@@ -1702,3 +1736,19 @@ For guidance, see the [GraphQL API](documentation/graphql_styleguide.md) page.
 ## Include a changelog entry
 
 All client-facing changes **must** include a [changelog entry](changelog.md).
+
+## Laziness
+
+One important technique unique to GraphQL for managing performance is
+using **lazy** values. Lazy values represent the promise of a result,
+allowing their action to be run later, which enables batching of queries in
+different parts of the query tree. The main example of lazy values in our code is
+the [GraphQL BatchLoader](graphql_guide/batchloader.md).
+
+To manage lazy values directly, read `Gitlab::Graphql::Lazy`, and in
+particular `Gitlab::Graphql::Laziness`. This contains `#force` and
+`#delay`, which help implement the basic operations of creation and
+elimination of laziness, where needed.
+
+For dealing with lazy values without forcing them, use
+`Gitlab::Graphql::Lazy.with_value`.

@@ -127,6 +127,8 @@ module AlertManagement
     scope :open, -> { with_status(open_statuses) }
     scope :not_resolved, -> { without_status(:resolved) }
     scope :with_prometheus_alert, -> { includes(:prometheus_alert) }
+    scope :with_threat_monitoring_alerts, -> { where(domain: :threat_monitoring ) }
+    scope :with_operations_alerts, -> { where(domain: :operations) }
 
     scope :order_start_time,    -> (sort_order) { order(started_at: sort_order) }
     scope :order_end_time,      -> (sort_order) { order(ended_at: sort_order) }

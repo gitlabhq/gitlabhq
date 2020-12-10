@@ -36,5 +36,23 @@ namespace :gitlab do
         puts "Successfully updated #{plural_updated_count} out of #{plural_id_count} total"
       end
     end
+
+    namespace :secret do
+      desc 'GitLab | LDAP | Secret | Write LDAP secrets'
+      task write: [:environment] do
+        content = STDIN.tty? ? STDIN.gets : STDIN.read
+        Gitlab::EncryptedLdapCommand.write(content)
+      end
+
+      desc 'GitLab | LDAP | Secret | Edit LDAP secrets'
+      task edit: [:environment] do
+        Gitlab::EncryptedLdapCommand.edit
+      end
+
+      desc 'GitLab | LDAP | Secret | Show LDAP secrets'
+      task show: [:environment] do
+        Gitlab::EncryptedLdapCommand.show
+      end
+    end
   end
 end

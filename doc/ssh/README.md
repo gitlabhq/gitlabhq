@@ -232,6 +232,11 @@ NOTE:
 If you manually copied your public SSH key make sure you copied the entire
 key starting with `ssh-ed25519` (or `ssh-rsa`) and ending with your email address.
 
+## Two-factor Authentication (2FA)
+
+You can set up two-factor authentication (2FA) for
+[Git over SSH](../security/two_factor_authentication.md#two-factor-authentication-2fa-for-git-over-ssh-operations).
+
 ## Testing that everything is set up correctly
 
 To test whether your SSH key was added correctly, run the following

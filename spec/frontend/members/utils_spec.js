@@ -8,7 +8,7 @@ import {
   canUpdate,
   canOverride,
   parseSortParam,
-  buildSortUrl,
+  buildSortHref,
 } from '~/members/utils';
 import { DEFAULT_SORT } from '~/members/constants';
 import { member as memberMock, group, invite } from './mock_data';
@@ -148,14 +148,14 @@ describe('Members Utils', () => {
 
     describe.each`
       sortParam              | expected
-      ${'name_asc'}          | ${{ sortBy: 'account', sortDesc: false, sortByLabel: 'Account, ascending' }}
-      ${'name_desc'}         | ${{ sortBy: 'account', sortDesc: true, sortByLabel: 'Account, descending' }}
-      ${'last_joined'}       | ${{ sortBy: 'granted', sortDesc: false, sortByLabel: 'Access granted, ascending' }}
-      ${'oldest_joined'}     | ${{ sortBy: 'granted', sortDesc: true, sortByLabel: 'Access granted, descending' }}
-      ${'access_level_asc'}  | ${{ sortBy: 'maxRole', sortDesc: false, sortByLabel: 'Max role, ascending' }}
-      ${'access_level_desc'} | ${{ sortBy: 'maxRole', sortDesc: true, sortByLabel: 'Max role, descending' }}
-      ${'recent_sign_in'}    | ${{ sortBy: 'lastSignIn', sortDesc: false, sortByLabel: 'Last sign-in, ascending' }}
-      ${'oldest_sign_in'}    | ${{ sortBy: 'lastSignIn', sortDesc: true, sortByLabel: 'Last sign-in, descending' }}
+      ${'name_asc'}          | ${{ sortByKey: 'account', sortDesc: false }}
+      ${'name_desc'}         | ${{ sortByKey: 'account', sortDesc: true }}
+      ${'last_joined'}       | ${{ sortByKey: 'granted', sortDesc: false }}
+      ${'oldest_joined'}     | ${{ sortByKey: 'granted', sortDesc: true }}
+      ${'access_level_asc'}  | ${{ sortByKey: 'maxRole', sortDesc: false }}
+      ${'access_level_desc'} | ${{ sortByKey: 'maxRole', sortDesc: true }}
+      ${'recent_sign_in'}    | ${{ sortByKey: 'lastSignIn', sortDesc: false }}
+      ${'oldest_sign_in'}    | ${{ sortByKey: 'lastSignIn', sortDesc: true }}
     `('when `sort` query string param is `$sortParam`', ({ sortParam, expected }) => {
       it(`returns ${JSON.stringify(expected)}`, async () => {
         window.location.search = `?sort=${sortParam}`;
@@ -167,7 +167,7 @@ describe('Members Utils', () => {
     });
   });
 
-  describe('buildSortUrl', () => {
+  describe('buildSortHref', () => {
     beforeEach(() => {
       delete window.location;
       window.location = new URL(URL_HOST);
@@ -176,7 +176,7 @@ describe('Members Utils', () => {
     describe('when field passed in `sortBy` argument does not have `sort` key defined', () => {
       it('returns an empty string', () => {
         expect(
-          buildSortUrl({
+          buildSortHref({
             sortBy: 'source',
             sortDesc: false,
             filteredSearchBarTokens: [],
@@ -189,7 +189,7 @@ describe('Members Utils', () => {
     describe('when there are no filter params set', () => {
       it('sets `sort` param', () => {
         expect(
-          buildSortUrl({
+          buildSortHref({
             sortBy: 'account',
             sortDesc: false,
             filteredSearchBarTokens: [],
@@ -204,7 +204,7 @@ describe('Members Utils', () => {
         window.location.search = '?two_factor=enabled&with_inherited_permissions=exclude';
 
         expect(
-          buildSortUrl({
+          buildSortHref({
             sortBy: 'account',
             sortDesc: false,
             filteredSearchBarTokens: ['two_factor', 'with_inherited_permissions'],
@@ -219,7 +219,7 @@ describe('Members Utils', () => {
         window.location.search = '?search=foobar';
 
         expect(
-          buildSortUrl({
+          buildSortHref({
             sortBy: 'account',
             sortDesc: false,
             filteredSearchBarTokens: ['two_factor', 'with_inherited_permissions'],

@@ -114,7 +114,7 @@ The action is irreversible.
 
 ## Triggering a pipeline
 
-To trigger a job you need to send a `POST` request to GitLab's API endpoint:
+To trigger a job you need to send a `POST` request to the GitLab API endpoint:
 
 ```plaintext
 POST /projects/:id/trigger/pipeline
@@ -126,7 +126,7 @@ branches or tags. The `:id` of a project can be found by
 [querying the API](../../api/projects.md) or by visiting the **CI/CD**
 settings page which provides self-explanatory examples.
 
-When a rerun of a pipeline is triggered, the information is exposed in GitLab's
+When a rerun of a pipeline is triggered, the information is exposed in the GitLab
 UI under the **Jobs** page and the jobs are marked as triggered 'by API'.
 
 ![Marked rebuilds as on jobs page](img/builds_page.png)
@@ -260,7 +260,7 @@ branch of project with ID `9` every night at `00:30`:
 30 0 * * * curl --request POST --form token=TOKEN --form ref=master "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"
 ```
 
-This behavior can also be achieved through GitLab's UI with
+This behavior can also be achieved through the GitLab UI with
 [pipeline schedules](../pipelines/schedules.md).
 
 ## Legacy triggers

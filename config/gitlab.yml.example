@@ -620,6 +620,9 @@ production: &base
     enabled: false
     prevent_ldap_sign_in: false
 
+    # File location to read encrypted secrets from
+    # secret_file: /mnt/gitlab/ldap.yaml.enc # Default: shared/encrypted_settings/ldap.yaml.enc
+
     # This setting controls the number of seconds between LDAP permission checks
     # for each user. After this time has expired for a given user, their next
     # interaction with GitLab (a click in the web UI, a git pull, etc.) will be

@@ -415,7 +415,7 @@ You can define per-project or per-group variables that are set in the pipeline e
 We recommend using group environment variables to store secrets (like passwords, SSH keys, and credentials) for Premium users who:
 
 - Do **not** use an external key store.
-- Use GitLab's [integration with HashiCorp Vault](../secrets/index.md).
+- Use the GitLab [integration with HashiCorp Vault](../secrets/index.md).
 
 Group-level variables can be added by:
 

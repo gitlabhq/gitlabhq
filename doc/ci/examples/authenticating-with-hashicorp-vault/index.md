@@ -152,7 +152,7 @@ EOF
 
 This example uses [bound_claims](https://www.vaultproject.io/api/auth/jwt#bound_claims) to specify that only a JWT with matching values for the specified claims will be allowed to authenticate.
 
-Combined with GitLab's [protected branches](../../../user/project/protected_branches.md), you can restrict who is able to authenticate and read the secrets.
+Combined with [protected branches](../../../user/project/protected_branches.md), you can restrict who is able to authenticate and read the secrets.
 
 [token_explicit_max_ttl](https://www.vaultproject.io/api/auth/jwt#token_explicit_max_ttl) specifies that the token issued by Vault, upon successful authentication, has a hard lifetime limit of 60 seconds.
 

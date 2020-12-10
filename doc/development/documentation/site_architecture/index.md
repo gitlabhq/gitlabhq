@@ -2,7 +2,6 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-description: "Learn how GitLab's documentation website is architectured."
 ---
 
 # Documentation site architecture
@@ -14,8 +13,8 @@ static site generator.
 
 ## Architecture
 
-While the source of the documentation content is stored in GitLab's respective product
-repositories, the source that is used to build the documentation
+While the source of the documentation content is stored in the repositories for
+each GitLab product, the source that is used to build the documentation
 site _from that content_ is located at <https://gitlab.com/gitlab-org/gitlab-docs>.
 
 The following diagram illustrates the relationship between the repositories

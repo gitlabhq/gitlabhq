@@ -431,7 +431,7 @@ fully understand [IAM Best Practices in AWS](https://docs.aws.amazon.com/IAM/lat
 To deploy our build artifacts, we need to install the [AWS CLI](https://aws.amazon.com/cli/) on
 the shared runner. The shared runner also needs to be able to authenticate with your AWS
 account to deploy the artifacts. By convention, AWS CLI will look for `AWS_ACCESS_KEY_ID`
-and `AWS_SECRET_ACCESS_KEY`. GitLab's CI gives us a way to pass the variables we
+and `AWS_SECRET_ACCESS_KEY`. GitLab CI/CD gives us a way to pass the variables we
 set up in the prior section using the `variables` portion of the `deploy` job. At the end,
 we add directives to ensure deployment `only` happens on pushes to `master`. This way, every
 single branch still runs through CI, and only merging (or committing directly) to master will
@@ -509,7 +509,7 @@ Within the [demo repository](https://gitlab.com/blitzgren/gitlab-game-demo) you 
 together nicely with GitLab CI/CD, which is the result of lessons learned while making [Dark Nova](https://www.darknova.io).
 Using a combination of free and open source software, we have a full CI/CD pipeline, a game foundation,
 and unit tests, all running and deployed at every push to master - with shockingly little code.
-Errors can be easily debugged through GitLab's build logs, and within minutes of a successful commit,
+Errors can be easily debugged through GitLab build logs, and within minutes of a successful commit,
 you can see the changes live on your game.
 
 Setting up Continuous Integration and Continuous Deployment from the start with Dark Nova enables
