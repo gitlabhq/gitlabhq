@@ -776,7 +776,7 @@ are generated:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/15442) in GitLab 12.3.
 
-Contains details of GitLab's [Database Load Balancing](database_load_balancing.md).
+Contains details of GitLab [Database Load Balancing](database_load_balancing.md).
 It's stored at:
 
 - `/var/log/gitlab/gitlab-rails/database_load_balancing.log` for Omnibus GitLab packages.

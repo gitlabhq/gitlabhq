@@ -25,7 +25,7 @@ module QA
         Flow::Login.sign_in
         add_ci_files
         project.visit!
-        Flow::Pipeline.visit_latest_pipeline(pipeline_condition: 'success')
+        Flow::Pipeline.visit_latest_pipeline(pipeline_condition: 'succeeded')
       end
 
       after do

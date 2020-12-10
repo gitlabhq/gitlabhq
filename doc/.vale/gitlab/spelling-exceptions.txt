@@ -8,7 +8,6 @@ allowlists
 anonymized
 Ansible
 Anthos
-API
 approvers
 architected
 Artifactory
@@ -63,7 +62,6 @@ bundlers
 burndown
 burnup
 cacheable
-CAS
 CentOS
 Certbot
 chai
@@ -234,7 +232,6 @@ kubectl
 Kubernetes
 Kubesec
 Laravel
-LDAP
 ldapsearch
 Lefthook
 Leiningen
@@ -299,7 +296,6 @@ namespacing
 namespacings
 Nanoc
 Netlify
-NGINX
 Nokogiri
 npm
 Nurtch
@@ -407,7 +403,6 @@ reusability
 reverified
 reverifies
 reverify
-RHEL
 rollout
 rollouts
 rsync
@@ -424,7 +419,6 @@ runit
 runtime
 runtimes
 Salesforce
-SAML
 sandboxing
 sanitization
 sbt
@@ -447,7 +441,6 @@ Slack
 Slony
 smartcard
 smartcards
-SMTP
 Sobelow
 Solarized
 Sourcegraph
@@ -456,7 +449,6 @@ sparklines
 spidering
 Splunk
 SpotBugs
-SSH
 Stackdriver
 storable
 storages

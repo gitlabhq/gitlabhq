@@ -22,11 +22,11 @@ module QA
             all_elements(:pipeline_url_link, minimum: 1, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME).first.click
           end
 
-          def wait_for_latest_pipeline_success
+          def wait_for_latest_pipeline_succeeded
             wait_for_latest_pipeline_status { has_text?('passed') }
           end
 
-          def wait_for_latest_pipeline_completion
+          def wait_for_latest_pipeline_completed
             wait_for_latest_pipeline_status { has_text?('passed') || has_text?('failed') }
           end
 

@@ -27,7 +27,7 @@ module QA
 
       it 'parent pipelines passes if child passes', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/754' do
         add_ci_files(success_child_ci_file)
-        Flow::Pipeline.visit_latest_pipeline(pipeline_condition: 'completion')
+        Flow::Pipeline.visit_latest_pipeline(pipeline_condition: 'completed')
 
         Page::Project::Pipeline::Show.perform do |parent_pipeline|
           expect(parent_pipeline).to have_child_pipeline
@@ -37,7 +37,7 @@ module QA
 
       it 'parent pipeline passes even if child fails', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/753' do
         add_ci_files(fail_child_ci_file)
-        Flow::Pipeline.visit_latest_pipeline(pipeline_condition: 'completion')
+        Flow::Pipeline.visit_latest_pipeline(pipeline_condition: 'completed')
 
         Page::Project::Pipeline::Show.perform do |parent_pipeline|
           expect(parent_pipeline).to have_child_pipeline

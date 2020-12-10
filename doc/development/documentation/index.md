@@ -7,7 +7,7 @@ description: Learn how to contribute to GitLab Documentation.
 
 # GitLab Documentation guidelines
 
-GitLab's documentation is [intended as the single source of truth (SSOT)](https://about.gitlab.com/handbook/documentation/) for information about how to configure, use, and troubleshoot GitLab. The documentation contains use cases and usage instructions for every GitLab feature, organized by product area and subject. This includes topics and workflows that span multiple GitLab features, and the use of GitLab with other applications.
+The GitLab documentation is [intended as the single source of truth (SSOT)](https://about.gitlab.com/handbook/documentation/) for information about how to configure, use, and troubleshoot GitLab. The documentation contains use cases and usage instructions for every GitLab feature, organized by product area and subject. This includes topics and workflows that span multiple GitLab features, and the use of GitLab with other applications.
 
 In addition to this page, the following resources can help you craft and contribute to documentation:
 
@@ -230,7 +230,7 @@ Things to note:
   and prints the file and the line where this file is mentioned.
   You may ask why the two greps. Since [we use relative paths to link to
   documentation](styleguide/index.md#links), sometimes it might be useful to search a path deeper.
-- The `*.md` extension is not used when a document is linked to GitLab's
+- The `*.md` extension is not used when a document is linked to the GitLab
   built-in help page, which is why we omit it in `git grep`.
 - Use the checklist on the "Change documentation location" MR description template.
 

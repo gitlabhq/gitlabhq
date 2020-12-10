@@ -25082,7 +25082,7 @@
             },
             {
               "name": "snippetRepositoryRegistries",
-              "description": "Find snippet repository registries on this Geo node. Available only when feature flag `geo_snippet_repository_replication` is enabled",
+              "description": "Find snippet repository registries on this Geo node",
               "args": [
                 {
                   "name": "ids",
@@ -71715,6 +71715,20 @@
           "name": "Vulnerability",
           "description": "Represents a vulnerability",
           "fields": [
+            {
+              "name": "confirmedAt",
+              "description": "Timestamp of when the vulnerability state was changed to confirmed",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
             {
               "name": "description",
               "description": "Description of the vulnerability",

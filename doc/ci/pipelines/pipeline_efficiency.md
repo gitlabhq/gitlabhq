@@ -105,10 +105,10 @@ External monitoring tools can poll the API and verify pipeline health or collect
 metrics for long term SLA analytics.
 
 For example, the [GitLab CI Pipelines Exporter](https://github.com/mvisonneau/gitlab-ci-pipelines-exporter)
-for Prometheus fetches metrics from the API. It can check branches in projects automatically
+for Prometheus fetches metrics from the API and pipeline events. It can check branches in projects automatically
 and get the pipeline status and duration. In combination with a Grafana dashboard,
 this helps build an actionable view for your operations team. Metric graphs can also
-be embedded into incidents making problem resolving easier.
+be embedded into incidents making problem resolving easier. Additionally, it can also export metrics about jobs and environments.
 
 ![Grafana Dashboard for GitLab CI Pipelines Prometheus Exporter](img/ci_efficiency_pipeline_health_grafana_dashboard.png)
 

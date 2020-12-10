@@ -8,11 +8,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Every API call to epic_issues must be authenticated.
 
-If a user is not a member of a group and the group is private, a `GET` request on that group will
-result in a `404` status code.
+If a user is not a member of a group and the group is private, a `GET` request on that group
+results in a `404` status code.
 
 Epics are available only in GitLab [Premium and higher](https://about.gitlab.com/pricing/).
-If the Epics feature is not available, a `403` status code will be returned.
+If the Epics feature is not available, a `403` status code is returned.
 
 ## List issues for an epic
 

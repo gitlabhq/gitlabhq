@@ -6,7 +6,6 @@ module IntegrationsActions
   included do
     include ServiceParams
 
-    before_action :not_found, unless: :integrations_enabled?
     before_action :integration, only: [:edit, :update, :test]
   end
 
@@ -50,10 +49,6 @@ module IntegrationsActions
   end
 
   private
-
-  def integrations_enabled?
-    false
-  end
 
   def integration
     # Using instance variable `@service` still required as it's used in ServiceParams.

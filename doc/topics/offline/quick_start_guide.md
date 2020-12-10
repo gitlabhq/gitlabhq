@@ -26,7 +26,7 @@ to the server's IP address. This better ensures a stable target for our certs' C
 and makes long-term resolution simpler.
 
 ```shell
-sudo EXTERNAL_URL="http://my-host.internal" install gitlab-ee
+sudo EXTERNAL_URL="http://my-host.internal" apt-get install gitlab-ee
 ```
 
 ## Enabling SSL

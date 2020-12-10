@@ -23,7 +23,7 @@ For this embed to display correctly, the
 Copy the link and add an image tag as [inline HTML](../../user/markdown.md#inline-html)
 in your Markdown. You can tweak the query parameters to meet your needs, such as
 removing the `&from=` and `&to=` parameters to display a live chart. Here is example
-markup for a live chart from GitLab's public dashboard:
+markup for a live chart from a GitLab public dashboard:
 
 ```html
 <img src="https://dashboards.gitlab.com/d/RZmbBr7mk/gitlab-triage?orgId=1&refresh=30s&var-env=gprd&var-environment=gprd&var-prometheus=prometheus-01-inf-gprd&var-prometheus_app=prometheus-app-01-inf-gprd&var-backend=All&var-type=All&var-stage=main&from=1580444107655&to=1580465707655"/>

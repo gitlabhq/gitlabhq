@@ -24,16 +24,6 @@ RSpec.describe Groups::Settings::IntegrationsController do
         group.add_owner(user)
       end
 
-      context 'when group_level_integrations not enabled' do
-        it 'returns not_found' do
-          stub_feature_flags(group_level_integrations: false)
-
-          get :index, params: { group_id: group }
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
-
       it 'successfully displays the template' do
         get :index, params: { group_id: group }
 
@@ -55,16 +45,6 @@ RSpec.describe Groups::Settings::IntegrationsController do
     context 'when user is owner' do
       before do
         group.add_owner(user)
-      end
-
-      context 'when group_level_integrations not enabled' do
-        it 'returns not_found' do
-          stub_feature_flags(group_level_integrations: false)
-
-          get :edit, params: { group_id: group, id: Service.available_services_names(include_project_specific: false).sample }
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
       end
 
       Service.available_services_names(include_project_specific: false).each do |integration_name|

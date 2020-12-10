@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Severity Summary given the message {"countMessage": "%{criticalStart}0 Critical%{criticalEnd} %{highStart}1 High%{highEnd} and %{otherStart}0 Others%{otherEnd}", "critical": 0, "high": 1, "message": "Security scanning detected %{totalStart}1%{totalEnd} potential vulnerability", "other": 0, "status": "", "total": 1} interpolates correctly 1`] = `
+exports[`SecuritySummary component given the message {"countMessage": "%{criticalStart}0 Critical%{criticalEnd} %{highStart}1 High%{highEnd} and %{otherStart}0 Others%{otherEnd}", "critical": 0, "high": 1, "message": "Security scanning detected %{totalStart}1%{totalEnd} potential vulnerability", "other": 0, "status": "", "total": 1} interpolates correctly 1`] = `
 <span>
   Security scanning detected 
   <strong>
@@ -43,7 +43,7 @@ exports[`Severity Summary given the message {"countMessage": "%{criticalStart}0 
 </span>
 `;
 
-exports[`Severity Summary given the message {"countMessage": "%{criticalStart}1 Critical%{criticalEnd} %{highStart}0 High%{highEnd} and %{otherStart}0 Others%{otherEnd}", "critical": 1, "high": 0, "message": "Security scanning detected %{totalStart}1%{totalEnd} potential vulnerability", "other": 0, "status": "", "total": 1} interpolates correctly 1`] = `
+exports[`SecuritySummary component given the message {"countMessage": "%{criticalStart}1 Critical%{criticalEnd} %{highStart}0 High%{highEnd} and %{otherStart}0 Others%{otherEnd}", "critical": 1, "high": 0, "message": "Security scanning detected %{totalStart}1%{totalEnd} potential vulnerability", "other": 0, "status": "", "total": 1} interpolates correctly 1`] = `
 <span>
   Security scanning detected 
   <strong>
@@ -86,7 +86,7 @@ exports[`Severity Summary given the message {"countMessage": "%{criticalStart}1 
 </span>
 `;
 
-exports[`Severity Summary given the message {"countMessage": "%{criticalStart}1 Critical%{criticalEnd} %{highStart}2 High%{highEnd} and %{otherStart}0 Others%{otherEnd}", "critical": 1, "high": 2, "message": "Security scanning detected %{totalStart}3%{totalEnd} potential vulnerabilities", "other": 0, "status": "", "total": 3} interpolates correctly 1`] = `
+exports[`SecuritySummary component given the message {"countMessage": "%{criticalStart}1 Critical%{criticalEnd} %{highStart}2 High%{highEnd} and %{otherStart}0 Others%{otherEnd}", "critical": 1, "high": 2, "message": "Security scanning detected %{totalStart}3%{totalEnd} potential vulnerabilities", "other": 0, "status": "", "total": 3} interpolates correctly 1`] = `
 <span>
   Security scanning detected 
   <strong>
@@ -129,14 +129,14 @@ exports[`Severity Summary given the message {"countMessage": "%{criticalStart}1 
 </span>
 `;
 
-exports[`Severity Summary given the message {"message": ""} interpolates correctly 1`] = `
+exports[`SecuritySummary component given the message {"message": ""} interpolates correctly 1`] = `
 <span>
    
   <!---->
 </span>
 `;
 
-exports[`Severity Summary given the message {"message": "foo"} interpolates correctly 1`] = `
+exports[`SecuritySummary component given the message {"message": "foo"} interpolates correctly 1`] = `
 <span>
   foo 
   <!---->

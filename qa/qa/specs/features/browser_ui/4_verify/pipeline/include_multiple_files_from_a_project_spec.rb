@@ -34,7 +34,7 @@ module QA
         add_included_files
         add_main_ci_file
         project.visit!
-        view_the_last_pipeline
+        Flow::Pipeline.visit_latest_pipeline(pipeline_condition: 'succeeded')
       end
 
       after do
@@ -76,12 +76,6 @@ module QA
           commit.commit_message = 'Add files'
           commit.add_files([included_file_1, included_file_2])
         end
-      end
-
-      def view_the_last_pipeline
-        Page::Project::Menu.perform(&:click_ci_cd_pipelines)
-        Page::Project::Pipeline::Index.perform(&:wait_for_latest_pipeline_success)
-        Page::Project::Pipeline::Index.perform(&:click_on_latest_pipeline)
       end
 
       def main_ci_file

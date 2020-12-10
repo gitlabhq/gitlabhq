@@ -25,7 +25,7 @@ In either case, an outcome of the experiment should be posted to the issue with 
 Experiments' code quality can fail our standards for several reasons. These
 reasons can include not being added to the codebase for a long time, or because
 of fast iteration to retrieve data. However, having the experiment run (or not
-run) shouldn't impact GitLab's availability. To avoid or identify issues,
+run) shouldn't impact GitLab availability. To avoid or identify issues,
 experiments are initially deployed to a small number of users. Regardless,
 experiments still need tests.
 
@@ -326,11 +326,11 @@ For visibility, please also share any commands run against production in the `#s
 
 ### Manually force the current user to be in the experiment group
 
-You may force the application to put your current user in the experiment group. To do so 
-add a query string parameter to the path where the experiment runs. If you do so, 
+You may force the application to put your current user in the experiment group. To do so
+add a query string parameter to the path where the experiment runs. If you do so,
 the experiment will work only for this request and won't work after following links or submitting forms.
 
-For example, to forcibly enable the `EXPERIMENT_KEY` experiment, add `force_experiment=EXPERIMENT_KEY` 
+For example, to forcibly enable the `EXPERIMENT_KEY` experiment, add `force_experiment=EXPERIMENT_KEY`
 to the URL:
 
 ```shell

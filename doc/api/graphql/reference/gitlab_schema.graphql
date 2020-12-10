@@ -8959,8 +8959,7 @@ type GeoNode {
   selectiveSyncType: String
 
   """
-  Find snippet repository registries on this Geo node. Available only when
-  feature flag `geo_snippet_repository_replication` is enabled
+  Find snippet repository registries on this Geo node
   """
   snippetRepositoryRegistries(
     """
@@ -24606,6 +24605,11 @@ type VulnerabilitiesCountByDayEdge {
 Represents a vulnerability
 """
 type Vulnerability implements Noteable {
+  """
+  Timestamp of when the vulnerability state was changed to confirmed
+  """
+  confirmedAt: Time
+
   """
   Description of the vulnerability
   """

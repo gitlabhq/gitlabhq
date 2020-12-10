@@ -27,7 +27,7 @@ NGINX Ingress versions prior to 0.16.0 offer an included [VTS Prometheus metrics
 
 ## Configuring NGINX Ingress monitoring
 
-If you have deployed NGINX Ingress using GitLab's [Kubernetes cluster integration](../../clusters/index.md#installing-applications), Prometheus [automatically monitors it](#about-managed-nginx-ingress-deployments).
+If you have deployed NGINX Ingress using the GitLab [Kubernetes cluster integration](../../clusters/index.md#installing-applications), Prometheus [automatically monitors it](#about-managed-nginx-ingress-deployments).
 
 For other deployments, there is [some configuration](#manually-setting-up-nginx-ingress-for-prometheus-monitoring) required depending on your installation:
 

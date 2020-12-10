@@ -27,7 +27,7 @@ GitLab has support for automatically detecting and monitoring the Kubernetes NGI
 
 ## Configuring NGINX Ingress monitoring
 
-If you have deployed NGINX Ingress using GitLab's [Kubernetes cluster integration](../../clusters/index.md#installing-applications), Prometheus [automatically monitors](#about-managed-nginx-ingress-deployments) it.
+If you have deployed NGINX Ingress using the GitLab [Kubernetes cluster integration](../../clusters/index.md#installing-applications), Prometheus [automatically monitors](#about-managed-nginx-ingress-deployments) it.
 
 For other deployments, there is [some configuration](#manually-setting-up-nginx-ingress-for-prometheus-monitoring) required depending on your installation:
 

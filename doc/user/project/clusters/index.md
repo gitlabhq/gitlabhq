@@ -66,7 +66,7 @@ See [Adding and removing Kubernetes clusters](add_remove_clusters.md) for detail
 to:
 
 - Create a cluster in Google Cloud Platform (GCP) or Amazon Elastic Kubernetes Service
-  (EKS) using GitLab's UI.
+  (EKS) using the GitLab UI.
 - Add an integration to an existing cluster from any Kubernetes platform.
 
 ### Multiple Kubernetes clusters
@@ -237,7 +237,7 @@ A Kubernetes cluster can be the destination for a deployment job. If
   [deployment variables](#deployment-variables) are made available to your job
   and configuration is not required. You can immediately begin interacting with
   the cluster from your jobs using tools such as `kubectl` or `helm`.
-- You don't use GitLab's cluster integration you can still deploy to your
+- You don't use the GitLab cluster integration, you can still deploy to your
   cluster. However, you must configure Kubernetes tools yourself
   using [environment variables](../../../ci/variables/README.md#custom-environment-variables)
   before you can interact with the cluster from your jobs.
@@ -318,7 +318,7 @@ the need to leave GitLab.
 
 #### Deploy Boards
 
-GitLab's Deploy Boards offer a consolidated view of the current health and
+GitLab Deploy Boards offer a consolidated view of the current health and
 status of each CI [environment](../../../ci/environments/index.md) running on Kubernetes,
 displaying the status of the pods in the deployment. Developers and other
 teammates can view the progress and status of a rollout, pod by pod, in the

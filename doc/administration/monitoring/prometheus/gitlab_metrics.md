@@ -310,7 +310,7 @@ instance (`cache`, `shared_state` etc.).
 
 ## Metrics shared directory
 
-GitLab's Prometheus client requires a directory to store metrics data shared between multi-process services.
+The GitLab Prometheus client requires a directory to store metrics data shared between multi-process services.
 Those files are shared among all instances running under Unicorn server.
 The directory must be accessible to all running Unicorn's processes, or
 metrics can't function correctly.
