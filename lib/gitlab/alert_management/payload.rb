@@ -4,7 +4,8 @@ module Gitlab
   module AlertManagement
     module Payload
       MONITORING_TOOLS = {
-        prometheus: 'Prometheus'
+        prometheus: 'Prometheus',
+        cilium: 'Cilium'
       }.freeze
 
       class << self

@@ -27,7 +27,7 @@ repository in automation, it's a simple solution.
 
 A drawback is that your repository could become vulnerable if a remote machine is compromised
 by a hacker. You should limit access to the remote machine before a deploy key is
-enabled on your repository. A good rule to follow is to access only to trusted users,
+enabled on your repository. A good rule to follow is to provide access only to trusted users,
 and make sure that the allowed users have [maintainer permissions or higher](../../permissions.md)
 in the GitLab project.
 

@@ -311,6 +311,9 @@ build_artifact:
       - <built artifact>
 ```
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a video walkthrough of this configuration process, see [Auto Deploy to EC2](https://www.youtube.com/watch?v=4B-qSwKnacA).
+
 ### Deploy to Amazon EKS
 
 - [How to deploy your application to a GitLab-managed Amazon EKS cluster with Auto DevOps](https://about.gitlab.com/blog/2020/05/05/deploying-application-eks/)

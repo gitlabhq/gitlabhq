@@ -7,7 +7,7 @@
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Naming, topics, avatar')
     %button.btn.btn-default.js-settings-toggle{ type: 'button' }= _('Collapse')
-    %p= _('Update your project name, topics, description and avatar.')
+    %p= _('Update your project name, topics, description, and avatar.')
   .settings-content= render 'projects/settings/general'
 
 %section.settings.sharing-permissions.no-animate#js-shared-permissions{ class: ('expanded' if expanded), data: { qa_selector: 'visibility_features_permissions_content' } }

@@ -121,3 +121,5 @@ module API
     end
   end
 end
+
+API::Internal::Kubernetes.prepend_if_ee('EE::API::Internal::Kubernetes')

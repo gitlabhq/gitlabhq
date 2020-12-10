@@ -136,11 +136,9 @@ class Import::FogbugzController < Import::BaseController
   def verify_blocked_uri
     Gitlab::UrlBlocker.validate!(
       params[:uri],
-      **{
-        allow_localhost: allow_local_requests?,
-        allow_local_network: allow_local_requests?,
-        schemes: %w(http https)
-      }
+      allow_localhost: allow_local_requests?,
+      allow_local_network: allow_local_requests?,
+      schemes: %w(http https)
     )
   rescue Gitlab::UrlBlocker::BlockedUrlError => e
     redirect_to new_import_fogbugz_url, alert: _('Specified URL cannot be used: "%{reason}"') % { reason: e.message }

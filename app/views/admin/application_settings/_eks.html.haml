@@ -25,12 +25,12 @@
           = f.label :eks_access_key_id, 'Access key ID', class: 'label-bold'
           = f.text_field :eks_access_key_id, class: 'form-control'
           .form-text.text-muted
-            = _('AWS Access Key.  Only required if not using role instance credentials')
+            = _('AWS Access Key. Only required if not using role instance credentials')
 
         .form-group
           = f.label :eks_secret_access_key, 'Secret access key', class: 'label-bold'
           = f.password_field :eks_secret_access_key, autocomplete: 'off', class: 'form-control'
           .form-text.text-muted
-            = _('AWS Secret Access Key.  Only required if not using role instance credentials')
+            = _('AWS Secret Access Key. Only required if not using role instance credentials')
 
       = f.submit 'Save changes', class: "gl-button btn btn-success"

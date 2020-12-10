@@ -186,12 +186,15 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def charts
     @charts = {}
+    @counts = {}
+
+    return unless Feature.enabled?(:graphql_pipeline_analytics)
+
     @charts[:week] = Gitlab::Ci::Charts::WeekChart.new(project)
     @charts[:month] = Gitlab::Ci::Charts::MonthChart.new(project)
     @charts[:year] = Gitlab::Ci::Charts::YearChart.new(project)
     @charts[:pipeline_times] = Gitlab::Ci::Charts::PipelineTime.new(project)
 
-    @counts = {}
     @counts[:total] = @project.all_pipelines.count(:all)
     @counts[:success] = @project.all_pipelines.success.count(:all)
     @counts[:failed] = @project.all_pipelines.failed.count(:all)

@@ -1328,13 +1328,13 @@ msgstr ""
 msgid "AWS Access Key"
 msgstr ""
 
-msgid "AWS Access Key.  Only required if not using role instance credentials"
+msgid "AWS Access Key. Only required if not using role instance credentials"
 msgstr ""
 
 msgid "AWS Secret Access Key"
 msgstr ""
 
-msgid "AWS Secret Access Key.  Only required if not using role instance credentials"
+msgid "AWS Secret Access Key. Only required if not using role instance credentials"
 msgstr ""
 
 msgid "AWS service error: %{error}"
@@ -16765,6 +16765,9 @@ msgstr ""
 msgid "Max access level"
 msgstr ""
 
+msgid "Max file size is 200 KB."
+msgstr ""
+
 msgid "Max role"
 msgstr ""
 
@@ -27417,9 +27420,6 @@ msgstr ""
 msgid "The maximum file size allowed is %{size}."
 msgstr ""
 
-msgid "The maximum file size allowed is 200KB."
-msgstr ""
-
 msgid "The merge conflicts for this merge request cannot be resolved through GitLab. Please try to resolve them locally."
 msgstr ""
 
@@ -29614,7 +29614,7 @@ msgstr ""
 msgid "Update your group name, description, avatar, and visibility."
 msgstr ""
 
-msgid "Update your project name, topics, description and avatar."
+msgid "Update your project name, topics, description, and avatar."
 msgstr ""
 
 msgid "UpdateProject|Cannot rename project because it contains container registry tags!"

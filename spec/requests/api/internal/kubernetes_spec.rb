@@ -87,7 +87,7 @@ RSpec.describe API::Internal::Kubernetes do
     end
   end
 
-  describe "GET /internal/kubernetes/agent_info" do
+  describe 'GET /internal/kubernetes/agent_info' do
     def send_request(headers: {}, params: {})
       get api('/internal/kubernetes/agent_info'), params: params, headers: headers.reverse_merge(jwt_auth_headers)
     end
