@@ -6,14 +6,14 @@ module MembersHelper
     text = 'Are you sure you want to'
 
     action =
-      if member.request?
+      if member.invite?
+        "revoke the invitation for #{member.invite_email} to join"
+      elsif member.request?
         if member.user == user
           'withdraw your access request for'
         else
           "deny #{member.user.name}'s request to join"
         end
-      elsif member.invite?
-        "revoke the invitation for #{member.invite_email} to join"
       else
         if member.user
           "remove #{member.user.name} from"

@@ -88,6 +88,7 @@ RSpec.describe ObjectStoreSettings do
         config['object_store']['objects']['pages'].delete('bucket')
 
         expect { subject }.not_to raise_error
+        expect(settings.pages['object_store']).to eq(nil)
       end
 
       context 'with legacy config' do

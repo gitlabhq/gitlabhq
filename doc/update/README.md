@@ -312,6 +312,8 @@ installation-specific upgrade instructions, based on how you installed GitLab:
 
 ### 13.6.0
 
+Ruby 2.7.2 is required. GitLab will not start with Ruby 2.6.6 or older versions.
+
 The required Git version is Git v2.29 or higher.
 
 ### 13.3.0

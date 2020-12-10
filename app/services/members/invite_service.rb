@@ -20,8 +20,8 @@ module Members
 
       emails.each do |email|
         next if existing_member?(source, email)
-
         next if existing_invite?(source, email)
+        next if existing_request?(source, email)
 
         if existing_user?(email)
           add_existing_user_as_member(current_user, source, params, email)
@@ -44,8 +44,7 @@ module Members
         access_level: params[:access_level],
         invite_email: email,
         created_by_id: current_user.id,
-        expires_at: params[:expires_at],
-        requested_at: Time.current.utc)
+        expires_at: params[:expires_at])
 
       unless new_member.valid? && new_member.persisted?
         errors[params[:email]] = new_member.errors.full_messages.to_sentence
@@ -86,6 +85,17 @@ module Members
 
       if existing_invite
         errors[email] = "Member already invited to #{source.name}"
+        return true
+      end
+
+      false
+    end
+
+    def existing_request?(source, email)
+      existing_request = source.requesters.with_user_by_email(email).exists?
+
+      if existing_request
+        errors[email] = "Member cannot be invited because they already requested to join #{source.name}"
         return true
       end
 

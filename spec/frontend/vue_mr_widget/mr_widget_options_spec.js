@@ -260,6 +260,20 @@ describe('mrWidgetOptions', () => {
           });
         });
       });
+
+      describe('formattedHumanAccess', () => {
+        it('when user is a tool admin but not a member of project', () => {
+          vm.mr.humanAccess = null;
+
+          expect(vm.formattedHumanAccess).toEqual('');
+        });
+
+        it('when user a member of the project', () => {
+          vm.mr.humanAccess = 'Owner';
+
+          expect(vm.formattedHumanAccess).toEqual('owner');
+        });
+      });
     });
 
     describe('methods', () => {

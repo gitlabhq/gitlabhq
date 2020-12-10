@@ -1,3 +1,5 @@
+import { joinPaths } from '~/lib/utils/url_utility';
+
 export const pathGenerator = (imageDetails, ending = '?format=json') => {
   // this method is a temporary workaround, to be removed with graphql implementation
   // https://gitlab.com/gitlab-org/gitlab/-/issues/276432
@@ -12,5 +14,12 @@ export const pathGenerator = (imageDetails, ending = '?format=json') => {
       return acc;
     }, [])
     .join('/');
-  return `/${basePath}/registry/repository/${imageDetails.id}/tags${ending}`;
+
+  return joinPaths(
+    window.gon.relative_url_root,
+    `/${basePath}`,
+    '/registry/repository/',
+    `${imageDetails.id}`,
+    `tags${ending}`,
+  );
 };

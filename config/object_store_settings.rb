@@ -121,6 +121,7 @@ class ObjectStoreSettings
 
       if section['enabled'] && target_config['bucket'].blank?
         missing_bucket_for(store_type)
+        next
       end
 
       # Map bucket (external name) -> remote_directory (internal representation)

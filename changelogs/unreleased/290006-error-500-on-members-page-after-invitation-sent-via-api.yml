@@ -1,0 +1,5 @@
+---
+title: Resolve Members page 500 error after Invitation sent via API
+merge_request: 48937
+author:
+type: fixed

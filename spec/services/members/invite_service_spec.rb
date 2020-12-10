@@ -63,4 +63,15 @@ RSpec.describe Members::InviteService do
     expect(result[:status]).to eq(:error)
     expect(result[:message][invited_member.invite_email]).to eq("Member already invited to #{project.name}")
   end
+
+  it 'does not add a member with an access_request' do
+    requested_member = create(:project_member, :access_request, project: project)
+
+    params = { email: requested_member.user.email,
+               access_level: Gitlab::Access::GUEST }
+    result = described_class.new(user, params).execute(project)
+
+    expect(result[:status]).to eq(:error)
+    expect(result[:message][requested_member.user.email]).to eq("Member cannot be invited because they already requested to join #{project.name}")
+  end
 end

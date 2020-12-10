@@ -93,7 +93,8 @@ module Gitlab
         # We try to encode the string from ASCII-8BIT to UTF8. If we failed to do
         # so for certain characters in the string, those chars are probably incomplete
         # multibyte characters.
-        string.encode(Encoding::UTF_8).match?(NULL_BYTE_REGEX)
+        string.dup.force_encoding(Encoding::UTF_8).match?(NULL_BYTE_REGEX)
+
       rescue ArgumentError, Encoding::UndefinedConversionError
         # If we're here, we caught a malformed string. Return true
         true

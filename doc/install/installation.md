@@ -224,12 +224,6 @@ make
 sudo make install
 ```
 
-Then install the Bundler gem (a version below 2.x):
-
-```shell
-sudo gem install bundler --no-document --version '< 2'
-```
-
 ## 3. Go
 
 In GitLab 8.0 and later, GitLab has several daemons written in Go. To install
