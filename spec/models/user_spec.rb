@@ -1585,6 +1585,80 @@ RSpec.describe User do
     end
   end
 
+  describe '#two_factor_otp_enabled?' do
+    let_it_be(:user) { create(:user) }
+
+    context 'when 2FA is enabled by an MFA Device' do
+      let(:user) { create(:user, :two_factor) }
+
+      it { expect(user.two_factor_otp_enabled?).to eq(true) }
+    end
+
+    context 'FortiAuthenticator' do
+      context 'when enabled via GitLab settings' do
+        before do
+          allow(::Gitlab.config.forti_authenticator).to receive(:enabled).and_return(true)
+        end
+
+        context 'when feature is disabled for the user' do
+          before do
+            stub_feature_flags(forti_authenticator: false)
+          end
+
+          it { expect(user.two_factor_otp_enabled?).to eq(false) }
+        end
+
+        context 'when feature is enabled for the user' do
+          before do
+            stub_feature_flags(forti_authenticator: user)
+          end
+
+          it { expect(user.two_factor_otp_enabled?).to eq(true) }
+        end
+      end
+
+      context 'when disabled via GitLab settings' do
+        before do
+          allow(::Gitlab.config.forti_authenticator).to receive(:enabled).and_return(false)
+        end
+
+        it { expect(user.two_factor_otp_enabled?).to eq(false) }
+      end
+    end
+
+    context 'FortiTokenCloud' do
+      context 'when enabled via GitLab settings' do
+        before do
+          allow(::Gitlab.config.forti_token_cloud).to receive(:enabled).and_return(true)
+        end
+
+        context 'when feature is disabled for the user' do
+          before do
+            stub_feature_flags(forti_token_cloud: false)
+          end
+
+          it { expect(user.two_factor_otp_enabled?).to eq(false) }
+        end
+
+        context 'when feature is enabled for the user' do
+          before do
+            stub_feature_flags(forti_token_cloud: user)
+          end
+
+          it { expect(user.two_factor_otp_enabled?).to eq(true) }
+        end
+      end
+
+      context 'when disabled via GitLab settings' do
+        before do
+          allow(::Gitlab.config.forti_token_cloud).to receive(:enabled).and_return(false)
+        end
+
+        it { expect(user.two_factor_otp_enabled?).to eq(false) }
+      end
+    end
+  end
+
   describe 'projects' do
     before do
       @user = create(:user)

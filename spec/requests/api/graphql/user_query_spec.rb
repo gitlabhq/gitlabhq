@@ -58,9 +58,25 @@ RSpec.describe 'getting user information' do
              source_project: project_b, author: user)
     end
 
+    let_it_be(:reviewed_mr) do
+      create(:merge_request, :unique_branches, :unique_author,
+             source_project: project_a, reviewers: [user])
+    end
+
+    let_it_be(:reviewed_mr_b) do
+      create(:merge_request, :unique_branches, :unique_author,
+             source_project: project_b, reviewers: [user])
+    end
+
+    let_it_be(:reviewed_mr_c) do
+      create(:merge_request, :unique_branches, :unique_author,
+             source_project: project_b, reviewers: [user])
+    end
+
     let(:current_user) { authorised_user }
     let(:authored_mrs) { graphql_data_at(:user, :authored_merge_requests, :nodes) }
     let(:assigned_mrs) { graphql_data_at(:user, :assigned_merge_requests, :nodes) }
+    let(:reviewed_mrs) { graphql_data_at(:user, :review_requested_merge_requests, :nodes) }
     let(:user_params) { { username: user.username } }
 
     before do
@@ -157,6 +173,23 @@ RSpec.describe 'getting user information' do
               )
             end
           end
+
+          context 'filtering by reviewer' do
+            let(:reviewer) { create(:user) }
+            let(:mr_args) { { reviewer_username: reviewer.username } }
+
+            it 'finds the assigned mrs' do
+              assigned_mr_b.reviewers << reviewer
+              assigned_mr_c.reviewers << reviewer
+
+              post_graphql(query, current_user: current_user)
+
+              expect(assigned_mrs).to contain_exactly(
+                a_hash_including('id' => global_id_of(assigned_mr_b)),
+                a_hash_including('id' => global_id_of(assigned_mr_c))
+              )
+            end
+          end
         end
 
         context 'the current user does not have access' do
@@ -164,6 +197,95 @@ RSpec.describe 'getting user information' do
 
           it 'cannot be found' do
             expect(assigned_mrs).to be_empty
+          end
+        end
+      end
+
+      describe 'reviewRequestedMergeRequests' do
+        let(:user_fields) do
+          query_graphql_field(:review_requested_merge_requests, mr_args, 'nodes { id }')
+        end
+
+        let(:mr_args) { nil }
+
+        it_behaves_like 'a working graphql query'
+
+        it 'can be found' do
+          expect(reviewed_mrs).to contain_exactly(
+            a_hash_including('id' => global_id_of(reviewed_mr)),
+            a_hash_including('id' => global_id_of(reviewed_mr_b)),
+            a_hash_including('id' => global_id_of(reviewed_mr_c))
+          )
+        end
+
+        context 'applying filters' do
+          context 'filtering by IID without specifying a project' do
+            let(:mr_args) do
+              { iids: [reviewed_mr_b.iid.to_s] }
+            end
+
+            it 'return an argument error that mentions the missing fields' do
+              expect_graphql_errors_to_include(/projectPath/)
+            end
+          end
+
+          context 'filtering by project path and IID' do
+            let(:mr_args) do
+              { project_path: project_b.full_path, iids: [reviewed_mr_b.iid.to_s] }
+            end
+
+            it 'selects the correct MRs' do
+              expect(reviewed_mrs).to contain_exactly(
+                a_hash_including('id' => global_id_of(reviewed_mr_b))
+              )
+            end
+          end
+
+          context 'filtering by project path' do
+            let(:mr_args) do
+              { project_path: project_b.full_path }
+            end
+
+            it 'selects the correct MRs' do
+              expect(reviewed_mrs).to contain_exactly(
+                a_hash_including('id' => global_id_of(reviewed_mr_b)),
+                a_hash_including('id' => global_id_of(reviewed_mr_c))
+              )
+            end
+          end
+
+          context 'filtering by author' do
+            let(:author) { reviewed_mr_b.author }
+            let(:mr_args) { { author_username: author.username } }
+
+            it 'finds the authored mrs' do
+              expect(reviewed_mrs).to contain_exactly(
+                a_hash_including('id' => global_id_of(reviewed_mr_b))
+              )
+            end
+          end
+
+          context 'filtering by assignee' do
+            let(:assignee) { create(:user) }
+            let(:mr_args) { { assignee_username: assignee.username } }
+
+            it 'finds the authored mrs' do
+              reviewed_mr_c.assignees << assignee
+
+              post_graphql(query, current_user: current_user)
+
+              expect(reviewed_mrs).to contain_exactly(
+                a_hash_including('id' => global_id_of(reviewed_mr_c))
+              )
+            end
+          end
+        end
+
+        context 'the current user does not have access' do
+          let(:current_user) { unauthorized_user }
+
+          it 'cannot be found' do
+            expect(reviewed_mrs).to be_empty
           end
         end
       end
@@ -208,6 +330,23 @@ RSpec.describe 'getting user information' do
 
               expect(authored_mrs).to contain_exactly(
                 a_hash_including('id' => global_id_of(authored_mr)),
+                a_hash_including('id' => global_id_of(authored_mr_c))
+              )
+            end
+          end
+
+          context 'filtering by reviewer' do
+            let(:reviewer) { create(:user) }
+            let(:mr_args) { { reviewer_username: reviewer.username } }
+
+            it 'finds the assigned mrs' do
+              authored_mr_b.reviewers << reviewer
+              authored_mr_c.reviewers << reviewer
+
+              post_graphql(query, current_user: current_user)
+
+              expect(authored_mrs).to contain_exactly(
+                a_hash_including('id' => global_id_of(authored_mr_b)),
                 a_hash_including('id' => global_id_of(authored_mr_c))
               )
             end

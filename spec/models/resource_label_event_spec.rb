@@ -51,14 +51,6 @@ RSpec.describe ResourceLabelEvent, type: :model do
   end
 
   context 'callbacks' do
-    describe '#usage_metrics' do
-      it 'tracks changed labels' do
-        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_label_changed_action)
-
-        subject.save!
-      end
-    end
-
     describe '#expire_etag_cache' do
       def expect_expiration(issue)
         expect_next_instance_of(Gitlab::EtagCaching::Store) do |instance|

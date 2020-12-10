@@ -123,11 +123,23 @@ const initPerformanceBar = el => {
   });
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+let loadedPeekBar = false;
+function loadBar() {
   const jsPeek = document.querySelector('#js-peek');
-  if (jsPeek) {
+  if (!loadedPeekBar && jsPeek) {
+    loadedPeekBar = true;
     initPerformanceBar(jsPeek);
   }
+}
+
+// If js-peek is not loaded when this script is executed, this call will do nothing
+// If this is the case, then it will loadBar on DOMContentLoaded. We would prefer it
+// to be initialized before the DOMContetLoaded event in order to pick up all the
+// requests sent from the page.
+loadBar();
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadBar();
 });
 
 initPerformanceBarLog();

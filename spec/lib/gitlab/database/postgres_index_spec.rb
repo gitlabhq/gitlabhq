@@ -46,9 +46,24 @@ RSpec.describe Gitlab::Database::PostgresIndex do
     end
   end
 
-  describe '.random_few' do
-    it 'limits to two records by default' do
-      expect(described_class.random_few(2).size).to eq(2)
+  describe '#bloat_size' do
+    subject { build(:postgres_index, bloat_estimate: bloat_estimate) }
+
+    let(:bloat_estimate) { build(:postgres_index_bloat_estimate) }
+    let(:bloat_size) { double }
+
+    it 'returns the bloat size from the estimate' do
+      expect(bloat_estimate).to receive(:bloat_size).and_return(bloat_size)
+
+      expect(subject.bloat_size).to eq(bloat_size)
+    end
+
+    context 'without a bloat estimate available' do
+      let(:bloat_estimate) { nil }
+
+      it 'returns 0' do
+        expect(subject.bloat_size).to eq(0)
+      end
     end
   end
 

@@ -9607,6 +9607,9 @@ msgstr ""
 msgid "DevopsAdoption|Add new segment"
 msgstr ""
 
+msgid "DevopsAdoption|Adopted"
+msgstr ""
+
 msgid "DevopsAdoption|An error occured while deleting the segment. Please try again."
 msgstr ""
 
@@ -9617,6 +9620,24 @@ msgid "DevopsAdoption|Approvals"
 msgstr ""
 
 msgid "DevopsAdoption|Are you sure that you would like to delete %{name}?"
+msgstr ""
+
+msgid "DevopsAdoption|At least 1 MR opened"
+msgstr ""
+
+msgid "DevopsAdoption|At least 1 approval on an MR"
+msgstr ""
+
+msgid "DevopsAdoption|At least 1 deploy"
+msgstr ""
+
+msgid "DevopsAdoption|At least 1 issue opened"
+msgstr ""
+
+msgid "DevopsAdoption|At least 1 pipeline successfully run"
+msgstr ""
+
+msgid "DevopsAdoption|At least 1 security scan of any type run in pipeline"
 msgstr ""
 
 msgid "DevopsAdoption|Confirm delete segment"
@@ -9661,7 +9682,13 @@ msgstr ""
 msgid "DevopsAdoption|No filter results."
 msgstr ""
 
+msgid "DevopsAdoption|Not adopted"
+msgstr ""
+
 msgid "DevopsAdoption|Pipelines"
+msgstr ""
+
+msgid "DevopsAdoption|Runner configured for project/group"
 msgstr ""
 
 msgid "DevopsAdoption|Runners"
@@ -11677,6 +11704,9 @@ msgid "Failed to update branch!"
 msgstr ""
 
 msgid "Failed to update environment!"
+msgstr ""
+
+msgid "Failed to update framework"
 msgstr ""
 
 msgid "Failed to update issue status"

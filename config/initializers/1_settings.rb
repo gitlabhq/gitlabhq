@@ -792,6 +792,12 @@ Settings.forti_authenticator['enabled'] = false if Settings.forti_authenticator[
 Settings.forti_authenticator['port'] = 443 if Settings.forti_authenticator['port'].to_i == 0
 
 #
+# FortiToken Cloud
+#
+Settings['forti_token_cloud'] ||= Settingslogic.new({})
+Settings.forti_token_cloud['enabled'] = false if Settings.forti_token_cloud['enabled'].nil?
+
+#
 # Extra customization
 #
 Settings['extra'] ||= Settingslogic.new({})

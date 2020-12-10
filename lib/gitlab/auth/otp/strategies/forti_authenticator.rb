@@ -17,7 +17,7 @@ module Gitlab
 
             # Successful authentication results in HTTP 200: OK
             # https://docs.fortinet.com/document/fortiauthenticator/6.2.0/rest-api-solution-guide/704555/authentication-auth
-            response.ok? ? success : error(message: response.message, http_status: response.code)
+            response.ok? ? success : error_from_response(response)
           end
 
           private

@@ -1,0 +1,5 @@
+---
+title: Fix usage data tracking of some issue events
+merge_request: 49571
+author:
+type: fixed

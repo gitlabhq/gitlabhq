@@ -142,6 +142,86 @@ to run the following command:
 Feature.enable(:forti_authenticator, User.find(<user ID>))
 ```
 
+### One-time password via FortiToken Cloud
+
+> - Introduced in [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/issues/212313).
+> - It's deployed behind a feature flag, disabled by default.
+> - It's disabled on GitLab.com.
+> - It's not recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-fortitoken-cloud-integration).
+
+WARNING:
+This feature might not be available to you. Check the **version history** note above for details.
+
+You can use FortiToken Cloud as an OTP provider in GitLab. Users must exist in
+both FortiToken Cloud and GitLab with the exact same username, and users must
+have FortiToken configured in FortiToken Cloud.
+
+You'll also need a `client_id` and `client_secret` to configure FortiToken Cloud.
+To get these, see the `REST API Guide` at
+[`Fortinet Document Library`](https://docs.fortinet.com/document/fortitoken-cloud/20.4.d/rest-api).
+
+First configure FortiToken Cloud in GitLab. On your GitLab server:
+
+1. Open the configuration file.
+
+   For Omnibus GitLab:
+
+   ```shell
+   sudo editor /etc/gitlab/gitlab.rb
+   ```
+
+   For installations from source:
+
+   ```shell
+   cd /home/git/gitlab
+   sudo -u git -H editor config/gitlab.yml
+   ```
+
+1. Add the provider configuration:
+
+   For Omnibus package:
+
+   ```ruby
+   gitlab_rails['forti_token_cloud_enabled'] = true
+   gitlab_rails['forti_token_cloud_client_id'] = '<your_fortinet_cloud_client_id>'
+   gitlab_rails['forti_token_cloud_client_secret'] = '<your_fortinet_cloud_client_secret>'
+   ```
+
+   For installations from source:
+
+   ```yaml
+   forti_token_cloud:
+     enabled: true
+     client_id: YOUR_FORTI_TOKEN_CLOUD_CLIENT_ID
+     client_secret: YOUR_FORTI_TOKEN_CLOUD_CLIENT_SECRET
+   ```
+
+1. Save the configuration file.
+1. [Reconfigure](../../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+   or [restart GitLab](../../../administration/restart_gitlab.md#installations-from-source)
+   for the changes to take effect if you installed GitLab via Omnibus or from
+   source respectively.
+
+#### Enable or disable FortiToken Cloud integration
+
+FortiToken Cloud integration is under development and not ready for production use.
+It is deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:forti_token_cloud, User.find(<user ID>))
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:forti_token_cloud, User.find(<user ID>))
+```
+
 ### U2F device
 
 > Introduced in [GitLab 8.9](https://about.gitlab.com/blog/2016/06/22/gitlab-adds-support-for-u2f/).

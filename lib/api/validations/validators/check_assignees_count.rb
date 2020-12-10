@@ -18,9 +18,10 @@ module API
         def validate_param!(attr_name, params)
           return if param_allowed?(attr_name, params)
 
-          raise Grape::Exceptions::Validation,
-                params: [@scope.full_name(attr_name)],
-                message: "allows one value, but found #{params[attr_name].size}: #{params[attr_name].join(", ")}"
+          raise Grape::Exceptions::Validation.new(
+            params: [@scope.full_name(attr_name)],
+            message: "allows one value, but found #{params[attr_name].size}: #{params[attr_name].join(", ")}"
+          )
         end
 
         private

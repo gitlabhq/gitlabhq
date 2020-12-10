@@ -43,6 +43,8 @@ module IntegrationsActions
   end
 
   def reset
+    integration.destroy!
+
     flash[:notice] = s_('Integrations|This integration, and inheriting projects were reset.')
 
     render json: {}, status: :ok

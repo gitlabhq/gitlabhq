@@ -1042,6 +1042,15 @@ production: &base
     # Access token for FortiAuthenticator API
     # access_token: 123s3cr3t456
 
+  # FortiToken Cloud settings
+  forti_token_cloud:
+    # Allow using FortiToken Cloud as OTP provider
+    enabled: false
+
+    # Client ID and Secret to access FortiToken Cloud API
+    # client_id: 'YOUR_FORTI_TOKEN_CLOUD_CLIENT_ID'
+    # client_secret: 'YOUR_FORTI_TOKEN_CLOUD_CLIENT_SECRET'
+
   # Shared file storage settings
   shared:
     # path: /mnt/gitlab # Default: shared

@@ -16,9 +16,10 @@ RSpec.describe Gitlab::Auth::Otp::Strategies::FortiAuthenticator do
   subject(:validate) { described_class.new(user).validate(otp_code) }
 
   before do
-    stub_feature_flags(forti_authenticator: true)
+    stub_feature_flags(forti_authenticator: user)
 
     stub_forti_authenticator_config(
+      enabled: true,
       host: host,
       port: port,
       username: api_username,

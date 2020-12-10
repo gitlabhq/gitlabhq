@@ -11,9 +11,10 @@ module API
 
           return if value.split(',').map { |v| ValidateEmail.valid?(v) }.all?
 
-          raise Grape::Exceptions::Validation,
+          raise Grape::Exceptions::Validation.new(
             params: [@scope.full_name(attr_name)],
             message: "contains an invalid email address"
+          )
         end
       end
     end

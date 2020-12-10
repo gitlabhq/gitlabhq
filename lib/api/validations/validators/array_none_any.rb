@@ -10,8 +10,10 @@ module API
           return if value.is_a?(Array) ||
               [IssuableFinder::Params::FILTER_NONE, IssuableFinder::Params::FILTER_ANY].include?(value.to_s.downcase)
 
-          raise Grape::Exceptions::Validation, params: [@scope.full_name(attr_name)],
-                                               message: "should be an array, 'None' or 'Any'"
+          raise Grape::Exceptions::Validation.new(
+            params: [@scope.full_name(attr_name)],
+            message: "should be an array, 'None' or 'Any'"
+          )
         end
       end
     end

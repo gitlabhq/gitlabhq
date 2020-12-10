@@ -1,0 +1,5 @@
+---
+title: Add primary key to elasticsearch_indexed_namespaces
+merge_request: 48944
+author:
+type: changed

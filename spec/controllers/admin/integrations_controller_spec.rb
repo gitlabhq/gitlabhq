@@ -75,18 +75,26 @@ RSpec.describe Admin::IntegrationsController do
   end
 
   describe '#reset' do
-    let(:integration) { create(:jira_service, :instance) }
+    let_it_be(:integration) { create(:jira_service, :instance) }
+    let_it_be(:inheriting_integration) { create(:jira_service, inherit_from_id: integration.id) }
 
-    before do
+    subject do
       post :reset, params: { id: integration.class.to_param }
     end
 
-    it 'returns 200 OK' do
+    it 'returns 200 OK', :aggregate_failures do
+      subject
+
       expected_json = {}.to_json
 
       expect(flash[:notice]).to eq('This integration, and inheriting projects were reset.')
       expect(response).to have_gitlab_http_status(:ok)
       expect(response.body).to eq(expected_json)
+    end
+
+    it 'deletes the integration and all inheriting integrations' do
+      expect { subject }.to change { JiraService.for_instance.count }.by(-1)
+        .and change { JiraService.inherit_from_id(integration.id).count }.by(-1)
     end
   end
 end
