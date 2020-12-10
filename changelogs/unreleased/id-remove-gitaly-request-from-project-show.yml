@@ -1,0 +1,5 @@
+---
+title: Remove unnecessary Gitaly calls from projects#show
+merge_request: 49565
+author:
+type: performance

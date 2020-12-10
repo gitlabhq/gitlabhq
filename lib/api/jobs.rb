@@ -76,6 +76,8 @@ module API
 
         build = find_build!(params[:job_id])
 
+        authorize_read_build_trace!(build) if build
+
         header 'Content-Disposition', "infile; filename=\"#{build.id}.log\""
         content_type 'text/plain'
         env['api.format'] = :binary

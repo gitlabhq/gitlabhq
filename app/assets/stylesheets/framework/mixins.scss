@@ -169,7 +169,6 @@
     transition-duration: 0.3s;
   }
 
-  .fa,
   svg {
     position: relative;
     top: 5px;
@@ -360,11 +359,6 @@
   min-width: 16px;
   color: $gray-400;
   fill: $gray-400;
-
-  .fa {
-    position: relative;
-    font-size: 16px;
-  }
 
   svg {
     @include btn-svg;

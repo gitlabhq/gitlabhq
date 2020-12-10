@@ -14,7 +14,7 @@ RSpec.describe Ci::Build do
                          status: 'success')
   end
 
-  let(:build) { create(:ci_build, pipeline: pipeline) }
+  let_it_be(:build, refind: true) { create(:ci_build, pipeline: pipeline) }
 
   it { is_expected.to belong_to(:runner) }
   it { is_expected.to belong_to(:trigger_request) }
@@ -307,8 +307,6 @@ RSpec.describe Ci::Build do
   end
 
   describe '.without_needs' do
-    let!(:build) { create(:ci_build) }
-
     subject { described_class.without_needs }
 
     context 'when no build_need is created' do
@@ -2019,6 +2017,8 @@ RSpec.describe Ci::Build do
     end
 
     context 'when ci_build_metadata_config is disabled' do
+      let(:build) { create(:ci_build, pipeline: pipeline) }
+
       before do
         stub_feature_flags(ci_build_metadata_config: false)
       end
@@ -2755,7 +2755,11 @@ RSpec.describe Ci::Build do
         pipeline.update!(tag: true)
       end
 
-      it { is_expected.to include(tag_variable) }
+      it do
+        build.reload
+
+        expect(subject).to include(tag_variable)
+      end
     end
 
     context 'when CI variable is defined' do
@@ -2989,8 +2993,11 @@ RSpec.describe Ci::Build do
     end
 
     context 'when pipeline variable overrides build variable' do
+      let(:build) do
+        create(:ci_build, pipeline: pipeline, yaml_variables: [{ key: 'MYVAR', value: 'myvar', public: true }])
+      end
+
       before do
-        build.yaml_variables = [{ key: 'MYVAR', value: 'myvar', public: true }]
         pipeline.variables.build(key: 'MYVAR', value: 'pipeline value')
       end
 
@@ -3306,9 +3313,12 @@ RSpec.describe Ci::Build do
     end
 
     context 'when overriding user-provided variables' do
+      let(:build) do
+        create(:ci_build, pipeline: pipeline, yaml_variables: [{ key: 'MY_VAR', value: 'myvar', public: true }])
+      end
+
       before do
         pipeline.variables.build(key: 'MY_VAR', value: 'pipeline value')
-        build.yaml_variables = [{ key: 'MY_VAR', value: 'myvar', public: true }]
       end
 
       it 'returns a hash including variable with higher precedence' do
@@ -3665,7 +3675,7 @@ RSpec.describe Ci::Build do
         end
 
         it 'handles raised exception' do
-          expect { subject.drop! }.not_to raise_exception(Gitlab::Access::AccessDeniedError)
+          expect { subject.drop! }.not_to raise_error
         end
 
         it 'logs the error' do
@@ -4721,6 +4731,80 @@ RSpec.describe Ci::Build do
       build.save!
 
       expect(action).not_to have_received(:perform!)
+    end
+  end
+
+  describe '#debug_mode?' do
+    subject { build.debug_mode? }
+
+    context 'when feature is disabled' do
+      before do
+        stub_feature_flags(restrict_access_to_build_debug_mode: false)
+      end
+
+      it { is_expected.to eq false }
+
+      context 'when in variables' do
+        before do
+          create(:ci_instance_variable, key: 'CI_DEBUG_TRACE', value: 'true')
+        end
+
+        it { is_expected.to eq false }
+      end
+    end
+
+    context 'when CI_DEBUG_TRACE=true is in variables' do
+      context 'when in instance variables' do
+        before do
+          create(:ci_instance_variable, key: 'CI_DEBUG_TRACE', value: 'true')
+        end
+
+        it { is_expected.to eq true }
+      end
+
+      context 'when in group variables' do
+        before do
+          create(:ci_group_variable, key: 'CI_DEBUG_TRACE', value: 'true', group: project.group)
+        end
+
+        it { is_expected.to eq true }
+      end
+
+      context 'when in pipeline variables' do
+        before do
+          create(:ci_pipeline_variable, key: 'CI_DEBUG_TRACE', value: 'true', pipeline: pipeline)
+        end
+
+        it { is_expected.to eq true }
+      end
+
+      context 'when in project variables' do
+        before do
+          create(:ci_variable, key: 'CI_DEBUG_TRACE', value: 'true', project: project)
+        end
+
+        it { is_expected.to eq true }
+      end
+
+      context 'when in job variables' do
+        before do
+          create(:ci_job_variable, key: 'CI_DEBUG_TRACE', value: 'true', job: build)
+        end
+
+        it { is_expected.to eq true }
+      end
+
+      context 'when in yaml variables' do
+        before do
+          build.update!(yaml_variables: [{ key: :CI_DEBUG_TRACE, value: 'true' }])
+        end
+
+        it { is_expected.to eq true }
+      end
+    end
+
+    context 'when CI_DEBUG_TRACE is not in variables' do
+      it { is_expected.to eq false }
     end
   end
 end

@@ -1006,6 +1006,15 @@ module Ci
       ::Gitlab.com? ? 500_000 : 0
     end
 
+    def debug_mode?
+      return false unless Feature.enabled?(:restrict_access_to_build_debug_mode, default_enabled: true)
+
+      # TODO: Have `debug_mode?` check against data on sent back from runner
+      # to capture all the ways that variables can be set.
+      # See (https://gitlab.com/gitlab-org/gitlab/-/issues/290955)
+      variables.any? { |variable| variable[:key] == 'CI_DEBUG_TRACE' && variable[:value].casecmp('true') == 0 }
+    end
+
     protected
 
     def run_status_commit_hooks!

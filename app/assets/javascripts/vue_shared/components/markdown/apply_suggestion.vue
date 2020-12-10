@@ -41,7 +41,7 @@ export default {
     :header-text="headerText"
     :disabled="disabled"
     boundary="window"
-    right="true"
+    right
     menu-class="gl-w-full! gl-pb-0!"
   >
     <gl-dropdown-form class="gl-m-3!">

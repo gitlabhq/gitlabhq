@@ -137,7 +137,7 @@ describe('RoleDropdown', () => {
 
     await nextTick();
 
-    expect(findDropdown().attributes('right')).toBe('true');
+    expect(findDropdown().props('right')).toBe(true);
   });
 
   it('sets the dropdown alignment to left on desktop', async () => {
@@ -146,6 +146,6 @@ describe('RoleDropdown', () => {
 
     await nextTick();
 
-    expect(findDropdown().attributes('right')).toBeUndefined();
+    expect(findDropdown().props('right')).toBe(false);
   });
 });

@@ -34,7 +34,7 @@ export default {
       return this.tags.some(tag => this.selectedItems[tag.name]);
     },
     showMultiDeleteButton() {
-      return this.tags.some(tag => tag.destroy_path) && !this.isMobile;
+      return this.tags.some(tag => tag.canDelete) && !this.isMobile;
     },
   },
   methods: {

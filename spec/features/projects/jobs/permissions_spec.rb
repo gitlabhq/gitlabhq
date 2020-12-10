@@ -3,11 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe 'Project Jobs Permissions' do
-  let(:user) { create(:user) }
-  let(:group) { create(:group, name: 'some group') }
-  let(:project) { create(:project, :repository, namespace: group) }
-  let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.sha, ref: 'master') }
-  let!(:job) { create(:ci_build, :running, :coverage, :trace_artifact, pipeline: pipeline) }
+  using RSpec::Parameterized::TableSyntax
+
+  let_it_be_with_reload(:group) { create(:group, name: 'some group') }
+  let_it_be_with_reload(:project) { create(:project, :repository, namespace: group) }
+  let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.sha, ref: 'master') }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:job) { create(:ci_build, :running, :coverage, :trace_artifact, pipeline: pipeline) }
 
   before do
     sign_in(user)
@@ -34,7 +36,7 @@ RSpec.describe 'Project Jobs Permissions' do
 
     context 'when public access for jobs is disabled' do
       before do
-        project.update(public_builds: false)
+        project.update!(public_builds: false)
       end
 
       context 'when user is a guest' do
@@ -48,7 +50,7 @@ RSpec.describe 'Project Jobs Permissions' do
 
       context 'when project is internal' do
         before do
-          project.update(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+          project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
         end
 
         it_behaves_like 'recent job page details responds with status', 404
@@ -58,12 +60,30 @@ RSpec.describe 'Project Jobs Permissions' do
 
     context 'when public access for jobs is enabled' do
       before do
-        project.update(public_builds: true)
+        project.update!(public_builds: true)
+      end
+
+      context 'when user is a guest' do
+        before do
+          project.add_guest(user)
+        end
+
+        it_behaves_like 'recent job page details responds with status', 200
+        it_behaves_like 'project jobs page responds with status', 200
+      end
+
+      context 'when user is a developer' do
+        before do
+          project.add_developer(user)
+        end
+
+        it_behaves_like 'recent job page details responds with status', 200
+        it_behaves_like 'project jobs page responds with status', 200
       end
 
       context 'when project is internal' do
         before do
-          project.update(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+          project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
         end
 
         it_behaves_like 'recent job page details responds with status', 200 do
@@ -89,7 +109,7 @@ RSpec.describe 'Project Jobs Permissions' do
 
   describe 'artifacts page' do
     context 'when recent job has artifacts available' do
-      before do
+      before_all do
         archive = fixture_file_upload('spec/fixtures/ci_build_artifacts.zip')
 
         create(:ci_job_artifact, :archive, file: archive, job: job)
@@ -97,7 +117,7 @@ RSpec.describe 'Project Jobs Permissions' do
 
       context 'when public access for jobs is disabled' do
         before do
-          project.update(public_builds: false)
+          project.update!(public_builds: false)
         end
 
         context 'when user with guest role' do
@@ -123,6 +143,126 @@ RSpec.describe 'Project Jobs Permissions' do
             expect(status_code).to eq(200)
             expect(page.response_headers['Content-Type']).to eq 'application/zip'
             expect(page.response_headers['Content-Transfer-Encoding']).to eq 'binary'
+          end
+        end
+      end
+    end
+  end
+
+  context 'with CI_DEBUG_TRACE' do
+    let_it_be(:ci_instance_variable) { create(:ci_instance_variable, key: 'CI_DEBUG_TRACE') }
+
+    describe 'trace endpoint' do
+      let_it_be(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
+
+      where(:public_builds, :user_project_role, :ci_debug_trace, :expected_status_code) do
+        true         | 'developer'      | true  | 200
+        true         | 'guest'          | true  | 403
+        true         | 'developer'      | false | 200
+        true         | 'guest'          | false | 200
+        false        | 'developer'      | true  | 200
+        false        | 'guest'          | true  | 403
+        false        | 'developer'      | false | 200
+        false        | 'guest'          | false | 403
+      end
+
+      with_them do
+        before do
+          ci_instance_variable.update!(value: ci_debug_trace)
+          project.update!(public_builds: public_builds)
+          project.add_role(user, user_project_role)
+        end
+
+        it 'renders trace to authorized users' do
+          visit trace_project_job_path(project, job)
+
+          expect(status_code).to eq(expected_status_code)
+        end
+      end
+
+      context 'when restrict_access_to_build_debug_mode feature not enabled' do
+        where(:public_builds, :user_project_role, :ci_debug_trace, :expected_status_code) do
+          true         | 'developer'      | true  | 200
+          true         | 'guest'          | true  | 200
+          true         | 'developer'      | false | 200
+          true         | 'guest'          | false | 200
+          false        | 'developer'      | true  | 200
+          false        | 'guest'          | true  | 403
+          false        | 'developer'      | false | 200
+          false        | 'guest'          | false | 403
+        end
+
+        with_them do
+          before do
+            stub_feature_flags(restrict_access_to_build_debug_mode: false)
+            ci_instance_variable.update!(value: ci_debug_trace)
+            project.update!(public_builds: public_builds)
+            project.add_role(user, user_project_role)
+          end
+
+          it 'renders trace to authorized users' do
+            visit trace_project_job_path(project, job)
+
+            expect(status_code).to eq(expected_status_code)
+          end
+        end
+      end
+    end
+
+    describe 'raw page' do
+      let_it_be(:job) { create(:ci_build, :running, :coverage, :trace_artifact, pipeline: pipeline) }
+
+      where(:public_builds, :user_project_role, :ci_debug_trace, :expected_status_code, :expected_msg) do
+        true         | 'developer'      | true  | 200 | nil
+        true         | 'guest'          | true  | 403 | 'You must have developer or higher permissions'
+        true         | 'developer'      | false | 200 | nil
+        true         | 'guest'          | false | 200 | nil
+        false        | 'developer'      | true  | 200 | nil
+        false        | 'guest'          | true  | 403 | 'You must have developer or higher permissions'
+        false        | 'developer'      | false | 200 | nil
+        false        | 'guest'          | false | 403 | 'The current user is not authorized to access the job log'
+      end
+
+      with_them do
+        before do
+          ci_instance_variable.update!(value: ci_debug_trace)
+          project.update!(public_builds: public_builds)
+          project.add_role(user, user_project_role)
+        end
+
+        it 'renders raw trace to authorized users' do
+          visit raw_project_job_path(project, job)
+
+          expect(status_code).to eq(expected_status_code)
+          expect(page).to have_content(expected_msg)
+        end
+      end
+
+      context 'when restrict_access_to_build_debug_mode feature not enabled' do
+        where(:public_builds, :user_project_role, :ci_debug_trace, :expected_status_code, :expected_msg) do
+          true         | 'developer'      | true  | 200 | nil
+          true         | 'guest'          | true  | 200 | nil
+          true         | 'developer'      | false | 200 | nil
+          true         | 'guest'          | false | 200 | nil
+          false        | 'developer'      | true  | 200 | nil
+          false        | 'guest'          | true  | 403 | 'The current user is not authorized to access the job log'
+          false        | 'developer'      | false | 200 | nil
+          false        | 'guest'          | false | 403 | 'The current user is not authorized to access the job log'
+        end
+
+        with_them do
+          before do
+            stub_feature_flags(restrict_access_to_build_debug_mode: false)
+            ci_instance_variable.update!(value: ci_debug_trace)
+            project.update!(public_builds: public_builds)
+            project.add_role(user, user_project_role)
+          end
+
+          it 'renders raw trace to authorized users' do
+            visit raw_project_job_path(project, job)
+
+            expect(status_code).to eq(expected_status_code)
+            expect(page).to have_content(expected_msg)
           end
         end
       end

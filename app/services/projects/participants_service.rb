@@ -14,7 +14,7 @@ module Projects
         groups +
         project_members
 
-      participants.uniq
+      render_participants_as_hash(participants.uniq)
     end
 
     def project_members

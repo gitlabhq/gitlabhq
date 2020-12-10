@@ -67,7 +67,7 @@ RSpec.describe Ci::CompareTestReportsService do
 
         # The JUnit fixture for the given build has 3 failures.
         # This service will create 1 test case failure record for each.
-        Ci::TestCasesService.new.execute(build)
+        Ci::TestFailureHistoryService.new(head_pipeline).execute
       end
 
       it 'loads recent failures on limited test cases to avoid building up a huge DB query', :aggregate_failures do

@@ -10,8 +10,6 @@ export default el => {
   if (whatsNewApp) {
     store.dispatch('openDrawer');
   } else {
-    const storageKey = getStorageKey(el);
-
     whatsNewApp = new Vue({
       el,
       store,
@@ -28,7 +26,11 @@ export default el => {
       },
       render(createElement) {
         return createElement('app', {
-          props: { storageKey },
+          props: {
+            storageKey: getStorageKey(el),
+            versions: JSON.parse(el.getAttribute('data-versions')),
+            gitlabDotCom: el.getAttribute('data-gitlab-dot-com'),
+          },
         });
       },
     });

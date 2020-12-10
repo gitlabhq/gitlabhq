@@ -1,0 +1,5 @@
+---
+title: Track test failures on pipeline completion
+merge_request: 48695
+author:
+type: changed

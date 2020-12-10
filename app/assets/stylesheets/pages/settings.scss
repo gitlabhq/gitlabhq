@@ -169,11 +169,6 @@
   .form-check {
     margin-bottom: 10px;
 
-    i.fa {
-      margin: 2px 0;
-      font-size: 20px;
-    }
-
     .option-title {
       font-weight: $gl-font-weight-normal;
       display: inline-block;
@@ -193,7 +188,7 @@
     }
 
     &.disabled {
-      i.fa {
+      svg {
         opacity: 0.5;
       }
 

@@ -495,6 +495,9 @@ toolchain
 toolchains
 tooltip
 tooltips
+transpile
+transpiles
+transpiling
 Trello
 triaging
 Twilio

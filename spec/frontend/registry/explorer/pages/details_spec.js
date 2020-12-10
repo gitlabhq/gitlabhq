@@ -1,5 +1,8 @@
-import { shallowMount } from '@vue/test-utils';
-import { GlPagination } from '@gitlab/ui';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { GlKeysetPagination } from '@gitlab/ui';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'jest/helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import Tracking from '~/tracking';
 import component from '~/registry/explorer/pages/details.vue';
 import DeleteAlert from '~/registry/explorer/components/details_page/delete_alert.vue';
@@ -9,24 +12,29 @@ import TagsLoader from '~/registry/explorer/components/details_page/tags_loader.
 import TagsList from '~/registry/explorer/components/details_page/tags_list.vue';
 import EmptyTagsState from '~/registry/explorer/components/details_page/empty_tags_state.vue';
 import { createStore } from '~/registry/explorer/stores/';
-import {
-  SET_MAIN_LOADING,
-  SET_TAGS_LIST_SUCCESS,
-  SET_TAGS_PAGINATION,
-  SET_INITIAL_STATE,
-  SET_IMAGE_DETAILS,
-} from '~/registry/explorer/stores/mutation_types';
 
-import { tagsListResponse, imageDetailsMock } from '../mock_data';
+import getContainerRepositoryDetailsQuery from '~/registry/explorer/graphql/queries/get_container_repository_details.graphql';
+import deleteContainerRepositoryTagsMutation from '~/registry/explorer/graphql/mutations/delete_container_repository_tags.graphql';
+
+import {
+  graphQLImageDetailsMock,
+  graphQLImageDetailsEmptyTagsMock,
+  graphQLDeleteImageRepositoryTagsMock,
+  containerRepositoryMock,
+  tagsMock,
+  tagsPageInfo,
+} from '../mock_data';
 import { DeleteModal } from '../stubs';
+
+const localVue = createLocalVue();
 
 describe('Details Page', () => {
   let wrapper;
-  let dispatchSpy;
   let store;
+  let apolloProvider;
 
   const findDeleteModal = () => wrapper.find(DeleteModal);
-  const findPagination = () => wrapper.find(GlPagination);
+  const findPagination = () => wrapper.find(GlKeysetPagination);
   const findTagsLoader = () => wrapper.find(TagsLoader);
   const findTagsList = () => wrapper.find(TagsList);
   const findDeleteAlert = () => wrapper.find(DeleteAlert);
@@ -36,15 +44,46 @@ describe('Details Page', () => {
 
   const routeId = 1;
 
+  const breadCrumbState = {
+    updateName: jest.fn(),
+  };
+
+  const cleanTags = tagsMock.map(t => {
+    const result = { ...t };
+    // eslint-disable-next-line no-underscore-dangle
+    delete result.__typename;
+    return result;
+  });
+
+  const waitForApolloRequestRender = async () => {
+    await waitForPromises();
+    await wrapper.vm.$nextTick();
+  };
+
   const tagsArrayToSelectedTags = tags =>
     tags.reduce((acc, c) => {
       acc[c.name] = true;
       return acc;
     }, {});
 
-  const mountComponent = ({ options } = {}) => {
+  const mountComponent = ({
+    resolver = jest.fn().mockResolvedValue(graphQLImageDetailsMock()),
+    mutationResolver = jest.fn().mockResolvedValue(graphQLDeleteImageRepositoryTagsMock),
+    options,
+  } = {}) => {
+    localVue.use(VueApollo);
+
+    const requestHandlers = [
+      [getContainerRepositoryDetailsQuery, resolver],
+      [deleteContainerRepositoryTagsMutation, mutationResolver],
+    ];
+
+    apolloProvider = createMockApollo(requestHandlers);
+
     wrapper = shallowMount(component, {
       store,
+      localVue,
+      apolloProvider,
       stubs: {
         DeleteModal,
       },
@@ -55,17 +94,17 @@ describe('Details Page', () => {
           },
         },
       },
+      provide() {
+        return {
+          breadCrumbState,
+        };
+      },
       ...options,
     });
   };
 
   beforeEach(() => {
     store = createStore();
-    dispatchSpy = jest.spyOn(store, 'dispatch');
-    dispatchSpy.mockResolvedValue();
-    store.commit(SET_TAGS_LIST_SUCCESS, tagsListResponse.data);
-    store.commit(SET_TAGS_PAGINATION, tagsListResponse.headers);
-    store.commit(SET_IMAGE_DETAILS, imageDetailsMock);
     jest.spyOn(Tracking, 'event');
   });
 
@@ -74,83 +113,88 @@ describe('Details Page', () => {
     wrapper = null;
   });
 
-  describe('lifecycle events', () => {
-    it('calls the appropriate action on mount', () => {
-      mountComponent();
-      expect(dispatchSpy).toHaveBeenCalledWith('requestImageDetailsAndTagsList', routeId);
-    });
-  });
-
   describe('when isLoading is true', () => {
-    beforeEach(() => {
-      store.commit(SET_MAIN_LOADING, true);
-      mountComponent();
-    });
-
-    afterEach(() => store.commit(SET_MAIN_LOADING, false));
-
     it('shows the loader', () => {
+      mountComponent();
+
       expect(findTagsLoader().exists()).toBe(true);
     });
 
     it('does not show the list', () => {
+      mountComponent();
+
       expect(findTagsList().exists()).toBe(false);
     });
 
     it('does not show pagination', () => {
+      mountComponent();
+
       expect(findPagination().exists()).toBe(false);
     });
   });
 
   describe('when the list of tags is empty', () => {
-    beforeEach(() => {
-      store.commit(SET_TAGS_LIST_SUCCESS, []);
-      mountComponent();
-    });
+    const resolver = jest.fn().mockResolvedValue(graphQLImageDetailsEmptyTagsMock);
 
-    it('has the empty state', () => {
+    it('has the empty state', async () => {
+      mountComponent({ resolver });
+
+      await waitForApolloRequestRender();
+
       expect(findEmptyTagsState().exists()).toBe(true);
     });
 
-    it('does not show the loader', () => {
+    it('does not show the loader', async () => {
+      mountComponent({ resolver });
+
+      await waitForApolloRequestRender();
+
       expect(findTagsLoader().exists()).toBe(false);
     });
 
-    it('does not show the list', () => {
+    it('does not show the list', async () => {
+      mountComponent({ resolver });
+
+      await waitForApolloRequestRender();
+
       expect(findTagsList().exists()).toBe(false);
     });
   });
 
   describe('list', () => {
-    beforeEach(() => {
+    it('exists', async () => {
       mountComponent();
-    });
 
-    it('exists', () => {
+      await waitForApolloRequestRender();
+
       expect(findTagsList().exists()).toBe(true);
     });
 
-    it('has the correct props bound', () => {
+    it('has the correct props bound', async () => {
+      mountComponent();
+
+      await waitForApolloRequestRender();
+
       expect(findTagsList().props()).toMatchObject({
         isMobile: false,
-        tags: store.state.tags,
+        tags: cleanTags,
       });
     });
 
     describe('deleteEvent', () => {
       describe('single item', () => {
         let tagToBeDeleted;
-        beforeEach(() => {
-          [tagToBeDeleted] = store.state.tags;
+        beforeEach(async () => {
+          mountComponent();
+
+          await waitForApolloRequestRender();
+
+          [tagToBeDeleted] = cleanTags;
           findTagsList().vm.$emit('delete', { [tagToBeDeleted.name]: true });
         });
 
-        it('open the modal', () => {
+        it('open the modal', async () => {
           expect(DeleteModal.methods.show).toHaveBeenCalled();
-        });
-
-        it('maps the selection to itemToBeDeleted', () => {
-          expect(wrapper.vm.itemsToBeDeleted).toEqual([tagToBeDeleted]);
         });
 
         it('tracks a single delete event', () => {
@@ -161,16 +205,16 @@ describe('Details Page', () => {
       });
 
       describe('multiple items', () => {
-        beforeEach(() => {
-          findTagsList().vm.$emit('delete', tagsArrayToSelectedTags(store.state.tags));
+        beforeEach(async () => {
+          mountComponent();
+
+          await waitForApolloRequestRender();
+
+          findTagsList().vm.$emit('delete', tagsArrayToSelectedTags(cleanTags));
         });
 
         it('open the modal', () => {
           expect(DeleteModal.methods.show).toHaveBeenCalled();
-        });
-
-        it('maps the selection to itemToBeDeleted', () => {
-          expect(wrapper.vm.itemsToBeDeleted).toEqual(store.state.tags);
         });
 
         it('tracks a single delete event', () => {
@@ -183,40 +227,77 @@ describe('Details Page', () => {
   });
 
   describe('pagination', () => {
-    beforeEach(() => {
+    it('exists', async () => {
       mountComponent();
-    });
 
-    it('exists', () => {
+      await waitForApolloRequestRender();
+
       expect(findPagination().exists()).toBe(true);
     });
 
-    it('is wired to the correct pagination props', () => {
-      const pagination = findPagination();
-      expect(pagination.props('perPage')).toBe(store.state.tagsPagination.perPage);
-      expect(pagination.props('totalItems')).toBe(store.state.tagsPagination.total);
-      expect(pagination.props('value')).toBe(store.state.tagsPagination.page);
+    it('is hidden when there are no more pages', async () => {
+      mountComponent({ resolver: jest.fn().mockResolvedValue(graphQLImageDetailsEmptyTagsMock) });
+
+      await waitForApolloRequestRender();
+
+      expect(findPagination().exists()).toBe(false);
     });
 
-    it('fetch the data from the API when the v-model changes', () => {
-      dispatchSpy.mockResolvedValue();
-      findPagination().vm.$emit(GlPagination.model.event, 2);
-      expect(store.dispatch).toHaveBeenCalledWith('requestTagsList', {
-        page: 2,
+    it('is wired to the correct pagination props', async () => {
+      mountComponent();
+
+      await waitForApolloRequestRender();
+
+      expect(findPagination().props()).toMatchObject({
+        hasNextPage: tagsPageInfo.hasNextPage,
+        hasPreviousPage: tagsPageInfo.hasPreviousPage,
       });
+    });
+
+    it('fetch next page when user clicks next', async () => {
+      const resolver = jest.fn().mockResolvedValue(graphQLImageDetailsMock());
+      mountComponent({ resolver });
+
+      await waitForApolloRequestRender();
+
+      findPagination().vm.$emit('next');
+
+      expect(resolver).toHaveBeenCalledWith(
+        expect.objectContaining({ after: tagsPageInfo.endCursor }),
+      );
+    });
+
+    it('fetch previous page when user clicks prev', async () => {
+      const resolver = jest.fn().mockResolvedValue(graphQLImageDetailsMock());
+      mountComponent({ resolver });
+
+      await waitForApolloRequestRender();
+
+      findPagination().vm.$emit('prev');
+
+      expect(resolver).toHaveBeenCalledWith(
+        expect.objectContaining({ first: null, before: tagsPageInfo.startCursor }),
+      );
     });
   });
 
   describe('modal', () => {
-    it('exists', () => {
+    it('exists', async () => {
       mountComponent();
+
+      await waitForApolloRequestRender();
+
       expect(findDeleteModal().exists()).toBe(true);
     });
 
     describe('cancel event', () => {
-      it('tracks cancel_delete', () => {
+      it('tracks cancel_delete', async () => {
         mountComponent();
+
+        await waitForApolloRequestRender();
+
         findDeleteModal().vm.$emit('cancel');
+
         expect(Tracking.event).toHaveBeenCalledWith(undefined, 'cancel_delete', {
           label: 'registry_tag_delete',
         });
@@ -224,45 +305,57 @@ describe('Details Page', () => {
     });
 
     describe('confirmDelete event', () => {
-      describe('when one item is selected to be deleted', () => {
-        beforeEach(() => {
-          mountComponent();
-          findTagsList().vm.$emit('delete', { [store.state.tags[0].name]: true });
-        });
+      let mutationResolver;
 
-        it('dispatch requestDeleteTag with the right parameters', () => {
+      beforeEach(() => {
+        mutationResolver = jest.fn().mockResolvedValue(graphQLDeleteImageRepositoryTagsMock);
+        mountComponent({ mutationResolver });
+
+        return waitForApolloRequestRender();
+      });
+      describe('when one item is selected to be deleted', () => {
+        it('calls apollo mutation with the right parameters', async () => {
+          findTagsList().vm.$emit('delete', { [cleanTags[0].name]: true });
+
+          await wrapper.vm.$nextTick();
+
           findDeleteModal().vm.$emit('confirmDelete');
-          expect(dispatchSpy).toHaveBeenCalledWith('requestDeleteTag', {
-            tag: store.state.tags[0],
-          });
+
+          expect(mutationResolver).toHaveBeenCalledWith(
+            expect.objectContaining({ tagNames: [cleanTags[0].name] }),
+          );
         });
       });
 
       describe('when more than one item is selected to be deleted', () => {
-        beforeEach(() => {
-          mountComponent();
-          findTagsList().vm.$emit('delete', tagsArrayToSelectedTags(store.state.tags));
-        });
+        it('calls apollo mutation with the right parameters', async () => {
+          findTagsList().vm.$emit('delete', { ...tagsArrayToSelectedTags(tagsMock) });
 
-        it('dispatch requestDeleteTags with the right parameters', () => {
+          await wrapper.vm.$nextTick();
+
           findDeleteModal().vm.$emit('confirmDelete');
-          expect(dispatchSpy).toHaveBeenCalledWith('requestDeleteTags', {
-            ids: store.state.tags.map(t => t.name),
-          });
+
+          expect(mutationResolver).toHaveBeenCalledWith(
+            expect.objectContaining({ tagNames: tagsMock.map(t => t.name) }),
+          );
         });
       });
     });
   });
 
   describe('Header', () => {
-    it('exists', () => {
+    it('exists', async () => {
       mountComponent();
+
+      await waitForApolloRequestRender();
       expect(findDetailsHeader().exists()).toBe(true);
     });
 
-    it('has the correct props', () => {
+    it('has the correct props', async () => {
       mountComponent();
-      expect(findDetailsHeader().props()).toEqual({ imageName: imageDetailsMock.name });
+
+      await waitForApolloRequestRender();
+      expect(findDetailsHeader().props()).toEqual({ imageName: containerRepositoryMock.name });
     });
   });
 
@@ -273,13 +366,15 @@ describe('Details Page', () => {
     };
     const deleteAlertType = 'success_tag';
 
-    it('exists', () => {
+    it('exists', async () => {
       mountComponent();
+
+      await waitForApolloRequestRender();
       expect(findDeleteAlert().exists()).toBe(true);
     });
 
-    it('has the correct props', () => {
-      store.commit(SET_INITIAL_STATE, { ...config });
+    it('has the correct props', async () => {
+      store.commit('SET_INITIAL_STATE', { ...config });
       mountComponent({
         options: {
           data: () => ({
@@ -287,6 +382,9 @@ describe('Details Page', () => {
           }),
         },
       });
+
+      await waitForApolloRequestRender();
+
       expect(findDeleteAlert().props()).toEqual({ ...config, deleteAlertType });
     });
   });
@@ -298,30 +396,40 @@ describe('Details Page', () => {
     };
 
     describe('when expiration_policy_started is not null', () => {
+      let resolver;
+
       beforeEach(() => {
-        store.commit(SET_IMAGE_DETAILS, {
-          ...imageDetailsMock,
-          cleanup_policy_started_at: Date.now().toString(),
-        });
+        resolver = jest.fn().mockResolvedValue(
+          graphQLImageDetailsMock({
+            expirationPolicyStartedAt: Date.now().toString(),
+          }),
+        );
       });
-      it('exists', () => {
-        mountComponent();
+      it('exists', async () => {
+        mountComponent({ resolver });
+
+        await waitForApolloRequestRender();
 
         expect(findPartialCleanupAlert().exists()).toBe(true);
       });
 
-      it('has the correct props', () => {
-        store.commit(SET_INITIAL_STATE, { ...config });
+      it('has the correct props', async () => {
+        store.commit('SET_INITIAL_STATE', { ...config });
 
-        mountComponent();
+        mountComponent({ resolver });
+
+        await waitForApolloRequestRender();
 
         expect(findPartialCleanupAlert().props()).toEqual({ ...config });
       });
 
       it('dismiss hides the component', async () => {
-        mountComponent();
+        mountComponent({ resolver });
+
+        await waitForApolloRequestRender();
 
         expect(findPartialCleanupAlert().exists()).toBe(true);
+
         findPartialCleanupAlert().vm.$emit('dismiss');
 
         await wrapper.vm.$nextTick();
@@ -331,11 +439,22 @@ describe('Details Page', () => {
     });
 
     describe('when expiration_policy_started is null', () => {
-      it('the component is hidden', () => {
+      it('the component is hidden', async () => {
         mountComponent();
+        await waitForApolloRequestRender();
 
         expect(findPartialCleanupAlert().exists()).toBe(false);
       });
+    });
+  });
+
+  describe('Breadcrumb connection', () => {
+    it('when the details are fetched updates the name', async () => {
+      mountComponent();
+
+      await waitForApolloRequestRender();
+
+      expect(breadCrumbState.updateName).toHaveBeenCalledWith(containerRepositoryMock.name);
     });
   });
 });

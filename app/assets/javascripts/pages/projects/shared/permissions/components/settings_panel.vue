@@ -14,6 +14,7 @@ import {
   featureAccessLevel,
 } from '../constants';
 import { toggleHiddenClassBySelector } from '../external';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 const PAGE_FEATURE_ACCESS_LEVEL = s__('ProjectSettings|Everyone');
 
@@ -27,7 +28,7 @@ export default {
     GlLink,
     GlFormCheckbox,
   },
-  mixins: [settingsMixin],
+  mixins: [settingsMixin, glFeatureFlagsMixin()],
 
   props: {
     currentSettings: {
@@ -605,6 +606,25 @@ export default {
         <template #help>{{
           s__(
             'ProjectSettings|When enabled, issues, merge requests, and snippets will always show thumbs-up and thumbs-down award emoji buttons.',
+          )
+        }}</template>
+      </gl-form-checkbox>
+    </project-setting-row>
+    <project-setting-row
+      v-if="glFeatures.allowEditingCommitMessages"
+      ref="allow-editing-commit-messages"
+      class="gl-mb-4"
+    >
+      <input
+        :value="allowEditingCommitMessages"
+        type="hidden"
+        name="project[project_setting_attributes][allow_editing_commit_messages]"
+      />
+      <gl-form-checkbox v-model="allowEditingCommitMessages">
+        {{ s__('ProjectSettings|Allow editing commit messages') }}
+        <template #help>{{
+          s__(
+            'ProjectSettings|When enabled, commit authors will be able to edit commit messages on unprotected branches.',
           )
         }}</template>
       </gl-form-checkbox>

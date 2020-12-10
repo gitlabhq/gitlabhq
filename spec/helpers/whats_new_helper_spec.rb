@@ -10,7 +10,7 @@ RSpec.describe WhatsNewHelper do
       let(:release_item) { double(:item) }
 
       before do
-        allow(ReleaseHighlight).to receive(:most_recent_version).and_return(84.0)
+        allow(ReleaseHighlight).to receive(:versions).and_return([84.0])
       end
 
       it { is_expected.to eq('display-whats-new-notification-84.0') }
@@ -18,7 +18,7 @@ RSpec.describe WhatsNewHelper do
 
     context 'when most recent release highlights do NOT exist' do
       before do
-        allow(ReleaseHighlight).to receive(:most_recent_version).and_return(nil)
+        allow(ReleaseHighlight).to receive(:versions).and_return(nil)
       end
 
       it { is_expected.to be_nil }
@@ -42,6 +42,16 @@ RSpec.describe WhatsNewHelper do
 
         expect(subject).to be_nil
       end
+    end
+  end
+
+  describe '#whats_new_versions' do
+    let(:versions) { [84.0] }
+
+    it 'returns ReleaseHighlight.versions' do
+      expect(ReleaseHighlight).to receive(:versions).and_return(versions)
+
+      expect(helper.whats_new_versions).to eq(versions)
     end
   end
 end

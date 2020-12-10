@@ -1,6 +1,6 @@
 <script>
 /* eslint-disable vue/no-v-html */
-// We are forced to use `v-html` untill this gitlab-ui MR is merged: https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/1869
+// We are forced to use `v-html` untill this gitlab-ui issue is resolved: https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1079
 //  then we can re-write this to use gl-breadcrumb
 import { initial, first, last } from 'lodash';
 import { sanitize } from '~/lib/dompurify';
@@ -35,7 +35,7 @@ export default {
       return {
         tagName,
         className,
-        text: this.$route.meta.nameGenerator(this.$store.state),
+        text: this.$route.meta.nameGenerator(),
         path: { to: this.$route.name },
       };
     },
@@ -53,7 +53,7 @@ export default {
     ></li>
     <li v-if="!isRootRoute">
       <router-link ref="rootRouteLink" :to="rootRoute.path">
-        {{ rootRoute.meta.nameGenerator($store.state) }}
+        {{ rootRoute.meta.nameGenerator() }}
       </router-link>
       <component :is="divider.tagName" :class="divider.classList" v-html="divider.innerHTML" />
     </li>

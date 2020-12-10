@@ -121,6 +121,11 @@ the actions used in configuration still exist as routes.
 
 ## API endpoints
 
+The [GraphQL API](../../api/graphql/index.md) is currently categorized
+as `not_owned`. For now, no extra specification is needed. For more 
+information, see
+[`gitlab-com/gl-infra/scalability#583`](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/583/).
+
 Grape API endpoints can use the `feature_category` class method, like
 [Rails controllers](#rails-controllers) do:
 

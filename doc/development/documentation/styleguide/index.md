@@ -952,7 +952,7 @@ For other punctuation rules, refer to the
 - Add the corresponding [product badge](#product-tier-badges) according to the tier the
   feature belongs.
 - Our documentation site search engine prioritizes words used in headings and
-  subheadings. Make you subheading titles clear, descriptive, and complete to help
+  subheadings. Make your subheading titles clear, descriptive, and complete to help
   users find the right example, as shown in the section on [heading titles](#heading-titles).
 - See [Capitalization](#capitalization) for guidelines on capitalizing headings.
 

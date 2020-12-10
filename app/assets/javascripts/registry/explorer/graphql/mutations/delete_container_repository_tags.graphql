@@ -1,0 +1,5 @@
+mutation destroyContainerRepositoryTags($id: ContainerRepositoryID!, $tagNames: [String!]!) {
+  destroyContainerRepositoryTags(input: { id: $id, tagNames: $tagNames }) {
+    errors
+  }
+}

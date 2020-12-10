@@ -161,78 +161,82 @@ Nanoc layout), which is displayed at the top of the page if defined:
 
 ## Move or rename a page
 
-Moving or renaming a document is the same as changing its location. This process
-requires specific steps to ensure that visitors can find the new
-documentation page, whether they're using `/help` from a GitLab instance or by
-visiting <https://docs.gitlab.com>.
-
-Be sure to assign a technical writer to a page move or rename MR. Technical
+Moving or renaming a document is the same as changing its location.
+Be sure to assign a technical writer to any MR that renames or moves a page. Technical
 Writers can help with any questions and can review your change.
 
-To change a document's location, don't remove the old document, but instead
-replace all of its content with the following:
+When moving or renaming a page, you must redirect browsers to the new page. This
+ensures users find the new page, and have the opportunity to update their bookmarks.
 
-```markdown
----
-redirect_to: '../path/to/file/index.md'
----
+There are two types of redirects:
 
-This document was moved to [another location](../path/to/file/index.md).
-```
+- Redirect files added into the docs themselves, for users who view the docs in `/help`
+  on self-managed instances. For example, [`/help` on GitLab.com](https://gitlab.com/help).
+- Redirects in a [`_redirects`](../../user/project/pages/redirects.md) file, for users
+  who view the docs on <http://docs.gitlab.com>.
 
-Replace `../path/to/file/index.md` with the relative path to the old document.
+To add a redirect:
 
-The `redirect_to` variable supports both full and relative URLs; for example:
+1. In an MR in one of the internal docs projects (`gitlab`, `gitlab-runner`, `omnibus-gitlab`
+   or `charts`):
+   1. Move or rename the doc, but do not delete the old doc.
+   1. In the old doc, add the redirect code for `/help`. Use the following template exactly,
+      and only change the links and date. Use relative paths and `.md` for a redirect
+      to another docs page. Use the full URL to redirect to a different project or site:
 
-- `https://docs.gitlab.com/ee/path/to/file.html`
-- `../path/to/file.html`
-- `path/to/file.md`
+      ```markdown
+      ---
+      redirect_to: '../path/to/file/index.md'
+      ---
 
-The redirect works for <https://docs.gitlab.com>, and any `*.md` paths are
-changed to `*.html`. The description line following the `redirect_to` code
-informs the visitor that the document changed location if the redirect process
-doesn't complete successfully.
+      This document was moved to [another location](../path/to/file/index.md).
 
-For example, if you move `doc/workflow/lfs/index.md` to
-`doc/administration/lfs.md`, then the steps would be:
+      <!-- This redirect file can be deleted after <YYYY-MM-DD>. -->
+      <!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/#move-or-rename-a-page -->
+      ```
 
-1. Copy `doc/workflow/lfs/index.md` to `doc/administration/lfs.md`
-1. Replace the contents of `doc/workflow/lfs/index.md` with:
+      Redirect files linking to docs in any of the 4 internal docs projects can be
+      removed after 3 months. Redirect files linking to external sites can be removed
+      after 1 year.
 
-   ```markdown
-   ---
-   redirect_to: '../../administration/lfs.md'
-   ---
+   1. If the document being moved has any Disqus comments on it, follow the steps
+      described in [Redirections for pages with Disqus comments](#redirections-for-pages-with-disqus-comments).
+   1. Assign the MR to a technical writer for review and merge.
+1. If the redirect is to one of the 4 internal docs projects (not an external URL),
+   create an MR in [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs):
+   1. Update [`_redirects`](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/master/content/_redirects)
+      with one redirect entry for each renamed or moved file. This code works for
+      <https://docs.gitlab.com> links only:
 
-   This document was moved to [another location](../../administration/lfs.md).
-   ```
+      ```plaintext
+      /ee/path/to/old_file.html /ee/path/to/new_file 302 # To be removed after YYYY-MM-DD
+      ```
 
-1. Find and replace any occurrences of the old location with the new one.
-   A quick way to find them is to use `git grep` on the repository you changed
-   the file from:
+      The path must start with the internal project directory `/ee` for `gitlab`,
+      `/gitlab-runner`, `/omnibus-gitlab` or `charts`, and must end with `.html`.
 
-   ```shell
-   git grep -n "workflow/lfs/lfs_administration"
-   git grep -n "lfs/lfs_administration"
-   ```
+      `_redirects` entries can be removed after one year.
 
-1. If the document being moved has any Disqus comments on it, follow the steps
-   described in [Redirections for pages with Disqus comments](#redirections-for-pages-with-disqus-comments).
+1. Search for links to the old file. You must find and update all links to the old file:
 
-Things to note:
+   - In <https://gitlab.com/gitlab-com/www-gitlab-com>, search for full URLs:
+     `grep -r "docs.gitlab.com/ee/path/to/file.html" .`
+   - In <https://gitlab.com/gitlab-org/gitlab-docs/-/tree/master/content/_data>,
+     search the navigation bar configuration files for the path with `.html`:
+     `grep -r "path/to/file.html" .`
+   - In any of the 4 internal projects. This includes searching for links in the docs
+     and codebase. Search for all variations, including full URL and just the path.
+     In macOS for example, go to the root directory of the `gitlab` project and run:
 
-- Since we also use inline documentation, except for the documentation itself,
-  the document might also be referenced in the views of GitLab (`app/`) which will
-  render when visiting `/help`, and sometimes in the testing suite (`spec/`).
-  You must search these paths for references to the doc and update them as well.
-- The above `git grep` command searches recursively in the directory you run
-  it in for `workflow/lfs/lfs_administration` and `lfs/lfs_administration`
-  and prints the file and the line where this file is mentioned.
-  You may ask why the two greps. Since [we use relative paths to link to
-  documentation](styleguide/index.md#links), sometimes it might be useful to search a path deeper.
-- The `*.md` extension is not used when a document is linked to the GitLab
-  built-in help page, which is why we omit it in `git grep`.
-- Use the checklist on the "Change documentation location" MR description template.
+     ```shell
+     grep -r "docs.gitlab.com/ee/path/to/file.html" .
+     grep -r "path/to/file.html" .
+     grep -r "path/to/file.md" .
+     grep -r "path/to/file" .
+     ```
+
+     You may need to try variations of relative links as well, such as `../path/to/file`
+     or even `../file` to find every case.
 
 ### Redirections for pages with Disqus comments
 

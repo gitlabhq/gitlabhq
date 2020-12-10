@@ -612,6 +612,7 @@ module ProjectsHelper
 
   def project_permissions_settings(project)
     feature = project.project_feature
+
     {
       packagesEnabled: !!project.packages_enabled,
       visibilityLevel: project.visibility_level,
@@ -629,7 +630,8 @@ module ProjectsHelper
       emailsDisabled: project.emails_disabled?,
       metricsDashboardAccessLevel: feature.metrics_dashboard_access_level,
       operationsAccessLevel: feature.operations_access_level,
-      showDefaultAwardEmojis: project.show_default_award_emojis?
+      showDefaultAwardEmojis: project.show_default_award_emojis?,
+      allowEditingCommitMessages: project.allow_editing_commit_messages?
     }
   end
 

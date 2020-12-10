@@ -277,11 +277,16 @@ RSpec.describe ProjectsController do
 
       render_views
 
+      def get_show
+        get :show, params: { namespace_id: public_project.namespace, id: public_project }
+      end
+
       it "renders the activity view" do
         allow(controller).to receive(:current_user).and_return(user)
         allow(user).to receive(:project_view).and_return('activity')
 
-        get :show, params: { namespace_id: public_project.namespace, id: public_project }
+        get_show
+
         expect(response).to render_template('_activity')
       end
 
@@ -289,7 +294,8 @@ RSpec.describe ProjectsController do
         allow(controller).to receive(:current_user).and_return(user)
         allow(user).to receive(:project_view).and_return('files')
 
-        get :show, params: { namespace_id: public_project.namespace, id: public_project }
+        get_show
+
         expect(response).to render_template('_files')
       end
 
@@ -297,8 +303,17 @@ RSpec.describe ProjectsController do
         allow(controller).to receive(:current_user).and_return(user)
         allow(user).to receive(:project_view).and_return('readme')
 
-        get :show, params: { namespace_id: public_project.namespace, id: public_project }
+        get_show
+
         expect(response).to render_template('_readme')
+      end
+
+      it 'does not make Gitaly requests', :request_store, :clean_gitlab_redis_cache do
+        # Warm up to populate repository cache
+        get_show
+        RequestStore.clear!
+
+        expect { get_show }.not_to change { Gitlab::GitalyClient.get_request_count }
       end
     end
 
@@ -689,6 +704,39 @@ RSpec.describe ProjectsController do
           external_service_deny_access(user, project)
 
           expect { subject }.not_to change(project, :description)
+        end
+      end
+    end
+
+    context 'when updating boolean values on project_settings' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:boolean_value, :result) do
+        '1'   | true
+        '0'   | false
+        1     | true
+        0     | false
+        true  | true
+        false | false
+      end
+
+      with_them do
+        it 'updates project settings attributes accordingly' do
+          put :update, params: {
+            namespace_id: project.namespace,
+            id: project.path,
+            project: {
+              project_setting_attributes: {
+                show_default_award_emojis: boolean_value,
+                allow_editing_commit_messages: boolean_value
+              }
+            }
+          }
+
+          project.reload
+
+          expect(project.show_default_award_emojis?).to eq(result)
+          expect(project.allow_editing_commit_messages?).to eq(result)
         end
       end
     end

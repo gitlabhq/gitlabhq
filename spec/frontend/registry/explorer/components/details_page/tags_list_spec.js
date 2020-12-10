@@ -7,8 +7,8 @@ import { tagsListResponse } from '../../mock_data';
 
 describe('Tags List', () => {
   let wrapper;
-  const tags = [...tagsListResponse.data];
-  const readOnlyTags = tags.map(t => ({ ...t, destroy_path: undefined }));
+  const tags = [...tagsListResponse];
+  const readOnlyTags = tags.map(t => ({ ...t, canDelete: false }));
 
   const findTagsListRow = () => wrapper.findAll(TagsListRow);
   const findDeleteButton = () => wrapper.find(GlButton);
@@ -92,7 +92,7 @@ describe('Tags List', () => {
         .vm.$emit('select');
 
       findDeleteButton().vm.$emit('click');
-      expect(wrapper.emitted('delete')).toEqual([[{ centos6: true }]]);
+      expect(wrapper.emitted('delete')).toEqual([[{ 'alpha-11821': true }]]);
     });
   });
 
@@ -132,7 +132,7 @@ describe('Tags List', () => {
         findTagsListRow()
           .at(0)
           .vm.$emit('delete');
-        expect(wrapper.emitted('delete')).toEqual([[{ centos6: true }]]);
+        expect(wrapper.emitted('delete')).toEqual([[{ 'alpha-11821': true }]]);
       });
     });
   });

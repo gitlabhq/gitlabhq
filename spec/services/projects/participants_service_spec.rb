@@ -3,57 +3,90 @@
 require 'spec_helper'
 
 RSpec.describe Projects::ParticipantsService do
-  describe '#groups' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project, :public) }
-    let(:service) { described_class.new(project, user) }
+  describe '#execute' do
+    let(:user) { create(:user) }
+    let(:project) { create(:project, :public) }
+    let(:noteable) { create(:issue, project: project) }
 
-    it 'avoids N+1 queries' do
+    def run_service
+      described_class.new(project, user).execute(noteable)
+    end
+
+    before do
+      project.add_developer(user)
+
+      run_service # warmup, runs table cache queries and create queries
+      BatchLoader::Executor.clear_current
+    end
+
+    it 'avoids N+1 UserDetail queries' do
+      project.add_developer(create(:user))
+
+      control_count = ActiveRecord::QueryRecorder.new { run_service.to_a }.count
+
+      BatchLoader::Executor.clear_current
+
+      project.add_developer(create(:user, status: build(:user_status, availability: :busy)))
+
+      expect { run_service.to_a }.not_to exceed_query_limit(control_count)
+    end
+
+    it 'avoids N+1 groups queries' do
       group_1 = create(:group)
       group_1.add_owner(user)
 
-      service.groups # Run general application warmup queries
-      control_count = ActiveRecord::QueryRecorder.new { service.groups }.count
+      control_count = ActiveRecord::QueryRecorder.new { run_service }.count
+
+      BatchLoader::Executor.clear_current
 
       group_2 = create(:group)
       group_2.add_owner(user)
 
-      expect { service.groups }.not_to exceed_query_limit(control_count)
+      expect { run_service }.not_to exceed_query_limit(control_count)
     end
 
-    it 'returns correct user counts for groups' do
-      group_1 = create(:group)
-      group_1.add_owner(user)
-      group_1.add_owner(create(:user))
+    describe 'group items' do
+      subject(:group_items) { run_service.select { |hash| hash[:type].eql?('Group') } }
 
-      group_2 = create(:group)
-      group_2.add_owner(user)
-      create(:group_member, :access_request, group: group_2, user: create(:user))
+      describe 'group user counts' do
+        let(:group_1) { create(:group) }
+        let(:group_2) { create(:group) }
 
-      expect(service.groups).to contain_exactly(
-        a_hash_including(name: group_1.full_name, count: 2),
-        a_hash_including(name: group_2.full_name, count: 1)
-      )
-    end
+        before do
+          group_1.add_owner(user)
+          group_1.add_owner(create(:user))
 
-    describe 'avatar_url' do
-      let(:group) { create(:group, avatar: fixture_file_upload('spec/fixtures/dk.png')) }
+          group_2.add_owner(user)
+          create(:group_member, :access_request, group: group_2, user: create(:user))
+        end
 
-      before do
-        group.add_owner(user)
+        it 'returns correct user counts for groups' do
+          expect(group_items).to contain_exactly(
+            a_hash_including(name: group_1.full_name, count: 2),
+            a_hash_including(name: group_2.full_name, count: 1)
+          )
+        end
       end
 
-      it 'returns an url for the avatar' do
-        expect(service.groups.size).to eq 1
-        expect(service.groups.first[:avatar_url]).to eq("/uploads/-/system/group/avatar/#{group.id}/dk.png")
-      end
+      describe 'avatar_url' do
+        let(:group) { create(:group, avatar: fixture_file_upload('spec/fixtures/dk.png')) }
 
-      it 'returns an url for the avatar with relative url' do
-        stub_config_setting(relative_url_root: '/gitlab')
-        stub_config_setting(url: Settings.send(:build_gitlab_url))
+        before do
+          group.add_owner(user)
+        end
 
-        expect(service.groups.size).to eq 1
-        expect(service.groups.first[:avatar_url]).to eq("/gitlab/uploads/-/system/group/avatar/#{group.id}/dk.png")
+        it 'returns an url for the avatar' do
+          expect(group_items.size).to eq 1
+          expect(group_items.first[:avatar_url]).to eq("/uploads/-/system/group/avatar/#{group.id}/dk.png")
+        end
+
+        it 'returns an url for the avatar with relative url' do
+          stub_config_setting(relative_url_root: '/gitlab')
+          stub_config_setting(url: Settings.send(:build_gitlab_url))
+
+          expect(group_items.size).to eq 1
+          expect(group_items.first[:avatar_url]).to eq("/gitlab/uploads/-/system/group/avatar/#{group.id}/dk.png")
+        end
       end
     end
   end

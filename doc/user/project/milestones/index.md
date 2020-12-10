@@ -5,7 +5,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Milestones
+# Milestones **(CORE)**
 
 Milestones in GitLab are a way to track issues and merge requests created to achieve a broader goal in a certain period of time.
 
@@ -27,7 +27,7 @@ Similarly, milestones can be used as releases. To do so:
 1. Set the milestone title to the version of your release, such as `Version 9.4`.
 1. Add an issue to your release by associating the desired milestone from the issue's right-hand sidebar.
 
-Additionally, you can integrate milestones with GitLab's [Releases feature](../releases/index.md#associate-milestones-with-a-release).
+Additionally, you can integrate milestones with the [Releases feature](../releases/index.md#associate-milestones-with-a-release).
 
 ## Project milestones and group milestones
 
@@ -47,9 +47,9 @@ For information about project and group milestones API, see:
 - [Group Milestones API](../../../api/group_milestones.md)
 
 NOTE:
-If you're in a group and click **Issues > Milestones**, you'll see group milestones and the milestones
-of projects in this group.
-If you're in a project and click **Issues > Milestones**, you'll only see this project's milestones.
+If you're in a group and click **Issues > Milestones**, GitLab displays group milestones
+and the milestones of projects in this group.
+If you're in a project and click **Issues > Milestones**, GitLab displays only this project's milestones.
 
 ## Creating milestones
 
@@ -93,12 +93,21 @@ You can delete a milestone by clicking the **Delete** button.
 
 ### Promoting project milestones to group milestones
 
-If you are expanding from a few projects to a larger number of projects within the same group, you may want to share the same milestone among multiple projects in the same group. If you previously created a project milestone and now want to make it available for other projects within the same group, you can promote it to a group milestone.
+If you are expanding the number of projects in a group, you might want to share the same milestones
+among this group's projects. You can also promote project milestones to group milestones in order to
+make them available to other projects in the same group.
 
-From the project milestone list page, you can promote a project milestone to a group milestone. This will merge all project milestones across all projects in this group with the same name into a single group milestones. All issues and merge requests that previously were assigned one of these project milestones will now be assigned the new group milestones. This action cannot be reversed and the changes are permanent.
+From the project milestone list page, you can promote a project milestone to a group milestone.
+This merges all project milestones across all projects in this group with the same name into a single
+group milestones. All issues and merge requests that were previously assigned to one of these project
+milestones is assigned the new group milestones. This action cannot be reversed and the changes are
+permanent.
 
 WARNING:
-From GitLab 12.4 and earlier, some information is lost when you promote a project milestone to a group milestone. Not all features on the project milestone view are available on the group milestone view. If you promote a project milestone to a group milestone, you will lose these features. See [Milestone view](#milestone-view) to see which features are missing from the group milestone view.
+From GitLab 12.4 and earlier, some information is lost when you promote a project milestone to a
+group milestone. Not all features on the project milestone view are available on the group milestone
+view. If you promote a project milestone to a group milestone, you lose these features. Visit
+[Milestone view](#milestone-view) to learn which features are missing from the group milestone view.
 
 ![Promote milestone](img/milestones_promote_milestone.png)
 
@@ -110,7 +119,7 @@ Every issue and merge request can be assigned a milestone. The milestones are vi
 
 ### Filtering in list pages
 
-From the project issue/merge request list pages and the group issue/merge request list pages, you can [filter](../../search/index.md#issues-and-merge-requests) by both group milestones and project milestones.
+From the project and group issue/merge request list pages, you can [filter](../../search/index.md#issues-and-merge-requests) by both group and project milestones.
 
 ### Filtering in issue boards
 
@@ -125,7 +134,7 @@ When filtering by milestone, in addition to choosing a specific project mileston
 
 - **None**: Show issues or merge requests with no assigned milestone.
 - **Any**: Show issues or merge requests that have an assigned milestone.
-- **Upcoming**: Show issues or merge requests that have been assigned the open milestone that has the next upcoming due date (i.e. nearest due date in the future).
+- **Upcoming**: Show issues or merge requests that have been assigned the open milestone and has the nearest due date in the future.
 - **Started**: Show issues or merge requests that have an open assigned milestone with a start date that is before today.
 
 ## Milestone view

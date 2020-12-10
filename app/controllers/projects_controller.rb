@@ -19,7 +19,6 @@ class ProjectsController < Projects::ApplicationController
   before_action :redirect_git_extension, only: [:show]
   before_action :project, except: [:index, :new, :create, :resolve]
   before_action :repository, except: [:index, :new, :create, :resolve]
-  before_action :assign_ref_vars, if: -> { action_name == 'show' && repo_exists? }
   before_action :project_export_enabled, only: [:export, :download_export, :remove_export, :generate_new_export]
   before_action :present_project, only: [:edit]
   before_action :authorize_download_code!, only: [:refs]
@@ -34,6 +33,7 @@ class ProjectsController < Projects::ApplicationController
 
   before_action only: [:edit] do
     push_frontend_feature_flag(:approval_suggestions, @project, default_enabled: true)
+    push_frontend_feature_flag(:allow_editing_commit_messages, @project)
   end
 
   layout :determine_layout
@@ -136,6 +136,8 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def show
+    @id, @ref, @path = extract_ref_path
+
     if @project.import_in_progress?
       redirect_to project_import_path(@project, custom_import_params)
       return
@@ -425,6 +427,7 @@ class ProjectsController < Projects::ApplicationController
       project_setting_attributes: %i[
         show_default_award_emojis
         squash_option
+        allow_editing_commit_messages
       ]
     ] + [project_feature_attributes: project_feature_attributes]
   end

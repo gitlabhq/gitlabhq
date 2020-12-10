@@ -249,7 +249,6 @@ Rails/SaveBang:
     - 'spec/features/profiles/personal_access_tokens_spec.rb'
     - 'spec/features/projects/features_visibility_spec.rb'
     - 'spec/features/projects/fork_spec.rb'
-    - 'spec/features/projects/jobs/permissions_spec.rb'
     - 'spec/features/projects/jobs_spec.rb'
     - 'spec/features/projects/members/user_requests_access_spec.rb'
     - 'spec/features/projects/pages_lets_encrypt_spec.rb'
