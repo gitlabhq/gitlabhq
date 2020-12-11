@@ -4,45 +4,55 @@ require 'spec_helper'
 
 RSpec.describe Projects::ParticipantsService do
   describe '#execute' do
-    let(:user) { create(:user) }
-    let(:project) { create(:project, :public) }
-    let(:noteable) { create(:issue, project: project) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:noteable) { create(:issue, project: project) }
+
+    before_all do
+      project.add_developer(user)
+    end
 
     def run_service
       described_class.new(project, user).execute(noteable)
     end
 
-    before do
-      project.add_developer(user)
+    context 'N+1 checks' do
+      before do
+        run_service # warmup, runs table cache queries and create queries
+        BatchLoader::Executor.clear_current
+      end
 
-      run_service # warmup, runs table cache queries and create queries
-      BatchLoader::Executor.clear_current
+      it 'avoids N+1 UserDetail queries' do
+        project.add_developer(create(:user))
+
+        control_count = ActiveRecord::QueryRecorder.new { run_service.to_a }.count
+
+        BatchLoader::Executor.clear_current
+
+        project.add_developer(create(:user, status: build(:user_status, availability: :busy)))
+
+        expect { run_service.to_a }.not_to exceed_query_limit(control_count)
+      end
+
+      it 'avoids N+1 groups queries' do
+        group_1 = create(:group)
+        group_1.add_owner(user)
+
+        control_count = ActiveRecord::QueryRecorder.new { run_service }.count
+
+        BatchLoader::Executor.clear_current
+
+        group_2 = create(:group)
+        group_2.add_owner(user)
+
+        expect { run_service }.not_to exceed_query_limit(control_count)
+      end
     end
 
-    it 'avoids N+1 UserDetail queries' do
-      project.add_developer(create(:user))
+    it 'does not return duplicate author' do
+      participants = run_service
 
-      control_count = ActiveRecord::QueryRecorder.new { run_service.to_a }.count
-
-      BatchLoader::Executor.clear_current
-
-      project.add_developer(create(:user, status: build(:user_status, availability: :busy)))
-
-      expect { run_service.to_a }.not_to exceed_query_limit(control_count)
-    end
-
-    it 'avoids N+1 groups queries' do
-      group_1 = create(:group)
-      group_1.add_owner(user)
-
-      control_count = ActiveRecord::QueryRecorder.new { run_service }.count
-
-      BatchLoader::Executor.clear_current
-
-      group_2 = create(:group)
-      group_2.add_owner(user)
-
-      expect { run_service }.not_to exceed_query_limit(control_count)
+      expect(participants.count { |p| p[:username] == noteable.author.username }).to eq 1
     end
 
     describe 'group items' do

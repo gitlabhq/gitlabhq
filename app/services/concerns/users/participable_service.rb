@@ -13,7 +13,9 @@ module Users
     def noteable_owner
       return [] unless noteable && noteable.author.present?
 
-      [user_as_hash(noteable.author)]
+      [noteable.author].tap do |users|
+        preload_status(users)
+      end
     end
 
     def participants_in_noteable

@@ -3312,6 +3312,9 @@ msgstr ""
 msgid "An error occurred while updating the comment"
 msgstr ""
 
+msgid "An error occurred while updating the configuration."
+msgstr ""
+
 msgid "An error occurred while updating the milestone."
 msgstr ""
 
@@ -10449,6 +10452,9 @@ msgstr ""
 msgid "Enable shared runners for this group"
 msgstr ""
 
+msgid "Enable shared runners for this project"
+msgstr ""
+
 msgid "Enable smartcn custom analyzer: Indexing"
 msgstr ""
 
@@ -12930,6 +12936,9 @@ msgid "GitLab is a single application for the entire software development lifecy
 msgstr ""
 
 msgid "GitLab is obtaining a Let's Encrypt SSL certificate for this domain. This process can take some time. Please try again later."
+msgstr ""
+
+msgid "GitLab is undergoing maintenance and is operating in a read-only mode."
 msgstr ""
 
 msgid "GitLab member or Email address"
@@ -25255,6 +25264,9 @@ msgstr ""
 msgid "Shared runners are disabled for the parent group"
 msgstr ""
 
+msgid "Shared runners are disabled on group level"
+msgstr ""
+
 msgid "Shared runners disabled on group level"
 msgstr ""
 
@@ -27889,6 +27901,9 @@ msgid "There was an error trying to validate your query"
 msgstr ""
 
 msgid "There was an error updating the Geo Settings"
+msgstr ""
+
+msgid "There was an error updating the Maintenance Mode Settings"
 msgstr ""
 
 msgid "There was an error updating the dashboard, branch name is invalid."

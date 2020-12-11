@@ -103,18 +103,7 @@
               = s_('IDE|Allow live previews of JavaScript projects in the Web IDE using CodeSandbox Live Preview.')
       = f.submit _('Save changes'), class: "gl-button btn btn-success"
 
-- if Feature.enabled?(:maintenance_mode)
-  %section.settings.no-animate#js-maintenance-mode-toggle{ class: ('expanded' if expanded_by_default?) }
-    .settings-header
-      %h4
-        = _('Maintenance mode')
-      %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
-        = expanded_by_default? ? _('Collapse') : _('Expand')
-      %p
-        = _('Prevent users from performing write operations on GitLab while performing maintenance.')
-    .settings-content
-      #js-maintenance-mode-settings
-
+= render_if_exists 'admin/application_settings/maintenance_mode_settings_form'
 = render_if_exists 'admin/application_settings/elasticsearch_form'
 = render 'admin/application_settings/gitpod'
 = render 'admin/application_settings/kroki'

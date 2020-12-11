@@ -74,4 +74,57 @@ RSpec.describe Ci::RunnersHelper do
       expect(data[:parent_shared_runners_availability]).to eq('enabled')
     end
   end
+
+  describe '#toggle_shared_runners_settings_data' do
+    let_it_be(:group) { create(:group) }
+    let(:project_with_runners) { create(:project, namespace: group, shared_runners_enabled: true) }
+    let(:project_without_runners) { create(:project, namespace: group, shared_runners_enabled: false) }
+
+    context 'when project has runners' do
+      it 'returns the correct value for is_enabled' do
+        data = toggle_shared_runners_settings_data(project_with_runners)
+        expect(data[:is_enabled]).to eq("true")
+      end
+    end
+
+    context 'when project does not have runners' do
+      it 'returns the correct value for is_enabled' do
+        data = toggle_shared_runners_settings_data(project_without_runners)
+        expect(data[:is_enabled]).to eq("false")
+      end
+    end
+
+    context 'for all projects' do
+      it 'returns the update path for toggling the shared runners setting' do
+        data = toggle_shared_runners_settings_data(project_with_runners)
+        expect(data[:update_path]).to eq(toggle_shared_runners_project_runners_path(project_with_runners))
+      end
+
+      it 'returns false for is_disabled_and_unoverridable when project has no group' do
+        project = create(:project)
+
+        data = toggle_shared_runners_settings_data(project)
+        expect(data[:is_disabled_and_unoverridable]).to eq("false")
+      end
+
+      using RSpec::Parameterized::TableSyntax
+
+      where(:shared_runners_setting, :is_disabled_and_unoverridable) do
+        'enabled'                    | "false"
+        'disabled_with_override'     | "false"
+        'disabled_and_unoverridable' | "true"
+      end
+
+      with_them do
+        it 'returns the override runner status for project with group' do
+          group = create(:group)
+          project = create(:project, group: group)
+          allow(group).to receive(:shared_runners_setting).and_return(shared_runners_setting)
+
+          data = toggle_shared_runners_settings_data(project)
+          expect(data[:is_disabled_and_unoverridable]).to eq(is_disabled_and_unoverridable)
+        end
+      end
+    end
+  end
 end

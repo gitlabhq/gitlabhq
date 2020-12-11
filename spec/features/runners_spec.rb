@@ -179,16 +179,32 @@ RSpec.describe 'Runners' do
   context 'when a project has disabled shared_runners' do
     let(:project) { create(:project, shared_runners_enabled: false) }
 
-    before do
-      project.add_maintainer(user)
+    context 'when feature flag: vueify_shared_runners_toggle is disabled' do
+      before do
+        stub_feature_flags(vueify_shared_runners_toggle: false)
+        project.add_maintainer(user)
+      end
+
+      it 'user enables shared runners' do
+        visit project_runners_path(project)
+
+        click_on 'Enable shared runners'
+
+        expect(page.find('.shared-runners-description')).to have_content('Disable shared runners')
+        expect(page).not_to have_selector('#toggle-shared-runners-form')
+      end
     end
 
-    it 'user enables shared runners' do
-      visit project_runners_path(project)
+    context 'when feature flag: vueify_shared_runners_toggle is enabled' do
+      before do
+        project.add_maintainer(user)
+      end
 
-      click_on 'Enable shared runners'
+      it 'user enables shared runners' do
+        visit project_runners_path(project)
 
-      expect(page.find('.shared-runners-description')).to have_content('Disable shared runners')
+        expect(page).to have_selector('#toggle-shared-runners-form')
+      end
     end
   end
 
