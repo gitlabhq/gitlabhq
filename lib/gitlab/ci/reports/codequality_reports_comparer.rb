@@ -3,21 +3,14 @@
 module Gitlab
   module Ci
     module Reports
-      class CodequalityReportsComparer
-        include Gitlab::Utils::StrongMemoize
-
-        STATUS_SUCCESS = 'success'
-        STATUS_FAILED = 'failed'
-
-        attr_reader :base_report, :head_report
-
+      class CodequalityReportsComparer < ReportsComparer
         def initialize(base_report, head_report)
           @base_report = base_report || CodequalityReports.new
           @head_report = head_report
         end
 
-        def status
-          head_report.degradations_count > 0 ? STATUS_FAILED : STATUS_SUCCESS
+        def success?
+          head_report.degradations_count == 0
         end
 
         def existing_errors
@@ -40,17 +33,15 @@ module Gitlab
           end
         end
 
-        def errors_count
-          head_report.degradations_count
-        end
-
         def resolved_count
           resolved_errors.size
         end
 
         def total_count
-          existing_errors.size + new_errors.size
+          head_report.degradations_count
         end
+
+        alias_method :errors_count, :total_count
       end
     end
   end

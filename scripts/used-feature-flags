@@ -39,6 +39,9 @@ flags_paths.each do |flags_path|
   Dir.glob(flags_path).each do |path|
     feature_flag_name = File.basename(path, '.yml')
 
+    # TODO: we need a better way of tracking use of Gitaly FF across Gitaly and GitLab
+    next if feature_flag_name.start_with?('gitaly_')
+
     all_flags[feature_flag_name] = File.exist?(File.join('tmp', 'feature_flags', feature_flag_name + '.used'))
   end
 end

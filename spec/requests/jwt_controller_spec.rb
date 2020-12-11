@@ -144,7 +144,7 @@ RSpec.describe JwtController do
           context 'without personal token' do
             it 'rejects the authorization attempt' do
               expect(response).to have_gitlab_http_status(:unauthorized)
-              expect(response.body).to include('You must use a personal access token with \'api\' scope for Git over HTTP')
+              expect(response.body).to include('or use a personal access token with \'api\' scope for Git over HTTP')
             end
           end
 
@@ -175,7 +175,7 @@ RSpec.describe JwtController do
             get '/jwt/auth', params: parameters, headers: headers
 
             expect(response).to have_gitlab_http_status(:unauthorized)
-            expect(response.body).not_to include('You must use a personal access token with \'api\' scope for Git over HTTP')
+            expect(response.body).not_to include('or use a personal access token with \'api\' scope for Git over HTTP')
           end
         end
 
@@ -187,7 +187,7 @@ RSpec.describe JwtController do
             get '/jwt/auth', params: parameters, headers: headers
 
             expect(response).to have_gitlab_http_status(:unauthorized)
-            expect(response.body).to include('You must use a personal access token with \'api\' scope for Git over HTTP')
+            expect(response.body).to include('or use a personal access token with \'api\' scope for Git over HTTP')
           end
         end
       end

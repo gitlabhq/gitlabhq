@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
 import Translate from '~/vue_shared/translate';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import RegistryExplorer from './pages/index.vue';
 import RegistryBreadcrumb from './components/registry_breadcrumb.vue';
-import { createStore } from './stores';
 import createRouter from './router';
 import { apolloProvider } from './graphql/index';
 
@@ -17,7 +17,7 @@ export default () => {
     return null;
   }
 
-  const { endpoint } = el.dataset;
+  const { endpoint, expirationPolicy, isGroupPage, isAdmin, ...config } = el.dataset;
 
   // This is a mini state to help the breadcrumb have the correct name in the details page
   const breadCrumbState = Vue.observable({
@@ -27,21 +27,31 @@ export default () => {
     },
   });
 
-  const store = createStore();
   const router = createRouter(endpoint, breadCrumbState);
-  store.dispatch('setInitialState', el.dataset);
 
   const attachMainComponent = () =>
     new Vue({
       el,
-      store,
       router,
       apolloProvider,
       components: {
         RegistryExplorer,
       },
       provide() {
-        return { breadCrumbState };
+        return {
+          breadCrumbState,
+          config: {
+            ...config,
+            expirationPolicy: expirationPolicy ? JSON.parse(expirationPolicy) : undefined,
+            isGroupPage: parseBoolean(isGroupPage),
+            isAdmin: parseBoolean(isAdmin),
+          },
+          /* eslint-disable @gitlab/require-i18n-strings */
+          dockerBuildCommand: `docker build -t ${config.repositoryUrl} .`,
+          dockerPushCommand: `docker push ${config.repositoryUrl}`,
+          dockerLoginCommand: `docker login ${config.registryHostUrlWithPort}`,
+          /* eslint-enable @gitlab/require-i18n-strings */
+        };
       },
       render(createElement) {
         return createElement('registry-explorer');

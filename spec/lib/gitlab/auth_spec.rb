@@ -133,7 +133,8 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
           expect_next_instance_of(Gitlab::Auth::IpRateLimiter) do |rate_limiter|
             expect(rate_limiter).to receive(:reset!)
           end
-          expect(Gitlab::Auth::UniqueIpsLimiter).to receive(:limit_user!).twice.and_call_original
+          expect(Gitlab::Auth::UniqueIpsLimiter).to(
+            receive(:limit_user!).exactly(3).times.and_call_original)
 
           gl_auth.find_for_git_client(user.username, user.password, project: nil, ip: 'ip')
         end
@@ -383,6 +384,28 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
       end
     end
 
+    context 'while using passwords with OTP' do
+      let_it_be(:user) { create(:user, :two_factor) }
+
+      context 'with valid OTP code' do
+        let(:password) { "#{user.password}#{user.current_otp}" }
+
+        it 'accepts password with OTP' do
+          expect(gl_auth.find_for_git_client(user.username, password, project: nil, ip: 'ip'))
+            .to(eq(Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, described_class.full_authentication_abilities)))
+        end
+      end
+
+      context 'with invalid OTP code' do
+        let(:password) { "#{user.password}abcdef" }
+
+        it 'throws error' do
+          expect { gl_auth.find_for_git_client(user.username, password, project: nil, ip: 'ip') }
+            .to raise_error(Gitlab::Auth::InvalidOTPError)
+        end
+      end
+    end
+
     context 'while using regular user and password' do
       it 'fails for a blocked user' do
         user = create(
@@ -428,7 +451,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
     it 'throws an error suggesting user create a PAT when internal auth is disabled' do
       allow_any_instance_of(ApplicationSetting).to receive(:password_authentication_enabled_for_git?) { false }
 
-      expect { gl_auth.find_for_git_client('foo', 'bar', project: nil, ip: 'ip') }.to raise_error(Gitlab::Auth::MissingPersonalAccessTokenError)
+      expect { gl_auth.find_for_git_client('foo', 'bar', project: nil, ip: 'ip') }.to raise_error(Gitlab::Auth::Missing2FAError)
     end
 
     context 'while using deploy tokens' do

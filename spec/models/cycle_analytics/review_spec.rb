@@ -9,7 +9,7 @@ RSpec.describe 'CycleAnalytics#review' do
   let_it_be(:from_date) { 10.days.ago }
   let_it_be(:user) { project.owner }
 
-  subject { CycleAnalytics::ProjectLevel.new(project, options: { from: from_date }) }
+  subject { CycleAnalytics::ProjectLevel.new(project, options: { from: from_date, current_user: user }) }
 
   generate_cycle_analytics_spec(
     phase: :review,

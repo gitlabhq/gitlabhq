@@ -1,5 +1,4 @@
 <script>
-import { mapState } from 'vuex';
 import { GlKeysetPagination, GlResizeObserverDirective } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import createFlash from '~/flash';
@@ -36,7 +35,7 @@ export default {
     TagsLoader,
     EmptyTagsState,
   },
-  inject: ['breadCrumbState'],
+  inject: ['breadCrumbState', 'config'],
   directives: {
     GlResizeObserver: GlResizeObserverDirective,
   },
@@ -71,7 +70,6 @@ export default {
     };
   },
   computed: {
-    ...mapState(['config']),
     queryVariables() {
       return {
         id: joinPaths(this.config.gidPrefix, `${this.$route.params.id}`),

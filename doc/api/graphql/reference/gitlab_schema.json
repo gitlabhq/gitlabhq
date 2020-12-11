@@ -72395,6 +72395,20 @@
               "deprecationReason": null
             },
             {
+              "name": "dismissedAt",
+              "description": "Timestamp of when the vulnerability state was changed to dismissed",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "externalIssueLinks",
               "description": "List of external issue links related to the vulnerability",
               "args": [

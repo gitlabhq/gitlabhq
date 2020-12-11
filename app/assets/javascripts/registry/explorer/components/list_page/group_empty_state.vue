@@ -1,16 +1,13 @@
 <script>
 import { GlEmptyState, GlSprintf, GlLink } from '@gitlab/ui';
-import { mapState } from 'vuex';
 
 export default {
   name: 'GroupEmptyState',
+  inject: ['config'],
   components: {
     GlEmptyState,
     GlSprintf,
     GlLink,
-  },
-  computed: {
-    ...mapState(['config']),
   },
 };
 </script>

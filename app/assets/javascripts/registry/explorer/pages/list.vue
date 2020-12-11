@@ -1,5 +1,4 @@
 <script>
-import { mapState } from 'vuex';
 import {
   GlEmptyState,
   GlTooltipDirective,
@@ -54,6 +53,7 @@ export default {
     RegistryHeader,
     CliCommands,
   },
+  inject: ['config'],
   directives: {
     GlTooltip: GlTooltipDirective,
   },
@@ -106,7 +106,6 @@ export default {
     };
   },
   computed: {
-    ...mapState(['config']),
     graphqlResource() {
       return this.config.isGroupPage ? 'group' : 'project';
     },

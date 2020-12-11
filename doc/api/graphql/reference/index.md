@@ -3745,6 +3745,7 @@ Represents a vulnerability.
 | `description` | String | Description of the vulnerability |
 | `detectedAt` | Time! | Timestamp of when the vulnerability was first detected |
 | `discussions` | DiscussionConnection! | All discussions on this noteable |
+| `dismissedAt` | Time | Timestamp of when the vulnerability state was changed to dismissed |
 | `externalIssueLinks` | VulnerabilityExternalIssueLinkConnection! | List of external issue links related to the vulnerability |
 | `id` | ID! | GraphQL ID of the vulnerability |
 | `identifiers` | VulnerabilityIdentifier! => Array | Identifiers of the vulnerability. |

@@ -1,50 +1,3 @@
-export const headers = {
-  'X-PER-PAGE': 5,
-  'X-PAGE': 1,
-  'X-TOTAL': 13,
-  'X-TOTAL_PAGES': 1,
-  'X-NEXT-PAGE': null,
-  'X-PREVIOUS-PAGE': null,
-};
-export const reposServerResponse = [
-  {
-    destroy_path: 'path',
-    id: '123',
-    location: 'location',
-    path: 'foo',
-    tags_path: 'tags_path',
-  },
-  {
-    destroy_path: 'path_',
-    id: '456',
-    location: 'location_',
-    path: 'bar',
-    tags_path: 'tags_path_',
-  },
-];
-
-export const registryServerResponse = [
-  {
-    name: 'centos7',
-    short_revision: 'b118ab5b0',
-    revision: 'b118ab5b0e90b7cb5127db31d5321ac14961d097516a8e0e72084b6cdc783b43',
-    total_size: 679,
-    layers: 19,
-    location: 'location',
-    created_at: 1505828744434,
-    destroy_path: 'path_',
-  },
-  {
-    name: 'centos6',
-    short_revision: 'b118ab5b0',
-    revision: 'b118ab5b0e90b7cb5127db31d5321ac14961d097516a8e0e72084b6cdc783b43',
-    total_size: 679,
-    layers: 19,
-    location: 'location',
-    created_at: 1505828744434,
-  },
-];
-
 export const imagesListResponse = [
   {
     __typename: 'ContainerRepository',
@@ -72,52 +25,12 @@ export const imagesListResponse = [
   },
 ];
 
-export const tagsListResponse = [
-  {
-    canDelete: true,
-    createdAt: '2020-11-03T13:29:49+00:00',
-    digest: 'sha256:9d72ae1db47404e44e1760eb1ca4cb427b84be8c511f05dfe2089e1b9f741dd7',
-    location: 'host.docker.internal:5000/gitlab-org/gitlab-test/rails-12009:alpha-11821',
-    name: 'alpha-11821',
-    path: 'gitlab-org/gitlab-test/rails-12009:alpha-11821',
-    revision: '5183b5d133fa864dca2de602f874b0d1bffe0f204ad894e3660432a487935139',
-    shortRevision: '5183b5d13',
-    totalSize: 104,
-    layers: 10,
-    __typename: 'ContainerRepositoryTag',
-  },
-  {
-    canDelete: true,
-    createdAt: '2020-11-03T13:29:48+00:00',
-    digest: 'sha256:64f61282a71659f72066f9decd30b9038a465859b277a5e20da8681eb83e72f7',
-    location: 'host.docker.internal:5000/gitlab-org/gitlab-test/rails-12009:alpha-20825',
-    name: 'alpha-20825',
-    path: 'gitlab-org/gitlab-test/rails-12009:alpha-20825',
-    revision: 'e4212f1b73c6f9def2c37fa7df6c8d35c345fb1402860ff9a56404821aacf16f',
-    shortRevision: 'e4212f1b7',
-    totalSize: 105,
-    layers: 10,
-    __typename: 'ContainerRepositoryTag',
-  },
-];
-
 export const pageInfo = {
   hasNextPage: true,
   hasPreviousPage: true,
   startCursor: 'eyJpZCI6IjI2In0',
   endCursor: 'eyJpZCI6IjgifQ',
   __typename: 'ContainerRepositoryConnection',
-};
-
-export const imageDetailsMock = {
-  canDelete: true,
-  createdAt: '2020-11-03T13:29:21Z',
-  expirationPolicyStartedAt: null,
-  id: 'gid://gitlab/ContainerRepository/26',
-  location: 'host.docker.internal:5000/gitlab-org/gitlab-test/rails-12009',
-  name: 'rails-12009',
-  path: 'gitlab-org/gitlab-test/rails-12009',
-  status: null,
 };
 
 export const graphQLImageListMock = {
@@ -284,4 +197,10 @@ export const graphQLDeleteImageRepositoryTagsMock = {
       __typename: 'DestroyContainerRepositoryTagsPayload',
     },
   },
+};
+
+export const dockerCommands = {
+  dockerBuildCommand: 'foofoo',
+  dockerPushCommand: 'barbar',
+  dockerLoginCommand: 'bazbaz',
 };

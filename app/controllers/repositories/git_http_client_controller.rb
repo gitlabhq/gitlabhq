@@ -60,8 +60,10 @@ module Repositories
 
       send_challenges
       render plain: "HTTP Basic: Access denied\n", status: :unauthorized
-    rescue Gitlab::Auth::MissingPersonalAccessTokenError
+    rescue Gitlab::Auth::Missing2FAError
       render_missing_personal_access_token
+    rescue Gitlab::Auth::InvalidOTPError
+      render_invalid_otp
     end
 
     def basic_auth_provided?
@@ -97,9 +99,16 @@ module Repositories
 
     def render_missing_personal_access_token
       render plain: "HTTP Basic: Access denied\n" \
-                    "You must use a personal access token with 'read_repository' or 'write_repository' scope for Git over HTTP.\n" \
-                    "You can generate one at #{profile_personal_access_tokens_url}",
-            status: :unauthorized
+                    "You must append your OTP code after your password (no spaces)\n" \
+                    "or use a personal access token (PAT) with a 'read_repository' or 'write_repository' scope for Git over HTTP.\n" \
+                    "You can generate a PAT at #{profile_personal_access_tokens_url}",
+             status: :unauthorized
+    end
+
+    def render_invalid_otp
+      render plain: "HTTP Basic: Access denied\n" \
+                    "Invalid OTP provided",
+             status: :unauthorized
     end
 
     def repository

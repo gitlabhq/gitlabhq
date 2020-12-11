@@ -22,6 +22,10 @@ module Gitlab
           ]
         end
 
+        def self.find_by_name!(name)
+          all.find { |raw_stage| raw_stage[:name].to_s.eql?(name.to_s) } || raise("Default stage '#{name}' not found")
+        end
+
         def self.names
           all.map { |stage| stage[:name] }
         end

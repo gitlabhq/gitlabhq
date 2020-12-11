@@ -105,7 +105,7 @@ module Repositories
         'Content-Type': LFS_TRANSFER_CONTENT_TYPE
       }
 
-      if Feature.enabled?(:lfs_chunked_encoding, project)
+      if Feature.enabled?(:lfs_chunked_encoding, project, default_enabled: true)
         headers['Transfer-Encoding'] = 'chunked'
       end
 

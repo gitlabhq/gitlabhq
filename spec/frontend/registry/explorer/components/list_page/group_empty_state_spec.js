@@ -9,23 +9,20 @@ localVue.use(Vuex);
 
 describe('Registry Group Empty state', () => {
   let wrapper;
-  let store;
+  const config = {
+    noContainersImage: 'foo',
+    helpPagePath: 'baz',
+  };
 
   beforeEach(() => {
-    store = new Vuex.Store({
-      state: {
-        config: {
-          noContainersImage: 'foo',
-          helpPagePath: 'baz',
-        },
-      },
-    });
     wrapper = shallowMount(groupEmptyState, {
       localVue,
-      store,
       stubs: {
         GlEmptyState,
         GlSprintf,
+      },
+      provide() {
+        return { config };
       },
     });
   });

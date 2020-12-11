@@ -11,7 +11,6 @@ import DetailsHeader from '~/registry/explorer/components/details_page/details_h
 import TagsLoader from '~/registry/explorer/components/details_page/tags_loader.vue';
 import TagsList from '~/registry/explorer/components/details_page/tags_list.vue';
 import EmptyTagsState from '~/registry/explorer/components/details_page/empty_tags_state.vue';
-import { createStore } from '~/registry/explorer/stores/';
 
 import getContainerRepositoryDetailsQuery from '~/registry/explorer/graphql/queries/get_container_repository_details.graphql';
 import deleteContainerRepositoryTagsMutation from '~/registry/explorer/graphql/mutations/delete_container_repository_tags.graphql';
@@ -30,7 +29,6 @@ const localVue = createLocalVue();
 
 describe('Details Page', () => {
   let wrapper;
-  let store;
   let apolloProvider;
 
   const findDeleteModal = () => wrapper.find(DeleteModal);
@@ -70,6 +68,7 @@ describe('Details Page', () => {
     resolver = jest.fn().mockResolvedValue(graphQLImageDetailsMock()),
     mutationResolver = jest.fn().mockResolvedValue(graphQLDeleteImageRepositoryTagsMock),
     options,
+    config = {},
   } = {}) => {
     localVue.use(VueApollo);
 
@@ -81,7 +80,6 @@ describe('Details Page', () => {
     apolloProvider = createMockApollo(requestHandlers);
 
     wrapper = shallowMount(component, {
-      store,
       localVue,
       apolloProvider,
       stubs: {
@@ -97,6 +95,7 @@ describe('Details Page', () => {
       provide() {
         return {
           breadCrumbState,
+          config,
         };
       },
       ...options,
@@ -104,7 +103,6 @@ describe('Details Page', () => {
   };
 
   beforeEach(() => {
-    store = createStore();
     jest.spyOn(Tracking, 'event');
   });
 
@@ -374,13 +372,13 @@ describe('Details Page', () => {
     });
 
     it('has the correct props', async () => {
-      store.commit('SET_INITIAL_STATE', { ...config });
       mountComponent({
         options: {
           data: () => ({
             deleteAlertType,
           }),
         },
+        config,
       });
 
       await waitForApolloRequestRender();
@@ -414,9 +412,7 @@ describe('Details Page', () => {
       });
 
       it('has the correct props', async () => {
-        store.commit('SET_INITIAL_STATE', { ...config });
-
-        mountComponent({ resolver });
+        mountComponent({ resolver, config });
 
         await waitForApolloRequestRender();
 

@@ -2,7 +2,8 @@
 
 module Gitlab
   module Auth
-    MissingPersonalAccessTokenError = Class.new(StandardError)
+    Missing2FAError = Class.new(StandardError)
+    InvalidOTPError = Class.new(StandardError)
     IpBlacklisted = Class.new(StandardError)
 
     # Scopes used for GitLab API access
@@ -52,6 +53,7 @@ module Gitlab
           oauth_access_token_check(login, password) ||
           personal_access_token_check(password, project) ||
           deploy_token_check(login, password, project) ||
+          user_with_password_and_otp_for_git(login, password) ||
           user_with_password_for_git(login, password) ||
           Gitlab::Auth::Result.new
 
@@ -62,7 +64,7 @@ module Gitlab
 
         # If sign-in is disabled and LDAP is not configured, recommend a
         # personal access token on failed auth attempts
-        raise Gitlab::Auth::MissingPersonalAccessTokenError
+        raise Gitlab::Auth::Missing2FAError
       end
 
       # Find and return a user if the provided password is valid for various
@@ -167,11 +169,26 @@ module Gitlab
         end
       end
 
+      def user_with_password_and_otp_for_git(login, password)
+        return unless password
+
+        password, otp_token = password[0..-7], password[-6..-1]
+
+        user = find_with_user_password(login, password)
+
+        return unless user&.otp_required_for_login?
+
+        otp_validation_result = ::Users::ValidateOtpService.new(user).execute(otp_token)
+        raise Gitlab::Auth::InvalidOTPError unless otp_validation_result[:status] == :success
+
+        Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_authentication_abilities)
+      end
+
       def user_with_password_for_git(login, password)
         user = find_with_user_password(login, password)
         return unless user
 
-        raise Gitlab::Auth::MissingPersonalAccessTokenError if user.two_factor_enabled?
+        raise Gitlab::Auth::Missing2FAError if user.two_factor_enabled?
 
         Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_authentication_abilities)
       end

@@ -3,21 +3,14 @@
 module Gitlab
   module Ci
     module Reports
-      class AccessibilityReportsComparer
-        include Gitlab::Utils::StrongMemoize
-
-        STATUS_SUCCESS = 'success'
-        STATUS_FAILED = 'failed'
-
-        attr_reader :base_report, :head_report
-
+      class AccessibilityReportsComparer < ReportsComparer
         def initialize(base_report, head_report)
           @base_report = base_report || AccessibilityReports.new
           @head_report = head_report
         end
 
-        def status
-          head_report.errors_count > 0 ? STATUS_FAILED : STATUS_SUCCESS
+        def success?
+          head_report.errors_count == 0
         end
 
         def existing_errors

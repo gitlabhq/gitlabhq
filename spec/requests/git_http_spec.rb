@@ -571,14 +571,49 @@ RSpec.describe 'Git HTTP requests' do
                   it 'rejects pulls with personal access token error message' do
                     download(path, user: user.username, password: user.password) do |response|
                       expect(response).to have_gitlab_http_status(:unauthorized)
-                      expect(response.body).to include('You must use a personal access token with \'read_repository\' or \'write_repository\' scope for Git over HTTP')
+                      expect(response.body).to include("or use a personal access token (PAT) with a 'read_repository' or 'write_repository' scope for Git over HTTP")
                     end
                   end
 
                   it 'rejects the push attempt with personal access token error message' do
                     upload(path, user: user.username, password: user.password) do |response|
                       expect(response).to have_gitlab_http_status(:unauthorized)
-                      expect(response.body).to include('You must use a personal access token with \'read_repository\' or \'write_repository\' scope for Git over HTTP')
+                      expect(response.body).to include("or use a personal access token (PAT) with a 'read_repository' or 'write_repository' scope for Git over HTTP")
+                    end
+                  end
+                end
+
+                context 'when username, password and OTP code are provided' do
+                  context 'with valid OTP code' do
+                    let(:password) { "#{user.password}#{user.current_otp}" }
+                    let(:env) { { user: user.username, password: password } }
+
+                    before do
+                      service = instance_double(::Users::ValidateOtpService)
+                      expect(::Users::ValidateOtpService).to receive(:new).twice.and_return(service)
+                      expect(service).to receive(:execute).with(user.current_otp).twice.and_return({ status: :success })
+                    end
+
+                    it_behaves_like 'pulls are allowed'
+                    it_behaves_like 'pushes are allowed'
+                  end
+
+                  context 'with invalid OTP code' do
+                    let(:password) { "#{user.password}abcdef" }
+                    let(:env) { { user: user.username, password: password } }
+
+                    it 'rejects the pull attempt' do
+                      download(path, **env) do |response|
+                        expect(response).to have_gitlab_http_status(:unauthorized)
+                        expect(response.body).to include('Invalid OTP provided')
+                      end
+                    end
+
+                    it 'rejects the push attempt' do
+                      upload(path, **env) do |response|
+                        expect(response).to have_gitlab_http_status(:unauthorized)
+                        expect(response.body).to include('Invalid OTP provided')
+                      end
                     end
                   end
                 end
@@ -640,14 +675,14 @@ RSpec.describe 'Git HTTP requests' do
                 it 'rejects pulls with personal access token error message' do
                   download(path, user: 'foo', password: 'bar') do |response|
                     expect(response).to have_gitlab_http_status(:unauthorized)
-                    expect(response.body).to include('You must use a personal access token with \'read_repository\' or \'write_repository\' scope for Git over HTTP')
+                    expect(response.body).to include("or use a personal access token (PAT) with a 'read_repository' or 'write_repository' scope for Git over HTTP")
                   end
                 end
 
                 it 'rejects pushes with personal access token error message' do
                   upload(path, user: 'foo', password: 'bar') do |response|
                     expect(response).to have_gitlab_http_status(:unauthorized)
-                    expect(response.body).to include('You must use a personal access token with \'read_repository\' or \'write_repository\' scope for Git over HTTP')
+                    expect(response.body).to include("or use a personal access token (PAT) with a 'read_repository' or 'write_repository' scope for Git over HTTP")
                   end
                 end
 
@@ -661,7 +696,7 @@ RSpec.describe 'Git HTTP requests' do
                   it 'does not display the personal access token error message' do
                     upload(path, user: 'foo', password: 'bar') do |response|
                       expect(response).to have_gitlab_http_status(:unauthorized)
-                      expect(response.body).not_to include('You must use a personal access token with \'read_repository\' or \'write_repository\' scope for Git over HTTP')
+                      expect(response.body).not_to include("or use a personal access token (PAT) with a 'read_repository' or 'write_repository' scope for Git over HTTP")
                     end
                   end
                 end

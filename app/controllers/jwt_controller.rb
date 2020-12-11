@@ -37,7 +37,7 @@ class JwtController < ApplicationController
         render_unauthorized
       end
     end
-  rescue Gitlab::Auth::MissingPersonalAccessTokenError
+  rescue Gitlab::Auth::Missing2FAError
     render_missing_personal_access_token
   end
 
@@ -46,7 +46,8 @@ class JwtController < ApplicationController
       errors: [
         { code: 'UNAUTHORIZED',
           message: _('HTTP Basic: Access denied\n' \
-                   'You must use a personal access token with \'api\' scope for Git over HTTP.\n' \
+                   'You must append your OTP code after your password\n' \
+                   'or use a personal access token with \'api\' scope for Git over HTTP.\n' \
                    'You can generate one at %{profile_personal_access_tokens_url}') % { profile_personal_access_tokens_url: profile_personal_access_tokens_url } }
       ]
     }, status: :unauthorized

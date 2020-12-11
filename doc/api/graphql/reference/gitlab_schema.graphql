@@ -24872,6 +24872,11 @@ type Vulnerability implements Noteable {
   ): DiscussionConnection!
 
   """
+  Timestamp of when the vulnerability state was changed to dismissed
+  """
+  dismissedAt: Time
+
+  """
   List of external issue links related to the vulnerability
   """
   externalIssueLinks(

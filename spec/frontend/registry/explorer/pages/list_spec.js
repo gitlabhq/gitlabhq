@@ -11,8 +11,7 @@ import ProjectEmptyState from '~/registry/explorer/components/list_page/project_
 import RegistryHeader from '~/registry/explorer/components/list_page/registry_header.vue';
 import ImageList from '~/registry/explorer/components/list_page/image_list.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
-import { createStore } from '~/registry/explorer/stores/';
-import { SET_INITIAL_STATE } from '~/registry/explorer/stores/mutation_types';
+
 import {
   DELETE_IMAGE_SUCCESS_MESSAGE,
   DELETE_IMAGE_ERROR_MESSAGE,
@@ -40,7 +39,6 @@ const localVue = createLocalVue();
 
 describe('List Page', () => {
   let wrapper;
-  let store;
   let apolloProvider;
 
   const findDeleteModal = () => wrapper.find(GlModal);
@@ -69,6 +67,7 @@ describe('List Page', () => {
     resolver = jest.fn().mockResolvedValue(graphQLImageListMock),
     groupResolver = jest.fn().mockResolvedValue(graphQLImageListMock),
     mutationResolver = jest.fn().mockResolvedValue(graphQLImageDeleteMock),
+    config = {},
   } = {}) => {
     localVue.use(VueApollo);
 
@@ -83,7 +82,6 @@ describe('List Page', () => {
     wrapper = shallowMount(component, {
       localVue,
       apolloProvider,
-      store,
       stubs: {
         GlModal,
         GlEmptyState,
@@ -98,12 +96,13 @@ describe('List Page', () => {
         },
         ...mocks,
       },
+      provide() {
+        return {
+          config,
+        };
+      },
     });
   };
-
-  beforeEach(() => {
-    store = createStore();
-  });
 
   afterEach(() => {
     wrapper.destroy();
@@ -127,34 +126,26 @@ describe('List Page', () => {
       helpPagePath: 'bar',
     };
 
-    beforeEach(() => {
-      store.commit(SET_INITIAL_STATE, config);
-    });
-
-    afterEach(() => {
-      store.commit(SET_INITIAL_STATE, {});
-    });
-
     it('should show an empty state', () => {
-      mountComponent();
+      mountComponent({ config });
 
       expect(findEmptyState().exists()).toBe(true);
     });
 
     it('empty state should have an svg-path', () => {
-      mountComponent();
+      mountComponent({ config });
 
       expect(findEmptyState().attributes('svg-path')).toBe(config.containersErrorImage);
     });
 
     it('empty state should have a description', () => {
-      mountComponent();
+      mountComponent({ config });
 
       expect(findEmptyState().html()).toContain('connection error');
     });
 
     it('should not show the loading or default state', () => {
-      mountComponent();
+      mountComponent({ config });
 
       expect(findSkeletonLoader().exists()).toBe(false);
       expect(findImageList().exists()).toBe(false);
@@ -204,16 +195,12 @@ describe('List Page', () => {
     describe('group page', () => {
       const groupResolver = jest.fn().mockResolvedValue(graphQLEmptyGroupImageListMock);
 
-      beforeEach(() => {
-        store.commit(SET_INITIAL_STATE, { isGroupPage: true });
-      });
-
-      afterEach(() => {
-        store.commit(SET_INITIAL_STATE, { isGroupPage: undefined });
-      });
+      const config = {
+        isGroupPage: true,
+      };
 
       it('group empty state is visible', async () => {
-        mountComponent({ groupResolver });
+        mountComponent({ groupResolver, config });
 
         await waitForApolloRequestRender();
 
@@ -221,7 +208,7 @@ describe('List Page', () => {
       });
 
       it('cli commands is not visible', async () => {
-        mountComponent({ groupResolver });
+        mountComponent({ groupResolver, config });
 
         await waitForApolloRequestRender();
 
@@ -229,7 +216,7 @@ describe('List Page', () => {
       });
 
       it('list header is not visible', async () => {
-        mountComponent({ groupResolver });
+        mountComponent({ groupResolver, config });
 
         await waitForApolloRequestRender();
 

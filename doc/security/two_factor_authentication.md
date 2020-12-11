@@ -149,3 +149,14 @@ To disable it:
 ```ruby
 Feature.disable(:two_factor_for_cli)
 ```
+
+## Two-factor Authentication (2FA) for Git over HTTP operations
+
+> - Introduced in [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48943)
+
+When 2FA is enabled, users must either:
+
+- Use a [personal access token](../user/profile/personal_access_tokens.md) with
+  the `read_repository` or `write_repository` scope, in place of a password.
+- Append a [One-time password](../user/profile/account/two_factor_authentication.md#enabling-2fa),
+  directly to the end of the regular password (no spaces).
