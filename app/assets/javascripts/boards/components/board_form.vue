@@ -192,7 +192,7 @@ export default {
     async createBoard() {
       // TODO: change this to use `createBoard` mutation https://gitlab.com/gitlab-org/gitlab/-/issues/292466 is resolved
       const boardData = await getBoardsPath(this.endpoints.boardsEndpoint, this.boardPayload);
-      await this.callBoardMutation(fullBoardId(boardData.data.id));
+      this.callBoardMutation(fullBoardId(boardData.data.id));
 
       return boardData.data || boardData;
     },

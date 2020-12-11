@@ -49,34 +49,50 @@ RSpec.describe ServicesHelper do
     end
   end
 
-  describe '#reset_integrations?' do
+  describe '#reset_integration?' do
     let(:group) { nil }
 
-    subject { helper.reset_integrations?(group: group) }
+    subject { helper.reset_integration?(integration, group: group) }
 
-    context 'when `reset_integrations` is not enabled' do
-      it 'returns false' do
-        stub_feature_flags(reset_integrations: false)
+    context 'when integration is existing record' do
+      let_it_be(:integration) { create(:jira_service) }
 
-        is_expected.to eq(false)
+      context 'when `reset_integrations` is not enabled' do
+        it 'returns false' do
+          stub_feature_flags(reset_integrations: false)
+
+          is_expected.to eq(false)
+        end
+      end
+
+      context 'when `reset_integrations` is enabled' do
+        it 'returns true' do
+          stub_feature_flags(reset_integrations: true)
+
+          is_expected.to eq(true)
+        end
+      end
+
+      context 'when `reset_integrations` is enabled for a group' do
+        let(:group) { build_stubbed(:group) }
+
+        it 'returns true' do
+          stub_feature_flags(reset_integrations: group)
+
+          is_expected.to eq(true)
+        end
       end
     end
 
-    context 'when `reset_integrations` is enabled' do
-      it 'returns true' do
-        stub_feature_flags(reset_integrations: true)
+    context 'when integration is a new record' do
+      let_it_be(:integration) { build(:jira_service) }
 
-        is_expected.to eq(true)
-      end
-    end
+      context 'when `reset_integrations` is enabled' do
+        it 'returns false' do
+          stub_feature_flags(reset_integrations: true)
 
-    context 'when `reset_integrations` is enabled for a group' do
-      let(:group) { build_stubbed(:group) }
-
-      it 'returns true' do
-        stub_feature_flags(reset_integrations: group)
-
-        is_expected.to eq(true)
+          is_expected.to eq(false)
+        end
       end
     end
   end

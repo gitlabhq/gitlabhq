@@ -236,7 +236,9 @@ module Gitlab
 
       def system_usage_data_settings
         {
-          settings: {}
+          settings: {
+            ldap_encrypted_secrets_enabled: alt_usage_data(fallback: nil) { Gitlab::Auth::Ldap::Config.encrypted_secrets.active? }
+          }
         }
       end
 

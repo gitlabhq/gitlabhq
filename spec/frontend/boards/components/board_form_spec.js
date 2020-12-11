@@ -4,7 +4,6 @@ import AxiosMockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'jest/helpers/test_constants';
 import { GlModal } from '@gitlab/ui';
 import waitForPromises from 'helpers/wait_for_promises';
-import BoardScope from 'ee_component/boards/components/board_scope.vue';
 
 import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -64,7 +63,6 @@ describe('BoardForm', () => {
   const findFormWrapper = () => wrapper.find('[data-testid="board-form-wrapper"]');
   const findDeleteConfirmation = () => wrapper.find('[data-testid="delete-confirmation-message"]');
   const findConfigurationOptions = () => wrapper.find(BoardConfigurationOptions);
-  const findBoardScope = () => wrapper.find(BoardScope);
   const findInput = () => wrapper.find('#board-new-name');
 
   const createComponent = (props, data) => {
@@ -172,12 +170,6 @@ describe('BoardForm', () => {
       });
     });
 
-    it('passes a correct collapseScope property to BoardScope component on scoped board', async () => {
-      createComponent({ canAdminBoard: true, scopedIssueBoardFeatureEnabled: true });
-      await waitForPromises();
-      expect(findBoardScope().props('collapseScope')).toBe(true);
-    });
-
     describe('when submitting a create event', () => {
       beforeEach(() => {
         const url = `${endpoints.boardsEndpoint}.json`;
@@ -253,12 +245,6 @@ describe('BoardForm', () => {
       it('passes a false isNewForm prop to BoardConfigurationOptions component', () => {
         expect(findConfigurationOptions().props('isNewForm')).toBe(false);
       });
-    });
-
-    it('passes a correct collapseScope property to BoardScope component on scoped board', async () => {
-      createComponent({ canAdminBoard: true, scopedIssueBoardFeatureEnabled: true });
-      await waitForPromises();
-      expect(findBoardScope().props('collapseScope')).toBe(false);
     });
 
     describe('when submitting an update event', () => {

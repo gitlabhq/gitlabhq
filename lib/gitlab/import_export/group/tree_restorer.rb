@@ -74,6 +74,12 @@ module Gitlab
           group = create_group(group_attributes)
 
           restore_group(group, group_attributes)
+        rescue => e
+          import_failure_service.log_import_failure(
+            source: 'process_child',
+            relation_key: 'group',
+            exception: e
+          )
         end
 
         def create_group(group_attributes)
@@ -83,13 +89,17 @@ module Gitlab
 
           parent_group = @groups_mapping.fetch(parent_id) { raise(ArgumentError, 'Parent group not found') }
 
-          ::Groups::CreateService.new(
+          group = ::Groups::CreateService.new(
             user,
             name: name,
             path: path,
             parent_id: parent_group.id,
             visibility_level: sub_group_visibility_level(group_attributes.attributes, parent_group)
           ).execute
+
+          group.validate!
+
+          group
         end
 
         def restore_group(group, group_attributes)
@@ -133,6 +143,10 @@ module Gitlab
               ).to_h
             )
           end
+        end
+
+        def import_failure_service
+          Gitlab::ImportExport::ImportFailureService.new(@top_level_group)
         end
       end
     end

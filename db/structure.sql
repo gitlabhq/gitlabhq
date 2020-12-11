@@ -15216,6 +15216,7 @@ CREATE TABLE postgres_reindex_actions (
     ondisk_size_bytes_end bigint,
     state smallint DEFAULT 0 NOT NULL,
     index_identifier text NOT NULL,
+    bloat_estimate_bytes_start bigint,
     CONSTRAINT check_f12527622c CHECK ((char_length(index_identifier) <= 255))
 );
 

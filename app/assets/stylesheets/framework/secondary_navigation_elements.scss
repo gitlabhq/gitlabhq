@@ -276,7 +276,7 @@
     @include fade(left, $gray-light);
     right: -5px;
 
-    .fa {
+    svg {
       right: -7px;
     }
   }
@@ -286,7 +286,7 @@
     left: -5px;
     text-align: center;
 
-    .fa {
+    svg {
       left: -7px;
     }
   }
@@ -337,7 +337,7 @@
       @include fade(left, $white);
       right: -5px;
 
-      .fa {
+      svg {
         right: -7px;
       }
     }
@@ -346,7 +346,7 @@
       @include fade(right, $white);
       left: -5px;
 
-      .fa {
+      svg {
         left: -7px;
       }
     }

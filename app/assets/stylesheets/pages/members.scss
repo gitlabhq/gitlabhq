@@ -30,12 +30,6 @@
     margin-bottom: 0;
   }
 
-  .member-controls {
-    .fa {
-      line-height: inherit;
-    }
-  }
-
   &.existing-title {
     @include media-breakpoint-up(sm) {
       float: left;

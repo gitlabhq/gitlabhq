@@ -1,0 +1,5 @@
+---
+title: Reduce object allocations for large merge request
+merge_request: 49563
+author:
+type: performance

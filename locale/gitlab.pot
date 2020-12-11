@@ -28551,6 +28551,9 @@ msgstr ""
 msgid "ThreatMonitoring|There was an error displaying the alerts. Confirm your endpoint's configuration details to ensure alerts appear."
 msgstr ""
 
+msgid "ThreatMonitoring|There was an error while updating the status of the alert. Please try again."
+msgstr ""
+
 msgid "ThreatMonitoring|Threat Monitoring"
 msgstr ""
 
@@ -32242,6 +32245,9 @@ msgid "by"
 msgstr ""
 
 msgid "cannot be a date in the past"
+msgstr ""
+
+msgid "cannot be changed"
 msgstr ""
 
 msgid "cannot be changed if a personal project has container registry tags."

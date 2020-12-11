@@ -1,3 +1,4 @@
+import { GlFilteredSearchToken } from '@gitlab/ui';
 import { mockLabels } from 'jest/vue_shared/components/sidebar/labels_select_vue/mock_data';
 import Api from '~/api';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
@@ -102,6 +103,21 @@ export const mockMilestoneToken = {
   fetchMilestones: () => Promise.resolve({ data: mockMilestones }),
 };
 
+export const mockMembershipToken = {
+  type: 'with_inherited_permissions',
+  icon: 'group',
+  title: 'Membership',
+  token: GlFilteredSearchToken,
+  unique: true,
+  operators: [{ value: '=', description: 'is' }],
+  options: [{ value: 'exclude', title: 'Direct' }, { value: 'only', title: 'Inherited' }],
+};
+
+export const mockMembershipTokenOptionsWithoutTitles = {
+  ...mockMembershipToken,
+  options: [{ value: 'exclude' }, { value: 'only' }],
+};
+
 export const mockAvailableTokens = [mockAuthorToken, mockLabelToken, mockMilestoneToken];
 
 export const tokenValueAuthor = {
@@ -125,6 +141,14 @@ export const tokenValueMilestone = {
   value: {
     operator: '=',
     data: 'v1.0',
+  },
+};
+
+export const tokenValueMembership = {
+  type: 'with_inherited_permissions',
+  value: {
+    operator: '=',
+    data: 'exclude',
   },
 };
 

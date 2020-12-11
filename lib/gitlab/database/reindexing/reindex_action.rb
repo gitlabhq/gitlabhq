@@ -18,7 +18,8 @@ module Gitlab
           action = create!(
             index_identifier: index.identifier,
             action_start: Time.zone.now,
-            ondisk_size_bytes_start: index.ondisk_size_bytes
+            ondisk_size_bytes_start: index.ondisk_size_bytes,
+            bloat_estimate_bytes_start: index.bloat_size
           )
 
           yield

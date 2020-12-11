@@ -69,9 +69,11 @@ module Types
     field :merge_commit_sha, GraphQL::STRING_TYPE, null: true,
           description: 'SHA of the merge request commit (set once merged)'
     field :user_notes_count, GraphQL::INT_TYPE, null: true,
-          description: 'User notes count of the merge request'
+          description: 'User notes count of the merge request',
+          resolver: Resolvers::UserNotesCountResolver
     field :user_discussions_count, GraphQL::INT_TYPE, null: true,
-          description: 'Number of user discussions in the merge request'
+          description: 'Number of user discussions in the merge request',
+          resolver: Resolvers::UserDiscussionsCountResolver
     field :should_remove_source_branch, GraphQL::BOOLEAN_TYPE, method: :should_remove_source_branch?, null: true,
           description: 'Indicates if the source branch of the merge request will be deleted after merge'
     field :force_remove_source_branch, GraphQL::BOOLEAN_TYPE, method: :force_remove_source_branch?, null: true,

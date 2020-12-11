@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Reindexing::ReindexAction, '.keep_track_of' do
-  let(:index) { double('index', identifier: 'public.something', ondisk_size_bytes: 10240, reload: nil) }
+  let(:index) { double('index', identifier: 'public.something', ondisk_size_bytes: 10240, reload: nil, bloat_size: 42) }
   let(:size_after) { 512 }
 
   it 'yields to the caller' do
@@ -45,6 +45,12 @@ RSpec.describe Gitlab::Database::Reindexing::ReindexAction, '.keep_track_of' do
     end
 
     expect(find_record.ondisk_size_bytes_end).to eq(size_after)
+  end
+
+  it 'creates the record with the indexes bloat estimate' do
+    described_class.keep_track_of(index) do
+      expect(find_record.bloat_estimate_bytes_start).to eq(index.bloat_size)
+    end
   end
 
   context 'in case of errors' do

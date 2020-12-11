@@ -163,12 +163,6 @@ $mr-widget-min-height: 69px;
 
   .btn {
     font-size: $gl-font-size;
-
-    &.dropdown-toggle {
-      .fa {
-        color: inherit;
-      }
-    }
   }
 
   .accept-merge-holder {
@@ -338,13 +332,6 @@ $mr-widget-min-height: 69px;
 
       .merge-opt-title {
         margin-left: 8px;
-      }
-    }
-
-    .dropdown-toggle {
-      .fa {
-        margin-left: 0;
-        color: inherit;
       }
     }
 
@@ -550,10 +537,6 @@ $mr-widget-min-height: 69px;
 
   @include media-breakpoint-up(md) {
     align-items: center;
-  }
-
-  .dropdown-toggle .fa {
-    color: $gl-text-color;
   }
 
   .git-merge-container {

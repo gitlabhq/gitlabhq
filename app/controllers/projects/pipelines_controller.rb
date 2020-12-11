@@ -188,7 +188,7 @@ class Projects::PipelinesController < Projects::ApplicationController
     @charts = {}
     @counts = {}
 
-    return unless Feature.enabled?(:graphql_pipeline_analytics)
+    return if Feature.enabled?(:graphql_pipeline_analytics)
 
     @charts[:week] = Gitlab::Ci::Charts::WeekChart.new(project)
     @charts[:month] = Gitlab::Ci::Charts::MonthChart.new(project)

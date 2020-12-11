@@ -102,7 +102,7 @@ module ServicesHelper
       cancel_path: scoped_integrations_path,
       can_test: integration.can_test?.to_s,
       test_path: scoped_test_integration_path(integration),
-      reset_path: reset_integrations?(group: group) ? scoped_reset_integration_path(integration, group: group) : ''
+      reset_path: reset_integration?(integration, group: group) ? scoped_reset_integration_path(integration, group: group) : ''
     }
   end
 
@@ -126,8 +126,8 @@ module ServicesHelper
     !Gitlab.com?
   end
 
-  def reset_integrations?(group: nil)
-    Feature.enabled?(:reset_integrations, group, type: :development)
+  def reset_integration?(integration, group: nil)
+    integration.persisted? && Feature.enabled?(:reset_integrations, group, type: :development)
   end
 
   extend self

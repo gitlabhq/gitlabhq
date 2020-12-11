@@ -22,7 +22,14 @@ FactoryBot.define do
     end
 
     factory :debian_package do
+      sequence(:name) { |n| "package-#{n}" }
+      sequence(:version) { |n| "1.0-#{n}" }
       package_type { :debian }
+
+      factory :debian_incoming do
+        name { 'incoming' }
+        version { nil }
+      end
     end
 
     factory :npm_package do
