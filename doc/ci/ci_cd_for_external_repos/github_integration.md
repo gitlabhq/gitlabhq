@@ -35,7 +35,7 @@ repositories:
    your project, update commit statuses, and create a web hook to notify
    GitLab of new commits.
 
-1. In GitLab, go to the [new project page](../../gitlab-basics/create-project.md#create-a-project-in-gitlab), select the **CI/CD for external repo** tab, and then click
+1. In GitLab, go to the [new project page](../../gitlab-basics/create-project.md#create-a-project-in-gitlab), select the **CI/CD for external repository** tab, and then click
    **GitHub**.
 
 1. Paste the token into the **Personal access token** field and click **List

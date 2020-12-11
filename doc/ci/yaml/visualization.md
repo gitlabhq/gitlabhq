@@ -20,11 +20,11 @@ configuration file and click on the `Visualization` tab. The visualization shows
 all stages and jobs. [`needs`](README.md#needs) relationships are displayed as lines
 connecting jobs together, showing the hierarchy of execution:
 
-![CI Config Visualization](img/ci_config_visualization_v13_5.png)
+![CI Configuration Visualization](img/ci_config_visualization_v13_5.png)
 
 Hovering on a job highlights its `needs` relationships:
 
-![CI Config Visualization on hover](img/ci_config_visualization_hover_v13_5.png)
+![CI Configuration Visualization on hover](img/ci_config_visualization_hover_v13_5.png)
 
 If the configuration does not have any `needs` relationships, then no lines are drawn because
 each job depends only on the previous stage being completed successfully.

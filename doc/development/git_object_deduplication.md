@@ -170,18 +170,18 @@ the fly by Gitaly.
 
 There are three different things that can go wrong here.
 
-#### 1. SQL says repo A belongs to pool P but Gitaly says A has no alternate objects
+#### 1. SQL says repository A belongs to pool P but Gitaly says A has no alternate objects
 
 In this case, we miss out on disk space savings but all RPC's on A
 itself function fine. The next time garbage collection runs on A,
 the alternates connection gets established in Gitaly. This is done by
 `Projects::GitDeduplicationService` in GitLab Rails.
 
-#### 2. SQL says repo A belongs to pool P1 but Gitaly says A has alternate objects in pool P2
+#### 2. SQL says repository A belongs to pool P1 but Gitaly says A has alternate objects in pool P2
 
 In this case `Projects::GitDeduplicationService` throws an exception.
 
-#### 3. SQL says repo A does not belong to any pool but Gitaly says A belongs to P
+#### 3. SQL says repository A does not belong to any pool but Gitaly says A belongs to P
 
 In this case `Projects::GitDeduplicationService` tries to
 "re-duplicate" the repository A using the DisconnectGitAlternates RPC.

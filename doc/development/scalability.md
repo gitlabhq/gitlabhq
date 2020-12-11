@@ -251,7 +251,7 @@ The full list of jobs can be found in the
 [`app/workers`](https://gitlab.com/gitlab-org/gitlab/tree/master/app/workers)
 and
 [`ee/app/workers`](https://gitlab.com/gitlab-org/gitlab/tree/master/ee/app/workers)
-directories in the GitLab code base.
+directories in the GitLab codebase.
 
 #### Runaway Queues
 

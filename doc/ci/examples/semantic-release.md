@@ -12,7 +12,7 @@ You can also view or fork the complete [example source](https://gitlab.com/gitla
 
 ## Initialize the module
 
-1. Open a terminal and navigate to the project's repo
+1. Open a terminal and navigate to the project's repository
 1. Run `npm init`. Name the module according to [the Package Registry's naming conventions](../../user/packages/npm_registry/index.md#package-naming-convention). For example, if the project's path is `gitlab-examples/semantic-release-npm`, name the module `@gitlab-examples/semantic-release-npm`.
 
 1. Install the following NPM packages:
@@ -97,7 +97,7 @@ As part of publishing a package, semantic-release increases the version number i
 
 ## Configure semantic-release
 
-semantic-release pulls its configuration info from a `.releaserc.json` file in the project. Create a `.releaserc.json` at the root of the repository:
+semantic-release pulls its configuration information from a `.releaserc.json` file in the project. Create a `.releaserc.json` at the root of the repository:
 
 ```json
 {

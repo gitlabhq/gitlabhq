@@ -674,10 +674,12 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
         end
 
         it 'does not allow setting params that are excluded from import_export settings' do
-          project.create_import_data(data: { override_params: { lfs_enabled: true } })
+          original_value = project.lfs_enabled?
+
+          project.create_import_data(data: { override_params: { lfs_enabled: !original_value } })
 
           expect(restored_project_json).to eq(true)
-          expect(project.lfs_enabled).to be_falsey
+          expect(project.lfs_enabled).to eq(original_value)
         end
 
         it 'overrides project feature access levels' do

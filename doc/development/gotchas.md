@@ -292,7 +292,7 @@ While the code above works in local environments, it errors out in production in
 
 ### Solution
 
-The alternative is the `lib/assets` folder. Use it if you need to add assets (like images) to the repo that meet the following conditions:
+The alternative is the `lib/assets` folder. Use it if you need to add assets (like images) to the repository that meet the following conditions:
 
 - The assets do not need to be directly served to the user (and hence need not be pre-compiled).
 - The assets do need to be accessed via application code.

@@ -15,7 +15,7 @@ Workhorse and GitLab Shell.
 In May 2019, Bob Van Landuyt hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/issues/1`)
 on GitLab's [Gitaly project](https://gitlab.com/gitlab-org/gitaly) and how to contribute to it as a
 Ruby developer, to share his domain specific knowledge with anyone who may work in this part of the
-code base in the future.
+codebase in the future.
 
 You can find the [recording on YouTube](https://www.youtube.com/watch?v=BmlEWFS8ORo), and the slides
 on [Google Slides](https://docs.google.com/presentation/d/1VgRbiYih9ODhcPnL8dS0W98EwFYpJ7GXMPpX-1TM6YE/edit)

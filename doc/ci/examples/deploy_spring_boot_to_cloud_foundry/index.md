@@ -16,7 +16,7 @@ Deployment](https://about.gitlab.com/blog/2016/08/05/continuous-integration-deli
 method.
 
 All the code for this project can be found in this [GitLab
-repo](https://gitlab.com/gitlab-examples/spring-gitlab-cf-deploy-demo).
+repository](https://gitlab.com/gitlab-examples/spring-gitlab-cf-deploy-demo).
 
 In case you're interested in deploying Spring Boot applications to Kubernetes
 using GitLab CI/CD, read through the blog post [Continuous Delivery of a Spring Boot application with GitLab CI and Kubernetes](https://about.gitlab.com/blog/2016/12/14/continuous-delivery-of-a-spring-boot-application-with-gitlab-ci-and-kubernetes/).

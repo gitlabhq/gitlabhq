@@ -93,7 +93,7 @@ too.
 1. ✓ Redesign GitLab Pages configuration source to use GitLab's API
 1. ✓ Evaluate performance and build reliable caching mechanisms
 1. ✓ Incrementally rollout the new source on GitLab.com
-1. ✓ Make GitLab Pages API domains config source enabled by default
+1. ✓ Make GitLab Pages API domains configuration source enabled by default
 1. Enable experimentation with different servings through feature flags
 1. Triangulate object store serving design through meaningful experiments
 1. Design pages migration mechanisms that can work incrementally

@@ -293,7 +293,7 @@ Example response:
 ```
 
 NOTE:
-`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the file name and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
+`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
 ### Scope: commits **(STARTER)**
 
@@ -675,7 +675,7 @@ Example response:
 ```
 
 NOTE:
-`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the file name and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
+`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
 ### Scope: commits **(STARTER)**
 
@@ -1072,7 +1072,7 @@ Example response:
 ```
 
 NOTE:
-`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the file name and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
+`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
 ### Scope: commits
 
@@ -1146,7 +1146,7 @@ Example response:
 ```
 
 NOTE:
-`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the file name and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
+`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
 ### Scope: users
 

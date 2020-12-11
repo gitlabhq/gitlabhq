@@ -225,9 +225,9 @@ To match the versions of `markdownlint-cli` and `vale` used in the GitLab projec
 [versions used](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/master/.gitlab-ci.yml#L447)
 when building the `image:docs-lint-markdown` Docker image containing these tools for CI/CD.
 
-| Tool               | Version  | Command                                   | Additional info |
-|--------------------|----------|-------------------------------------------|-----------------|
-| `markdownlint-cli` | Latest   | `yarn global add markdownlint-cli`        | n/a             |
+| Tool               | Version  | Command                                   | Additional information |
+|--------------------|----------|-------------------------------------------|------------------------|
+| `markdownlint-cli` | Latest   | `yarn global add markdownlint-cli`        | n/a                    |
 | `markdownlint-cli` | Specfic  | `yarn global add markdownlint-cli@0.23.2` | The `@` indicates a specific version, and this example updates the tool to version `0.23.2`. |
 | Vale               | Latest   | `brew update && brew upgrade vale`        | This command is for macOS only. |
 | Vale               | Specific | n/a                                       | Not possible using `brew`, but can be [directly downloaded](https://github.com/errata-ai/vale/releases). |

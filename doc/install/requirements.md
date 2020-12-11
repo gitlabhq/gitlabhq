@@ -111,7 +111,7 @@ Since file system performance may affect GitLab's overall performance, [we don't
 
 ### CPU
 
-CPU requirements are dependent on the number of users and expected workload. Your exact needs may be more, depending on your workload. Your workload is influenced by factors such as - but not limited to - how active your users are, how much automation you use, mirroring, and repo/change size.
+CPU requirements are dependent on the number of users and expected workload. Your exact needs may be more, depending on your workload. Your workload is influenced by factors such as - but not limited to - how active your users are, how much automation you use, mirroring, and repository/change size.
 
 The following is the recommended minimum CPU hardware guidance for a handful of example GitLab user base sizes.
 
@@ -121,7 +121,7 @@ The following is the recommended minimum CPU hardware guidance for a handful of 
 
 ### Memory
 
-Memory requirements are dependent on the number of users and expected workload. Your exact needs may be more, depending on your workload. Your workload is influenced by factors such as - but not limited to - how active your users are, how much automation you use, mirroring, and repo/change size.
+Memory requirements are dependent on the number of users and expected workload. Your exact needs may be more, depending on your workload. Your workload is influenced by factors such as - but not limited to - how active your users are, how much automation you use, mirroring, and repository/change size.
 
 The following is the recommended minimum Memory hardware guidance for a handful of example GitLab user base sizes.
 

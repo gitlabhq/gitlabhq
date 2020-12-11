@@ -203,7 +203,7 @@ If those are present, the request is exceeding the
 which is set to 10 seconds by default.
 
 To fix this the `gitlab_rails['webhook_timeout']` value must be increased
-in the `gitlab.rb` config file, followed by the [`gitlab-ctl reconfigure` command](../administration/restart_gitlab.md).
+in the `gitlab.rb` configuration file, followed by the [`gitlab-ctl reconfigure` command](../administration/restart_gitlab.md).
 
 If you don't find the errors above, but do find *duplicate* entries like below (in `/var/log/gitlab/gitlab-rail`), this
 could also indicate that [webhook requests are timing out](../user/project/integrations/webhooks.md#webhook-fails-or-multiple-webhook-requests-are-triggered):

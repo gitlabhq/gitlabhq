@@ -39,7 +39,7 @@ pre-deployment and post-deployment tasks.
 
 ## Template for new docs
 
-Follow the [folder structure and file name guidelines](styleguide/index.md#folder-structure-overview)
+Follow the [folder structure and filename guidelines](styleguide/index.md#folder-structure-overview)
 and create a new topic by using this template:
 
 ```markdown

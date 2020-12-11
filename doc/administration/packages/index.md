@@ -137,7 +137,7 @@ store packages.
 [Read more about using object storage with GitLab](../object_storage.md).
 
 NOTE:
-We recommend using the [consolidated object storage settings](../object_storage.md#consolidated-object-storage-configuration). The following instructions apply to the original config format.
+We recommend using the [consolidated object storage settings](../object_storage.md#consolidated-object-storage-configuration). The following instructions apply to the original configuration format.
 
 **Omnibus GitLab installations**
 

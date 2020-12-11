@@ -234,7 +234,7 @@ If no modules API is detected, the library will fall back as it does with
 
 To use plugins, you can pass them in an array as the third argument of
 `DropLab.prototype.init` or `DropLab.prototype.addHook`. Some plugins require
-configuration values; the config object can be passed as the fourth argument.
+configuration values; the configuration object can be passed as the fourth argument.
 
 ```html
 <a href="#" id="trigger" data-dropdown-trigger="#list">Toggle</a>

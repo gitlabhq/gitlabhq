@@ -207,7 +207,7 @@ all Kubernetes resources and dependent charts:
   helm get manifest <release name>
   ```
 
-## Installation of minimal GitLab config via Minikube on macOS
+## Installation of minimal GitLab configuration via Minikube on macOS
 
 This section is based on [Developing for Kubernetes with Minikube](https://docs.gitlab.com/charts/development/minikube/index.html)
 and [Helm](https://docs.gitlab.com/charts/installation/tools.html#helm). Refer

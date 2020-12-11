@@ -18,13 +18,13 @@ This service was [removed in v13.0](https://gitlab.com/gitlab-org/gitlab/-/issue
 
 Integration includes:
 
-- Trigger Jenkins build after push to repo
+- Trigger Jenkins build after push to repository
 - Show build status on Merge Request page
 
 Requirements:
 
 - [Jenkins GitLab Hook plugin](https://wiki.jenkins.io/display/JENKINS/GitLab+Hook+Plugin)
-- Git clone access for Jenkins from GitLab repo (via SSH key)
+- Git clone access for Jenkins from GitLab repository (via SSH key)
 
 ## Jenkins
 

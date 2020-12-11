@@ -17,7 +17,7 @@ The `text` data type can not be defined with a limit, so `add_text_limit` is enf
 adding a [check constraint](https://www.postgresql.org/docs/11/ddl-constraints.html) on the
 column and then validating it at a followup step.
 
-## Background info
+## Background information
 
 The reason we always want to use `text` instead of `string` is that `string` columns have the
 disadvantage that if you want to update their limit, you have to run an `ALTER TABLE ...` command.
@@ -256,7 +256,7 @@ end
 
 To keep this guide short, we skipped the definition of the background migration and only
 provided a high level example of the post-deployment migration that is used to schedule the batches.
-You can find more info on the guide about [background migrations](../background_migrations.md)
+You can find more information on the guide about [background migrations](../background_migrations.md)
 
 #### Validate the text limit (next release)
 

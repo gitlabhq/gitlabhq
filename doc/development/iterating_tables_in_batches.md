@@ -61,7 +61,9 @@ In case the column is not unique (no unique index definition), calling the `dist
 
 When dealing with data migrations the preferred way to iterate over large volume of data is using `EachBatch`.
 
-A special case of data migration is a background migration where the actual data modification is executed in a background job. The migration code that determines the data ranges (slices) and schedules the background jobs uses `each_batch`. More info: [background migration scheduling](background_migrations.md#scheduling)
+A special case of data migration is a [background migration](background_migrations.md#scheduling)
+where the actual data modification is executed in a background job. The migration code that determines
+the data ranges (slices) and schedules the background jobs uses `each_batch`.
 
 ## Efficient usage of `each_batch`
 

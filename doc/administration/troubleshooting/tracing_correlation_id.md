@@ -56,7 +56,7 @@ interested in.
 
 ### Getting the correlation ID from curl
 
-If you're using `curl` then you can use the verbose option to show request and response headers, as well as other debug info.
+If you're using `curl` then you can use the verbose option to show request and response headers, as well as other debug information.
 
 ```shell
 ➜  ~ curl --verbose "https://gitlab.example.com/api/v4/projects"

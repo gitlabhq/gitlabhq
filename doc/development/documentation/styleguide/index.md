@@ -336,12 +336,6 @@ Only use the GitLab name and trademarks in accordance with
 
 Don't use the possessive form of the word GitLab (`GitLab's`).
 
-### Point of view
-
-In most cases, it’s appropriate to use the second-person (you, yours) point of
-view, because it’s friendly and easy to understand. (Tested in
-[`FirstPerson.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FirstPerson.yml).)
-
 ### Capitalization
 
 #### Headings
@@ -529,84 +523,26 @@ You can use the following fake tokens as examples:
 | Health check token    | `Tu7BgjR9qeZTEyRzGG2P`                                             |
 | Request profile token | `7VgpS4Ax5utVD2esNstz`                                             |
 
-### Language to avoid
+### Usage list
+<!-- vale off -->
 
-When creating documentation, limit or avoid the use of the following verb
-tenses, words, and phrases:
+| Usage                         | Guidance                                                                                                                                                                                                                                                                                                                                  | [Vale](../testing.md#vale) Tests                                                                         |
+|-------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| currently                     | Do not use when talking about the product or its features. The documentation describes the product as it is today.                                                                                                                                                                                                                        | None                                                                                                     |
+| e.g., i.e., via               | Do not use Latin abbreviations.<br><br>- Instead of **e.g.**, use **for example**, **such as**, **for instance**, or **like**.<br>- Instead of **i.e.**, use **that is**.<br>- Instead of **via**, use **with**, **through**, or **by using**.                                                                                            | [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml)   |
+| future tense                  | When possible, use present tense instead. For example, use `after you execute this command, GitLab displays the result` instead of `after you execute this command, GitLab will display the result`.                                                                                                                                      | [`FutureTense.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FutureTense.yml) |
+| high availability, HA         | Do not use. Direct readers to the GitLab [reference architectures](../../../administration/reference_architectures/index.md) for information about configuring GitLab to have the performance needed for additional users over time.                                                                                                      | None                                                                                                     |
+| I, me                         | Do not use first-person singular. Use **you**, **we**, or **us** instead.                                                                                                                                                                                                                                                                 | [`FirstPerson.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FirstPerson.yml) |
+| jargon                        | Do not use. Define the term or [link to a definition](#links-to-external-documentation).                                                                                                                                                                                                                                                  | None                                                                                                     |
+| may, might                    | **Might** means something has the probability of occurring. **May** gives permission to do something. Consider **can** instead of **may**.                                                                                                                                                                                                | None                                                                                                     |
+| please                        | Do not use. For details, see the [Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/p/please).                                                                                                                                                                                           | None                                                                                                     |
+| profanity                     | Do not use. Doing so may negatively affect other users and contributors, which is contrary to the GitLab value of [Diversity, Inclusion, and Belonging](https://about.gitlab.com/handbook/values/#diversity-inclusion).                                                                                                                   | None                                                                                                     |
+| scalability                   | Do not use when talking about increasing GitLab performance for additional users. The words scale or scaling are sometimes acceptable, but references to increasing GitLab performance for additional users should direct readers to the GitLab [reference architectures](../../../administration/reference_architectures/index.md) page. | None                                                                                                     |
+| simply, easily, handy, useful | Do not use. If the user doesn't find the process to be these things, we lose their trust.                                                                                                                                                                                                                                                 | None                                                                                                     |
+| slashes                       | Instead of **and/or** use **or** or another sensible construction. This rule applies to other slashes as well, like **follow/unfollow**. Exception like **CI/CD** are allowed.                                                                                                                                                            | None                                                                                                     |
+| that                          | Do not use. Example: `the file that you save` can be `the file you save`.                                                                                                                                                                                                                                                                 | None                                                                                                     |
 
-- Avoid jargon when possible, and when not possible, define the term or
- [link to a definition](#links-to-external-documentation).
-- Avoid uncommon words when a more-common alternative is possible, ensuring that
-  content is accessible to more readers.
-- Don't write in the first person singular.
-  (Tested in [`FirstPerson.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FirstPerson.yml).)
-  <!-- vale gitlab.FirstPerson = NO -->
-  - Instead of _I_ or _me_, use _we_, _you_, _us_, or _one_.
-  <!-- vale gitlab.FirstPerson = YES -->
-  - When possible, stay user focused by writing in the second person (_you_ or
-    the imperative).
-- Don't overuse "that". In many cases, you can remove "that" from a sentence
-  and improve readability.
-- Avoid use of the future tense:
-  - Instead of `after you execute this command, GitLab will display the result`, use
-    `after you execute this command, GitLab displays the result`.
-  - Only use the future tense to convey when the action or result actually
-    occurs at a future time.
-- Don't use slashes to clump different words together or as a replacement for
-  the word "or":
-  - Instead of "and/or," consider using "or," or use another sensible
-    construction.
-  - Other examples include "clone/fetch," author/assignee," and
-    "namespace/repository name." Break apart any such instances in an
-    appropriate way.
-  - Exceptions to this rule include commonly accepted technical terms, such as
-    CI/CD and TCP/IP.
-<!-- vale gitlab.LatinTerms = NO -->
-- We discourage the use of Latin abbreviations and terms, such as _e.g._,
-  _i.e._, _etc._, or _via_, as even native users of English can misunderstand
-  those terms. (Tested in [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml).)
-  - Instead of _i.e._, use _that is_.
-  - Instead of _via_, use _through_.
-  - Instead of _e.g._, use _for example_, _such as_, _for instance_, or _like_.
-  - Instead of _etc._, either use _and so on_ or consider editing it out, as
-    it can be vague.
-<!-- vale gitlab.LatinTerms = YES -->
-<!-- vale gitlab.CurrentStatus = NO -->
-- Avoid using the word *currently* when talking about the product or its
-  features. The documentation describes the product as it is, and not as it
-  is planned to be in some indeterminate point in the future.
-<!-- vale gitlab.CurrentStatus = YES -->
-- Avoid using the word *scalability* when talking about increasing GitLab
-  performance for additional users. The words scale or scaling are sometimes
-  acceptable, but references to increasing GitLab performance for additional
-  users should direct readers to the GitLab
-  [reference architectures](../../../administration/reference_architectures/index.md)
-  page.
-- Avoid all forms of the phrases *high availability* and *HA*, and instead
-  direct readers to the GitLab [reference architectures](../../../administration/reference_architectures/index.md)
-  for information about configuring GitLab to have the performance needed for
-  additional users over time.
-- Don't use profanity or obscenities. Doing so may negatively affect other users
-  and contributors, which is contrary to the GitLab value of
-  [Diversity, Inclusion, and Belonging](https://about.gitlab.com/handbook/values/#diversity-inclusion).
-- Avoid the use of [racially-insensitive terminology or phrases](https://www.marketplace.org/2020/06/17/tech-companies-update-language-to-avoid-offensive-terms/). For example:
-  - Use *primary* and *secondary* for database and server relationships.
-  - Use *allowlist* and *denylist* to describe access control lists.
-- Avoid the word _please_. For details, see the [Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/p/please).
-<!-- vale gitlab.Simplicity = NO -->
-- Avoid words like _easily_, _simply_, _handy_, and _useful._ If the user
-  doesn't find the process to be these things, we lose their trust.
-<!-- vale gitlab.Simplicity = YES -->
-
-### Word usage clarifications
-
-- Don't use "may" and "might" interchangeably:
-  - Use "might" to indicate the probability of something occurring. "If you
-    skip this step, the import process might fail."
-  - Use "may" to indicate giving permission for someone to do something, or
-    consider using "can" instead. "You may select either option on this
-    screen." Or, "You can select either option on this screen."
-
+<!-- vale on -->
 ### Contractions
 
 Contractions are encouraged, and can create a friendly and informal tone,

@@ -2155,7 +2155,7 @@ POST /projects/:id/issues/:issue_iid/metric_images
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 | `file` | file | yes      | The image file to be uploaded |
-| `url` | string | no      | The URL to view more metric info |
+| `url` | string | no      | The URL to view more metric information |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" --form 'file=@/path/to/file.png' \

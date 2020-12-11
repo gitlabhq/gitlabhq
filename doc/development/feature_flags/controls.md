@@ -274,7 +274,7 @@ To remove a feature flag:
 
 ### Cleanup ChatOps
 
-When a feature gate has been removed from the code base, the feature
+When a feature gate has been removed from the codebase, the feature
 record still exists in the database that the flag was deployed too.
 The record can be deleted once the MR is deployed to each environment:
 

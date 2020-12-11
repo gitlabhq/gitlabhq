@@ -91,7 +91,7 @@ here's how you configure GitLab to be aware of the change:
    In the future you might want to set up [connecting with an SSH key](https://cloud.google.com/compute/docs/instances/connecting-to-instance)
    instead.
 
-1. Edit the config file of Omnibus GitLab using your favorite text editor:
+1. Edit the configuration file of Omnibus GitLab using your favorite text editor:
 
    ```shell
    sudo vim /etc/gitlab/gitlab.rb

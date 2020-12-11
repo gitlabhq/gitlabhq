@@ -59,13 +59,13 @@ RSpec.describe ...
 
 Since the migration files are not autoloaded by Rails, you will need to manually
 load the migration file. To do so, you can use the `require_migration!` helper method
-which can automatically load the correct migration file based on the spec file name.
+which can automatically load the correct migration file based on the spec filename.
 
 For example, if your spec file is named as `populate_foo_column_spec.rb` then the
 helper method will try to load `${schema_version}_populate_foo_column.rb` migration file.
 
 In case there is no pattern between your spec file and the actual migration file,
-you can provide the migration file name without the schema version, like so:
+you can provide the migration filename without the schema version, like so:
 
 ```ruby
 require_migration!('populate_foo_column')

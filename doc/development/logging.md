@@ -12,7 +12,7 @@ administrators and GitLab team members to diagnose problems in the field.
 ## Don't use `Rails.logger`
 
 Currently `Rails.logger` calls all get saved into `production.log`, which contains
-a mix of Rails' logs and other calls developers have inserted in the code base.
+a mix of Rails' logs and other calls developers have inserted in the codebase.
 For example:
 
 ```plaintext

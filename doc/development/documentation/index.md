@@ -253,7 +253,7 @@ available under `https://docs.gitlab.com/my-old-location/README.html` to a new l
 `https://docs.gitlab.com/my-new-location/index.html`.
 
 Into the **new document** front matter, we add the following information. You must
-include the file name in the `disqus_identifier` URL, even if it's `index.html` or `README.html`.
+include the filename in the `disqus_identifier` URL, even if it's `index.html` or `README.html`.
 
 ```yaml
 ---
@@ -498,7 +498,7 @@ To run the tool on an existing screenshot generator, take the following steps:
 1. Set up the [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/gitlab_docs.md).
 1. Navigate to the subdirectory with your cloned GitLab repository, typically `gdk/gitlab`.
 1. Make sure that your GDK database is fully migrated: `bin/rake db:migrate RAILS_ENV=development`.
-1. Install pngquant, see the tool website for more info: [`pngquant`](https://pngquant.org/)
+1. Install pngquant, see the tool website for more information: [`pngquant`](https://pngquant.org/)
 1. Run `scripts/docs_screenshots.rb spec/docs_screenshots/<name_of_screenshot_generator>.rb <milestone-version>`.
 1. Identify the location of the screenshots, based on the `gitlab/doc` location defined by the `it` parameter in your script.
 1. Commit the newly created screenshots.

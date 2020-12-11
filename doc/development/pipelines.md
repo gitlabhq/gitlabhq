@@ -697,10 +697,10 @@ and included in `rules` definitions via [YAML anchors](../ci/yaml/README.md#anch
 
 | `changes:` patterns          | Description                                                              |
 |------------------------------|--------------------------------------------------------------------------|
-| `ci-patterns`                | Only create job for CI config-related changes.                           |
-| `ci-build-images-patterns`   | Only create job for CI config-related changes related to the `build-images` stage. |
-| `ci-review-patterns`         | Only create job for CI config-related changes related to the `review` stage. |
-| `ci-qa-patterns`             | Only create job for CI config-related changes related to the `qa` stage. |
+| `ci-patterns`                | Only create job for CI configuration-related changes.                    |
+| `ci-build-images-patterns`   | Only create job for CI configuration-related changes related to the `build-images` stage. |
+| `ci-review-patterns`         | Only create job for CI configuration-related changes related to the `review` stage. |
+| `ci-qa-patterns`             | Only create job for CI configuration-related changes related to the `qa` stage. |
 | `yaml-lint-patterns`         | Only create job for YAML-related changes.                                |
 | `docs-patterns`              | Only create job for docs-related changes.                                |
 | `frontend-dependency-patterns` | Only create job when frontend dependencies are updated (i.e. `package.json`, and `yarn.lock`). changes. |

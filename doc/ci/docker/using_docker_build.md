@@ -629,7 +629,7 @@ Then every job that the runner picks up will be authenticated already. If you
 are using the official `docker:19.03.13` image, the home directory is
 under `/root`.
 
-If you mount the config file, any `docker` command
+If you mount the configuration file, any `docker` command
 that modifies the `~/.docker/config.json` (for example, `docker login`)
 fails, because the file is mounted as read-only. Do not change it from
 read-only, because other problems will occur.
@@ -703,7 +703,7 @@ There are multiple ways to define this. For example:
 
 - Inside
   [`pre_build_script`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
-  inside of the runner config file.
+  inside of the runner configuration file.
 - Inside [`before_script`](../yaml/README.md#before_script).
 - Inside of [`script`](../yaml/README.md#script).
 

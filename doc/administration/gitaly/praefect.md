@@ -748,7 +748,7 @@ documentation](index.md#configure-gitaly-servers).
 
 After all Gitaly nodes are configured, you can run the Praefect connection
 checker to verify Praefect can connect to all Gitaly servers in the Praefect
-config.
+configuration.
 
 1. SSH into each **Praefect** node and run the Praefect connection checker:
 

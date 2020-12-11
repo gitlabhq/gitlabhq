@@ -121,7 +121,7 @@ For example when the regex `.*!$` matches the string `hello!`, the `.*` first ma
 the entire string but then the `!` from the regex is unable to match because the
 character has already been used. In that case, the Ruby regex engine _backtracks_
 one character to allow the `!` to match.
- 
+
 [ReDoS](https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS)
 is an attack in which the attacker knows or controls the regular expression used.
 The attacker may be able to enter user input that triggers this backtracking behavior in a
@@ -331,7 +331,7 @@ Once you've [determined when and where](#setting-expectations) the user submitte
 - Content placed inside [HTML URL GET parameters](https://youtu.be/2VFavqfDS6w?t=3494) need to be [URL-encoded](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#rule-5---url-escape-before-inserting-untrusted-data-into-html-url-parameter-values)
 - [Additional contexts may require context-specific encoding](https://youtu.be/2VFavqfDS6w?t=2341).
 
-### Additional info
+### Additional information
 
 #### XSS mitigation and prevention in Rails
 
@@ -590,4 +590,3 @@ In order to prevent this from happening, it is recommended to use the method `us
           forbidden!(api_access_denied_message(user))
         end
 ```
-  

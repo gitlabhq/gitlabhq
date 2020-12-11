@@ -16,7 +16,7 @@ To enable the Shibboleth OmniAuth provider you must configure Apache Shibboleth 
 The installation and configuration of the module itself is out of the scope of this document.
 Check <https://wiki.shibboleth.net/confluence/display/SP3/Apache> for more information.
 
-You can find Apache config in [GitLab Recipes](https://gitlab.com/gitlab-org/gitlab-recipes/tree/master/web-server/apache).
+You can find Apache configuration in [GitLab Recipes](https://gitlab.com/gitlab-org/gitlab-recipes/tree/master/web-server/apache).
 
 The following changes are needed to enable Shibboleth:
 
@@ -40,7 +40,7 @@ The following changes are needed to enable Shibboleth:
    </Location>
    ```
 
-1. Exclude Shibboleth URLs from rewriting. Add `RewriteCond %{REQUEST_URI} !/Shibboleth.sso` and `RewriteCond %{REQUEST_URI} !/shibboleth-sp`. Config should look like this:
+1. Exclude Shibboleth URLs from rewriting. Add `RewriteCond %{REQUEST_URI} !/Shibboleth.sso` and `RewriteCond %{REQUEST_URI} !/shibboleth-sp`. Configuration should look like this:
 
    ```apache
    # Apache equivalent of Nginx try files

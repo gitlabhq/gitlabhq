@@ -104,7 +104,7 @@ If you omit `--global` or use `--local`, the configuration will be applied only 
 repository.
 
 You can read more on how Git manages configurations in the
-[Git Config](https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration) documentation.
+[Git configuration documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration).
 
 ## Git authentication methods
 
@@ -183,7 +183,7 @@ changes to GitLab. This is referred to as **pushing** to GitLab, as this is achi
 [`git push`](#send-changes-to-gitlabcom).
 
 When the remote repository changes, your local copy will be behind it. You can update it with the new
-changes in the remote repo.
+changes in the remote repository.
 This is referred to as **pulling** from GitLab, as this is achieved by the command
 [`git pull`](#download-the-latest-changes-in-the-project).
 

@@ -68,7 +68,7 @@ The editor follows the same public API as [provided by Monaco editor](https://mi
 Editor Lite comes with the loading state built-in, making spinners and loaders rarely needed in HTML. To benefit the built-in loading state, set the `data-editor-loading` property on the HTML element that is supposed to contain the editor. Editor Lite will show the loader automatically while it's bootstrapping.
 ![Editor Lite: loading state](img/editor_lite_loading.png)
 
-1. Update syntax highlighting if the file name changes.
+1. Update syntax highlighting if the filename changes.
 
 ```javascript
 // fileNameEl here is the HTML input element that contains the file name

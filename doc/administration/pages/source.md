@@ -395,7 +395,7 @@ API to check that the user is authorized to read that site.
 From [GitLab 12.8](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/3689) onward,
 Access Control parameters for Pages are set in a configuration file, which
 by convention is named `gitlab-pages-config`. The configuration file is passed to
-pages using the `-config flag` or CONFIG environment variable.
+pages using the `-config flag` or `CONFIG` environment variable.
 
 Pages access control is disabled by default. To enable it:
 

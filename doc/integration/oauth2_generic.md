@@ -26,7 +26,7 @@ This strategy is designed to allow configuration of the simple OmniAuth SSO proc
 - It is not able to fetch user information from more than one URL
 - It has not been tested with user information formats other than JSON
 
-## Config Instructions
+## Configuration Instructions
 
 1. Register your application in the OAuth2 provider you wish to authenticate with.
 

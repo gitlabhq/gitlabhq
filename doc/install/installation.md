@@ -773,14 +773,14 @@ sudo apt-get install -y nginx
 
 ### Site Configuration
 
-Copy the example site config:
+Copy the example site configuration:
 
 ```shell
 sudo cp lib/support/nginx/gitlab /etc/nginx/sites-available/gitlab
 sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 ```
 
-Make sure to edit the config file to match your setup. Also, ensure that you match your paths to GitLab, especially if installing for a user other than the `git` user:
+Make sure to edit the configuration file to match your setup. Also, ensure that you match your paths to GitLab, especially if installing for a user other than the `git` user:
 
 ```shell
 # Change YOUR_SERVER_FQDN to the fully-qualified
@@ -795,21 +795,21 @@ Make sure to edit the config file to match your setup. Also, ensure that you mat
 sudo editor /etc/nginx/sites-available/gitlab
 ```
 
-If you intend to enable GitLab Pages, there is a separate NGINX config you need
+If you intend to enable GitLab Pages, there is a separate NGINX configuration you need
 to use. Read all about the needed configuration at the
 [GitLab Pages administration guide](../administration/pages/index.md).
 
-If you want to use HTTPS, replace the `gitlab` NGINX config with `gitlab-ssl`. See [Using HTTPS](#using-https) for HTTPS configuration details.
+If you want to use HTTPS, replace the `gitlab` NGINX configuration with `gitlab-ssl`. See [Using HTTPS](#using-https) for HTTPS configuration details.
 
 ### Test Configuration
 
-Validate your `gitlab` or `gitlab-ssl` NGINX config file with the following command:
+Validate your `gitlab` or `gitlab-ssl` NGINX configuration file with the following command:
 
 ```shell
 sudo nginx -t
 ```
 
-You should receive `syntax is okay` and `test is successful` messages. If you receive errors check your `gitlab` or `gitlab-ssl` NGINX config file for typos, etc. as indicated in the error message given.
+You should receive `syntax is okay` and `test is successful` messages. If you receive errors check your `gitlab` or `gitlab-ssl` NGINX configuration file for typos, etc. as indicated in the error message given.
 
 Verify that the installed version is greater than 1.12.1:
 
@@ -878,7 +878,7 @@ To use GitLab with HTTPS:
 1. In the `config.yml` of GitLab Shell:
    1. Set `gitlab_url` option to the HTTPS endpoint of GitLab (e.g. `https://git.example.com`).
    1. Set the certificates using either the `ca_file` or `ca_path` option.
-1. Use the `gitlab-ssl` NGINX example config instead of the `gitlab` config.
+1. Use the `gitlab-ssl` NGINX example configuration instead of the `gitlab` configuration.
    1. Update `YOUR_SERVER_FQDN`.
    1. Update `ssl_certificate` and `ssl_certificate_key`.
    1. Review the configuration file and consider applying other security and performance enhancing features.
@@ -951,7 +951,7 @@ production:
 
 ### Custom SSH Connection
 
-If you are running SSH on a non-standard port, you must change the GitLab user's SSH config.
+If you are running SSH on a non-standard port, you must change the GitLab user's SSH configuration.
 
 ```plaintext
 # Add to /home/git/.ssh/config
@@ -973,7 +973,7 @@ As of GitLab 12.9, [Puma](https://github.com/puma/puma) has replaced Unicorn as 
 If you want to switch back to Unicorn, follow these steps:
 
 1. Finish the GitLab setup so you have it up and running.
-1. Copy the supplied example Unicorn config file into place:
+1. Copy the supplied example Unicorn configuration file into place:
 
    ```shell
    cd /home/git/gitlab
