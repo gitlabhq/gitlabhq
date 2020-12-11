@@ -1,11 +1,14 @@
 <script>
-/* eslint-disable vue/no-v-html */
+import { GlSafeHtmlDirective } from '@gitlab/ui';
 import { sanitize } from '~/lib/dompurify';
 import Prompt from '../prompt.vue';
 
 export default {
   components: {
     Prompt,
+  },
+  directives: {
+    SafeHtml: GlSafeHtmlDirective,
   },
   props: {
     count: {
@@ -23,9 +26,7 @@ export default {
   },
   computed: {
     sanitizedOutput() {
-      return sanitize(this.rawCode, {
-        ALLOWED_ATTR: ['src'],
-      });
+      return sanitize(this.rawCode);
     },
     showOutput() {
       return this.index === 0;
@@ -37,6 +38,6 @@ export default {
 <template>
   <div class="output">
     <prompt type="Out" :count="count" :show-output="showOutput" />
-    <div class="gl-overflow-auto" v-html="sanitizedOutput"></div>
+    <div v-safe-html="sanitizedOutput" class="gl-overflow-auto"></div>
   </div>
 </template>

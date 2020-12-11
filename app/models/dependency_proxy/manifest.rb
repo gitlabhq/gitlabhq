@@ -11,4 +11,6 @@ class DependencyProxy::Manifest < ApplicationRecord
   validates :digest, presence: true
 
   mount_file_store_uploader DependencyProxy::FileUploader
+
+  scope :find_or_initialize_by_file_name, ->(file_name) { find_or_initialize_by(file_name: file_name) }
 end

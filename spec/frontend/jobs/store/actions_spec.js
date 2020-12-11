@@ -27,6 +27,7 @@ import {
   hideSidebar,
   showSidebar,
   toggleSidebar,
+  triggerManualJob,
 } from '~/jobs/store/actions';
 import state from '~/jobs/store/state';
 import * as types from '~/jobs/store/mutation_types';
@@ -531,6 +532,45 @@ describe('Job State actions', () => {
         mockedState,
         [{ type: types.RECEIVE_JOBS_FOR_STAGE_ERROR }],
         [],
+        done,
+      );
+    });
+  });
+
+  describe('triggerManualJob', () => {
+    let mock;
+
+    beforeEach(() => {
+      mock = new MockAdapter(axios);
+    });
+
+    afterEach(() => {
+      mock.restore();
+    });
+
+    it('should dispatch fetchTrace', done => {
+      const playManualJobEndpoint = `${TEST_HOST}/manual-job/jobs/1000/play`;
+
+      mock.onPost(playManualJobEndpoint).reply(200);
+
+      mockedState.job = {
+        status: {
+          action: {
+            path: playManualJobEndpoint,
+          },
+        },
+      };
+
+      testAction(
+        triggerManualJob,
+        [{ id: '1', key: 'test_var', secret_value: 'test_value' }],
+        mockedState,
+        [],
+        [
+          {
+            type: 'fetchTrace',
+          },
+        ],
         done,
       );
     });

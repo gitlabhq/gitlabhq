@@ -31,7 +31,31 @@ module SnowplowHelpers
   #       )
   #     end
   #   end
-  def expect_snowplow_event(category:, action:, **kwargs)
+  #
+  # Passing context:
+  #
+  #   Simply provide a hash that has the schema and data expected.
+  #
+  #   expect_snowplow_event(
+  #     category: 'Experiment',
+  #     action: 'created',
+  #     context: [
+  #       {
+  #         schema: 'iglu:com.gitlab/.../0-3-0',
+  #         data: { key: 'value' }
+  #       }
+  #     ]
+  #   )
+  def expect_snowplow_event(category:, action:, context: nil, **kwargs)
+    if context
+      kwargs[:context] = []
+      context.each do |c|
+        expect(SnowplowTracker::SelfDescribingJson).to have_received(:new)
+          .with(c[:schema], c[:data]).at_least(:once)
+        kwargs[:context] << an_instance_of(SnowplowTracker::SelfDescribingJson)
+      end
+    end
+
     expect(Gitlab::Tracking).to have_received(:event) # rubocop:disable RSpec/ExpectGitlabTracking
       .with(category, action, **kwargs).at_least(:once)
   end

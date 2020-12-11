@@ -176,7 +176,7 @@ class GroupDescendantsFinder
   end
 
   def sort
-    params.fetch(:sort, 'created_desc')
+    params.fetch(:sort, 'name_asc')
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

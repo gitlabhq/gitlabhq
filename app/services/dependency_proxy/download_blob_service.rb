@@ -2,16 +2,6 @@
 
 module DependencyProxy
   class DownloadBlobService < DependencyProxy::BaseService
-    class DownloadError < StandardError
-      attr_reader :http_status
-
-      def initialize(message, http_status)
-        @http_status = http_status
-
-        super(message)
-      end
-    end
-
     def initialize(image, blob_sha, token)
       @image = image
       @blob_sha = blob_sha

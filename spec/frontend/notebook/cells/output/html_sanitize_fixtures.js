@@ -1,114 +1,96 @@
+/**
+ * Jupyter notebooks handles the following data types
+ * that are to be handled by `html.vue`
+ *
+ * 'text/html';
+ * 'image/svg+xml';
+ *
+ * This file sets up fixtures for each of these types
+ * NOTE: The inputs are taken directly from data derived from the
+ * jupyter notebook file used to test nbview here:
+ * https://nbviewer.jupyter.org/github/ipython/ipython-in-depth/blob/master/examples/IPython%20Kernel/Rich%20Output.ipynb
+ */
+
 export default [
   [
-    'protocol-based JS injection: simple, no spaces',
+    'text/html table',
     {
-      input: `<a href="javascript:alert('XSS');">foo</a>`,
-      output: '<a>foo</a>',
+      input: [
+        '<table>\n',
+        '<tr>\n',
+        '<th>Header 1</th>\n',
+        '<th>Header 2</th>\n',
+        '</tr>\n',
+        '<tr>\n',
+        '<td>row 1, cell 1</td>\n',
+        '<td>row 1, cell 2</td>\n',
+        '</tr>\n',
+        '<tr>\n',
+        '<td>row 2, cell 1</td>\n',
+        '<td>row 2, cell 2</td>\n',
+        '</tr>\n',
+        '</table>',
+      ].join(''),
+      output: '<table>',
+    },
+  ],
+  // Note: style is sanitized out
+  [
+    'text/html style',
+    {
+      input: [
+        '<style type="text/css">\n',
+        '\n',
+        'circle {\n',
+        '  fill: rgb(31, 119, 180);\n',
+        '  fill-opacity: .25;\n',
+        '  stroke: rgb(31, 119, 180);\n',
+        '  stroke-width: 1px;\n',
+        '}\n',
+        '\n',
+        '.leaf circle {\n',
+        '  fill: #ff7f0e;\n',
+        '  fill-opacity: 1;\n',
+        '}\n',
+        '\n',
+        'text {\n',
+        '  font: 10px sans-serif;\n',
+        '}\n',
+        '\n',
+        '</style>',
+      ].join(''),
+      output: '<!---->',
+    },
+  ],
+  // Note: iframe is sanitized out
+  [
+    'text/html iframe',
+    {
+      input: [
+        '\n',
+        '        <iframe\n',
+        '            width="400"\n',
+        '            height="300"\n',
+        '            src="https://www.youtube.com/embed/sjfsUzECqK0"\n',
+        '            frameborder="0"\n',
+        '            allowfullscreen\n',
+        '        ></iframe>\n',
+        '        ',
+      ].join(''),
+      output: '<!---->',
     },
   ],
   [
-    'protocol-based JS injection: simple, spaces before',
+    'image/svg+xml',
     {
-      input: `<a href="javascript    :alert('XSS');">foo</a>`,
-      output: '<a>foo</a>',
+      input: [
+        '<svg height="115.02pt" id="svg2" version="1.0" width="388.84pt" xmlns="http://www.w3.org/2000/svg">\n',
+        '  <g>\n',
+        '    <path d="M 184.61344,61.929363 C 184.61344,47.367213 180.46118,39.891193 172.15666,39.481813" style="fill:#646464;fill-opacity:1"/>\n',
+        '  </g>\n',
+        '</svg>',
+      ].join(),
+      output: '<svg height="115.02pt" id="svg2"',
     },
   ],
-  [
-    'protocol-based JS injection: simple, spaces after',
-    {
-      input: `<a href="javascript:    alert('XSS');">foo</a>`,
-      output: '<a>foo</a>',
-    },
-  ],
-  [
-    'protocol-based JS injection: simple, spaces before and after',
-    {
-      input: `<a href="javascript    :   alert('XSS');">foo</a>`,
-      output: '<a>foo</a>',
-    },
-  ],
-  [
-    'protocol-based JS injection: preceding colon',
-    {
-      input: `<a href=":javascript:alert('XSS');">foo</a>`,
-      output: '<a>foo</a>',
-    },
-  ],
-  [
-    'protocol-based JS injection: UTF-8 encoding',
-    {
-      input: '<a href="javascript&#58;">foo</a>',
-      output: '<a>foo</a>',
-    },
-  ],
-  [
-    'protocol-based JS injection: long UTF-8 encoding',
-    {
-      input: '<a href="javascript&#0058;">foo</a>',
-      output: '<a>foo</a>',
-    },
-  ],
-  [
-    'protocol-based JS injection: long UTF-8 encoding without semicolons',
-    {
-      input:
-        '<a href=&#0000106&#0000097&#0000118&#0000097&#0000115&#0000099&#0000114&#0000105&#0000112&#0000116&#0000058&#0000097&#0000108&#0000101&#0000114&#0000116&#0000040&#0000039&#0000088&#0000083&#0000083&#0000039&#0000041>foo</a>',
-      output: '<a>foo</a>',
-    },
-  ],
-  [
-    'protocol-based JS injection: hex encoding',
-    {
-      input: '<a href="javascript&#x3A;">foo</a>',
-      output: '<a>foo</a>',
-    },
-  ],
-  [
-    'protocol-based JS injection: long hex encoding',
-    {
-      input: '<a href="javascript&#x003A;">foo</a>',
-      output: '<a>foo</a>',
-    },
-  ],
-  [
-    'protocol-based JS injection: hex encoding without semicolons',
-    {
-      input:
-        '<a href=&#x6A&#x61&#x76&#x61&#x73&#x63&#x72&#x69&#x70&#x74&#x3A&#x61&#x6C&#x65&#x72&#x74&#x28&#x27&#x58&#x53&#x53&#x27&#x29>foo</a>',
-      output: '<a>foo</a>',
-    },
-  ],
-  [
-    'protocol-based JS injection: null char',
-    {
-      input: '<a href=java\u0000script:alert("XSS")>foo</a>',
-      output: '<a>foo</a>',
-    },
-  ],
-  [
-    'protocol-based JS injection: invalid URL char',
-    { input: '<img src=javascript:alert("XSS")>', output: '<img>' },
-  ],
-  [
-    'protocol-based JS injection: Unicode',
-    {
-      input: `<a href="\u0001java\u0003script:alert('XSS')">foo</a>`,
-      output: '<a>foo</a>',
-    },
-  ],
-  [
-    'protocol-based JS injection: spaces and entities',
-    {
-      input: `<a href=" &#14;  javascript:alert('XSS');">foo</a>`,
-      output: '<a>foo</a>',
-    },
-  ],
-  [
-    'img on error',
-    {
-      input: '<img src="x" onerror="alert(document.domain)" />',
-      output: '<img src="x">',
-    },
-  ],
-  ['style tags are removed', { input: '<style>.foo {}</style> Foo', output: 'Foo' }],
 ];

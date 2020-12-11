@@ -59,6 +59,10 @@ class Projects::IssuesController < Projects::ApplicationController
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]
 
+  before_action :run_null_hypothesis_experiment,
+                only: [:index, :new, :create],
+                if: -> { Feature.enabled?(:gitlab_experiments) }
+
   respond_to :html
 
   alias_method :designs, :show
@@ -388,6 +392,14 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def service_desk?
     action_name == 'service_desk'
+  end
+
+  def run_null_hypothesis_experiment
+    experiment(:null_hypothesis, project: project) do |e|
+      e.use { } # define the control
+      e.try { } # define the candidate
+      e.track(action_name) # track the action so we can build a funnel
+    end
   end
 
   # Overridden in EE

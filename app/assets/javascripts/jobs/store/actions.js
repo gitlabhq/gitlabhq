@@ -90,7 +90,7 @@ export const fetchJob = ({ state, dispatch }) => {
     if (!Visibility.hidden()) {
       // This check is needed to ensure the loading icon
       // is not shown for a finished job during a visibility change
-      if (!isTraceReadyForRender) {
+      if (!isTraceReadyForRender && state.job.started) {
         dispatch('startPollingTrace');
       }
       dispatch('restartPolling');
@@ -258,7 +258,7 @@ export const receiveJobsForStageError = ({ commit }) => {
   flash(__('An error occurred while fetching the jobs.'));
 };
 
-export const triggerManualJob = ({ state }, variables) => {
+export const triggerManualJob = ({ state, dispatch }, variables) => {
   const parsedVariables = variables.map(variable => {
     const copyVar = { ...variable };
     delete copyVar.id;
@@ -269,5 +269,6 @@ export const triggerManualJob = ({ state }, variables) => {
     .post(state.job.status.action.path, {
       job_variables_attributes: parsedVariables,
     })
+    .then(() => dispatch('fetchTrace'))
     .catch(() => flash(__('An error occurred while triggering the job.')));
 };

@@ -1,0 +1,6 @@
+---
+title: The dependency proxy caches manifests and makes HEAD requests to help with
+  rate limiting
+merge_request: 48845
+author:
+type: changed

@@ -11,6 +11,6 @@ FactoryBot.define do
     group
     file { fixture_file_upload('spec/fixtures/dependency_proxy/manifest') }
     digest { 'sha256:5ab5a6872b264fe4fd35d63991b9b7d8425f4bc79e7cf4d563c10956581170c9' }
-    file_name { 'manifest' }
+    file_name { 'alpine:latest.json' }
   end
 end

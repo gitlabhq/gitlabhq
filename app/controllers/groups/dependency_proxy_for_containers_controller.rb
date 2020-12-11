@@ -13,10 +13,10 @@ class Groups::DependencyProxyForContainersController < Groups::ApplicationContro
   feature_category :dependency_proxy
 
   def manifest
-    result = DependencyProxy::PullManifestService.new(image, tag, token).execute
+    result = DependencyProxy::FindOrCreateManifestService.new(group, image, tag, token).execute
 
     if result[:status] == :success
-      render json: result[:manifest]
+      send_upload(result[:manifest].file)
     else
       render status: result[:http_status], json: result[:message]
     end

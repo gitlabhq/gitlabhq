@@ -21197,7 +21197,7 @@ CREATE INDEX index_dependency_proxy_blobs_on_group_id_and_file_name ON dependenc
 
 CREATE INDEX index_dependency_proxy_group_settings_on_group_id ON dependency_proxy_group_settings USING btree (group_id);
 
-CREATE INDEX index_dependency_proxy_manifests_on_group_id_and_digest ON dependency_proxy_manifests USING btree (group_id, digest);
+CREATE UNIQUE INDEX index_dependency_proxy_manifests_on_group_id_and_file_name ON dependency_proxy_manifests USING btree (group_id, file_name);
 
 CREATE INDEX index_deploy_key_id_on_protected_branch_push_access_levels ON protected_branch_push_access_levels USING btree (deploy_key_id);
 

@@ -73,6 +73,7 @@ class Group < Namespace
 
   has_one :dependency_proxy_setting, class_name: 'DependencyProxy::GroupSetting'
   has_many :dependency_proxy_blobs, class_name: 'DependencyProxy::Blob'
+  has_many :dependency_proxy_manifests, class_name: 'DependencyProxy::Manifest'
 
   accepts_nested_attributes_for :variables, allow_destroy: true
 

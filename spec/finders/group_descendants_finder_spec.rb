@@ -77,9 +77,9 @@ RSpec.describe GroupDescendantsFinder do
       end
     end
 
-    it 'sorts elements by latest created as default' do
-      project1 = create(:project, namespace: group, created_at: 1.hour.ago)
-      project2 = create(:project, namespace: group)
+    it 'sorts elements by name as default' do
+      project1 = create(:project, namespace: group, name: 'z')
+      project2 = create(:project, namespace: group, name: 'a')
 
       expect(subject.execute).to eq([project2, project1])
     end

@@ -101,11 +101,11 @@ RSpec.describe Groups::DependencyProxyForContainersController do
   end
 
   describe 'GET #manifest' do
-    let(:manifest) { { foo: 'bar' }.to_json }
+    let_it_be(:manifest) { create(:dependency_proxy_manifest) }
     let(:pull_response) { { status: :success, manifest: manifest } }
 
     before do
-      allow_next_instance_of(DependencyProxy::PullManifestService) do |instance|
+      allow_next_instance_of(DependencyProxy::FindOrCreateManifestService) do |instance|
         allow(instance).to receive(:execute).and_return(pull_response)
       end
     end
@@ -155,11 +155,17 @@ RSpec.describe Groups::DependencyProxyForContainersController do
         end
       end
 
-      it 'returns 200 with manifest file' do
+      it 'sends a file' do
+        expect(controller).to receive(:send_file).with(manifest.file.path, {})
+
+        subject
+      end
+
+      it 'returns Content-Disposition: attachment' do
         subject
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(response.body).to eq(manifest)
+        expect(response.headers['Content-Disposition']).to match(/^attachment/)
       end
     end
 
@@ -171,7 +177,7 @@ RSpec.describe Groups::DependencyProxyForContainersController do
   end
 
   describe 'GET #blob' do
-    let(:blob) { create(:dependency_proxy_blob) }
+    let_it_be(:blob) { create(:dependency_proxy_blob) }
     let(:blob_sha) { blob.file_name.sub('.gz', '') }
     let(:blob_response) { { status: :success, blob: blob } }
 

@@ -96,7 +96,7 @@ New child epics appear at the top of the list of epics in the **Epics and Issues
 
 When you add an epic that's already linked to a parent epic, the link to its current parent is removed.
 
-An epic can have multiple child epics up to the maximum depth of five.
+An epic can have multiple child epics up to the maximum depth of seven.
 
 See [Manage multi-level child epics](manage_epics.md#manage-multi-level-child-epics) for
 steps to create, move, reorder, or delete child epics.

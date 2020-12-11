@@ -36,7 +36,7 @@ RSpec.describe 'Dashboard Archived Project' do
   end
 
   it 'searches archived projects', :js do
-    click_button 'Last updated'
+    click_button 'Name'
     click_link 'Show archived projects'
 
     expect(page).to have_link(project.name)

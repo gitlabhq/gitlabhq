@@ -30,6 +30,7 @@ RSpec.describe Group do
     it { is_expected.to have_many(:services) }
     it { is_expected.to have_one(:dependency_proxy_setting) }
     it { is_expected.to have_many(:dependency_proxy_blobs) }
+    it { is_expected.to have_many(:dependency_proxy_manifests) }
 
     describe '#members & #requesters' do
       let(:requester) { create(:user) }
