@@ -220,6 +220,46 @@ On subsequent visits, you should be able to go [sign in to GitLab.com with SAML]
 1. From the list of apps, click on the "GitLab.com" app (The name is set by the administrator of the identity provider).
 1. You are then signed in to GitLab.com and redirected to the group.
 
+### Configure user settings from SAML response
+
+GitLab allows setting certain user attributes based on values from the SAML response. 
+This affects users created on first sign-in via Group SAML. Existing users'
+attributes are not affected regardless of the values sent in the SAML response. 
+
+#### Supported user attributes
+
+- `can_create_group` - 'true' or 'false' to indicate whether the user can create
+  new groups. Default is `true`.
+- `projects_limit` - The total number of personal projects a user can create. 
+  A value of `0` means the user cannot create new projects in their personal 
+  namespace. Default is `10000`.
+  
+#### Example SAML response
+
+You can find SAML responses in the developer tools or console of your browser,
+in base64-encoded format. Use the base64 decoding tool of your choice to
+convert the information to XML. An example SAML response is shown here.
+
+```xml
+   <saml2:AttributeStatement>
+      <saml2:Attribute Name="email" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic">
+         <saml2:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">user.email</saml2:AttributeValue>
+      </saml2:Attribute>
+      <saml2:Attribute Name="first_name" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
+         <saml2:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">user.firstName</saml2:AttributeValue>
+      </saml2:Attribute>
+      <saml2:Attribute Name="last_name" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
+         <saml2:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">user.lastName</saml2:AttributeValue>
+      </saml2:Attribute>
+      <saml2:Attribute Name="can_create_group" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
+         <saml2:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">true</saml2:AttributeValue>
+      </saml2:Attribute>
+      <saml2:Attribute Name="projects_limit" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
+         <saml2:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">10</saml2:AttributeValue>
+      </saml2:Attribute>
+   </saml2:AttributeStatement>
+```
+
 ### Role
 
 Starting from [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/214523), group owners can set a 'Default membership role' other than 'Guest'. To do so, [configure the SAML SSO for the group](#configuring-gitlab). That role becomes the starting access level of all users added to the group.

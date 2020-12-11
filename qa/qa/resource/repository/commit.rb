@@ -9,7 +9,8 @@ module QA
                       :branch,
                       :commit_message,
                       :file_path,
-                      :sha
+                      :sha,
+                      :start_branch
 
         attribute :short_id
 
@@ -85,7 +86,7 @@ module QA
             author_name: @author_name || Runtime::User.username,
             commit_message: commit_message,
             actions: actions
-          }
+          }.merge(new_branch)
         end
 
         def actions
@@ -103,6 +104,14 @@ module QA
               files.any? { |file| !file.has_key?(:file_path) || !file.has_key?(:content) }
             raise ArgumentError, "Please provide an array of hashes e.g.: [{file_path: 'file1', content: 'foo'}]"
           end
+        end
+
+        def new_branch
+          return {} unless start_branch
+
+          {
+            start_branch: start_branch
+          }
         end
       end
     end

@@ -278,10 +278,10 @@ In line with [using the API](#prefer-api-over-ui), use a `Commit` resource whene
 
 ```ruby
 # Using a commit resource
-Resource::Commit.fabricate_via_api! do |commit|
+Resource::Repository::Commit.fabricate_via_api! do |commit|
   commit.commit_message = 'Initial commit'
   commit.add_files([
-    {file_path: 'README.md', content: 'Hello, GitLab'}
+    { file_path: 'README.md', content: 'Hello, GitLab' }
   ])
 end
 

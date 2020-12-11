@@ -31,7 +31,14 @@ module QA
       end
 
       # Require approval from code owners on master
-      Resource::ProtectedBranch.fabricate! do |protected_branch|
+      # The default branch is already protected, and we can't update a protected branch via the API (yet)
+      # so we unprotect it first and then protect it again with the desired parameters
+      Resource::ProtectedBranch.unprotect_via_api! do |protected_branch|
+        protected_branch.project = project
+        protected_branch.branch_name = 'master'
+      end
+
+      Resource::ProtectedBranch.fabricate_via_api! do |protected_branch|
         protected_branch.project = project
         protected_branch.branch_name = 'master'
         protected_branch.new_branch = false

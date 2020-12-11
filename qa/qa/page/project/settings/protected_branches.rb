@@ -58,7 +58,7 @@ module QA
             allowed[:roles] = Resource::ProtectedBranch::Roles::NO_ONE unless allowed.key?(:roles)
 
             within_element(:"allowed_to_#{action}_dropdown") do
-              click_on allowed[:roles]
+              click_on allowed[:roles][:description]
               allowed[:users].each { |user| click_on user.username } if allowed.key?(:users)
               allowed[:groups].each { |group| click_on group.name } if allowed.key?(:groups)
             end

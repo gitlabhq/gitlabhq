@@ -8,7 +8,6 @@ module QA
       attr_accessor :branch_name,
                     :allowed_to_push,
                     :allowed_to_merge,
-                    :protected,
                     :new_branch,
                     :require_code_owner_approval
 
@@ -20,13 +19,14 @@ module QA
       end
 
       attribute :branch do
-        Repository::ProjectPush.fabricate! do |project_push|
-          project_push.project = project
-          project_push.file_name = "new_file-#{SecureRandom.hex(8)}.md"
-          project_push.commit_message = 'Add new file'
-          project_push.branch_name = branch_name
-          project_push.new_branch = true
-          project_push.remote_branch = branch_name
+        Resource::Repository::Commit.fabricate_via_api! do |commit|
+          commit.project = project
+          commit.branch = branch_name
+          commit.start_branch = 'master'
+          commit.commit_message = 'Add new file'
+          commit.add_files([
+            { file_path: "new_file-#{SecureRandom.hex(8)}.md", content: 'new file' }
+          ])
         end
       end
 
@@ -39,16 +39,11 @@ module QA
         @allowed_to_merge = {
           roles: Resource::ProtectedBranch::Roles::DEVS_AND_MAINTAINERS
         }
-        @protected = false
-        @require_code_owner_approval = true
+        @require_code_owner_approval = false
       end
 
       def fabricate!
-        if new_branch
-          populate(:branch)
-
-          project.wait_for_push_new_branch branch_name
-        end
+        populate_new_branch_if_required
 
         project.visit!
         Page::Project::Menu.perform(&:go_to_repository_settings)
@@ -67,6 +62,12 @@ module QA
         end
       end
 
+      def fabricate_via_api!
+        populate_new_branch_if_required
+
+        super
+      end
+
       def self.unprotect_via_api!(&block)
         self.remove_via_api!(&block)
       end
@@ -79,10 +80,49 @@ module QA
         "/projects/#{project.id}/protected_branches/#{branch_name}"
       end
 
+      def api_post_path
+        "/projects/#{project.id}/protected_branches"
+      end
+
+      def api_post_body
+        {
+          name: branch_name,
+          code_owner_approval_required: require_code_owner_approval
+        }
+        .merge(allowed_to_push_hash)
+        .merge(allowed_to_merge_hash)
+      end
+
+      def allowed_to_push_hash
+        allowed = {}
+        allowed.merge({ push_access_level: allowed_to_push[:roles][:access_level] }) if allowed_to_push.key?(:roles)
+      end
+
+      def allowed_to_merge_hash
+        allowed = {}
+        allowed.merge({ merge_access_level: allowed_to_merge[:roles][:access_level] }) if allowed_to_merge.key?(:roles)
+      end
+
+      def resource_web_url(resource)
+        super
+      rescue ResourceURLMissingError
+        # this particular resource does not expose a web_url property
+      end
+
       class Roles
-        NO_ONE = 'No one'
-        DEVS_AND_MAINTAINERS = 'Developers + Maintainers'
-        MAINTAINERS = 'Maintainers'
+        NO_ONE = { description: 'No one', access_level: 0 }.freeze
+        DEVS_AND_MAINTAINERS = { description: 'Developers + Maintainers', access_level: 30 }.freeze
+        MAINTAINERS = { description: 'Maintainers', access_level: 40 }.freeze
+      end
+
+      private
+
+      def populate_new_branch_if_required
+        return unless new_branch
+
+        populate(:branch)
+
+        project.wait_for_push_new_branch(branch_name)
       end
     end
   end

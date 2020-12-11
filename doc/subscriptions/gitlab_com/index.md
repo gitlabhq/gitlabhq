@@ -303,10 +303,42 @@ Be aware that:
   be deducted from your Additional Minutes quota immediately after your purchase of additional
   minutes.
 
+## Storage subscription
+
+Projects have a free storage quota of 10 GB. To exceed this quota you must first [purchase one or
+more storage subscription units](#purchase-more-storage). Each unit provides 10 GB of additional
+storage per namespace. A storage subscription is renewed annually. For more details, see
+[Usage Quotas](../../user/usage_quotas.md).
+
+When the amount of purchased storage reaches zero, all projects over the free storage quota are
+locked. Projects can only be unlocked by purchasing more storage subscription units.
+
+### Purchase more storage
+
+To purchase more storage for either a personal or group namespace:
+
+1. Sign in to GitLab.com.
+1. From either your personal homepage or the group's page, go to **Settings > Usage Quotas**.
+1. For each locked project, total by how much its **Usage** exceeds the free quota and purchased
+   storage. You must purchase the storage increment that exceeds this total.
+1. Click **Purchase more storage** and you are taken to the Customers Portal.
+1. Click **Add new subscription**.
+1. Scroll to **Purchase add-on subscriptions** and select **Buy storage subscription**.
+1. In the **Subscription details** section select the name of the user or group from the dropdown.
+1. Enter the desired quantity of storage packs.
+1. In the **Billing information** section select the payment method from the dropdown.
+1. Select the **Privacy Policy** and **Terms of Service** checkbox.
+1. Select **Buy subscription**.
+1. Sign out of the Customers Portal.
+1. Switch back to the GitLab.com tab and refresh the page.
+
+The **Purchased storage available** total is incremented by the amount purchased. All locked
+projects are unlocked and their excess usage is deducted from the additional storage.
+
 ## Customers Portal
 
-GitLab provides the [Customers Portal](../index.md#customers-portal) where you can
-manage your subscriptions and your account details.
+The GitLab [Customers Portal](../index.md#customers-portal) enables you to manage your subscriptions
+and account details.
 
 ## Contact Support
 
