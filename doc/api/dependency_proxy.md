@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11631) in GitLab 12.10.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/273655) to [GitLab Core](https://about.gitlab.com/pricing/) in GitLab 13.6.
 
-Deletes the cached blobs for a group. This endpoint requires group admin access.
+Deletes the cached manifests and blobs for a group. This endpoint requires group admin access.
 
 WARNING:
 [A bug exists](https://gitlab.com/gitlab-org/gitlab/-/issues/277161) for this API.

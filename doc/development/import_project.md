@@ -29,7 +29,7 @@ This method ignores all the errors silently (including the ones related to `GITA
 
 A convenient script, [`bin/import-project`](https://gitlab.com/gitlab-org/quality/performance/blob/master/bin/import-project), is provided with [performance](https://gitlab.com/gitlab-org/quality/performance) project to import the Project tarball into a GitLab environment via API from the terminal.
 
-Note that to use the script, it will require some preparation if you haven't done so already:
+Note that to use the script, it requires some preparation if you haven't done so already:
 
 1. First, set up [`Ruby`](https://www.ruby-lang.org/en/documentation/installation/) and [`Ruby Bundler`](https://bundler.io) if they aren't already available on the machine.
 1. Next, install the required Ruby Gems via Bundler with `bundle install`.
@@ -40,7 +40,7 @@ For details how to use `bin/import-project`, run:
 bin/import-project --help
 ```
 
-The process should take up to 15 minutes for the project to import fully. The script will keep checking periodically for the status and exit once import has completed.
+The process should take up to 15 minutes for the project to import fully. The script checks the status periodically and exits after the import has completed.
 
 ### Importing via GitHub
 
@@ -49,7 +49,7 @@ There is also an option to [import the project via GitHub](../user/project/impor
 1. Create the group `qa-perf-testing`
 1. Import the GitLab FOSS repository that's [mirrored on GitHub](https://github.com/gitlabhq/gitlabhq) into the group via the UI.
 
-This method will take longer to import than the other methods and will depend on several factors. It's recommended to use the other methods.
+This method takes longer to import than the other methods and depends on several factors. It's recommended to use the other methods.
 
 ### Importing via a Rake task
 
@@ -94,7 +94,7 @@ The `namespace_path` does not exist.
 For example, one of the groups or subgroups is mistyped or missing
 or you've specified the project name in the path.
 
-The task will only create the project.
+The task only creates the project.
 If you want to import it to a new group or subgroup then create it first.
 
 ##### `Exception: No such file or directory @ rb_sysopen - (filename)`
@@ -118,8 +118,8 @@ with '-', end in '.git' or end in '.atom'
 
 The project name specified in `project_path` is not valid for one of the specified reasons.
 
-Only put the project name in `project_path`. If, for example, you put a path of subgroups in there
-it will fail with this error as `/` is not a valid character in a project name.
+Only put the project name in `project_path`. For example, if you provide a path of subgroups
+it fails with this error as `/` is not a valid character in a project name.
 
 ##### `Name has already been taken and Path has already been taken`
 
@@ -190,7 +190,7 @@ For Performance testing, we should:
 - Count the number of executed SQL queries during the restore.
 - Observe the number of GC cycles happening.
 
-You can use this snippet: `https://gitlab.com/gitlab-org/gitlab/snippets/1924954` (must be logged in), which will restore the project, and measure the execution time of `Project::TreeRestorer`, number of SQL queries and number of GC cycles happening.
+You can use this snippet: `https://gitlab.com/gitlab-org/gitlab/snippets/1924954` (must be logged in), which restores the project, and measures the execution time of `Project::TreeRestorer`, number of SQL queries and number of GC cycles happening.
 
 You can execute the script from the `gdk/gitlab` directory like this:
 
@@ -200,7 +200,7 @@ bundle exec rails r  /path_to_sript/script.rb project_name /path_to_extracted_pr
 
 ## Troubleshooting
 
-In this section we'll detail any known issues we've seen when trying to import a project and how to manage them.
+This section details known issues we've seen when trying to import a project and how to manage them.
 
 ### Gitaly calls error when importing
 

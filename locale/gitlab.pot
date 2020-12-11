@@ -1196,19 +1196,19 @@ msgstr ""
 msgid "A CI/CD pipeline must run and be successful before merge."
 msgstr ""
 
-msgid "A GitBook site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
+msgid "A GitBook site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features"
 msgstr ""
 
 msgid "A Gitpod configured Webapplication in Spring and Java"
 msgstr ""
 
-msgid "A Hexo site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
+msgid "A Hexo site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features"
 msgstr ""
 
-msgid "A Hugo site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
+msgid "A Hugo site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features"
 msgstr ""
 
-msgid "A Jekyll site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
+msgid "A Jekyll site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features"
 msgstr ""
 
 msgid "A Let's Encrypt SSL certificate can not be obtained until your domain is verified."
@@ -1277,13 +1277,13 @@ msgstr ""
 msgid "A non-confidential epic cannot be assigned to a confidential parent epic"
 msgstr ""
 
-msgid "A plain HTML site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
+msgid "A plain HTML site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features"
 msgstr ""
 
 msgid "A platform value can be web, mob or app."
 msgstr ""
 
-msgid "A project boilerplate for Salesforce App development with Salesforce Developer tools."
+msgid "A project boilerplate for Salesforce App development with Salesforce Developer tools"
 msgstr ""
 
 msgid "A project containing issues for each audit inquiry in the HIPAA Audit Protocol published by the U.S. Department of Health & Human Services"
@@ -1292,10 +1292,10 @@ msgstr ""
 msgid "A project is where you house your files (repository), plan your work (issues), and publish your documentation (wiki), %{among_other_things_link}."
 msgstr ""
 
-msgid "A ready-to-go template for use with Android apps."
+msgid "A ready-to-go template for use with Android apps"
 msgstr ""
 
-msgid "A ready-to-go template for use with iOS Swift apps."
+msgid "A ready-to-go template for use with iOS Swift apps"
 msgstr ""
 
 msgid "A regular expression that will be used to find the test coverage output in the job log. Leave blank to disable"
@@ -3333,7 +3333,7 @@ msgstr ""
 msgid "An error ocurred while loading your content. Please try again."
 msgstr ""
 
-msgid "An example project for managing Kubernetes clusters integrated with GitLab."
+msgid "An example project for managing Kubernetes clusters integrated with GitLab"
 msgstr ""
 
 msgid "An example showing how to use Jsonnet with GitLab dynamic child pipelines"
@@ -4362,9 +4362,6 @@ msgid "BambooService|You must set up automatic revision labeling and a repositor
 msgstr ""
 
 msgid "Based on"
-msgstr ""
-
-msgid "Basic Sample Data template with Issues, Merge Requests and Milestones."
 msgstr ""
 
 msgid "Be careful. Changing the project's namespace can have unintended side effects."
@@ -11304,22 +11301,22 @@ msgstr ""
 msgid "Everything on your to-do list is marked as done."
 msgstr ""
 
-msgid "Everything you need to create a GitLab Pages site using Gatsby."
+msgid "Everything you need to create a GitLab Pages site using Gatsby"
 msgstr ""
 
-msgid "Everything you need to create a GitLab Pages site using GitBook."
+msgid "Everything you need to create a GitLab Pages site using GitBook"
 msgstr ""
 
-msgid "Everything you need to create a GitLab Pages site using Hexo."
+msgid "Everything you need to create a GitLab Pages site using Hexo"
 msgstr ""
 
-msgid "Everything you need to create a GitLab Pages site using Hugo."
+msgid "Everything you need to create a GitLab Pages site using Hugo"
 msgstr ""
 
-msgid "Everything you need to create a GitLab Pages site using Jekyll."
+msgid "Everything you need to create a GitLab Pages site using Jekyll"
 msgstr ""
 
-msgid "Everything you need to create a GitLab Pages site using plain HTML."
+msgid "Everything you need to create a GitLab Pages site using plain HTML"
 msgstr ""
 
 msgid "Evidence collection"
@@ -12845,6 +12842,9 @@ msgstr ""
 msgid "Get started"
 msgstr ""
 
+msgid "Get started with a project that follows best practices for setting up GitLab for your own organization, including sample Issues, Merge Requests, and Milestones"
+msgstr ""
+
 msgid "Get started with error tracking"
 msgstr ""
 
@@ -13142,7 +13142,7 @@ msgstr ""
 msgid "Go Back"
 msgstr ""
 
-msgid "Go Micro is a framework for micro service development."
+msgid "Go Micro is a framework for micro service development"
 msgstr ""
 
 msgid "Go back"
@@ -14662,13 +14662,13 @@ msgstr ""
 msgid "Includes LFS objects. It can be overridden per group, or per project. 0 for unlimited."
 msgstr ""
 
-msgid "Includes an MVC structure to help you get started."
+msgid "Includes an MVC structure to help you get started"
 msgstr ""
 
-msgid "Includes an MVC structure, Gemfile, Rakefile, along with many others, to help you get started."
+msgid "Includes an MVC structure, Gemfile, Rakefile, along with many others, to help you get started"
 msgstr ""
 
-msgid "Includes an MVC structure, mvnw and pom.xml to help you get started."
+msgid "Includes an MVC structure, mvnw and pom.xml to help you get started"
 msgstr ""
 
 msgid "Incoming email"
@@ -21889,9 +21889,6 @@ msgstr ""
 msgid "ProjectTemplates|Android"
 msgstr ""
 
-msgid "ProjectTemplates|Basic"
-msgstr ""
-
 msgid "ProjectTemplates|GitLab Cluster Management"
 msgstr ""
 
@@ -21946,7 +21943,7 @@ msgstr ""
 msgid "ProjectTemplates|SalesforceDX"
 msgstr ""
 
-msgid "ProjectTemplates|Serenity Valley"
+msgid "ProjectTemplates|Sample GitLab Project"
 msgstr ""
 
 msgid "ProjectTemplates|Serverless Framework/JS"
@@ -23980,9 +23977,6 @@ msgstr ""
 msgid "SSL Verification:"
 msgstr ""
 
-msgid "Sample Data"
-msgstr ""
-
 msgid "Satisfied"
 msgstr ""
 
@@ -24917,9 +24911,6 @@ msgid "Separate topics with commas."
 msgstr ""
 
 msgid "September"
-msgstr ""
-
-msgid "Serenity Valley Sample Data template."
 msgstr ""
 
 msgid "SeriesFinalConjunction|and"

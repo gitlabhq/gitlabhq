@@ -1,0 +1,5 @@
+---
+title: Improve the performance of the diff change access check
+merge_request: 49803
+author:
+type: performance

@@ -19,7 +19,7 @@
 
 <!--- Use the following resources to find the appropriate labels:
 - https://gitlab.com/gitlab-org/gitlab/-/labels
-- https://about.gitlab.com/handbook/product/product-categories/features/
+- https://about.gitlab.com/handbook/product/categories/features/
 
 Consider adding related issues and epics to this issue. You can also reference the Feature Proposal Template (https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20proposal.md) for additional details to consider adding to this issue. Additionally, as a data oriented organization, when your feature exits planning breakdown, consider adding the `What does success look like, and how can we measure that?` section.
 

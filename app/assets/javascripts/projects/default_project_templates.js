@@ -1,6 +1,10 @@
 import { s__ } from '~/locale';
 
 export default {
+  sample: {
+    text: s__('ProjectTemplates|Sample GitLab Project'),
+    icon: '.template-option .icon-sample',
+  },
   rails: {
     text: s__('ProjectTemplates|Ruby on Rails'),
     icon: '.template-option .icon-rails',

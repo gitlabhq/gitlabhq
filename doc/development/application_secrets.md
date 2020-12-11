@@ -29,8 +29,8 @@ This page is a development guide for application secrets.
 ## Warning: Before you add a new secret to application secrets
 
 Before you add a new secret to [`config/initializers/01_secret_token.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/initializers/01_secret_token.rb),
-make sure you also update Omnibus GitLab or updates will fail. Omnibus is responsible for writing the `secrets.yml` file.
-If Omnibus doesn't know about a secret, Rails will attempt to write to the file, but this will fail because Rails doesn't have write access.
+make sure you also update Omnibus GitLab or updates fail. Omnibus is responsible for writing the `secrets.yml` file.
+If Omnibus doesn't know about a secret, Rails attempts to write to the file, but this fails because Rails doesn't have write access.
 The same rules apply to Cloud Native GitLab charts, you must update the charts at first.
 In case you need the secret to have same value on each node (which is usually the case) you need to make sure it's configured for all
 GitLab.com environments prior to changing this file.
@@ -44,5 +44,5 @@ GitLab.com environments prior to changing this file.
 
 ## Further iteration
 
-We might deprecate/remove this automatic secret generation '01_secret_token.rb' in the future.
-Please see [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/222690) for more information.
+We may either deprecate or remove this automatic secret generation `01_secret_token.rb` in the future.
+Please see [issue 222690](https://gitlab.com/gitlab-org/gitlab/-/issues/222690) for more information.

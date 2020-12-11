@@ -5,8 +5,7 @@ module Gitlab
     class << self
       def localized_templates_table
         [
-          SampleDataTemplate.new('basic', 'Basic', _('Basic Sample Data template with Issues, Merge Requests and Milestones.'), 'https://gitlab.com/gitlab-org/sample-data-templates/basic'),
-          SampleDataTemplate.new('serenity_valley', 'Serenity Valley', _('Serenity Valley Sample Data template.'), 'https://gitlab.com/gitlab-org/sample-data-templates/serenity-valley')
+          SampleDataTemplate.new('sample', 'Sample GitLab Project', _('Get started with a project that follows best practices for setting up GitLab for your own organization, including sample Issues, Merge Requests, and Milestones'), 'https://gitlab.com/gitlab-org/sample-data-templates/sample-gitlab-project')
         ].freeze
       end
 

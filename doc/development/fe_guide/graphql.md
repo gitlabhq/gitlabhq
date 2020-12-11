@@ -625,6 +625,58 @@ methods: {
 },
 ```
 
+#### Pagination and optimistic updates
+
+When Apollo caches paginated data client-side, it includes `pageInfo` variables in the cache key.
+If you wanted to optimistically update that data, you'd have to provide `pageInfo` variables
+when interacting with the cache via [`.readQuery()`](https://www.apollographql.com/docs/react/v2/api/apollo-client/#ApolloClient.readQuery)
+or [`.writeQuery()`](https://www.apollographql.com/docs/react/v2/api/apollo-client/#ApolloClient.writeQuery).
+This can be tedious and counter-intuitive.
+
+To make it easier to deal with cached paginated queries, Apollo provides the `@connection` directive.
+The directive accepts a `key` parameter that will be used as a static key when caching the data.
+You'd then be able to retrieve the data without providing any pagination-specific variables.
+
+Here's an example of a query using the `@connection` directive:
+
+```graphql
+#import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
+
+query DastSiteProfiles($fullPath: ID!, $after: String, $before: String, $first: Int, $last: Int) {
+  project(fullPath: $fullPath) {
+    siteProfiles: dastSiteProfiles(after: $after, before: $before, first: $first, last: $last)
+      @connection(key: "dastSiteProfiles") {
+      pageInfo {
+        ...PageInfo
+      }
+      edges {
+        cursor
+        node {
+          id
+          # ...
+        }
+      }
+    }
+  }
+}
+```
+
+In this example, Apollo will store the data with the stable `dastSiteProfiles` cache key.
+
+To retrieve that data from the cache, you'd then only need to provide the `$fullPath` variable,
+omitting pagination-specific variables like `after` or `before`:
+
+```javascript
+const data = store.readQuery({
+  query: dastSiteProfilesQuery,
+  variables: {
+    fullPath: 'namespace/project',
+  },
+});
+```
+
+Read more about the `@connection` directive in [Apollo's documentation](https://www.apollographql.com/docs/react/v2/caching/cache-interaction/#the-connection-directive).
+
 ### Managing performance
 
 The Apollo client will batch queries by default. This means that if you have 3 queries defined,

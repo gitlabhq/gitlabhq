@@ -50,28 +50,28 @@ called `Gitlab::GithubImport::AdvanceStageWorker`.
 
 ### 1. RepositoryImportWorker
 
-This worker will kick off the import process by simply scheduling a job for the
+This worker starts the import process by scheduling a job for the
 next worker.
 
 ### 2. Stage::ImportRepositoryWorker
 
-This worker will import the repository and wiki, scheduling the next stage when
+This worker imports the repository and wiki, scheduling the next stage when
 done.
 
 ### 3. Stage::ImportBaseDataWorker
 
-This worker will import base data such as labels, milestones, and releases. This
-work is done in a single thread since it can be performed fast enough that we
+This worker imports base data such as labels, milestones, and releases. This
+work is done in a single thread because it can be performed fast enough that we
 don't need to perform this work in parallel.
 
 ### 4. Stage::ImportPullRequestsWorker
 
-This worker will import all pull requests. For every pull request a job for the
+This worker imports all pull requests. For every pull request a job for the
 `Gitlab::GithubImport::ImportPullRequestWorker` worker is scheduled.
 
 ### 5. Stage::ImportIssuesAndDiffNotesWorker
 
-This worker will import all issues and pull request comments. For every issue, we
+This worker imports all issues and pull request comments. For every issue, we
 schedule a job for the `Gitlab::GithubImport::ImportIssueWorker` worker. For
 pull request comments, we instead schedule jobs for the
 `Gitlab::GithubImport::DiffNoteImporter` worker.
@@ -91,14 +91,14 @@ This worker imports regular comments for both issues and pull requests. For
 every comment, we schedule a job for the
 `Gitlab::GithubImport::ImportNoteWorker` worker.
 
-Regular comments have to be imported at the end since the GitHub API used
+Regular comments have to be imported at the end because the GitHub API used
 returns comments for both issues and pull requests. This means we have to wait
 for all issues and pull requests to be imported before we can import regular
 comments.
 
 ### 7. Stage::FinishImportWorker
 
-This worker will wrap up the import process by performing some housekeeping
+This worker completes the import process by performing some housekeeping
 (such as flushing any caches) and by marking the import as completed.
 
 ## Advancing stages
@@ -113,22 +113,22 @@ The first approach should only be used by workers that perform all their work in
 a single thread, while `AdvanceStageWorker` should be used for everything else.
 
 The way `AdvanceStageWorker` works is fairly simple. When scheduling a job it
-will be given a project ID, a list of Redis keys, and the name of the next
+is given a project ID, a list of Redis keys, and the name of the next
 stage. The Redis keys (produced by `Gitlab::JobWaiter`) are used to check if the
 currently running stage has been completed or not. If the stage has not yet been
-completed `AdvanceStageWorker` will reschedule itself. Once a stage finishes
-`AdvanceStageworker` will refresh the import JID (more on this below) and
+completed `AdvanceStageWorker` reschedules itself. After a stage finishes
+`AdvanceStageworker` refreshes the import JID (more on this below) and
 schedule the worker of the next stage.
 
-To reduce the number of `AdvanceStageWorker` jobs scheduled this worker will
-briefly wait for jobs to complete before deciding what the next action should
-be. For small projects, this may slow down the import process a bit, but it will
-also reduce pressure on the system as a whole.
+To reduce the number of `AdvanceStageWorker` jobs scheduled this worker
+briefly waits for jobs to complete before deciding what the next action should
+be. For small projects, this may slow down the import process a bit, but it
+also reduces pressure on the system as a whole.
 
 ## Refreshing import JIDs
 
 GitLab includes a worker called `Gitlab::Import::StuckProjectImportJobsWorker`
-that will periodically run and mark project imports as failed if they have been
+that periodically runs and marks project imports as failed if they have been
 running for more than 15 hours. For GitHub projects, this poses a bit of a
 problem: importing large projects could take several hours depending on how
 often we hit the GitHub rate limit (more on this below), but we don't want
@@ -151,7 +151,7 @@ because we need the Email address of users in order to map them to GitLab users.
 
 We handle this by doing the following:
 
-1. Once we hit the rate limit all jobs will automatically reschedule themselves
+1. After we hit the rate limit all jobs automatically reschedule themselves
    in such a way that they are not executed until the rate limit has been reset.
 1. We cache the mapping of GitHub users to GitLab users in Redis.
 
@@ -164,7 +164,7 @@ perform:
 
 1. One API call to get the user's Email address.
 1. Two database queries to see if a corresponding GitLab user exists. One query
-   will try to find the user based on the GitHub user ID, while the second query
+   tries to find the user based on the GitHub user ID, while the second query
    is used to find the user using their GitHub Email address.
 
 Because this process is quite expensive we cache the result of these lookups in
@@ -186,11 +186,11 @@ positive lookup, we refresh the TTL automatically. The TTL of false lookups is
 never refreshed.
 
 Because of this caching layer, it's possible newly registered GitLab accounts
-won't be linked to their corresponding GitHub accounts. This, however, will sort
-itself out once the cached keys expire.
+aren't linked to their corresponding GitHub accounts. This, however, is resolved
+after the cached keys expire.
 
-The user cache lookup is shared across projects. This means that the more
-projects get imported the fewer GitHub API calls will be needed.
+The user cache lookup is shared across projects. This means that the greater the number of
+projects that are imported, fewer GitHub API calls are needed.
 
 The code for this resides in:
 

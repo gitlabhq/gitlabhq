@@ -99,7 +99,7 @@ In which enterprise tier should this feature go? See https://about.gitlab.com/ha
 <!-- Label reminders - you should have one of each of the following labels.
 Use the following resources to find the appropriate labels:
 - https://gitlab.com/gitlab-org/gitlab/-/labels
-- https://about.gitlab.com/handbook/product/product-categories/features/
+- https://about.gitlab.com/handbook/product/categories/features/
 -->
 /label ~devops:: ~group: ~Category:
 

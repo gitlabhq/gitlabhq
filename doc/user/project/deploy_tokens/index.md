@@ -18,6 +18,8 @@ container registry images of a project without having a user and a password.
 
 Deploy tokens can be managed by [maintainers only](../../permissions.md).
 
+Deploy tokens cannot be used with the GitLab API.
+
 If you have a key pair, you might want to use [deploy keys](../../../ssh/README.md#deploy-keys)
 instead.
 
@@ -36,7 +38,7 @@ project. Alternatively, you can also create [group-scoped deploy tokens](#group-
 1. Save the deploy token somewhere safe. After you leave or refresh
    the page, **you won't be able to access it again**.
 
-![Personal access tokens page](img/deploy_tokens.png)
+![Personal access tokens page](img/deploy_tokens_ui.png)
 
 ## Deploy token expiration
 

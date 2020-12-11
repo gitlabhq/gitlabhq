@@ -7,6 +7,8 @@ RSpec.describe GlobalPolicy do
 
   let_it_be(:project_bot) { create(:user, :project_bot) }
   let_it_be(:migration_bot) { create(:user, :migration_bot) }
+  let_it_be(:security_bot) { create(:user, :security_bot) }
+
   let(:current_user) { create(:user) }
   let(:user) { create(:user) }
 
@@ -223,6 +225,12 @@ RSpec.describe GlobalPolicy do
       it { is_expected.not_to be_allowed(:access_api) }
     end
 
+    context 'security bot' do
+      let(:current_user) { security_bot }
+
+      it { is_expected.not_to be_allowed(:access_api) }
+    end
+
     context 'user blocked pending approval' do
       before do
         current_user.block_pending_approval
@@ -349,6 +357,12 @@ RSpec.describe GlobalPolicy do
 
     context 'migration bot' do
       let(:current_user) { migration_bot }
+
+      it { is_expected.to be_allowed(:access_git) }
+    end
+
+    context 'security bot' do
+      let(:current_user) { security_bot }
 
       it { is_expected.to be_allowed(:access_git) }
     end
@@ -509,6 +523,12 @@ RSpec.describe GlobalPolicy do
 
     context 'migration bot' do
       let(:current_user) { migration_bot }
+
+      it { is_expected.not_to be_allowed(:log_in) }
+    end
+
+    context 'security bot' do
+      let(:current_user) { security_bot }
 
       it { is_expected.not_to be_allowed(:log_in) }
     end

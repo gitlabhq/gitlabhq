@@ -49,6 +49,10 @@ module PolicyActor
     false
   end
 
+  def security_bot?
+    false
+  end
+
   def deactivated?
     false
   end

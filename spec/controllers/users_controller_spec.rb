@@ -221,6 +221,111 @@ RSpec.describe UsersController do
     end
   end
 
+  describe "#ssh_keys" do
+    describe "non existent user" do
+      it "does not generally work" do
+        get :ssh_keys, params: { username: 'not-existent' }
+
+        expect(response).not_to be_successful
+      end
+    end
+
+    describe "user with no keys" do
+      it "does generally work" do
+        get :ssh_keys, params: { username: user.username }
+
+        expect(response).to be_successful
+      end
+
+      it "renders all keys separated with a new line" do
+        get :ssh_keys, params: { username: user.username }
+
+        expect(response.body).to eq("")
+      end
+
+      it "responds with text/plain content type" do
+        get :ssh_keys, params: { username: user.username }
+        expect(response.content_type).to eq("text/plain")
+      end
+    end
+
+    describe "user with keys" do
+      let!(:key) { create(:key, user: user) }
+      let!(:another_key) { create(:another_key, user: user) }
+      let!(:deploy_key) { create(:deploy_key, user: user) }
+
+      describe "while signed in" do
+        before do
+          sign_in(user)
+        end
+
+        it "does generally work" do
+          get :ssh_keys, params: { username: user.username }
+
+          expect(response).to be_successful
+        end
+
+        it "renders all non deploy keys separated with a new line" do
+          get :ssh_keys, params: { username: user.username }
+
+          expect(response.body).not_to eq('')
+          expect(response.body).to eq(user.all_ssh_keys.join("\n"))
+
+          expect(response.body).to include(key.key.sub(' dummy@gitlab.com', ''))
+          expect(response.body).to include(another_key.key.sub(' dummy@gitlab.com', ''))
+
+          expect(response.body).not_to include(deploy_key.key)
+        end
+
+        it "does not render the comment of the key" do
+          get :ssh_keys, params: { username: user.username }
+          expect(response.body).not_to match(/dummy@gitlab.com/)
+        end
+
+        it "responds with text/plain content type" do
+          get :ssh_keys, params: { username: user.username }
+
+          expect(response.content_type).to eq("text/plain")
+        end
+      end
+
+      describe 'when logged out' do
+        before do
+          sign_out(user)
+        end
+
+        it "still does generally work" do
+          get :ssh_keys, params: { username: user.username }
+
+          expect(response).to be_successful
+        end
+
+        it "renders all non deploy keys separated with a new line" do
+          get :ssh_keys, params: { username: user.username }
+
+          expect(response.body).not_to eq('')
+          expect(response.body).to eq(user.all_ssh_keys.join("\n"))
+
+          expect(response.body).to include(key.key.sub(' dummy@gitlab.com', ''))
+          expect(response.body).to include(another_key.key.sub(' dummy@gitlab.com', ''))
+
+          expect(response.body).not_to include(deploy_key.key)
+        end
+
+        it "does not render the comment of the key" do
+          get :ssh_keys, params: { username: user.username }
+          expect(response.body).not_to match(/dummy@gitlab.com/)
+        end
+
+        it "responds with text/plain content type" do
+          get :ssh_keys, params: { username: user.username }
+
+          expect(response.content_type).to eq("text/plain")
+        end
+      end
+    end
+  end
+
   describe 'GET #calendar' do
     context 'for user' do
       let(:project) { create(:project) }

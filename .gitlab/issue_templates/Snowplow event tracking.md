@@ -40,7 +40,7 @@ We generally recommend events be tracked using a [structured event](https://docs
 <!-- Label reminders - you should have one of each of the following labels.
 Use the following resources to find the appropriate labels:
 - https://gitlab.com/gitlab-org/gitlab/-/labels
-- https://about.gitlab.com/handbook/product/product-categories/features/
+- https://about.gitlab.com/handbook/product/categories/features/
 -->
 /label ~devops:: ~group: ~Category:
 /label ~"snowplow tracking events"

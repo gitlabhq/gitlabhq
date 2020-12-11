@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Query Count Limits
 
 Each controller or API endpoint is allowed to execute up to 100 SQL queries and
-in test environments we'll raise an error when this threshold is exceeded.
+in test environments we raise an error when this threshold is exceeded.
 
 ## Solving Failing Tests
 
@@ -20,18 +20,18 @@ solutions to this problem:
 You should only resort to whitelisting when an existing controller or endpoint
 is to blame as in this case reducing the number of SQL queries can take a lot of
 effort. Newly added controllers and endpoints are not allowed to execute more
-than 100 SQL queries and no exceptions will be made for this rule. _If_ a large
+than 100 SQL queries and no exceptions are made for this rule. _If_ a large
 number of SQL queries is necessary to perform certain work it's best to have
 this work performed by Sidekiq instead of doing this directly in a web request.
 
 ## Whitelisting
 
-In the event that you _have_ to whitelist a controller you'll first need to
+In the event that you _have_ to whitelist a controller you must first
 create an issue. This issue should (preferably in the title) mention the
 controller or endpoint and include the appropriate labels (`database`,
 `performance`, and at least a team specific label such as `Discussion`).
 
-Once the issue has been created you can whitelist the code in question. For
+After the issue has been created you can whitelist the code in question. For
 Rails controllers it's best to create a `before_action` hook that runs as early
 as possible. The called method in turn should call
 `Gitlab::QueryLimiting.whitelist('issue URL here')`. For example:

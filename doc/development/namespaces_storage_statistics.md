@@ -33,7 +33,7 @@ Additionally, the pattern that is currently used to update the project statistic
 (the callback) doesn't scale adequately. It is currently one of the largest
 [database queries transactions on production](https://gitlab.com/gitlab-org/gitlab/-/issues/29070)
 that takes the most time overall. We can't add one more query to it as
-it will increase the transaction's length.
+it increases the transaction's length.
 
 Because of all of the above, we can't apply the same pattern to store
 and update the namespaces statistics, as the `namespaces` table is one
@@ -137,12 +137,12 @@ WHERE namespace_id IN (
 
 Even though this approach would make aggregating much easier, it has some major downsides:
 
-- We'd have to migrate **all namespaces** by adding and filling a new column. Because of the size of the table, dealing with time/cost will not be great. The background migration will take approximately `153h`, see <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29772>.
+- We'd have to migrate **all namespaces** by adding and filling a new column. Because of the size of the table, dealing with time/cost would be significant. The background migration would take approximately `153h`, see <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29772>.
 - Background migration has to be shipped one release before, delaying the functionality by another milestone.
 
 ### Attempt E (final): Update the namespace storage statistics in async way
 
-This approach consists of keep using the incremental statistics updates we currently already have,
+This approach consists of continuing to use the incremental statistics updates we already have,
 but we refresh them through Sidekiq jobs and in different transactions:
 
 1. Create a second table (`namespace_aggregation_schedules`) with two columns `id` and `namespace_id`.

@@ -127,6 +127,7 @@ with this approach, however, and there is a
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4393) in GitLab Core 13.5.
 > - Made [available in all tiers](https://gitlab.com/gitlab-org/gitlab/-/issues/273205) in 13.6.
+> - Report download dropdown [added](https://gitlab.com/gitlab-org/gitlab/-/issues/273418) in 13.7.
 > - It's [deployed behind a feature flag](../feature_flags.md), enabled by default.
 > - It's enabled on GitLab.com.
 > - It can be enabled or disabled for a single project.
@@ -137,9 +138,10 @@ WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
 Merge requests which have run security scans let you know that the generated
-reports are available to download.
+reports are available to download. To download a report, click on the
+**Download results** dropdown, and select the desired report.
 
-![Security widget](img/security_widget_v13_6.png)
+![Security widget](img/security_widget_v13_7.png)
 
 ## Interacting with the vulnerabilities
 

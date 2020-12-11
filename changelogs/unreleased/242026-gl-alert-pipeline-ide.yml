@@ -1,0 +1,5 @@
+---
+title: Update ide pipeline alert to use gitlab ui
+merge_request: 49634
+author:
+type: changed

@@ -15,6 +15,7 @@ class PurgeDependencyProxyCacheWorker
     return unless valid?
 
     @group.dependency_proxy_blobs.destroy_all # rubocop:disable Cop/DestroyAll
+    @group.dependency_proxy_manifests.destroy_all # rubocop:disable Cop/DestroyAll
   end
 
   private

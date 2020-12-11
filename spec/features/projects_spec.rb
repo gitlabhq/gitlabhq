@@ -34,7 +34,7 @@ RSpec.describe 'Project' do
     end
 
     context 'create with sample data template' do
-      it_behaves_like 'creates from template', Gitlab::SampleDataTemplate.find(:basic), '.sample-data-templates-tab'
+      it_behaves_like 'creates from template', Gitlab::SampleDataTemplate.find(:sample)
     end
   end
 

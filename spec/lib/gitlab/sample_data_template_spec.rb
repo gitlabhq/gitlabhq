@@ -6,8 +6,7 @@ RSpec.describe Gitlab::SampleDataTemplate do
   describe '.all' do
     it 'returns all templates' do
       expected = %w[
-        basic
-        serenity_valley
+        sample
       ]
 
       expect(described_class.all).to be_an(Array)
@@ -19,7 +18,7 @@ RSpec.describe Gitlab::SampleDataTemplate do
     subject { described_class.find(query) }
 
     context 'when there is a match' do
-      let(:query) { :basic }
+      let(:query) { :sample }
 
       it { is_expected.to be_a(described_class) }
     end

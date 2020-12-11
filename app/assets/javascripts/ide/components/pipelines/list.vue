@@ -8,6 +8,7 @@ import {
   GlTabs,
   GlTab,
   GlBadge,
+  GlAlert,
 } from '@gitlab/ui';
 import { sprintf, __ } from '../../../locale';
 import CiIcon from '../../../vue_shared/components/ci_icon.vue';
@@ -26,6 +27,7 @@ export default {
     GlTabs,
     GlTab,
     GlBadge,
+    GlAlert,
   },
   directives: {
     SafeHtml,
@@ -89,11 +91,16 @@ export default {
         :can-set-ci="true"
         class="mb-auto mt-auto"
       />
-      <div v-else-if="latestPipeline.yamlError" class="bs-callout bs-callout-danger">
+      <gl-alert
+        v-else-if="latestPipeline.yamlError"
+        variant="danger"
+        :dismissible="false"
+        class="gl-mt-5"
+      >
         <p class="gl-mb-0">{{ __('Found errors in your .gitlab-ci.yml:') }}</p>
         <p class="gl-mb-0 break-word">{{ latestPipeline.yamlError }}</p>
         <p v-safe-html="ciLintText" class="gl-mb-0"></p>
-      </div>
+      </gl-alert>
       <gl-tabs v-else>
         <gl-tab :active="!pipelineFailed">
           <template #title>

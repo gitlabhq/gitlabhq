@@ -17,7 +17,7 @@ module Gitlab
 
         file_paths = []
 
-        if ::Feature.enabled?(:diff_check_with_paths_changed_rpc, project)
+        if ::Feature.enabled?(:diff_check_with_paths_changed_rpc, project, default_enabled: true)
           paths = project.repository.find_changed_paths(commits.map(&:sha))
           paths.each do |path|
             file_paths.concat([path.path])
