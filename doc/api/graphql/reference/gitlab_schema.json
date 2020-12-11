@@ -1252,25 +1252,25 @@
               "name": "updated_desc",
               "description": "Updated at descending order",
               "isDeprecated": true,
-              "deprecationReason": "Use UPDATED_DESC. Deprecated in 13.5"
+              "deprecationReason": "Use UPDATED_DESC. Deprecated in 13.5."
             },
             {
               "name": "updated_asc",
               "description": "Updated at ascending order",
               "isDeprecated": true,
-              "deprecationReason": "Use UPDATED_ASC. Deprecated in 13.5"
+              "deprecationReason": "Use UPDATED_ASC. Deprecated in 13.5."
             },
             {
               "name": "created_desc",
               "description": "Created at descending order",
               "isDeprecated": true,
-              "deprecationReason": "Use CREATED_DESC. Deprecated in 13.5"
+              "deprecationReason": "Use CREATED_DESC. Deprecated in 13.5."
             },
             {
               "name": "created_asc",
               "description": "Created at ascending order",
               "isDeprecated": true,
-              "deprecationReason": "Use CREATED_ASC. Deprecated in 13.5"
+              "deprecationReason": "Use CREATED_ASC. Deprecated in 13.5."
             },
             {
               "name": "UPDATED_DESC",
@@ -3766,7 +3766,7 @@
               "args": [
                 {
                   "name": "startDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.start",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present) Deprecated in 13.5: Use timeframe.start.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -3776,7 +3776,7 @@
                 },
                 {
                   "name": "endDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.end",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present) Deprecated in 13.5: Use timeframe.end.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -13550,7 +13550,7 @@
             },
             {
               "name": "globalId",
-              "description": "ID of the DAST scanner profile. Deprecated in 13.6: Use `id`",
+              "description": "ID of the DAST scanner profile Deprecated in 13.6: Use `id`.",
               "args": [
 
               ],
@@ -13564,7 +13564,7 @@
                 }
               },
               "isDeprecated": true,
-              "deprecationReason": "Use `id`. Deprecated in 13.6"
+              "deprecationReason": "Use `id`. Deprecated in 13.6."
             },
             {
               "name": "id",
@@ -13897,7 +13897,7 @@
             },
             {
               "name": "globalId",
-              "description": "ID of the scanner profile.. Deprecated in 13.6: Use `id`",
+              "description": "ID of the scanner profile. Deprecated in 13.6: Use `id`.",
               "args": [
 
               ],
@@ -13907,7 +13907,7 @@
                 "ofType": null
               },
               "isDeprecated": true,
-              "deprecationReason": "Use `id`. Deprecated in 13.6"
+              "deprecationReason": "Use `id`. Deprecated in 13.6."
             },
             {
               "name": "id",
@@ -21129,7 +21129,7 @@
               "args": [
                 {
                   "name": "startDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.start",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present) Deprecated in 13.5: Use timeframe.start.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -21139,7 +21139,7 @@
                 },
                 {
                   "name": "endDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.end",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present) Deprecated in 13.5: Use timeframe.end.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -25739,7 +25739,7 @@
             },
             {
               "name": "complianceFrameworks",
-              "description": "Compliance frameworks available to projects in this namespace. Available only when feature flag `ff_custom_compliance_frameworks` is enabled",
+              "description": "Compliance frameworks available to projects in this namespace Available only when feature flag `ff_custom_compliance_frameworks` is enabled.",
               "args": [
                 {
                   "name": "after",
@@ -25891,7 +25891,7 @@
             },
             {
               "name": "customEmoji",
-              "description": "Custom emoji within this namespace. Available only when feature flag `custom_emoji` is enabled",
+              "description": "Custom emoji within this namespace Available only when feature flag `custom_emoji` is enabled.",
               "args": [
                 {
                   "name": "after",
@@ -25990,7 +25990,7 @@
               "args": [
                 {
                   "name": "startDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.start",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present) Deprecated in 13.5: Use timeframe.start.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -26000,7 +26000,7 @@
                 },
                 {
                   "name": "endDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.end",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present) Deprecated in 13.5: Use timeframe.end.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -26229,7 +26229,7 @@
               "args": [
                 {
                   "name": "startDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.start",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present) Deprecated in 13.5: Use timeframe.start.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -26239,7 +26239,7 @@
                 },
                 {
                   "name": "endDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.end",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present) Deprecated in 13.5: Use timeframe.end.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -26908,7 +26908,7 @@
               "args": [
                 {
                   "name": "startDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.start",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present) Deprecated in 13.5: Use timeframe.start.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -26918,7 +26918,7 @@
                 },
                 {
                   "name": "endDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.end",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present) Deprecated in 13.5: Use timeframe.end.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -27364,7 +27364,7 @@
               "args": [
                 {
                   "name": "startDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.start",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present) Deprecated in 13.5: Use timeframe.start.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -27374,7 +27374,7 @@
                 },
                 {
                   "name": "endDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.end",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present) Deprecated in 13.5: Use timeframe.end.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -28227,7 +28227,7 @@
             },
             {
               "name": "vulnerabilitiesCountByDayAndSeverity",
-              "description": "Number of vulnerabilities per severity level, per day, for the projects in the group and its subgroups. Deprecated in 13.3: Use `vulnerabilitiesCountByDay`",
+              "description": "Number of vulnerabilities per severity level, per day, for the projects in the group and its subgroups Deprecated in 13.3: Use `vulnerabilitiesCountByDay`.",
               "args": [
                 {
                   "name": "startDate",
@@ -28304,7 +28304,7 @@
                 "ofType": null
               },
               "isDeprecated": true,
-              "deprecationReason": "Use `vulnerabilitiesCountByDay`. Deprecated in 13.3"
+              "deprecationReason": "Use `vulnerabilitiesCountByDay`. Deprecated in 13.3."
             },
             {
               "name": "vulnerabilityGrades",
@@ -33085,25 +33085,25 @@
               "name": "updated_desc",
               "description": "Updated at descending order",
               "isDeprecated": true,
-              "deprecationReason": "Use UPDATED_DESC. Deprecated in 13.5"
+              "deprecationReason": "Use UPDATED_DESC. Deprecated in 13.5."
             },
             {
               "name": "updated_asc",
               "description": "Updated at ascending order",
               "isDeprecated": true,
-              "deprecationReason": "Use UPDATED_ASC. Deprecated in 13.5"
+              "deprecationReason": "Use UPDATED_ASC. Deprecated in 13.5."
             },
             {
               "name": "created_desc",
               "description": "Created at descending order",
               "isDeprecated": true,
-              "deprecationReason": "Use CREATED_DESC. Deprecated in 13.5"
+              "deprecationReason": "Use CREATED_DESC. Deprecated in 13.5."
             },
             {
               "name": "created_asc",
               "description": "Created at ascending order",
               "isDeprecated": true,
-              "deprecationReason": "Use CREATED_ASC. Deprecated in 13.5"
+              "deprecationReason": "Use CREATED_ASC. Deprecated in 13.5."
             },
             {
               "name": "UPDATED_DESC",
@@ -39012,25 +39012,25 @@
               "name": "updated_desc",
               "description": "Updated at descending order",
               "isDeprecated": true,
-              "deprecationReason": "Use UPDATED_DESC. Deprecated in 13.5"
+              "deprecationReason": "Use UPDATED_DESC. Deprecated in 13.5."
             },
             {
               "name": "updated_asc",
               "description": "Updated at ascending order",
               "isDeprecated": true,
-              "deprecationReason": "Use UPDATED_ASC. Deprecated in 13.5"
+              "deprecationReason": "Use UPDATED_ASC. Deprecated in 13.5."
             },
             {
               "name": "created_desc",
               "description": "Created at descending order",
               "isDeprecated": true,
-              "deprecationReason": "Use CREATED_DESC. Deprecated in 13.5"
+              "deprecationReason": "Use CREATED_DESC. Deprecated in 13.5."
             },
             {
               "name": "created_asc",
               "description": "Created at ascending order",
               "isDeprecated": true,
-              "deprecationReason": "Use CREATED_ASC. Deprecated in 13.5"
+              "deprecationReason": "Use CREATED_ASC. Deprecated in 13.5."
             },
             {
               "name": "UPDATED_DESC",
@@ -40261,7 +40261,7 @@
                 "ofType": null
               },
               "isDeprecated": true,
-              "deprecationReason": "Use awardEmojiAdd. Deprecated in 13.2"
+              "deprecationReason": "Use awardEmojiAdd. Deprecated in 13.2."
             },
             {
               "name": "addProjectToSecurityDashboard",
@@ -40778,7 +40778,7 @@
             },
             {
               "name": "createCustomEmoji",
-              "description": ". Available only when feature flag `custom_emoji` is enabled",
+              "description": " Available only when feature flag `custom_emoji` is enabled.",
               "args": [
                 {
                   "name": "input",
@@ -41692,7 +41692,7 @@
                 "ofType": null
               },
               "isDeprecated": true,
-              "deprecationReason": "Use vulnerabilityDismiss. Deprecated in 13.5"
+              "deprecationReason": "Use vulnerabilityDismiss. Deprecated in 13.5."
             },
             {
               "name": "environmentsCanaryIngressUpdate",
@@ -42934,7 +42934,7 @@
                 "ofType": null
               },
               "isDeprecated": true,
-              "deprecationReason": "Use awardEmojiRemove. Deprecated in 13.2"
+              "deprecationReason": "Use awardEmojiRemove. Deprecated in 13.2."
             },
             {
               "name": "removeProjectFromSecurityDashboard",
@@ -43015,7 +43015,7 @@
                 "ofType": null
               },
               "isDeprecated": true,
-              "deprecationReason": "Use vulnerabilityRevertToDetected. Deprecated in 13.5"
+              "deprecationReason": "Use vulnerabilityRevertToDetected. Deprecated in 13.5."
             },
             {
               "name": "runDastScan",
@@ -43042,7 +43042,7 @@
                 "ofType": null
               },
               "isDeprecated": true,
-              "deprecationReason": "Use DastOnDemandScanCreate. Deprecated in 13.4"
+              "deprecationReason": "Use DastOnDemandScanCreate. Deprecated in 13.4."
             },
             {
               "name": "terraformStateDelete",
@@ -43285,7 +43285,7 @@
                 "ofType": null
               },
               "isDeprecated": true,
-              "deprecationReason": "Use awardEmojiToggle. Deprecated in 13.2"
+              "deprecationReason": "Use awardEmojiToggle. Deprecated in 13.2."
             },
             {
               "name": "updateAlertStatus",
@@ -43845,7 +43845,7 @@
             },
             {
               "name": "complianceFrameworks",
-              "description": "Compliance frameworks available to projects in this namespace. Available only when feature flag `ff_custom_compliance_frameworks` is enabled",
+              "description": "Compliance frameworks available to projects in this namespace Available only when feature flag `ff_custom_compliance_frameworks` is enabled.",
               "args": [
                 {
                   "name": "after",
@@ -49886,7 +49886,7 @@
               "args": [
                 {
                   "name": "startDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.start",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present) Deprecated in 13.5: Use timeframe.start.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -49896,7 +49896,7 @@
                 },
                 {
                   "name": "endDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.end",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present) Deprecated in 13.5: Use timeframe.end.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -50478,7 +50478,7 @@
               "args": [
                 {
                   "name": "startDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.start",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present) Deprecated in 13.5: Use timeframe.start.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -50488,7 +50488,7 @@
                 },
                 {
                   "name": "endDate",
-                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present). Deprecated in 13.5: Use timeframe.end",
+                  "description": "List items overlapping a time frame defined by startDate..endDate (if one date is provided, both must be present) Deprecated in 13.5: Use timeframe.end.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
@@ -55455,7 +55455,7 @@
             },
             {
               "name": "vulnerabilitiesCountByDayAndSeverity",
-              "description": "Number of vulnerabilities per severity level, per day, for the projects on the current user's instance security dashboard. Deprecated in 13.3: Use `vulnerabilitiesCountByDay`",
+              "description": "Number of vulnerabilities per severity level, per day, for the projects on the current user's instance security dashboard Deprecated in 13.3: Use `vulnerabilitiesCountByDay`.",
               "args": [
                 {
                   "name": "startDate",
@@ -55532,7 +55532,7 @@
                 "ofType": null
               },
               "isDeprecated": true,
-              "deprecationReason": "Use `vulnerabilitiesCountByDay`. Deprecated in 13.3"
+              "deprecationReason": "Use `vulnerabilitiesCountByDay`. Deprecated in 13.3."
             },
             {
               "name": "vulnerability",
@@ -62800,7 +62800,7 @@
             },
             {
               "name": "blob",
-              "description": "Snippet blob. Deprecated in 13.3: Use `blobs`",
+              "description": "Snippet blob Deprecated in 13.3: Use `blobs`.",
               "args": [
 
               ],
@@ -62814,7 +62814,7 @@
                 }
               },
               "isDeprecated": true,
-              "deprecationReason": "Use `blobs`. Deprecated in 13.3"
+              "deprecationReason": "Use `blobs`. Deprecated in 13.3."
             },
             {
               "name": "blobs",
@@ -64283,25 +64283,25 @@
               "name": "updated_desc",
               "description": "Updated at descending order",
               "isDeprecated": true,
-              "deprecationReason": "Use UPDATED_DESC. Deprecated in 13.5"
+              "deprecationReason": "Use UPDATED_DESC. Deprecated in 13.5."
             },
             {
               "name": "updated_asc",
               "description": "Updated at ascending order",
               "isDeprecated": true,
-              "deprecationReason": "Use UPDATED_ASC. Deprecated in 13.5"
+              "deprecationReason": "Use UPDATED_ASC. Deprecated in 13.5."
             },
             {
               "name": "created_desc",
               "description": "Created at descending order",
               "isDeprecated": true,
-              "deprecationReason": "Use CREATED_DESC. Deprecated in 13.5"
+              "deprecationReason": "Use CREATED_DESC. Deprecated in 13.5."
             },
             {
               "name": "created_asc",
               "description": "Created at ascending order",
               "isDeprecated": true,
-              "deprecationReason": "Use CREATED_ASC. Deprecated in 13.5"
+              "deprecationReason": "Use CREATED_ASC. Deprecated in 13.5."
             },
             {
               "name": "UPDATED_DESC",
@@ -66994,7 +66994,7 @@
             },
             {
               "name": "updatedIds",
-              "description": "The IDs of the updated todo items. Deprecated in 13.2: Use todos",
+              "description": "The IDs of the updated todo items Deprecated in 13.2: Use todos.",
               "args": [
 
               ],
@@ -67016,7 +67016,7 @@
                 }
               },
               "isDeprecated": true,
-              "deprecationReason": "Use todos. Deprecated in 13.2"
+              "deprecationReason": "Use todos. Deprecated in 13.2."
             }
           ],
           "inputFields": null,
@@ -67271,7 +67271,7 @@
             },
             {
               "name": "updatedIds",
-              "description": "Ids of the updated todos. Deprecated in 13.2: Use todos",
+              "description": "Ids of the updated todos Deprecated in 13.2: Use todos.",
               "args": [
 
               ],
@@ -67293,7 +67293,7 @@
                 }
               },
               "isDeprecated": true,
-              "deprecationReason": "Use todos. Deprecated in 13.2"
+              "deprecationReason": "Use todos. Deprecated in 13.2."
             }
           ],
           "inputFields": null,
@@ -70685,7 +70685,7 @@
             },
             {
               "name": "email",
-              "description": "User email. Deprecated in 13.7: Use public_email",
+              "description": "User email Deprecated in 13.7: Use public_email.",
               "args": [
 
               ],
@@ -70695,11 +70695,11 @@
                 "ofType": null
               },
               "isDeprecated": true,
-              "deprecationReason": "Use public_email. Deprecated in 13.7"
+              "deprecationReason": "Use public_email. Deprecated in 13.7."
             },
             {
               "name": "groupCount",
-              "description": "Group count for the user. Available only when feature flag `user_group_counts` is enabled",
+              "description": "Group count for the user Available only when feature flag `user_group_counts` is enabled.",
               "args": [
 
               ],

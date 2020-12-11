@@ -10,7 +10,7 @@ const apolloProvider = new VueApollo({
   defaultClient: createDefaultClient(),
 });
 
-export default () => {
+export default (endpoints = {}) => {
   const boardsSwitcherElement = document.getElementById('js-multiple-boards-switcher');
   return new Vue({
     el: boardsSwitcherElement,
@@ -34,6 +34,9 @@ export default () => {
       };
 
       return { boardsSelectorProps };
+    },
+    provide: {
+      endpoints,
     },
     render(createElement) {
       return createElement(BoardsSelector, {

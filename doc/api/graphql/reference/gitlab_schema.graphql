@@ -537,22 +537,22 @@ enum AlertManagementAlertSort {
   """
   Created at ascending order
   """
-  created_asc @deprecated(reason: "Use CREATED_ASC. Deprecated in 13.5")
+  created_asc @deprecated(reason: "Use CREATED_ASC. Deprecated in 13.5.")
 
   """
   Created at descending order
   """
-  created_desc @deprecated(reason: "Use CREATED_DESC. Deprecated in 13.5")
+  created_desc @deprecated(reason: "Use CREATED_DESC. Deprecated in 13.5.")
 
   """
   Updated at ascending order
   """
-  updated_asc @deprecated(reason: "Use UPDATED_ASC. Deprecated in 13.5")
+  updated_asc @deprecated(reason: "Use UPDATED_ASC. Deprecated in 13.5.")
 
   """
   Updated at descending order
   """
-  updated_desc @deprecated(reason: "Use UPDATED_DESC. Deprecated in 13.5")
+  updated_desc @deprecated(reason: "Use UPDATED_DESC. Deprecated in 13.5.")
 }
 
 """
@@ -1435,7 +1435,7 @@ type BoardEpic implements CurrentUserTodos & Noteable {
 
     """
     List items overlapping a time frame defined by startDate..endDate (if one
-    date is provided, both must be present). Deprecated in 13.5: Use timeframe.end
+    date is provided, both must be present) Deprecated in 13.5: Use timeframe.end.
     """
     endDate: Time
 
@@ -1491,8 +1491,8 @@ type BoardEpic implements CurrentUserTodos & Noteable {
 
     """
     List items overlapping a time frame defined by startDate..endDate (if one
-    date is provided, both must be present). Deprecated in 13.5: Use
-    timeframe.start
+    date is provided, both must be present) Deprecated in 13.5: Use
+    timeframe.start.
     """
     startDate: Time
 
@@ -4925,9 +4925,9 @@ type DastScannerProfile {
   editPath: String
 
   """
-  ID of the DAST scanner profile. Deprecated in 13.6: Use `id`
+  ID of the DAST scanner profile Deprecated in 13.6: Use `id`.
   """
-  globalId: DastScannerProfileID! @deprecated(reason: "Use `id`. Deprecated in 13.6")
+  globalId: DastScannerProfileID! @deprecated(reason: "Use `id`. Deprecated in 13.6.")
 
   """
   ID of the DAST scanner profile
@@ -5049,9 +5049,9 @@ type DastScannerProfileCreatePayload {
   errors: [String!]!
 
   """
-  ID of the scanner profile.. Deprecated in 13.6: Use `id`
+  ID of the scanner profile. Deprecated in 13.6: Use `id`.
   """
-  globalId: DastScannerProfileID @deprecated(reason: "Use `id`. Deprecated in 13.6")
+  globalId: DastScannerProfileID @deprecated(reason: "Use `id`. Deprecated in 13.6.")
 
   """
   ID of the scanner profile.
@@ -7540,7 +7540,7 @@ type Epic implements CurrentUserTodos & Noteable {
 
     """
     List items overlapping a time frame defined by startDate..endDate (if one
-    date is provided, both must be present). Deprecated in 13.5: Use timeframe.end
+    date is provided, both must be present) Deprecated in 13.5: Use timeframe.end.
     """
     endDate: Time
 
@@ -7596,8 +7596,8 @@ type Epic implements CurrentUserTodos & Noteable {
 
     """
     List items overlapping a time frame defined by startDate..endDate (if one
-    date is provided, both must be present). Deprecated in 13.5: Use
-    timeframe.start
+    date is provided, both must be present) Deprecated in 13.5: Use
+    timeframe.start.
     """
     startDate: Time
 
@@ -9213,8 +9213,8 @@ type Group {
   ): CodeCoverageActivityConnection
 
   """
-  Compliance frameworks available to projects in this namespace. Available only
-  when feature flag `ff_custom_compliance_frameworks` is enabled
+  Compliance frameworks available to projects in this namespace Available only
+  when feature flag `ff_custom_compliance_frameworks` is enabled.
   """
   complianceFrameworks(
     """
@@ -9279,7 +9279,7 @@ type Group {
   containsLockedProjects: Boolean!
 
   """
-  Custom emoji within this namespace. Available only when feature flag `custom_emoji` is enabled
+  Custom emoji within this namespace Available only when feature flag `custom_emoji` is enabled.
   """
   customEmoji(
     """
@@ -9329,7 +9329,7 @@ type Group {
 
     """
     List items overlapping a time frame defined by startDate..endDate (if one
-    date is provided, both must be present). Deprecated in 13.5: Use timeframe.end
+    date is provided, both must be present) Deprecated in 13.5: Use timeframe.end.
     """
     endDate: Time
 
@@ -9375,8 +9375,8 @@ type Group {
 
     """
     List items overlapping a time frame defined by startDate..endDate (if one
-    date is provided, both must be present). Deprecated in 13.5: Use
-    timeframe.start
+    date is provided, both must be present) Deprecated in 13.5: Use
+    timeframe.start.
     """
     startDate: Time
 
@@ -9447,7 +9447,7 @@ type Group {
 
     """
     List items overlapping a time frame defined by startDate..endDate (if one
-    date is provided, both must be present). Deprecated in 13.5: Use timeframe.end
+    date is provided, both must be present) Deprecated in 13.5: Use timeframe.end.
     """
     endDate: Time
 
@@ -9503,8 +9503,8 @@ type Group {
 
     """
     List items overlapping a time frame defined by startDate..endDate (if one
-    date is provided, both must be present). Deprecated in 13.5: Use
-    timeframe.start
+    date is provided, both must be present) Deprecated in 13.5: Use
+    timeframe.start.
     """
     startDate: Time
 
@@ -9730,7 +9730,7 @@ type Group {
 
     """
     List items overlapping a time frame defined by startDate..endDate (if one
-    date is provided, both must be present). Deprecated in 13.5: Use timeframe.end
+    date is provided, both must be present) Deprecated in 13.5: Use timeframe.end.
     """
     endDate: Time
 
@@ -9761,8 +9761,8 @@ type Group {
 
     """
     List items overlapping a time frame defined by startDate..endDate (if one
-    date is provided, both must be present). Deprecated in 13.5: Use
-    timeframe.start
+    date is provided, both must be present) Deprecated in 13.5: Use
+    timeframe.start.
     """
     startDate: Time
 
@@ -9938,7 +9938,7 @@ type Group {
 
     """
     List items overlapping a time frame defined by startDate..endDate (if one
-    date is provided, both must be present). Deprecated in 13.5: Use timeframe.end
+    date is provided, both must be present) Deprecated in 13.5: Use timeframe.end.
     """
     endDate: Time
 
@@ -9969,8 +9969,8 @@ type Group {
 
     """
     List items overlapping a time frame defined by startDate..endDate (if one
-    date is provided, both must be present). Deprecated in 13.5: Use
-    timeframe.start
+    date is provided, both must be present) Deprecated in 13.5: Use
+    timeframe.start.
     """
     startDate: Time
 
@@ -10272,7 +10272,7 @@ type Group {
 
   """
   Number of vulnerabilities per severity level, per day, for the projects in the
-  group and its subgroups. Deprecated in 13.3: Use `vulnerabilitiesCountByDay`
+  group and its subgroups Deprecated in 13.3: Use `vulnerabilitiesCountByDay`.
   """
   vulnerabilitiesCountByDayAndSeverity(
     """
@@ -10304,7 +10304,7 @@ type Group {
     First day for which to fetch vulnerability history
     """
     startDate: ISO8601Date!
-  ): VulnerabilitiesCountByDayAndSeverityConnection @deprecated(reason: "Use `vulnerabilitiesCountByDay`. Deprecated in 13.3")
+  ): VulnerabilitiesCountByDayAndSeverityConnection @deprecated(reason: "Use `vulnerabilitiesCountByDay`. Deprecated in 13.3.")
 
   """
   Represents vulnerable project counts for each grade
@@ -12066,22 +12066,22 @@ enum IssueSort {
   """
   Created at ascending order
   """
-  created_asc @deprecated(reason: "Use CREATED_ASC. Deprecated in 13.5")
+  created_asc @deprecated(reason: "Use CREATED_ASC. Deprecated in 13.5.")
 
   """
   Created at descending order
   """
-  created_desc @deprecated(reason: "Use CREATED_DESC. Deprecated in 13.5")
+  created_desc @deprecated(reason: "Use CREATED_DESC. Deprecated in 13.5.")
 
   """
   Updated at ascending order
   """
-  updated_asc @deprecated(reason: "Use UPDATED_ASC. Deprecated in 13.5")
+  updated_asc @deprecated(reason: "Use UPDATED_ASC. Deprecated in 13.5.")
 
   """
   Updated at descending order
   """
-  updated_desc @deprecated(reason: "Use UPDATED_DESC. Deprecated in 13.5")
+  updated_desc @deprecated(reason: "Use UPDATED_DESC. Deprecated in 13.5.")
 }
 
 """
@@ -14124,22 +14124,22 @@ enum MergeRequestSort {
   """
   Created at ascending order
   """
-  created_asc @deprecated(reason: "Use CREATED_ASC. Deprecated in 13.5")
+  created_asc @deprecated(reason: "Use CREATED_ASC. Deprecated in 13.5.")
 
   """
   Created at descending order
   """
-  created_desc @deprecated(reason: "Use CREATED_DESC. Deprecated in 13.5")
+  created_desc @deprecated(reason: "Use CREATED_DESC. Deprecated in 13.5.")
 
   """
   Updated at ascending order
   """
-  updated_asc @deprecated(reason: "Use UPDATED_ASC. Deprecated in 13.5")
+  updated_asc @deprecated(reason: "Use UPDATED_ASC. Deprecated in 13.5.")
 
   """
   Updated at descending order
   """
-  updated_desc @deprecated(reason: "Use UPDATED_DESC. Deprecated in 13.5")
+  updated_desc @deprecated(reason: "Use UPDATED_DESC. Deprecated in 13.5.")
 }
 
 """
@@ -14515,7 +14515,7 @@ enum MoveType {
 }
 
 type Mutation {
-  addAwardEmoji(input: AddAwardEmojiInput!): AddAwardEmojiPayload @deprecated(reason: "Use awardEmojiAdd. Deprecated in 13.2")
+  addAwardEmoji(input: AddAwardEmojiInput!): AddAwardEmojiPayload @deprecated(reason: "Use awardEmojiAdd. Deprecated in 13.2.")
   addProjectToSecurityDashboard(input: AddProjectToSecurityDashboardInput!): AddProjectToSecurityDashboardPayload
   adminSidekiqQueuesDeleteJobs(input: AdminSidekiqQueuesDeleteJobsInput!): AdminSidekiqQueuesDeleteJobsPayload
   alertSetAssignees(input: AlertSetAssigneesInput!): AlertSetAssigneesPayload
@@ -14537,7 +14537,7 @@ type Mutation {
   createClusterAgent(input: CreateClusterAgentInput!): CreateClusterAgentPayload
 
   """
-  . Available only when feature flag `custom_emoji` is enabled
+   Available only when feature flag `custom_emoji` is enabled.
   """
   createCustomEmoji(input: CreateCustomEmojiInput!): CreateCustomEmojiPayload
   createDevopsAdoptionSegment(input: CreateDevopsAdoptionSegmentInput!): CreateDevopsAdoptionSegmentPayload
@@ -14576,7 +14576,7 @@ type Mutation {
   Toggles the resolved state of a discussion
   """
   discussionToggleResolve(input: DiscussionToggleResolveInput!): DiscussionToggleResolvePayload
-  dismissVulnerability(input: DismissVulnerabilityInput!): DismissVulnerabilityPayload @deprecated(reason: "Use vulnerabilityDismiss. Deprecated in 13.5")
+  dismissVulnerability(input: DismissVulnerabilityInput!): DismissVulnerabilityPayload @deprecated(reason: "Use vulnerabilityDismiss. Deprecated in 13.5.")
   environmentsCanaryIngressUpdate(input: EnvironmentsCanaryIngressUpdateInput!): EnvironmentsCanaryIngressUpdatePayload
   epicAddIssue(input: EpicAddIssueInput!): EpicAddIssuePayload
   epicSetSubscription(input: EpicSetSubscriptionInput!): EpicSetSubscriptionPayload
@@ -14626,15 +14626,15 @@ type Mutation {
   releaseCreate(input: ReleaseCreateInput!): ReleaseCreatePayload
   releaseDelete(input: ReleaseDeleteInput!): ReleaseDeletePayload
   releaseUpdate(input: ReleaseUpdateInput!): ReleaseUpdatePayload
-  removeAwardEmoji(input: RemoveAwardEmojiInput!): RemoveAwardEmojiPayload @deprecated(reason: "Use awardEmojiRemove. Deprecated in 13.2")
+  removeAwardEmoji(input: RemoveAwardEmojiInput!): RemoveAwardEmojiPayload @deprecated(reason: "Use awardEmojiRemove. Deprecated in 13.2.")
   removeProjectFromSecurityDashboard(input: RemoveProjectFromSecurityDashboardInput!): RemoveProjectFromSecurityDashboardPayload
 
   """
   Repositions a DiffNote on an image (a `Note` where the `position.positionType` is `"image"`)
   """
   repositionImageDiffNote(input: RepositionImageDiffNoteInput!): RepositionImageDiffNotePayload
-  revertVulnerabilityToDetected(input: RevertVulnerabilityToDetectedInput!): RevertVulnerabilityToDetectedPayload @deprecated(reason: "Use vulnerabilityRevertToDetected. Deprecated in 13.5")
-  runDastScan(input: RunDASTScanInput!): RunDASTScanPayload @deprecated(reason: "Use DastOnDemandScanCreate. Deprecated in 13.4")
+  revertVulnerabilityToDetected(input: RevertVulnerabilityToDetectedInput!): RevertVulnerabilityToDetectedPayload @deprecated(reason: "Use vulnerabilityRevertToDetected. Deprecated in 13.5.")
+  runDastScan(input: RunDASTScanInput!): RunDASTScanPayload @deprecated(reason: "Use DastOnDemandScanCreate. Deprecated in 13.4.")
   terraformStateDelete(input: TerraformStateDeleteInput!): TerraformStateDeletePayload
   terraformStateLock(input: TerraformStateLockInput!): TerraformStateLockPayload
   terraformStateUnlock(input: TerraformStateUnlockInput!): TerraformStateUnlockPayload
@@ -14643,7 +14643,7 @@ type Mutation {
   todoRestore(input: TodoRestoreInput!): TodoRestorePayload
   todoRestoreMany(input: TodoRestoreManyInput!): TodoRestoreManyPayload
   todosMarkAllDone(input: TodosMarkAllDoneInput!): TodosMarkAllDonePayload
-  toggleAwardEmoji(input: ToggleAwardEmojiInput!): ToggleAwardEmojiPayload @deprecated(reason: "Use awardEmojiToggle. Deprecated in 13.2")
+  toggleAwardEmoji(input: ToggleAwardEmojiInput!): ToggleAwardEmojiPayload @deprecated(reason: "Use awardEmojiToggle. Deprecated in 13.2.")
   updateAlertStatus(input: UpdateAlertStatusInput!): UpdateAlertStatusPayload
   updateBoard(input: UpdateBoardInput!): UpdateBoardPayload
   updateBoardEpicUserPreferences(input: UpdateBoardEpicUserPreferencesInput!): UpdateBoardEpicUserPreferencesPayload
@@ -14707,8 +14707,8 @@ type Namespace {
   additionalPurchasedStorageSize: Float
 
   """
-  Compliance frameworks available to projects in this namespace. Available only
-  when feature flag `ff_custom_compliance_frameworks` is enabled
+  Compliance frameworks available to projects in this namespace Available only
+  when feature flag `ff_custom_compliance_frameworks` is enabled.
   """
   complianceFrameworks(
     """
@@ -16912,7 +16912,7 @@ type Project {
 
     """
     List items overlapping a time frame defined by startDate..endDate (if one
-    date is provided, both must be present). Deprecated in 13.5: Use timeframe.end
+    date is provided, both must be present) Deprecated in 13.5: Use timeframe.end.
     """
     endDate: Time
 
@@ -16943,8 +16943,8 @@ type Project {
 
     """
     List items overlapping a time frame defined by startDate..endDate (if one
-    date is provided, both must be present). Deprecated in 13.5: Use
-    timeframe.start
+    date is provided, both must be present) Deprecated in 13.5: Use
+    timeframe.start.
     """
     startDate: Time
 
@@ -17177,7 +17177,7 @@ type Project {
 
     """
     List items overlapping a time frame defined by startDate..endDate (if one
-    date is provided, both must be present). Deprecated in 13.5: Use timeframe.end
+    date is provided, both must be present) Deprecated in 13.5: Use timeframe.end.
     """
     endDate: Time
 
@@ -17208,8 +17208,8 @@ type Project {
 
     """
     List items overlapping a time frame defined by startDate..endDate (if one
-    date is provided, both must be present). Deprecated in 13.5: Use
-    timeframe.start
+    date is provided, both must be present) Deprecated in 13.5: Use
+    timeframe.start.
     """
     startDate: Time
 
@@ -19008,8 +19008,8 @@ type Query {
 
   """
   Number of vulnerabilities per severity level, per day, for the projects on the
-  current user's instance security dashboard. Deprecated in 13.3: Use
-  `vulnerabilitiesCountByDay`
+  current user's instance security dashboard Deprecated in 13.3: Use
+  `vulnerabilitiesCountByDay`.
   """
   vulnerabilitiesCountByDayAndSeverity(
     """
@@ -19041,7 +19041,7 @@ type Query {
     First day for which to fetch vulnerability history
     """
     startDate: ISO8601Date!
-  ): VulnerabilitiesCountByDayAndSeverityConnection @deprecated(reason: "Use `vulnerabilitiesCountByDay`. Deprecated in 13.3")
+  ): VulnerabilitiesCountByDayAndSeverityConnection @deprecated(reason: "Use `vulnerabilitiesCountByDay`. Deprecated in 13.3.")
 
   """
   Find a vulnerability
@@ -21529,9 +21529,9 @@ type Snippet implements Noteable {
   author: User
 
   """
-  Snippet blob. Deprecated in 13.3: Use `blobs`
+  Snippet blob Deprecated in 13.3: Use `blobs`.
   """
-  blob: SnippetBlob! @deprecated(reason: "Use `blobs`. Deprecated in 13.3")
+  blob: SnippetBlob! @deprecated(reason: "Use `blobs`. Deprecated in 13.3.")
 
   """
   Snippet blobs
@@ -22038,22 +22038,22 @@ enum Sort {
   """
   Created at ascending order
   """
-  created_asc @deprecated(reason: "Use CREATED_ASC. Deprecated in 13.5")
+  created_asc @deprecated(reason: "Use CREATED_ASC. Deprecated in 13.5.")
 
   """
   Created at descending order
   """
-  created_desc @deprecated(reason: "Use CREATED_DESC. Deprecated in 13.5")
+  created_desc @deprecated(reason: "Use CREATED_DESC. Deprecated in 13.5.")
 
   """
   Updated at ascending order
   """
-  updated_asc @deprecated(reason: "Use UPDATED_ASC. Deprecated in 13.5")
+  updated_asc @deprecated(reason: "Use UPDATED_ASC. Deprecated in 13.5.")
 
   """
   Updated at descending order
   """
-  updated_desc @deprecated(reason: "Use UPDATED_DESC. Deprecated in 13.5")
+  updated_desc @deprecated(reason: "Use UPDATED_DESC. Deprecated in 13.5.")
 }
 
 type StatusAction {
@@ -22891,9 +22891,9 @@ type TodoRestoreManyPayload {
   todos: [Todo!]!
 
   """
-  The IDs of the updated todo items. Deprecated in 13.2: Use todos
+  The IDs of the updated todo items Deprecated in 13.2: Use todos.
   """
-  updatedIds: [TodoID!]! @deprecated(reason: "Use todos. Deprecated in 13.2")
+  updatedIds: [TodoID!]! @deprecated(reason: "Use todos. Deprecated in 13.2.")
 }
 
 """
@@ -22988,9 +22988,9 @@ type TodosMarkAllDonePayload {
   todos: [Todo!]!
 
   """
-  Ids of the updated todos. Deprecated in 13.2: Use todos
+  Ids of the updated todos Deprecated in 13.2: Use todos.
   """
-  updatedIds: [TodoID!]! @deprecated(reason: "Use todos. Deprecated in 13.2")
+  updatedIds: [TodoID!]! @deprecated(reason: "Use todos. Deprecated in 13.2.")
 }
 
 """
@@ -24261,12 +24261,12 @@ type User {
   avatarUrl: String
 
   """
-  User email. Deprecated in 13.7: Use public_email
+  User email Deprecated in 13.7: Use public_email.
   """
-  email: String @deprecated(reason: "Use public_email. Deprecated in 13.7")
+  email: String @deprecated(reason: "Use public_email. Deprecated in 13.7.")
 
   """
-  Group count for the user. Available only when feature flag `user_group_counts` is enabled
+  Group count for the user Available only when feature flag `user_group_counts` is enabled.
   """
   groupCount: Int
 

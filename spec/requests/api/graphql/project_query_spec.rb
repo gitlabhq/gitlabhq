@@ -151,8 +151,9 @@ RSpec.describe 'getting project information' do
           )))
     end
 
-    it 'can lookahead to eliminate N+1 queries', :use_clean_rails_memory_store_caching, :request_store do
-      expect { run_query(10) }.to issue_same_number_of_queries_as { run_query(1) }.or_fewer.ignoring_cached_queries
+    it 'can lookahead to eliminate N+1 queries' do
+      baseline = ActiveRecord::QueryRecorder.new { run_query(1) }
+      expect { run_query(10) }.not_to exceed_query_limit(baseline)
     end
   end
 

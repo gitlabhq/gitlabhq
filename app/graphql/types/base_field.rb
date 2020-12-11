@@ -78,7 +78,7 @@ module Types
     attr_reader :feature_flag
 
     def feature_documentation_message(key, description)
-      "#{description}. Available only when feature flag `#{key}` is enabled"
+      "#{description} Available only when feature flag `#{key}` is enabled."
     end
 
     def check_feature_flag(args)

@@ -183,7 +183,7 @@ export default {
       @dismiss="dismissPartialCleanupWarning = true"
     />
 
-    <details-header :image-name="image.name" />
+    <details-header :image="image" />
 
     <tags-loader v-if="isLoading" />
     <template v-else>

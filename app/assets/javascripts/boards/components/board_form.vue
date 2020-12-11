@@ -1,11 +1,14 @@
 <script>
 import { GlModal } from '@gitlab/ui';
+import { pick } from 'lodash';
 import { __, s__ } from '~/locale';
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import { visitUrl } from '~/lib/utils/url_utility';
 import boardsStore from '~/boards/stores/boards_store';
+import { fullBoardId, getBoardsPath } from '../boards_util';
 
 import BoardConfigurationOptions from './board_configuration_options.vue';
+import createBoardMutation from '../graphql/board.mutation.graphql';
 
 const boardDefaults = {
   id: false,
@@ -81,11 +84,19 @@ export default {
       required: false,
       default: false,
     },
+    currentBoard: {
+      type: Object,
+      required: true,
+    },
+  },
+  inject: {
+    endpoints: {
+      default: {},
+    },
   },
   data() {
     return {
       board: { ...boardDefaults, ...this.currentBoard },
-      currentBoard: boardsStore.state.currentBoard,
       currentPage: boardsStore.state.currentPage,
       isLoading: false,
     };
@@ -143,6 +154,15 @@ export default {
         text: this.$options.i18n.cancelButtonText,
       };
     },
+    boardPayload() {
+      const { assignee, milestone, labels } = this.board;
+      return {
+        ...this.board,
+        assignee_id: assignee?.id,
+        milestone_id: milestone?.id,
+        label_ids: labels.length ? labels.map(b => b.id) : [''],
+      };
+    },
   },
   mounted() {
     this.resetFormState();
@@ -151,6 +171,31 @@ export default {
     }
   },
   methods: {
+    callBoardMutation(id) {
+      return this.$apollo.mutate({
+        mutation: createBoardMutation,
+        variables: {
+          ...pick(this.boardPayload, ['hideClosedList', 'hideBacklogList']),
+          id,
+        },
+      });
+    },
+    async updateBoard() {
+      const responses = await Promise.all([
+        // Remove unnecessary REST API call when https://gitlab.com/gitlab-org/gitlab/-/issues/282299#note_462996301 is resolved
+        getBoardsPath(this.endpoints.boardsEndpoint, this.boardPayload),
+        this.callBoardMutation(fullBoardId(this.boardPayload.id)),
+      ]);
+
+      return responses[0].data;
+    },
+    async createBoard() {
+      // TODO: change this to use `createBoard` mutation https://gitlab.com/gitlab-org/gitlab/-/issues/292466 is resolved
+      const boardData = await getBoardsPath(this.endpoints.boardsEndpoint, this.boardPayload);
+      await this.callBoardMutation(fullBoardId(boardData.data.id));
+
+      return boardData.data || boardData;
+    },
     submit() {
       if (this.board.name.length === 0) return;
       this.isLoading = true;
@@ -166,21 +211,9 @@ export default {
             this.isLoading = false;
           });
       } else {
-        boardsStore
-          .createBoard(this.board)
-          .then(resp => {
-            // This handles 2 use cases
-            // - In create call we only get one parameter, the new board
-            // - In update call, due to Promise.all, we get REST response in
-            // array index 0
-
-            if (Array.isArray(resp)) {
-              return resp[0].data;
-            }
-            return resp.data ? resp.data : resp;
-          })
+        const boardAction = this.boardPayload.id ? this.updateBoard : this.createBoard;
+        boardAction()
           .then(data => {
-            this.isLoading = false;
             visitUrl(data.board_path);
           })
           .catch(() => {
@@ -219,9 +252,11 @@ export default {
     @close="cancel"
     @hide.prevent
   >
-    <p v-if="isDeleteForm">{{ $options.i18n.deleteConfirmationMessage }}</p>
-    <form v-else class="js-board-config-modal" @submit.prevent>
-      <div v-if="!readonly" class="gl-mb-5">
+    <p v-if="isDeleteForm" data-testid="delete-confirmation-message">
+      {{ $options.i18n.deleteConfirmationMessage }}
+    </p>
+    <form v-else class="js-board-config-modal" data-testid="board-form-wrapper" @submit.prevent>
+      <div v-if="!readonly" class="gl-mb-5" data-testid="board-form">
         <label class="gl-font-weight-bold gl-font-lg" for="board-new-name">
           {{ $options.i18n.titleFieldLabel }}
         </label>

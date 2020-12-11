@@ -10,7 +10,7 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions, type: :rubocop do
   subject(:cop) { described_class.new }
 
   context 'fields' do
-    it 'adds an offense when there is no field description' do
+    it 'adds an offense when there is no description' do
       inspect_source(<<~TYPE)
         module Types
           class FakeType < BaseObject
@@ -24,16 +24,29 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions, type: :rubocop do
       expect(cop.offenses.size).to eq 1
     end
 
-    it 'does not add an offense for fields with a description' do
-      expect_no_offenses(<<~TYPE.strip)
+    it 'adds an offense when description does not end in a period' do
+      inspect_source(<<~TYPE)
         module Types
           class FakeType < BaseObject
-            graphql_name 'FakeTypeName'
-
-            argument :a_thing,
+            field :a_thing,
               GraphQL::STRING_TYPE,
               null: false,
               description: 'A descriptive description'
+          end
+        end
+      TYPE
+
+      expect(cop.offenses.size).to eq 1
+    end
+
+    it 'does not add an offense when description is correct' do
+      expect_no_offenses(<<~TYPE.strip)
+        module Types
+          class FakeType < BaseObject
+            field :a_thing,
+              GraphQL::STRING_TYPE,
+              null: false,
+              description: 'A descriptive description.'
           end
         end
       TYPE
@@ -41,7 +54,7 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions, type: :rubocop do
   end
 
   context 'arguments' do
-    it 'adds an offense when there is no argument description' do
+    it 'adds an offense when there is no description' do
       inspect_source(<<~TYPE)
         module Types
           class FakeType < BaseObject
@@ -55,16 +68,85 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions, type: :rubocop do
       expect(cop.offenses.size).to eq 1
     end
 
-    it 'does not add an offense for arguments with a description' do
-      expect_no_offenses(<<~TYPE.strip)
+    it 'adds an offense when description does not end in a period' do
+      inspect_source(<<~TYPE)
         module Types
           class FakeType < BaseObject
-            graphql_name 'FakeTypeName'
-
             argument :a_thing,
               GraphQL::STRING_TYPE,
               null: false,
               description: 'Behold! A description'
+          end
+        end
+      TYPE
+
+      expect(cop.offenses.size).to eq 1
+    end
+
+    it 'does not add an offense when description is correct' do
+      expect_no_offenses(<<~TYPE.strip)
+        module Types
+          class FakeType < BaseObject
+            argument :a_thing,
+              GraphQL::STRING_TYPE,
+              null: false,
+              description: 'Behold! A description.'
+          end
+        end
+      TYPE
+    end
+  end
+
+  describe 'autocorrecting descriptions without periods' do
+    it 'can autocorrect' do
+      expect_offense(<<~TYPE)
+        module Types
+          class FakeType < BaseObject
+            field :a_thing,
+            ^^^^^^^^^^^^^^^ `description` strings must end with a `.`.
+              GraphQL::STRING_TYPE,
+              null: false,
+              description: 'Behold! A description'
+          end
+        end
+      TYPE
+
+      expect_correction(<<~TYPE)
+        module Types
+          class FakeType < BaseObject
+            field :a_thing,
+              GraphQL::STRING_TYPE,
+              null: false,
+              description: 'Behold! A description.'
+          end
+        end
+      TYPE
+    end
+
+    it 'can autocorrect a heredoc' do
+      expect_offense(<<~TYPE)
+        module Types
+          class FakeType < BaseObject
+            field :a_thing,
+            ^^^^^^^^^^^^^^^ `description` strings must end with a `.`.
+              GraphQL::STRING_TYPE,
+              null: false,
+              description: <<~DESC
+                Behold! A description
+              DESC
+          end
+        end
+      TYPE
+
+      expect_correction(<<~TYPE)
+        module Types
+          class FakeType < BaseObject
+            field :a_thing,
+              GraphQL::STRING_TYPE,
+              null: false,
+              description: <<~DESC
+                Behold! A description.
+              DESC
           end
         end
       TYPE

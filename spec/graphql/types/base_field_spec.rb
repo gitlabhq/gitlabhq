@@ -145,11 +145,11 @@ RSpec.describe Types::BaseField do
 
   describe '#description' do
     context 'feature flag given' do
-      let(:field) { described_class.new(name: 'test', type: GraphQL::STRING_TYPE, feature_flag: flag, null: false, description: 'Test description') }
+      let(:field) { described_class.new(name: 'test', type: GraphQL::STRING_TYPE, feature_flag: flag, null: false, description: 'Test description.') }
       let(:flag) { :test_flag }
 
       it 'prepends the description' do
-        expect(field.description). to eq 'Test description. Available only when feature flag `test_flag` is enabled'
+        expect(field.description). to eq 'Test description. Available only when feature flag `test_flag` is enabled.'
       end
 
       context 'falsey feature_flag values' do
@@ -164,7 +164,7 @@ RSpec.describe Types::BaseField do
 
         with_them do
           it 'returns the correct description' do
-            expect(field.description).to eq('Test description')
+            expect(field.description).to eq('Test description.')
           end
         end
       end
@@ -181,11 +181,11 @@ RSpec.describe Types::BaseField do
     it 'interacts well with the `feature_flag` property' do
       field = subject(
         deprecated: { milestone: '1.10', reason: 'Deprecation reason' },
-        description: 'Field description',
+        description: 'Field description.',
         feature_flag: 'foo_flag'
       )
 
-      expectation = 'Field description. Available only when feature flag `foo_flag` is enabled. Deprecated in 1.10: Deprecation reason'
+      expectation = 'Field description. Available only when feature flag `foo_flag` is enabled. Deprecated in 1.10: Deprecation reason.'
 
       expect(field.description).to eq(expectation)
     end

@@ -26,14 +26,7 @@ namespace :gitlab do
       args.with_defaults(repo: 'https://gitlab.com/gitlab-org/gitlab-workhorse.git')
       checkout_or_clone_version(version: 'workhorse-move-notice', repo: args.repo, target_dir: args.dir, clone_opts: %w[--depth 1])
 
-      _, which_status = Gitlab::Popen.popen(%w[which gmake])
-      make = which_status == 0 ? 'gmake' : 'make'
-      command = %W[#{make} -C #{Rails.root.join('workhorse')} install PREFIX=#{File.absolute_path(args.dir)}]
-
-      run_command!(command)
-
-      # 'make install' puts the binaries in #{args.dir}/bin but the init script expects them in args.dir
-      FileUtils.mv(Dir["#{args.dir}/bin/*"], args.dir)
+      Gitlab::SetupHelper::Workhorse.compile_into(args.dir)
     end
   end
 end

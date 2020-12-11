@@ -44,6 +44,24 @@ module Gitlab
         def get_config_path(dir)
           File.join(dir, 'config.toml')
         end
+
+        def compile_into(dir)
+          command = %W[#{make} -C #{Rails.root.join('workhorse')} install PREFIX=#{File.absolute_path(dir)}]
+
+          make_out, make_status = Gitlab::Popen.popen(command)
+          unless make_status == 0
+            warn make_out
+            raise 'workhorse make failed'
+          end
+
+          # 'make install' puts the binaries in #{dir}/bin but the init script expects them in dir
+          FileUtils.mv(Dir["#{dir}/bin/*"], dir)
+        end
+
+        def make
+          _, which_status = Gitlab::Popen.popen(%w[which gmake])
+          which_status == 0 ? 'gmake' : 'make'
+        end
       end
     end
 

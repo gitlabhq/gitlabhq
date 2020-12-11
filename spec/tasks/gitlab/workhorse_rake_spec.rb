@@ -9,8 +9,12 @@ RSpec.describe 'gitlab:workhorse namespace rake task' do
 
   describe 'install' do
     let(:repo) { 'https://gitlab.com/gitlab-org/gitlab-workhorse.git' }
-    let(:clone_path) { Rails.root.join('tmp/tests/gitlab-workhorse').to_s }
+    let(:clone_path) { Dir.mktmpdir('gitlab:workhorse:install-rake-test') }
     let(:workhorse_source) { Rails.root.join('workhorse').to_s }
+
+    after do
+      FileUtils.rm_rf(clone_path)
+    end
 
     context 'no dir given' do
       it 'aborts and display a help message' do
@@ -20,7 +24,7 @@ RSpec.describe 'gitlab:workhorse namespace rake task' do
       end
     end
 
-    context 'when an underlying Git command fail' do
+    context 'when an underlying Git command fails' do
       it 'aborts and display a help message' do
         expect(main_object)
           .to receive(:checkout_or_clone_version).and_raise 'Git error'
@@ -29,47 +33,26 @@ RSpec.describe 'gitlab:workhorse namespace rake task' do
       end
     end
 
-    describe 'checkout or clone' do
-      it 'calls checkout_or_clone_version with the right arguments' do
-        expect(main_object)
-          .to receive(:checkout_or_clone_version).with(version: 'workhorse-move-notice', repo: repo, target_dir: clone_path, clone_opts: %w[--depth 1])
+    it 'clones the origin and creates a gitlab-workhorse binary' do
+      FileUtils.rm_rf(clone_path)
 
-        run_rake_task('gitlab:workhorse:install', clone_path)
-      end
-    end
-
-    describe 'gmake/make' do
-      before do
-        FileUtils.mkdir_p(clone_path)
-      end
-
-      context 'gmake is available' do
-        before do
-          expect(main_object).to receive(:checkout_or_clone_version)
-          allow(Object).to receive(:run_command!).with(['gmake']).and_return(true)
+      Dir.mktmpdir('fake-workhorse-origin') do |workhorse_origin|
+        [
+          %W[git init -q #{workhorse_origin}],
+          %W[git -C #{workhorse_origin} checkout -q -b workhorse-move-notice],
+          %W[touch #{workhorse_origin}/proof-that-repo-got-cloned],
+          %W[git -C #{workhorse_origin} add .],
+          %W[git -C #{workhorse_origin} commit -q -m init],
+          %W[git -C #{workhorse_origin} checkout -q -b master]
+        ].each do |cmd|
+          raise "#{cmd.join(' ')} failed" unless system(*cmd)
         end
 
-        it 'calls gmake in the gitlab-workhorse directory' do
-          expect(Gitlab::Popen).to receive(:popen).with(%w[which gmake]).and_return(['/usr/bin/gmake', 0])
-          expect(main_object).to receive(:run_command!).with(["gmake", "-C", workhorse_source, "install", "PREFIX=#{clone_path}"]).and_return(true)
-
-          run_rake_task('gitlab:workhorse:install', clone_path)
-        end
+        run_rake_task('gitlab:workhorse:install', clone_path, File.join(workhorse_origin, '.git'))
       end
 
-      context 'gmake is not available' do
-        before do
-          expect(main_object).to receive(:checkout_or_clone_version)
-          allow(main_object).to receive(:run_command!).with(['make']).and_return(true)
-        end
-
-        it 'calls make in the gitlab-workhorse directory' do
-          expect(Gitlab::Popen).to receive(:popen).with(%w[which gmake]).and_return(['', 42])
-          expect(main_object).to receive(:run_command!).with(["make", "-C", workhorse_source, "install", "PREFIX=#{clone_path}"]).and_return(true)
-
-          run_rake_task('gitlab:workhorse:install', clone_path)
-        end
-      end
+      expect(File.exist?(File.join(clone_path, 'proof-that-repo-got-cloned'))).to be true
+      expect(File.executable?(File.join(clone_path, 'gitlab-workhorse'))).to be true
     end
   end
 end

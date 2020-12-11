@@ -40,6 +40,7 @@
   .settings-content
     = render 'shared/badges/badge_settings'
 
+= render_if_exists 'groups/compliance_frameworks', expanded: expanded
 = render_if_exists 'groups/custom_project_templates_setting'
 = render_if_exists 'groups/templates_setting', expanded: expanded
 

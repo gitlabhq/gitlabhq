@@ -353,7 +353,12 @@ describe('Details Page', () => {
       mountComponent();
 
       await waitForApolloRequestRender();
-      expect(findDetailsHeader().props()).toEqual({ imageName: containerRepositoryMock.name });
+      expect(findDetailsHeader().props('image')).toMatchObject({
+        name: containerRepositoryMock.name,
+        project: {
+          visibility: containerRepositoryMock.project.visibility,
+        },
+      });
     });
   });
 

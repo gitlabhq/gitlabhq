@@ -14,7 +14,7 @@ Notes are comments on:
 - Epics **(ULTIMATE)**
 
 This includes system notes, which are notes about changes to the object (for example, when an
-assignee changes, there will be a corresponding system note).
+assignee changes, GitLab posts a system note).
 
 ## Resource events
 
@@ -137,7 +137,7 @@ Parameters:
 - `issue_iid` (required) - The IID of an issue
 - `body` (required) - The content of a note. Limited to 1,000,000 characters.
 - `confidential` (optional) - The confidential flag of a note. Default is false.
-- `created_at` (optional) - Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z (requires admin or project/group owner rights)
+- `created_at` (optional) - Date time string, ISO 8601 formatted. Example: `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights)
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/11/notes?body=note"
@@ -244,8 +244,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ### Create new snippet note
 
-Creates a new note for a single snippet. Snippet notes are comments users can post to a snippet.
-If you create a note where the body only contains an Award Emoji, you'll receive this object back.
+Creates a new note for a single snippet. Snippet notes are user comments on snippets.
+If you create a note where the body only contains an Award Emoji, GitLab returns this object.
 
 ```plaintext
 POST /projects/:id/snippets/:snippet_id/notes
@@ -256,7 +256,7 @@ Parameters:
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding)
 - `snippet_id` (required) - The ID of a snippet
 - `body` (required) - The content of a note. Limited to 1,000,000 characters.
-- `created_at` (optional) - Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z
+- `created_at` (optional) - Date time string, ISO 8601 formatted. Example: `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights)
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/snippet/11/notes?body=note"
@@ -368,8 +368,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ### Create new merge request note
 
 Creates a new note for a single merge request.
-If you create a note where the body only contains an Award Emoji, you'll receive
-this object back.
+If you create a note where the body only contains an Award Emoji, GitLab returns this object.
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/notes
@@ -380,7 +379,7 @@ Parameters:
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding)
 - `merge_request_iid` (required) - The IID of a merge request
 - `body` (required) - The content of a note. Limited to 1,000,000 characters.
-- `created_at` (optional) - Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z
+- `created_at` (optional) - Date time string, ISO 8601 formatted. Example: `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights)
 
 ### Modify existing merge request note
 
@@ -486,7 +485,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ### Create new epic note
 
 Creates a new note for a single epic. Epic notes are comments users can post to an epic.
-If you create a note where the body only contains an Award Emoji, you'll receive this object back.
+If you create a note where the body only contains an Award Emoji, GitLab returns this object.
 
 ```plaintext
 POST /groups/:id/epics/:epic_id/notes

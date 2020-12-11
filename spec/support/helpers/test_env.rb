@@ -241,15 +241,14 @@ module TestEnv
   end
 
   def setup_workhorse
-    install_workhorse_args = [workhorse_dir, workhorse_url].compact.join(',')
+    start = Time.now
+    puts "\n==> Setting up GitLab Workhorse..."
 
-    component_timed_setup(
-      'GitLab Workhorse',
-      install_dir: workhorse_dir,
-      version: Gitlab::Workhorse.version,
-      task: "gitlab:workhorse:install[#{install_workhorse_args}]") do
-        Gitlab::SetupHelper::Workhorse.create_configuration(workhorse_dir, nil)
-      end
+    FileUtils.rm_rf(workhorse_dir)
+    Gitlab::SetupHelper::Workhorse.compile_into(workhorse_dir)
+    Gitlab::SetupHelper::Workhorse.create_configuration(workhorse_dir, nil)
+
+    puts "    GitLab Workhorse set up in #{Time.now - start} seconds...\n"
   end
 
   def workhorse_dir

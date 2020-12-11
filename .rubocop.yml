@@ -427,6 +427,7 @@ Scalability/FileUploads:
 
 Graphql/Descriptions:
   Enabled: true
+  AutoCorrect: true
   Include:
     - 'app/graphql/**/*'
     - 'ee/app/graphql/**/*'

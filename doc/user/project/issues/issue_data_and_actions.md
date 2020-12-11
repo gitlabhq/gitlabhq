@@ -10,13 +10,15 @@ Please read through the [GitLab Issue Documentation](index.md) for an overview o
 
 ## Parts of an Issue
 
-The image below illustrates what an issue may look like. Note that certain parts will
-look slightly different or will be absent, depending on the version of GitLab being used
-and the permissions of the user viewing the issue.
+The image below illustrates what an issue may look like. Certain parts
+look slightly different or are absent, depending on the GitLab version
+and the user's permissions.
 
-You can find all the information for that issue on one screen.
+You can find all of an issue's information on one page.
 
 ![Issue view](img/issues_main_view_numbered.png)
+
+The numbers in the image correspond to the following features:
 
 - **1.** [Issue actions](#issue-actions)
 - **2.** [To Do](#to-do)
@@ -46,10 +48,6 @@ You can find all the information for that issue on one screen.
 - **24.** [Comments](#comments)
 - **25.** [Submit comment, start a thread, or comment and close](#submit-comment-start-a-thread-or-comment-and-close)
 - **26.** [Zoom meetings](#zoom-meetings)
-
-An issue starts with its status (open or closed), followed by its author,
-and includes many other functionalities, numbered in the image above to
-explain what they mean, one by one.
 
 Many of the elements of the issue screen refresh automatically, such as the title and
 description, when they are changed by another user. Comments and system notes also
@@ -89,9 +87,9 @@ An issue can be assigned to:
 - Another person.
 - [Many people](#multiple-assignees). **(STARTER)**
 
-The assignee(s) can be changed as often as needed. The idea is that the assignees are
+The assignees can be changed as often as needed. The idea is that the assignees are
 responsible for that issue until it's reassigned to someone else to take it from there.
-When assigned to someone, it will appear in their assigned issues list.
+When assigned to someone, it appears in their assigned issues list.
 
 NOTE:
 If a user is not member of that project, it can only be
@@ -99,7 +97,7 @@ assigned to them if they created the issue themselves.
 
 #### Multiple Assignees **(STARTER)**
 
-Often multiple people work on the same issue together, which can be especially difficult
+Often, multiple people work on the same issue together. This can be difficult
 to track in large teams where there is shared ownership of an issue.
 
 In [GitLab Starter](https://about.gitlab.com/pricing/), you can
@@ -116,10 +114,10 @@ Select a [milestone](../milestones/index.md) to attribute that issue to.
 
 ### Time tracking
 
-Use [GitLab Quick Actions](../quick_actions.md) to [track estimates and time spent on issues](../time_tracking.md).
-You can add an [estimate of the time it will take](../time_tracking.md#estimates)
-to resolve the issue, and also add [the time spent](../time_tracking.md#time-spent)
-on the resolution of the issue.
+Use [GitLab Quick Actions](../quick_actions.md) to [track estimates and time
+spent on issues](../time_tracking.md). You can add a [time estimate](../time_tracking.md#estimates)
+for resolving the issue, and also add [the time spent](../time_tracking.md#time-spent)
+to resolve the issue.
 
 ### Due date
 
@@ -132,13 +130,12 @@ element. Due dates can be changed as many times as needed.
 Categorize issues by giving them [labels](../labels.md). They help to organize workflows,
 and they enable you to work with the [GitLab Issue Board](index.md#issue-boards).
 
-Group Labels, which allow you to use the same labels for all projects within the same
-group, can be also given to issues. They work exactly the same, but they are immediately
+Group Labels, which allow you to use the same labels for all projects in the same
+group, can also be given to issues. They work exactly the same, but are immediately
 available to all projects in the group.
 
-NOTE:
-If a label doesn't exist yet, you can click **Edit**, and it opens a dropdown menu
-from which you can select **Create new label**.
+If a label doesn't exist yet, you can create one by clicking **Edit**
+followed by **Create new label** in the dropdown menu.
 
 ### Weight **(STARTER)**
 
@@ -148,9 +145,8 @@ positive values or zero are allowed.
 
 ### Confidentiality
 
-You can [set an issue to be confidential](confidential_issues.md). When set, unauthorized
-users will not be able to access the issue, and will not see it listed in project
-issue boards or the issue list.
+You can [set an issue to be confidential](confidential_issues.md). Unauthorized users
+cannot access the issue, and it is not listed in the project's issue boards nor list for them.
 
 ### Lock issue
 
@@ -165,7 +161,7 @@ or were mentioned in the description or threads.
 ### Notifications
 
 Click on the icon to enable/disable [notifications](../../profile/notifications.md#issue--epics--merge-request-events)
-for the issue. This will automatically enable if you participate in the issue in any way.
+for the issue. Notifications are automatically enabled after you participate in the issue in any way.
 
 - **Enable**: If you are not a participant in the discussion on that issue, but
   want to receive notifications on each update, subscribe to it.
@@ -180,9 +176,9 @@ for the issue. This will automatically enable if you participate in the issue in
 
 ### Edit
 
-Clicking this icon opens the issue for editing, and you will have access to all the
-same fields as when the issue was created. This icon will not display if the user
-does not have permission to edit the issue.
+Clicking this icon opens the issue for editing. All the fields which
+were shown when the issue was created are displayed for editing.
+This icon is only displayed if the user has permission to edit the issue.
 
 ### Description
 
@@ -195,17 +191,15 @@ allowing many formatting options.
 ### Mentions
 
 You can mention a user or a group present in your GitLab instance with `@username` or
-`@groupname` and they will be notified via to-dos and email, unless they have disabled
-all notifications in their profile settings. This is controlled in the
-[notification settings](../../profile/notifications.md).
+`@groupname`. All mentioned users are notified via to-do items and emails,
+unless they have disabled all notifications in their profile settings.
+This is controlled in the [notification settings](../../profile/notifications.md).
 
-Mentions for yourself (the current logged in user), will be highlighted in a different
-color, allowing you to easily see which comments involve you, helping you focus on
-them quickly.
+Mentions for yourself (the current logged in user) are highlighted
+in a different color, which allows you to quickly see which comments involve you.
 
-NOTE:
 Avoid mentioning `@all` in issues and merge requests, as it sends an email notification
-to all the members of that project's group, which can be interpreted as spam.
+to all the members of that project's group. This might be interpreted as spam.
 
 ### Related Issues
 
@@ -217,18 +211,18 @@ You can also click the `+` to add more related issues.
 Merge requests that were mentioned in that issue's description or in the issue thread
 are listed as [related merge requests](crosslinking_issues.md#from-merge-requests) here.
 Also, if the current issue was mentioned as related in another merge request, that
-merge request will be listed here.
+merge request is also listed here.
 
 ### Award emoji
 
-You can award an emoji to that issue. There are shortcuts to "thumbs_up" and "thumbs_down",
-or you can click on the light gray "face" to choose a different reaction from the
-dropdown list of available [GitLab Flavored Markdown Emoji](../../markdown.md#emoji).
+You can award emojis to issues. You can select the "thumbs up" and "thumbs down",
+or the gray "smiley-face" to choose from the list of available
+[GitLab Flavored Markdown Emoji](../../markdown.md#emoji).
 
 NOTE:
 Posting "+1" as a comment in a thread spams all subscribed participants of that issue,
 clutters the threads, and is not recommended. Awarding an emoji is a way
-to let them know your reaction without spamming them.
+to let them know your reaction without notifying them.
 
 ### Show all activity
 
@@ -241,21 +235,20 @@ and selecting either:
 Also:
 
 - You can mention a user or a group present in your GitLab instance with
-  `@username` or `@groupname` and they will be notified via to-do items
-  and email, unless they have [disabled all notifications](#notifications)
+  `@username` or `@groupname` and they are notified via to-do items
+  and emails, unless they have [disabled all notifications](#notifications)
   in their profile settings.
-- Mentions for yourself (the current logged in user), will be highlighted
-  in a different color, allowing you to easily see which comments involve you,
-  helping you focus on them quickly.
+- Mentions for yourself (the current logged-in user) are highlighted
+  in a different color, which allows you to quickly see which comments involve you.
 
 ![Show all activity](img/show-all-activity.png)
 
 ### Create Merge Request
 
 Create a new branch and [**Draft** merge request](../merge_requests/work_in_progress_merge_requests.md)
-in one action. The branch will be named `issuenumber-title` by default, but you can
-choose any name, and GitLab will verify that it is not already in use. The merge request
-will automatically inherit the milestone and labels of the issue, and will be set to
+in one action. The branch is named `issuenumber-title` by default, but you can
+choose any name, and GitLab verifies that it is not already in use. The merge request
+inherits the milestone and labels of the issue, and is set to automatically
 close the issue when it is merged.
 
 ![Create MR from issue](img/create_mr_from_issue.png)
@@ -288,11 +281,11 @@ supports [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-g
 
 ### Submit comment, start a thread, or comment and close
 
-Once you write a comment, you can:
+After you write a comment, you can:
 
-- Click **Comment** and your comment will be published.
+- Click **Comment** and to publish your comment.
 - Choose **Start thread** from the dropdown list and start a new [thread](../../discussions/index.md#threaded-discussions)
-  within that issue's main thread to discuss specific points. This invites other participants
+  in that issue's main thread to discuss specific points. This invites other participants
   to reply directly to your thread, keeping related comments grouped together.
 
 ![Comment or thread](img/comment-or-discussion.png)

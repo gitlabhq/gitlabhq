@@ -345,6 +345,7 @@ export default {
         :scoped-issue-board-feature-enabled="scopedIssueBoardFeatureEnabled"
         :weights="weights"
         :enable-scoped-labels="enabledScopedLabels"
+        :current-board="currentBoard"
       />
     </span>
   </div>

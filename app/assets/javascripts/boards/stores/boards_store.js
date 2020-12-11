@@ -1,7 +1,7 @@
 /* eslint-disable no-shadow, no-param-reassign,consistent-return */
 /* global List */
 /* global ListIssue */
-import { sortBy, pick } from 'lodash';
+import { sortBy } from 'lodash';
 import Vue from 'vue';
 import BoardsStoreEE from 'ee_else_ce/boards/stores/boards_store_ee';
 import {
@@ -20,8 +20,6 @@ import IssueProject from '../models/project';
 import ListLabel from '../models/label';
 import ListAssignee from '../models/assignee';
 import ListMilestone from '../models/milestone';
-
-import createBoardMutation from '../graphql/board.mutation.graphql';
 
 const PER_PAGE = 20;
 export const gqlClient = createDefaultClient();
@@ -757,52 +755,6 @@ const boardsStore = {
 
   recentBoards() {
     return axios.get(this.state.endpoints.recentBoardsEndpoint);
-  },
-
-  createBoard(board) {
-    const boardPayload = { ...board };
-    boardPayload.label_ids = (board.labels || []).map(b => b.id);
-
-    if (boardPayload.label_ids.length === 0) {
-      boardPayload.label_ids = [''];
-    }
-
-    if (boardPayload.assignee) {
-      boardPayload.assignee_id = boardPayload.assignee.id;
-    }
-
-    if (boardPayload.milestone) {
-      boardPayload.milestone_id = boardPayload.milestone.id;
-    }
-
-    if (boardPayload.id) {
-      const input = {
-        ...pick(boardPayload, ['hideClosedList', 'hideBacklogList']),
-        id: this.generateBoardGid(boardPayload.id),
-      };
-
-      return Promise.all([
-        axios.put(this.generateBoardsPath(boardPayload.id), { board: boardPayload }),
-        gqlClient.mutate({
-          mutation: createBoardMutation,
-          variables: input,
-        }),
-      ]);
-    }
-
-    return axios
-      .post(this.generateBoardsPath(), { board: boardPayload })
-      .then(resp => resp.data)
-      .then(data => {
-        gqlClient.mutate({
-          mutation: createBoardMutation,
-          variables: {
-            ...pick(boardPayload, ['hideClosedList', 'hideBacklogList']),
-            id: this.generateBoardGid(data.id),
-          },
-        });
-        return data;
-      });
   },
 
   deleteBoard({ id }) {
