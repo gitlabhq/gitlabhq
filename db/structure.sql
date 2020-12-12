@@ -22566,6 +22566,8 @@ CREATE UNIQUE INDEX index_smartcard_identities_on_subject_and_issuer ON smartcar
 
 CREATE INDEX index_smartcard_identities_on_user_id ON smartcard_identities USING btree (user_id);
 
+CREATE INDEX index_snippet_on_id_and_project_id ON snippets USING btree (id, project_id);
+
 CREATE UNIQUE INDEX index_snippet_repositories_on_disk_path ON snippet_repositories USING btree (disk_path);
 
 CREATE INDEX index_snippet_repositories_on_shard_id ON snippet_repositories USING btree (shard_id);
