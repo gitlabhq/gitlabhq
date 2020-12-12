@@ -47,9 +47,6 @@ The Dependency Proxy is not available for projects.
 
 ## Use the Dependency Proxy for Docker images
 
-WARNING:
-In some specific storage configurations, an issue occurs and container images are not pulled correctly from the cache. The problem occurs when an image is located in object storage. The proxy looks for it locally and fails to find it. View [issue #208080](https://gitlab.com/gitlab-org/gitlab/-/issues/208080) for details.
-
 You can use GitLab as a source for your Docker images.
 
 Prerequisites:
@@ -189,3 +186,66 @@ stored.
 
 To reclaim disk space used by image blobs that are no longer needed, use
 the [Dependency Proxy API](../../../api/dependency_proxy.md).
+
+## Docker Hub rate limits and the Dependency Proxy
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241639) in [GitLab Core](https://about.gitlab.com/pricing/) 13.7.
+
+In November 2020, Docker introduced
+[rate limits on pull requests from Docker Hub](https://docs.docker.com/docker-hub/download-rate-limit/).
+If your GitLab [CI/CD configuration](../../../ci/README.md) uses
+an image from Docker Hub, each time a job runs, it may count as a pull request.
+To help get around this limit, you can pull your image from the Dependency Proxy cache instead.
+
+When you pull an image (by using a command like `docker pull` or, in a `.gitlab-ci.yml`
+file, `image: foo:latest`), the Docker client makes a collection of requests:
+
+1. The image manifest is requested. The manifest contains information about
+   how to build the image.
+1. Using the manifest, the Docker client requests a collection of layers, also
+   known as blobs, one at a time.
+
+The Docker Hub rate limit is based on the number of GET requests for the manifest. The Dependency Proxy
+caches both the manifest and blobs for a given image, so when you request it again,
+Docker Hub does not have to be contacted.
+
+### How does GitLab know if a cached tagged image is stale?
+
+If you are using an image tag like `alpine:latest`, the image changes
+over time. Each time it changes, the manifest contains different information about which
+blobs to request. The Dependency Proxy does not pull a new image each time the
+manifest changes; it checks only when the manifest becomes stale.
+
+Docker does not count HEAD requests for the image manifest towards the rate limit.
+You can make a HEAD request for `alpine:latest`, view the digest (checksum)
+value returned in the header, and determine if a manifest has changed.
+
+The Dependency Proxy starts all requests with a HEAD request. If the manifest
+has become stale, only then is a new image pulled.
+
+For example, if your pipeline pulls `node:latest` every five
+minutes, the Dependency Proxy caches the entire image and only updates it if
+`node:latest` changes. So instead of having 360 requests for the image in six hours
+(which exceeds the Docker Hub rate limit), you only have one pull request, unless
+the manifest changed during that time.
+
+### Check your Docker Hub rate limit
+
+If you are curious about how many requests to Docker Hub you have made and how
+many remain, you can run these commands from your runner, or even in a CI/CD
+script:
+
+```shell
+# Note, you must have jq installed to run this command
+TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq --raw-output .token) && curl --head --header "Authorization: Bearer $TOKEN" "https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest" 2>&1 | grep RateLimit
+...
+```
+
+The output is something like:
+
+```shell
+RateLimit-Limit: 100;w=21600
+RateLimit-Remaining: 98;w=21600
+```
+
+This example shows the total limit of 100 pulls in six hours, with 98 pulls remaining.

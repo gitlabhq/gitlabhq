@@ -18,7 +18,7 @@ much more.
 GitLab provides a WAF out of the box after Ingress is deployed. All you need to do is deploy your
 application along with a service and Ingress resource. In GitLab's [Ingress](../../user/clusters/applications.md#ingress)
 deployment, the [ModSecurity](https://modsecurity.org/)
-module is loaded into Ingress-NGINX by default and monitors the traffic going to the applications
+module is loaded into Ingress-NGINX by default and monitors the traffic to the applications
 which have an Ingress. The ModSecurity module runs with the [OWASP Core Rule Set (CRS)](https://coreruleset.org/)
 by default. The OWASP CRS detects and logs a wide range of common attacks.
 

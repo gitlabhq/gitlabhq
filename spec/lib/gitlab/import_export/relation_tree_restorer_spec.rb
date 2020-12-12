@@ -113,12 +113,31 @@ RSpec.describe Gitlab::ImportExport::RelationTreeRestorer do
 
         include_examples 'logging of relations creation'
       end
+    end
 
-      context 'using ndjson reader' do
-        let(:path) { 'spec/fixtures/lib/gitlab/import_export/complex/tree' }
-        let(:relation_reader) { Gitlab::ImportExport::JSON::NdjsonReader.new(path) }
+    context 'using ndjson reader' do
+      let(:path) { 'spec/fixtures/lib/gitlab/import_export/complex/tree' }
+      let(:relation_reader) { Gitlab::ImportExport::JSON::NdjsonReader.new(path) }
 
-        it_behaves_like 'import project successfully'
+      it_behaves_like 'import project successfully'
+    end
+
+    context 'with invalid relations' do
+      let(:path) { 'spec/fixtures/lib/gitlab/import_export/project_with_invalid_relations/tree' }
+      let(:relation_reader) { Gitlab::ImportExport::JSON::NdjsonReader.new(path) }
+
+      it 'logs the invalid relation and its errors' do
+        expect(relation_tree_restorer.shared.logger)
+          .to receive(:warn)
+          .with(
+            error_messages: "Title can't be blank. Title is invalid",
+            message: '[Project/Group Import] Invalid object relation built',
+            relation_class: 'ProjectLabel',
+            relation_index: 0,
+            relation_key: 'labels'
+          ).once
+
+        relation_tree_restorer.restore
       end
     end
   end

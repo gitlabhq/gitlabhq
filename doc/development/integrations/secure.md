@@ -217,7 +217,7 @@ then `artifacts:reports:dependency_scanning` must be set to `depscan.json`.
 
 ### Exit code
 
-Following the POSIX exit code standard, the scanner will exit with 0 for success and any number from 1 to 255 for anything else.
+Following the POSIX exit code standard, the scanner exits with 0 for success and any number from 1 to 255 for anything else.
 Success also includes the case when vulnerabilities are found.
 
 When executing a scanning job using the [Docker-in-Docker privileged mode](../../user/application_security/sast/index.md#requirements),
@@ -397,7 +397,7 @@ Not all vulnerabilities have CVEs, and a CVE can be identified multiple times. A
 isn't a stable identifier and you shouldn't assume it as such when tracking vulnerabilities.
 
 The maximum number of identifiers for a vulnerability is set as 20. If a vulnerability has more than 20 identifiers,
-the system will save only the first 20 of them. Note that vulnerabilities in the [Pipeline
+the system saves only the first 20 of them. Note that vulnerabilities in the [Pipeline
 Security](../../user/application_security/security_dashboard/#pipeline-security)
 tab do not enforce this limit and will show all identifiers present in the report artifact.
 

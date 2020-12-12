@@ -7,7 +7,6 @@ import { FEATURE_FLAG_SCOPE, USER_LIST_SCOPE } from '../constants';
 import FeatureFlagsTab from './feature_flags_tab.vue';
 import FeatureFlagsTable from './feature_flags_table.vue';
 import UserListsTable from './user_lists_table.vue';
-import { s__ } from '~/locale';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 import {
   buildUrlWithCurrentLocation,
@@ -95,9 +94,6 @@ export default {
     },
     hasNewPath() {
       return !isEmpty(this.newFeatureFlagPath);
-    },
-    emptyStateTitle() {
-      return s__('FeatureFlags|Get started with feature flags');
     },
   },
   created() {
@@ -246,7 +242,12 @@ export default {
           :error-state="shouldRenderErrorState"
           :error-title="s__(`FeatureFlags|There was an error fetching the feature flags.`)"
           :empty-state="shouldShowEmptyState"
-          :empty-title="emptyStateTitle"
+          :empty-title="s__('FeatureFlags|Get started with feature flags')"
+          :empty-description="
+            s__(
+              'FeatureFlags|Feature flags allow you to configure your code into different flavors by dynamically toggling certain functionality.',
+            )
+          "
           data-testid="feature-flags-tab"
           @dismissAlert="clearAlert"
           @changeTab="onFeatureFlagsTab"
@@ -266,7 +267,12 @@ export default {
           :error-state="shouldRenderErrorState"
           :error-title="s__(`FeatureFlags|There was an error fetching the user lists.`)"
           :empty-state="shouldShowEmptyState"
-          :empty-title="emptyStateTitle"
+          :empty-title="s__('FeatureFlags|Get started with user lists')"
+          :empty-description="
+            s__(
+              'FeatureFlags|User lists allow you to define a set of users to use with Feature Flags.',
+            )
+          "
           data-testid="user-lists-tab"
           @dismissAlert="clearAlert"
           @changeTab="onUserListsTab"

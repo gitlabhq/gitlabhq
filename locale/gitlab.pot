@@ -11918,6 +11918,9 @@ msgstr ""
 msgid "FeatureFlags|Get started with feature flags"
 msgstr ""
 
+msgid "FeatureFlags|Get started with user lists"
+msgstr ""
+
 msgid "FeatureFlags|GitLab is moving to a new way of managing feature flags, and in 13.4, this feature flag will become read-only. Please create a new feature flag."
 msgstr ""
 
@@ -12030,6 +12033,9 @@ msgid "FeatureFlags|User List"
 msgstr ""
 
 msgid "FeatureFlags|User Lists"
+msgstr ""
+
+msgid "FeatureFlags|User lists allow you to define a set of users to use with Feature Flags."
 msgstr ""
 
 msgid "FeatureFlag|Percentage"

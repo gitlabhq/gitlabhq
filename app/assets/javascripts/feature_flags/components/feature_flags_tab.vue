@@ -41,6 +41,10 @@ export default {
       required: true,
       type: String,
     },
+    emptyDescription: {
+      required: true,
+      type: String,
+    },
   },
   inject: ['errorStateSvgPath', 'featureFlagsHelpPagePath'],
   computed: {
@@ -92,11 +96,7 @@ export default {
         data-testid="empty-state"
       >
         <template #description>
-          {{
-            s__(
-              'FeatureFlags|Feature flags allow you to configure your code into different flavors by dynamically toggling certain functionality.',
-            )
-          }}
+          {{ emptyDescription }}
           <gl-link :href="featureFlagsHelpPagePath" target="_blank">
             {{ s__('FeatureFlags|More information') }}
           </gl-link>

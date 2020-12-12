@@ -3936,7 +3936,7 @@ You can use [Generic packages](../../user/packages/generic_packages/) to host yo
 For a complete example, see the [Release assets as Generic packages](https://gitlab.com/gitlab-org/release-cli/-/tree/master/docs/examples/release-assets-as-generic-package/)
 project.
 
-#### `releaser-cli` command line
+#### `release-cli` command line
 
 The entries under the `release` node are transformed into a `bash` command line and sent
 to the Docker container, which contains the [release-cli](https://gitlab.com/gitlab-org/release-cli).

@@ -299,7 +299,7 @@ For details on saving and transporting Docker images as a file, see Docker's doc
 
 It can be worthwhile to set up a [scheduled pipeline](../../../ci/pipelines/schedules.md) to
 build a new version of the vulnerabilities database on a preset schedule. Automating
-this with a pipeline means you won't have to do it manually each time. You can use the following
+this with a pipeline means you do not have to do it manually each time. You can use the following
 `.gitlab-yml.ci` as a template:
 
 ```yaml
@@ -319,7 +319,7 @@ build_latest_vulnerabilities:
     - docker push $CI_REGISTRY/namespace/clair-vulnerabilities-db
 ```
 
-The above template works for a GitLab Docker registry running on a local installation, however, if you're using a non-GitLab Docker registry, you'll need to change the `$CI_REGISTRY` value and the `docker login` credentials to match the details of your local registry.
+The above template works for a GitLab Docker registry running on a local installation, however, if you're using a non-GitLab Docker registry, you need to change the `$CI_REGISTRY` value and the `docker login` credentials to match the details of your local registry.
 
 ## Running the standalone container scanning tool
 

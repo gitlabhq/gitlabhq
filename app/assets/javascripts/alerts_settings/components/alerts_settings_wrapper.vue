@@ -107,6 +107,7 @@ export default {
     },
     canManageOpsgenie() {
       return (
+        this.opsgenie.active ||
         this.integrations?.list?.every(({ active }) => active === false) ||
         this.integrations?.list?.length === 0
       );

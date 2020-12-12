@@ -6,25 +6,25 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Getting started with the Web Application Firewall
 
-This is a step-by-step guide that will help you use GitLab's [Web Application Firewall](index.md) after
+This is a step-by-step guide to help you use the GitLab [Web Application Firewall](index.md) after
 deploying a project hosted on GitLab.com to Google Kubernetes Engine using [Auto DevOps](../autodevops/index.md).
 
-We will use GitLab's native Kubernetes integration, so you will not need
+GitLab's native Kubernetes integration is used, so you do not need
 to create a Kubernetes cluster manually using the Google Cloud Platform console.
-We will create and deploy a simple application that we create from a GitLab template.
+A simple application is created and deployed based on a GitLab template.
 
-These instructions will also work for a self-managed GitLab instance. However, you will
+These instructions also work for a self-managed GitLab instance. However, you
 need to ensure your own [runners are configured](../../ci/runners/README.md) and
 [Google OAuth is enabled](../../integration/google.md).
 
 GitLab's Web Application Firewall is deployed with [Ingress](../../user/clusters/applications.md#ingress),
-so it will be available to your applications no matter how you deploy them to Kubernetes.
+so it is available to your applications no matter how you deploy them to Kubernetes.
 
 ## Configuring your Google account
 
 Before creating and connecting your Kubernetes cluster to your GitLab project,
 you need a Google Cloud Platform account. If you do not already have one,
-sign up at <https://console.cloud.google.com>. You will need to either sign in with an existing
+sign up at <https://console.cloud.google.com>. You need to either sign in with an existing
 Google account (for example, one that you use to access Gmail, Drive, etc.) or create a new one.
 
 1. To enable the required APIs and related services, follow the steps in the ["Before you begin" section of the Kubernetes Engine docs](https://cloud.google.com/kubernetes-engine/docs/quickstart#before-you-begin).
@@ -37,14 +37,14 @@ Google Kubernetes Engine integration. All you have to do is [follow this link](h
 
 ## Creating a new project from a template
 
-We will use one of GitLab's project templates to get started. As the name suggests,
+We use a GitLab project templates to get started. As the name suggests,
 those projects provide a barebones application built on some well-known frameworks.
 
 1. In GitLab, click the plus icon (**+**) at the top of the navigation bar and select
    **New project**.
 1. Go to the **Create from template** tab where you can choose for example a Ruby on
    Rails, Spring, or NodeJS Express project.
-   We will use the Ruby on Rails template.
+   Use the Ruby on Rails template.
 
    ![Select project template](../autodevops/img/guide_project_template_v12_3.png)
 
@@ -57,7 +57,7 @@ those projects provide a barebones application built on some well-known framewor
 1. Click **Create project**.
 
 Now that the project is created, the next step is to create the Kubernetes cluster
-under which this application will be deployed.
+to deploy this application under.
 
 ## Creating a Kubernetes cluster from within GitLab
 
@@ -111,14 +111,14 @@ auditing anomalous traffic, blocking mode ensures the traffic doesn't reach past
 
 After Ingress is installed, wait a few seconds and copy the IP address that
 is displayed in order to add in your base **Domain** at the top of the page. For
-the purpose of this guide, we will use the one suggested by GitLab. Once you have
+the purpose of this guide, we use the one suggested by GitLab. Once you have
 filled in the domain, click **Save changes**.
 
 ![Cluster Base Domain](../autodevops/img/guide_base_domain_v12_3.png)
 
 Prometheus should also be installed. It is an open-source monitoring and
-alerting system that we will use to supervise the deployed application.
-We will not install GitLab Runner as we will use the shared runners that
+alerting system that is used to supervise the deployed application.
+We will not install GitLab Runner as we use the shared runners that
 GitLab.com provides.
 
 ## Enabling Auto DevOps (optional)
@@ -162,7 +162,7 @@ deploys the application in Kubernetes ([Auto Deploy](../autodevops/stages.md#aut
 
 The **production** stage creates Kubernetes objects
 like a Deployment, Service, and Ingress resource. The
-application will be monitored by the WAF automatically.
+application is monitored by the WAF automatically.
 
 ## Validating Ingress is running ModSecurity
 

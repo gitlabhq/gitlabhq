@@ -110,6 +110,7 @@ RSpec.describe Groups::ImportExport::ImportService do
         allow(Gitlab::Import::Logger).to receive(:build).and_return(import_logger)
         allow(import_logger).to receive(:error)
         allow(import_logger).to receive(:info)
+        allow(import_logger).to receive(:warn)
         allow(FileUtils).to receive(:rm_rf).and_call_original
       end
 
@@ -220,6 +221,7 @@ RSpec.describe Groups::ImportExport::ImportService do
 
         allow(Gitlab::Import::Logger).to receive(:build).and_return(import_logger)
         allow(import_logger).to receive(:error)
+        allow(import_logger).to receive(:warn)
         allow(import_logger).to receive(:info)
         allow(FileUtils).to receive(:rm_rf).and_call_original
       end

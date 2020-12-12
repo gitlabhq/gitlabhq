@@ -12,6 +12,7 @@ const DEFAULT_PROPS = {
   errorTitle: 'test title',
   emptyState: true,
   emptyTitle: 'test empty',
+  emptyDescription: 'empty description',
 };
 
 const DEFAULT_PROVIDE = {
@@ -115,9 +116,7 @@ describe('feature_flags/components/feature_flags_tab.vue', () => {
 
     it('should show an empty state if it is empty', () => {
       expect(emptyState.text()).toContain(DEFAULT_PROPS.emptyTitle);
-      expect(emptyState.text()).toContain(
-        'Feature flags allow you to configure your code into different flavors by dynamically toggling certain functionality.',
-      );
+      expect(emptyState.text()).toContain(DEFAULT_PROPS.emptyDescription);
       expect(emptyState.props('svgPath')).toBe(DEFAULT_PROVIDE.errorStateSvgPath);
       expect(emptyStateLink.attributes('href')).toBe(DEFAULT_PROVIDE.featureFlagsHelpPagePath);
       expect(emptyStateLink.text()).toBe('More information');
