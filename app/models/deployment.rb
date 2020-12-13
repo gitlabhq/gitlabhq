@@ -45,6 +45,12 @@ class Deployment < ApplicationRecord
   scope :older_than, -> (deployment) { where('deployments.id < ?', deployment.id) }
   scope :with_deployable, -> { joins('INNER JOIN ci_builds ON ci_builds.id = deployments.deployable_id').preload(:deployable) }
 
+  scope :finished_between, -> (start_date, end_date = nil) do
+    selected = where('deployments.finished_at >= ?', start_date)
+    selected = selected.where('deployments.finished_at < ?', end_date) if end_date
+    selected
+  end
+
   FINISHED_STATUSES = %i[success failed canceled].freeze
 
   state_machine :status, initial: :created do

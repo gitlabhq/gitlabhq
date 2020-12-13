@@ -21232,6 +21232,8 @@ CREATE INDEX index_deployments_on_id_and_status_and_created_at ON deployments US
 
 CREATE INDEX index_deployments_on_id_where_cluster_id_present ON deployments USING btree (id) WHERE (cluster_id IS NOT NULL);
 
+CREATE INDEX index_deployments_on_project_and_finished ON deployments USING btree (project_id, finished_at) WHERE (status = 2);
+
 CREATE INDEX index_deployments_on_project_id_and_id ON deployments USING btree (project_id, id DESC);
 
 CREATE UNIQUE INDEX index_deployments_on_project_id_and_iid ON deployments USING btree (project_id, iid);
