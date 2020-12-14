@@ -4,7 +4,8 @@ module Mutations
   module Snippets
     class Create < BaseMutation
       include SpammableMutationFields
-      include ResolvesProject
+
+      authorize :create_snippet
 
       graphql_name 'CreateSnippet'
 
@@ -37,17 +38,15 @@ module Mutations
                description: 'Actions to perform over the snippet repository and blobs',
                required: false
 
-      def resolve(args)
-        project_path = args.delete(:project_path)
-
+      def resolve(project_path: nil, **args)
         if project_path.present?
-          project = find_project!(project_path: project_path)
-        elsif !can_create_personal_snippet?
-          raise_resource_not_available_error!
+          project = authorized_find!(project_path)
+        else
+          authorize!(:global)
         end
 
         service_response = ::Snippets::CreateService.new(project,
-                                                         context[:current_user],
+                                                         current_user,
                                                          create_params(args)).execute
 
         snippet = service_response.payload[:snippet]
@@ -67,20 +66,8 @@ module Mutations
 
       private
 
-      def find_project!(project_path:)
-        authorized_find!(full_path: project_path)
-      end
-
-      def find_object(full_path:)
-        resolve_project(full_path: full_path)
-      end
-
-      def authorized_resource?(project)
-        Ability.allowed?(context[:current_user], :create_snippet, project)
-      end
-
-      def can_create_personal_snippet?
-        Ability.allowed?(context[:current_user], :create_snippet)
+      def find_object(full_path)
+        Project.find_by_full_path(full_path)
       end
 
       def create_params(args)

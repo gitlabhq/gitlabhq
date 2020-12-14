@@ -2495,7 +2495,7 @@ class Project < ApplicationRecord
   end
 
   def service_desk_custom_address_enabled?
-    ::Gitlab::ServiceDeskEmail.enabled? && ::Feature.enabled?(:service_desk_custom_address, self)
+    ::Gitlab::ServiceDeskEmail.enabled? && ::Feature.enabled?(:service_desk_custom_address, self, default_enabled: true)
   end
 
   def root_namespace

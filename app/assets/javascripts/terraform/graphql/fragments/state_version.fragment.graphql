@@ -8,4 +8,19 @@ fragment StateVersion on TerraformStateVersion {
   createdByUser {
     ...User
   }
+
+  job {
+    detailedStatus {
+      detailsPath
+      group
+      icon
+      label
+      text
+    }
+
+    pipeline {
+      id
+      path
+    }
+  }
 }

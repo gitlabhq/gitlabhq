@@ -4,7 +4,7 @@ group: Certify
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Service Desk
+# Service Desk **(CORE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/149) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.1.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/214839) to [GitLab Starter](https://about.gitlab.com/pricing/) in 13.0.
@@ -129,10 +129,12 @@ this name in the `From` header. The default display name is `GitLab Support Bot`
 
 ### Using custom email address **(CORE ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2201) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.0.
-
-NOTE:
-This feature is disabled by default. For steps to enable it, see [Enable custom email address](#enable-custom-email-address).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2201) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.0.
+> - It was [deployed behind a feature flag](../feature_flags.md), disabled by default.
+> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/284656) on GitLab 13.7.
+> - It's enabled on GitLab.com.
+> - It's recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#disable-custom-email-address). **(CORE ONLY)**
 
 If the `service_desk_email` feature flag is enabled in your configuration,
 then it's possible to create Service Desk issues by sending emails to the
@@ -198,18 +200,27 @@ In this case, suppose the `mygroup/myproject` project Service Desk settings has 
 suffix set to `support`, and a user sends an email to `project_contact+mygroup-myproject-support@example.com`.
 As a result, a new Service Desk issue is created from this email in the `mygroup/myproject` project.
 
-#### Enable custom email address
+The configuration options are the same as for configuring
+[incoming email](../../administration/incoming_email.md#set-it-up).
 
-This feature comes with the `service_desk_custom_address` feature flag disabled by default.
-To turn on the feature, ask a GitLab administrator with Rails console access to run the following
-command:
+#### Disable custom email address **(CORE ONLY)**
+
+Service Desk custom email is under development but ready for production use.
+It is deployed behind a feature flag that is **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can opt to disable it.
+
+To enable it:
 
 ```ruby
 Feature.enable(:service_desk_custom_address)
 ```
 
-The configuration options are the same as for configuring
-[incoming email](../../administration/incoming_email.md#set-it-up).
+To disable it:
+
+```ruby
+Feature.disable(:service_desk_custom_address)
+```
 
 ## Using Service Desk
 

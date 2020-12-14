@@ -26,7 +26,7 @@ export default {
 
 <template>
   <form
-    class="gl-display-flex gl-flex-direction-column col-md-3 gl-mr-4 gl-mb-6 gl-mt-5"
+    class="search-sidebar gl-display-flex gl-flex-direction-column gl-mr-4 gl-mb-6 gl-mt-5"
     @submit.prevent="applyQuery"
   >
     <status-filter />

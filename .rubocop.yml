@@ -368,6 +368,8 @@ Cop/SidekiqOptionsQueue:
 
 Graphql/ResolverType:
   Enabled: true
+  Exclude:
+    - 'app/graphql/resolvers/base_resolver.rb'
   Include:
     - 'app/graphql/resolvers/**/*'
     - 'ee/app/graphql/resolvers/**/*'

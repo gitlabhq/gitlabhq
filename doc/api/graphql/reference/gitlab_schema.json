@@ -6737,13 +6737,9 @@
 
               ],
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Pipeline",
-                  "ofType": null
-                }
+                "kind": "OBJECT",
+                "name": "Pipeline",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null

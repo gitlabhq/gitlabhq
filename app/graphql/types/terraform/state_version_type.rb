@@ -15,7 +15,6 @@ module Types
 
       field :created_by_user, Types::UserType,
             null: true,
-            authorize: :read_user,
             description: 'The user that created this version'
 
       field :download_path, GraphQL::STRING_TYPE,
@@ -24,7 +23,6 @@ module Types
 
       field :job, Types::Ci::JobType,
             null: true,
-            authorize: :read_build,
             description: 'The job that created this version'
 
       field :serial, GraphQL::INT_TYPE,

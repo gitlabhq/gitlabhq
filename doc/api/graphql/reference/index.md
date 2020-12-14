@@ -430,7 +430,7 @@ Represents the total number of issues and their weights for a particular day.
 | `detailedStatus` | DetailedStatus | Detailed status of the job |
 | `name` | String | Name of the job |
 | `needs` | CiJobConnection | Builds that must complete before the jobs run |
-| `pipeline` | Pipeline! | Pipeline the job belongs to |
+| `pipeline` | Pipeline | Pipeline the job belongs to |
 | `scheduledAt` | Time | Schedule for the build |
 
 ### CiJobArtifact

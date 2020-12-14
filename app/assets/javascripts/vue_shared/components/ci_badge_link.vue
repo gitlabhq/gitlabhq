@@ -20,6 +20,7 @@ import CiIcon from './ci_icon.vue';
  * - Pipeline show view - header
  * - Job show view - header
  * - MR widget
+ * - Terraform table
  */
 
 export default {

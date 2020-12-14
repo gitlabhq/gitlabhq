@@ -2,20 +2,28 @@ import { sortBy } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
 import { ListType } from './constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import boardsStore from '~/boards/stores/boards_store';
 
 export function getMilestone() {
   return null;
 }
 
+export function updateListPosition(listObj) {
+  const { listType } = listObj;
+  let { position } = listObj;
+  if (listType === ListType.closed) {
+    position = Infinity;
+  } else if (listType === ListType.backlog) {
+    position = -Infinity;
+  }
+
+  return { ...listObj, position };
+}
+
 export function formatBoardLists(lists) {
-  const formattedLists = lists.nodes.map(list =>
-    boardsStore.updateListPosition({ ...list, doNotFetchIssues: true }),
-  );
-  return formattedLists.reduce((map, list) => {
+  return lists.nodes.reduce((map, list) => {
     return {
       ...map,
-      [list.id]: list,
+      [list.id]: updateListPosition(list),
     };
   }, {});
 }
@@ -85,22 +93,22 @@ export function fullLabelId(label) {
 export function moveIssueListHelper(issue, fromList, toList) {
   const updatedIssue = issue;
   if (
-    toList.type === ListType.label &&
+    toList.listType === ListType.label &&
     !updatedIssue.labels.find(label => label.id === toList.label.id)
   ) {
     updatedIssue.labels.push(toList.label);
   }
-  if (fromList?.label && fromList.type === ListType.label) {
+  if (fromList?.label && fromList.listType === ListType.label) {
     updatedIssue.labels = updatedIssue.labels.filter(label => fromList.label.id !== label.id);
   }
 
   if (
-    toList.type === ListType.assignee &&
+    toList.listType === ListType.assignee &&
     !updatedIssue.assignees.find(assignee => assignee.id === toList.assignee.id)
   ) {
     updatedIssue.assignees.push(toList.assignee);
   }
-  if (fromList?.assignee && fromList.type === ListType.assignee) {
+  if (fromList?.assignee && fromList.listType === ListType.assignee) {
     updatedIssue.assignees = updatedIssue.assignees.filter(
       assignee => assignee.id !== fromList.assignee.id,
     );
@@ -118,6 +126,10 @@ export function getBoardsPath(endpoint, board) {
   return axios.post(path, { board });
 }
 
+export function isListDraggable(list) {
+  return list.listType !== ListType.backlog && list.listType !== ListType.closed;
+}
+
 export default {
   getMilestone,
   formatIssue,
@@ -125,4 +137,5 @@ export default {
   fullBoardId,
   fullLabelId,
   getBoardsPath,
+  isListDraggable,
 };

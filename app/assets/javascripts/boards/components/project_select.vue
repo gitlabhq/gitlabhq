@@ -7,6 +7,7 @@ import eventHub from '../eventhub';
 import Api from '../../api';
 import { featureAccessLevel } from '~/pages/projects/shared/permissions/constants';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
+import { ListType } from '../constants';
 
 export default {
   name: 'BoardProjectSelect',
@@ -53,7 +54,7 @@ export default {
         this.loading = true;
         const additionalAttrs = {};
 
-        if (this.list.type && this.list.type !== 'backlog') {
+        if ((this.list.type || this.list.listType) !== ListType.backlog) {
           additionalAttrs.min_access_level = featureAccessLevel.EVERYONE;
         }
 

@@ -103,9 +103,6 @@ export default {
         :key="list.id"
         ref="board"
         :can-admin-list="canAdminList"
-        :class="{
-          'is-draggable': !list.preset,
-        }"
         :list="list"
         :disabled="disabled"
       />

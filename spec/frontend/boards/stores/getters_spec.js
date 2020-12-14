@@ -6,7 +6,7 @@ import {
   mockIssues,
   mockIssuesByListId,
   issues,
-  mockListsWithModel,
+  mockLists,
 } from '../mock_data';
 
 describe('Boards - Getters', () => {
@@ -94,22 +94,22 @@ describe('Boards - Getters', () => {
 
   const boardsState = {
     boardLists: {
-      'gid://gitlab/List/1': mockListsWithModel[0],
-      'gid://gitlab/List/2': mockListsWithModel[1],
+      'gid://gitlab/List/1': mockLists[0],
+      'gid://gitlab/List/2': mockLists[1],
     },
   };
 
   describe('getListByLabelId', () => {
     it('returns list for a given label id', () => {
       expect(getters.getListByLabelId(boardsState)('gid://gitlab/GroupLabel/121')).toEqual(
-        mockListsWithModel[1],
+        mockLists[1],
       );
     });
   });
 
   describe('getListByTitle', () => {
     it('returns list for a given list title', () => {
-      expect(getters.getListByTitle(boardsState)('To Do')).toEqual(mockListsWithModel[1]);
+      expect(getters.getListByTitle(boardsState)('To Do')).toEqual(mockLists[1]);
     });
   });
 });

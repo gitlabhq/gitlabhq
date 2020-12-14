@@ -30,7 +30,7 @@ module QA
       end
 
       def branch
-        @branch ||= "master"
+        @branch ||= project.default_branch
       end
 
       def fabricate!

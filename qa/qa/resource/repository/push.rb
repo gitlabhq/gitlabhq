@@ -17,7 +17,6 @@ module QA
           @file_name = "file-#{SecureRandom.hex(8)}.txt"
           @file_content = '# This is test file'
           @commit_message = "This is a test commit"
-          @branch_name = 'master'
           @new_branch = true
           @repository_http_uri = ""
           @ssh_key = nil
@@ -78,6 +77,8 @@ module QA
             @output += repository.clone
             repository.configure_identity(name, email)
 
+            @branch_name ||= default_branch(repository)
+
             @output += repository.checkout(branch_name, new_branch: new_branch)
 
             if @tag_name
@@ -104,6 +105,10 @@ module QA
         end
 
         private
+
+        def default_branch(repository)
+          repository.remote_branches.last || Runtime::Env.default_branch
+        end
 
         def commit_to(repository)
           @gpg_key_id.nil? ? repository.commit(@commit_message) : repository.commit_with_gpg(@commit_message)

@@ -12,6 +12,11 @@ import { sprintf, __ } from '~/locale';
 
 export default {
   name: 'BoardList',
+  i18n: {
+    loadingIssues: __('Loading issues'),
+    loadingMoreissues: __('Loading more issues'),
+    showingAllIssues: __('Showing all issues'),
+  },
   components: {
     BoardCard,
     BoardNewIssue,
@@ -49,11 +54,11 @@ export default {
     paginatedIssueText() {
       return sprintf(__('Showing %{pageSize} of %{total} issues'), {
         pageSize: this.issues.length,
-        total: this.list.issuesSize,
+        total: this.list.issuesCount,
       });
     },
     issuesSizeExceedsMax() {
-      return this.list.maxIssueCount > 0 && this.list.issuesSize > this.list.maxIssueCount;
+      return this.list.maxIssueCount > 0 && this.list.issuesCount > this.list.maxIssueCount;
     },
     hasNextPage() {
       return this.pageInfoByListId[this.list.id].hasNextPage;
@@ -61,9 +66,15 @@ export default {
     loading() {
       return this.listsFlags[this.list.id]?.isLoading;
     },
+    loadingMore() {
+      return this.listsFlags[this.list.id]?.isLoadingMore;
+    },
     listRef() {
       // When  list is draggable, the reference to the list needs to be accessed differently
       return this.canAdminList ? this.$refs.list.$el : this.$refs.list;
+    },
+    showingAllIssues() {
+      return this.issues.length === this.list.issuesCount;
     },
     treeRootWrapper() {
       return this.canAdminList ? Draggable : 'ul';
@@ -72,7 +83,7 @@ export default {
       const options = {
         ...defaultSortableConfig,
         fallbackOnBody: false,
-        group: 'boards-list',
+        group: 'board-list',
         tag: 'ul',
         'ghost-class': 'board-card-drag-active',
         'data-list-id': this.list.id,
@@ -85,7 +96,6 @@ export default {
   watch: {
     filters: {
       handler() {
-        this.list.loadingMore = false;
         this.listRef.scrollTop = 0;
       },
       deep: true,
@@ -124,13 +134,7 @@ export default {
       this.listRef.scrollTop = 0;
     },
     loadNextPage() {
-      const loadingDone = () => {
-        this.list.loadingMore = false;
-      };
-      this.list.loadingMore = true;
-      this.fetchIssuesForList({ listId: this.list.id, fetchNext: true })
-        .then(loadingDone)
-        .catch(loadingDone);
+      this.fetchIssuesForList({ listId: this.list.id, fetchNext: true });
     },
     toggleForm() {
       this.showIssueForm = !this.showIssueForm;
@@ -138,7 +142,7 @@ export default {
     onScroll() {
       window.requestAnimationFrame(() => {
         if (
-          !this.list.loadingMore &&
+          !this.loadingMore &&
           this.scrollTop() > this.scrollHeight() - this.scrollOffset &&
           this.hasNextPage
         ) {
@@ -198,26 +202,26 @@ export default {
 
 <template>
   <div
-    v-show="list.isExpanded"
+    v-show="!list.collapsed"
     class="board-list-component gl-relative gl-h-full gl-display-flex gl-flex-direction-column"
     data-qa-selector="board_list_cards_area"
   >
     <div
       v-if="loading"
       class="gl-mt-4 gl-text-center"
-      :aria-label="__('Loading issues')"
+      :aria-label="$options.i18n.loadingIssues"
       data-testid="board_list_loading"
     >
       <gl-loading-icon />
     </div>
-    <board-new-issue v-if="list.type !== 'closed' && showIssueForm" :list="list" />
+    <board-new-issue v-if="list.listType !== 'closed' && showIssueForm" :list="list" />
     <component
       :is="treeRootWrapper"
       v-show="!loading"
       ref="list"
       v-bind="treeRootOptions"
       :data-board="list.id"
-      :data-board-type="list.type"
+      :data-board-type="list.listType"
       :class="{ 'bg-danger-100': issuesSizeExceedsMax }"
       class="board-list gl-w-full gl-h-full gl-list-style-none gl-mb-0 gl-p-2 js-board-list"
       data-testid="tree-root-wrapper"
@@ -234,8 +238,8 @@ export default {
         :disabled="disabled"
       />
       <li v-if="showCount" class="board-list-count gl-text-center" data-issue-id="-1">
-        <gl-loading-icon v-show="list.loadingMore" label="Loading more issues" />
-        <span v-if="issues.length === list.issuesSize">{{ __('Showing all issues') }}</span>
+        <gl-loading-icon v-if="loadingMore" :label="$options.i18n.loadingMoreissues" />
+        <span v-if="showingAllIssues">{{ $options.i18n.showingAllIssues }}</span>
         <span v-else>{{ paginatedIssueText }}</span>
       </li>
     </component>

@@ -37,7 +37,7 @@ module QA
           Support::Waiter.wait_until(retry_on_exception: true, sleep_interval: 5) do
             Resource::Repository::Commit.fabricate_via_api! do |commits|
               commits.project = project
-              commits.sha = 'master'
+              commits.sha = project.default_branch
             end
           end
 

@@ -19,7 +19,6 @@ module Types
 
       field :locked_by_user, Types::UserType,
             null: true,
-            authorize: :read_user,
             description: 'The user currently holding a lock on the Terraform state'
 
       field :locked_at, Types::TimeType,

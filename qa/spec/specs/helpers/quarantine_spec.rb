@@ -423,17 +423,17 @@ RSpec.describe QA::Specs::Helpers::Quarantine do
         end
       end
 
-      context 'when a pipeline triggered from master runs in gitlab-qa' do
+      context 'when a pipeline triggered from the default branch runs in gitlab-qa' do
         before do
           stub_env('CI_PROJECT_NAME', 'gitlab-qa')
           described_class.configure_rspec
         end
 
-        it 'runs on master pipelines' do
+        it 'runs on default branch pipelines' do
           group = describe_successfully do
             it('runs on master pipeline given a single pipeline', only: { pipeline: :master } ) {}
             it('runs in master given an array of pipelines', only: { pipeline: [:canary, :master] }) {}
-            it('does not run in non-master pipelines', only: { pipeline: [:nightly, :not_nightly, :not_master] } ) {}
+            it('does not run in non-default pipelines', only: { pipeline: [:nightly, :not_nightly, :not_master] } ) {}
           end
 
           aggregate_failures do

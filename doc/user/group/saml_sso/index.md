@@ -222,18 +222,20 @@ On subsequent visits, you should be able to go [sign in to GitLab.com with SAML]
 
 ### Configure user settings from SAML response
 
-GitLab allows setting certain user attributes based on values from the SAML response. 
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263661) in GitLab 13.7.
+
+GitLab allows setting certain user attributes based on values from the SAML response.
 This affects users created on first sign-in via Group SAML. Existing users'
-attributes are not affected regardless of the values sent in the SAML response. 
+attributes are not affected regardless of the values sent in the SAML response.
 
 #### Supported user attributes
 
 - `can_create_group` - 'true' or 'false' to indicate whether the user can create
   new groups. Default is `true`.
-- `projects_limit` - The total number of personal projects a user can create. 
-  A value of `0` means the user cannot create new projects in their personal 
+- `projects_limit` - The total number of personal projects a user can create.
+  A value of `0` means the user cannot create new projects in their personal
   namespace. Default is `10000`.
-  
+
 #### Example SAML response
 
 You can find SAML responses in the developer tools or console of your browser,

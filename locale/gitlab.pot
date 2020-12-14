@@ -16504,6 +16504,9 @@ msgstr ""
 msgid "Loading issues"
 msgstr ""
 
+msgid "Loading more issues"
+msgstr ""
+
 msgid "Loading snippet"
 msgstr ""
 
@@ -27072,7 +27075,13 @@ msgstr ""
 msgid "Terraform|A Terraform report was generated in your pipelines."
 msgstr ""
 
+msgid "Terraform|Actions"
+msgstr ""
+
 msgid "Terraform|An error occurred while loading your Terraform States"
+msgstr ""
+
+msgid "Terraform|Details"
 msgstr ""
 
 msgid "Terraform|Download JSON"
@@ -27087,6 +27096,9 @@ msgstr ""
 msgid "Terraform|Get started with Terraform"
 msgstr ""
 
+msgid "Terraform|Job status"
+msgstr ""
+
 msgid "Terraform|Lock"
 msgstr ""
 
@@ -27094,6 +27106,12 @@ msgid "Terraform|Locked"
 msgstr ""
 
 msgid "Terraform|Locked by %{user} %{timeAgo}"
+msgstr ""
+
+msgid "Terraform|Name"
+msgstr ""
+
+msgid "Terraform|Pipeline"
 msgstr ""
 
 msgid "Terraform|Reported Resource Changes: %{addNum} to add, %{changeNum} to change, %{deleteNum} to delete"

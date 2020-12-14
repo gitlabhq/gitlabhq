@@ -5,7 +5,7 @@ import Draggable from 'vuedraggable';
 import EpicsSwimlanes from 'ee_component/boards/components/epics_swimlanes.vue';
 import getters from 'ee_else_ce/boards/stores/getters';
 import BoardColumn from '~/boards/components/board_column.vue';
-import { mockListsWithModel } from '../mock_data';
+import { mockLists, mockListsWithModel } from '../mock_data';
 import BoardContent from '~/boards/components/board_content.vue';
 
 const localVue = createLocalVue();
@@ -20,7 +20,7 @@ describe('BoardContent', () => {
 
   const defaultState = {
     isShowingEpicsSwimlanes: false,
-    boardLists: mockListsWithModel,
+    boardLists: mockLists,
     error: undefined,
   };
 
@@ -59,7 +59,7 @@ describe('BoardContent', () => {
   it('renders a BoardColumn component per list', () => {
     createComponent();
 
-    expect(wrapper.findAll(BoardColumn)).toHaveLength(mockListsWithModel.length);
+    expect(wrapper.findAll(BoardColumn)).toHaveLength(mockLists.length);
   });
 
   it('does not display EpicsSwimlanes component', () => {

@@ -10,6 +10,7 @@ import IssueDueDate from './issue_due_date.vue';
 import IssueTimeEstimate from './issue_time_estimate.vue';
 import boardsStore from '../stores/boards_store';
 import { isScopedLabel } from '~/lib/utils/common_utils';
+import { ListType } from '../constants';
 
 export default {
   components: {
@@ -122,7 +123,13 @@ export default {
       return true;
     },
     isNonListLabel(label) {
-      return label.id && !(this.list.type === 'label' && this.list.title === label.title);
+      return (
+        label.id &&
+        !(
+          (this.list.type || this.list.listType) === ListType.label &&
+          this.list.title === label.title
+        )
+      );
     },
     filterByLabel(label) {
       if (!this.updateFilters) return;

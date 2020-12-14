@@ -567,12 +567,12 @@ More information can be found in the [Push event activities limit and bulk push 
 
 On GitLab.com, the maximum file size for a package that's uploaded to the [GitLab Package Registry](../user/packages/package_registry/index.md) varies by format:
 
-- Conan: 3GB
+- Conan: 5GB
 - Generic: 5GB
-- Maven: 3GB
-- NPM: 500MB
-- NuGet: 500MB
-- PyPI: 3GB
+- Maven: 5GB
+- NPM: 5GB
+- NuGet: 5GB
+- PyPI: 5GB
 
 To set this limit on a self-managed installation, run the following in the
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):

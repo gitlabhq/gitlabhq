@@ -161,3 +161,22 @@ This section describes the earlier configuration format.
    ```
 
 1. [Restart GitLab](../restart_gitlab.md#installations-from-source "How to restart GitLab") for the changes to take effect.
+
+## Disabling Authentication
+
+Authentication was introduced in 13.7 as part of [enabling private groups to use the
+Dependency Proxy](https://gitlab.com/gitlab-org/gitlab/-/issues/11582). If you
+previously used the Dependency Proxy without authentication and need to disable
+this feature while you update your workflow to [authenticate with the Dependency
+Proxy](../../user/packages/dependency_proxy/index.md#authenticate-with-the-dependency-proxy),
+the following commands can be issued in a Rails console:
+
+```ruby
+# Disable the authentication
+Feature.disable(:dependency_proxy_for_private_groups)
+
+# Re-enable the authentication
+Feature.enable(:dependency_proxy_for_private_groups)
+```
+
+The ability to disable this feature will be [removed in 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/276777).

@@ -12,7 +12,6 @@ import {
   formatListsPageInfo,
   formatIssue,
 } from '../boards_util';
-import boardStore from '~/boards/stores/boards_store';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
 import updateAssigneesMutation from '~/vue_shared/components/sidebar/queries/updateAssignees.mutation.graphql';
@@ -119,11 +118,7 @@ export default {
   },
 
   addList: ({ commit }, list) => {
-    // Temporarily using positioning logic from boardStore
-    commit(
-      types.RECEIVE_ADD_LIST_SUCCESS,
-      boardStore.updateListPosition({ ...list, doNotFetchIssues: true }),
-    );
+    commit(types.RECEIVE_ADD_LIST_SUCCESS, list);
   },
 
   fetchLabels: ({ state, commit }, searchTerm) => {

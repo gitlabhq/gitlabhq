@@ -5,8 +5,9 @@ module Types
     # rubocop: disable Graphql/AuthorizeTypes
     class JobType < BaseObject
       graphql_name 'CiJob'
+      authorize :read_build
 
-      field :pipeline, Types::Ci::PipelineType, null: false,
+      field :pipeline, Types::Ci::PipelineType, null: true,
             description: 'Pipeline the job belongs to'
       field :name, GraphQL::STRING_TYPE, null: true,
             description: 'Name of the job'

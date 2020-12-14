@@ -2,7 +2,6 @@ import { shallowMount } from '@vue/test-utils';
 
 import { listObj } from 'jest/boards/mock_data';
 import BoardColumn from '~/boards/components/board_column_new.vue';
-import List from '~/boards/models/list';
 import { ListType } from '~/boards/constants';
 import { createStore } from '~/boards/stores';
 
@@ -20,16 +19,14 @@ describe('Board Column Component', () => {
 
     const listMock = {
       ...listObj,
-      list_type: listType,
+      listType,
       collapsed,
     };
 
     if (listType === ListType.assignee) {
       delete listMock.label;
-      listMock.user = {};
+      listMock.assignee = {};
     }
-
-    const list = new List({ ...listMock, doNotFetchIssues: true });
 
     store = createStore();
 
@@ -37,7 +34,7 @@ describe('Board Column Component', () => {
       store,
       propsData: {
         disabled: false,
-        list,
+        list: listMock,
       },
       provide: {
         boardId,
@@ -60,7 +57,7 @@ describe('Board Column Component', () => {
     it('has class is-collapsed when list is collapsed', () => {
       createComponent({ collapsed: false });
 
-      expect(wrapper.vm.list.isExpanded).toBe(true);
+      expect(isCollapsed()).toBe(false);
     });
 
     it('does not have class is-collapsed when list is expanded', () => {

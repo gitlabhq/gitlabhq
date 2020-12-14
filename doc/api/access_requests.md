@@ -1,6 +1,6 @@
 ---
-stage: Create
-group: Source Code
+stage: Manage
+group: Access
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: reference, api
 ---
@@ -11,9 +11,11 @@ type: reference, api
 
 ## Valid access levels
 
- The access levels are defined in the `Gitlab::Access` module. Currently, these levels are recognized:
+The access levels are defined in the `Gitlab::Access` module, and the
+following levels are recognized:
 
 - No access (`0`)
+- Minimal access (`5`) ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220203) in GitLab 13.5.)
 - Guest (`10`)
 - Reporter (`20`)
 - Developer (`30`)

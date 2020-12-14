@@ -38,6 +38,19 @@ describe('StatesTable', () => {
           createdByUser: {
             name: 'user-3',
           },
+          job: {
+            detailedStatus: {
+              detailsPath: '/job-path-3',
+              group: 'failed',
+              icon: 'status_failed',
+              label: 'failed',
+              text: 'failed',
+            },
+            pipeline: {
+              id: 'gid://gitlab/Ci::Pipeline/3',
+              path: '/pipeline-path-3',
+            },
+          },
         },
       },
       {
@@ -48,6 +61,19 @@ describe('StatesTable', () => {
         latestVersion: {
           updatedAt: '2020-10-09T00:00:00Z',
           createdByUser: null,
+          job: {
+            detailedStatus: {
+              detailsPath: '/job-path-4',
+              group: 'passed',
+              icon: 'status_success',
+              label: 'passed',
+              text: 'passed',
+            },
+            pipeline: {
+              id: 'gid://gitlab/Ci::Pipeline/4',
+              path: '/pipeline-path-4',
+            },
+          },
         },
       },
     ],
@@ -106,6 +132,23 @@ describe('StatesTable', () => {
 
     expect(state.text()).toMatchInterpolatedText(updateTime);
   });
+
+  it.each`
+    pipelineText              | toolTipAdded | lineNumber
+    ${''}                     | ${false}     | ${0}
+    ${''}                     | ${false}     | ${1}
+    ${'#3 failed Job status'} | ${true}      | ${2}
+    ${'#4 passed Job status'} | ${true}      | ${3}
+  `(
+    'displays the pipeline information for line "$lineNumber"',
+    ({ pipelineText, toolTipAdded, lineNumber }) => {
+      const states = wrapper.findAll('[data-testid="terraform-states-table-pipeline"]');
+      const state = states.at(lineNumber);
+
+      expect(state.find(GlTooltip).exists()).toBe(toolTipAdded);
+      expect(state.text()).toMatchInterpolatedText(pipelineText);
+    },
+  );
 
   it('displays no actions dropdown', () => {
     expect(findActions().length).toEqual(0);

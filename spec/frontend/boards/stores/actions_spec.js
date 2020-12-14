@@ -1,6 +1,5 @@
 import testAction from 'helpers/vuex_action_helper';
 import {
-  mockListsWithModel,
   mockLists,
   mockListsById,
   mockIssue,
@@ -229,8 +228,8 @@ describe('createList', () => {
 describe('moveList', () => {
   it('should commit MOVE_LIST mutation and dispatch updateList action', done => {
     const initialBoardListsState = {
-      'gid://gitlab/List/1': mockListsWithModel[0],
-      'gid://gitlab/List/2': mockListsWithModel[1],
+      'gid://gitlab/List/1': mockLists[0],
+      'gid://gitlab/List/2': mockLists[1],
     };
 
     const state = {
@@ -252,7 +251,7 @@ describe('moveList', () => {
       [
         {
           type: types.MOVE_LIST,
-          payload: { movedList: mockListsWithModel[0], listAtNewIndex: mockListsWithModel[1] },
+          payload: { movedList: mockLists[0], listAtNewIndex: mockLists[1] },
         },
       ],
       [
@@ -271,8 +270,8 @@ describe('moveList', () => {
 
   it('should not commit MOVE_LIST or dispatch updateList if listId and replacedListId are the same', () => {
     const initialBoardListsState = {
-      'gid://gitlab/List/1': mockListsWithModel[0],
-      'gid://gitlab/List/2': mockListsWithModel[1],
+      'gid://gitlab/List/1': mockLists[0],
+      'gid://gitlab/List/2': mockLists[1],
     };
 
     const state = {
@@ -512,7 +511,7 @@ describe('moveIssue', () => {
     endpoints: { fullPath: 'gitlab-org', boardId: '1' },
     boardType: 'group',
     disabled: false,
-    boardLists: mockListsWithModel,
+    boardLists: mockLists,
     issuesByListId: listIssues,
     issues,
   };

@@ -36,7 +36,6 @@ module QA
         QA::Support::Retrier.retry_on_exception do
           Resource::Repository::ProjectPush.fabricate! do |push|
             push.project = project
-            push.branch_name = 'master'
             push.new_branch = false
             push.file_name = "file_#{SecureRandom.hex(4)}.txt"
           end

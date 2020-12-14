@@ -24,7 +24,7 @@ module DependencyProxy
     private
 
     def dependency_proxy_for_private_groups?
-      Feature.enabled?(:dependency_proxy_for_private_groups, default_enabled: false)
+      Feature.enabled?(:dependency_proxy_for_private_groups, default_enabled: true)
     end
 
     def request_bearer_token!

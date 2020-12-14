@@ -7,7 +7,7 @@ module QA
       let(:changed_content) { 'changes' }
       let(:commit_message) { 'Changes to snippets' }
       let(:added_content) { 'updated ' }
-      let(:branch_name) { 'master' }
+      let(:branch_name) { snippet.project.default_branch }
 
       let(:snippet) do
         Resource::ProjectSnippet.fabricate! do |snippet|

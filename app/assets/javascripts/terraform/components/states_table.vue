@@ -1,14 +1,18 @@
 <script>
-import { GlBadge, GlIcon, GlSprintf, GlTable, GlTooltip } from '@gitlab/ui';
+import { GlBadge, GlIcon, GlLink, GlSprintf, GlTable, GlTooltip } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
 import StateActions from './states_table_actions.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
 export default {
   components: {
+    CiBadge,
     GlBadge,
     GlIcon,
+    GlLink,
     GlSprintf,
     GlTable,
     GlTooltip,
@@ -32,20 +36,24 @@ export default {
       const columns = [
         {
           key: 'name',
-          thClass: 'gl-display-none',
+          label: this.$options.i18n.name,
+        },
+        {
+          key: 'pipeline',
+          label: this.$options.i18n.pipeline,
         },
         {
           key: 'updated',
-          thClass: 'gl-display-none',
-          tdClass: 'gl-text-right',
+          label: this.$options.i18n.details,
         },
       ];
 
       if (this.terraformAdmin) {
         columns.push({
           key: 'actions',
-          thClass: 'gl-display-none',
-          tdClass: 'gl-w-10',
+          label: this.$options.i18n.actions,
+          thClass: 'gl-w-12',
+          tdClass: 'gl-text-right',
         });
       }
 
@@ -53,8 +61,13 @@ export default {
     },
   },
   i18n: {
+    actions: s__('Terraform|Actions'),
+    details: s__('Terraform|Details'),
+    jobStatus: s__('Terraform|Job status'),
     locked: s__('Terraform|Locked'),
     lockedByUser: s__('Terraform|Locked by %{user} %{timeAgo}'),
+    name: s__('Terraform|Name'),
+    pipeline: s__('Terraform|Pipeline'),
     unknownUser: s__('Terraform|Unknown User'),
     updatedUser: s__('Terraform|%{user} updated %{timeAgo}'),
   },
@@ -65,6 +78,21 @@ export default {
     lockedByUserName(item) {
       return item.lockedByUser?.name || this.$options.i18n.unknownUser;
     },
+    pipelineDetailedStatus(item) {
+      return item.latestVersion?.job?.detailedStatus;
+    },
+    pipelineID(item) {
+      let id = item.latestVersion?.job?.pipeline?.id;
+
+      if (id) {
+        id = getIdFromGraphQLId(id);
+      }
+
+      return id;
+    },
+    pipelinePath(item) {
+      return item.latestVersion?.job?.pipeline?.path;
+    },
     updatedTime(item) {
       return item.latestVersion?.updatedAt || item.updatedAt;
     },
@@ -73,9 +101,18 @@ export default {
 </script>
 
 <template>
-  <gl-table :items="states" :fields="fields" data-testid="terraform-states-table">
+  <gl-table
+    :items="states"
+    :fields="fields"
+    data-testid="terraform-states-table"
+    fixed
+    stacked="md"
+  >
     <template #cell(name)="{ item }">
-      <div class="gl-display-flex align-items-center" data-testid="terraform-states-table-name">
+      <div
+        class="gl-display-flex align-items-center gl-justify-content-end gl-justify-content-md-start"
+        data-testid="terraform-states-table-name"
+      >
         <p class="gl-font-weight-bold gl-m-0 gl-text-gray-900">
           {{ item.name }}
         </p>
@@ -100,6 +137,34 @@ export default {
                 {{ timeFormatted(item.lockedAt) }}
               </template>
             </gl-sprintf>
+          </gl-tooltip>
+        </div>
+      </div>
+    </template>
+
+    <template #cell(pipeline)="{ item }">
+      <div data-testid="terraform-states-table-pipeline" class="gl-min-h-7">
+        <gl-link v-if="pipelineID(item)" :href="pipelinePath(item)">
+          #{{ pipelineID(item) }}
+        </gl-link>
+
+        <div
+          v-if="pipelineDetailedStatus(item)"
+          :id="`terraformJobStatusContainer${item.name}`"
+          class="gl-my-2"
+        >
+          <ci-badge
+            :id="`terraformJobStatus${item.name}`"
+            :status="pipelineDetailedStatus(item)"
+            class="gl-py-1"
+          />
+
+          <gl-tooltip
+            :container="`terraformJobStatusContainer${item.name}`"
+            :target="`terraformJobStatus${item.name}`"
+            placement="right"
+          >
+            {{ $options.i18n.jobStatus }}
           </gl-tooltip>
         </div>
       </div>

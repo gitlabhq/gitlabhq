@@ -81,7 +81,7 @@ module QA
 
         def api_post_body
           {
-            branch: @branch || "master",
+            branch: @branch || project.default_branch,
             author_email: @author_email || Runtime::User.default_email,
             author_name: @author_name || Runtime::User.username,
             commit_message: commit_message,

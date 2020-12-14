@@ -15,6 +15,7 @@ To send an invitation, you must have access to the project or group you are send
 levels are defined in the `Gitlab::Access` module. Currently, these levels are valid:
 
 - No access (`0`)
+- Minimal access (`5`) ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220203) in GitLab 13.5.)
 - Guest (`10`)
 - Reporter (`20`)
 - Developer (`30`)

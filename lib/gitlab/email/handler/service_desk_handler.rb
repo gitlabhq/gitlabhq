@@ -68,7 +68,7 @@ module Gitlab
         end
 
         def valid_project_key?(project, slug)
-          project.present? && slug == project.full_path_slug && Feature.enabled?(:service_desk_custom_address, project)
+          project.present? && slug == project.full_path_slug && Feature.enabled?(:service_desk_custom_address, project, default_enabled: true)
         end
 
         def create_issue!

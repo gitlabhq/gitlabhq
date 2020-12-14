@@ -14,7 +14,7 @@ module QA
       include Support::Run
 
       attr_writer :use_lfs, :gpg_key_id
-      attr_accessor :env_vars
+      attr_accessor :env_vars, :default_branch
 
       InvalidCredentialsError = Class.new(RuntimeError)
 
@@ -25,6 +25,7 @@ module QA
         self.env_vars = [%Q{HOME="#{tmp_home_dir}"}]
         @use_lfs = false
         @gpg_key_id = nil
+        @default_branch = Runtime::Env.default_branch
       end
 
       def self.perform(*args)
@@ -123,7 +124,7 @@ module QA
         run_git("git rev-parse --abbrev-ref HEAD").to_s
       end
 
-      def push_changes(branch = 'master', push_options: nil)
+      def push_changes(branch = @default_branch, push_options: nil)
         cmd = ['git push']
         cmd << push_options_hash_to_string(push_options)
         cmd << uri
@@ -207,6 +208,13 @@ module QA
 
       def delete_netrc
         File.delete(netrc_file_path) if File.exist?(netrc_file_path)
+      end
+
+      def remote_branches
+        # This gets the remote branch names
+        # When executed on a fresh repo it returns the default branch name
+
+        run_git('git --no-pager branch --list --remotes --format="%(refname:lstrip=3)"').to_s.split("\n")
       end
 
       private

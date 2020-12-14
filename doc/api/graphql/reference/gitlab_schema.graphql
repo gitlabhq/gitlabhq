@@ -2498,7 +2498,7 @@ type CiJob {
   """
   Pipeline the job belongs to
   """
-  pipeline: Pipeline!
+  pipeline: Pipeline
 
   """
   Schedule for the build

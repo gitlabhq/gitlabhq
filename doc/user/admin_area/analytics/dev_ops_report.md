@@ -9,18 +9,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30469) in GitLab 9.3.
 > - [Renamed from Conversational Development Index](https://gitlab.com/gitlab-org/gitlab/-/issues/20976) in GitLab 12.6.
 
-NOTE:
-Your GitLab instance's [usage ping](../settings/usage_statistics.md#usage-ping) must be activated in order to use this feature.
-
 The DevOps Report gives you an overview of your entire instance's adoption of
 [Concurrent DevOps](https://about.gitlab.com/topics/concurrent-devops/)
 from planning to monitoring.
 
 To see DevOps Report, go to **Admin Area > Analytics > DevOps Report**.
 
-## DevOps Score
+## DevOps Score **(CORE)**
 
-DevOps Score displays the usage of GitLab's major features on your instance over
+NOTE:
+Your GitLab instance's [usage ping](../settings/usage_statistics.md#usage-ping) must be activated in order to use this feature.
+
+The DevOps Score tab displays the usage of GitLab's major features on your instance over
 the last 30 days, averaged over the number of billable users in that time period. It also
 provides a Lead score per feature, which is calculated based on GitLab's analysis
 of top-performing instances based on [usage ping data](../settings/usage_statistics.md#usage-ping) that GitLab has
@@ -35,3 +35,27 @@ improve your scores.
 Usage ping data is aggregated on GitLab's servers for analysis. Your usage
 information is **not sent** to any other GitLab instances. If you have just started using GitLab, it may take a few weeks for data to be
 collected before this feature is available.
+
+## DevOps Adoption **(ULTIMATE)**
+
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247112) in GitLab 13.7.
+
+The DevOps Adoption tab shows you which segments of your organization are using GitLab's most essential features:
+
+- Issues
+- Merge Requests
+- Approvals
+- Runners
+- Pipelines
+- Deploys
+- Scanning
+
+Segments are arbitrary collections of GitLab groups and projects that you define. You might define a segment to represent a small team, a large department, or a whole organization. You are limited to creating a maximum of 20 segments, and each segment is limited to a maximum of 20 groups. Buttons to manage your segments appear in the DevOps Adoption section of the page.
+
+DevOps Adoption allows you to:
+
+- Verify whether you are getting the return on investment that you expected from GitLab.
+- Identify specific groups that are lagging in their adoption of GitLab so you can help them along in their DevOps journey.
+- Find the groups that have adopted certain features and can provide guidance to other groups on how to use those features.
+
+![DevOps Report](img/dev_ops_adoption_v13_7.png)

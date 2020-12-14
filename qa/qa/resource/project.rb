@@ -15,7 +15,6 @@ module QA
       attr_writer :github_personal_access_token
       attr_writer :github_repository_path
 
-      attribute :default_branch
       attribute :id
       attribute :name
       attribute :add_name_uuid
@@ -25,6 +24,10 @@ module QA
       attribute :visibility
       attribute :template_name
       attribute :import
+
+      attribute :default_branch do
+        api_response[:default_branch] || Runtime::Env.default_branch
+      end
 
       attribute :group do
         Group.fabricate!

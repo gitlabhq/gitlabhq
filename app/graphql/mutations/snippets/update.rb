@@ -27,11 +27,11 @@ module Mutations
                description: 'Actions to perform over the snippet repository and blobs',
                required: false
 
-      def resolve(args)
-        snippet = authorized_find!(id: args.delete(:id))
+      def resolve(id:, **args)
+        snippet = authorized_find!(id: id)
 
         result = ::Snippets::UpdateService.new(snippet.project,
-                                               context[:current_user],
+                                               current_user,
                                                update_params(args)).execute(snippet)
         snippet = result.payload[:snippet]
 

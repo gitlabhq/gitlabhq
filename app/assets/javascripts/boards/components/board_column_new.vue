@@ -2,6 +2,7 @@
 import { mapGetters, mapActions, mapState } from 'vuex';
 import BoardListHeader from 'ee_else_ce/boards/components/board_list_header_new.vue';
 import BoardList from './board_list_new.vue';
+import { isListDraggable } from '../boards_util';
 
 export default {
   components: {
@@ -35,6 +36,9 @@ export default {
     listIssues() {
       return this.getIssuesByList(this.list.id);
     },
+    isListDraggable() {
+      return isListDraggable(this.list);
+    },
   },
   watch: {
     filterParams: {
@@ -47,7 +51,6 @@ export default {
   },
   methods: {
     ...mapActions(['fetchIssuesForList']),
-    // TODO: Reordering of lists https://gitlab.com/gitlab-org/gitlab/-/issues/280515
   },
 };
 </script>
@@ -55,13 +58,12 @@ export default {
 <template>
   <div
     :class="{
-      'is-draggable': !list.preset,
-      'is-expandable': list.isExpandable,
-      'is-collapsed': !list.isExpanded,
-      'board-type-assignee': list.type === 'assignee',
+      'is-draggable': isListDraggable,
+      'is-collapsed': list.collapsed,
+      'board-type-assignee': list.listType === 'assignee',
     }"
     :data-id="list.id"
-    class="board gl-display-inline-block gl-h-full gl-px-3 gl-vertical-align-top gl-white-space-normal"
+    class="board gl-display-inline-block gl-h-full gl-px-3 gl-vertical-align-top gl-white-space-normal is-expandable"
     data-qa-selector="board_list"
   >
     <div

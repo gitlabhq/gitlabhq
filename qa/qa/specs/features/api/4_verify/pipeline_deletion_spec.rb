@@ -42,7 +42,7 @@ module QA
       end
 
       let!(:pipeline_id) do
-        pipeline_create_request = Runtime::API::Request.new(api_client, "/projects/#{project.id}/pipeline?ref=master")
+        pipeline_create_request = Runtime::API::Request.new(api_client, "/projects/#{project.id}/pipeline?ref=#{project.default_branch}")
         JSON.parse(post(pipeline_create_request.url, nil))['id']
       end
 

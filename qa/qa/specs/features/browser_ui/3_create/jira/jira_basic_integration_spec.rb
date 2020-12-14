@@ -80,7 +80,6 @@ module QA
 
       def push_commit(commit_message)
         Resource::Repository::ProjectPush.fabricate! do |push|
-          push.branch_name = 'master'
           push.commit_message = commit_message
           push.file_content = commit_message
           push.project = project
@@ -101,7 +100,7 @@ module QA
       end
 
       def master_branch_exists?
-        project.repository_branches.map { |item| item[:name] }.include?("master")
+        project.repository_branches.map { |item| item[:name] }.include?(project.default_branch)
       end
     end
   end
