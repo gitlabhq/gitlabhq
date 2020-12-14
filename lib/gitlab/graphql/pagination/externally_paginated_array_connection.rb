@@ -8,13 +8,7 @@ module Gitlab
         include ::Gitlab::Graphql::ConnectionCollectionMethods
         prepend ::Gitlab::Graphql::ConnectionRedaction
 
-        def start_cursor
-          items.previous_cursor
-        end
-
-        def end_cursor
-          items.next_cursor
-        end
+        delegate :start_cursor, :end_cursor, to: :items
 
         def next_page?
           end_cursor.present?

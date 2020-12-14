@@ -27,7 +27,7 @@ RSpec.describe Resolvers::DesignManagement::VersionsResolver do
     end
 
     shared_examples 'a source of versions' do
-      subject(:result) { resolve_versions(object) }
+      subject(:result) { resolve_versions(object)&.to_a }
 
       let_it_be(:all_versions) { object.versions.ordered }
 
@@ -39,7 +39,7 @@ RSpec.describe Resolvers::DesignManagement::VersionsResolver do
 
       context 'without constraints' do
         it 'returns the ordered versions' do
-          expect(result).to eq(all_versions)
+          expect(result.to_a).to eq(all_versions)
         end
       end
 
@@ -51,13 +51,13 @@ RSpec.describe Resolvers::DesignManagement::VersionsResolver do
         end
 
         context 'by earlier_or_equal_to_id' do
-          let(:params) { { id: global_id_of(first_version) } }
+          let(:params) { { earlier_or_equal_to_id: global_id_of(first_version) } }
 
           it_behaves_like 'a query for all_versions up to the first_version'
         end
 
         context 'by earlier_or_equal_to_sha' do
-          let(:params) { { sha: first_version.sha } }
+          let(:params) { { earlier_or_equal_to_sha: first_version.sha } }
 
           it_behaves_like 'a query for all_versions up to the first_version'
         end
@@ -68,8 +68,8 @@ RSpec.describe Resolvers::DesignManagement::VersionsResolver do
             # return successfully
             let(:params) do
               {
-                sha: first_version.sha,
-                id:  global_id_of(first_version)
+                earlier_or_equal_to_sha: first_version.sha,
+                earlier_or_equal_to_id:  global_id_of(first_version)
               }
             end
 
@@ -79,8 +79,8 @@ RSpec.describe Resolvers::DesignManagement::VersionsResolver do
           context 'and they do not match' do
             let(:params) do
               {
-                sha: first_version.sha,
-                id:  global_id_of(other_version)
+                earlier_or_equal_to_sha: first_version.sha,
+                earlier_or_equal_to_id:  global_id_of(other_version)
               }
             end
 
@@ -111,7 +111,7 @@ RSpec.describe Resolvers::DesignManagement::VersionsResolver do
     end
 
     def resolve_versions(obj, context = { current_user: current_user })
-      eager_resolve(resolver, obj: obj, args: params.merge(parent: parent), ctx: context)
+      eager_resolve(resolver, obj: obj, parent: parent, args: params, ctx: context)
     end
   end
 end

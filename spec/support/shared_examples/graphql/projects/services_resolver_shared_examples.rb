@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'no project services' do
   it 'returns empty collection' do
-    expect(resolve_services).to eq []
+    expect(resolve_services).to be_empty
   end
 end
 

@@ -6,16 +6,18 @@ RSpec.describe Resolvers::Projects::SnippetsResolver do
   include GraphqlHelpers
 
   describe '#resolve' do
-    let_it_be(:current_user) { create(:user) }
+    let_it_be(:user) { create(:user) }
     let_it_be(:other_user) { create(:user) }
     let_it_be(:project) { create(:project) }
 
-    let_it_be(:personal_snippet) { create(:personal_snippet, :private, author: current_user) }
-    let_it_be(:project_snippet) { create(:project_snippet, :internal, author: current_user, project: project) }
+    let_it_be(:personal_snippet) { create(:personal_snippet, :private, author: user) }
+    let_it_be(:project_snippet) { create(:project_snippet, :internal, author: user, project: project) }
     let_it_be(:other_project_snippet) { create(:project_snippet, :public, author: other_user, project: project) }
 
-    before do
-      project.add_developer(current_user)
+    let(:current_user) { user }
+
+    before_all do
+      project.add_developer(user)
     end
 
     it 'calls SnippetsFinder' do
@@ -42,19 +44,25 @@ RSpec.describe Resolvers::Projects::SnippetsResolver do
       end
 
       it 'returns the snippets by gid' do
-        snippets = resolve_snippets(args: { ids: project_snippet.to_global_id })
+        snippets = resolve_snippets(args: { ids: [global_id_of(project_snippet)] })
 
         expect(snippets).to contain_exactly(project_snippet)
       end
 
       it 'returns the snippets by array of gid' do
         args = {
-          ids: [project_snippet.to_global_id, other_project_snippet.to_global_id]
+          ids: [global_id_of(project_snippet), global_id_of(other_project_snippet)]
         }
 
         snippets = resolve_snippets(args: args)
 
         expect(snippets).to contain_exactly(project_snippet, other_project_snippet)
+      end
+
+      it 'returns an error if the gid is invalid' do
+        expect do
+          resolve_snippets(args: { ids: ['foo'] })
+        end.to raise_error(GraphQL::CoercionError)
       end
     end
 
@@ -65,8 +73,10 @@ RSpec.describe Resolvers::Projects::SnippetsResolver do
     end
 
     context 'when provided user is not current user' do
+      let(:current_user) { other_user }
+
       it 'returns no snippets' do
-        expect(resolve_snippets(context: { current_user: other_user }, args: { ids: project_snippet.to_global_id })).to be_empty
+        expect(resolve_snippets(args: { ids: [global_id_of(project_snippet)] })).to be_empty
       end
     end
 

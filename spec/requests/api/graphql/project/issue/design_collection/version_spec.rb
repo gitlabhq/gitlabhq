@@ -42,7 +42,6 @@ RSpec.describe 'Query.project(fullPath).issue(iid).designCollection.version(sha)
 
   describe 'scalar fields' do
     let(:path) { path_prefix }
-    let(:version_fields) { query_graphql_field(:sha) }
 
     before do
       post_query
@@ -50,7 +49,7 @@ RSpec.describe 'Query.project(fullPath).issue(iid).designCollection.version(sha)
 
     { id: ->(x) { x.to_global_id.to_s }, sha: ->(x) { x.sha } }.each do |field, value|
       describe ".#{field}" do
-        let(:version_fields) { query_graphql_field(field) }
+        let(:version_fields) { field }
 
         it "retrieves the #{field}" do
           expect(data).to match(a_hash_including(field.to_s => value[version]))

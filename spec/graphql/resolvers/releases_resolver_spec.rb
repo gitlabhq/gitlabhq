@@ -17,6 +17,7 @@ RSpec.describe Resolvers::ReleasesResolver do
   let_it_be(:public_user) { create(:user) }
 
   let(:args) { { sort: :released_at_desc } }
+  let(:all_releases) { [release_v1, release_v2, release_v3] }
 
   before do
     project.add_developer(developer)
@@ -27,7 +28,7 @@ RSpec.describe Resolvers::ReleasesResolver do
       let(:current_user) { public_user }
 
       it 'returns an empty array' do
-        expect(resolve_releases).to eq([])
+        expect(resolve_releases).to be_empty
       end
     end
 
@@ -35,7 +36,7 @@ RSpec.describe Resolvers::ReleasesResolver do
       let(:current_user) { developer }
 
       it 'returns all releases associated to the project' do
-        expect(resolve_releases).to eq([release_v3, release_v2, release_v1])
+        expect(resolve_releases).to match_array(all_releases)
       end
 
       describe 'sorting behavior' do
@@ -43,7 +44,9 @@ RSpec.describe Resolvers::ReleasesResolver do
           let(:args) { { sort: :released_at_desc } }
 
           it 'returns the releases ordered by released_at in descending order' do
-            expect(resolve_releases).to eq([release_v3, release_v2, release_v1])
+            expect(resolve_releases.to_a)
+              .to match_array(all_releases)
+              .and be_sorted(:released_at, :desc)
           end
         end
 
@@ -51,7 +54,9 @@ RSpec.describe Resolvers::ReleasesResolver do
           let(:args) { { sort: :released_at_asc } }
 
           it 'returns the releases ordered by released_at in ascending order' do
-            expect(resolve_releases).to eq([release_v1, release_v2, release_v3])
+            expect(resolve_releases.to_a)
+              .to match_array(all_releases)
+              .and be_sorted(:released_at, :asc)
           end
         end
 
@@ -59,7 +64,9 @@ RSpec.describe Resolvers::ReleasesResolver do
           let(:args) { { sort: :created_desc } }
 
           it 'returns the releases ordered by created_at in descending order' do
-            expect(resolve_releases).to eq([release_v1, release_v3, release_v2])
+            expect(resolve_releases.to_a)
+              .to match_array(all_releases)
+              .and be_sorted(:created_at, :desc)
           end
         end
 
@@ -67,7 +74,9 @@ RSpec.describe Resolvers::ReleasesResolver do
           let(:args) { { sort: :created_asc } }
 
           it 'returns the releases ordered by created_at in ascending order' do
-            expect(resolve_releases).to eq([release_v2, release_v3, release_v1])
+            expect(resolve_releases.to_a)
+              .to match_array(all_releases)
+              .and be_sorted(:created_at, :asc)
           end
         end
       end

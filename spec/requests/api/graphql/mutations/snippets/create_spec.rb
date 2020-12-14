@@ -163,9 +163,15 @@ RSpec.describe 'Creating a Snippet' do
     context 'when there are uploaded files' do
       shared_examples 'expected files argument' do |file_value, expected_value|
         let(:uploaded_files) { file_value }
+        let(:snippet) { build(:snippet) }
+        let(:creation_response) do
+          ::ServiceResponse.error(message: 'urk', payload: { snippet: snippet })
+        end
 
         it do
-          expect(::Snippets::CreateService).to receive(:new).with(nil, user, hash_including(files: expected_value))
+          expect(::Snippets::CreateService).to receive(:new)
+            .with(nil, user, hash_including(files: expected_value))
+            .and_return(double(execute: creation_response))
 
           subject
         end

@@ -33,7 +33,7 @@ RSpec.describe Resolvers::AlertManagement::AlertResolver do
     end
 
     context 'finding by status' do
-      let(:args) { { status: [Types::AlertManagement::StatusEnum.values['IGNORED'].value] } }
+      let(:args) { { statuses: [Types::AlertManagement::StatusEnum.values['IGNORED'].value] } }
 
       it { is_expected.to contain_exactly(ignored_alert) }
     end

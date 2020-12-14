@@ -2,8 +2,7 @@
 
 module Types
   # rubocop: disable Graphql/AuthorizeTypes
-  # Authorization is at project level for owners or admins,
-  # so it is added directly to the Resolvers::JiraImportsResolver
+  # Authorization is at project level for owners or admins
   class JiraImportType < BaseObject
     graphql_name 'JiraImport'
 

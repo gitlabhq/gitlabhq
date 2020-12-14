@@ -13,7 +13,8 @@ end
 
 RSpec.shared_examples 'can raise spam flag' do
   it 'spam parameters are passed to the service' do
-    expect(service).to receive(:new).with(anything, anything, hash_including(api: true, request: instance_of(ActionDispatch::Request)))
+    args = [anything, anything, hash_including(api: true, request: instance_of(ActionDispatch::Request))]
+    expect(service).to receive(:new).with(*args).and_call_original
 
     subject
   end
@@ -39,7 +40,9 @@ RSpec.shared_examples 'can raise spam flag' do
     end
 
     it 'request parameter is not passed to the service' do
-      expect(service).to receive(:new).with(anything, anything, hash_not_including(request: instance_of(ActionDispatch::Request)))
+      expect(service).to receive(:new)
+        .with(anything, anything, hash_not_including(request: instance_of(ActionDispatch::Request)))
+        .and_call_original
 
       subject
     end

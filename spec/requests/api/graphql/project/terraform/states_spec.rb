@@ -53,32 +53,32 @@ RSpec.describe 'query terraform states' do
     post_graphql(query, current_user: current_user)
   end
 
-  it 'returns terraform state data', :aggregate_failures do
-    state = data.dig('nodes', 0)
-    version = state['latestVersion']
-
-    expect(state['id']).to eq(terraform_state.to_global_id.to_s)
-    expect(state['name']).to eq(terraform_state.name)
-    expect(state['lockedAt']).to eq(terraform_state.locked_at.iso8601)
-    expect(state['createdAt']).to eq(terraform_state.created_at.iso8601)
-    expect(state['updatedAt']).to eq(terraform_state.updated_at.iso8601)
-    expect(state.dig('lockedByUser', 'id')).to eq(terraform_state.locked_by_user.to_global_id.to_s)
-
-    expect(version['id']).to eq(latest_version.to_global_id.to_s)
-    expect(version['serial']).to eq(latest_version.version)
-    expect(version['downloadPath']).to eq(
-      expose_path(
-        api_v4_projects_terraform_state_versions_path(
-          id: project.id,
-          name: terraform_state.name,
-          serial: latest_version.version
-        )
+  it 'returns terraform state data' do
+    download_path = expose_path(
+      api_v4_projects_terraform_state_versions_path(
+        id: project.id,
+        name: terraform_state.name,
+        serial: latest_version.version
       )
     )
-    expect(version['createdAt']).to eq(latest_version.created_at.iso8601)
-    expect(version['updatedAt']).to eq(latest_version.updated_at.iso8601)
-    expect(version.dig('createdByUser', 'id')).to eq(latest_version.created_by_user.to_global_id.to_s)
-    expect(version.dig('job', 'name')).to eq(latest_version.build.name)
+
+    expect(data['nodes']).to contain_exactly({
+      'id'            => global_id_of(terraform_state),
+      'name'          => terraform_state.name,
+      'lockedAt'      => terraform_state.locked_at.iso8601,
+      'createdAt'     => terraform_state.created_at.iso8601,
+      'updatedAt'     => terraform_state.updated_at.iso8601,
+      'lockedByUser'  => { 'id' => global_id_of(terraform_state.locked_by_user) },
+      'latestVersion' => {
+        'id'            => eq(global_id_of(latest_version)),
+        'serial'        => eq(latest_version.version),
+        'downloadPath'  => eq(download_path),
+        'createdAt'     => eq(latest_version.created_at.iso8601),
+        'updatedAt'     => eq(latest_version.updated_at.iso8601),
+        'createdByUser' => { 'id' => eq(global_id_of(latest_version.created_by_user)) },
+        'job'           => { 'name' => eq(latest_version.build.name) }
+      }
+    })
   end
 
   it 'returns count of terraform states' do
