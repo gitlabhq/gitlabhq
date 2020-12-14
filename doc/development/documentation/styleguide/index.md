@@ -1428,14 +1428,14 @@ interface:
 | Section                  | Description                                                                                                                 |
 |:-------------------------|:----------------------------------------------------------------------------------------------------------------------------|
 | **{overview}** Overview  | View your GitLab Dashboard, and administer projects, users, groups, jobs, runners, and Gitaly servers.                      |
-| **{monitor}** Monitoring | View GitLab system information, and information on background jobs, logs, health checks, requests profiles, and audit logs. |
+| **{monitor}** Monitoring | View GitLab system information, and information on background jobs, logs, health checks, requests profiles, and audit events. |
 | **{messages}** Messages  | Send and manage broadcast messages for your users.                                                                          |
 ```
 
 | Section                  | Description                                                                                                                 |
 |:-------------------------|:----------------------------------------------------------------------------------------------------------------------------|
 | **{overview}** Overview  | View your GitLab Dashboard, and administer projects, users, groups, jobs, runners, and Gitaly servers.                      |
-| **{monitor}** Monitoring | View GitLab system information, and information on background jobs, logs, health checks, requests profiles, and audit logs. |
+| **{monitor}** Monitoring | View GitLab system information, and information on background jobs, logs, health checks, requests profiles, and audit events. |
 | **{messages}** Messages  | Send and manage broadcast messages for your users.                                                                          |
 
 Use an icon when you find yourself having to describe an interface element. For

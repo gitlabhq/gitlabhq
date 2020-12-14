@@ -118,7 +118,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
   - See also other [authentication](../topics/authentication/index.md#gitlab-administrators) topics (for example, enforcing 2FA).
 - [Email users](../tools/email.md): Email GitLab users from within GitLab. **(STARTER ONLY)**
 - [User Cohorts](../user/admin_area/analytics/user_cohorts.md): Display the monthly cohorts of new users and their activities over time.
-- [Audit logs and events](audit_events.md): View the changes made within the GitLab server for:
+- [Audit events](audit_events.md): View the changes made within the GitLab server for:
   - Groups and projects. **(STARTER)**
   - Instances. **(PREMIUM ONLY)**
 - [Auditor users](auditor_users.md): Users with read-only access to all projects, groups, and other resources on the GitLab instance. **(PREMIUM ONLY)**

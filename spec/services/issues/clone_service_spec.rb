@@ -74,8 +74,8 @@ RSpec.describe Issues::CloneService do
           expect(new_issue.changed?).to be false
         end
 
-        it 'preserves author' do
-          expect(new_issue.author).to eq author
+        it 'sets the current user as author' do
+          expect(new_issue.author).to eq user
         end
 
         it 'creates a new internal id for issue' do

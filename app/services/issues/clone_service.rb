@@ -48,7 +48,7 @@ module Issues
         id: nil,
         iid: nil,
         project: target_project,
-        author: original_entity.author,
+        author: current_user,
         assignee_ids: original_entity.assignee_ids
       }
 
