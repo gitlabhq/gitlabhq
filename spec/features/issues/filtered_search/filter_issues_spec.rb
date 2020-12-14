@@ -153,6 +153,14 @@ RSpec.describe 'Filter issues', :js do
     end
   end
 
+  describe 'filter by reviewer' do
+    it 'does not allow filtering by reviewer' do
+      find('.filtered-search').click
+
+      expect(page).not_to have_button('Reviewer')
+    end
+  end
+
   describe 'filter issues by label' do
     context 'only label' do
       it 'filters issues by searched label' do

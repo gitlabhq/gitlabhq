@@ -1,5 +1,5 @@
 import { produce } from 'immer';
-import expirationPolicyQuery from '../queries/get_expiration_policy.graphql';
+import expirationPolicyQuery from '../queries/get_expiration_policy.query.graphql';
 
 export const updateContainerExpirationPolicy = projectPath => (client, { data: updatedData }) => {
   const queryAndParams = {

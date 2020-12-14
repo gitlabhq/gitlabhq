@@ -1,6 +1,6 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import { GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlLink, GlSprintf } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ReportSection from '~/reports/components/report_section.vue';
 import { LOADING, ERROR, SLOT_SUCCESS, SLOT_LOADING, SLOT_ERROR } from '~/reports/constants';
@@ -8,6 +8,7 @@ import { s__ } from '~/locale';
 import { normalizeHeaders, parseIntPagination } from '~/lib/utils/common_utils';
 import createFlash from '~/flash';
 import Api from '~/api';
+import HelpIcon from './components/help_icon.vue';
 import SecurityReportDownloadDropdown from './components/security_report_download_dropdown.vue';
 import SecuritySummary from './components/security_summary.vue';
 import store from './store';
@@ -23,10 +24,10 @@ import { extractSecurityReportArtifacts } from './utils';
 export default {
   store,
   components: {
-    GlIcon,
     GlLink,
     GlSprintf,
     ReportSection,
+    HelpIcon,
     SecurityReportDownloadDropdown,
     SecuritySummary,
   },
@@ -43,6 +44,11 @@ export default {
     securityReportsDocsPath: {
       type: String,
       required: true,
+    },
+    discoverProjectSecurityPath: {
+      type: String,
+      required: false,
+      default: '',
     },
     sastComparisonPath: {
       type: String,
@@ -63,6 +69,11 @@ export default {
       type: Number,
       required: false,
       default: 0,
+    },
+    canDiscoverProjectSecurity: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -231,7 +242,6 @@ export default {
     downloadFromPipelineTab: s__(
       'SecurityReports|Go to the %{linkStart}pipelines tab%{linkEnd} to download the security reports',
     ),
-    securityReportsHelp: s__('SecurityReports|Security reports help page link'),
   },
   summarySlots: [SLOT_SUCCESS, SLOT_LOADING, SLOT_ERROR],
 };
@@ -248,14 +258,10 @@ export default {
       <span :key="slot">
         <security-summary :message="groupedSummaryText" />
 
-        <gl-link
-          target="_blank"
-          data-testid="help"
-          :href="securityReportsDocsPath"
-          :aria-label="$options.i18n.securityReportsHelp"
-        >
-          <gl-icon name="question" />
-        </gl-link>
+        <help-icon
+          :help-path="securityReportsDocsPath"
+          :discover-project-security-path="discoverProjectSecurityPath"
+        />
       </span>
     </template>
 
@@ -300,14 +306,10 @@ export default {
         </template>
       </gl-sprintf>
 
-      <gl-link
-        target="_blank"
-        data-testid="help"
-        :href="securityReportsDocsPath"
-        :aria-label="$options.i18n.securityReportsHelp"
-      >
-        <gl-icon name="question" />
-      </gl-link>
+      <help-icon
+        :help-path="securityReportsDocsPath"
+        :discover-project-security-path="discoverProjectSecurityPath"
+      />
     </template>
 
     <template v-if="canShowDownloads" #action-buttons>

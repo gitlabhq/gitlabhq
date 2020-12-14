@@ -1,7 +1,7 @@
 #import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
 #import "../fragments/container_repository.fragment.graphql"
 
-query getProjectContainerRepositories(
+query getGroupContainerRepositories(
   $fullPath: ID!
   $name: String
   $first: Int

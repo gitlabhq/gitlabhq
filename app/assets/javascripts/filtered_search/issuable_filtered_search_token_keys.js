@@ -22,15 +22,6 @@ export const tokenKeys = [
     tag: '@assignee',
   },
   {
-    formattedKey: __('Reviewer'),
-    key: 'reviewer',
-    type: 'string',
-    param: 'username',
-    symbol: '@',
-    icon: 'user',
-    tag: '@reviewer',
-  },
-  {
     formattedKey: __('Milestone'),
     key: 'milestone',
     type: 'string',

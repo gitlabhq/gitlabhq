@@ -3450,6 +3450,20 @@
               "deprecationReason": null
             },
             {
+              "name": "iteration",
+              "description": "The board iteration.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Iteration",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "labels",
               "description": "Labels of the board",
               "args": [
@@ -68292,6 +68306,16 @@
               "defaultValue": null
             },
             {
+              "name": "iterationId",
+              "description": "The ID of iteration to be assigned to the board.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "IterationID",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
               "name": "weight",
               "description": "The weight value to be assigned to the board",
               "type": {
@@ -72461,6 +72485,20 @@
                   "name": "VulnerabilityExternalIssueLinkConnection",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "hasSolutions",
+              "description": "Indicates whether there is a solution available for this vulnerability.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null

@@ -64,6 +64,11 @@ RSpec.describe Feature::Definition do
         expect { definition.valid_usage!(type_in_code: :development, default_enabled_in_code: false) }
           .to raise_error(/The `default_enabled:` of `feature_flag` is not equal to config/)
       end
+
+      it 'allows passing `default_enabled: :yaml`' do
+        expect { definition.valid_usage!(type_in_code: :development, default_enabled_in_code: :yaml) }
+          .not_to raise_error
+      end
     end
   end
 
@@ -205,6 +210,60 @@ RSpec.describe Feature::Definition do
           expect do
             described_class.valid_usage!(:unknown_feature_flag, type: :unknown_type, default_enabled: false)
           end.to raise_error(/Unknown feature flag type used: `unknown_type`/)
+        end
+      end
+    end
+  end
+
+  describe '.defaul_enabled?' do
+    subject { described_class.default_enabled?(key) }
+
+    context 'when feature flag exist' do
+      let(:key) { definition.key }
+
+      before do
+        allow(described_class).to receive(:definitions) do
+          { definition.key => definition }
+        end
+      end
+
+      context 'when default_enabled is true' do
+        it 'returns the value from the definition' do
+          expect(subject).to eq(true)
+        end
+      end
+
+      context 'when default_enabled is false' do
+        let(:attributes) do
+          { name: 'feature_flag',
+            type: 'development',
+            default_enabled: false }
+        end
+
+        it 'returns the value from the definition' do
+          expect(subject).to eq(false)
+        end
+      end
+    end
+
+    context 'when feature flag does not exist' do
+      let(:key) { :unknown_feature_flag }
+
+      context 'when on dev or test environment' do
+        it 'raises an error' do
+          expect { subject }.to raise_error(
+            Feature::InvalidFeatureFlagError,
+            "The feature flag YAML definition for 'unknown_feature_flag' does not exist")
+        end
+      end
+
+      context 'when on production environment' do
+        before do
+          allow(Gitlab::ErrorTracking).to receive(:should_raise_for_dev?).and_return(false)
+        end
+
+        it 'returns false' do
+          expect(subject).to eq(false)
         end
       end
     end

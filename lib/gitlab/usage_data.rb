@@ -689,16 +689,12 @@ module Gitlab
       end
 
       def aggregated_metrics_monthly
-        return {} unless Feature.enabled?(:product_analytics_aggregated_metrics)
-
         {
           aggregated_metrics: ::Gitlab::UsageDataCounters::HLLRedisCounter.aggregated_metrics_monthly_data
         }
       end
 
       def aggregated_metrics_weekly
-        return {} unless Feature.enabled?(:product_analytics_aggregated_metrics)
-
         {
           aggregated_metrics: ::Gitlab::UsageDataCounters::HLLRedisCounter.aggregated_metrics_weekly_data
         }

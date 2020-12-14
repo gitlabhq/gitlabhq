@@ -178,6 +178,29 @@ if Feature.disabled?(:my_feature_flag, project, default_enabled: true)
 end
 ```
 
+If not specified, `default_enabled` is `false`.
+
+To force reading the `default_enabled` value from the relative YAML definition file, use
+`default_enabled: :yaml`:
+
+```ruby
+if Feature.enabled?(:feature_flag, project, default_enabled: :yaml)
+  # execute code if feature flag is enabled
+end
+```
+
+```ruby
+if Feature.disabled?(:feature_flag, project, default_enabled: :yaml)
+  # execute code if feature flag is disabled
+end
+```
+
+This allows to use the same feature flag check across various parts of the codebase and
+maintain the status of `default_enabled` in the YAML definition file which is the SSOT.
+
+If `default_enabled: :yaml` is used, a YAML definition is expected or an error is raised
+in development or test environment, while returning `false` on production.
+
 If not specified, the default feature flag type for `Feature.enabled?` and `Feature.disabled?`
 is `type: development`. For all other feature flag types, you must specify the `type:`:
 

@@ -1295,6 +1295,11 @@ type Board {
   id: ID!
 
   """
+  The board iteration.
+  """
+  iteration: Iteration
+
+  """
   Labels of the board
   """
   labels(
@@ -23340,6 +23345,11 @@ input UpdateBoardInput {
   id: BoardID!
 
   """
+  The ID of iteration to be assigned to the board.
+  """
+  iterationId: IterationID
+
+  """
   The IDs of labels to be added to the board
   """
   labelIds: [LabelID!]
@@ -24900,6 +24910,11 @@ type Vulnerability implements Noteable {
     """
     last: Int
   ): VulnerabilityExternalIssueLinkConnection!
+
+  """
+  Indicates whether there is a solution available for this vulnerability.
+  """
+  hasSolutions: Boolean
 
   """
   GraphQL ID of the vulnerability

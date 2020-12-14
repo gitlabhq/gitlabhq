@@ -68,6 +68,9 @@ class Feature
         Feature::Definition.valid_usage!(key, type: type, default_enabled: default_enabled)
       end
 
+      # If `default_enabled: :yaml` we fetch the value from the YAML definition instead.
+      default_enabled = Feature::Definition.default_enabled?(key) if default_enabled == :yaml
+
       # During setup the database does not exist yet. So we haven't stored a value
       # for the feature yet and return the default.
       return default_enabled unless Gitlab::Database.exists?

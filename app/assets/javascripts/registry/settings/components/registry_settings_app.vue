@@ -1,7 +1,7 @@
 <script>
 import { GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
 import { isEqual, get, isEmpty } from 'lodash';
-import expirationPolicyQuery from '../graphql/queries/get_expiration_policy.graphql';
+import expirationPolicyQuery from '../graphql/queries/get_expiration_policy.query.graphql';
 import {
   FETCH_SETTINGS_ERROR_MESSAGE,
   UNAVAILABLE_FEATURE_TITLE,

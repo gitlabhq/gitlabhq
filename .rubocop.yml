@@ -276,6 +276,12 @@ GitlabSecurity/PublicSend:
 Gitlab/DuplicateSpecLocation:
   Enabled: true
 
+Gitlab/PolicyRuleBoolean:
+  Enabled: true
+  Include:
+    - 'app/policies/**/*'
+    - 'ee/app/policies/**/*'
+
 Cop/InjectEnterpriseEditionModule:
   Enabled: true
   Exclude:

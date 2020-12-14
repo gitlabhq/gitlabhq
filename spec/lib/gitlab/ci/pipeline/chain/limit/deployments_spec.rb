@@ -7,26 +7,13 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::Deployments do
   let_it_be(:project, reload: true) { create(:project, namespace: namespace) }
   let_it_be(:plan_limits, reload: true) { create(:plan_limits, :default_plan) }
 
-  let(:stage_seeds) do
-    [
-      double(:test, seeds: [
-        double(:test, attributes: {})
-      ]),
-      double(:staging, seeds: [
-        double(:staging, attributes: { environment: 'staging' })
-      ]),
-      double(:production, seeds: [
-        double(:production, attributes: { environment: 'production' })
-      ])
-    ]
-  end
-
+  let(:pipeline_seed) { double(:pipeline_seed, deployments_count: 2) }
   let(:save_incompleted) { false }
 
   let(:command) do
     double(:command,
       project: project,
-      stage_seeds: stage_seeds,
+      pipeline_seed: pipeline_seed,
       save_incompleted: save_incompleted
     )
   end

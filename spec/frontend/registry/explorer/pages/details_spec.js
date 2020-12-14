@@ -12,8 +12,8 @@ import TagsLoader from '~/registry/explorer/components/details_page/tags_loader.
 import TagsList from '~/registry/explorer/components/details_page/tags_list.vue';
 import EmptyTagsState from '~/registry/explorer/components/details_page/empty_tags_state.vue';
 
-import getContainerRepositoryDetailsQuery from '~/registry/explorer/graphql/queries/get_container_repository_details.graphql';
-import deleteContainerRepositoryTagsMutation from '~/registry/explorer/graphql/mutations/delete_container_repository_tags.graphql';
+import getContainerRepositoryDetailsQuery from '~/registry/explorer/graphql/queries/get_container_repository_details.query.graphql';
+import deleteContainerRepositoryTagsMutation from '~/registry/explorer/graphql/mutations/delete_container_repository_tags.mutation.graphql';
 
 import {
   graphQLImageDetailsMock,

@@ -12,8 +12,8 @@ import TagsList from '../components/details_page/tags_list.vue';
 import TagsLoader from '../components/details_page/tags_loader.vue';
 import EmptyTagsState from '../components/details_page/empty_tags_state.vue';
 
-import getContainerRepositoryDetailsQuery from '../graphql/queries/get_container_repository_details.graphql';
-import deleteContainerRepositoryTagsMutation from '../graphql/mutations/delete_container_repository_tags.graphql';
+import getContainerRepositoryDetailsQuery from '../graphql/queries/get_container_repository_details.query.graphql';
+import deleteContainerRepositoryTagsMutation from '../graphql/mutations/delete_container_repository_tags.mutation.graphql';
 
 import {
   ALERT_SUCCESS_TAG,

@@ -41,6 +41,10 @@ Graphql/ResolverType:
     - 'app/graphql/resolvers/users/group_count_resolver.rb'
     - 'ee/app/graphql/resolvers/vulnerabilities_base_resolver.rb'
 
+Gitlab/PolicyRuleBoolean:
+  Exclude:
+    - 'ee/app/policies/ee/identity_provider_policy.rb'
+
 Rails/SaveBang:
   Exclude:
     - 'ee/spec/controllers/projects/merge_requests_controller_spec.rb'

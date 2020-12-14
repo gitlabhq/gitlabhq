@@ -1,0 +1,3 @@
+= f.label :visibility_level, class: 'label-bold' do
+  = _('Visibility level')
+.js-visibility-level-dropdown{ data: { visibility_level_options: visibility_level_options(@group).to_json, default_level: f.object.visibility_level } }

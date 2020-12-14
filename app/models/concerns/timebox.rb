@@ -12,9 +12,15 @@ module Timebox
   include FromUnion
 
   TimeboxStruct = Struct.new(:title, :name, :id) do
+    include GlobalID::Identification
+
     # Ensure these models match the interface required for exporting
     def serializable_hash(_opts = {})
       { title: title, name: name, id: id }
+    end
+
+    def self.declarative_policy_class
+      "TimeboxPolicy"
     end
   end
 
@@ -24,8 +30,6 @@ module Timebox
   Any = TimeboxStruct.new('Any Timebox', '', -1)
   Upcoming = TimeboxStruct.new('Upcoming', '#upcoming', -2)
   Started = TimeboxStruct.new('Started', '#started', -3)
-  # For Iteration
-  Current = TimeboxStruct.new('Current', '#current', -4)
 
   included do
     # Defines the same constants above, but inside the including class.
@@ -33,7 +37,6 @@ module Timebox
     const_set :Any, TimeboxStruct.new("Any #{self.name}", '', -1)
     const_set :Upcoming, TimeboxStruct.new('Upcoming', '#upcoming', -2)
     const_set :Started, TimeboxStruct.new('Started', '#started', -3)
-    const_set :Current, TimeboxStruct.new('Current', '#current', -4)
 
     alias_method :timebox_id, :id
 

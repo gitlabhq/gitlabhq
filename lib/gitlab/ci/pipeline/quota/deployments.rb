@@ -34,11 +34,7 @@ module Gitlab
 
           def pipeline_deployment_count
             strong_memoize(:pipeline_deployment_count) do
-              @command.stage_seeds.sum do |stage_seed|
-                stage_seed.seeds.count do |build_seed|
-                  build_seed.attributes[:environment].present?
-                end
-              end
+              @command.pipeline_seed.deployments_count
             end
           end
 

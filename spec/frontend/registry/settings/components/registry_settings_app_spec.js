@@ -3,7 +3,7 @@ import VueApollo from 'vue-apollo';
 import { GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
 import createMockApollo from 'jest/helpers/mock_apollo_helper';
 import component from '~/registry/settings/components/registry_settings_app.vue';
-import expirationPolicyQuery from '~/registry/settings/graphql/queries/get_expiration_policy.graphql';
+import expirationPolicyQuery from '~/registry/settings/graphql/queries/get_expiration_policy.query.graphql';
 import SettingsForm from '~/registry/settings/components/settings_form.vue';
 import {
   FETCH_SETTINGS_ERROR_MESSAGE,

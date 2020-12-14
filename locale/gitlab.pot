@@ -24634,6 +24634,12 @@ msgstr ""
 msgid "SecurityReports|Undo dismiss"
 msgstr ""
 
+msgid "SecurityReports|Upgrade to interact, track and shift left with vulnerability management features in the UI."
+msgstr ""
+
+msgid "SecurityReports|Upgrade to manage vulnerabilities"
+msgstr ""
+
 msgid "SecurityReports|Vulnerability Report"
 msgstr ""
 

@@ -247,6 +247,7 @@ Represents a project or group board.
 | `hideBacklogList` | Boolean | Whether or not backlog list is hidden |
 | `hideClosedList` | Boolean | Whether or not closed list is hidden |
 | `id` | ID! | ID (global ID) of the board |
+| `iteration` | Iteration | The board iteration. |
 | `labels` | LabelConnection | Labels of the board |
 | `lists` | BoardListConnection | Lists of the board |
 | `milestone` | Milestone | The board milestone |
@@ -3747,6 +3748,7 @@ Represents a vulnerability.
 | `discussions` | DiscussionConnection! | All discussions on this noteable |
 | `dismissedAt` | Time | Timestamp of when the vulnerability state was changed to dismissed |
 | `externalIssueLinks` | VulnerabilityExternalIssueLinkConnection! | List of external issue links related to the vulnerability |
+| `hasSolutions` | Boolean | Indicates whether there is a solution available for this vulnerability. |
 | `id` | ID! | GraphQL ID of the vulnerability |
 | `identifiers` | VulnerabilityIdentifier! => Array | Identifiers of the vulnerability. |
 | `issueLinks` | VulnerabilityIssueLinkConnection! | List of issue links related to the vulnerability |

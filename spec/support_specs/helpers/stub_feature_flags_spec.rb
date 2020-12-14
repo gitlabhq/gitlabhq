@@ -5,19 +5,20 @@ require 'spec_helper'
 RSpec.describe StubFeatureFlags do
   let_it_be(:dummy_feature_flag) { :dummy_feature_flag }
 
+  let_it_be(:dummy_definition) do
+    Feature::Definition.new(
+      nil,
+      name: dummy_feature_flag,
+      type: 'development',
+      default_enabled: false
+    )
+  end
+
   # We inject dummy feature flag defintion
   # to ensure that we strong validate it's usage
   # as well
   before(:all) do
-    definition = Feature::Definition.new(
-      nil,
-      name: dummy_feature_flag,
-      type: 'development',
-      # we allow ambigious usage of `default_enabled:`
-      default_enabled: [false, true]
-    )
-
-    Feature::Definition.definitions[dummy_feature_flag] = definition
+    Feature::Definition.definitions[dummy_feature_flag] = dummy_definition
   end
 
   after(:all) do
@@ -47,6 +48,10 @@ RSpec.describe StubFeatureFlags do
         it { expect(Feature.disabled?(feature_name)).not_to eq(expected_result) }
 
         context 'default_enabled does not impact feature state' do
+          before do
+            allow(dummy_definition).to receive(:default_enabled).and_return(true)
+          end
+
           it { expect(Feature.enabled?(feature_name, default_enabled: true)).to eq(expected_result) }
           it { expect(Feature.disabled?(feature_name, default_enabled: true)).not_to eq(expected_result) }
         end
@@ -79,6 +84,10 @@ RSpec.describe StubFeatureFlags do
         it { expect(Feature.disabled?(feature_name, actor(tested_actor))).not_to eq(expected_result) }
 
         context 'default_enabled does not impact feature state' do
+          before do
+            allow(dummy_definition).to receive(:default_enabled).and_return(true)
+          end
+
           it { expect(Feature.enabled?(feature_name, actor(tested_actor), default_enabled: true)).to eq(expected_result) }
           it { expect(Feature.disabled?(feature_name, actor(tested_actor), default_enabled: true)).not_to eq(expected_result) }
         end

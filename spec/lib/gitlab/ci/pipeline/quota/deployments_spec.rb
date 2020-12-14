@@ -10,24 +10,12 @@ RSpec.describe Gitlab::Ci::Pipeline::Quota::Deployments do
 
   let(:pipeline) { build_stubbed(:ci_pipeline, project: project) }
 
-  let(:stage_seeds) do
-    [
-      double(:test, seeds: [
-        double(:test, attributes: {})
-      ]),
-      double(:staging, seeds: [
-        double(:staging, attributes: { environment: 'staging' })
-      ]),
-      double(:production, seeds: [
-        double(:production, attributes: { environment: 'production' })
-      ])
-    ]
-  end
+  let(:pipeline_seed) { double(:pipeline_seed, deployments_count: 2)}
 
   let(:command) do
     double(:command,
       project: project,
-      stage_seeds: stage_seeds,
+      pipeline_seed: pipeline_seed,
       save_incompleted: true
     )
   end

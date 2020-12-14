@@ -63,9 +63,19 @@ end
 Within the rule DSL, you can use:
 
 - A regular word mentions a condition by name - a rule that is in effect when that condition is truthy.
-- `~` indicates negation.
+- `~` indicates negation, also available as `negate`.
 - `&` and `|` are logical combinations, also available as `all?(...)` and `any?(...)`.
 - `can?(:other_ability)` delegates to the rules that apply to `:other_ability`. Note that this is distinct from the instance method `can?`, which can check dynamically - this only configures a delegation to another ability.
+
+`~`, `&` and `|` operators are overridden methods in
+[`DeclarativePolicy::Rule::Base`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/declarative_policy/rule.rb).
+
+Do not use boolean operators such as `&&` and `||` within the rule DSL,
+as conditions within rule blocks are objects, not booleans. The same
+applies for ternary operators (`condition ? ... : ...`), and `if`
+blocks. These operators cannot be overridden, and are hence banned via a
+[custom
+cop](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49771).
 
 ## Scores, Order, Performance
 

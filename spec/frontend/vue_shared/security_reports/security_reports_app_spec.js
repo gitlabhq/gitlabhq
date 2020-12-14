@@ -19,6 +19,7 @@ import {
   REPORT_TYPE_SAST,
   REPORT_TYPE_SECRET_DETECTION,
 } from '~/vue_shared/security_reports/constants';
+import HelpIcon from '~/vue_shared/security_reports/components/help_icon.vue';
 import SecurityReportDownloadDropdown from '~/vue_shared/security_reports/components/security_report_download_dropdown.vue';
 import SecurityReportsApp from '~/vue_shared/security_reports/security_reports_app.vue';
 import securityReportDownloadPathsQuery from '~/vue_shared/security_reports/queries/security_report_download_paths.query.graphql';
@@ -38,6 +39,7 @@ describe('Security reports app', () => {
     pipelineId: 123,
     projectId: 456,
     securityReportsDocsPath: '/docs',
+    discoverProjectSecurityPath: '/discoverProjectSecurityPath',
   };
 
   const createComponent = options => {
@@ -47,6 +49,9 @@ describe('Security reports app', () => {
         {
           localVue,
           propsData: { ...props },
+          stubs: {
+            HelpIcon: true,
+          },
         },
         options,
       ),
@@ -68,7 +73,7 @@ describe('Security reports app', () => {
 
   const findDownloadDropdown = () => wrapper.find(SecurityReportDownloadDropdown);
   const findPipelinesTabAnchor = () => wrapper.find('[data-testid="show-pipelines"]');
-  const findHelpLink = () => wrapper.find('[data-testid="help"]');
+  const findHelpIconComponent = () => wrapper.find(HelpIcon);
   const setupMockJobArtifact = reportType => {
     jest
       .spyOn(Api, 'pipelineJobs')
@@ -133,8 +138,9 @@ describe('Security reports app', () => {
         });
 
         it('renders a help link', () => {
-          expect(findHelpLink().attributes()).toMatchObject({
-            href: props.securityReportsDocsPath,
+          expect(findHelpIconComponent().props()).toEqual({
+            helpPath: props.securityReportsDocsPath,
+            discoverProjectSecurityPath: props.discoverProjectSecurityPath,
           });
         });
       });

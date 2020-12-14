@@ -1255,45 +1255,21 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     end
   end
 
-  describe 'aggregated_metrics' do
-    shared_examples 'aggregated_metrics_for_time_range' do
-      context 'with product_analytics_aggregated_metrics feature flag on' do
-        before do
-          stub_feature_flags(product_analytics_aggregated_metrics: true)
-        end
+  describe '.aggregated_metrics_weekly' do
+    subject(:aggregated_metrics_payload) { described_class.aggregated_metrics_weekly }
 
-        it 'uses ::Gitlab::UsageDataCounters::HLLRedisCounter#aggregated_metrics_data', :aggregate_failures do
-          expect(::Gitlab::UsageDataCounters::HLLRedisCounter).to receive(aggregated_metrics_data_method).and_return(global_search_gmau: 123)
-          expect(aggregated_metrics_payload).to eq(aggregated_metrics: { global_search_gmau: 123 })
-        end
-      end
-
-      context 'with product_analytics_aggregated_metrics feature flag off' do
-        before do
-          stub_feature_flags(product_analytics_aggregated_metrics: false)
-        end
-
-        it 'returns empty hash', :aggregate_failures do
-          expect(::Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(aggregated_metrics_data_method)
-          expect(aggregated_metrics_payload).to be {}
-        end
-      end
+    it 'uses ::Gitlab::UsageDataCounters::HLLRedisCounter#aggregated_metrics_data', :aggregate_failures do
+      expect(::Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:aggregated_metrics_weekly_data).and_return(global_search_gmau: 123)
+      expect(aggregated_metrics_payload).to eq(aggregated_metrics: { global_search_gmau: 123 })
     end
+  end
 
-    describe '.aggregated_metrics_weekly' do
-      subject(:aggregated_metrics_payload) { described_class.aggregated_metrics_weekly }
+  describe '.aggregated_metrics_monthly' do
+    subject(:aggregated_metrics_payload) { described_class.aggregated_metrics_monthly }
 
-      let(:aggregated_metrics_data_method) { :aggregated_metrics_weekly_data }
-
-      it_behaves_like 'aggregated_metrics_for_time_range'
-    end
-
-    describe '.aggregated_metrics_monthly' do
-      subject(:aggregated_metrics_payload) { described_class.aggregated_metrics_monthly }
-
-      let(:aggregated_metrics_data_method) { :aggregated_metrics_monthly_data }
-
-      it_behaves_like 'aggregated_metrics_for_time_range'
+    it 'uses ::Gitlab::UsageDataCounters::HLLRedisCounter#aggregated_metrics_data', :aggregate_failures do
+      expect(::Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:aggregated_metrics_monthly_data).and_return(global_search_gmau: 123)
+      expect(aggregated_metrics_payload).to eq(aggregated_metrics: { global_search_gmau: 123 })
     end
   end
 

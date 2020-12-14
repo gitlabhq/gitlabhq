@@ -10,12 +10,12 @@ module Gitlab
           PopulateError = Class.new(StandardError)
 
           def perform!
-            raise ArgumentError, 'missing stage seeds' unless @command.stage_seeds
+            raise ArgumentError, 'missing pipeline seed' unless @command.pipeline_seed
 
             ##
             # Populate pipeline with all stages, and stages with builds.
             #
-            pipeline.stages = @command.stage_seeds.map(&:to_resource)
+            pipeline.stages = @command.pipeline_seed.stages
 
             if stage_names.empty?
               return error('No stages / jobs for this pipeline.')
