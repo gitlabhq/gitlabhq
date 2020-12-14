@@ -1,0 +1,5 @@
+mutation lockState($stateID: TerraformStateID!) {
+  terraformStateLock(input: { id: $stateID }) {
+    errors
+  }
+}

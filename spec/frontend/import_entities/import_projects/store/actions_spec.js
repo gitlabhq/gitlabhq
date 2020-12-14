@@ -17,11 +17,11 @@ import {
   RECEIVE_NAMESPACES_ERROR,
   SET_PAGE,
   SET_FILTER,
-} from '~/import_projects/store/mutation_types';
-import actionsFactory from '~/import_projects/store/actions';
-import { getImportTarget } from '~/import_projects/store/getters';
-import state from '~/import_projects/store/state';
-import { STATUSES } from '~/import_projects/constants';
+} from '~/import_entities/import_projects/store/mutation_types';
+import actionsFactory from '~/import_entities/import_projects/store/actions';
+import { getImportTarget } from '~/import_entities/import_projects/store/getters';
+import state from '~/import_entities/import_projects/store/state';
+import { STATUSES } from '~/import_entities/constants';
 
 jest.mock('~/flash');
 

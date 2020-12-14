@@ -14,6 +14,10 @@
   - run_timed_command "scripts/gitaly-test-spawn"
   - source ./scripts/rspec_helpers.sh
 
+.minimal-rspec-tests:
+  variables:
+    RSPEC_TESTS_MAPPING_ENABLED: "true"
+
 .rspec-base:
   extends: .rails-job-base
   stage: test
@@ -240,11 +244,23 @@ rspec migration pg11:
     - .rspec-base-migration
     - .rspec-migration-parallel
 
+rspec migration pg11 minimal:
+  extends:
+    - rspec migration pg11
+    - .minimal-rspec-tests
+    - .rails:rules:ee-and-foss-migration:minimal
+
 rspec unit pg11:
   extends:
     - .rspec-base-pg11
     - .rails:rules:ee-and-foss-unit
     - .rspec-unit-parallel
+
+rspec unit pg11 minimal:
+  extends:
+    - rspec unit pg11
+    - .minimal-rspec-tests
+    - .rails:rules:ee-and-foss-unit:minimal
 
 rspec integration pg11:
   extends:
@@ -252,11 +268,23 @@ rspec integration pg11:
     - .rails:rules:ee-and-foss-integration
     - .rspec-integration-parallel
 
+rspec integration pg11 minimal:
+  extends:
+    - rspec integration pg11
+    - .minimal-rspec-tests
+    - .rails:rules:ee-and-foss-integration:minimal
+
 rspec system pg11:
   extends:
     - .rspec-base-pg11
     - .rails:rules:ee-and-foss-system
     - .rspec-system-parallel
+
+rspec system pg11 minimal:
+  extends:
+    - rspec system pg11
+    - .minimal-rspec-tests
+    - .rails:rules:ee-and-foss-system:minimal
 
 rspec fast_spec_helper:
   extends:
@@ -264,6 +292,12 @@ rspec fast_spec_helper:
     - .rails:rules:ee-and-foss-fast_spec_helper
   script:
     - bin/rspec spec/fast_spec_helper.rb
+
+rspec fast_spec_helper minimal:
+  extends:
+    - rspec fast_spec_helper
+    - .minimal-rspec-tests
+    - .rails:rules:ee-and-foss-fast_spec_helper:minimal
 
 db:migrate:reset:
   extends: .db-job-base
@@ -418,11 +452,23 @@ rspec migration pg11-as-if-foss:
     - .rails:rules:as-if-foss-migration
     - .rspec-migration-parallel
 
+rspec migration pg11-as-if-foss minimal:
+  extends:
+    - rspec migration pg11-as-if-foss
+    - .minimal-rspec-tests
+    - .rails:rules:as-if-foss-migration:minimal
+
 rspec unit pg11-as-if-foss:
   extends:
     - .rspec-base-pg11-as-if-foss
     - .rails:rules:as-if-foss-unit
     - .rspec-unit-parallel
+
+rspec unit pg11-as-if-foss minimal:
+  extends:
+    - rspec unit pg11-as-if-foss
+    - .minimal-rspec-tests
+    - .rails:rules:as-if-foss-unit:minimal
 
 rspec integration pg11-as-if-foss:
   extends:
@@ -430,11 +476,23 @@ rspec integration pg11-as-if-foss:
     - .rails:rules:as-if-foss-integration
     - .rspec-integration-parallel
 
+rspec integration pg11-as-if-foss minimal:
+  extends:
+    - rspec integration pg11-as-if-foss
+    - .minimal-rspec-tests
+    - .rails:rules:as-if-foss-integration:minimal
+
 rspec system pg11-as-if-foss:
   extends:
     - .rspec-base-pg11-as-if-foss
     - .rails:rules:as-if-foss-system
     - .rspec-system-parallel
+
+rspec system pg11-as-if-foss minimal:
+  extends:
+    - rspec system pg11-as-if-foss
+    - .minimal-rspec-tests
+    - .rails:rules:as-if-foss-system:minimal
 
 rspec-ee migration pg11:
   extends:
@@ -443,11 +501,23 @@ rspec-ee migration pg11:
     - .rails:rules:ee-only-migration
     - .rspec-ee-migration-parallel
 
+rspec-ee migration pg11 minimal:
+  extends:
+    - rspec-ee migration pg11
+    - .minimal-rspec-tests
+    - .rails:rules:ee-only-migration:minimal
+
 rspec-ee unit pg11:
   extends:
     - .rspec-ee-base-pg11
     - .rails:rules:ee-only-unit
     - .rspec-ee-unit-parallel
+
+rspec-ee unit pg11 minimal:
+  extends:
+    - rspec-ee unit pg11
+    - .minimal-rspec-tests
+    - .rails:rules:ee-only-unit:minimal
 
 rspec-ee integration pg11:
   extends:
@@ -455,11 +525,23 @@ rspec-ee integration pg11:
     - .rails:rules:ee-only-integration
     - .rspec-ee-integration-parallel
 
+rspec-ee integration pg11 minimal:
+  extends:
+    - rspec-ee integration pg11
+    - .minimal-rspec-tests
+    - .rails:rules:ee-only-integration:minimal
+
 rspec-ee system pg11:
   extends:
     - .rspec-ee-base-pg11
     - .rails:rules:ee-only-system
     - .rspec-ee-system-parallel
+
+rspec-ee system pg11 minimal:
+  extends:
+    - rspec-ee system pg11
+    - .minimal-rspec-tests
+    - .rails:rules:ee-only-system:minimal
 
 rspec-ee unit pg11 geo:
   extends:
@@ -467,15 +549,33 @@ rspec-ee unit pg11 geo:
     - .rails:rules:ee-only-unit
     - .rspec-ee-unit-geo-parallel
 
+rspec-ee unit pg11 geo minimal:
+  extends:
+    - rspec-ee unit pg11 geo
+    - .minimal-rspec-tests
+    - .rails:rules:ee-only-unit:minimal
+
 rspec-ee integration pg11 geo:
   extends:
     - .rspec-ee-base-geo-pg11
     - .rails:rules:ee-only-integration
 
+rspec-ee integration pg11 geo minimal:
+  extends:
+    - rspec-ee integration pg11 geo
+    - .minimal-rspec-tests
+    - .rails:rules:ee-only-integration:minimal
+
 rspec-ee system pg11 geo:
   extends:
     - .rspec-ee-base-geo-pg11
     - .rails:rules:ee-only-system
+
+rspec-ee system pg11 geo minimal:
+  extends:
+    - rspec-ee system pg11 geo
+    - .minimal-rspec-tests
+    - .rails:rules:ee-only-system:minimal
 
 db:rollback geo:
   extends:

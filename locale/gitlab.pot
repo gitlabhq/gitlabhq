@@ -27081,6 +27081,9 @@ msgstr ""
 msgid "Terraform|Get started with Terraform"
 msgstr ""
 
+msgid "Terraform|Lock"
+msgstr ""
+
 msgid "Terraform|Locked"
 msgstr ""
 
@@ -27100,6 +27103,9 @@ msgid "Terraform|The Terraform report %{name} was generated in your pipelines."
 msgstr ""
 
 msgid "Terraform|Unknown User"
+msgstr ""
+
+msgid "Terraform|Unlock"
 msgstr ""
 
 msgid "Test"

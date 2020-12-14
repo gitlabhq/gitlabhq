@@ -82,6 +82,7 @@ detect-tests:
     - .detect-test-base
     - .rails:rules:detect-tests
   variables:
+    RSPEC_TESTS_MAPPING_ENABLED: "true"
     MATCHED_TESTS_FILE: tmp/matching_tests.txt
 
 detect-tests as-if-foss:

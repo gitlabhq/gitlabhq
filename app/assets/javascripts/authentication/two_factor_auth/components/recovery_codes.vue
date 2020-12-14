@@ -2,11 +2,13 @@
 import Mousetrap from 'mousetrap';
 import { GlSprintf, GlButton, GlAlert } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import Tracking from '~/tracking';
 import { __ } from '~/locale';
 import {
   COPY_BUTTON_ACTION,
   DOWNLOAD_BUTTON_ACTION,
   PRINT_BUTTON_ACTION,
+  TRACKING_LABEL_PREFIX,
   RECOVERY_CODE_DOWNLOAD_FILENAME,
   COPY_KEYBOARD_SHORTCUT,
 } from '../constants';
@@ -28,10 +30,12 @@ export default {
   copyButtonAction: COPY_BUTTON_ACTION,
   downloadButtonAction: DOWNLOAD_BUTTON_ACTION,
   printButtonAction: PRINT_BUTTON_ACTION,
+  trackingLabelPrefix: TRACKING_LABEL_PREFIX,
   recoveryCodeDownloadFilename: RECOVERY_CODE_DOWNLOAD_FILENAME,
   i18n,
   mousetrap: null,
   components: { GlSprintf, GlButton, GlAlert, ClipboardButton },
+  mixins: [Tracking.mixin()],
   props: {
     codes: {
       type: Array,
@@ -74,6 +78,8 @@ export default {
       if (action === this.$options.printButtonAction) {
         window.print();
       }
+
+      this.track('click_button', { label: `${this.$options.trackingLabelPrefix}${action}_button` });
     },
     handleKeyboardCopy() {
       if (!window.getSelection) {
@@ -84,6 +90,9 @@ export default {
 
       if (copiedText.includes(this.codesAsString)) {
         this.proceedButtonDisabled = false;
+        this.track('copy_keyboard_shortcut', {
+          label: `${this.$options.trackingLabelPrefix}manual_copy`,
+        });
       }
     },
   },
@@ -155,6 +164,8 @@ export default {
           :title="$options.i18n.proceedButton"
           variant="success"
           data-qa-selector="proceed_button"
+          data-track-event="click_button"
+          :data-track-label="`${$options.trackingLabelPrefix}proceed_button`"
           >{{ $options.i18n.proceedButton }}</gl-button
         >
       </div>

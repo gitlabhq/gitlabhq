@@ -1,4 +1,4 @@
-import { STATUSES } from './constants';
+import { STATUSES } from '../constants';
 
 export function isIncompatible(project) {
   return project.importSource.incompatible;

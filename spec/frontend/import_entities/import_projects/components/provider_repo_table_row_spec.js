@@ -2,9 +2,9 @@ import { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { GlBadge } from '@gitlab/ui';
-import ProviderRepoTableRow from '~/import_projects/components/provider_repo_table_row.vue';
-import ImportStatus from '~/import_projects/components/import_status.vue';
-import { STATUSES } from '~/import_projects/constants';
+import ProviderRepoTableRow from '~/import_entities/import_projects/components/provider_repo_table_row.vue';
+import ImportStatus from '~/import_entities/components/import_status.vue';
+import { STATUSES } from '~/import_entities//constants';
 import Select2Select from '~/vue_shared/components/select2_select.vue';
 
 describe('ProviderRepoTableRow', () => {

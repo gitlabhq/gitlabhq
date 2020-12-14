@@ -1,7 +1,7 @@
-import * as types from '~/import_projects/store/mutation_types';
-import mutations from '~/import_projects/store/mutations';
-import getInitialState from '~/import_projects/store/state';
-import { STATUSES } from '~/import_projects/constants';
+import * as types from '~/import_entities/import_projects/store/mutation_types';
+import mutations from '~/import_entities/import_projects/store/mutations';
+import getInitialState from '~/import_entities/import_projects/store/state';
+import { STATUSES } from '~/import_entities/constants';
 
 describe('import_projects store mutations', () => {
   let state;

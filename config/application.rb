@@ -188,6 +188,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/error_tracking_index.css"
     config.assets.precompile << "page_bundles/signup.css"
     config.assets.precompile << "page_bundles/ide.css"
+    config.assets.precompile << "page_bundles/import.css"
     config.assets.precompile << "page_bundles/issues_list.css"
     config.assets.precompile << "page_bundles/jira_connect.css"
     config.assets.precompile << "page_bundles/jira_connect_users.css"

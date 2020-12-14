@@ -2,8 +2,8 @@ import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 
 import { GlAlert } from '@gitlab/ui';
-import BitbucketStatusTable from '~/import_projects/components/bitbucket_status_table.vue';
-import ImportProjectsTable from '~/import_projects/components/import_projects_table.vue';
+import BitbucketStatusTable from '~/import_entities/import_projects/components/bitbucket_status_table.vue';
+import ImportProjectsTable from '~/import_entities/import_projects/components/import_projects_table.vue';
 
 const ImportProjectsTableStub = {
   name: 'ImportProjectsTable',

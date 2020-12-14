@@ -5,9 +5,9 @@ import {
   hasImportableRepos,
   importAllCount,
   getImportTarget,
-} from '~/import_projects/store/getters';
-import { STATUSES } from '~/import_projects/constants';
-import state from '~/import_projects/store/state';
+} from '~/import_entities/import_projects/store/getters';
+import { STATUSES } from '~/import_entities/constants';
+import state from '~/import_entities/import_projects/store/state';
 
 const IMPORTED_REPO = {
   importSource: {},

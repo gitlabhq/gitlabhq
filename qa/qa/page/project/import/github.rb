@@ -12,7 +12,7 @@ module QA
             element :authenticate_button
           end
 
-          view 'app/assets/javascripts/import_projects/components/provider_repo_table_row.vue' do
+          view 'app/assets/javascripts/import_entities/import_projects/components/provider_repo_table_row.vue' do
             element :project_import_row
             element :project_namespace_select
             element :project_path_field

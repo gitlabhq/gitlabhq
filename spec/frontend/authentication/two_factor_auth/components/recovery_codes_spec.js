@@ -2,7 +2,8 @@ import { mount } from '@vue/test-utils';
 import { GlAlert, GlButton } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { within } from '@testing-library/dom';
-import { extendedWrapper } from 'jest/helpers/vue_test_utils_helper';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import Tracking from '~/tracking';
 import RecoveryCodes, {
   i18n,
 } from '~/authentication/two_factor_auth/components/recovery_codes.vue';
@@ -42,6 +43,7 @@ describe('RecoveryCodes', () => {
     wrapper.vm.$options.mousetrap.trigger(COPY_KEYBOARD_SHORTCUT);
 
   beforeEach(() => {
+    jest.spyOn(Tracking, 'event');
     createComponent();
   });
 
@@ -73,6 +75,13 @@ describe('RecoveryCodes', () => {
         href: profileAccountPath,
       });
     });
+
+    it('fires Snowplow event', () => {
+      expect(findProceedButton().attributes()).toMatchObject({
+        'data-track-event': 'click_button',
+        'data-track-label': '2fa_recovery_codes_proceed_button',
+      });
+    });
   });
 
   describe('"Copy codes" button', () => {
@@ -88,12 +97,20 @@ describe('RecoveryCodes', () => {
     });
 
     describe('when button is clicked', () => {
-      it('enables "Proceed" button', async () => {
+      beforeEach(async () => {
         findCopyButton().trigger('click');
 
         await nextTick();
+      });
 
+      it('enables "Proceed" button', () => {
         expect(findProceedButton().props('disabled')).toBe(false);
+      });
+
+      it('fires Snowplow event', () => {
+        expect(Tracking.event).toHaveBeenCalledWith(undefined, 'click_button', {
+          label: '2fa_recovery_codes_copy_button',
+        });
       });
     });
   });
@@ -111,7 +128,7 @@ describe('RecoveryCodes', () => {
     });
 
     describe('when button is clicked', () => {
-      it('enables "Proceed" button', async () => {
+      beforeEach(async () => {
         const downloadButton = findDownloadButton();
         // jsdom does not support navigating.
         // Since we are clicking an anchor tag there is no way to mock this
@@ -121,8 +138,16 @@ describe('RecoveryCodes', () => {
         downloadButton.trigger('click');
 
         await nextTick();
+      });
 
+      it('enables "Proceed" button', () => {
         expect(findProceedButton().props('disabled')).toBe(false);
+      });
+
+      it('fires Snowplow event', () => {
+        expect(Tracking.event).toHaveBeenCalledWith(undefined, 'click_button', {
+          label: '2fa_recovery_codes_download_button',
+        });
       });
     });
   });
@@ -138,33 +163,47 @@ describe('RecoveryCodes', () => {
     });
 
     describe('when button is clicked', () => {
-      it('enables "Proceed" button and opens print dialog', async () => {
+      beforeEach(async () => {
         window.print = jest.fn();
 
         findPrintButton().trigger('click');
 
         await nextTick();
+      });
 
+      it('enables "Proceed" button and opens print dialog', () => {
         expect(findProceedButton().props('disabled')).toBe(false);
-        expect(window.print).toHaveBeenCalledWith();
+        expect(window.print).toHaveBeenCalled();
+      });
+
+      it('fires Snowplow event', () => {
+        expect(Tracking.event).toHaveBeenCalledWith(undefined, 'click_button', {
+          label: '2fa_recovery_codes_print_button',
+        });
       });
     });
   });
 
   describe('when codes are manually copied', () => {
     describe('when selected text is the recovery codes', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         jest.spyOn(window, 'getSelection').mockImplementation(() => ({
           toString: jest.fn(() => codesFormattedString),
         }));
-      });
 
-      it('enables "Proceed" button', async () => {
         manuallyCopyRecoveryCodes();
 
         await nextTick();
+      });
 
+      it('enables "Proceed" button', () => {
         expect(findProceedButton().props('disabled')).toBe(false);
+      });
+
+      it('fires Snowplow event', () => {
+        expect(Tracking.event).toHaveBeenCalledWith(undefined, 'copy_keyboard_shortcut', {
+          label: '2fa_recovery_codes_manual_copy',
+        });
       });
     });
 

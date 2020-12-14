@@ -52,12 +52,18 @@ export default {
       return columns;
     },
   },
+  i18n: {
+    locked: s__('Terraform|Locked'),
+    lockedByUser: s__('Terraform|Locked by %{user} %{timeAgo}'),
+    unknownUser: s__('Terraform|Unknown User'),
+    updatedUser: s__('Terraform|%{user} updated %{timeAgo}'),
+  },
   methods: {
     createdByUserName(item) {
       return item.latestVersion?.createdByUser?.name;
     },
     lockedByUserName(item) {
-      return item.lockedByUser?.name || s__('Terraform|Unknown User');
+      return item.lockedByUser?.name || this.$options.i18n.unknownUser;
     },
     updatedTime(item) {
       return item.latestVersion?.updatedAt || item.updatedAt;
@@ -74,18 +80,18 @@ export default {
           {{ item.name }}
         </p>
 
-        <div v-if="item.lockedAt" id="terraformLockedBadgeContainer" class="gl-mx-2">
-          <gl-badge id="terraformLockedBadge">
+        <div v-if="item.lockedAt" :id="`terraformLockedBadgeContainer${item.name}`" class="gl-mx-2">
+          <gl-badge :id="`terraformLockedBadge${item.name}`">
             <gl-icon name="lock" />
-            {{ s__('Terraform|Locked') }}
+            {{ $options.i18n.locked }}
           </gl-badge>
 
           <gl-tooltip
-            container="terraformLockedBadgeContainer"
+            :container="`terraformLockedBadgeContainer${item.name}`"
+            :target="`terraformLockedBadge${item.name}`"
             placement="right"
-            target="terraformLockedBadge"
           >
-            <gl-sprintf :message="s__('Terraform|Locked by %{user} %{timeAgo}')">
+            <gl-sprintf :message="$options.i18n.lockedByUser">
               <template #user>
                 {{ lockedByUserName(item) }}
               </template>
@@ -101,7 +107,7 @@ export default {
 
     <template #cell(updated)="{ item }">
       <p class="gl-m-0" data-testid="terraform-states-table-updated">
-        <gl-sprintf :message="s__('Terraform|%{user} updated %{timeAgo}')">
+        <gl-sprintf :message="$options.i18n.updatedUser">
           <template #user>
             <span v-if="item.latestVersion">
               {{ createdByUserName(item) }}

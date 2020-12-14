@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import { initStoreFromElement, initPropsFromElement } from '~/import_projects';
-import BitbucketStatusTable from '~/import_projects/components/bitbucket_status_table.vue';
+import { initStoreFromElement, initPropsFromElement } from '~/import_entities/import_projects';
+import BitbucketStatusTable from '~/import_entities/import_projects/components/bitbucket_status_table.vue';
 
 document.addEventListener('DOMContentLoaded', () => {
   const mountElement = document.getElementById('import-projects-mount-element');

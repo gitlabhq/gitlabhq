@@ -1,6 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import BitbucketStatusTable from '~/import_projects/components/bitbucket_status_table.vue';
+import BitbucketStatusTable from '~/import_entities/import_projects/components/bitbucket_status_table.vue';
 
 export default {
   components: {

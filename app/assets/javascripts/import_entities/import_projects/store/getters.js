@@ -1,4 +1,4 @@
-import { STATUSES } from '../constants';
+import { STATUSES } from '../../constants';
 import { isProjectImportable, isIncompatible } from '../utils';
 
 export const isLoading = state => state.isLoadingRepos || state.isLoadingNamespaces;

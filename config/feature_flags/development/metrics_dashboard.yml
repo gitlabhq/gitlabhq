@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29634
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/257902
 milestone: '13.0'
 type: development
-group: group::health
+group: group::monitor
 default_enabled: true
