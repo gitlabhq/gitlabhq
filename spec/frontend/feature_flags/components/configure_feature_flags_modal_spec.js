@@ -1,7 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlModal, GlSprintf } from '@gitlab/ui';
+import { GlModal, GlSprintf, GlAlert } from '@gitlab/ui';
 import Component from '~/feature_flags/components/configure_feature_flags_modal.vue';
-import Callout from '~/vue_shared/components/callout.vue';
 
 describe('Configure Feature Flags Modal', () => {
   const mockEvent = { preventDefault: jest.fn() };
@@ -36,8 +35,8 @@ describe('Configure Feature Flags Modal', () => {
   const findGlModal = () => wrapper.find(GlModal);
   const findPrimaryAction = () => findGlModal().props('actionPrimary');
   const findProjectNameInput = () => wrapper.find('#project_name_verification');
-  const findDangerCallout = () =>
-    wrapper.findAll(Callout).filter(c => c.props('category') === 'danger');
+  const findDangerGlAlert = () =>
+    wrapper.findAll(GlAlert).filter(c => c.props('variant') === 'danger');
 
   describe('idle', () => {
     afterEach(() => wrapper.destroy());
@@ -86,10 +85,10 @@ describe('Configure Feature Flags Modal', () => {
       );
     });
 
-    it('should display one and only one danger callout', () => {
-      const dangerCallout = findDangerCallout();
-      expect(dangerCallout.length).toBe(1);
-      expect(dangerCallout.at(0).props('message')).toMatch(/Regenerating the instance ID/);
+    it('should display one and only one danger alert', () => {
+      const dangerGlAlert = findDangerGlAlert();
+      expect(dangerGlAlert.length).toBe(1);
+      expect(dangerGlAlert.at(0).text()).toMatch(/Regenerating the instance ID/);
     });
 
     it('should display a message asking to fill the project name', () => {
@@ -130,7 +129,7 @@ describe('Configure Feature Flags Modal', () => {
     });
 
     it('should not display regenerating instance ID', async () => {
-      expect(findDangerCallout().exists()).toBe(false);
+      expect(findDangerGlAlert().exists()).toBe(false);
     });
 
     it('should disable the project name input', async () => {

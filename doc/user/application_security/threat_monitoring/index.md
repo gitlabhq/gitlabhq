@@ -101,7 +101,7 @@ reflected upon refresh. Enforcement status changes are deployed
 directly to a deployment namespace of the selected environment.
 
 By default, the network policy list contains predefined policies in a
-disabled state. Once enabled,a predefined policy deploys to the
+disabled state. Once enabled, a predefined policy deploys to the
 selected environment's deployment platform and you can manage it like
 the regular policies.
 

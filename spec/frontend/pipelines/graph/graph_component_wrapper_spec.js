@@ -108,4 +108,17 @@ describe('Pipeline graph wrapper', () => {
       expect(getGraph().exists()).toBe(false);
     });
   });
+
+  describe('when refresh action is emitted', () => {
+    beforeEach(async () => {
+      createComponentWithApollo();
+      jest.spyOn(wrapper.vm.$apollo.queries.pipeline, 'refetch');
+      await wrapper.vm.$nextTick();
+      getGraph().vm.$emit('refreshPipelineGraph');
+    });
+
+    it('calls refetch', () => {
+      expect(wrapper.vm.$apollo.queries.pipeline.refetch).toHaveBeenCalled();
+    });
+  });
 });

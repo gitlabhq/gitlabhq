@@ -98,7 +98,7 @@ Please check this [rules](https://github.com/vuejs/eslint-plugin-vue#bulb-rules)
 
     We discourage the use of the spread operator in this specific case in
     order to keep our codebase explicit, discoverable, and searchable.
-    This applies in any place where we'll benefit from the above, such as
+    This applies in any place where we would benefit from the above, such as
     when [initializing Vuex state](../vuex.md#why-not-just-spread-the-initial-state).
     The pattern above also enables us to easily parse non scalar values during
     instantiation.
@@ -667,7 +667,7 @@ The goal of this accord is to make sure we are all on the same page.
    1. If you need to grab data from the DOM, you may query the DOM 1 time while bootstrapping your application to grab data attributes using `dataset`. You can do this without jQuery.
    1. You may use a jQuery dependency in Vue.js following [this example from the docs](https://vuejs.org/v2/examples/select2.html).
    1. If an outside jQuery Event needs to be listen to inside the Vue application, you may use jQuery event listeners.
-   1. We will avoid adding new jQuery events when they are not required. Instead of adding new jQuery events take a look at [different methods to do the same task](https://vuejs.org/v2/api/#vm-emit).
+   1. We avoid adding new jQuery events when they are not required. Instead of adding new jQuery events take a look at [different methods to do the same task](https://vuejs.org/v2/api/#vm-emit).
 1. You may query the `window` object one time, while bootstrapping your application for application specific data (e.g. `scrollTo` is ok to access anytime). Do this access during the bootstrapping of your application.
 1. You may have a temporary but immediate need to create technical debt by writing code that does not follow our standards, to be refactored later. Maintainers need to be ok with the tech debt in the first place. An issue should be created for that tech debt to evaluate it further and discuss. In the coming months you should fix that tech debt, with its priority to be determined by maintainers.
 1. When creating tech debt you must write the tests for that code before hand and those tests may not be rewritten. e.g. jQuery tests rewritten to Vue tests.

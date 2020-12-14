@@ -147,6 +147,10 @@ RSpec.describe Project, factory_default: :keep do
       let(:container_without_wiki) { create(:project) }
     end
 
+    it_behaves_like 'can move repository storage' do
+      let_it_be(:container) { create(:project, :repository) }
+    end
+
     it 'has an inverse relationship with merge requests' do
       expect(described_class.reflect_on_association(:merge_requests).has_inverse?).to eq(:target_project)
     end
@@ -3037,50 +3041,6 @@ RSpec.describe Project, factory_default: :keep do
       it 'includes direct forks of the project' do
         expect(project.forks).to contain_exactly(forked_project)
       end
-    end
-  end
-
-  describe '#set_repository_read_only!' do
-    let(:project) { create(:project) }
-
-    it 'makes the repository read-only' do
-      expect { project.set_repository_read_only! }
-        .to change(project, :repository_read_only?)
-        .from(false)
-        .to(true)
-    end
-
-    it 'raises an error if the project is already read-only' do
-      project.set_repository_read_only!
-
-      expect { project.set_repository_read_only! }.to raise_error(described_class::RepositoryReadOnlyError, /already read-only/)
-    end
-
-    it 'raises an error when there is an existing git transfer in progress' do
-      allow(project).to receive(:git_transfer_in_progress?) { true }
-
-      expect { project.set_repository_read_only! }.to raise_error(described_class::RepositoryReadOnlyError, /in progress/)
-    end
-
-    context 'skip_git_transfer_check is true' do
-      it 'makes the project read-only when git transfers are in progress' do
-        allow(project).to receive(:git_transfer_in_progress?) { true }
-
-        expect { project.set_repository_read_only!(skip_git_transfer_check: true) }
-          .to change(project, :repository_read_only?)
-          .from(false)
-          .to(true)
-      end
-    end
-  end
-
-  describe '#set_repository_writable!' do
-    it 'sets repository_read_only to false' do
-      project = create(:project, :read_only)
-
-      expect { project.set_repository_writable! }
-        .to change(project, :repository_read_only)
-        .from(true).to(false)
     end
   end
 

@@ -129,14 +129,14 @@ graph RL
 - **All server requests**:
   When running frontend unit tests, the backend may not be reachable, so all outgoing requests need to be mocked.
 - **Asynchronous background operations**:
-  Background operations cannot be stopped or waited on, so they will continue running in the following tests and cause side effects.
+  Background operations cannot be stopped or waited on, so they continue running in the following tests and cause side effects.
 
 #### What *not* to mock in unit tests
 
 - **Non-exported functions or classes**:
-  Everything that is not exported can be considered private to the module, and will be implicitly tested through the exported classes and functions.
+  Everything that is not exported can be considered private to the module, and is implicitly tested through the exported classes and functions.
 - **Methods of the class under test**:
-  By mocking methods of the class under test, the mocks will be tested and not the real methods.
+  By mocking methods of the class under test, the mocks are tested and not the real methods.
 - **Utility functions (pure functions, or those that only modify parameters)**:
  If a function has no side effects because it has no state, it is safe to not mock it in tests.
 - **Full HTML pages**:
@@ -206,7 +206,7 @@ graph RL
 - **All server requests**:
   Similar to unit tests, when running component tests, the backend may not be reachable, so all outgoing requests need to be mocked.
 - **Asynchronous background operations**:
-  Similar to unit tests, background operations cannot be stopped or waited on. This means they will continue running in the following tests and cause side effects.
+  Similar to unit tests, background operations cannot be stopped or waited on. This means they continue running in the following tests and cause side effects.
 - **Child components**:
   Every component is tested individually, so child components are mocked.
   See also [`shallowMount()`](https://vue-test-utils.vuejs.org/api/#shallowmount)
@@ -214,7 +214,7 @@ graph RL
 #### What *not* to mock in component tests
 
 - **Methods or computed properties of the component under test**:
-  By mocking part of the component under test, the mocks will be tested and not the real component.
+  By mocking part of the component under test, the mocks are tested and not the real component.
 - **Functions and classes independent from Vue**:
   All plain JavaScript code is already covered by unit tests and needs not to be mocked in component tests.
 
@@ -295,7 +295,7 @@ graph RL
   Similar to unit and component tests, when running component tests, the backend may not be reachable, so all outgoing requests must be mocked.
 - **Asynchronous background operations that are not perceivable on the page**:
   Background operations that affect the page must be tested on this level.
-  All other background operations cannot be stopped or waited on, so they will continue running in the following tests and cause side effects.
+  All other background operations cannot be stopped or waited on, so they continue running in the following tests and cause side effects.
 
 #### What *not* to mock in integration tests
 
@@ -360,7 +360,7 @@ possible).
 
 | Tests path | Testing engine | Notes |
 | ---------- | -------------- | ----- |
-| `spec/features/` | [Capybara](https://github.com/teamcapybara/capybara) + [RSpec](https://github.com/rspec/rspec-rails#feature-specs) | If your test has the `:js` metadata, the browser driver will be [Poltergeist](https://github.com/teamcapybara/capybara#poltergeist), otherwise it's using [RackTest](https://github.com/teamcapybara/capybara#racktest). |
+| `spec/features/` | [Capybara](https://github.com/teamcapybara/capybara) + [RSpec](https://github.com/rspec/rspec-rails#feature-specs) | If your test has the `:js` metadata, the browser driver is [Poltergeist](https://github.com/teamcapybara/capybara#poltergeist), otherwise it's using [RackTest](https://github.com/teamcapybara/capybara#racktest). |
 
 ### Frontend feature tests
 
@@ -453,13 +453,13 @@ should take care of not introducing too many (slow and duplicated) tests.
 
 The reasons why we should follow these best practices are as follows:
 
-- System tests are slow to run since they spin up the entire application stack
+- System tests are slow to run because they spin up the entire application stack
   in a headless browser, and even slower when they integrate a JS driver
 - When system tests run with a JavaScript driver, the tests are run in a
   different thread than the application. This means it does not share a
-  database connection and your test will have to commit the transactions in
+  database connection and your test must commit the transactions in
   order for the running application to see the data (and vice-versa). In that
-  case we need to truncate the database after each spec instead of simply
+  case we need to truncate the database after each spec instead of
   rolling back a transaction (the faster strategy that's in use for other kind
   of tests). This is slower than transactions, however, so we want to use
   truncation only when necessary.

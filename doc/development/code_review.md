@@ -468,7 +468,7 @@ Enterprise Edition instance. This has some implications:
    1. Similarly, if you need to remove a worker, stop it from being scheduled in
       one release, then remove it in the next. This allows existing jobs to
       execute.
-   1. Don't forget, not every instance will upgrade to every intermediate version
+   1. Don't forget, not every instance is upgraded to every intermediate version
       (some people may go from X.1.0 to X.10.0, or even try bigger upgrades!), so
       try to be liberal in accepting the old format if it is cheap to do so.
 1. **Cached values** may persist across releases. If you are changing the type a
@@ -480,12 +480,12 @@ Enterprise Edition instance. This has some implications:
    1. Try to avoid that, and add to `ApplicationSetting` instead.
    1. Ensure that it is also
       [added to Omnibus](https://docs.gitlab.com/omnibus/settings/gitlab.yml.html#adding-a-new-setting-to-gitlab-yml).
-1. **Filesystem access** can be slow, so try to avoid
+1. **File system access** can be slow, so try to avoid
    [shared files](shared_files.md) when an alternative solution is available.
 
 ### Review turnaround time
 
-Since [unblocking others is always a top priority](https://about.gitlab.com/handbook/values/#global-optimization),
+Because [unblocking others is always a top priority](https://about.gitlab.com/handbook/values/#global-optimization),
 reviewers are expected to review assigned merge requests in a timely manner,
 even when this may negatively impact their other tasks and priorities.
 

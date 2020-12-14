@@ -138,7 +138,7 @@ the model/service.
 - `with_reactive_cache` must be called where the result of `calculate_reactive_cache`
   is required.
 - A block can be given to `with_reactive_cache`. `with_reactive_cache` can also take
-  any number of arguments. Any arguments passed to `with_reactive_cache` will be
+  any number of arguments. Any arguments passed to `with_reactive_cache` are
   passed to `calculate_reactive_cache`. The arguments passed to `with_reactive_cache`
   are appended to the cache key name.
 - If `with_reactive_cache` is called when the result has already been cached, the

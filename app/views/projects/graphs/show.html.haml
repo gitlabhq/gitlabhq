@@ -3,6 +3,6 @@
 .sub-header-block.bg-gray-light.gl-p-5
   .tree-ref-holder.inline.vertical-align-middle
     = render 'shared/ref_switcher', destination: 'graphs'
-  = link_to s_('Commits|History'), project_commits_path(@project, current_ref), class: 'btn'
+  = link_to s_('Commits|History'), project_commits_path(@project, current_ref), class: 'btn gl-button'
 
 .js-contributors-graph{ class: container_class, 'data-project-graph-path': project_graph_path(@project, current_ref, format: :json),'data-project-branch': current_ref }

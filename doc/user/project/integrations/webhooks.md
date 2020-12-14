@@ -1360,6 +1360,37 @@ X-Gitlab-Event: Deployment Hook
 
 Note that `deployable_id` is the ID of the CI job.
 
+### Member events
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/260347) in GitLab 13.7.
+
+Triggered when a user is added as a group member.
+
+**Request Header**:
+
+```plaintext
+X-Gitlab-Event: Member Hook
+```
+
+**Request Body**:
+
+```json
+{
+  "created_at": "2020-12-11T04:57:22Z",
+  "updated_at": "2020-12-11T04:57:22Z",
+  "group_name": "webhook-test",
+  "group_path": "webhook-test",
+  "group_id": 100,
+  "user_username": "test_user",
+  "user_name": "Test User",
+  "user_email": "testuser@webhooktest.com",
+  "user_id": 64,
+  "group_access": "Guest",
+  "group_plan": null,
+  "event_name": "user_add_to_group"
+}
+```
+
 ### Feature Flag events
 
 Triggered when a feature flag is turned on or off.

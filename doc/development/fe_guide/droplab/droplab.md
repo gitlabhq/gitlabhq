@@ -22,7 +22,7 @@ The value is irrelevant.
 
 The DropLab class has no side effects, so you must always call `.init` when the
 DOM is ready. `DropLab.prototype.init` takes the same arguments as `DropLab.prototype.addHook`.
-If you don't provide any arguments, it will globally query and instantiate all
+If you don't provide any arguments, it globally queries and instantiates all
 DropLab-compatible dropdowns.
 
 ```html
@@ -103,7 +103,7 @@ droplab.addHook(trigger, list);
 
 ### Dynamic data
 
-Adding `data-dynamic` to your dropdown element will enable dynamic list
+Adding `data-dynamic` to your dropdown element enables dynamic list
 rendering.
 
 You can template a list item using the keys of the data object provided. Use the
@@ -111,7 +111,7 @@ handlebars syntax `{{ value }}` to HTML escape the value. Use the `<%= value %>`
 syntax to interpolate the value. Use the `<%= value %>` syntax to evaluate the
 value.
 
-Passing an array of objects to `DropLab.prototype.addData` will render that data
+Passing an array of objects to `DropLab.prototype.addData` renders that data
 for all `data-dynamic` dropdown lists tracked by that DropLab instance.
 
 ```html
@@ -227,8 +227,8 @@ provides some potentially useful data.
 Plugins are objects that are registered to be executed when a hook is added (when
 a DropLab trigger and dropdown are instantiated).
 
-If no modules API is detected, the library will fall back as it does with
-`window.DropLab` and will add `window.DropLab.plugins.PluginName`.
+If no modules API is detected, the library falls back as it does with
+`window.DropLab` and adds `window.DropLab.plugins.PluginName`.
 
 ### Usage
 

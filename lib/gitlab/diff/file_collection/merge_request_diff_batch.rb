@@ -82,7 +82,7 @@ module Gitlab
         # rubocop: enable CodeReuse/ActiveRecord
 
         def batch_gradual_load?
-          Feature.enabled?(:diffs_gradual_load, @merge_request_diff.project)
+          Feature.enabled?(:diffs_gradual_load, @merge_request_diff.project, default_enabled: true)
         end
       end
     end

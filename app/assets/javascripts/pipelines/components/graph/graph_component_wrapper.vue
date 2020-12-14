@@ -4,7 +4,7 @@ import { __ } from '~/locale';
 import { DEFAULT, LOAD_FAILURE } from '../../constants';
 import getPipelineDetails from '../../graphql/queries/get_pipeline_details.query.graphql';
 import PipelineGraph from './graph_component.vue';
-import { unwrapPipelineData } from './utils';
+import { unwrapPipelineData, toggleQueryPollingByVisibility } from './utils';
 
 export default {
   name: 'PipelineGraphWrapper',
@@ -35,6 +35,7 @@ export default {
   apollo: {
     pipeline: {
       query: getPipelineDetails,
+      pollInterval: 10000,
       variables() {
         return {
           projectPath: this.pipelineProjectPath,
@@ -64,10 +65,23 @@ export default {
           };
       }
     },
+    showLoadingIcon() {
+      /*
+        Shows the icon only when the graph is empty, not when it is is
+        being refetched, for instance, on action completion
+      */
+      return this.$apollo.queries.pipeline.loading && !this.pipeline;
+    },
+  },
+  mounted() {
+    toggleQueryPollingByVisibility(this.$apollo.queries.pipeline);
   },
   methods: {
     hideAlert() {
       this.showAlert = false;
+    },
+    refreshPipelineGraph() {
+      this.$apollo.queries.pipeline.refetch();
     },
     reportFailure(type) {
       this.showAlert = true;
@@ -81,7 +95,12 @@ export default {
     <gl-alert v-if="showAlert" :variant="alert.variant" @dismiss="hideAlert">
       {{ alert.text }}
     </gl-alert>
-    <gl-loading-icon v-if="$apollo.queries.pipeline.loading" class="gl-mx-auto gl-my-4" size="lg" />
-    <pipeline-graph v-if="pipeline" :pipeline="pipeline" @error="reportFailure" />
+    <gl-loading-icon v-if="showLoadingIcon" class="gl-mx-auto gl-my-4" size="lg" />
+    <pipeline-graph
+      v-if="pipeline"
+      :pipeline="pipeline"
+      @error="reportFailure"
+      @refreshPipelineGraph="refreshPipelineGraph"
+    />
   </div>
 </template>

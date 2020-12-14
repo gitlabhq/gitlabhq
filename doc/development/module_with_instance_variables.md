@@ -121,7 +121,7 @@ module Gitlab
 end
 ```
 
-Now the cop won't complain. Here's a bad example which we could rewrite:
+Now the cop doesn't complain. Here's a bad example which we could rewrite:
 
 ``` ruby
 module SpamCheckService
@@ -213,14 +213,14 @@ module M
 end
 ```
 
-Note that you need to enable it at some point, otherwise everything below
-won't be checked.
+Note that you need to enable it at some point, otherwise nothing below
+that point is checked.
 
 ## Things we might need to ignore right now
 
 Because of the way Rails helpers and mailers work, we might not be able to
 avoid the use of instance variables there. For those cases, we could ignore
-them at the moment. At least we're not going to share those modules with
+them at the moment. Those modules are not shared with
 other random objects, so they're still somewhat isolated.
 
 ## Instance variables in views

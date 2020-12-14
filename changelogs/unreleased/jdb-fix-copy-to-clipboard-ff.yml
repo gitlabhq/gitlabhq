@@ -1,0 +1,5 @@
+---
+title: Fix copy to clipboard on Firefox
+merge_request: 49648
+author:
+type: fixed

@@ -24,10 +24,6 @@ RSpec.describe 'Value Stream Analytics', :js do
         wait_for_requests
       end
 
-      it 'shows introductory message' do
-        expect(page).to have_content('Introducing Value Stream Analytics')
-      end
-
       it 'shows pipeline summary' do
         expect(new_issues_counter).to have_content('-')
         expect(commits_counter).to have_content('-')

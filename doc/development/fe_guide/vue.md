@@ -62,11 +62,11 @@ Be sure to read about [page-specific JavaScript](performance.md#page-specific-ja
 While mounting a Vue application, you might need to provide data from Rails to JavaScript.
 To do that, you can use the `data` attributes in the HTML element and query them while mounting the application.
 
-You should only do this while initializing the application, because the mounted element will be replaced with Vue-generated DOM.
+You should only do this while initializing the application, because the mounted element is replaced with a Vue-generated DOM.
 
 The advantage of providing data from the DOM to the Vue instance through `props` in the `render` function
 instead of querying the DOM inside the main Vue component is avoiding the need to create a fixture or an HTML element in the unit test,
-which will make the tests easier.
+which makes the tests easier.
 
 See the following example, also, please refer to our [Vue style guide](style/vue.md#basic-rules) for additional
 information on why we explicitly declare the data being passed into the Vue app;
@@ -98,8 +98,8 @@ return new Vue({
 
 #### Accessing the `gl` object
 
-When we need to query the `gl` object for data that won't change during the application's life cycle, we should do it in the same place where we query the DOM.
-By following this practice, we can avoid the need to mock the `gl` object, which will make tests easier.
+When we need to query the `gl` object for data that doesn't change during the application's life cycle, we should do it in the same place where we query the DOM.
+By following this practice, we can avoid the need to mock the `gl` object, which makes tests easier.
 It should be done while initializing our Vue instance, and the data should be provided as `props` to the main component:
 
 ```javascript
@@ -162,12 +162,12 @@ This approach has a few benefits:
 
 ### A folder for Components
 
-This folder holds all components that are specific of this new feature.
-If you need to use or create a component that will probably be used somewhere
+This folder holds all components that are specific to this new feature.
+If you need to use or create a component that is likely to be used somewhere
 else, please refer to `vue_shared/components`.
 
 A good rule of thumb to know when you should create a component is to think if
-it will be reusable elsewhere.
+it could be reusable elsewhere.
 
 For example, tables are used in a quite amount of places across GitLab, a table
 would be a good fit for a component. On the other hand, a table cell used only
@@ -192,7 +192,7 @@ Check this [page](vuex.md) for more details.
 
 In the [Vue documentation](https://vuejs.org/v2/api/#Options-Data) the Data function/object is defined as follows:
 
-> The data object for the Vue instance. Vue will recursively convert its properties into getter/setters to make it “reactive”. The object must be plain: native objects such as browser API objects and prototype properties are ignored. A rule of thumb is that data should just be data - it is not recommended to observe objects with their own stateful behavior.
+> The data object for the Vue instance. Vue recursively converts its properties into getter/setters to make it “reactive”. The object must be plain: native objects such as browser API objects and prototype properties are ignored. A rule of thumb is that data should just be data - it is not recommended to observe objects with their own stateful behavior.
 
 Based on the Vue guidance:
 

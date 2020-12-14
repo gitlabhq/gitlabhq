@@ -24,15 +24,15 @@ Adding a `:migration` tag to a test signature enables some custom RSpec
 [`spec/support/migration.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/f81fa6ab1dd788b70ef44b85aaba1f31ffafae7d/spec/support/migration.rb)
 to run.
 
-A `before` hook will revert all migrations to the point that a migration
+A `before` hook reverts all migrations to the point that a migration
 under test is not yet migrated.
 
-In other words, our custom RSpec hooks will find a previous migration, and
+In other words, our custom RSpec hooks finds a previous migration, and
 migrate the database **down** to the previous migration version.
 
 With this approach you can test a migration against a database schema.
 
-An `after` hook will migrate the database **up** and reinstitute the latest
+An `after` hook migrates the database **up** and reinstitutes the latest
 schema version, so that the process does not affect subsequent specs and
 ensures proper isolation.
 
@@ -40,7 +40,7 @@ ensures proper isolation.
 
 To test an `ActiveRecord::Migration` class (i.e., a
 regular migration `db/migrate` or a post-migration `db/post_migrate`), you
-will need to load the migration file by using the `require_migration!` helper
+must load the migration file by using the `require_migration!` helper
 method because it is not autoloaded by Rails.
 
 Example:
@@ -57,12 +57,12 @@ RSpec.describe ...
 
 #### `require_migration!`
 
-Since the migration files are not autoloaded by Rails, you will need to manually
+Since the migration files are not autoloaded by Rails, you must manually
 load the migration file. To do so, you can use the `require_migration!` helper method
 which can automatically load the correct migration file based on the spec filename.
 
 For example, if your spec file is named as `populate_foo_column_spec.rb` then the
-helper method will try to load `${schema_version}_populate_foo_column.rb` migration file.
+helper method tries to load `${schema_version}_populate_foo_column.rb` migration file.
 
 In case there is no pattern between your spec file and the actual migration file,
 you can provide the migration filename without the schema version, like so:
@@ -85,8 +85,8 @@ project = table(:projects).create!(id: 1, name: 'gitlab1', path: 'gitlab1')
 
 #### `migrate!`
 
-Use the `migrate!` helper to run the migration that is under test. It will not only
-run the migration, but will also bump the schema version in the `schema_migrations`
+Use the `migrate!` helper to run the migration that is under test. It
+runs the migration and bumps the schema version in the `schema_migrations`
 table. It is necessary because in the `after` hook we trigger the rest of
 the migrations, and we need to know where to start. Example:
 
@@ -103,7 +103,7 @@ end
 #### `reversible_migration`
 
 Use the `reversible_migration` helper to test migrations with either a
-`change` or both `up` and `down` hooks. This will test that the state of
+`change` or both `up` and `down` hooks. This tests that the state of
 the application and its data after the migration becomes reversed is the
 same as it was before the migration ran in the first place. The helper:
 
@@ -184,7 +184,7 @@ end
 ## Testing a non-`ActiveRecord::Migration` class
 
 To test a non-`ActiveRecord::Migration` test (a background migration),
-you will need to manually provide a required schema version. Please add a
+you must manually provide a required schema version. Please add a
 `schema` tag to a context that you want to switch the database schema within.
 
 If not set, `schema` defaults to `:latest`.

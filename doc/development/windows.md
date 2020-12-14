@@ -15,7 +15,7 @@ This is a guide for how to get a Windows development virtual machine on Google C
 
 Use of Microsoft Windows operating systems on company laptops is banned under GitLab's [Approved Operating Systems policy](https://about.gitlab.com/handbook/security/approved_os.html#windows).
 
-This can make it difficult to develop features for the Windows platforms. Using GCP will allow us to have a temporary Windows machine that can be removed once we're done with it.
+This can make it difficult to develop features for the Windows platforms. Using GCP allows us to have a temporary Windows machine that can be removed once we're done with it.
 
 ## Shared Windows runners
 
@@ -74,7 +74,7 @@ Build a Google Cloud image with the above shared runners repository by doing the
 1. Click **Set Windows password**.
 1. Optional: Set a username or use default.
 1. Click **Next**.
-1. Copy and save the password as it won't be shown again.
+1. Copy and save the password as it is not shown again.
 1. Click **RDP** down arrow.
 1. Click **Download the RDP file**.
 1. Open the downloaded RDP file with the Windows remote desktop app (<https://docs.microsoft.com/en-us/windows-server/remote/remote-desktop-services/clients/remote-desktop-clients>).
@@ -98,8 +98,8 @@ Here are a few tips on GCP and Windows.
 
 ### GCP cost savings
 
-To minimise the cost of your GCP VM instance, stop it when you're not using it.
-If you do, you'll need to re-download the RDP file from the console as the IP
+To minimize the cost of your GCP VM instance, stop it when you're not using it.
+If you do, you must download the RDP file again from the console as the IP
 address changes every time you stop and start it.
 
 ### chocolatey

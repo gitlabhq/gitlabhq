@@ -19,7 +19,7 @@ You can run eslint locally by running `yarn eslint`
 ## Avoid forEach
 
 Avoid forEach when mutating data. Use `map`, `reduce` or `filter` instead of `forEach`
-when mutating data. This will minimize mutations in functions,
+when mutating data. This minimizes mutations in functions,
 which aligns with [Airbnb's style guide](https://github.com/airbnb/javascript#testing--for-real).
 
 ```javascript
@@ -237,7 +237,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 ### Avoid side effects in constructors
 
 Avoid making asynchronous calls, API requests or DOM manipulations in the `constructor`.
-Move them into separate functions instead. This will make tests easier to write and
+Move them into separate functions instead. This makes tests easier to write and
 avoids violating the [Single Responsibility Principle](https://en.wikipedia.org/wiki/Single_responsibility_principle).
 
 ```javascript

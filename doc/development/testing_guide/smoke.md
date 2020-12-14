@@ -7,11 +7,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Smoke Tests
 
 It is imperative in any testing suite that we have Smoke Tests. In short, smoke
-tests will run quick sanity end-to-end functional tests from GitLab QA and are
+tests run quick end-to-end functional tests from GitLab QA and are
 designed to run against the specified environment to ensure that basic
 functionality is working.
 
-Currently, our suite consists of this basic functionality coverage:
+Our suite consists of this basic functionality coverage:
 
 - User standard authentication
 - SSH Key creation and addition to a user

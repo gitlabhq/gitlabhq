@@ -67,6 +67,6 @@ element's `data-selected-id` to `1`.
 
 Optionally, you can set `inputAttribute` to a string that's the name of an
 attribute on your `input` element that you want to update. If you don't provide
-an `inputAttribute`, `InputSetter` will update the `value` of the `input`
+an `inputAttribute`, `InputSetter` updates the `value` of the `input`
 element if it's an `INPUT` element, or the `textContent` of the `input` element
 if it isn't an `INPUT` element.

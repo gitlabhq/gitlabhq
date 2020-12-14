@@ -27,7 +27,7 @@ Our current CI parallelization setup is as follows:
    `knapsack/rspec*_pg_*.json` files and merge them all together into a single
    `knapsack/report-master.json` file that is saved as artifact.
 
-After that, the next pipeline will use the up-to-date `knapsack/report-master.json` file.
+After that, the next pipeline uses the up-to-date `knapsack/report-master.json` file.
 
 ## Monitoring
 

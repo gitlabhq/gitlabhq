@@ -30,7 +30,7 @@ In some cases the query count might change slightly between runs for unrelated r
 
 ## Cached queries
 
-By default, QueryRecorder will ignore [cached queries](merge_request_performance_guidelines.md#cached-queries) in the count. However, it may be better to count
+By default, QueryRecorder ignores [cached queries](merge_request_performance_guidelines.md#cached-queries) in the count. However, it may be better to count
 all queries to avoid introducing an N+1 query that may be masked by the statement cache.
 To do this, this requires the `:use_sql_query_cache` flag to be set.
 You should pass the `skip_cached` variable to `QueryRecorder` and use the `exceed_all_query_limit` matcher:
@@ -73,7 +73,7 @@ There are multiple ways to find the source of queries.
 
 - View the call backtrace for the specific `QueryRecorder` instance you want
   by using `ActiveRecord::QueryRecorder.new(query_recorder_debug: true)`. The output
-  will be in `test.log`
+  is stored in file `test.log`.
 
 - Enable the call backtrace for all tests using the `QUERY_RECORDER_DEBUG` environment variable.
 
@@ -83,7 +83,7 @@ There are multiple ways to find the source of queries.
   QUERY_RECORDER_DEBUG=1 bundle exec rspec spec/requests/api/projects_spec.rb
   ```
 
-  This will log calls to QueryRecorder into the `test.log` file. For example:
+  This logs calls to QueryRecorder into the `test.log` file. For example:
 
   ```sql
    QueryRecorder SQL: SELECT COUNT(*) FROM "issues" WHERE "issues"."deleted_at" IS NULL AND "issues"."project_id" = $1 AND ("issues"."state" IN ('opened')) AND "issues"."confidential" = $2

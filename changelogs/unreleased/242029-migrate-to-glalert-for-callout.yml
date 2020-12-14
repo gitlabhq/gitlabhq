@@ -1,0 +1,5 @@
+---
+title: Migrate bs-callout to GlAlert for components using app/assets/javascripts/vue_shared/components/callout.vue
+merge_request: 49732
+author: Gary Bell @garybell
+type: other

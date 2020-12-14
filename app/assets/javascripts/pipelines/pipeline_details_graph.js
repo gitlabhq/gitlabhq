@@ -7,7 +7,12 @@ import { GRAPHQL } from './components/graph/constants';
 Vue.use(VueApollo);
 
 const apolloProvider = new VueApollo({
-  defaultClient: createDefaultClient(),
+  defaultClient: createDefaultClient(
+    {},
+    {
+      batchMax: 2,
+    },
+  ),
 });
 
 const createPipelinesDetailApp = (selector, pipelineProjectPath, pipelineIid) => {

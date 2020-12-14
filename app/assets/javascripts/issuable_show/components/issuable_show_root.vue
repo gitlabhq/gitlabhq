@@ -35,7 +35,17 @@ export default {
       required: false,
       default: false,
     },
+    enableAutosave: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
     editFormVisible: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    showFieldTitle: {
       type: Boolean,
       required: false,
       default: false,
@@ -49,6 +59,14 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+  },
+  methods: {
+    handleKeydownTitle(e, issuableMeta) {
+      this.$emit('keydown-title', e, issuableMeta);
+    },
+    handleKeydownDescription(e, issuableMeta) {
+      this.$emit('keydown-description', e, issuableMeta);
     },
   },
 };
@@ -77,10 +95,14 @@ export default {
       :status-icon="statusIcon"
       :enable-edit="enableEdit"
       :enable-autocomplete="enableAutocomplete"
+      :enable-autosave="enableAutosave"
       :edit-form-visible="editFormVisible"
+      :show-field-title="showFieldTitle"
       :description-preview-path="descriptionPreviewPath"
       :description-help-path="descriptionHelpPath"
       @edit-issuable="$emit('edit-issuable', $event)"
+      @keydown-title="handleKeydownTitle"
+      @keydown-description="handleKeydownDescription"
     >
       <template #status-badge>
         <slot name="status-badge"></slot>

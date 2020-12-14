@@ -41,6 +41,40 @@ describe('IssuableEditForm', () => {
     wrapper.destroy();
   });
 
+  describe('watch', () => {
+    describe('issuable', () => {
+      it('sets title and description to `issuable.title` and `issuable.description` when those values are available', async () => {
+        wrapper.setProps({
+          issuable: {
+            ...issuableEditFormProps.issuable,
+            title: 'Foo',
+            description: 'Foobar',
+          },
+        });
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.title).toBe('Foo');
+        expect(wrapper.vm.description).toBe('Foobar');
+      });
+
+      it('sets title and description to empty string when `issuable.title` and `issuable.description` is unavailable', async () => {
+        wrapper.setProps({
+          issuable: {
+            ...issuableEditFormProps.issuable,
+            title: null,
+            description: null,
+          },
+        });
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.title).toBe('');
+        expect(wrapper.vm.description).toBe('');
+      });
+    });
+  });
+
   describe('created', () => {
     it('binds `update.issuable` and `close.form` event listeners', () => {
       const eventOnSpy = jest.spyOn(IssuableEventHub, '$on');
@@ -117,6 +151,43 @@ describe('IssuableEditForm', () => {
 
       expect(actionsEl.find('button.js-save').exists()).toBe(true);
       expect(actionsEl.find('button.js-cancel').exists()).toBe(true);
+    });
+
+    describe('events', () => {
+      const eventObj = {
+        preventDefault: jest.fn(),
+        stopPropagation: jest.fn(),
+      };
+
+      it('component emits `keydown-title` event with event object and issuableMeta params via gl-form-input', async () => {
+        const titleInputEl = wrapper.find(GlFormInput);
+
+        titleInputEl.vm.$emit('keydown', eventObj, 'title');
+
+        expect(wrapper.emitted('keydown-title')).toBeTruthy();
+        expect(wrapper.emitted('keydown-title')[0]).toMatchObject([
+          eventObj,
+          {
+            issuableTitle: wrapper.vm.title,
+            issuableDescription: wrapper.vm.description,
+          },
+        ]);
+      });
+
+      it('component emits `keydown-description` event with event object and issuableMeta params via textarea', async () => {
+        const descriptionInputEl = wrapper.find('[data-testid="description"] textarea');
+
+        descriptionInputEl.trigger('keydown', eventObj, 'description');
+
+        expect(wrapper.emitted('keydown-description')).toBeTruthy();
+        expect(wrapper.emitted('keydown-description')[0]).toMatchObject([
+          eventObj,
+          {
+            issuableTitle: wrapper.vm.title,
+            issuableDescription: wrapper.vm.description,
+          },
+        ]);
+      });
     });
   });
 });

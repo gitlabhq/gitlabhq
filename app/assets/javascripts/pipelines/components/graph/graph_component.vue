@@ -69,9 +69,6 @@ export default {
     },
   },
   methods: {
-    handleError(errorType) {
-      this.$emit('error', errorType);
-    },
     setJob(jobName) {
       this.hoveredJobName = jobName;
     },
@@ -97,7 +94,7 @@ export default {
             :linked-pipelines="upstreamPipelines"
             :column-title="__('Upstream')"
             :type="$options.pipelineTypeConstants.UPSTREAM"
-            @error="handleError"
+            @error="emit('error', errorType)"
           />
         </template>
         <template #main>
@@ -109,6 +106,7 @@ export default {
             :action="stage.status.action"
             :job-hovered="hoveredJobName"
             :pipeline-expanded="pipelineExpanded"
+            @refreshPipelineGraph="$emit('refreshPipelineGraph')"
           />
         </template>
         <template #downstream>
@@ -119,7 +117,7 @@ export default {
             :type="$options.pipelineTypeConstants.DOWNSTREAM"
             @downstreamHovered="setJob"
             @pipelineExpandToggle="togglePipelineExpanded"
-            @error="handleError"
+            @error="emit('error', errorType)"
           />
         </template>
       </linked-graph-wrapper>

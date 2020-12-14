@@ -12,7 +12,7 @@ easy to maintain, and performant for the end-user.
 
 ## Rules
 
-Our CSS is a mixture of current and legacy approaches. That means sometimes it may be difficult to follow this guide to the letter; it means you will definitely run into exceptions, where following the guide is difficult to impossible without outsized effort. In those cases, you may work with your reviewers and maintainers to identify an approach that does not fit these rules. Please endeavor to limit these cases.
+Our CSS is a mixture of current and legacy approaches. That means sometimes it may be difficult to follow this guide to the letter; it means you are likely to run into exceptions, where following the guide is difficult to impossible without outsized effort. In those cases, you may work with your reviewers and maintainers to identify an approach that does not fit these rules. Please endeavor to limit these cases.
 
 ### Utility Classes
 
@@ -132,8 +132,8 @@ We use [SCSS Lint](https://github.com/sds/scss-lint) to check for style guide co
 ruleset in `.scss-lint.yml`, which is located in the home directory of the
 project.
 
-To check if any warnings will be produced by your changes, you can run `rake
-scss_lint` in the GitLab directory. SCSS Lint will also run in GitLab CI/CD to
+To check if any warnings are produced by your changes, run `rake
+scss_lint` in the GitLab directory. SCSS Lint also runs in GitLab CI/CD to
 catch any warnings.
 
 If the Rake task is throwing warnings you don't understand, SCSS Lint's
@@ -147,4 +147,4 @@ the SCSS style guide, you can use [CSSComb](https://github.com/csscomb/csscomb.j
 CSSComb globally (system-wide). Run it in the GitLab directory with
 `csscomb app/assets/stylesheets` to automatically fix issues with CSS/SCSS.
 
-Note that this won't fix every problem, but it should fix a majority.
+Note that this doesn't fix every problem, but it should fix a majority.

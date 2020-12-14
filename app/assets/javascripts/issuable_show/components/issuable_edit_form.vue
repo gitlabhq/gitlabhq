@@ -23,6 +23,14 @@ export default {
       type: Boolean,
       required: true,
     },
+    enableAutosave: {
+      type: Boolean,
+      required: true,
+    },
+    showFieldTitle: {
+      type: Boolean,
+      required: true,
+    },
     descriptionPreviewPath: {
       type: String,
       required: true,
@@ -33,19 +41,27 @@ export default {
     },
   },
   data() {
-    const { title, description } = this.issuable;
-
     return {
-      title,
-      description,
+      title: '',
+      description: '',
     };
+  },
+  watch: {
+    issuable: {
+      handler(value) {
+        this.title = value?.title || '';
+        this.description = value?.description || '';
+      },
+      deep: true,
+      immediate: true,
+    },
   },
   created() {
     eventHub.$on('update.issuable', this.resetAutosave);
     eventHub.$on('close.form', this.resetAutosave);
   },
   mounted() {
-    this.initAutosave();
+    if (this.enableAutosave) this.initAutosave();
   },
   beforeDestroy() {
     eventHub.$off('update.issuable', this.resetAutosave);
@@ -73,6 +89,12 @@ export default {
       this.autosaveTitle.reset();
       this.autosaveDescription.reset();
     },
+    handleKeydown(e, inputType) {
+      this.$emit(`keydown-${inputType}`, e, {
+        issuableTitle: this.title,
+        issuableDescription: this.description,
+      });
+    },
   },
 };
 </script>
@@ -82,9 +104,9 @@ export default {
     <gl-form-group
       data-testid="title"
       :label="__('Title')"
-      :label-sr-only="true"
+      :label-sr-only="!showFieldTitle"
       label-for="issuable-title"
-      class="col-12"
+      class="col-12 gl-px-0"
     >
       <gl-form-input
         id="issuable-title"
@@ -94,14 +116,16 @@ export default {
         :aria-label="__('Title')"
         :autofocus="true"
         class="qa-title-input"
+        @keydown="handleKeydown($event, 'title')"
       />
     </gl-form-group>
     <gl-form-group
       data-testid="description"
       :label="__('Description')"
-      :label-sr-only="true"
+      :label-sr-only="!showFieldTitle"
       label-for="issuable-description"
-      class="col-12 common-note-form"
+      label-class="gl-pb-0!"
+      class="col-12 gl-px-0 common-note-form"
     >
       <markdown-field
         :markdown-preview-path="descriptionPreviewPath"
@@ -120,11 +144,12 @@ export default {
             class="note-textarea js-gfm-input js-autosize markdown-area
           qa-description-textarea"
             dir="auto"
+            @keydown="handleKeydown($event, 'description')"
           ></textarea>
         </template>
       </markdown-field>
     </gl-form-group>
-    <div data-testid="actions" class="col-12 gl-mt-3 gl-mb-3 clearfix">
+    <div data-testid="actions" class="col-12 gl-mt-3 gl-mb-3 gl-px-0 clearfix">
       <slot
         name="edit-form-actions"
         :issuable-title="title"

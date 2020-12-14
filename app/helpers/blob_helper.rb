@@ -242,7 +242,7 @@ module BlobHelper
   def copy_blob_source_button(blob)
     return unless blob.rendered_as_text?(ignore_errors: false)
 
-    clipboard_button(target: ".blob-content[data-blob-id='#{blob.id}']", class: "btn btn-sm js-copy-blob-source-btn", title: _("Copy file contents"))
+    clipboard_button(target: ".blob-content[data-blob-id='#{blob.id}'] > pre", class: "btn btn-sm js-copy-blob-source-btn", title: _("Copy file contents"))
   end
 
   def open_raw_blob_button(blob)

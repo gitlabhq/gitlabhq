@@ -118,6 +118,27 @@ describe('IssuableShowRoot', () => {
 
         expect(wrapper.emitted('sidebar-toggle')).toBeTruthy();
       });
+
+      it.each(['keydown-title', 'keydown-description'])(
+        'component emits `%s` event with event object and issuableMeta params via issuable-body',
+        eventName => {
+          const eventObj = {
+            preventDefault: jest.fn(),
+            stopPropagation: jest.fn(),
+          };
+          const issuableMeta = {
+            issuableTitle: 'foo',
+            issuableDescription: 'foobar',
+          };
+
+          const issuableBody = wrapper.find(IssuableBody);
+
+          issuableBody.vm.$emit(eventName, eventObj, issuableMeta);
+
+          expect(wrapper.emitted(eventName)).toBeTruthy();
+          expect(wrapper.emitted(eventName)[0]).toMatchObject([eventObj, issuableMeta]);
+        },
+      );
     });
   });
 });

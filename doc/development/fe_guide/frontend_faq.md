@@ -82,13 +82,13 @@ follow up issue and attach it to the component implementation epic found within 
 
 ### 4. My submit form button becomes disabled after submitting
 
-If you are using a submit button inside a form and you attach an `onSubmit` event listener on the form element, [this piece of code](https://gitlab.com/gitlab-org/gitlab/blob/794c247a910e2759ce9b401356432a38a4535d49/app/assets/javascripts/main.js#L225) will add a `disabled` class selector to the submit button when the form is submitted.
+If you are using a submit button inside a form and you attach an `onSubmit` event listener on the form element, [this piece of code](https://gitlab.com/gitlab-org/gitlab/blob/794c247a910e2759ce9b401356432a38a4535d49/app/assets/javascripts/main.js#L225) adds a `disabled` class selector to the submit button when the form is submitted.
 To avoid this behavior, add the class `js-no-auto-disable` to the button.
 
 ### 5. Should I use a full URL (i.e. `gon.gitlab_url`) or a full path (i.e. `gon.relative_url_root`) when referencing backend endpoints?
 
-It's preferred to use a **full path** over a **full URL** because the URL will use the hostname configured with
-GitLab which may not match the request. This will cause [CORS issues like this Web IDE one](https://gitlab.com/gitlab-org/gitlab/-/issues/36810).
+It's preferred to use a **full path** over a **full URL** because the URL uses the hostname configured with
+GitLab which may not match the request. This causes [CORS issues like this Web IDE one](https://gitlab.com/gitlab-org/gitlab/-/issues/36810).
 
 Example:
 
@@ -161,8 +161,9 @@ Sometimes it's necessary to test locally what the frontend production build woul
 1. Open `gitlab.yaml` located in your `gitlab` installation folder, scroll down to the `webpack` section and change `dev_server` to `enabled: false`.
 1. Run `yarn webpack-prod && gdk restart rails-web`.
 
-The production build takes a few minutes to be completed; any code change at this point will be
+The production build takes a few minutes to be completed; any code changes at this point are
 displayed only after executing the item 3 above again.
+
 To return to the normal development mode:
 
 1. Open `gitlab.yaml` located in your `gitlab` installation folder, scroll down to the `webpack` section and change back `dev_server` to `enabled: true`.

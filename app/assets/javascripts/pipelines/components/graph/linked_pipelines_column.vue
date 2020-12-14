@@ -3,7 +3,7 @@ import getPipelineDetails from '../../graphql/queries/get_pipeline_details.query
 import LinkedPipeline from './linked_pipeline.vue';
 import { LOAD_FAILURE } from '../../constants';
 import { UPSTREAM } from './constants';
-import { unwrapPipelineData } from './utils';
+import { unwrapPipelineData, toggleQueryPollingByVisibility } from './utils';
 
 export default {
   components: {
@@ -67,6 +67,7 @@ export default {
 
       this.$apollo.addSmartQuery('currentPipeline', {
         query: getPipelineDetails,
+        pollInterval: 10000,
         variables() {
           return {
             projectPath,
@@ -83,6 +84,8 @@ export default {
           this.$emit('error', LOAD_FAILURE);
         },
       });
+
+      toggleQueryPollingByVisibility(this.$apollo.queries.currentPipeline);
     },
     isExpanded(id) {
       return Boolean(this.currentPipeline?.id && id === this.currentPipeline.id);

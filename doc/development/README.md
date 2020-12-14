@@ -11,20 +11,24 @@ description: "Development Guidelines: learn how to contribute to GitLab."
 
 Learn the processes and technical information needed for contributing to GitLab.
 
-This content is intended for members of the GitLab Team as well as community contributors.
-Content specific to the GitLab Team should instead be included in the [Handbook](https://about.gitlab.com/handbook/).
+This content is intended for members of the GitLab Team as well as community
+contributors. Content specific to the GitLab Team should instead be included in
+the [Handbook](https://about.gitlab.com/handbook/).
 
-For information on using GitLab to work on your own software projects, see the [GitLab user documentation](../user/index.md).
+For information on using GitLab to work on your own software projects, see the
+[GitLab user documentation](../user/index.md).
 
 For information on working with the GitLab APIs, see the [API documentation](../api/README.md).
 
-For information on how to install, configure, update, and upgrade your own GitLab instance, see the [administration documentation](../administration/index.md).
+For information about how to install, configure, update, and upgrade your own
+GitLab instance, see the [administration documentation](../administration/index.md).
 
 ## Get started
 
-- Set up the GitLab development environment with [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/README.md)
+- Set up the GitLab development environment with the
+  [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/README.md)
 - [GitLab contributing guide](contributing/index.md)
-  - [Issues workflow](contributing/issue_workflow.md) for more information on:
+  - [Issues workflow](contributing/issue_workflow.md) for more information about:
     - Issue tracker guidelines.
     - Triaging.
     - Labels.
@@ -33,7 +37,7 @@ For information on how to install, configure, update, and upgrade your own GitLa
     - Regression issues.
     - Technical or UX debt.
   - [Merge requests workflow](contributing/merge_request_workflow.md) for more
-    information on:
+    information about:
     - Merge request guidelines.
     - Contribution acceptance criteria.
     - Definition of done.
@@ -48,8 +52,10 @@ For information on how to install, configure, update, and upgrade your own GitLa
 **Must-reads:**
 
 - [Guide on adapting existing and introducing new components](architecture.md#adapting-existing-and-introducing-new-components)
-- [Code review guidelines](code_review.md) for reviewing code and having code reviewed
-- [Database review guidelines](database_review.md) for reviewing database-related changes and complex SQL queries, and having them reviewed
+- [Code review guidelines](code_review.md) for reviewing code and having code
+  reviewed
+- [Database review guidelines](database_review.md) for reviewing
+  database-related changes and complex SQL queries, and having them reviewed
 - [Secure coding guidelines](secure_coding_guidelines.md)
 - [Pipelines for the GitLab project](pipelines.md)
 
@@ -66,20 +72,80 @@ Complementary reads:
 
 ### Development guidelines review
 
-When you submit a change to the GitLab development guidelines, request a review
-from:
+When you submit a change to GitLab's development guidelines, the people
+you ask for reviews from depend on the level of change, as described below.
 
-- A member of your team or group, to check for technical accuracy.
-- For **significant** changes or proposals, request review from:
-  - Engineering managers (FE, BE, DB, Security, UX, and others), according to the subject or process you're proposing.
-  - The VP of Development (DRI) ([@clefelhocz1](https://gitlab.com/clefelhocz1)), for
-  final approval of the new or changed guidelines.
-- The [Technical Writer assigned to dev guidelines](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines),
-  to review the content for consistency and adherence to documentation guidelines.
+#### Wording, style, or link changes
+
+Not all changes require extensive review. For example, MRs that don't change the
+content's meaning or function can be reviewed, approved, and merged by any
+maintainer or Technical Writer. These can include:
+
+- Typo fixes.
+- Clarifying links, such as to external programming language documentation.
+- Changes to comply with the [Documentation Style Guide](documentation/index.md)
+  that don't change the intent of the documentation page.
+
+#### Specific changes
+
+If the MR proposes changes limited to a particular stage, group, or team,
+request a review and approval from an experienced GitLab Team Member in that
+group. For example, if you're documenting a new internal API used exclusively by
+a given group, request an engineering review from one of the group's members.
+
+After the engineering review is complete, assign the MR to the
+[Technical Writer associated with the stage and group](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments)
+in the modified documentation page's metadata.
+
+If you have questions or need further input, request a review from the
+Technical Writer assigned to the [Development Guidelines](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines).
+
+#### Broader changes
+
+Some changes affect more than one group. For example:
+
+- Changes to [code review guidelines](code_review.md).
+- Changes to [commit message guidelines](contributing/merge_request_workflow.md#commit-messages-guidelines).
+- Changes to guidelines in [feature flags in development of GitLab](feature_flags/).
+- Changes to [feature flags documentation guidelines](documentation/feature_flags.md).
+
+In these cases, use the following workflow:
+
+1. Request a peer review from a member of your team.
+1. Request a review and approval of an Engineering Manager (EM)
+   or Staff Engineer who's responsible for the area in question:
+
+   - [Frontend](https://about.gitlab.com/handbook/engineering/frontend/)
+   - [Backend](https://about.gitlab.com/handbook/engineering/)
+   - [Database](https://about.gitlab.com/handbook/engineering/development/database/)
+   - [User Experience (UX)](https://about.gitlab.com/handbook/engineering/ux/)
+   - [Security](https://about.gitlab.com/handbook/engineering/security/)
+   - [Quality](https://about.gitlab.com/handbook/engineering/quality/)
+   - [Infrastructure](https://about.gitlab.com/handbook/engineering/infrastructure/)
+   - [Technical Writing](https://about.gitlab.com/handbook/engineering/ux/technical-writing/)
+
+   You can skip this step for MRs authored by EMs or Staff Engineers responsible
+   for their area.
+
+   If there are several affected groups, you may need approvals at the
+   EM/Staff Engineer level from each affected area.
+
+1. After completing the reviews, consult with the EM/Staff Engineer
+   author / approver of the MR.
+   
+   If this is a significant change across multiple areas, request final review
+   and approval from the VP of Development, the DRI for Development Guidelines,
+   @clefelhocz1.
+
+1. After all approvals are complete, assign the merge request to the
+   Technical Writer for [Development Guidelines](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines)
+   for final content review and merge. The Technical Writer may ask for
+   additional approvals as previously suggested before merging the MR.
 
 ## UX and Frontend guides
 
-- [GitLab Design System](https://design.gitlab.com/) for building GitLab with existing CSS styles and elements
+- [GitLab Design System](https://design.gitlab.com/), for building GitLab with
+  existing CSS styles and elements
 - [Frontend guidelines](fe_guide/index.md)
 - [Emoji guide](fe_guide/emojis.md)
 
@@ -89,7 +155,8 @@ from:
 - [Issuable-like Rails models](issuable-like-models.md)
 - [Logging](logging.md)
 - [API style guide](api_styleguide.md) for contributing to the API
-- [GraphQL API style guide](api_graphql_styleguide.md) for contributing to the [GraphQL API](../api/graphql/index.md)
+- [GraphQL API style guide](api_graphql_styleguide.md) for contributing to the
+  [GraphQL API](../api/graphql/index.md)
 - [Sidekiq guidelines](sidekiq_style_guide.md) for working with Sidekiq workers
 - [Working with Gitaly](gitaly.md)
 - [Manage feature flags](feature_flags/index.md)
@@ -101,7 +168,8 @@ from:
 - [Sidekiq debugging](../administration/troubleshooting/sidekiq.md)
 - [Accessing session data](session.md)
 - [Gotchas](gotchas.md) to avoid
-- [Avoid modules with instance variables](module_with_instance_variables.md) if possible
+- [Avoid modules with instance variables](module_with_instance_variables.md), if
+  possible
 - [How to dump production data to staging](db_dump.md)
 - [Working with the GitHub importer](github_importer.md)
 - [Import/Export development documentation](import_export.md)
@@ -147,8 +215,9 @@ from:
   for ensuring merge requests do not negatively impact GitLab performance
 - [Profiling](profiling.md) a URL, measuring performance using Sherlock, or
   tracking down N+1 queries using Bullet.
-- [Cached queries guidelines](cached_queries.md), for tracking down N+1 queries masked by query caching, memory profiling and why should
-  we avoid cached queries.
+- [Cached queries guidelines](cached_queries.md), for tracking down N+1 queries
+  masked by query caching, memory profiling and why should we avoid cached
+  queries.
 
 ## Database guides
 

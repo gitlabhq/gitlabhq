@@ -14,21 +14,21 @@ We use ESLint to encapsulate and enforce frontend code standards. Our configurat
 
 This section describes yarn scripts that are available to validate and apply automatic fixes to files using ESLint.
 
-To check all currently staged files (based on `git diff`) with ESLint, run the following script:
+To check all staged files (based on `git diff`) with ESLint, run the following script:
 
 ```shell
 yarn eslint-staged
 ```
 
-A list of problems found will be logged to the console.
+A list of problems found are logged to the console.
 
-To apply automatic ESLint fixes to all currently staged files (based on `git diff`), run the following script:
+To apply automatic ESLint fixes to all staged files (based on `git diff`), run the following script:
 
 ```shell
 yarn eslint-staged-fix
 ```
 
-If manual changes are required, a list of changes will be sent to the console.
+If manual changes are required, a list of changes are sent to the console.
 
 To check **all** files in the repository with ESLint, run the following script:
 
@@ -36,7 +36,7 @@ To check **all** files in the repository with ESLint, run the following script:
 yarn eslint
 ```
 
-A list of problems found will be logged to the console.
+A list of problems found are logged to the console.
 
 To apply automatic ESLint fixes to **all** files in the repository, run the following script:
 
@@ -44,7 +44,7 @@ To apply automatic ESLint fixes to **all** files in the repository, run the foll
 yarn eslint-fix
 ```
 
-If manual changes are required, a list of changes will be sent to the console.
+If manual changes are required, a list of changes are sent to the console.
 
 WARNING:
 Limit use to global rule updates. Otherwise, the changes can lead to huge Merge Requests.
@@ -156,13 +156,13 @@ The source of these Yarn scripts can be found in `/scripts/frontend/prettier.js`
 node ./scripts/frontend/prettier.js check-all ./vendor/
 ```
 
-This will go over all files in a specific folder check it.
+This iterates over all files in a specific folder, and checks them.
 
 ```shell
 node ./scripts/frontend/prettier.js save-all ./vendor/
 ```
 
-This will go over all files in a specific folder and save it.
+This iterates over all files in a specific folder and saves them.
 
 ### VSCode Settings
 

@@ -100,7 +100,7 @@ Refer to [`override.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gi
     end
     ```
 
-    Note that the check will only happen when either:
+    Note that the check only happens when either:
 
     - The overriding method is defined in a class, or:
     - The overriding method is defined in a module, and it's prepended to

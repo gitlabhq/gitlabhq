@@ -1,0 +1,5 @@
+---
+title: Gradually load more diffs async
+merge_request: 49476
+author:
+type: changed

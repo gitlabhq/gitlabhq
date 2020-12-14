@@ -4,6 +4,8 @@ module Resolvers
   class MergeRequestsResolver < BaseResolver
     include ResolvesMergeRequests
 
+    type ::Types::MergeRequestType.connection_type, null: true
+
     alias_method :project, :synchronized_object
 
     def self.accept_assignee

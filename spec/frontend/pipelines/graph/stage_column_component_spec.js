@@ -1,5 +1,6 @@
 import { mount, shallowMount } from '@vue/test-utils';
 import ActionComponent from '~/pipelines/components/graph/action_component.vue';
+import JobItem from '~/pipelines/components/graph/job_item.vue';
 import StageColumnComponent from '~/pipelines/components/graph/stage_column_component.vue';
 
 const mockJob = {
@@ -37,6 +38,7 @@ describe('stage column component', () => {
   const findStageColumnTitle = () => wrapper.find('[data-testid="stage-column-title"]');
   const findStageColumnGroup = () => wrapper.find('[data-testid="stage-column-group"]');
   const findAllStageColumnGroups = () => wrapper.findAll('[data-testid="stage-column-group"]');
+  const findJobItem = () => wrapper.find(JobItem);
   const findActionComponent = () => wrapper.find(ActionComponent);
 
   const createComponent = ({ method = shallowMount, props = {} } = {}) => {
@@ -64,6 +66,28 @@ describe('stage column component', () => {
 
     it('should render the provided groups', () => {
       expect(findAllStageColumnGroups().length).toBe(mockGroups.length);
+    });
+  });
+
+  describe('when job notifies action is complete', () => {
+    beforeEach(() => {
+      createComponent({
+        method: mount,
+        props: {
+          groups: [
+            {
+              title: 'Fish',
+              size: 1,
+              jobs: [mockJob],
+            },
+          ],
+        },
+      });
+      findJobItem().vm.$emit('pipelineActionRequestComplete');
+    });
+
+    it('emits refreshPipelineGraph', () => {
+      expect(wrapper.emitted().refreshPipelineGraph).toHaveLength(1);
     });
   });
 

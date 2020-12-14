@@ -59,10 +59,6 @@ module CycleAnalytics
       end
     end
 
-    def no_stats?
-      stats.all? { |hash| hash[:value].nil? }
-    end
-
     def [](stage_name)
       if Feature.enabled?(:new_project_level_vsa_backend, resource_parent)
         StageAdapter.new(build_stage(stage_name), options)

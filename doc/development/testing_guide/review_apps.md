@@ -164,7 +164,7 @@ used by the `review-deploy` and `review-stop` jobs.
 You need to [open an access request (internal link)](https://gitlab.com/gitlab-com/access-requests/-/issues/new)
 for the `gcp-review-apps-dev` GCP group and role.
 
-This will grant you the following permissions for:
+This grants you the following permissions for:
 
 - [Retrieving pod logs](#dig-into-a-pods-logs). Granted by [Viewer (`roles/viewer`)](https://cloud.google.com/iam/docs/understanding-roles#kubernetes-engine-roles).
 - [Running a Rails console](#run-a-rails-console). Granted by [Kubernetes Engine Developer (`roles/container.pods.exec`)](https://cloud.google.com/iam/docs/understanding-roles#kubernetes-engine-roles).
@@ -317,7 +317,7 @@ kubectl get cm --sort-by='{.metadata.creationTimestamp}' | grep 'review-' | grep
 
 ### Using K9s
 
-[K9s](https://github.com/derailed/k9s) is a powerful command line dashboard which allows you to filter by labels. This can help identify trends with apps exceeding the [review-app resource requests](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/review_apps/base-config.yaml). Kubernetes will schedule pods to nodes based on resource requests and allow for CPU usage up to the limits.
+[K9s](https://github.com/derailed/k9s) is a powerful command line dashboard which allows you to filter by labels. This can help identify trends with apps exceeding the [review-app resource requests](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/review_apps/base-config.yaml). Kubernetes schedules pods to nodes based on resource requests and allow for CPU usage up to the limits.
 
 - In K9s you can sort or add filters by typing the `/` character
   - `-lrelease=<review-app-slug>` - filters down to all pods for a release. This aids in determining what is having issues in a single deployment
@@ -395,8 +395,8 @@ helm ls -d | grep "Jun  4" | cut -f1 | xargs helm delete --purge
 
 #### Mitigation steps taken to avoid this problem in the future
 
-We've created a new node pool with smaller machines so that it's less likely
-that a machine will hit the "too many mount points" problem in the future.
+We've created a new node pool with smaller machines to reduce the risk
+that a machine reaches the "too many mount points" problem in the future.
 
 ## Frequently Asked Questions
 

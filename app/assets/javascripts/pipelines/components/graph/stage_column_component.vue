@@ -79,6 +79,7 @@ export default {
           :tooltip-text="action.title"
           :link="action.path"
           class="js-stage-action stage-action rounded"
+          @pipelineActionRequestComplete="$emit('refreshPipelineGraph')"
         />
       </div>
     </template>
@@ -96,6 +97,7 @@ export default {
           :job-hovered="jobHovered"
           :pipeline-expanded="pipelineExpanded"
           css-class-job-name="gl-build-content"
+          @pipelineActionRequestComplete="$emit('refreshPipelineGraph')"
         />
         <job-group-dropdown v-else :group="group" />
       </div>

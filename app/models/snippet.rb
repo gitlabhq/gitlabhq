@@ -15,6 +15,7 @@ class Snippet < ApplicationRecord
   include FromUnion
   include IgnorableColumns
   include HasRepository
+  include CanMoveRepositoryStorage
   include AfterCommitQueue
   extend ::Gitlab::Utils::Override
 

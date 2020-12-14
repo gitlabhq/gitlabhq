@@ -183,11 +183,11 @@ export default {
           <span v-if="appliesToAllEnvironments" class="text-secondary gl-mt-3 mt-md-0 ml-md-3">
             {{ $options.i18n.allEnvironments }}
           </span>
-          <div v-else class="gl-display-flex gl-align-items-center">
+          <div v-else class="gl-display-flex gl-align-items-center gl-flex-wrap">
             <gl-token
               v-for="environment in filteredEnvironments"
               :key="environment.id"
-              class="gl-mt-3 gl-mr-3 mt-md-0 mr-md-0 ml-md-2 rounded-pill"
+              class="gl-mt-3 gl-mr-3 gl-mb-3 mt-md-0 mr-md-0 ml-md-2 rounded-pill"
               @close="removeScope(environment)"
             >
               {{ environment.environmentScope }}

@@ -43,7 +43,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:core_security_mr_widget_downloads, @project, default_enabled: true)
     push_frontend_feature_flag(:remove_resolve_note, @project, default_enabled: true)
     push_frontend_feature_flag(:test_failure_history, @project)
-    push_frontend_feature_flag(:diffs_gradual_load, @project)
+    push_frontend_feature_flag(:diffs_gradual_load, @project, default_enabled: true)
 
     record_experiment_user(:invite_members_version_a)
     record_experiment_user(:invite_members_version_b)

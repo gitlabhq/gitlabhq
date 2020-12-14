@@ -44,6 +44,18 @@ describe('graph component', () => {
     it('renders the main columns in the graph', () => {
       expect(findStageColumns()).toHaveLength(defaultProps.pipeline.stages.length);
     });
+
+    describe('when column requests a refresh', () => {
+      beforeEach(() => {
+        findStageColumns()
+          .at(0)
+          .vm.$emit('refreshPipelineGraph');
+      });
+
+      it('refreshPipelineGraph is emitted', () => {
+        expect(wrapper.emitted().refreshPipelineGraph).toHaveLength(1);
+      });
+    });
   });
 
   describe('when linked pipelines are not present', () => {
