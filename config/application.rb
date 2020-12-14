@@ -138,6 +138,7 @@ module Gitlab
       import_url
       elasticsearch_url
       search
+      jwt
       otp_attempt
       sentry_dsn
       trace

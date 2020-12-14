@@ -1,0 +1,5 @@
+---
+title: Retry rsync when source files vanish during backup
+merge_request: 48568
+author:
+type: added
