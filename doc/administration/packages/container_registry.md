@@ -101,7 +101,7 @@ If `auth` is not set up, users can pull Docker images without authentication.
 There are two ways you can configure the Registry's external domain. Either:
 
 - [Use the existing GitLab domain](#configure-container-registry-under-an-existing-gitlab-domain).
-  The Registry listens on a port and reuses GitLab's TLS certificate.
+  The Registry listens on a port and reuses the TLS certificate from GitLab.
 - [Use a completely separate domain](#configure-container-registry-under-its-own-domain) with a new TLS certificate
   for that domain.
 
@@ -612,8 +612,8 @@ You can use GitLab as an auth endpoint with an external container registry.
    gitlab_rails['registry_issuer'] = "omnibus-gitlab-issuer"
    ```
 
-   `gitlab_rails['registry_enabled'] = true` is needed to enable GitLab's
-   Container Registry features and authentication endpoint. GitLab's bundled
+   `gitlab_rails['registry_enabled'] = true` is needed to enable GitLab
+   Container Registry features and authentication endpoint. The GitLab bundled
    Container Registry service does not start, even with this enabled.
 
 1. A certificate-key pair is required for GitLab and the external container

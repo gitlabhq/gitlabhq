@@ -6,15 +6,15 @@ RSpec.describe ProjectsController do
   include ExternalAuthorizationServiceHelpers
   include ProjectForksHelper
 
-  let(:project) { create(:project, service_desk_enabled: false) }
-  let(:public_project) { create(:project, :public) }
-  let(:user) { create(:user) }
+  let_it_be(:project, reload: true) { create(:project, service_desk_enabled: false) }
+  let_it_be(:public_project) { create(:project, :public) }
+  let_it_be(:user) { create(:user) }
   let(:jpg) { fixture_file_upload('spec/fixtures/rails_sample.jpg', 'image/jpg') }
   let(:txt) { fixture_file_upload('spec/fixtures/doc_sample.txt', 'text/plain') }
 
   describe 'GET new' do
     context 'with an authenticated user' do
-      let(:group) { create(:group) }
+      let_it_be(:group) { create(:group) }
 
       before do
         sign_in(user)
@@ -68,7 +68,7 @@ RSpec.describe ProjectsController do
     include DesignManagementTestHelpers
     render_views
 
-    let(:project) { create(:project, :public, issues_access_level: ProjectFeature::PRIVATE) }
+    let_it_be(:project) { create(:project, :public, issues_access_level: ProjectFeature::PRIVATE) }
 
     before do
       enable_design_management
@@ -227,10 +227,12 @@ RSpec.describe ProjectsController do
     end
 
     context "project with empty repo" do
-      let(:empty_project) { create(:project_empty_repo, :public) }
+      let_it_be(:empty_project) { create(:project_empty_repo, :public) }
 
       before do
         sign_in(user)
+
+        allow(controller).to receive(:record_experiment_user).with(:invite_members_empty_project_version_a)
       end
 
       User.project_views.keys.each do |project_view|
@@ -241,15 +243,16 @@ RSpec.describe ProjectsController do
             get :show, params: { namespace_id: empty_project.namespace, id: empty_project }
           end
 
-          it "renders the empty project view" do
+          it "renders the empty project view and records the experiment user", :aggregate_failures do
             expect(response).to render_template('empty')
+            expect(controller).to have_received(:record_experiment_user).with(:invite_members_empty_project_version_a)
           end
         end
       end
     end
 
     context "project with broken repo" do
-      let(:empty_project) { create(:project_broken_repo, :public) }
+      let_it_be(:empty_project) { create(:project_broken_repo, :public) }
 
       before do
         sign_in(user)
@@ -273,7 +276,7 @@ RSpec.describe ProjectsController do
     end
 
     context "rendering default project view" do
-      let(:public_project) { create(:project, :public, :repository) }
+      let_it_be(:public_project) { create(:project, :public, :repository) }
 
       render_views
 
@@ -397,8 +400,8 @@ RSpec.describe ProjectsController do
   end
 
   describe 'POST #archive' do
-    let(:group) { create(:group) }
-    let(:project) { create(:project, group: group) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
 
     before do
       sign_in(user)
@@ -445,8 +448,8 @@ RSpec.describe ProjectsController do
   end
 
   describe 'POST #unarchive' do
-    let(:group) { create(:group) }
-    let(:project) { create(:project, :archived, group: group) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, :archived, group: group) }
 
     before do
       sign_in(user)
@@ -493,8 +496,8 @@ RSpec.describe ProjectsController do
   end
 
   describe '#housekeeping' do
-    let(:group) { create(:group) }
-    let(:project) { create(:project, group: group) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
     let(:housekeeping) { Projects::HousekeepingService.new(project) }
 
     context 'when authenticated as owner' do
@@ -666,13 +669,13 @@ RSpec.describe ProjectsController do
     end
 
     context 'hashed storage' do
-      let(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project, :repository) }
 
       it_behaves_like 'updating a project'
     end
 
     context 'legacy storage' do
-      let(:project) { create(:project, :repository, :legacy_storage) }
+      let_it_be(:project) { create(:project, :repository, :legacy_storage) }
 
       it_behaves_like 'updating a project'
     end
@@ -745,9 +748,9 @@ RSpec.describe ProjectsController do
   describe '#transfer', :enable_admin_mode do
     render_views
 
-    let(:project) { create(:project, :repository) }
-    let(:admin) { create(:admin) }
-    let(:new_namespace) { create(:namespace) }
+    let_it_be(:project, reload: true) { create(:project, :repository) }
+    let_it_be(:admin) { create(:admin) }
+    let_it_be(:new_namespace) { create(:namespace) }
 
     it 'updates namespace' do
       sign_in(admin)
@@ -791,7 +794,7 @@ RSpec.describe ProjectsController do
   end
 
   describe "#destroy", :enable_admin_mode do
-    let(:admin) { create(:admin) }
+    let_it_be(:admin) { create(:admin) }
 
     it "redirects to the dashboard", :sidekiq_might_not_need_inline do
       controller.instance_variable_set(:@project, project)
@@ -971,7 +974,7 @@ RSpec.describe ProjectsController do
   end
 
   describe "GET refs" do
-    let(:project) { create(:project, :public, :repository) }
+    let_it_be(:project) { create(:project, :public, :repository) }
 
     it 'gets a list of branches and tags' do
       get :refs, params: { namespace_id: project.namespace, id: project, sort: 'updated_desc' }
@@ -1043,7 +1046,7 @@ RSpec.describe ProjectsController do
     end
 
     context 'state filter on references' do
-      let(:issue) { create(:issue, :closed, project: public_project) }
+      let_it_be(:issue) { create(:issue, :closed, project: public_project) }
       let(:merge_request) { create(:merge_request, :closed, target_project: public_project) }
 
       it 'renders JSON body with state filter for issues' do
@@ -1366,7 +1369,7 @@ RSpec.describe ProjectsController do
   end
 
   context 'private project with token authentication' do
-    let(:private_project) { create(:project, :private) }
+    let_it_be(:private_project) { create(:project, :private) }
 
     it_behaves_like 'authenticates sessionless user', :show, :atom, ignore_incrementing: true do
       before do
@@ -1378,7 +1381,7 @@ RSpec.describe ProjectsController do
   end
 
   context 'public project with token authentication' do
-    let(:public_project) { create(:project, :public) }
+    let_it_be(:public_project) { create(:project, :public) }
 
     it_behaves_like 'authenticates sessionless user', :show, :atom, public: true do
       before do

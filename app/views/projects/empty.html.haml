@@ -6,6 +6,8 @@
 
 = render "home_panel"
 
+= render "invite_members" if experiment_enabled?(:invite_members_empty_project_version_a) && can_import_members?
+
 %h4.gl-mt-0.gl-mb-3
   = _('The repository for this project is empty')
 

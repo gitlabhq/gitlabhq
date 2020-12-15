@@ -81,6 +81,10 @@ module Gitlab
       end
     end
 
+    def can_push_for_ref?(_)
+      can_do_action?(:push_code)
+    end
+
     private
 
     def can_push?

@@ -51,9 +51,12 @@ To enforce confirmation of the email address used for new sign ups:
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4315) in GitLab 13.6.
 
-When the number of users reaches the user cap, any user who is added or requests access must be
+When the number of billable users reaches the user cap, any user who is added or requests access must be
 [approved](../approving_users.md#approving-a-user) by an administrator before they can start using
 their account.
+
+If an administrator increases or removes the user cap, the users in pending approval state will be
+automatically approved in a background job.
 
 ## Soft email confirmation
 

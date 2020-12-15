@@ -25,7 +25,7 @@ RSpec.describe Gitlab::DeployKeyAccess do
     end
   end
 
-  describe '#can_push_to_branch?' do
+  describe '#can_push_for_ref?' do
     context 'push to a protected branch of this project via a deploy key' do
       before do
         create(:protected_branch_push_access_level, protected_branch: protected_branch, deploy_key: deploy_key)
@@ -33,7 +33,7 @@ RSpec.describe Gitlab::DeployKeyAccess do
 
       context 'when the project has active deploy key owned by this user' do
         it 'returns true' do
-          expect(access.can_push_to_branch?(protected_branch.name)).to be_truthy
+          expect(access.can_push_for_ref?(protected_branch.name)).to be_truthy
         end
       end
 
@@ -41,7 +41,7 @@ RSpec.describe Gitlab::DeployKeyAccess do
         let(:deploy_key) { create(:deploy_key, user: create(:user)) }
 
         it 'returns false' do
-          expect(access.can_push_to_branch?(protected_branch.name)).to be_falsey
+          expect(access.can_push_for_ref?(protected_branch.name)).to be_falsey
         end
       end
 
@@ -49,15 +49,15 @@ RSpec.describe Gitlab::DeployKeyAccess do
         let(:another_branch) { create(:protected_branch, :no_one_can_push, name: 'another_branch', project: project) }
 
         it 'returns false when trying to push to that other branch' do
-          expect(access.can_push_to_branch?(another_branch.name)).to be_falsey
+          expect(access.can_push_for_ref?(another_branch.name)).to be_falsey
         end
 
         context 'and the deploy key added for the first protected branch is also added for this other branch' do
           it 'returns true for both protected branches' do
             create(:protected_branch_push_access_level, protected_branch: another_branch, deploy_key: deploy_key)
 
-            expect(access.can_push_to_branch?(protected_branch.name)).to be_truthy
-            expect(access.can_push_to_branch?(another_branch.name)).to be_truthy
+            expect(access.can_push_for_ref?(protected_branch.name)).to be_truthy
+            expect(access.can_push_for_ref?(another_branch.name)).to be_truthy
           end
         end
       end

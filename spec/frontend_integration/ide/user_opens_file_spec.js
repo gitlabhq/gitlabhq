@@ -3,7 +3,9 @@ import { screen } from '@testing-library/dom';
 import * as ideHelper from './helpers/ide_helper';
 import startWebIDE from './helpers/start';
 
-describe('IDE: User opens a file in the Web IDE', () => {
+// https://gitlab.com/gitlab-org/gitlab/-/issues/293654#note_466432769
+// eslint-disable-next-line jest/no-disabled-tests
+describe.skip('IDE: User opens a file in the Web IDE', () => {
   useOverclockTimers();
 
   let vm;

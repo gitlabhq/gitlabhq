@@ -325,7 +325,11 @@ class ProjectsController < Projects::ApplicationController
     if can?(current_user, :download_code, @project)
       return render 'projects/no_repo' unless @project.repository_exists?
 
-      render 'projects/empty' if @project.empty_repo?
+      if @project.empty_repo?
+        record_experiment_user(:invite_members_empty_project_version_a)
+
+        render 'projects/empty'
+      end
     else
       if can?(current_user, :read_wiki, @project)
         @wiki = @project.wiki

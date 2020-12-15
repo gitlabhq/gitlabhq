@@ -15207,10 +15207,19 @@ msgstr ""
 msgid "InviteMembers|Invite team members"
 msgstr ""
 
+msgid "InviteMember|Add members to this project and start collaborating with your team."
+msgstr ""
+
 msgid "InviteMember|Invite Members (optional)"
 msgstr ""
 
 msgid "InviteMember|Invite another member"
+msgstr ""
+
+msgid "InviteMember|Invite members"
+msgstr ""
+
+msgid "InviteMember|Invite your team"
 msgstr ""
 
 msgid "InviteMember|Invited users will be added with developer level permissions. %{linkStart}View the documentation%{linkEnd} to see how to change this later."

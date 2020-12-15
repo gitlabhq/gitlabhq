@@ -8,6 +8,10 @@ module Gitlab
       @container = container
     end
 
+    def can_push_for_ref?(ref)
+      can_push_to_branch?(ref)
+    end
+
     private
 
     attr_reader :deploy_key

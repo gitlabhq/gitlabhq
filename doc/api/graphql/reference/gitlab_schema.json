@@ -5611,6 +5611,16 @@
               "defaultValue": null
             },
             {
+              "name": "iterationId",
+              "description": "Global ID of an existing iteration",
+              "type": {
+                "kind": "SCALAR",
+                "name": "IterationID",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
               "name": "assigneeId",
               "description": "Global ID of an existing user",
               "type": {

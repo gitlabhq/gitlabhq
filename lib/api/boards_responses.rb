@@ -45,7 +45,7 @@ module API
 
         def create_list
           create_list_service =
-            ::Boards::Lists::CreateService.new(board_parent, current_user, create_list_params)
+            ::Boards::Lists::CreateService.new(board_parent, current_user, declared_params.compact.with_indifferent_access)
 
           response = create_list_service.execute(board)
 
@@ -54,10 +54,6 @@ module API
           else
             render_api_error!({ error: response.errors.first }, 400)
           end
-        end
-
-        def create_list_params
-          params.slice(:label_id)
         end
 
         def move_list(list)
