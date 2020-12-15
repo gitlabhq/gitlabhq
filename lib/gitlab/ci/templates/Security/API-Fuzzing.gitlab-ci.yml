@@ -15,7 +15,8 @@ variables:
     FUZZAPI_VERSION: latest
     FUZZAPI_CONFIG: .gitlab-api-fuzzing.yml
     FUZZAPI_TIMEOUT: 30
-    FUZZAPI_REPORT: gl-api-fuzzing-report.xml
+    FUZZAPI_REPORT: gl-api-fuzzing-report.json
+    FUZZAPI_REPORT_ASSET_PATH: assets
     #
     FUZZAPI_D_NETWORK: testing-net
     #
@@ -45,6 +46,7 @@ apifuzzer_fuzz:
     variables:
         FUZZAPI_PROJECT: $CI_PROJECT_PATH
         FUZZAPI_API: http://apifuzzer:80
+        FUZZAPI_NEW_REPORT: 1
         TZ: America/Los_Angeles
     services:
         - name: $FUZZAPI_IMAGE
@@ -75,6 +77,9 @@ apifuzzer_fuzz:
         # Run user provided pre-script
         - sh -c "$FUZZAPI_PRE_SCRIPT"
         #
+        # Make sure asset path exists
+        - mkdir -p $FUZZAPI_REPORT_ASSET_PATH
+        #
         # Start scanning
         - worker-entry
         #
@@ -82,8 +87,12 @@ apifuzzer_fuzz:
         - sh -c "$FUZZAPI_POST_SCRIPT"
         #
     artifacts:
+        when: always
+        paths:
+            - $FUZZAPI_REPORT_ASSET_PATH
+            - $FUZZAPI_REPORT
         reports:
-            junit: $FUZZAPI_REPORT
+            api_fuzzing: $FUZZAPI_REPORT
 
 apifuzzer_fuzz_dnd:
     stage: fuzz
@@ -114,6 +123,9 @@ apifuzzer_fuzz_dnd:
         #
         # Run user provided pre-script
         - sh -c "$FUZZAPI_PRE_SCRIPT"
+        #
+        # Make sure asset path exists
+        - mkdir -p $FUZZAPI_REPORT_ASSET_PATH
         #
         # Start peach testing engine container
         - |
@@ -155,6 +167,8 @@ apifuzzer_fuzz_dnd:
                     -e FUZZAPI_PROFILE \
                     -e FUZZAPI_CONFIG \
                     -e FUZZAPI_REPORT \
+                    -e FUZZAPI_REPORT_ASSET_PATH \
+                    -e FUZZAPI_NEW_REPORT=1 \
                     -e FUZZAPI_HAR \
                     -e FUZZAPI_OPENAPI \
                     -e FUZZAPI_POSTMAN_COLLECTION \
@@ -168,6 +182,8 @@ apifuzzer_fuzz_dnd:
                     -e FUZZAPI_SERVICE_START_TIMEOUT \
                     -e FUZZAPI_HTTP_USERNAME \
                     -e FUZZAPI_HTTP_PASSWORD \
+                    -e CI_PROJECT_URL \
+                    -e CI_JOB_ID \
                     -e CI_COMMIT_BRANCH=${CI_COMMIT_BRANCH} \
                     $FUZZAPI_D_WORKER_ENV \
                     $FUZZAPI_D_WORKER_PORTS \
@@ -193,6 +209,8 @@ apifuzzer_fuzz_dnd:
                     -e FUZZAPI_PROFILE \
                     -e FUZZAPI_CONFIG \
                     -e FUZZAPI_REPORT \
+                    -e FUZZAPI_REPORT_ASSET_PATH \
+                    -e FUZZAPI_NEW_REPORT=1 \
                     -e FUZZAPI_HAR \
                     -e FUZZAPI_OPENAPI \
                     -e FUZZAPI_POSTMAN_COLLECTION \
@@ -206,7 +224,10 @@ apifuzzer_fuzz_dnd:
                     -e FUZZAPI_SERVICE_START_TIMEOUT \
                     -e FUZZAPI_HTTP_USERNAME \
                     -e FUZZAPI_HTTP_PASSWORD \
+                    -e CI_PROJECT_URL \
+                    -e CI_JOB_ID \
                     -v $CI_PROJECT_DIR:/app \
+                    -v `pwd`/$FUZZAPI_REPORT_ASSET_PATH:/app/$FUZZAPI_REPORT_ASSET_PATH:rw \
                     -p 81:80 \
                     -p 8001:8000 \
                     -p 515:514 \
@@ -239,7 +260,9 @@ apifuzzer_fuzz_dnd:
         paths:
             - ./gl-api_fuzzing*.log
             - ./gl-api_fuzzing*.zip
+            - $FUZZAPI_REPORT_ASSET_PATH
+            - $FUZZAPI_REPORT
         reports:
-            junit: $FUZZAPI_REPORT
+            api_fuzzing: $FUZZAPI_REPORT
 
 # end

@@ -224,7 +224,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
             gitlab: 2
           },
           projects_imported: {
-            total: 20,
+            total: 2,
             gitlab_project: 2,
             gitlab: 2,
             github: 2,
@@ -248,7 +248,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
             gitlab: 1
           },
           projects_imported: {
-            total: 10,
+            total: 1,
             gitlab_project: 1,
             gitlab: 1,
             github: 1,

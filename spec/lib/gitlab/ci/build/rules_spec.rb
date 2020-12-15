@@ -187,11 +187,17 @@ RSpec.describe Gitlab::Ci::Build::Rules do
     let(:start_in) { nil }
     let(:allow_failure) { nil }
 
-    subject { Gitlab::Ci::Build::Rules::Result.new(when_value, start_in, allow_failure) }
+    subject(:result) do
+      Gitlab::Ci::Build::Rules::Result.new(when_value, start_in, allow_failure)
+    end
 
     describe '#build_attributes' do
+      subject(:build_attributes) do
+        result.build_attributes
+      end
+
       it 'compacts nil values' do
-        expect(subject.build_attributes).to eq(options: {}, when: 'on_success')
+        is_expected.to eq(options: {}, when: 'on_success')
       end
     end
 

@@ -504,6 +504,17 @@ RSpec.shared_examples 'wiki controller actions' do
     end
   end
 
+  describe '#git_access' do
+    render_views
+
+    it 'renders the git access page' do
+      get :git_access, params: routing_params
+
+      expect(response).to render_template('shared/wikis/git_access')
+      expect(response.body).to include(wiki.http_url_to_repo)
+    end
+  end
+
   def redirect_to_wiki(wiki, page)
     redirect_to(controller.wiki_page_path(wiki, page))
   end

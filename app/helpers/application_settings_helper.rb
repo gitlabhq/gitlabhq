@@ -255,6 +255,7 @@ module ApplicationSettingsHelper
       :password_authentication_enabled_for_git,
       :performance_bar_allowed_group_path,
       :performance_bar_enabled,
+      :personal_access_token_prefix,
       :kroki_enabled,
       :kroki_url,
       :plantuml_enabled,

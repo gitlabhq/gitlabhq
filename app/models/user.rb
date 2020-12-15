@@ -1665,7 +1665,7 @@ class User < ApplicationRecord
     save
   end
 
-  # each existing user needs to have an `feed_token`.
+  # each existing user needs to have a `feed_token`.
   # we do this on read since migrating all existing users is not a feasible
   # solution.
   def feed_token

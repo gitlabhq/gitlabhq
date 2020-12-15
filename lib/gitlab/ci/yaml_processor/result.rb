@@ -77,6 +77,7 @@ module Gitlab
             options: {
               image: job[:image],
               services: job[:services],
+              allow_failure_criteria: job[:allow_failure_criteria],
               artifacts: job[:artifacts],
               dependencies: job[:dependencies],
               cross_dependencies: job.dig(:needs, :cross_dependency),

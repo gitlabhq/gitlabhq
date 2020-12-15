@@ -1,0 +1,3 @@
+mutation importGroup($sourceGroupId: String!) {
+  importGroup(sourceGroupId: $sourceGroupId) @client
+}

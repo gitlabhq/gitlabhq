@@ -670,6 +670,10 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
   end
 
   describe '#ignored?' do
+    before do
+      entry.compose!
+    end
+
     context 'when job is a manual action' do
       context 'when it is not specified if job is allowed to fail' do
         let(:config) do
@@ -700,6 +704,16 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
           expect(entry).not_to be_ignored
         end
       end
+
+      context 'when job is dynamically allowed to fail' do
+        let(:config) do
+          { script: 'deploy', when: 'manual', allow_failure: { exit_codes: 42 } }
+        end
+
+        it 'is not an ignored job' do
+          expect(entry).not_to be_ignored
+        end
+      end
     end
 
     context 'when job is not a manual action' do
@@ -709,6 +723,10 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
         it 'is not an ignored job' do
           expect(entry).not_to be_ignored
         end
+
+        it 'does not return allow_failure' do
+          expect(entry.value.key?(:allow_failure_criteria)).to be_falsey
+        end
       end
 
       context 'when job is allowed to fail' do
@@ -717,6 +735,10 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
         it 'is an ignored job' do
           expect(entry).to be_ignored
         end
+
+        it 'does not return allow_failure_criteria' do
+          expect(entry.value.key?(:allow_failure_criteria)).to be_falsey
+        end
       end
 
       context 'when job is not allowed to fail' do
@@ -724,6 +746,32 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
 
         it 'is not an ignored job' do
           expect(entry).not_to be_ignored
+        end
+
+        it 'does not return allow_failure_criteria' do
+          expect(entry.value.key?(:allow_failure_criteria)).to be_falsey
+        end
+      end
+
+      context 'when job is dynamically allowed to fail' do
+        let(:config) { { script: 'deploy', allow_failure: { exit_codes: 42 } } }
+
+        it 'is not an ignored job' do
+          expect(entry).not_to be_ignored
+        end
+
+        it 'returns allow_failure_criteria' do
+          expect(entry.value[:allow_failure_criteria]).to match(exit_codes: [42])
+        end
+
+        context 'with ci_allow_failure_with_exit_codes disabled' do
+          before do
+            stub_feature_flags(ci_allow_failure_with_exit_codes: false)
+          end
+
+          it 'does not return allow_failure_criteria' do
+            expect(entry.value.key?(:allow_failure_criteria)).to be_falsey
+          end
         end
       end
     end

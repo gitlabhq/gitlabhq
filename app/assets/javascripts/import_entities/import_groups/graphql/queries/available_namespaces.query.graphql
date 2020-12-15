@@ -1,0 +1,6 @@
+query availableNamespaces {
+  availableNamespaces @client {
+    id
+    full_path
+  }
+}

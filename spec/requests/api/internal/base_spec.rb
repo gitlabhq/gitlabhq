@@ -220,6 +220,8 @@ RSpec.describe API::Internal::Base do
     end
 
     it 'returns a token without expiry when the expires_at parameter is missing' do
+      token_size = (PersonalAccessToken.token_prefix || '').size + 20
+
       post api('/internal/personal_access_token'),
            params: {
              secret_token: secret_token,
@@ -229,12 +231,14 @@ RSpec.describe API::Internal::Base do
            }
 
       expect(json_response['success']).to be_truthy
-      expect(json_response['token']).to match(/\A\S{20}\z/)
+      expect(json_response['token']).to match(/\A\S{#{token_size}}\z/)
       expect(json_response['scopes']).to match_array(%w(read_api read_repository))
       expect(json_response['expires_at']).to be_nil
     end
 
     it 'returns a token with expiry when it receives a valid expires_at parameter' do
+      token_size = (PersonalAccessToken.token_prefix || '').size + 20
+
       post api('/internal/personal_access_token'),
            params: {
              secret_token: secret_token,
@@ -245,7 +249,7 @@ RSpec.describe API::Internal::Base do
            }
 
       expect(json_response['success']).to be_truthy
-      expect(json_response['token']).to match(/\A\S{20}\z/)
+      expect(json_response['token']).to match(/\A\S{#{token_size}}\z/)
       expect(json_response['scopes']).to match_array(%w(read_api read_repository))
       expect(json_response['expires_at']).to eq('9001-11-17')
     end

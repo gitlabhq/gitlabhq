@@ -28,61 +28,62 @@ Example response:
 
 ```json
 {
-   "default_projects_limit" : 100000,
-   "signup_enabled" : true,
-   "id" : 1,
-   "default_branch_protection" : 2,
-   "restricted_visibility_levels" : [],
-   "password_authentication_enabled_for_web" : true,
-   "after_sign_out_path" : null,
-   "max_attachment_size" : 10,
-   "max_import_size": 50,
-   "user_oauth_applications" : true,
-   "updated_at" : "2016-01-04T15:44:55.176Z",
-   "session_expire_delay" : 10080,
-   "home_page_url" : null,
-   "default_snippet_visibility" : "private",
-   "outbound_local_requests_whitelist": [],
-   "domain_allowlist" : [],
-   "domain_denylist_enabled" : false,
-   "domain_denylist" : [],
-   "created_at" : "2016-01-04T15:44:55.176Z",
-   "default_ci_config_path" : null,
-   "default_project_visibility" : "private",
-   "default_group_visibility" : "private",
-   "gravatar_enabled" : true,
-   "sign_in_text" : null,
-   "container_expiration_policies_enable_historic_entries": true,
-   "container_registry_token_expire_delay": 5,
-   "repository_storages_weighted": {"default": 100},
-   "plantuml_enabled": false,
-   "plantuml_url": null,
-   "kroki_enabled": false,
-   "kroki_url": null,
-   "terminal_max_session_time": 0,
-   "polling_interval_multiplier": 1.0,
-   "rsa_key_restriction": 0,
-   "dsa_key_restriction": 0,
-   "ecdsa_key_restriction": 0,
-   "ed25519_key_restriction": 0,
-   "first_day_of_week": 0,
-   "enforce_terms": true,
-   "terms": "Hello world!",
-   "performance_bar_allowed_group_id": 42,
-   "user_show_add_ssh_key_message": true,
-   "local_markdown_version": 0,
-   "allow_local_requests_from_hooks_and_services": true,
-   "allow_local_requests_from_web_hooks_and_services": true,
-   "allow_local_requests_from_system_hooks": false,
-   "asset_proxy_enabled": true,
-   "asset_proxy_url": "https://assets.example.com",
-   "asset_proxy_whitelist": ["example.com", "*.example.com", "your-instance.com"],
-   "npm_package_requests_forwarding": true,
-   "snippet_size_limit": 52428800,
-   "issues_create_limit": 300,
-   "raw_blob_request_limit": 300,
-   "wiki_page_max_content_bytes": 52428800,
-   "require_admin_approval_after_user_signup": false
+  "default_projects_limit" : 100000,
+  "signup_enabled" : true,
+  "id" : 1,
+  "default_branch_protection" : 2,
+  "restricted_visibility_levels" : [],
+  "password_authentication_enabled_for_web" : true,
+  "after_sign_out_path" : null,
+  "max_attachment_size" : 10,
+  "max_import_size": 50,
+  "user_oauth_applications" : true,
+  "updated_at" : "2016-01-04T15:44:55.176Z",
+  "session_expire_delay" : 10080,
+  "home_page_url" : null,
+  "default_snippet_visibility" : "private",
+  "outbound_local_requests_whitelist": [],
+  "domain_allowlist" : [],
+  "domain_denylist_enabled" : false,
+  "domain_denylist" : [],
+  "created_at" : "2016-01-04T15:44:55.176Z",
+  "default_ci_config_path" : null,
+  "default_project_visibility" : "private",
+  "default_group_visibility" : "private",
+  "gravatar_enabled" : true,
+  "sign_in_text" : null,
+  "container_expiration_policies_enable_historic_entries": true,
+  "container_registry_token_expire_delay": 5,
+  "repository_storages_weighted": {"default": 100},
+  "plantuml_enabled": false,
+  "plantuml_url": null,
+  "kroki_enabled": false,
+  "kroki_url": null,
+  "terminal_max_session_time": 0,
+  "polling_interval_multiplier": 1.0,
+  "rsa_key_restriction": 0,
+  "dsa_key_restriction": 0,
+  "ecdsa_key_restriction": 0,
+  "ed25519_key_restriction": 0,
+  "first_day_of_week": 0,
+  "enforce_terms": true,
+  "terms": "Hello world!",
+  "performance_bar_allowed_group_id": 42,
+  "user_show_add_ssh_key_message": true,
+  "local_markdown_version": 0,
+  "allow_local_requests_from_hooks_and_services": true,
+  "allow_local_requests_from_web_hooks_and_services": true,
+  "allow_local_requests_from_system_hooks": false,
+  "asset_proxy_enabled": true,
+  "asset_proxy_url": "https://assets.example.com",
+  "asset_proxy_whitelist": ["example.com", "*.example.com", "your-instance.com"],
+  "npm_package_requests_forwarding": true,
+  "snippet_size_limit": 52428800,
+  "issues_create_limit": 300,
+  "raw_blob_request_limit": 300,
+  "wiki_page_max_content_bytes": 52428800,
+  "require_admin_approval_after_user_signup": false,
+  "personal_access_token_prefix": "GL-"
 }
 ```
 
@@ -91,12 +92,12 @@ the `file_template_project_id`, `deletion_adjourned_period`, or the `geo_node_al
 
 ```json
 {
-   "id" : 1,
-   "signup_enabled" : true,
-   "file_template_project_id": 1,
-   "geo_node_allowed_ips": "0.0.0.0/0, ::/0",
-   "deletion_adjourned_period": 7,
-   ...
+  "id" : 1,
+  "signup_enabled" : true,
+  "file_template_project_id": 1,
+  "geo_node_allowed_ips": "0.0.0.0/0, ::/0",
+  "deletion_adjourned_period": 7,
+  ...
 }
 ```
 
@@ -174,7 +175,8 @@ Example response:
   "issues_create_limit": 300,
   "raw_blob_request_limit": 300,
   "wiki_page_max_content_bytes": 52428800,
-  "require_admin_approval_after_user_signup": false
+  "require_admin_approval_after_user_signup": false,
+  "personal_access_token_prefix": "GL-"
 }
 ```
 
@@ -318,6 +320,7 @@ listed in the descriptions of the relevant settings.
 | `performance_bar_allowed_group_id`       | string           | no                                   | (Deprecated: Use `performance_bar_allowed_group_path` instead) Path of the group that is allowed to toggle the performance bar. |
 | `performance_bar_allowed_group_path`     | string           | no                                   | Path of the group that is allowed to toggle the performance bar. |
 | `performance_bar_enabled`                | boolean          | no                                   | (Deprecated: Pass `performance_bar_allowed_group_path: nil` instead) Allow enabling the performance bar. |
+| `personal_access_token_prefix`           | string           | no                                   | Prefix for all generated personal access tokens. |
 | `plantuml_enabled`                       | boolean          | no                                   | (**If enabled, requires:** `plantuml_url`) Enable PlantUML integration. Default is `false`. |
 | `plantuml_url`                           | string           | required by: `plantuml_enabled`      | The PlantUML instance URL for integration. |
 | `polling_interval_multiplier`            | decimal          | no                                   | Interval multiplier used by endpoints that perform polling. Set to `0` to disable polling. |

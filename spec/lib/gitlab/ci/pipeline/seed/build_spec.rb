@@ -165,6 +165,45 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
 
       it { is_expected.to include(options: {}) }
     end
+
+    context 'with allow_failure' do
+      let(:options) do
+        { allow_failure_criteria: { exit_codes: [42] } }
+      end
+
+      let(:rules) do
+        [{ if: '$VAR == null', when: 'always' }]
+      end
+
+      let(:attributes) do
+        {
+          name: 'rspec',
+          ref: 'master',
+          options: options,
+          rules: rules
+        }
+      end
+
+      context 'when rules does not override allow_failure' do
+        it { is_expected.to match a_hash_including(options: options) }
+      end
+
+      context 'when rules set allow_failure to true' do
+        let(:rules) do
+          [{ if: '$VAR == null', when: 'always', allow_failure: true }]
+        end
+
+        it { is_expected.to match a_hash_including(options: { allow_failure_criteria: nil }) }
+      end
+
+      context 'when rules set allow_failure to false' do
+        let(:rules) do
+          [{ if: '$VAR == null', when: 'always', allow_failure: false }]
+        end
+
+        it { is_expected.to match a_hash_including(options: { allow_failure_criteria: nil }) }
+      end
+    end
   end
 
   describe '#bridge?' do

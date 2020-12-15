@@ -584,7 +584,7 @@ module Gitlab
             gitlab: distinct_count(::BulkImport.where(time_period, source_type: :gitlab), :user_id)
           },
           projects_imported: {
-            total: count(Project.where(time_period).where.not(import_type: nil)),
+            total: distinct_count(::Project.where(time_period).where.not(import_type: nil), :creator_id),
             gitlab_project: projects_imported_count('gitlab_project', time_period),
             gitlab: projects_imported_count('gitlab', time_period),
             github: projects_imported_count('github', time_period),
@@ -894,7 +894,7 @@ module Gitlab
       end
 
       def projects_imported_count(from, time_period)
-        distinct_count(::Project.imported_from(from).where(time_period), :creator_id) # rubocop: disable CodeReuse/ActiveRecord
+        distinct_count(::Project.imported_from(from).where(time_period).where.not(import_type: nil), :creator_id) # rubocop: disable CodeReuse/ActiveRecord
       end
 
       # rubocop:disable CodeReuse/ActiveRecord

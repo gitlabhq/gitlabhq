@@ -11,12 +11,14 @@ module CaseSensitivity
     def iwhere(params)
       criteria = self
 
-      params.each do |key, value|
+      params.each do |column, value|
+        column = arel_table[column] unless column.is_a?(Arel::Attribute)
+
         criteria = case value
                    when Array
-                     criteria.where(value_in(key, value))
+                     criteria.where(value_in(column, value))
                    else
-                     criteria.where(value_equal(key, value))
+                     criteria.where(value_equal(column, value))
                    end
       end
 
@@ -28,7 +30,7 @@ module CaseSensitivity
     def value_equal(column, value)
       lower_value = lower_value(value)
 
-      lower_column(arel_table[column]).eq(lower_value).to_sql
+      lower_column(column).eq(lower_value).to_sql
     end
 
     def value_in(column, values)
@@ -36,7 +38,7 @@ module CaseSensitivity
         lower_value(value)
       end
 
-      lower_column(arel_table[column]).in(lower_values).to_sql
+      lower_column(column).in(lower_values).to_sql
     end
 
     def lower_value(value)

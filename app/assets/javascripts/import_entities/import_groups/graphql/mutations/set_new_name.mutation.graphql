@@ -1,0 +1,3 @@
+mutation setNewName($newName: String!, $sourceGroupId: String!) {
+  setNewName(newName: $newName, sourceGroupId: $sourceGroupId) @client
+}

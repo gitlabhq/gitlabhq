@@ -1,7 +1,7 @@
 <script>
 import dateFormat from 'dateformat';
 import { GlColumnChart } from '@gitlab/ui/dist/charts';
-import { GlAlert } from '@gitlab/ui';
+import { GlAlert, GlSkeletonLoader } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import { getDateInPast } from '~/lib/utils/datetime_utility';
 import getPipelineCountByStatus from '../graphql/queries/get_pipeline_count_by_status.query.graphql';
@@ -50,6 +50,7 @@ export default {
   components: {
     GlAlert,
     GlColumnChart,
+    GlSkeletonLoader,
     StatisticsList,
     PipelinesAreaChart,
   },
@@ -278,7 +279,8 @@ export default {
     <h4 class="gl-my-4">{{ s__('PipelineCharts|Overall statistics') }}</h4>
     <div class="row">
       <div class="col-md-6">
-        <statistics-list :counts="formattedCounts" />
+        <gl-skeleton-loader v-if="$apollo.queries.counts.loading" :lines="5" />
+        <statistics-list v-else :counts="formattedCounts" />
       </div>
       <div class="col-md-6">
         <strong>

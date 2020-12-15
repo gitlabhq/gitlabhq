@@ -1,0 +1,8 @@
+fragment BulkImportSourceGroupItem on ClientBulkImportSourceGroup {
+  id
+  web_url
+  full_path
+  full_name
+  status
+  import_target
+}

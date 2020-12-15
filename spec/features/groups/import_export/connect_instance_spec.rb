@@ -22,6 +22,19 @@ RSpec.describe 'Import/Export - Connect to another instance', :js do
     it 'successfully connects to remote instance' do
       source_url = 'https://gitlab.com'
       pat = 'demo-pat'
+      stub_path = 'stub-group'
+
+      stub_request(:get, "%{url}/api/v4/groups?page=1&per_page=30&top_level_only=true" % { url: source_url }).to_return(
+        body: [{
+          id: 2595438,
+          web_url: 'https://gitlab.com/groups/auto-breakfast',
+          name: 'Stub',
+          path: stub_path,
+          full_name: 'Stub',
+          full_path: stub_path
+          }].to_json,
+        headers: { 'Content-Type' => 'application/json' }
+      )
 
       expect(page).to have_content 'Import groups from another instance of GitLab'
 
@@ -31,6 +44,7 @@ RSpec.describe 'Import/Export - Connect to another instance', :js do
       click_on 'Connect instance'
 
       expect(page).to have_content 'Importing groups from %{url}' % { url: source_url }
+      expect(page).to have_content stub_path
     end
   end
 

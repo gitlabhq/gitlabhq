@@ -4,11 +4,10 @@
       %a.gutter-toggle.float-right.d-block.d-md-none.js-sidebar-wiki-toggle{ href: "#" }
         = sprite_icon('chevron-double-lg-right', css_class: 'gl-icon')
 
-      - if @wiki.container.is_a?(Project)
-        - git_access_url = wiki_path(@wiki, action: :git_access)
-        = link_to git_access_url, class: active_nav_link?(path: 'wikis#git_access') ? 'active' : '', data: { qa_selector: 'clone_repository_link' } do
-          = sprite_icon('download', css_class: 'gl-mr-2')
-          %span= _("Clone repository")
+      - git_access_url = wiki_path(@wiki, action: :git_access)
+      = link_to git_access_url, class: active_nav_link?(path: 'wikis#git_access') ? 'active' : '', data: { qa_selector: 'clone_repository_link' } do
+        = sprite_icon('download', css_class: 'gl-mr-2')
+        %span= _("Clone repository")
 
     - if @sidebar_error.present?
       = render 'shared/alert_info', body: s_('Wiki|The sidebar failed to load. You can reload the page to try again.')

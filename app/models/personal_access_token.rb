@@ -9,7 +9,9 @@ class PersonalAccessToken < ApplicationRecord
   add_authentication_token_field :token, digest: true
 
   REDIS_EXPIRY_TIME = 3.minutes
-  TOKEN_LENGTH = 20
+
+  # PATs are 20 characters + optional configurable settings prefix (0..20)
+  TOKEN_LENGTH_RANGE = (20..40).freeze
 
   serialize :scopes, Array # rubocop:disable Cop/ActiveRecordSerialize
 
@@ -75,6 +77,15 @@ class PersonalAccessToken < ApplicationRecord
         'expires_at_desc' => -> { order_expires_at_desc }
       }
     )
+  end
+
+  def self.token_prefix
+    Gitlab::CurrentSettings.current_application_settings.personal_access_token_prefix
+  end
+
+  override :format_token
+  def format_token(token)
+    "#{self.class.token_prefix}#{token}"
   end
 
   protected

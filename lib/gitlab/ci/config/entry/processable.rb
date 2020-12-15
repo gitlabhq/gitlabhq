@@ -32,7 +32,6 @@ module Gitlab
               with_options allow_nil: true do
                 validates :extends, array_of_strings_or_string: true
                 validates :rules, array_of_hashes: true
-                validates :allow_failure, boolean: true
               end
             end
 
@@ -65,7 +64,7 @@ module Gitlab
               inherit: false,
               default: {}
 
-            attributes :extends, :rules, :allow_failure
+            attributes :extends, :rules
           end
 
           def compose!(deps = nil)
@@ -140,10 +139,6 @@ module Gitlab
 
           def manual_action?
             self.when == 'manual'
-          end
-
-          def ignored?
-            allow_failure.nil? ? manual_action? : allow_failure
           end
         end
       end

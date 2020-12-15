@@ -35,6 +35,25 @@ If you choose a size larger than what is currently configured for the web server
 you will likely get errors. See the [troubleshooting section](#troubleshooting) for more
 details.
 
+## Personal Access Token prefix
+
+You can set a global prefix for all generated Personal Access Tokens.
+
+A prefix can help you identify PATs visually, as well as with automation tools.
+
+### Setting a prefix
+
+Only a GitLab administrator can set the prefix, which is a global setting applied
+to any PAT generated in the system by any user:
+
+1. Navigate to **Admin Area > Settings > General**.
+1. Expand the **Account and limit** section.
+1. Fill in the **Personal Access Token prefix** field.
+1. Click **Save changes**.
+
+It is also possible to configure the prefix via the [settings API](../../../api/settings.md)
+using the `personal_access_token_prefix` field.
+
 ## Repository size limit **(STARTER ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/740) in [GitLab Enterprise Edition 8.12](https://about.gitlab.com/releases/2016/09/22/gitlab-8-12-released/#limit-project-size-ee).

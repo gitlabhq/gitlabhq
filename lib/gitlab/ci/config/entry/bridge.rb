@@ -22,6 +22,7 @@ module Gitlab
                 in: ALLOWED_WHEN,
                 message: "should be one of: #{ALLOWED_WHEN.join(', ')}"
               }
+              validates :allow_failure, boolean: true
             end
 
             validate on: :composed do
@@ -47,7 +48,7 @@ module Gitlab
             inherit: false,
             metadata: { allowed_needs: %i[job bridge] }
 
-          attributes :when
+          attributes :when, :allow_failure
 
           def self.matching?(name, config)
             !name.to_s.start_with?('.') &&
@@ -71,6 +72,10 @@ module Gitlab
 
           def bridge_needs
             needs_value[:bridge] if needs_value
+          end
+
+          def ignored?
+            allow_failure.nil? ? manual_action? : allow_failure
           end
         end
       end

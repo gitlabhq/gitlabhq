@@ -104,6 +104,7 @@ module ApplicationSettingImplementation
         password_authentication_enabled_for_git: true,
         password_authentication_enabled_for_web: Settings.gitlab['signin_enabled'],
         performance_bar_allowed_group_id: nil,
+        personal_access_token_prefix: nil,
         plantuml_enabled: false,
         plantuml_url: nil,
         polling_interval_multiplier: 1,

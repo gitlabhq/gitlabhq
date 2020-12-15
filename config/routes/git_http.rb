@@ -9,7 +9,7 @@ scope(path: '*repository_path', format: false) do
       end
 
       # NOTE: LFS routes are exposed on all repository types, but we still check for
-      # LFS availability on the repository container in LfsRequest#require_lfs_enabled!
+      # LFS availability on the repository container in LfsRequest#lfs_check_access!
 
       # Git LFS API (metadata)
       scope(path: 'info/lfs/objects', controller: :lfs_api) do

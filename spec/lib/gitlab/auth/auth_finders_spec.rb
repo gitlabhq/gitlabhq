@@ -384,6 +384,16 @@ RSpec.describe Gitlab::Auth::AuthFinders do
 
         expect { find_personal_access_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
       end
+
+      context 'when using a non-prefixed access token' do
+        let(:personal_access_token) { create(:personal_access_token, :no_prefix, user: user) }
+
+        it 'returns user' do
+          set_header('HTTP_AUTHORIZATION', "Bearer #{personal_access_token.token}")
+
+          expect(find_user_from_access_token).to eq user
+        end
+      end
     end
   end
 

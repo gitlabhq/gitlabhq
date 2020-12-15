@@ -93,6 +93,73 @@ RSpec.describe Ci::CreatePipelineService do
         end
       end
     end
+
+    context 'with allow_failure and exit_codes', :aggregate_failures do
+      def find_job(name)
+        pipeline.builds.find_by(name: name)
+      end
+
+      let(:config) do
+        <<-EOY
+          job-1:
+            script: exit 42
+            allow_failure:
+              exit_codes: 42
+            rules:
+              - if: $CI_COMMIT_REF_NAME == "master"
+                allow_failure: false
+
+          job-2:
+            script: exit 42
+            allow_failure:
+              exit_codes: 42
+            rules:
+              - if: $CI_COMMIT_REF_NAME == "master"
+                allow_failure: true
+
+          job-3:
+            script: exit 42
+            allow_failure:
+              exit_codes: 42
+            rules:
+              - if: $CI_COMMIT_REF_NAME == "master"
+                when: manual
+        EOY
+      end
+
+      it 'creates a pipeline' do
+        expect(pipeline).to be_persisted
+        expect(build_names).to contain_exactly(
+          'job-1', 'job-2', 'job-3'
+        )
+      end
+
+      it 'assigns job:allow_failure values to the builds' do
+        expect(find_job('job-1').allow_failure).to eq(false)
+        expect(find_job('job-2').allow_failure).to eq(true)
+        expect(find_job('job-3').allow_failure).to eq(false)
+      end
+
+      it 'removes exit_codes if allow_failure is specified' do
+        expect(find_job('job-1').options.dig(:allow_failure_criteria)).to be_nil
+        expect(find_job('job-2').options.dig(:allow_failure_criteria)).to be_nil
+        expect(find_job('job-3').options.dig(:allow_failure_criteria, :exit_codes)).to eq([42])
+      end
+
+      context 'with ci_allow_failure_with_exit_codes disabled' do
+        before do
+          stub_feature_flags(ci_allow_failure_with_exit_codes: false)
+        end
+
+        it 'does not persist allow_failure_criteria' do
+          expect(pipeline).to be_persisted
+
+          expect(find_job('job-1').options.key?(:allow_failure_criteria)).to be_falsey
+          expect(find_job('job-2').options.key?(:allow_failure_criteria)).to be_falsey
+          expect(find_job('job-3').options.key?(:allow_failure_criteria)).to be_falsey
+        end
+      end
+    end
   end
 
   context 'when workflow:rules are used' do

@@ -157,6 +157,44 @@ RSpec.describe Admin::ApplicationSettingsController do
       expect(ApplicationSetting.current.default_branch_name).to eq("example_branch_name")
     end
 
+    context "personal access token prefix settings" do
+      let(:application_settings) { ApplicationSetting.current }
+
+      shared_examples "accepts prefix setting" do |prefix|
+        it "updates personal_access_token_prefix setting" do
+          put :update, params: { application_setting: { personal_access_token_prefix: prefix } }
+
+          expect(response).to redirect_to(general_admin_application_settings_path)
+          expect(application_settings.reload.personal_access_token_prefix).to eq(prefix)
+        end
+      end
+
+      shared_examples "rejects prefix setting" do |prefix|
+        it "does not update personal_access_token_prefix setting" do
+          put :update, params: { application_setting: { personal_access_token_prefix: prefix } }
+
+          expect(response).not_to redirect_to(general_admin_application_settings_path)
+          expect(application_settings.reload.personal_access_token_prefix).not_to eq(prefix)
+        end
+      end
+
+      context "with valid prefix" do
+        include_examples("accepts prefix setting", "a_prefix@")
+      end
+
+      context "with blank prefix" do
+        include_examples("accepts prefix setting", "")
+      end
+
+      context "with too long prefix" do
+        include_examples("rejects prefix setting", "a_prefix@" * 10)
+      end
+
+      context "with invalid characters prefix" do
+        include_examples("rejects prefix setting", "a_préfixñ:")
+      end
+    end
+
     context 'external policy classification settings' do
       let(:settings) do
         {

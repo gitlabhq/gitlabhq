@@ -4,6 +4,36 @@
 # Object must have name and path db fields and respond to parent and parent_changed? methods.
 module Routable
   extend ActiveSupport::Concern
+  include CaseSensitivity
+
+  # Finds a Routable object by its full path, without knowing the class.
+  #
+  # Usage:
+  #
+  #     Routable.find_by_full_path('groupname')             # -> Group
+  #     Routable.find_by_full_path('groupname/projectname') # -> Project
+  #
+  # Returns a single object, or nil.
+  def self.find_by_full_path(path, follow_redirects: false, route_scope: Route, redirect_route_scope: RedirectRoute)
+    return unless path.present?
+
+    # Case sensitive match first (it's cheaper and the usual case)
+    # If we didn't have an exact match, we perform a case insensitive search
+    #
+    # We need to qualify the columns with the table name, to support both direct lookups on
+    # Route/RedirectRoute, and scoped lookups through the Routable classes.
+    route =
+      route_scope.find_by(routes: { path: path }) ||
+      route_scope.iwhere(Route.arel_table[:path] => path).take
+
+    if follow_redirects
+      route ||= redirect_route_scope.iwhere(RedirectRoute.arel_table[:path] => path).take
+    end
+
+    return unless route
+
+    route.is_a?(Routable) ? route : route.source
+  end
 
   included do
     # Remove `inverse_of: source` when upgraded to rails 5.2
@@ -30,15 +60,14 @@ module Routable
     #
     # Returns a single object, or nil.
     def find_by_full_path(path, follow_redirects: false)
-      # Case sensitive match first (it's cheaper and the usual case)
-      # If we didn't have an exact match, we perform a case insensitive search
-      found = includes(:route).find_by(routes: { path: path }) || where_full_path_in([path]).take
-
-      return found if found
-
-      if follow_redirects
-        joins(:redirect_routes).find_by("LOWER(redirect_routes.path) = LOWER(?)", path)
-      end
+      # TODO: Optimize these queries by avoiding joins
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/292252
+      Routable.find_by_full_path(
+        path,
+        follow_redirects: follow_redirects,
+        route_scope: includes(:route).references(:routes),
+        redirect_route_scope: joins(:redirect_routes)
+      )
     end
 
     # Builds a relation to find multiple objects by their full paths.

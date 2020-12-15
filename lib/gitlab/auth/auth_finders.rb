@@ -194,6 +194,10 @@ module Gitlab
 
       def access_token
         strong_memoize(:access_token) do
+          # The token can be a PAT or an OAuth (doorkeeper) token
+          # It is also possible that a PAT is encapsulated in a `Bearer` OAuth token
+          # (e.g. NPM client registry auth), this case will be properly handled
+          # by find_personal_access_token
           find_oauth_access_token || find_personal_access_token
         end
       end
@@ -237,7 +241,7 @@ module Gitlab
       end
 
       def matches_personal_access_token_length?(token)
-        token.length == PersonalAccessToken::TOKEN_LENGTH
+        PersonalAccessToken::TOKEN_LENGTH_RANGE.include?(token.length)
       end
 
       # Check if the request is GET/HEAD, or if CSRF token is valid.

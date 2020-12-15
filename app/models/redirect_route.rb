@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class RedirectRoute < ApplicationRecord
+  include CaseSensitivity
+
   belongs_to :source, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
 
   validates :source, presence: true

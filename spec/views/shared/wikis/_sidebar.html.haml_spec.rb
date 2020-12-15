@@ -16,16 +16,6 @@ RSpec.describe 'shared/wikis/_sidebar.html.haml' do
     expect(rendered).to have_link('Clone repository')
   end
 
-  context 'the wiki is not a project wiki' do
-    it 'does not include the clone repository link' do
-      allow(wiki).to receive(:container).and_return(create(:group))
-
-      render
-
-      expect(rendered).not_to have_link('Clone repository')
-    end
-  end
-
   context 'the sidebar failed to load' do
     before do
       assign(:sidebar_error, Object.new)

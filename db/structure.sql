@@ -9372,11 +9372,13 @@ CREATE TABLE application_settings (
     secret_detection_revocation_token_types_url text,
     cloud_license_enabled boolean DEFAULT false NOT NULL,
     disable_feed_token boolean DEFAULT false NOT NULL,
+    personal_access_token_prefix text,
     CONSTRAINT app_settings_registry_exp_policies_worker_capacity_positive CHECK ((container_registry_expiration_policies_worker_capacity >= 0)),
     CONSTRAINT check_17d9558205 CHECK ((char_length((kroki_url)::text) <= 1024)),
     CONSTRAINT check_2dba05b802 CHECK ((char_length(gitpod_url) <= 255)),
     CONSTRAINT check_51700b31b5 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT check_57123c9593 CHECK ((char_length(help_page_documentation_base_url) <= 255)),
+    CONSTRAINT check_718b4458ae CHECK ((char_length(personal_access_token_prefix) <= 20)),
     CONSTRAINT check_85a39b68ff CHECK ((char_length(encrypted_ci_jwt_signing_key_iv) <= 255)),
     CONSTRAINT check_9a719834eb CHECK ((char_length(secret_detection_token_revocation_url) <= 255)),
     CONSTRAINT check_9c6c447a13 CHECK ((char_length(maintenance_mode_message) <= 255)),
@@ -22275,6 +22277,8 @@ CREATE INDEX index_projects_on_creator_id_and_created_at_and_id ON projects USIN
 
 CREATE INDEX index_projects_on_creator_id_and_id ON projects USING btree (creator_id, id);
 
+CREATE INDEX index_projects_on_creator_id_import_type_and_created_at_partial ON projects USING btree (creator_id, import_type, created_at) WHERE (import_type IS NOT NULL);
+
 CREATE INDEX index_projects_on_description_trigram ON projects USING gin (description gin_trgm_ops);
 
 CREATE INDEX index_projects_on_id_and_archived_and_pending_delete ON projects USING btree (id) WHERE ((archived = false) AND (pending_delete = false));
@@ -22527,7 +22531,7 @@ CREATE INDEX index_security_findings_on_scanner_id ON security_findings USING bt
 
 CREATE INDEX index_security_findings_on_severity ON security_findings USING btree (severity);
 
-CREATE UNIQUE INDEX index_security_findings_on_uuid ON security_findings USING btree (uuid);
+CREATE UNIQUE INDEX index_security_findings_on_uuid_and_scan_id ON security_findings USING btree (uuid, scan_id);
 
 CREATE INDEX index_self_managed_prometheus_alert_events_on_environment_id ON self_managed_prometheus_alert_events USING btree (environment_id);
 

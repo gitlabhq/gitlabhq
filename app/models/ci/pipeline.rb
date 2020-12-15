@@ -104,7 +104,6 @@ module Ci
 
     accepts_nested_attributes_for :variables, reject_if: :persisted?
 
-    delegate :id, to: :project, prefix: true
     delegate :full_path, to: :project, prefix: true
 
     validates :sha, presence: { unless: :importing? }
