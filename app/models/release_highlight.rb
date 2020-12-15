@@ -34,11 +34,23 @@ class ReleaseHighlight
     return if file_path.nil?
 
     file = File.read(file_path)
-
     items = YAML.safe_load(file, permitted_classes: [Date])
 
     platform = Gitlab.com? ? 'gitlab-com' : 'self-managed'
-    items&.select {|item| item[platform] }
+
+    items&.map! do |item|
+      next unless item[platform]
+
+      begin
+        item.tap {|i| i['body'] = Kramdown::Document.new(i['body']).to_html }
+      rescue => e
+        Gitlab::ErrorTracking.track_exception(e, file_path: file_path)
+
+        next
+      end
+    end
+
+    items&.compact
   rescue Psych::Exception => e
     Gitlab::ErrorTracking.track_exception(e, file_path: file_path)
 

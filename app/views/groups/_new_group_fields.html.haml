@@ -2,7 +2,7 @@
 = render 'shared/group_form', f: f, autofocus: true
 
 .row
-  .form-group.col-sm-12
+  .form-group.col-sm-12.gl-mb-0
     %label.label-bold
       = _('Visibility level')
     %p
@@ -10,8 +10,13 @@
       = link_to _('View the documentation'), help_page_path("public_access/public_access"), target: '_blank'
     = render 'shared/visibility_level', f: f, visibility_level: default_group_visibility, can_change_visibility_level: true, form_model: @group, with_label: false
 
-    = render 'create_chat_team', f: f if Gitlab.config.mattermost.enabled
-
+- if Gitlab.config.mattermost.enabled
+  .row
+    = render 'create_chat_team', f: f
+.row
+  .col-sm-4
+    = render_if_exists 'shared/groups/invite_members'
+.row
   .form-actions.col-sm-12
     = f.submit _('Create group'), class: "btn btn-success"
     = link_to _('Cancel'), dashboard_groups_path, class: 'btn btn-cancel'

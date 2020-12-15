@@ -103,20 +103,21 @@ Here's an example setup flow from scratch:
 
 #### How to check the current traffic weight on a Canary Ingress
 
-1. Visit [Deploy Board](../../user/project/deploy_boards.md).
-1. Open your browser's inspection tool and examine a response from the `environments.json` endpoint.
-   You can find the current weight under `rollout_status`.
+1. Visit the [Deploy Board](../../user/project/deploy_boards.md).
+1. View the current weights on the right.
 
-   ![Rollout Status Canary Ingress](img/rollout_status_canary_ingress.png)
-
-   Note that we have [a plan](https://gitlab.com/gitlab-org/gitlab/-/issues/218139)
-   to visualize this information in a [Deploy Board](../../user/project/deploy_boards.md)
-   without needing a browser's inspection tool.
+   ![Rollout Status Canary Ingress](img/canary_weight.png)
 
 #### How to change the traffic weight on a Canary Ingress
 
-You can change the traffic weight by using [GraphiQL](../../api/graphql/getting_started.md#graphiql)
+You can change the traffic weight within your environment's Deploy Board by using [GraphiQL](../../api/graphql/getting_started.md#graphiql),
 or by sending requests to the [GraphQL API](../../api/graphql/getting_started.md#command-line).
+
+To use your [Deploy Board](../../user/project/deploy_boards.md):
+
+1. Navigate to **Operations > Environments** for your project.
+1. Set the new weight with the dropdown on the right side.
+1. Confirm your selection.
 
 Here's an example using [GraphiQL](../../api/graphql/getting_started.md#graphiql):
 
@@ -136,6 +137,3 @@ Here's an example using [GraphiQL](../../api/graphql/getting_started.md#graphiql
 
 1. If the request succeeds, the `errors` response contains an empty array. GitLab sends a `PATCH`
    request to your Kubernetes cluster for updating the weight parameter on a Canary Ingress.
-
-Note that there's [a plan](https://gitlab.com/gitlab-org/gitlab/-/issues/218139)
-to control the weight from a [Deploy Board](../../user/project/deploy_boards.md).

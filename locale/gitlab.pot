@@ -4996,6 +4996,30 @@ msgstr ""
 msgid "Canary weight must be specified and valid range (0..100)."
 msgstr ""
 
+msgid "CanaryIngress|%{boldStart}Canary:%{boldEnd} %{canary}"
+msgstr ""
+
+msgid "CanaryIngress|%{boldStart}Stable:%{boldEnd} %{stable}"
+msgstr ""
+
+msgid "CanaryIngress|Canary"
+msgstr ""
+
+msgid "CanaryIngress|Change ratio"
+msgstr ""
+
+msgid "CanaryIngress|Change the ratio of canary deployments?"
+msgstr ""
+
+msgid "CanaryIngress|Doing so will set a deployment change in progress. This temporarily blocks any further configuration until the deployment is finished."
+msgstr ""
+
+msgid "CanaryIngress|Stable"
+msgstr ""
+
+msgid "CanaryIngress|You are changing the ratio of the canary rollout for %{environment} compared to the stable deployment to:"
+msgstr ""
+
 msgid "Cancel"
 msgstr ""
 
@@ -23411,6 +23435,9 @@ msgstr ""
 msgid "RepositoriesAnalytics|Historic Test Coverage Data is available in raw format (.csv) for further analysis."
 msgstr ""
 
+msgid "RepositoriesAnalytics|Jobs with Coverage"
+msgstr ""
+
 msgid "RepositoriesAnalytics|Last Update"
 msgstr ""
 
@@ -23423,16 +23450,13 @@ msgstr ""
 msgid "RepositoriesAnalytics|Please select projects to display."
 msgstr ""
 
-msgid "RepositoriesAnalytics|Projects with Tests"
+msgid "RepositoriesAnalytics|Projects with Coverage"
 msgstr ""
 
 msgid "RepositoriesAnalytics|Test Code Coverage"
 msgstr ""
 
 msgid "RepositoriesAnalytics|There was an error fetching the projects."
-msgstr ""
-
-msgid "RepositoriesAnalytics|Total Number of Coverages"
 msgstr ""
 
 msgid "Repository"
@@ -25935,6 +25959,9 @@ msgid "Something went wrong, unable to get projects"
 msgstr ""
 
 msgid "Something went wrong, unable to search projects"
+msgstr ""
+
+msgid "Something went wrong. Please try again later"
 msgstr ""
 
 msgid "Something went wrong. Please try again."

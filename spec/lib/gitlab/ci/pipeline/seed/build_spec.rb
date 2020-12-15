@@ -71,6 +71,33 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
       end
     end
 
+    context 'with job:rules:[variables:]' do
+      let(:attributes) do
+        { name: 'rspec',
+          ref: 'master',
+          yaml_variables: [{ key: 'VAR1', value: 'var 1', public: true },
+                           { key: 'VAR2', value: 'var 2', public: true }],
+          rules: [{ if: '$VAR == null', variables: { VAR1: 'new var 1', VAR3: 'var 3' } }] }
+      end
+
+      it do
+        is_expected.to include(yaml_variables: [{ key: 'VAR1', value: 'new var 1', public: true },
+                                                { key: 'VAR2', value: 'var 2', public: true },
+                                                { key: 'VAR3', value: 'var 3', public: true }])
+      end
+
+      context 'when FF ci_rules_variables is disabled' do
+        before do
+          stub_feature_flags(ci_rules_variables: false)
+        end
+
+        it do
+          is_expected.to include(yaml_variables: [{ key: 'VAR1', value: 'var 1', public: true },
+                                                  { key: 'VAR2', value: 'var 2', public: true }])
+        end
+      end
+    end
+
     context 'with cache:key' do
       let(:attributes) do
         {

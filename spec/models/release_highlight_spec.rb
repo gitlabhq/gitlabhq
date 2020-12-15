@@ -86,6 +86,17 @@ RSpec.describe ReleaseHighlight do
         expect(subject[:next_page]).to eq(2)
       end
 
+      it 'parses the body as markdown and returns html' do
+        expect(subject[:items].first['body']).to match("<h2 id=\"bright-and-sunshinin-day\">bright and sunshinin’ day</h2>")
+      end
+
+      it 'logs an error if theres an error parsing markdown for an item, and skips it' do
+        allow(Kramdown::Document).to receive(:new).and_raise
+
+        expect(Gitlab::ErrorTracking).to receive(:track_exception)
+        expect(subject[:items]).to be_empty
+      end
+
       context 'when Gitlab.com' do
         let(:dot_com) { true }
 
@@ -95,14 +106,11 @@ RSpec.describe ReleaseHighlight do
         end
       end
 
-      context 'when recent release items do NOT exist' do
-        before do
+      context 'YAML parsing throws an exception' do
+        it 'fails gracefully and logs an error' do
           allow(YAML).to receive(:safe_load).and_raise(Psych::Exception)
 
           expect(Gitlab::ErrorTracking).to receive(:track_exception)
-        end
-
-        it 'fails gracefully and logs an error' do
           expect(subject).to be_nil
         end
       end

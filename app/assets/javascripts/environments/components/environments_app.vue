@@ -143,13 +143,7 @@ export default {
     <confirm-rollback-modal :environment="environmentInRollbackModal" />
 
     <div class="gl-w-full">
-      <div
-        class="
-        gl-display-flex
-        gl-flex-direction-column
-        gl-mt-3
-        gl-display-md-none!"
-      >
+      <div class="gl-display-flex gl-flex-direction-column gl-mt-3 gl-display-md-none!">
         <gl-button
           v-if="state.reviewAppDetails.can_setup_review_app"
           v-gl-modal="$options.modal.id"
@@ -158,18 +152,16 @@ export default {
           category="secondary"
           type="button"
           class="gl-mb-3 gl-flex-fill-1"
+          >{{ $options.i18n.reviewAppButtonLabel }}</gl-button
         >
-          {{ $options.i18n.reviewAppButtonLabel }}
-        </gl-button>
         <gl-button
           v-if="canCreateEnvironment"
           :href="newEnvironmentPath"
           data-testid="new-environment"
           category="primary"
           variant="success"
+          >{{ $options.i18n.newEnvironmentButtonLabel }}</gl-button
         >
-          {{ $options.i18n.newEnvironmentButtonLabel }}
-        </gl-button>
       </div>
       <gl-tabs content-class="gl-display-none">
         <gl-tab
@@ -185,14 +177,7 @@ export default {
         </gl-tab>
         <template #tabs-end>
           <div
-            class="
-            gl-display-none
-            gl-display-md-flex
-            gl-lg-align-items-center
-            gl-lg-flex-direction-row
-            gl-lg-flex-fill-1
-            gl-lg-justify-content-end
-            gl-lg-mt-0"
+            class="gl-display-none gl-display-md-flex gl-lg-align-items-center gl-lg-flex-direction-row gl-lg-flex-fill-1 gl-lg-justify-content-end gl-lg-mt-0"
           >
             <gl-button
               v-if="state.reviewAppDetails.can_setup_review_app"
@@ -202,18 +187,16 @@ export default {
               category="secondary"
               type="button"
               class="gl-mb-3 gl-lg-mr-3 gl-lg-mb-0"
+              >{{ $options.i18n.reviewAppButtonLabel }}</gl-button
             >
-              {{ $options.i18n.reviewAppButtonLabel }}
-            </gl-button>
             <gl-button
               v-if="canCreateEnvironment"
               :href="newEnvironmentPath"
               data-testid="new-environment"
               category="primary"
               variant="success"
+              >{{ $options.i18n.newEnvironmentButtonLabel }}</gl-button
             >
-              {{ $options.i18n.newEnvironmentButtonLabel }}
-            </gl-button>
           </div>
         </template>
       </gl-tabs>

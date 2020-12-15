@@ -121,10 +121,12 @@ For example:
 
 ## Rate Limits
 
-To help avoid abuse, users are rate limited to:
+To help avoid abuse, by default, users are rate limited to:
 
 | Request Type     | Limit                                    |
 | ---------------- | ---------------------------------------- |
-| Export           | 30 groups every 5 minutes                |
-| Download export  | 10 downloads per group every 10 minutes  |
-| Import           | 30 groups every 5 minutes                |
+| Export           | 6 groups per minute                |
+| Download export  | 1 download per group per minute  |
+| Import           | 6 groups per minute                |
+
+Please note that GitLab.com may have [different settings](../../gitlab_com/index.md#importexport) from the defaults.

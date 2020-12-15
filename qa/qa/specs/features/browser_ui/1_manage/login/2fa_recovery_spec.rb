@@ -29,7 +29,6 @@ module QA
       end
 
       before do
-        Runtime::Feature.enable('vue_2fa_recovery_codes', user: developer_user)
         group.add_member(developer_user, Resource::Members::AccessLevel::DEVELOPER)
       end
 
@@ -58,7 +57,6 @@ module QA
       end
 
       after do
-        Runtime::Feature.disable('vue_2fa_recovery_codes', user: developer_user)
         group.set_require_two_factor_authentication(value: 'false')
         group.remove_via_api!
         sandbox_group.remove_via_api!

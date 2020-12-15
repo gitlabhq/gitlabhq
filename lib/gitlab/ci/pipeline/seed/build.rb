@@ -156,10 +156,12 @@ module Gitlab
 
           def rules_attributes
             strong_memoize(:rules_attributes) do
-              if @using_rules
-                rules_result.build_attributes
+              next {} unless @using_rules
+
+              if ::Gitlab::Ci::Features.rules_variables_enabled?(@pipeline.project)
+                rules_result.build_attributes(@seed_attributes)
               else
-                {}
+                rules_result.build_attributes
               end
             end
           end

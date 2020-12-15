@@ -989,6 +989,7 @@ The job attributes you can use with `rules` are:
 - [`when`](#when): If not defined, defaults to `when: on_success`.
   - If used as `when: delayed`, `start_in` is also required.
 - [`allow_failure`](#allow_failure): If not defined, defaults to `allow_failure: false`.
+- [`variables`](#rulesvariables): If not defined, uses the [variables defined elsewhere](#variables).
 
 If a rule evaluates to true, and `when` has any value except `never`, the job is included in the pipeline.
 
@@ -1409,6 +1410,56 @@ job:
 ```
 
 In this example, if the first rule matches, then the job has `when: manual` and `allow_failure: true`.
+
+#### `rules:variables`
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209864) in GitLab 13.7.
+> - It's [deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
+> - It's disabled on GitLab.com.
+> - It's not recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-rulesvariables). **(CORE ONLY)**
+
+WARNING:
+This feature might not be available to you. Check the **version history** note above for details.
+
+You can use [`variables`](#variables) in `rules:` to define variables for specific conditions.
+
+For example:
+
+```yaml
+job:
+  variables:
+    DEPLOY_VARIABLE: "default-deploy"
+  rules:
+    - if: $CI_COMMIT_REF_NAME =~ /master/
+      variables:                              # Override DEPLOY_VARIABLE defined
+        DEPLOY_VARIABLE: "deploy-production"  # at the job level.
+    - if: $CI_COMMIT_REF_NAME =~ /feature/
+      variables:
+        IS_A_FEATURE: "true"                  # Define a new variable.
+  script:
+    - echo "Run script with $DEPLOY_VARIABLE as an argument"
+    - echo "Run another script if $IS_A_FEATURE exists"
+```
+
+##### Enable or disable rules:variables **(CORE ONLY)**
+
+rules:variables is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:ci_rules_variables)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:ci_rules_variables)
+```
 
 #### Complex rule clauses
 

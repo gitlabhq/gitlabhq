@@ -1,6 +1,9 @@
 ---
 - title: Coverage-guided fuzz testing for Go and C/C++ applications
-  body: You can now run coverage-guided fuzz tests against your Go and C/C++ apps. This is a great way to start finding security issues and bugs that other security scanners and traditional QA may miss. Coverage-guided fuzz testing uses contextual information about your app to randomly generate inputs and find crashes or other faults that you can then fix before they affect users in production.
+  body: |
+    You can now run coverage-guided fuzz tests against your Go and C/C++ apps. This is a great way to start finding security issues and bugs that other security scanners and traditional QA may miss.
+
+    Coverage-guided fuzz testing uses contextual information about your app to randomly generate inputs and find crashes or other faults that you can then fix before they affect users in production.
   stage: Secure
   self-managed: true
   gitlab-com: true
@@ -10,7 +13,8 @@
   published_at: 2020-08-22
   release: 13.3
 - title: Create a matrix of jobs using a simple syntax
-  body: GitLab’s child/parent pipelines let you write your own code to generate an entire pipeline YAML. This is a powerful way to generate custom behaviors, including generating jobs at runtime. This might not be needed for simpler scenarios where you just want to create multiple similar jobs for a defined set of cases. In this release you can find a new matrix keyword that works along with parallel to handle the creation of multiple jobs for you, each with different variables.
+  body: |
+    GitLab’s [child/parent pipelines](https://gitlab.com/gitlab-org/gitlab/-/issues/16094) let you write your own code to generate an entire pipeline YAML. This is a powerful way to generate custom behaviors, including generating jobs at runtime. This might not be needed for simpler scenarios where you just want to create multiple similar jobs for a defined set of cases. In this release you can find a new `matrix` keyword that works along with `parallel` to handle the creation of multiple jobs for you, each with different variables.
   stage: Verify
   self-managed: true
   gitlab-com: true
@@ -20,7 +24,12 @@
   published_at: 2020-08-22
   release: 13.3
 - title: On-demand DAST scans
-  body: Dynamic Application Security Testing at GitLab has always been focused on integrating DAST into the DevOps pipeline and enabling developers to scan their review app, running website, or API for vulnerabilities as early as possible. However, there are times when it is necessary to run a DAST scan against an already deployed application when no code changes have been made and no Merge Request has been created. These scans could be needed for audit or compliance reasons, to debug and reproduce an issue that has been found, or to support teams who do not commit code, such as security analysts. Because of the need for DAST scans that are not triggered by a code change or MR, on-demand DAST testing is now available. You don’t need configuration files or code to start running on-demand scans. Configuration options for on-demand DAST scans are available within the GitLab UI.
+  body: |
+    Dynamic Application Security Testing at GitLab has always been focused on integrating DAST into the DevOps pipeline and enabling developers to scan their review app, running website, or API for vulnerabilities as early as possible.
+
+    However, there are times when it is necessary to run a DAST scan against an already deployed application when no code changes have been made and no Merge Request has been created. These scans could be needed for audit or compliance reasons, to debug and reproduce an issue that has been found, or to support teams who do not commit code, such as security analysts.
+
+    Because of the need for DAST scans that are not triggered by a code change or MR, on-demand DAST testing is now available. You don’t need configuration files or code to start running on-demand scans. Configuration options for on-demand DAST scans are available within the GitLab UI.
   stage: Secure
   self-managed: true
   gitlab-com: true
@@ -30,7 +39,10 @@
   published_at: 2020-08-22
   release: 13.3
 - title: SAST security analyzers available for all
-  body: We want to help developers write better code and worry less about common security mistakes. Static Application Security Testing (SAST) helps prevent security vulnerabilities by allowing developers to easily identify common security issues as code is being committed and mitigate proactively. As part of our community stewardship commitment we have made all 15 of our open source based SAST analyzers available in every GitLab tier. This allows ALL GitLab users developing in any of our 18 supported languages and frameworks to leverage GitLab SAST in their projects.
+  body: |
+    We want to help developers write better code and worry less about common security mistakes. [Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/) helps prevent security vulnerabilities by allowing developers to easily identify common security issues as code is being committed and mitigate proactively.
+
+    As part of our [community stewardship commitment](https://about.gitlab.com/company/stewardship/#promises) we have made [all 15 of our open source based SAST analyzers](https://docs.gitlab.com/ee/user/application_security/sast/#supported-languages-and-frameworks) available in every GitLab tier. This allows ALL GitLab users developing in any of our [18 supported languages and frameworks](https://docs.gitlab.com/ee/user/application_security/sast/#supported-languages-and-frameworks) to leverage GitLab SAST in their projects.
   stage: Secure
   self-managed: true
   gitlab-com: true

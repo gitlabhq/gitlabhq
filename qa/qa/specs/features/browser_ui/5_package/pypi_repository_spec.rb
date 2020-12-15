@@ -87,6 +87,7 @@ module QA
 
       after do
         runner.remove_via_api!
+        project&.remove_via_api!
       end
 
       it 'publishes a pypi package and deletes it', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1087' do
@@ -105,6 +106,32 @@ module QA
           aggregate_failures do
             expect(index).to have_content("Package deleted successfully")
             expect(index).not_to have_package(package_name)
+          end
+        end
+      end
+
+      context 'Geo', :orchestrated, :geo do
+        it 'replicates a published pypi package to the Geo secondary site', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1120' do
+          QA::Runtime::Logger.debug('Visiting the secondary Geo site')
+
+          QA::Flow::Login.while_signed_in(address: :geo_secondary) do
+            EE::Page::Main::Banner.perform do |banner|
+              expect(banner).to have_secondary_read_only_banner
+            end
+
+            Page::Main::Menu.perform(&:go_to_projects)
+
+            Page::Dashboard::Projects.perform do |dashboard|
+              dashboard.wait_for_project_replication(project.name)
+              dashboard.go_to_project(project.name)
+            end
+
+            Page::Project::Menu.perform(&:click_packages_link)
+
+            Page::Project::Packages::Index.perform do |index|
+              index.wait_for_package_replication(package_name)
+              expect(index).to have_package(package_name)
+            end
           end
         end
       end

@@ -403,6 +403,10 @@ module QA
         ENV['GITLAB_QA_USER_AGENT']
       end
 
+      def geo_environment?
+        QA::Runtime::Scenario.attributes.include?(:geo_secondary_address)
+      end
+
       private
 
       def remote_grid_credentials

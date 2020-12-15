@@ -6,13 +6,17 @@ module Gitlab
       module Entry
         class Rules::Rule < ::Gitlab::Config::Entry::Node
           include ::Gitlab::Config::Entry::Validatable
+          include ::Gitlab::Config::Entry::Configurable
           include ::Gitlab::Config::Entry::Attributable
 
           CLAUSES        = %i[if changes exists].freeze
-          ALLOWED_KEYS   = %i[if changes exists when start_in allow_failure].freeze
+          ALLOWED_KEYS   = %i[if changes exists when start_in allow_failure variables].freeze
           ALLOWABLE_WHEN = %w[on_success on_failure always never manual delayed].freeze
 
           attributes :if, :changes, :exists, :when, :start_in, :allow_failure
+
+          entry :variables, Entry::Variables,
+            description: 'Environment variables to define for rule conditions.'
 
           validations do
             validates :config, presence: true

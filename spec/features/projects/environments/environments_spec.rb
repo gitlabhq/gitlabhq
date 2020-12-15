@@ -454,10 +454,10 @@ RSpec.describe 'Environments page', :js do
       expect(page).to have_content 'review-1'
       expect(page).to have_content 'review-2'
       within('.ci-table') do
-        within('.gl-responsive-table-row:nth-child(3)') do
+        within('[data-qa-selector="environment_item"]', text: 'review-1') do
           expect(find('.js-auto-stop').text).not_to be_empty
         end
-        within('.gl-responsive-table-row:nth-child(4)') do
+        within('[data-qa-selector="environment_item"]', text: 'review-2') do
           expect(find('.js-auto-stop').text).not_to be_empty
         end
       end

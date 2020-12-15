@@ -191,12 +191,14 @@ As described in the API documentation, the query may return an import error or e
 
 If you have a larger project, consider using a Rake task, as described in our [developer documentation](../../../development/import_project.md#importing-via-a-rake-task).
 
-## Rate limits
+## Rate Limits
 
-To help avoid abuse, users are rate limited to:
+To help avoid abuse, by default, users are rate limited to:
 
-| Request Type     | Limit                                     |
-| ---------------- | ----------------------------------------- |
-| Export           | 30 projects per 5 minutes                 |
-| Download export  | 10 downloads per project every 10 minutes |
-| Import           | 30 projects per 5 minutes                 |
+| Request Type     | Limit                                    |
+| ---------------- | ---------------------------------------- |
+| Export           | 6 projects per minute                |
+| Download export  | 1 download per group per minute  |
+| Import           | 6 projects per minute                |
+
+Please note that GitLab.com may have [different settings](../../gitlab_com/index.md#importexport) from the defaults.

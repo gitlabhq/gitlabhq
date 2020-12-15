@@ -1,11 +1,14 @@
 <script>
-import { GlBadge, GlIcon, GlLink } from '@gitlab/ui';
+import { GlBadge, GlIcon, GlLink, GlSafeHtmlDirective } from '@gitlab/ui';
 
 export default {
   components: {
     GlBadge,
     GlIcon,
     GlLink,
+  },
+  directives: {
+    SafeHtml: GlSafeHtmlDirective,
   },
   props: {
     feature: {
@@ -51,7 +54,7 @@ export default {
         class="img-thumbnail gl-px-8 gl-py-3 whats-new-item-image"
       />
     </gl-link>
-    <p class="gl-pt-3">{{ feature.body }}</p>
+    <div v-safe-html="feature.body" class="gl-pt-3"></div>
     <gl-link
       :href="feature.url"
       target="_blank"

@@ -15,6 +15,7 @@ export default {
     CanaryDeploymentCallout: () =>
       import('ee_component/environments/components/canary_deployment_callout.vue'),
     EnvironmentAlert: () => import('ee_component/environments/components/environment_alert.vue'),
+    CanaryUpdateModal: () => import('ee_component/environments/components/canary_update_modal.vue'),
   },
   props: {
     environments: {
@@ -57,6 +58,12 @@ export default {
       required: false,
       default: '',
     },
+  },
+  data() {
+    return {
+      canaryWeight: 0,
+      environmentToChange: null,
+    };
   },
   computed: {
     sortedEnvironments() {
@@ -144,11 +151,16 @@ export default {
         sortBy(env => (env.isFolder ? -1 : 1)),
       )(environments);
     },
+    changeCanaryWeight(model, weight) {
+      this.environmentToChange = model;
+      this.canaryWeight = weight;
+    },
   },
 };
 </script>
 <template>
   <div class="ci-table" role="grid">
+    <canary-update-modal :environment="environmentToChange" :weight="canaryWeight" />
     <div class="gl-responsive-table-row table-row-header" role="row">
       <div class="table-section" :class="tableData.name.spacing" role="columnheader">
         {{ tableData.name.title }}
@@ -179,6 +191,7 @@ export default {
         :model="model"
         :can-read-environment="canReadEnvironment"
         :table-data="tableData"
+        data-qa-selector="environment_item"
       />
 
       <div
@@ -193,6 +206,7 @@ export default {
             :is-loading="model.isLoadingDeployBoard"
             :is-empty="model.isEmptyDeployBoard"
             :logs-path="model.logs_path"
+            @changeCanaryWeight="changeCanaryWeight(model, $event)"
           />
         </div>
       </div>
@@ -215,6 +229,7 @@ export default {
             :model="children"
             :can-read-environment="canReadEnvironment"
             :table-data="tableData"
+            data-qa-selector="environment_item"
           />
 
           <div :key="`sub-div-${i}`">

@@ -1,10 +1,10 @@
 .form-group
   .col-sm-2.col-form-label
     = f.label :create_chat_team do
-      %span.mattermost-icon
+      %span.gl-display-flex
         = custom_icon('icon_mattermost')
-      Mattermost
-  .col-sm-10
+        %span.gl-ml-2 Mattermost
+  .col-sm-12
     .form-check.js-toggle-container
       .js-toggle-button.form-check-input= f.check_box(:create_chat_team, { checked: false }, true, false)
       = f.label :create_chat_team, class: 'form-check-label' do

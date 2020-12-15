@@ -66,6 +66,10 @@ module Gitlab
       def self.allow_failure_with_exit_codes_enabled?
         ::Feature.enabled?(:ci_allow_failure_with_exit_codes)
       end
+
+      def self.rules_variables_enabled?(project)
+        ::Feature.enabled?(:ci_rules_variables, project, default_enabled: false)
+      end
     end
   end
 end

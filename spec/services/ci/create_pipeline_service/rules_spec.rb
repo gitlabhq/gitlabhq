@@ -160,6 +160,81 @@ RSpec.describe Ci::CreatePipelineService do
         end
       end
     end
+
+    context 'if:' do
+      context 'variables:' do
+        let(:config) do
+          <<-EOY
+          job:
+            script: "echo job1"
+            variables:
+              VAR1: my var 1
+              VAR2: my var 2
+            rules:
+              - if: $CI_COMMIT_REF_NAME =~ /master/
+                variables:
+                  VAR1: overridden var 1
+              - if: $CI_COMMIT_REF_NAME =~ /feature/
+                variables:
+                  VAR2: overridden var 2
+                  VAR3: new var 3
+              - when: on_success
+          EOY
+        end
+
+        let(:job) { pipeline.builds.find_by(name: 'job') }
+
+        context 'when matching to the first rule' do
+          let(:ref) { 'refs/heads/master' }
+
+          it 'overrides VAR1' do
+            variables = job.scoped_variables_hash
+
+            expect(variables['VAR1']).to eq('overridden var 1')
+            expect(variables['VAR2']).to eq('my var 2')
+            expect(variables['VAR3']).to be_nil
+          end
+
+          context 'when FF ci_rules_variables is disabled' do
+            before do
+              stub_feature_flags(ci_rules_variables: false)
+            end
+
+            it 'does not affect variables' do
+              variables = job.scoped_variables_hash
+
+              expect(variables['VAR1']).to eq('my var 1')
+              expect(variables['VAR2']).to eq('my var 2')
+              expect(variables['VAR3']).to be_nil
+            end
+          end
+        end
+
+        context 'when matching to the second rule' do
+          let(:ref) { 'refs/heads/feature' }
+
+          it 'overrides VAR2 and adds VAR3' do
+            variables = job.scoped_variables_hash
+
+            expect(variables['VAR1']).to eq('my var 1')
+            expect(variables['VAR2']).to eq('overridden var 2')
+            expect(variables['VAR3']).to eq('new var 3')
+          end
+        end
+
+        context 'when no match' do
+          let(:ref) { 'refs/heads/wip' }
+
+          it 'does not affect vars' do
+            variables = job.scoped_variables_hash
+
+            expect(variables['VAR1']).to eq('my var 1')
+            expect(variables['VAR2']).to eq('my var 2')
+            expect(variables['VAR3']).to be_nil
+          end
+        end
+      end
+    end
   end
 
   context 'when workflow:rules are used' do
