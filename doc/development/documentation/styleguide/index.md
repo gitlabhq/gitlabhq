@@ -1594,8 +1594,9 @@ elements:
 
 ## GitLab versions
 
-To help users be aware of recent product improvements or additions, we add
-GitLab version information to our documentation.
+GitLab product documentation pages (not including [Contributor and Development](../../README.md)
+pages in the `/development` directory) can include version information to help
+users be aware of recent improvements or additions.
 
 The GitLab Technical Writing team determines which versions of
 documentation to display on this site based on the GitLab

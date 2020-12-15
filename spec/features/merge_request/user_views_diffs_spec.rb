@@ -22,8 +22,8 @@ RSpec.describe 'User views diffs', :js do
     it 'unfolds diffs upwards' do
       first('.js-unfold').click
 
-      page.within('.file-holder[id="a5cc2925ca8258af241be7e5b0381edf30266302"]') do
-        expect(find('.text-file')).to have_content('.bundle')
+      page.within('.file-holder[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd"]') do
+        expect(find('.text-file')).to have_content('fileutils')
         expect(page).to have_selector('.new_line [data-linenumber="1"]', count: 1)
       end
     end

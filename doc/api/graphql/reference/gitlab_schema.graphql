@@ -16230,6 +16230,11 @@ type Project {
   ): BoardConnection
 
   """
+  CI/CD settings for the project
+  """
+  ciCdSettings: ProjectCiCdSetting
+
+  """
   Find a single cluster agent by name
   """
   clusterAgent(
@@ -17904,6 +17909,23 @@ type Project {
   Indicates if Wikis are enabled for the current user
   """
   wikiEnabled: Boolean
+}
+
+type ProjectCiCdSetting {
+  """
+  Whether merge pipelines are enabled.
+  """
+  mergePipelinesEnabled: Boolean
+
+  """
+  Whether merge trains are enabled.
+  """
+  mergeTrainsEnabled: Boolean
+
+  """
+  Project the CI/CD settings belong to.
+  """
+  project: Project
 }
 
 """

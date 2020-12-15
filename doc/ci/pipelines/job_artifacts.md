@@ -213,6 +213,17 @@ as artifacts.
 The collected DAST report uploads to GitLab as an artifact and is summarized in merge requests and the pipeline view. It's also used to provide data for security
 dashboards.
 
+#### `artifacts:reports:api_fuzzing` **(ULTIMATE)**
+
+> - Introduced in GitLab 13.4.
+> - Requires GitLab Runner 13.4 or later.
+
+The `api_fuzzing` report collects [API Fuzzing bugs](../../user/application_security/api_fuzzing/index.md)
+as artifacts.
+
+The collected API Fuzzing report uploads to GitLab as an artifact and is summarized in merge
+requests and the pipeline view. It's also used to provide data for security dashboards.
+
 #### `artifacts:reports:coverage_fuzzing` **(ULTIMATE)**
 
 > - Introduced in GitLab 13.4.

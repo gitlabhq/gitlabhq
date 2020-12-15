@@ -40,9 +40,10 @@ using the Agent.
 
 To use multiple YAML files, specify a `paths` attribute in the `gitops` section.
 
-By default, the Agent monitors all types of resources. You can exclude some types of resources
-from monitoring. This enables you to reduce the permissions needed by the GitOps feature,
-through `resource_exclusions`.
+By default, the Agent monitors all
+[Kubernetes object types](https://kubernetes.io/docs/concepts/overview/working-with-objects/kubernetes-objects/#required-fields).
+You can exclude some types of resources from monitoring. This enables you to reduce
+the permissions needed by the GitOps feature, through `resource_exclusions`.
 
 To enable a specific named resource, first use `resource_inclusions` to enable desired resources.
 The following file excerpt includes specific `api_groups` and `kinds`. The `resource_exclusions`
@@ -60,6 +61,8 @@ gitops:
     # Holds the only API groups and kinds of resources that gitops will monitor.
     # Inclusion rules are evaluated first, then exclusion rules.
     # If there is still no match, resource is monitored.
+    # Resources: https://kubernetes.io/docs/concepts/overview/working-with-objects/kubernetes-objects/#required-fields
+    # Groups: https://kubernetes.io/docs/concepts/overview/kubernetes-api/#api-groups-and-versioning
     resource_inclusions:
     - api_groups:
       - apps

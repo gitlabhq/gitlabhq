@@ -219,6 +219,7 @@ MergeRequestDiff:
 - start_commit_sha
 - commits_count
 - files_count
+- sorted
 MergeRequestDiffCommit:
 - merge_request_diff_id
 - relative_order

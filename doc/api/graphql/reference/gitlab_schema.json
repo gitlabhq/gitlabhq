@@ -48282,6 +48282,20 @@
               "deprecationReason": null
             },
             {
+              "name": "ciCdSettings",
+              "description": "CI/CD settings for the project",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ProjectCiCdSetting",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "clusterAgent",
               "description": "Find a single cluster agent by name",
               "args": [
@@ -52324,6 +52338,61 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ProjectCiCdSetting",
+          "description": null,
+          "fields": [
+            {
+              "name": "mergePipelinesEnabled",
+              "description": "Whether merge pipelines are enabled.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "mergeTrainsEnabled",
+              "description": "Whether merge trains are enabled.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "project",
+              "description": "Project the CI/CD settings belong to.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Project",
                 "ofType": null
               },
               "isDeprecated": false,

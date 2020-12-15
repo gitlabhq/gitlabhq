@@ -5,7 +5,7 @@ import { BLOB_EDITOR_ERROR, BLOB_PREVIEW_ERROR } from './constants';
 import TemplateSelectorMediator from '../blob/file_template_mediator';
 import { addEditorMarkdownListeners } from '~/lib/utils/text_markdown';
 import EditorLite from '~/editor/editor_lite';
-import FileTemplateExtension from '~/editor/editor_file_template_ext';
+import { FileTemplateExtension } from '~/editor/editor_file_template_ext';
 
 export default class EditBlob {
   // The options object has:
@@ -16,11 +16,11 @@ export default class EditBlob {
 
     if (this.options.isMarkdown) {
       import('~/editor/editor_markdown_ext')
-        .then(MarkdownExtension => {
-          this.editor.use(MarkdownExtension.default);
+        .then(({ EditorMarkdownExtension: MarkdownExtension } = {}) => {
+          this.editor.use(new MarkdownExtension());
           addEditorMarkdownListeners(this.editor);
         })
-        .catch(() => createFlash(BLOB_EDITOR_ERROR));
+        .catch(e => createFlash(`${BLOB_EDITOR_ERROR}: ${e}`));
     }
 
     this.initModePanesAndLinks();
@@ -42,7 +42,7 @@ export default class EditBlob {
       blobPath: fileNameEl.value,
       blobContent: editorEl.innerText,
     });
-    this.editor.use(FileTemplateExtension);
+    this.editor.use(new FileTemplateExtension());
 
     fileNameEl.addEventListener('change', () => {
       this.editor.updateModelLanguage(fileNameEl.value);

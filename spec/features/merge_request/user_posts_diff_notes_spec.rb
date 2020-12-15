@@ -74,7 +74,10 @@ RSpec.describe 'Merge request > User posts diff notes', :js do
 
     context 'with an unfolded line' do
       before do
-        find('.js-unfold', match: :first).click
+        page.within('.file-holder[id="a5cc2925ca8258af241be7e5b0381edf30266302"]') do
+          find('.js-unfold', match: :first).click
+        end
+
         wait_for_requests
       end
 
@@ -137,7 +140,10 @@ RSpec.describe 'Merge request > User posts diff notes', :js do
 
     context 'with an unfolded line' do
       before do
-        find('.js-unfold', match: :first).click
+        page.within('.file-holder[id="a5cc2925ca8258af241be7e5b0381edf30266302"]') do
+          find('.js-unfold', match: :first).click
+        end
+
         wait_for_requests
       end
 

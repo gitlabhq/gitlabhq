@@ -8,7 +8,7 @@ import { clearDomElement } from './utils';
 import { EDITOR_LITE_INSTANCE_ERROR_NO_EL, URI_PREFIX } from './constants';
 import { uuids } from '~/diffs/utils/uuids';
 
-export default class Editor {
+export default class EditorLite {
   constructor(options = {}) {
     this.instances = [];
     this.options = {
@@ -17,7 +17,7 @@ export default class Editor {
       ...options,
     };
 
-    Editor.setupMonacoTheme();
+    EditorLite.setupMonacoTheme();
 
     registerLanguages(...languages);
   }
@@ -54,10 +54,23 @@ export default class Editor {
     extensionsArray.forEach(ext => {
       const prefix = ext.includes('/') ? '' : 'editor/';
       const trimmedExt = ext.replace(/^\//, '').trim();
-      Editor.pushToImportsArray(promises, `~/${prefix}${trimmedExt}`);
+      EditorLite.pushToImportsArray(promises, `~/${prefix}${trimmedExt}`);
     });
 
     return Promise.all(promises);
+  }
+
+  static mixIntoInstance(source, inst) {
+    if (!inst) {
+      return;
+    }
+    const isClassInstance = source.constructor.prototype !== Object.prototype;
+    const sanitizedSource = isClassInstance ? source.constructor.prototype : source;
+    Object.getOwnPropertyNames(sanitizedSource).forEach(prop => {
+      if (prop !== 'constructor') {
+        Object.assign(inst, { [prop]: source[prop] });
+      }
+    });
   }
 
   /**
@@ -101,10 +114,10 @@ export default class Editor {
       this.instances.splice(index, 1);
       model.dispose();
     });
-    instance.updateModelLanguage = path => Editor.updateModelLanguage(path, instance);
+    instance.updateModelLanguage = path => EditorLite.updateModelLanguage(path, instance);
     instance.use = args => this.use(args, instance);
 
-    Editor.loadExtensions(extensions, instance)
+    EditorLite.loadExtensions(extensions, instance)
       .then(modules => {
         if (modules) {
           modules.forEach(module => {
@@ -129,10 +142,17 @@ export default class Editor {
 
   use(exts = [], instance = null) {
     const extensions = Array.isArray(exts) ? exts : [exts];
+    const initExtensions = inst => {
+      extensions.forEach(extension => {
+        EditorLite.mixIntoInstance(extension, inst);
+      });
+    };
     if (instance) {
-      Object.assign(instance, ...extensions);
+      initExtensions(instance);
     } else {
-      this.instances.forEach(inst => Object.assign(inst, ...extensions));
+      this.instances.forEach(inst => {
+        initExtensions(inst);
+      });
     }
   }
 }

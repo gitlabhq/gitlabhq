@@ -358,6 +358,7 @@ class MergeRequestDiff < ApplicationRecord
       if comparison
         comparison.diffs_in_batch(batch_page, batch_size, diff_options: diff_options)
       else
+        reorder_diff_files!
         diffs_in_batch_collection(batch_page, batch_size, diff_options: diff_options)
       end
     end
@@ -371,6 +372,7 @@ class MergeRequestDiff < ApplicationRecord
       if comparison
         comparison.diffs(diff_options)
       else
+        reorder_diff_files!
         diffs_collection(diff_options)
       end
     end
@@ -565,7 +567,7 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def build_merge_request_diff_files(diffs)
-    diffs.map.with_index do |diff, index|
+    sort_diffs(diffs).map.with_index do |diff, index|
       diff_hash = diff.to_hash.merge(
         binary: false,
         merge_request_diff_id: self.id,
@@ -678,6 +680,7 @@ class MergeRequestDiff < ApplicationRecord
 
         rows = build_merge_request_diff_files(diff_collection)
         create_merge_request_diff_files(rows)
+        new_attributes[:sorted] = true
         self.class.uncached { merge_request_diff_files.reset }
       end
 
@@ -718,6 +721,59 @@ class MergeRequestDiff < ApplicationRecord
     [repository, merge_request.source_project.repository].uniq.each do |repo|
       repo.keep_around(start_commit_sha, head_commit_sha, base_commit_sha)
     end
+  end
+
+  def reorder_diff_files!
+    return unless sort_diffs?
+    return if sorted? || merge_request_diff_files.empty?
+
+    diff_files = sort_diffs(merge_request_diff_files)
+
+    diff_files.each_with_index do |diff_file, index|
+      diff_file.relative_order = index
+    end
+
+    transaction do
+      # The `merge_request_diff_files` table doesn't have an `id` column so
+      # we cannot use `Gitlab::Database::BulkUpdate`.
+      MergeRequestDiffFile.where(merge_request_diff_id: id).delete_all
+      MergeRequestDiffFile.bulk_insert!(diff_files)
+      update_column(:sorted, true)
+    end
+  end
+
+  def sort_diffs(diffs)
+    return diffs unless sort_diffs?
+
+    diffs.sort do |a, b|
+      compare_path_parts(path_parts(a), path_parts(b))
+    end
+  end
+
+  def path_parts(diff)
+    (diff.new_path.presence || diff.old_path).split(::File::SEPARATOR)
+  end
+
+  # Used for sorting the file paths by:
+  # 1. Directory name
+  # 2. Depth
+  # 3. File name
+  def compare_path_parts(a_parts, b_parts)
+    a_part = a_parts.shift
+    b_part = b_parts.shift
+
+    return 1 if a_parts.size < b_parts.size && a_parts.empty?
+    return -1 if a_parts.size > b_parts.size && b_parts.empty?
+
+    comparison = a_part <=> b_part
+
+    return comparison unless comparison == 0
+
+    compare_path_parts(a_parts, b_parts)
+  end
+
+  def sort_diffs?
+    Feature.enabled?(:sort_diffs, project, default_enabled: false)
   end
 end
 

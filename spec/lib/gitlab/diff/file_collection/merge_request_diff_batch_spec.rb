@@ -130,6 +130,7 @@ RSpec.describe Gitlab::Diff::FileCollection::MergeRequestDiffBatch do
     end
 
     let(:diffable) { merge_request.merge_request_diff }
+    let(:batch_page) { 2 }
     let(:stub_path) { '.gitignore' }
 
     subject do

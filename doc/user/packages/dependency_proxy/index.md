@@ -17,6 +17,11 @@ upstream images.
 In the case of CI/CD, the Dependency Proxy receives a request and returns the
 upstream image from a registry, acting as a pull-through cache.
 
+NOTE:
+The Dependency Proxy is not compatible with Docker version 20.x and later.
+If you are using the Dependency Proxy, Docker version 19.x.x is recommended until
+[issue #290944](https://gitlab.com/gitlab-org/gitlab/-/issues/290944) is resolved.
+
 ## Prerequisites
 
 The Dependency Proxy must be [enabled by an administrator](../../../administration/packages/dependency_proxy.md).
@@ -89,7 +94,7 @@ You can authenticate using:
 
 #### Authenticate within CI/CD
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/280582) in 13.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/280582) in 13.7.
 
 To work with the Dependency Proxy in [GitLab CI/CD](../../../ci/README.md), you can use:
 

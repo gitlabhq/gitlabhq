@@ -13847,6 +13847,7 @@ CREATE TABLE merge_request_diffs (
     external_diff_store integer DEFAULT 1,
     stored_externally boolean,
     files_count smallint,
+    sorted boolean DEFAULT false NOT NULL,
     CONSTRAINT check_93ee616ac9 CHECK ((external_diff_store IS NOT NULL))
 );
 

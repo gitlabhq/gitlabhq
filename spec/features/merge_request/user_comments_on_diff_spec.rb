@@ -31,7 +31,7 @@ RSpec.describe 'User comments on a diff', :js do
             click_button('Add comment now')
           end
 
-          page.within('.diff-files-holder > div:nth-child(3)') do
+          page.within('.diff-files-holder > div:nth-child(6)') do
             expect(page).to have_content('Line is wrong')
 
             find('.js-diff-more-actions').click
@@ -53,7 +53,7 @@ RSpec.describe 'User comments on a diff', :js do
 
           wait_for_requests
 
-          page.within('.diff-files-holder > div:nth-child(2) .note-body > .note-text') do
+          page.within('.diff-files-holder > div:nth-child(5) .note-body > .note-text') do
             expect(page).to have_content('Line is correct')
           end
 
@@ -67,7 +67,7 @@ RSpec.describe 'User comments on a diff', :js do
           wait_for_requests
 
           # Hide the comment.
-          page.within('.diff-files-holder > div:nth-child(3)') do
+          page.within('.diff-files-holder > div:nth-child(6)') do
             find('.js-diff-more-actions').click
             click_button 'Hide comments on this file'
 
@@ -76,22 +76,22 @@ RSpec.describe 'User comments on a diff', :js do
 
           # At this moment a user should see only one comment.
           # The other one should be hidden.
-          page.within('.diff-files-holder > div:nth-child(2) .note-body > .note-text') do
+          page.within('.diff-files-holder > div:nth-child(5) .note-body > .note-text') do
             expect(page).to have_content('Line is correct')
           end
 
           # Show the comment.
-          page.within('.diff-files-holder > div:nth-child(3)') do
+          page.within('.diff-files-holder > div:nth-child(6)') do
             find('.js-diff-more-actions').click
             click_button 'Show comments on this file'
           end
 
           # Now both the comments should be shown.
-          page.within('.diff-files-holder > div:nth-child(3) .note-body > .note-text') do
+          page.within('.diff-files-holder > div:nth-child(6) .note-body > .note-text') do
             expect(page).to have_content('Line is wrong')
           end
 
-          page.within('.diff-files-holder > div:nth-child(2) .note-body > .note-text') do
+          page.within('.diff-files-holder > div:nth-child(5) .note-body > .note-text') do
             expect(page).to have_content('Line is correct')
           end
 
@@ -102,11 +102,11 @@ RSpec.describe 'User comments on a diff', :js do
 
           wait_for_requests
 
-          page.within('.diff-files-holder > div:nth-child(3) .parallel .note-body > .note-text') do
+          page.within('.diff-files-holder > div:nth-child(6) .parallel .note-body > .note-text') do
             expect(page).to have_content('Line is wrong')
           end
 
-          page.within('.diff-files-holder > div:nth-child(2) .parallel .note-body > .note-text') do
+          page.within('.diff-files-holder > div:nth-child(5) .parallel .note-body > .note-text') do
             expect(page).to have_content('Line is correct')
           end
         end
@@ -204,7 +204,7 @@ RSpec.describe 'User comments on a diff', :js do
         click_button('Add comment now')
       end
 
-      page.within('.diff-file:nth-of-type(5) .discussion .note') do
+      page.within('.diff-file:nth-of-type(1) .discussion .note') do
         find('.js-note-edit').click
 
         page.within('.current-note-edit-form') do
@@ -215,7 +215,7 @@ RSpec.describe 'User comments on a diff', :js do
         expect(page).not_to have_button('Save comment', disabled: true)
       end
 
-      page.within('.diff-file:nth-of-type(5) .discussion .note') do
+      page.within('.diff-file:nth-of-type(1) .discussion .note') do
         expect(page).to have_content('Typo, please fix').and have_no_content('Line is wrong')
       end
     end
@@ -234,7 +234,7 @@ RSpec.describe 'User comments on a diff', :js do
         expect(page).to have_content('1')
       end
 
-      page.within('.diff-file:nth-of-type(5) .discussion .note') do
+      page.within('.diff-file:nth-of-type(1) .discussion .note') do
         find('.more-actions').click
         find('.more-actions .dropdown-menu li', match: :first)
 

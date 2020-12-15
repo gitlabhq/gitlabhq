@@ -12,6 +12,7 @@ RSpec.describe Gitlab::Auth::Otp::Strategies::FortiAuthenticator do
   let(:api_token) { 's3cr3t' }
 
   let(:forti_authenticator_auth_url) { "https://#{host}:#{port}/api/v1/auth/" }
+  let(:response_status) { 200 }
 
   subject(:validate) { described_class.new(user).validate(otp_code) }
 
@@ -23,20 +24,20 @@ RSpec.describe Gitlab::Auth::Otp::Strategies::FortiAuthenticator do
       host: host,
       port: port,
       username: api_username,
-      token: api_token
+      access_token: api_token
     )
 
     request_body = { username: user.username,
                      token_code: otp_code }
 
     stub_request(:post, forti_authenticator_auth_url)
-      .with(body: JSON(request_body), headers: { 'Content-Type' => 'application/json' })
-      .to_return(status: response_status, body: '', headers: {})
+      .with(body: JSON(request_body),
+            headers: { 'Content-Type': 'application/json' },
+            basic_auth: [api_username, api_token])
+      .to_return(status: response_status, body: '')
   end
 
   context 'successful validation' do
-    let(:response_status) { 200 }
-
     it 'returns success' do
       expect(validate[:status]).to eq(:success)
     end
@@ -47,6 +48,16 @@ RSpec.describe Gitlab::Auth::Otp::Strategies::FortiAuthenticator do
 
     it 'returns error' do
       expect(validate[:status]).to eq(:error)
+    end
+  end
+
+  context 'unexpected error' do
+    it 'returns error' do
+      error_message = 'boom!'
+      stub_request(:post, forti_authenticator_auth_url).to_raise(StandardError.new(error_message))
+
+      expect(validate[:status]).to eq(:error)
+      expect(validate[:message]).to eq(error_message)
     end
   end
 

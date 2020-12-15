@@ -66,6 +66,12 @@ module Gitlab
         @iterator = nil
       end
 
+      def sort(&block)
+        @array = @array.sort(&block)
+
+        self
+      end
+
       def empty?
         any? # Make sure the iterator has been exercised
         @empty

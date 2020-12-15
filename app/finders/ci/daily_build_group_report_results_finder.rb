@@ -4,7 +4,7 @@ module Ci
   class DailyBuildGroupReportResultsFinder
     include Gitlab::Allowable
 
-    def initialize(current_user:, project:, ref_path:, start_date:, end_date:, limit: nil)
+    def initialize(current_user:, project:, ref_path: nil, start_date:, end_date:, limit: nil)
       @current_user = current_user
       @project = project
       @ref_path = ref_path
@@ -35,11 +35,18 @@ module Ci
     end
 
     def query_params
-      {
+      params = {
         project_id: project,
-        ref_path: ref_path,
         date: start_date..end_date
       }
+
+      if ref_path
+        params[:ref_path] = ref_path
+      else
+        params[:default_branch] = true
+      end
+
+      params
     end
 
     def none

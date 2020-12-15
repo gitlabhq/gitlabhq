@@ -1,0 +1,8 @@
+---
+name: sort_diffs
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49118
+rollout_issue_url:
+milestone: '13.7'
+type: development
+group: group::code review
+default_enabled: false

@@ -10209,6 +10209,9 @@ msgstr ""
 msgid "Editing"
 msgstr ""
 
+msgid "Editor Lite instance is required to set up an extension."
+msgstr ""
+
 msgid "Elasticsearch AWS IAM credentials"
 msgstr ""
 

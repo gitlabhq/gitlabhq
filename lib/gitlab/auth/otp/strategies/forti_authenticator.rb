@@ -18,6 +18,9 @@ module Gitlab
             # Successful authentication results in HTTP 200: OK
             # https://docs.fortinet.com/document/fortiauthenticator/6.2.0/rest-api-solution-guide/704555/authentication-auth
             response.ok? ? success : error_from_response(response)
+          rescue StandardError => ex
+            Gitlab::AppLogger.error(ex)
+            error(ex.message)
           end
 
           private
@@ -32,7 +35,7 @@ module Gitlab
 
           def api_credentials
             { username: ::Gitlab.config.forti_authenticator.username,
-              password: ::Gitlab.config.forti_authenticator.token }
+              password: ::Gitlab.config.forti_authenticator.access_token }
           end
         end
       end

@@ -1,4 +1,6 @@
-export default {
+import { EditorLiteExtension } from './editor_lite_extension_base';
+
+export class EditorMarkdownExtension extends EditorLiteExtension {
   getSelectedText(selection = this.getSelection()) {
     const { startLineNumber, endLineNumber, startColumn, endColumn } = selection;
     const valArray = this.getValue().split('\n');
@@ -18,19 +20,19 @@ export default {
         : [startLineText, endLineText].join('\n');
     }
     return text;
-  },
+  }
 
   replaceSelectedText(text, select = undefined) {
     const forceMoveMarkers = !select;
     this.executeEdits('', [{ range: this.getSelection(), text, forceMoveMarkers }]);
-  },
+  }
 
   moveCursor(dx = 0, dy = 0) {
     const pos = this.getPosition();
     pos.column += dx;
     pos.lineNumber += dy;
     this.setPosition(pos);
-  },
+  }
 
   /**
    * Adjust existing selection to select text within the original selection.
@@ -91,5 +93,5 @@ export default {
       .setEndPosition(newEndLineNumber, newEndColumn);
 
     this.setSelection(newSelection);
-  },
-};
+  }
+}
