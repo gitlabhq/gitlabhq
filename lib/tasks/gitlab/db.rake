@@ -192,11 +192,17 @@ namespace :gitlab do
         exit
       end
 
-      indexes = if args[:index_name]
-                  [Gitlab::Database::PostgresIndex.by_identifier(args[:index_name])]
-                else
-                  Gitlab::Database::Reindexing.candidate_indexes
-                end
+      indexes = Gitlab::Database::Reindexing.candidate_indexes
+
+      if identifier = args[:index_name]
+        raise ArgumentError, "Index name is not fully qualified with a schema: #{identifier}" unless identifier =~ /^\w+\.\w+$/
+
+        indexes = indexes.where(identifier: identifier)
+
+        raise "Index not found or not supported: #{args[:index_name]}" if indexes.empty?
+      end
+
+      ActiveRecord::Base.logger = Logger.new(STDOUT) if Gitlab::Utils.to_boolean(ENV['LOG_QUERIES_TO_CONSOLE'], default: false)
 
       Gitlab::Database::Reindexing.perform(indexes)
     rescue => e

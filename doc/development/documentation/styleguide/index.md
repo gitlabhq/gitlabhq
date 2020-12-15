@@ -526,7 +526,7 @@ You can use the following fake tokens as examples:
 ### Usage list
 <!-- vale off -->
 
-| {::nomarkdown}<div style="width:140px">Usage</div>{:/} | Guidance |
+| Usage | Guidance |
 |-----------------------|-----|
 | and/or                | Use **or** instead, or another sensible construction. |
 | currently             | Do not use when talking about the product or its features. The documentation describes the product as it is today. |

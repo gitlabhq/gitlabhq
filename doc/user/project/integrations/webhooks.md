@@ -1387,6 +1387,7 @@ X-Gitlab-Event: Member Hook
   "user_id": 64,
   "group_access": "Guest",
   "group_plan": null,
+  "expires_at": "2020-12-14T00:00:00Z",
   "event_name": "user_add_to_group"
 }
 ```

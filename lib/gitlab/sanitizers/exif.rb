@@ -67,7 +67,7 @@ module Gitlab
           batch_size: 1000
         }
 
-        relation.find_each(find_params) do |upload|
+        relation.find_each(**find_params) do |upload|
           clean(upload.retrieve_uploader, dry_run: dry_run)
           sleep sleep_time if sleep_time
         rescue => err

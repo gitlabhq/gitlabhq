@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Jira::Requests::Projects::ListService do
+  include AfterNextHelpers
+
   let(:jira_service) { create(:jira_service) }
   let(:params) { {} }
 
@@ -33,15 +35,17 @@ RSpec.describe Jira::Requests::Projects::ListService do
 
     context 'with jira_service' do
       context 'when validations and params are ok' do
-        let(:client) { double(options: { site: 'https://jira.example.com' }) }
+        let(:response_headers) { { 'content-type' => 'application/json' } }
+        let(:response_body) { [].to_json }
+        let(:expected_url_pattern) { /.*jira.example.com\/rest\/api\/2\/project/ }
 
         before do
-          expect(service).to receive(:client).at_least(:once).and_return(client)
+          stub_request(:get, expected_url_pattern).to_return(status: 200, body: response_body, headers: response_headers)
         end
 
         context 'when the request to Jira returns an error' do
           before do
-            expect(client).to receive(:get).and_raise(Timeout::Error)
+            expect_next(JIRA::Client).to receive(:get).and_raise(Timeout::Error)
           end
 
           it 'returns an error response' do
@@ -54,10 +58,17 @@ RSpec.describe Jira::Requests::Projects::ListService do
           end
         end
 
-        context 'when the request does not return any values' do
-          before do
-            expect(client).to receive(:get).and_return([])
+        context 'when jira runs on a subpath' do
+          let(:jira_service) { create(:jira_service, url: 'http://jira.example.com/jira') }
+          let(:expected_url_pattern) { /.*jira.example.com\/jira\/rest\/api\/2\/project/ }
+
+          it 'takes the subpath into account' do
+            expect(subject.success?).to be_truthy
           end
+        end
+
+        context 'when the request does not return any values' do
+          let(:response_body) { [].to_json }
 
           it 'returns a paylod with no projects returned' do
             payload = subject.payload
@@ -69,9 +80,7 @@ RSpec.describe Jira::Requests::Projects::ListService do
         end
 
         context 'when the request returns values' do
-          before do
-            expect(client).to receive(:get).and_return([{ 'key' => 'pr1', 'name' => 'First Project' }, { 'key' => 'pr2', 'name' => 'Second Project' }])
-          end
+          let(:response_body) { [{ 'key' => 'pr1', 'name' => 'First Project' }, { 'key' => 'pr2', 'name' => 'Second Project' }].to_json }
 
           it 'returns a paylod with Jira projects' do
             payload = subject.payload

@@ -23462,7 +23462,7 @@
             },
             {
               "name": "healthStatus",
-              "description": "Current health status. Returns null if `save_issuable_health_status` feature flag is disabled.",
+              "description": "Current health status.",
               "args": [
 
               ],
@@ -30725,7 +30725,7 @@
             },
             {
               "name": "healthStatus",
-              "description": "Current health status. Returns null if `save_issuable_health_status` feature flag is disabled.",
+              "description": "Current health status.",
               "args": [
 
               ],

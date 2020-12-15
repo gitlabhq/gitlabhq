@@ -7,6 +7,7 @@ import {
   clientTypenames,
   createResolvers,
 } from '~/import_entities/import_groups/graphql/client_factory';
+import { StatusPoller } from '~/import_entities/import_groups/graphql/services/status_poller';
 import { STATUSES } from '~/import_entities/constants';
 
 import bulkImportSourceGroupsQuery from '~/import_entities/import_groups/graphql/queries/bulk_import_source_groups.query.graphql';
@@ -16,6 +17,12 @@ import setNewNameMutation from '~/import_entities/import_groups/graphql/mutation
 import importGroupMutation from '~/import_entities/import_groups/graphql/mutations/import_group.mutation.graphql';
 import httpStatus from '~/lib/utils/http_status';
 import { statusEndpointFixture, availableNamespacesFixture } from './fixtures';
+
+jest.mock('~/import_entities/import_groups/graphql/services/status_poller', () => ({
+  StatusPoller: jest.fn().mockImplementation(function mock() {
+    this.startPolling = jest.fn();
+  }),
+}));
 
 const FAKE_ENDPOINTS = {
   status: '/fake_status_url',
@@ -172,6 +179,42 @@ describe('Bulk import resolvers', () => {
         });
 
         expect(intermediateResults[0].status).toBe(STATUSES.SCHEDULING);
+      });
+
+      it('sets group status to STARTED when request completes', async () => {
+        axiosMockAdapter.onPost(FAKE_ENDPOINTS.createBulkImport).reply(httpStatus.OK);
+        await client.mutate({
+          mutation: importGroupMutation,
+          variables: { sourceGroupId: GROUP_ID },
+        });
+
+        expect(results[0].status).toBe(STATUSES.STARTED);
+      });
+
+      it('starts polling when request completes', async () => {
+        axiosMockAdapter.onPost(FAKE_ENDPOINTS.createBulkImport).reply(httpStatus.OK);
+        await client.mutate({
+          mutation: importGroupMutation,
+          variables: { sourceGroupId: GROUP_ID },
+        });
+        const [statusPoller] = StatusPoller.mock.instances;
+        expect(statusPoller.startPolling).toHaveBeenCalled();
+      });
+
+      it('resets status to NONE if request fails', async () => {
+        axiosMockAdapter
+          .onPost(FAKE_ENDPOINTS.createBulkImport)
+          .reply(httpStatus.INTERNAL_SERVER_ERROR);
+
+        client
+          .mutate({
+            mutation: importGroupMutation,
+            variables: { sourceGroupId: GROUP_ID },
+          })
+          .catch(() => {});
+        await waitForPromises();
+
+        expect(results[0].status).toBe(STATUSES.NONE);
       });
     });
   });

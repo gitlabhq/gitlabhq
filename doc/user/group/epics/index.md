@@ -79,13 +79,9 @@ to:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199184) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.10.
 > - The health status of a closed issue [is hidden](https://gitlab.com/gitlab-org/gitlab/-/issues/220867) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.3 or later.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/213567) in GitLab 13.7.
 
 Report or respond to the health of issues and epics by setting a red, amber, or green [health status](../../project/issues/index.md#health-status), which then appears on your Epic tree.
-
-### Disable Issue health status in Epic tree
-
-This feature comes with a feature flag enabled by default. For steps to disable it, see
-[Disable issue health status](../../project/issues/index.md#disable-issue-health-status).
 
 ## Multi-level child epics **(ULTIMATE)**
 

@@ -155,7 +155,7 @@ module Gitlab
           transform_sub_relations!(data_hash, sub_relation_key, sub_relation_definition, relation_index)
         end
 
-        relation = @relation_factory.create(relation_factory_params(relation_key, data_hash))
+        relation = @relation_factory.create(**relation_factory_params(relation_key, data_hash))
 
         if relation && !relation.valid?
           @shared.logger.warn(

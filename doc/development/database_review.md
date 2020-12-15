@@ -48,7 +48,7 @@ If new migrations are introduced, in the MR **you are required to provide**:
 If new queries have been introduced or existing queries have been updated, **you are required to provide**:
 
 - [Query plans](#query-plans) for each raw SQL query included in the merge request along with the link to the query plan following each raw SQL snippet.
-- [Raw SQL](#raw-sql) for all queries (as translated from ActiveRecord queries).
+- [Raw SQL](#raw-sql) for all changed or added queries (as translated from ActiveRecord queries).
   - In case of updating an existing query, the raw SQL of both the old and the new version of the query should be provided together with their query plans.
 
 Refer to [Preparation when adding or modifying queries](#preparation-when-adding-or-modifying-queries) for how to provide this information.

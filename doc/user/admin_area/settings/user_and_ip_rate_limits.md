@@ -82,6 +82,41 @@ are marked with `"throttle_safelist":"throttle_user_allowlist"` in
 
 At application startup, the allowlist is logged in [`auth.log`](../../../administration/logs.md#authlog).
 
+## Trying out throttling settings before enforcing them
+
+> [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/629) in GitLab 13.6.
+
+Trying out throttling settings can be done by setting the
+`GITLAB_THROTTLE_DRY_RUN` environment variable to a comma-separated
+list of throttle names.
+
+The possible names are:
+
+- `throttle_unauthenticated`
+- `throttle_authenticated_api`
+- `throttle_authenticated_web`
+- `throttle_unauthenticated_protected_paths`
+- `throttle_authenticated_protected_paths_api`
+- `throttle_authenticated_protected_paths_web`
+
+For example: trying out throttles for all authenticated requests to
+non-protected paths could be done by setting
+`GITLAB_THROTTLE_DRY_RUN='throttle_authenticated_web,throttle_authenticated_api'`.
+
+To enable the dry-run mode for all throttles, the variable can be set
+to `*`.
+
+Setting a throttle to dry-run mode will log a message to the
+[`auth.log`](../../../administration/logs.md#authlog) when it would
+hit the limit, while letting the request continue as normal. The log
+message will contain an `env` field set to `track`. The `matched`
+field will contain the name of throttle that was hit.
+
+It is important to set the environment variable **before** enabling
+the rate limiting in the settings. The settings in the admin panel
+take effect immediately, while setting the environment variable
+requires a restart of all the Puma processes.
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

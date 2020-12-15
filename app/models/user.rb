@@ -1493,6 +1493,10 @@ class User < ApplicationRecord
     !solo_owned_groups.present?
   end
 
+  def can_remove_self?
+    true
+  end
+
   def ci_owned_runners
     @ci_owned_runners ||= begin
       project_runners = Ci::RunnerProject

@@ -3098,6 +3098,14 @@ RSpec.describe User do
     end
   end
 
+  describe '#can_remove_self?' do
+    let(:user) { create(:user) }
+
+    it 'returns true' do
+      expect(user.can_remove_self?).to eq true
+    end
+  end
+
   describe "#recent_push" do
     let(:user) { build(:user) }
     let(:project) { build(:project) }

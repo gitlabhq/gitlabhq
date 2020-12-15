@@ -246,17 +246,25 @@ RSpec.describe 'gitlab:db namespace rake task' do
     context 'with index name given' do
       let(:index) { double('index') }
 
+      before do
+        allow(Gitlab::Database::Reindexing).to receive(:candidate_indexes).and_return(indexes)
+      end
+
       it 'calls the index rebuilder with the proper arguments' do
-        expect(Gitlab::Database::PostgresIndex).to receive(:by_identifier).with('public.foo_idx').and_return(index)
+        allow(indexes).to receive(:where).with(identifier: 'public.foo_idx').and_return([index])
         expect(Gitlab::Database::Reindexing).to receive(:perform).with([index])
 
         run_rake_task('gitlab:db:reindex', '[public.foo_idx]')
       end
 
       it 'raises an error if the index does not exist' do
-        expect(Gitlab::Database::PostgresIndex).to receive(:by_identifier).with('public.absent_index').and_raise(ActiveRecord::RecordNotFound)
+        allow(indexes).to receive(:where).with(identifier: 'public.absent_index').and_return([])
 
-        expect { run_rake_task('gitlab:db:reindex', '[public.absent_index]') }.to raise_error(ActiveRecord::RecordNotFound)
+        expect { run_rake_task('gitlab:db:reindex', '[public.absent_index]') }.to raise_error(/Index not found/)
+      end
+
+      it 'raises an error if the index is not fully qualified with a schema' do
+        expect { run_rake_task('gitlab:db:reindex', '[foo_idx]') }.to raise_error(/Index name is not fully qualified/)
       end
     end
   end

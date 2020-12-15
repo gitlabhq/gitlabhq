@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Issues
+# Issues **(CORE)**
 
 Issues are the fundamental medium for collaborating on ideas and planning work in GitLab.
 
@@ -191,6 +191,7 @@ requires [GraphQL](../../../api/graphql/index.md) to be enabled.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36427) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.10.
 > - Health status of closed issues [can't be edited](https://gitlab.com/gitlab-org/gitlab/-/issues/220867) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.4 and later.
 > - Issue health status visible in issue lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45141) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.6.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/213567) in GitLab 13.7.
 
 To help you track the status of your issues, you can assign a status to each issue to flag work
 that's progressing as planned or needs attention to keep on schedule:
@@ -206,16 +207,6 @@ until the issue is reopened.
 
 You can then see issue statuses in the [issue list](#issues-list) and the
 [Epic tree](../../group/epics/index.md#issue-health-status-in-epic-tree).
-
-#### Disable issue health status
-
-This feature comes with the `:save_issuable_health_status` feature flag enabled by default. However, in some cases
-this feature is incompatible with old configuration. To turn off the feature while configuration is
-migrated, ask a GitLab administrator with Rails console access to run the following command:
-
-```ruby
-Feature.disable(:save_issuable_health_status)
-```
 
 ## Other Issue actions
 

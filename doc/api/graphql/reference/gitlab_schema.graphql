@@ -8383,7 +8383,7 @@ type EpicIssue implements CurrentUserTodos & Noteable {
   epicIssueId: ID!
 
   """
-  Current health status. Returns null if `save_issuable_health_status` feature flag is disabled.
+  Current health status.
   """
   healthStatus: HealthStatus
 
@@ -11154,7 +11154,7 @@ type Issue implements CurrentUserTodos & Noteable {
   epic: Epic
 
   """
-  Current health status. Returns null if `save_issuable_health_status` feature flag is disabled.
+  Current health status.
   """
   healthStatus: HealthStatus
 

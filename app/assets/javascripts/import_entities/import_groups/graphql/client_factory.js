@@ -1,8 +1,11 @@
 import axios from '~/lib/utils/axios_utils';
 import createDefaultClient from '~/lib/graphql';
+import { s__ } from '~/locale';
+import createFlash from '~/flash';
 import { STATUSES } from '../../constants';
 import availableNamespacesQuery from './queries/available_namespaces.query.graphql';
 import { SourceGroupsManager } from './services/source_groups_manager';
+import { StatusPoller } from './services/status_poller';
 
 export const clientTypenames = {
   BulkImportSourceGroup: 'ClientBulkImportSourceGroup',
@@ -10,6 +13,8 @@ export const clientTypenames = {
 };
 
 export function createResolvers({ endpoints }) {
+  let statusPoller;
+
   return {
     Query: {
       async bulkImportSourceGroups(_, __, { client }) {
@@ -57,6 +62,30 @@ export function createResolvers({ endpoints }) {
         const groupManager = new SourceGroupsManager({ client });
         const group = groupManager.findById(sourceGroupId);
         groupManager.setImportStatus(group, STATUSES.SCHEDULING);
+        try {
+          await axios.post(endpoints.createBulkImport, {
+            bulk_import: [
+              {
+                source_type: 'group_entity',
+                source_full_path: group.full_path,
+                destination_namespace: group.import_target.target_namespace,
+                destination_name: group.import_target.new_name,
+              },
+            ],
+          });
+          groupManager.setImportStatus(group, STATUSES.STARTED);
+          if (!statusPoller) {
+            statusPoller = new StatusPoller({ client, interval: 3000 });
+            statusPoller.startPolling();
+          }
+        } catch (e) {
+          createFlash({
+            message: s__('BulkImport|Importing the group failed'),
+          });
+
+          groupManager.setImportStatus(group, STATUSES.NONE);
+          throw e;
+        }
       },
     },
   };

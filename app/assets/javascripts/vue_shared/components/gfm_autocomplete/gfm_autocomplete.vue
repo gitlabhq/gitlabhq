@@ -1,5 +1,5 @@
 <script>
-import Tribute from 'tributejs';
+import Tribute from '@gitlab/tributejs';
 import {
   GfmAutocompleteType,
   tributeConfig,
@@ -29,6 +29,10 @@ export default {
     config() {
       return this.autocompleteTypes.map(type => ({
         ...tributeConfig[type].config,
+        loadingItemTemplate: `<span class="gl-spinner gl-vertical-align-text-bottom gl-ml-3 gl-mr-2"></span>${__(
+          'Loading',
+        )}`,
+        requireLeadingSpace: true,
         values: this.getValues(type),
       }));
     },

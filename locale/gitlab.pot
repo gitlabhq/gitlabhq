@@ -4777,7 +4777,19 @@ msgstr ""
 msgid "BulkImport|From source group"
 msgstr ""
 
+msgid "BulkImport|Import groups from GitLab"
+msgstr ""
+
+msgid "BulkImport|Importing groups from %{link}"
+msgstr ""
+
+msgid "BulkImport|Importing the group failed"
+msgstr ""
+
 msgid "BulkImport|To new group"
+msgstr ""
+
+msgid "BulkImport|Update of import statuses with realtime changes failed"
 msgstr ""
 
 msgid "BulkImport|expected an associated Group but has an associated Project"
@@ -9419,9 +9431,6 @@ msgid "Descending"
 msgstr ""
 
 msgid "Describe the goal of the changes and what reviewers should be aware of."
-msgstr ""
-
-msgid "Describe the requirement here"
 msgstr ""
 
 msgid "Description"
@@ -14474,12 +14483,6 @@ msgid "Import/Export illustration"
 msgstr ""
 
 msgid "ImportButtons|Connect repositories from"
-msgstr ""
-
-msgid "ImportGroups|Import groups from GitLab"
-msgstr ""
-
-msgid "ImportGroups|Importing groups from %{link}"
 msgstr ""
 
 msgid "ImportProjects|%{provider} rate limit exceeded. Try again later"
@@ -21088,6 +21091,9 @@ msgstr ""
 msgid "Profiles|@username"
 msgstr ""
 
+msgid "Profiles|Account could not be deleted. GitLab was unable to verify your identity."
+msgstr ""
+
 msgid "Profiles|Account scheduled for removal."
 msgstr ""
 
@@ -21190,6 +21196,9 @@ msgstr ""
 msgid "Profiles|Full name"
 msgstr ""
 
+msgid "Profiles|GitLab is unable to verify your identity automatically."
+msgstr ""
+
 msgid "Profiles|Give your individual key a title."
 msgstr ""
 
@@ -21236,6 +21245,9 @@ msgid "Profiles|Organization"
 msgstr ""
 
 msgid "Profiles|Path"
+msgstr ""
+
+msgid "Profiles|Please email %{data_request} to begin the account deletion process."
 msgstr ""
 
 msgid "Profiles|Position and size your new avatar"
@@ -23565,9 +23577,6 @@ msgid "Requirement %{reference} has been reopened"
 msgstr ""
 
 msgid "Requirement %{reference} has been updated"
-msgstr ""
-
-msgid "Requirement title"
 msgstr ""
 
 msgid "Requirement title cannot have more than %{limit} characters."

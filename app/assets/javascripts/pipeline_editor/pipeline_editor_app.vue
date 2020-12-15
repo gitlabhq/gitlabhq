@@ -10,6 +10,7 @@ import TextEditor from './components/text_editor.vue';
 import commitCiFileMutation from './graphql/mutations/commit_ci_file.mutation.graphql';
 import getBlobContent from './graphql/queries/blob_content.graphql';
 import getCiConfigData from './graphql/queries/ci_config.graphql';
+import { unwrapStagesWithNeeds } from '~/pipelines/components/unwrapping_utils';
 
 const MR_SOURCE_BRANCH = 'merge_request[source_branch]';
 const MR_TARGET_BRANCH = 'merge_request[target_branch]';
@@ -99,7 +100,11 @@ export default {
         };
       },
       update(data) {
-        return data?.ciConfig ?? {};
+        const { ciConfigData } = data || {};
+        const stageNodes = ciConfigData?.stages?.nodes || [];
+        const stages = unwrapStagesWithNeeds(stageNodes);
+
+        return { ...ciConfigData, stages };
       },
       error() {
         this.reportFailure(LOAD_FAILURE_UNKNOWN);

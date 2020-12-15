@@ -22,11 +22,15 @@ In the Gitaly documentation:
 GitLab end users do not have direct access to Gitaly. Gitaly only manages Git
 repository access for GitLab. Other types of GitLab data aren't accessed using Gitaly.
 
+<!-- vale gitlab.FutureTense = NO -->
+
 WARNING:
 From GitLab 13.0, Gitaly support for NFS is deprecated. As of GitLab 14.0, NFS-related issues
 with Gitaly will no longer be addressed. Upgrade to [Gitaly Cluster](praefect.md) as soon as
-possible. Watch for [tools to enable bulk move](https://gitlab.com/groups/gitlab-org/-/epics/4916)
-of projects to Gitaly Cluster.
+possible. Tools to [enable bulk moves](https://gitlab.com/groups/gitlab-org/-/epics/4916)
+of projects to Gitaly Cluster are planned.
+
+<!-- vale gitlab.FutureTense = YES -->
 
 ## Architecture
 

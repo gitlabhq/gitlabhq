@@ -68,6 +68,11 @@ The following reference architectures are available:
 - [Up to 25,000 users](25k_users.md)
 - [Up to 50,000 users](50k_users.md)
 
+A GitLab [Premium or Ultimate](https://about.gitlab.com/pricing/#self-managed) license is required
+to get assistance from Support with troubleshooting the [2,000 users](2k_users.md)
+and higher reference architectures.
+[Read more about our definition of scaled architectures](https://about.gitlab.com/support/#definition-of-scaled-architecture).
+
 ## Availability Components
 
 GitLab comes with the following components for your use, listed from least to

@@ -4,14 +4,14 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::HookData::GroupMemberBuilder do
   let_it_be(:group) { create(:group) }
-  let_it_be(:group_member) { create(:group_member, :developer, group: group) }
+  let_it_be(:group_member) { create(:group_member, :developer, group: group, expires_at: 1.day.from_now) }
 
   describe '#build' do
     let(:data) { described_class.new(group_member).build(event) }
     let(:event_name) { data[:event_name] }
     let(:attributes) do
       [
-        :event_name, :created_at, :updated_at, :group_name, :group_path,
+        :event_name, :created_at, :updated_at, :expires_at, :group_name, :group_path,
         :group_id, :user_id, :user_username, :user_name, :user_email, :group_access
       ]
     end
@@ -31,6 +31,7 @@ RSpec.describe Gitlab::HookData::GroupMemberBuilder do
           expect(data[:group_access]).to eq('Developer')
           expect(data[:created_at]).to eq(group_member.created_at&.xmlschema)
           expect(data[:updated_at]).to eq(group_member.updated_at&.xmlschema)
+          expect(data[:expires_at]).to eq(group_member.expires_at&.xmlschema)
         end
       end
 

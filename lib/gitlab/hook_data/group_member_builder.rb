@@ -19,6 +19,7 @@ module Gitlab
       #   :group_access=>"Guest",
       #   :created_at=>"2020-11-04T10:12:10Z",
       #   :updated_at=>"2020-11-04T10:12:10Z",
+      #   :expires_at=>"2020-12-04T10:12:10Z"
       # }
 
       def build(event)
@@ -40,7 +41,8 @@ module Gitlab
           user_name: group_member.user.name,
           user_email: group_member.user.email,
           user_id: group_member.user.id,
-          group_access: group_member.human_access
+          group_access: group_member.human_access,
+          expires_at: group_member.expires_at&.xmlschema
         }
       end
 

@@ -2088,11 +2088,58 @@ build_job:
   needs:
     - project: $CI_PROJECT_PATH
       job: $DEPENDENCY_JOB_NAME
-      ref: $CI_COMMIT_BRANCH
+      ref: $ARTIFACTS_DOWNLOAD_REF
       artifacts: true
 ```
 
 Downloading artifacts from jobs that are run in [`parallel:`](#parallel) is not supported.
+
+To download artifacts between [parent-child pipelines](../parent_child_pipelines.md) use [`needs:pipeline`](#artifact-downloads-to-child-pipelines).
+Downloading artifacts from the same ref as the currently running pipeline is not
+recommended because artifacts could be overridden by concurrent pipelines running
+on the same ref.
+
+##### Artifact downloads to child pipelines
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/255983) in GitLab v13.7.
+
+A [child pipeline](../parent_child_pipelines.md) can download artifacts from a job in
+its parent pipeline or another child pipeline in the same parent-child pipeline hierarchy.
+
+For example, with the following parent pipeline that has a job that creates some artifacts:
+
+```yaml
+create-artifact:
+  stage: build
+  script: echo 'sample artifact' > artifact.txt
+  artifacts:
+    paths: [artifact.txt]
+
+child-pipeline:
+  stage: test
+  trigger:
+    include: child.yml
+    strategy: depend
+  variables:
+    PARENT_PIPELINE_ID: $CI_PIPELINE_ID
+```
+
+A job in the child pipeline can download artifacts from the `create-artifact` job in
+the parent pipeline:
+
+```yaml
+use-artifact:
+  script: cat artifact.txt
+  needs:
+    - pipeline: $PARENT_PIPELINE_ID
+      job: create-artifact
+```
+
+The `pipeline` attribute accepts a pipeline ID and it must be a pipeline present
+in the same parent-child pipeline hierarchy of the given pipeline.
+
+The `pipeline` attribute does not accept the current pipeline ID (`$CI_PIPELINE_ID`).
+To download artifacts from a job in the current pipeline, use the basic form of [`needs`](#artifact-downloads-with-needs).
 
 ### `tags`
 

@@ -1,5 +1,5 @@
+import Tribute from '@gitlab/tributejs';
 import { shallowMount } from '@vue/test-utils';
-import Tribute from 'tributejs';
 import GfmAutocomplete from '~/vue_shared/components/gfm_autocomplete/gfm_autocomplete.vue';
 
 describe('GfmAutocomplete', () => {
