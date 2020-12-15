@@ -24,9 +24,7 @@ module Gitlab
           end
 
           def auto_stop_in
-            if Feature.enabled?(:environment_auto_stop_start_on_create)
-              job.environment_auto_stop_in
-            end
+            job.environment_auto_stop_in
           end
 
           def expanded_environment_name

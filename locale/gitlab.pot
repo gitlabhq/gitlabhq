@@ -5179,9 +5179,6 @@ msgstr ""
 msgid "Channel handle (e.g. town-square)"
 msgstr ""
 
-msgid "Charts"
-msgstr ""
-
 msgid "Charts can't be displayed as the request for data has timed out. %{documentationLink}"
 msgstr ""
 
@@ -11037,9 +11034,6 @@ msgstr ""
 msgid "Error fetching payload data."
 msgstr ""
 
-msgid "Error fetching projects"
-msgstr ""
-
 msgid "Error fetching refs"
 msgstr ""
 
@@ -12135,6 +12129,9 @@ msgid "Fill in the fields below, turn on %{strong_open}Enable SAML authenticatio
 msgstr ""
 
 msgid "Filter"
+msgstr ""
+
+msgid "Filter by"
 msgstr ""
 
 msgid "Filter by %{issuable_type} that are currently closed."
@@ -13880,6 +13877,9 @@ msgstr ""
 msgid "GroupsEmptyState|You can manage your group member’s permissions and access to each project in the group."
 msgstr ""
 
+msgid "GroupsNew|Connect instance"
+msgstr ""
+
 msgid "GroupsNew|Contact an administrator to enable options for importing your group."
 msgstr ""
 
@@ -13889,22 +13889,46 @@ msgstr ""
 msgid "GroupsNew|Create group"
 msgstr ""
 
-msgid "GroupsNew|Import"
+msgid "GroupsNew|GitLab source URL"
 msgstr ""
 
-msgid "GroupsNew|Import a GitLab group export file"
+msgid "GroupsNew|Import"
 msgstr ""
 
 msgid "GroupsNew|Import group"
 msgstr ""
 
+msgid "GroupsNew|Import groups from another instance of GitLab"
+msgstr ""
+
 msgid "GroupsNew|My Awesome Group"
+msgstr ""
+
+msgid "GroupsNew|Navigate to user settings to find your %{link_start}personal access token%{link_end}."
 msgstr ""
 
 msgid "GroupsNew|No import options available"
 msgstr ""
 
-msgid "GroupsNew|To copy a GitLab group between installations, navigate to the group settings page for the original installation, generate an export file, and upload it here."
+msgid "GroupsNew|Personal access token"
+msgstr ""
+
+msgid "GroupsNew|Please fill in GitLab source URL."
+msgstr ""
+
+msgid "GroupsNew|Please fill in your personal access token."
+msgstr ""
+
+msgid "GroupsNew|Provide credentials for another instance of GitLab to import your groups directly."
+msgstr ""
+
+msgid "GroupsNew|To import a group, navigate to the group settings for the GitLab source instance, %{link_start}generate an export file%{link_end}, and upload it here."
+msgstr ""
+
+msgid "GroupsNew|Upload file"
+msgstr ""
+
+msgid "GroupsNew|e.g. h8d3f016698e..."
 msgstr ""
 
 msgid "GroupsTree|Are you sure you want to leave the \"%{fullName}\" group?"
@@ -14371,6 +14395,12 @@ msgstr ""
 msgid "Import from Jira"
 msgstr ""
 
+msgid "Import group from file"
+msgstr ""
+
+msgid "Import groups"
+msgstr ""
+
 msgid "Import in progress"
 msgstr ""
 
@@ -14438,6 +14468,12 @@ msgid "Import/Export illustration"
 msgstr ""
 
 msgid "ImportButtons|Connect repositories from"
+msgstr ""
+
+msgid "ImportGroups|Import groups from GitLab"
+msgstr ""
+
+msgid "ImportGroups|Importing groups from %{link}"
 msgstr ""
 
 msgid "ImportProjects|%{provider} rate limit exceeded. Try again later"
@@ -18573,6 +18609,12 @@ msgid "New file"
 msgstr ""
 
 msgid "New group"
+msgstr ""
+
+msgid "New group URL"
+msgstr ""
+
+msgid "New group name"
 msgstr ""
 
 msgid "New health check access token has been generated!"
@@ -27888,6 +27930,9 @@ msgstr ""
 msgid "There was an error fetching median data for stages"
 msgstr ""
 
+msgid "There was an error fetching projects"
+msgstr ""
+
 msgid "There was an error fetching the %{replicableType}"
 msgstr ""
 
@@ -32533,6 +32578,9 @@ msgid "ciReport|There was an error fetching the codequality report."
 msgstr ""
 
 msgid "ciReport|There was an error reverting the dismissal. Please try again."
+msgstr ""
+
+msgid "ciReport|This report contains all Code Quality issues in the source branch."
 msgstr ""
 
 msgid "ciReport|Used by %{packagesString}"

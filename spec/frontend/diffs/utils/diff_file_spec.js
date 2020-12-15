@@ -3,35 +3,45 @@ import { prepareRawDiffFile } from '~/diffs/utils/diff_file';
 function getDiffFiles() {
   return [
     {
+      blob: {
+        id: 'C0473471',
+      },
       file_hash: 'ABC', // This file is just a normal file
       file_identifier_hash: 'ABC1',
-      content_sha: 'C047347',
     },
     {
+      blob: {
+        id: 'C0473472',
+      },
       file_hash: 'DEF', // This file replaces a symlink
       file_identifier_hash: 'DEF1',
-      content_sha: 'C047347',
       a_mode: '0',
       b_mode: '0755',
     },
     {
+      blob: {
+        id: 'C0473473',
+      },
       file_hash: 'DEF', // This symlink is replaced by a file
       file_identifier_hash: 'DEF2',
-      content_sha: 'C047347',
       a_mode: '120000',
       b_mode: '0',
     },
     {
+      blob: {
+        id: 'C0473474',
+      },
       file_hash: 'GHI', // This symlink replaces a file
       file_identifier_hash: 'GHI1',
-      content_sha: 'C047347',
       a_mode: '0',
       b_mode: '120000',
     },
     {
+      blob: {
+        id: 'C0473475',
+      },
       file_hash: 'GHI', // This file is replaced by a symlink
       file_identifier_hash: 'GHI2',
-      content_sha: 'C047347',
       a_mode: '0755',
       b_mode: '0',
     },
@@ -76,11 +86,11 @@ describe('diff_file utilities', () => {
 
     it.each`
       fileIndex | id
-      ${0}      | ${'e075da30-4ec7-4e1c-a505-fe0fb0efe2d8'}
-      ${1}      | ${'5ab05419-123e-4d18-8454-0b8c3d9f3f91'}
-      ${2}      | ${'94eb6bba-575c-4504-bd8e-5d302364d31e'}
-      ${3}      | ${'06d669b2-29b7-4f47-9731-33fc38a8db61'}
-      ${4}      | ${'edd3e8f9-07f9-4647-8171-544c72e5a175'}
+      ${0}      | ${'8dcd585e-a421-4dab-a04e-6f88c81b7b4c'}
+      ${1}      | ${'3f178b78-392b-44a4-bd7d-5d6192208a97'}
+      ${2}      | ${'3d9e1354-cddf-4a11-8234-f0413521b2e5'}
+      ${3}      | ${'460f005b-d29d-43c1-9a08-099a7c7f08de'}
+      ${4}      | ${'d8c89733-6ce1-4455-ae3d-f8aad6ee99f9'}
     `('sets the file id properly { id: $id } on normal diff files', ({ fileIndex, id }) => {
       const preppedFile = prepareRawDiffFile({
         file: files[fileIndex],
@@ -100,10 +110,10 @@ describe('diff_file utilities', () => {
       expect(preppedFile).not.toHaveProp('id');
     });
 
-    it('does not set the id property if the file is missing a `content_sha`', () => {
+    it('does not set the id property if the file is missing a `blob.id`', () => {
       const fileMissingContentSha = { ...files[0] };
 
-      delete fileMissingContentSha.content_sha;
+      delete fileMissingContentSha.blob.id;
 
       const preppedFile = prepareRawDiffFile({
         file: fileMissingContentSha,

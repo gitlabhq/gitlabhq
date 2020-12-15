@@ -28,6 +28,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupService do
           expect(ContainerRepository.waiting_for_cleanup.count).to eq(0)
           expect(repository.reload.cleanup_unscheduled?).to be_truthy
           expect(repository.expiration_policy_started_at).to eq(nil)
+          expect(repository.expiration_policy_completed_at).not_to eq(nil)
         end
       end
     end
@@ -45,6 +46,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupService do
           expect(ContainerRepository.waiting_for_cleanup.count).to eq(1)
           expect(repository.reload.cleanup_unfinished?).to be_truthy
           expect(repository.expiration_policy_started_at).not_to eq(nil)
+          expect(repository.expiration_policy_completed_at).to eq(nil)
         end
       end
     end

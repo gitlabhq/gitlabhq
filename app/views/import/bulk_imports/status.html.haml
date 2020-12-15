@@ -1,1 +1,8 @@
-- page_title 'Bulk Import'
+- add_to_breadcrumbs 'New group', admin_users_path
+- add_page_specific_style 'page_bundles/import'
+- breadcrumb_title _('Import groups')
+
+%h1.gl-my-0.gl-py-4.gl-font-size-h1.gl-border-solid.gl-border-gray-200.gl-border-0.gl-border-b-1
+  = s_('ImportGroups|Import groups from GitLab')
+%p.gl-my-0.gl-py-5.gl-border-solid.gl-border-gray-200.gl-border-0.gl-border-b-1
+  = s_('ImportGroups|Importing groups from %{link}').html_safe % { link: external_link(@source_url, @source_url) }

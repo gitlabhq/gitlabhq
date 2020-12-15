@@ -11,7 +11,7 @@ RSpec.describe 'search/_filter' do
       expect(rendered).to have_selector('input#js-search-group-dropdown')
 
       expect(rendered).to have_selector('label[for="dashboard_search_project"]')
-      expect(rendered).to have_selector('button#dashboard_search_project')
+      expect(rendered).to have_selector('input#js-search-project-dropdown')
     end
   end
 end

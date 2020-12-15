@@ -1,0 +1,5 @@
+---
+title: Adds sha checksum to composer URL
+merge_request: 49511
+author:
+type: added

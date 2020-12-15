@@ -167,7 +167,8 @@ RSpec.describe API::ComposerPackages do
 
   describe 'GET /api/v4/group/:id/-/packages/composer/*package_name.json' do
     let(:package_name) { 'foobar' }
-    let(:url) { "/group/#{group.id}/-/packages/composer/#{package_name}.json" }
+    let(:sha) { '$1234' }
+    let(:url) { "/group/#{group.id}/-/packages/composer/#{package_name}#{sha}.json" }
 
     subject { get api(url), headers: headers }
 
@@ -204,6 +205,16 @@ RSpec.describe API::ComposerPackages do
       with_them do
         include_context 'Composer api group access', params[:project_visibility_level], params[:user_role], params[:user_token] do
           it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
+        end
+      end
+
+      context 'without a sha' do
+        let(:sha) { '' }
+
+        include_context 'Composer api group access', 'PRIVATE', :developer, true do
+          include_context 'Composer user type', :developer, true do
+            it_behaves_like 'process Composer api request', :developer, :not_found, true
+          end
         end
       end
     end

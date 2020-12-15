@@ -81,7 +81,7 @@ export default {
   <gl-dropdown
     class="gl-w-full"
     menu-class="gl-w-full!"
-    toggle-class="gl-text-truncate gl-reset-line-height!"
+    toggle-class="gl-text-truncate"
     :header-text="headerText"
     @show="$emit('search', searchText)"
     @shown="$refs.searchBox.focusInput()"

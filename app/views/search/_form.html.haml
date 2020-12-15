@@ -7,9 +7,9 @@
     .search-field-holder.form-group.mr-lg-1.mb-lg-0
       %label{ for: "dashboard_search" }
         = _("What are you searching for?")
-      .position-relative
-        = search_field_tag :search, params[:search], placeholder: _("Search for projects, issues, etc."), class: "form-control search-text-input js-search-input", id: "dashboard_search", autofocus: true, spellcheck: false
-        = sprite_icon('search', css_class: 'search-icon')
+      .gl-search-box-by-type
+        = search_field_tag :search, params[:search], placeholder: _("Search for projects, issues, etc."), class: "gl-form-input form-control search-text-input js-search-input", id: "dashboard_search", autofocus: true, spellcheck: false
+        = sprite_icon('search', css_class: 'gl-search-box-by-type-search-icon gl-icon')
         %button.search-clear.js-search-clear{ class: [("hidden" if params[:search].blank?), "has-tooltip"], type: "button", tabindex: "-1", title: _('Clear') }
           = sprite_icon('clear')
           %span.sr-only
@@ -17,4 +17,4 @@
     - unless params[:snippets].eql? 'true'
       = render 'filter'
     .d-flex-center.flex-column.flex-lg-row
-      = button_tag _("Search"), class: "gl-button btn btn-success btn-search form-control mt-lg-0 ml-lg-1 align-self-end"
+      = button_tag _("Search"), class: "gl-button btn btn-success btn-search mt-lg-0 ml-lg-1 align-self-end"

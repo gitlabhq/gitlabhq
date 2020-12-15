@@ -32,7 +32,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
           image: 'ruby:2.7',
           default: {},
           services: ['postgres:9.1', 'mysql:5.5'],
-          variables: { VAR: 'root' },
+          variables: { VAR: 'root', VAR2: { value: 'val 2', description: 'this is var 2' } },
           after_script: ['make clean'],
           stages: %w(build pages release),
           cache: { key: 'k', untracked: true, paths: ['public/'] },
@@ -78,6 +78,10 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
             .to eq 'Default configuration for all jobs.'
           expect(root.descendants.second.description)
             .to eq 'List of external YAML files to include.'
+        end
+
+        it 'sets correct variables value' do
+          expect(root.variables_value).to eq('VAR' => 'root', 'VAR2' => 'val 2')
         end
 
         describe '#leaf?' do
@@ -128,7 +132,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
                        services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
                        stage: 'test',
                        cache: { key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push', when: 'on_success' },
-                       variables: { 'VAR' => 'root' },
+                       variables: { 'VAR' => 'root', 'VAR2' => 'val 2' },
                        ignore: false,
                        after_script: ['make clean'],
                        only: { refs: %w[branches tags] },
@@ -142,7 +146,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
                          services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
                          stage: 'test',
                          cache: { key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push', when: 'on_success' },
-                         variables: { 'VAR' => 'root' },
+                         variables: { 'VAR' => 'root', 'VAR2' => 'val 2' },
                          ignore: false,
                          after_script: ['make clean'],
                          only: { refs: %w[branches tags] },
@@ -158,7 +162,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
                          services: [{ name: "postgres:9.1" }, { name: "mysql:5.5" }],
                          cache: { key: "k", untracked: true, paths: ["public/"], policy: "pull-push", when: 'on_success' },
                          only: { refs: %w(branches tags) },
-                         variables: { 'VAR' => 'job' },
+                         variables: { 'VAR' => 'job', 'VAR2' => 'val 2' },
                          after_script: [],
                          ignore: false,
                          scheduling_type: :stage }

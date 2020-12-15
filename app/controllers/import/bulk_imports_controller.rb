@@ -20,8 +20,9 @@ class Import::BulkImportsController < ApplicationController
       format.json do
         render json: { importable_data: serialized_importable_data }
       end
-
-      format.html
+      format.html do
+        @source_url = session[url_key]
+      end
     end
   end
 

@@ -10129,7 +10129,8 @@ CREATE TABLE ci_build_pending_states (
     build_id bigint NOT NULL,
     state smallint,
     failure_reason smallint,
-    trace_checksum bytea
+    trace_checksum bytea,
+    trace_bytesize bigint
 );
 
 CREATE SEQUENCE ci_build_pending_states_id_seq
@@ -11432,7 +11433,8 @@ CREATE TABLE container_repositories (
     updated_at timestamp without time zone NOT NULL,
     status smallint,
     expiration_policy_started_at timestamp with time zone,
-    expiration_policy_cleanup_status smallint DEFAULT 0 NOT NULL
+    expiration_policy_cleanup_status smallint DEFAULT 0 NOT NULL,
+    expiration_policy_completed_at timestamp with time zone
 );
 
 CREATE SEQUENCE container_repositories_id_seq

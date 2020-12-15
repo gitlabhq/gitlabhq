@@ -35,7 +35,7 @@ function collapsed(file) {
 
 function identifier(file) {
   return uuids({
-    seeds: [file.file_identifier_hash, file.content_sha],
+    seeds: [file.file_identifier_hash, file.blob?.id],
   })[0];
 }
 
@@ -51,7 +51,7 @@ export function prepareRawDiffFile({ file, allFiles, meta = false }) {
   // It's possible, but not confirmed, that `content_sha` isn't available sometimes
   // See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49506#note_464692057
   // We don't want duplicate IDs if that's the case, so we just don't assign an ID
-  if (!meta && file.content_sha) {
+  if (!meta && file.blob?.id) {
     additionalProperties.id = identifier(file);
   }
 

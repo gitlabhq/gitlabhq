@@ -80,7 +80,11 @@ RSpec.describe Ci::UpdateBuildStateService do
 
   context 'when build has a checksum' do
     let(:params) do
-      { checksum: 'crc32:12345678', state: 'failed', failure_reason: 'script_failure' }
+      {
+        output: { checksum: 'crc32:12345678', bytesize: 123 },
+        failure_reason: 'script_failure',
+        state: 'failed'
+      }
     end
 
     context 'when build does not have associated trace chunks' do
@@ -154,14 +158,74 @@ RSpec.describe Ci::UpdateBuildStateService do
       end
 
       context 'when trace checksum is valid' do
-        let(:params) { { checksum: 'crc32:ed82cd11', state: 'success' } }
+        let(:params) do
+          { output: { checksum: 'crc32:ed82cd11', bytesize: 4 }, state: 'success' }
+        end
 
-        it 'does not increment invalid trace metric' do
+        it 'does not increment invalid or corrupted trace metric' do
           execute_with_stubbed_metrics!
 
           expect(metrics)
             .not_to have_received(:increment_trace_operation)
             .with(operation: :invalid)
+
+          expect(metrics)
+            .not_to have_received(:increment_trace_operation)
+            .with(operation: :corrupted)
+        end
+
+        context 'when using deprecated parameters' do
+          let(:params) do
+            { checksum: 'crc32:ed82cd11', state: 'success' }
+          end
+
+          it 'does not increment invalid or corrupted trace metric' do
+            execute_with_stubbed_metrics!
+
+            expect(metrics)
+              .not_to have_received(:increment_trace_operation)
+              .with(operation: :invalid)
+
+            expect(metrics)
+              .not_to have_received(:increment_trace_operation)
+              .with(operation: :corrupted)
+          end
+        end
+      end
+
+      context 'when trace checksum is invalid and the log is corrupted' do
+        let(:params) do
+          { output: { checksum: 'crc32:12345678', bytesize: 1 }, state: 'success' }
+        end
+
+        it 'increments invalid and corrupted trace metrics' do
+          execute_with_stubbed_metrics!
+
+          expect(metrics)
+            .to have_received(:increment_trace_operation)
+            .with(operation: :invalid)
+
+          expect(metrics)
+            .to have_received(:increment_trace_operation)
+            .with(operation: :corrupted)
+        end
+      end
+
+      context 'when trace checksum is invalid but the log seems fine' do
+        let(:params) do
+          { output: { checksum: 'crc32:12345678', bytesize: 4 }, state: 'success' }
+        end
+
+        it 'does not increment corrupted trace metric' do
+          execute_with_stubbed_metrics!
+
+          expect(metrics)
+            .to have_received(:increment_trace_operation)
+            .with(operation: :invalid)
+
+          expect(metrics)
+            .not_to have_received(:increment_trace_operation)
+            .with(operation: :corrupted)
         end
       end
 

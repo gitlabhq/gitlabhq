@@ -20,7 +20,8 @@ module ContainerExpirationPolicies
       if result[:status] == :success
         repository.update!(
           expiration_policy_cleanup_status: :cleanup_unscheduled,
-          expiration_policy_started_at: nil
+          expiration_policy_started_at: nil,
+          expiration_policy_completed_at: Time.zone.now
         )
         success(:finished)
       else

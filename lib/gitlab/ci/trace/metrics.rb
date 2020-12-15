@@ -18,7 +18,8 @@ module Gitlab
           :conflict,  # runner has sent unrecognized build state details
           :locked,    # build trace has been locked by a different mechanism
           :stalled,   # failed to migrate chunk due to a worker duplication
-          :invalid    # malformed build trace has been detected using CRC32
+          :invalid,   # invalid build trace has been detected using CRC32
+          :corrupted  # malformed trace found after comparing CRC32 and size
         ].freeze
 
         def increment_trace_operation(operation: :unknown)

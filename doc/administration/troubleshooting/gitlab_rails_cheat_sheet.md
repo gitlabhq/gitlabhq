@@ -578,6 +578,17 @@ group = Group.find_by_path_or_name('group-name')
 group.project_creation_level=0
 ```
 
+### Modify group - disable 2FA requirement 
+
+WARNING:
+When disabling the 2FA Requirement on a subgroup, the whole parent group (including all subgroups) is affected by this change.
+
+```ruby
+group = Group.find_by_path_or_name('group-name')
+group.require_two_factor_authentication=false
+group.save
+```
+
 ## SCIM
 
 ### Fixing bad SCIM identities

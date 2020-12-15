@@ -50,6 +50,7 @@ module Gitlab
 
           entry :variables, Entry::Variables,
             description: 'Environment variables that will be used.',
+            metadata: { use_value_data: true },
             reserved: true
 
           entry :stages, Entry::Stages,

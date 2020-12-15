@@ -390,7 +390,10 @@ const Api = {
         params: { ...defaults, ...options },
       })
       .then(({ data }) => callback(data))
-      .catch(() => flash(__('Something went wrong while fetching projects')));
+      .catch(() => {
+        flash(__('Something went wrong while fetching projects'));
+        callback();
+      });
   },
 
   commit(id, sha, params = {}) {

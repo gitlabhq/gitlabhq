@@ -38,6 +38,8 @@ module API
           packages = ::Packages::Composer::PackagesFinder.new(current_user, user_group).execute
 
           if params[:package_name].present?
+            params[:package_name], params[:sha] = params[:package_name].split('$')
+
             packages = packages.with_name(params[:package_name])
           end
 
@@ -93,6 +95,7 @@ module API
 
       get ':id/-/packages/composer/*package_name', requirements: COMPOSER_ENDPOINT_REQUIREMENTS, file_path: true do
         not_found! if packages.empty?
+        not_found! if params[:sha].blank?
 
         presenter.package_versions
       end

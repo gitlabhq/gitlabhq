@@ -1,7 +1,7 @@
 import mutations from '~/search/store/mutations';
 import createState from '~/search/store/state';
 import * as types from '~/search/store/mutation_types';
-import { MOCK_QUERY, MOCK_GROUPS } from '../mock_data';
+import { MOCK_QUERY, MOCK_GROUPS, MOCK_PROJECTS } from '../mock_data';
 
 describe('Global Search Store Mutations', () => {
   let state;
@@ -33,6 +33,32 @@ describe('Global Search Store Mutations', () => {
 
       expect(state.fetchingGroups).toBe(false);
       expect(state.groups).toEqual([]);
+    });
+  });
+
+  describe('REQUEST_PROJECTS', () => {
+    it('sets fetchingProjects to true', () => {
+      mutations[types.REQUEST_PROJECTS](state);
+
+      expect(state.fetchingProjects).toBe(true);
+    });
+  });
+
+  describe('RECEIVE_PROJECTS_SUCCESS', () => {
+    it('sets fetchingProjects to false and sets projects', () => {
+      mutations[types.RECEIVE_PROJECTS_SUCCESS](state, MOCK_PROJECTS);
+
+      expect(state.fetchingProjects).toBe(false);
+      expect(state.projects).toBe(MOCK_PROJECTS);
+    });
+  });
+
+  describe('RECEIVE_PROJECTS_ERROR', () => {
+    it('sets fetchingProjects to false and clears projects', () => {
+      mutations[types.RECEIVE_PROJECTS_ERROR](state);
+
+      expect(state.fetchingProjects).toBe(false);
+      expect(state.projects).toEqual([]);
     });
   });
 
