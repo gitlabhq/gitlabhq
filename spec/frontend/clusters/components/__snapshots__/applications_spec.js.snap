@@ -55,7 +55,7 @@ exports[`Applications Crossplane application shows the correct description 1`] =
 `;
 
 exports[`Applications Ingress application shows the correct warning message 1`] = `
-<strong
+<span
   data-testid="ingressCostWarning"
 >
   Installing Ingress may incur additional costs. Learn more about 
@@ -68,7 +68,7 @@ exports[`Applications Ingress application shows the correct warning message 1`] 
     pricing
   </a>
   .
-</strong>
+</span>
 `;
 
 exports[`Applications Knative application shows the correct description 1`] = `
