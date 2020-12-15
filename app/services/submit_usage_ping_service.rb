@@ -43,8 +43,6 @@ class SubmitUsagePingService
   private
 
   def save_raw_usage_data(usage_data)
-    return unless Feature.enabled?(:save_raw_usage_data)
-
     RawUsageData.safe_find_or_create_by(recorded_at: usage_data[:recorded_at]) do |record|
       record.payload = usage_data
     end

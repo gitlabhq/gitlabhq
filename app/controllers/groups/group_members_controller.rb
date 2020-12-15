@@ -15,7 +15,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
   before_action :authorize_admin_group_member!, except: admin_not_required_endpoints
 
   before_action do
-    push_frontend_feature_flag(:group_members_filtered_search, @group)
+    push_frontend_feature_flag(:group_members_filtered_search, @group, default_enabled: true)
   end
 
   skip_before_action :check_two_factor_requirement, only: :leave

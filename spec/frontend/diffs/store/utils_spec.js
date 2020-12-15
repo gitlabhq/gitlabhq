@@ -409,10 +409,13 @@ describe('DiffsStoreUtils', () => {
           diff_files: [{ ...mock, [INLINE_DIFF_LINES_KEY]: undefined }],
         };
 
-        preparedDiff.diff_files = utils.prepareDiffData(preparedDiff);
-        splitInlineDiff.diff_files = utils.prepareDiffData(splitInlineDiff);
-        splitParallelDiff.diff_files = utils.prepareDiffData(splitParallelDiff);
-        completedDiff.diff_files = utils.prepareDiffData(completedDiff, [mock]);
+        preparedDiff.diff_files = utils.prepareDiffData({ diff: preparedDiff });
+        splitInlineDiff.diff_files = utils.prepareDiffData({ diff: splitInlineDiff });
+        splitParallelDiff.diff_files = utils.prepareDiffData({ diff: splitParallelDiff });
+        completedDiff.diff_files = utils.prepareDiffData({
+          diff: completedDiff,
+          priorFiles: [mock],
+        });
       });
 
       it('sets the renderIt and collapsed attribute on files', () => {
@@ -447,7 +450,10 @@ describe('DiffsStoreUtils', () => {
           content_sha: 'ABC',
           file_hash: 'DEF',
         };
-        const updatedFilesList = utils.prepareDiffData({ diff_files: [fakeNewFile] }, priorFiles);
+        const updatedFilesList = utils.prepareDiffData({
+          diff: { diff_files: [fakeNewFile] },
+          priorFiles,
+        });
 
         expect(updatedFilesList).toEqual([mock, fakeNewFile]);
       });
@@ -460,7 +466,10 @@ describe('DiffsStoreUtils', () => {
           { ...mock, [INLINE_DIFF_LINES_KEY]: undefined },
           { ...mock, [INLINE_DIFF_LINES_KEY]: undefined, content_sha: 'ABC', file_hash: 'DEF' },
         ];
-        const updatedFilesList = utils.prepareDiffData({ diff_files: fakeBatch }, priorFiles);
+        const updatedFilesList = utils.prepareDiffData({
+          diff: { diff_files: fakeBatch },
+          priorFiles,
+        });
 
         expect(updatedFilesList).toEqual([
           mock,
@@ -498,7 +507,7 @@ describe('DiffsStoreUtils', () => {
       beforeEach(() => {
         mock = getDiffMetadataMock();
 
-        preparedDiffFiles = utils.prepareDiffData(mock);
+        preparedDiffFiles = utils.prepareDiffData({ diff: mock, meta: true });
       });
 
       it('sets the renderIt and collapsed attribute on files', () => {
@@ -514,7 +523,7 @@ describe('DiffsStoreUtils', () => {
         const fileMock = getDiffFileMock();
         const metaData = getDiffMetadataMock();
         const priorFiles = [fileMock];
-        const updatedFilesList = utils.prepareDiffData(metaData, priorFiles);
+        const updatedFilesList = utils.prepareDiffData({ diff: metaData, priorFiles, meta: true });
 
         expect(updatedFilesList.length).toEqual(2);
         expect(updatedFilesList[0]).toEqual(fileMock);
@@ -539,7 +548,7 @@ describe('DiffsStoreUtils', () => {
         const fileMock = getDiffFileMock();
         const metaMock = getDiffMetadataMock();
         const priorFiles = [{ ...fileMock }];
-        const updatedFilesList = utils.prepareDiffData(metaMock, priorFiles);
+        const updatedFilesList = utils.prepareDiffData({ diff: metaMock, priorFiles, meta: true });
 
         expect(updatedFilesList).toEqual([
           fileMock,

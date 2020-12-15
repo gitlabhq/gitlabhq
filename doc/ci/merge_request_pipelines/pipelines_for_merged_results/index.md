@@ -15,7 +15,9 @@ source branch into a target branch. By default, the CI pipeline runs jobs
 against the source branch.
 
 With *pipelines for merged results*, the pipeline runs as if the changes from
-the source branch have already been merged into the target branch.
+the source branch have already been merged into the target branch. The commit shown for the pipeline does not exist on the source or target branches but represents the combined target and source branches.
+
+![Merge request widget for merged results pipeline](img/merged_result_pipeline.png)
 
 If the pipeline fails due to a problem in the target branch, you can wait until the
 target is fixed and re-run the pipeline.

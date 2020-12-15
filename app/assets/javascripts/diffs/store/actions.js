@@ -191,7 +191,13 @@ export const fetchDiffFilesMeta = ({ commit, state }) => {
       commit(types.SET_MERGE_REQUEST_DIFFS, data.merge_request_diffs || []);
       commit(types.SET_DIFF_METADATA, strippedData);
 
-      worker.postMessage(prepareDiffData(data, state.diffFiles));
+      worker.postMessage(
+        prepareDiffData({
+          diff: data,
+          priorFiles: state.diffFiles,
+          meta: true,
+        }),
+      );
 
       return data;
     })

@@ -73,7 +73,10 @@ export default {
   },
 
   [types.SET_DIFF_DATA_BATCH](state, data) {
-    const files = prepareDiffData(data, state.diffFiles);
+    const files = prepareDiffData({
+      diff: data,
+      priorFiles: state.diffFiles,
+    });
 
     Object.assign(state, {
       ...convertObjectPropsToCamelCase(data),
@@ -143,7 +146,7 @@ export default {
   },
 
   [types.ADD_COLLAPSED_DIFFS](state, { file, data }) {
-    const files = prepareDiffData(data);
+    const files = prepareDiffData({ diff: data });
     const [newFileData] = files.filter(f => f.file_hash === file.file_hash);
     const selectedFile = state.diffFiles.find(f => f.file_hash === file.file_hash);
     Object.assign(selectedFile, { ...newFileData });

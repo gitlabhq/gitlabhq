@@ -16,7 +16,7 @@ module Gitlab
             fallback_diff_refs: merge_request_diff.fallback_diff_refs)
         end
 
-        def diff_files
+        def diff_files(sorted: false)
           strong_memoize(:diff_files) do
             diff_files = super
 
@@ -24,6 +24,12 @@ module Gitlab
 
             diff_files
           end
+        end
+
+        def raw_diff_files(sorted: false)
+          # We force `sorted` to `false` as we don't need to sort the diffs when
+          # dealing with `MergeRequestDiff` since we sort its files on create.
+          super(sorted: false)
         end
 
         override :write_cache

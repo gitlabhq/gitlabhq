@@ -6,6 +6,7 @@ import TemplateSelectorMediator from '../blob/file_template_mediator';
 import { addEditorMarkdownListeners } from '~/lib/utils/text_markdown';
 import EditorLite from '~/editor/editor_lite';
 import { FileTemplateExtension } from '~/editor/editor_file_template_ext';
+import { insertFinalNewline } from '~/lib/utils/text_utility';
 
 export default class EditBlob {
   // The options object has:
@@ -49,7 +50,7 @@ export default class EditBlob {
     });
 
     form.addEventListener('submit', () => {
-      fileContentEl.value = this.editor.getValue();
+      fileContentEl.value = insertFinalNewline(this.editor.getValue());
     });
   }
 

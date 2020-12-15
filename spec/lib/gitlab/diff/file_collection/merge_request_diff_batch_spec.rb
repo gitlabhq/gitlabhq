@@ -144,4 +144,18 @@ RSpec.describe Gitlab::Diff::FileCollection::MergeRequestDiffBatch do
   it_behaves_like 'cacheable diff collection' do
     let(:cacheable_files_count) { batch_size }
   end
+
+  it_behaves_like 'unsortable diff files' do
+    let(:diffable) { merge_request.merge_request_diff }
+    let(:collection_default_args) do
+      { diff_options: {} }
+    end
+
+    subject do
+      described_class.new(merge_request.merge_request_diff,
+                          batch_page,
+                          batch_size,
+                          **collection_default_args)
+    end
+  end
 end

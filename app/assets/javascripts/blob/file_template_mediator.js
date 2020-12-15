@@ -82,19 +82,12 @@ export default class FileTemplateMediator {
 
   initPageEvents() {
     this.listenForFilenameInput();
-    this.prepFileContentForSubmit();
     this.listenForPreviewMode();
   }
 
   listenForFilenameInput() {
     this.$filenameInput.on('keyup blur', () => {
       this.displayMatchedTemplateSelector();
-    });
-  }
-
-  prepFileContentForSubmit() {
-    this.$commitForm.submit(() => {
-      this.$fileContent.val(this.editor.getValue());
     });
   }
 

@@ -4,6 +4,7 @@ import {
   DIFF_FILE_MANUAL_COLLAPSE,
   DIFF_FILE_AUTOMATIC_COLLAPSE,
 } from '../constants';
+import { uuids } from './uuids';
 
 function fileSymlinkInformation(file, fileList) {
   const duplicates = fileList.filter(iteratedFile => iteratedFile.file_hash === file.file_hash);
@@ -32,16 +33,29 @@ function collapsed(file) {
   };
 }
 
-export function prepareRawDiffFile({ file, allFiles }) {
-  Object.assign(file, {
+function identifier(file) {
+  return uuids({
+    seeds: [file.file_identifier_hash, file.content_sha],
+  })[0];
+}
+
+export function prepareRawDiffFile({ file, allFiles, meta = false }) {
+  const additionalProperties = {
     brokenSymlink: fileSymlinkInformation(file, allFiles),
     viewer: {
       ...file.viewer,
       ...collapsed(file),
     },
-  });
+  };
 
-  return file;
+  // It's possible, but not confirmed, that `content_sha` isn't available sometimes
+  // See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49506#note_464692057
+  // We don't want duplicate IDs if that's the case, so we just don't assign an ID
+  if (!meta && file.content_sha) {
+    additionalProperties.id = identifier(file);
+  }
+
+  return Object.assign(file, additionalProperties);
 }
 
 export function collapsedType(file) {

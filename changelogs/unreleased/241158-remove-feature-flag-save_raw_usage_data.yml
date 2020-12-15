@@ -1,0 +1,5 @@
+---
+title: Save usage ping payload in raw_usage_data table
+merge_request: 49559
+author:
+type: added

@@ -1,0 +1,5 @@
+---
+title: Add final newline on submit in blob editor
+merge_request: 49681
+author:
+type: fixed

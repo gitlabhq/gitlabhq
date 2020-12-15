@@ -386,9 +386,9 @@ function deduplicateFilesList(files) {
   return Object.values(dedupedFiles);
 }
 
-export function prepareDiffData(diff, priorFiles = []) {
+export function prepareDiffData({ diff, priorFiles = [], meta = false }) {
   const cleanedFiles = (diff.diff_files || [])
-    .map((file, index, allFiles) => prepareRawDiffFile({ file, allFiles }))
+    .map((file, index, allFiles) => prepareRawDiffFile({ file, allFiles, meta }))
     .map(ensureBasicDiffFileLines)
     .map(prepareDiffFileLines)
     .map(finalizeDiffFile);

@@ -147,6 +147,8 @@
 /ee/spec/javascripts/ @gitlab-org/maintainers/frontend
 /spec/frontend/ @gitlab-org/maintainers/frontend
 /ee/spec/frontend/ @gitlab-org/maintainers/frontend
+/spec/frontend_integration/ @gitlab-org/maintainers/frontend
+/ee/spec/frontend_integration/ @gitlab-org/maintainers/frontend
 
 [Database]
 /db/ @gitlab-org/maintainers/database

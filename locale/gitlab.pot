@@ -11805,9 +11805,6 @@ msgstr ""
 msgid "Feature flag was successfully removed."
 msgstr ""
 
-msgid "Feature not available"
-msgstr ""
-
 msgid "FeatureFlags|%d user"
 msgid_plural "FeatureFlags|%d users"
 msgstr[0] ""
