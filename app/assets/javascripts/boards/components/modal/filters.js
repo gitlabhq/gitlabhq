@@ -1,6 +1,5 @@
 import FilteredSearchBoards from '../../filtered_search_boards';
 import FilteredSearchContainer from '../../../filtered_search/container';
-import vuexstore from '~/boards/stores';
 
 export default {
   name: 'modal-filters',
@@ -13,7 +12,7 @@ export default {
   mounted() {
     FilteredSearchContainer.container = this.$el;
 
-    this.filteredSearch = new FilteredSearchBoards(this.store, vuexstore);
+    this.filteredSearch = new FilteredSearchBoards(this.store);
     this.filteredSearch.setup();
     this.filteredSearch.removeTokens();
     this.filteredSearch.handleInputPlaceholder();

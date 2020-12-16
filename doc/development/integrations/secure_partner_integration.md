@@ -99,7 +99,7 @@ and complete an integration with the Secure stage.
       - In the [Security Dashboard](../../user/application_security/security_dashboard/index.md) ([Dashboard data flow](https://gitlab.com/snippets/1910005#project-and-group-dashboards)).
 1. Optional: Provide a way to interact with results as Vulnerabilities:
    - Users can interact with the findings from your artifact within their workflow. They can dismiss the findings or accept them and create a backlog issue.
-   - To automatically create issues without user interaction, use the [issue API](../../api/issues.md). This will be replaced by [Standalone Vulnerabilities](https://gitlab.com/groups/gitlab-org/-/epics/634) in the future.
+   - To automatically create issues without user interaction, use the [issue API](../../api/issues.md).
 1. Optional: Provide auto-remediation steps:
    - If you specified `remediations` in your artifact, it is proposed through our [automatic remediation](../../user/application_security/index.md#automatic-remediation-for-vulnerabilities)
      interface.

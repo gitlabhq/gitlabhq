@@ -409,7 +409,8 @@ X-Gitlab-Event: Issue Hook
 }
 ```
 
-NOTE: `assignee` and `assignee_id` keys are deprecated and now show the first assignee only.
+NOTE:
+`assignee` and `assignee_id` keys are deprecated and now show the first assignee only.
 
 ### Comment events
 
@@ -734,7 +735,8 @@ X-Gitlab-Event: Note Hook
 }
 ```
 
-NOTE: `assignee_id` field is deprecated and now shows the first assignee only.
+NOTE:
+`assignee_id` field is deprecated and now shows the first assignee only.
 
 #### Comment on code snippet
 
@@ -1603,7 +1605,7 @@ Missing intermediate certificates are a common point of verification failure.
 
 ## Example webhook receiver
 
-If you want to see GitLab's webhooks in action for testing purposes you can use
+If you want to see GitLab webhooks in action for testing purposes you can use
 a simple echo script running in a console session. For the following script to
 work you need to have Ruby installed.
 

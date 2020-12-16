@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::WhatsNew::ItemPresenter do
   let(:present) { Gitlab::WhatsNew::ItemPresenter.present(item) }
-  let(:item) { { "packages" => %w(Premium Ultimate) } }
+  let(:item) { { "packages" => %w(Core Starter Premium Ultimate) } }
   let(:gitlab_com) { true }
 
   before do
@@ -14,7 +14,7 @@ RSpec.describe Gitlab::WhatsNew::ItemPresenter do
   describe '.present' do
     context 'when on Gitlab.com' do
       it 'transforms package names to gitlab.com friendly package names' do
-        expect(present).to eq({ "packages" => %w(Silver Gold) })
+        expect(present).to eq({ "packages" => %w(Free Bronze Silver Gold) })
       end
     end
 
@@ -22,7 +22,7 @@ RSpec.describe Gitlab::WhatsNew::ItemPresenter do
       let(:gitlab_com) { false }
 
       it 'does not transform package names' do
-        expect(present).to eq({ "packages" => %w(Premium Ultimate) })
+        expect(present).to eq({ "packages" => %w(Core Starter Premium Ultimate) })
       end
     end
   end

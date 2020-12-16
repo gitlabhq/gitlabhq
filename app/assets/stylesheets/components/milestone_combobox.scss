@@ -1,11 +1,6 @@
-.selected-item::before {
-  content: '\f00c';
-  color: $green-500;
-  position: absolute;
-  left: 16px;
-  top: 16px;
-  transform: translateY(-50%);
-  font: 14px FontAwesome;
+.selected-item {
+  /* stylelint-disable-next-line function-url-quotes */
+  background: url(asset_path('checkmark.png')) no-repeat 0 2px;
 }
 
 .dropdown-item-space {

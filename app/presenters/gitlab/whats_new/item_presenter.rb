@@ -4,7 +4,7 @@ module Gitlab
   module WhatsNew
     class ItemPresenter
       DICTIONARY = {
-        free: 'Free',
+        core: 'Free',
         starter: 'Bronze',
         premium: 'Silver',
         ultimate: 'Gold'

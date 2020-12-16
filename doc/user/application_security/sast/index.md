@@ -94,6 +94,31 @@ Note that the Java analyzers can also be used for variants like the
 [Grails](https://grails.org/),
 and the [Maven wrapper](https://github.com/takari/maven-wrapper).
 
+### Multi-project support
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4895) in GitLab 13.7.
+
+GitLab SAST can scan repositories that contain multiple projects. All projects must be in the same
+language.
+
+The following analyzers have multi-project support:
+
+- Bandit
+- ESLint
+- Gosec
+- Kubesec
+- NodeJsScan
+- MobSF
+- PMD
+- Security Code Scan
+- SpotBugs
+- Sobelow
+
+#### Enable multi-project support for Security Code Scan
+
+Multi-project support in the Security Code Scan requires a Solution (`.sln`) file in the root of
+the repository. For details on the Solution format, see the Microsoft reference [Solution (.sln) file](https://docs.microsoft.com/en-us/visualstudio/extensibility/internals/solution-dot-sln-file?view=vs-2019).
+
 ### Making SAST analyzers available to all GitLab tiers
 
 All open source (OSS) analyzers have been moved to the GitLab Core tier as of GitLab 13.3.

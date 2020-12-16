@@ -170,7 +170,7 @@ From time to time, it may be required to delete or clean up branches that are
 protected.
 
 User with [Maintainer permissions](../permissions.md) and up can manually delete protected
-branches via GitLab's web interface:
+branches via the GitLab web interface:
 
 1. Visit **Repository > Branches**
 1. Click on the delete icon next to the branch you wish to delete

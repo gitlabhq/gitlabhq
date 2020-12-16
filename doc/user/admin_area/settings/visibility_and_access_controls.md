@@ -151,7 +151,7 @@ For more details, see [Exporting a project and its data](../../../user/project/s
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/4696) in GitLab 8.10.
 
-With GitLab's access restrictions, you can select with which protocols users can communicate with
+With GitLab access restrictions, you can select with which protocols users can communicate with
 GitLab.
 
 Disabling an access protocol does not block access to the server itself via those ports. The ports

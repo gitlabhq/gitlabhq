@@ -16,7 +16,7 @@ Once configured, you can reference external issues using the format `CODE-123`, 
 
 These references in GitLab merge requests, commits, or comments are automatically converted to links to the issues.
 
-You can keep GitLab's issue tracker enabled in parallel or disable it. When enabled, the **Issues** link in the
+You can keep the GitLab issue tracker enabled in parallel or disable it. When enabled, the **Issues** link in the
 GitLab menu always opens the internal issue tracker. When disabled, the link is not visible in the menu.
 
 ## Configuration

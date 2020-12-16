@@ -74,7 +74,8 @@ We follow a simple formula roughly based on Hungarian notation.
   - `_tab`
   - `_menu_item`
 
-*Note: If none of the listed types are suitable, please open a merge request to add an appropriate type to the list.*
+NOTE:
+If none of the listed types are suitable, please open a merge request to add an appropriate type to the list.
 
 ### Examples
 

@@ -90,7 +90,7 @@ These settings can be found within:
   1. From the Group's homepage, navigate to **Settings > General**.
   1. Fill in the **Repository size limit (MB)** field in the **Naming, visibility** section.
   1. Click **Save changes**.
-- GitLab's global settings:
+- GitLab global settings:
   1. From the Dashboard, navigate to **Admin Area > Settings > General**.
   1. Expand the **Account and limit** section.
   1. Fill in the **Size limit per repository (MB)** field.

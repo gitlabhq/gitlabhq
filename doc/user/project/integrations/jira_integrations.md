@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab Issues are a tool for discussing ideas and planning and tracking work. However, your organization may already use Jira for these purposes, with
 extensive, established data and business processes they rely on.
 
-Although you can [migrate](../../../user/project/import/jira.md) your Jira issues and work exclusively in GitLab, you also have the option of continuing to use Jira by using GitLab's Jira integrations.
+Although you can [migrate](../../../user/project/import/jira.md) your Jira issues and work exclusively in GitLab, you also have the option of continuing to use Jira by using the GitLab Jira integrations.
 
 ## Integrations
 

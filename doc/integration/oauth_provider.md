@@ -76,7 +76,7 @@ in the **Authorized applications** section under **Profile Settings > Applicatio
 
 ![Authorized_applications](img/oauth_provider_authorized_application.png)
 
-GitLab's OAuth applications support scopes, which allow various actions that any given
+The GitLab OAuth applications support scopes, which allow various actions that any given
 application can perform such as `read_user` and `api`. There are many more scopes
 available.
 

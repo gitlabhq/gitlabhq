@@ -46,4 +46,4 @@ These resources will help you get further acclimated to working on the command l
 - [Start using Git on the command line](start-using-git.md), for some simple Git commands.
 - [Command line basics](command-line-commands.md), to create and edit files using the command line.
 
-More Git resources are available in GitLab's [Git documentation](../topics/git/index.md).
+More Git resources are available in the GitLab [Git documentation](../topics/git/index.md).

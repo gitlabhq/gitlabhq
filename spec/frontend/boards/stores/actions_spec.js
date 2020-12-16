@@ -31,6 +31,10 @@ const expectNotImplemented = action => {
 // subgroups when the movIssue action is called.
 const getProjectPath = path => path.split('#')[0];
 
+beforeEach(() => {
+  window.gon = { features: {} };
+});
+
 describe('setInitialBoardData', () => {
   it('sets data object', () => {
     const mockData = {
@@ -62,6 +66,24 @@ describe('setFilters', () => {
       state,
       [{ type: types.SET_FILTERS, payload: filters }],
       [],
+      done,
+    );
+  });
+});
+
+describe('performSearch', () => {
+  it('should dispatch setFilters action', done => {
+    testAction(actions.performSearch, {}, {}, [], [{ type: 'setFilters', payload: {} }], done);
+  });
+
+  it('should dispatch setFilters, fetchLists and resetIssues action when graphqlBoardLists FF is on', done => {
+    window.gon = { features: { graphqlBoardLists: true } };
+    testAction(
+      actions.performSearch,
+      {},
+      {},
+      [],
+      [{ type: 'setFilters', payload: {} }, { type: 'fetchLists' }, { type: 'resetIssues' }],
       done,
     );
   });

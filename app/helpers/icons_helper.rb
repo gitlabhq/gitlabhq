@@ -4,7 +4,6 @@ require 'json'
 
 module IconsHelper
   extend self
-  include FontAwesome::Rails::IconHelper
 
   DEFAULT_ICON_SIZE = 16
 

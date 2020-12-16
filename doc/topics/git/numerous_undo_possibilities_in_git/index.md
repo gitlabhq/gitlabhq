@@ -8,7 +8,7 @@ type: howto
 # Numerous undo possibilities in Git
 
 In this tutorial, we will show you different ways of undoing your work in Git, for which
-we will assume you have a basic working knowledge of. Check GitLab's
+we will assume you have a basic working knowledge of. Check the GitLab
 [Git documentation](../index.md) for reference.
 
 Also, we will only provide some general information of the commands, which is enough

@@ -22,7 +22,7 @@ For information on how to contribute to the development of Value Stream Analytic
 
 Group-level Value Stream Analytics is available via **Group > Analytics > Value Stream**.
 
-Note: [Project-level Value Stream Analytics](../../analytics/value_stream_analytics.md) is also available.
+[Project-level Value Stream Analytics](../../analytics/value_stream_analytics.md) is also available.
 
 ## Default stages
 

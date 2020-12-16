@@ -95,7 +95,7 @@ you can drag and drop designs onto the dedicated drop zone to upload them.
 
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202634)
 in GitLab 12.10, you can also copy images from your file system and
-paste them directly on GitLab's Design page as a new design.
+paste them directly on the GitLab Design page as a new design.
 
 On macOS you can also take a screenshot and immediately copy it to
 the clipboard by simultaneously clicking <kbd>Control</kbd> + <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>3</kbd>, and then paste it as a design.

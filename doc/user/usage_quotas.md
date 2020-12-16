@@ -40,7 +40,7 @@ storage item. Click on each project's title to see a breakdown per storage item.
 > - It's enabled on GitLab.com.
 > - It's recommended for production use.
 
-CAUTION: **Warning:**
+WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
 The following storage usage statistics are available to an owner:

@@ -62,9 +62,8 @@ Prerequisites:
 
 ### Authenticate with the Dependency Proxy
 
-> - [Authentication and support for private groups](https://gitlab.com/gitlab-org/gitlab/-/issues/11582) in [GitLab Core](https://about.gitlab.com/pricing/) 13.7.
-> - It was [deployed behind a feature flag](../../feature_flags.md), disabled by default.
-> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49519) on GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11582) in [GitLab Core](https://about.gitlab.com/pricing/) 13.7.
+> - It's [deployed behind a feature flag](../../feature_flags.md), enabled by default.
 > - It's enabled on GitLab.com.
 > - It's recommended for production use.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](../../../administration/packages/dependency_proxy.md#disabling-authentication). **(CORE ONLY)**
@@ -94,7 +93,7 @@ You can authenticate using:
 
 #### Authenticate within CI/CD
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/280582) in 13.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/280582) in GitLab 13.7.
 
 To work with the Dependency Proxy in [GitLab CI/CD](../../../ci/README.md), you can use:
 
@@ -208,6 +207,9 @@ the [Dependency Proxy API](../../../api/dependency_proxy.md).
 ## Docker Hub rate limits and the Dependency Proxy
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241639) in [GitLab Core](https://about.gitlab.com/pricing/) 13.7.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+Watch how to [use the Dependency Proxy to help avoid Docker Hub rate limits](https://youtu.be/Nc4nUo7Pq08).
 
 In November 2020, Docker introduced
 [rate limits on pull requests from Docker Hub](https://docs.docker.com/docker-hub/download-rate-limit/).

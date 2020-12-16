@@ -40,7 +40,6 @@ import {
   NavigationType,
   convertObjectPropsToCamelCase,
   parseBoolean,
-  urlParamsToObject,
 } from '~/lib/utils/common_utils';
 import mountMultipleBoardsSwitcher from './mount_multiple_boards_switcher';
 
@@ -112,7 +111,7 @@ export default () => {
       };
     },
     computed: {
-      ...mapGetters(['isSwimlanesOn', 'shouldUseGraphQL']),
+      ...mapGetters(['shouldUseGraphQL']),
       detailIssueVisible() {
         return Object.keys(this.detailIssue.issue).length;
       },
@@ -130,6 +129,17 @@ export default () => {
         ...endpoints,
         boardType: this.parent,
         disabled: this.disabled,
+        boardConfig: {
+          milestoneId: parseInt($boardApp.dataset.boardMilestoneId, 10),
+          milestoneTitle: $boardApp.dataset.boardMilestoneTitle || '',
+          iterationId: parseInt($boardApp.dataset.boardIterationId, 10),
+          iterationTitle: $boardApp.dataset.boardIterationTitle || '',
+          assigneeUsername: $boardApp.dataset.boardAssigneeUsername,
+          labels: $boardApp.dataset.labels ? JSON.parse($boardApp.dataset.labels || []) : [],
+          weight: $boardApp.dataset.boardWeight
+            ? parseInt($boardApp.dataset.boardWeight, 10)
+            : null,
+        },
       });
       boardsStore.setEndpoints(endpoints);
       boardsStore.rootPath = this.boardsEndpoint;
@@ -138,7 +148,6 @@ export default () => {
       eventHub.$on('newDetailIssue', this.updateDetailIssue);
       eventHub.$on('clearDetailIssue', this.clearDetailIssue);
       sidebarEventHub.$on('toggleSubscription', this.toggleSubscription);
-      eventHub.$on('performSearch', this.performSearch);
       eventHub.$on('initialBoardLoad', this.initialBoardLoad);
     },
     beforeDestroy() {
@@ -146,16 +155,10 @@ export default () => {
       eventHub.$off('newDetailIssue', this.updateDetailIssue);
       eventHub.$off('clearDetailIssue', this.clearDetailIssue);
       sidebarEventHub.$off('toggleSubscription', this.toggleSubscription);
-      eventHub.$off('performSearch', this.performSearch);
       eventHub.$off('initialBoardLoad', this.initialBoardLoad);
     },
     mounted() {
-      this.filterManager = new FilteredSearchBoards(
-        boardsStore.filter,
-        store,
-        true,
-        boardsStore.cantEdit,
-      );
+      this.filterManager = new FilteredSearchBoards(boardsStore.filter, true, boardsStore.cantEdit);
       this.filterManager.setup();
 
       this.performSearch();
@@ -167,14 +170,7 @@ export default () => {
       }
     },
     methods: {
-      ...mapActions([
-        'setInitialBoardData',
-        'setFilters',
-        'fetchEpicsSwimlanes',
-        'resetIssues',
-        'resetEpics',
-        'fetchLists',
-      ]),
+      ...mapActions(['setInitialBoardData', 'performSearch']),
       initialBoardLoad() {
         boardsStore
           .all()
@@ -189,17 +185,6 @@ export default () => {
       },
       updateTokens() {
         this.filterManager.updateTokens();
-      },
-      performSearch() {
-        this.setFilters(convertObjectPropsToCamelCase(urlParamsToObject(window.location.search)));
-        if (this.isSwimlanesOn) {
-          this.resetEpics();
-          this.resetIssues();
-          this.fetchEpicsSwimlanes({});
-        } else if (gon.features.graphqlBoardLists) {
-          this.fetchLists();
-          this.resetIssues();
-        }
       },
       updateDetailIssue(newIssue, multiSelect = false) {
         const { sidebarInfoEndpoint } = newIssue;

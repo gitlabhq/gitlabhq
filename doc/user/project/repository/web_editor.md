@@ -94,7 +94,7 @@ the target branch. Click **Create directory** to finish.
 
 ## Create a new branch
 
-There are multiple ways to create a branch from GitLab's web interface.
+There are multiple ways to create a branch from the GitLab web interface.
 
 ### Create a new branch from an issue
 

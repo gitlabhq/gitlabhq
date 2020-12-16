@@ -50,7 +50,7 @@ When you create a project in GitLab, you'll have access to a large number of
   - [Merge Request Approvals](merge_requests/merge_request_approvals.md): Ask for approval before
   implementing a change **(STARTER)**
   - [Fix merge conflicts from the UI](merge_requests/resolve_conflicts.md):
-  Your Git diff tool right from GitLab's UI
+  Your Git diff tool right from the GitLab UI
   - [Review Apps](../../ci/review_apps/index.md): Live preview the results
   of the changes proposed in a merge request in a per-branch basis
 - [Labels](labels.md): Organize issues and merge requests by labels
@@ -69,7 +69,7 @@ When you create a project in GitLab, you'll have access to a large number of
 
 **GitLab CI/CD:**
 
-- [GitLab CI/CD](../../ci/README.md): GitLab's built-in [Continuous Integration, Delivery, and Deployment](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/) tool
+- [GitLab CI/CD](../../ci/README.md): the GitLab built-in [Continuous Integration, Delivery, and Deployment](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/) tool
   - [Container Registry](../packages/container_registry/index.md): Build and push Docker
   images out-of-the-box
   - [Auto Deploy](../../topics/autodevops/stages.md#auto-deploy): Configure GitLab CI/CD
@@ -100,7 +100,7 @@ When you create a project in GitLab, you'll have access to a large number of
 - [Insights](insights/index.md): configure the Insights that matter for your projects. **(ULTIMATE)**
 - [Security Dashboard](../application_security/security_dashboard/index.md): Security Dashboard. **(ULTIMATE)**
 - [Syntax highlighting](highlighting.md): an alternative to customize
-  your code blocks, overriding GitLab's default choice of language.
+  your code blocks, overriding the GitLab default choice of language.
 - [Badges](badges.md): badges for the project overview.
 - [Releases](releases/index.md): a way to track deliverables in your project as snapshot in time of
   the source, build output, other metadata, and other artifacts

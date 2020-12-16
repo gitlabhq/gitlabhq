@@ -32,7 +32,7 @@ ones that GitLab developed.
 - Git Annex requires a more complex setup, but has much more options than Git
   LFS. You can compare the commands each one offers by running `man git-annex`
   and `man git-lfs`.
-- Annex files cannot be browsed directly in GitLab's interface, whereas LFS
+- Annex files cannot be browsed directly in the GitLab interface, whereas LFS
   files can.
 
 ## Migration steps

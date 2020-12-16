@@ -22,31 +22,13 @@
     border-radius: $gl-border-radius-base;
 
     .select2-arrow {
-      background-image: none;
-      background-color: transparent;
-      border: 0;
       padding-top: 12px;
       padding-right: 20px;
-      font-size: 10px;
+      /* stylelint-disable-next-line function-url-quotes */
+      background: url(asset_path('chevron-down.png')) no-repeat 2px 8px;
 
       b {
         display: none;
-      }
-
-      &::after {
-        content: '\f078';
-        position: absolute;
-        z-index: 1;
-        text-align: center;
-        pointer-events: none;
-        box-sizing: border-box;
-        color: $gray-darkest;
-        display: inline-block;
-        font: normal normal normal 14px/1 FontAwesome;
-        font-size: inherit;
-        text-rendering: auto;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
       }
     }
 

@@ -70,7 +70,7 @@ When trying to integrate GitLab with services that are using self-signed certifi
 There are two approaches you can take to solve this:
 
 1. Add the root certificate to the trusted chain of the OS.
-1. If using Omnibus, you can add the certificate to GitLab's trusted certificates.
+1. If using Omnibus, you can add the certificate to the GitLab trusted certificates.
 
 **OS main trusted chain**
 

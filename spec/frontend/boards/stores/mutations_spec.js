@@ -33,16 +33,21 @@ describe('Board Store Mutations', () => {
       };
       const boardType = 'group';
       const disabled = false;
+      const boardConfig = {
+        milestoneTitle: 'Milestone 1',
+      };
 
       mutations[types.SET_INITIAL_BOARD_DATA](state, {
         ...endpoints,
         boardType,
         disabled,
+        boardConfig,
       });
 
       expect(state.endpoints).toEqual(endpoints);
       expect(state.boardType).toEqual(boardType);
       expect(state.disabled).toEqual(disabled);
+      expect(state.boardConfig).toEqual(boardConfig);
     });
   });
 

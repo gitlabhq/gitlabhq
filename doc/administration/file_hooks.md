@@ -11,7 +11,7 @@ type: reference
 > - Until GitLab 12.8, the feature name was Plugins.
 
 With custom file hooks, GitLab administrators can introduce custom integrations
-without modifying GitLab's source code.
+without modifying the GitLab source code.
 
 NOTE:
 Instead of writing and supporting your own file hook you can make changes

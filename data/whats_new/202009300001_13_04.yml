@@ -76,7 +76,7 @@
   stage: Enablement
   self-managed: true
   gitlab-com: true
-  packages: [core, starter, premium, ultimate]
+  packages: [Core, Starter, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/user/search/#autocomplete-suggestions
   image_url: https://about.gitlab.com/images/13_4/enablement_global_search.gif
   published_at: 2020-09-22

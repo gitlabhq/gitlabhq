@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 NOTE:
 The preferred approach for integrating a Shibboleth authentication system
-with GitLab 10 or newer is to use [GitLab's SAML integration](saml.md). This documentation is for Omnibus GitLab 9.x installs or older.
+with GitLab 10 or newer is to use the [GitLab SAML integration](saml.md). This documentation is for Omnibus GitLab 9.x installs or older.
 
 In order to enable Shibboleth support in GitLab we need to use Apache instead of NGINX (It may be possible to use NGINX, however this is difficult to configure using the bundled NGINX provided in the Omnibus GitLab package). Apache uses mod_shib2 module for Shibboleth authentication and can pass attributes as headers to OmniAuth Shibboleth provider.
 

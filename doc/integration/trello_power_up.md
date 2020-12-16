@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Trello Power-Up
 
-GitLab's Trello Power-Up enables you to seamlessly attach
+The GitLab Trello Power-Up enables you to seamlessly attach
 GitLab **merge requests** to Trello cards.
 
 ![GitLab Trello PowerUp - Trello card](img/trello_card_with_gitlab_powerup.png)
@@ -35,7 +35,7 @@ If your instance's URL is `https://example.com`, your API URL is `https://exampl
 
 ## What is my Personal Access Token?
 
-Your GitLab's personal access token enables your GitLab account to be accessed
+Your GitLab personal access token enables your GitLab account to be accessed
 from Trello.
 
 > Find it in GitLab by clicking on your avatar (upright corner), from which you access

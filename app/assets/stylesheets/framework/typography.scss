@@ -1,3 +1,6 @@
+// Custom Fontawesome icons
+@import 'fontawesome_custom';
+
 /**
  * Apply Markup (Markdown/AsciiDoc) typography
  *
@@ -432,11 +435,11 @@
     &::before {
       margin-right: 4px;
 
-      font: normal normal normal 14px/1 FontAwesome;
+      font-style: normal;
       font-size: inherit;
       text-rendering: auto;
       -webkit-font-smoothing: antialiased;
-      content: '\f0c6';
+      content: '📎';
     }
 
     &.no-attachment-icon {

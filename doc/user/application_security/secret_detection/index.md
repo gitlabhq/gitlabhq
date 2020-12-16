@@ -332,7 +332,7 @@ For information on this, see the [general Application Security troubleshooting s
 
 This error is usually caused by the `GIT_DEPTH` value of 50 that is set for all [projects by default](../../../ci/pipelines/settings.md#git-shallow-clone).
 
-For example, if a pipeline is triggered from a Merge Request containing 60 commits while the `GIT_DEPTH` is set to 50, the Secret Detection job will fail as the clone will not have been deep enough to contain all of the relevant commits.
+For example, if a pipeline is triggered from a Merge Request containing 60 commits while the `GIT_DEPTH` is set to 50, the Secret Detection job fails as the clone is not deep enough to contain all of the relevant commits.
 
 You can confirm this to be the cause of the error by implementing a [logging level](../../application_security/secret_detection/index.md#logging-level) of `debug`. Once implemented, the logs should look similar to the following example, wherein an "object not found" error can be seen:
 

@@ -970,7 +970,7 @@ not an external process, there was very little overhead between:
 - GitLab application code that tried to look up data in Git repositories.
 - The Git implementation itself.
 
-Because the combination of Rugged and Unicorn was so efficient, GitLab's application code ended up with lots of
+Because the combination of Rugged and Unicorn was so efficient, the GitLab application code ended up with lots of
 duplicate Git object lookups. For example, looking up the `master` commit a dozen times in one
 request. We could write inefficient code without poor performance.
 
@@ -1006,7 +1006,7 @@ enables direct Git access.
 When GitLab calls a function that has a "Rugged patch", it performs two checks:
 
 - Is the feature flag for this patch set in the database? If so, the feature flag setting controls
-  GitLab's use of "Rugged patch" code.
+  the GitLab use of "Rugged patch" code.
 - If the feature flag is not set, GitLab tries accessing the filesystem underneath the
   Gitaly server directly. If it can, it uses the "Rugged patch":
   - If using Unicorn.

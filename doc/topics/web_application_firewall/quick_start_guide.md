@@ -76,9 +76,9 @@ to deploy this application under.
    ![Google auth](../autodevops/img/guide_google_auth_v12_3.png)
 
 1. The last step is to provide the cluster details.
-   1. Give it a name, leave the environment scope as is, and choose the GCP project under which the cluster
-      will be created (per the instructions to [configure your Google account](#configuring-your-google-account), a project should have already been created for you).
-   1. Choose the [region/zone](https://cloud.google.com/compute/docs/regions-zones/) under which the cluster will be created.
+   1. Give it a name, leave the environment scope as is, and choose the GCP project under which to create the cluster.
+      (Per the instructions to [configure your Google account](#configuring-your-google-account), a project should have already been created for you.)
+   1. Choose the [region/zone](https://cloud.google.com/compute/docs/regions-zones/) to create the cluster in.
    1. Enter the number of nodes you want it to have.
    1. Choose the [machine type](https://cloud.google.com/compute/docs/machine-types).
 
@@ -118,7 +118,7 @@ filled in the domain, click **Save changes**.
 
 Prometheus should also be installed. It is an open-source monitoring and
 alerting system that is used to supervise the deployed application.
-We will not install GitLab Runner as we use the shared runners that
+Installing GitLab Runner is not required as we use the shared runners that
 GitLab.com provides.
 
 ## Enabling Auto DevOps (optional)

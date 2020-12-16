@@ -48,7 +48,7 @@ to your repository's root.
 
 **From the user interface:**
 
-GitLab's UI allows you to perform lots of Git commands without having to
+The GitLab UI allows you to perform lots of Git commands without having to
 touch the command line. Even if you use the command line regularly, sometimes
 it's easier to do so [via GitLab UI](web_editor.md):
 
@@ -67,7 +67,7 @@ To get started with the command line, please read through the
 
 ### Find files
 
-Use GitLab's [file finder](file_finder.md) to search for files in a repository.
+Use the GitLab [file finder](file_finder.md) to search for files in a repository.
 
 ### Supported markup languages and extensions
 
@@ -141,7 +141,7 @@ their filenames include `openapi` or `swagger` and their extension is `yaml`,
 
 Then, to render them:
 
-1. Navigate to the OpenAPI file in your repository in GitLab's UI.
+1. Navigate to the OpenAPI file in your repository in the GitLab UI.
 1. Click the "Display OpenAPI" button which is located between the "Display source"
    and "Edit" buttons (when an OpenAPI file is found, it replaces the
    "Display rendered file" button).

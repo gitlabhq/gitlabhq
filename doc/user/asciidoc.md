@@ -48,13 +48,10 @@ monospaced font:
  and lines breaks will be preserved.
 ```
 
-An admonition paragraph grabs the reader's attention:
+Admonition paragraphs grab the reader's attention:
 
-```plaintext
-NOTE: This is a brief reference, please read the full documentation at https://asciidoctor.org/docs/.
-
-TIP: Lists can be indented. Leading whitespace is not significant.
-```
+- `NOTE: This is a brief reference, please read the full documentation at https://asciidoctor.org/docs/.`
+- `TIP: Lists can be indented. Leading whitespace is not significant.`
 
 ### Text Formatting
 

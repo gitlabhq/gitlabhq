@@ -832,7 +832,7 @@ sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 
 If all items are green, congratulations on successfully installing GitLab!
 
-TIP:  **Tip:**
+NOTE:
 Supply the `SANITIZE=true` environment variable to `gitlab:check` to omit project names from the output of the check command.
 
 ### Initial Login

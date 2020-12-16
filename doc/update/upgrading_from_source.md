@@ -45,7 +45,7 @@ specific guidelines (should there be any) are covered separately.
 
 ### 1. Backup
 
-NOTE: If you installed GitLab from source, make sure `rsync` is installed.
+If you installed GitLab from source, make sure `rsync` is installed.
 
 ```shell
 cd /home/git/gitlab
@@ -61,7 +61,8 @@ sudo service gitlab stop
 
 ### 3. Update Ruby
 
-NOTE: Beginning in GitLab 13.6, we only support Ruby 2.7 or higher, and dropped
+NOTE:
+Beginning in GitLab 13.6, we only support Ruby 2.7 or higher, and dropped
 support for Ruby 2.6. Be sure to upgrade if necessary.
 
 You can check which version you are running with `ruby -v`.
@@ -81,7 +82,7 @@ sudo make install
 
 ### 4. Update Node.js
 
-NOTE: To check the minimum required Node.js version, see [Node.js versions](../install/requirements.md#nodejs-versions).
+To check the minimum required Node.js version, see [Node.js versions](../install/requirements.md#nodejs-versions).
 
 GitLab also requires the use of Yarn `>= v1.10.0` to manage JavaScript
 dependencies.
@@ -99,7 +100,7 @@ More information can be found on the [Yarn website](https://classic.yarnpkg.com/
 
 ### 5. Update Go
 
-NOTE: To check the minimum required Go version, see [Go versions](../install/requirements.md#go-versions).
+To check the minimum required Go version, see [Go versions](../install/requirements.md#go-versions).
 
 You can check which version you are running with `go version`.
 

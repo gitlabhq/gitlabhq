@@ -7,7 +7,7 @@
   stage: Plan
   self-managed: true
   gitlab-com: true
-  packages: [Ultimate, Gold]
+  packages: [Ultimate]
   url: https://docs.gitlab.com/ee/user/project/requirements/index.html
   image_url: https://docs.gitlab.com/ee/user/project/requirements/img/requirements_list_v13_5.png
   published_at: 2020-04-22
@@ -20,7 +20,7 @@
   stage: Release
   self-managed: true
   gitlab-com: true
-  packages: [All]
+  packages: [Core, Starter, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/ci/examples/authenticating-with-hashicorp-vault/index.html
   image_url: https://about.gitlab.com/images/12_10/jwt-vault-1.png
   published_at: 2020-04-22
@@ -35,7 +35,7 @@
   stage: Plan
   self-managed: true
   gitlab-com: true
-  packages: [Ultimate, Gold]
+  packages: [Ultimate]
   url: https://docs.gitlab.com/ee/user/project/issues/index.html#health-status
   image_url: https://about.gitlab.com/images/12_10/epic-health-status.png
   published_at: 2020-04-22
@@ -48,7 +48,7 @@
   stage: Plan
   self-managed: true
   gitlab-com: true
-  packages: [All]
+  packages: [Core, Starter, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/user/project/import/jira.html
   image_url: https://about.gitlab.com/images/12_10/jira-importer.png
   published_at: 2020-04-22

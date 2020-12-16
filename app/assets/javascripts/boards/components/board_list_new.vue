@@ -7,7 +7,6 @@ import { sortableStart, sortableEnd } from '~/boards/mixins/sortable_default_opt
 import BoardNewIssue from './board_new_issue_new.vue';
 import BoardCard from './board_card.vue';
 import eventHub from '../eventhub';
-import boardsStore from '../stores/boards_store';
 import { sprintf, __ } from '~/locale';
 
 export default {
@@ -44,7 +43,6 @@ export default {
   data() {
     return {
       scrollOffset: 250,
-      filters: boardsStore.state.filters,
       showCount: false,
       showIssueForm: false,
     };
@@ -94,12 +92,6 @@ export default {
     },
   },
   watch: {
-    filters: {
-      handler() {
-        this.listRef.scrollTop = 0;
-      },
-      deep: true,
-    },
     issues() {
       this.$nextTick(() => {
         this.showCount = this.scrollHeight() > Math.ceil(this.listHeight());

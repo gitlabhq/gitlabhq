@@ -21,8 +21,6 @@ module TriggerableHooks
   extend ActiveSupport::Concern
 
   class_methods do
-    attr_reader :triggerable_hooks
-
     attr_reader :triggers
 
     def hooks_for(trigger)

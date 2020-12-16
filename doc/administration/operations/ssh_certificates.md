@@ -19,7 +19,8 @@ user, including ones that expire 24 hours after issuing.
 In such setups some external automated process is needed to constantly
 upload the new keys to GitLab.
 
-> **Warning:** OpenSSH version 6.9+ is required because that version
+WARNING:
+OpenSSH version 6.9+ is required because that version
 introduced the `AuthorizedPrincipalsCommand` configuration option. If
 using CentOS 6, you can [follow these
 instructions](fast_ssh_key_lookup.html#compiling-a-custom-version-of-openssh-for-centos-6)

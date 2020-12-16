@@ -130,6 +130,11 @@ export function isListDraggable(list) {
   return list.listType !== ListType.backlog && list.listType !== ListType.closed;
 }
 
+// EE-specific feature. Find the implementation in the `ee/`-folder
+export function transformBoardConfig() {
+  return '';
+}
+
 export default {
   getMilestone,
   formatIssue,

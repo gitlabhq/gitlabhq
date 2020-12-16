@@ -1,56 +1,43 @@
-/*!
- *  Font Awesome 4.7.0 by @davegandy - http://fontawesome.io - @fontawesome
- *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
- */
+// Custom Font Awesome styles that render emojis in asciidoc
+.md {
+  .fa {
+    display: inline-block;
+    font-style: normal;
+    font-size: 14px;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-// stylelint-disable property-no-vendor-prefix
-// stylelint-disable at-rule-no-vendor-prefix
-// stylelint-disable stylelint-gitlab/duplicate-selectors
-// scss-lint:disable MergeableSelector
-@font-face {
-  font-family: 'FontAwesome';
-  src: asset-url('fontawesome-webfont.woff2?v=4.7.0') format('woff2'), asset-url('fontawesome-webfont.woff?v=4.7.0') format('woff');
-  font-weight: normal;
-  font-style: normal;
-}
+  .fa-2x {
+    font-size: 2em;
+  }
 
-.fa {
-  display: inline-block;
-  font: normal normal normal 14px/1 FontAwesome;
-  font-size: inherit;
-  text-rendering: auto;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  .fa-exclamation-triangle::before {
+    content: '⚠';
+  }
 
-.fa-2x {
-  font-size: 2em;
-}
+  .fa-exclamation-circle::before {
+    content: '❗';
+  }
 
-.fa-exclamation-triangle::before {
-  content: '\f071';
-}
+  .fa-lightbulb-o::before {
+    content: '💡';
+  }
 
-.fa-exclamation-circle::before {
-  content: '\f06a';
-}
+  .fa-thumb-tack::before {
+    content: '📌';
+  }
 
-.fa-lightbulb-o::before {
-  content: '\f0eb';
-}
+  .fa-fire::before {
+    content: '🔥';
+  }
 
-.fa-thumb-tack::before {
-  content: '\f08d';
-}
+  .fa-square-o::before {
+    content: '\2610';
+  }
 
-.fa-fire::before {
-  content: '\f06d';
-}
-
-.fa-square-o::before {
-  content: '\f096';
-}
-
-.fa-check-square-o::before {
-  content: '\f046';
+  .fa-check-square-o::before {
+    content: '\2611';
+  }
 }

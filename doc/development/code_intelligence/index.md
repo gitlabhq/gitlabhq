@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 This document describes the design behind [Code Intelligence](../../user/project/code_intelligence.md).
 
-GitLab's built-in Code Intelligence is powered by
+The built-in Code Intelligence in GitLab is powered by
 [LSIF](https://lsif.dev) and comes down to generating an LSIF document for a
 project in a CI job, processing the data, uploading it as a CI artifact and
 displaying this information for the files in the project.

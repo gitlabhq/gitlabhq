@@ -28,7 +28,8 @@ GitLab Shell solves this by providing a way to authorize SSH users via a fast,
 indexed lookup in the GitLab database. This page describes how to enable the fast
 lookup of authorized SSH keys.
 
-> **Warning:** OpenSSH version 6.9+ is required because
+WARNING:
+OpenSSH version 6.9+ is required because
 `AuthorizedKeysCommand` must be able to accept a fingerprint. These
 instructions will break installations using older versions of OpenSSH, such as
 those included with CentOS 6 as of September 2017. If you want to use this

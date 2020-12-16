@@ -3,6 +3,7 @@ import { pick } from 'lodash';
 import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { convertObjectPropsToCamelCase, urlParamsToObject } from '~/lib/utils/common_utils';
 import { BoardType, ListType, inactiveId } from '~/boards/constants';
 import * as types from './mutation_types';
 import {
@@ -62,6 +63,18 @@ export default {
       'search',
     ]);
     commit(types.SET_FILTERS, filterParams);
+  },
+
+  performSearch({ dispatch }) {
+    dispatch(
+      'setFilters',
+      convertObjectPropsToCamelCase(urlParamsToObject(window.location.search)),
+    );
+
+    if (gon.features.graphqlBoardLists) {
+      dispatch('fetchLists');
+      dispatch('resetIssues');
+    }
   },
 
   fetchLists: ({ commit, state, dispatch }) => {

@@ -505,29 +505,27 @@
       &.is-active {
         color: $gl-text-color;
 
-        &::before {
-          position: absolute;
-          left: 16px;
-          top: 16px;
-          transform: translateY(-50%);
-          font: normal normal normal 14px/1 FontAwesome;
-          font-size: inherit;
-          text-rendering: auto;
-          -webkit-font-smoothing: antialiased;
-          -moz-osx-font-smoothing: grayscale;
-        }
-
         &.dropdown-menu-user-link::before {
           top: 50%;
         }
       }
 
       &.is-indeterminate::before {
-        content: '\f068';
+        position: absolute;
+        left: 16px;
+        top: 16px;
+        transform: translateY(-50%);
+        font-style: normal;
+        font-size: inherit;
+        text-rendering: auto;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        content: '—';
       }
 
-      &.is-active::before {
-        content: '\f00c';
+      &.is-active {
+        /* stylelint-disable-next-line function-url-quotes */
+        background: url(asset_path('checkmark.png')) no-repeat 14px 8px;
       }
     }
   }

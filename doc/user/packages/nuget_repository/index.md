@@ -181,7 +181,7 @@ nuget push <package_file> -Source <source_name>
 
 Prerequisite:
 
-[A NuGet package created with .NET CLI](https://docs.microsoft.com/en-us/nuget/create-packages/creating-a-package-dotnet-cli).
+- [A NuGet package created with .NET CLI](https://docs.microsoft.com/en-us/nuget/create-packages/creating-a-package-dotnet-cli).
 
 Publish a package by running this command:
 

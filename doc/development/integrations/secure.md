@@ -399,7 +399,7 @@ isn't a stable identifier and you shouldn't assume it as such when tracking vuln
 The maximum number of identifiers for a vulnerability is set as 20. If a vulnerability has more than 20 identifiers,
 the system saves only the first 20 of them. Note that vulnerabilities in the [Pipeline
 Security](../../user/application_security/security_dashboard/#pipeline-security)
-tab do not enforce this limit and will show all identifiers present in the report artifact.
+tab do not enforce this limit and all identifiers present in the report artifact are displayed.
 
 ### Location
 

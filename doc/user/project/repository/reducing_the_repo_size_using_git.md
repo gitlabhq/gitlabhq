@@ -253,7 +253,7 @@ When using repository cleanup, note:
   are not be removed immediately. If you have access to the
   [Gitaly](../../../administration/gitaly/index.md) server, you may slip that delay and run `git gc --prune=now` to
   prune all loose objects immediately.
-- This process removes some copies of the rewritten commits from GitLab's cache and database,
+- This process removes some copies of the rewritten commits from the GitLab cache and database,
   but there are still numerous gaps in coverage and some of the copies may persist indefinitely.
   [Clearing the instance cache](../../../administration/raketasks/maintenance.md#clear-redis-cache)
   may help to remove some of them, but it should not be depended on for security purposes!

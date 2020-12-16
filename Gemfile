@@ -292,7 +292,6 @@ gem 'sassc-rails', '~> 2.1.0'
 gem 'terser', '1.0.2'
 
 gem 'addressable', '~> 2.7'
-gem 'font-awesome-rails', '~> 4.7'
 gem 'gemojione', '~> 3.3'
 gem 'gon', '~> 6.2'
 gem 'request_store', '~> 1.5'

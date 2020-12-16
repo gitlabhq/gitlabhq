@@ -308,7 +308,8 @@ log data to build up in `pg_xlog`. Removing the unused slots can reduce the amou
    sudo gitlab-psql
    ```
 
-   Note: Using `gitlab-rails dbconsole` will not work, because managing replication slots requires superuser permissions.
+   NOTE:
+   Using `gitlab-rails dbconsole` will not work, because managing replication slots requires superuser permissions.
 
 1. View your replication slots with:
 

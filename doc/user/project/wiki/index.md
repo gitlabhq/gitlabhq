@@ -64,7 +64,7 @@ When you're ready, click the **Create page** and the new page will be created.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/33475) in GitLab 11.3.
 
-Starting with GitLab 11.3, any file that is uploaded to the wiki via GitLab's
+Starting with GitLab 11.3, any file that is uploaded to the wiki via the GitLab
 interface will be stored in the wiki Git repository, and it will be available
 if you clone the wiki repository locally. All uploaded files prior to GitLab
 11.3 are stored in GitLab itself. If you want them to be part of the wiki's Git

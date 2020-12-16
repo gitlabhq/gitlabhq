@@ -110,7 +110,7 @@ result = Net::HTTP.get(URI('https://<GITLAB URL>'));0
 ```
 
 If GitLab is not trusting HTTPS connections to itself, then you may
-need to [add your certificate to GitLab's trusted certificates](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
+need to [add your certificate to the GitLab trusted certificates](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
 
 If GitLab is not trusting connections to Slack, then the GitLab
 OpenSSL trust store is incorrect. Some typical causes: overriding
