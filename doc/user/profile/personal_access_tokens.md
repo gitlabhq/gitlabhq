@@ -14,9 +14,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 If you're unable to use [OAuth2](../../api/oauth2.md), you can use a personal access token to authenticate with the [GitLab API](../../api/README.md#personalproject-access-tokens).
 
-You can also use [personal access tokens or an OTP](../../security/two_factor_authentication.md#two-factor-authentication-2fa-for-git-over-http-operations)
-with Git to authenticate over HTTP. When 2FA is enabled, you can no longer use
-your normal account password to authenticate with Git over HTTPS.
+You can also use personal access tokens with Git to authenticate over HTTP. Personal access tokens are required when [Two-Factor Authentication (2FA)](account/two_factor_authentication.md) is enabled. In both cases, you can authenticate with a token in place of your password.
 
 Personal access tokens expire on the date you define, at midnight UTC.
 

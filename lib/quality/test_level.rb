@@ -23,6 +23,7 @@ module Quality
         dependencies
         elastic
         elastic_integration
+        experiments
         factories
         finders
         frontend

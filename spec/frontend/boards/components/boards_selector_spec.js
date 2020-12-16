@@ -126,7 +126,10 @@ describe('BoardsSelector', () => {
   });
 
   describe('loaded', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
+      await wrapper.setData({
+        loadingBoards: false,
+      });
       return Promise.all([allBoardsResponse, recentBoardsResponse]).then(() => nextTick());
     });
 

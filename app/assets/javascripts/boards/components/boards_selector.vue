@@ -112,7 +112,7 @@ export default {
       return this.groupId ? 'group' : 'project';
     },
     loading() {
-      return this.loadingRecentBoards && this.loadingBoards;
+      return this.loadingRecentBoards || Boolean(this.loadingBoards);
     },
     currentPage() {
       return this.state.currentPage;
