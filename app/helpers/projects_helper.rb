@@ -463,7 +463,8 @@ module ProjectsHelper
       issues:             :read_issue,
       project_members:    :read_project_member,
       wiki:               :read_wiki,
-      feature_flags:      :read_feature_flag
+      feature_flags:      :read_feature_flag,
+      analytics:          :read_analytics
     }
   end
 
@@ -625,6 +626,7 @@ module ProjectsHelper
       wikiAccessLevel: feature.wiki_access_level,
       snippetsAccessLevel: feature.snippets_access_level,
       pagesAccessLevel: feature.pages_access_level,
+      analyticsAccessLevel: feature.analytics_access_level,
       containerRegistryEnabled: !!project.container_registry_enabled,
       lfsEnabled: !!project.lfs_enabled,
       emailsDisabled: project.emails_disabled?,

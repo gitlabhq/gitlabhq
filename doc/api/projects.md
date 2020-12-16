@@ -1045,6 +1045,7 @@ POST /projects
 | Attribute                                                   | Type    | Required               | Description |
 |-------------------------------------------------------------|---------|------------------------|-------------|
 | `allow_merge_on_skipped_pipeline`                           | boolean | **{dotted-circle}** No | Set whether or not merge requests can be merged with skipped jobs. |
+| `analytics_access_level`                                    | string  | no                     | One of `disabled`, `private` or `enabled` |
 | `approvals_before_merge` **(STARTER)**                      | integer | **{dotted-circle}** No | How many approvers should approve merge requests by default. |
 | `auto_cancel_pending_pipelines`                             | string  | **{dotted-circle}** No | Auto-cancel pending pipelines. This isn't a boolean, but enabled/disabled. |
 | `auto_devops_deploy_strategy`                               | string  | **{dotted-circle}** No | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`). |
@@ -1118,6 +1119,7 @@ POST /projects/user/:user_id
 | Attribute                                                   | Type    | Required               | Description |
 |-------------------------------------------------------------|---------|------------------------|-------------|
 | `allow_merge_on_skipped_pipeline`                           | boolean | **{dotted-circle}** No | Set whether or not merge requests can be merged with skipped jobs. |
+| `analytics_access_level`                                    | string  | no                     | One of `disabled`, `private` or `enabled` |
 | `approvals_before_merge` **(STARTER)**                      | integer | **{dotted-circle}** No | How many approvers should approve merge requests by default. |
 | `auto_cancel_pending_pipelines`                             | string  | **{dotted-circle}** No | Auto-cancel pending pipelines. This isn't a boolean, but enabled/disabled. |
 | `auto_devops_deploy_strategy`                               | string  | **{dotted-circle}** No | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`). |
@@ -1190,6 +1192,7 @@ PUT /projects/:id
 | Attribute                                                   | Type           | Required               | Description |
 |-------------------------------------------------------------|----------------|------------------------|-------------|
 | `allow_merge_on_skipped_pipeline`                           | boolean        | **{dotted-circle}** No | Set whether or not merge requests can be merged with skipped jobs. |
+| `analytics_access_level`                                    | string         | no                     | One of `disabled`, `private` or `enabled` |
 | `approvals_before_merge` **(STARTER)**                      | integer        | **{dotted-circle}** No | How many approvers should approve merge request by default. |
 | `auto_cancel_pending_pipelines`                             | string         | **{dotted-circle}** No | Auto-cancel pending pipelines. This isn't a boolean, but enabled/disabled. |
 | `auto_devops_deploy_strategy`                               | string         | **{dotted-circle}** No | Auto Deploy strategy (`continuous`, `manual`, or `timed_incremental`). |
@@ -2374,6 +2377,7 @@ Example response:
   "repository_access_level": "enabled",
   "merge_requests_access_level": "enabled",
   "forking_access_level": "enabled",
+  "analytics_access_level": "enabled",
   "wiki_access_level": "enabled",
   "builds_access_level": "enabled",
   "snippets_access_level": "enabled",

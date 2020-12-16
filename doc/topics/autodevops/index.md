@@ -88,6 +88,9 @@ in multiple ways:
 
 ## Features
 
+NOTE:
+Depending on your target platform, some features might not be available to you.
+
 Comprised of a set of [stages](stages.md), Auto DevOps brings these best practices to your
 project in a simple and automatic way:
 

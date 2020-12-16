@@ -107,6 +107,7 @@ snippets:
 - user_mentions
 - snippet_repository
 - statistics
+- repository_storage_moves
 releases:
 - author
 - project

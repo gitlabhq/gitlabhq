@@ -211,6 +211,88 @@ To remove a member from a group:
 1. (Optional) Select the **Also unassign this user from related issues and merge requests** checkbox.
 1. Click **Remove member**.
 
+## Filter and sort members in a group
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21727) in GitLab 12.6.
+> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/228675) in GitLab 13.7.
+> - Improvements are [deployed behind a feature flag](../feature_flags.md), enabled by default.
+> - Improvements are enabled on GitLab.com.
+> - Improvements are recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable improvements](#enable-or-disable-improvements-to-the-ability-to-filter-and-sort-group-members). **(CORE ONLY)**
+
+The following sections illustrate how you can filter and sort members in a group. To view these options,
+navigate to your desired group, go to **Members**, and include the noted search terms.
+
+### Membership filter
+
+By default, inherited and direct members are displayed. The [membership](subgroups/index.md#membership) filter can be used to display only inherited or only direct members.
+
+#### Only display inherited members
+
+Include `Membership` `=` `Inherited` in the search text box.
+
+![Group members filter inherited](img/group_members_filter_inherited_13_7.png)
+
+#### Only display direct members
+
+Include `Membership` `=` `Direct` in the search text box.
+
+![Group members filter direct](img/group_members_filter_direct_13_7.png)
+
+### 2FA filter
+
+[Owner](../permissions.md#group-members-permissions) permissions required.
+
+By default, members with 2FA enabled and disabled are displayed. The 2FA filter can be used to display only members with 2FA enabled or only members with 2FA disabled.
+
+#### Only display members with 2FA enabled
+
+Include `2FA` `=` `Enabled` in the search text box.
+
+![Group members filter 2FA enabled](img/group_members_filter_2fa_enabled_13_7.png)
+
+#### Only display members with 2FA disabled
+
+Include `2FA` `=` `Disabled` in the search text box.
+
+![Group members filter 2FA disabled](img/group_members_filter_2fa_disabled_13_7.png)
+
+### Search
+
+You can search for members by name, username, or email.
+
+![Group members search](img/group_members_search_13_7.png)
+
+### Sort
+
+You can sort members by **Account**, **Access granted**, **Max role**, or **Last sign-in** in ascending or descending order.
+
+![Group members sort](img/group_members_sort_13_7.png)
+
+### Enable or disable improvements to the ability to filter and sort group members **(CORE ONLY)**
+
+Group member filtering and sorting improvements are deployed behind a feature flag that is **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can opt to disable the improvements.
+
+To disable them:
+
+```ruby
+# For the instance
+Feature.disable(:group_members_filtered_search)
+# For a single group
+Feature.disable(:group_members_filtered_search, Group.find(<group id>))
+```
+
+To enable them:
+
+```ruby
+# For the instance
+Feature.enable(:group_members_filtered_search)
+# For a single group
+Feature.enable(:group_members_filtered_search, Group.find(<group id>))
+```
+
 ## Changing the default branch protection of a group
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7583) in GitLab 12.9.

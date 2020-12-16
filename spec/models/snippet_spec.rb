@@ -21,6 +21,7 @@ RSpec.describe Snippet do
     it { is_expected.to have_many(:user_mentions).class_name("SnippetUserMention") }
     it { is_expected.to have_one(:snippet_repository) }
     it { is_expected.to have_one(:statistics).class_name('SnippetStatistics').dependent(:destroy) }
+    it { is_expected.to have_many(:repository_storage_moves).class_name('SnippetRepositoryStorageMove').inverse_of(:container) }
   end
 
   describe 'validation' do

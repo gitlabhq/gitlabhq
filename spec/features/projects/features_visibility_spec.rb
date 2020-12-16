@@ -14,7 +14,7 @@ RSpec.describe 'Edit Project Settings' do
       sign_in(member)
     end
 
-    tools = { builds: "pipelines", issues: "issues", wiki: "wiki", snippets: "snippets", merge_requests: "merge_requests" }
+    tools = { builds: "pipelines", issues: "issues", wiki: "wiki", snippets: "snippets", merge_requests: "merge_requests", analytics: "analytics" }
 
     tools.each do |tool_name, shortcut_name|
       describe "feature #{tool_name}" do

@@ -16,7 +16,7 @@ For those new to the GitLab GraphQL API, see
 
 ### Quick Reference
 
-- GitLab's GraphQL API endpoint is located at `/api/graphql`.
+- The GitLab GraphQL API endpoint is located at `/api/graphql`.
 - Get an [introduction to GraphQL from graphql.org](https://graphql.org/).
 - GitLab supports a wide range of resources, listed in the [GraphQL API Reference](reference/index.md).
 
@@ -115,9 +115,9 @@ library GitLab uses on the backend.
 
 ## Reference
 
-GitLab's GraphQL reference [is available](reference/index.md).
+The GitLab GraphQL reference [is available](reference/index.md).
 
-It is automatically generated from GitLab's GraphQL schema and embedded in a Markdown file.
+It is automatically generated from the GitLab GraphQL schema and embedded in a Markdown file.
 
 Machine-readable versions are also available:
 

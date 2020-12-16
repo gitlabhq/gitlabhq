@@ -977,6 +977,34 @@ RSpec.describe ProjectPolicy do
     end
   end
 
+  describe 'read_analytics' do
+    context 'anonymous user' do
+      let(:current_user) { anonymous }
+
+      it { is_expected.to be_allowed(:read_analytics) }
+    end
+
+    context 'project member' do
+      let(:project) { private_project }
+
+      %w(guest reporter developer maintainer).each do |role|
+        context role do
+          let(:current_user) { send(role) }
+
+          it { is_expected.to be_allowed(:read_analytics) }
+
+          context "without access to Analytics" do
+            before do
+              project.project_feature.update!(analytics_access_level: ProjectFeature::DISABLED)
+            end
+
+            it { is_expected.to be_disallowed(:read_analytics) }
+          end
+        end
+      end
+    end
+  end
+
   it_behaves_like 'Self-managed Core resource access tokens'
 
   describe 'operations feature' do

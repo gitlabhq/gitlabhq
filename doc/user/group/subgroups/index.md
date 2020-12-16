@@ -116,9 +116,9 @@ Follow the same process to create any subsequent groups.
 
 ## Membership
 
-When you add a member to a subgroup, they inherit the membership and permission
-level from the parent group(s). This model allows access to nested groups if you
-have membership in one of its parents.
+When you add a member to a group, that member is also added to all subgroups.
+Permission level is inherited from the group’s parent. This model allows access to 
+subgroups if you have membership in one of its parents.
 
 Jobs for pipelines in subgroups can use [runners](../../../ci/runners/README.md) registered to the parent group(s).
 This means secrets configured for the parent group are available to subgroup jobs.
@@ -131,31 +131,23 @@ the **Members** page of the group the member was added.
 You can tell if a member has inherited the permissions from a parent group by
 looking at the group's **Members** page.
 
-![Group members page](img/group_members.png)
+![Group members page](img/group_members_13_7.png)
 
 From the image above, we can deduce the following things:
 
 - There are 5 members that have access to the group `four`.
-- User0 is a Reporter and has inherited their permissions from group `one`
+- User 0 is a Reporter and has inherited their permissions from group `one`
   which is above the hierarchy of group `four`.
-- User1 is a Developer and has inherited their permissions from group
+- User 1 is a Developer and has inherited their permissions from group
   `one/two` which is above the hierarchy of group `four`.
-- User2 is a Developer and has inherited their permissions from group
+- User 2 is a Developer and has inherited their permissions from group
   `one/two/three` which is above the hierarchy of group `four`.
-- For User3 there is no indication of a parent group, therefore they belong to
+- For User 3 the **Source** column indicates **Direct member**, therefore they belong to
   group `four`, the one we're inspecting.
 - Administrator is the Owner and member of **all** subgroups and for that reason,
-  as with User3, there is no indication of an ancestor group.
+  as with User 3, the **Source** column indicates **Direct member**.
 
-[From](https://gitlab.com/gitlab-org/gitlab/-/issues/21727) GitLab 12.6, you can filter
-this list using dropdown on the right side:
-
-![Group members filter](img/group_members_filter_v12_6.png)
-
-- **Show only direct members** displays only Administrator and User3, since these are
-  the only users that belong to group `four`, which is the one we're inspecting.
-- **Show only inherited members** displays User0, User1 and User2, no matter which group
-  above the hierarchy is the source of inherited permissions.
+Members can be [filtered by inherited or direct membership](../index.md#membership-filter).
 
 ### Overriding the ancestor group membership
 
@@ -169,9 +161,9 @@ Therefore, you cannot reduce a user's permissions in a subgroup with respect to 
 To override a user's membership of an ancestor group (the first group they were
 added to), add the user to the new subgroup again with a higher set of permissions.
 
-For example, if User0 was first added to group `group-1/group-1-1` with Developer
+For example, if User 1 was first added to group `one/two` with Developer
 permissions, then they inherit those permissions in every other subgroup
-of `group-1/group-1-1`. To give them Maintainer access to `group-1/group-1-1/group1-1-1`,
+of `one/two`. To give them Maintainer access to group `one/two/three/four`,
 you would add them again in that group as Maintainer. Removing them from that group,
 the permissions fall back to those of the ancestor group.
 

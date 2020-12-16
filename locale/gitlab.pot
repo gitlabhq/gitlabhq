@@ -962,6 +962,9 @@ msgstr ""
 msgid "(%{value}) has already been taken"
 msgstr ""
 
+msgid "(+%{count}&nbsp;rules)"
+msgstr ""
+
 msgid "(No changes)"
 msgstr ""
 
@@ -8680,6 +8683,9 @@ msgstr ""
 msgid "DastProfiles|Error Details"
 msgstr ""
 
+msgid "DastProfiles|Excluded URLs"
+msgstr ""
+
 msgid "DastProfiles|Hide debug messages"
 msgstr ""
 
@@ -8726,6 +8732,9 @@ msgid "DastProfiles|Please enter a valid timeout value"
 msgstr ""
 
 msgid "DastProfiles|Profile name"
+msgstr ""
+
+msgid "DastProfiles|Request headers"
 msgstr ""
 
 msgid "DastProfiles|Run the AJAX spider, in addition to the traditional spider, to crawl the target site."
@@ -21754,6 +21763,9 @@ msgstr ""
 msgid "ProjectSettings|Allow users to request access"
 msgstr ""
 
+msgid "ProjectSettings|Analytics"
+msgstr ""
+
 msgid "ProjectSettings|Automatically resolve merge request diff discussions when they become outdated"
 msgstr ""
 
@@ -21995,6 +22007,9 @@ msgid "ProjectSettings|View and edit files in this project"
 msgstr ""
 
 msgid "ProjectSettings|View and edit files in this project. Non-project members will only have read access"
+msgstr ""
+
+msgid "ProjectSettings|View project analytics"
 msgstr ""
 
 msgid "ProjectSettings|When approved for merge, merge requests are queued and pipelines validate the combined results of the source and target branches before merge."

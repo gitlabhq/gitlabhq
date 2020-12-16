@@ -68,6 +68,7 @@ module API
       expose(:snippets_access_level) { |project, options| project.project_feature.string_access_level(:snippets) }
       expose(:pages_access_level) { |project, options| project.project_feature.string_access_level(:pages) }
       expose(:operations_access_level) { |project, options| project.project_feature.string_access_level(:operations) }
+      expose(:analytics_access_level) { |project, options| project.project_feature.string_access_level(:analytics) }
 
       expose :emails_disabled
       expose :shared_runners_enabled

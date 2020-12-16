@@ -3,7 +3,7 @@
 class ProjectFeature < ApplicationRecord
   include Featurable
 
-  FEATURES = %i(issues forking merge_requests wiki snippets builds repository pages metrics_dashboard operations).freeze
+  FEATURES = %i(issues forking merge_requests wiki snippets builds repository pages metrics_dashboard analytics operations).freeze
 
   set_available_features(FEATURES)
 
@@ -44,6 +44,7 @@ class ProjectFeature < ApplicationRecord
   default_value_for :snippets_access_level,          value: ENABLED, allows_nil: false
   default_value_for :wiki_access_level,              value: ENABLED, allows_nil: false
   default_value_for :repository_access_level,        value: ENABLED, allows_nil: false
+  default_value_for :analytics_access_level,         value: ENABLED, allows_nil: false
   default_value_for :metrics_dashboard_access_level, value: PRIVATE, allows_nil: false
   default_value_for :operations_access_level,        value: ENABLED, allows_nil: false
 

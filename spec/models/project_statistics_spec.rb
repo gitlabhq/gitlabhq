@@ -313,17 +313,6 @@ RSpec.describe ProjectStatistics do
     it 'stores the size of related uploaded files' do
       expect(statistics.update_uploads_size).to eq(3.megabytes)
     end
-
-    context 'with feature flag disabled' do
-      before do
-        statistics.update_columns(uploads_size: 0)
-        stub_feature_flags(count_uploads_size_in_storage_stats: false)
-      end
-
-      it 'does not store the size of related uploaded files' do
-        expect(statistics.update_uploads_size).to eq(0)
-      end
-    end
   end
 
   describe '#update_storage_size' do

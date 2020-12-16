@@ -192,6 +192,8 @@ If the information you need isn't listed above you may wish to check our [troubl
 
 ## User access and management
 
+> [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/268142) in GitLab 13.7.
+
 Once Group SSO is configured and enabled, users can access the GitLab.com group through the identity provider's dashboard. If [SCIM](scim_setup.md) is configured, please see the [user access and linking setup section on the SCIM page](scim_setup.md#user-access-and-linking-setup).
 
 When a user tries to sign in with Group SSO, GitLab attempts to find or create a user based on the following:

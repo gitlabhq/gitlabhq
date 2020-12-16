@@ -53,7 +53,6 @@ problems, such as outages.
 
 Please also read the [development guide for feature flags](development.md).
 
-
 ### Including a feature behind feature flag in the final release
 
 In order to build a final release and present the feature for self-managed
