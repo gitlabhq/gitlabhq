@@ -48,7 +48,7 @@ module API
         not_found! unless Feature.enabled?(:go_proxy, user_project)
 
         module_name = case_decode params[:module_name]
-        bad_request!('Module Name') if module_name.blank?
+        bad_request_missing_attribute!('Module Name') if module_name.blank?
 
         mod = ::Packages::Go::ModuleFinder.new(user_project, module_name).execute
 

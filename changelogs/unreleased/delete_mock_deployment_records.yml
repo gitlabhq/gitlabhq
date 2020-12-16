@@ -1,0 +1,5 @@
+---
+title: Delete MockDeploymentService records, used only in development environments
+merge_request: 50030
+author:
+type: other

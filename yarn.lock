@@ -871,10 +871,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/tributejs/-/tributejs-1.0.0.tgz#672befa222aeffc83e7d799b0500a7a4418e59b8"
   integrity sha512-nmKw1+hB6MHvlmPz63yPwVs1qQkycHwsKgxpEbzmky16Y6mL4EJMk3w1b8QlOAF/AIAzjCERPhe/R4MJiohbZw==
 
-"@gitlab/ui@24.8.0":
-  version "24.8.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-24.8.0.tgz#dc7daf941ba691e702d607e0a31377a374fdb136"
-  integrity sha512-hoRAqBsuw4A781HsSbEOgo3hs93WhjQM9rkuQhu/NFCkfdCo5Zn8Nk/tfqfv3cYMlZzfXhWMlq+ABUQaZKkesg==
+"@gitlab/ui@24.8.1":
+  version "24.8.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-24.8.1.tgz#eb674d19aedf9c91b9a14aa7a66397d54b199fb7"
+  integrity sha512-tiK1toaa8VqiGGLQCTiOJRemODusm773yVDZjWT5RtmfhsnwFXpBu6wuV3YJjPbeptuzCsX3q2a+thEswZkAZQ==
   dependencies:
     "@babel/standalone" "^7.0.0"
     "@gitlab/vue-toasted" "^1.3.0"

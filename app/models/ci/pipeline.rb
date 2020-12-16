@@ -7,6 +7,7 @@ module Ci
     include Importable
     include AfterCommitQueue
     include Presentable
+    include Gitlab::Allowable
     include Gitlab::OptimisticLocking
     include Gitlab::Utils::StrongMemoize
     include AtomicInternalId
@@ -15,6 +16,8 @@ module Ci
     include ShaAttribute
     include FromUnion
     include UpdatedAtFilterable
+
+    MAX_OPEN_MERGE_REQUESTS_REFS = 4
 
     PROJECT_ROUTE_AND_NAMESPACE_ROUTE = {
       project: [:project_feature, :route, { namespace: :route }]
@@ -801,6 +804,10 @@ module Ci
           variables.concat(merge_request.predefined_variables)
         end
 
+        if Gitlab::Ci::Features.pipeline_open_merge_requests?(project) && open_merge_requests_refs.any?
+          variables.append(key: 'CI_OPEN_MERGE_REQUESTS', value: open_merge_requests_refs.join(','))
+        end
+
         variables.append(key: 'CI_KUBERNETES_ACTIVE', value: 'true') if has_kubernetes_active?
         variables.append(key: 'CI_DEPLOY_FREEZE', value: 'true') if freeze_period?
 
@@ -865,6 +872,36 @@ module Ci
 
     def all_merge_requests_by_recency
       all_merge_requests.order(id: :desc)
+    end
+
+    # This returns a list of MRs that point
+    # to the same source project/branch
+    def related_merge_requests
+      if merge_request?
+        # We look for all other MRs that this branch might be pointing to
+        MergeRequest.where(
+          source_project_id: merge_request.source_project_id,
+          source_branch: merge_request.source_branch)
+      else
+        MergeRequest.where(
+          source_project_id: project_id,
+          source_branch: ref)
+      end
+    end
+
+    # We cannot use `all_merge_requests`, due to race condition
+    # This returns a list of at most 4 open MRs
+    def open_merge_requests_refs
+      strong_memoize(:open_merge_requests_refs) do
+        # We ensure that triggering user can actually read the pipeline
+        related_merge_requests
+          .opened
+          .limit(MAX_OPEN_MERGE_REQUESTS_REFS)
+          .order(id: :desc)
+          .preload(:target_project)
+          .select { |mr| can?(user, :read_merge_request, mr) }
+          .map { |mr| mr.to_reference(project, full: true) }
+      end
     end
 
     def same_family_pipeline_ids

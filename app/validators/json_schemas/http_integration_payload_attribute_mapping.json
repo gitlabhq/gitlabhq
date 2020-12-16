@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "patternProperties": {
+    ".*": {
+      "type": "object",
+      "required": ["path", "type"],
+      "properties": {
+        "path": { "type": "array" },
+        "type": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

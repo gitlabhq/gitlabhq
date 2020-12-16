@@ -847,7 +847,6 @@ module API
       def self.development_service_classes
         [
           ::MockCiService,
-          ::MockDeploymentService,
           ::MockMonitoringService
         ]
       end

@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+# Deprecated, to be deleted in 13.8 (https://gitlab.com/gitlab-org/gitlab/-/issues/293914)
+#
+# This was a class used only in development environment but became unusable
+# since DeploymentService was deleted
 class MockDeploymentService < Service
   default_value_for :category, 'deployment'
 
@@ -30,27 +34,5 @@ class MockDeploymentService < Service
 
   def can_test?
     false
-  end
-
-  def rollout_status(environment)
-    case environment.name
-    when 'staging'
-      ::Gitlab::Kubernetes::RolloutStatus.new([], status: :not_found)
-    when 'test'
-      ::Gitlab::Kubernetes::RolloutStatus.new([], status: :loading)
-    else
-      ::Gitlab::Kubernetes::RolloutStatus.new(rollout_status_deployments)
-    end
-  end
-
-  private
-
-  def rollout_status_instances
-    data = File.read(Rails.root.join('spec', 'fixtures', 'rollout_status_instances.json'))
-    Gitlab::Json.parse(data)
-  end
-
-  def rollout_status_deployments
-    [OpenStruct.new(instances: rollout_status_instances)]
   end
 end

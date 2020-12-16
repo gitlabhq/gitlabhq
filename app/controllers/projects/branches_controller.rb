@@ -18,8 +18,8 @@ class Projects::BranchesController < Projects::ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @sort = params[:sort].presence || sort_value_recently_updated
         @mode = params[:state].presence || 'overview'
+        @sort = sort_value_for_mode
         @overview_max_branches = 5
 
         # Fetch branches for the specified mode
@@ -125,6 +125,12 @@ class Projects::BranchesController < Projects::ApplicationController
 
   private
 
+  def sort_value_for_mode
+    return params[:sort] if params[:sort].present?
+
+    'stale' == @mode ? sort_value_oldest_updated : sort_value_recently_updated
+  end
+
   # It can be expensive to calculate the diverging counts for each
   # branch. Normally the frontend should be specifying a set of branch
   # names, but prior to
@@ -169,19 +175,32 @@ class Projects::BranchesController < Projects::ApplicationController
   end
 
   def fetch_branches_by_mode
-    if @mode == 'overview'
-      # overview mode
-      @active_branches, @stale_branches = BranchesFinder.new(@repository, sort: sort_value_recently_updated).execute.partition(&:active?)
-      # Here we get one more branch to indicate if there are more data we're not showing
-      @active_branches = @active_branches.first(@overview_max_branches + 1)
-      @stale_branches = @stale_branches.first(@overview_max_branches + 1)
-      @branches = @active_branches + @stale_branches
+    return fetch_branches_for_overview if @mode == 'overview'
+
+    # active/stale/all view mode
+    @branches = BranchesFinder.new(@repository, params.merge(sort: @sort)).execute
+    @branches = @branches.select { |b| b.state.to_s == @mode } if %w[active stale].include?(@mode)
+    @branches = Kaminari.paginate_array(@branches).page(params[:page])
+  end
+
+  def fetch_branches_for_overview
+    # Here we get one more branch to indicate if there are more data we're not showing
+    limit = @overview_max_branches + 1
+
+    if Feature.enabled?(:branch_list_keyset_pagination, project, default_enabled: true)
+      @active_branches =
+        BranchesFinder.new(@repository, { per_page: limit, sort: sort_value_recently_updated })
+          .execute(gitaly_pagination: true).select(&:active?)
+      @stale_branches =
+        BranchesFinder.new(@repository, { per_page: limit, sort: sort_value_oldest_updated })
+          .execute(gitaly_pagination: true).select(&:stale?)
     else
-      # active/stale/all view mode
-      @branches = BranchesFinder.new(@repository, params.merge(sort: @sort)).execute
-      @branches = @branches.select { |b| b.state.to_s == @mode } if %w[active stale].include?(@mode)
-      @branches = Kaminari.paginate_array(@branches).page(params[:page])
+      @active_branches, @stale_branches = BranchesFinder.new(@repository, sort: sort_value_recently_updated).execute.partition(&:active?)
+      @active_branches = @active_branches.first(limit)
+      @stale_branches = @stale_branches.first(limit)
     end
+
+    @branches = @active_branches + @stale_branches
   end
 
   def confidential_issue_project

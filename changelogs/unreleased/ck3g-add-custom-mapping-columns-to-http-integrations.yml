@@ -1,0 +1,6 @@
+---
+title: Add payload_example and payload_attribute_mapping columns to alert_management_http_integrations
+  table
+merge_request: 49941
+author:
+type: added

@@ -8837,6 +8837,8 @@ CREATE TABLE alert_management_http_integrations (
     encrypted_token_iv text NOT NULL,
     endpoint_identifier text NOT NULL,
     name text NOT NULL,
+    payload_example jsonb DEFAULT '{}'::jsonb NOT NULL,
+    payload_attribute_mapping jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_286943b636 CHECK ((char_length(encrypted_token_iv) <= 255)),
     CONSTRAINT check_392143ccf4 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_e270820180 CHECK ((char_length(endpoint_identifier) <= 255)),

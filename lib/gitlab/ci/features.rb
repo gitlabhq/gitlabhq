@@ -55,6 +55,10 @@ module Gitlab
         ::Feature.enabled?(:ci_trace_log_invalid_chunks, project, type: :ops, default_enabled: false)
       end
 
+      def self.pipeline_open_merge_requests?(project)
+        ::Feature.enabled?(:ci_pipeline_open_merge_requests, project, default_enabled: false)
+      end
+
       def self.seed_block_run_before_workflow_rules_enabled?(project)
         ::Feature.enabled?(:ci_seed_block_run_before_workflow_rules, project, default_enabled: true)
       end

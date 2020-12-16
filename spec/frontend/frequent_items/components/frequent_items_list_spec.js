@@ -27,7 +27,7 @@ describe('FrequentItemsListComponent', () => {
 
   describe('computed', () => {
     describe('isListEmpty', () => {
-      it('should return `true` or `false` representing whether if `items` is empty or not with projects', () => {
+      it('should return `true` or `false` representing whether if `items` is empty or not with projects', async () => {
         createComponent({
           items: [],
         });
@@ -37,13 +37,14 @@ describe('FrequentItemsListComponent', () => {
         wrapper.setProps({
           items: mockFrequentProjects,
         });
+        await wrapper.vm.$nextTick();
 
         expect(wrapper.vm.isListEmpty).toBe(false);
       });
     });
 
     describe('fetched item messages', () => {
-      it('should return appropriate empty list message based on value of `localStorageFailed` prop with projects', () => {
+      it('should return appropriate empty list message based on value of `localStorageFailed` prop with projects', async () => {
         createComponent({
           isFetchFailed: true,
         });
@@ -55,13 +56,14 @@ describe('FrequentItemsListComponent', () => {
         wrapper.setProps({
           isFetchFailed: false,
         });
+        await wrapper.vm.$nextTick();
 
         expect(wrapper.vm.listEmptyMessage).toBe('Projects you visit often will appear here');
       });
     });
 
     describe('searched item messages', () => {
-      it('should return appropriate empty list message based on value of `searchFailed` prop with projects', () => {
+      it('should return appropriate empty list message based on value of `searchFailed` prop with projects', async () => {
         createComponent({
           hasSearchQuery: true,
           isFetchFailed: true,
@@ -72,6 +74,7 @@ describe('FrequentItemsListComponent', () => {
         wrapper.setProps({
           isFetchFailed: false,
         });
+        await wrapper.vm.$nextTick();
 
         expect(wrapper.vm.listEmptyMessage).toBe('Sorry, no projects matched your search');
       });

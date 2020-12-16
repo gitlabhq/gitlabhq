@@ -24,7 +24,7 @@ class Service < ApplicationRecord
 
   # Fake services to help with local development.
   DEV_SERVICE_NAMES = %w[
-    mock_ci mock_deployment mock_monitoring
+    mock_ci mock_monitoring
   ].freeze
 
   serialize :properties, JSON # rubocop:disable Cop/ActiveRecordSerialize

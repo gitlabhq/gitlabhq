@@ -322,7 +322,7 @@ module API
     #   keys (required) - A hash consisting of keys that must be present
     def required_attributes!(keys)
       keys.each do |key|
-        bad_request!(key) unless params[key].present?
+        bad_request_missing_attribute!(key) unless params[key].present?
       end
     end
 
@@ -368,10 +368,14 @@ module API
       render_api_error!(message.join(' '), 403)
     end
 
-    def bad_request!(attribute)
-      message = ["400 (Bad request)"]
-      message << "\"" + attribute.to_s + "\" not given" if attribute
+    def bad_request!(reason = nil)
+      message = ['400 Bad request']
+      message << "- #{reason}" if reason
       render_api_error!(message.join(' '), 400)
+    end
+
+    def bad_request_missing_attribute!(attribute)
+      bad_request!("\"#{attribute}\" not given")
     end
 
     def not_found!(resource = nil)

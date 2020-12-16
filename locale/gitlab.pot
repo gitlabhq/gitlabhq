@@ -792,6 +792,21 @@ msgid_plural "%{strong_start}%{commit_count}%{strong_end} Commits"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{strong_start}%{count} approval rule%{strong_end} requires eligible members to approve before merging."
+msgid_plural "%{strong_start}%{count} approval rules%{strong_end} require eligible members to approve before merging."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%{strong_start}%{count} eligible member%{strong_end} must approve to merge."
+msgid_plural "%{strong_start}%{count} eligible members%{strong_end} must approve to merge."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%{strong_start}%{count} member%{strong_end} must approve to merge. Anyone with role Developer or higher can approve."
+msgid_plural "%{strong_start}%{count} members%{strong_end} must approve to merge. Anyone with role Developer or higher can approve."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{strong_start}%{human_size}%{strong_end} Files"
 msgstr ""
 
@@ -3600,6 +3615,9 @@ msgid "ApprovalStatusTooltip|At least one rule does not adhere to separation of 
 msgstr ""
 
 msgid "ApprovalStatusTooltip|Fails to adhere to separation of duties"
+msgstr ""
+
+msgid "Approvals are optional."
 msgstr ""
 
 msgid "Approvals|Section: %section"
