@@ -720,45 +720,43 @@ Repeat this configuration for each profile as needed.
 
 ## Running your first scan
 
-When configured correctly, a CI/CD pipeline contains a `Fuzz` stage and a `apifuzzer_fuzz` job. The
-job only fails when an invalid configuration is provided. During normal operation, the job always
-succeeds even if faults are identified during fuzz testing.
+When configured correctly, a CI/CD pipeline contains a `fuzz` stage and an `apifuzzer_fuzz` or
+`apifuzzer_fuzz_dnd` job. The job only fails when an invalid configuration is provided. During
+normal operation, the job always succeeds even if faults are identified during fuzz testing.
 
-Faults are displayed on the **Tests** pipeline tab with the suite name **API-Fuzzing**. The **Name**
-field on the **Tests** page includes the fuzz-tested operation and parameter. The **Trace** field
-contains a writeup of the identified fault. This writeup contains information on what the fuzzer
-tested and how it detected something wrong.
+Faults are displayed on the **Security** pipeline tab with the suite name. When testing against the
+repositories default branch, the fuzzing faults are also shown on the Security & Compliance's
+Vulnerability Report page.
 
 To prevent an excessive number of reported faults, the API fuzzing scanner limits the number of
-faults it reports to one per parameter.
+faults it reports.
 
-### Fault Writeup
+## Viewing fuzzing faults
 
-The faults that API fuzzing finds aren't associated with a specific vulnerability type. They require
-investigation to determine what type of issue they are and if they should be fixed. See
-[handling false positives](#handling-false-positives) for information about configuration changes
-you can make to limit the number of false positives reported.
+The API Fuzzing analyzer produces a JSON report that is collected and used
+[to populate the faults into GitLab's vulnerability screens](../index.md#view-details-of-an-api-fuzzing-vulnerability).
+Fuzzing faults show up as vulnerabilities with a severity of Unknown.
 
-This table contains a description of fields in an API fuzzing fault writeup.
+The faults that API fuzzing finds require manual investigation and aren't associated with a specific
+vulnerability type. They require investigation to determine if they are a security issue, and if
+they should be fixed. See [handling false positives](#handling-false-positives)
+for information about configuration changes you can make to limit the number of false positives
+reported.
 
-| Writeup Item | Description |
-|:-------------|:------------|
-| Operation | The operation tested. |
-| Parameter | The field modified. This can be a path segment, header, query string, or body element. |
-| Endpoint  | The endpoint being tested. |
-| Check     | Check module producing the test. Checks can be turned on and off. |
-| Assert    | Assert module that detected a failure. Assertions can be configured and turned on and off. |
-| CWE       | Fuzzing faults always have the same CWE. |
-| OWASP     | Fuzzing faults always have the same OWASP ID. |
-| Exploitability | Fuzzing faults always have an `unknown` exploitability. |
-| Impact         | Fuzzing faults always have an `unknown` risk impact. |
-| Description    | Verbose description of what the check did. Includes the original parameter value and the modified (mutated) value. |
-| Detection      | Why a failure was detected and reported. This is related to the Assert that was used. |
-| Original Request  | The original, unmodified HTTP request. Useful when reviewing the actual request to see what changes were made. |
-| Actual Request    | The request that produced the failure. This request has been modified in some way by the Check logic. |
-| Actual Response   | The response to the actual request. |
-| Recorded Request  | An unmodified request. |
-| Recorded Response | The response to the unmodified request. You can compare this with the actual request when triaging this fault. |
+For additional information, see
+[View details of an API Fuzzing vulnerability](../index.md#view-details-of-an-api-fuzzing-vulnerability).
+
+### Security Dashboard
+
+Fuzzing faults show up as vulnerabilities with a severity of Unknown. The Security Dashboard is a
+good place to get an overview of all the security vulnerabilities in your groups, projects and
+pipelines. For more information, see the [Security Dashboard documentation](../security_dashboard/index.md).
+
+### Interacting with the vulnerabilities
+
+Fuzzing faults show up as vulnerabilities with a severity of Unknown. 
+Once a fault is found, you can interact with it. Read more on how to
+[interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).
 
 ## Handling False Positives
 

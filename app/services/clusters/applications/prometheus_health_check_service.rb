@@ -65,7 +65,7 @@ module Clusters
         notification_payload = build_notification_payload(project)
         integration = project.alert_management_http_integrations.active.first
 
-        Projects::Alerting::NotifyService.new(project, nil, notification_payload).execute(integration&.token, integration)
+        Projects::Alerting::NotifyService.new(project, notification_payload).execute(integration&.token, integration)
 
         @logger.info(message: 'Successfully notified of Prometheus newly unhealthy', cluster_id: @cluster.id, project_id: project.id)
       end

@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlLink, GlSprintf } from '@gitlab/ui';
+import { stubComponent } from 'helpers/stub_component';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import HistoryItem from '~/vue_shared/components/registry/history_item.vue';
 import { HISTORY_PIPELINES_LIMIT } from '~/packages/details/constants';
@@ -21,10 +22,9 @@ describe('Package History', () => {
     wrapper = shallowMount(component, {
       propsData: { ...defaultProps, ...props },
       stubs: {
-        HistoryItem: {
-          props: HistoryItem.props,
+        HistoryItem: stubComponent(HistoryItem, {
           template: '<div data-testid="history-element"><slot></slot></div>',
-        },
+        }),
         GlSprintf,
       },
     });

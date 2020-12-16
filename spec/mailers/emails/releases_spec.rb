@@ -49,5 +49,14 @@ RSpec.describe Emails::Releases do
       is_expected.to have_body_text('Release notes:')
       is_expected.to have_body_text(release.description)
     end
+
+    context 'release notes with attachment' do
+      let(:upload_path) { '/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg' }
+      let(:release) { create(:release, project: project, description: "Attachment: [Test file](#{upload_path})") }
+
+      it 'renders absolute links' do
+        is_expected.to have_body_text(%Q(<a href="#{project.web_url}#{upload_path}" data-link="true" class="gfm">Test file</a>))
+      end
+    end
   end
 end

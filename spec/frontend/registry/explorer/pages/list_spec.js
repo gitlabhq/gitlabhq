@@ -135,13 +135,13 @@ describe('List Page', () => {
     it('empty state should have an svg-path', () => {
       mountComponent({ config });
 
-      expect(findEmptyState().attributes('svg-path')).toBe(config.containersErrorImage);
+      expect(findEmptyState().props('svgPath')).toBe(config.containersErrorImage);
     });
 
     it('empty state should have a description', () => {
       mountComponent({ config });
 
-      expect(findEmptyState().html()).toContain('connection error');
+      expect(findEmptyState().props('title')).toContain('connection error');
     });
 
     it('should not show the loading or default state', () => {

@@ -168,7 +168,7 @@ RSpec.describe Projects::Prometheus::AlertsController do
 
       expect(Projects::Prometheus::Alerts::NotifyService)
         .to receive(:new)
-        .with(project, nil, duck_type(:permitted?))
+        .with(project, duck_type(:permitted?))
         .and_return(notify_service)
     end
 

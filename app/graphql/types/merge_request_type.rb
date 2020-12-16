@@ -167,6 +167,8 @@ module Types
           description: 'Indicates if the merge request is mergeable'
     field :commits_without_merge_commits, Types::CommitType.connection_type, null: true,
           calls_gitaly: true, description: 'Merge request commits excluding merge commits'
+    field :security_auto_fix, GraphQL::BOOLEAN_TYPE, null: true,
+          description: 'Indicates if the merge request is created by @GitLab-Security-Bot.'
 
     def approved_by
       object.approved_by_users
@@ -228,6 +230,10 @@ module Types
 
     def commits_without_merge_commits
       object.recent_commits.without_merge_commits
+    end
+
+    def security_auto_fix
+      object.author == User.security_bot
     end
   end
 end

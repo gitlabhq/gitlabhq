@@ -13457,6 +13457,11 @@ type MergeRequest implements CurrentUserTodos & Noteable {
   ): String!
 
   """
+  Indicates if the merge request is created by @GitLab-Security-Bot.
+  """
+  securityAutoFix: Boolean
+
+  """
   Indicates if the merge request will be rebased
   """
   shouldBeRebased: Boolean!
@@ -25000,6 +25005,11 @@ type Vulnerability implements Noteable {
   Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability
   """
   location: VulnerabilityLocation
+
+  """
+  Merge request that fixes the vulnerability.
+  """
+  mergeRequest: MergeRequest
 
   """
   All notes on this noteable

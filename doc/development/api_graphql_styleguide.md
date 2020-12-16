@@ -803,6 +803,32 @@ overhead. If you are writing:
 - A `Mutation`, feel free to lookup objects directly.
 - A `Resolver` or methods on a `BaseObject`, then you want to allow for batching.
 
+### Error handling
+
+Resolvers may raise errors, which will be converted to top-level errors as
+appropriate. All anticipated errors should be caught and transformed to an
+appropriate GraphQL error (see
+[`Gitlab::Graphql::Errors`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/graphql/errors.rb)).
+Any uncaught errors will be suppressed and the client will receive the message
+`Internal service error`.
+
+The one special case is permission errors. In the REST API we return
+`404 Not Found` for any resources that the user does not have permission to
+access. The equivalent behavior in GraphQL is for us to return `null` for
+all absent or unauthorized resources.
+Query resolvers **should not raise errors for unauthorized resources**.
+
+The rationale for this is that clients must not be able to distinguish between
+the absence of a record and the presence of one they do not have access to. To
+do so is a security vulnerability, since it leaks information we want to keep
+hidden.
+
+In most cases you don't need to worry about this - this is handled correctly by
+the resolver field authorization we declare with the `authorize` DSL calls. If
+you need to do something more custom however, remember, if you encounter an
+object the `current_user` does not have access to when resolving a field, then
+the entire field should resolve to `null`.
+
 ### Deriving resolvers (`BaseResolver.single` and `BaseResolver.last`)
 
 For some simple use cases, we can derive resolvers from others.

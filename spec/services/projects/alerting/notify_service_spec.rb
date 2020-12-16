@@ -13,7 +13,7 @@ RSpec.describe Projects::Alerting::NotifyService do
     let(:token) { 'invalid-token' }
     let(:starts_at) { Time.current.change(usec: 0) }
     let(:fingerprint) { 'testing' }
-    let(:service) { described_class.new(project, nil, payload) }
+    let(:service) { described_class.new(project, payload) }
     let_it_be(:environment) { create(:environment, project: project) }
     let(:environment) { create(:environment, project: project) }
     let(:ended_at) { nil }

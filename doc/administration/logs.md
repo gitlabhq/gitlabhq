@@ -1021,7 +1021,7 @@ previously listed components, it's helpful to simultaneously gather multiple log
 from a GitLab instance.
 
 NOTE:
-GitLab Support will often ask for one of these, and maintains the required tools.
+GitLab Support often asks for one of these, and maintains the required tools.
 
 ### Briefly tail the main logs
 

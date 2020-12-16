@@ -73,7 +73,7 @@ module Projects
 
       def notify_service
         Projects::Prometheus::Alerts::NotifyService
-          .new(project, current_user, params.permit!)
+          .new(project, params.permit!)
       end
 
       def create_service

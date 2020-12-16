@@ -58,6 +58,11 @@ class UsersController < ApplicationController
     end
   end
 
+  # Get all gpg keys of a user(params[:username]) in a text format
+  def gpg_keys
+    render plain: user.gpg_keys.select(&:verified?).map(&:key).join("\n")
+  end
+
   def groups
     load_groups
 

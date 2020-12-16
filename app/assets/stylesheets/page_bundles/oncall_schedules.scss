@@ -32,7 +32,7 @@
 //// Copied from roadmaps.scss - adapted for on-call schedules
 $header-item-height: 72px;
 $item-height: 40px;
-$details-cell-width: 150px;
+$details-cell-width: 180px;
 $timeline-cell-height: 32px;
 $timeline-cell-width: 180px;
 $border-style: 1px solid var(--gray-100, $gray-100);
@@ -98,7 +98,7 @@ $column-right-gradient: linear-gradient(to right, $gradient-dark-gray 0%, $gradi
 
     .item-label {
       @include gl-py-4;
-      @include gl-pl-7;
+      @include gl-pl-4;
       border-right: $border-style;
       border-bottom: $border-style;
     }
@@ -147,7 +147,6 @@ $column-right-gradient: linear-gradient(to right, $gradient-dark-gray 0%, $gradi
 .timeline-cell {
   @include float-left;
   height: $item-height;
-  border-bottom: $border-style;
 }
 
 .details-cell {
@@ -179,5 +178,12 @@ $column-right-gradient: linear-gradient(to right, $gradient-dark-gray 0%, $gradi
     background-color: var(--red-500, $red-500);
     @include gl-pointer-events-none;
     transform: translateX(-50%);
+  }
+}
+
+.gl-token {
+  .gl-avatar-labeled-label {
+    @include gl-text-white;
+    @include gl-font-weight-normal;
   }
 }

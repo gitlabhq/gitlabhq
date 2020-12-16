@@ -2,7 +2,6 @@
 
 class Profiles::GpgKeysController < Profiles::ApplicationController
   before_action :set_gpg_key, only: [:destroy, :revoke]
-  skip_before_action :authenticate_user!, only: [:get_keys]
 
   feature_category :users
 
@@ -37,24 +36,6 @@ class Profiles::GpgKeysController < Profiles::ApplicationController
     respond_to do |format|
       format.html { redirect_to profile_gpg_keys_url, status: :found }
       format.js { head :ok }
-    end
-  end
-
-  # Get all gpg keys of a user(params[:username]) in a text format
-  def get_keys
-    if params[:username].present?
-      begin
-        user = UserFinder.new(params[:username]).find_by_username
-        if user.present?
-          render plain: user.gpg_keys.select(&:verified?).map(&:key).join("\n")
-        else
-          render_404
-        end
-      rescue => e
-        render html: e.message
-      end
-    else
-      render_404
     end
   end
 

@@ -54,6 +54,24 @@ RSpec.describe 'Terraform', :js do
           expect(page).to have_content(terraform_state.name)
         end
       end
+
+      context 'when clicking on the delete button' do
+        let(:additional_state) { create(:terraform_state, project: project) }
+
+        it 'removes the state', :aggregate_failures do
+          visit project_terraform_index_path(project)
+
+          expect(page).to have_content(additional_state.name)
+
+          find("[data-testid='terraform-state-actions-#{additional_state.name}']").click
+          find('[data-testid="terraform-state-remove"]').click
+          fill_in "terraform-state-remove-input-#{additional_state.name}", with: additional_state.name
+          click_button 'Remove'
+
+          expect(page).not_to have_content(additional_state.name)
+          expect { additional_state.reload }.to raise_error ActiveRecord::RecordNotFound
+        end
+      end
     end
   end
 

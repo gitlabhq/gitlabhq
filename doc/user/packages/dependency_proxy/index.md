@@ -57,8 +57,6 @@ You can use GitLab as a source for your Docker images.
 Prerequisites:
 
 - Your images must be stored on [Docker Hub](https://hub.docker.com/).
-- Docker Hub must be available. Follow [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/241639)
-  for progress on accessing images when Docker Hub is down.
 
 ### Authenticate with the Dependency Proxy
 
@@ -119,6 +117,12 @@ dependency-proxy-pull-master:
     - docker pull "$CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX"/alpine:latest
 ```
 
+`CI_DEPENDENCY_PROXY_SERVER` and `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX` include the server port. So if you use `CI_DEPENDENCY_PROXY_SERVER` to log in, for example, you must explicitly include the port in your pull command and vice-versa:
+
+```shell
+docker pull gitlab.example.com:443/my-group/dependency_proxy/containers/alpine:latest
+```
+
 You can also use [custom environment variables](../../../ci/variables/README.md#custom-environment-variables) to store and access your personal access token or other valid credentials.
 
 ##### Authenticate with `DOCKER_AUTH_CONFIG`
@@ -157,11 +161,23 @@ named `DOCKER_AUTH_CONFIG` with a value of:
    }
    ```
 
+   To use `$CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX` when referencing images, you must explicitly include the port in your `DOCKER_AUTH_CONFIG` value:
+
+   ```json
+   {
+       "auths": {
+           "https://gitlab.example.com:443": {
+               "auth": "(Base64 content from above)"
+           }
+       }
+   }
+   ```
+
 1. Now reference the Dependency Proxy in your base image:
 
    ```yaml
    # .gitlab-ci.yml
-   image: "$CI_SERVER_HOST":"$CI_SERVER_PORT"/groupname/dependency_proxy/containers/node:latest
+   image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/node:latest
    ...
    ```
 

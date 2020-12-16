@@ -1,9 +1,10 @@
-import { GlDropdown } from '@gitlab/ui';
+import { GlDropdown, GlModal, GlSprintf } from '@gitlab/ui';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import createMockApollo from 'jest/helpers/mock_apollo_helper';
 import VueApollo from 'vue-apollo';
 import StateActions from '~/terraform/components/states_table_actions.vue';
 import lockStateMutation from '~/terraform/graphql/mutations/lock_state.mutation.graphql';
+import removeStateMutation from '~/terraform/graphql/mutations/remove_state.mutation.graphql';
 import unlockStateMutation from '~/terraform/graphql/mutations/unlock_state.mutation.graphql';
 
 const localVue = createLocalVue();
@@ -11,6 +12,7 @@ localVue.use(VueApollo);
 
 describe('StatesTableActions', () => {
   let lockResponse;
+  let removeResponse;
   let unlockResponse;
   let wrapper;
 
@@ -26,12 +28,17 @@ describe('StatesTableActions', () => {
   const createMockApolloProvider = () => {
     lockResponse = jest.fn().mockResolvedValue({ data: { terraformStateLock: { errors: [] } } });
 
+    removeResponse = jest
+      .fn()
+      .mockResolvedValue({ data: { terraformStateDelete: { errors: [] } } });
+
     unlockResponse = jest
       .fn()
       .mockResolvedValue({ data: { terraformStateUnlock: { errors: [] } } });
 
     return createMockApollo([
       [lockStateMutation, lockResponse],
+      [removeStateMutation, removeResponse],
       [unlockStateMutation, unlockResponse],
     ]);
   };
@@ -43,7 +50,7 @@ describe('StatesTableActions', () => {
       apolloProvider,
       localVue,
       propsData,
-      stubs: { GlDropdown },
+      stubs: { GlDropdown, GlModal, GlSprintf },
     });
 
     return wrapper.vm.$nextTick();
@@ -52,6 +59,8 @@ describe('StatesTableActions', () => {
   const findLockBtn = () => wrapper.find('[data-testid="terraform-state-lock"]');
   const findUnlockBtn = () => wrapper.find('[data-testid="terraform-state-unlock"]');
   const findDownloadBtn = () => wrapper.find('[data-testid="terraform-state-download"]');
+  const findRemoveBtn = () => wrapper.find('[data-testid="terraform-state-remove"]');
+  const findRemoveModal = () => wrapper.find(GlModal);
 
   beforeEach(() => {
     return createComponent();
@@ -59,6 +68,7 @@ describe('StatesTableActions', () => {
 
   afterEach(() => {
     lockResponse = null;
+    removeResponse = null;
     unlockResponse = null;
     wrapper.destroy();
   });
@@ -133,6 +143,45 @@ describe('StatesTableActions', () => {
       it('calls the lock mutation', () => {
         expect(lockResponse).toHaveBeenCalledWith({
           stateID: unlockedProps.state.id,
+        });
+      });
+    });
+  });
+
+  describe('remove button', () => {
+    it('displays a remove button', () => {
+      expect(findRemoveBtn().text()).toBe(StateActions.i18n.remove);
+    });
+
+    describe('when clicking the remove button', () => {
+      beforeEach(() => {
+        findRemoveBtn().vm.$emit('click');
+        return wrapper.vm.$nextTick();
+      });
+
+      it('displays a remove modal', () => {
+        expect(findRemoveModal().text()).toContain(
+          `You are about to remove the State file ${defaultProps.state.name}`,
+        );
+      });
+
+      describe('when submitting the remove modal', () => {
+        it('does not call the remove mutation when state name is missing', async () => {
+          findRemoveModal().vm.$emit('ok');
+          await wrapper.vm.$nextTick();
+
+          expect(removeResponse).not.toHaveBeenCalledWith();
+        });
+
+        it('calls the remove mutation when state name is present', async () => {
+          await wrapper.setData({ removeConfirmText: defaultProps.state.name });
+
+          findRemoveModal().vm.$emit('ok');
+          await wrapper.vm.$nextTick();
+
+          expect(removeResponse).toHaveBeenCalledWith({
+            stateID: defaultProps.state.id,
+          });
         });
       });
     });

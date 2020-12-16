@@ -1,13 +1,9 @@
 <script>
 import { GlIcon, GlPopover } from '@gitlab/ui';
 import { __, sprintf } from '../../../locale';
-import popover from '../../../vue_shared/directives/popover';
 import { MAX_TITLE_LENGTH, MAX_BODY_LENGTH } from '../../constants';
 
 export default {
-  directives: {
-    popover,
-  },
   components: {
     GlIcon,
     GlPopover,

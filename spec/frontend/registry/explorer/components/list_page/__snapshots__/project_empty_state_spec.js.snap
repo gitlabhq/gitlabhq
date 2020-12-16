@@ -1,10 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Registry Project Empty state to match the default snapshot 1`] = `
-<div
-  svg-path="bazFoo"
-  title="There are no container images stored for this project"
->
+<div>
   <p>
     With the Container Registry, every project can have its own space to store its Docker images. 
     <gl-link-stub

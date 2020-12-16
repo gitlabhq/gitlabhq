@@ -125,6 +125,9 @@ RSpec.shared_examples 'write access for a read-only GitLab instance' do
       where(:description, :path) do
         'LFS request to batch'        | '/root/rouge.git/info/lfs/objects/batch'
         'request to git-upload-pack'  | '/root/rouge.git/git-upload-pack'
+        'user sign out'               | '/users/sign_out'
+        'admin session'               | '/admin/session'
+        'admin session destroy'       | '/admin/session/destroy'
       end
 
       with_them do

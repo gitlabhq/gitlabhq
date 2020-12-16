@@ -10581,6 +10581,9 @@ msgstr ""
 msgid "End Time"
 msgstr ""
 
+msgid "Ends at %{endsAt}"
+msgstr ""
+
 msgid "Ends at (UTC)"
 msgstr ""
 
@@ -19349,7 +19352,13 @@ msgstr ""
 msgid "OnCallSchedules|Create on-call schedules  in GitLab"
 msgstr ""
 
+msgid "OnCallSchedules|Delete rotation"
+msgstr ""
+
 msgid "OnCallSchedules|Delete schedule"
+msgstr ""
+
+msgid "OnCallSchedules|Edit rotation"
 msgstr ""
 
 msgid "OnCallSchedules|Edit schedule"
@@ -19367,7 +19376,7 @@ msgstr ""
 msgid "OnCallSchedules|On-call schedule"
 msgstr ""
 
-msgid "OnCallSchedules|On-call schedule for the %{tzShort}"
+msgid "OnCallSchedules|On-call schedule for the %{timezone}"
 msgstr ""
 
 msgid "OnCallSchedules|Rotation length"
@@ -19718,9 +19727,6 @@ msgid "Owned by:"
 msgstr ""
 
 msgid "Owner"
-msgstr ""
-
-msgid "PST"
 msgstr ""
 
 msgid "Package Registry"
@@ -26399,6 +26405,9 @@ msgstr ""
 msgid "Starts %{startsIn}"
 msgstr ""
 
+msgid "Starts at %{startsAt}"
+msgstr ""
+
 msgid "Starts at (UTC)"
 msgstr ""
 
@@ -27201,6 +27210,12 @@ msgstr ""
 msgid "Terraform|An error occurred while loading your Terraform States"
 msgstr ""
 
+msgid "Terraform|Are you sure you want to remove the Terraform State %{name}?"
+msgstr ""
+
+msgid "Terraform|Cancel"
+msgstr ""
+
 msgid "Terraform|Details"
 msgstr ""
 
@@ -27234,6 +27249,12 @@ msgstr ""
 msgid "Terraform|Pipeline"
 msgstr ""
 
+msgid "Terraform|Remove"
+msgstr ""
+
+msgid "Terraform|Remove state file and versions"
+msgstr ""
+
 msgid "Terraform|Reported Resource Changes: %{addNum} to add, %{changeNum} to change, %{deleteNum} to delete"
 msgstr ""
 
@@ -27246,10 +27267,16 @@ msgstr ""
 msgid "Terraform|The Terraform report %{name} was generated in your pipelines."
 msgstr ""
 
+msgid "Terraform|To remove the State file and its versions, type %{name} to confirm:"
+msgstr ""
+
 msgid "Terraform|Unknown User"
 msgstr ""
 
 msgid "Terraform|Unlock"
+msgstr ""
+
+msgid "Terraform|You are about to remove the State file %{name}. This will permanently delete all the State versions and history. The infrastructure provisioned previously\twill remain intact, only the state file with all its versions are to be removed. This action is non-revertible."
 msgstr ""
 
 msgid "Test"

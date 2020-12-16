@@ -1,4 +1,5 @@
 import { GlFilteredSearchToken, GlFilteredSearchSuggestion, GlLoadingIcon } from '@gitlab/ui';
+import { stubComponent } from 'helpers/stub_component';
 import { shallowMount } from '@vue/test-utils';
 import Api from '~/api';
 import PipelineTriggerAuthorToken from '~/pipelines/components/pipelines_list/tokens/pipeline_trigger_author_token.vue';
@@ -7,14 +8,7 @@ import { users } from '../mock_data';
 describe('Pipeline Trigger Author Token', () => {
   let wrapper;
 
-  const stubs = {
-    GlFilteredSearchToken: {
-      props: GlFilteredSearchToken.props,
-      template: `<div><slot name="suggestions"></slot></div>`,
-    },
-  };
-
-  const findFilteredSearchToken = () => wrapper.find(stubs.GlFilteredSearchToken);
+  const findFilteredSearchToken = () => wrapper.find(GlFilteredSearchToken);
   const findAllFilteredSearchSuggestions = () => wrapper.findAll(GlFilteredSearchSuggestion);
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
 
@@ -42,7 +36,11 @@ describe('Pipeline Trigger Author Token', () => {
           ...data,
         };
       },
-      stubs,
+      stubs: {
+        GlFilteredSearchToken: stubComponent(GlFilteredSearchToken, {
+          template: `<div><slot name="suggestions"></slot></div>`,
+        }),
+      },
     });
   };
 

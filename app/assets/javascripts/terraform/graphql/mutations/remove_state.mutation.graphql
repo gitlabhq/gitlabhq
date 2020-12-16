@@ -1,0 +1,5 @@
+mutation removeState($stateID: TerraformStateID!) {
+  terraformStateDelete(input: { id: $stateID }) {
+    errors
+  }
+}

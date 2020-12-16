@@ -72,8 +72,8 @@ Complementary reads:
 
 ### Development guidelines review
 
-When you submit a change to GitLab's development guidelines, the people
-you ask for reviews from depend on the level of change, as described below.
+When you submit a change to GitLab's development guidelines, who 
+you ask for reviews depends on the level of change.
 
 #### Wording, style, or link changes
 
@@ -88,7 +88,7 @@ maintainer or Technical Writer. These can include:
 
 #### Specific changes
 
-If the MR proposes changes limited to a particular stage, group, or team,
+If the MR proposes changes that are limited to a particular stage, group, or team,
 request a review and approval from an experienced GitLab Team Member in that
 group. For example, if you're documenting a new internal API used exclusively by
 a given group, request an engineering review from one of the group's members.

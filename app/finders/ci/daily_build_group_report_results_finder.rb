@@ -40,7 +40,7 @@ module Ci
         date: start_date..end_date
       }
 
-      if ref_path
+      if ref_path.present?
         params[:ref_path] = ref_path
       else
         params[:default_branch] = true

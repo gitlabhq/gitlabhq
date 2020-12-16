@@ -31,7 +31,7 @@ module Projects
       end
 
       def notify_service
-        notify_service_class.new(project, current_user, notification_payload)
+        notify_service_class.new(project, notification_payload)
       end
 
       def notify_service_class
