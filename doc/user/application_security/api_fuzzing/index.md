@@ -147,7 +147,7 @@ data. Only run fuzzing against a test server.
 ### HTTP Archive (HAR)
 
 The [HTTP Archive format (HAR)](http://www.softwareishard.com/blog/har-12-spec/)
-is an archive file format for logging HTTP transactions. When used with GitLab's API fuzzer, HAR
+is an archive file format for logging HTTP transactions. When used with the GitLab API fuzzer, HAR
 must contain records of calling the web API to test. The API fuzzer extracts all the requests and
 uses them to perform testing.
 
@@ -243,7 +243,7 @@ developers and testers use to call various types of APIs. The API definitions
 for use with API Fuzzing. When exporting, make sure to select a supported version of Postman
 Collection: v2.0 or v2.1.
 
-When used with GitLab's API fuzzer, Postman Collections must contain definitions of the web API to
+When used with the GitLab API fuzzer, Postman Collections must contain definitions of the web API to
 test with valid data. The API fuzzer extracts all the API definitions and uses them to perform
 testing.
 

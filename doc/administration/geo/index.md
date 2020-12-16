@@ -124,7 +124,7 @@ The following are required to run Geo:
 - Git-lfs 2.4.2+ on the user side when using LFS
 - All nodes must run the same GitLab version.
 
-Additionally, check GitLab's [minimum requirements](../../install/requirements.md),
+Additionally, check the GitLab [minimum requirements](../../install/requirements.md),
 and we recommend you use:
 
 - At least GitLab Enterprise Edition 10.0 for basic Geo features.

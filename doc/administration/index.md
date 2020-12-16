@@ -51,26 +51,40 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Global user settings](user_settings.md): Configure instance-wide user permissions.
 - [Polling](polling.md): Configure how often the GitLab UI polls for updates.
 - [GitLab Pages configuration](pages/index.md): Enable and configure GitLab Pages.
-- [GitLab Pages configuration for GitLab source installations](pages/source.md): Enable and configure GitLab Pages on [source installations](../install/installation.md#installation-from-source).
+- [GitLab Pages configuration for GitLab source installations](pages/source.md):
+  Enable and configure GitLab Pages on [source installations](../install/installation.md#installation-from-source).
 - [Uploads administration](uploads.md): Configure GitLab uploads storage.
 - [Environment variables](environment_variables.md): Supported environment
   variables that can be used to override their default values to configure
   GitLab.
-- [Plugins](file_hooks.md): With custom plugins, GitLab administrators can introduce custom integrations without modifying GitLab's source code.
+- [Plugins](file_hooks.md): With custom plugins, GitLab administrators can
+  introduce custom integrations without modifying GitLab source code.
 - [Enforcing Terms of Service](../user/admin_area/settings/terms.md)
 - [Third party offers](../user/admin_area/settings/third_party_offers.md)
-- [Compliance](compliance.md): A collection of features from across the application that you may configure to help ensure that your GitLab instance and DevOps workflow meet compliance standards.
-- [Diff limits](../user/admin_area/diff_limits.md): Configure the diff rendering size limits of branch comparison pages.
-- [Merge request diffs storage](merge_request_diffs.md): Configure merge requests diffs external storage.
-- [Broadcast Messages](../user/admin_area/broadcast_messages.md): Send messages to GitLab users through the UI.
-- [Elasticsearch](../integration/elasticsearch.md): Enable Elasticsearch to empower GitLab's Advanced Search. Useful when you deal with a huge amount of data. **(STARTER ONLY)**
-- [External Classification Policy Authorization](../user/admin_area/settings/external_authorization.md) **(PREMIUM ONLY)**
-- [Upload a license](../user/admin_area/license.md): Upload a license to unlock features that are in paid tiers of GitLab. **(STARTER ONLY)**
-- [Admin Area](../user/admin_area/index.md): for self-managed instance-wide configuration and maintenance.
-- [S/MIME Signing](smime_signing_email.md): how to sign all outgoing notification emails with S/MIME.
-- [Enabling and disabling features flags](feature_flags.md): how to enable and disable GitLab features deployed behind feature flags.
+- [Compliance](compliance.md): A collection of features from across the
+  application that you may configure to help ensure that your GitLab instance
+  and DevOps workflow meet compliance standards.
+- [Diff limits](../user/admin_area/diff_limits.md): Configure the diff rendering
+  size limits of branch comparison pages.
+- [Merge request diffs storage](merge_request_diffs.md): Configure merge
+  requests diffs external storage.
+- [Broadcast Messages](../user/admin_area/broadcast_messages.md): Send messages
+  to GitLab users through the UI.
+- [Elasticsearch](../integration/elasticsearch.md): Enable Elasticsearch to
+  empower Advanced Search. Useful when you deal with a huge amount of data.
+  **(STARTER ONLY)**
+- [External Classification Policy Authorization](../user/admin_area/settings/external_authorization.md)
+  **(PREMIUM ONLY)**
+- [Upload a license](../user/admin_area/license.md): Upload a license to unlock
+  features that are in paid tiers of GitLab. **(STARTER ONLY)**
+- [Admin Area](../user/admin_area/index.md): for self-managed instance-wide
+  configuration and maintenance.
+- [S/MIME Signing](smime_signing_email.md): how to sign all outgoing notification
+  emails with S/MIME.
+- [Enabling and disabling features flags](feature_flags.md): how to enable and
+  disable GitLab features deployed behind feature flags.
 
-#### Customizing GitLab's appearance
+#### Customizing GitLab appearance
 
 - [Header logo](../user/admin_area/appearance.md#navigation-bar): Change the logo on all pages and email headers.
 - [Favicon](../user/admin_area/appearance.md#favicon): Change the default favicon to your own logo.
@@ -104,7 +118,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Mattermost](https://docs.gitlab.com/omnibus/gitlab-mattermost/): Integrate with [Mattermost](https://mattermost.com), an open source, private cloud workplace for web messaging.
 - [PlantUML](integration/plantuml.md): Create simple diagrams in AsciiDoc and Markdown documents
   created in snippets, wikis, and repositories.
-- [Web terminals](integration/terminal.md): Provide terminal access to your applications deployed to Kubernetes from within GitLab's CI/CD [environments](../ci/environments/index.md#web-terminals).
+- [Web terminals](integration/terminal.md): Provide terminal access to your applications deployed to Kubernetes from within GitLab CI/CD [environments](../ci/environments/index.md#web-terminals).
 
 ## User settings and permissions
 
@@ -134,7 +148,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 ## Project settings
 
 - [Issue closing pattern](issue_closing_pattern.md): Customize how to close an issue from commit messages.
-- [Gitaly](gitaly/index.md): Configuring Gitaly, GitLab's Git repository storage service.
+- [Gitaly](gitaly/index.md): Configuring Gitaly, the Git repository storage service for GitLab.
 - [Default labels](../user/admin_area/labels.md): Create labels that are automatically added to every new project.
 - [Restrict the use of public or internal projects](../public_access/public_access.md#restricting-the-use-of-public-or-internal-projects): Restrict the use of visibility levels for users when they create a project or a snippet.
 - [Custom project templates](../user/admin_area/custom_project_templates.md): Configure a set of projects to be used as custom templates when creating a new project. **(PREMIUM ONLY)**
@@ -186,7 +200,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Monitoring GitLab](monitoring/index.md):
   - [Monitoring uptime](../user/admin_area/monitoring/health_check.md): Check the server status using the health check endpoint.
   - [IP whitelist](monitoring/ip_whitelist.md): Monitor endpoints that provide health check information when probed.
-  - [Monitoring GitHub imports](monitoring/github_imports.md): GitLab's GitHub Importer displays Prometheus metrics to monitor the health and progress of the importer.
+  - [Monitoring GitHub imports](monitoring/github_imports.md): The GitLab GitHub Importer displays Prometheus metrics to monitor the health and progress of the importer.
 
 ### Performance Monitoring
 
@@ -199,7 +213,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 ## Analytics
 
-- [Pseudonymizer](pseudonymizer.md): Export data from GitLab's database to CSV files in a secure way. **(ULTIMATE)**
+- [Pseudonymizer](pseudonymizer.md): Export data from a GitLab database to CSV files in a secure way. **(ULTIMATE)**
 
 ## Troubleshooting
 

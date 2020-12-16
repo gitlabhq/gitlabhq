@@ -13,9 +13,9 @@ the [Elasticsearch integration documentation](../integration/elasticsearch.md#en
 
 ## Deep Dive
 
-In June 2019, Mario de la Ossa hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/issues/1`) on GitLab's [Elasticsearch integration](../integration/elasticsearch.md) to share his domain specific knowledge with anyone who may work in this part of the codebase in the future. You can find the [recording on YouTube](https://www.youtube.com/watch?v=vrvl-tN2EaA), and the slides on [Google Slides](https://docs.google.com/presentation/d/1H-pCzI_LNrgrL5pJAIQgvLX8Ji0-jIKOg1QeJQzChug/edit) and in [PDF](https://gitlab.com/gitlab-org/create-stage/uploads/c5aa32b6b07476fa8b597004899ec538/Elasticsearch_Deep_Dive.pdf). Everything covered in this deep dive was accurate as of GitLab 12.0, and while specific details may have changed since then, it should still serve as a good introduction.
+In June 2019, Mario de la Ossa hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/issues/1`) on the GitLab [Elasticsearch integration](../integration/elasticsearch.md) to share his domain specific knowledge with anyone who may work in this part of the codebase in the future. You can find the [recording on YouTube](https://www.youtube.com/watch?v=vrvl-tN2EaA), and the slides on [Google Slides](https://docs.google.com/presentation/d/1H-pCzI_LNrgrL5pJAIQgvLX8Ji0-jIKOg1QeJQzChug/edit) and in [PDF](https://gitlab.com/gitlab-org/create-stage/uploads/c5aa32b6b07476fa8b597004899ec538/Elasticsearch_Deep_Dive.pdf). Everything covered in this deep dive was accurate as of GitLab 12.0, and while specific details may have changed since then, it should still serve as a good introduction.
 
-In August 2020, a second Deep Dive was hosted, focusing on [GitLab's specific architecture for multi-indices support](#zero-downtime-reindexing-with-multiple-indices). The [recording on YouTube](https://www.youtube.com/watch?v=0WdPR9oB2fg) and the [slides](https://lulalala.gitlab.io/gitlab-elasticsearch-deepdive/) are available. Everything covered in this deep dive was accurate as of GitLab 13.3.
+In August 2020, a second Deep Dive was hosted, focusing on [GitLab-specific architecture for multi-indices support](#zero-downtime-reindexing-with-multiple-indices). The [recording on YouTube](https://www.youtube.com/watch?v=0WdPR9oB2fg) and the [slides](https://lulalala.gitlab.io/gitlab-elasticsearch-deepdive/) are available. Everything covered in this deep dive was accurate as of GitLab 13.3.
 
 ## Supported Versions
 
@@ -173,7 +173,7 @@ This is not applicable yet as multiple indices functionality is not fully implem
 
 Folders like `ee/lib/elastic/v12p1` contain snapshots of search logic from different versions. To keep a continuous Git history, the latest version lives under `ee/lib/elastic/latest`, but its classes are aliased under an actual version (e.g. `ee/lib/elastic/v12p3`). When referencing these classes, never use the `Latest` namespace directly, but use the actual version (e.g. `V12p3`).
 
-The version name basically follows GitLab's release version. If setting is changed in 12.3, we will create a new namespace called `V12p3` (p stands for "point"). Raise an issue if there is a need to name a version differently.
+The version name basically follows the GitLab release version. If setting is changed in 12.3, we will create a new namespace called `V12p3` (p stands for "point"). Raise an issue if there is a need to name a version differently.
 
 If the current version is `v12p1`, and we need to create a new version for `v12p3`, the steps are as follows:
 

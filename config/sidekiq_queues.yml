@@ -198,6 +198,8 @@
   - 1
 - - namespaceless_project_destroy
   - 1
+- - namespaces_onboarding_user_added
+  - 1
 - - new_epic
   - 2
 - - new_issue

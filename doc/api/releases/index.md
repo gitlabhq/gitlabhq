@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Releases API
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41766) in GitLab 11.7.
-> - Using this API you can manipulate GitLab's [Release](../../user/project/releases/index.md) entries.
+> - Using this API you can manipulate GitLab [Release](../../user/project/releases/index.md) entries.
 > - For manipulating links as a release asset, see [Release Links API](links.md).
 > - Release Evidences were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26019) in GitLab 12.5.
 

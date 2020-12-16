@@ -79,7 +79,7 @@ determining a suitable level of formality.
 
 ### Inclusive language
 
-[Diversity](https://about.gitlab.com/handbook/values/#diversity) is one of GitLab's values.
+[Diversity](https://about.gitlab.com/handbook/values/#diversity) is a GitLab value.
 We ask you to avoid translations which exclude people based on their gender or
 ethnicity.
 In languages which distinguish between a male and female form, use both or

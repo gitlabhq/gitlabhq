@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :project_repository_storage_move, class: 'ProjectRepositoryStorageMove' do
-    project
+    container { association(:project) }
 
     source_storage_name { 'default' }
 

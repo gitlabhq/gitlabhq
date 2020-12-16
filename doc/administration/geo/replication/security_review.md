@@ -33,7 +33,7 @@ from [owasp.org](https://owasp.org/).
 
 ### How can the data be classified into categories according to its sensitivity?
 
-- GitLab’s model of sensitivity is centered around public vs. internal vs.
+- The GitLab model of sensitivity is centered around public vs. internal vs.
   private projects. Geo replicates them all indiscriminately. “Selective sync”
   exists for files and repositories (but not database content), which would permit
   only less-sensitive projects to be replicated to a **secondary** node if desired.

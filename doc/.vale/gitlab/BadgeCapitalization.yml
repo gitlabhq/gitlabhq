@@ -6,7 +6,7 @@
 # For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: existence
 message: 'Badge "%s" must be capitalized.'
-link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#product-badges
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#product-tier-badges
 level: error
 scope: raw
 raw:

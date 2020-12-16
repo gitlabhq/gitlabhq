@@ -65,7 +65,7 @@ must meet one of the following conditions prior to the import:
   [primary email address](https://docs.github.com/en/free-pro-team@latest/rest/reference/users#get-a-user)
   on their profile that matches their GitLab account's email address.
 
-If a user referenced in the project is not found in GitLab's database, the project creator (typically the user
+If a user referenced in the project is not found in the GitLab database, the project creator (typically the user
 that initiated the import process) is set as the author/assignee, but a note on the issue mentioning the original
 GitHub author is added.
 
@@ -103,7 +103,7 @@ If you are using a self-managed GitLab instance or if you are importing from Git
 1. From the top navigation bar, click **+** and select **New project**.
 1. Select the **Import project** tab and then select **GitHub**.
 1. Select the first button to **List your GitHub repositories**. You are redirected to a page on [GitHub](https://github.com) to authorize the GitLab application.
-1. Click **Authorize GitlabHQ**. You are redirected back to GitLab's Import page and all of your GitHub repositories are listed.
+1. Click **Authorize GitlabHQ**. You are redirected back to the GitLab Import page and all of your GitHub repositories are listed.
 1. Continue on to [selecting which repositories to import](#selecting-which-repositories-to-import).
 
 ### Using a GitHub token

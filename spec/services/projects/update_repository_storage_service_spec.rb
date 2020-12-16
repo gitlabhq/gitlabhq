@@ -18,7 +18,7 @@ RSpec.describe Projects::UpdateRepositoryStorageService do
     context 'without wiki and design repository' do
       let(:project) { create(:project, :repository, wiki_enabled: false) }
       let(:destination) { 'test_second_storage' }
-      let(:repository_storage_move) { create(:project_repository_storage_move, :scheduled, project: project, destination_storage_name: destination) }
+      let(:repository_storage_move) { create(:project_repository_storage_move, :scheduled, container: project, destination_storage_name: destination) }
       let!(:checksum) { project.repository.checksum }
       let(:project_repository_double) { double(:repository) }
       let(:original_project_repository_double) { double(:repository) }
@@ -144,7 +144,7 @@ RSpec.describe Projects::UpdateRepositoryStorageService do
       end
 
       context 'when the repository move is finished' do
-        let(:repository_storage_move) { create(:project_repository_storage_move, :finished, project: project, destination_storage_name: destination) }
+        let(:repository_storage_move) { create(:project_repository_storage_move, :finished, container: project, destination_storage_name: destination) }
 
         it 'is idempotent' do
           expect do
@@ -156,7 +156,7 @@ RSpec.describe Projects::UpdateRepositoryStorageService do
       end
 
       context 'when the repository move is failed' do
-        let(:repository_storage_move) { create(:project_repository_storage_move, :failed, project: project, destination_storage_name: destination) }
+        let(:repository_storage_move) { create(:project_repository_storage_move, :failed, container: project, destination_storage_name: destination) }
 
         it 'is idempotent' do
           expect do
@@ -170,7 +170,7 @@ RSpec.describe Projects::UpdateRepositoryStorageService do
 
     context 'project with no repositories' do
       let(:project) { create(:project) }
-      let(:repository_storage_move) { create(:project_repository_storage_move, :scheduled, project: project, destination_storage_name: 'test_second_storage') }
+      let(:repository_storage_move) { create(:project_repository_storage_move, :scheduled, container: project, destination_storage_name: 'test_second_storage') }
 
       it 'updates the database' do
         allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('default').and_call_original
@@ -191,7 +191,7 @@ RSpec.describe Projects::UpdateRepositoryStorageService do
         let(:project) { create(:project, :repository, wiki_enabled: true) }
         let(:repository) { project.wiki.repository }
         let(:destination) { 'test_second_storage' }
-        let(:repository_storage_move) { create(:project_repository_storage_move, :scheduled, project: project, destination_storage_name: destination) }
+        let(:repository_storage_move) { create(:project_repository_storage_move, :scheduled, container: project, destination_storage_name: destination) }
 
         before do
           project.create_wiki
@@ -204,7 +204,7 @@ RSpec.describe Projects::UpdateRepositoryStorageService do
         let(:project) { create(:project, :repository) }
         let(:repository) { project.design_repository }
         let(:destination) { 'test_second_storage' }
-        let(:repository_storage_move) { create(:project_repository_storage_move, :scheduled, project: project, destination_storage_name: destination) }
+        let(:repository_storage_move) { create(:project_repository_storage_move, :scheduled, container: project, destination_storage_name: destination) }
 
         before do
           project.design_repository.create_if_not_exists

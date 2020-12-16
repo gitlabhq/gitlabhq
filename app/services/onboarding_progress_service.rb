@@ -2,7 +2,7 @@
 
 class OnboardingProgressService
   def initialize(namespace)
-    @namespace = namespace
+    @namespace = namespace.root_ancestor
   end
 
   def execute(action:)

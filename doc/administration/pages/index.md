@@ -53,7 +53,7 @@ supporting custom domains a secondary IP is not needed.
 
 Before proceeding with the Pages configuration, you will need to:
 
-1. Have a domain for Pages that is not a subdomain of your GitLab's instance domain.
+1. Have a domain for Pages that is not a subdomain of your GitLab instance domain.
 
    | GitLab domain | Pages domain | Does it work? |
    | :---: | :---: | :---: |
@@ -842,7 +842,7 @@ x509: certificate signed by unknown authority
 ```
 
 The reason for those errors is that the files `resolv.conf` and `ca-bundle.pem` are missing inside the chroot.
-The fix is to copy the host's `/etc/resolv.conf` and GitLab's certificate bundle inside the chroot:
+The fix is to copy the host's `/etc/resolv.conf` and the GitLab certificate bundle inside the chroot:
 
 ```shell
 sudo mkdir -p /var/opt/gitlab/gitlab-rails/shared/pages/etc/ssl

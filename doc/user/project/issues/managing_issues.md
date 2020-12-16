@@ -234,7 +234,7 @@ This translates to the following keywords:
 - Resolve, Resolves, Resolved, Resolving, resolve, resolves, resolved, resolving
 - Implement, Implements, Implemented, Implementing, implement, implements, implemented, implementing
 
-Note that `%{issue_ref}` is a complex regular expression defined inside GitLab's
+Note that `%{issue_ref}` is a complex regular expression defined inside the GitLab
 source code that can match references to:
 
 - A local issue (`#123`).

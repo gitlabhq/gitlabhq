@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5105) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.7.
 
-GitLab's Dependency Scanning feature can automatically find security vulnerabilities in your
+The Dependency Scanning feature can automatically find security vulnerabilities in your
 dependencies while you're developing and testing your applications. For example, dependency scanning
 lets you know if your application uses an external (open source) library that is known to be
 vulnerable. You can then take action to protect your application.
@@ -369,7 +369,7 @@ Here are the requirements for using dependency scanning in an offline environmen
 - If you have a limited access environment you need to allow access, such as using a proxy, to the advisory database: `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git`.
   If you are unable to permit access to `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git` you must host an offline copy of this `git` repository and set the `GEMNASIUM_DB_REMOTE_URL` variable to the URL of this repository. For more information on configuration variables, see [Dependency Scanning](#configuring-dependency-scanning).
 
-  This advisory database is constantly being updated, so you must periodically sync your local copy with GitLab's.
+  This advisory database is constantly being updated, so you must periodically sync your local copy with GitLab.
 
 - _Only if scanning Ruby projects_: Host an offline Git copy of the [advisory database](https://github.com/rubysec/ruby-advisory-db).
 - _Only if scanning npm/yarn projects_: Host an offline copy of the [retire.js](https://github.com/RetireJS/retire.js/) [node](https://github.com/RetireJS/retire.js/blob/master/repository/npmrepository.json) and [js](https://github.com/RetireJS/retire.js/blob/master/repository/jsrepository.json) advisory databases.

@@ -9,7 +9,8 @@ class NamespaceOnboardingAction < ApplicationRecord
     subscription_created: 1,
     git_write: 2,
     merge_request_created: 3,
-    git_read: 4
+    git_read: 4,
+    user_added: 6
   }.freeze
 
   enum action: ACTIONS

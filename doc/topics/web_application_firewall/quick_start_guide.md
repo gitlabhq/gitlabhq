@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 This is a step-by-step guide to help you use the GitLab [Web Application Firewall](index.md) after
 deploying a project hosted on GitLab.com to Google Kubernetes Engine using [Auto DevOps](../autodevops/index.md).
 
-GitLab's native Kubernetes integration is used, so you do not need
+The GitLab native Kubernetes integration is used, so you do not need
 to create a Kubernetes cluster manually using the Google Cloud Platform console.
 A simple application is created and deployed based on a GitLab template.
 
@@ -17,7 +17,7 @@ These instructions also work for a self-managed GitLab instance. However, you
 need to ensure your own [runners are configured](../../ci/runners/README.md) and
 [Google OAuth is enabled](../../integration/google.md).
 
-GitLab's Web Application Firewall is deployed with [Ingress](../../user/clusters/applications.md#ingress),
+The GitLab Web Application Firewall is deployed with [Ingress](../../user/clusters/applications.md#ingress),
 so it is available to your applications no matter how you deploy them to Kubernetes.
 
 ## Configuring your Google account
@@ -32,7 +32,7 @@ Google account (for example, one that you use to access Gmail, Drive, etc.) or c
 
 NOTE:
 Every new Google Cloud Platform (GCP) account receives [$300 in credit](https://console.cloud.google.com/freetrial),
-and in partnership with Google, GitLab is able to offer an additional $200 for new GCP accounts to get started with GitLab's
+and in partnership with Google, GitLab is able to offer an additional $200 for new GCP accounts to get started with the GitLab
 Google Kubernetes Engine integration. All you have to do is [follow this link](https://cloud.google.com/partners/partnercredit/?PCN=a0n60000006Vpz4AAC) and apply for credit.
 
 ## Creating a new project from a template
@@ -94,7 +94,7 @@ to take full advantage of Auto DevOps.
 
 ## Install Ingress
 
-GitLab's Kubernetes integration comes with some
+The GitLab Kubernetes integration comes with some
 [pre-defined applications](../../user/project/clusters/index.md#installing-applications)
 for you to install.
 

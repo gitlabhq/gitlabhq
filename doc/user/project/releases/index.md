@@ -470,7 +470,7 @@ In the API:
 > [Introduced](https://gitlab.com/gitlab-org/release-cli/-/merge_requests/6) in GitLab 12.10.
 
 The Release CLI is a command-line tool for managing GitLab Releases from the command line or from
-GitLab's CI/CD configuration file, `.gitlab-ci.yml`.
+the GitLab CI/CD configuration file, `.gitlab-ci.yml`.
 
 With it, you can create, update, modify, and delete releases right through the
 terminal.

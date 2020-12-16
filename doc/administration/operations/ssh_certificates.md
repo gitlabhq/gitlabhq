@@ -9,12 +9,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Available in](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19911) GitLab
 > Community Edition 11.2.
 
-GitLab's default SSH authentication requires users to upload their SSH
+The default SSH authentication for GitLab requires users to upload their SSH
 public keys before they can use the SSH transport.
 
-In centralized (e.g. corporate) environments this can be a hassle
-operationally, particularly if the SSH keys are temporary keys issued
-to the user, e.g. ones that expire 24 hours after issuing.
+In centralized (for example, corporate) environments this can be a hassle
+operationally, particularly if the SSH keys are temporary keys issued to the
+user, including ones that expire 24 hours after issuing.
 
 In such setups some external automated process is needed to constantly
 upload the new keys to GitLab.

@@ -192,7 +192,7 @@ You can use Vale:
 - [In a Git hook](#configure-pre-push-hooks). Vale only reports errors in the Git hook (the same
   configuration as the CI/CD pipelines), and does not report suggestions or warnings.
 
-#### Vale
+#### Vale result types
 
 Vale returns three types of results: `suggestion`, `warning`, and `error`:
 

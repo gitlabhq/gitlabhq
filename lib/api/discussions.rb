@@ -104,6 +104,7 @@ module API
             position: params[:position],
             id_key => noteable.id
           }
+          opts[:commit_id] = params[:commit_id] if noteable.is_a?(MergeRequest) && type == 'DiffNote'
 
           note = create_note(noteable, opts)
 

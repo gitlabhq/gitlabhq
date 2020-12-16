@@ -325,7 +325,7 @@ RSpec.describe Projects::ForkService do
       storage_move = create(
         :project_repository_storage_move,
         :scheduled,
-        project: project,
+        container: project,
         destination_storage_name: 'test_second_storage'
       )
       Projects::UpdateRepositoryStorageService.new(storage_move).execute

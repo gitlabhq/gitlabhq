@@ -280,4 +280,4 @@ No, you don't. You can create your project first and it will be accessed under
 
 ## Known issues
 
-For a list of known issues, visit GitLab's [public issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues?label_name[]=Category%3APages).
+For a list of known issues, visit the GitLab [public issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues?label_name[]=Category%3APages).

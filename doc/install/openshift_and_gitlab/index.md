@@ -19,7 +19,7 @@ for details.
 platform created by [RedHat](https://www.redhat.com/en), based on [Kubernetes](https://kubernetes.io/) and [Docker](https://www.docker.com). That means
 you can host your own PaaS for free and almost with no hassle.
 
-In this tutorial, we will see how to deploy GitLab in OpenShift using GitLab's
+In this tutorial, we will see how to deploy GitLab in OpenShift using the GitLab
 official Docker image while getting familiar with the web interface and CLI
 tools that will help us achieve our goal.
 
@@ -326,8 +326,8 @@ Now that we configured this, let's see how to manage and scale GitLab.
 
 Setting up GitLab for the first time might take a while depending on your
 internet connection and the resources you have attached to the all-in-one VM.
-GitLab's Docker image is quite big (~500MB), so you'll have to wait until
-it's downloaded and configured before you use it.
+The GitLab Docker image is quite big (approximately 500 MB), so you'll have to
+wait until it's downloaded and configured before you use it.
 
 ### Watch while GitLab gets deployed
 

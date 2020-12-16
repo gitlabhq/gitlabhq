@@ -6,9 +6,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Compliance features
 
-You can configure the following GitLab features to help ensure that your GitLab instance meets common compliance standards. Click a feature name for further documentation.
+You can configure the following GitLab features to help ensure that your GitLab
+instance meets common compliance standards. Click a feature name for additional
+documentation.
 
-GitLab’s [security features](../security/README.md) may also help you meet relevant compliance standards.
+The [security features](../security/README.md) in GitLab may also help you meet
+relevant compliance standards.
 
 |Feature   |GitLab tier |GitLab.com |
 | ---------| :--------: | :-------: |
@@ -23,4 +26,4 @@ GitLab’s [security features](../security/README.md) may also help you meet rel
 |**[Audit events](audit_events.md)**<br>To maintain the integrity of your code, GitLab Enterprise Edition Premium gives admins the ability to view any modifications made within the GitLab server in an advanced audit events system, so you can control, analyze, and track every change.|Premium+||
 |**[Auditor users](auditor_users.md)**<br>Auditor users are users who are given read-only access to all projects, groups, and other resources on the GitLab instance.|Premium+||
 |**[Credentials inventory](../user/admin_area/credentials_inventory.md)**<br>With a credentials inventory, GitLab administrators can keep track of the credentials used by all of the users in their GitLab instance. |Ultimate||
-|**Separation of Duties using [Protected branches](../user/project/protected_branches.md#protected-branches-approval-by-code-owners) and [custom CI Configuration Paths](../ci/pipelines/settings.md#custom-ci-configuration-path)**<br> GitLab Silver and Premium users can leverage GitLab's cross-project YAML configuration's to define deployers of code and developers of code. View the [Separation of Duties Deploy Project](https://gitlab.com/guided-explorations/separation-of-duties-deploy/blob/master/README.md) and [Separation of Duties Project](https://gitlab.com/guided-explorations/separation-of-duties/blob/master/README.md) to see how to use this set up to define these roles.|Premium+||
+|**Separation of Duties using [Protected branches](../user/project/protected_branches.md#protected-branches-approval-by-code-owners) and [custom CI Configuration Paths](../ci/pipelines/settings.md#custom-ci-configuration-path)**<br> GitLab Silver and Premium users can leverage the GitLab cross-project YAML configurations to define deployers of code and developers of code. View the [Separation of Duties Deploy Project](https://gitlab.com/guided-explorations/separation-of-duties-deploy/blob/master/README.md) and [Separation of Duties Project](https://gitlab.com/guided-explorations/separation-of-duties/blob/master/README.md) to see how to use this set up to define these roles.|Premium+||

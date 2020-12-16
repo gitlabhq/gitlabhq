@@ -10,7 +10,7 @@ type: howto, reference
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1589) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.0.
 > - [Moved](<https://gitlab.com/gitlab-org/gitlab/-/issues/212320>) to GitLab Core in 13.7.
 
-GitLab's Deploy Boards offer a consolidated view of the current health and
+GitLab Deploy Boards offer a consolidated view of the current health and
 status of each CI [environment](../../ci/environments/index.md) running on [Kubernetes](https://kubernetes.io), displaying the status
 of the pods in the deployment. Developers and other teammates can view the
 progress and status of a rollout, pod by pod, in the workflow they already use

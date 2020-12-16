@@ -27,7 +27,7 @@ This requires Gitea `v1.0.0` or newer.
 ## How it works
 
 Since Gitea is currently not an OAuth provider, author/assignee cannot be mapped
-to users in your GitLab's instance. This means that the project creator (most of
+to users in your GitLab instance. This means that the project creator (most of
 the times the current user that started the import process) is set as the author,
 but a reference on the issue about the original Gitea author is kept.
 

@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Translate GitLab to your language
 
-The text in GitLab's user interface is in American English by default.
+The text in the GitLab user interface is in American English by default.
 Each string can be translated to other languages.
 As each string is translated, it is added to the languages translation file,
 and is made available in future releases of GitLab.

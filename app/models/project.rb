@@ -342,7 +342,7 @@ class Project < ApplicationRecord
 
   has_many :daily_build_group_report_results, class_name: 'Ci::DailyBuildGroupReportResult'
 
-  has_many :repository_storage_moves, class_name: 'ProjectRepositoryStorageMove'
+  has_many :repository_storage_moves, class_name: 'ProjectRepositoryStorageMove', inverse_of: :container
 
   has_many :webide_pipelines, -> { webide_source }, class_name: 'Ci::Pipeline', inverse_of: :project
   has_many :reviews, inverse_of: :project

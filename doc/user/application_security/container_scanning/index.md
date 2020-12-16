@@ -14,7 +14,7 @@ vulnerabilities. By including an extra job in your pipeline that scans for those
 displays them in a merge request, you can use GitLab to audit your Docker-based apps.
 By default, container scanning in GitLab is based on [Clair](https://github.com/quay/clair) and
 [Klar](https://github.com/optiopay/klar), which are open-source tools for vulnerability static analysis in
-containers. [GitLab's Klar analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/klar/)
+containers. The GitLab [Klar analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/klar/)
 scans the containers and serves as a wrapper for Clair.
 
 To integrate security scanners other than Clair and Klar into GitLab, see

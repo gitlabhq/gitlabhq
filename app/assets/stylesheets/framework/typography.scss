@@ -573,10 +573,6 @@ body {
   font-size: 1.25em;
   font-weight: $gl-font-weight-bold;
 
-  &:last-child {
-    margin-bottom: 0;
-  }
-
   &.with-button {
     line-height: 34px;
   }

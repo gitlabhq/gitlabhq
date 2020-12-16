@@ -9,7 +9,7 @@ type: concepts, howto
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29382) in GitLab 13.0.
 
-You can use the Freeze Periods API to manipulate GitLab's [Freeze Period](../user/project/releases/index.md#prevent-unintentional-releases-by-setting-a-deploy-freeze) entries.
+You can use the Freeze Periods API to manipulate GitLab [Freeze Period](../user/project/releases/index.md#prevent-unintentional-releases-by-setting-a-deploy-freeze) entries.
 
 ## Permissions and security
 

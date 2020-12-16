@@ -13,7 +13,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 >   quick actions when updating the description of issues, epics, and merge requests.
 
 Quick actions are textual shortcuts for common actions on issues, epics, merge requests,
-and commits that are usually done by clicking buttons or dropdowns in GitLab's UI.
+and commits that are usually done by clicking buttons or dropdowns in the GitLab UI.
 You can enter these commands in the description or in comments of issues, epics, merge requests, and commits.
 Each command should be on a separate line in order to be properly detected and executed.
 

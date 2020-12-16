@@ -279,7 +279,7 @@ deploy_prod:
 
 The `when: manual` action:
 
-- Exposes a "play" button in GitLab's UI for that job.
+- Exposes a "play" button in the GitLab UI for that job.
 - Means the `deploy_prod` job will only be triggered when the "play" button is clicked.
 
 You can find the "play" button in the pipelines, environments, deployments, and jobs views.
@@ -413,7 +413,7 @@ deploy:
     - master
 ```
 
-When deploying to a Kubernetes cluster using GitLab's Kubernetes integration,
+When deploying to a Kubernetes cluster using the GitLab Kubernetes integration,
 information about the cluster and namespace will be displayed above the job
 trace on the deployment job page:
 
@@ -648,7 +648,7 @@ For example:
 
 #### Going from source files to public pages
 
-With GitLab's [Route Maps](../review_apps/index.md#route-maps) you can go directly
+With GitLab [Route Maps](../review_apps/index.md#route-maps), you can go directly
 from source files to public pages in the environment set for Review Apps.
 
 ### Stopping an environment

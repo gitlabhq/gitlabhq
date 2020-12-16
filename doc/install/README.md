@@ -93,7 +93,7 @@ the above methods, provided the cloud provider supports it.
 - [Install on AWS](aws/index.md): Install Omnibus GitLab on AWS using the community AMIs that GitLab provides.
 - [Install GitLab on Google Cloud Platform](google_cloud_platform/index.md): Install Omnibus GitLab on a VM in GCP.
 - [Install GitLab on Azure](azure/index.md): Install Omnibus GitLab from Azure Marketplace.
-- [Install GitLab on OpenShift](https://docs.gitlab.com/charts/installation/cloud/openshift.html): Install GitLab on OpenShift by using GitLab's Helm charts.
+- [Install GitLab on OpenShift](https://docs.gitlab.com/charts/installation/cloud/openshift.html): Install GitLab on OpenShift by using the GitLab Helm charts.
 - [Install GitLab on DC/OS](https://d2iq.com/blog/gitlab-dcos): Install GitLab on Mesosphere DC/OS via the [GitLab-Mesosphere integration](https://about.gitlab.com/blog/2016/09/16/announcing-gitlab-and-mesosphere/).
 - [Install GitLab on DigitalOcean](https://about.gitlab.com/blog/2016/04/27/getting-started-with-gitlab-and-digitalocean/): Install Omnibus GitLab on DigitalOcean.
 - _Testing only!_ [DigitalOcean and Docker Machine](digitaloceandocker.md):
@@ -107,7 +107,7 @@ installation:
 - [Upload a license](../user/admin_area/license.md)  or [start a free trial](https://about.gitlab.com/free-trial/):
   Activate all GitLab Enterprise Edition functionality with a license.
 - [Set up runners](https://docs.gitlab.com/runner/): Set up one or more GitLab
-  Runners, the agents that are responsible for all of GitLab's CI/CD features.
+  Runners, the agents that are responsible for all of the GitLab CI/CD features.
 - [GitLab Pages](../administration/pages/index.md): Configure GitLab Pages to
   allow hosting of static sites.
 - [GitLab Registry](../administration/packages/container_registry.md): With the
@@ -129,7 +129,7 @@ installation:
   faster, more advanced code search across your entire GitLab instance.
 - [Geo replication](../administration/geo/index.md):
   Geo is the solution for widely distributed development teams.
-- [Release and maintenance policy](../policy/maintenance.md): Learn about GitLab's
+- [Release and maintenance policy](../policy/maintenance.md): Learn about GitLab
   policies governing version naming, as well as release pace for major, minor, patch,
   and security releases.
 - [Pricing](https://about.gitlab.com/pricing/): Pricing for the different tiers.

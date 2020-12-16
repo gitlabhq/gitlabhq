@@ -38,6 +38,8 @@ module Members
         end
       end
 
+      enqueue_onboarding_progress_action(source) if members.size > errors.size
+
       return success unless errors.any?
 
       error(errors.to_sentence)
@@ -49,6 +51,10 @@ module Members
       limit = params.fetch(:limit, DEFAULT_LIMIT)
 
       limit && limit < 0 ? nil : limit
+    end
+
+    def enqueue_onboarding_progress_action(source)
+      Namespaces::OnboardingUserAddedWorker.perform_async(source.id)
     end
   end
 end

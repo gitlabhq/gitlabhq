@@ -7,8 +7,8 @@ description: 'Learn how to use and administer GitLab, the most scalable Git-base
 ---
 
 <div class="d-none">
-  <em>Visit <a href="https://docs.gitlab.com/ee/">docs.gitlab.com</a> for optimized
-  navigation, discoverability, and readability.</em>
+  <h3>Visit <a href="https://docs.gitlab.com/ee/">docs.gitlab.com</a> for the latest version
+  of this help information with enhanced navigation, discoverability, and readability.</h3>
 </div>
 <!-- the div above will not display on the docs site but will display on /help -->
 

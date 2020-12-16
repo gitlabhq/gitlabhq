@@ -370,7 +370,7 @@ GitLab strongly recommends against using AWS Elastic File System (EFS).
 Our support team will not be able to assist on performance issues related to
 file system access.
 
-Customers and users have reported that AWS EFS does not perform well for GitLab's
+Customers and users have reported that AWS EFS does not perform well for the GitLab
 use-case. Workloads where many small files are written in a serialized manner, like `git`,
 are not well-suited for EFS. EBS with an NFS server on top will perform much better.
 
@@ -383,7 +383,7 @@ For more details on another person's experience with EFS, see this [Commit Brook
 ### Avoid using CephFS and GlusterFS
 
 GitLab strongly recommends against using CephFS and GlusterFS.
-These distributed file systems are not well-suited for GitLab's input/output access patterns because Git uses many small files and access times and file locking times to propagate will make Git activity very slow.
+These distributed file systems are not well-suited for the GitLab input/output access patterns because Git uses many small files and access times and file locking times to propagate will make Git activity very slow.
 
 ### Avoid using PostgreSQL with NFS
 

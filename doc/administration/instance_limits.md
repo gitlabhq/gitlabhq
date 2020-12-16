@@ -499,8 +499,8 @@ as the overall index size. This value defaults to `1024 KiB` (1 MiB) as any
 text files larger than this likely aren't meant to be read by humans.
 
 You must set a limit, as unlimited file sizes aren't supported. Setting this
-value to be greater than the amount of memory on GitLab's Sidekiq nodes causes
-GitLab's Sidekiq nodes to run out of memory, as they will pre-allocate this
+value to be greater than the amount of memory on GitLab Sidekiq nodes causes
+the GitLab Sidekiq nodes to run out of memory, as they will pre-allocate this
 amount of memory during indexing.
 
 ### Maximum field length

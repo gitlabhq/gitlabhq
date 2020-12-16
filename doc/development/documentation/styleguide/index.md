@@ -528,6 +528,7 @@ You can use the following fake tokens as examples:
 
 | Usage | Guidance |
 |-----------------------|-----|
+| admin, admin area     | Use **administration**, **administrator**, **administer**, or **Admin Area** instead. |.
 | and/or                | Use **or** instead, or another sensible construction. |
 | currently             | Do not use when talking about the product or its features. The documentation describes the product as it is today. |
 | easily                | Do not use. If the user doesn't find the process to be these things, we lose their trust. |
@@ -539,7 +540,7 @@ You can use the following fake tokens as examples:
 | i.e.                  | Do not use Latin abbreviations. Use **that is** instead. ([Vale](../testing.md#vale) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml)) |
 | jargon                | Do not use. Define the term or [link to a definition](#links-to-external-documentation). |
 | may, might            | **Might** means something has the probability of occurring. **May** gives permission to do something. Consider **can** instead of **may**. |
-| me                    | Do not use first-person singular. Use **you**, **we**, or **us** instead. ([Vale](../testing.md#vale) rule: [`FirstPerson.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FirstPerson.yml)) |
+| me, myself, mine      | Do not use first-person singular. Use **you**, **we**, or **us** instead. ([Vale](../testing.md#vale) rule: [`FirstPerson.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FirstPerson.yml)) |
 | please                | Do not use. For details, see the [Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/p/please). |
 | profanity             | Do not use. Doing so may negatively affect other users and contributors, which is contrary to the GitLab value of [Diversity, Inclusion, and Belonging](https://about.gitlab.com/handbook/values/#diversity-inclusion). |
 | scalability           | Do not use when talking about increasing GitLab performance for additional users. The words scale or scaling are sometimes acceptable, but references to increasing GitLab performance for additional users should direct readers to the GitLab [reference architectures](../../../administration/reference_architectures/index.md) page. |
@@ -547,6 +548,7 @@ You can use the following fake tokens as examples:
 | slashes               | Instead of **and/or**, use **or** or another sensible construction. This rule also applies to other slashes, like **follow/unfollow**. Some exceptions (like **CI/CD**) are allowed. |
 | that                  | Do not use. Example: `the file that you save` can be `the file you save`. |
 | useful                | Do not use. If the user doesn't find the process to be these things, we lose their trust. |
+| utilize               | Do not use. Use **use** instead. It's more succinct and easier for non-native English speakers to understand. |
 | via                   | Do not use Latin abbreviations. Use **with**, **through**, or **by using** instead. ([Vale](../testing.md#vale) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml)) |
 
 <!-- vale on -->
@@ -1853,7 +1855,8 @@ packages. Possible configuration settings include:
 - Other settings in `lib/support/`.
 
 Configuration procedures can require users to edit configuration files, reconfigure
-GitLab, or restart GitLab. Use these styles to document these steps:
+GitLab, or restart GitLab. Use these styles to document these steps, replacing
+`PATH/TO` with the appropriate path:
 
 <!-- vale off -->
 
@@ -1866,7 +1869,7 @@ GitLab, or restart GitLab. Use these styles to document these steps:
    external_url "https://gitlab.example.com"
    ```
 
-1. Save the file and [reconfigure](path/to/administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file and [reconfigure](PATH/TO/administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
    GitLab for the changes to take effect.
 
 ---
@@ -1880,7 +1883,7 @@ GitLab, or restart GitLab. Use these styles to document these steps:
      host: "gitlab.example.com"
    ```
 
-1. Save the file and [restart](path/to/administration/restart_gitlab.md#installations-from-source)
+1. Save the file and [restart](PATH/TO/administration/restart_gitlab.md#installations-from-source)
    GitLab for the changes to take effect.
 ````
 

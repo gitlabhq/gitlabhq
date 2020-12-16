@@ -19,7 +19,7 @@ integration as well as linking to more detailed resources for how to do so.
 
 ## Integration Tiers
 
-GitLab's security offerings are designed for GitLab Gold and GitLab Ultimate users, and the
+The security offerings in GitLab are designed for GitLab Gold and GitLab Ultimate users, and the
 [DevSecOps](https://about.gitlab.com/handbook/use-cases/#4-devsecops-shift-left-security)
 use case. All the features are in those tiers. This includes the APIs and standard reporting
 framework needed to provide a consistent experience for users to easily bring their preferred

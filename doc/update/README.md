@@ -33,7 +33,7 @@ official ways to update GitLab:
 ### Linux packages (Omnibus GitLab)
 
 The [Omnibus update guide](https://docs.gitlab.com/omnibus/update/)
-contains the steps needed to update a package installed by GitLab's official
+contains the steps needed to update a package installed by official GitLab
 repositories.
 
 There are also instructions when you want to

@@ -6,7 +6,7 @@
 # For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: existence
 message: 'Can this reference to "%s" be refactored?'
-link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#importance-of-referencing-gitlab-versions-and-tiers
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#gitlab-versions
 level: suggestion
 nonword: true
 ignorecase: true

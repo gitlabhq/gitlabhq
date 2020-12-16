@@ -93,7 +93,7 @@ To read the container registry images, you'll need to:
 
 1. Create a Deploy Token with `read_registry` as a scope.
 1. Take note of your `username` and `token`.
-1. Sign in to GitLab’s Container Registry using the deploy token:
+1. Sign in to the GitLab Container Registry using the deploy token:
 
 ```shell
 docker login -u <username> -p <deploy_token> registry.example.com
@@ -110,7 +110,7 @@ To push the container registry images, you'll need to:
 
 1. Create a Deploy Token with `write_registry` as a scope.
 1. Take note of your `username` and `token`.
-1. Sign in to GitLab’s Container Registry using the deploy token:
+1. Sign in to the GitLab Container Registry using the deploy token:
 
    ```shell
    docker login -u <username> -p <deploy_token> registry.example.com

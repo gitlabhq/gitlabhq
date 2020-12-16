@@ -296,7 +296,7 @@ To make your website's visitors even more secure, you can choose to
 force HTTPS for GitLab Pages. By doing so, all attempts to visit your
 website via HTTP will be automatically redirected to HTTPS via 301.
 
-It works with both GitLab's default domain and with your custom
+It works with both the GitLab default domain and with your custom
 domain (as long as you've set a valid certificate for it).
 
 To enable this setting:

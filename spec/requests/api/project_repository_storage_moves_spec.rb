@@ -7,7 +7,7 @@ RSpec.describe API::ProjectRepositoryStorageMoves do
 
   let_it_be(:user) { create(:admin) }
   let_it_be(:project) { create(:project, :repository).tap { |project| project.track_project_repository } }
-  let_it_be(:storage_move) { create(:project_repository_storage_move, :scheduled, project: project) }
+  let_it_be(:storage_move) { create(:project_repository_storage_move, :scheduled, container: project) }
 
   shared_examples 'get single project repository storage move' do
     let(:project_repository_storage_move_id) { storage_move.id }
@@ -63,14 +63,14 @@ RSpec.describe API::ProjectRepositoryStorageMoves do
 
       control = ActiveRecord::QueryRecorder.new { get_project_repository_storage_moves }
 
-      create(:project_repository_storage_move, :scheduled, project: project)
+      create(:project_repository_storage_move, :scheduled, container: project)
 
       expect { get_project_repository_storage_moves }.not_to exceed_query_limit(control)
     end
 
     it 'returns the most recently created first' do
-      storage_move_oldest = create(:project_repository_storage_move, :scheduled, project: project, created_at: 2.days.ago)
-      storage_move_middle = create(:project_repository_storage_move, :scheduled, project: project, created_at: 1.day.ago)
+      storage_move_oldest = create(:project_repository_storage_move, :scheduled, container: project, created_at: 2.days.ago)
+      storage_move_middle = create(:project_repository_storage_move, :scheduled, container: project, created_at: 1.day.ago)
 
       get_project_repository_storage_moves
 

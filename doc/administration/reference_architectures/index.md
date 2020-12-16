@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 You can set up GitLab on a single server or scale it up to serve many users.
 This page details the recommended Reference Architectures that were built and
-verified by GitLab's Quality and Support teams.
+verified by the GitLab Quality and Support teams.
 
 Below is a chart representing each architecture tier and the number of users
 they can handle. As your number of users grow with time, it’s recommended that
@@ -18,8 +18,8 @@ you scale GitLab accordingly.
 ![Reference Architectures](img/reference-architectures.png)
 <!-- Internal link: https://docs.google.com/spreadsheets/d/1obYP4fLKkVVDOljaI3-ozhmCiPtEeMblbBKkf2OADKs/edit#gid=1403207183 -->
 
-Testing on these reference architectures were performed with
-[GitLab's Performance Tool](https://gitlab.com/gitlab-org/quality/performance)
+Testing on these reference architectures was performed with the
+[GitLab Performance Tool](https://gitlab.com/gitlab-org/quality/performance)
 at specific coded workloads, and the throughputs used for testing were
 calculated based on sample customer data. Select the
 [reference architecture](#available-reference-architectures) that matches your scale.
@@ -36,8 +36,8 @@ the [default setup](#automated-backups) by
 [installing GitLab](../../install/README.md) on a single machine to minimize
 maintenance and resource costs.
 
-If your organization has more than 2,000 users, the recommendation is to scale
-GitLab's components to multiple machine nodes. The machine nodes are grouped by
+If your organization has more than 2,000 users, the recommendation is to scale the
+GitLab components to multiple machine nodes. The machine nodes are grouped by
 components. The addition of these nodes increases the performance and
 scalability of to your GitLab instance.
 

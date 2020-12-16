@@ -70,7 +70,7 @@ NOTE:
 Only direct subgroups can be set as the template source. Projects of nested subgroups of a selected template source cannot be used.
 
 Repository and database information that are copied over to each new project are
-identical to the data exported with [GitLab's Project Import/Export](../project/settings/import_export.md).
+identical to the data exported with the [GitLab Project Import/Export](../project/settings/import_export.md).
 
 <!-- ## Troubleshooting
 

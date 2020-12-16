@@ -16,6 +16,6 @@ If you plan to deploy a GitLab instance on a physically-isolated and offline net
 
 ## Features
 
-Follow these best practices to use GitLab's features in an offline environment:
+Follow these best practices to use GitLab features in an offline environment:
 
 - [Operating the GitLab Secure scanners in an offline environment](../../user/application_security/offline_deployments/index.md).

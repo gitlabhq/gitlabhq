@@ -773,6 +773,7 @@ Diff comments also contain position:
         "noteable_id": 3,
         "noteable_type": "Merge request",
         "noteable_iid": null,
+        "commit_id": "4803c71e6b1833ca72b8b26ef2ecd5adc8a38031",
         "position": {
           "base_sha": "b5d6e7b1613fca24d250fa8e5bc7bcc3dd6002ef",
           "start_sha": "7c9c2ead8a320fb7ba0b4e234bd9529a2614e306",
@@ -828,6 +829,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ### Create new merge request thread
 
+> The `commit id` entry was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47130) in GitLab 13.7.
+
 Creates a new thread to a single project merge request. This is similar to creating
 a note but other comments (replies) can be added to it later.
 
@@ -842,6 +845,7 @@ Parameters:
 | `id`                                     | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `merge_request_iid`                      | integer        | yes      | The IID of a merge request |
 | `body`                                   | string         | yes      | The content of the thread |
+| `commit_id`                              | string         | no       | SHA referencing commit to start this thread on |
 | `created_at`                             | string         | no       | Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z (requires admin or project/group owner rights) |
 | `position`                               | hash           | no       | Position when creating a diff note |
 | `position[base_sha]`                     | string         | yes      | Base commit SHA in the source branch |

@@ -470,7 +470,7 @@ Connect to your GitLab instance via **Bastion Host A** using [SSH Agent Forwardi
 
 #### Disable Let's Encrypt
 
-Since we're adding our SSL certificate at the load balancer, we do not need GitLab's built-in support for Let's Encrypt. Let's Encrypt [is enabled by default](https://docs.gitlab.com/omnibus/settings/ssl.html#lets-encrypt-integration) when using an `https` domain in GitLab 10.7 and later, so we need to explicitly disable it:
+Since we're adding our SSL certificate at the load balancer, we do not need the GitLab built-in support for Let's Encrypt. Let's Encrypt [is enabled by default](https://docs.gitlab.com/omnibus/settings/ssl.html#lets-encrypt-integration) when using an `https` domain in GitLab 10.7 and later, so we need to explicitly disable it:
 
 1. Open `/etc/gitlab/gitlab.rb` and disable it:
 
@@ -586,7 +586,7 @@ Let's create an EC2 instance where we'll install Gitaly:
 1. Finally, acknowledge that you have access to the selected private key file or create a new one. Click **Launch Instances**.
 
 NOTE:
-Instead of storing configuration _and_ repository data on the root volume, you can also choose to add an additional EBS volume for repository storage. Follow the same guidance as above. See the [Amazon EBS pricing](https://aws.amazon.com/ebs/pricing/). We do not recommend using EFS as it may negatively impact GitLab’s performance. You can review the [relevant documentation](../../administration/nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
+Instead of storing configuration _and_ repository data on the root volume, you can also choose to add an additional EBS volume for repository storage. Follow the same guidance as above. See the [Amazon EBS pricing](https://aws.amazon.com/ebs/pricing/). We do not recommend using EFS as it may negatively impact the performance of GitLab. You can review the [relevant documentation](../../administration/nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
 
 Now that we have our EC2 instance ready, follow the [documentation to install GitLab and set up Gitaly on its own server](../../administration/gitaly/index.md#run-gitaly-on-its-own-server). Perform the client setup steps from that document on the [GitLab instance we created](#install-gitlab) above.
 

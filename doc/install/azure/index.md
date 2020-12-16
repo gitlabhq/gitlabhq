@@ -9,7 +9,7 @@ type: howto
 # Install GitLab on Microsoft Azure
 
 WARNING:
-This guide is deprecated and pending an update. For the time being, use GitLab's
+This guide is deprecated and pending an update. For the time being, use the GitLab
 [image in the Azure Marketplace](https://azuremarketplace.microsoft.com/en-us/marketplace/apps/gitlabinc1586447921813.gitlabee?tab=Overview).
 
 Azure is Microsoft's business cloud and GitLab is a pre-configured offering on

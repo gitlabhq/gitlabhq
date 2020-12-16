@@ -25,9 +25,9 @@ it easier to [deploy to AWS](#deploy-your-application-to-the-aws-elastic-contain
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31167) in GitLab 12.6.
 
-GitLab's AWS Docker image provides the [AWS Command Line Interface](https://aws.amazon.com/cli/),
+The GitLab AWS Docker image provides the [AWS Command Line Interface](https://aws.amazon.com/cli/),
 which enables you to run `aws` commands. As part of your deployment strategy, you can run `aws` commands directly from
-`.gitlab-ci.yml` by specifying [GitLab's AWS Docker image](https://gitlab.com/gitlab-org/cloud-deploy).
+`.gitlab-ci.yml` by specifying the [GitLab AWS Docker image](https://gitlab.com/gitlab-org/cloud-deploy).
 
 Some credentials are required to be able to run `aws` commands:
 

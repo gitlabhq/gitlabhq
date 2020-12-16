@@ -7,7 +7,7 @@
 # For a list of all options, see https://errata-ai.github.io/vale/styles/
 extends: substitution
 message: 'Consider %s instead of "%s".'
-link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#language
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#language
 level: suggestion
 ignorecase: true
 swap:

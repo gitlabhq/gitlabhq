@@ -8,9 +8,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5532) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.1.
 
-As GitLab's database hosts sensitive information, using it unfiltered for analytics
+As the GitLab database hosts sensitive information, using it unfiltered for analytics
 implies high security requirements. To help alleviate this constraint, the Pseudonymizer
-service is used to export GitLab's data in a pseudonymized way.
+service is used to export GitLab data in a pseudonymized way.
 
 WARNING:
 This process is not impervious. If the source data is available, it's possible for
