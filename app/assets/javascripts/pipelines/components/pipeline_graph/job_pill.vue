@@ -10,10 +10,6 @@ export default {
       type: String,
       required: true,
     },
-    jobId: {
-      type: String,
-      required: true,
-    },
     isHighlighted: {
       type: Boolean,
       required: false,
@@ -45,7 +41,7 @@ export default {
   },
   methods: {
     onMouseEnter() {
-      this.$emit('on-mouse-enter', this.jobId);
+      this.$emit('on-mouse-enter', this.jobName);
     },
     onMouseLeave() {
       this.$emit('on-mouse-leave');
@@ -56,7 +52,7 @@ export default {
 <template>
   <tooltip-on-truncate :title="jobName" truncate-target="child" placement="top">
     <div
-      :id="jobId"
+      :id="jobName"
       class="gl-w-15 gl-bg-white gl-text-center gl-text-truncate gl-rounded-pill gl-mb-3 gl-px-5 gl-py-2 gl-relative gl-z-index-1 gl-transition-duration-slow gl-transition-timing-function-ease"
       :class="jobPillClasses"
       @mouseover="onMouseEnter"

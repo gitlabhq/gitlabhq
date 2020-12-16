@@ -44,10 +44,10 @@ Impersonation is where an administrator uses credentials to perform an action as
 
 ### Group events **(STARTER)**
 
-NOTE:
-You need Owner [permissions](../user/permissions.md) to view the group Audit Events page.
+A user with a Owner role (or above) can retrieve group audit events of all users.
+A user with a Developer or Maintainer role is limited to group audit events based on their individual actions.
 
-To view a group's audit events, navigate to **Group > Settings > Audit Events**.
+To view a group's audit events, navigate to **Group > Security & Compliance > Audit Events**.
 From there, you can see the following actions:
 
 - Group name or path changed.
@@ -74,10 +74,10 @@ Group events can also be accessed via the [Group Audit Events API](../api/audit_
 
 ### Project events **(STARTER)**
 
-NOTE:
-You need Maintainer [permissions](../user/permissions.md) or higher to view the project Audit Events page.
+A user with a Maintainer role (or above) can retrieve project audit events of all users.
+A user with a Developer role is limited to project audit events based on their individual actions.
 
-To view a project's audit events, navigate to **Project > Settings > Audit Events**.
+To view a project's audit events, navigate to **Project > Security & Compliance > Audit Events**.
 From there, you can see the following actions:
 
 - Added or removed deploy keys

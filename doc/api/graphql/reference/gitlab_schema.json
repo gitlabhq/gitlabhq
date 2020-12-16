@@ -10945,28 +10945,8 @@
               "defaultValue": null
             },
             {
-              "name": "assigneeId",
-              "description": "The ID of the user to be assigned to the board.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "milestoneId",
-              "description": "The ID of the milestone to be assigned to the board.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "MilestoneID",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "weight",
-              "description": "The weight of the board.",
+              "name": "hideBacklogList",
+              "description": "Whether or not backlog list is hidden",
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
@@ -10975,20 +10955,12 @@
               "defaultValue": null
             },
             {
-              "name": "labelIds",
-              "description": "The IDs of labels to be added to the board.",
+              "name": "hideClosedList",
+              "description": "Whether or not closed list is hidden",
               "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "LabelID",
-                    "ofType": null
-                  }
-                }
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
               },
               "defaultValue": null
             },
@@ -68542,22 +68514,8 @@
           "fields": null,
           "inputFields": [
             {
-              "name": "id",
-              "description": "The board global ID",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "BoardID",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
               "name": "name",
-              "description": "Name of the board",
+              "description": "The board name.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -68586,77 +68544,15 @@
               "defaultValue": null
             },
             {
-              "name": "assigneeId",
-              "description": "The ID of user to be assigned to the board",
+              "name": "id",
+              "description": "The board global ID.",
               "type": {
-                "kind": "SCALAR",
-                "name": "UserID",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "milestoneId",
-              "description": "The ID of milestone to be assigned to the board",
-              "type": {
-                "kind": "SCALAR",
-                "name": "MilestoneID",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "iterationId",
-              "description": "The ID of iteration to be assigned to the board.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "IterationID",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "weight",
-              "description": "The weight value to be assigned to the board",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "labels",
-              "description": "Labels of the issue",
-              "type": {
-                "kind": "LIST",
+                "kind": "NON_NULL",
                 "name": null,
                 "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "labelIds",
-              "description": "The IDs of labels to be added to the board",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "LabelID",
-                    "ofType": null
-                  }
+                  "kind": "SCALAR",
+                  "name": "BoardID",
+                  "ofType": null
                 }
               },
               "defaultValue": null
@@ -68805,7 +68701,7 @@
           "fields": [
             {
               "name": "board",
-              "description": "The board after mutation",
+              "description": "The board after mutation.",
               "args": [
 
               ],

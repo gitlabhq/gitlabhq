@@ -12,6 +12,12 @@ RSpec.describe Suggestion do
   describe 'validations' do
     it { is_expected.to validate_presence_of(:note) }
 
+    context 'when importing' do
+      subject { create(:suggestion, importing: true) }
+
+      it { is_expected.not_to validate_presence_of(:note) }
+    end
+
     context 'when suggestion is applied' do
       before do
         allow(subject).to receive(:applied?).and_return(true)

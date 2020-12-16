@@ -17,7 +17,7 @@ RSpec.describe 'Invalid uploads that must be rejected', :api, :js do
     subject do
       HTTParty.put(
         url,
-        basic_auth: { user: user.username, password: personal_access_token.token },
+        basic_auth: { username: user.username, password: personal_access_token.token },
         body: body
       )
     end

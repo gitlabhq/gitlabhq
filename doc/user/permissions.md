@@ -167,7 +167,7 @@ The following table depicts the various user permission levels in a project.
 | Reposition comments on images (posted by any user)|✓ (*11*) | ✓ (*11*)   |  ✓ (*11*)   | ✓        | ✓      |
 | Manage Error Tracking                             |         |            |             | ✓        | ✓      |
 | Delete wiki pages                                 |         |            |             | ✓        | ✓      |
-| View project Audit Events                         |         |            |             | ✓        | ✓      |
+| View project Audit Events                         |         |            |  ✓ (*12*)   | ✓        | ✓      |
 | Manage [push rules](../push_rules/push_rules.md)  |         |            |             | ✓        | ✓      |
 | Manage [project access tokens](project/settings/project_access_tokens.md) **(CORE ONLY)** |         |            |             | ✓        | ✓      |
 | Switch visibility level                           |         |            |             |          | ✓      |
@@ -195,6 +195,7 @@ The following table depicts the various user permission levels in a project.
    [Eligible approvers](project/merge_requests/merge_request_approvals.md#eligible-approvers).
 1. Owner permission is only available at the group or personal namespace level (and for instance admins) and is inherited by its projects.
 1. Applies only to comments on [Design Management](project/issues/design_management.md) designs.
+1. Users can only view events based on their individual actions.
 
 ## Project features permissions
 
@@ -279,7 +280,7 @@ group.
 | Delete group                                           |       |          |           |            | ✓     |
 | Delete group epic **(PREMIUM)**                       |       |          |           |            | ✓     |
 | Edit SAML SSO Billing **(SILVER ONLY)**                | ✓     | ✓        | ✓         | ✓          | ✓ (4) |
-| View group Audit Events                                |       |          |           |            | ✓     |
+| View group Audit Events                                |       |          | ✓ (7)     | ✓ (7)      | ✓     |
 | Disable notification emails                            |       |          |           |            | ✓     |
 | View Contribution analytics                            | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View Insights **(ULTIMATE)**                           | ✓     | ✓        | ✓         | ✓          | ✓     |
@@ -298,6 +299,7 @@ group.
 1. Does not apply to subgroups.
 1. Developers can push commits to the default branch of a new project only if the [default branch protection](group/index.md#changing-the-default-branch-protection-of-a-group) is set to "Partially protected" or "Not protected".
 1. In addition, if your group is public or internal, all users who can see the group can also see group wiki pages.
+1. Users can only view events based on their individual actions.
 
 ### Subgroup permissions
 

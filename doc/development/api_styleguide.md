@@ -34,7 +34,7 @@ for a good example):
 - `desc` for the method summary. You should pass it a block for additional
   details such as:
   - The GitLab version when the endpoint was added. If it is behind a feature flag, mention that instead: _This feature is gated by the :feature\_flag\_symbol feature flag._
-  - If the endpoint is deprecated, and if so, when will it be removed
+  - If the endpoint is deprecated, and if so, its planned removal date
 
 - `params` for the method parameters. This acts as description,
   [validation, and coercion of the parameters](https://github.com/ruby-grape/grape#parameter-validation-and-coercion)
@@ -72,7 +72,7 @@ parent namespaces.
 
 – <https://github.com/ruby-grape/grape#include-parent-namespaces>
 
-In most cases you will want to exclude parameters from the parent namespaces:
+In most cases you should exclude parameters from the parent namespaces:
 
 ```ruby
 declared(params, include_parent_namespaces: false)
@@ -94,7 +94,7 @@ User.create(declared(params, include_parent_namespaces: false).to_h)
 ```
 
 NOTE:
-`declared(params)` return a `Hashie::Mash` object, on which you will have to
+`declared(params)` return a `Hashie::Mash` object, on which you must
 call `.to_h`.
 
 But we can use `params[key]` directly when we access single elements.
@@ -109,7 +109,7 @@ Model.create(foo: params[:foo])
 ## Array types
 
 With Grape v1.3+, Array types must be defined with a `coerce_with`
-block, or parameters will fail to validate when passed a string from an
+block, or parameters, fails to validate when passed a string from an
 API request. See the [Grape upgrading
 documentation](https://github.com/ruby-grape/grape/blob/master/UPGRADING.md#ensure-that-array-types-have-explicit-coercions)
 for more details.
@@ -140,7 +140,7 @@ before do
 end
 ```
 
-With this change, a request to PUT `/test?user_ids` will cause Grape to
+With this change, a request to PUT `/test?user_ids` causes Grape to
 pass `params` to be `{ user_ids: [] }`.
 
 There is [an open issue in the Grape tracker](https://github.com/ruby-grape/grape/issues/2068)
@@ -148,7 +148,7 @@ to make this easier.
 
 ## Using HTTP status helpers
 
-For non-200 HTTP responses, use the provided helpers in `lib/api/helpers.rb` to ensure correct behavior (`not_found!`, `no_content!` etc.). These will `throw` inside Grape and abort the execution of your endpoint.
+For non-200 HTTP responses, use the provided helpers in `lib/api/helpers.rb` to ensure correct behavior (`not_found!`, `no_content!` etc.). These `throw` inside Grape and abort the execution of your endpoint.
 
 For `DELETE` requests, you should also generally use the `destroy_conditionally!` helper which by default returns a `204 No Content` response on success, or a `412 Precondition Failed` response if the given `If-Unmodified-Since` header is out of range. This helper calls `#destroy` on the passed resource, but you can also implement a custom deletion method by passing a block.
 
@@ -249,7 +249,7 @@ In order to avoid N+1 problems that are common when returning collections
 of records in an API endpoint, we should use eager loading.
 
 A standard way to do this within the API is for models to implement a
-scope called `with_api_entity_associations` that will preload the
+scope called `with_api_entity_associations` that preloads the
 associations and data returned in the API. An example of this scope can
 be seen in
 [the `Issue` model](https://gitlab.com/gitlab-org/gitlab/blob/2fedc47b97837ea08c3016cf2fb773a0300a4a25/app%2Fmodels%2Fissue.rb#L62).
@@ -259,7 +259,7 @@ In situations where the same model has multiple entities in the API
 discretion with applying this scope. It may be that you optimize for the
 most basic entity, with successive entities building upon that scope.
 
-The `with_api_entity_associations` scope will also [automatically preload
+The `with_api_entity_associations` scope also [automatically preloads
 data](https://gitlab.com/gitlab-org/gitlab/blob/19f74903240e209736c7668132e6a5a735954e7c/app%2Fmodels%2Ftodo.rb#L34)
 for `Todo` _targets_ when returned in the [to-dos API](../api/todos.md).
 

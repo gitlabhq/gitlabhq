@@ -1,0 +1,5 @@
+---
+title: Replace spec/controllers/ide_controller_spec.rb with request spec
+merge_request: 50075
+author: Takuya Noguchi
+type: other

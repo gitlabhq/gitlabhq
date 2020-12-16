@@ -416,6 +416,7 @@ RSpec.describe ProjectsHelper do
 
   describe '#get_project_nav_tabs' do
     before do
+      allow(helper).to receive(:current_user).and_return(user)
       allow(helper).to receive(:can?) { true }
     end
 

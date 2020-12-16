@@ -142,7 +142,9 @@ RSpec.configure do |config|
   config.include TestEnv
   config.include FileReadHelpers
   config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Devise::Test::ControllerHelpers, type: :view
   config.include Devise::Test::IntegrationHelpers, type: :feature
+  config.include Devise::Test::IntegrationHelpers, type: :request
   config.include LoginHelpers, type: :feature
   config.include SearchHelpers, type: :feature
   config.include WaitHelpers, type: :feature
@@ -150,7 +152,6 @@ RSpec.configure do |config|
   config.include EmailHelpers, :mailer, type: :mailer
   config.include Warden::Test::Helpers, type: :request
   config.include Gitlab::Routing, type: :routing
-  config.include Devise::Test::ControllerHelpers, type: :view
   config.include ApiHelpers, :api
   config.include CookieHelper, :js
   config.include InputHelper, :js

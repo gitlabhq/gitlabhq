@@ -73,7 +73,7 @@ such as with reCAPTCHA, which cannot be used without an `iframe`.
 
 ## Avoiding inline scripts and styles
 
-In order to protect users from [XSS vulnerabilities](https://en.wikipedia.org/wiki/Cross-site_scripting), we will disable
+In order to protect users from [XSS vulnerabilities](https://en.wikipedia.org/wiki/Cross-site_scripting), we intend to disable
 inline scripts in the future using Content Security Policy.
 
 While inline scripts can be useful, they're also a security concern. If

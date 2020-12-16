@@ -40,6 +40,14 @@ RSpec.describe Timelog do
 
       expect(subject).to be_valid
     end
+
+    describe 'when importing' do
+      it 'is valid if issue_id and merge_request_id are missing' do
+        subject.attributes = { issue: nil, merge_request: nil, importing: true }
+
+        expect(subject).to be_valid
+      end
+    end
   end
 
   describe 'scopes' do

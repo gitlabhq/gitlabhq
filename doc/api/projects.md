@@ -1077,6 +1077,7 @@ POST /projects
 | `mirror` **(STARTER)**                                      | boolean | **{dotted-circle}** No | Enables pull mirroring in a project. |
 | `name`                                                      | string  | **{check-circle}** Yes (if path isn't provided) | The name of the new project. Equals path if not provided. |
 | `namespace_id`                                              | integer | **{dotted-circle}** No | Namespace for the new project (defaults to the current user's namespace). |
+| `operations_access_level`                                   | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `only_allow_merge_if_all_discussions_are_resolved`          | boolean | **{dotted-circle}** No | Set whether merge requests can only be merged when all the discussions are resolved. |
 | `only_allow_merge_if_pipeline_succeeds`                     | boolean | **{dotted-circle}** No | Set whether merge requests can only be merged with successful jobs. |
 | `packages_enabled`                                          | boolean | **{dotted-circle}** No | Enable or disable packages repository feature. |
@@ -1147,6 +1148,7 @@ POST /projects/user/:user_id
 | `mirror` **(STARTER)**                                      | boolean | **{dotted-circle}** No | Enables pull mirroring in a project. |
 | `name`                                                      | string  | **{check-circle}** Yes | The name of the new project. |
 | `namespace_id`                                              | integer | **{dotted-circle}** No | Namespace for the new project (defaults to the current user's namespace). |
+| `operations_access_level`                                   | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `only_allow_merge_if_all_discussions_are_resolved`          | boolean | **{dotted-circle}** No | Set whether merge requests can only be merged when all the discussions are resolved. |
 | `only_allow_merge_if_pipeline_succeeds`                     | boolean | **{dotted-circle}** No | Set whether merge requests can only be merged with successful jobs. |
 | `packages_enabled`                                          | boolean | **{dotted-circle}** No | Enable or disable packages repository feature. |
@@ -1222,6 +1224,7 @@ PUT /projects/:id
 | `mirror_user_id` **(STARTER)**                              | integer        | **{dotted-circle}** No | User responsible for all the activity surrounding a pull mirror event. _(admins only)_ |
 | `mirror` **(STARTER)**                                      | boolean        | **{dotted-circle}** No | Enables pull mirroring in a project. |
 | `name`                                                      | string         | **{dotted-circle}** No | The name of the project. |
+| `operations_access_level`                                   | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `only_allow_merge_if_all_discussions_are_resolved`          | boolean        | **{dotted-circle}** No | Set whether merge requests can only be merged when all the discussions are resolved. |
 | `only_allow_merge_if_pipeline_succeeds`                     | boolean        | **{dotted-circle}** No | Set whether merge requests can only be merged with successful jobs. |
 | `only_mirror_protected_branches` **(STARTER)**              | boolean        | **{dotted-circle}** No | Only mirror protected branches. |

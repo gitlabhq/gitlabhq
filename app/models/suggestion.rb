@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 class Suggestion < ApplicationRecord
+  include Importable
   include Suggestible
 
   belongs_to :note, inverse_of: :suggestions
-  validates :note, presence: true
+  validates :note, presence: true, unless: :importing?
   validates :commit_id, presence: true, if: :applied?
 
   delegate :position, :noteable, to: :note

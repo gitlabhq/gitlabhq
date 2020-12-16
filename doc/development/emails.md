@@ -83,7 +83,7 @@ See the [Rails guides](https://guides.rubyonrails.org/action_mailer_basics.html#
      expunge_deleted: false
    ```
 
-   As mentioned, the part after `+` is ignored, and this will end up in the mailbox for `gitlab-incoming@gmail.com`.
+   As mentioned, the part after `+` is ignored, and this message is sent to the mailbox for `gitlab-incoming@gmail.com`.
 
 1. Run this command in the GitLab root directory to launch `mail_room`:
 

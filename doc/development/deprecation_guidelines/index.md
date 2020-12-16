@@ -15,7 +15,7 @@ It's important to understand the difference between **deprecation** and
 **removal**:
 
 **Deprecation** is the process of flagging/marking/announcing that a feature
-will be removed in a future version of GitLab.
+is scheduled for removal in a future version of GitLab.
 
 **Removal** is the process of actually removing a feature that was previously
 deprecated.

@@ -89,7 +89,7 @@ Puma enqueues jobs with an extra parameter that the old Sidekiq cannot handle.
 
 ### Database migrations
 
-The following graph is a simplified visual representation of a deployment, this will guide us in understanding how expand and contract is implemented in our migrations strategy.
+The following graph is a simplified visual representation of a deployment, this guides us in understanding how expand and contract is implemented in our migrations strategy.
 
 There's a special consideration here. Using our post-deployment migrations framework allows us to bundle all three phases into one milestone.
 

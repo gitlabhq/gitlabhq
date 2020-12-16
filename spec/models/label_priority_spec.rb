@@ -18,5 +18,11 @@ RSpec.describe LabelPriority do
 
       expect(subject).to validate_uniqueness_of(:label_id).scoped_to(:project_id)
     end
+
+    describe 'when importing' do
+      subject { create(:label_priority, importing: true) }
+
+      it { is_expected.not_to validate_presence_of(:label) }
+    end
   end
 end

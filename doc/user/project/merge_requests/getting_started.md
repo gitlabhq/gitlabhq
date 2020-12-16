@@ -114,10 +114,11 @@ It is also possible to manage multiple assignees:
 ### Reviewer
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216054) in GitLab 13.5.
-> - It's [deployed behind a feature flag](../../../user/feature_flags.md), enabled by default.
-> - It's disabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-merge-request-reviewers). **(CORE ONLY)**
+> - It was [deployed behind a feature flag](../../../user/feature_flags.md), disabled by default.
+> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49787) on GitLab 13.7.1.
+> - It's enabled on GitLab.com.
+> - It's recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-merge-request-reviewers). **(CORE ONLY)**
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -136,21 +137,27 @@ To request it, open the **Reviewers** drop-down box to search for the user you w
 
 #### Enable or disable Merge Request Reviewers **(CORE ONLY)**
 
-Merge Request Reviewers is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
+Merge Request Reviewers is under development but ready for production use.
+It is deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it.
+can opt to disable it.
 
 To enable it:
 
 ```ruby
+# For the instance
 Feature.enable(:merge_request_reviewers)
+# For a single project
+Feature.enable(:merge_request_reviewers, Project.find(<project id>))
 ```
 
 To disable it:
 
 ```ruby
+# For the instance
 Feature.disable(:merge_request_reviewers)
+# For a single project
+Feature.disable(:merge_request_reviewers, Project.find(<project id>))
 ```
 
 ### Merge requests to close issues

@@ -79,7 +79,7 @@ File diffs are collapsed (but are expandable) if 100 files have already been ren
 Gitlab::Git::DiffCollection.collection_limits[:safe_max_lines] = Gitlab::Git::DiffCollection::DEFAULT_LIMITS[:max_lines] = 5000
 ```
 
-File diffs will be collapsed (but be expandable) if 5000 lines have already been rendered.
+File diffs are collapsed (but be expandable) if 5000 lines have already been rendered.
 
 ```ruby
 Gitlab::Git::DiffCollection.collection_limits[:safe_max_bytes] = Gitlab::Git::DiffCollection.collection_limits[:safe_max_files] * 5.kilobytes = 500.kilobytes

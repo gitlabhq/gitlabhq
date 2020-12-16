@@ -883,7 +883,9 @@ RSpec.describe API::Projects do
         only_allow_merge_if_all_discussions_are_resolved: false,
         ci_config_path: 'a/custom/path',
         merge_method: 'ff'
-      })
+      }).tap do |attrs|
+        attrs[:operations_access_level] = 'disabled'
+      end
 
       post api('/projects', user), params: project
 
@@ -900,6 +902,7 @@ RSpec.describe API::Projects do
       expect(project.project_feature.issues_access_level).to eq(ProjectFeature::DISABLED)
       expect(project.project_feature.merge_requests_access_level).to eq(ProjectFeature::DISABLED)
       expect(project.project_feature.wiki_access_level).to eq(ProjectFeature::DISABLED)
+      expect(project.operations_access_level).to eq(ProjectFeature::DISABLED)
     end
 
     it 'creates a project using a template' do
@@ -1579,6 +1582,7 @@ RSpec.describe API::Projects do
         expect(json_response['only_allow_merge_if_pipeline_succeeds']).to eq(project.only_allow_merge_if_pipeline_succeeds)
         expect(json_response['allow_merge_on_skipped_pipeline']).to eq(project.allow_merge_on_skipped_pipeline)
         expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
+        expect(json_response['operations_access_level']).to be_present
       end
     end
 
@@ -1621,6 +1625,7 @@ RSpec.describe API::Projects do
         expect(json_response['forking_access_level']).to be_present
         expect(json_response['wiki_access_level']).to be_present
         expect(json_response['builds_access_level']).to be_present
+        expect(json_response['operations_access_level']).to be_present
         expect(json_response).to have_key('emails_disabled')
         expect(json_response['resolve_outdated_diff_discussions']).to eq(project.resolve_outdated_diff_discussions)
         expect(json_response['remove_source_branch_after_merge']).to be_truthy

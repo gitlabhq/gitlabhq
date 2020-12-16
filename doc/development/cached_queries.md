@@ -29,7 +29,7 @@ more expensive from a memory perspective. They could mask
 so you should treat them the same way you treat regular N+1 queries.
 
 In cases of N+1 queries masked by cached queries, the same query is executed N times.
-It will not hit the database N times but instead returns the cached results N times.
+It doesn't hit the database N times but instead returns the cached results N times.
 This is still expensive because you need to re-initialize objects each time at a
 greater expense to the CPU and memory resources. Instead, you should use the same
 in-memory objects whenever possible.

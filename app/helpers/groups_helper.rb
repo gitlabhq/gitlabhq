@@ -21,7 +21,6 @@ module GroupsHelper
       integrations#edit
       ldap_group_links#index
       hooks#index
-      audit_events#index
       pipeline_quota#index
     ]
   end

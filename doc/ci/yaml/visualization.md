@@ -7,6 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Visualize your CI/CD configuration
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241722) in GitLab 13.5.
+> - [Moved to **CI/CD > Editor**](https://gitlab.com/gitlab-org/gitlab/-/issues/263141) in GitLab 13.7.
 > - It's [deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
 > - It's disabled on GitLab.com.
 > - It's not recommended for production use.
@@ -15,16 +16,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
-To see a visualization of your `gitlab-ci.yml` configuration, navigate to any CI/CD
-configuration file and click on the `Visualization` tab. The visualization shows
-all stages and jobs. [`needs`](README.md#needs) relationships are displayed as lines
-connecting jobs together, showing the hierarchy of execution:
+To see a visualization of your `gitlab-ci.yml` configuration, navigate to **CI/CD > Editor**
+and select the `Visualization` tab. The visualization shows all stages and jobs. 
+[`needs`](README.md#needs) relationships are displayed as lines connecting jobs together, showing the hierarchy of execution:
 
-![CI Configuration Visualization](img/ci_config_visualization_v13_5.png)
+![CI Config Visualization](img/ci_config_visualization_v13_7.png)
 
 Hovering on a job highlights its `needs` relationships:
 
-![CI Configuration Visualization on hover](img/ci_config_visualization_hover_v13_5.png)
+![CI Config Visualization on hover](img/ci_config_visualization_hover_v13_7.png)
 
 If the configuration does not have any `needs` relationships, then no lines are drawn because
 each job depends only on the previous stage being completed successfully.
@@ -42,11 +42,11 @@ can enable it.
 To enable it:
 
 ```ruby
-Feature.enable(:gitlab_ci_yml_preview)
+Feature.enable(:ci_config_visualization_tab)
 ```
 
 To disable it:
 
 ```ruby
-Feature.disable(:gitlab_ci_yml_preview)
+Feature.disable(:ci_config_visualization_tab)
 ```

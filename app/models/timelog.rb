@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 class Timelog < ApplicationRecord
+  include Importable
+
   validates :time_spent, :user, presence: true
-  validate :issuable_id_is_present
+  validate :issuable_id_is_present, unless: :importing?
 
   belongs_to :issue, touch: true
   belongs_to :merge_request, touch: true

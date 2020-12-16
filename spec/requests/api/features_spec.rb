@@ -117,6 +117,12 @@ RSpec.describe API::Features, stub_feature_flags: false do
           )
         end
 
+        it 'logs the event' do
+          expect(Feature.logger).to receive(:info).once
+
+          post api("/features/#{feature_name}", admin), params: { value: 'true' }
+        end
+
         it 'creates an enabled feature for the given Flipper group when passed feature_group=perf_team' do
           post api("/features/#{feature_name}", admin), params: { value: 'true', feature_group: 'perf_team' }
 
@@ -443,6 +449,12 @@ RSpec.describe API::Features, stub_feature_flags: false do
             .and change { Feature.enabled?(feature_name) }
 
           expect(response).to have_gitlab_http_status(:no_content)
+        end
+
+        it 'logs the event' do
+          expect(Feature.logger).to receive(:info).once
+
+          delete api("/features/#{feature_name}", admin)
         end
       end
     end

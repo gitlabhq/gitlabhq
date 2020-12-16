@@ -12,7 +12,7 @@ class ResourceLabelEvent < ResourceEvent
   scope :inc_relations, -> { includes(:label, :user) }
 
   validates :label, presence: { unless: :importing? }, on: :create
-  validate :exactly_one_issuable
+  validate :exactly_one_issuable, unless: :importing?
 
   after_save :expire_etag_cache
   after_destroy :expire_etag_cache

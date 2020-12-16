@@ -155,7 +155,7 @@ To add or edit the default merge request approval rule:
 
 1. Click **Add approval rule**, or **Edit**.
    - Add or change the **Rule name**.
-   - Set the number of required approvals in **No. approvals required**. The minimum value is `0`.
+   - Set the number of required approvals in **Approvals required**. The minimum value is `0`.
    - (Optional) Search for users or groups that will be [eligible to approve](#eligible-approvers)
      merge requests and click the **Add** button to add them as approvers. Before typing
      in the search field, approvers will be suggested based on the previous authors of
@@ -191,7 +191,7 @@ the same steps as [Adding / editing a default approval rule](#adding--editing-a-
 MR approvals can be configured to be optional.
 This can be useful if you're working on a team where approvals are appreciated, but not required.
 
-To configure an approval to be optional, set the number of required approvals in **No. approvals required** to `0`.
+To configure an approval to be optional, set the number of required approvals in **Approvals required** to `0`.
 
 You can also set an optional approval rule through the [Merge requests approvals API](../../../api/merge_request_approvals.md#update-merge-request-level-rule), by setting the `approvals_required` attribute to `0`.
 
@@ -273,7 +273,7 @@ Regardless of the approval rules you choose for your project, users can edit the
 request, overriding the rules you set as [default](#adding--editing-a-default-approval-rule).
 To prevent that from happening:
 
-1. Uncheck the **Can override approvers and approvals required per merge request** checkbox.
+1. Uncheck the **Allow overrides to approval lists per merge request (MR).** checkbox.
 1. Click **Save changes**.
 
 #### Resetting approvals on push
@@ -282,7 +282,7 @@ You can force all approvals on a merge request to be removed when new commits ar
 pushed to the source branch of the merge request. If disabled, approvals will persist
 even if there are changes added to the merge request. To enable this feature:
 
-1. Check the **Remove all approvals in a merge request when new commits are pushed to its source branch**
+1. Check the **Require new approvals when new commits are added to an MR.**
    checkbox.
 1. Click **Save changes**.
 
@@ -298,7 +298,7 @@ By default, projects are configured to prevent merge requests from being approve
 their own authors. To change this setting:
 
 1. Go to your project's **Settings > General**, expand **Merge request approvals**.
-1. Uncheck the **Prevent approval of merge requests by merge request author** checkbox.
+1. Uncheck the **Prevent MR approval by the author.** checkbox.
 1. Click **Save changes**.
 
 Note that users can edit the approval rules in every merge request and override pre-defined settings unless it's set [**not to allow** overrides](#prevent-overriding-default-approvals).
@@ -310,7 +310,7 @@ Note that users can edit the approval rules in every merge request and override 
 You can prevent users that have committed to a merge request from approving it. To
 enable this feature:
 
-1. Check the **Prevent approval of merge requests by their committers** checkbox.
+1. Check the **Prevent MR approvals from users who make commits to the MR.** checkbox.
 1. Click **Save changes**.
 
 #### Require authentication when approving a merge request
@@ -327,7 +327,7 @@ the approval. This enables an Electronic Signature for approvals such as the one
 by [CFR Part 11](https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfcfr/CFRSearch.cfm?CFRPart=11&showFR=1&subpartNode=21:1.0.1.1.8.3)).
 To enable this feature:
 
-1. Check the **Require user password to approve** checkbox.
+1. Check the **Require user password for approvals.** checkbox.
 1. Click **Save changes**.
 
 ### Security approvals in merge requests **(ULTIMATE)**

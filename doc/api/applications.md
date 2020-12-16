@@ -33,7 +33,7 @@ Parameters:
 | `name`         | string  | yes      | Name of the application.         |
 | `redirect_uri` | string  | yes      | Redirect URI of the application. |
 | `scopes`       | string  | yes      | Scopes of the application.       |
-| `confidential` | boolean | no       | The application will be used where the client secret can be kept confidential. Native mobile apps and Single Page Apps are considered non-confidential. Defaults to `true` if not supplied |
+| `confidential` | boolean | no       | The application is used where the client secret can be kept confidential. Native mobile apps and Single Page Apps are considered non-confidential. Defaults to `true` if not supplied |
 
 Example request:
 
@@ -83,7 +83,7 @@ Example response:
 ```
 
 NOTE:
-The `secret` value will not be exposed by this API.
+The `secret` value is not exposed by this API.
 
 ## Delete an application
 

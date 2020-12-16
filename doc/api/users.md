@@ -416,7 +416,7 @@ Parameters:
 | `note`                               | No       | Admin notes for this user                                                                                                                               |
 | `organization`                       | No       | Organization name                                                                                                                                       |
 | `password`                           | No       | Password                                                                                                                                                |
-| `private_profile`                    | No       | User's profile is private - true, false (default), or null (will be converted to false)                                                                 |
+| `private_profile`                    | No       | User's profile is private - true, false (default), or null (is converted to false)                                                                 |
 | `projects_limit`                     | No       | Number of projects user can create                                                                                                                      |
 | `provider`                           | No       | External provider name                                                                                                                                  |
 | `public_email`                       | No       | The public email of the user                                                                                                                            |
@@ -458,7 +458,7 @@ Parameters:
 | `note`                               | No       | Admin notes for this user                                                                                                                               |
 | `organization`                       | No       | Organization name                                                                                                                                       |
 | `password`                           | No       | Password                                                                                                                                                |
-| `private_profile`                    | No       | User's profile is private - true, false (default), or null (will be converted to false)                                                                 |
+| `private_profile`                    | No       | User's profile is private - true, false (default), or null (is converted to false)                                                                 |
 | `projects_limit`                     | No       | Limit projects each user can create                                                                                                                     |
 | `provider`                           | No       | External provider name                                                                                                                                  |
 | `public_email`                       | No       | The public email of the user                                                                                                                            |

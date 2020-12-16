@@ -1,13 +1,17 @@
 # frozen_string_literal: true
 
 class ZoomMeeting < ApplicationRecord
+  include Importable
   include UsageStatistics
 
-  belongs_to :project, optional: false
-  belongs_to :issue, optional: false
+  belongs_to :project
+  belongs_to :issue
+
+  validates :project, presence: true, unless: :importing?
+  validates :issue, presence: true, unless: :importing?
 
   validates :url, presence: true, length: { maximum: 255 }, zoom_url: true
-  validates :issue, same_project_association: true
+  validates :issue, same_project_association: true, unless: :importing?
 
   enum issue_status: {
     added: 1,

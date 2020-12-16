@@ -12,8 +12,8 @@ RSpec.describe ZoomMeeting do
   end
 
   describe 'Associations' do
-    it { is_expected.to belong_to(:project).required }
-    it { is_expected.to belong_to(:issue).required }
+    it { is_expected.to belong_to(:project) }
+    it { is_expected.to belong_to(:issue) }
   end
 
   describe 'scopes' do
@@ -40,6 +40,16 @@ RSpec.describe ZoomMeeting do
   end
 
   describe 'Validations' do
+    it { is_expected.to validate_presence_of(:project) }
+    it { is_expected.to validate_presence_of(:issue) }
+
+    describe 'when importing' do
+      subject { build(:zoom_meeting, importing: true) }
+
+      it { is_expected.not_to validate_presence_of(:project) }
+      it { is_expected.not_to validate_presence_of(:issue) }
+    end
+
     describe 'url' do
       it { is_expected.to validate_presence_of(:url) }
       it { is_expected.to validate_length_of(:url).is_at_most(255) }

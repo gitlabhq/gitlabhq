@@ -12,6 +12,6 @@ RSpec.describe IdeController do
   it 'increases the views counter' do
     expect(Gitlab::UsageDataCounters::WebIdeCounter).to receive(:increment_views_count)
 
-    get :index
+    get ide_url
   end
 end
