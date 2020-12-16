@@ -123,6 +123,14 @@ RSpec.describe Gitlab::SidekiqCluster do
     end
   end
 
+  describe '.count_by_queue' do
+    it 'tallies the queue counts' do
+      queues = [%w(foo), %w(bar baz), %w(foo)]
+
+      expect(described_class.count_by_queue(queues)).to eq(%w(foo) => 2, %w(bar baz) => 1)
+    end
+  end
+
   describe '.concurrency' do
     using RSpec::Parameterized::TableSyntax
 

@@ -14488,6 +14488,9 @@ msgstr ""
 msgid "Import repository"
 msgstr ""
 
+msgid "Import requirements"
+msgstr ""
+
 msgid "Import started by: %{importInitiator}"
 msgstr ""
 
@@ -25793,6 +25796,9 @@ msgstr ""
 msgid "Someone edited this merge request at the same time you did. Please refresh the page to see changes."
 msgstr ""
 
+msgid "Something went wrong"
+msgstr ""
+
 msgid "Something went wrong on our end"
 msgstr ""
 
@@ -31055,6 +31061,9 @@ msgstr ""
 msgid "Webhooks|Job events"
 msgstr ""
 
+msgid "Webhooks|Member events"
+msgstr ""
+
 msgid "Webhooks|Merge request events"
 msgstr ""
 
@@ -31089,6 +31098,9 @@ msgid "Webhooks|This URL will be triggered by a push to the repository"
 msgstr ""
 
 msgid "Webhooks|This URL will be triggered when a confidential issue is created/updated/merged"
+msgstr ""
+
+msgid "Webhooks|This URL will be triggered when a member is added to a group"
 msgstr ""
 
 msgid "Webhooks|This URL will be triggered when a merge request is created/updated/merged"
@@ -32182,6 +32194,9 @@ msgstr ""
 msgid "Your device was successfully set up! Give it a name and register it with the GitLab server."
 msgstr ""
 
+msgid "Your file must contain a column named %{codeStart}title%{codeEnd}. A %{codeStart}description%{codeEnd} column is optional. The maximum file size allowed is 10 MB."
+msgstr ""
+
 msgid "Your first project"
 msgstr ""
 
@@ -32258,6 +32273,9 @@ msgid "Your request to join %{host} has been rejected."
 msgstr ""
 
 msgid "Your requirements are being imported. Once finished, you'll receive a confirmation email."
+msgstr ""
+
+msgid "Your requirements will be imported in the background. Once it's finished, you'll get a confirmation email. "
 msgstr ""
 
 msgid "Your response has been recorded."

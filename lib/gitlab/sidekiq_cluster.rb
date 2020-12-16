@@ -111,7 +111,7 @@ module Gitlab
     end
 
     def self.count_by_queue(queues)
-      queues.each_with_object(Hash.new(0)) { |element, hash| hash[element] += 1 }
+      queues.tally
     end
 
     def self.proc_details(counts)

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Mark snippet as spam' do
   include GraphqlHelpers
+  include AfterNextHelpers
 
   let_it_be(:admin) { create(:admin) }
   let_it_be(:other_user) { create(:user) }
@@ -56,11 +57,12 @@ RSpec.describe 'Mark snippet as spam' do
       end
 
       it 'marks snippet as spam' do
-        expect_next_instance_of(Spam::MarkAsSpamService) do |instance|
-          expect(instance).to receive(:execute)
-        end
+        expect_next(Spam::MarkAsSpamService, target: snippet)
+          .to receive(:execute).and_return(true)
 
         post_graphql_mutation(mutation, current_user: current_user)
+
+        expect(graphql_errors).to be_blank
       end
     end
   end

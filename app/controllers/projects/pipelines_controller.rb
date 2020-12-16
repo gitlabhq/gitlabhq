@@ -18,7 +18,7 @@ class Projects::PipelinesController < Projects::ApplicationController
     push_frontend_feature_flag(:graphql_pipeline_header, project, type: :development, default_enabled: false)
     push_frontend_feature_flag(:graphql_pipeline_details, project, type: :development, default_enabled: false)
     push_frontend_feature_flag(:graphql_pipeline_analytics, project, type: :development)
-    push_frontend_feature_flag(:new_pipeline_form_prefilled_vars, project, type: :development)
+    push_frontend_feature_flag(:new_pipeline_form_prefilled_vars, project, type: :development, default_enabled: true)
   end
   before_action :ensure_pipeline, only: [:show]
 

@@ -51,6 +51,7 @@ module Gitlab
         end
 
         query = (@raw_query.split - fragments).join(' ')
+        query = '*' if query.empty?
 
         [query, filters]
       end
