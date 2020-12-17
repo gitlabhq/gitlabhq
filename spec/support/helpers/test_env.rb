@@ -168,6 +168,11 @@ module TestEnv
       version: Gitlab::GitalyClient.expected_server_version,
       task: "gitlab:gitaly:install[#{install_gitaly_args}]") do
         Gitlab::SetupHelper::Gitaly.create_configuration(gitaly_dir, { 'default' => repos_path }, force: true)
+        Gitlab::SetupHelper::Gitaly.create_configuration(
+          gitaly_dir,
+          { 'default' => repos_path }, force: true,
+          options: { gitaly_socket: "gitaly2.socket", config_filename: "gitaly2.config.toml" }
+        )
         Gitlab::SetupHelper::Praefect.create_configuration(gitaly_dir, { 'praefect' => repos_path }, force: true)
       end
 
@@ -283,7 +288,7 @@ module TestEnv
     host = "[#{host}]" if host.include?(':')
     listen_addr = [host, port].join(':')
 
-    config_path = Gitlab::SetupHelper::Workhorse.get_config_path(workhorse_dir)
+    config_path = Gitlab::SetupHelper::Workhorse.get_config_path(workhorse_dir, {})
 
     # This should be set up in setup_workhorse, but since
     # component_needs_update? only checks that versions are consistent,

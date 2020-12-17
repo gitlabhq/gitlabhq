@@ -19,14 +19,14 @@ in your existing `.gitlab-ci.yml` file or by implicitly using
 [Auto License Compliance](../../../topics/autodevops/stages.md#auto-license-compliance)
 that is provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
-GitLab checks the License Compliance report, compares the licenses between the
-source and target branches, and shows the information right on the merge request.
-Denied licenses are notated with an `x` red icon next to them
-as well as new licenses which need a decision from you. In addition, you can
-[manually allow or deny](#policies)
-licenses in your project's license compliance policy section. If GitLab detects a denied license
-in a new commit, GitLab blocks any merge requests containing that commit and instructs the developer
-to remove the license.
+The [License Finder](https://github.com/pivotal/LicenseFinder) scan tool runs as part of the CI/CD
+pipeline, and detects the licenses in use. GitLab checks the License Compliance report, compares the
+licenses between the source and target branches, and shows the information right on the merge
+request. Denied licenses are indicated by a `x` red icon next to them as well as new licenses that
+need a decision from you. In addition, you can [manually allow or deny](#policies) licenses in your
+project's license compliance policy section. If a denied license is detected in a new commit,
+GitLab blocks any merge requests containing that commit and instructs the developer to remove the
+license.
 
 NOTE:
 If the license compliance report doesn't have anything to compare to, no information
@@ -51,36 +51,33 @@ You can view and modify existing policies from the [policies](#policies) tab.
 
 The following languages and package managers are supported.
 
-| Language   | Package managers | Notes | Scan Tool |
-|------------|------------------|-------|-----------|
-| JavaScript | [Bower](https://bower.io/), [npm](https://www.npmjs.com/) |  | [License Finder](https://github.com/pivotal/LicenseFinder) |
-| Go         | [Godep](https://github.com/tools/godep), [go mod](https://github.com/golang/go/wiki/Modules) |  | [License Finder](https://github.com/pivotal/LicenseFinder) |
-| Java       | [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/) |  | [License Finder](https://github.com/pivotal/LicenseFinder) |
-| .NET       | [Nuget](https://www.nuget.org/) | The .NET Framework is supported via the [mono project](https://www.mono-project.com/). There are, however, some limitations. The scanner doesn't support Windows-specific dependencies and doesn't report dependencies of your project's listed dependencies. Also, the scanner always marks detected licenses for all dependencies as `unknown`. | [License Finder](https://github.com/pivotal/LicenseFinder) |
-| Python     | [pip](https://pip.pypa.io/en/stable/) | Python is supported through [requirements.txt](https://pip.pypa.io/en/stable/user_guide/#requirements-files) and [Pipfile.lock](https://github.com/pypa/pipfile#pipfilelock). | [License Finder](https://github.com/pivotal/LicenseFinder) |
-| Ruby       | [gem](https://rubygems.org/) |  | [License Finder](https://github.com/pivotal/LicenseFinder)|
+Java 8 and Gradle 1.x projects are not supported. The minimum supported version of Maven is 3.2.5.
 
-NOTE:
-Java 8 and Gradle 1.x projects are not supported.
-The minimum supported version of Maven is 3.2.5.
+| Language   | Package managers                                                                             | Notes |
+|------------|----------------------------------------------------------------------------------------------|-------|
+| JavaScript | [Bower](https://bower.io/), [npm](https://www.npmjs.com/)                                    |       |
+| Go         | [Godep](https://github.com/tools/godep), [go mod](https://github.com/golang/go/wiki/Modules) |       |
+| Java       | [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/)                            |       |
+| .NET       | [Nuget](https://www.nuget.org/)                                                              | The .NET Framework is supported via the [mono project](https://www.mono-project.com/). There are, however, some limitations. The scanner doesn't support Windows-specific dependencies and doesn't report dependencies of your project's listed dependencies. Also, the scanner always marks detected licenses for all dependencies as `unknown`. |
+| Python     | [pip](https://pip.pypa.io/en/stable/)                                                        | Python is supported through [requirements.txt](https://pip.pypa.io/en/stable/user_guide/#requirements-files) and [Pipfile.lock](https://github.com/pypa/pipfile#pipfilelock). |
+| Ruby       | [gem](https://rubygems.org/) |  |
 
 ### Experimental support
 
-The following languages and package managers are [supported experimentally](https://github.com/pivotal/LicenseFinder#experimental-project-types),
-which means that the reported licenses might be incomplete or inaccurate.
+The following languages and package managers are [supported experimentally](https://github.com/pivotal/LicenseFinder#experimental-project-types).
+The reported licenses might be incomplete or inaccurate.
 
-| Language   | Package managers                                                  | Scan Tool                                                |
-|------------|-------------------------------------------------------------------|----------------------------------------------------------|
-| JavaScript | [Yarn](https://yarnpkg.com/)|[License Finder](https://github.com/pivotal/LicenseFinder)|
-| Go         | go get, gvt, glide, dep, trash, govendor |[License Finder](https://github.com/pivotal/LicenseFinder)|
-| Erlang     | [Rebar](https://www.rebar3.org/) |[License Finder](https://github.com/pivotal/LicenseFinder)|
-| Objective-C, Swift | [Carthage](https://github.com/Carthage/Carthage) | [License Finder](https://github.com/pivotal/LicenseFinder) |
-| Objective-C, Swift | [CocoaPods](https://cocoapods.org/) v0.39 and below |[License Finder](https://github.com/pivotal/LicenseFinder)|
-| Elixir     | [Mix](https://elixir-lang.org/getting-started/mix-otp/introduction-to-mix.html) |[License Finder](https://github.com/pivotal/LicenseFinder)|
-| C++/C      | [Conan](https://conan.io/) |[License Finder](https://github.com/pivotal/LicenseFinder)|
-| Scala      | [sbt](https://www.scala-sbt.org/) |[License Finder](https://github.com/pivotal/LicenseFinder)|
-| Rust       | [Cargo](https://crates.io) |[License Finder](https://github.com/pivotal/LicenseFinder)|
-| PHP        | [Composer](https://getcomposer.org/) |[License Finder](https://github.com/pivotal/LicenseFinder)|
+| Language   | Package managers                                                                                              |
+|------------|---------------------------------------------------------------------------------------------------------------|
+| JavaScript | [Yarn](https://yarnpkg.com/)                                                                                  |
+| Go         | go get, gvt, glide, dep, trash, govendor                                                                      |
+| Erlang     | [Rebar](https://www.rebar3.org/)                                                                              |
+| Objective-C, Swift | [Carthage](https://github.com/Carthage/Carthage), [CocoaPods](https://cocoapods.org/) v0.39 and below |
+| Elixir     | [Mix](https://elixir-lang.org/getting-started/mix-otp/introduction-to-mix.html)                               |
+| C++/C      | [Conan](https://conan.io/)                                                                                    |
+| Scala      | [sbt](https://www.scala-sbt.org/)                                                                             |
+| Rust       | [Cargo](https://crates.io)                                                                                    |
+| PHP        | [Composer](https://getcomposer.org/)                                                                          |
 
 ## Requirements
 

@@ -130,6 +130,7 @@ module Auth
       ContainerRepository.create_from_path!(path)
     end
 
+    # Overridden in EE
     def can_access?(requested_project, requested_action)
       return false unless requested_project.container_registry_enabled?
       return false if requested_project.repository_access_level == ::ProjectFeature::DISABLED
@@ -226,11 +227,16 @@ module Auth
       end
     end
 
+    # Overridden in EE
+    def extra_info
+      {}
+    end
+
     def log_if_actions_denied(type, requested_project, requested_actions, authorized_actions)
       return if requested_actions == authorized_actions
 
       log_info = {
-        message: "Denied container registry permissions",
+        message: 'Denied container registry permissions',
         scope_type: type,
         requested_project_path: requested_project.full_path,
         requested_actions: requested_actions,
@@ -238,9 +244,11 @@ module Auth
         username: current_user&.username,
         user_id: current_user&.id,
         project_path: project&.full_path
-      }.compact
+      }.merge!(extra_info).compact
 
       Gitlab::AuthLogger.warn(log_info)
     end
   end
 end
+
+Auth::ContainerRegistryAuthenticationService.prepend_if_ee('EE::Auth::ContainerRegistryAuthenticationService')

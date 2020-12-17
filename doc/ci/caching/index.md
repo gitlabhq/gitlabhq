@@ -316,6 +316,37 @@ rspec:
     - rspec spec
 ```
 
+If you have jobs that each need a different selection of gems, use the `prefix`
+keyword in the global `cache` definition. This configuration generates a different
+cache for each job.
+
+For example, a testing job might not need the same gems as a job that deploys to
+production:
+
+```yaml
+cache:
+  key:
+    files:
+      - Gemfile.lock
+    prefix: ${CI_JOB_NAME}
+  paths:
+    - vendor/ruby
+
+test_job:
+  stage: test
+  before_script:
+    - bundle install --without production --path vendor/ruby
+  script:
+    - bundle exec rspec
+
+deploy_job:
+  stage: production
+  before_script:
+    - bundle install --without test --path vendor/ruby
+  script:
+    - bundle exec deploy
+```
+
 ### Caching Go dependencies
 
 Assuming your project is using [Go Modules](https://github.com/golang/go/wiki/Modules) to install

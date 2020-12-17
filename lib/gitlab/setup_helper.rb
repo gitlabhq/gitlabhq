@@ -4,10 +4,10 @@ require 'toml-rb'
 
 module Gitlab
   module SetupHelper
-    def create_configuration(dir, storage_paths, force: false)
+    def create_configuration(dir, storage_paths, force: false, options: {})
       generate_configuration(
-        configuration_toml(dir, storage_paths),
-        get_config_path(dir),
+        configuration_toml(dir, storage_paths, options),
+        get_config_path(dir, options),
         force: force
       )
     end
@@ -31,7 +31,7 @@ module Gitlab
     module Workhorse
       extend Gitlab::SetupHelper
       class << self
-        def configuration_toml(dir, _)
+        def configuration_toml(dir, _, _)
           config = { redis: { URL: redis_url } }
 
           TomlRB.dump(config)
@@ -41,8 +41,8 @@ module Gitlab
           Gitlab::Redis::SharedState.url
         end
 
-        def get_config_path(dir)
-          File.join(dir, 'config.toml')
+        def get_config_path(dir, _)
+          File.join(dir, 'config_path')
         end
 
         def compile_into(dir)
@@ -76,7 +76,7 @@ module Gitlab
         # because it uses a Unix socket.
         # For development and testing purposes, an extra storage is added to gitaly,
         # which is not known to Rails, but must be explicitly stubbed.
-        def configuration_toml(gitaly_dir, storage_paths, gitaly_ruby: true)
+        def configuration_toml(gitaly_dir, storage_paths, options, gitaly_ruby: true)
           storages = []
           address = nil
 
@@ -97,14 +97,20 @@ module Gitlab
           config = { socket_path: address.sub(/\Aunix:/, '') }
 
           if Rails.env.test?
+            socket_filename = options[:gitaly_socket] || "gitaly.socket"
+
+            config = {
+              # Override the set gitaly_address since Praefect is in the loop
+              socket_path: File.join(gitaly_dir, socket_filename),
+              auth: { token: 'secret' },
+              # Compared to production, tests run in constrained environments. This
+              # number is meant to grow with the number of concurrent rails requests /
+              # sidekiq jobs, and concurrency will be low anyway in test.
+              git: { catfile_cache_size: 5 }
+            }
+
             storage_path = Rails.root.join('tmp', 'tests', 'second_storage').to_s
             storages << { name: 'test_second_storage', path: storage_path }
-
-            config[:auth] = { token: 'secret' }
-            # Compared to production, tests run in constrained environments. This
-            # number is meant to grow with the number of concurrent rails requests /
-            # sidekiq jobs, and concurrency will be low anyway in test.
-            config[:git] = { catfile_cache_size: 5 }
           end
 
           config[:storage] = storages
@@ -124,8 +130,9 @@ module Gitlab
 
         private
 
-        def get_config_path(dir)
-          File.join(dir, 'config.toml')
+        def get_config_path(dir, options)
+          config_filename = options[:config_filename] || 'config.toml'
+          File.join(dir, config_filename)
         end
       end
     end
@@ -133,9 +140,11 @@ module Gitlab
     module Praefect
       extend Gitlab::SetupHelper
       class << self
-        def configuration_toml(gitaly_dir, storage_paths)
+        def configuration_toml(gitaly_dir, _, _)
           nodes = [{ storage: 'default', address: "unix:#{gitaly_dir}/gitaly.socket", primary: true, token: 'secret' }]
-          storages = [{ name: 'default', node: nodes }]
+          second_storage_nodes = [{ storage: 'test_second_storage', address: "unix:#{gitaly_dir}/gitaly2.socket", primary: true, token: 'secret' }]
+
+          storages = [{ name: 'default', node: nodes }, { name: 'test_second_storage', node: second_storage_nodes }]
           failover = { enabled: false }
           config = { socket_path: "#{gitaly_dir}/praefect.socket", memory_queue_enabled: true, virtual_storage: storages, failover: failover }
           config[:token] = 'secret' if Rails.env.test?
@@ -145,7 +154,7 @@ module Gitlab
 
         private
 
-        def get_config_path(dir)
+        def get_config_path(dir, _)
           File.join(dir, 'praefect.config.toml')
         end
       end
