@@ -37,6 +37,8 @@ RSpec.describe IncidentManagement::Incidents::CreateService do
         end
 
         let(:issue) { new_issue }
+
+        include_examples 'has incident label'
       end
 
       context 'with default severity' do

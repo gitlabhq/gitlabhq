@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Access
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -9,7 +9,7 @@ type: reference
 
 These are notes and screenshots regarding Group SAML and SCIM that the GitLab Support Team sometimes uses while troubleshooting, but which do not fit into the official documentation. GitLab is making this public, so that anyone can make use of the Support team’s collected knowledge.
 
-Please refer to GitLab's [Group SAML](../../user/group/saml_sso/index.md) docs for information on the feature and how to set it up.
+Please refer to the GitLab [Group SAML](../../user/group/saml_sso/index.md) docs for information on the feature and how to set it up.
 
 When troubleshooting a SAML configuration, GitLab team members will frequently start with the [SAML troubleshooting section](../../user/group/saml_sso/index.md#troubleshooting).
 
@@ -22,7 +22,7 @@ This section includes relevant screenshots of the following example configuratio
 - [Azure Active Directory](#azure-active-directory)
 - [OneLogin](#onelogin)
 
-CAUTION: **Caution:**
+WARNING:
 These screenshots are updated only as needed by GitLab Support. They are **not** official documentation.
 
 If you are currently having an issue with GitLab, you may want to check your [support options](https://about.gitlab.com/support/).

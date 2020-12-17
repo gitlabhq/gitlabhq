@@ -1,7 +1,7 @@
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
-import boardsStore, { gqlClient } from '~/boards/stores/boards_store';
+import boardsStore from '~/boards/stores/boards_store';
 import eventHub from '~/boards/eventhub';
 import { listObj, listObjDuplicate } from './mock_data';
 
@@ -63,23 +63,6 @@ describe('boardsStore', () => {
       axiosMock.onGet(endpoints.listsEndpoint).replyOnce(500);
 
       return expect(boardsStore.all()).rejects.toThrow();
-    });
-  });
-
-  describe('generateDefaultLists', () => {
-    const listsEndpointGenerate = `${endpoints.listsEndpoint}/generate.json`;
-
-    it('makes a request to generate default lists', () => {
-      axiosMock.onPost(listsEndpointGenerate).replyOnce(200, dummyResponse);
-      const expectedResponse = expect.objectContaining({ data: dummyResponse });
-
-      return expect(boardsStore.generateDefaultLists()).resolves.toEqual(expectedResponse);
-    });
-
-    it('fails for error response', () => {
-      axiosMock.onPost(listsEndpointGenerate).replyOnce(500);
-
-      return expect(boardsStore.generateDefaultLists()).rejects.toThrow();
     });
   });
 
@@ -473,118 +456,6 @@ describe('boardsStore', () => {
     });
   });
 
-  describe('createBoard', () => {
-    const labelIds = ['first label', 'second label'];
-    const assigneeId = 'as sign ee';
-    const milestoneId = 'vegetable soup';
-    const board = {
-      labels: labelIds.map(id => ({ id })),
-      assignee: { id: assigneeId },
-      milestone: { id: milestoneId },
-    };
-
-    describe('for existing board', () => {
-      const id = 'skate-board';
-      const url = `${endpoints.boardsEndpoint}/${id}.json`;
-      const expectedRequest = expect.objectContaining({
-        data: JSON.stringify({
-          board: {
-            ...board,
-            id,
-            label_ids: labelIds,
-            assignee_id: assigneeId,
-            milestone_id: milestoneId,
-          },
-        }),
-      });
-
-      let requestSpy;
-
-      beforeEach(() => {
-        requestSpy = jest.fn();
-        axiosMock.onPut(url).replyOnce(config => requestSpy(config));
-        jest.spyOn(gqlClient, 'mutate').mockReturnValue(Promise.resolve({}));
-      });
-
-      it('makes a request to update the board', () => {
-        requestSpy.mockReturnValue([200, dummyResponse]);
-        const expectedResponse = [
-          expect.objectContaining({ data: dummyResponse }),
-          expect.objectContaining({}),
-        ];
-
-        return expect(
-          boardsStore.createBoard({
-            ...board,
-            id,
-          }),
-        )
-          .resolves.toEqual(expectedResponse)
-          .then(() => {
-            expect(requestSpy).toHaveBeenCalledWith(expectedRequest);
-          });
-      });
-
-      it('fails for error response', () => {
-        requestSpy.mockReturnValue([500]);
-
-        return expect(
-          boardsStore.createBoard({
-            ...board,
-            id,
-          }),
-        )
-          .rejects.toThrow()
-          .then(() => {
-            expect(requestSpy).toHaveBeenCalledWith(expectedRequest);
-          });
-      });
-    });
-
-    describe('for new board', () => {
-      const url = `${endpoints.boardsEndpoint}.json`;
-      const expectedRequest = expect.objectContaining({
-        data: JSON.stringify({
-          board: {
-            ...board,
-            label_ids: labelIds,
-            assignee_id: assigneeId,
-            milestone_id: milestoneId,
-          },
-        }),
-      });
-
-      let requestSpy;
-
-      beforeEach(() => {
-        requestSpy = jest.fn();
-        axiosMock.onPost(url).replyOnce(config => requestSpy(config));
-        jest.spyOn(gqlClient, 'mutate').mockReturnValue(Promise.resolve({}));
-      });
-
-      it('makes a request to create a new board', () => {
-        requestSpy.mockReturnValue([200, dummyResponse]);
-        const expectedResponse = dummyResponse;
-
-        return expect(boardsStore.createBoard(board))
-          .resolves.toEqual(expectedResponse)
-          .then(() => {
-            expect(requestSpy).toHaveBeenCalledWith(expectedRequest);
-          });
-      });
-
-      it('fails for error response', () => {
-        requestSpy.mockReturnValue([500]);
-
-        return expect(boardsStore.createBoard(board))
-          .rejects.toThrow()
-          .then(() => {
-            expect(requestSpy).toHaveBeenCalledWith(expectedRequest);
-          });
-      });
-    });
-  });
-
   describe('deleteBoard', () => {
     const id = 'capsized';
     const url = `${endpoints.boardsEndpoint}/${id}.json`;
@@ -725,24 +596,6 @@ describe('boardsStore', () => {
             }),
           );
         });
-      });
-
-      it('check for blank state adding', () => {
-        expect(boardsStore.shouldAddBlankState()).toBe(true);
-      });
-
-      it('check for blank state not adding', () => {
-        boardsStore.addList(listObj);
-
-        expect(boardsStore.shouldAddBlankState()).toBe(false);
-      });
-
-      it('check for blank state adding when closed list exist', () => {
-        boardsStore.addList({
-          list_type: 'closed',
-        });
-
-        expect(boardsStore.shouldAddBlankState()).toBe(true);
       });
 
       it('removes list from state', () => {

@@ -25,10 +25,6 @@ module Groups
         Service.find_or_initialize_non_project_specific_integration(name, group_id: group.id)
       end
 
-      def integrations_enabled?
-        Feature.enabled?(:group_level_integrations, group, default_enabled: true)
-      end
-
       def scoped_edit_integration_path(integration)
         edit_group_settings_integration_path(group, integration)
       end

@@ -55,7 +55,8 @@ module Gitlab
           bulk_migrate_async(jobs) unless jobs.empty?
         end
 
-        # Queues background migration jobs for an entire table, batched by ID range.
+        # Queues background migration jobs for an entire table in batches.
+        # The default batching column used is the standard primary key `id`.
         # Each job is scheduled with a `delay_interval` in between.
         # If you use a small interval, then some jobs may run at the same time.
         #
@@ -68,6 +69,7 @@ module Gitlab
         # is scheduled to be run. These records can be used to trace execution of the background job, but there is no
         # builtin support to manage that automatically at this time. You should only set this flag if you are aware of
         # how it works, and intend to manually cleanup the database records in your background job.
+        # primary_column_name - The name of the primary key column if the primary key is not `id`
         #
         # *Returns the final migration delay*
         #
@@ -87,8 +89,9 @@ module Gitlab
         #         # do something
         #       end
         #     end
-        def queue_background_migration_jobs_by_range_at_intervals(model_class, job_class_name, delay_interval, batch_size: BACKGROUND_MIGRATION_BATCH_SIZE, other_job_arguments: [], initial_delay: 0, track_jobs: false)
-          raise "#{model_class} does not have an ID to use for batch ranges" unless model_class.column_names.include?('id')
+        def queue_background_migration_jobs_by_range_at_intervals(model_class, job_class_name, delay_interval, batch_size: BACKGROUND_MIGRATION_BATCH_SIZE, other_job_arguments: [], initial_delay: 0, track_jobs: false, primary_column_name: :id)
+          raise "#{model_class} does not have an ID column of #{primary_column_name} to use for batch ranges" unless model_class.column_names.include?(primary_column_name.to_s)
+          raise "#{primary_column_name} is not an integer column" unless model_class.columns_hash[primary_column_name.to_s].type == :integer
 
           # To not overload the worker too much we enforce a minimum interval both
           # when scheduling and performing jobs.
@@ -99,7 +102,7 @@ module Gitlab
           final_delay = 0
 
           model_class.each_batch(of: batch_size) do |relation, index|
-            start_id, end_id = relation.pluck(Arel.sql('MIN(id), MAX(id)')).first
+            start_id, end_id = relation.pluck(Arel.sql("MIN(#{primary_column_name}), MAX(#{primary_column_name})")).first
 
             # `BackgroundMigrationWorker.bulk_perform_in` schedules all jobs for
             # the same time, which is not helpful in most cases where we wish to

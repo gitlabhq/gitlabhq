@@ -29,7 +29,7 @@ RSpec.describe Resolvers::BoardListIssuesResolver do
       end
 
       it 'finds only issues matching filters' do
-        result = resolve_board_list_issues(args: { filters: { label_name: label.title, not: { label_name: label2.title } } }).items
+        result = resolve_board_list_issues(args: { filters: { label_name: [label.title], not: { label_name: [label2.title] } } }).items
 
         expect(result).to match_array([issue1, issue3])
       end

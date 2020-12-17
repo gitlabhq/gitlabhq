@@ -1,7 +1,7 @@
 ---
 stage: Configure
 group: Configure
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Runbooks
@@ -25,7 +25,7 @@ pre-written code blocks or database queries against a given environment.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45912) in GitLab 11.4.
 
-The JupyterHub app offered via GitLab’s Kubernetes integration now ships
+The JupyterHub app offered via the GitLab Kubernetes integration now ships
 with Nurtch’s Rubix library, providing a simple way to create DevOps
 runbooks. A sample runbook is provided, showcasing common operations. While
 Rubix makes it simple to create common Kubernetes and AWS workflows, you can
@@ -37,11 +37,11 @@ for an overview of how this is accomplished in GitLab!
 
 ## Requirements
 
-To create an executable runbook, you will need:
+To create an executable runbook, you need:
 
 - **Kubernetes** - A Kubernetes cluster is required to deploy the rest of the
   applications. The simplest way to get started is to add a cluster using one
-  of [GitLab's integrations](../add_remove_clusters.md#create-new-cluster).
+  of the [GitLab integrations](../add_remove_clusters.md#create-new-cluster).
 - **Ingress** - Ingress can provide load balancing, SSL termination, and name-based
   virtual hosting. It acts as a web proxy for your applications.
 - **JupyterHub** - [JupyterHub](https://jupyterhub.readthedocs.io/) is a multi-user
@@ -71,7 +71,7 @@ the components outlined above and the pre-loaded demo runbook.
    ![install ingress](img/ingress-install.png)
 
 1. After Ingress has been installed successfully, click the **Install** button next
-   to the **JupyterHub** application. You will need the **Jupyter Hostname** provided
+   to the **JupyterHub** application. You need the **Jupyter Hostname** provided
    here in the next step.
 
    ![install JupyterHub](img/jupyterhub-install.png)
@@ -84,8 +84,8 @@ the components outlined above and the pre-loaded demo runbook.
 
    ![authorize Jupyter](img/authorize-jupyter.png)
 
-1. Click **Authorize**, and you will be redirected to the JupyterHub application.
-1. Click **Start My Server**, and the server will start in a few seconds.
+1. Click **Authorize**, and GitLab redirects you to the JupyterHub application.
+1. Click **Start My Server** to start the server in a few seconds.
 1. To configure the runbook's access to your GitLab project, you must enter your
    [GitLab Access Token](../../../profile/personal_access_tokens.md)
    and your Project ID in the **Setup** section of the demo runbook:

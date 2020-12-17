@@ -36,7 +36,7 @@ RSpec.describe 'Query.project(fullPath).release(tagName)' do
       let(:path) { path_prefix }
 
       let(:release_fields) do
-        query_graphql_field(%{
+        %{
           tagName
           tagPath
           description
@@ -45,7 +45,7 @@ RSpec.describe 'Query.project(fullPath).release(tagName)' do
           createdAt
           releasedAt
           upcomingRelease
-        })
+        }
       end
 
       before do
@@ -233,7 +233,7 @@ RSpec.describe 'Query.project(fullPath).release(tagName)' do
       let(:path) { path_prefix }
 
       let(:release_fields) do
-        query_graphql_field('description')
+        'description'
       end
 
       before do
@@ -394,10 +394,10 @@ RSpec.describe 'Query.project(fullPath).release(tagName)' do
     let(:current_user) { developer }
 
     let(:release_fields) do
-      query_graphql_field(%{
+      %{
         releasedAt
         upcomingRelease
-      })
+      }
     end
 
     before do

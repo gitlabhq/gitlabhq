@@ -139,13 +139,11 @@ class Todo < ApplicationRecord
     # Todos with highest priority first then oldest todos
     # Need to order by created_at last because of differences on Mysql and Postgres when joining by type "Merge_request/Issue"
     def order_by_labels_priority
-      params = {
+      highest_priority = highest_label_priority(
         target_type_column: "todos.target_type",
         target_column: "todos.target_id",
         project_column: "todos.project_id"
-      }
-
-      highest_priority = highest_label_priority(params).to_sql
+      ).to_sql
 
       select("#{table_name}.*, (#{highest_priority}) AS highest_priority")
         .order(Gitlab::Database.nulls_last_order('highest_priority', 'ASC'))

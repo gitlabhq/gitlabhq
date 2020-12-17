@@ -1,7 +1,7 @@
 ---
 stage: Enablement
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: howto
 ---
 
@@ -13,7 +13,7 @@ restore your original configuration. This process consists of two steps:
 1. Making the old **primary** node a **secondary** node.
 1. Promoting a **secondary** node to a **primary** node.
 
-CAUTION: **Caution:**
+WARNING:
 If you have any doubts about the consistency of the data on this node, we recommend setting it up from scratch.
 
 ## Configure the former **primary** node to be a **secondary** node
@@ -32,14 +32,14 @@ To bring the former **primary** node up to date:
    sudo gitlab-ctl start
    ```
 
-   NOTE: **Note:**
+   NOTE:
    If you [disabled the **primary** node permanently](index.md#step-2-permanently-disable-the-primary-node),
    you need to undo those steps now. For Debian/Ubuntu you just need to run
    `sudo systemctl enable gitlab-runsvdir`. For CentOS 6, you need to install
    the GitLab instance from scratch and set it up as a **secondary** node by
    following [Setup instructions](../setup/index.md). In this case, you don't need to follow the next step.
 
-   NOTE: **Note:**
+   NOTE:
    If you [changed the DNS records](index.md#step-4-optional-updating-the-primary-domain-dns-record)
    for this node during disaster recovery procedure you may need to [block
    all the writes to this node](planned_failover.md#prevent-updates-to-the-primary-node)

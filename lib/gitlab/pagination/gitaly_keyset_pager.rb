@@ -15,6 +15,7 @@ module Gitlab
       # and supports pagination via gitaly.
       def paginate(finder)
         return paginate_via_gitaly(finder) if keyset_pagination_enabled?
+        return paginate_first_page_via_gitaly(finder) if paginate_first_page?
 
         branches = ::Kaminari.paginate_array(finder.execute)
         Gitlab::Pagination::OffsetPagination
@@ -25,12 +26,30 @@ module Gitlab
       private
 
       def keyset_pagination_enabled?
-        Feature.enabled?(:branch_list_keyset_pagination, project) && params[:pagination] == 'keyset'
+        Feature.enabled?(:branch_list_keyset_pagination, project, default_enabled: true) && params[:pagination] == 'keyset'
+      end
+
+      def paginate_first_page?
+        Feature.enabled?(:branch_list_keyset_pagination, project, default_enabled: true) && (params[:page].blank? || params[:page].to_i == 1)
       end
 
       def paginate_via_gitaly(finder)
         finder.execute(gitaly_pagination: true).tap do |records|
           apply_headers(records)
+        end
+      end
+
+      # When first page is requested, we paginate the data via Gitaly
+      # Headers are added to immitate offset pagination, while it is the default option
+      def paginate_first_page_via_gitaly(finder)
+        finder.execute(gitaly_pagination: true).tap do |records|
+          total = project.repository.branch_count
+          per_page = params[:per_page].presence || Kaminari.config.default_per_page
+
+          Gitlab::Pagination::OffsetHeaderBuilder.new(
+            request_context: request_context, per_page: per_page, page: 1, next_page: 2,
+            total: total, total_pages: total / per_page + 1
+          ).execute
         end
       end
 

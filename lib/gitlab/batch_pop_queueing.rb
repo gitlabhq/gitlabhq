@@ -9,7 +9,7 @@ module Gitlab
   # and the following items wait until the next items have been popped from the queue.
   # On the other hand, this queueing system, the former part is same, however,
   # it pops the enqueued items as batch. This is especially useful when you want to
-  # drop redandant items from the queue in order to process important items only,
+  # drop redundant items from the queue in order to process important items only,
   # thus it's more efficient than the traditional queueing system.
   #
   # Caveats:

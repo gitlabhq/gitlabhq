@@ -79,6 +79,10 @@ RSpec.describe Reenqueuer do
 
         job.perform
       end
+
+      it 'returns the original value from #perform' do
+        expect(job.perform).to eq(true)
+      end
     end
 
     context 'when #perform returns falsey' do
@@ -86,6 +90,10 @@ RSpec.describe Reenqueuer do
         expect(worker_class).not_to receive(:perform_async)
 
         job.perform
+      end
+
+      it 'returns the original value from #perform' do
+        expect(job.perform).to eq(false)
       end
     end
   end

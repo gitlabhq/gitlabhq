@@ -69,7 +69,7 @@ module QA
             end
           end
 
-          def has_no_assignee_named?(username)
+          def has_no_assignee?(username)
             within_element(:assignee_block) do
               has_no_text?(username, wait: 120)
             end

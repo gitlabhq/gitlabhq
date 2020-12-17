@@ -1,14 +1,14 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: howto
 ---
 
 # Numerous undo possibilities in Git
 
 In this tutorial, we will show you different ways of undoing your work in Git, for which
-we will assume you have a basic working knowledge of. Check GitLab's
+we will assume you have a basic working knowledge of. Check the GitLab
 [Git documentation](../index.md) for reference.
 
 Also, we will only provide some general information of the commands, which is enough
@@ -421,7 +421,7 @@ GitLab). There is a `git merge --squash` command which does exactly that
 (squashes commits on feature-branch to a single commit on target branch
 at merge).
 
-NOTE: **Note:**
+NOTE:
 Never modify the commit history of `master` or shared branch.
 
 ### How modifying history is done
@@ -457,7 +457,7 @@ pick <commit3-id> <commit3-commit-message>
 # Note that empty commits are commented out
 ```
 
-NOTE: **Note:**
+NOTE:
 It is important to notice that comment from the output clearly states that, if
 you decide to abort, then do not just close your editor (as that will in-fact
 modify history), but remove all uncommented lines and save.

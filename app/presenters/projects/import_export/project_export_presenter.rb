@@ -15,6 +15,10 @@ module Projects
         self.respond_to?(:override_description) ? override_description : super
       end
 
+      def protected_branches
+        project.exported_protected_branches
+      end
+
       private
 
       def converted_group_members

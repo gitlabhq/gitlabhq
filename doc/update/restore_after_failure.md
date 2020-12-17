@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Restoring from backup after a failed upgrade
@@ -65,7 +65,7 @@ sudo gitlab-rake gitlab:db:mark_migration_complete[20151103134857]
 ```
 
 Once the migration is successfully marked, run the Rake `db:migrate` task again.
-You will likely have to repeat this process several times until all failed
+You might need to repeat this process several times until all failed
 migrations are marked complete.
 
 ### GitLab < 8.6
@@ -86,5 +86,5 @@ exit
 ```
 
 Once the migration is successfully marked, run the Rake `db:migrate` task again.
-You will likely have to repeat this process several times until all failed
+You might need to repeat this process several times until all failed
 migrations are marked complete.

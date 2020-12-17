@@ -7,7 +7,7 @@ module QA
   # environment variable is the version actually running.
   #
   # See https://gitlab.com/gitlab-com/gl-infra/delivery/-/issues/1179
-  RSpec.describe 'Version sanity check', :smoke do
+  RSpec.describe 'Version sanity check', :smoke, only: { pipeline: [:pre, :release] } do
     let(:api_client) { Runtime::API::Client.new(:gitlab) }
     let(:request) { Runtime::API::Request.new(api_client, '/version') }
 

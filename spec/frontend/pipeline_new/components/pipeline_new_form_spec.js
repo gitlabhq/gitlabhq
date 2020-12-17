@@ -5,7 +5,14 @@ import waitForPromises from 'helpers/wait_for_promises';
 import httpStatusCodes from '~/lib/utils/http_status';
 import axios from '~/lib/utils/axios_utils';
 import PipelineNewForm from '~/pipeline_new/components/pipeline_new_form.vue';
-import { mockRefs, mockParams, mockPostParams, mockProjectId, mockError } from '../mock_data';
+import {
+  mockBranches,
+  mockTags,
+  mockParams,
+  mockPostParams,
+  mockProjectId,
+  mockError,
+} from '../mock_data';
 import { redirectTo } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -37,6 +44,10 @@ describe('Pipeline New Form', () => {
   const findWarnings = () => wrapper.findAll('[data-testid="run-pipeline-warning"]');
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
   const getExpectedPostParams = () => JSON.parse(mock.history.post[0].data);
+  const changeRef = i =>
+    findDropdownItems()
+      .at(i)
+      .vm.$emit('click');
 
   const createComponent = (term = '', props = {}, method = shallowMount) => {
     wrapper = method(PipelineNewForm, {
@@ -44,7 +55,8 @@ describe('Pipeline New Form', () => {
         projectId: mockProjectId,
         pipelinesPath,
         configVariablesPath,
-        refs: mockRefs,
+        branches: mockBranches,
+        tags: mockTags,
         defaultBranch: 'master',
         settingsLink: '',
         maxWarnings: 25,
@@ -76,8 +88,11 @@ describe('Pipeline New Form', () => {
     });
 
     it('displays dropdown with all branches and tags', () => {
+      const refLength = mockBranches.length + mockTags.length;
+
       createComponent();
-      expect(findDropdownItems()).toHaveLength(mockRefs.length);
+
+      expect(findDropdownItems()).toHaveLength(refLength);
     });
 
     it('when user enters search term the list is filtered', () => {
@@ -130,15 +145,6 @@ describe('Pipeline New Form', () => {
       expect(findVariableRows()).toHaveLength(2);
     });
 
-    it('creates a pipeline on submit', async () => {
-      findForm().vm.$emit('submit', dummySubmitEvent);
-
-      await waitForPromises();
-
-      expect(getExpectedPostParams()).toEqual(mockPostParams);
-      expect(redirectTo).toHaveBeenCalledWith(`${pipelinesPath}/${postResponse.id}`);
-    });
-
     it('creates blank variable on input change event', async () => {
       const input = findKeyInputs().at(2);
       input.element.value = 'test_var_2';
@@ -150,45 +156,81 @@ describe('Pipeline New Form', () => {
       expect(findKeyInputs().at(3).element.value).toBe('');
       expect(findValueInputs().at(3).element.value).toBe('');
     });
+  });
 
-    describe('when the form has been modified', () => {
-      const selectRef = i =>
-        findDropdownItems()
-          .at(i)
-          .vm.$emit('click');
+  describe('Pipeline creation', () => {
+    beforeEach(async () => {
+      mock.onPost(pipelinesPath).reply(httpStatusCodes.OK, postResponse);
 
-      beforeEach(async () => {
-        const input = findKeyInputs().at(0);
-        input.element.value = 'test_var_2';
-        input.trigger('change');
+      await waitForPromises();
+    });
+    it('creates pipeline with full ref and variables', async () => {
+      createComponent();
 
-        findRemoveIcons()
-          .at(1)
-          .trigger('click');
+      changeRef(0);
 
-        await wrapper.vm.$nextTick();
-      });
+      findForm().vm.$emit('submit', dummySubmitEvent);
 
-      it('form values are restored when the ref changes', async () => {
-        expect(findVariableRows()).toHaveLength(2);
+      await waitForPromises();
 
-        selectRef(1);
-        await waitForPromises();
+      expect(getExpectedPostParams().ref).toEqual(wrapper.vm.$data.refValue.fullName);
+      expect(redirectTo).toHaveBeenCalledWith(`${pipelinesPath}/${postResponse.id}`);
+    });
+    it('creates a pipeline with short ref and variables', async () => {
+      // query params are used
+      createComponent('', mockParams);
 
-        expect(findVariableRows()).toHaveLength(3);
-        expect(findKeyInputs().at(0).element.value).toBe('test_var');
-      });
+      await waitForPromises();
 
-      it('form values are restored again when the ref is reverted', async () => {
-        selectRef(1);
-        await waitForPromises();
+      findForm().vm.$emit('submit', dummySubmitEvent);
 
-        selectRef(2);
-        await waitForPromises();
+      await waitForPromises();
 
-        expect(findVariableRows()).toHaveLength(2);
-        expect(findKeyInputs().at(0).element.value).toBe('test_var_2');
-      });
+      expect(getExpectedPostParams()).toEqual(mockPostParams);
+      expect(redirectTo).toHaveBeenCalledWith(`${pipelinesPath}/${postResponse.id}`);
+    });
+  });
+
+  describe('When the ref has been changed', () => {
+    beforeEach(async () => {
+      createComponent('', {}, mount);
+
+      await waitForPromises();
+    });
+    it('variables persist between ref changes', async () => {
+      changeRef(0); // change to master
+
+      await waitForPromises();
+
+      const masterInput = findKeyInputs().at(0);
+      masterInput.element.value = 'build_var';
+      masterInput.trigger('change');
+
+      await wrapper.vm.$nextTick();
+
+      changeRef(1); // change to branch-1
+
+      await waitForPromises();
+
+      const branchOneInput = findKeyInputs().at(0);
+      branchOneInput.element.value = 'deploy_var';
+      branchOneInput.trigger('change');
+
+      await wrapper.vm.$nextTick();
+
+      changeRef(0); // change back to master
+
+      await waitForPromises();
+
+      expect(findKeyInputs().at(0).element.value).toBe('build_var');
+      expect(findVariableRows().length).toBe(2);
+
+      changeRef(1); // change back to branch-1
+
+      await waitForPromises();
+
+      expect(findKeyInputs().at(0).element.value).toBe('deploy_var');
+      expect(findVariableRows().length).toBe(2);
     });
   });
 
@@ -321,6 +363,7 @@ describe('Pipeline New Form', () => {
 
     it('shows the correct warning title', () => {
       const { length } = mockError.warnings;
+
       expect(findWarningAlertSummary().attributes('message')).toBe(`${length} warnings found:`);
     });
 

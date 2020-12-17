@@ -61,6 +61,37 @@ RSpec.describe API::Discussions do
         expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
+
+    context "when a commit parameter is given" do
+      it "creates the discussion on that commit within the merge request" do
+        # SHAs of "feature" and its parent in spec/support/gitlab-git-test.git
+        mr_commit = '0b4bc9a49b562e85de7cc9e834518ea6828729b9'
+        parent_commit = 'ae73cb07c9eeaf35924a10f713b364d32b2dd34f'
+        file = "files/ruby/feature.rb"
+        line_range = {
+          "start_line_code" => Gitlab::Git.diff_line_code(file, 1, 1),
+          "end_line_code" => Gitlab::Git.diff_line_code(file, 1, 1),
+          "start_line_type" => "text",
+          "end_line_type" => "text"
+        }
+        position = build(
+          :text_diff_position,
+          :added,
+          file: file,
+          new_line: 1,
+          line_range: line_range,
+          base_sha: parent_commit,
+          head_sha: mr_commit,
+          start_sha: parent_commit
+        )
+
+        post api("/projects/#{project.id}/merge_requests/#{noteable['iid']}/discussions", user),
+          params: { body: 'MR discussion on commit', position: position.to_h, commit_id: mr_commit }
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['notes'].first['commit_id']).to eq(mr_commit)
+      end
+    end
   end
 
   context 'when noteable is a Commit' do

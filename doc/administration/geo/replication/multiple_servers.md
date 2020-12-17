@@ -1,7 +1,7 @@
 ---
 stage: Enablement
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: howto
 ---
 
@@ -27,7 +27,7 @@ network topology of your deployment.
 The only external way to access the two Geo deployments is by HTTPS at
 `gitlab.us.example.com` and `gitlab.eu.example.com` in the example above.
 
-NOTE: **Note:**
+NOTE:
 The **primary** and **secondary** Geo deployments must be able to communicate to each other over HTTPS.
 
 ## Redis and PostgreSQL for multiple nodes
@@ -37,7 +37,7 @@ Geo supports:
 - Redis and PostgreSQL on the **primary** node configured for multiple nodes.
 - Redis on **secondary** nodes configured for multiple nodes.
 
-NOTE: **Note:**
+NOTE:
 Support for PostgreSQL on **secondary** nodes in multi-node configuration
 [is planned](https://gitlab.com/groups/gitlab-org/-/epics/2536).
 
@@ -48,7 +48,7 @@ For more information about setting up a multi-node PostgreSQL cluster and Redis 
 [PostgreSQL](../../postgresql/replication_and_failover.md) and
 [Redis](../../redis/replication_and_failover.md), respectively.
 
-NOTE: **Note:**
+NOTE:
 It is possible to use cloud hosted services for PostgreSQL and Redis, but this is beyond the scope of this document.
 
 ## Prerequisites: Two working GitLab multi-node clusters
@@ -90,7 +90,7 @@ The following steps enable a GitLab cluster to serve as the **primary** node.
 
 After making these changes, [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) so the changes take effect.
 
-NOTE: **Note:**
+NOTE:
 PostgreSQL and Redis should have already been disabled on the
 application servers, and connections from the application servers to those
 services on the backend servers configured, during normal GitLab multi-node set up. See
@@ -136,13 +136,13 @@ documentation:
 - [Gitaly](../../gitaly/index.md), which will store data that is
   synchronized from the **primary** node.
 
-NOTE: **Note:**
+NOTE:
 [NFS](../../nfs.md) can be used in place of Gitaly but is not
 recommended.
 
 ### Step 2: Configure the main read-only replica PostgreSQL database on the **secondary** node
 
-NOTE: **Note:**
+NOTE:
 The following documentation assumes the database will be run on
 a single node only. Multi-node PostgreSQL on **secondary** nodes is
 [not currently supported](https://gitlab.com/groups/gitlab-org/-/epics/2536).
@@ -172,6 +172,12 @@ the **primary** database. Use the following as a guide.
    ## Configure the Geo secondary role and the PostgreSQL role
    ##
    roles ['geo_secondary_role', 'postgres_role']
+
+   ##
+   ## The unique identifier for the Geo node.
+   ## This should match the secondary's application node.
+   ##
+   gitlab_rails['geo_node_name'] = '<node_name_here>'
 
    ##
    ## Secondary address
@@ -226,7 +232,7 @@ If using an external PostgreSQL instance, refer also to
 
 ### Step 3: Configure the tracking database on the **secondary** node
 
-NOTE: **Note:**
+NOTE:
 This documentation assumes the tracking database will be run on
 only a single machine, rather than as a PostgreSQL cluster.
 
@@ -359,14 +365,14 @@ then make the following modifications:
    registry['gid'] = 9002
    ```
 
-NOTE: **Note:**
+NOTE:
 If you had set up PostgreSQL cluster using the omnibus package and you had set
 up `postgresql['sql_user_password'] = 'md5 digest of secret'` setting, keep in
 mind that `gitlab_rails['db_password']` and `geo_secondary['db_password']`
 mentioned above contains the plaintext passwords. This is used to let the Rails
 servers connect to the databases.
 
-NOTE: **Note:**
+NOTE:
 Make sure that current node IP is listed in `postgresql['md5_auth_cidr_addresses']` setting of your remote database.
 
 After making these changes [Reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) so the changes take effect.

@@ -1,7 +1,7 @@
 ---
 stage: Enablement
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: howto
 ---
 
@@ -13,7 +13,7 @@ failover with minimal effort, in a disaster situation.
 
 See [Geo limitations](../index.md#limitations) for more information.
 
-CAUTION: **Warning:**
+WARNING:
 Disaster recovery for multi-secondary configurations is in **Alpha**.
 For the latest updates, check the [Disaster Recovery epic for complete maturity](https://gitlab.com/groups/gitlab-org/-/epics/590).
 Multi-secondary configurations require the complete re-synchronization and re-configuration of all non-promoted secondaries and
@@ -36,7 +36,7 @@ order to avoid unnecessary data loss.
 
 ### Step 2. Permanently disable the **primary** node
 
-CAUTION: **Warning:**
+WARNING:
 If the **primary** node goes offline, there may be data saved on the **primary** node
 that has not been replicated to the **secondary** node. This data should be treated
 as lost if you proceed.
@@ -58,7 +58,7 @@ must disable the **primary** node.
    sudo systemctl disable gitlab-runsvdir
    ```
 
-   NOTE: **Note:**
+   NOTE:
    (**CentOS only**) In CentOS 6 or older, there is no easy way to prevent GitLab from being
    started if the machine reboots isn't available (see [Omnibus GitLab issue #3058](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3058)).
    It may be safest to uninstall the GitLab package completely:
@@ -67,7 +67,7 @@ must disable the **primary** node.
    yum remove gitlab-ee
    ```
 
-   NOTE: **Note:**
+   NOTE:
    (**Ubuntu 14.04 LTS**) If you are using an older version of Ubuntu
    or any other distribution based on the Upstart init system, you can prevent GitLab
    from starting if the machine reboots by doing the following:
@@ -133,13 +133,14 @@ Note the following when promoting a secondary:
    ```
 
 1. Promote the **secondary** node to the **primary** node.
-   DANGER: **Warning:**
+
+   WARNING:
    In GitLab 13.2 and 13.3, promoting a secondary node to a primary while the
    secondary is paused fails. Do not pause replication before promoting a
    secondary. If the node is paused, be sure to resume before promoting. This
    issue has been fixed in GitLab 13.4 and later.
 
-   CAUTION: **Caution:**
+   WARNING:
    If the secondary node [has been paused](../../geo/index.md#pausing-and-resuming-replication), this performs
    a point-in-time recovery to the last known state.
    Data that was created on the primary while the secondary was paused will be lost.
@@ -173,13 +174,13 @@ conjunction with multiple servers, as it can only
 perform changes on a **secondary** with only a single machine. Instead, you must
 do this manually.
 
-DANGER: **Warning:**
+WARNING:
 In GitLab 13.2 and 13.3, promoting a secondary node to a primary while the
 secondary is paused fails. Do not pause replication before promoting a
 secondary. If the node is paused, be sure to resume before promoting. This
 issue has been fixed in GitLab 13.4 and later.
 
-CAUTION: **Caution:**
+WARNING:
    If the secondary node [has been paused](../../geo/index.md#pausing-and-resuming-replication), this performs
 a point-in-time recovery to the last known state.
 Data that was created on the primary while the secondary was paused will be lost.
@@ -300,7 +301,7 @@ secondary domain, like changing Git remotes and API URLs.
    external_url 'https://<new_external_url>'
    ```
 
-   NOTE: **Note:**
+   NOTE:
    Changing `external_url` won't prevent access via the old secondary URL, as
    long as the secondary DNS records are still intact.
 

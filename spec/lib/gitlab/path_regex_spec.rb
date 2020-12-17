@@ -433,37 +433,85 @@ RSpec.describe Gitlab::PathRegex do
     it { is_expected.not_to match('gitlab.git') }
   end
 
-  shared_examples 'invalid snippet routes' do
-    it { is_expected.not_to match('gitlab-org/gitlab/snippets/1.git') }
-    it { is_expected.not_to match('snippets/1.git') }
-    it { is_expected.not_to match('gitlab-org/gitlab/snippets/') }
-    it { is_expected.not_to match('/gitlab-org/gitlab/snippets/1') }
-    it { is_expected.not_to match('gitlab-org/gitlab/snippets/foo') }
-    it { is_expected.not_to match('root/snippets/1') }
-    it { is_expected.not_to match('/snippets/1') }
-    it { is_expected.not_to match('snippets/') }
-    it { is_expected.not_to match('snippets/foo') }
-  end
+  context 'repository routes' do
+    # Paths that match a known container
+    let_it_be(:container_paths) do
+      [
+        'gitlab-org',
+        'gitlab-org/gitlab-test',
+        'gitlab-org/gitlab-test/snippets/1',
+        'gitlab-org/gitlab-test/snippets/foo', # ambiguous, we allow creating a sub-group called 'snippets'
+        'snippets/1'
+      ]
+    end
 
-  describe '.full_snippets_repository_path_regex' do
-    subject { described_class.full_snippets_repository_path_regex }
+    # Paths that never match a container
+    let_it_be(:invalid_paths) do
+      [
+        'gitlab/',
+        '/gitlab',
+        'gitlab/foo/',
+        '?gitlab',
+        'git lab',
+        '/snippets/1',
+        'snippets/foo',
+        'gitlab-org/gitlab/snippets/'
+      ]
+    end
 
-    it { is_expected.to match('gitlab-org/gitlab/snippets/1') }
-    it { is_expected.to match('snippets/1') }
+    let_it_be(:git_paths) { container_paths.map { |path| path + '.git' } }
+    let_it_be(:snippet_paths) { container_paths.grep(%r{snippets/\d}) }
+    let_it_be(:wiki_git_paths) { (container_paths - snippet_paths).map { |path| path + '.wiki.git' } }
+    let_it_be(:invalid_git_paths) { invalid_paths.map { |path| path + '.git' } }
 
-    it_behaves_like 'invalid snippet routes'
-  end
+    def expect_route_match(paths)
+      paths.each { |path| is_expected.to match(path) }
+    end
 
-  describe '.personal_and_project_snippets_path_regex' do
-    subject { %r{\A#{described_class.personal_and_project_snippets_path_regex}\z} }
+    def expect_no_route_match(paths)
+      paths.each { |path| is_expected.not_to match(path) }
+    end
 
-    it { is_expected.to match('gitlab-org/gitlab/snippets') }
-    it { is_expected.to match('snippets') }
+    describe '.repository_route_regex' do
+      subject { %r{\A#{described_class.repository_route_regex}\z} }
 
-    it { is_expected.not_to match('gitlab-org/gitlab/snippets/1') }
-    it { is_expected.not_to match('snippets/1') }
+      it 'matches the expected paths' do
+        expect_route_match(container_paths)
+        expect_no_route_match(invalid_paths + git_paths)
+      end
+    end
 
-    it_behaves_like 'invalid snippet routes'
+    describe '.repository_git_route_regex' do
+      subject { %r{\A#{described_class.repository_git_route_regex}\z} }
+
+      it 'matches the expected paths' do
+        expect_route_match(git_paths + wiki_git_paths)
+        expect_no_route_match(container_paths + invalid_paths + invalid_git_paths)
+      end
+    end
+
+    describe '.repository_wiki_git_route_regex' do
+      subject { %r{\A#{described_class.repository_wiki_git_route_regex}\z} }
+
+      it 'matches the expected paths' do
+        expect_route_match(wiki_git_paths)
+        expect_no_route_match(git_paths + invalid_git_paths)
+      end
+
+      it { is_expected.not_to match('snippets/1.wiki.git') }
+    end
+
+    describe '.full_snippets_repository_path_regex' do
+      subject { described_class.full_snippets_repository_path_regex }
+
+      it 'matches the expected paths' do
+        expect_route_match(snippet_paths)
+        expect_no_route_match(container_paths - snippet_paths + git_paths + invalid_paths)
+      end
+
+      it { is_expected.not_to match('root/snippets/1') }
+      it { is_expected.not_to match('gitlab-org/gitlab-test/snippets/foo') }
+    end
   end
 
   describe '.container_image_regex' do

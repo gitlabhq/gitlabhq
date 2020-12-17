@@ -7,14 +7,15 @@ RSpec.describe Import::BulkImportEntity do
     {
       'id' => 1,
       'full_name' => 'test',
-      'full_path' => 'full/path/test',
+      'full_path' => 'full/path/tes',
+      'web_url' => 'http://web.url/path',
       'foo' => 'bar'
     }
   end
 
   subject { described_class.represent(importable_data).as_json }
 
-  %w[id full_name full_path].each do |attribute|
+  %w[id full_name full_path web_url].each do |attribute|
     it "exposes #{attribute}" do
       expect(subject[attribute.to_sym]).to eq(importable_data[attribute])
     end

@@ -1,19 +1,19 @@
 ---
 stage: Release
-group: Release Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+group: Release
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 description: "How to secure GitLab Pages websites with Let's Encrypt (manual process, deprecated)."
 ---
 
 # Let's Encrypt for GitLab Pages (manual process, deprecated)
 
-CAUTION: **Warning:**
+WARNING:
 This method is still valid but was **deprecated** in favor of the
 [Let's Encrypt integration](custom_domains_ssl_tls_certification/lets_encrypt_integration.md)
 introduced in GitLab 12.1.
 
 If you have a GitLab Pages website served under your own domain,
-you might want to secure it with a SSL/TSL certificate.
+you might want to secure it with a SSL/TLS certificate.
 
 [Let's Encrypt](https://letsencrypt.org) is a free, automated, and
 open source Certificate Authority.
@@ -67,7 +67,7 @@ might be slightly different. Follow the
    sudo certbot certonly -a manual -d example.com --register-unsafely-without-email
    ```
 
-   TIP: **Tip:**
+   NOTE:
    Read through CertBot's documentation on their
    [command line options](https://certbot.eff.org/docs/using.html#certbot-command-line-options).
 

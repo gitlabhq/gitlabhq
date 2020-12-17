@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Review Apps
@@ -102,8 +102,8 @@ subgraph "CNG-mirror pipeline"
 - The manual `review-stop` can be used to
   stop a Review App manually, and is also started by GitLab once a merge
   request's branch is deleted after being merged.
-- The Kubernetes cluster is connected to the `gitlab` projects using
-  [GitLab's Kubernetes integration](../../user/project/clusters/index.md). This basically
+- The Kubernetes cluster is connected to the `gitlab` projects using the
+  [GitLab Kubernetes integration](../../user/project/clusters/index.md). This basically
   allows to have a link to the Review App directly from the merge request widget.
 
 ### Auto-stopping of Review Apps
@@ -164,7 +164,7 @@ used by the `review-deploy` and `review-stop` jobs.
 You need to [open an access request (internal link)](https://gitlab.com/gitlab-com/access-requests/-/issues/new)
 for the `gcp-review-apps-dev` GCP group and role.
 
-This will grant you the following permissions for:
+This grants you the following permissions for:
 
 - [Retrieving pod logs](#dig-into-a-pods-logs). Granted by [Viewer (`roles/viewer`)](https://cloud.google.com/iam/docs/understanding-roles#kubernetes-engine-roles).
 - [Running a Rails console](#run-a-rails-console). Granted by [Kubernetes Engine Developer (`roles/container.pods.exec`)](https://cloud.google.com/iam/docs/understanding-roles#kubernetes-engine-roles).
@@ -317,7 +317,7 @@ kubectl get cm --sort-by='{.metadata.creationTimestamp}' | grep 'review-' | grep
 
 ### Using K9s
 
-[K9s](https://github.com/derailed/k9s) is a powerful command line dashboard which allows you to filter by labels. This can help identify trends with apps exceeding the [review-app resource requests](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/review_apps/base-config.yaml). Kubernetes will schedule pods to nodes based on resource requests and allow for CPU usage up to the limits.
+[K9s](https://github.com/derailed/k9s) is a powerful command line dashboard which allows you to filter by labels. This can help identify trends with apps exceeding the [review-app resource requests](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/review_apps/base-config.yaml). Kubernetes schedules pods to nodes based on resource requests and allow for CPU usage up to the limits.
 
 - In K9s you can sort or add filters by typing the `/` character
   - `-lrelease=<review-app-slug>` - filters down to all pods for a release. This aids in determining what is having issues in a single deployment
@@ -395,8 +395,8 @@ helm ls -d | grep "Jun  4" | cut -f1 | xargs helm delete --purge
 
 #### Mitigation steps taken to avoid this problem in the future
 
-We've created a new node pool with smaller machines so that it's less likely
-that a machine will hit the "too many mount points" problem in the future.
+We've created a new node pool with smaller machines to reduce the risk
+that a machine reaches the "too many mount points" problem in the future.
 
 ## Frequently Asked Questions
 

@@ -1,0 +1,5 @@
+---
+title: Fix Markdown attachments in Releases not rendering with full URL
+merge_request: 50146
+author:
+type: fixed

@@ -4,7 +4,9 @@ require 'spec_helper'
 
 RSpec.describe 'Admin Builds' do
   before do
-    sign_in(create(:admin))
+    admin = create(:admin)
+    sign_in(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
   end
 
   describe 'GET /admin/builds' do

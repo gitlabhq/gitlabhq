@@ -26,7 +26,7 @@ Issue:
 - weight
 - time_estimate
 - relative_position
-- service_desk_reply_to
+- external_author
 - last_edited_at
 - last_edited_by_id
 - discussion_locked
@@ -219,6 +219,7 @@ MergeRequestDiff:
 - start_commit_sha
 - commits_count
 - files_count
+- sorted
 MergeRequestDiffCommit:
 - merge_request_diff_id
 - relative_order
@@ -577,6 +578,8 @@ ProjectFeature:
 - pages_access_level
 - metrics_dashboard_access_level
 - requirements_access_level
+- analytics_access_level
+- operations_access_level
 - created_at
 - updated_at
 ProtectedBranch::MergeAccessLevel:
@@ -742,6 +745,7 @@ Board:
 - updated_at
 - group_id
 - milestone_id
+- iteration_id
 - weight
 - name
 - hide_backlog_list

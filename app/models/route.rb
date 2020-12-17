@@ -4,7 +4,7 @@ class Route < ApplicationRecord
   include CaseSensitivity
   include Gitlab::SQL::Pattern
 
-  belongs_to :source, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
+  belongs_to :source, polymorphic: true, inverse_of: :route # rubocop:disable Cop/PolymorphicAssociations
   validates :source, presence: true
 
   validates :path,

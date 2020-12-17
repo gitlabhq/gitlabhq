@@ -1,0 +1,5 @@
+---
+title: Fix console error being thrown when file is renamed
+merge_request: 48275
+author:
+type: fixed

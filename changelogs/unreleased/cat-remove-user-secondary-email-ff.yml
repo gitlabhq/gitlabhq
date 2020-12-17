@@ -1,0 +1,5 @@
+---
+title: Remove user_search_secondary_email feature flag
+merge_request: 49312
+author:
+type: changed

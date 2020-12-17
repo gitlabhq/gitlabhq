@@ -1,4 +1,5 @@
 import GroupsStore from '~/groups/store/groups_store';
+import { getGroupItemMicrodata } from '~/groups/store/utils';
 import {
   mockGroups,
   mockSearchedGroups,
@@ -17,9 +18,9 @@ describe('ProjectsStore', () => {
       expect(Object.keys(store.state).length).toBe(2);
       expect(Array.isArray(store.state.groups)).toBeTruthy();
       expect(Object.keys(store.state.pageInfo).length).toBe(0);
-      expect(store.hideProjects).not.toBeDefined();
+      expect(store.hideProjects).toBeFalsy();
 
-      store = new GroupsStore(true);
+      store = new GroupsStore({ hideProjects: true });
 
       expect(store.hideProjects).toBeTruthy();
     });
@@ -86,22 +87,30 @@ describe('ProjectsStore', () => {
 
   describe('formatGroupItem', () => {
     it('should parse group item object and return updated object', () => {
-      let store;
-      let updatedGroupItem;
-
-      store = new GroupsStore();
-      updatedGroupItem = store.formatGroupItem(mockRawChildren[0]);
+      const store = new GroupsStore();
+      const updatedGroupItem = store.formatGroupItem(mockRawChildren[0]);
 
       expect(Object.keys(updatedGroupItem).indexOf('fullName')).toBeGreaterThan(-1);
       expect(updatedGroupItem.childrenCount).toBe(mockRawChildren[0].children_count);
       expect(updatedGroupItem.isChildrenLoading).toBe(false);
       expect(updatedGroupItem.isBeingRemoved).toBe(false);
+      expect(updatedGroupItem.microdata).toEqual({});
+    });
 
-      store = new GroupsStore(true);
-      updatedGroupItem = store.formatGroupItem(mockRawChildren[0]);
+    it('with hideProjects', () => {
+      const store = new GroupsStore({ hideProjects: true });
+      const updatedGroupItem = store.formatGroupItem(mockRawChildren[0]);
 
       expect(Object.keys(updatedGroupItem).indexOf('fullName')).toBeGreaterThan(-1);
       expect(updatedGroupItem.childrenCount).toBe(mockRawChildren[0].subgroup_count);
+      expect(updatedGroupItem.microdata).toEqual({});
+    });
+
+    it('with showSchemaMarkup', () => {
+      const store = new GroupsStore({ showSchemaMarkup: true });
+      const updatedGroupItem = store.formatGroupItem(mockRawChildren[0]);
+
+      expect(updatedGroupItem.microdata).toEqual(getGroupItemMicrodata(mockRawChildren[0]));
     });
   });
 

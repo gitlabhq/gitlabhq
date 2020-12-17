@@ -1,7 +1,7 @@
 ---
 stage: Configure
 group: Configure
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Infrastructure as code with Terraform and GitLab
@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ## Motivation
 
 The Terraform integration features within GitLab enable your GitOps / Infrastructure-as-Code (IaC)
-workflows to tie into GitLab's authentication and authorization. These features focus on
+workflows to tie into GitLab authentication and authorization. These features focus on
 lowering the barrier to entry for teams to adopt Terraform, collaborate effectively within
 GitLab, and support Terraform best practices.
 
@@ -30,6 +30,12 @@ Amazon S3 or Google Cloud Storage. Its features include:
 - Remote Terraform plan and apply execution.
 
 Read more on setting up and [using GitLab Managed Terraform states](terraform_state.md)
+
+WARNING:
+Like any other job artifact, Terraform plan data is [viewable by anyone with Guest access](../permissions.md) to the repository.
+Neither Terraform nor GitLab encrypts the plan file by default. If your Terraform plan
+includes sensitive data such as passwords, access tokens, or certificates, GitLab strongly
+recommends encrypting plan output or modifying the project visibility settings.
 
 ## Terraform integration in Merge Requests
 

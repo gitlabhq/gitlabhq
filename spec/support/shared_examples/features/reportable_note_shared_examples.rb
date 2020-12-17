@@ -29,7 +29,7 @@ RSpec.shared_examples 'reportable note' do |type|
     end
   end
 
-  it 'Report button links to a report page' do
+  it 'report button links to a report page' do
     dropdown = comment.find(more_actions_selector)
     open_dropdown(dropdown)
 

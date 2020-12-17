@@ -2,7 +2,8 @@
 import { GlTooltipDirective, GlButton, GlLink, GlLoadingIcon } from '@gitlab/ui';
 import CiStatus from '~/vue_shared/components/ci_icon.vue';
 import { __, sprintf } from '~/locale';
-import { UPSTREAM, DOWNSTREAM } from './constants';
+import { accessValue } from './accessors';
+import { DOWNSTREAM, REST, UPSTREAM } from './constants';
 
 export default {
   directives: {
@@ -14,28 +15,43 @@ export default {
     GlLink,
     GlLoadingIcon,
   },
+  inject: {
+    dataMethod: {
+      default: REST,
+    },
+  },
   props: {
     columnTitle: {
       type: String,
+      required: true,
+    },
+    expanded: {
+      type: Boolean,
       required: true,
     },
     pipeline: {
       type: Object,
       required: true,
     },
-    projectId: {
-      type: Number,
-      required: true,
-    },
     type: {
       type: String,
       required: true,
     },
-  },
-  data() {
-    return {
-      expanded: false,
-    };
+    /*
+      The next two props will be removed or required
+      once the graph transition is done.
+      See: https://gitlab.com/gitlab-org/gitlab/-/issues/291043
+    */
+    isLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    projectId: {
+      type: Number,
+      required: false,
+      default: -1,
+    },
   },
   computed: {
     tooltipText() {
@@ -46,7 +62,7 @@ export default {
       return `js-linked-pipeline-${this.pipeline.id}`;
     },
     pipelineStatus() {
-      return this.pipeline.details.status;
+      return accessValue(this.dataMethod, 'pipelineStatus', this.pipeline);
     },
     projectName() {
       return this.pipeline.project.name;
@@ -68,6 +84,9 @@ export default {
       }
       return __('Multi-project');
     },
+    pipelineIsLoading() {
+      return Boolean(this.isLoading || this.pipeline.isLoading);
+    },
     isDownstream() {
       return this.type === DOWNSTREAM;
     },
@@ -75,12 +94,15 @@ export default {
       return this.type === UPSTREAM;
     },
     isSameProject() {
-      return this.projectId === this.pipeline.project.id;
+      return this.projectId > -1
+        ? this.projectId === this.pipeline.project.id
+        : !this.pipeline.multiproject;
+    },
+    sourceJobName() {
+      return accessValue(this.dataMethod, 'sourceJob', this.pipeline);
     },
     sourceJobInfo() {
-      return this.isDownstream
-        ? sprintf(__('Created by %{job}'), { job: this.pipeline.source_job.name })
-        : '';
+      return this.isDownstream ? sprintf(__('Created by %{job}'), { job: this.sourceJobName }) : '';
     },
     expandedIcon() {
       if (this.isUpstream) {
@@ -94,16 +116,15 @@ export default {
   },
   methods: {
     onClickLinkedPipeline() {
-      this.$root.$emit('bv::hide::tooltip', this.buttonId);
-      this.expanded = !this.expanded;
+      this.hideTooltips();
       this.$emit('pipelineClicked', this.$refs.linkedPipeline);
-      this.$emit('pipelineExpandToggle', this.pipeline.source_job.name, this.expanded);
+      this.$emit('pipelineExpandToggle', this.sourceJobName, !this.expanded);
     },
     hideTooltips() {
       this.$root.$emit('bv::hide::tooltip');
     },
     onDownstreamHovered() {
-      this.$emit('downstreamHovered', this.pipeline.source_job.name);
+      this.$emit('downstreamHovered', this.sourceJobName);
     },
     onDownstreamHoverLeave() {
       this.$emit('downstreamHovered', '');
@@ -113,10 +134,10 @@ export default {
 </script>
 
 <template>
-  <li
+  <div
     ref="linkedPipeline"
     v-gl-tooltip
-    class="linked-pipeline build"
+    class="linked-pipeline build gl-pipeline-job-width"
     :title="tooltipText"
     :class="{ 'downstream-pipeline': isDownstream }"
     data-qa-selector="child_pipeline"
@@ -129,8 +150,9 @@ export default {
     >
       <div class="gl-display-flex">
         <ci-status
-          v-if="!pipeline.isLoading"
+          v-if="!pipelineIsLoading"
           :status="pipelineStatus"
+          :size="24"
           css-classes="gl-top-0 gl-pr-2"
         />
         <div v-else class="gl-pr-2"><gl-loading-icon inline /></div>
@@ -153,10 +175,10 @@ export default {
         class="gl-absolute gl-top-0 gl-bottom-0 gl-shadow-none! gl-rounded-0!"
         :class="`js-pipeline-expand-${pipeline.id} ${expandButtonPosition}`"
         :icon="expandedIcon"
-        data-testid="expandPipelineButton"
+        data-testid="expand-pipeline-button"
         data-qa-selector="expand_pipeline_button"
         @click="onClickLinkedPipeline"
       />
     </div>
-  </li>
+  </div>
 </template>

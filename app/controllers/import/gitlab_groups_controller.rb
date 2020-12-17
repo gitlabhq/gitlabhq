@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Import::GitlabGroupsController < ApplicationController
-  include WorkhorseImportExportUpload
+  include WorkhorseAuthorization
 
   before_action :ensure_group_import_enabled
   before_action :import_rate_limit, only: %i[create]
@@ -63,5 +63,13 @@ class Import::GitlabGroupsController < ApplicationController
       flash[:alert] = _('This endpoint has been requested too many times. Try again later.')
       redirect_to new_group_path
     end
+  end
+
+  def uploader_class
+    ImportExportUploader
+  end
+
+  def maximum_size
+    Gitlab::CurrentSettings.max_import_size.megabytes
   end
 end

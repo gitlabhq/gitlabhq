@@ -9,7 +9,7 @@ module API
 
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       namespace ':id/packages/conan/v1' do
-        include ConanPackageEndpoints
+        include ::API::Concerns::Packages::ConanEndpoints
       end
     end
   end

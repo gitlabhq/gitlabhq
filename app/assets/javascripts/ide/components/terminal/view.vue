@@ -1,12 +1,11 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import EmptyState from './empty_state.vue';
-import TerminalSession from './session.vue';
 
 export default {
   components: {
     EmptyState,
-    TerminalSession,
+    TerminalSession: () => import(/* webpackChunkName: 'ide_terminal' */ './session.vue'),
   },
   computed: {
     ...mapState('terminal', ['isShowSplash', 'paths']),

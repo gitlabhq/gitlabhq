@@ -1,6 +1,18 @@
 import { __ } from '~/locale';
 
 export default (IssuableTokenKeys, disableTargetBranchFilter = false) => {
+  const reviewerToken = {
+    formattedKey: __('Reviewer'),
+    key: 'reviewer',
+    type: 'string',
+    param: 'username',
+    symbol: '@',
+    icon: 'user',
+    tag: '@reviewer',
+  };
+  IssuableTokenKeys.tokenKeys.splice(2, 0, reviewerToken);
+  IssuableTokenKeys.tokenKeysWithAlternative.splice(2, 0, reviewerToken);
+
   const draftToken = {
     token: {
       formattedKey: __('Draft'),
@@ -91,7 +103,7 @@ export default (IssuableTokenKeys, disableTargetBranchFilter = false) => {
     ],
   };
 
-  const tokenPosition = 2;
+  const tokenPosition = 3;
   IssuableTokenKeys.tokenKeys.splice(tokenPosition, 0, ...[approvedBy.token]);
   IssuableTokenKeys.tokenKeysWithAlternative.splice(tokenPosition, 0, ...[approvedBy.token]);
   IssuableTokenKeys.conditions.push(...approvedBy.condition);

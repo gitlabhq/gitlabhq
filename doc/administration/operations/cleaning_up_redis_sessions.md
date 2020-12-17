@@ -1,7 +1,7 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+stage: Enablement
+group: Distribution
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Cleaning up stale Redis sessions
@@ -21,7 +21,7 @@ prefixed with `session:gitlab:`, so they would look like
 `session:gitlab:976aa289e2189b17d7ef525a6702ace9`. Below we describe how to
 remove the keys in the old format.
 
-NOTE: **Note:**
+NOTE:
 The instructions below must be modified in accordance with your
 configuration settings if you have used the advanced Redis
 settings outlined in

@@ -1,10 +1,11 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 import ciIcon from '../../vue_shared/components/ci_icon.vue';
 
 export default {
   components: {
     ciIcon,
+    GlButton,
     GlLoadingIcon,
   },
   props: {
@@ -32,21 +33,23 @@ export default {
 };
 </script>
 <template>
-  <div class="d-flex align-self-start">
+  <div class="gl-display-flex gl-align-self-start">
     <div class="square s24 h-auto d-flex-center gl-mr-3">
-      <div v-if="isLoading" class="mr-widget-icon d-inline-flex">
-        <gl-loading-icon size="md" class="mr-loading-icon d-inline-flex" />
+      <div v-if="isLoading" class="mr-widget-icon gl-display-inline-flex">
+        <gl-loading-icon size="md" class="mr-loading-icon gl-display-inline-flex" />
       </div>
       <ci-icon v-else :status="statusObj" :size="24" />
     </div>
 
-    <button
+    <gl-button
       v-if="showDisabledButton"
       type="button"
-      class="js-disabled-merge-button btn btn-success btn-sm"
-      disabled="true"
+      category="primary"
+      variant="success"
+      class="js-disabled-merge-button"
+      :disabled="true"
     >
       {{ s__('mrWidget|Merge') }}
-    </button>
+    </gl-button>
   </div>
 </template>

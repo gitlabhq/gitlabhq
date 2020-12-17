@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: reference, howto
 ---
 
@@ -48,13 +48,10 @@ monospaced font:
  and lines breaks will be preserved.
 ```
 
-An admonition paragraph grabs the reader's attention:
+Admonition paragraphs grab the reader's attention:
 
-```plaintext
-NOTE: This is a brief reference, please read the full documentation at https://asciidoctor.org/docs/.
-
-TIP: Lists can be indented. Leading whitespace is not significant.
-```
+- `NOTE: This is a brief reference, please read the full documentation at https://asciidoctor.org/docs/.`
+- `TIP: Lists can be indented. Leading whitespace is not significant.`
 
 ### Text Formatting
 
@@ -439,6 +436,36 @@ graph LR
     C --> D
 ----
 ```
+
+#### Kroki
+
+Kroki supports more than a dozen diagram libraries.
+To make Kroki available in GitLab, a GitLab administrator needs to enable it first.
+Read more in the [Kroki integration](../administration/integration/kroki.md) page.
+
+Once Kroki is enabled, you can create a wide variety of diagrams in AsciiDoc and Markdown documents.
+Here's an example using a GraphViz diagram:
+
+**AsciiDoc**
+
+```plaintext
+[graphviz]
+....
+digraph G {
+  Hello->World
+}
+....
+```
+
+**Markdown**
+
+````markdown
+```graphviz
+digraph G {
+  Hello->World
+}
+```
+````
 
 #### PlantUML
 

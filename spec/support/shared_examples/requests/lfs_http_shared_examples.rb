@@ -65,12 +65,19 @@ end
 RSpec.shared_examples 'LFS http requests' do
   include LfsHttpHelpers
 
+  let(:lfs_enabled) { true }
   let(:authorize_guest) {}
   let(:authorize_download) {}
   let(:authorize_upload) {}
 
   let(:lfs_object) { create(:lfs_object, :with_file) }
   let(:sample_oid) { lfs_object.oid }
+  let(:sample_size) { lfs_object.size }
+  let(:sample_object) { { 'oid' => sample_oid, 'size' => sample_size } }
+  let(:non_existing_object_oid) { '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897' }
+  let(:non_existing_object_size) { 1575078 }
+  let(:non_existing_object) { { 'oid' => non_existing_object_oid, 'size' => non_existing_object_size } }
+  let(:multiple_objects) { [sample_object, non_existing_object] }
 
   let(:authorization) { authorize_user }
   let(:headers) do
@@ -89,13 +96,11 @@ RSpec.shared_examples 'LFS http requests' do
   end
 
   before do
-    stub_lfs_setting(enabled: true)
+    stub_lfs_setting(enabled: lfs_enabled)
   end
 
   context 'when LFS is disabled globally' do
-    before do
-      stub_lfs_setting(enabled: false)
-    end
+    let(:lfs_enabled) { false }
 
     describe 'download request' do
       before do

@@ -28,7 +28,9 @@ export const mockIssuableShowProps = {
   descriptionPreviewPath: '/gitlab-org/gitlab-shell/preview_markdown',
   editFormVisible: false,
   enableAutocomplete: true,
+  enableAutosave: true,
   enableEdit: true,
+  showFieldTitle: false,
   statusBadgeClass: 'status-box-open',
   statusIcon: 'issue-open-m',
 };

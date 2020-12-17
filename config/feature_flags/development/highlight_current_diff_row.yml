@@ -1,8 +1,0 @@
----
-name: highlight_current_diff_row
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27937
-rollout_issue_url: 
-milestone: '13.4'
-type: development
-group: group::source code
-default_enabled: false

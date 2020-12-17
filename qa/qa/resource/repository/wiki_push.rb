@@ -12,11 +12,14 @@ module QA
           end
         end
 
+        def branch_name
+          @branch_name ||= wiki.project.default_branch
+        end
+
         def initialize
           @file_name = 'Home.md'
           @file_content = 'This line was created using git push'
           @commit_message = 'Updating using git push'
-          @branch_name = 'master'
           @new_branch = false
         end
 

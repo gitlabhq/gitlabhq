@@ -10,7 +10,13 @@ RSpec.describe Gitlab::Graphql::Pagination::ExternallyPaginatedArrayConnection d
   let(:arguments) { {} }
 
   subject(:connection) do
-    described_class.new(all_nodes, { max_page_size: values.size }.merge(arguments))
+    described_class.new(all_nodes, **{ max_page_size: values.size }.merge(arguments))
+  end
+
+  it_behaves_like 'a connection with collection methods'
+
+  it_behaves_like 'a redactable connection' do
+    let(:unwanted) { 3 }
   end
 
   describe '#nodes' do

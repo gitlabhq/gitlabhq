@@ -11,7 +11,8 @@ class JwtController < ApplicationController
   feature_category :authentication_and_authorization
 
   SERVICES = {
-    Auth::ContainerRegistryAuthenticationService::AUDIENCE => Auth::ContainerRegistryAuthenticationService
+    ::Auth::ContainerRegistryAuthenticationService::AUDIENCE => ::Auth::ContainerRegistryAuthenticationService,
+    ::Auth::DependencyProxyAuthenticationService::AUDIENCE => ::Auth::DependencyProxyAuthenticationService
   }.freeze
 
   def auth

@@ -1,14 +1,13 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
+import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import {
   WEBIDE_MARK_APP_START,
   WEBIDE_MARK_FILE_FINISH,
   WEBIDE_MARK_FILE_CLICKED,
-  WEBIDE_MARK_TREE_FINISH,
-  WEBIDE_MEASURE_TREE_FROM_REQUEST,
-  WEBIDE_MEASURE_FILE_FROM_REQUEST,
   WEBIDE_MEASURE_FILE_AFTER_INTERACTION,
+  WEBIDE_MEASURE_BEFORE_VUE,
 } from '~/performance/constants';
 import { performanceMarkAndMeasure } from '~/performance/utils';
 import { modalTypes } from '../constants';
@@ -19,12 +18,6 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import { measurePerformance } from '../utils';
 
-eventHub.$on(WEBIDE_MEASURE_TREE_FROM_REQUEST, () =>
-  measurePerformance(WEBIDE_MARK_TREE_FINISH, WEBIDE_MEASURE_TREE_FROM_REQUEST),
-);
-eventHub.$on(WEBIDE_MEASURE_FILE_FROM_REQUEST, () =>
-  measurePerformance(WEBIDE_MARK_FILE_FINISH, WEBIDE_MEASURE_FILE_FROM_REQUEST),
-);
 eventHub.$on(WEBIDE_MEASURE_FILE_AFTER_INTERACTION, () =>
   measurePerformance(
     WEBIDE_MARK_FILE_FINISH,
@@ -37,15 +30,17 @@ export default {
   components: {
     IdeSidebar,
     RepoEditor,
-    'error-message': () => import('./error_message.vue'),
-    'gl-button': () => import('@gitlab/ui/src/components/base/button/button.vue'),
-    'gl-loading-icon': () => import('@gitlab/ui/src/components/base/loading_icon/loading_icon.vue'),
-    'commit-editor-header': () => import('./commit_sidebar/editor_header.vue'),
-    'repo-tabs': () => import('./repo_tabs.vue'),
-    'ide-status-bar': () => import('./ide_status_bar.vue'),
-    'find-file': () => import('~/vue_shared/components/file_finder/index.vue'),
-    'right-pane': () => import('./panes/right.vue'),
-    'new-modal': () => import('./new_dropdown/modal.vue'),
+    GlButton,
+    GlLoadingIcon,
+    ErrorMessage: () => import(/* webpackChunkName: 'ide_runtime' */ './error_message.vue'),
+    CommitEditorHeader: () =>
+      import(/* webpackChunkName: 'ide_runtime' */ './commit_sidebar/editor_header.vue'),
+    RepoTabs: () => import(/* webpackChunkName: 'ide_runtime' */ './repo_tabs.vue'),
+    IdeStatusBar: () => import(/* webpackChunkName: 'ide_runtime' */ './ide_status_bar.vue'),
+    FindFile: () =>
+      import(/* webpackChunkName: 'ide_runtime' */ '~/vue_shared/components/file_finder/index.vue'),
+    RightPane: () => import(/* webpackChunkName: 'ide_runtime' */ './panes/right.vue'),
+    NewModal: () => import(/* webpackChunkName: 'ide_runtime' */ './new_dropdown/modal.vue'),
   },
   mixins: [glFeatureFlagsMixin()],
   data() {
@@ -84,7 +79,14 @@ export default {
       document.querySelector('.navbar-gitlab').classList.add(`theme-${this.themeName}`);
   },
   beforeCreate() {
-    performanceMarkAndMeasure({ mark: WEBIDE_MARK_APP_START });
+    performanceMarkAndMeasure({
+      mark: WEBIDE_MARK_APP_START,
+      measures: [
+        {
+          name: WEBIDE_MEASURE_BEFORE_VUE,
+        },
+      ],
+    });
   },
   methods: {
     ...mapActions(['toggleFileFinder']),

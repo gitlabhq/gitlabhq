@@ -28,6 +28,10 @@ module QA
         Page::Project::Show.perform(&:new_merge_request)
         Page::MergeRequest::New.perform(&:create_merge_request)
       end
+
+      def fabricate_via_api!
+        raise NotImplementedError
+      end
     end
   end
 end

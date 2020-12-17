@@ -1,0 +1,5 @@
+---
+title: Eliminate N+1 performance issues in MergeRequest.pipelines in GraphQL API
+merge_request: 47784
+author:
+type: fixed

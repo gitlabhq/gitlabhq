@@ -36,6 +36,7 @@ export default class ClusterStore {
   constructor() {
     this.state = {
       helpPath: null,
+      helmHelpPath: null,
       ingressHelpPath: null,
       environmentsHelpPath: null,
       clustersHelpPath: null,
@@ -49,7 +50,7 @@ export default class ClusterStore {
       applications: {
         helm: {
           ...applicationInitialState,
-          title: s__('ClusterIntegration|Helm Tiller'),
+          title: s__('ClusterIntegration|Legacy Helm Tiller server'),
         },
         ingress: {
           ...applicationInitialState,
@@ -126,26 +127,10 @@ export default class ClusterStore {
     };
   }
 
-  setHelpPaths(
-    helpPath,
-    ingressHelpPath,
-    ingressDnsHelpPath,
-    ingressModSecurityHelpPath,
-    environmentsHelpPath,
-    clustersHelpPath,
-    deployBoardsHelpPath,
-    cloudRunHelpPath,
-    ciliumHelpPath,
-  ) {
-    this.state.helpPath = helpPath;
-    this.state.ingressHelpPath = ingressHelpPath;
-    this.state.ingressDnsHelpPath = ingressDnsHelpPath;
-    this.state.ingressModSecurityHelpPath = ingressModSecurityHelpPath;
-    this.state.environmentsHelpPath = environmentsHelpPath;
-    this.state.clustersHelpPath = clustersHelpPath;
-    this.state.deployBoardsHelpPath = deployBoardsHelpPath;
-    this.state.cloudRunHelpPath = cloudRunHelpPath;
-    this.state.ciliumHelpPath = ciliumHelpPath;
+  setHelpPaths(helpPaths) {
+    Object.assign(this.state, {
+      ...helpPaths,
+    });
   }
 
   setManagePrometheusPath(managePrometheusPath) {

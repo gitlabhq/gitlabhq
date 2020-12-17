@@ -46,6 +46,9 @@
 .if-security-merge-request: &if-security-merge-request
   if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_MERGE_REQUEST_IID'
 
+.if-security-schedule: &if-security-schedule
+  if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_PIPELINE_SOURCE == "schedule"'
+
 .if-dot-com-gitlab-org-schedule: &if-dot-com-gitlab-org-schedule
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule"'
 
@@ -66,6 +69,9 @@
 
 .if-cache-credentials-schedule: &if-cache-credentials-schedule
   if: '$CI_REPO_CACHE_CREDENTIALS && $CI_PIPELINE_SOURCE == "schedule"'
+
+.if-merge-request-rspec-minimal-disabled: &if-merge-request-rspec-minimal-disabled
+  if: '$CI_MERGE_REQUEST_IID && $RSPEC_MINIMAL_ENABLED != "true"'
 
 .if-rspec-fail-fast-disabled: &if-rspec-fail-fast-disabled
   if: '$RSPEC_FAIL_FAST_ENABLED != "true"'
@@ -102,6 +108,10 @@
   - ".gitlab/ci/frontend.gitlab-ci.yml"
   - ".gitlab/ci/build-images.gitlab-ci.yml"
   - ".gitlab/ci/qa.gitlab-ci.yml"
+
+.workhorse-patterns: &workhorse-patterns
+  - "GITLAB_WORKHORSE_VERSION"
+  - "workhorse/**/*"
 
 .yaml-lint-patterns: &yaml-lint-patterns
   - ".gitlab-ci.yml"
@@ -154,6 +164,7 @@
   - "{,ee/}fixtures/**/*"
   - "{,ee/}rubocop/**/*"
   - "{,ee/}spec/**/*"
+  - "{,spec/}tooling/**/*"
 
 .code-patterns: &code-patterns
   - "{package.json,yarn.lock}"
@@ -200,6 +211,7 @@
   - "{,ee/}fixtures/**/*"
   - "{,ee/}rubocop/**/*"
   - "{,ee/}spec/**/*"
+  - "{,spec/}tooling/**/*"
 
 .code-qa-patterns: &code-qa-patterns
   - "{package.json,yarn.lock}"
@@ -245,6 +257,7 @@
   - "{,ee/}fixtures/**/*"
   - "{,ee/}rubocop/**/*"
   - "{,ee/}spec/**/*"
+  - "{,spec/}tooling/**/*"
   # QA changes
   - ".dockerignore"
   - "qa/**/*"
@@ -255,6 +268,7 @@
 .shared:rules:update-cache:
   rules:
     - <<: *if-master-schedule-2-hourly
+    - <<: *if-security-schedule
     - <<: *if-merge-request-title-update-caches
 
 ######################
@@ -395,6 +409,7 @@
       when: never
     - <<: *if-merge-request
       changes: *code-backstage-patterns
+      when: always
     - <<: *if-master-refs
       changes: *code-backstage-patterns
 
@@ -480,25 +495,85 @@
     - changes: *db-patterns
     - <<: *if-merge-request-title-run-all-rspec
 
+.rails:rules:ee-and-foss-migration:minimal:
+  rules:
+    - <<: *if-merge-request-rspec-minimal-disabled
+      when: never
+    - <<: *if-merge-request-title-run-all-rspec
+      when: never
+    - <<: *if-merge-request
+      changes: *ci-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: *db-patterns
+
 .rails:rules:ee-and-foss-unit:
   rules:
     - changes: *backend-patterns
     - <<: *if-merge-request-title-run-all-rspec
+
+.rails:rules:ee-and-foss-unit:minimal:
+  rules:
+    - <<: *if-merge-request-rspec-minimal-disabled
+      when: never
+    - <<: *if-merge-request-title-run-all-rspec
+      when: never
+    - <<: *if-merge-request
+      changes: *ci-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: *backend-patterns
 
 .rails:rules:ee-and-foss-integration:
   rules:
     - changes: *backend-patterns
     - <<: *if-merge-request-title-run-all-rspec
 
+.rails:rules:ee-and-foss-integration:minimal:
+  rules:
+    - <<: *if-merge-request-rspec-minimal-disabled
+      when: never
+    - <<: *if-merge-request-title-run-all-rspec
+      when: never
+    - <<: *if-merge-request
+      changes: *ci-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: *backend-patterns
+
 .rails:rules:ee-and-foss-system:
   rules:
     - changes: *code-backstage-patterns
     - <<: *if-merge-request-title-run-all-rspec
 
+.rails:rules:ee-and-foss-system:minimal:
+  rules:
+    - <<: *if-merge-request-rspec-minimal-disabled
+      when: never
+    - <<: *if-merge-request-title-run-all-rspec
+      when: never
+    - <<: *if-merge-request
+      changes: *ci-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: *code-backstage-patterns
+
 .rails:rules:ee-and-foss-fast_spec_helper:
   rules:
     - changes: ["config/**/*"]
     - <<: *if-merge-request-title-run-all-rspec
+
+.rails:rules:ee-and-foss-fast_spec_helper:minimal:
+  rules:
+    - <<: *if-merge-request-rspec-minimal-disabled
+      when: never
+    - <<: *if-merge-request-title-run-all-rspec
+      when: never
+    - <<: *if-merge-request
+      changes: *ci-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: ["config/**/*"]
 
 .rails:rules:default-refs-code-backstage-qa:
   rules:
@@ -513,12 +588,40 @@
     - changes: *db-patterns
     - <<: *if-merge-request-title-run-all-rspec
 
+.rails:rules:ee-only-migration:minimal:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-rspec-minimal-disabled
+      when: never
+    - <<: *if-merge-request-title-run-all-rspec
+      when: never
+    - <<: *if-merge-request
+      changes: *ci-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: *db-patterns
+
 .rails:rules:ee-only-unit:
   rules:
     - <<: *if-not-ee
       when: never
     - changes: *backend-patterns
     - <<: *if-merge-request-title-run-all-rspec
+
+.rails:rules:ee-only-unit:minimal:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-rspec-minimal-disabled
+      when: never
+    - <<: *if-merge-request-title-run-all-rspec
+      when: never
+    - <<: *if-merge-request
+      changes: *ci-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: *backend-patterns
 
 .rails:rules:ee-only-integration:
   rules:
@@ -527,12 +630,40 @@
     - changes: *backend-patterns
     - <<: *if-merge-request-title-run-all-rspec
 
+.rails:rules:ee-only-integration:minimal:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-rspec-minimal-disabled
+      when: never
+    - <<: *if-merge-request-title-run-all-rspec
+      when: never
+    - <<: *if-merge-request
+      changes: *ci-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: *backend-patterns
+
 .rails:rules:ee-only-system:
   rules:
     - <<: *if-not-ee
       when: never
     - changes: *code-backstage-patterns
     - <<: *if-merge-request-title-run-all-rspec
+
+.rails:rules:ee-only-system:minimal:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-rspec-minimal-disabled
+      when: never
+    - <<: *if-merge-request-title-run-all-rspec
+      when: never
+    - <<: *if-merge-request
+      changes: *ci-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: *code-backstage-patterns
 
 .rails:rules:as-if-foss-migration:
   rules:
@@ -545,6 +676,20 @@
     - <<: *if-merge-request
       changes: *ci-patterns
 
+.rails:rules:as-if-foss-migration:minimal:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-rspec-minimal-disabled
+      when: never
+    - <<: *if-merge-request
+      changes: *ci-patterns
+      when: never
+    - <<: *if-security-merge-request
+      changes: *db-patterns
+    - <<: *if-merge-request-title-as-if-foss
+      changes: *db-patterns
+
 .rails:rules:as-if-foss-unit:
   rules:
     - <<: *if-not-ee
@@ -555,6 +700,20 @@
       changes: *backend-patterns
     - <<: *if-merge-request
       changes: *ci-patterns
+
+.rails:rules:as-if-foss-unit:minimal:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-rspec-minimal-disabled
+      when: never
+    - <<: *if-merge-request
+      changes: *ci-patterns
+      when: never
+    - <<: *if-security-merge-request
+      changes: *backend-patterns
+    - <<: *if-merge-request-title-as-if-foss
+      changes: *backend-patterns
 
 .rails:rules:as-if-foss-integration:
   rules:
@@ -567,6 +726,20 @@
     - <<: *if-merge-request
       changes: *ci-patterns
 
+.rails:rules:as-if-foss-integration:minimal:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-rspec-minimal-disabled
+      when: never
+    - <<: *if-merge-request
+      changes: *ci-patterns
+      when: never
+    - <<: *if-security-merge-request
+      changes: *backend-patterns
+    - <<: *if-merge-request-title-as-if-foss
+      changes: *backend-patterns
+
 .rails:rules:as-if-foss-system:
   rules:
     - <<: *if-not-ee
@@ -577,6 +750,20 @@
       changes: *code-backstage-patterns
     - <<: *if-merge-request
       changes: *ci-patterns
+
+.rails:rules:as-if-foss-system:minimal:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-rspec-minimal-disabled
+      when: never
+    - <<: *if-merge-request
+      changes: *ci-patterns
+      when: never
+    - <<: *if-security-merge-request
+      changes: *code-backstage-patterns
+    - <<: *if-merge-request-title-as-if-foss
+      changes: *code-backstage-patterns
 
 .rails:rules:ee-mr-and-master-only:
   rules:
@@ -590,12 +777,9 @@
 
 .rails:rules:detect-tests:
   rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-security-merge-request
+    - <<: *if-default-refs
       changes: *code-backstage-patterns
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *code-backstage-patterns
+    - <<: *if-merge-request-title-run-all-rspec
 
 .rails:rules:rspec-foss-impact:
   rules:
@@ -647,8 +831,10 @@
       when: never
     - <<: *if-merge-request
       changes: *code-backstage-patterns
+      when: always
     - <<: *if-master-schedule-2-hourly
     - <<: *if-merge-request-title-run-all-rspec
+      when: always
 
 .rails:rules:rspec-feature-flags:
   rules:
@@ -911,6 +1097,14 @@
         - "scripts/rspec_helpers.sh"
     - <<: *if-dot-com-ee-schedule
       changes: *code-backstage-patterns
+
+###################
+# workhorse rules #
+###################
+.workhorse:rules:workhorse:
+  rules:
+    - <<: *if-default-refs
+      changes: *workhorse-patterns
 
 ###################
 # yaml-lint rules #

@@ -1,12 +1,12 @@
 ---
 stage: Configure
 group: Configure
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Kubernetes integration - development guidelines
 
-This document provides various guidelines when developing for GitLab's
+This document provides various guidelines when developing for the GitLab
 [Kubernetes integration](../user/project/clusters/index.md).
 
 ## Development

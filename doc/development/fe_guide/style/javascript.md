@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 disqus_identifier: 'https://docs.gitlab.com/ee/development/fe_guide/style_guide_js.html'
 ---
 
@@ -13,13 +13,13 @@ linter to manage most of our JavaScript style guidelines.
 In addition to the style guidelines set by Airbnb, we also have a few specific rules
 listed below.
 
-TIP: **Tip:**
+NOTE:
 You can run eslint locally by running `yarn eslint`
 
 ## Avoid forEach
 
 Avoid forEach when mutating data. Use `map`, `reduce` or `filter` instead of `forEach`
-when mutating data. This will minimize mutations in functions,
+when mutating data. This minimizes mutations in functions,
 which aligns with [Airbnb's style guide](https://github.com/airbnb/javascript#testing--for-real).
 
 ```javascript
@@ -237,7 +237,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 ### Avoid side effects in constructors
 
 Avoid making asynchronous calls, API requests or DOM manipulations in the `constructor`.
-Move them into separate functions instead. This will make tests easier to write and
+Move them into separate functions instead. This makes tests easier to write and
 avoids violating the [Single Responsibility Principle](https://en.wikipedia.org/wiki/Single_responsibility_principle).
 
 ```javascript

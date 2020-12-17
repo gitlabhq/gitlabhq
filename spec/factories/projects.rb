@@ -32,10 +32,13 @@ FactoryBot.define do
         visibility_level == Gitlab::VisibilityLevel::PUBLIC ? ProjectFeature::ENABLED : ProjectFeature::PRIVATE
       end
       metrics_dashboard_access_level { ProjectFeature::PRIVATE }
+      operations_access_level { ProjectFeature::ENABLED }
 
       # we can't assign the delegated `#ci_cd_settings` attributes directly, as the
       # `#ci_cd_settings` relation needs to be created first
       group_runners_enabled { nil }
+      merge_pipelines_enabled { nil }
+      merge_trains_enabled { nil }
       import_status { nil }
       import_jid { nil }
       import_correlation_id { nil }
@@ -57,7 +60,8 @@ FactoryBot.define do
         merge_requests_access_level: merge_requests_access_level,
         repository_access_level: evaluator.repository_access_level,
         pages_access_level: evaluator.pages_access_level,
-        metrics_dashboard_access_level: evaluator.metrics_dashboard_access_level
+        metrics_dashboard_access_level: evaluator.metrics_dashboard_access_level,
+        operations_access_level: evaluator.operations_access_level
       }
 
       project.build_project_feature(hash)
@@ -75,7 +79,9 @@ FactoryBot.define do
       project.group&.refresh_members_authorized_projects
 
       # assign the delegated `#ci_cd_settings` attributes after create
-      project.reload.group_runners_enabled = evaluator.group_runners_enabled unless evaluator.group_runners_enabled.nil?
+      project.group_runners_enabled = evaluator.group_runners_enabled unless evaluator.group_runners_enabled.nil?
+      project.merge_pipelines_enabled = evaluator.merge_pipelines_enabled unless evaluator.merge_pipelines_enabled.nil?
+      project.merge_trains_enabled = evaluator.merge_trains_enabled unless evaluator.merge_trains_enabled.nil?
 
       if evaluator.import_status
         import_state = project.import_state || project.build_import_state
@@ -322,6 +328,9 @@ FactoryBot.define do
     trait(:metrics_dashboard_enabled) { metrics_dashboard_access_level { ProjectFeature::ENABLED } }
     trait(:metrics_dashboard_disabled) { metrics_dashboard_access_level { ProjectFeature::DISABLED } }
     trait(:metrics_dashboard_private) { metrics_dashboard_access_level { ProjectFeature::PRIVATE } }
+    trait(:operations_enabled)           { operations_access_level { ProjectFeature::ENABLED } }
+    trait(:operations_disabled)          { operations_access_level { ProjectFeature::DISABLED } }
+    trait(:operations_private)           { operations_access_level { ProjectFeature::PRIVATE } }
 
     trait :auto_devops do
       association :auto_devops, factory: :project_auto_devops
@@ -387,10 +396,6 @@ FactoryBot.define do
     has_external_issue_tracker { true }
 
     jira_service
-  end
-
-  factory :mock_deployment_project, parent: :project do
-    mock_deployment_service
   end
 
   factory :prometheus_project, parent: :project do

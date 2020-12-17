@@ -1,0 +1,5 @@
+---
+title: Restrict access to job page to developers only when use CI_DEBUG_TRACE is true
+merge_request: 48932
+author:
+type: fixed

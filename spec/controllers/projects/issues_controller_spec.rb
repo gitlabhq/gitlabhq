@@ -62,6 +62,56 @@ RSpec.describe Projects::IssuesController do
           expect(response).to have_gitlab_http_status(:moved_permanently)
         end
       end
+
+      describe 'the null hypothesis experiment', :snowplow do
+        it 'defines the expected before actions' do
+          expect(controller).to use_before_action(:run_null_hypothesis_experiment)
+        end
+
+        context 'when rolled out to 100%' do
+          it 'assigns the candidate experience and tracks the event' do
+            get :index, params: { namespace_id: project.namespace, project_id: project }
+
+            expect_snowplow_event(
+              category: 'null_hypothesis',
+              action: 'index',
+              context: [{
+                schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/0-3-0',
+                data: { variant: 'candidate', experiment: 'null_hypothesis', key: anything }
+              }]
+            )
+          end
+        end
+
+        context 'when not rolled out' do
+          before do
+            stub_feature_flags(null_hypothesis: false)
+          end
+
+          it 'assigns the control experience and tracks the event' do
+            get :index, params: { namespace_id: project.namespace, project_id: project }
+
+            expect_snowplow_event(
+              category: 'null_hypothesis',
+              action: 'index',
+              context: [{
+                schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/0-3-0',
+                data: { variant: 'control', experiment: 'null_hypothesis', key: anything }
+              }]
+            )
+          end
+        end
+
+        context 'when gitlab_experiments is disabled' do
+          it 'does not run the experiment at all' do
+            stub_feature_flags(gitlab_experiments: false)
+
+            expect(controller).not_to receive(:run_null_hypothesis_experiment)
+
+            get :index, params: { namespace_id: project.namespace, project_id: project }
+          end
+        end
+      end
     end
 
     context 'internal issue tracker' do
@@ -1128,12 +1178,12 @@ RSpec.describe Projects::IssuesController do
         { merge_request_to_resolve_discussions_of: merge_request.iid }
       end
 
-      def post_issue(issue_params, other_params: {})
+      def post_issue(other_params: {}, **issue_params)
         post :create, params: { namespace_id: project.namespace.to_param, project_id: project, issue: issue_params, merge_request_to_resolve_discussions_of: merge_request.iid }.merge(other_params)
       end
 
       it 'creates an issue for the project' do
-        expect { post_issue({ title: 'Hello' }) }.to change { project.issues.reload.size }.by(1)
+        expect { post_issue(title: 'Hello') }.to change { project.issues.reload.size }.by(1)
       end
 
       it "doesn't overwrite given params" do
@@ -1157,7 +1207,7 @@ RSpec.describe Projects::IssuesController do
 
       describe "resolving a single discussion" do
         before do
-          post_issue({ title: 'Hello' }, other_params: { discussion_to_resolve: discussion.id })
+          post_issue(title: 'Hello', other_params: { discussion_to_resolve: discussion.id })
         end
         it 'resolves a single discussion' do
           discussion.first_note.reload

@@ -1,7 +1,7 @@
 ---
 stage: Monitor
 group: Health
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Project operations **(CORE)**
@@ -81,7 +81,7 @@ infrastructure.
 GitLab stores and executes your infrastructure as code, whether it's
 defined in Ansible, Puppet or Chef. We also offer native integration with
 [Terraform](https://www.terraform.io/), uniting your GitOps and
-Infrastructure-as-Code (IaC) workflows with GitLab's authentication, authorization,
+Infrastructure-as-Code (IaC) workflows with the GitLab authentication, authorization,
 and user interface. By lowering the barrier to entry for adopting Terraform, you
 can manage and provision infrastructure through machine-readable definition files,
 rather than physical hardware configuration or interactive configuration tools.

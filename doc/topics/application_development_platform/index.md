@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Application Development Platform
@@ -35,14 +35,14 @@ of newer, more efficient, more profitable, and less error-prone techniques for s
 
 Because at GitLab we are [cloud-native first](https://about.gitlab.com/handbook/product/#cloud-native-first) our
 Application Development Platform initially focuses on providing robust support for Kubernetes, with other platforms
-to follow. Teams can bring their own clusters and we will additionally make it easy to create new infrastructure
+to follow. Teams can bring their own clusters and we additionally make it easy to create new infrastructure
 with various cloud providers.
 
 ### Build, test, deploy
 
-In order to provide modern DevOps workflows, our Application Development Platform will rely on
+In order to provide modern DevOps workflows, our Application Development Platform relies on
 [Auto DevOps](../autodevops/index.md) to provide those workflows. Auto DevOps works with
-any Kubernetes cluster; you're not limited to running on GitLab's infrastructure. Additionally, Auto DevOps offers
+any Kubernetes cluster; you're not limited to running on GitLab infrastructure. Additionally, Auto DevOps offers
 an incremental consumption path. Because it is [composable](../autodevops/customize.md#using-components-of-auto-devops),
 you can use as much or as little of the default pipeline as you'd like, and deeply customize without having to integrate a completely different platform.
 

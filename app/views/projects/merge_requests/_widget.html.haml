@@ -1,4 +1,4 @@
-= javascript_tag nonce: true do
+= javascript_tag do
   :plain
     window.gl = window.gl || {};
     window.gl.mrWidgetData = #{serialize_issuable(@merge_request, serializer: 'widget', issues_links: true)}

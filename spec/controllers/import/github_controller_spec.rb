@@ -123,26 +123,33 @@ RSpec.describe Import::GithubController do
       end
 
       it 'fetches repos using latest github client' do
-        expect_next_instance_of(Gitlab::GithubImport::Client) do |client|
-          expect(client).to receive(:each_page).with(:repos).and_return([].to_enum)
+        expect_next_instance_of(Octokit::Client) do |client|
+          expect(client).to receive(:repos).and_return([].to_enum)
         end
 
         get :status
       end
 
-      it 'concatenates list of repos from multiple pages' do
-        repo_1 = OpenStruct.new(login: 'emacs', full_name: 'asd/emacs', name: 'emacs', owner: { login: 'owner' })
-        repo_2 = OpenStruct.new(login: 'vim', full_name: 'asd/vim', name: 'vim', owner: { login: 'owner' })
-        repos = [OpenStruct.new(objects: [repo_1]), OpenStruct.new(objects: [repo_2])].to_enum
+      context 'pagination' do
+        context 'when no page is specified' do
+          it 'requests first page' do
+            expect_next_instance_of(Octokit::Client) do |client|
+              expect(client).to receive(:repos).with(nil, { page: 1, per_page: 25 }).and_return([].to_enum)
+            end
 
-        allow(stub_client).to receive(:each_page).and_return(repos)
+            get :status
+          end
+        end
 
-        get :status, format: :json
+        context 'when page is specified' do
+          it 'requests repos with specified page' do
+            expect_next_instance_of(Octokit::Client) do |client|
+              expect(client).to receive(:repos).with(nil, { page: 2, per_page: 25 }).and_return([].to_enum)
+            end
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response.dig('provider_repos').count).to eq(2)
-        expect(json_response.dig('provider_repos', 0, 'id')).to eq(repo_1.id)
-        expect(json_response.dig('provider_repos', 1, 'id')).to eq(repo_2.id)
+            get :status, params: { page: 2 }
+          end
+        end
       end
 
       context 'when filtering' do
@@ -150,6 +157,7 @@ RSpec.describe Import::GithubController do
         let(:user_login) { 'user' }
         let(:collaborations_subquery) { 'repo:repo1 repo:repo2' }
         let(:organizations_subquery) { 'org:org1 org:org2' }
+        let(:search_query) { "test in:name is:public,private user:#{user_login} #{collaborations_subquery} #{organizations_subquery}" }
 
         before do
           allow_next_instance_of(Octokit::Client) do |client|
@@ -158,20 +166,56 @@ RSpec.describe Import::GithubController do
         end
 
         it 'makes request to github search api' do
-          expected_query = "test in:name is:public,private user:#{user_login} #{collaborations_subquery} #{organizations_subquery}"
+          expect_next_instance_of(Octokit::Client) do |client|
+            expect(client).to receive(:user).and_return(double(login: user_login))
+            expect(client).to receive(:search_repositories).with(search_query, { page: 1, per_page: 25 }).and_return({ items: [].to_enum })
+          end
 
           expect_next_instance_of(Gitlab::GithubImport::Client) do |client|
             expect(client).to receive(:collaborations_subquery).and_return(collaborations_subquery)
             expect(client).to receive(:organizations_subquery).and_return(organizations_subquery)
-            expect(client).to receive(:each_page).with(:search_repositories, expected_query).and_return([].to_enum)
           end
 
           get :status, params: { filter: filter }, format: :json
         end
 
+        context 'pagination' do
+          context 'when no page is specified' do
+            it 'requests first page' do
+              expect_next_instance_of(Octokit::Client) do |client|
+                expect(client).to receive(:user).and_return(double(login: user_login))
+                expect(client).to receive(:search_repositories).with(search_query, { page: 1, per_page: 25 }).and_return({ items: [].to_enum })
+              end
+
+              expect_next_instance_of(Gitlab::GithubImport::Client) do |client|
+                expect(client).to receive(:collaborations_subquery).and_return(collaborations_subquery)
+                expect(client).to receive(:organizations_subquery).and_return(organizations_subquery)
+              end
+
+              get :status, params: { filter: filter }, format: :json
+            end
+          end
+
+          context 'when page is specified' do
+            it 'requests repos with specified page' do
+              expect_next_instance_of(Octokit::Client) do |client|
+                expect(client).to receive(:user).and_return(double(login: user_login))
+                expect(client).to receive(:search_repositories).with(search_query, { page: 2, per_page: 25 }).and_return({ items: [].to_enum })
+              end
+
+              expect_next_instance_of(Gitlab::GithubImport::Client) do |client|
+                expect(client).to receive(:collaborations_subquery).and_return(collaborations_subquery)
+                expect(client).to receive(:organizations_subquery).and_return(organizations_subquery)
+              end
+
+              get :status, params: { filter: filter, page: 2 }, format: :json
+            end
+          end
+        end
+
         context 'when user input contains colons and spaces' do
           before do
-            stub_client(search_repos_by_name: [])
+            allow(controller).to receive(:client_repos).and_return([])
           end
 
           it 'sanitizes user input' do

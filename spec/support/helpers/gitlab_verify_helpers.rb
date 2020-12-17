@@ -2,7 +2,7 @@
 
 module GitlabVerifyHelpers
   def collect_ranges(args = {})
-    verifier = described_class.new(args.merge(batch_size: 1))
+    verifier = described_class.new(**args.merge(batch_size: 1))
 
     collect_results(verifier).map { |range, _| range }
   end

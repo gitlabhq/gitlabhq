@@ -300,7 +300,7 @@ module API
         post '/two_factor_otp_check', feature_category: :authentication_and_authorization do
           status 200
 
-          break { success: false } unless Feature.enabled?(:two_factor_for_cli)
+          break { success: false, message: 'Feature flag is disabled' } unless Feature.enabled?(:two_factor_for_cli)
 
           actor.update_last_used_at!
           user = actor.user
@@ -316,6 +316,8 @@ module API
           otp_validation_result = ::Users::ValidateOtpService.new(user).execute(params.fetch(:otp_attempt))
 
           if otp_validation_result[:status] == :success
+            ::Gitlab::Auth::Otp::SessionEnforcer.new(actor.key).update_session
+
             { success: true }
           else
             { success: false, message: 'Invalid OTP' }

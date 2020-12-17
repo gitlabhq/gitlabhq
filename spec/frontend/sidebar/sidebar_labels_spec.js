@@ -3,7 +3,7 @@ import {
   mockLabels,
   mockRegularLabel,
 } from 'jest/vue_shared/components/sidebar/labels_select_vue/mock_data';
-import updateIssueLabelsMutation from '~/boards/queries/issue_set_labels.mutation.graphql';
+import updateIssueLabelsMutation from '~/boards/graphql/issue_set_labels.mutation.graphql';
 import { MutationOperationMode } from '~/graphql_shared/utils';
 import { IssuableType } from '~/issue_show/constants';
 import SidebarLabels from '~/sidebar/components/labels/sidebar_labels.vue';

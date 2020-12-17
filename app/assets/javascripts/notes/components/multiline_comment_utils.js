@@ -103,9 +103,15 @@ export function getCommentedLines(selectedCommentPosition, diffLines) {
     };
   }
 
+  const findLineCodeIndex = line => position => {
+    return [position.line_code, position.left?.line_code, position.right?.line_code].includes(
+      line.line_code,
+    );
+  };
+
   const { start, end } = selectedCommentPosition;
-  const startLine = diffLines.findIndex(l => l.line_code === start.line_code);
-  const endLine = diffLines.findIndex(l => l.line_code === end.line_code);
+  const startLine = diffLines.findIndex(findLineCodeIndex(start));
+  const endLine = diffLines.findIndex(findLineCodeIndex(end));
 
   return { startLine, endLine };
 }

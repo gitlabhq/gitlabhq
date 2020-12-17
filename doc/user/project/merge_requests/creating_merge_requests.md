@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: howto
 description: "How to create Merge Requests in GitLab."
 disqus_identifier: 'https://docs.gitlab.com/ee/gitlab-basics/add-merge-request.html'
@@ -46,7 +46,7 @@ the merge request.
 
 ![New Merge Request page](img/new_merge_request_page_v12_6.png)
 
-TIP: **Tip:**
+NOTE:
 You can push one or more times to your branch in GitLab before
 creating the merge request.
 

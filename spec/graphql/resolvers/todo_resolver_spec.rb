@@ -20,7 +20,7 @@ RSpec.describe Resolvers::TodoResolver do
 
     it 'calls TodosFinder' do
       expect_next_instance_of(TodosFinder) do |finder|
-        expect(finder).to receive(:execute)
+        expect(finder).to receive(:execute).and_call_original
       end
 
       resolve_todos
@@ -48,7 +48,7 @@ RSpec.describe Resolvers::TodoResolver do
       end
 
       it 'returns the todos for single filter' do
-        todos = resolve_todos(type: 'MergeRequest')
+        todos = resolve_todos(type: ['MergeRequest'])
 
         expect(todos).to contain_exactly(merge_request_todo_pending)
       end

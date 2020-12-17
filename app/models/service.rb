@@ -11,15 +11,20 @@ class Service < ApplicationRecord
   include EachBatch
 
   SERVICE_NAMES = %w[
-    alerts asana assembla bamboo bugzilla buildkite campfire confluence custom_issue_tracker discord
+    asana assembla bamboo bugzilla buildkite campfire confluence custom_issue_tracker datadog discord
     drone_ci emails_on_push ewm external_wiki flowdock hangouts_chat hipchat irker jira
     mattermost mattermost_slash_commands microsoft_teams packagist pipelines_email
     pivotaltracker prometheus pushover redmine slack slack_slash_commands teamcity unify_circuit webex_teams youtrack
   ].freeze
 
+  PROJECT_SPECIFIC_SERVICE_NAMES = %w[
+    jenkins
+    alerts
+  ].freeze
+
   # Fake services to help with local development.
   DEV_SERVICE_NAMES = %w[
-    mock_ci mock_deployment mock_monitoring
+    mock_ci mock_monitoring
   ].freeze
 
   serialize :properties, JSON # rubocop:disable Cop/ActiveRecordSerialize
@@ -66,6 +71,7 @@ class Service < ApplicationRecord
   scope :by_type, -> (type) { where(type: type) }
   scope :by_active_flag, -> (flag) { where(active: flag) }
   scope :inherit_from_id, -> (id) { where(inherit_from_id: id) }
+  scope :inherit, -> { where.not(inherit_from_id: nil) }
   scope :for_group, -> (group) { where(group_id: group, type: available_services_types(include_project_specific: false)) }
   scope :for_template, -> { where(template: true, type: available_services_types(include_project_specific: false)) }
   scope :for_instance, -> { where(instance: true, type: available_services_types(include_project_specific: false)) }
@@ -147,6 +153,10 @@ class Service < ApplicationRecord
     %w[commit push tag_push issue confidential_issue merge_request wiki_page]
   end
 
+  def self.default_test_event
+    'push'
+  end
+
   def self.event_description(event)
     ServicesHelper.service_event_description(event)
   end
@@ -212,7 +222,7 @@ class Service < ApplicationRecord
   end
 
   def self.project_specific_services_names
-    []
+    PROJECT_SPECIFIC_SERVICE_NAMES
   end
 
   def self.available_services_types(include_project_specific: true, include_dev: true)
@@ -270,7 +280,7 @@ class Service < ApplicationRecord
       active.where(instance: true),
       active.where(group_id: group_ids, inherit_from_id: nil)
     ]).order(Arel.sql("type ASC, array_position(#{array}::bigint[], services.group_id), instance DESC")).group_by(&:type).each do |type, records|
-      build_from_integration(records.first, association => scope.id).save!
+      build_from_integration(records.first, association => scope.id).save
     end
   end
 
@@ -386,6 +396,10 @@ class Service < ApplicationRecord
     self.class.supported_events
   end
 
+  def default_test_event
+    self.class.default_test_event
+  end
+
   def execute(data)
     # implement inside child
   end
@@ -400,6 +414,10 @@ class Service < ApplicationRecord
   # https://gitlab.com/gitlab-org/gitlab/-/issues/213138
   def can_test?
     !instance? && !group_id
+  end
+
+  def parent
+    project || group
   end
 
   # Returns a hash of the properties that have been assigned a new value since last save,

@@ -64,8 +64,7 @@ export default class FilterableList {
       return false;
     }
 
-    // eslint-disable-next-line no-jquery/no-fade
-    $(this.listHolderElement).fadeTo(250, 0.5);
+    $(this.listHolderElement).addClass('gl-opacity-5');
 
     this.isBusy = true;
 
@@ -99,7 +98,6 @@ export default class FilterableList {
 
   onFilterComplete() {
     this.isBusy = false;
-    // eslint-disable-next-line no-jquery/no-fade
-    $(this.listHolderElement).fadeTo(250, 1);
+    $(this.listHolderElement).removeClass('gl-opacity-5');
   }
 }

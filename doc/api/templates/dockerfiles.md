@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -20,7 +20,7 @@ GET /templates/dockerfiles
 ```
 
 ```shell
-curl https://gitlab.example.com/api/v4/templates/dockerfiles
+curl "https://gitlab.example.com/api/v4/templates/dockerfiles"
 ```
 
 Example response:
@@ -119,7 +119,7 @@ GET /templates/dockerfiles/:key
 | `key`      | string | yes      | The key of the Dockerfile template |
 
 ```shell
-curl https://gitlab.example.com/api/v4/templates/dockerfiles/Binary
+curl "https://gitlab.example.com/api/v4/templates/dockerfiles/Binary"
 ```
 
 Example response:

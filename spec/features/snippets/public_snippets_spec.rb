@@ -6,7 +6,7 @@ RSpec.describe 'Public Snippets', :js do
   let(:public_snippet) { create(:personal_snippet, :public, :repository) }
   let(:content) { public_snippet.blobs.first.data.strip! }
 
-  it 'Unauthenticated user should see public snippets' do
+  it 'unauthenticated user should see public snippets' do
     url = Gitlab::UrlBuilder.build(public_snippet)
 
     visit snippet_path(public_snippet)
@@ -18,7 +18,7 @@ RSpec.describe 'Public Snippets', :js do
     expect(page).to have_field('Share', readonly: true, with: url)
   end
 
-  it 'Unauthenticated user should see raw public snippets' do
+  it 'unauthenticated user should see raw public snippets' do
     visit raw_snippet_path(public_snippet)
 
     expect(page).to have_content(content)

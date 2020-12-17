@@ -2,8 +2,69 @@
 
 require 'spec_helper'
 
+RSpec.shared_examples '.find_by_full_path' do
+  describe '.find_by_full_path', :aggregate_failures do
+    it 'finds records by their full path' do
+      expect(described_class.find_by_full_path(record.full_path)).to eq(record)
+      expect(described_class.find_by_full_path(record.full_path.upcase)).to eq(record)
+    end
+
+    it 'returns nil for unknown paths' do
+      expect(described_class.find_by_full_path('unknown')).to be_nil
+    end
+
+    it 'includes route information when loading a record' do
+      control_count = ActiveRecord::QueryRecorder.new do
+        described_class.find_by_full_path(record.full_path)
+      end.count
+
+      expect do
+        described_class.find_by_full_path(record.full_path).route
+      end.not_to exceed_all_query_limit(control_count)
+    end
+
+    context 'with redirect routes' do
+      let_it_be(:redirect_route) { create(:redirect_route, source: record) }
+
+      context 'without follow_redirects option' do
+        it 'does not find records by their redirected path' do
+          expect(described_class.find_by_full_path(redirect_route.path)).to be_nil
+          expect(described_class.find_by_full_path(redirect_route.path.upcase)).to be_nil
+        end
+      end
+
+      context 'with follow_redirects option set to true' do
+        it 'finds records by their canonical path' do
+          expect(described_class.find_by_full_path(record.full_path, follow_redirects: true)).to eq(record)
+          expect(described_class.find_by_full_path(record.full_path.upcase, follow_redirects: true)).to eq(record)
+        end
+
+        it 'finds records by their redirected path' do
+          expect(described_class.find_by_full_path(redirect_route.path, follow_redirects: true)).to eq(record)
+          expect(described_class.find_by_full_path(redirect_route.path.upcase, follow_redirects: true)).to eq(record)
+        end
+
+        it 'returns nil for unknown paths' do
+          expect(described_class.find_by_full_path('unknown', follow_redirects: true)).to be_nil
+        end
+      end
+    end
+  end
+end
+
+RSpec.describe Routable do
+  it_behaves_like '.find_by_full_path' do
+    let_it_be(:record) { create(:group) }
+  end
+
+  it_behaves_like '.find_by_full_path' do
+    let_it_be(:record) { create(:project) }
+  end
+end
+
 RSpec.describe Group, 'Routable' do
-  let!(:group) { create(:group, name: 'foo') }
+  let_it_be_with_reload(:group) { create(:group, name: 'foo') }
+  let_it_be(:nested_group) { create(:group, parent: group) }
 
   describe 'Validations' do
     it { is_expected.to validate_presence_of(:route) }
@@ -59,61 +120,20 @@ RSpec.describe Group, 'Routable' do
   end
 
   describe '.find_by_full_path' do
-    let!(:nested_group) { create(:group, parent: group) }
-
-    context 'without any redirect routes' do
-      it { expect(described_class.find_by_full_path(group.to_param)).to eq(group) }
-      it { expect(described_class.find_by_full_path(group.to_param.upcase)).to eq(group) }
-      it { expect(described_class.find_by_full_path(nested_group.to_param)).to eq(nested_group) }
-      it { expect(described_class.find_by_full_path('unknown')).to eq(nil) }
-
-      it 'includes route information when loading a record' do
-        path = group.to_param
-        control_count = ActiveRecord::QueryRecorder.new { described_class.find_by_full_path(path) }.count
-
-        expect { described_class.find_by_full_path(path).route }.not_to exceed_all_query_limit(control_count)
-      end
+    it_behaves_like '.find_by_full_path' do
+      let_it_be(:record) { group }
     end
 
-    context 'with redirect routes' do
-      let!(:group_redirect_route) { group.redirect_routes.create!(path: 'bar') }
-      let!(:nested_group_redirect_route) { nested_group.redirect_routes.create!(path: nested_group.path.sub('foo', 'bar')) }
+    it_behaves_like '.find_by_full_path' do
+      let_it_be(:record) { nested_group }
+    end
 
-      context 'without follow_redirects option' do
-        context 'with the given path not matching any route' do
-          it { expect(described_class.find_by_full_path('unknown')).to eq(nil) }
-        end
+    it 'does not find projects with a matching path' do
+      project = create(:project)
+      redirect_route = create(:redirect_route, source: project)
 
-        context 'with the given path matching the canonical route' do
-          it { expect(described_class.find_by_full_path(group.to_param)).to eq(group) }
-          it { expect(described_class.find_by_full_path(group.to_param.upcase)).to eq(group) }
-          it { expect(described_class.find_by_full_path(nested_group.to_param)).to eq(nested_group) }
-        end
-
-        context 'with the given path matching a redirect route' do
-          it { expect(described_class.find_by_full_path(group_redirect_route.path)).to eq(nil) }
-          it { expect(described_class.find_by_full_path(group_redirect_route.path.upcase)).to eq(nil) }
-          it { expect(described_class.find_by_full_path(nested_group_redirect_route.path)).to eq(nil) }
-        end
-      end
-
-      context 'with follow_redirects option set to true' do
-        context 'with the given path not matching any route' do
-          it { expect(described_class.find_by_full_path('unknown', follow_redirects: true)).to eq(nil) }
-        end
-
-        context 'with the given path matching the canonical route' do
-          it { expect(described_class.find_by_full_path(group.to_param, follow_redirects: true)).to eq(group) }
-          it { expect(described_class.find_by_full_path(group.to_param.upcase, follow_redirects: true)).to eq(group) }
-          it { expect(described_class.find_by_full_path(nested_group.to_param, follow_redirects: true)).to eq(nested_group) }
-        end
-
-        context 'with the given path matching a redirect route' do
-          it { expect(described_class.find_by_full_path(group_redirect_route.path, follow_redirects: true)).to eq(group) }
-          it { expect(described_class.find_by_full_path(group_redirect_route.path.upcase, follow_redirects: true)).to eq(group) }
-          it { expect(described_class.find_by_full_path(nested_group_redirect_route.path, follow_redirects: true)).to eq(nested_group) }
-        end
-      end
+      expect(described_class.find_by_full_path(project.full_path)).to be_nil
+      expect(described_class.find_by_full_path(redirect_route.path, follow_redirects: true)).to be_nil
     end
   end
 
@@ -131,8 +151,6 @@ RSpec.describe Group, 'Routable' do
     end
 
     context 'with valid paths' do
-      let!(:nested_group) { create(:group, parent: group) }
-
       it 'returns the projects matching the paths' do
         result = described_class.where_full_path_in([group.to_param, nested_group.to_param])
 
@@ -148,32 +166,36 @@ RSpec.describe Group, 'Routable' do
   end
 
   describe '#full_path' do
-    let(:group) { create(:group) }
-    let(:nested_group) { create(:group, parent: group) }
-
     it { expect(group.full_path).to eq(group.path) }
     it { expect(nested_group.full_path).to eq("#{group.full_path}/#{nested_group.path}") }
   end
 
   describe '#full_name' do
-    let(:group) { create(:group) }
-    let(:nested_group) { create(:group, parent: group) }
-
     it { expect(group.full_name).to eq(group.name) }
     it { expect(nested_group.full_name).to eq("#{group.name} / #{nested_group.name}") }
   end
 end
 
 RSpec.describe Project, 'Routable' do
-  describe '#full_path' do
-    let(:project) { build_stubbed(:project) }
+  let_it_be(:project) { create(:project) }
 
+  it_behaves_like '.find_by_full_path' do
+    let_it_be(:record) { project }
+  end
+
+  it 'does not find groups with a matching path' do
+    group = create(:group)
+    redirect_route = create(:redirect_route, source: group)
+
+    expect(described_class.find_by_full_path(group.full_path)).to be_nil
+    expect(described_class.find_by_full_path(redirect_route.path, follow_redirects: true)).to be_nil
+  end
+
+  describe '#full_path' do
     it { expect(project.full_path).to eq "#{project.namespace.full_path}/#{project.path}" }
   end
 
   describe '#full_name' do
-    let(:project) { build_stubbed(:project) }
-
     it { expect(project.full_name).to eq "#{project.namespace.human_name} / #{project.name}" }
   end
 end

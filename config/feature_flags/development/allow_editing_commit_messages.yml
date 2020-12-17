@@ -1,0 +1,8 @@
+---
+name: allow_editing_commit_messages
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49152/
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/290779
+milestone: '13.7'
+type: development
+group:
+default_enabled: false

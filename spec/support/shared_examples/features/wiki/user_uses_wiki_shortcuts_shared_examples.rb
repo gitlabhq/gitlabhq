@@ -12,7 +12,7 @@ RSpec.shared_examples 'User uses wiki shortcuts' do
     visit wiki_page_path(wiki, wiki_page)
   end
 
-  it 'Visit edit wiki page using "e" keyboard shortcut', :js do
+  it 'visit edit wiki page using "e" keyboard shortcut', :js do
     find('body').native.send_key('e')
 
     expect(find('.wiki-page-title')).to have_content('Edit Page')

@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'gitlab'
+require 'test_file_finder'
+
+gitlab_token = ENV.fetch('DANGER_GITLAB_API_TOKEN', '')
+
+Gitlab.configure do |config|
+  config.endpoint       = 'https://gitlab.com/api/v4'
+  config.private_token  = gitlab_token
+end
+
+output_file = ARGV.shift
+
+mr_project_path = ENV.fetch('CI_MERGE_REQUEST_PROJECT_PATH')
+mr_iid = ENV.fetch('CI_MERGE_REQUEST_IID')
+
+mr_changes = Gitlab.merge_request_changes(mr_project_path, mr_iid)
+changed_files = mr_changes.changes.map { |change| change['new_path'] }
+
+tff = TestFileFinder::FileFinder.new(paths: changed_files).tap do |file_finder|
+  file_finder.use TestFileFinder::MappingStrategies::PatternMatching.load('tests.yml')
+
+  if ENV['RSPEC_TESTS_MAPPING_ENABLED']
+    file_finder.use TestFileFinder::MappingStrategies::DirectMatching.load_json(ENV['RSPEC_TESTS_MAPPING_PATH'])
+  end
+end
+
+File.write(output_file, tff.test_files.uniq.join(' '))

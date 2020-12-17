@@ -115,4 +115,10 @@ module Gitlab
 
     'web'
   end
+
+  def self.maintenance_mode?
+    return false unless ::Feature.enabled?(:maintenance_mode)
+
+    ::Gitlab::CurrentSettings.maintenance_mode
+  end
 end

@@ -45,8 +45,7 @@ export default class LabelsSelect {
       const $sidebarCollapsedValue = $block.find('.sidebar-collapsed-icon span');
       const $value = $block.find('.value');
       const $dropdownMenu = $dropdown.parent().find('.dropdown-menu');
-      // eslint-disable-next-line no-jquery/no-fade
-      const $loading = $block.find('.block-loading').fadeOut();
+      const $loading = $block.find('.block-loading').addClass('gl-display-none');
       const fieldName = $dropdown.data('fieldName');
       let initialSelected = $selectbox
         .find(`input[name="${$dropdown.data('fieldName')}"]`)
@@ -83,15 +82,13 @@ export default class LabelsSelect {
         if (!selected.length) {
           data[abilityName].label_ids = [''];
         }
-        // eslint-disable-next-line no-jquery/no-fade
-        $loading.removeClass('hidden').fadeIn();
+        $loading.removeClass('gl-display-none');
         $dropdown.trigger('loading.gl.dropdown');
         axios
           .put(issueUpdateURL, data)
           .then(({ data }) => {
             let template;
-            // eslint-disable-next-line no-jquery/no-fade
-            $loading.fadeOut();
+            $loading.addClass('gl-display-none');
             $dropdown.trigger('loaded.gl.dropdown');
             $selectbox.hide();
             data.issueUpdateURL = issueUpdateURL;
@@ -340,9 +337,8 @@ export default class LabelsSelect {
           const { $el, e, isMarking } = clickEvent;
           const label = clickEvent.selectedObj;
 
-          const fadeOutLoader = () => {
-            // eslint-disable-next-line no-jquery/no-fade
-            $loading.fadeOut();
+          const hideLoader = () => {
+            $loading.addClass('gl-display-none');
           };
 
           const page = $('body').attr('data-page');
@@ -403,8 +399,7 @@ export default class LabelsSelect {
               boardsStore.detail.issue.labels = labels;
             }
 
-            // eslint-disable-next-line no-jquery/no-fade
-            $loading.fadeIn();
+            $loading.removeClass('gl-display-none');
             const oldLabels = boardsStore.detail.issue.labels;
 
             boardsStore.detail.issue
@@ -420,8 +415,8 @@ export default class LabelsSelect {
                     .removeClass('is-active');
                 }
               })
-              .then(fadeOutLoader)
-              .catch(fadeOutLoader);
+              .then(hideLoader)
+              .catch(hideLoader);
           } else if (handleClick) {
             e.preventDefault();
             handleClick(label);

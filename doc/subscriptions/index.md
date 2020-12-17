@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: index, reference
 ---
 
@@ -27,7 +27,7 @@ When choosing a subscription, there are two factors to consider:
 There are some differences in how a subscription applies, depending if you use
 GitLab.com or a self-managed instance:
 
-- [GitLab.com](gitlab_com/index.md): GitLab's software-as-a-service offering.
+- [GitLab.com](gitlab_com/index.md): The GitLab software-as-a-service offering.
   You don't need to install anything to use GitLab.com, you only need to
   [sign up](https://gitlab.com/users/sign_up) and start using GitLab straight away.
 - [GitLab self-managed](self_managed/index.md): Install, administer, and maintain
@@ -37,7 +37,7 @@ On a self-managed instance, a GitLab subscription provides the same set of
 features for _all_ users. On GitLab.com, you can apply a subscription to either
 a group or a personal namespace.
 
-NOTE: **Note:**
+NOTE:
 Subscriptions cannot be transferred between GitLab.com and GitLab self-managed.
 A new subscription must be purchased and applied as needed.
 
@@ -77,7 +77,7 @@ With the [Customers Portal](https://customers.gitlab.com/) you can:
 - [Change your payment method](#change-your-payment-method)
 - [Change the linked account](#change-the-linked-account)
 - [Change the associated namespace](#change-the-associated-namespace)
-- [Change customers portal account password](#change-customer-portal-account-password)
+- [Change customers portal account password](#change-customers-portal-account-password)
 
 ### Change your personal details
 
@@ -152,9 +152,9 @@ With a linked GitLab.com account:
 1. Select the desired group from the **This subscription is for** dropdown.
 1. Click **Proceed to checkout**.
 
-Subscription charges are calculated based on the total number of users in a group, including its subgroups and nested projects. If the total number of users exceeds the number of seats in your subscription, you will be charged for the additional users.
+Subscription charges are calculated based on the total number of users in a group, including its subgroups and nested projects. If the total number of users exceeds the number of seats in your subscription, your account is charged for the additional users.
 
-### Change customer portal account password
+### Change Customers Portal account password
 
 To change the password for this customers portal account:
 
@@ -173,7 +173,7 @@ Find more information how to apply and renew at
 
 ## GitLab for Open Source subscriptions
 
-All [GitLab for Open Source](https://about.gitlab.com/solutions/open-source/program/)
+All [GitLab for Open Source](https://about.gitlab.com/solutions/open-source/join/)
 requests, including subscription renewals, must be made by using the application process.
 If you have any questions, send an email to `opensource@gitlab.com` for assistance.
 

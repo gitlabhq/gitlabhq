@@ -2,7 +2,7 @@
 type: reference, howto
 stage: Secure
 group: Static Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Secret Detection
@@ -40,19 +40,26 @@ The [default ruleset provided by Gitleaks](https://gitlab.com/gitlab-org/securit
 - Cloud services:
   - Amazon Web Services (AWS)
   - Google Cloud Platform (GCP)
-Encryption keys:
+  - Heroku API
+- Encryption keys:
   - PKCS8
   - RSA
   - SSH
   - PGP
+  - DSA
+  - EC
 - Social media platforms:
   - Facebook API
   - Twitter API
 - Cloud SaaS vendors:
   - GitHub API
   - Slack Token
+  - Slack Webhook
   - Stripe API
+  - Twilio API
   - Generic API key strings starting with `api-`
+- Password in URL
+- U.S. Social Security Number
 
 ## Requirements
 
@@ -61,10 +68,10 @@ To run Secret Detection jobs, by default, you need GitLab Runner with the
 [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
 If you're using the shared runners on GitLab.com, this is enabled by default.
 
-CAUTION: **Caution:**
+WARNING:
 Our Secret Detection jobs expect a Linux container type. Windows containers are not supported.
 
-CAUTION: **Caution:**
+WARNING:
 If you use your own runners, make sure the Docker version installed
 is **not** `19.03.0`. See [troubleshooting information](../sast#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error) for details.
 
@@ -102,7 +109,7 @@ begins with a dollar sign (`$`), as this likely indicates the password is an env
 For example, `https://username:$password@example.com/path/to/repo` isn't detected, while
 `https://username:password@example.com/path/to/repo` is.
 
-NOTE: **Note:**
+NOTE:
 You don't have to configure Secret Detection manually as shown in this section if you're using
 [Auto Secret Detection](../../../topics/autodevops/stages.md#auto-secret-detection)
 provided by [Auto DevOps](../../../topics/autodevops/index.md).
@@ -115,7 +122,7 @@ Add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
 include:
-  - template: Secret-Detection.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
 ```
 
 The included template creates Secret Detection jobs in your CI/CD pipeline and scans
@@ -130,13 +137,13 @@ always take the latest Secret Detection artifact available.
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4639) in GitLab 13.6.
 
-Upon detection of a secret, GitLab supports post processing hooks. These can be used to take actions like notifying the cloud service who issued the secret. The cloud provider can confirm the credentials and take remediation actions like revoking or reissuing a new secret and notifying the creator of the secret. Post-processing workflows vary by supported cloud providers. 
+Upon detection of a secret, GitLab supports post processing hooks. These can be used to take actions like notifying the cloud service who issued the secret. The cloud provider can confirm the credentials and take remediation actions like revoking or reissuing a new secret and notifying the creator of the secret. Post-processing workflows vary by supported cloud providers.
 
 GitLab currently supports post-processing for following service providers:
 
 - Amazon Web Services (AWS)
 
-Third party cloud and SaaS providers can [express integration interest by filling out this form](https://forms.gle/wWpvrtLRK21Q2WJL9). Learn more about the [technical details of post-processing secrets](https://gitlab.com/groups/gitlab-org/-/epics/4639). 
+Third party cloud and SaaS providers can [express integration interest by filling out this form](https://forms.gle/wWpvrtLRK21Q2WJL9). Learn more about the [technical details of post-processing secrets](https://gitlab.com/groups/gitlab-org/-/epics/4639).
 
 ### Customizing settings
 
@@ -153,7 +160,7 @@ override the `secret_detection` job with the `SECRET_DETECTION_HISTORIC_SCAN` va
 
 ```yaml
 include:
-  - template: Secret-Detection.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
 
 secret_detection:
   variables:
@@ -163,7 +170,7 @@ secret_detection:
 Because the template is [evaluated before](../../../ci/yaml/README.md#include)
 the pipeline configuration, the last mention of the variable takes precedence.
 
-CAUTION: **Deprecation:**
+WARNING:
 Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/README.md#onlyexcept-basic)
 is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules) instead.
 
@@ -252,6 +259,27 @@ We have created a [short video walkthrough](https://youtu.be/wDtc_K00Y0A) showca
   <iframe src="https://www.youtube.com/embed/wDtc_K00Y0A" frameborder="0" allowfullscreen="true"> </iframe>
 </figure>
 
+## Running Secret Detection in an offline environment
+
+For self-managed GitLab instances in an environment with limited, restricted, or intermittent access
+to external resources through the internet, some adjustments are required for the Secret Detection job to
+run successfully. For more information, see [Offline environments](../offline_deployments/index.md).
+
+### Requirements for offline Secret Detection
+
+To use Secret Detection in an offline environment, you need:
+
+- GitLab Runner with the [`docker` or `kubernetes` executor](#requirements).
+- A Docker Container Registry with locally available copy of Secret Detection [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
+- Configure certificate checking of packages (optional).
+
+GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
+meaning the runner tries to pull Docker images from the GitLab container registry even if a local
+copy is available. The GitLab Runner [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
+in an offline environment if you prefer using only locally available Docker images. However, we
+recommend keeping the pull policy setting to `always` if not in an offline environment, as this
+enables the use of updated scanners in your CI/CD pipelines.
+
 ### Make GitLab Secret Detection analyzer image available inside your Docker registry
 
 Import the following default Secret Detection analyzer images from `registry.gitlab.com` into your
@@ -278,8 +306,46 @@ Support for custom certificate authorities was introduced in the following versi
 | -------- | ------- |
 | secrets | [v3.0.0](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/releases/v3.0.0) |
 
+### Set Secret Detection CI job variables to use local Secret Detection analyzer
+
+Add the following configuration to your `.gitlab-ci.yml` file. You must replace
+`SECURE_ANALYZERS_PREFIX` to refer to your local Docker container registry:
+
+```yaml
+include:
+  - template: Security/Secret-Detection.gitlab-ci.yml
+
+variables:
+  SECURE_ANALYZERS_PREFIX: "localhost:5000/analyzers"
+```
+
+The Secret Detection job should now use local copies of the Secret Detection analyzer to scan your code and generate
+security reports without requiring internet access.
+
 ## Troubleshooting
 
 ### Getting warning message `gl-secret-detection-report.json: no matching files`
 
 For information on this, see the [general Application Security troubleshooting section](../../../ci/pipelines/job_artifacts.md#error-message-no-files-to-upload).
+
+### Error: `Couldn't run the gitleaks command: exit status 2`
+
+This error is usually caused by the `GIT_DEPTH` value of 50 that is set for all [projects by default](../../../ci/pipelines/settings.md#git-shallow-clone).
+
+For example, if a pipeline is triggered from a Merge Request containing 60 commits while the `GIT_DEPTH` is set to 50, the Secret Detection job fails as the clone is not deep enough to contain all of the relevant commits.
+
+You can confirm this to be the cause of the error by implementing a [logging level](../../application_security/secret_detection/index.md#logging-level) of `debug`. Once implemented, the logs should look similar to the following example, wherein an "object not found" error can be seen:
+
+```plaintext
+ERRO[2020-11-18T18:05:52Z] object not found
+[ERRO] [secrets] [2020-11-18T18:05:52Z] ▶ Couldn't run the gitleaks command: exit status 2
+[ERRO] [secrets] [2020-11-18T18:05:52Z] ▶ Gitleaks analysis failed: exit status 2
+```
+
+If this is the case, we can resolve the issue by setting the [`GIT_DEPTH` variable](../../../ci/runners/README.md#shallow-cloning) to a higher value. In order to apply this only to the Secret Detection job, the following can be added to your `.gitlab-ci.yml`:
+
+```yaml
+secret_detection:
+  variables:
+    GIT_DEPTH: 100
+```

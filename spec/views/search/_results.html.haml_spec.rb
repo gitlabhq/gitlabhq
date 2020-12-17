@@ -3,17 +3,23 @@
 require 'spec_helper'
 
 RSpec.describe 'search/_results' do
+  let(:user) { create(:user) }
   let(:search_objects) { Issue.page(1).per(2) }
   let(:scope) { 'issues' }
+  let(:term) { 'foo' }
 
   before do
     controller.params[:action] = 'show'
+    controller.params[:search] = term
 
     create_list(:issue, 3)
 
     @search_objects = search_objects
     @scope = scope
-    @search_term = 'foo'
+    @search_term = term
+    @search_service = SearchServicePresenter.new(SearchService.new(user, search: term, scope: scope))
+
+    allow(@search_service).to receive(:search_objects).and_return(search_objects)
   end
 
   it 'displays the page size' do
@@ -48,11 +54,22 @@ RSpec.describe 'search/_results' do
         let(:scope) { search_scope }
         let(:search_objects) { Gitlab::ProjectSearchResults.new(user, '*', project: project).objects(scope) }
 
-        it 'renders the click text event tracking attributes' do
-          render
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it 'renders the click text event tracking attributes' do
+            render
 
-          expect(rendered).to have_selector('[data-track-event=click_text]')
-          expect(rendered).to have_selector('[data-track-property=search_result]')
+            expect(rendered).to have_selector('[data-track-event=click_text]')
+            expect(rendered).to have_selector('[data-track-property=search_result]')
+          end
+        end
+
+        context 'when admin mode is disabled' do
+          it 'does not render the click text event tracking attributes' do
+            render
+
+            expect(rendered).not_to have_selector('[data-track-event=click_text]')
+            expect(rendered).not_to have_selector('[data-track-property=search_result]')
+          end
         end
 
         it 'does render the sidebar' do
@@ -68,11 +85,22 @@ RSpec.describe 'search/_results' do
         let(:scope) { search_scope }
         let(:search_objects) { Gitlab::ProjectSearchResults.new(user, '*', project: project).objects(scope) }
 
-        it 'renders the click text event tracking attributes' do
-          render
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it 'renders the click text event tracking attributes' do
+            render
 
-          expect(rendered).to have_selector('[data-track-event=click_text]')
-          expect(rendered).to have_selector('[data-track-property=search_result]')
+            expect(rendered).to have_selector('[data-track-event=click_text]')
+            expect(rendered).to have_selector('[data-track-property=search_result]')
+          end
+        end
+
+        context 'when admin mode is disabled' do
+          it 'does not render the click text event tracking attributes' do
+            render
+
+            expect(rendered).not_to have_selector('[data-track-event=click_text]')
+            expect(rendered).not_to have_selector('[data-track-property=search_result]')
+          end
         end
 
         it 'does not render the sidebar' do

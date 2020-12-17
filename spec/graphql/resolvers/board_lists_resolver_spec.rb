@@ -29,9 +29,7 @@ RSpec.describe Resolvers::BoardListsResolver do
 
     context 'with unauthorized user' do
       it 'raises an error' do
-        expect do
-          resolve_board_lists(current_user: unauth_user)
-        end.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+        expect(resolve_board_lists(current_user: unauth_user)).to be_nil
       end
     end
 
@@ -101,12 +99,6 @@ RSpec.describe Resolvers::BoardListsResolver do
   end
 
   def resolve_board_lists(args: {}, current_user: user)
-    context = GraphQL::Query::Context.new(
-      query: OpenStruct.new(schema: nil),
-      values: { current_user: current_user },
-      object: nil
-    )
-
-    resolve(described_class, obj: board, args: args, ctx: context )
+    resolve(described_class, obj: board, args: args, ctx: { current_user: current_user })
   end
 end

@@ -18,6 +18,7 @@ module Ci
                 Gitlab::Ci::Pipeline::Chain::EvaluateWorkflowRules,
                 Gitlab::Ci::Pipeline::Chain::Seed,
                 Gitlab::Ci::Pipeline::Chain::Limit::Size,
+                Gitlab::Ci::Pipeline::Chain::Limit::Deployments,
                 Gitlab::Ci::Pipeline::Chain::Validate::External,
                 Gitlab::Ci::Pipeline::Chain::Populate,
                 Gitlab::Ci::Pipeline::Chain::StopDryRun,
@@ -90,7 +91,9 @@ module Ci
     # rubocop: enable Metrics/ParameterLists
 
     def execute!(*args, &block)
-      execute(*args, &block).tap do |pipeline|
+      source, params = args[0], Hash(args[1])
+
+      execute(source, **params, &block).tap do |pipeline|
         unless pipeline.persisted?
           raise CreateError, pipeline.full_error_messages
         end

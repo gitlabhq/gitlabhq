@@ -23,12 +23,12 @@ RSpec.describe Mutations::Boards::Lists::Create do
 
   describe '#ready?' do
     it 'raises an error if required arguments are missing' do
-      expect { mutation.ready?({ board_id: 'some id' }) }
+      expect { mutation.ready?(board_id: 'some id') }
         .to raise_error(Gitlab::Graphql::Errors::ArgumentError, /one and only one of/)
     end
 
     it 'raises an error if too many required arguments are specified' do
-      expect { mutation.ready?({ board_id: 'some id', backlog: true, label_id: 'some label' }) }
+      expect { mutation.ready?(board_id: 'some id', backlog: true, label_id: 'some label') }
         .to raise_error(Gitlab::Graphql::Errors::ArgumentError, /one and only one of/)
     end
   end
@@ -68,9 +68,8 @@ RSpec.describe Mutations::Boards::Lists::Create do
         context 'when label not found' do
           let(:list_create_params) { { label_id: "gid://gitlab/Label/#{non_existing_record_id}" } }
 
-          it 'raises an error' do
-            expect { subject }
-              .to raise_error(Gitlab::Graphql::Errors::ArgumentError, 'Label not found!')
+          it 'returns an error' do
+            expect(subject[:errors]).to include 'Label not found'
           end
         end
       end

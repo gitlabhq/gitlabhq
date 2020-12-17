@@ -10,11 +10,19 @@ describe('Getters TestReports Store', () => {
   const defaultState = {
     testReports,
     selectedSuiteIndex: 0,
+    pageInfo: {
+      page: 1,
+      perPage: 2,
+    },
   };
 
   const emptyState = {
     testReports: {},
     selectedSuite: null,
+    pageInfo: {
+      page: 1,
+      perPage: 2,
+    },
   };
 
   beforeEach(() => {
@@ -59,15 +67,17 @@ describe('Getters TestReports Store', () => {
   });
 
   describe('getSuiteTests', () => {
-    it('should return the test cases inside the suite', () => {
+    it('should return the current page of test cases inside the suite', () => {
       setupState();
 
       const cases = getters.getSuiteTests(state);
-      const expected = testReports.test_suites[0].test_cases.map(x => ({
-        ...x,
-        formattedTime: formattedTime(x.execution_time),
-        icon: iconForTestStatus(x.status),
-      }));
+      const expected = testReports.test_suites[0].test_cases
+        .map(x => ({
+          ...x,
+          formattedTime: formattedTime(x.execution_time),
+          icon: iconForTestStatus(x.status),
+        }))
+        .slice(0, state.pageInfo.perPage);
 
       expect(cases).toEqual(expected);
     });
@@ -76,6 +86,17 @@ describe('Getters TestReports Store', () => {
       setupState(emptyState);
 
       expect(getters.getSuiteTests(state)).toEqual([]);
+    });
+  });
+
+  describe('getSuiteTestCount', () => {
+    it('should return the total number of test cases', () => {
+      setupState();
+
+      const testCount = getters.getSuiteTestCount(state);
+      const expected = testReports.test_suites[0].test_cases.length;
+
+      expect(testCount).toEqual(expected);
     });
   });
 });

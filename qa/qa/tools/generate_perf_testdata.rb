@@ -95,20 +95,20 @@ module QA
 
       def create_many_merge_requests
         30.times do |i|
-          create_a_merge_request_api_req("#{@group_name}%2F#{@project_name}", "branch#{i}", "master", "MR#{i}")
+          create_a_merge_request_api_req("#{@group_name}%2F#{@project_name}", "branch#{i}", Runtime::Env.default_branch, "MR#{i}")
         end
         @urls[:mr_list_page] = @urls[:project_page] + "/merge_requests"
         STDOUT.puts "Created many MRs: #{@urls[:mr_list_page]}"
       end
 
       def create_many_new_files
-        create_a_new_file_api_req("hello.txt", "master", "#{@group_name}%2F#{@project_name}", "hello", "my new content")
+        create_a_new_file_api_req("hello.txt", Runtime::Env.default_branch, "#{@group_name}%2F#{@project_name}", "hello", "my new content")
         30.times do |i|
-          create_a_new_file_api_req("hello#{i}.txt", "master", "#{@group_name}%2F#{@project_name}", "hello", "my new content")
+          create_a_new_file_api_req("hello#{i}.txt", Runtime::Env.default_branch, "#{@group_name}%2F#{@project_name}", "hello", "my new content")
           create_a_new_file_api_req("hello#{i}.txt", "branch#{i}", "#{@group_name}%2F#{@project_name}", "hello", "my new content")
         end
 
-        @urls[:files_page] = @urls[:project_page] + "/tree/master"
+        @urls[:files_page] = @urls[:project_page] + "/tree/#{Runtime::Env.default_branch}"
         STDOUT.puts "Added many new files: #{@urls[:files_page]}"
       end
 
@@ -138,7 +138,7 @@ module QA
         16.times do |i|
           faker_line_arr = Faker::Lorem.sentences(1500)
           content = faker_line_arr.join("\n\r")
-          create_a_new_file_api_req("hello#{i + 100}.txt", "master", "#{@group_name}%2F#{@project_name}", "Add hello#{i + 100}.txt", content)
+          create_a_new_file_api_req("hello#{i + 100}.txt", Runtime::Env.default_branch, "#{@group_name}%2F#{@project_name}", "Add hello#{i + 100}.txt", content)
           content_arr[i] = faker_line_arr
         end
 
@@ -151,7 +151,7 @@ module QA
           update_file_api_req("hello#{i + 100}.txt", "performance", "#{@group_name}%2F#{@project_name}", "Update hello#{i + 100}.txt", content)
         end
 
-        create_mr_response = create_a_merge_request_api_req("#{@group_name}%2F#{@project_name}", "performance", "master", "Large_MR")
+        create_mr_response = create_a_merge_request_api_req("#{@group_name}%2F#{@project_name}", "performance", Runtime::Env.default_branch, "Large_MR")
 
         iid = JSON.parse(create_mr_response.body)["iid"]
         diff_refs = JSON.parse(create_mr_response.body)["diff_refs"]
@@ -200,7 +200,7 @@ module QA
 
         create_a_branch_api_req(branch_name, project_path)
         create_a_new_file_api_req(file_name, branch_name, project_path, "Initial commit for new file", "Initial file content")
-        create_mr_response = create_a_merge_request_api_req(project_path, branch_name, "master", "MR with many commits-#{SecureRandom.hex(8)}")
+        create_mr_response = create_a_merge_request_api_req(project_path, branch_name, Runtime::Env.default_branch, "MR with many commits-#{SecureRandom.hex(8)}")
         @urls[:mr_with_many_commits] = JSON.parse(create_mr_response.body)["web_url"]
         100.times do |i|
           update_file_api_req(file_name, branch_name, project_path, Faker::Lorem.sentences(5).join(" "), Faker::Lorem.sentences(500).join("\n"))
@@ -268,7 +268,7 @@ module QA
 
       def create_a_branch_api_req(branch_name, project_path_or_id)
         call_api(expected_response_code: 201) do
-          post Runtime::API::Request.new(@api_client, "/projects/#{project_path_or_id}/repository/branches").url, "branch=#{branch_name}&ref=master"
+          post Runtime::API::Request.new(@api_client, "/projects/#{project_path_or_id}/repository/branches").url, "branch=#{branch_name}&ref=#{Runtime::Env.default_branch}"
         end
       end
 

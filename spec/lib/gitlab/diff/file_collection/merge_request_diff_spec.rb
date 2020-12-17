@@ -54,4 +54,11 @@ RSpec.describe Gitlab::Diff::FileCollection::MergeRequestDiff do
   it 'returns a valid instance of a DiffCollection' do
     expect(diff_files).to be_a(Gitlab::Git::DiffCollection)
   end
+
+  it_behaves_like 'unsortable diff files' do
+    let(:diffable) { merge_request.merge_request_diff }
+    let(:collection_default_args) do
+      { diff_options: {} }
+    end
+  end
 end

@@ -1,10 +1,11 @@
 <script>
-import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlIcon, GlTooltipDirective, GlFormCheckbox } from '@gitlab/ui';
 import { SQUASH_BEFORE_MERGE } from '../../i18n';
 
 export default {
   components: {
     GlIcon,
+    GlFormCheckbox,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -32,32 +33,23 @@ export default {
     tooltipTitle() {
       return this.isDisabled ? this.$options.i18n.tooltipTitle : null;
     },
-    tooltipFocusable() {
-      return this.isDisabled ? '0' : null;
-    },
   },
 };
 </script>
 
 <template>
-  <div class="inline">
-    <label
+  <div class="gl-display-flex gl-align-items-center">
+    <gl-form-checkbox
       v-gl-tooltip
-      :class="{ 'gl-text-gray-400': isDisabled }"
-      :tabindex="tooltipFocusable"
-      data-testid="squashLabel"
+      :checked="value"
+      :disabled="isDisabled"
+      name="squash"
+      class="qa-squash-checkbox js-squash-checkbox gl-mb-0 gl-mr-2"
       :title="tooltipTitle"
+      @change="checked => $emit('input', checked)"
     >
-      <input
-        :checked="value"
-        :disabled="isDisabled"
-        type="checkbox"
-        name="squash"
-        class="qa-squash-checkbox js-squash-checkbox"
-        @change="$emit('input', $event.target.checked)"
-      />
       {{ $options.i18n.checkboxLabel }}
-    </label>
+    </gl-form-checkbox>
     <a
       v-if="helpPath"
       v-gl-tooltip

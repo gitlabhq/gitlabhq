@@ -1,101 +1,96 @@
-import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
-import toggleButton from '~/vue_shared/components/toggle_button.vue';
+import { shallowMount } from '@vue/test-utils';
+import { GlIcon } from '@gitlab/ui';
+import ToggleButton from '~/vue_shared/components/toggle_button.vue';
 
-describe('Toggle Button', () => {
-  let vm;
-  let Component;
+describe('Toggle Button component', () => {
+  let wrapper;
 
-  beforeEach(() => {
-    Component = Vue.extend(toggleButton);
-  });
+  function createComponent(propsData = {}) {
+    wrapper = shallowMount(ToggleButton, {
+      propsData,
+    });
+  }
+
+  const findInput = () => wrapper.find('input');
+  const findButton = () => wrapper.find('button');
+  const findToggleIcon = () => wrapper.find(GlIcon);
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
+    wrapper = null;
   });
 
-  describe('render output', () => {
+  it('renders input with provided name', () => {
+    createComponent({
+      name: 'foo',
+    });
+
+    expect(findInput().attributes('name')).toBe('foo');
+  });
+
+  describe.each`
+    value    | iconName
+    ${true}  | ${'status_success_borderless'}
+    ${false} | ${'status_failed_borderless'}
+  `('when `value` prop is `$value`', ({ value, iconName }) => {
     beforeEach(() => {
-      vm = mountComponent(Component, {
-        value: true,
+      createComponent({
+        value,
         name: 'foo',
       });
     });
 
-    it('renders input with provided name', () => {
-      expect(vm.$el.querySelector('input').getAttribute('name')).toEqual('foo');
+    it('renders input with correct value attribute', () => {
+      expect(findInput().attributes('value')).toBe(`${value}`);
     });
 
-    it('renders input with provided value', () => {
-      expect(vm.$el.querySelector('input').getAttribute('value')).toEqual('true');
+    it('renders correct icon', () => {
+      const icon = findToggleIcon();
+      expect(icon.isVisible()).toBe(true);
+      expect(icon.props('name')).toBe(iconName);
+      expect(findButton().classes('is-checked')).toBe(value);
     });
 
-    it('renders input status icon', () => {
-      expect(vm.$el.querySelectorAll('span.toggle-icon').length).toEqual(1);
-      expect(vm.$el.querySelectorAll('svg.s18').length).toEqual(1);
-    });
-  });
+    describe('when clicked', () => {
+      it('emits `change` event with correct event', async () => {
+        findButton().trigger('click');
+        await wrapper.vm.$nextTick();
 
-  describe('is-checked', () => {
-    beforeEach(() => {
-      vm = mountComponent(Component, {
-        value: true,
+        expect(wrapper.emitted('change')).toStrictEqual([[!value]]);
       });
-
-      jest.spyOn(vm, '$emit').mockImplementation(() => {});
-    });
-
-    it('renders is checked class', () => {
-      expect(vm.$el.querySelector('button').classList.contains('is-checked')).toEqual(true);
-    });
-
-    it('sets aria-label representing toggle state', () => {
-      vm.value = true;
-
-      expect(vm.ariaLabel).toEqual('Toggle Status: ON');
-
-      vm.value = false;
-
-      expect(vm.ariaLabel).toEqual('Toggle Status: OFF');
-    });
-
-    it('emits change event when clicked', () => {
-      vm.$el.querySelector('button').click();
-
-      expect(vm.$emit).toHaveBeenCalledWith('change', false);
     });
   });
 
-  describe('is-disabled', () => {
+  describe('when `disabledInput` prop is `true`', () => {
     beforeEach(() => {
-      vm = mountComponent(Component, {
+      createComponent({
         value: true,
         disabledInput: true,
       });
-      jest.spyOn(vm, '$emit').mockImplementation(() => {});
     });
 
     it('renders disabled button', () => {
-      expect(vm.$el.querySelector('button').classList.contains('is-disabled')).toEqual(true);
+      expect(findButton().classes()).toContain('is-disabled');
     });
 
-    it('does not emit change event when clicked', () => {
-      vm.$el.querySelector('button').click();
+    it('does not emit change event when clicked', async () => {
+      findButton().trigger('click');
+      await wrapper.vm.$nextTick();
 
-      expect(vm.$emit).not.toHaveBeenCalled();
+      expect(wrapper.emitted('change')).toBeFalsy();
     });
   });
 
-  describe('is-loading', () => {
+  describe('when `isLoading` prop is `true`', () => {
     beforeEach(() => {
-      vm = mountComponent(Component, {
+      createComponent({
         value: true,
         isLoading: true,
       });
     });
 
     it('renders loading class', () => {
-      expect(vm.$el.querySelector('button').classList.contains('is-loading')).toEqual(true);
+      expect(findButton().classes()).toContain('is-loading');
     });
   });
 });

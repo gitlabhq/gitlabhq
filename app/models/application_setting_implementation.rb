@@ -58,6 +58,7 @@ module ApplicationSettingImplementation
         default_projects_limit: Settings.gitlab['default_projects_limit'],
         default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
         diff_max_patch_bytes: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES,
+        disable_feed_token: false,
         disabled_oauth_sign_in_sources: [],
         dns_rebinding_protection_enabled: true,
         domain_allowlist: Settings.gitlab['domain_allowlist'],
@@ -103,6 +104,7 @@ module ApplicationSettingImplementation
         password_authentication_enabled_for_git: true,
         password_authentication_enabled_for_web: Settings.gitlab['signin_enabled'],
         performance_bar_allowed_group_id: nil,
+        personal_access_token_prefix: nil,
         plantuml_enabled: false,
         plantuml_url: nil,
         polling_interval_multiplier: 1,
@@ -168,7 +170,9 @@ module ApplicationSettingImplementation
         user_show_add_ssh_key_message: true,
         wiki_page_max_content_bytes: 50.megabytes,
         container_registry_delete_tags_service_timeout: 250,
-        container_registry_expiration_policies_worker_capacity: 0
+        container_registry_expiration_policies_worker_capacity: 0,
+        kroki_enabled: false,
+        kroki_url: nil
       }
     end
 

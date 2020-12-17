@@ -33,28 +33,31 @@ describe('IssueMilestoneComponent', () => {
 
   describe('computed', () => {
     describe('isMilestoneStarted', () => {
-      it('should return `false` when milestoneStart prop is not defined', () => {
+      it('should return `false` when milestoneStart prop is not defined', async () => {
         wrapper.setProps({
           milestone: { ...mockMilestone, start_date: '' },
         });
+        await wrapper.vm.$nextTick();
 
         expect(wrapper.vm.isMilestoneStarted).toBe(false);
       });
 
-      it('should return `true` when milestone start date is past current date', () => {
-        wrapper.setProps({
+      it('should return `true` when milestone start date is past current date', async () => {
+        await wrapper.setProps({
           milestone: { ...mockMilestone, start_date: '1990-07-22' },
         });
+        await wrapper.vm.$nextTick();
 
         expect(wrapper.vm.isMilestoneStarted).toBe(true);
       });
     });
 
     describe('isMilestonePastDue', () => {
-      it('should return `false` when milestoneDue prop is not defined', () => {
+      it('should return `false` when milestoneDue prop is not defined', async () => {
         wrapper.setProps({
           milestone: { ...mockMilestone, due_date: '' },
         });
+        await wrapper.vm.$nextTick();
 
         expect(wrapper.vm.isMilestonePastDue).toBe(false);
       });
@@ -73,41 +76,45 @@ describe('IssueMilestoneComponent', () => {
         expect(vm.milestoneDatesAbsolute).toBe('(December 31, 2019)');
       });
 
-      it('returns string containing absolute milestone start date when due date is not present', () => {
+      it('returns string containing absolute milestone start date when due date is not present', async () => {
         wrapper.setProps({
           milestone: { ...mockMilestone, due_date: '' },
         });
+        await wrapper.vm.$nextTick();
 
         expect(wrapper.vm.milestoneDatesAbsolute).toBe('(January 1, 2018)');
       });
 
-      it('returns empty string when both milestone start and due dates are not present', () => {
+      it('returns empty string when both milestone start and due dates are not present', async () => {
         wrapper.setProps({
           milestone: { ...mockMilestone, start_date: '', due_date: '' },
         });
+        await wrapper.vm.$nextTick();
 
         expect(wrapper.vm.milestoneDatesAbsolute).toBe('');
       });
     });
 
     describe('milestoneDatesHuman', () => {
-      it('returns string containing milestone due date when date is yet to be due', () => {
+      it('returns string containing milestone due date when date is yet to be due', async () => {
         wrapper.setProps({
           milestone: { ...mockMilestone, due_date: `${new Date().getFullYear() + 10}-01-01` },
         });
+        await wrapper.vm.$nextTick();
 
         expect(wrapper.vm.milestoneDatesHuman).toContain('years remaining');
       });
 
-      it('returns string containing milestone start date when date has already started and due date is not present', () => {
+      it('returns string containing milestone start date when date has already started and due date is not present', async () => {
         wrapper.setProps({
           milestone: { ...mockMilestone, start_date: '1990-07-22', due_date: '' },
         });
+        await wrapper.vm.$nextTick();
 
         expect(wrapper.vm.milestoneDatesHuman).toContain('Started');
       });
 
-      it('returns string containing milestone start date when date is yet to start and due date is not present', () => {
+      it('returns string containing milestone start date when date is yet to start and due date is not present', async () => {
         wrapper.setProps({
           milestone: {
             ...mockMilestone,
@@ -115,14 +122,16 @@ describe('IssueMilestoneComponent', () => {
             due_date: '',
           },
         });
+        await wrapper.vm.$nextTick();
 
         expect(wrapper.vm.milestoneDatesHuman).toContain('Starts');
       });
 
-      it('returns empty string when milestone start and due dates are not present', () => {
+      it('returns empty string when milestone start and due dates are not present', async () => {
         wrapper.setProps({
           milestone: { ...mockMilestone, start_date: '', due_date: '' },
         });
+        await wrapper.vm.$nextTick();
 
         expect(wrapper.vm.milestoneDatesHuman).toBe('');
       });

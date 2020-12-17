@@ -44,6 +44,30 @@ RSpec.describe IssuablesHelper do
     end
   end
 
+  describe '#issuable_meta' do
+    let(:user) { create(:user) }
+
+    let_it_be(:project) { create(:project) }
+
+    describe 'author status' do
+      let(:issuable) { build(:merge_request, source_project: project, author: user, created_at: '2020-01-30') }
+
+      it 'displays an emoji if the user status is set' do
+        user.status = UserStatus.new(message: 'lol')
+        content = helper.issuable_meta(issuable, project)
+        expect(content).to match('<span class="user-status-emoji has-tooltip" title="lol" data-html="true" data-placement="top">')
+        expect(content).to match('<gl-emoji title="speech balloon" data-name="speech_balloon" data-unicode-version="6.0">')
+      end
+
+      it 'does not displays an emoji if the user status is not set' do
+        user.status = UserStatus.new
+        content = helper.issuable_meta(issuable, project)
+        expect(content).not_to match('class="user-status-emoji has-tooltip"')
+        expect(content).not_to match('gl-emoji')
+      end
+    end
+  end
+
   describe '#issuables_state_counter_text' do
     let(:user) { create(:user) }
 
@@ -194,7 +218,7 @@ RSpec.describe IssuablesHelper do
         assign(:project, issue.project)
       end
 
-      it 'sets sentryIssueIdentifier to nil with no sentry issue ' do
+      it 'sets sentryIssueIdentifier to nil with no sentry issue' do
         expect(helper.issuable_initial_data(issue)[:sentryIssueIdentifier])
           .to be_nil
       end

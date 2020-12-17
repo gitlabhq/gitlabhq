@@ -213,6 +213,10 @@ export default {
     }
   },
 
+  [types.SET_RESOLVING_DISCUSSION](state, isResolving) {
+    state.isResolvingDiscussion = isResolving;
+  },
+
   [types.UPDATE_NOTE](state, note) {
     const noteObj = utils.findNoteObjectById(state.discussions, note.discussion_id);
 
@@ -299,10 +303,6 @@ export default {
 
   [types.TOGGLE_STATE_BUTTON_LOADING](state, value) {
     Object.assign(state, { isToggleStateButtonLoading: value });
-  },
-
-  [types.TOGGLE_BLOCKED_ISSUE_WARNING](state, value) {
-    Object.assign(state, { isToggleBlockedIssueWarning: value });
   },
 
   [types.SET_NOTES_FETCHED_STATE](state, value) {

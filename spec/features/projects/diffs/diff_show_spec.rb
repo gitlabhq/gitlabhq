@@ -155,10 +155,6 @@ RSpec.describe 'Diff file viewer', :js do
 
   context 'binary file that appears to be text in the first 1024 bytes' do
     before do
-      # The file we're visiting is smaller than 10 KB and we want it collapsed
-      # so we need to disable the size increase feature.
-      stub_feature_flags(gitlab_git_diff_size_limit_increase: false)
-
       visit_commit('7b1cf4336b528e0f3d1d140ee50cafdbc703597c')
     end
 

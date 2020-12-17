@@ -1,4 +1,10 @@
 import { defer } from 'lodash';
+import { performanceMarkAndMeasure } from '~/performance/utils';
+import {
+  WEBIDE_MARK_FETCH_FILES_FINISH,
+  WEBIDE_MEASURE_FETCH_FILES,
+  WEBIDE_MARK_FETCH_FILES_START,
+} from '~/performance/constants';
 import { __ } from '../../../locale';
 import service from '../../services';
 import * as types from '../mutation_types';
@@ -46,8 +52,9 @@ export const setDirectoryData = ({ state, commit }, { projectId, branchId, treeL
   });
 };
 
-export const getFiles = ({ state, commit, dispatch }, payload = {}) =>
-  new Promise((resolve, reject) => {
+export const getFiles = ({ state, commit, dispatch }, payload = {}) => {
+  performanceMarkAndMeasure({ mark: WEBIDE_MARK_FETCH_FILES_START });
+  return new Promise((resolve, reject) => {
     const { projectId, branchId, ref = branchId } = payload;
 
     if (
@@ -61,6 +68,15 @@ export const getFiles = ({ state, commit, dispatch }, payload = {}) =>
       service
         .getFiles(selectedProject.path_with_namespace, ref)
         .then(({ data }) => {
+          performanceMarkAndMeasure({
+            mark: WEBIDE_MARK_FETCH_FILES_FINISH,
+            measures: [
+              {
+                name: WEBIDE_MEASURE_FETCH_FILES,
+                start: WEBIDE_MARK_FETCH_FILES_START,
+              },
+            ],
+          });
           const { entries, treeList } = decorateFiles({ data });
 
           commit(types.SET_ENTRIES, entries);
@@ -85,6 +101,7 @@ export const getFiles = ({ state, commit, dispatch }, payload = {}) =>
       resolve();
     }
   });
+};
 
 export const restoreTree = ({ dispatch, commit, state }, path) => {
   const entry = state.entries[path];

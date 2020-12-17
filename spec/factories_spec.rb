@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'factories' do
+  include DatabaseHelpers
+
   shared_examples 'factory' do |factory|
     describe "#{factory.name} factory" do
       it 'does not raise error when built' do
@@ -32,6 +34,14 @@ RSpec.describe 'factories' do
     fork_network_member
   ].to_set.freeze
 
+  # Some factories and their corresponding models are based on
+  # database views. In order to use those, we have to swap the
+  # view out with a table of the same structure.
+  factories_based_on_view = %i[
+    postgres_index
+    postgres_index_bloat_estimate
+  ].to_set.freeze
+
   without_fd, with_fd = FactoryBot.factories
     .partition { |factory| skip_factory_defaults.include?(factory.name) }
 
@@ -39,6 +49,13 @@ RSpec.describe 'factories' do
     let_it_be(:namespace) { create_default(:namespace) }
     let_it_be(:project) { create_default(:project, :repository) }
     let_it_be(:user) { create_default(:user) }
+
+    before do
+      factories_based_on_view.each do |factory|
+        view = build(factory).class.table_name
+        swapout_view_for_table(view)
+      end
+    end
 
     with_fd.each do |factory|
       it_behaves_like 'factory', factory

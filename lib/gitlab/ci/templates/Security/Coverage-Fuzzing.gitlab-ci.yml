@@ -12,7 +12,7 @@ variables:
 
 
 coverage_fuzzing_unlicensed:
-  stage: test
+  stage: .pre
   allow_failure: true
   rules:
     - if: $GITLAB_FEATURES !~ /\bcoverage_fuzzing\b/ && $COVFUZZ_DISABLED == null

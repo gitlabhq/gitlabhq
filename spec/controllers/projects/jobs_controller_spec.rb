@@ -15,6 +15,54 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
   end
 
   describe 'GET index' do
+    describe 'pushing tracking_data to Gon' do
+      before do
+        stub_experiment(jobs_empty_state: experiment_active)
+        stub_experiment_for_subject(jobs_empty_state: in_experiment_group)
+
+        get_index
+      end
+
+      context 'when experiment not active' do
+        let(:experiment_active) { false }
+        let(:in_experiment_group) { false }
+
+        it 'does not push tracking_data to Gon' do
+          expect(Gon.tracking_data).to be_nil
+        end
+      end
+
+      context 'when experiment active and user in control group' do
+        let(:experiment_active) { true }
+        let(:in_experiment_group) { false }
+
+        it 'pushes tracking_data to Gon' do
+          expect(Gon.tracking_data).to match(
+            {
+              category: 'Growth::Activation::Experiment::JobsEmptyState',
+              action: 'click_button',
+              label: anything,
+              property: 'control_group'
+            }
+          )
+        end
+      end
+
+      context 'when experiment active and user in experimental group' do
+        let(:experiment_active) { true }
+        let(:in_experiment_group) { true }
+
+        it 'pushes tracking_data to gon' do
+          expect(Gon.tracking_data).to match(
+            category: 'Growth::Activation::Experiment::JobsEmptyState',
+            action: 'click_button',
+            label: anything,
+            property: 'experimental_group'
+          )
+        end
+      end
+    end
+
     context 'when scope is pending' do
       before do
         create(:ci_build, :pending, pipeline: pipeline)
@@ -113,11 +161,11 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
 
     context 'when requesting HTML' do
       context 'when job exists' do
-        before do
-          get_show(id: job.id)
-        end
+        let(:extra_params) { { id: job.id } }
 
         it 'has a job' do
+          get_show(**extra_params)
+
           expect(response).to have_gitlab_http_status(:ok)
           expect(assigns(:build).id).to eq(job.id)
         end
@@ -599,6 +647,46 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         expect(json_response['total']).to be_present
         expect(json_response['lines'].count).to be_positive
       end
+
+      context 'when CI_DEBUG_TRACE enabled' do
+        let!(:variable) { create(:ci_instance_variable, key: 'CI_DEBUG_TRACE', value: 'true') }
+
+        context 'with proper permissions on a project' do
+          before do
+            project.add_developer(user)
+            sign_in(user)
+          end
+
+          it 'returns response ok' do
+            get_trace
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+
+        context 'without proper permissions for debug logging' do
+          before do
+            project.add_guest(user)
+            sign_in(user)
+          end
+
+          it 'returns response forbidden' do
+            get_trace
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+
+          context 'with restrict_access_to_build_debug_mode feature disabled' do
+            before do
+              stub_feature_flags(restrict_access_to_build_debug_mode: false)
+            end
+
+            it 'returns response forbidden' do
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
+        end
+      end
     end
 
     context 'when job has a trace' do
@@ -805,18 +893,6 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           post_play
 
           expect(job.reload).to be_pending
-        end
-
-        context 'when FF ci_manual_bridges is disabled' do
-          before do
-            stub_feature_flags(ci_manual_bridges: false)
-          end
-
-          it 'returns 404' do
-            post_play
-
-            expect(response).to have_gitlab_http_status(:not_found)
-          end
         end
       end
     end
@@ -1027,7 +1103,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
                  }
     end
 
-    context "when job has a trace artifact" do
+    context 'when job has a trace artifact' do
       let(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
 
       it "sets #{Gitlab::Workhorse::DETECT_HEADER} header" do
@@ -1037,6 +1113,62 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         expect(response.headers["Content-Type"]).to eq("text/plain; charset=utf-8")
         expect(response.body).to eq(job.job_artifacts_trace.open.read)
         expect(response.header[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
+      end
+
+      context 'when CI_DEBUG_TRACE enabled' do
+        before do
+          create(:ci_instance_variable, key: 'CI_DEBUG_TRACE', value: 'true')
+        end
+
+        context 'with proper permissions for debug logging on a project' do
+          before do
+            project.add_developer(user)
+            sign_in(user)
+          end
+
+          it 'returns response ok' do
+            response = subject
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+
+          context 'with restrict_access_to_build_debug_mode feature disabled' do
+            before do
+              stub_feature_flags(restrict_access_to_build_debug_mode: false)
+            end
+
+            it 'returns response ok' do
+              response = subject
+
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
+        end
+
+        context 'without proper permissions for debug logging on a project' do
+          before do
+            project.add_reporter(user)
+            sign_in(user)
+          end
+
+          it 'returns response forbidden' do
+            response = subject
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+
+          context 'with restrict_access_to_build_debug_mode feature disabled' do
+            before do
+              stub_feature_flags(restrict_access_to_build_debug_mode: false)
+            end
+
+            it 'returns response ok' do
+              response = subject
+
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
+        end
       end
     end
 

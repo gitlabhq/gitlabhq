@@ -191,7 +191,7 @@ RSpec.describe AutoMerge::MergeWhenPipelineSucceedsService do
       expect(mr_merge_if_green_enabled.merge_user).to be nil
     end
 
-    it 'Posts a system note' do
+    it 'posts a system note' do
       note = mr_merge_if_green_enabled.notes.last
       expect(note.note).to include 'canceled the automatic merge'
     end

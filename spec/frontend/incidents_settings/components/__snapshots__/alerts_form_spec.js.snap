@@ -17,7 +17,7 @@ exports[`Alert integration settings form default state should match the default 
         data-qa-selector="create_issue_checkbox"
       >
         <span>
-          Create an issue. Issues are created for each alert triggered.
+          Create an incident. Incidents are created for each alert triggered.
         </span>
       </gl-form-checkbox-stub>
     </gl-form-group-stub>
@@ -32,7 +32,7 @@ exports[`Alert integration settings form default state should match the default 
         for="alert-integration-settings-issue-template"
       >
         
-        Issue template (optional)
+        Incident template (optional)
         
         <gl-link-stub
           href="/help/user/project/description_templates#creating-issue-templates"
@@ -47,7 +47,7 @@ exports[`Alert integration settings form default state should match the default 
        
       <gl-dropdown-stub
         block="true"
-        category="tertiary"
+        category="primary"
         data-qa-selector="incident_templates_dropdown"
         headertext=""
         id="alert-integration-settings-issue-template"
@@ -60,6 +60,7 @@ exports[`Alert integration settings form default state should match the default 
           data-qa-selector="incident_templates_item"
           iconcolor=""
           iconname=""
+          iconrightarialabel=""
           iconrightname=""
           ischeckitem="true"
           secondarytext=""
@@ -88,7 +89,7 @@ exports[`Alert integration settings form default state should match the default 
         checked="true"
       >
         <span>
-          Automatically close incident issues when the associated Prometheus alert resolves.
+          Automatically close incidents when the associated Prometheus alert resolves.
         </span>
       </gl-form-checkbox-stub>
     </gl-form-group-stub>

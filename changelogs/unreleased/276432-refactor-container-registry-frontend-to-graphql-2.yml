@@ -1,0 +1,5 @@
+---
+title: Add containerRepositoriesCount to project and group queries
+merge_request: 48685
+author:
+type: changed

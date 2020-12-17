@@ -5,8 +5,8 @@ module Gitlab
     module Project
       module Sample
         class RelationTreeRestorer < ImportExport::RelationTreeRestorer
-          def initialize(*args)
-            super
+          def initialize(...)
+            super(...)
 
             @date_calculator = Gitlab::ImportExport::Project::Sample::DateCalculator.new(dates)
           end

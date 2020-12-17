@@ -25,72 +25,113 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
   end
 
   describe "GET /:project/jobs" do
-    let!(:job) { create(:ci_build, pipeline: pipeline) }
-
-    context "Pending scope" do
+    context 'with no jobs' do
       before do
-        visit project_jobs_path(project, scope: :pending)
-      end
+        stub_experiment(jobs_empty_state: experiment_active)
+        stub_experiment_for_subject(jobs_empty_state: in_experiment_group)
 
-      it "shows Pending tab jobs" do
-        expect(page).to have_selector('.nav-links li.active', text: 'Pending')
-        expect(page).to have_content job.short_sha
-        expect(page).to have_content job.ref
-        expect(page).to have_content job.name
-      end
-    end
-
-    context "Running scope" do
-      before do
-        job.run!
-        visit project_jobs_path(project, scope: :running)
-      end
-
-      it "shows Running tab jobs" do
-        expect(page).to have_selector('.nav-links li.active', text: 'Running')
-        expect(page).to have_content job.short_sha
-        expect(page).to have_content job.ref
-        expect(page).to have_content job.name
-      end
-    end
-
-    context "Finished scope" do
-      before do
-        job.run!
-        visit project_jobs_path(project, scope: :finished)
-      end
-
-      it "shows Finished tab jobs" do
-        expect(page).to have_selector('.nav-links li.active', text: 'Finished')
-        expect(page).to have_content 'No jobs to show'
-      end
-    end
-
-    context "All jobs" do
-      before do
-        project.builds.running_or_pending.each(&:success)
         visit project_jobs_path(project)
       end
 
-      it "shows All tab jobs" do
-        expect(page).to have_selector('.nav-links li.active', text: 'All')
-        expect(page).to have_content job.short_sha
-        expect(page).to have_content job.ref
-        expect(page).to have_content job.name
+      context 'when experiment not active' do
+        let(:experiment_active) { false }
+        let(:in_experiment_group) { false }
+
+        it 'shows the empty state control page' do
+          expect(page).to have_content('No jobs to show')
+          expect(page).to have_link('Get started with Pipelines')
+        end
+      end
+
+      context 'when experiment active and user in control group' do
+        let(:experiment_active) { true }
+        let(:in_experiment_group) { false }
+
+        it 'shows the empty state control page' do
+          expect(page).to have_content('No jobs to show')
+          expect(page).to have_link('Get started with Pipelines')
+        end
+      end
+
+      context 'when experiment active and user in experimental group' do
+        let(:experiment_active) { true }
+        let(:in_experiment_group) { true }
+
+        it 'shows the empty state experiment page' do
+          expect(page).to have_content('Use jobs to automate your tasks')
+          expect(page).to have_link('Create CI/CD configuration file')
+        end
       end
     end
 
-    context "when visiting old URL" do
-      let(:jobs_url) do
-        project_jobs_path(project)
+    context 'with a job' do
+      let!(:job) { create(:ci_build, pipeline: pipeline) }
+
+      context "Pending scope" do
+        before do
+          visit project_jobs_path(project, scope: :pending)
+        end
+
+        it "shows Pending tab jobs" do
+          expect(page).to have_selector('.nav-links li.active', text: 'Pending')
+          expect(page).to have_content job.short_sha
+          expect(page).to have_content job.ref
+          expect(page).to have_content job.name
+        end
       end
 
-      before do
-        visit jobs_url.sub('/-/jobs', '/builds')
+      context "Running scope" do
+        before do
+          job.run!
+          visit project_jobs_path(project, scope: :running)
+        end
+
+        it "shows Running tab jobs" do
+          expect(page).to have_selector('.nav-links li.active', text: 'Running')
+          expect(page).to have_content job.short_sha
+          expect(page).to have_content job.ref
+          expect(page).to have_content job.name
+        end
       end
 
-      it "redirects to new URL" do
-        expect(page.current_path).to eq(jobs_url)
+      context "Finished scope" do
+        before do
+          job.run!
+          visit project_jobs_path(project, scope: :finished)
+        end
+
+        it "shows Finished tab jobs" do
+          expect(page).to have_selector('.nav-links li.active', text: 'Finished')
+          expect(page).to have_content 'No jobs to show'
+        end
+      end
+
+      context "All jobs" do
+        before do
+          project.builds.running_or_pending.each(&:success)
+          visit project_jobs_path(project)
+        end
+
+        it "shows All tab jobs" do
+          expect(page).to have_selector('.nav-links li.active', text: 'All')
+          expect(page).to have_content job.short_sha
+          expect(page).to have_content job.ref
+          expect(page).to have_content job.name
+        end
+      end
+
+      context "when visiting old URL" do
+        let(:jobs_url) do
+          project_jobs_path(project)
+        end
+
+        before do
+          visit jobs_url.sub('/-/jobs', '/builds')
+        end
+
+        it "redirects to new URL" do
+          expect(page.current_path).to eq(jobs_url)
+        end
       end
     end
   end

@@ -79,7 +79,7 @@
                 data: { toggle: "dropdown", field_name: "#{f.object_name}[access_level]", qa_selector: "access_level_dropdown" } }
                 %span.dropdown-toggle-text
                   = member.human_access
-                = icon("chevron-down")
+                = sprite_icon("chevron-down", css_class: "dropdown-menu-toggle-icon gl-top-3")
               .dropdown-menu.dropdown-select.dropdown-menu-right.dropdown-menu-selectable
                 = dropdown_title(_("Change permissions"))
                 .dropdown-content

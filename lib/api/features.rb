@@ -46,6 +46,15 @@ module API
         present features, with: Entities::Feature, current_user: current_user
       end
 
+      desc 'Get a list of all feature definitions' do
+        success Entities::Feature::Definition
+      end
+      get :definitions do
+        definitions = ::Feature::Definition.definitions.values.map(&:to_h)
+
+        present definitions, with: Entities::Feature::Definition, current_user: current_user
+      end
+
       desc 'Set the gate value for the given feature' do
         success Entities::Feature
       end
@@ -56,6 +65,7 @@ module API
         optional :user, type: String, desc: 'A GitLab username'
         optional :group, type: String, desc: "A GitLab group's path, such as 'gitlab-org'"
         optional :project, type: String, desc: 'A projects path, like gitlab-org/gitlab-ce'
+        optional :force, type: Boolean, desc: 'Skip feature flag validation checks, ie. YAML definition'
 
         mutually_exclusive :key, :feature_group
         mutually_exclusive :key, :user
@@ -63,9 +73,8 @@ module API
         mutually_exclusive :key, :project
       end
       post ':name' do
-        validate_feature_flag_name!(params[:name])
+        validate_feature_flag_name!(params[:name]) unless params[:force]
 
-        feature = Feature.get(params[:name]) # rubocop:disable Gitlab/AvoidFeatureGet
         targets = gate_targets(params)
         value = gate_value(params)
         key = gate_key(params)
@@ -73,25 +82,26 @@ module API
         case value
         when true
           if gate_specified?(params)
-            targets.each { |target| feature.enable(target) }
+            targets.each { |target| Feature.enable(params[:name], target) }
           else
-            feature.enable
+            Feature.enable(params[:name])
           end
         when false
           if gate_specified?(params)
-            targets.each { |target| feature.disable(target) }
+            targets.each { |target| Feature.disable(params[:name], target) }
           else
-            feature.disable
+            Feature.disable(params[:name])
           end
         else
           if key == :percentage_of_actors
-            feature.enable_percentage_of_actors(value)
+            Feature.enable_percentage_of_actors(params[:name], value)
           else
-            feature.enable_percentage_of_time(value)
+            Feature.enable_percentage_of_time(params[:name], value)
           end
         end
 
-        present feature, with: Entities::Feature, current_user: current_user
+        present Feature.get(params[:name]), # rubocop:disable Gitlab/AvoidFeatureGet
+          with: Entities::Feature, current_user: current_user
       end
 
       desc 'Remove the gate value for the given feature'

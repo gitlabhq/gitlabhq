@@ -2,7 +2,7 @@
 type: reference
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Iterations **(STARTER)**
@@ -38,7 +38,7 @@ From there you can create a new iteration or click an iteration to get a more de
 
 ## Create an iteration
 
-NOTE: **Note:**
+NOTE:
 You need Developer [permissions](../../permissions.md) or higher to create an iteration.
 
 To create an iteration:
@@ -52,7 +52,7 @@ To create an iteration:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218277) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.2.
 
-NOTE: **Note:**
+NOTE:
 You need Developer [permissions](../../permissions.md) or higher to edit an iteration.
 
 To edit an iteration, click the three-dot menu (**{ellipsis_v}**) > **Edit iteration**.
@@ -71,17 +71,16 @@ To learn how to add an issue to an iteration, see the steps in
 You can track the progress of an iteration by reviewing iteration reports.
 An iteration report displays a list of all the issues assigned to an iteration and their status.
 
+The report also shows a breakdown of total issues in an iteration.
+Open iteration reports show a summary of completed, unstarted, and in-progress issues.
+Closed iteration reports show the total number of issues completed by the due date.
+
 To view an iteration report, go to the iterations list page and click an iteration's title.
 
 ### Iteration burndown and burnup charts
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/222750) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.5.
-> - It was deployed behind a feature flag, disabled by default.
-> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45492) on GitLab 13.6.
-> - It's enabled on GitLab.com.
-> - It's able to be enabled or disabled per-group.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#disable-iteration-charts). **(STARTER ONLY)**
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/269972) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.7.
 
 The iteration report includes [burndown and burnup charts](../../project/milestones/burndown_and_burnup_charts.md),
 similar to how they appear when viewing a [milestone](../../project/milestones/index.md).
@@ -111,30 +110,6 @@ To disable it:
 Feature.disable(:group_iterations)
 # or by group
 Feature.disable(:group_iterations, Group.find(<group ID>))
-```
-
-## Disable iteration charts **(STARTER ONLY)**
-
-GitLab iteration charts feature is deployed with a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can disable it for your instance. `:iteration_charts` can be enabled or disabled per-group.
-
-To enable it:
-
-```ruby
-# Instance-wide
-Feature.enable(:iteration_charts)
-# or by group
-Feature.enable(:iteration_charts, Group.find(<group ID>))
-```
-
-To disable it:
-
-```ruby
-# Instance-wide
-Feature.disable(:iteration_charts)
-# or by group
-Feature.disable(:iteration_charts, Group.find(<group ID>))
 ```
 
 <!-- ## Troubleshooting

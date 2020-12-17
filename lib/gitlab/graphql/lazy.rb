@@ -24,6 +24,8 @@ module Gitlab
           value.force
         when ::BatchLoader::GraphQL
           value.sync
+        when ::Gitlab::Graphql::Deferred
+          value.execute
         when ::GraphQL::Execution::Lazy
           value.value # part of the private api, but we can force this as well
         when ::Concurrent::Promise

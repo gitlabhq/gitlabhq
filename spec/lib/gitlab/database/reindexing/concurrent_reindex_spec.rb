@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Database::Reindexing::ConcurrentReindex, '#perform' do
   let(:table_name) { '_test_reindex_table' }
   let(:column_name) { '_test_column' }
   let(:index_name) { '_test_reindex_index' }
-  let(:index) { instance_double(Gitlab::Database::PostgresIndex, indexrelid: 42, name: index_name, schema: 'public', partitioned?: false, unique?: false, exclusion?: false, definition: 'CREATE INDEX _test_reindex_index ON public._test_reindex_table USING btree (_test_column)') }
+  let(:index) { instance_double(Gitlab::Database::PostgresIndex, indexrelid: 42, name: index_name, schema: 'public', tablename: table_name, partitioned?: false, unique?: false, exclusion?: false, expression?: false, definition: 'CREATE INDEX _test_reindex_index ON public._test_reindex_table USING btree (_test_column)') }
   let(:logger) { double('logger', debug: nil, info: nil, error: nil ) }
   let(:connection) { ActiveRecord::Base.connection }
 
@@ -128,6 +128,36 @@ RSpec.describe Gitlab::Database::Reindexing::ConcurrentReindex, '#perform' do
         subject.perform
 
         check_index_exists
+      end
+
+      context 'for expression indexes' do
+        before do
+          allow(index).to receive(:expression?).and_return(true)
+        end
+
+        it 'rebuilds table statistics before dropping the original index' do
+          expect(connection).to receive(:execute).with('SET statement_timeout TO \'21600s\'').twice
+
+          expect_to_execute_concurrently_in_order(create_index)
+
+          expect_to_execute_concurrently_in_order(<<~SQL)
+            ANALYZE "#{index.schema}"."#{index.tablename}"
+          SQL
+
+          expect_next_instance_of(::Gitlab::Database::WithLockRetries) do |instance|
+            expect(instance).to receive(:run).with(raise_on_exhaustion: true).and_yield
+          end
+
+          expect_index_rename(index.name, replaced_name)
+          expect_index_rename(replacement_name, index.name)
+          expect_index_rename(replaced_name, replacement_name)
+
+          expect_to_execute_concurrently_in_order(drop_index)
+
+          subject.perform
+
+          check_index_exists
+        end
       end
 
       context 'when a dangling index is left from a previous run' do

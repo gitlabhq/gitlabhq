@@ -34,6 +34,9 @@ def create_tokens
     openid_connect_signing_key: generate_new_rsa_private_key
   }
 
+  # encrypted_settings_key_base is optional for now
+  defaults[:encrypted_settings_key_base] = generate_new_secure_token if ENV['GITLAB_GENERATE_ENCRYPTED_SETTINGS_KEY_BASE']
+
   missing_secrets = set_missing_keys(defaults)
   write_secrets_yml(missing_secrets) unless missing_secrets.empty?
 

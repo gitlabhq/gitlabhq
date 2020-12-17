@@ -1,7 +1,6 @@
 - if @merge_requests.to_a.any?
-  .card.card-without-border
-    %ul.content-list.mr-list.issuable-list
-      = render partial: 'projects/merge_requests/merge_request', collection: @merge_requests
+  %ul.content-list.mr-list.issuable-list
+    = render partial: 'projects/merge_requests/merge_request', collection: @merge_requests
 
   = paginate @merge_requests, theme: "gitlab"
 

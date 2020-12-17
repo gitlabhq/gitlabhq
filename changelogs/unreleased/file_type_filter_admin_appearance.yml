@@ -1,0 +1,5 @@
+---
+title: Add type filtering in appearance page of the admin panel
+merge_request: 48709
+author: Paul Ungureanu @ungps
+type: fixed

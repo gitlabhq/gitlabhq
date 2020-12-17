@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 import 'ee_else_ce/boards/models/issue';
 import 'ee_else_ce/boards/models/list';
@@ -9,7 +9,6 @@ import boardConfigToggle from 'ee_else_ce/boards/config_toggle';
 import toggleLabels from 'ee_else_ce/boards/toggle_labels';
 import toggleEpicsSwimlanes from 'ee_else_ce/boards/toggle_epics_swimlanes';
 import {
-  setPromotionState,
   setWeightFetchingState,
   setEpicFetchingState,
   getMilestoneTitle,
@@ -41,7 +40,6 @@ import {
   NavigationType,
   convertObjectPropsToCamelCase,
   parseBoolean,
-  urlParamsToObject,
 } from '~/lib/utils/common_utils';
 import mountMultipleBoardsSwitcher from './mount_multiple_boards_switcher';
 
@@ -77,7 +75,6 @@ export default () => {
     el: $boardApp,
     components: {
       BoardContent,
-      Board: () => import('ee_else_ce/boards/components/board_column.vue'),
       BoardSidebar,
       BoardAddIssuesModal,
       BoardSettingsSidebar: () => import('~/boards/components/board_settings_sidebar.vue'),
@@ -114,7 +111,6 @@ export default () => {
       };
     },
     computed: {
-      ...mapState(['isShowingEpicsSwimlanes']),
       ...mapGetters(['shouldUseGraphQL']),
       detailIssueVisible() {
         return Object.keys(this.detailIssue.issue).length;
@@ -133,7 +129,17 @@ export default () => {
         ...endpoints,
         boardType: this.parent,
         disabled: this.disabled,
-        showPromotion: parseBoolean($boardApp.getAttribute('data-show-promotion')),
+        boardConfig: {
+          milestoneId: parseInt($boardApp.dataset.boardMilestoneId, 10),
+          milestoneTitle: $boardApp.dataset.boardMilestoneTitle || '',
+          iterationId: parseInt($boardApp.dataset.boardIterationId, 10),
+          iterationTitle: $boardApp.dataset.boardIterationTitle || '',
+          assigneeUsername: $boardApp.dataset.boardAssigneeUsername,
+          labels: $boardApp.dataset.labels ? JSON.parse($boardApp.dataset.labels || []) : [],
+          weight: $boardApp.dataset.boardWeight
+            ? parseInt($boardApp.dataset.boardWeight, 10)
+            : null,
+        },
       });
       boardsStore.setEndpoints(endpoints);
       boardsStore.rootPath = this.boardsEndpoint;
@@ -142,7 +148,6 @@ export default () => {
       eventHub.$on('newDetailIssue', this.updateDetailIssue);
       eventHub.$on('clearDetailIssue', this.clearDetailIssue);
       sidebarEventHub.$on('toggleSubscription', this.toggleSubscription);
-      eventHub.$on('performSearch', this.performSearch);
       eventHub.$on('initialBoardLoad', this.initialBoardLoad);
     },
     beforeDestroy() {
@@ -150,7 +155,6 @@ export default () => {
       eventHub.$off('newDetailIssue', this.updateDetailIssue);
       eventHub.$off('clearDetailIssue', this.clearDetailIssue);
       sidebarEventHub.$off('toggleSubscription', this.toggleSubscription);
-      eventHub.$off('performSearch', this.performSearch);
       eventHub.$off('initialBoardLoad', this.initialBoardLoad);
     },
     mounted() {
@@ -166,22 +170,13 @@ export default () => {
       }
     },
     methods: {
-      ...mapActions([
-        'setInitialBoardData',
-        'setFilters',
-        'fetchEpicsSwimlanes',
-        'resetIssues',
-        'resetEpics',
-        'fetchLists',
-      ]),
+      ...mapActions(['setInitialBoardData', 'performSearch']),
       initialBoardLoad() {
         boardsStore
           .all()
           .then(res => res.data)
           .then(lists => {
             lists.forEach(list => boardsStore.addList(list));
-            boardsStore.addBlankState();
-            setPromotionState(boardsStore);
             this.loading = false;
           })
           .catch(() => {
@@ -190,17 +185,6 @@ export default () => {
       },
       updateTokens() {
         this.filterManager.updateTokens();
-      },
-      performSearch() {
-        this.setFilters(convertObjectPropsToCamelCase(urlParamsToObject(window.location.search)));
-        if (gon.features.boardsWithSwimlanes && this.isShowingEpicsSwimlanes) {
-          this.resetEpics();
-          this.resetIssues();
-          this.fetchEpicsSwimlanes({});
-        } else if (gon.features.graphqlBoardLists && !this.isShowingEpicsSwimlanes) {
-          this.fetchLists();
-          this.resetIssues();
-        }
       },
       updateDetailIssue(newIssue, multiSelect = false) {
         const { sidebarInfoEndpoint } = newIssue;
@@ -303,7 +287,7 @@ export default () => {
 
   const issueBoardsModal = document.getElementById('js-add-issues-btn');
 
-  if (issueBoardsModal) {
+  if (issueBoardsModal && gon.features.addIssuesButton) {
     // eslint-disable-next-line no-new
     new Vue({
       el: issueBoardsModal,
@@ -350,5 +334,8 @@ export default () => {
     toggleEpicsSwimlanes();
   }
 
-  mountMultipleBoardsSwitcher();
+  mountMultipleBoardsSwitcher({
+    boardsEndpoint: $boardApp.dataset.boardsEndpoint,
+    recentBoardsEndpoint: $boardApp.dataset.recentBoardsEndpoint,
+  });
 };

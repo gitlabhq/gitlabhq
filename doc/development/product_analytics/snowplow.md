@@ -1,7 +1,7 @@
 ---
 stage: Growth
 group: Product Analytics
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Snowplow Guide
@@ -71,8 +71,8 @@ The following example shows a basic request/response flow between the following 
 
 - Snowplow JS / Ruby Trackers on GitLab.com
 - [GitLab.com Snowplow Collector](https://gitlab.com/gitlab-com/gl-infra/readiness/-/blob/master/library/snowplow/index.md)
-- GitLab's S3 Bucket
-- GitLab's Snowflake Data Warehouse
+- The GitLab S3 Bucket
+- The GitLab Snowflake Data Warehouse
 - Sisense:
 
 ```mermaid
@@ -98,7 +98,7 @@ sequenceDiagram
 
 ## Structured event taxonomy
 
-When adding new click events, we should add them in a way that's internally consistent. If we don't, it'll be very painful to perform analysis across features since each feature will be capturing events differently.
+When adding new click events, we should add them in a way that's internally consistent. If we don't, it is very painful to perform analysis across features since each feature captures events differently.
 
 The current method provides several attributes that are sent on each click event. Please try to follow these guidelines when specifying events to capture:
 
@@ -109,6 +109,10 @@ The current method provides several attributes that are sent on each click event
 | label     | text    | false    | The specific element, or object that's being acted on. This is either the label of the element (e.g. a tab labeled 'Create from template' may be `create_from_template`) or a unique identifier if no text is available (e.g. closing the Groups dropdown in the top navbar might be `groups_dropdown_close`), or it could be the name or title attribute of a record being created. |
 | property  | text    | false    | Any additional property of the element, or object being acted on. |
 | value     | decimal | false    | Describes a numeric value or something directly related to the event. This could be the value of an input (e.g. `10` when clicking `internal` visibility). |
+
+### Web-specific parameters
+
+Snowplow JS adds many [web-specific parameters](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/snowplow-tracker-protocol/#Web-specific_parameters) to all web events by default.
 
 ## Implementing Snowplow JS (Frontend) tracking
 
@@ -149,6 +153,17 @@ Below is a list of supported `data-track-*` attributes:
 | `data-track-property` | false    | The `property` as described in our [Structured event taxonomy](#structured-event-taxonomy). |
 | `data-track-value`    | false    | The `value` as described in our [Structured event taxonomy](#structured-event-taxonomy). If omitted, this is the element's `value` property or an empty string. For checkboxes, the default value is the element's checked attribute or `false` when unchecked. |
 | `data-track-context`  | false    | The `context` as described in our [Structured event taxonomy](#structured-event-taxonomy). |
+
+#### Caveats
+
+When using the GitLab helper method [`nav_link`](https://gitlab.com/gitlab-org/gitlab/-/blob/898b286de322e5df6a38d257b10c94974d580df8/app/helpers/tab_helper.rb#L69) be sure to wrap `html_options` under the `html_options` keyword argument.
+Be careful, as this behavior can be confused with the `ActionView` helper method [`link_to`](https://api.rubyonrails.org/v5.2.3/classes/ActionView/Helpers/UrlHelper.html#method-i-link_to) that does not require additional wrapping of `html_options`
+
+`nav_link(controller: ['dashboard/groups', 'explore/groups'], html_options: { data: { track_label: "groups_dropdown", track_event: "click_dropdown" } })`
+
+vs
+
+`link_to assigned_issues_dashboard_path, title: _('Issues'), data: { track_label: 'main_navigation', track_event: 'click_issues_link' }`
 
 ### Tracking within Vue components
 
@@ -366,47 +381,78 @@ Snowplow Micro is a Docker-based solution for testing frontend and backend event
 - Look at the [Snowplow Micro repository](https://github.com/snowplow-incubator/snowplow-micro)
 - Watch our [installation guide recording](https://www.youtube.com/watch?v=OX46fo_A0Ag)
 
-1. Install [Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro):
+1. Ensure Docker is installed and running.
+
+1. Install [Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro) by cloning the settings in [this project](https://gitlab.com/gitlab-org/snowplow-micro-configuration):
+1. Navigate to the directory with the cloned project, and start the appropriate Docker
+   container with the following script:
 
    ```shell
-   docker run --mount type=bind,source=$(pwd)/example,destination=/config -p 9090:9090 snowplow/snowplow-micro:latest --collector-config /config/micro.conf --iglu /config/iglu.json
-   ```
-
-1. Install Snowplow Micro by cloning the settings in [this project](https://gitlab.com/gitlab-org/snowplow-micro-configuration):
-
-   ```shell
-   git clone git@gitlab.com:gitlab-org/snowplow-micro-configuration.git
    ./snowplow-micro.sh
    ```
 
-1. Update port in SQL to set `9090`:
+1. Update your instance's settings to enable Snowplow events and point to the Snowplow Micro collector:
 
    ```shell
    gdk psql -d gitlabhq_development
    update application_settings set snowplow_collector_hostname='localhost:9090', snowplow_enabled=true, snowplow_cookie_domain='.gitlab.com';
    ```
 
-1. Update `app/assets/javascripts/tracking.js` to [remove this line](https://gitlab.com/snippets/1918635):
+1. Update `DEFAULT_SNOWPLOW_OPTIONS` in `app/assets/javascripts/tracking.js` to remove `forceSecureTracker: true`:
 
-   ```javascript
-   forceSecureTracker: true
+   ```diff
+   diff --git a/app/assets/javascripts/tracking.js b/app/assets/javascripts/tracking.js
+   index 0a1211d0a76..3b98c8f28f2 100644
+   --- a/app/assets/javascripts/tracking.js
+   +++ b/app/assets/javascripts/tracking.js
+   @@ -7,7 +7,6 @@ const DEFAULT_SNOWPLOW_OPTIONS = {
+      appId: '',
+      userFingerprint: false,
+      respectDoNotTrack: true,
+   -  forceSecureTracker: true,
+      eventMethod: 'post',
+      contexts: { webPage: true, performanceTiming: true },
+      formTracking: false,
+
    ```
 
-1. Update `lib/gitlab/tracking.rb` to [add these lines](https://gitlab.com/snippets/1918635):
+1. Update `snowplow_options` in `lib/gitlab/tracking.rb` to add `protocol` and `port`:
 
-   ```ruby
-   protocol: 'http',
-   port: 9090,
+   ```diff
+   diff --git a/lib/gitlab/tracking.rb b/lib/gitlab/tracking.rb
+   index 618e359211b..e9084623c43 100644
+   --- a/lib/gitlab/tracking.rb
+   +++ b/lib/gitlab/tracking.rb
+   @@ -41,7 +41,9 @@ def snowplow_options(group)
+              cookie_domain: Gitlab::CurrentSettings.snowplow_cookie_domain,
+              app_id: Gitlab::CurrentSettings.snowplow_app_id,
+              form_tracking: additional_features,
+   -          link_click_tracking: additional_features
+   +          link_click_tracking: additional_features,
+   +          protocol: 'http',
+   +          port: 9090
+            }.transform_keys! { |key| key.to_s.camelize(:lower).to_sym }
+          end
    ```
 
-1. Update `lib/gitlab/tracking.rb` to [change async emitter from https to http](https://gitlab.com/snippets/1918635):
+1. Update `emitter` in `lib/gitlab/tracking/destinations/snowplow.rb` to change `protocol`:
 
-   ```ruby
-   SnowplowTracker::AsyncEmitter.new(Gitlab::CurrentSettings.snowplow_collector_hostname, protocol: 'http'),
+   ```diff
+   diff --git a/lib/gitlab/tracking/destinations/snowplow.rb b/lib/gitlab/tracking/destinations/snowplow.rb
+   index 4fa844de325..5dd9d0eacfb 100644
+   --- a/lib/gitlab/tracking/destinations/snowplow.rb
+   +++ b/lib/gitlab/tracking/destinations/snowplow.rb
+   @@ -40,7 +40,7 @@ def tracker
+            def emitter
+              SnowplowTracker::AsyncEmitter.new(
+                Gitlab::CurrentSettings.snowplow_collector_hostname,
+   -            protocol: 'https'
+   +            protocol: 'http'
+              )
+            end
+          end
+
    ```
-
-1. Enable Snowplow in the admin area, Settings::Integrations::Snowplow to point to:
-   `http://localhost:3000/admin/application_settings/integrations#js-snowplow-settings`.
 
 1. Restart GDK:
 
@@ -417,8 +463,10 @@ Snowplow Micro is a Docker-based solution for testing frontend and backend event
 1. Send a test Snowplow event from the Rails console:
 
    ```ruby
-   Gitlab::Tracking.self_describing_event('iglu:com.gitlab/pageview_context/jsonschema/1-0-0', { page_type: 'MY_TYPE' }, context: nil )
+   Gitlab::Tracking.self_describing_event('iglu:com.gitlab/pageview_context/jsonschema/1-0-0', data: { page_type: 'MY_TYPE' }, context: nil)
    ```
+
+1. Navigate to `localhost:9090/micro/good` to see the event.
 
 ### Snowplow Mini
 
@@ -427,3 +475,142 @@ Snowplow Micro is a Docker-based solution for testing frontend and backend event
 Snowplow Mini can be used for testing frontend and backend events on a production, staging and local development environment.
 
 For GitLab.com, we're setting up a [QA and Testing environment](https://gitlab.com/gitlab-org/telemetry/-/issues/266) using Snowplow Mini.
+
+## Snowplow Schemas
+
+### Default Schema
+
+| Field Name               | Required            | Type      | Description                                                                                                                      |
+|--------------------------|---------------------|-----------|----------------------------------------------------------------------------------------------------------------------------------|
+| app_id                   | **{check-circle}**  | string    | Unique identifier for website / application                                                                                      |
+| base_currency            | **{dotted-circle}** | string    | Reporting currency                                                                                                               |
+| br_colordepth            | **{dotted-circle}** | integer   | Browser color depth                                                                                                              |
+| br_cookies               | **{dotted-circle}** | boolean   | Does the browser permit cookies?                                                                                                 |
+| br_family                | **{dotted-circle}** | string    | Browser family                                                                                                                   |
+| br_features_director     | **{dotted-circle}** | boolean   | Director plugin installed?                                                                                                       |
+| br_features_flash        | **{dotted-circle}** | boolean   | Flash plugin installed?                                                                                                          |
+| br_features_gears        | **{dotted-circle}** | boolean   | Google gears installed?                                                                                                          |
+| br_features_java         | **{dotted-circle}** | boolean   | Java plugin installed?                                                                                                           |
+| br_features_pdf          | **{dotted-circle}** | boolean   | Adobe PDF plugin installed?                                                                                                      |
+| br_features_quicktime    | **{dotted-circle}** | boolean   | Quicktime plugin installed?                                                                                                      |
+| br_features_realplayer   | **{dotted-circle}** | boolean   | Realplayer plugin installed?                                                                                                     |
+| br_features_silverlight  | **{dotted-circle}** | boolean   | Silverlight plugin installed?                                                                                                    |
+| br_features_windowsmedia | **{dotted-circle}** | boolean   | Windows media plugin installed?                                                                                                  |
+| br_lang                  | **{dotted-circle}** | string    | Language the browser is set to                                                                                                   |
+| br_name                  | **{dotted-circle}** | string    | Browser name                                                                                                                     |
+| br_renderengine          | **{dotted-circle}** | string    | Browser rendering engine                                                                                                         |
+| br_type                  | **{dotted-circle}** | string    | Browser type                                                                                                                     |
+| br_version               | **{dotted-circle}** | string    | Browser version                                                                                                                  |
+| br_viewheight            | **{dotted-circle}** | string    | Browser viewport height                                                                                                          |
+| br_viewwidth             | **{dotted-circle}** | string    | Browser viewport width                                                                                                           |
+| collector_tstamp         | **{dotted-circle}** | timestamp | Time stamp for the event recorded by the collector                                                                               |
+| contexts                 | **{dotted-circle}** |           |                                                                                                                                  |
+| derived_contexts         | **{dotted-circle}** |           | Contexts derived in the Enrich process                                                                                           |
+| derived_tstamp           | **{dotted-circle}** | timestamp | Timestamp making allowance for innaccurate device clock                                                                          |
+| doc_charset              | **{dotted-circle}** | string    | Web page’s character encoding                                                                                                    |
+| doc_height               | **{dotted-circle}** | string    | Web page height                                                                                                                  |
+| doc_width                | **{dotted-circle}** | string    | Web page width                                                                                                                   |
+| domain_sessionid         | **{dotted-circle}** | string    | Unique identifier (UUID) for this visit of this user_id to this domain                                                           |
+| domain_sessionidx        | **{dotted-circle}** | integer   | Index of number of visits that this user_id has made to this domain (The first visit is `1`)                                        |
+| domain_userid            | **{dotted-circle}** | string    | Unique identifier for a user, based on a first party cookie (so domain specific)                                                 |
+| dvce_created_tstamp      | **{dotted-circle}** | timestamp | Timestamp when event occurred, as recorded by client device                                                                      |
+| dvce_ismobile            | **{dotted-circle}** | boolean   | Indicates whether device is mobile                                                                                               |
+| dvce_screenheight        | **{dotted-circle}** | string    | Screen / monitor resolution                                                                                                      |
+| dvce_screenwidth         | **{dotted-circle}** | string    | Screen / monitor resolution                                                                                                      |
+| dvce_sent_tstamp         | **{dotted-circle}** | timestamp | Timestamp when event was sent by client device to collector                                                                      |
+| dvce_type                | **{dotted-circle}** | string    | Type of device                                                                                                                   |
+| etl_tags                 | **{dotted-circle}** | string    | JSON of tags for this ETL run                                                                                                    |
+| etl_tstamp               | **{dotted-circle}** | timestamp | Timestamp event began ETL                                                                                                        |
+| event                    | **{dotted-circle}** | string    | Event type                                                                                                                       |
+| event_fingerprint        | **{dotted-circle}** | string    | Hash client-set event fields                                                                                                     |
+| event_format             | **{dotted-circle}** | string    | Format for event                                                                                                                 |
+| event_id                 | **{dotted-circle}** | string    | Event UUID                                                                                                                       |
+| event_name               | **{dotted-circle}** | string    | Event name                                                                                                                       |
+| event_vendor             | **{dotted-circle}** | string    | The company who developed the event model                                                                                        |
+| event_version            | **{dotted-circle}** | string    | Version of event schema                                                                                                          |
+| geo_city                 | **{dotted-circle}** | string    | City of IP origin                                                                                                                |
+| geo_country              | **{dotted-circle}** | string    | Country of IP origin                                                                                                             |
+| geo_latitude             | **{dotted-circle}** | string    | An approximate latitude                                                                                                          |
+| geo_longitude            | **{dotted-circle}** | string    | An approximate longitude                                                                                                         |
+| geo_region               | **{dotted-circle}** | string    | Region of IP origin                                                                                                              |
+| geo_region_name          | **{dotted-circle}** | string    | Region of IP origin                                                                                                              |
+| geo_timezone             | **{dotted-circle}** | string    | Timezone of IP origin                                                                                                            |
+| geo_zipcode              | **{dotted-circle}** | string    | Zip (postal) code of IP origin                                                                                                   |
+| ip_domain                | **{dotted-circle}** | string    | Second level domain name associated with the visitor’s IP address                                                                |
+| ip_isp                   | **{dotted-circle}** | string    | Visitor’s ISP                                                                                                                    |
+| ip_netspeed              | **{dotted-circle}** | string    | Visitor’s connection type                                                                                                        |
+| ip_organization          | **{dotted-circle}** | string    | Organization associated with the visitor’s IP address – defaults to ISP name if none is found                                    |
+| mkt_campaign             | **{dotted-circle}** | string    | The campaign ID                                                                                                                  |
+| mkt_clickid              | **{dotted-circle}** | string    | The click ID                                                                                                                     |
+| mkt_content              | **{dotted-circle}** | string    | The content or ID of the ad.                                                                   |
+| mkt_medium               | **{dotted-circle}** | string    | Type of traffic source                                                                                                           |
+| mkt_network              | **{dotted-circle}** | string    | The ad network to which the click ID belongs                                                                                     |
+| mkt_source               | **{dotted-circle}** | string    | The company / website where the traffic came from                                                                                |
+| mkt_term                 | **{dotted-circle}** | string    | Keywords associated with the referrer                                                                                        |
+| name_tracker             | **{dotted-circle}** | string    | The tracker namespace                                                                                                            |
+| network_userid           | **{dotted-circle}** | string    | Unique identifier for a user, based on a cookie from the collector (so set at a network level and shouldn’t be set by a tracker) |
+| os_family                | **{dotted-circle}** | string    | Operating system family                                                                                                          |
+| os_manufacturer          | **{dotted-circle}** | string    | Manufacturers of operating system                                                                                                |
+| os_name                  | **{dotted-circle}** | string    | Name of operating system                                                                                                         |
+| os_timezone              | **{dotted-circle}** | string    | Client operating system timezone                                                                                                 |
+| page_referrer            | **{dotted-circle}** | string    | Referrer URL                                                                                                                     |
+| page_title               | **{dotted-circle}** | string    | Page title                                                                                                                       |
+| page_url                 | **{dotted-circle}** | string    | Page URL                                                                                                                         |
+| page_urlfragment         | **{dotted-circle}** | string    | Fragment aka anchor                                                                                                              |
+| page_urlhost             | **{dotted-circle}** | string    | Host aka domain                                                                                                                  |
+| page_urlpath             | **{dotted-circle}** | string    | Path to page                                                                                                                     |
+| page_urlport             | **{dotted-circle}** | integer   | Port if specified, 80 if not                                                                                                     |
+| page_urlquery            | **{dotted-circle}** | string    | Query string                                                                                                                      |
+| page_urlscheme           | **{dotted-circle}** | string    | Scheme (protocol name)                                                                                                              |
+| platform                 | **{dotted-circle}** | string    | The platform the app runs on                                                                                                     |
+| pp_xoffset_max           | **{dotted-circle}** | integer   | Maximum page x offset seen in the last ping period                                                                               |
+| pp_xoffset_min           | **{dotted-circle}** | integer   | Minimum page x offset seen in the last ping period                                                                               |
+| pp_yoffset_max           | **{dotted-circle}** | integer   | Maximum page y offset seen in the last ping period                                                                               |
+| pp_yoffset_min           | **{dotted-circle}** | integer   | Minimum page y offset seen in the last ping period                                                                               |
+| refr_domain_userid       | **{dotted-circle}** | string    | The Snowplow domain_userid of the referring website                                                                              |
+| refr_dvce_tstamp         | **{dotted-circle}** | timestamp | The time of attaching the domain_userid to the inbound link                                                                      |
+| refr_medium              | **{dotted-circle}** | string    | Type of referer                                                                                                                  |
+| refr_source              | **{dotted-circle}** | string    | Name of referer if recognised                                                                                                    |
+| refr_term                | **{dotted-circle}** | string    | Keywords if source is a search engine                                                                                            |
+| refr_urlfragment         | **{dotted-circle}** | string    | Referer URL fragment                                                                                                             |
+| refr_urlhost             | **{dotted-circle}** | string    | Referer host                                                                                                                     |
+| refr_urlpath             | **{dotted-circle}** | string    | Referer page path                                                                                                                |
+| refr_urlport             | **{dotted-circle}** | integer   | Referer port                                                                                                                     |
+| refr_urlquery            | **{dotted-circle}** | string    | Referer URL querystring                                                                                                          |
+| refr_urlscheme           | **{dotted-circle}** | string    | Referer scheme                                                                                                                   |
+| se_action                | **{dotted-circle}** | string    | The action / event itself                                                                                                        |
+| se_category              | **{dotted-circle}** | string    | The category of event                                                                                                            |
+| se_label                 | **{dotted-circle}** | string    | A label often used to refer to the ‘object’ the action is performed on                                                           |
+| se_property              | **{dotted-circle}** | string    | A property associated with either the action or the object                                                                       |
+| se_value                 | **{dotted-circle}** | decimal   | A value associated with the user action                                                                                          |
+| ti_category              | **{dotted-circle}** | string    | Item category                                                                                                                    |
+| ti_currency              | **{dotted-circle}** | string    | Currency                                                                                                                         |
+| ti_name                  | **{dotted-circle}** | string    | Item name                                                                                                                        |
+| ti_orderid               | **{dotted-circle}** | string    | Order ID                                                                                                                         |
+| ti_price                 | **{dotted-circle}** | decimal   | Item price                                                                                                                       |
+| ti_price_base            | **{dotted-circle}** | decimal   | Item price in base currency                                                                                                      |
+| ti_quantity              | **{dotted-circle}** | integer   | Item quantity                                                                                                                    |
+| ti_sku                   | **{dotted-circle}** | string    | Item SKU                                                                                                                         |
+| tr_affiliation           | **{dotted-circle}** | string    | Transaction affiliation (such as channel)                                                                                           |
+| tr_city                  | **{dotted-circle}** | string    | Delivery address: city                                                                                                           |
+| tr_country               | **{dotted-circle}** | string    | Delivery address: country                                                                                                        |
+| tr_currency              | **{dotted-circle}** | string    | Transaction Currency                                                                                                             |
+| tr_orderid               | **{dotted-circle}** | string    | Order ID                                                                                                                         |
+| tr_shipping              | **{dotted-circle}** | decimal   | Delivery cost charged                                                                                                            |
+| tr_shipping_base         | **{dotted-circle}** | decimal   | Shipping cost in base currency                                                                                                   |
+| tr_state                 | **{dotted-circle}** | string    | Delivery address: state                                                                                                          |
+| tr_tax                   | **{dotted-circle}** | decimal   | Transaction tax value (such as amount of VAT included)                                                                              |
+| tr_tax_base              | **{dotted-circle}** | decimal   | Tax applied in base currency                                                                                                     |
+| tr_total                 | **{dotted-circle}** | decimal   | Transaction total value                                                                                                          |
+| tr_total_base            | **{dotted-circle}** | decimal   | Total amount of transaction in base currency                                                                                     |
+| true_tstamp              | **{dotted-circle}** | timestamp | User-set exact timestamp                                                                                                         |
+| txn_id                   | **{dotted-circle}** | string    | Transaction ID                                                                                                                   |
+| unstruct_event           | **{dotted-circle}** | JSON      | The properties of the event                                                                                                      |
+| uploaded_at              | **{dotted-circle}** |           |                                                                                                                                  |
+| user_fingerprint         | **{dotted-circle}** | integer   | User identifier based on (hopefully unique) browser features                                                                     |
+| user_id                  | **{dotted-circle}** | string    | Unique identifier for user, set by the business using setUserId                                                                  |
+| user_ipaddress           | **{dotted-circle}** | string    | IP address                                                                                                                       |
+| useragent                | **{dotted-circle}** | string    | User agent (expressed as a browser string)                                                                                                |
+| v_collector              | **{dotted-circle}** | string    | Collector version                                                                                                                |
+| v_etl                    | **{dotted-circle}** | string    | ETL version                                                                                                                      |
+| v_tracker                | **{dotted-circle}** | string    | Identifier for Snowplow tracker                                                                                                  |

@@ -596,6 +596,7 @@ export class AwardsHandler {
   hideMenuElement($emojiMenu) {
     $emojiMenu.on(transitionEndEventString, e => {
       if (e.currentTarget === e.target) {
+        // eslint-disable-next-line @gitlab/no-global-event-off
         $emojiMenu.removeClass(IS_RENDERED).off(transitionEndEventString);
       }
     });

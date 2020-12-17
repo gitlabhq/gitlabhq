@@ -2,7 +2,7 @@
 type: reference, howto
 stage: Manage
 group: Compliance
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Compliance Dashboard **(ULTIMATE)**
@@ -19,7 +19,7 @@ To access the Compliance Dashboard for a group, navigate to **{shield}** **Secur
 
 ![Compliance Dashboard](img/compliance_dashboard_v13_6.png)
 
-NOTE: **Note:**
+NOTE:
 The Compliance Dashboard shows only the latest MR on each project.
 
 ## Use cases
@@ -81,6 +81,6 @@ To download the Chain of Custody report, navigate to **{shield}** **Security & C
 You can generate a commit-specific Chain of Custody report for a given commit SHA. To do so, select
 the dropdown next to the **List of all merge commits** button at the top of the Compliance Dashboard.
 
-NOTE: **Note:**
+NOTE:
 The Chain of Custody report download is a CSV file, with a maximum size of 15 MB.
 The remaining records are truncated when this limit is reached.

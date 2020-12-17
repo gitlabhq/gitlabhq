@@ -1,0 +1,5 @@
+---
+title: Add cascade delete foreign key to web_hooks on service_id without validation
+merge_request: 47821
+author:
+type: fixed

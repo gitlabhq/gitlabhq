@@ -2,7 +2,7 @@
 disqus_identifier: 'https://docs.gitlab.com/ee/workflow/notifications.html'
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # GitLab Notification Emails
@@ -13,15 +13,15 @@ Notifications are sent via email.
 
 ## Receiving notifications
 
-You will receive notifications for one of the following reasons:
+You receive notifications for one of the following reasons:
 
 - You participate in an issue, merge request, epic or design. In this context, _participate_ means comment, or edit.
 - You enable notifications in an issue, merge request, or epic. To enable notifications, click the **Notifications** toggle in the sidebar to _on_.
 
-While notifications are enabled, you will receive notification of actions occurring in that issue, merge request, or epic.
+While notifications are enabled, you receive notification of actions occurring in that issue, merge request, or epic.
 
-NOTE: **Note:**
-Notifications can be blocked by an admin, preventing them from being sent.
+NOTE:
+Notifications can be blocked by an administrator, preventing them from being sent.
 
 ## Tuning your notifications
 
@@ -50,7 +50,7 @@ These notification settings apply only to you. They do not affect the notificati
 Your **Global notification settings** are the default settings unless you select different values for a project or a group.
 
 - Notification email
-  - This is the email address your notifications will be sent to.
+  - This is the email address your notifications are sent to.
 - Global notification level
   - This is the default [notification level](#notification-levels) which applies to all your notifications.
 - Receive notifications about your own activity.
@@ -138,7 +138,7 @@ For each project and group you can select one of the following levels:
 
 ## Notification events
 
-Users will be notified of the following events:
+Users are notified of the following events:
 
 | Event                        | Sent to             | Settings level               |
 |------------------------------|---------------------|------------------------------|
@@ -158,7 +158,7 @@ Users will be notified of the following events:
 
 ## Issue / Epics / Merge request events
 
-In most of the below cases, the notification will be sent to:
+In most of the below cases, the notification is sent to:
 
 - Participants:
   - the author and assignee of the issue/merge request
@@ -169,7 +169,7 @@ In most of the below cases, the notification will be sent to:
 - Subscribers: anyone who manually subscribed to the issue, merge request, or epic **(ULTIMATE)**
 - Custom: Users with notification level "custom" who turned on notifications for any of the events present in the table below
 
-NOTE: **Note:**
+NOTE:
 To minimize the number of notifications that do not require any action, from [GitLab 12.9 onwards](https://gitlab.com/gitlab-org/gitlab/-/issues/616), eligible approvers are no longer notified for all the activities in their projects. To receive them they have to change their user notification settings to **Watch** instead.
 
 | Event                  | Sent to |
@@ -193,23 +193,23 @@ To minimize the number of notifications that do not require any action, from [Gi
 | New comment            | The above, plus anyone mentioned by `@username` in the comment, with notification level "Mention" or higher |
 | Failed pipeline        | The author of the pipeline |
 | Fixed pipeline    | The author of the pipeline. Enabled by default. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24309) in GitLab 13.1. |
-| Successful pipeline    | The author of the pipeline, if they have the custom notification setting for successful pipelines set. If the pipeline failed previously, a `Fixed pipeline` message will be sent for the first successful pipeline after the failure, then a `Successful pipeline` message for any further successful pipelines. |
+| Successful pipeline    | The author of the pipeline, if they have the custom notification setting for successful pipelines set. If the pipeline failed previously, a `Fixed pipeline` message is sent for the first successful pipeline after the failure, then a `Successful pipeline` message for any further successful pipelines. |
 | New epic **(ULTIMATE)** |        |
 | Close epic **(ULTIMATE)** |      |
 | Reopen epic **(ULTIMATE)** |     |
 
 In addition, if the title or description of an Issue or Merge Request is
-changed, notifications will be sent to any **new** mentions by `@username` as
+changed, notifications are sent to any **new** mentions by `@username` as
 if they had been mentioned in the original text.
 
-You won't receive notifications for Issues, Merge Requests or Milestones created
-by yourself (except when an issue is due). You will only receive automatic
+You don't receive notifications for Issues, Merge Requests or Milestones created
+by yourself (except when an issue is due). You only receive automatic
 notifications when somebody else comments or adds changes to the ones that
 you've created or mentions you.
 
-If an open merge request becomes unmergeable due to conflict, its author will be notified about the cause.
+If an open merge request becomes unmergeable due to conflict, its author is notified about the cause.
 If a user has also set the merge request to automatically merge once pipeline succeeds,
-then that user will also be notified.
+then that user is also notified.
 
 ## Design email notifications
 
@@ -252,9 +252,9 @@ The `X-GitLab-NotificationReason` header contains the reason for the notificatio
 - `mentioned`
 
 The reason for the notification is also included in the footer of the notification email. For example an email with the
-reason `assigned` will have this sentence in the footer:
+reason `assigned` has this sentence in the footer:
 
 - `You are receiving this email because you have been assigned an item on <configured GitLab hostname>.`
 
-NOTE: **Note:**
+NOTE:
 Notification of other events is being considered for inclusion in the `X-GitLab-NotificationReason` header. For details, see this [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/20689).

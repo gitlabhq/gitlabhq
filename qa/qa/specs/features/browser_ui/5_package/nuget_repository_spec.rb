@@ -51,7 +51,7 @@ module QA
                         - dotnet nuget add source "$CI_SERVER_URL/api/v4/projects/$CI_PROJECT_ID/packages/nuget/index.json" --name gitlab --username gitlab-ci-token --password $CI_JOB_TOKEN --store-password-in-clear-text
                         - dotnet nuget push "bin/Release/*.nupkg" --source gitlab
                       only:
-                        - master
+                        - "#{project.default_branch}"
                       tags:
                         - "runner-for-#{project.name}"
                     YAML
@@ -84,7 +84,7 @@ module QA
 
         Page::Project::Packages::Index.perform do |index|
           expect(index).to have_content("Package deleted successfully")
-          expect(index).to have_no_package(package_name)
+          expect(index).not_to have_package(package_name)
         end
       end
     end

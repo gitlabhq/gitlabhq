@@ -1,0 +1,189 @@
+@import 'mixins_and_variables_and_functions';
+
+@mixin inset-border-1-red-500($important: false) {
+  box-shadow: inset 0 0 0 $gl-border-size-1 $red-500 if-important($important);
+}
+
+.timezone-dropdown {
+  .dropdown-menu {
+    @include gl-w-full;
+  }
+
+  .gl-new-dropdown-item-text-primary {
+    @include gl-overflow-hidden;
+    @include gl-text-overflow-ellipsis;
+  }
+}
+
+.modal-footer {
+  @include gl-bg-gray-10;
+}
+
+.invalid-dropdown {
+  .gl-dropdown-toggle {
+    @include inset-border-1-red-500;
+
+    &:hover {
+      @include inset-border-1-red-500(true);
+    }
+  }
+}
+
+//// Copied from roadmaps.scss - adapted for on-call schedules
+$header-item-height: 72px;
+$item-height: 40px;
+$details-cell-width: 180px;
+$timeline-cell-height: 32px;
+$timeline-cell-width: 180px;
+$border-style: 1px solid var(--gray-100, $gray-100);
+$gradient-dark-gray: rgba(0, 0, 0, 0.15);
+$gradient-gray: rgba(255, 255, 255, 0.001);
+$scroll-top-gradient: linear-gradient(to bottom, $gradient-dark-gray 0%, $gradient-gray 100%);
+$scroll-bottom-gradient: linear-gradient(to bottom, $gradient-gray 0%, $gradient-dark-gray 100%);
+$column-right-gradient: linear-gradient(to right, $gradient-dark-gray 0%, $gradient-gray 100%);
+
+.schedule-shell {
+  @include gl-relative;
+  @include gl-h-full;
+  @include gl-w-full;
+  @include gl-overflow-x-auto;
+  @include gl-border-gray-100;
+  @include gl-border-1;
+  @include gl-border-solid;
+  @include gl-rounded-base;
+}
+
+.timeline-section {
+  @include gl-sticky;
+  @include gl-top-0;
+  z-index: 20;
+
+  .timeline-header-blank,
+  .timeline-header-item {
+    @include float-left;
+    height: $header-item-height;
+    border-bottom: $border-style;
+    background-color: var(--white, $white);
+  }
+
+  .timeline-header-blank {
+    @include gl-sticky;
+    @include gl-top-0;
+    @include gl-left-0;
+    width: $details-cell-width;
+    z-index: 2;
+  }
+
+  .timeline-header-item {
+    // container size minus left panel width divided by 2 week timeframes
+    width: calc((100% - #{$details-cell-width}) / 2);
+
+    &:last-of-type .item-label {
+      @include gl-border-r-0;
+    }
+
+    .item-label,
+    .item-sublabel .sublabel-value {
+      color: var(--gray-400, $gray-400);
+      @include gl-font-weight-normal;
+
+      &.label-dark {
+        @include gl-text-gray-900;
+      }
+
+      &.label-bold {
+        @include gl-font-weight-bold;
+      }
+    }
+
+    .item-label {
+      @include gl-py-4;
+      @include gl-pl-4;
+      border-right: $border-style;
+      border-bottom: $border-style;
+    }
+
+    .item-sublabel {
+      @include gl-relative;
+      @include gl-display-flex;
+
+      .sublabel-value {
+        @include gl-flex-grow-1;
+        @include gl-flex-basis-0;
+
+        text-align: center;
+        @include gl-font-base;
+        padding: 2px 0;
+      }
+    }
+
+    .current-day-indicator-header {
+      @include gl-absolute;
+      @include gl-bottom-0;
+      height: $grid-size;
+      width: $grid-size;
+      background-color: var(--red-500, $red-500);
+      @include gl-rounded-full;
+      transform: translate(-50%, 50%);
+    }
+  }
+}
+
+.timeline-section .timeline-header-blank,
+.list-section .details-cell {
+  &::after {
+    @include gl-h-full;
+    @include gl-content-empty;
+    @include gl-absolute;
+    @include gl-top-0;
+    right: -$grid-size;
+    width: $grid-size;
+    @include gl-pointer-events-none;
+    background: $column-right-gradient;
+  }
+}
+
+.details-cell,
+.timeline-cell {
+  @include float-left;
+  height: $item-height;
+}
+
+.details-cell {
+  @include gl-sticky;
+  @include gl-left-0;
+  width: $details-cell-width;
+  @include gl-font-base;
+  background-color: var(--white, $white);
+  z-index: 10;
+}
+
+.timeline-cell {
+  @include gl-relative;
+  // width: $timeline-cell-width;
+  // container size minus left panel width divided by 2 week timeframes
+  width: calc((100% - #{$details-cell-width}) / 2);
+  @include gl-bg-transparent;
+  border-right: $border-style;
+
+  &:last-child {
+    @include gl-border-r-0;
+  }
+
+  .current-day-indicator {
+    @include gl-absolute;
+    top: -1px;
+    width: $gl-spacing-scale-1;
+    height: calc(100% + 1px);
+    background-color: var(--red-500, $red-500);
+    @include gl-pointer-events-none;
+    transform: translateX(-50%);
+  }
+}
+
+.gl-token {
+  .gl-avatar-labeled-label {
+    @include gl-text-white;
+    @include gl-font-weight-normal;
+  }
+}

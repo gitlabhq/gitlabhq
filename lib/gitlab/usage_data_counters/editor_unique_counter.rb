@@ -6,6 +6,7 @@ module Gitlab
       EDIT_BY_SNIPPET_EDITOR = 'g_edit_by_snippet_ide'
       EDIT_BY_SFE = 'g_edit_by_sfe'
       EDIT_BY_WEB_IDE = 'g_edit_by_web_ide'
+      EDIT_BY_SSE = 'g_edit_by_sse'
       EDIT_CATEGORY = 'ide_edit'
 
       class << self
@@ -36,6 +37,14 @@ module Gitlab
         def count_edit_using_editor(date_from:, date_to:)
           events = Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category(EDIT_CATEGORY)
           count_unique(events, date_from, date_to)
+        end
+
+        def track_sse_edit_action(author:, time: Time.zone.now)
+          track_unique_action(EDIT_BY_SSE, author, time)
+        end
+
+        def count_sse_edit_actions(date_from:, date_to:)
+          count_unique(EDIT_BY_SSE, date_from, date_to)
         end
 
         private

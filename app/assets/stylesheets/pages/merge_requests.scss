@@ -53,6 +53,7 @@ $mr-widget-min-height: 69px;
   position: relative;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
+  background: var(--white, $white);
 
   .gl-skeleton-loader {
     display: block;
@@ -61,7 +62,7 @@ $mr-widget-min-height: 69px;
 
 .mr-widget-extension {
   border-top: 1px solid $border-color;
-  background-color: $gray-light;
+  background-color: $gray-50;
 
   &.clickable:hover {
     background-color: $gray-100;
@@ -87,6 +88,7 @@ $mr-widget-min-height: 69px;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
   border-top: 0;
+  background: var(--white, $white);
 }
 
 .mr-widget-body,
@@ -161,12 +163,6 @@ $mr-widget-min-height: 69px;
 
   .btn {
     font-size: $gl-font-size;
-
-    &.dropdown-toggle {
-      .fa {
-        color: inherit;
-      }
-    }
   }
 
   .accept-merge-holder {
@@ -287,10 +283,6 @@ $mr-widget-min-height: 69px;
       margin-top: 0;
       margin-bottom: 0;
 
-      &.has-conflicts .fa-exclamation-triangle {
-        color: $orange-500;
-      }
-
       time {
         font-weight: $gl-font-weight-normal;
       }
@@ -340,13 +332,6 @@ $mr-widget-min-height: 69px;
 
       .merge-opt-title {
         margin-left: 8px;
-      }
-    }
-
-    .dropdown-toggle {
-      .fa {
-        margin-left: 0;
-        color: inherit;
       }
     }
 
@@ -507,19 +492,6 @@ $mr-widget-min-height: 69px;
   display: none;
 }
 
-#modal_merge_info .modal-dialog {
-  .dark {
-    margin-right: 40px;
-  }
-
-  .btn-clipboard {
-    margin-right: 20px;
-    margin-top: 5px;
-    position: absolute;
-    right: 0;
-  }
-}
-
 .mr-links {
   padding-left: $gl-padding-8 + $status-icon-size + $gl-btn-padding;
 
@@ -560,14 +532,11 @@ $mr-widget-min-height: 69px;
   border-radius: $border-radius-default;
   padding: $gl-padding;
   border: 1px solid $border-color;
+  background: var(--white, $white);
   min-height: $mr-widget-min-height;
 
   @include media-breakpoint-up(md) {
     align-items: center;
-  }
-
-  .dropdown-toggle .fa {
-    color: $gl-text-color;
   }
 
   .git-merge-container {
@@ -720,7 +689,7 @@ $mr-widget-min-height: 69px;
     z-index: 199;
     white-space: nowrap;
 
-    .dropdown-menu-toggle {
+    .gl-dropdown-toggle {
       width: auto;
       max-width: 170px;
 
@@ -778,7 +747,7 @@ $mr-widget-min-height: 69px;
 .epic-tabs-holder {
   top: $header-height;
   z-index: 250;
-  background-color: $white;
+  background-color: $body-bg;
   border-bottom: 1px solid $border-color;
 
   .with-system-header & {
@@ -1038,4 +1007,12 @@ $mr-widget-min-height: 69px;
 
 .diff-file-row.is-active {
   background-color: $gray-50;
+}
+
+.mr-conflict-loader {
+  max-width: 334px;
+
+  > svg {
+    vertical-align: middle;
+  }
 }

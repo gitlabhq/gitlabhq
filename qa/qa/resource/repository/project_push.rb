@@ -23,7 +23,6 @@ module QA
           @file_name = "file-#{SecureRandom.hex(8)}.txt"
           @file_content = '# This is test project'
           @commit_message = "This is a test commit"
-          @branch_name = 'master'
           @new_branch = true
           @project_name = 'project-with-code'
           @wait_for_push = true
@@ -39,6 +38,8 @@ module QA
         end
 
         def fabricate!
+          @branch_name ||= project.default_branch
+
           super
           project.wait_for_push @commit_message if @wait_for_push
         end

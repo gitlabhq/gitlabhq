@@ -3,9 +3,17 @@ require_relative '../object_store_settings'
 require_relative '../smime_signature_settings'
 
 # Default settings
+Settings['shared'] ||= Settingslogic.new({})
+Settings.shared['path'] = Settings.absolute(Settings.shared['path'] || "shared")
+
+Settings['encrypted_settings'] ||= Settingslogic.new({})
+Settings.encrypted_settings['path'] ||= File.join(Settings.shared['path'], "encrypted_settings")
+Settings.encrypted_settings['path'] = Settings.absolute(Settings.encrypted_settings['path'])
+
 Settings['ldap'] ||= Settingslogic.new({})
 Settings.ldap['enabled'] = false if Settings.ldap['enabled'].nil?
 Settings.ldap['prevent_ldap_sign_in'] = false if Settings.ldap['prevent_ldap_sign_in'].blank?
+Settings.ldap['secret_file'] = Settings.absolute(Settings.ldap['secret_file'] || File.join(Settings.encrypted_settings['path'], "ldap.yaml.enc"))
 
 Gitlab.ee do
   Settings.ldap['sync_time'] = 3600 if Settings.ldap['sync_time'].nil?
@@ -139,9 +147,6 @@ end
 if Gitlab.ee? && Rails.env.test? && !saml_provider_enabled
   Settings.omniauth.providers << Settingslogic.new({ 'name' => 'group_saml' })
 end
-
-Settings['shared'] ||= Settingslogic.new({})
-Settings.shared['path'] = Settings.absolute(Settings.shared['path'] || "shared")
 
 Settings['issues_tracker'] ||= {}
 
@@ -532,8 +537,14 @@ Settings.cron_jobs['member_invitation_reminder_emails_worker']['job_class'] = 'M
 Settings.cron_jobs['schedule_merge_request_cleanup_refs_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['schedule_merge_request_cleanup_refs_worker']['cron'] ||= '* * * * *'
 Settings.cron_jobs['schedule_merge_request_cleanup_refs_worker']['job_class'] = 'ScheduleMergeRequestCleanupRefsWorker'
+Settings.cron_jobs['manage_evidence_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['manage_evidence_worker']['cron'] ||= '0 * * * *'
+Settings.cron_jobs['manage_evidence_worker']['job_class'] = 'Releases::ManageEvidenceWorker'
 
 Gitlab.ee do
+  Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker']['cron'] ||= '0 0 1 * *'
+  Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker']['job_class'] = 'Analytics::DevopsAdoption::CreateAllSnapshotsWorker'
   Settings.cron_jobs['active_user_count_threshold_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['active_user_count_threshold_worker']['cron'] ||= '0 12 * * *'
   Settings.cron_jobs['active_user_count_threshold_worker']['job_class'] = 'ActiveUserCountThresholdWorker'
@@ -546,6 +557,9 @@ Gitlab.ee do
   Settings.cron_jobs['adjourned_projects_deletion_cron_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['adjourned_projects_deletion_cron_worker']['cron'] ||= '0 4 * * *'
   Settings.cron_jobs['adjourned_projects_deletion_cron_worker']['job_class'] = 'AdjournedProjectsDeletionCronWorker'
+  Settings.cron_jobs['geo_verification_cron_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['geo_verification_cron_worker']['cron'] ||= '* * * * *'
+  Settings.cron_jobs['geo_verification_cron_worker']['job_class'] ||= 'Geo::VerificationCronWorker'
   Settings.cron_jobs['geo_file_download_dispatch_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['geo_file_download_dispatch_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['geo_file_download_dispatch_worker']['job_class'] ||= 'Geo::FileDownloadDispatchWorker'
@@ -779,9 +793,17 @@ Settings.forti_authenticator['enabled'] = false if Settings.forti_authenticator[
 Settings.forti_authenticator['port'] = 443 if Settings.forti_authenticator['port'].to_i == 0
 
 #
+# FortiToken Cloud
+#
+Settings['forti_token_cloud'] ||= Settingslogic.new({})
+Settings.forti_token_cloud['enabled'] = false if Settings.forti_token_cloud['enabled'].nil?
+
+#
 # Extra customization
 #
 Settings['extra'] ||= Settingslogic.new({})
+Settings.extra['matomo_site_id'] ||= Settings.extra['piwik_site_id'] if Settings.extra['piwik_site_id'].present?
+Settings.extra['matomo_url'] ||= Settings.extra['piwik_url'] if Settings.extra['piwik_url'].present?
 
 #
 # Rack::Attack settings

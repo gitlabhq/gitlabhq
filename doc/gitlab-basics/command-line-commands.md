@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: howto, reference
 ---
 
@@ -59,14 +59,14 @@ nano README.md
 
 It's easy to delete (remove) a file or directory, but be careful:
 
-DANGER: **Warning:**
+WARNING:
 This will **permanently** delete a file.
 
 ```shell
 rm NAME-OF-FILE
 ```
 
-DANGER: **Warning:**
+WARNING:
 This will **permanently** delete a directory and **all** of its contents.
 
 ```shell
@@ -102,7 +102,7 @@ might be asked for an administrator password.
 sudo RESTRICTED-COMMAND
 ```
 
-CAUTION: **Caution:**
+WARNING:
 Be careful of the commands you run with `sudo`. Certain commands may cause
 damage to your data or system.
 

@@ -2,9 +2,15 @@
 
 module Projects
   module Alerting
-    class NotifyService < BaseService
+    class NotifyService
+      include BaseServiceUtility
       include Gitlab::Utils::StrongMemoize
       include ::IncidentManagement::Settings
+
+      def initialize(project, payload)
+        @project = project
+        @payload = payload
+      end
 
       def execute(token, integration = nil)
         @integration = integration
@@ -24,7 +30,7 @@ module Projects
 
       private
 
-      attr_reader :integration
+      attr_reader :project, :payload, :integration
 
       def process_alert
         if alert.persisted?
@@ -101,7 +107,7 @@ module Projects
 
       def incoming_payload
         strong_memoize(:incoming_payload) do
-          Gitlab::AlertManagement::Payload.parse(project, params.to_h)
+          Gitlab::AlertManagement::Payload.parse(project, payload.to_h)
         end
       end
 
@@ -110,7 +116,7 @@ module Projects
       end
 
       def valid_payload_size?
-        Gitlab::Utils::DeepSize.new(params).valid?
+        Gitlab::Utils::DeepSize.new(payload).valid?
       end
 
       def active_integration?

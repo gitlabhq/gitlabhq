@@ -1,14 +1,14 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+stage: Create
+group: Ecosystem
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Shibboleth OmniAuth Provider
 
-NOTE: **Note:**
+NOTE:
 The preferred approach for integrating a Shibboleth authentication system
-with GitLab 10 or newer is to use [GitLab's SAML integration](saml.md). This documentation is for Omnibus GitLab 9.x installs or older.
+with GitLab 10 or newer is to use the [GitLab SAML integration](saml.md). This documentation is for Omnibus GitLab 9.x installs or older.
 
 In order to enable Shibboleth support in GitLab we need to use Apache instead of NGINX (It may be possible to use NGINX, however this is difficult to configure using the bundled NGINX provided in the Omnibus GitLab package). Apache uses mod_shib2 module for Shibboleth authentication and can pass attributes as headers to OmniAuth Shibboleth provider.
 
@@ -16,7 +16,7 @@ To enable the Shibboleth OmniAuth provider you must configure Apache Shibboleth 
 The installation and configuration of the module itself is out of the scope of this document.
 Check <https://wiki.shibboleth.net/confluence/display/SP3/Apache> for more information.
 
-You can find Apache config in [GitLab Recipes](https://gitlab.com/gitlab-org/gitlab-recipes/tree/master/web-server/apache).
+You can find Apache configuration in [GitLab Recipes](https://gitlab.com/gitlab-org/gitlab-recipes/tree/master/web-server/apache).
 
 The following changes are needed to enable Shibboleth:
 
@@ -40,7 +40,7 @@ The following changes are needed to enable Shibboleth:
    </Location>
    ```
 
-1. Exclude Shibboleth URLs from rewriting. Add `RewriteCond %{REQUEST_URI} !/Shibboleth.sso` and `RewriteCond %{REQUEST_URI} !/shibboleth-sp`. Config should look like this:
+1. Exclude Shibboleth URLs from rewriting. Add `RewriteCond %{REQUEST_URI} !/Shibboleth.sso` and `RewriteCond %{REQUEST_URI} !/shibboleth-sp`. Configuration should look like this:
 
    ```apache
    # Apache equivalent of Nginx try files
@@ -52,12 +52,12 @@ The following changes are needed to enable Shibboleth:
    RequestHeader set X_FORWARDED_PROTO 'https'
    ```
 
-   NOTE: **Note:**
+   NOTE:
    Starting from GitLab 11.4, OmniAuth is enabled by default. If you're using an
-   earlier version, you'll need to explicitly enable it in `/etc/gitlab/gitlab.rb`.
+   earlier version, you must explicitly enable it in `/etc/gitlab/gitlab.rb`.
 
 1. In addition, add Shibboleth to `/etc/gitlab/gitlab.rb` as an OmniAuth provider.
-   User attributes will be sent from the
+   User attributes are sent from the
    Apache reverse proxy to GitLab as headers with the names from the Shibboleth
    attribute mapping. Therefore the values of the `args` hash
    should be in the form of `"HTTP_ATTRIBUTE"`. The keys in the hash are arguments
@@ -100,12 +100,12 @@ The following changes are needed to enable Shibboleth:
 1. [Reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) or [restart](../administration/restart_gitlab.md#installations-from-source) GitLab for the changes to take effect if you
    installed GitLab via Omnibus or from source respectively.
 
-On the sign in page, there should now be a "Sign in with: Shibboleth" icon below the regular sign in form. Click the icon to begin the authentication process. You will be redirected to IdP server (depends on your Shibboleth module configuration). If everything goes well the user will be returned to GitLab and will be signed in.
+On the sign in page, there should now be a "Sign in with: Shibboleth" icon below the regular sign in form. Click the icon to begin the authentication process. You are redirected to IdP server (depends on your Shibboleth module configuration). If everything goes well the user is returned to GitLab and is signed in.
 
 ## Apache 2.4 / GitLab 8.6 update
 
 The order of the first 2 Location directives is important. If they are reversed,
-you will not get a Shibboleth session!
+requesting a Shibboleth session fails!
 
 ```plaintext
 <Location />

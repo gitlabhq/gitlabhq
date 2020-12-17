@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -20,10 +20,10 @@ shown.
 Patches greater than 10% of this size will be automatically collapsed, and a
 link to expand the diff will be presented.
 
-NOTE: **Note:**
+NOTE:
 Merge requests and branch comparison views will be affected.
 
-CAUTION: **Caution:**
+WARNING:
 This setting is experimental. An increased maximum will increase resource
 consumption of your instance. Keep this in mind when adjusting the maximum.
 

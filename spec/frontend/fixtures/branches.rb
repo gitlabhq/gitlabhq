@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe 'Branches (JavaScript fixtures)' do
   include JavaScriptFixturesHelpers
 
-  let_it_be(:admin) { create(:admin) }
   let_it_be(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
   let_it_be(:project) { create(:project, :repository, namespace: namespace, path: 'branches-project') }
+  let_it_be(:user) { project.owner }
 
   before(:all) do
     clean_frontend_fixtures('branches/')
@@ -22,7 +22,7 @@ RSpec.describe 'Branches (JavaScript fixtures)' do
     render_views
 
     before do
-      sign_in(admin)
+      sign_in(user)
     end
 
     it 'branches/new_branch.html' do
@@ -44,7 +44,7 @@ RSpec.describe 'Branches (JavaScript fixtures)' do
       # - "master": default, protected
       # - "markdown": non-default, protected
       # - "many_files": non-default, not protected
-      get api("/projects/#{project.id}/repository/branches?search=ma", admin)
+      get api("/projects/#{project.id}/repository/branches?search=ma", user)
 
       expect(response).to be_successful
     end

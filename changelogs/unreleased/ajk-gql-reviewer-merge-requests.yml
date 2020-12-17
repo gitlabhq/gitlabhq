@@ -1,0 +1,5 @@
+---
+title: Support merge requests filtered by reviewer in GraphQL API
+merge_request: 49464
+author:
+type: changed

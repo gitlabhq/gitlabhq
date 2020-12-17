@@ -1,7 +1,7 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+stage: Create
+group: Editor
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Editor Lite
@@ -58,7 +58,7 @@ The editor follows the same public API as [provided by Monaco editor](https://mi
 | Function | Arguments | Description
 | ----- | ----- | ----- |
 | `updateModelLanguage` | `path`: String | Updates the instance's syntax highlighting to follow the extension of the passed `path`. Available only on _instance_ level|
-| `use` | Array of objects | Array of **extensions** to apply to the instance. Accepts only the array of _objects_, which means that the extensions' ES6 modules should be fetched and resolved in your views/components before being passed to `use`. This prop is available on _instance_ (applies extension to this particular instance) and _global edtor_ (applies the same extension to all instances) levels. |
+| `use` | Array of objects | Array of **extensions** to apply to the instance. Accepts only the array of _objects_, which means that the extensions' ES6 modules should be fetched and resolved in your views/components before being passed to `use`. This prop is available on _instance_ (applies extension to this particular instance) and _global editor_ (applies the same extension to all instances) levels. |
 | Monaco Editor options | See [documentation](https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandalonecodeeditor.html) | Default Monaco editor options |
 
 ## Tips
@@ -68,7 +68,7 @@ The editor follows the same public API as [provided by Monaco editor](https://mi
 Editor Lite comes with the loading state built-in, making spinners and loaders rarely needed in HTML. To benefit the built-in loading state, set the `data-editor-loading` property on the HTML element that is supposed to contain the editor. Editor Lite will show the loader automatically while it's bootstrapping.
 ![Editor Lite: loading state](img/editor_lite_loading.png)
 
-1. Update syntax highlighting if the file name changes.
+1. Update syntax highlighting if the filename changes.
 
 ```javascript
 // fileNameEl here is the HTML input element that contains the file name

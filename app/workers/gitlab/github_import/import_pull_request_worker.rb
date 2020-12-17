@@ -6,7 +6,7 @@ module Gitlab
       include ObjectImporter
 
       def representation_class
-        Representation::PullRequest
+        Gitlab::GithubImport::Representation::PullRequest
       end
 
       def importer_class

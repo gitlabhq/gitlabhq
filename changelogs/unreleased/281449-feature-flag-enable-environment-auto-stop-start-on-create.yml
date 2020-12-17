@@ -1,0 +1,5 @@
+---
+title: Begin auto-stop countdown for environment after initial creation
+merge_request: 47702
+author:
+type: changed

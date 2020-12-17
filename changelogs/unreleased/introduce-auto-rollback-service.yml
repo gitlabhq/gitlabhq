@@ -1,0 +1,5 @@
+---
+title: Add database index for deployment rollback targets
+merge_request: 47159
+author:
+type: performance

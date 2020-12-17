@@ -10,6 +10,10 @@ RSpec.shared_examples 'reenqueuer' do
     expect(subject.lease_timeout).to be_a(ActiveSupport::Duration)
   end
 
+  it 'uses the :none deduplication strategy' do
+    expect(subject.class.get_deduplicate_strategy).to eq(:none)
+  end
+
   describe '#perform' do
     it 'tries to obtain a lease' do
       expect_to_obtain_exclusive_lease(subject.lease_key)

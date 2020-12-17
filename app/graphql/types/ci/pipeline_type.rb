@@ -27,8 +27,7 @@ module Types
             description: "Status of the pipeline (#{::Ci::Pipeline.all_state_names.compact.join(', ').upcase})"
 
       field :detailed_status, Types::Ci::DetailedStatusType, null: false,
-            description: 'Detailed status of the pipeline',
-            resolve: -> (obj, _args, ctx) { obj.detailed_status(ctx[:current_user]) }
+            description: 'Detailed status of the pipeline'
 
       field :config_source, PipelineConfigSourceEnum, null: true,
             description: "Config source of the pipeline (#{::Enums::Ci::Pipeline.config_sources.keys.join(', ').upcase})"
@@ -60,8 +59,7 @@ module Types
             resolver: Resolvers::Ci::PipelineStagesResolver
 
       field :user, Types::UserType, null: true,
-            description: 'Pipeline user',
-            resolve: -> (pipeline, _args, _context) { Gitlab::Graphql::Loaders::BatchModelLoader.new(User, pipeline.user_id).find }
+            description: 'Pipeline user'
 
       field :retryable, GraphQL::BOOLEAN_TYPE,
             description: 'Specifies if a pipeline can be retried',
@@ -91,11 +89,25 @@ module Types
             method: :triggered_by_pipeline
 
       field :path, GraphQL::STRING_TYPE, null: true,
-            description: "Relative path to the pipeline's page",
-            resolve: -> (obj, _args, _ctx) { ::Gitlab::Routing.url_helpers.project_pipeline_path(obj.project, obj) }
+            description: "Relative path to the pipeline's page"
 
       field :project, Types::ProjectType, null: true,
             description: 'Project the pipeline belongs to'
+
+      field :active, GraphQL::BOOLEAN_TYPE, null: false, method: :active?,
+            description: 'Indicates if the pipeline is active'
+
+      def detailed_status
+        object.detailed_status(context[:current_user])
+      end
+
+      def user
+        Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.user_id).find
+      end
+
+      def path
+        ::Gitlab::Routing.url_helpers.project_pipeline_path(object.project, object)
+      end
     end
   end
 end

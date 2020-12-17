@@ -7,10 +7,12 @@ RSpec.describe 'Admin Serverless Domains', :js do
 
   before do
     allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
-    sign_in(create(:admin))
+    admin = create(:admin)
+    sign_in(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
   end
 
-  it 'Add domain with certificate' do
+  it 'add domain with certificate' do
     visit admin_serverless_domains_path
 
     fill_in 'pages_domain[domain]', with: 'foo.com'
@@ -30,7 +32,7 @@ RSpec.describe 'Admin Serverless Domains', :js do
     expect(page).to have_content '/CN=test-certificate'
   end
 
-  it 'Update domain certificate' do
+  it 'update domain certificate' do
     visit admin_serverless_domains_path
 
     fill_in 'pages_domain[domain]', with: 'foo.com'
@@ -60,7 +62,7 @@ RSpec.describe 'Admin Serverless Domains', :js do
   context 'when domain exists' do
     let!(:domain) { create(:pages_domain, :instance_serverless) }
 
-    it 'Displays a modal when attempting to delete a domain' do
+    it 'displays a modal when attempting to delete a domain' do
       visit admin_serverless_domains_path
 
       click_button 'Delete domain'
@@ -71,7 +73,7 @@ RSpec.describe 'Admin Serverless Domains', :js do
       end
     end
 
-    it 'Displays a modal with disabled button if unable to delete a domain' do
+    it 'displays a modal with disabled button if unable to delete a domain' do
       create(:serverless_domain_cluster, pages_domain: domain)
 
       visit admin_serverless_domains_path

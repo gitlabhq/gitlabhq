@@ -80,38 +80,34 @@ RSpec.describe 'getting projects' do
   end
 
   describe 'sorting and pagination' do
+    let_it_be(:ns) { create(:group) }
+    let_it_be(:current_user) { create(:user) }
+    let_it_be(:project_1) { create(:project, name: 'Project', path: 'project', namespace: ns) }
+    let_it_be(:project_2) { create(:project, name: 'Test Project', path: 'test-project', namespace: ns) }
+    let_it_be(:project_3) { create(:project, name: 'Test', path: 'test', namespace: ns) }
+    let_it_be(:project_4) { create(:project, name: 'Test Project Other', path: 'other-test-project', namespace: ns) }
+
     let(:data_path) { [:namespace, :projects] }
 
-    def pagination_query(params, page_info)
-      graphql_query_for(
-        'namespace',
-        { 'fullPath' => subject.full_path },
-        <<~QUERY
-        projects(includeSubgroups: #{include_subgroups}, search: "#{search}", #{params}) {
-          #{page_info} edges {
-            node {
-              #{all_graphql_fields_for('Project')}
-            }
-          }
-        }
-        QUERY
-      )
+    let(:ns_args) { { full_path: ns.full_path } }
+    let(:search) { 'test' }
+
+    before do
+      ns.add_owner(current_user)
     end
 
-    def pagination_results_data(data)
-      data.map { |project| project.dig('node', 'name') }
+    def pagination_query(params)
+      arguments = params.merge(include_subgroups: include_subgroups, search: search)
+      graphql_query_for(:namespace, ns_args, query_graphql_field(:projects, arguments, <<~GQL))
+        #{page_info}
+        nodes { name }
+      GQL
     end
 
     context 'when sorting by similarity' do
-      let!(:project_1) { create(:project, name: 'Project', path: 'project', namespace: subject) }
-      let!(:project_2) { create(:project, name: 'Test Project', path: 'test-project', namespace: subject) }
-      let!(:project_3) { create(:project, name: 'Test', path: 'test', namespace: subject) }
-      let!(:project_4) { create(:project, name: 'Test Project Other', path: 'other-test-project', namespace: subject) }
-      let(:search) { 'test' }
-      let(:current_user) { user }
-
       it_behaves_like 'sorted paginated query' do
-        let(:sort_param)       { 'SIMILARITY' }
+        let(:node_path)        { %w[name] }
+        let(:sort_param)       { :SIMILARITY }
         let(:first_param)      { 2 }
         let(:expected_results) { [project_3.name, project_2.name, project_4.name] }
       end

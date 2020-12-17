@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Open a fork in Web IDE' do
+    describe 'Open a fork in Web IDE', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/284081', type: :investigating } do
       let(:parent_project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'parent-project'

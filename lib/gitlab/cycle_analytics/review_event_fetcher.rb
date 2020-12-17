@@ -5,7 +5,7 @@ module Gitlab
     class ReviewEventFetcher < BaseEventFetcher
       include ReviewHelper
 
-      def initialize(*args)
+      def initialize(...)
         @projections = [mr_table[:title],
                         mr_table[:iid],
                         mr_table[:id],
@@ -13,7 +13,7 @@ module Gitlab
                         mr_table[:state_id],
                         mr_table[:author_id]]
 
-        super(*args)
+        super(...)
       end
 
       private

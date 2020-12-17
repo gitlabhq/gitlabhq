@@ -193,4 +193,69 @@ RSpec.describe 'Group show page' do
 
     it_behaves_like 'page meta description', 'Lorem ipsum dolor sit amet'
   end
+
+  context 'structured schema markup' do
+    let_it_be(:group) { create(:group, :public, :with_avatar, description: 'foo') }
+    let_it_be(:subgroup) { create(:group, :public, :with_avatar, parent: group, description: 'bar') }
+    let_it_be_with_reload(:project) { create(:project, :public, :with_avatar, namespace: group, description: 'foo') }
+    let_it_be(:subproject) { create(:project, :public, :with_avatar, namespace: subgroup, description: 'bar') }
+
+    it 'shows Organization structured markup', :js do
+      visit path
+      wait_for_all_requests
+
+      aggregate_failures do
+        expect(page).to have_selector('.content[itemscope][itemtype="https://schema.org/Organization"]')
+
+        page.within('.group-home-panel') do
+          expect(page).to have_selector('img.avatar[itemprop="logo"]')
+          expect(page).to have_selector('[itemprop="name"]', text: group.name)
+          expect(page).to have_selector('[itemprop="description"]', text: group.description)
+        end
+
+        page.within('[itemprop="owns"][itemtype="https://schema.org/SoftwareSourceCode"]') do
+          expect(page).to have_selector('img.avatar[itemprop="image"]')
+          expect(page).to have_selector('[itemprop="name"]', text: project.name)
+          expect(page).to have_selector('[itemprop="description"]', text: project.description)
+        end
+
+        # Finding the subgroup row and expanding it
+        el = find('[itemprop="subOrganization"][itemtype="https://schema.org/Organization"]')
+        el.click
+        wait_for_all_requests
+        page.within(el) do
+          expect(page).to have_selector('img.avatar[itemprop="logo"]')
+          expect(page).to have_selector('[itemprop="name"]', text: subgroup.name)
+          expect(page).to have_selector('[itemprop="description"]', text: subgroup.description)
+
+          page.within('[itemprop="owns"][itemtype="https://schema.org/SoftwareSourceCode"]') do
+            expect(page).to have_selector('img.avatar[itemprop="image"]')
+            expect(page).to have_selector('[itemprop="name"]', text: subproject.name)
+            expect(page).to have_selector('[itemprop="description"]', text: subproject.description)
+          end
+        end
+      end
+    end
+
+    it 'does not include structured markup in shared projects tab', :js do
+      other_project = create(:project, :public)
+      other_project.project_group_links.create!(group: group)
+
+      visit group_shared_path(group)
+      wait_for_all_requests
+
+      expect(page).to have_selector('li.group-row')
+      expect(page).not_to have_selector('[itemprop="owns"][itemtype="https://schema.org/SoftwareSourceCode"]')
+    end
+
+    it 'does not include structured markup in archived projects tab', :js do
+      project.update!(archived: true)
+
+      visit group_archived_path(group)
+      wait_for_all_requests
+
+      expect(page).to have_selector('li.group-row')
+      expect(page).not_to have_selector('[itemprop="owns"][itemtype="https://schema.org/SoftwareSourceCode"]')
+    end
+  end
 end

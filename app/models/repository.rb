@@ -513,6 +513,9 @@ class Repository
     # Don't attempt to return a special result if there is no blob at all
     return unless blob
 
+    # Don't attempt to return a special result if this can't be a README
+    return blob unless Gitlab::FileDetector.type_of(blob.name) == :readme
+
     # Don't attempt to return a special result unless we're looking at HEAD
     return blob unless head_commit&.sha == sha
 
@@ -615,7 +618,7 @@ class Repository
   end
 
   def readme_path
-    readme&.path
+    head_tree&.readme_path
   end
   cache_method :readme_path
 

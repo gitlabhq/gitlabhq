@@ -19,7 +19,7 @@ RSpec.describe EncryptPlaintextAttributesOnApplicationSettings do
 
   describe '#up' do
     it 'encrypts token and saves it' do
-      application_setting = application_settings.create
+      application_setting = application_settings.create!
       application_setting.update_columns(
         plaintext_attributes.each_with_object({}) do |plaintext_attribute, attributes|
           attributes[plaintext_attribute] = plaintext
@@ -39,7 +39,7 @@ RSpec.describe EncryptPlaintextAttributesOnApplicationSettings do
 
   describe '#down' do
     it 'decrypts encrypted token and saves it' do
-      application_setting = application_settings.create(
+      application_setting = application_settings.create!(
         plaintext_attributes.each_with_object({}) do |plaintext_attribute, attributes|
           attributes[plaintext_attribute] = plaintext
         end

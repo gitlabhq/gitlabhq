@@ -30,12 +30,16 @@ module Gitlab
           @diffs ||= diffable.raw_diffs(diff_options)
         end
 
-        def diff_files
-          raw_diff_files
+        def diff_files(sorted: false)
+          raw_diff_files(sorted: sorted)
         end
 
-        def raw_diff_files
-          @raw_diff_files ||= diffs.decorate! { |diff| decorate_diff!(diff) }
+        def raw_diff_files(sorted: false)
+          strong_memoize(:"raw_diff_files_#{sorted}") do
+            collection = diffs.decorate! { |diff| decorate_diff!(diff) }
+            collection = sort_diffs(collection) if sorted
+            collection
+          end
         end
 
         def diff_file_paths
@@ -110,6 +114,12 @@ module Gitlab
                                  diff_refs: diff_refs,
                                  fallback_diff_refs: fallback_diff_refs,
                                  stats: stats)
+        end
+
+        def sort_diffs(diffs)
+          return diffs unless Feature.enabled?(:sort_diffs, project, default_enabled: false)
+
+          Gitlab::Diff::FileCollectionSorter.new(diffs).sort
         end
       end
     end

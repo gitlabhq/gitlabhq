@@ -28,6 +28,7 @@ issues:
 - events
 - merge_requests_closing_issues
 - metrics
+- metric_images
 - timelogs
 - issuable_severity
 - issuable_sla
@@ -85,6 +86,7 @@ label:
 - issues
 - merge_requests
 - priorities
+- epic_board_labels
 milestone:
 - group
 - project
@@ -105,6 +107,7 @@ snippets:
 - user_mentions
 - snippet_repository
 - statistics
+- repository_storage_moves
 releases:
 - author
 - project
@@ -349,6 +352,7 @@ project:
 - services
 - campfire_service
 - confluence_service
+- datadog_service
 - discord_service
 - drone_ci_service
 - emails_on_push_service
@@ -540,6 +544,7 @@ project:
 - daily_build_group_report_results
 - jira_imports
 - compliance_framework_setting
+- compliance_management_frameworks
 - metrics_users_starred_dashboards
 - alert_management_alerts
 - repository_storage_moves
@@ -548,10 +553,13 @@ project:
 - build_report_results
 - vulnerability_statistic
 - vulnerability_historical_statistics
+- vulnerability_remediations
 - product_analytics_events
 - pipeline_artifacts
 - terraform_states
 - alert_management_http_integrations
+- exported_protected_branches
+- incident_management_oncall_schedules
 award_emoji:
 - awardable
 - user
@@ -639,6 +647,7 @@ boards:
 - lists
 - destroyable_lists
 - milestone
+- iteration
 - board_labels
 - board_assignee
 - assignee
@@ -648,6 +657,7 @@ boards:
 lists:
 - user
 - milestone
+- iteration
 - board
 - label
 - list_user_preferences

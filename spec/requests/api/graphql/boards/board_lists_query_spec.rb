@@ -66,26 +66,20 @@ RSpec.describe 'get board lists' do
 
       describe 'sorting and pagination' do
         let_it_be(:current_user) { user }
-        let(:data_path) { [board_parent_type, :boards, :edges, 0, :node, :lists] }
+        let(:data_path) { [board_parent_type, :boards, :nodes, 0, :lists] }
 
-        def pagination_query(params, page_info)
+        def pagination_query(params)
           graphql_query_for(
             board_parent_type,
             { 'fullPath' => board_parent.full_path },
             <<~BOARDS
               boards(first: 1) {
-                edges {
-                  node {
-                    #{query_graphql_field('lists', params, "#{page_info} edges { node { id } }")}
-                  }
+                nodes {
+                  #{query_graphql_field(:lists, params, "#{page_info} nodes { id }")}
                 }
               }
             BOARDS
           )
-        end
-
-        def pagination_results_data(data)
-          data.map { |list| list.dig('node', 'id') }
         end
 
         context 'when using default sorting' do
@@ -99,7 +93,7 @@ RSpec.describe 'get board lists' do
             it_behaves_like 'sorted paginated query' do
               let(:sort_param)       { }
               let(:first_param)      { 2 }
-              let(:expected_results) { lists.map { |list| list.to_global_id.to_s } }
+              let(:expected_results) { lists.map { |list| global_id_of(list) } }
             end
           end
         end

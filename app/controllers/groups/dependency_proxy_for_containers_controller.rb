@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class Groups::DependencyProxyForContainersController < Groups::ApplicationController
-  include DependencyProxyAccess
+  include DependencyProxy::Auth
+  include DependencyProxy::GroupAccess
   include SendFileUpload
 
   before_action :ensure_token_granted!
@@ -9,13 +10,13 @@ class Groups::DependencyProxyForContainersController < Groups::ApplicationContro
 
   attr_reader :token
 
-  feature_category :package_registry
+  feature_category :dependency_proxy
 
   def manifest
-    result = DependencyProxy::PullManifestService.new(image, tag, token).execute
+    result = DependencyProxy::FindOrCreateManifestService.new(group, image, tag, token).execute
 
     if result[:status] == :success
-      render json: result[:manifest]
+      send_upload(result[:manifest].file)
     else
       render status: result[:http_status], json: result[:message]
     end

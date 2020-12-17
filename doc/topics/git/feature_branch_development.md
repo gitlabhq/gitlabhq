@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: how-tos
 ---
 
@@ -15,7 +15,7 @@ Once work on the development branch is complete, then the feature branch can be 
 
 GitLab frequently implements this process whenever there is an MVC that requires multiple MRs.
 
-## Use case: GitLab's release posts
+## Use case: GitLab release posts
 
 This section describes the use case with GitLab [release posts](https://about.gitlab.com/handbook/marketing/blog/release-posts/).
 Dozens of GitLab team members contribute to each monthly release post.

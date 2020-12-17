@@ -1,7 +1,7 @@
 ---
 stage: Enablement
 group: Infrastructure
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Feature Categorization
@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Each Sidekiq worker, controller action, or API endpoint
 must declare a `feature_category` attribute. This attribute maps each
 of these to a [feature
-category](https://about.gitlab.com/handbook/product/product-categories/). This
+category](https://about.gitlab.com/handbook/product/categories/). This
 is done for error budgeting, alert routing, and team attribution.
 
 The list of feature categories can be found in the file `config/feature_categories.yml`.
@@ -120,6 +120,11 @@ The spec also validates if the used feature categories are known. And if
 the actions used in configuration still exist as routes.
 
 ## API endpoints
+
+The [GraphQL API](../../api/graphql/index.md) is currently categorized
+as `not_owned`. For now, no extra specification is needed. For more 
+information, see
+[`gitlab-com/gl-infra/scalability#583`](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/583/).
 
 Grape API endpoints can use the `feature_category` class method, like
 [Rails controllers](#rails-controllers) do:

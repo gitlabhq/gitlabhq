@@ -18,6 +18,14 @@ class ProtectedBranch::PushAccessLevel < ApplicationRecord
     end
   end
 
+  def check_access(user)
+    if Feature.enabled?(:deploy_keys_on_protected_branches, project) && user && deploy_key.present?
+      return true if user.can?(:read_project, project) && enabled_deploy_key_for_user?(deploy_key, user)
+    end
+
+    super
+  end
+
   private
 
   def validate_deploy_key_membership
@@ -26,5 +34,9 @@ class ProtectedBranch::PushAccessLevel < ApplicationRecord
     unless project.deploy_keys_projects.where(deploy_key: deploy_key).exists?
       self.errors.add(:deploy_key, 'is not enabled for this project')
     end
+  end
+
+  def enabled_deploy_key_for_user?(deploy_key, user)
+    deploy_key.user_id == user.id && DeployKey.with_write_access_for_project(protected_branch.project, deploy_key: deploy_key).any?
   end
 end

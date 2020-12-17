@@ -19,6 +19,10 @@ RSpec.describe PaginatedDiffEntity do
 
   subject { entity.as_json }
 
+  before do
+    stub_feature_flags(diffs_gradual_load: false)
+  end
+
   it 'exposes diff_files' do
     expect(subject[:diff_files]).to be_present
   end

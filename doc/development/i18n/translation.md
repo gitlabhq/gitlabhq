@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Translating GitLab
@@ -23,7 +23,7 @@ You may create a new account or use any of their supported sign in services.
 GitLab is being translated into many languages.
 
 1. Select the language you would like to contribute translations to by clicking the flag
-1. You will see a list of files and folders.
+1. Next, you can view list of files and folders.
   Click `gitlab.pot` to open the translation editor.
 
 ### Translation Editor
@@ -34,7 +34,7 @@ The online translation editor is the easiest way to contribute translations.
 
 1. Strings for translation are listed in the left panel
 1. Translations are entered into the central panel.
-  Multiple translations will be required for strings that contains plurals.
+  Multiple translations are required for strings that contains plurals.
   The string to be translated is shown above with glossary terms highlighted.
   If the string to be translated is not clear, you can 'Request Context'
 
@@ -79,7 +79,7 @@ determining a suitable level of formality.
 
 ### Inclusive language
 
-[Diversity](https://about.gitlab.com/handbook/values/#diversity) is one of GitLab's values.
+[Diversity](https://about.gitlab.com/handbook/values/#diversity) is a GitLab value.
 We ask you to avoid translations which exclude people based on their gender or
 ethnicity.
 In languages which distinguish between a male and female form, use both or
@@ -100,7 +100,7 @@ To propose additions to the glossary please
 ### Inclusive language in French
 
 <!-- vale gitlab.Spelling = NO -->
-In French, the "écriture inclusive" is now over (see on [Legifrance](https://www.legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000036068906&categorieLien=id)).
+In French, the "écriture inclusive" is now over (see on [Legifrance](https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000036068906/)).
 So, to include both genders, write “Utilisateurs et utilisatrices” instead of “Utilisateur·rice·s”.
 When space is missing, the male gender should be used alone.
 <!-- vale gitlab.Spelling = YES -->

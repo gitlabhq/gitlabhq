@@ -80,7 +80,7 @@ RSpec.describe MigrateAutoDevOpsDomainToClusterDomain do
     cluster_projects.each do |cluster_project|
       specific_domain = "#{cluster_project.id}-#{domain}" if domain
 
-      project_auto_devops_table.create(
+      project_auto_devops_table.create!(
         project_id: cluster_project.project_id,
         enabled: true,
         domain: specific_domain

@@ -8,14 +8,14 @@ module Ci
       status = runner.status
       case status
       when :not_connected
-        content_tag(:span, title: "New runner. Has not connected yet") do
+        content_tag(:span, title: _("New runner. Has not connected yet")) do
           sprite_icon("warning-solid", size: 24, css_class: "gl-vertical-align-bottom!")
         end
 
       when :online, :offline, :paused
-        content_tag :i, nil,
-                    class: "fa fa-circle runner-status-#{status}",
-                    title: "Runner is #{status}, last contact was #{time_ago_in_words(runner.contacted_at)} ago"
+        content_tag :span, nil,
+                    class: "gl-display-inline-block gl-avatar gl-avatar-s16 gl-avatar-circle runner-status runner-status-#{status}",
+                    title: _("Runner is %{status}, last contact was %{runner_contact} ago") % { status: status, runner_contact: time_ago_in_words(runner.contacted_at) }
       end
     end
 
@@ -47,6 +47,14 @@ module Ci
         update_path: api_v4_groups_path(id: group.id),
         shared_runners_availability: group.shared_runners_setting,
         parent_shared_runners_availability: group.parent&.shared_runners_setting
+      }
+    end
+
+    def toggle_shared_runners_settings_data(project)
+      {
+        is_enabled: "#{project.shared_runners_enabled?}",
+        is_disabled_and_unoverridable: "#{project.group&.shared_runners_setting == 'disabled_and_unoverridable'}",
+        update_path: toggle_shared_runners_project_runners_path(project)
       }
     end
   end

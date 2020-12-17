@@ -19,6 +19,7 @@ module Gitlab
         # project - An instance of Project.
         def import(client, project)
           waiters = IMPORTERS.each_with_object({}) do |klass, hash|
+            info(project.id, message: "starting importer", importer: klass.name)
             waiter = klass.new(project, client).execute
             hash[waiter.key] = waiter.jobs_remaining
           end

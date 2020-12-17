@@ -1,0 +1,5 @@
+---
+title: Upgrade fog-aws to v3.7.0
+merge_request: 48921
+author:
+type: changed

@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Updating to GitLab 13.2: Email confirmation issues
@@ -27,7 +27,7 @@ sent within five minutes, with a link for users to re-confirm the subject email 
 
 ## Do the confirmation emails expire?
 
-The links in these re-confirmation emails expire after one day by default. Users who click an expired link will be asked to request a new re-confirmation email. Any user can request a new re-confirmation email from `http://gitlab.example.com/users/confirmation/new`.
+The links in these re-confirmation emails expire after one day by default. Users who click an expired link are asked to request a new re-confirmation email. Any user can request a new re-confirmation email from `http://gitlab.example.com/users/confirmation/new`.
 
 ## Generate a list of affected users
 
@@ -60,7 +60,7 @@ User.where(confirmed_at: nil).where('LENGTH(confirmation_token) = 32')
 
 A regular user might receive a message that says "You have to confirm your email address before continuing". This message could includes a 404 or 422 error code, when the user tries to sign in.
 
-NOTE: **Note:**
+NOTE:
 We hope to improve the [sign-in experience for an unverified user](https://gitlab.com/gitlab-org/gitlab/-/issues/29279) in a future release.
 
 When an affected user commits code to a Git repository, that user may see the following message:
@@ -107,21 +107,21 @@ Once connected, run the following commands to confirm all user accounts:
 User.where('LENGTH(confirmation_token) = 32').where(confirmed_at: nil).find_each { |u| u.confirmed_at = Time.now; u.save }
 ```
 
-CAUTION: **Caution:**
+WARNING:
 The command described in this section may activate users who have not properly confirmed their email addresses.
 
 ## What about LDAP users?
 
-LDAP Users will remain confirmed if all of the following conditions are met:
+LDAP Users remain confirmed if all of the following conditions are met:
 
 - The ["User email confirmation at sign-up" option](../security/user_email_confirmation.md) is set to false.
 - The first sign-in is based on user LDAP credentials.
 - The user has added and verified [a secondary email address](profile/index.md#profile-settings) some time later.
 
-NOTE: **Note:**
-Confirmation timestamps (primary vs. secondary) will be different.
+NOTE:
+Confirmation timestamps (primary vs. secondary) are different.
 
-Users will be unconfirmed by the background migration if any of the following conditions are met:
+Users remain unconfirmed by the background migration if any of the following conditions are met:
 
 - They [create an account through GitLab](profile/account/create_accounts.md).
 - They [swap their primary email address](profile/index.md#profile-settings) and verify it.

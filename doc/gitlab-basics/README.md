@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 comments: false
 type: index
 ---
@@ -46,4 +46,4 @@ These resources will help you get further acclimated to working on the command l
 - [Start using Git on the command line](start-using-git.md), for some simple Git commands.
 - [Command line basics](command-line-commands.md), to create and edit files using the command line.
 
-More Git resources are available in GitLab's [Git documentation](../topics/git/index.md).
+More Git resources are available in the GitLab [Git documentation](../topics/git/index.md).

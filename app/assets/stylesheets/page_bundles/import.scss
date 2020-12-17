@@ -1,0 +1,81 @@
+@import 'mixins_and_variables_and_functions';
+
+.import-jobs-to-col {
+  width: 39%;
+}
+
+.import-jobs-status-col {
+  width: 15%;
+}
+
+.import-jobs-cta-col {
+  width: 1%;
+}
+
+.import-project-name-input {
+  border-radius: 0 $border-radius-default $border-radius-default 0;
+  position: relative;
+  left: -1px;
+  max-width: 300px;
+}
+
+.import-slash-divider {
+  background-color: $gray-lightest;
+  border: 1px solid $border-color;
+}
+
+.import-row {
+  height: 55px;
+}
+
+.import-table {
+  .import-jobs-from-col,
+  .import-jobs-to-col,
+  .import-jobs-status-col,
+  .import-jobs-cta-col {
+    border-bottom-width: 1px;
+    padding-left: $gl-padding;
+  }
+}
+
+.import-projects-loading-icon {
+  margin-top: $gl-padding-32;
+}
+
+.import-entities-target-select {
+  &.disabled {
+    .import-entities-target-select-separator,
+    .select2-container.select2-container-disabled .select2-choice {
+      color: var(--gray-400, $gray-400);
+      border-color: var(--gray-100, $gray-100);
+      background-color: var(--gray-10, $gray-10);
+    }
+
+    .select2-container.select2-container-disabled .select2-choice .select2-arrow {
+      background-color: var(--gray-10, $gray-10);
+    }
+  }
+
+  .import-entities-target-select-separator {
+    border-color: var(--gray-200, $gray-200);
+    background-color: var(--gray-10, $gray-10);
+  }
+
+  .select2-container {
+    > .select2-choice {
+      .select2-arrow {
+        background-color: var(--white, $white);
+      }
+
+      border-color: var(--gray-200, $gray-200);
+      color: var(--gray-900, $gray-900) !important;
+      background-color: var(--white, $white) !important;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+  }
+
+  .gl-form-input {
+    box-shadow: inset 0 0 0 1px var(--gray-200, $gray-200);
+  }
+}

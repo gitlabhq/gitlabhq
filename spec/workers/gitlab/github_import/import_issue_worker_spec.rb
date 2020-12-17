@@ -7,7 +7,7 @@ RSpec.describe Gitlab::GithubImport::ImportIssueWorker do
 
   describe '#import' do
     it 'imports an issue' do
-      project = double(:project, full_path: 'foo/bar')
+      project = double(:project, full_path: 'foo/bar', id: 1)
       client = double(:client)
       importer = double(:importer)
       hash = {

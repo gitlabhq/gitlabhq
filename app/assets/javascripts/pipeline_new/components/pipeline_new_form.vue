@@ -12,14 +12,18 @@ import {
   GlLink,
   GlDropdown,
   GlDropdownItem,
+  GlDropdownSectionHeader,
   GlSearchBoxByType,
   GlSprintf,
   GlLoadingIcon,
 } from '@gitlab/ui';
+import * as Sentry from '~/sentry/wrapper';
 import { s__, __, n__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { redirectTo } from '~/lib/utils/url_utility';
-import { VARIABLE_TYPE, FILE_TYPE } from '../constants';
+import { VARIABLE_TYPE, FILE_TYPE, CONFIG_VARIABLES_TIMEOUT } from '../constants';
+import { backOff } from '~/lib/utils/common_utils';
+import httpStatusCodes from '~/lib/utils/http_status';
 
 export default {
   typeOptions: [
@@ -44,6 +48,7 @@ export default {
     GlLink,
     GlDropdown,
     GlDropdownItem,
+    GlDropdownSectionHeader,
     GlSearchBoxByType,
     GlSprintf,
     GlLoadingIcon,
@@ -57,11 +62,19 @@ export default {
       type: String,
       required: true,
     },
+    defaultBranch: {
+      type: String,
+      required: true,
+    },
     projectId: {
       type: String,
       required: true,
     },
-    refs: {
+    branches: {
+      type: Array,
+      required: true,
+    },
+    tags: {
       type: Array,
       required: true,
     },
@@ -92,7 +105,9 @@ export default {
   data() {
     return {
       searchTerm: '',
-      refValue: this.refParam,
+      refValue: {
+        shortName: this.refParam,
+      },
       form: {},
       error: null,
       warnings: [],
@@ -102,9 +117,21 @@ export default {
     };
   },
   computed: {
-    filteredRefs() {
-      const lowerCasedSearchTerm = this.searchTerm.toLowerCase();
-      return this.refs.filter(ref => ref.toLowerCase().includes(lowerCasedSearchTerm));
+    lowerCasedSearchTerm() {
+      return this.searchTerm.toLowerCase();
+    },
+    filteredBranches() {
+      return this.branches.filter(branch =>
+        branch.shortName.toLowerCase().includes(this.lowerCasedSearchTerm),
+      );
+    },
+    filteredTags() {
+      return this.tags.filter(tag =>
+        tag.shortName.toLowerCase().includes(this.lowerCasedSearchTerm),
+      );
+    },
+    hasTags() {
+      return this.tags.length > 0;
     },
     overMaxWarningsLimit() {
       return this.totalWarnings > this.maxWarnings;
@@ -118,14 +145,27 @@ export default {
     shouldShowWarning() {
       return this.warnings.length > 0 && !this.isWarningDismissed;
     },
+    refShortName() {
+      return this.refValue.shortName;
+    },
+    refFullName() {
+      return this.refValue.fullName;
+    },
     variables() {
-      return this.form[this.refValue]?.variables ?? [];
+      return this.form[this.refFullName]?.variables ?? [];
     },
     descriptions() {
-      return this.form[this.refValue]?.descriptions ?? {};
+      return this.form[this.refFullName]?.descriptions ?? {};
     },
   },
   created() {
+    // this is needed until we add support for ref type in url query strings
+    // ensure default branch is called with full ref on load
+    // https://gitlab.com/gitlab-org/gitlab/-/issues/287815
+    if (this.refValue.shortName === this.defaultBranch) {
+      this.refValue.fullName = `refs/heads/${this.refValue.shortName}`;
+    }
+
     this.setRefSelected(this.refValue);
   },
   methods: {
@@ -168,19 +208,19 @@ export default {
     setRefSelected(refValue) {
       this.refValue = refValue;
 
-      if (!this.form[refValue]) {
-        this.fetchConfigVariables(refValue)
+      if (!this.form[this.refFullName]) {
+        this.fetchConfigVariables(this.refFullName || this.refShortName)
           .then(({ descriptions, params }) => {
-            Vue.set(this.form, refValue, {
+            Vue.set(this.form, this.refFullName, {
               variables: [],
               descriptions,
             });
 
             // Add default variables from yml
-            this.setVariableParams(refValue, VARIABLE_TYPE, params);
+            this.setVariableParams(this.refFullName, VARIABLE_TYPE, params);
           })
           .catch(() => {
-            Vue.set(this.form, refValue, {
+            Vue.set(this.form, this.refFullName, {
               variables: [],
               descriptions: {},
             });
@@ -188,20 +228,19 @@ export default {
           .finally(() => {
             // Add/update variables, e.g. from query string
             if (this.variableParams) {
-              this.setVariableParams(refValue, VARIABLE_TYPE, this.variableParams);
+              this.setVariableParams(this.refFullName, VARIABLE_TYPE, this.variableParams);
             }
             if (this.fileParams) {
-              this.setVariableParams(refValue, FILE_TYPE, this.fileParams);
+              this.setVariableParams(this.refFullName, FILE_TYPE, this.fileParams);
             }
 
             // Adds empty var at the end of the form
-            this.addEmptyVariable(refValue);
+            this.addEmptyVariable(this.refFullName);
           });
       }
     },
-
     isSelected(ref) {
-      return ref === this.refValue;
+      return ref.fullName === this.refValue.fullName;
     },
     removeVariable(index) {
       this.variables.splice(index, 1);
@@ -209,34 +248,52 @@ export default {
     canRemove(index) {
       return index < this.variables.length - 1;
     },
-
     fetchConfigVariables(refValue) {
-      if (gon?.features?.newPipelineFormPrefilledVars) {
-        this.isLoading = true;
+      if (!gon?.features?.newPipelineFormPrefilledVars) {
+        return Promise.resolve({ params: {}, descriptions: {} });
+      }
 
-        return axios
+      this.isLoading = true;
+
+      return backOff((next, stop) => {
+        axios
           .get(this.configVariablesPath, {
             params: {
               sha: refValue,
             },
           })
-          .then(({ data }) => {
-            const params = {};
-            const descriptions = {};
-
-            Object.entries(data).forEach(([key, { value, description }]) => {
-              if (description !== null) {
-                params[key] = value;
-                descriptions[key] = description;
-              }
-            });
-
-            this.isLoading = false;
-
-            return { params, descriptions };
+          .then(({ data, status }) => {
+            if (status === httpStatusCodes.NO_CONTENT) {
+              next();
+            } else {
+              this.isLoading = false;
+              stop(data);
+            }
+          })
+          .catch(error => {
+            stop(error);
           });
-      }
-      return Promise.resolve({ params: {}, descriptions: {} });
+      }, CONFIG_VARIABLES_TIMEOUT)
+        .then(data => {
+          const params = {};
+          const descriptions = {};
+
+          Object.entries(data).forEach(([key, { value, description }]) => {
+            if (description !== null) {
+              params[key] = value;
+              descriptions[key] = description;
+            }
+          });
+
+          return { params, descriptions };
+        })
+        .catch(error => {
+          this.isLoading = false;
+
+          Sentry.captureException(error);
+
+          return { params: {}, descriptions: {} };
+        });
     },
     createPipeline() {
       const filteredVariables = this.variables
@@ -249,7 +306,9 @@ export default {
 
       return axios
         .post(this.pipelinesPath, {
-          ref: this.refValue,
+          // send shortName as fall back for query params
+          // https://gitlab.com/gitlab-org/gitlab/-/issues/287815
+          ref: this.refValue.fullName || this.refShortName,
           variables_attributes: filteredVariables,
         })
         .then(({ data }) => {
@@ -307,20 +366,29 @@ export default {
       </details>
     </gl-alert>
     <gl-form-group :label="s__('Pipeline|Run for')">
-      <gl-dropdown :text="refValue" block>
-        <gl-search-box-by-type
-          v-model.trim="searchTerm"
-          :placeholder="__('Search branches and tags')"
-        />
+      <gl-dropdown :text="refShortName" block>
+        <gl-search-box-by-type v-model.trim="searchTerm" :placeholder="__('Search refs')" />
+        <gl-dropdown-section-header>{{ __('Branches') }}</gl-dropdown-section-header>
         <gl-dropdown-item
-          v-for="(ref, index) in filteredRefs"
-          :key="index"
+          v-for="branch in filteredBranches"
+          :key="branch.fullName"
           class="gl-font-monospace"
           is-check-item
-          :is-checked="isSelected(ref)"
-          @click="setRefSelected(ref)"
+          :is-checked="isSelected(branch)"
+          @click="setRefSelected(branch)"
         >
-          {{ ref }}
+          {{ branch.shortName }}
+        </gl-dropdown-item>
+        <gl-dropdown-section-header v-if="hasTags">{{ __('Tags') }}</gl-dropdown-section-header>
+        <gl-dropdown-item
+          v-for="tag in filteredTags"
+          :key="tag.fullName"
+          class="gl-font-monospace"
+          is-check-item
+          :is-checked="isSelected(tag)"
+          @click="setRefSelected(tag)"
+        >
+          {{ tag.shortName }}
         </gl-dropdown-item>
       </gl-dropdown>
 
@@ -353,7 +421,7 @@ export default {
             :placeholder="s__('CiVariables|Input variable key')"
             :class="$options.formElementClasses"
             data-testid="pipeline-form-ci-variable-key"
-            @change="addEmptyVariable(refValue)"
+            @change="addEmptyVariable(refFullName)"
           />
           <gl-form-input
             v-model="variable.value"

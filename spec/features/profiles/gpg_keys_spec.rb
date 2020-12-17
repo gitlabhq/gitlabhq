@@ -36,7 +36,7 @@ RSpec.describe 'Profile > GPG Keys' do
     end
   end
 
-  it 'User sees their key' do
+  it 'user sees their key' do
     create(:gpg_key, user: user, key: GpgHelpers::User2.public_key)
     visit profile_gpg_keys_path
 
@@ -45,7 +45,7 @@ RSpec.describe 'Profile > GPG Keys' do
     expect(page).to have_content(GpgHelpers::User2.fingerprint)
   end
 
-  it 'User removes a key via the key index' do
+  it 'user removes a key via the key index' do
     create(:gpg_key, user: user, key: GpgHelpers::User2.public_key)
     visit profile_gpg_keys_path
 
@@ -54,7 +54,7 @@ RSpec.describe 'Profile > GPG Keys' do
     expect(page).to have_content('Your GPG keys (0)')
   end
 
-  it 'User revokes a key via the key index' do
+  it 'user revokes a key via the key index' do
     gpg_key = create :gpg_key, user: user, key: GpgHelpers::User2.public_key
     gpg_signature = create :gpg_signature, gpg_key: gpg_key, verification_status: :verified
 

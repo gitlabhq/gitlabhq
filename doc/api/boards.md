@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Project Issue Boards API
@@ -423,7 +423,7 @@ POST /projects/:id/boards/:board_id/lists
 | `assignee_id` **(PREMIUM)** | integer | no | The ID of a user |
 | `milestone_id` **(PREMIUM)** | integer | no | The ID of a milestone |
 
-NOTE: **Note:**
+NOTE:
 Label, assignee and milestone arguments are mutually exclusive,
 that is, only one of them are accepted in a request.
 Check the [Issue Board docs](../user/project/issue_board.md)

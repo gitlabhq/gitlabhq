@@ -1,0 +1,5 @@
+---
+title: Add dependency_proxy_manifests table and associations
+merge_request: 48535
+author:
+type: added

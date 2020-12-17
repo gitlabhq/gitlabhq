@@ -228,12 +228,12 @@ module TreeHelper
       gitpod_enabled: !current_user.nil? && current_user.gitpod_enabled,
       is_blob: !options[:blob].nil?,
 
-      show_edit_button: show_edit_button?,
+      show_edit_button: show_edit_button?(options),
       show_web_ide_button: show_web_ide_button?,
       show_gitpod_button: show_gitpod_button?,
 
       web_ide_url: web_ide_url,
-      edit_url: edit_url,
+      edit_url: edit_url(options),
       gitpod_url: gitpod_url
     }
   end

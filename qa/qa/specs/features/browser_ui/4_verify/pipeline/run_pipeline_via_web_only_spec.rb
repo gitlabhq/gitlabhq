@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Verify' do
-    describe 'Run pipeline', only: { subdomain: :staging } do
+    describe 'Run pipeline' do
       context 'with web only rule' do
         let(:job_name) { 'test_job' }
         let(:project) do

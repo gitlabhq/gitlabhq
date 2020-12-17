@@ -58,7 +58,7 @@ RSpec.describe Projects::MoveProjectGroupLinksService do
         target_project.project_group_links.create!(group: maintainer_group, group_access: Gitlab::Access::MAINTAINER)
         target_project.project_group_links.create!(group: developer_group, group_access: Gitlab::Access::DEVELOPER)
 
-        subject.execute(project_with_groups, options)
+        subject.execute(project_with_groups, **options)
 
         expect(project_with_groups.project_group_links.count).not_to eq 0
       end

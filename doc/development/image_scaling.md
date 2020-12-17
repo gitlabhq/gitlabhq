@@ -1,12 +1,12 @@
 ---
 stage: Enablement
 group: Memory
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Image scaling guide
 
-This section contains a brief overview of GitLab's image scaler and how to work with it.
+This section contains a brief overview of the GitLab image scaler and how to work with it.
 
 For a general introduction to the history of image scaling at GitLab, you might be interested in
 [this Unfiltered blog post](https://about.gitlab.com/blog/2020/11/02/scaling-down-how-we-prototyped-an-image-scaler-at-gitlab/).

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_not_mock_admin_mode do
+RSpec.describe 'Admin updates settings' do
   include StubENV
   include TermsHelper
   include UsageDataHelpers
@@ -24,7 +24,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
         visit general_admin_application_settings_path
       end
 
-      it 'Change visibility settings' do
+      it 'change visibility settings' do
         page.within('.as-visibility-access') do
           choose "application_setting_default_project_visibility_20"
           click_button 'Save changes'
@@ -33,7 +33,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
         expect(page).to have_content "Application settings saved successfully"
       end
 
-      it 'Uncheck all restricted visibility levels' do
+      it 'uncheck all restricted visibility levels' do
         page.within('.as-visibility-access') do
           find('#application_setting_visibility_level_0').set(false)
           find('#application_setting_visibility_level_10').set(false)
@@ -47,7 +47,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
         expect(find('#application_setting_visibility_level_20')).not_to be_checked
       end
 
-      it 'Modify import sources' do
+      it 'modify import sources' do
         expect(current_settings.import_sources).not_to be_empty
 
         page.within('.as-visibility-access') do
@@ -70,7 +70,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
         expect(current_settings.import_sources).to eq(['git'])
       end
 
-      it 'Change Visibility and Access Controls' do
+      it 'change Visibility and Access Controls' do
         page.within('.as-visibility-access') do
           uncheck 'Project export enabled'
           click_button 'Save changes'
@@ -80,7 +80,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
         expect(page).to have_content "Application settings saved successfully"
       end
 
-      it 'Change Keys settings' do
+      it 'change Keys settings' do
         page.within('.as-visibility-access') do
           select 'Are forbidden', from: 'RSA SSH keys'
           select 'Are allowed', from: 'DSA SSH keys'
@@ -98,7 +98,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
         expect(find_field('ED25519 SSH keys').value).to eq(forbidden)
       end
 
-      it 'Change Account and Limit Settings' do
+      it 'change Account and Limit Settings' do
         page.within('.as-account-limit') do
           uncheck 'Gravatar enabled'
           click_button 'Save changes'
@@ -108,7 +108,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
         expect(page).to have_content "Application settings saved successfully"
       end
 
-      it 'Change Maximum import size' do
+      it 'change Maximum import size' do
         page.within('.as-account-limit') do
           fill_in 'Maximum import size (MB)', with: 15
           click_button 'Save changes'
@@ -118,7 +118,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
         expect(page).to have_content "Application settings saved successfully"
       end
 
-      it 'Change New users set to external', :js do
+      it 'change New users set to external', :js do
         user_internal_regex = find('#application_setting_user_default_internal_regex', visible: :all)
 
         expect(user_internal_regex).to be_readonly
@@ -144,7 +144,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
         end
       end
 
-      it 'Change Sign-in restrictions' do
+      it 'change Sign-in restrictions' do
         page.within('.as-signin') do
           fill_in 'Home page URL', with: 'https://about.gitlab.com/'
           click_button 'Save changes'
@@ -154,7 +154,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
         expect(page).to have_content "Application settings saved successfully"
       end
 
-      it 'Terms of Service' do
+      it 'terms of Service' do
         # Already have the admin accept terms, so they don't need to accept in this spec.
         _existing_terms = create(:term)
         accept_terms(admin)
@@ -170,7 +170,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
         expect(page).to have_content 'Application settings saved successfully'
       end
 
-      it 'Modify oauth providers' do
+      it 'modify oauth providers' do
         expect(current_settings.disabled_oauth_sign_in_sources).to be_empty
 
         page.within('.as-signin') do
@@ -190,7 +190,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
         expect(current_settings.disabled_oauth_sign_in_sources).not_to include('google_oauth2')
       end
 
-      it 'Oauth providers do not raise validation errors when saving unrelated changes' do
+      it 'oauth providers do not raise validation errors when saving unrelated changes' do
         expect(current_settings.disabled_oauth_sign_in_sources).to be_empty
 
         page.within('.as-signin') do
@@ -213,7 +213,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
         expect(current_settings.disabled_oauth_sign_in_sources).to include('google_oauth2')
       end
 
-      it 'Configure web terminal' do
+      it 'configure web terminal' do
         page.within('.as-terminal') do
           fill_in 'Max session time', with: 15
           click_button 'Save changes'
@@ -255,7 +255,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
         visit general_admin_application_settings_path
       end
 
-      it 'Enable hiding third party offers' do
+      it 'enable hiding third party offers' do
         page.within('.as-third-party-offers') do
           check 'Do not display offers from third parties within GitLab'
           click_button 'Save changes'
@@ -265,7 +265,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
         expect(current_settings.hide_third_party_offers).to be true
       end
 
-      it 'Change Slack Notifications Service template settings', :js do
+      it 'change Slack Notifications Service template settings', :js do
         first(:link, 'Service Templates').click
         click_link 'Slack notifications'
         fill_in 'Webhook', with: 'http://localhost'
@@ -315,7 +315,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
     end
 
     context 'CI/CD page' do
-      it 'Change CI/CD settings' do
+      it 'change CI/CD settings' do
         visit ci_cd_admin_application_settings_path
 
         page.within('.as-ci-cd') do
@@ -380,7 +380,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
     end
 
     context 'Repository page' do
-      it 'Change Repository storage settings' do
+      it 'change Repository storage settings' do
         visit repository_admin_application_settings_path
 
         page.within('.as-repository-storage') do
@@ -393,7 +393,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
     end
 
     context 'Reporting page' do
-      it 'Change Spam settings' do
+      it 'change Spam settings' do
         visit reporting_admin_application_settings_path
 
         page.within('.as-spam') do
@@ -421,7 +421,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
         visit metrics_and_profiling_admin_application_settings_path
       end
 
-      it 'Change Prometheus settings' do
+      it 'change Prometheus settings' do
         page.within('.as-prometheus') do
           check 'Enable Prometheus Metrics'
           click_button 'Save changes'
@@ -431,7 +431,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
         expect(page).to have_content "Application settings saved successfully"
       end
 
-      it 'Change Performance bar settings' do
+      it 'change Performance bar settings' do
         group = create(:group)
 
         page.within('.as-performance-bar') do
@@ -474,7 +474,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
     end
 
     context 'Network page' do
-      it 'Changes Outbound requests settings' do
+      it 'changes Outbound requests settings' do
         visit network_admin_application_settings_path
 
         page.within('.as-outbound') do
@@ -492,7 +492,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
         expect(current_settings.dns_rebinding_protection_enabled).to be false
       end
 
-      it 'Changes Issues rate limits settings' do
+      it 'changes Issues rate limits settings' do
         visit network_admin_application_settings_path
 
         page.within('.as-issue-limits') do
@@ -510,7 +510,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
         visit preferences_admin_application_settings_path
       end
 
-      it 'Change Help page' do
+      it 'change Help page' do
         stub_feature_flags(help_page_documentation_redirect: true)
 
         new_support_url = 'http://example.com/help'
@@ -531,7 +531,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
         expect(page).to have_content "Application settings saved successfully"
       end
 
-      it 'Change Pages settings' do
+      it 'change Pages settings' do
         page.within('.as-pages') do
           fill_in 'Maximum size of pages (MB)', with: 15
           check 'Require users to prove ownership of custom domains'
@@ -543,7 +543,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
         expect(page).to have_content "Application settings saved successfully"
       end
 
-      it 'Change Real-time features settings' do
+      it 'change Real-time features settings' do
         page.within('.as-realtime') do
           fill_in 'Polling interval multiplier', with: 5.0
           click_button 'Save changes'
@@ -564,7 +564,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
           .to have_content "The form contains the following error: Polling interval multiplier must be greater than or equal to 0"
       end
 
-      it "Change Pages Let's Encrypt settings" do
+      it "change Pages Let's Encrypt settings" do
         visit preferences_admin_application_settings_path
         page.within('.as-pages') do
           fill_in 'Email', with: 'my@test.example.com'
@@ -578,7 +578,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
     end
 
     context 'Nav bar' do
-      it 'Shows default help links in nav' do
+      it 'shows default help links in nav' do
         default_support_url = 'https://about.gitlab.com/getting-help/'
 
         visit root_dashboard_path
@@ -591,7 +591,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
         end
       end
 
-      it 'Shows custom support url in nav when set' do
+      it 'shows custom support url in nav when set' do
         new_support_url = 'http://example.com/help'
         stub_application_setting(help_page_support_url: new_support_url)
 

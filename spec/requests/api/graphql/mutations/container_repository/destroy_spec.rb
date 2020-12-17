@@ -22,7 +22,7 @@ RSpec.describe 'Destroying a container repository' do
     GQL
   end
 
-  let(:params) { { id: container_repository.to_global_id.to_s } }
+  let(:params) { { id: id } }
   let(:mutation) { graphql_mutation(:destroy_container_repository, params, query) }
   let(:mutation_response) { graphql_mutation_response(:destroyContainerRepository) }
   let(:container_repository_mutation_response) { mutation_response['containerRepository'] }

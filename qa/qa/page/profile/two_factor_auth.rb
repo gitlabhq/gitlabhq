@@ -14,8 +14,9 @@ module QA
           element :register_2fa_app_button
         end
 
-        view 'app/views/profiles/two_factor_auths/_codes.html.haml' do
+        view 'app/assets/javascripts/authentication/two_factor_auth/components/recovery_codes.vue' do
           element :proceed_button
+          element :copy_button
           element :codes_content
           element :code_content
         end
@@ -43,7 +44,8 @@ module QA
           code_elements.map { |code_content| code_content.text }
         end
 
-        def click_proceed_button
+        def click_copy_and_proceed
+          click_element :copy_button
           click_element :proceed_button
         end
       end

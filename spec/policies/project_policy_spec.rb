@@ -401,6 +401,40 @@ RSpec.describe ProjectPolicy do
     end
   end
 
+  describe 'bot_log_in' do
+    let(:bot_user) { create(:user, :project_bot) }
+    let(:project) { private_project }
+
+    context 'when bot is in project and is not blocked' do
+      before do
+        project.add_maintainer(bot_user)
+      end
+
+      it 'is a valid project bot' do
+        expect(bot_user.can?(:bot_log_in, project)).to be_truthy
+      end
+    end
+
+    context 'when project bot is invalid' do
+      context 'when bot is not in project' do
+        it 'is not a valid project bot' do
+          expect(bot_user.can?(:bot_log_in, project)).to be_falsy
+        end
+      end
+
+      context 'when bot user is blocked' do
+        before do
+          project.add_maintainer(bot_user)
+          bot_user.block!
+        end
+
+        it 'is not a valid project bot' do
+          expect(bot_user.can?(:bot_log_in, project)).to be_falsy
+        end
+      end
+    end
+  end
+
   context 'support bot' do
     let(:current_user) { User.support_bot }
 
@@ -943,5 +977,145 @@ RSpec.describe ProjectPolicy do
     end
   end
 
+  describe 'read_analytics' do
+    context 'anonymous user' do
+      let(:current_user) { anonymous }
+
+      it { is_expected.to be_allowed(:read_analytics) }
+    end
+
+    context 'project member' do
+      let(:project) { private_project }
+
+      %w(guest reporter developer maintainer).each do |role|
+        context role do
+          let(:current_user) { send(role) }
+
+          it { is_expected.to be_allowed(:read_analytics) }
+
+          context "without access to Analytics" do
+            before do
+              project.project_feature.update!(analytics_access_level: ProjectFeature::DISABLED)
+            end
+
+            it { is_expected.to be_disallowed(:read_analytics) }
+          end
+        end
+      end
+    end
+  end
+
   it_behaves_like 'Self-managed Core resource access tokens'
+
+  describe 'operations feature' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:guest_operations_permissions) { [:read_environment, :read_deployment] }
+
+    let(:developer_operations_permissions) do
+      guest_operations_permissions + [
+        :read_feature_flag, :read_sentry_issue, :read_alert_management_alert, :read_terraform_state,
+        :metrics_dashboard, :read_pod_logs, :read_prometheus, :create_feature_flag,
+        :create_environment, :create_deployment, :update_feature_flag, :update_environment,
+        :update_sentry_issue, :update_alert_management_alert, :update_deployment,
+        :destroy_feature_flag, :destroy_environment, :admin_feature_flag
+      ]
+    end
+
+    let(:maintainer_operations_permissions) do
+      developer_operations_permissions + [
+        :read_cluster, :create_cluster, :update_cluster, :admin_environment,
+        :admin_cluster, :admin_terraform_state, :admin_deployment
+      ]
+    end
+
+    where(:project_visibility, :access_level, :role, :allowed) do
+      :public   | ProjectFeature::ENABLED   | :maintainer | true
+      :public   | ProjectFeature::ENABLED   | :developer  | true
+      :public   | ProjectFeature::ENABLED   | :guest      | true
+      :public   | ProjectFeature::ENABLED   | :anonymous  | true
+      :public   | ProjectFeature::PRIVATE   | :maintainer | true
+      :public   | ProjectFeature::PRIVATE   | :developer  | true
+      :public   | ProjectFeature::PRIVATE   | :guest      | true
+      :public   | ProjectFeature::PRIVATE   | :anonymous  | false
+      :public   | ProjectFeature::DISABLED  | :maintainer | false
+      :public   | ProjectFeature::DISABLED  | :developer  | false
+      :public   | ProjectFeature::DISABLED  | :guest      | false
+      :public   | ProjectFeature::DISABLED  | :anonymous  | false
+      :internal | ProjectFeature::ENABLED   | :maintainer | true
+      :internal | ProjectFeature::ENABLED   | :developer  | true
+      :internal | ProjectFeature::ENABLED   | :guest      | true
+      :internal | ProjectFeature::ENABLED   | :anonymous  | false
+      :internal | ProjectFeature::PRIVATE   | :maintainer | true
+      :internal | ProjectFeature::PRIVATE   | :developer  | true
+      :internal | ProjectFeature::PRIVATE   | :guest      | true
+      :internal | ProjectFeature::PRIVATE   | :anonymous  | false
+      :internal | ProjectFeature::DISABLED  | :maintainer | false
+      :internal | ProjectFeature::DISABLED  | :developer  | false
+      :internal | ProjectFeature::DISABLED  | :guest      | false
+      :internal | ProjectFeature::DISABLED  | :anonymous  | false
+      :private  | ProjectFeature::ENABLED   | :maintainer | true
+      :private  | ProjectFeature::ENABLED   | :developer  | true
+      :private  | ProjectFeature::ENABLED   | :guest      | false
+      :private  | ProjectFeature::ENABLED   | :anonymous  | false
+      :private  | ProjectFeature::PRIVATE   | :maintainer | true
+      :private  | ProjectFeature::PRIVATE   | :developer  | true
+      :private  | ProjectFeature::PRIVATE   | :guest      | false
+      :private  | ProjectFeature::PRIVATE   | :anonymous  | false
+      :private  | ProjectFeature::DISABLED  | :maintainer | false
+      :private  | ProjectFeature::DISABLED  | :developer  | false
+      :private  | ProjectFeature::DISABLED  | :guest      | false
+      :private  | ProjectFeature::DISABLED  | :anonymous  | false
+    end
+
+    with_them do
+      let(:current_user) { user_subject(role) }
+      let(:project) { project_subject(project_visibility) }
+
+      it 'allows/disallows the abilities based on the operation feature access level' do
+        project.project_feature.update!(operations_access_level: access_level)
+
+        if allowed
+          expect_allowed(*permissions_abilities(role))
+        else
+          expect_disallowed(*permissions_abilities(role))
+        end
+      end
+
+      def project_subject(project_type)
+        case project_type
+        when :public
+          public_project
+        when :internal
+          internal_project
+        else
+          private_project
+        end
+      end
+
+      def user_subject(role)
+        case role
+        when :maintainer
+          maintainer
+        when :developer
+          developer
+        when :guest
+          guest
+        when :anonymous
+          anonymous
+        end
+      end
+
+      def permissions_abilities(role)
+        case role
+        when :maintainer
+          maintainer_operations_permissions
+        when :developer
+          developer_operations_permissions
+        else
+          guest_operations_permissions
+        end
+      end
+    end
+  end
 end

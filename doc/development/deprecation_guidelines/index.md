@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Deprecation guidelines
@@ -15,7 +15,7 @@ It's important to understand the difference between **deprecation** and
 **removal**:
 
 **Deprecation** is the process of flagging/marking/announcing that a feature
-will be removed in a future version of GitLab.
+is scheduled for removal in a future version of GitLab.
 
 **Removal** is the process of actually removing a feature that was previously
 deprecated.

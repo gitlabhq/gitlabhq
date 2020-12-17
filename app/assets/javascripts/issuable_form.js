@@ -7,6 +7,7 @@ import ZenMode from './zen_mode';
 import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
 import { parsePikadayDate, pikadayToString } from './lib/utils/datetime_utility';
 import { queryToObject, objectToQuery } from './lib/utils/url_utility';
+import { loadCSSFile } from './lib/utils/css_utils';
 
 const MR_SOURCE_BRANCH = 'merge_request[source_branch]';
 const MR_TARGET_BRANCH = 'merge_request[target_branch]';
@@ -184,36 +185,41 @@ export default class IssuableForm {
   initTargetBranchDropdown() {
     import(/* webpackChunkName: 'select2' */ 'select2/select2')
       .then(() => {
-        this.$targetBranchSelect.select2({
-          ...AutoWidthDropdownSelect.selectOptions('js-target-branch-select'),
-          ajax: {
-            url: this.$targetBranchSelect.data('endpoint'),
-            dataType: 'JSON',
-            quietMillis: 250,
-            data(search) {
-              return {
-                search,
-              };
-            },
-            results(data) {
-              return {
-                // `data` keys are translated so we can't just access them with a string based key
-                results: data[Object.keys(data)[0]].map(name => ({
-                  id: name,
-                  text: name,
-                })),
-              };
-            },
-          },
-          initSelection(el, callback) {
-            const val = el.val();
+        // eslint-disable-next-line promise/no-nesting
+        loadCSSFile(gon.select2_css_path)
+          .then(() => {
+            this.$targetBranchSelect.select2({
+              ...AutoWidthDropdownSelect.selectOptions('js-target-branch-select'),
+              ajax: {
+                url: this.$targetBranchSelect.data('endpoint'),
+                dataType: 'JSON',
+                quietMillis: 250,
+                data(search) {
+                  return {
+                    search,
+                  };
+                },
+                results(data) {
+                  return {
+                    // `data` keys are translated so we can't just access them with a string based key
+                    results: data[Object.keys(data)[0]].map(name => ({
+                      id: name,
+                      text: name,
+                    })),
+                  };
+                },
+              },
+              initSelection(el, callback) {
+                const val = el.val();
 
-            callback({
-              id: val,
-              text: val,
+                callback({
+                  id: val,
+                  text: val,
+                });
+              },
             });
-          },
-        });
+          })
+          .catch(() => {});
       })
       .catch(() => {});
   }

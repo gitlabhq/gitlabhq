@@ -16,7 +16,7 @@ RSpec.describe 'Upload a nuget package', :api, :js do
   subject do
     HTTParty.put(
       url,
-      basic_auth: { user: user.username, password: personal_access_token.token },
+      basic_auth: { username: user.username, password: personal_access_token.token },
       body: { package: file }
     )
   end

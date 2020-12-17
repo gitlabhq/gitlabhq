@@ -46,6 +46,8 @@ Sidekiq.configure_server do |config|
 
   config.client_middleware(&Gitlab::SidekiqMiddleware.client_configurator)
 
+  config.death_handlers << Gitlab::SidekiqDeathHandler.method(:handler)
+
   config.on :startup do
     # Clear any connections that might have been obtained before starting
     # Sidekiq (e.g. in an initializer).

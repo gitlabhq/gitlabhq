@@ -48,11 +48,12 @@ export default class AccessDropdown {
       clicked: options => {
         const { $el, e } = options;
         const item = options.selectedObj;
+        const fossWithMergeAccess = !this.hasLicense && this.accessLevel === ACCESS_LEVELS.MERGE;
 
         e.preventDefault();
 
-        if (!this.hasLicense) {
-          // We're not multiselecting quite yet with FOSS:
+        if (fossWithMergeAccess) {
+          // We're not multiselecting quite yet in "Merge" access dropdown, on FOSS:
           // remove all preselected items before selecting this item
           // https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37499
           this.accessLevelsData.forEach(level => {
@@ -62,7 +63,7 @@ export default class AccessDropdown {
 
         if ($el.is('.is-active')) {
           if (this.noOneObj) {
-            if (item.id === this.noOneObj.id && this.hasLicense) {
+            if (item.id === this.noOneObj.id && !fossWithMergeAccess) {
               // remove all others selected items
               this.accessLevelsData.forEach(level => {
                 if (level.id !== item.id) {

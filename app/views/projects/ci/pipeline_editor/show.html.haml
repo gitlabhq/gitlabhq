@@ -3,4 +3,6 @@
 #js-pipeline-editor{ data: { "ci-config-path": @project.ci_config_path_or_default,
   "project-path" => @project.full_path,
   "default-branch" => @project.default_branch,
+  "commit-id" => @project.commit ? @project.commit.id : '',
+  "new-merge-request-path" => namespace_project_new_merge_request_path,
 } }

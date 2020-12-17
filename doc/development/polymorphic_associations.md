@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Polymorphic Associations
@@ -16,7 +16,7 @@ target ID. For example, at the time of writing we have such a setup for
 - `source_type`: a string defining the model to use, can be either `Project` or
   `Namespace`.
 - `source_id`: the ID of the row to retrieve based on `source_type`. For
-  example, when `source_type` is `Project` then `source_id` will contain a
+  example, when `source_type` is `Project` then `source_id` contains a
   project ID.
 
 While such a setup may appear to be useful, it comes with many drawbacks; enough
@@ -24,8 +24,8 @@ that you should avoid this at all costs.
 
 ## Space Wasted
 
-Because this setup relies on string values to determine the model to use it will
-end up wasting a lot of space. For example, for `Project` and `Namespace` the
+Because this setup relies on string values to determine the model to use, it
+wastes a lot of space. For example, for `Project` and `Namespace` the
 maximum size is 9 bytes, plus 1 extra byte for every string when using
 PostgreSQL. While this may only be 10 bytes per row, given enough tables and
 rows using such a setup we can end up wasting quite a bit of disk space and
@@ -84,7 +84,7 @@ Let's say you have a `members` table storing both approved and pending members,
 for both projects and groups, and the pending state is determined by the column
 `requested_at` being set or not. Schema wise such a setup can lead to various
 columns only being set for certain rows, wasting space. It's also possible that
-certain indexes will only be set for certain rows, again wasting space. Finally,
+certain indexes are only set for certain rows, again wasting space. Finally,
 querying such a table requires less than ideal queries. For example:
 
 ```sql
@@ -121,7 +121,7 @@ WHERE group_id = 4
 ```
 
 If you want to get both you can use a UNION, though you need to be explicit
-about what columns you want to SELECT as otherwise the result set will use the
+about what columns you want to SELECT as otherwise the result set uses the
 columns of the first query. For example:
 
 ```sql
@@ -147,6 +147,6 @@ filter rows using the `IS NULL` condition.
 To summarize: using separate tables allows us to use foreign keys effectively,
 create indexes only where necessary, conserve space, query data more
 efficiently, and scale these tables more easily (e.g. by storing them on
-separate disks). A nice side effect of this is that code can also become easier
-as you won't end up with a single model having to handle different kinds of
+separate disks). A nice side effect of this is that code can also become easier,
+as a single model isn't responsible for handling different kinds of
 data.

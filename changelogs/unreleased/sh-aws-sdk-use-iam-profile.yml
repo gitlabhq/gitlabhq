@@ -1,0 +1,5 @@
+---
+title: Support instance profiles for IAM role for Amazon EKS integration
+merge_request: 49212
+author:
+type: added

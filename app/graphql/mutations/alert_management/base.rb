@@ -11,7 +11,7 @@ module Mutations
 
       argument :iid, GraphQL::STRING_TYPE,
                required: true,
-               description: "The iid of the alert to mutate"
+               description: "The IID of the alert to mutate"
 
       field :alert,
             Types::AlertManagement::AlertType,

@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Ecosystem
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Creating an API token in Jira Cloud
@@ -11,7 +11,7 @@ below to create one:
 
 1. Log in to [`id.atlassian.com`](https://id.atlassian.com/manage-profile/security/api-tokens) with your email address.
 
-   NOTE: **Note:**
+   NOTE:
    It is important that the user associated with this email address has *write* access
    to projects in Jira.
 

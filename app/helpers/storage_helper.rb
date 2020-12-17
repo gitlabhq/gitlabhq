@@ -15,9 +15,11 @@ module StorageHelper
       counter_wikis: storage_counter(statistics.wiki_size),
       counter_build_artifacts: storage_counter(statistics.build_artifacts_size),
       counter_lfs_objects: storage_counter(statistics.lfs_objects_size),
-      counter_snippets: storage_counter(statistics.snippets_size)
+      counter_snippets: storage_counter(statistics.snippets_size),
+      counter_packages: storage_counter(statistics.packages_size),
+      counter_uploads: storage_counter(statistics.uploads_size)
     }
 
-    _("Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / LFS: %{counter_lfs_objects} / Snippets: %{counter_snippets}") % counters
+    _("Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / LFS: %{counter_lfs_objects} / Snippets: %{counter_snippets} / Packages: %{counter_packages} / Uploads: %{counter_uploads}") % counters
   end
 end

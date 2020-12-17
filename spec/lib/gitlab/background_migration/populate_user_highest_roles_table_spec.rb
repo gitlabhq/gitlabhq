@@ -18,7 +18,7 @@ RSpec.describe Gitlab::BackgroundMigration::PopulateUserHighestRolesTable, schem
       projects_limit: 0
     }.merge(params)
 
-    users.create(user_params)
+    users.create!(user_params)
   end
 
   def create_member(id, access_level, params = {})
@@ -30,7 +30,7 @@ RSpec.describe Gitlab::BackgroundMigration::PopulateUserHighestRolesTable, schem
       notification_level: 0
     }.merge(params)
 
-    members.create(params)
+    members.create!(params)
   end
 
   before do
@@ -47,7 +47,7 @@ RSpec.describe Gitlab::BackgroundMigration::PopulateUserHighestRolesTable, schem
     create_member(7, 30)
     create_member(8, 20, requested_at: Time.current)
 
-    user_highest_roles.create(user_id: 1, highest_access_level: 50)
+    user_highest_roles.create!(user_id: 1, highest_access_level: 50)
   end
 
   describe '#perform' do

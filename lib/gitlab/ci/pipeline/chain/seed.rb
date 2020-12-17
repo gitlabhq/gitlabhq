@@ -29,11 +29,11 @@ module Gitlab
             ##
             # Gather all runtime build/stage errors
             #
-            if stage_seeds_errors
-              return error(stage_seeds_errors.join("\n"), config_error: true)
+            if pipeline_seed.errors
+              return error(pipeline_seed.errors.join("\n"), config_error: true)
             end
 
-            @command.stage_seeds = stage_seeds
+            @command.pipeline_seed = pipeline_seed
           end
 
           def break?
@@ -42,23 +42,11 @@ module Gitlab
 
           private
 
-          def stage_seeds_errors
-            stage_seeds.flat_map(&:errors).compact.presence
-          end
-
-          def stage_seeds
-            strong_memoize(:stage_seeds) do
-              seeds = stages_attributes.inject([]) do |previous_stages, attributes|
-                seed = Gitlab::Ci::Pipeline::Seed::Stage.new(pipeline, attributes, previous_stages)
-                previous_stages + [seed]
-              end
-
-              seeds.select(&:included?)
+          def pipeline_seed
+            strong_memoize(:pipeline_seed) do
+              stages_attributes = @command.yaml_processor_result.stages_attributes
+              Gitlab::Ci::Pipeline::Seed::Pipeline.new(pipeline, stages_attributes)
             end
-          end
-
-          def stages_attributes
-            @command.yaml_processor_result.stages_attributes
           end
         end
       end

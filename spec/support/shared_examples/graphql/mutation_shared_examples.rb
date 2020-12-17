@@ -13,6 +13,8 @@ RSpec.shared_examples 'a mutation that returns top-level errors' do |errors: []|
   it do
     post_graphql_mutation(mutation, current_user: current_user)
 
+    expect(graphql_errors).to be_present
+
     error_messages = graphql_errors.map { |e| e['message'] }
 
     expect(error_messages).to match_errors

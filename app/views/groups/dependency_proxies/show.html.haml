@@ -7,7 +7,7 @@
     - link_start = '<a href="%{url}">'.html_safe % { url: help_page_path('user/packages/dependency_proxy/index') }
     = _('Create a local proxy for storing frequently used upstream images. %{link_start}Learn more%{link_end} about dependency proxies.').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
 
-- if @group.public?
+- if Feature.enabled?(:dependency_proxy_for_private_groups, default_enabled: true) || @group.public?
   - if can?(current_user, :admin_dependency_proxy, @group)
     = form_for(@dependency_proxy, method: :put, url: group_dependency_proxy_path(@group)) do |f|
       .form-group

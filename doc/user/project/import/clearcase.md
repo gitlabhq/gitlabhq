@@ -2,12 +2,12 @@
 type: reference, howto
 stage: Manage
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Migrating from ClearCase
 
-[ClearCase](https://www.ibm.com/us-en/marketplace/rational-clearcase) is a set of
+[ClearCase](https://www.ibm.com/products/rational-clearcase) is a set of
 tools developed by IBM which also include a centralized version control system
 similar to Git.
 

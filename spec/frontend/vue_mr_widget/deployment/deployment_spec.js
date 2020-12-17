@@ -8,6 +8,7 @@ import {
   SUCCESS,
   FAILED,
   CANCELED,
+  SKIPPED,
 } from '~/vue_merge_request_widget/components/deployment/constants';
 import { deploymentMockData, playDetails, retryDetails } from './deployment_mock_data';
 
@@ -77,6 +78,10 @@ describe('Deployment component', () => {
       ${CANCELED} | ${true}  | ${noDetails}      | ${'Canceled deployment to'}      | ${defaultGroup}
       ${CANCELED} | ${false} | ${deployDetail}   | ${'Canceled deployment to'}      | ${noActions}
       ${CANCELED} | ${false} | ${noDetails}      | ${'Canceled deployment to'}      | ${noActions}
+      ${SKIPPED}  | ${true}  | ${deployDetail}   | ${'Skipped deployment to'}       | ${defaultGroup}
+      ${SKIPPED}  | ${true}  | ${noDetails}      | ${'Skipped deployment to'}       | ${defaultGroup}
+      ${SKIPPED}  | ${false} | ${deployDetail}   | ${'Skipped deployment to'}       | ${noActions}
+      ${SKIPPED}  | ${false} | ${noDetails}      | ${'Skipped deployment to'}       | ${noActions}
     `(
       '$status + previous: $previous + manual: $deploymentDetails.isManual',
       ({ status, previous, deploymentDetails, text, actionButtons }) => {

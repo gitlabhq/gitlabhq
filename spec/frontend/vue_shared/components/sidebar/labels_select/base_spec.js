@@ -33,8 +33,8 @@ describe('BaseComponent', () => {
         expect(vm.hiddenInputName).toBe('issue[label_names][]');
       });
 
-      it('returns correct string when showCreate prop is `false`', () => {
-        wrapper.setProps({ showCreate: false });
+      it('returns correct string when showCreate prop is `false`', async () => {
+        await wrapper.setProps({ showCreate: false });
 
         expect(vm.hiddenInputName).toBe('label_id[]');
       });
@@ -45,8 +45,8 @@ describe('BaseComponent', () => {
         expect(vm.createLabelTitle).toBe('Create project label');
       });
 
-      it('return `Create group label` when `isProject` prop is false', () => {
-        wrapper.setProps({ isProject: false });
+      it('return `Create group label` when `isProject` prop is false', async () => {
+        await wrapper.setProps({ isProject: false });
 
         expect(vm.createLabelTitle).toBe('Create group label');
       });
@@ -57,8 +57,8 @@ describe('BaseComponent', () => {
         expect(vm.manageLabelsTitle).toBe('Manage project labels');
       });
 
-      it('return `Manage group labels` when `isProject` prop is false', () => {
-        wrapper.setProps({ isProject: false });
+      it('return `Manage group labels` when `isProject` prop is false', async () => {
+        await wrapper.setProps({ isProject: false });
 
         expect(vm.manageLabelsTitle).toBe('Manage group labels');
       });

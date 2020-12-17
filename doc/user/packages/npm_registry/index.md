@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # NPM packages in the Package Registry
@@ -12,7 +12,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Publish NPM packages in your project's Package Registry. Then install the
 packages whenever you need to use them as a dependency.
 
-Only [scoped](https://docs.npmjs.com/misc/scope) packages are supported.
+Only [scoped](https://docs.npmjs.com/misc/scope/) packages are supported.
 
 ## Build an NPM package
 
@@ -25,7 +25,7 @@ the [next section](#authenticate-to-the-package-registry).
 ### Install NPM
 
 Install Node.js and NPM in your local development environment by following
-the instructions at [npmjs.com](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
+the instructions at [npmjs.com](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm/).
 
 When installation is complete, verify you can use NPM in your terminal by
 running:
@@ -102,10 +102,11 @@ To authenticate to the Package Registry, you must use one of the following:
 - It's not recommended, but you can use [OAuth tokens](../../../api/oauth2.md#resource-owner-password-credentials-flow).
   Standard OAuth tokens cannot authenticate to the GitLab NPM Registry. You must use a personal access token with OAuth headers.
 - A [CI job token](#authenticate-with-a-ci-job-token).
+- Your NPM package name must be in the format of [@scope:package-name](#package-naming-convention). It must match exactly, including the case.
 
 ### Authenticate with a personal access token or deploy token
 
-To authenticate with the Package Registry, you will need a [personal access token](../../profile/personal_access_tokens.md) or [deploy token](../../project/deploy_tokens/index.md).
+To authenticate with the Package Registry, you need a [personal access token](../../profile/personal_access_tokens.md) or [deploy token](../../project/deploy_tokens/index.md).
 
 #### Project-level NPM endpoint
 
@@ -228,7 +229,7 @@ This regex allows almost all of the characters that NPM allows, with a few excep
 The regex also allows for capital letters, while NPM does not. Capital letters are needed because the scope must be
 identical to the root namespace of the project.
 
-CAUTION: **Caution:**
+WARNING:
 When you update the path of a user or group, or transfer a subgroup or project,
 you must remove any NPM packages first. You cannot update the root namespace
 of a project with NPM packages. Make sure you update your `.npmrc` files to follow
@@ -240,6 +241,7 @@ Prerequisites:
 
 - [Authenticate](#authenticate-to-the-package-registry) to the Package Registry.
 - Set a [project-level NPM endpoint](#use-the-gitlab-endpoint-for-npm-packages).
+- Your NPM package name must be in the format of [@scope:package-name](#package-naming-convention). It must match exactly, including the case.
 
 To upload an NPM package to your project, run this command:
 
@@ -276,6 +278,10 @@ deploy:
     - echo "//gitlab.example.com/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}">.npmrc
     - npm publish
 ```
+
+See the
+[Publish NPM packages to the GitLab Package Registry using semantic-release](../../../ci/examples/semantic-release.md)
+step-by-step guide and demo project for a complete example.
 
 ## Publishing packages with the same name or version
 
@@ -356,7 +362,7 @@ In GitLab 12.6 and later, packages published to the Package Registry expose the 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9425) in GitLab Premium 12.8.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Core in 13.3.
 
-You can add [distribution tags](https://docs.npmjs.com/cli/dist-tag) to newly-published packages.
+You can add [distribution tags](https://docs.npmjs.com/cli/dist-tag/) to newly-published packages.
 Tags are optional and can be assigned to only one package at a time.
 
 When you publish a package without a tag, the `latest` tag is added by default.
@@ -451,3 +457,11 @@ If you get this error, ensure that:
 - The scoped packages URL includes a trailing slash:
   - Correct: `//gitlab.example.com/api/v4/packages/npm/`
   - Incorrect: `//gitlab.example.com/api/v4/packages/npm`
+
+### `npm publish` returns `npm ERR! 400 Bad Request`
+
+If you get this error, your package name may not meet the
+[@scope:package-name package naming convention](#package-naming-convention).
+
+Ensure the name meets the convention exactly, including the case.
+Then try to publish again.

@@ -1,7 +1,7 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+stage: Enablement
+group: Distribution
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Changing your time zone
@@ -20,7 +20,7 @@ To see all available time zones, run `bundle exec rake time:zones:all`.
 
 For Omnibus installations, run `gitlab-rake time:zones:all`.
 
-NOTE: **Note:**
+NOTE:
 This Rake task does not list timezones in TZInfo format required by Omnibus GitLab during a reconfigure: [#27209](https://gitlab.com/gitlab-org/gitlab/-/issues/27209).
 
 ## Changing time zone in Omnibus installations

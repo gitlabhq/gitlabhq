@@ -4,7 +4,9 @@ require 'spec_helper'
 
 RSpec.describe 'DevOps Report page', :js do
   before do
-    sign_in(create(:admin))
+    admin = create(:admin)
+    sign_in(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
   end
 
   context 'with devops_adoption feature flag disabled' do

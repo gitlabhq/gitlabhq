@@ -310,4 +310,24 @@ RSpec.describe Gitlab::UserAccess do
       end
     end
   end
+
+  describe '#can_push_for_ref?' do
+    let(:ref) { 'test_ref' }
+
+    context 'when user cannot push_code to a project repository (eg. as a guest)' do
+      it 'is false' do
+        project.add_user(user, :guest)
+
+        expect(access.can_push_for_ref?(ref)).to be_falsey
+      end
+    end
+
+    context 'when user can push_code to a project repository (eg. as a developer)' do
+      it 'is true' do
+        project.add_user(user, :developer)
+
+        expect(access.can_push_for_ref?(ref)).to be_truthy
+      end
+    end
+  end
 end

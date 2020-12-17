@@ -23,7 +23,7 @@ RSpec.describe EnsureNamespaceSettingsCreation do
       end
     end
 
-    it 'schedules migrations in batches ' do
+    it 'schedules migrations in batches' do
       stub_const("#{described_class.name}::BATCH_SIZE", 2)
 
       namespace_3 = namespaces.create!(name: 'gitlab', path: 'gitlab-org3')

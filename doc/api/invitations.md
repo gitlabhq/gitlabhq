@@ -1,7 +1,7 @@
 ---
 stage: Growth
 group: Expansion
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Invitations API
@@ -15,15 +15,16 @@ To send an invitation, you must have access to the project or group you are send
 levels are defined in the `Gitlab::Access` module. Currently, these levels are valid:
 
 - No access (`0`)
+- Minimal access (`5`) ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220203) in GitLab 13.5.)
 - Guest (`10`)
 - Reporter (`20`)
 - Developer (`30`)
 - Maintainer (`40`)
 - Owner (`50`) - Only valid to set for groups
 
-CAUTION: **Caution:**
+WARNING:
 Due to [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/219299),
-projects in personal namespaces will not show owner (`50`) permission.
+projects in personal namespaces don't show owner (`50`) permission.
 
 ## Invite by email to group or project
 

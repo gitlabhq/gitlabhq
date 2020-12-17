@@ -74,6 +74,7 @@ export default class Autosave {
   }
 
   dispose() {
+    // eslint-disable-next-line @gitlab/no-global-event-off
     this.field.off('input');
   }
 }

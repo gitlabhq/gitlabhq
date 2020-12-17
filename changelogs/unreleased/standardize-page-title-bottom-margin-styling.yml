@@ -1,0 +1,5 @@
+---
+title: 'Remove last-child bottom-margin: 0 from page-title class'
+merge_request: 49884
+author:
+type: fixed

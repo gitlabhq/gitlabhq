@@ -10,19 +10,19 @@ RSpec.describe DedupMrMetrics, :migration, schema: 20200526013844 do
   let(:metrics) { table(:merge_request_metrics) }
   let(:merge_request_params) { { source_branch: 'x', target_branch: 'y', target_project_id: project.id } }
 
-  let!(:namespace) { namespaces.create(name: 'foo', path: 'foo') }
+  let!(:namespace) { namespaces.create!(name: 'foo', path: 'foo') }
   let!(:project) { projects.create!(namespace_id: namespace.id) }
   let!(:merge_request_1) { merge_requests.create!(merge_request_params) }
   let!(:merge_request_2) { merge_requests.create!(merge_request_params) }
   let!(:merge_request_3) { merge_requests.create!(merge_request_params) }
 
-  let!(:duplicated_metrics_1) { metrics.create(merge_request_id: merge_request_1.id, latest_build_started_at: 1.day.ago, first_deployed_to_production_at: 5.days.ago, updated_at: 2.months.ago) }
-  let!(:duplicated_metrics_2) { metrics.create(merge_request_id: merge_request_1.id, latest_build_started_at: Time.now, merged_at: Time.now, updated_at: 1.month.ago) }
+  let!(:duplicated_metrics_1) { metrics.create!(merge_request_id: merge_request_1.id, latest_build_started_at: 1.day.ago, first_deployed_to_production_at: 5.days.ago, updated_at: 2.months.ago) }
+  let!(:duplicated_metrics_2) { metrics.create!(merge_request_id: merge_request_1.id, latest_build_started_at: Time.now, merged_at: Time.now, updated_at: 1.month.ago) }
 
-  let!(:duplicated_metrics_3) { metrics.create(merge_request_id: merge_request_3.id, diff_size: 30, commits_count: 20, updated_at: 2.months.ago) }
-  let!(:duplicated_metrics_4) { metrics.create(merge_request_id: merge_request_3.id, added_lines: 5, commits_count: nil, updated_at: 1.month.ago) }
+  let!(:duplicated_metrics_3) { metrics.create!(merge_request_id: merge_request_3.id, diff_size: 30, commits_count: 20, updated_at: 2.months.ago) }
+  let!(:duplicated_metrics_4) { metrics.create!(merge_request_id: merge_request_3.id, added_lines: 5, commits_count: nil, updated_at: 1.month.ago) }
 
-  let!(:non_duplicated_metrics) { metrics.create(merge_request_id: merge_request_2.id, latest_build_started_at: 2.days.ago) }
+  let!(:non_duplicated_metrics) { metrics.create!(merge_request_id: merge_request_2.id, latest_build_started_at: 2.days.ago) }
 
   it 'deduplicates merge_request_metrics table' do
     expect { migrate! }.to change { metrics.count }.from(5).to(3)

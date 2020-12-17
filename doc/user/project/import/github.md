@@ -2,7 +2,7 @@
 type: reference, howto
 stage: Manage
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Import your project from GitHub to GitLab
@@ -23,6 +23,8 @@ The following aspects of a project are imported:
 - Labels (GitLab.com & 8.7+)
 - Release note descriptions (GitLab.com & 8.12+)
 - Pull request review comments (GitLab.com & 10.2+)
+- Pull request reviews (GitLab.com & 13.7+)
+- Pull request "merged by" information (GitLab.com & 13.7+)
 - Regular issue and pull request comments
 - [Git Large File Storage (LFS) Objects](../../../topics/git/lfs/index.md)
 
@@ -59,11 +61,11 @@ For this association to succeed, each GitHub author and assignee in the reposito
 must meet one of the following conditions prior to the import:
 
 - Have previously logged in to a GitLab account using the GitHub icon.
-- Have a GitHub account with a
-  [primary email address](https://docs.github.com/en/github/setting-up-and-managing-your-github-user-account/setting-your-commit-email-address)
-  that matches their GitLab account's email address.
+- Have a GitHub account with a publicly visible
+  [primary email address](https://docs.github.com/en/free-pro-team@latest/rest/reference/users#get-a-user)
+  on their profile that matches their GitLab account's email address.
 
-If a user referenced in the project is not found in GitLab's database, the project creator (typically the user
+If a user referenced in the project is not found in the GitLab database, the project creator (typically the user
 that initiated the import process) is set as the author/assignee, but a note on the issue mentioning the original
 GitHub author is added.
 
@@ -89,24 +91,24 @@ Before you begin, ensure that any GitHub users who you want to map to GitLab use
 
 - A GitLab account that has logged in using the GitHub icon
   \- or -
-- A GitLab account with an email address that matches the [public email address](https://docs.github.com/en/github/setting-up-and-managing-your-github-user-account/setting-your-commit-email-address) of the GitHub user
+- A GitLab account with an email address that matches the [publicly visible email address](https://docs.github.com/en/free-pro-team@latest/rest/reference/users#get-a-user) in the profile of the GitHub user
 
 User-matching attempts occur in that order, and if a user is not identified either way, the activity is associated with
 the user account that is performing the import.
 
-NOTE: **Note:**
+NOTE:
 If you are using a self-managed GitLab instance or if you are importing from GitHub Enterprise, this process requires that you have configured
 [GitHub integration](../../../integration/github.md).
 
 1. From the top navigation bar, click **+** and select **New project**.
 1. Select the **Import project** tab and then select **GitHub**.
 1. Select the first button to **List your GitHub repositories**. You are redirected to a page on [GitHub](https://github.com) to authorize the GitLab application.
-1. Click **Authorize GitlabHQ**. You are redirected back to GitLab's Import page and all of your GitHub repositories are listed.
+1. Click **Authorize GitlabHQ**. You are redirected back to the GitLab Import page and all of your GitHub repositories are listed.
 1. Continue on to [selecting which repositories to import](#selecting-which-repositories-to-import).
 
 ### Using a GitHub token
 
-NOTE: **Note:**
+NOTE:
 Using a personal access token to import projects is not recommended. If you are a GitLab.com user,
 you can use a personal access token to import your project from GitHub, but this method cannot
 associate all user activity (such as issues and pull requests) with matching GitLab users.
@@ -154,8 +156,8 @@ of the above are automatically configured. **(PREMIUM)**
 
 ## Improving the speed of imports on self-managed instances
 
-NOTE: **Note:**
-Admin access to the GitLab server is required.
+NOTE:
+Administrator access to the GitLab server is required.
 
 For large projects it may take a while to import all data. To reduce the time necessary, you can increase the number of
 Sidekiq workers that process the following queues:

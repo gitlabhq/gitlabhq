@@ -1,0 +1,5 @@
+---
+title: Add validating jsonb fields with json schema draft-07
+merge_request: 49451
+author:
+type: added

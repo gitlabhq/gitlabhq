@@ -25,20 +25,22 @@ module Types
             description: 'Tooltip associated with the status',
             method: :status_tooltip
       field :action, Types::Ci::StatusActionType, null: true,
-            description: 'Action information for the status. This includes method, button title, icon, path, and title',
-            resolve: -> (obj, _args, _ctx) {
-              if obj.has_action?
-                {
-                  button_title: obj.action_button_title,
-                  icon: obj.action_icon,
-                  method: obj.action_method,
-                  path: obj.action_path,
-                  title: obj.action_title
-                }
-              else
-                nil
-              end
-            }
+          calls_gitaly: true,
+          description: 'Action information for the status. This includes method, button title, icon, path, and title'
+
+      def action
+        if object.has_action?
+          {
+            button_title: object.action_button_title,
+            icon: object.action_icon,
+            method: object.action_method,
+            path: object.action_path,
+            title: object.action_title
+          }
+        else
+          nil
+        end
+      end
     end
     # rubocop: enable Graphql/AuthorizeTypes
   end

@@ -1,20 +1,20 @@
 ---
 stage: Configure
 group: Configure
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Getting started with Auto DevOps
 
-This step-by-step guide will help you use [Auto DevOps](index.md) to
+This step-by-step guide helps you use [Auto DevOps](index.md) to
 deploy a project hosted on GitLab.com to Google Kubernetes Engine.
 
-You will use GitLab's native Kubernetes integration, so you won't need
+You are using the GitLab native Kubernetes integration, so you don't need
 to create a Kubernetes cluster manually using the Google Cloud Platform console.
-You will create and deploy a simple application that you create from a GitLab template.
+You are creating and deploying a simple application that you create from a GitLab template.
 
-These instructions will also work for a self-managed GitLab instance; you'll just
-need to ensure your own [runners are configured](../../ci/runners/README.md) and
+These instructions also work for a self-managed GitLab instance;
+ensure your own [runners are configured](../../ci/runners/README.md) and
 [Google OAuth is enabled](../../integration/google.md).
 
 ## Configure your Google account
@@ -29,16 +29,16 @@ or Google Drive, or create a new one.
 1. Ensure you've created a [billing account](https://cloud.google.com/billing/docs/how-to/manage-billing-account)
    with Google Cloud Platform.
 
-TIP: **Tip:**
+NOTE:
 Every new Google Cloud Platform (GCP) account receives [$300 in credit](https://console.cloud.google.com/freetrial),
 and in partnership with Google, GitLab is able to offer an additional $200 for new
-GCP accounts to get started with GitLab's Google Kubernetes Engine Integration.
+GCP accounts to get started with the GitLab integration with Google Kubernetes Engine.
 [Follow this link](https://cloud.google.com/partners/partnercredit/?pcn_code=0014M00001h35gDQAQ#contact-form)
 and apply for credit.
 
 ## Create a new project from a template
 
-We will use one of GitLab's project templates to get started. As the name suggests,
+We are using a GitLab project template to get started. As the name suggests,
 those projects provide a bare-bones application built on some well-known frameworks.
 
 1. In GitLab, click the plus icon (**{plus-square}**) at the top of the navigation bar, and select
@@ -57,7 +57,7 @@ those projects provide a bare-bones application built on some well-known framewo
 
 1. Click **Create project**.
 
-Now that you've created a project, you'll next create the Kubernetes cluster
+Now that you've created a project, create the Kubernetes cluster
 to deploy this project to.
 
 ## Create a Kubernetes cluster from within GitLab
@@ -98,30 +98,30 @@ to deploy this project to.
 
 1. Click **Create Kubernetes cluster**.
 
-After a couple of minutes, the cluster will be created. You can also see its
+After a couple of minutes, the cluster is created. You can also see its
 status on your [GCP dashboard](https://console.cloud.google.com/kubernetes).
 
-Next, you will install some applications on your cluster that are needed
+Next, install some applications on your cluster that are needed
 to take full advantage of Auto DevOps.
 
 ## Install Ingress and Prometheus
 
-After your cluster is running, you can install your first applications.
-In this guide, we will install Ingress and Prometheus:
+After your cluster is running, you can install your first applications,
+Ingress and Prometheus:
 
 - Ingress - Provides load balancing, SSL termination, and name-based virtual hosting,
   using NGINX behind the scenes.
 - Prometheus - An open-source monitoring and alerting system used to supervise the
   deployed application.
 
-We won't install GitLab Runner in this quick start guide, as this guide uses the
+We aren't installing GitLab Runner in this quick start guide, as this guide uses the
 shared runners provided by GitLab.com.
 
 To install the applications:
 
 - Click the **Install** button for **Ingress**.
 - When the **Ingress Endpoint** is displayed, copy the IP address.
-- Add your **Base domain**. For this guide, we will use the domain suggested by GitLab.
+- Add your **Base domain**. For this guide, use the domain suggested by GitLab.
 - Click **Save changes**.
 
 ![Cluster Base Domain](img/guide_base_domain_v12_3.png)
@@ -221,7 +221,7 @@ Kubernetes cluster, color-coded to show their status. Hovering over a square on
 the deploy board displays the state of the deployment, and clicking the square
 takes you to the pod's logs page.
 
-TIP: **Tip:**
+NOTE:
 The example shows only one pod hosting the application at the moment, but you can add
 more pods by defining the [`REPLICAS` variable](customize.md#environment-variables)
 in **Settings > CI/CD > Environment variables**.
@@ -251,7 +251,7 @@ a few more that run only on branches other than `master`.
 
 ![Merge request](img/guide_merge_request_v12_3.png)
 
-After a few minutes you'll notice a test failed, which means a test was
+After a few minutes a test fails, which means a test was
 'broken' by your change. Click on the failed `test` job to see more information
 about it:
 

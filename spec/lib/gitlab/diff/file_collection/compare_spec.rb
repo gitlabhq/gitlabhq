@@ -27,4 +27,43 @@ RSpec.describe Gitlab::Diff::FileCollection::Compare do
     let(:diffable) { Compare.new(raw_compare, project) }
     let(:stub_path) { '.gitignore' }
   end
+
+  it_behaves_like 'sortable diff files' do
+    let(:diffable) { Compare.new(raw_compare, project) }
+    let(:collection_default_args) do
+      {
+        project: diffable.project,
+        diff_options: {},
+        diff_refs: diffable.diff_refs
+      }
+    end
+
+    let(:unsorted_diff_files_paths) do
+      [
+        '.DS_Store',
+        '.gitignore',
+        '.gitmodules',
+        'Gemfile.zip',
+        'files/.DS_Store',
+        'files/ruby/popen.rb',
+        'files/ruby/regex.rb',
+        'files/ruby/version_info.rb',
+        'gitlab-shell'
+      ]
+    end
+
+    let(:sorted_diff_files_paths) do
+      [
+        'files/ruby/popen.rb',
+        'files/ruby/regex.rb',
+        'files/ruby/version_info.rb',
+        'files/.DS_Store',
+        '.DS_Store',
+        '.gitignore',
+        '.gitmodules',
+        'Gemfile.zip',
+        'gitlab-shell'
+      ]
+    end
+  end
 end

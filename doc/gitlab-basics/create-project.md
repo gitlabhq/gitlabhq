@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: howto
 ---
 
@@ -23,7 +23,7 @@ To create a project in GitLab:
      if enabled on your GitLab instance. Contact your GitLab administrator if this is unavailable.
    - Run [CI/CD pipelines for external repositories](../ci/ci_cd_for_external_repos/index.md). **(PREMIUM)**
 
-NOTE: **Note:**
+NOTE:
 For a list of words that can't be used as project names see
 [Reserved project and group names](../user/reserved_names.md).
 
@@ -99,7 +99,7 @@ Available Enterprise templates include:
 
 - HIPAA Audit Protocol template ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13756) in GitLab 12.10)
 
-TIP: **Tip:**
+NOTE:
 You can improve the existing built-in templates or contribute new ones in the
 [`project-templates`](https://gitlab.com/gitlab-org/project-templates) and
 [`pages`](https://gitlab.com/pages) groups by following [these steps](https://gitlab.com/gitlab-org/project-templates/contributing).

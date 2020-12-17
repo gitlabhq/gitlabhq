@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: howto
 disqus_identifier: 'https://docs.gitlab.com/ee/customization/branded_login_page.html'
 ---
@@ -16,15 +16,15 @@ section.
 
 By default, the navigation bar has the GitLab logo, but this can be customized with
 any image desired. It is optimized for images 28px high (any width), but any image can be
-used (less than 1MB) and it will automatically be resized.
+used (less than 1MB) and it is automatically resized.
 
 ![Navigation bar header logo screenshot](img/appearance_header_logo_v12_3.png)
 
 Once you select and upload an image, click **Update appearance settings** at the bottom
 of the page to activate it in the GitLab instance.
 
-NOTE: **Note:**
-GitLab pipeline emails will also display the custom logo.
+NOTE:
+GitLab pipeline emails also display the custom logo.
 
 ## Favicon
 
@@ -45,7 +45,7 @@ of the page to activate it in the GitLab instance.
 > - [Added](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/55057) to [GitLab Core](https://about.gitlab.com/pricing/) in 11.9.
 
 You can add a small header message, a small footer message, or both, to the interface
-of your GitLab instance. These messages will appear on all projects and pages of the
+of your GitLab instance. These messages appear on all projects and pages of the
 instance, including the sign in / sign up page. The default color is white text on
 an orange background, but this can be customized by clicking on **Customize colors**.
 
@@ -69,7 +69,7 @@ and logo. You can make full use of [Markdown](../markdown.md) in the description
 ![sign in message screenshot](img/appearance_sign_in_v12_3.png)
 
 The optimal size for the logo is 640x360px, but any image can be used (below 1MB)
-and it will be resized automatically. The logo image will appear between the title and
+and it is resized automatically. The logo image appears between the title and
 the description, on the left of the sign-up page.
 
 ![sign in message preview screenshot](img/appearance_sign_in_preview_v12_3.png)
@@ -78,7 +78,7 @@ After you add a message, click **Update appearance settings** at the bottom of t
 to activate it in the GitLab instance. You can also click on the **Sign-in page** button,
 to review the saved appearance settings:
 
-NOTE: **Note:**
+NOTE:
 You can add also add a [customized help message](settings/help_page.md) below the sign in message or add [a Sign in text message](settings/sign_in_restrictions.md#sign-in-information).
 
 ## New project pages
@@ -88,12 +88,12 @@ You can make full use of [Markdown](../markdown.md) in the description:
 
 ![new project message screenshot](img/appearance_new_project_v12_3.png)
 
-The message will be displayed below the **New Project** message, on the left side
+The message is displayed below the **New Project** message, on the left side
 of the **New project page**.
 
 After you add a message, click **Update appearance settings** at the bottom of the page
 to activate it in the GitLab instance. You can also click on the **New project page**
-button, which will bring you to the new project page so you can review the change.
+button, which brings you to the new project page so you can review the change.
 
 ![new project message preview screenshot](img/appearance_new_project_preview_v12_3.png)
 

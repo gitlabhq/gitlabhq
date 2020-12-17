@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 disqus_identifier: 'https://docs.gitlab.com/ee/workflow/gitlab_flow.html'
 ---
 
@@ -151,7 +151,7 @@ In GitLab, you can do this when merging.
 Removing finished branches ensures that the list of branches shows only work in progress.
 It also ensures that if someone reopens the issue, they can use the same branch name without causing problems.
 
-NOTE: **Note:**
+NOTE:
 When you reopen an issue you need to create a new merge request.
 
 ![Remove checkbox for branch in merge requests](img/gitlab_flow_remove_checkbox.png)
@@ -173,7 +173,7 @@ For example, the issue title "As an administrator, I want to remove users withou
 When you are ready to code, create a branch for the issue from the `master` branch.
 This branch is the place for any work related to this change.
 
-NOTE: **Note:**
+NOTE:
 The name of a branch might be dictated by organizational standards.
 
 When you are done or want to discuss the code, open a merge request.
@@ -224,12 +224,12 @@ Not only does this rewrite history, but it also loses authorship information.
 Rebasing prevents the other authors from being attributed and sharing part of the [`git blame`](https://git-scm.com/docs/git-blame).
 
 If a merge involves many commits, it may seem more difficult to undo.
-You might consider solving this by squashing all the changes into one commit just before merging by using GitLab's [Squash-and-Merge](../user/project/merge_requests/squash_and_merge.md) feature.
+You might consider solving this by squashing all the changes into one commit just before merging by using the GitLab [Squash-and-Merge](../user/project/merge_requests/squash_and_merge.md) feature.
 Fortunately, there is an easy way to undo a merge with all its commits.
 The way to do this is by reverting the merge commit.
 Preserving this ability to revert a merge is a good reason to always use the "no fast-forward" (`--no-ff`) strategy when you merge manually.
 
-NOTE: **Note:**
+NOTE:
 If you revert a merge commit and then change your mind, revert the revert commit to redo the merge.
 Git does not allow you to merge the code again otherwise.
 
@@ -254,7 +254,7 @@ If you need to use some code that was introduced in `master` after you created t
 
 If your feature branch has a merge conflict, creating a merge commit is a standard way of solving this.
 
-NOTE: **Note:**
+NOTE:
 Sometimes you can use `.gitattributes` to reduce merge conflicts.
 For example, you can set your changelog file to use the [union merge driver](https://git-scm.com/docs/gitattributes#gitattributes-union) so that multiple new entries don't conflict with each other.
 
@@ -268,7 +268,7 @@ One option is to use continuous integration (CI) to merge in `master` at the sta
 Another option is to only merge in from well-defined points in time, for example, a tagged release.
 You could also use [feature toggles](https://martinfowler.com/bliki/FeatureToggle.html) to hide incomplete features so you can still merge back into `master` every day.
 
-NOTE: **Note:**
+NOTE:
 Don't confuse automatic branch testing with continuous integration.
 Martin Fowler makes this distinction in [his article about feature branches](https://martinfowler.com/bliki/FeatureBranch.html):
 "I've heard people say they are doing CI because they are running builds, perhaps using a CI server, on every branch with every commit.

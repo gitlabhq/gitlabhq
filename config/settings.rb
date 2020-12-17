@@ -152,6 +152,14 @@ class Settings < Settingslogic
       Gitlab::Application.secrets.db_key_base
     end
 
+    def encrypted(path)
+      Gitlab::EncryptedConfiguration.new(
+        content_path: path,
+        base_key: Gitlab::Application.secrets.encrypted_settings_key_base,
+        previous_keys: Gitlab::Application.secrets.rotated_encrypted_settings_key_base || []
+      )
+    end
+
     def load_dynamic_cron_schedules!
       cron_jobs['gitlab_usage_ping_worker']['cron'] ||= cron_for_usage_ping
     end

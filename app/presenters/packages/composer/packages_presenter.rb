@@ -11,7 +11,7 @@ module Packages
       end
 
       def root
-        path = api_v4_group___packages_composer_package_name_path({ id: @group.id, package_name: '%package%', format: '.json' }, true)
+        path = api_v4_group___packages_composer_package_name_path({ id: @group.id, package_name: '%package%$%hash%', format: '.json' }, true)
         { 'packages' => [], 'provider-includes' => { 'p/%hash%.json' => { 'sha256' => provider_sha } }, 'providers-url' => path }
       end
 

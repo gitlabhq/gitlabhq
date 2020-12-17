@@ -1,0 +1,5 @@
+---
+title: Add ldap encrypted credentials to the usage data
+merge_request: 48210
+author:
+type: changed

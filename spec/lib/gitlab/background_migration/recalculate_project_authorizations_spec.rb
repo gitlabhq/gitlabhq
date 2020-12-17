@@ -91,7 +91,7 @@ RSpec.describe Gitlab::BackgroundMigration::RecalculateProjectAuthorizations, sc
         projects_table.create!(id: 1, name: 'project', path: 'project', visibility_level: 0,
                                namespace_id: shared_group.id)
 
-        group_group_links.create(shared_group_id: shared_group.id, shared_with_group_id: group.id,
+        group_group_links.create!(shared_group_id: shared_group.id, shared_with_group_id: group.id,
                                  group_access: 20)
       end
 
@@ -111,7 +111,7 @@ RSpec.describe Gitlab::BackgroundMigration::RecalculateProjectAuthorizations, sc
         shared_project = projects_table.create!(id: 1, name: 'shared project', path: 'shared-project',
                                                 visibility_level: 0, namespace_id: another_group.id)
 
-        project_group_links.create(project_id: shared_project.id, group_id: group.id, group_access: 20)
+        project_group_links.create!(project_id: shared_project.id, group_id: group.id, group_access: 20)
       end
 
       it 'creates correct authorization' do
@@ -174,7 +174,7 @@ RSpec.describe Gitlab::BackgroundMigration::RecalculateProjectAuthorizations, sc
         projects_table.create!(id: 1, name: 'project', path: 'project', visibility_level: 0,
                                namespace_id: shared_group.id)
 
-        group_group_links.create(shared_group_id: shared_group.id, shared_with_group_id: group.id,
+        group_group_links.create!(shared_group_id: shared_group.id, shared_with_group_id: group.id,
                                  group_access: 20)
       end
 
@@ -192,7 +192,7 @@ RSpec.describe Gitlab::BackgroundMigration::RecalculateProjectAuthorizations, sc
         shared_project = projects_table.create!(id: 1, name: 'shared project', path: 'shared-project',
                                                 visibility_level: 0, namespace_id: another_group.id)
 
-        project_group_links.create(project_id: shared_project.id, group_id: group.id, group_access: 20)
+        project_group_links.create!(project_id: shared_project.id, group_id: group.id, group_access: 20)
       end
 
       it 'does not create authorization' do

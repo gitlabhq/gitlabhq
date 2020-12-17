@@ -3,15 +3,19 @@ import VueApollo from 'vue-apollo';
 import { GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
 import createMockApollo from 'jest/helpers/mock_apollo_helper';
 import component from '~/registry/settings/components/registry_settings_app.vue';
-import expirationPolicyQuery from '~/registry/settings/graphql/queries/get_expiration_policy.graphql';
+import expirationPolicyQuery from '~/registry/settings/graphql/queries/get_expiration_policy.query.graphql';
 import SettingsForm from '~/registry/settings/components/settings_form.vue';
-import { FETCH_SETTINGS_ERROR_MESSAGE } from '~/registry/shared/constants';
 import {
+  FETCH_SETTINGS_ERROR_MESSAGE,
   UNAVAILABLE_FEATURE_INTRO_TEXT,
   UNAVAILABLE_USER_FEATURE_TEXT,
 } from '~/registry/settings/constants';
 
-import { expirationPolicyPayload, emptyExpirationPolicyPayload } from '../mock_data';
+import {
+  expirationPolicyPayload,
+  emptyExpirationPolicyPayload,
+  containerExpirationPolicyData,
+} from '../mock_data';
 
 const localVue = createLocalVue();
 
@@ -60,6 +64,29 @@ describe('Registry Settings App', () => {
 
   afterEach(() => {
     wrapper.destroy();
+  });
+
+  describe('isEdited status', () => {
+    it.each`
+      description                                  | apiResponse                       | workingCopy                                                   | result
+      ${'empty response and no changes from user'} | ${emptyExpirationPolicyPayload()} | ${{}}                                                         | ${false}
+      ${'empty response and changes from user'}    | ${emptyExpirationPolicyPayload()} | ${{ enabled: true }}                                          | ${true}
+      ${'response and no changes'}                 | ${expirationPolicyPayload()}      | ${containerExpirationPolicyData()}                            | ${false}
+      ${'response and changes'}                    | ${expirationPolicyPayload()}      | ${{ ...containerExpirationPolicyData(), nameRegex: '12345' }} | ${true}
+      ${'response and empty'}                      | ${expirationPolicyPayload()}      | ${{}}                                                         | ${true}
+    `('$description', async ({ apiResponse, workingCopy, result }) => {
+      const requests = mountComponentWithApollo({
+        provide: { ...defaultProvidedValues, enableHistoricEntries: true },
+        resolver: jest.fn().mockResolvedValue(apiResponse),
+      });
+      await Promise.all(requests);
+
+      findSettingsComponent().vm.$emit('input', workingCopy);
+
+      await wrapper.vm.$nextTick();
+
+      expect(findSettingsComponent().props('isEdited')).toBe(result);
+    });
   });
 
   it('renders the setting form', async () => {

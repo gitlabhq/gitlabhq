@@ -2,7 +2,7 @@
 type: reference, howto
 stage: Secure
 group: Threat Insights
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # GitLab Security Dashboard, Security Center, and Vulnerability Reports **(ULTIMATE)**
@@ -87,7 +87,7 @@ display all detected and confirmed vulnerabilities.
 
 The Vulnerability Report first displays the time at which the last pipeline completed on the project's
 default branch. There's also a link to view this in more detail. In the case of any pipeline failures,
-you will see the number of failures clearly indicated. The failure notification takes you directly to
+the number of failures is indicated. The failure notification takes you directly to
 the **Failed jobs** tab of the pipeline page.
 
 The Vulnerability Report next displays the total number of vulnerabilities by severity (for example,
@@ -142,7 +142,7 @@ Next to the timeline chart is a list of projects, grouped and sorted by the seve
 | B | One or more "low" |
 | A | Zero vulnerabilities |
 
-Projects with no vulnerability tests configured will not appear in the list. Additionally, dismissed
+Projects with no vulnerability tests configured don't appear in the list. Additionally, dismissed
 vulnerabilities are excluded.
 
 Navigate to the group's [vulnerability report](#vulnerability-report-1) to view the vulnerabilities found.
@@ -192,7 +192,7 @@ You can export all your vulnerabilities in CSV (comma separated values) format b
 ready, the CSV report downloads to your local machine. The report contains all vulnerabilities for
 the projects defined in the Security Dashboard, as filters don't apply to the export function.
 
-NOTE: **Note:**
+NOTE:
 It may take several minutes for the download to start if your project contains
 thousands of vulnerabilities. Don't close the page until the download finishes.
 
@@ -225,12 +225,12 @@ are discovered.
 
 To ensure the information on the Security Dashboard is regularly updated,
 [configure a scheduled pipeline](../../../ci/pipelines/schedules.md) to run a
-daily security scan. This will update the information displayed on the Security
+daily security scan. This updates the information displayed on the Security
 Dashboard regardless of how often the default branch is updated.
 
 That way, reports are created even if no code change happens.
 
-CAUTION: **Warning:**
+WARNING:
 Running Dependency Scanning from a scheduled pipeline might result in false negatives if your
 project doesn't have a lock file and isn't configured for Continuous Delivery. A lock file is a file
 that lists all transient dependencies and keeps track of their exact versions. The false negative
@@ -249,7 +249,7 @@ to configure daily security scans.
 Each vulnerability report contains vulnerabilities from the latest scans that were merged
 into the default branch.
 
-![Vulnerability Report](img/group_vulnerability_report_v13_4.png)
+![Vulnerability Report](img/group_vulnerability_report_v13_7.png)
 
 You can filter which vulnerabilities the vulnerability report displays by:
 
@@ -264,7 +264,7 @@ Clicking any vulnerability in the table takes you to its
 [Vulnerability Details](../vulnerabilities) page to see more information on that vulnerability.
 To create an issue associated with the vulnerability, click the **Create Issue** button.
 
-![Create an issue for the vulnerability](img/vulnerability_page_v13_1.png)
+![Create an issue for the vulnerability](img/vulnerability_details_create_issue_v13_7.png)
 
 Once you create the issue, the linked issue icon in the vulnerability list:
 

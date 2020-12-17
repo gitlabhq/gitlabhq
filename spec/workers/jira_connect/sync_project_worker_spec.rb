@@ -36,7 +36,7 @@ RSpec.describe JiraConnect::SyncProjectWorker, factory_default: :keep do
     end
 
     it_behaves_like 'an idempotent worker' do
-      let(:request_url) { 'https://sample.atlassian.net/rest/devinfo/0.10/bulk' }
+      let(:request_path) { '/rest/devinfo/0.10/bulk' }
       let(:request_body) do
         {
           repositories: [
@@ -46,13 +46,13 @@ RSpec.describe JiraConnect::SyncProjectWorker, factory_default: :keep do
               update_sequence_id: update_sequence_id
             )
           ]
-        }.to_json
+        }
       end
 
       it 'sends the request with custom update_sequence_id' do
-        expect(Atlassian::JiraConnect::Client).to receive(:post)
-          .exactly(IdempotentWorkerHelper::WORKER_EXEC_TIMES).times
-          .with(URI(request_url), headers: anything, body: request_body)
+        allow_next_instances_of(Atlassian::JiraConnect::Client, IdempotentWorkerHelper::WORKER_EXEC_TIMES) do |client|
+          expect(client).to receive(:post).with(request_path, request_body)
+        end
 
         subject
       end

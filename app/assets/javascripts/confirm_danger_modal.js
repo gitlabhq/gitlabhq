@@ -14,6 +14,7 @@ function openConfirmDangerModal($form, $modal, text) {
   $submit.disable();
   $input.focus();
 
+  // eslint-disable-next-line @gitlab/no-global-event-off
   $input.off('input').on('input', function handleInput() {
     const confirmText = rstrip($(this).val());
     if (confirmText === confirmTextMatch) {
@@ -23,6 +24,7 @@ function openConfirmDangerModal($form, $modal, text) {
     }
   });
 
+  // eslint-disable-next-line @gitlab/no-global-event-off
   $('.js-confirm-danger-submit', $modal)
     .off('click')
     .on('click', () => {

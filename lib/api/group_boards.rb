@@ -83,8 +83,6 @@ module API
           use :list_creation_params
         end
         post '/lists' do
-          authorize_list_type_resource!
-
           authorize!(:admin_list, user_group)
 
           create_list

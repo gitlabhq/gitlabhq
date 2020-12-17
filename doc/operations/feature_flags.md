@@ -1,7 +1,7 @@
 ---
 stage: Release
-group: Progressive Delivery
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+group: Release
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Feature Flags **(CORE)**
@@ -18,7 +18,7 @@ delivery from customer launch.
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an example of feature flags in action, see [GitLab for Deploys, Feature Flags, and Error Tracking](https://www.youtube.com/embed/5tw2p6lwXxo).
 
-NOTE: **Note:**
+NOTE:
 The Feature Flags GitLab offer as a feature (described in this document) is not the same method
 used for the [development of GitLab](../development/feature_flags/index.md).
 
@@ -77,7 +77,6 @@ is 200. On GitLab.com, the maximum number is determined by [GitLab.com tier](htt
 > - It became [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/214684) in GitLab 13.2.
 > - It's recommended for production use.
 > - It's enabled on GitLab.com.
-> - For GitLab self-managed instances, a GitLab administrator can choose to [disable it](#enable-or-disable-feature-flag-strategies). **(CORE ONLY)**
 
 You can apply a feature flag strategy across multiple environments, without defining
 the strategy multiple times.
@@ -130,7 +129,7 @@ The rollout percentage can be from 0% to 100%.
 
 Selecting a consistency based on User IDs functions the same as the [percent of Users](#percent-of-users) rollout.
 
-CAUTION: **Caution:**
+WARNING:
 Selecting **Random** provides inconsistent application behavior for individual users.
 
 ### Percent of Users
@@ -148,7 +147,7 @@ but not anonymous users.
 Note that [percent rollout](#percent-rollout) with a consistency based on **User IDs** has the same
 behavior. We recommend using percent rollout because it's more flexible than percent of users
 
-CAUTION: **Caution:**
+WARNING:
 If the percent of users strategy is selected, then the Unleash client **must** be given a user
 ID for the feature to be enabled. See the [Ruby example](#ruby-application-example) below.
 
@@ -165,7 +164,7 @@ Enter user IDs as a comma-separated list of values (for example,
 `user@example.com, user2@example.com`, or `username1,username2,username3`, and so on). Note that
 user IDs are identifiers for your application users. They do not need to be GitLab users.
 
-CAUTION: **Caution:**
+WARNING:
 The Unleash client **must** be given a user ID for the feature to be enabled for
 target users. See the [Ruby example](#ruby-application-example) below.
 
@@ -221,25 +220,6 @@ To remove users from a user list:
 1. In your project, navigate to **Operations > Feature Flags**.
 1. Click on the **{pencil}** (edit) button next to the list you want to change.
 1. Click on the **{remove}** (remove) button next to the ID you want to remove.
-
-### Enable or disable feature flag strategies
-
-This feature is under development, but is ready for production use. It's
-deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
-can disable it for your instance.
-
-To disable it:
-
-```ruby
-Feature.disable(:feature_flags_new_version)
-```
-
-To enable it:
-
-```ruby
-Feature.enable(:feature_flags_new_version)
-```
 
 ## Rollout strategy (legacy)
 

@@ -1,7 +1,7 @@
 ---
 stage: Create
-group: Static Site Editor
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+group: Editor
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: reference, how-to
 description: "The static site editor enables users to edit content on static websites without prior knowledge of the underlying templating language, site architecture or Git commands."
 ---
@@ -11,6 +11,7 @@ description: "The static site editor enables users to edit content on static web
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28758) in GitLab 12.10.
 > - WYSIWYG editor [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214559) in GitLab 13.0.
 > - Non-Markdown content blocks uneditable on the WYSIWYG mode [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216836) in GitLab 13.3.
+> - Formatting Markdown [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49052) in GitLab 13.7.
 
 Static Site Editor (SSE) enables users to edit content on static websites without
 prior knowledge of the underlying templating language, site architecture, or
@@ -53,10 +54,16 @@ click of a button:
 
 ![Static Site Editor](img/wysiwyg_editor_v13_3.png)
 
-When an editor submits their changes, in the background, GitLab automatically
-creates a new branch, commits their changes, and opens a merge request. The
-editor lands directly on the merge request, and then they can assign it to
-a colleague for review.
+When an editor submits their changes, these are the following actions that GitLab
+performs automatically in the background:
+
+1. Creates a new branch.
+1. Commits their changes.
+   1. Fixes formatting according to the [Handbook Markdown Style Guide](https://about.gitlab.com/handbook/markdown-guide/)
+      style guide and add them through another commit.
+1. Opens a merge request against the default branch.
+
+The editor can then navigate to the merge request to assign it to a colleague for review.
 
 ## Set up your project
 
@@ -162,7 +169,7 @@ title, layout template, or author, but can be used to pass any kind of metadata 
 generator as the page renders out to HTML. Included at the very top of each data file, the
 front matter is often formatted as YAML or JSON and requires consistent and accurate syntax.
 
-To edit the front matter from the Static Site Editor you can use the GitLab's regular file editor,
+To edit the front matter from the Static Site Editor you can use the GitLab regular file editor,
 the Web IDE, or easily update the data directly from the WYSIWYG editor:
 
 1. Click the **Page settings** button on the bottom-right to reveal a web form with the data you

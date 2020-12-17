@@ -3,7 +3,7 @@ comments: false
 type: index
 stage: Manage
 group: Access
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # GitLab authentication and authorization
@@ -36,5 +36,5 @@ providers:
 - [Smartcard](smartcard.md) **(PREMIUM ONLY)**
 - [Twitter](../../integration/twitter.md)
 
-NOTE: **Note:**
+NOTE:
 UltraAuth has removed their software which supports OmniAuth integration. We have therefore removed all references to UltraAuth integration.

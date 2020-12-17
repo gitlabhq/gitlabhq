@@ -1,18 +1,12 @@
 import { GlFilteredSearchToken, GlFilteredSearchSuggestion, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { stubComponent } from 'helpers/stub_component';
 import PipelineStatusToken from '~/pipelines/components/pipelines_list/tokens/pipeline_status_token.vue';
 
 describe('Pipeline Status Token', () => {
   let wrapper;
 
-  const stubs = {
-    GlFilteredSearchToken: {
-      props: GlFilteredSearchToken.props,
-      template: `<div><slot name="suggestions"></slot></div>`,
-    },
-  };
-
-  const findFilteredSearchToken = () => wrapper.find(stubs.GlFilteredSearchToken);
+  const findFilteredSearchToken = () => wrapper.find(GlFilteredSearchToken);
   const findAllFilteredSearchSuggestions = () => wrapper.findAll(GlFilteredSearchSuggestion);
   const findAllGlIcons = () => wrapper.findAll(GlIcon);
 
@@ -33,7 +27,11 @@ describe('Pipeline Status Token', () => {
       propsData: {
         ...defaultProps,
       },
-      stubs,
+      stubs: {
+        GlFilteredSearchToken: stubComponent(GlFilteredSearchToken, {
+          template: `<div><slot name="suggestions"></slot></div>`,
+        }),
+      },
     });
   };
 

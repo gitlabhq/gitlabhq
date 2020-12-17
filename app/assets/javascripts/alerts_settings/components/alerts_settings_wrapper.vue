@@ -1,7 +1,6 @@
 <script>
 import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { fetchPolicies } from '~/lib/graphql';
 import createFlash, { FLASH_TYPES } from '~/flash';
 import getIntegrationsQuery from '../graphql/queries/get_integrations.query.graphql';
@@ -15,8 +14,8 @@ import resetHttpTokenMutation from '../graphql/mutations/reset_http_token.mutati
 import resetPrometheusTokenMutation from '../graphql/mutations/reset_prometheus_token.mutation.graphql';
 import updateCurrentIntergrationMutation from '../graphql/mutations/update_current_intergration.mutation.graphql';
 import IntegrationsList from './alerts_integrations_list.vue';
-import SettingsFormOld from './alerts_settings_form_old.vue';
-import SettingsFormNew from './alerts_settings_form_new.vue';
+import AlertSettingsForm from './alerts_settings_form.vue';
+import service from '../services';
 import { typeSet } from '../constants';
 import {
   updateStoreAfterIntegrationDelete,
@@ -37,6 +36,9 @@ export default {
       'AlertsIntegrations|The integration has been successfully saved. Alerts from this new integration should now appear on your alerts list.',
     ),
     integrationRemoved: s__('AlertsIntegrations|The integration has been successfully removed.'),
+    alertSent: s__(
+      'AlertsIntegrations|The test alert has been successfully sent, and should now be visible on your alerts list.',
+    ),
   },
   components: {
     // TODO: Will be removed in 13.7 as part of: https://gitlab.com/gitlab-org/gitlab/-/issues/273657
@@ -44,10 +46,8 @@ export default {
     GlLink,
     GlSprintf,
     IntegrationsList,
-    SettingsFormOld,
-    SettingsFormNew,
+    AlertSettingsForm,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: {
     generic: {
       default: {},
@@ -93,6 +93,7 @@ export default {
   data() {
     return {
       isUpdating: false,
+      testAlertPayload: null,
       integrations: {},
       currentIntegration: null,
     };
@@ -101,25 +102,12 @@ export default {
     loading() {
       return this.$apollo.queries.integrations.loading;
     },
-    integrationsOptionsOld() {
-      return [
-        {
-          name: s__('AlertSettings|HTTP endpoint'),
-          type: s__('AlertsIntegrations|HTTP endpoint'),
-          active: this.generic.active,
-        },
-        {
-          name: s__('AlertSettings|External Prometheus'),
-          type: s__('AlertsIntegrations|Prometheus'),
-          active: this.prometheus.active,
-        },
-      ];
-    },
     canAddIntegration() {
       return this.multiIntegrations || this.integrations?.list?.length < 2;
     },
     canManageOpsgenie() {
       return (
+        this.opsgenie.active ||
         this.integrations?.list?.every(({ active }) => active === false) ||
         this.integrations?.list?.length === 0
       );
@@ -149,6 +137,19 @@ export default {
           if (error) {
             return createFlash({ message: error });
           }
+
+          if (this.testAlertPayload) {
+            const integration =
+              httpIntegrationCreate?.integration || prometheusIntegrationCreate?.integration;
+
+            const payload = {
+              ...this.testAlertPayload,
+              endpoint: integration.url,
+              token: integration.token,
+            };
+            return this.validateAlertPayload(payload);
+          }
+
           return createFlash({
             message: this.$options.i18n.changesSaved,
             type: FLASH_TYPES.SUCCESS,
@@ -179,6 +180,13 @@ export default {
           if (error) {
             return createFlash({ message: error });
           }
+
+          if (this.testAlertPayload) {
+            return this.validateAlertPayload();
+          }
+
+          this.clearCurrentIntegration();
+
           return createFlash({
             message: this.$options.i18n.changesSaved,
             type: FLASH_TYPES.SUCCESS,
@@ -189,6 +197,7 @@ export default {
         })
         .finally(() => {
           this.isUpdating = false;
+          this.testAlertPayload = null;
         });
     },
     resetToken({ type, variables }) {
@@ -212,7 +221,13 @@ export default {
             const integration =
               httpIntegrationResetToken?.integration ||
               prometheusIntegrationResetToken?.integration;
-            this.currentIntegration = integration;
+
+            this.$apollo.mutate({
+              mutation: updateCurrentIntergrationMutation,
+              variables: {
+                ...integration,
+              },
+            });
 
             return createFlash({
               message: this.$options.i18n.changesSaved,
@@ -280,8 +295,21 @@ export default {
         variables: {},
       });
     },
-    testPayloadFailure() {
-      createFlash({ message: INTEGRATION_PAYLOAD_TEST_ERROR });
+    setTestAlertPayload(payload) {
+      this.testAlertPayload = payload;
+    },
+    validateAlertPayload(payload) {
+      return service
+        .updateTestAlert(payload ?? this.testAlertPayload)
+        .then(() => {
+          return createFlash({
+            message: this.$options.i18n.alertSent,
+            type: FLASH_TYPES.SUCCESS,
+          });
+        })
+        .catch(() => {
+          createFlash({ message: INTEGRATION_PAYLOAD_TEST_ERROR });
+        });
     },
   },
 };
@@ -310,13 +338,12 @@ export default {
     </gl-alert>
     <integrations-list
       v-else
-      :integrations="glFeatures.httpIntegrationsList ? integrations.list : integrationsOptionsOld"
+      :integrations="integrations.list"
       :loading="loading"
       @edit-integration="editIntegration"
       @delete-integration="deleteIntegration"
     />
-    <settings-form-new
-      v-if="glFeatures.httpIntegrationsList"
+    <alert-settings-form
       :loading="isUpdating"
       :can-add-integration="canAddIntegration"
       :can-manage-opsgenie="canManageOpsgenie"
@@ -324,8 +351,7 @@ export default {
       @update-integration="updateIntegration"
       @reset-token="resetToken"
       @clear-current-integration="clearCurrentIntegration"
-      @test-payload-failure="testPayloadFailure"
+      @set-test-alert-payload="setTestAlertPayload"
     />
-    <settings-form-old v-else />
   </div>
 </template>

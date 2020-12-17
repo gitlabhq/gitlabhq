@@ -5,54 +5,54 @@ require 'spec_helper'
 RSpec.describe 'Alert Management index', :js do
   let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user) }
-  let_it_be(:alert) { create(:alert_management_alert, project: project, status: 'triggered') }
 
   before_all do
     project.add_developer(developer)
   end
 
-  before do
-    sign_in(developer)
+  context 'when a developer displays the alert list' do
+    before do
+      sign_in(developer)
 
-    visit project_alert_management_index_path(project)
-    wait_for_requests
-  end
+      visit project_alert_management_index_path(project)
+      wait_for_requests
+    end
 
-  context 'when a developer displays the alert list and alert integrations are not enabled' do
-    it 'shows the alert page title' do
+    it 'shows the alert page title and empty state without filtered search or alert table' do
       expect(page).to have_content('Alerts')
-    end
-
-    it 'shows the empty state by default' do
       expect(page).to have_content('Surface alerts in GitLab')
-    end
-
-    it 'does not show the filtered search' do
+      expect(page).not_to have_selector('.gl-table')
       page.within('.layout-page') do
         expect(page).not_to have_css('[data-testid="search-icon"]')
       end
     end
 
-    it 'does not show the alert table' do
-      expect(page).not_to have_selector('.gl-table')
-    end
-  end
-
-  context 'when a developer displays the alert list and an HTTP integration is enabled' do
-    let_it_be(:integration) { create(:alert_management_http_integration, project: project) }
-
-    it 'shows the alert page title' do
-      expect(page).to have_content('Alerts')
-    end
-
-    it 'shows the filtered search' do
-      page.within('.layout-page') do
-        expect(page).to have_css('[data-testid="search-icon"]')
+    shared_examples 'alert page with title, filtered search, and table' do
+      it 'renders correctly' do
+        expect(page).to have_content('Alerts')
+        expect(page).to have_selector('.gl-table')
+        page.within('.layout-page') do
+          expect(page).to have_css('[data-testid="search-icon"]')
+        end
       end
     end
 
-    it 'shows the alert table' do
-      expect(page).to have_selector('.gl-table')
+    context 'when alerts have already been created' do
+      let_it_be(:alert) { create(:alert_management_alert, project: project) }
+
+      it_behaves_like 'alert page with title, filtered search, and table'
+    end
+
+    context 'when an HTTP integration is enabled' do
+      let_it_be(:integration) { create(:alert_management_http_integration, project: project) }
+
+      it_behaves_like 'alert page with title, filtered search, and table'
+    end
+
+    context 'when the prometheus integration is enabled' do
+      let_it_be(:integration) { create(:prometheus_service, project: project) }
+
+      it_behaves_like 'alert page with title, filtered search, and table'
     end
   end
 end

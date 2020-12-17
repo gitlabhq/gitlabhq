@@ -33,7 +33,14 @@ export default {
   mixins: [glFeatureFlagsMixin()],
   computed: {
     ...mapGetters(['currentKey', 'propsSource', 'isDisabled']),
-    ...mapState(['defaultState', 'override', 'isSaving', 'isTesting', 'isResetting']),
+    ...mapState([
+      'defaultState',
+      'customState',
+      'override',
+      'isSaving',
+      'isTesting',
+      'isResetting',
+    ]),
     isEditable() {
       return this.propsSource.editable;
     },
@@ -42,8 +49,8 @@ export default {
     },
     isInstanceOrGroupLevel() {
       return (
-        this.propsSource.integrationLevel === integrationLevels.INSTANCE ||
-        this.propsSource.integrationLevel === integrationLevels.GROUP
+        this.customState.integrationLevel === integrationLevels.INSTANCE ||
+        this.customState.integrationLevel === integrationLevels.GROUP
       );
     },
     showJiraIssuesFields() {
@@ -52,9 +59,18 @@ export default {
     showReset() {
       return this.isInstanceOrGroupLevel && this.propsSource.resetPath;
     },
+    saveButtonKey() {
+      return `save-button-${this.isDisabled}`;
+    },
   },
   methods: {
-    ...mapActions(['setOverride', 'setIsSaving', 'setIsTesting', 'setIsResetting']),
+    ...mapActions([
+      'setOverride',
+      'setIsSaving',
+      'setIsTesting',
+      'setIsResetting',
+      'fetchResetIntegration',
+    ]),
     onSaveClick() {
       this.setIsSaving(true);
       eventHub.$emit('saveIntegration');
@@ -63,7 +79,9 @@ export default {
       this.setIsTesting(true);
       eventHub.$emit('testIntegration');
     },
-    onResetClick() {},
+    onResetClick() {
+      this.fetchResetIntegration();
+    },
   },
 };
 </script>
@@ -102,6 +120,7 @@ export default {
     <div v-if="isEditable" class="footer-block row-content-block">
       <template v-if="isInstanceOrGroupLevel">
         <gl-button
+          :key="saveButtonKey"
           v-gl-modal.confirmSaveIntegration
           category="primary"
           variant="success"
@@ -115,6 +134,7 @@ export default {
       </template>
       <gl-button
         v-else
+        :key="saveButtonKey"
         category="primary"
         variant="success"
         type="submit"

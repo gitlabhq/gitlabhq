@@ -17,11 +17,17 @@ request removing the feature flag or the merge request where the default value o
 the feature flag is set to enabled. If the feature contains any database migrations, it
 *should* include a changelog entry for the database changes.
 
-CAUTION: **Caution:**
+WARNING:
 All newly-introduced feature flags should be [disabled by default](process.md#feature-flags-in-gitlab-development).
 
-NOTE: **Note:**
+NOTE:
 This document is the subject of continued work as part of an epic to [improve internal usage of Feature Flags](https://gitlab.com/groups/gitlab-org/-/epics/3551). Raise any suggestions as new issues and attach them to the epic.
+
+## Risk of a broken master (main) branch
+
+Feature flags **must** be used in the MR that introduces them. Not doing so causes a
+[broken master](https://about.gitlab.com/handbook/engineering/workflow/#broken-master) scenario due
+to the `rspec:feature-flags` job that only runs on the `master` branch.
 
 ## Types of feature flags
 
@@ -40,11 +46,11 @@ This is the default type used when calling `Feature.enabled?`.
 ### `ops` type
 
 `ops` feature flags are long-lived feature flags that control operational aspects
-of GitLab's behavior. For example, feature flags that disable features that might
+of GitLab product behavior. For example, feature flags that disable features that might
 have a performance impact, like special Sidekiq worker behavior.
 
 `ops` feature flags likely do not have rollout issues, as it is hard to
-predict when they will be enabled or disabled.
+predict when they are enabled or disabled.
 
 To use `ops` feature flags, you must append `type: :ops` to `Feature.enabled?`
 invocations:
@@ -88,9 +94,9 @@ Each feature flag is defined in a separate YAML file consisting of a number of f
 | `default_enabled`   | yes      | The default state of the feature flag that is strictly validated, with `default_enabled:` passed as an argument. |
 | `introduced_by_url` | no       | The URL to the Merge Request that introduced the feature flag. |
 | `rollout_issue_url` | no       | The URL to the Issue covering the feature flag rollout.        |
-| `group`             | no       | The [group](https://about.gitlab.com/handbook/product/product-categories/#devops-stages) that owns the feature flag. |
+| `group`             | no       | The [group](https://about.gitlab.com/handbook/product/categories/#devops-stages) that owns the feature flag. |
 
-TIP: **Tip:**
+NOTE:
 All validations are skipped when running in `RAILS_ENV=production`.
 
 ## Create a new feature flag
@@ -125,7 +131,7 @@ type: development
 default_enabled: false
 ```
 
-TIP: **Tip:**
+NOTE:
 To create a feature flag that is only used in EE, add the `--ee` flag: `bin/feature-flag --ee`
 
 ## Delete a feature flag
@@ -172,6 +178,29 @@ if Feature.disabled?(:my_feature_flag, project, default_enabled: true)
 end
 ```
 
+If not specified, `default_enabled` is `false`.
+
+To force reading the `default_enabled` value from the relative YAML definition file, use
+`default_enabled: :yaml`:
+
+```ruby
+if Feature.enabled?(:feature_flag, project, default_enabled: :yaml)
+  # execute code if feature flag is enabled
+end
+```
+
+```ruby
+if Feature.disabled?(:feature_flag, project, default_enabled: :yaml)
+  # execute code if feature flag is disabled
+end
+```
+
+This allows to use the same feature flag check across various parts of the codebase and
+maintain the status of `default_enabled` in the YAML definition file which is the SSOT.
+
+If `default_enabled: :yaml` is used, a YAML definition is expected or an error is raised
+in development or test environment, while returning `false` on production.
+
 If not specified, the default feature flag type for `Feature.enabled?` and `Feature.disabled?`
 is `type: development`. For all other feature flag types, you must specify the `type:`:
 
@@ -187,7 +216,7 @@ if Feature.disabled?(:my_feature_flag, project, type: :ops)
 end
 ```
 
-DANGER: **Warning:**
+WARNING:
 Don't use feature flags at application load time. For example, using the `Feature` class in
 `config/initializers/*` or at the class level could cause an unexpected error. This error occurs
 because a database that a feature flag adapter might depend on doesn't exist at load time
@@ -496,10 +525,6 @@ of `Feature.enabled?` and `Feature.disabled?` returning always `true` unless fea
 is persisted.
 
 Make sure behavior under feature flag doesn't go untested in some non-specific contexts.
-
-See the
-[testing guide](../testing_guide/best_practices.md#feature-flags-in-tests)
-for information and examples on how to stub feature flags in tests.
 
 ### `stub_feature_flags: false`
 

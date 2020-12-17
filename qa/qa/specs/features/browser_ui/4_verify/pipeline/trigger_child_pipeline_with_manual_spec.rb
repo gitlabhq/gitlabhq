@@ -3,11 +3,8 @@
 require 'faker'
 
 module QA
-  RSpec.describe 'Verify', :runner, :requires_admin do
-    # [TODO]: Developer to remove :requires_admin once FF is removed in follow up issue
-
+  RSpec.describe 'Verify', :runner do
     describe "Trigger child pipeline with 'when:manual'" do
-      let(:feature_flag) { :ci_manual_bridges } # [TODO]: Developer to remove when feature flag is removed
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(8)}" }
 
       let(:project) do
@@ -25,15 +22,13 @@ module QA
       end
 
       before do
-        Runtime::Feature.enable(feature_flag) # [TODO]: Developer to remove when feature flag is removed
         Flow::Login.sign_in
         add_ci_files
         project.visit!
-        Flow::Pipeline.visit_latest_pipeline(pipeline_condition: 'success')
+        Flow::Pipeline.visit_latest_pipeline(pipeline_condition: 'succeeded')
       end
 
       after do
-        Runtime::Feature.disable(feature_flag) # [TODO]: Developer to remove when feature flag is removed
         runner.remove_via_api!
       end
 

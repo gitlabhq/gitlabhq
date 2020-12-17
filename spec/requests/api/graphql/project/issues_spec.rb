@@ -142,16 +142,14 @@ RSpec.describe 'getting an issue list for a project' do
   describe 'sorting and pagination' do
     let_it_be(:data_path) { [:project, :issues] }
 
-    def pagination_query(params, page_info)
-      graphql_query_for(
-        'project',
-        { 'fullPath' => sort_project.full_path },
-        query_graphql_field('issues', params, "#{page_info} edges { node { iid dueDate} }")
+    def pagination_query(params)
+      graphql_query_for(:project, { full_path: sort_project.full_path },
+        query_graphql_field(:issues, params, "#{page_info} nodes { iid }")
       )
     end
 
     def pagination_results_data(data)
-      data.map { |issue| issue.dig('node', 'iid').to_i }
+      data.map { |issue| issue.dig('iid').to_i }
     end
 
     context 'when sorting by due date' do
@@ -164,7 +162,7 @@ RSpec.describe 'getting an issue list for a project' do
 
       context 'when ascending' do
         it_behaves_like 'sorted paginated query' do
-          let(:sort_param)       { 'DUE_DATE_ASC' }
+          let(:sort_param)       { :DUE_DATE_ASC }
           let(:first_param)      { 2 }
           let(:expected_results) { [due_issue3.iid, due_issue5.iid, due_issue1.iid, due_issue4.iid, due_issue2.iid] }
         end
@@ -172,7 +170,7 @@ RSpec.describe 'getting an issue list for a project' do
 
       context 'when descending' do
         it_behaves_like 'sorted paginated query' do
-          let(:sort_param)       { 'DUE_DATE_DESC' }
+          let(:sort_param)       { :DUE_DATE_DESC }
           let(:first_param)      { 2 }
           let(:expected_results) { [due_issue1.iid, due_issue5.iid, due_issue3.iid, due_issue4.iid, due_issue2.iid] }
         end
@@ -189,7 +187,7 @@ RSpec.describe 'getting an issue list for a project' do
 
       context 'when ascending' do
         it_behaves_like 'sorted paginated query' do
-          let(:sort_param)       { 'RELATIVE_POSITION_ASC' }
+          let(:sort_param)       { :RELATIVE_POSITION_ASC }
           let(:first_param)      { 2 }
           let(:expected_results) { [relative_issue5.iid, relative_issue3.iid, relative_issue1.iid, relative_issue4.iid, relative_issue2.iid] }
         end
@@ -209,7 +207,7 @@ RSpec.describe 'getting an issue list for a project' do
 
       context 'when ascending' do
         it_behaves_like 'sorted paginated query' do
-          let(:sort_param)       { 'PRIORITY_ASC' }
+          let(:sort_param)       { :PRIORITY_ASC }
           let(:first_param)      { 2 }
           let(:expected_results) { [priority_issue3.iid, priority_issue1.iid, priority_issue2.iid, priority_issue4.iid] }
         end
@@ -217,7 +215,7 @@ RSpec.describe 'getting an issue list for a project' do
 
       context 'when descending' do
         it_behaves_like 'sorted paginated query' do
-          let(:sort_param)       { 'PRIORITY_DESC' }
+          let(:sort_param)       { :PRIORITY_DESC }
           let(:first_param)      { 2 }
           let(:expected_results) { [priority_issue1.iid, priority_issue3.iid, priority_issue2.iid, priority_issue4.iid] }
         end
@@ -236,7 +234,7 @@ RSpec.describe 'getting an issue list for a project' do
 
       context 'when ascending' do
         it_behaves_like 'sorted paginated query' do
-          let(:sort_param)       { 'LABEL_PRIORITY_ASC' }
+          let(:sort_param)       { :LABEL_PRIORITY_ASC }
           let(:first_param)      { 2 }
           let(:expected_results) { [label_issue3.iid, label_issue1.iid, label_issue2.iid, label_issue4.iid] }
         end
@@ -244,7 +242,7 @@ RSpec.describe 'getting an issue list for a project' do
 
       context 'when descending' do
         it_behaves_like 'sorted paginated query' do
-          let(:sort_param)       { 'LABEL_PRIORITY_DESC' }
+          let(:sort_param)       { :LABEL_PRIORITY_DESC }
           let(:first_param)      { 2 }
           let(:expected_results) { [label_issue2.iid, label_issue3.iid, label_issue1.iid, label_issue4.iid] }
         end
@@ -261,7 +259,7 @@ RSpec.describe 'getting an issue list for a project' do
 
       context 'when ascending' do
         it_behaves_like 'sorted paginated query' do
-          let(:sort_param)       { 'MILESTONE_DUE_ASC' }
+          let(:sort_param)       { :MILESTONE_DUE_ASC }
           let(:first_param)      { 2 }
           let(:expected_results) { [milestone_issue2.iid, milestone_issue3.iid, milestone_issue1.iid] }
         end
@@ -269,7 +267,7 @@ RSpec.describe 'getting an issue list for a project' do
 
       context 'when descending' do
         it_behaves_like 'sorted paginated query' do
-          let(:sort_param)       { 'MILESTONE_DUE_DESC' }
+          let(:sort_param)       { :MILESTONE_DUE_DESC }
           let(:first_param)      { 2 }
           let(:expected_results) { [milestone_issue3.iid, milestone_issue2.iid, milestone_issue1.iid] }
         end

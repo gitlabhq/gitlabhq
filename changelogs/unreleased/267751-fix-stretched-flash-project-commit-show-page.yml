@@ -1,0 +1,5 @@
+---
+title: Fix stretched flash in project commit show page
+merge_request: 48439
+author:
+type: fixed

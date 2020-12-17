@@ -30,20 +30,6 @@
     margin-bottom: 0;
   }
 
-  .member-controls {
-    .fa {
-      line-height: inherit;
-    }
-  }
-
-  .btn-remove {
-    width: 100%;
-
-    @include media-breakpoint-up(sm) {
-      width: auto;
-    }
-  }
-
   &.existing-title {
     @include media-breakpoint-up(sm) {
       float: left;

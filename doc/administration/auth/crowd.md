@@ -2,12 +2,13 @@
 type: reference
 stage: Manage
 group: Access
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Atlassian Crowd OmniAuth Provider
 
-Authenticate to GitLab using the Atlassian Crowd OmniAuth provider.
+Authenticate to GitLab using the Atlassian Crowd OmniAuth provider. Enabling
+this provider also allows Crowd authentication for Git-over-https requests.
 
 ## Configure a new Crowd application
 

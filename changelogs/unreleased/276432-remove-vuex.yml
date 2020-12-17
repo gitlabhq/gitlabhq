@@ -1,0 +1,5 @@
+---
+title: Refactor container registry to use GraphQL API
+merge_request: 49584
+author:
+type: changed

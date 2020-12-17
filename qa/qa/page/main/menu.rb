@@ -93,6 +93,10 @@ module QA
           has_personal_area?(wait: 0)
         end
 
+        def not_signed_in?
+          has_no_personal_area?
+        end
+
         def sign_out
           retry_until do
             wait_if_retry_later
@@ -127,6 +131,10 @@ module QA
 
         def has_personal_area?(wait: Capybara.default_max_wait_time)
           has_element?(:user_avatar, wait: wait)
+        end
+
+        def has_no_personal_area?(wait: Capybara.default_max_wait_time)
+          has_no_element?(:user_avatar, wait: wait)
         end
 
         def has_admin_area_link?(wait: Capybara.default_max_wait_time)

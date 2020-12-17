@@ -14,7 +14,7 @@ module QA
             element :remove_related_issue_button
           end
 
-          view 'app/views/shared/issuable/_close_reopen_button.html.haml' do
+          view 'app/assets/javascripts/issue_show/components/header_actions.vue' do
             element :close_issue_button
             element :reopen_issue_button
           end

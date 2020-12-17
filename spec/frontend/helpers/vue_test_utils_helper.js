@@ -1,3 +1,5 @@
+import { isArray } from 'lodash';
+
 const vNodeContainsText = (vnode, text) =>
   (vnode.text && vnode.text.includes(text)) ||
   (vnode.children && vnode.children.filter(child => vNodeContainsText(child, text)).length);
@@ -34,9 +36,18 @@ export const waitForMutation = (store, expectedMutationType) =>
     });
   });
 
-export const extendedWrapper = wrapper =>
-  Object.defineProperty(wrapper, 'findByTestId', {
+export const extendedWrapper = wrapper => {
+  if (isArray(wrapper) || !wrapper?.find) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      '[vue-test-utils-helper]: you are trying to extend an object that is not a VueWrapper.',
+    );
+    return wrapper;
+  }
+
+  return Object.defineProperty(wrapper, 'findByTestId', {
     value(id) {
       return this.find(`[data-testid="${id}"]`);
     },
   });
+};

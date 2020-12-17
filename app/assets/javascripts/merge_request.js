@@ -102,14 +102,6 @@ MergeRequest.prototype.initMRBtnListeners = function() {
   return $('.btn-close, .btn-reopen').on('click', function(e) {
     const $this = $(this);
     const shouldSubmit = $this.hasClass('btn-comment');
-    if ($this.hasClass('js-btn-issue-action')) {
-      const url = $this.data('endpoint');
-      return axios
-        .put(url)
-        .then(() => window.location.reload())
-        .catch(() => createFlash(__('Something went wrong.')));
-    }
-
     if (shouldSubmit && $this.data('submitted')) {
       return;
     }
@@ -171,10 +163,6 @@ MergeRequest.decreaseCounter = function(by = 1) {
 
 MergeRequest.hideCloseButton = function() {
   const el = document.querySelector('.merge-request .js-issuable-actions');
-  const closeDropdownItem = el.querySelector('li.close-item');
-  if (closeDropdownItem) {
-    closeDropdownItem.classList.add('hidden');
-  }
   // Dropdown for mobile screen
   el.querySelector('li.js-close-item').classList.add('hidden');
 };

@@ -1,10 +1,14 @@
 <script>
 import Pikaday from 'pikaday';
+import { GlIcon } from '@gitlab/ui';
 import { parsePikadayDate, pikadayToString } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
 
 export default {
   name: 'DatePicker',
+  components: {
+    GlIcon,
+  },
   props: {
     label: {
       type: String,
@@ -66,7 +70,7 @@ export default {
     <div class="dropdown open">
       <button type="button" class="dropdown-menu-toggle" data-toggle="dropdown" @click="toggled">
         <span class="dropdown-toggle-text"> {{ label }} </span>
-        <i class="fa fa-chevron-down" aria-hidden="true"> </i>
+        <gl-icon name="chevron-down" class="gl-absolute gl-right-3 gl-top-3 gl-text-gray-500" />
       </button>
     </div>
   </div>

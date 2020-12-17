@@ -84,7 +84,6 @@ module Issuable
     validate :description_max_length_for_new_records_is_valid, on: :update
 
     before_validation :truncate_description_on_import!
-    after_save :store_mentions!, if: :any_mentionable_attributes_changed?
 
     scope :authored, ->(user) { where(author_id: user) }
     scope :recent, -> { reorder(id: :desc) }
@@ -198,7 +197,7 @@ module Issuable
     end
 
     def severity
-      return IssuableSeverity::DEFAULT unless incident?
+      return IssuableSeverity::DEFAULT unless supports_severity?
 
       issuable_severity&.severity || IssuableSeverity::DEFAULT
     end
@@ -305,14 +304,12 @@ module Issuable
     end
 
     def order_labels_priority(direction = 'ASC', excluded_labels: [], extra_select_columns: [], with_cte: false)
-      params = {
+      highest_priority = highest_label_priority(
         target_type: name,
         target_column: "#{table_name}.id",
         project_column: "#{table_name}.#{project_foreign_key}",
         excluded_labels: excluded_labels
-      }
-
-      highest_priority = highest_label_priority(params).to_sql
+      ).to_sql
 
       # When using CTE make sure to select the same columns that are on the group_by clause.
       # This prevents errors when ignored columns are present in the database.

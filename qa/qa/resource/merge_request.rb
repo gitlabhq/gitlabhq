@@ -34,7 +34,7 @@ module QA
       attribute :target do
         Repository::ProjectPush.fabricate! do |resource|
           resource.project = project
-          resource.branch_name = 'master'
+          resource.branch_name = project.default_branch
           resource.new_branch = @target_new_branch
           resource.remote_branch = target_branch
         end
@@ -56,7 +56,6 @@ module QA
         @title = 'QA test - merge request'
         @description = 'This is a test merge request'
         @source_branch = "qa-test-feature-#{SecureRandom.hex(8)}"
-        @target_branch = "master"
         @assignee = nil
         @milestone = nil
         @labels = []
@@ -68,7 +67,7 @@ module QA
       end
 
       def fabricate!
-        populate(:target, :source)
+        populate_target_and_source_if_required
 
         project.visit!
         Page::Project::Show.perform(&:new_merge_request)
@@ -89,7 +88,7 @@ module QA
       def fabricate_via_api!
         resource_web_url(api_get)
       rescue ResourceNotFoundError
-        populate(:target, :source) unless @no_preparation
+        populate_target_and_source_if_required
 
         super
       end
@@ -143,6 +142,12 @@ module QA
         raise ResourceNotFoundError if api_resource.blank?
 
         super(api_resource)
+      end
+
+      def populate_target_and_source_if_required
+        @target_branch ||= project.default_branch
+
+        populate(:target, :source) unless @no_preparation
       end
     end
   end

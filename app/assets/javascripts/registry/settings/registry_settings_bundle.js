@@ -13,7 +13,13 @@ export default () => {
   if (!el) {
     return null;
   }
-  const { projectPath, isAdmin, adminSettingsPath, enableHistoricEntries } = el.dataset;
+  const {
+    isAdmin,
+    enableHistoricEntries,
+    projectPath,
+    adminSettingsPath,
+    tagsRegexHelpPagePath,
+  } = el.dataset;
   return new Vue({
     el,
     apolloProvider,
@@ -21,10 +27,11 @@ export default () => {
       RegistrySettingsApp,
     },
     provide: {
-      projectPath,
       isAdmin: parseBoolean(isAdmin),
-      adminSettingsPath,
       enableHistoricEntries: parseBoolean(enableHistoricEntries),
+      projectPath,
+      adminSettingsPath,
+      tagsRegexHelpPagePath,
     },
     render(createElement) {
       return createElement('registry-settings-app', {});

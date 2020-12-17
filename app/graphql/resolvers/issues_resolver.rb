@@ -10,7 +10,7 @@ module Resolvers
     argument :sort, Types::IssueSortEnum,
               description: 'Sort issues by this criteria',
               required: false,
-              default_value: 'created_desc'
+              default_value: :created_desc
 
     type Types::IssueType.connection_type, null: true
 
@@ -24,7 +24,7 @@ module Resolvers
       if non_stable_cursor_sort?(args[:sort])
         # Certain complex sorts are not supported by the stable cursor pagination yet.
         # In these cases, we use offset pagination, so we return the correct connection.
-        Gitlab::Graphql::Pagination::OffsetActiveRecordRelationConnection.new(issues)
+        offset_pagination(issues)
       else
         issues
       end

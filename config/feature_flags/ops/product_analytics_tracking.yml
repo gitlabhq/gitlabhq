@@ -1,0 +1,8 @@
+---
+name: product_analytics_tracking
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46482
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/285519
+milestone: '13.7'
+type: ops
+group: group::product analytics
+default_enabled: false

@@ -1,0 +1,6 @@
+---
+title: Adds type="button" to the close button for the issue type selector to prevent
+  accidental form submission
+merge_request: 48249
+author:
+type: fixed

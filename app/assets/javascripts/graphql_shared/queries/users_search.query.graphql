@@ -1,0 +1,9 @@
+#import "../fragments/user.fragment.graphql"
+
+query usersSearch($search: String!) {
+  users(search: $search) {
+    nodes {
+      ...User
+    }
+  }
+}

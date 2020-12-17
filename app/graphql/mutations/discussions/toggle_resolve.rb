@@ -10,7 +10,7 @@ module Mutations
       argument :id,
                 Types::GlobalIDType[Discussion],
                 required: true,
-                description: 'The global id of the discussion'
+                description: 'The global ID of the discussion'
 
       argument :resolve,
                GraphQL::BOOLEAN_TYPE,

@@ -24,7 +24,7 @@
         = hidden_field_tag :ref, default_ref
         = button_tag type: 'button', title: default_ref, class: 'dropdown-menu-toggle wide js-branch-select monospace', required: true, data: { toggle: 'dropdown', selected: default_ref, field_name: 'ref' } do
           .text-left.dropdown-toggle-text= default_ref
-          = icon('chevron-down')
+          = sprite_icon('chevron-down', css_class: 'dropdown-menu-toggle-icon gl-top-3')
         = render 'shared/ref_dropdown', dropdown_class: 'wide'
       .form-text.text-muted
         = s_('TagsPage|Existing branch name, tag, or commit SHA')

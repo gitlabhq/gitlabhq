@@ -1,7 +1,7 @@
 ---
 stage: Configure
 group: Configure
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Cluster cost management **(ULTIMATE)**
@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Cluster cost management provides insights into cluster resource usage. GitLab provides an example
 [`kubecost-cost-model`](https://gitlab.com/gitlab-examples/kubecost-cost-model/)
-project that uses GitLab's Prometheus integration and
+project that uses the GitLab Prometheus integration and
 [Kubecost's `cost-model`](https://github.com/kubecost/cost-model) to provide cluster cost
 insights within GitLab:
 
@@ -28,7 +28,7 @@ permissions in a project or group.
      need to change this value if you use a non-managed Prometheus.
    - Adds the necessary annotations to the deployment manifest to be scraped by
      GitLab-managed Prometheus.
-   - Changes the Google Pricing API access key to GitLab's access key.
+   - Changes the Google Pricing API access key to the GitLab access key.
    - Contains definitions for a custom GitLab Metrics dashboard to show the cost insights.
 1. Connect GitLab with Prometheus, depending on your configuration:
    - *If Prometheus is already configured,* navigate to **Settings > Integrations > Prometheus**
@@ -58,7 +58,7 @@ file or creating similar dashboard configuration files. To learn more, read abou
 
 #### Available metrics
 
-Metrics contain both instance and node labels. The instance label will be deprecated in a future version.
+Metrics contain both instance and node labels. The instance label is scheduled for deprecation in a future version.
 
 - `node_cpu_hourly_cost` - Hourly cost per vCPU on this node.
 - `node_gpu_hourly_cost` - Hourly cost per GPU on this node.

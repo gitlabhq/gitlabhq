@@ -4,18 +4,25 @@ require 'spec_helper'
 
 RSpec.describe ::CachingArrayResolver do
   include GraphqlHelpers
+  include Gitlab::Graphql::Laziness
 
-  let_it_be(:non_admins) { create_list(:user, 4, admin: false) }
-  let(:query_context) { {} }
+  let_it_be(:admins) { create_list(:user, 4, admin: true) }
+  let(:query_context) { { current_user: admins.first } }
   let(:max_page_size) { 10 }
   let(:field) { double('Field', max_page_size: max_page_size) }
-  let(:schema) { double('Schema', default_max_page_size: 3) }
+  let(:schema) do
+    Class.new(GitlabSchema) do
+      default_max_page_size 3
+    end
+  end
 
   let_it_be(:caching_resolver) do
     mod = described_class
 
     Class.new(::Resolvers::BaseResolver) do
       include mod
+      type [::Types::UserType], null: true
+      argument :is_admin, ::GraphQL::BOOLEAN_TYPE, required: false
 
       def query_input(is_admin:)
         is_admin
@@ -44,6 +51,8 @@ RSpec.describe ::CachingArrayResolver do
 
         Class.new(::Resolvers::BaseResolver) do
           include mod
+          type [::Types::UserType], null: true
+          argument :username, ::GraphQL::STRING_TYPE, required: false
 
           def query_input(username:)
             username
@@ -72,7 +81,7 @@ RSpec.describe ::CachingArrayResolver do
         expect(User).to receive(:from_union).twice.and_call_original
 
         results = users.in_groups_of(2, false).map do |users|
-          resolve(resolver, args: { username: users.map(&:username) }, field: field, schema: schema)
+          resolve(resolver, args: { username: users.map(&:username) }, schema: schema)
         end
 
         expect(results.flat_map(&method(:force))).to match_array(users)
@@ -80,19 +89,19 @@ RSpec.describe ::CachingArrayResolver do
     end
 
     context 'all queries return results' do
-      let_it_be(:admins) { create_list(:admin, 3) }
+      let_it_be(:non_admins) { create_list(:user, 3, admin: false) }
 
       it 'batches the queries' do
         expect do
-          [resolve_users(true), resolve_users(false)].each(&method(:force))
-        end.to issue_same_number_of_queries_as { force(resolve_users(nil)) }
+          [resolve_users(admin: true), resolve_users(admin: false)].each(&method(:force))
+        end.to issue_same_number_of_queries_as { force(resolve_users(admin: nil)) }
       end
 
       it 'finds the correct values' do
-        found_admins = resolve_users(true)
-        found_others = resolve_users(false)
-        admins_again = resolve_users(true)
-        found_all = resolve_users(nil)
+        found_admins = resolve_users(admin: true)
+        found_others = resolve_users(admin: false)
+        admins_again = resolve_users(admin: true)
+        found_all = resolve_users(admin: nil)
 
         expect(force(found_admins)).to match_array(admins)
         expect(force(found_others)).to match_array(non_admins)
@@ -104,37 +113,37 @@ RSpec.describe ::CachingArrayResolver do
     it 'does not perform a union of a query with itself' do
       expect(User).to receive(:where).once.and_call_original
 
-      [resolve_users(false), resolve_users(false)].each(&method(:force))
+      [resolve_users(admin: false), resolve_users(admin: false)].each(&method(:force))
     end
 
     context 'one of the queries returns no results' do
       it 'finds the correct values' do
-        found_admins = resolve_users(true)
-        found_others = resolve_users(false)
-        found_all = resolve_users(nil)
+        found_admins = resolve_users(admin: true)
+        found_others = resolve_users(admin: false)
+        found_all = resolve_users(admin: nil)
 
-        expect(force(found_admins)).to be_empty
-        expect(force(found_others)).to match_array(non_admins)
-        expect(force(found_all)).to match_array(non_admins)
+        expect(force(found_admins)).to match_array(admins)
+        expect(force(found_others)).to be_empty
+        expect(force(found_all)).to match_array(admins)
       end
     end
 
     context 'one of the queries has already been cached' do
       before do
-        force(resolve_users(nil))
+        force(resolve_users(admin: nil))
       end
 
       it 'avoids further queries' do
         expect do
-          repeated_find = resolve_users(nil)
+          repeated_find = resolve_users(admin: nil)
 
-          expect(force(repeated_find)).to match_array(non_admins)
+          expect(force(repeated_find)).to match_array(admins)
         end.not_to exceed_query_limit(0)
       end
     end
 
     context 'the resolver overrides item_found' do
-      let_it_be(:admins) { create_list(:admin, 2) }
+      let_it_be(:non_admins) { create_list(:user, 2, admin: false) }
       let(:query_context) do
         {
           found: { true => [], false => [], nil => [] }
@@ -150,14 +159,14 @@ RSpec.describe ::CachingArrayResolver do
       end
 
       it 'receives item_found for each key the item mapped to' do
-        found_admins = resolve_users(true, with_item_found)
-        found_all = resolve_users(nil, with_item_found)
+        found_admins = resolve_users(admin: true, resolver: with_item_found)
+        found_all = resolve_users(admin: nil, resolver: with_item_found)
 
         [found_admins, found_all].each(&method(:force))
 
         expect(query_context[:found]).to match({
-          false => be_empty,
           true => match_array(admins),
+          false => be_empty,
           nil => match_array(admins + non_admins)
         })
       end
@@ -167,11 +176,11 @@ RSpec.describe ::CachingArrayResolver do
       let(:max_page_size) { 2 }
 
       it 'respects the max_page_size, on a per subset basis' do
-        found_all = resolve_users(nil)
-        found_others = resolve_users(false)
+        found_all = resolve_users(admin: nil)
+        found_admins = resolve_users(admin: true)
 
         expect(force(found_all).size).to eq(2)
-        expect(force(found_others).size).to eq(2)
+        expect(force(found_admins).size).to eq(2)
       end
     end
 
@@ -179,11 +188,11 @@ RSpec.describe ::CachingArrayResolver do
       let(:max_page_size) { nil }
 
       it 'takes the page size from schema.default_max_page_size' do
-        found_all = resolve_users(nil)
-        found_others = resolve_users(false)
+        found_all = resolve_users(admin: nil)
+        found_admins = resolve_users(admin: true)
 
         expect(force(found_all).size).to eq(schema.default_max_page_size)
-        expect(force(found_others).size).to eq(schema.default_max_page_size)
+        expect(force(found_admins).size).to eq(schema.default_max_page_size)
       end
     end
 
@@ -197,12 +206,10 @@ RSpec.describe ::CachingArrayResolver do
     end
   end
 
-  def resolve_users(is_admin, resolver = caching_resolver)
-    args = { is_admin: is_admin }
-    resolve(resolver, args: args, field: field, ctx: query_context, schema: schema)
-  end
-
-  def force(lazy)
-    ::Gitlab::Graphql::Lazy.force(lazy)
+  def resolve_users(admin:, resolver: caching_resolver)
+    args = { is_admin: admin }
+    opts = resolver.field_options
+    allow(resolver).to receive(:field_options).and_return(opts.merge(max_page_size: max_page_size))
+    resolve(resolver, args: args, ctx: query_context, schema: schema, field: field)
   end
 end

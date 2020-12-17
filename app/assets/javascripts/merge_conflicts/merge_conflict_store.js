@@ -54,7 +54,6 @@ import { s__ } from '~/locale';
         file.promptDiscardConfirmation = false;
         file.resolveMode = DEFAULT_RESOLVE_MODE;
         file.filePath = this.getFilePath(file);
-        file.iconClass = `fa-${file.blob_icon}`;
         file.blobPath = file.blob_path;
 
         if (file.type === CONFLICT_TYPES.TEXT) {

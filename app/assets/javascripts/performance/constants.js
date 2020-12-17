@@ -19,16 +19,27 @@ export const SNIPPET_MEASURE_BLOBS_CONTENT = 'snippet-blobs-content';
 
 // Marks
 export const WEBIDE_MARK_APP_START = 'webide-app-start';
-export const WEBIDE_MARK_TREE_START = 'webide-tree-start';
-export const WEBIDE_MARK_TREE_FINISH = 'webide-tree-finished';
-export const WEBIDE_MARK_FILE_START = 'webide-file-start';
 export const WEBIDE_MARK_FILE_CLICKED = 'webide-file-clicked';
 export const WEBIDE_MARK_FILE_FINISH = 'webide-file-finished';
+export const WEBIDE_MARK_REPO_EDITOR_START = 'webide-init-editor-start';
+export const WEBIDE_MARK_REPO_EDITOR_FINISH = 'webide-init-editor-finish';
+export const WEBIDE_MARK_FETCH_BRANCH_DATA_START = 'webide-getBranchData-start';
+export const WEBIDE_MARK_FETCH_BRANCH_DATA_FINISH = 'webide-getBranchData-finish';
+export const WEBIDE_MARK_FETCH_FILE_DATA_START = 'webide-getFileData-start';
+export const WEBIDE_MARK_FETCH_FILE_DATA_FINISH = 'webide-getFileData-finish';
+export const WEBIDE_MARK_FETCH_FILES_START = 'webide-getFiles-start';
+export const WEBIDE_MARK_FETCH_FILES_FINISH = 'webide-getFiles-finish';
+export const WEBIDE_MARK_FETCH_PROJECT_DATA_START = 'webide-getProjectData-start';
+export const WEBIDE_MARK_FETCH_PROJECT_DATA_FINISH = 'webide-getProjectData-finish';
 
 // Measures
-export const WEBIDE_MEASURE_TREE_FROM_REQUEST = 'webide-tree-loading-from-request';
-export const WEBIDE_MEASURE_FILE_FROM_REQUEST = 'webide-file-loading-from-request';
 export const WEBIDE_MEASURE_FILE_AFTER_INTERACTION = 'webide-file-loading-after-interaction';
+export const WEBIDE_MEASURE_FETCH_PROJECT_DATA = 'WebIDE: Project data';
+export const WEBIDE_MEASURE_FETCH_BRANCH_DATA = 'WebIDE: Branch data';
+export const WEBIDE_MEASURE_FETCH_FILE_DATA = 'WebIDE: File data';
+export const WEBIDE_MEASURE_BEFORE_VUE = 'WebIDE: Before Vue app';
+export const WEBIDE_MEASURE_REPO_EDITOR = 'WebIDE: Repo Editor';
+export const WEBIDE_MEASURE_FETCH_FILES = 'WebIDE: Fetch Files';
 
 //
 // MR Diffs namespace

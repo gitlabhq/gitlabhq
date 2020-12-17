@@ -5,13 +5,9 @@
 // directory.
 @import '@gitlab/at.js/dist/css/jquery.atwho';
 @import 'dropzone/dist/basic';
-@import 'select2';
 
 // GitLab UI framework
 @import 'framework';
-
-// Custom Fontawesome icons
-@import 'fontawesome_custom';
 
 // Page specific styles (issues, projects etc):
 @import 'page_specific_files';

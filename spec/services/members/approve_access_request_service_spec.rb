@@ -12,23 +12,23 @@ RSpec.describe Members::ApproveAccessRequestService do
 
   shared_examples 'a service raising ActiveRecord::RecordNotFound' do
     it 'raises ActiveRecord::RecordNotFound' do
-      expect { described_class.new(current_user).execute(access_requester, opts) }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { described_class.new(current_user).execute(access_requester, **opts) }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 
   shared_examples 'a service raising Gitlab::Access::AccessDeniedError' do
     it 'raises Gitlab::Access::AccessDeniedError' do
-      expect { described_class.new(current_user).execute(access_requester, opts) }.to raise_error(Gitlab::Access::AccessDeniedError)
+      expect { described_class.new(current_user).execute(access_requester, **opts) }.to raise_error(Gitlab::Access::AccessDeniedError)
     end
   end
 
   shared_examples 'a service approving an access request' do
     it 'succeeds' do
-      expect { described_class.new(current_user).execute(access_requester, opts) }.to change { source.requesters.count }.by(-1)
+      expect { described_class.new(current_user).execute(access_requester, **opts) }.to change { source.requesters.count }.by(-1)
     end
 
     it 'returns a <Source>Member' do
-      member = described_class.new(current_user).execute(access_requester, opts)
+      member = described_class.new(current_user).execute(access_requester, **opts)
 
       expect(member).to be_a "#{source.class}Member".constantize
       expect(member.requested_at).to be_nil
@@ -36,7 +36,7 @@ RSpec.describe Members::ApproveAccessRequestService do
 
     context 'with a custom access level' do
       it 'returns a ProjectMember with the custom access level' do
-        member = described_class.new(current_user, access_level: Gitlab::Access::MAINTAINER).execute(access_requester, opts)
+        member = described_class.new(current_user, access_level: Gitlab::Access::MAINTAINER).execute(access_requester, **opts)
 
         expect(member.access_level).to eq(Gitlab::Access::MAINTAINER)
       end

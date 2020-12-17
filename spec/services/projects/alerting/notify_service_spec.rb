@@ -13,7 +13,7 @@ RSpec.describe Projects::Alerting::NotifyService do
     let(:token) { 'invalid-token' }
     let(:starts_at) { Time.current.change(usec: 0) }
     let(:fingerprint) { 'testing' }
-    let(:service) { described_class.new(project, nil, payload) }
+    let(:service) { described_class.new(project, payload) }
     let_it_be(:environment) { create(:environment, project: project) }
     let(:environment) { create(:environment, project: project) }
     let(:ended_at) { nil }
@@ -54,7 +54,6 @@ RSpec.describe Projects::Alerting::NotifyService do
           shared_examples 'assigns the alert properties' do
             it 'ensure that created alert has all data properly assigned' do
               subject
-
               expect(last_alert_attributes).to match(
                 project_id: project.id,
                 title: payload_raw.fetch(:title),
@@ -62,6 +61,7 @@ RSpec.describe Projects::Alerting::NotifyService do
                 severity: payload_raw.fetch(:severity),
                 status: AlertManagement::Alert.status_value(:triggered),
                 events: 1,
+                domain: 'operations',
                 hosts: payload_raw.fetch(:hosts),
                 payload: payload_raw.with_indifferent_access,
                 issue_id: nil,
@@ -187,6 +187,7 @@ RSpec.describe Projects::Alerting::NotifyService do
                 status: AlertManagement::Alert.status_value(:triggered),
                 events: 1,
                 hosts: [],
+                domain: 'operations',
                 payload: payload_raw.with_indifferent_access,
                 issue_id: nil,
                 description: nil,

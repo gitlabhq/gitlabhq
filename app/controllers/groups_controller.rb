@@ -69,7 +69,7 @@ class GroupsController < Groups::ApplicationController
     @group = Groups::CreateService.new(current_user, group_params).execute
 
     if @group.persisted?
-      track_experiment_event(:onboarding_issues, 'created_namespace')
+      successful_creation_hooks
 
       notice = if @group.chat_team.present?
                  "Group '#{@group.name}' and its Mattermost team were successfully created."
@@ -319,6 +319,10 @@ class GroupsController < Groups::ApplicationController
 
   private
 
+  def successful_creation_hooks
+    track_experiment_event(:onboarding_issues, 'created_namespace')
+  end
+
   def groups
     if @group.supports_events?
       @group.self_and_descendants.public_or_visible_to_user(current_user)
@@ -328,6 +332,11 @@ class GroupsController < Groups::ApplicationController
   override :markdown_service_params
   def markdown_service_params
     params.merge(group: group)
+  end
+
+  override :has_project_list?
+  def has_project_list?
+    %w(details show index).include?(action_name)
   end
 end
 

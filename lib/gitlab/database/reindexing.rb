@@ -3,8 +3,14 @@
 module Gitlab
   module Database
     module Reindexing
-      def self.perform(index_selector)
-        Coordinator.new(index_selector).perform
+      # Number of indexes to reindex per invocation
+      DEFAULT_INDEXES_PER_INVOCATION = 2
+
+      # candidate_indexes: Array of Gitlab::Database::PostgresIndex
+      def self.perform(candidate_indexes, how_many: DEFAULT_INDEXES_PER_INVOCATION)
+        indexes = IndexSelection.new(candidate_indexes).take(how_many)
+
+        Coordinator.new(indexes).perform
       end
 
       def self.candidate_indexes

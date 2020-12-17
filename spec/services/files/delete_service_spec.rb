@@ -55,7 +55,7 @@ RSpec.describe Files::DeleteService do
     context "when the file's last commit sha does not match the supplied last_commit_sha" do
       let(:last_commit_sha) { "foo" }
 
-      it "returns a hash with the correct error message and a :error status " do
+      it "returns a hash with the correct error message and a :error status" do
         expect { subject.execute }
           .to raise_error(Files::UpdateService::FileChangedError,
                          "You are attempting to delete a file that has been previously updated.")

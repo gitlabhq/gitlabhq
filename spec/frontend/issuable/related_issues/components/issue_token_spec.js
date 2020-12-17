@@ -100,7 +100,7 @@ describe('IssueToken', () => {
         state,
       });
 
-      expect(findReferenceIcon().attributes('aria-label')).toBe(state);
+      expect(findReferenceIcon().props('ariaLabel')).toBe(state);
       expect(findReference().text()).toBe(displayReference);
       expect(findTitle().text()).toBe(title);
     });

@@ -1,0 +1,5 @@
+---
+title: Add `external_author` alias to `service_desk_reply_to`
+merge_request: 48363
+author: Lee Tickett
+type: other

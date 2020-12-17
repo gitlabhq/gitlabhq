@@ -97,7 +97,9 @@ export default {
   },
   beforeDestroy() {
     const $input = $(this.$refs.input);
+    // eslint-disable-next-line @gitlab/no-global-event-off
     $input.off('shown-issues.atwho');
+    // eslint-disable-next-line @gitlab/no-global-event-off
     $input.off('hidden-issues.atwho');
     $input.off('inserted-issues.atwho', this.onInput);
   },

@@ -1,0 +1,8 @@
+---
+name: dependency_proxy_for_private_groups
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46042
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/276777
+milestone: '13.7'
+type: development
+group: group::package
+default_enabled: true

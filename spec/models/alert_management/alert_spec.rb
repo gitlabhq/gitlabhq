@@ -99,7 +99,8 @@ RSpec.describe AlertManagement::Alert do
 
     describe 'fingerprint' do
       let_it_be(:fingerprint) { 'fingerprint' }
-      let(:new_alert) { build(:alert_management_alert, fingerprint: fingerprint, project: project) }
+      let_it_be(:project3, refind: true) { create(:project) }
+      let(:new_alert) { build(:alert_management_alert, fingerprint: fingerprint, project: project3) }
 
       subject { new_alert }
 
@@ -107,7 +108,7 @@ RSpec.describe AlertManagement::Alert do
         context 'same project, various states' do
           using RSpec::Parameterized::TableSyntax
 
-          let_it_be(:existing_alert) { create(:alert_management_alert, fingerprint: fingerprint, project: project) }
+          let_it_be(:existing_alert, refind: true) { create(:alert_management_alert, fingerprint: fingerprint, project: project3) }
 
           # We are only validating uniqueness for non-resolved alerts
           where(:existing_status, :new_status, :valid) do
@@ -130,7 +131,7 @@ RSpec.describe AlertManagement::Alert do
           end
 
           with_them do
-            let(:new_alert) { build(:alert_management_alert, new_status, fingerprint: fingerprint, project: project) }
+            let(:new_alert) { build(:alert_management_alert, new_status, fingerprint: fingerprint, project: project3) }
 
             before do
               existing_alert.change_status_to(existing_status)

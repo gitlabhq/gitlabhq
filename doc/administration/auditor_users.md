@@ -1,7 +1,7 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+stage: Enablement
+group: Distribution
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Auditor users **(PREMIUM ONLY)**
@@ -58,7 +58,7 @@ helpful:
 To create a new Auditor user:
 
 1. Create a new user or edit an existing one by navigating to
-   **Admin Area > Users**. You will find the option of the access level in
+   **Admin Area > Users**. The option of the access level is located in
    the 'Access' section.
 
    ![Admin Area Form](img/auditor_access_form.png)

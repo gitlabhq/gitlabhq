@@ -77,7 +77,7 @@ export default {
       class="sidebar-collapsed-icon"
       @click="toggleForm"
     >
-      <gl-icon :name="confidentialityIcon" aria-hidden="true" />
+      <gl-icon :name="confidentialityIcon" />
     </div>
     <div class="title hide-collapsed">
       {{ __('Confidentiality') }}
@@ -101,16 +101,11 @@ export default {
         :issuable-type="issuableType"
       />
       <div v-if="!confidential" class="no-value sidebar-item-value" data-testid="not-confidential">
-        <gl-icon :size="16" name="eye" aria-hidden="true" class="sidebar-item-icon inline" />
+        <gl-icon :size="16" name="eye" class="sidebar-item-icon inline" />
         {{ __('Not confidential') }}
       </div>
       <div v-else class="value sidebar-item-value hide-collapsed">
-        <gl-icon
-          :size="16"
-          name="eye-slash"
-          aria-hidden="true"
-          class="sidebar-item-icon inline is-active"
-        />
+        <gl-icon :size="16" name="eye-slash" class="sidebar-item-icon inline is-active" />
         {{ confidentialText }}
       </div>
     </div>

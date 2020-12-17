@@ -20,6 +20,18 @@ RSpec.shared_examples 'not accessible to non-admin users' do
       expect(response).to have_gitlab_http_status(:not_found)
     end
   end
+
+  context 'with authenticated admin user without admin mode' do
+    before do
+      login_as(create(:admin))
+    end
+
+    it 'redirects to enable admin mode' do
+      subject
+
+      expect(response).to redirect_to(new_admin_session_path)
+    end
+  end
 end
 
 # Requires subject and worker_class and status_api to be defined

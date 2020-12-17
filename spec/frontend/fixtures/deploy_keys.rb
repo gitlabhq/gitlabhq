@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::DeployKeysController, '(JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
+  include AdminModeHelper
 
   let(:admin) { create(:admin) }
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
@@ -17,7 +18,10 @@ RSpec.describe Projects::DeployKeysController, '(JavaScript fixtures)', type: :c
   end
 
   before do
+    # Using an admin for these fixtures because they are used for verifying a frontend
+    # component that would normally get its data from `Admin::DeployKeysController`
     sign_in(admin)
+    enable_admin_mode!(admin)
   end
 
   after do

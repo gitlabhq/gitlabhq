@@ -1,11 +1,10 @@
 <script>
+import DeleteUserModal from './delete_user_modal.vue';
+
 export default {
+  components: { DeleteUserModal },
   props: {
     modalConfiguration: {
-      required: true,
-      type: Object,
-    },
-    actionModals: {
       required: true,
       type: Object,
     },
@@ -21,10 +20,7 @@ export default {
   },
   computed: {
     activeModal() {
-      if (!this.currentModalData) return null;
-      const { glModalAction: action } = this.currentModalData;
-
-      return this.actionModals[action];
+      return Boolean(this.currentModalData);
     },
 
     modalProps() {
@@ -56,9 +52,7 @@ export default {
 
     show(modalData) {
       const { glModalAction: requestedAction } = modalData;
-      if (!this.actionModals[requestedAction]) {
-        throw new Error(`Requested non-existing modal action ${requestedAction}`);
-      }
+
       if (!this.modalConfiguration[requestedAction]) {
         throw new Error(`Modal action ${requestedAction} has no configuration in HTML`);
       }
@@ -73,5 +67,5 @@ export default {
 };
 </script>
 <template>
-  <div :is="activeModal" v-if="activeModal" ref="modal" v-bind="modalProps" />
+  <delete-user-modal v-if="activeModal" ref="modal" v-bind="modalProps" />
 </template>

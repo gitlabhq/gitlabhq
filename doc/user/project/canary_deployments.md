@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Canary Deployments **(PREMIUM)**
@@ -32,13 +32,13 @@ deployments right inside the [Deploy Board](deploy_boards.md), without the need 
 Canary deployments can be used when you want to ship features to only a portion of
 your pods fleet and watch their behavior as a percentage of your user base
 visits the temporarily deployed feature. If all works well, you can deploy the
-feature to production knowing that it won't cause any problems.
+feature to production knowing that it shouldn't cause any problems.
 
 Canary deployments are also especially useful for backend refactors, performance
 improvements, or other changes where the user interface doesn't change, but you
 want to make sure the performance stays the same, or improves. Developers need
 to be careful when using canaries with user-facing changes, because by default,
-requests from the same user will be randomly distributed between canary and
+requests from the same user are randomly distributed between canary and
 non-canary pods, which could result in confusion or even errors. If needed, you
 may want to consider [setting `service.spec.sessionAffinity` to `ClientIP` in
 your Kubernetes service definitions](https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies), but that is beyond the scope of
@@ -60,7 +60,7 @@ This allows GitLab to discover whether a deployment is stable or canary (tempora
 
 Once all of the above are set up and the pipeline has run at least once,
 navigate to the environments page under **Pipelines > Environments**.
-As the pipeline executes Deploy Boards will clearly mark canary pods, enabling
+As the pipeline executes, Deploy Boards clearly mark canary pods, enabling
 quick and easy insight into the status of each environment and deployment.
 
 Canary deployments are marked with a yellow dot in the Deploy Board so that you
@@ -68,9 +68,10 @@ can easily notice them.
 
 ![Canary deployments on Deploy Board](img/deploy_boards_canary_deployments.png)
 
-### Advanced traffic control with Canary Ingress **(PREMIUM)**
+### Advanced traffic control with Canary Ingress
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215501) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215501) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.6.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212320) to Core in GitLab 13.7.
 
 Canary deployments can be more strategic with [Canary Ingress](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#canary),
 which is an advanced traffic routing service that controls incoming HTTP
@@ -102,20 +103,21 @@ Here's an example setup flow from scratch:
 
 #### How to check the current traffic weight on a Canary Ingress
 
-1. Visit [Deploy Board](../../user/project/deploy_boards.md).
-1. Open your browser's inspection tool and examine a response from the `environments.json` endpoint.
-   You can find the current weight under `rollout_status`.
+1. Visit the [Deploy Board](../../user/project/deploy_boards.md).
+1. View the current weights on the right.
 
-   ![Rollout Status Canary Ingress](img/rollout_status_canary_ingress.png)
-
-   Note that we have [a plan](https://gitlab.com/gitlab-org/gitlab/-/issues/218139)
-   to visualize this information in a [Deploy Board](../../user/project/deploy_boards.md)
-   without needing a browser's inspection tool.
+   ![Rollout Status Canary Ingress](img/canary_weight.png)
 
 #### How to change the traffic weight on a Canary Ingress
 
-You can change the traffic weight by using [GraphiQL](../../api/graphql/getting_started.md#graphiql)
+You can change the traffic weight within your environment's Deploy Board by using [GraphiQL](../../api/graphql/getting_started.md#graphiql),
 or by sending requests to the [GraphQL API](../../api/graphql/getting_started.md#command-line).
+
+To use your [Deploy Board](../../user/project/deploy_boards.md):
+
+1. Navigate to **Operations > Environments** for your project.
+1. Set the new weight with the dropdown on the right side.
+1. Confirm your selection.
 
 Here's an example using [GraphiQL](../../api/graphql/getting_started.md#graphiql):
 
@@ -135,6 +137,3 @@ Here's an example using [GraphiQL](../../api/graphql/getting_started.md#graphiql
 
 1. If the request succeeds, the `errors` response contains an empty array. GitLab sends a `PATCH`
    request to your Kubernetes cluster for updating the weight parameter on a Canary Ingress.
-
-Note that there's [a plan](https://gitlab.com/gitlab-org/gitlab/-/issues/218139)
-to control the weight from a [Deploy Board](../../user/project/deploy_boards.md).

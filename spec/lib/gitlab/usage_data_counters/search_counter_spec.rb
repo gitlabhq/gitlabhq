@@ -20,4 +20,12 @@ RSpec.describe Gitlab::UsageDataCounters::SearchCounter, :clean_gitlab_redis_sha
   context 'navbar_searches counter' do
     it_behaves_like 'usage counter with totals', :navbar_searches
   end
+
+  describe '.fetch_supported_event' do
+    subject { described_class.fetch_supported_event(event_name) }
+
+    let(:event_name) { 'all_searches' }
+
+    it { is_expected.to eq 'all_searches' }
+  end
 end

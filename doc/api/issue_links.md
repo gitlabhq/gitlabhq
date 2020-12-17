@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Issue links API **(CORE)**
@@ -12,7 +12,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Get a list of a given issue's [related issues](../user/project/issues/related_issues.md),
 sorted by the relationship creation datetime (ascending).
-Issues will be filtered according to the user authorizations.
+Issues are filtered according to the user authorizations.
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/links
@@ -57,7 +57,9 @@ Parameters:
     "web_url": "http://example.com/example/example/issues/14",
     "confidential": false,
     "weight": null,
-    "link_type": "relates_to"
+    "link_type": "relates_to",
+    "link_created_at": "2016-01-07T12:44:33.959Z",
+    "link_updated_at": "2016-01-07T12:44:33.959Z"
   }
 ]
 ```

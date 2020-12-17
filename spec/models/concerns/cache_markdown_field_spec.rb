@@ -233,7 +233,7 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache do
         end
 
         it 'calls #refresh_markdown_cache!' do
-          expect(thing).to receive(:refresh_markdown_cache!)
+          expect(thing).to receive(:refresh_markdown_cache)
 
           expect(thing.updated_cached_html_for(:description)).to eq(html)
         end
@@ -279,10 +279,101 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache do
     end
   end
 
+  shared_examples 'a class with mentionable markdown fields' do
+    let(:mentionable) { klass.new(description: markdown, description_html: html, title: markdown, title_html: html, cached_markdown_version: cache_version) }
+
+    context 'when klass is a Mentionable', :aggregate_failures do
+      before do
+        klass.send(:include, Mentionable)
+        klass.send(:attr_mentionable, :description)
+      end
+
+      describe '#mentionable_attributes_changed?' do
+        message = Struct.new(:text)
+
+        let(:changes) do
+          msg = message.new('test')
+
+          changes = {}
+          changes[msg] = ['', 'some message']
+          changes[:random_sym_key] = ['', 'some message']
+          changes["description"] = ['', 'some message']
+          changes
+        end
+
+        it 'returns true with key string' do
+          changes["description_html"] = ['', 'some message']
+
+          allow(mentionable).to receive(:saved_changes).and_return(changes)
+
+          expect(mentionable.send(:mentionable_attributes_changed?)).to be true
+        end
+
+        it 'returns false with key symbol' do
+          changes[:description_html] = ['', 'some message']
+          allow(mentionable).to receive(:saved_changes).and_return(changes)
+
+          expect(mentionable.send(:mentionable_attributes_changed?)).to be false
+        end
+
+        it 'returns false when no attr_mentionable keys' do
+          allow(mentionable).to receive(:saved_changes).and_return(changes)
+
+          expect(mentionable.send(:mentionable_attributes_changed?)).to be false
+        end
+      end
+
+      describe '#save' do
+        context 'when cache is outdated' do
+          before do
+            thing.cached_markdown_version += 1
+          end
+
+          context 'when the markdown field also a mentionable attribute' do
+            let(:thing) { klass.new(description: markdown, description_html: html, cached_markdown_version: cache_version) }
+
+            it 'calls #store_mentions!' do
+              expect(thing).to receive(:mentionable_attributes_changed?).and_return(true)
+              expect(thing).to receive(:store_mentions!)
+
+              thing.try(:save)
+
+              expect(thing.description_html).to eq(html)
+            end
+          end
+
+          context 'when the markdown field is not mentionable attribute' do
+            let(:thing) { klass.new(title: markdown, title_html: html, cached_markdown_version: cache_version) }
+
+            it 'does not call #store_mentions!' do
+              expect(thing).not_to receive(:store_mentions!)
+              expect(thing).to receive(:refresh_markdown_cache)
+
+              thing.try(:save)
+
+              expect(thing.title_html).to eq(html)
+            end
+          end
+        end
+
+        context 'when the markdown field does not exist' do
+          let(:thing) { klass.new(cached_markdown_version: cache_version) }
+
+          it 'does not call #store_mentions!' do
+            expect(thing).not_to receive(:store_mentions!)
+
+            thing.try(:save)
+          end
+        end
+      end
+    end
+  end
+
   context 'for Active record classes' do
     let(:klass) { ar_class }
 
     it_behaves_like 'a class with cached markdown fields'
+    it_behaves_like 'a class with mentionable markdown fields'
 
     describe '#attribute_invalidated?' do
       let(:thing) { klass.create!(description: markdown, description_html: html, cached_markdown_version: cache_version) }

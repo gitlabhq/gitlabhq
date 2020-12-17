@@ -8,7 +8,7 @@ RSpec.describe 'aggregated metrics' do
       Gitlab::UsageDataCounters::HLLRedisCounter.known_event?(event)
     end
 
-    failure_message do
+    failure_message do |event|
       "Event with name: `#{event}` can not be found within `#{Gitlab::UsageDataCounters::HLLRedisCounter::KNOWN_EVENTS_PATH}`"
     end
   end

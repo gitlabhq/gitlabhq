@@ -1,7 +1,7 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+stage: Create
+group: Ecosystem
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # GitLab as OAuth2 authentication service provider
@@ -48,12 +48,12 @@ In order to add a new application via your profile, navigate to
 ![New OAuth application](img/oauth_provider_user_wide_applications.png)
 
 In the application form, enter a **Name** (arbitrary), and make sure to set up
-correctly the **Redirect URI** which is the URL where users will be sent after
+correctly the **Redirect URI** which is the URL where users are sent after
 they authorize with GitLab.
 
 ![New OAuth application form](img/oauth_provider_application_form.png)
 
-When you hit **Submit** you will be provided with the application ID and
+When you click **Submit** you are provided with the application ID and
 the application secret which you can then use with your application that
 connects to GitLab.
 
@@ -71,12 +71,12 @@ the user authorization step is automatically skipped for this application.
 
 ## Authorized applications
 
-Every application you authorized to use your GitLab credentials will be shown
+Every application you authorized to use your GitLab credentials is shown
 in the **Authorized applications** section under **Profile Settings > Applications**.
 
 ![Authorized_applications](img/oauth_provider_authorized_application.png)
 
-GitLab's OAuth applications support scopes, which allow various actions that any given
+The GitLab OAuth applications support scopes, which allow various actions that any given
 application can perform such as `read_user` and `api`. There are many more scopes
 available.
 

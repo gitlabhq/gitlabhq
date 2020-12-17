@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Continuous Integration
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: howto
 ---
 
@@ -14,17 +14,17 @@ GitLab CI/CD can be used with Bitbucket Cloud by:
 
 To use GitLab CI/CD with a Bitbucket Cloud repository:
 
-1. In GitLab create a **CI/CD for external repo**, select **Repo by URL** and
+1. In GitLab create a **CI/CD for external repository**, select **Repo by URL** and
    create the project.
 
    ![Create project](img/external_repository.png)
 
-   GitLab will import the repository and enable [Pull Mirroring](../../user/project/repository/repository_mirroring.md#pulling-from-a-remote-repository).
+   GitLab imports the repository and enables [Pull Mirroring](../../user/project/repository/repository_mirroring.md#pulling-from-a-remote-repository).
 
 1. In GitLab create a
    [Personal Access Token](../../user/profile/personal_access_tokens.md)
-   with `api` scope. This will be used to authenticate requests from the web
-   hook that will be created in Bitbucket to notify GitLab of new commits.
+   with `api` scope. This is used to authenticate requests from the web
+   hook that is created in Bitbucket to notify GitLab of new commits.
 
 1. In Bitbucket, from **Settings > Webhooks**, create a new web hook to notify
    GitLab of new commits.
@@ -62,8 +62,9 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
 
 1. In Bitbucket, add a script to push the pipeline status to Bitbucket.
 
-   > Note: changes made in GitLab will be overwritten by any changes made
-   > upstream in Bitbucket.
+   NOTE:
+   Changes made in GitLab are overwritten by any changes made
+   upstream in Bitbucket.
 
    Create a file `build_status` and insert the script below and run
    `chmod +x build_status` in your terminal to make the script executable.
@@ -110,7 +111,7 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
    esac
 
    echo "Pushing status to $BITBUCKET_STATUS_API..."
-   curl --request POST $BITBUCKET_STATUS_API \
+   curl --request POST "$BITBUCKET_STATUS_API" \
    --user $BITBUCKET_USERNAME:$BITBUCKET_ACCESS_TOKEN \
    --header "Content-Type:application/json" \
    --silent \

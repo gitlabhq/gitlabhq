@@ -3,15 +3,15 @@
 module StubExperiments
   # Stub Experiment with `key: true/false`
   #
-  # @param [Hash] experiment where key is feature name and value is boolean whether enabled or not.
+  # @param [Hash] experiment where key is feature name and value is boolean whether active or not.
   #
   # Examples
-  # - `stub_experiment(signup_flow: false)` ... Disable `signup_flow` experiment globally.
+  # - `stub_experiment(signup_flow: false)` ... Disables `signup_flow` experiment.
   def stub_experiment(experiments)
-    allow(Gitlab::Experimentation).to receive(:enabled?).and_call_original
+    allow(Gitlab::Experimentation).to receive(:active?).and_call_original
 
     experiments.each do |experiment_key, enabled|
-      allow(Gitlab::Experimentation).to receive(:enabled?).with(experiment_key) { enabled }
+      allow(Gitlab::Experimentation).to receive(:active?).with(experiment_key) { enabled }
     end
   end
 
@@ -20,12 +20,12 @@ module StubExperiments
   # @param [Hash] experiment where key is feature name and value is boolean whether enabled or not.
   #
   # Examples
-  # - `stub_experiment_for_user(signup_flow: false)` ... Disable `signup_flow` experiment for user.
-  def stub_experiment_for_user(experiments)
-    allow(Gitlab::Experimentation).to receive(:enabled_for_value?).and_call_original
+  # - `stub_experiment_for_subject(signup_flow: false)` ... Disable `signup_flow` experiment for user.
+  def stub_experiment_for_subject(experiments)
+    allow(Gitlab::Experimentation).to receive(:in_experiment_group?).and_call_original
 
     experiments.each do |experiment_key, enabled|
-      allow(Gitlab::Experimentation).to receive(:enabled_for_value?).with(experiment_key, anything) { enabled }
+      allow(Gitlab::Experimentation).to receive(:in_experiment_group?).with(experiment_key, anything) { enabled }
     end
   end
 end

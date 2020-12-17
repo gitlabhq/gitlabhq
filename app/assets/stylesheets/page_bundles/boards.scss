@@ -92,7 +92,6 @@
   .board-title-caret {
     border-radius: $border-radius-default;
     line-height: $gl-spacing-scale-5;
-    height: $gl-spacing-scale-5;
 
     &.btn svg {
       top: 0;
@@ -171,13 +170,6 @@
   .js-max-issue-size::before {
     content: '/';
   }
-}
-
-.board-promotion-state {
-  background-color: var(--white, $white);
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
 }
 
 .board-list-component {

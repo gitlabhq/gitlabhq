@@ -1,0 +1,5 @@
+---
+title: Scroll exactly to the top of a discussion on the MR Overview tab
+merge_request: 47970
+author:
+type: fixed

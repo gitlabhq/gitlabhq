@@ -11,7 +11,7 @@ class ResourceStateEvent < ResourceEvent
   # state is used for issue and merge request states.
   enum state: Issue.available_states.merge(MergeRequest.available_states).merge(reopened: 5)
 
-  after_save :usage_metrics
+  after_create :issue_usage_metrics
 
   def self.issuable_attrs
     %i(issue merge_request).freeze
@@ -27,7 +27,7 @@ class ResourceStateEvent < ResourceEvent
 
   private
 
-  def usage_metrics
+  def issue_usage_metrics
     return unless for_issue?
 
     case state

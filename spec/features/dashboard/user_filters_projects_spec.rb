@@ -173,11 +173,11 @@ RSpec.describe 'Dashboard > User filters projects' do
         end
       end
 
-      it 'defaults to "Last updated"', :js do
+      it 'defaults to "Name"', :js do
         page.find('.filtered-search-block #filtered-search-sorting-dropdown').click
         active_sorting_option = page.first('.filtered-search-block #filtered-search-sorting-dropdown .is-active')
 
-        expect(active_sorting_option).to have_content 'Last updated'
+        expect(active_sorting_option).to have_content 'Name'
       end
 
       context 'Sorting by name' do

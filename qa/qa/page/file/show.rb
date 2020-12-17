@@ -46,8 +46,16 @@ module QA
           has_no_element?(:file_name_content, text: name)
         end
 
-        def has_file_content?(text)
-          has_element?(:file_content, text: text)
+        def has_file_content?(file_content, file_number = nil)
+          if file_number
+            within_element_by_index(:file_content, file_number - 1) do
+              has_text?(file_content)
+            end
+          else
+            within_element(:file_content) do
+              has_text?(file_content)
+            end
+          end
         end
       end
     end

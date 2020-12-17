@@ -24,6 +24,7 @@ export default () => {
         props: {
           emptyStateImage,
           projectPath,
+          terraformAdmin: el.hasAttribute('data-terraform-admin'),
         },
       });
     },

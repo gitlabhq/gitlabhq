@@ -7,8 +7,8 @@ module API
         extend ::Gitlab::Utils::Override
 
         module Constants
-          AUTHENTICATE_REALM_HEADER = 'Www-Authenticate: Basic realm'
-          AUTHENTICATE_REALM_NAME = 'GitLab Packages Registry'
+          AUTHENTICATE_REALM_HEADER = 'WWW-Authenticate'
+          AUTHENTICATE_REALM_NAME = 'Basic realm="GitLab Packages Registry"'
         end
 
         include Constants

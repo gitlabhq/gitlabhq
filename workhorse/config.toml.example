@@ -1,0 +1,19 @@
+# alt_document_root = '/home/git/public/assets'
+
+[redis]
+URL = "unix:/home/git/gitlab/redis/redis.socket"
+
+[object_storage]
+  provider = "AWS" # Allowed options: AWS, AzureRM
+
+[object_storage.s3]
+  aws_access_key_id = "YOUR AWS ACCESS KEY"
+  aws_secret_access_key = "YOUR AWS SECRET ACCESS KEY"
+
+[object_store.azurerm]
+  azure_storage_account_name = "YOUR ACCOUNT NAME"
+  azure_storage_access_key = "YOUR ACCOUNT KEY"
+
+[image_resizer]
+  max_scaler_procs = 4 # Recommendation: CPUs / 2
+  max_filesize = 250000

@@ -16,6 +16,7 @@ describe('Pipeline Url Component', () => {
   const findAutoDevopsTag = () => wrapper.find('[data-testid="pipeline-url-autodevops"]');
   const findStuckTag = () => wrapper.find('[data-testid="pipeline-url-stuck"]');
   const findDetachedTag = () => wrapper.find('[data-testid="pipeline-url-detached"]');
+  const findForkTag = () => wrapper.find('[data-testid="pipeline-url-fork"]');
 
   const defaultProps = {
     pipeline: {
@@ -30,6 +31,9 @@ describe('Pipeline Url Component', () => {
   const createComponent = props => {
     wrapper = shallowMount(PipelineUrlComponent, {
       propsData: { ...defaultProps, ...props },
+      provide: {
+        targetProjectFullPath: 'test/test',
+      },
     });
   };
 
@@ -136,5 +140,16 @@ describe('Pipeline Url Component', () => {
 
     expect(findScheduledTag().exists()).toBe(true);
     expect(findScheduledTag().text()).toContain('Scheduled');
+  });
+  it('should render the fork badge when the pipeline was run in a fork', () => {
+    createComponent({
+      pipeline: {
+        flags: {},
+        project: { fullPath: 'test/forked' },
+      },
+    });
+
+    expect(findForkTag().exists()).toBe(true);
+    expect(findForkTag().text()).toBe('fork');
   });
 });

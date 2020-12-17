@@ -94,7 +94,7 @@ class Explore::ProjectsController < Explore::ApplicationController
   end
 
   def default_sort_order
-    sort_value_latest_activity
+    sort_value_name
   end
 
   def sorting_field

@@ -92,6 +92,39 @@ RSpec.describe MergeRequest, factory_default: :keep do
     it { is_expected.not_to include(mr_without_jira_reference) }
   end
 
+  context 'scopes' do
+    let_it_be(:user1) { create(:user) }
+    let_it_be(:user2) { create(:user) }
+
+    let_it_be(:merge_request1) { create(:merge_request, :unique_branches, reviewers: [user1])}
+    let_it_be(:merge_request2) { create(:merge_request, :unique_branches, reviewers: [user2])}
+    let_it_be(:merge_request3) { create(:merge_request, :unique_branches, reviewers: [])}
+
+    describe '.review_requested' do
+      it 'returns MRs that has any review requests' do
+        expect(described_class.review_requested).to eq([merge_request1, merge_request2])
+      end
+    end
+
+    describe '.no_review_requested' do
+      it 'returns MRs that has no review requests' do
+        expect(described_class.no_review_requested).to eq([merge_request3])
+      end
+    end
+
+    describe '.review_requested_to' do
+      it 'returns MRs that the user has been requested to review' do
+        expect(described_class.review_requested_to(user1)).to eq([merge_request1])
+      end
+    end
+
+    describe '.no_review_requested_to' do
+      it 'returns MRs that the user has been requested to review' do
+        expect(described_class.no_review_requested_to(user1)).to eq([merge_request2, merge_request3])
+      end
+    end
+  end
+
   describe '#squash_in_progress?' do
     let(:repo_path) do
       Gitlab::GitalyClient::StorageSettings.allow_disk_access do
@@ -463,6 +496,77 @@ RSpec.describe MergeRequest, factory_default: :keep do
       it 'sorts desc' do
         merge_requests = described_class.sort_by_attribute(:merged_at_desc)
         expect(merge_requests).to eq([newer_mr, older_mr])
+      end
+    end
+  end
+
+  describe 'time to merge calculations' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project) }
+
+    let!(:mr1) do
+      create(
+        :merge_request,
+        :with_merged_metrics,
+        source_project: project,
+        target_project: project
+      )
+    end
+
+    let!(:mr2) do
+      create(
+        :merge_request,
+        :with_merged_metrics,
+        source_project: project,
+        target_project: project
+      )
+    end
+
+    let!(:mr3) do
+      create(
+        :merge_request,
+        :with_merged_metrics,
+        source_project: project,
+        target_project: project
+      )
+    end
+
+    let!(:unmerged_mr) do
+      create(
+        :merge_request,
+        source_project: project,
+        target_project: project
+      )
+    end
+
+    before do
+      project.add_user(user, :developer)
+    end
+
+    describe '.total_time_to_merge' do
+      it 'returns the sum of the time to merge for all merged MRs' do
+        mrs = project.merge_requests
+
+        expect(mrs.total_time_to_merge).to be_within(1).of(expected_total_time(mrs))
+      end
+
+      context 'when merged_at is earlier than created_at' do
+        before do
+          mr1.metrics.update!(merged_at: mr1.metrics.created_at - 1.week)
+        end
+
+        it 'returns nil' do
+          mrs = project.merge_requests.where(id: mr1.id)
+
+          expect(mrs.total_time_to_merge).to be_nil
+        end
+      end
+
+      def expected_total_time(mrs)
+        mrs = mrs.reject { |mr| mr.merged_at.nil? }
+        mrs.reduce(0.0) do |sum, mr|
+          (mr.merged_at - mr.created_at) + sum
+        end
       end
     end
   end
@@ -1825,6 +1929,32 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
   end
 
+  describe '#has_codequality_reports?' do
+    subject { merge_request.has_codequality_reports? }
+
+    let(:project) { create(:project, :repository) }
+
+    context 'when head pipeline has a codequality report' do
+      let(:merge_request) { create(:merge_request, :with_codequality_reports, source_project: project) }
+
+      it { is_expected.to be_truthy }
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(codequality_mr_diff: false)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'when head pipeline does not have a codequality report' do
+      let(:merge_request) { create(:merge_request, source_project: project) }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '#has_terraform_reports?' do
     context 'when head pipeline has terraform reports' do
       it 'returns true' do
@@ -2089,6 +2219,62 @@ RSpec.describe MergeRequest, factory_default: :keep do
         context 'when cached result is not latest' do
           before do
             allow_next_instance_of(Ci::CompareAccessibilityReportsService) do |service|
+              allow(service).to receive(:latest?).and_return(false)
+            end
+          end
+
+          it 'raises an InvalidateReactiveCache error' do
+            expect { subject }.to raise_error(ReactiveCaching::InvalidateReactiveCache)
+          end
+        end
+      end
+    end
+  end
+
+  describe '#compare_codequality_reports' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:merge_request, reload: true) { create(:merge_request, :with_codequality_reports, source_project: project) }
+    let_it_be(:pipeline) { merge_request.head_pipeline }
+
+    subject { merge_request.compare_codequality_reports }
+
+    context 'when head pipeline has codequality report' do
+      let(:job) do
+        create(:ci_build, options: { artifacts: { reports: { codeclimate: ['codequality.json'] } } }, pipeline: pipeline)
+      end
+
+      let(:artifacts_metadata) { create(:ci_job_artifact, :metadata, job: job) }
+
+      context 'when reactive cache worker is parsing results asynchronously' do
+        it 'returns parsing status' do
+          expect(subject[:status]).to eq(:parsing)
+        end
+      end
+
+      context 'when reactive cache worker is inline' do
+        before do
+          synchronous_reactive_cache(merge_request)
+        end
+
+        it 'returns parsed status' do
+          expect(subject[:status]).to eq(:parsed)
+          expect(subject[:data]).to be_present
+        end
+
+        context 'when an error occurrs' do
+          before do
+            merge_request.update!(head_pipeline: nil)
+          end
+
+          it 'returns an error status' do
+            expect(subject[:status]).to eq(:error)
+            expect(subject[:status_reason]).to eq("This merge request does not have codequality reports")
+          end
+        end
+
+        context 'when cached result is not latest' do
+          before do
+            allow_next_instance_of(Ci::CompareCodequalityReportsService) do |service|
               allow(service).to receive(:latest?).and_return(false)
             end
           end
@@ -3266,7 +3452,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
   end
 
-  describe "#closed_without_fork?" do
+  describe "#closed_or_merged_without_fork?" do
     let(:project) { create(:project) }
     let(:forked_project) { fork_project(project) }
     let(:user) { create(:user) }
@@ -3280,14 +3466,33 @@ RSpec.describe MergeRequest, factory_default: :keep do
       end
 
       it "returns false if the fork exist" do
-        expect(closed_merge_request.closed_without_fork?).to be_falsey
+        expect(closed_merge_request.closed_or_merged_without_fork?).to be_falsey
       end
 
       it "returns true if the fork does not exist" do
         unlink_project.execute
         closed_merge_request.reload
 
-        expect(closed_merge_request.closed_without_fork?).to be_truthy
+        expect(closed_merge_request.closed_or_merged_without_fork?).to be_truthy
+      end
+    end
+
+    context "when the merge request was merged" do
+      let(:merged_merge_request) do
+        create(:merged_merge_request,
+          source_project: forked_project,
+          target_project: project)
+      end
+
+      it "returns false if the fork exist" do
+        expect(merged_merge_request.closed_or_merged_without_fork?).to be_falsey
+      end
+
+      it "returns true if the fork does not exist" do
+        unlink_project.execute
+        merged_merge_request.reload
+
+        expect(merged_merge_request.closed_or_merged_without_fork?).to be_truthy
       end
     end
 
@@ -3299,7 +3504,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
       end
 
       it "returns false" do
-        expect(open_merge_request.closed_without_fork?).to be_falsey
+        expect(open_merge_request.closed_or_merged_without_fork?).to be_falsey
       end
     end
   end
@@ -4240,6 +4445,14 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
         it 'returns true' do
           expect(subject.diffable_merge_ref?).to eq(true)
+        end
+
+        context 'merge request is merged' do
+          subject { build_stubbed(:merge_request, :merged, project: project) }
+
+          it 'returns false' do
+            expect(subject.diffable_merge_ref?).to eq(false)
+          end
         end
 
         context 'merge request cannot be merged' do

@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Create', :smoke do
     describe 'Personal snippet creation' do
-      it 'User creates a personal snippet', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/840' do
+      it 'user creates a personal snippet', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/840' do
         Flow::Login.sign_in
 
         Page::Main::Menu.perform do |menu|

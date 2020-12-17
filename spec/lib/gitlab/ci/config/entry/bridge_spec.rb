@@ -227,6 +227,23 @@ RSpec.describe Gitlab::Ci::Config::Entry::Bridge do
         end
       end
     end
+
+    context 'when bridge config contains exit_codes' do
+      let(:config) do
+        { script: 'rspec', allow_failure: { exit_codes: [42] } }
+      end
+
+      describe '#valid?' do
+        it { is_expected.not_to be_valid }
+      end
+
+      describe '#errors' do
+        it 'returns an error message' do
+          expect(subject.errors)
+            .to include(/allow failure should be a boolean value/)
+        end
+      end
+    end
   end
 
   describe '#manual_action?' do

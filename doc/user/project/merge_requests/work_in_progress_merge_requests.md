@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference, concepts
 ---
 
@@ -13,6 +13,12 @@ it as a **Draft**. This will disable the "Merge" button, preventing it from
 being merged, and it will stay disabled until the "Draft" flag has been removed.
 
 ![Blocked Merge Button](img/draft_blocked_merge_button_v13_2.png)
+
+When [pipelines for merged results](../../../ci/merge_request_pipelines/pipelines_for_merged_results/index.md)
+is enabled, draft merge requests run [merge request pipelines](../../../ci/merge_request_pipelines/index.md)
+only.
+
+To run pipelines for merged results, you must [remove the draft status](#removing-the-draft-flag-from-a-merge-request).
 
 ## Adding the "Draft" flag to a merge request
 

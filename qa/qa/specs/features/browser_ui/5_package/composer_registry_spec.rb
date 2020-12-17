@@ -81,8 +81,7 @@ module QA
         end
 
         project.visit!
-        Page::Project::Menu.perform(&:click_ci_cd_pipelines)
-        Page::Project::Pipeline::Index.perform(&:click_on_latest_pipeline)
+        Flow::Pipeline.visit_latest_pipeline
 
         Page::Project::Pipeline::Show.perform do |pipeline|
           pipeline.click_job('publish')
@@ -112,7 +111,7 @@ module QA
         Page::Project::Packages::Index.perform do |index|
           aggregate_failures 'package deletion' do
             expect(index).to have_content("Package deleted successfully")
-            expect(index).to have_no_package(package_name)
+            expect(index).not_to have_package(package_name)
           end
         end
       end

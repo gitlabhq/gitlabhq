@@ -51,11 +51,11 @@ RSpec.describe MicrosoftTeams::Notifier do
 
   describe '#body' do
     it 'returns Markdown-based body when HTML was passed' do
-      expect(subject.send(:body, options)).to eq(body.to_json)
+      expect(subject.send(:body, **options)).to eq(body.to_json)
     end
 
     it 'fails when empty Hash was passed' do
-      expect { subject.send(:body, {}) }.to raise_error(ArgumentError)
+      expect { subject.send(:body, **{}) }.to raise_error(ArgumentError)
     end
   end
 end

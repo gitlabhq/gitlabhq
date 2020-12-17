@@ -1,0 +1,5 @@
+---
+title: Add uuid column into security_findings table
+merge_request: 48968
+author: Harrison Brock @harrisonbrock
+type: added

@@ -19,6 +19,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
   it { is_expected.to have_many(:deployments) }
   it { is_expected.to have_many(:metrics_dashboard_annotations) }
   it { is_expected.to have_many(:alert_management_alerts) }
+  it { is_expected.to have_one(:upcoming_deployment) }
   it { is_expected.to have_one(:latest_opened_most_severe_alert) }
 
   it { is_expected.to delegate_method(:stop_action).to(:last_deployment) }
@@ -723,6 +724,22 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe '#upcoming_deployment' do
+    subject { environment.upcoming_deployment }
+
+    context 'when environment has a successful deployment' do
+      let!(:deployment) { create(:deployment, :success, environment: environment, project: project) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when environment has a running deployment' do
+      let!(:deployment) { create(:deployment, :running, environment: environment, project: project) }
+
+      it { is_expected.to eq(deployment) }
+    end
+  end
+
   describe '#has_terminals?' do
     subject { environment.has_terminals? }
 
@@ -858,16 +875,6 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
     it 'overrides default reactive_cache_hard_limit to 10 Mb' do
       expect(described_class.reactive_cache_hard_limit).to eq(10.megabyte)
-    end
-
-    it 'overrides reactive_cache_limit_enabled? with a FF' do
-      environment_with_enabled_ff = build(:environment, project: create(:project))
-      environment_with_disabled_ff = build(:environment, project: create(:project))
-
-      stub_feature_flags(reactive_caching_limit_environment: environment_with_enabled_ff.project)
-
-      expect(environment_with_enabled_ff.send(:reactive_cache_limit_enabled?)).to be_truthy
-      expect(environment_with_disabled_ff.send(:reactive_cache_limit_enabled?)).to be_falsey
     end
 
     it 'returns cache data from the deployment platform' do
@@ -1392,6 +1399,152 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
     context 'when environment does not have an alert' do
       it { is_expected.to be(false) }
+    end
+  end
+
+  describe '#cancel_deployment_jobs!' do
+    subject { environment.cancel_deployment_jobs! }
+
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:environment, reload: true) { create(:environment, project: project) }
+    let!(:deployment) { create(:deployment, project: project, environment: environment, deployable: build) }
+    let!(:build) { create(:ci_build, :running, project: project, environment: environment) }
+
+    it 'cancels an active deployment job' do
+      subject
+
+      expect(build.reset).to be_canceled
+    end
+
+    context 'when deployable does not exist' do
+      before do
+        deployment.update_column(:deployable_id, non_existing_record_id)
+      end
+
+      it 'does not raise an error' do
+        expect { subject }.not_to raise_error
+
+        expect(build.reset).to be_running
+      end
+    end
+  end
+
+  describe '#rollout_status' do
+    let!(:cluster) { create(:cluster, :project, :provided_by_user, projects: [project]) }
+    let!(:environment) { create(:environment, project: project) }
+    let!(:deployment) { create(:deployment, :success, environment: environment, project: project) }
+
+    subject { environment.rollout_status }
+
+    context 'environment does not have a deployment board available' do
+      before do
+        allow(environment).to receive(:has_terminals?).and_return(false)
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'cached rollout status is present' do
+      let(:pods) { %w(pod1 pod2) }
+      let(:deployments) { %w(deployment1 deployment2) }
+
+      before do
+        stub_reactive_cache(environment, pods: pods, deployments: deployments)
+      end
+
+      it 'fetches the rollout status from the deployment platform' do
+        expect(environment.deployment_platform).to receive(:rollout_status)
+          .with(environment, pods: pods, deployments: deployments)
+          .and_return(:mock_rollout_status)
+
+        is_expected.to eq(:mock_rollout_status)
+      end
+    end
+
+    context 'cached rollout status is not present yet' do
+      before do
+        stub_reactive_cache(environment, nil)
+      end
+
+      it 'falls back to a loading status' do
+        expect(::Gitlab::Kubernetes::RolloutStatus).to receive(:loading).and_return(:mock_loading_status)
+
+        is_expected.to eq(:mock_loading_status)
+      end
+    end
+  end
+
+  describe '#ingresses' do
+    subject { environment.ingresses }
+
+    let(:deployment_platform) { double(:deployment_platform) }
+    let(:deployment_namespace) { 'production' }
+
+    before do
+      allow(environment).to receive(:deployment_platform) { deployment_platform }
+      allow(environment).to receive(:deployment_namespace) { deployment_namespace }
+    end
+
+    context 'when rollout status is available' do
+      before do
+        allow(environment).to receive(:rollout_status_available?) { true }
+      end
+
+      it 'fetches ingresses from the deployment platform' do
+        expect(deployment_platform).to receive(:ingresses).with(deployment_namespace)
+
+        subject
+      end
+    end
+
+    context 'when rollout status is not available' do
+      before do
+        allow(environment).to receive(:rollout_status_available?) { false }
+      end
+
+      it 'does nothing' do
+        expect(deployment_platform).not_to receive(:ingresses)
+
+        subject
+      end
+    end
+  end
+
+  describe '#patch_ingress' do
+    subject { environment.patch_ingress(ingress, data) }
+
+    let(:ingress) { double(:ingress) }
+    let(:data) { double(:data) }
+    let(:deployment_platform) { double(:deployment_platform) }
+    let(:deployment_namespace) { 'production' }
+
+    before do
+      allow(environment).to receive(:deployment_platform) { deployment_platform }
+      allow(environment).to receive(:deployment_namespace) { deployment_namespace }
+    end
+
+    context 'when rollout status is available' do
+      before do
+        allow(environment).to receive(:rollout_status_available?) { true }
+      end
+
+      it 'fetches ingresses from the deployment platform' do
+        expect(deployment_platform).to receive(:patch_ingress).with(deployment_namespace, ingress, data)
+
+        subject
+      end
+    end
+
+    context 'when rollout status is not available' do
+      before do
+        allow(environment).to receive(:rollout_status_available?) { false }
+      end
+
+      it 'does nothing' do
+        expect(deployment_platform).not_to receive(:patch_ingress)
+
+        subject
+      end
     end
   end
 end

@@ -46,7 +46,7 @@ module Packages
                                                    .execute
         end
 
-        package.build_infos.create!(pipeline: params[:build].pipeline) if params[:build].present?
+        package.build_infos.safe_find_or_create_by!(pipeline: params[:build].pipeline) if params[:build].present?
 
         package
       end

@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Continuous Integration
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -105,10 +105,10 @@ External monitoring tools can poll the API and verify pipeline health or collect
 metrics for long term SLA analytics.
 
 For example, the [GitLab CI Pipelines Exporter](https://github.com/mvisonneau/gitlab-ci-pipelines-exporter)
-for Prometheus fetches metrics from the API. It can check branches in projects automatically
+for Prometheus fetches metrics from the API and pipeline events. It can check branches in projects automatically
 and get the pipeline status and duration. In combination with a Grafana dashboard,
 this helps build an actionable view for your operations team. Metric graphs can also
-be embedded into incidents making problem resolving easier.
+be embedded into incidents making problem resolving easier. Additionally, it can also export metrics about jobs and environments.
 
 ![Grafana Dashboard for GitLab CI Pipelines Prometheus Exporter](img/ci_efficiency_pipeline_health_grafana_dashboard.png)
 
@@ -189,8 +189,12 @@ be more efficient, but can also make pipelines harder to understand and analyze.
 
 ### Caching
 
-Another optimization method is to use [caching](../caching/index.md) between jobs and stages,
-for example [`/node_modules` for NodeJS](../caching/index.md#caching-nodejs-dependencies).
+Another optimization method is to [cache](../caching/index.md) dependencies. If your
+dependencies change rarely, like [NodeJS `/node_modules`](../caching/index.md#cache-nodejs-dependencies),
+caching can make pipeline execution much faster.
+
+You can use [`cache:when`](../yaml/README.md#cachewhen) to cache downloaded dependencies
+even when a job fails.
 
 ### Docker Images
 

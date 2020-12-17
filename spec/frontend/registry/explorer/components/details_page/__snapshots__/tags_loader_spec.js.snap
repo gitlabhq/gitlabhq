@@ -2,9 +2,7 @@
 
 exports[`TagsLoader component has the correct markup 1`] = `
 <div>
-  <div
-    preserve-aspect-ratio="xMinYMax meet"
-  >
+  <div>
     <rect
       height="15"
       rx="4"

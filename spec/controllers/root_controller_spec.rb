@@ -125,7 +125,7 @@ RSpec.describe RootController do
 
         context 'when experiment is enabled' do
           before do
-            stub_experiment_for_user(customize_homepage: true)
+            stub_experiment_for_subject(customize_homepage: true)
           end
 
           it 'renders the default dashboard' do

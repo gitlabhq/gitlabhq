@@ -1,6 +1,14 @@
 import { has } from 'lodash';
 import { isInIssuePage, isInMRPage, isInEpicPage } from './common_utils';
 
+/**
+ * Checks whether an element's content exceeds the element's width.
+ *
+ * @param element DOM element to check
+ */
+export const hasHorizontalOverflow = element =>
+  Boolean(element && element.scrollWidth > element.offsetWidth);
+
 export const addClassIfElementExists = (element, className) => {
   if (element) {
     element.classList.add(className);

@@ -1,0 +1,5 @@
+---
+title: Allow opsgenie manage form to be displayed when opsgenie is enabled
+merge_request: 49863
+author:
+type: fixed

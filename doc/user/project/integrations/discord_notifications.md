@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Ecosystem
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Discord Notifications service
@@ -17,7 +17,7 @@ To send GitLab event notifications to a Discord channel, create a webhook in Dis
 1. Open the Discord channel you want to receive GitLab event notifications.
 1. From the channel menu, select **Edit channel**.
 1. Click on **Webhooks** menu item.
-1. Click the **Create Webhook** button and fill in the name of the bot that will post the messages. Optionally, edit the avatar.
+1. Click the **Create Webhook** button and fill in the name of the bot to post the messages. Optionally, edit the avatar.
 1. Note the URL from the **WEBHOOK URL** field.
 1. Click the **Save** button.
 
@@ -32,4 +32,4 @@ With the webhook URL created in the Discord channel, you can set up the Discord 
 1. Paste the webhook URL that you copied from the create Discord webhook step.
 1. Configure the remaining options and click the **Save changes** button.
 
-The Discord channel you created the webhook for will now receive notification of the GitLab events that were configured.
+The Discord channel you created the webhook for now receives notification of the GitLab events that were configured.

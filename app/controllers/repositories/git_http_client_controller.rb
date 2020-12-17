@@ -87,8 +87,12 @@ module Repositories
       @project
     end
 
+    def repository_path
+      @repository_path ||= params[:repository_path]
+    end
+
     def parse_repo_path
-      @container, @project, @repo_type, @redirected_path = Gitlab::RepoPath.parse("#{params[:namespace_id]}/#{params[:repository_id]}")
+      @container, @project, @repo_type, @redirected_path = Gitlab::RepoPath.parse(repository_path)
     end
 
     def render_missing_personal_access_token

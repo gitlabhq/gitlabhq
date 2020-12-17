@@ -1,8 +1,8 @@
 ---
 type: concepts
 stage: Release
-group: Release Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+group: Release
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # SSL/TLS Certificates
@@ -16,8 +16,8 @@ up your Pages project with your custom (sub)domain, if you want
 it secured by HTTPS, you will have to issue a certificate for that
 (sub)domain and install it on your project.
 
-NOTE: **Note:**
-Certificates are NOT required to add to your custom
+NOTE:
+Certificates are **not** required to add to your custom
 (sub)domain on your GitLab Pages project, though they are
 highly recommendable.
 
@@ -56,7 +56,7 @@ reiterating the importance of HTTPS.
 
 ## Issuing Certificates
 
-GitLab Pages accepts certificates provided in the [PEM](https://knowledge.digicert.com/quovadis) format, issued by
+GitLab Pages accepts certificates provided in the [PEM](https://knowledge.digicert.com/quovadis.html) format, issued by
 [Certificate Authorities](https://en.wikipedia.org/wiki/Certificate_authority) or as
 [self-signed certificates](https://en.wikipedia.org/wiki/Self-signed_certificate). Note that [self-signed certificates are typically not used](https://www.mcafee.com/blogs/other-blogs/mcafee-labs/self-signed-certificates-secure-so-why-ban/)
 for public websites for security reasons and to ensure that browsers trust your site's certificate.

@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Frontend Development Process
@@ -85,7 +85,7 @@ With the purpose of being [respectful of others' time](https://about.gitlab.com/
 ### Share your work early
 
 1. Before writing code, ensure your vision of the architecture is aligned with
-   GitLab's architecture.
+   GitLab architecture.
 1. Add a diagram to the issue and ask a frontend maintainer in the Slack channel `#frontend_maintainers` about it.
 
    ![Diagram of Issue Boards Architecture](img/boards_diagram.png)

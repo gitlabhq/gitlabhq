@@ -10,14 +10,14 @@ RSpec.describe FixNullTypeLabels do
   let(:labels) { table(:labels) }
 
   before do
-    group = namespaces.create(name: 'labels-test-project', path: 'labels-test-project', type: 'Group')
+    group = namespaces.create!(name: 'labels-test-project', path: 'labels-test-project', type: 'Group')
     project = projects.create!(namespace_id: group.id, name: 'labels-test-group', path: 'labels-test-group')
 
-    @template_label = labels.create(title: 'template', template: true)
-    @project_label = labels.create(title: 'project label', project_id: project.id, type: 'ProjectLabel')
-    @group_label = labels.create(title: 'group_label', group_id: group.id, type: 'GroupLabel')
-    @broken_label_1 = labels.create(title: 'broken 1', project_id: project.id)
-    @broken_label_2 = labels.create(title: 'broken 2', project_id: project.id)
+    @template_label = labels.create!(title: 'template', template: true)
+    @project_label = labels.create!(title: 'project label', project_id: project.id, type: 'ProjectLabel')
+    @group_label = labels.create!(title: 'group_label', group_id: group.id, type: 'GroupLabel')
+    @broken_label_1 = labels.create!(title: 'broken 1', project_id: project.id)
+    @broken_label_2 = labels.create!(title: 'broken 2', project_id: project.id)
   end
 
   describe '#up' do

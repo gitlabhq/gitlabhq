@@ -15,12 +15,12 @@ import {
   NOT_AVAILABLE_SIZE,
 } from '~/registry/explorer/constants/index';
 
-import { tagsListResponse } from '../../mock_data';
+import { tagsMock } from '../../mock_data';
 import { ListItem } from '../../stubs';
 
 describe('tags list row', () => {
   let wrapper;
-  const [tag] = [...tagsListResponse.data];
+  const [tag] = [...tagsMock];
 
   const defaultProps = { tag, isMobile: false, index: 0 };
 
@@ -65,7 +65,7 @@ describe('tags list row', () => {
     });
 
     it("does not exist when the row can't be deleted", () => {
-      const customTag = { ...tag, destroy_path: '' };
+      const customTag = { ...tag, canDelete: false };
 
       mountComponent({ ...defaultProps, tag: customTag });
 
@@ -137,8 +137,8 @@ describe('tags list row', () => {
       mountComponent();
 
       expect(findClipboardButton().attributes()).toMatchObject({
-        text: 'location',
-        title: 'location',
+        text: tag.location,
+        title: tag.location,
       });
     });
   });
@@ -171,26 +171,26 @@ describe('tags list row', () => {
       expect(findSize().exists()).toBe(true);
     });
 
-    it('contains the total_size and layers', () => {
-      mountComponent({ ...defaultProps, tag: { ...tag, total_size: 1024 } });
+    it('contains the totalSize and layers', () => {
+      mountComponent({ ...defaultProps, tag: { ...tag, totalSize: 1024, layers: 10 } });
 
       expect(findSize().text()).toMatchInterpolatedText('1.00 KiB · 10 layers');
     });
 
-    it('when total_size is missing', () => {
-      mountComponent();
+    it('when totalSize is missing', () => {
+      mountComponent({ ...defaultProps, tag: { ...tag, totalSize: 0, layers: 10 } });
 
       expect(findSize().text()).toMatchInterpolatedText(`${NOT_AVAILABLE_SIZE} · 10 layers`);
     });
 
     it('when layers are missing', () => {
-      mountComponent({ ...defaultProps, tag: { ...tag, total_size: 1024, layers: null } });
+      mountComponent({ ...defaultProps, tag: { ...tag, totalSize: 1024 } });
 
       expect(findSize().text()).toMatchInterpolatedText('1.00 KiB');
     });
 
     it('when there is 1 layer', () => {
-      mountComponent({ ...defaultProps, tag: { ...tag, layers: 1 } });
+      mountComponent({ ...defaultProps, tag: { ...tag, totalSize: 0, layers: 1 } });
 
       expect(findSize().text()).toMatchInterpolatedText(`${NOT_AVAILABLE_SIZE} · 1 layer`);
     });
@@ -218,7 +218,7 @@ describe('tags list row', () => {
     it('pass the correct props to time ago tooltip', () => {
       mountComponent();
 
-      expect(findTimeAgoTooltip().attributes()).toMatchObject({ time: tag.created_at });
+      expect(findTimeAgoTooltip().attributes()).toMatchObject({ time: tag.createdAt });
     });
   });
 
@@ -232,7 +232,7 @@ describe('tags list row', () => {
     it('has the correct text', () => {
       mountComponent();
 
-      expect(findShortRevision().text()).toMatchInterpolatedText('Digest: 1ab51d5');
+      expect(findShortRevision().text()).toMatchInterpolatedText('Digest: 2cf3d2f');
     });
 
     it(`displays ${NOT_AVAILABLE_TEXT} when digest is missing`, () => {
@@ -260,18 +260,15 @@ describe('tags list row', () => {
     });
 
     it.each`
-      destroy_path | digest
-      ${'foo'}     | ${null}
-      ${null}      | ${'foo'}
-      ${null}      | ${null}
-    `(
-      'is disabled when destroy_path is $destroy_path and digest is $digest',
-      ({ destroy_path, digest }) => {
-        mountComponent({ ...defaultProps, tag: { ...tag, destroy_path, digest } });
+      canDelete | digest
+      ${true}   | ${null}
+      ${false}  | ${'foo'}
+      ${false}  | ${null}
+    `('is disabled when canDelete is $canDelete and digest is $digest', ({ canDelete, digest }) => {
+      mountComponent({ ...defaultProps, tag: { ...tag, canDelete, digest } });
 
-        expect(findDeleteButton().attributes('disabled')).toBe('true');
-      },
-    );
+      expect(findDeleteButton().attributes('disabled')).toBe('true');
+    });
 
     it('delete event emits delete', () => {
       mountComponent();
@@ -295,10 +292,10 @@ describe('tags list row', () => {
       });
 
       describe.each`
-        name                       | finderFunction             | text                                                                                               | icon            | clipboard
-        ${'published date detail'} | ${findPublishedDateDetail} | ${'Published to the bar image repository at 10:23 GMT+0000 on 2020-06-29'}                         | ${'clock'}      | ${false}
-        ${'manifest detail'}       | ${findManifestDetail}      | ${'Manifest digest: sha256:1ab51d519f574b636ae7788051c60239334ae8622a9fd82a0cf7bae7786dfd5c'}      | ${'log'}        | ${true}
-        ${'configuration detail'}  | ${findConfigurationDetail} | ${'Configuration digest: sha256:b118ab5b0e90b7cb5127db31d5321ac14961d097516a8e0e72084b6cdc783b43'} | ${'cloud-gear'} | ${true}
+        name                       | finderFunction             | text                                                                                                      | icon            | clipboard
+        ${'published date detail'} | ${findPublishedDateDetail} | ${'Published to the gitlab-org/gitlab-test/rails-12009 image repository at 01:29 GMT+0000 on 2020-11-03'} | ${'clock'}      | ${false}
+        ${'manifest detail'}       | ${findManifestDetail}      | ${'Manifest digest: sha256:2cf3d2fdac1b04a14301d47d51cb88dcd26714c74f91440eeee99ce399089062'}             | ${'log'}        | ${true}
+        ${'configuration detail'}  | ${findConfigurationDetail} | ${'Configuration digest: sha256:c2613843ab33aabf847965442b13a8b55a56ae28837ce182627c0716eb08c02b'}        | ${'cloud-gear'} | ${true}
       `('$name details row', ({ finderFunction, text, icon, clipboard }) => {
         it(`has ${text} as text`, () => {
           expect(finderFunction().text()).toMatchInterpolatedText(text);

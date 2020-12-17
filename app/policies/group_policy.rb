@@ -185,7 +185,10 @@ class GroupPolicy < BasePolicy
   rule { developer & developer_maintainer_access }.enable :create_projects
   rule { create_projects_disabled }.prevent :create_projects
 
-  rule { owner | admin }.enable :read_statistics
+  rule { owner | admin }.policy do
+    enable :owner_access
+    enable :read_statistics
+  end
 
   rule { maintainer & can?(:create_projects) }.enable :transfer_projects
 

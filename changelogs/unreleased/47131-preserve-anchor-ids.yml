@@ -1,0 +1,5 @@
+---
+title: Preserve cross references in AsciiDoc documents
+merge_request: 47131
+author: Guillaume Grossetie
+type: changed

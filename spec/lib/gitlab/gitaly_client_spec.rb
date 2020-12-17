@@ -53,7 +53,7 @@ RSpec.describe Gitlab::GitalyClient do
   describe '.filesystem_id_from_disk' do
     it 'catches errors' do
       [Errno::ENOENT, Errno::EACCES, JSON::ParserError].each do |error|
-        allow(File).to receive(:read).with(described_class.storage_metadata_file_path('default')).and_raise(error)
+        stub_file_read(described_class.storage_metadata_file_path('default'), error: error)
 
         expect(described_class.filesystem_id_from_disk('default')).to be_nil
       end

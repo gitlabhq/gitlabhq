@@ -13,11 +13,11 @@ RSpec.describe FixPoolRepositorySourceProjectId do
 
     # gitaly is a project with a pool repository that has a source_project_id
     gitaly = projects.create!(name: 'gitaly', path: 'gitlab-org/gitaly', namespace_id: 1)
-    pool_repository = pool_repositories.create(shard_id: shard.id, source_project_id: gitaly.id)
+    pool_repository = pool_repositories.create!(shard_id: shard.id, source_project_id: gitaly.id)
     gitaly.update_column(:pool_repository_id, pool_repository.id)
 
     # gitlab is a project with a pool repository that's missing a source_project_id
-    pool_repository_without_source_project = pool_repositories.create(shard_id: shard.id, source_project_id: nil)
+    pool_repository_without_source_project = pool_repositories.create!(shard_id: shard.id, source_project_id: nil)
     gitlab = projects.create!(name: 'gitlab', path: 'gitlab-org/gitlab-ce', namespace_id: 1, pool_repository_id: pool_repository_without_source_project.id)
     projects.create!(name: 'gitlab-fork-1', path: 'my-org-1/gitlab-ce', namespace_id: 1, pool_repository_id: pool_repository_without_source_project.id)
 

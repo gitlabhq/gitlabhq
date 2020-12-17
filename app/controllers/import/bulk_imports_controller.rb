@@ -20,8 +20,9 @@ class Import::BulkImportsController < ApplicationController
       format.json do
         render json: { importable_data: serialized_importable_data }
       end
-
-      format.html
+      format.html do
+        @source_url = session[url_key]
+      end
     end
   end
 
@@ -57,7 +58,7 @@ class Import::BulkImportsController < ApplicationController
   end
 
   def create_params
-    params.permit(:bulk_import, [*bulk_import_params])
+    params.permit(bulk_import: bulk_import_params)[:bulk_import]
   end
 
   def bulk_import_params
@@ -84,11 +85,9 @@ class Import::BulkImportsController < ApplicationController
   def verify_blocked_uri
     Gitlab::UrlBlocker.validate!(
       session[url_key],
-      **{
-        allow_localhost: allow_local_requests?,
-        allow_local_network: allow_local_requests?,
-        schemes: %w(http https)
-      }
+      allow_localhost: allow_local_requests?,
+      allow_local_network: allow_local_requests?,
+      schemes: %w(http https)
     )
   rescue Gitlab::UrlBlocker::BlockedUrlError => e
     clear_session_data
@@ -129,7 +128,7 @@ class Import::BulkImportsController < ApplicationController
   def credentials
     {
       url: session[url_key],
-      access_token: [access_token_key]
+      access_token: session[access_token_key]
     }
   end
 end

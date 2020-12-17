@@ -27,7 +27,7 @@
           data: { toggle: "dropdown", field_name: "group_link[group_access]" } }
           %span.dropdown-toggle-text
             = group_link.human_access
-          = icon("chevron-down")
+          = sprite_icon("chevron-down", css_class: "dropdown-menu-toggle-icon gl-top-3")
         .dropdown-menu.dropdown-select.dropdown-menu-right.dropdown-menu-selectable
           = dropdown_title(_("Change permissions"))
           .dropdown-content

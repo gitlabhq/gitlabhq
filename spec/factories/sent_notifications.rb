@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :sent_notification do
     project
     recipient { project.creator }
-    noteable { create(:issue, project: project) }
+    noteable { association(:issue, project: project) }
     reply_key { SentNotification.reply_key }
   end
 end

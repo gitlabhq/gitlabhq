@@ -1,12 +1,12 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # GraphQL API style guide
 
-This document outlines the style guide for GitLab's [GraphQL API](../api/graphql/index.md).
+This document outlines the style guide for the GitLab [GraphQL API](../api/graphql/index.md).
 
 ## How GitLab implements GraphQL
 
@@ -19,7 +19,7 @@ which is exposed as an API endpoint at `/api/graphql`.
 ## Deep Dive
 
 In March 2019, Nick Thomas hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/issues/1`)
-on GitLab's [GraphQL API](../api/graphql/index.md) to share his domain specific knowledge
+on the GitLab [GraphQL API](../api/graphql/index.md) to share his domain specific knowledge
 with anyone who may work in this part of the codebase in the future. You can find the
 [recording on YouTube](https://www.youtube.com/watch?v=-9L_1MWrjkg), and the slides on
 [Google Slides](https://docs.google.com/presentation/d/1qOTxpkTdHIp1CRjuTvO-aXg0_rUtzE3ETfLUdnBB5uQ/edit)
@@ -44,7 +44,7 @@ add a `HTTP_PRIVATE_TOKEN` header.
 
 ## Global IDs
 
-GitLab's GraphQL API uses Global IDs (i.e: `"gid://gitlab/MyObject/123"`)
+The GitLab GraphQL API uses Global IDs (i.e: `"gid://gitlab/MyObject/123"`)
 and never database primary key IDs.
 
 Global ID is [a convention](https://graphql.org/learn/global-object-identification/)
@@ -154,7 +154,7 @@ Further reading:
 
 ### Exposing Global IDs
 
-In keeping with GitLab's use of [Global IDs](#global-ids), always convert
+In keeping with the GitLab use of [Global IDs](#global-ids), always convert
 database primary key IDs into Global IDs when you expose them.
 
 All fields named `id` are
@@ -179,7 +179,7 @@ end
 
 ### Connection types
 
-TIP: **Tip:**
+NOTE:
 For specifics on implementation, see [Pagination implementation](#pagination-implementation).
 
 GraphQL uses [cursor based
@@ -268,8 +268,8 @@ query($project_path: ID!) {
 }
 ```
 
-To ensure that we get consistent ordering, we will append an ordering on the primary
-key, in descending order. This is usually `id`, so basically we will add `order(id: :desc)`
+To ensure that we get consistent ordering, we append an ordering on the primary
+key, in descending order. This is usually `id`, so we add `order(id: :desc)`
 to the end of the relation. A primary key _must_ be available on the underlying table.
 
 #### Shortcut fields
@@ -310,12 +310,12 @@ class MergeRequestPermissionsType < BasePermissionType
   abilities :admin_merge_request, :update_merge_request, :create_note
 
   ability_field :resolve_note,
-                description: 'Indicates the user can resolve discussions on the merge request'
+                description: 'Indicates the user can resolve discussions on the merge request.'
   permission_field :push_to_source_branch, method: :can_push_to_source_branch?
 end
 ```
 
-- **`permission_field`**: Will act the same as `graphql-ruby`'s
+- **`permission_field`**: Acts the same as `graphql-ruby`'s
   `field` method but setting a default description and type and making
   them non-nullable. These options can still be overridden by adding
   them as arguments.
@@ -323,7 +323,7 @@ end
   behaves the same way as `permission_field` and the same
   arguments can be overridden.
 - **`abilities`**: Allows exposing several abilities defined in our
-  policies at once. The fields for these will all have be non-nullable
+  policies at once. The fields for these must all be non-nullable
   booleans with a default description.
 
 ## Feature flags
@@ -331,7 +331,7 @@ end
 Developers can add [feature flags](../development/feature_flags/index.md) to GraphQL
 fields in the following ways:
 
-- Add the `feature_flag` property to a field. This will allow the field to be _hidden_
+- Add the `feature_flag` property to a field. This allows the field to be _hidden_
   from the GraphQL schema when the flag is disabled.
 - Toggle the return value when resolving the field.
 
@@ -339,7 +339,7 @@ You can refer to these guidelines to decide which approach to use:
 
 - If your field is experimental, and its name or type is subject to
   change, use the `feature_flag` property.
-- If your field is stable and its definition will not change, even after the flag is
+- If your field is stable and its definition doesn't change, even after the flag is
   removed, toggle the return value of the field instead. Note that
   [all fields should be nullable](#nullable-fields) anyway.
 
@@ -347,15 +347,15 @@ You can refer to these guidelines to decide which approach to use:
 
 The `feature_flag` property allows you to toggle the field's
 [visibility](https://graphql-ruby.org/authorization/visibility.html)
-within the GraphQL schema. This will remove the field from the schema
+within the GraphQL schema. This removes the field from the schema
 when the flag is disabled.
 
 A description is [appended](https://gitlab.com/gitlab-org/gitlab/-/blob/497b556/app/graphql/types/base_field.rb#L44-53)
 to the field indicating that it is behind a feature flag.
 
-CAUTION: **Caution:**
-If a client queries for the field when the feature flag is disabled, the query will
-fail. Consider this when toggling the visibility of the feature on or off on
+WARNING:
+If a client queries for the field when the feature flag is disabled, the query
+fails. Consider this when toggling the visibility of the feature on or off on
 production.
 
 The `feature_flag` property does not allow the use of
@@ -369,7 +369,7 @@ Example:
 ```ruby
 field :test_field, type: GraphQL::STRING_TYPE,
       null: true,
-      description: 'Some test field',
+      description: 'Some test field.',
       feature_flag: :my_feature_flag
 ```
 
@@ -385,7 +385,7 @@ When applying a feature flag to toggle the value of a field, the
 
 - State that the value of the field can be toggled by a feature flag.
 - Name the feature flag.
-- State what the field will return when the feature flag is disabled (or
+- State what the field returns when the feature flag is disabled (or
   enabled, if more appropriate).
 
 Example:
@@ -394,7 +394,7 @@ Example:
 field :foo, GraphQL::STRING_TYPE,
       null: true,
       description: 'Some test field. Will always return `null`' \
-                   'if `my_feature_flag` feature flag is disabled'
+                   'if `my_feature_flag` feature flag is disabled.'
 
 def foo
   object.foo if Feature.enabled?(:my_feature_flag, object)
@@ -403,11 +403,11 @@ end
 
 ## Deprecating fields and enum values
 
-GitLab's GraphQL API is versionless, which means we maintain backwards
+The GitLab GraphQL API is versionless, which means we maintain backwards
 compatibility with older versions of the API with every change. Rather
 than removing a field or [enum value](#enums), we need to _deprecate_ it instead.
 The deprecated parts of the schema can then be removed in a future release
-in accordance with [GitLab's deprecation process](../api/graphql/index.md#deprecation-process).
+in accordance with the [GitLab deprecation process](../api/graphql/index.md#deprecation-process).
 
 Fields and enum values are deprecated using the `deprecated` property.
 The value of the property is a `Hash` of:
@@ -420,12 +420,12 @@ Example:
 ```ruby
 field :token, GraphQL::STRING_TYPE, null: true,
       deprecated: { reason: 'Login via token has been removed', milestone: '10.0' },
-      description: 'Token for login'
+      description: 'Token for login.'
 ```
 
 The original `description` of the things being deprecated should be maintained,
-and should _not_ be updated to mention the deprecation. Instead, the `reason` will
-be appended to the `description`.
+and should _not_ be updated to mention the deprecation. Instead, the `reason`
+is appended to the `description`.
 
 ### Deprecation reason style guide
 
@@ -441,7 +441,7 @@ Example:
 ```ruby
 field :designs, ::Types::DesignManagement::DesignCollectionType, null: true,
       deprecated: { reason: 'Use `designCollection`', milestone: '10.0' },
-      description: 'The designs associated with this issue',
+      description: 'The designs associated with this issue.',
 ```
 
 ```ruby
@@ -477,20 +477,20 @@ module Types
     graphql_name 'TrafficLightState'
     description 'State of a traffic light'
 
-    value 'RED', description: 'Drivers must stop'
-    value 'YELLOW', description: 'Drivers must stop when it is safe to'
-    value 'GREEN', description: 'Drivers can start or keep driving'
+    value 'RED', description: 'Drivers must stop.'
+    value 'YELLOW', description: 'Drivers must stop when it is safe to.'
+    value 'GREEN', description: 'Drivers can start or keep driving.'
   end
 end
 ```
 
-If the enum will be used for a class property in Ruby that is not an uppercase string,
-you can provide a `value:` option that will adapt the uppercase value.
+If the enum is used for a class property in Ruby that is not an uppercase string,
+you can provide a `value:` option that adapts the uppercase value.
 
 In the following example:
 
-- GraphQL inputs of `OPENED` will be converted to `'opened'`.
-- Ruby values of `'opened'` will be converted to `"OPENED"` in GraphQL responses.
+- GraphQL inputs of `OPENED` are converted to `'opened'`.
+- Ruby values of `'opened'` are converted to `"OPENED"` in GraphQL responses.
 
 ```ruby
 module Types
@@ -498,8 +498,8 @@ module Types
     graphql_name 'EpicState'
     description 'State of a GitLab epic'
 
-    value 'OPENED', value: 'opened', description: 'An open Epic'
-    value 'CLOSED', value: 'closed', description: 'An closed Epic'
+    value 'OPENED', value: 'opened', description: 'An open Epic.'
+    value 'CLOSED', value: 'closed', description: 'A closed Epic.'
   end
 end
 ```
@@ -523,7 +523,7 @@ module Types
     description 'Incident severity'
 
     ::IssuableSeverity.severities.keys.each do |severity|
-      value severity.upcase, value: severity, description: "#{severity.titleize} severity"
+      value severity.upcase, value: severity, description: "#{severity.titleize} severity."
     end
   end
 end
@@ -536,7 +536,7 @@ When data to be returned by GraphQL is stored as
 GraphQL types whenever possible. Avoid using the `GraphQL::Types::JSON` type unless
 the JSON data returned is _truly_ unstructured.
 
-If the structure of the JSON data varies, but will be one of a set of known possible
+If the structure of the JSON data varies, but is one of a set of known possible
 structures, use a
 [union](https://graphql-ruby.org/type_definitions/unions.html).
 An example of the use of a union for this purpose is
@@ -562,15 +562,15 @@ We can use GraphQL types like this:
 ```ruby
 module Types
   class ChartType < BaseObject
-    field :title, GraphQL::STRING_TYPE, null: true, description: 'Title of the chart'
-    field :data, [Types::ChartDatumType], null: true, description: 'Data of the chart'
+    field :title, GraphQL::STRING_TYPE, null: true, description: 'Title of the chart.'
+    field :data, [Types::ChartDatumType], null: true, description: 'Data of the chart.'
   end
 end
 
 module Types
   class ChartDatumType < BaseObject
-    field :x, GraphQL::INT_TYPE, null: true, description: 'X-axis value of the chart datum'
-    field :y, GraphQL::INT_TYPE, null: true, description: 'Y-axis value of the chart datum'
+    field :x, GraphQL::INT_TYPE, null: true, description: 'X-axis value of the chart datum.'
+    field :y, GraphQL::INT_TYPE, null: true, description: 'Y-axis value of the chart datum.'
   end
 end
 ```
@@ -584,7 +584,7 @@ A description of a field or argument is given using the `description:`
 keyword. For example:
 
 ```ruby
-field :id, GraphQL::ID_TYPE, description: 'ID of the resource'
+field :id, GraphQL::ID_TYPE, description: 'ID of the resource.'
 ```
 
 Descriptions of fields and arguments are viewable to users through:
@@ -605,20 +605,20 @@ descriptions:
   this field do?". Example: `'Indicates project has a Git repository'`.
 - Always include the word `"timestamp"` when describing an argument or
   field of type `Types::TimeType`. This lets the reader know that the
-  format of the property will be `Time`, rather than just `Date`.
-- No `.` at end of strings.
+  format of the property is `Time`, rather than just `Date`.
+- Must end with a period (`.`).
 
 Example:
 
 ```ruby
-field :id, GraphQL::ID_TYPE, description: 'ID of the Issue'
-field :confidential, GraphQL::BOOLEAN_TYPE, description: 'Indicates the issue is confidential'
-field :closed_at, Types::TimeType, description: 'Timestamp of when the issue was closed'
+field :id, GraphQL::ID_TYPE, description: 'ID of the issue.'
+field :confidential, GraphQL::BOOLEAN_TYPE, description: 'Indicates the issue is confidential.'
+field :closed_at, Types::TimeType, description: 'Timestamp of when the issue was closed.'
 ```
 
 ### `copy_field_description` helper
 
-Sometimes we want to ensure that two descriptions will always be identical.
+Sometimes we want to ensure that two descriptions are always identical.
 For example, to keep a type field description the same as a mutation argument
 when they both represent the same property.
 
@@ -641,13 +641,13 @@ abilities as in the Rails app.
 If the:
 
 - Currently authenticated user fails the authorization, the authorized
-  resource will be returned as `null`.
-- Resource is part of a collection, the collection will be filtered to
+  resource is returned as `null`.
+- Resource is part of a collection, the collection is filtered to
   exclude the objects that the user's authorization checks failed against.
 
 Also see [authorizing resources in a mutation](#authorizing-resources).
 
-TIP: **Tip:**
+NOTE:
 Try to load only what the currently authenticated user is allowed to
 view with our existing finders first, without relying on authorization
 to filter the records. This minimizes database queries and unnecessary
@@ -656,7 +656,7 @@ authorization checks of the loaded records.
 ### Type authorization
 
 Authorize a type by passing an ability to the `authorize` method. All
-fields with the same type will be authorized by checking that the
+fields with the same type is authorized by checking that the
 currently authenticated user has the required ability.
 
 For example, the following authorization ensures that the currently
@@ -785,7 +785,7 @@ end
 
 You should never re-use resolvers directly. Resolvers have a complex life-cycle, with
 authorization, readiness and resolution orchestrated by the framework, and at
-each stage lazy values can be returned to take advantage of batching
+each stage [lazy values](#laziness) can be returned to take advantage of batching
 opportunities. Never instantiate a resolver or a mutation in application code.
 
 Instead, the units of code reuse are much the same as in the rest of the
@@ -802,6 +802,32 @@ overhead. If you are writing:
 
 - A `Mutation`, feel free to lookup objects directly.
 - A `Resolver` or methods on a `BaseObject`, then you want to allow for batching.
+
+### Error handling
+
+Resolvers may raise errors, which will be converted to top-level errors as
+appropriate. All anticipated errors should be caught and transformed to an
+appropriate GraphQL error (see
+[`Gitlab::Graphql::Errors`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/graphql/errors.rb)).
+Any uncaught errors will be suppressed and the client will receive the message
+`Internal service error`.
+
+The one special case is permission errors. In the REST API we return
+`404 Not Found` for any resources that the user does not have permission to
+access. The equivalent behavior in GraphQL is for us to return `null` for
+all absent or unauthorized resources.
+Query resolvers **should not raise errors for unauthorized resources**.
+
+The rationale for this is that clients must not be able to distinguish between
+the absence of a record and the presence of one they do not have access to. To
+do so is a security vulnerability, since it leaks information we want to keep
+hidden.
+
+In most cases you don't need to worry about this - this is handled correctly by
+the resolver field authorization we declare with the `authorize` DSL calls. If
+you need to do something more custom however, remember, if you encounter an
+object the `current_user` does not have access to when resolving a field, then
+the entire field should resolve to `null`.
 
 ### Deriving resolvers (`BaseResolver.single` and `BaseResolver.last`)
 
@@ -889,8 +915,8 @@ Then we can use these resolver on fields:
 ```ruby
 # In PipelineType
 
-field :jobs, resolver: JobsResolver, description: 'All jobs'
-field :job, resolver: JobsResolver.single, description: 'A single job'
+field :jobs, resolver: JobsResolver, description: 'All jobs.'
+field :job, resolver: JobsResolver.single, description: 'A single job.'
 ```
 
 ### Correct use of `Resolver#ready?`
@@ -922,7 +948,7 @@ before calling `resolve`! An example can be seen in our [`GraphQLHelpers`](https
 
 The full query is known in advance during execution, which means we can make use
 of [lookahead](https://graphql-ruby.org/queries/lookahead.html) to optimize our
-queries, and batch load associations we know we will need. Consider adding
+queries, and batch load associations we know we need. Consider adding
 lookahead support in your resolvers to avoid `N+1` performance issues.
 
 To enable support for common lookahead use-cases (pre-loading associations when
@@ -965,7 +991,7 @@ to advertise the need for lookahead:
   field :my_things, MyThingType.connection_type, null: true,
         extras: [:lookahead], # Necessary
         resolver: MyThingResolver,
-        description: 'My things'
+        description: 'My things.'
 ```
 
 For an example of real world use, please
@@ -996,7 +1022,7 @@ When using resolvers, they can and should serve as the SSoT for field metadata.
 All field options (apart from the field name) can be declared on the resolver.
 These include:
 
-- `type` (this is particularly important, and will soon be mandatory)
+- `type` (this is particularly important, and is planned to be mandatory)
 - `extras`
 - `description`
 
@@ -1034,7 +1060,7 @@ To find the parent object in your `Presenter` class:
      field :computed_field, SomeType, null: true,
            method: :my_computing_method,
            extras: [:parent], # Necessary
-           description: 'My field description'
+           description: 'My field description.'
 
      field :resolver_field, resolver: SomeTypeResolver
 
@@ -1042,7 +1068,7 @@ To find the parent object in your `Presenter` class:
 
      extras [:parent]
      type SomeType, null: true
-     description 'My field description'
+     description 'My field description.'
    ```
 
 1. Declare your field's method in your Presenter class and have it accept the `parent` keyword argument.
@@ -1080,7 +1106,7 @@ are returned as the result of the mutation.
 
 #### Update mutation granularity
 
-GitLab's service-oriented architecture means that most mutations call a Create, Delete, or Update
+The service-oriented architecture in GitLab means that most mutations call a Create, Delete, or Update
 service, for example `UpdateMergeRequestService`.
 For Update mutations, a you might want to only update one aspect of an object, and thus only need a
 _fine-grained_ mutation, for example `MergeRequest::SetWip`.
@@ -1161,10 +1187,10 @@ Example:
 ```ruby
 argument :my_arg, GraphQL::STRING_TYPE,
          required: true,
-         description: "A description of the argument"
+         description: "A description of the argument."
 ```
 
-Each GraphQL `argument` defined will be passed to the `#resolve` method
+Each GraphQL `argument` defined is passed to the `#resolve` method
 of a mutation as keyword arguments.
 
 Example:
@@ -1175,7 +1201,7 @@ def resolve(my_arg:)
 end
 ```
 
-`graphql-ruby` will automatically wrap up arguments into an
+`graphql-ruby` wraps up arguments into an
 [input type](https://graphql.org/learn/schema/#input-types).
 
 For example, the
@@ -1186,11 +1212,11 @@ defines these arguments (some
 ```ruby
 argument :project_path, GraphQL::ID_TYPE,
          required: true,
-         description: "The project the merge request to mutate is in"
+         description: "The project the merge request to mutate is in."
 
 argument :iid, GraphQL::STRING_TYPE,
          required: true,
-         description: "The iid of the merge request to mutate"
+         description: "The IID of the merge request to mutate."
 
 argument :wip,
          GraphQL::BOOLEAN_TYPE,
@@ -1207,7 +1233,7 @@ These arguments automatically generate an input type called
 
 ### Object identifier arguments
 
-In keeping with GitLab's use of [Global IDs](#global-ids), mutation
+In keeping with the GitLab use of [Global IDs](#global-ids), mutation
 arguments should use Global IDs to identify an object and never database
 primary key IDs.
 
@@ -1231,7 +1257,7 @@ single mutation when multiple are performed within a single request.
 ### The `resolve` method
 
 The `resolve` method receives the mutation's arguments as keyword arguments.
-From here, we can call the service that will modify the resource.
+From here, we can call the service that modifies the resource.
 
 The `resolve` method should then return a hash with the same field
 names as defined on the mutation including an `errors` array. For example,
@@ -1242,7 +1268,7 @@ field:
 field :merge_request,
       Types::MergeRequestType,
       null: true,
-      description: "The merge request after mutation"
+      description: "The merge request after mutation."
 ```
 
 This means that the hash returned from `resolve` in this mutation
@@ -1262,8 +1288,8 @@ should look like this:
 ### Mounting the mutation
 
 To make the mutation available it must be defined on the mutation
-type that lives in `graphql/types/mutation_types`. The
-`mount_mutation` helper method will define a field based on the
+type that is stored in `graphql/types/mutation_types`. The
+`mount_mutation` helper method defines a field based on the
 GraphQL-name of the mutation:
 
 ```ruby
@@ -1278,7 +1304,7 @@ module Types
 end
 ```
 
-Will generate a field called `mergeRequestSetWip` that
+Generates a field called `mergeRequestSetWip` that
 `Mutations::MergeRequests::SetWip` to be resolved.
 
 ### Authorizing resources
@@ -1301,13 +1327,13 @@ end
 We can then call `authorize!` in the `resolve` method, passing in the resource we
 want to validate the abilities for.
 
-Alternatively, we can add a `find_object` method that will load the
+Alternatively, we can add a `find_object` method that loads the
 object on the mutation. This would allow you to use the
 `authorized_find!` helper method.
 
 When a user is not allowed to perform the action, or an object is not
 found, we should raise a
-`Gitlab::Graphql::Errors::ResourceNotAvailable` error. Which will be
+`Gitlab::Graphql::Errors::ResourceNotAvailable` error which is
 correctly rendered to the clients.
 
 ### Errors in mutations
@@ -1418,8 +1444,8 @@ of errors should be treated as internal, and not shown to the user in specific
 detail.
 
 We need to inform the user when the mutation fails, but we do not need to
-tell them why, since they cannot have caused it, and nothing they can do will
-fix it, although we may offer to retry the mutation.
+tell them why, since they cannot have caused it, and nothing they can do
+fixes it, although we may offer to retry the mutation.
 
 #### Categorizing errors
 
@@ -1483,7 +1509,7 @@ Sometimes a mutation or resolver may accept a number of optional
 arguments, but we still want to validate that at least one of the optional
 arguments is provided. In this situation, consider using the `#ready?`
 method within your mutation or resolver to provide the validation. The
-`#ready?` method will be called before any work is done within the
+`#ready?` method is called before any work is done within the
 `#resolve` method.
 
 Example:
@@ -1504,7 +1530,7 @@ In the future this may be able to be done using `InputUnions` if
 [this RFC](https://github.com/graphql/graphql-spec/blob/master/rfcs/InputUnion.md)
 is merged.
 
-## GitLab's custom scalars
+## GitLab custom scalars
 
 ### `Types::TimeType`
 
@@ -1527,37 +1553,71 @@ and handles time inputs.
 Example:
 
 ```ruby
-field :created_at, Types::TimeType, null: true, description: 'Timestamp of when the issue was created'
+field :created_at, Types::TimeType, null: true, description: 'Timestamp of when the issue was created.'
 ```
 
 ## Testing
 
-_full stack_ tests for a graphql query or mutation live in
+### Writing unit tests
+
+Before creating unit tests, review the following examples:
+
+- [`spec/graphql/resolvers/users_resolver_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/graphql/resolvers/users_resolver_spec.rb)
+- [`spec/graphql/mutations/issues/create_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/graphql/mutations/issues/create_spec.rb)
+
+It's faster to test as much of the logic from your GraphQL queries and mutations
+with unit tests, which are stored in `spec/graphql`.
+
+Use unit tests to verify that:
+
+- Types have the expected fields.
+- Resolvers and mutations apply authorizations and return expected data.
+- Edge cases are handled correctly.
+
+### Writing integration tests
+
+Integration tests check the full stack for a GraphQL query or mutation and are stored in
 `spec/requests/api/graphql`.
 
-When adding a query, the `a working graphql query` shared example can
-be used to test if the query renders valid results.
+For speed, you should test most logic in unit tests instead of integration tests.
+However, integration tests that check if data is returned verify the following
+additional items:
 
-Using the `GraphqlHelpers#all_graphql_fields_for`-helper, a query
-including all available fields can be constructed. This makes it easy
-to add a test rendering all possible fields for a query.
+- The mutation is actually queryable within the schema (was mounted in `MutationType`).
+- The data returned by a resolver or mutation correctly matches the
+  [return types](https://graphql-ruby.org/fields/introduction.html#field-return-type) of
+  the fields and resolves without errors.
+
+Integration tests can also verify the following items, because they invoke the
+full stack:
+
+- An argument or scalar's [`prepare`](#validating-arguments) applies correctly.
+- Logic in a resolver or mutation's [`#ready?` method](#correct-use-of-resolverready) applies correctly.
+- An [argument's `default_value`](https://graphql-ruby.org/fields/arguments.html) applies correctly.
+- Objects resolve performantly and there are no N+1 issues.
+
+When adding a query, you can use the `a working graphql query` shared example to test if the query
+renders valid results.
+
+You can construct a query including all available fields using the `GraphqlHelpers#all_graphql_fields_for`
+helper. This makes it easy to add a test rendering all possible fields for a query.
 
 If you're adding a field to a query that supports pagination and sorting,
 visit [Testing](graphql_guide/pagination.md#testing) for details.
 
-To test GraphQL mutation requests, `GraphqlHelpers` provides 2
+To test GraphQL mutation requests, `GraphqlHelpers` provides two
 helpers: `graphql_mutation` which takes the name of the mutation, and
-a hash with the input for the mutation. This will return a struct with
+a hash with the input for the mutation. This returns a struct with
 a mutation query, and prepared variables.
 
-This struct can then be passed to the `post_graphql_mutation` helper,
-that will post the request with the correct parameters, like a GraphQL
+You can then pass this struct to the `post_graphql_mutation` helper,
+that posts the request with the correct parameters, like a GraphQL
 client would do.
 
-To access the response of a mutation, the `graphql_mutation_response`
-helper is available.
+To access the response of a mutation, you can use the `graphql_mutation_response`
+helper.
 
-Using these helpers, we can build specs like this:
+Using these helpers, you can build specs like this:
 
 ```ruby
 let(:mutation) do
@@ -1629,13 +1689,13 @@ end
 - Mimic the folder structure of `app/graphql/types`:
 
   For example, tests for fields on `Types::Ci::PipelineType`
-  in `app/graphql/types/ci/pipeline_type.rb` should live in
+  in `app/graphql/types/ci/pipeline_type.rb` should be stored in
   `spec/requests/api/graphql/ci/pipeline_spec.rb` regardless of the query being
   used to fetch the pipeline data.
 
 ## Notes about Query flow and GraphQL infrastructure
 
-GitLab's GraphQL infrastructure can be found in `lib/gitlab/graphql`.
+The GitLab GraphQL infrastructure can be found in `lib/gitlab/graphql`.
 
 [Instrumentation](https://graphql-ruby.org/queries/instrumentation.html) is functionality
 that wraps around a query being executed. It is implemented as a module that uses the `Instrumentation` class.
@@ -1702,3 +1762,19 @@ For guidance, see the [GraphQL API](documentation/graphql_styleguide.md) page.
 ## Include a changelog entry
 
 All client-facing changes **must** include a [changelog entry](changelog.md).
+
+## Laziness
+
+One important technique unique to GraphQL for managing performance is
+using **lazy** values. Lazy values represent the promise of a result,
+allowing their action to be run later, which enables batching of queries in
+different parts of the query tree. The main example of lazy values in our code is
+the [GraphQL BatchLoader](graphql_guide/batchloader.md).
+
+To manage lazy values directly, read `Gitlab::Graphql::Lazy`, and in
+particular `Gitlab::Graphql::Laziness`. This contains `#force` and
+`#delay`, which help implement the basic operations of creation and
+elimination of laziness, where needed.
+
+For dealing with lazy values without forcing them, use
+`Gitlab::Graphql::Lazy.with_value`.

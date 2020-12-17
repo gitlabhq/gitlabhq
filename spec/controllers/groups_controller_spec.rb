@@ -333,7 +333,7 @@ RSpec.describe GroupsController, factory_default: :keep do
 
         context 'and the user is part of the control group' do
           before do
-            stub_experiment_for_user(onboarding_issues: false)
+            stub_experiment_for_subject(onboarding_issues: false)
           end
 
           it 'tracks the event with the "created_namespace" action with the "control_group" property', :snowplow do
@@ -350,7 +350,7 @@ RSpec.describe GroupsController, factory_default: :keep do
 
         context 'and the user is part of the experimental group' do
           before do
-            stub_experiment_for_user(onboarding_issues: true)
+            stub_experiment_for_subject(onboarding_issues: true)
           end
 
           it 'tracks the event with the "created_namespace" action with the "experimental_group" property', :snowplow do
@@ -398,15 +398,6 @@ RSpec.describe GroupsController, factory_default: :keep do
       create_list(:award_emoji, 2, :downvote, awardable: issue_2)
 
       sign_in(user)
-    end
-
-    it 'lists only incidents and issues' do
-      incident = create(:incident, project: project)
-      create(:quality_test_case, project: project)
-
-      get :issues, params: { id: group.to_param }
-
-      expect(assigns(:issues)).to match_array([issue_1, issue_2, incident])
     end
 
     context 'sorting by votes' do

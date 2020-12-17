@@ -44,7 +44,7 @@ RSpec.describe API::ImportGithub do
 
     it 'returns 201 response when the project is imported successfully' do
       allow(Gitlab::LegacyGithubImport::ProjectCreator)
-        .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, access_params, type: provider)
+        .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, type: provider, **access_params)
           .and_return(double(execute: project))
 
       post api("/import/github", user), params: {
@@ -59,7 +59,7 @@ RSpec.describe API::ImportGithub do
 
     it 'returns 201 response when the project is imported successfully from GHE' do
       allow(Gitlab::LegacyGithubImport::ProjectCreator)
-        .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, access_params, type: provider)
+        .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, type: provider, **access_params)
           .and_return(double(execute: project))
 
       post api("/import/github", user), params: {

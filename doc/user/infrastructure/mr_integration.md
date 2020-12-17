@@ -1,7 +1,7 @@
 ---
 stage: Configure
 group: Configure
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Terraform integration in Merge Requests
@@ -17,7 +17,7 @@ modifies, or destroys.
 
 ## Setup
 
-NOTE: **Note:**
+NOTE:
 GitLab ships with a [pre-built CI template](index.md#quick-start) that uses GitLab Managed Terraform state and integrates Terraform changes into merge requests. We recommend customizing the pre-built image and relying on the `gitlab-terraform` helper provided within for a quick setup.
 
 To manually configure a GitLab Terraform Report artifact requires the following steps:
@@ -42,7 +42,7 @@ To manually configure a GitLab Terraform Report artifact requires the following 
      - alias convert_report="jq -r '([.resource_changes[]?.change.actions?]|flatten)|{\"create\":(map(select(.==\"create\"))|length),\"update\":(map(select(.==\"update\"))|length),\"delete\":(map(select(.==\"delete\"))|length)}'"
    ```
 
-   NOTE: **Note:**
+   NOTE:
    In distributions that use Bash (for example, Ubuntu), `alias` statements are not
    expanded in non-interactive mode. If your pipelines fail with the error
    `convert_report: command not found`, alias expansion can be activated explicitly

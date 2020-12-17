@@ -1,4 +1,4 @@
-%table.table.b-table.gl-table.mt-3{ role: 'table', 'aria-busy': false, 'aria-colcount': 4 }
+%table.table.b-table.gl-table{ role: 'table', 'aria-busy': false, 'aria-colcount': 4 }
   %colgroup
     %col
     %col
@@ -15,11 +15,10 @@
     - integrations.each do |integration|
       - activated_label = (integration.activated? ? s_("ProjectService|%{service_title}: status on") : s_("ProjectService|%{service_title}: status off")) % { service_title: integration.title }
       %tr{ role: 'row' }
-        %td{ role: 'cell', 'aria-colindex': 1, 'aria-label': activated_label }
+        %td{ role: 'cell', 'aria-colindex': 1, 'aria-label': activated_label, title: activated_label }
           = boolean_to_icon integration.operating?
         %td{ role: 'cell', 'aria-colindex': 2 }
-          = link_to scoped_edit_integration_path(integration), { data: { qa_selector: "#{integration.to_param}_link" } } do
-            %strong= integration.title
+          = link_to integration.title, scoped_edit_integration_path(integration), class: 'gl-font-weight-bold', data: { qa_selector: "#{integration.to_param}_link" }
         %td.d-none.d-sm-table-cell{ role: 'cell', 'aria-colindex': 3 }
           = integration.description
         %td{ role: 'cell', 'aria-colindex': 4 }

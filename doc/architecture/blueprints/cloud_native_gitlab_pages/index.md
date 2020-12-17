@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 comments: false
 description: 'Making GitLab Pages a Cloud Native application - architecture blueprint.'
 ---
@@ -72,9 +72,9 @@ of complexity, maintenance cost and enormous, negative impact on availability.
 
 ## New GitLab Pages Architecture
 
-- GitLab Pages is going to source domains' configuration from GitLab's internal
+- GitLab Pages sources domains' configuration from the GitLab internal
   API, instead of reading `config.json` files from a local shared storage.
-- GitLab Pages is going to serve static content from Object Storage.
+- GitLab Pages serves static content from Object Storage.
 
 ```mermaid
 graph TD
@@ -90,10 +90,10 @@ too.
 
 ## Iterations
 
-1. ✓ Redesign GitLab Pages configuration source to use GitLab's API
+1. ✓ Redesign GitLab Pages configuration source to use the GitLab API
 1. ✓ Evaluate performance and build reliable caching mechanisms
 1. ✓ Incrementally rollout the new source on GitLab.com
-1. ✓ Make GitLab Pages API domains config source enabled by default
+1. ✓ Make GitLab Pages API domains configuration source enabled by default
 1. Enable experimentation with different servings through feature flags
 1. Triangulate object store serving design through meaningful experiments
 1. Design pages migration mechanisms that can work incrementally

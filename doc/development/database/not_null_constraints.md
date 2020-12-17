@@ -1,7 +1,7 @@
 ---
 stage: Enablement
 group: Database
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # `NOT NULL` constraints
@@ -66,7 +66,7 @@ different releases:
    - Add a post-deployment migration to add the `NOT NULL` constraint with `validate: false`.
    - Add a post-deployment migration to fix the existing records.
 
-     NOTE: **Note:**
+     NOTE:
      Depending on the size of the table, a background migration for cleanup could be required in the next release.
      See the [`NOT NULL` constraints on large tables](not_null_constraints.md#not-null-constraints-on-large-tables) section for more information.
 
@@ -94,7 +94,7 @@ that all epics should have a user-generated description.
 After checking our production database, we know that there are `epics` with `NULL` descriptions,
 so we can not add and validate the constraint in one step.
 
-NOTE: **Note:**
+NOTE:
 Even if we did not have any epic with a `NULL` description, another instance of GitLab could have
 such records, so we would follow the same process either way.
 

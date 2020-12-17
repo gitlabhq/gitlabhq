@@ -14,20 +14,17 @@ describe('Users admin page Modal Manager', () => {
     },
   };
 
-  const actionModals = {
-    action1: ModalStub,
-    action2: ModalStub,
-  };
-
   let wrapper;
 
   const createComponent = (props = {}) => {
     wrapper = mount(UserModalManager, {
       propsData: {
-        actionModals,
         modalConfiguration,
         csrfToken: 'dummyCSRF',
         ...props,
+      },
+      stubs: {
+        DeleteUserModal: ModalStub,
       },
     });
   };
@@ -41,11 +38,6 @@ describe('Users admin page Modal Manager', () => {
     it('does not renders modal when initialized', () => {
       createComponent();
       expect(wrapper.find({ ref: 'modal' }).exists()).toBeFalsy();
-    });
-
-    it('throws if non-existing action is requested', () => {
-      createComponent();
-      expect(() => wrapper.vm.show({ glModalAction: 'non-existing' })).toThrow();
     });
 
     it('throws if action has no proper configuration', () => {

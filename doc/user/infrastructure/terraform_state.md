@@ -1,7 +1,7 @@
 ---
 stage: Configure
 group: Configure
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # GitLab managed Terraform State
@@ -186,7 +186,7 @@ and the CI YAML file:
 
 The output from the above `terraform` commands should be viewable in the job logs.
 
-CAUTION: **Caution:**
+WARNING:
 Like any other job artifact, Terraform plan data is [viewable by anyone with Guest access](../permissions.md) to the repository.
 Neither Terraform nor GitLab encrypts the plan file by default. If your Terraform plan
 includes sensitive data such as passwords, access tokens, or certificates, GitLab strongly
@@ -344,7 +344,7 @@ location. You can then go back to running it from within GitLab CI.
 
 ## Managing state files
 
-NOTE: **Note:**
+NOTE:
 We are currently working on [providing a graphical interface for managing state files](https://gitlab.com/groups/gitlab-org/-/epics/4563).
 
 ![Terraform state list](img/terraform_list_view_v13_5.png)
@@ -356,5 +356,5 @@ The state files attached to a project can be found under Operations / Terraform.
 You can only remove a state file by making a request to the API, like the following example:
 
 ```shell
-curl --header "Private-Token: <your_access_token>" --request DELETE "https://gitlab.example.com/api/v4/projects/<your_project_id/terraform/state/<your_state_name>"
+curl --header "Private-Token: <your_access_token>" --request DELETE "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>"
 ```

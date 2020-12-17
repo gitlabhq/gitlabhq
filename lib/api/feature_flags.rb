@@ -62,8 +62,6 @@ module API
 
           attrs = declared_params(include_missing: false)
 
-          ensure_post_version_2_flags_enabled! if attrs[:version] == 'new_version_flag'
-
           rename_key(attrs, :scopes, :scopes_attributes)
           rename_key(attrs, :strategies, :strategies_attributes)
           update_value(attrs, :strategies_attributes) do |strategies|
@@ -143,7 +141,7 @@ module API
         end
 
         desc 'Update a feature flag' do
-          detail 'This feature will be introduced in GitLab 13.1 if feature_flags_new_version feature flag is removed'
+          detail 'This feature was introduced in GitLab 13.2'
           success ::API::Entities::FeatureFlag
         end
         params do
@@ -163,7 +161,6 @@ module API
           end
         end
         put do
-          not_found! unless feature_flags_new_version_enabled?
           authorize_update_feature_flag!
           render_api_error!('PUT operations are not supported for legacy feature flags', :unprocessable_entity) if feature_flag.legacy_flag?
 
@@ -228,30 +225,15 @@ module API
 
       def present_entity(result)
         present result,
-          with: ::API::Entities::FeatureFlag,
-          feature_flags_new_version_enabled: feature_flags_new_version_enabled?
-      end
-
-      def ensure_post_version_2_flags_enabled!
-        unless feature_flags_new_version_enabled?
-          render_api_error!('Version 2 flags are not enabled for this project', :unprocessable_entity)
-        end
+          with: ::API::Entities::FeatureFlag
       end
 
       def feature_flag
-        @feature_flag ||= if feature_flags_new_version_enabled?
-                            user_project.operations_feature_flags.find_by_name!(params[:feature_flag_name])
-                          else
-                            user_project.operations_feature_flags.legacy_flag.find_by_name!(params[:feature_flag_name])
-                          end
+        @feature_flag ||= user_project.operations_feature_flags.find_by_name!(params[:feature_flag_name])
       end
 
       def new_version_flag_present?
         user_project.operations_feature_flags.new_version_flag.find_by_name(params[:name]).present?
-      end
-
-      def feature_flags_new_version_enabled?
-        Feature.enabled?(:feature_flags_new_version, user_project, default_enabled: true)
       end
 
       def rename_key(hash, old_key, new_key)

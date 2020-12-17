@@ -2,10 +2,6 @@
 .diff-file {
   margin-bottom: $gl-padding;
 
-  &.conflict {
-    border-top: 1px solid $border-color;
-  }
-
   &.has-body {
     .file-title {
       box-shadow: 0 -2px 0 0 var(--white);
@@ -60,7 +56,7 @@
         left: -11px;
         width: 10px;
         height: calc(100% + 1px);
-        background: $white;
+        background: $body-bg;
         pointer-events: none;
       }
 
@@ -601,10 +597,6 @@ table.code {
   .diff-grid-right {
     display: grid;
     grid-template-columns: 50px 8px 1fr;
-
-    .diff-td:nth-child(2) {
-      display: none;
-    }
   }
 
   .diff-grid-comments {
@@ -635,20 +627,6 @@ table.code {
     .diff-grid-left,
     .diff-grid-right {
       grid-template-columns: 50px 50px 8px 1fr;
-
-      .diff-td:nth-child(2) {
-        display: block;
-      }
-    }
-
-    .diff-grid-left .old:nth-child(1) [data-linenumber],
-    .diff-grid-right .new:nth-child(2) [data-linenumber] {
-      display: inline;
-    }
-
-    .diff-grid-left .old:nth-child(2) [data-linenumber],
-    .diff-grid-right .new:nth-child(1) [data-linenumber] {
-      display: none;
     }
   }
 }

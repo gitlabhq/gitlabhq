@@ -66,7 +66,7 @@ module API
         success Entities::GroupLabel
       end
       params do
-        optional :label_id, type: Integer, desc: 'The id of the label to be updated'
+        optional :label_id, type: Integer, desc: 'The ID of the label to be updated'
         optional :name, type: String, desc: 'The name of the label to be updated'
         use :group_label_update_params
         exactly_one_of :label_id, :name

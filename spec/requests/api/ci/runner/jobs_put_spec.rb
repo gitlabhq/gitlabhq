@@ -61,6 +61,23 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           expect(response.header).not_to have_key('X-GitLab-Trace-Update-Interval')
         end
 
+        context 'when runner sends an unrecognized field in a payload' do
+          ##
+          # This test case is here to ensure that the API used to communicate
+          # runner with GitLab can evolve.
+          #
+          # In case of adding new features on the Runner side we do not want
+          # GitLab-side to reject requests containing unrecognizable fields in
+          # a payload, because runners can be updated before a new version of
+          # GitLab is installed.
+          #
+          it 'ignores unrecognized fields' do
+            update_job(state: 'success', 'unknown': 'something')
+
+            expect(job.reload).to be_success
+          end
+        end
+
         context 'when failure_reason is script_failure' do
           before do
             update_job(state: 'failed', failure_reason: 'script_failure')

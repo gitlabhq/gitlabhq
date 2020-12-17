@@ -2,17 +2,13 @@
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
 import FileTree from '~/vue_shared/components/file_tree.vue';
-import {
-  WEBIDE_MARK_TREE_START,
-  WEBIDE_MEASURE_TREE_FROM_REQUEST,
-  WEBIDE_MARK_FILE_CLICKED,
-} from '~/performance/constants';
+import { WEBIDE_MARK_FILE_CLICKED } from '~/performance/constants';
 import { performanceMarkAndMeasure } from '~/performance/utils';
-import eventHub from '../eventhub';
 import IdeFileRow from './ide_file_row.vue';
 import NavDropdown from './nav_dropdown.vue';
 
 export default {
+  name: 'IdeTreeList',
   components: {
     GlSkeletonLoading,
     NavDropdown,
@@ -38,14 +34,6 @@ export default {
         this.$emit('tree-ready');
       }
     },
-  },
-  beforeCreate() {
-    performanceMarkAndMeasure({ mark: WEBIDE_MARK_TREE_START });
-  },
-  updated() {
-    if (this.currentTree?.tree?.length) {
-      eventHub.$emit(WEBIDE_MEASURE_TREE_FROM_REQUEST);
-    }
   },
   methods: {
     ...mapActions(['toggleTreeOpen']),

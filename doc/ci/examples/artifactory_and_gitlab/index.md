@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Continuous Integration
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 disqus_identifier: 'https://docs.gitlab.com/ee/articles/artifactory_and_gitlab/index.html'
 type: tutorial
 ---
@@ -34,7 +34,7 @@ For this article you'll use a Maven app that can be cloned from our example
 project:
 
 1. Log in to your GitLab account
-1. Create a new project by selecting **Import project from ➔ Repo by URL**
+1. Create a new project by selecting **Import project from > Repo by URL**
 1. Add the following URL:
 
    ```plaintext

@@ -41,12 +41,6 @@
   @include media-breakpoint-down(xs) {
     width: 100%;
     margin-top: 10px;
-
-    > .issue-btn-group {
-      > .btn {
-        width: 100%;
-      }
-    }
   }
 }
 

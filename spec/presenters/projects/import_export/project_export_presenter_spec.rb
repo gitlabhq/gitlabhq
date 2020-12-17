@@ -45,6 +45,14 @@ RSpec.describe Projects::ImportExport::ProjectExportPresenter do
     end
   end
 
+  describe '#protected_branches' do
+    it 'returns the project exported protected branches' do
+      expect(project).to receive(:exported_protected_branches)
+
+      subject.protected_branches
+    end
+  end
+
   describe '#project_members' do
     let(:user2) { create(:user, email: 'group@member.com') }
     let(:member_emails) do

@@ -26,8 +26,14 @@ module Backup
       FileUtils.rm_f(backup_tarball)
 
       if ENV['STRATEGY'] == 'copy'
-        cmd = [%w[rsync -a], exclude_dirs(:rsync), %W[#{app_files_dir} #{Gitlab.config.backup.path}]].flatten
+        cmd = [%w[rsync -a --delete], exclude_dirs(:rsync), %W[#{app_files_dir} #{Gitlab.config.backup.path}]].flatten
         output, status = Gitlab::Popen.popen(cmd)
+
+        # Retry if rsync source files vanish
+        if status == 24
+          $stdout.puts "Warning: files vanished during rsync, retrying..."
+          output, status = Gitlab::Popen.popen(cmd)
+        end
 
         unless status == 0
           puts output

@@ -33,14 +33,14 @@ RSpec.describe Projects::MilestonesController do
       view_milestone
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(response.content_type).to eq 'text/html'
+      expect(response.media_type).to eq 'text/html'
     end
 
     it 'returns milestone json' do
       view_milestone format: :json
 
       expect(response).to have_gitlab_http_status(:not_found)
-      expect(response.content_type).to eq 'application/json'
+      expect(response.media_type).to eq 'application/json'
     end
   end
 
@@ -189,7 +189,7 @@ RSpec.describe Projects::MilestonesController do
           get :labels, params: { namespace_id: group.id, project_id: project.id, id: milestone.iid }, format: :json
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(response.content_type).to eq 'application/json'
+          expect(response.media_type).to eq 'application/json'
 
           expect(json_response['html']).not_to include(label.title)
         end
@@ -200,7 +200,7 @@ RSpec.describe Projects::MilestonesController do
           get :labels, params: { namespace_id: group.id, project_id: project.id, id: milestone.iid }, format: :json
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(response.content_type).to eq 'application/json'
+          expect(response.media_type).to eq 'application/json'
 
           expect(json_response['html']).to include(label.title)
         end
@@ -262,7 +262,7 @@ RSpec.describe Projects::MilestonesController do
           get :participants, params: params
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(response.content_type).to eq 'application/json'
+          expect(response.media_type).to eq 'application/json'
           expect(json_response['html']).to include(issue_assignee.name)
         end
       end
@@ -277,7 +277,7 @@ RSpec.describe Projects::MilestonesController do
           get :participants, params: params
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(response.content_type).to eq 'application/json'
+          expect(response.media_type).to eq 'application/json'
           expect(json_response['html']).not_to include(issue_assignee.name)
         end
       end

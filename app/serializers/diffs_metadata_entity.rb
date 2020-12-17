@@ -2,7 +2,9 @@
 
 class DiffsMetadataEntity < DiffsEntity
   unexpose :diff_files
-  expose :raw_diff_files, as: :diff_files, using: DiffFileMetadataEntity
+  expose :diff_files, using: DiffFileMetadataEntity do |diffs, _|
+    diffs.raw_diff_files(sorted: true)
+  end
 
   expose :conflict_resolution_path do |_, options|
     presenter(options[:merge_request]).conflict_resolution_path

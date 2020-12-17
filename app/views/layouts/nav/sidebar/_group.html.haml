@@ -159,11 +159,10 @@
                 %span
                   = _('General')
 
-            - if group_level_integrations?
-              = nav_link(controller: :integrations) do
-                = link_to group_settings_integrations_path(@group), title: _('Integrations') do
-                  %span
-                    = _('Integrations')
+            = nav_link(controller: :integrations) do
+              = link_to group_settings_integrations_path(@group), title: _('Integrations') do
+                %span
+                  = _('Integrations')
 
             = nav_link(path: 'groups#projects') do
               = link_to projects_group_path(@group), title: _('Projects') do

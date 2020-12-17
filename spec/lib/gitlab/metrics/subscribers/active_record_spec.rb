@@ -18,59 +18,73 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
   end
 
   describe '#sql' do
-    describe 'without a current transaction' do
-      it 'simply returns' do
-        expect_any_instance_of(Gitlab::Metrics::Transaction)
-          .not_to receive(:increment)
+    shared_examples 'track query in metrics' do
+      before do
+        allow(subscriber).to receive(:current_transaction)
+                               .at_least(:once)
+                               .and_return(transaction)
+      end
+
+      it 'increments only db count value' do
+        described_class::DB_COUNTERS.each do |counter|
+          prometheus_counter = "gitlab_transaction_#{counter}_total".to_sym
+          if expected_counters[counter] > 0
+            expect(transaction).to receive(:increment).with(prometheus_counter, 1)
+          else
+            expect(transaction).not_to receive(:increment).with(prometheus_counter, 1)
+          end
+        end
 
         subscriber.sql(event)
       end
     end
 
-    describe 'with a current transaction' do
-      shared_examples 'track executed query' do
-        before do
-          allow(subscriber).to receive(:current_transaction)
-                                 .at_least(:once)
-                                 .and_return(transaction)
-        end
-
-        it 'increments only db count value' do
-          described_class::DB_COUNTERS.each do |counter|
-            prometheus_counter = "gitlab_transaction_#{counter}_total".to_sym
-            if expected_counters[counter] > 0
-              expect(transaction).to receive(:increment).with(prometheus_counter, 1)
-            else
-              expect(transaction).not_to receive(:increment).with(prometheus_counter, 1)
-            end
-          end
-
+    shared_examples 'track query in RequestStore' do
+      context 'when RequestStore is enabled' do
+        it 'caches db count value', :request_store, :aggregate_failures do
           subscriber.sql(event)
+
+          described_class::DB_COUNTERS.each do |counter|
+            expect(Gitlab::SafeRequestStore[counter].to_i).to eq expected_counters[counter]
+          end
         end
 
-        context 'when RequestStore is enabled' do
-          it 'caches db count value', :request_store, :aggregate_failures do
-            subscriber.sql(event)
+        it 'prevents db counters from leaking to the next transaction' do
+          2.times do
+            Gitlab::WithRequestStore.with_request_store do
+              subscriber.sql(event)
 
-            described_class::DB_COUNTERS.each do |counter|
-              expect(Gitlab::SafeRequestStore[counter].to_i).to eq expected_counters[counter]
-            end
-          end
-
-          it 'prevents db counters from leaking to the next transaction' do
-            2.times do
-              Gitlab::WithRequestStore.with_request_store do
-                subscriber.sql(event)
-
-                described_class::DB_COUNTERS.each do |counter|
-                  expect(Gitlab::SafeRequestStore[counter].to_i).to eq expected_counters[counter]
-                end
+              described_class::DB_COUNTERS.each do |counter|
+                expect(Gitlab::SafeRequestStore[counter].to_i).to eq expected_counters[counter]
               end
             end
           end
         end
       end
+    end
 
+    describe 'without a current transaction' do
+      it 'does not track any metrics' do
+        expect_any_instance_of(Gitlab::Metrics::Transaction)
+          .not_to receive(:increment)
+
+        subscriber.sql(event)
+      end
+
+      context 'with read query' do
+        let(:expected_counters) do
+          {
+            db_count: 1,
+            db_write_count: 0,
+            db_cached_count: 0
+          }
+        end
+
+        it_behaves_like 'track query in RequestStore'
+      end
+    end
+
+    describe 'with a current transaction' do
       it 'observes sql_duration metric' do
         expect(subscriber).to receive(:current_transaction)
                                 .at_least(:once)
@@ -96,12 +110,14 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
           }
         end
 
-        it_behaves_like 'track executed query'
+        it_behaves_like 'track query in metrics'
+        it_behaves_like 'track query in RequestStore'
 
         context 'with only select' do
           let(:payload) { { sql: 'WITH active_milestones AS (SELECT COUNT(*), state FROM milestones GROUP BY state) SELECT * FROM active_milestones' } }
 
-          it_behaves_like 'track executed query'
+          it_behaves_like 'track query in metrics'
+          it_behaves_like 'track query in RequestStore'
         end
       end
 
@@ -117,33 +133,38 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
         context 'with select for update sql event' do
           let(:payload) { { sql: 'SELECT * FROM users WHERE id = 10 FOR UPDATE' } }
 
-          it_behaves_like 'track executed query'
+          it_behaves_like 'track query in metrics'
+          it_behaves_like 'track query in RequestStore'
         end
 
         context 'with common table expression' do
           context 'with insert' do
             let(:payload) { { sql: 'WITH archived_rows AS (SELECT * FROM users WHERE archived = true) INSERT INTO products_log SELECT * FROM archived_rows' } }
 
-            it_behaves_like 'track executed query'
+            it_behaves_like 'track query in metrics'
+            it_behaves_like 'track query in RequestStore'
           end
         end
 
         context 'with delete sql event' do
           let(:payload) { { sql: 'DELETE FROM users where id = 10' } }
 
-          it_behaves_like 'track executed query'
+          it_behaves_like 'track query in metrics'
+          it_behaves_like 'track query in RequestStore'
         end
 
         context 'with insert sql event' do
           let(:payload) { { sql: 'INSERT INTO project_ci_cd_settings (project_id) SELECT id FROM projects' } }
 
-          it_behaves_like 'track executed query'
+          it_behaves_like 'track query in metrics'
+          it_behaves_like 'track query in RequestStore'
         end
 
         context 'with update sql event' do
           let(:payload) { { sql: 'UPDATE users SET admin = true WHERE id = 10' } }
 
-          it_behaves_like 'track executed query'
+          it_behaves_like 'track query in metrics'
+          it_behaves_like 'track query in RequestStore'
         end
       end
 
@@ -164,18 +185,20 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
             }
           end
 
-          it_behaves_like 'track executed query'
+          it_behaves_like 'track query in metrics'
+          it_behaves_like 'track query in RequestStore'
         end
 
         context 'with cached payload name' do
           let(:payload) do
             {
-             sql: 'SELECT * FROM users WHERE id = 10',
-             name: 'CACHE'
+              sql: 'SELECT * FROM users WHERE id = 10',
+              name: 'CACHE'
             }
           end
 
-          it_behaves_like 'track executed query'
+          it_behaves_like 'track query in metrics'
+          it_behaves_like 'track query in RequestStore'
         end
       end
 
@@ -227,8 +250,8 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
 
         it 'skips schema/begin/commit sql commands' do
           allow(subscriber).to receive(:current_transaction)
-                                  .at_least(:once)
-                                  .and_return(transaction)
+                                 .at_least(:once)
+                                 .and_return(transaction)
 
           expect(transaction).not_to receive(:increment)
 

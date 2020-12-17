@@ -88,7 +88,7 @@ RSpec.describe RuboCop::Cop::Migration::CreateTableWithForeignKeys, type: :ruboc
 
         shared_examples 'target to high traffic table' do |dsl_method, table_name|
           context 'when the target is defined as option' do
-            it 'registers an offense ' do
+            it 'registers an offense' do
               expect_offense(<<~RUBY)
                 def up
                   create_table(:foo) do |t|
@@ -102,7 +102,7 @@ RSpec.describe RuboCop::Cop::Migration::CreateTableWithForeignKeys, type: :ruboc
           end
 
           context 'when the target has implicit definition' do
-            it 'registers an offense ' do
+            it 'registers an offense' do
               expect_offense(<<~RUBY)
                 def up
                   create_table(:foo) do |t|

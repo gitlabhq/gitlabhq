@@ -2,7 +2,7 @@
 type: reference
 stage: Manage
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 # Group Import/Export
 
@@ -55,7 +55,7 @@ The following items are **not** exported:
 - Runner tokens
 - SAML discovery tokens
 
-NOTE: **Note:**
+NOTE:
 For more details on the specific data persisted in a group export, see the
 [`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/import_export/group/import_export.yml) file.
 
@@ -75,7 +75,7 @@ For more details on the specific data persisted in a group export, see the
 1. Alternatively, you can come back to the project settings and download the
    file from there by clicking **Download export**, or generate a new file by clicking **Regenerate export**.
 
-NOTE: **Note:**
+NOTE:
 The maximum import file size can be set by the Administrator, default is 50MB.
 As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](../../../api/settings.md#change-application-settings) or the [Admin UI](../../admin_area/settings/account_and_limit_settings.md).
 
@@ -121,10 +121,12 @@ For example:
 
 ## Rate Limits
 
-To help avoid abuse, users are rate limited to:
+To help avoid abuse, by default, users are rate limited to:
 
 | Request Type     | Limit                                    |
 | ---------------- | ---------------------------------------- |
-| Export           | 30 groups every 5 minutes                |
-| Download export  | 10 downloads per group every 10 minutes  |
-| Import           | 30 groups every 5 minutes                |
+| Export           | 6 groups per minute                |
+| Download export  | 1 download per group per minute  |
+| Import           | 6 groups per minute                |
+
+Please note that GitLab.com may have [different settings](../../gitlab_com/index.md#importexport) from the defaults.

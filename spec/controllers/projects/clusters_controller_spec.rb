@@ -500,7 +500,7 @@ RSpec.describe Projects::ClustersController do
         expect { post_create_aws }.not_to change { Clusters::Cluster.count }
 
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
-        expect(response.content_type).to eq('application/json')
+        expect(response.media_type).to eq('application/json')
         expect(response.body).to include('is invalid')
       end
     end

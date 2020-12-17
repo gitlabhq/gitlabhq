@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: reference
 ---
 
@@ -112,7 +112,7 @@ in the `.gitignore` file followed by one or more of:
 - A user's `@username`.
 - A user's email address.
 - The `@name` of one or more groups that should be owners of the file.
-- Lines starting with `#` are escaped.
+- Lines starting with `#` are ignored.
 
 The order in which the paths are defined is significant: the last pattern that
 matches a given path will be used to find the code owners.

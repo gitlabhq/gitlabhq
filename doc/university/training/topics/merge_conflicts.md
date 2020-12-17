@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 comments: false
 ---
 
@@ -42,7 +42,7 @@ git commit -am "add line6 and line7"
 git push origin master
 ```
 
-Create a merge request on the GitLab web UI. You'll see a conflict warning.
+Create a merge request on the GitLab web UI, and a conflict warning displays.
 
 ```shell
 git checkout conflicts_branch

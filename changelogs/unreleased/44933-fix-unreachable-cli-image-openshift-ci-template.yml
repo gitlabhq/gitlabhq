@@ -1,0 +1,5 @@
+---
+title: Fix the unreachable CLI image in OpenShift CI template
+merge_request: 44933
+author: Klaus Mueller @klml
+type: added

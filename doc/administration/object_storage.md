@@ -1,7 +1,7 @@
 ---
 stage: Enablement
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -114,6 +114,7 @@ See the section on [ETag mismatch errors](#etag-mismatch) for more details.
     gitlab_rails['object_store']['objects']['packages']['bucket'] = '<packages>'
     gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = '<dependency-proxy>'
     gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = '<terraform-state>'
+    gitlab_rails['object_store']['objects']['pages']['bucket'] = '<pages>'
     ```
 
    For GitLab 9.4 or later, if you're using AWS IAM profiles, be sure to omit the
@@ -160,6 +161,8 @@ See the section on [ETag mismatch errors](#etag-mismatch) for more details.
          bucket: <dependency_proxy>
        terraform_state:
          bucket: <terraform>
+       pages:
+         bucket: <pages>
    ```
 
 1. Edit `/home/git/gitlab-workhorse/config.toml` and add or amend the following lines:
@@ -440,6 +443,8 @@ required parameter within each type:
           bucket: dependency_proxy
         terraform_state:
           bucket: terraform
+        pages:
+          bucket: pages
 ```
 
 This maps to this Omnibus GitLab configuration:
@@ -454,6 +459,7 @@ gitlab_rails['object_store']['objects']['packages']['bucket'] = 'packages'
 gitlab_rails['object_store']['objects']['dependency_proxy']['enabled'] = false
 gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = 'dependency-proxy'
 gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = 'terraform-state'
+gitlab_rails['object_store']['objects']['pages']['bucket'] = 'pages'
 ```
 
 This is the list of valid `objects` that can be used:
@@ -467,6 +473,7 @@ This is the list of valid `objects` that can be used:
 | `packages`         | [Project packages (e.g. PyPI, Maven, NuGet, etc.)](packages/index.md) |
 | `dependency_proxy` | [GitLab Dependency Proxy](packages/dependency_proxy.md) |
 | `terraform_state`  | [Terraform state files](terraform_state.md) |
+| `pages`            | [GitLab Pages](pages/index.md) |
 
 Within each object type, three parameters can be defined:
 
@@ -536,7 +543,7 @@ supported by consolidated configuration form, refer to the following guides:
 
 |Object storage type|Supported by consolidated configuration?|
 |-------------------|----------------------------------------|
-| [Backups](../raketasks/backup_restore.md#uploading-backups-to-a-remote-cloud-storage)|No|
+| [Backups](../raketasks/backup_restore.md#uploading-backups-to-a-remote-cloud-storage) | No |
 | [Job artifacts](job_artifacts.md#using-object-storage) including archived job logs | Yes |
 | [LFS objects](lfs/index.md#storing-lfs-objects-in-remote-object-storage) | Yes |
 | [Uploads](uploads.md#using-object-storage) | Yes |
@@ -548,6 +555,7 @@ supported by consolidated configuration form, refer to the following guides:
 | [Pseudonymizer](pseudonymizer.md#configuration) (optional feature) **(ULTIMATE ONLY)** | No |
 | [Autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional for improved performance) | No |
 | [Terraform state files](terraform_state.md#using-object-storage) | Yes |
+| [GitLab Pages content](pages/index.md#using-object-storage) | Yes |
 
 ### Other alternatives to filesystem storage
 

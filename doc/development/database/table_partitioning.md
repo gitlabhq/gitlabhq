@@ -1,7 +1,7 @@
 ---
 stage: Enablement
 group: Database
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Database table partitioning
@@ -98,7 +98,7 @@ CREATE TABLE audit_events (
 PARTITION BY RANGE(created_at);
 ```
 
-NOTE: **Note:**
+NOTE:
 The primary key of a partitioned table must include the partition key as
 part of the primary key definition.
 

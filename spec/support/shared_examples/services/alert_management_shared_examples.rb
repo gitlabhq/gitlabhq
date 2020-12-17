@@ -16,6 +16,38 @@ RSpec.shared_examples 'creates an alert management alert' do
   end
 end
 
+# This shared_example requires the following variables:
+# - last_alert_attributes, last created alert
+# - project, project that alert created
+# - payload_raw, hash representation of payload
+# - environment, project's environment
+# - fingerprint, fingerprint hash
+RSpec.shared_examples 'assigns the alert properties' do
+  it 'ensures that created alert has all data properly assigned' do
+    subject
+
+    expect(last_alert_attributes).to match(
+      project_id: project.id,
+      title: payload_raw.fetch(:title),
+      started_at: Time.zone.parse(payload_raw.fetch(:start_time)),
+      severity: payload_raw.fetch(:severity),
+      status: AlertManagement::Alert.status_value(:triggered),
+      events: 1,
+      domain: domain,
+      hosts: payload_raw.fetch(:hosts),
+      payload: payload_raw.with_indifferent_access,
+      issue_id: nil,
+      description: payload_raw.fetch(:description),
+      monitoring_tool: payload_raw.fetch(:monitoring_tool),
+      service: payload_raw.fetch(:service),
+      fingerprint: Digest::SHA1.hexdigest(fingerprint),
+      environment_id: environment.id,
+      ended_at: nil,
+      prometheus_alert_id: nil
+    )
+  end
+end
+
 RSpec.shared_examples 'does not an create alert management alert' do
   it 'does not create alert' do
     expect { subject }.not_to change(AlertManagement::Alert, :count)

@@ -7,7 +7,7 @@
 extends: occurrence
 message: 'Shorter sentences improve readability (max 25 words).'
 scope: sentence
-link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#language
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#language
 level: warning
 max: 25
 token: \b(\w+)\b

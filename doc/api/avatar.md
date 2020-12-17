@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Avatar API
@@ -16,9 +16,9 @@ If:
 
 - No user with the given public email address is found, results from external avatar services are
   returned.
-- Public visibility is restricted, response will be `403 Forbidden` when unauthenticated.
+- Public visibility is restricted, response is `403 Forbidden` when unauthenticated.
 
-NOTE: **Note:**
+NOTE:
 This endpoint can be accessed without authentication.
 
 ```plaintext

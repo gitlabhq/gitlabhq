@@ -1,7 +1,7 @@
 ---
 stage: Monitor
 group: Health
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Tracing
@@ -38,4 +38,4 @@ GitLab provides an easy way to open the Jaeger UI from within your project:
 1. Navigate to your project's **Settings > Operations** and provide the Jaeger URL.
 1. Click **Save changes** for the changes to take effect.
 1. You can now visit **Operations > Tracing** in your project's sidebar and
-   GitLab will redirect you to the configured Jaeger URL.
+   GitLab redirects you to the configured Jaeger URL.

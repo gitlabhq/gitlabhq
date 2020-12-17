@@ -94,9 +94,20 @@ module Clusters
         return unless enabled?
 
         pods = read_pods(environment.deployment_namespace)
+        deployments = read_deployments(environment.deployment_namespace)
 
-        # extract_relevant_pod_data avoids uploading all the pod info into ReactiveCaching
-        { pods: extract_relevant_pod_data(pods) }
+        ingresses = if ::Feature.enabled?(:canary_ingress_weight_control, environment.project, default_enabled: true)
+                      read_ingresses(environment.deployment_namespace)
+                    else
+                      []
+                    end
+
+        # extract only the data required for display to avoid unnecessary caching
+        {
+          pods: extract_relevant_pod_data(pods),
+          deployments: extract_relevant_deployment_data(deployments),
+          ingresses: extract_relevant_ingress_data(ingresses)
+        }
       end
 
       def terminals(environment, data)
@@ -107,6 +118,25 @@ module Clusters
 
       def kubeclient
         @kubeclient ||= build_kube_client!
+      end
+
+      def rollout_status(environment, data)
+        project = environment.project
+
+        deployments = filter_by_project_environment(data[:deployments], project.full_path_slug, environment.slug)
+        pods = filter_by_project_environment(data[:pods], project.full_path_slug, environment.slug)
+        ingresses = data[:ingresses].presence || []
+
+        ::Gitlab::Kubernetes::RolloutStatus.from_deployments(*deployments, pods_attrs: pods, ingresses: ingresses)
+      end
+
+      def ingresses(namespace)
+        ingresses = read_ingresses(namespace)
+        ingresses.map { |ingress| ::Gitlab::Kubernetes::Ingress.new(ingress) }
+      end
+
+      def patch_ingress(namespace, ingress, data)
+        kubeclient.patch_ingress(ingress.name, data, namespace)
       end
 
       private
@@ -136,6 +166,18 @@ module Clusters
 
       def read_pods(namespace)
         kubeclient.get_pods(namespace: namespace).as_json
+      rescue Kubeclient::ResourceNotFoundError
+        []
+      end
+
+      def read_deployments(namespace)
+        kubeclient.get_deployments(namespace: namespace).as_json
+      rescue Kubeclient::ResourceNotFoundError
+        []
+      end
+
+      def read_ingresses(namespace)
+        kubeclient.get_ingresses(namespace: namespace).as_json
       rescue Kubeclient::ResourceNotFoundError
         []
       end
@@ -231,8 +273,24 @@ module Clusters
           }
         end
       end
+
+      def extract_relevant_deployment_data(deployments)
+        deployments.map do |deployment|
+          {
+            'metadata' => deployment.fetch('metadata', {}).slice('name', 'generation', 'labels', 'annotations'),
+            'spec' => deployment.fetch('spec', {}).slice('replicas'),
+            'status' => deployment.fetch('status', {}).slice('observedGeneration')
+          }
+        end
+      end
+
+      def extract_relevant_ingress_data(ingresses)
+        ingresses.map do |ingress|
+          {
+            'metadata' => ingress.fetch('metadata', {}).slice('name', 'labels', 'annotations')
+          }
+        end
+      end
     end
   end
 end
-
-Clusters::Platforms::Kubernetes.prepend_if_ee('EE::Clusters::Platforms::Kubernetes')

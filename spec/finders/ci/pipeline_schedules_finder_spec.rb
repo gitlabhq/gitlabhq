@@ -8,7 +8,7 @@ RSpec.describe Ci::PipelineSchedulesFinder do
   let!(:active_schedule) { create(:ci_pipeline_schedule, project: project) }
   let!(:inactive_schedule) { create(:ci_pipeline_schedule, :inactive, project: project) }
 
-  subject { described_class.new(project).execute(params) }
+  subject { described_class.new(project).execute(**params) }
 
   describe "#execute" do
     context 'when the scope is nil' do

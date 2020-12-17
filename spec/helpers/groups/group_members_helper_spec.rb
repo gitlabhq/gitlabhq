@@ -74,13 +74,15 @@ RSpec.describe Groups::GroupMembersHelper do
 
     before do
       allow(helper).to receive(:group_group_member_path).with(group, ':id').and_return('/groups/foo-bar/-/group_members/:id')
+      allow(helper).to receive(:can?).with(current_user, :admin_group_member, group).and_return(true)
     end
 
     it 'returns expected hash' do
       expect(helper.group_members_list_data_attributes(group, present_members([group_member]))).to include({
         members: helper.members_data_json(group, present_members([group_member])),
         member_path: '/groups/foo-bar/-/group_members/:id',
-        group_id: group.id
+        group_id: group.id,
+        can_manage_members: 'true'
       })
     end
   end

@@ -59,6 +59,13 @@ module Gitlab
             raise ReindexError, "failed to reindex #{index}: #{message}"
           end
 
+          # Some expression indexes (aka functional indexes)
+          # require additional statistics. The existing statistics
+          # are tightly bound to the original index. We have to
+          # rebuild statistics for the new index before dropping
+          # the original one.
+          rebuild_statistics if index.expression?
+
           yield replacement_index
         ensure
           begin
@@ -94,6 +101,14 @@ module Gitlab
               IF EXISTS #{quote_table_name(schema)}.#{quote_table_name(name)}
             SQL
           end
+        end
+
+        def rebuild_statistics
+          logger.info("rebuilding table statistics for #{index.schema}.#{index.tablename}")
+
+          connection.execute(<<~SQL)
+            ANALYZE #{quote_table_name(index.schema)}.#{quote_table_name(index.tablename)}
+          SQL
         end
 
         def replacement_index_name

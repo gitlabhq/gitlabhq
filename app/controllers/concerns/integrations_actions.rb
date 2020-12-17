@@ -6,7 +6,6 @@ module IntegrationsActions
   included do
     include ServiceParams
 
-    before_action :not_found, unless: :integrations_enabled?
     before_action :integration, only: [:edit, :update, :test]
   end
 
@@ -43,11 +42,15 @@ module IntegrationsActions
     render json: {}, status: :ok
   end
 
-  private
+  def reset
+    integration.destroy!
 
-  def integrations_enabled?
-    false
+    flash[:notice] = s_('Integrations|This integration, and inheriting projects were reset.')
+
+    render json: {}, status: :ok
   end
+
+  private
 
   def integration
     # Using instance variable `@service` still required as it's used in ServiceParams.

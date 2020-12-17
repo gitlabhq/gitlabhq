@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
 class SentryIssue < ApplicationRecord
+  include Importable
+
   belongs_to :issue
 
-  validates :issue, uniqueness: true, presence: true
+  validates :issue, uniqueness: true
+  validates :issue, presence: true, unless: :importing?
   validates :sentry_issue_identifier, presence: true
   validate :ensure_sentry_issue_identifier_is_unique_per_project
 

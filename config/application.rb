@@ -138,6 +138,7 @@ module Gitlab
       import_url
       elasticsearch_url
       search
+      jwt
       otp_attempt
       sentry_dsn
       trace
@@ -187,6 +188,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/error_tracking_index.css"
     config.assets.precompile << "page_bundles/signup.css"
     config.assets.precompile << "page_bundles/ide.css"
+    config.assets.precompile << "page_bundles/import.css"
     config.assets.precompile << "page_bundles/issues_list.css"
     config.assets.precompile << "page_bundles/jira_connect.css"
     config.assets.precompile << "page_bundles/jira_connect_users.css"
@@ -197,6 +199,8 @@ module Gitlab
     config.assets.precompile << "page_bundles/pipelines.css"
     config.assets.precompile << "page_bundles/pipeline_schedules.css"
     config.assets.precompile << "page_bundles/productivity_analytics.css"
+    config.assets.precompile << "page_bundles/profile_two_factor_auth.css"
+    config.assets.precompile << "page_bundles/security_dashboard.css"
     config.assets.precompile << "page_bundles/terminal.css"
     config.assets.precompile << "page_bundles/todos.css"
     config.assets.precompile << "page_bundles/reports.css"
@@ -204,6 +208,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/wiki.css"
     config.assets.precompile << "page_bundles/xterm.css"
     config.assets.precompile << "page_bundles/alert_management_settings.css"
+    config.assets.precompile << "page_bundles/oncall_schedules.css"
     config.assets.precompile << "lazy_bundles/cropper.css"
     config.assets.precompile << "lazy_bundles/select2.css"
     config.assets.precompile << "performance_bar.css"
@@ -223,11 +228,6 @@ module Gitlab
     config.assets.precompile << "icons.svg"
     config.assets.precompile << "icons.json"
     config.assets.precompile << "illustrations/*.svg"
-
-    # Import Fontawesome fonts
-    config.assets.paths << "#{config.root}/node_modules/font-awesome/fonts"
-    config.assets.precompile << "fontawesome-webfont.woff2"
-    config.assets.precompile << "fontawesome-webfont.woff"
 
     # Import css for xterm
     config.assets.paths << "#{config.root}/node_modules/xterm/src/"

@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # QueryRecorder
@@ -10,7 +10,7 @@ QueryRecorder is a tool for detecting the [N+1 queries problem](https://guides.r
 
 > Implemented in [spec/support/query_recorder.rb](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/support/helpers/query_recorder.rb) via [9c623e3e](https://gitlab.com/gitlab-org/gitlab-foss/commit/9c623e3e5d7434f2e30f7c389d13e5af4ede770a)
 
-As a rule, merge requests [should not increase query counts](merge_request_performance_guidelines.md#query-counts). If you find yourself adding something like `.includes(:author, :assignee)` to avoid having `N+1` queries, consider using QueryRecorder to enforce this with a test. Without this, a new feature which causes an additional model to be accessed will silently reintroduce the problem.
+As a rule, merge requests [should not increase query counts](merge_request_performance_guidelines.md#query-counts). If you find yourself adding something like `.includes(:author, :assignee)` to avoid having `N+1` queries, consider using QueryRecorder to enforce this with a test. Without this, a new feature which causes an additional model to be accessed can silently reintroduce the problem.
 
 ## How it works
 
@@ -30,7 +30,7 @@ In some cases the query count might change slightly between runs for unrelated r
 
 ## Cached queries
 
-By default, QueryRecorder will ignore [cached queries](merge_request_performance_guidelines.md#cached-queries) in the count. However, it may be better to count
+By default, QueryRecorder ignores [cached queries](merge_request_performance_guidelines.md#cached-queries) in the count. However, it may be better to count
 all queries to avoid introducing an N+1 query that may be masked by the statement cache.
 To do this, this requires the `:use_sql_query_cache` flag to be set.
 You should pass the `skip_cached` variable to `QueryRecorder` and use the `exceed_all_query_limit` matcher:
@@ -73,7 +73,7 @@ There are multiple ways to find the source of queries.
 
 - View the call backtrace for the specific `QueryRecorder` instance you want
   by using `ActiveRecord::QueryRecorder.new(query_recorder_debug: true)`. The output
-  will be in `test.log`
+  is stored in file `test.log`.
 
 - Enable the call backtrace for all tests using the `QUERY_RECORDER_DEBUG` environment variable.
 
@@ -83,7 +83,7 @@ There are multiple ways to find the source of queries.
   QUERY_RECORDER_DEBUG=1 bundle exec rspec spec/requests/api/projects_spec.rb
   ```
 
-  This will log calls to QueryRecorder into the `test.log` file. For example:
+  This logs calls to QueryRecorder into the `test.log` file. For example:
 
   ```sql
    QueryRecorder SQL: SELECT COUNT(*) FROM "issues" WHERE "issues"."deleted_at" IS NULL AND "issues"."project_id" = $1 AND ("issues"."state" IN ('opened')) AND "issues"."confidential" = $2

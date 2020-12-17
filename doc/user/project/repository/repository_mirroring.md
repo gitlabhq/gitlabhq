@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 disqus_identifier: 'https://docs.gitlab.com/ee/workflow/repository_mirroring.html'
 ---
 
@@ -11,8 +11,7 @@ Repository mirroring allows for mirroring of repositories to and from external s
 used to mirror branches, tags, and commits between repositories.
 
 A repository mirror at GitLab will be updated automatically. You can also manually trigger an update
-at most once every 5 minutes. Follow [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/237891)
-for discussions on how to potentially reduce the delay.
+at most once every 5 minutes on GitLab.com with [the limit set by the administrator on self-managed instances](../../../administration/instance_limits.md#pull-mirroring-interval).
 
 ## Overview
 
@@ -30,7 +29,7 @@ Users with at least [Developer access](../../permissions.md) to the project can 
 immediate update, unless:
 
 - The mirror is already being updated.
-- 5 minutes haven't elapsed since its last update.
+- The [limit for pull mirroring interval seconds](../../../administration/instance_limits.md#pull-mirroring-interval) has not elapsed since its last update.
 
 For security reasons, in [GitLab 12.10 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27166),
 the URL to the original repository is only displayed to users with
@@ -117,14 +116,14 @@ skipped, allowing `master` and `stable` to be updated. The mirror status will
 reflect that `develop` has diverged and was skipped, and be marked as a failed
 update.
 
-NOTE: **Note:**
+NOTE:
 After the mirror is created, this option can currently only be modified via the [API](../../../api/remote_mirrors.md).
 
 ## Setting up a push mirror from GitLab to GitHub **(CORE)**
 
 To set up a mirror from GitLab to GitHub, you need to follow these steps:
 
-1. Create a [GitHub personal access token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token) with the `public_repo` box checked.
+1. Create a [GitHub personal access token](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token) with the `public_repo` box checked.
 1. Fill in the **Git repository URL** field using this format: `https://<your_github_username>@github.com/<your_github_group>/<your_github_project>.git`.
 1. Fill in **Password** field with your GitHub personal access token.
 1. Click the **Mirror repository** button.
@@ -137,11 +136,11 @@ The repository will push soon. To force a push, click the **Update now** (**{ret
 
 AWS CodeCommit push mirroring is currently the best way to connect GitLab repositories to AWS CodePipeline, as GitLab is not yet supported as one of their Source Code Management (SCM) providers.
 
-Each new AWS Codepipeline needs significant AWS infrastructure setup. It also requires an individual pipeline per branch.
+Each new AWS CodePipeline needs significant AWS infrastructure setup. It also requires an individual pipeline per branch.
 
 If AWS CodeDeploy is the final step of a CodePipeline, you can, instead, leverage GitLab CI/CD pipelines and simply use the AWS CLI in the final job in `.gitlab-ci.yml` to deploy to CodeDeploy.
 
-NOTE: **Note:**
+NOTE:
 GitLab-to-AWS-CodeCommit push mirroring cannot use SSH authentication until [GitLab issue 34014](https://gitlab.com/gitlab-org/gitlab/-/issues/34014) is resolved.
 
 To set up a mirror from GitLab to AWS CodeCommit:
@@ -177,7 +176,7 @@ To set up a mirror from GitLab to AWS CodeCommit:
 1. Click the **Security credentials** tab.
 1. Under **HTTPS Git credentials for AWS CodeCommit** click **Generate credentials**.
 
-   NOTE: **Note:**
+   NOTE:
    This Git user ID and password is specific to communicating with CodeCommit. Do
    not confuse it with the IAM user ID or AWS keys of this user.
 
@@ -256,7 +255,7 @@ Changes pushed to the upstream repository will be pulled into the GitLab reposit
 - Automatically within a certain period of time.
 - When a [forced update](#forcing-an-update) is initiated.
 
-CAUTION: **Caution:**
+WARNING:
 If you do manually update a branch in the GitLab repository, the branch will become diverged from
 upstream and GitLab will no longer automatically update this branch to prevent any changes from being lost.
 Also note that deleted branches and tags in the upstream repository will not be reflected in the GitLab repository.
@@ -301,7 +300,7 @@ To get started:
 1. Navigate to your project's **Settings > Repository** and expand the **Mirroring repositories** section.
 1. Enter an `ssh://` URL for mirroring.
 
-NOTE: **Note:**
+NOTE:
 SCP-style URLs (that is, `git@example.com:group/project.git`) are not supported at this time.
 
 Entering the URL adds two buttons to the page:
@@ -320,7 +319,7 @@ fingerprints in the open for you to check:
 
 - [AWS CodeCommit](https://docs.aws.amazon.com/codecommit/latest/userguide/regions.html#regions-fingerprints)
 - [Bitbucket](https://support.atlassian.com/bitbucket-cloud/docs/configure-ssh-and-two-step-verification/)
-- [GitHub](https://docs.github.com/en/github/authenticating-to-github/githubs-ssh-key-fingerprints)
+- [GitHub](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/githubs-ssh-key-fingerprints)
 - [GitLab.com](../../gitlab_com/index.md#ssh-host-keys-fingerprints)
 - [Launchpad](https://help.launchpad.net/SSHFingerprints)
 - [Savannah](http://savannah.gnu.org/maintenance/SshAccess/)
@@ -337,7 +336,7 @@ $ cat /etc/ssh/ssh_host*pub | ssh-keygen -E md5 -l -f -
 2048 MD5:3f:72:be:3d:62:03:5c:62:83:e8:6e:14:34:3a:85:1d root@example.com (RSA)
 ```
 
-NOTE: **Note:**
+NOTE:
 You may need to exclude `-E md5` for some older versions of SSH.
 
 When mirroring the repository, GitLab will now check that at least one of the
@@ -364,7 +363,7 @@ If you need to change the key at any time, you can remove and re-add the mirror
 to generate a new key. You'll have to update the other repository with the new
 key to keep the mirror running.
 
-NOTE: **Note:**
+NOTE:
 The generated keys are stored in the GitLab database, not in the filesystem. Therefore,
 SSH public key authentication for mirrors cannot be used in a pre-receive hook.
 
@@ -375,7 +374,7 @@ SSH public key authentication for mirrors cannot be used in a pre-receive hook.
 You can choose to always update your local branches with remote versions, even if they have
 diverged from the remote.
 
-CAUTION: **Caution:**
+WARNING:
 For mirrored branches, enabling this option results in the loss of local changes.
 
 To use this option, check the **Overwrite diverged branches** box when creating a repository mirror.
@@ -421,7 +420,7 @@ update button which is available on the **Mirroring repositories** section of th
 
 ## Bidirectional mirroring **(STARTER)**
 
-CAUTION: **Caution:**
+WARNING:
 Bidirectional mirroring may cause conflicts.
 
 If you configure a GitLab repository to both pull from, and push to, the same remote source, there
@@ -464,7 +463,7 @@ To do this:
 
 ### Preventing conflicts using a `pre-receive` hook
 
-CAUTION: **Warning:**
+WARNING:
 The solution proposed will negatively impact the performance of
 Git push operations because they will be proxied to the upstream Git
 repository.
@@ -547,7 +546,7 @@ Note that this sample has a few limitations:
 
 ### Mirroring with Perforce Helix via Git Fusion **(STARTER)**
 
-CAUTION: **Warning:**
+WARNING:
 Bidirectional mirroring should not be used as a permanent configuration. Refer to
 [Migrating from Perforce Helix](../import/perforce.md) for alternative migration approaches.
 

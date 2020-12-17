@@ -9,7 +9,7 @@ RSpec.describe 'Experience level screen' do
   before do
     group.add_owner(user)
     gitlab_sign_in(user)
-    stub_experiment_for_user(onboarding_issues: true)
+    stub_experiment_for_subject(onboarding_issues: true)
     visit users_sign_up_experience_level_path(namespace_path: group.to_param)
   end
 
@@ -23,14 +23,14 @@ RSpec.describe 'Experience level screen' do
 
   it 'shows the option for novice' do
     is_expected.to have_content('Novice')
-    is_expected.to have_content('I’m not very familiar with the basics of project management and DevOps')
-    is_expected.to have_content('Show me everything')
+    is_expected.to have_content('I’m not familiar with the basics of DevOps')
+    is_expected.to have_content('Show me the basics')
   end
 
   it 'shows the option for experienced' do
     is_expected.to have_content('Experienced')
-    is_expected.to have_content('I’m familiar with the basics of project management and DevOps')
-    is_expected.to have_content('Show me more advanced stuff')
+    is_expected.to have_content('I’m familiar with the basics of DevOps')
+    is_expected.to have_content('Show me advanced features')
   end
 
   it 'does not display any flash messages' do

@@ -21,6 +21,7 @@ module Types
     field :description, GraphQL::STRING_TYPE, null: true,
           description: 'Description of the namespace'
     markdown_field :description_html, null: true
+
     field :visibility, GraphQL::STRING_TYPE, null: true,
           description: 'Visibility of the namespace'
     field :lfs_enabled, GraphQL::BOOLEAN_TYPE, null: true, method: :lfs_enabled?,
@@ -30,12 +31,15 @@ module Types
 
     field :root_storage_statistics, Types::RootStorageStatisticsType,
           null: true,
-          description: 'Aggregated storage statistics of the namespace. Only available for root namespaces',
-          resolve: -> (obj, _args, _ctx) { Gitlab::Graphql::Loaders::BatchRootStorageStatisticsLoader.new(obj.id).find }
+          description: 'Aggregated storage statistics of the namespace. Only available for root namespaces'
 
     field :projects, Types::ProjectType.connection_type, null: false,
           description: 'Projects within this namespace',
           resolver: ::Resolvers::NamespaceProjectsResolver
+
+    def root_storage_statistics
+      Gitlab::Graphql::Loaders::BatchRootStorageStatisticsLoader.new(object.id).find
+    end
   end
 end
 

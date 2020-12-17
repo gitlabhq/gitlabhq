@@ -49,7 +49,7 @@ RSpec.describe ApplicationSettings::UpdateService do
         expect(application_settings.terms).to eq('Be nice!')
       end
 
-      it 'Only queries once when the terms are changed' do
+      it 'only queries once when the terms are changed' do
         create(:term, terms: 'Other terms')
         expect(application_settings.terms).to eq('Other terms')
 
@@ -257,7 +257,7 @@ RSpec.describe ApplicationSettings::UpdateService do
       described_class.new(application_settings, admin, { external_authorization_service_enabled: false }).execute
     end
 
-    it 'does validate labels if external authorization gets enabled ' do
+    it 'does validate labels if external authorization gets enabled' do
       expect_any_instance_of(described_class).to receive(:validate_classification_label)
 
       described_class.new(application_settings, admin, { external_authorization_service_enabled: true }).execute
@@ -348,6 +348,30 @@ RSpec.describe ApplicationSettings::UpdateService do
       application_settings.reload
 
       expect(application_settings.issues_create_limit).to eq(600)
+    end
+  end
+
+  context 'when require_admin_approval_after_user_signup changes' do
+    context 'when it goes from enabled to disabled' do
+      let(:params) { { require_admin_approval_after_user_signup: false } }
+
+      it 'calls ApproveBlockedPendingApprovalUsersWorker' do
+        expect(ApproveBlockedPendingApprovalUsersWorker).to receive(:perform_async)
+
+        subject.execute
+      end
+    end
+
+    context 'when it goes from disabled to enabled' do
+      let(:params) { { require_admin_approval_after_user_signup: true } }
+
+      it 'does not call ApproveBlockedPendingApprovalUsersWorker' do
+        application_settings.update!(require_admin_approval_after_user_signup: false)
+
+        expect(ApproveBlockedPendingApprovalUsersWorker).not_to receive(:perform_async)
+
+        subject.execute
+      end
     end
   end
 end

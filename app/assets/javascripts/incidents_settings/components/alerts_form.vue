@@ -86,7 +86,7 @@ export default {
     <form ref="settingsForm" @submit.prevent="updateAlertsIntegrationSettings">
       <gl-form-group class="gl-pl-0">
         <gl-form-checkbox v-model="createIssueEnabled" data-qa-selector="create_issue_checkbox">
-          <span>{{ $options.i18n.createIssue.label }}</span>
+          <span>{{ $options.i18n.createIncident.label }}</span>
         </gl-form-checkbox>
       </gl-form-group>
 
@@ -96,7 +96,7 @@ export default {
         class="col-8 col-md-9 gl-px-6"
       >
         <label class="gl-display-inline-flex" for="alert-integration-settings-issue-template">
-          {{ $options.i18n.issueTemplate.label }}
+          {{ $options.i18n.incidentTemplate.label }}
           <gl-link :href="$options.ISSUE_TEMPLATES_DOCS_LINK" target="_blank">
             <gl-icon name="question" :size="12" />
           </gl-link>

@@ -25,6 +25,13 @@ module Gitlab
         relation.select(relation.all.table[column].sum).to_sql
       end
 
+      # For estimated distinct count use exact query instead of hll
+      # buckets query, because it can't be used to obtain estimations without
+      # supplementary ruby code present in Gitlab::Database::PostgresHll::BatchDistinctCounter
+      def estimate_batch_distinct_count(relation, column = nil, *rest)
+        raw_sql(relation, column, :distinct)
+      end
+
       private
 
       def raw_sql(relation, column, distinct = nil)

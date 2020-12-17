@@ -1,0 +1,5 @@
+---
+title: Add metric for dead Sidekiq jobs
+merge_request: 48361
+author:
+type: changed

@@ -1,63 +1,63 @@
 $gray-10: #1f1f1f;
-$gray-50: #2e2e2e;
-$gray-100: #4f4f4f;
-$gray-200: #707070;
-$gray-300: #919191;
-$gray-400: #a7a7a7;
-$gray-500: #bababa;
-$gray-600: #ccc;
-$gray-700: #dfdfdf;
-$gray-800: #f2f2f2;
+$gray-50: #303030;
+$gray-100: #404040;
+$gray-200: #525252;
+$gray-300: #5e5e5e;
+$gray-400: #868686;
+$gray-500: #999;
+$gray-600: #bfbfbf;
+$gray-700: #dbdbdb;
+$gray-800: #f0f0f0;
 $gray-900: #fafafa;
 $gray-950: #fff;
 
-$green-50: #072b15;
-$green-100: #0a4020;
-$green-200: #0e5a2d;
-$green-300: #12753a;
-$green-400: #168f48;
-$green-500: #1aaa55;
-$green-600: #37b96d;
-$green-700: #75d09b;
-$green-800: #b3e6c8;
-$green-900: #dcf5e7;
+$green-50: #0a4020;
+$green-100: #0d532a;
+$green-200: #24663b;
+$green-300: #217645;
+$green-400: #108548;
+$green-500: #2da160;
+$green-600: #52b87a;
+$green-700: #91d4a8;
+$green-800: #c3e6cd;
+$green-900: #ecf4ee;
 $green-950: #f1fdf6;
 
-$blue-50: #0a2744;
-$blue-100: #0f3b66;
-$blue-200: #134a81;
-$blue-300: #17599c;
-$blue-400: #1b69b6;
-$blue-500: #1f78d1;
-$blue-600: #418cd8;
-$blue-700: #73afea;
-$blue-800: #b8d6f4;
-$blue-900: #e4f0fb;
-$blue-950: #f6fafe;
+$blue-50: #033464;
+$blue-100: #064787;
+$blue-200: #0b5cad;
+$blue-300: #1068bf;
+$blue-400: #1f75cb;
+$blue-500: #428fdc;
+$blue-600: #63a6e9;
+$blue-700: #9dc7f1;
+$blue-800: #cbe2f9;
+$blue-900: #e9f3fc;
+$blue-950: #f2f9ff;
 
-$orange-50: #592800;
-$orange-100: #853c00;
-$orange-200: #a35200;
-$orange-300: #c26700;
-$orange-400: #de7e00;
-$orange-500: #fc9403;
-$orange-600: #fca429;
-$orange-700: #fdbc60;
-$orange-800: #fed69f;
-$orange-900: #fff1de;
-$orange-950: #fffaf4;
+$orange-50: #5c2900;
+$orange-100: #703800;
+$orange-200: #8f4700;
+$orange-300: #9e5400;
+$orange-400: #ab6100;
+$orange-500: #c17d10;
+$orange-600: #d99530;
+$orange-700: #e9be74;
+$orange-800: #f5d9a8;
+$orange-900: #fdf1dd;
+$orange-950: #fff4e1;
 
-$red-50: #4b140b;
-$red-100: #711e11;
-$red-200: #8b2615;
-$red-300: #a62d19;
-$red-400: #c0341d;
-$red-500: #db3b21;
-$red-600: #e05842;
-$red-700: #ea8271;
-$red-800: #f2b4a9;
-$red-900: #fbe5e1;
-$red-950: #fef6f5;
+$red-50: #660e00;
+$red-100: #8d1300;
+$red-200: #ae1800;
+$red-300: #c91c00;
+$red-400: #dd2b0e;
+$red-500: #ec5941;
+$red-600: #f57f6c;
+$red-700: #fcb5aa;
+$red-800: #fdd4cd;
+$red-900: #fcf1ef;
+$red-950: #fff4f3;
 
 $indigo-50: #1a1a40;
 $indigo-100: #292961;
@@ -166,14 +166,16 @@ body.gl-dark {
 
   --white: #{$white};
   --black: #{$black};
+
+  --svg-status-bg: #{$white};
 }
 
 $border-white-light: $gray-900;
 $border-white-normal: $gray-900;
 
-$body-bg: $gray-50;
-$input-bg: $gray-100;
-$input-focus-bg: $gray-100;
+$body-bg: $gray-10;
+$input-bg: $white;
+$input-focus-bg: $white;
 $input-color: $gray-900;
 $input-group-addon-bg: $gray-900;
 

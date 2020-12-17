@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'User edit profile' do
+  include Spec::Support::Helpers::Features::NotesHelpers
+
   let(:user) { create(:user) }
 
   before do
@@ -226,7 +228,7 @@ RSpec.describe 'User edit profile' do
       end
 
       def open_edit_status_modal
-        open_modal  'Edit status'
+        open_modal 'Edit status'
       end
 
       def set_user_status_in_modal
@@ -289,6 +291,10 @@ RSpec.describe 'User edit profile' do
 
         toggle_busy_status
         set_user_status_in_modal
+
+        wait_for_requests
+        visit root_path(user)
+
         open_edit_status_modal
 
         expect(busy_status.checked?).to eq(true)
@@ -366,26 +372,37 @@ RSpec.describe 'User edit profile' do
         expect(page).not_to have_selector '.cover-status'
       end
 
-      it 'clears the user status with the "Remove status" button' do
-        user_status = create(:user_status, user: user, message: 'Eating bread', emoji: 'stuffed_flatbread')
+      context 'Remove status button' do
+        before do
+          user.status = UserStatus.new(message: 'Eating bread', emoji: 'stuffed_flatbread')
 
-        visit_user
-        wait_for_requests
+          visit_user
+          wait_for_requests
 
-        within('.cover-status') do
-          expect(page).to have_emoji(user_status.emoji)
-          expect(page).to have_content user_status.message
+          open_edit_status_modal
+
+          page.within "#set-user-status-modal" do
+            click_button 'Remove status'
+          end
+
+          wait_for_requests
         end
 
-        open_edit_status_modal
+        it 'clears the user status with the "Remove status" button' do
+          visit_user
 
-        page.within "#set-user-status-modal" do
-          click_button 'Remove status'
+          expect(page).not_to have_selector '.cover-status'
         end
 
-        visit_user
+        it 'shows the "Set status" menu item in the user menu' do
+          visit root_path(user)
 
-        expect(page).not_to have_selector '.cover-status'
+          find('.header-user-dropdown-toggle').click
+
+          page.within ".header-user" do
+            expect(page).to have_content('Set status')
+          end
+        end
       end
 
       it 'displays a default emoji if only message is entered' do
@@ -395,6 +412,45 @@ RSpec.describe 'User edit profile' do
 
         within('.js-toggle-emoji-menu') do
           expect(page).to have_emoji('speech_balloon')
+        end
+      end
+
+      context 'note header' do
+        let(:project) { create(:project_empty_repo, :public) }
+        let(:issue) { create(:issue, project: project) }
+        let(:emoji) { "stuffed_flatbread" }
+
+        before do
+          project.add_guest(user)
+          create(:user_status, user: user, message: 'Taking notes', emoji: emoji)
+
+          visit(project_issue_path(project, issue))
+
+          add_note("This is a comment")
+          visit(project_issue_path(project, issue))
+
+          wait_for_requests
+        end
+
+        it 'displays the status emoji' do
+          first_note = page.find_all(".main-notes-list .timeline-entry").first
+
+          expect(first_note).to have_emoji(emoji)
+        end
+
+        it 'clears the status emoji' do
+          open_edit_status_modal
+
+          page.within "#set-user-status-modal" do
+            click_button 'Remove status'
+          end
+
+          visit(project_issue_path(project, issue))
+          wait_for_requests
+
+          first_note = page.find_all(".main-notes-list .timeline-entry").first
+
+          expect(first_note).not_to have_css('.user-status-emoji')
         end
       end
 

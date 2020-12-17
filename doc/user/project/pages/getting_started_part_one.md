@@ -1,7 +1,7 @@
 ---
 stage: Release
-group: Release Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+group: Release
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # GitLab Pages domain names, URLs, and baseurls
@@ -33,7 +33,7 @@ Pages domains are `*.gitlab.io`.
 | Project pages owned by a group | `projectname` | `http(s)://groupname.example.io/projectname`|
 | Project pages owned by a subgroup | `subgroup/projectname` | `http(s)://groupname.example.io/subgroup/projectname`|
 
-CAUTION: **Warning:**
+WARNING:
 There are some known [limitations](introduction.md#limitations)
 regarding namespaces served under the general domain name and HTTPS.
 Make sure to read that section.
@@ -80,6 +80,9 @@ To understand Pages domains clearly, read the examples below.
 
 ## URLs and baseurls
 
+NOTE:
+The `baseurl` option might be called named differently in some static site generators.
+
 Every Static Site Generator (SSG) default configuration expects
 to find your website under a (sub)domain (`example.com`), not
 in a subdirectory of that domain (`example.com/subdir`). Therefore,
@@ -96,7 +99,7 @@ baseurl: "/blog"
 ```
 
 On the contrary, if you deploy your website after forking one of
-our [default examples](https://gitlab.com/pages), the baseurl will
+our [default examples](https://gitlab.com/pages), the `baseurl` will
 already be configured this way, as all examples there are project
 websites. If you decide to make yours a user or group website, you'll
 have to remove this configuration from your project. For the Jekyll
@@ -105,6 +108,9 @@ example we've just mentioned, you'd have to change Jekyll's `_config.yml` to:
 ```yaml
 baseurl: ""
 ```
+
+If you're using the [plain HTML example](https://gitlab.com/pages/plain-html),
+you don't need to set a `baseurl`.
 
 ## Custom domains
 

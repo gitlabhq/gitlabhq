@@ -18,8 +18,13 @@ module TokenAuthenticatableStrategies
       raise NotImplementedError
     end
 
-    def set_token(instance)
+    def set_token(instance, token)
       raise NotImplementedError
+    end
+
+    # Default implementation returns the token as-is
+    def format_token(instance, token)
+      instance.send("format_#{@token_field}", token) # rubocop:disable GitlabSecurity/PublicSend
     end
 
     def ensure_token(instance)
@@ -57,7 +62,8 @@ module TokenAuthenticatableStrategies
 
     def write_new_token(instance)
       new_token = generate_available_token
-      set_token(instance, new_token)
+      formatted_token = format_token(instance, new_token)
+      set_token(instance, formatted_token)
     end
 
     def unique

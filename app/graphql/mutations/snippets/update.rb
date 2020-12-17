@@ -9,7 +9,7 @@ module Mutations
 
       argument :id, ::Types::GlobalIDType[::Snippet],
                required: true,
-               description: 'The global id of the snippet to update'
+               description: 'The global ID of the snippet to update'
 
       argument :title, GraphQL::STRING_TYPE,
                required: false,
@@ -27,11 +27,11 @@ module Mutations
                description: 'Actions to perform over the snippet repository and blobs',
                required: false
 
-      def resolve(args)
-        snippet = authorized_find!(id: args.delete(:id))
+      def resolve(id:, **args)
+        snippet = authorized_find!(id: id)
 
         result = ::Snippets::UpdateService.new(snippet.project,
-                                               context[:current_user],
+                                               current_user,
                                                update_params(args)).execute(snippet)
         snippet = result.payload[:snippet]
 

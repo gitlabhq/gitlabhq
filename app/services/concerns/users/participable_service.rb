@@ -8,10 +8,14 @@ module Users
       attr_reader :noteable
     end
 
+    private
+
     def noteable_owner
       return [] unless noteable && noteable.author.present?
 
-      [user_as_hash(noteable.author)]
+      [noteable.author].tap do |users|
+        preload_status(users)
+      end
     end
 
     def participants_in_noteable
@@ -22,23 +26,29 @@ module Users
     end
 
     def sorted(users)
-      users.uniq.to_a.compact.sort_by(&:username).map do |user|
-        user_as_hash(user)
+      users.uniq.to_a.compact.sort_by(&:username).tap do |users|
+        preload_status(users)
       end
     end
 
     def groups
-      group_counts = GroupMember
-                       .of_groups(current_user.authorized_groups)
-                       .non_request
-                       .count_users_by_group_id
-
-      current_user.authorized_groups.with_route.sort_by(&:path).map do |group|
-        group_as_hash(group, group_counts)
-      end
+      current_user.authorized_groups.with_route.sort_by(&:path)
     end
 
-    private
+    def render_participants_as_hash(participants)
+      participants.map(&method(:participant_as_hash))
+    end
+
+    def participant_as_hash(participant)
+      case participant
+      when Group
+        group_as_hash(participant)
+      when User
+        user_as_hash(participant)
+      else
+        participant
+      end
+    end
 
     def user_as_hash(user)
       {
@@ -46,12 +56,11 @@ module Users
         username: user.username,
         name: user.name,
         avatar_url: user.avatar_url,
-        availability: nil
+        availability: lazy_user_availability(user).itself # calling #itself to avoid returning a BatchLoader instance
       }
-      # Return nil for availability for now due to https://gitlab.com/gitlab-org/gitlab/-/issues/285442
     end
 
-    def group_as_hash(group, group_counts)
+    def group_as_hash(group)
       {
         type: group.class.name,
         username: group.full_path,
@@ -60,6 +69,28 @@ module Users
         count: group_counts.fetch(group.id, 0),
         mentionsDisabled: group.mentions_disabled
       }
+    end
+
+    def group_counts
+      @group_counts ||= GroupMember
+        .of_groups(current_user.authorized_groups)
+        .non_request
+        .count_users_by_group_id
+    end
+
+    def preload_status(users)
+      users.each { |u| lazy_user_availability(u) }
+    end
+
+    def lazy_user_availability(user)
+      BatchLoader.for(user.id).batch do |user_ids, loader|
+        user_ids.each_slice(1_000) do |sliced_user_ids|
+          UserStatus
+            .select(:user_id, :availability)
+            .primary_key_in(sliced_user_ids)
+            .each { |status| loader.call(status.user_id, status.availability) }
+        end
+      end
     end
   end
 end

@@ -26,5 +26,9 @@ FactoryBot.define do
     trait :invalid do
       token_digest { nil }
     end
+
+    trait :no_prefix do
+      after(:build) { |personal_access_token| personal_access_token.set_token(Devise.friendly_token) }
+    end
   end
 end

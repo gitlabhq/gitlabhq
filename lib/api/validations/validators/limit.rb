@@ -9,9 +9,10 @@ module API
 
           return if value.size <= @option
 
-          raise Grape::Exceptions::Validation,
+          raise Grape::Exceptions::Validation.new(
             params: [@scope.full_name(attr_name)],
             message: "#{@scope.full_name(attr_name)} must be less than #{@option} characters"
+          )
         end
       end
     end

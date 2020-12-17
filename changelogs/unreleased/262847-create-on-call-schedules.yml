@@ -1,0 +1,5 @@
+---
+title: Create `incident_management_oncall_schedules` table
+merge_request: 47407
+author:
+type: added

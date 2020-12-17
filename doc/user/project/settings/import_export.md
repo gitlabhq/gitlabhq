@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: reference, howto
 ---
 
@@ -42,7 +42,7 @@ Note the following:
 - Exports are stored in a temporary [shared directory](../../../development/shared_files.md)
   and are deleted every 24 hours by a specific worker.
 - Group members are exported as project members, as long as the user has
-  maintainer or admin access to the group where the exported project lives.
+  maintainer or administrator access to the group where the exported project lives.
 - Project members with owner access will be imported as maintainers.
 - Imported users can be mapped by their primary email on self-managed instances, if an administrative user (not an owner) does the import.
   Otherwise, a supplementary comment is left to mention that the original author and
@@ -51,6 +51,9 @@ Note the following:
   then new branches associated with such merge requests will be created
   within a project during the import/export. Thus, the number of branches
   in the exported project could be bigger than in the original project.
+- Deploy keys allowed to push to protected branches are not exported. Therefore,
+  you will need to recreate this association by first enabling these deploy keys in your
+  imported project and then updating your protected branches accordingly.
 
 ## Version history
 
@@ -114,8 +117,9 @@ The following items will be exported:
 - LFS objects
 - Issue boards
 - Pipelines history
+- Push Rules
 
-The following items will NOT be exported:
+The following items will **not** be exported:
 
 - Build traces and artifacts
 - Container registry images
@@ -123,10 +127,9 @@ The following items will NOT be exported:
 - Webhooks
 - Any encrypted tokens
 - Merge Request Approvers
-- Push Rules
 - Awards
 
-NOTE: **Note:**
+NOTE:
 For more details on the specific data persisted in a project export, see the
 [`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/import_export/project/import_export.yml) file.
 
@@ -170,14 +173,14 @@ To export a project and its data, follow these steps:
 1. Click on **Import project** to begin importing. Your newly imported project
    page will appear soon.
 
-NOTE: **Note:**
+NOTE:
 If use of the `Internal` visibility level
 [is restricted](../../../public_access/public_access.md#restricting-the-use-of-public-or-internal-projects),
 all imported projects are given the visibility of `Private`.
 
-NOTE: **Note:**
+NOTE:
 The maximum import file size can be set by the Administrator, default is 50MB.
-As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](../../../api/settings.md#change-application-settings) or the [Admin UI](../../admin_area/settings/account_and_limit_settings.md).
+As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](../../../api/settings.md#change-application-settings) or the [Admin Area UI](../../admin_area/settings/account_and_limit_settings.md).
 
 ### Project import status
 
@@ -188,12 +191,14 @@ As described in the API documentation, the query may return an import error or e
 
 If you have a larger project, consider using a Rake task, as described in our [developer documentation](../../../development/import_project.md#importing-via-a-rake-task).
 
-## Rate limits
+## Rate Limits
 
-To help avoid abuse, users are rate limited to:
+To help avoid abuse, by default, users are rate limited to:
 
-| Request Type     | Limit                                     |
-| ---------------- | ----------------------------------------- |
-| Export           | 30 projects per 5 minutes                 |
-| Download export  | 10 downloads per project every 10 minutes |
-| Import           | 30 projects per 5 minutes                 |
+| Request Type     | Limit                                    |
+| ---------------- | ---------------------------------------- |
+| Export           | 6 projects per minute                |
+| Download export  | 1 download per group per minute  |
+| Import           | 6 projects per minute                |
+
+Please note that GitLab.com may have [different settings](../../gitlab_com/index.md#importexport) from the defaults.

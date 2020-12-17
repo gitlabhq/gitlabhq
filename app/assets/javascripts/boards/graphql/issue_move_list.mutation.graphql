@@ -1,0 +1,28 @@
+#import "ee_else_ce/boards/graphql/issue.fragment.graphql"
+
+mutation IssueMoveList(
+  $projectPath: ID!
+  $iid: String!
+  $boardId: ID!
+  $fromListId: ID
+  $toListId: ID
+  $moveBeforeId: ID
+  $moveAfterId: ID
+) {
+  issueMoveList(
+    input: {
+      projectPath: $projectPath
+      iid: $iid
+      boardId: $boardId
+      fromListId: $fromListId
+      toListId: $toListId
+      moveBeforeId: $moveBeforeId
+      moveAfterId: $moveAfterId
+    }
+  ) {
+    issue {
+      ...IssueNode
+    }
+    errors
+  }
+}

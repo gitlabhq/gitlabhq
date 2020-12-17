@@ -10,12 +10,6 @@
   }
 
   .input-group {
-    .select2-container {
-      display: unset;
-      max-width: unset;
-      flex-grow: 1;
-    }
-
     > div {
       &:last-child {
         padding-right: 0;
@@ -52,7 +46,6 @@
       flex-grow: 1;
     }
 
-    + .select2 a,
     + .btn-default {
       border-radius: 0 $border-radius-base $border-radius-base 0;
     }
@@ -147,21 +140,8 @@
       margin-left: 0;
     }
 
-    .fa {
-      color: $layout-link-gray;
-    }
-
     svg {
       fill: $layout-link-gray;
-    }
-
-    .fa-caret-down {
-      margin-left: 3px;
-      line-height: 0;
-
-      &.dropdown-btn-icon {
-        margin-left: 0;
-      }
     }
 
     .notifications-icon {
@@ -177,13 +157,6 @@
   .count-badge,
   .btn-xs {
     height: 24px;
-  }
-
-  .dropdown-toggle,
-  .clone-dropdown-btn {
-    .fa {
-      color: unset;
-    }
   }
 
   .home-panel-action-button,
@@ -256,10 +229,6 @@
   margin-top: 50px;
   margin-bottom: 50px;
   color: $gray-700;
-}
-
-.transfer-project .select2-container {
-  min-width: 200px;
 }
 
 .deploy-key {
@@ -512,7 +481,7 @@
       top: 0;
       height: calc(100% - #{$browser-scrollbar-size});
 
-      .fa {
+      svg {
         top: 50%;
         margin-top: -$gl-padding-8;
       }
@@ -1056,11 +1025,6 @@ pre.light-well {
     @include media-breakpoint-up(sm) {
       margin-bottom: 0;
     }
-  }
-
-  .select2-choice {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
   }
 }
 

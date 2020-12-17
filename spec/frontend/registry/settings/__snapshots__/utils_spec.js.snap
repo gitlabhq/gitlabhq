@@ -1,0 +1,101 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Utils formOptionsGenerator returns an object containing cadence 1`] = `
+Array [
+  Object {
+    "default": true,
+    "key": "EVERY_DAY",
+    "label": "Every day",
+  },
+  Object {
+    "default": false,
+    "key": "EVERY_WEEK",
+    "label": "Every week",
+  },
+  Object {
+    "default": false,
+    "key": "EVERY_TWO_WEEKS",
+    "label": "Every two weeks",
+  },
+  Object {
+    "default": false,
+    "key": "EVERY_MONTH",
+    "label": "Every month",
+  },
+  Object {
+    "default": false,
+    "key": "EVERY_THREE_MONTHS",
+    "label": "Every three months",
+  },
+]
+`;
+
+exports[`Utils formOptionsGenerator returns an object containing keepN 1`] = `
+Array [
+  Object {
+    "default": false,
+    "key": "ONE_TAG",
+    "label": "1 tag per image name",
+    "variable": 1,
+  },
+  Object {
+    "default": false,
+    "key": "FIVE_TAGS",
+    "label": "5 tags per image name",
+    "variable": 5,
+  },
+  Object {
+    "default": true,
+    "key": "TEN_TAGS",
+    "label": "10 tags per image name",
+    "variable": 10,
+  },
+  Object {
+    "default": false,
+    "key": "TWENTY_FIVE_TAGS",
+    "label": "25 tags per image name",
+    "variable": 25,
+  },
+  Object {
+    "default": false,
+    "key": "FIFTY_TAGS",
+    "label": "50 tags per image name",
+    "variable": 50,
+  },
+  Object {
+    "default": false,
+    "key": "ONE_HUNDRED_TAGS",
+    "label": "100 tags per image name",
+    "variable": 100,
+  },
+]
+`;
+
+exports[`Utils formOptionsGenerator returns an object containing olderThan 1`] = `
+Array [
+  Object {
+    "default": false,
+    "key": "SEVEN_DAYS",
+    "label": "7 days",
+    "variable": 7,
+  },
+  Object {
+    "default": false,
+    "key": "FOURTEEN_DAYS",
+    "label": "14 days",
+    "variable": 14,
+  },
+  Object {
+    "default": false,
+    "key": "THIRTY_DAYS",
+    "label": "30 days",
+    "variable": 30,
+  },
+  Object {
+    "default": true,
+    "key": "NINETY_DAYS",
+    "label": "90 days",
+    "variable": 90,
+  },
+]
+`;

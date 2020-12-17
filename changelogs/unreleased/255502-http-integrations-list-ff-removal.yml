@@ -1,0 +1,5 @@
+---
+title: Remove http_integrations_list feature flag
+merge_request: 48030
+author:
+type: changed

@@ -1,0 +1,20 @@
+fragment PipelineStagesConnection on CiConfigStageConnection {
+  nodes {
+    name
+    groups {
+      nodes {
+        name
+        jobs {
+          nodes {
+            name
+            needs {
+              nodes {
+                name
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

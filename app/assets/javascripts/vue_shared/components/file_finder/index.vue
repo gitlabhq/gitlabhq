@@ -234,7 +234,6 @@ export default {
           name="search"
           class="dropdown-input-search"
           :class="{ hidden: showClearInputButton }"
-          aria-hidden="true"
         />
         <gl-icon
           name="close"

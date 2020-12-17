@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: reference, howto
 ---
 
@@ -75,7 +75,7 @@ See [server hooks](../administration/server_hooks.md) for more information.
 
 ## Enabling push rules
 
-NOTE: **Note:**
+NOTE:
 GitLab administrators can set push rules globally under
 **Admin Area > Push Rules** that all new projects will inherit. You can later
 override them in a project's settings. They can be also set on a [group level](../user/group/index.md#group-push-rules).
@@ -100,7 +100,7 @@ The following options are available.
 | Prohibited file names | **Starter** 7.10 | Any committed filenames that match this regular expression and do not already exist in the repository are not allowed to be pushed. Leave empty to allow any filenames. See [common examples](#prohibited-file-names). |
 | Maximum file size | **Starter** 7.12 | Pushes that contain added or updated files that exceed this file size (in MB) are rejected. Set to 0 to allow files of any size. Files tracked by Git LFS are exempted. |
 
-TIP: **Tip:**
+NOTE:
 GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular expressions in push rules, and you can test them at the [regex101 regex tester](https://regex101.com/).
 
 ## Prevent pushing secrets to the repository
@@ -116,7 +116,7 @@ pushes to the repository when a file matches a regular expression as read from
 [`files_denylist.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/gitlab/checks/files_denylist.yml) (make sure you are at the right branch
 as your GitLab version when viewing this file).
 
-NOTE: **Note:**
+NOTE:
 Files already committed won't get restricted by this push rule.
 
 Below is an example list of what will be rejected by these regular expressions:

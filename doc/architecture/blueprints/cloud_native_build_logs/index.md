@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 comments: false
 description: 'Next iteration of build logs architecture at GitLab'
 ---
@@ -24,7 +24,7 @@ output to a file on a disk. This is simple, but this mechanism depends on
 shared local storage - the same file needs to be available on every GitLab web
 node machine, because GitLab Runner might connect to a different one every time
 it performs an API request. Sidekiq also needs access to the file because when
-a job is complete, a trace file contents will be sent to the object store.
+a job is complete, the trace file contents are sent to the object store.
 
 ## New architecture
 
@@ -109,15 +109,21 @@ of complexity, maintenance cost and enormous, negative impact on availability.
 1. ✓ Evaluate performance and edge-cases, iterate to improve the new architecture
 1. ✓ Design cloud native build logs correctness verification mechanisms
 1. ✓ Build observability mechanisms around performance and correctness
-1. Rollout the feature into production environment incrementally
+1. ✓ Rollout the feature into production environment incrementally
 
 The work needed to make the new architecture production ready and enabled on
-GitLab.com is being tracked in [Cloud Native Build Logs on
+GitLab.com had been tracked in [Cloud Native Build Logs on
 GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/4275) epic.
 
 Enabling this feature on GitLab.com is a subtask of [making the new
 architecture generally
 available](https://gitlab.com/groups/gitlab-org/-/epics/3791) for everyone.
+
+## Status
+
+This change has been implemented and enabled on GitLab.com.
+
+We are working on [an epic to make this feature more resilient and observable](https://gitlab.com/groups/gitlab-org/-/epics/4860).
 
 ## Who
 
@@ -137,7 +143,7 @@ DRIs:
 
 | Role                         | Who
 |------------------------------|------------------------|
-| Product                      |     Jason Yavorska     |
+| Product                      |      Thao Yeager       |
 | Leadership                   |       Darby Frey       |
 | Engineering                  |     Grzegorz Bizon     |
 

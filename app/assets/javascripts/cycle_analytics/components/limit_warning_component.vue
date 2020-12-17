@@ -27,7 +27,6 @@ export default {
         ),
       }"
       name="warning"
-      aria-hidden="true"
     />
     {{ n__('Showing %d event', 'Showing %d events', 50) }}
   </span>

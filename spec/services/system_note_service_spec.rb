@@ -333,6 +333,19 @@ RSpec.describe SystemNoteService do
     end
   end
 
+  describe '.noteable_cloned' do
+    let(:noteable_ref) { double }
+    let(:direction) { double }
+
+    it 'calls IssuableService' do
+      expect_next_instance_of(::SystemNotes::IssuablesService) do |service|
+        expect(service).to receive(:noteable_cloned).with(noteable_ref, direction)
+      end
+
+      described_class.noteable_cloned(double, double, noteable_ref, double, direction: direction)
+    end
+  end
+
   describe 'Jira integration' do
     include JiraServiceHelper
 

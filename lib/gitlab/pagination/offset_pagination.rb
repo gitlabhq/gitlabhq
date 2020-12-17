@@ -48,58 +48,26 @@ module Gitlab
       end
 
       def add_pagination_headers(paginated_data, exclude_total_headers)
-        header 'X-Per-Page',    paginated_data.limit_value.to_s
-        header 'X-Page',        paginated_data.current_page.to_s
-        header 'X-Next-Page',   paginated_data.next_page.to_s
-        header 'X-Prev-Page',   paginated_data.prev_page.to_s
-        header 'Link',          pagination_links(paginated_data)
-
-        return if exclude_total_headers || data_without_counts?(paginated_data)
-
-        header 'X-Total',       paginated_data.total_count.to_s
-        header 'X-Total-Pages', total_pages(paginated_data).to_s
-      end
-
-      def pagination_links(paginated_data)
-        [].tap do |links|
-          links << %(<#{page_href(page: paginated_data.prev_page)}>; rel="prev") if paginated_data.prev_page
-          links << %(<#{page_href(page: paginated_data.next_page)}>; rel="next") if paginated_data.next_page
-          links << %(<#{page_href(page: 1)}>; rel="first")
-
-          links << %(<#{page_href(page: total_pages(paginated_data))}>; rel="last") unless data_without_counts?(paginated_data)
-        end.join(', ')
-      end
-
-      def total_pages(paginated_data)
-        # Ensure there is in total at least 1 page
-        [paginated_data.total_pages, 1].max
+        Gitlab::Pagination::OffsetHeaderBuilder.new(
+          request_context: self, per_page: paginated_data.limit_value, page: paginated_data.current_page,
+          next_page: paginated_data.next_page, prev_page: paginated_data.prev_page,
+          total: total_count(paginated_data), total_pages: total_pages(paginated_data)
+        ).execute(exclude_total_headers: exclude_total_headers, data_without_counts: data_without_counts?(paginated_data))
       end
 
       def data_without_counts?(paginated_data)
         paginated_data.is_a?(Kaminari::PaginatableWithoutCount)
       end
 
-      def base_request_uri
-        @base_request_uri ||= URI.parse(request.url).tap do |uri|
-          uri.host = Gitlab.config.gitlab.host
-          uri.port = Gitlab.config.gitlab.port
-        end
+      def total_count(paginated_data)
+        paginated_data.total_count unless data_without_counts?(paginated_data)
       end
 
-      def build_page_url(query_params:)
-        base_request_uri.tap do |uri|
-          uri.query = query_params
-        end.to_s
-      end
+      def total_pages(paginated_data)
+        return if data_without_counts?(paginated_data)
 
-      def page_href(next_page_params = {})
-        query_params = params.merge(**next_page_params, per_page: per_page).to_query
-
-        build_page_url(query_params: query_params)
-      end
-
-      def per_page
-        @per_page ||= params[:per_page]
+        # Ensure there is in total at least 1 page
+        [paginated_data.total_pages, 1].max
       end
     end
   end

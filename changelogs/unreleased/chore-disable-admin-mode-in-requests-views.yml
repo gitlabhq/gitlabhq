@@ -1,0 +1,5 @@
+---
+title: Disable auto admin mode on requests and views specs
+merge_request: 48700
+author: Diego Louzán
+type: other

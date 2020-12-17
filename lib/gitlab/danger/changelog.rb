@@ -39,6 +39,7 @@ module Gitlab
       def required?
         git.added_files.any? { |path| path =~ %r{\Adb/(migrate|post_migrate)/} }
       end
+      alias_method :db_changes?, :required?
 
       def optional?
         categories_need_changelog? && without_no_changelog_label?

@@ -1,3 +1,5 @@
+- select_mode_for_dropdown = Feature.enabled?(:deploy_keys_on_protected_branches, protected_branch.project) ? 'js-multiselect' : ''
+
 - merge_access_levels = protected_branch.merge_access_levels.for_role
 - push_access_levels = protected_branch.push_access_levels.for_role
 
@@ -23,7 +25,7 @@
 %td.push_access_levels-container
   = hidden_field_tag "allowed_to_push_#{protected_branch.id}", push_access_levels.first&.access_level
   = dropdown_tag( (push_access_levels.first&.humanize || 'Select') ,
-                 options: { toggle_class: 'js-allowed-to-push', dropdown_class: 'dropdown-menu-selectable js-allowed-to-push-container capitalize-header',
+    options: { toggle_class: "js-allowed-to-push #{select_mode_for_dropdown}", dropdown_class: 'dropdown-menu-selectable js-allowed-to-push-container capitalize-header',
                  data: { field_name: "allowed_to_push_#{protected_branch.id}", preselected_items: access_levels_data(push_access_levels) }})
   - if user_push_access_levels.any?
     %p.small

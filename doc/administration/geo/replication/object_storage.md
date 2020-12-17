@@ -1,7 +1,7 @@
 ---
 stage: Enablement
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: howto
 ---
 
@@ -25,7 +25,7 @@ To have:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10586) in GitLab 12.4.
 
-CAUTION: **Caution:**
+WARNING:
 This is a [**beta** feature](https://about.gitlab.com/handbook/product/#beta) and is not ready yet for production use at any scale. The main limitations are a lack of testing at scale and no verification of any replicated data.
 
 **Secondary** nodes can replicate files stored on the **primary** node regardless of
@@ -35,8 +35,8 @@ To enable GitLab replication, you must:
 
 1. Go to **Admin Area > Geo**.
 1. Press **Edit** on the **secondary** node.
-1. Enable the **Allow this secondary node to replicate content on Object Storage**
-   checkbox.
+1. In the **Synchronization Settings** section, find the **Allow this secondary node to replicate content on Object Storage**
+   checkbox to enable it.
 
 For LFS, follow the documentation to
 [set up LFS object storage](../../lfs/index.md#storing-lfs-objects-in-remote-object-storage).

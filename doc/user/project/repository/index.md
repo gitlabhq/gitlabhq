@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: concepts, howto
 ---
 
@@ -48,7 +48,7 @@ to your repository's root.
 
 **From the user interface:**
 
-GitLab's UI allows you to perform lots of Git commands without having to
+The GitLab UI allows you to perform lots of Git commands without having to
 touch the command line. Even if you use the command line regularly, sometimes
 it's easier to do so [via GitLab UI](web_editor.md):
 
@@ -67,7 +67,7 @@ To get started with the command line, please read through the
 
 ### Find files
 
-Use GitLab's [file finder](file_finder.md) to search for files in a repository.
+Use the GitLab [file finder](file_finder.md) to search for files in a repository.
 
 ### Supported markup languages and extensions
 
@@ -141,7 +141,7 @@ their filenames include `openapi` or `swagger` and their extension is `yaml`,
 
 Then, to render them:
 
-1. Navigate to the OpenAPI file in your repository in GitLab's UI.
+1. Navigate to the OpenAPI file in your repository in the GitLab UI.
 1. Click the "Display OpenAPI" button which is located between the "Display source"
    and "Edit" buttons (when an OpenAPI file is found, it replaces the
    "Display rendered file" button).
@@ -189,7 +189,7 @@ updated every 15 minutes at most, so may not reflect recent activity. The displa
 
 The project size may differ slightly from one instance to another due to compression, housekeeping, and other factors.
 
-[Repository size limit](../../admin_area/settings/account_and_limit_settings.md) may be set by admins.
+[Repository size limit](../../admin_area/settings/account_and_limit_settings.md) may be set by administrators.
 GitLab.com's repository size limit [is set by GitLab](../../gitlab_com/index.md#account-and-limit-settings).
 
 ## Contributors

@@ -2,7 +2,7 @@
 type: reference, howto
 stage: Manage
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Gemnasium **(ULTIMATE)**
@@ -66,19 +66,19 @@ GitHub.com or GitHub Enterprise repository. This will automatically prompt
 GitLab CI/CD to run whenever code is pushed to GitHub and post CI/CD results
 back to both GitLab and GitHub when completed.
 
-1. Create a new project, and select the "CI/CD for external repo" tab:
+1. Create a new project, and select "CI/CD for external repo":
 
-   ![Create new Project](img/gemnasium/create_project.png)
+   ![Create new Project](img/gemnasium/create_project_v13_5.png)
 
 1. Use the "GitHub" button to connect your repositories.
 
-   ![Connect from GitHub](img/gemnasium/connect_github.png)
+   ![Connect from GitHub](img/gemnasium/connect_github_v13_5.png)
 
 1. Select the project(s) to be set up with GitLab CI/CD and chose "Connect".
 
-   ![Select projects](img/gemnasium/select_project.png)
+   ![Select projects](img/gemnasium/select_project_v13_5.png)
 
-   Once the configuration is done, you may click on your new
+   After the configuration is done, you may click on your new
    project on GitLab.
 
    ![click on connected project](img/gemnasium/project_connected.png)
@@ -107,7 +107,7 @@ back to both GitLab and GitHub when completed.
 
    ![Security Dashboard](../../application_security/security_dashboard/img/pipeline_security_dashboard_v13_3.png)
 
-NOTE: **Note:**
+NOTE:
 If you don't commit very often to your project, you may want to use
 [scheduled pipelines](../../../ci/pipelines/schedules.md) to run the job on a regular
 basis.

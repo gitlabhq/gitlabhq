@@ -3,22 +3,60 @@
 require 'spec_helper'
 
 RSpec.describe 'git_http routing' do
-  include RSpec::Rails::RequestExampleGroup
+  describe 'code repositories' do
+    it_behaves_like 'git repository routes' do
+      let(:path) { '/gitlab-org/gitlab-test.git' }
+    end
+  end
 
-  describe 'wiki.git routing', 'routing' do
-    let(:wiki_path)  { '/gitlab/gitlabhq/wikis' }
+  describe 'wiki repositories' do
+    context 'in project' do
+      let(:path) { '/gitlab-org/gitlab-test.wiki.git' }
 
-    it 'redirects namespace/project.wiki.git to the project wiki' do
-      expect(get('/gitlab/gitlabhq.wiki.git')).to redirect_to(wiki_path)
+      it_behaves_like 'git repository routes'
+
+      describe 'redirects', type: :request do
+        let(:web_path) { '/gitlab-org/gitlab-test/-/wikis' }
+
+        it 'redirects namespace/project.wiki.git to the project wiki' do
+          expect(get(path)).to redirect_to(web_path)
+        end
+
+        it 'preserves query parameters' do
+          expect(get("#{path}?foo=bar&baz=qux")).to redirect_to("#{web_path}?foo=bar&baz=qux")
+        end
+
+        it 'only redirects when the format is .git' do
+          expect(get(path.delete_suffix('.git'))).not_to redirect_to(web_path)
+          expect(get(path.delete_suffix('.git') + '.json')).not_to redirect_to(web_path)
+        end
+      end
     end
 
-    it 'preserves query parameters' do
-      expect(get('/gitlab/gitlabhq.wiki.git?foo=bar&baz=qux')).to redirect_to("#{wiki_path}?foo=bar&baz=qux")
+    context 'in toplevel group' do
+      it_behaves_like 'git repository routes' do
+        let(:path) { '/gitlab-org.wiki.git' }
+      end
     end
 
-    it 'only redirects when the format is .git' do
-      expect(get('/gitlab/gitlabhq.wiki')).not_to redirect_to(wiki_path)
-      expect(get('/gitlab/gitlabhq.wiki.json')).not_to redirect_to(wiki_path)
+    context 'in child group' do
+      it_behaves_like 'git repository routes' do
+        let(:path) { '/gitlab-org/child.wiki.git' }
+      end
+    end
+  end
+
+  describe 'snippet repositories' do
+    context 'personal snippet' do
+      it_behaves_like 'git repository routes' do
+        let(:path) { '/snippets/123.git' }
+      end
+    end
+
+    context 'project snippet' do
+      it_behaves_like 'git repository routes' do
+        let(:path) { '/gitlab-org/gitlab-test/snippets/123.git' }
+      end
     end
   end
 end

@@ -6,8 +6,9 @@ RSpec.describe 'Deleting Sidekiq jobs', :clean_gitlab_redis_queues do
   include GraphqlHelpers
 
   let_it_be(:admin) { create(:admin) }
+  let(:queue) { 'authorized_projects' }
 
-  let(:variables) { { user: admin.username, queue_name: 'authorized_projects' } }
+  let(:variables) { { user: admin.username, queue_name: queue } }
   let(:mutation) { graphql_mutation(:admin_sidekiq_queues_delete_jobs, variables) }
 
   def mutation_response
@@ -26,18 +27,19 @@ RSpec.describe 'Deleting Sidekiq jobs', :clean_gitlab_redis_queues do
 
     context 'valid request' do
       around do |example|
-        Sidekiq::Queue.new('authorized_projects').clear
+        Sidekiq::Queue.new(queue).clear
         Sidekiq::Testing.disable!(&example)
-        Sidekiq::Queue.new('authorized_projects').clear
+        Sidekiq::Queue.new(queue).clear
       end
 
       def add_job(user, args)
         Sidekiq::Client.push(
           'class' => 'AuthorizedProjectsWorker',
-          'queue' => 'authorized_projects',
+          'queue' => queue,
           'args' => args,
           'meta.user' => user.username
         )
+        raise 'Not enqueued!' if Sidekiq::Queue.new(queue).size.zero?
       end
 
       it 'returns info about the deleted jobs' do
@@ -55,7 +57,7 @@ RSpec.describe 'Deleting Sidekiq jobs', :clean_gitlab_redis_queues do
     end
 
     context 'when no required params are provided' do
-      let(:variables) { { queue_name: 'authorized_projects' } }
+      let(:variables) { { queue_name: queue } }
 
       it_behaves_like 'a mutation that returns errors in the response',
                       errors: ['No metadata provided']

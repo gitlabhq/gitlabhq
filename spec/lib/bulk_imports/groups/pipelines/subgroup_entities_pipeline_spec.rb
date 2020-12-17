@@ -55,7 +55,6 @@ RSpec.describe BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline do
 
   describe 'pipeline parts' do
     it { expect(described_class).to include_module(BulkImports::Pipeline) }
-    it { expect(described_class).to include_module(BulkImports::Pipeline::Attributes) }
     it { expect(described_class).to include_module(BulkImports::Pipeline::Runner) }
 
     it 'has extractors' do
@@ -67,8 +66,8 @@ RSpec.describe BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline do
 
     it 'has transformers' do
       expect(described_class.transformers).to contain_exactly(
-        klass: BulkImports::Groups::Transformers::SubgroupToEntityTransformer,
-        options: nil
+        { klass: BulkImports::Common::Transformers::ProhibitedAttributesTransformer, options: nil },
+        { klass: BulkImports::Groups::Transformers::SubgroupToEntityTransformer, options: nil }
       )
     end
 

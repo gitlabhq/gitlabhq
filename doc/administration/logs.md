@@ -1,7 +1,7 @@
 ---
 stage: Monitor
 group: Health
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Log system
@@ -117,7 +117,7 @@ The ActionCable connection or channel class is used as the `controller`.
 }
 ```
 
-NOTE: **Note:**
+NOTE:
 Starting with GitLab 12.5, if an error occurs, an
 `exception` field is included with `class`, `message`, and
 `backtrace`. Previous versions included an `error` field instead of
@@ -383,7 +383,7 @@ only. For example:
 
 ## `audit_json.log`
 
-NOTE: **Note:**
+NOTE:
 Most log entries only exist in [GitLab Starter](https://about.gitlab.com/pricing/), however a few exist in GitLab Core.
 
 This file lives in `/var/log/gitlab/gitlab-rails/audit_json.log` for
@@ -665,6 +665,31 @@ installations from source.
 
 It logs the progress of the export process.
 
+## `features_json.log`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/59587) in GitLab 13.7.
+
+This file's location depends on how you installed GitLab:
+
+- For Omnibus GitLab packages: `/var/log/gitlab/gitlab-rails/features_json.log`
+- For installations from source: `/home/git/gitlab/log/features_json.log`
+
+The modification events from [Feature flags in development of GitLab](../development/feature_flags/index.md)
+are recorded in this file. For example:
+
+```json
+{"severity":"INFO","time":"2020-11-24T02:30:59.860Z","correlation_id":null,"key":"cd_auto_rollback","action":"enable","extra.thing":"true"}
+{"severity":"INFO","time":"2020-11-24T02:31:29.108Z","correlation_id":null,"key":"cd_auto_rollback","action":"enable","extra.thing":"true"}
+{"severity":"INFO","time":"2020-11-24T02:31:29.129Z","correlation_id":null,"key":"cd_auto_rollback","action":"disable","extra.thing":"false"}
+{"severity":"INFO","time":"2020-11-24T02:31:29.177Z","correlation_id":null,"key":"cd_auto_rollback","action":"enable","extra.thing":"Project:1"}
+{"severity":"INFO","time":"2020-11-24T02:31:29.183Z","correlation_id":null,"key":"cd_auto_rollback","action":"disable","extra.thing":"Project:1"}
+{"severity":"INFO","time":"2020-11-24T02:31:29.188Z","correlation_id":null,"key":"cd_auto_rollback","action":"enable_percentage_of_time","extra.percentage":"50"}
+{"severity":"INFO","time":"2020-11-24T02:31:29.193Z","correlation_id":null,"key":"cd_auto_rollback","action":"disable_percentage_of_time"}
+{"severity":"INFO","time":"2020-11-24T02:31:29.198Z","correlation_id":null,"key":"cd_auto_rollback","action":"enable_percentage_of_actors","extra.percentage":"50"}
+{"severity":"INFO","time":"2020-11-24T02:31:29.203Z","correlation_id":null,"key":"cd_auto_rollback","action":"disable_percentage_of_actors"}
+{"severity":"INFO","time":"2020-11-24T02:31:29.329Z","correlation_id":null,"key":"cd_auto_rollback","action":"remove"}
+```
+
 ## `auth.log`
 
 > Introduced in GitLab 12.0.
@@ -751,7 +776,7 @@ are generated:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/15442) in GitLab 12.3.
 
-Contains details of GitLab's [Database Load Balancing](database_load_balancing.md).
+Contains details of GitLab [Database Load Balancing](database_load_balancing.md).
 It's stored at:
 
 - `/var/log/gitlab/gitlab-rails/database_load_balancing.log` for Omnibus GitLab packages.
@@ -973,11 +998,30 @@ For Omnibus GitLab installations, GitLab Exporter logs reside in `/var/log/gitla
 For Omnibus GitLab installations, GitLab Kubernetes Agent Server logs reside
 in `/var/log/gitlab/gitlab-kas/`.
 
+## Performance bar stats
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48149) in GitLab 13.7.
+
+This file lives in `/var/log/gitlab/gitlab-rails/performance_bar_json.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/performance_bar_json.log` for
+installations from source.
+
+Performance bar statistics (currently only duration of SQL queries) are recorded in that file. For example:
+
+```json
+{"severity":"INFO","time":"2020-12-04T09:29:44.592Z","correlation_id":"33680b1490ccd35981b03639c406a697","filename":"app/models/ci/pipeline.rb","filenum":"395","method":"each_with_object","request_id":"rYHomD0VJS4","duration_ms":26.889,"type": "sql"}
+```
+
+These statistics are logged on .com only, disabled on self-deployments.
+
 ## Gathering logs
 
 When [troubleshooting](troubleshooting/index.md) issues that aren't localized to one of the
 previously listed components, it's helpful to simultaneously gather multiple logs and statistics
 from a GitLab instance.
+
+NOTE:
+GitLab Support often asks for one of these, and maintains the required tools.
 
 ### Briefly tail the main logs
 
@@ -995,11 +1039,8 @@ Conclude the log gathering with <kbd>Ctrl</kbd> + <kbd>C</kbd>.
 
 If performance degradations or cascading errors occur that can't readily be attributed to one
 of the previously listed GitLab components, [GitLabSOS](https://gitlab.com/gitlab-com/support/toolbox/gitlabsos/)
-can provide a perspective spanning all of Omnibus GitLab. For more details and instructions
+can provide a broader perspective of the GitLab instance. For more details and instructions
 to run it, read [the GitLabSOS documentation](https://gitlab.com/gitlab-com/support/toolbox/gitlabsos/#gitlabsos).
-
-NOTE: **Note:**
-GitLab Support likes to use this custom-made tool.
 
 ### Fast-stats
 

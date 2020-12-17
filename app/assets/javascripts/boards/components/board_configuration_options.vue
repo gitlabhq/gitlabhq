@@ -42,7 +42,7 @@ export default {
 </script>
 
 <template>
-  <div class="append-bottom-20">
+  <div class="gl-mb-5">
     <label class="label-bold gl-font-lg" for="board-new-name">
       {{ __('List options') }}
     </label>

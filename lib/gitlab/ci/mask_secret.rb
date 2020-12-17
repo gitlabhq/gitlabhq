@@ -9,11 +9,7 @@ module Gitlab
         # We assume 'value' must be mutable, given
         # that frozen string is enabled.
 
-        ##
-        # TODO We need to remove this because it is going to change checksum of
-        # a trace.
-        #
-        value.gsub!(token, 'x' * token.length)
+        value.gsub!(token, 'x' * token.bytesize)
         value
       end
     end

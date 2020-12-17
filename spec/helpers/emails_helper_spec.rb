@@ -296,7 +296,7 @@ RSpec.describe EmailsHelper do
     end
 
     with_them do
-      it 'Produces the right List-Id' do
+      it 'produces the right List-Id' do
         project = double("project")
         allow(project).to receive(:full_path).and_return(full_path)
         allow(project).to receive(:id).and_return(12345)

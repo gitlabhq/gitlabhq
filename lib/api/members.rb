@@ -62,7 +62,7 @@ module API
         get ":id/members/:user_id" do
           source = find_source(source_type, params[:id])
 
-          members = source.members
+          members = source_members(source)
           member = members.find_by!(user_id: params[:user_id])
 
           present_members member

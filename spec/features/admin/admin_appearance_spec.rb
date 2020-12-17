@@ -4,9 +4,11 @@ require 'spec_helper'
 
 RSpec.describe 'Admin Appearance' do
   let!(:appearance) { create(:appearance) }
+  let(:admin) { create(:admin) }
 
-  it 'Create new appearance' do
-    sign_in(create(:admin))
+  it 'create new appearance' do
+    sign_in(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
     visit admin_appearances_path
 
     fill_in 'appearance_title', with: 'MyCompany'
@@ -25,8 +27,9 @@ RSpec.describe 'Admin Appearance' do
     expect(page).to have_content 'Last edit'
   end
 
-  it 'Preview sign-in page appearance' do
-    sign_in(create(:admin))
+  it 'preview sign-in page appearance' do
+    sign_in(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
 
     visit admin_appearances_path
     click_link "Sign-in page"
@@ -34,8 +37,9 @@ RSpec.describe 'Admin Appearance' do
     expect_custom_sign_in_appearance(appearance)
   end
 
-  it 'Preview new project page appearance' do
-    sign_in(create(:admin))
+  it 'preview new project page appearance' do
+    sign_in(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
 
     visit admin_appearances_path
     click_link "New project page"
@@ -45,7 +49,8 @@ RSpec.describe 'Admin Appearance' do
 
   context 'Custom system header and footer' do
     before do
-      sign_in(create(:admin))
+      sign_in(admin)
+      gitlab_enable_admin_mode_sign_in(admin)
     end
 
     context 'when system header and footer messages are empty' do
@@ -75,14 +80,15 @@ RSpec.describe 'Admin Appearance' do
     end
   end
 
-  it 'Custom sign-in page' do
+  it 'custom sign-in page' do
     visit new_user_session_path
 
     expect_custom_sign_in_appearance(appearance)
   end
 
-  it 'Custom new project page' do
-    sign_in create(:user)
+  it 'custom new project page' do
+    sign_in(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
     visit new_project_path
 
     expect_custom_new_project_appearance(appearance)
@@ -91,6 +97,7 @@ RSpec.describe 'Admin Appearance' do
   context 'Profile page with custom profile image guidelines' do
     before do
       sign_in(create(:admin))
+      gitlab_enable_admin_mode_sign_in(admin)
       visit admin_appearances_path
       fill_in 'appearance_profile_image_guidelines', with: 'Custom profile image guidelines, please :smile:!'
       click_button 'Update appearance settings'
@@ -104,8 +111,9 @@ RSpec.describe 'Admin Appearance' do
     end
   end
 
-  it 'Appearance logo' do
-    sign_in(create(:admin))
+  it 'appearance logo' do
+    sign_in(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
     visit admin_appearances_path
 
     attach_file(:appearance_logo, logo_fixture)
@@ -116,8 +124,9 @@ RSpec.describe 'Admin Appearance' do
     expect(page).not_to have_css(logo_selector)
   end
 
-  it 'Header logos' do
-    sign_in(create(:admin))
+  it 'header logos' do
+    sign_in(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
     visit admin_appearances_path
 
     attach_file(:appearance_header_logo, logo_fixture)
@@ -129,7 +138,8 @@ RSpec.describe 'Admin Appearance' do
   end
 
   it 'Favicon' do
-    sign_in(create(:admin))
+    sign_in(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
     visit admin_appearances_path
 
     attach_file(:appearance_favicon, logo_fixture)

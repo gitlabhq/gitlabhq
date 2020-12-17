@@ -22,7 +22,7 @@
     min-width: 170px; //Guarantees buttons don't break in several lines.
 
     .btn-default {
-      color: $gl-text-color-secondary;
+      color: var(--gray-500, $gray-500);
     }
 
     .btn.btn-retry:hover,
@@ -32,7 +32,7 @@
     }
 
     svg path {
-      fill: $gl-text-color-secondary;
+      fill: var(--gray-500, $gray-500);
     }
 
     .dropdown-menu {
@@ -42,12 +42,7 @@
 
     .dropdown-toggle,
     .dropdown-menu {
-      color: $gl-text-color-secondary;
-
-      .fa {
-        color: $gl-text-color-secondary;
-        font-size: 14px;
-      }
+      color: var(--gray-500, $gray-500);
     }
 
     .btn-group.open .btn-default {

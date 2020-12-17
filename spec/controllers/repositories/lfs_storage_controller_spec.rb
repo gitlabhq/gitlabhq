@@ -23,8 +23,7 @@ RSpec.describe Repositories::LfsStorageController do
 
     let(:params) do
       {
-        namespace_id: project.namespace.path,
-        repository_id: "#{project.path}.git",
+        repository_path: "#{project.full_path}.git",
         oid: '6b9765d3888aaec789e8c309eb05b05c3a87895d6ad70d2264bd7270fff665ac',
         size: '6725030'
       }

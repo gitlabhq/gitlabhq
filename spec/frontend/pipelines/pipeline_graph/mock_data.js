@@ -1,4 +1,4 @@
-import { createUniqueJobId } from '~/pipelines/utils';
+import { createUniqueLinkId } from '~/pipelines/utils';
 
 export const yamlString = `stages:
 - empty
@@ -41,10 +41,10 @@ deploy_a:
   script: echo hello
 `;
 
-const jobId1 = createUniqueJobId('build', 'build_1');
-const jobId2 = createUniqueJobId('test', 'test_1');
-const jobId3 = createUniqueJobId('test', 'test_2');
-const jobId4 = createUniqueJobId('deploy', 'deploy_1');
+const jobId1 = createUniqueLinkId('build', 'build_1');
+const jobId2 = createUniqueLinkId('test', 'test_1');
+const jobId3 = createUniqueLinkId('test', 'test_2');
+const jobId4 = createUniqueLinkId('deploy', 'deploy_1');
 
 export const pipelineData = {
   stages: [

@@ -28,7 +28,7 @@ RSpec.describe Quality::TestLevel do
     context 'when level is unit' do
       it 'returns a pattern' do
         expect(subject.pattern(:unit))
-          .to eq("spec/{bin,channels,config,db,dependencies,factories,finders,frontend,graphql,haml_lint,helpers,initializers,javascripts,lib,models,policies,presenters,rack_servers,replicators,routing,rubocop,serializers,services,sidekiq,support_specs,tasks,uploaders,validators,views,workers,elastic_integration,tooling}{,/**/}*_spec.rb")
+          .to eq("spec/{bin,channels,config,db,dependencies,elastic,elastic_integration,experiments,factories,finders,frontend,graphql,haml_lint,helpers,initializers,javascripts,lib,models,policies,presenters,rack_servers,replicators,routing,rubocop,serializers,services,sidekiq,support_specs,tasks,uploaders,validators,views,workers,tooling}{,/**/}*_spec.rb")
       end
     end
 
@@ -103,7 +103,7 @@ RSpec.describe Quality::TestLevel do
     context 'when level is unit' do
       it 'returns a regexp' do
         expect(subject.regexp(:unit))
-          .to eq(%r{spec/(bin|channels|config|db|dependencies|factories|finders|frontend|graphql|haml_lint|helpers|initializers|javascripts|lib|models|policies|presenters|rack_servers|replicators|routing|rubocop|serializers|services|sidekiq|support_specs|tasks|uploaders|validators|views|workers|elastic_integration|tooling)})
+          .to eq(%r{spec/(bin|channels|config|db|dependencies|elastic|elastic_integration|experiments|factories|finders|frontend|graphql|haml_lint|helpers|initializers|javascripts|lib|models|policies|presenters|rack_servers|replicators|routing|rubocop|serializers|services|sidekiq|support_specs|tasks|uploaders|validators|views|workers|tooling)})
       end
     end
 
@@ -172,6 +172,10 @@ RSpec.describe Quality::TestLevel do
 
     it 'returns the correct level for a background migration test' do
       expect(subject.level_for('spec/lib/gitlab/background_migration/archive_legacy_traces_spec.rb')).to eq(:migration)
+    end
+
+    it 'returns the correct level for an EE file without passing a prefix' do
+      expect(subject.level_for('ee/spec/migrations/geo/migrate_ci_job_artifacts_to_separate_registry_spec.rb')).to eq(:migration)
     end
 
     it 'returns the correct level for a geo migration test' do

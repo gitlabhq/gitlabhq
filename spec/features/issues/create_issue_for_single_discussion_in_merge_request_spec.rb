@@ -31,7 +31,8 @@ RSpec.describe 'Resolve an open thread in a merge request by creating an issue',
         visit project_merge_request_path(project, merge_request)
       end
 
-      it 'does not show a link to create a new issue' do
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/285453
+      xit 'does not show a link to create a new issue' do
         expect(page).not_to have_css resolve_discussion_selector
       end
     end
@@ -81,7 +82,7 @@ RSpec.describe 'Resolve an open thread in a merge request by creating an issue',
                                             discussion_to_resolve: discussion.id)
     end
 
-    it 'Shows a notice to ask someone else to resolve the threads' do
+    it 'shows a notice to ask someone else to resolve the threads' do
       expect(page).to have_content("The thread at #{merge_request.to_reference}"\
                                    " (discussion #{discussion.first_note.id}) will stay unresolved."\
                                    " Ask someone with permission to resolve it.")

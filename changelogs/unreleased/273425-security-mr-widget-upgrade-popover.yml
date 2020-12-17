@@ -1,0 +1,5 @@
+---
+title: Show upgrade popover in security widget in merge requests when the user is able to upgrade
+merge_request: 49613
+author:
+type: added

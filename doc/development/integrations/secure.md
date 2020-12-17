@@ -1,7 +1,7 @@
 ---
 stage: Protect
 group: Container Security
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Security scanner integration
@@ -82,9 +82,9 @@ mysec_sast:
       sast: gl-sast-report.json
 ```
 
-Note that `gl-sast-report.json` is an example file path but any other file name can be used. See
+Note that `gl-sast-report.json` is an example file path but any other filename can be used. See
 [the Output file section](#output-file) for more details. It's processed as a SAST report because
-it's declared under the `reports:sast` key in the job definition, not because of the file name.
+it's declared under the `reports:sast` key in the job definition, not because of the filename.
 
 ### Policies
 
@@ -207,17 +207,17 @@ given by the `CI_PROJECT_DIR` environment variable.
 
 It is recommended to name the output file after the type of scanning, and to use `gl-` as a prefix.
 Since all Secure reports are JSON files, it is recommended to use `.json` as a file extension.
-For instance, a suggested file name for a Dependency Scanning report is `gl-dependency-scanning.json`.
+For instance, a suggested filename for a Dependency Scanning report is `gl-dependency-scanning.json`.
 
 The [`artifacts:reports`](../../ci/pipelines/job_artifacts.md#artifactsreports) keyword
 of the job definition must be consistent with the file path where the Security report is written.
 For instance, if a Dependency Scanning analyzer writes its report to the CI project directory,
-and if this report file name is `depscan.json`,
+and if this report filename is `depscan.json`,
 then `artifacts:reports:dependency_scanning` must be set to `depscan.json`.
 
 ### Exit code
 
-Following the POSIX exit code standard, the scanner will exit with 0 for success and any number from 1 to 255 for anything else.
+Following the POSIX exit code standard, the scanner exits with 0 for success and any number from 1 to 255 for anything else.
 Success also includes the case when vulnerabilities are found.
 
 When executing a scanning job using the [Docker-in-Docker privileged mode](../../user/application_security/sast/index.md#requirements),
@@ -324,7 +324,7 @@ whereas the `message` may repeat the location.
 As a visual example, this screenshot highlights where these fields are used when viewing a
 vulnerability as part of a pipeline view.
 
-![Example Vulnerability](example_vuln.png)
+![Example Vulnerability](img/example_vuln.png)
 
 For instance, a `message` for a vulnerability
 reported by Dependency Scanning gives information on the vulnerable dependency,
@@ -397,7 +397,9 @@ Not all vulnerabilities have CVEs, and a CVE can be identified multiple times. A
 isn't a stable identifier and you shouldn't assume it as such when tracking vulnerabilities.
 
 The maximum number of identifiers for a vulnerability is set as 20. If a vulnerability has more than 20 identifiers,
-the system will save only the first 20 of them.
+the system saves only the first 20 of them. Note that vulnerabilities in the [Pipeline
+Security](../../user/application_security/security_dashboard/#pipeline-security)
+tab do not enforce this limit and all identifiers present in the report artifact are displayed.
 
 ### Location
 

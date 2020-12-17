@@ -3,9 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe RepositoryUpdateRemoteMirrorWorker, :clean_gitlab_redis_shared_state do
-  subject { described_class.new }
+  let_it_be(:remote_mirror) { create(:remote_mirror) }
 
-  let(:remote_mirror) { create(:remote_mirror) }
   let(:scheduled_time) { Time.current - 5.minutes }
 
   around do |example|
@@ -19,6 +18,8 @@ RSpec.describe RepositoryUpdateRemoteMirrorWorker, :clean_gitlab_redis_shared_st
   end
 
   describe '#perform' do
+    subject { described_class.new }
+
     it 'calls out to the service to perform the update' do
       expect_mirror_service_to_return(remote_mirror, status: :success)
 
@@ -67,5 +68,9 @@ RSpec.describe RepositoryUpdateRemoteMirrorWorker, :clean_gitlab_redis_shared_st
 
       subject.perform(remote_mirror.id, scheduled_time)
     end
+  end
+
+  include_examples 'an idempotent worker' do
+    let(:job_args) { [remote_mirror.id, scheduled_time] }
   end
 end

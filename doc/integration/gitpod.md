@@ -2,7 +2,7 @@
 type: reference, how-to
 stage: Create
 group: Editor
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 ---
 
 # Gitpod Integration
@@ -14,7 +14,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 > - It's recommended for production use.
 > - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#configure-your-gitlab-instance-with-gitpod). **(CORE ONLY)**
 
-CAUTION: **Warning:**
+WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
 With [Gitpod](https://gitpod.io/) you can describe your dev environment as code to get fully set

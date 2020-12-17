@@ -3,17 +3,18 @@ import { throttle } from 'lodash';
 import {
   GlLoadingIcon,
   GlSearchBoxByType,
-  GlDeprecatedDropdown,
-  GlDeprecatedDropdownDivider,
-  GlDeprecatedDropdownHeader,
-  GlDeprecatedDropdownItem,
+  GlDropdown,
+  GlDropdownDivider,
+  GlDropdownSectionHeader,
+  GlDropdownItem,
+  GlModalDirective,
 } from '@gitlab/ui';
 
 import httpStatusCodes from '~/lib/utils/http_status';
 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import projectQuery from '../queries/project_boards.query.graphql';
-import groupQuery from '../queries/group_boards.query.graphql';
+import projectQuery from '../graphql/project_boards.query.graphql';
+import groupQuery from '../graphql/group_boards.query.graphql';
 
 import boardsStore from '../stores/boards_store';
 import BoardForm from './board_form.vue';
@@ -26,10 +27,13 @@ export default {
     BoardForm,
     GlLoadingIcon,
     GlSearchBoxByType,
-    GlDeprecatedDropdown,
-    GlDeprecatedDropdownDivider,
-    GlDeprecatedDropdownHeader,
-    GlDeprecatedDropdownItem,
+    GlDropdown,
+    GlDropdownDivider,
+    GlDropdownSectionHeader,
+    GlDropdownItem,
+  },
+  directives: {
+    GlModalDirective,
   },
   props: {
     currentBoard: {
@@ -108,7 +112,7 @@ export default {
       return this.groupId ? 'group' : 'project';
     },
     loading() {
-      return this.loadingRecentBoards && this.loadingBoards;
+      return this.loadingRecentBoards || Boolean(this.loadingBoards);
     },
     currentPage() {
       return this.state.currentPage;
@@ -235,22 +239,17 @@ export default {
 <template>
   <div class="boards-switcher js-boards-selector gl-mr-3">
     <span class="boards-selector-wrapper js-boards-selector-wrapper">
-      <gl-deprecated-dropdown
+      <gl-dropdown
         data-qa-selector="boards_dropdown"
         toggle-class="dropdown-menu-toggle js-dropdown-toggle"
         menu-class="flex-column dropdown-extended-height"
         :text="board.name"
         @show="loadBoards"
       >
-        <div>
-          <div class="dropdown-title mb-0" @mousedown.prevent>
-            {{ s__('IssueBoards|Switch board') }}
-          </div>
-        </div>
-
-        <gl-deprecated-dropdown-header class="mt-0">
-          <gl-search-box-by-type ref="searchBox" v-model="filterTerm" />
-        </gl-deprecated-dropdown-header>
+        <p class="gl-new-dropdown-header-top" @mousedown.prevent>
+          {{ s__('IssueBoards|Switch board') }}
+        </p>
+        <gl-search-box-by-type ref="searchBox" v-model="filterTerm" class="m-2" />
 
         <div
           v-if="!loading"
@@ -259,49 +258,50 @@ export default {
           class="dropdown-content flex-fill"
           @scroll.passive="throttledSetScrollFade"
         >
-          <gl-deprecated-dropdown-item
+          <gl-dropdown-item
             v-show="filteredBoards.length === 0"
             class="gl-pointer-events-none text-secondary"
           >
             {{ s__('IssueBoards|No matching boards found') }}
-          </gl-deprecated-dropdown-item>
+          </gl-dropdown-item>
 
-          <h6 v-if="showRecentSection" class="dropdown-bold-header my-0">
+          <gl-dropdown-section-header v-if="showRecentSection">
             {{ __('Recent') }}
-          </h6>
+          </gl-dropdown-section-header>
 
           <template v-if="showRecentSection">
-            <gl-deprecated-dropdown-item
+            <gl-dropdown-item
               v-for="recentBoard in recentBoards"
               :key="`recent-${recentBoard.id}`"
               class="js-dropdown-item"
               :href="`${boardBaseUrl}/${recentBoard.id}`"
             >
               {{ recentBoard.name }}
-            </gl-deprecated-dropdown-item>
+            </gl-dropdown-item>
           </template>
 
-          <hr v-if="showRecentSection" class="my-1" />
+          <gl-dropdown-divider v-if="showRecentSection" />
 
-          <h6 v-if="showRecentSection" class="dropdown-bold-header my-0">
+          <gl-dropdown-section-header v-if="showRecentSection">
             {{ __('All') }}
-          </h6>
+          </gl-dropdown-section-header>
 
-          <gl-deprecated-dropdown-item
+          <gl-dropdown-item
             v-for="otherBoard in filteredBoards"
             :key="otherBoard.id"
             class="js-dropdown-item"
             :href="`${boardBaseUrl}/${otherBoard.id}`"
           >
             {{ otherBoard.name }}
-          </gl-deprecated-dropdown-item>
-          <gl-deprecated-dropdown-item v-if="hasMissingBoards" class="small unclickable">
+          </gl-dropdown-item>
+
+          <gl-dropdown-item v-if="hasMissingBoards" class="no-pointer-events">
             {{
               s__(
                 'IssueBoards|Some of your boards are hidden, activate a license to see them again.',
               )
             }}
-          </gl-deprecated-dropdown-item>
+          </gl-dropdown-item>
         </div>
 
         <div
@@ -313,25 +313,27 @@ export default {
         <gl-loading-icon v-if="loading" />
 
         <div v-if="canAdminBoard">
-          <gl-deprecated-dropdown-divider />
+          <gl-dropdown-divider />
 
-          <gl-deprecated-dropdown-item
+          <gl-dropdown-item
             v-if="multipleIssueBoardsAvailable"
+            v-gl-modal-directive="'board-config-modal'"
             data-qa-selector="create_new_board_button"
             @click.prevent="showPage('new')"
           >
             {{ s__('IssueBoards|Create new board') }}
-          </gl-deprecated-dropdown-item>
+          </gl-dropdown-item>
 
-          <gl-deprecated-dropdown-item
+          <gl-dropdown-item
             v-if="showDelete"
+            v-gl-modal-directive="'board-config-modal'"
             class="text-danger js-delete-board"
             @click.prevent="showPage('delete')"
           >
             {{ s__('IssueBoards|Delete board') }}
-          </gl-deprecated-dropdown-item>
+          </gl-dropdown-item>
         </div>
-      </gl-deprecated-dropdown>
+      </gl-dropdown>
 
       <board-form
         v-if="currentPage"
@@ -343,6 +345,7 @@ export default {
         :scoped-issue-board-feature-enabled="scopedIssueBoardFeatureEnabled"
         :weights="weights"
         :enable-scoped-labels="enabledScopedLabels"
+        :current-board="currentBoard"
       />
     </span>
   </div>

@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 module BlobHelper
-  def no_highlight_files
-    %w(credits changelog news copying copyright license authors)
-  end
-
   def edit_blob_path(project = @project, ref = @ref, path = @path, options = {})
     project_edit_blob_path(project,
                            tree_join(ref, path),
@@ -246,7 +242,7 @@ module BlobHelper
   def copy_blob_source_button(blob)
     return unless blob.rendered_as_text?(ignore_errors: false)
 
-    clipboard_button(target: ".blob-content[data-blob-id='#{blob.id}']", class: "btn btn-sm js-copy-blob-source-btn", title: _("Copy file contents"))
+    clipboard_button(target: ".blob-content[data-blob-id='#{blob.id}'] > pre", class: "btn btn-sm js-copy-blob-source-btn", title: _("Copy file contents"))
   end
 
   def open_raw_blob_button(blob)
@@ -332,8 +328,9 @@ module BlobHelper
   end
 
   def readable_blob(options, path, project, ref)
-    blob = options.delete(:blob)
-    blob ||= project.repository.blob_at(ref, path) rescue nil
+    blob = options.fetch(:blob) do
+      project.repository.blob_at(ref, path) rescue nil
+    end
 
     blob if blob&.readable_text?
   end
@@ -382,8 +379,7 @@ module BlobHelper
   end
 
   def show_suggest_pipeline_creation_celebration?
-    Feature.enabled?(:suggest_pipeline, default_enabled: true) &&
-      @blob.path == Gitlab::FileDetector::PATTERNS[:gitlab_ci] &&
+    @blob.path == Gitlab::FileDetector::PATTERNS[:gitlab_ci] &&
       @blob.auxiliary_viewer&.valid?(project: @project, sha: @commit.sha, user: current_user) &&
       @project.uses_default_ci_config? &&
       cookies[suggest_pipeline_commit_cookie_name].present?

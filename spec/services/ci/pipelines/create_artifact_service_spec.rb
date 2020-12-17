@@ -7,7 +7,8 @@ RSpec.describe ::Ci::Pipelines::CreateArtifactService do
     subject { described_class.new.execute(pipeline) }
 
     context 'when pipeline has coverage reports' do
-      let(:pipeline) { create(:ci_pipeline, :with_coverage_reports) }
+      let(:project) { create(:project, :repository) }
+      let(:pipeline) { create(:ci_pipeline, :with_coverage_reports, project: project) }
 
       context 'when pipeline is finished' do
         it 'creates a pipeline artifact' do

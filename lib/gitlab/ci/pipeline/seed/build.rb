@@ -60,6 +60,7 @@ module Gitlab
             @seed_attributes
               .deep_merge(pipeline_attributes)
               .deep_merge(rules_attributes)
+              .deep_merge(allow_failure_criteria_attributes)
               .deep_merge(cache_attributes)
           end
 
@@ -154,9 +155,15 @@ module Gitlab
           end
 
           def rules_attributes
-            return {} unless @using_rules
+            strong_memoize(:rules_attributes) do
+              next {} unless @using_rules
 
-            rules_result.build_attributes
+              if ::Gitlab::Ci::Features.rules_variables_enabled?(@pipeline.project)
+                rules_result.build_attributes(@seed_attributes)
+              else
+                rules_result.build_attributes
+              end
+            end
           end
 
           def rules_result
@@ -175,6 +182,17 @@ module Gitlab
             strong_memoize(:cache_attributes) do
               @cache.build_attributes
             end
+          end
+
+          # If a job uses `allow_failure:exit_codes` and `rules:allow_failure`
+          # we need to prevent the exit codes from being persisted because they
+          # would break the behavior defined by `rules:allow_failure`.
+          def allow_failure_criteria_attributes
+            return {} unless ::Gitlab::Ci::Features.allow_failure_with_exit_codes_enabled?
+            return {} if rules_attributes[:allow_failure].nil?
+            return {} unless @seed_attributes.dig(:options, :allow_failure_criteria)
+
+            { options: { allow_failure_criteria: nil } }
           end
         end
       end

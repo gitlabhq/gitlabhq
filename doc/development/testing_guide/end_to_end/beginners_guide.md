@@ -1,20 +1,20 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Beginner's guide to writing end-to-end tests
 
-In this tutorial, you will learn about the creation of end-to-end (_e2e_) tests
+This tutorial walks you through the creation of end-to-end (_e2e_) tests
 for [GitLab Community Edition](https://about.gitlab.com/install/?version=ce) and
 [GitLab Enterprise Edition](https://about.gitlab.com/install/).
 
-By the end of this tutorial, you will be able to:
+By the end of this tutorial, you can:
 
 - Determine whether an end-to-end test is needed.
 - Understand the directory structure within `qa/`.
-- Write a basic end-to-end test that will validate login features.
+- Write a basic end-to-end test that validates login features.
 - Develop any missing [page object](page_objects.md) libraries.
 
 ## Before you write a test
@@ -29,7 +29,7 @@ must be configured to run the specs. The end-to-end tests:
 - Create [resources](resources.md) (such as project, issue, user) on an ad-hoc basis.
 - Test the UI and API interfaces, and use the API to efficiently set up the UI tests.
 
-TIP: **Tip:**
+NOTE:
 For more information, see [End-to-end testing Best Practices](best_practices.md).
 
 ## Determine if end-to-end tests are needed
@@ -52,7 +52,7 @@ For information about the distribution of tests per level in GitLab, see
 - Finally, discuss the proposed test with the developer(s) involved in implementing
   the feature and the lower-level tests.
 
-CAUTION: **Caution:**
+WARNING:
 Check both [GitLab Community Edition](https://gitlab-org.gitlab.io/gitlab-foss/coverage-ruby/#_AllFiles) and
 [GitLab Enterprise Edition](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/#_AllFiles) coverage projects
 for previously-written tests for this feature. For analyzing the code coverage,
@@ -67,18 +67,18 @@ end-to-end flows, and is easiest to understand.
 The GitLab QA end-to-end tests are organized by the different
 [stages in the DevOps lifecycle](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/qa/qa/specs/features/browser_ui).
 Determine where the test should be placed by
-[stage](https://about.gitlab.com/handbook/product/product-categories/#devops-stages),
-determine which feature the test will belong to, and then place it in a subdirectory
+[stage](https://about.gitlab.com/handbook/product/categories/#devops-stages),
+determine which feature the test belongs to, and then place it in a subdirectory
 under the stage.
 
 ![DevOps lifecycle by stages](img/gl-devops-lifecycle-by-stage-numbers_V12_10.png)
 
-If the test is Enterprise Edition only, the test will be created in the `features/ee`
+If the test is Enterprise Edition only, the test is created in the `features/ee`
 directory, but follow the same DevOps lifecycle format.
 
 ## Create a skeleton test
 
-In the first part of this tutorial we will be testing login, which is owned by the
+In the first part of this tutorial we are testing login, which is owned by the
 Manage stage. Inside `qa/specs/features/browser_ui/1_manage/login`, create a
 file `basic_login_spec.rb`.
 
@@ -86,7 +86,7 @@ file `basic_login_spec.rb`.
 
 See the [`RSpec.describe` outer block](#the-outer-rspecdescribe-block)
 
-CAUTION: **Deprecation notice:**
+WARNING:
 The outer `context` [was deprecated](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/550) in `13.2`
 in adherence to RSpec 4.0 specifications. Use `RSpec.describe` instead.
 
@@ -286,12 +286,12 @@ end
 
 Note the following important points:
 
-- At the start of our example, we will be at the `page/issue/show.rb` [page](page_objects.md).
+- At the start of our example, we are at the `page/issue/show.rb` [page](page_objects.md).
 - Our test fabricates only what it needs, when it needs it.
 - The issue is fabricated through the API to save time.
 - GitLab prefers `let()` over instance variables. See
   [best practices](../best_practices.md#subject-and-let-variables).
-- `be_closed` is not implemented in `page/project/issue/show.rb` yet, but will be
+- `be_closed` is not implemented in `page/project/issue/show.rb` yet, but is
   implemented in the next step.
 
 The issue is fabricated as a [Resource](resources.md), which is a GitLab entity
@@ -349,3 +349,9 @@ Where `<test_file>` is:
 
 - `qa/specs/features/browser_ui/1_manage/login/login_spec.rb` when running the Login example.
 - `qa/specs/features/browser_ui/2_plan/issues/issue_spec.rb` when running the Issue example.
+
+## End-to-end test merge request template
+
+When submitting a new end-to-end test, use the ["New End to End Test"](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/merge_request_templates/New%20End%20To%20End%20Test.md)
+merge request description template for additional
+steps that are required prior a successful merge.

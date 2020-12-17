@@ -1,7 +1,7 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+stage: Enablement
+group: Distribution
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -13,7 +13,7 @@ and it may be useful for users with experience with Linux. If you are currently
 having an issue with GitLab, you may want to check your [support options](https://about.gitlab.com/support/)
 first, before attempting to use this information.
 
-CAUTION: **Caution:**
+WARNING:
 If you are administering GitLab you are expected to know these commands for your distribution
 of choice. If you are a GitLab Support Engineer, consider this a cross-reference to
 translate `yum` -> `apt-get` and the like.
@@ -23,7 +23,7 @@ on. Contributions are welcome to help add them.
 
 ## System Commands
 
-### Distro Information
+### Distribution Information
 
 ```shell
 # Debian/Ubuntu
@@ -200,7 +200,7 @@ or you can build it from source if you have the Rust compiler.
 
 #### How to use the tool
 
-First run the tool with no arguments other than the strace output file name to get
+First run the tool with no arguments other than the strace output filename to get
 a summary of the top processes sorted by time spent actively performing tasks. You
 can also sort based on total time, # of syscalls made, PID #, and # of child processes
 using the `-S` or `--sort` flag. The number of results defaults to 25 processes, but
@@ -303,7 +303,7 @@ nslookup example.com 1.1.1.1
 whois <ip_address> | grep -i "orgname\|netname"
 
 # Curl headers with redirect
-curl --head --location https://example.com
+curl --head --location "https://example.com"
 ```
 
 ## Package Management

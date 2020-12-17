@@ -45,7 +45,7 @@ module Gitlab
         end
 
         def add_attachments(reply)
-          attachments = Email::AttachmentUploader.new(mail).execute(upload_params)
+          attachments = Email::AttachmentUploader.new(mail).execute(**upload_params)
 
           reply + attachments.map do |link|
             "\n\n#{link[:markdown]}"

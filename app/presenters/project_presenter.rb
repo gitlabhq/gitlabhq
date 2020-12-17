@@ -77,19 +77,19 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def readme_path
-    filename_path(:readme)
+    filename_path(repository.readme_path)
   end
 
   def changelog_path
-    filename_path(:changelog)
+    filename_path(repository.changelog&.name)
   end
 
   def license_path
-    filename_path(:license_blob)
+    filename_path(repository.license_blob&.name)
   end
 
   def ci_configuration_path
-    filename_path(:gitlab_ci_yml)
+    filename_path(repository.gitlab_ci_yml&.name)
   end
 
   def contribution_guide_path
@@ -244,11 +244,11 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def readme_anchor_data
-    if current_user && can_current_user_push_to_default_branch? && repository.readme.nil?
+    if current_user && can_current_user_push_to_default_branch? && readme_path.nil?
       AnchorData.new(false,
                      statistic_icon + _('Add README'),
                      empty_repo? ? add_readme_ide_path : add_readme_path)
-    elsif repository.readme
+    elsif readme_path
       AnchorData.new(false,
                      statistic_icon('doc-text') + _('README'),
                      default_view != 'readme' ? readme_path : '#readme',
@@ -397,13 +397,10 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     current_user && can?(current_user, :create_cluster, project)
   end
 
-  def filename_path(filename)
-    if blob = repository.public_send(filename) # rubocop:disable GitlabSecurity/PublicSend
-      project_blob_path(
-        project,
-        tree_join(default_branch, blob.name)
-      )
-    end
+  def filename_path(filepath)
+    return if filepath.blank?
+
+    project_blob_path(project, tree_join(default_branch, filepath))
   end
 
   def anonymous_project_view

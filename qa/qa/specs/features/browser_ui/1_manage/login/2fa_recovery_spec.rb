@@ -81,7 +81,7 @@ module QA
 
             recovery_code = two_fa_auth.recovery_codes.sample
 
-            two_fa_auth.click_proceed_button
+            two_fa_auth.click_copy_and_proceed
 
             recovery_code
           end

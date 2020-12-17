@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Gitaly
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference, howto
 disqus_identifier: 'https://docs.gitlab.com/ee/administration/custom_hooks.html'
 ---
@@ -85,7 +85,7 @@ configuration:
   - GitLab 13.0 and earlier, this is set in `gitlab-shell/config.yml`.
   - GitLab 13.1 and later, this is set in `gitaly/config.toml` under the `[hooks]` section.
 
-NOTE: **Note:**
+NOTE:
 The `custom_hooks_dir` value in `gitlab-shell/config.yml` is still honored in GitLab 13.1 and later
 if the value in `gitaly/config.toml` is blank or non-existent.
 
@@ -123,13 +123,13 @@ Within a directory, server hooks:
 - Are executed in alphabetical order.
 - Stop executing when a hook exits with a non-zero value.
 
-Note:
+`<hook_name>.d` must be either `pre-receive.d`, `post-receive.d`, or `update.d` to work properly.
+Any other names are ignored.
 
-- `<hook_name>.d` must be either `pre-receive.d`, `post-receive.d`, or `update.d` to work properly.
-  Any other names are ignored.
-- Files in `.d` directories must be executable and not match the backup file pattern (`*~`).
-- For `<project>.git` you need to [translate](repository_storage_types.md#translating-hashed-storage-paths)
-  your project name into the hashed storage format that GitLab uses.
+Files in `.d` directories must be executable and not match the backup file pattern (`*~`).
+
+For `<project>.git` you need to [translate](repository_storage_types.md#translating-hashed-storage-paths)
+your project name into the hashed storage format that GitLab uses.
 
 ## Environment Variables
 
@@ -152,7 +152,7 @@ Pre-receive and post-receive server hooks can also access the following Git envi
 | `GIT_PUSH_OPTION_COUNT`            | Number of push options. See [Git `pre-receive` documentation](https://git-scm.com/docs/githooks#pre-receive).                                                          |
 | `GIT_PUSH_OPTION_<i>`              | Value of push options where `i` is from `0` to `GIT_PUSH_OPTION_COUNT - 1`. See [Git `pre-receive` documentation](https://git-scm.com/docs/githooks#pre-receive).      |
 
-NOTE: **Note:**
+NOTE:
 While other environment variables can be passed to server hooks, your application should not rely on
 them as they can change.
 
@@ -160,7 +160,7 @@ them as they can change.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5073) in GitLab 8.10.
 
-To have custom error messages appear in GitLab's UI when a commit is declined or an error occurs
+To have custom error messages appear in the GitLab UI when a commit is declined or an error occurs
 during the Git hook, your script should:
 
 - Send the custom error messages to either the script's `stdout` or `stderr`.
@@ -168,7 +168,7 @@ during the Git hook, your script should:
 
 ### Example custom error message
 
-This hook script written in Bash generates the following message in GitLab's UI:
+This hook script written in Bash generates the following message in the GitLab UI:
 
 ```shell
 #!/bin/sh

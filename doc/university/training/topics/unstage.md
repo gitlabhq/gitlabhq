@@ -1,13 +1,13 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 comments: false
 ---
 
 # Unstage
 
-- To remove files from stage use reset HEAD where HEAD is the last commit of the current branch. This will unstage the file but maintain the modifications.
+- To remove files from stage use reset HEAD where HEAD is the last commit of the current branch. This unstages the file but maintain the modifications.
 
   ```shell
   git reset HEAD <file>

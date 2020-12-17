@@ -1,0 +1,17 @@
+query getProjectPipelineStatistics($projectPath: ID!) {
+  project(fullPath: $projectPath) {
+    pipelineAnalytics {
+      weekPipelinesTotals
+      weekPipelinesLabels
+      weekPipelinesSuccessful
+      monthPipelinesLabels
+      monthPipelinesTotals
+      monthPipelinesSuccessful
+      yearPipelinesLabels
+      yearPipelinesTotals
+      yearPipelinesSuccessful
+      pipelineTimesLabels
+      pipelineTimesValues
+    }
+  }
+}

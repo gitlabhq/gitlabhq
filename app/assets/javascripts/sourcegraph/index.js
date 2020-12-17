@@ -17,7 +17,7 @@ export default function initSourcegraph() {
     return;
   }
 
-  const assetsUrl = new URL('/assets/webpack/sourcegraph/', window.location.href);
+  const assetsUrl = new URL(process.env.SOURCEGRAPH_PUBLIC_PATH, window.location.href);
   const scriptPath = new URL('scripts/integration.bundle.js', assetsUrl).href;
 
   window.SOURCEGRAPH_ASSETS_URL = assetsUrl.href;

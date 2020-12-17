@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Continuous Integration
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 comments: false
 type: index, howto
 ---
@@ -200,7 +200,7 @@ deploy_prod:
 
 ### Filter job by branch
 
-[Rules](../yaml/README.md#rules) are a mechanism to determine if the job will or will not run for a specific branch.
+[Rules](../yaml/README.md#rules) are a mechanism to determine if the job runs for a specific branch.
 
 CircleCI example of a job filtered by branch:
 

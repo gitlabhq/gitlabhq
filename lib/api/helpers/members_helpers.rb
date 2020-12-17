@@ -45,7 +45,7 @@ module API
       end
 
       def find_all_members_for_project(project)
-        MembersFinder.new(project, current_user).execute(include_relations: [:inherited, :direct, :invited_groups_members])
+        MembersFinder.new(project, current_user).execute(include_relations: [:inherited, :direct, :invited_groups])
       end
 
       def find_all_members_for_group(group)

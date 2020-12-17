@@ -22,8 +22,7 @@ module Gitlab
 
           start_offset = @state.offset
 
-          @state.new_line!(
-            style: Style.new(@state.inherited_style))
+          @state.new_line!(style: Style.new(**@state.inherited_style))
 
           stream.each_line do |line|
             consume_line(line)

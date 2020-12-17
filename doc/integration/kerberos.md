@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Access
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: reference, how-to
 ---
 
@@ -13,13 +13,13 @@ GitLab can integrate with [Kerberos](https://web.mit.edu/kerberos/) as an authen
 
 [Kerberos](https://web.mit.edu/kerberos/) is a secure method for authenticating a request for a service in a
 computer network. Kerberos was developed in the Athena Project at the
-[Massachusetts Institute of Technology (MIT)](http://web.mit.edu/). The name is taken from Greek
+[Massachusetts Institute of Technology (MIT)](https://web.mit.edu/). The name is taken from Greek
 mythology; Kerberos was a three-headed dog who guarded the gates of Hades.
 
 ## Use-cases
 
 - GitLab can be configured to allow your users to sign with their Kerberos credentials.
-- You can use Kerberos to [prevent](http://web.mit.edu/sipb/doc/working/guide/guide/node20.html) anyone from intercepting or eavesdropping on the transmitted password.
+- You can use Kerberos to [prevent](https://web.mit.edu/sipb/doc/working/guide/guide/node20.html) anyone from intercepting or eavesdropping on the transmitted password.
 
 ## Configuration
 
@@ -49,7 +49,7 @@ sudo chmod 0600 /etc/http.keytab
 
 #### Installations from source
 
-NOTE: **Note:**
+NOTE:
 For source installations, make sure the `kerberos` gem group
 [has been installed](../install/installation.md#install-gems).
 
@@ -150,7 +150,7 @@ With that information at hand:
    1. If `block_auto_created_users` is false, the Kerberos user is
       authenticated and is signed in to GitLab.
 
-CAUTION: **Warning**
+WARNING:
 We recommend that you retain the default for `block_auto_created_users`.
 Kerberos users who create accounts on GitLab without administrator
 knowledge can be a security risk.
@@ -162,7 +162,7 @@ enabled, your users will be linked to their LDAP accounts on their first sign-in
 For this to work, some prerequisites must be met:
 
 The Kerberos username must match the LDAP user's UID. You can choose which LDAP
-attribute is used as the UID in GitLab's [LDAP configuration](../administration/auth/ldap/index.md#configuration)
+attribute is used as the UID in the GitLab [LDAP configuration](../administration/auth/ldap/index.md#configuration)
 but for Active Directory, this should be `sAMAccountName`.
 
 The Kerberos realm must match the domain part of the LDAP user's Distinguished
@@ -216,11 +216,11 @@ GitLab users with a linked Kerberos account can also `git pull` and `git push`
 using Kerberos tokens, i.e., without having to send their password with each
 operation.
 
-DANGER: **Warning:**
+WARNING:
 There is a [known issue](https://github.com/curl/curl/issues/1261) with `libcurl`
 older than version 7.64.1 wherein it won't reuse connections when negotiating.
 This leads to authorization issues when push is larger than `http.postBuffer`
-config. Ensure that Git is using at least `libcurl` 7.64.1 to avoid this. To
+configuration. Ensure that Git is using at least `libcurl` 7.64.1 to avoid this. To
 know the `libcurl` version installed, run `curl-config --version`.
 
 ### HTTP Git access with Kerberos token (passwordless authentication)

@@ -1,7 +1,7 @@
 ---
 stage: Enablement
 group: Database
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Standalone PostgreSQL using Omnibus GitLab **(CORE ONLY)**
@@ -59,7 +59,7 @@ together with Omnibus GitLab. This is recommended as part of our
    gitlab_rails['auto_migrate'] = false
    ```
 
-   NOTE: **Note:**
+   NOTE:
    The role `postgres_role` was introduced with GitLab 10.3
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.

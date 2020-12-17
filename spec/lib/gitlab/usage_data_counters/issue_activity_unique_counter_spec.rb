@@ -118,6 +118,16 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
     end
   end
 
+  context 'for Issue cloned actions' do
+    it_behaves_like 'a tracked issue edit event' do
+      let(:action) { described_class::ISSUE_CLONED }
+
+      def track_action(params)
+        described_class.track_issue_cloned_action(**params)
+      end
+    end
+  end
+
   context 'for Issue relate actions' do
     it_behaves_like 'a tracked issue edit event' do
       let(:action) { described_class::ISSUE_RELATED }

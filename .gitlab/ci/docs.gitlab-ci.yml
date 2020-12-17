@@ -53,7 +53,7 @@ docs-lint links:
   extends:
     - .default-retry
     - .docs:rules:docs-lint
-  image: "registry.gitlab.com/gitlab-org/gitlab-docs/lint:ruby-2.7.2-alpine-3.12-vale-2.4.3-markdownlint-0.24.0"
+  image: "registry.gitlab.com/gitlab-org/gitlab-docs/lint-html:alpine-3.12-ruby-2.7.2"
   stage: test
   needs: []
   script:
@@ -65,6 +65,13 @@ docs-lint links:
     # Build HTML from Markdown
     - bundle exec nanoc
     # Check the internal links
+    - bundle exec nanoc check internal_links
+    # Delete the redirect files, rebuild, and check internal links again, to see if we are linking to redirects.
+    # Don't delete the documentation/index.md, which is a false positive for the simple grep.
+    - grep -rl "redirect_to:" /tmp/gitlab-docs/content/ee/ | grep -v "development/documentation/index.md" | xargs rm -f
+    - bundle exec nanoc
+    - echo -e "\e[1;96mThe following test fails when a doc links to a redirect file."
+    - echo -e "\e[1;96mMake sure all links point to the correct page."
     - bundle exec nanoc check internal_links
     # Check the internal anchor links
     - bundle exec nanoc check internal_anchors

@@ -90,6 +90,8 @@ RSpec.describe ::API::Admin::InstanceClusters do
           expect(json_response['environment_scope']).to eq('*')
           expect(json_response['cluster_type']).to eq('instance_type')
           expect(json_response['domain']).to eq('example.com')
+          expect(json_response['enabled']).to be_truthy
+          expect(json_response['managed']).to be_truthy
         end
 
         it 'returns kubernetes platform information' do
@@ -163,6 +165,7 @@ RSpec.describe ::API::Admin::InstanceClusters do
         name: 'test-instance-cluster',
         domain: 'domain.example.com',
         managed: false,
+        enabled: false,
         namespace_per_environment: false,
         platform_kubernetes_attributes: platform_kubernetes_attributes,
         clusterable: clusterable
@@ -205,9 +208,9 @@ RSpec.describe ::API::Admin::InstanceClusters do
           expect(cluster_result.name).to eq('test-instance-cluster')
           expect(cluster_result.domain).to eq('domain.example.com')
           expect(cluster_result.environment_scope).to eq('*')
-          expect(cluster_result.enabled).to eq(true)
-          expect(platform_kubernetes.authorization_type).to eq('rbac')
           expect(cluster_result.managed).to be_falsy
+          expect(cluster_result.enabled).to be_falsy
+          expect(platform_kubernetes.authorization_type).to eq('rbac')
           expect(cluster_result.namespace_per_environment).to eq(false)
           expect(platform_kubernetes.api_url).to eq("https://example.com")
           expect(platform_kubernetes.token).to eq('sample-token')
@@ -301,6 +304,8 @@ RSpec.describe ::API::Admin::InstanceClusters do
     let(:update_params) do
       {
         domain: domain,
+        managed: false,
+        enabled: false,
         platform_kubernetes_attributes: platform_kubernetes_attributes
       }
     end
@@ -326,6 +331,8 @@ RSpec.describe ::API::Admin::InstanceClusters do
 
         it 'updates cluster attributes' do
           expect(cluster.domain).to eq('new-domain.com')
+          expect(cluster.managed).to be_falsy
+          expect(cluster.enabled).to be_falsy
         end
       end
 
@@ -338,6 +345,8 @@ RSpec.describe ::API::Admin::InstanceClusters do
 
         it 'does not update cluster attributes' do
           expect(cluster.domain).to eq('old-domain.com')
+          expect(cluster.managed).to be_truthy
+          expect(cluster.enabled).to be_truthy
         end
 
         it 'returns validation errors' do

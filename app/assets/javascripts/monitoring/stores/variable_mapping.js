@@ -271,5 +271,3 @@ export const optionsFromSeriesData = ({ label, data = [] }) => {
 
   return [...optionsSet].map(parseSimpleCustomValues);
 };
-
-export default {};

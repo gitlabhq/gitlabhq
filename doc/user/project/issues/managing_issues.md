@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Managing issues
@@ -99,7 +99,7 @@ When you click this link, an email address is generated and displayed, which sho
 by **you only**, to create issues in this project. You can save this address as a
 contact in your email client for easy access.
 
-CAUTION: **Caution:**
+WARNING:
 This is a private email address, generated just for you. **Keep it to yourself**,
 as anyone who knows it can create issues or merge requests as if they
 were you. If the address is compromised, or you'd like it to be regenerated for
@@ -112,7 +112,7 @@ this project, where:
 - The email body becomes the issue description.
 - [Markdown](../../markdown.md) and [quick actions](../quick_actions.md) are supported.
 
-NOTE: **Note:**
+NOTE:
 In GitLab 11.7, we updated the format of the generated email address. However the
 older format is still supported, allowing existing aliases or contacts to continue working.
 
@@ -160,7 +160,7 @@ The "Move issue" button is at the bottom of the right-sidebar when viewing the i
 If you have advanced technical skills you can also bulk move all the issues from one project to another in the rails console. The below script will move all the issues from one project to another that are not in status **closed**.
 
 To access rails console run `sudo gitlab-rails console` on the GitLab server and run the below
-script. Please be sure to change **project**, **admin_user** and **target_project** to your values.
+script. Please be sure to change `project`, `admin_user`, and `target_project` to your values.
 We do also recommend [creating a backup](../../../raketasks/backup_restore.md#back-up-gitlab) before
 attempting any changes in the console.
 
@@ -193,7 +193,7 @@ from its list and dropping it into the **Closed** list.
 
 ### Closing issues automatically
 
-NOTE: **Note:**
+NOTE:
 For performance reasons, automatic issue closing is disabled for the very first
 push from an existing repository.
 
@@ -234,7 +234,7 @@ This translates to the following keywords:
 - Resolve, Resolves, Resolved, Resolving, resolve, resolves, resolved, resolving
 - Implement, Implements, Implemented, Implementing, implement, implements, implemented, implementing
 
-Note that `%{issue_ref}` is a complex regular expression defined inside GitLab's
+Note that `%{issue_ref}` is a complex regular expression defined inside the GitLab
 source code that can match references to:
 
 - A local issue (`#123`).

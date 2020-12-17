@@ -59,7 +59,7 @@ authorization with each flow.
 
 ### Web application flow
 
-NOTE: **Note:**
+NOTE:
 Check the [RFC spec](https://tools.ietf.org/html/rfc6749#section-4.1) for a
 detailed flow description.
 
@@ -105,7 +105,7 @@ The web application flow is:
    }
    ```
 
-NOTE: **Note:**
+NOTE:
 The `redirect_uri` must match the `redirect_uri` used in the original
 authorization request.
 
@@ -113,11 +113,11 @@ You can now make requests to the API with the access token returned.
 
 ### Implicit grant flow
 
-NOTE: **Note:**
+NOTE:
 Check the [RFC spec](https://tools.ietf.org/html/rfc6749#section-4.2) for a
 detailed flow description.
 
-CAUTION: **Important:**
+WARNING:
 Avoid using this flow for applications that store data outside of the GitLab
 instance. If you do, make sure to verify `application id` associated with the
 access token before granting access to the data
@@ -149,11 +149,11 @@ https://example.com/oauth/redirect#access_token=ABCDExyz123&state=YOUR_UNIQUE_ST
 
 ### Resource owner password credentials flow
 
-NOTE: **Note:**
+NOTE:
 Check the [RFC spec](https://tools.ietf.org/html/rfc6749#section-4.3) for a
 detailed flow description.
 
-NOTE: **Note:**
+NOTE:
 The Resource Owner Password Credentials is disabled for users with [two-factor
 authentication](../user/profile/account/two_factor_authentication.md) turned on.
 These users can access the API using [personal access tokens](../user/profile/personal_access_tokens.md)
@@ -169,7 +169,7 @@ The credentials should only be used when:
   privileged application.
 - Other authorization grant types are not available (such as an authorization code).
 
-CAUTION: **Important:**
+WARNING:
 Never store the user's credentials and only use this grant type when your client
 is deployed to a trusted environment, in 99% of cases
 [personal access tokens](../user/profile/personal_access_tokens.md) are a better

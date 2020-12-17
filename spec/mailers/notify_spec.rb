@@ -1284,7 +1284,7 @@ RSpec.describe Notify do
 
     context 'for service desk issues' do
       before do
-        issue.update!(service_desk_reply_to: 'service.desk@example.com')
+        issue.update!(external_author: 'service.desk@example.com')
       end
 
       def expect_sender(username)
@@ -1449,38 +1449,6 @@ RSpec.describe Notify do
       let(:inviter) { owner }
 
       subject { described_class.member_invited_email('Group', group_member.id, group_member.invite_token) }
-
-      shared_examples "tracks the 'sent' event for the invitation reminders experiment" do
-        before do
-          stub_experiment(invitation_reminders: true)
-          allow(Gitlab::Experimentation).to receive(:enabled_for_attribute?).with(:invitation_reminders, group_member.invite_email).and_return(experimental_group)
-        end
-
-        it "tracks the 'sent' event", :snowplow do
-          subject.deliver_now
-
-          expect_snowplow_event(
-            category: 'Growth::Acquisition::Experiment::InvitationReminders',
-            label: Digest::MD5.hexdigest(group_member.to_global_id.to_s),
-            property: experimental_group ? 'experimental_group' : 'control_group',
-            action: 'sent'
-          )
-        end
-      end
-
-      describe 'tracking for the invitation reminders experiment' do
-        context 'when invite email is in the experimental group' do
-          let(:experimental_group) { true }
-
-          it_behaves_like "tracks the 'sent' event for the invitation reminders experiment"
-        end
-
-        context 'when invite email is in the control group' do
-          let(:experimental_group) { false }
-
-          it_behaves_like "tracks the 'sent' event for the invitation reminders experiment"
-        end
-      end
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'

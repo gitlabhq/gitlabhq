@@ -229,6 +229,7 @@ export default {
         v-if="pipeline.cancelable"
         :loading="isCanceling"
         :disabled="isCanceling"
+        class="gl-ml-3"
         variant="danger"
         data-testid="cancelPipeline"
         @click="cancelPipeline()"

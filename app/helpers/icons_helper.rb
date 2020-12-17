@@ -4,24 +4,8 @@ require 'json'
 
 module IconsHelper
   extend self
-  include FontAwesome::Rails::IconHelper
 
   DEFAULT_ICON_SIZE = 16
-
-  # Creates an icon tag given icon name(s) and possible icon modifiers.
-  #
-  # Right now this method simply delegates directly to `fa_icon` from the
-  # font-awesome-rails gem, but should we ever use a different icon pack in the
-  # future we won't have to change hundreds of method calls.
-  def icon(names, options = {})
-    if (options.keys & %w[aria-hidden aria-label data-hidden]).empty?
-      # Add 'aria-hidden' and 'data-hidden' if they are not set in options.
-      options['aria-hidden'] = true
-      options['data-hidden'] = true
-    end
-
-    options.include?(:base) ? fa_stacked_icon(names, options) : fa_icon(names, options)
-  end
 
   def custom_icon(icon_name, size: DEFAULT_ICON_SIZE)
     memoized_icon("#{icon_name}_#{size}") do
@@ -95,9 +79,9 @@ module IconsHelper
 
   def boolean_to_icon(value)
     if value
-      sprite_icon('check', css_class: 'cgreen')
+      sprite_icon('check', css_class: 'gl-text-green-500')
     else
-      sprite_icon('power', css_class: 'clgray')
+      sprite_icon('power', css_class: 'gl-text-gray-500')
     end
   end
 

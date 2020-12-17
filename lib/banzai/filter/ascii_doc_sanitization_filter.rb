@@ -6,8 +6,8 @@ module Banzai
     #
     # Extends Banzai::Filter::BaseSanitizationFilter with specific rules.
     class AsciiDocSanitizationFilter < Banzai::Filter::BaseSanitizationFilter
-      # Section anchor link pattern
-      SECTION_LINK_REF_PATTERN = /\A#{Gitlab::Asciidoc::DEFAULT_ADOC_ATTRS['idprefix']}(:?[[:alnum:]]|-|_)+\z/.freeze
+      # Anchor link prefixed by "user-content-" pattern
+      PREFIXED_ID_PATTERN = /\A#{Gitlab::Asciidoc::DEFAULT_ADOC_ATTRS['idprefix']}(:?[[:alnum:]]|-|_)+\z/.freeze
       SECTION_HEADINGS = %w(h2 h3 h4 h5 h6).freeze
 
       # Footnote link patterns
@@ -54,43 +54,34 @@ module Banzai
         whitelist[:attributes]['table'] = %w(class)
         whitelist[:transformers].push(self.class.remove_element_classes)
 
+        # Allow `id` in anchor and footnote elements
+        whitelist[:attributes]['a'].push('id')
+        whitelist[:attributes]['div'].push('id')
+
         # Allow `id` in heading elements for section anchors
         SECTION_HEADINGS.each do |header|
           whitelist[:attributes][header] = %w(id)
         end
-        whitelist[:transformers].push(self.class.remove_non_heading_ids)
 
-        # Allow `id` in footnote elements
-        FOOTNOTE_LINK_ID_PATTERNS.keys.each do |element|
-          whitelist[:attributes][element.to_s].push('id')
-        end
-        whitelist[:transformers].push(self.class.remove_non_footnote_ids)
+        # Remove ids that are not explicitly allowed
+        whitelist[:transformers].push(self.class.remove_disallowed_ids)
 
         whitelist
       end
 
       class << self
-        def remove_non_footnote_ids
+        def remove_disallowed_ids
           lambda do |env|
             node = env[:node]
 
-            return unless (pattern = FOOTNOTE_LINK_ID_PATTERNS[node.name.to_sym])
+            return unless node.name == 'a' || node.name == 'div' || SECTION_HEADINGS.any?(node.name)
             return unless node.has_attribute?('id')
 
-            return if node['id'] =~ pattern
+            return if node['id'] =~ PREFIXED_ID_PATTERN
 
-            node.remove_attribute('id')
-          end
-        end
-
-        def remove_non_heading_ids
-          lambda do |env|
-            node = env[:node]
-
-            return unless SECTION_HEADINGS.any?(node.name)
-            return unless node.has_attribute?('id')
-
-            return if node['id'] =~ SECTION_LINK_REF_PATTERN
+            if (pattern = FOOTNOTE_LINK_ID_PATTERNS[node.name.to_sym])
+              return if node['id'] =~ pattern
+            end
 
             node.remove_attribute('id')
           end

@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Continuous Integration
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: tutorial
 ---
 
@@ -62,7 +62,7 @@ You can use other versions of Scala and SBT by defining them in
 ## Display test coverage in job
 
 Add the `Coverage was \[\d+.\d+\%\]` regular expression in the
-**Settings ➔ Pipelines ➔ Coverage report** project setting to
+**Settings > Pipelines > Coverage report** project setting to
 retrieve the [test coverage](../pipelines/settings.md#test-coverage-report-badge)
 rate from the build trace and have it displayed with your jobs.
 

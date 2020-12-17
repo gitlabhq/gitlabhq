@@ -34,10 +34,10 @@ class PagesDomain < ApplicationRecord
   validate :validate_matching_key, if: ->(domain) { domain.certificate.present? || domain.key.present? }
   validate :validate_intermediates, if: ->(domain) { domain.certificate.present? && domain.certificate_changed? }
 
-  default_value_for(:auto_ssl_enabled, allow_nil: false) { ::Gitlab::LetsEncrypt.enabled? }
-  default_value_for :scope, allow_nil: false, value: :project
-  default_value_for :wildcard, allow_nil: false, value: false
-  default_value_for :usage, allow_nil: false, value: :pages
+  default_value_for(:auto_ssl_enabled, allows_nil: false) { ::Gitlab::LetsEncrypt.enabled? }
+  default_value_for :scope, allows_nil: false, value: :project
+  default_value_for :wildcard, allows_nil: false, value: false
+  default_value_for :usage, allows_nil: false, value: :pages
 
   attr_encrypted :key,
     mode: :per_attribute_iv_and_salt,

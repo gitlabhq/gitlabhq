@@ -1,14 +1,14 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+stage: Create
+group: Ecosystem
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # IBM Engineering Workflow Management (EWM) Integration **(CORE)**
 
 This service allows you to navigate from GitLab to EWM work items mentioned in merge request descriptions and commit messages. Each work item reference is automatically converted to a link back to the work item.
 
-NOTE: **Note:**
+NOTE:
 This IBM product was [formerly named Rational Team Concert](https://jazz.net/blog/index.php/2019/04/23/renaming-the-ibm-continuous-engineering-portfolio/)(RTC). This integration is also compatible with all versions of RTC and EWM.
 
 1. From a GitLab project, navigate to **Settings > Integrations**, and then click **EWM**.

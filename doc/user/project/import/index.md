@@ -2,7 +2,7 @@
 type: reference, howto
 stage: Manage
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Migrating projects to a GitLab instance
@@ -47,7 +47,7 @@ All GitLab user associations (such as comment author) will be changed to the use
 If you need to migrate all data over, you can leverage our [API](../../../api/README.md) to migrate from self-managed to GitLab.com.
 The order of assets to migrate from a self-managed instance to GitLab.com is the following:
 
-NOTE: **Note:**
+NOTE:
 When migrating to GitLab.com, users would need to be manually created unless [SCIM](../../../user/group/saml_sso/scim_setup.md) is going to be used. Creating users with the API is limited to self-managed instances as it requires administrator access.
 
 1. [Groups](../../../api/groups.md)
@@ -61,7 +61,7 @@ Docker pulls and pushes and re-run any CI pipelines to retrieve any build artifa
 
 ## Migrating from GitLab.com to self-managed GitLab
 
-The process is essentially the same as for [migrating from self-managed GitLab to GitLab.com](#migrating-from-self-managed-gitlab-to-gitlabcom). The main difference is that users can be created on the self-managed GitLab instance by an admin through the UI or the [users API](../../../api/users.md#user-creation).
+The process is essentially the same as for [migrating from self-managed GitLab to GitLab.com](#migrating-from-self-managed-gitlab-to-gitlabcom). The main difference is that users can be created on the self-managed GitLab instance by an administrator through the UI or the [users API](../../../api/users.md#user-creation).
 
 ## Migrating between two self-managed GitLab instances
 
@@ -73,4 +73,4 @@ then restore it on the new server.
 In the event of merging two GitLab instances together (for example, both instances have existing data on them and one can't be wiped),
 refer to the instructions in [Migrating from self-managed GitLab to GitLab.com](#migrating-from-self-managed-gitlab-to-gitlabcom).
 
-Additionally, you can migrate users using the [Users API](../../../api/users.md) with an admin user.
+Additionally, you can migrate users using the [Users API](../../../api/users.md) with an administrator user.

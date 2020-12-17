@@ -11,8 +11,8 @@ RSpec.describe 'Profile > Active Sessions', :clean_gitlab_redis_shared_state do
 
   let(:admin) { create(:admin) }
 
-  it 'User sees their active sessions' do
-    Timecop.freeze(Time.zone.parse('2018-03-12 09:06')) do
+  it 'user sees their active sessions' do
+    travel_to(Time.zone.parse('2018-03-12 09:06')) do
       Capybara::Session.new(:session1)
       Capybara::Session.new(:session2)
       Capybara::Session.new(:session3)
@@ -45,6 +45,7 @@ RSpec.describe 'Profile > Active Sessions', :clean_gitlab_redis_shared_state do
         )
 
         gitlab_sign_in(admin)
+        gitlab_enable_admin_mode_sign_in(admin)
 
         visit admin_user_path(user)
 
@@ -55,8 +56,8 @@ RSpec.describe 'Profile > Active Sessions', :clean_gitlab_redis_shared_state do
         visit profile_active_sessions_path
 
         expect(page).to(
-          have_selector('ul.list-group li.list-group-item', { text: 'Signed in on',
-                                                              count: 2 }))
+          have_selector('ul.list-group li.list-group-item', text: 'Signed in on',
+                                                              count: 2))
 
         expect(page).to have_content(
           '127.0.0.1 ' \
@@ -81,7 +82,7 @@ RSpec.describe 'Profile > Active Sessions', :clean_gitlab_redis_shared_state do
     end
   end
 
-  it 'User can revoke a session', :js do
+  it 'user can revoke a session', :js do
     Capybara::Session.new(:session1)
     Capybara::Session.new(:session2)
 

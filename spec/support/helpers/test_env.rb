@@ -168,6 +168,11 @@ module TestEnv
       version: Gitlab::GitalyClient.expected_server_version,
       task: "gitlab:gitaly:install[#{install_gitaly_args}]") do
         Gitlab::SetupHelper::Gitaly.create_configuration(gitaly_dir, { 'default' => repos_path }, force: true)
+        Gitlab::SetupHelper::Gitaly.create_configuration(
+          gitaly_dir,
+          { 'default' => repos_path }, force: true,
+          options: { gitaly_socket: "gitaly2.socket", config_filename: "gitaly2.config.toml" }
+        )
         Gitlab::SetupHelper::Praefect.create_configuration(gitaly_dir, { 'praefect' => repos_path }, force: true)
       end
 
@@ -241,15 +246,38 @@ module TestEnv
   end
 
   def setup_workhorse
-    install_workhorse_args = [workhorse_dir, workhorse_url].compact.join(',')
+    start = Time.now
+    return if skip_compile_workhorse?
 
-    component_timed_setup(
-      'GitLab Workhorse',
-      install_dir: workhorse_dir,
-      version: Gitlab::Workhorse.version,
-      task: "gitlab:workhorse:install[#{install_workhorse_args}]") do
-        Gitlab::SetupHelper::Workhorse.create_configuration(workhorse_dir, nil)
-      end
+    puts "\n==> Setting up GitLab Workhorse..."
+
+    FileUtils.rm_rf(workhorse_dir)
+    Gitlab::SetupHelper::Workhorse.compile_into(workhorse_dir)
+    Gitlab::SetupHelper::Workhorse.create_configuration(workhorse_dir, nil)
+
+    File.write(workhorse_tree_file, workhorse_tree) if workhorse_source_clean?
+
+    puts "    GitLab Workhorse set up in #{Time.now - start} seconds...\n"
+  end
+
+  def skip_compile_workhorse?
+    File.directory?(workhorse_dir) &&
+      workhorse_source_clean? &&
+      File.exist?(workhorse_tree_file) &&
+      workhorse_tree == File.read(workhorse_tree_file)
+  end
+
+  def workhorse_source_clean?
+    out = IO.popen(%w[git status --porcelain workhorse], &:read)
+    $?.success? && out.empty?
+  end
+
+  def workhorse_tree
+    IO.popen(%w[git rev-parse HEAD:workhorse], &:read)
+  end
+
+  def workhorse_tree_file
+    File.join(workhorse_dir, 'WORKHORSE_TREE')
   end
 
   def workhorse_dir
@@ -260,7 +288,7 @@ module TestEnv
     host = "[#{host}]" if host.include?(':')
     listen_addr = [host, port].join(':')
 
-    config_path = Gitlab::SetupHelper::Workhorse.get_config_path(workhorse_dir)
+    config_path = Gitlab::SetupHelper::Workhorse.get_config_path(workhorse_dir, {})
 
     # This should be set up in setup_workhorse, but since
     # component_needs_update? only checks that versions are consistent,

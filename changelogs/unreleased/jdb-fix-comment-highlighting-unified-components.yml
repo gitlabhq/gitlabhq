@@ -1,0 +1,5 @@
+---
+title: Fix comment highlighting for unified diff components
+merge_request: 49061
+author:
+type: fixed

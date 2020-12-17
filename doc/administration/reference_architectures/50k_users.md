@@ -2,7 +2,7 @@
 reading_time: true
 stage: Enablement
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Reference architecture: up to 50,000 users **(PREMIUM ONLY)**
@@ -24,14 +24,89 @@ full list of reference architectures, see
 | Internal load balancing node            | 1           | 8 vCPU, 7.2 GB memory   | n1-highcpu-8    | c5.2xlarge   | F8s v2   |
 | Redis - Cache                           | 3           | 4 vCPU, 15 GB memory    | n1-standard-4   | m5.xlarge    | D4s v3   |
 | Redis - Queues / Shared State           | 3           | 4 vCPU, 15 GB memory    | n1-standard-4   | m5.xlarge    | D4s v3   |
-| Redis Sentinel - Cache                  | 3           | 1 vCPU, 1.7 GB memory   | g1-small        | t2.small     | B1MS     |
-| Redis Sentinel - Queues / Shared State  | 3           | 1 vCPU, 1.7 GB memory   | g1-small        | t2.small     | B1MS     |
+| Redis Sentinel - Cache                  | 3           | 1 vCPU, 1.7 GB memory   | g1-small        | t3.small     | B1MS     |
+| Redis Sentinel - Queues / Shared State  | 3           | 1 vCPU, 1.7 GB memory   | g1-small        | t3.small     | B1MS     |
 | Gitaly                                  | 2 (minimum) | 64 vCPU, 240 GB memory  | n1-standard-64  | m5.16xlarge  | D64s v3  |
 | Sidekiq                                 | 4           | 4 vCPU, 15 GB memory    | n1-standard-4   | m5.xlarge    | D4s v3   |
 | GitLab Rails                            | 12          | 32 vCPU, 28.8 GB memory | n1-highcpu-32   | c5.9xlarge   | F32s v2  |
 | Monitoring node                         | 1           | 4 vCPU, 3.6 GB memory   | n1-highcpu-4    | c5.xlarge    | F4s v2   |
 | Object storage                          | n/a         | n/a                     | n/a             | n/a          | n/a      |
 | NFS server                              | 1           | 4 vCPU, 3.6 GB memory   | n1-highcpu-4    | c5.xlarge    | F4s v2   |
+
+```mermaid
+stateDiagram-v2
+    [*] --> LoadBalancer
+    LoadBalancer --> ApplicationServer
+
+    ApplicationServer --> BackgroundJobs
+    ApplicationServer --> Gitaly
+    ApplicationServer --> Redis_Cache
+    ApplicationServer --> Redis_Queues
+    ApplicationServer --> PgBouncer
+    PgBouncer --> Database
+    ApplicationServer --> ObjectStorage
+    BackgroundJobs --> ObjectStorage
+
+    ApplicationMonitoring -->ApplicationServer
+    ApplicationMonitoring -->PgBouncer
+    ApplicationMonitoring -->Database
+    ApplicationMonitoring -->BackgroundJobs
+
+    ApplicationServer --> Consul
+
+    Consul --> Database
+    Consul --> PgBouncer
+    Redis_Cache --> Consul
+    Redis_Queues --> Consul
+    BackgroundJobs --> Consul
+
+    state Consul {
+      "Consul_1..3"
+    }
+
+    state Database {
+      "PG_Primary_Node"
+      "PG_Secondary_Node_1..2"
+    }
+
+    state Redis_Cache {
+      "R_Cache_Primary_Node"
+      "R_Cache_Replica_Node_1..2"
+      "R_Cache_Sentinel_1..3"
+    }
+
+    state Redis_Queues {
+      "R_Queues_Primary_Node"
+      "R_Queues_Replica_Node_1..2"
+      "R_Queues_Sentinel_1..3"
+    }
+
+    state Gitaly {
+      "Gitaly_1..2"
+    }
+
+    state BackgroundJobs {
+      "Sidekiq_1..4"
+    }
+
+    state ApplicationServer {
+      "GitLab_Rails_1..12"
+    }
+
+    state LoadBalancer {
+      "LoadBalancer_1"
+    }
+
+    state ApplicationMonitoring {
+      "Prometheus"
+      "Grafana"
+    }
+
+    state PgBouncer {
+      "Internal_Load_Balancer"
+      "PgBouncer_1..3"
+    }
+```
 
 The Google Cloud Platform (GCP) architectures were built and tested using the
 [Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
@@ -241,7 +316,7 @@ The following IPs will be used as an example:
 - `10.6.0.12`: Consul 2
 - `10.6.0.13`: Consul 3
 
-NOTE: **Note:**
+NOTE:
 The configuration processes for the other servers in your reference architecture will
 use the `/etc/gitlab/gitlab-secrets.json` file from your Consul server to connect
 with the other servers.
@@ -962,7 +1037,7 @@ servers. The following IPs will be used as an example:
 - `10.6.0.72`: Sentinel - Cache 2
 - `10.6.0.73`: Sentinel - Cache 3
 
-NOTE: **Note:**
+NOTE:
 If you're using an external Redis Sentinel instance, be sure to exclude the
 `requirepass` parameter from the Sentinel configuration. This parameter causes
 clients to report `NOAUTH Authentication required.`.
@@ -1226,7 +1301,7 @@ servers. The following IPs will be used as an example:
 - `10.6.0.82`: Sentinel - Queues 2
 - `10.6.0.83`: Sentinel - Queues 3
 
-NOTE: **Note:**
+NOTE:
 If you're using an external Redis Sentinel instance, be sure to exclude the
 `requirepass` parameter from the Sentinel configuration. This parameter causes
 clients to report `NOAUTH Authentication required.`.
@@ -1347,7 +1422,7 @@ To configure the Sentinel Queues server:
 
 ## Configure Gitaly
 
-NOTE: **Note:**
+NOTE:
 [Gitaly Cluster](../gitaly/praefect.md) support
 for the Reference Architectures is being
 worked on as a [collaborative effort](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/1) between the Quality Engineering and Gitaly teams. When this component has been verified
@@ -1356,19 +1431,17 @@ and improved designed.
 
 [Gitaly](../gitaly/index.md) server node requirements are dependent on data,
 specifically the number of projects and those projects' sizes. It's recommended
-that a Gitaly server node stores no more than 5 TB of data. Although this
-reference architecture includes a recommendation for the number of Gitaly server
-nodes to use, depending on your storage requirements, you may require additional
-Gitaly server nodes.
+that a Gitaly server node stores no more than 5 TB of data. Depending on your
+repository storage requirements, you may require additional Gitaly server nodes.
 
 Due to Gitaly having notable input and output requirements, we strongly
-recommend that all Gitaly nodes use solid-state drives (SSDs). These SSDs should
-have a throughput of at least 8,000 input/output operations per second (IOPS)
-for read operations and 2,000 IOPS for write operations. These IOPS values are
-initial recommendations, and may be adjusted to greater or lesser values
-depending on the scale of your environment's workload. If you're running the
-environment on a Cloud provider, refer to their documentation about how to
-configure IOPS correctly.
+recommend that all Gitaly nodes use solid-state drives (SSDs). These SSDs
+should have a throughput of at least 8,000
+input/output operations per second (IOPS) for read operations and 2,000 IOPS for
+write operations. These IOPS values are initial recommendations, and may be
+adjusted to greater or lesser values depending on the scale of your
+environment's workload. If you're running the environment on a Cloud provider,
+refer to their documentation about how to configure IOPS correctly.
 
 Be sure to note the following items:
 
@@ -1376,14 +1449,14 @@ Be sure to note the following items:
   [repository storage paths](../repository_storage_paths.md).
 - A Gitaly server can host one or more storage paths.
 - A GitLab server can use one or more Gitaly server nodes.
-- Gitaly addresses must be specified to be correctly resolvable for _all_
-  Gitaly clients.
+- Gitaly addresses must be specified to be correctly resolvable for all Gitaly
+  clients.
 - Gitaly servers must not be exposed to the public internet, as Gitaly's network
   traffic is unencrypted by default. The use of a firewall is highly recommended
   to restrict access to the Gitaly server. Another option is to
   [use TLS](#gitaly-tls-support).
 
-NOTE: **Note:**
+NOTE:
 The token referred to throughout the Gitaly documentation is an arbitrary
 password selected by the administrator. This token is unrelated to tokens
 created for the GitLab API or other similar web API tokens.
@@ -1406,8 +1479,8 @@ On each node:
 1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
    package of your choice. Be sure to follow _only_ installation steps 1 and 2
    on the page, and _do not_ provide the `EXTERNAL_URL` value.
-1. Edit `/etc/gitlab/gitlab.rb` to configure the storage paths, enable
-   the network listener, and configure the token:
+1. Edit the Gitaly server node's `/etc/gitlab/gitlab.rb` file to configure
+   storage paths, enable the network listener, and to configure the token:
 
    <!--
    updates to following example must also be made at
@@ -1501,7 +1574,7 @@ nodes (including the Gitaly node using the certificate) and on all client nodes
 that communicate with it following the procedure described in
 [GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
 
-NOTE: **Note:**
+NOTE:
 The self-signed certificate must specify the address you use to access the
 Gitaly server. If you are addressing the Gitaly server by a hostname, you can
 either use the Common Name field for this, or add it as a Subject Alternative
@@ -1677,7 +1750,7 @@ To configure the Sidekiq nodes, on each one:
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
-TIP: **Tip:**
+NOTE:
 You can also run [multiple Sidekiq processes](../operations/extra_sidekiq_processes.md).
 
 <div align="right">
@@ -1689,12 +1762,6 @@ You can also run [multiple Sidekiq processes](../operations/extra_sidekiq_proces
 ## Configure GitLab Rails
 
 This section describes how to configure the GitLab application (Rails) component.
-
-In our architecture, we run each GitLab Rails node using the Puma webserver, and
-have its number of workers set to 90% of available CPUs, with four threads. For
-nodes running Rails with other components, the worker value should be reduced
-accordingly. We've determined that a worker value of 50% achieves a good balance,
-but this is dependent on workload.
 
 The following IPs will be used as an example:
 
@@ -1999,7 +2066,7 @@ on what features you intend to use:
 
 |Object storage type|Supported by consolidated configuration?|
 |-------------------|----------------------------------------|
-| [Backups](../../raketasks/backup_restore.md#uploading-backups-to-a-remote-cloud-storage)|No|
+| [Backups](../../raketasks/backup_restore.md#uploading-backups-to-a-remote-cloud-storage) | No |
 | [Job artifacts](../job_artifacts.md#using-object-storage) including archived job logs | Yes |
 | [LFS objects](../lfs/index.md#storing-lfs-objects-in-remote-object-storage) | Yes |
 | [Uploads](../uploads.md#using-object-storage) | Yes |

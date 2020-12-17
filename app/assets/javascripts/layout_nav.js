@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import ContextualSidebar from './contextual_sidebar';
 import initFlyOutNav from './fly_out_nav';
+import { setNotification } from './whats_new/utils/notification';
 
 function hideEndFade($scrollingTabs) {
   $scrollingTabs.each(function scrollTabsLoop() {
@@ -14,25 +15,17 @@ function hideEndFade($scrollingTabs) {
 function initDeferred() {
   $(document).trigger('init.scrolling-tabs');
 
-  const whatsNewTriggerEl = document.querySelector('.js-whats-new-trigger');
-  if (whatsNewTriggerEl) {
-    const storageKey = whatsNewTriggerEl.getAttribute('data-storage-key');
+  const appEl = document.getElementById('whats-new-app');
+  if (!appEl) return;
 
-    $('.header-help').on('show.bs.dropdown', () => {
-      const displayNotification = JSON.parse(localStorage.getItem(storageKey));
-      if (displayNotification === false) {
-        $('.js-whats-new-notification-count').remove();
-      }
-    });
-
-    whatsNewTriggerEl.addEventListener('click', () => {
-      import(/* webpackChunkName: 'whatsNewApp' */ '~/whats_new')
-        .then(({ default: initWhatsNew }) => {
-          initWhatsNew();
-        })
-        .catch(() => {});
-    });
-  }
+  setNotification(appEl);
+  document.querySelector('.js-whats-new-trigger').addEventListener('click', () => {
+    import(/* webpackChunkName: 'whatsNewApp' */ '~/whats_new')
+      .then(({ default: initWhatsNew }) => {
+        initWhatsNew(appEl);
+      })
+      .catch(() => {});
+  });
 }
 
 export default function initLayoutNav() {

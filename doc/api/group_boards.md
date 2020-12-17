@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Group Issue Boards API
@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Every API call to group boards must be authenticated.
 
 If a user is not a member of a group and the group is private, a `GET`
-request will result in `404` status code.
+request results in `404` status code.
 
 ## List all group issue boards in a group
 
@@ -76,7 +76,7 @@ Example response:
 ]
 ```
 
-Users on GitLab [Premium, Silver, or higher](https://about.gitlab.com/pricing/) will see
+Users on GitLab [Premium, Silver, or higher](https://about.gitlab.com/pricing/) see
 different parameters, due to the ability to have multiple group boards.
 
 Example response:
@@ -192,8 +192,8 @@ Example response:
   }
 ```
 
-Users on GitLab [Premium, Silver, or higher](https://about.gitlab.com/pricing/) will see
-different parameters, due to the ability to have multiple group issue boards.s
+Users on GitLab [Premium, Silver, or higher](https://about.gitlab.com/pricing/) see
+different parameters, due to the ability to have multiple group issue boards.
 
 Example response:
 

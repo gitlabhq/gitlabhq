@@ -72,6 +72,16 @@ class Admin::UsersController < Admin::ApplicationController
     end
   end
 
+  def reject
+    result = Users::RejectService.new(current_user).execute(user)
+
+    if result[:status] == :success
+      redirect_to admin_users_path, status: :found, notice: _("You've rejected %{user}" % { user: user.name })
+    else
+      redirect_back_or_admin_user(alert: result[:message])
+    end
+  end
+
   def activate
     return redirect_back_or_admin_user(notice: _("Error occurred. A blocked user must be unblocked to be activated")) if user.blocked?
 

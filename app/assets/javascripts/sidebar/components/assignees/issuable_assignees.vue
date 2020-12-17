@@ -1,9 +1,11 @@
 <script>
+import { GlButton } from '@gitlab/ui';
 import { n__ } from '~/locale';
 import UncollapsedAssigneeList from '~/sidebar/components/assignees/uncollapsed_assignee_list.vue';
 
 export default {
   components: {
+    GlButton,
     UncollapsedAssigneeList,
   },
   inject: ['rootPath'],
@@ -27,9 +29,15 @@ export default {
 <template>
   <div class="gl-display-flex gl-flex-direction-column">
     <div v-if="emptyUsers" data-testid="none">
-      <span>
-        {{ __('None') }}
-      </span>
+      <span> {{ __('None') }} -</span>
+      <gl-button
+        data-testid="assign-yourself"
+        category="tertiary"
+        variant="link"
+        @click="$emit('assign-self')"
+      >
+        <span class="gl-text-gray-400">{{ __('assign yourself') }}</span>
+      </gl-button>
     </div>
     <uncollapsed-assignee-list v-else :users="users" :root-path="rootPath" />
   </div>

@@ -1,9 +1,11 @@
 <script>
+/* eslint-disable vue/no-v-html */
+// We are forced to use `v-html` untill this gitlab-ui issue is resolved: https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1079
+//  then we can re-write this to use gl-breadcrumb
 import { initial, first, last } from 'lodash';
-import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import { sanitize } from '~/lib/dompurify';
 
 export default {
-  directives: { SafeHtml },
   props: {
     crumbs: {
       type: Array,
@@ -11,6 +13,9 @@ export default {
     },
   },
   computed: {
+    parsedCrumbs() {
+      return this.crumbs.map(c => ({ ...c, innerHTML: sanitize(c.innerHTML) }));
+    },
     rootRoute() {
       return this.$router.options.routes.find(r => r.meta.root);
     },
@@ -18,11 +23,11 @@ export default {
       return this.$route.name === this.rootRoute.name;
     },
     rootCrumbs() {
-      return initial(this.crumbs);
+      return initial(this.parsedCrumbs);
     },
     divider() {
       const { classList, tagName, innerHTML } = first(this.crumbs).querySelector('svg');
-      return { classList: [...classList], tagName, innerHTML };
+      return { classList: [...classList], tagName, innerHTML: sanitize(innerHTML) };
     },
     lastCrumb() {
       const { children } = last(this.crumbs);
@@ -30,7 +35,7 @@ export default {
       return {
         tagName,
         className,
-        text: this.$route.meta.nameGenerator(this.$store.state),
+        text: this.$route.meta.nameGenerator(),
         path: { to: this.$route.name },
       };
     },
@@ -43,14 +48,14 @@ export default {
     <li
       v-for="(crumb, index) in rootCrumbs"
       :key="index"
-      v-safe-html="crumb.innerHTML"
       :class="crumb.className"
+      v-html="crumb.innerHTML"
     ></li>
     <li v-if="!isRootRoute">
       <router-link ref="rootRouteLink" :to="rootRoute.path">
-        {{ rootRoute.meta.nameGenerator($store.state) }}
+        {{ rootRoute.meta.nameGenerator() }}
       </router-link>
-      <component :is="divider.tagName" v-safe-html="divider.innerHTML" :class="divider.classList" />
+      <component :is="divider.tagName" :class="divider.classList" v-html="divider.innerHTML" />
     </li>
     <li>
       <component :is="lastCrumb.tagName" ref="lastCrumb" :class="lastCrumb.className">

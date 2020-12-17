@@ -15,4 +15,4 @@
 
   %p
     %h4= _("Release notes:")
-    = markdown_field(@release, :description)
+    = markdown(@release.description, pipeline: :email, author: @release.author)

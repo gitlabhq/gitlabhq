@@ -57,7 +57,7 @@ module API
             end
 
             params do
-              requires :link_id, type: String, desc: 'The id of the link'
+              requires :link_id, type: String, desc: 'The ID of the link'
             end
             resource 'links/:link_id' do
               desc 'Get a link detail of a release' do

@@ -13,7 +13,7 @@ RSpec.describe BackfillReleasesTableUpdatedAtAndAddNotNullConstraintsToTimestamp
   it 'fills null updated_at rows with the value of created_at' do
     created_at_a = Time.zone.parse('2014-03-11T04:30:00Z')
     created_at_b = Time.zone.parse('2019-09-10T12:00:00Z')
-    namespace = namespaces.create(name: 'foo', path: 'foo')
+    namespace = namespaces.create!(name: 'foo', path: 'foo')
     project = projects.create!(namespace_id: namespace.id)
     release_a = releases.create!(project_id: project.id,
                                  released_at: Time.zone.parse('2014-12-10T06:00:00Z'),
@@ -36,7 +36,7 @@ RSpec.describe BackfillReleasesTableUpdatedAtAndAddNotNullConstraintsToTimestamp
     created_at_a = Time.zone.parse('2014-03-11T04:30:00Z')
     updated_at_a = Time.zone.parse('2015-01-16T10:00:00Z')
     created_at_b = Time.zone.parse('2019-09-10T12:00:00Z')
-    namespace = namespaces.create(name: 'foo', path: 'foo')
+    namespace = namespaces.create!(name: 'foo', path: 'foo')
     project = projects.create!(namespace_id: namespace.id)
     release_a = releases.create!(project_id: project.id,
                                  released_at: Time.zone.parse('2014-12-10T06:00:00Z'),

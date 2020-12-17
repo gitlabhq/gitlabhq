@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe Projects::BlobController, '(JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
 
-  let(:admin) { create(:admin) }
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
   let(:project) { create(:project, :repository, namespace: namespace, path: 'branches-project') }
+  let(:user) { project.owner }
 
   render_views
 
@@ -16,7 +16,7 @@ RSpec.describe Projects::BlobController, '(JavaScript fixtures)', type: :control
   end
 
   before do
-    sign_in(admin)
+    sign_in(user)
     allow(SecureRandom).to receive(:hex).and_return('securerandomhex:thereisnospoon')
   end
 

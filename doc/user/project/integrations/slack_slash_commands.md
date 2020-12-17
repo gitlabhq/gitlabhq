@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Ecosystem
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Slack slash commands **(CORE ONLY)**
@@ -14,7 +14,7 @@ Slack, without having to leave it. This requires configurations in both Slack an
 GitLab can also send events (e.g., `issue created`) to Slack as notifications.
 This is the separately configured [Slack Notifications Service](slack.md).
 
-NOTE: **Note:**
+NOTE:
 For GitLab.com, use the [Slack app](gitlab_slack_application.md) instead.
 
 ## Configuration

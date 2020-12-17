@@ -16,7 +16,7 @@ RSpec.describe RuboCop::Cop::IncludeSidekiqWorker, type: :rubocop do
     let(:source) { 'include Sidekiq::Worker' }
     let(:correct_source) { 'include ApplicationWorker' }
 
-    it 'registers an offense ' do
+    it 'registers an offense' do
       inspect_source(source)
 
       aggregate_failures do

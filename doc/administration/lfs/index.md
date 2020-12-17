@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: reference, howto
 disqus_identifier: 'https://docs.gitlab.com/ee/workflow/lfs/lfs_administration.html'
 ---
@@ -71,7 +71,7 @@ GitLab provides two different options for the uploading mechanism: "Direct uploa
 
 [Read more about using object storage with GitLab](../object_storage.md).
 
-NOTE: **Note:**
+NOTE:
 In GitLab 13.2 and later, we recommend using the
 [consolidated object storage settings](../object_storage.md#consolidated-object-storage-configuration).
 This section describes the earlier configuration format.

@@ -5,36 +5,34 @@ require 'spec_helper'
 RSpec.describe 'getting project information' do
   include GraphqlHelpers
 
-  let(:group) { create(:group) }
-  let(:project) { create(:project, :repository, group: group) }
-  let(:current_user) { create(:user) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, :repository, group: group) }
+  let_it_be(:current_user) { create(:user) }
+  let(:fields) { all_graphql_fields_for(Project, max_depth: 2, excluded: %w(jiraImports services)) }
 
   let(:query) do
-    graphql_query_for(
-      'project',
-      { 'fullPath' => project.full_path },
-      all_graphql_fields_for('project'.to_s.classify, excluded: %w(jiraImports services))
-    )
+    graphql_query_for(:project, { full_path: project.full_path }, fields)
   end
 
   context 'when the user has full access to the project' do
     let(:full_access_query) do
-      graphql_query_for('project', 'fullPath' => project.full_path)
+      graphql_query_for(:project, { full_path: project.full_path },
+                        all_graphql_fields_for('Project', max_depth: 2))
     end
 
     before do
       project.add_maintainer(current_user)
     end
 
-    it 'includes the project' do
-      post_graphql(query, current_user: current_user)
+    it 'includes the project', :use_clean_rails_memory_store_caching, :request_store do
+      post_graphql(full_access_query, current_user: current_user)
 
       expect(graphql_data['project']).not_to be_nil
     end
   end
 
-  context 'when the user has access to the project' do
-    before do
+  context 'when the user has access to the project', :use_clean_rails_memory_store_caching, :request_store do
+    before_all do
       project.add_developer(current_user)
     end
 
@@ -55,10 +53,12 @@ RSpec.describe 'getting project information' do
         create(:ci_pipeline, project: project)
       end
 
+      let(:fields) { query_nodes(:pipelines) }
+
       it 'is included in the pipelines connection' do
         post_graphql(query, current_user: current_user)
 
-        expect(graphql_data['project']['pipelines']['edges'].size).to eq(1)
+        expect(graphql_data_at(:project, :pipelines, :nodes)).to contain_exactly(a_kind_of(Hash))
       end
     end
 
@@ -109,7 +109,7 @@ RSpec.describe 'getting project information' do
   end
 
   describe 'performance' do
-    before do
+    before_all do
       project.add_developer(current_user)
       mrs = create_list(:merge_request, 10, :closed, :with_head_pipeline,
                         source_project: project,
@@ -151,8 +151,9 @@ RSpec.describe 'getting project information' do
           )))
     end
 
-    it 'can lookahead to eliminate N+1 queries', :use_clean_rails_memory_store_caching, :request_store do
-      expect { run_query(10) }.to issue_same_number_of_queries_as { run_query(1) }.or_fewer.ignoring_cached_queries
+    it 'can lookahead to eliminate N+1 queries' do
+      baseline = ActiveRecord::QueryRecorder.new { run_query(1) }
+      expect { run_query(10) }.not_to exceed_query_limit(baseline)
     end
   end
 

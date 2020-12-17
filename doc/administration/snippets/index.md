@@ -2,7 +2,7 @@
 type: reference, howto
 stage: Create
 group: Editor
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 ---
 
 # Snippets settings **(CORE ONLY)**
@@ -29,7 +29,7 @@ This setting is not available through the [Admin Area settings](../../user/admin
 In order to configure this setting, use either the Rails console
 or the [Application settings API](../../api/settings.md).
 
-NOTE: **IMPORTANT:**
+NOTE:
 The value of the limit **must** be in bytes.
 
 #### Through the Rails console
@@ -64,11 +64,11 @@ The process to set the snippets size limit through the Application Settings API 
 exactly the same as you would do to [update any other setting](../../api/settings.md#change-application-settings).
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/application/settings?snippet_size_limit=52428800
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/settings?snippet_size_limit=52428800"
 ```
 
 You can also use the API to [retrieve the current value](../../api/settings.md#get-current-application-settings).
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/application/settings
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/settings"
 ```

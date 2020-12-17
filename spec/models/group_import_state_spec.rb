@@ -70,4 +70,24 @@ RSpec.describe GroupImportState do
       end
     end
   end
+
+  context 'when import failed' do
+    context 'when error message is present' do
+      it 'truncates error message' do
+        group_import_state = build(:group_import_state, :started)
+        group_import_state.fail_op('e' * 300)
+
+        expect(group_import_state.last_error.length).to eq(255)
+      end
+    end
+
+    context 'when error message is missing' do
+      it 'has no error message' do
+        group_import_state = build(:group_import_state, :started)
+        group_import_state.fail_op
+
+        expect(group_import_state.last_error).to be_nil
+      end
+    end
+  end
 end

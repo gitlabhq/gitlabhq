@@ -1,5 +1,11 @@
 import { mount, createLocalVue } from '@vue/test-utils';
-import { GlDropdownItem, GlAvatarLink, GlAvatarLabeled, GlSearchBoxByType } from '@gitlab/ui';
+import {
+  GlDropdownItem,
+  GlAvatarLink,
+  GlAvatarLabeled,
+  GlSearchBoxByType,
+  GlLoadingIcon,
+} from '@gitlab/ui';
 import createMockApollo from 'jest/helpers/mock_apollo_helper';
 import VueApollo from 'vue-apollo';
 import BoardAssigneeDropdown from '~/boards/components/board_assignee_dropdown.vue';
@@ -8,7 +14,7 @@ import MultiSelectDropdown from '~/vue_shared/components/sidebar/multiselect_dro
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
 import store from '~/boards/stores';
 import getIssueParticipants from '~/vue_shared/components/sidebar/queries/getIssueParticipants.query.graphql';
-import searchUsers from '~/boards/queries/users_search.query.graphql';
+import searchUsers from '~/boards/graphql/users_search.query.graphql';
 import { participants } from '../mock_data';
 
 const localVue = createLocalVue();
@@ -20,17 +26,18 @@ describe('BoardCardAssigneeDropdown', () => {
   let fakeApollo;
   let getIssueParticipantsSpy;
   let getSearchUsersSpy;
+  let dispatchSpy;
 
   const iid = '111';
   const activeIssueName = 'test';
   const anotherIssueName = 'hello';
 
-  const createComponent = (search = '') => {
+  const createComponent = (search = '', loading = false) => {
     wrapper = mount(BoardAssigneeDropdown, {
       data() {
         return {
           search,
-          selected: store.getters.activeIssue.assignees,
+          selected: [],
           participants,
         };
       },
@@ -38,6 +45,15 @@ describe('BoardCardAssigneeDropdown', () => {
       provide: {
         canUpdate: true,
         rootPath: '',
+      },
+      mocks: {
+        $apollo: {
+          queries: {
+            participants: {
+              loading,
+            },
+          },
+        },
       },
     });
   };
@@ -47,14 +63,13 @@ describe('BoardCardAssigneeDropdown', () => {
       [getIssueParticipants, getIssueParticipantsSpy],
       [searchUsers, getSearchUsersSpy],
     ]);
-
     wrapper = mount(BoardAssigneeDropdown, {
       localVue,
       apolloProvider: fakeApollo,
       data() {
         return {
           search,
-          selected: store.getters.activeIssue.assignees,
+          selected: [],
           participants,
         };
       },
@@ -82,6 +97,8 @@ describe('BoardCardAssigneeDropdown', () => {
     return wrapper.findAll(GlDropdownItem).wrappers.find(node => node.text().indexOf(text) === 0);
   };
 
+  const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
+
   beforeEach(() => {
     store.state.activeId = '1';
     store.state.issues = {
@@ -91,10 +108,11 @@ describe('BoardCardAssigneeDropdown', () => {
       },
     };
 
-    jest.spyOn(store, 'dispatch').mockResolvedValue();
+    dispatchSpy = jest.spyOn(store, 'dispatch').mockResolvedValue();
   });
 
   afterEach(() => {
+    window.gon = {};
     jest.restoreAllMocks();
   });
 
@@ -243,6 +261,30 @@ describe('BoardCardAssigneeDropdown', () => {
     },
   );
 
+  describe('when participants is loading', () => {
+    beforeEach(() => {
+      createComponent('', true);
+    });
+
+    it('finds a loading icon in the dropdown', () => {
+      expect(findLoadingIcon().exists()).toBe(true);
+    });
+  });
+
+  describe('when participants is loading is false', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('does not find GlLoading icon in the dropdown', () => {
+      expect(findLoadingIcon().exists()).toBe(false);
+    });
+
+    it('finds at least 1 GlDropdownItem', () => {
+      expect(wrapper.findAll(GlDropdownItem).length).toBeGreaterThan(0);
+    });
+  });
+
   describe('Apollo', () => {
     beforeEach(() => {
       getIssueParticipantsSpy = jest.fn().mockResolvedValue({
@@ -304,5 +346,40 @@ describe('BoardCardAssigneeDropdown', () => {
     await openDropdown();
 
     expect(wrapper.find(GlSearchBoxByType).exists()).toBe(true);
+  });
+
+  describe('when assign-self is emitted from IssuableAssignees', () => {
+    const currentUser = { username: 'self', name: '', id: '' };
+
+    beforeEach(() => {
+      window.gon = { current_username: currentUser.username };
+
+      dispatchSpy.mockResolvedValue([currentUser]);
+      createComponent();
+
+      wrapper.find(IssuableAssignees).vm.$emit('assign-self');
+    });
+
+    it('calls setAssignees with currentUser', () => {
+      expect(store.dispatch).toHaveBeenCalledWith('setAssignees', currentUser.username);
+    });
+
+    it('adds the user to the selected list', async () => {
+      expect(findByText(currentUser.username).exists()).toBe(true);
+    });
+  });
+
+  describe('when setting an assignee', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('passes loading state from Vuex to BoardEditableItem', async () => {
+      store.state.isSettingAssignees = true;
+
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.find(BoardEditableItem).props('loading')).toBe(true);
+    });
   });
 });

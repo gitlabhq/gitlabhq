@@ -138,13 +138,15 @@ module LoginHelpers
         secret: 'mock_secret'
       },
       extra: {
-        raw_info: {
-          info: {
-            name: 'mockuser',
-            email: email,
-            image: 'mock_user_thumbnail_url'
+        raw_info: OneLogin::RubySaml::Attributes.new(
+          {
+            info: {
+              name: 'mockuser',
+              email: email,
+              image: 'mock_user_thumbnail_url'
+            }
           }
-        },
+        ),
         response_object: response_object
       }
     }).merge(additional_info) { |_, old_hash, new_hash| old_hash.merge(new_hash) }
@@ -198,7 +200,7 @@ module LoginHelpers
     env['omniauth.error.strategy'] = strategy
   end
 
-  def stub_omniauth_saml_config(messages, context: Rails.application)
+  def stub_omniauth_saml_config(context: Rails.application, **messages)
     set_devise_mapping(context: context)
     routes = Rails.application.routes
     routes.disable_clear_and_finalize = true

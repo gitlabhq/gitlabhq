@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Ecosystem
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Jira integrations
@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab Issues are a tool for discussing ideas and planning and tracking work. However, your organization may already use Jira for these purposes, with
 extensive, established data and business processes they rely on.
 
-Although you can [migrate](../../../user/project/import/jira.md) your Jira issues and work exclusively in GitLab, you also have the option of continuing to use Jira by using GitLab's Jira integrations.
+Although you can [migrate](../../../user/project/import/jira.md) your Jira issues and work exclusively in GitLab, you also have the option of continuing to use Jira by using the GitLab Jira integrations.
 
 ## Integrations
 
@@ -19,7 +19,7 @@ The following Jira integrations allow different types of cross-referencing betwe
 
 - [**Jira integration**](jira.md) - This is built in to GitLab. In a given GitLab project, it can be configured to connect to any Jira instance, self-managed or Cloud.
 - [**Jira development panel integration**](../../../integration/jira_development_panel.md) - This connects all GitLab projects under a specified group or personal namespace.
-  - If you're using Jira Cloud and GitLab.com, install the [GitLab for Jira](https://marketplace.atlassian.com/apps/1221011/gitlab-for-jira) app in the Atlassian Marketplace and see its [documentation](../../../integration/jira_development_panel.md#gitlab-for-jira-app).
+  - If you're using Jira Cloud and GitLab.com, install the [GitLab for Jira](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud) app in the Atlassian Marketplace and see its [documentation](../../../integration/jira_development_panel.md#gitlab-for-jira-app).
   - For all other environments, use the [Jira DVCS Connector configuration instructions](../../../integration/jira_development_panel.md#configuration).
 
 ### Feature comparison

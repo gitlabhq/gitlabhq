@@ -26,9 +26,6 @@ RSpec.describe BuildFinishedWorker do
         expect_next_instance_of(Ci::BuildReportResultWorker) do |instance|
           expect(instance).to receive(:perform)
         end
-        expect_next_instance_of(Ci::TestCasesService) do |instance|
-          expect(instance).to receive(:execute)
-        end
 
         expect(BuildHooksWorker).to receive(:perform_async)
         expect(ExpirePipelineCacheWorker).to receive(:perform_async)

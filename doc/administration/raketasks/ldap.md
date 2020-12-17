@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Access
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # LDAP Rake tasks **(CORE ONLY)**
@@ -42,7 +42,7 @@ The following task will run a [group sync](../auth/ldap/index.md#group-sync) imm
 when you'd like to update all configured group memberships against LDAP without
 waiting for the next scheduled group sync to be run.
 
-NOTE: **Note:**
+NOTE:
 If you'd like to change the frequency at which a group sync is performed,
 [adjust the cron schedule](../auth/ldap/index.md#adjusting-ldap-group-sync-schedule)
 instead.
@@ -146,4 +146,97 @@ confirmation dialog:
 
 ```shell
 sudo gitlab-rake gitlab:ldap:rename_provider[old_provider,new_provider] force=yes
+```
+
+## Secrets
+
+GitLab can use [LDAP configuration secrets](../auth/ldap/index.md#using-encrypted-credentials) to read from an encrypted file. The following Rake tasks are provided for updating the contents of the encrypted file.
+
+### Show secret
+
+Show the contents of the current LDAP secrets.
+
+**Omnibus Installation**
+
+```shell
+sudo gitlab-rake gitlab:ldap:secret:show
+```
+
+**Source Installation**
+
+```shell
+bundle exec rake gitlab:ldap:secret:show RAILS_ENV=production
+```
+
+**Example output:**
+
+```plaintext
+main:
+  password: '123'
+  user_bn: 'gitlab-adm'
+```
+
+### Edit secret
+
+Opens the secret contents in your editor, and writes the resulting content to the encrypted secret file when you exit.
+
+**Omnibus Installation**
+
+```shell
+sudo gitlab-rake gitlab:ldap:secret:edit EDITOR=vim
+```
+
+**Source Installation**
+
+```shell
+bundle exec rake gitlab:ldap:secret:edit RAILS_ENV=production EDITOR=vim
+```
+
+### Write raw secret
+
+Write new secret content by providing it on STDIN.
+
+**Omnibus Installation**
+
+```shell
+echo -e "main:\n  password: '123'" | sudo gitlab-rake gitlab:ldap:secret:write
+```
+
+**Source Installation**
+
+```shell
+echo -e "main:\n  password: '123'" | bundle exec rake gitlab:ldap:secret:write RAILS_ENV=production
+```
+
+### Secrets examples
+
+**Editor example**
+
+The write task can be used in cases where the edit command does not work with your editor:
+
+```shell
+# Write the existing secret to a plaintext file
+sudo gitlab-rake gitlab:ldap:secret:show > ldap.yaml
+# Edit the ldap file in your editor
+...
+# Re-encrypt the file
+cat ldap.yaml | sudo gitlab-rake gitlab:ldap:secret:write
+# Remove the plaintext file
+rm ldap.yaml
+```
+
+**KMS integration example**
+
+It can also be used as a receiving application for content encrypted with a KMS:
+
+```shell
+gcloud kms decrypt --key my-key --keyring my-test-kms --plaintext-file=- --ciphertext-file=my-file --location=us-west1 | sudo gitlab-rake gitlab:ldap:secret:write
+```
+
+**gcloud secret integration example**
+
+It can also be used as a receiving application for secrets out of gcloud:
+
+```shell
+gcloud secrets versions access latest --secret="my-test-secret" > $1 | sudo gitlab-rake gitlab:ldap:secret:write
 ```

@@ -353,7 +353,7 @@ RSpec.describe NotificationService, :mailer do
 
         context 'a service-desk issue' do
           before do
-            issue.update!(service_desk_reply_to: 'service.desk@example.com')
+            issue.update!(external_author: 'service.desk@example.com')
             project.update!(service_desk_enabled: true)
           end
 
@@ -1549,6 +1549,37 @@ RSpec.describe NotificationService, :mailer do
       end
     end
 
+    describe '#issue_cloned' do
+      let(:new_issue) { create(:issue) }
+
+      it 'sends email to issue notification recipients' do
+        notification.issue_cloned(issue, new_issue, @u_disabled)
+
+        should_email(issue.assignees.first)
+        should_email(issue.author)
+        should_email(@u_watcher)
+        should_email(@u_guest_watcher)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
+        should_not_email(@u_lazy_participant)
+      end
+
+      it_behaves_like 'participating notifications' do
+        let(:participant) { create(:user, username: 'user-participant') }
+        let(:issuable) { issue }
+        let(:notification_trigger) { notification.issue_cloned(issue, new_issue, @u_disabled) }
+      end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { issue }
+        let(:notification_trigger) { notification.issue_cloned(issue, new_issue, @u_disabled) }
+      end
+    end
+
     describe '#issue_due' do
       before do
         issue.update!(due_date: Date.today)
@@ -2323,6 +2354,20 @@ RSpec.describe NotificationService, :mailer do
       subject
 
       should_only_email(*ten_most_recently_active_instance_admins)
+    end
+  end
+
+  describe '#user_admin_rejection', :deliver_mails_inline do
+    let_it_be(:user) { create(:user, :blocked_pending_approval) }
+
+    before do
+      reset_delivered_emails!
+    end
+
+    it 'sends the user a rejection email' do
+      notification.user_admin_rejection(user.name, user.email)
+
+      should_only_email(user)
     end
   end
 

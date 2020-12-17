@@ -7,7 +7,7 @@ RSpec.describe Clusters::Applications::CreateService do
 
   let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
   let(:user) { create(:user) }
-  let(:params) { { application: 'helm' } }
+  let(:params) { { application: 'ingress' } }
   let(:service) { described_class.new(cluster, user, params) }
 
   describe '#execute' do
@@ -23,16 +23,16 @@ RSpec.describe Clusters::Applications::CreateService do
         subject
 
         cluster.reload
-      end.to change(cluster, :application_helm)
+      end.to change(cluster, :application_ingress)
     end
 
     context 'application already installed' do
-      let!(:application) { create(:clusters_applications_helm, :installed, cluster: cluster) }
+      let!(:application) { create(:clusters_applications_ingress, :installed, cluster: cluster) }
 
       it 'does not create a new application' do
         expect do
           subject
-        end.not_to change(Clusters::Applications::Helm, :count)
+        end.not_to change(Clusters::Applications::Ingress, :count)
       end
 
       it 'schedules an upgrade for the application' do
@@ -43,10 +43,6 @@ RSpec.describe Clusters::Applications::CreateService do
     end
 
     context 'known applications' do
-      before do
-        create(:clusters_applications_helm, :installed, cluster: cluster)
-      end
-
       context 'ingress application' do
         let(:params) do
           {
@@ -215,19 +211,17 @@ RSpec.describe Clusters::Applications::CreateService do
 
       using RSpec::Parameterized::TableSyntax
 
-      where(:application, :association, :allowed, :pre_create_helm, :pre_create_ingress) do
-        'helm'       | :application_helm       | true | false | false
-        'ingress'    | :application_ingress    | true | true | false
-        'runner'     | :application_runner     | true | true | false
-        'prometheus' | :application_prometheus | true | true | false
-        'jupyter'    | :application_jupyter    | true | true | true
+      where(:application, :association, :allowed, :pre_create_ingress) do
+        'ingress'    | :application_ingress    | true | false
+        'runner'     | :application_runner     | true | false
+        'prometheus' | :application_prometheus | true | false
+        'jupyter'    | :application_jupyter    | true | true
       end
 
       with_them do
         before do
           klass = "Clusters::Applications::#{application.titleize}"
           allow_any_instance_of(klass.constantize).to receive(:make_scheduled!).and_call_original
-          create(:clusters_applications_helm, :installed, cluster: cluster) if pre_create_helm
           create(:clusters_applications_ingress, :installed, cluster: cluster, external_hostname: 'example.com') if pre_create_ingress
         end
 
@@ -252,7 +246,7 @@ RSpec.describe Clusters::Applications::CreateService do
         it 'makes the application scheduled' do
           expect do
             subject
-          end.to change { Clusters::Applications::Helm.with_status(:scheduled).count }.by(1)
+          end.to change { Clusters::Applications::Ingress.with_status(:scheduled).count }.by(1)
         end
 
         it 'schedules an install via worker' do
@@ -266,7 +260,7 @@ RSpec.describe Clusters::Applications::CreateService do
       end
 
       context 'when application is associated with a cluster' do
-        let(:application) { create(:clusters_applications_helm, :installable, cluster: cluster) }
+        let(:application) { create(:clusters_applications_ingress, :installable, cluster: cluster) }
         let(:worker_arguments) { [application.name, application.id] }
 
         it_behaves_like 'installable applications'
@@ -280,7 +274,7 @@ RSpec.describe Clusters::Applications::CreateService do
     end
 
     context 'when installation is already in progress' do
-      let!(:application) { create(:clusters_applications_helm, :installing, cluster: cluster) }
+      let!(:application) { create(:clusters_applications_ingress, :installing, cluster: cluster) }
 
       it 'raises an exception' do
         expect { subject }
@@ -295,7 +289,7 @@ RSpec.describe Clusters::Applications::CreateService do
 
     context 'when application is installed' do
       %i(installed updated).each do |status|
-        let(:application) { create(:clusters_applications_helm, status, cluster: cluster) }
+        let(:application) { create(:clusters_applications_ingress, status, cluster: cluster) }
 
         it 'schedules an upgrade via worker' do
           expect(ClusterUpgradeAppWorker)

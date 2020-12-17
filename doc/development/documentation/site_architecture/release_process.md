@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # GitLab Docs monthly release process
@@ -26,7 +26,7 @@ To add a new charts version:
    version mapping. Note that only the `major.minor` version is needed.
 1. Create a new merge request and merge it.
 
-TIP: **Tip:**
+NOTE:
 It can be handy to create the future mappings since they are pretty much known.
 In that case, when a new GitLab version is released, you don't have to repeat
 this first step.
@@ -44,14 +44,14 @@ this needs to happen when the stable branches for all products have been created
    ```
 
     A new `Dockerfile.12.0` should have been created and `.gitlab-ci.yml` should
-    have the branches variables updated into a new branch. They will be automatically
+    have the branches variables updated into a new branch. They are automatically
     committed.
 
 1. Push the newly created branch, but **don't create a merge request**.
-   Once you push, the `image:docker-singe` job will create a new Docker image
+   After you push, the `image:docs-single` job creates a new Docker image
    tagged with the branch name you created in the first step. In the end, the
-   image will be uploaded in the [Container Registry](https://gitlab.com/gitlab-org/gitlab-docs/container_registry)
-   and it will be listed under the `registry` environment folder at
+   image is uploaded in the [Container Registry](https://gitlab.com/gitlab-org/gitlab-docs/container_registry)
+   and it is listed under the `registry` environment folder at
    `https://gitlab.com/gitlab-org/gitlab-docs/-/environments/folders/registry` (must
    have developer access).
 
@@ -66,7 +66,7 @@ Visit `http://localhost:4000/12.0/` to see if everything works correctly.
 
 ## 3. Create the release merge request
 
-NOTE: **Note:**
+NOTE:
 To be [automated](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/750).
 
 Now it's time to create the monthly release merge request that adds the new
@@ -114,20 +114,20 @@ version and rotates the old one:
 
 The versions dropdown is in a way "hardcoded". When the site is built, it looks
 at the contents of `content/_data/versions.yaml` and based on that, the dropdown
-is populated. So, older branches will have different content, which means the
-dropdown will list one or more releases behind. Remember that the new changes of
+is populated. Older branches have different content, which means the
+dropdown list is one or more releases behind. Remember that the new changes of
 the dropdown are included in the unmerged `release-X-Y` branch.
 
 The content of `content/_data/versions.yaml` needs to change for all online
 versions (stable branches `X.Y` of the `gitlab-docs` project):
 
-1. Run the Rake task that will create all the respective merge requests needed to
-   update the dropdowns and will be set to automatically be merged when their
+1. Run the Rake task that creates all the respective merge requests needed to
+   update the dropdowns. Set these to automatically be merged when their
    pipelines succeed:
 
-   NOTE: **Note:**
+   NOTE:
    The `release-X-Y` branch needs to be present locally,
-   and you need to have switched to it, otherwise the Rake task will fail.
+   and you need to have switched to it, otherwise the Rake task fails.
 
    ```shell
    git checkout release-X-Y
@@ -138,13 +138,13 @@ versions (stable branches `X.Y` of the `gitlab-docs` project):
    to check that their pipelines pass, and once all are merged, proceed to the
    following and final step.
 
-TIP: **Tip:**
+NOTE:
 In case a pipeline fails, see [troubleshooting](#troubleshooting).
 
 ## 5. Merge the release merge request
 
 The dropdown merge requests should have now been merged into their respective
-version (stable `X.Y` branch), which will trigger another pipeline. At this point,
+version (stable `X.Y` branch), which triggers another pipeline. At this point,
 you need to only babysit the pipelines and make sure they don't fail:
 
 1. Check the [pipelines page](https://gitlab.com/gitlab-org/gitlab-docs/pipelines)
@@ -152,9 +152,9 @@ you need to only babysit the pipelines and make sure they don't fail:
 1. After all the pipelines of the online versions succeed, merge the release merge request.
 1. Finally, run the
    [`Build docker images weekly` pipeline](https://gitlab.com/gitlab-org/gitlab-docs/pipeline_schedules)
-   that will build the `:latest` and `:archives` Docker images.
+   that builds the `:latest` and `:archives` Docker images.
 
-Once the scheduled pipeline succeeds, the docs site will be deployed with all
+Once the scheduled pipeline succeeds, the docs site is deployed with all
 new versions online.
 
 ## Troubleshooting
@@ -163,7 +163,7 @@ Releasing a new version is a long process that involves many moving parts.
 
 ### `test_internal_links_and_anchors` failing on dropdown merge requests
 
-DANGER: **Deprecated:**
+WARNING:
 We now pin versions in the `.gitlab-ci.yml` of the respective branch,
 so the steps below are deprecated.
 

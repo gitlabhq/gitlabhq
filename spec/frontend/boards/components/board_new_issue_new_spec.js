@@ -3,7 +3,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import BoardNewIssue from '~/boards/components/board_new_issue_new.vue';
 
 import '~/boards/models/list';
-import { mockListsWithModel } from '../mock_data';
+import { mockList } from '../mock_data';
 
 const localVue = createLocalVue();
 
@@ -37,7 +37,7 @@ describe('Issue boards new issue form', () => {
     wrapper = shallowMount(BoardNewIssue, {
       propsData: {
         disabled: false,
-        list: mockListsWithModel[0],
+        list: mockList,
       },
       store,
       localVue,

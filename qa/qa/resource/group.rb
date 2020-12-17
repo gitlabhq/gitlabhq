@@ -36,7 +36,6 @@ module QA
 
             Page::Group::New.perform do |group_new|
               group_new.set_path(path)
-              group_new.set_description(description)
               group_new.set_visibility('Public')
               group_new.create
             end

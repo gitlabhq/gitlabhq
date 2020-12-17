@@ -1,7 +1,7 @@
 ---
 stage: Enablement
 group: Global Search
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: reference
 ---
 
@@ -9,7 +9,7 @@ type: reference
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109) in GitLab [Starter](https://about.gitlab.com/pricing/) 8.4.
 
-NOTE: **GitLab.com availability:**
+NOTE:
 Advanced Search (powered by Elasticsearch) is enabled for Bronze and above on GitLab.com since 2020-07-10.
 
 Leverage Elasticsearch for faster, more advanced code search across your entire
@@ -43,11 +43,7 @@ The Advanced Search can be useful in various scenarios.
 
 ### Faster searches
 
-If you are dealing with huge amount of data and want to keep GitLab's search
-fast, Advanced Search will help you achieve that.
-
-NOTE: **Note:**
-Between versions 12.10 and 13.4, Advanced Search response times have improved by 80%.
+Advanced Search is based on Elasticsearch, which is a purpose built full text search engine that can be horizontally scaled so that it can provide search results in 1-2 seconds in most cases.  
 
 ### Promote innersourcing
 
@@ -66,7 +62,7 @@ project you have access to.
 You can also use the [Advanced Search Syntax](advanced_search_syntax.md) which
 provides some useful queries.
 
-NOTE: **Note:**
+NOTE:
 Elasticsearch has only data for the default branch. That means that if you go
 to the repository tree and switch the branch from the default to something else,
 then the "Code" tab in the search result page will be served by the basic

@@ -50,6 +50,6 @@ RSpec.describe Resolvers::CommitPipelinesResolver do
   it 'resolves pipelines for commit and ref' do
     pipelines = resolve_pipelines
 
-    expect(pipelines).to eq([pipeline2, pipeline])
+    expect(pipelines.to_a).to eq([pipeline2, pipeline])
   end
 end

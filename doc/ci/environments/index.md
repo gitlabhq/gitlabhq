@@ -1,7 +1,7 @@
 ---
 stage: Release
-group: Release Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+group: Release
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 disqus_identifier: 'https://docs.gitlab.com/ee/ci/environments.html'
 ---
@@ -121,7 +121,7 @@ Note that the `environment` keyword defines where the app is deployed. The envir
 `url` is exposed in various places within GitLab. Each time a job that has an environment specified
 succeeds, a deployment is recorded along with the Git SHA and environment name.
 
-CAUTION: **Caution:**
+WARNING:
 Some characters are not allowed in environment names. Use only letters,
 numbers, spaces, and `-`, `_`, `/`, `{`, `}`, or `.`. Also, it must not start nor end with `/`.
 
@@ -279,7 +279,7 @@ deploy_prod:
 
 The `when: manual` action:
 
-- Exposes a "play" button in GitLab's UI for that job.
+- Exposes a "play" button in the GitLab UI for that job.
 - Means the `deploy_prod` job will only be triggered when the "play" button is clicked.
 
 You can find the "play" button in the pipelines, environments, deployments, and jobs views.
@@ -386,7 +386,7 @@ If you are deploying to a [Kubernetes cluster](../../user/project/clusters/index
 associated with your project, you can configure these deployments from your
 `gitlab-ci.yml` file.
 
-NOTE: **Note:**
+NOTE:
 Kubernetes configuration isn't supported for Kubernetes clusters that are
 [managed by GitLab](../../user/project/clusters/index.md#gitlab-managed-clusters).
 To follow progress on support for GitLab-managed clusters, see the
@@ -413,7 +413,7 @@ deploy:
     - master
 ```
 
-When deploying to a Kubernetes cluster using GitLab's Kubernetes integration,
+When deploying to a Kubernetes cluster using the GitLab Kubernetes integration,
 information about the cluster and namespace will be displayed above the job
 trace on the deployment job page:
 
@@ -648,7 +648,7 @@ For example:
 
 #### Going from source files to public pages
 
-With GitLab's [Route Maps](../review_apps/index.md#route-maps) you can go directly
+With GitLab [Route Maps](../review_apps/index.md#route-maps), you can go directly
 from source files to public pages in the environment set for Review Apps.
 
 ### Stopping an environment
@@ -894,6 +894,32 @@ longer visible on the environment page.
 If the alert requires a [rollback](#retrying-and-rolling-back), you can select the
 deployment tab from the environment page and select which deployment to roll back to.
 
+#### Auto Rollback **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35404) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.7.
+
+In a typical Continuous Deployment workflow, the CI pipeline tests every commit before deploying to
+production. However, problematic code can still make it to production. For example, inefficient code
+that is logically correct can pass tests even though it causes severe performance degradation.
+Operators and SREs monitor the system to catch such problems as soon as possible. If they find a
+problematic deployment, they can roll back to a previous stable version.
+
+GitLab Auto Rollback eases this workflow by automatically triggering a rollback when a
+[critical alert](../../operations/incident_management/alerts.md)
+is detected. GitLab selects and redeploys the most recent successful deployment.
+
+Limitations of GitLab Auto Rollback:
+
+- The rollback is skipped if a deployment is running when the alert is detected.
+- A rollback can happen only once in three minutes. If multiple alerts are detected at once, only
+  one rollback is performed.
+
+GitLab Auto Rollback is turned off by default. To turn it on:
+
+1. Visit **Project > Settings > CI/CD > Automatic deployment rollbacks**.
+1. Select the checkbox for **Enable automatic rollbacks**.
+1. Click **Save changes**.
+
 ### Monitoring environments
 
 If you have enabled [Prometheus for monitoring system and response metrics](../../user/project/integrations/prometheus.md),
@@ -1040,7 +1066,7 @@ Below are some links you may find interesting:
 - [The `.gitlab-ci.yml` definition of environments](../yaml/README.md#environment)
 - [A blog post on Deployments & Environments](https://about.gitlab.com/blog/2016/08/26/ci-deployment-and-environments/)
 - [Review Apps - Use dynamic environments to deploy your code for every branch](../review_apps/index.md)
-- [Deploy Boards for your applications running on Kubernetes](../../user/project/deploy_boards.md) **(PREMIUM)**
+- [Deploy Boards for your applications running on Kubernetes](../../user/project/deploy_boards.md)
 
 <!-- ## Troubleshooting
 

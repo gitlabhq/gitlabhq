@@ -286,6 +286,7 @@ export default {
     handleFilterSubmit() {
       const filterTokens = uniqueTokens(this.filterValue);
       this.filterValue = filterTokens;
+
       if (this.recentSearchesStorageKey) {
         this.recentSearchesPromise
           .then(() => {
@@ -301,6 +302,17 @@ export default {
       }
       this.blurSearchInput();
       this.$emit('onFilter', this.removeQuotesEnclosure(filterTokens));
+    },
+    historyTokenOptionTitle(historyToken) {
+      const tokenOption = this.tokens
+        .find(token => token.type === historyToken.type)
+        ?.options?.find(option => option.value === historyToken.value.data);
+
+      if (!tokenOption?.title) {
+        return historyToken.value.data;
+      }
+
+      return tokenOption.title;
     },
   },
 };
@@ -333,7 +345,7 @@ export default {
             <span v-if="tokenTitles[token.type]"
               >{{ tokenTitles[token.type] }} :{{ token.value.operator }}</span
             >
-            <strong>{{ tokenSymbols[token.type] }}{{ token.value.data }}</strong>
+            <strong>{{ tokenSymbols[token.type] }}{{ historyTokenOptionTitle(token) }}</strong>
           </span>
         </template>
       </template>

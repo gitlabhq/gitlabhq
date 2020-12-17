@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 comments: false
 type: reference
 ---
@@ -28,6 +28,8 @@ git tag my_lightweight_tag
 
 # Annotated tag
 git tag -a v1.0 -m ‘Version 1.0’
+
+# Show list of the existing tags
 git tag
 
 git push origin --tags

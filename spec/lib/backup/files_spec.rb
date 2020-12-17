@@ -149,13 +149,27 @@ RSpec.describe Backup::Files do
       end
 
       it 'excludes tmp dirs from rsync' do
-        expect(Gitlab::Popen).to receive(:popen).with(%w(rsync -a --exclude=lost+found --exclude=/@pages.tmp /var/gitlab-pages /var/gitlab-backup)).and_return(['', 0])
+        expect(Gitlab::Popen).to receive(:popen)
+          .with(%w(rsync -a --delete --exclude=lost+found --exclude=/@pages.tmp /var/gitlab-pages /var/gitlab-backup))
+          .and_return(['', 0])
 
         subject.dump
       end
 
+      it 'retries if rsync fails due to vanishing files' do
+        expect(Gitlab::Popen).to receive(:popen)
+          .with(%w(rsync -a --delete --exclude=lost+found --exclude=/@pages.tmp /var/gitlab-pages /var/gitlab-backup))
+          .and_return(['rsync failed', 24], ['', 0])
+
+        expect do
+          subject.dump
+        end.to output(/files vanished during rsync, retrying/).to_stdout
+      end
+
       it 'raises an error and outputs an error message if rsync failed' do
-        allow(Gitlab::Popen).to receive(:popen).with(%w(rsync -a --exclude=lost+found --exclude=/@pages.tmp /var/gitlab-pages /var/gitlab-backup)).and_return(['rsync failed', 1])
+        allow(Gitlab::Popen).to receive(:popen)
+          .with(%w(rsync -a --delete --exclude=lost+found --exclude=/@pages.tmp /var/gitlab-pages /var/gitlab-backup))
+          .and_return(['rsync failed', 1])
 
         expect do
           subject.dump

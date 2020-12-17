@@ -10,7 +10,7 @@
 - content_for :project_javascripts do
   - project = @target_project || @project
   - if current_user
-    = javascript_tag nonce: true do
+    = javascript_tag do
       :plain
         window.uploads_path = "#{project_uploads_path(project)}";
 

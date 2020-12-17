@@ -38,7 +38,7 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
       it 'adds the jid of the existing job to the job hash' do
         allow(fake_duplicate_job).to receive(:scheduled?).and_return(false)
         allow(fake_duplicate_job).to receive(:check!).and_return('the jid')
-        allow(fake_duplicate_job).to receive(:droppable?).and_return(true)
+        allow(fake_duplicate_job).to receive(:idempotent?).and_return(true)
         allow(fake_duplicate_job).to receive(:options).and_return({})
         job_hash = {}
 
@@ -62,7 +62,7 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
               receive(:check!)
                 .with(Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob::DUPLICATE_KEY_TTL)
                 .and_return('the jid'))
-            allow(fake_duplicate_job).to receive(:droppable?).and_return(true)
+            allow(fake_duplicate_job).to receive(:idempotent?).and_return(true)
             job_hash = {}
 
             expect(fake_duplicate_job).to receive(:duplicate?).and_return(true)
@@ -82,7 +82,7 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
               allow(fake_duplicate_job).to receive(:options).and_return({ including_scheduled: true })
               allow(fake_duplicate_job).to(
                 receive(:check!).with(time_diff.to_i).and_return('the jid'))
-              allow(fake_duplicate_job).to receive(:droppable?).and_return(true)
+              allow(fake_duplicate_job).to receive(:idempotent?).and_return(true)
               job_hash = {}
 
               expect(fake_duplicate_job).to receive(:duplicate?).and_return(true)
@@ -104,13 +104,13 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
         allow(fake_duplicate_job).to receive(:duplicate?).and_return(true)
         allow(fake_duplicate_job).to receive(:options).and_return({})
         allow(fake_duplicate_job).to receive(:existing_jid).and_return('the jid')
-        allow(fake_duplicate_job).to receive(:droppable?).and_return(true)
+        allow(fake_duplicate_job).to receive(:idempotent?).and_return(true)
       end
 
       it 'drops the job' do
         schedule_result = nil
 
-        expect(fake_duplicate_job).to receive(:droppable?).and_return(true)
+        expect(fake_duplicate_job).to receive(:idempotent?).and_return(true)
 
         expect { |b| schedule_result = strategy.schedule({}, &b) }.not_to yield_control
         expect(schedule_result).to be(false)

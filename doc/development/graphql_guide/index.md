@@ -1,12 +1,12 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # GraphQL development guidelines
 
-This guide contains all the information to successfully contribute to GitLab's
+This guide contains all the information to successfully contribute to the GitLab
 GraphQL API. This is a living document, and we welcome contributions,
 feedback, and suggestions.
 

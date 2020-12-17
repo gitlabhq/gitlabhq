@@ -7,7 +7,7 @@ import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
 import ImageDiffOverlay from '~/diffs/components/image_diff_overlay.vue';
 import { getDiffMode } from '~/diffs/store/utils';
 import { diffViewerModes } from '~/ide/constants';
-import { isCollapsed } from '../../diffs/diff_file';
+import { isCollapsed } from '../../diffs/utils/diff_file';
 
 const FIRST_CHAR_REGEX = /^(\+|-| )/;
 
@@ -131,14 +131,18 @@ export default {
         :file-hash="discussion.diff_file.file_hash"
         :project-path="projectPath"
       >
-        <image-diff-overlay
-          slot="image-overlay"
-          :discussions="discussion"
-          :file-hash="discussion.diff_file.file_hash"
-          :show-comment-icon="true"
-          :should-toggle-discussion="false"
-          badge-class="image-comment-badge"
-        />
+        <template #image-overlay="{ renderedWidth, renderedHeight }">
+          <image-diff-overlay
+            v-if="renderedWidth"
+            :rendered-width="renderedWidth"
+            :rendered-height="renderedHeight"
+            :discussions="discussion"
+            :file-hash="discussion.diff_file.file_hash"
+            :show-comment-icon="true"
+            :should-toggle-discussion="false"
+            badge-class="image-comment-badge gl-text-gray-500"
+          />
+        </template>
       </diff-viewer>
       <slot></slot>
     </div>

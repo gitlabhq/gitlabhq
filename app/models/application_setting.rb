@@ -5,13 +5,13 @@ class ApplicationSetting < ApplicationRecord
   include CacheMarkdownField
   include TokenAuthenticatable
   include ChronicDurationAttribute
-  include IgnorableColumns
-
-  ignore_column :namespace_storage_size_limit, remove_with: '13.5', remove_after: '2020-09-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
     'Admin Area > Settings > Metrics and profiling > Metrics - Grafana'
+
+  KROKI_URL_ERROR_MESSAGE = 'Please check your Kroki URL setting in ' \
+    'Admin Area > Settings > General > Kroki'
 
   add_authentication_token_field :runners_registration_token, encrypted: -> { Feature.enabled?(:application_settings_tokens_optional_encryption) ? :optional : :required }
   add_authentication_token_field :health_check_access_token
@@ -128,6 +128,11 @@ class ApplicationSetting < ApplicationRecord
             presence: true,
             if: :unique_ips_limit_enabled
 
+  validates :kroki_url,
+            presence: { if: :kroki_enabled }
+
+  validate :validate_kroki_url, if: :kroki_enabled
+
   validates :plantuml_url,
             presence: true,
             if: :plantuml_enabled
@@ -243,6 +248,12 @@ class ApplicationSetting < ApplicationRecord
                             less_than_or_equal_to: Gitlab::Git::Diff::MAX_PATCH_BYTES_UPPER_BOUND }
 
   validates :user_default_internal_regex, js_regex: true, allow_nil: true
+
+  validates :personal_access_token_prefix,
+            format: { with: /\A[a-zA-Z0-9_+=\/@:.-]+\z/,
+                      message: _("can contain only letters of the Base64 alphabet (RFC4648) with the addition of '@', ':' and '.'") },
+            length: { maximum: 20, message: _('is too long (maximum is %{count} characters)') },
+            allow_blank: true
 
   validates :commit_email_hostname, format: { with: /\A[^@]+\z/ }
 
@@ -362,11 +373,11 @@ class ApplicationSetting < ApplicationRecord
 
   validates :eks_access_key_id,
             length: { in: 16..128 },
-            if: :eks_integration_enabled?
+            if: -> (setting) { setting.eks_integration_enabled? && setting.eks_access_key_id.present? }
 
   validates :eks_secret_access_key,
             presence: true,
-            if: :eks_integration_enabled?
+            if: -> (setting) { setting.eks_integration_enabled? && setting.eks_access_key_id.present? }
 
   validates_with X509CertificateCredentialsValidator,
                  certificate: :external_auth_client_cert,
@@ -418,6 +429,9 @@ class ApplicationSetting < ApplicationRecord
   attr_encrypted :secret_detection_token_revocation_token, encryption_options_base_truncated_aes_256_gcm
   attr_encrypted :cloud_license_auth_token, encryption_options_base_truncated_aes_256_gcm
 
+  validates :disable_feed_token,
+            inclusion: { in: [true, false], message: 'must be a boolean value' }
+
   before_validation :ensure_uuid!
 
   before_save :ensure_runners_registration_token
@@ -429,16 +443,19 @@ class ApplicationSetting < ApplicationRecord
   after_commit :expire_performance_bar_allowed_user_ids_cache, if: -> { previous_changes.key?('performance_bar_allowed_group_id') }
 
   def validate_grafana_url
-    unless parsed_grafana_url
-      self.errors.add(
-        :grafana_url,
-        "must be a valid relative or absolute URL. #{GRAFANA_URL_ERROR_MESSAGE}"
-      )
-    end
+    validate_url(parsed_grafana_url, :grafana_url, GRAFANA_URL_ERROR_MESSAGE)
   end
 
   def grafana_url_absolute?
     parsed_grafana_url&.absolute?
+  end
+
+  def validate_kroki_url
+    validate_url(parsed_kroki_url, :kroki_url, KROKI_URL_ERROR_MESSAGE)
+  end
+
+  def kroki_url_absolute?
+    parsed_kroki_url&.absolute?
   end
 
   def sourcegraph_url_is_com?
@@ -502,6 +519,24 @@ class ApplicationSetting < ApplicationRecord
 
   def parsed_grafana_url
     @parsed_grafana_url ||= Gitlab::Utils.parse_url(grafana_url)
+  end
+
+  def parsed_kroki_url
+    @parsed_kroki_url ||= Gitlab::UrlBlocker.validate!(kroki_url, schemes: %w(http https), enforce_sanitization: true)[0]
+  rescue Gitlab::UrlBlocker::BlockedUrlError => error
+    self.errors.add(
+      :kroki_url,
+      "is not valid. #{error}"
+    )
+  end
+
+  def validate_url(parsed_url, name, error_message)
+    unless parsed_url
+      self.errors.add(
+        name,
+        "must be a valid relative or absolute URL. #{error_message}"
+      )
+    end
   end
 end
 

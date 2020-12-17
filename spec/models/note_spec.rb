@@ -357,7 +357,7 @@ RSpec.describe Note do
   describe '#confidential?' do
     context 'when note is not confidential' do
       context 'when include_noteable is set to true' do
-        it 'is true when a noteable is confidential ' do
+        it 'is true when a noteable is confidential' do
           issue = create(:issue, :confidential)
           note = build(:note, noteable: issue, project: issue.project)
 
@@ -366,7 +366,7 @@ RSpec.describe Note do
       end
 
       context 'when include_noteable is not set to true' do
-        it 'is false when a noteable is confidential ' do
+        it 'is false when a noteable is confidential' do
           issue = create(:issue, :confidential)
           note = build(:note, noteable: issue, project: issue.project)
 

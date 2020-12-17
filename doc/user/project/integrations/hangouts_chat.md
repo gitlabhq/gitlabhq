@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Ecosystem
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Hangouts Chat service
@@ -14,7 +14,7 @@ The Hangouts Chat service sends notifications from GitLab to the room for which 
 
 1. Open the chat room in which you want to see the notifications.
 1. From the chat room menu, select **Configure Webhooks**.
-1. Click on **ADD WEBHOOK** and fill in the name of the bot that will post the messages. Optionally define avatar.
+1. Click on **ADD WEBHOOK** and fill in the name of the bot to post the messages. Optionally define an avatar.
 1. Click **SAVE** and copy the **Webhook URL** of your webhook.
 
 See also [the Hangouts Chat documentation for configuring incoming webhooks](https://developers.google.com/hangouts/chat/how-tos/webhooks)
@@ -30,6 +30,6 @@ When you have the **Webhook URL** for your Hangouts Chat room webhook, you can s
 1. Paste the **Webhook URL** that you copied from the Hangouts Chat configuration step.
 1. Configure the remaining options and click `Save changes`.
 
-Your Hangouts Chat room will now start receiving GitLab event notifications as configured.
+Your Hangouts Chat room now starts receiving GitLab event notifications as configured.
 
 ![Hangouts Chat configuration](img/hangouts_chat_configuration.png)

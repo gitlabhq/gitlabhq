@@ -28,7 +28,7 @@ RSpec.describe Projects::HashedStorage::RollbackRepositoryService, :clean_gitlab
       end
 
       it 'fails when a git operation is in progress' do
-        allow(project).to receive(:repo_reference_count) { 1 }
+        allow(project).to receive(:git_transfer_in_progress?) { true }
 
         expect { service.execute }.to raise_error(Projects::HashedStorage::RepositoryInUseError)
       end

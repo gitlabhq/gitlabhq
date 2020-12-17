@@ -1,0 +1,5 @@
+---
+title: Use a separate commit to store formatting changes in the Static Site Editor
+merge_request: 49052
+author:
+type: changed

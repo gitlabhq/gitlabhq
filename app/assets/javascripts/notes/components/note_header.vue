@@ -85,7 +85,10 @@ export default {
       };
     },
     authorStatus() {
-      return this.author.status_tooltip_html;
+      if (this.author?.show_status) {
+        return this.author.status_tooltip_html;
+      }
+      return false;
     },
     authorIsBusy() {
       const { status } = this.author;
@@ -142,7 +145,7 @@ export default {
         type="button"
         @click="handleToggle"
       >
-        <gl-icon ref="chevronIcon" :name="toggleChevronIconName" aria-hidden="true" />
+        <gl-icon ref="chevronIcon" :name="toggleChevronIconName" />
         {{ __('Toggle thread') }}
       </button>
     </div>

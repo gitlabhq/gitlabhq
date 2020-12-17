@@ -3,9 +3,13 @@
 module Resolvers
   class BoardListsResolver < BaseResolver
     include BoardIssueFilterable
+    prepend ManualAuthorization
     include Gitlab::Graphql::Authorize::AuthorizeResource
 
     type Types::BoardListType, null: true
+    extras [:lookahead]
+
+    authorize :read_list
 
     argument :id, Types::GlobalIDType[List],
              required: false,
@@ -27,7 +31,7 @@ module Resolvers
         List.preload_preferences_for_user(lists, context[:current_user])
       end
 
-      Gitlab::Graphql::Pagination::OffsetActiveRecordRelationConnection.new(lists)
+      offset_pagination(lists)
     end
 
     private
@@ -40,10 +44,6 @@ module Resolvers
       )
 
       service.execute(board, create_default_lists: false)
-    end
-
-    def authorized_resource?(board)
-      Ability.allowed?(context[:current_user], :read_list, board)
     end
 
     def load_preferences?(lookahead)

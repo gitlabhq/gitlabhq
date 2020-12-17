@@ -28,6 +28,17 @@ RSpec.describe Gitlab::GithubImport::Client do
     end
   end
 
+  describe '#pull_request_reviews' do
+    it 'returns the pull request reviews' do
+      client = described_class.new('foo')
+
+      expect(client.octokit).to receive(:pull_request_reviews).with('foo/bar', 999)
+      expect(client).to receive(:with_rate_limit).and_yield
+
+      client.pull_request_reviews('foo/bar', 999)
+    end
+  end
+
   describe '#repository' do
     it 'returns the details of a repository' do
       client = described_class.new('foo')
@@ -36,6 +47,17 @@ RSpec.describe Gitlab::GithubImport::Client do
       expect(client).to receive(:with_rate_limit).and_yield
 
       client.repository('foo/bar')
+    end
+  end
+
+  describe '#pull_request' do
+    it 'returns the details of a pull_request' do
+      client = described_class.new('foo')
+
+      expect(client.octokit).to receive(:pull_request).with('foo/bar', 999)
+      expect(client).to receive(:with_rate_limit).and_yield
+
+      client.pull_request('foo/bar', 999)
     end
   end
 
@@ -478,7 +500,7 @@ RSpec.describe Gitlab::GithubImport::Client do
       it 'searches for repositories based on name' do
         expected_search_query = 'test in:name is:public,private user:user repo:repo1 repo:repo2 org:org1 org:org2'
 
-        expect(client).to receive(:each_page).with(:search_repositories, expected_search_query)
+        expect(client.octokit).to receive(:search_repositories).with(expected_search_query, {})
 
         client.search_repos_by_name('test')
       end

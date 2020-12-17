@@ -6,7 +6,7 @@ ActiveSupport::Notifications.subscribe(/rack_attack/) do |name, start, finish, r
   req = payload[:request]
 
   case req.env['rack.attack.match_type']
-  when :throttle, :blocklist
+  when :throttle, :blocklist, :track
     rack_attack_info = {
       message: 'Rack_Attack',
       env: req.env['rack.attack.match_type'],

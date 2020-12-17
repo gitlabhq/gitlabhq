@@ -6,15 +6,16 @@ module BulkImports
       class GraphqlExtractor
         def initialize(query)
           @query = query[:query]
-          @query_string = @query.to_s
-          @variables = @query.variables
         end
 
         def extract(context)
-          @context = context
+          client = graphql_client(context)
 
           Enumerator.new do |yielder|
-            result = graphql_client.execute(parsed_query, query_variables(context.entity))
+            result = client.execute(
+              client.parse(query.to_s),
+              query.variables(context.entity)
+            )
 
             yielder << result.original_hash.deep_dup
           end
@@ -22,23 +23,17 @@ module BulkImports
 
         private
 
-        def graphql_client
+        attr_reader :query
+
+        def graphql_client(context)
           @graphql_client ||= BulkImports::Clients::Graphql.new(
-            url: @context.configuration.url,
-            token: @context.configuration.access_token
+            url: context.configuration.url,
+            token: context.configuration.access_token
           )
         end
 
         def parsed_query
-          @parsed_query ||= graphql_client.parse(@query.to_s)
-        end
-
-        def query_variables(entity)
-          return unless @variables
-
-          @variables.transform_values do |entity_attribute|
-            entity.public_send(entity_attribute) # rubocop:disable GitlabSecurity/PublicSend
-          end
+          @parsed_query ||= graphql_client.parse(query.to_s)
         end
       end
     end

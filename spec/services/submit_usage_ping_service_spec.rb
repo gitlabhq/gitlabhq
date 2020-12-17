@@ -134,10 +134,9 @@ RSpec.describe SubmitUsagePingService do
       it_behaves_like 'saves DevOps report data from the response'
     end
 
-    context 'with save_raw_usage_data feature enabled' do
+    context 'with saving raw_usage_data' do
       before do
         stub_response(body: with_dev_ops_score_params)
-        stub_feature_flags(save_raw_usage_data: true)
       end
 
       it 'creates a raw_usage_data record' do
@@ -156,18 +155,6 @@ RSpec.describe SubmitUsagePingService do
 
         expect(raw_usage_data.recorded_at).to be_like_time(recorded_at)
         expect(raw_usage_data.payload.to_json).to eq(usage_data.to_json)
-      end
-    end
-
-    context 'with save_raw_usage_data feature disabled' do
-      before do
-        stub_response(body: with_dev_ops_score_params)
-      end
-
-      it 'does not create a raw_usage_data record' do
-        stub_feature_flags(save_raw_usage_data: false)
-
-        expect { subject.execute }.to change(RawUsageData, :count).by(0)
       end
     end
 

@@ -231,6 +231,23 @@ module Gitlab
                 expect(subject[:allow_failure]).to be true
               end
             end
+
+            context 'when allow_failure has exit_codes' do
+              let(:config) do
+                YAML.dump(rspec: { script: 'rspec',
+                                   when: 'manual',
+                                   allow_failure: { exit_codes: 1 } })
+              end
+
+              it 'is not allowed to fail' do
+                expect(subject[:allow_failure]).to be false
+              end
+
+              it 'saves allow_failure_criteria into options' do
+                expect(subject[:options]).to match(
+                  a_hash_including(allow_failure_criteria: { exit_codes: [1] }))
+              end
+            end
           end
 
           context 'when job is not a manual action' do
@@ -252,6 +269,22 @@ module Gitlab
 
               it 'is not allowed to fail' do
                 expect(subject[:allow_failure]).to be false
+              end
+            end
+
+            context 'when allow_failure is dynamically specified' do
+              let(:config) do
+                YAML.dump(rspec: { script: 'rspec',
+                                   allow_failure: { exit_codes: 1 } })
+              end
+
+              it 'is not allowed to fail' do
+                expect(subject[:allow_failure]).to be false
+              end
+
+              it 'saves allow_failure_criteria into options' do
+                expect(subject[:options]).to match(
+                  a_hash_including(allow_failure_criteria: { exit_codes: [1] }))
               end
             end
           end
@@ -2111,6 +2144,71 @@ module Gitlab
         end
       end
 
+      describe 'cross pipeline needs' do
+        context 'when configuration is valid' do
+          let(:config) do
+            <<~YAML
+            rspec:
+              stage: test
+              script: rspec
+              needs:
+                - pipeline: $THE_PIPELINE_ID
+                  job: dependency-job
+            YAML
+          end
+
+          it 'returns a valid configuration and sets artifacts: true by default' do
+            expect(subject).to be_valid
+
+            rspec = subject.build_attributes(:rspec)
+            expect(rspec.dig(:options, :cross_dependencies)).to eq(
+              [{ pipeline: '$THE_PIPELINE_ID', job: 'dependency-job', artifacts: true }]
+            )
+          end
+
+          context 'when pipeline ID is hard-coded' do
+            let(:config) do
+              <<~YAML
+              rspec:
+                stage: test
+                script: rspec
+                needs:
+                  - pipeline: "123"
+                    job: dependency-job
+              YAML
+            end
+
+            it 'returns a valid configuration and sets artifacts: true by default' do
+              expect(subject).to be_valid
+
+              rspec = subject.build_attributes(:rspec)
+              expect(rspec.dig(:options, :cross_dependencies)).to eq(
+                [{ pipeline: '123', job: 'dependency-job', artifacts: true }]
+              )
+            end
+          end
+        end
+
+        context 'when configuration is not valid' do
+          let(:config) do
+            <<~YAML
+            rspec:
+              stage: test
+              script: rspec
+              needs:
+                - pipeline: $THE_PIPELINE_ID
+                  job: dependency-job
+                  something: else
+            YAML
+          end
+
+          it 'returns an error' do
+            expect(subject).not_to be_valid
+            expect(subject.errors).to include(/:need config contains unknown keys: something/)
+          end
+        end
+      end
+
       describe "Hidden jobs" do
         let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config).execute }
 
@@ -2429,7 +2527,13 @@ module Gitlab
         context 'returns errors if job allow_failure parameter is not an boolean' do
           let(:config) { YAML.dump({ rspec: { script: "test", allow_failure: "string" } }) }
 
-          it_behaves_like 'returns errors', 'jobs:rspec allow failure should be a boolean value'
+          it_behaves_like 'returns errors', 'jobs:rspec allow failure should be a hash or a boolean value'
+        end
+
+        context 'returns errors if job exit_code parameter from allow_failure is not an integer' do
+          let(:config) { YAML.dump({ rspec: { script: "test", allow_failure: { exit_codes: 'string' } } }) }
+
+          it_behaves_like 'returns errors', 'jobs:rspec:allow_failure exit codes should be an array of integers or an integer'
         end
 
         context 'returns errors if job stage is not a string' do

@@ -13,7 +13,7 @@ RSpec.describe SystemNoteMetadata do
 
     context 'when action type is invalid' do
       subject do
-        build(:system_note_metadata, note: build(:note), action: 'invalid_type' )
+        build(:system_note_metadata, note: build(:note), action: 'invalid_type')
       end
 
       it { is_expected.to be_invalid }
@@ -21,7 +21,15 @@ RSpec.describe SystemNoteMetadata do
 
     context 'when action type is valid' do
       subject do
-        build(:system_note_metadata, note: build(:note), action: 'merge' )
+        build(:system_note_metadata, note: build(:note), action: 'merge')
+      end
+
+      it { is_expected.to be_valid }
+    end
+
+    context 'when importing' do
+      subject do
+        build(:system_note_metadata, note: nil, action: 'merge', importing: true)
       end
 
       it { is_expected.to be_valid }

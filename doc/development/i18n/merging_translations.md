@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Merging translations from CrowdIn
@@ -27,8 +27,8 @@ If there are validation errors, the easiest solution is to disapprove
 the offending string in CrowdIn, leaving a comment with what is
 required to fix the offense. There is an
 [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/23256)
-suggesting to automate this process. Disapproving will exclude the
-invalid translation, the merge request will be updated within a few
+suggesting to automate this process. Disapproving excludes the
+invalid translation, the merge request is then updated within a few
 minutes.
 
 If the translation has failed validation due to angle brackets `<` or `>`
@@ -52,7 +52,7 @@ We are discussing [automating this entire process](https://gitlab.com/gitlab-org
 ## Recreate the merge request
 
 CrowdIn creates a new merge request as soon as the old one is closed
-or merged. But it won't recreate the `master-i18n` branch every
+or merged. But it does not recreate the `master-i18n` branch every
 time. To force CrowdIn to recreate the branch, close any [open merge
 request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests?scope=all&utf8=%E2%9C%93&state=opened&author_username=gitlab-crowdin-bot)
 and delete the
@@ -63,7 +63,7 @@ have been fixed on master.
 
 ## Recreate the GitLab integration in CrowdIn
 
-NOTE: **Note:**
+NOTE:
 These instructions work only for GitLab Team Members.
 
 If for some reason the GitLab integration in CrowdIn does not exist, it can be

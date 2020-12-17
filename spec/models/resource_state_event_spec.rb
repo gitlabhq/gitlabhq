@@ -41,7 +41,7 @@ RSpec.describe ResourceStateEvent, type: :model do
   end
 
   context 'callbacks' do
-    describe '#usage_metrics' do
+    describe '#issue_usage_metrics' do
       it 'tracks closed issues' do
         expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_closed_action)
 
@@ -52,6 +52,12 @@ RSpec.describe ResourceStateEvent, type: :model do
         expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_reopened_action)
 
         create(described_class.name.underscore.to_sym, issue: issue, state: described_class.states[:reopened])
+      end
+
+      it 'does not track merge requests' do
+        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_closed_action)
+
+        create(described_class.name.underscore.to_sym, merge_request: merge_request, state: described_class.states[:closed])
       end
     end
   end

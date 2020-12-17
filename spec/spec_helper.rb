@@ -8,6 +8,12 @@ if $".include?(File.expand_path('fast_spec_helper.rb', __dir__))
   abort 'Aborting...'
 end
 
+# Enable deprecation warnings by default and make them more visible
+# to developers to ease upgrading to newer Ruby versions.
+Warning[:deprecated] = true unless ENV.key?('SILENCE_DEPRECATIONS')
+
+require './spec/deprecation_toolkit_env'
+
 require './spec/simplecov_env'
 SimpleCovEnv.start!
 
@@ -134,8 +140,11 @@ RSpec.configure do |config|
   config.include NextFoundInstanceOf
   config.include NextInstanceOf
   config.include TestEnv
+  config.include FileReadHelpers
   config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Devise::Test::ControllerHelpers, type: :view
   config.include Devise::Test::IntegrationHelpers, type: :feature
+  config.include Devise::Test::IntegrationHelpers, type: :request
   config.include LoginHelpers, type: :feature
   config.include SearchHelpers, type: :feature
   config.include WaitHelpers, type: :feature
@@ -143,7 +152,6 @@ RSpec.configure do |config|
   config.include EmailHelpers, :mailer, type: :mailer
   config.include Warden::Test::Helpers, type: :request
   config.include Gitlab::Routing, type: :routing
-  config.include Devise::Test::ControllerHelpers, type: :view
   config.include ApiHelpers, :api
   config.include CookieHelper, :js
   config.include InputHelper, :js
@@ -215,10 +223,6 @@ RSpec.configure do |config|
       stub_feature_flags(vue_issuable_sidebar: false)
       stub_feature_flags(vue_issuable_epic_sidebar: false)
 
-      # The following can be removed once we are confident the
-      # unified diff lines works as expected
-      stub_feature_flags(unified_diff_lines: false)
-
       # Merge request widget GraphQL requests are disabled in the tests
       # for now whilst we migrate as much as we can over the GraphQL
       stub_feature_flags(merge_request_widget_graphql: false)
@@ -226,6 +230,10 @@ RSpec.configure do |config|
       # Using FortiAuthenticator as OTP provider is disabled by default in
       # tests, until we introduce it in user settings
       stub_feature_flags(forti_authenticator: false)
+
+      # Using FortiToken Cloud as OTP provider is disabled by default in
+      # tests, until we introduce it in user settings
+      stub_feature_flags(forti_token_cloud: false)
 
       enable_rugged = example.metadata[:enable_rugged].present?
 
@@ -237,6 +245,8 @@ RSpec.configure do |config|
       # Disable the usage of file_identifier_hash by default until it is ready
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/33867
       stub_feature_flags(file_identifier_hash: false)
+
+      stub_feature_flags(unified_diff_components: false)
 
       allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
     else
@@ -279,27 +289,15 @@ RSpec.configure do |config|
     # context 'some test in mocked dir', :do_not_mock_admin_mode do ... end
     admin_mode_mock_dirs = %w(
       ./ee/spec/elastic_integration
-      ./ee/spec/features
       ./ee/spec/finders
       ./ee/spec/lib
-      ./ee/spec/requests/admin
       ./ee/spec/serializers
-      ./ee/spec/support/protected_tags
-      ./ee/spec/support/shared_examples/features
       ./ee/spec/support/shared_examples/finders/geo
       ./ee/spec/support/shared_examples/graphql/geo
-      ./spec/features
       ./spec/finders
-      ./spec/frontend
-      ./spec/helpers
       ./spec/lib
-      ./spec/requests
       ./spec/serializers
-      ./spec/support/protected_tags
-      ./spec/support/shared_examples/features
-      ./spec/support/shared_examples/requests
       ./spec/support/shared_examples/lib/gitlab
-      ./spec/views
       ./spec/workers
     )
 
@@ -331,6 +329,13 @@ RSpec.configure do |config|
 
   config.around(:example, :request_store) do |example|
     Gitlab::WithRequestStore.with_request_store { example.run }
+  end
+
+  config.before(:example, :request_store) do
+    # Clear request store before actually starting the spec (the
+    # `around` above will have the request store enabled for all
+    # `before` blocks)
+    RequestStore.clear!
   end
 
   config.around do |example|

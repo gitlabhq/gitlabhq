@@ -86,6 +86,16 @@ export const conditions = flattenDeep(
       value: __('Any'),
     },
     {
+      url: 'reviewer_id=None',
+      tokenKey: 'reviewer',
+      value: __('None'),
+    },
+    {
+      url: 'reviewer_id=Any',
+      tokenKey: 'reviewer',
+      value: __('Any'),
+    },
+    {
       url: 'author_username=support-bot',
       tokenKey: 'author',
       value: 'support-bot',

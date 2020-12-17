@@ -1,7 +1,7 @@
 ---
 stage: Enablement
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 description: 'Learn how to install a GitLab instance on Google Cloud Platform.'
 type: howto
 ---
@@ -10,7 +10,7 @@ type: howto
 
 This guide will help you install GitLab on a [Google Cloud Platform (GCP)](https://cloud.google.com/) instance.
 
-NOTE: **Alternative installation method:**
+NOTE:
 Google provides a whitepaper for [deploying production-ready GitLab on
 Google Kubernetes Engine](https://cloud.google.com/solutions/deploying-production-ready-gitlab-on-gke),
 including all steps and external resource configuration. These are an alternative to using a GCP VM, and use
@@ -91,7 +91,7 @@ here's how you configure GitLab to be aware of the change:
    In the future you might want to set up [connecting with an SSH key](https://cloud.google.com/compute/docs/instances/connecting-to-instance)
    instead.
 
-1. Edit the config file of Omnibus GitLab using your favorite text editor:
+1. Edit the configuration file of Omnibus GitLab using your favorite text editor:
 
    ```shell
    sudo vim /etc/gitlab/gitlab.rb

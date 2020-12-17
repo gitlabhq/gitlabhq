@@ -42,6 +42,7 @@ describe('Discussion navigation mixin', () => {
     );
 
     jest.spyOn(utils, 'scrollToElementWithContext');
+    jest.spyOn(utils, 'scrollToElement');
 
     expandDiscussion = jest.fn();
     const { actions, ...notesRest } = notesModule();
@@ -133,7 +134,7 @@ describe('Discussion navigation mixin', () => {
         });
 
         it('scrolls to element', () => {
-          expect(utils.scrollToElementWithContext).toHaveBeenCalledWith(
+          expect(utils.scrollToElement).toHaveBeenCalledWith(
             findDiscussion('div.discussion', expected),
           );
         });
@@ -200,7 +201,7 @@ describe('Discussion navigation mixin', () => {
           });
 
           it('scrolls to discussion', () => {
-            expect(utils.scrollToElementWithContext).toHaveBeenCalledWith(
+            expect(utils.scrollToElement).toHaveBeenCalledWith(
               findDiscussion('div.discussion', expected),
             );
           });

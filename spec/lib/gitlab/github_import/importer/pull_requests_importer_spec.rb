@@ -29,6 +29,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsImporter do
       milestone: double(:milestone, number: 4),
       user: double(:user, id: 4, login: 'alice'),
       assignee: double(:user, id: 4, login: 'alice'),
+      merged_by: double(:user, id: 4, login: 'alice'),
       created_at: 1.second.ago,
       updated_at: 1.second.ago,
       merged_at: 1.second.ago

@@ -12,9 +12,15 @@ module Timebox
   include FromUnion
 
   TimeboxStruct = Struct.new(:title, :name, :id) do
+    include GlobalID::Identification
+
     # Ensure these models match the interface required for exporting
     def serializable_hash(_opts = {})
       { title: title, name: name, id: id }
+    end
+
+    def self.declarative_policy_class
+      "TimeboxPolicy"
     end
   end
 

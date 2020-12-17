@@ -67,33 +67,25 @@ module Types
           description: 'E-mail address of the service desk.'
 
     field :avatar_url, GraphQL::STRING_TYPE, null: true, calls_gitaly: true,
-          description: 'URL to avatar image file of the project',
-          resolve: -> (project, args, ctx) do
-            project.avatar_url(only_path: false)
-          end
+          description: 'URL to avatar image file of the project'
 
     %i[issues merge_requests wiki snippets].each do |feature|
       field "#{feature}_enabled", GraphQL::BOOLEAN_TYPE, null: true,
-            description: "Indicates if #{feature.to_s.titleize.pluralize} are enabled for the current user",
-            resolve: -> (project, args, ctx) do
-              project.feature_available?(feature, ctx[:current_user])
-            end
+            description: "Indicates if #{feature.to_s.titleize.pluralize} are enabled for the current user"
+
+      define_method "#{feature}_enabled" do
+        object.feature_available?(feature, context[:current_user])
+      end
     end
 
     field :jobs_enabled, GraphQL::BOOLEAN_TYPE, null: true,
-          description: 'Indicates if CI/CD pipeline jobs are enabled for the current user',
-          resolve: -> (project, args, ctx) do
-            project.feature_available?(:builds, ctx[:current_user])
-          end
+          description: 'Indicates if CI/CD pipeline jobs are enabled for the current user'
 
     field :public_jobs, GraphQL::BOOLEAN_TYPE, method: :public_builds, null: true,
           description: 'Indicates if there is public access to pipelines and job details of the project, including output logs and artifacts'
 
     field :open_issues_count, GraphQL::INT_TYPE, null: true,
-          description: 'Number of open issues for the project',
-          resolve: -> (project, args, ctx) do
-            project.open_issues_count if project.feature_available?(:issues, ctx[:current_user])
-          end
+          description: 'Number of open issues for the project'
 
     field :import_status, GraphQL::STRING_TYPE, null: true,
           description: 'Status of import background job of the project'
@@ -115,6 +107,8 @@ module Types
           description: 'Indicates if issues referenced by merge requests and commits within the default branch are closed automatically'
     field :suggestion_commit_message, GraphQL::STRING_TYPE, null: true,
           description: 'The commit message used to apply merge request suggestions'
+    field :squash_read_only, GraphQL::BOOLEAN_TYPE, null: false, method: :squash_readonly?,
+          description: 'Indicates if squash readonly is enabled'
 
     field :namespace, Types::NamespaceType, null: true,
           description: 'Namespace of the project'
@@ -123,8 +117,7 @@ module Types
 
     field :statistics, Types::ProjectStatisticsType,
           null: true,
-          description: 'Statistics of the project',
-          resolve: -> (obj, _args, _ctx) { Gitlab::Graphql::Loaders::BatchProjectStatisticsLoader.new(obj.id).find }
+          description: 'Statistics of the project'
 
     field :repository, Types::RepositoryType, null: true,
           description: 'Git repository of the project'
@@ -198,6 +191,11 @@ module Types
           description: 'Build pipeline of the project',
           resolver: Resolvers::ProjectPipelineResolver
 
+    field :ci_cd_settings,
+          Types::Ci::CiCdSettingType,
+          null: true,
+          description: 'CI/CD settings for the project'
+
     field :sentry_detailed_error,
           Types::ErrorTracking::SentryDetailedErrorType,
           null: true,
@@ -238,8 +236,7 @@ module Types
     field :jira_imports,
           Types::JiraImportType.connection_type,
           null: true,
-          description: 'Jira imports into the project',
-          resolver: Resolvers::Projects::JiraImportsResolver
+          description: 'Jira imports into the project'
 
     field :services,
           Types::Projects::ServiceType.connection_type,
@@ -296,6 +293,9 @@ module Types
           description: 'Container repositories of the project',
           resolver: Resolvers::ContainerRepositoriesResolver
 
+    field :container_repositories_count, GraphQL::INT_TYPE, null: false,
+          description: 'Number of container repositories in the project'
+
     field :label,
           Types::LabelType,
           null: true,
@@ -310,6 +310,13 @@ module Types
           null: true,
           description: 'Terraform states associated with the project',
           resolver: Resolvers::Terraform::StatesResolver
+
+    field :pipeline_analytics, Types::Ci::AnalyticsType, null: true,
+          description: 'Pipeline analytics',
+          resolver: Resolvers::ProjectPipelineStatisticsResolver
+
+    field :total_pipeline_duration, GraphQL::INT_TYPE, null: true,
+          description: 'Total pipeline duration for all of the pipelines in a project'
 
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: project) do |titles, loader, args|
@@ -333,6 +340,30 @@ module Types
       LabelsFinder
         .new(current_user, project: project, search: search_term)
         .execute
+    end
+
+    def avatar_url
+      object.avatar_url(only_path: false)
+    end
+
+    def jobs_enabled
+      object.feature_available?(:builds, context[:current_user])
+    end
+
+    def open_issues_count
+      object.open_issues_count if object.feature_available?(:issues, context[:current_user])
+    end
+
+    def statistics
+      Gitlab::Graphql::Loaders::BatchProjectStatisticsLoader.new(object.id).find
+    end
+
+    def container_repositories_count
+      project.container_repositories.size
+    end
+
+    def total_pipeline_duration
+      object.all_pipelines.total_duration
     end
 
     private

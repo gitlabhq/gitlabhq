@@ -2,7 +2,7 @@
 type: reference, dev
 stage: none
 group: Development
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Contribute to GitLab
@@ -37,7 +37,7 @@ Report suspected security vulnerabilities in private to
 `support@gitlab.com`, also see the
 [disclosure section on the GitLab.com website](https://about.gitlab.com/security/disclosure/).
 
-DANGER: **Warning:**
+WARNING:
 Do **NOT** create publicly viewable issues for suspected security vulnerabilities.
 
 ## Code of conduct
@@ -144,10 +144,10 @@ Keep the following in mind when submitting merge requests:
 
 - When reviewers are reading through a merge request they may request guidance from other
   reviewers.
-- If the code quality is found to not meet GitLab’s standards, the merge request reviewer will
+- If the code quality is found to not meet GitLab standards, the merge request reviewer will
   provide guidance and refer the author to our:
   - [Documentation](../documentation/styleguide/index.md) style guide.
-  - Code style guides.
+  - [Code style guides](style_guides.md).
 - Sometimes style guides will be followed but the code will lack structural integrity, or the
   reviewer will have reservations about the code’s overall quality. When there is a reservation,
   the reviewer will inform the author and provide some guidance.

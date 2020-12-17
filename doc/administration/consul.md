@@ -1,7 +1,7 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+stage: Enablement
+group: Distribution
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -77,7 +77,7 @@ Identify any existing health issues in the cluster by running the following comm
 within each node. The command will return an empty array if the cluster is healthy:
 
 ```shell
-curl http://127.0.0.1:8500/v1/health/state/critical
+curl "http://127.0.0.1:8500/v1/health/state/critical"
 ```
 
 Consul nodes communicate using the raft protocol. If the current leader goes
@@ -133,7 +133,7 @@ you will need to follow the Consul [outage recovery](#outage-recovery) process.
 To be safe, it's recommended that you only restart Consul in one node at a time to
 ensure the cluster remains intact. For larger clusters, it is possible to restart
 multiple nodes at a time. See the
-[Consul consensus document](https://www.consul.io/docs/internals/consensus.html#deployment-table)
+[Consul consensus document](https://www.consul.io/docs/architecture/consensus#deployment-table)
 for how many failures it can tolerate. This will be the number of simultaneous
 restarts it can sustain.
 

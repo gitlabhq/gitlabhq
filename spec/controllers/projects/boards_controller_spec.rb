@@ -27,7 +27,7 @@ RSpec.describe Projects::BoardsController do
         list_boards
 
         expect(response).to render_template :index
-        expect(response.content_type).to eq 'text/html'
+        expect(response.media_type).to eq 'text/html'
       end
 
       context 'with unauthorized user' do
@@ -41,7 +41,7 @@ RSpec.describe Projects::BoardsController do
           list_boards
 
           expect(response).to have_gitlab_http_status(:not_found)
-          expect(response.content_type).to eq 'text/html'
+          expect(response.media_type).to eq 'text/html'
         end
       end
 
@@ -57,7 +57,7 @@ RSpec.describe Projects::BoardsController do
           list_boards
 
           expect(response).to render_template :index
-          expect(response.content_type).to eq 'text/html'
+          expect(response.media_type).to eq 'text/html'
         end
       end
     end
@@ -85,7 +85,7 @@ RSpec.describe Projects::BoardsController do
           list_boards format: :json
 
           expect(response).to have_gitlab_http_status(:not_found)
-          expect(response.content_type).to eq 'application/json'
+          expect(response.media_type).to eq 'application/json'
         end
       end
     end
@@ -127,7 +127,7 @@ RSpec.describe Projects::BoardsController do
         expect { read_board board: board }.to change(BoardProjectRecentVisit, :count).by(1)
 
         expect(response).to render_template :show
-        expect(response.content_type).to eq 'text/html'
+        expect(response.media_type).to eq 'text/html'
       end
 
       context 'with unauthorized user' do
@@ -141,7 +141,7 @@ RSpec.describe Projects::BoardsController do
           read_board board: board
 
           expect(response).to have_gitlab_http_status(:not_found)
-          expect(response.content_type).to eq 'text/html'
+          expect(response.media_type).to eq 'text/html'
         end
       end
 
@@ -154,7 +154,7 @@ RSpec.describe Projects::BoardsController do
           expect { read_board board: board }.to change(BoardProjectRecentVisit, :count).by(0)
 
           expect(response).to render_template :show
-          expect(response.content_type).to eq 'text/html'
+          expect(response.media_type).to eq 'text/html'
         end
       end
     end
@@ -179,7 +179,7 @@ RSpec.describe Projects::BoardsController do
           read_board board: board, format: :json
 
           expect(response).to have_gitlab_http_status(:not_found)
-          expect(response.content_type).to eq 'application/json'
+          expect(response.media_type).to eq 'application/json'
         end
       end
     end

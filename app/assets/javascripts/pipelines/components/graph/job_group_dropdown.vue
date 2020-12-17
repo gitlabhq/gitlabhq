@@ -44,17 +44,18 @@ export default {
       type="button"
       data-toggle="dropdown"
       data-display="static"
-      class="dropdown-menu-toggle build-content"
+      class="dropdown-menu-toggle build-content gl-build-content"
     >
-      <ci-icon :status="group.status" />
+      <div class="gl-display-flex gl-align-items-center gl-justify-content-space-between">
+        <span class="gl-display-flex gl-align-items-center gl-min-w-0">
+          <ci-icon :status="group.status" :size="24" />
+          <span class="gl-text-truncate mw-70p gl-pl-3">
+            {{ group.name }}
+          </span>
+        </span>
 
-      <span
-        class="gl-text-truncate mw-70p gl-pl-2 gl-display-inline-block gl-vertical-align-bottom"
-      >
-        {{ group.name }}
-      </span>
-
-      <span class="dropdown-counter-badge"> {{ group.size }} </span>
+        <span class="gl-font-weight-100 gl-font-size-lg"> {{ group.size }} </span>
+      </div>
     </button>
 
     <ul class="dropdown-menu big-pipeline-graph-dropdown-menu js-grouped-pipeline-dropdown">

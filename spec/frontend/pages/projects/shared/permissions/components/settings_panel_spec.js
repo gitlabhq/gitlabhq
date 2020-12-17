@@ -21,11 +21,13 @@ const defaultProps = {
     wikiAccessLevel: 20,
     snippetsAccessLevel: 20,
     pagesAccessLevel: 10,
+    analyticsAccessLevel: 20,
     containerRegistryEnabled: true,
     lfsEnabled: true,
     emailsDisabled: false,
     packagesEnabled: true,
     showDefaultAwardEmojis: true,
+    allowEditingCommitMessages: false,
   },
   canDisableEmails: true,
   canChangeVisibilityLevel: true,
@@ -49,7 +51,7 @@ describe('Settings Panel', () => {
   let wrapper;
 
   const mountComponent = (
-    { currentSettings = {}, ...customProps } = {},
+    { currentSettings = {}, glFeatures = {}, ...customProps } = {},
     mountFn = shallowMount,
   ) => {
     const propsData = {
@@ -60,6 +62,9 @@ describe('Settings Panel', () => {
 
     return mountFn(settingsPanel, {
       propsData,
+      provide: {
+        glFeatures,
+      },
     });
   };
 
@@ -74,6 +79,8 @@ describe('Settings Panel', () => {
   const findRepositoryFeatureProjectRow = () => wrapper.find({ ref: 'repository-settings' });
   const findRepositoryFeatureSetting = () =>
     findRepositoryFeatureProjectRow().find(projectFeatureSetting);
+
+  const findAnalyticsRow = () => wrapper.find({ ref: 'analytics-settings' });
 
   beforeEach(() => {
     wrapper = mountComponent();
@@ -537,6 +544,28 @@ describe('Settings Panel', () => {
 
       expect(wrapper.vm.metricsOptionsDropdownEnabled).toBe(true);
       expect(metricsSettingsRow.find('select').attributes('disabled')).toBe('disabled');
+    });
+  });
+
+  describe('Settings panel with feature flags', () => {
+    describe('Allow edit of commit message', () => {
+      it('should show the allow editing of commit messages checkbox', async () => {
+        wrapper = mountComponent({
+          glFeatures: { allowEditingCommitMessages: true },
+        });
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.find({ ref: 'allow-editing-commit-messages' }).exists()).toBe(true);
+      });
+    });
+  });
+
+  describe('Analytics', () => {
+    it('should show the analytics toggle', async () => {
+      await wrapper.vm.$nextTick();
+
+      expect(findAnalyticsRow().exists()).toBe(true);
     });
   });
 });

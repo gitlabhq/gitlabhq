@@ -1,0 +1,5 @@
+---
+title: Replaces elements with the bs-callout class with gl-alert vue component
+merge_request: 47331
+author: Gary Bell @garybell
+type: other

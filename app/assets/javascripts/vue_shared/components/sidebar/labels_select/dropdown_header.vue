@@ -16,7 +16,7 @@ export default {
       type="button"
       class="dropdown-title-button dropdown-menu-close gl-ml-auto"
     >
-      <gl-icon name="close" aria-hidden="true" class="dropdown-menu-close-icon" />
+      <gl-icon name="close" class="dropdown-menu-close-icon" />
     </button>
   </div>
 </template>

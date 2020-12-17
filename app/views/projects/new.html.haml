@@ -8,10 +8,9 @@
   .project-edit-errors
     = render 'projects/errors'
 
-  - if experiment_enabled?(:new_create_project_ui)
-    .js-experiment-new-project-creation{ data: { is_ci_cd_available: ci_cd_projects_available?, has_errors: @project.errors.any? } }
+  .js-experiment-new-project-creation{ data: { is_ci_cd_available: (ci_cd_projects_available? if Gitlab.ee?), has_errors: @project.errors.any? } }
 
-  .row{ 'v-cloak': experiment_enabled?(:new_create_project_ui) }
+  .row{ 'v-cloak': true }
     .col-lg-3.profile-settings-sidebar
       %h4.gl-mt-0
         = _('New project')

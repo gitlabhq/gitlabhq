@@ -1,0 +1,10 @@
+#import "ee_else_ce/boards/graphql/issue.fragment.graphql"
+
+mutation CreateIssue($input: CreateIssueInput!) {
+  createIssue(input: $input) {
+    issue {
+      ...IssueNode
+    }
+    errors
+  }
+}

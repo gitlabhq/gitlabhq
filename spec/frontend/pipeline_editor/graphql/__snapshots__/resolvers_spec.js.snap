@@ -1,0 +1,73 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`~/pipeline_editor/graphql/resolvers Mutation lintCI lint data is as expected 1`] = `
+Object {
+  "__typename": "CiLintContent",
+  "errors": Array [],
+  "jobs": Array [
+    Object {
+      "__typename": "CiLintJob",
+      "afterScript": Array [
+        "echo 'after script 1",
+      ],
+      "allowFailure": false,
+      "beforeScript": Array [
+        "echo 'before script 1'",
+      ],
+      "environment": "prd",
+      "except": Object {
+        "refs": Array [
+          "master@gitlab-org/gitlab",
+          "/^release/.*$/@gitlab-org/gitlab",
+        ],
+      },
+      "name": "job_1",
+      "only": null,
+      "script": Array [
+        "echo 'script 1'",
+      ],
+      "stage": "test",
+      "tagList": Array [
+        "tag 1",
+      ],
+      "when": "on_success",
+    },
+    Object {
+      "__typename": "CiLintJob",
+      "afterScript": Array [
+        "echo 'after script 2",
+      ],
+      "allowFailure": true,
+      "beforeScript": Array [
+        "echo 'before script 2'",
+      ],
+      "environment": "stg",
+      "except": Object {
+        "refs": Array [
+          "master@gitlab-org/gitlab",
+          "/^release/.*$/@gitlab-org/gitlab",
+        ],
+      },
+      "name": "job_2",
+      "only": Object {
+        "__typename": "CiLintJobOnlyPolicy",
+        "refs": Array [
+          "web",
+          "chat",
+          "pushes",
+        ],
+      },
+      "script": Array [
+        "echo 'script 2'",
+      ],
+      "stage": "test",
+      "tagList": Array [
+        "tag 2",
+      ],
+      "when": "on_success",
+    },
+  ],
+  "valid": true,
+  "warnings": Array [],
+}
+`;

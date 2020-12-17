@@ -19,11 +19,9 @@ RSpec.describe Emails::Projects do
         create(:project_incident_management_setting, project: project, create_issue: true)
       end
 
-      let(:incident_issues_url) do
-        project_issues_url(project, label_name: 'incident')
-      end
+      let(:incidents_url) { project_incidents_url(project) }
 
-      it { is_expected.to have_body_text(incident_issues_url) }
+      it { is_expected.to have_body_text(incidents_url) }
     end
   end
 

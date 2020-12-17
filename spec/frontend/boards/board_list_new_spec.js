@@ -1,15 +1,11 @@
-/* global List */
-/* global ListIssue */
-
 import Vuex from 'vuex';
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 import { createLocalVue, mount } from '@vue/test-utils';
 import eventHub from '~/boards/eventhub';
 import BoardList from '~/boards/components/board_list_new.vue';
 import BoardCard from '~/boards/components/board_card.vue';
-import '~/boards/models/issue';
 import '~/boards/models/list';
-import { listObj, mockIssuesByListId, issues } from './mock_data';
+import { mockList, mockIssuesByListId, issues, mockIssues } from './mock_data';
 import defaultState from '~/boards/stores/state';
 
 const localVue = createLocalVue();
@@ -46,13 +42,11 @@ const createComponent = ({
     ...state,
   });
 
-  const list = new List({
-    ...listObj,
-    id: 'gid://gitlab/List/1',
+  const list = {
+    ...mockList,
     ...listProps,
-    doNotFetchIssues: true,
-  });
-  const issue = new ListIssue({
+  };
+  const issue = {
     title: 'Testing',
     id: 1,
     iid: 1,
@@ -60,9 +54,9 @@ const createComponent = ({
     labels: [],
     assignees: [],
     ...listIssueProps,
-  });
-  if (!Object.prototype.hasOwnProperty.call(listProps, 'issuesSize')) {
-    list.issuesSize = 1;
+  };
+  if (!Object.prototype.hasOwnProperty.call(listProps, 'issuesCount')) {
+    list.issuesCount = 1;
   }
 
   const component = mount(BoardList, {
@@ -71,6 +65,7 @@ const createComponent = ({
       disabled: false,
       list,
       issues: [issue],
+      canAdminList: true,
       ...componentProps,
     },
     store,
@@ -87,15 +82,17 @@ const createComponent = ({
 
 describe('Board list component', () => {
   let wrapper;
+  const findByTestId = testId => wrapper.find(`[data-testid="${testId}"]`);
   useFakeRequestAnimationFrame();
+
+  afterEach(() => {
+    wrapper.destroy();
+    wrapper = null;
+  });
 
   describe('When Expanded', () => {
     beforeEach(() => {
       wrapper = createComponent();
-    });
-
-    afterEach(() => {
-      wrapper.destroy();
     });
 
     it('renders component', () => {
@@ -107,7 +104,7 @@ describe('Board list component', () => {
         state: { listsFlags: { 'gid://gitlab/List/1': { isLoading: true } } },
       });
 
-      expect(wrapper.find('[data-testid="board_list_loading"').exists()).toBe(true);
+      expect(findByTestId('board_list_loading').exists()).toBe(true);
     });
 
     it('renders issues', () => {
@@ -157,7 +154,7 @@ describe('Board list component', () => {
 
     it('shows how many more issues to load', async () => {
       wrapper.vm.showCount = true;
-      wrapper.setProps({ list: { issuesSize: 20 } });
+      wrapper.setProps({ list: { issuesCount: 20 } });
 
       await wrapper.vm.$nextTick();
       expect(wrapper.find('.board-list-count').text()).toBe('Showing 1 of 20 issues');
@@ -167,30 +164,30 @@ describe('Board list component', () => {
   describe('load more issues', () => {
     beforeEach(() => {
       wrapper = createComponent({
-        listProps: { issuesSize: 25 },
+        listProps: { issuesCount: 25 },
       });
     });
 
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     it('loads more issues after scrolling', () => {
-      wrapper.vm.$refs.list.dispatchEvent(new Event('scroll'));
+      wrapper.vm.listRef.dispatchEvent(new Event('scroll'));
 
       expect(actions.fetchIssuesForList).toHaveBeenCalled();
     });
 
     it('does not load issues if already loading', () => {
-      wrapper.vm.$refs.list.dispatchEvent(new Event('scroll'));
-      wrapper.vm.$refs.list.dispatchEvent(new Event('scroll'));
+      wrapper = createComponent({
+        state: { listsFlags: { 'gid://gitlab/List/1': { isLoadingMore: true } } },
+      });
+      wrapper.vm.listRef.dispatchEvent(new Event('scroll'));
 
-      expect(actions.fetchIssuesForList).toHaveBeenCalledTimes(1);
+      expect(actions.fetchIssuesForList).not.toHaveBeenCalled();
     });
 
     it('shows loading more spinner', async () => {
+      wrapper = createComponent({
+        state: { listsFlags: { 'gid://gitlab/List/1': { isLoadingMore: true } } },
+      });
       wrapper.vm.showCount = true;
-      wrapper.vm.list.loadingMore = true;
 
       await wrapper.vm.$nextTick();
       expect(wrapper.find('.board-list-count .gl-spinner').exists()).toBe(true);
@@ -200,17 +197,13 @@ describe('Board list component', () => {
   describe('max issue count warning', () => {
     beforeEach(() => {
       wrapper = createComponent({
-        listProps: { issuesSize: 50 },
+        listProps: { issuesCount: 50 },
       });
-    });
-
-    afterEach(() => {
-      wrapper.destroy();
     });
 
     describe('when issue count exceeds max issue count', () => {
       it('sets background to bg-danger-100', async () => {
-        wrapper.setProps({ list: { issuesSize: 4, maxIssueCount: 3 } });
+        wrapper.setProps({ list: { issuesCount: 4, maxIssueCount: 3 } });
 
         await wrapper.vm.$nextTick();
         expect(wrapper.find('.bg-danger-100').exists()).toBe(true);
@@ -219,7 +212,7 @@ describe('Board list component', () => {
 
     describe('when list issue count does NOT exceed list max issue count', () => {
       it('does not sets background to bg-danger-100', () => {
-        wrapper.setProps({ list: { issuesSize: 2, maxIssueCount: 3 } });
+        wrapper.setProps({ list: { issuesCount: 2, maxIssueCount: 3 } });
 
         expect(wrapper.find('.bg-danger-100').exists()).toBe(false);
       });
@@ -230,6 +223,45 @@ describe('Board list component', () => {
         wrapper.setProps({ list: { maxIssueCount: 0 } });
 
         expect(wrapper.find('.bg-danger-100').exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('drag & drop issue', () => {
+    beforeEach(() => {
+      wrapper = createComponent();
+    });
+
+    describe('handleDragOnStart', () => {
+      it('adds a class `is-dragging` to document body', () => {
+        expect(document.body.classList.contains('is-dragging')).toBe(false);
+
+        findByTestId('tree-root-wrapper').vm.$emit('start');
+
+        expect(document.body.classList.contains('is-dragging')).toBe(true);
+      });
+    });
+
+    describe('handleDragOnEnd', () => {
+      it('removes class `is-dragging` from document body', () => {
+        jest.spyOn(wrapper.vm, 'moveIssue').mockImplementation(() => {});
+        document.body.classList.add('is-dragging');
+
+        findByTestId('tree-root-wrapper').vm.$emit('end', {
+          oldIndex: 1,
+          newIndex: 0,
+          item: {
+            dataset: {
+              issueId: mockIssues[0].id,
+              issueIid: mockIssues[0].iid,
+              issuePath: mockIssues[0].referencePath,
+            },
+          },
+          to: { children: [], dataset: { listId: 'gid://gitlab/List/1' } },
+          from: { dataset: { listId: 'gid://gitlab/List/2' } },
+        });
+
+        expect(document.body.classList.contains('is-dragging')).toBe(false);
       });
     });
   });

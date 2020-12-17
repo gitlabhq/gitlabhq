@@ -1,0 +1,5 @@
+---
+title: Fix the header name for basic auth authentication in package managers APIs
+merge_request: 49836
+author:
+type: fixed

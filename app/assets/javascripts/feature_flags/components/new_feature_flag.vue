@@ -1,21 +1,14 @@
 <script>
 import { mapState, mapActions } from 'vuex';
-import { GlAlert } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import FeatureFlagForm from './form.vue';
-import {
-  LEGACY_FLAG,
-  NEW_VERSION_FLAG,
-  NEW_FLAG_ALERT,
-  ROLLOUT_STRATEGY_ALL_USERS,
-} from '../constants';
+import { NEW_VERSION_FLAG, ROLLOUT_STRATEGY_ALL_USERS } from '../constants';
 import { createNewEnvironmentScope } from '../store/helpers';
 
 import featureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {
-    GlAlert,
     FeatureFlagForm,
   },
   mixins: [featureFlagsMixin()],
@@ -33,9 +26,6 @@ export default {
       userShouldSeeNewFlagAlert: this.showUserCallout,
     };
   },
-  translations: {
-    newFlagAlert: NEW_FLAG_ALERT,
-  },
   computed: {
     ...mapState(['error', 'path']),
     scopes() {
@@ -50,13 +40,7 @@ export default {
       ];
     },
     version() {
-      return this.hasNewVersionFlags ? NEW_VERSION_FLAG : LEGACY_FLAG;
-    },
-    hasNewVersionFlags() {
-      return this.glFeatures.featureFlagsNewVersion;
-    },
-    shouldShowNewFlagAlert() {
-      return !this.hasNewVersionFlags && this.userShouldSeeNewFlagAlert;
+      return NEW_VERSION_FLAG;
     },
     strategies() {
       return [{ name: ROLLOUT_STRATEGY_ALL_USERS, parameters: {}, scopes: [] }];
@@ -75,14 +59,6 @@ export default {
 </script>
 <template>
   <div>
-    <gl-alert
-      v-if="shouldShowNewFlagAlert"
-      variant="warning"
-      class="gl-my-5"
-      @dismiss="dismissNewVersionFlagAlert"
-    >
-      {{ $options.translations.newFlagAlert }}
-    </gl-alert>
     <h3 class="page-title">{{ s__('FeatureFlags|New feature flag') }}</h3>
 
     <div v-if="error.length" class="alert alert-danger">

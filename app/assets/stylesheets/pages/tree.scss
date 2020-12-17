@@ -1,8 +1,11 @@
+.project-last-commit {
+  min-height: 4.75rem;
+}
+
 .tree-holder {
   .nav-block {
     margin: 16px 0;
 
-    .btn .fa,
     .btn svg {
       color: $gl-text-color-secondary;
     }
@@ -69,7 +72,7 @@
       }
 
       .btn {
-        margin: 10px 0 0;
+        margin-top: 10px;
       }
     }
   }

@@ -1,7 +1,7 @@
 ---
 stage: Enablement
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: howto
 ---
 
@@ -33,7 +33,7 @@ from [owasp.org](https://owasp.org/).
 
 ### How can the data be classified into categories according to its sensitivity?
 
-- GitLab’s model of sensitivity is centered around public vs. internal vs.
+- The GitLab model of sensitivity is centered around public vs. internal vs.
   private projects. Geo replicates them all indiscriminately. “Selective sync”
   exists for files and repositories (but not database content), which would permit
   only less-sensitive projects to be replicated to a **secondary** node if desired.

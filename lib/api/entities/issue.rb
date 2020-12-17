@@ -43,6 +43,7 @@ module API
       end
 
       expose :moved_to_id
+      expose :service_desk_reply_to
     end
   end
 end

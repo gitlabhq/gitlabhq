@@ -1,0 +1,5 @@
+---
+title: Replace bootstrap alerts in app/views/admin/runners/show.html.haml
+merge_request: 41378
+author: Gilang Gumilar
+type: changed

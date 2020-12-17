@@ -44,20 +44,24 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:vue_issuable_sidebar, project.group)
     push_frontend_feature_flag(:tribute_autocomplete, @project)
     push_frontend_feature_flag(:vue_issuables_list, project)
-    push_frontend_feature_flag(:vue_issue_header, @project, default_enabled: true)
+    push_frontend_feature_flag(:usage_data_design_action, project, default_enabled: true)
   end
 
   before_action only: :show do
     real_time_feature_flag = :real_time_issue_sidebar
     real_time_enabled = Gitlab::ActionCable::Config.in_app? || Feature.enabled?(real_time_feature_flag, @project)
 
-    push_to_gon_features(real_time_feature_flag, real_time_enabled)
+    push_to_gon_attributes(:features, real_time_feature_flag, real_time_enabled)
 
     record_experiment_user(:invite_members_version_a)
     record_experiment_user(:invite_members_version_b)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]
+
+  before_action :run_null_hypothesis_experiment,
+                only: [:index, :new, :create],
+                if: -> { Feature.enabled?(:gitlab_experiments) }
 
   respond_to :html
 
@@ -73,6 +77,8 @@ class Projects::IssuesController < Projects::ApplicationController
 
   feature_category :service_desk, [:service_desk]
   feature_category :importers, [:import_csv, :export_csv]
+
+  attr_accessor :vulnerability_id
 
   def index
     @issues = @issuables
@@ -124,6 +130,8 @@ class Projects::IssuesController < Projects::ApplicationController
 
     service = ::Issues::CreateService.new(project, current_user, create_params)
     @issue = service.execute
+
+    create_vulnerability_issue_link(issue)
 
     if service.discussions_to_resolve.count(&:resolved?) > 0
       flash[:notice] = if service.discussion_to_resolve_id
@@ -385,6 +393,17 @@ class Projects::IssuesController < Projects::ApplicationController
   def service_desk?
     action_name == 'service_desk'
   end
+
+  def run_null_hypothesis_experiment
+    experiment(:null_hypothesis, project: project) do |e|
+      e.use { } # define the control
+      e.try { } # define the candidate
+      e.track(action_name) # track the action so we can build a funnel
+    end
+  end
+
+  # Overridden in EE
+  def create_vulnerability_issue_link(issue); end
 end
 
 Projects::IssuesController.prepend_if_ee('EE::Projects::IssuesController')

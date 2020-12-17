@@ -1,7 +1,7 @@
 ---
 stage: Configure
 group: Configure
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Auto DevOps
@@ -38,18 +38,21 @@ For requirements, see [Requirements for Auto DevOps](requirements.md) for more i
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41729) in GitLab 11.3.
 
-Auto DevOps is enabled by default for all projects and attempts to run on all pipelines
-in each project. An instance administrator can enable or disable this default in the
+On self-managed instances, Auto DevOps is enabled by default for all projects.
+It attempts to run on all pipelines in each project. An instance administrator can
+enable or disable this default in the
 [Auto DevOps settings](../../user/admin_area/settings/continuous_integration.md#auto-devops).
 Auto DevOps automatically disables in individual projects on their first pipeline failure,
-if it has not been explicitly enabled for the project.
+
+NOTE:
+Auto DevOps is not enabled by default on GitLab.com.
 
 Since [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/issues/26655), Auto DevOps
 runs on pipelines automatically only if a [`Dockerfile` or matching buildpack](stages.md#auto-build)
 exists.
 
 If a [CI/CD configuration file](../../ci/yaml/README.md) is present in the project,
-it will continue to be used, whether or not Auto DevOps is enabled.
+it continues to be used, whether or not Auto DevOps is enabled.
 
 ## Quick start
 
@@ -73,7 +76,7 @@ innovative work done by [Heroku](https://www.heroku.com/) and goes beyond it
 in multiple ways:
 
 - Auto DevOps works with any Kubernetes cluster; you're not limited to running
-  on GitLab's infrastructure. (Note that many features also work without Kubernetes).
+  on infrastructure managed by GitLab. (Note that many features also work without Kubernetes).
 - There is no additional cost (no markup on the infrastructure costs), and you
   can use a Kubernetes cluster you host or Containers as a Service on any
   public cloud (for example, [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine/)).
@@ -84,6 +87,9 @@ in multiple ways:
   completely different platform. Review the [customizing](customize.md) documentation for more information.
 
 ## Features
+
+NOTE:
+Depending on your target platform, some features might not be available to you.
 
 Comprised of a set of [stages](stages.md), Auto DevOps brings these best practices to your
 project in a simple and automatic way:
@@ -120,7 +126,7 @@ Auto DevOps provides great defaults for all the stages and makes use of
 For an overview on the creation of Auto DevOps, read more
 [in this blog post](https://about.gitlab.com/blog/2017/06/29/whats-next-for-gitlab-ci/).
 
-NOTE: **Note:**
+NOTE:
 Kubernetes clusters can [be used without](../../user/project/clusters/index.md)
 Auto DevOps.
 
@@ -146,14 +152,14 @@ any of the following places:
 The base domain variable `KUBE_INGRESS_BASE_DOMAIN` follows the same order of precedence
 as other environment [variables](../../ci/variables/README.md#priority-of-environment-variables).
 If the CI/CD variable is not set and the cluster setting is left blank, the instance-wide **Auto DevOps domain**
-setting will be used if set.
+setting is used if set.
 
-TIP: **Tip:**
+NOTE:
 If you use the [GitLab managed app for Ingress](../../user/clusters/applications.md#ingress),
 the URL endpoint should be automatically configured for you. All you must do
 is use its value for the `KUBE_INGRESS_BASE_DOMAIN` variable.
 
-NOTE: **Note:**
+NOTE:
 `AUTO_DEVOPS_DOMAIN` was [deprecated in GitLab 11.8](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/52363)
 and replaced with `KUBE_INGRESS_BASE_DOMAIN`, and removed in
 [GitLab 12.0](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/56959).
@@ -236,7 +242,7 @@ Auto DevOps at the group and project level, respectively.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38542) in GitLab 11.0.
 
-You can change the deployment strategy used by Auto DevOps by going to your
+You can change the deployment strategy used by Auto DevOps by visiting your
 project's **Settings > CI/CD > Auto DevOps**. The following options
 are available:
 
@@ -254,7 +260,7 @@ are available:
   - `master` branch is directly deployed to staging.
   - Manual actions are provided for incremental rollout to production.
 
-TIP: **Tip:**
+NOTE:
 Use the [blue-green deployment](../../ci/environments/incremental_rollouts.md#blue-green-deployment) technique
 to minimize downtime and risk.
 
@@ -313,7 +319,7 @@ simplify configuration and prevent any unforeseen issues.
 
 ### Install applications behind a proxy
 
-GitLab's Helm integration does not support installing applications when
+The GitLab integration with Helm does not support installing applications when
 behind a proxy. Users who want to do so must inject their proxy settings
 into the installation pods at runtime, such as by using a
 [`PodPreset`](https://kubernetes.io/docs/concepts/workloads/pods/podpreset/):
@@ -372,7 +378,7 @@ To fix this issue, you must either:
 
 ### Failure to create a Kubernetes namespace
 
-Auto Deploy will fail if GitLab can't create a Kubernetes namespace and
+Auto Deploy fails if GitLab can't create a Kubernetes namespace and
 service account for your project. For help debugging this issue, see
 [Troubleshooting failed deployment jobs](../../user/project/clusters/index.md#troubleshooting).
 
@@ -407,7 +413,7 @@ If you receive this error, you can do one of the following actions:
   database by setting `AUTO_DEVOPS_POSTGRES_DELETE_V1` to a non-empty value and
   redeploying.
 
-  DANGER: **Warning:**
+  WARNING:
   Deleting the channel 1 PostgreSQL database permanently deletes the existing
   channel 1 database and all its data. See
   [Upgrading PostgreSQL](upgrading_postgresql.md)
@@ -421,7 +427,7 @@ If you receive this error, you can do one of the following actions:
   and persisted by Helm, regardless of whether or not your chart uses the
   variable.
 
-DANGER: **Warning:**
+WARNING:
 Setting `POSTGRES_ENABLED` to `false` permanently deletes any existing
 channel 1 database for your environment.
 
@@ -476,7 +482,7 @@ that works for this problem. Follow these steps to use the tool in Auto DevOps:
 ### Error: error initializing: Looks like "https://kubernetes-charts.storage.googleapis.com" is not a valid chart repository or cannot be reached
 
 As [announced in the official CNCF blogpost](https://www.cncf.io/blog/2020/10/07/important-reminder-for-all-helm-users-stable-incubator-repos-are-deprecated-and-all-images-are-changing-location/),
-the stable Helm chart repository will be deprecated and removed on November 13th, 2020.
+the stable Helm chart repository was deprecated and removed on November 13th, 2020.
 You may encounter this error after that date.
 
 Some GitLab features had dependencies on the stable chart. To mitigate the impact, we changed them
@@ -495,7 +501,7 @@ include:
   image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:v1.0.5"
 ```
 
-Keep in mind that this approach will eventually stop working when the stable repository is removed,
+Keep in mind that this approach stops working when the stable repository is removed,
 so you must eventually fix your custom chart.
 
 To fix your custom chart:

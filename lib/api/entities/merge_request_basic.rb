@@ -27,6 +27,7 @@ module API
       expose(:downvotes)        { |merge_request, options| issuable_metadata.downvotes }
 
       expose :author, :assignees, :assignee, using: Entities::UserBasic
+      expose :reviewers, if: -> (merge_request, _) { merge_request.allows_reviewers? }, using: Entities::UserBasic
       expose :source_project_id, :target_project_id
       expose :labels do |merge_request, options|
         if options[:with_labels_details]

@@ -55,6 +55,7 @@ export default class ProjectFindFile {
   }
 
   initEvent() {
+    // eslint-disable-next-line @gitlab/no-global-event-off
     this.inputElement.off('keyup');
     this.inputElement.on('keyup', event => {
       const target = $(event.target);

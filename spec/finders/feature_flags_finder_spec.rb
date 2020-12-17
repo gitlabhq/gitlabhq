@@ -18,7 +18,7 @@ RSpec.describe FeatureFlagsFinder do
   end
 
   describe '#execute' do
-    subject { finder.execute(args) }
+    subject { finder.execute(**args) }
 
     let!(:feature_flag_1) { create(:operations_feature_flag, name: 'flag-a', project: project) }
     let!(:feature_flag_2) { create(:operations_feature_flag, name: 'flag-b', project: project) }
@@ -78,16 +78,6 @@ RSpec.describe FeatureFlagsFinder do
 
       it 'returns new and legacy flags' do
         is_expected.to eq([feature_flag_1, feature_flag_2, feature_flag_3])
-      end
-    end
-
-    context 'when new version flags are disabled' do
-      let!(:feature_flag_3) { create(:operations_feature_flag, :new_version_flag, name: 'flag-c', project: project) }
-
-      it 'returns only legacy flags' do
-        stub_feature_flags(feature_flags_new_version: false)
-
-        is_expected.to eq([feature_flag_1, feature_flag_2])
       end
     end
   end

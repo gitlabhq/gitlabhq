@@ -1,0 +1,5 @@
+---
+title: Update alert details sidebar assignee dropdown to use correct styling and formatting
+merge_request: 48285
+author:
+type: fixed

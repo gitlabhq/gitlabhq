@@ -87,7 +87,7 @@ export default {
       return this.getUserData;
     },
     mappedLines() {
-      if (this.glFeatures.unifiedDiffLines && this.glFeatures.unifiedDiffComponents) {
+      if (this.glFeatures.unifiedDiffComponents) {
         return this.diffLines(this.diffFile, true).map(mapParallel(this)) || [];
       }
 
@@ -95,9 +95,7 @@ export default {
       if (this.isInlineView) {
         return this.diffFile.highlighted_diff_lines.map(mapInline(this));
       }
-      return this.glFeatures.unifiedDiffLines
-        ? this.diffLines(this.diffFile).map(mapParallel(this))
-        : this.diffFile.parallel_diff_lines.map(mapParallel(this)) || [];
+      return this.diffLines(this.diffFile).map(mapParallel(this));
     },
   },
   updated() {
@@ -129,9 +127,7 @@ export default {
 <template>
   <div class="diff-content">
     <div class="diff-viewer">
-      <template
-        v-if="isTextFile && glFeatures.unifiedDiffLines && glFeatures.unifiedDiffComponents"
-      >
+      <template v-if="isTextFile && glFeatures.unifiedDiffComponents">
         <diff-view
           :diff-file="diffFile"
           :diff-lines="mappedLines"
@@ -173,12 +169,16 @@ export default {
         :a-mode="diffFile.a_mode"
         :b-mode="diffFile.b_mode"
       >
-        <image-diff-overlay
-          slot="image-overlay"
-          :discussions="imageDiscussions"
-          :file-hash="diffFileHash"
-          :can-comment="getNoteableData.current_user.can_create_note && !diffFile.brokenSymlink"
-        />
+        <template #image-overlay="{ renderedWidth, renderedHeight }">
+          <image-diff-overlay
+            v-if="renderedWidth"
+            :rendered-width="renderedWidth"
+            :rendered-height="renderedHeight"
+            :discussions="imageDiscussions"
+            :file-hash="diffFileHash"
+            :can-comment="getNoteableData.current_user.can_create_note && !diffFile.brokenSymlink"
+          />
+        </template>
         <div v-if="showNotesContainer" class="note-container">
           <user-avatar-link
             v-if="diffFileCommentForm && author"

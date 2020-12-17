@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 description: "Learn how GitLab docs' global navigation works and how to add new items."
 ---
 
@@ -101,11 +101,11 @@ The global nav has 3 components:
 
 The available sections are described on the table below:
 
-| Section       | Description                                |
-| ------------- | ------------------------------------------ |
-| User          | Documentation for the GitLab's user UI.    |
-| Administrator | Documentation for the GitLab's Admin Area. |
-| Contributor   | Documentation for developing GitLab.       |
+| Section       | Description                          |
+| ------------- | ------------------------------------ |
+| User          | Documentation for the GitLab UI.     |
+| Administrator | Documentation for the Admin Area.    |
+| Contributor   | Documentation for developing GitLab. |
 
 The majority of the links available on the nav were added according to the UI.
 The match is not perfect, as for some UI nav items the documentation doesn't
@@ -250,7 +250,7 @@ below the doc link:
 ```
 
 All nav links are clickable. If the higher-level link does not have a link
-of its own, it must link to its first sub-item link, mimicking GitLab's navigation.
+of its own, it must link to its first sub-item link, mimicking the navigation in GitLab.
 This must be avoided so that we don't have duplicated links nor two `.active` links
 at the same time.
 
@@ -292,7 +292,7 @@ and the following syntax rules.
   an "information" icon on the nav to make the user aware that the feature is
   EE-only.
 
-CAUTION: **Caution:**
+WARNING:
 All links present on the data file must end in `.html`, not `.md`. Do not
 start any relative link with a forward slash `/`.
 

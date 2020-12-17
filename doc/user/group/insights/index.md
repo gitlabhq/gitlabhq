@@ -1,8 +1,8 @@
 ---
 type: reference, howto
 stage: Manage
-group: Value Stream Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+group: Optimize
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Insights **(ULTIMATE)**
@@ -40,7 +40,7 @@ more details about the `.gitlab/insights.yml` configuration file.
 
 If you have access to view a group, then you have access to view their Insights.
 
-NOTE: **Note:**
+NOTE:
 Issues or merge requests that you don't have access to (because you don't have
 access to the project they belong to, or because they are confidential) are
 filtered out of the Insights charts.

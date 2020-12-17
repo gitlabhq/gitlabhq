@@ -20,6 +20,7 @@ module Gitlab
       end,
       container_class: ProjectWiki,
       project_resolver: -> (wiki) { wiki.try(:project) },
+      guest_read_ability: :download_wiki_code,
       suffix: :wiki
     ).freeze
     SNIPPET = RepoType.new(

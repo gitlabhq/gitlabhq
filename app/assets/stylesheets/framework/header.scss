@@ -384,6 +384,10 @@
       text-overflow: ellipsis;
       flex: 0 1 auto;
     }
+
+    &:last-of-type > .breadcrumbs-list-angle {
+      display: none;
+    }
   }
 }
 
@@ -556,12 +560,17 @@
   border: 1px solid $gray-normal;
 }
 
-.header-user-notification-dot {
+.notification-dot {
   background-color: $orange-300;
   height: 12px;
   width: 12px;
-  right: 8px;
-  top: -8px;
+  margin-top: -15px;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.with-notifications .notification-dot {
+  visibility: visible;
 }
 
 .with-performance-bar .navbar-gitlab {

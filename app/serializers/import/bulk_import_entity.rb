@@ -12,4 +12,8 @@ class Import::BulkImportEntity < Grape::Entity
   expose :full_path do |entity|
     entity['full_path']
   end
+
+  expose :web_url do |entity|
+    entity['web_url']
+  end
 end

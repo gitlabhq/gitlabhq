@@ -13,6 +13,7 @@ RSpec.describe 'User creates a project', :js do
   it 'creates a new project' do
     visit(new_project_path)
 
+    find('[data-qa-selector="blank_project_link"]').click
     fill_in(:project_name, with: 'Empty')
 
     page.within('#content-body') do
@@ -39,6 +40,7 @@ RSpec.describe 'User creates a project', :js do
     it 'creates a new project' do
       visit(new_project_path)
 
+      find('[data-qa-selector="blank_project_link"]').click
       fill_in :project_name, with: 'A Subgroup Project'
       fill_in :project_path, with: 'a-subgroup-project'
 
@@ -67,6 +69,7 @@ RSpec.describe 'User creates a project', :js do
     it 'creates a new project' do
       visit(new_project_path)
 
+      find('[data-qa-selector="blank_project_link"]').click
       fill_in :project_name, with: 'a-new-project'
       fill_in :project_path, with: 'a-new-project'
 

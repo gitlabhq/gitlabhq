@@ -12,7 +12,7 @@ RSpec.describe 'Self-Monitoring project requests' do
 
     it_behaves_like 'not accessible to non-admin users'
 
-    context 'with admin user' do
+    context 'with admin user', :enable_admin_mode do
       before do
         login_as(admin)
       end
@@ -36,7 +36,7 @@ RSpec.describe 'Self-Monitoring project requests' do
 
     it_behaves_like 'not accessible to non-admin users'
 
-    context 'with admin user' do
+    context 'with admin user', :enable_admin_mode do
       before do
         login_as(admin)
       end
@@ -116,7 +116,7 @@ RSpec.describe 'Self-Monitoring project requests' do
 
     it_behaves_like 'not accessible to non-admin users'
 
-    context 'with admin user' do
+    context 'with admin user', :enable_admin_mode do
       before do
         login_as(admin)
       end
@@ -140,7 +140,7 @@ RSpec.describe 'Self-Monitoring project requests' do
 
     it_behaves_like 'not accessible to non-admin users'
 
-    context 'with admin user' do
+    context 'with admin user', :enable_admin_mode do
       before do
         login_as(admin)
       end

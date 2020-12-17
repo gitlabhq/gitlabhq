@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Rake tasks for developers
@@ -61,7 +61,7 @@ bin/rake "gitlab:seed:insights:issues[group-path/project-path]"
 ```
 
 By default, this seeds an average of 10 issues per week for the last 52 weeks
-per project. All issues will also be randomly labeled with team, type, severity,
+per project. All issues are also randomly labeled with team, type, severity,
 and priority.
 
 #### Seeding groups with sub-groups
@@ -116,8 +116,8 @@ so no worries about missing errors.
 There are a few environment flags you can pass to change how projects are seeded
 
 - `SIZE`: defaults to `8`, max: `32`. Amount of projects to create.
-- `LARGE_PROJECTS`: defaults to false. If set will clone 6 large projects to help with testing.
-- `FORK`: defaults to false. If set to `true` will fork `torvalds/linux` five times. Can also be set to an existing project full_path and it will fork that instead.
+- `LARGE_PROJECTS`: defaults to false. If set, clones 6 large projects to help with testing.
+- `FORK`: defaults to false. If set to `true`, forks `torvalds/linux` five times. Can also be set to an existing project `full_path` to fork that instead.
 
 ## Run tests
 
@@ -132,10 +132,10 @@ In order to run the test you can use the following commands:
 `bin/rake spec` takes significant time to pass.
 Instead of running the full test suite locally, you can save a lot of time by running
 a single test or directory related to your changes. After you submit a merge request,
-CI will run full test suite for you. Green CI status in the merge request means
+CI runs full test suite for you. Green CI status in the merge request means
 full test suite is passed.
 
-You can't run `rspec .` since this will try to run all the `_spec.rb`
+You can't run `rspec .` since this tries to run all the `_spec.rb`
 files it can find, also the ones in `/tmp`
 
 You can pass RSpec command line options to the `spec:unit`,
@@ -157,7 +157,7 @@ To run several tests inside one directory:
 speeds up development by keeping your application running in the background so
 you don't need to boot it every time you run a test, Rake task or migration.
 
-If you want to use it, you'll need to export the `ENABLE_SPRING` environment
+If you want to use it, you must export the `ENABLE_SPRING` environment
 variable to `1`:
 
 ```shell
@@ -180,7 +180,7 @@ environment you can do so with the following command:
 RAILS_ENV=production NODE_ENV=production bundle exec rake gitlab:assets:compile
 ```
 
-This will compile and minify all JavaScript and CSS assets and copy them along
+This compiles and minifies all JavaScript and CSS assets and copy them along
 with all other frontend assets (images, fonts, etc) into `/public/assets` where
 they can be easily inspected.
 
@@ -200,7 +200,7 @@ following:
 bundle exec rake gemojione:digests
 ```
 
-This will update the file `fixtures/emojis/digests.json` based on the currently
+This updates the file `fixtures/emojis/digests.json` based on the currently
 available Emoji.
 
 To generate a sprite file containing all the Emoji, run:
@@ -276,8 +276,13 @@ In its current state, the Rake task:
 This uses some features from `graphql-docs` gem like its schema parser and helper methods.
 The docs generator code comes from our side giving us more flexibility, like using Haml templates and generating Markdown files.
 
-To edit the template used, please take a look at `lib/gitlab/graphql/docs/templates/default.md.haml`.
-The actual renderer is at `Gitlab::Graphql::Docs::Renderer`.
+To edit the content, you may need to edit the following:
+
+- The template. You can edit the template at `lib/gitlab/graphql/docs/templates/default.md.haml`.
+  The actual renderer is at `Gitlab::Graphql::Docs::Renderer`.
+- The applicable `description` field in the code, which
+  [Updates machine-readable schema files](#update-machine-readable-schema-files),
+  which is then used by the `rake` task described earlier.
 
 `@parsed_schema` is an instance variable that the `graphql-docs` gem expects to have available.
 `Gitlab::Graphql::Docs::Helper` defines the `object` method we currently use. This is also where you

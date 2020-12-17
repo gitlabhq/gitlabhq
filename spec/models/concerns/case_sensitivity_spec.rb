@@ -4,16 +4,16 @@ require 'spec_helper'
 
 RSpec.describe CaseSensitivity do
   describe '.iwhere' do
-    let(:connection) { ActiveRecord::Base.connection }
-    let(:model) do
+    let_it_be(:connection) { ActiveRecord::Base.connection }
+    let_it_be(:model) do
       Class.new(ActiveRecord::Base) do
         include CaseSensitivity
         self.table_name = 'namespaces'
       end
     end
 
-    let!(:model_1) { model.create!(path: 'mOdEl-1', name: 'mOdEl 1') }
-    let!(:model_2) { model.create!(path: 'mOdEl-2', name: 'mOdEl 2') }
+    let_it_be(:model_1) { model.create!(path: 'mOdEl-1', name: 'mOdEl 1') }
+    let_it_be(:model_2) { model.create!(path: 'mOdEl-2', name: 'mOdEl 2') }
 
     it 'finds a single instance by a single attribute regardless of case' do
       expect(model.iwhere(path: 'MODEL-1')).to contain_exactly(model_1)
@@ -26,6 +26,10 @@ RSpec.describe CaseSensitivity do
     it 'finds instances by multiple attributes' do
       expect(model.iwhere(path: %w(MODEL-1 model-2), name: 'model 1'))
         .to contain_exactly(model_1)
+    end
+
+    it 'finds instances by custom Arel attributes' do
+      expect(model.iwhere(model.arel_table[:path] => 'MODEL-1')).to contain_exactly(model_1)
     end
 
     it 'builds a query using LOWER' do

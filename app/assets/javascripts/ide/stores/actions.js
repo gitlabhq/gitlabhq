@@ -3,6 +3,12 @@ import { escape } from 'lodash';
 import { __, sprintf } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { deprecatedCreateFlash as flash } from '~/flash';
+import { performanceMarkAndMeasure } from '~/performance/utils';
+import {
+  WEBIDE_MARK_FETCH_BRANCH_DATA_START,
+  WEBIDE_MARK_FETCH_BRANCH_DATA_FINISH,
+  WEBIDE_MEASURE_FETCH_BRANCH_DATA,
+} from '~/performance/constants';
 import * as types from './mutation_types';
 import { decorateFiles } from '../lib/files';
 import { stageKeys, commitActionTypes } from '../constants';
@@ -245,13 +251,23 @@ export const renameEntry = ({ dispatch, commit, state, getters }, { path, name, 
   dispatch('triggerFilesChange', { type: commitActionTypes.move, path, newPath });
 };
 
-export const getBranchData = ({ commit, state }, { projectId, branchId, force = false } = {}) =>
-  new Promise((resolve, reject) => {
+export const getBranchData = ({ commit, state }, { projectId, branchId, force = false } = {}) => {
+  return new Promise((resolve, reject) => {
+    performanceMarkAndMeasure({ mark: WEBIDE_MARK_FETCH_BRANCH_DATA_START });
     const currentProject = state.projects[projectId];
     if (!currentProject || !currentProject.branches[branchId] || force) {
       service
         .getBranchData(projectId, branchId)
         .then(({ data }) => {
+          performanceMarkAndMeasure({
+            mark: WEBIDE_MARK_FETCH_BRANCH_DATA_FINISH,
+            measures: [
+              {
+                name: WEBIDE_MEASURE_FETCH_BRANCH_DATA,
+                start: WEBIDE_MARK_FETCH_BRANCH_DATA_START,
+              },
+            ],
+          });
           const { id } = data.commit;
           commit(types.SET_BRANCH, {
             projectPath: projectId,
@@ -291,6 +307,7 @@ export const getBranchData = ({ commit, state }, { projectId, branchId, force = 
       resolve(currentProject.branches[branchId]);
     }
   });
+};
 
 export * from './actions/tree';
 export * from './actions/file';

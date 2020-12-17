@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Labels
@@ -90,7 +90,7 @@ Once created, you can edit a label by clicking the pencil (**{pencil}**), or del
 a label by clicking the three dots (**{ellipsis_v}**) next to the **Subscribe** button
 and selecting **Delete**.
 
-CAUTION: **Caution:**
+WARNING:
 If you delete a label, it is permanently deleted. All references to the label are removed from the system and you cannot undo the deletion.
 
 #### Promote a project label to a group label
@@ -109,7 +109,7 @@ with the old labels are assigned to the new group label.
 
 The new group label has the same ID as the previous project label.
 
-CAUTION: **Caution:**
+WARNING:
 Promoting a label is a permanent action, and cannot be reversed.
 
 To promote a project label to a group label:

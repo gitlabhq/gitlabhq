@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference, concepts
 ---
 
@@ -22,7 +22,7 @@ for information on when this is available).
 
 ![Merge request widget](img/merge_request_widget.png)
 
-NOTE: **Note:**
+NOTE:
 GitLab resolves conflicts by creating a merge commit in the source branch that
 is not automatically merged into the target branch. This allows the merge
 commit to be reviewed and tested before the changes are merged, preventing

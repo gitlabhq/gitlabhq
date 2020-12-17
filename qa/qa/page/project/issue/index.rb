@@ -79,6 +79,10 @@ module QA
           def has_issue?(issue)
             has_element? :issue_container, issue_title: issue.title
           end
+
+          def has_no_issue?(issue)
+            has_no_element? :issue_container, issue_title: issue.title
+          end
         end
       end
     end

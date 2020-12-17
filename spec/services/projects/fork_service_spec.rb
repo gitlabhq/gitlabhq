@@ -325,7 +325,7 @@ RSpec.describe Projects::ForkService do
       storage_move = create(
         :project_repository_storage_move,
         :scheduled,
-        project: project,
+        container: project,
         destination_storage_name: 'test_second_storage'
       )
       Projects::UpdateRepositoryStorageService.new(storage_move).execute
@@ -343,10 +343,6 @@ RSpec.describe Projects::ForkService do
   context 'when forking with object pools' do
     let(:fork_from_project) { create(:project, :public) }
     let(:forker) { create(:user) }
-
-    before do
-      stub_feature_flags(object_pools: true)
-    end
 
     context 'when no pool exists' do
       it 'creates a new object pool' do

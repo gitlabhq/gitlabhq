@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Access
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -30,7 +30,7 @@ GitLab supports two authentication methods:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/726) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.6 as an experimental feature.
 
-CAUTION: **Caution:**
+WARNING:
 Smartcard authentication against local databases may change or be removed completely in future
 releases.
 
@@ -60,7 +60,7 @@ Certificate:
 Smartcards with X.509 certificates using SAN extensions can be used to authenticate
 with GitLab.
 
-NOTE: **Note:**
+NOTE:
 This is an experimental feature. Smartcard authentication against local databases may
 change or be removed completely in future releases.
 
@@ -211,7 +211,7 @@ attribute. As a prerequisite, you must use an LDAP server that:
      client_certificate_required_port: 3443
    ```
 
-   NOTE: **Note:**
+   NOTE:
    Assign a value to at least one of the following variables:
    `client_certificate_required_host` or `client_certificate_required_port`.
 

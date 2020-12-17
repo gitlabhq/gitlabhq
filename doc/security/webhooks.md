@@ -1,13 +1,13 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: concepts, reference, howto
 ---
 
 # Webhooks and insecure internal web services
 
-NOTE: **Note:**
+NOTE:
 On GitLab.com, the [maximum number of webhooks and their size](../user/gitlab_com/index.md#webhooks) per project, and per group, is limited.
 
 If you have non-GitLab web services running on your GitLab server or within its
@@ -40,9 +40,9 @@ to endpoints like `http://localhost:123/some-resource/delete`.
 
 To prevent this type of exploitation from happening, starting with GitLab 10.6,
 all Webhook requests to the current GitLab instance server address and/or in a
-private network will be forbidden by default. That means that all requests made
+private network are forbidden by default. That means that all requests made
 to `127.0.0.1`, `::1` and `0.0.0.0`, as well as IPv4 `10.0.0.0/8`, `172.16.0.0/12`,
-`192.168.0.0/16` and IPv6 site-local (`ffc0::/10`) addresses won't be allowed.
+`192.168.0.0/16` and IPv6 site-local (`ffc0::/10`) addresses aren't allowed.
 
 This behavior can be overridden by enabling the option *"Allow requests to the
 local network from web hooks and services"* in the *"Outbound requests"* section
@@ -50,7 +50,7 @@ inside the **Admin Area > Settings** (`/admin/application_settings/network`):
 
 ![Outbound requests admin settings](img/outbound_requests_section_v12_2.png)
 
-NOTE: **Note:**
+NOTE:
 *System hooks* are enabled to make requests to local network by default since they are
 set up by administrators. However, you can turn this off by disabling the
 **Allow requests to the local network from system hooks** option.
@@ -75,9 +75,9 @@ The allowlist can hold a maximum of 1000 entries. Each entry can be a maximum of
 255 characters.
 
 You can allow a particular port by specifying it in the allowlist entry.
-For example `127.0.0.1:8080` will only allow connections to port 8080 on `127.0.0.1`.
+For example `127.0.0.1:8080` only allows connections to port 8080 on `127.0.0.1`.
 If no port is mentioned, all ports on that IP/domain are allowed. An IP range
-will allow all ports on all IPs in that range.
+allows all ports on all IPs in that range.
 
 Example:
 
@@ -90,7 +90,7 @@ example.com;gitlab.example.com
 example.com:8080
 ```
 
-NOTE: **Note:**
+NOTE:
 Wildcards (`*.example.com`) are not currently supported.
 
 <!-- ## Troubleshooting

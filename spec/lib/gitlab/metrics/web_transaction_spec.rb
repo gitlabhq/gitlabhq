@@ -80,13 +80,15 @@ RSpec.describe Gitlab::Metrics::WebTransaction do
     context 'when request goes to Grape endpoint' do
       before do
         route = double(:route, request_method: 'GET', path: '/:version/projects/:id/archive(.:format)')
-        endpoint = double(:endpoint, route: route)
+        endpoint = double(:endpoint, route: route,
+                          options: { for: API::Projects, path: [":id/archive"] },
+                          namespace: "/projects")
 
         env['api.endpoint'] = endpoint
       end
 
       it 'provides labels with the method and path of the route in the grape endpoint' do
-        expect(transaction.labels).to eq({ controller: 'Grape', action: 'GET /projects/:id/archive', feature_category: '' })
+        expect(transaction.labels).to eq({ controller: 'Grape', action: 'GET /projects/:id/archive', feature_category: 'projects' })
       end
 
       it 'contains only the labels defined for transactions' do

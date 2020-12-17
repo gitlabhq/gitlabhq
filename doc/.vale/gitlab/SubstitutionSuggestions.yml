@@ -6,12 +6,16 @@
 #
 # For a list of all options, see https://errata-ai.github.io/vale/styles/
 extends: substitution
-message: 'Consider "%s" instead of "%s".'
-link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#language
+message: 'Consider %s instead of "%s".'
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#language
 level: suggestion
 ignorecase: true
 swap:
-  since: because
-  once that: after that
-  once the: after the
-  once you: after you
+  active user: '"billable user"'
+  active users: '"billable users"'
+  docs: documentation
+  once that: '"after that"'
+  once the: '"after the"'
+  once you: '"after you"'
+  since: '"because" or "after"'
+  within: '"in"'

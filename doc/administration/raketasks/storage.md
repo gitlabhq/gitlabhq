@@ -1,7 +1,7 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+stage: Enablement
+group: Distribution
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Repository storage Rake tasks **(CORE ONLY)**
@@ -74,7 +74,7 @@ To have a summary and then a list of projects and their attachments using hashed
 
 ## Migrate to hashed storage
 
-DANGER: **Deprecated:**
+WARNING:
 In GitLab 13.0, [hashed storage](../repository_storage_types.md#hashed-storage)
 is enabled by default and the legacy storage is deprecated.
 Support for legacy storage will be removed in GitLab 14.0. If you're on GitLab
@@ -82,8 +82,9 @@ Support for legacy storage will be removed in GitLab 14.0. If you're on GitLab
 The option to choose between hashed and legacy storage in the admin area has
 been disabled.
 
-This task will schedule all your existing projects and attachments associated
-with it to be migrated to the **Hashed** storage type:
+This task must be run on any machine that has Rails/Sidekiq configured and will 
+schedule all your existing projects and attachments associated with it to be 
+migrated to the **Hashed** storage type:
 
 - **Omnibus installation**
 
@@ -123,7 +124,7 @@ commands below that helps you inspect projects and attachments in both legacy an
 
 ## Rollback from hashed storage to legacy storage
 
-DANGER: **Deprecated:**
+WARNING:
 In GitLab 13.0, [hashed storage](../repository_storage_types.md#hashed-storage)
 is enabled by default and the legacy storage is deprecated.
 Support for legacy storage will be removed in GitLab 14.0. If you're on GitLab

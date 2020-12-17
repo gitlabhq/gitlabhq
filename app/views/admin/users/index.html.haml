@@ -31,7 +31,7 @@
         = s_('AdminUsers|Blocked')
         %small.badge.badge-pill= limited_counter_with_delimiter(User.blocked)
     = nav_link(html_options: { class: "#{active_when(params[:filter] == 'blocked_pending_approval')} filter-blocked-pending-approval" }) do
-      = link_to admin_users_path(filter: "blocked_pending_approval") do
+      = link_to admin_users_path(filter: "blocked_pending_approval"), data: { qa_selector: 'pending_approval_tab' } do
         = s_('AdminUsers|Pending approval')
         %small.badge.badge-pill= limited_counter_with_delimiter(User.blocked_pending_approval)
     = nav_link(html_options: { class: active_when(params[:filter] == 'deactivated') }) do
@@ -69,7 +69,11 @@
               = link_to admin_users_path(sort: value, filter: params[:filter], search_query: params[:search_query]) do
                 = title
 
-- if @users.empty?
+- if Feature.enabled?(:vue_admin_users)
+  #js-admin-users-app{ data: admin_users_data_attributes(@users) }
+    .gl-spinner-container.gl-my-7
+      %span.gl-vertical-align-bottom.gl-spinner.gl-spinner-dark.gl-spinner-lg{ aria: { label: _('Loading') } }
+- elsif @users.empty?
   .nothing-here-block.border-top-0
     = s_('AdminUsers|No users found')
 - else

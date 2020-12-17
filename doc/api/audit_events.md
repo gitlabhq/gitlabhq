@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Audit Events API
@@ -132,7 +132,8 @@ Example response:
 
 The Group Audit Events API allows you to retrieve [group audit events](../administration/audit_events.md#group-events).
 
-To retrieve group audit events using the API, you must [authenticate yourself](README.md#authentication) as an Administrator or an owner of the group.
+A user with a Owner role (or above) can retrieve group audit events of all users.
+A user with a Developer or Maintainer role is limited to group audit events based on their individual actions.
 
 ### Retrieve all group audit events
 
@@ -238,7 +239,8 @@ Example response:
 
 The Project Audit Events API allows you to retrieve [project audit events](../administration/audit_events.md#project-events).
 
-To retrieve project audit events using the API, you must [authenticate yourself](README.md#authentication) as a Maintainer or an Owner of the project.
+A user with a Maintainer role (or above) can retrieve project audit events of all users.
+A user with a Developer role is limited to project audit events based on their individual actions.
 
 ### Retrieve all project audit events
 
@@ -258,7 +260,7 @@ are paginated.
 Read more on [pagination](README.md#pagination).
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://primary.example.com/api/v4/projects/7/audit_events
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/projects/7/audit_events"
 ```
 
 Example response:
@@ -318,7 +320,7 @@ GET /projects/:id/audit_events/:audit_event_id
 | `audit_event_id` | integer | yes | The ID of the audit event |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://primary.example.com/api/v4/projects/7/audit_events/5
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/projects/7/audit_events/5"
 ```
 
 Example response:

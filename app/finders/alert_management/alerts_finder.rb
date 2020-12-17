@@ -18,6 +18,7 @@ module AlertManagement
       return AlertManagement::Alert.none unless authorized?
 
       collection = project.alert_management_alerts
+      collection = by_domain(collection)
       collection = by_status(collection)
       collection = by_iid(collection)
       collection = by_assignee(collection)
@@ -29,6 +30,10 @@ module AlertManagement
     private
 
     attr_reader :current_user, :project, :params
+
+    def by_domain(collection)
+      collection.with_operations_alerts
+    end
 
     def by_iid(collection)
       return collection unless params[:iid]
@@ -59,3 +64,5 @@ module AlertManagement
     end
   end
 end
+
+AlertManagement::AlertsFinder.prepend_if_ee('EE::AlertManagement::AlertsFinder')

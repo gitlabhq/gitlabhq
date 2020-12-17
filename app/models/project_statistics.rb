@@ -73,8 +73,6 @@ class ProjectStatistics < ApplicationRecord
   end
 
   def update_uploads_size
-    return uploads_size unless Feature.enabled?(:count_uploads_size_in_storage_stats, project)
-
     self.uploads_size = project.uploads.sum(:size)
   end
 

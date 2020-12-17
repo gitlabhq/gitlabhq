@@ -2,13 +2,6 @@
 - add_page_specific_style 'page_bundles/cycle_analytics'
 
 #cycle-analytics{ "v-cloak" => "true", data: { request_path: project_cycle_analytics_path(@project) } }
-  - if @cycle_analytics_no_data
-    %banner{ "v-if" => "!isOverviewDialogDismissed",
-      "documentation-link": help_page_path('user/analytics/value_stream_analytics.md'),
-      "v-on:dismiss-overview-dialog" => "dismissOverviewDialog()" }
-  .mb-3
-    %h3
-      = _("Value Stream Analytics")
   %gl-loading-icon{ "v-show" => "isLoading", "size" => "lg" }
   .wrapper{ "v-show" => "!isLoading && !hasError" }
     .card
@@ -49,7 +42,7 @@
                 %span.has-tooltip{ "data-placement" => "top", title: _("The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."), "aria-hidden" => "true" }
                   = sprite_icon('question-o', css_class: 'gl-text-gray-500')
               %li.event-header.pl-3
-                %span.stage-name.font-weight-bold
+                %span.stage-name.font-weight-bold{ "v-if" => "currentStage && currentStage.legend" }
                   {{ currentStage ? __(currentStage.legend) : __('Related Issues') }}
                 %span.has-tooltip{ "data-placement" => "top", title: _("The collection of events added to the data gathered for that stage."), "aria-hidden" => "true" }
                   = sprite_icon('question-o', css_class: 'gl-text-gray-500')

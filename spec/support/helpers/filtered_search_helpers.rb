@@ -113,6 +113,10 @@ module FilteredSearchHelpers
     create_token('Assignee', assignee_name)
   end
 
+  def reviewer_token(reviewer_name = nil)
+    create_token('Reviewer', reviewer_name)
+  end
+
   def milestone_token(milestone_name = nil, has_symbol = true, operator = '=')
     symbol = has_symbol ? '%' : nil
     create_token('Milestone', milestone_name, symbol, operator)

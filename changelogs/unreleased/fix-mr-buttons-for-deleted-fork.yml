@@ -1,0 +1,5 @@
+---
+title: Fix MR buttons when fork is deleted
+merge_request: 48813
+author:
+type: fixed

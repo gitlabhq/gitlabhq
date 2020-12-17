@@ -1,7 +1,7 @@
 ---
 stage: Enablement
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Upgrading GitLab
@@ -33,7 +33,7 @@ official ways to update GitLab:
 ### Linux packages (Omnibus GitLab)
 
 The [Omnibus update guide](https://docs.gitlab.com/omnibus/update/)
-contains the steps needed to update a package installed by GitLab's official
+contains the steps needed to update a package installed by official GitLab
 repositories.
 
 There are also instructions when you want to
@@ -109,7 +109,7 @@ Sidekiq::ScheduledSet.new.select { |r| r.klass == 'BackgroundMigrationWorker' }.
 
 ### What do I do if my background migrations are stuck?
 
-CAUTION: **Warning:**
+WARNING:
 The following operations can disrupt your GitLab performance.
 
 It is safe to re-execute these commands, especially if you have 1000+ pending jobs which would likely overflow your runtime memory.
@@ -266,7 +266,7 @@ Below you can find some guides to help you change GitLab editions.
 
 ### Community to Enterprise Edition
 
-NOTE: **Note:**
+NOTE:
 The following guides are for subscribers of the Enterprise Edition only.
 
 If you wish to upgrade your GitLab installation from Community to Enterprise
@@ -276,7 +276,7 @@ Edition, follow the guides below based on the installation method:
   to a version upgrade: stop the server, get the code, update configuration files for
   the new functionality, install libraries and do migrations, update the init
   script, start the application and check its status.
-- [Omnibus CE to EE](https://docs.gitlab.com/omnibus/update/README.html#updating-community-edition-to-enterprise-edition) - Follow this guide to update your Omnibus
+- [Omnibus CE to EE](https://docs.gitlab.com/omnibus/update/README.html#update-community-edition-to-enterprise-edition) - Follow this guide to update your Omnibus
   GitLab Community Edition to the Enterprise Edition.
 
 ### Enterprise to Community Edition
@@ -309,6 +309,10 @@ installation-specific upgrade instructions, based on how you installed GitLab:
 
 - [Linux packages (Omnibus GitLab)](https://docs.gitlab.com/omnibus/update/README.html#version-specific-changes)
 - [Helm charts](https://docs.gitlab.com/charts/installation/upgrade.html)
+
+NOTE:
+Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
+and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
 ### 13.6.0
 

@@ -8,8 +8,6 @@ class MemberInvitationReminderEmailsWorker # rubocop:disable Scalability/Idempot
   urgency :low
 
   def perform
-    return unless Gitlab::Experimentation.enabled?(:invitation_reminders)
-
     Member.not_accepted_invitations.not_expired.last_ten_days_excluding_today.find_in_batches do |invitations|
       invitations.each do |invitation|
         Members::InvitationReminderEmailService.new(invitation).execute

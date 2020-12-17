@@ -1,7 +1,7 @@
 ---
 stage: Manage
-group: Value Stream Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+group: Optimize
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Repository Analytics
@@ -23,7 +23,7 @@ The feature requires:
 
 You can find Repository Analytics in the project's sidebar. To access the page, go to **{chart}** **Analytics > Repository**.
 
-NOTE: **Note:**
+NOTE:
 Without a Git commit in the default branch, the menu item won't be visible.
 
 ### Charts

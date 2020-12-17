@@ -1,0 +1,5 @@
+---
+title: Add lock button to the Terraform State list view
+merge_request: 47842
+author:
+type: added

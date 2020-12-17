@@ -1,7 +1,7 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+stage: Create
+group: Ecosystem
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 comments: false
 ---
 
@@ -43,14 +43,15 @@ GitLab also provides features to improve the security of your own application. F
 
 GitLab can be integrated with the following external service for continuous integration:
 
-- [Jenkins](jenkins.md) CI. **(STARTER)**
+- [Jenkins](jenkins.md) CI.
 
 ## Feature enhancements
 
 GitLab can be integrated with the following enhancements:
 
 - Add GitLab actions to [Gmail actions buttons](gmail_action_buttons_for_gitlab.md).
-- Configure [PlantUML](../administration/integration/plantuml.md) to use diagrams in AsciiDoc documents.
+- Configure [PlantUML](../administration/integration/plantuml.md)
+or [Kroki](../administration/integration/kroki.md) to use diagrams in AsciiDoc and Markdown documents.
 - Attach merge requests to [Trello](trello_power_up.md) cards.
 - Enable integrated code intelligence powered by [Sourcegraph](sourcegraph.md).
 - Add [Elasticsearch](elasticsearch.md) for [Advanced Search](../user/search/advanced_global_search.md),
@@ -64,12 +65,12 @@ Integration with services such as Campfire, Flowdock, HipChat, Pivotal Tracker, 
 
 ### SSL certificate errors
 
-When trying to integrate GitLab with services that are using self-signed certificates, it is very likely that SSL certificate errors will occur in different parts of the application, most likely Sidekiq.
+When trying to integrate GitLab with services that are using self-signed certificates, it is very likely that SSL certificate errors occur in different parts of the application, most likely Sidekiq.
 
 There are two approaches you can take to solve this:
 
 1. Add the root certificate to the trusted chain of the OS.
-1. If using Omnibus, you can add the certificate to GitLab's trusted certificates.
+1. If using Omnibus, you can add the certificate to the GitLab trusted certificates.
 
 **OS main trusted chain**
 

@@ -6,6 +6,10 @@ RSpec.describe QA::Resource::Events::Project do
       def api_get_path
         '/foo'
       end
+
+      def default_branch
+        'master'
+      end
     end
   end
 
@@ -53,7 +57,7 @@ RSpec.describe QA::Resource::Events::Project do
   end
 
   describe "#wait_for_push_new_branch" do
-    it 'waits for a push to master if no branch is given' do
+    it 'waits for a push to the default branch if no branch is given' do
       expect(subject).to receive(:api_get_from).with('/foo/events?action=pushed')
       expect { subject.wait_for_push_new_branch }.not_to raise_error
     end

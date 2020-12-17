@@ -2,14 +2,14 @@
 type: reference, howto
 stage: Secure
 group: Composition Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Dependency List **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10075) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
 
-The Dependency list allows you to see your project's dependencies, and key
+The dependency list allows you to see your project's dependencies, and key
 details about them, including their known vulnerabilities. To see it,
 navigate to **Security & Compliance > Dependency List** in your project's
 sidebar. This information is sometimes referred to as a Software Bill of Materials or SBoM / BOM.
@@ -55,13 +55,14 @@ dependencies, but the UI only shows one of the shortest paths.
 Dependency Paths are supported for the following package managers:
 
 - [NuGet](https://www.nuget.org/)
+- [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
 
 ## Licenses
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10536) in GitLab Ultimate 12.3.
 
 If the [License Compliance](../../compliance/license_compliance/index.md) CI job is configured,
-the [discovered licenses](../../compliance/license_compliance/index.md#supported-languages-and-package-managers) will be displayed on this page.
+the [discovered licenses](../../compliance/license_compliance/index.md#supported-languages-and-package-managers) are displayed on this page.
 
 ## Downloading the Dependency List
 

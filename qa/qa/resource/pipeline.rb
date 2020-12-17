@@ -22,7 +22,6 @@ module QA
       attribute :variables
 
       def initialize
-        @ref = 'master'
         @variables = []
       end
 
@@ -32,6 +31,10 @@ module QA
         Page::Project::Menu.perform(&:click_ci_cd_pipelines)
         Page::Project::Pipeline::Index.perform(&:click_run_pipeline_button)
         Page::Project::Pipeline::New.perform(&:click_run_pipeline_button)
+      end
+
+      def ref
+        project.default_branch
       end
 
       def api_get_path

@@ -56,5 +56,6 @@ cache:
 .destroy: &destroy
   stage: cleanup
   script:
+    - cd ${TF_ROOT}
     - gitlab-terraform destroy
   when: manual

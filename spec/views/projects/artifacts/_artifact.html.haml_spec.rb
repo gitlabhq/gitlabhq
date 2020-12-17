@@ -16,10 +16,21 @@ RSpec.describe "projects/artifacts/_artifact.html.haml" do
     context 'with admin' do
       let(:user) { build(:admin) }
 
-      it 'has a delete button' do
-        render_partial
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it 'has a delete button' do
+          render_partial
 
-        expect(rendered).to have_link('Delete artifacts', href: project_artifact_path(project, project.job_artifacts.first))
+          expect(rendered).to have_link('Delete artifacts', href: project_artifact_path(project, project.job_artifacts.first))
+        end
+      end
+
+      context 'when admin mode is disabled' do
+        it 'has no delete button' do
+          project.add_reporter(user)
+          render_partial
+
+          expect(rendered).not_to have_link('Delete artifacts')
+        end
       end
     end
 

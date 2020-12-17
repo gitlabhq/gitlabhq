@@ -62,9 +62,10 @@ RSpec.describe 'Groups > Members > Tabs' do
 
       click_link 'Invited'
 
-      page.within '[data-testid="user-search-form"]' do
-        fill_in 'search_invited', with: 'email'
-        find('button[type="submit"]').click
+      page.within '[data-testid="members-filtered-search-bar"]' do
+        find_field('Search invited').click
+        find('input').native.send_keys('email')
+        click_button 'Search'
       end
     end
 
@@ -74,9 +75,10 @@ RSpec.describe 'Groups > Members > Tabs' do
       before do
         click_link 'Members'
 
-        page.within '[data-testid="user-search-form"]' do
-          fill_in 'search', with: 'test'
-          find('button[type="submit"]').click
+        page.within '[data-testid="members-filtered-search-bar"]' do
+          find_field('Filter members').click
+          find('input').native.send_keys('test')
+          click_button 'Search'
         end
       end
 

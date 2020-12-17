@@ -43,6 +43,7 @@ RSpec.describe API::Settings, 'Settings' do
       expect(json_response['spam_check_endpoint_url']).to be_nil
       expect(json_response['wiki_page_max_content_bytes']).to be_a(Integer)
       expect(json_response['require_admin_approval_after_user_signup']).to eq(true)
+      expect(json_response['personal_access_token_prefix']).to be_nil
     end
   end
 
@@ -122,7 +123,8 @@ RSpec.describe API::Settings, 'Settings' do
             spam_check_endpoint_url: 'https://example.com/spam_check',
             disabled_oauth_sign_in_sources: 'unknown',
             import_sources: 'github,bitbucket',
-            wiki_page_max_content_bytes: 12345
+            wiki_page_max_content_bytes: 12345,
+            personal_access_token_prefix: "GL-"
           }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -166,6 +168,7 @@ RSpec.describe API::Settings, 'Settings' do
         expect(json_response['disabled_oauth_sign_in_sources']).to eq([])
         expect(json_response['import_sources']).to match_array(%w(github bitbucket))
         expect(json_response['wiki_page_max_content_bytes']).to eq(12345)
+        expect(json_response['personal_access_token_prefix']).to eq("GL-")
       end
     end
 
@@ -449,6 +452,26 @@ RSpec.describe API::Settings, 'Settings' do
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eq('spam_check_endpoint_url is missing')
+      end
+    end
+
+    context "personal access token prefix settings" do
+      context "handles validation errors" do
+        it "fails to update the settings with too long prefix" do
+          put api("/application/settings", admin), params: { personal_access_token_prefix: "prefix" * 10 }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          message = json_response["message"]
+          expect(message["personal_access_token_prefix"]).to include(a_string_matching("is too long"))
+        end
+
+        it "fails to update the settings with invalid characters in the prefix" do
+          put api("/application/settings", admin), params: { personal_access_token_prefix: "éñ" }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          message = json_response["message"]
+          expect(message["personal_access_token_prefix"]).to include(a_string_matching("can contain only letters of the Base64 alphabet"))
+        end
       end
     end
   end

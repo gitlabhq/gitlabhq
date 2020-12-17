@@ -31,6 +31,54 @@ RSpec.describe AlertManagement::HttpIntegration do
 
       it { is_expected.not_to validate_uniqueness_of(:endpoint_identifier).scoped_to(:project_id, :active) }
     end
+
+    context 'payload_attribute_mapping' do
+      subject { build(:alert_management_http_integration, payload_attribute_mapping: attribute_mapping) }
+
+      context 'with valid JSON schema' do
+        let(:attribute_mapping) do
+          {
+            title: { path: %w(a b c), type: 'string' },
+            description: { path: %w(a), type: 'string' }
+          }
+        end
+
+        it { is_expected.to be_valid }
+      end
+
+      context 'with invalid JSON schema' do
+        shared_examples 'is invalid record' do
+          it do
+            expect(subject).to be_invalid
+            expect(subject.errors.messages[:payload_attribute_mapping]).to eq(['must be a valid json schema'])
+          end
+        end
+
+        context 'when property is not an object' do
+          let(:attribute_mapping) do
+            { title: 'That is not a valid schema' }
+          end
+
+          it_behaves_like 'is invalid record'
+        end
+
+        context 'when property missing required attributes' do
+          let(:attribute_mapping) do
+            { title: { type: 'string' } }
+          end
+
+          it_behaves_like 'is invalid record'
+        end
+
+        context 'when property has extra attributes' do
+          let(:attribute_mapping) do
+            { title: { path: %w(a b c), type: 'string', extra: 'property' } }
+          end
+
+          it_behaves_like 'is invalid record'
+        end
+      end
+    end
   end
 
   describe '#token' do

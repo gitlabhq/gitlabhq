@@ -97,10 +97,6 @@ export function trimTrailingWhitespace(content) {
   return content.replace(/[^\S\r\n]+$/gm, '');
 }
 
-export function insertFinalNewline(content, eol = '\n') {
-  return content.slice(-eol.length) !== eol ? `${content}${eol}` : content;
-}
-
 export function getPathParents(path, maxDepth = Infinity) {
   const pathComponents = path.split('/');
   const paths = [];

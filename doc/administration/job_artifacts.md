@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Continuous Integration
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference, howto
 ---
 
@@ -103,7 +103,7 @@ If you configure GitLab to store artifacts on object storage, you may also want 
 [eliminate local disk usage for job logs](job_logs.md#prevent-local-disk-usage).
 In both cases, job logs are archived and moved to object storage when the job completes.
 
-DANGER: **Warning:**
+WARNING:
 In a multi-server setup you must use one of the options to
 [eliminate local disk usage for job logs](job_logs.md#prevent-local-disk-usage), or job logs could be lost.
 
@@ -111,21 +111,21 @@ In a multi-server setup you must use one of the options to
 
 #### Object Storage Settings
 
-NOTE: **Note:**
+NOTE:
 In GitLab 13.2 and later, we recommend using the
 [consolidated object storage settings](object_storage.md#consolidated-object-storage-configuration).
 This section describes the earlier configuration format.
 
 For source installations the following settings are nested under `artifacts:` and then `object_store:`. On Omnibus GitLab installs they are prefixed by `artifacts_object_store_`.
 
-| Setting | Description | Default |
-|---------|-------------|---------|
-| `enabled` | Enable/disable object storage | `false` |
-| `remote_directory` | The bucket name where Artifacts will be stored| |
-| `direct_upload` | Set to `true` to enable direct upload of Artifacts without the need of local shared storage. Option may be removed once we decide to support only single storage for all files. | `false` |
-| `background_upload` | Set to `false` to disable automatic upload. Option may be removed once upload is direct to S3 | `true` |
-| `proxy_download` | Set to `true` to enable proxying all files served. Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data | `false` |
-| `connection` | Various connection options described below | |
+| Setting             | Default | Description                                                                                                                                                                             |
+|---------------------|---------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `enabled`           | `false` | Enable/disable object storage                                                                                                                                                           |
+| `remote_directory`  |         | The bucket name where Artifacts are stored                                                                                                                                              |
+| `direct_upload`     | `false` | Set to `true` to enable direct upload of Artifacts without the need of local shared storage. Option may be removed once we decide to support only single storage for all files.         |
+| `background_upload` | `true`  | Set to `false` to disable automatic upload. Option may be removed once upload is direct to S3                                                                                           |
+| `proxy_download`    | `false` | Set to `true` to enable proxying all files served. Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data. |
+| `connection`        |         | Various connection options described below                                                                                                                                              |
 
 #### Connection settings
 
@@ -190,7 +190,7 @@ _The artifacts are stored by default in
    In some cases, you may need to run the [orphan artifact file cleanup Rake task](../raketasks/cleanup.md#remove-orphan-artifact-files)
    to clean up orphaned artifacts.
 
-CAUTION: **Caution:**
+WARNING:
 JUnit test report artifact (`junit.xml.gz`) migration
 [was not supported until GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/issues/27698#note_317190991)
 by the `gitlab:artifacts:migrate` script.
@@ -243,7 +243,7 @@ _The artifacts are stored by default in
    In some cases, you may need to run the [orphan artifact file cleanup Rake task](../raketasks/cleanup.md#remove-orphan-artifact-files)
    to clean up orphaned artifacts.
 
-CAUTION: **Caution:**
+WARNING:
 JUnit test report artifact (`junit.xml.gz`) migration
 [was not supported until GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/issues/27698#note_317190991)
 by the `gitlab:artifacts:migrate` script.
@@ -336,7 +336,7 @@ To migrate back to local storage:
 
 If [`artifacts:expire_in`](../ci/yaml/README.md#artifactsexpire_in) is used to set
 an expiry for the artifacts, they are marked for deletion right after that date passes.
-Otherwise, they will expire per the [default artifacts expiration setting](../user/admin_area/settings/continuous_integration.md).
+Otherwise, they expire per the [default artifacts expiration setting](../user/admin_area/settings/continuous_integration.md).
 
 Artifacts are cleaned up by the `expire_build_artifacts_worker` cron job which Sidekiq
 runs every hour at 50 minutes (`50 * * * *`).
@@ -367,7 +367,7 @@ steps below.
 
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 
-If the `expire` directive is not set explicitly in your pipeline, artifacts will expire per the
+If the `expire` directive is not set explicitly in your pipeline, artifacts expire per the
 default artifacts expiration setting, which you can find in the [CI/CD Admin settings](../user/admin_area/settings/continuous_integration.md).
 
 ## Validation for dependencies
@@ -444,7 +444,7 @@ reasons are:
 - The number of jobs run, and hence artifacts generated, is higher than expected.
 - Job logs are larger than expected, and have accumulated over time.
 
-In these and other cases, you'll need to identify the projects most responsible
+In these and other cases, identify the projects most responsible
 for disk space usage, figure out what types of artifacts are using the most
 space, and in some cases, manually delete job artifacts to reclaim disk space.
 
@@ -481,7 +481,7 @@ the number you want.
 
 #### Delete job artifacts from jobs completed before a specific date
 
-CAUTION: **Caution:**
+WARNING:
 These commands remove data permanently from the database and from disk. We
 highly recommend running them only under the guidance of a Support Engineer, or
 running them in a test environment with a backup of the instance ready to be
@@ -507,8 +507,8 @@ If you need to manually remove job artifacts associated with multiple jobs while
 
 1. Delete job artifacts older than a specific date:
 
-   NOTE: **Note:**
-   This step will also erase artifacts that users have chosen to
+   NOTE:
+   This step also erases artifacts that users have chosen to
    ["keep"](../ci/pipelines/job_artifacts.md#browsing-artifacts).
 
    ```ruby
@@ -528,7 +528,7 @@ If you need to manually remove job artifacts associated with multiple jobs while
 
 #### Delete job artifacts and logs from jobs completed before a specific date
 
-CAUTION: **Caution:**
+WARNING:
 These commands remove data permanently from the database and from disk. We
 highly recommend running them only under the guidance of a Support Engineer, or
 running them in a test environment with a backup of the instance ready to be
@@ -552,7 +552,7 @@ If you need to manually remove **all** job artifacts associated with multiple jo
    builds_with_artifacts = Ci::Build.with_existing_job_artifacts(Ci::JobArtifact.trace)
    ```
 
-1. Select the user which will be mentioned in the web UI as erasing the job:
+1. Select the user which is mentioned in the web UI as erasing the job:
 
    ```ruby
    admin_user = User.find_by(username: 'username')

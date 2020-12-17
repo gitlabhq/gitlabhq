@@ -31,7 +31,7 @@ module SearchHelper
     [
       resources_results,
       generic_results
-    ].flatten.uniq do |item|
+    ].flatten do |item|
       item[:label]
     end
   end
@@ -370,7 +370,7 @@ module SearchHelper
   def highlight_and_truncate_issuable(issuable, search_term, _search_highlight)
     return unless issuable.description.present?
 
-    simple_search_highlight_and_truncate(issuable.description, search_term, highlighter: '<span class="gl-text-black-normal gl-font-weight-bold">\1</span>')
+    simple_search_highlight_and_truncate(issuable.description, search_term, highlighter: '<span class="gl-text-gray-900 gl-font-weight-bold">\1</span>')
   end
 
   def show_user_search_tab?

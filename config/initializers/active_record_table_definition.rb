@@ -16,7 +16,7 @@ module ActiveRecord
         options[:null] = false if options[:null].nil?
 
         [:created_at, :updated_at].each do |column_name|
-          column(column_name, :datetime_with_timezone, options)
+          column(column_name, :datetime_with_timezone, **options)
         end
       end
 
@@ -27,7 +27,7 @@ module ActiveRecord
       #   t.datetime_with_timezone :did_something_at
       # end
       def datetime_with_timezone(column_name, **options)
-        column(column_name, :datetime_with_timezone, options)
+        column(column_name, :datetime_with_timezone, **options)
       end
 
       # Disable timestamp alias to datetime

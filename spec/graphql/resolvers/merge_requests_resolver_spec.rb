@@ -75,9 +75,9 @@ RSpec.describe Resolvers::MergeRequestsResolver do
       it 'can batch-resolve merge requests from different projects' do
         # 2 queries for project_authorizations, and 2 for merge_requests
         result = batch_sync(max_queries: queries_per_project * 2) do
-          resolve_mr(project, iids: iid_1) +
-            resolve_mr(project, iids: iid_2) +
-            resolve_mr(other_project, iids: other_iid)
+          resolve_mr(project, iids: [iid_1]) +
+            resolve_mr(project, iids: [iid_2]) +
+            resolve_mr(other_project, iids: [other_iid])
         end
 
         expect(result).to contain_exactly(merge_request_1, merge_request_2, other_merge_request)
@@ -110,7 +110,7 @@ RSpec.describe Resolvers::MergeRequestsResolver do
 
     context 'by source branches' do
       it 'takes one argument' do
-        result = resolve_mr(project, source_branch: [merge_request_3.source_branch])
+        result = resolve_mr(project, source_branches: [merge_request_3.source_branch])
 
         expect(result).to contain_exactly(merge_request_3)
       end
@@ -118,7 +118,7 @@ RSpec.describe Resolvers::MergeRequestsResolver do
       it 'takes more than one argument' do
         mrs = [merge_request_3, merge_request_4]
         branches = mrs.map(&:source_branch)
-        result = resolve_mr(project, source_branch: branches )
+        result = resolve_mr(project, source_branches: branches )
 
         expect(result).to match_array(mrs)
       end
@@ -126,7 +126,7 @@ RSpec.describe Resolvers::MergeRequestsResolver do
 
     context 'by target branches' do
       it 'takes one argument' do
-        result = resolve_mr(project, target_branch: [merge_request_3.target_branch])
+        result = resolve_mr(project, target_branches: [merge_request_3.target_branch])
 
         expect(result).to contain_exactly(merge_request_3)
       end
@@ -134,7 +134,7 @@ RSpec.describe Resolvers::MergeRequestsResolver do
       it 'takes more than one argument' do
         mrs = [merge_request_3, merge_request_4]
         branches = mrs.map(&:target_branch)
-        result = resolve_mr(project, target_branch: branches )
+        result = resolve_mr(project, target_branches: branches )
 
         expect(result.compact).to match_array(mrs)
       end
@@ -153,13 +153,13 @@ RSpec.describe Resolvers::MergeRequestsResolver do
       let_it_be(:with_label) { create(:labeled_merge_request, :closed, labels: [label], **common_attrs) }
 
       it 'takes one argument' do
-        result = resolve_mr(project, label_name: [label.title])
+        result = resolve_mr(project, labels: [label.title])
 
         expect(result).to contain_exactly(merge_request_6, with_label)
       end
 
       it 'takes multiple arguments, with semantics of ALL MUST MATCH' do
-        result = resolve_mr(project, label_name: merge_request_6.labels.map(&:title))
+        result = resolve_mr(project, labels: merge_request_6.labels.map(&:title))
 
         expect(result).to contain_exactly(merge_request_6)
       end
@@ -201,7 +201,7 @@ RSpec.describe Resolvers::MergeRequestsResolver do
       it 'requires all filters' do
         create(:merge_request, :closed, source_project: project, target_project: project, source_branch: merge_request_4.source_branch)
 
-        result = resolve_mr(project, source_branch: [merge_request_4.source_branch], state: 'locked')
+        result = resolve_mr(project, source_branches: [merge_request_4.source_branch], state: 'locked')
 
         expect(result.compact).to contain_exactly(merge_request_4)
       end
@@ -236,7 +236,7 @@ RSpec.describe Resolvers::MergeRequestsResolver do
   end
 
   def resolve_mr_single(project, iid)
-    resolve_mr(project, resolver: described_class.single, iids: iid)
+    resolve_mr(project, resolver: described_class.single, iid: iid.to_s)
   end
 
   def resolve_mr(project, resolver: described_class, user: current_user, **args)

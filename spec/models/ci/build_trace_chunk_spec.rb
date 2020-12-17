@@ -91,7 +91,7 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
   end
 
   describe 'CHUNK_SIZE' do
-    it 'Chunk size can not be changed without special care' do
+    it 'chunk size can not be changed without special care' do
       expect(described_class::CHUNK_SIZE).to eq(128.kilobytes)
     end
   end

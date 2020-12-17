@@ -12,12 +12,17 @@ module Types
     def initialize(*args, **kwargs, &block)
       @calls_gitaly = !!kwargs.delete(:calls_gitaly)
       @constant_complexity = !!kwargs[:complexity]
+      @requires_argument = !!kwargs.delete(:requires_argument)
       kwargs[:complexity] = field_complexity(kwargs[:resolver_class], kwargs[:complexity])
       @feature_flag = kwargs[:feature_flag]
       kwargs = check_feature_flag(kwargs)
       kwargs = gitlab_deprecation(kwargs)
 
       super(*args, **kwargs, &block)
+    end
+
+    def requires_argument?
+      @requires_argument || arguments.values.any? { |argument| argument.type.non_null? }
     end
 
     # Based on https://github.com/rmosolgo/graphql-ruby/blob/v1.11.4/lib/graphql/schema/field.rb#L538-L563
@@ -73,7 +78,7 @@ module Types
     attr_reader :feature_flag
 
     def feature_documentation_message(key, description)
-      "#{description}. Available only when feature flag `#{key}` is enabled"
+      "#{description} Available only when feature flag `#{key}` is enabled."
     end
 
     def check_feature_flag(args)

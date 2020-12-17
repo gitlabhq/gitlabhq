@@ -5,14 +5,13 @@ module Gitlab
     class PoLinter
       include Gitlab::Utils::StrongMemoize
 
-      attr_reader :po_path, :translation_entries, :metadata_entry, :locale, :html_todolist
+      attr_reader :po_path, :translation_entries, :metadata_entry, :locale
 
       VARIABLE_REGEX = /%{\w*}|%[a-z]/.freeze
 
-      def initialize(po_path:, html_todolist:, locale: I18n.locale.to_s)
+      def initialize(po_path:, locale: I18n.locale.to_s)
         @po_path = po_path
         @locale = locale
-        @html_todolist = html_todolist
       end
 
       def errors
@@ -43,8 +42,7 @@ module Gitlab
         @translation_entries = entries.map do |entry_data|
           Gitlab::I18n::TranslationEntry.new(
             entry_data: entry_data,
-            nplurals: metadata_entry.expected_forms,
-            html_allowed: html_todolist.fetch(entry_data[:msgid], false)
+            nplurals: metadata_entry.expected_forms
           )
         end
 
@@ -97,15 +95,15 @@ module Gitlab
         common_message = 'contains < or >. Use variables to include HTML in the string, or the &lt; and &gt; codes ' \
           'for the symbols. For more info see: https://docs.gitlab.com/ee/development/i18n/externalization.html#html'
 
-        if entry.msgid_contains_potential_html? && !entry.msgid_html_allowed?
+        if entry.msgid_contains_potential_html?
           errors << common_message
         end
 
-        if entry.plural_id_contains_potential_html? && !entry.plural_id_html_allowed?
+        if entry.plural_id_contains_potential_html?
           errors << 'plural id ' + common_message
         end
 
-        if entry.translations_contain_potential_html? && !entry.translations_html_allowed?
+        if entry.translations_contain_potential_html?
           errors << 'translation ' + common_message
         end
       end

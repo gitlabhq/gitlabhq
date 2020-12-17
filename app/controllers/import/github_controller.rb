@@ -17,6 +17,8 @@ class Import::GithubController < Import::BaseController
   rescue_from Octokit::TooManyRequests, with: :provider_rate_limit
   rescue_from Gitlab::GithubImport::RateLimitError, with: :rate_limit_threshold_exceeded
 
+  PAGE_LENGTH = 25
+
   def new
     if !ci_cd_only? && github_import_configured? && logged_in_with_provider?
       go_to_provider_for_permissions
@@ -115,17 +117,14 @@ class Import::GithubController < Import::BaseController
 
   def client_repos
     @client_repos ||= if Feature.enabled?(:remove_legacy_github_client)
-                        concatenated_repos
+                        if sanitized_filter_param
+                          client.search_repos_by_name(sanitized_filter_param, pagination_options)[:items]
+                        else
+                          client.octokit.repos(nil, pagination_options)
+                        end
                       else
                         filtered(client.repos)
                       end
-  end
-
-  def concatenated_repos
-    return [] unless client.respond_to?(:each_page)
-    return client.each_page(:repos).flat_map(&:objects) unless sanitized_filter_param
-
-    client.search_repos_by_name(sanitized_filter_param).flat_map(&:objects).flat_map(&:items)
   end
 
   def sanitized_filter_param
@@ -256,6 +255,13 @@ class Import::GithubController < Import::BaseController
 
   def rate_limit_threshold_exceeded
     head :too_many_requests
+  end
+
+  def pagination_options
+    {
+      page: [1, params[:page].to_i].max,
+      per_page: PAGE_LENGTH
+    }
   end
 end
 

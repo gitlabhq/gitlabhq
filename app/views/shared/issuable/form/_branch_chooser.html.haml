@@ -2,7 +2,7 @@
 - form = local_assigns.fetch(:form)
 
 - return unless issuable.is_a?(MergeRequest)
-- return if issuable.closed_without_fork?
+- return if issuable.closed_or_merged_without_fork?
 
 - source_title, target_title = format_mr_branch_names(@merge_request)
 

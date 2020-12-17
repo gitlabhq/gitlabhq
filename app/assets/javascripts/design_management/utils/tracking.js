@@ -1,24 +1,34 @@
 import Tracking from '~/tracking';
+import Api from '~/api';
 
-// Tracking Constants
+// Snowplow tracking constants
 const DESIGN_TRACKING_CONTEXT_SCHEMAS = {
   VIEW_DESIGN_SCHEMA: 'iglu:com.gitlab/design_management_context/jsonschema/1-0-0',
 };
-const DESIGN_TRACKING_EVENTS = {
+
+export const DESIGN_TRACKING_PAGE_NAME = 'projects:issues:design';
+
+export const DESIGN_SNOWPLOW_EVENT_TYPES = {
   VIEW_DESIGN: 'view_design',
   CREATE_DESIGN: 'create_design',
   UPDATE_DESIGN: 'update_design',
 };
 
-export const DESIGN_TRACKING_PAGE_NAME = 'projects:issues:design';
+export const DESIGN_USAGE_PING_EVENT_TYPES = {
+  DESIGN_ACTION: 'design_action',
+};
 
+/**
+ * Track "design detail" view in Snowplow
+ */
 export function trackDesignDetailView(
   referer = '',
   owner = '',
   designVersion = 1,
   latestVersion = false,
 ) {
-  const eventName = DESIGN_TRACKING_EVENTS.VIEW_DESIGN;
+  const eventName = DESIGN_SNOWPLOW_EVENT_TYPES.VIEW_DESIGN;
+
   Tracking.event(DESIGN_TRACKING_PAGE_NAME, eventName, {
     label: eventName,
     context: {
@@ -34,9 +44,16 @@ export function trackDesignDetailView(
 }
 
 export function trackDesignCreate() {
-  return Tracking.event(DESIGN_TRACKING_PAGE_NAME, DESIGN_TRACKING_EVENTS.CREATE_DESIGN);
+  return Tracking.event(DESIGN_TRACKING_PAGE_NAME, DESIGN_SNOWPLOW_EVENT_TYPES.CREATE_DESIGN);
 }
 
 export function trackDesignUpdate() {
-  return Tracking.event(DESIGN_TRACKING_PAGE_NAME, DESIGN_TRACKING_EVENTS.UPDATE_DESIGN);
+  return Tracking.event(DESIGN_TRACKING_PAGE_NAME, DESIGN_SNOWPLOW_EVENT_TYPES.UPDATE_DESIGN);
+}
+
+/**
+ * Track "design detail" view via usage ping
+ */
+export function usagePingDesignDetailView() {
+  Api.trackRedisHllUserEvent(DESIGN_USAGE_PING_EVENT_TYPES.DESIGN_ACTION);
 }

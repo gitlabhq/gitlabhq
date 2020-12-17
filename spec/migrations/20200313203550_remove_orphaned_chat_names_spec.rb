@@ -9,9 +9,9 @@ RSpec.describe RemoveOrphanedChatNames, schema: 20200313202430 do
   let(:services) { table(:services) }
   let(:chat_names) { table(:chat_names) }
 
-  let(:namespace) { namespaces.create(name: 'foo', path: 'foo') }
-  let(:project) { projects.create(namespace_id: namespace.id) }
-  let(:service) { services.create(project_id: project.id, type: 'chat') }
+  let(:namespace) { namespaces.create!(name: 'foo', path: 'foo') }
+  let(:project) { projects.create!(namespace_id: namespace.id) }
+  let(:service) { services.create!(project_id: project.id, type: 'chat') }
   let(:chat_name) { chat_names.create!(service_id: service.id, team_id: 'TEAM', user_id: 12345, chat_id: 12345) }
   let(:orphaned_chat_name) { chat_names.create!(team_id: 'TEAM', service_id: 0, user_id: 12345, chat_id: 12345) }
 

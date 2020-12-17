@@ -1,0 +1,11 @@
+@media print {
+  .codes-to-print {
+    background-color: var(--white);
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    margin: 0;
+  }
+}

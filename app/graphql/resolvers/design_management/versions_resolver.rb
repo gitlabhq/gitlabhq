@@ -9,6 +9,8 @@ module Resolvers
 
       VersionID = ::Types::GlobalIDType[::DesignManagement::Version]
 
+      extras [:parent]
+
       argument :earlier_or_equal_to_sha, GraphQL::STRING_TYPE,
                as: :sha,
                required: false,

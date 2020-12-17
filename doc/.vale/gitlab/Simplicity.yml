@@ -8,7 +8,7 @@ extends: existence
 message: 'Avoid words like "%s" that imply ease of use, because the user may find this action hard.'
 level: suggestion
 ignorecase: true
-link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#language-to-avoid
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#usage-list
 tokens:
   - easy
   - easily

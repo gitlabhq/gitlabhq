@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class RepositoryUpdateRemoteMirrorWorker # rubocop:disable Scalability/IdempotentWorker
+class RepositoryUpdateRemoteMirrorWorker
   UpdateError = Class.new(StandardError)
 
   include ApplicationWorker
@@ -11,6 +11,7 @@ class RepositoryUpdateRemoteMirrorWorker # rubocop:disable Scalability/Idempoten
   sidekiq_options retry: 3, dead: false
   feature_category :source_code_management
   loggable_arguments 1
+  idempotent!
 
   LOCK_WAIT_TIME = 30.seconds
   MAX_TRIES = 3

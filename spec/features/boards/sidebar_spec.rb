@@ -72,7 +72,7 @@ RSpec.describe 'Issue Boards', :js do
     end
   end
 
-  it 'removes card from board when clicking ' do
+  it 'removes card from board when clicking' do
     click_card(card)
 
     page.within('.issue-boards-sidebar') do

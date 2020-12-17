@@ -133,11 +133,6 @@ label {
 }
 
 .input-group {
-  .select2-container {
-    display: table-cell;
-    max-width: 180px;
-  }
-
   .input-group-prepend,
   .input-group-append {
     background-color: $input-group-addon-bg;
@@ -211,15 +206,6 @@ label {
 .input-icon-wrapper,
 .select-wrapper {
   position: relative;
-}
-
-.select-wrapper > .fa-chevron-down {
-  position: absolute;
-  font-size: 10px;
-  right: 10px;
-  top: 12px;
-  color: $gray-darkest;
-  pointer-events: none;
 }
 
 .input-icon-wrapper > .input-icon-right {

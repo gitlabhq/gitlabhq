@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['MergeRequestConnection'] do
+RSpec.describe GitlabSchema.types['PipelineConnection'] do
   it 'has the expected fields' do
     expected_fields = %i[count page_info edges nodes]
 

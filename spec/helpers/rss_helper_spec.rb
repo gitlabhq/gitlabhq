@@ -18,5 +18,14 @@ RSpec.describe RssHelper do
         expect(helper.rss_url_options[:feed_token]).to be_nil
       end
     end
+
+    context 'when feed_token disabled' do
+      it "does not have a feed_token" do
+        current_user = create(:user)
+        allow(helper).to receive(:current_user).and_return(current_user)
+        allow(Gitlab::CurrentSettings).to receive(:disable_feed_token).and_return(true)
+        expect(helper.rss_url_options[:feed_token]).to be_nil
+      end
+    end
   end
 end

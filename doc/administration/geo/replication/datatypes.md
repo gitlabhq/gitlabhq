@@ -1,7 +1,7 @@
 ---
 stage: Enablement
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: howto
 ---
 
@@ -28,13 +28,13 @@ verification methods:
 | Database | Application data in PostgreSQL                  | Native                                | Native                 |
 | Database | Redis                                           | _N/A_ (*1*)                           | _N/A_                  |
 | Database | Elasticsearch                                   | Native                                | Native                 |
-| Database | Personal snippets                               | PostgreSQL Replication                | PostgreSQL Replication |
-| Database | Project snippets                                | PostgreSQL Replication                | PostgreSQL Replication |
 | Database | SSH public keys                                 | PostgreSQL Replication                | PostgreSQL Replication |
 | Git      | Project repository                              | Geo with Gitaly                       | Gitaly Checksum        |
 | Git      | Project wiki repository                         | Geo with Gitaly                       | Gitaly Checksum        |
 | Git      | Project designs repository                      | Geo with Gitaly                       | Gitaly Checksum        |
 | Git      | Object pools for forked project deduplication   | Geo with Gitaly                       | _Not implemented_      |
+| Git      | Project Snippets                                | Geo with Gitaly                       | _Not implemented_      |
+| Git      | Personal Snippets                               | Geo with Gitaly                       | _Not implemented_      |
 | Blobs    | User uploads _(filesystem)_                     | Geo with API                          | _Not implemented_      |
 | Blobs    | User uploads _(object storage)_                 | Geo with API/Managed (*2*)            | _Not implemented_      |
 | Blobs    | LFS objects _(filesystem)_                      | Geo with API                          | _Not implemented_      |
@@ -80,6 +80,9 @@ Each project can have at most 3 different repositories:
 
 They all live in the same shard and share the same base name with a `-wiki` and `-design` suffix
 for Wiki and Design Repository cases.
+
+Besides that, there are snippet repositories. They can be connected to a project or to some specific user.
+Both types will be synced to a secondary node.
 
 ### Blobs
 
@@ -160,7 +163,7 @@ To enable, such as for package file replication:
 Feature.enable(:geo_package_file_replication)
 ```
 
-DANGER: **Warning:**
+WARNING:
 Features not on this list, or with **No** in the **Replicated** column,
 are not replicated on the **secondary** node. Failing over without manually
 replicating data from those features will cause the data to be **lost**.
@@ -192,7 +195,7 @@ successfully, you must replicate their data using some other means.
 | [Generic packages](../../../user/packages/generic_packages/index.md)                                | **Yes** (13.5)                                                                     | [No](https://gitlab.com/groups/gitlab-org/-/epics/1817)   | Via Object Storage provider if supported. Native Geo support (Beta).                 | Behind feature flag `geo_package_file_replication`, enabled by default                                                                                                                                                                                                                                                     |
 | [Versioned Terraform State](../../terraform_state.md)                                                          | **Yes** (13.5)                                                                     | No                                                        | Via Object Storage provider if supported. Native Geo support (Beta).                 | Behind feature flag `geo_terraform_state_version_replication`, enabled by default                                                                                                                                                                                                                                          |
 | [External merge request diffs](../../merge_request_diffs.md)                                                   | **Yes** (13.5)                          | No                                                        |  Via Object Storage provider if supported. Native Geo support (Beta).                 |  Behind feature flag `geo_merge_request_diff_replication`, enabled by default                                                                                                                                                                                                                                                                                                                          |
-| [Versioned snippets](../../../user/snippets.md#versioned-snippets)                                             | [No](https://gitlab.com/groups/gitlab-org/-/epics/2809)                            | [No](https://gitlab.com/groups/gitlab-org/-/epics/2810)   | No                                                                                   |                                                                                                                                                                                                                                                                                                                            |
+| [Versioned snippets](../../../user/snippets.md#versioned-snippets)                                             | [**Yes** (13.7)](https://gitlab.com/groups/gitlab-org/-/epics/2809)                            | [No](https://gitlab.com/groups/gitlab-org/-/epics/2810)   | No                                                                                   |                                                                                                                                                                                                                                                                                                                            |
 | [Server-side Git hooks](../../server_hooks.md)                                                                 | [No](https://gitlab.com/groups/gitlab-org/-/epics/1867)                            | No                                                        | No                                                                                   |                                                                                                                                                                                                                                                                                                                            |
 | [Elasticsearch integration](../../../integration/elasticsearch.md)                                             | [No](https://gitlab.com/gitlab-org/gitlab/-/issues/1186)                           | No                                                        | No                                                                                   |                                                                                                                                                                                                                                                                                                                            |
 | [GitLab Pages](../../pages/index.md)                                                                           | [No](https://gitlab.com/groups/gitlab-org/-/epics/589)                             | No                                                        | No                                                                                   |                                                                                                                                                                                                                                                                                                                            |

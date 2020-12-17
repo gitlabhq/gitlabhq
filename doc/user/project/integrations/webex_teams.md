@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Ecosystem
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Webex Teams service
@@ -10,7 +10,7 @@ You can configure GitLab to send notifications to a Webex Teams space.
 
 ## Create a webhook for the space
 
-1. Go to the [Incoming Webhooks app page](https://apphub.webex.com/teams/applications/incoming-webhooks-cisco-systems-38054).
+1. Go to the [Incoming Webhooks app page](https://apphub.webex.com/messaging/applications/incoming-webhooks-cisco-systems-38054).
 1. Click **Connect** and log in to Webex Teams, if required.
 1. Enter a name for the webhook and select the space to receive the notifications.
 1. Click **ADD**.

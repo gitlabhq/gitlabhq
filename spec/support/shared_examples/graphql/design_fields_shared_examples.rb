@@ -26,27 +26,35 @@ RSpec.shared_examples 'a GraphQL type with design fields' do
   end
 
   describe '#image' do
+    let_it_be(:current_user) { create(:user) }
     let(:schema) { GitlabSchema }
     let(:query) { GraphQL::Query.new(schema) }
-    let(:context) { double('Context', schema: schema, query: query, parent: nil) }
+    let(:context) { query.context }
     let(:field) { described_class.fields['image'] }
     let(:args) { GraphQL::Query::Arguments::NO_ARGS }
-    let(:instance) do
+    let(:instance) { instantiate(object_id) }
+    let(:instance_b) { instantiate(object_id_b) }
+
+    def instantiate(object_id)
       object = GitlabSchema.sync_lazy(GitlabSchema.object_from_id(object_id))
       object_type.authorized_new(object, query.context)
     end
 
-    let(:instance_b) do
-      object_b = GitlabSchema.sync_lazy(GitlabSchema.object_from_id(object_id_b))
-      object_type.authorized_new(object_b, query.context)
+    def resolve_image(instance)
+      field.resolve_field(instance, args, context)
+    end
+
+    before do
+      context[:current_user] = current_user
+      allow(Ability).to receive(:allowed?).with(current_user, :read_design, anything).and_return(true)
+      allow(context).to receive(:parent).and_return(nil)
     end
 
     it 'resolves to the design image URL' do
-      image = field.resolve_field(instance, args, context)
       sha = design.versions.first.sha
       url = ::Gitlab::Routing.url_helpers.project_design_management_designs_raw_image_url(design.project, design, sha)
 
-      expect(image).to eq(url)
+      expect(resolve_image(instance)).to eq(url)
     end
 
     it 'has better than O(N) peformance', :request_store do
@@ -68,10 +76,10 @@ RSpec.shared_examples 'a GraphQL type with design fields' do
       #   = 10
       expect(instance).not_to eq(instance_b) # preload designs themselves.
       expect do
-        image_a = field.resolve_field(instance, args, context)
-        image_b = field.resolve_field(instance, args, context)
-        image_c = field.resolve_field(instance_b, args, context)
-        image_d = field.resolve_field(instance_b, args, context)
+        image_a = resolve_image(instance)
+        image_b = resolve_image(instance)
+        image_c = resolve_image(instance_b)
+        image_d = resolve_image(instance_b)
         expect(image_a).to eq(image_b)
         expect(image_c).not_to eq(image_b)
         expect(image_c).to eq(image_d)

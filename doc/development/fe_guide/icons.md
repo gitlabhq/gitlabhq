@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Icons and SVG Illustrations
@@ -22,7 +22,7 @@ Our goal is to replace one by one all inline SVG Icons (as those currently bloat
 
 ### Usage in HAML/Rails
 
-To use a sprite Icon in HAML or Rails we use a specific helper function :
+To use a sprite Icon in HAML or Rails we use a specific helper function:
 
 ```ruby
 sprite_icon(icon_name, size: nil, css_class: '')
@@ -31,7 +31,7 @@ sprite_icon(icon_name, size: nil, css_class: '')
 - **icon_name**: Use the icon_name for the SVG sprite in the list of
   ([GitLab SVGs](https://gitlab-org.gitlab.io/gitlab-svgs)).
 - **size (optional)**: Use one of the following sizes : 16, 24, 32, 48, 72 (this
-  will be translated into a `s16` class)
+  is translated into a `s16` class)
 - **css_class (optional)**: If you want to add additional CSS classes.
 
 **Example**
@@ -90,7 +90,7 @@ Please use the following function inside JS to render an icon:
 
 ### Usage in HAML/Rails
 
-DANGER: **Warning:**
+WARNING:
 Do not use the `spinner` or `icon('spinner spin')` rails helpers to insert
 loading icons. These helpers rely on the Font Awesome icon library which is
 deprecated.

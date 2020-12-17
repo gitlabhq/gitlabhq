@@ -1,0 +1,5 @@
+---
+title: Add `service_desk_reply_to` to issues list and header
+merge_request: 48089
+author: Lee Tickett
+type: added

@@ -18,6 +18,14 @@ module Emails
         subject: subject(_("GitLab Account Request")))
     end
 
+    def user_admin_rejection_email(name, email)
+      @name = name
+
+      profile_email_with_layout(
+        to: email,
+        subject: subject(_("GitLab account request rejected")))
+    end
+
     # rubocop: disable CodeReuse/ActiveRecord
     def new_ssh_key_email(key_id)
       @key = Key.find_by(id: key_id)

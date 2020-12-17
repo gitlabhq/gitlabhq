@@ -30,7 +30,7 @@
     .dropdown.inline
       %a.btn.gl-button.dropdown-toggle.qa-options-button.d-md-inline{ data: { toggle: "dropdown" } }
         %span= _('Options')
-        = icon('caret-down')
+        = sprite_icon('chevron-down', css_class: 'gl-text-gray-500')
       %ul.dropdown-menu.dropdown-menu-right
         %li.d-block.d-sm-none
           = link_to project_tree_path(@project, @commit) do

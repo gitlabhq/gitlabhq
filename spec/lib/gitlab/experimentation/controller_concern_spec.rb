@@ -6,12 +6,10 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
   before do
     stub_const('Gitlab::Experimentation::EXPERIMENTS', {
         backwards_compatible_test_experiment: {
-          environment: environment,
           tracking_category: 'Team',
           use_backwards_compatible_subject_index: true
         },
         test_experiment: {
-          environment: environment,
           tracking_category: 'Team'
         }
       }
@@ -21,7 +19,6 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
     Feature.enable_percentage_of_time(:test_experiment_experiment_percentage, enabled_percentage)
   end
 
-  let(:environment) { Rails.env.test? }
   let(:enabled_percentage) { 10 }
 
   controller(ApplicationController) do
@@ -78,29 +75,24 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
   describe '#push_frontend_experiment' do
     it 'pushes an experiment to the frontend' do
       gon = instance_double('gon')
-      experiments = { experiments: { 'myExperiment' => true } }
-
-      stub_experiment_for_user(my_experiment: true)
+      stub_experiment_for_subject(my_experiment: true)
       allow(controller).to receive(:gon).and_return(gon)
 
-      expect(gon).to receive(:push).with(experiments, true)
+      expect(gon).to receive(:push).with({ experiments: { 'myExperiment' => true } }, true)
 
       controller.push_frontend_experiment(:my_experiment)
     end
   end
 
   describe '#experiment_enabled?' do
-    def check_experiment(exp_key = :test_experiment)
-      controller.experiment_enabled?(exp_key)
+    def check_experiment(exp_key = :test_experiment, subject = nil)
+      controller.experiment_enabled?(exp_key, subject: subject)
     end
 
     subject { check_experiment }
 
     context 'cookie is not present' do
-      it 'calls Gitlab::Experimentation.enabled_for_value? with the name of the experiment and an experimentation_subject_index of nil' do
-        expect(Gitlab::Experimentation).to receive(:enabled_for_value?).with(:test_experiment, nil)
-        check_experiment
-      end
+      it { is_expected.to eq(false) }
     end
 
     context 'cookie is present' do
@@ -112,37 +104,56 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
       end
 
       where(:experiment_key, :index_value) do
-        :test_experiment | 40 # Zlib.crc32('test_experimentabcd-1234') % 100 = 40
-        :backwards_compatible_test_experiment | 76 # 'abcd1234'.hex % 100 = 76
+        :test_experiment | 'abcd-1234'
+        :backwards_compatible_test_experiment | 'abcd1234'
       end
 
       with_them do
-        it 'calls Gitlab::Experimentation.enabled_for_value? with the name of the experiment and the calculated experimentation_subject_index based on the uuid' do
-          expect(Gitlab::Experimentation).to receive(:enabled_for_value?).with(experiment_key, index_value)
+        it 'calls Gitlab::Experimentation.in_experiment_group?? with the name of the experiment and the calculated experimentation_subject_index based on the uuid' do
+          expect(Gitlab::Experimentation).to receive(:in_experiment_group?).with(experiment_key, subject: index_value)
+
           check_experiment(experiment_key)
+        end
+      end
+
+      context 'when subject is given' do
+        let(:user) { build(:user) }
+
+        it 'uses the subject' do
+          expect(Gitlab::Experimentation).to receive(:in_experiment_group?).with(:test_experiment, subject: user)
+
+          check_experiment(:test_experiment, user)
         end
       end
     end
 
-    it 'returns true when DNT: 0 is set in the request' do
-      allow(Gitlab::Experimentation).to receive(:enabled_for_value?) { true }
-      controller.request.headers['DNT'] = '0'
+    context 'do not track' do
+      before do
+        allow(Gitlab::Experimentation).to receive(:in_experiment_group?) { true }
+      end
 
-      is_expected.to be_truthy
+      context 'when do not track is disabled' do
+        before do
+          controller.request.headers['DNT'] = '0'
+        end
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'when do not track is enabled' do
+        before do
+          controller.request.headers['DNT'] = '1'
+        end
+
+        it { is_expected.to eq(false) }
+      end
     end
 
-    it 'returns false when DNT: 1 is set in the request' do
-      allow(Gitlab::Experimentation).to receive(:enabled_for_value?) { true }
-      controller.request.headers['DNT'] = '1'
-
-      is_expected.to be_falsy
-    end
-
-    describe 'URL parameter to force enable experiment' do
+    context 'URL parameter to force enable experiment' do
       it 'returns true unconditionally' do
         get :index, params: { force_experiment: :test_experiment }
 
-        is_expected.to be_truthy
+        is_expected.to eq(true)
       end
     end
   end
@@ -155,7 +166,7 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
 
       context 'the user is part of the experimental group' do
         before do
-          stub_experiment_for_user(test_experiment: true)
+          stub_experiment_for_subject(test_experiment: true)
         end
 
         it 'tracks the event with the right parameters' do
@@ -172,7 +183,7 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
 
       context 'the user is part of the control group' do
         before do
-          stub_experiment_for_user(test_experiment: false)
+          stub_experiment_for_subject(test_experiment: false)
         end
 
         it 'tracks the event with the right parameters' do
@@ -215,6 +226,59 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
           expect_no_snowplow_event
         end
       end
+
+      context 'subject is provided' do
+        before do
+          stub_experiment_for_subject(test_experiment: false)
+        end
+
+        it "provides the subject's hashed global_id as label" do
+          experiment_subject = double(:subject, to_global_id: 'abc')
+
+          controller.track_experiment_event(:test_experiment, 'start', 1, subject: experiment_subject)
+
+          expect_snowplow_event(
+            category: 'Team',
+            action: 'start',
+            property: 'control_group',
+            value: 1,
+            label: Digest::MD5.hexdigest('abc')
+          )
+        end
+
+        it "provides the subject's hashed string representation as label" do
+          experiment_subject = 'somestring'
+
+          controller.track_experiment_event(:test_experiment, 'start', 1, subject: experiment_subject)
+
+          expect_snowplow_event(
+            category: 'Team',
+            action: 'start',
+            property: 'control_group',
+            value: 1,
+            label: Digest::MD5.hexdigest('somestring')
+          )
+        end
+      end
+
+      context 'no subject is provided but cookie is set' do
+        before do
+          get :index
+          stub_experiment_for_subject(test_experiment: false)
+        end
+
+        it 'uses the experimentation_subject_id as fallback' do
+          controller.track_experiment_event(:test_experiment, 'start', 1)
+
+          expect_snowplow_event(
+            category: 'Team',
+            action: 'start',
+            property: 'control_group',
+            value: 1,
+            label: cookies.permanent.signed[:experimentation_subject_id]
+          )
+        end
+      end
     end
 
     context 'when the experiment is disabled' do
@@ -238,7 +302,7 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
 
       context 'the user is part of the experimental group' do
         before do
-          stub_experiment_for_user(test_experiment: true)
+          stub_experiment_for_subject(test_experiment: true)
         end
 
         it 'pushes the right parameters to gon' do
@@ -256,9 +320,7 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
 
       context 'the user is part of the control group' do
         before do
-          allow_next_instance_of(described_class) do |instance|
-            allow(instance).to receive(:experiment_enabled?).with(:test_experiment).and_return(false)
-          end
+          stub_experiment_for_subject(test_experiment: false)
         end
 
         it 'pushes the right parameters to gon' do
@@ -311,7 +373,7 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
         it 'does not push data to gon' do
           controller.frontend_experimentation_tracking_data(:test_experiment, 'start')
 
-          expect(Gon.method_defined?(:tracking_data)).to be_falsey
+          expect(Gon.method_defined?(:tracking_data)).to eq(false)
         end
       end
     end
@@ -322,7 +384,7 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
       end
 
       it 'does not push data to gon' do
-        expect(Gon.method_defined?(:tracking_data)).to be_falsey
+        expect(Gon.method_defined?(:tracking_data)).to eq(false)
         controller.track_experiment_event(:test_experiment, 'start')
       end
     end
@@ -330,6 +392,7 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
 
   describe '#record_experiment_user' do
     let(:user) { build(:user) }
+    let(:context) { { a: 42 } }
 
     context 'when the experiment is enabled' do
       before do
@@ -339,27 +402,25 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
 
       context 'the user is part of the experimental group' do
         before do
-          stub_experiment_for_user(test_experiment: true)
+          stub_experiment_for_subject(test_experiment: true)
         end
 
         it 'calls add_user on the Experiment model' do
-          expect(::Experiment).to receive(:add_user).with(:test_experiment, :experimental, user)
+          expect(::Experiment).to receive(:add_user).with(:test_experiment, :experimental, user, context)
 
-          controller.record_experiment_user(:test_experiment)
+          controller.record_experiment_user(:test_experiment, context)
         end
       end
 
       context 'the user is part of the control group' do
         before do
-          allow_next_instance_of(described_class) do |instance|
-            allow(instance).to receive(:experiment_enabled?).with(:test_experiment).and_return(false)
-          end
+          stub_experiment_for_subject(test_experiment: false)
         end
 
         it 'calls add_user on the Experiment model' do
-          expect(::Experiment).to receive(:add_user).with(:test_experiment, :control, user)
+          expect(::Experiment).to receive(:add_user).with(:test_experiment, :control, user, context)
 
-          controller.record_experiment_user(:test_experiment)
+          controller.record_experiment_user(:test_experiment, context)
         end
       end
     end
@@ -373,7 +434,7 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
       it 'does not call add_user on the Experiment model' do
         expect(::Experiment).not_to receive(:add_user)
 
-        controller.record_experiment_user(:test_experiment)
+        controller.record_experiment_user(:test_experiment, context)
       end
     end
 
@@ -385,27 +446,26 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
       it 'does not call add_user on the Experiment model' do
         expect(::Experiment).not_to receive(:add_user)
 
-        controller.record_experiment_user(:test_experiment)
+        controller.record_experiment_user(:test_experiment, context)
       end
     end
 
     context 'do not track' do
       before do
+        stub_experiment(test_experiment: true)
         allow(controller).to receive(:current_user).and_return(user)
-        allow_next_instance_of(described_class) do |instance|
-          allow(instance).to receive(:experiment_enabled?).with(:test_experiment).and_return(false)
-        end
       end
 
       context 'is disabled' do
         before do
           request.headers['DNT'] = '0'
+          stub_experiment_for_subject(test_experiment: false)
         end
 
         it 'calls add_user on the Experiment model' do
-          expect(::Experiment).to receive(:add_user).with(:test_experiment, :control, user)
+          expect(::Experiment).to receive(:add_user).with(:test_experiment, :control, user, context)
 
-          controller.record_experiment_user(:test_experiment)
+          controller.record_experiment_user(:test_experiment, context)
         end
       end
 
@@ -417,9 +477,59 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
         it 'does not call add_user on the Experiment model' do
           expect(::Experiment).not_to receive(:add_user)
 
-          controller.record_experiment_user(:test_experiment)
+          controller.record_experiment_user(:test_experiment, context)
         end
       end
+    end
+  end
+
+  describe '#record_experiment_conversion_event' do
+    let(:user) { build(:user) }
+
+    before do
+      allow(controller).to receive(:dnt_enabled?).and_return(false)
+      allow(controller).to receive(:current_user).and_return(user)
+      stub_experiment(test_experiment: true)
+    end
+
+    subject(:record_conversion_event) do
+      controller.record_experiment_conversion_event(:test_experiment)
+    end
+
+    it 'records the conversion event for the experiment & user' do
+      expect(::Experiment).to receive(:record_conversion_event).with(:test_experiment, user)
+      record_conversion_event
+    end
+
+    shared_examples 'does not record the conversion event' do
+      it 'does not record the conversion event' do
+        expect(::Experiment).not_to receive(:record_conversion_event)
+        record_conversion_event
+      end
+    end
+
+    context 'when DNT is enabled' do
+      before do
+        allow(controller).to receive(:dnt_enabled?).and_return(true)
+      end
+
+      include_examples 'does not record the conversion event'
+    end
+
+    context 'when there is no current user' do
+      before do
+        allow(controller).to receive(:current_user).and_return(nil)
+      end
+
+      include_examples 'does not record the conversion event'
+    end
+
+    context 'when the experiment is not enabled' do
+      before do
+        stub_experiment(test_experiment: false)
+      end
+
+      include_examples 'does not record the conversion event'
     end
   end
 
@@ -430,7 +540,7 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
 
     it 'returns a string with the experiment tracking category & group joined with a ":"' do
       expect(controller).to receive(:tracking_category).with(experiment_key).and_return('Experiment::Category')
-      expect(controller).to receive(:tracking_group).with(experiment_key, '_group').and_return('experimental_group')
+      expect(controller).to receive(:tracking_group).with(experiment_key, '_group', subject: nil).and_return('experimental_group')
 
       expect(subject).to eq('Experiment::Category:experimental_group')
     end

@@ -13,11 +13,17 @@ export const mount2faAuthentication = () => {
 };
 
 export const mount2faRegistration = () => {
+  const el = $('#js-register-token-2fa');
+
+  if (!el.length) {
+    return;
+  }
+
   if (gon.webauthn) {
-    const webauthnRegister = new WebAuthnRegister($('#js-register-token-2fa'), gon.webauthn);
+    const webauthnRegister = new WebAuthnRegister(el, gon.webauthn);
     webauthnRegister.start();
   } else {
-    const u2fRegister = new U2FRegister($('#js-register-token-2fa'), gon.u2f);
+    const u2fRegister = new U2FRegister(el, gon.u2f);
     u2fRegister.start();
   }
 };

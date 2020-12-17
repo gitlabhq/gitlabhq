@@ -10,7 +10,7 @@ module Projects
 
       prepend_before_action :repository, :project_without_auth
 
-      feature_category :alert_management
+      feature_category :incident_management
 
       def create
         token = extract_alert_manager_token(request)
@@ -31,7 +31,7 @@ module Projects
       end
 
       def notify_service
-        notify_service_class.new(project, current_user, notification_payload)
+        notify_service_class.new(project, notification_payload)
       end
 
       def notify_service_class

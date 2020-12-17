@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Continuous Integration
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 disqus_identifier: 'https://docs.gitlab.com/ee/user/project/pipelines/settings.html'
 type: reference, howto
 ---
@@ -26,7 +26,7 @@ There are two options. Using:
 
 - `git clone`, which is slower since it clones the repository from scratch
   for every job, ensuring that the local working copy is always pristine.
-- `git fetch`, which is GitLab's default and faster as it re-uses the local working copy (falling
+- `git fetch`, which is default in GitLab and faster as it re-uses the local working copy (falling
   back to clone if it doesn't exist).
   This is recommended, especially for [large repositories](../large_repositories/index.md#git-strategy).
 
@@ -170,7 +170,7 @@ Pipeline visibility is determined by:
 - Your current [user access level](../../user/permissions.md).
 - The **Public pipelines** project setting under your project's **Settings > CI/CD > General pipelines**.
 
-NOTE: **Note:**
+NOTE:
 If the project visibility is set to **Private**, the [**Public pipelines** setting has no effect](../enable_or_disable_ci.md#per-project-user-setting).
 
 This also determines the visibility of these related features:
@@ -209,7 +209,8 @@ You can set pending or running pipelines to cancel automatically when a new pipe
 1. Check the **Auto-cancel redundant, pending pipelines** checkbox.
 1. Click **Save changes**.
 
-Note that only jobs with [interruptible](../yaml/README.md#interruptible) set to `true` are cancelled.
+Use the [`interruptible`](../yaml/README.md#interruptible) keyword to indicate if a
+running job can be cancelled before it completes.
 
 ## Skip outdated deployment jobs
 

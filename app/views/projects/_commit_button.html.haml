@@ -1,7 +1,7 @@
 .form-actions
-  = button_tag 'Commit changes', id: 'commit-changes', class: 'btn commit-btn js-commit-button btn-success qa-commit-button'
+  = button_tag 'Commit changes', id: 'commit-changes', class: 'gl-button btn btn-success js-commit-button  qa-commit-button'
 
   = link_to 'Cancel', cancel_path,
-            class: 'btn btn-cancel', data: {confirm: leave_edit_message}
+            class: 'gl-button btn btn-default btn-cancel', data: {confirm: leave_edit_message}
 
   = render 'shared/projects/edit_information'

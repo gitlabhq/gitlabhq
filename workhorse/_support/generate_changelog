@@ -1,0 +1,75 @@
+#!/usr/bin/env ruby
+# Generates the changelog from the yaml entries in changelogs/unreleased
+#
+# Lifted form gitlab-org/gitaly
+
+require 'yaml'
+require 'fileutils'
+
+class ChangelogEntry
+  attr_reader :title, :merge_request, :type, :author
+
+  def initialize(file_path)
+    yaml = YAML.safe_load(File.read(file_path))
+
+    @title = yaml['title']
+    @merge_request = yaml['merge_request']
+    @type = yaml['type']
+    @author = yaml['author']
+  end
+
+  def to_s
+    str = ""
+    str << "- #{title}\n"
+    str << "  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/#{merge_request}\n"
+    str << "  Contributed by #{author}\n" if author
+
+    str
+  end
+end
+
+ROOT_DIR = File.expand_path('../..', __FILE__)
+UNRELEASED_ENTRIES = File.join(ROOT_DIR, 'changelogs', 'unreleased')
+CHANGELOG_FILE = File.join(ROOT_DIR, 'CHANGELOG')
+
+def main(version)
+  entries = []
+  Dir["#{UNRELEASED_ENTRIES}/*.yml"].each do |yml|
+    entries << ChangelogEntry.new(yml)
+    FileUtils.rm(yml)
+  end
+
+  sections = []
+  types = entries.map(&:type).uniq.sort
+  types.each do |type|
+    text = ''
+    text << "### #{type.capitalize}\n"
+
+    entries.each do |e|
+      next unless e.type == type
+
+      text << e.to_s
+    end
+
+    sections << text
+  end
+
+  sections << '- No changes.' if sections.empty?
+
+  new_version_entry = ["## v#{version}\n\n", sections.join("\n"), "\n"].join
+
+  current_changelog = File.read(CHANGELOG_FILE).lines
+  header = current_changelog.shift(2)
+
+  new_changelog = [header, new_version_entry, current_changelog.join]
+
+  File.write(CHANGELOG_FILE, new_changelog.join)
+end
+
+unless ARGV.count == 1
+  warn "Usage: #{$0} VERSION"
+  warn "Specify version as x.y.z"
+  abort
+end
+
+main(ARGV.first)

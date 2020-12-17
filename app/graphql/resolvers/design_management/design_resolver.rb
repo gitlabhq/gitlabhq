@@ -5,6 +5,8 @@ module Resolvers
     class DesignResolver < BaseResolver
       type ::Types::DesignManagement::DesignType, null: true
 
+      requires_argument!
+
       argument :id, ::Types::GlobalIDType[::DesignManagement::Design],
                required: false,
                description: 'Find a design by its ID'

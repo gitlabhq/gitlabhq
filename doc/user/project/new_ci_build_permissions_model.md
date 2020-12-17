@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Continuous Integration
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -34,9 +34,9 @@ The reasons to do it like that are:
 
 With the new behavior, any job that is triggered by the user, is also marked
 with their read permissions. When a user does a `git push` or changes files through
-the web UI, a new pipeline will be usually created. This pipeline will be marked
+the web UI, a new pipeline is usually created. This pipeline is marked
 as created by the pusher (local push or via the UI) and any job created in this
-pipeline will have the read permissions of the pusher but not write permissions.
+pipeline has the read permissions of the pusher but not write permissions.
 
 This allows us to make it really easy to evaluate the access for all projects
 that have [Git submodules](../../ci/git_submodules.md) or are using container images that the pusher
@@ -47,14 +47,14 @@ is running. The access is revoked after the job is finished.**
 
 It is important to note that we have a few types of users:
 
-- **Administrators**: CI jobs created by Administrators will not have access
+- **Administrators**: CI jobs created by Administrators don't have access
   to all GitLab projects, but only to projects and container images of projects
   that the administrator is a member of. That means that if a project is either
   public or internal users have access anyway, but if a project is private, the
-  Administrator will have to be a member of it in order to have access to it
+  Administrator has to be a member of it in order to have access to it
   via another project's job.
 
-- **External users**: CI jobs created by [external users](../permissions.md#external-users) will have
+- **External users**: CI jobs created by [external users](../permissions.md#external-users) have
   access only to projects to which the user has at least Reporter access. This
   rules out accessing all internal projects by default.
 
@@ -75,7 +75,9 @@ Let's consider the following scenario:
 A unique job token is generated for each job and provides the user read
 access all projects that would be normally accessible to the user creating that
 job. The unique job token does not have any write permissions, but there
-is a [proposal to add support](https://gitlab.com/gitlab-org/gitlab/-/issues/35067).
+is a [proposal to add support](https://gitlab.com/groups/gitlab-org/-/epics/3559).
+
+If you need your CI pipeline to push to the Package Registry, consider using [deploy tokens](deploy_tokens/index.md).
 
 We try to make sure that this token doesn't leak by:
 
@@ -149,8 +151,8 @@ the container registry.
 
 ### Prerequisites to use the new permissions model
 
-With the new permissions model in place, there may be times that your job will
-fail. This is most likely because your project tries to access other project's
+With the new permissions model in place, there may be times that your job
+fails. This is most likely because your project tries to access other project's
 sources, and you don't have the appropriate permissions. In the job log look
 for information about 403 or forbidden access messages.
 
@@ -158,7 +160,7 @@ In short here's what you need to do should you encounter any issues.
 
 As an administrator:
 
-- **500 errors**: You will need to update [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse) to at
+- **500 errors**: You need to update [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse) to at
   least 0.8.2. This is done automatically for Omnibus installations, you need to
   [check manually](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/doc/update) for installations from source.
 - **500 errors**: Check if you have another web proxy sitting in front of NGINX (HAProxy,
@@ -185,7 +187,7 @@ git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/<user>/<mydependent
 ```
 
 It can also be used for system-wide authentication
-(only do this in a Docker container, it will overwrite ~/.netrc):
+(only do this in a Docker container, it overwrites `~/.netrc`):
 
 ```shell
 echo -e "machine gitlab.com\nlogin gitlab-ci-token\npassword ${CI_JOB_TOKEN}" > ~/.netrc
@@ -201,18 +203,17 @@ To properly configure submodules with GitLab CI/CD, read the
 With the update permission model we also extended the support for accessing
 Container Registries for private projects.
 
-> **Notes:**
->
-> - GitLab Runner versions prior to 1.8 don't incorporate the introduced changes
->   for permissions. This makes the `image:` directive not work with private
->   projects automatically and it needs to be configured manually on the GitLab Runner host
->   with a predefined account (for example administrator's personal account with
->   access token created explicitly for this purpose). This issue is resolved with
->   latest changes in GitLab Runner 1.8 which receives GitLab credentials with
->   build data.
-> - Starting from GitLab 8.12, if you have [2FA](../profile/account/two_factor_authentication.md) enabled in your account, you need
->   to pass a [personal access token](../profile/personal_access_tokens.md) instead of your password in order to
->   login to GitLab's Container Registry.
+GitLab Runner versions prior to 1.8 don't incorporate the introduced changes
+for permissions. This makes the `image:` directive not work with private
+projects automatically and it needs to be configured manually on the GitLab Runner host
+with a predefined account (for example administrator's personal account with
+access token created explicitly for this purpose). This issue is resolved with
+latest changes in GitLab Runner 1.8 which receives GitLab credentials with
+build data.
+
+Starting from GitLab 8.12, if you have [2FA](../profile/account/two_factor_authentication.md) enabled in your account, you need
+to pass a [personal access token](../profile/personal_access_tokens.md) instead of your password in order to
+login to the Container Registry.
 
 Your jobs can access all container images that you would normally have access
 to. The only implication is that you can push to the Container Registry of the

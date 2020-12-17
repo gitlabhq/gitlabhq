@@ -2,7 +2,7 @@
 type: reference, howto
 stage: Manage
 group: Access
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Groups
@@ -130,7 +130,7 @@ give a user access to all projects in the group with one action.
 
 Add members to a group by navigating to the group's dashboard and clicking **Members**.
 
-![add members to group](img/add_new_members_v13_6.png)
+![add members to group](img/add_new_members_v13_7.png)
 
 Select the [permission level](../permissions.md#permissions), and add the new member. You can also set the expiring date for that user; this is the date on which they will no longer have access to your group.
 
@@ -211,6 +211,88 @@ To remove a member from a group:
 1. (Optional) Select the **Also unassign this user from related issues and merge requests** checkbox.
 1. Click **Remove member**.
 
+## Filter and sort members in a group
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21727) in GitLab 12.6.
+> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/228675) in GitLab 13.7.
+> - Improvements are [deployed behind a feature flag](../feature_flags.md), enabled by default.
+> - Improvements are enabled on GitLab.com.
+> - Improvements are recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable improvements](#enable-or-disable-improvements-to-the-ability-to-filter-and-sort-group-members). **(CORE ONLY)**
+
+The following sections illustrate how you can filter and sort members in a group. To view these options,
+navigate to your desired group, go to **Members**, and include the noted search terms.
+
+### Membership filter
+
+By default, inherited and direct members are displayed. The [membership](subgroups/index.md#membership) filter can be used to display only inherited or only direct members.
+
+#### Only display inherited members
+
+Include `Membership` `=` `Inherited` in the search text box.
+
+![Group members filter inherited](img/group_members_filter_inherited_13_7.png)
+
+#### Only display direct members
+
+Include `Membership` `=` `Direct` in the search text box.
+
+![Group members filter direct](img/group_members_filter_direct_13_7.png)
+
+### 2FA filter
+
+[Owner](../permissions.md#group-members-permissions) permissions required.
+
+By default, members with 2FA enabled and disabled are displayed. The 2FA filter can be used to display only members with 2FA enabled or only members with 2FA disabled.
+
+#### Only display members with 2FA enabled
+
+Include `2FA` `=` `Enabled` in the search text box.
+
+![Group members filter 2FA enabled](img/group_members_filter_2fa_enabled_13_7.png)
+
+#### Only display members with 2FA disabled
+
+Include `2FA` `=` `Disabled` in the search text box.
+
+![Group members filter 2FA disabled](img/group_members_filter_2fa_disabled_13_7.png)
+
+### Search
+
+You can search for members by name, username, or email.
+
+![Group members search](img/group_members_search_13_7.png)
+
+### Sort
+
+You can sort members by **Account**, **Access granted**, **Max role**, or **Last sign-in** in ascending or descending order.
+
+![Group members sort](img/group_members_sort_13_7.png)
+
+### Enable or disable improvements to the ability to filter and sort group members **(CORE ONLY)**
+
+Group member filtering and sorting improvements are deployed behind a feature flag that is **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can opt to disable the improvements.
+
+To disable them:
+
+```ruby
+# For the instance
+Feature.disable(:group_members_filtered_search)
+# For a single group
+Feature.disable(:group_members_filtered_search, Group.find(<group id>))
+```
+
+To enable them:
+
+```ruby
+# For the instance
+Feature.enable(:group_members_filtered_search)
+# For a single group
+Feature.enable(:group_members_filtered_search, Group.find(<group id>))
+```
+
 ## Changing the default branch protection of a group
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7583) in GitLab 12.9.
@@ -226,7 +308,7 @@ To change this setting for a specific group:
 
 To change this setting globally, see [Default branch protection](../admin_area/settings/visibility_and_access_controls.md#default-branch-protection).
 
-NOTE: **Note:**
+NOTE:
 In [GitLab Premium or higher](https://about.gitlab.com/pricing/), GitLab administrators can choose to [disable group owners from updating the default branch protection](../admin_area/settings/visibility_and_access_controls.md#disable-group-owners-from-updating-default-branch-protection).
 
 ## Add projects to a group
@@ -342,7 +424,7 @@ Group links can be created using either a CN or a filter. These group links are 
 
 For more information on the administration of LDAP and group sync, refer to the [main LDAP documentation](../../administration/auth/ldap/index.md#group-sync).
 
-NOTE: **Note:**
+NOTE:
 If an LDAP user is a group member when LDAP Synchronization is added, and they are not part of the LDAP group, they will be removed from the group.
 
 ### Creating group links via CN **(STARTER ONLY)**
@@ -377,7 +459,7 @@ In GitLab [8.15](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/822) and 
 1. Select the pencil icon in the row for the user you are editing.
 1. Select the brown `Edit permissions` button in the modal.
 
-![Setting manual permissions](img/manual_permissions_v13_6.png)
+![Setting manual permissions](img/manual_permissions_v13_7.png)
 
 Now you will be able to edit the user's permissions from the **Members** page.
 
@@ -404,7 +486,7 @@ and above.
 
 There are a few limitations compared to project wikis:
 
-- Local Git access is not supported yet.
+- Git LFS is not supported.
 - Group wikis are not included in global search, group exports, backups, and Geo replication.
 - Changes to group wikis don't show up in the group's activity feed.
 - Group wikis [can't be moved](../../api/project_repository_storage_moves.md#limitations) using the project
@@ -482,12 +564,12 @@ To change your group path (group URL):
 1. Enter a new name under **Change group URL**.
 1. Click **Change group URL**.
 
-CAUTION: **Caution:**
+WARNING:
 It is currently not possible to rename a namespace if it contains a
 project with [Container Registry](../packages/container_registry/index.md) tags,
 because the project cannot be moved.
 
-TIP: **Tip:**
+NOTE:
 If you want to retain ownership over the original namespace and
 protect the URL redirects, then instead of changing a group's path or renaming a
 username, you can create a new group and transfer projects to it.
@@ -716,7 +798,7 @@ To enable delayed deletion of projects:
 1. Expand the **Permissions, LFS, 2FA** section, and check **Enable delayed project removal**.
 1. Click **Save changes**.
 
-NOTE: **Note:**
+NOTE:
 The group setting for delayed deletion is not inherited by sub-groups and has to be individually defined for each group.
 
 #### Prevent project forking outside group **(PREMIUM)**
@@ -746,20 +828,6 @@ To enable prevent project forking:
   for the group. **(STARTER ONLY)**
 - **Pipelines quota**: Keep track of the [pipeline quota](../admin_area/settings/continuous_integration.md) for the group.
 - **Integrations**: Configure [integrations](../admin_area/settings/project_integration_management.md) for your group.
-
-#### Storage usage quota **(STARTER)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/13294) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.0.
-
-A group owner can check the aggregated storage usage for all the projects in a group, sub-groups included, in the **Storage** tab of the **Usage Quotas** page available to the group page settings list.
-
-![Group storage usage quota](img/group_storage_usage_quota.png)
-
-The total usage of the storage is updated if any relevant event that
-will affect its value is triggered (e.g., a commit push).
-For performance reasons, we may delay the update up to 1 hour and 30 minutes.
-
-If your namespace shows `N/A` as the total storage usage, you can trigger a recalculation by pushing a commit to any project in that namespace.
 
 #### Group push rules **(STARTER)**
 
@@ -794,9 +862,20 @@ With [GitLab Issue Analytics](issues_analytics/index.md), you can see a bar char
 
 ## Repositories analytics **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215104) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263478) in GitLab 13.6.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/276003) in GitLab 13.7.
 
 With [GitLab Repositories Analytics](repositories_analytics/index.md), you can download a CSV of the latest coverage data for all the projects in your group.
+
+### Check code coverage for all projects
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263478) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.7.
+
+See the overall activity of all projects with code coverage with [GitLab Repositories Analytics](repositories_analytics/index.md).
+
+It displays the current code coverage data available for your projects:
+
+![Group repositories analytics](img/group_code_coverage_analytics_v13_7.png)
 
 ## Dependency Proxy
 

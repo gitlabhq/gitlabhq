@@ -17,8 +17,6 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   def show
     @cycle_analytics = ::CycleAnalytics::ProjectLevel.new(@project, options: options(cycle_analytics_project_params))
 
-    @cycle_analytics_no_data = @cycle_analytics.no_stats?
-
     respond_to do |format|
       format.html do
         Gitlab::UsageDataCounters::CycleAnalyticsCounter.count(:views)

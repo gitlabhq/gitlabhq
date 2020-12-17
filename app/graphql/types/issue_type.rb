@@ -61,9 +61,11 @@ module Types
     field :downvotes, GraphQL::INT_TYPE, null: false,
           description: 'Number of downvotes the issue has received'
     field :user_notes_count, GraphQL::INT_TYPE, null: false,
-          description: 'Number of user notes of the issue'
+          description: 'Number of user notes of the issue',
+          resolver: Resolvers::UserNotesCountResolver
     field :user_discussions_count, GraphQL::INT_TYPE, null: false,
-          description: 'Number of user discussions in the issue'
+          description: 'Number of user discussions in the issue',
+          resolver: Resolvers::UserDiscussionsCountResolver
     field :web_path, GraphQL::STRING_TYPE, null: false, method: :issue_path,
           description: 'Web path of the issue'
     field :web_url, GraphQL::STRING_TYPE, null: false,
@@ -118,26 +120,6 @@ module Types
 
     field :moved_to, Types::IssueType, null: true,
           description: 'Updated Issue after it got moved to another project'
-
-    def user_notes_count
-      BatchLoader::GraphQL.for(object.id).batch(key: :issue_user_notes_count) do |ids, loader, args|
-        counts = Note.count_for_collection(ids, 'Issue').index_by(&:noteable_id)
-
-        ids.each do |id|
-          loader.call(id, counts[id]&.count || 0)
-        end
-      end
-    end
-
-    def user_discussions_count
-      BatchLoader::GraphQL.for(object.id).batch(key: :issue_user_discussions_count) do |ids, loader, args|
-        counts = Note.count_for_collection(ids, 'Issue', 'COUNT(DISTINCT discussion_id) as count').index_by(&:noteable_id)
-
-        ids.each do |id|
-          loader.call(id, counts[id]&.count || 0)
-        end
-      end
-    end
 
     def author
       Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.author_id).find

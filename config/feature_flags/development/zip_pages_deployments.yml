@@ -1,8 +1,0 @@
----
-name: zip_pages_deployments
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42834
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/245308
-milestone: '13.5'
-type: development
-group: group::release management
-default_enabled: true

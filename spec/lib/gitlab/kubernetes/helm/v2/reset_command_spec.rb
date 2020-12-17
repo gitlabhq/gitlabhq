@@ -12,29 +12,11 @@ RSpec.describe Gitlab::Kubernetes::Helm::V2::ResetCommand do
   it_behaves_like 'helm command generator' do
     let(:commands) do
       <<~EOS
-      helm reset
-      kubectl delete replicaset -n gitlab-managed-apps -l name\\=tiller
-      kubectl delete clusterrolebinding tiller-admin
+      export HELM_HOST="localhost:44134"
+      tiller -listen ${HELM_HOST} -alsologtostderr &
+      helm init --client-only
+      helm reset --force
       EOS
-    end
-  end
-
-  context 'when there is a ca.pem file' do
-    let(:files) { { 'ca.pem': 'some file content' } }
-
-    it_behaves_like 'helm command generator' do
-      let(:commands) do
-        <<~EOS1.squish + "\n" + <<~EOS2
-        helm reset
-        --tls
-        --tls-ca-cert /data/helm/helm/config/ca.pem
-        --tls-cert /data/helm/helm/config/cert.pem
-        --tls-key /data/helm/helm/config/key.pem
-        EOS1
-          kubectl delete replicaset -n gitlab-managed-apps -l name\\=tiller
-          kubectl delete clusterrolebinding tiller-admin
-        EOS2
-      end
     end
   end
 

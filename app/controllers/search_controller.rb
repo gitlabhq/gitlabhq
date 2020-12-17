@@ -3,15 +3,7 @@
 class SearchController < ApplicationController
   include ControllerWithCrossProjectAccessCheck
   include SearchHelper
-  include RendersCommits
   include RedisTracking
-
-  SCOPE_PRELOAD_METHOD = {
-    projects: :with_web_entity_associations,
-    issues: :with_web_entity_associations,
-    merge_requests: :with_web_entity_associations,
-    epics: :with_web_entity_associations
-  }.freeze
 
   track_redis_hll_event :show, name: 'i_search_total', feature: :search_track_unique_users, feature_default_enabled: true
 
@@ -41,14 +33,12 @@ class SearchController < ApplicationController
     @search_term = params[:search]
     @sort = params[:sort] || default_sort
 
-    @scope = search_service.scope
-    @show_snippets = search_service.show_snippets?
-    @search_results = search_service.search_results
-    @search_objects = search_service.search_objects(preload_method)
-    @search_highlight = search_service.search_highlight
-
-    render_commits if @scope == 'commits'
-    eager_load_user_status if @scope == 'users'
+    @search_service = Gitlab::View::Presenter::Factory.new(search_service, current_user: current_user).fabricate!
+    @scope = @search_service.scope
+    @show_snippets = @search_service.show_snippets?
+    @search_results = @search_service.search_results
+    @search_objects = @search_service.search_objects
+    @search_highlight = @search_service.search_highlight
 
     increment_search_counters
   end
@@ -79,10 +69,6 @@ class SearchController < ApplicationController
 
   private
 
-  def preload_method
-    SCOPE_PRELOAD_METHOD[@scope.to_sym]
-  end
-
   # overridden in EE
   def default_sort
     'created_desc'
@@ -100,14 +86,6 @@ class SearchController < ApplicationController
     end
 
     true
-  end
-
-  def render_commits
-    @search_objects = prepare_commits_for_rendering(@search_objects)
-  end
-
-  def eager_load_user_status
-    @search_objects = @search_objects.eager_load(:status) # rubocop:disable CodeReuse/ActiveRecord
   end
 
   def check_single_commit_result?

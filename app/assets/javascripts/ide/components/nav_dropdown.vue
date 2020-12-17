@@ -30,6 +30,7 @@ export default {
         .on('hide.bs.dropdown', () => this.hideDropdown());
     },
     removeDropdownListeners() {
+      // eslint-disable-next-line @gitlab/no-global-event-off
       $(this.$refs.dropdown)
         .off('show.bs.dropdown')
         .off('hide.bs.dropdown');
@@ -45,7 +46,7 @@ export default {
 </script>
 
 <template>
-  <div ref="dropdown" class="btn-group ide-nav-dropdown dropdown">
+  <div ref="dropdown" class="btn-group ide-nav-dropdown dropdown" data-testid="ide-nav-dropdown">
     <nav-dropdown-button :show-merge-requests="canReadMergeRequests" />
     <div class="dropdown-menu dropdown-menu-left p-0">
       <nav-form v-if="isVisibleDropdown" :show-merge-requests="canReadMergeRequests" />

@@ -1,0 +1,6 @@
+---
+title: Do not crash the ingestion of all security reports if there is an invalid report
+  artifact
+merge_request: 49181
+author:
+type: fixed

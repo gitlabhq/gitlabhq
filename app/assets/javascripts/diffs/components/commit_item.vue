@@ -136,7 +136,12 @@ export default {
           class="d-inline-flex mb-2"
         />
         <gl-button-group class="gl-ml-4 gl-mb-4" data-testid="commit-sha-group">
-          <gl-button label class="gl-font-monospace" v-text="commit.short_id" />
+          <gl-button
+            label
+            class="gl-font-monospace"
+            data-testid="commit-sha-short-id"
+            v-text="commit.short_id"
+          />
           <clipboard-button
             :text="commit.id"
             :title="__('Copy commit SHA')"

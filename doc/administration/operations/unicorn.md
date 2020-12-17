@@ -1,12 +1,12 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+stage: Enablement
+group: Distribution
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Understanding Unicorn and unicorn-worker-killer
 
-NOTE: **Note:**
+NOTE:
 Starting with GitLab 13.0, Puma is the default web server used in GitLab
 all-in-one package based installations as well as GitLab Helm chart deployments.
 
@@ -51,7 +51,7 @@ master process has PID 56227 below.
 The main tunable options for Unicorn are the number of worker processes and the
 request timeout after which the Unicorn master terminates a worker process.
 See the [Omnibus GitLab Unicorn settings
-documentation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/unicorn.html)
+documentation](https://docs.gitlab.com/omnibus/settings/unicorn.html)
 if you want to adjust these settings.
 
 ## unicorn-worker-killer

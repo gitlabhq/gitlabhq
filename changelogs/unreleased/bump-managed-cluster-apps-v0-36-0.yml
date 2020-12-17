@@ -1,0 +1,5 @@
+---
+title: Bumps Managed-Cluster-Applications CI template to v0.36.0, which upgrades Runner
+merge_request: 48444
+author:
+type: changed

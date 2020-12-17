@@ -216,6 +216,24 @@ RSpec.describe TreeHelper do
           web_ide_url: "/-/ide/project/#{project.full_path}/edit/#{sha}/-/#{@path}"
         )
       end
+
+      it 'does not load blob from repository again' do
+        blob
+
+        expect(repository).not_to receive(:blob_at)
+
+        subject
+      end
+    end
+
+    context 'nil blob is passed' do
+      let(:blob) { nil }
+
+      it 'does not load blob from repository' do
+        expect(repository).not_to receive(:blob_at)
+
+        subject
+      end
     end
 
     context 'user does not have write access but a personal fork exists' do

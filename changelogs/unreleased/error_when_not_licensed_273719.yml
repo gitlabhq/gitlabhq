@@ -1,0 +1,5 @@
+---
+title: Add a job to the DAST template that shows an error in the console if the user is not licensed to use DAST.
+merge_request: 47484
+author:
+type: changed

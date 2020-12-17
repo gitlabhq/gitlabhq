@@ -11,17 +11,17 @@ RSpec.describe Gitlab::BackgroundMigration::MigrateUsersBioToUserDetails, :migra
     klass
   end
 
-  let!(:user_needs_migration) { users.create(name: 'user1', email: 'test1@test.com', projects_limit: 1, bio: 'bio') }
-  let!(:user_needs_no_migration) { users.create(name: 'user2', email: 'test2@test.com', projects_limit: 1) }
-  let!(:user_also_needs_no_migration) { users.create(name: 'user3', email: 'test3@test.com', projects_limit: 1, bio: '') }
-  let!(:user_with_long_bio) { users.create(name: 'user4', email: 'test4@test.com', projects_limit: 1, bio: 'a' * 256) } # 255 is the max
+  let!(:user_needs_migration) { users.create!(name: 'user1', email: 'test1@test.com', projects_limit: 1, bio: 'bio') }
+  let!(:user_needs_no_migration) { users.create!(name: 'user2', email: 'test2@test.com', projects_limit: 1) }
+  let!(:user_also_needs_no_migration) { users.create!(name: 'user3', email: 'test3@test.com', projects_limit: 1, bio: '') }
+  let!(:user_with_long_bio) { users.create!(name: 'user4', email: 'test4@test.com', projects_limit: 1, bio: 'a' * 256) } # 255 is the max
 
-  let!(:user_already_has_details) { users.create(name: 'user5', email: 'test5@test.com', projects_limit: 1, bio: 'my bio') }
-  let!(:existing_user_details) { user_details.find_or_create_by(user_id: user_already_has_details.id).update(bio: 'my bio') }
+  let!(:user_already_has_details) { users.create!(name: 'user5', email: 'test5@test.com', projects_limit: 1, bio: 'my bio') }
+  let!(:existing_user_details) { user_details.find_or_create_by!(user_id: user_already_has_details.id).update!(bio: 'my bio') }
 
   # unlikely scenario since we have triggers
-  let!(:user_has_different_details) { users.create(name: 'user6', email: 'test6@test.com', projects_limit: 1, bio: 'different') }
-  let!(:different_existing_user_details) { user_details.find_or_create_by(user_id: user_has_different_details.id).update(bio: 'bio') }
+  let!(:user_has_different_details) { users.create!(name: 'user6', email: 'test6@test.com', projects_limit: 1, bio: 'different') }
+  let!(:different_existing_user_details) { user_details.find_or_create_by!(user_id: user_has_different_details.id).update!(bio: 'bio') }
 
   let(:user_ids) do
     [

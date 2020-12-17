@@ -25,6 +25,10 @@ module Gitlab
 
             result
           end
+
+          def error_from_response(response)
+            error(response.message, response.code)
+          end
         end
       end
     end

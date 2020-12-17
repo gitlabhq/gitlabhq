@@ -84,56 +84,11 @@ RSpec.describe Import::GitlabProjectsController do
   end
 
   describe 'POST authorize' do
-    subject { post authorize_import_gitlab_project_path, headers: workhorse_headers }
+    it_behaves_like 'handle uploads authorize request' do
+      let(:uploader_class) { ImportExportUploader }
+      let(:maximum_size) { Gitlab::CurrentSettings.max_import_size.megabytes }
 
-    it 'authorizes importing project with workhorse header' do
-      subject
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
-      expect(json_response['TempPath']).to eq(ImportExportUploader.workhorse_local_upload_path)
-    end
-
-    it 'rejects requests that bypassed gitlab-workhorse' do
-      workhorse_headers.delete(Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER)
-
-      expect { subject }.to raise_error(JWT::DecodeError)
-    end
-
-    context 'when using remote storage' do
-      context 'when direct upload is enabled' do
-        before do
-          stub_uploads_object_storage(ImportExportUploader, enabled: true, direct_upload: true)
-        end
-
-        it 'responds with status 200, location of file remote store and object details' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
-          expect(json_response).not_to have_key('TempPath')
-          expect(json_response['RemoteObject']).to have_key('ID')
-          expect(json_response['RemoteObject']).to have_key('GetURL')
-          expect(json_response['RemoteObject']).to have_key('StoreURL')
-          expect(json_response['RemoteObject']).to have_key('DeleteURL')
-          expect(json_response['RemoteObject']).to have_key('MultipartUpload')
-        end
-      end
-
-      context 'when direct upload is disabled' do
-        before do
-          stub_uploads_object_storage(ImportExportUploader, enabled: true, direct_upload: false)
-        end
-
-        it 'handles as a local file' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
-          expect(json_response['TempPath']).to eq(ImportExportUploader.workhorse_local_upload_path)
-          expect(json_response['RemoteObject']).to be_nil
-        end
-      end
+      subject { post authorize_import_gitlab_project_path, headers: workhorse_headers }
     end
   end
 end

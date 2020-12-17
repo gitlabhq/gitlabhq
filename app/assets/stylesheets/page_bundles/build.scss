@@ -61,7 +61,7 @@
   }
 
   .environment-information {
-    border: 1px solid $border-color;
+    border: 1px solid var(--border-color, $border-color);
     padding: 8px $gl-padding 12px;
     border-radius: $border-radius-default;
 
@@ -219,9 +219,9 @@
   }
 
   .builds-container {
-    background-color: $white;
-    border-top: 1px solid $border-color;
-    border-bottom: 1px solid $border-color;
+    background-color: var(--white, $white);
+    border-top: 1px solid var(--border-color, $border-color);
+    border-bottom: 1px solid var(--border-color, $border-color);
     max-height: 300px;
     width: 289px;
     overflow: auto;
@@ -237,7 +237,7 @@
       width: 270px;
 
       &:hover {
-        color: $gl-text-color;
+        color: var(--gl-text-color, $gl-text-color);
       }
     }
 
@@ -256,13 +256,13 @@
       }
 
       &:hover {
-        background-color: $gray-darker;
+        background-color: var(--gray-50, $gray-50);
       }
     }
   }
 
   .link-commit {
-    color: $blue-600;
+    color: var(--blue-600, $blue-600);
   }
 }
 

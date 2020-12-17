@@ -2,7 +2,7 @@
 type: reference
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # GitLab Quick Actions
@@ -13,7 +13,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 >   quick actions when updating the description of issues, epics, and merge requests.
 
 Quick actions are textual shortcuts for common actions on issues, epics, merge requests,
-and commits that are usually done by clicking buttons or dropdowns in GitLab's UI.
+and commits that are usually done by clicking buttons or dropdowns in the GitLab UI.
 You can enter these commands in the description or in comments of issues, epics, merge requests, and commits.
 Each command should be on a separate line in order to be properly detected and executed.
 
@@ -34,6 +34,7 @@ The following quick actions are applicable to descriptions, discussions and thre
 | `/award :emoji:`                      | ✓     | ✓             | ✓    | Toggle emoji award.                                                                                                              |
 | `/child_epic <epic>`                  |       |               | ✓    | Add child epic to `<epic>`. The `<epic>` value should be in the format of `&epic`, `group&epic`, or a URL to an epic ([introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab/-/issues/7330)). **(ULTIMATE)** |
 | `/clear_weight`                       | ✓     |               |      | Clear weight. **(STARTER)**                                                                                                      |
+| `/clone <path/to/project> [--with_notes]`| ✓     |               |      | Clone the issue to given project, or the current one if no arguments are given ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9421) in GitLab 13.7). Copies as much data as possible as long as the target project contains equivalent labels, milestones, and so on. Does not copy comments or system notes unless `--with_notes` is provided as an argument. |
 | `/close`                              | ✓     | ✓             | ✓    | Close.                                                                                                                           |
 | `/confidential`                       | ✓     |               |      | Make confidential.                                                                                                               |
 | `/copy_metadata <!merge_request>`     | ✓     | ✓             |      | Copy labels and milestone from another merge request in the project.                                                             |

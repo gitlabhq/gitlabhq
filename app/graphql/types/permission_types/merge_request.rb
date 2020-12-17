@@ -19,7 +19,9 @@ module Types
         permission_field field_name, method: :"can_#{field_name}?", calls_gitaly: true
       end
 
-      permission_field :can_merge, calls_gitaly: true, resolve: -> (object, args, context) do
+      permission_field :can_merge, calls_gitaly: true
+
+      def can_merge
         object.can_be_merged_by?(context[:current_user])
       end
     end

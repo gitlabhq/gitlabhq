@@ -1,12 +1,12 @@
 ---
 stage: Monitor
 group: Health
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Generate sample Prometheus data **(CORE ONLY)**
 
-This command will run Prometheus queries for each of the metrics of a specific environment
+This command runs Prometheus queries for each of the metrics of a specific environment
 for a series of time intervals to now:
 
 - 30 minutes

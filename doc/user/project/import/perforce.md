@@ -2,7 +2,7 @@
 type: howto
 stage: Manage
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Migrating from Perforce Helix
@@ -35,7 +35,7 @@ Git:
 
 ## Why migrate
 
-Perforce Helix can be difficult to manage both from a user and an admin
+Perforce Helix can be difficult to manage both from a user and an administrator
 perspective. Migrating to Git/GitLab there is:
 
 - **No licensing costs**, Git is GPL while Perforce Helix is proprietary.

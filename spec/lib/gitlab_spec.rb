@@ -26,18 +26,17 @@ RSpec.describe Gitlab do
       end
 
       it 'returns the actual Git revision' do
-        expect(File).to receive(:read)
-                          .with(described_class.root.join('REVISION'))
-                          .and_return("abc123\n")
+        expect_file_read(described_class.root.join('REVISION'), content: "abc123\n")
 
         expect(described_class.revision).to eq('abc123')
       end
 
       it 'memoizes the revision' do
+        stub_file_read(described_class.root.join('REVISION'), content: "abc123\n")
+
         expect(File).to receive(:read)
-                          .once
-                          .with(described_class.root.join('REVISION'))
-                          .and_return("abc123\n")
+          .once
+          .with(described_class.root.join('REVISION'))
 
         2.times { described_class.revision }
       end
@@ -328,6 +327,26 @@ RSpec.describe Gitlab do
 
     it 'returns false when not set' do
       expect(described_class.http_proxy_env?).to eq(false)
+    end
+  end
+
+  describe '.maintenance_mode?' do
+    it 'returns true when maintenance mode is enabled' do
+      stub_application_setting(maintenance_mode: true)
+
+      expect(described_class.maintenance_mode?).to eq(true)
+    end
+
+    it 'returns false when maintenance mode is disabled' do
+      stub_application_setting(maintenance_mode: false)
+
+      expect(described_class.maintenance_mode?).to eq(false)
+    end
+
+    it 'returns false when maintenance mode feature flag is disabled' do
+      stub_feature_flags(maintenance_mode: false)
+
+      expect(described_class.maintenance_mode?).to eq(false)
     end
   end
 end

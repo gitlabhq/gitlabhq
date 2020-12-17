@@ -1,0 +1,25 @@
+- search_service = local_assigns.fetch(:search_service)
+
+- return unless search_service.show_results_status?
+
+.search-results-status
+  .row-content-block.gl-display-flex
+    .gl-display-md-flex.gl-text-left.gl-align-items-center.gl-flex-grow-1
+      - unless search_service.without_count?
+        = search_entries_info(search_service.search_objects, search_service.scope, params[:search])
+      - unless search_service.show_snippets?
+        - if search_service.project
+          - link_to_project = link_to(search_service.project.full_name, search_service.project, class: 'ml-md-1')
+          - if search_service.scope == 'blobs'
+            = _("in")
+            .mx-md-1
+              = render partial: "shared/ref_switcher", locals: { ref: repository_ref(search_service.project), form_path: request.fullpath, field_name: 'repository_ref' }
+            = s_('SearchCodeResults|of %{link_to_project}').html_safe % { link_to_project: link_to_project }
+          - else
+            = _("in project %{link_to_project}").html_safe % { link_to_project: link_to_project }
+        - elsif search_service.group
+          - link_to_group = link_to(search_service.group.name, search_service.group, class: 'ml-md-1')
+          = _("in group %{link_to_group}").html_safe % { link_to_group: link_to_group }
+    - if search_service.show_sort_dropdown?
+      .gl-display-md-flex.gl-flex-direction-column
+        = render partial: 'search/sort_dropdown'

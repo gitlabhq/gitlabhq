@@ -2,18 +2,12 @@ import Vue from 'vue';
 
 import Translate from '~/vue_shared/translate';
 import ModalManager from './components/user_modal_manager.vue';
-import DeleteUserModal from './components/delete_user_modal.vue';
-import UserOperationConfirmationModal from './components/user_operation_confirmation_modal.vue';
 import csrf from '~/lib/utils/csrf';
 import initConfirmModal from '~/confirm_modal';
+import initAdminUsersApp from '~/admin/users';
 
-const MODAL_TEXTS_CONTAINER_SELECTOR = '#modal-texts';
-const MODAL_MANAGER_SELECTOR = '#user-modal';
-const ACTION_MODALS = {
-  deactivate: UserOperationConfirmationModal,
-  delete: DeleteUserModal,
-  'delete-with-contributions': DeleteUserModal,
-};
+const MODAL_TEXTS_CONTAINER_SELECTOR = '#js-modal-texts';
+const MODAL_MANAGER_SELECTOR = '#js-delete-user-modal';
 
 function loadModalsConfigurationFromHtml(modalsElement) {
   const modalsConfiguration = {};
@@ -56,7 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ref: 'manager',
         props: {
           modalConfiguration,
-          actionModals: ACTION_MODALS,
           csrfToken: csrf.token,
         },
       });
@@ -64,4 +57,5 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   initConfirmModal();
+  initAdminUsersApp();
 });

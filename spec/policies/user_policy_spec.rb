@@ -160,4 +160,16 @@ RSpec.describe UserPolicy do
       it { is_expected.not_to be_allowed(:read_group_count) }
     end
   end
+
+  describe ':read_user_profile' do
+    context 'when the user is unconfirmed' do
+      let(:user) { create(:user, :unconfirmed) }
+
+      it { is_expected.not_to be_allowed(:read_user_profile) }
+    end
+
+    context 'when the user is confirmed' do
+      it { is_expected.to be_allowed(:read_user_profile) }
+    end
+  end
 end

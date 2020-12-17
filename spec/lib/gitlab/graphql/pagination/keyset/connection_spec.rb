@@ -10,15 +10,22 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
   let(:context) { GraphQL::Query::Context.new(query: OpenStruct.new(schema: schema), values: nil, object: nil) }
 
   subject(:connection) do
-    described_class.new(nodes, { context: context, max_page_size: 3 }.merge(arguments))
+    described_class.new(nodes, **{ context: context, max_page_size: 3 }.merge(arguments))
   end
 
   def encoded_cursor(node)
-    described_class.new(nodes, { context: context }).cursor_for(node)
+    described_class.new(nodes, context: context).cursor_for(node)
   end
 
   def decoded_cursor(cursor)
     Gitlab::Json.parse(Base64Bp.urlsafe_decode64(cursor))
+  end
+
+  it_behaves_like 'a connection with collection methods'
+
+  it_behaves_like 'a redactable connection' do
+    let_it_be(:projects) { create_list(:project, 2) }
+    let(:unwanted) { projects.second }
   end
 
   describe '#cursor_for' do

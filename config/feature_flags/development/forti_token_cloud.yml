@@ -1,0 +1,8 @@
+---
+name: forti_token_cloud
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49089
+rollout_issue_url:
+milestone: '13.7'
+type: development
+group: group::access
+default_enabled: false

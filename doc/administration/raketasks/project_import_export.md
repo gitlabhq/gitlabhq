@@ -1,7 +1,7 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+stage: Enablement
+group: Distribution
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Project import/export administration **(CORE ONLY)**
@@ -36,7 +36,7 @@ sudo gitlab-rake gitlab:import_export:version
 bundle exec rake gitlab:import_export:version RAILS_ENV=production
 ```
 
-The current list of DB tables that will be exported can be listed by using the following command:
+The current list of DB tables to export can be listed by using the following command:
 
 ```shell
 # Omnibus installations

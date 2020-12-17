@@ -1,7 +1,7 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+stage: Enablement
+group: Distribution
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Uploads administration **(CORE ONLY)**
@@ -44,7 +44,7 @@ stored locally, use the steps in this section based on your installation method:
 
 **In Omnibus GitLab installations:**
 
-NOTE: **Note:**
+NOTE:
 For historical reasons, uploads are stored into a base directory, which by
 default is `uploads/-/system`. It's strongly discouraged to change this
 configuration option for an existing GitLab installation.

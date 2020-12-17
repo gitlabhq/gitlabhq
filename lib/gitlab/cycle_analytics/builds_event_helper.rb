@@ -3,11 +3,11 @@
 module Gitlab
   module CycleAnalytics
     module BuildsEventHelper
-      def initialize(*args)
+      def initialize(...)
         @projections = [build_table[:id]]
         @order = build_table[:created_at]
 
-        super(*args)
+        super(...)
       end
 
       def fetch

@@ -15,7 +15,7 @@ RSpec.describe Resolvers::DesignManagement::Version::DesignAtVersionResolver do
 
   let(:all_singular_args) do
     {
-      design_at_version_id: global_id_of(dav(design)),
+      id: global_id_of(dav(design)),
       design_id: global_id_of(design),
       filename: design.filename
     }
@@ -50,7 +50,7 @@ RSpec.describe Resolvers::DesignManagement::Version::DesignAtVersionResolver do
       end
     end
 
-    %i[design_at_version_id design_id filename].each do |arg|
+    %i[id design_id filename].each do |arg|
       describe "passing #{arg}" do
         let(:args) { all_singular_args.slice(arg) }
 
@@ -71,7 +71,7 @@ RSpec.describe Resolvers::DesignManagement::Version::DesignAtVersionResolver do
     describe 'attempting to retrieve an object not visible at this version' do
       let(:design) { design_d }
 
-      %i[design_at_version_id design_id filename].each do |arg|
+      %i[id design_id filename].each do |arg|
         describe "passing #{arg}" do
           let(:args) { all_singular_args.slice(arg) }
 

@@ -47,11 +47,3 @@
       = f.label :id, class: 'label-bold' do
         = _("Group ID")
       = f.text_field :id, class: 'form-control', readonly: true
-
-.row
-  .form-group.group-description-holder.col-sm-8
-    = f.label :description, class: 'label-bold' do
-      = _("Group description")
-      %span (optional)
-    = f.text_area :description, maxlength: 250,
-        class: 'form-control js-gfm-input', rows: 4

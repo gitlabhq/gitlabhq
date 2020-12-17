@@ -7,7 +7,7 @@ module Mutations
 
       argument :id, PipelineID,
                 required: true,
-                description: 'The id of the pipeline to mutate'
+                description: 'The ID of the pipeline to mutate'
 
       private
 

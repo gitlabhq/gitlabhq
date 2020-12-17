@@ -10,6 +10,9 @@ exports[`Resizable Skeleton Loader default setup renders the bars, labels, and g
     version="1.1"
     viewBox="0 0 400 130"
   >
+    <title>
+      Loading
+    </title>
     <rect
       clip-path="url(#null-idClip)"
       height="130"
@@ -226,6 +229,9 @@ exports[`Resizable Skeleton Loader with custom settings renders the correct posi
     version="1.1"
     viewBox="0 0 400 130"
   >
+    <title>
+      Loading
+    </title>
     <rect
       clip-path="url(#-idClip)"
       height="130"

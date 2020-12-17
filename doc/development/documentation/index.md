@@ -1,13 +1,13 @@
 ---
 stage: none
 group: Documentation Guidelines
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 description: Learn how to contribute to GitLab Documentation.
 ---
 
 # GitLab Documentation guidelines
 
-GitLab's documentation is [intended as the single source of truth (SSOT)](https://about.gitlab.com/handbook/documentation/) for information about how to configure, use, and troubleshoot GitLab. The documentation contains use cases and usage instructions for every GitLab feature, organized by product area and subject. This includes topics and workflows that span multiple GitLab features, and the use of GitLab with other applications.
+The GitLab documentation is [intended as the single source of truth (SSOT)](https://about.gitlab.com/handbook/documentation/) for information about how to configure, use, and troubleshoot GitLab. The documentation contains use cases and usage instructions for every GitLab feature, organized by product area and subject. This includes topics and workflows that span multiple GitLab features, and the use of GitLab with other applications.
 
 In addition to this page, the following resources can help you craft and contribute to documentation:
 
@@ -38,8 +38,8 @@ Documentation issues and merge requests are part of their respective repositorie
 
 The [CI pipeline for the main GitLab project](../pipelines.md) is configured to automatically
 run only the jobs that match the type of contribution. If your contribution contains
-**only** documentation changes, then only documentation-related jobs will be run, and
-the pipeline will complete much faster than a code contribution.
+**only** documentation changes, then only documentation-related jobs run, and
+the pipeline completes much faster than a code contribution.
 
 If you are submitting documentation-only changes to Runner, Omnibus, or Charts,
 the fast pipeline is not determined automatically. Instead, create branches for
@@ -82,7 +82,7 @@ All values are treated as strings and are only used for the
 Each page should ideally have metadata related to the stage and group it
 belongs to, as well as an information block as described below:
 
-- `stage`: The [Stage](https://about.gitlab.com/handbook/product/product-categories/#devops-stages)
+- `stage`: The [Stage](https://about.gitlab.com/handbook/product/categories/#devops-stages)
   to which the majority of the page's content belongs.
 - `group`: The [Group](https://about.gitlab.com/company/team/structure/#product-groups)
   to which the majority of the page's content belongs.
@@ -93,7 +93,7 @@ belongs to, as well as an information block as described below:
   ```plaintext
   To determine the technical writer assigned to the Stage/Group
   associated with this page, see
-  https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+  https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
   ```
 
 For example, the following metadata would be at the beginning of a product
@@ -104,7 +104,7 @@ feature:
 ---
 stage: Monitor
 group: APM
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 ```
 
@@ -152,7 +152,7 @@ comments: false
 
 Each page can have additional, optional metadata (set in the
 [default.html](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/fc3577921343173d589dfa43d837b4307e4e620f/layouts/default.html#L30-52)
-Nanoc layout), which will be displayed at the top of the page if defined:
+Nanoc layout), which is displayed at the top of the page if defined:
 
 - `reading_time`: If you want to add an indication of the approximate reading
   time of a page, you can set `reading_time` to `true`. This uses a simple
@@ -161,78 +161,82 @@ Nanoc layout), which will be displayed at the top of the page if defined:
 
 ## Move or rename a page
 
-Moving or renaming a document is the same as changing its location. This process
-requires specific steps to ensure that visitors can find the new
-documentation page, whether they're using `/help` from a GitLab instance or by
-visiting <https://docs.gitlab.com>.
-
-Be sure to assign a technical writer to a page move or rename MR. Technical
+Moving or renaming a document is the same as changing its location.
+Be sure to assign a technical writer to any MR that renames or moves a page. Technical
 Writers can help with any questions and can review your change.
 
-To change a document's location, don't remove the old document, but instead
-replace all of its content with the following:
+When moving or renaming a page, you must redirect browsers to the new page. This
+ensures users find the new page, and have the opportunity to update their bookmarks.
 
-```markdown
----
-redirect_to: '../path/to/file/index.md'
----
+There are two types of redirects:
 
-This document was moved to [another location](../path/to/file/index.md).
-```
+- Redirect files added into the docs themselves, for users who view the docs in `/help`
+  on self-managed instances. For example, [`/help` on GitLab.com](https://gitlab.com/help).
+- Redirects in a [`_redirects`](../../user/project/pages/redirects.md) file, for users
+  who view the docs on <http://docs.gitlab.com>.
 
-Replace `../path/to/file/index.md` with the relative path to the old document.
+To add a redirect:
 
-The `redirect_to` variable supports both full and relative URLs; for example:
+1. In an MR in one of the internal docs projects (`gitlab`, `gitlab-runner`, `omnibus-gitlab`
+   or `charts`):
+   1. Move or rename the doc, but do not delete the old doc.
+   1. In the old doc, add the redirect code for `/help`. Use the following template exactly,
+      and only change the links and date. Use relative paths and `.md` for a redirect
+      to another docs page. Use the full URL to redirect to a different project or site:
 
-- `https://docs.gitlab.com/ee/path/to/file.html`
-- `../path/to/file.html`
-- `path/to/file.md`
+      ```markdown
+      ---
+      redirect_to: '../path/to/file/index.md'
+      ---
 
-The redirect works for <https://docs.gitlab.com>, and any `*.md` paths are
-changed to `*.html`. The description line following the `redirect_to` code
-informs the visitor that the document changed location if the redirect process
-doesn't complete successfully.
+      This document was moved to [another location](../path/to/file/index.md).
 
-For example, if you move `doc/workflow/lfs/index.md` to
-`doc/administration/lfs.md`, then the steps would be:
+      <!-- This redirect file can be deleted after <YYYY-MM-DD>. -->
+      <!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/#move-or-rename-a-page -->
+      ```
 
-1. Copy `doc/workflow/lfs/index.md` to `doc/administration/lfs.md`
-1. Replace the contents of `doc/workflow/lfs/index.md` with:
+      Redirect files linking to docs in any of the 4 internal docs projects can be
+      removed after 3 months. Redirect files linking to external sites can be removed
+      after 1 year.
 
-   ```markdown
-   ---
-   redirect_to: '../../administration/lfs.md'
-   ---
+   1. If the document being moved has any Disqus comments on it, follow the steps
+      described in [Redirections for pages with Disqus comments](#redirections-for-pages-with-disqus-comments).
+   1. Assign the MR to a technical writer for review and merge.
+1. If the redirect is to one of the 4 internal docs projects (not an external URL),
+   create an MR in [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs):
+   1. Update [`_redirects`](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/master/content/_redirects)
+      with one redirect entry for each renamed or moved file. This code works for
+      <https://docs.gitlab.com> links only:
 
-   This document was moved to [another location](../../administration/lfs.md).
-   ```
+      ```plaintext
+      /ee/path/to/old_file.html /ee/path/to/new_file 302 # To be removed after YYYY-MM-DD
+      ```
 
-1. Find and replace any occurrences of the old location with the new one.
-   A quick way to find them is to use `git grep` on the repository you changed
-   the file from:
+      The path must start with the internal project directory `/ee` for `gitlab`,
+      `/gitlab-runner`, `/omnibus-gitlab` or `charts`, and must end with `.html`.
 
-   ```shell
-   git grep -n "workflow/lfs/lfs_administration"
-   git grep -n "lfs/lfs_administration"
-   ```
+      `_redirects` entries can be removed after one year.
 
-1. If the document being moved has any Disqus comments on it, follow the steps
-   described in [Redirections for pages with Disqus comments](#redirections-for-pages-with-disqus-comments).
+1. Search for links to the old file. You must find and update all links to the old file:
 
-Things to note:
+   - In <https://gitlab.com/gitlab-com/www-gitlab-com>, search for full URLs:
+     `grep -r "docs.gitlab.com/ee/path/to/file.html" .`
+   - In <https://gitlab.com/gitlab-org/gitlab-docs/-/tree/master/content/_data>,
+     search the navigation bar configuration files for the path with `.html`:
+     `grep -r "path/to/file.html" .`
+   - In any of the 4 internal projects. This includes searching for links in the docs
+     and codebase. Search for all variations, including full URL and just the path.
+     In macOS for example, go to the root directory of the `gitlab` project and run:
 
-- Since we also use inline documentation, except for the documentation itself,
-  the document might also be referenced in the views of GitLab (`app/`) which will
-  render when visiting `/help`, and sometimes in the testing suite (`spec/`).
-  You must search these paths for references to the doc and update them as well.
-- The above `git grep` command will search recursively in the directory you run
-  it in for `workflow/lfs/lfs_administration` and `lfs/lfs_administration`
-  and will print the file and the line where this file is mentioned.
-  You may ask why the two greps. Since [we use relative paths to link to
-  documentation](styleguide/index.md#links), sometimes it might be useful to search a path deeper.
-- The `*.md` extension is not used when a document is linked to GitLab's
-  built-in help page, which is why we omit it in `git grep`.
-- Use the checklist on the "Change documentation location" MR description template.
+     ```shell
+     grep -r "docs.gitlab.com/ee/path/to/file.html" .
+     grep -r "path/to/file.html" .
+     grep -r "path/to/file.md" .
+     grep -r "path/to/file" .
+     ```
+
+     You may need to try variations of relative links as well, such as `../path/to/file`
+     or even `../file` to find every case.
 
 ### Redirections for pages with Disqus comments
 
@@ -249,7 +253,7 @@ available under `https://docs.gitlab.com/my-old-location/README.html` to a new l
 `https://docs.gitlab.com/my-new-location/index.html`.
 
 Into the **new document** front matter, we add the following information. You must
-include the file name in the `disqus_identifier` URL, even if it's `index.html` or `README.html`.
+include the filename in the `disqus_identifier` URL, even if it's `index.html` or `README.html`.
 
 ```yaml
 ---
@@ -267,7 +271,7 @@ Before getting started, make sure you read the introductory section
 - Label the MR `Documentation` (can only be done by people with `developer` access, for example, GitLab team members)
 - Assign the correct milestone per note below (can only be done by people with `developer` access, for example, GitLab team members)
 
-Documentation will be merged if it is an improvement on existing content,
+Documentation is merged if it is an improvement on existing content,
 represents a good-faith effort to follow the template and style standards,
 and is believed to be accurate.
 
@@ -285,16 +289,16 @@ Every GitLab instance includes the documentation, which is available at `/help`
 (`https://gitlab.example.com/help`). For example, <https://gitlab.com/help>.
 
 The documentation available online on <https://docs.gitlab.com> is deployed every four hours from the `master` branch of GitLab, Omnibus, and Runner. Therefore,
-after a merge request gets merged, it will be available online on the same day.
-However, it will be shipped (and available on `/help`) within the milestone assigned
+after a merge request gets merged, it is available online on the same day.
+However, it's shipped (and available on `/help`) within the milestone assigned
 to the MR.
 
 For example, let's say your merge request has a milestone set to 11.3, which
-will be released on 2018-09-22. If it gets merged on 2018-09-15, it will be
+a release date of 2018-09-22. If it gets merged on 2018-09-15, it is
 available online on 2018-09-15, but, as the feature freeze date has passed, if
 the MR does not have a `~"Pick into 11.3"` label, the milestone has to be changed
-to 11.4 and it will be shipped with all GitLab packages only on 2018-10-22,
-with GitLab 11.4. Meaning, it will only be available under `/help` from GitLab
+to 11.4 and it ships with all GitLab packages only on 2018-10-22,
+with GitLab 11.4. Meaning, it's available only with `/help` from GitLab
 11.4 onward, but available on <https://docs.gitlab.com/> on the same day it was merged.
 
 ### Linking to `/help`
@@ -365,7 +369,7 @@ You can combine one or more of the following:
 ### GitLab `/help` tests
 
 Several [RSpec tests](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/features/help_pages_spec.rb)
-are run to ensure GitLab documentation renders and works correctly. In particular, that [main docs landing page](../../README.md) will work correctly from `/help`.
+are run to ensure GitLab documentation renders and works correctly. In particular, that [main docs landing page](../../README.md) works correctly from `/help`.
 For example, [GitLab.com's `/help`](https://gitlab.com/help).
 
 ## Docs site architecture
@@ -381,7 +385,7 @@ on how the left-side navigation menu is built and updated.
 
 ## Previewing the changes live
 
-NOTE: **Note:**
+NOTE:
 To preview your changes to documentation locally, follow this
 [development guide](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/README.md#development-when-contributing-to-gitlab-documentation) or [these instructions for GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/gitlab_docs.md).
 
@@ -392,20 +396,20 @@ The live preview is currently enabled for the following projects:
 
 If your merge request has docs changes, you can use the manual `review-docs-deploy` job
 to deploy the docs review app for your merge request.
-You will need at least Maintainer permissions to be able to run it.
+You need at least Maintainer permissions to be able to run it.
 
 ![Manual trigger a docs build](img/manual_build_docs.png)
 
 You must push a branch to those repositories, as it doesn't work for forks.
 
-The `review-docs-deploy*` job will:
+The `review-docs-deploy*` job:
 
-1. Create a new branch in the [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs)
+1. Creates a new branch in the [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs)
    project named after the scheme: `docs-preview-$DOCS_GITLAB_REPO_SUFFIX-$CI_MERGE_REQUEST_IID`,
    where `DOCS_GITLAB_REPO_SUFFIX` is the suffix for each product, e.g, `ee` for
    EE, `omnibus` for Omnibus GitLab, etc, and `CI_MERGE_REQUEST_IID` is the ID
    of the respective merge request.
-1. Trigger a cross project pipeline and build the docs site with your changes.
+1. Triggers a cross project pipeline and build the docs site with your changes.
 
 In case the review app URL returns 404, this means that either the site is not
 yet deployed, or something went wrong with the remote pipeline. Give it a few
@@ -414,11 +418,11 @@ remote pipeline from the link in the merge request's job output.
 If the pipeline failed or got stuck, drop a line in the `#docs` chat channel.
 
 Make sure that you always delete the branch of the merge request you were
-working on. If you don't, the remote docs branch won't be removed either,
-and the server where the Review Apps are hosted will eventually be out of
+working on. If you don't, the remote docs branch isn't removed either,
+and the server where the Review Apps are hosted can eventually run out of
 disk space.
 
-TIP: **Tip:**
+NOTE:
 Someone with no merge rights to the GitLab projects (think of forks from
 contributors) cannot run the manual job. In that case, you can
 ask someone from the GitLab team who has the permissions to do that for you.
@@ -449,7 +453,7 @@ If you want to know the in-depth details, here's what's really happening:
       - The number of the merge request is added so that you can know by the
         `gitlab-docs` branch name the merge request it originated from.
    1. The remote branch is then created if it doesn't exist (meaning you can
-      re-run the manual job as many times as you want and this step will be skipped).
+      re-run the manual job as many times as you want and this step is skipped).
    1. A new cross-project pipeline is triggered in the docs project.
    1. The preview URL is shown both at the job output and in the merge request
       widget. You also get the link to the remote pipeline.
@@ -494,7 +498,7 @@ To run the tool on an existing screenshot generator, take the following steps:
 1. Set up the [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/gitlab_docs.md).
 1. Navigate to the subdirectory with your cloned GitLab repository, typically `gdk/gitlab`.
 1. Make sure that your GDK database is fully migrated: `bin/rake db:migrate RAILS_ENV=development`.
-1. Install pngquant, see the tool website for more info: [`pngquant`](https://pngquant.org/)
+1. Install pngquant, see the tool website for more information: [`pngquant`](https://pngquant.org/)
 1. Run `scripts/docs_screenshots.rb spec/docs_screenshots/<name_of_screenshot_generator>.rb <milestone-version>`.
 1. Identify the location of the screenshots, based on the `gitlab/doc` location defined by the `it` parameter in your script.
 1. Commit the newly created screenshots.
@@ -537,8 +541,12 @@ To have the screenshot focuses few more steps are needed:
 - **wait for the content**: `expect(screenshot_area).to have_content 'Expiration interval'`
 - **set the crop area**: `set_crop_data(screenshot_area, 20)`
 
-In particular `set_crop_data` accepts as arguments: a `DOM` element and a padding, the padding will be added around the element enlarging the screenshot area.
+In particular, `set_crop_data` accepts as arguments: a `DOM` element and a
+padding. The padding is added around the element, enlarging the screenshot area.
 
 #### Live example
 
 Please use `spec/docs_screenshots/container_registry_docs.rb` as a guide and as an example to create your own scripts.
+
+<!-- This redirect file can be deleted after February 1, 2021. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/#move-or-rename-a-page -->

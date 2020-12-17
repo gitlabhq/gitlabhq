@@ -2,7 +2,7 @@
 type: reference, howto
 stage: Secure
 group: Threat Insights
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Vulnerability Pages
@@ -37,7 +37,7 @@ the following values:
 |-----------|------------------------------------------------------------------------------------------------------------------|
 | Detected  | The default state for a newly discovered vulnerability                                                           |
 | Confirmed | A user has seen this vulnerability and confirmed it to be accurate                                               |
-| Dismissed | A user has seen this vulnerability and dismissed it because it is not accurate or otherwise will not be resolved |
+| Dismissed | A user has seen this vulnerability and dismissed it because it is not accurate or otherwise not to be resolved |
 | Resolved  | The vulnerability has been fixed and is no longer valid                                                          |
 
 A timeline shows you when the vulnerability status has changed
@@ -47,9 +47,9 @@ and allows you to comment on a change.
 
 You can create an issue for a vulnerability by selecting the **Create issue** button.
 
-This creates a [confidential issue](../../project/issues/confidential_issues.md) in the
-project the vulnerability came from and pre-populates it with useful information from
-the vulnerability report. After the issue is created, GitLab redirects you to the
+This allows the user to create a [confidential issue](../../project/issues/confidential_issues.md)
+in the project the vulnerability came from. Fields are pre-populated with pertinent information
+from the vulnerability report. After the issue is created, GitLab redirects you to the
 issue page so you can edit, assign, or comment on the issue.
 
 ## Link issues to the vulnerability

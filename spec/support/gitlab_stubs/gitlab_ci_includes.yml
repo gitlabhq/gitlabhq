@@ -1,0 +1,19 @@
+rspec 0 1:
+  stage: build
+  script: 'rake spec'
+  needs: []
+
+rspec 0 2:
+  stage: build
+  script: 'rake spec'
+  needs: []
+
+spinach:
+  stage: build
+  script: 'rake spinach'
+  needs: []
+
+docker:
+  stage: test
+  script: 'curl http://dockerhub/URL'
+  needs: [spinach, rspec 0 1]

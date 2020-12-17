@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Continuous Integration
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -19,7 +19,7 @@ You can use special syntax in [`script`](README.md#script) sections to:
 You can split long commands into multiline commands to improve readability with
 `|` (literal) and `>` (folded) [YAML multiline block scalar indicators](https://yaml-multiline.info/).
 
-CAUTION: **Warning:**
+WARNING:
 If multiple commands are combined into one command string, only the last command's
 failure or success is reported.
 [Failures from earlier commands are ignored due to a bug](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/25394).

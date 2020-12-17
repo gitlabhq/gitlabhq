@@ -38,7 +38,7 @@ RSpec.describe Projects::Alerting::NotificationsController do
 
           expect(notify_service_class)
             .to have_received(:new)
-            .with(project, nil, permitted_params)
+            .with(project, permitted_params)
         end
       end
 

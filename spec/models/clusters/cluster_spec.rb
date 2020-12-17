@@ -262,14 +262,14 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     end
   end
 
-  describe '.with_project_alert_service_data' do
-    subject { described_class.with_project_alert_service_data(project_id) }
+  describe '.with_project_http_integrations' do
+    subject { described_class.with_project_http_integrations(project_id) }
 
     let!(:cluster) { create(:cluster, :project) }
     let!(:project_id) { cluster.first_project.id }
 
     context 'project has alert service data' do
-      let!(:alerts_service) { create(:alerts_service, project: cluster.clusterable) }
+      let!(:integration) { create(:alert_management_http_integration, project: cluster.clusterable) }
 
       it { is_expected.to include(cluster) }
     end

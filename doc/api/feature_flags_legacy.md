@@ -1,7 +1,7 @@
 ---
 stage: Release
-group: Progressive Delivery
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+group: Release
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Legacy Feature Flags API **(CORE)**
@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) to [GitLab Starter](https://about.gitlab.com/pricing/) in 13.4.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) to [GitLab Core](https://about.gitlab.com/pricing/) in 13.5.
 
-CAUTION: **Deprecation:**
+WARNING:
 This API is deprecated and [scheduled for removal in GitLab 14.0](https://gitlab.com/gitlab-org/gitlab/-/issues/213369). Use [this API](feature_flags.md) instead.
 
 API for accessing resources of [GitLab Feature Flags](../operations/feature_flags.md).
@@ -36,7 +36,7 @@ GET /projects/:id/feature_flags
 | `scope`             | string           | no         | The condition of feature flags, one of: `enabled`, `disabled`.                                                              |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/feature_flags
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/feature_flags"
 ```
 
 Example response:
@@ -174,7 +174,7 @@ POST /projects/:id/feature_flags
 | `scopes:strategies` | JSON             | no         | The [strategies](../operations/feature_flags.md#feature-flag-strategies) of the feature flag spec. |
 
 ```shell
-curl https://gitlab.example.com/api/v4/projects/1/feature_flags \
+curl "https://gitlab.example.com/api/v4/projects/1/feature_flags" \
      --header "PRIVATE-TOKEN: <your_access_token>" \
      --header "Content-type: application/json" \
      --data @- << EOF
@@ -244,7 +244,7 @@ GET /projects/:id/feature_flags/:name
 | `name`              | string           | yes        | The name of the feature flag.  |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/feature_flags/new_live_trace
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/feature_flags/new_live_trace"
 ```
 
 Example response:
@@ -320,5 +320,5 @@ DELETE /projects/:id/feature_flags/:name
 | `name`              | string           | yes        | The name of the feature flag.  |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" --request DELETE https://gitlab.example.com/api/v4/projects/1/feature_flags/awesome_feature
+curl --header "PRIVATE-TOKEN: <your_access_token>" --request DELETE "https://gitlab.example.com/api/v4/projects/1/feature_flags/awesome_feature"
 ```

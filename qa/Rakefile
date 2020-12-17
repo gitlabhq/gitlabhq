@@ -3,6 +3,7 @@ require_relative 'qa/tools/delete_subgroups'
 require_relative 'qa/tools/generate_perf_testdata'
 require_relative 'qa/tools/delete_test_ssh_keys'
 require_relative 'qa/tools/initialize_gitlab_auth'
+require_relative 'qa/tools/delete_projects'
 
 desc "Revokes all personal access tokens"
 task :revoke_personal_access_tokens do
@@ -50,4 +51,9 @@ task generate_data_and_run_load_test: [:generate_perf_testdata, :run_artillery_l
 desc "Deletes test ssh keys a user"
 task :delete_test_ssh_keys, [:title_portion, :delete_before, :dry_run] do |t, args|
   QA::Tools::DeleteTestSSHKeys.new(args).run
+end
+
+desc "Deletes projects directly under the provided group"
+task :delete_projects do
+  QA::Tools::DeleteProjects.new.run
 end

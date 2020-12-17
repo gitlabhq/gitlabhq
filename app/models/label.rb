@@ -257,7 +257,7 @@ class Label < ApplicationRecord
   end
 
   def present(attributes)
-    super(attributes.merge(presenter_class: ::LabelPresenter))
+    super(**attributes.merge(presenter_class: ::LabelPresenter))
   end
 
   private

@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 comments: false
 ---
 
@@ -12,7 +12,7 @@ comments: false
 - **Windows** - Install 'Git for Windows' from [Git for Windows](https://gitforwindows.org).
 - **Mac**
   - Type '`git`' in the Terminal application.
-  - If it's not installed, it will prompt you to install it.
+  - If it's not installed, it prompts you to install it.
 
 - **GNU/Linux** - Enter `which git` in the Terminal application and press <kbd>Enter</kbd> to
   determine if Git is installed on your system.

@@ -426,7 +426,7 @@ RSpec.describe Projects::NotesController do
           let(:note_text) { "/award :thumbsup:\n/estimate 1d\n/spend 3h" }
           let(:extra_request_params) { { format: :json } }
 
-          it 'includes changes in commands_changes ' do
+          it 'includes changes in commands_changes' do
             create!
 
             expect(response).to have_gitlab_http_status(:ok)

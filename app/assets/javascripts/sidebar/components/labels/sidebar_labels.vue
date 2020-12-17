@@ -1,7 +1,7 @@
 <script>
 import $ from 'jquery';
 import { camelCase, difference, union } from 'lodash';
-import updateIssueLabelsMutation from '~/boards/queries/issue_set_labels.mutation.graphql';
+import updateIssueLabelsMutation from '~/boards/graphql/issue_set_labels.mutation.graphql';
 import createFlash from '~/flash';
 import { IssuableType } from '~/issue_show/constants';
 import { __ } from '~/locale';

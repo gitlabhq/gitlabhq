@@ -10,14 +10,6 @@ RSpec.describe Projects::OpenIssuesCountService, :use_clean_rails_memory_store_c
   it_behaves_like 'a counter caching service'
 
   describe '#count' do
-    it 'does not count test cases' do
-      create(:issue, :opened, project: project)
-      create(:incident, :opened, project: project)
-      create(:quality_test_case, :opened, project: project)
-
-      expect(described_class.new(project).count).to eq(2)
-    end
-
     context 'when user is nil' do
       it 'does not include confidential issues in the issue count' do
         create(:issue, :opened, project: project)

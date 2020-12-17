@@ -3,11 +3,6 @@
 
 - @gfm_form = true
 
-- content_for :note_actions do
-  - if can?(current_user, :update_issue, @issue)
-    = link_to 'Reopen issue', issue_path(@issue, issue: {state_event: :reopen}, format: 'json'), data: {original_text: "Reopen issue", alternative_text: "Comment & reopen issue"}, class: "gl-button btn btn-nr btn-reopen btn-comment js-note-target-reopen #{issue_button_visibility(@issue, false)}", title: 'Reopen issue'
-    = link_to 'Close issue', issue_path(@issue, issue: {state_event: :close}, format: 'json'), data: {original_text: "Close issue", alternative_text: "Comment & close issue"}, class: "gl-button btn btn-nr btn-close btn-comment js-note-target-close #{issue_button_visibility(@issue, true)}", title: 'Close issue'
-
 %section.issuable-discussion.js-vue-notes-event
   #js-vue-notes{ data: { notes_data: notes_data(@issue).to_json,
     noteable_data: serialize_issuable(@issue, with_blocking_issues: true),

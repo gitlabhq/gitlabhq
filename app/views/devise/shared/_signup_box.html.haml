@@ -1,7 +1,12 @@
 - max_first_name_length = max_last_name_length = 127
 - max_username_length = 255
 - min_username_length = 2
+- omniauth_providers_placement ||= :bottom
+
 .gl-mb-3.gl-p-4.gl-border-gray-100.gl-border-1.gl-border-solid.gl-rounded-base
+  - if show_omniauth_providers && omniauth_providers_placement == :top
+    = render 'devise/shared/signup_omniauth_providers_top'
+
   = form_for(resource, as: "new_#{resource_name}", url: url, html: { class: 'new_user gl-show-field-errors', 'aria-live' => 'assertive' }) do |f|
     .devise-errors
       = render 'devise/shared/error_messages', resource: resource
@@ -23,7 +28,7 @@
     .form-group
       = f.label :email, class: 'label-bold'
       = f.email_field :email, value: @invite_email, class: 'form-control middle', data: { qa_selector: 'new_user_email_field' }, required: true, title: _('Please provide a valid email address.')
-    .form-group.append-bottom-20#password-strength
+    .form-group.gl-mb-5#password-strength
       = f.label :password, class: 'label-bold'
       = f.password_field :password, class: 'form-control bottom', data: { qa_selector: 'new_user_password_field' }, required: true, pattern: ".{#{@minimum_password_length},}", title: s_('SignUp|Minimum length is %{minimum_password_length} characters.') % { minimum_password_length: @minimum_password_length }
       %p.gl-field-hint.text-secondary= s_('SignUp|Minimum length is %{minimum_password_length} characters.') % { minimum_password_length: @minimum_password_length }
@@ -33,5 +38,5 @@
     .submit-container
       = f.submit button_text, class: 'btn gl-button btn-success', data: { qa_selector: 'new_user_register_button' }
     = render 'devise/shared/terms_of_service_notice'
-    - if show_omniauth_providers
+    - if show_omniauth_providers && omniauth_providers_placement == :bottom
       = render 'devise/shared/signup_omniauth_providers'

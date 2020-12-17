@@ -2,7 +2,7 @@
 type: reference
 stage: Manage
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Custom group-level project templates **(PREMIUM)**
@@ -20,7 +20,7 @@ To use a custom project template for a new project you need to:
 1. Edit your group's settings to look to your 'templates' subgroup for templates:
    1. In the left-hand menu, click **{settings}** **Settings > General**.
 
-      NOTE: **Note:**
+      NOTE:
       If you don't have access to the group's settings, you may not have sufficient privileges (for example, you may need developer or higher permissions).
 
    1. Scroll to **Custom project templates** and click **Expand**. If no **Custom project templates** section displays, make sure you've created a subgroup, and added a project (repository) to it.
@@ -56,7 +56,7 @@ gitlab.com/acmeco/
 Users can configure a GitLab group that serves as template
 source under a group's **Settings > General > Custom project templates**.
 
-NOTE: **Note:**
+NOTE:
 GitLab administrators can
 [set project templates for an entire GitLab instance](../admin_area/custom_project_templates.md).
 
@@ -66,11 +66,11 @@ available to every signed-in user, if all enabled [project features](../project/
 
 However, private projects will be available only if the user is a member of the project.
 
-NOTE: **Note:**
+NOTE:
 Only direct subgroups can be set as the template source. Projects of nested subgroups of a selected template source cannot be used.
 
 Repository and database information that are copied over to each new project are
-identical to the data exported with [GitLab's Project Import/Export](../project/settings/import_export.md).
+identical to the data exported with the [GitLab Project Import/Export](../project/settings/import_export.md).
 
 <!-- ## Troubleshooting
 

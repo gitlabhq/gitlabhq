@@ -31,5 +31,4 @@ Actionable insights always have a follow-up action that needs to take place as a
 
 
 
-
- /label ~"Actionable Insight" 
+/label ~"Actionable Insight"

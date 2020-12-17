@@ -14,8 +14,6 @@ module Members
     end
 
     def execute
-      return unless experiment_enabled?
-
       reminder_index = days_on_which_to_send_reminders.index(days_after_invitation_sent)
       return unless reminder_index
 
@@ -23,10 +21,6 @@ module Members
     end
 
     private
-
-    def experiment_enabled?
-      Gitlab::Experimentation.enabled_for_attribute?(:invitation_reminders, invitation.invite_email)
-    end
 
     def days_after_invitation_sent
       (Date.today - invitation.created_at.to_date).to_i

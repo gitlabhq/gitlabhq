@@ -1,7 +1,7 @@
 ---
 stage: Secure
 group: Fuzz Testing
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference, howto
 ---
 
@@ -139,7 +139,7 @@ This is a minimal configuration for API Fuzzing. From here you can:
 - [Add authentication](#authentication).
 - Learn how to [handle false positives](#handling-false-positives).
 
-DANGER: **Warning:**
+WARNING:
 **NEVER** run fuzz testing against a production server. Not only can it perform *any* function that
 the API can, it may also trigger bugs in the API. This includes actions like modifying and deleting
 data. Only run fuzzing against a test server.
@@ -147,7 +147,7 @@ data. Only run fuzzing against a test server.
 ### HTTP Archive (HAR)
 
 The [HTTP Archive format (HAR)](http://www.softwareishard.com/blog/har-12-spec/)
-is an archive file format for logging HTTP transactions. When used with GitLab's API fuzzer, HAR
+is an archive file format for logging HTTP transactions. When used with the GitLab API fuzzer, HAR
 must contain records of calling the web API to test. The API fuzzer extracts all the requests and
 uses them to perform testing.
 
@@ -155,10 +155,10 @@ You can use various tools to generate HAR files:
 
 - [Fiddler](https://www.telerik.com/fiddler): Web debugging proxy
 - [Insomnia Core](https://insomnia.rest/): API client
-- [Chrome](https://www.google.com/chrome): Browser
+- [Chrome](https://www.google.com/chrome/): Browser
 - [Firefox](https://www.mozilla.org/en-US/firefox/): Browser
 
-DANGER: **Warning:**
+WARNING:
 HAR files may contain sensitive information such as authentication tokens, API keys, and session
 cookies. We recommend that you review the HAR file contents before adding them to a repository.
 
@@ -230,7 +230,7 @@ This is a minimal configuration for API Fuzzing. From here you can:
 - [Add authentication](#authentication).
 - Learn how to [handle false positives](#handling-false-positives).
 
-DANGER: **Warning:**
+WARNING:
 **NEVER** run fuzz testing against a production server. Not only can it perform *any* function that
 the API can, it may also trigger bugs in the API. This includes actions like modifying and deleting
 data. Only run fuzzing against a test server.
@@ -243,11 +243,11 @@ developers and testers use to call various types of APIs. The API definitions
 for use with API Fuzzing. When exporting, make sure to select a supported version of Postman
 Collection: v2.0 or v2.1.
 
-When used with GitLab's API fuzzer, Postman Collections must contain definitions of the web API to
+When used with the GitLab API fuzzer, Postman Collections must contain definitions of the web API to
 test with valid data. The API fuzzer extracts all the API definitions and uses them to perform
 testing.
 
-DANGER: **Warning:**
+WARNING:
 Postman Collection files may contain sensitive information such as authentication tokens, API keys,
 and session cookies. We recommend that you review the Postman Collection file contents before adding
 them to a repository.
@@ -321,7 +321,7 @@ This is a minimal configuration for API Fuzzing. From here you can:
 - [Add authentication](#authentication).
 - Learn how to [handle false positives](#handling-false-positives).
 
-DANGER: **Warning:**
+WARNING:
 **NEVER** run fuzz testing against a production server. Not only can it perform *any* function that
 the API can, it may also trigger bugs in the API. This includes actions like modifying and deleting
 data. Only run fuzzing against a test server.
@@ -488,24 +488,24 @@ increases as the numbers go up. To use a configuration file, add it to your repo
 
 | Environment variable        | Description        |
 |-----------------------------|--------------------|
-| `FUZZAPI_VERSION`           |Specify API Fuzzing container version. Defaults to `latest`. |
-| `FUZZAPI_TARGET_URL`        |Base URL of API testing target. |
-|[`FUZZAPI_CONFIG`](#configuration-files)|API Fuzzing configuration file. Defaults to `.gitlab-apifuzzer.yml`. |
-|[`FUZZAPI_PROFILE`](#configuration-files)|Configuration profile to use during testing. Defaults to `Quick`. |
-| `FUZZAPI_REPORT`            |Scan report filename. Defaults to `gl-api_fuzzing-report.xml`. |
-|[`FUZZAPI_OPENAPI`](#openapi-specification)|OpenAPI specification file or URL. |
-|[`FUZZAPI_HAR`](#http-archive-har)|HTTP Archive (HAR) file. |
-|[`FUZZAPI_POSTMAN_COLLECTION`](#postman-collection)|Postman Collection file. |
-|[`FUZZAPI_OVERRIDES_FILE`](#overrides)     |Path to a JSON file containing overrides. |
-|[`FUZZAPI_OVERRIDES_ENV`](#overrides)      |JSON string containing headers to override. |
-|[`FUZZAPI_OVERRIDES_CMD`](#overrides)      |Overrides command. |
-|[`FUZZAPI_OVERRIDES_INTERVAL`](#overrides) |How often to run overrides command in seconds. Defaults to `0` (once). |
-|[`FUZZAPI_HTTP_USERNAME`](#http-basic-authentication) |Username for HTTP authentication. |
-|[`FUZZAPI_HTTP_PASSWORD`](#http-basic-authentication) |Password for HTTP authentication. |
+| `FUZZAPI_VERSION`           | Specify API Fuzzing container version. Defaults to `latest`. |
+| `FUZZAPI_TARGET_URL`        | Base URL of API testing target. |
+|[`FUZZAPI_CONFIG`](#configuration-files) | API Fuzzing configuration file. Defaults to `.gitlab-apifuzzer.yml`. |
+|[`FUZZAPI_PROFILE`](#configuration-files) | Configuration profile to use during testing. Defaults to `Quick`. |
+| `FUZZAPI_REPORT`            | Scan report filename. Defaults to `gl-api_fuzzing-report.xml`. |
+|[`FUZZAPI_OPENAPI`](#openapi-specification) | OpenAPI specification file or URL. |
+|[`FUZZAPI_HAR`](#http-archive-har) | HTTP Archive (HAR) file. |
+|[`FUZZAPI_POSTMAN_COLLECTION`](#postman-collection) | Postman Collection file. |
+|[`FUZZAPI_OVERRIDES_FILE`](#overrides)     | Path to a JSON file containing overrides. |
+|[`FUZZAPI_OVERRIDES_ENV`](#overrides)      | JSON string containing headers to override. |
+|[`FUZZAPI_OVERRIDES_CMD`](#overrides)      | Overrides command. |
+|[`FUZZAPI_OVERRIDES_INTERVAL`](#overrides) | How often to run overrides command in seconds. Defaults to `0` (once). |
+|[`FUZZAPI_HTTP_USERNAME`](#http-basic-authentication) | Username for HTTP authentication. |
+|[`FUZZAPI_HTTP_PASSWORD`](#http-basic-authentication) | Password for HTTP authentication. |
 
 <!--|[`FUZZAPI_D_TARGET_IMAGE`](#target-container) |API target docker image |
 |[`FUZZAPI_D_TARGET_ENV`](#target-container)   |Docker environment options |
-|[`FUZZAPI_D_TARGET_VOLUME`](#target-container)|Docker volume options |
+|[`FUZZAPI_D_TARGET_VOLUME`](#target-container) | Docker volume options |
 |[`FUZZAPI_D_TARGET_PORTS`](#target-container) |Docker port options |
 | `FUZZAPI_D_WORKER_IMAGE`    |Custom worker docker image |
 | `FUZZAPI_D_WORKER_ENV`      |Custom worker docker environment options |
@@ -720,45 +720,43 @@ Repeat this configuration for each profile as needed.
 
 ## Running your first scan
 
-When configured correctly, a CI/CD pipeline contains a `Fuzz` stage and a `apifuzzer_fuzz` job. The
-job only fails when an invalid configuration is provided. During normal operation, the job always
-succeeds even if faults are identified during fuzz testing.
+When configured correctly, a CI/CD pipeline contains a `fuzz` stage and an `apifuzzer_fuzz` or
+`apifuzzer_fuzz_dnd` job. The job only fails when an invalid configuration is provided. During
+normal operation, the job always succeeds even if faults are identified during fuzz testing.
 
-Faults are displayed on the **Tests** pipeline tab with the suite name **API-Fuzzing**. The **Name**
-field on the **Tests** page includes the fuzz-tested operation and parameter. The **Trace** field
-contains a writeup of the identified fault. This writeup contains information on what the fuzzer
-tested and how it detected something wrong.
+Faults are displayed on the **Security** pipeline tab with the suite name. When testing against the
+repositories default branch, the fuzzing faults are also shown on the Security & Compliance's
+Vulnerability Report page.
 
 To prevent an excessive number of reported faults, the API fuzzing scanner limits the number of
-faults it reports to one per parameter.
+faults it reports.
 
-### Fault Writeup
+## Viewing fuzzing faults
 
-The faults that API fuzzing finds aren't associated with a specific vulnerability type. They require
-investigation to determine what type of issue they are and if they should be fixed. See
-[handling false positives](#handling-false-positives) for information about configuration changes
-you can make to limit the number of false positives reported.
+The API Fuzzing analyzer produces a JSON report that is collected and used
+[to populate the faults into GitLab vulnerability screens](../index.md#view-details-of-an-api-fuzzing-vulnerability).
+Fuzzing faults show up as vulnerabilities with a severity of Unknown.
 
-This table contains a description of fields in an API fuzzing fault writeup.
+The faults that API fuzzing finds require manual investigation and aren't associated with a specific
+vulnerability type. They require investigation to determine if they are a security issue, and if
+they should be fixed. See [handling false positives](#handling-false-positives)
+for information about configuration changes you can make to limit the number of false positives
+reported.
 
-| Writeup Item | Description |
-|:-------------|:------------|
-| Operation | The operation tested. |
-| Parameter | The field modified. This can be a path segment, header, query string, or body element. |
-| Endpoint  | The endpoint being tested. |
-| Check     | Check module producing the test. Checks can be turned on and off. |
-| Assert    | Assert module that detected a failure. Assertions can be configured and turned on and off. |
-| CWE       | Fuzzing faults always have the same CWE. |
-| OWASP     | Fuzzing faults always have the same OWASP ID. |
-| Exploitability | Fuzzing faults always have an `unknown` exploitability. |
-| Impact         | Fuzzing faults always have an `unknown` risk impact. |
-| Description    | Verbose description of what the check did. Includes the original parameter value and the modified (mutated) value. |
-| Detection      | Why a failure was detected and reported. This is related to the Assert that was used. |
-| Original Request  | The original, unmodified HTTP request. Useful when reviewing the actual request to see what changes were made. |
-| Actual Request    | The request that produced the failure. This request has been modified in some way by the Check logic. |
-| Actual Response   | The response to the actual request. |
-| Recorded Request  | An unmodified request. |
-| Recorded Response | The response to the unmodified request. You can compare this with the actual request when triaging this fault. |
+For additional information, see
+[View details of an API Fuzzing vulnerability](../index.md#view-details-of-an-api-fuzzing-vulnerability).
+
+### Security Dashboard
+
+Fuzzing faults show up as vulnerabilities with a severity of Unknown. The Security Dashboard is a
+good place to get an overview of all the security vulnerabilities in your groups, projects and
+pipelines. For more information, see the [Security Dashboard documentation](../security_dashboard/index.md).
+
+### Interacting with the vulnerabilities
+
+Fuzzing faults show up as vulnerabilities with a severity of Unknown.
+Once a fault is found, you can interact with it. Read more on how to
+[interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).
 
 ## Handling False Positives
 

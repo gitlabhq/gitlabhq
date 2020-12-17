@@ -1,0 +1,5 @@
+---
+title: Add CI_OPEN_MERGE_REQUESTS environment variable
+merge_request: 38673
+author: Ben Bodenmiller @bbodenmiller
+type: added

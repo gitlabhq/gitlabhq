@@ -19,6 +19,8 @@ const IS_EE = require('./helpers/is_ee_env');
 const DEV_SERVER_HOST = process.env.DEV_SERVER_HOST || 'localhost';
 const DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3808;
 const DEV_SERVER_PUBLIC_ADDR = process.env.DEV_SERVER_PUBLIC_ADDR;
+const DEV_SERVER_ALLOWED_HOSTS =
+  process.env.DEV_SERVER_ALLOWED_HOSTS && process.env.DEV_SERVER_ALLOWED_HOSTS.split(',');
 const DEV_SERVER_HTTPS = process.env.DEV_SERVER_HTTPS && process.env.DEV_SERVER_HTTPS !== 'false';
 const DEV_SERVER_LIVERELOAD = IS_DEV_SERVER && process.env.DEV_SERVER_LIVERELOAD !== 'false';
 const WEBPACK_REPORT = process.env.WEBPACK_REPORT && process.env.WEBPACK_REPORT !== 'false';
@@ -27,9 +29,18 @@ const WEBPACK_MEMORY_TEST =
 const NO_COMPRESSION = process.env.NO_COMPRESSION && process.env.NO_COMPRESSION !== 'false';
 const NO_SOURCEMAPS = process.env.NO_SOURCEMAPS && process.env.NO_SOURCEMAPS !== 'false';
 
+const WEBPACK_OUTPUT_PATH = path.join(ROOT_PATH, 'public/assets/webpack');
+const WEBPACK_PUBLIC_PATH = '/assets/webpack/';
+const SOURCEGRAPH_PACKAGE = '@sourcegraph/code-host-integration';
+
 const VUE_VERSION = require('vue/package.json').version;
 const VUE_LOADER_VERSION = require('vue-loader/package.json').version;
 const WEBPACK_VERSION = require('webpack/package.json').version;
+const SOURCEGRAPH_VERSION = require(path.join(SOURCEGRAPH_PACKAGE, 'package.json')).version;
+
+const SOURCEGRAPH_PATH = path.join('sourcegraph', SOURCEGRAPH_VERSION, '/');
+const SOURCEGRAPH_OUTPUT_PATH = path.join(WEBPACK_OUTPUT_PATH, SOURCEGRAPH_PATH);
+const SOURCEGRAPH_PUBLIC_PATH = path.join(WEBPACK_PUBLIC_PATH, SOURCEGRAPH_PATH);
 
 const devtool = IS_PRODUCTION ? 'source-map' : 'cheap-module-eval-source-map';
 
@@ -141,7 +152,7 @@ if (VENDOR_DLL && !IS_PRODUCTION) {
   dll = {
     manifestPath: path.join(dllCachePath, 'vendor.dll.manifest.json'),
     cacheFrom: dllCachePath,
-    cacheTo: path.join(ROOT_PATH, `public/assets/webpack/dll.${dllHash}/`),
+    cacheTo: path.join(WEBPACK_OUTPUT_PATH, `dll.${dllHash}/`),
     publicPath: `dll.${dllHash}/vendor.dll.bundle.js`,
     exists: null,
   };
@@ -155,8 +166,8 @@ module.exports = {
   entry: generateEntries,
 
   output: {
-    path: path.join(ROOT_PATH, 'public/assets/webpack'),
-    publicPath: '/assets/webpack/',
+    path: WEBPACK_OUTPUT_PATH,
+    publicPath: WEBPACK_PUBLIC_PATH,
     filename: IS_PRODUCTION ? '[name].[contenthash:8].bundle.js' : '[name].bundle.js',
     chunkFilename: IS_PRODUCTION ? '[name].[contenthash:8].chunk.js' : '[name].chunk.js',
     globalObject: 'this', // allow HMR and web workers to play nice
@@ -362,6 +373,18 @@ module.exports = {
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery',
+      Popper: ['popper.js', 'default'],
+      Alert: 'exports-loader?Alert!bootstrap/js/dist/alert',
+      Button: 'exports-loader?Button!bootstrap/js/dist/button',
+      Carousel: 'exports-loader?Carousel!bootstrap/js/dist/carousel',
+      Collapse: 'exports-loader?Collapse!bootstrap/js/dist/collapse',
+      Dropdown: 'exports-loader?Dropdown!bootstrap/js/dist/dropdown',
+      Modal: 'exports-loader?Modal!bootstrap/js/dist/modal',
+      Popover: 'exports-loader?Popover!bootstrap/js/dist/popover',
+      Scrollspy: 'exports-loader?Scrollspy!bootstrap/js/dist/scrollspy',
+      Tab: 'exports-loader?Tab!bootstrap/js/dist/tab',
+      Tooltip: 'exports-loader?Tooltip!bootstrap/js/dist/tooltip',
+      Util: 'exports-loader?Util!bootstrap/js/dist/util',
     }),
 
     // if DLLs are enabled, detect whether the DLL exists and create it automatically if necessary
@@ -435,11 +458,11 @@ module.exports = {
     new CopyWebpackPlugin([
       {
         from: path.join(ROOT_PATH, 'node_modules/pdfjs-dist/cmaps/'),
-        to: path.join(ROOT_PATH, 'public/assets/webpack/cmaps/'),
+        to: path.join(WEBPACK_OUTPUT_PATH, 'cmaps/'),
       },
       {
-        from: path.join(ROOT_PATH, 'node_modules/@sourcegraph/code-host-integration/'),
-        to: path.join(ROOT_PATH, 'public/assets/webpack/sourcegraph/'),
+        from: path.join(ROOT_PATH, 'node_modules', SOURCEGRAPH_PACKAGE, '/'),
+        to: SOURCEGRAPH_OUTPUT_PATH,
         ignore: ['package.json'],
       },
       {
@@ -447,7 +470,7 @@ module.exports = {
           ROOT_PATH,
           'node_modules/@gitlab/visual-review-tools/dist/visual_review_toolbar.js',
         ),
-        to: path.join(ROOT_PATH, 'public/assets/webpack'),
+        to: WEBPACK_OUTPUT_PATH,
       },
     ]),
 
@@ -541,6 +564,8 @@ module.exports = {
       'process.env.IS_EE': JSON.stringify(IS_EE),
       // This one is used to check against "EE" properly in application code
       IS_EE: IS_EE ? 'window.gon && window.gon.ee' : JSON.stringify(false),
+      // This is used by Sourcegraph because these assets are loaded dnamically
+      'process.env.SOURCEGRAPH_PUBLIC_PATH': JSON.stringify(SOURCEGRAPH_PUBLIC_PATH),
     }),
 
     /* Pikaday has a optional dependency to moment.
@@ -556,6 +581,7 @@ module.exports = {
     host: DEV_SERVER_HOST,
     port: DEV_SERVER_PORT,
     public: DEV_SERVER_PUBLIC_ADDR,
+    allowedHosts: DEV_SERVER_ALLOWED_HOSTS,
     https: DEV_SERVER_HTTPS,
     contentBase: false,
     stats: 'errors-only',

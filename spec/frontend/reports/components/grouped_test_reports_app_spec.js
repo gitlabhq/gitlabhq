@@ -264,7 +264,9 @@ describe('Grouped test reports app', () => {
         });
 
         it('renders the recent failures count on the test case', () => {
-          expect(findIssueDescription().text()).toContain('Failed 8 times in the last 14 days');
+          expect(findIssueDescription().text()).toContain(
+            'Failed 8 times in master in the last 14 days',
+          );
         });
       });
 

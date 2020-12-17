@@ -15,14 +15,17 @@ RSpec.describe GitlabSchema.types['User'] do
       name
       username
       email
+      publicEmail
       avatarUrl
       webUrl
       webPath
       todos
       state
       status
+      location
       authoredMergeRequests
       assignedMergeRequests
+      reviewRequestedMergeRequests
       groupMemberships
       groupCount
       projectMemberships

@@ -17,10 +17,6 @@ module Packages
       def create_npm_package!
         package = create_package!(:npm, name: name, version: version)
 
-        if build.present?
-          package.build_infos.create!(pipeline: build.pipeline)
-        end
-
         ::Packages::CreatePackageFileService.new(package, file_params).execute
         ::Packages::CreateDependencyService.new(package, package_dependencies).execute
         ::Packages::Npm::CreateTagService.new(package, dist_tag).execute
@@ -48,10 +44,6 @@ module Packages
 
       def version_data
         params[:versions][version]
-      end
-
-      def build
-        params[:build]
       end
 
       def dist_tag

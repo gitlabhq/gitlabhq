@@ -36,7 +36,15 @@ export default {
       type: Boolean,
       required: true,
     },
+    enableAutosave: {
+      type: Boolean,
+      required: true,
+    },
     editFormVisible: {
+      type: Boolean,
+      required: true,
+    },
+    showFieldTitle: {
       type: Boolean,
       required: true,
     },
@@ -57,6 +65,14 @@ export default {
       return this.issuable.updatedBy;
     },
   },
+  methods: {
+    handleKeydownTitle(e, issuableMeta) {
+      this.$emit('keydown-title', e, issuableMeta);
+    },
+    handleKeydownDescription(e, issuableMeta) {
+      this.$emit('keydown-description', e, issuableMeta);
+    },
+  },
 };
 </script>
 
@@ -67,8 +83,12 @@ export default {
         v-if="editFormVisible"
         :issuable="issuable"
         :enable-autocomplete="enableAutocomplete"
+        :enable-autosave="enableAutosave"
+        :show-field-title="showFieldTitle"
         :description-preview-path="descriptionPreviewPath"
         :description-help-path="descriptionHelpPath"
+        @keydown-title="handleKeydownTitle"
+        @keydown-description="handleKeydownDescription"
       >
         <template #edit-form-actions="issuableMeta">
           <slot name="edit-form-actions" v-bind="issuableMeta"></slot>

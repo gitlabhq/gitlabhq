@@ -19,7 +19,7 @@ RSpec.describe "User interacts with deploy keys", :js do
 
         click_button("Enable")
 
-        expect(page).not_to have_selector(".fa-spinner")
+        expect(page).not_to have_selector(".gl-spinner")
         expect(current_path).to eq(project_settings_repository_path(project))
 
         find(".js-deployKeys-tab-enabled_keys").click

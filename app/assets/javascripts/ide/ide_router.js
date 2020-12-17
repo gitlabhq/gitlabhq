@@ -3,6 +3,12 @@ import IdeRouter from '~/ide/ide_router_extension';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { deprecatedCreateFlash as flash } from '~/flash';
 import { __ } from '~/locale';
+import { performanceMarkAndMeasure } from '~/performance/utils';
+import {
+  WEBIDE_MARK_FETCH_PROJECT_DATA_START,
+  WEBIDE_MARK_FETCH_PROJECT_DATA_FINISH,
+  WEBIDE_MEASURE_FETCH_PROJECT_DATA,
+} from '~/performance/constants';
 import { syncRouterAndStore } from './sync_router_and_store';
 
 Vue.use(IdeRouter);
@@ -69,6 +75,7 @@ export const createRouter = store => {
 
   router.beforeEach((to, from, next) => {
     if (to.params.namespace && to.params.project) {
+      performanceMarkAndMeasure({ mark: WEBIDE_MARK_FETCH_PROJECT_DATA_START });
       store
         .dispatch('getProjectData', {
           namespace: to.params.namespace,
@@ -81,6 +88,15 @@ export const createRouter = store => {
           const mergeRequestId = to.params.mrid;
 
           if (branchId) {
+            performanceMarkAndMeasure({
+              mark: WEBIDE_MARK_FETCH_PROJECT_DATA_FINISH,
+              measures: [
+                {
+                  name: WEBIDE_MEASURE_FETCH_PROJECT_DATA,
+                  start: WEBIDE_MARK_FETCH_PROJECT_DATA_START,
+                },
+              ],
+            });
             store.dispatch('openBranch', {
               projectId,
               branchId,

@@ -1,40 +1,46 @@
-import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
-import missingBranchComponent from '~/vue_merge_request_widget/components/states/mr_widget_missing_branch.vue';
+import { shallowMount } from '@vue/test-utils';
+import MissingBranchComponent from '~/vue_merge_request_widget/components/states/mr_widget_missing_branch.vue';
+
+let wrapper;
+
+function factory(sourceBranchRemoved, mergeRequestWidgetGraphql) {
+  wrapper = shallowMount(MissingBranchComponent, {
+    propsData: {
+      mr: { sourceBranchRemoved },
+    },
+    provide: {
+      glFeatures: { mergeRequestWidgetGraphql },
+    },
+  });
+
+  if (mergeRequestWidgetGraphql) {
+    wrapper.setData({ state: { sourceBranchExists: !sourceBranchRemoved } });
+  }
+
+  return wrapper.vm.$nextTick();
+}
 
 describe('MRWidgetMissingBranch', () => {
-  let vm;
-
-  beforeEach(() => {
-    const Component = Vue.extend(missingBranchComponent);
-    vm = mountComponent(Component, { mr: { sourceBranchRemoved: true } });
-  });
-
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
-  describe('computed', () => {
-    describe('missingBranchName', () => {
-      it('should return proper branch name', () => {
-        expect(vm.missingBranchName).toEqual('source');
+  [true, false].forEach(mergeRequestWidgetGraphql => {
+    describe(`widget GraphQL feature flag is ${
+      mergeRequestWidgetGraphql ? 'enabled' : 'disabled'
+    }`, () => {
+      it.each`
+        sourceBranchRemoved | branchName
+        ${true}             | ${'source'}
+        ${false}            | ${'target'}
+      `(
+        'should set missing branch name as $branchName when sourceBranchRemoved is $sourceBranchRemoved',
+        async ({ sourceBranchRemoved, branchName }) => {
+          await factory(sourceBranchRemoved, mergeRequestWidgetGraphql);
 
-        vm.mr.sourceBranchRemoved = false;
-
-        expect(vm.missingBranchName).toEqual('target');
-      });
-    });
-  });
-
-  describe('template', () => {
-    it('should have correct elements', () => {
-      const el = vm.$el;
-      const content = el.textContent.replace(/\n(\s)+/g, ' ').trim();
-
-      expect(el.classList.contains('mr-widget-body')).toBeTruthy();
-      expect(el.querySelector('button').getAttribute('disabled')).toBeTruthy();
-      expect(content.replace(/\s\s+/g, ' ')).toContain('source branch does not exist.');
-      expect(content).toContain('Please restore it or use a different source branch');
+          expect(wrapper.find('[data-testid="missingBranchName"]').text()).toContain(branchName);
+        },
+      );
     });
   });
 });

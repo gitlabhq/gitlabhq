@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Incoming email
@@ -21,10 +21,9 @@ GitLab has several features based on receiving incoming emails:
 
 ## Requirements
 
-NOTE: **Note:**
-It is **not** recommended to use an email address that receives or will receive any
+It is **not** recommended to use an email address that receives any
 messages not intended for the GitLab instance. Any incoming emails not intended
-for GitLab will receive a reject notice.
+for GitLab receive a reject notice.
 
 Handling incoming emails requires an [IMAP](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol)-enabled
 email account. GitLab requires one of the following three strategies:
@@ -38,14 +37,14 @@ Let's walk through each of these options.
 ### Email sub-addressing
 
 [Sub-addressing](https://en.wikipedia.org/wiki/Email_address#Sub-addressing) is
-a mail server feature where any email to `user+arbitrary_tag@example.com` will end up
+a mail server feature where any email to `user+arbitrary_tag@example.com` ends up
 in the mailbox for `user@example.com` . It is supported by providers such as
 Gmail, Google Apps, Yahoo! Mail, Outlook.com, and iCloud, as well as the
 [Postfix mail server](reply_by_email_postfix_setup.md), which you can run on-premises.
 Microsoft Exchange Server [does not support sub-addressing](#microsoft-exchange-server),
 and Microsoft Office 365 [does not support sub-addressing by default](#microsoft-office-365)
 
-TIP: **Tip:**
+NOTE:
 If your provider or server supports email sub-addressing, we recommend using it.
 A dedicated email address only supports Reply by Email functionality.
 A catch-all mailbox supports the same features as sub-addressing as of GitLab 11.7,
@@ -86,7 +85,7 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow the
 
 ### Security concerns
 
-CAUTION: **Caution:**
+WARNING:
 Be careful when choosing the domain used for receiving incoming email.
 
 For example, suppose your top-level company domain is `hooli.com`.
@@ -113,13 +112,13 @@ Alternatively, use a dedicated domain for GitLab email communications such as
 See GitLab issue [#30366](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30366)
 for a real-world example of this exploit.
 
-CAUTION: **Caution:**
+WARNING:
 Use a mail server that has been configured to reduce
 spam.
 A Postfix mail server that is running on a default configuration, for example,
-can result in abuse. All messages received on the configured mailbox will be processed
-and messages that are not intended for the GitLab instance will receive a reject notice.
-If the sender's address is spoofed, the reject notice will be delivered to the spoofed
+can result in abuse. All messages received on the configured mailbox are processed
+and messages that are not intended for the GitLab instance receive a reject notice.
+If the sender's address is spoofed, the reject notice is delivered to the spoofed
 `FROM` address, which can cause the mail server's IP or domain to appear on a block
 list.
 
@@ -254,7 +253,7 @@ incoming_email:
 
 Example configuration for Gmail/G Suite. Assumes mailbox `gitlab-incoming@gmail.com`.
 
-NOTE: **Note:**
+NOTE:
 `incoming_email_email` cannot be a Gmail alias account.
 
 Example for Omnibus installs:
@@ -443,7 +442,7 @@ Example configurations for Microsoft Office 365 with IMAP enabled.
 
 ##### Sub-addressing mailbox
 
-NOTE: **Note:**
+NOTE:
 As of September 2020 sub-addressing support
 [has been added to Office 365](https://office365.uservoice.com/forums/273493-office-365-admin/suggestions/18612754-support-for-dynamic-email-aliases-in-office-36). This feature is not
 enabled by default, and must be enabled through PowerShell.
@@ -452,9 +451,9 @@ This series of PowerShell commands enables [sub-addressing](#email-sub-addressin
 at the organization level in Office 365. This allows all mailboxes in the organization
 to receive sub-addressed mail:
 
-NOTE: **Note:**
-This series of commands will enable sub-addressing at the organization
-level in Office 365. This will allow all mailboxes in the organization
+NOTE:
+This series of commands enables sub-addressing at the organization
+level in Office 365. This allows all mailboxes in the organization
 to receive sub-addressed mail.
 
 ```powershell

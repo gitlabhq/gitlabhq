@@ -1,8 +1,8 @@
 ---
 description: 'Learn how to use GitLab Pages to deploy a static website at no additional cost.'
 stage: Release
-group: Release Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+group: Release
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # GitLab Pages
@@ -83,9 +83,9 @@ to build your site and publish it to the GitLab Pages server. The sequence of
 scripts that GitLab CI/CD runs to accomplish this task is created from a file named
 `.gitlab-ci.yml`, which you can [create and modify](getting_started/pages_from_scratch.md) at will. A specific `job` called `pages` in the configuration file will make GitLab aware that you are deploying a GitLab Pages website.
 
-You can either use GitLab's [default domain for GitLab Pages websites](getting_started_part_one.md#gitlab-pages-default-domain-names),
+You can either use the GitLab [default domain for GitLab Pages websites](getting_started_part_one.md#gitlab-pages-default-domain-names),
 `*.gitlab.io`, or your own domain (`example.com`). In that case, you'll
-need admin access to your domain's registrar (or control panel) to set it up with Pages.
+need administrator access to your domain's registrar (or control panel) to set it up with Pages.
 
 The following diagrams show the workflows you might follow to get started with Pages.
 
@@ -103,7 +103,7 @@ To restrict access to your website, enable [GitLab Pages Access Control](pages_a
 
 If you're using a self-managed instance (Core, Starter, Premium, or Ultimate),
 your websites will be published on your own server, according to the
-[Pages admin settings](../../../administration/pages/index.md) chosen by your sysadmin,
+[Pages settings](../../../administration/pages/index.md) chosen by your sysadmin,
 who can make them public or internal.
 
 ## Pages examples

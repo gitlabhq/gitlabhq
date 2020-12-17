@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 class Admin::InstanceReviewController < Admin::ApplicationController
-  feature_category :instance_statistics
+  feature_category :devops_reports
 
   def index
     redirect_to("#{::Gitlab::SubscriptionPortal::SUBSCRIPTIONS_URL}/instance_review?#{instance_review_params}")

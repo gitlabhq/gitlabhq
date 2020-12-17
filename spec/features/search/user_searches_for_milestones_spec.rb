@@ -30,8 +30,13 @@ RSpec.describe 'User searches for milestones', :js do
 
   context 'when on a project page' do
     it 'finds a milestone' do
-      find('.js-search-project-dropdown').click
-      find('[data-testid="project-filter"]').click_link(project.full_name)
+      find('[data-testid="project-filter"]').click
+
+      wait_for_requests
+
+      page.within('[data-testid="project-filter"]') do
+        click_on(project.full_name)
+      end
 
       fill_in('dashboard_search', with: milestone1.title)
       find('.btn-search').click

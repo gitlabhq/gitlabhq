@@ -80,12 +80,6 @@
     .btn-success {
       width: 100%;
     }
-
-    .dropdown .dropdown-toggle .fa-chevron-down {
-      position: absolute;
-      top: 11px;
-      right: 8px;
-    }
   }
 }
 
@@ -297,12 +291,6 @@
 
 table.pipeline-project-metrics tr td {
   padding: $gl-padding;
-}
-
-.mattermost-icon svg {
-  width: 16px;
-  height: 16px;
-  vertical-align: text-bottom;
 }
 
 .mattermost-team-name {

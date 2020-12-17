@@ -81,7 +81,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Image do
     context 'when configuration has ports' do
       let(:ports) { [{ number: 80, protocol: 'http', name: 'foobar' }] }
       let(:config) { { name: 'ruby:2.7', entrypoint: %w(/bin/sh run), ports: ports } }
-      let(:entry) { described_class.new(config, { with_image_ports: image_ports }) }
+      let(:entry) { described_class.new(config, with_image_ports: image_ports) }
       let(:image_ports) { false }
 
       context 'when with_image_ports metadata is not enabled' do

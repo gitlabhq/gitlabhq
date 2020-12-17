@@ -339,6 +339,22 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule do
           end
         end
       end
+
+      context 'with an invalid variables' do
+        let(:config) do
+          { if: '$THIS == "that"', variables: 'hello' }
+        end
+
+        before do
+          subject.compose!
+        end
+
+        it { is_expected.not_to be_valid }
+
+        it 'returns an error about invalid variables:' do
+          expect(subject.errors).to include(/variables config should be a hash of key value pairs/)
+        end
+      end
     end
 
     context 'allow_failure: validation' do

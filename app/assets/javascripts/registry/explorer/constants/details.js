@@ -56,6 +56,8 @@ export const MISSING_MANIFEST_WARNING_TOOLTIP = s__(
   'ContainerRegistry|Invalid tag: missing manifest digest',
 );
 
+export const UPDATED_AT = s__('ContainerRegistry|Last updated %{time}');
+
 export const NOT_AVAILABLE_TEXT = __('N/A');
 export const NOT_AVAILABLE_SIZE = __('0 bytes');
 // Parameters

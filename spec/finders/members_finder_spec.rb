@@ -160,8 +160,8 @@ RSpec.describe MembersFinder, '#execute' do
     expect(result).to eq([member3, member2, member1])
   end
 
-  context 'when include_invited_groups_members == true' do
-    subject { described_class.new(project, user2).execute(include_relations: [:inherited, :direct, :invited_groups_members]) }
+  context 'when :invited_groups is passed' do
+    subject { described_class.new(project, user2).execute(include_relations: [:inherited, :direct, :invited_groups]) }
 
     let_it_be(:linked_group) { create(:group, :public) }
     let_it_be(:nested_linked_group) { create(:group, parent: linked_group) }

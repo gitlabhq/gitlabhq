@@ -99,6 +99,8 @@ RSpec.describe User do
     it { is_expected.to have_many(:releases).dependent(:nullify) }
     it { is_expected.to have_many(:metrics_users_starred_dashboards).inverse_of(:user) }
     it { is_expected.to have_many(:reviews).inverse_of(:author) }
+    it { is_expected.to have_many(:merge_request_assignees).inverse_of(:assignee) }
+    it { is_expected.to have_many(:merge_request_reviewers).inverse_of(:reviewer) }
 
     describe "#user_detail" do
       it 'does not persist `user_detail` by default' do
@@ -1085,7 +1087,7 @@ RSpec.describe User do
         @user.update!(email: 'new_primary@example.com')
       end
 
-      it 'adds old primary to secondary emails when secondary is a new email ' do
+      it 'adds old primary to secondary emails when secondary is a new email' do
         @user.update!(email: 'new_primary@example.com')
         @user.reload
 
@@ -1521,6 +1523,16 @@ RSpec.describe User do
       expect(feed_token).not_to be_blank
       expect(user.reload.feed_token).to eq feed_token
     end
+
+    it 'ensures no feed token when disabled' do
+      allow(Gitlab::CurrentSettings).to receive(:disable_feed_token).and_return(true)
+
+      user = create(:user, feed_token: nil)
+      feed_token = user.feed_token
+
+      expect(feed_token).to be_blank
+      expect(user.reload.feed_token).to be_blank
+    end
   end
 
   describe 'static object token' do
@@ -1570,6 +1582,80 @@ RSpec.describe User do
       expect(user.encrypted_otp_secret_salt).to be_nil
       expect(user.otp_backup_codes).to be_nil
       expect(user.otp_grace_period_started_at).to be_nil
+    end
+  end
+
+  describe '#two_factor_otp_enabled?' do
+    let_it_be(:user) { create(:user) }
+
+    context 'when 2FA is enabled by an MFA Device' do
+      let(:user) { create(:user, :two_factor) }
+
+      it { expect(user.two_factor_otp_enabled?).to eq(true) }
+    end
+
+    context 'FortiAuthenticator' do
+      context 'when enabled via GitLab settings' do
+        before do
+          allow(::Gitlab.config.forti_authenticator).to receive(:enabled).and_return(true)
+        end
+
+        context 'when feature is disabled for the user' do
+          before do
+            stub_feature_flags(forti_authenticator: false)
+          end
+
+          it { expect(user.two_factor_otp_enabled?).to eq(false) }
+        end
+
+        context 'when feature is enabled for the user' do
+          before do
+            stub_feature_flags(forti_authenticator: user)
+          end
+
+          it { expect(user.two_factor_otp_enabled?).to eq(true) }
+        end
+      end
+
+      context 'when disabled via GitLab settings' do
+        before do
+          allow(::Gitlab.config.forti_authenticator).to receive(:enabled).and_return(false)
+        end
+
+        it { expect(user.two_factor_otp_enabled?).to eq(false) }
+      end
+    end
+
+    context 'FortiTokenCloud' do
+      context 'when enabled via GitLab settings' do
+        before do
+          allow(::Gitlab.config.forti_token_cloud).to receive(:enabled).and_return(true)
+        end
+
+        context 'when feature is disabled for the user' do
+          before do
+            stub_feature_flags(forti_token_cloud: false)
+          end
+
+          it { expect(user.two_factor_otp_enabled?).to eq(false) }
+        end
+
+        context 'when feature is enabled for the user' do
+          before do
+            stub_feature_flags(forti_token_cloud: user)
+          end
+
+          it { expect(user.two_factor_otp_enabled?).to eq(true) }
+        end
+      end
+
+      context 'when disabled via GitLab settings' do
+        before do
+          allow(::Gitlab.config.forti_token_cloud).to receive(:enabled).and_return(false)
+        end
+
+        it { expect(user.two_factor_otp_enabled?).to eq(false) }
+      end
     end
   end
 
@@ -2024,9 +2110,10 @@ RSpec.describe User do
   end
 
   describe '.search' do
-    let!(:user) { create(:user, name: 'user', username: 'usern', email: 'email@gmail.com') }
-    let!(:user2) { create(:user, name: 'user name', username: 'username', email: 'someemail@gmail.com') }
-    let!(:user3) { create(:user, name: 'us', username: 'se', email: 'foo@gmail.com') }
+    let_it_be(:user) { create(:user, name: 'user', username: 'usern', email: 'email@example.com') }
+    let_it_be(:user2) { create(:user, name: 'user name', username: 'username', email: 'someemail@example.com') }
+    let_it_be(:user3) { create(:user, name: 'us', username: 'se', email: 'foo@example.com') }
+    let_it_be(:email) { create(:email, user: user, email: 'alias@example.com') }
 
     describe 'name matching' do
       it 'returns users with a matching name with exact match first' do
@@ -2056,11 +2143,25 @@ RSpec.describe User do
       end
 
       it 'does not return users with a partially matching Email' do
-        expect(described_class.search(user.email[0..2])).not_to include(user, user2)
+        expect(described_class.search(user.email[1...-1])).to be_empty
       end
 
       it 'returns users with a matching Email regardless of the casing' do
         expect(described_class.search(user2.email.upcase)).to eq([user2])
+      end
+    end
+
+    describe 'secondary email matching' do
+      it 'returns users with a matching secondary email' do
+        expect(described_class.search(email.email)).to include(email.user)
+      end
+
+      it 'does not return users with a matching part of secondary email' do
+        expect(described_class.search(email.email[1...-1])).to be_empty
+      end
+
+      it 'returns users with a matching secondary email regardless of the casing' do
+        expect(described_class.search(email.email.upcase)).to include(email.user)
       end
     end
 
@@ -2103,65 +2204,119 @@ RSpec.describe User do
     end
   end
 
-  describe '.search_with_secondary_emails' do
-    delegate :search_with_secondary_emails, to: :described_class
-
-    let!(:user) { create(:user, name: 'John Doe', username: 'john.doe', email: 'john.doe@example.com' ) }
-    let!(:another_user) { create(:user, name: 'Albert Smith', username: 'albert.smith', email: 'albert.smith@example.com' ) }
-    let!(:email) do
-      create(:email, user: another_user, email: 'alias@example.com')
-    end
+  describe '.search_without_secondary_emails' do
+    let_it_be(:user) { create(:user, name: 'John Doe', username: 'john.doe', email: 'someone.1@example.com' ) }
+    let_it_be(:another_user) { create(:user, name: 'Albert Smith', username: 'albert.smith', email: 'another.2@example.com' ) }
+    let_it_be(:email) { create(:email, user: another_user, email: 'alias@example.com') }
 
     it 'returns users with a matching name' do
-      expect(search_with_secondary_emails(user.name)).to eq([user])
+      expect(described_class.search_without_secondary_emails(user.name)).to eq([user])
     end
 
     it 'returns users with a partially matching name' do
-      expect(search_with_secondary_emails(user.name[0..2])).to eq([user])
+      expect(described_class.search_without_secondary_emails(user.name[0..2])).to eq([user])
     end
 
     it 'returns users with a matching name regardless of the casing' do
-      expect(search_with_secondary_emails(user.name.upcase)).to eq([user])
+      expect(described_class.search_without_secondary_emails(user.name.upcase)).to eq([user])
     end
 
     it 'returns users with a matching email' do
-      expect(search_with_secondary_emails(user.email)).to eq([user])
+      expect(described_class.search_without_secondary_emails(user.email)).to eq([user])
     end
 
     it 'does not return users with a partially matching email' do
-      expect(search_with_secondary_emails(user.email[0..2])).not_to include([user])
+      expect(described_class.search_without_secondary_emails(user.email[1...-1])).to be_empty
     end
 
     it 'returns users with a matching email regardless of the casing' do
-      expect(search_with_secondary_emails(user.email.upcase)).to eq([user])
+      expect(described_class.search_without_secondary_emails(user.email.upcase)).to eq([user])
     end
 
     it 'returns users with a matching username' do
-      expect(search_with_secondary_emails(user.username)).to eq([user])
+      expect(described_class.search_without_secondary_emails(user.username)).to eq([user])
     end
 
     it 'returns users with a partially matching username' do
-      expect(search_with_secondary_emails(user.username[0..2])).to eq([user])
+      expect(described_class.search_without_secondary_emails(user.username[0..2])).to eq([user])
     end
 
     it 'returns users with a matching username regardless of the casing' do
-      expect(search_with_secondary_emails(user.username.upcase)).to eq([user])
+      expect(described_class.search_without_secondary_emails(user.username.upcase)).to eq([user])
     end
 
-    it 'returns users with a matching whole secondary email' do
-      expect(search_with_secondary_emails(email.email)).to eq([email.user])
+    it 'does not return users with a matching whole secondary email' do
+      expect(described_class.search_without_secondary_emails(email.email)).not_to include(email.user)
     end
 
     it 'does not return users with a matching part of secondary email' do
-      expect(search_with_secondary_emails(email.email[1..4])).not_to include([email.user])
+      expect(described_class.search_without_secondary_emails(email.email[1...-1])).to be_empty
     end
 
     it 'returns no matches for an empty string' do
-      expect(search_with_secondary_emails('')).to be_empty
+      expect(described_class.search_without_secondary_emails('')).to be_empty
     end
 
     it 'returns no matches for nil' do
-      expect(search_with_secondary_emails(nil)).to be_empty
+      expect(described_class.search_without_secondary_emails(nil)).to be_empty
+    end
+  end
+
+  describe '.search_with_secondary_emails' do
+    let_it_be(:user) { create(:user, name: 'John Doe', username: 'john.doe', email: 'someone.1@example.com' ) }
+    let_it_be(:another_user) { create(:user, name: 'Albert Smith', username: 'albert.smith', email: 'another.2@example.com' ) }
+    let_it_be(:email) { create(:email, user: another_user, email: 'alias@example.com') }
+
+    it 'returns users with a matching name' do
+      expect(described_class.search_with_secondary_emails(user.name)).to eq([user])
+    end
+
+    it 'returns users with a partially matching name' do
+      expect(described_class.search_with_secondary_emails(user.name[0..2])).to eq([user])
+    end
+
+    it 'returns users with a matching name regardless of the casing' do
+      expect(described_class.search_with_secondary_emails(user.name.upcase)).to eq([user])
+    end
+
+    it 'returns users with a matching email' do
+      expect(described_class.search_with_secondary_emails(user.email)).to eq([user])
+    end
+
+    it 'does not return users with a partially matching email' do
+      expect(described_class.search_with_secondary_emails(user.email[1...-1])).to be_empty
+    end
+
+    it 'returns users with a matching email regardless of the casing' do
+      expect(described_class.search_with_secondary_emails(user.email.upcase)).to eq([user])
+    end
+
+    it 'returns users with a matching username' do
+      expect(described_class.search_with_secondary_emails(user.username)).to eq([user])
+    end
+
+    it 'returns users with a partially matching username' do
+      expect(described_class.search_with_secondary_emails(user.username[0..2])).to eq([user])
+    end
+
+    it 'returns users with a matching username regardless of the casing' do
+      expect(described_class.search_with_secondary_emails(user.username.upcase)).to eq([user])
+    end
+
+    it 'returns users with a matching whole secondary email' do
+      expect(described_class.search_with_secondary_emails(email.email)).to eq([email.user])
+    end
+
+    it 'does not return users with a matching part of secondary email' do
+      expect(described_class.search_with_secondary_emails(email.email[1...-1])).to be_empty
+    end
+
+    it 'returns no matches for an empty string' do
+      expect(described_class.search_with_secondary_emails('')).to be_empty
+    end
+
+    it 'returns no matches for nil' do
+      expect(described_class.search_with_secondary_emails(nil)).to be_empty
     end
   end
 
@@ -2451,6 +2606,28 @@ RSpec.describe User do
       user.reload
 
       expect(user.verified_email?(email_unconfirmed.email)).to be_falsy
+    end
+  end
+
+  context 'crowd synchronized user' do
+    describe '#crowd_user?' do
+      it 'is true if provider is crowd' do
+        user = create(:omniauth_user, provider: 'crowd')
+
+        expect(user.crowd_user?).to be_truthy
+      end
+
+      it 'is false for other providers' do
+        user = create(:omniauth_user, provider: 'other-provider')
+
+        expect(user.crowd_user?).to be_falsey
+      end
+
+      it 'is false if no extern_uid is provided' do
+        user = create(:omniauth_user, extern_uid: nil)
+
+        expect(user.crowd_user?).to be_falsey
+      end
     end
   end
 
@@ -2875,6 +3052,57 @@ RSpec.describe User do
       end
 
       it { expect(subject.can_be_removed?).to be_falsey }
+    end
+  end
+
+  describe '#solo_owned_groups' do
+    let_it_be_with_refind(:user) { create(:user) }
+
+    subject(:solo_owned_groups) { user.solo_owned_groups }
+
+    context 'no owned groups' do
+      it { is_expected.to be_empty }
+    end
+
+    context 'has owned groups' do
+      let_it_be(:group) { create(:group) }
+
+      before do
+        group.add_owner(user)
+      end
+
+      context 'not solo owner' do
+        let_it_be(:user2) { create(:user) }
+
+        before do
+          group.add_owner(user2)
+        end
+
+        it { is_expected.to be_empty }
+      end
+
+      context 'solo owner' do
+        it { is_expected.to include(group) }
+
+        it 'avoids N+1 queries' do
+          fresh_user = User.find(user.id)
+          control_count = ActiveRecord::QueryRecorder.new do
+            fresh_user.solo_owned_groups
+          end.count
+
+          create(:group).add_owner(user)
+
+          expect { solo_owned_groups }.not_to exceed_query_limit(control_count)
+        end
+      end
+    end
+  end
+
+  describe '#can_remove_self?' do
+    let(:user) { create(:user) }
+
+    it 'returns true' do
+      expect(user.can_remove_self?).to eq true
     end
   end
 

@@ -1,5 +1,6 @@
 - project = local_assigns.fetch(:project)
 - issuable = local_assigns.fetch(:issuable)
+- presenter = local_assigns.fetch(:presenter)
 
 - return unless can?(current_user, :"admin_#{issuable.to_ability_name}", issuable.project)
 
@@ -14,7 +15,7 @@
 
     - if issuable.allows_reviewers?
       .form-group.row.merge-request-reviewer
-        = render "shared/issuable/form/metadata_issuable_reviewer", issuable: issuable, form: form, has_due_date: has_due_date
+        = render "shared/issuable/form/metadata_issuable_reviewer", issuable: issuable, form: form, has_due_date: has_due_date, presenter: presenter
 
     = render_if_exists "shared/issuable/form/epic", issuable: issuable, form: form, project: project
 

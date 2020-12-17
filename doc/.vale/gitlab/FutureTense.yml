@@ -9,7 +9,7 @@ extends: existence
 message: 'Avoid using future tense: "%s". Use present tense instead.'
 ignorecase: true
 level: warning
-link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#language-to-avoid
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#usage-list
 raw:
   - "(going to( |\n|[[:punct:]])[a-zA-Z]*|"
   - "will( |\n|[[:punct:]])[a-zA-Z]*|"

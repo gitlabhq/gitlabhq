@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: reference, api
 ---
 
@@ -129,7 +129,8 @@ Example response:
 ]
 ```
 
-**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+NOTE:
+`assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 ### Scope: merge_requests
 
@@ -291,8 +292,8 @@ Example response:
 ]
 ```
 
-NOTE: **Note:**
-`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the file name and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
+NOTE:
+`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
 ### Scope: commits **(STARTER)**
 
@@ -363,7 +364,7 @@ Example response:
 ]
 ```
 
-NOTE: **Note:**
+NOTE:
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the file name and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
 ### Scope: notes **(STARTER)**
@@ -541,7 +542,8 @@ Example response:
 ]
 ```
 
-**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+NOTE:
+`assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 ### Scope: merge_requests
 
@@ -672,8 +674,8 @@ Example response:
 ]
 ```
 
-NOTE **Note:**
-`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the file name and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
+NOTE:
+`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
 ### Scope: commits **(STARTER)**
 
@@ -744,7 +746,7 @@ Example response:
 ]
 ```
 
-NOTE **Note:**
+NOTE:
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the file name and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
 ### Scope: notes **(STARTER)**
@@ -890,7 +892,8 @@ Example response:
 ]
 ```
 
-**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+NOTE:
+`assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 ### Scope: merge_requests
 
@@ -1068,8 +1071,8 @@ Example response:
 ]
 ```
 
-NOTE: **Note:**
-`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the file name and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
+NOTE:
+`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
 ### Scope: commits
 
@@ -1142,8 +1145,8 @@ Example response:
 ]
 ```
 
-NOTE: **Note:**
-`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the file name and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
+NOTE:
+`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` will be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
 ### Scope: users
 

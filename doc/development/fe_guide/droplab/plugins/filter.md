@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Filter plugin
@@ -49,7 +49,7 @@ droplab.addData('trigger', [{
 In the previous code, the input string is compared against the `test` key of the
 passed data objects.
 
-Optionally you can set `filterFunction` to a function. This function will be
+Optionally you can set `filterFunction` to a function. This function is then
 used instead of `Filter`'s built-in string search. `filterFunction` is passed
 two arguments: the first is one of the data objects, and the second is the
 current input value.

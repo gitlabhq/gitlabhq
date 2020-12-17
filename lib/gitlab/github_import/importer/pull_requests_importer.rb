@@ -11,7 +11,7 @@ module Gitlab
         end
 
         def representation_class
-          Representation::PullRequest
+          Gitlab::GithubImport::Representation::PullRequest
         end
 
         def sidekiq_worker_class

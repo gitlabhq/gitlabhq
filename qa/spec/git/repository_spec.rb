@@ -110,7 +110,7 @@ RSpec.describe QA::Git::Repository do
     end
 
     describe '#push_changes' do
-      let(:branch) { 'master' }
+      let(:branch) { QA::Runtime::Env.default_branch }
       let(:call_method) { repository.push_changes }
       let(:command) { "git push #{repo_uri_with_credentials} #{branch}" }
 

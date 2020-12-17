@@ -15,6 +15,7 @@ export default {
   },
 
   bindEvents() {
+    // eslint-disable-next-line @gitlab/no-global-event-off
     return this.form.off('submit').on('submit', this.onFormSubmit.bind(this));
   },
 

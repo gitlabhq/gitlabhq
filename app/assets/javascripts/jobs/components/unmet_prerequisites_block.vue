@@ -1,11 +1,19 @@
 <script>
-import { GlLink } from '@gitlab/ui';
+import { GlLink, GlAlert } from '@gitlab/ui';
+import { __, s__ } from '~/locale';
 /**
  * Renders Unmet Prerequisites block for job's view.
  */
 export default {
+  i18n: {
+    failMessage: s__(
+      'Job|This job failed because the necessary resources were not successfully created.',
+    ),
+    moreInformation: __('More information'),
+  },
   components: {
     GlLink,
+    GlAlert,
   },
   props: {
     helpPath: {
@@ -16,15 +24,10 @@ export default {
 };
 </script>
 <template>
-  <div class="bs-callout bs-callout-danger">
-    <p class="js-failed-unmet-prerequisites gl-mb-0">
-      {{
-        s__(`Job|This job failed because the necessary resources were not successfully created.`)
-      }}
-
-      <gl-link :href="helpPath" class="js-help-path">
-        <strong> {{ __('More information') }} </strong>
-      </gl-link>
-    </p>
-  </div>
+  <gl-alert variant="danger" class="gl-mt-3" :dismissible="false">
+    {{ $options.i18n.failMessage }}
+    <gl-link :href="helpPath">
+      {{ $options.i18n.moreInformation }}
+    </gl-link>
+  </gl-alert>
 </template>

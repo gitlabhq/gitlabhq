@@ -1,15 +1,18 @@
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
 describe('clipboard button', () => {
   let wrapper;
 
-  const createWrapper = propsData => {
-    wrapper = shallowMount(ClipboardButton, {
+  const createWrapper = (propsData, options = {}) => {
+    wrapper = mount(ClipboardButton, {
       propsData,
+      ...options,
     });
   };
+
+  const findButton = () => wrapper.find(GlButton);
 
   afterEach(() => {
     wrapper.destroy();
@@ -26,7 +29,7 @@ describe('clipboard button', () => {
     });
 
     it('renders a button for clipboard', () => {
-      expect(wrapper.find(GlButton).exists()).toBe(true);
+      expect(findButton().exists()).toBe(true);
       expect(wrapper.attributes('data-clipboard-text')).toBe('copy me');
     });
 
@@ -52,5 +55,36 @@ describe('clipboard button', () => {
         '{"text":"copy me","gfm":"`path/to/file`"}',
       );
     });
+  });
+
+  it('renders default slot as button text', () => {
+    createWrapper(
+      {
+        text: 'copy me',
+        title: 'Copy this value',
+      },
+      {
+        slots: {
+          default: 'Foo bar',
+        },
+      },
+    );
+
+    expect(findButton().text()).toBe('Foo bar');
+  });
+
+  it('re-emits button events', () => {
+    const onClick = jest.fn();
+    createWrapper(
+      {
+        text: 'copy me',
+        title: 'Copy this value',
+      },
+      { listeners: { click: onClick } },
+    );
+
+    findButton().trigger('click');
+
+    expect(onClick).toHaveBeenCalled();
   });
 });

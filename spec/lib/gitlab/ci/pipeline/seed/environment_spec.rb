@@ -85,16 +85,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Environment do
         end
 
         it_behaves_like 'returning a correct environment'
-
-        context 'but the environment auto_stop_in on create flag is disabled' do
-          let(:expected_auto_stop_in) { nil }
-
-          before do
-            stub_feature_flags(environment_auto_stop_start_on_create: false)
-          end
-
-          it_behaves_like 'returning a correct environment'
-        end
       end
     end
 

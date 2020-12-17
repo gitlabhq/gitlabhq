@@ -1,0 +1,5 @@
+---
+title: Expand index on ci_pipelines
+merge_request: 49604
+author:
+type: performance

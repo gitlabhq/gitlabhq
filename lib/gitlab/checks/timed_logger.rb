@@ -31,7 +31,7 @@ module Gitlab
         args = { cancelled: true }
         args[:start] = start if timed
 
-        append_message(log_message + time_suffix_message(args))
+        append_message(log_message + time_suffix_message(**args))
 
         raise TimeoutError
       end

@@ -80,37 +80,6 @@ module Mentionable
     all_references(current_user).users
   end
 
-  def store_mentions!
-    refs = all_references(self.author)
-
-    references = {}
-    references[:mentioned_users_ids] = refs.mentioned_users&.pluck(:id).presence
-    references[:mentioned_groups_ids] = refs.mentioned_groups&.pluck(:id).presence
-    references[:mentioned_projects_ids] = refs.mentioned_projects&.pluck(:id).presence
-
-    # One retry should be enough as next time `model_user_mention` should return the existing mention record, that
-    # threw the `ActiveRecord::RecordNotUnique` exception in first place.
-    self.class.safe_ensure_unique(retries: 1) do
-      user_mention = model_user_mention
-
-      # this may happen due to notes polymorphism, so noteable_id may point to a record that no longer exists
-      # as we cannot have FK on noteable_id
-      break if user_mention.blank?
-
-      user_mention.mentioned_users_ids = references[:mentioned_users_ids]
-      user_mention.mentioned_groups_ids = references[:mentioned_groups_ids]
-      user_mention.mentioned_projects_ids = references[:mentioned_projects_ids]
-
-      if user_mention.has_mentions?
-        user_mention.save!
-      else
-        user_mention.destroy!
-      end
-    end
-
-    true
-  end
-
   def referenced_users
     User.where(id: user_mentions.select("unnest(mentioned_users_ids)"))
   end
@@ -216,12 +185,6 @@ module Mentionable
     source.select { |key, val| mentionable.include?(key) }
   end
 
-  def any_mentionable_attributes_changed?
-    self.class.mentionable_attrs.any? do |attr|
-      saved_changes.key?(attr.first)
-    end
-  end
-
   # Determine whether or not a cross-reference Note has already been created between this Mentionable and
   # the specified target.
   def cross_reference_exists?(target)
@@ -237,12 +200,12 @@ module Mentionable
   end
 
   # User mention that is parsed from model description rather then its related notes.
-  # Models that have a descriprion attribute like Issue, MergeRequest, Epic, Snippet may have such a user mention.
+  # Models that have a description attribute like Issue, MergeRequest, Epic, Snippet may have such a user mention.
   # Other mentionable models like Commit, DesignManagement::Design, will never have such record as those do not have
   # a description attribute.
   #
   # Using this method followed by a call to *save* may result in *ActiveRecord::RecordNotUnique* exception
-  # in a multithreaded environment. Make sure to use it within a *safe_ensure_unique* block.
+  # in a multi-threaded environment. Make sure to use it within a *safe_ensure_unique* block.
   def model_user_mention
     user_mentions.where(note_id: nil).first_or_initialize
   end

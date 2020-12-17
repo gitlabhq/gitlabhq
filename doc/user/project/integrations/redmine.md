@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Ecosystem
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Redmine Service
@@ -15,9 +15,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
    | ----- | ----------- |
    | `project_url`   | The URL to the project in Redmine which is being linked to this GitLab project |
    | `issues_url`    | The URL to the issue in Redmine project that is linked to this GitLab project. Note that the `issues_url` requires `:id` in the URL. This ID is used by GitLab as a placeholder to replace the issue number. |
-   | `new_issue_url` | This is the URL to create a new issue in Redmine for the project linked to this GitLab project. **This is currently not being used and will be removed in a future release.** |
+   | `new_issue_url` | This is the URL to create a new issue in Redmine for the project linked to this GitLab project. **This is currently not being used and is planned be removed in a future release.** |
 
-   Once you have configured and enabled Redmine you'll see the Redmine link on the GitLab project pages that takes you to the appropriate Redmine project.
+   Once you have configured and enabled Redmine, you see the Redmine link on the GitLab project pages that takes you to the appropriate Redmine project.
 
    As an example, below is a configuration for a project named `gitlab-ci`.
 
@@ -34,7 +34,7 @@ Issues in Redmine can be referenced in two alternative ways:
   then followed by capital letters, numbers or underscores, and `<ID>` is
   a number (example `API_32-143`).
 
-We suggest using the longer format if you have both internal and external issue trackers enabled. If you use the shorter format and an issue with the same ID exists in the internal issue tracker the internal issue will be linked.
+We suggest using the longer format if you have both internal and external issue trackers enabled. If you use the shorter format and an issue with the same ID exists in the internal issue tracker, the internal issue is linked.
 
 Please note that `<PROJECT>` part is ignored and links always point to the
 address specified in `issues_url`.

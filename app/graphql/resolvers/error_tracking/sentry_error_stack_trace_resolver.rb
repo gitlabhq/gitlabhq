@@ -3,6 +3,8 @@
 module Resolvers
   module ErrorTracking
     class SentryErrorStackTraceResolver < BaseResolver
+      type Types::ErrorTracking::SentryErrorStackTraceType, null: true
+
       argument :id, ::Types::GlobalIDType[::Gitlab::ErrorTracking::DetailedError],
                 required: true,
                 description: 'ID of the Sentry issue'

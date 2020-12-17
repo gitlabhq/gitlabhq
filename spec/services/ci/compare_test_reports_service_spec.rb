@@ -67,7 +67,7 @@ RSpec.describe Ci::CompareTestReportsService do
 
         # The JUnit fixture for the given build has 3 failures.
         # This service will create 1 test case failure record for each.
-        Ci::TestCasesService.new.execute(build)
+        Ci::TestFailureHistoryService.new(head_pipeline).execute
       end
 
       it 'loads recent failures on limited test cases to avoid building up a huge DB query', :aggregate_failures do
@@ -78,36 +78,6 @@ RSpec.describe Ci::CompareTestReportsService do
         ])
         expect(new_failures.count).to eq(2)
       end
-    end
-  end
-
-  describe '#latest?' do
-    subject { service.latest?(base_pipeline, head_pipeline, data) }
-
-    let!(:base_pipeline) { nil }
-    let!(:head_pipeline) { create(:ci_pipeline, :with_test_reports, project: project) }
-    let!(:key) { service.send(:key, base_pipeline, head_pipeline) }
-
-    context 'when cache key is latest' do
-      let(:data) { { key: key } }
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'when cache key is outdated' do
-      before do
-        head_pipeline.update_column(:updated_at, 10.minutes.ago)
-      end
-
-      let(:data) { { key: key } }
-
-      it { is_expected.to be_falsy }
-    end
-
-    context 'when cache key is empty' do
-      let(:data) { { key: nil } }
-
-      it { is_expected.to be_falsy }
     end
   end
 end

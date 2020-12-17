@@ -1,7 +1,7 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+stage: Enablement
+group: Distribution
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Polling configuration
@@ -9,7 +9,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 The GitLab UI polls for updates for different resources (issue notes, issue
 titles, pipeline statuses, etc.) on a schedule appropriate to the resource.
 
-In "Application settings -> Real-time features" you can configure "Polling
+In **[Admin Area](../user/admin_area/index.md) > Settings > Preferences > Real-time features**,
+you can configure "Polling
 interval multiplier". This multiplier is applied to all resources at once,
 and decimal values are supported. For the sake of the examples below, we will
 say that issue notes poll every 2 seconds, and issue titles poll every 5

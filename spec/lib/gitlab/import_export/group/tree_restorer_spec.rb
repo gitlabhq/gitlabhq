@@ -75,12 +75,31 @@ RSpec.describe Gitlab::ImportExport::Group::TreeRestorer do
 
     before do
       setup_import_export_config('group_exports/child_with_no_parent')
-
-      expect(group_tree_restorer.restore).to be_falsey
     end
 
-    it 'fails when a child group does not have a valid parent_id' do
-      expect(shared.errors).to include('Parent group not found')
+    it 'captures import failures when a child group does not have a valid parent_id' do
+      group_tree_restorer.restore
+
+      expect(group.import_failures.first.exception_message).to eq('Parent group not found')
+    end
+  end
+
+  context 'when child group creation fails' do
+    let(:user) { create(:user) }
+    let(:group) { create(:group) }
+    let(:shared) { Gitlab::ImportExport::Shared.new(group) }
+    let(:group_tree_restorer) { described_class.new(user: user, shared: shared, group: group) }
+
+    before do
+      setup_import_export_config('group_exports/child_short_name')
+    end
+
+    it 'captures import failure' do
+      exception_message = 'Validation failed: Group URL is too short (minimum is 2 characters)'
+
+      group_tree_restorer.restore
+
+      expect(group.import_failures.first.exception_message).to eq(exception_message)
     end
   end
 

@@ -1,0 +1,249 @@
+[
+    {
+        "start_line": 11,
+        "start_char": 5,
+        "definition_path": "morestrings/reverse.go#L12",
+        "hover": [
+            {
+                "tokens": [
+                    [
+                        {
+                            "class": "kd",
+                            "value": "func"
+                        },
+                        {
+                            "value": " Reverse(s "
+                        },
+                        {
+                            "class": "kt",
+                            "value": "string"
+                        },
+                        {
+                            "value": ") "
+                        },
+                        {
+                            "class": "kt",
+                            "value": "string"
+                        }
+                    ]
+                ],
+                "language": "go"
+            },
+            {
+                "value": "This method reverses a string \n\n"
+            }
+        ],
+        "references": [
+            {
+                "path": "main.go#L8"
+            }
+        ]
+    },
+    {
+        "start_line": 4,
+        "start_char": 11,
+        "definition_path": "morestrings/reverse.go#L5",
+        "hover": [
+            {
+                "tokens": [
+                    [
+                        {
+                            "class": "kd",
+                            "value": "var"
+                        },
+                        {
+                            "value": " i "
+                        },
+                        {
+                            "class": "kt",
+                            "value": "int"
+                        }
+                    ]
+                ],
+                "language": "go"
+            }
+        ]
+    },
+    {
+        "start_line": 11,
+        "start_char": 13,
+        "definition_path": "morestrings/reverse.go#L12",
+        "hover": [
+            {
+                "tokens": [
+                    [
+                        {
+                            "class": "kd",
+                            "value": "var"
+                        },
+                        {
+                            "value": " s "
+                        },
+                        {
+                            "class": "kt",
+                            "value": "string"
+                        }
+                    ]
+                ],
+                "language": "go"
+            }
+        ]
+    },
+    {
+        "start_line": 12,
+        "start_char": 1,
+        "definition_path": "morestrings/reverse.go#L13",
+        "hover": [
+            {
+                "tokens": [
+                    [
+                        {
+                            "class": "kd",
+                            "value": "var"
+                        },
+                        {
+                            "value": " a "
+                        },
+                        {
+                            "class": "kt",
+                            "value": "string"
+                        }
+                    ]
+                ],
+                "language": "go"
+            }
+        ],
+        "references": [
+            {
+                "path": "morestrings/reverse.go#L15"
+            }
+        ]
+    },
+    {
+        "start_line": 5,
+        "start_char": 1,
+        "definition_path": "morestrings/reverse.go#L6",
+        "hover": [
+            {
+                "tokens": [
+                    [
+                        {
+                            "class": "kd",
+                            "value": "var"
+                        },
+                        {
+                            "value": " b "
+                        },
+                        {
+                            "class": "kt",
+                            "value": "string"
+                        }
+                    ]
+                ],
+                "language": "go"
+            }
+        ],
+        "references": [
+            {
+                "path": "morestrings/reverse.go#L8"
+            }
+        ]
+    },
+    {
+        "start_line": 14,
+        "start_char": 8,
+        "definition_path": "morestrings/reverse.go#L13",
+        "hover": [
+            {
+                "tokens": [
+                    [
+                        {
+                            "class": "kd",
+                            "value": "var"
+                        },
+                        {
+                            "value": " a "
+                        },
+                        {
+                            "class": "kt",
+                            "value": "string"
+                        }
+                    ]
+                ],
+                "language": "go"
+            }
+        ],
+        "references": [
+            {
+                "path": "morestrings/reverse.go#L15"
+            }
+        ]
+    },
+    {
+        "start_line": 7,
+        "start_char": 8,
+        "definition_path": "morestrings/reverse.go#L6",
+        "hover": [
+            {
+                "tokens": [
+                    [
+                        {
+                            "class": "kd",
+                            "value": "var"
+                        },
+                        {
+                            "value": " b "
+                        },
+                        {
+                            "class": "kt",
+                            "value": "string"
+                        }
+                    ]
+                ],
+                "language": "go"
+            }
+        ],
+        "references": [
+            {
+                "path": "morestrings/reverse.go#L8"
+            }
+        ]
+    },
+    {
+        "start_line": 4,
+        "start_char": 5,
+        "definition_path": "morestrings/reverse.go#L5",
+        "hover": [
+            {
+                "tokens": [
+                    [
+                        {
+                            "class": "kd",
+                            "value": "func"
+                        },
+                        {
+                            "value": " Func2(i "
+                        },
+                        {
+                            "class": "kt",
+                            "value": "int"
+                        },
+                        {
+                            "value": ") "
+                        },
+                        {
+                            "class": "kt",
+                            "value": "string"
+                        }
+                    ]
+                ],
+                "language": "go"
+            }
+        ],
+        "references": [
+            {
+                "path": "main.go#L9"
+            }
+        ]
+    }
+]

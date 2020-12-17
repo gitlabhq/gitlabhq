@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Editor
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: reference
 ---
 
@@ -17,7 +17,7 @@ before the check result is visible on the project admin page. If the
 checks failed you can see their output on in the [`repocheck.log`
 file.](logs.md#repochecklog)
 
-NOTE: **Note:**
+NOTE:
 It is OFF by default because it still causes too many false alarms.
 
 ## Periodic checks

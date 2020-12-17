@@ -70,8 +70,10 @@ export default class GLForm {
   }
 
   setupAutosize() {
+    // eslint-disable-next-line @gitlab/no-global-event-off
     this.textarea.off('autosize:resized').on('autosize:resized', this.setHeightData.bind(this));
 
+    // eslint-disable-next-line @gitlab/no-global-event-off
     this.textarea.off('mouseup.autosize').on('mouseup.autosize', this.destroyAutosize.bind(this));
 
     setTimeout(() => {
@@ -97,7 +99,9 @@ export default class GLForm {
   }
 
   clearEventListeners() {
+    // eslint-disable-next-line @gitlab/no-global-event-off
     this.textarea.off('focus');
+    // eslint-disable-next-line @gitlab/no-global-event-off
     this.textarea.off('blur');
     removeMarkdownListeners(this.form);
   }

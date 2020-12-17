@@ -1,0 +1,2 @@
+export const CI_CONFIG_STATUS_VALID = 'VALID';
+export const CI_CONFIG_STATUS_INVALID = 'INVALID';

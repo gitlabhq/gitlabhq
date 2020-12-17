@@ -17,7 +17,8 @@ import initInviteMemberModal from '~/invite_member/init_invite_member_modal';
 import { IssuableType } from '~/issuable_show/constants';
 
 export default function() {
-  const { issueType, ...issuableData } = parseIssuableData();
+  const initialDataEl = document.getElementById('js-issuable-app');
+  const { issueType, ...issuableData } = parseIssuableData(initialDataEl);
 
   switch (issueType) {
     case IssuableType.Incident:

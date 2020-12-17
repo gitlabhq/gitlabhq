@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Description templates
@@ -26,7 +26,7 @@ are added to the root directory of a GitLab project's repository.
 
 Description templates must be written in [Markdown](../markdown.md) and stored
 in your project's repository under a directory named `.gitlab`. Only the
-templates of the default branch will be taken into account.
+templates of the default branch are taken into account.
 
 ## Use-cases
 
@@ -53,7 +53,7 @@ To create a Markdown file:
     example `feature_request.md` or `Feature Request.md`.
  1. Commit and push to your default branch.
 
-If you don't have a `.gitlab/issue_templates` directory in your repository, you'll need to create it.
+If you don't have a `.gitlab/issue_templates` directory in your repository, you need to create it.
 
 To create the `.gitlab/issue_templates` directory:
 
@@ -74,12 +74,12 @@ push to your default branch.
 ## Using the templates
 
 Let's take for example that you've created the file `.gitlab/issue_templates/Bug.md`.
-This will enable the `Bug` dropdown option when creating or editing issues. When
-`Bug` is selected, the content from the `Bug.md` template file will be copied
-to the issue description field. The 'Reset template' button will discard any
-changes you made after picking the template and return it to its initial status.
+This enables the `Bug` dropdown option when creating or editing issues. When
+`Bug` is selected, the content from the `Bug.md` template file is copied
+to the issue description field. The **Reset template** button discards any
+changes you made after picking the template and returns it to its initial status.
 
-TIP: **Tip:**
+NOTE:
 You can create short-cut links to create an issue using a designated template. For example: `https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20proposal`.
 
 ![Description templates](img/description_templates.png)
@@ -92,7 +92,7 @@ You can create short-cut links to create an issue using a designated template. F
 
 The visibility of issues and/or merge requests should be set to either "Everyone
 with access" or "Only Project Members" in your project's **Settings / Visibility, project features, permissions** section, otherwise the
-template text areas won't show. This is the default behavior so in most cases
+template text areas don't show. This is the default behavior, so in most cases
 you should be fine.
 
 1. Go to your project's **Settings**.
@@ -108,7 +108,7 @@ you should be fine.
 ![Default issue description templates](img/description_templates_issue_settings.png)
 
 After you add the description, hit **Save changes** for the settings to take
-effect. Now, every time a new merge request or issue is created, it will be
+effect. Now, every time a new merge request or issue is created, it is 
 pre-filled with the text you entered in the template(s).
 
 ## Description template example
@@ -117,9 +117,9 @@ We make use of Description Templates for Issues and Merge Requests within the Gi
 Edition project. Please refer to the [`.gitlab` folder](https://gitlab.com/gitlab-org/gitlab/tree/master/.gitlab)
 for some examples.
 
-TIP: **Tip:**
+NOTE:
 It's possible to use [quick actions](quick_actions.md) within description templates to quickly add
-labels, assignees, and milestones. The quick actions will only be executed if the user submitting
+labels, assignees, and milestones. The quick actions are only executed if the user submitting
 the issue or merge request has the permissions to perform the relevant actions.
 
 Here is an example of a Bug report template:

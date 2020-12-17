@@ -60,6 +60,7 @@ export default {
   },
   data() {
     return {
+      formattedMarkdown: null,
       parsedSource: parseSourceFile(this.preProcess(true, this.content)),
       editorMode: EDITOR_TYPES.wysiwyg,
       hasMatter: false,
@@ -140,9 +141,13 @@ export default {
     onSubmit() {
       const preProcessedContent = this.preProcess(false, this.parsedSource.content());
       this.$emit('submit', {
+        formattedMarkdown: this.formattedMarkdown,
         content: preProcessedContent,
         images: this.$options.imageRepository.getAll(),
       });
+    },
+    onEditorLoad({ formattedMarkdown }) {
+      this.formattedMarkdown = formattedMarkdown;
     },
   },
 };
@@ -167,6 +172,7 @@ export default {
       @modeChange="onModeChange"
       @input="onInputChange"
       @uploadImage="onUploadImage"
+      @load="onEditorLoad"
     />
     <unsaved-changes-confirm-dialog :modified="isSaveable" />
     <publish-toolbar

@@ -8,7 +8,7 @@ module Analytics
 
       DEFAULT_DELAY = 3.minutes.freeze
 
-      feature_category :instance_statistics
+      feature_category :devops_reports
       urgency :low
 
       idempotent!

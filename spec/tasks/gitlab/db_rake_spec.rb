@@ -129,7 +129,7 @@ RSpec.describe 'gitlab:db namespace rake task' do
     let(:output) { StringIO.new }
 
     before do
-      allow(File).to receive(:read).with(structure_file).and_return(input)
+      stub_file_read(structure_file, content: input)
       allow(File).to receive(:open).with(structure_file, any_args).and_yield(output)
     end
 
@@ -235,8 +235,8 @@ RSpec.describe 'gitlab:db namespace rake task' do
     let(:indexes) { double('indexes') }
 
     context 'when no index_name is given' do
-      it 'rebuilds a random number of large indexes' do
-        expect(Gitlab::Database::Reindexing).to receive_message_chain('candidate_indexes.random_few').and_return(indexes)
+      it 'uses all candidate indexes' do
+        expect(Gitlab::Database::Reindexing).to receive(:candidate_indexes).and_return(indexes)
         expect(Gitlab::Database::Reindexing).to receive(:perform).with(indexes)
 
         run_rake_task('gitlab:db:reindex')
@@ -246,17 +246,53 @@ RSpec.describe 'gitlab:db namespace rake task' do
     context 'with index name given' do
       let(:index) { double('index') }
 
+      before do
+        allow(Gitlab::Database::Reindexing).to receive(:candidate_indexes).and_return(indexes)
+      end
+
       it 'calls the index rebuilder with the proper arguments' do
-        expect(Gitlab::Database::PostgresIndex).to receive(:by_identifier).with('public.foo_idx').and_return(index)
+        allow(indexes).to receive(:where).with(identifier: 'public.foo_idx').and_return([index])
         expect(Gitlab::Database::Reindexing).to receive(:perform).with([index])
 
         run_rake_task('gitlab:db:reindex', '[public.foo_idx]')
       end
 
       it 'raises an error if the index does not exist' do
-        expect(Gitlab::Database::PostgresIndex).to receive(:by_identifier).with('public.absent_index').and_raise(ActiveRecord::RecordNotFound)
+        allow(indexes).to receive(:where).with(identifier: 'public.absent_index').and_return([])
 
-        expect { run_rake_task('gitlab:db:reindex', '[public.absent_index]') }.to raise_error(ActiveRecord::RecordNotFound)
+        expect { run_rake_task('gitlab:db:reindex', '[public.absent_index]') }.to raise_error(/Index not found/)
+      end
+
+      it 'raises an error if the index is not fully qualified with a schema' do
+        expect { run_rake_task('gitlab:db:reindex', '[foo_idx]') }.to raise_error(/Index name is not fully qualified/)
+      end
+    end
+  end
+
+  describe 'active' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:task) { 'gitlab:db:active' }
+    let(:self_monitoring) { double('self_monitoring') }
+
+    where(:needs_migration, :self_monitoring_project, :project_count, :exit_status, :exit_code) do
+      true | nil | nil | 1 | false
+      false | :self_monitoring | 1 | 1 | false
+      false | nil | 0 | 1 | false
+      false | :self_monitoring | 2 | 0 | true
+    end
+
+    with_them do
+      it 'exits 0 or 1 depending on user modifications to the database' do
+        allow_any_instance_of(ActiveRecord::MigrationContext).to receive(:needs_migration?).and_return(needs_migration)
+        allow_any_instance_of(ApplicationSetting).to receive(:self_monitoring_project).and_return(self_monitoring_project)
+        allow(Project).to receive(:count).and_return(project_count)
+
+        expect { run_rake_task(task) }.to raise_error do |error|
+          expect(error).to be_a(SystemExit)
+          expect(error.status).to eq(exit_status)
+          expect(error.success?).to be(exit_code)
+        end
       end
     end
   end

@@ -10,31 +10,35 @@ RSpec.describe InstanceConfiguration do
         let(:sha256) { 'SHA256:2KJDT7xf2i68mBgJ3TVsjISntg4droLbXYLfQj0VvSY' }
 
         it 'does not return anything if file does not exist' do
-          stub_pub_file(exist: false)
+          stub_pub_file(pub_file(exist: false))
 
           expect(subject.settings[:ssh_algorithms_hashes]).to be_empty
         end
 
         it 'does not return anything if file is empty' do
-          stub_pub_file
+          stub_pub_file(pub_file)
 
-          allow(File).to receive(:read).and_return('')
+          stub_file_read(pub_file, content: '')
 
           expect(subject.settings[:ssh_algorithms_hashes]).to be_empty
         end
 
         it 'returns the md5 and sha256 if file valid and exists' do
-          stub_pub_file
+          stub_pub_file(pub_file)
 
           result = subject.settings[:ssh_algorithms_hashes].select { |o| o[:md5] == md5 && o[:sha256] == sha256 }
 
           expect(result.size).to eq(InstanceConfiguration::SSH_ALGORITHMS.size)
         end
 
-        def stub_pub_file(exist: true)
+        def pub_file(exist: true)
           path = exist ? 'spec/fixtures/ssh_host_example_key.pub' : 'spec/fixtures/ssh_host_example_key.pub.random'
 
-          allow(subject).to receive(:ssh_algorithm_file).and_return(Rails.root.join(path))
+          Rails.root.join(path)
+        end
+
+        def stub_pub_file(path)
+          allow(subject).to receive(:ssh_algorithm_file).and_return(path)
         end
       end
 

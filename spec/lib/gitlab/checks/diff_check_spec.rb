@@ -7,7 +7,6 @@ RSpec.describe Gitlab::Checks::DiffCheck do
 
   describe '#validate!' do
     let(:owner) { create(:user) }
-    let!(:lock) { create(:lfs_file_lock, user: owner, project: project, path: 'README') }
 
     before do
       allow(project.repository).to receive(:new_commits).and_return(
@@ -28,13 +27,27 @@ RSpec.describe Gitlab::Checks::DiffCheck do
     end
 
     context 'with LFS enabled' do
+      let!(:lock) { create(:lfs_file_lock, user: owner, project: project, path: 'README') }
+
       before do
         allow(project).to receive(:lfs_enabled?).and_return(true)
       end
 
       context 'when change is sent by a different user' do
-        it 'raises an error if the user is not allowed to update the file' do
-          expect { subject.validate! }.to raise_error(Gitlab::GitAccess::ForbiddenError, "The path 'README' is locked in Git LFS by #{lock.user.name}")
+        context 'when diff check with paths rpc feature flag is true' do
+          it 'raises an error if the user is not allowed to update the file' do
+            expect { subject.validate! }.to raise_error(Gitlab::GitAccess::ForbiddenError, "The path 'README' is locked in Git LFS by #{lock.user.name}")
+          end
+        end
+
+        context 'when diff check with paths rpc feature flag is false' do
+          before do
+            stub_feature_flags(diff_check_with_paths_changed_rpc: false)
+          end
+
+          it 'raises an error if the user is not allowed to update the file' do
+            expect { subject.validate! }.to raise_error(Gitlab::GitAccess::ForbiddenError, "The path 'README' is locked in Git LFS by #{lock.user.name}")
+          end
         end
       end
 
@@ -52,6 +65,8 @@ RSpec.describe Gitlab::Checks::DiffCheck do
         allow(subject).to receive(:validations_for_diff).and_return([lambda { |diff| return }])
 
         expect_any_instance_of(Commit).to receive(:raw_deltas).and_call_original
+
+        stub_feature_flags(diff_check_with_paths_changed_rpc: false)
 
         subject.validate!
       end

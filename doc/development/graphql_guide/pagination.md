@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # GraphQL pagination
@@ -85,6 +85,20 @@ This was a conscious decision to support performance and data stability.
 However, there are some cases where we have to use the offset
 pagination connection, `OffsetActiveRecordRelationConnection`, such as when
 sorting by label priority in issues, due to the complexity of the sort.
+
+If you return a relation from a resolver that is not suitable for keyset
+pagination (due to the sort order for example), then you can use the
+`BaseResolver#offset_pagination` method to wrap the relation in the correct
+connection type. For example:
+
+```ruby
+def resolve(**args)
+  result = Finder.new(object, current_user, args).execute
+  result = offset_pagination(result) if needs_offset?(args[:sort])
+
+  result
+end
+```
 
 ### Keyset pagination
 
@@ -225,7 +239,7 @@ instead of an `ActiveRecord::Relation`:
       if non_stable_cursor_sort?(args[:sort])
         # Certain complex sorts are not supported by the stable cursor pagination yet.
         # In these cases, we use offset pagination, so we return the correct connection.
-        Gitlab::Graphql::Pagination::OffsetActiveRecordRelationConnection.new(issues)
+        offset_pagination(issues)
       else
         issues
       end
@@ -280,28 +294,30 @@ The shared example requires certain `let` variables and methods to be set up:
 
 ```ruby
 describe 'sorting and pagination' do
-  let(:sort_project) { create(:project, :public) }
+  let_it_be(:sort_project) { create(:project, :public) }
   let(:data_path)    { [:project, :issues] }
 
-  def pagination_query(params, page_info)
-    graphql_query_for(
-      'project',
-      { 'fullPath' => sort_project.full_path },
-      query_graphql_field('issues', params, "#{page_info} edges { node { id } }")
+  def pagination_query(params)
+    graphql_query_for( :project, { full_path: sort_project.full_path },
+      query_nodes(:issues, :id, include_pagination_info: true, args: params))
     )
   end
 
-  def pagination_results_data(data)
-    data.map { |issue| issue.dig('node', 'iid').to_i }
+  def pagination_results_data(nodes)
+    nodes.map { |issue| issue['iid'].to_i }
   end
 
   context 'when sorting by weight' do
-    ...
+    let_it_be(:issues) { make_some_issues_with_weights }
+
     context 'when ascending' do
+      let(:ordered_issues) { issues.sort_by(&:weight) }
+
       it_behaves_like 'sorted paginated query' do
-        let(:sort_param)       { 'WEIGHT_ASC' }
+        let(:sort_param)       { :WEIGHT_ASC }
         let(:first_param)      { 2 }
-        let(:expected_results) { [weight_issue3.iid, weight_issue5.iid, weight_issue1.iid, weight_issue4.iid, weight_issue2.iid] }
+        let(:expected_results) { ordered_issues.map(&:iid) }
       end
     end
+  end
 ```

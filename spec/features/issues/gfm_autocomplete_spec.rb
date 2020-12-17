@@ -418,6 +418,46 @@ RSpec.describe 'GFM autocomplete', :js do
       end
     end
 
+    context 'when other notes are destroyed' do
+      let!(:discussion) { create(:discussion_note_on_issue, noteable: issue, project: issue.project) }
+
+      # This is meant to protect against this issue https://gitlab.com/gitlab-org/gitlab/-/issues/228729
+      it 'keeps autocomplete key listeners' do
+        visit project_issue_path(project, issue)
+        note = find('#note-body')
+
+        start_comment_with_emoji(note)
+
+        start_and_cancel_discussion
+
+        note.fill_in(with: '')
+        start_comment_with_emoji(note)
+        note.native.send_keys(:enter)
+
+        expect(note.value).to eql('Hello :100: ')
+      end
+
+      def start_comment_with_emoji(note)
+        note.native.send_keys('Hello :10')
+
+        wait_for_requests
+
+        find('.atwho-view li', text: '100')
+      end
+
+      def start_and_cancel_discussion
+        click_button('Reply...')
+
+        fill_in('note_note', with: 'Whoops!')
+
+        page.accept_alert 'Are you sure you want to cancel creating this comment?' do
+          click_button('Cancel')
+        end
+
+        wait_for_requests
+      end
+    end
+
     shared_examples 'autocomplete suggestions' do
       it 'suggests objects correctly' do
         page.within '.timeline-content-form' do
@@ -550,6 +590,15 @@ RSpec.describe 'GFM autocomplete', :js do
       expect(find('.tribute-container ul', visible: true)).to have_text('alert milestone')
     end
 
+    it 'does not open autocomplete menu when trigger character is prefixed with text' do
+      page.within '.timeline-content-form' do
+        find('#note-body').native.send_keys('testing')
+        find('#note-body').native.send_keys('@')
+      end
+
+      expect(page).not_to have_selector('.tribute-container', visible: true)
+    end
+
     it 'selects the first item for assignee dropdowns' do
       page.within '.timeline-content-form' do
         find('#note-body').native.send_keys('@')
@@ -618,21 +667,6 @@ RSpec.describe 'GFM autocomplete', :js do
         expect(page).to have_selector('.tribute-container', visible: true)
       end
 
-      it "does not show dropdown when preceded with a special character" do
-        note = find('#note-body')
-        page.within '.timeline-content-form' do
-          note.native.send_keys("@")
-        end
-
-        expect(page).to have_selector('.tribute-container', visible: true)
-
-        page.within '.timeline-content-form' do
-          note.native.send_keys("@")
-        end
-
-        expect(page).not_to have_selector('.tribute-container')
-      end
-
       it "does not throw an error if no labels exist" do
         note = find('#note-body')
         page.within '.timeline-content-form' do
@@ -651,14 +685,6 @@ RSpec.describe 'GFM autocomplete', :js do
         user_item = find('.tribute-container ul', text: user.username, visible: true)
 
         expect_to_wrap(false, user_item, note, user.username)
-      end
-
-      it 'doesn\'t open autocomplete after non-word character' do
-        page.within '.timeline-content-form' do
-          find('#note-body').native.send_keys("@#{user.username[0..2]}!")
-        end
-
-        expect(page).not_to have_selector('.tribute-container')
       end
 
       it 'triggers autocomplete after selecting a quick action' do
@@ -847,46 +873,6 @@ RSpec.describe 'GFM autocomplete', :js do
       let(:expected_body) { object.to_reference }
 
       it_behaves_like 'autocomplete suggestions'
-    end
-
-    context 'when other notes are destroyed' do
-      let!(:discussion) { create(:discussion_note_on_issue, noteable: issue, project: issue.project) }
-
-      # This is meant to protect against this issue https://gitlab.com/gitlab-org/gitlab/-/issues/228729
-      it 'keeps autocomplete key listeners' do
-        visit project_issue_path(project, issue)
-        note = find('#note-body')
-
-        start_comment_with_emoji(note)
-
-        start_and_cancel_discussion
-
-        note.fill_in(with: '')
-        start_comment_with_emoji(note)
-        note.native.send_keys(:enter)
-
-        expect(note.value).to eql('Hello :100: ')
-      end
-
-      def start_comment_with_emoji(note)
-        note.native.send_keys('Hello :10')
-
-        wait_for_requests
-
-        find('.atwho-view li', text: '100')
-      end
-
-      def start_and_cancel_discussion
-        click_button('Reply...')
-
-        fill_in('note_note', with: 'Whoops!')
-
-        page.accept_alert 'Are you sure you want to cancel creating this comment?' do
-          click_button('Cancel')
-        end
-
-        wait_for_requests
-      end
     end
   end
 

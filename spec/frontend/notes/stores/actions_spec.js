@@ -174,10 +174,10 @@ describe('Actions Notes Store', () => {
       axiosMock.onAny().reply(200, {});
     });
 
-    describe('closeIssue', () => {
+    describe('closeMergeRequest', () => {
       it('sets state as closed', done => {
         store
-          .dispatch('closeIssue', { notesData: { closeIssuePath: '' } })
+          .dispatch('closeIssuable', { notesData: { closeIssuePath: '' } })
           .then(() => {
             expect(store.state.noteableData.state).toEqual('closed');
             expect(store.state.isToggleStateButtonLoading).toEqual(false);
@@ -187,10 +187,10 @@ describe('Actions Notes Store', () => {
       });
     });
 
-    describe('reopenIssue', () => {
+    describe('reopenMergeRequest', () => {
       it('sets state as reopened', done => {
         store
-          .dispatch('reopenIssue', { notesData: { reopenIssuePath: '' } })
+          .dispatch('reopenIssuable', { notesData: { reopenIssuePath: '' } })
           .then(() => {
             expect(store.state.noteableData.state).toEqual('reopened');
             expect(store.state.isToggleStateButtonLoading).toEqual(false);
@@ -247,30 +247,6 @@ describe('Actions Notes Store', () => {
         'reopened',
         {},
         [{ type: 'REOPEN_ISSUE' }],
-        [],
-        done,
-      );
-    });
-  });
-
-  describe('toggleBlockedIssueWarning', () => {
-    it('should set issue warning as true', done => {
-      testAction(
-        actions.toggleBlockedIssueWarning,
-        true,
-        {},
-        [{ type: 'TOGGLE_BLOCKED_ISSUE_WARNING', payload: true }],
-        [],
-        done,
-      );
-    });
-
-    it('should set issue warning as false', done => {
-      testAction(
-        actions.toggleBlockedIssueWarning,
-        false,
-        {},
-        [{ type: 'TOGGLE_BLOCKED_ISSUE_WARNING', payload: false }],
         [],
         done,
       );
@@ -944,10 +920,16 @@ describe('Actions Notes Store', () => {
     it('when service success, commits and resolves discussion', done => {
       testSubmitSuggestion(done, () => {
         expect(commit.mock.calls).toEqual([
+          [mutationTypes.SET_RESOLVING_DISCUSSION, true],
           [mutationTypes.APPLY_SUGGESTION, { discussionId, noteId, suggestionId }],
+          [mutationTypes.SET_RESOLVING_DISCUSSION, false],
         ]);
 
-        expect(dispatch.mock.calls).toEqual([['resolveDiscussion', { discussionId }]]);
+        expect(dispatch.mock.calls).toEqual([
+          ['stopPolling'],
+          ['resolveDiscussion', { discussionId }],
+          ['restartPolling'],
+        ]);
         expect(Flash).not.toHaveBeenCalled();
       });
     });
@@ -958,8 +940,11 @@ describe('Actions Notes Store', () => {
       Api.applySuggestion.mockReturnValue(Promise.reject(response));
 
       testSubmitSuggestion(done, () => {
-        expect(commit).not.toHaveBeenCalled();
-        expect(dispatch).not.toHaveBeenCalled();
+        expect(commit.mock.calls).toEqual([
+          [mutationTypes.SET_RESOLVING_DISCUSSION, true],
+          [mutationTypes.SET_RESOLVING_DISCUSSION, false],
+        ]);
+        expect(dispatch.mock.calls).toEqual([['stopPolling'], ['restartPolling']]);
         expect(Flash).toHaveBeenCalledWith(TEST_ERROR_MESSAGE, 'alert', flashContainer);
       });
     });
@@ -970,8 +955,11 @@ describe('Actions Notes Store', () => {
       Api.applySuggestion.mockReturnValue(Promise.reject(response));
 
       testSubmitSuggestion(done, () => {
-        expect(commit).not.toHaveBeenCalled();
-        expect(dispatch).not.toHaveBeenCalled();
+        expect(commit.mock.calls).toEqual([
+          [mutationTypes.SET_RESOLVING_DISCUSSION, true],
+          [mutationTypes.SET_RESOLVING_DISCUSSION, false],
+        ]);
+        expect(dispatch.mock.calls).toEqual([['stopPolling'], ['restartPolling']]);
         expect(Flash).toHaveBeenCalledWith(
           'Something went wrong while applying the suggestion. Please try again.',
           'alert',
@@ -1015,15 +1003,19 @@ describe('Actions Notes Store', () => {
       testSubmitSuggestionBatch(done, () => {
         expect(commit.mock.calls).toEqual([
           [mutationTypes.SET_APPLYING_BATCH_STATE, true],
+          [mutationTypes.SET_RESOLVING_DISCUSSION, true],
           [mutationTypes.APPLY_SUGGESTION, batchSuggestionsInfo[0]],
           [mutationTypes.APPLY_SUGGESTION, batchSuggestionsInfo[1]],
           [mutationTypes.CLEAR_SUGGESTION_BATCH],
           [mutationTypes.SET_APPLYING_BATCH_STATE, false],
+          [mutationTypes.SET_RESOLVING_DISCUSSION, false],
         ]);
 
         expect(dispatch.mock.calls).toEqual([
+          ['stopPolling'],
           ['resolveDiscussion', { discussionId: discussionIds[0] }],
           ['resolveDiscussion', { discussionId: discussionIds[1] }],
+          ['restartPolling'],
         ]);
 
         expect(Flash).not.toHaveBeenCalled();
@@ -1038,10 +1030,12 @@ describe('Actions Notes Store', () => {
       testSubmitSuggestionBatch(done, () => {
         expect(commit.mock.calls).toEqual([
           [mutationTypes.SET_APPLYING_BATCH_STATE, true],
+          [mutationTypes.SET_RESOLVING_DISCUSSION, true],
           [mutationTypes.SET_APPLYING_BATCH_STATE, false],
+          [mutationTypes.SET_RESOLVING_DISCUSSION, false],
         ]);
 
-        expect(dispatch).not.toHaveBeenCalled();
+        expect(dispatch.mock.calls).toEqual([['stopPolling'], ['restartPolling']]);
         expect(Flash).toHaveBeenCalledWith(TEST_ERROR_MESSAGE, 'alert', flashContainer);
       });
     });
@@ -1054,10 +1048,12 @@ describe('Actions Notes Store', () => {
       testSubmitSuggestionBatch(done, () => {
         expect(commit.mock.calls).toEqual([
           [mutationTypes.SET_APPLYING_BATCH_STATE, true],
+          [mutationTypes.SET_RESOLVING_DISCUSSION, true],
           [mutationTypes.SET_APPLYING_BATCH_STATE, false],
+          [mutationTypes.SET_RESOLVING_DISCUSSION, false],
         ]);
 
-        expect(dispatch).not.toHaveBeenCalled();
+        expect(dispatch.mock.calls).toEqual([['stopPolling'], ['restartPolling']]);
         expect(Flash).toHaveBeenCalledWith(
           'Something went wrong while applying the batch of suggestions. Please try again.',
           'alert',
@@ -1072,10 +1068,12 @@ describe('Actions Notes Store', () => {
       testSubmitSuggestionBatch(done, () => {
         expect(commit.mock.calls).toEqual([
           [mutationTypes.SET_APPLYING_BATCH_STATE, true],
+          [mutationTypes.SET_RESOLVING_DISCUSSION, true],
           [mutationTypes.APPLY_SUGGESTION, batchSuggestionsInfo[0]],
           [mutationTypes.APPLY_SUGGESTION, batchSuggestionsInfo[1]],
           [mutationTypes.CLEAR_SUGGESTION_BATCH],
           [mutationTypes.SET_APPLYING_BATCH_STATE, false],
+          [mutationTypes.SET_RESOLVING_DISCUSSION, false],
         ]);
 
         expect(Flash).not.toHaveBeenCalled();

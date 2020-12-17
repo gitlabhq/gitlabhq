@@ -8,7 +8,7 @@ extends: existence
 message: '"%s" is a first-person pronoun. Use second- or third-person pronouns (like we, you, us, one) instead.'
 level: warning
 ignorecase: true
-link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#language
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#usage-list
 tokens:
   - '\bI[ ,;:?!"]|\bI\x27.{1,2}'
   - me

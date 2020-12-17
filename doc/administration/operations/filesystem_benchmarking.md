@@ -1,7 +1,7 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+stage: Enablement
+group: Distribution
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Filesystem Performance Benchmarking
@@ -71,7 +71,7 @@ operations per second.
 
 ### Simple benchmarking
 
-NOTE: **Note:**
+NOTE:
 This test is naive but may be useful if `fio` is not
 available on the system. It's possible to receive good results on this
 test but still have poor performance due to read speed and various other

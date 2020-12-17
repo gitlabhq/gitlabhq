@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Pry debugging
@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ## Invoking pry debugging
 
 To invoke the debugger, place `binding.pry` somewhere in your
-code. When the Ruby interpreter hits that code, execution will stop,
+code. When the Ruby interpreter hits that code, execution stops,
 and you can type in commands to debug the state of the program
 
 ## `byebug` vs `binding.pry`
@@ -20,7 +20,7 @@ use the powerful Pry REPL.
 `binding.pry` uses Pry, but lacks some of the `byebug`
 features. GitLab uses the [`pry-byebug`](https://github.com/deivid-rodriguez/pry-byebug)
 gem. This gem brings some capabilities `byebug` to `binding.pry`, so
-using that, will give you the most debugging powers.
+using that gives you the most debugging powers.
 
 ## `byebug`
 
@@ -104,7 +104,7 @@ You also can move around in the callstack with these commands:
 - `down`: Moves the stack frame down. Takes an optional numeric
   argument to move multiple frames.
 - `frame <n>`: Moves to a specific frame. Called without arguments
-  will show the current frame.
+  displays the current frame.
 
 ## Short commands
 

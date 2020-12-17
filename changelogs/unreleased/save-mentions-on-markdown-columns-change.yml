@@ -1,0 +1,5 @@
+---
+title: Update user mentions when markdown columns are directly saved to DB
+merge_request: 38034
+author:
+type: fixed

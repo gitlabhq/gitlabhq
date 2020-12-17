@@ -1,0 +1,5 @@
+---
+title: Conan packages show build and commit information when published using CI
+merge_request: 49426
+author:
+type: fixed

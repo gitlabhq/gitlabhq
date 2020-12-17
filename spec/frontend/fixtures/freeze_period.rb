@@ -4,10 +4,10 @@ require 'spec_helper'
 
 RSpec.describe 'Freeze Periods (JavaScript fixtures)' do
   include JavaScriptFixturesHelpers
-  include Ci::PipelineSchedulesHelper
+  include TimeZoneHelper
 
-  let_it_be(:admin) { create(:admin) }
   let_it_be(:project) { create(:project, :repository, path: 'freeze-periods-project') }
+  let_it_be(:user) { project.owner }
 
   before(:all) do
     clean_frontend_fixtures('api/freeze-periods/')
@@ -34,16 +34,18 @@ RSpec.describe 'Freeze Periods (JavaScript fixtures)' do
       create(:ci_freeze_period, project: project, freeze_start: '0 12 * * 1-5', freeze_end: '0 1 5 * *', cron_timezone: 'Etc/UTC')
       create(:ci_freeze_period, project: project, freeze_start: '0 12 * * 1-5', freeze_end: '0 16 * * 6', cron_timezone: 'Europe/Berlin')
 
-      get api("/projects/#{project.id}/freeze_periods", admin)
+      get api("/projects/#{project.id}/freeze_periods", user)
 
       expect(response).to be_successful
     end
   end
 
-  describe Ci::PipelineSchedulesHelper, '(JavaScript fixtures)' do
+  describe TimeZoneHelper, '(JavaScript fixtures)' do
     let(:response) { timezone_data.to_json }
 
     it 'api/freeze-periods/timezone_data.json' do
+      # Looks empty but does things
+      # More info: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38525/diffs#note_391048415
     end
   end
 end

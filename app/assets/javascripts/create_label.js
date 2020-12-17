@@ -29,11 +29,17 @@ export default class CreateLabelDropdown {
   }
 
   cleanBinding() {
+    // eslint-disable-next-line @gitlab/no-global-event-off
     this.$colorSuggestions.off('click');
+    // eslint-disable-next-line @gitlab/no-global-event-off
     this.$newLabelField.off('keyup change');
+    // eslint-disable-next-line @gitlab/no-global-event-off
     this.$newColorField.off('keyup change');
+    // eslint-disable-next-line @gitlab/no-global-event-off
     this.$dropdownBack.off('click');
+    // eslint-disable-next-line @gitlab/no-global-event-off
     this.$cancelButton.off('click');
+    // eslint-disable-next-line @gitlab/no-global-event-off
     this.$newLabelCreateButton.off('click');
   }
 

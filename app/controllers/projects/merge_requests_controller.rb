@@ -21,13 +21,13 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     :exposed_artifacts,
     :coverage_reports,
     :terraform_reports,
-    :accessibility_reports
+    :accessibility_reports,
+    :codequality_reports
   ]
   before_action :set_issuables_index, only: [:index]
   before_action :authenticate_user!, only: [:assign_related_issues]
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
   before_action only: [:show] do
-    push_frontend_feature_flag(:suggest_pipeline, default_enabled: true)
     push_frontend_feature_flag(:widget_visibility_polling, @project, default_enabled: true)
     push_frontend_feature_flag(:mr_commit_neighbor_nav, @project, default_enabled: true)
     push_frontend_feature_flag(:multiline_comments, @project, default_enabled: true)
@@ -36,13 +36,14 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:approvals_commented_by, @project, default_enabled: true)
     push_frontend_feature_flag(:hide_jump_to_next_unresolved_in_threads, default_enabled: true)
     push_frontend_feature_flag(:merge_request_widget_graphql, @project)
-    push_frontend_feature_flag(:unified_diff_lines, @project, default_enabled: true)
     push_frontend_feature_flag(:unified_diff_components, @project)
-    push_frontend_feature_flag(:highlight_current_diff_row, @project)
     push_frontend_feature_flag(:default_merge_ref_for_diffs, @project)
     push_frontend_feature_flag(:core_security_mr_widget, @project, default_enabled: true)
+    push_frontend_feature_flag(:core_security_mr_widget_counts, @project)
+    push_frontend_feature_flag(:core_security_mr_widget_downloads, @project, default_enabled: true)
     push_frontend_feature_flag(:remove_resolve_note, @project, default_enabled: true)
     push_frontend_feature_flag(:test_failure_history, @project)
+    push_frontend_feature_flag(:diffs_gradual_load, @project, default_enabled: true)
 
     record_experiment_user(:invite_members_version_a)
     record_experiment_user(:invite_members_version_b)
@@ -50,6 +51,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   before_action do
     push_frontend_feature_flag(:vue_issuable_sidebar, @project.group)
+    push_frontend_feature_flag(:merge_request_reviewers, @project, default_enabled: true)
+    push_frontend_feature_flag(:mr_collapsed_approval_rules, @project)
+    push_frontend_feature_flag(:reviewer_approval_rules, @project)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :discussions]
@@ -98,9 +102,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         @noteable = @merge_request
         @commits_count = @merge_request.commits_count + @merge_request.context_commits_count
         @issuable_sidebar = serializer.represent(@merge_request, serializer: 'sidebar')
-        @current_user_data = UserSerializer.new(project: @project).represent(current_user, {}, MergeRequestUserEntity).to_json
+        @current_user_data = UserSerializer.new(project: @project).represent(current_user, {}, MergeRequestCurrentUserEntity).to_json
         @show_whitespace_default = current_user.nil? || current_user.show_whitespace_in_diffs
-        @file_by_file_default = Feature.enabled?(:view_diffs_file_by_file, default_enabled: true) && current_user&.view_diffs_file_by_file
+        @file_by_file_default = current_user&.view_diffs_file_by_file
         @coverage_path = coverage_reports_project_merge_request_path(@project, @merge_request, format: :json) if @merge_request.has_coverage_reports?
         @endpoint_metadata_url = endpoint_metadata_url(@project, @merge_request)
 
@@ -191,6 +195,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     else
       head :no_content
     end
+  end
+
+  def codequality_reports
+    reports_response(@merge_request.compare_codequality_reports)
   end
 
   def terraform_reports
@@ -481,7 +489,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   def endpoint_metadata_url(project, merge_request)
     params = request.query_parameters
-    params[:view] = unified_diff_lines_view_type(project)
+    params[:view] = "inline"
 
     if Feature.enabled?(:default_merge_ref_for_diffs, project)
       params = params.merge(diff_head: true)

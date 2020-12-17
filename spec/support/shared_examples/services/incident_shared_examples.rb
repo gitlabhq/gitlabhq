@@ -11,11 +11,13 @@
 #
 #   include_examples 'incident issue'
 RSpec.shared_examples 'incident issue' do
-  let(:label_properties) { attributes_for(:label, :incident) }
-
   it 'has incident as issue type' do
     expect(issue.issue_type).to eq('incident')
   end
+end
+
+RSpec.shared_examples 'has incident label' do
+  let(:label_properties) { attributes_for(:label, :incident) }
 
   it 'has exactly one incident label' do
     expect(issue.labels).to be_one do |label|

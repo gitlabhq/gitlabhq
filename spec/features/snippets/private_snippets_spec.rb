@@ -11,7 +11,7 @@ RSpec.describe 'Private Snippets', :js do
     sign_in(user)
   end
 
-  it 'Private Snippet renders for creator' do
+  it 'private Snippet renders for creator' do
     visit snippet_path(private_snippet)
     wait_for_requests
 

@@ -12,10 +12,23 @@ describe('Mutations TestReports Store', () => {
     testReports: {},
     selectedSuite: null,
     isLoading: false,
+    pageInfo: {
+      page: 1,
+      perPage: 2,
+    },
   };
 
   beforeEach(() => {
     mockState = { ...defaultState };
+  });
+
+  describe('set page', () => {
+    it('should set the current page to display', () => {
+      const pageToDisplay = 3;
+      mutations[types.SET_PAGE](mockState, pageToDisplay);
+
+      expect(mockState.pageInfo.page).toEqual(pageToDisplay);
+    });
   });
 
   describe('set suite', () => {

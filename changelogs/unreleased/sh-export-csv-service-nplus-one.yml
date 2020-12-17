@@ -1,0 +1,5 @@
+---
+title: Fix N+1 queries loading milestones when exporting CSVs
+merge_request: 49429
+author:
+type: performance

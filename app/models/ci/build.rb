@@ -190,6 +190,8 @@ module Ci
 
     scope :with_coverage, -> { where.not(coverage: nil) }
 
+    scope :for_project, -> (project_id) { where(project_id: project_id) }
+
     acts_as_taggable
 
     add_authentication_token_field :token, encrypted: :optional
@@ -379,8 +381,16 @@ module Ci
         Ci::BuildRunnerSession.where(build: build).delete_all
       end
 
-      after_transition any => [:skipped, :canceled] do |build|
-        build.deployment&.cancel
+      after_transition any => [:skipped, :canceled] do |build, transition|
+        if Feature.enabled?(:cd_skipped_deployment_status, build.project)
+          if transition.to_name == :skipped
+            build.deployment&.skip
+          else
+            build.deployment&.cancel
+          end
+        else
+          build.deployment&.cancel
+        end
       end
     end
 
@@ -527,6 +537,7 @@ module Ci
       strong_memoize(:variables) do
         Gitlab::Ci::Variables::Collection.new
           .concat(persisted_variables)
+          .concat(dependency_proxy_variables)
           .concat(job_jwt_variables)
           .concat(scoped_variables)
           .concat(job_variables)
@@ -572,6 +583,15 @@ module Ci
 
         variables.append(key: 'CI_DEPLOY_USER', value: gitlab_deploy_token.username)
         variables.append(key: 'CI_DEPLOY_PASSWORD', value: gitlab_deploy_token.token, public: false, masked: true)
+      end
+    end
+
+    def dependency_proxy_variables
+      Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        break variables unless Gitlab.config.dependency_proxy.enabled
+
+        variables.append(key: 'CI_DEPENDENCY_PROXY_USER', value: ::Gitlab::Auth::CI_JOB_USER)
+        variables.append(key: 'CI_DEPENDENCY_PROXY_PASSWORD', value: token.to_s, public: false, masked: true)
       end
     end
 
@@ -908,11 +928,31 @@ module Ci
     end
 
     def collect_coverage_reports!(coverage_report)
+      project_path, worktree_paths = if Feature.enabled?(:smart_cobertura_parser, project)
+                                       # If the flag is disabled, we intentionally pass nil
+                                       # for both project_path and worktree_paths to fallback
+                                       # to the non-smart behavior of the parser
+                                       [project.full_path, pipeline.all_worktree_paths]
+                                     end
+
       each_report(Ci::JobArtifact::COVERAGE_REPORT_FILE_TYPES) do |file_type, blob|
-        Gitlab::Ci::Parsers.fabricate!(file_type).parse!(blob, coverage_report)
+        Gitlab::Ci::Parsers.fabricate!(file_type).parse!(
+          blob,
+          coverage_report,
+          project_path: project_path,
+          worktree_paths: worktree_paths
+        )
       end
 
       coverage_report
+    end
+
+    def collect_codequality_reports!(codequality_report)
+      each_report(Ci::JobArtifact::CODEQUALITY_REPORT_FILE_TYPES) do |file_type, blob|
+        Gitlab::Ci::Parsers.fabricate!(file_type).parse!(blob, codequality_report)
+      end
+
+      codequality_report
     end
 
     def collect_terraform_reports!(terraform_reports)
@@ -964,6 +1004,15 @@ module Ci
       # NOTE: This is temporary and will be replaced later by a value
       # that would come from an actual application limit.
       ::Gitlab.com? ? 500_000 : 0
+    end
+
+    def debug_mode?
+      return false unless Feature.enabled?(:restrict_access_to_build_debug_mode, default_enabled: true)
+
+      # TODO: Have `debug_mode?` check against data on sent back from runner
+      # to capture all the ways that variables can be set.
+      # See (https://gitlab.com/gitlab-org/gitlab/-/issues/290955)
+      variables.any? { |variable| variable[:key] == 'CI_DEBUG_TRACE' && variable[:value].casecmp('true') == 0 }
     end
 
     protected

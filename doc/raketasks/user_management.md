@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # User management **(CORE ONLY)**
@@ -58,9 +58,23 @@ sudo gitlab-rake gitlab:import:all_users_to_all_groups
 bundle exec rake gitlab:import:all_users_to_all_groups RAILS_ENV=production
 ```
 
-Admin users are added as owners so they can add additional users to the group.
+Administrators are added as owners so they can add additional users to the group.
 
-## Control the number of active users
+## Update all users in a given group to `project_limit:0` and `can_create_group: false`
+
+To update all users in given group to `project_limit: 0` and `can_create_group: false`, run:
+
+```shell
+# omnibus-gitlab
+sudo gitlab-rake gitlab:user_management:disable_project_and_group_creation\[:group_id\]
+
+# installation from source
+bundle exec rake gitlab:user_management:disable_project_and_group_creation\[:group_id\] RAILS_ENV=production
+```
+
+It updates all users in the given group, its subgroups and projects in this group namespace, with the noted limits.
+
+## Control the number of billable users
 
 Enable this setting to keep new users blocked until they have been cleared by the administrator.
 Defaults to `false`:
@@ -72,7 +86,7 @@ block_auto_created_users: false
 ## Disable two-factor authentication for all users
 
 This task disables two-factor authentication (2FA) for all users that have it enabled. This can be
-useful if GitLab's `config/secrets.yml` file has been lost and users are unable
+useful if the GitLab `config/secrets.yml` file has been lost and users are unable
 to log in, for example.
 
 To disable two-factor authentication for all users, run:
@@ -98,11 +112,11 @@ the leaked key without forcing all users to change their 2FA details.
 To rotate the two-factor authentication encryption key:
 
 1. Look up the old key. This is in the `config/secrets.yml` file, but **make sure you're working
-   with the production section**. The line you're interested in will look like this:
+   with the production section**. The line you're interested in looks like this:
 
    ```yaml
    production:
-     otp_key_base: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+     otp_key_base: fffffffffffffffffffffffffffffffffffffffffffffff
    ```
 
 1. Generate a new secret:
@@ -130,7 +144,7 @@ To rotate the two-factor authentication encryption key:
    ```
 
    The `<old key>` value can be read from `config/secrets.yml` (`<new key>` was
-   generated earlier). The **encrypted** values for the user 2FA secrets will be
+   generated earlier). The **encrypted** values for the user 2FA secrets are
    written to the specified `filename`. You can use this to rollback in case of
    error.
 

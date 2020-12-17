@@ -1,0 +1,5 @@
+---
+title: Add option to uninstall the legacy Tiller server for clusters added before GitLab 13.2
+merge_request: 47457
+author:
+type: changed

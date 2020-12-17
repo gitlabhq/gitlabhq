@@ -1,0 +1,37 @@
+- @content_class = "limit-container-width" unless fluid_layout
+- page_title s_("WikiClone|Git Access"), _("Wiki")
+- add_page_specific_style 'page_bundles/wiki'
+
+.wiki-page-header.top-area.has-sidebar-toggle.py-3.flex-column.flex-lg-row
+  = wiki_sidebar_toggle_button
+
+  .git-access-header.w-100.d-flex.flex-column.justify-content-center
+    %span
+      = _("Clone repository")
+      %strong= @wiki.full_path
+
+  .pt-3.pt-lg-0.w-100
+    = render "shared/clone_panel", container: @wiki
+
+.wiki-git-access
+  %h3= s_("WikiClone|Install Gollum")
+  %pre.dark
+    :preserve
+      gem install gollum
+
+  %h3= s_("WikiClone|Clone your wiki")
+  %pre.dark
+    :preserve
+      git clone #{ content_tag(:span, h(default_url_to_repo(@wiki)), class: 'clone')}
+      cd #{h @wiki.path}
+
+  %h3= s_("WikiClone|Start Gollum and edit locally")
+  %pre.dark
+    :preserve
+      gollum
+      == Sinatra/1.3.5 has taken the stage on 4567 for development with backup from Thin
+      >> Thin web server (v1.5.0 codename Knife)
+      >> Maximum connections set to 1024
+      >> Listening on 0.0.0.0:4567, CTRL+C to stop
+
+= render 'shared/wikis/sidebar'

@@ -7,6 +7,21 @@ RSpec.describe Projects::StaticSiteEditorController do
   let_it_be(:user) { create(:user) }
   let(:data) { { key: 'value' } }
 
+  describe 'GET index' do
+    let(:default_params) do
+      {
+        namespace_id: project.namespace,
+        project_id: project
+      }
+    end
+
+    it 'responds with 404 page' do
+      get :index, params: default_params
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+  end
+
   describe 'GET show' do
     render_views
 

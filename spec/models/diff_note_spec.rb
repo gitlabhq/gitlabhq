@@ -38,6 +38,26 @@ RSpec.describe DiffNote do
     it_behaves_like 'a valid diff positionable note' do
       subject { build(:diff_note_on_commit, project: project, commit_id: commit_id, position: position) }
     end
+
+    it "is not valid when noteable is empty" do
+      note = build(:diff_note_on_merge_request, project: project, noteable: nil)
+
+      note.valid?
+
+      expect(note.errors[:noteable]).to include("doesn't support new-style diff notes")
+    end
+
+    context 'when importing' do
+      it "does not check if it's supported" do
+        note = build(:diff_note_on_merge_request, project: project, noteable: nil)
+        note.importing = true
+        note.valid?
+
+        expect(note.errors.full_messages).not_to include(
+          "Noteable doesn't support new-style diff notes"
+        )
+      end
+    end
   end
 
   describe "#position=" do

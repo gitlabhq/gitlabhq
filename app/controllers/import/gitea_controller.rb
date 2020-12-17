@@ -72,11 +72,9 @@ class Import::GiteaController < Import::GithubController
   def verify_blocked_uri
     Gitlab::UrlBlocker.validate!(
       provider_url,
-      {
-        allow_localhost: allow_local_requests?,
-        allow_local_network: allow_local_requests?,
-        schemes: %w(http https)
-      }
+      allow_localhost: allow_local_requests?,
+      allow_local_network: allow_local_requests?,
+      schemes: %w(http https)
     )
   rescue Gitlab::UrlBlocker::BlockedUrlError => e
     session[access_token_key] = nil

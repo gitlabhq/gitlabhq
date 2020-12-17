@@ -186,7 +186,7 @@ describe('EKS Cluster Store Actions', () => {
             role_external_id: payload.externalId,
             region: DEFAULT_REGION,
           })
-          .reply(400, error);
+          .reply(400, null);
       });
 
       it('dispatches createRoleError action', () =>
@@ -196,6 +196,32 @@ describe('EKS Cluster Store Actions', () => {
           state,
           [],
           [{ type: 'requestCreateRole' }, { type: 'createRoleError', payload: { error } }],
+        ));
+    });
+
+    describe('when request fails with a message', () => {
+      beforeEach(() => {
+        const errResp = { message: 'Something failed' };
+
+        mock
+          .onPost(state.createRolePath, {
+            role_arn: payload.roleArn,
+            role_external_id: payload.externalId,
+            region: DEFAULT_REGION,
+          })
+          .reply(4, errResp);
+      });
+
+      it('dispatches createRoleError action', () =>
+        testAction(
+          actions.createRole,
+          payload,
+          state,
+          [],
+          [
+            { type: 'requestCreateRole' },
+            { type: 'createRoleError', payload: { error: 'Something failed' } },
+          ],
         ));
     });
   });

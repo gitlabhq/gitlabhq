@@ -1,7 +1,7 @@
 ---
 stage: Protect
 group: Container Security
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Securing your deployed applications
@@ -40,7 +40,7 @@ Minimum requirements (depending on the GitLab Manage Application you want to ins
 
 ### Understanding how GitLab Managed Apps are installed
 
-NOTE: **Note:**
+NOTE:
 These diagrams use the term _Kubernetes_ for simplicity. In practice, Sidekiq connects to a Helm
 command runner pod in the cluster.
 

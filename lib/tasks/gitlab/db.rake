@@ -192,16 +192,42 @@ namespace :gitlab do
         exit
       end
 
-      indexes = if args[:index_name]
-                  [Gitlab::Database::PostgresIndex.by_identifier(args[:index_name])]
-                else
-                  Gitlab::Database::Reindexing.candidate_indexes.random_few(2)
-                end
+      indexes = Gitlab::Database::Reindexing.candidate_indexes
+
+      if identifier = args[:index_name]
+        raise ArgumentError, "Index name is not fully qualified with a schema: #{identifier}" unless identifier =~ /^\w+\.\w+$/
+
+        indexes = indexes.where(identifier: identifier)
+
+        raise "Index not found or not supported: #{args[:index_name]}" if indexes.empty?
+      end
+
+      ActiveRecord::Base.logger = Logger.new(STDOUT) if Gitlab::Utils.to_boolean(ENV['LOG_QUERIES_TO_CONSOLE'], default: false)
 
       Gitlab::Database::Reindexing.perform(indexes)
     rescue => e
       Gitlab::AppLogger.error(e)
       raise
+    end
+
+    desc 'Check if there have been user additions to the database'
+    task active: :environment do
+      if ActiveRecord::Base.connection.migration_context.needs_migration?
+        puts "Migrations pending. Database not active"
+        exit 1
+      end
+
+      # A list of projects that GitLab creates automatically on install/upgrade
+      # gc = Gitlab::CurrentSettings.current_application_settings
+      seed_projects = [Gitlab::CurrentSettings.current_application_settings.self_monitoring_project]
+
+      if (Project.count - seed_projects.count {|x| !x.nil? }).eql?(0)
+        puts "No user created projects. Database not active"
+        exit 1
+      end
+
+      puts "Found user created projects. Database active"
+      exit 0
     end
   end
 end

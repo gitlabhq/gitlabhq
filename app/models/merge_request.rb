@@ -233,13 +233,13 @@ class MergeRequest < ApplicationRecord
     cannot_be_merged_rechecking? ? 'checking' : merge_status
   end
 
-  validates :source_project, presence: true, unless: [:allow_broken, :importing?, :closed_without_fork?]
+  validates :source_project, presence: true, unless: [:allow_broken, :importing?, :closed_or_merged_without_fork?]
   validates :source_branch, presence: true
   validates :target_project, presence: true
   validates :target_branch, presence: true
   validates :merge_user, presence: true, if: :auto_merge_enabled?, unless: :importing?
-  validate :validate_branches, unless: [:allow_broken, :importing?, :closed_without_fork?]
-  validate :validate_fork, unless: :closed_without_fork?
+  validate :validate_branches, unless: [:allow_broken, :importing?, :closed_or_merged_without_fork?]
+  validate :validate_fork, unless: :closed_or_merged_without_fork?
   validate :validate_target_project, on: :create
 
   scope :by_source_or_target_branch, ->(branch_name) do
@@ -274,7 +274,7 @@ class MergeRequest < ApplicationRecord
   scope :with_api_entity_associations, -> {
     preload_routables
       .preload(:assignees, :author, :unresolved_notes, :labels, :milestone,
-               :timelogs, :latest_merge_request_diff,
+               :timelogs, :latest_merge_request_diff, :reviewers,
                target_project: :project_feature,
                metrics: [:latest_closed_by, :merged_by])
   }
@@ -313,6 +313,38 @@ class MergeRequest < ApplicationRecord
   end
 
   scope :with_jira_issue_keys, -> { where('title ~ :regex OR merge_requests.description ~ :regex', regex: Gitlab::Regex.jira_issue_key_regex.source) }
+
+  scope :review_requested, -> do
+    where(reviewers_subquery.exists)
+  end
+
+  scope :no_review_requested, -> do
+    where(reviewers_subquery.exists.not)
+  end
+
+  scope :review_requested_to, ->(user) do
+    where(
+      reviewers_subquery
+        .where(Arel::Table.new("#{to_ability_name}_reviewers")[:user_id].eq(user))
+        .exists
+    )
+  end
+
+  scope :no_review_requested_to, ->(user) do
+    where(
+      reviewers_subquery
+        .where(Arel::Table.new("#{to_ability_name}_reviewers")[:user_id].eq(user))
+        .exists
+        .not
+    )
+  end
+
+  def self.total_time_to_merge
+    join_metrics
+      .merge(MergeRequest::Metrics.with_valid_time_to_merge)
+      .pluck(MergeRequest::Metrics.time_to_merge_expression)
+      .first
+  end
 
   after_save :keep_around_commit, unless: :importing?
 
@@ -359,6 +391,12 @@ class MergeRequest < ApplicationRecord
     else
       super
     end
+  end
+
+  def self.reviewers_subquery
+    MergeRequestReviewer.arel_table
+      .project('true')
+      .where(Arel::Nodes::SqlLiteral.new("#{to_ability_name}_id = #{to_ability_name}s.id"))
   end
 
   def rebase_in_progress?
@@ -845,8 +883,8 @@ class MergeRequest < ApplicationRecord
     !!merge_jid && !merged? && Gitlab::SidekiqStatus.running?(merge_jid)
   end
 
-  def closed_without_fork?
-    closed? && source_project_missing?
+  def closed_or_merged_without_fork?
+    (closed? || merged?) && source_project_missing?
   end
 
   def source_project_missing?
@@ -941,7 +979,7 @@ class MergeRequest < ApplicationRecord
   # rubocop: enable CodeReuse/ServiceClass
 
   def diffable_merge_ref?
-    merge_ref_head.present? && (Feature.enabled?(:display_merge_conflicts_in_diff, project) || can_be_merged?)
+    open? && merge_ref_head.present? && (Feature.enabled?(:display_merge_conflicts_in_diff, project) || can_be_merged?)
   end
 
   # Returns boolean indicating the merge_status should be rechecked in order to
@@ -1423,6 +1461,20 @@ class MergeRequest < ApplicationRecord
     compare_reports(Ci::GenerateCoverageReportsService)
   end
 
+  def has_codequality_reports?
+    return false unless Feature.enabled?(:codequality_mr_diff, project)
+
+    actual_head_pipeline&.has_reports?(Ci::JobArtifact.codequality_reports)
+  end
+
+  def compare_codequality_reports
+    unless has_codequality_reports?
+      return { status: :error, status_reason: _('This merge request does not have codequality reports') }
+    end
+
+    compare_reports(Ci::CompareCodequalityReportsService)
+  end
+
   def find_terraform_reports
     unless has_terraform_reports?
       return { status: :error, status_reason: 'This merge request does not have terraform reports' }
@@ -1703,7 +1755,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def allows_reviewers?
-    Feature.enabled?(:merge_request_reviewers, project)
+    Feature.enabled?(:merge_request_reviewers, project, default_enabled: true)
   end
 
   def allows_multiple_reviewers?

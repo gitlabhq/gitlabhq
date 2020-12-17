@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -53,11 +53,69 @@ users to not set that header and bypass the GitLab rate limiter.
 Note that the bypass only works if the header is set to `1`.
 
 Requests that bypassed the rate limiter because of the bypass header
-will be marked with `"throttle_safelist":"throttle_bypass_header"` in
+are marked with `"throttle_safelist":"throttle_bypass_header"` in
 [`production_json.log`](../../../administration/logs.md#production_jsonlog).
 
 To disable the bypass mechanism, make sure the environment variable
 `GITLAB_THROTTLE_BYPASS_HEADER` is unset or empty.
+
+## Allowing specific users to bypass authenticated request rate limiting
+
+Similarly to the bypass header described above, it is possible to allow
+a certain set of users to bypass the rate limiter. This only applies
+to authenticated requests: with unauthenticated requests, by definition
+GitLab does not know who the user is.
+
+The allowlist is configured as a comma-separated list of user IDs in
+the `GITLAB_THROTTLE_USER_ALLOWLIST` environment variable. If you want
+users 1, 53 and 217 to bypass the authenticated request rate limiter,
+the allowlist configuration would be `1,53,217`.
+
+- For [Omnibus](https://docs.gitlab.com/omnibus/settings/environment-variables.html),
+  set `'GITLAB_THROTTLE_USER_ALLOWLIST' => '1,53,217'` in `gitlab_rails['env']`.
+- For source installations, set `export GITLAB_THROTTLE_USER_ALLOWLIST=1,53,217`
+  in `/etc/default/gitlab`.
+
+Requests that bypassed the rate limiter because of the user allowlist
+are marked with `"throttle_safelist":"throttle_user_allowlist"` in
+[`production_json.log`](../../../administration/logs.md#production_jsonlog).
+
+At application startup, the allowlist is logged in [`auth.log`](../../../administration/logs.md#authlog).
+
+## Trying out throttling settings before enforcing them
+
+> [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/629) in GitLab 13.6.
+
+Trying out throttling settings can be done by setting the
+`GITLAB_THROTTLE_DRY_RUN` environment variable to a comma-separated
+list of throttle names.
+
+The possible names are:
+
+- `throttle_unauthenticated`
+- `throttle_authenticated_api`
+- `throttle_authenticated_web`
+- `throttle_unauthenticated_protected_paths`
+- `throttle_authenticated_protected_paths_api`
+- `throttle_authenticated_protected_paths_web`
+
+For example: trying out throttles for all authenticated requests to
+non-protected paths could be done by setting
+`GITLAB_THROTTLE_DRY_RUN='throttle_authenticated_web,throttle_authenticated_api'`.
+
+To enable the dry-run mode for all throttles, the variable can be set
+to `*`.
+
+Setting a throttle to dry-run mode will log a message to the
+[`auth.log`](../../../administration/logs.md#authlog) when it would
+hit the limit, while letting the request continue as normal. The log
+message will contain an `env` field set to `track`. The `matched`
+field will contain the name of throttle that was hit.
+
+It is important to set the environment variable **before** enabling
+the rate limiting in the settings. The settings in the admin panel
+take effect immediately, while setting the environment variable
+requires a restart of all the Puma processes.
 
 <!-- ## Troubleshooting
 

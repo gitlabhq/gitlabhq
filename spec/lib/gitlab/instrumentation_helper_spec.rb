@@ -34,7 +34,10 @@ RSpec.describe Gitlab::InstrumentationHelper do
         :redis_shared_state_calls,
         :redis_shared_state_duration_s,
         :redis_shared_state_read_bytes,
-        :redis_shared_state_write_bytes
+        :redis_shared_state_write_bytes,
+        :db_count,
+        :db_write_count,
+        :db_cached_count
       ]
 
       expect(described_class.keys).to eq(expected_keys)
@@ -46,10 +49,10 @@ RSpec.describe Gitlab::InstrumentationHelper do
 
     subject { described_class.add_instrumentation_data(payload) }
 
-    it 'adds nothing' do
+    it 'adds only DB counts by default' do
       subject
 
-      expect(payload).to eq({})
+      expect(payload).to eq(db_count: 0, db_cached_count: 0, db_write_count: 0)
     end
 
     context 'when Gitaly calls are made' do

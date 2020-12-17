@@ -1,7 +1,7 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+stage: Enablement
+group: Distribution
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -11,7 +11,7 @@ This is a list of useful information regarding Kubernetes that the GitLab Suppor
 Team sometimes uses while troubleshooting. GitLab is making this public, so that anyone
 can make use of the Support team's collected knowledge
 
-CAUTION: **Caution:**
+WARNING:
 These commands **can alter or break** your Kubernetes components so use these at your own risk.
 
 If you are on a [paid tier](https://about.gitlab.com/pricing/) and are not sure how
@@ -126,7 +126,7 @@ and they will assist you with any issues you are having.
   kubectl get pods | grep task-runner
 
   # enter it
-  kubectl exec -it <task-runner-pod-name> bash
+  kubectl exec -it <task-runner-pod-name> -- bash
 
   # open rails console
   # rails console can be also called from other GitLab pods
@@ -139,10 +139,10 @@ and they will assist you with any issues you are having.
   /usr/local/bin/gitlab-rake gitlab:check
 
   # open console without entering pod
-  kubectl exec -it <task-runner-pod-name> /srv/gitlab/bin/rails console
+  kubectl exec -it <task-runner-pod-name> -- /srv/gitlab/bin/rails console
 
   # check the status of DB migrations
-  kubectl exec -it <task-runner-pod-name> /usr/local/bin/gitlab-rake db:migrate:status
+  kubectl exec -it <task-runner-pod-name> -- /usr/local/bin/gitlab-rake db:migrate:status
   ```
 
   You can also use `gitlab-rake`, instead of `/usr/local/bin/gitlab-rake`.
@@ -207,7 +207,7 @@ all Kubernetes resources and dependent charts:
   helm get manifest <release name>
   ```
 
-## Installation of minimal GitLab config via Minikube on macOS
+## Installation of minimal GitLab configuration via Minikube on macOS
 
 This section is based on [Developing for Kubernetes with Minikube](https://docs.gitlab.com/charts/development/minikube/index.html)
 and [Helm](https://docs.gitlab.com/charts/installation/tools.html#helm). Refer

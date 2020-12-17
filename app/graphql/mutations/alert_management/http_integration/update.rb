@@ -8,7 +8,7 @@ module Mutations
 
         argument :id, Types::GlobalIDType[::AlertManagement::HttpIntegration],
                  required: true,
-                 description: "The id of the integration to mutate"
+                 description: "The ID of the integration to mutate"
 
         argument :name, GraphQL::STRING_TYPE,
                  required: false,

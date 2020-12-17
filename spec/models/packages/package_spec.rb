@@ -111,6 +111,24 @@ RSpec.describe Packages::Package, type: :model do
         it { is_expected.not_to allow_value('%foo%bar').for(:name) }
       end
 
+      context 'debian package' do
+        subject { build(:debian_package) }
+
+        it { is_expected.to allow_value('0ad').for(:name) }
+        it { is_expected.to allow_value('g++').for(:name) }
+        it { is_expected.not_to allow_value('a_b').for(:name) }
+      end
+
+      context 'debian incoming' do
+        subject { create(:debian_incoming) }
+
+        # Only 'incoming' is accepted
+        it { is_expected.to allow_value('incoming').for(:name) }
+        it { is_expected.not_to allow_value('0ad').for(:name) }
+        it { is_expected.not_to allow_value('g++').for(:name) }
+        it { is_expected.not_to allow_value('a_b').for(:name) }
+      end
+
       context 'generic package' do
         subject { build_stubbed(:generic_package) }
 
@@ -178,6 +196,21 @@ RSpec.describe Packages::Package, type: :model do
 
         it { is_expected.to allow_value('dev-master').for(:version) }
         it { is_expected.to allow_value('2.x-dev').for(:version) }
+      end
+
+      context 'debian package' do
+        subject { build(:debian_package) }
+
+        it { is_expected.to allow_value('2:4.9.5+dfsg-5+deb10u1').for(:version) }
+        it { is_expected.not_to allow_value('1_0').for(:version) }
+      end
+
+      context 'debian incoming' do
+        subject { create(:debian_incoming) }
+
+        it { is_expected.to allow_value(nil).for(:version) }
+        it { is_expected.not_to allow_value('2:4.9.5+dfsg-5+deb10u1').for(:version) }
+        it { is_expected.not_to allow_value('1_0').for(:version) }
       end
 
       context 'maven package' do
@@ -618,6 +651,46 @@ RSpec.describe Packages::Package, type: :model do
       end
 
       it { is_expected.to contain_exactly(*tags) }
+    end
+  end
+
+  describe '#debian_incoming?' do
+    let(:package) { build(:package) }
+
+    subject { package.debian_incoming? }
+
+    it { is_expected.to eq(false) }
+
+    context 'with debian_incoming' do
+      let(:package) { create(:debian_incoming) }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'with debian_package' do
+      let(:package) { create(:debian_package) }
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
+  describe '#debian_package?' do
+    let(:package) { build(:package) }
+
+    subject { package.debian_package? }
+
+    it { is_expected.to eq(false) }
+
+    context 'with debian_incoming' do
+      let(:package) { create(:debian_incoming) }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'with debian_package' do
+      let(:package) { create(:debian_package) }
+
+      it { is_expected.to eq(true) }
     end
   end
 

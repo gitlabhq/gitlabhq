@@ -13,7 +13,8 @@ module Gitlab
           ALLOWED_VALUE_DATA = %i[value description].freeze
 
           validations do
-            validates :config, variables: { allowed_value_data: ALLOWED_VALUE_DATA }
+            validates :config, variables: { allowed_value_data: ALLOWED_VALUE_DATA }, if: :use_value_data?
+            validates :config, variables: true, unless: :use_value_data?
           end
 
           def value
@@ -26,6 +27,10 @@ module Gitlab
 
           def value_with_data
             Hash[@config.map { |key, value| [key.to_s, expand_value(value)] }]
+          end
+
+          def use_value_data?
+            opt(:use_value_data)
           end
 
           private

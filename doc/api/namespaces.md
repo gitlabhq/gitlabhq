@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Namespaces API
@@ -93,12 +93,12 @@ the `plan` parameter associated with a namespace:
 ]
 ```
 
-Users on GitLab.com will also see `max_seats_used` and `seats_in_use` parameters.
+Users on GitLab.com also see `max_seats_used` and `seats_in_use` parameters.
 `max_seats_used` is the highest number of users the group had. `seats_in_use` is
 the number of license seats currently being used. Both values are updated
 once a day.
 
-`max_seats_used` and `seats_in_use` will be non-zero only for namespaces on paid plans.
+`max_seats_used` and `seats_in_use` are non-zero only for namespaces on paid plans.
 
 ```json
 [
@@ -113,7 +113,7 @@ once a day.
 ]
 ```
 
-NOTE: **Note:**
+NOTE:
 Only group maintainers/owners are presented with `members_count_with_descendants`, as well as `plan` **(BRONZE ONLY)**.
 
 ## Search for namespace

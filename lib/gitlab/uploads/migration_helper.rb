@@ -75,3 +75,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Uploads::MigrationHelper.prepend_if_ee('EE::Gitlab::Uploads::MigrationHelper')

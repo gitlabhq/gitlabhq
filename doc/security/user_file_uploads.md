@@ -2,7 +2,7 @@
 type: reference
 stage: Manage
 group: Access
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # User File Uploads
@@ -18,7 +18,7 @@ notification emails, which are often read from email clients that are not
 authenticated with GitLab, such as Outlook, Apple Mail, or the Mail app on your
 mobile device.
 
-NOTE: **Note:**
+NOTE:
 Non-image attachments do require authentication to be viewed.
 
 <!-- ## Troubleshooting

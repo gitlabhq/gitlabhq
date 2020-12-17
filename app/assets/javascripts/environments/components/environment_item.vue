@@ -1,13 +1,14 @@
 <script>
 /* eslint-disable @gitlab/vue-require-i18n-strings */
 import { isEmpty } from 'lodash';
-import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
-import { __, sprintf } from '~/locale';
+import { GlTooltipDirective, GlIcon, GlLink } from '@gitlab/ui';
+import { __, s__, sprintf } from '~/locale';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import CommitComponent from '~/vue_shared/components/commit.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import eventHub from '../event_hub';
 import ActionsComponent from './environment_actions.vue';
 import ExternalUrlComponent from './environment_external_url.vue';
@@ -30,6 +31,7 @@ export default {
     CommitComponent,
     ExternalUrlComponent,
     GlIcon,
+    GlLink,
     MonitoringButtonComponent,
     PinComponent,
     DeleteComponent,
@@ -38,6 +40,7 @@ export default {
     TerminalButtonComponent,
     TooltipOnTruncate,
     UserAvatarLink,
+    CiIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -78,6 +81,24 @@ export default {
         return true;
       }
       return false;
+    },
+
+    /**
+     * @returns {Object|Undefined} The `upcoming_deployment` object if it exists.
+     * Otherwise, `undefined`.
+     */
+    upcomingDeployment() {
+      return this.model?.upcoming_deployment;
+    },
+
+    /**
+     * @returns {String} Text that will be shown in the tooltip when
+     * the user hovers over the upcoming deployment's status icon.
+     */
+    upcomingDeploymentTooltipText() {
+      return sprintf(s__('Environments|Deployment %{status}'), {
+        status: this.upcomingDeployment.deployable.status.text,
+      });
     },
 
     /**
@@ -235,6 +256,18 @@ export default {
     },
 
     /**
+     * Same as `userImageAltDescription`, but for the
+     * upcoming deployment's user
+     *
+     * @returns {String}
+     */
+    upcomingDeploymentUserImageAltDescription() {
+      return sprintf(__("%{username}'s avatar"), {
+        username: this.upcomingDeployment.user.username,
+      });
+    },
+
+    /**
      * If provided, returns the commit tag.
      *
      * @returns {String|Undefined}
@@ -382,6 +415,15 @@ export default {
     },
 
     /**
+     * Same as `deploymentInternalId`, but for the upcoming deployment
+     *
+     * @returns {String}
+     */
+    upcomingDeploymentInternalId() {
+      return `#${this.upcomingDeployment.iid}`;
+    },
+
+    /**
      * Verifies if the user object is present under last_deployment object.
      *
      * @returns {Boolean}
@@ -503,6 +545,13 @@ export default {
     folderIconName() {
       return this.model.isOpen ? 'chevron-down' : 'chevron-right';
     },
+
+    upcomingDeploymentCellClasses() {
+      return [
+        this.tableData.upcoming.spacing,
+        { 'gl-display-none gl-display-md-block': !this.upcomingDeployment },
+      ];
+    },
   },
 
   methods: {
@@ -511,6 +560,19 @@ export default {
     },
     onClickFolder() {
       eventHub.$emit('toggleFolder', this.model);
+    },
+
+    /**
+     * Returns the field title that will be shown in the field's row
+     * in the mobile view.
+     *
+     * @returns `field.mobileTitle` if present;
+     * if not, falls back to `field.title`.
+     */
+    getMobileViewTitleForField(fieldName) {
+      const field = this.tableData[fieldName];
+
+      return field.mobileTitle || field.title;
     },
   },
 };
@@ -530,7 +592,7 @@ export default {
       role="gridcell"
     >
       <div v-if="!isFolder" class="table-mobile-header" role="rowheader">
-        {{ tableData.name.title }}
+        {{ getMobileViewTitleForField('name') }}
       </div>
 
       <span v-if="shouldRenderDeployBoard" class="deploy-board-icon" @click="toggleDeployBoard">
@@ -609,7 +671,9 @@ export default {
     </div>
 
     <div v-if="!isFolder" class="table-section" :class="tableData.commit.spacing" role="gridcell">
-      <div role="rowheader" class="table-mobile-header">{{ tableData.commit.title }}</div>
+      <div role="rowheader" class="table-mobile-header">
+        {{ getMobileViewTitleForField('commit') }}
+      </div>
       <div v-if="hasLastDeploymentKey" class="js-commit-component table-mobile-content">
         <commit-component
           :tag="commitTag"
@@ -623,7 +687,9 @@ export default {
     </div>
 
     <div v-if="!isFolder" class="table-section" :class="tableData.date.spacing" role="gridcell">
-      <div role="rowheader" class="table-mobile-header">{{ tableData.date.title }}</div>
+      <div role="rowheader" class="table-mobile-header">
+        {{ getMobileViewTitleForField('date') }}
+      </div>
       <span
         v-if="canShowDeploymentDate"
         v-gl-tooltip
@@ -636,8 +702,51 @@ export default {
       </span>
     </div>
 
+    <div
+      v-if="!isFolder"
+      class="table-section"
+      :class="upcomingDeploymentCellClasses"
+      role="gridcell"
+      data-testid="upcoming-deployment"
+    >
+      <div role="rowheader" class="table-mobile-header">
+        {{ getMobileViewTitleForField('upcoming') }}
+      </div>
+      <div
+        v-if="upcomingDeployment"
+        class="gl-w-full gl-display-flex gl-flex-direction-row gl-md-flex-direction-column! gl-justify-content-end"
+        data-testid="upcoming-deployment-content"
+      >
+        <div class="gl-display-flex gl-align-items-center">
+          <span class="gl-mr-2">{{ upcomingDeploymentInternalId }}</span>
+          <gl-link
+            v-if="upcomingDeployment.deployable"
+            v-gl-tooltip
+            :href="upcomingDeployment.deployable.build_path"
+            :title="upcomingDeploymentTooltipText"
+            data-testid="upcoming-deployment-status-link"
+          >
+            <ci-icon class="gl-mr-2" :status="upcomingDeployment.deployable.status" />
+          </gl-link>
+        </div>
+        <div class="gl-display-flex">
+          <span v-if="upcomingDeployment.user" class="text-break-word">
+            by
+            <user-avatar-link
+              :link-href="upcomingDeployment.user.web_url"
+              :img-src="upcomingDeployment.user.avatar_url"
+              :img-alt="upcomingDeploymentUserImageAltDescription"
+              :tooltip-text="upcomingDeployment.user.username"
+            />
+          </span>
+        </div>
+      </div>
+    </div>
+
     <div v-if="!isFolder" class="table-section" :class="tableData.autoStop.spacing" role="gridcell">
-      <div role="rowheader" class="table-mobile-header">{{ tableData.autoStop.title }}</div>
+      <div role="rowheader" class="table-mobile-header">
+        {{ getMobileViewTitleForField('autoStop') }}
+      </div>
       <span
         v-if="canShowAutoStopDate"
         v-gl-tooltip

@@ -2,7 +2,7 @@
 type: reference
 stage: Manage
 group: Access
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Okta SSO provider
@@ -158,7 +158,7 @@ You might want to try this out on an incognito browser window.
 
 ## Configuring groups
 
-NOTE: **Note:**
+NOTE:
 Make sure the groups exist and are assigned to the Okta app.
 
 You can take a look of the [SAML documentation](../../integration/saml.md#saml-groups) on configuring groups.

@@ -7,15 +7,20 @@ RSpec.describe EnvironmentEntity do
 
   let(:request) { double('request') }
   let(:entity) do
-    described_class.new(environment, request: spy('request'))
+    described_class.new(environment, request: request)
   end
 
   let_it_be(:user)    { create(:user) }
-  let_it_be(:project) { create(:project) }
-  let_it_be(:environment) { create(:environment, project: project) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:environment, refind: true) { create(:environment, project: project) }
+
+  before_all do
+    project.add_developer(user)
+  end
 
   before do
-    allow(entity).to receive(:current_user).and_return(user)
+    allow(request).to receive(:current_user).and_return(user)
+    allow(request).to receive(:project).and_return(project)
   end
 
   subject { entity.as_json }
@@ -30,6 +35,51 @@ RSpec.describe EnvironmentEntity do
 
   it 'exposes folder path' do
     expect(subject).to include(:folder_path)
+  end
+
+  context 'when there is a successful deployment' do
+    let!(:pipeline) { create(:ci_pipeline, :success, project: project) }
+    let!(:deployable) { create(:ci_build, :success, project: project, pipeline: pipeline) }
+    let!(:deployment) { create(:deployment, :success, project: project, environment: environment, deployable: deployable) }
+
+    it 'exposes it as the latest deployment' do
+      expect(subject[:last_deployment][:sha]).to eq(deployment.sha)
+    end
+
+    it 'does not expose it as an upcoming deployment' do
+      expect(subject[:upcoming_deployment]).to be_nil
+    end
+
+    context 'when the deployment pipeline has the other manual job' do
+      let!(:manual_job) { create(:ci_build, :manual, name: 'stop-review', project: project, pipeline: pipeline) }
+
+      it 'exposes the manual job in the latest deployment' do
+        expect(subject[:last_deployment][:manual_actions].first[:name])
+          .to eq(manual_job.name)
+      end
+    end
+  end
+
+  context 'when there is a running deployment' do
+    let!(:pipeline) { create(:ci_pipeline, :running, project: project) }
+    let!(:deployable) { create(:ci_build, :running, project: project, pipeline: pipeline) }
+    let!(:deployment) { create(:deployment, :running, project: project, environment: environment, deployable: deployable) }
+
+    it 'does not expose it as the latest deployment' do
+      expect(subject[:last_deployment]).to be_nil
+    end
+
+    it 'exposes it as an upcoming deployment' do
+      expect(subject[:upcoming_deployment][:sha]).to eq(deployment.sha)
+    end
+
+    context 'when the deployment pipeline has the other manual job' do
+      let!(:manual_job) { create(:ci_build, :manual, name: 'stop-review', project: project, pipeline: pipeline) }
+
+      it 'does not expose the manual job in the latest deployment' do
+        expect(subject[:upcoming_deployment][:manual_actions]).to be_nil
+      end
+    end
   end
 
   context 'metrics disabled' do

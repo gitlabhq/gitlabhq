@@ -27,12 +27,6 @@ FactoryBot.define do
     end
   end
 
-  factory :mock_deployment_service do
-    project
-    type { 'MockDeploymentService' }
-    active { true }
-  end
-
   factory :prometheus_service do
     project
     active { true }

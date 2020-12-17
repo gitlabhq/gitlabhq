@@ -1,0 +1,5 @@
+---
+title: Mark SCIM-created accounts as provisioned by group
+merge_request: 48483
+author:
+type: added

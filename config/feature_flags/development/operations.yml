@@ -1,0 +1,8 @@
+---
+name: operations
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48347
+rollout_issue_url:
+milestone: '13.7'
+type: development
+group: group::editor
+default_enabled: true

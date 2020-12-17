@@ -1,7 +1,7 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+stage: Manage
+group: Access
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: howto
 ---
 
@@ -58,7 +58,7 @@ user.save!
 
 Exit the console, and then try to sign in with your new password.
 
-NOTE: **Note:**
+NOTE:
 You can also reset passwords by using the [Users API](../api/users.md#user-modification).
 
 ### Reset your root password

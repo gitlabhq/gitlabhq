@@ -1,7 +1,7 @@
 ---
 stage: Release
-group: Progressive Delivery
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+group: Release
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: tutorial
 ---
 
@@ -16,7 +16,7 @@ Deployment](https://about.gitlab.com/blog/2016/08/05/continuous-integration-deli
 method.
 
 All the code for this project can be found in this [GitLab
-repo](https://gitlab.com/gitlab-examples/spring-gitlab-cf-deploy-demo).
+repository](https://gitlab.com/gitlab-examples/spring-gitlab-cf-deploy-demo).
 
 In case you're interested in deploying Spring Boot applications to Kubernetes
 using GitLab CI/CD, read through the blog post [Continuous Delivery of a Spring Boot application with GitLab CI and Kubernetes](https://about.gitlab.com/blog/2016/12/14/continuous-delivery-of-a-spring-boot-application-with-gitlab-ci-and-kubernetes/).
@@ -31,7 +31,7 @@ To follow along, you will need:
   other Cloud Foundry (CF) instance.
 - An account on GitLab.
 
-NOTE: **Note:**
+NOTE:
 You will need to replace the `api.run.pivotal.io` URL in the all below
 commands with the [API
 URL](https://docs.cloudfoundry.org/running/cf-api-endpoint.html) of your CF
@@ -116,7 +116,7 @@ After set up, GitLab CI/CD deploys your app to CF at every push to your
 repository's default branch. To review the build logs or watch your builds
 running live, navigate to **CI/CD > Pipelines**.
 
-CAUTION: **Caution:**
+WARNING:
 It's considered best practice for security to create a separate deploy user for
 your application and add its credentials to GitLab instead of using a
 developer's credentials.

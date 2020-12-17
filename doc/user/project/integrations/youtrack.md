@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Ecosystem
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # YouTrack Service
@@ -17,14 +17,14 @@ To enable YouTrack integration in a project:
 1. Navigate to the project's **Settings > [Integrations](overview.md#accessing-integrations)** page.
 1. Click the **YouTrack** service, ensure it's active, and enter the required details on the page as described in the table below.
 
-    | Field           | Description                                                                                                                                                                                                 |
-    |:----------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-    | **Project URL** | URL to the project in YouTrack which is being linked to this GitLab project.                                                                                                                                |
-    | **Issues URL**  | URL to the issue in YouTrack project that is linked to this GitLab project. Note that the **Issues URL** requires `:id` in the URL. This ID is used by GitLab as a placeholder to replace the issue number. |
+   | Field           | Description                                                                                                                                                                                                 |
+   |:----------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+   | **Project URL** | URL to the project in YouTrack which is being linked to this GitLab project.                                                                                                                                |
+   | **Issues URL**  | URL to the issue in YouTrack project that is linked to this GitLab project. Note that the **Issues URL** requires `:id` in the URL. This ID is used by GitLab as a placeholder to replace the issue number. |
 
 1. Click the **Save changes** button.
 
-Once you have configured and enabled YouTrack, you'll see the YouTrack link on the GitLab project pages that takes you to the appropriate YouTrack project.
+Once you have configured and enabled YouTrack, you see the YouTrack link on the GitLab project pages that takes you to the appropriate YouTrack project.
 
 ## Disable the internal issue tracker
 

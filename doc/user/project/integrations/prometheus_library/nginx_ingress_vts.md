@@ -1,14 +1,14 @@
 ---
 stage: Monitor
 group: Health
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Monitoring NGINX Ingress Controller with VTS metrics
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13438) in GitLab 9.5.
 
-NOTE: **Note:**
+NOTE:
 [NGINX Ingress version 0.16](nginx_ingress.md) and above have built-in Prometheus metrics, which are different than the VTS based metrics.
 
 GitLab has support for automatically detecting and monitoring the Kubernetes NGINX Ingress controller. This is provided by leveraging the included VTS Prometheus metrics exporter in [version 0.9.0](https://github.com/kubernetes/ingress-nginx/blob/master/Changelog.md#09-beta1) through [0.15.x](https://github.com/kubernetes/ingress-nginx/blob/master/Changelog.md#0150).
@@ -27,7 +27,7 @@ GitLab has support for automatically detecting and monitoring the Kubernetes NGI
 
 ## Configuring NGINX Ingress monitoring
 
-If you have deployed NGINX Ingress using GitLab's [Kubernetes cluster integration](../../clusters/index.md#installing-applications), it will [automatically be monitored](#about-managed-nginx-ingress-deployments) by Prometheus.
+If you have deployed NGINX Ingress using the GitLab [Kubernetes cluster integration](../../clusters/index.md#installing-applications), Prometheus [automatically monitors](#about-managed-nginx-ingress-deployments) it.
 
 For other deployments, there is [some configuration](#manually-setting-up-nginx-ingress-for-prometheus-monitoring) required depending on your installation:
 
@@ -37,7 +37,7 @@ For other deployments, there is [some configuration](#manually-setting-up-nginx-
 
 ### About managed NGINX Ingress deployments
 
-NGINX Ingress is deployed into the `gitlab-managed-apps` namespace, using the [official Helm chart](https://github.com/helm/charts/tree/master/stable/nginx-ingress). NGINX Ingress will be [externally reachable via the Load Balancer's Endpoint](../../../clusters/applications.md#ingress).
+NGINX Ingress is deployed into the `gitlab-managed-apps` namespace, using the [official Helm chart](https://github.com/helm/charts/tree/master/stable/nginx-ingress). NGINX Ingress is [externally reachable via the Load Balancer's Endpoint](../../../clusters/applications.md#ingress).
 
 NGINX is configured for Prometheus monitoring, by setting:
 
@@ -45,11 +45,11 @@ NGINX is configured for Prometheus monitoring, by setting:
 - `prometheus.io/scrape: "true"`, to enable automatic discovery.
 - `prometheus.io/port: "10254"`, to specify the metrics port.
 
-When used in conjunction with the GitLab deployed Prometheus service, response metrics will be automatically collected.
+When used in conjunction with the GitLab deployed Prometheus service, response metrics are automatically collected.
 
 ### Manually setting up NGINX Ingress for Prometheus monitoring
 
-Version 0.9.0 and above of [NGINX Ingress](https://github.com/kubernetes/ingress-nginx) has built-in support for exporting Prometheus metrics. To enable, a ConfigMap setting must be passed: `enable-vts-status: "true"`. Once enabled, a Prometheus metrics endpoint will start running on port 10254.
+Version 0.9.0 and above of [NGINX Ingress](https://github.com/kubernetes/ingress-nginx) has built-in support for exporting Prometheus metrics. To enable, a ConfigMap setting must be passed: `enable-vts-status: "true"`. Once enabled, a Prometheus metrics endpoint begins running on port 10254.
 
 Next, the Ingress needs to be annotated for Prometheus monitoring. Two new annotations need to be added:
 
@@ -60,6 +60,6 @@ Managing these settings depends on how NGINX Ingress has been deployed. If you h
 
 ## Specifying the Environment label
 
-In order to isolate and only display relevant metrics for a given environment, GitLab needs a method to detect which labels are associated. To do this, GitLab will search for metrics with appropriate labels. In this case, the `upstream` label must be of the form `<KUBE_NAMESPACE>-<CI_ENVIRONMENT_SLUG>-*`.
+In order to isolate and only display relevant metrics for a given environment, GitLab needs a method to detect which labels are associated. To do this, GitLab searches for metrics with appropriate labels. In this case, the `upstream` label must be of the form `<KUBE_NAMESPACE>-<CI_ENVIRONMENT_SLUG>-*`.
 
-If you have used [Auto Deploy](../../../../topics/autodevops/stages.md#auto-deploy) to deploy your app, this format will be used automatically and metrics will be detected with no action on your part.
+If you have used [Auto Deploy](../../../../topics/autodevops/stages.md#auto-deploy) to deploy your app, this format is used automatically and metrics are detected with no action on your part.

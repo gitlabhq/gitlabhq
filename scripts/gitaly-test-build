@@ -19,8 +19,10 @@ class GitalyTestBuild
 
     # Starting gitaly further validates its configuration
     gitaly_pid = start_gitaly
+    gitaly2_pid = start_gitaly2
     praefect_pid = start_praefect
     Process.kill('TERM', gitaly_pid)
+    Process.kill('TERM', gitaly2_pid)
     Process.kill('TERM', praefect_pid)
 
     # Make the 'gitaly' executable look newer than 'GITALY_SERVER_VERSION'.

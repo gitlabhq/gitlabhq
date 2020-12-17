@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -14,7 +14,7 @@ To access the Admin Area, either:
 - Click the Admin Area icon (**{admin}**).
 - Visit `/admin` on your self-managed instance.
 
-NOTE: **Note:**
+NOTE:
 Only admin users can access the Admin Area.
 
 ## Admin Area sections
@@ -24,7 +24,7 @@ The Admin Area is made up of the following sections:
 | Section                                        | Description                                                                                                                                                                                                                                                                              |
 |:-----------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **{overview}** [Overview](#overview-section)   | View your GitLab [Dashboard](#admin-dashboard), and administer [projects](#administering-projects), [users](#administering-users), [groups](#administering-groups), [jobs](#administering-jobs), [runners](#administering-runners), and [Gitaly servers](#administering-gitaly-servers). |
-| **{monitor}** Monitoring                       | View GitLab [system information](#system-info), and information on [background jobs](#background-jobs), [logs](#logs), [health checks](monitoring/health_check.md), [requests profiles](#requests-profiles), and [audit logs](#audit-log).                                  |
+| **{monitor}** Monitoring                       | View GitLab [system information](#system-info), and information on [background jobs](#background-jobs), [logs](#logs), [health checks](monitoring/health_check.md), [requests profiles](#requests-profiles), and [audit events](#audit-events).                                  |
 | **{messages}** Messages                        | Send and manage [broadcast messages](broadcast_messages.md) for your users.                                                                                                                                                                                                              |
 | **{hook}** System Hooks                        | Configure [system hooks](../../system_hooks/system_hooks.md) for many events.                                                                                                                                                                                                            |
 | **{applications}** Applications                | Create system [OAuth applications](../../integration/oauth_provider.md) for integrations with other services.                                                                                                                                                                            |
@@ -37,7 +37,7 @@ The Admin Area is made up of the following sections:
 | **{lock}** Credentials **(ULTIMATE ONLY)**     | View [credentials](credentials_inventory.md) that can be used to access your instance.                                                                                                                                                                                                   |
 | **{template}** Service Templates               | Create [service templates](../project/integrations/services_templates.md) for projects.                                                                                                                                                                                                  |
 | **{labels}** Labels                            | Create and maintain [labels](labels.md) for your GitLab instance.                                                                                                                                                                                                                        |
-| **{appearance}** Appearance                    | Customize [GitLab's appearance](appearance.md).                                                                                                                                                                                                                                          |
+| **{appearance}** Appearance                    | Customize [GitLab appearance](appearance.md).                                                                                                                                                                                                                                          |
 | **{settings}** Settings                        | Modify the [settings](settings/index.md) for your GitLab instance.                                                                                                                                                                                                                       |
 
 ## Admin Dashboard
@@ -94,7 +94,7 @@ The list of projects can be sorted by:
 
 A user can choose to hide or show archived projects in the list.
 
-In the **Filter by name** field, type the project name you want to find, and GitLab will filter
+In the **Filter by name** field, type the project name you want to find, and GitLab filters
 them as you type.
 
 Select from the **Namespace** dropdown to filter only projects in that namespace.
@@ -322,6 +322,6 @@ The content of each log file is listed in chronological order. To minimize perfo
 
 The **Requests Profiles** page contains the token required for profiling. For more details, see [Request Profiling](../../administration/monitoring/performance/request_profiling.md).
 
-### Audit Log **(PREMIUM ONLY)**
+### Audit Events **(PREMIUM ONLY)**
 
-The **Audit Log** page lists changes made within the GitLab server. With this information you can control, analyze, and track every change.
+The **Audit Events** page lists changes made within the GitLab server. With this information you can control, analyze, and track every change.

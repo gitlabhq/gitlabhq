@@ -1,7 +1,7 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+stage: Enablement
+group: Distribution
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Integrity check Rake task **(CORE ONLY)**
@@ -56,7 +56,7 @@ sudo -u git -H bundle exec rake gitlab:git:fsck RAILS_ENV=production
 Various types of files can be uploaded to a GitLab installation by users.
 These integrity checks can detect missing files. Additionally, for locally
 stored files, checksums are generated and stored in the database upon upload,
-and these checks will verify them against current files.
+and these checks verify them against current files.
 
 Currently, integrity checks are supported for the following types of file:
 
@@ -137,8 +137,8 @@ Done!
 
 ## LDAP check
 
-The LDAP check Rake task will test the bind DN and password credentials
-(if configured) and will list a sample of LDAP users. This task is also
+The LDAP check Rake task tests the bind DN and password credentials
+(if configured) and lists a sample of LDAP users. This task is also
 executed as part of the `gitlab:check` task, but can run independently.
 See [LDAP Rake Tasks - LDAP Check](ldap.md#check) for details.
 

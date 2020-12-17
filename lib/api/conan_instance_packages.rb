@@ -4,7 +4,7 @@
 module API
   class ConanInstancePackages < ::API::Base
     namespace 'packages/conan/v1' do
-      include ConanPackageEndpoints
+      include ::API::Concerns::Packages::ConanEndpoints
     end
   end
 end

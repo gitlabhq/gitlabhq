@@ -1,7 +1,7 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+stage: Manage
+group: Access
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Group and project members API
@@ -11,15 +11,16 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 The access levels are defined in the `Gitlab::Access` module. Currently, these levels are recognized:
 
 - No access (`0`)
+- Minimal access (`5`) ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220203) in GitLab 13.5.)
 - Guest (`10`)
 - Reporter (`20`)
 - Developer (`30`)
 - Maintainer (`40`)
 - Owner (`50`) - Only valid to set for groups
 
-CAUTION: **Caution:**
+WARNING:
 Due to [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/219299),
-projects in personal namespaces will not show owner (`50`) permission
+projects in personal namespaces don't show owner (`50`) permission
 for owner.
 
 ## Limitations
@@ -89,7 +90,7 @@ Example response:
 
 Gets a list of group or project members viewable by the authenticated user, including inherited members and permissions through ancestor groups.
 
-CAUTION: **Caution:**
+WARNING:
 Due to [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/249523), the users effective `access_level` may actually be higher than returned value when listing group members.
 
 This function takes pagination parameters `page` and `per_page` to restrict the list of users.
@@ -241,6 +242,10 @@ Unlike other API endpoints, billable members is updated once per day at 12:00 UT
 
 This function takes [pagination](README.md#pagination) parameters `page` and `per_page` to restrict the list of users.
 
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262875) in GitLab 13.7, the `search` and
+`sort` parameters allow you to search for billable group members by name and sort the results,
+respectively.
+
 ```plaintext
 GET /groups/:id/billable_members
 ```
@@ -248,6 +253,21 @@ GET /groups/:id/billable_members
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `search`  | string         | no  | A query string to search for group members by name, username, or email. |
+| `sort`    | string         | no  | A query string containing parameters that specify the sort attribute and order. See supported values below.|
+
+The supported values for the `sort` attribute are:
+
+| Value               | Description              |
+| ------------------- | ------------------------ |
+| `access_level_asc`  | Access level, ascending  |
+| `access_level_desc` | Access level, descending |
+| `last_joined`       | Last joined              |
+| `name_asc`          | Name, ascending          |
+| `name_desc`         | Name, descending         |
+| `oldest_joined`     | Oldest joined            |
+| `oldest_sign_in`    | Oldest sign in           |
+| `recent_sign_in`    | Recent sign in           |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/billable_members"

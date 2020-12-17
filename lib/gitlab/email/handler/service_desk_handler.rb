@@ -68,7 +68,7 @@ module Gitlab
         end
 
         def valid_project_key?(project, slug)
-          project.present? && slug == project.full_path_slug && Feature.enabled?(:service_desk_custom_address, project)
+          project.present? && slug == project.full_path_slug && Feature.enabled?(:service_desk_custom_address, project, default_enabled: true)
         end
 
         def create_issue!
@@ -78,7 +78,7 @@ module Gitlab
             title: issue_title,
             description: message_including_template,
             confidential: true,
-            service_desk_reply_to: from_address
+            external_author: from_address
           ).execute
 
           raise InvalidIssueError unless @issue.persisted?

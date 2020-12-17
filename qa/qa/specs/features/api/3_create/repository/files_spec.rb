@@ -21,27 +21,29 @@ module QA
         a_hash_including(name: project_name, path: project_name)
       )
 
+      default_branch = json_body[:default_branch].to_s.empty? ? Runtime::Env.default_branch : json_body[:default_branch]
+
       create_file_request = Runtime::API::Request.new(@api_client, "/projects/#{sanitized_project_path}/repository/files/README.md")
-      post create_file_request.url, branch: 'master', content: 'Hello world', commit_message: 'Add README.md'
+      post create_file_request.url, branch: default_branch, content: 'Hello world', commit_message: 'Add README.md'
 
       expect_status(201)
       expect(json_body).to match(
-        a_hash_including(branch: 'master', file_path: 'README.md')
+        a_hash_including(branch: default_branch, file_path: 'README.md')
       )
 
-      get_file_request = Runtime::API::Request.new(@api_client, "/projects/#{sanitized_project_path}/repository/files/README.md", ref: 'master')
+      get_file_request = Runtime::API::Request.new(@api_client, "/projects/#{sanitized_project_path}/repository/files/README.md", ref: default_branch)
       get get_file_request.url
 
       expect_status(200)
       expect(json_body).to match(
         a_hash_including(
-          ref: 'master',
+          ref: default_branch,
           file_path: 'README.md', file_name: 'README.md',
           encoding: 'base64', content: 'SGVsbG8gd29ybGQ='
         )
       )
 
-      delete_file_request = Runtime::API::Request.new(@api_client, "/projects/#{sanitized_project_path}/repository/files/README.md", branch: 'master', commit_message: 'Remove README.md')
+      delete_file_request = Runtime::API::Request.new(@api_client, "/projects/#{sanitized_project_path}/repository/files/README.md", branch: default_branch, commit_message: 'Remove README.md')
       delete delete_file_request.url
 
       expect_status(204)
@@ -80,10 +82,12 @@ module QA
         create_project_request = Runtime::API::Request.new(@api_client, '/projects')
         post create_project_request.url, path: project_name, name: project_name
 
-        create_file_request = Runtime::API::Request.new(@api_client, "/projects/#{sanitized_project_path}/repository/files/test.svg")
-        post create_file_request.url, branch: 'master', content: svg_file, commit_message: 'Add test.svg'
+        default_branch = json_body[:default_branch].to_s.empty? ? Runtime::Env.default_branch : json_body[:default_branch]
 
-        get_file_request = Runtime::API::Request.new(@api_client, "/projects/#{sanitized_project_path}/repository/files/test.svg/raw", ref: 'master')
+        create_file_request = Runtime::API::Request.new(@api_client, "/projects/#{sanitized_project_path}/repository/files/test.svg")
+        post create_file_request.url, branch: default_branch, content: svg_file, commit_message: 'Add test.svg'
+
+        get_file_request = Runtime::API::Request.new(@api_client, "/projects/#{sanitized_project_path}/repository/files/test.svg/raw", ref: default_branch)
 
         3.times do
           response = get get_file_request.url

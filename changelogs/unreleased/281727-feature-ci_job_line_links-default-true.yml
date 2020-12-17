@@ -1,0 +1,5 @@
+---
+title: Render http and https URLs as clickable links in Job logs
+merge_request: 48758
+author: Łukasz Groszkowski @falxcerebri
+type: added

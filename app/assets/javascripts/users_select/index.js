@@ -15,6 +15,7 @@ import { parseBoolean, spriteIcon } from '../lib/utils/common_utils';
 import { getAjaxUsersSelectOptions, getAjaxUsersSelectParams } from './utils';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import { fixTitle, dispose } from '~/tooltips';
+import { loadCSSFile } from '../lib/utils/css_utils';
 
 // TODO: remove eventHub hack after code splitting refactor
 window.emitSidebarEvent = window.emitSidebarEvent || $.noop;
@@ -48,6 +49,7 @@ function UsersSelect(currentUser, els, options = {}) {
     options.todoStateFilter = $dropdown.data('todoStateFilter');
     options.iid = $dropdown.data('iid');
     options.issuableType = $dropdown.data('issuableType');
+    options.targetBranch = $dropdown.data('targetBranch');
     const showNullUser = $dropdown.data('nullUser');
     const defaultNullUser = $dropdown.data('nullUserDefault');
     const showMenuAbove = $dropdown.data('showMenuAbove');
@@ -62,8 +64,7 @@ function UsersSelect(currentUser, els, options = {}) {
     const abilityName = $dropdown.data('abilityName');
     let $value = $block.find('.value');
     const $collapsedSidebar = $block.find('.sidebar-collapsed-user');
-    // eslint-disable-next-line no-jquery/no-fade
-    const $loading = $block.find('.block-loading').fadeOut();
+    const $loading = $block.find('.block-loading').addClass('gl-display-none');
     const selectedIdDefault = defaultNullUser && showNullUser ? 0 : null;
     let selectedId = $dropdown.data('selected');
     let assignTo;
@@ -204,16 +205,14 @@ function UsersSelect(currentUser, els, options = {}) {
       const data = {};
       data[abilityName] = {};
       data[abilityName].assignee_id = selected != null ? selected : null;
-      // eslint-disable-next-line no-jquery/no-fade
-      $loading.removeClass('hidden').fadeIn();
+      $loading.removeClass('gl-display-none');
       $dropdown.trigger('loading.gl.dropdown');
 
       return axios.put(issueURL, data).then(({ data }) => {
         let user = {};
         let tooltipTitle = user.name;
         $dropdown.trigger('loaded.gl.dropdown');
-        // eslint-disable-next-line no-jquery/no-fade
-        $loading.fadeOut();
+        $loading.addClass('gl-display-none');
         if (data.assignee) {
           user = {
             name: data.assignee.name,
@@ -584,7 +583,14 @@ function UsersSelect(currentUser, els, options = {}) {
           img = `<img src='${avatar}' class='avatar avatar-inline m-0' width='32' />`;
         }
 
-        return userSelect.renderRow(options.issuableType, user, selected, username, img);
+        return userSelect.renderRow(
+          options.issuableType,
+          user,
+          selected,
+          username,
+          img,
+          elsClassName,
+        );
       },
     });
   });
@@ -592,92 +598,97 @@ function UsersSelect(currentUser, els, options = {}) {
   if ($('.ajax-users-select').length) {
     import(/* webpackChunkName: 'select2' */ 'select2/select2')
       .then(() => {
-        $('.ajax-users-select').each((i, select) => {
-          const options = getAjaxUsersSelectOptions($(select), AJAX_USERS_SELECT_OPTIONS_MAP);
-          options.skipLdap = $(select).hasClass('skip_ldap');
-          const showNullUser = $(select).data('nullUser');
-          const showAnyUser = $(select).data('anyUser');
-          const showEmailUser = $(select).data('emailUser');
-          const firstUser = $(select).data('firstUser');
-          return $(select).select2({
-            placeholder: __('Search for a user'),
-            multiple: $(select).hasClass('multiselect'),
-            minimumInputLength: 0,
-            query(query) {
-              return userSelect.users(query.term, options, users => {
-                let name;
-                const data = {
-                  results: users,
-                };
-                if (query.term.length === 0) {
-                  if (firstUser) {
-                    // Move current user to the front of the list
-                    const ref = data.results;
+        // eslint-disable-next-line promise/no-nesting
+        loadCSSFile(gon.select2_css_path)
+          .then(() => {
+            $('.ajax-users-select').each((i, select) => {
+              const options = getAjaxUsersSelectOptions($(select), AJAX_USERS_SELECT_OPTIONS_MAP);
+              options.skipLdap = $(select).hasClass('skip_ldap');
+              const showNullUser = $(select).data('nullUser');
+              const showAnyUser = $(select).data('anyUser');
+              const showEmailUser = $(select).data('emailUser');
+              const firstUser = $(select).data('firstUser');
+              return $(select).select2({
+                placeholder: __('Search for a user'),
+                multiple: $(select).hasClass('multiselect'),
+                minimumInputLength: 0,
+                query(query) {
+                  return userSelect.users(query.term, options, users => {
+                    let name;
+                    const data = {
+                      results: users,
+                    };
+                    if (query.term.length === 0) {
+                      if (firstUser) {
+                        // Move current user to the front of the list
+                        const ref = data.results;
 
-                    for (let index = 0, len = ref.length; index < len; index += 1) {
-                      const obj = ref[index];
-                      if (obj.username === firstUser) {
-                        data.results.splice(index, 1);
-                        data.results.unshift(obj);
-                        break;
+                        for (let index = 0, len = ref.length; index < len; index += 1) {
+                          const obj = ref[index];
+                          if (obj.username === firstUser) {
+                            data.results.splice(index, 1);
+                            data.results.unshift(obj);
+                            break;
+                          }
+                        }
+                      }
+                      if (showNullUser) {
+                        const nullUser = {
+                          name: s__('UsersSelect|Unassigned'),
+                          id: 0,
+                        };
+                        data.results.unshift(nullUser);
+                      }
+                      if (showAnyUser) {
+                        name = showAnyUser;
+                        if (name === true) {
+                          name = s__('UsersSelect|Any User');
+                        }
+                        const anyUser = {
+                          name,
+                          id: null,
+                        };
+                        data.results.unshift(anyUser);
                       }
                     }
-                  }
-                  if (showNullUser) {
-                    const nullUser = {
-                      name: s__('UsersSelect|Unassigned'),
-                      id: 0,
-                    };
-                    data.results.unshift(nullUser);
-                  }
-                  if (showAnyUser) {
-                    name = showAnyUser;
-                    if (name === true) {
-                      name = s__('UsersSelect|Any User');
+                    if (
+                      showEmailUser &&
+                      data.results.length === 0 &&
+                      query.term.match(/^[^@]+@[^@]+$/)
+                    ) {
+                      const trimmed = query.term.trim();
+                      const emailUser = {
+                        name: sprintf(__('Invite "%{trimmed}" by email'), { trimmed }),
+                        username: trimmed,
+                        id: trimmed,
+                        invite: true,
+                      };
+                      data.results.unshift(emailUser);
                     }
-                    const anyUser = {
-                      name,
-                      id: null,
-                    };
-                    data.results.unshift(anyUser);
-                  }
-                }
-                if (
-                  showEmailUser &&
-                  data.results.length === 0 &&
-                  query.term.match(/^[^@]+@[^@]+$/)
-                ) {
-                  const trimmed = query.term.trim();
-                  const emailUser = {
-                    name: sprintf(__('Invite "%{trimmed}" by email'), { trimmed }),
-                    username: trimmed,
-                    id: trimmed,
-                    invite: true,
-                  };
-                  data.results.unshift(emailUser);
-                }
-                return query.callback(data);
+                    return query.callback(data);
+                  });
+                },
+                initSelection() {
+                  const args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
+                  return userSelect.initSelection.apply(userSelect, args);
+                },
+                formatResult() {
+                  const args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
+                  return userSelect.formatResult.apply(userSelect, args);
+                },
+                formatSelection() {
+                  const args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
+                  return userSelect.formatSelection.apply(userSelect, args);
+                },
+                dropdownCssClass: 'ajax-users-dropdown',
+                // we do not want to escape markup since we are displaying html in results
+                escapeMarkup(m) {
+                  return m;
+                },
               });
-            },
-            initSelection() {
-              const args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
-              return userSelect.initSelection.apply(userSelect, args);
-            },
-            formatResult() {
-              const args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
-              return userSelect.formatResult.apply(userSelect, args);
-            },
-            formatSelection() {
-              const args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
-              return userSelect.formatSelection.apply(userSelect, args);
-            },
-            dropdownCssClass: 'ajax-users-dropdown',
-            // we do not want to escape markup since we are displaying html in results
-            escapeMarkup(m) {
-              return m;
-            },
-          });
-        });
+            });
+          })
+          .catch(() => {});
       })
       .catch(() => {});
   }
@@ -743,8 +754,17 @@ UsersSelect.prototype.users = function(query, options, callback) {
     ...getAjaxUsersSelectParams(options, AJAX_USERS_SELECT_PARAMS_MAP),
   };
 
-  if (options.issuableType === 'merge_request') {
+  const isMergeRequest = options.issuableType === 'merge_request';
+  const isEditMergeRequest = !options.issuableType && (options.iid && options.targetBranch);
+  const isNewMergeRequest = !options.issuableType && (!options.iid && options.targetBranch);
+
+  if (isMergeRequest || isEditMergeRequest || isNewMergeRequest) {
     params.merge_request_iid = options.iid || null;
+    params.approval_rules = true;
+  }
+
+  if (isNewMergeRequest) {
+    params.target_branch = options.targetBranch || null;
   }
 
   return axios.get(url, { params }).then(({ data }) => {
@@ -759,7 +779,14 @@ UsersSelect.prototype.buildUrl = function(url) {
   return url;
 };
 
-UsersSelect.prototype.renderRow = function(issuableType, user, selected, username, img) {
+UsersSelect.prototype.renderRow = function(
+  issuableType,
+  user,
+  selected,
+  username,
+  img,
+  elsClassName,
+) {
   const tooltip = issuableType === 'merge_request' && !user.can_merge ? __('Cannot merge') : '';
   const tooltipClass = tooltip ? `has-tooltip` : '';
   const selectedClass = selected === true ? 'is-active' : '';
@@ -773,10 +800,15 @@ UsersSelect.prototype.renderRow = function(issuableType, user, selected, usernam
       <a href="#" class="dropdown-menu-user-link d-flex align-items-center ${linkClasses}" ${tooltipAttributes}>
         ${this.renderRowAvatar(issuableType, user, img)}
         <span class="d-flex flex-column overflow-hidden">
-          <strong class="dropdown-menu-user-full-name">
+          <strong class="dropdown-menu-user-full-name gl-font-weight-bold">
             ${escape(user.name)}
           </strong>
-          ${username ? `<span class="dropdown-menu-user-username">${username}</span>` : ''}
+          ${
+            username
+              ? `<span class="dropdown-menu-user-username gl-text-gray-400">${username}</span>`
+              : ''
+          }
+          ${this.renderApprovalRules(elsClassName, user.applicable_approval_rules)}
         </span>
       </a>
     </li>
@@ -790,13 +822,31 @@ UsersSelect.prototype.renderRowAvatar = function(issuableType, user, img) {
 
   const mergeIcon =
     issuableType === 'merge_request' && !user.can_merge
-      ? '<i class="fa fa-exclamation-triangle merge-icon"></i>'
+      ? spriteIcon('warning-solid', 's12 merge-icon')
       : '';
 
   return `<span class="position-relative mr-2">
     ${img}
     ${mergeIcon}
   </span>`;
+};
+
+UsersSelect.prototype.renderApprovalRules = function(elsClassName, approvalRules = []) {
+  if (!gon.features?.reviewerApprovalRules || !elsClassName?.includes('reviewer')) {
+    return '';
+  }
+
+  const count = approvalRules.length;
+  const [rule] = approvalRules;
+  const countText = sprintf(__('(+%{count}&nbsp;rules)'), { count });
+  const renderApprovalRulesCount = count > 1 ? `<span class="ml-1">${countText}</span>` : '';
+
+  return count
+    ? `<div class="gl-display-flex gl-font-sm">
+        <span class="gl-text-truncate" title="${rule.name}">${rule.name}</span>
+        ${renderApprovalRulesCount}
+      </div>`
+    : '';
 };
 
 export default UsersSelect;

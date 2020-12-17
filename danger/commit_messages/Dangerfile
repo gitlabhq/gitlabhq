@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative File.expand_path('../../lib/gitlab/danger/commit_linter', __dir__)
+require_relative File.expand_path('../../lib/gitlab/danger/merge_request_linter', __dir__)
 
 COMMIT_MESSAGE_GUIDELINES = "https://docs.gitlab.com/ee/development/contributing/merge_request_workflow.html#commit-messages-guidelines"
 MORE_INFO = "For more information, take a look at our [Commit message guidelines](#{COMMIT_MESSAGE_GUIDELINES})."
@@ -92,7 +93,7 @@ end
 def lint_mr_title(mr_title)
   commit = Struct.new(:message, :sha).new(mr_title)
 
-  Gitlab::Danger::CommitLinter.new(commit).lint_subject("merge request title")
+  Gitlab::Danger::MergeRequestLinter.new(commit).lint
 end
 
 def count_non_fixup_commits(commit_linters)
@@ -139,4 +140,12 @@ def warn_or_fail_commits(failed_linters, default_to_fail: true)
   end
 end
 
-lint_commits(git.commits)
+# As part of https://gitlab.com/groups/gitlab-org/-/epics/4826 we are
+# vendoring workhorse commits from the stand-alone gitlab-workhorse
+# repo. There is no point in linting commits that we want to vendor as
+# is.
+def workhorse_changes?
+  git.diff.any? { |file| file.path.start_with?('workhorse/') }
+end
+
+lint_commits(git.commits) unless workhorse_changes?

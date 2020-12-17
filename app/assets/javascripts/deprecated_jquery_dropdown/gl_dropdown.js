@@ -622,6 +622,7 @@ export class GitLabDropdown {
 
   // eslint-disable-next-line class-methods-use-this
   removeArrowKeyEvent() {
+    // eslint-disable-next-line @gitlab/no-global-event-off
     return $('body').off('keydown');
   }
 

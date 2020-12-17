@@ -1,0 +1,5 @@
+---
+title: Retain spinner when applying MR suggestions
+merge_request: 46203
+author:
+type: fixed

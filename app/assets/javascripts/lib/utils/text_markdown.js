@@ -339,6 +339,7 @@ export function addMarkdownListeners(form) {
       Shortcuts.initMarkdownEditorShortcuts($(this), updateTextForToolbarBtn);
     });
 
+  // eslint-disable-next-line @gitlab/no-global-event-off
   const $allToolbarBtns = $('.js-md', form)
     .off('click')
     .on('click', function() {
@@ -351,6 +352,7 @@ export function addMarkdownListeners(form) {
 }
 
 export function addEditorMarkdownListeners(editor) {
+  // eslint-disable-next-line @gitlab/no-global-event-off
   $('.js-md')
     .off('click')
     .on('click', e => {
@@ -376,5 +378,6 @@ export function removeMarkdownListeners(form) {
       Shortcuts.removeMarkdownEditorShortcuts($(this));
     });
 
+  // eslint-disable-next-line @gitlab/no-global-event-off
   return $('.js-md', form).off('click');
 }

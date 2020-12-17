@@ -1,7 +1,7 @@
 ---
 stage: Monitor
 group: Health
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Grafana Configuration
@@ -113,7 +113,7 @@ If you require access to your old Grafana data but don't meet one of these crite
 1. [Exporting the dashboards](https://grafana.com/docs/grafana/latest/reference/export_import/#exporting-a-dashboard) you need.
 1. Refreshing the data and [re-importing your dashboards](https://grafana.com/docs/grafana/latest/reference/export_import/#importing-a-dashboard).
 
-DANGER: **Warning:**
+WARNING:
 These actions pose a temporary vulnerability while your old Grafana data is in use.
 Deciding to take any of these actions should be weighed carefully with your need to access
 existing data and dashboards.

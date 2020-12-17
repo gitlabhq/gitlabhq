@@ -18,6 +18,10 @@ RSpec.describe 'Profile > Personal Access Tokens', :js do
     find("#created-personal-access-token").value
   end
 
+  def feed_token
+    find("#feed_token").value
+  end
+
   def disallow_personal_access_token_saves!
     allow(PersonalAccessTokens::CreateService).to receive(:new).and_return(pat_create_service)
 
@@ -109,6 +113,28 @@ RSpec.describe 'Profile > Personal Access Tokens', :js do
         accept_confirm { click_on "Revoke" }
         expect(active_personal_access_tokens).to have_text(personal_access_token.name)
         expect(page).to have_content("Not permitted to revoke")
+      end
+    end
+  end
+
+  describe "feed token" do
+    context "when enabled" do
+      it "displays feed token" do
+        allow(Gitlab::CurrentSettings).to receive(:disable_feed_token).and_return(false)
+        visit profile_personal_access_tokens_path
+
+        expect(page).to have_content("Your feed token is used to authenticate you when your RSS reader loads a personalized RSS feed or when your calendar application loads a personalized calendar, and is included in those feed URLs.")
+        expect(feed_token).to eq(user.feed_token)
+      end
+    end
+
+    context "when disabled" do
+      it "does not display feed token" do
+        allow(Gitlab::CurrentSettings).to receive(:disable_feed_token).and_return(true)
+        visit profile_personal_access_tokens_path
+
+        expect(page).not_to have_content("Your feed token is used to authenticate you when your RSS reader loads a personalized RSS feed or when your calendar application loads a personalized calendar, and is included in those feed URLs.")
+        expect(page).not_to have_css("#feed_token")
       end
     end
   end

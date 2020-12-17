@@ -37,7 +37,11 @@ class GraphqlController < ApplicationController
   rescue_from StandardError do |exception|
     log_exception(exception)
 
-    render_error("Internal server error")
+    if Rails.env.test? || Rails.env.development?
+      render_error("Internal server error: #{exception.message}")
+    else
+      render_error("Internal server error")
+    end
   end
 
   rescue_from Gitlab::Graphql::Variables::Invalid do |exception|

@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Documentation deployment process
@@ -36,7 +36,7 @@ and tag all tooling images locally:
    ```
 
 For each image, there's a manual job under the `images` stage in
-[`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/.gitlab-ci.yml) which can be invoked at will.
+[`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/.gitlab-ci.yml) which can be invoked at any time.
 
 ## Update an old Docker image with new upstream docs content
 
@@ -46,12 +46,12 @@ for the version in question.
 
 ## Porting new website changes to old versions
 
-CAUTION: **Warning:**
+WARNING:
 Porting changes to older branches can have unintended effects as we're constantly
 changing the backend of the website. Use only when you know what you're doing
 and make sure to test locally.
 
-The website will keep changing and being improved. In order to consolidate
+The website keeps changing and being improved. In order to consolidate
 those changes to the stable branches, we'd need to pick certain changes
 from time to time.
 

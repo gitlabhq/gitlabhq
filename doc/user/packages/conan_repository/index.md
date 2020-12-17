@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Conan packages in the Package Registry
@@ -51,7 +51,7 @@ compilers. This example uses the CMake compiler.
 
 To install CMake:
 
-- For Mac, use [homebrew](https://brew.sh/) and run `brew install cmake`.
+- For Mac, use [Homebrew](https://brew.sh/) and run `brew install cmake`.
 - For other operating systems, follow the instructions at [cmake.org](https://cmake.org/install/).
 
 When installation is complete, verify you can use CMake in your terminal by
@@ -86,7 +86,7 @@ To build a package:
    conan create . mycompany/beta
    ```
 
-   NOTE: **Note:**
+   NOTE:
    If you use an [instance remote](#add-a-remote-for-your-instance), you must
    follow a specific [naming convention](#package-recipe-naming-convention-for-instance-remotes).
 
@@ -205,7 +205,7 @@ For example:
 CONAN_LOGIN_USERNAME=<gitlab_username or deploy_token_username> CONAN_PASSWORD=<personal_access_token or deploy_token> conan upload Hello/0.1@mycompany/beta --all --remote=gitlab
 ```
 
-NOTE: **Note:**
+NOTE:
 Because your authentication with GitLab expires on a regular basis, you may
 occasionally need to re-enter your personal access token.
 
@@ -221,7 +221,7 @@ In a terminal, run this command:
 conan remote add_ref Hello/0.1@mycompany/beta gitlab
 ```
 
-NOTE: **Note:**
+NOTE:
 The package recipe includes the version, so the default remote for
 `Hello/0.1@user/channel` doesn't work for `Hello/0.2@user/channel`.
 
@@ -292,7 +292,7 @@ Prerequisites:
 - [Authentication](#authenticate-to-the-package-registry) with the
   Package Registry must be configured.
 
-1. In the project where you want to install the package as a dependency, open 
+1. In the project where you want to install the package as a dependency, open
    `conanfile.txt`. Or, in the root of your project, create a file called
    `conanfile.txt`.
 
@@ -316,10 +316,10 @@ Prerequisites:
 1. Install the dependencies listed in `conanfile.txt`:
 
    ```shell
-   conan install <options>
+   conan install .. <options>
    ```
 
-NOTE: **Note:**
+NOTE:
 If you try to install the package you just created in this tutorial, the package
 already exists on your local computer, so this command has no effect.
 
@@ -336,7 +336,7 @@ There are two ways to remove a Conan package from the GitLab Package Registry.
   You must explicitly include the remote in this command, otherwise the package
   is removed only from your local system cache.
 
-  NOTE: **Note:**
+  NOTE:
   This command removes all recipe and binary package files from the
   Package Registry.
 

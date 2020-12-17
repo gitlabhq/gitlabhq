@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # NuGet packages in the Package Registry
@@ -181,7 +181,7 @@ nuget push <package_file> -Source <source_name>
 
 Prerequisite:
 
-[A NuGet package created with .NET CLI](https://docs.microsoft.com/en-us/nuget/create-packages/creating-a-package-dotnet-cli).
+- [A NuGet package created with .NET CLI](https://docs.microsoft.com/en-us/nuget/create-packages/creating-a-package-dotnet-cli).
 
 Publish a package by running this command:
 
@@ -233,7 +233,7 @@ updated:
 
 ### Install a package with the NuGet CLI
 
-CAUTION: **Warning:**
+WARNING:
 By default, `nuget` checks the official source at `nuget.org` first. If you have
 a NuGet package in the Package Registry with the same name as a package at
 `nuget.org`, you must specify the source name to install the correct package.
@@ -253,7 +253,7 @@ nuget install <package_id> -OutputDirectory <output_directory> \
 
 ### Install a package with the .NET CLI
 
-CAUTION: **Warning:**
+WARNING:
 If you have a package in the Package Registry with the same name as a package at
 a different source, verify the order in which `dotnet` checks sources during
 install. This is defined in the `nuget.config` file.

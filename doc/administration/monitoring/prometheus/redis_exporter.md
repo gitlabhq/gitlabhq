@@ -1,7 +1,7 @@
 ---
 stage: Monitor
 group: Health
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Redis exporter
@@ -25,5 +25,5 @@ To enable the Redis exporter:
 1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
    for the changes to take effect.
 
-Prometheus will now begin collecting performance data from
+Prometheus begins collecting performance data from
 the Redis exporter exposed at `localhost:9121`.

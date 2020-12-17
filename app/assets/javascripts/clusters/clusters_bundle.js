@@ -52,6 +52,7 @@ export default class Clusters {
       clusterStatus,
       clusterStatusReason,
       helpPath,
+      helmHelpPath,
       ingressHelpPath,
       ingressDnsHelpPath,
       ingressModSecurityHelpPath,
@@ -68,8 +69,9 @@ export default class Clusters {
     this.clusterBannerDismissedKey = `cluster_${this.clusterId}_banner_dismissed`;
 
     this.store = new ClustersStore();
-    this.store.setHelpPaths(
+    this.store.setHelpPaths({
       helpPath,
+      helmHelpPath,
       ingressHelpPath,
       ingressDnsHelpPath,
       ingressModSecurityHelpPath,
@@ -78,7 +80,7 @@ export default class Clusters {
       deployBoardsHelpPath,
       cloudRunHelpPath,
       ciliumHelpPath,
-    );
+    });
     this.store.setManagePrometheusPath(managePrometheusPath);
     this.store.updateStatus(clusterStatus);
     this.store.updateStatusReason(clusterStatusReason);
@@ -162,6 +164,7 @@ export default class Clusters {
             type,
             applications: this.state.applications,
             helpPath: this.state.helpPath,
+            helmHelpPath: this.state.helmHelpPath,
             ingressHelpPath: this.state.ingressHelpPath,
             managePrometheusPath: this.state.managePrometheusPath,
             ingressDnsHelpPath: this.state.ingressDnsHelpPath,
@@ -262,13 +265,21 @@ export default class Clusters {
   removeListeners() {
     eventHub.$off('installApplication', this.installApplication);
     eventHub.$off('updateApplication', this.updateApplication);
+    // eslint-disable-next-line @gitlab/no-global-event-off
     eventHub.$off('saveKnativeDomain');
+    // eslint-disable-next-line @gitlab/no-global-event-off
     eventHub.$off('setKnativeDomain');
+    // eslint-disable-next-line @gitlab/no-global-event-off
     eventHub.$off('setCrossplaneProviderStack');
+    // eslint-disable-next-line @gitlab/no-global-event-off
     eventHub.$off('uninstallApplication');
+    // eslint-disable-next-line @gitlab/no-global-event-off
     eventHub.$off('setIngressModSecurityEnabled');
+    // eslint-disable-next-line @gitlab/no-global-event-off
     eventHub.$off('setIngressModSecurityMode');
+    // eslint-disable-next-line @gitlab/no-global-event-off
     eventHub.$off('resetIngressModSecurityChanges');
+    // eslint-disable-next-line @gitlab/no-global-event-off
     eventHub.$off('setFluentdSettings');
   }
 

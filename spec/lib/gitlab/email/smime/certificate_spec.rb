@@ -69,8 +69,8 @@ RSpec.describe Gitlab::Email::Smime::Certificate do
 
   describe '.from_files' do
     it 'parses correctly a certificate and key' do
-      allow(File).to receive(:read).with('a_key').and_return(@cert[:key].to_s)
-      allow(File).to receive(:read).with('a_cert').and_return(@cert[:cert].to_pem)
+      stub_file_read('a_key', content: @cert[:key].to_s)
+      stub_file_read('a_cert', content: @cert[:cert].to_pem)
 
       parsed_cert = described_class.from_files('a_key', 'a_cert')
 
@@ -79,9 +79,9 @@ RSpec.describe Gitlab::Email::Smime::Certificate do
 
     context 'with optional ca_certs' do
       it 'parses correctly certificate, key and ca_certs' do
-        allow(File).to receive(:read).with('a_key').and_return(@cert[:key].to_s)
-        allow(File).to receive(:read).with('a_cert').and_return(@cert[:cert].to_pem)
-        allow(File).to receive(:read).with('a_ca_cert').and_return(@intermediate_ca[:cert].to_pem)
+        stub_file_read('a_key', content: @cert[:key].to_s)
+        stub_file_read('a_cert', content: @cert[:cert].to_pem)
+        stub_file_read('a_ca_cert', content: @intermediate_ca[:cert].to_pem)
 
         parsed_cert = described_class.from_files('a_key', 'a_cert', 'a_ca_cert')
 
@@ -94,8 +94,8 @@ RSpec.describe Gitlab::Email::Smime::Certificate do
     it 'parses correctly a certificate and key' do
       cert = generate_cert(signer_ca: @root_ca)
 
-      allow(File).to receive(:read).with('a_key').and_return(cert[:key].to_s)
-      allow(File).to receive(:read).with('a_cert').and_return(cert[:cert].to_pem)
+      stub_file_read('a_key', content: cert[:key].to_s)
+      stub_file_read('a_cert', content: cert[:cert].to_pem)
 
       parsed_cert = described_class.from_files('a_key', 'a_cert')
 

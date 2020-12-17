@@ -1,12 +1,8 @@
 import { GlEmptyState } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { stubComponent } from 'helpers/stub_component';
 import GroupEmptyState from '~/monitoring/components/group_empty_state.vue';
 import { metricStates } from '~/monitoring/constants';
-
-const MockGlEmptyState = {
-  props: GlEmptyState.props,
-  template: '<div><slot name="description"></slot></div>',
-};
 
 function createComponent(props) {
   return shallowMount(GroupEmptyState, {
@@ -17,7 +13,9 @@ function createComponent(props) {
       svgPath: '/path/to/empty-group-illustration.svg',
     },
     stubs: {
-      GlEmptyState: MockGlEmptyState,
+      GlEmptyState: stubComponent(GlEmptyState, {
+        template: '<div><slot name="description"></slot></div>',
+      }),
     },
   });
 }
@@ -47,7 +45,7 @@ describe('GroupEmptyState', () => {
     });
 
     it('passes the expected props to GlEmptyState', () => {
-      expect(wrapper.find(MockGlEmptyState).props()).toMatchSnapshot();
+      expect(wrapper.find(GlEmptyState).props()).toMatchSnapshot();
     });
   });
 });

@@ -463,11 +463,12 @@ module ProjectsHelper
       issues:             :read_issue,
       project_members:    :read_project_member,
       wiki:               :read_wiki,
-      feature_flags:      :read_feature_flag
+      feature_flags:      :read_feature_flag,
+      analytics:          :read_analytics
     }
   end
 
-  def can_view_operations_tab?(current_user, project)
+  def view_operations_tab_ability
     [
       :metrics_dashboard,
       :read_alert_management_alert,
@@ -477,7 +478,13 @@ module ProjectsHelper
       :read_cluster,
       :read_feature_flag,
       :read_terraform_state
-    ].any? do |ability|
+    ]
+  end
+
+  def can_view_operations_tab?(current_user, project)
+    return false unless project.feature_available?(:operations, current_user)
+
+    view_operations_tab_ability.any? do |ability|
       can?(current_user, ability, project)
     end
   end
@@ -606,6 +613,7 @@ module ProjectsHelper
 
   def project_permissions_settings(project)
     feature = project.project_feature
+
     {
       packagesEnabled: !!project.packages_enabled,
       visibilityLevel: project.visibility_level,
@@ -618,11 +626,14 @@ module ProjectsHelper
       wikiAccessLevel: feature.wiki_access_level,
       snippetsAccessLevel: feature.snippets_access_level,
       pagesAccessLevel: feature.pages_access_level,
+      analyticsAccessLevel: feature.analytics_access_level,
       containerRegistryEnabled: !!project.container_registry_enabled,
       lfsEnabled: !!project.lfs_enabled,
       emailsDisabled: project.emails_disabled?,
       metricsDashboardAccessLevel: feature.metrics_dashboard_access_level,
-      showDefaultAwardEmojis: project.show_default_award_emojis?
+      operationsAccessLevel: feature.operations_access_level,
+      showDefaultAwardEmojis: project.show_default_award_emojis?,
+      allowEditingCommitMessages: project.allow_editing_commit_messages?
     }
   end
 

@@ -165,6 +165,14 @@ RSpec.describe Gitlab::Danger::Roulette do
         end
       end
 
+      context 'when change contains many categories' do
+        let(:categories) { [:frontend, :test, :qa, :engineering_productivity, :ci_template, :backend] }
+
+        it 'has a deterministic sorting order' do
+          expect(spins.map(&:category)).to eq categories.sort
+        end
+      end
+
       context 'when change contains QA category' do
         let(:categories) { [:qa] }
 

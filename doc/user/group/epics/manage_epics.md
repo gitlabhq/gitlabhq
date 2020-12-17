@@ -2,7 +2,7 @@
 type: howto
 stage: Plan
 group: Product Planning
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 <!-- When adding a new h2 section here, remember to mention it in index.md#manage-epics -->
@@ -14,42 +14,28 @@ to them.
 
 ## Create an epic
 
-A paginated list of epics is available in each group from where you can create
-a new epic. The list of epics includes also epics from all subgroups of the
-selected group. From your group page:
+> - The New Epic form [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211533) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
+> - In [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/issues/229621) and later, the New Epic button on the Epics list opens the New Epic form.
 
-### Create an epic from the epic list
+To create an epic in the group you're in:
 
-To create an epic from the epic list, in a group:
+1. Get to the New Epic form:
+   - From the **Epics** list in your group, select the **New Epic** button.
+   - From an epic in your group, select the **New Epic** button.
+   - From anywhere, in the top menu, select **New...** (**{plus-square}**) **> New epic**.
 
-1. Go to **{epic}** **Epics**.
-1. Select **New epic**.
-1. Enter a descriptive title.
-1. Select **Create epic**.
+     ![New epic from an open epic](img/new_epic_from_groups_v13.7.png)
 
-### Access the New Epic form
+1. Fill in these fields:
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211533) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
+   - Title
+   - Description
+   - [Confidentiality checkbox](#make-an-epic-confidential)
+   - Labels
+   - Start date
+   - Due date
 
-There are two ways to get to the New Epic form and create an epic in the group you're in:
-
-- From an epic in your group, select **New Epic**.
-- From anywhere, in the top menu, select **plus** (**{plus-square}**) **> New epic**.
-
-  ![New epic from an open epic](img/new_epic_from_groups_v13.2.png)
-
-### Elements of the New Epic form
-
-When you're creating a new epic, these are the fields you can fill in:
-
-- Title
-- Description
-- Confidentiality checkbox
-- Labels
-- Start date
-- Due date
-
-![New epic form](img/new_epic_form_v13.2.png)
+1. Select **Create epic**. You are taken to view the newly created epic.
 
 ## Edit an epic
 
@@ -79,7 +65,7 @@ You can edit multiple epics at once. To learn how to do it, visit
 
 ## Delete an epic
 
-NOTE: **Note:**
+NOTE:
 To delete an epic, you need to be an [Owner](../../permissions.md#group-members-permissions) of a group/subgroup.
 
 When editing the description of an epic, select the **Delete** button to delete the epic.
@@ -130,7 +116,7 @@ that of Issues and Merge Requests) based on following parameters:
 ![epics search](img/epics_search.png)
 
 To search, go to the list of epics and select the field **Search or filter results**.
-It will display a dropdown menu, from which you can add an author. You can also enter plain
+It displays a dropdown menu, from which you can add an author. You can also enter plain
 text to search by epic title or description. When done, press <kbd>Enter</kbd> on your
 keyboard to filter the list.
 
@@ -155,7 +141,7 @@ The sort option and order is saved and used wherever you browse epics, including
 
 If you're working on items that contain private information, you can make an epic confidential.
 
-NOTE: **Note:**
+NOTE:
 A confidential epic can only contain confidential issues and confidential child epics.
 
 To make an epic confidential:
@@ -211,7 +197,7 @@ To create an issue from an epic:
 ### Remove an issue from an epic
 
 You can remove issues from an epic when you're on the epic's details page.
-After you remove an issue from an epic, the issue will no longer be associated with this epic.
+After you remove an issue from an epic, the issue is no longer associated with this epic.
 
 To remove an issue from an epic:
 
@@ -253,8 +239,8 @@ To move an issue to another epic:
 If you have the necessary [permissions](../../permissions.md) to close an issue and create an
 epic in the immediate parent group, you can promote an issue to an epic with the `/promote`
 [quick action](../../project/quick_actions.md#quick-actions-for-issues-merge-requests-and-epics).
-Only issues from projects that are in groups can be promoted. When attempting to promote a confidential
-issue, a warning will display. Promoting a confidential issue to an epic will make all information
+Only issues from projects that are in groups can be promoted. When you attempt to promote a confidential
+issue, a warning is displayed. Promoting a confidential issue to an epic makes all information
 related to the issue public as epics are public to group members.
 
 When the quick action is executed:
@@ -262,7 +248,7 @@ When the quick action is executed:
 - An epic is created in the same group as the project of the issue.
 - Subscribers of the issue are notified that the epic was created.
 
-The following issue metadata will be copied to the epic:
+The following issue metadata is copied to the epic:
 
 - Title, description, activity/comment thread.
 - Upvotes/downvotes.
@@ -277,7 +263,7 @@ You can create a spreadsheet template to manage a pattern of consistently repeat
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an introduction to epic templates, see [GitLab Epics and Epic Template Tip](https://www.youtube.com/watch?v=D74xKFNw8vg).
 
-For more on epic templates, see [Epic Templates - Repeatable sets of issues](https://about.gitlab.com/handbook/marketing/product-marketing/getting-started/104/).
+For more on epic templates, see [Epic Templates - Repeatable sets of issues](https://about.gitlab.com/handbook/marketing/strategic-marketing/getting-started/104/).
 
 ## Manage multi-level child epics **(ULTIMATE)**
 

@@ -1,0 +1,10 @@
+workhorse:
+  extends: .workhorse:rules:workhorse
+  image: golang:1.14
+  stage: test
+  needs: []
+  script:
+    - rm .git/hooks/post-checkout
+    - git checkout .
+    - scripts/update-workhorse check
+    - make -C workhorse

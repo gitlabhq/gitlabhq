@@ -1,13 +1,13 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # License **(CORE ONLY)**
 
 To interact with license endpoints, you need to authenticate yourself as an
-admin.
+administrator.
 
 ## Retrieve information about the current license
 
@@ -86,15 +86,15 @@ GET /licenses
 ]
 ```
 
-Overage is the difference between the number of active users and the licensed number of users.
+Overage is the difference between the number of billable users and the licensed number of users.
 This is calculated differently depending on whether the license has expired or not.
 
-- If the license has expired, it uses the historical maximum active user count (`historical_max`).
-- If the license has not expired, it uses the current active users count.
+- If the license has expired, it uses the historical maximum billable user count (`historical_max`).
+- If the license has not expired, it uses the current billable users count.
 
 Returns:
 
-- `200 OK` with response containing the licenses in JSON format. This will be an empty JSON array if there are no licenses.
+- `200 OK` with response containing the licenses in JSON format. This is an empty JSON array if there are no licenses.
 - `403 Forbidden` if the current user in not permitted to read the licenses.
 
 ## Add a new license

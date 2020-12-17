@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { initStoreFromElement, initPropsFromElement } from '~/import_projects';
+import { initStoreFromElement, initPropsFromElement } from '~/import_entities/import_projects';
 import BitbucketServerStatusTable from './components/bitbucket_server_status_table.vue';
 
 document.addEventListener('DOMContentLoaded', () => {

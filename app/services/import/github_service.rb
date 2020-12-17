@@ -31,9 +31,8 @@ module Import
         project_name,
         target_namespace,
         current_user,
-        access_params,
-        type: provider
-      ).execute(extra_project_attrs)
+        type: provider,
+        **access_params).execute(extra_project_attrs)
     end
 
     def repo
@@ -71,11 +70,9 @@ module Import
     def blocked_url?
       Gitlab::UrlBlocker.blocked_url?(
         url,
-        {
-          allow_localhost: allow_local_requests?,
-          allow_local_network: allow_local_requests?,
-          schemes: %w(http https)
-        }
+        allow_localhost: allow_local_requests?,
+        allow_local_network: allow_local_requests?,
+        schemes: %w(http https)
       )
     end
 

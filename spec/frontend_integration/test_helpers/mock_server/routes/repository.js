@@ -19,6 +19,18 @@ export default server => {
     return schema.db.files.map(({ path }) => path);
   });
 
+  server.get('/:namespace/:project/-/blob/:sha/*path', (schema, request) => {
+    const { path } = schema.db.files.findBy({ path: request.params.path });
+
+    return { path, rawPath: request.url.replace('/-/blob', '/-/raw') };
+  });
+
+  server.get('/:namespace/:project/-/raw/:sha/*path', (schema, request) => {
+    const { path } = request.params;
+
+    return schema.db.filesRaw.findBy({ path })?.raw || 'Sample content';
+  });
+
   server.post('/api/v4/projects/:id/repository/commits', (schema, request) => {
     const { branch: branchName, commit_message: message, actions } = JSON.parse(
       request.requestBody,

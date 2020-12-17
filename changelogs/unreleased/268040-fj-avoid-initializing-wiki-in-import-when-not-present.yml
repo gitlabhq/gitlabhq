@@ -1,0 +1,5 @@
+---
+title: Avoid creating wiki empty repo when not present in export files
+merge_request: 48890
+author:
+type: changed

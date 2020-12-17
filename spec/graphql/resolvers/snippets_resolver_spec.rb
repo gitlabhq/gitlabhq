@@ -84,19 +84,18 @@ RSpec.describe Resolvers::SnippetsResolver do
       end
 
       it 'returns the snippets by single gid' do
-        snippets = resolve_snippets(args: { ids: personal_snippet.to_global_id })
+        snippets = resolve_snippets(args: { ids: [global_id_of(personal_snippet)] })
 
         expect(snippets).to contain_exactly(personal_snippet)
       end
 
       it 'returns the snippets by array of gid' do
-        args = {
-          ids: [personal_snippet.to_global_id, project_snippet.to_global_id]
-        }
+        snippets = [personal_snippet, project_snippet]
+        args = { ids: snippets.map { |s| global_id_of(s) } }
 
-        snippets = resolve_snippets(args: args)
+        found = resolve_snippets(args: args)
 
-        expect(snippets).to contain_exactly(personal_snippet, project_snippet)
+        expect(found).to match_array(snippets)
       end
 
       it 'returns an error if the id cannot be coerced' do

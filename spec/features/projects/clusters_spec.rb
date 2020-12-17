@@ -110,7 +110,7 @@ RSpec.describe 'Clusters', :js do
         visit project_clusters_path(project)
       end
 
-      it 'user sees a add cluster button ' do
+      it 'user sees a add cluster button' do
         expect(page).to have_selector('.js-add-cluster:not(.readonly)')
       end
 

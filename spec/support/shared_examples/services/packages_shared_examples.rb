@@ -14,6 +14,24 @@ RSpec.shared_examples 'assigns build to package' do
   end
 end
 
+RSpec.shared_examples 'assigns build to package file' do
+  context 'with build info' do
+    let(:job) { create(:ci_build, user: user) }
+    let(:params) { super().merge(build: job) }
+
+    it 'assigns the pipeline to the package' do
+      package_file = subject
+
+      expect(package_file.package_file_build_infos).to be_present
+      expect(package_file.pipelines.first).to eq job.pipeline
+    end
+
+    it 'creates a new PackageFileBuildInfo record' do
+      expect { subject }.to change { Packages::PackageFileBuildInfo.count }.by(1)
+    end
+  end
+end
+
 RSpec.shared_examples 'assigns the package creator' do
   it 'assigns the package creator' do
     subject

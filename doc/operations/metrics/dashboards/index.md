@@ -1,7 +1,7 @@
 ---
 stage: Monitor
 group: Health
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Custom dashboards **(CORE)**
@@ -65,9 +65,9 @@ To create a new dashboard from the command line:
 
 Your custom dashboard is available at `https://example.com/project/-/metrics/custom_dashboard_name.yml`.
 
-NOTE: **Note:**
-Configuration files nested under subdirectories of `.gitlab/dashboards` are not
-supported and won't be available in the UI.
+NOTE:
+Configuration files nested under subdirectories of `.gitlab/dashboards` aren't
+supported or available in the UI.
 
 ## Add a new metrics panel to a dashboard
 
@@ -81,7 +81,7 @@ with the **Add Panel** page:
    [permissions](../../../user/permissions.md#project-members-permissions).
 1. Click **Add panel** in the **{ellipsis_v}** **More actions** menu.
 
-   NOTE: **Note:**
+   NOTE:
    You can only add panels to custom dashboards.
 
    ![Monitoring Dashboard actions menu with add panel item](img/actions_menu_create_add_panel_v13_3.png)
@@ -156,7 +156,7 @@ and end times to the URL, enabling you to share specific timeframes more easily.
 
 You can use **Metrics Dashboard Annotations** to mark any important events on
 every metrics dashboard by adding annotations to it. While viewing a dashboard,
-annotation entries assigned to the selected time range will be automatically
+annotation entries assigned to the selected time range are automatically
 fetched and displayed on every chart within that dashboard. On mouse hover, each
 annotation presents additional details, including the exact time of an event and
 its description.

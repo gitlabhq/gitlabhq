@@ -23,6 +23,8 @@ RSpec.describe Packages::Generic::CreatePackageFileService do
       }
     end
 
+    subject { described_class.new(project, user, params).execute }
+
     before do
       FileUtils.touch(temp_file)
     end
@@ -41,9 +43,7 @@ RSpec.describe Packages::Generic::CreatePackageFileService do
       expect(::Packages::Generic::FindOrCreatePackageService).to receive(:new).with(project, user, package_params).and_return(package_service)
       expect(package_service).to receive(:execute).and_return(package)
 
-      service = described_class.new(project, user, params)
-
-      expect { service.execute }.to change { package.package_files.count }.by(1)
+      expect { subject }.to change { package.package_files.count }.by(1)
         .and change { Packages::PackageFileBuildInfo.count }.by(1)
 
       package_file = package.package_files.last
@@ -54,5 +54,7 @@ RSpec.describe Packages::Generic::CreatePackageFileService do
         expect(package_file.file_sha256).to eq(sha256)
       end
     end
+
+    it_behaves_like 'assigns build to package file'
   end
 end

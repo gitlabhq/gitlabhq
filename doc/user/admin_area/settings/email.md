@@ -2,9 +2,8 @@
 type: reference
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
-
 
 # Email **(CORE ONLY)**
 
@@ -18,7 +17,7 @@ The logo in the header of some emails can be customized, see the [logo customiza
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5031) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.7.
 
-The additional text will appear at the bottom of any email and can be used for
+The additional text appears at the bottom of any email and can be used for
 legal/auditing/compliance reasons.
 
 1. Go to **Admin Area > Settings > Preferences** (`/admin/application_settings/preferences`).
@@ -37,10 +36,10 @@ In order to change this option:
 
 1. Go to **Admin Area > Settings > Preferences** (`/admin/application_settings/preferences`).
 1. Expand the **Email** section.
-1. Enter the desire hostname in the **Custom hostname (for private commit emails)** field.
-1. Click **Save changes**.
+1. Enter the desired hostname in the **Custom hostname (for private commit emails)** field.
+1. Select **Save changes**.
 
-NOTE: **Note:**
+NOTE:
 Once the hostname gets configured, every private commit email using the previous hostname, will not get
 recognized by GitLab. This can directly conflict with certain [Push rules](../../../push_rules/push_rules.md) such as
 `Check whether author is a GitLab user` and `Check whether committer is the current authenticated user`.

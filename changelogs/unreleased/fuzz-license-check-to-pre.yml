@@ -1,0 +1,5 @@
+---
+title: Move fuzz license check to .pre stage
+merge_request: 48076
+author:
+type: fixed

@@ -118,6 +118,12 @@
   expiry: 29
   aggregation: daily
   feature_flag: track_editor_edit_actions
+- name: g_edit_by_sse
+  category: ide_edit
+  redis_slot: edit
+  expiry: 29
+  aggregation: daily
+  feature_flag: track_editor_edit_actions
 - name: g_edit_by_snippet_ide
   category: ide_edit
   redis_slot: edit
@@ -145,6 +151,7 @@
 - name: design_action
   category: source_code
   aggregation: daily
+  feature_flag: usage_data_design_action
 - name: project_action
   category: source_code
   aggregation: daily
@@ -229,6 +236,12 @@
   category: incident_management
   aggregation: weekly
   feature_flag: usage_data_incident_management_incident_change_confidential
+# Incident management alerts
+- name: incident_management_alert_create_incident
+  redis_slot: incident_management
+  category: incident_management_alerts
+  aggregation: weekly
+  feature_flag: usage_data_incident_management_alert_create_incident
 # Testing category
 - name: i_testing_test_case_parsed
   category: testing
@@ -396,9 +409,19 @@
   redis_slot: project_management
   aggregation: daily
   feature_flag: track_issue_activity_actions
+- name: g_project_management_issue_cloned
+  category: issues_edit
+  redis_slot: project_management
+  aggregation: daily
+  feature_flag: track_issue_activity_actions
 # Secrets Management
 - name: i_ci_secrets_management_vault_build_created
   category: ci_secrets_management
   redis_slot: ci_secrets_management
   aggregation: weekly
   feature_flag: usage_data_i_ci_secrets_management_vault_build_created
+- name: i_snippets_show
+  category: snippets
+  redis_slot: snippets
+  aggregation: weekly
+  feature_flag: usage_data_i_snippets_show

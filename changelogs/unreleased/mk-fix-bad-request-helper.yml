@@ -1,0 +1,5 @@
+---
+title: Fix wording of some 400 Bad request API responses
+merge_request: 49895
+author:
+type: fixed

@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Packages API
@@ -67,7 +67,7 @@ Example response:
 ]
 ```
 
-By default, the `GET` request will return 20 results, since the API is [paginated](README.md#pagination).
+By default, the `GET` request returns 20 results, since the API is [paginated](README.md#pagination).
 
 ### Within a group
 
@@ -157,7 +157,7 @@ Example response:
 ]
 ```
 
-By default, the `GET` request will return 20 results, since the API is [paginated](README.md#pagination).
+By default, the `GET` request returns 20 results, since the API is [paginated](README.md#pagination).
 
 The `_links` object contains the following properties:
 
@@ -314,7 +314,7 @@ Example response:
 ]
 ```
 
-By default, the `GET` request will return 20 results, since the API is [paginated](README.md#pagination).
+By default, the `GET` request returns 20 results, since the API is [paginated](README.md#pagination).
 
 ## Delete a project package
 

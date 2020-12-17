@@ -33,6 +33,7 @@ class SchemaRegenerator
       checkout_clean_schema
       hide_migrations
       remove_schema_migration_files
+      stop_spring
       reset_db
       unhide_migrations
       migrate
@@ -146,6 +147,12 @@ class SchemaRegenerator
   def commited_schema_migrations
     git_command = "git diff --name-only --diff-filter=A #{merge_base} -- #{SCHEMA_MIGRATIONS_DIR}"
     run(git_command).chomp.split("\n")
+  end
+
+  ##
+  # Stop spring before modifying the database
+  def stop_spring
+    run %q[bin/spring stop]
   end
 
   ##

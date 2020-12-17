@@ -52,6 +52,9 @@
         = link_to _('More information'), help_page_path('user/permissions', anchor: 'setting-new-users-to-external'),
           target: '_blank'
     .form-group
+      = f.label :personal_access_token_prefix, _('Personal Access Token prefix'), class: 'label-light'
+      = f.text_field :personal_access_token_prefix, placeholder: _('Max 20 characters'), class: 'form-control'
+    .form-group
       = f.label :user_show_add_ssh_key_message, _('Prompt users to upload SSH keys'), class: 'label-bold'
       .form-check
         = f.check_box :user_show_add_ssh_key_message, class: 'form-check-input'

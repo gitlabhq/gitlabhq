@@ -9,7 +9,8 @@ module Enums
         {
           unknown_failure: 0,
           config_error: 1,
-          external_validation_failure: 2
+          external_validation_failure: 2,
+          deployments_limit_exceeded: 23
         }
       end
 
@@ -24,8 +25,6 @@ module Enums
           schedule: 4,
           api: 5,
           external: 6,
-          # TODO: Rename `pipeline` to `cross_project_pipeline` in 13.0
-          # https://gitlab.com/gitlab-org/gitlab/issues/195991
           pipeline: 7,
           chat: 8,
           webide: 9,
@@ -51,6 +50,10 @@ module Enums
       # they run for. By definition it excludes dangling pipelines.
       def self.ci_sources
         sources.except(*dangling_sources.keys)
+      end
+
+      def self.ci_branch_sources
+        ci_sources.except(:merge_request_event)
       end
 
       def self.ci_and_parent_sources

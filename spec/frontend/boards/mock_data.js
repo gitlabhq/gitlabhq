@@ -1,10 +1,8 @@
-/* global ListIssue */
 /* global List */
 
 import Vue from 'vue';
 import { keyBy } from 'lodash';
 import '~/boards/models/list';
-import '~/boards/models/issue';
 import boardsStore from '~/boards/stores/boards_store';
 
 export const boardObj = {
@@ -99,7 +97,7 @@ export const mockMilestone = {
   due_date: '2019-12-31',
 };
 
-const assignees = [
+export const assignees = [
   {
     id: 'gid://gitlab/User/2',
     username: 'angelina.herman',
@@ -184,8 +182,6 @@ export const mockActiveIssue = {
   emailsDisabled: false,
 };
 
-export const mockIssueWithModel = new ListIssue(mockIssue);
-
 export const mockIssue2 = {
   id: 'gid://gitlab/Issue/437',
   iid: 28,
@@ -202,8 +198,6 @@ export const mockIssue2 = {
     id: 'gid://gitlab/Epic/40',
   },
 };
-
-export const mockIssue2WithModel = new ListIssue(mockIssue2);
 
 export const mockIssue3 = {
   id: 'gid://gitlab/Issue/438',
@@ -288,38 +282,39 @@ export const setMockEndpoints = (opts = {}) => {
   });
 };
 
-export const mockLists = [
-  {
-    id: 'gid://gitlab/List/1',
-    title: 'Backlog',
-    position: null,
-    listType: 'backlog',
-    collapsed: false,
-    label: null,
-    assignee: null,
-    milestone: null,
-    loading: false,
-    issuesSize: 1,
-  },
-  {
-    id: 'gid://gitlab/List/2',
+export const mockList = {
+  id: 'gid://gitlab/List/1',
+  title: 'Backlog',
+  position: null,
+  listType: 'backlog',
+  collapsed: false,
+  label: null,
+  assignee: null,
+  milestone: null,
+  loading: false,
+  issuesCount: 1,
+};
+
+export const mockLabelList = {
+  id: 'gid://gitlab/List/2',
+  title: 'To Do',
+  position: 0,
+  listType: 'label',
+  collapsed: false,
+  label: {
+    id: 'gid://gitlab/GroupLabel/121',
     title: 'To Do',
-    position: 0,
-    listType: 'label',
-    collapsed: false,
-    label: {
-      id: 'gid://gitlab/GroupLabel/121',
-      title: 'To Do',
-      color: '#F0AD4E',
-      textColor: '#FFFFFF',
-      description: null,
-    },
-    assignee: null,
-    milestone: null,
-    loading: false,
-    issuesSize: 0,
+    color: '#F0AD4E',
+    textColor: '#FFFFFF',
+    description: null,
   },
-];
+  assignee: null,
+  milestone: null,
+  loading: false,
+  issuesCount: 0,
+};
+
+export const mockLists = [mockList, mockLabelList];
 
 export const mockListsById = keyBy(mockLists, 'id');
 

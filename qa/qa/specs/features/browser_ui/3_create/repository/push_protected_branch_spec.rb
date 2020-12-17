@@ -40,7 +40,7 @@ module QA
       end
 
       def create_protected_branch(allowed_to_push:)
-        Resource::ProtectedBranch.fabricate! do |resource|
+        Resource::ProtectedBranch.fabricate_via_api! do |resource|
           resource.branch_name = branch_name
           resource.project = project
           resource.allowed_to_push = allowed_to_push

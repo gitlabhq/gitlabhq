@@ -472,10 +472,6 @@ RSpec.describe IssuesFinder do
         it 'returns issues with title and description match for search term' do
           expect(issues).to contain_exactly(issue1, issue2)
         end
-
-        it 'uses optimizer hints' do
-          expect(issues.to_sql).to match(/BitmapScan/)
-        end
       end
 
       context 'filtering by issue term in title' do

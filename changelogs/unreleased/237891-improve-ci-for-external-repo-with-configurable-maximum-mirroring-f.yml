@@ -1,0 +1,6 @@
+---
+title: Improve CI for external repo with configurable maximum mirroring frequency
+  on self-hosted
+merge_request: 48955
+author:
+type: changed

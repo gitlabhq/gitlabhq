@@ -19,5 +19,9 @@ module Clusters
         with: Gitlab::Regex.cluster_agent_name_regex,
         message: Gitlab::Regex.cluster_agent_name_regex_message
       }
+
+    def has_access_to?(requested_project)
+      requested_project == project
+    end
   end
 end

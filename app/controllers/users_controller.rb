@@ -33,16 +33,34 @@ class UsersController < ApplicationController
       end
 
       format.json do
+        # In 13.8, this endpoint will be removed:
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/289972
         load_events
         pager_json("events/_events", @events.count, events: @events)
       end
     end
   end
 
+  # Get all keys of a user(params[:username]) in a text format
+  # Helpful for sysadmins to put in respective servers
+  def ssh_keys
+    render plain: user.all_ssh_keys.join("\n")
+  end
+
   def activity
     respond_to do |format|
       format.html { render 'show' }
+
+      format.json do
+        load_events
+        pager_json("events/_events", @events.count, events: @events)
+      end
     end
+  end
+
+  # Get all gpg keys of a user(params[:username]) in a text format
+  def gpg_keys
+    render plain: user.gpg_keys.select(&:verified?).map(&:key).join("\n")
   end
 
   def groups

@@ -33,7 +33,7 @@ RSpec.describe Mutations::Issues::Update do
       }.merge(expected_attributes)
     end
 
-    subject { mutation.resolve(mutation_params) }
+    subject { mutation.resolve(**mutation_params) }
 
     it_behaves_like 'permission level for issue mutation is correctly verified'
 

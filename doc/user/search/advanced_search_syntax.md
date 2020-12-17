@@ -1,7 +1,7 @@
 ---
 stage: Enablement
 group: Global Search
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: reference
 ---
 
@@ -9,7 +9,7 @@ type: reference
 
 > - Introduced in [GitLab Enterprise Starter](https://about.gitlab.com/pricing/) 9.2
 
-NOTE: **GitLab.com availability:**
+NOTE:
 Advanced Search (powered by Elasticsearch) is enabled for Bronze and above on GitLab.com since 2020-07-10.
 
 Use advanced queries for more targeted search results.
@@ -24,19 +24,6 @@ The Advanced Search Syntax is a subset of the
 want to have more specific search results.
 
 Advanced Search only supports searching the [default branch](../project/repository/branches/index.md#default-branch).
-
-## Use cases
-
-Let's say for example that the product you develop relies on the code of another
-product that's hosted under some other group.
-
-Since under your GitLab instance there are hosted hundreds of different projects,
-you need the search results to be as efficient as possible. You have a feeling
-of what you want to find (e.g., a function name), but at the same you're also
-not so sure.
-
-In that case, using the advanced search syntax in your query will yield much
-better results.
 
 ## Using the Advanced Search Syntax
 
@@ -93,3 +80,10 @@ Examples:
 - Finding `success` in all files excluding `.po|pot` files: [`success -filename:*.po*`](https://gitlab.com/search?utf8=%E2%9C%93&snippets=&scope=blobs&repository_ref=&search=success+-filename%3A*.po*&group_id=9970&project_id=278964)
 - Finding `import` excluding minified JavaScript (`.min.js`) files: [`import -extension:min.js`](https://gitlab.com/search?utf8=%E2%9C%93&snippets=&scope=blobs&repository_ref=&search=import+-extension%3Amin.js&group_id=9970&project_id=278964)
 - Finding `docs` for all files outside the `docs/` folder: [`docs -path:docs/`](https://gitlab.com/search?utf8=%E2%9C%93&snippets=&scope=blobs&repository_ref=&search=docs+-path%3Adocs%2F&group_id=9970&project_id=278964)
+
+### Search by issue or merge request ID
+
+You can search a specific issue or merge request by its ID with a special prefix.
+
+- To search by issue ID, use prefix `#` followed by issue ID. For example, [#23456](https://gitlab.com/search?utf8=%E2%9C%93&snippets=&scope=issues&repository_ref=&search=%2323456&group_id=9970&project_id=278964)
+- To search by merge request ID, use prefix `!` followed by merge request ID. For example [!23456](https://gitlab.com/search?utf8=%E2%9C%93&snippets=&scope=merge_requests&repository_ref=&search=%2123456&group_id=9970&project_id=278964)

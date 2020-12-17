@@ -2,14 +2,14 @@
 type: tutorial
 stage: Secure
 group: Vulnerability Research
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # CVE ID Requests
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41203) in GitLab 13.4, only for public projects on GitLab.com.
 
-As part of [GitLab's role as a CVE Numbering Authority](https://about.gitlab.com/security/cve)
+As part of [our role as a CVE Numbering Authority](https://about.gitlab.com/security/cve/)
 ([CNA](https://cve.mitre.org/cve/cna.html)), you may request
 [CVE](https://cve.mitre.org/index.html) identifiers from GitLab to track
 vulnerabilities found within your project.
@@ -33,7 +33,7 @@ If the following conditions are met, a **Request CVE ID** button appears in your
 ## Submitting a CVE ID Request
 
 Clicking the **Request CVE ID** button in the issue sidebar takes you to the new issue page for
-[GitLab's CVE project](https://gitlab.com/gitlab-org/cves).
+the [GitLab CVE project](https://gitlab.com/gitlab-org/cves).
 
 ![CVE ID request button](img/cve_id_request_button.png)
 

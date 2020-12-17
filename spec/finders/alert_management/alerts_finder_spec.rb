@@ -8,6 +8,8 @@ RSpec.describe AlertManagement::AlertsFinder, '#execute' do
   let_it_be(:resolved_alert) { create(:alert_management_alert, :all_fields, :resolved, project: project, ended_at: 1.year.ago, events: 2, severity: :high) }
   let_it_be(:ignored_alert) { create(:alert_management_alert, :all_fields, :ignored, project: project, events: 1, severity: :critical) }
   let_it_be(:triggered_alert) { create(:alert_management_alert, :all_fields) }
+  let_it_be(:threat_monitroing_alert) { create(:alert_management_alert, domain: 'threat_monitoring') }
+
   let(:params) { {} }
 
   describe '#execute' do
@@ -20,6 +22,26 @@ RSpec.describe AlertManagement::AlertsFinder, '#execute' do
     context 'user is developer' do
       before do
         project.add_developer(current_user)
+      end
+
+      context 'domain' do
+        context 'domain is threat management' do
+          let(:params) { { domain: 'threat_management' } }
+
+          it { is_expected.to contain_exactly(resolved_alert, ignored_alert) }
+        end
+
+        context 'domain is unknown' do
+          let(:params) { { domain: 'unkown' } }
+
+          it { is_expected.to contain_exactly(resolved_alert, ignored_alert) }
+        end
+
+        context 'domain is missing' do
+          let(:params) { {} }
+
+          it { is_expected.to contain_exactly(resolved_alert, ignored_alert) }
+        end
       end
 
       context 'empty params' do
@@ -233,12 +255,6 @@ RSpec.describe AlertManagement::AlertsFinder, '#execute' do
 
           it { is_expected.to be_empty }
         end
-
-        context 'empty search' do
-          let(:params) { { search: ' ' } }
-
-          it { is_expected.not_to include(alert) }
-        end
       end
 
       context 'assignee username given' do
@@ -256,12 +272,6 @@ RSpec.describe AlertManagement::AlertsFinder, '#execute' do
           let(:username) { 'unknown username' }
 
           it { is_expected.to be_empty }
-        end
-
-        context 'with empty assignee_username' do
-          let(:username) { ' ' }
-
-          it { is_expected.not_to include(alert) }
         end
       end
     end

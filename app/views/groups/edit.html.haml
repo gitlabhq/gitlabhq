@@ -8,7 +8,7 @@
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only{ role: 'button' }
       = _('Naming, visibility')
-    %button.btn.js-settings-toggle{ type: 'button' }
+    %button.btn.gl-button.js-settings-toggle{ type: 'button' }
       = _('Collapse')
     %p
       = _('Update your group name, description, avatar, and visibility.')
@@ -19,7 +19,7 @@
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only{ role: 'button' }
       = _('Permissions, LFS, 2FA')
-    %button.btn.js-settings-toggle{ type: 'button' }
+    %button.btn.gl-button.js-settings-toggle{ type: 'button' }
       = expanded ? _('Collapse') : _('Expand')
     %p
       = _('Advanced permissions, Large File Storage and Two-Factor authentication settings.')
@@ -32,7 +32,7 @@
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only{ role: 'button' }
       = s_('GroupSettings|Badges')
-    %button.btn.js-settings-toggle{ type: 'button' }
+    %button.btn.gl-button.js-settings-toggle{ type: 'button' }
       = expanded ? _('Collapse') : _('Expand')
     %p
       = s_('GroupSettings|Customize your group badges.')
@@ -40,6 +40,7 @@
   .settings-content
     = render 'shared/badges/badge_settings'
 
+= render_if_exists 'groups/compliance_frameworks', expanded: expanded
 = render_if_exists 'groups/custom_project_templates_setting'
 = render_if_exists 'groups/templates_setting', expanded: expanded
 
@@ -47,7 +48,7 @@
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only{ role: 'button' }
       = _('Advanced')
-    %button.btn.js-settings-toggle{ type: 'button' }
+    %button.btn.gl-button.js-settings-toggle{ type: 'button' }
       = expanded ? _('Collapse') : _('Expand')
     %p
       = _('Perform advanced options such as changing path, transferring, exporting, or removing the group.')

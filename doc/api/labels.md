@@ -1,12 +1,12 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Labels API
 
-NOTE: **Note:**
+NOTE:
 The `description_html` - was added to response JSON in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413).
 
 ## List labels
@@ -200,7 +200,7 @@ DELETE /projects/:id/labels/:label_id
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/labels/bug"
 ```
 
-NOTE: **Note:**
+NOTE:
 An older endpoint `DELETE /projects/:id/labels` with `name` in the parameters is still available, but deprecated.
 
 ## Edit an existing label
@@ -244,7 +244,7 @@ Example response:
 }
 ```
 
-NOTE: **Note:**
+NOTE:
 An older endpoint `PUT /projects/:id/labels` with `name` or `label_id` in the parameters is still available, but deprecated.
 
 ## Promote a project label to a group label
@@ -285,7 +285,7 @@ Example response:
 }
 ```
 
-NOTE: **Note:**
+NOTE:
 An older endpoint `PUT /projects/:id/labels/promote` with `name` in the parameters is still available, but deprecated.
 
 ## Subscribe to a label

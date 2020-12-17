@@ -1,7 +1,7 @@
 ---
 stage: Enablement
 group: Database
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Strings and the Text data type
@@ -17,7 +17,7 @@ The `text` data type can not be defined with a limit, so `add_text_limit` is enf
 adding a [check constraint](https://www.postgresql.org/docs/11/ddl-constraints.html) on the
 column and then validating it at a followup step.
 
-## Background info
+## Background information
 
 The reason we always want to use `text` instead of `string` is that `string` columns have the
 disadvantage that if you want to update their limit, you have to run an `ALTER TABLE ...` command.
@@ -133,7 +133,7 @@ Adding text limits to existing database columns requires multiple steps split in
    - Add a post-deployment migration to add the limit to the text column with `validate: false`.
    - Add a post-deployment migration to fix the existing records.
 
-     NOTE: **Note:**
+     NOTE:
      Depending on the size of the table, a background migration for cleanup could be required in the next release.
      See [text limit constraints on large tables](strings_and_the_text_data_type.md#text-limit-constraints-on-large-tables) for more information.
 
@@ -154,7 +154,7 @@ other processes that try to access it while running the update.
 Also, after checking our production database, we know that there are `issues` with more characters in
 their title than the 1024 character limit, so we can not add and validate the constraint in one step.
 
-NOTE: **Note:**
+NOTE:
 Even if we did not have any record with a title larger than the provided limit, another
 instance of GitLab could have such records, so we would follow the same process either way.
 
@@ -256,7 +256,7 @@ end
 
 To keep this guide short, we skipped the definition of the background migration and only
 provided a high level example of the post-deployment migration that is used to schedule the batches.
-You can find more info on the guide about [background migrations](../background_migrations.md)
+You can find more information on the guide about [background migrations](../background_migrations.md)
 
 #### Validate the text limit (next release)
 

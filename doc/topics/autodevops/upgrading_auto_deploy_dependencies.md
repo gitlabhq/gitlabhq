@@ -1,7 +1,7 @@
 ---
 stage: Release
-group: Progressive Delivery
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+group: Release
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -73,7 +73,9 @@ please proceed with the following upgrade guide. Otherwise, you can skip this pr
 
 #### Kubernetes 1.16+
 
-The v2 auto-deploy-image also drops support for Kubernetes 1.15 and lower.
+The v2 auto-deploy-image drops support for Kubernetes 1.15 and lower. If you need to upgrade your
+Kubernetes cluster, follow your cloud provider's instructions. Here's
+[an example on GKE](https://cloud.google.com/kubernetes-engine/docs/how-to/upgrading-a-cluster).
 
 #### Helm 3
 
@@ -113,6 +115,12 @@ If your Auto DevOps project has an active environment that was deployed with the
    The backup is in a Kubernetes manifest file that can be restored using
    `kubectl apply -f $backup`.
 1. Remove the `MIGRATE_HELM_2TO3` variable.
+
+#### In-Cluster PostgreSQL Channel 2
+
+The v2 auto-deploy-image drops support for [legacy in-cluster PostgreSQL](upgrading_postgresql.md).
+If your Kubernetes cluster still depends on it, [upgrade and migrate your data](upgrading_postgresql.md)
+with the [v1 auto-deploy-image](#use-a-specific-version-of-auto-deploy-dependencies).
 
 #### Traffic routing change for canary deployments and incremental rollouts
 
@@ -176,7 +184,7 @@ include:
   - remote: https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.latest.gitlab-ci.yml
 ```
 
-CAUTION: **Warning:**
+WARNING:
 Using a beta or unstable `auto-deploy-image` could cause unrecoverable damage to
 your environments. Do not test it with important projects or environments.
 

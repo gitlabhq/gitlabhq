@@ -19,7 +19,7 @@ import { __, s__, sprintf } from '~/locale';
 import { diffViewerModes } from '~/ide/constants';
 import DiffStats from './diff_stats.vue';
 import { scrollToElement } from '~/lib/utils/common_utils';
-import { isCollapsed } from '../diff_file';
+import { isCollapsed } from '../utils/diff_file';
 import { DIFF_FILE_HEADER } from '../i18n';
 
 export default {
@@ -221,7 +221,6 @@ export default {
         ref="collapseIcon"
         :name="collapseIcon"
         :size="16"
-        aria-hidden="true"
         class="diff-toggle-caret gl-mr-2"
         @click.stop="handleToggleFile"
       />

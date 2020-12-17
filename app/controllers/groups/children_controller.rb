@@ -2,12 +2,15 @@
 
 module Groups
   class ChildrenController < Groups::ApplicationController
+    extend ::Gitlab::Utils::Override
+
     before_action :group
     skip_cross_project_access_check :index
 
     feature_category :subgroups
 
     def index
+      params[:sort] ||= @group_projects_sort
       parent = if params[:parent_id].present?
                  GroupFinder.new(current_user).execute(id: params[:parent_id])
                else
@@ -39,6 +42,13 @@ module Groups
                                              parent_group: parent,
                                              params: params.to_unsafe_h).execute
       @children = @children.page(params[:page])
+    end
+
+    private
+
+    override :has_project_list?
+    def has_project_list?
+      true
     end
   end
 end

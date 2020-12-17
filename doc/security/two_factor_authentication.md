@@ -2,7 +2,7 @@
 type: howto
 stage: Manage
 group: Access
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Enforce Two-factor Authentication (2FA)
@@ -72,7 +72,7 @@ The following are important notes about 2FA:
 
 ## Disabling 2FA for everyone
 
-CAUTION: **Caution:**
+WARNING:
 Disabling 2FA for everyone does not disable the [enforce 2FA for all users](#enforcing-2fa-for-all-users)
 or [enforce 2FA for all users in a group](#enforcing-2fa-for-all-users-in-a-group)
 settings. In addition to the steps in this section, you will need to disable any enforced 2FA
@@ -94,7 +94,7 @@ sudo gitlab-rake gitlab:two_factor:disable_for_all_users
 sudo -u git -H bundle exec rake gitlab:two_factor:disable_for_all_users RAILS_ENV=production
 ```
 
-CAUTION: **Caution:**
+WARNING:
 This is a permanent and irreversible action. Users will have to
 reactivate 2FA from scratch if they want to use it again.
 
@@ -109,3 +109,43 @@ questions that you know someone might ask.
 Each scenario can be a third-level heading, e.g. `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->
+
+## Two-factor Authentication (2FA) for Git over SSH operations
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/270554) in GitLab 13.7.
+> - It's [deployed behind a feature flag](../user/feature_flags.md), disabled by default.
+> - It's disabled on GitLab.com.
+> - It's not recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-two-factor-authentication-2fa-for-git-operations).
+
+WARNING:
+This feature might not be available to you. Check the **version history** note above for details.
+
+Two-factor authentication can be enforced for Git over SSH operations. The OTP
+verification can be done via a GitLab Shell command:
+
+```shell
+ssh git@<hostname> 2fa_verify
+```
+
+Once the OTP is verified, Git over SSH operations can be used for 15 minutes
+with the associated SSH key.
+
+### Enable or disable Two-factor Authentication (2FA) for Git operations
+
+Two-factor Authentication (2FA) for Git operations is under development and not
+ready for production use. It is deployed behind a feature flag that is
+**disabled by default**. [GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:two_factor_for_cli)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:two_factor_for_cli)
+```

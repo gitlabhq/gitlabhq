@@ -377,6 +377,16 @@ describe('Notes Store mutations', () => {
     });
   });
 
+  describe('SET_RESOLVING_DISCUSSION', () => {
+    it('should set resolving discussion state', () => {
+      const state = {};
+
+      mutations.SET_RESOLVING_DISCUSSION(state, true);
+
+      expect(state.isResolvingDiscussion).toEqual(true);
+    });
+  });
+
   describe('UPDATE_NOTE', () => {
     it('should update a note', () => {
       const state = {
@@ -684,42 +694,6 @@ describe('Notes Store mutations', () => {
 
       expect(state.discussionSortOrder).toBe(DESC);
       expect(state.persistSortOrder).toBe(false);
-    });
-  });
-
-  describe('TOGGLE_BLOCKED_ISSUE_WARNING', () => {
-    it('should set isToggleBlockedIssueWarning as true', () => {
-      const state = {
-        discussions: [],
-        targetNoteHash: null,
-        lastFetchedAt: null,
-        isToggleStateButtonLoading: false,
-        isToggleBlockedIssueWarning: false,
-        notesData: {},
-        userData: {},
-        noteableData: {},
-      };
-
-      mutations.TOGGLE_BLOCKED_ISSUE_WARNING(state, true);
-
-      expect(state.isToggleBlockedIssueWarning).toEqual(true);
-    });
-
-    it('should set isToggleBlockedIssueWarning as false', () => {
-      const state = {
-        discussions: [],
-        targetNoteHash: null,
-        lastFetchedAt: null,
-        isToggleStateButtonLoading: false,
-        isToggleBlockedIssueWarning: true,
-        notesData: {},
-        userData: {},
-        noteableData: {},
-      };
-
-      mutations.TOGGLE_BLOCKED_ISSUE_WARNING(state, false);
-
-      expect(state.isToggleBlockedIssueWarning).toEqual(false);
     });
   });
 

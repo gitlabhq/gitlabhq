@@ -1,7 +1,7 @@
 ---
 stage: Release
-group: Progressive Delivery
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+group: Release
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Feature flag user lists API **(CORE)**
@@ -13,7 +13,7 @@ API for accessing GitLab Feature Flag User Lists.
 
 Users with Developer or higher [permissions](../user/permissions.md) can access the Feature Flag User Lists API.
 
-NOTE: **Note:**
+NOTE:
 `GET` requests return twenty results at a time because the API results
 are [paginated](README.md#pagination). You can change this value.
 

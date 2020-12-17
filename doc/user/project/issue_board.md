@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Issue Boards
@@ -51,10 +51,53 @@ To learn more, visit [GitLab Enterprise features for issue boards](#gitlab-enter
 Watch a [video presentation](https://youtu.be/vjccjHI7aGI) of
 the Issue Board feature.
 
+## Multiple issue boards
+
+> - [Introduced](https://about.gitlab.com/releases/2016/10/22/gitlab-8-13-released/) in GitLab 8.13.
+> - Multiple issue boards per project [moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53811) to [GitLab Core](https://about.gitlab.com/pricing/) in GitLab 12.1.
+> - Multiple issue boards per group are available in [GitLab Premium](https://about.gitlab.com/pricing/).
+
+Multiple issue boards allow for more than one issue board for a given project **(CORE)** or group **(PREMIUM)**.
+This is great for large projects with more than one team or when a repository hosts the code of multiple products.
+
+Using the search box at the top of the menu, you can filter the listed boards.
+
+When you have ten or more boards available, a **Recent** section is also shown in the menu, with
+shortcuts to your last four visited boards.
+
+![Multiple issue boards](img/issue_boards_multiple_v13_6.png)
+
+When you're revisiting an issue board in a project or group with multiple boards,
+GitLab automatically loads the last board you visited.
+
+### Create an issue board
+
+To create a new issue board:
+
+1. Click the dropdown with the current board name in the upper left corner of the Issue Boards page.
+1. Click **Create new board**.
+1. Enter the new board's name and select its scope: milestone, labels, assignee, or weight.
+
+### Delete an issue board
+
+To delete the currently active issue board:
+
+1. Click the dropdown with the current board name in the upper left corner of the Issue Boards page.
+1. Click **Delete board**.
+1. Click **Delete** to confirm.
+
 ## Issue boards use cases
 
 You can tailor GitLab issue boards to your own preferred workflow.
 Here are some common use cases for issue boards.
+
+For examples of using issue boards along with [epics](../group/epics/index.md) **(PREMIUM)**,
+[issue health status](issues/index.md#health-status) **(ULTIMATE)**, and
+[scoped labels](labels.md#scoped-labels) **(PREMIUM)** for various Agile frameworks, check:
+
+- The [How to use GitLab for Agile portfolio planning and project management](https://about.gitlab.com/blog/2020/11/11/gitlab-for-agile-portfolio-planning-project-management/) blog post (November 2020)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+[Cross-project Agile work management with GitLab](https://www.youtube.com/watch?v=5J0bonGoECs) (15 min, July 2020)
 
 ### Use cases for a single issue board
 
@@ -113,7 +156,7 @@ When finished with something, they move the card to **Frontend**. The Frontend t
 Cards finished by the UX team automatically appear in the **Frontend** column when they are ready
 for them.
 
-NOTE: **Note:**
+NOTE:
 For a broader use case, please see the blog post
 [GitLab Workflow, an Overview](https://about.gitlab.com/blog/2016/10/25/gitlab-workflow-an-overview/#gitlab-workflow-use-case-scenario).
 For a real use case example, you can read why
@@ -122,7 +165,10 @@ to improve their workflow with multiple boards.
 
 #### Quick assignments
 
-Create lists for each of your team members and quickly drag issues onto each team member's list.
+To quickly assign issues to your team members:
+
+1. Create [assignee lists](#assignee-lists) for each team member.
+1. Drag an issue onto the team member's list.
 
 ## Issue board terminology
 
@@ -184,41 +230,6 @@ and vice versa.
 
 GitLab issue boards are available on GitLab Core and GitLab.com Free tiers, but some
 advanced functionality is present in [higher tiers only](https://about.gitlab.com/pricing/).
-
-### Multiple issue boards
-
-> - [Introduced](https://about.gitlab.com/releases/2016/10/22/gitlab-8-13-released/) in GitLab 8.13.
-> - Multiple issue boards per project [moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53811) to [GitLab Core](https://about.gitlab.com/pricing/) in GitLab 12.1.
-> - Multiple issue boards per group are available in [GitLab Premium](https://about.gitlab.com/pricing/).
-
-Multiple issue boards allow for more than one issue board for a given project or group.
-This is great for large projects with more than one team or when a repository hosts the code of multiple products.
-
-Using the search box at the top of the menu, you can filter the listed boards.
-
-When you have ten or more boards available, a **Recent** section is also shown in the menu, with
-shortcuts to your last four visited boards.
-
-![Multiple issue boards](img/issue_boards_multiple_v13_6.png)
-
-When you're revisiting an issue board in a project or group with multiple boards,
-GitLab automatically loads the last board you visited.
-
-#### Create an issue board
-
-To create a new issue board:
-
-1. Click the dropdown with the current board name in the upper left corner of the Issue Boards page.
-1. Click **Create new board**.
-1. Enter the new board's name and select its scope: milestone, labels, assignee, or weight.
-
-#### Delete an issue board
-
-To delete the currently active issue board:
-
-1. Click the dropdown with the current board name in the upper left corner of the Issue Boards page.
-1. Click **Delete board**.
-1. Click **Delete** to confirm.
 
 ### Configurable issue boards **(STARTER)**
 
@@ -315,6 +326,9 @@ With swimlanes you can visualize issues grouped by epic.
 Your issue board keeps all the other features, but with a different visual organization of issues.
 This feature is available both at the project and group level.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a video overview, see [Epics Swimlanes Walkthrough - 13.6](https://www.youtube.com/watch?v=nHC7-kz5P2g) (November 2020).
+
 To group issues by epic in an issue board:
 
 1. Select the **Group by** dropdown button.
@@ -380,19 +394,6 @@ status.
 If you're not able to do some of the things above, make sure you have the right
 [permissions](#permissions).
 
-### First time using an issue board
-
-> The automatic creation of the **To Do** and **Doing** lists was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202144) in GitLab 13.5.
-
-The first time you open an issue board, you are presented with the default lists
-(**Open**, **To Do**, **Doing**, and **Closed**).
-
-If the **To Do** and **Doing** labels don't exist in the project or group, they are created, and
-their lists appear as empty. If any of them already exists, the list is filled with the issues that
-have that label.
-
-![issue board default lists](img/issue_board_default_lists_v13_4.png)
-
 ### Create a new list
 
 Create a new list by clicking the **Add list** dropdown button in the upper right corner of the issue board.
@@ -419,7 +420,13 @@ To remove a list from an issue board:
 1. Select **Remove list**. A confirmation dialog appears.
 1. Select **OK**.
 
-### Add issues to a list
+### Add issues to a list **(CORE ONLY)**
+
+> - Feature flag [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47898) in GitLab 13.7.
+> - It's [deployed behind a feature flag](../feature_flags.md), disabled by default.
+> - It's disabled on GitLab.com.
+> - It's recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-adding-issues-to-the-list). **(CORE ONLY)**
 
 You can add issues to a list in a project issue board by clicking the **Add issues** button
 in the top right corner of the issue board. This opens up a modal
@@ -432,13 +439,30 @@ the list by filtering by the following:
 - Assignee
 - Author
 - Epic
+- Iteration ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6)
 - Label
 - Milestone
 - My Reaction
 - Release
 - Weight
 
-![Bulk adding issues to lists](img/issue_boards_add_issues_modal_v13_6.png)
+#### Enable or disable adding issues to the list **(CORE ONLY)**
+
+Adding issues to the list is deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:add_issues_button)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:add_issues_button)
+```
 
 ### Remove an issue from a list
 
@@ -459,6 +483,7 @@ You can filter by the following:
 - Assignee
 - Author
 - Epic
+- Iteration ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6)
 - Label
 - Milestone
 - My Reaction
@@ -527,6 +552,22 @@ To select and move multiple cards:
 1. Drag one of the selected cards to another position or list and all selected cards are moved.
 
 ![Multi-select Issue Cards](img/issue_boards_multi_select_v12_4.png)
+
+### First time using an issue board
+
+> - The automatic creation of the **To Do** and **Doing** lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202144) in GitLab 13.5.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/270583) in GitLab 13.7. In GitLab 13.7 and later, the **To Do** and **Doing** columns are not automatically created.
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/270583) in GitLab 13.7.
+The **To Do** and **Doing** columns are no longer automatically created.
+
+In GitLab 13.5 and 13.6, the first time you open an issue board, you are presented with the default lists
+(**Open**, **To Do**, **Doing**, and **Closed**).
+
+If the **To Do** and **Doing** labels don't exist in the project or group, they are created, and
+their lists appear as empty. If any of them already exists, the list is filled with the issues that
+have that label.
 
 ## Tips
 

@@ -1,5 +1,5 @@
 import initTree from 'ee_else_ce/repository';
-import initBlob from '~/blob_edit/blob_bundle';
+import { initUploadForm } from '~/blob_edit/blob_bundle';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import NotificationsForm from '~/notifications_form';
 import UserCallout from '~/user_callout';
@@ -26,7 +26,7 @@ new UserCallout({
 // Project show page loads different overview content based on user preferences
 const treeSlider = document.getElementById('js-tree-list');
 if (treeSlider) {
-  initBlob();
+  initUploadForm();
   initTree();
 }
 

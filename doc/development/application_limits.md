@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Application limits development
@@ -12,7 +12,7 @@ limits to GitLab.
 ## Documentation
 
 First of all, you have to gather information and decide which are the different
-limits that will be set for the different GitLab tiers. You also need to
+limits that are set for the different GitLab tiers. You also need to
 coordinate with others to [document](../administration/instance_limits.md)
 and communicate those limits.
 
@@ -63,7 +63,7 @@ It's recommended to create two separate migration script files.
    end
    ```
 
-   Some plans exist only on GitLab.com. This will be a no-op for plans
+   Some plans exist only on GitLab.com. This is a no-op for plans
    that do not exist.
 
 ### Plan limits validation

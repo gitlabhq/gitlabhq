@@ -1,7 +1,7 @@
 ---
 stage: Enablement
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Troubleshooting a reference architecture setup
@@ -434,13 +434,13 @@ If the monitoring node is not receiving any data, check that the exporters are
 capturing data.
 
 ```shell
-curl http[s]://localhost:<EXPORTER LISTENING PORT>/metric
+curl "http[s]://localhost:<EXPORTER LISTENING PORT>/metric"
 ```
 
 or
 
 ```shell
-curl http[s]://localhost:<EXPORTER LISTENING PORT>/-/metric
+curl "http[s]://localhost:<EXPORTER LISTENING PORT>/-/metric"
 ```
 
 ## Troubleshooting PgBouncer

@@ -9,7 +9,7 @@
       dismissible: true.to_s } }
       = notice[:message].html_safe
 
-- if @license.present? && show_license_breakdown?
+- if @license.present?
   .license-panel.gl-mt-5
     = render_if_exists 'admin/licenses/summary'
     = render_if_exists 'admin/licenses/breakdown'

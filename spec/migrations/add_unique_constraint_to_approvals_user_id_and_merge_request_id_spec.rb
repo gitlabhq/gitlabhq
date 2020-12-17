@@ -12,15 +12,15 @@ RSpec.describe AddUniqueConstraintToApprovalsUserIdAndMergeRequestId do
 
   describe '#up' do
     before do
-      namespaces.create(id: 1, name: 'ns', path: 'ns')
-      projects.create(id: 1, namespace_id: 1)
-      merge_requests.create(id: 1, target_branch: 'master', source_branch: 'feature-1', target_project_id: 1)
-      merge_requests.create(id: 2, target_branch: 'master', source_branch: 'feature-2', target_project_id: 1)
+      namespaces.create!(id: 1, name: 'ns', path: 'ns')
+      projects.create!(id: 1, namespace_id: 1)
+      merge_requests.create!(id: 1, target_branch: 'master', source_branch: 'feature-1', target_project_id: 1)
+      merge_requests.create!(id: 2, target_branch: 'master', source_branch: 'feature-2', target_project_id: 1)
     end
 
     it 'deletes duplicate records and keeps the first one' do
-      first_approval = approvals.create(id: 1, merge_request_id: 1, user_id: 1)
-      approvals.create(id: 2, merge_request_id: 1, user_id: 1)
+      first_approval = approvals.create!(id: 1, merge_request_id: 1, user_id: 1)
+      approvals.create!(id: 2, merge_request_id: 1, user_id: 1)
 
       migration.up
 

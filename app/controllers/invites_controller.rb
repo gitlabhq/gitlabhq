@@ -20,7 +20,6 @@ class InvitesController < ApplicationController
 
   def accept
     if member.accept_invite!(current_user)
-      track_invitation_reminders_experiment('accepted')
       redirect_to invite_details[:path], notice: _("You have been granted %{member_human_access} access to %{title} %{name}.") %
         { member_human_access: member.human_access, title: invite_details[:title], name: invite_details[:name] }
     else
@@ -106,18 +105,5 @@ class InvitesController < ApplicationController
                             path: group_path(member.source)
                           }
                         end
-  end
-
-  def track_invitation_reminders_experiment(action)
-    return unless Gitlab::Experimentation.enabled?(:invitation_reminders)
-
-    property = Gitlab::Experimentation.enabled_for_attribute?(:invitation_reminders, member.invite_email) ? 'experimental_group' : 'control_group'
-
-    Gitlab::Tracking.event(
-      Gitlab::Experimentation.experiment(:invitation_reminders).tracking_category,
-      action,
-      property: property,
-      label: Digest::MD5.hexdigest(member.to_global_id.to_s)
-    )
   end
 end

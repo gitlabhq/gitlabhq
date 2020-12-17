@@ -2,7 +2,7 @@
 type: reference, howto
 stage: Protect
 group: Container Security
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Container Scanning **(ULTIMATE)**
@@ -14,7 +14,7 @@ vulnerabilities. By including an extra job in your pipeline that scans for those
 displays them in a merge request, you can use GitLab to audit your Docker-based apps.
 By default, container scanning in GitLab is based on [Clair](https://github.com/quay/clair) and
 [Klar](https://github.com/optiopay/klar), which are open-source tools for vulnerability static analysis in
-containers. [GitLab's Klar analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/klar/)
+containers. The GitLab [Klar analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/klar/)
 scans the containers and serves as a wrapper for Clair.
 
 To integrate security scanners other than Clair and Klar into GitLab, see
@@ -43,6 +43,7 @@ To enable container scanning in your pipeline, you need the following:
   or [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
 - Docker `18.09.03` or higher installed on the same computer as the runner. If you're using the
   shared runners on GitLab.com, then this is already the case.
+- An image matching [Clair's list of supported distributions](https://quay.github.io/claircore/).
 - [Build and push](../../packages/container_registry/index.md#build-and-push-by-using-gitlab-cicd)
   your Docker image to your project's container registry. The name of the Docker image should use
   the following [predefined environment variables](../../../ci/variables/predefined_variables.md):
@@ -211,7 +212,7 @@ container_scanning:
     GIT_STRATEGY: fetch
 ```
 
-CAUTION: **Deprecated:**
+WARNING:
 GitLab 13.0 and later doesn't support [`only` and `except`](../../../ci/yaml/README.md#onlyexcept-basic).
 When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules)
 instead.
@@ -298,7 +299,7 @@ For details on saving and transporting Docker images as a file, see Docker's doc
 
 It can be worthwhile to set up a [scheduled pipeline](../../../ci/pipelines/schedules.md) to
 build a new version of the vulnerabilities database on a preset schedule. Automating
-this with a pipeline means you won't have to do it manually each time. You can use the following
+this with a pipeline means you do not have to do it manually each time. You can use the following
 `.gitlab-yml.ci` as a template:
 
 ```yaml
@@ -318,7 +319,7 @@ build_latest_vulnerabilities:
     - docker push $CI_REGISTRY/namespace/clair-vulnerabilities-db
 ```
 
-The above template works for a GitLab Docker registry running on a local installation, however, if you're using a non-GitLab Docker registry, you'll need to change the `$CI_REGISTRY` value and the `docker login` credentials to match the details of your local registry.
+The above template works for a GitLab Docker registry running on a local installation, however, if you're using a non-GitLab Docker registry, you need to change the `$CI_REGISTRY` value and the `docker login` credentials to match the details of your local registry.
 
 ## Running the standalone container scanning tool
 

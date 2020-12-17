@@ -358,30 +358,4 @@ RSpec.describe DiffHelper do
       expect(diff_file_path_text(diff_file, max: 10)).to eq("...open.rb")
     end
   end
-
-  describe 'unified_diff_lines_view_type' do
-    before do
-      controller.params[:view] = 'parallel'
-    end
-
-    describe 'unified diffs enabled' do
-      before do
-        stub_feature_flags(unified_diff_lines: true)
-      end
-
-      it 'returns inline view' do
-        expect(helper.unified_diff_lines_view_type(project)).to eq 'inline'
-      end
-    end
-
-    describe 'unified diffs disabled' do
-      before do
-        stub_feature_flags(unified_diff_lines: false)
-      end
-
-      it 'returns parallel view' do
-        expect(helper.unified_diff_lines_view_type(project)).to eq :parallel
-      end
-    end
-  end
 end

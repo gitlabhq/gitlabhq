@@ -242,7 +242,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             }
 
             expect { authorize_artifacts_with_token_in_headers(artifact_type: :lsif) }
-              .to change { Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(tracking_params) }
+              .to change { Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(**tracking_params) }
               .by(1)
           end
         end

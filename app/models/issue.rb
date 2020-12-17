@@ -22,6 +22,7 @@ class Issue < ApplicationRecord
   include Presentable
   include IssueAvailableFeatures
   include Todoable
+  include FromUnion
 
   DueDateStruct                   = Struct.new(:title, :name).freeze
   NoDueDate                       = DueDateStruct.new('No Due Date', '0').freeze
@@ -89,6 +90,8 @@ class Issue < ApplicationRecord
 
   alias_attribute :parent_ids, :project_id
   alias_method :issuing_parent, :project
+
+  alias_attribute :external_author, :service_desk_reply_to
 
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
   scope :not_in_projects, ->(project_ids) { where.not(project_id: project_ids) }
@@ -306,6 +309,7 @@ class Issue < ApplicationRecord
     !moved? && persisted? &&
       user.can?(:admin_issue, self.project)
   end
+  alias_method :can_clone?, :can_move?
 
   def to_branch_name
     if self.confidential?
@@ -328,7 +332,9 @@ class Issue < ApplicationRecord
     related_issues = ::Issue
                        .select(['issues.*', 'issue_links.id AS issue_link_id',
                                 'issue_links.link_type as issue_link_type_value',
-                                'issue_links.target_id as issue_link_source_id'])
+                                'issue_links.target_id as issue_link_source_id',
+                                'issue_links.created_at as issue_link_created_at',
+                                'issue_links.updated_at as issue_link_updated_at'])
                        .joins("INNER JOIN issue_links ON
 	                             (issue_links.source_id = issues.id AND issue_links.target_id = #{id})
 	                             OR

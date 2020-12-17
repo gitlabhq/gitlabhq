@@ -29,7 +29,7 @@ export default {
 <template>
   <div class="issuable-create-container">
     <slot name="title"></slot>
-    <hr />
+    <hr class="gl-mt-0" />
     <issuable-form
       :description-preview-path="descriptionPreviewPath"
       :description-help-path="descriptionHelpPath"

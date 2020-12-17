@@ -12,6 +12,8 @@ module Types
           description: 'ID (global ID) of the commit'
     field :sha, type: GraphQL::STRING_TYPE, null: false,
           description: 'SHA1 ID of the commit'
+    field :short_id, type: GraphQL::STRING_TYPE, null: false,
+          description: 'Short SHA1 ID of the commit'
     field :title, type: GraphQL::STRING_TYPE, null: true, calls_gitaly: true,
           description: 'Title of the commit message'
     markdown_field :title_html, null: true
@@ -31,10 +33,7 @@ module Types
     field :author_name, type: GraphQL::STRING_TYPE, null: true,
           description: 'Commit authors name'
     field :author_gravatar, type: GraphQL::STRING_TYPE, null: true,
-          description: 'Commit authors gravatar',
-          resolve: -> (commit, args, context) do
-            GravatarService.new.execute(commit.author_email, 40)
-          end
+          description: 'Commit authors gravatar'
 
     # models/commit lazy loads the author by email
     field :author, type: Types::UserType, null: true,
@@ -44,5 +43,9 @@ module Types
           null: true,
           description: 'Pipelines of the commit ordered latest first',
           resolver: Resolvers::CommitPipelinesResolver
+
+    def author_gravatar
+      GravatarService.new.execute(object.author_email, 40)
+    end
   end
 end

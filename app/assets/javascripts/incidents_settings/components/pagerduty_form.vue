@@ -109,7 +109,20 @@ export default {
       {{ webhookUpdateAlertMsg }}
     </gl-alert>
 
-    <p>{{ $options.i18n.introText }}</p>
+    <p>
+      <gl-sprintf :message="$options.i18n.introText">
+        <template #link="{ content }">
+          <gl-link
+            :href="$options.CONFIGURE_PAGERDUTY_WEBHOOK_DOCS_LINK"
+            target="_blank"
+            class="gl-display-inline-flex"
+          >
+            <span>{{ content }}</span>
+            <gl-icon name="external-link" />
+          </gl-link>
+        </template>
+      </gl-sprintf>
+    </p>
     <form ref="settingsForm" @submit.prevent="updatePagerDutyIntegrationSettings">
       <gl-form-group class="col-8 col-md-9 gl-p-0">
         <gl-toggle
@@ -134,23 +147,9 @@ export default {
           </template>
         </gl-form-input-group>
 
-        <div class="gl-text-gray-200 gl-pt-2">
-          <gl-sprintf :message="$options.i18n.webhookUrl.helpText">
-            <template #docsLink>
-              <gl-link
-                :href="$options.CONFIGURE_PAGERDUTY_WEBHOOK_DOCS_LINK"
-                target="_blank"
-                class="gl-display-inline-flex"
-              >
-                <span>{{ $options.i18n.webhookUrl.helpDocsLink }}</span>
-                <gl-icon name="external-link" />
-              </gl-link>
-            </template>
-          </gl-sprintf>
-        </div>
         <gl-button
           v-gl-modal.resetWebhookModal
-          class="gl-mt-3"
+          class="gl-mt-5"
           :disabled="loading"
           :loading="resettingWebhook"
           data-testid="webhook-reset-btn"

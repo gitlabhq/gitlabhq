@@ -1,6 +1,5 @@
 <script>
 import { GlEmptyState, GlSprintf, GlLink, GlFormInputGroup, GlFormInput } from '@gitlab/ui';
-import { mapState, mapGetters } from 'vuex';
 import { s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import {
@@ -20,6 +19,7 @@ export default {
     GlFormInputGroup,
     GlFormInput,
   },
+  inject: ['config', 'dockerBuildCommand', 'dockerPushCommand', 'dockerLoginCommand'],
   i18n: {
     quickStart: QUICK_START,
     copyLoginTitle: COPY_LOGIN_TITLE,
@@ -34,10 +34,6 @@ export default {
     addImageText: s__(
       'ContainerRegistry|You can add an image to this registry with the following commands:',
     ),
-  },
-  computed: {
-    ...mapState(['config']),
-    ...mapGetters(['dockerBuildCommand', 'dockerPushCommand', 'dockerLoginCommand']),
   },
 };
 </script>

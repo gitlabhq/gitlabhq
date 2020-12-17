@@ -7,7 +7,11 @@ module Boards
         return false unless board.lists.movable.empty?
 
         List.transaction do
-          label_params.each { |params| create_list(board, params) }
+          label_params.each do |params|
+            response = create_list(board, params)
+
+            raise ActiveRecord::Rollback unless response.success?
+          end
         end
 
         true

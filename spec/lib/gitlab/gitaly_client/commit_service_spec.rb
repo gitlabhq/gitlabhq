@@ -145,6 +145,31 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
     end
   end
 
+  describe '#find_changed_paths' do
+    let(:commits) { %w[1a0b36b3cdad1d2ee32457c102a8c0b7056fa863 cfe32cf61b73a0d5e9f13e774abde7ff789b1660] }
+
+    it 'sends an RPC request and returns the stats' do
+      request = Gitaly::FindChangedPathsRequest.new(repository: repository_message,
+                                                    commits: commits)
+
+      changed_paths_response = Gitaly::FindChangedPathsResponse.new(
+        paths: [{
+          path: "app/assets/javascripts/boards/components/project_select.vue",
+          status: :MODIFIED
+        }])
+
+      expect_any_instance_of(Gitaly::DiffService::Stub).to receive(:find_changed_paths)
+        .with(request, kind_of(Hash)).and_return([changed_paths_response])
+
+      returned_value = described_class.new(repository).find_changed_paths(commits)
+
+      mapped_returned_value = returned_value.map(&:to_h)
+      mapped_expected_value = changed_paths_response.paths.map(&:to_h)
+
+      expect(mapped_returned_value).to eq(mapped_expected_value)
+    end
+  end
+
   describe '#tree_entries' do
     let(:path) { '/' }
 
@@ -357,7 +382,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
       end
 
       it 'sends an RPC request with the correct payload' do
-        expect(client.commits_by_message(query, options)).to match_array(wrap_commits(commits))
+        expect(client.commits_by_message(query, **options)).to match_array(wrap_commits(commits))
       end
     end
 

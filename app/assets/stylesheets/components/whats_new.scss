@@ -6,6 +6,32 @@
   .gl-infinite-scroll-legend {
     @include gl-display-none;
   }
+
+  .gl-tabs {
+    @include gl-overflow-y-auto;
+  }
+
+  .gl-tabs-nav {
+    flex-wrap: nowrap;
+    overflow-x: scroll;
+    align-items: stretch;
+
+    .nav-item {
+      @include gl-flex-shrink-0;
+
+      a {
+        @include gl-h-full;
+        line-height: 1.5;
+      }
+    }
+  }
+
+  .gl-spinner-container {
+    @include gl-w-full;
+    @include gl-absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
 }
 
 .with-performance-bar .whats-new-drawer {

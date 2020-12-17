@@ -6,15 +6,15 @@ RSpec.describe ProjectsController do
   include ExternalAuthorizationServiceHelpers
   include ProjectForksHelper
 
-  let(:project) { create(:project, service_desk_enabled: false) }
-  let(:public_project) { create(:project, :public) }
-  let(:user) { create(:user) }
+  let_it_be(:project, reload: true) { create(:project, service_desk_enabled: false) }
+  let_it_be(:public_project) { create(:project, :public) }
+  let_it_be(:user) { create(:user) }
   let(:jpg) { fixture_file_upload('spec/fixtures/rails_sample.jpg', 'image/jpg') }
   let(:txt) { fixture_file_upload('spec/fixtures/doc_sample.txt', 'text/plain') }
 
   describe 'GET new' do
     context 'with an authenticated user' do
-      let(:group) { create(:group) }
+      let_it_be(:group) { create(:group) }
 
       before do
         sign_in(user)
@@ -39,27 +39,6 @@ RSpec.describe ProjectsController do
             expect(response).to have_gitlab_http_status(:not_found)
             expect(response).not_to render_template('new')
           end
-        end
-      end
-
-      context 'with the new_create_project_ui experiment enabled and the user is part of the control group' do
-        before do
-          stub_experiment(new_create_project_ui: true)
-          stub_experiment_for_user(new_create_project_ui: false)
-          allow_any_instance_of(described_class).to receive(:experimentation_subject_id).and_return('uuid')
-        end
-
-        it 'passes the right tracking parameters to the frontend' do
-          get(:new)
-
-          expect(Gon.tracking_data).to eq(
-            {
-              category: 'Manage::Import::Experiment::NewCreateProjectUi',
-              action: 'click_tab',
-              label: 'uuid',
-              property: 'control_group'
-            }
-          )
         end
       end
     end
@@ -89,7 +68,7 @@ RSpec.describe ProjectsController do
     include DesignManagementTestHelpers
     render_views
 
-    let(:project) { create(:project, :public, issues_access_level: ProjectFeature::PRIVATE) }
+    let_it_be(:project) { create(:project, :public, issues_access_level: ProjectFeature::PRIVATE) }
 
     before do
       enable_design_management
@@ -248,10 +227,12 @@ RSpec.describe ProjectsController do
     end
 
     context "project with empty repo" do
-      let(:empty_project) { create(:project_empty_repo, :public) }
+      let_it_be(:empty_project) { create(:project_empty_repo, :public) }
 
       before do
         sign_in(user)
+
+        allow(controller).to receive(:record_experiment_user).with(:invite_members_empty_project_version_a)
       end
 
       User.project_views.keys.each do |project_view|
@@ -262,15 +243,16 @@ RSpec.describe ProjectsController do
             get :show, params: { namespace_id: empty_project.namespace, id: empty_project }
           end
 
-          it "renders the empty project view" do
+          it "renders the empty project view and records the experiment user", :aggregate_failures do
             expect(response).to render_template('empty')
+            expect(controller).to have_received(:record_experiment_user).with(:invite_members_empty_project_version_a)
           end
         end
       end
     end
 
     context "project with broken repo" do
-      let(:empty_project) { create(:project_broken_repo, :public) }
+      let_it_be(:empty_project) { create(:project_broken_repo, :public) }
 
       before do
         sign_in(user)
@@ -294,15 +276,20 @@ RSpec.describe ProjectsController do
     end
 
     context "rendering default project view" do
-      let(:public_project) { create(:project, :public, :repository) }
+      let_it_be(:public_project) { create(:project, :public, :repository) }
 
       render_views
+
+      def get_show
+        get :show, params: { namespace_id: public_project.namespace, id: public_project }
+      end
 
       it "renders the activity view" do
         allow(controller).to receive(:current_user).and_return(user)
         allow(user).to receive(:project_view).and_return('activity')
 
-        get :show, params: { namespace_id: public_project.namespace, id: public_project }
+        get_show
+
         expect(response).to render_template('_activity')
       end
 
@@ -310,7 +297,8 @@ RSpec.describe ProjectsController do
         allow(controller).to receive(:current_user).and_return(user)
         allow(user).to receive(:project_view).and_return('files')
 
-        get :show, params: { namespace_id: public_project.namespace, id: public_project }
+        get_show
+
         expect(response).to render_template('_files')
       end
 
@@ -318,8 +306,17 @@ RSpec.describe ProjectsController do
         allow(controller).to receive(:current_user).and_return(user)
         allow(user).to receive(:project_view).and_return('readme')
 
-        get :show, params: { namespace_id: public_project.namespace, id: public_project }
+        get_show
+
         expect(response).to render_template('_readme')
+      end
+
+      it 'does not make Gitaly requests', :request_store, :clean_gitlab_redis_cache do
+        # Warm up to populate repository cache
+        get_show
+        RequestStore.clear!
+
+        expect { get_show }.not_to change { Gitlab::GitalyClient.get_request_count }
       end
     end
 
@@ -403,8 +400,8 @@ RSpec.describe ProjectsController do
   end
 
   describe 'POST #archive' do
-    let(:group) { create(:group) }
-    let(:project) { create(:project, group: group) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
 
     before do
       sign_in(user)
@@ -451,8 +448,8 @@ RSpec.describe ProjectsController do
   end
 
   describe 'POST #unarchive' do
-    let(:group) { create(:group) }
-    let(:project) { create(:project, :archived, group: group) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, :archived, group: group) }
 
     before do
       sign_in(user)
@@ -499,8 +496,8 @@ RSpec.describe ProjectsController do
   end
 
   describe '#housekeeping' do
-    let(:group) { create(:group) }
-    let(:project) { create(:project, group: group) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
     let(:housekeeping) { Projects::HousekeepingService.new(project) }
 
     context 'when authenticated as owner' do
@@ -672,13 +669,13 @@ RSpec.describe ProjectsController do
     end
 
     context 'hashed storage' do
-      let(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project, :repository) }
 
       it_behaves_like 'updating a project'
     end
 
     context 'legacy storage' do
-      let(:project) { create(:project, :repository, :legacy_storage) }
+      let_it_be(:project) { create(:project, :repository, :legacy_storage) }
 
       it_behaves_like 'updating a project'
     end
@@ -713,14 +710,47 @@ RSpec.describe ProjectsController do
         end
       end
     end
+
+    context 'when updating boolean values on project_settings' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:boolean_value, :result) do
+        '1'   | true
+        '0'   | false
+        1     | true
+        0     | false
+        true  | true
+        false | false
+      end
+
+      with_them do
+        it 'updates project settings attributes accordingly' do
+          put :update, params: {
+            namespace_id: project.namespace,
+            id: project.path,
+            project: {
+              project_setting_attributes: {
+                show_default_award_emojis: boolean_value,
+                allow_editing_commit_messages: boolean_value
+              }
+            }
+          }
+
+          project.reload
+
+          expect(project.show_default_award_emojis?).to eq(result)
+          expect(project.allow_editing_commit_messages?).to eq(result)
+        end
+      end
+    end
   end
 
   describe '#transfer', :enable_admin_mode do
     render_views
 
-    let(:project) { create(:project, :repository) }
-    let(:admin) { create(:admin) }
-    let(:new_namespace) { create(:namespace) }
+    let_it_be(:project, reload: true) { create(:project, :repository) }
+    let_it_be(:admin) { create(:admin) }
+    let_it_be(:new_namespace) { create(:namespace) }
 
     it 'updates namespace' do
       sign_in(admin)
@@ -764,7 +794,7 @@ RSpec.describe ProjectsController do
   end
 
   describe "#destroy", :enable_admin_mode do
-    let(:admin) { create(:admin) }
+    let_it_be(:admin) { create(:admin) }
 
     it "redirects to the dashboard", :sidekiq_might_not_need_inline do
       controller.instance_variable_set(:@project, project)
@@ -944,7 +974,7 @@ RSpec.describe ProjectsController do
   end
 
   describe "GET refs" do
-    let(:project) { create(:project, :public, :repository) }
+    let_it_be(:project) { create(:project, :public, :repository) }
 
     it 'gets a list of branches and tags' do
       get :refs, params: { namespace_id: project.namespace, id: project, sort: 'updated_desc' }
@@ -1016,7 +1046,7 @@ RSpec.describe ProjectsController do
     end
 
     context 'state filter on references' do
-      let(:issue) { create(:issue, :closed, project: public_project) }
+      let_it_be(:issue) { create(:issue, :closed, project: public_project) }
       let(:merge_request) { create(:merge_request, :closed, target_project: public_project) }
 
       it 'renders JSON body with state filter for issues' do
@@ -1339,7 +1369,7 @@ RSpec.describe ProjectsController do
   end
 
   context 'private project with token authentication' do
-    let(:private_project) { create(:project, :private) }
+    let_it_be(:private_project) { create(:project, :private) }
 
     it_behaves_like 'authenticates sessionless user', :show, :atom, ignore_incrementing: true do
       before do
@@ -1351,7 +1381,7 @@ RSpec.describe ProjectsController do
   end
 
   context 'public project with token authentication' do
-    let(:public_project) { create(:project, :public) }
+    let_it_be(:public_project) { create(:project, :public) }
 
     it_behaves_like 'authenticates sessionless user', :show, :atom, public: true do
       before do

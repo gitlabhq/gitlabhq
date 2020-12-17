@@ -169,6 +169,7 @@ excluded_attributes:
     - :compliance_framework_setting
     - :show_default_award_emojis
     - :services
+    - :exported_protected_branches
   namespaces:
     - :runners_token
     - :runners_token_encrypted
@@ -219,6 +220,7 @@ excluded_attributes:
     - :duplicated_to_id
     - :promoted_to_epic_id
     - :blocking_issues_count
+    - :service_desk_reply_to
   merge_request:
     - :milestone_id
     - :sprint_id
@@ -340,10 +342,12 @@ excluded_attributes:
     - :protected_environment_id
   boards:
     - :milestone_id
+    - :iteration_id
   lists:
     - :board_id
     - :label_id
     - :milestone_id
+    - :iteration_id
   epic:
     - :start_date_sourcing_milestone_id
     - :due_date_sourcing_milestone_id

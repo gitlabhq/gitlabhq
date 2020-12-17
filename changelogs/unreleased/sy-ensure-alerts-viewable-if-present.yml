@@ -1,0 +1,6 @@
+---
+title: Allow alert list to be visible when alerts exist, even if alerting integrations
+  are disabled
+merge_request: 49257
+author:
+type: changed

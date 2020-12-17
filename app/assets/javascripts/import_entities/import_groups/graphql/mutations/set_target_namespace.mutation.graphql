@@ -1,0 +1,3 @@
+mutation setTargetNamespace($targetNamespace: String!, $sourceGroupId: String!) {
+  setTargetNamespace(targetNamespace: $targetNamespace, sourceGroupId: $sourceGroupId) @client
+}

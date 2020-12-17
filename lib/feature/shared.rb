@@ -23,7 +23,7 @@ class Feature
         example: <<-EOS
           Feature.enabled?(:my_feature_flag, project)
           Feature.enabled?(:my_feature_flag, project, type: :development)
-          push_frontend_feature_flag?(:my_feature_flag, project)
+          push_frontend_feature_flag(:my_feature_flag, project)
         EOS
       },
       ops: {
@@ -33,8 +33,8 @@ class Feature
         ee_only: false,
         default_enabled: false,
         example: <<-EOS
-          Feature.enabled?(:my_ops_flag, type: ops)
-          push_frontend_feature_flag?(:my_ops_flag, project, type: :ops)
+          Feature.enabled?(:my_ops_flag, type: :ops)
+          push_frontend_feature_flag(:my_ops_flag, project, type: :ops)
         EOS
       },
       licensed: {
@@ -47,6 +47,16 @@ class Feature
         example: <<-EOS
           project.feature_available?(:my_licensed_feature)
           namespace.feature_available?(:my_licensed_feature)
+        EOS
+      },
+      experiment: {
+        description: 'Short lived, used specifically to run A/B/n experiments.',
+        optional: true,
+        rollout_issue: true,
+        ee_only: true,
+        default_enabled: false,
+        example: <<-EOS
+          experiment(:my_experiment, project: project, actor: current_user) { ...variant code... }
         EOS
       }
     }.freeze

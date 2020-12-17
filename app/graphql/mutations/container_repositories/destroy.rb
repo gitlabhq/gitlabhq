@@ -2,9 +2,7 @@
 
 module Mutations
   module ContainerRepositories
-    class Destroy < Mutations::BaseMutation
-      include ::Mutations::PackageEventable
-
+    class Destroy < ::Mutations::ContainerRepositories::DestroyBase
       graphql_name 'DestroyContainerRepository'
 
       authorize :destroy_container_image
@@ -30,15 +28,6 @@ module Mutations
           container_repository: container_repository,
           errors: []
         }
-      end
-
-      private
-
-      def find_object(id:)
-        # TODO: remove this line when the compatibility layer is removed
-        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
-        id = ::Types::GlobalIDType[::ContainerRepository].coerce_isolated_input(id)
-        GitlabSchema.find_by_gid(id)
       end
     end
   end

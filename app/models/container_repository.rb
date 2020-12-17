@@ -25,8 +25,7 @@ class ContainerRepository < ApplicationRecord
       .with_container_registry
       .select(:id)
 
-    ContainerRepository
-      .joins("INNER JOIN (#{project_scope.to_sql}) projects on projects.id=container_repositories.project_id")
+    joins("INNER JOIN (#{project_scope.to_sql}) projects on projects.id=container_repositories.project_id")
   end
   scope :for_project_id, ->(project_id) { where(project_id: project_id) }
   scope :search_by_name, ->(query) { fuzzy_search(query, [:name], use_minimum_char_limit: false) }

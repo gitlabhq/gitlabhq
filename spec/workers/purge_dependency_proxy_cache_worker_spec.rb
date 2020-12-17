@@ -6,6 +6,7 @@ RSpec.describe PurgeDependencyProxyCacheWorker do
   let_it_be(:user) { create(:admin) }
   let_it_be(:blob) { create(:dependency_proxy_blob )}
   let_it_be(:group, reload: true) { blob.group }
+  let_it_be(:manifest) { create(:dependency_proxy_manifest, group: group )}
   let_it_be(:group_id) { group.id }
 
   subject { described_class.new.perform(user.id, group_id) }
@@ -17,8 +18,9 @@ RSpec.describe PurgeDependencyProxyCacheWorker do
 
   describe '#perform' do
     shared_examples 'returns nil' do
-      it 'returns nil' do
+      it 'returns nil', :aggregate_failures do
         expect { subject }.not_to change { group.dependency_proxy_blobs.size }
+        expect { subject }.not_to change { group.dependency_proxy_manifests.size }
         expect(subject).to be_nil
       end
     end
@@ -27,12 +29,14 @@ RSpec.describe PurgeDependencyProxyCacheWorker do
       include_examples 'an idempotent worker' do
         let(:job_args) { [user.id, group_id] }
 
-        it 'deletes the blobs and returns ok' do
+        it 'deletes the blobs and returns ok', :aggregate_failures do
           expect(group.dependency_proxy_blobs.size).to eq(1)
+          expect(group.dependency_proxy_manifests.size).to eq(1)
 
           subject
 
           expect(group.dependency_proxy_blobs.size).to eq(0)
+          expect(group.dependency_proxy_manifests.size).to eq(0)
         end
       end
     end

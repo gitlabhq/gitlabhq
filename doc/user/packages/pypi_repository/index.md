@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # PyPI packages in the Package Registry
@@ -237,11 +237,11 @@ When publishing packages, note that:
 
 - The maximum allowed size is 50 MB.
 - You can't upload the same version of a package multiple times. If you try,
-  you'll receive the error `Validation failed: File name has already been taken`.
+  you receive the error `Validation failed: File name has already been taken`.
 
 ### Ensure your version string is valid
 
-If your version string (for example, `0.0.1`) isn't valid, it will be rejected.
+If your version string (for example, `0.0.1`) isn't valid, it gets rejected.
 GitLab uses the following regex to validate the version string.
 
 ```ruby

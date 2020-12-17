@@ -28,7 +28,7 @@ class Packages::Package < ApplicationRecord
   validates :project, presence: true
   validates :name, presence: true
 
-  validates :name, format: { with: Gitlab::Regex.package_name_regex }, unless: -> { conan? || generic? }
+  validates :name, format: { with: Gitlab::Regex.package_name_regex }, unless: -> { conan? || generic? || debian? }
 
   validates :name,
     uniqueness: { scope: %i[project_id version package_type] }, unless: :conan?
@@ -40,6 +40,8 @@ class Packages::Package < ApplicationRecord
   validates :name, format: { with: Gitlab::Regex.conan_recipe_component_regex }, if: :conan?
   validates :name, format: { with: Gitlab::Regex.generic_package_name_regex }, if: :generic?
   validates :name, format: { with: Gitlab::Regex.nuget_package_name_regex }, if: :nuget?
+  validates :name, format: { with: Gitlab::Regex.debian_package_name_regex }, if: :debian_package?
+  validates :name, inclusion: { in: %w[incoming] }, if: :debian_incoming?
   validates :version, format: { with: Gitlab::Regex.nuget_version_regex }, if: :nuget?
   validates :version, format: { with: Gitlab::Regex.conan_recipe_component_regex }, if: :conan?
   validates :version, format: { with: Gitlab::Regex.maven_version_regex }, if: -> { version? && maven? }
@@ -51,6 +53,11 @@ class Packages::Package < ApplicationRecord
     presence: true,
     format: { with: Gitlab::Regex.generic_package_version_regex },
     if: :generic?
+  validates :version,
+    presence: true,
+    format: { with: Gitlab::Regex.debian_version_regex },
+    if: :debian_package?
+  validate :forbidden_debian_changes, if: :debian?
 
   enum package_type: { maven: 1, npm: 2, conan: 3, nuget: 4, pypi: 5, composer: 6, generic: 7, golang: 8, debian: 9 }
 
@@ -184,6 +191,14 @@ class Packages::Package < ApplicationRecord
     tags.pluck(:name)
   end
 
+  def debian_incoming?
+    debian? && version.nil?
+  end
+
+  def debian_package?
+    debian? && !version.nil?
+  end
+
   private
 
   def composer_tag_version?
@@ -226,6 +241,15 @@ class Packages::Package < ApplicationRecord
 
     if project.package_already_taken?(name)
       errors.add(:base, _('Package already exists'))
+    end
+  end
+
+  def forbidden_debian_changes
+    return unless persisted?
+
+    # Debian incoming
+    if version_was.nil? || version.nil?
+      errors.add(:version, _('cannot be changed')) if version_changed?
     end
   end
 end

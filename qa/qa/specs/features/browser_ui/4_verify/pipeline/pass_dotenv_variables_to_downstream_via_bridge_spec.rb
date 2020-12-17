@@ -3,9 +3,8 @@
 require 'faker'
 
 module QA
-  RSpec.describe 'Verify', :runner, :requires_admin do
-    describe "Pass dotenv variables to downstream via bridge" do
-      let(:feature_flag) { :ci_bridge_dependency_variables }
+  RSpec.describe 'Verify', :runner do
+    describe 'Pass dotenv variables to downstream via bridge' do
       let(:executor_1) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(8)}" }
       let(:executor_2) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(8)}" }
 
@@ -38,16 +37,14 @@ module QA
       end
 
       before do
-        Runtime::Feature.enable(feature_flag)
         Flow::Login.sign_in
         add_ci_file(downstream_project, downstream_ci_file)
         add_ci_file(upstream_project, upstream_ci_file)
         upstream_project.visit!
-        Flow::Pipeline.visit_latest_pipeline(pipeline_condition: 'success')
+        Flow::Pipeline.visit_latest_pipeline(pipeline_condition: 'succeeded')
       end
 
       after do
-        Runtime::Feature.disable(feature_flag)
         runner_1.remove_via_api!
         runner_2.remove_via_api!
       end

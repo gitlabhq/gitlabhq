@@ -1,13 +1,13 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 comments: false
 ---
 
 # Upgrading from Community Edition to Enterprise Edition from source
 
-NOTE: **Note:**
+NOTE:
 In the past we used separate documents for upgrading from
 Community Edition to Enterprise Edition. These documents can be found in the
 [`doc/update` directory of Enterprise Edition's source
@@ -128,7 +128,7 @@ sudo -u git -H bundle exec rake gitlab:backup:restore RAILS_ENV=production
 
 Certain versions of GitLab may require you to perform additional steps when
 upgrading from Community Edition to Enterprise Edition. Should such steps be
-necessary, they will listed per version below.
+necessary, they are listed per version below.
 
 <!--
 Example:

@@ -38,9 +38,20 @@ const initPopovers = () => {
   }
 };
 
+export const initUploadForm = () => {
+  const uploadBlobForm = $('.js-upload-blob-form');
+  if (uploadBlobForm.length) {
+    const method = uploadBlobForm.data('method');
+
+    new BlobFileDropzone(uploadBlobForm, method);
+    new NewCommitForm(uploadBlobForm);
+
+    disableButtonIfEmptyField(uploadBlobForm.find('.js-commit-message'), '.btn-upload-file');
+  }
+};
+
 export default () => {
   const editBlobForm = $('.js-edit-blob-form');
-  const uploadBlobForm = $('.js-upload-blob-form');
   const deleteBlobForm = $('.js-delete-blob-form');
 
   if (editBlobForm.length) {
@@ -80,14 +91,7 @@ export default () => {
     window.onbeforeunload = () => '';
   }
 
-  if (uploadBlobForm.length) {
-    const method = uploadBlobForm.data('method');
-
-    new BlobFileDropzone(uploadBlobForm, method);
-    new NewCommitForm(uploadBlobForm);
-
-    disableButtonIfEmptyField(uploadBlobForm.find('.js-commit-message'), '.btn-upload-file');
-  }
+  initUploadForm();
 
   if (deleteBlobForm.length) {
     new NewCommitForm(deleteBlobForm);

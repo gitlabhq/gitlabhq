@@ -4,6 +4,10 @@ import { isArray } from 'lodash';
 import imageDiffMixin from 'ee_else_ce/diffs/mixins/image_diff';
 import { GlIcon } from '@gitlab/ui';
 
+function calcPercent(pos, size, renderedSize) {
+  return (((pos / size) * 100) / ((renderedSize / size) * 100)) * 100;
+}
+
 export default {
   name: 'ImageDiffOverlay',
   components: {
@@ -39,6 +43,14 @@ export default {
       required: false,
       default: true,
     },
+    renderedWidth: {
+      type: Number,
+      required: true,
+    },
+    renderedHeight: {
+      type: Number,
+      required: true,
+    },
   },
   computed: {
     ...mapGetters('diffs', ['getDiffFileByHash', 'getCommentFormForDiffFile']),
@@ -59,33 +71,33 @@ export default {
     },
     getPositionForObject(meta) {
       const { x, y, width, height } = meta;
-      const imageWidth = this.getImageDimensions().width;
-      const imageHeight = this.getImageDimensions().height;
-      const widthRatio = imageWidth / width;
-      const heightRatio = imageHeight / height;
 
       return {
-        x: Math.round(x * widthRatio),
-        y: Math.round(y * heightRatio),
+        x: (x / width) * 100,
+        y: (y / height) * 100,
       };
     },
     getPosition(discussion) {
       const { x, y } = this.getPositionForObject(discussion.position);
 
       return {
-        left: `${x}px`,
-        top: `${y}px`,
+        left: `${x}%`,
+        top: `${y}%`,
       };
     },
     clickedImage(x, y) {
       const { width, height } = this.getImageDimensions();
+      const xPercent = calcPercent(x, width, this.renderedWidth);
+      const yPercent = calcPercent(y, height, this.renderedHeight);
 
       this.openDiffFileCommentForm({
         fileHash: this.fileHash,
         width,
         height,
-        x,
-        y,
+        x: width * (xPercent / 100),
+        y: height * (yPercent / 100),
+        xPercent,
+        yPercent,
       });
     },
   },
@@ -112,22 +124,19 @@ export default {
       type="button"
       @click="clickedToggle(discussion)"
     >
-      <gl-icon v-if="showCommentIcon" name="image-comment-dark" />
+      <gl-icon v-if="showCommentIcon" name="image-comment-dark" :size="24" />
       <template v-else>
         {{ toggleText(discussion, index) }}
       </template>
     </button>
     <button
-      v-if="currentCommentForm"
-      :style="{
-        left: `${currentCommentForm.x}px`,
-        top: `${currentCommentForm.y}px`,
-      }"
+      v-if="canComment && currentCommentForm"
+      :style="{ left: `${currentCommentForm.xPercent}%`, top: `${currentCommentForm.yPercent}%` }"
       :aria-label="__('Comment form position')"
-      class="btn-transparent comment-indicator"
+      class="btn-transparent comment-indicator position-absolute"
       type="button"
     >
-      <gl-icon name="image-comment-dark" />
+      <gl-icon name="image-comment-dark" :size="24" />
     </button>
   </div>
 </template>

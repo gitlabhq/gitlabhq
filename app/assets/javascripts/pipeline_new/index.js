@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import PipelineNewForm from './components/pipeline_new_form.vue';
+import formatRefs from './utils/format_refs';
 
 export default () => {
   const el = document.getElementById('js-new-pipeline');
@@ -7,17 +8,20 @@ export default () => {
     projectId,
     pipelinesPath,
     configVariablesPath,
+    defaultBranch,
     refParam,
     varParam,
     fileParam,
-    refNames,
+    branchRefs,
+    tagRefs,
     settingsLink,
     maxWarnings,
   } = el?.dataset;
 
   const variableParams = JSON.parse(varParam);
   const fileParams = JSON.parse(fileParam);
-  const refs = JSON.parse(refNames);
+  const branches = formatRefs(JSON.parse(branchRefs), 'branch');
+  const tags = formatRefs(JSON.parse(tagRefs), 'tag');
 
   return new Vue({
     el,
@@ -27,10 +31,12 @@ export default () => {
           projectId,
           pipelinesPath,
           configVariablesPath,
+          defaultBranch,
           refParam,
           variableParams,
           fileParams,
-          refs,
+          branches,
+          tags,
           settingsLink,
           maxWarnings: Number(maxWarnings),
         },

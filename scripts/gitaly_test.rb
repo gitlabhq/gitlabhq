@@ -62,8 +62,19 @@ module GitalyTest
     case service
     when :gitaly
       File.join(tmp_tests_gitaly_dir, 'config.toml')
+    when :gitaly2
+      File.join(tmp_tests_gitaly_dir, 'gitaly2.config.toml')
     when :praefect
       File.join(tmp_tests_gitaly_dir, 'praefect.config.toml')
+    end
+  end
+
+  def service_binary(service)
+    case service
+    when :gitaly, :gitaly2
+      'gitaly'
+    when :praefect
+      'praefect'
     end
   end
 
@@ -71,12 +82,16 @@ module GitalyTest
     start(:gitaly)
   end
 
+  def start_gitaly2
+    start(:gitaly2)
+  end
+
   def start_praefect
     start(:praefect)
   end
 
   def start(service)
-    args = ["#{tmp_tests_gitaly_dir}/#{service}"]
+    args = ["#{tmp_tests_gitaly_dir}/#{service_binary(service)}"]
     args.push("-config") if service == :praefect
     args.push(config_path(service))
     pid = spawn(env, *args, [:out, :err] => "log/#{service}-test.log")

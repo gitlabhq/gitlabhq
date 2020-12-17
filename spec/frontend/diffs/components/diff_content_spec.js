@@ -6,13 +6,11 @@ import InlineDiffView from '~/diffs/components/inline_diff_view.vue';
 import NotDiffableViewer from '~/vue_shared/components/diff_viewer/viewers/not_diffable.vue';
 import NoPreviewViewer from '~/vue_shared/components/diff_viewer/viewers/no_preview.vue';
 import ParallelDiffView from '~/diffs/components/parallel_diff_view.vue';
-import ImageDiffOverlay from '~/diffs/components/image_diff_overlay.vue';
 import NoteForm from '~/notes/components/note_form.vue';
 import DiffDiscussions from '~/diffs/components/diff_discussions.vue';
 import { IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import diffFileMockData from '../mock_data/diff_file';
 import { diffViewerModes } from '~/ide/constants';
-import { diffLines } from '~/diffs/store/getters';
 import DiffView from '~/diffs/components/diff_view.vue';
 
 const localVue = createLocalVue();
@@ -74,7 +72,7 @@ describe('DiffContent', () => {
             isInlineView: isInlineViewGetterMock,
             isParallelView: isParallelViewGetterMock,
             getCommentFormForDiffFile: getCommentFormForDiffFileGetterMock,
-            diffLines,
+            diffLines: () => () => [...diffFileMockData.parallel_diff_lines],
           },
           actions: {
             saveDiffDiscussion: saveDiffDiscussionMock,
@@ -122,11 +120,11 @@ describe('DiffContent', () => {
       expect(wrapper.find(ParallelDiffView).exists()).toBe(true);
     });
 
-    it('should render diff view if `unifiedDiffLines` & `unifiedDiffComponents` are true', () => {
+    it('should render diff view if `unifiedDiffComponents` are true', () => {
       isParallelViewGetterMock.mockReturnValue(true);
       createComponent({
         props: { diffFile: textDiffFile },
-        provide: { glFeatures: { unifiedDiffLines: true, unifiedDiffComponents: true } },
+        provide: { glFeatures: { unifiedDiffComponents: true } },
       });
 
       expect(wrapper.find(DiffView).exists()).toBe(true);
@@ -166,14 +164,6 @@ describe('DiffContent', () => {
 
   describe('with image files', () => {
     const imageDiffFile = { ...defaultProps.diffFile, viewer: { name: diffViewerModes.image } };
-
-    it('should have image diff view in place', () => {
-      getCommentFormForDiffFileGetterMock.mockReturnValue(() => true);
-      createComponent({ props: { diffFile: imageDiffFile } });
-
-      expect(wrapper.find(InlineDiffView).exists()).toBe(false);
-      expect(wrapper.find(ImageDiffOverlay).exists()).toBe(true);
-    });
 
     it('renders diff file discussions', () => {
       getCommentFormForDiffFileGetterMock.mockReturnValue(() => true);

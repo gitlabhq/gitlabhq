@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Knowledge
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: reference, how-to
 ---
 
@@ -34,7 +34,7 @@ message.
 
 ## Creating a new wiki page
 
-NOTE: **Note:**
+NOTE:
 Requires Developer [permissions](../../permissions.md).
 
 Create a new page by clicking the **New page** button that can be found
@@ -64,7 +64,7 @@ When you're ready, click the **Create page** and the new page will be created.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/33475) in GitLab 11.3.
 
-Starting with GitLab 11.3, any file that is uploaded to the wiki via GitLab's
+Starting with GitLab 11.3, any file that is uploaded to the wiki via the GitLab
 interface will be stored in the wiki Git repository, and it will be available
 if you clone the wiki repository locally. All uploaded files prior to GitLab
 11.3 are stored in GitLab itself. If you want them to be part of the wiki's Git
@@ -208,7 +208,7 @@ On the project's Wiki page, there is a right side navigation that renders the fu
 
 To customize the sidebar, you can create a file named `_sidebar` to fully replace the default navigation.
 
-CAUTION: **Warning:**
+WARNING:
 Unless you link the `_sidebar` file from your custom nav, to edit it you'll have to access it directly
 from the browser's address bar by typing: `https://gitlab.com/<namespace>/<project_name>/-/wikis/_sidebar` (for self-managed GitLab instances, replace `gitlab.com` with your instance's URL).
 
@@ -226,4 +226,4 @@ Example for `_sidebar` (using Markdown format):
 - [Sidebar](_sidebar)
 ```
 
-Support for displaying a generated TOC with a custom side navigation is planned.
+Support for displaying a generated table of contents with a custom side navigation is planned.

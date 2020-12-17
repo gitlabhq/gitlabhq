@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Import your Jira project issues to GitLab
@@ -33,7 +33,7 @@ Our parser for converting text in Jira issues to GitLab Flavored Markdown is onl
 Jira V3 REST API.
 
 There is an [epic](https://gitlab.com/groups/gitlab-org/-/epics/2738) tracking the addition of
-items, such as issue assignees, comments, and much more. These will be included in the future
+items, such as issue assignees, comments, and much more. These are included in the future
 iterations of the GitLab Jira importer.
 
 ## Prerequisites
@@ -56,7 +56,7 @@ Make sure you have the integration set up before trying to import Jira issues.
 
 To import Jira issues to a GitLab project, follow the steps below.
 
-NOTE: **Note:**
+NOTE:
 Importing Jira issues is done as an asynchronous background job, which
 may result in delays based on import queues load, system load, or other factors.
 Importing large projects may take several minutes depending on the size of the import.
@@ -76,7 +76,7 @@ Importing large projects may take several minutes depending on the size of the i
 1. Click the **Import from** dropdown and select the Jira project that you wish to import issues from.
 
    In the **Jira-GitLab user mapping template** section, the table shows to which GitLab users your Jira
-   users will be mapped.
+   users are mapped.
    When the form appears, the dropdown defaults to the user conducting the import.
 
 1. To change any of the mappings, click the dropdown in the **GitLab username** column and
@@ -88,6 +88,6 @@ Importing large projects may take several minutes depending on the size of the i
 1. Click **Continue**. You're presented with a confirmation that import has started.
 
    While the import is running in the background, you can navigate away from the import status page
-   to the issues page, and you'll see the new issues appearing in the issues list.
+   to the issues page, and you can see the new issues appearing in the issues list.
 
 1. To check the status of your import, go to the Jira import page again.

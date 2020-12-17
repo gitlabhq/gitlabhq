@@ -135,7 +135,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
                 patch_the_trace
               end
 
-              it 'returns Forbidden ' do
+              it 'returns Forbidden' do
                 expect(response).to have_gitlab_http_status(:forbidden)
               end
             end

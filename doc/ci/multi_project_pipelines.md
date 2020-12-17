@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Continuous Integration
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -19,9 +19,10 @@ but also across projects with multi-project pipelines.
 Multi-project pipelines are useful for larger products that require cross-project inter-dependencies, such as those
 adopting a [microservices architecture](https://about.gitlab.com/blog/2016/08/16/trends-in-version-control-land-microservices/).
 
-For a demonstration of how cross-functional development teams can use cross-pipeline
-triggering to trigger multiple pipelines for different microservices projects, see
-[Cross-project Pipeline Triggering and Visualization](https://about.gitlab.com/handbook/marketing/product-marketing/demo/#cross-project-pipeline-triggering-and-visualization-may-2019---1110).
+Cross-functional development teams can use cross-pipeline
+triggering to trigger multiple pipelines for different microservices projects. Learn more
+in the [Cross-project Pipeline Triggering and Visualization demo](https://about.gitlab.com/learn/)
+at GitLab@learn, in the Continuous Integration (CI) section.
 
 Additionally, it's possible to visualize the entire pipeline, including all cross-project
 inter-dependencies. **(PREMIUM)**
@@ -46,7 +47,7 @@ When you configure GitLab CI/CD for your project, you can visualize the stages o
 ![Multi-project pipeline graph](img/multi_project_pipeline_graph.png)
 
 In the Merge Request Widget, multi-project pipeline mini-graphs are displayed,
-and when hovering or tapping (on touchscreen devices) they will expand and be shown adjacent to each other.
+and when hovering or tapping (on touchscreen devices) they expand and are shown adjacent to each other.
 
 ![Multi-project mini graph](img/multi_pipeline_mini_graph.gif)
 
@@ -97,16 +98,16 @@ staging:
   trigger: my/deployment
 ```
 
-In the example above, as soon as `rspec` job succeeds in the `test` stage,
-the `staging` bridge job is going to be started. The initial status of this
-job will be `pending`. GitLab will create a downstream pipeline in the
-`my/deployment` project and, as soon as the pipeline gets created, the
-`staging` job will succeed. `my/deployment` is a full path to that project.
+In the example above, as soon as the `rspec` job succeeds in the `test` stage,
+the `staging` bridge job is started. The initial status of this
+job is `pending`. GitLab then creates a downstream pipeline in the
+`my/deployment` project and, as soon as the pipeline is created, the
+`staging` job succeeds. `my/deployment` is a full path to that project.
 
 The user that created the upstream pipeline needs to have access rights to the
-downstream project (`my/deployment` in this case). If a downstream project can
-not be found, or a user does not have access rights to create pipeline there,
-the `staging` job is going to be marked as _failed_.
+downstream project (`my/deployment` in this case). If a downstream project is
+not found, or a user does not have access rights to create a pipeline there,
+the `staging` job is marked as _failed_.
 
 When using:
 
@@ -117,21 +118,18 @@ When using:
 - [`only/except`](yaml/README.md#onlyexcept-basic) to control job behavior, use the
   `pipelines` keyword.
 
-CAUTION: **Caution:**
-In the example, `staging` will be marked as succeeded as soon as a downstream pipeline
+In the example, `staging` is marked as successful as soon as a downstream pipeline
 gets created. If you want to display the downstream pipeline's status instead, see
 [Mirroring status from triggered pipeline](#mirroring-status-from-triggered-pipeline).
 
-NOTE: **Note:**
-Bridge jobs do not support every configuration entry that a user can use
-in the case of regular jobs. Bridge jobs will not be picked by a runner,
-so there is no point in adding support for `script`, for example. If a user
-tries to use unsupported configuration syntax, YAML validation will fail upon
-pipeline creation.
+NOTE:
+Bridge jobs [do not support every configuration keyword](#limitations) that can be used
+with other jobs. If a user tries to use unsupported configuration keywords, YAML
+validation fails on pipeline creation.
 
 ### Specifying a downstream pipeline branch
 
-It is possible to specify a branch name that a downstream pipeline will use:
+It is possible to specify a branch name that a downstream pipeline uses:
 
 ```yaml
 rspec:
@@ -152,10 +150,10 @@ Use:
   [From GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/issues/10126), variable expansion is
   supported.
 
-GitLab will use a commit that is currently on the HEAD of the branch when
+GitLab uses a commit that is on the head of the branch when
 creating a downstream pipeline.
 
-NOTE: **Note:**
+NOTE:
 Pipelines triggered on a protected branch in a downstream project use the [permissions](../user/permissions.md)
 of the user that ran the trigger job in the upstream project. If the user does not
 have permission to run CI/CD pipelines against the protected branch, the pipeline fails. See
@@ -181,10 +179,10 @@ staging:
   trigger: my/deployment
 ```
 
-The `ENVIRONMENT` variable will be passed to every job defined in a downstream
-pipeline. It will be available as an environment variable when GitLab Runner picks a job.
+The `ENVIRONMENT` variable is passed to every job defined in a downstream
+pipeline. It is available as an environment variable when GitLab Runner picks a job.
 
-In the following configuration, the `MY_VARIABLE` variable will be passed to the downstream pipeline
+In the following configuration, the `MY_VARIABLE` variable is passed to the downstream pipeline
 that is created when the `trigger-downstream` job is queued. This is because `trigger-downstream`
 job inherits variables declared in global variables blocks, and then we pass these variables to a downstream pipeline.
 
@@ -210,7 +208,7 @@ downstream-job:
 ```
 
 In this scenario, the `UPSTREAM_BRANCH` variable with a value related to the
-upstream pipeline will be passed to the `downstream-job` job, and will be available
+upstream pipeline is passed to the `downstream-job` job, and is available
 within the context of all downstream builds.
 
 Upstream pipelines take precedence over downstream ones. If there are two
@@ -289,9 +287,9 @@ upstream_bridge:
 
 ### Limitations
 
-Because bridge jobs are a little different to regular jobs, it is not
-possible to use exactly the same configuration syntax here, as one would
-normally do when defining a regular job that will be picked by a runner.
+Bridge jobs are a little different from regular jobs. It is not
+possible to use exactly the same configuration syntax as when defining regular jobs
+that are picked by a runner.
 
 Some features are not implemented yet. For example, support for environments.
 
@@ -304,6 +302,7 @@ Some features are not implemented yet. For example, support for environments.
 - `only` and `except`
 - `when` (only with `on_success`, `on_failure`, and `always` values)
 - `extends`
+- `needs`
 
 ## Trigger a pipeline when an upstream project is rebuilt **(PREMIUM)**
 
@@ -318,7 +317,7 @@ tag in a different project:
 1. Click subscribe.
 
 Any pipelines that complete successfully for new tags in the subscribed project
-will now trigger a pipeline on the current project's default branch. The maximum
+now trigger a pipeline on the current project's default branch. The maximum
 number of upstream pipeline subscriptions is 2 by default, for both the upstream and
 downstream projects. This [application limit](../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project) can be changed on self-managed instances by a GitLab administrator.
 

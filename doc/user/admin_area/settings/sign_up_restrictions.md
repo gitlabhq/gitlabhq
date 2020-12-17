@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -51,9 +51,12 @@ To enforce confirmation of the email address used for new sign ups:
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4315) in GitLab 13.6.
 
-When the number of users reaches the user cap, any user who is added or requests access must be
+When the number of billable users reaches the user cap, any user who is added or requests access must be
 [approved](../approving_users.md#approving-a-user) by an administrator before they can start using
 their account.
+
+If an administrator increases or removes the user cap, the users in pending approval state will be
+automatically approved in a background job.
 
 ## Soft email confirmation
 
@@ -63,7 +66,7 @@ their account.
 > - It's recommended for production use.
 > - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-soft-email-confirmation).
 
-CAUTION: **Warning:**
+WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
 The soft email confirmation improves the signup experience for new users by allowing

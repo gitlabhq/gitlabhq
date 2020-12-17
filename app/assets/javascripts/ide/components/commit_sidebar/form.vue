@@ -134,15 +134,17 @@ export default {
       @after-enter="afterEndTransition"
     >
       <div v-if="isCompact" ref="compactEl" class="commit-form-compact">
-        <button
+        <gl-button
           :disabled="!someUncommittedChanges"
-          type="button"
-          class="btn btn-primary btn-sm btn-block qa-begin-commit-button"
+          category="primary"
+          variant="info"
+          block
+          class="qa-begin-commit-button"
           data-testid="begin-commit-button"
           @click="beginCommit"
         >
           {{ __('Commit…') }}
-        </button>
+        </gl-button>
         <p class="text-center bold">{{ overviewText }}</p>
       </div>
       <form v-else ref="formEl" @submit.prevent.stop="commit">
@@ -158,28 +160,21 @@ export default {
           <gl-button
             :loading="submitCommitLoading"
             class="float-left qa-commit-button"
-            size="small"
             category="primary"
             variant="success"
             @click="commit"
           >
             {{ __('Commit') }}
           </gl-button>
-          <button
-            v-if="!discardDraftButtonDisabled"
-            type="button"
-            class="btn btn-default btn-sm float-right"
-            @click="discardDraft"
-          >
+          <gl-button v-if="!discardDraftButtonDisabled" class="float-right" @click="discardDraft">
             {{ __('Discard draft') }}
-          </button>
+          </gl-button>
           <gl-button
             v-else
             type="button"
             class="float-right"
             category="secondary"
             variant="default"
-            size="small"
             @click="toggleIsCompact"
           >
             {{ __('Collapse') }}

@@ -31,7 +31,7 @@ const SUBMIT_ACTION_TEXT = {
 const SUBMIT_BUTTON_CLASS = {
   create: 'btn-success',
   update: 'btn-success',
-  delete: 'btn-remove',
+  delete: 'btn-danger',
 };
 
 export default {

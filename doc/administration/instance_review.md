@@ -1,7 +1,7 @@
 ---
 stage: Growth
 group: Conversion
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Instance Review
@@ -21,5 +21,9 @@ you qualify for a free Instance Review.
 1. GitLab redirects you to a form with prefilled data obtained from your instance.
 1. Click **Submit** to see the initial report.
 
-A GitLab team member will contact you for further review, to provide suggestions
-that will help you improve your usage of GitLab.
+<!-- vale gitlab.FutureTense = NO -->
+
+You will be contacted by a GitLab team member for further review, to provide suggestions
+intended to help you improve your usage of GitLab.
+
+<!-- vale gitlab.FutureTense = YES -->

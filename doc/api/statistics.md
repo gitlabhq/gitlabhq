@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Application statistics API
@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 List the current statistics of the GitLab instance. You have to be an
 administrator in order to perform this action.
 
-NOTE: **Note:**
+NOTE:
 These statistics are approximate.
 
 ```plaintext

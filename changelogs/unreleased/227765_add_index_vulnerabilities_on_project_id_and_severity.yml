@@ -1,0 +1,6 @@
+---
+title: Add index for the `vulnerabilities` table on `project_id`, `state`, and `severity`
+  columns
+merge_request: 48930
+author:
+type: added

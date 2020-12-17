@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Knowledge
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 ---
 
 # Design Management **(CORE)**
@@ -37,7 +37,7 @@ to be enabled:
 
 Design Management also requires that projects are using
 [hashed storage](../../../administration/raketasks/storage.md#migrate-to-hashed-storage). Since
- GitLab 10.0, newly created projects use hashed storage by default. A GitLab admin can verify the storage type of a
+ GitLab 10.0, newly created projects use hashed storage by default. A GitLab administrator can verify the storage type of a
 project by navigating to **Admin Area > Projects** and then selecting the project in question.
 A project can be identified as hashed-stored if its *Gitaly relative path* contains `@hashed`.
 
@@ -95,7 +95,7 @@ you can drag and drop designs onto the dedicated drop zone to upload them.
 
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202634)
 in GitLab 12.10, you can also copy images from your file system and
-paste them directly on GitLab's Design page as a new design.
+paste them directly on the GitLab Design page as a new design.
 
 On macOS you can also take a screenshot and immediately copy it to
 the clipboard by simultaneously clicking <kbd>Control</kbd> + <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>3</kbd>, and then paste it as a design.
@@ -170,7 +170,7 @@ Once selected, click the **Delete selected** button to confirm the deletion:
 
 ![Delete multiple designs](img/delete_multiple_designs_v12_4.png)
 
-NOTE: **Note:**
+NOTE:
 Only the latest version of the designs can be deleted.
 Deleted designs are not permanently lost; they can be
 viewed by browsing previous versions.

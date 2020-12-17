@@ -66,4 +66,12 @@
       .form-group
         = f.label field_name, "#{type.upcase} SSH keys", class: 'label-bold'
         = f.select field_name, key_restriction_options_for_select(type), {}, class: 'form-control'
+
+    .form-group
+      %label.label-bold= s_('AdminSettings|Feed token')
+      .form-check
+        = f.check_box :disable_feed_token, class: 'form-check-input'
+        = f.label :disable_feed_token, class: 'form-check-label' do
+          = s_('AdminSettings|Disable feed token')
+
   = f.submit _('Save changes'), class: "gl-button btn btn-success"

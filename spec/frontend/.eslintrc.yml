@@ -25,3 +25,6 @@ rules:
         - 'testAction'
   jest/no-test-callback:
     - off
+  "@gitlab/no-global-event-off":
+    - off
+

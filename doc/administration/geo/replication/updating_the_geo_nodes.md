@@ -1,13 +1,13 @@
 ---
 stage: Enablement
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: howto
 ---
 
 # Updating the Geo nodes **(PREMIUM ONLY)**
 
-CAUTION: **Warning:**
+WARNING:
 Read these sections carefully before updating your Geo nodes. Not following
 version-specific update steps may result in unexpected downtime. If you have
 any specific questions, [contact Support](https://about.gitlab.com/support/#contact-support).
@@ -20,7 +20,7 @@ Updating Geo nodes involves performing:
 
 ## General update steps
 
-NOTE: **Note:**
+NOTE:
 These general update steps are not intended for [high-availability deployments](https://docs.gitlab.com/omnibus/update/README.html#multi-node--ha-deployment), and will cause downtime. If you want to avoid downtime, consider using [zero downtime updates](https://docs.gitlab.com/omnibus/update/README.html#zero-downtime-updates).
 
 To update the Geo nodes when a new GitLab version is released, update **primary**

@@ -1,12 +1,12 @@
 ---
 stage: Release
-group: Release Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+group: Release
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # GitLab Pages administration for source installations
 
-NOTE: **Note:**
+NOTE:
 Before attempting to enable GitLab Pages, first make sure you have
 [installed GitLab](../../install/installation.md) successfully.
 
@@ -77,7 +77,7 @@ host that GitLab runs. For example, an entry would look like this:
 where `example.io` is the domain under which GitLab Pages will be served
 and `192.0.2.1` is the IP address of your GitLab instance.
 
-NOTE: **Note:**
+NOTE:
 You should not use the GitLab domain to serve user pages. For more information
 see the [security section](#security).
 
@@ -349,7 +349,7 @@ world. Custom domains and TLS are supported.
 
 ## NGINX caveats
 
-NOTE: **Note:**
+NOTE:
 The following information applies only for installations from source.
 
 Be extra careful when setting up the domain name in the NGINX configuration. You must
@@ -395,7 +395,7 @@ API to check that the user is authorized to read that site.
 From [GitLab 12.8](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/3689) onward,
 Access Control parameters for Pages are set in a configuration file, which
 by convention is named `gitlab-pages-config`. The configuration file is passed to
-pages using the `-config flag` or CONFIG environment variable.
+pages using the `-config flag` or `CONFIG` environment variable.
 
 Pages access control is disabled by default. To enable it:
 

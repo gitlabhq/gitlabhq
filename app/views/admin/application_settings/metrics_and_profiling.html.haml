@@ -6,7 +6,7 @@
   .settings-header
     %h4
       = _('Metrics - Prometheus')
-    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Enable and configure Prometheus metrics.')
@@ -17,7 +17,7 @@
   .settings-header
     %h4
       = _('Metrics - Grafana')
-    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Enable and configure Grafana.')
@@ -28,7 +28,7 @@
   .settings-header
     %h4
       = _('Profiling - Performance bar')
-    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Enable access to the Performance Bar for a given group.')
@@ -42,7 +42,7 @@
   .settings-header#usage-statistics
     %h4
       = _('Usage statistics')
-    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Enable or disable version check and usage ping.')

@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: reference
 ---
 
@@ -11,14 +11,14 @@ type: reference
 > - Until GitLab 12.8, the feature name was Plugins.
 
 With custom file hooks, GitLab administrators can introduce custom integrations
-without modifying GitLab's source code.
+without modifying the GitLab source code.
 
-NOTE: **Note:**
+NOTE:
 Instead of writing and supporting your own file hook you can make changes
 directly to the GitLab source code and contribute back upstream. This way we can
 ensure functionality is preserved across versions and covered by tests.
 
-NOTE: **Note:**
+NOTE:
 File hooks must be configured on the filesystem of the GitLab server. Only GitLab
 server administrators will be able to complete these tasks. Explore
 [system hooks](../system_hooks/system_hooks.md) or [webhooks](../user/project/integrations/webhooks.md) as an option if you do not have filesystem access.

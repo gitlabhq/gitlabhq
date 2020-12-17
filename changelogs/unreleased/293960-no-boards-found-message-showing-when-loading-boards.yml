@@ -1,0 +1,5 @@
+---
+title: Resolve No boards found message showing when loading boards
+merge_request: 50140
+author:
+type: fixed

@@ -6,30 +6,6 @@ import GpgBadges from '~/gpg_badges';
 import initWebIdeLink from '~/pages/projects/shared/web_ide_link';
 import '~/sourcegraph/load';
 import PipelineTourSuccessModal from '~/blob/pipeline_tour_success_modal.vue';
-import { parseBoolean } from '~/lib/utils/common_utils';
-
-const createGitlabCiYmlVisualization = (containerId = '#js-blob-toggle-graph-preview') => {
-  const el = document.querySelector(containerId);
-  const { isCiConfigFile, blobData } = el?.dataset;
-
-  if (el && parseBoolean(isCiConfigFile)) {
-    // eslint-disable-next-line no-new
-    new Vue({
-      el,
-      components: {
-        GitlabCiYamlVisualization: () =>
-          import('~/pipelines/components/pipeline_graph/gitlab_ci_yaml_visualization.vue'),
-      },
-      render(createElement) {
-        return createElement('gitlabCiYamlVisualization', {
-          props: {
-            blobData,
-          },
-        });
-      },
-    });
-  }
-};
 
 document.addEventListener('DOMContentLoaded', () => {
   new BlobViewer(); // eslint-disable-line no-new
@@ -73,25 +49,19 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   }
 
-  if (gon.features?.suggestPipeline) {
-    const successPipelineEl = document.querySelector('.js-success-pipeline-modal');
+  const successPipelineEl = document.querySelector('.js-success-pipeline-modal');
 
-    if (successPipelineEl) {
-      // eslint-disable-next-line no-new
-      new Vue({
-        el: successPipelineEl,
-        render(createElement) {
-          return createElement(PipelineTourSuccessModal, {
-            props: {
-              ...successPipelineEl.dataset,
-            },
-          });
-        },
-      });
-    }
-  }
-
-  if (gon?.features?.gitlabCiYmlPreview) {
-    createGitlabCiYmlVisualization();
+  if (successPipelineEl) {
+    // eslint-disable-next-line no-new
+    new Vue({
+      el: successPipelineEl,
+      render(createElement) {
+        return createElement(PipelineTourSuccessModal, {
+          props: {
+            ...successPipelineEl.dataset,
+          },
+        });
+      },
+    });
   }
 });

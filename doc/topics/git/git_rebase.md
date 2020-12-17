@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: concepts, howto
 description: "Introduction to Git rebase, force-push, and resolving merge conflicts through the command line."
 ---
@@ -24,7 +24,7 @@ Git. There are the following rebase options:
 
 ### Before rebasing
 
-CAUTION: **Warning:**
+WARNING:
 `git rebase` rewrites the commit history. It **can be harmful** to do it in
 shared branches. It can cause complex and hard to resolve merge conflicts. In
 these cases, instead of rebasing your branch against the default branch,
@@ -129,7 +129,7 @@ message, squash (join multiple commits into one), edit, or delete
 commits. It is handy for changing past commit messages,
 as well as for organizing the commit history of your branch to keep it clean.
 
-TIP: **Tip:**
+NOTE:
 If you want to keep the default branch commit history clean, you don't need to
 manually squash all your commits before merging every merge request;
 with [Squash and Merge](../../user/project/merge_requests/squash_and_merge.md)
@@ -263,7 +263,7 @@ To fix conflicts locally, you can use the following method:
    git rebase --continue
    ```
 
-   CAUTION: **Caution:**
+   WARNING:
    Up to this point, you can run `git rebase --abort` to stop the process.
    Git aborts the rebase and rolls back the branch to the state you had before
    running `git rebase`.

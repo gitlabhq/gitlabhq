@@ -235,6 +235,7 @@ describe('static_site_editor/pages/home', () => {
 
   describe('when submitting changes succeeds', () => {
     const newContent = `new ${content}`;
+    const formattedMarkdown = `formatted ${content}`;
 
     beforeEach(() => {
       mutateMock.mockResolvedValueOnce(hasSubmittedChangesMutationPayload).mockResolvedValueOnce({
@@ -243,7 +244,12 @@ describe('static_site_editor/pages/home', () => {
         },
       });
 
-      buildWrapper({ content: newContent, images });
+      buildWrapper();
+
+      findEditMetaModal().vm.show = jest.fn();
+
+      findEditArea().vm.$emit('submit', { content: newContent, images, formattedMarkdown });
+
       findEditMetaModal().vm.$emit('primary', mergeRequestMeta);
 
       return wrapper.vm.$nextTick();
@@ -266,6 +272,7 @@ describe('static_site_editor/pages/home', () => {
         variables: {
           input: {
             content: newContent,
+            formattedMarkdown,
             project,
             sourcePath,
             username,

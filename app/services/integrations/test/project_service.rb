@@ -16,9 +16,7 @@ module Integrations
 
       def data
         strong_memoize(:data) do
-          next pipeline_events_data if integration.is_a?(::PipelinesEmailService)
-
-          case event
+          case event || integration.default_test_event
           when 'push', 'tag_push'
             push_events_data
           when 'note', 'confidential_note'
@@ -37,8 +35,6 @@ module Integrations
             deployment_events_data
           when 'release'
             releases_events_data
-          else
-            push_events_data
           end
         end
       end

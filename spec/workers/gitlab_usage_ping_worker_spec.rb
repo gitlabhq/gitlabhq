@@ -8,6 +8,13 @@ RSpec.describe GitlabUsagePingWorker, :clean_gitlab_redis_shared_state do
     allow(subject).to receive(:sleep)
   end
 
+  it 'does not run for GitLab.com' do
+    allow(Gitlab).to receive(:com?).and_return(true)
+    expect(SubmitUsagePingService).not_to receive(:new)
+
+    subject.perform
+  end
+
   it 'delegates to SubmitUsagePingService' do
     expect_next_instance_of(SubmitUsagePingService) { |service| expect(service).to receive(:execute) }
 

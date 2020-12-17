@@ -245,7 +245,7 @@ RSpec.describe Service do
 
       context 'with a previous existing service (MockCiService) and a new service (Asana)' do
         before do
-          Service.insert(type: 'MockCiService', instance: true)
+          Service.insert({ type: 'MockCiService', instance: true })
           Service.delete_by(type: 'AsanaService', instance: true)
         end
 
@@ -291,7 +291,7 @@ RSpec.describe Service do
 
         context 'with a previous existing service (Previous) and a new service (Asana)' do
           before do
-            Service.insert(type: 'PreviousService', template: true)
+            Service.insert({ type: 'PreviousService', template: true })
             Service.delete_by(type: 'AsanaService', template: true)
           end
 
@@ -915,6 +915,15 @@ RSpec.describe Service do
       expect(described_class).to receive(:project_specific_services_names).and_call_original
 
       described_class.available_services_names(include_dev: false)
+    end
+
+    it { expect(described_class.available_services_names).to include('jenkins') }
+  end
+
+  describe '.project_specific_services_names' do
+    it do
+      expect(described_class.project_specific_services_names)
+        .to include(*described_class::PROJECT_SPECIFIC_SERVICE_NAMES)
     end
   end
 end

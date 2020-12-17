@@ -1,0 +1,5 @@
+---
+title: Fix missing item with same name in autocomplete suggestions
+merge_request: 48410
+author: Paul Ungureanu @ungps
+type: fixed

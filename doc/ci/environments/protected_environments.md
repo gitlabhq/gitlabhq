@@ -1,7 +1,7 @@
 ---
 stage: Release
-group: Release Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+group: Release
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: concepts, howto
 ---
 
@@ -20,7 +20,7 @@ specific environments are "protected" to prevent unauthorized people from affect
 By default, a protected environment does one thing: it ensures that only people
 with the right privileges can deploy to it, thus keeping it safe.
 
-NOTE: **Note:**
+NOTE:
 A GitLab admin is always allowed to use environments, even if they are protected.
 
 To protect, update, or unprotect an environment, you need to have at least

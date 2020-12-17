@@ -57,6 +57,13 @@ module TokenAuthenticatable
         token = read_attribute(token_field)
         token.present? && ActiveSupport::SecurityUtils.secure_compare(other_token, token)
       end
+
+      # Base strategy delegates to this method for formatting a token before
+      # calling set_token. Can be overridden in models to e.g. add a prefix
+      # to the tokens
+      mod.define_method("format_#{token_field}") do |token|
+        token
+      end
     end
 
     def token_authenticatable_module

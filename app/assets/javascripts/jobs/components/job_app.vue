@@ -1,12 +1,11 @@
 <script>
 import { throttle, isEmpty } from 'lodash';
 import { mapGetters, mapState, mapActions } from 'vuex';
-import { GlLoadingIcon, GlIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import { GlLoadingIcon, GlIcon, GlSafeHtmlDirective as SafeHtml, GlAlert } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
 import { polyfillSticky } from '~/lib/utils/sticky';
 import CiHeader from '~/vue_shared/components/header_ci_component.vue';
-import Callout from '~/vue_shared/components/callout.vue';
 import EmptyState from './empty_state.vue';
 import EnvironmentsBlock from './environments_block.vue';
 import ErasedBlock from './erased_block.vue';
@@ -22,7 +21,6 @@ export default {
   name: 'JobPageApp',
   components: {
     CiHeader,
-    Callout,
     EmptyState,
     EnvironmentsBlock,
     ErasedBlock,
@@ -34,6 +32,7 @@ export default {
     Sidebar,
     GlLoadingIcon,
     SharedRunner: () => import('ee_component/jobs/components/shared_runner_limit_block.vue'),
+    GlAlert,
   },
   directives: {
     SafeHtml,
@@ -223,10 +222,14 @@ export default {
               @clickedSidebarButton="toggleSidebar"
             />
           </div>
-
-          <callout v-if="shouldRenderHeaderCallout">
+          <gl-alert
+            v-if="shouldRenderHeaderCallout"
+            variant="danger"
+            class="gl-mt-3"
+            :dismissible="false"
+          >
             <div v-safe-html="job.callout_message"></div>
-          </callout>
+          </gl-alert>
         </header>
         <!-- EO Header Section -->
 

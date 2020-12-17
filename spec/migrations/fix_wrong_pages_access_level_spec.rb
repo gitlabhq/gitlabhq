@@ -17,7 +17,7 @@ RSpec.describe FixWrongPagesAccessLevel, :sidekiq_might_not_need_inline, schema:
   let(:features_table) { table(:project_features) }
 
   let(:subgroup) do
-    root_group = namespaces_table.create(path: "group", name: "group")
+    root_group = namespaces_table.create!(path: "group", name: "group")
     namespaces_table.create!(path: "subgroup", name: "group", parent_id: root_group.id)
   end
 

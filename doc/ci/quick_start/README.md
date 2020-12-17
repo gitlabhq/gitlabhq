@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Continuous Integration
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -53,7 +53,7 @@ must [install GitLab Runner](https://docs.gitlab.com/runner/install/) and
 [register](https://docs.gitlab.com/runner/register/) at least one runner.
 
 If you are testing CI/CD, you can install GitLab Runner and register runners on your local machine.
-When your CI/CD jobs run, they will run on your local machine.
+When your CI/CD jobs run, they run on your local machine.
 
 ### Create a `.gitlab-ci.yml` file
 
@@ -79,7 +79,7 @@ To create a `.gitlab-ci.yml` file:
 
    ![New file](img/new_file_v13_6.png)
 
-1. For the **File name** type `.gitlab-ci.yml` and in the larger window,
+1. For the **Filename**, type `.gitlab-ci.yml` and in the larger window,
    paste this sample code:
 
    ```yaml

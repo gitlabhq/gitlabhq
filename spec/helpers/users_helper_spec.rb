@@ -272,4 +272,82 @@ RSpec.describe UsersHelper do
       end
     end
   end
+
+  describe '#user_display_name' do
+    subject { helper.user_display_name(user) }
+
+    before do
+      stub_current_user(nil)
+    end
+
+    context 'for a confirmed user' do
+      let(:user) { create(:user) }
+
+      before do
+        stub_profile_permission_allowed(true)
+      end
+
+      it { is_expected.to eq(user.name) }
+    end
+
+    context 'for an unconfirmed user' do
+      let(:user) { create(:user, :unconfirmed) }
+
+      before do
+        stub_profile_permission_allowed(false)
+      end
+
+      it { is_expected.to eq('Unconfirmed user') }
+
+      context 'when current user is an admin' do
+        before do
+          admin_user = create(:admin)
+          stub_current_user(admin_user)
+          stub_profile_permission_allowed(true, admin_user)
+        end
+
+        it { is_expected.to eq(user.name) }
+      end
+
+      context 'when the current user is self' do
+        before do
+          stub_current_user(user)
+          stub_profile_permission_allowed(true, user)
+        end
+
+        it { is_expected.to eq(user.name) }
+      end
+    end
+
+    context 'for a blocked user' do
+      let(:user) { create(:user, :blocked) }
+
+      it { is_expected.to eq('Blocked user') }
+    end
+
+    def stub_current_user(user)
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    def stub_profile_permission_allowed(allowed, current_user = nil)
+      allow(helper).to receive(:can?).with(current_user, :read_user_profile, user).and_return(allowed)
+    end
+  end
+
+  describe '#admin_users_data_attributes' do
+    subject(:data) { helper.admin_users_data_attributes([user]) }
+
+    it 'users matches the serialized json' do
+      entity = double
+      expect_next_instance_of(Admin::UserSerializer) do |instance|
+        expect(instance).to receive(:represent).with([user]).and_return(entity)
+      end
+      expect(entity).to receive(:to_json).and_return("{\"username\":\"admin\"}")
+      expect(data[:users]).to eq "{\"username\":\"admin\"}"
+    end
+
+    it 'paths matches the schema' do
+      expect(data[:paths]).to match_schema('entities/admin_users_data_attributes_paths')
+    end
+  end
 end

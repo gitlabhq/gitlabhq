@@ -1,7 +1,7 @@
 ---
 stage: Configure
 group: Configure
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Terraform state administration (alpha)
@@ -20,7 +20,7 @@ These locations can be configured using the options described below.
 
 ## Using local storage
 
-NOTE: **Note:**
+NOTE:
 This is the default configuration
 
 To change the location where Terraform state files are stored locally, follow the steps
@@ -52,8 +52,8 @@ below.
 
 ## Using object storage **(CORE ONLY)**
 
-Instead of storing Terraform state files on disk, we recommend the use of an object
-store that is S3-compatible instead. This configuration relies on valid credentials to
+Instead of storing Terraform state files on disk, we recommend the use of [one of the supported object
+storage options](object_storage.md#options). This configuration relies on valid credentials to
 be configured already.
 
 [Read more about using object storage with GitLab](object_storage.md).
@@ -68,7 +68,7 @@ The following settings are:
 | Setting | Description | Default |
 |---------|-------------|---------|
 | `enabled` | Enable/disable object storage | `false` |
-| `remote_directory` | The bucket name where Terraform state files will be stored | |
+| `remote_directory` | The bucket name where Terraform state files are stored | |
 | `connection` | Various connection options described below | |
 
 ### S3-compatible connection settings
@@ -91,7 +91,7 @@ See [the available connection settings for different providers](object_storage.m
    }
    ```
 
-   NOTE: **Note:**
+   NOTE:
    If you are using AWS IAM profiles, be sure to omit the AWS access key and secret access key/value pairs.
 
    ```ruby

@@ -203,14 +203,6 @@ module DiffHelper
     set_secure_cookie(:diff_view, params.delete(:view), type: CookiesHelper::COOKIE_TYPE_PERMANENT) if params[:view].present?
   end
 
-  def unified_diff_lines_view_type(project)
-    if Feature.enabled?(:unified_diff_lines, project, default_enabled: true)
-      'inline'
-    else
-      diff_view
-    end
-  end
-
   private
 
   def diff_btn(title, name, selected)

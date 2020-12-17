@@ -32,9 +32,9 @@ class Iteration < ApplicationRecord
   scope :closed, -> { with_state(:closed) }
 
   scope :within_timeframe, -> (start_date, end_date) do
-    where('start_date is not NULL or due_date is not NULL')
-      .where('start_date is NULL or start_date <= ?', end_date)
-      .where('due_date is NULL or due_date >= ?', start_date)
+    where('start_date IS NOT NULL OR due_date IS NOT NULL')
+      .where('start_date IS NULL OR start_date <= ?', end_date)
+      .where('due_date IS NULL OR due_date >= ?', start_date)
   end
 
   scope :start_date_passed, -> { where('start_date <= ?', Date.current).where('due_date >= ?', Date.current) }

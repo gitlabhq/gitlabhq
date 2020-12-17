@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', :requires_admin do
+  RSpec.describe 'Create', :requires_admin, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/261793', type: :investigating } do
     describe 'View merge request merge-ref diff' do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
@@ -37,8 +37,8 @@ module QA
             mr_page.click_diffs_tab
             mr_page.click_target_version_dropdown
 
-            expect(mr_page.version_dropdown_content).to include('master (HEAD)')
-            expect(mr_page.version_dropdown_content).not_to include('master (base)')
+            expect(mr_page.version_dropdown_content).to include("#{project.default_branch} (HEAD)")
+            expect(mr_page.version_dropdown_content).not_to include("#{project.default_branch} (base)")
             expect(mr_page).to have_file(merge_request.file_name)
             expect(mr_page).not_to have_file(new_file_name)
           end
@@ -62,8 +62,8 @@ module QA
             mr_page.click_diffs_tab
             mr_page.click_target_version_dropdown
 
-            expect(mr_page.version_dropdown_content).to include('master (HEAD)')
-            expect(mr_page.version_dropdown_content).to include('master (base)')
+            expect(mr_page.version_dropdown_content).to include("#{project.default_branch} (HEAD)")
+            expect(mr_page.version_dropdown_content).to include("#{project.default_branch} (base)")
             expect(mr_page).to have_file(merge_request.file_name)
             expect(mr_page).to have_file(new_file_name)
           end

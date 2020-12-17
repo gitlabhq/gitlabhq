@@ -1,0 +1,8 @@
+Issue was cloned.
+
+<% if @can_access_project %>
+  New issue location:
+  <%= project_issue_url(@new_issue.project, @new_issue) %>
+<% else %>
+  You don't have access to the project.
+<% end %>

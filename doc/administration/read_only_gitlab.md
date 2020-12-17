@@ -1,12 +1,12 @@
 ---
 stage: Enablement
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Place GitLab into a read-only state **(CORE ONLY)**
 
-CAUTION: **Warning:**
+WARNING:
 This document should be used as a temporary solution.
 There's work in progress to make this
 [possible with Geo](https://gitlab.com/groups/gitlab-org/-/epics/2149).

@@ -37,26 +37,25 @@
                 - elsif user.blocked?
                   - if user.blocked_pending_approval?
                     = link_to s_('AdminUsers|Approve'), approve_admin_user_path(user), method: :put
-                    %button.btn.btn-default-tertiary.js-confirm-modal-button{ data: user_block_data(user, user_block_effects) }
-                      = s_('AdminUsers|Block')
+                    = link_to s_('AdminUsers|Reject'), reject_admin_user_path(user), method: :delete
                   - else
-                    = link_to _('Unblock'), unblock_admin_user_path(user), method: :put
+                    %button.btn.btn-default-tertiary.js-confirm-modal-button{ data: user_unblock_data(user) }
+                      = s_('AdminUsers|Unblock')
                 - else
                   %button.btn.btn-default-tertiary.js-confirm-modal-button{ data: user_block_data(user, user_block_effects) }
                     = s_('AdminUsers|Block')
               - if user.can_be_deactivated?
                 %li
-                  %button.btn.btn-default-tertiary{ data: { 'gl-modal-action': 'deactivate',
-                    url: deactivate_admin_user_path(user),
-                    username: sanitize_name(user.name) } }
+                  %button.btn.btn-default-tertiary.js-confirm-modal-button{ data: user_deactivation_data(user, user_deactivation_effects) }
                     = s_('AdminUsers|Deactivate')
               - elsif user.deactivated?
                 %li
-                  = link_to _('Activate'), activate_admin_user_path(user), method: :put
+                  %button.btn.btn-default-tertiary.js-confirm-modal-button{ data: user_activation_data(user) }
+                    = s_('AdminUsers|Activate')
               - if user.access_locked?
                 %li
                   = link_to _('Unlock'), unlock_admin_user_path(user), method: :put, data: { confirm: _('Are you sure?') }
-            - if can?(current_user, :destroy_user, user)
+            - if can?(current_user, :destroy_user, user) && !user.blocked_pending_approval?
               %li.divider
               - if user.can_be_removed?
                 %li

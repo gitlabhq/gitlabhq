@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # GitLab utilities
@@ -100,7 +100,7 @@ Refer to [`override.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gi
     end
     ```
 
-    Note that the check will only happen when either:
+    Note that the check only happens when either:
 
     - The overriding method is defined in a class, or:
     - The overriding method is defined in a module, and it's prepended to

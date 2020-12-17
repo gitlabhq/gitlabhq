@@ -185,10 +185,15 @@ export default class SSHMirror {
   }
 
   destroy() {
+    // eslint-disable-next-line @gitlab/no-global-event-off
     this.$repositoryUrl.off('keyup');
+    // eslint-disable-next-line @gitlab/no-global-event-off
     this.$form.find('.js-known-hosts').off('keyup');
+    // eslint-disable-next-line @gitlab/no-global-event-off
     this.$dropdownAuthType.off('change');
+    // eslint-disable-next-line @gitlab/no-global-event-off
     this.$btnDetectHostKeys.off('click');
+    // eslint-disable-next-line @gitlab/no-global-event-off
     this.$btnSSHHostsShowAdvanced.off('click');
   }
 }

@@ -1,0 +1,6 @@
+---
+title: Add `project_id` column into the `vulnerability_remediations` table to scope
+  the records with projects
+merge_request: 49219
+author:
+type: added

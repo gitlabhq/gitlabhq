@@ -85,6 +85,7 @@ module UsageDataHelpers
       projects
       projects_imported_from_github
       projects_asana_active
+      projects_jenkins_active
       projects_jira_active
       projects_jira_server_active
       projects_jira_cloud_active
@@ -161,7 +162,6 @@ module UsageDataHelpers
       git
       gitaly
       database
-      avg_cycle_analytics
       prometheus_metrics_enabled
       web_ide_clientside_preview_enabled
       ingress_modsecurity_enabled

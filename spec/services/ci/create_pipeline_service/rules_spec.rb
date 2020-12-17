@@ -93,6 +93,148 @@ RSpec.describe Ci::CreatePipelineService do
         end
       end
     end
+
+    context 'with allow_failure and exit_codes', :aggregate_failures do
+      def find_job(name)
+        pipeline.builds.find_by(name: name)
+      end
+
+      let(:config) do
+        <<-EOY
+          job-1:
+            script: exit 42
+            allow_failure:
+              exit_codes: 42
+            rules:
+              - if: $CI_COMMIT_REF_NAME == "master"
+                allow_failure: false
+
+          job-2:
+            script: exit 42
+            allow_failure:
+              exit_codes: 42
+            rules:
+              - if: $CI_COMMIT_REF_NAME == "master"
+                allow_failure: true
+
+          job-3:
+            script: exit 42
+            allow_failure:
+              exit_codes: 42
+            rules:
+              - if: $CI_COMMIT_REF_NAME == "master"
+                when: manual
+        EOY
+      end
+
+      it 'creates a pipeline' do
+        expect(pipeline).to be_persisted
+        expect(build_names).to contain_exactly(
+          'job-1', 'job-2', 'job-3'
+        )
+      end
+
+      it 'assigns job:allow_failure values to the builds' do
+        expect(find_job('job-1').allow_failure).to eq(false)
+        expect(find_job('job-2').allow_failure).to eq(true)
+        expect(find_job('job-3').allow_failure).to eq(false)
+      end
+
+      it 'removes exit_codes if allow_failure is specified' do
+        expect(find_job('job-1').options.dig(:allow_failure_criteria)).to be_nil
+        expect(find_job('job-2').options.dig(:allow_failure_criteria)).to be_nil
+        expect(find_job('job-3').options.dig(:allow_failure_criteria, :exit_codes)).to eq([42])
+      end
+
+      context 'with ci_allow_failure_with_exit_codes disabled' do
+        before do
+          stub_feature_flags(ci_allow_failure_with_exit_codes: false)
+        end
+
+        it 'does not persist allow_failure_criteria' do
+          expect(pipeline).to be_persisted
+
+          expect(find_job('job-1').options.key?(:allow_failure_criteria)).to be_falsey
+          expect(find_job('job-2').options.key?(:allow_failure_criteria)).to be_falsey
+          expect(find_job('job-3').options.key?(:allow_failure_criteria)).to be_falsey
+        end
+      end
+    end
+
+    context 'if:' do
+      context 'variables:' do
+        let(:config) do
+          <<-EOY
+          job:
+            script: "echo job1"
+            variables:
+              VAR1: my var 1
+              VAR2: my var 2
+            rules:
+              - if: $CI_COMMIT_REF_NAME =~ /master/
+                variables:
+                  VAR1: overridden var 1
+              - if: $CI_COMMIT_REF_NAME =~ /feature/
+                variables:
+                  VAR2: overridden var 2
+                  VAR3: new var 3
+              - when: on_success
+          EOY
+        end
+
+        let(:job) { pipeline.builds.find_by(name: 'job') }
+
+        context 'when matching to the first rule' do
+          let(:ref) { 'refs/heads/master' }
+
+          it 'overrides VAR1' do
+            variables = job.scoped_variables_hash
+
+            expect(variables['VAR1']).to eq('overridden var 1')
+            expect(variables['VAR2']).to eq('my var 2')
+            expect(variables['VAR3']).to be_nil
+          end
+
+          context 'when FF ci_rules_variables is disabled' do
+            before do
+              stub_feature_flags(ci_rules_variables: false)
+            end
+
+            it 'does not affect variables' do
+              variables = job.scoped_variables_hash
+
+              expect(variables['VAR1']).to eq('my var 1')
+              expect(variables['VAR2']).to eq('my var 2')
+              expect(variables['VAR3']).to be_nil
+            end
+          end
+        end
+
+        context 'when matching to the second rule' do
+          let(:ref) { 'refs/heads/feature' }
+
+          it 'overrides VAR2 and adds VAR3' do
+            variables = job.scoped_variables_hash
+
+            expect(variables['VAR1']).to eq('my var 1')
+            expect(variables['VAR2']).to eq('overridden var 2')
+            expect(variables['VAR3']).to eq('new var 3')
+          end
+        end
+
+        context 'when no match' do
+          let(:ref) { 'refs/heads/wip' }
+
+          it 'does not affect vars' do
+            variables = job.scoped_variables_hash
+
+            expect(variables['VAR1']).to eq('my var 1')
+            expect(variables['VAR2']).to eq('my var 2')
+            expect(variables['VAR3']).to be_nil
+          end
+        end
+      end
+    end
   end
 
   context 'when workflow:rules are used' do

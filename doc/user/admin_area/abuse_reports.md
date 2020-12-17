@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Access
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference, howto
 ---
 
@@ -73,7 +73,7 @@ page:
 
 ![abuse-report-blocked-user-image](img/abuse_report_blocked_user.png)
 
-NOTE: **Note:**
+NOTE:
 Users can be [blocked](../../api/users.md#block-user) and
 [unblocked](../../api/users.md#unblock-user) using the GitLab API.
 

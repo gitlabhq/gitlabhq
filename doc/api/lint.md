@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Continuous Integration
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # CI Lint API
@@ -246,7 +246,7 @@ GitLab API using `curl` and `jq` in a one-line command:
 
 ```shell
 jq --null-input --arg yaml "$(<example-gitlab-ci.yml)" '.content=$yaml' \
-| curl 'https://gitlab.com/api/v4/ci/lint?include_merged_yaml=true' \
+| curl "https://gitlab.com/api/v4/ci/lint?include_merged_yaml=true" \
 --header 'Content-Type: application/json' \
 --data @-
 ```
@@ -293,7 +293,7 @@ With a one-line command, you can:
 
 ```shell
 jq --null-input --arg yaml "$(<example-gitlab-ci.yml)" '.content=$yaml' \
-| curl 'https://gitlab.com/api/v4/ci/lint?include_merged_yaml=true' \
+| curl "https://gitlab.com/api/v4/ci/lint?include_merged_yaml=true" \
 --header 'Content-Type: application/json' --data @- \
 | jq --raw-output '.merged_yaml | fromjson'
 ```

@@ -116,7 +116,7 @@ export default function initDiffsApp(store) {
           isFluidLayout: this.isFluidLayout,
           dismissEndpoint: this.dismissEndpoint,
           showSuggestPopover: this.showSuggestPopover,
-          viewDiffsFileByFile: this.viewDiffsFileByFile,
+          fileByFileUserPreference: this.viewDiffsFileByFile,
         },
       });
     },

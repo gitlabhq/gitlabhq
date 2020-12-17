@@ -34,7 +34,7 @@ module Issues
     private
 
     def associations_to_preload
-      %i(author assignees timelogs)
+      %i(author assignees timelogs milestone)
     end
 
     def header_to_value_hash

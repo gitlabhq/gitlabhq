@@ -1,0 +1,5 @@
+---
+title: Add member_events column to web_hooks table
+merge_request: 49273
+author:
+type: added

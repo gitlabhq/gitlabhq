@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Testing
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference, howto
 ---
 
@@ -51,7 +51,7 @@ from any job in any stage in the pipeline. The coverage will be displayed for ea
 Hovering over the coverage bar will provide further information, such as the number
 of times the line was checked by tests.
 
-NOTE: **Note:**
+NOTE:
 The Cobertura XML parser currently does not support the `sources` element and ignores it. It is assumed that
 the `filename` of a `class` element contains the full path relative to the project root.
 
@@ -60,7 +60,7 @@ the `filename` of a `class` element contains the full path relative to the proje
 ### JavaScript example
 
 The following [`gitlab-ci.yml`](../../../ci/yaml/README.md) example uses [Mocha](https://mochajs.org/)
-JavaScript testing and [NYC](https://github.com/istanbuljs/nyc) coverage-tooling to
+JavaScript testing and [nyc](https://github.com/istanbuljs/nyc) coverage-tooling to
 generate the coverage artifact:
 
 ```yaml
@@ -78,7 +78,7 @@ test:
 #### Maven example
 
 The following [`gitlab-ci.yml`](../../../ci/yaml/README.md) example for Java or Kotlin uses [Maven](https://maven.apache.org/)
-to build the project and [Jacoco](https://www.eclemma.org/jacoco/) coverage-tooling to
+to build the project and [JaCoCo](https://www.eclemma.org/jacoco/) coverage-tooling to
 generate the coverage artifact.
 You can check the [Docker image configuration and scripts](https://gitlab.com/haynes/jacoco2cobertura) if you want to build your own image.
 
@@ -118,7 +118,7 @@ coverage-jdk11:
 #### Gradle example
 
 The following [`gitlab-ci.yml`](../../../ci/yaml/README.md) example for Java or Kotlin uses [Gradle](https://gradle.org/)
-to build the project and [Jacoco](https://www.eclemma.org/jacoco/) coverage-tooling to
+to build the project and [JaCoCo](https://www.eclemma.org/jacoco/) coverage-tooling to
 generate the coverage artifact.
 You can check the [Docker image configuration and scripts](https://gitlab.com/haynes/jacoco2cobertura) if you want to build your own image.
 
@@ -153,4 +153,24 @@ coverage-jdk11:
   artifacts:
     reports:
       cobertura: build/cobertura.xml
+```
+
+### Python example
+
+The following [`gitlab-ci.yml`](../../../ci/yaml/README.md) example for Python uses [pytest-cov](https://pytest-cov.readthedocs.io/) to collect test coverage data and [coverage.py](https://coverage.readthedocs.io/) to convert the report to use full relative paths.
+The information isn't displayed without the conversion.
+
+This example assumes that the code for your package is in `src/` and your tests are in `tests.py`:
+
+```yaml
+run tests:
+  stage: test
+  image: python:3
+  script:
+    - pip install pytest pytest-cov
+    - pytest --cov=src/ tests.py
+    - coverage xml
+  artifacts:
+    reports:
+      cobertura: coverage.xml
 ```

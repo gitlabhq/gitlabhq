@@ -8,13 +8,25 @@ module DependencyProxy
       @token = token
     end
 
-    def execute
+    def execute_with_manifest
+      raise ArgumentError, 'Block must be provided' unless block_given?
+
       response = Gitlab::HTTP.get(manifest_url, headers: auth_headers)
 
       if response.success?
-        success(manifest: response.body)
+        file = Tempfile.new
+
+        begin
+          file.write(response)
+          file.flush
+
+          yield(success(file: file, digest: response.headers['docker-content-digest']))
+        ensure
+          file.close
+          file.unlink
+        end
       else
-        error(response.body, response.code)
+        yield(error(response.body, response.code))
       end
     rescue Timeout::Error => exception
       error(exception.message, 599)

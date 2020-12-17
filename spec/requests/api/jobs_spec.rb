@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::Jobs do
+  using RSpec::Parameterized::TableSyntax
   include HttpIOHelpers
 
   let_it_be(:project, reload: true) do
@@ -715,6 +716,58 @@ RSpec.describe API::Jobs do
 
       it 'does not return specific job trace' do
         expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when ci_debug_trace is set to true' do
+      before_all do
+        create(:ci_instance_variable, key: 'CI_DEBUG_TRACE', value: true)
+      end
+
+      where(:public_builds, :user_project_role, :expected_status) do
+        true         | 'developer'     | :ok
+        true         | 'guest'         | :forbidden
+        false        | 'developer'     | :ok
+        false        | 'guest'         | :forbidden
+      end
+
+      with_them do
+        before do
+          project.update!(public_builds: public_builds)
+          project.add_role(user, user_project_role)
+
+          get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user)
+        end
+
+        it 'renders trace to authorized users' do
+          expect(response).to have_gitlab_http_status(expected_status)
+        end
+      end
+
+      context 'with restrict_access_to_build_debug_mode feature disabled' do
+        before do
+          stub_feature_flags(restrict_access_to_build_debug_mode: false)
+        end
+
+        where(:public_builds, :user_project_role, :expected_status) do
+          true         | 'developer'     | :ok
+          true         | 'guest'         | :ok
+          false        | 'developer'     | :ok
+          false        | 'guest'         | :forbidden
+        end
+
+        with_them do
+          before do
+            project.update!(public_builds: public_builds)
+            project.add_role(user, user_project_role)
+
+            get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user)
+          end
+
+          it 'renders trace to authorized users' do
+            expect(response).to have_gitlab_http_status(expected_status)
+          end
+        end
       end
     end
   end

@@ -17,17 +17,26 @@ module Gitlab
 
         file_paths = []
 
-        process_commits do |commit|
-          validate_once(commit) do
-            commit.raw_deltas.each do |diff|
-              file_paths.concat([diff.new_path, diff.old_path].compact)
+        if ::Feature.enabled?(:diff_check_with_paths_changed_rpc, project, default_enabled: true)
+          paths = project.repository.find_changed_paths(commits.map(&:sha))
+          paths.each do |path|
+            file_paths.concat([path.path])
 
-              validate_diff(diff)
+            validate_diff(path)
+          end
+        else
+          process_commits do |commit|
+            validate_once(commit) do
+              commit.raw_deltas.each do |diff|
+                file_paths.concat([diff.new_path, diff.old_path].compact)
+
+                validate_diff(diff)
+              end
             end
           end
         end
 
-        validate_file_paths(file_paths)
+        validate_file_paths(file_paths.uniq)
       end
 
       private

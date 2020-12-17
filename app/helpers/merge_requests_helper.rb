@@ -39,19 +39,6 @@ module MergeRequestsHelper
     end
   end
 
-  def ci_build_details_path(merge_request)
-    build_url = merge_request.source_project.ci_service.build_page(merge_request.diff_head_sha, merge_request.source_branch)
-    return unless build_url
-
-    parsed_url = URI.parse(build_url)
-
-    unless parsed_url.userinfo.blank?
-      parsed_url.userinfo = ''
-    end
-
-    parsed_url.to_s
-  end
-
   def merge_path_description(merge_request, separator)
     if merge_request.for_fork?
       "Project:Branches: #{@merge_request.source_project_path}:#{@merge_request.source_branch} #{separator} #{@merge_request.target_project.full_path}:#{@merge_request.target_branch}"
@@ -96,7 +83,7 @@ module MergeRequestsHelper
   end
 
   def merge_request_button_hidden?(merge_request, closed)
-    merge_request.closed? == closed || (merge_request.merged? == closed && !merge_request.closed?) || merge_request.closed_without_fork?
+    merge_request.closed? == closed || (merge_request.merged? == closed && !merge_request.closed?) || merge_request.closed_or_merged_without_fork?
   end
 
   def merge_request_version_path(project, merge_request, merge_request_diff, start_sha = nil)
@@ -165,6 +152,12 @@ module MergeRequestsHelper
     else
       current_user.fork_of(project)
     end
+  end
+
+  def toggle_draft_merge_request_path(issuable)
+    wip_event = issuable.work_in_progress? ? 'unwip' : 'wip'
+
+    issuable_path(issuable, { merge_request: { wip_event: wip_event } })
   end
 end
 

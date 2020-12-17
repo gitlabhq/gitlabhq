@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: concepts, howto
 ---
 
@@ -55,7 +55,7 @@ GET /-/health
 Example request:
 
 ```shell
-curl 'https://gitlab.example.com/-/health'
+curl "https://gitlab.example.com/-/health"
 ```
 
 Example response:
@@ -70,7 +70,7 @@ The readiness probe checks whether the GitLab instance is ready
 to accept traffic via Rails Controllers. The check by default
 does validate only instance-checks.
 
-If the `all=1` parameter is specified, the check will also validate
+If the `all=1` parameter is specified, the check also validates
 the dependent services (Database, Redis, Gitaly etc.)
 and gives a status for each.
 
@@ -82,7 +82,7 @@ GET /-/readiness?all=1
 Example request:
 
 ```shell
-curl 'https://gitlab.example.com/-/readiness'
+curl "https://gitlab.example.com/-/readiness"
 ```
 
 Example response:
@@ -97,7 +97,7 @@ Example response:
 }
 ```
 
-On failure, the endpoint will return a `503` HTTP status code.
+On failure, the endpoint returns a `503` HTTP status code.
 
 This check does hit the database and Redis if authenticated via `token`.
 
@@ -105,7 +105,7 @@ This check is being exempt from Rack Attack.
 
 ## Liveness
 
-DANGER: **Warning:**
+WARNING:
 In GitLab [12.4](https://about.gitlab.com/upcoming-releases/)
 the response body of the Liveness check was changed
 to match the example below.
@@ -121,12 +121,12 @@ GET /-/liveness
 Example request:
 
 ```shell
-curl 'https://gitlab.example.com/-/liveness'
+curl "https://gitlab.example.com/-/liveness"
 ```
 
 Example response:
 
-On success, the endpoint will return a `200` HTTP status code, and a response like below.
+On success, the endpoint returns a `200` HTTP status code, and a response like below.
 
 ```json
 {
@@ -134,13 +134,13 @@ On success, the endpoint will return a `200` HTTP status code, and a response li
 }
 ```
 
-On failure, the endpoint will return a `503` HTTP status code.
+On failure, the endpoint returns a `503` HTTP status code.
 
 This check is being exempt from Rack Attack.
 
 ## Access token (Deprecated)
 
-NOTE: **Note:**
+NOTE:
 Access token has been deprecated in GitLab 9.4 in favor of [IP whitelist](#ip-whitelist).
 
 An access token needs to be provided while accessing the probe endpoints. The current
@@ -155,7 +155,7 @@ The access token can be passed as a URL parameter:
 https://gitlab.example.com/-/readiness?token=ACCESS_TOKEN
 ```
 
-NOTE: **Note:**
+NOTE:
 In case the database or Redis service are inaccessible, the probe endpoints response is not guaranteed to be correct.
 You should switch to [IP whitelist](#ip-whitelist) from deprecated access token to avoid it.
 

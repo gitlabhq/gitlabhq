@@ -1,0 +1,24 @@
+#import "ee_else_ce/boards/graphql/board_list.fragment.graphql"
+
+mutation CreateBoardList(
+  $boardId: BoardID!
+  $backlog: Boolean
+  $labelId: LabelID
+  $milestoneId: MilestoneID
+  $assigneeId: UserID
+) {
+  boardListCreate(
+    input: {
+      boardId: $boardId
+      backlog: $backlog
+      labelId: $labelId
+      milestoneId: $milestoneId
+      assigneeId: $assigneeId
+    }
+  ) {
+    list {
+      ...BoardListFragment
+    }
+    errors
+  }
+}

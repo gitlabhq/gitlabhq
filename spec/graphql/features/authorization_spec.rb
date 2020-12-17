@@ -55,7 +55,7 @@ RSpec.describe 'Gitlab::Graphql::Authorization' do
     describe 'with a single permission' do
       let(:query_type) do
         query_factory do |query|
-          query.field :item, type, null: true, resolve: ->(obj, args, ctx) { test_object }, authorize: permission_single
+          query.field :item, type, null: true, resolver: simple_resolver(test_object), authorize: permission_single
         end
       end
 
@@ -66,7 +66,7 @@ RSpec.describe 'Gitlab::Graphql::Authorization' do
       let(:query_type) do
         permissions = permission_collection
         query_factory do |qt|
-          qt.field :item, type, null: true, resolve: ->(obj, args, ctx) { test_object } do
+          qt.field :item, type, null: true, resolver: simple_resolver(test_object) do
             authorize permissions
           end
         end
@@ -79,7 +79,7 @@ RSpec.describe 'Gitlab::Graphql::Authorization' do
   describe 'Field authorizations when field is a built in type' do
     let(:query_type) do
       query_factory do |query|
-        query.field :item, type, null: true, resolve: ->(obj, args, ctx) { test_object }
+        query.field :item, type, null: true, resolver: simple_resolver(test_object)
       end
     end
 
@@ -132,7 +132,7 @@ RSpec.describe 'Gitlab::Graphql::Authorization' do
   describe 'Type authorizations' do
     let(:query_type) do
       query_factory do |query|
-        query.field :item, type, null: true, resolve: ->(obj, args, ctx) { test_object }
+        query.field :item, type, null: true, resolver: simple_resolver(test_object)
       end
     end
 
@@ -169,7 +169,7 @@ RSpec.describe 'Gitlab::Graphql::Authorization' do
 
     let(:query_type) do
       query_factory do |query|
-        query.field :item, type, null: true, resolve: ->(obj, args, ctx) { test_object }, authorize: permission_2
+        query.field :item, type, null: true, resolver: simple_resolver(test_object), authorize: permission_2
       end
     end
 
@@ -188,7 +188,7 @@ RSpec.describe 'Gitlab::Graphql::Authorization' do
 
     let(:query_type) do
       query_factory do |query|
-        query.field :item, type.connection_type, null: true, resolve: ->(obj, args, ctx) { [test_object, second_test_object] }
+        query.field :item, type.connection_type, null: true, resolver: simple_resolver([test_object, second_test_object])
       end
     end
 
@@ -208,9 +208,7 @@ RSpec.describe 'Gitlab::Graphql::Authorization' do
     describe 'limiting connections with multiple objects' do
       let(:query_type) do
         query_factory do |query|
-          query.field :item, type.connection_type, null: true, resolve: ->(obj, args, ctx) do
-            [test_object, second_test_object]
-          end
+          query.field :item, type.connection_type, null: true, resolver: simple_resolver([test_object, second_test_object])
         end
       end
 
@@ -234,7 +232,7 @@ RSpec.describe 'Gitlab::Graphql::Authorization' do
 
     let(:query_type) do
       query_factory do |query|
-        query.field :item, [type], null: true, resolve: ->(obj, args, ctx) { [test_object] }
+        query.field :item, [type], null: true, resolver: simple_resolver([test_object])
       end
     end
 
@@ -262,13 +260,13 @@ RSpec.describe 'Gitlab::Graphql::Authorization' do
       type_factory do |type|
         type.graphql_name 'FakeProjectType'
         type.field :test_issues, issue_type.connection_type, null: false,
-                   resolve: -> (_, _, _) { Issue.where(project: [visible_project, other_project]).order(id: :asc) }
+                   resolver: simple_resolver(Issue.where(project: [visible_project, other_project]).order(id: :asc))
       end
     end
 
     let(:query_type) do
       query_factory do |query|
-        query.field :test_project, project_type, null: false, resolve: -> (_, _, _) { visible_project }
+        query.field :test_project, project_type, null: false, resolver: simple_resolver(visible_project)
       end
     end
 

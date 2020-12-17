@@ -1,0 +1,5 @@
+---
+title: Migrate HAML buttons to Pajamas in app/views/profiles/keys
+merge_request: 49421
+author: Jonston Chan @JonstonChan
+type: changed

@@ -1,7 +1,7 @@
 ---
 stage: Monitor
 group: Health
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Registry exporter
@@ -21,7 +21,7 @@ To enable it:
 1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
    for the changes to take effect.
 
-Prometheus will now automatically begin collecting performance data from
+Prometheus automatically begins collecting performance data from
 the registry exporter exposed under `localhost:5001/metrics`.
 
 [← Back to the main Prometheus page](index.md)

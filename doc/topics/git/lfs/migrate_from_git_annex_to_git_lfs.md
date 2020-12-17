@@ -1,13 +1,13 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: reference, howto
 ---
 
 # Migration guide from Git Annex to Git LFS
 
-DANGER: **Deprecated:**
+WARNING:
 Git Annex support [has been removed](https://gitlab.com/gitlab-org/gitlab/-/issues/1648) in GitLab Enterprise
 Edition 9.0 (2017/03/22).
 
@@ -32,7 +32,7 @@ ones that GitLab developed.
 - Git Annex requires a more complex setup, but has much more options than Git
   LFS. You can compare the commands each one offers by running `man git-annex`
   and `man git-lfs`.
-- Annex files cannot be browsed directly in GitLab's interface, whereas LFS
+- Annex files cannot be browsed directly in the GitLab interface, whereas LFS
   files can.
 
 ## Migration steps
@@ -82,7 +82,7 @@ Here you'll find a guide on
 Since Annex files are stored as objects with symlinks and cannot be directly
 modified, we need to first remove those symlinks.
 
-NOTE: **Note:**
+NOTE:
 Make sure the you read about the [`direct` mode](https://git-annex.branchable.com/direct_mode/) as it contains
 useful information that may fit in your use case. Note that `annex direct` is
 deprecated in Git Annex version 6, so you may need to upgrade your repository
@@ -216,7 +216,7 @@ GitLab.com), therefore, you don't need to do anything server-side.
 After the migration finishes successfully, you can remove all `git-annex`
 related branches from your repository.
 
-On GitLab, navigate to your project's **Repository ➔ Branches** and delete all
+On GitLab, navigate to your project's **Repository > Branches** and delete all
 branches created by Git Annex: `git-annex`, and all under `synced/`.
 
 ![repository branches](img/git-annex-branches.png)

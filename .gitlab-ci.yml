@@ -109,3 +109,4 @@ include:
   - local: .gitlab/ci/releases.gitlab-ci.yml
   - local: .gitlab/ci/notify.gitlab-ci.yml
   - local: .gitlab/ci/dast.gitlab-ci.yml
+  - local: .gitlab/ci/workhorse.gitlab-ci.yml

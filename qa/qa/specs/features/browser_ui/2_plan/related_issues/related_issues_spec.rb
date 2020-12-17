@@ -37,7 +37,7 @@ module QA
 
           show.click_remove_related_issue_button
 
-          expect(show).to have_no_text(issue_2.title, wait: max_wait)
+          expect(show).not_to have_text(issue_2.title, wait: max_wait)
         end
       end
     end

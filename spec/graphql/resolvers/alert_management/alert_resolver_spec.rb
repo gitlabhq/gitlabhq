@@ -33,9 +33,19 @@ RSpec.describe Resolvers::AlertManagement::AlertResolver do
     end
 
     context 'finding by status' do
-      let(:args) { { status: [Types::AlertManagement::StatusEnum.values['IGNORED'].value] } }
+      let(:args) { { statuses: [Types::AlertManagement::StatusEnum.values['IGNORED'].value] } }
 
       it { is_expected.to contain_exactly(ignored_alert) }
+    end
+
+    context 'filtering by domain' do
+      let_it_be(:alert1) { create(:alert_management_alert, project: project, monitoring_tool: 'Cilium', domain: :threat_monitoring) }
+      let_it_be(:alert2) { create(:alert_management_alert, project: project, monitoring_tool: 'Cilium', domain: :threat_monitoring) }
+      let_it_be(:alert3) { create(:alert_management_alert, project: project, monitoring_tool: 'generic') }
+
+      let(:args) { { domain: 'operations' } }
+
+      it { is_expected.to contain_exactly(resolved_alert, ignored_alert, alert3) }
     end
 
     describe 'sorting' do

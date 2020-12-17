@@ -104,6 +104,37 @@ RSpec.describe SearchHelper do
         })
       end
 
+      it 'includes the users recently viewed issues with the exact same name', :aggregate_failures do
+        recent_issues = instance_double(::Gitlab::Search::RecentIssues)
+        expect(::Gitlab::Search::RecentIssues).to receive(:new).with(user: user).and_return(recent_issues)
+        project1 = create(:project, namespace: user.namespace)
+        project2 = create(:project, namespace: user.namespace)
+        issue1 = create(:issue, title: 'issue same_name', project: project1)
+        issue2 = create(:issue, title: 'issue same_name', project: project2)
+
+        expect(recent_issues).to receive(:search).with('the search term').and_return(Issue.id_in_ordered([issue1.id, issue2.id]))
+
+        results = search_autocomplete_opts("the search term")
+
+        expect(results.count).to eq(2)
+
+        expect(results[0]).to include({
+          category: 'Recent issues',
+          id: issue1.id,
+          label: 'issue same_name',
+          url: Gitlab::Routing.url_helpers.project_issue_path(issue1.project, issue1),
+          avatar_url: '' # This project didn't have an avatar so set this to ''
+        })
+
+        expect(results[1]).to include({
+          category: 'Recent issues',
+          id: issue2.id,
+          label: 'issue same_name',
+          url: Gitlab::Routing.url_helpers.project_issue_path(issue2.project, issue2),
+          avatar_url: '' # This project didn't have an avatar so set this to ''
+        })
+      end
+
       it 'includes the users recently viewed merge requests', :aggregate_failures do
         recent_merge_requests = instance_double(::Gitlab::Search::RecentMergeRequests)
         expect(::Gitlab::Search::RecentMergeRequests).to receive(:new).with(user: user).and_return(recent_merge_requests)
@@ -502,11 +533,11 @@ RSpec.describe SearchHelper do
       using RSpec::Parameterized::TableSyntax
 
       where(:description, :expected) do
-        'test'                                                                 | '<span class="gl-text-black-normal gl-font-weight-bold">test</span>'
-        '<span style="color: blue;">this test should not be blue</span>'       | '<span>this <span class="gl-text-black-normal gl-font-weight-bold">test</span> should not be blue</span>'
-        '<a href="#" onclick="alert(\'XSS\')">Click Me test</a>'               | '<a href="#">Click Me <span class="gl-text-black-normal gl-font-weight-bold">test</span></a>'
-        '<script type="text/javascript">alert(\'Another XSS\');</script> test' | ' <span class="gl-text-black-normal gl-font-weight-bold">test</span>'
-        'Lorem test ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec.' | 'Lorem <span class="gl-text-black-normal gl-font-weight-bold">test</span> ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Don...'
+        'test'                                                                 | '<span class="gl-text-gray-900 gl-font-weight-bold">test</span>'
+        '<span style="color: blue;">this test should not be blue</span>'       | '<span>this <span class="gl-text-gray-900 gl-font-weight-bold">test</span> should not be blue</span>'
+        '<a href="#" onclick="alert(\'XSS\')">Click Me test</a>'               | '<a href="#">Click Me <span class="gl-text-gray-900 gl-font-weight-bold">test</span></a>'
+        '<script type="text/javascript">alert(\'Another XSS\');</script> test' | ' <span class="gl-text-gray-900 gl-font-weight-bold">test</span>'
+        'Lorem test ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec.' | 'Lorem <span class="gl-text-gray-900 gl-font-weight-bold">test</span> ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Don...'
       end
 
       with_them do

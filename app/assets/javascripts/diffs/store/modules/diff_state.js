@@ -5,6 +5,8 @@ import {
   DIFF_VIEW_COOKIE_NAME,
   DIFF_WHITESPACE_COOKIE_NAME,
 } from '../../constants';
+
+import { fileByFile } from '../../utils/preferences';
 import { getDefaultWhitespace } from '../utils';
 
 const viewTypeFromQueryString = getParameterValues('view')[0];
@@ -39,6 +41,7 @@ export default () => ({
   highlightedRow: null,
   renderTreeList: true,
   showWhitespace: getDefaultWhitespace(whiteSpaceFromQueryString, whiteSpaceFromCookie),
+  viewDiffsFileByFile: fileByFile(),
   fileFinderVisible: false,
   dismissEndpoint: '',
   showSuggestPopover: true,

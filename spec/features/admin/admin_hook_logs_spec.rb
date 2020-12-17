@@ -8,7 +8,9 @@ RSpec.describe 'Admin::HookLogs' do
   let(:hook_log) { create(:web_hook_log, web_hook: system_hook, internal_error_message: 'some error') }
 
   before do
-    sign_in(create(:admin))
+    admin = create(:admin)
+    sign_in(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
   end
 
   it 'show list of hook logs' do

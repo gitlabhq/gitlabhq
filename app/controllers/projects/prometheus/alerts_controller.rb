@@ -16,7 +16,7 @@ module Projects
       before_action :authorize_read_prometheus_alerts!, except: [:notify]
       before_action :alert, only: [:update, :show, :destroy, :metrics_dashboard]
 
-      feature_category :alert_management
+      feature_category :incident_management
 
       def index
         render json: serialize_as_json(alerts)
@@ -73,7 +73,7 @@ module Projects
 
       def notify_service
         Projects::Prometheus::Alerts::NotifyService
-          .new(project, current_user, params.permit!)
+          .new(project, params.permit!)
       end
 
       def create_service

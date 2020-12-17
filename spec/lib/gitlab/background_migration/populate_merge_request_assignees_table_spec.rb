@@ -11,8 +11,8 @@ RSpec.describe Gitlab::BackgroundMigration::PopulateMergeRequestAssigneesTable, 
   let(:user_2) { users.create!(email: 'test2@example.com', projects_limit: 100, username: 'test') }
   let(:user_3) { users.create!(email: 'test3@example.com', projects_limit: 100, username: 'test') }
 
-  let(:namespace) { namespaces.create(name: 'gitlab', path: 'gitlab-org') }
-  let(:project) { projects.create(namespace_id: namespace.id, name: 'foo') }
+  let(:namespace) { namespaces.create!(name: 'gitlab', path: 'gitlab-org') }
+  let(:project) { projects.create!(namespace_id: namespace.id, name: 'foo') }
   let(:merge_requests) { table(:merge_requests) }
   let(:merge_request_assignees) { table(:merge_request_assignees) }
 
@@ -24,7 +24,7 @@ RSpec.describe Gitlab::BackgroundMigration::PopulateMergeRequestAssigneesTable, 
                   source_branch: 'mr name',
                   title: "mr name#{id}")
 
-    merge_requests.create(params)
+    merge_requests.create!(params)
   end
 
   before do

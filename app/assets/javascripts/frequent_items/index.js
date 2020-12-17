@@ -2,6 +2,7 @@ import $ from 'jquery';
 import Vue from 'vue';
 import Translate from '~/vue_shared/translate';
 import eventHub from './event_hub';
+import { createStore } from '~/frequent_items/store';
 
 Vue.use(Translate);
 
@@ -28,11 +29,15 @@ export default function initFrequentItemDropdowns() {
       return;
     }
 
+    const dropdownType = namespace;
+    const store = createStore({ dropdownType });
+
     import('./components/app.vue')
       .then(({ default: FrequentItems }) => {
         // eslint-disable-next-line no-new
         new Vue({
           el,
+          store,
           data() {
             const { dataset } = this.$options.el;
             const item = {

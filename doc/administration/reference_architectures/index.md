@@ -2,14 +2,14 @@
 type: reference, concepts
 stage: Enablement
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Reference architectures
 
 You can set up GitLab on a single server or scale it up to serve many users.
 This page details the recommended Reference Architectures that were built and
-verified by GitLab's Quality and Support teams.
+verified by the GitLab Quality and Support teams.
 
 Below is a chart representing each architecture tier and the number of users
 they can handle. As your number of users grow with time, it’s recommended that
@@ -18,8 +18,8 @@ you scale GitLab accordingly.
 ![Reference Architectures](img/reference-architectures.png)
 <!-- Internal link: https://docs.google.com/spreadsheets/d/1obYP4fLKkVVDOljaI3-ozhmCiPtEeMblbBKkf2OADKs/edit#gid=1403207183 -->
 
-Testing on these reference architectures were performed with
-[GitLab's Performance Tool](https://gitlab.com/gitlab-org/quality/performance)
+Testing on these reference architectures was performed with the
+[GitLab Performance Tool](https://gitlab.com/gitlab-org/quality/performance)
 at specific coded workloads, and the throughputs used for testing were
 calculated based on sample customer data. Select the
 [reference architecture](#available-reference-architectures) that matches your scale.
@@ -36,8 +36,8 @@ the [default setup](#automated-backups) by
 [installing GitLab](../../install/README.md) on a single machine to minimize
 maintenance and resource costs.
 
-If your organization has more than 2,000 users, the recommendation is to scale
-GitLab's components to multiple machine nodes. The machine nodes are grouped by
+If your organization has more than 2,000 users, the recommendation is to scale the
+GitLab components to multiple machine nodes. The machine nodes are grouped by
 components. The addition of these nodes increases the performance and
 scalability of to your GitLab instance.
 
@@ -47,7 +47,7 @@ When scaling GitLab, there are several factors to consider:
 - A load balancer is added in front to distribute traffic across the application nodes.
 - The application nodes connects to a shared file server and PostgreSQL and Redis services on the backend.
 
-NOTE: **Note:**
+NOTE:
 Depending on your workflow, the following recommended reference architectures
 may need to be adapted accordingly. Your workload is influenced by factors
 including how active your users are, how much automation you use, mirroring,
@@ -67,6 +67,11 @@ The following reference architectures are available:
 - [Up to 10,000 users](10k_users.md)
 - [Up to 25,000 users](25k_users.md)
 - [Up to 50,000 users](50k_users.md)
+
+A GitLab [Premium or Ultimate](https://about.gitlab.com/pricing/#self-managed) license is required
+to get assistance from Support with troubleshooting the [2,000 users](2k_users.md)
+and higher reference architectures.
+[Read more about our definition of scaled architectures](https://about.gitlab.com/support/#definition-of-scaled-architecture).
 
 ## Availability Components
 
@@ -151,7 +156,27 @@ is recommended.
 instance to other geographical locations as a read-only fully operational instance
 that can also be promoted in case of disaster.
 
-## Configuring select components with Cloud Native Helm
+## Deviating from the suggested reference architectures
+
+As a general rule of thumb, the further away you move from the Reference Architectures,
+the harder it will be get support for it. With any deviation, you're introducing
+a layer of complexity that will add challenges to finding out where potential
+issues might lie.
+
+The reference architectures use the official GitLab Linux packages (Omnibus
+GitLab) to install and configure the various components (with one notable exception being the suggested select Cloud Native installation method described below). The components are
+installed on separate machines (virtualized or bare metal), with machine hardware
+requirements listed in the "Configuration" column and equivalent VM standard sizes listed
+in GCP/AWS/Azure columns of each [available reference architecture](#available-reference-architectures).
+
+Running components on Docker (including Compose) with the same specs should be fine, as Docker is well known in terms of support.
+However, it is still an additional layer and may still add some support complexities, such as not being able to run `strace` easily in containers.
+
+Other technologies, like [Docker swarm](https://docs.docker.com/engine/swarm/)
+are not officially supported, but can be implemented at your own risk. In that
+case, GitLab Support will not be able to help you.
+
+### Configuring select components with Cloud Native Helm
 
 We also provide [Helm charts](https://docs.gitlab.com/charts/) as a Cloud Native installation
 method for GitLab. For the reference architectures, select components can be set up in this

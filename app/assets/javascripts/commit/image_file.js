@@ -27,7 +27,7 @@ export default class ImageFile {
 
   initViewModes() {
     const viewMode = viewModes[0];
-    $('.view-modes', this.file).removeClass('hide');
+    $('.view-modes', this.file).removeClass('gl-display-none');
     $('.view-modes-menu', this.file).on('click', 'li', event => {
       if (!$(event.currentTarget).hasClass('active')) {
         return this.activateViewMode(event.currentTarget.className);
@@ -42,12 +42,10 @@ export default class ImageFile {
       .filter(`.${viewMode}`)
       .addClass('active');
 
-    // eslint-disable-next-line no-jquery/no-fade
-    return $(`.view:visible:not(.${viewMode})`, this.file).fadeOut(200, () => {
-      // eslint-disable-next-line no-jquery/no-fade
-      $(`.view.${viewMode}`, this.file).fadeIn(200);
-      return this.initView(viewMode);
-    });
+    $(`.view:visible:not(.${viewMode})`, this.file).addClass('gl-display-none');
+    $(`.view.${viewMode}`, this.file).removeClass('gl-display-none');
+
+    return this.initView(viewMode);
   }
 
   initView(viewMode) {
@@ -74,12 +72,14 @@ export default class ImageFile {
       callback(e, left);
     };
 
+    // eslint-disable-next-line @gitlab/no-global-event-off
     $el
       .off('mousedown')
       .off('touchstart')
       .on('mousedown', dragStart)
       .on('touchstart', dragStart);
 
+    // eslint-disable-next-line @gitlab/no-global-event-off
     $body
       .off('mouseup')
       .off('mousemove')
@@ -120,7 +120,7 @@ export default class ImageFile {
         return this.requestImageInfo($('img', wrap), (width, height) => {
           $('.image-info .meta-width', wrap).text(`${width}px`);
           $('.image-info .meta-height', wrap).text(`${height}px`);
-          return $('.image-info', wrap).removeClass('hide');
+          return $('.image-info', wrap).removeClass('gl-display-none');
         });
       });
     },

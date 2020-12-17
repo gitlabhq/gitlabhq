@@ -38,10 +38,11 @@ module Types
       field :user,
             Types::UserType,
             null: false,
-            description: 'The user who awarded the emoji',
-            resolve: -> (award_emoji, _args, _context) {
-              Gitlab::Graphql::Loaders::BatchModelLoader.new(User, award_emoji.user_id).find
-            }
+            description: 'The user who awarded the emoji'
+
+      def user
+        Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.user_id).find
+      end
     end
   end
 end

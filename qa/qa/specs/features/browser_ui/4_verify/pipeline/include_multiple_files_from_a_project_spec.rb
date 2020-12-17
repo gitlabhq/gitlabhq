@@ -3,9 +3,8 @@
 require 'faker'
 
 module QA
-  RSpec.describe 'Verify', :runner, :requires_admin, :skip_live_env do
-    describe "Include multiple files from a project" do
-      let(:feature_flag) { :ci_include_multiple_files_from_project }
+  RSpec.describe 'Verify', :runner do
+    describe 'Include multiple files from a project' do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(8)}" }
       let(:expected_text) { Faker::Lorem.sentence }
       let(:unexpected_text) { Faker::Lorem.sentence }
@@ -31,16 +30,14 @@ module QA
       end
 
       before do
-        Runtime::Feature.enable(feature_flag)
         Flow::Login.sign_in
         add_included_files
         add_main_ci_file
         project.visit!
-        view_the_last_pipeline
+        Flow::Pipeline.visit_latest_pipeline(pipeline_condition: 'succeeded')
       end
 
       after do
-        Runtime::Feature.disable(feature_flag)
         runner.remove_via_api!
       end
 
@@ -57,7 +54,7 @@ module QA
 
         Page::Project::Job::Show.perform do |job|
           aggregate_failures 'main CI is not overridden' do
-            expect(job.output).to have_no_content("#{unexpected_text}")
+            expect(job.output).not_to have_content("#{unexpected_text}")
             expect(job.output).to have_content("#{expected_text}")
           end
         end
@@ -79,12 +76,6 @@ module QA
           commit.commit_message = 'Add files'
           commit.add_files([included_file_1, included_file_2])
         end
-      end
-
-      def view_the_last_pipeline
-        Page::Project::Menu.perform(&:click_ci_cd_pipelines)
-        Page::Project::Pipeline::Index.perform(&:wait_for_latest_pipeline_success)
-        Page::Project::Pipeline::Index.perform(&:click_on_latest_pipeline)
       end
 
       def main_ci_file

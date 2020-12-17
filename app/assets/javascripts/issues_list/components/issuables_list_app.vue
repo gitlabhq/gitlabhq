@@ -215,6 +215,7 @@ export default {
     this.fetchIssuables();
   },
   beforeDestroy() {
+    // eslint-disable-next-line @gitlab/no-global-event-off
     issueableEventHub.$off('issuables:toggleBulkEdit');
   },
   methods: {

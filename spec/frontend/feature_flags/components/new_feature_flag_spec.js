@@ -1,17 +1,11 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import MockAdapter from 'axios-mock-adapter';
 import { GlAlert } from '@gitlab/ui';
 import { TEST_HOST } from 'spec/test_constants';
 import Form from '~/feature_flags/components/form.vue';
 import createStore from '~/feature_flags/store/new';
 import NewFeatureFlag from '~/feature_flags/components/new_feature_flag.vue';
-import {
-  ROLLOUT_STRATEGY_ALL_USERS,
-  DEFAULT_PERCENT_ROLLOUT,
-  NEW_FLAG_ALERT,
-} from '~/feature_flags/constants';
-import axios from '~/lib/utils/axios_utils';
+import { ROLLOUT_STRATEGY_ALL_USERS, DEFAULT_PERCENT_ROLLOUT } from '~/feature_flags/constants';
 import { allUsersStrategy } from '../mock_data';
 
 const userCalloutId = 'feature_flags_new_version';
@@ -42,9 +36,6 @@ describe('New feature flag form', () => {
         userCalloutsPath,
         environmentsEndpoint: 'environments.json',
         projectId: '8',
-        glFeatures: {
-          featureFlagsNewVersion: true,
-        },
         ...opts,
       },
     });
@@ -57,8 +48,6 @@ describe('New feature flag form', () => {
   afterEach(() => {
     wrapper.destroy();
   });
-
-  const findAlert = () => wrapper.find(GlAlert);
 
   describe('with error', () => {
     it('should render the error', () => {
@@ -100,37 +89,5 @@ describe('New feature flag form', () => {
     const strategies = wrapper.find(Form).props('strategies');
 
     expect(strategies).toEqual([allUsersStrategy]);
-  });
-
-  describe('without new version flags', () => {
-    beforeEach(() => factory({ glFeatures: { featureFlagsNewVersion: false } }));
-
-    it('should alert users that feature flags are changing soon', () => {
-      expect(findAlert().text()).toBe(NEW_FLAG_ALERT);
-    });
-  });
-
-  describe('dismissing new version alert', () => {
-    let mock;
-
-    beforeEach(() => {
-      mock = new MockAdapter(axios);
-      mock.onPost(userCalloutsPath, { feature_name: userCalloutId }).reply(200);
-      factory({ glFeatures: { featureFlagsNewVersion: false } });
-      findAlert().vm.$emit('dismiss');
-      return wrapper.vm.$nextTick();
-    });
-
-    afterEach(() => {
-      mock.restore();
-    });
-
-    it('should hide the alert', () => {
-      expect(findAlert().exists()).toBe(false);
-    });
-
-    it('should send the dismissal event', () => {
-      expect(mock.history.post.length).toBe(1);
-    });
   });
 });

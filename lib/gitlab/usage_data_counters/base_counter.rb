@@ -29,6 +29,12 @@ module Gitlab::UsageDataCounters
         known_events.map { |event| [counter_key(event), -1] }.to_h
       end
 
+      def fetch_supported_event(event_name)
+        return if prefix.present? && !event_name.start_with?(prefix)
+
+        known_events.find { |event| counter_key(event) == event_name.to_sym }
+      end
+
       private
 
       def require_known_event(event)

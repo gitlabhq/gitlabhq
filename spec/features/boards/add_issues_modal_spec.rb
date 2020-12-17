@@ -37,6 +37,10 @@ RSpec.describe 'Issue Boards add issue modal', :js do
   end
 
   context 'modal interaction' do
+    before do
+      stub_feature_flags(add_issues_button: true)
+    end
+
     it 'opens modal' do
       click_button('Add issues')
 
@@ -72,6 +76,7 @@ RSpec.describe 'Issue Boards add issue modal', :js do
 
   context 'issues list' do
     before do
+      stub_feature_flags(add_issues_button: true)
       click_button('Add issues')
 
       wait_for_requests

@@ -7,6 +7,8 @@ module Resolvers
 
       type Types::DesignManagement::VersionType, null: true
 
+      requires_argument!
+
       authorize :read_design
 
       alias_method :collection, :object

@@ -5,7 +5,7 @@
       .dropdown
         %button.dropdown.dropdown-new.btn.gl-button.btn-default.has-tooltip{ type: 'button', 'data-toggle' => 'dropdown', title: s_('Environments|Deploy to...') }
           = sprite_icon('play')
-          = icon('caret-down')
+          = sprite_icon('chevron-down')
         %ul.dropdown-menu.dropdown-menu-right
           - actions.each do |action|
             - next unless can?(current_user, :update_build, action)

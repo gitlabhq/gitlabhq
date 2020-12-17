@@ -512,7 +512,8 @@ RSpec.describe Projects::BranchesController do
               state: 'all'
             }
 
-        expect(controller.instance_variable_get(:@branch_pipeline_statuses)["master"].group).to eq("success")
+        expect(assigns[:branch_pipeline_statuses]["master"].group).to eq("success")
+        expect(assigns[:sort]).to eq('updated_desc')
       end
     end
 
@@ -543,8 +544,8 @@ RSpec.describe Projects::BranchesController do
               state: 'all'
             }
 
-        expect(controller.instance_variable_get(:@branch_pipeline_statuses)["master"].group).to eq("running")
-        expect(controller.instance_variable_get(:@branch_pipeline_statuses)["test"].group).to eq("success")
+        expect(assigns[:branch_pipeline_statuses]["master"].group).to eq("running")
+        expect(assigns[:branch_pipeline_statuses]["test"].group).to eq("success")
       end
     end
 
@@ -555,10 +556,11 @@ RSpec.describe Projects::BranchesController do
             params: {
               namespace_id: project.namespace,
               project_id: project,
-              state: 'all'
+              state: 'stale'
             }
 
-        expect(controller.instance_variable_get(:@branch_pipeline_statuses)).to be_blank
+        expect(assigns[:branch_pipeline_statuses]).to be_blank
+        expect(assigns[:sort]).to eq('updated_asc')
       end
     end
 
@@ -573,10 +575,12 @@ RSpec.describe Projects::BranchesController do
             params: {
               namespace_id: project.namespace,
               project_id: project,
+              sort: 'name_asc',
               state: 'all'
             }
 
         expect(response).to have_gitlab_http_status(:ok)
+        expect(assigns[:sort]).to eq('name_asc')
       end
     end
 
@@ -633,6 +637,34 @@ RSpec.describe Projects::BranchesController do
             }
 
         expect(response).to redirect_to project_branches_filtered_path(project, state: 'all')
+      end
+    end
+
+    context 'fetching branches for overview' do
+      before do
+        get :index, format: :html, params: {
+          namespace_id: project.namespace, project_id: project, state: 'overview'
+        }
+      end
+
+      it 'sets active and stale branches' do
+        expect(assigns[:active_branches]).to eq([])
+        expect(assigns[:stale_branches].map(&:name)).to eq(
+          ["feature", "improve/awesome", "merge-test", "markdown", "feature_conflict", "'test'"]
+        )
+      end
+
+      context 'branch_list_keyset_pagination is disabled' do
+        before do
+          stub_feature_flags(branch_list_keyset_pagination: false)
+        end
+
+        it 'sets active and stale branches' do
+          expect(assigns[:active_branches]).to eq([])
+          expect(assigns[:stale_branches].map(&:name)).to eq(
+            ["feature", "improve/awesome", "merge-test", "markdown", "feature_conflict", "'test'"]
+          )
+        end
       end
     end
   end

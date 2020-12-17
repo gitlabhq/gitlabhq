@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference, concepts
 ---
 
@@ -34,6 +34,11 @@ When the jobs are retried and succeed on the second try, the merge request
 is automatically merged. When the merge request is updated with
 new commits, the automatic merge is canceled to allow the new
 changes to be reviewed.
+
+By default, all threads must be resolved before you see the **Merge when
+pipeline succeeds** button. If someone adds a new comment after
+the button is selected, but before the jobs in the CI pipeline are
+complete, the merge is blocked until you resolve all existing threads.
 
 ## Only allow merge requests to be merged if the pipeline succeeds
 

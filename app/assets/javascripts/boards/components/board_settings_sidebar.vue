@@ -53,7 +53,7 @@ export default {
       return this.activeList.label;
     },
     boardListType() {
-      return this.activeList.type || null;
+      return this.activeList.type || this.activeList.listType || null;
     },
     listTypeTitle() {
       return this.$options.labelListText;

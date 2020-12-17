@@ -135,6 +135,10 @@ class ProjectPolicy < BasePolicy
     ::Feature.enabled?(:build_service_proxy, @subject)
   end
 
+  condition(:project_bot_is_member) do
+    user.project_bot? & team_member?
+  end
+
   with_scope :subject
   condition(:packages_disabled) { !@subject.packages_enabled }
 
@@ -147,6 +151,8 @@ class ProjectPolicy < BasePolicy
     builds
     pages
     metrics_dashboard
+    analytics
+    operations
   ]
 
   features.each do |f|
@@ -211,6 +217,7 @@ class ProjectPolicy < BasePolicy
     enable :award_emoji
     enable :read_pages_content
     enable :read_release
+    enable :read_analytics
   end
 
   # These abilities are not allowed to admins that are not members of the project,
@@ -270,6 +277,19 @@ class ProjectPolicy < BasePolicy
 
   rule { metrics_dashboard_disabled }.policy do
     prevent(:metrics_dashboard)
+  end
+
+  rule { operations_disabled }.policy do
+    prevent(*create_read_update_admin_destroy(:feature_flag))
+    prevent(*create_read_update_admin_destroy(:environment))
+    prevent(*create_read_update_admin_destroy(:sentry_issue))
+    prevent(*create_read_update_admin_destroy(:alert_management_alert))
+    prevent(*create_read_update_admin_destroy(:cluster))
+    prevent(*create_read_update_admin_destroy(:terraform_state))
+    prevent(*create_read_update_admin_destroy(:deployment))
+    prevent(:metrics_dashboard)
+    prevent(:read_pod_logs)
+    prevent(:read_prometheus)
   end
 
   rule { can?(:metrics_dashboard) }.policy do
@@ -424,6 +444,10 @@ class ProjectPolicy < BasePolicy
     prevent(*create_read_update_admin_destroy(:snippet))
   end
 
+  rule { analytics_disabled }.policy do
+    prevent(:read_analytics)
+  end
+
   rule { wiki_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:wiki))
     prevent(:download_wiki_code)
@@ -494,6 +518,7 @@ class ProjectPolicy < BasePolicy
     enable :download_wiki_code
     enable :read_cycle_analytics
     enable :read_pages_content
+    enable :read_analytics
 
     # NOTE: may be overridden by IssuePolicy
     enable :read_issue
@@ -593,6 +618,8 @@ class ProjectPolicy < BasePolicy
   rule { resource_access_token_available & can?(:admin_project) }.policy do
     enable :admin_resource_access_tokens
   end
+
+  rule { project_bot_is_member & ~blocked }.enable :bot_log_in
 
   private
 

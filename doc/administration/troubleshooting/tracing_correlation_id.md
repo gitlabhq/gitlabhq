@@ -1,7 +1,7 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+stage: Enablement
+group: Distribution
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -56,10 +56,10 @@ interested in.
 
 ### Getting the correlation ID from curl
 
-If you're using `curl` then you can use the verbose option to show request and response headers, as well as other debug info.
+If you're using `curl` then you can use the verbose option to show request and response headers, as well as other debug information.
 
 ```shell
-➜  ~ curl --verbose https://gitlab.example.com/api/v4/projects
+➜  ~ curl --verbose "https://gitlab.example.com/api/v4/projects"
 # look for a line that looks like this
 < x-request-id: 4rAMkV3gof4
 ```

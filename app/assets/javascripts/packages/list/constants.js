@@ -68,6 +68,10 @@ export const PACKAGE_REGISTRY_TABS = [
     title: s__('PackageRegistry|Conan'),
     type: PackageType.CONAN,
   },
+  {
+    title: s__('PackageRegistry|Generic'),
+    type: PackageType.GENERIC,
+  },
 
   {
     title: s__('PackageRegistry|Maven'),

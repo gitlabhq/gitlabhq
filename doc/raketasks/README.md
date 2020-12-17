@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 comments: false
 ---
 
@@ -42,6 +42,7 @@ The following are available Rake tasks:
 | [Repository storage](../administration/raketasks/storage.md)                                        | List and migrate existing projects and attachments from legacy storage to hashed storage. |
 | [Uploads migrate](../administration/raketasks/uploads/migrate.md)                                   | Migrate uploads between storage local and object storage.                                 |
 | [Uploads sanitize](../administration/raketasks/uploads/sanitize.md)                                 | Remove EXIF data from images uploaded to earlier versions of GitLab.                      |
+| [Usage data](../administration/troubleshooting/gitlab_rails_cheat_sheet.md#generate-usage-ping)     | Generate and troubleshoot [Usage Ping](../development/product_analytics/usage_ping.md).|
 | [User management](user_management.md)                                                               | Perform user management tasks.                                                            |
 | [Webhooks administration](web_hooks.md)                                                             | Maintain project Webhooks.                                                                |
 | [X.509 signatures](x509_signatures.md)                                                              | Update X.509 commit signatures, useful if certificate store has changed.                  |

@@ -5,9 +5,11 @@
       GitLab
     = stylesheet_link_tag 'https://unpkg.com/@atlaskit/css-reset@3.0.6/dist/bundle.css'
     = stylesheet_link_tag 'https://unpkg.com/@atlaskit/reduced-ui-pack@10.5.5/dist/bundle.css'
+    = yield :page_specific_styles
+
     = javascript_include_tag 'https://connect-cdn.atl-paas.net/all.js'
     = javascript_include_tag 'https://unpkg.com/jquery@3.3.1/dist/jquery.min.js'
-    = yield :page_specific_styles
+    = Gon::Base.render_data(nonce: content_security_policy_nonce)
     = yield :head
   %body
     .ac-content

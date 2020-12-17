@@ -1,12 +1,12 @@
 ---
 # Warning: gitlab.LatinTerms
 #
-# Checks for use of latin terms.
+# Checks for use of Latin terms.
 #
 # For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: substitution
 message: 'Use "%s" instead of "%s", but consider rewriting the sentence.'
-link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#language
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#usage-list
 level: warning
 nonword: true
 ignorecase: true

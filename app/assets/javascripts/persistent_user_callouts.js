@@ -7,6 +7,7 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-buy-pipeline-minutes-notification-callout',
   '.js-token-expiry-callout',
   '.js-registration-enabled-callout',
+  '.js-new-user-signups-cap-reached',
 ];
 
 const initCallouts = () => {

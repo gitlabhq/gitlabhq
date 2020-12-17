@@ -3,15 +3,11 @@
 module API
   module Validations
     module Validators
-      class IntegerNoneAny < Grape::Validations::Base
-        def validate_param!(attr_name, params)
-          value = params[attr_name]
+      class IntegerNoneAny < IntegerOrCustomValue
+        private
 
-          return if value.is_a?(Integer) ||
-              [IssuableFinder::Params::FILTER_NONE, IssuableFinder::Params::FILTER_ANY].include?(value.to_s.downcase)
-
-          raise Grape::Exceptions::Validation, params: [@scope.full_name(attr_name)],
-                                               message: "should be an integer, 'None' or 'Any'"
+        def extract_custom_values(_options)
+          [IssuableFinder::Params::FILTER_NONE, IssuableFinder::Params::FILTER_ANY]
         end
       end
     end

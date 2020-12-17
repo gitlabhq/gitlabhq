@@ -37,6 +37,10 @@ We generally recommend events be tracked using a [structured event](https://docs
 * [ ] Create chart(s) to track your event(s) in the relevant dashboard
   * [ ] Use the [Chart Snowplow Actions](https://app.periscopedata.com/app/gitlab/snippet/Chart-Snowplow-Actions/5546da87ae2c4a3fbc98415c88b3eedd/edit) SQL snippet to quickly visualize usage. See [example](https://app.periscopedata.com/app/gitlab/737489/Health-Group-Dashboard?widget=9797112&udv=0)
 
-<!--  Label reminders - you should have one of each of the following labels if you can figure out the correct ones -->
+<!-- Label reminders - you should have one of each of the following labels.
+Use the following resources to find the appropriate labels:
+- https://gitlab.com/gitlab-org/gitlab/-/labels
+- https://about.gitlab.com/handbook/product/categories/features/
+-->
 /label ~devops:: ~group: ~Category:
 /label ~"snowplow tracking events"

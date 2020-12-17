@@ -1,0 +1,5 @@
+---
+title: Fix author on /clone quickaction usage to be current user
+merge_request: 49830
+author:
+type: fixed

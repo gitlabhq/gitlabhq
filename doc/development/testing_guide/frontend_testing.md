@@ -1,12 +1,12 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Frontend testing standards and style guidelines
 
-There are two types of test suites you'll encounter while developing frontend code
+There are two types of test suites encountered while developing frontend code
 at GitLab. We use Karma with Jasmine and Jest for JavaScript unit and integration testing,
 and RSpec feature tests with Capybara for e2e (end-to-end) integration testing.
 
@@ -25,17 +25,19 @@ If you are looking for a guide on Vue component testing, you can jump right away
 
 ## Jest
 
-We have started to migrate frontend tests to the [Jest](https://jestjs.io) testing framework (see also the corresponding
-[epic](https://gitlab.com/groups/gitlab-org/-/epics/895)).
-
+We use Jest to write frontend unit and integration tests.
 Jest tests can be found in `/spec/frontend` and `/ee/spec/frontend` in EE.
-
-Most examples have a Jest and Karma example. See the Karma examples only as explanation to what's going on in the code, should you stumble over some use cases during your discovery. The Jest examples are the one you should follow.
 
 ## Karma test suite
 
-While GitLab is switching over to [Jest](https://jestjs.io) you'll still find Karma tests in our application. [Karma](http://karma-runner.github.io/) is a test runner which uses [Jasmine](https://jasmine.github.io/) as its test
-framework. Jest also uses Jasmine as foundation, that's why it's looking quite similar.
+While GitLab has switched over to [Jest](https://jestjs.io), Karma tests still exist in our
+application because some of our specs require a browser and can't be easiliy migrated to Jest.
+Those specs intend to eventually drop Karma in favor of either Jest or RSpec. You can track this migration
+in the [related epic](https://gitlab.com/groups/gitlab-org/-/epics/4900).
+
+[Karma](http://karma-runner.github.io/) is a test runner which uses
+[Jasmine](https://jasmine.github.io/) as its test framework. Jest also uses Jasmine as foundation,
+that's why it's looking quite similar.
 
 Karma tests live in `spec/javascripts/` and `/ee/spec/javascripts` in EE.
 
@@ -43,22 +45,9 @@ Karma tests live in `spec/javascripts/` and `/ee/spec/javascripts` in EE.
 might have a corresponding `spec/javascripts/behaviors/autosize_spec.js` file.
 
 Keep in mind that in a CI environment, these tests are run in a headless
-browser and you will not have access to certain APIs, such as
+browser and you don't have access to certain APIs, such as
 [`Notification`](https://developer.mozilla.org/en-US/docs/Web/API/notification),
 which have to be stubbed.
-
-### When should I use Jest over Karma?
-
-If you need to update an existing Karma test file (found in `spec/javascripts`), you do not
-need to migrate the whole spec to Jest. Simply updating the Karma spec to test your change
-is fine. It is probably more appropriate to migrate to Jest in a separate merge request.
-
-If you create a new test file, it needs to be created in Jest. This will
-help support our migration and we think you'll love using Jest.
-
-As always, please use discretion. Jest solves a lot of issues we experienced in Karma and
-provides a better developer experience, however there are potentially unexpected issues
-which could arise (especially with testing against browser specific features).
 
 ### Differences to Karma
 
@@ -71,7 +60,7 @@ which could arise (especially with testing against browser specific features).
 - No [context object](https://jasmine.github.io/tutorials/your_first_suite#section-The_%3Ccode%3Ethis%3C/code%3E_keyword) is passed to tests in Jest.
   This means sharing `this.something` between `beforeEach()` and `it()` for example does not work.
   Instead you should declare shared variables in the context that they are needed (via `const` / `let`).
-- The following will cause tests to fail in Jest:
+- The following cause tests to fail in Jest:
   - Unmocked requests.
   - Unhandled Promise rejections.
   - Calls to `console.warn`, including warnings from libraries like Vue.
@@ -89,14 +78,14 @@ See also the issue for [support running Jest tests in browsers](https://gitlab.c
 
 ### Debugging Jest tests
 
-Running `yarn jest-debug` will run Jest in debug mode, allowing you to debug/inspect as described in the [Jest docs](https://jestjs.io/docs/en/troubleshooting#tests-are-failing-and-you-don-t-know-why).
+Running `yarn jest-debug` runs Jest in debug mode, allowing you to debug/inspect as described in the [Jest docs](https://jestjs.io/docs/en/troubleshooting#tests-are-failing-and-you-don-t-know-why).
 
 ### Timeout error
 
 The default timeout for Jest is set in
 [`/spec/frontend/test_setup.js`](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/frontend/test_setup.js).
 
-If your test exceeds that time, it will fail.
+If your test exceeds that time, it fails.
 
 If you cannot improve the performance of the tests, you can increase the timeout
 for a specific test using
@@ -114,37 +103,6 @@ describe('Component', () => {
 ```
 
 Remember that the performance of each test depends on the environment.
-
-### Timout error due to async components
-
-If your component is fetching some other components asynchroneously based on some conditions, it might happen so that your Jest suite for this component will become flaky timing out from time to time. 
-
-```javascript
-// ide.vue
-export default {
-  components: {
-    'error-message': () => import('./error_message.vue'),
-    'gl-button': () => import('@gitlab/ui/src/components/base/button/button.vue'),
-    ...
-};
-```
-
-To address this issue, you can "help" Jest by stubbing the async components so that Jest would not need to fetch those asynchroneously at the run-time.
-
-```javascript
-// ide_spec.js
-import { GlButton } from '@gitlab/ui';
-import ErrorMessage from '~/ide/components/error_message.vue';
-...
-return shallowMount(ide, {
-  ...
-  stubs: {
-    ErrorMessage,
-    GlButton,
-    ...
-  },
-})
-```
 
 ## What and how to test
 
@@ -227,15 +185,15 @@ For example, it's better to use the generated markup to trigger a button click a
 
 ## Common practices
 
-Following you'll find some general common practices you will find as part of our test suite. Should you stumble over something not following this guide, ideally fix it right away. 🎉
+These some general common practices included as part of our test suite. Should you stumble over something not following this guide, ideally fix it right away. 🎉
 
 ### How to query DOM elements
 
 When it comes to querying DOM elements in your tests, it is best to uniquely and semantically target
 the element.
 
-Preferentially, this is done by targeting what the user actually sees using [DOM Testing Library](https://testing-library.com/docs/dom-testing-library/intro).
-When selecting by text it is best to use [`getByRole` or `findByRole`](https://testing-library.com/docs/dom-testing-library/api-queries#byrole)
+Preferentially, this is done by targeting what the user actually sees using [DOM Testing Library](https://testing-library.com/docs/dom-testing-library/intro/).
+When selecting by text it is best to use [`getByRole` or `findByRole`](https://testing-library.com/docs/dom-testing-library/api-queries/#byrole)
 as these enforce accessibility best practices as well. The examples below demonstrate the order of preference.
 
 When writing Vue component unit tests, it can be wise to query children by component, so that the unit test can focus on comprehensive value coverage
@@ -246,6 +204,7 @@ possible selectors include:
 
 - A semantic attribute like `name` (also verifies that `name` was setup properly)
 - A `data-testid` attribute ([recommended by maintainers of `@vue/test-utils`](https://github.com/vuejs/vue-test-utils/issues/1498#issuecomment-610133465))
+  optionally combined with [`findByTestId`](#extendedwrapper-and-findbytestid)
 - a Vue `ref` (if using `@vue/test-utils`)
 
 ```javascript
@@ -262,7 +221,8 @@ it('exists', () => {
   // Good (especially for unit tests)
   wrapper.find(FooComponent);
   wrapper.find('input[name=foo]');
-  wrapper.find('[data-testid="foo"]');
+  wrapper.find('[data-testid="my-foo-id"]');
+  wrapper.findByTestId('my-foo-id'); // with the extendedWrapper utility – check below
   wrapper.find({ ref: 'foo'});
 
   // Bad
@@ -272,6 +232,8 @@ it('exists', () => {
   wrapper.find('[data-qa-selector="foo"]');
 });
 ```
+
+It is recommended to use `kebab-case` for `data-testid` attribute.
 
 It is not recommended that you add `.js-*` classes just for testing purposes. Only do this if there are no other feasible options available.
 
@@ -389,7 +351,7 @@ it('tests a promise rejection', () => {
 
 ### Manipulating Time
 
-Sometimes we have to test time-sensitive code. For example, recurring events that run every X amount of seconds or similar. Here you'll find some strategies to deal with that:
+Sometimes we have to test time-sensitive code. For example, recurring events that run every X amount of seconds or similar. Here are some strategies to deal with that:
 
 #### `setTimeout()` / `setInterval()` in application
 
@@ -435,7 +397,7 @@ it('does something', () => {
 
 Sometimes a test needs to wait for something to happen in the application before it continues.
 Avoid using [`setTimeout`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setTimeout)
-because it makes the reason for waiting unclear and if used within Karma with a time larger than zero it will slow down our test suite.
+because it makes the reason for waiting unclear and if used within Karma with a time larger than zero it slows down our test suite.
 Instead use one of the following approaches.
 
 #### Promises and Ajax calls
@@ -599,7 +561,7 @@ Jest has [`toBe`](https://jestjs.io/docs/en/expect#tobevalue) and
 As [`toBe`](https://jestjs.io/docs/en/expect#tobevalue) uses
 [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is)
 to compare values, it's faster (by default) than using `toEqual`.
-While the latter will eventually fallback to leverage [`Object.is`](https://github.com/facebook/jest/blob/master/packages/expect/src/jasmineUtils.ts#L91),
+While the latter eventually falls back to leverage [`Object.is`](https://github.com/facebook/jest/blob/master/packages/expect/src/jasmineUtils.ts#L91),
 for primitive values, it should only be used when complex objects need a comparison.
 
 Examples:
@@ -745,10 +707,10 @@ a [Jest mock for the package `monaco-editor`](https://gitlab.com/gitlab-org/gitl
 
 If a manual mock is needed for a CE module, please place it in `spec/frontend/mocks/ce`.
 
-- Files in `spec/frontend/mocks/ce` will mock the corresponding CE module from `app/assets/javascripts`, mirroring the source module's path.
-  - Example: `spec/frontend/mocks/ce/lib/utils/axios_utils` will mock the module `~/lib/utils/axios_utils`.
+- Files in `spec/frontend/mocks/ce` mocks the corresponding CE module from `app/assets/javascripts`, mirroring the source module's path.
+  - Example: `spec/frontend/mocks/ce/lib/utils/axios_utils` mocks the module `~/lib/utils/axios_utils`.
 - We don't support mocking EE modules yet.
-- If a mock is found for which a source module doesn't exist, the test suite will fail. 'Virtual' mocks, or mocks that don't have a 1-to-1 association with a source module, are not supported yet.
+- If a mock is found for which a source module doesn't exist, the test suite fails. 'Virtual' mocks, or mocks that don't have a 1-to-1 association with a source module, are not supported yet.
 
 #### Manual mock examples
 
@@ -776,11 +738,10 @@ Please consult the [official Jest docs](https://jestjs.io/docs/en/jest-object#mo
 
 For running the frontend tests, you need the following commands:
 
-- `rake frontend:fixtures` (re-)generates [fixtures](#frontend-test-fixtures).
-- `yarn test` executes the tests.
-- `yarn jest` executes only the Jest tests.
-
-As long as the fixtures don't change, `yarn test` is sufficient (and saves you some time).
+- `rake frontend:fixtures` (re-)generates [fixtures](#frontend-test-fixtures). Make sure that
+  fixtures are up-to-date before running tests that require them.
+- `yarn jest` runs Jest tests.
+- `yarn karma` runs Karma tests.
 
 ### Live testing and focused testing -- Jest
 
@@ -809,12 +770,12 @@ yarn jest term
 
 Karma allows something similar, but it's way more costly.
 
-Running Karma with `yarn run karma-start` will compile the JavaScript
-assets and run a server at `http://localhost:9876/` where it will automatically
-run the tests on any browser which connects to it. You can enter that URL on
+Running Karma with `yarn run karma-start` compiles the JavaScript
+assets and runs a server at `http://localhost:9876/` where it automatically
+runs the tests on any browser which connects to it. You can enter that URL on
 multiple browsers at once to have it run the tests on each in parallel.
 
-While Karma is running, any changes you make will instantly trigger a recompile
+While Karma is running, any changes you make instantly trigger a recompile
 and retest of the **entire test suite**, so you can see instantly if you've broken
 a test with your changes. You can use [Jasmine focused](https://jasmine.github.io/2.5/focused_specs.html) or
 excluded tests (with `fdescribe` or `xdescribe`) to get Karma to run only the
@@ -866,8 +827,8 @@ You can find generated fixtures are in `tmp/tests/frontend/fixtures-ee`.
 #### Creating new fixtures
 
 For each fixture, you can find the content of the `response` variable in the output file.
-For example, test named `"merge_requests/diff_discussion.json"` in `spec/frontend/fixtures/merge_requests.rb`
-will produce output file `tmp/tests/frontend/fixtures-ee/merge_requests/diff_discussion.json`.
+For example, a test named `"merge_requests/diff_discussion.json"` in `spec/frontend/fixtures/merge_requests.rb`
+produces an output file `tmp/tests/frontend/fixtures-ee/merge_requests/diff_discussion.json`.
 The `response` variable gets automatically set if the test is marked as `type: :request` or `type: :controller`.
 
 When creating a new fixture, it often makes sense to take a look at the corresponding tests for the
@@ -977,12 +938,12 @@ describe.each`
 
 ### RSpec errors due to JavaScript
 
-By default RSpec unit tests will not run JavaScript in the headless browser
-and will simply rely on inspecting the HTML generated by rails.
+By default RSpec unit tests don't run JavaScript in the headless browser
+and rely on inspecting the HTML generated by rails.
 
 If an integration test depends on JavaScript to run correctly, you need to make
 sure the spec is configured to enable JavaScript when the tests are run. If you
-don't do this you'll see vague error messages from the spec runner.
+don't do this, the spec runner displays vague error messages.
 
 To enable a JavaScript driver in an `rspec` test, add `:js` to the
 individual spec or the context block containing multiple specs that need
@@ -1004,6 +965,45 @@ describe "Admin::AbuseReports", :js do
 end
 ```
 
+### Jest test timeout due to async imports
+
+If a module asynchronously imports some other modules at runtime, these modules must be
+transpiled by the Jest loaders at runtime. It's possible that this can cause [Jest to timeout](https://gitlab.com/gitlab-org/gitlab/-/issues/280809).
+
+If you run into this issue, consider eager importing the module so that Jest compiles
+and caches it at compile-time, fixing the runtime timeout.
+
+Consider the following example:
+
+```javascript
+// the_subject.js
+
+export default {
+  components: {
+    // Async import Thing because it is large and isn't always needed.
+    Thing: () => import(/* webpackChunkName: 'thing' */ './path/to/thing.vue'),
+  }
+};
+```
+
+Jest doesn't automatically transpile the `thing.vue` module, and depending on its size, could
+cause Jest to time out. We can force Jest to transpile and cache this module by eagerly importing
+it like so:
+
+```javascript
+// the_subject_spec.js
+
+import Subject from '~/feature/the_subject.vue';
+
+// Force Jest to transpile and cache
+// eslint-disable-next-line import/order, no-unused-vars
+import _Thing from '~/feature/path/to/thing.vue';
+```
+
+**PLEASE NOTE:** Do not simply disregard test timeouts. This could be a sign that there's
+actually a production problem. Use this opportunity to analyze the production webpack bundles and
+chunks and confirm that there is not a production issue with the async imports.
+
 ## Overview of Frontend Testing Levels
 
 Main information on frontend testing levels can be found in the [Testing Levels page](testing_levels.md).
@@ -1016,7 +1016,7 @@ Tests relevant for frontend development can be found at the following places:
 
 RSpec runs complete [feature tests](testing_levels.md#frontend-feature-tests), while the Jest and Karma directories contain [frontend unit tests](testing_levels.md#frontend-unit-tests), [frontend component tests](testing_levels.md#frontend-component-tests), and [frontend integration tests](testing_levels.md#frontend-integration-tests).
 
-All tests in `spec/javascripts/` will eventually be migrated to `spec/frontend/` (see also [#52483](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/52483)).
+All tests in `spec/javascripts/` are intended to be migrated to `spec/frontend/` (see also [#52483](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/52483)).
 
 Before May 2018, `features/` also contained feature tests run by Spinach. These tests were removed from the codebase in May 2018 ([#23036](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/23036)).
 
@@ -1045,7 +1045,7 @@ testAction(
 );
 ```
 
-Check an example in [`spec/javascripts/ide/stores/actions_spec.jsspec/javascripts/ide/stores/actions_spec.js`](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/javascripts/ide/stores/actions_spec.js).
+Check an example in [`spec/frontend/ide/stores/actions_spec.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/fdc7197609dfa7caeb1d962042a26248e49f27da/spec/frontend/ide/stores/actions_spec.js#L392).
 
 ### Wait until Axios requests finish
 
@@ -1057,6 +1057,29 @@ These are very useful if you don't have a handle to the request's Promise, for e
 
 Both functions run `callback` on the next tick after the requests finish (using `setImmediate()`), to allow any `.then()` or `.catch()` handlers to run.
 
+### `extendedWrapper` and `findByTestId`
+
+Using `data-testid` is one of the [recommended ways to query DOM elements](#how-to-query-dom-elements).
+You can use the `extendedWrapper` utility on the `wrapper` returned by `shalowMount`/`mount`.
+By doing so, the `wrapper` provides you with the ability to perform a `findByTestId`,
+which is a shortcut to the more verbose `wrapper.find('[data-testid="my-test-id"]');`
+
+```javascript
+import { extendedWrapper } from 'jest/helpers/vue_test_utils_helper';
+
+describe('FooComponent', () => {
+  const wrapper = extendedWrapper(shallowMount({
+    template: `<div data-testid="my-test-id"></div>`,
+  }));
+
+  it('exists', () => {
+    expect(wrapper.findByTestId('my-test-id').exists()).toBe(true);
+  });
+});
+```
+
+Check an example in [`spec/frontend/alert_management/components/alert_details_spec.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/ac1c9fa4c5b3b45f9566147b1c88fd1339cd7c25/spec/frontend/alert_management/components/alert_details_spec.js#L32).
+
 ## Testing with older browsers
 
 Some regressions only affect a specific browser version. We can install and test in particular browsers with either Firefox or BrowserStack using the following steps:
@@ -1065,7 +1088,7 @@ Some regressions only affect a specific browser version. We can install and test
 
 [BrowserStack](https://www.browserstack.com/) allows you to test more than 1200 mobile devices and browsers.
 You can use it directly through the [live app](https://www.browserstack.com/live) or you can install the [chrome extension](https://chrome.google.com/webstore/detail/browserstack/nkihdmlheodkdfojglpcjjmioefjahjb) for easy access.
-Sign in to BrowserStack with the credentials saved in the **Engineering** vault of GitLab's
+Sign in to BrowserStack with the credentials saved in the **Engineering** vault of the GitLab
 [shared 1Password account](https://about.gitlab.com/handbook/security/#1password-guide).
 
 ### Firefox
@@ -1076,7 +1099,7 @@ You can download any older version of Firefox from the releases FTP server, <htt
 
 1. From the website, select a version, in this case `50.0.1`.
 1. Go to the mac folder.
-1. Select your preferred language, you will find the DMG package inside, download it.
+1. Select your preferred language. The DMG package is inside. Download it.
 1. Drag and drop the application to any other folder but the `Applications` folder.
 1. Rename the application to something like `Firefox_Old`.
 1. Move the application to the `Applications` folder.

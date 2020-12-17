@@ -51,7 +51,7 @@ RSpec.describe Mutations::Issues::Create do
       project.add_guest(assignee2)
     end
 
-    subject { mutation.resolve(mutation_params) }
+    subject { mutation.resolve(**mutation_params) }
 
     context 'when the user does not have permission to create an issue' do
       it 'raises an error' do
@@ -117,7 +117,7 @@ RSpec.describe Mutations::Issues::Create do
       end
 
       it 'raises exception when mutually exclusive params are given' do
-        expect { mutation.ready?(mutation_params) }
+        expect { mutation.ready?(**mutation_params) }
           .to raise_error(Gitlab::Graphql::Errors::ArgumentError, /one and only one of/)
       end
     end
@@ -128,7 +128,7 @@ RSpec.describe Mutations::Issues::Create do
       end
 
       it 'raises exception when mutually exclusive params are given' do
-        expect { mutation.ready?(mutation_params) }
+        expect { mutation.ready?(**mutation_params) }
           .to raise_error(Gitlab::Graphql::Errors::ArgumentError, /to resolve a discussion please also provide `merge_request_to_resolve_discussions_of` parameter/)
       end
     end
@@ -139,7 +139,7 @@ RSpec.describe Mutations::Issues::Create do
       end
 
       it 'raises exception when mutually exclusive params are given' do
-        expect { mutation.ready?(mutation_params) }.not_to raise_error
+        expect { mutation.ready?(**mutation_params) }.not_to raise_error
       end
     end
   end

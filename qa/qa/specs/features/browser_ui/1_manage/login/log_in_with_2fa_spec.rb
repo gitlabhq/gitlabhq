@@ -99,9 +99,9 @@ module QA
             two_fa_auth.set_pin_code(@otp.fresh_otp)
             two_fa_auth.click_register_2fa_app_button
 
-            expect(two_fa_auth).to have_text('Congratulations! You have enabled Two-factor Authentication!')
+            two_fa_auth.click_copy_and_proceed
 
-            two_fa_auth.click_proceed_button
+            expect(two_fa_auth).to have_text('Congratulations! You have enabled Two-factor Authentication!')
           end
         end
       end

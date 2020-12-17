@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Go proxy for GitLab
@@ -45,7 +45,7 @@ Feature.enable(:go_proxy, Project.find(1))
 Feature.disable(:go_proxy, Project.find(2))
 ```
 
-NOTE: **Note:**
+NOTE:
 Even if it's enabled, GitLab doesn't display Go modules in the **Package Registry**.
 Follow [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/213770) for
 details.
@@ -159,7 +159,7 @@ later, can be written with `go env -w <var>=<value>`. For example,
 
 Go modules and module versions are defined by source repositories, such as Git,
 SVN, and Mercurial. A module is a repository that contains `go.mod` and Go
-files. Module versions are defined by VCS tags.
+files. Module versions are defined by version control system (VCS) tags.
 
 To publish a module, push `go.mod` and source files to a VCS repository. To
 publish a module version, push a VCS tag.

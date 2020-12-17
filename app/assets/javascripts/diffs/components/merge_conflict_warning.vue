@@ -1,11 +1,14 @@
 <script>
-import { GlButton, GlAlert } from '@gitlab/ui';
+import { GlButton, GlAlert, GlModalDirective } from '@gitlab/ui';
 import { CENTERED_LIMITED_CONTAINER_CLASSES } from '../constants';
 
 export default {
   components: {
     GlAlert,
     GlButton,
+  },
+  directives: {
+    GlModalDirective,
   },
   props: {
     limited: {
@@ -60,9 +63,8 @@ export default {
         </gl-button>
         <gl-button
           v-if="mergeable"
+          v-gl-modal-directive="'modal-merge-info'"
           class="gl-alert-action"
-          data-toggle="modal"
-          data-target="#modal_merge_info"
         >
           {{ __('Merge locally') }}
         </gl-button>

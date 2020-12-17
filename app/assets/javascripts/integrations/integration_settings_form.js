@@ -35,12 +35,14 @@ export default class IntegrationSettingsForm {
   }
 
   saveIntegration() {
-    // Service was marked active so now we check;
+    // Save Service if not active and check the following if active;
     // 1) If form contents are valid
     // 2) If this service can be saved
     // If both conditions are true, we override form submission
     // and save the service using provided configuration.
-    if (this.$form.get(0).checkValidity()) {
+    const formValid = this.$form.get(0).checkValidity() || this.formActive === false;
+
+    if (formValid) {
       this.$form.submit();
     } else {
       eventHub.$emit('validateForm');

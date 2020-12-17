@@ -86,9 +86,9 @@ class CommitCollection
 
     # Batch load full Commits from the repository
     # and map to a Hash of id => Commit
-    replacements = Hash[unenriched.map do |c|
-      [c.id, Commit.lazy(container, c.id)]
-    end.compact]
+    replacements = unenriched.each_with_object({}) do |c, result|
+      result[c.id] = Commit.lazy(container, c.id)
+    end.compact
 
     # Replace the commits, keeping the same order
     @commits = @commits.map do |original_commit|

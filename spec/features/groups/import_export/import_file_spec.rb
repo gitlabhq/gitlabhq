@@ -32,12 +32,12 @@ RSpec.describe 'Import/Export - Group Import', :js do
         fill_in :group_name, with: group_name
         find('#import-group-tab').click
 
-        expect(page).to have_content 'Import a GitLab group export file'
+        expect(page).to have_content 'Import group from file'
         attach_file(file) do
           find('.js-filepicker-button').click
         end
 
-        expect { click_on 'Import group' }.to change { Group.count }.by 1
+        expect { click_on 'Import' }.to change { Group.count }.by 1
 
         group = Group.find_by(name: group_name)
 
@@ -60,7 +60,7 @@ RSpec.describe 'Import/Export - Group Import', :js do
           find('.js-filepicker-button').click
         end
 
-        expect { click_on 'Import group' }.to change { Group.count }.by 1
+        expect { click_on 'Import' }.to change { Group.count }.by 1
 
         group = Group.find_by(name: 'Test Group Import')
         expect(group.path).to eq 'custom-path'
@@ -94,7 +94,7 @@ RSpec.describe 'Import/Export - Group Import', :js do
         find('.js-filepicker-button').click
       end
 
-      expect { click_on 'Import group' }.not_to change { Group.count }
+      expect { click_on 'Import' }.not_to change { Group.count }
 
       page.within('.flash-container') do
         expect(page).to have_content('Unable to process group import file')

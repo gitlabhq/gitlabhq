@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Continuous Integration
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 disqus_identifier: 'https://docs.gitlab.com/ee/user/project/pipelines/schedules.html'
 type: reference, howto
 ---
@@ -43,7 +43,7 @@ To schedule a pipeline for project:
 
 ![New Schedule Form](img/pipeline_schedules_new_form.png)
 
-NOTE: **Note:**
+NOTE:
 Pipelines execution [timing is dependent](#advanced-configuration) on Sidekiq's own schedule.
 
 In the **Schedules** index page you can see a list of the pipelines that are
@@ -56,15 +56,15 @@ is installed on.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12328) in GitLab 9.4.
 
-You can pass any number of arbitrary variables and they will be available in
+You can pass any number of arbitrary variables. They are available in
 GitLab CI/CD so that they can be used in your [`.gitlab-ci.yml` file](../../ci/yaml/README.md).
 
 ![Scheduled pipeline variables](img/pipeline_schedule_variables.png)
 
 ### Using only and except
 
-To configure that a job can be executed only when the pipeline has been
-scheduled (or the opposite), you can use
+To configure a job to be executed only when the pipeline has been
+scheduled (or the opposite), use
 [only and except](../yaml/README.md#onlyexcept-basic) configuration keywords.
 
 For example:
@@ -102,7 +102,7 @@ For GitLab.com, refer to the [dedicated settings page](../../user/gitlab_com/ind
 
 ## Working with scheduled pipelines
 
-Once configured, GitLab supports many functions for working with scheduled pipelines.
+After configuration, GitLab supports many functions for working with scheduled pipelines.
 
 ### Running manually
 
@@ -115,7 +115,7 @@ To trigger a pipeline schedule manually, click the "Play" button:
 This schedules a background job to run the pipeline schedule. A flash
 message provides a link to the CI/CD Pipeline index page.
 
-NOTE: **Note:**
+NOTE:
 To help avoid abuse, users are rate limited to triggering a pipeline once per
 minute.
 
@@ -128,7 +128,7 @@ The next time a pipeline is scheduled, your credentials are used.
 
 ![Schedules list](img/pipeline_schedules_ownership.png)
 
-If the owner of a pipeline schedule does not have the ability to create
+If the owner of a pipeline schedule cannot create
 pipelines on the target branch, the schedule stops creating new
 pipelines.
 

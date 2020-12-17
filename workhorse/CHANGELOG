@@ -1,0 +1,1069 @@
+# Changelog for gitlab-workhorse
+
+## v8.58.0
+
+### Added
+- Support alternate document root directory
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/626
+
+### Fixed
+- Fix uploader not returning 413 when artifact too large
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/663
+- Auto-register Prometheus metrics
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/660
+
+### Other
+- Do not resize when image is less than 8 bytes
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/666
+
+## v8.57.0
+
+### Added
+- Add direct upload acceleration for requirements import
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/
+
+## v8.56.0
+
+### Fixed
+- Return 413 HTTP status for S3 uploads if max upload limit is reached
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/655
+- Fix EXIF cleaning for S3 compatible Object Storage
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/
+
+### Other
+- Improve logging for image scaler
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/652
+- Update LabKit to v1.0.0
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/659
+
+## v8.55.0
+
+### Added
+- Add direct upload acceleration for metric images
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/653
+
+### Fixed
+- Image scaler: add success-client-cache status label
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/656
+
+## v8.54.0
+
+### Changed
+- Don't reject image scaling requests based on file extension/format mismatch
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/651
+
+### Other
+- Rework image scaler test suite
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/
+- Adjust image scaling latency buckets
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/643
+- Update raven-go and gocertifi packages
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/644
+- jaeger: limit operation cardinality by using route regex
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/648
+
+### Performance
+- Add support for conditional GETs for rescaled images
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/647
+
+## v8.53.0
+
+### Added
+- Add route for Debian package uploads
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/610
+  Contributed by Mathieu Parent
+
+### Fixed
+- Don't log image scaler fail-overs as successes
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/636
+
+### Other
+- Exclude dot-files from "make fmt" target
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/641
+- Add max_processes Prometheus metric for image scaling
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/640
+- Simplify config handling in main()
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/634
+- Default MaxScalerProcs to num_cores / 2
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/635
+- Add a total requests metric for image scaling
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/638
+
+## v8.52.0
+
+### Fixed
+- Only generate CI artifact metadata for ZIP files
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/627
+- Fix typo in redis URL scheme
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/631
+- Restructure error handling in main()
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/633
+
+### Other
+- Include route regex identifier in structured logs
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/624
+
+## v8.51.0
+
+### Changed
+- Allow configure image resizing params
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/615
+
+### Fixed
+- Fix processing lsif dump with repeating lines with inVs
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/621
+  Contributed by Pavel Kuznetsov
+
+### Other
+- Add CODEOWNERS with listed maintainers
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/623
+
+## v8.50.0
+
+### Added
+- Update Gitaly module dependency
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/619
+
+## v8.49.0
+
+### Fixed
+- Fix gitlab-resize-image bin installation
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/618
+
+### Other
+- Add image scaler duration histogram
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/614
+- Pass CORRELATION_ID env variable to resize image subprocesses
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/612
+- Simplify s3 session management code
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/616
+- Bump labkit dependency to get mutex profiling
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/
+
+## v8.48.0
+
+### Changed
+- Switch image scaler to a Go-only solution
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/603
+
+### Other
+- Push uploader control flow into objectstore package
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/608
+
+## v8.47.0
+
+### Added
+- Add logging for local LSIF ZIP caching
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/579
+- Add project level route for Generic Packages uploads
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/596
+
+### Changed
+- Further simplify remote/local upload code
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/602
+- Experimental: Use strict content checks when resizing images
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/564
+
+### Fixed
+- Increase LSIF scanner buffer
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/609
+- Fix correlation IDs not being propagated in preauth check
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/607
+
+### Other
+- Reflect the actual duration of bootstrapping GitLab
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/605
+  Contributed by Takuya Noguchi
+
+## v8.46.0
+
+### Added
+- Support Azure custom storage domains
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/593
+
+## v8.45.0
+
+### Added
+- Reject upload when filesize exceeds MaximumSize returned by authorize endpoint
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/
+
+### Other
+- Eliminate unnecessary code in GoCloud test stubs
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/590
+- Drop tests that check for log messages
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/591
+
+## v8.44.0
+
+### Fixed
+- Fix objectstore.uploader.uploadError race
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/583
+- Silence errors when Azure objects have aleady been deleted
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/585
+- Fix race condition in httprs test
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/584
+
+### Performance
+- Remove an in-memory buffer for LSIF transformation
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/586
+
+## v8.43.0
+
+### Changed
+- Remove ProcessReferences flag
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/543
+
+### Fixed
+- Fix nil pointer exception when no object storage config is defined
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/565
+
+## v8.42.0
+
+### Added
+- Resize images on-demand with `gm convert`
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/546
+
+## v8.41.0
+
+### Added
+- Add Azure blob store support
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/555
+
+## v8.40.0
+
+### Added
+- Add project level route for conan package uploads
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/558
+
+### Other
+- Refactor uploaders to use different upload strategies
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/553
+
+## v8.39.0
+
+### Fixed
+- Fix HTTP Range Requests not working on some S3 providers
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/549
+
+### Other
+- Vendor httprs module
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/550
+
+### Performance
+- Cache references in file
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/544
+
+## v8.38.0
+
+### Added
+- Added configuration option PropagateCorrelationID
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/529
+  Contributed by Mahmoud Rahbar Azad
+- Add support for AWS S3 Server Side Encryption (SSE-KMS)
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/537
+
+### Changed
+- Drop Go v1.12 support
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/532
+
+## v8.37.0
+
+- No changes.
+## v8.36.0
+
+- No changes.
+## v8.35.0
+
+### Fixed
+- Fix Content-Length set prior to SendUrl injection
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/496
+  Contributed by Georges-Etienne Legendre
+
+## v8.34.0
+
+### Added
+- Support Workhorse directly uploading files to S3
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/466
+
+### Fixed
+- Disable compression for open archive
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/508
+  Contributed by Georges-Etienne Legendre
+
+### Other
+- Add configuration to support an S3 client inside Workhorse
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/516
+- Refactor Preparer and SaveFileOpts handling
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/515
+
+## v8.33.0
+
+### Added
+- Add routes for Group import via the UI
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/493
+
+### Fixed
+- Gather gitlab-zip-cat/metadata stderr and log output in the current context
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/498
+  Contributed by Georges-Etienne Legendre
+
+## v8.32.1
+
+### Security
+- Limit memory footprint of a command that generates ZIP artifacts metadata
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/
+
+## v8.32.0
+
+### Added
+- Process LSIF document before sending it to GitLab
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/492
+- Delay PostUploadPack response until request is fully read
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/494  
+
+## v8.31.1
+
+### Security
+- Limit memory footprint of a command that generates ZIP artifacts metadata
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/
+
+## v8.31.0
+
+### Added
+- Add a signed field on upload requests containing all the workhorse parameters
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/490
+
+### Other
+- Add automatic changelog generation
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/484
+
+## v8.30.2
+
+### Security
+- Limit memory footprint of a command that generates ZIP artifacts metadata
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/
+
+v 8.30.1
+
+- Sign artifact multipart fields in Workhorse
+
+v 8.30.0
+
+- Proxy ActionCable websocket connection !454
+
+v 8.29.0
+
+- Bump Labkit version to support Profiler sample versioning !479
+
+v 8.28.0
+
+- Reject parameters that override upload fields
+- PyPi - Object storage upload route for package files !474
+
+v 8.27.0
+
+- Remove Set-Cookie header from archive and raw blob responses !475
+
+v 8.26.0
+
+- Add route for project imports direct upload via UI !470
+
+## v8.25.3
+
+### Security
+- Limit memory footprint of a command that generates ZIP artifacts metadata
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/
+
+### Other
+- Add automatic changelog generation
+  https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/484
+
+v 8.25.2
+
+- Sign artifact multipart fields in Workhorse
+
+v 8.25.1
+
+- Reject parameters that override upload fields
+
+v 8.25.0
+
+- Add route for project imports direct upload !459
+
+v 8.24.0
+
+- Support Stackdriver Profiler through Labkit !461
+
+v 8.23.0
+
+- Don't set Cache-Control header for git archives !462
+
+v 8.22.0
+
+- Bump the version of golang.org/x/sys !456
+- Add friendly development error page for 502 !453
+
+v 8.21.2
+
+- Sign artifact multipart fields in Workhorse
+
+v 8.21.1
+
+- Reject parameters that override upload fields
+
+v 8.21.0
+
+- Add route for group imports direct upload !455
+
+v 8.20.2
+
+- Sign artifact multipart fields in Workhorse
+
+v 8.20.1
+
+- Reject parameters that override upload fields
+
+v 8.20.0
+
+- Sign file upload requests modified by workhorse
+
+v 8.19.0
+
+- Use multipart uploads for nuget packages !451
+
+v 8.18.0
+
+- Allow inline content disposition for pdf files !446
+- Update environment websocket route !449
+
+v 8.17.0
+
+- Add labkit monitoring for build metrics !440
+- Log duration_ms when Workhorse hits a bad gateway !445
+
+v 8.16.0
+
+- Ignore CompleteMultipartUpload ETag !438
+- Add NuGet route for package uploads !441
+- Upgrade Gitaly client to v1.74.0 !443
+- Set a time limit on git upload-pack requests
+
+v 8.15.0
+
+- Object store case insensitive ETag comparison !434
+- Upgrade gitaly to 1.68.0 !435
+
+v 8.14.1
+
+- Set a time limit on git upload-pack requests
+
+v 8.14.0
+
+- Keep HTTP 1.0 cache headers from sendurl proxies !431
+
+v 8.13.0
+
+- Preserve original HTTP cache headers when proxying with sendurl !428
+
+v8.12.0
+
+- Fix health checks routes incorrectly intercepting errors !424
+- Simplify badgateway RoundTripper !425
+
+v8.11.0
+
+- Accelerate GraphQL uploads !403
+- Add route for handling Conan package uploads !412
+- Accelerate wiki attachments !422
+
+v8.10.1
+
+- Set a time limit on git upload-pack requests
+
+v8.10.0
+
+- Use accelerated uploads for users/personal snippets
+- Fix typo in keywatcher prometheus metrics !420
+
+v8.9.0
+
+- Update Gitaly library code to v1.57.0 !407
+- Replace govendor with go mod !411
+- Support gzip compression for Git info/refs !404
+- Add prometheus counter for Gitaly connection stubs !414
+- Support passing on Gitaly feature flags  !410
+
+v8.8.1
+
+- Use accelerated uploads for users/personal snippets
+
+v8.8.0
+
+- Filter title, description, text, and body from logs !402
+- Remove redirections from Terminal to Channel !397
+- Add option to set Sentry environment !396
+
+v8.7.1
+
+- Use accelerated uploads for users/personal snippets
+
+v8.7.0
+
+- Don't log http.ErrAbortHandler panics in sentry !392
+
+v8.6.0
+
+- Add new endpoint to add support to proxy websocket requests to build's services !370
+
+v8.5.2
+
+- Don't log http.ErrAbortHandler panics in sentry !392
+
+v8.5.1
+
+- Remove duplicate X-Request-Id response header !384
+
+v8.5.0
+
+- Replace terminal terminology to channel !382
+
+v8.4.0
+
+- Adds X-Request-Id response header for Workhorse !363
+- Change content type detection header size to 4k !366
+- Allow unknown fields in jsonpb gitaly-proto messages !367
+- Filter `sharedSecret` param from Jira !369
+- Get git-archive with GetArchiveRequest !375
+
+v8.3.3
+
+- Preserve orientation when removing EXIF
+
+v8.3.2
+
+- Remove EXIF from JPEG/TIFF images
+
+v 8.3.1
+
+- Update gitaly-proto to 1.10.0 !363
+
+v 8.3.0
+
+- Count ^/-/ requests separately in prometheus !355
+- Statically link jaeger into Workhorse by default !359
+- Support encoded Content-Disposition fields !360
+
+v 8.2.0
+
+- Sign LFS upload requests that have been handled by workhorse
+- Fixed svg recognition to get the proper content type !353
+
+v 8.1.1
+
+- Sign LFS upload requests that have been handled by workhorse
+
+v 8.1.0
+
+- Upgrade the gitaly client to v1.13.0 (includes TLS support) !351
+- Update gitaly-proto to 0.124.0 !331
+- Add distributed tracing with LabKit !325
+
+v 8.0.4
+
+- Preserve orientation when removing EXIF
+
+v 8.0.3
+
+- Remove EXIF from JPEG/TIFF images
+
+v 8.0.2
+
+- Fixed svg recognition to get the proper content type !353
+
+v 8.0.1
+
+- Sign LFS upload requests that have been handled by workhorse
+
+v 8.0.0
+
+- Remove local git archive support !304
+- Remove local git diff handling !345
+- Remove local git format-patch handling !346
+- Remove RepoPath from the API response
+
+v 7.6.1
+
+- Sign LFS upload requests that have been handled by workhorse
+
+v 7.6.0
+
+- Rename correlation-id structured logging field to correlation_id !343
+- Remove local git receive-pack implementation !326
+- Remove curl from sendfile_test.go !344
+- Update README.md usage example !342
+
+v 7.5.1
+
+- Rename correlation-id structured logging field to correlation_id !343
+
+v 7.5.0
+
+- Add proxy layer to calculate content type and disposition headers !335
+
+v 7.4.0
+
+- Strip port and include remote IP in access logs !337
+
+v 7.3.0
+
+- Redact sensitive url params as in Rails
+
+v 7.2.1
+
+- Extract correlation code out to the LabKit project !323
+- Log X-Forwarded-For IPs when UNIX domain sockets are in use !324
+
+v 7.2.0
+
+- Update CI matrix to go1.10 + go1.11 and fix ResponseWriter bugs !309
+- Add support for Redis URLs (redis:// and rediss://) in Workhorse !321
+
+v 7.1.4
+
+- Sign LFS upload requests that have been handled by workhorse
+
+v 7.1.3
+
+- Redact sensitive url params as in Rails
+
+v 7.1.1
+
+Bad release, use 7.2.0 instead.
+
+v 7.1.0
+
+- Add structured logFormat for text based logging !275
+- Run make fmt on master !306
+- Allow to configure `BUILD_DIR` and `TARGET_DIR` !308
+- Resolve "Rework test suite to allow dead code to be removed" !307
+- Update Prometheus vendoring !305
+- General vendoring cleanup !310
+- Remove Go 1.8 support !314
+- Remove unused 'body' argument !315
+- Refactor badgateway to use standardlib interfaces !316
+- Pass Correlation-Ids down to backend systems !311
+- Don't fail if /home/git/repositories already exists in Gitaly container !317
+
+v 7.0.1
+
+- Redact sensitive url params as in Rails
+
+v 7.0.0
+
+- Use the new Gitaly auth scheme (v2) !298
+
+v 6.1.2
+
+- Redact sensitive url params as in Rails
+
+v 6.1.1
+
+- Allow custom error messages to pass through to Rails !300
+
+v 6.1.0
+
+- Support adding PUT headers for object storage from Rails !297
+
+v 6.0.0
+
+- Accelerate Maven artifact repository uploads !283
+
+v 5.2.0
+
+- Populate Git Protocol !276
+- Add support for GitConfigOptions required for git-receive-pack command !281
+
+
+v 5.1.0
+
+- Log using correlation-id bound to the incoming request !258
+- Prevent uploading two files as artifacts in single request !273
+- Prometheus instrumentation !279
+
+v 5.0.0
+
+- Update httprs for broken range implementations !266
+- Direct Upload for User Uploads !265
+
+v 4.3.1
+
+- Objectstorage ETag checking !263
+
+v 4.3.0
+
+- Multipart upload support !257
+- Make external commands extend the environment !261
+
+v 4.2.1
+
+- Fix objectstore error shadowing !259
+
+v 4.2.0
+
+- Guess RemoteAddr from X-Forwarded-For !254
+
+v 4.1.0
+
+- Add websocket route for web terminal access to CI jobs !234
+- Remove RepoPath check on Git HTTP !244
+- Artifacts and Uploads must allow Objects Storage only requests !247
+- Bridge between Gitaly and GitLab for a new repository snapshot endpoint !248
+- Update gitaly proto !249
+
+v 4.0.0
+
+- Handle Object Store upload in upload.HandleFileUploads !238
+- More consistent API naming. ObjectStore -> RemoteObject !240
+
+v3.8.0
+
+- Add structured logging !236
+
+v3.7.0
+
+- Add option to send file uploads straight to object storage !227
+- Allow sending Git archives with file names other than 'archive' !232
+- Unify uploads handling under filestore package !230
+
+v3.6.0
+
+- Introduce a `send-url:` method that allows to serve remote HTTP/GET file, like S3-based file !228
+
+v3.5.1
+
+- Use grpc-go 1.9.1 (!225)
+- Update gitaly stream and dial library functions (!224)
+
+v3.5.0
+
+- Add option to disable Git archive caching !222
+
+v3.4.0
+
+- Track Gitaly Connections in Prometheus !211
+- Run test suite on Go 1.9 !213
+- Remove repo disk check !218
+
+v3.3.1
+
+- Fix "net/http: request canceled" errors in gitlab-zip-cat !208
+
+v3.3.0
+
+- Ban context.Background !201
+- Respect the ShowAllRefs flag in git upload-pack and info-refs !203
+- Upgrade grpc to v1.7.1, protobuf to latest !207
+
+v3.2.0
+
+- Implement Gitaly call for archive requests !199
+- Re-use client.Dial from gitaly !194
+- Respect GL_USERNAME !192
+- Update BurntSushi/toml !195
+- Add Redis error counters !197
+- Migrate Send{Diff,Patch} to Gitaly !200
+
+v3.1.0
+
+- Add histograms to routes !184
+- Gitaly deprecations and replacements !186, !187, !189
+- Enable CI long polling by default !188
+- Refactor Git archive creation !190
+
+v3.0.0
+
+- Use GetBlob RPC instead of TreeEntry RPC for serving blobs !182
+
+v2.3.0
+- Improve gitaly info refs error message !172
+- Migrate GetBlob to Gitaly !174
+- Drop support for Go <1.8 !176
+- Add some tests for gzipped assets !177
+- Use reader/writer from gitaly streamio !178
+- Use http.Request contexts for Gitaly calls !179
+- Allow to access remote archive !180
+
+v2.2.0
+- Add support for token authentication on Gitaly requests
+- Update gitaly-proto library to 0.9.0
+
+v2.1.1
+- Bug fix and counters for static error pages
+
+v2.1.0
+- Remove chatty ErrorPage log message
+- Filter query-string secrets out of logged URLs
+- Suggest better default for prometheus port
+- Add internal upload to external storage
+- Prometheus metrics for senddata and git archive cache
+
+v2.0.1
+- Support GL_REPOSITORY from API and pass it to Gitaly on ReceivePack
+
+v2.0.0
+
+- Fix gRPC stream resource leak !158, !160
+- Don't append error messages to Git HTTP responses !157
+- Drop support for old Gitaly fields in Git API response !152
+
+v1.4.3
+
+- Support forwarding Git HTTP POST data to Gitaly !143
+- Pass more Gitaly 'Repository' fields on from gitlab-rails !147
+- Support insecure TCP connections to Gitaly !150
+
+v1.4.2
+
+- Return 500 from GET /info/refs if possible !145
+
+v1.4.1
+
+- Fix several Redis integration bugs !137, !140
+- Fix race conditions in Redis tests !136
+- Don't follow HTTP redirects on internal API !134
+- Support /api/v4 for CI !133
+- Don't spam logs with CI queueing messages (Marcin Biegała) !127
+
+v1.4.0
+
+- Integrate with Gitaly via gRPC !119
+- Buffer git receive-pack responses in tempfiles !123
+- Use stdlib to copy stdin/stdout of git subprocesses !118
+- Terminal session timeouts !107
+- Redis integration EXPERIMENTAL !112
+- CI notifications via Redis EXPERIMENTAL !128
+- More CI queue metrics !122
+
+v1.3.0
+
+- Fix stalled HTTP fetches with large payloads. !110
+- Correctly parse content types in HTTP requests and responses !114
+- Catch _all_ multipart NextPart() errors. !108
+- Replace 'gitlab_workhorse_artifacts_upload_*' with labeled version of
+  'gitlab_workhorse_multipart_upload_*'. !106
+- Allow GET /info/refs to be proxied to Gitaly. !105
+- Set correct value of X-Forwarded-For header in PreAuthorize request. !104
+- Allow nested namespaces in git URLs. !80
+
+v1.2.1
+
+- More Prometheus metrics
+- Hide 502 internal errors from text-mode clients
+- Buffer internal API responses up to a 32kB hard limit
+
+v1.2.0
+
+- Add terminal websocket proxy endpoint
+- Rewrite all incoming multipart requests: write 'file' parts to tempfiles
+
+v1.1.1
+
+- Restrict effect of API rate limiting to /ci/api/v1/builds/register.json
+
+v1.1.0
+
+- Prometheus metrics listener via `-prometheusListenAddr` option
+- Tell NGINX to not buffer Git HTTP responses etc. with X-Accel-Buffering
+- Fix double content type bug on archive downloads
+
+v1.0.0
+
+- Workhorse is now v1.0.0, according to Semantic Versioning. No breaking
+  changes were made.
+- Add support for logging to file, and logfile rotation with SIGHUP.
+- Improve error messages.
+
+v0.8.5
+
+Simplify revspec for 'git format-patch'.
+
+v0.8.4
+
+Fix Go 1.5 compatibility broken in 0.8.3. Update CI configuration so
+that tests run on Go 1.5, 1.6 and 1.7 (was only 1.6 before).
+
+v0.8.3
+
+Add rate-limiting feature for /api requests (disabled by default).
+Suppress non-zero exit code error from git-upload-pack during shallow
+Git clone (only affects logging and Sentry). Don't treat EEXIST as an
+error during git archive finalization.
+
+v0.8.2
+
+Recognize more archive formats in git.SendArchive. Make 502 errors
+(failed proxy requests to Unicorn) easier to recognize in Sentry.
+
+v0.8.1
+
+Add Sentry (raven-go) for remote error tracking.
+
+v0.8.0
+
+Add JWT signed communication between gitlab-workhorse and gitlab-rails.
+
+v0.7.11
+
+Fix 'nil dereference' crash on Go 1.7 when parsing authBackend
+parameter. Fix 'hard-wire backend host' crashes.
+
+v0.7.10
+
+Fix typo in metrics header name.
+
+v0.7.9
+
+Hard-wire backend host when using TCP.
+
+v0.7.8
+
+Send artifact zip file entries via the 'senddata' mechanism.
+
+v0.7.7
+
+Add the protocol used (HTTP) to each gitCommand call in order to check
+for restricted protocol access on GitLab's side.
+
+v0.7.6
+
+Add the capability to inject `git format-patch` output.
+
+v0.7.5
+
+Add the capability to inject `git diff` output as HTTP response bodies
+(@zj).
+
+v0.7.4
+
+Pass a timestamp when forwarding requests to Rails. Hopefully this
+will give us insight into Unicorn queueing behavior.
+
+v0.7.3
+
+Revert 'buffer Git HTTP responses'. Set default listen socket
+permissions to world read/writeable.
+
+v0.7.2 DO NOT USE
+
+Integrate with GOPATH during development (remove relative imports
+etc.). Buffer Git HTTP responses so that we may return an error if the
+local command fails early.
+
+Update: the 'buffer Git HTTP responses' change in 0.7.2 is BAD, it
+breaks shallow Git clone. Don't use 0.7.2!
+
+v0.7.1
+
+Set Content-Length (retrieved from Git) on raw blob data responses.
+
+v0.7.0
+
+Start using a 'v' prefix on the version string.
+
+0.6.5
+
+Inject 'git archive' data the same way as Git blob data.
+
+0.6.4
+
+Increase default ProxyHeadersTimeout to 5 minutes. Fix injecting raw
+blobs for /api/v3 requetsts.
+
+0.6.3
+
+Add support for sending Git raw git blobs via gitlab-workhorse.
+
+0.6.2
+
+We now fill in missing directory entries in archize zip metadata
+files; also some other minor changes.
+
+0.6.1
+
+Add support for generating zip artifacts metadata and serving single
+files from zip archives.
+
+Gitlab-workhorse now consists of multiple executables. We also fixed a
+routing bug introduced by the 0.6.0 refactor that broke relative URL
+support.
+
+0.6.0
+
+Overhauled the source code organization; no user-facing changes
+(intended). The application code is now split into Go 'packages'
+(modules). As of 0.6.0 gitlab-workhorse requires Go 1.5 or newer.
+
+0.5.4
+
+Fix /api/v3/projects routing bug introduced in 0.5.2-0.5.3.
+
+0.5.3
+
+Fixes merge error in 0.5.2.
+
+0.5.2 (broken!)
+
+- Always check with upstream if files in /uploads/ may be served
+- Fix project%2Fnamespace API project ID's
+- Prevent archive zombies when using gzip or bzip2
+- Don't show pretty error pages in development mode
+
+0.5.1
+
+Deprecate -relativeURLRoot option, use -authBackend instead.
+
+0.5.0
+
+Send ALL GitLab requests through gitlab-workhorse.
+
+0.4.2
+
+Return response to client when uploading Git LFS object.
+
+0.4.1
+
+Add support for Build Artifacts and Git LFS. The GitLab-Workhorse
+offloads file uploading and downloading by providing support for
+rewriting multipart form data and X-Sendfile.
+
+Other changes:
+- add header Gitlab-Workhorse to all requests to indicate from where
+  they originated
+
+0.4.0
+
+Rename the project to gitlab-workhorse. The old name had become too
+specific.
+
+Other changes:
+
+- pass LD_LIBRARY_PATH to Git commands
+- accomodate broken HTTP clients by spelling 'Www-Authenticate' as
+  'WWW-Authenticate'
+
+0.3.1
+
+Add support for Unix domain socket connections to the authBackend.
+
+0.3.0
+
+In 0.3.0 we also handle 'git archive' downloads for GitLab 8.1+.
+This has lead to some breaking API changes, making 0.3.0 incompatible
+with GitLab 8.0.  We now expect the 'auth backend' (GitLab) to
+provide us with much more information about each request, such as
+the path on disk to the Git repository the client is requesting.
+This makes the REPO_ROOT command line argument obsolete.
+
+0.2.14
+
+This is the last version that works with GitLab 8.0.

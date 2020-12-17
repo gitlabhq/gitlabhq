@@ -79,7 +79,7 @@ export default {
         <span class="gl-mx-2">-</span>
         <gl-button
           variant="link"
-          class="gl-text-gray-400!"
+          class="gl-text-gray-500!"
           data-testid="reset-button"
           :disabled="loading"
           @click="setDueDate(null)"

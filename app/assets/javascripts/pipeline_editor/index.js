@@ -10,7 +10,11 @@ import PipelineEditorApp from './pipeline_editor_app.vue';
 export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
   const el = document.querySelector(selector);
 
-  const { projectPath, defaultBranch, ciConfigPath } = el?.dataset;
+  if (!el) {
+    return null;
+  }
+
+  const { ciConfigPath, commitId, defaultBranch, newMergeRequestPath, projectPath } = el?.dataset;
 
   Vue.use(VueApollo);
 
@@ -24,9 +28,11 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
     render(h) {
       return h(PipelineEditorApp, {
         props: {
-          projectPath,
-          defaultBranch,
           ciConfigPath,
+          commitId,
+          defaultBranch,
+          newMergeRequestPath,
+          projectPath,
         },
       });
     },

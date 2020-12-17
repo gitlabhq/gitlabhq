@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Editor
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: reference, how-to
 ---
 
@@ -66,7 +66,7 @@ Monaco uses the [Monarch](https://microsoft.github.io/monaco-editor/monarch.html
 
 If you are missing Syntax Highlighting support for any language, we prepared a short guide on how to [add support for a missing language Syntax Highlighting.](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/ide/lib/languages/README.md)
 
-NOTE: **Note:**
+NOTE:
 Single file editing is based on the [Ace Editor](https://ace.c9.io).
 
 ### Themes
@@ -262,8 +262,8 @@ quickly share your project with others.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/268288) in GitLab 12.9, third-party assets and libraries required for Live Preview are hosted at `https://sandbox-prod.gitlab-static.net` when it is enabled. However, some libraries are still served from other third-party services which may or may not be desirable in your environment.
 
-The Live Preview feature needs to be enabled in the GitLab instances
-admin settings. Live Preview is enabled for all projects on
+The Live Preview feature needs to be enabled in the GitLab instance's
+Admin Area. Live Preview is enabled for all projects on
 GitLab.com
 
 ![Administrator Live Preview setting](img/admin_live_preview_v13_0.png)
@@ -286,9 +286,9 @@ below.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5426) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.6.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/211685) to GitLab Core in 13.1.
 
-CAUTION: **Warning:**
+WARNING:
 Interactive Web Terminals for the Web IDE is currently in **Beta**.
-Shared runners [do not yet support Interactive Web Terminals](https://gitlab.com/gitlab-org/gitlab/-/issues/24674),
+GitLab.com shared runners [do not yet support Interactive Web Terminals](https://gitlab.com/gitlab-org/gitlab/-/issues/24674),
 so you would need to use your own private runner to make use of this feature.
 
 [Interactive Web Terminals](../../../ci/interactive_web_terminal/index.md)
@@ -313,7 +313,7 @@ terminal blocks the job from finishing for the duration configured in
 [`[session_server].session_timeout`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section)
 until you close the terminal window.
 
-NOTE: **Note:**
+NOTE:
 Not all executors are
 [supported](https://docs.gitlab.com/runner/executors/#compatibility-chart).
 The [File Sync](#file-syncing-to-web-terminal) feature is supported on Kubernetes runners only.
@@ -394,7 +394,7 @@ File changes in the Web IDE can be synced to a running web terminal.
 This enables users to test their code changes in a preconfigured terminal
 environment.
 
-NOTE: **Note:**
+NOTE:
 Only file changes in the Web IDE are synced to the terminal.
 Changes made in the terminal are **not** synced to the Web IDE.
 This feature is only available for Kubernetes runners.

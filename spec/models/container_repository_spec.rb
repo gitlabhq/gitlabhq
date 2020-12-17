@@ -188,7 +188,7 @@ RSpec.describe ContainerRepository do
     subject { repository.start_expiration_policy! }
 
     it 'sets the expiration policy started at to now' do
-      Timecop.freeze do
+      freeze_time do
         expect { subject }
           .to change { repository.expiration_policy_started_at }.from(nil).to(Time.zone.now)
       end

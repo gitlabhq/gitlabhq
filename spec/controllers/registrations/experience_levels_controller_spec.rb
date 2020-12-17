@@ -19,7 +19,7 @@ RSpec.describe Registrations::ExperienceLevelsController do
     context 'with an authenticated user' do
       before do
         sign_in(user)
-        stub_experiment_for_user(onboarding_issues: true)
+        stub_experiment_for_subject(onboarding_issues: true)
       end
 
       it { is_expected.to have_gitlab_http_status(:ok) }
@@ -28,7 +28,7 @@ RSpec.describe Registrations::ExperienceLevelsController do
 
       context 'when not part of the onboarding issues experiment' do
         before do
-          stub_experiment_for_user(onboarding_issues: false)
+          stub_experiment_for_subject(onboarding_issues: false)
         end
 
         it { is_expected.to have_gitlab_http_status(:not_found) }
@@ -47,12 +47,12 @@ RSpec.describe Registrations::ExperienceLevelsController do
     context 'with an authenticated user' do
       before do
         sign_in(user)
-        stub_experiment_for_user(onboarding_issues: true)
+        stub_experiment_for_subject(onboarding_issues: true)
       end
 
       context 'when not part of the onboarding issues experiment' do
         before do
-          stub_experiment_for_user(onboarding_issues: false)
+          stub_experiment_for_subject(onboarding_issues: false)
         end
 
         it { is_expected.to have_gitlab_http_status(:not_found) }
@@ -90,7 +90,7 @@ RSpec.describe Registrations::ExperienceLevelsController do
           let(:issues_board) { build(:board, id: 123, project: project) }
 
           before do
-            stub_experiment_for_user(
+            stub_experiment_for_subject(
               onboarding_issues: true,
               default_to_issues_board: default_to_issues_board_xp?
             )

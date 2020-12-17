@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Ecosystem
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # GitLab Jira Development Panel integration **(CORE)**
@@ -73,7 +73,7 @@ When configuring Jira DVCS Connector:
 
 #### GitLab account configuration for DVCS
 
-TIP: **Tip:**
+NOTE:
 To ensure that regular user account maintenance doesn't impact your integration,
 create and use a single-purpose `jira` user in GitLab.
 
@@ -89,7 +89,7 @@ create and use a single-purpose `jira` user in GitLab.
    replacing `<gitlab.example.com>` with your GitLab instance domain. For example, if you are using GitLab.com,
    this would be `https://gitlab.com/login/oauth/callback`.
 
-   NOTE: **Note:**
+   NOTE:
    If using a GitLab version earlier than 11.3, the `Redirect URI` must be
    `https://<gitlab.example.com>/-/jira/login/oauth/callback`. If you want Jira
    to have access to all projects, GitLab recommends that an administrator create the
@@ -100,7 +100,7 @@ create and use a single-purpose `jira` user in GitLab.
    - Check **API** in the Scopes section and uncheck any other checkboxes.
 
 1. Click **Save application**. GitLab displays the generated **Application ID**
-   and **Secret** values. Copy these values, which you will use in Jira.
+   and **Secret** values. Copy these values, which you use in Jira.
 
 #### Jira DVCS Connector setup
 
@@ -125,7 +125,7 @@ If you're using GitLab.com and Jira Cloud, we recommend you use the
    replacing `<gitlab.example.com>` with your GitLab instance domain. For example, if you are using GitLab.com,
    this would be `https://gitlab.com/`.
 
-   NOTE: **Note:**
+   NOTE:
    If using a GitLab version earlier than 11.3 the **Host URL** value should be `https://<gitlab.example.com>/-/jira`
 
    For the **Client ID** field, use the **Application ID** value from the previous section.
@@ -165,7 +165,7 @@ This error message is generated in Jira, after completing the **Add New Account*
 form and authorizing access. It indicates a connectivity issue from Jira to
 GitLab. No other error messages appear in any logs.
 
-If there was an issue with SSL/TLS, this error message will be generated.
+If there was an issue with SSL/TLS, this error message is generated.
 
 - The [GitLab Jira integration](../user/project/integrations/jira.md) requires GitLab to connect to Jira. Any
   TLS issues that arise from a private certificate authority or self-signed
@@ -232,7 +232,7 @@ Potential resolutions:
 - If you're using GitLab Core or GitLab Starter, be sure you're using
   GitLab 13.4 or later.
 
-[Contact GitLab Support](https://about.gitlab.com/support) if none of these reasons apply.
+[Contact GitLab Support](https://about.gitlab.com/support/) if none of these reasons apply.
 
 #### Fixing synchronization issues
 
@@ -245,11 +245,11 @@ resynchronize the information. To do so:
 1. For each project, there's a sync button displayed next to the **last activity** date.
    To perform a *soft resync*, click the button, or complete a *full sync* by shift clicking
    the button. For more information, see
-   [Atlassian's documentation](https://confluence.atlassian.com/adminjiracloud/synchronize-an-account-972332890.html).
+   [Atlassian's documentation](https://support.atlassian.com/jira-cloud-administration/docs/synchronize-jira-cloud-to-bitbucket/).
 
 ### GitLab for Jira app
 
-You can integrate GitLab.com and Jira Cloud using the [GitLab for Jira](https://marketplace.atlassian.com/apps/1221011/gitlab-for-jira) app in the Atlassian Marketplace.
+You can integrate GitLab.com and Jira Cloud using the [GitLab for Jira](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud) app in the Atlassian Marketplace.
 
 This method is recommended when using GitLab.com and Jira Cloud because data is synchronized in realtime, while the DVCS connector updates data only once per hour. If you are not using both of these environments, use the [Jira DVCS Connector](#jira-dvcs-configuration) method.
 
@@ -257,7 +257,7 @@ This method is recommended when using GitLab.com and Jira Cloud because data is 
 For a walkthrough of the integration with GitLab for Jira, watch [Configure GitLab Jira Integration using Marketplace App](https://youtu.be/SwR-g1s1zTo) on YouTube.
 
 1. Go to **Jira Settings > Apps > Find new apps**, then search for GitLab.
-1. Click **GitLab for Jira**, then click **Get it now**. Or go the [App in the marketplace directly](https://marketplace.atlassian.com/apps/1221011/gitlab-for-jira)
+1. Click **GitLab for Jira**, then click **Get it now**. Or go the [App in the marketplace directly](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud)
 
    ![Install GitLab App on Jira](img/jira_dev_panel_setup_com_1.png)
 1. After installing, click **Get started** to go to the configurations page. This page is always available under **Jira Settings > Apps > Manage apps**.
@@ -267,12 +267,12 @@ For a walkthrough of the integration with GitLab for Jira, watch [Configure GitL
    **Link namespace to Jira**. The user setting up *GitLab for Jira* must have
    *Maintainer* access to the GitLab namespace.
 
-NOTE: **Note:**
+NOTE:
 The GitLab user only needs access when adding a new namespace. For syncing with Jira, we do not depend on the user's token.
 
    ![Configure namespace on GitLab Jira App](img/jira_dev_panel_setup_com_3.png)
 
-After a namespace is added, all future commits, branches and merge requests of all projects under that namespace will be synced to Jira. Past data cannot be synced at the moment.
+After a namespace is added, all future commits, branches, and merge requests of all projects under that namespace are synced to Jira. Past data cannot be synced at the moment.
 
 For more information, see [Usage](#usage).
 

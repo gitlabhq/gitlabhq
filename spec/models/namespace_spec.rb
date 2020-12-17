@@ -19,6 +19,7 @@ RSpec.describe Namespace do
     it { is_expected.to have_one :aggregation_schedule }
     it { is_expected.to have_one :namespace_settings }
     it { is_expected.to have_many :custom_emoji }
+    it { is_expected.to have_many :namespace_onboarding_actions }
   end
 
   describe 'validations' do

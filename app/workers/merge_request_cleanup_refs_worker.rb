@@ -3,7 +3,7 @@
 class MergeRequestCleanupRefsWorker
   include ApplicationWorker
 
-  feature_category :source_code_management
+  feature_category :code_review
   idempotent!
 
   def perform(merge_request_id)

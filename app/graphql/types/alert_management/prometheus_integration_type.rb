@@ -2,7 +2,7 @@
 
 module Types
   module AlertManagement
-    class PrometheusIntegrationType < BaseObject
+    class PrometheusIntegrationType < ::Types::BaseObject
       include ::Gitlab::Routing
 
       graphql_name 'AlertManagementPrometheusIntegration'

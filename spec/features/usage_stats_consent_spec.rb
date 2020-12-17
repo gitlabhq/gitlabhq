@@ -19,6 +19,7 @@ RSpec.describe 'Usage stats consent' do
       end
 
       gitlab_sign_in(user)
+      gitlab_enable_admin_mode_sign_in(user)
     end
 
     it 'hides the banner permanently when sets usage stats' do

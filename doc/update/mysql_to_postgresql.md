@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Migrating from MySQL to PostgreSQL
@@ -11,7 +11,7 @@ migrate it to a PostgreSQL database.
 
 ## Requirements
 
-NOTE: **Note:**
+NOTE:
 Support for MySQL was removed in GitLab 12.1. This procedure should be performed
 **before** installing GitLab 12.1.
 
@@ -51,7 +51,7 @@ For other distributions, follow the instructions in PostgreSQL's
 [download page](https://www.postgresql.org/download/) to add their repository
 and then install `pgloader`.
 
-If you are migrating to a Docker based installation, you will need to install
+If you are migrating to a Docker based installation, you must install
 pgloader within the container as it is not included in the container image.
 
 1. Start a shell session in the context of the running container:
@@ -69,7 +69,7 @@ pgloader within the container as it is not included in the container image.
 
 ## Omnibus GitLab installations
 
-For [Omnibus GitLab packages](https://about.gitlab.com/install/), you'll first
+For [Omnibus GitLab packages](https://about.gitlab.com/install/), you first
 need to enable the bundled PostgreSQL:
 
 1. Stop GitLab:
@@ -84,13 +84,13 @@ need to enable the bundled PostgreSQL:
    postgresql['enable'] = true
    ```
 
-1. Edit `/etc/gitlab/gitlab.rb` to use the bundled PostgreSQL. Please check
-   all the settings beginning with `db_`, such as `gitlab_rails['db_adapter']`
-   and alike. You could just comment all of them out so that we'll just use
-   the defaults.
+1. Edit `/etc/gitlab/gitlab.rb` to use the bundled PostgreSQL. Review all of the
+   settings beginning with `db_` (such as `gitlab_rails['db_adapter']`). To use
+   the default values, you can comment all of them out.
 
 1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
    for the changes to take effect.
+
 1. Start Unicorn and PostgreSQL so that we can prepare the schema:
 
    ```shell
@@ -110,9 +110,9 @@ need to enable the bundled PostgreSQL:
    sudo gitlab-ctl stop unicorn
    ```
 
-After these steps, you'll have a fresh PostgreSQL database with up-to-date schema.
+After these steps, you have a fresh PostgreSQL database with up-to-date schema.
 
-Next, we'll use `pgloader` to migrate the data from the old MySQL database to the
+Next, use `pgloader` to migrate the data from the old MySQL database to the
 new PostgreSQL one:
 
 1. Save the following snippet in a `commands.load` file, and edit with your
@@ -178,7 +178,7 @@ You can now verify that everything works as expected by visiting GitLab.
 
 ## Source installations
 
-For installations from source that use MySQL, you'll first need to
+For installations from source that use MySQL, you must first
 [install PostgreSQL and create a database](../install/installation.md#6-database).
 
 After the database is created, go on with the following steps:
@@ -211,9 +211,9 @@ After the database is created, go on with the following steps:
    sudo -u git -H bundle exec rake db:create db:migrate RAILS_ENV=production
    ```
 
-After these steps, you'll have a fresh PostgreSQL database with up-to-date schema.
+After these steps, you have a fresh PostgreSQL database with up-to-date schema.
 
-Next, we'll use `pgloader` to migrate the data from the old MySQL database to the
+Next, use `pgloader` to migrate the data from the old MySQL database to the
 new PostgreSQL one:
 
 1. Save the following snippet in a `commands.load` file, and edit with your

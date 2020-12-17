@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class GroupMembersFinder < UnionFinder
+  RELATIONS = %i(direct inherited descendants).freeze
+  DEFAULT_RELATIONS = %i(direct inherited).freeze
+
   include CreatedAtFilter
 
   # Params can be any of the following:
@@ -17,11 +20,11 @@ class GroupMembersFinder < UnionFinder
     @params = params
   end
 
-  def execute(include_relations: [:inherited, :direct])
+  def execute(include_relations: DEFAULT_RELATIONS)
     group_members = group_members_list
     relations = []
 
-    return group_members if include_relations == [:direct]
+    return filter_members(group_members) if include_relations == [:direct]
 
     relations << group_members if include_relations.include?(:direct)
 

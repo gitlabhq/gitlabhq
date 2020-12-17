@@ -22,7 +22,7 @@ RSpec.describe 'Environment > Metrics' do
   end
 
   around do |example|
-    Timecop.freeze(current_time) { example.run }
+    travel_to(current_time) { example.run }
   end
 
   shared_examples 'has environment selector' do

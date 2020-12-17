@@ -4,6 +4,8 @@ module Resolvers
   class MergeRequestsResolver < BaseResolver
     include ResolvesMergeRequests
 
+    type ::Types::MergeRequestType.connection_type, null: true
+
     alias_method :project, :synchronized_object
 
     def self.accept_assignee
@@ -16,6 +18,12 @@ module Resolvers
       argument :author_username, GraphQL::STRING_TYPE,
              required: false,
              description: 'Username of the author'
+    end
+
+    def self.accept_reviewer
+      argument :reviewer_username, GraphQL::STRING_TYPE,
+             required: false,
+             description: 'Username of the reviewer'
     end
 
     argument :iids, [GraphQL::STRING_TYPE],
@@ -52,7 +60,7 @@ module Resolvers
     argument :sort, Types::MergeRequestSortEnum,
              description: 'Sort merge requests by this criteria',
              required: false,
-             default_value: 'created_desc'
+             default_value: :created_desc
 
     def self.single
       ::Resolvers::MergeRequestResolver

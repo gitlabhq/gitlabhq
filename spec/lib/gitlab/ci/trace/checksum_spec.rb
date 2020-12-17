@@ -8,8 +8,12 @@ RSpec.describe Gitlab::Ci::Trace::Checksum do
   subject { described_class.new(build) }
 
   context 'when build pending state exists' do
+    let(:trace_details) do
+      { trace_checksum: 'crc32:d4777540', trace_bytesize: 262161 }
+    end
+
     before do
-      create(:ci_build_pending_state, build: build, trace_checksum: 'crc32:d4777540')
+      create(:ci_build_pending_state, build: build, **trace_details)
     end
 
     context 'when matching persisted trace chunks exist' do
@@ -22,6 +26,7 @@ RSpec.describe Gitlab::Ci::Trace::Checksum do
       it 'calculates combined trace chunks CRC32 correctly' do
         expect(subject.chunks_crc32).to eq 3564598592
         expect(subject).to be_valid
+        expect(subject).not_to be_corrupted
       end
     end
 
@@ -32,8 +37,9 @@ RSpec.describe Gitlab::Ci::Trace::Checksum do
         create_chunk(index: 2, data: 'ccccccccccccccccc')
       end
 
-      it 'makes trace checksum invalid' do
+      it 'makes trace checksum invalid but not corrupted' do
         expect(subject).not_to be_valid
+        expect(subject).not_to be_corrupted
       end
     end
 
@@ -43,8 +49,9 @@ RSpec.describe Gitlab::Ci::Trace::Checksum do
         create_chunk(index: 2, data: 'ccccccccccccccccc')
       end
 
-      it 'makes trace checksum invalid' do
+      it 'makes trace checksum invalid and corrupted' do
         expect(subject).not_to be_valid
+        expect(subject).to be_corrupted
       end
     end
 
@@ -55,8 +62,9 @@ RSpec.describe Gitlab::Ci::Trace::Checksum do
         create_chunk(index: 2, data: 'ccccccccccccccccc')
       end
 
-      it 'makes trace checksum invalid' do
+      it 'makes trace checksum invalid but not corrupted' do
         expect(subject).not_to be_valid
+        expect(subject).not_to be_corrupted
       end
     end
 
@@ -99,6 +107,14 @@ RSpec.describe Gitlab::Ci::Trace::Checksum do
       it 'returns nil' do
         expect(subject.last_chunk).to be_nil
       end
+
+      it 'is not a valid trace' do
+        expect(subject).not_to be_valid
+      end
+
+      it 'is not a corrupted trace' do
+        expect(subject).not_to be_corrupted
+      end
     end
 
     context 'when there are multiple chunks' do
@@ -110,6 +126,26 @@ RSpec.describe Gitlab::Ci::Trace::Checksum do
       it 'returns chunk with the highest index' do
         expect(subject.last_chunk.chunk_index).to eq 1
       end
+
+      it 'is not a valid trace' do
+        expect(subject).not_to be_valid
+      end
+
+      it 'is not a corrupted trace' do
+        expect(subject).not_to be_corrupted
+      end
+    end
+  end
+
+  describe '#trace_size' do
+    before do
+      create_chunk(index: 0, data: 'a' * 128.kilobytes)
+      create_chunk(index: 1, data: 'b' * 128.kilobytes)
+      create_chunk(index: 2, data: 'abcdefg-ü')
+    end
+
+    it 'returns total trace size in bytes' do
+      expect(subject.trace_size).to eq 262154
     end
   end
 

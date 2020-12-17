@@ -13,6 +13,9 @@ class UserPolicy < BasePolicy
   desc "The user is blocked"
   condition(:blocked_user, scope: :subject, score: 0) { @subject.blocked? }
 
+  desc "The user is unconfirmed"
+  condition(:unconfirmed_user, scope: :subject, score: 0) { !@subject.confirmed? }
+
   rule { ~restricted_public_level }.enable :read_user
   rule { ~anonymous }.enable :read_user
 
@@ -25,7 +28,7 @@ class UserPolicy < BasePolicy
   end
 
   rule { default }.enable :read_user_profile
-  rule { (private_profile | blocked_user) & ~(user_is_self | admin) }.prevent :read_user_profile
+  rule { (private_profile | blocked_user | unconfirmed_user) & ~(user_is_self | admin) }.prevent :read_user_profile
   rule { user_is_self | admin }.enable :disable_two_factor
   rule { (user_is_self | admin) & ~blocked }.enable :create_user_personal_access_token
 end

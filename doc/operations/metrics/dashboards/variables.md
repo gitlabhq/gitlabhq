@@ -1,7 +1,7 @@
 ---
 stage: Monitor
 group: Health
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Using variables **(CORE)**
@@ -12,7 +12,7 @@ Variables can be specified using double curly braces, such as `"{{ci_environment
 
 Support for the `"%{ci_environment_slug}"` format was
 [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31581) in GitLab 13.0.
-Queries that continue to use the old format will show no data.
+Queries that continue to use the old format display no data.
 
 ## Predefined variables
 

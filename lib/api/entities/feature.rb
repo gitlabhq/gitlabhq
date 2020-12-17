@@ -17,6 +17,16 @@ module API
           { key: gate.key, value: value }
         end.compact
       end
+
+      class Definition < Grape::Entity
+        ::Feature::Definition::PARAMS.each do |param|
+          expose param
+        end
+      end
+
+      expose :definition, using: Definition do |feature|
+        ::Feature::Definition.definitions[feature.name.to_sym]
+      end
     end
   end
 end

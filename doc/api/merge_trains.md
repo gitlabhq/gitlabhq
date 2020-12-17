@@ -1,19 +1,19 @@
 ---
 stage: Verify
 group: Continuous Integration
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Merge Trains API **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36146) in GitLab 12.9.
-> - Using this API you can consume GitLab's [Merge Train](../ci/merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md) entries.
+> - Using this API you can consume [Merge Train](../ci/merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md) entries.
 
 Every API call to merge trains must be authenticated with Developer or higher [permissions](../user/permissions.md).
 
-If a user is not a member of a project and the project is private, a `GET` request on that project will result to a `404` status code.
+If a user is not a member of a project and the project is private, a `GET` request on that project returns a `404` status code.
 
-If Merge Trains is not available for the project, a `403` status code will return.
+If Merge Trains is not available for the project, a `403` status code is returned.
 
 ## Merge Trains API pagination
 

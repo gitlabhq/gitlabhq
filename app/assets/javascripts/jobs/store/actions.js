@@ -13,6 +13,7 @@ import {
   scrollDown,
   scrollUp,
 } from '~/lib/utils/scroll_utils';
+import httpStatusCodes from '~/lib/utils/http_status';
 
 export const init = ({ dispatch }, { endpoint, logState, pagePath }) => {
   dispatch('setJobEndpoint', endpoint);
@@ -20,8 +21,7 @@ export const init = ({ dispatch }, { endpoint, logState, pagePath }) => {
     logState,
     pagePath,
   });
-
-  return Promise.all([dispatch('fetchJob'), dispatch('fetchTrace')]);
+  dispatch('fetchJob');
 };
 
 export const setJobEndpoint = ({ commit }, endpoint) => commit(types.SET_JOB_ENDPOINT, endpoint);
@@ -39,6 +39,7 @@ export const toggleSidebar = ({ dispatch, state }) => {
 };
 
 let eTagPoll;
+let isTraceReadyForRender;
 
 export const clearEtagPoll = () => {
   eTagPoll = null;
@@ -70,7 +71,14 @@ export const fetchJob = ({ state, dispatch }) => {
   });
 
   if (!Visibility.hidden()) {
-    eTagPoll.makeRequest();
+    // eslint-disable-next-line promise/catch-or-return
+    eTagPoll.makeRequest().then(() => {
+      // if a job is canceled we still need to dispatch
+      // fetchTrace to get the trace so we check for has_trace
+      if (state.job.started || state.job.has_trace) {
+        dispatch('fetchTrace');
+      }
+    });
   } else {
     axios
       .get(state.jobEndpoint)
@@ -80,9 +88,15 @@ export const fetchJob = ({ state, dispatch }) => {
 
   Visibility.change(() => {
     if (!Visibility.hidden()) {
+      // This check is needed to ensure the loading icon
+      // is not shown for a finished job during a visibility change
+      if (!isTraceReadyForRender && state.job.started) {
+        dispatch('startPollingTrace');
+      }
       dispatch('restartPolling');
     } else {
       dispatch('stopPolling');
+      dispatch('stopPollingTrace');
     }
   });
 };
@@ -163,6 +177,8 @@ export const fetchTrace = ({ dispatch, state }) =>
       params: { state: state.traceState },
     })
     .then(({ data }) => {
+      isTraceReadyForRender = data.complete;
+
       dispatch('toggleScrollisInBottom', isScrolledToBottom());
       dispatch('receiveTraceSuccess', data);
 
@@ -172,7 +188,11 @@ export const fetchTrace = ({ dispatch, state }) =>
         dispatch('startPollingTrace');
       }
     })
-    .catch(() => dispatch('receiveTraceError'));
+    .catch(e =>
+      e.response.status === httpStatusCodes.FORBIDDEN
+        ? dispatch('receiveTraceUnauthorizedError')
+        : dispatch('receiveTraceError'),
+    );
 
 export const startPollingTrace = ({ dispatch, commit }) => {
   const traceTimeout = setTimeout(() => {
@@ -193,6 +213,10 @@ export const receiveTraceSuccess = ({ commit }, log) => commit(types.RECEIVE_TRA
 export const receiveTraceError = ({ dispatch }) => {
   dispatch('stopPollingTrace');
   flash(__('An error occurred while fetching the job log.'));
+};
+export const receiveTraceUnauthorizedError = ({ dispatch }) => {
+  dispatch('stopPollingTrace');
+  flash(__('The current user is not authorized to access the job log.'));
 };
 /**
  * When the user clicks a collapsible line in the job
@@ -234,7 +258,7 @@ export const receiveJobsForStageError = ({ commit }) => {
   flash(__('An error occurred while fetching the jobs.'));
 };
 
-export const triggerManualJob = ({ state }, variables) => {
+export const triggerManualJob = ({ state, dispatch }, variables) => {
   const parsedVariables = variables.map(variable => {
     const copyVar = { ...variable };
     delete copyVar.id;
@@ -245,5 +269,6 @@ export const triggerManualJob = ({ state }, variables) => {
     .post(state.job.status.action.path, {
       job_variables_attributes: parsedVariables,
     })
+    .then(() => dispatch('fetchTrace'))
     .catch(() => flash(__('An error occurred while triggering the job.')));
 };

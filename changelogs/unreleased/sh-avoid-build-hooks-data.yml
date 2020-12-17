@@ -1,0 +1,5 @@
+---
+title: Reduce SQL queries when no pipeline hooks are active
+merge_request: 49186
+author:
+type: performance

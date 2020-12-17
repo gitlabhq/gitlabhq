@@ -244,21 +244,7 @@ export const toggleResolveNote = ({ commit, dispatch }, { endpoint, isResolved, 
   });
 };
 
-export const toggleBlockedIssueWarning = ({ commit }, value) => {
-  commit(types.TOGGLE_BLOCKED_ISSUE_WARNING, value);
-  // Hides Close issue button at the top of issue page
-  const closeDropdown = document.querySelector('.js-issuable-close-dropdown');
-  if (closeDropdown) {
-    closeDropdown.classList.toggle('d-none');
-  } else {
-    const closeButton = document.querySelector(
-      '.detail-page-header-actions .btn-close.btn-grouped',
-    );
-    closeButton.classList.toggle('d-md-block');
-  }
-};
-
-export const closeIssue = ({ commit, dispatch, state }) => {
+export const closeIssuable = ({ commit, dispatch, state }) => {
   dispatch('toggleStateButtonLoading', true);
   return axios.put(state.notesData.closePath).then(({ data }) => {
     commit(types.CLOSE_ISSUE);
@@ -267,7 +253,7 @@ export const closeIssue = ({ commit, dispatch, state }) => {
   });
 };
 
-export const reopenIssue = ({ commit, dispatch, state }) => {
+export const reopenIssuable = ({ commit, dispatch, state }) => {
   dispatch('toggleStateButtonLoading', true);
   return axios.put(state.notesData.reopenPath).then(({ data }) => {
     commit(types.REOPEN_ISSUE);
@@ -435,6 +421,10 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
 };
 
 const pollSuccessCallBack = (resp, commit, state, getters, dispatch) => {
+  if (state.isResolvingDiscussion) {
+    return null;
+  }
+
   if (resp.notes?.length) {
     dispatch('updateOrCreateNotes', resp.notes);
     dispatch('startTaskList');
@@ -574,6 +564,9 @@ export const submitSuggestion = (
   const dispatchResolveDiscussion = () =>
     dispatch('resolveDiscussion', { discussionId }).catch(() => {});
 
+  commit(types.SET_RESOLVING_DISCUSSION, true);
+  dispatch('stopPolling');
+
   return Api.applySuggestion(suggestionId)
     .then(() => commit(types.APPLY_SUGGESTION, { discussionId, noteId, suggestionId }))
     .then(dispatchResolveDiscussion)
@@ -587,6 +580,10 @@ export const submitSuggestion = (
       const flashMessage = errorMessage || defaultMessage;
 
       Flash(__(flashMessage), 'alert', flashContainer);
+    })
+    .finally(() => {
+      commit(types.SET_RESOLVING_DISCUSSION, false);
+      dispatch('restartPolling');
     });
 };
 
@@ -605,6 +602,8 @@ export const submitSuggestionBatch = ({ commit, dispatch, state }, { flashContai
     });
 
   commit(types.SET_APPLYING_BATCH_STATE, true);
+  commit(types.SET_RESOLVING_DISCUSSION, true);
+  dispatch('stopPolling');
 
   return Api.applySuggestionBatch(suggestionIds)
     .then(() => Promise.all(applyAllSuggestions()))
@@ -621,7 +620,11 @@ export const submitSuggestionBatch = ({ commit, dispatch, state }, { flashContai
 
       Flash(__(flashMessage), 'alert', flashContainer);
     })
-    .finally(() => commit(types.SET_APPLYING_BATCH_STATE, false));
+    .finally(() => {
+      commit(types.SET_APPLYING_BATCH_STATE, false);
+      commit(types.SET_RESOLVING_DISCUSSION, false);
+      dispatch('restartPolling');
+    });
 };
 
 export const addSuggestionInfoToBatch = ({ commit }, { suggestionId, noteId, discussionId }) =>

@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { mockEditorApi } from '@toast-ui/vue-editor';
 import RichContentEditor from '~/vue_shared/components/rich_content_editor/rich_content_editor.vue';
 import AddImageModal from '~/vue_shared/components/rich_content_editor/modals/add_image/add_image_modal.vue';
 import InsertVideoModal from '~/vue_shared/components/rich_content_editor/modals/insert_video_modal.vue';
@@ -114,8 +115,15 @@ describe('Rich Content Editor', () => {
   });
 
   describe('when editor is loaded', () => {
+    const formattedMarkdown = 'formatted markdown';
+
     beforeEach(() => {
+      mockEditorApi.getMarkdown.mockReturnValueOnce(formattedMarkdown);
       buildWrapper();
+    });
+
+    afterEach(() => {
+      mockEditorApi.getMarkdown.mockReset();
     });
 
     it('adds the CUSTOM_EVENTS.openAddImageModal custom event listener', () => {
@@ -136,6 +144,11 @@ describe('Rich Content Editor', () => {
 
     it('registers HTML to markdown renderer', () => {
       expect(registerHTMLToMarkdownRenderer).toHaveBeenCalledWith(wrapper.vm.editorApi);
+    });
+
+    it('emits load event with the markdown formatted by Toast UI', () => {
+      expect(mockEditorApi.getMarkdown).toHaveBeenCalled();
+      expect(wrapper.emitted('load')[0]).toEqual([{ formattedMarkdown }]);
     });
   });
 

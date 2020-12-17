@@ -57,4 +57,16 @@ RSpec.describe Clusters::Agent do
       end
     end
   end
+
+  describe '#has_access_to?' do
+    let(:agent) { build(:cluster_agent) }
+
+    it 'has access to own project' do
+      expect(agent.has_access_to?(agent.project)).to be_truthy
+    end
+
+    it 'does not have access to other projects' do
+      expect(agent.has_access_to?(create(:project))).to be_falsey
+    end
+  end
 end

@@ -2,7 +2,7 @@
 disqus_identifier: 'https://docs.gitlab.com/ee/workflow/todos.html'
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # GitLab To-Do List **(CORE)**
@@ -62,7 +62,7 @@ item.
 
 To-do item triggers aren't affected by [GitLab notification email settings](profile/notifications.md).
 
-NOTE: **Note:**
+NOTE:
 When a user no longer has access to a resource related to a to-do item (such as
 an issue, merge request, epic, project, or group), for security reasons GitLab
 deletes any related to-do items within the next hour. Deletion is delayed to
@@ -72,7 +72,7 @@ prevent data loss, in the case where a user's access is accidentally revoked.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7926) in GitLab 9.0.
 
-If you're mentioned at the start of a line, the to-do item you receive will be
+If you're mentioned at the start of a line, the to-do item you receive is 
 listed as *directly addressed*. For example, in the following comment:
 
 ```markdown
@@ -104,7 +104,7 @@ You can also add the following to your To-Do List by clicking the **Add a to do*
 
 ## Marking a to-do item as done
 
-Any action to an issue or merge request (or epic **(ULTIMATE)**) will mark its
+Any action to an issue or merge request (or epic **(PREMIUM)**) marks its
 corresponding to-do item as done.
 
 Actions that dismiss to-do items include:

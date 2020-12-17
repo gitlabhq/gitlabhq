@@ -475,6 +475,10 @@ production: &base
   # GitLab EE only jobs. These jobs are automatically enabled for an EE
   # installation, and ignored for a CE installation.
   ee_cron_jobs:
+    # Schedule snapshots for all devops adoption segments
+    analytics_devops_adoption_create_all_snapshots_worker:
+      cron: 0 0 1 * *
+
     # Snapshot active users statistics
     historical_data_worker:
       cron: "0 12 * * *"
@@ -615,6 +619,9 @@ production: &base
   ldap:
     enabled: false
     prevent_ldap_sign_in: false
+
+    # File location to read encrypted secrets from
+    # secret_file: /mnt/gitlab/ldap.yaml.enc # Default: shared/encrypted_settings/ldap.yaml.enc
 
     # This setting controls the number of seconds between LDAP permission checks
     # for each user. After this time has expired for a given user, their next
@@ -1038,9 +1045,22 @@ production: &base
     # Access token for FortiAuthenticator API
     # access_token: 123s3cr3t456
 
+  # FortiToken Cloud settings
+  forti_token_cloud:
+    # Allow using FortiToken Cloud as OTP provider
+    enabled: false
+
+    # Client ID and Secret to access FortiToken Cloud API
+    # client_id: 'YOUR_FORTI_TOKEN_CLOUD_CLIENT_ID'
+    # client_secret: 'YOUR_FORTI_TOKEN_CLOUD_CLIENT_SECRET'
+
   # Shared file storage settings
   shared:
     # path: /mnt/gitlab # Default: shared
+
+  # Encrypted Settings configuration
+  encrypted_settings:
+    # path: /mnt/gitlab/encrypted_settings  # Default: shared/encrypted_settings
 
   # Gitaly settings
   gitaly:
@@ -1216,9 +1236,9 @@ production: &base
     ## Google tag manager
     # google_tag_manager_id: '_your_tracking_id'
 
-    ## Piwik analytics.
-    # piwik_url: '_your_piwik_url'
-    # piwik_site_id: '_your_piwik_site_id'
+    ## Matomo analytics.
+    # matomo_url: '_your_matomo_url'
+    # matomo_site_id: '_your_matomo_site_id'
 
   rack_attack:
     git_basic_auth:
@@ -1366,7 +1386,7 @@ test:
     storages:
       default:
         path: tmp/tests/repositories/
-        gitaly_address: unix:tmp/tests/gitaly/gitaly.socket
+        gitaly_address: unix:tmp/tests/gitaly/praefect.socket
 
   gitaly:
     client_path: tmp/tests/gitaly

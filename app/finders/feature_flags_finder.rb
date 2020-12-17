@@ -24,11 +24,7 @@ class FeatureFlagsFinder
   private
 
   def feature_flags
-    if Feature.enabled?(:feature_flags_new_version, project, default_enabled: true)
-      project.operations_feature_flags
-    else
-      project.operations_feature_flags.legacy_flag
-    end
+    project.operations_feature_flags
   end
 
   def by_scope(items)

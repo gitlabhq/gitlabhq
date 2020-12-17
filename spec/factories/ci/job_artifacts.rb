@@ -229,6 +229,16 @@ FactoryBot.define do
       end
     end
 
+    trait :coverage_with_paths_not_relative_to_project_root do
+      file_type { :cobertura }
+      file_format { :gzip }
+
+      after(:build) do |artifact, evaluator|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/cobertura/coverage_with_paths_not_relative_to_project_root.xml.gz'), 'application/x-gzip')
+      end
+    end
+
     trait :coverage_with_corrupted_data do
       file_type { :cobertura }
       file_format { :gzip }
@@ -245,7 +255,17 @@ FactoryBot.define do
 
       after(:build) do |artifact, evaluator|
         artifact.file = fixture_file_upload(
-          Rails.root.join('spec/fixtures/codequality/codequality.json'), 'application/json')
+          Rails.root.join('spec/fixtures/codequality/codeclimate.json'), 'application/json')
+      end
+    end
+
+    trait :codequality_without_errors do
+      file_type { :codequality }
+      file_format { :raw }
+
+      after(:build) do |artifact, evaluator|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/codequality/codeclimate_without_errors.json'), 'application/json')
       end
     end
 

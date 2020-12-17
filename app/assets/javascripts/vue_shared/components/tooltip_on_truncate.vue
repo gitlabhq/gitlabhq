@@ -1,6 +1,7 @@
 <script>
 import { isFunction } from 'lodash';
 import tooltip from '../directives/tooltip';
+import { hasHorizontalOverflow } from '~/lib/utils/dom_utils';
 
 export default {
   directives: {
@@ -49,7 +50,7 @@ export default {
     },
     updateTooltip() {
       const target = this.selectTarget();
-      this.showTooltip = Boolean(target && target.scrollWidth > target.offsetWidth);
+      this.showTooltip = hasHorizontalOverflow(target);
     },
   },
 };

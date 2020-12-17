@@ -8,7 +8,7 @@ class UserSerializer < BaseSerializer
       merge_request = opts[:project].merge_requests.find_by_iid!(params[:merge_request_iid])
       preload_max_member_access(merge_request.project, Array(resource))
 
-      super(resource, opts.merge(merge_request: merge_request), MergeRequestAssigneeEntity)
+      super(resource, opts.merge(merge_request: merge_request), MergeRequestUserEntity)
     else
       super
     end
@@ -20,3 +20,5 @@ class UserSerializer < BaseSerializer
     project.team.max_member_access_for_user_ids(users.map(&:id))
   end
 end
+
+UserSerializer.prepend_if_ee('EE::UserSerializer')

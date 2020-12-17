@@ -85,15 +85,15 @@ module WorkhorseHelpers
 
     return {} if upload_params.empty?
 
-    { "#{key}.gitlab-workhorse-upload" => jwt_token('upload' => upload_params) }
+    { "#{key}.gitlab-workhorse-upload" => jwt_token(data: { 'upload' => upload_params }) }
   end
 
-  def jwt_token(data = {}, issuer: 'gitlab-workhorse', secret: Gitlab::Workhorse.secret, algorithm: 'HS256')
+  def jwt_token(data: {}, issuer: 'gitlab-workhorse', secret: Gitlab::Workhorse.secret, algorithm: 'HS256')
     JWT.encode({ 'iss' => issuer }.merge(data), secret, algorithm)
   end
 
   def workhorse_rewritten_fields_header(fields)
-    { Gitlab::Middleware::Multipart::RACK_ENV_KEY => jwt_token('rewritten_fields' => fields) }
+    { Gitlab::Middleware::Multipart::RACK_ENV_KEY => jwt_token(data: { 'rewritten_fields' => fields }) }
   end
 
   def workhorse_disk_accelerated_file_params(key, file)

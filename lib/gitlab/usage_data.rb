@@ -47,7 +47,6 @@ module Gitlab
             .merge(system_usage_data_weekly)
             .merge(features_usage_data)
             .merge(components_usage_data)
-            .merge(cycle_analytics_usage_data)
             .merge(object_store_usage_data)
             .merge(topology_usage_data)
             .merge(usage_activity_by_stage)
@@ -237,7 +236,9 @@ module Gitlab
 
       def system_usage_data_settings
         {
-          settings: {}
+          settings: {
+            ldap_encrypted_secrets_enabled: alt_usage_data(fallback: nil) { Gitlab::Auth::Ldap::Config.encrypted_secrets.active? }
+          }
         }
       end
 
@@ -248,12 +249,6 @@ module Gitlab
             aggregated_metrics_weekly
           )
         }
-      end
-
-      def cycle_analytics_usage_data
-        Gitlab::CycleAnalytics::UsageData.new.to_json
-      rescue ActiveRecord::StatementInvalid
-        { avg_cycle_analytics: {} }
       end
 
       # rubocop:disable CodeReuse/ActiveRecord
@@ -296,20 +291,7 @@ module Gitlab
 
       # @return [Array<#totals>] An array of objects that respond to `#totals`
       def usage_data_counters
-        [
-          Gitlab::UsageDataCounters::WikiPageCounter,
-          Gitlab::UsageDataCounters::WebIdeCounter,
-          Gitlab::UsageDataCounters::NoteCounter,
-          Gitlab::UsageDataCounters::SnippetCounter,
-          Gitlab::UsageDataCounters::SearchCounter,
-          Gitlab::UsageDataCounters::CycleAnalyticsCounter,
-          Gitlab::UsageDataCounters::ProductivityAnalyticsCounter,
-          Gitlab::UsageDataCounters::SourceCodeCounter,
-          Gitlab::UsageDataCounters::MergeRequestCounter,
-          Gitlab::UsageDataCounters::DesignsCounter,
-          Gitlab::UsageDataCounters::KubernetesAgentCounter,
-          Gitlab::UsageDataCounters::StaticSiteEditorCounter
-        ]
+        Gitlab::UsageDataCounters.counters
       end
 
       def components_usage_data
@@ -602,7 +584,7 @@ module Gitlab
             gitlab: distinct_count(::BulkImport.where(time_period, source_type: :gitlab), :user_id)
           },
           projects_imported: {
-            total: count(Project.where(time_period).where.not(import_type: nil)),
+            total: distinct_count(::Project.where(time_period).where.not(import_type: nil), :creator_id),
             gitlab_project: projects_imported_count('gitlab_project', time_period),
             gitlab: projects_imported_count('gitlab', time_period),
             github: projects_imported_count('github', time_period),
@@ -707,16 +689,12 @@ module Gitlab
       end
 
       def aggregated_metrics_monthly
-        return {} unless Feature.enabled?(:product_analytics_aggregated_metrics)
-
         {
           aggregated_metrics: ::Gitlab::UsageDataCounters::HLLRedisCounter.aggregated_metrics_monthly_data
         }
       end
 
       def aggregated_metrics_weekly
-        return {} unless Feature.enabled?(:product_analytics_aggregated_metrics)
-
         {
           aggregated_metrics: ::Gitlab::UsageDataCounters::HLLRedisCounter.aggregated_metrics_weekly_data
         }
@@ -783,12 +761,13 @@ module Gitlab
           action_monthly_active_users_web_ide_edit: redis_usage_data { counter.count_web_ide_edit_actions(**date_range) },
           action_monthly_active_users_sfe_edit: redis_usage_data { counter.count_sfe_edit_actions(**date_range) },
           action_monthly_active_users_snippet_editor_edit: redis_usage_data { counter.count_snippet_editor_edit_actions(**date_range) },
+          action_monthly_active_users_sse_edit: redis_usage_data { counter.count_sse_edit_actions(**date_range) },
           action_monthly_active_users_ide_edit: redis_usage_data { counter.count_edit_using_editor(**date_range) }
         }
       end
 
       def report_snowplow_events?
-        self_monitoring_project && Feature.enabled?(:product_analytics, self_monitoring_project)
+        self_monitoring_project && Feature.enabled?(:product_analytics_tracking, type: :ops)
       end
 
       def distinct_count_service_desk_enabled_projects(time_period)
@@ -915,7 +894,7 @@ module Gitlab
       end
 
       def projects_imported_count(from, time_period)
-        distinct_count(::Project.imported_from(from).where(time_period), :creator_id) # rubocop: disable CodeReuse/ActiveRecord
+        distinct_count(::Project.imported_from(from).where(time_period).where.not(import_type: nil), :creator_id) # rubocop: disable CodeReuse/ActiveRecord
       end
 
       # rubocop:disable CodeReuse/ActiveRecord

@@ -1,0 +1,5 @@
+---
+title: Add User.location field to GraphQL API
+merge_request: 48059
+author:
+type: changed

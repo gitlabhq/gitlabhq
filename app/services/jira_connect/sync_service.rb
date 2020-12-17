@@ -6,13 +6,15 @@ module JiraConnect
       self.project = project
     end
 
-    def execute(commits: nil, branches: nil, merge_requests: nil, update_sequence_id: nil)
-      JiraConnectInstallation.for_project(project).each do |installation|
+    # Parameters: see Atlassian::JiraConnect::Client#send_info
+    # Includes: update_sequence_id, commits, branches, merge_requests, pipelines
+    def execute(**args)
+      JiraConnectInstallation.for_project(project).flat_map do |installation|
         client = Atlassian::JiraConnect::Client.new(installation.base_url, installation.shared_secret)
 
-        response = client.store_dev_info(project: project, commits: commits, branches: branches, merge_requests: merge_requests, update_sequence_id: update_sequence_id)
+        responses = client.send_info(project: project, **args)
 
-        log_response(response)
+        responses.each { |r| log_response(r) }
       end
     end
 
@@ -29,7 +31,7 @@ module JiraConnect
         jira_response: response&.to_json
       }
 
-      if response && response['errorMessages']
+      if response && (response['errorMessages'] || response['rejectedBuilds'].present?)
         logger.error(message)
       else
         logger.info(message)

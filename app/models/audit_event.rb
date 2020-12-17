@@ -13,6 +13,8 @@ class AuditEvent < ApplicationRecord
     :target_id
   ].freeze
 
+  self.primary_key = :id
+
   serialize :details, Hash # rubocop:disable Cop/ActiveRecordSerialize
 
   belongs_to :user, foreign_key: :author_id

@@ -32,6 +32,7 @@ AllCops:
     - 'builds/**/*'
     - 'plugins/**/*'
     - 'file_hooks/**/*'
+    - 'workhorse/**/*'
   CacheRootDirectory: tmp
   MaxFilesInCache: 18000
 
@@ -46,6 +47,10 @@ Cop/StaticTranslationDefinition:
   Exclude:
     - 'spec/**/*'
     - 'ee/spec/**/*'
+
+Lint/LastKeywordArgument:
+  Enabled: true
+  Safe: false
 
 # This cop checks whether some constant value isn't a
 # mutable literal (e.g. array or hash).
@@ -271,6 +276,12 @@ GitlabSecurity/PublicSend:
 Gitlab/DuplicateSpecLocation:
   Enabled: true
 
+Gitlab/PolicyRuleBoolean:
+  Enabled: true
+  Include:
+    - 'app/policies/**/*'
+    - 'ee/app/policies/**/*'
+
 Cop/InjectEnterpriseEditionModule:
   Enabled: true
   Exclude:
@@ -357,6 +368,8 @@ Cop/SidekiqOptionsQueue:
 
 Graphql/ResolverType:
   Enabled: true
+  Exclude:
+    - 'app/graphql/resolvers/base_resolver.rb'
   Include:
     - 'app/graphql/resolvers/**/*'
     - 'ee/app/graphql/resolvers/**/*'
@@ -422,12 +435,10 @@ Scalability/FileUploads:
 
 Graphql/Descriptions:
   Enabled: true
+  AutoCorrect: true
   Include:
     - 'app/graphql/**/*'
     - 'ee/app/graphql/**/*'
-
-RSpec/AnyInstanceOf:
-  Enabled: false
 
 # Cops for upgrade to gitlab-styles 3.1.0
 RSpec/ImplicitSubject:

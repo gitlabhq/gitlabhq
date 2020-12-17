@@ -1,0 +1,5 @@
+---
+title: Fix project access token build authentication error
+merge_request: 47247
+author:
+type: fixed

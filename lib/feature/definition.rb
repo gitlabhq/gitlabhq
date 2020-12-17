@@ -13,6 +13,12 @@ class Feature
       end
     end
 
+    TYPES.each do |type, _|
+      define_method("#{type}?") do
+        attributes[:type].to_sym == type
+      end
+    end
+
     def initialize(path, opts = {})
       @path = path
       @attributes = {}
@@ -65,9 +71,7 @@ class Feature
           "a valid syntax: #{TYPES.dig(type, :example)}"
       end
 
-      # We accept an array of defaults as some features are undefined
-      # and have `default_enabled: true/false`
-      unless Array(default_enabled).include?(default_enabled_in_code)
+      unless default_enabled_in_code == :yaml || default_enabled == default_enabled_in_code
         # Raise exception in test and dev
         raise Feature::InvalidFeatureFlagError, "The `default_enabled:` of `#{key}` is not equal to config: " \
           "#{default_enabled_in_code} vs #{default_enabled}. Ensure to update #{path}"
@@ -90,17 +94,36 @@ class Feature
         @definitions ||= load_all!
       end
 
+      def get(key)
+        definitions[key.to_sym]
+      end
+
       def reload!
         @definitions = load_all!
       end
 
+      def has_definition?(key)
+        definitions.has_key?(key.to_sym)
+      end
+
       def valid_usage!(key, type:, default_enabled:)
-        if definition = definitions[key.to_sym]
+        if definition = get(key)
           definition.valid_usage!(type_in_code: type, default_enabled_in_code: default_enabled)
         elsif type_definition = self::TYPES[type]
           raise InvalidFeatureFlagError, "Missing feature definition for `#{key}`" unless type_definition[:optional]
         else
           raise InvalidFeatureFlagError, "Unknown feature flag type used: `#{type}`"
+        end
+      end
+
+      def default_enabled?(key)
+        if definition = get(key)
+          definition.default_enabled
+        else
+          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
+            InvalidFeatureFlagError.new("The feature flag YAML definition for '#{key}' does not exist"))
+
+          false
         end
       end
 
@@ -119,10 +142,6 @@ class Feature
       private
 
       def load_all!
-        # We currently do not load feature flag definitions
-        # in production environments
-        return [] unless Gitlab.dev_or_test_env?
-
         paths.each_with_object({}) do |glob_path, definitions|
           load_all_from_path!(definitions, glob_path)
         end

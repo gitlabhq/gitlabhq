@@ -1,0 +1,5 @@
+---
+title: Github importer - Avoid touching MR when importing pull request `merged by` field
+merge_request: 48729
+author:
+type: fixed

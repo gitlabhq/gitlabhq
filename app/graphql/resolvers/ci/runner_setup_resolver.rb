@@ -23,7 +23,10 @@ module Resolvers
 
       def resolve(platform:, architecture:, **args)
         instructions = Gitlab::Ci::RunnerInstructions.new(
-          { current_user: current_user, os: platform, arch: architecture }.merge(target_param(args))
+          current_user: current_user,
+          os: platform,
+          arch: architecture,
+          **target_param(args)
         )
 
         {

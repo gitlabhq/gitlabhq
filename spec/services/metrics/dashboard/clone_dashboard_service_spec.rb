@@ -146,7 +146,7 @@ RSpec.describe Metrics::Dashboard::CloneDashboardService, :use_clean_rails_memor
         it 'extends dashboard template path to absolute url' do
           allow(::Files::CreateService).to receive(:new).and_return(double(execute: { status: :success }))
 
-          expect(File).to receive(:read).with(Rails.root.join('config/prometheus/common_metrics.yml')).and_return('')
+          expect_file_read(Rails.root.join('config/prometheus/common_metrics.yml'), content: '')
 
           service_call
         end

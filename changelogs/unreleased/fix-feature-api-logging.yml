@@ -1,0 +1,5 @@
+---
+title: Fix feature flag logging is not working on API
+merge_request: 50025
+author:
+type: fixed

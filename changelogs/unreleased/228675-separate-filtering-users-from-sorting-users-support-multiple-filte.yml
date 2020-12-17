@@ -1,0 +1,5 @@
+---
+title: Add support for filtering direct group members by 2FA enabled/disabled
+merge_request: 48084
+author:
+type: changed

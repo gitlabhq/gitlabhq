@@ -6,8 +6,8 @@ RSpec.describe API::ProjectRepositoryStorageMoves do
   include AccessMatchersForRequest
 
   let_it_be(:user) { create(:admin) }
-  let_it_be(:project) { create(:project) }
-  let_it_be(:storage_move) { create(:project_repository_storage_move, :scheduled, project: project) }
+  let_it_be(:project) { create(:project, :repository).tap { |project| project.track_project_repository } }
+  let_it_be(:storage_move) { create(:project_repository_storage_move, :scheduled, container: project) }
 
   shared_examples 'get single project repository storage move' do
     let(:project_repository_storage_move_id) { storage_move.id }
@@ -63,14 +63,14 @@ RSpec.describe API::ProjectRepositoryStorageMoves do
 
       control = ActiveRecord::QueryRecorder.new { get_project_repository_storage_moves }
 
-      create(:project_repository_storage_move, :scheduled, project: project)
+      create(:project_repository_storage_move, :scheduled, container: project)
 
       expect { get_project_repository_storage_moves }.not_to exceed_query_limit(control)
     end
 
     it 'returns the most recently created first' do
-      storage_move_oldest = create(:project_repository_storage_move, :scheduled, project: project, created_at: 2.days.ago)
-      storage_move_middle = create(:project_repository_storage_move, :scheduled, project: project, created_at: 1.day.ago)
+      storage_move_oldest = create(:project_repository_storage_move, :scheduled, container: project, created_at: 2.days.ago)
+      storage_move_middle = create(:project_repository_storage_move, :scheduled, container: project, created_at: 1.day.ago)
 
       get_project_repository_storage_moves
 
@@ -157,6 +157,66 @@ RSpec.describe API::ProjectRepositoryStorageMoves do
         expect(json_response['source_storage_name']).to eq('default')
         expect(json_response['destination_storage_name']).to be_present
       end
+    end
+  end
+
+  describe 'POST /project_repository_storage_moves' do
+    let(:source_storage_name) { 'default' }
+    let(:destination_storage_name) { 'test_second_storage' }
+
+    def create_project_repository_storage_moves
+      post api('/project_repository_storage_moves', user), params: {
+        source_storage_name: source_storage_name,
+        destination_storage_name: destination_storage_name
+      }
+    end
+
+    before do
+      stub_storage_settings('test_second_storage' => { 'path' => 'tmp/tests/extra_storage' })
+    end
+
+    it 'schedules the worker' do
+      expect(ProjectScheduleBulkRepositoryShardMovesWorker).to receive(:perform_async).with(source_storage_name, destination_storage_name)
+
+      create_project_repository_storage_moves
+
+      expect(response).to have_gitlab_http_status(:accepted)
+    end
+
+    context 'source_storage_name is invalid' do
+      let(:destination_storage_name) { 'not-a-real-storage' }
+
+      it 'gives an error' do
+        create_project_repository_storage_moves
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
+    context 'destination_storage_name is missing' do
+      let(:destination_storage_name) { nil }
+
+      it 'schedules the worker' do
+        expect(ProjectScheduleBulkRepositoryShardMovesWorker).to receive(:perform_async).with(source_storage_name, destination_storage_name)
+
+        create_project_repository_storage_moves
+
+        expect(response).to have_gitlab_http_status(:accepted)
+      end
+    end
+
+    context 'destination_storage_name is invalid' do
+      let(:destination_storage_name) { 'not-a-real-storage' }
+
+      it 'gives an error' do
+        create_project_repository_storage_moves
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
+    describe 'normal user' do
+      it { expect { create_project_repository_storage_moves }.to be_denied_for(:user) }
     end
   end
 end

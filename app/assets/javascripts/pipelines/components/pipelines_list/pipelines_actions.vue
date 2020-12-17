@@ -32,7 +32,7 @@ export default {
       if (action.scheduled_at) {
         const confirmationMessage = sprintf(
           s__(
-            "DelayedJobs|Are you sure you want to run %{jobName} immediately? Otherwise this job will run automatically after it's timer finishes.",
+            'DelayedJobs|Are you sure you want to run %{jobName} immediately? Otherwise this job will run automatically after its timer finishes.',
           ),
           { jobName: action.name },
         );

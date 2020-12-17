@@ -21,6 +21,7 @@ RSpec.describe Snippet do
     it { is_expected.to have_many(:user_mentions).class_name("SnippetUserMention") }
     it { is_expected.to have_one(:snippet_repository) }
     it { is_expected.to have_one(:statistics).class_name('SnippetStatistics').dependent(:destroy) }
+    it { is_expected.to have_many(:repository_storage_moves).class_name('SnippetRepositoryStorageMove').inverse_of(:container) }
   end
 
   describe 'validation' do
@@ -481,17 +482,9 @@ RSpec.describe Snippet do
   end
 
   describe '#blobs' do
-    let(:snippet) { create(:snippet) }
-
-    it 'returns a blob representing the snippet data' do
-      blob = snippet.blob
-
-      expect(blob).to be_a(Blob)
-      expect(blob.path).to eq(snippet.file_name)
-      expect(blob.data).to eq(snippet.content)
-    end
-
     context 'when repository does not exist' do
+      let(:snippet) { create(:snippet) }
+
       it 'returns empty array' do
         expect(snippet.blobs).to be_empty
       end
@@ -776,5 +769,31 @@ RSpec.describe Snippet do
 
       it { is_expected.to be_falsey }
     end
+  end
+
+  describe '#git_transfer_in_progress?' do
+    let(:snippet) { build(:snippet) }
+
+    subject { snippet.git_transfer_in_progress? }
+
+    it 'returns true when there are git transfers' do
+      allow(snippet).to receive(:reference_counter).with(type: Gitlab::GlRepository::SNIPPET) do
+        double(:reference_counter, value: 2)
+      end
+
+      expect(subject).to eq true
+    end
+
+    it 'returns false when there are not git transfers' do
+      allow(snippet).to receive(:reference_counter).with(type: Gitlab::GlRepository::SNIPPET) do
+        double(:reference_counter, value: 0)
+      end
+
+      expect(subject).to eq false
+    end
+  end
+
+  it_behaves_like 'can move repository storage' do
+    let_it_be(:container) { create(:snippet, :repository) }
   end
 end

@@ -1,14 +1,14 @@
 ---
 stage: Monitor
 group: Health
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # IP whitelist
 
 > Introduced in GitLab 9.4.
 
-NOTE: **Note:**
+NOTE:
 We intend to [rename IP whitelist as `IP allowlist`](https://gitlab.com/gitlab-org/gitlab/-/issues/7554).
 
 GitLab provides some [monitoring endpoints](../../user/admin_area/monitoring/health_check.md)

@@ -1,8 +1,8 @@
 ---
 type: reference, howto
 stage: Release
-group: Release Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+group: Release
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Releases
@@ -78,6 +78,16 @@ To create a new release through the GitLab UI:
    [title](#title), [milestones](#associate-milestones-with-a-release),
    [release notes](#release-notes-description), or [assets links](#links).
 1. Click **Create release**.
+
+### Create release from GitLab CI
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19298) in GitLab 12.7.
+
+You can [create a release directly from the GitLab CI pipeline](../../../ci/yaml/README.md#release)
+by using a `release` node in the job definition.
+
+The release is created only if the job processes without error. If the Rails API returns an error
+during release creation, the release job fails.
 
 ### Schedule a future release
 
@@ -213,7 +223,7 @@ To set a deploy freeze window in the UI, complete these steps:
 
 ![Deploy freeze modal for setting a deploy freeze period](img/deploy_freeze_v13_2.png)
 
-CAUTION: **Caution:**
+WARNING:
 To edit or delete a deploy freeze, use the [Freeze Periods API](../../../api/freeze_periods.md).
 
 If a project contains multiple freeze periods, all periods apply. If they overlap, the freeze covers the
@@ -460,7 +470,7 @@ In the API:
 > [Introduced](https://gitlab.com/gitlab-org/release-cli/-/merge_requests/6) in GitLab 12.10.
 
 The Release CLI is a command-line tool for managing GitLab Releases from the command line or from
-GitLab's CI/CD configuration file, `.gitlab-ci.yml`.
+the GitLab CI/CD configuration file, `.gitlab-ci.yml`.
 
 With it, you can create, update, modify, and delete releases right through the
 terminal.

@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: howto, tutorial
 description: "Introduction to using Git through the command line."
 ---
@@ -22,14 +22,14 @@ the command line and then push your changes to the remote server.
 
 This guide will help you get started with Git through the command line and can be your reference
 for Git commands in the future. If you're only looking for a quick reference of Git commands, you
-can download GitLab's [Git Cheat Sheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf).
+can download the GitLab [Git Cheat Sheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf).
 
 > For more information about the advantages of working with Git and GitLab:
 >
 > - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Watch the [GitLab Source Code Management Walkthrough](https://www.youtube.com/watch?v=wTQ3aXJswtM) video.
 > - Learn how GitLab became the backbone of [Worldline](https://about.gitlab.com/customers/worldline/)’s development environment.
 
-TIP: **Tip:**
+NOTE:
 To help you visualize what you're doing locally, there are
 [Git GUI apps](https://git-scm.com/download/gui/) you can install.
 
@@ -49,7 +49,7 @@ prompt, terminal, and command line) of your preference. Here are some suggestion
 
 - For macOS users:
   - Built-in: [Terminal](https://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line). Press <kbd>⌘ command</kbd> + <kbd>space</kbd> and type "terminal" to find it.
-  - [iTerm2](https://www.iterm2.com/), which you can integrate with [zsh](https://git-scm.com/book/id/v2/Appendix-A%3A-Git-in-Other-Environments-Git-in-Zsh) and [oh my zsh](https://ohmyz.sh/) for color highlighting, among other handy features for Git users.
+  - [iTerm2](https://iterm2.com/), which you can integrate with [zsh](https://git-scm.com/book/id/v2/Appendix-A%3A-Git-in-Other-Environments-Git-in-Zsh) and [oh my zsh](https://ohmyz.sh/) for color highlighting, among other handy features for Git users.
 - For Windows users:
   - Built-in: **cmd**. Click the search icon on the bottom navbar on Windows and type "cmd" to find it.
   - [PowerShell](https://docs.microsoft.com/en-us/powershell/scripting/windows-powershell/install/installing-windows-powershell?view=powershell-7): a Windows "powered up" shell, from which you can execute a greater number of commands.
@@ -104,7 +104,7 @@ If you omit `--global` or use `--local`, the configuration will be applied only 
 repository.
 
 You can read more on how Git manages configurations in the
-[Git Config](https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration) documentation.
+[Git configuration documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration).
 
 ## Git authentication methods
 
@@ -127,8 +127,8 @@ to our computer:
     Create one before cloning.
   - If you don't have 2FA enabled, use your account's password.
 
-NOTE: **Note:**
-Authenticating via SSH is GitLab's recommended method. You can read more about credential storage
+NOTE:
+Authenticating via SSH is the GitLab recommended method. You can read more about credential storage
 in the [Git Credentials documentation](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage).
 
 ## Git terminology
@@ -183,7 +183,7 @@ changes to GitLab. This is referred to as **pushing** to GitLab, as this is achi
 [`git push`](#send-changes-to-gitlabcom).
 
 When the remote repository changes, your local copy will be behind it. You can update it with the new
-changes in the remote repo.
+changes in the remote repository.
 This is referred to as **pulling** from GitLab, as this is achieved by the command
 [`git pull`](#download-the-latest-changes-in-the-project).
 
@@ -234,7 +234,7 @@ To clone `https://gitlab.com/gitlab-tests/sample-project/` via HTTPS:
 git clone https://gitlab.com/gitlab-tests/sample-project.git
 ```
 
-TIP: **Troubleshooting:**
+NOTE:
 On Windows, if you entered incorrect passwords multiple times and GitLab is responding `Access denied`,
 you may have to add your namespace (user name or group name) to clone through HTTPS:
 `git clone https://namespace@gitlab.com/gitlab-org/gitlab.git`.
@@ -280,7 +280,7 @@ To add a remote repository to your local copy:
 1. On your computer, open the terminal in the directory you've initialized, paste the command you copied, and press <kbd>enter</kbd>:
 
    ```shell
-   git remote add origin <git@gitlab.com:username/projectpath.git
+   git remote add origin git@gitlab.com:username/projectpath.git
    ```
 
 After you've done that, you can [stage your files](#add-and-commit-local-changes) and [upload them to GitLab](#send-changes-to-gitlabcom).
@@ -400,7 +400,7 @@ git add .
 git commit -m "COMMENT TO DESCRIBE THE INTENTION OF THE COMMIT"
 ```
 
-NOTE: **Note:**
+NOTE:
 The `.` character means _all file changes in the current directory and all subdirectories_.
 
 ### Send changes to GitLab.com
@@ -420,7 +420,7 @@ git push origin master
 On certain occasions, Git won't allow you to push to your repository, and then
 you'll need to [force an update](../topics/git/git_rebase.md#force-push).
 
-NOTE: **Note:**
+NOTE:
 To create a merge request from a fork to an upstream repository, see the
 [forking workflow](../user/project/repository/forking_workflow.md).
 
@@ -453,7 +453,7 @@ git reset HEAD~1
 
 This leaves the changed files and folders unstaged in your local repository.
 
-CAUTION: **Warning:**
+WARNING:
 A Git commit should not usually be reversed, particularly if you already pushed it
 to the remote repository. Although you can undo a commit, the best option is to avoid
 the situation altogether by working carefully.

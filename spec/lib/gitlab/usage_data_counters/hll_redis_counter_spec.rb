@@ -30,6 +30,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         'search',
         'source_code',
         'incident_management',
+        'incident_management_alerts',
         'testing',
         'issues_edit',
         'ci_secrets_management',
@@ -43,7 +44,8 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         'golang_packages',
         'debian_packages',
         'container_packages',
-        'tag_packages'
+        'tag_packages',
+        'snippets'
       )
     end
   end

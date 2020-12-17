@@ -1,7 +1,7 @@
 ---
 stage: Growth
 group: Conversion
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: howto
 ---
 
@@ -32,7 +32,7 @@ is locked.
 
 ## Uploading your license
 
-The very first time you visit your GitLab EE installation signed in as an admin,
+The very first time you visit your GitLab EE installation signed in as an administrator,
 you should see a note urging you to upload a license with a link that takes you
 to **Admin Area > License**.
 
@@ -75,7 +75,7 @@ You can also specify a custom location and filename for the license:
   gitlab_rails['initial_license_file'] = "/path/to/license/file"
   ```
 
-CAUTION: **Caution:**
+WARNING:
 These methods only add a license at the time of installation. Use the
 **{admin}** **Admin Area** in the web user interface to renew or upgrade licenses.
 
@@ -94,13 +94,13 @@ You can review the license details at any time in the **License** section of the
 ## Notification before the license expires
 
 One month before the license expires, a message informing about the expiration
-date is displayed to GitLab admins. Make sure that you update your
+date is displayed to GitLab administrators. Make sure that you update your
 license, otherwise you miss all the paid features if your license expires.
 
 ## What happens when your license expires
 
 In case your license expires, GitLab locks down some features like Git pushes,
-and issue creation, and displays a message to all admins to inform of the expired license.
+and issue creation, and displays a message to all administrators to inform of the expired license.
 
 To get back all the previous functionality, you must upload a new license.
 To fall back to having only the Core features active, you must delete the

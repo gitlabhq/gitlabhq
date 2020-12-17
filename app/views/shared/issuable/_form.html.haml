@@ -32,7 +32,7 @@
         = form.label :confidential, class: 'form-check-label' do
           This issue is confidential and should only be visible to team members with at least Reporter access.
 
-= render 'shared/issuable/form/metadata', issuable: issuable, form: form, project: project
+= render 'shared/issuable/form/metadata', issuable: issuable, form: form, project: project, presenter: presenter
 
 = render_if_exists 'shared/issuable/approvals', issuable: issuable, presenter: presenter, form: form
 
@@ -88,3 +88,6 @@
   = form.hidden_field :issue_type
 
 = form.hidden_field :lock_version
+
+- if @vulnerability_id
+  = hidden_field_tag 'vulnerability_id', @vulnerability_id

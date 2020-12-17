@@ -124,7 +124,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:analytics_instance_statistics_count_job_trigger
-  :feature_category: :instance_statistics
+  :feature_category: :devops_reports
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -323,6 +323,22 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: cronjob:releases_create_evidence
+  :feature_category: :release_evidence
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
+- :name: cronjob:releases_manage_evidence
+  :feature_category: :release_evidence
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
 - :name: cronjob:remove_expired_group_links
   :feature_category: :authentication_and_authorization
   :has_external_dependencies:
@@ -380,7 +396,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:schedule_merge_request_cleanup_refs
-  :feature_category: :source_code_management
+  :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -388,7 +404,7 @@
   :idempotent: true
   :tags: []
 - :name: cronjob:schedule_migrate_external_diffs
-  :feature_category: :source_code_management
+  :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -412,7 +428,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:stuck_merge_jobs
-  :feature_category: :source_code_management
+  :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -691,6 +707,22 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: github_importer:github_import_import_pull_request_merged_by
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
+- :name: github_importer:github_import_import_pull_request_review
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
 - :name: github_importer:github_import_refresh_import_jid
   :feature_category: :importers
   :has_external_dependencies:
@@ -740,6 +772,22 @@
   :idempotent:
   :tags: []
 - :name: github_importer:github_import_stage_import_pull_requests
+  :feature_category: :importers
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
+- :name: github_importer:github_import_stage_import_pull_requests_merged_by
+  :feature_category: :importers
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
+- :name: github_importer:github_import_stage_import_pull_requests_reviews
   :feature_category: :importers
   :has_external_dependencies:
   :urgency: :low
@@ -829,15 +877,23 @@
   :tags: []
 - :name: jira_connect:jira_connect_sync_branch
   :feature_category: :integrations
-  :has_external_dependencies:
+  :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
   :tags: []
+- :name: jira_connect:jira_connect_sync_builds
+  :feature_category: :integrations
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: jira_connect:jira_connect_sync_merge_request
   :feature_category: :integrations
-  :has_external_dependencies:
+  :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
@@ -1038,6 +1094,14 @@
   :idempotent: true
   :tags: []
 - :name: pipeline_background:ci_ref_delete_unlock_artifacts
+  :feature_category: :continuous_integration
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: pipeline_background:ci_test_failure_history
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :low
@@ -1313,7 +1377,15 @@
   :idempotent: true
   :tags: []
 - :name: analytics_instance_statistics_counter_job
-  :feature_category: :instance_statistics
+  :feature_category: :devops_reports
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: approve_blocked_pending_approval_users
+  :feature_category: :users
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -1377,16 +1449,8 @@
   :weight: 2
   :idempotent: true
   :tags: []
-- :name: create_evidence
-  :feature_category: :release_evidence
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 2
-  :idempotent:
-  :tags: []
 - :name: create_note_diff_file
-  :feature_category: :source_code_management
+  :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -1402,7 +1466,7 @@
   :idempotent:
   :tags: []
 - :name: delete_diff_files
-  :feature_category: :source_code_management
+  :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -1497,6 +1561,14 @@
   :weight: 2
   :idempotent:
   :tags: []
+- :name: environments_canary_ingress_update
+  :feature_category: :continuous_delivery
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: error_tracking_issue_link
   :feature_category: :error_tracking
   :has_external_dependencies: true
@@ -1562,6 +1634,14 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: gitlab_performance_bar_stats
+  :feature_category: :metrics
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: gitlab_shell
   :feature_category: :source_code_management
   :has_external_dependencies:
@@ -1601,7 +1681,7 @@
   :urgency: :low
   :resource_boundary: :cpu
   :weight: 2
-  :idempotent:
+  :idempotent: true
   :tags: []
 - :name: invalid_gpg_signature_update
   :feature_category: :source_code_management
@@ -1660,7 +1740,7 @@
   :idempotent:
   :tags: []
 - :name: merge_request_cleanup_refs
-  :feature_category: :source_code_management
+  :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -1668,7 +1748,7 @@
   :idempotent: true
   :tags: []
 - :name: merge_request_mergeability_check
-  :feature_category: :source_code_management
+  :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -1692,7 +1772,7 @@
   :idempotent: true
   :tags: []
 - :name: migrate_external_diffs
-  :feature_category: :source_code_management
+  :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -1707,6 +1787,14 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: namespaces_onboarding_user_added
+  :feature_category: :users
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: new_issue
   :feature_category: :issue_tracking
   :has_external_dependencies:
@@ -1716,7 +1804,7 @@
   :idempotent:
   :tags: []
 - :name: new_merge_request
-  :feature_category: :source_code_management
+  :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :high
   :resource_boundary: :cpu
@@ -1812,7 +1900,7 @@
   :urgency: :high
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent:
+  :idempotent: true
   :tags: []
 - :name: project_daily_statistics
   :feature_category: :source_code_management
@@ -1838,6 +1926,14 @@
   :resource_boundary: :memory
   :weight: 1
   :idempotent:
+  :tags: []
+- :name: project_schedule_bulk_repository_shard_moves
+  :feature_category: :gitaly
+  :has_external_dependencies:
+  :urgency: :throttled
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: project_service
   :feature_category: :integrations
@@ -1973,7 +2069,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent:
+  :idempotent: true
   :tags: []
 - :name: self_monitoring_project_create
   :feature_category: :metrics
@@ -2024,7 +2120,7 @@
   :idempotent: true
   :tags: []
 - :name: update_merge_requests
-  :feature_category: :source_code_management
+  :feature_category: :code_review
   :has_external_dependencies:
   :urgency: :high
   :resource_boundary: :cpu

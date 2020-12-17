@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Crosslinking Issues
@@ -31,7 +31,7 @@ git commit -m "this is my commit message. Related to https://gitlab.com/<usernam
 
 Of course, you can replace `gitlab.com` with the URL of your own GitLab instance.
 
-NOTE: **Note:**
+NOTE:
 Linking your first commit to your issue is going to be relevant
 for tracking your process with [GitLab Value Stream Analytics](https://about.gitlab.com/stages-devops-lifecycle/value-stream-analytics/).
 It will measure the time taken for planning the implementation of that issue,

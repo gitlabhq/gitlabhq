@@ -1,13 +1,13 @@
 ---
 stage: Enablement
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: howto
 ---
 
 # Automatic background verification **(PREMIUM ONLY)**
 
-NOTE: **Note:**
+NOTE:
 Automatic background verification of repositories and wikis was added in
 GitLab EE 10.6 but is enabled by default only on GitLab EE 11.1. You can
 disable or enable this feature manually by following

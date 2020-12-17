@@ -22,7 +22,7 @@ RSpec.describe Boards::ListsController do
       read_board_list user: user, board: board
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(response.content_type).to eq 'application/json'
+      expect(response.media_type).to eq 'application/json'
     end
 
     it 'returns a list of board lists' do
@@ -85,20 +85,22 @@ RSpec.describe Boards::ListsController do
 
     context 'with invalid params' do
       context 'when label is nil' do
-        it 'returns a not found 404 response' do
+        it 'returns an unprocessable entity 422 response' do
           create_board_list user: user, board: board, label_id: nil
 
-          expect(response).to have_gitlab_http_status(:not_found)
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['errors']).to eq(['Label not found'])
         end
       end
 
       context 'when label that does not belongs to project' do
-        it 'returns a not found 404 response' do
+        it 'returns an unprocessable entity 422 response' do
           label = create(:label, name: 'Development')
 
           create_board_list user: user, board: board, label_id: label.id
 
-          expect(response).to have_gitlab_http_status(:not_found)
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['errors']).to eq(['Label not found'])
         end
       end
     end

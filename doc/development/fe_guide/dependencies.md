@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Frontend dependencies
@@ -32,7 +32,7 @@ updated using renovate are:
 
 We discourage installing some dependencies in [GitLab repository](https://gitlab.com/gitlab-org/gitlab)
 because they can create conflicts in the dependency tree. Blocked dependencies are declared in the
-`blockDependencies` property of GitLab’s [`package.json` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/package.json).
+`blockDependencies` property of the GitLab [`package.json` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/package.json).
 
 ## Dependency notes
 

@@ -27,11 +27,11 @@ RSpec.describe 'Issue Boards', :js do
     end
 
     it 'creates default lists' do
-      lists = ['Open', 'To Do', 'Doing', 'Closed']
+      lists = %w[Open Closed]
 
       wait_for_requests
 
-      expect(page).to have_selector('.board', count: 4)
+      expect(page).to have_selector('.board', count: 2)
 
       page.all('.board').each_with_index do |list, i|
         expect(list.find('.board-title')).to have_content(lists[i])

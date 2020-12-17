@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Access
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: howto, reference
 ---
 
@@ -44,7 +44,7 @@ GitLab supports the use of RSA, DSA, ECDSA, and ED25519 keys.
 - GitLab has [deprecated](https://about.gitlab.com/releases/2018/06/22/gitlab-11-0-released/#support-for-dsa-ssh-keys) DSA keys in GitLab 11.0.
 - As noted in [Practical Cryptography With Go](https://leanpub.com/gocrypto/read#leanpub-auto-ecdsa), the security issues related to DSA also apply to ECDSA.
 
-TIP: **Tip:**
+NOTE:
 Available documentation suggests that ED25519 is more secure. If you use an RSA key, the US National Institute of Science and Technology in [Publication 800-57 Part 3 (PDF)](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57Pt3r1.pdf) recommends a key size of at least 2048 bits.
 
 Therefore, our documentation focuses on the use of ED25519 and RSA keys.
@@ -121,7 +121,7 @@ Enter file in which to save the key (/home/user/.ssh/id_rsa):
 
 For guidance, proceed to the [common steps](#common-steps-for-generating-an-ssh-key-pair).
 
-NOTE: **Note:**
+NOTE:
 If you have OpenSSH version 7.8 or below, consider the problems associated
 with [encoding](#rsa-keys-and-openssh-from-versions-65-to-78).
 
@@ -183,7 +183,7 @@ the following command:
 ssh-keygen -o -t rsa -b 4096 -C "email@example.com"
 ```
 
-NOTE: **Note:**
+NOTE:
 As noted in the `ssh-keygen` man page, ED25519 already encrypts keys to the more secure
 OpenSSH format.
 
@@ -215,7 +215,7 @@ Now you can copy the SSH key you created to your GitLab account. To do so, follo
 
    If you're using an RSA key, substitute accordingly.
 
-1. Navigate to `https://gitlab.com` and sign in.
+1. Navigate to `https://gitlab.com` or your local GitLab instance URL and sign in.
 1. Select your avatar in the upper right corner, and click **Settings**
 1. Click **SSH Keys**.
 1. Paste the public key that you copied into the **Key** text box.
@@ -228,14 +228,20 @@ SSH keys that have "expired" using this procedure are valid in GitLab workflows.
 As the GitLab-configured expiration date is not included in the SSH key itself,
 you can still export public SSH keys as needed.
 
-NOTE: **Note:**
+NOTE:
 If you manually copied your public SSH key make sure you copied the entire
 key starting with `ssh-ed25519` (or `ssh-rsa`) and ending with your email address.
 
+## Two-factor Authentication (2FA)
+
+You can set up two-factor authentication (2FA) for
+[Git over SSH](../security/two_factor_authentication.md#two-factor-authentication-2fa-for-git-over-ssh-operations).
+
 ## Testing that everything is set up correctly
 
-To test whether your SSH key was added correctly, run the following command in
-your terminal (replacing `gitlab.com` with your GitLab's instance domain):
+To test whether your SSH key was added correctly, run the following
+command in your terminal (replace `gitlab.com` with the domain of
+your GitLab instance):
 
 ```shell
 ssh -T git@gitlab.com
@@ -253,15 +259,15 @@ Are you sure you want to continue connecting (yes/no)? yes
 Warning: Permanently added 'gitlab.com' (ECDSA) to the list of known hosts.
 ```
 
-NOTE: **Note:**
+NOTE:
 For GitLab.com, consult the
 [SSH host keys fingerprints](../user/gitlab_com/index.md#ssh-host-keys-fingerprints),
 section to make sure you're connecting to the correct server. For example, you can see
 the ECDSA key fingerprint shown above in the linked section.
 
 Once added to the list of known hosts, you should validate the
-authenticity of GitLab's host again. Run the above command once more, and
-you should only receive a _Welcome to GitLab, `@username`!_ message.
+authenticity of the GitLab host, once again. Run the above command
+again, and you should receive a _Welcome to GitLab, `@username`!_ message.
 
 If the welcome message doesn't appear, you can troubleshoot the problem by running `ssh`
 in verbose mode with the following command:
@@ -324,7 +330,7 @@ due to how SSH assembles `IdentityFile` entries and is not changed by
 setting `IdentitiesOnly` to `yes`. `IdentityFile` entries should point to
 the private key of an SSH key pair.
 
-NOTE: **Note:**
+NOTE:
 Private and public keys should be readable by the user only. Accomplish this
 on Linux and macOS by running: `chmod 0400 ~/.ssh/<example_ssh_key>` and
 `chmod 0400 ~/.ssh/<example_sh_key.pub>`.
@@ -343,7 +349,7 @@ Host <user_2.gitlab.com>
   IdentityFile ~/.ssh/<example_ssh_key2>
 ```
 
-NOTE: **Note:**
+NOTE:
 The example `Host` aliases are defined as `user_1.gitlab.com` and
 `user_2.gitlab.com` for efficiency and transparency. Advanced configurations
 are more difficult to maintain; using this type of alias makes it easier to

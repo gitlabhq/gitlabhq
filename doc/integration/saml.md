@@ -2,7 +2,7 @@
 type: reference
 stage: Manage
 group: Access
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # SAML OmniAuth Provider **(CORE ONLY)**
@@ -378,7 +378,7 @@ You may also bypass the auto sign-in feature by browsing to
 
 ### `attribute_statements`
 
-NOTE: **Note:**
+NOTE:
 This setting should be used only to map attributes that are part of the OmniAuth
 `info` hash schema.
 
@@ -536,7 +536,7 @@ args: {
 
 Your Identity Provider will encrypt the assertion with the public certificate of GitLab. GitLab will decrypt the EncryptedAssertion with its private key.
 
-NOTE: **Note:**
+NOTE:
 This integration uses the `certificate` and `private_key` settings for both assertion encryption and request signing.
 
 ## Request signing (optional)

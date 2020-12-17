@@ -2,7 +2,7 @@
 
 module Types
   module DesignManagement
-    class DesignCollectionType < BaseObject
+    class DesignCollectionType < ::Types::BaseObject
       graphql_name 'DesignCollection'
       description 'A collection of designs'
 

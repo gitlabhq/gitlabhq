@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Editor
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: howto
 ---
 
@@ -32,7 +32,7 @@ When you are satisfied with your new file, click **Commit Changes** at the botto
 ### Shortcuts
 
 You can use handy shortcuts when editing a file through the Web Editor, which are the same as
-the WEB IDE's. For details, see the documentation for [Command Palette](../web_ide/index.md#command-palette).
+the Web IDE's. For details, see the documentation for [Command Palette](../web_ide/index.md#command-palette).
 
 ### Template dropdowns
 
@@ -53,7 +53,7 @@ has already been created, which creates a link to the license itself.
 
 ![New file button](img/web_editor_template_dropdown_buttons.png)
 
-NOTE: **Note:**
+NOTE:
 The **Set up CI/CD** button will not appear on an empty repository. You have to at
 least add a file in order for the button to show up.
 
@@ -94,7 +94,7 @@ the target branch. Click **Create directory** to finish.
 
 ## Create a new branch
 
-There are multiple ways to create a branch from GitLab's web interface.
+There are multiple ways to create a branch from the GitLab web interface.
 
 ### Create a new branch from an issue
 
@@ -106,7 +106,7 @@ The new branch, and later its merge request, will be marked as related to this i
 Once merged, the MR will automatically close the issue.
 You can see a **Create merge request** dropdown below the issue description.
 
-NOTE: **Note:**
+NOTE:
 You won't see the **Create merge request** button if there is already a branch with the same
 name or a referenced merge request or your project has an active
 fork relationship.

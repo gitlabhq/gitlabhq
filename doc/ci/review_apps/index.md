@@ -1,7 +1,7 @@
 ---
 stage: Release
-group: Progressive Delivery
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+group: Release
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -125,7 +125,7 @@ paths (on the website).
 ### Route Maps example
 
 The following is an example of a route map for [Middleman](https://middlemanapp.com),
-a static site generator (SSG) used to build [GitLab's website](https://about.gitlab.com),
+a static site generator (SSG) used to build the [GitLab website](https://about.gitlab.com),
 deployed from its [project on GitLab.com](https://gitlab.com/gitlab-com/www-gitlab-com):
 
 ```yaml

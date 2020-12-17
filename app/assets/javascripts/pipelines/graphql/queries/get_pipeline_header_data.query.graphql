@@ -2,6 +2,7 @@ query getPipelineHeaderData($fullPath: ID!, $iid: ID!) {
   project(fullPath: $fullPath) {
     pipeline(iid: $iid) {
       id
+      iid
       status
       retryable
       cancelable

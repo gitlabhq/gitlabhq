@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Internationalization for GitLab
@@ -10,10 +10,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 For working with internationalization (i18n),
 [GNU gettext](https://www.gnu.org/software/gettext/) is used given it's the most
-used tool for this task and there are a lot of applications that will help us to
+used tool for this task and there are a lot of applications that help us
 work with it.
 
-TIP: **Tip:**
+NOTE:
 All `rake` commands described on this page must be run on a GitLab instance, usually GDK.
 
 ## Setting up GitLab Development Kit (GDK)
@@ -376,7 +376,7 @@ Namespaces should be PascalCase.
   s_('OpenedNDaysAgo|Opened')
   ```
 
-  In case the translation is not found it will return `Opened`.
+  In case the translation is not found it returns `Opened`.
 
 - In JavaScript:
 
@@ -417,12 +417,12 @@ To include formatting in the translated string, we can do the following:
 
   See the section on [interpolation](#interpolation).
 
-When [this translation helper issue](https://gitlab.com/gitlab-org/gitlab/-/issues/217935) is complete, we'll update the
+When [this translation helper issue](https://gitlab.com/gitlab-org/gitlab/-/issues/217935) is complete, we plan to update the
 process of including formatting in translated strings.
 
 #### Including Angle Brackets
 
-If a string contains angles brackets (`<`/`>`) that are not used for HTML, it will still be flagged by the
+If a string contains angles brackets (`<`/`>`) that are not used for HTML, it is still flagged by the
 `rake gettext:lint` linter.
 To avoid this error, use the applicable HTML entity code (`&lt;` or `&gt;`) instead:
 
@@ -473,7 +473,7 @@ This makes use of [`Intl.DateTimeFormat`](https://developer.mozilla.org/en-US/do
   1. **Through the `l` helper**, i.e. `l(active_session.created_at, format: :short)`. We have some predefined formats for
      [dates](https://gitlab.com/gitlab-org/gitlab/blob/4ab54c2233e91f60a80e5b6fa2181e6899fdcc3e/config/locales/en.yml#L54) and [times](https://gitlab.com/gitlab-org/gitlab/blob/4ab54c2233e91f60a80e5b6fa2181e6899fdcc3e/config/locales/en.yml#L262).
      If you need to add a new format, because other parts of the code could benefit from it,
-     you'll need to add it to [en.yml](https://gitlab.com/gitlab-org/gitlab/blob/master/config/locales/en.yml) file.
+     you can add it to [en.yml](https://gitlab.com/gitlab-org/gitlab/blob/master/config/locales/en.yml) file.
   1. **Through `strftime`**, i.e. `milestone.start_date.strftime('%b %-d')`. We use `strftime` in case none of the formats
      defined on [en.yml](https://gitlab.com/gitlab-org/gitlab/blob/master/config/locales/en.yml) matches the date/time
      specifications we need, and if there is no need to add it as a new format because is very particular (i.e. it's only used in a single view).
@@ -504,7 +504,7 @@ Examples:
 - Mappings for a dropdown list
 - Error messages
 
-To store these kinds of data, using a constant seems like the best choice, however this won't work for translations.
+To store these kinds of data, using a constant seems like the best choice, however this doesn't work for translations.
 
 Bad, avoid it:
 
@@ -518,7 +518,7 @@ class MyPresenter
 end
 ```
 
-The translation method (`_`) will be called when the class is loaded for the first time and translates the text to the default locale. Regardless of what's the user's locale, these values will not be translated again.
+The translation method (`_`) is called when the class is loaded for the first time and translates the text to the default locale. Regardless of the user's locale, these values are not translated a second time.
 
 Similar thing happens when using class methods with memoization.
 
@@ -536,7 +536,7 @@ class MyModel
 end
 ```
 
-This method will memoize the translations using the locale of the user, who first "called" this method.
+This method memorizes the translations using the locale of the user, who first "called" this method.
 
 To avoid these problems, keep the translations dynamic.
 
@@ -700,9 +700,9 @@ Now that the new content is marked for translation, we need to update
 bin/rake gettext:regenerate
 ```
 
-This command will update `locale/gitlab.pot` file with the newly externalized
+This command updates `locale/gitlab.pot` file with the newly externalized
 strings and remove any strings that aren't used anymore. You should check this
-file in. Once the changes are on master, they will be picked up by
+file in. Once the changes are on master, they are picked up by
 [CrowdIn](https://translate.gitlab.com) and be presented for
 translation.
 
@@ -719,7 +719,7 @@ running on CI as part of the `static-analysis` job.
 
 To lint the adjustments in PO files locally you can run `rake gettext:lint`.
 
-The linter will take the following into account:
+The linter takes the following into account:
 
 - Valid PO-file syntax
 - Variable usage
@@ -756,9 +756,9 @@ aren't in the message with ID `1 pipeline`.
 
 ## Adding a new language
 
-NOTE: **Note:**
+NOTE:
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221012) in GitLab 13.3:
-Languages with less than 2% of translations won't be available in the UI.
+Languages with less than 2% of translations are not available in the UI.
 
 Let's suppose you want to add translations for a new language, let's say French.
 

@@ -66,6 +66,19 @@ RSpec.describe JiraService do
     end
   end
 
+  describe '#fields' do
+    let(:service) { create(:jira_service) }
+
+    subject(:fields) { service.fields }
+
+    it 'includes transition help link' do
+      transition_id_field = fields.find { |field| field[:name] == 'jira_issue_transition_id' }
+
+      expect(transition_id_field[:title]).to eq('Jira workflow transition IDs')
+      expect(transition_id_field[:help]).to include('/help/user/project/integrations/jira')
+    end
+  end
+
   describe 'Associations' do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }

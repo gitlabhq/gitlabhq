@@ -1,7 +1,7 @@
 ---
 stage: Monitor
 group: Health
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Alert integrations
@@ -27,12 +27,12 @@ The list displays the integration name, type, and status (enabled or disabled):
 
 ## Configuration
 
-GitLab can receive alerts via a [HTTP endpoint](#generic-http-endpoint) that you configure,
+GitLab can receive alerts via a HTTP endpoint that you configure,
 or the [Prometheus integration](#external-prometheus-integration).
 
-### Generic HTTP Endpoint **CORE**
+### Single HTTP Endpoint **CORE**
 
-Enabling the Generic HTTP Endpoint activates a unique HTTP endpoint that can
+Enabling the HTTP Endpoint in a GitLab projects activates it to
 receive alert payloads in JSON format. You can always
 [customize the payload](#customize-the-alert-payload-outside-of-gitlab) to your liking.
 
@@ -60,10 +60,10 @@ and you can [customize the payload](#customize-the-alert-payload-outside-of-gitl
    1. In the **Integration** dropdown menu, select **HTTP Endpoint**.
    1. Name the integration.
    1. Toggle the **Active** alert setting to display the **URL** and **Authorization Key**
-      for the webhook configuration. You will input the URL and Authorization Key
+      for the webhook configuration. You must also input the URL and Authorization Key
       in your external service.
    1. _(Optional)_ To generate a test alert to test the new integration, enter a
-      sample payload, then click **Save and test alert payload**.Valid JSON is required.
+      sample payload, then click **Save and test alert payload**. Valid JSON is required.
    1. Click **Save Integration**.
 
 The new HTTP Endpoint displays in the [integrations list](#integrations-list).
@@ -102,7 +102,7 @@ can be a nested JSON object. For example:
 { "foo": { "bar": { "baz": 42 } } }
 ```
 
-TIP: **Tip:**
+NOTE:
 Ensure your requests are smaller than the
 [payload application limits](../../administration/instance_limits.md#generic-alert-json-payloads).
 
@@ -170,18 +170,18 @@ If the existing alert is already `resolved`, GitLab creates a new alert instead.
 
 ## Link to your Opsgenie Alerts
 
-DANGER: **Deprecated:**
+WARNING:
 We are building deeper integration with Opsgenie and other alerting tools through
-[HTTP endpoint integrations](#generic-http-endpoint) so you can see alerts within
+[HTTP endpoint integrations](#single-http-endpoint) so you can see alerts within
 the GitLab interface. As a result, the previous direct link to Opsgenie Alerts from
-the GitLab alerts list will be deprecated following the 13.7 release on December 22, 2020.
+the GitLab alerts list is scheduled for deprecation following the 13.7 release on December 22, 2020.
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
 
 You can monitor alerts using a GitLab integration with [Opsgenie](https://www.atlassian.com/software/opsgenie).
 
 If you enable the Opsgenie integration, you can't have other GitLab alert
-services, such as [Generic Alerts](generic_alerts.md) or Prometheus alerts,
+services
 active at the same time.
 
 To enable Opsgenie integration:

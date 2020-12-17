@@ -11,7 +11,7 @@ RSpec.describe Mutations::AlertManagement::HttpIntegration::Destroy do
   specify { expect(described_class).to require_graphql_authorizations(:admin_operations) }
 
   describe '#resolve' do
-    subject(:resolve) { mutation_for(project, current_user).resolve(args) }
+    subject(:resolve) { mutation_for(project, current_user).resolve(**args) }
 
     context 'user has access to project' do
       before do

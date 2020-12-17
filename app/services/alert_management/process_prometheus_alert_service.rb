@@ -1,9 +1,15 @@
 # frozen_string_literal: true
 
 module AlertManagement
-  class ProcessPrometheusAlertService < BaseService
+  class ProcessPrometheusAlertService
+    include BaseServiceUtility
     include Gitlab::Utils::StrongMemoize
     include ::IncidentManagement::Settings
+
+    def initialize(project, payload)
+      @project = project
+      @payload = payload
+    end
 
     def execute
       return bad_request unless incoming_payload.has_required_attributes?
@@ -18,6 +24,8 @@ module AlertManagement
     end
 
     private
+
+    attr_reader :project, :payload
 
     def process_alert_management_alert
       if incoming_payload.resolved?
@@ -127,7 +135,7 @@ module AlertManagement
       strong_memoize(:incoming_payload) do
         Gitlab::AlertManagement::Payload.parse(
           project,
-          params,
+          payload,
           monitoring_tool: Gitlab::AlertManagement::Payload::MONITORING_TOOLS[:prometheus]
         )
       end

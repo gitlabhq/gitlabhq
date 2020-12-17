@@ -14,6 +14,7 @@
         "merge_request_cached_widget_path": { "type": "string" },
         "commit_change_content_path": { "type": "string" },
         "conflicts_docs_path": { "type": ["string", "null"] },
+        "reviewing_and_managing_merge_requests_docs_path": { "type": ["string", "null"] },
         "merge_request_pipelines_docs_path": { "type": ["string", "null"] },
         "ci_environments_status_path": { "type": "string" },
         "issues_links": {

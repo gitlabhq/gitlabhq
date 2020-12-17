@@ -57,8 +57,8 @@ RSpec.describe Import::BulkImportsController do
           let(:client_response) do
             double(
               parsed_response: [
-                { 'id' => 1, 'full_name' => 'group1', 'full_path' => 'full/path/group1' },
-                { 'id' => 2, 'full_name' => 'group2', 'full_path' => 'full/path/group2' }
+                { 'id' => 1, 'full_name' => 'group1', 'full_path' => 'full/path/group1', 'web_url' => 'http://demo.host/full/path/group1' },
+                { 'id' => 2, 'full_name' => 'group2', 'full_path' => 'full/path/group2', 'web_url' => 'http://demo.host/full/path/group1' }
               ]
             )
           end
@@ -132,12 +132,27 @@ RSpec.describe Import::BulkImportsController do
       end
 
       describe 'POST create' do
+        let(:instance_url) { "http://fake-intance" }
+        let(:pat) { "fake-pat" }
+
+        before do
+          session[:bulk_import_gitlab_access_token] = pat
+          session[:bulk_import_gitlab_url] = instance_url
+        end
+
         it 'executes BulkImportService' do
-          expect_next_instance_of(BulkImportService) do |service|
+          bulk_import_params = [{ "source_type" => "group_entity",
+            "source_full_path" => "full_path",
+            "destination_name" =>
+            "destination_name",
+            "destination_namespace" => "root" }]
+
+          expect_next_instance_of(
+            BulkImportService, user, bulk_import_params, { url: instance_url, access_token: pat }) do |service|
             expect(service).to receive(:execute)
           end
 
-          post :create
+          post :create, params: { bulk_import: bulk_import_params }
 
           expect(response).to have_gitlab_http_status(:ok)
         end

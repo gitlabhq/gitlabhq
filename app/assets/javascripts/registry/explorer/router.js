@@ -6,7 +6,7 @@ import { CONTAINER_REGISTRY_TITLE } from './constants/index';
 
 Vue.use(VueRouter);
 
-export default function createRouter(base) {
+export default function createRouter(base, breadCrumbState) {
   const router = new VueRouter({
     base,
     mode: 'history',
@@ -25,7 +25,7 @@ export default function createRouter(base) {
         path: '/:id',
         component: Details,
         meta: {
-          nameGenerator: ({ imageDetails }) => imageDetails?.name,
+          nameGenerator: () => breadCrumbState.name,
         },
       },
     ],

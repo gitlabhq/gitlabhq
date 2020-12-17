@@ -18,6 +18,21 @@ then
   ((ERRORCODE++))
 fi
 
+# Test for non-standard spaces (NBSP, NNBSP) in documentation.
+echo '=> Checking for non-standard spaces...'
+echo
+grep --extended-regexp --binary-file=without-match --recursive '[  ]' doc/ >/dev/null 2>&1
+if [ $? -eq 0 ]
+then
+  echo '✖ ERROR: Non-standard spaces (NBSP, NNBSP) should not be used in documentation.
+         https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#spaces-between-words
+         Replace with standard spaces:' >&2
+  # Find the spaces, then add color codes with sed to highlight each NBSP or NNBSP in the output.
+  grep --extended-regexp --binary-file=without-match --recursive --color=auto '[  ]' doc \
+       | sed -e ''/ /s//`printf "\033[0;101m \033[0m"`/'' -e ''/ /s//`printf "\033[0;101m \033[0m"`/''
+  ((ERRORCODE++))
+fi
+
 # Ensure that the CHANGELOG.md does not contain duplicate versions
 DUPLICATE_CHANGELOG_VERSIONS=$(grep --extended-regexp '^## .+' CHANGELOG.md | sed -E 's| \(.+\)||' | sort -r | uniq -d)
 echo '=> Checking for CHANGELOG.md duplicate entries...'
@@ -65,10 +80,16 @@ then
   echo "Merge request pipeline (detached) detected. Testing all files."
 else
   MERGE_BASE=$(git merge-base ${CI_MERGE_REQUEST_TARGET_BRANCH_SHA} ${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA})
-  MD_DOC_PATH=$(git diff --name-only "${MERGE_BASE}..${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}" 'doc/*.md')
-  if [ -n "${MD_DOC_PATH}" ]
+  if git diff --name-only "${MERGE_BASE}..${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}" | grep -E "\.vale|\.markdownlint|lint-doc\.sh"
   then
-    echo -e "Merged results pipeline detected. Testing only the following files:\n${MD_DOC_PATH}"
+    MD_DOC_PATH=${MD_DOC_PATH:-doc}
+    echo "Vale, Markdownlint, or lint-doc.sh configuration changed. Testing all files."
+  else
+    MD_DOC_PATH=$(git diff --name-only "${MERGE_BASE}..${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}" 'doc/*.md')
+    if [ -n "${MD_DOC_PATH}" ]
+    then
+      echo -e "Merged results pipeline detected. Testing only the following files:\n${MD_DOC_PATH}"
+    fi
   fi
 fi
 

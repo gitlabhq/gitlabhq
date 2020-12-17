@@ -1,15 +1,7 @@
 import mutations from '~/boards/stores/mutations';
 import * as types from '~/boards/stores/mutation_types';
 import defaultState from '~/boards/stores/state';
-import {
-  mockListsWithModel,
-  mockLists,
-  rawIssue,
-  mockIssue,
-  mockIssue2,
-  mockIssueWithModel,
-  mockIssue2WithModel,
-} from '../mock_data';
+import { mockLists, rawIssue, mockIssue, mockIssue2 } from '../mock_data';
 
 const expectNotImplemented = action => {
   it('is not implemented', () => {
@@ -21,8 +13,8 @@ describe('Board Store Mutations', () => {
   let state;
 
   const initialBoardListsState = {
-    'gid://gitlab/List/1': mockListsWithModel[0],
-    'gid://gitlab/List/2': mockListsWithModel[1],
+    'gid://gitlab/List/1': mockLists[0],
+    'gid://gitlab/List/2': mockLists[1],
   };
 
   beforeEach(() => {
@@ -41,19 +33,21 @@ describe('Board Store Mutations', () => {
       };
       const boardType = 'group';
       const disabled = false;
-      const showPromotion = false;
+      const boardConfig = {
+        milestoneTitle: 'Milestone 1',
+      };
 
       mutations[types.SET_INITIAL_BOARD_DATA](state, {
         ...endpoints,
         boardType,
         disabled,
-        showPromotion,
+        boardConfig,
       });
 
       expect(state.endpoints).toEqual(endpoints);
       expect(state.boardType).toEqual(boardType);
       expect(state.disabled).toEqual(disabled);
-      expect(state.showPromotion).toEqual(showPromotion);
+      expect(state.boardConfig).toEqual(boardConfig);
     });
   });
 
@@ -135,10 +129,10 @@ describe('Board Store Mutations', () => {
 
   describe('RECEIVE_ADD_LIST_SUCCESS', () => {
     it('adds list to boardLists state', () => {
-      mutations.RECEIVE_ADD_LIST_SUCCESS(state, mockListsWithModel[0]);
+      mutations.RECEIVE_ADD_LIST_SUCCESS(state, mockLists[0]);
 
       expect(state.boardLists).toEqual({
-        [mockListsWithModel[0].id]: mockListsWithModel[0],
+        [mockLists[0].id]: mockLists[0],
       });
     });
   });
@@ -155,13 +149,13 @@ describe('Board Store Mutations', () => {
       };
 
       mutations.MOVE_LIST(state, {
-        movedList: mockListsWithModel[0],
-        listAtNewIndex: mockListsWithModel[1],
+        movedList: mockLists[0],
+        listAtNewIndex: mockLists[1],
       });
 
       expect(state.boardLists).toEqual({
-        'gid://gitlab/List/2': mockListsWithModel[1],
-        'gid://gitlab/List/1': mockListsWithModel[0],
+        'gid://gitlab/List/2': mockLists[1],
+        'gid://gitlab/List/1': mockLists[0],
       });
     });
   });
@@ -171,8 +165,8 @@ describe('Board Store Mutations', () => {
       state = {
         ...state,
         boardLists: {
-          'gid://gitlab/List/2': mockListsWithModel[1],
-          'gid://gitlab/List/1': mockListsWithModel[0],
+          'gid://gitlab/List/2': mockLists[1],
+          'gid://gitlab/List/1': mockLists[0],
         },
         error: undefined,
       };
@@ -186,7 +180,7 @@ describe('Board Store Mutations', () => {
 
   describe('REMOVE_LIST', () => {
     it('removes list from boardLists', () => {
-      const [list, secondList] = mockListsWithModel;
+      const [list, secondList] = mockLists;
       const expected = {
         [secondList.id]: secondList,
       };
@@ -355,8 +349,8 @@ describe('Board Store Mutations', () => {
       };
 
       const issues = {
-        '1': mockIssueWithModel,
-        '2': mockIssue2WithModel,
+        '1': mockIssue,
+        '2': mockIssue2,
       };
 
       state = {
@@ -367,7 +361,7 @@ describe('Board Store Mutations', () => {
       };
 
       mutations.MOVE_ISSUE(state, {
-        originalIssue: mockIssue2WithModel,
+        originalIssue: mockIssue2,
         fromListId: 'gid://gitlab/List/1',
         toListId: 'gid://gitlab/List/2',
       });
@@ -396,7 +390,7 @@ describe('Board Store Mutations', () => {
         issue: rawIssue,
       });
 
-      expect(state.issues).toEqual({ '436': { ...mockIssueWithModel, id: 436 } });
+      expect(state.issues).toEqual({ '436': { ...mockIssue, id: 436 } });
     });
   });
 
@@ -466,13 +460,13 @@ describe('Board Store Mutations', () => {
         boardLists: initialBoardListsState,
       };
 
-      expect(state.boardLists['gid://gitlab/List/1'].issuesSize).toBe(1);
+      expect(state.boardLists['gid://gitlab/List/1'].issuesCount).toBe(1);
 
-      mutations.ADD_ISSUE_TO_LIST(state, { list: mockListsWithModel[0], issue: mockIssue2 });
+      mutations.ADD_ISSUE_TO_LIST(state, { list: mockLists[0], issue: mockIssue2 });
 
       expect(state.issuesByListId['gid://gitlab/List/1']).toContain(mockIssue2.id);
       expect(state.issues[mockIssue2.id]).toEqual(mockIssue2);
-      expect(state.boardLists['gid://gitlab/List/1'].issuesSize).toBe(2);
+      expect(state.boardLists['gid://gitlab/List/1'].issuesCount).toBe(2);
     });
   });
 
@@ -521,6 +515,14 @@ describe('Board Store Mutations', () => {
 
       expect(state.issuesByListId['gid://gitlab/List/1']).not.toContain(mockIssue2.id);
       expect(state.issues).not.toContain(mockIssue2);
+    });
+  });
+
+  describe('SET_ASSIGNEE_LOADING', () => {
+    it('sets isSettingAssignees to the value passed', () => {
+      mutations.SET_ASSIGNEE_LOADING(state, true);
+
+      expect(state.isSettingAssignees).toBe(true);
     });
   });
 

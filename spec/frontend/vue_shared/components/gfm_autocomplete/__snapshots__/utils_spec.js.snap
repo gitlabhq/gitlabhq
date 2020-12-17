@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`gfm_autocomplete/utils issues config shows the iid and title in the menu item within a project context 1`] = `"<small>123456</small> Project context issue title &lt;script&gt;alert(&#39;hi&#39;)&lt;/script&gt;"`;
+
+exports[`gfm_autocomplete/utils issues config shows the reference and title in the menu item within a group context 1`] = `"<small>gitlab#987654</small> Group context issue title &lt;script&gt;alert(&#39;hi&#39;)&lt;/script&gt;"`;
+
+exports[`gfm_autocomplete/utils labels config shows the title in the menu item 1`] = `
+"
+        <span class=\\"dropdown-label-box\\" style=\\"background: #123456;\\"></span>
+        bug &lt;script&gt;alert(&#39;hi&#39;)&lt;/script&gt;"
+`;
+
+exports[`gfm_autocomplete/utils members config shows an avatar character, name, parent name, and count in the menu item for a group 1`] = `
+"
+        <div class=\\"gl-display-flex gl-align-items-center\\">
+          <div class=\\"gl-avatar gl-avatar-s24 gl-flex-shrink-0 gl-rounded-small
+        gl-display-flex gl-align-items-center gl-justify-content-center\\" aria-hidden=\\"true\\">
+            G</div>
+          <div class=\\"gl-font-sm gl-line-height-normal gl-ml-3\\">
+            <div>1-1s &lt;script&gt;alert(&#39;hi&#39;)&lt;/script&gt; (2)</div>
+            <div class=\\"gl-text-gray-700\\">GitLab Support Team</div>
+          </div>
+          
+        </div>
+      "
+`;
+
+exports[`gfm_autocomplete/utils members config shows the avatar, name and username in the menu item for a user 1`] = `
+"
+        <div class=\\"gl-display-flex gl-align-items-center\\">
+          <img class=\\"gl-avatar gl-avatar-s24 gl-flex-shrink-0 gl-avatar-circle\\" src=\\"/uploads/-/system/user/avatar/123456/avatar.png\\" alt=\\"\\" />
+          <div class=\\"gl-font-sm gl-line-height-normal gl-ml-3\\">
+            <div>My Name &lt;script&gt;alert(&#39;hi&#39;)&lt;/script&gt;</div>
+            <div class=\\"gl-text-gray-700\\">@myusername</div>
+          </div>
+          
+        </div>
+      "
+`;
+
+exports[`gfm_autocomplete/utils merge requests config shows the iid and title in the menu item within a project context 1`] = `"<small>123456</small> Project context merge request title &lt;script&gt;alert(&#39;hi&#39;)&lt;/script&gt;"`;
+
+exports[`gfm_autocomplete/utils merge requests config shows the reference and title in the menu item within a group context 1`] = `"<small>gitlab!456789</small> Group context merge request title &lt;script&gt;alert(&#39;hi&#39;)&lt;/script&gt;"`;
+
+exports[`gfm_autocomplete/utils milestones config shows the title in the menu item 1`] = `"13.2 &lt;script&gt;alert(&#39;hi&#39;)&lt;/script&gt;"`;
+
+exports[`gfm_autocomplete/utils snippets config shows the id and title in the menu item 1`] = `"<small>123456</small> Snippet title &lt;script&gt;alert(&#39;hi&#39;)&lt;/script&gt;"`;

@@ -9,7 +9,7 @@ RSpec.describe FillFileStoreLfsObjects do
 
   context 'when file_store is nil' do
     it 'updates file_store to local' do
-      lfs_objects.create(oid: oid, size: 1062, file_store: nil)
+      lfs_objects.create!(oid: oid, size: 1062, file_store: nil)
       lfs_object = lfs_objects.find_by(oid: oid)
 
       expect { migrate! }.to change { lfs_object.reload.file_store }.from(nil).to(1)
@@ -18,7 +18,7 @@ RSpec.describe FillFileStoreLfsObjects do
 
   context 'when file_store is set to local' do
     it 'does not update file_store' do
-      lfs_objects.create(oid: oid, size: 1062, file_store: 1)
+      lfs_objects.create!(oid: oid, size: 1062, file_store: 1)
       lfs_object = lfs_objects.find_by(oid: oid)
 
       expect { migrate! }.not_to change { lfs_object.reload.file_store }
@@ -27,7 +27,7 @@ RSpec.describe FillFileStoreLfsObjects do
 
   context 'when file_store is set to object storage' do
     it 'does not update file_store' do
-      lfs_objects.create(oid: oid, size: 1062, file_store: 2)
+      lfs_objects.create!(oid: oid, size: 1062, file_store: 2)
       lfs_object = lfs_objects.find_by(oid: oid)
 
       expect { migrate! }.not_to change { lfs_object.reload.file_store }

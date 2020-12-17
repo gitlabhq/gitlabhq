@@ -2,7 +2,7 @@
 type: concepts, howto
 stage: Manage
 group: Access
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Personal access tokens
@@ -14,7 +14,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 If you're unable to use [OAuth2](../../api/oauth2.md), you can use a personal access token to authenticate with the [GitLab API](../../api/README.md#personalproject-access-tokens).
 
-You can also use personal access tokens with Git to authenticate over HTTP or SSH. Personal access tokens are required when [Two-Factor Authentication (2FA)](account/two_factor_authentication.md) is enabled. In both cases, you can authenticate with a token in place of your password.
+You can also use personal access tokens with Git to authenticate over HTTP. Personal access tokens are required when [Two-Factor Authentication (2FA)](account/two_factor_authentication.md) is enabled. In both cases, you can authenticate with a token in place of your password.
 
 Personal access tokens expire on the date you define, at midnight UTC.
 
@@ -91,7 +91,7 @@ This can be shortened into a single-line shell command using the
 sudo gitlab-rails runner "token = User.find_by_username('automation-bot').personal_access_tokens.create(scopes: [:read_user, :read_repository], name: 'Automation token'); token.set_token('token-string-here123'); token.save!"
 ```
 
-NOTE: **Note:**
+NOTE:
 The token string must be 20 characters in length to be
 recognized as a valid personal access token.
 

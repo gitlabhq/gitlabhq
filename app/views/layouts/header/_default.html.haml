@@ -74,6 +74,7 @@
               %span.gl-sr-only
                 = s_('Nav|Help')
               = sprite_icon('question')
+              %span.notification-dot.rounded-circle.gl-absolute
               = sprite_icon('chevron-down', css_class: 'caret-down')
             .dropdown-menu.dropdown-menu-right
               = render 'layouts/header/help_dropdown'
@@ -101,7 +102,7 @@
         = sprite_icon('close', size: 12, css_class: 'close-icon js-navbar-toggle-left')
 
 - if ::Feature.enabled?(:whats_new_drawer, current_user)
-  #whats-new-app{ data: { storage_key: whats_new_storage_key } }
+  #whats-new-app{ data: { storage_key: whats_new_storage_key, versions: whats_new_versions, gitlab_dot_com: Gitlab.dev_env_org_or_com? } }
 
 - if can?(current_user, :update_user_status, current_user)
   .js-set-status-modal-wrapper{ data: user_status_data }

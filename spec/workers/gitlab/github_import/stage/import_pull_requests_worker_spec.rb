@@ -27,7 +27,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsWorker do
 
       expect(Gitlab::GithubImport::AdvanceStageWorker)
         .to receive(:perform_async)
-        .with(project.id, { '123' => 2 }, :issues_and_diff_notes)
+        .with(project.id, { '123' => 2 }, :pull_requests_merged_by)
 
       worker.import(client, project)
     end

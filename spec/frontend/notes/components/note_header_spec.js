@@ -22,6 +22,10 @@ describe('NoteHeader component', () => {
   const findTimestamp = () => wrapper.find({ ref: 'noteTimestamp' });
   const findConfidentialIndicator = () => wrapper.find('[data-testid="confidentialIndicator"]');
   const findSpinner = () => wrapper.find({ ref: 'spinner' });
+  const findAuthorStatus = () => wrapper.find({ ref: 'authorStatus' });
+
+  const statusHtml =
+    '"<span class="user-status-emoji has-tooltip" title="foo bar" data-html="true" data-placement="top"><gl-emoji title="basketball and hoop" data-name="basketball" data-unicode-version="6.0">🏀</gl-emoji></span>"';
 
   const author = {
     avatar_url: null,
@@ -30,6 +34,8 @@ describe('NoteHeader component', () => {
     path: '/root',
     state: 'active',
     username: 'root',
+    show_status: true,
+    status_tooltip_html: statusHtml,
     status: {
       availability: '',
     },
@@ -107,6 +113,32 @@ describe('NoteHeader component', () => {
     createComponent({ author: { ...author, status: { availability: AVAILABILITY_STATUS.BUSY } } });
 
     expect(wrapper.find('.js-user-link').text()).toContain('(Busy)');
+  });
+
+  it('renders author status', () => {
+    createComponent({ author });
+
+    expect(findAuthorStatus().exists()).toBe(true);
+  });
+
+  it('does not render author status if show_status=false', () => {
+    createComponent({
+      author: { ...author, status: { availability: AVAILABILITY_STATUS.BUSY }, show_status: false },
+    });
+
+    expect(findAuthorStatus().exists()).toBe(false);
+  });
+
+  it('does not render author status if status_tooltip_html=null', () => {
+    createComponent({
+      author: {
+        ...author,
+        status: { availability: AVAILABILITY_STATUS.BUSY },
+        status_tooltip_html: null,
+      },
+    });
+
+    expect(findAuthorStatus().exists()).toBe(false);
   });
 
   it('renders deleted user text if author is not passed as a prop', () => {
@@ -206,13 +238,12 @@ describe('NoteHeader component', () => {
       createComponent({
         author: {
           ...author,
-          status_tooltip_html:
-            '"<span class="user-status-emoji has-tooltip" title="foo bar" data-html="true" data-placement="top"><gl-emoji title="basketball and hoop" data-name="basketball" data-unicode-version="6.0">🏀</gl-emoji></span>"',
+          status_tooltip_html: statusHtml,
         },
       });
 
       return nextTick().then(() => {
-        const authorStatus = wrapper.find({ ref: 'authorStatus' });
+        const authorStatus = findAuthorStatus();
         authorStatus.trigger('mouseenter');
 
         expect(authorStatus.find('gl-emoji').attributes('title')).toBeUndefined();

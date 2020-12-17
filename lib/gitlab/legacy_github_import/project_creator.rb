@@ -5,7 +5,7 @@ module Gitlab
     class ProjectCreator
       attr_reader :repo, :name, :namespace, :current_user, :session_data, :type
 
-      def initialize(repo, name, namespace, current_user, session_data, type: 'github')
+      def initialize(repo, name, namespace, current_user, type: 'github', **session_data)
         @repo = repo
         @name = name
         @namespace = namespace

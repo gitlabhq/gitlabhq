@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::ListConfigVariablesService do
+RSpec.describe Ci::ListConfigVariablesService, :use_clean_rails_memory_store_caching do
+  include ReactiveCachingHelpers
+
   let(:project) { create(:project, :repository) }
   let(:user) { project.creator }
   let(:service) { described_class.new(project, user) }
@@ -29,6 +31,10 @@ RSpec.describe Ci::ListConfigVariablesService do
           script: 'echo'
         }
       }
+    end
+
+    before do
+      synchronous_reactive_cache(service)
     end
 
     it 'returns variable list' do
@@ -65,6 +71,8 @@ RSpec.describe Ci::ListConfigVariablesService do
           HEREDOC
         end
       end
+
+      synchronous_reactive_cache(service)
     end
 
     it 'returns variable list' do
@@ -76,6 +84,10 @@ RSpec.describe Ci::ListConfigVariablesService do
   context 'when sending an invalid sha' do
     let(:sha) { 'invalid-sha' }
     let(:ci_config) { nil }
+
+    before do
+      synchronous_reactive_cache(service)
+    end
 
     it 'returns empty json' do
       expect(subject).to eq({})
@@ -96,8 +108,41 @@ RSpec.describe Ci::ListConfigVariablesService do
       }
     end
 
+    before do
+      synchronous_reactive_cache(service)
+    end
+
     it 'returns empty result' do
       expect(subject).to eq({})
+    end
+  end
+
+  context 'when reading from cache' do
+    let(:sha) { 'master' }
+    let(:ci_config) { {} }
+    let(:reactive_cache_params) { [sha] }
+    let(:return_value) { { 'KEY1' => { value: 'val 1', description: 'description 1' } } }
+
+    before do
+      stub_reactive_cache(service, return_value, reactive_cache_params)
+    end
+
+    it 'returns variable list' do
+      expect(subject).to eq(return_value)
+    end
+  end
+
+  context 'when the cache is empty' do
+    let(:sha) { 'master' }
+    let(:ci_config) { {} }
+    let(:reactive_cache_params) { [sha] }
+
+    it 'returns nil and enquques the worker to fill cache' do
+      expect(ExternalServiceReactiveCachingWorker)
+        .to receive(:perform_async)
+        .with(service.class, service.id, *reactive_cache_params)
+
+      expect(subject).to be_nil
     end
   end
 

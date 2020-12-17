@@ -1,7 +1,7 @@
 ---
 stage: Monitor
 group: Health
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Embedding metric charts within GitLab-flavored Markdown **(CORE)**
@@ -19,7 +19,7 @@ metrics to others, and you want to have relevant information directly available.
 
 This feature requires [Kubernetes](../../user/project/integrations/prometheus_library/kubernetes.md) metrics.
 
-Note: **Note:**
+NOTE:
 In GitLab versions 13.3 and earlier, metrics dashboard links were in the form
 `https://<root_url>/<project>/-/environments/<environment_id>/metrics`. These links
 are still supported, and can be used to embed metric charts.

@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: howto
 ---
 
@@ -24,7 +24,7 @@ In order to use SSH, you need to:
 To add the SSH public key to GitLab, see
 [Adding an SSH key to your GitLab account](../ssh/README.md#adding-an-ssh-key-to-your-gitlab-account).
 
-NOTE: **Note:**
+NOTE:
 Once you add a key, you can't edit it. If it did not paste properly, it
 [will not work](../ssh/README.md#testing-that-everything-is-set-up-correctly), and
 you need to remove the key from GitLab and try adding it again.

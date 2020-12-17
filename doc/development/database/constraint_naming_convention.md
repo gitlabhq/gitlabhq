@@ -1,7 +1,7 @@
 ---
 stage: Enablement
 group: Database
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Constraints naming conventions
@@ -17,7 +17,7 @@ Please note that the intent is not to retroactively change names in existing dat
 | **Foreign Key**          | `fk_<table name>_<column name>[_and_<column name>]*_<foreign table name>`                         |                                                                                                                                                                             | `fk_projects_group_id_groups`                                                                                     |
 | **Index**                | `index_<table name>_on_<column name>[_and_<column name>]*[_and_<column name in partial clause>]*` |                                                                                                                                                                             | `index_repositories_on_group_id`                                                                                  |
 | **Unique Constraint**    | `unique_<table name>_<column name>[_and_<column name>]*`                                          |                                                                                                                                                                             | `unique_projects_group_id_and_name`                                                                               |
-| **Check Constraint**     | `check_<table name>_<column name>[_and_<column name>]*[_<suffix>]?`                               | The optional suffix should denote the type of validation, such as `length` and `enum`. It can also be used to desambiguate multiple `CHECK` constraints on the same column. | `check_projects_name_length`<br />`check_projects_type_enum`<br />`check_projects_admin1_id_and_admin2_id_differ` |
+| **Check Constraint**     | `check_<table name>_<column name>[_and_<column name>]*[_<suffix>]?`                               | The optional suffix should denote the type of validation, such as `length` and `enum`. It can also be used to disambiguate multiple `CHECK` constraints on the same column. | `check_projects_name_length`<br />`check_projects_type_enum`<br />`check_projects_admin1_id_and_admin2_id_differ` |
 | **Exclusion Constraint** | `excl_<table name>_<column name>[_and_<column name>]*_[_<suffix>]?`                               | The optional suffix should denote the type of exclusion being performed.                                                                                                    | `excl_reservations_start_at_end_at_no_overlap`                                                                    |
 
 ## Observations

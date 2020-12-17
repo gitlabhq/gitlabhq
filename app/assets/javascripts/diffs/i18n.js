@@ -16,3 +16,7 @@ export const DIFF_FILE = {
   autoCollapsed: __('Files with large changes are collapsed by default.'),
   expand: __('Expand file'),
 };
+
+export const SETTINGS_DROPDOWN = {
+  fileByFile: __('Show one file at a time'),
+};

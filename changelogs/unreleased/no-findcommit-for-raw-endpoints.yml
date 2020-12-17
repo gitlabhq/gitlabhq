@@ -1,0 +1,5 @@
+---
+title: Remove unnecessary Gitaly calls from raw endpoint
+merge_request: 48917
+author:
+type: performance

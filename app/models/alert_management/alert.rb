@@ -69,6 +69,11 @@ module AlertManagement
       unknown: 5
     }
 
+    enum domain: {
+      operations: 0,
+      threat_monitoring: 1
+    }
+
     state_machine :status, initial: :triggered do
       state :triggered, value: STATUSES[:triggered]
 
@@ -122,6 +127,8 @@ module AlertManagement
     scope :open, -> { with_status(open_statuses) }
     scope :not_resolved, -> { without_status(:resolved) }
     scope :with_prometheus_alert, -> { includes(:prometheus_alert) }
+    scope :with_threat_monitoring_alerts, -> { where(domain: :threat_monitoring ) }
+    scope :with_operations_alerts, -> { where(domain: :operations) }
 
     scope :order_start_time,    -> (sort_order) { order(started_at: sort_order) }
     scope :order_end_time,      -> (sort_order) { order(ended_at: sort_order) }
@@ -263,3 +270,5 @@ module AlertManagement
     end
   end
 end
+
+AlertManagement::Alert.prepend_if_ee('EE::AlertManagement::Alert')

@@ -32,7 +32,7 @@ import {
   setHighlightedRow,
   toggleTreeOpen,
   scrollToFile,
-  toggleShowTreeList,
+  setShowTreeList,
   renderFileForDiscussionId,
   setRenderTreeList,
   setShowWhitespace,
@@ -48,6 +48,7 @@ import {
   moveToNeighboringCommit,
   setCurrentDiffFileIdFromNote,
   navigateToDiffFileIndex,
+  setFileByFile,
 } from '~/diffs/store/actions';
 import eventHub from '~/notes/event_hub';
 import * as types from '~/diffs/store/mutation_types';
@@ -159,10 +160,10 @@ describe('DiffsStoreActions', () => {
         .onGet(
           mergeUrlParams(
             {
-              per_page: DIFFS_PER_PAGE,
               w: '1',
               view: 'inline',
               page: 1,
+              per_page: DIFFS_PER_PAGE,
             },
             endpointBatch,
           ),
@@ -171,10 +172,10 @@ describe('DiffsStoreActions', () => {
         .onGet(
           mergeUrlParams(
             {
-              per_page: DIFFS_PER_PAGE,
               w: '1',
               view: 'inline',
               page: 2,
+              per_page: DIFFS_PER_PAGE,
             },
             endpointBatch,
           ),
@@ -248,7 +249,7 @@ describe('DiffsStoreActions', () => {
           { type: types.SET_LOADING, payload: true },
           { type: types.SET_LOADING, payload: false },
           { type: types.SET_MERGE_REQUEST_DIFFS, payload: diffMetadata.merge_request_diffs },
-          { type: types.SET_DIFF_DATA, payload: noFilesData },
+          { type: types.SET_DIFF_METADATA, payload: noFilesData },
         ],
         [],
         () => {
@@ -901,15 +902,22 @@ describe('DiffsStoreActions', () => {
     });
   });
 
-  describe('toggleShowTreeList', () => {
+  describe('setShowTreeList', () => {
     it('commits toggle', done => {
-      testAction(toggleShowTreeList, null, {}, [{ type: types.TOGGLE_SHOW_TREE_LIST }], [], done);
+      testAction(
+        setShowTreeList,
+        { showTreeList: true },
+        {},
+        [{ type: types.SET_SHOW_TREE_LIST, payload: true }],
+        [],
+        done,
+      );
     });
 
     it('updates localStorage', () => {
       jest.spyOn(localStorage, 'setItem').mockImplementation(() => {});
 
-      toggleShowTreeList({ commit() {}, state: { showTreeList: true } });
+      setShowTreeList({ commit() {} }, { showTreeList: true });
 
       expect(localStorage.setItem).toHaveBeenCalledWith('mr_tree_show', true);
     });
@@ -917,7 +925,7 @@ describe('DiffsStoreActions', () => {
     it('does not update localStorage', () => {
       jest.spyOn(localStorage, 'setItem').mockImplementation(() => {});
 
-      toggleShowTreeList({ commit() {}, state: { showTreeList: true } }, false);
+      setShowTreeList({ commit() {} }, { showTreeList: true, saving: false });
 
       expect(localStorage.setItem).not.toHaveBeenCalled();
     });
@@ -1236,10 +1244,6 @@ describe('DiffsStoreActions', () => {
         { diffViewType: 'inline' },
         [
           {
-            type: 'SET_HIDDEN_VIEW_DIFF_FILE_LINES',
-            payload: { filePath: 'path', lines: ['test'] },
-          },
-          {
             type: 'SET_CURRENT_VIEW_DIFF_FILE_LINES',
             payload: { filePath: 'path', lines: ['test'] },
           },
@@ -1258,10 +1262,6 @@ describe('DiffsStoreActions', () => {
         { file: { file_path: 'path' }, data: [] },
         { diffViewType: 'inline' },
         [
-          {
-            type: 'SET_HIDDEN_VIEW_DIFF_FILE_LINES',
-            payload: { filePath: 'path', lines },
-          },
           {
             type: 'SET_CURRENT_VIEW_DIFF_FILE_LINES',
             payload: { filePath: 'path', lines: lines.slice(0, 200) },
@@ -1453,6 +1453,22 @@ describe('DiffsStoreActions', () => {
         [{ type: types.VIEW_DIFF_FILE, payload: '123' }],
         [],
         done,
+      );
+    });
+  });
+
+  describe('setFileByFile', () => {
+    it.each`
+      value
+      ${true}
+      ${false}
+    `('commits SET_FILE_BY_FILE with the new value $value', ({ value }) => {
+      return testAction(
+        setFileByFile,
+        { fileByFile: value },
+        { viewDiffsFileByFile: null },
+        [{ type: types.SET_FILE_BY_FILE, payload: value }],
+        [],
       );
     });
   });

@@ -13,6 +13,7 @@ describe('group member utils', () => {
       el = document.createElement('div');
       el.setAttribute('data-members', membersJsonString);
       el.setAttribute('data-group-id', '234');
+      el.setAttribute('data-can-manage-members', 'true');
     });
 
     afterEach(() => {
@@ -23,6 +24,7 @@ describe('group member utils', () => {
       expect(parseDataAttributes(el)).toEqual({
         members: membersParsed,
         sourceId: 234,
+        canManageMembers: true,
       });
     });
   });

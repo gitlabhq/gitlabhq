@@ -1,0 +1,83 @@
+workflow:
+  rules: &workflow_rules
+    # For merge requests, create a pipeline.
+    - if: '$CI_MERGE_REQUEST_IID'
+    # For `master` branch, create a pipeline (this includes on schedules, pushes, merges, etc.).
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    # For tags, create a pipeline.
+    - if: '$CI_COMMIT_TAG'
+    # For stable branches, create a pipeline.
+    - if: '$CI_COMMIT_BRANCH =~ /^[\d-]+-stable$/'
+
+default:
+  image: golang:1.13
+  tags:
+    - gitlab-org
+
+# Disable DIND for SAST because we need to execute a before_script in the gosec-sast job
+variables:
+  SAST_DISABLE_DIND: "true"
+
+verify:
+  script:
+  - make verify
+
+changelog:
+  script:
+  - _support/check_changelog.sh
+  rules:
+  - if: '$CI_MERGE_REQUEST_IID'
+
+.test:
+  services:
+    - name: registry.gitlab.com/gitlab-org/build/cng/gitaly:latest
+      # Disable the hooks so we don't have to stub the GitLab API
+      command: ["/usr/bin/env", "GITALY_TESTING_NO_GIT_HOOKS=1", "/scripts/process-wrapper"]
+      alias: gitaly
+  variables:
+    GITALY_ADDRESS: "tcp://gitaly:8075"
+  script:
+  - go version
+  - apt-get update && apt-get -y install libimage-exiftool-perl
+  - make test
+
+test using go 1.13:
+  extends: .test
+  image: golang:1.13
+
+test using go 1.14:
+  extends: .test
+  image: golang:1.14
+
+test:release:
+  rules:
+    - if: '$CI_COMMIT_TAG'
+  script:
+    - git describe --exact-match
+
+include:
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
+
+gosec-sast:
+  before_script:
+    - apk add make
+    - make install
+  rules: *workflow_rules
+
+gemnasium-dependency_scanning:
+  rules: *workflow_rules
+
+secret_detection:
+  rules: *workflow_rules
+
+code_navigation:
+  image: golang:latest
+  allow_failure: true
+  script:
+    - go get github.com/sourcegraph/lsif-go/cmd/lsif-go
+    - lsif-go
+  artifacts:
+    reports:
+      lsif: dump.lsif

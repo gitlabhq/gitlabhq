@@ -132,14 +132,10 @@ module Ci
     end
 
     def playable?
-      return false unless ::Gitlab::Ci::Features.manual_bridges_enabled?(project)
-
       action? && !archived? && manual?
     end
 
     def action?
-      return false unless ::Gitlab::Ci::Features.manual_bridges_enabled?(project)
-
       %w[manual].include?(self.when)
     end
 
@@ -206,7 +202,7 @@ module Ci
 
     override :dependency_variables
     def dependency_variables
-      return [] unless ::Feature.enabled?(:ci_bridge_dependency_variables, project)
+      return [] unless ::Feature.enabled?(:ci_bridge_dependency_variables, project, default_enabled: true)
 
       super
     end

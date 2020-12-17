@@ -26,20 +26,20 @@ RSpec.describe 'Project > Settings > CI/CD > Container registry tag expiration p
       subject
 
       settings_block = find('#js-registry-policies')
-      expect(settings_block).to have_text 'Cleanup policy for tags'
+      expect(settings_block).to have_text 'Clean up image tags'
     end
 
     it 'saves cleanup policy submit the form' do
       subject
 
       within '#js-registry-policies' do
-        within '.gl-card-body' do
-          select('7 days until tags are automatically removed', from: 'Expiration interval:')
-          select('Every day', from: 'Expiration schedule:')
-          select('50 tags per image name', from: 'Number of tags to retain:')
-          fill_in('Tags with names matching this regex pattern will expire:', with: '.*-production')
-        end
-        submit_button = find('.gl-card-footer .btn.btn-success')
+        select('Every day', from: 'Run cleanup')
+        select('50 tags per image name', from: 'Keep the most recent:')
+        fill_in('Keep tags matching:', with: 'stable')
+        select('7 days', from: 'Remove tags older than:')
+        fill_in('Remove tags matching:', with: '.*-production')
+
+        submit_button = find('.btn.btn-success')
         expect(submit_button).not_to be_disabled
         submit_button.click
       end
@@ -51,10 +51,9 @@ RSpec.describe 'Project > Settings > CI/CD > Container registry tag expiration p
       subject
 
       within '#js-registry-policies' do
-        within '.gl-card-body' do
-          fill_in('Tags with names matching this regex pattern will expire:', with: '*-production')
-        end
-        submit_button = find('.gl-card-footer .btn.btn-success')
+        fill_in('Remove tags matching:', with: '*-production')
+
+        submit_button = find('.btn.btn-success')
         expect(submit_button).not_to be_disabled
         submit_button.click
       end
@@ -85,7 +84,7 @@ RSpec.describe 'Project > Settings > CI/CD > Container registry tag expiration p
         within '#js-registry-policies' do
           case result
           when :available_section
-            expect(find('.gl-card-header')).to have_content('Tag expiration policy')
+            expect(find('[data-testid="enable-toggle"]')).to have_content('Disabled - Tags will not be automatically deleted.')
           when :disabled_message
             expect(find('.gl-alert-title')).to have_content('Cleanup policy for tags is disabled')
           end

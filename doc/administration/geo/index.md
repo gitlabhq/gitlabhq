@@ -1,7 +1,7 @@
 ---
 stage: Enablement
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: howto
 ---
 
@@ -17,7 +17,7 @@ Geo is the solution for widely distributed development teams and for providing a
 
 ## Overview
 
-CAUTION: **Caution:**
+WARNING:
 Geo undergoes significant changes from release to release. Upgrades **are** supported and [documented](#updating-geo), but you should ensure that you're using the right version of the documentation for your installation.
 
 Fetching large repositories can take a long time for teams located far from a single GitLab instance.
@@ -50,6 +50,11 @@ Geo provides:
 - Read-only **secondary** nodes: Maintain one **primary** GitLab node while still enabling read-only **secondary** nodes for each of your distributed teams.
 - Authentication system hooks: **Secondary** nodes receives all authentication data (like user accounts and logins) from the **primary** instance.
 - An intuitive UI: **Secondary** nodes use the same web interface your team has grown accustomed to. In addition, there are visual notifications that block write operations and make it clear that a user is on a **secondary** node.
+
+### Gitaly Cluster
+
+Geo should not be confused with [Gitaly Cluster](../gitaly/praefect.md). For more information about
+the difference between Geo and Gitaly Cluster, see [Gitaly Cluster compared to Geo](../gitaly/praefect.md#gitaly-cluster-compared-to-geo).
 
 ## How it works
 
@@ -119,7 +124,7 @@ The following are required to run Geo:
 - Git-lfs 2.4.2+ on the user side when using LFS
 - All nodes must run the same GitLab version.
 
-Additionally, check GitLab's [minimum requirements](../../install/requirements.md),
+Additionally, check the GitLab [minimum requirements](../../install/requirements.md),
 and we recommend you use:
 
 - At least GitLab Enterprise Edition 10.0 for basic Geo features.
@@ -138,11 +143,11 @@ The following table lists basic ports that must be open between the **primary** 
 
 See the full list of ports used by GitLab in [Package defaults](https://docs.gitlab.com/omnibus/package-information/defaults.html)
 
-NOTE: **Note:**
+NOTE:
 [Web terminal](../../ci/environments/index.md#web-terminals) support requires your load balancer to correctly handle WebSocket connections.
 When using HTTP or HTTPS proxying, your load balancer must be configured to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the [web terminal](../integration/terminal.md) integration guide for more details.
 
-NOTE: **Note:**
+NOTE:
 When using HTTPS protocol for port 443, you will need to add an SSL certificate to the load balancers.
 If you wish to terminate SSL at the GitLab application server instead, use TCP protocol.
 
@@ -150,7 +155,7 @@ If you wish to terminate SSL at the GitLab application server instead, use TCP p
 
 We recommend that if you use LDAP on your **primary** node, you also set up secondary LDAP servers on each **secondary** node. Otherwise, users will not be able to perform Git operations over HTTP(s) on the **secondary** node using HTTP Basic Authentication. However, Git via SSH and personal access tokens will still work.
 
-NOTE: **Note:**
+NOTE:
 It is possible for all **secondary** nodes to share an LDAP server, but additional latency can be an issue. Also, consider what LDAP server will be available in a [disaster recovery](disaster_recovery/index.md) scenario if a **secondary** node is promoted to be a **primary** node.
 
 Check for instructions on how to set up replication in your LDAP service. Instructions will be different depending on the software or service used. For example, OpenLDAP provides [these instructions](https://www.openldap.org/doc/admin24/replication.html).
@@ -196,19 +201,21 @@ For information on how to update your Geo nodes to the latest GitLab version, se
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35913) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
 
-DANGER: **Warning:**
+WARNING:
 In GitLab 13.2 and 13.3, promoting a secondary node to a primary while the
 secondary is paused fails. Do not pause replication before promoting a
 secondary. If the node is paused, be sure to resume before promoting. This
 issue has been fixed in GitLab 13.4 and later.
 
-CAUTION: **Caution:**
+WARNING:
 Pausing and resuming of replication is currently only supported for Geo installations using an
 Omnibus GitLab-managed database. External databases are currently not supported.
 
 In some circumstances, like during [upgrades](replication/updating_the_geo_nodes.md) or a [planned failover](disaster_recovery/planned_failover.md), it is desirable to pause replication between the primary and secondary.
 
-Pausing and resuming replication is done via a command line tool from the secondary node.
+Pausing and resuming replication is done via a command line tool from the secondary node where the `postgresql` service is enabled.
+
+If `postgresql` is on a standalone database node, ensure that `gitlab.rb` on that node contains the configuration line `gitlab_rails['geo_node_name'] = 'node_name'`, where `node_name` is the same as the `geo_name_name` on the application node.
 
 **To Pause: (from secondary)**
 
@@ -250,6 +257,16 @@ For more information on tuning Geo, see [Tuning Geo](replication/tuning.md).
 
 For an example of how to set up a location-aware Git remote URL with AWS Route53, see [Location-aware Git remote URL with AWS Route53](replication/location_aware_git_url.md).
 
+### Backfill
+
+Once a **secondary** node is set up, it will start replicating missing data from
+the **primary** node in a process known as **backfill**. You can monitor the
+synchronization process on each Geo node from the **primary** node's **Geo Nodes**
+dashboard in your browser.
+
+Failures that happen during a backfill are scheduled to be retried at the end
+of the backfill.
+
 ## Remove Geo node
 
 For more information on removing a Geo node, see [Removing **secondary** Geo nodes](replication/remove_geo_node.md).
@@ -260,7 +277,7 @@ To find out how to disable Geo, see [Disabling Geo](replication/disable_geo.md).
 
 ## Limitations
 
-CAUTION: **Caution:**
+WARNING:
 This list of limitations only reflects the latest version of GitLab. If you are using an older version, extra limitations may be in place.
 
 - Pushing directly to a **secondary** node redirects (for HTTP) or proxies (for SSH) the request to the **primary** node instead of [handling it directly](https://gitlab.com/gitlab-org/gitlab/-/issues/1381), except when using Git over HTTP with credentials embedded within the URI. For example, `https://user:password@secondary.tld`.
@@ -270,7 +287,6 @@ This list of limitations only reflects the latest version of GitLab. If you are 
 - Real-time updates of issues/merge requests (for example, via long polling) doesn't work on the **secondary** node.
 - [Selective synchronization](replication/configuration.md#selective-synchronization) applies only to files and repositories. Other datasets are replicated to the **secondary** node in full, making it inappropriate for use as an access control mechanism.
 - Object pools for forked project deduplication work only on the **primary** node, and are duplicated on the **secondary** node.
-- [External merge request diffs](../merge_request_diffs.md) will not be replicated if they are on-disk, and viewing merge requests will fail. However, external MR diffs in object storage **are** supported. The default configuration (in-database) does work.
 - GitLab Runners cannot register with a **secondary** node. Support for this is [planned for the future](https://gitlab.com/gitlab-org/gitlab/-/issues/3294).
 - Geo **secondary** nodes can not be configured to [use high-availability configurations of PostgreSQL](https://gitlab.com/groups/gitlab-org/-/epics/2536).
 

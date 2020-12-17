@@ -40,6 +40,8 @@ class PostReceiveService
 
       response.add_basic_message(redirect_message)
       response.add_basic_message(project_created_message)
+
+      record_onboarding_progress
     end
 
     response
@@ -89,6 +91,10 @@ class PostReceiveService
     banner ||= BroadcastMessage.current_banner_messages.last
 
     banner&.message
+  end
+
+  def record_onboarding_progress
+    NamespaceOnboardingAction.create_action(project.namespace, :git_write)
   end
 end
 

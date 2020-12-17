@@ -32,7 +32,8 @@ should be leveraged:
   requests, you can use the following workflow:
 
   1. [Create a new feature flag](development.md#create-a-new-feature-flag)
-     which is **off** by default, in the first merge request.
+     which is **off** by default, in the first merge request which uses the flag.
+     Flags [should not be added separately](development.md#risk-of-a-broken-master-main-branch).
   1. Submit incremental changes via one or more merge requests, ensuring that any
      new code added can only be reached if the feature flag is **on**.
      You can keep the feature flag enabled on your local GDK during development.
@@ -52,28 +53,6 @@ problems, such as outages.
 
 Please also read the [development guide for feature flags](development.md).
 
-### When to use feature flags
-
-Starting with GitLab 11.4, developers are required to use feature flags for
-non-trivial changes. Such changes include:
-
-- New features (e.g. a new merge request widget, epics, etc).
-- Complex performance improvements that may require additional testing in
-  production, such as rewriting complex queries.
-- Invasive changes to the user interface, such as a new navigation bar or the
-  removal of a sidebar.
-- Adding support for importing projects from a third-party service.
-
-In all cases, those working on the changes can best decide if a feature flag is
-necessary. For example, changing the color of a button doesn't need a feature
-flag, while changing the navigation bar definitely needs one. In case you are
-uncertain if a feature flag is necessary, simply ask about this in the merge
-request, and those reviewing the changes will likely provide you with an answer.
-
-When using a feature flag for UI elements, make sure to _also_ use a feature
-flag for the underlying backend code, if there is any. This ensures there is
-absolutely no way to use the feature until it is enabled.
-
 ### Including a feature behind feature flag in the final release
 
 In order to build a final release and present the feature for self-managed
@@ -91,7 +70,7 @@ account for unforeseen problems.
 Feature flags must be [documented according to their state (enabled/disabled)](../documentation/feature_flags.md),
 and when the state changes, docs **must** be updated accordingly.
 
-NOTE: **Note:**
+NOTE:
 Take into consideration that such action can make the feature available on
 GitLab.com shortly after the change to the feature flag is merged.
 

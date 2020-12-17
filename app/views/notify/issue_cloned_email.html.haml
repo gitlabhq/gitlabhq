@@ -1,0 +1,7 @@
+- author_link = link_to @author.name, user_url(@author)
+- if @can_access_project
+  - string = _("%{author_link} cloned %{original_issue} to %{new_issue}.").html_safe
+- else
+  - string = _("%{author_link} cloned %{original_issue}. You don't have access to the new project.").html_safe
+%p
+  = string % { author_link: author_link, original_issue: issue_reference_link(@issue), new_issue: issue_reference_link(@new_issue, full: true) }

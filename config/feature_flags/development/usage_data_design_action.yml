@@ -1,0 +1,8 @@
+---
+name: usage_data_design_action
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46626
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/287630
+milestone: '13.7'
+type: development
+group: group::knowledge
+default_enabled: true

@@ -30,7 +30,7 @@ See how to document them below, according to the state of the flag:
 - [Features that can be enabled or disabled for a single project](#features-enabled-by-project).
 - [Features with the feature flag removed](#features-with-flag-removed).
 
-The [`**(CORE ONLY)**`](styleguide/index.md#product-badges) badge or equivalent for
+The [`**(CORE ONLY)**`](styleguide/index.md#product-tier-badges) badge or equivalent for
 the feature's tier should be added to the line and heading that refers to
 enabling/disabling feature flags as Admin access is required to do so,
 therefore, it indicates that it cannot be done by regular users of GitLab.com.
@@ -65,7 +65,7 @@ be enabled for a single project, and is not ready for production use:
 > - It's not recommended for production use.
 > - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#anchor-to-section). **(CORE ONLY)**
 
-CAUTION: **Warning:**
+WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
 (...Regular content goes here...)
@@ -124,7 +124,7 @@ use:
 > - It's recommended for production use.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#anchor-to-section). **(CORE ONLY)**
 
-CAUTION: **Warning:**
+WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
 (...Regular content goes here...)
@@ -180,7 +180,7 @@ cannot be enabled for a single project, and is ready for production use:
 > - It's recommended for production use.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#anchor-to-section). **(CORE ONLY)**
 
-CAUTION: **Warning:**
+WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
 (...Regular content goes here...)
@@ -253,7 +253,7 @@ be enabled by project, and is ready for production use:
 > - It's recommended for production use.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#anchor-to-section). **(CORE ONLY)**
 
-CAUTION: **Warning:**
+WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
 (...Regular content goes here...)

@@ -1,7 +1,7 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+stage: Enablement
+group: Distribution
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Maintenance Rake tasks **(CORE ONLY)**
@@ -107,8 +107,8 @@ The `gitlab:check` Rake task runs the following Rake tasks:
 - `gitlab:sidekiq:check`
 - `gitlab:app:check`
 
-It will check that each component was set up according to the installation guide and suggest fixes
-for issues found. This command must be run from your application server and will not work correctly on
+It checks that each component was set up according to the installation guide and suggest fixes
+for issues found. This command must be run from your application server and doesn't work correctly on
 component servers like [Gitaly](../gitaly/index.md#run-gitaly-on-its-own-server).
 
 You may also have a look at our troubleshooting guides for:
@@ -272,7 +272,7 @@ clear it.
 
 To clear all exclusive leases:
 
-DANGER: **Warning:**
+WARNING:
 Don't run it while GitLab or Sidekiq is running
 
 ```shell
@@ -300,7 +300,7 @@ To check the status of specific migrations, you can use the following Rake task:
 sudo gitlab-rake db:migrate:status
 ```
 
-This will output a table with a `Status` of `up` or `down` for
+This outputs a table with a `Status` of `up` or `down` for
 each Migration ID.
 
 ```shell
@@ -313,7 +313,7 @@ database: gitlabhq_production
 
 ## Run incomplete database migrations
 
-Database migrations can be stuck in an incomplete state. That is, they'll have a `down`
+Database migrations can be stuck in an incomplete state, with a `down`
 status in the output of the `sudo gitlab-rake db:migrate:status` command.
 
 To complete these migrations, use the following Rake task:

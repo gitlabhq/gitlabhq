@@ -17,8 +17,10 @@ module API
 
           return unless invalid_character?(revision)
 
-          raise Grape::Exceptions::Validation, params: [@scope.full_name(attr_name)],
-                                               message: 'should be a valid reference path'
+          raise Grape::Exceptions::Validation.new(
+            params: [@scope.full_name(attr_name)],
+            message: 'should be a valid reference path'
+          )
         end
 
         private

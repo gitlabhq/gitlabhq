@@ -23,6 +23,11 @@ RSpec.shared_examples 'rate-limited token-authenticated requests' do
     settings_to_set[:"#{throttle_setting_prefix}_period_in_seconds"] = period_in_seconds
   end
 
+  after do
+    stub_env('GITLAB_THROTTLE_USER_ALLOWLIST', nil)
+    Gitlab::RackAttack.configure_user_allowlist
+  end
+
   context 'when the throttle is enabled' do
     before do
       settings_to_set[:"#{throttle_setting_prefix}_enabled"] = true
@@ -30,6 +35,8 @@ RSpec.shared_examples 'rate-limited token-authenticated requests' do
     end
 
     it 'rejects requests over the rate limit' do
+      expect(Gitlab::Instrumentation::Throttle).not_to receive(:safelist=)
+
       # At first, allow requests under the rate limit.
       requests_per_period.times do
         make_request(request_args)
@@ -38,6 +45,18 @@ RSpec.shared_examples 'rate-limited token-authenticated requests' do
 
       # the last straw
       expect_rejection { make_request(request_args) }
+    end
+
+    it 'does not reject requests if the user is in the allowlist' do
+      stub_env('GITLAB_THROTTLE_USER_ALLOWLIST', user.id.to_s)
+      Gitlab::RackAttack.configure_user_allowlist
+
+      expect(Gitlab::Instrumentation::Throttle).to receive(:safelist=).with('throttle_user_allowlist').at_least(:once)
+
+      (requests_per_period + 1).times do
+        make_request(request_args)
+        expect(response).not_to have_gitlab_http_status(:too_many_requests)
+      end
     end
 
     it 'allows requests after throttling and then waiting for the next period' do
@@ -110,6 +129,14 @@ RSpec.shared_examples 'rate-limited token-authenticated requests' do
         expect { make_request(request_args) }.not_to exceed_query_limit(control_count)
       end
     end
+
+    it_behaves_like 'tracking when dry-run mode is set' do
+      let(:throttle_name) { throttle_types[throttle_setting_prefix] }
+
+      def do_request
+        make_request(request_args)
+      end
+    end
   end
 
   context 'when the throttle is disabled' do
@@ -159,6 +186,11 @@ RSpec.shared_examples 'rate-limited web authenticated requests' do
     settings_to_set[:"#{throttle_setting_prefix}_period_in_seconds"] = period_in_seconds
   end
 
+  after do
+    stub_env('GITLAB_THROTTLE_USER_ALLOWLIST', nil)
+    Gitlab::RackAttack.configure_user_allowlist
+  end
+
   context 'when the throttle is enabled' do
     before do
       settings_to_set[:"#{throttle_setting_prefix}_enabled"] = true
@@ -166,6 +198,8 @@ RSpec.shared_examples 'rate-limited web authenticated requests' do
     end
 
     it 'rejects requests over the rate limit' do
+      expect(Gitlab::Instrumentation::Throttle).not_to receive(:safelist=)
+
       # At first, allow requests under the rate limit.
       requests_per_period.times do
         request_authenticated_web_url
@@ -174,6 +208,18 @@ RSpec.shared_examples 'rate-limited web authenticated requests' do
 
       # the last straw
       expect_rejection { request_authenticated_web_url }
+    end
+
+    it 'does not reject requests if the user is in the allowlist' do
+      stub_env('GITLAB_THROTTLE_USER_ALLOWLIST', user.id.to_s)
+      Gitlab::RackAttack.configure_user_allowlist
+
+      expect(Gitlab::Instrumentation::Throttle).to receive(:safelist=).with('throttle_user_allowlist').at_least(:once)
+
+      (requests_per_period + 1).times do
+        request_authenticated_web_url
+        expect(response).not_to have_gitlab_http_status(:too_many_requests)
+      end
     end
 
     it 'allows requests after throttling and then waiting for the next period' do
@@ -245,6 +291,14 @@ RSpec.shared_examples 'rate-limited web authenticated requests' do
       expect(Gitlab::AuthLogger).to receive(:error).with(arguments).once
       expect { request_authenticated_web_url }.not_to exceed_query_limit(control_count)
     end
+
+    it_behaves_like 'tracking when dry-run mode is set' do
+      let(:throttle_name) { throttle_types[throttle_setting_prefix] }
+
+      def do_request
+        request_authenticated_web_url
+      end
+    end
   end
 
   context 'when the throttle is disabled' do
@@ -266,6 +320,66 @@ RSpec.shared_examples 'rate-limited web authenticated requests' do
       post url_that_requires_authentication
     else
       get url_that_requires_authentication
+    end
+  end
+end
+
+# Requires:
+# - #do_request - This needs to be a method so the result isn't memoized
+# - throttle_name
+RSpec.shared_examples 'tracking when dry-run mode is set' do
+  let(:dry_run_config) { '*' }
+
+  # we can't use `around` here, because stub_env isn't supported outside of the
+  # example itself
+  before do
+    stub_env('GITLAB_THROTTLE_DRY_RUN', dry_run_config)
+    reset_rack_attack
+  end
+
+  after do
+    stub_env('GITLAB_THROTTLE_DRY_RUN', '')
+    reset_rack_attack
+  end
+
+  def reset_rack_attack
+    Rack::Attack.reset!
+    Rack::Attack.clear_configuration
+    Gitlab::RackAttack.configure(Rack::Attack)
+  end
+
+  it 'does not throttle the requests when `*` is configured' do
+    (1 + requests_per_period).times do
+      do_request
+      expect(response).not_to have_gitlab_http_status(:too_many_requests)
+    end
+  end
+
+  it 'logs RackAttack info into structured logs' do
+    arguments = a_hash_including({
+      message: 'Rack_Attack',
+      env: :track,
+      remote_ip: '127.0.0.1',
+      matched: throttle_name
+    })
+
+    expect(Gitlab::AuthLogger).to receive(:error).with(arguments)
+
+    (1 + requests_per_period).times do
+      do_request
+    end
+  end
+
+  context 'when configured with the the throttled name in a list' do
+    let(:dry_run_config) do
+      "throttle_list, #{throttle_name}, other_throttle"
+    end
+
+    it 'does not throttle' do
+      (1 + requests_per_period).times do
+        do_request
+        expect(response).not_to have_gitlab_http_status(:too_many_requests)
+      end
     end
   end
 end

@@ -37,6 +37,7 @@ module Reenqueuer
     include ReenqueuerSleeper
 
     sidekiq_options retry: false
+    deduplicate :none
   end
 
   def perform(*args)
@@ -52,7 +53,11 @@ module Reenqueuer
   private
 
   def reenqueue(*args)
-    self.class.perform_async(*args) if yield
+    result = yield
+
+    self.class.perform_async(*args) if result
+
+    result
   end
 
   # Override as needed

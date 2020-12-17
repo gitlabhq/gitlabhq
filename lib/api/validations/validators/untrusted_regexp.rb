@@ -11,7 +11,7 @@ module API
           Gitlab::UntrustedRegexp.new(value)
         rescue RegexpError => e
           message = "is an invalid regexp: #{e.message}"
-          raise Grape::Exceptions::Validation, params: [@scope.full_name(attr_name)], message: message
+          raise Grape::Exceptions::Validation.new(params: [@scope.full_name(attr_name)], message: message)
         end
       end
     end

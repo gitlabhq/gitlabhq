@@ -1,12 +1,12 @@
 ---
 stage: Configure
 group: Configure
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Cluster management project (alpha)
+# Cluster management project
 
-CAUTION: **Warning:**
+WARNING:
 This is an _alpha_ feature, and it is subject to change at any time without
 prior notice.
 
@@ -20,13 +20,13 @@ privileges.
 
 This can be useful for:
 
-- Creating pipelines to install cluster-wide applications into your cluster, see [Install using GitLab CI/CD (alpha)](applications.md#install-using-gitlab-cicd-alpha) for details.
+- Creating pipelines to install cluster-wide applications into your cluster, see [Install using GitLab CI/CD (alpha)](applications.md#install-using-gitlab-cicd) for details.
 - Any jobs that require `cluster-admin` privileges.
 
 ## Permissions
 
-Only the management project will receive `cluster-admin` privileges. All
-other projects will continue to receive [namespace scoped `edit` level privileges](../project/clusters/add_remove_clusters.md#rbac-cluster-resources).
+Only the management project receives `cluster-admin` privileges. All
+other projects continue to receive [namespace scoped `edit` level privileges](../project/clusters/add_remove_clusters.md#rbac-cluster-resources).
 
 Management projects are restricted to the following:
 
@@ -92,7 +92,7 @@ to a management project:
 | Production  | `production`      |
 
 The following environments set in
-[`.gitlab-ci.yml`](../../ci/yaml/README.md) will deploy to the
+[`.gitlab-ci.yml`](../../ci/yaml/README.md) deploy to the
 Development, Staging, and Production cluster respectively.
 
 ```yaml

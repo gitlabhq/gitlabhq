@@ -364,20 +364,33 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
         let_it_be(:project_access_token) { create(:personal_access_token, user: project_bot_user) }
 
         context 'with valid project access token' do
-          before_all do
+          before do
             project.add_maintainer(project_bot_user)
           end
 
-          it 'succeeds' do
+          it 'successfully authenticates the project bot' do
             expect(gl_auth.find_for_git_client(project_bot_user.username, project_access_token.token, project: project, ip: 'ip'))
               .to eq(Gitlab::Auth::Result.new(project_bot_user, nil, :personal_access_token, described_class.full_authentication_abilities))
           end
         end
 
         context 'with invalid project access token' do
-          it 'fails' do
-            expect(gl_auth.find_for_git_client(project_bot_user.username, project_access_token.token, project: project, ip: 'ip'))
-              .to eq(Gitlab::Auth::Result.new(nil, nil, nil, nil))
+          context 'when project bot is not a project member' do
+            it 'fails for a non-project member' do
+              expect(gl_auth.find_for_git_client(project_bot_user.username, project_access_token.token, project: project, ip: 'ip'))
+                .to eq(Gitlab::Auth::Result.new(nil, nil, nil, nil))
+            end
+          end
+
+          context 'when project bot user is blocked' do
+            before do
+              project_bot_user.block!
+            end
+
+            it 'fails for a blocked project bot' do
+              expect(gl_auth.find_for_git_client(project_bot_user.username, project_access_token.token, project: project, ip: 'ip'))
+                .to eq(Gitlab::Auth::Result.new(nil, nil, nil, nil))
+            end
           end
         end
       end

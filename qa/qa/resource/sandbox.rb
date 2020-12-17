@@ -31,7 +31,6 @@ module QA
 
             Page::Group::New.perform do |group|
               group.set_path(path)
-              group.set_description('GitLab QA Sandbox Group')
               group.set_visibility('Public')
               group.create
             end
@@ -75,6 +74,19 @@ module QA
           name: path,
           visibility: 'public'
         }
+      end
+
+      def api_put_path
+        "/groups/#{id}"
+      end
+
+      def update_group_setting(group_setting:, value:)
+        put_body = { "#{group_setting}": value }
+        response = put Runtime::API::Request.new(api_client, api_put_path).url, put_body
+
+        unless response.code == HTTP_STATUS_OK
+          raise ResourceUpdateFailedError, "Could not update #{group_setting} to #{value}. Request returned (#{response.code}): `#{response}`."
+        end
       end
     end
   end

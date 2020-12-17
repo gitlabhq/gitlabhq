@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Abuse reports
@@ -38,8 +38,8 @@ To report abuse from a user's comment:
 1. Complete an abuse report.
 1. Click the **Send report** button.
 
-NOTE: **Note:**
-A URL to the reported user's comment will be pre-filled in the abuse report's
+NOTE:
+A URL to the reported user's comment is pre-filled in the abuse report's
 **Message** field.
 
 ## Reporting abuse through a user's issue or merge request
@@ -58,8 +58,8 @@ With the **Report abuse** button displayed, to submit an abuse report:
 1. Submit an abuse report.
 1. Click the **Send report** button.
 
-NOTE: **Note:**
-A URL to the reported user's issue or merge request will be pre-filled
+NOTE:
+A URL to the reported user's issue or merge request is pre-filled
 in the abuse report's **Message** field.
 
 ## Managing abuse reports

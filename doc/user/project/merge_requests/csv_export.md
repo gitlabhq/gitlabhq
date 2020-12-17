@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Compliance
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Export Merge Requests to CSV **(CORE)**
@@ -18,7 +18,7 @@ The following table shows what attributes will be present in the CSV.
 
 | Column             | Description                                                  |
 |--------------------|--------------------------------------------------------------|
-| MR ID              | MR iid                                                       |
+| MR ID              | MR `iid`                                                     |
 | URL                | A link to the merge request on GitLab                        |
 | Title              | Merge request title                                          |
 | State              | Opened, Closed, Locked, or Merged                            |

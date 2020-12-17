@@ -9,6 +9,10 @@ class Milestone < ApplicationRecord
 
   prepend_if_ee('::EE::Milestone') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
+  class Predefined
+    ALL = [::Timebox::None, ::Timebox::Any, ::Timebox::Started, ::Timebox::Upcoming].freeze
+  end
+
   has_many :milestone_releases
   has_many :releases, through: :milestone_releases
 

@@ -5,5 +5,6 @@ module Resolvers
     type ::Types::MergeRequestType.connection_type, null: true
     accept_assignee
     accept_author
+    accept_reviewer
   end
 end

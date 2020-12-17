@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Shared files
@@ -12,7 +12,7 @@ etc. Having so many shared directories makes it difficult to deploy GitLab on
 shared storage (e.g. NFS). Working towards GitLab 9.0 we are consolidating
 these different directories under the `shared` directory.
 
-This means that if GitLab will start storing puppies in some future version
+This means that if GitLab begins storing puppies in some future version
 then we should put them in `shared/puppies`. Temporary puppy files should be
 stored in `shared/tmp`.
 

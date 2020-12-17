@@ -273,4 +273,12 @@ RSpec.describe Resolvers::BaseResolver do
       end
     end
   end
+
+  describe '#offset_pagination' do
+    let(:instance) { resolver_instance(resolver) }
+
+    it 'is sugar for OffsetActiveRecordRelationConnection.new' do
+      expect(instance.offset_pagination(User.none)).to be_a(::Gitlab::Graphql::Pagination::OffsetActiveRecordRelationConnection)
+    end
+  end
 end

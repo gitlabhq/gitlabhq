@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 disqus_identifier: 'https://docs.gitlab.com/ee/workflow/shortcuts.html'
 ---
@@ -47,14 +47,14 @@ for example comments, replies, issue descriptions, and merge request description
 | <kbd>⌘</kbd> (Mac) / <kbd>Ctrl</kbd> + <kbd>i</kbd>                    | Italicize the selected text (surround it with `_`). |
 | <kbd>⌘</kbd> (Mac) / <kbd>Ctrl</kbd> + <kbd>k</kbd>                    | Add a link (surround the selected text with `[]()`). |
 
-NOTE: **Note:**
+NOTE:
 The shortcuts for editing in text fields are always enabled, even when
 other keyboard shortcuts are disabled as explained above.
 
 ## Project
 
 These shortcuts are available from any page within a project. You must type them
-relatively quickly to work, and they will take you to another page in the project.
+relatively quickly to work, and they take you to another page in the project.
 
 | Keyboard Shortcut           | Description |
 | --------------------------- | ----------- |
@@ -87,7 +87,7 @@ These shortcuts are available when viewing issues and merge requests.
 | <kbd>a</kbd>                 | Change assignee. |
 | <kbd>m</kbd>                 | Change milestone. |
 | <kbd>l</kbd>                 | Change label. |
-| <kbd>r</kbd>                 | Start writing a comment. If any text is selected, it will be quoted in the comment. Can't be used to reply within a thread. |
+| <kbd>r</kbd>                 | Start writing a comment. If any text is selected, it is quoted in the comment. Can't be used to reply within a thread. |
 | <kbd>n</kbd>                 | Move to next unresolved discussion (merge requests only). |
 | <kbd>p</kbd>                 | Move to previous unresolved discussion (merge requests only). |
 | <kbd>]</kbd> or <kbd>j</kbd> | Move to next file (merge requests only). |
@@ -153,6 +153,6 @@ These shortcuts are available when viewing [Epics](group/epics/index.md):
 
 | Keyboard Shortcut | Description |
 | ----------------- | ----------- |
-| <kbd>r</kbd>      | Start writing a comment. If any text is selected, it will be quoted in the comment. Can't be used to reply within a thread. |
+| <kbd>r</kbd>      | Start writing a comment. If any text is selected, it is quoted in the comment. Can't be used to reply within a thread. |
 | <kbd>e</kbd>      | Edit description. |
 | <kbd>l</kbd>      | Change label. |

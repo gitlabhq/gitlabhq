@@ -52,20 +52,29 @@ RSpec.describe 'Dashboard Merge Requests' do
   end
 
   context 'merge requests exist' do
+    let_it_be(:author_user) { create(:user) }
     let(:label) { create(:label) }
 
     let!(:assigned_merge_request) do
       create(:merge_request,
         assignees: [current_user],
         source_project: project,
-        author: create(:user))
+        author: author_user)
+    end
+
+    let!(:review_requested_merge_request) do
+      create(:merge_request,
+        reviewers: [current_user],
+        source_branch: 'review',
+        source_project: project,
+        author: author_user)
     end
 
     let!(:assigned_merge_request_from_fork) do
       create(:merge_request,
               source_branch: 'markdown', assignees: [current_user],
               target_project: public_project, source_project: forked_project,
-              author: create(:user))
+              author: author_user)
     end
 
     let!(:authored_merge_request) do
@@ -94,7 +103,7 @@ RSpec.describe 'Dashboard Merge Requests' do
       create(:merge_request,
               source_branch: 'fix',
               source_project: project,
-              author: create(:user))
+              author: author_user)
     end
 
     before do
@@ -109,6 +118,10 @@ RSpec.describe 'Dashboard Merge Requests' do
       expect(page).not_to have_content(authored_merge_request_from_fork.title)
       expect(page).not_to have_content(other_merge_request.title)
       expect(page).not_to have_content(labeled_merge_request.title)
+    end
+
+    it 'does not show review requested merge requests' do
+      expect(page).not_to have_content(review_requested_merge_request.title)
     end
 
     it 'shows authored merge requests', :js do
@@ -157,6 +170,27 @@ RSpec.describe 'Dashboard Merge Requests' do
       visit project_merge_requests_path(project)
 
       expect(find('.issues-filters')).to have_content('Created date')
+    end
+  end
+
+  context 'merge request review', :js do
+    let_it_be(:author_user) { create(:user) }
+    let!(:review_requested_merge_request) do
+      create(:merge_request,
+        reviewers: [current_user],
+        source_branch: 'review',
+        source_project: project,
+        author: author_user)
+    end
+
+    before do
+      visit merge_requests_dashboard_path(reviewer_username: current_user.username)
+    end
+
+    it 'displays review requested merge requests' do
+      expect(page).to have_content(review_requested_merge_request.title)
+
+      expect_tokens([reviewer_token(current_user.name)])
     end
   end
 end

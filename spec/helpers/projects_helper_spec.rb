@@ -416,6 +416,7 @@ RSpec.describe ProjectsHelper do
 
   describe '#get_project_nav_tabs' do
     before do
+      allow(helper).to receive(:current_user).and_return(user)
       allow(helper).to receive(:can?) { true }
     end
 
@@ -488,23 +489,36 @@ RSpec.describe ProjectsHelper do
   describe '#can_view_operations_tab?' do
     before do
       allow(helper).to receive(:current_user).and_return(user)
+      allow(helper).to receive(:can?).and_return(false)
     end
 
     subject { helper.send(:can_view_operations_tab?, user, project) }
 
-    [
-      :metrics_dashboard,
-      :read_alert_management_alert,
-      :read_environment,
-      :read_issue,
-      :read_sentry_issue,
-      :read_cluster
-    ].each do |ability|
+    where(:ability) do
+      [
+        :metrics_dashboard,
+        :read_alert_management_alert,
+        :read_environment,
+        :read_issue,
+        :read_sentry_issue,
+        :read_cluster
+      ]
+    end
+
+    with_them do
       it 'includes operations tab' do
-        allow(helper).to receive(:can?).and_return(false)
         allow(helper).to receive(:can?).with(user, ability, project).and_return(true)
 
         is_expected.to be(true)
+      end
+
+      context 'when operations feature is disabled' do
+        it 'does not include operations tab' do
+          allow(helper).to receive(:can?).with(user, ability, project).and_return(true)
+          project.project_feature.update_attribute(:operations_access_level, ProjectFeature::DISABLED)
+
+          is_expected.to be(false)
+        end
       end
     end
   end
@@ -1008,6 +1022,36 @@ RSpec.describe ProjectsHelper do
       expect(helper).to receive(:push_to_schema_breadcrumb).with(project.name, project_path(project))
 
       subject
+    end
+  end
+
+  describe '#project_permissions_settings' do
+    context 'with no project_setting associated' do
+      it 'includes a value for edit commit messages' do
+        settings = project_permissions_settings(project)
+
+        expect(settings[:allowEditingCommitMessages]).to be_falsy
+      end
+    end
+
+    context 'when commits are allowed to be edited' do
+      it 'includes the edit commit message value' do
+        project.create_project_setting(allow_editing_commit_messages: true)
+
+        settings = project_permissions_settings(project)
+
+        expect(settings[:allowEditingCommitMessages]).to be_truthy
+      end
+    end
+
+    context 'when commits are not allowed to be edited' do
+      it 'returns false to the edit commit message value' do
+        project.create_project_setting(allow_editing_commit_messages: false)
+
+        settings = project_permissions_settings(project)
+
+        expect(settings[:allowEditingCommitMessages]).to be_falsy
+      end
     end
   end
 end

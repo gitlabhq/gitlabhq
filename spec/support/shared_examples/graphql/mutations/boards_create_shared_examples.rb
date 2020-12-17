@@ -40,6 +40,30 @@ RSpec.shared_examples 'boards create mutation' do
         end
       end
 
+      context 'when hide_backlog_list parameter is true' do
+        before do
+          params[:hide_backlog_list] = true
+        end
+
+        it 'returns the board with correct hide_backlog_list field' do
+          post_graphql_mutation(mutation, current_user: current_user)
+
+          expect(mutation_response['board']['hideBacklogList']).to eq(true)
+        end
+      end
+
+      context 'when hide_closed_list parameter is true' do
+        before do
+          params[:hide_closed_list] = true
+        end
+
+        it 'returns the board with correct hide_closed_list field' do
+          post_graphql_mutation(mutation, current_user: current_user)
+
+          expect(mutation_response['board']['hideClosedList']).to eq(true)
+        end
+      end
+
       context 'when the Boards::CreateService returns an error response' do
         before do
           allow_next_instance_of(Boards::CreateService) do |service|

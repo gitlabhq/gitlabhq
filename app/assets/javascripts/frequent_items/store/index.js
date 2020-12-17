@@ -7,10 +7,11 @@ import state from './state';
 
 Vue.use(Vuex);
 
-export default () =>
-  new Vuex.Store({
+export const createStore = (initState = {}) => {
+  return new Vuex.Store({
     actions,
     getters,
     mutations,
-    state: state(),
+    state: state(initState),
   });
+};

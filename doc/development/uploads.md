@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Uploads development documentation
@@ -46,7 +46,7 @@ We have three challenges here: performance, availability, and scalability.
 
 ### Performance
 
-Rails process are expensive in terms of both CPU and memory. Ruby [global interpreter lock](https://en.wikipedia.org/wiki/Global_interpreter_lock) adds to cost too because the Ruby process will spend time on I/O operations on step 3 causing incoming requests to pile up.
+Rails process are expensive in terms of both CPU and memory. Ruby [global interpreter lock](https://en.wikipedia.org/wiki/Global_interpreter_lock) adds to cost too because the Ruby process spends time on I/O operations on step 3 causing incoming requests to pile up.
 
 In order to improve this, [disk buffered upload](#disk-buffered-upload) was implemented. With this, Rails no longer deals with writing uploaded files to disk.
 
@@ -88,7 +88,7 @@ To address this problem an HA object storage can be used and it's supported by [
 
 Scaling NFS is outside of our support scope, and NFS is not a part of cloud native installations.
 
-All features that require Sidekiq and do not use direct upload won't work without NFS. In Kubernetes, machine boundaries translate to PODs, and in this case the uploaded file will be written into the POD private disk. Since Sidekiq POD cannot reach into other pods, the operation will fail to read it.
+All features that require Sidekiq and do not use direct upload doesn't work without NFS. In Kubernetes, machine boundaries translate to PODs, and in this case the uploaded file is written into the POD private disk. Since Sidekiq POD cannot reach into other pods, the operation fails to read it.
 
 ## How to select the proper level of acceleration?
 
@@ -96,7 +96,7 @@ Selecting the proper acceleration is a tradeoff between speed of development and
 
 We can identify three major use-cases for an upload:
 
-1. **storage:** if we are uploading for storing a file (i.e. artifacts, packages, discussion attachments). In this case [direct upload](#direct-upload) is the proper level as it's the less resource-intensive operation. Additional information can be found on [File Storage in GitLab](file_storage.md).
+1. **storage:** if we are uploading for storing a file (like artifacts, packages, or discussion attachments). In this case [direct upload](#direct-upload) is the proper level as it's the less resource-intensive operation. Additional information can be found on [File Storage in GitLab](file_storage.md).
 1. **in-controller/synchronous processing:** if we allow processing **small files** synchronously, using [disk buffered upload](#disk-buffered-upload) may speed up development.
 1. **Sidekiq/asynchronous processing:** Asynchronous processing must implement [direct upload](#direct-upload), the reason being that it's the only way to support Cloud Native deployments without a shared NFS.
 
@@ -120,7 +120,7 @@ We have three kinds of file encoding in our uploads:
 
 1. <i class="fa fa-check-circle"></i> **multipart**: `multipart/form-data` is the most common, a file is encoded as a part of a multipart encoded request.
 1. <i class="fa fa-check-circle"></i> **body**: some APIs uploads files as the whole request body.
-1. <i class="fa fa-times-circle"></i> **JSON**: some JSON API uploads files as base64 encoded strings. This will require a change to GitLab Workhorse, which [is planned](https://gitlab.com/gitlab-org/gitlab-workhorse/-/issues/226).
+1. <i class="fa fa-times-circle"></i> **JSON**: some JSON API uploads files as base64 encoded strings. This requires a change to GitLab Workhorse, which [is planned](https://gitlab.com/gitlab-org/gitlab-workhorse/-/issues/226).
 
 ## Uploading technologies
 
@@ -166,7 +166,7 @@ is replaced with the path to the corresponding file before it is forwarded to
 Rails.
 
 To prevent abuse of this feature, Workhorse signs the modified request with a
-special header, stating which entries it modified. Rails will ignore any
+special header, stating which entries it modified. Rails ignores any
 unsigned path entries.
 
 ```mermaid
@@ -220,8 +220,8 @@ In this setup, an extra Rails route must be implemented in order to handle autho
   and [its routes](https://gitlab.com/gitlab-org/gitlab/blob/cc723071ad337573e0360a879cbf99bc4fb7adb9/config/routes/git_http.rb#L31-32).
 - [API endpoints for uploading packages](packages.md#file-uploads).
 
-This will fallback to _disk buffered upload_ when `direct_upload` is disabled inside the [object storage setting](../administration/uploads.md#object-storage-settings).
-The answer to the `/authorize` call will only contain a file system path.
+This falls back to _disk buffered upload_ when `direct_upload` is disabled inside the [object storage setting](../administration/uploads.md#object-storage-settings).
+The answer to the `/authorize` call contains only a file system path.
 
 ```mermaid
 sequenceDiagram
@@ -272,7 +272,7 @@ sequenceDiagram
 
 ## How to add a new upload route
 
-In this section, we'll describe how to add a new upload route [accelerated](#uploading-technologies) by Workhorse for [body and multipart](#upload-encodings) encoded uploads.
+In this section, we describe how to add a new upload route [accelerated](#uploading-technologies) by Workhorse for [body and multipart](#upload-encodings) encoded uploads.
 
 Uploads routes belong to one of these categories:
 
@@ -280,7 +280,7 @@ Uploads routes belong to one of these categories:
 1. Grape API: uploads handled by a Grape API endpoint.
 1. GraphQL API: uploads handled by a GraphQL resolve function.
 
-CAUTION: **Warning:**
+WARNING:
 GraphQL uploads do not support [direct upload](#direct-upload) yet. Depending on the use case, the feature may not work on installations without NFS (like GitLab.com or Kubernetes installations). Uploading to object storage inside the GraphQL resolve function may result in timeout errors. For more details please follow [issue #280819](https://gitlab.com/gitlab-org/gitlab/-/issues/280819).
 
 ### Update Workhorse for the new route
@@ -310,7 +310,7 @@ few things to do:
 1. Generally speaking, it's a good idea to check if the instance is from the [`UploadedFile`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/uploaded_file.rb) class. For example, see how we checked
 [that the parameter is indeed an `UploadedFile`](https://gitlab.com/gitlab-org/gitlab/-/commit/ea30fe8a71bf16ba07f1050ab4820607b5658719#51c0cc7a17b7f12c32bc41cfab3649ff2739b0eb_79_77).
 
-CAUTION: **Caution:**
+WARNING:
 **Do not** call `UploadedFile#from_params` directly! Do not build an [`UploadedFile`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/uploaded_file.rb)
 instance using `UploadedFile#from_params`! This method can be unsafe to use depending on the `params`
 passed. Instead, use the [`UploadedFile`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/uploaded_file.rb)
@@ -339,7 +339,7 @@ use `requires :file, type: ::API::Validations::Types::WorkhorseFile`.
    - The remaining code of the processing. This is where the code must be reading the parameter (for
 our example, it would be `params[:file]`).
 
-CAUTION: **Caution:**
+WARNING:
 **Do not** call `UploadedFile#from_params` directly! Do not build an [`UploadedFile`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/uploaded_file.rb)
 object using `UploadedFile#from_params`! This method can be unsafe to use depending on the `params`
 passed. Instead, use the [`UploadedFile`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/uploaded_file.rb)

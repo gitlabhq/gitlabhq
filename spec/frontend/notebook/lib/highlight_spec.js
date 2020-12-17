@@ -9,7 +9,7 @@ describe('Highlight library', () => {
     const el = document.createElement('div');
     el.innerHTML = Prism.highlight('console.log("a");', Prism.languages.javascript);
 
-    expect(el.querySelector('.s')).not.toBeNull();
-    expect(el.querySelector('.nf')).not.toBeNull();
+    expect(el.querySelector('.string')).not.toBeNull();
+    expect(el.querySelector('.function')).not.toBeNull();
   });
 });

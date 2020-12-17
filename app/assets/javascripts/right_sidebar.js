@@ -23,8 +23,11 @@ Sidebar.initialize = function() {
 
 Sidebar.prototype.removeListeners = function() {
   this.sidebar.off('click', '.sidebar-collapsed-icon');
+  // eslint-disable-next-line @gitlab/no-global-event-off
   this.sidebar.off('hidden.gl.dropdown');
+  // eslint-disable-next-line @gitlab/no-global-event-off
   $('.dropdown').off('loading.gl.dropdown');
+  // eslint-disable-next-line @gitlab/no-global-event-off
   $('.dropdown').off('loaded.gl.dropdown');
   $(document).off('click', '.js-sidebar-toggle');
 };

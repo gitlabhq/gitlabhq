@@ -13,7 +13,7 @@ class ResourceTimeboxEvent < ResourceEvent
     remove: 2
   }
 
-  after_save :usage_metrics
+  after_create :issue_usage_metrics
 
   def self.issuable_attrs
     %i(issue merge_request).freeze
@@ -25,7 +25,13 @@ class ResourceTimeboxEvent < ResourceEvent
 
   private
 
-  def usage_metrics
+  def for_issue?
+    issue_id.present?
+  end
+
+  def issue_usage_metrics
+    return unless for_issue?
+
     case self
     when ResourceMilestoneEvent
       Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_milestone_changed_action(author: user)

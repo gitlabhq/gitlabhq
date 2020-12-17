@@ -742,28 +742,65 @@ RSpec.describe 'Login' do
       end
 
       context 'when the user did not enable 2FA' do
-        it 'asks to set 2FA before asking to accept the terms' do
-          expect(authentication_metrics)
-            .to increment(:user_authenticated_counter)
+        context 'when `vue_2fa_recovery_codes` feature flag is disabled' do
+          before do
+            stub_feature_flags(vue_2fa_recovery_codes: false)
+          end
 
-          visit new_user_session_path
+          it 'asks to set 2FA before asking to accept the terms' do
+            expect(authentication_metrics)
+              .to increment(:user_authenticated_counter)
 
-          fill_in 'user_login', with: user.email
-          fill_in 'user_password', with: '12345678'
+            visit new_user_session_path
 
-          click_button 'Sign in'
+            fill_in 'user_login', with: user.email
+            fill_in 'user_password', with: '12345678'
 
-          expect_to_be_on_terms_page
-          click_button 'Accept terms'
+            click_button 'Sign in'
 
-          expect(current_path).to eq(profile_two_factor_auth_path)
+            expect_to_be_on_terms_page
+            click_button 'Accept terms'
 
-          fill_in 'pin_code', with: user.reload.current_otp
+            expect(current_path).to eq(profile_two_factor_auth_path)
 
-          click_button 'Register with two-factor app'
-          click_link 'Proceed'
+            fill_in 'pin_code', with: user.reload.current_otp
 
-          expect(current_path).to eq(profile_account_path)
+            click_button 'Register with two-factor app'
+
+            expect(page).to have_content('Congratulations! You have enabled Two-factor Authentication!')
+
+            click_link 'Proceed'
+
+            expect(current_path).to eq(profile_account_path)
+          end
+        end
+
+        context 'when `vue_2fa_recovery_codes` feature flag is enabled' do
+          it 'asks to set 2FA before asking to accept the terms', :js do
+            expect(authentication_metrics)
+              .to increment(:user_authenticated_counter)
+
+            visit new_user_session_path
+
+            fill_in 'user_login', with: user.email
+            fill_in 'user_password', with: '12345678'
+
+            click_button 'Sign in'
+
+            expect_to_be_on_terms_page
+            click_button 'Accept terms'
+
+            expect(current_path).to eq(profile_two_factor_auth_path)
+
+            fill_in 'pin_code', with: user.reload.current_otp
+
+            click_button 'Register with two-factor app'
+            click_button 'Copy codes'
+            click_link 'Proceed'
+
+            expect(current_path).to eq(profile_account_path)
+            expect(page).to have_content('Congratulations! You have enabled Two-factor Authentication!')
+          end
         end
       end
 

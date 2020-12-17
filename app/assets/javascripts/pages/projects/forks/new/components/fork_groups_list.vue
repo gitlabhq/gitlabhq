@@ -85,6 +85,7 @@ export default {
         v-model="filter"
         :placeholder="$options.i18n.searchPlaceholder"
         class="gl-align-self-center gl-ml-auto fork-filtered-search"
+        data-qa-selector="fork_groups_list_search_field"
       />
     </template>
   </gl-tabs>
