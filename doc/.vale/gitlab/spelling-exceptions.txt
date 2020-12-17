@@ -404,6 +404,8 @@ reusability
 reverified
 reverifies
 reverify
+roadmap
+roadmaps
 rollout
 rollouts
 rsync

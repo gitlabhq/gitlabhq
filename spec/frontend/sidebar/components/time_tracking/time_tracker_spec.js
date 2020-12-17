@@ -1,5 +1,6 @@
 import { createMockDirective } from 'helpers/vue_mock_directive';
 import { mount } from '@vue/test-utils';
+import { stubTransition } from 'helpers/stub_transition';
 import TimeTracker from '~/sidebar/components/time_tracking/time_tracker.vue';
 
 describe('Issuable Time Tracker', () => {
@@ -22,6 +23,9 @@ describe('Issuable Time Tracker', () => {
     mount(TimeTracker, {
       propsData: { ...defaultProps, ...props },
       directives: { GlTooltip: createMockDirective() },
+      stubs: {
+        transition: stubTransition(),
+      },
     });
 
   afterEach(() => {
@@ -213,14 +217,12 @@ describe('Issuable Time Tracker', () => {
         findHelpButton().trigger('click');
         await wrapper.vm.$nextTick();
 
-        expect(findByTestId('helpPane').classes('help-state-toggle-enter')).toBe(true);
-        expect(findByTestId('helpPane').classes('help-state-toggle-leave')).toBe(false);
+        expect(findByTestId('helpPane').exists()).toBe(true);
 
         findCloseHelpButton().trigger('click');
         await wrapper.vm.$nextTick();
 
-        expect(findByTestId('helpPane').classes('help-state-toggle-leave')).toBe(true);
-        expect(findByTestId('helpPane').classes('help-state-toggle-enter')).toBe(false);
+        expect(findByTestId('helpPane').exists()).toBe(false);
       });
     });
   });

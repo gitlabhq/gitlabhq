@@ -228,7 +228,7 @@ to label notifications for the project only, or the whole group.
 > - Priority sorting is based on the highest priority label only. [This discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/14523) considers changing this.
 
 Labels can have relative priorities, which are used in the **Label priority** and
-**Priority** sort orders of the epic, issue, and merge request list pages. Prioritization
+**Priority** sort orders of issues and merge request list pages. Prioritization
 for both group and project labels happens at the project level, and cannot be done
 from the group label list.
 
@@ -241,7 +241,7 @@ means higher priority.
 
 ![Drag to change label priority](img/labels_drag_priority_v12_1.gif)
 
-On the epic, merge request, and issue list pages (for both groups and projects) you
+On the merge request and issue list pages (for both groups and projects) you
 can sort by `Label priority` or `Priority`.
 
 If you sort by `Label priority`, GitLab uses this sort comparison order:
