@@ -31,6 +31,7 @@ export const dataStructure = () => ({
   mrChange: null,
   deleted: false,
   prevPath: undefined,
+  mimeType: '',
 });
 
 export const decorateData = entity => {
@@ -47,6 +48,7 @@ export const decorateData = entity => {
     rawPath = '',
     file_lock,
     parentPath = '',
+    mimeType = '',
   } = entity;
 
   return Object.assign(dataStructure(), {
@@ -63,6 +65,7 @@ export const decorateData = entity => {
     rawPath,
     file_lock,
     parentPath,
+    mimeType,
   });
 };
 

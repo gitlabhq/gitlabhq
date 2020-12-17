@@ -8,7 +8,7 @@ type: howto
 # Installing GitLab on Amazon Web Services (AWS)
 
 This page offers a walkthrough of a common configuration
-for GitLab on AWS. You should customize it to accommodate your needs.
+for GitLab on AWS using the official GitLab Linux package. You should customize it to accommodate your needs.
 
 NOTE:
 For organizations with 1,000 users or less, the recommended AWS installation method is to launch an EC2 single box [Omnibus Installation](https://about.gitlab.com/install/) and implement a snapshot strategy for backing up the data. See the [1,000 user reference architecture](../../administration/reference_architectures/1k_users.md) for more.

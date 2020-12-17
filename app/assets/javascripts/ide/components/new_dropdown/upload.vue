@@ -25,10 +25,10 @@ export default {
   },
   methods: {
     createFile(target, file) {
-      const { name } = file;
+      const { name, type: mimeType } = file;
       const encodedContent = target.result.split('base64,')[1];
       const rawContent = encodedContent ? atob(encodedContent) : '';
-      const isText = isTextFile({ content: rawContent, mimeType: file.type, name });
+      const isText = isTextFile({ content: rawContent, mimeType, name });
 
       const emitCreateEvent = content =>
         this.$emit('create', {
@@ -36,6 +36,7 @@ export default {
           type: 'blob',
           content,
           rawPath: !isText ? URL.createObjectURL(file) : '',
+          mimeType,
         });
 
       if (isText) {

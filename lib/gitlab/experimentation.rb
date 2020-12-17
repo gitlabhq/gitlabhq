@@ -90,6 +90,9 @@ module Gitlab
       },
       trial_during_signup: {
         tracking_category: 'Growth::Conversion::Experiment::TrialDuringSignup'
+      },
+      ci_syntax_templates: {
+        tracking_category: 'Growth::Activation::Experiment::CiSyntaxTemplates'
       }
     }.freeze
 

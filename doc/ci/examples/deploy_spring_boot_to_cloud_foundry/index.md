@@ -9,11 +9,10 @@ type: tutorial
 
 ## Introduction
 
-In this article, we'll demonstrate how to deploy a [Spring
-Boot](https://projects.spring.io/spring-boot/) application to [Cloud
-Foundry (CF)](https://www.cloudfoundry.org/) with GitLab CI/CD using the [Continuous
-Deployment](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#continuous-deployment)
-method.
+This article demonstrates how to use the [Continuous Deployment](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#continuous-deployment)
+method to deploy a [Spring Boot](https://projects.spring.io/spring-boot/) application to
+[Cloud Foundry (CF)](https://www.cloudfoundry.org/)
+with GitLab CI/CD.
 
 All the code for this project can be found in this [GitLab
 repository](https://gitlab.com/gitlab-examples/spring-gitlab-cf-deploy-demo).
@@ -25,17 +24,16 @@ using GitLab CI/CD, read through the blog post [Continuous Delivery of a Spring 
 
 This tutorial assumes you are familiar with Java, GitLab, Cloud Foundry, and GitLab CI/CD.
 
-To follow along, you will need:
+To follow along, you need:
 
 - An account on [Pivotal Web Services (PWS)](https://run.pivotal.io/) or any
   other Cloud Foundry (CF) instance.
 - An account on GitLab.
 
 NOTE:
-You will need to replace the `api.run.pivotal.io` URL in the all below
-commands with the [API
-URL](https://docs.cloudfoundry.org/running/cf-api-endpoint.html) of your CF
-instance if you're not deploying to PWS.
+If you're not deploying to PWS, you must replace the `api.run.pivotal.io` URL in all the below
+commands with the [API URL](https://docs.cloudfoundry.org/running/cf-api-endpoint.html)
+of your CF instance.
 
 ## Create your project
 
@@ -46,9 +44,9 @@ GitLab when creating a new project:
 
 ## Configure the deployment to Cloud Foundry
 
-To deploy to Cloud Foundry we need to add a `manifest.yml` file. This
-is the configuration for the CF CLI we will use to deploy the application. We
-will create this in the root directory of our project with the following
+To deploy to Cloud Foundry you must add a `manifest.yml` file. This
+is the configuration for the CF CLI you must use to deploy the application.
+Create this in the root directory of your project with the following
 content:
 
 ```yaml
@@ -62,12 +60,12 @@ applications:
 
 ## Configure GitLab CI/CD to deploy your application
 
-Now we need to add the GitLab CI/CD configuration file
-([`.gitlab-ci.yml`](../../yaml/README.md)) to our
-project's root. This is how GitLab figures out what commands need to be run whenever
-code is pushed to our repository. We will add the following `.gitlab-ci.yml`
-file to the root directory of the repository, GitLab will detect it
-automatically and run the steps defined once we push our code:
+Now you must add the GitLab CI/CD configuration file
+([`.gitlab-ci.yml`](../../yaml/README.md))
+to your project's root. This is how GitLab figures out what commands must run whenever
+code is pushed to your repository. Add the following `.gitlab-ci.yml`
+file to the root directory of the repository. GitLab detects it
+automatically and runs the defined steps once you push your code:
 
 ```yaml
 image: java:8
@@ -96,15 +94,13 @@ production:
     - master
 ```
 
-We've used the `java:8` [Docker
-image](../../docker/using_docker_images.md) to build
-our application as it provides the up-to-date Java 8 JDK on [Docker
-Hub](https://hub.docker.com/). We've also added the [`only`
-clause](../../yaml/README.md#onlyexcept-basic)
-to ensure our deployments only happen when we push to the master branch.
+This uses the `java:8` [Docker image](../../docker/using_docker_images.md)
+to build your application, as it provides the up-to-date Java 8 JDK on [Docker Hub](https://hub.docker.com/).
+You also added the [`only` clause](../../yaml/README.md#onlyexcept-basic)
+to ensure your deployments only happen when you push to the master branch.
 
 Because the steps defined in `.gitlab-ci.yml` require credentials to sign in to
-CF, you'll need to add your CF credentials as
+CF, you must add your CF credentials as
 [environment variables](../../variables/README.md#predefined-environment-variables)
 in GitLab CI/CD. To set the environment variables, navigate to your project's
 **Settings > CI/CD**, and then expand **Variables**. Name the variables
@@ -122,8 +118,8 @@ your application and add its credentials to GitLab instead of using a
 developer's credentials.
 
 To start a manual deployment in GitLab go to **CI/CD > Pipelines** then click
-on **Run Pipeline**. After the app is finished deploying, it will display the
-URL of your application in the logs for the `production` job like:
+**Run Pipeline**. After the app is finished deploying, it displays the
+URL of your application in the logs for the `production` job:
 
 ```shell
 requested state: started

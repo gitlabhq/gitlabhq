@@ -14,6 +14,7 @@ RSpec.describe TemplateFinder do
       :gitlab_ci_ymls | described_class
       :licenses | ::LicenseTemplateFinder
       :metrics_dashboard_ymls | described_class
+      :gitlab_ci_syntax_ymls  | described_class
     end
 
     with_them do
@@ -30,6 +31,7 @@ RSpec.describe TemplateFinder do
       :gitignores     | 'Actionscript'
       :gitlab_ci_ymls | 'Android'
       :metrics_dashboard_ymls | 'Default'
+      :gitlab_ci_syntax_ymls  | 'Artifacts example'
     end
 
     with_them do

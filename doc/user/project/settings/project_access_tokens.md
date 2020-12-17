@@ -72,7 +72,7 @@ the following table.
 
 | Scope              |  Description |
 | ------------------ |  ----------- |
-| `api`              | Grants complete read/write access to the scoped project API, including the Package Registry](../../packages/package_registry/index.md). |
+| `api`              | Grants complete read/write access to the scoped project API, including the [Package Registry](../../packages/package_registry/index.md). |
 | `read_api`         | Grants read access to the scoped project API, including the [Package Registry](../../packages/package_registry/index.md). |
 | `read_registry`    | Allows read-access (pull) to [container registry](../../packages/container_registry/index.md) images if a project is private and authorization is required. |
 | `write_registry`   | Allows write-access (push) to [container registry](../../packages/container_registry/index.md). |

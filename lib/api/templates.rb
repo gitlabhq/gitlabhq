@@ -13,6 +13,9 @@ module API
       gitlab_ci_ymls: {
         gitlab_version: 8.9
       },
+      gitlab_ci_syntax_ymls: {
+        gitlab_version: 13.8
+      },
       dockerfiles: {
         gitlab_version: 8.15
       }

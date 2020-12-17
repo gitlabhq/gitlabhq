@@ -9,6 +9,7 @@ import { deprecatedCreateFlash as Flash } from '../flash';
 
 import FileTemplateTypeSelector from './template_selectors/type_selector';
 import BlobCiYamlSelector from './template_selectors/ci_yaml_selector';
+import BlobCiSyntaxYamlSelector from './template_selectors/ci_syntax_yaml_selector';
 import DockerfileSelector from './template_selectors/dockerfile_selector';
 import GitignoreSelector from './template_selectors/gitignore_selector';
 import LicenseSelector from './template_selectors/license_selector';
@@ -33,6 +34,7 @@ export default class FileTemplateMediator {
     this.templateSelectors = [
       GitignoreSelector,
       BlobCiYamlSelector,
+      BlobCiSyntaxYamlSelector,
       MetricsDashboardSelector,
       DockerfileSelector,
       LicenseSelector,
@@ -42,15 +44,20 @@ export default class FileTemplateMediator {
   initTemplateTypeSelector() {
     this.typeSelector = new FileTemplateTypeSelector({
       mediator: this,
-      dropdownData: this.templateSelectors.map(templateSelector => {
-        const cfg = templateSelector.config;
+      dropdownData: this.templateSelectors
+        .map(templateSelector => {
+          const cfg = templateSelector.config;
 
-        return {
-          name: cfg.name,
-          key: cfg.key,
-          id: cfg.key,
-        };
-      }),
+          return {
+            name: cfg.name,
+            key: cfg.key,
+            id: cfg.key,
+          };
+        })
+        .reduce(
+          (acc, current) => (acc.find(item => item.id === current.id) ? acc : [...acc, current]),
+          [],
+        ),
     });
   }
 

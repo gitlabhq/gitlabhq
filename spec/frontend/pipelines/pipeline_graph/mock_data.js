@@ -78,18 +78,12 @@ export const pipelineData = {
       groups: [
         {
           name: 'deploy_1',
-          jobs: [{ script: 'yarn magick', stage: 'deploy' }],
+          jobs: [{ script: 'yarn magick', stage: 'deploy', needs: ['test_1'] }],
           id: jobId4,
         },
       ],
     },
   ],
-  jobs: {
-    [jobId1]: {},
-    [jobId2]: {},
-    [jobId3]: {},
-    [jobId4]: {},
-  },
 };
 
 export const singleStageData = {

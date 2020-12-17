@@ -1577,6 +1577,14 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: experiments_record_conversion_event
+  :feature_category: :users
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: expire_build_instance_artifacts
   :feature_category: :continuous_integration
   :has_external_dependencies:

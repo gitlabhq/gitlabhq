@@ -7,6 +7,7 @@ class TemplateFinder
     dockerfiles: ::Gitlab::Template::DockerfileTemplate,
     gitignores: ::Gitlab::Template::GitignoreTemplate,
     gitlab_ci_ymls: ::Gitlab::Template::GitlabCiYmlTemplate,
+    gitlab_ci_syntax_ymls: ::Gitlab::Template::GitlabCiSyntaxYmlTemplate,
     metrics_dashboard_ymls: ::Gitlab::Template::MetricsDashboardTemplate,
     issues: ::Gitlab::Template::IssueTemplate,
     merge_requests: ::Gitlab::Template::MergeRequestTemplate

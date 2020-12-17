@@ -11,8 +11,20 @@ export const splitParent = path => {
 
 /**
  * Create file objects from a list of file paths.
+ *
+ * @param {Array} options.data Array of blob paths to parse and create a file tree from.
+ * @param {Boolean} options.tempFile Web IDE flag for whether this is a "new" file or not.
+ * @param {String} options.content Content to initialize the new blob with.
+ * @param {String} options.rawPath Raw path used for the new blob.
+ * @param {Object} options.blobData Extra values to initialize each blob with.
  */
-export const decorateFiles = ({ data, tempFile = false, content = '', rawPath = '' }) => {
+export const decorateFiles = ({
+  data,
+  tempFile = false,
+  content = '',
+  rawPath = '',
+  blobData = {},
+}) => {
   const treeList = [];
   const entries = {};
 
@@ -73,6 +85,7 @@ export const decorateFiles = ({ data, tempFile = false, content = '', rawPath = 
         content,
         rawPath,
         parentPath,
+        ...blobData,
       });
 
       Object.assign(entries, {

@@ -102,11 +102,11 @@ export default {
         };
       },
       update(data) {
-        const { ciConfigData } = data || {};
-        const stageNodes = ciConfigData?.stages?.nodes || [];
+        const { ciConfig } = data || {};
+        const stageNodes = ciConfig?.stages?.nodes || [];
         const stages = unwrapStagesWithNeeds(stageNodes);
 
-        return { ...ciConfigData, stages };
+        return { ...ciConfig, stages };
       },
       error() {
         this.reportFailure(LOAD_FAILURE_UNKNOWN);

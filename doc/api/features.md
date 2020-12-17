@@ -111,8 +111,8 @@ Example response:
 
 ## Set or create a feature
 
-Set a feature's gate value. If a feature with the given name doesn't exist yet
-it will be created. The value can be a boolean, or an integer to indicate
+Set a feature's gate value. If a feature with the given name doesn't exist yet,
+it's created. The value can be a boolean, or an integer to indicate
 percentage of time.
 
 ```plaintext

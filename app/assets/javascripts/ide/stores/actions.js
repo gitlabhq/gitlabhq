@@ -31,7 +31,7 @@ export const setResizingStatus = ({ commit }, resizing) => {
 
 export const createTempEntry = (
   { state, commit, dispatch, getters },
-  { name, type, content = '', rawPath = '', openFile = true, makeFileActive = true },
+  { name, type, content = '', rawPath = '', openFile = true, makeFileActive = true, mimeType = '' },
 ) => {
   const fullName = name.slice(-1) !== '/' && type === 'tree' ? `${name}/` : name;
 
@@ -56,6 +56,9 @@ export const createTempEntry = (
     tempFile: true,
     content,
     rawPath,
+    blobData: {
+      mimeType,
+    },
   });
   const { file, parentPath } = data;
 

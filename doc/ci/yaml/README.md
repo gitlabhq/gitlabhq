@@ -3933,7 +3933,23 @@ The Release name. If omitted, it is populated with the value of `release: tag_na
 
 #### `release:description`
 
-Specifies the longer description of the Release.
+Specifies the long description of the Release. You can also specify a file that contains the
+description.
+
+##### Read description from a file
+
+> [Introduced](https://gitlab.com/gitlab-org/release-cli/-/merge_requests/67) in GitLab 13.7.
+
+You can specify a file in `$CI_PROJECT_DIR` that contains the description. The file must be relative
+to the project directory (`$CI_PROJECT_DIR`), and if the file is a symbolic link it can't reside
+outside of `$CI_PROJECT_DIR`. The `./path/to/file` and file name can't contain spaces.
+
+```yaml
+job:
+  release:
+    tag_name: ${MAJOR}_${MINOR}_${REVISION}
+    description: './path/to/CHANGELOG.md'
+```
 
 #### `release:ref`
 

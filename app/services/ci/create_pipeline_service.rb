@@ -81,7 +81,10 @@ module Ci
         .new(pipeline, command, SEQUENCE)
         .build!
 
-      schedule_head_pipeline_update if pipeline.persisted?
+      if pipeline.persisted?
+        schedule_head_pipeline_update
+        record_conversion_event
+      end
 
       # If pipeline is not persisted, try to recover IID
       pipeline.reset_project_iid unless pipeline.persisted?
@@ -114,6 +117,10 @@ module Ci
       pipeline.all_merge_requests.opened.each do |merge_request|
         UpdateHeadPipelineForMergeRequestWorker.perform_async(merge_request.id)
       end
+    end
+
+    def record_conversion_event
+      Experiments::RecordConversionEventWorker.perform_async(:ci_syntax_templates, current_user.id)
     end
 
     def extra_options(content: nil, dry_run: false)

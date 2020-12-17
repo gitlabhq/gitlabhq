@@ -3,9 +3,8 @@
 module Gitlab
   module Template
     class DockerfileTemplate < BaseTemplate
-      def content
-        explanation = "# This file is a template, and might need editing before it works on your project."
-        [explanation, super].join("\n")
+      def description
+        "# This file is a template, and might need editing before it works on your project."
       end
 
       class << self

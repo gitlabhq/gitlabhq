@@ -47,7 +47,8 @@ Click **Create New Domain**.
 
 #### 2. Get the verification code
 
-Once you have added a new domain to Pages, the verification code will be prompted to you. Copy the values from GitLab and paste them in your domain's control panel as a TXT record on the next step.
+After you add a new domain to Pages, the verification code prompts you. Copy the values from GitLab
+and paste them in your domain's control panel as a TXT record on the next step.
 
 ![Get the verification code](img/get_domain_verification_code_v12_0.png)
 
@@ -91,7 +92,7 @@ add a DNS apex `CNAME` record instead of an `A` record. The main
 advantage of doing so is that when GitLab Pages IP on GitLab.com
 changes for whatever reason, you don't need to update your `A` record.
 There may be a few exceptions, but **this method is not recommended**
-as it most likely won't work if you set an [`MX` record](dns_concepts.md#mx-record) for your root domain.
+as it most likely doesn't work if you set an [`MX` record](dns_concepts.md#mx-record) for your root domain.
 
 ##### For subdomains
 
@@ -154,12 +155,11 @@ Once you have added all the DNS records:
 
 ![Verify your domain](img/retry_domain_verification_v12_0.png)
 
-As soon as your domain becomes active, your website will be available
-through your domain name.
+As soon as your domain becomes active, your website is available through your domain name.
 
 WARNING:
 Considering GitLab instances with domain verification enabled,
-if the domain cannot be verified for 7 days, it will be removed
+if the domain can't be verified for 7 days, it's removed
 from the GitLab project.
 
 > **Notes:**
@@ -169,9 +169,9 @@ from the GitLab project.
   to [disabled custom domain verification](../../../../administration/pages/index.md#custom-domain-verification).
 > - [DNS propagation may take some time (up to 24h)](https://www.inmotionhosting.com/support/domain-names/dns-nameserver-changes/complete-guide-to-dns-records/),
   although it's usually a matter of minutes to complete. Until it does, verification
-  will fail and attempts to visit your domain will respond with a 404.
+  fails, and attempts to visit your domain result in a 404.
 > - Once your domain has been verified, leave the verification record
-  in place: your domain will be periodically reverified, and may be
+  in place. Your domain is periodically reverified, and may be
   disabled if the record is removed.
 
 ##### Troubleshooting Pages domain verification
@@ -211,7 +211,7 @@ For a subdomain:
 You can add more than one alias (custom domains and subdomains) to the same project.
 An alias can be understood as having many doors leading to the same room.
 
-All the aliases you've set to your site will be listed on **Setting > Pages**.
+All the aliases you've set to your site are listed on **Setting > Pages**.
 From that page, you can view, add, and remove them.
 
 ### Redirecting `www.domain.com` to `domain.com` with Cloudflare
@@ -294,7 +294,7 @@ Sublime Text, Atom, Dreamweaver, Brackets, etc).
 
 To make your website's visitors even more secure, you can choose to
 force HTTPS for GitLab Pages. By doing so, all attempts to visit your
-website via HTTP will be automatically redirected to HTTPS via 301.
+website through HTTP are automatically redirected to HTTPS through 301.
 
 It works with both the GitLab default domain and with your custom
 domain (as long as you've set a valid certificate for it).

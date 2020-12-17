@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlAlert } from '@gitlab/ui';
 import { pipelineData, singleStageData } from './mock_data';
-import { CI_CONFIG_STATUS_INVALID } from '~/pipeline_editor/constants';
+import { CI_CONFIG_STATUS_INVALID, CI_CONFIG_STATUS_VALID } from '~/pipeline_editor/constants';
 import { DRAW_FAILURE, EMPTY_PIPELINE_DATA, INVALID_CI_CONFIG } from '~/pipelines/constants';
 import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
 import StagePill from '~/pipelines/components/pipeline_graph/stage_pill.vue';
@@ -56,18 +56,20 @@ describe('pipeline graph component', () => {
     });
   });
 
-  describe('without `INVALID` status', () => {
+  describe('with `VALID` status', () => {
     beforeEach(() => {
-      wrapper = createComponent();
+      wrapper = createComponent({
+        pipelineData: { status: CI_CONFIG_STATUS_VALID, stages: [{ name: 'hello', groups: [] }] },
+      });
     });
 
     it('renders the graph with no status error', () => {
-      expect(findAlert().text()).not.toBe(wrapper.vm.$options.warningTexts[INVALID_CI_CONFIG]);
+      expect(findAlert().exists()).toBe(false);
       expect(findPipelineGraph().exists()).toBe(true);
     });
   });
 
-  describe('with error while rendering the links', () => {
+  describe('with error while rendering the links with needs', () => {
     beforeEach(() => {
       wrapper = createComponent();
     });

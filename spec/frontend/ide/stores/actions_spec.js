@@ -195,11 +195,13 @@ describe('Multi-file store actions', () => {
           .dispatch('createTempEntry', {
             name,
             type: 'blob',
+            mimeType: 'test/mime',
           })
           .then(() => {
             const f = store.state.entries[name];
 
             expect(f.tempFile).toBeTruthy();
+            expect(f.mimeType).toBe('test/mime');
             expect(store.state.trees['abcproject/mybranch'].tree.length).toBe(1);
 
             done();

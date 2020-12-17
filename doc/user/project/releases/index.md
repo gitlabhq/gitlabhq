@@ -274,13 +274,10 @@ Release note descriptions are unrelated. Description supports [Markdown](../../m
 
 ### Release assets
 
-You can currently add the following types of assets to each release:
+You can add the following types of assets to each release:
 
 - [Source code](#source-code)
 - [Links](#links)
-
-GitLab will support more asset types in the future, including objects such
-as pre-built packages, compliance/security evidence, or container images.
 
 #### Permanent links to release assets
 
@@ -336,8 +333,8 @@ The four types of links are "Runbook," "Package," "Image," and "Other."
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26019) in GitLab 12.6.
 
 Each time a release is created, GitLab takes a snapshot of data that's related to it.
-This data is saved in a JSON file and called *release evidence*. The feature currently
-includes test artifacts and linked milestones (and will include issues) to facilitate
+This data is saved in a JSON file and called *release evidence*. The feature
+includes test artifacts and linked milestones to facilitate
 internal processes, like external audits.
 
 To access the release evidence, on the Releases page, click the link to the JSON file that's listed

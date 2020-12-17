@@ -36,14 +36,14 @@ To protect an environment:
 1. In the **Allowed to Deploy** dropdown menu, select the role, users, or groups you
    want to give deploy access to. Keep in mind that:
    - There are two roles to choose from:
-     - **Maintainers**: will allow access to all maintainers in the project.
-     - **Developers**: will allow access to all maintainers and all developers in the project.
+     - **Maintainers**: Allows access to all maintainers in the project.
+     - **Developers**: Allows access to all maintainers and all developers in the project.
    - You can only select groups that are already associated with the project.
-   - Only users that have at least Developer permission level will appear in
+   - Only users that have at least the Developer permission level appear in
      the **Allowed to Deploy** dropdown menu.
 1. Click the **Protect** button.
 
-The protected environment will now appear in the list of protected environments.
+The protected environment now appears in the list of protected environments.
 
 ### Use the API to protect an environment
 

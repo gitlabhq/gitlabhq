@@ -47,8 +47,11 @@ export default {
     };
   },
   computed: {
+    pipelineStages() {
+      return this.pipelineData?.stages || [];
+    },
     isPipelineDataEmpty() {
-      return !this.isInvalidCiConfig && isEmpty(this.pipelineData?.stages);
+      return !this.isInvalidCiConfig && isEmpty(this.pipelineStages);
     },
     isInvalidCiConfig() {
       return this.pipelineData?.status === CI_CONFIG_STATUS_INVALID;
@@ -133,7 +136,7 @@ export default {
   methods: {
     prepareLinkData() {
       try {
-        const arrayOfJobs = unwrapArrayOfJobs(this.pipelineData);
+        const arrayOfJobs = unwrapArrayOfJobs(this.pipelineStages);
         const parsedData = parseData(arrayOfJobs);
         this.links = generateLinksData(parsedData, this.$options.CONTAINER_ID);
       } catch {
@@ -141,7 +144,7 @@ export default {
       }
     },
     getStageBackgroundClasses(index) {
-      const { length } = this.pipelineData.stages;
+      const { length } = this.pipelineStages;
       // It's possible for a graph to have only one stage, in which
       // case we concatenate both the left and right rounding classes
       if (length === 1) {
@@ -162,7 +165,7 @@ export default {
       // The first time we hover, we create the object where
       // we store all the data to properly highlight the needs.
       if (!this.needsObject) {
-        const jobs = createJobsHash(this.pipelineData);
+        const jobs = createJobsHash(this.pipelineStages);
         this.needsObject = generateJobNeedsDict(jobs) ?? {};
       }
 
@@ -227,7 +230,7 @@ export default {
         </template>
       </svg>
       <div
-        v-for="(stage, index) in pipelineData.stages"
+        v-for="(stage, index) in pipelineStages"
         :key="`${stage.name}-${index}`"
         class="gl-flex-direction-column"
       >

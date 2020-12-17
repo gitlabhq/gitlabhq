@@ -217,6 +217,10 @@ module BlobHelper
     @gitlab_ci_ymls ||= template_dropdown_names(TemplateFinder.build(:gitlab_ci_ymls, project).execute)
   end
 
+  def gitlab_ci_syntax_ymls(project)
+    @gitlab_ci_syntax_ymls ||= template_dropdown_names(TemplateFinder.build(:gitlab_ci_syntax_ymls, project).execute)
+  end
+
   def metrics_dashboard_ymls(project)
     @metrics_dashboard_ymls ||= template_dropdown_names(TemplateFinder.build(:metrics_dashboard_ymls, project).execute)
   end

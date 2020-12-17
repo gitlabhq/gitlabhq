@@ -16,7 +16,7 @@ wildcard domain with your sysadmin. This guide is valid for any GitLab instance,
 replace the Pages wildcard domain on GitLab.com (`*.gitlab.io`) with your own.
 
 If you set up a GitLab Pages project on GitLab,
-it will automatically be accessible under a
+it's automatically accessible under a
 subdomain of `namespace.example.io`.
 The [`namespace`](../../group/index.md#namespaces)
 is defined by your username on GitLab.com,
@@ -45,35 +45,35 @@ To understand Pages domains clearly, read the examples below.
 - You created a project called `blog` under your username `john`,
   therefore your project URL is `https://gitlab.com/john/blog/`.
   Once you enable GitLab Pages for this project, and build your site,
-  it will be available under `https://john.gitlab.io/blog/`.
+  you can access it at `https://john.gitlab.io/blog/`.
 - You created a group for all your websites called `websites`,
   and a project within this group is called `blog`. Your project
   URL is `https://gitlab.com/websites/blog/`. Once you enable
-  GitLab Pages for this project, the site will live under
+  GitLab Pages for this project, the site is available at
   `https://websites.gitlab.io/blog/`.
 - You created a group for your engineering department called `engineering`,
   a subgroup for all your documentation websites called `docs`,
   and a project within this subgroup is called `workflows`. Your project
   URL is `https://gitlab.com/engineering/docs/workflows/`. Once you enable
-  GitLab Pages for this project, the site will live under
+  GitLab Pages for this project, the site is available at
   `https://engineering.gitlab.io/docs/workflows`.
 
 ### User and Group website examples
 
 - Under your username, `john`, you created a project called
-  `john.gitlab.io`. Your project URL will be `https://gitlab.com/john/john.gitlab.io`.
+  `john.gitlab.io`. Your project URL is `https://gitlab.com/john/john.gitlab.io`.
   Once you enable GitLab Pages for your project, your website
-  will be published under `https://john.gitlab.io`.
+  is published under `https://john.gitlab.io`.
 - Under your group `websites`, you created a project called
-  `websites.gitlab.io`. your project's URL will be `https://gitlab.com/websites/websites.gitlab.io`.
+  `websites.gitlab.io`. Your project's URL is `https://gitlab.com/websites/websites.gitlab.io`.
   Once you enable GitLab Pages for your project,
-  your website will be published under `https://websites.gitlab.io`.
+  your website is published under `https://websites.gitlab.io`.
 
 **General example:**
 
-- On GitLab.com, a project site will always be available under
+- On GitLab.com, a project site is always available under
   `https://namespace.gitlab.io/project-name`
-- On GitLab.com, a user or group website will be available under
+- On GitLab.com, a user or group website is available under
   `https://namespace.gitlab.io/`
 - On your GitLab instance, replace `gitlab.io` above with your
   Pages server domain. Ask your sysadmin for this information.
@@ -87,7 +87,7 @@ Every Static Site Generator (SSG) default configuration expects
 to find your website under a (sub)domain (`example.com`), not
 in a subdirectory of that domain (`example.com/subdir`). Therefore,
 whenever you publish a project website (`namespace.gitlab.io/project-name`),
-you'll have to look for this configuration (base URL) on your SSG's
+you must look for this configuration (base URL) on your SSG's
 documentation and set it up to reflect this pattern.
 
 For example, for a Jekyll site, the `baseurl` is defined in the Jekyll
@@ -99,11 +99,11 @@ baseurl: "/blog"
 ```
 
 On the contrary, if you deploy your website after forking one of
-our [default examples](https://gitlab.com/pages), the `baseurl` will
-already be configured this way, as all examples there are project
-websites. If you decide to make yours a user or group website, you'll
-have to remove this configuration from your project. For the Jekyll
-example we've just mentioned, you'd have to change Jekyll's `_config.yml` to:
+our [default examples](https://gitlab.com/pages), the `baseurl` is
+already configured this way, as all examples there are project
+websites. If you decide to make yours a user or group website, you
+must remove this configuration from your project. For the Jekyll
+example we just mentioned, you must change Jekyll's `_config.yml` to:
 
 ```yaml
 baseurl: ""

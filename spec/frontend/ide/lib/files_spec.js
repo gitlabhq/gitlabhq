@@ -1,6 +1,8 @@
 import { decorateFiles, splitParent } from '~/ide/lib/files';
 import { decorateData } from '~/ide/stores/utils';
 
+const TEST_BLOB_DATA = { mimeType: 'test/mime' };
+
 const createEntries = paths => {
   const createEntry = (acc, { path, type, children }) => {
     const { name, parent } = splitParent(path);
@@ -14,6 +16,7 @@ const createEntries = paths => {
         parentPath: parent,
       }),
       tree: children.map(childName => expect.objectContaining({ name: childName })),
+      ...(type === 'blob' ? TEST_BLOB_DATA : {}),
     };
 
     return acc;
@@ -43,7 +46,7 @@ describe('IDE lib decorate files', () => {
       { path: 'README.md', type: 'blob', children: [] },
     ]);
 
-    const { entries, treeList } = decorateFiles({ data });
+    const { entries, treeList } = decorateFiles({ data, blobData: TEST_BLOB_DATA });
 
     // Here we test the keys and then each key/value individually because `expect(entries).toEqual(expectedEntries)`
     // was taking a very long time for some reason. Probably due to large objects and nested `expect.objectContaining`.

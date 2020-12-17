@@ -56,9 +56,10 @@ RSpec.describe Gitlab::Kubernetes::KubectlCmd do
 
   describe '.delete_crds_from_group' do
     it 'constructs string properly' do
-      expected_command = 'kubectl api-resources -o name --api-group foo | xargs kubectl delete --ignore-not-found crd'
+      command = 'kubectl api-resources -o name --api-group foo | xargs -r kubectl delete --ignore-not-found crd'
+      command_with_retries = "for i in $(seq 1 3); do #{command} && s=0 && break || s=$?; sleep 1s; echo \"Retrying ($i)...\"; done; (exit $s)"
 
-      expect(described_class.delete_crds_from_group("foo")).to eq expected_command
+      expect(described_class.delete_crds_from_group("foo")).to eq command_with_retries
     end
   end
 end
