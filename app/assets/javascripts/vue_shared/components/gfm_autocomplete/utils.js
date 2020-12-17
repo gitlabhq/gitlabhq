@@ -1,4 +1,5 @@
 import { escape, last } from 'lodash';
+import * as Emoji from '~/emoji';
 import { spriteIcon } from '~/lib/utils/common_utils';
 
 const groupType = 'Group'; // eslint-disable-line @gitlab/require-i18n-strings
@@ -6,6 +7,7 @@ const groupType = 'Group'; // eslint-disable-line @gitlab/require-i18n-strings
 const nonWordOrInteger = /\W|^\d+$/;
 
 export const GfmAutocompleteType = {
+  Emojis: 'emojis',
   Issues: 'issues',
   Labels: 'labels',
   Members: 'members',
@@ -21,6 +23,15 @@ function doesCurrentLineStartWith(searchString, fullText, selectionStart) {
 }
 
 export const tributeConfig = {
+  [GfmAutocompleteType.Emojis]: {
+    config: {
+      trigger: ':',
+      lookup: value => value,
+      menuItemTemplate: ({ original }) => `${original} ${Emoji.glEmojiTag(original)}`,
+      selectTemplate: ({ original }) => `:${original}:`,
+    },
+  },
+
   [GfmAutocompleteType.Issues]: {
     config: {
       trigger: '#',

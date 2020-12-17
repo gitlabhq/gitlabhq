@@ -84,6 +84,9 @@ export default {
     onFileChange() {
       this.$emit('input', this.editor.getValue());
     },
+    getEditor() {
+      return this.editor;
+    },
   },
 };
 </script>

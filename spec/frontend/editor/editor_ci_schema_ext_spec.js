@@ -1,0 +1,96 @@
+import { languages } from 'monaco-editor';
+import EditorLite from '~/editor/editor_lite';
+import { CiSchemaExtension } from '~/editor/editor_ci_schema_ext';
+import { EXTENSION_CI_SCHEMA_FILE_NAME_MATCH } from '~/editor/constants';
+
+describe('~/editor/editor_ci_config_ext', () => {
+  const defaultBlobPath = '.gitlab-ci.yml';
+
+  let editor;
+  let instance;
+  let editorEl;
+
+  const createMockEditor = ({ blobPath = defaultBlobPath } = {}) => {
+    setFixtures('<div id="editor"></div>');
+    editorEl = document.getElementById('editor');
+    editor = new EditorLite();
+    instance = editor.createInstance({
+      el: editorEl,
+      blobPath,
+      blobContent: '',
+    });
+    instance.use(new CiSchemaExtension());
+  };
+
+  beforeEach(() => {
+    createMockEditor();
+  });
+
+  afterEach(() => {
+    instance.dispose();
+    editorEl.remove();
+  });
+
+  describe('registerCiSchema', () => {
+    beforeEach(() => {
+      jest.spyOn(languages.yaml.yamlDefaults, 'setDiagnosticsOptions');
+    });
+
+    describe('register validations options with monaco for yaml language', () => {
+      const mockProjectNamespace = 'namespace1';
+      const mockProjectPath = 'project1';
+
+      const getConfiguredYmlSchema = () => {
+        return languages.yaml.yamlDefaults.setDiagnosticsOptions.mock.calls[0][0].schemas[0];
+      };
+
+      it('with expected basic validation configuration', () => {
+        instance.registerCiSchema({
+          projectNamespace: mockProjectNamespace,
+          projectPath: mockProjectPath,
+        });
+
+        const expectedOptions = {
+          validate: true,
+          enableSchemaRequest: true,
+          hover: true,
+          completion: true,
+        };
+
+        expect(languages.yaml.yamlDefaults.setDiagnosticsOptions).toHaveBeenCalledTimes(1);
+        expect(languages.yaml.yamlDefaults.setDiagnosticsOptions).toHaveBeenCalledWith(
+          expect.objectContaining(expectedOptions),
+        );
+      });
+
+      it('with an schema uri that contains project and ref', () => {
+        const mockRef = 'AABBCCDD';
+
+        instance.registerCiSchema({
+          projectNamespace: mockProjectNamespace,
+          projectPath: mockProjectPath,
+          ref: mockRef,
+        });
+
+        expect(getConfiguredYmlSchema()).toEqual({
+          uri: `/${mockProjectNamespace}/${mockProjectPath}/-/schema/${mockRef}/${EXTENSION_CI_SCHEMA_FILE_NAME_MATCH}`,
+          fileMatch: [defaultBlobPath],
+        });
+      });
+
+      it('with an alternative file name match', () => {
+        createMockEditor({ blobPath: 'dir1/dir2/another-ci-filename.yml' });
+
+        instance.registerCiSchema({
+          projectNamespace: mockProjectNamespace,
+          projectPath: mockProjectPath,
+        });
+
+        expect(getConfiguredYmlSchema()).toEqual({
+          uri: `/${mockProjectNamespace}/${mockProjectPath}/-/schema/master/${EXTENSION_CI_SCHEMA_FILE_NAME_MATCH}`,
+          fileMatch: ['another-ci-filename.yml'],
+        });
+      });
+    });
+  });
+});

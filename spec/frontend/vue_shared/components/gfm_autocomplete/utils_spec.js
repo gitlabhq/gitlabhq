@@ -2,6 +2,27 @@ import { escape, last } from 'lodash';
 import { GfmAutocompleteType, tributeConfig } from '~/vue_shared/components/gfm_autocomplete/utils';
 
 describe('gfm_autocomplete/utils', () => {
+  describe('emojis config', () => {
+    const emojisConfig = tributeConfig[GfmAutocompleteType.Emojis].config;
+    const emoji = 'raised_hands';
+
+    it('uses : as the trigger', () => {
+      expect(emojisConfig.trigger).toBe(':');
+    });
+
+    it('searches using the emoji name', () => {
+      expect(emojisConfig.lookup(emoji)).toBe(emoji);
+    });
+
+    it('shows the emoji name and icon in the menu item', () => {
+      expect(emojisConfig.menuItemTemplate({ original: emoji })).toMatchSnapshot();
+    });
+
+    it('inserts the emoji name on autocomplete selection', () => {
+      expect(emojisConfig.selectTemplate({ original: emoji })).toBe(`:${emoji}:`);
+    });
+  });
+
   describe('issues config', () => {
     const issuesConfig = tributeConfig[GfmAutocompleteType.Issues].config;
     const groupContextIssue = {

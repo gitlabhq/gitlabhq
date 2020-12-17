@@ -1,5 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`gfm_autocomplete/utils emojis config shows the emoji name and icon in the menu item 1`] = `
+"raised_hands 
+    <gl-emoji
+      
+      data-name=\\"raised_hands\\"></gl-emoji>
+  "
+`;
+
 exports[`gfm_autocomplete/utils issues config shows the iid and title in the menu item within a project context 1`] = `"<small>123456</small> Project context issue title &lt;script&gt;alert(&#39;hi&#39;)&lt;/script&gt;"`;
 
 exports[`gfm_autocomplete/utils issues config shows the reference and title in the menu item within a group context 1`] = `"<small>gitlab#987654</small> Group context issue title &lt;script&gt;alert(&#39;hi&#39;)&lt;/script&gt;"`;

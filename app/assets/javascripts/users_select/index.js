@@ -832,21 +832,21 @@ UsersSelect.prototype.renderRowAvatar = function(issuableType, user, img) {
 };
 
 UsersSelect.prototype.renderApprovalRules = function(elsClassName, approvalRules = []) {
-  if (!gon.features?.reviewerApprovalRules || !elsClassName?.includes('reviewer')) {
+  const count = approvalRules.length;
+
+  if (!gon.features?.reviewerApprovalRules || !elsClassName?.includes('reviewer') || !count) {
     return '';
   }
 
-  const count = approvalRules.length;
   const [rule] = approvalRules;
   const countText = sprintf(__('(+%{count}&nbsp;rules)'), { count });
   const renderApprovalRulesCount = count > 1 ? `<span class="ml-1">${countText}</span>` : '';
+  const ruleName = rule.rule_type === 'code_owner' ? __('Code Owner') : rule.name;
 
-  return count
-    ? `<div class="gl-display-flex gl-font-sm">
-        <span class="gl-text-truncate" title="${rule.name}">${rule.name}</span>
-        ${renderApprovalRulesCount}
-      </div>`
-    : '';
+  return `<div class="gl-display-flex gl-font-sm">
+    <span class="gl-text-truncate" title="${ruleName}">${ruleName}</span>
+    ${renderApprovalRulesCount}
+  </div>`;
 };
 
 export default UsersSelect;

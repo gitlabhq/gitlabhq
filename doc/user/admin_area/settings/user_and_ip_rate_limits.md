@@ -20,6 +20,9 @@ IP rate limits**:
 
 These limits are disabled by default.
 
+NOTE:
+By default, all Git operations are first tried unathenticated. Because of this, HTTP Git operations may trigger the rate limits configured for unauthenticated requests.
+
 ![user-and-ip-rate-limits](img/user_and_ip_rate_limits.png)
 
 ## Use an HTTP header to bypass rate limiting

@@ -2820,9 +2820,6 @@ msgstr ""
 msgid "All changes are committed"
 msgstr ""
 
-msgid "All default stages are currently visible"
-msgstr ""
-
 msgid "All email addresses will be used to identify your commits."
 msgstr ""
 
@@ -6910,6 +6907,9 @@ msgstr ""
 msgid "Code Coverage|Couldn't fetch the code coverage data"
 msgstr ""
 
+msgid "Code Owner"
+msgstr ""
+
 msgid "Code Owners"
 msgstr ""
 
@@ -7327,6 +7327,9 @@ msgid "ConfluenceService|Your GitLab Wiki can be accessed here: %{wiki_link}. To
 msgstr ""
 
 msgid "Congratulations! You have enabled Two-factor Authentication!"
+msgstr ""
+
+msgid "Congratulations, your free trial is activated."
 msgstr ""
 
 msgid "Connect"
@@ -8330,7 +8333,19 @@ msgstr ""
 msgid "CustomCycleAnalytics|Add stage"
 msgstr ""
 
+msgid "CustomCycleAnalytics|All default stages are currently visible"
+msgstr ""
+
+msgid "CustomCycleAnalytics|Default stages"
+msgstr ""
+
 msgid "CustomCycleAnalytics|Editing stage"
+msgstr ""
+
+msgid "CustomCycleAnalytics|End event"
+msgstr ""
+
+msgid "CustomCycleAnalytics|End event label"
 msgstr ""
 
 msgid "CustomCycleAnalytics|Enter a name for the stage"
@@ -8345,10 +8360,13 @@ msgstr ""
 msgid "CustomCycleAnalytics|Please select a start event first"
 msgstr ""
 
-msgid "CustomCycleAnalytics|Select start event"
+msgid "CustomCycleAnalytics|Recover hidden stage"
 msgstr ""
 
-msgid "CustomCycleAnalytics|Select stop event"
+msgid "CustomCycleAnalytics|Select end event"
+msgstr ""
+
+msgid "CustomCycleAnalytics|Select start event"
 msgstr ""
 
 msgid "CustomCycleAnalytics|Stage name already exists"
@@ -8357,16 +8375,10 @@ msgstr ""
 msgid "CustomCycleAnalytics|Start event"
 msgstr ""
 
-msgid "CustomCycleAnalytics|Start event changed, please select a valid stop event"
+msgid "CustomCycleAnalytics|Start event changed, please select a valid end event"
 msgstr ""
 
 msgid "CustomCycleAnalytics|Start event label"
-msgstr ""
-
-msgid "CustomCycleAnalytics|Stop event"
-msgstr ""
-
-msgid "CustomCycleAnalytics|Stop event label"
 msgstr ""
 
 msgid "CustomCycleAnalytics|Update stage"
@@ -8957,9 +8969,6 @@ msgid "Default project deletion protection"
 msgstr ""
 
 msgid "Default projects limit"
-msgstr ""
-
-msgid "Default stages"
 msgstr ""
 
 msgid "Default: Map a FogBugz account ID to a full name"
@@ -12977,6 +12986,9 @@ msgstr ""
 msgid "GitLab Billing Team."
 msgstr ""
 
+msgid "GitLab Gold trial (optional)"
+msgstr ""
+
 msgid "GitLab Group Runners can execute code for all the projects in this group."
 msgstr ""
 
@@ -14221,6 +14233,9 @@ msgid "How it works"
 msgstr ""
 
 msgid "How many days need to pass between marking entity for deletion and actual removing it."
+msgstr ""
+
+msgid "How many employees will use Gitlab?"
 msgstr ""
 
 msgid "How many replicas each Elasticsearch shard has."
@@ -29419,6 +29434,12 @@ msgstr ""
 msgid "Trials|You won't get a free trial right now but you can always resume this process by clicking on your avatar and choosing 'Start a free trial'"
 msgstr ""
 
+msgid "Trial|Dismiss"
+msgstr ""
+
+msgid "Trial|Successful trial activation image"
+msgstr ""
+
 msgid "Trigger"
 msgstr ""
 
@@ -31053,6 +31074,9 @@ msgid "We tried to automatically renew your subscription for %{strong}%{namespac
 msgstr ""
 
 msgid "We want to be sure it is you, please confirm you are not a robot."
+msgstr ""
+
+msgid "We will activate your trial on your group once you complete this step. After 30 days, you can upgrade to any plan"
 msgstr ""
 
 msgid "We will notify %{inviter} that you declined their invitation to join GitLab. You will stop receiving reminders."

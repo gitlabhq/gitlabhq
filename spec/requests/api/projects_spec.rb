@@ -2711,6 +2711,22 @@ RSpec.describe API::Projects do
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']['container_expiration_policy.name_regex_keep']).to contain_exactly('not valid RE2 syntax: missing ]: [')
       end
+
+      it "doesn't update container_expiration_policy with invalid keep_n" do
+        project_param = {
+          container_expiration_policy_attributes: {
+            cadence: '1month',
+            enabled: true,
+            keep_n: 'not_int',
+            name_regex_keep: 'foo.*'
+          }
+        }
+
+        put api("/projects/#{project3.id}", user4), params: project_param
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('container_expiration_policy_attributes[keep_n] is invalid')
+      end
     end
 
     context 'when authenticated as project developer' do

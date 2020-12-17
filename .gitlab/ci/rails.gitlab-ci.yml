@@ -549,33 +549,36 @@ rspec-ee unit pg11 geo:
     - .rails:rules:ee-only-unit
     - .rspec-ee-unit-geo-parallel
 
-rspec-ee unit pg11 geo minimal:
-  extends:
-    - rspec-ee unit pg11 geo
-    - .minimal-rspec-tests
-    - .rails:rules:ee-only-unit:minimal
+# FIXME: Temporarily disable geo minimal rspec jobs https://gitlab.com/gitlab-org/gitlab/-/issues/294212
+#rspec-ee unit pg11 geo minimal:
+#  extends:
+#    - rspec-ee unit pg11 geo
+#    - .minimal-rspec-tests
+#    - .rails:rules:ee-only-unit:minimal
 
 rspec-ee integration pg11 geo:
   extends:
     - .rspec-ee-base-geo-pg11
     - .rails:rules:ee-only-integration
 
-rspec-ee integration pg11 geo minimal:
-  extends:
-    - rspec-ee integration pg11 geo
-    - .minimal-rspec-tests
-    - .rails:rules:ee-only-integration:minimal
+# FIXME: Temporarily disable geo minimal rspec jobs https://gitlab.com/gitlab-org/gitlab/-/issues/294212
+#rspec-ee integration pg11 geo minimal:
+#  extends:
+#    - rspec-ee integration pg11 geo
+#    - .minimal-rspec-tests
+#    - .rails:rules:ee-only-integration:minimal
 
 rspec-ee system pg11 geo:
   extends:
     - .rspec-ee-base-geo-pg11
     - .rails:rules:ee-only-system
 
-rspec-ee system pg11 geo minimal:
-  extends:
-    - rspec-ee system pg11 geo
-    - .minimal-rspec-tests
-    - .rails:rules:ee-only-system:minimal
+# FIXME: Temporarily disable geo minimal rspec jobs https://gitlab.com/gitlab-org/gitlab/-/issues/294212
+#rspec-ee system pg11 geo minimal:
+#  extends:
+#    - rspec-ee system pg11 geo
+#    - .minimal-rspec-tests
+#    - .rails:rules:ee-only-system:minimal
 
 db:rollback geo:
   extends:

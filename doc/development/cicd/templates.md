@@ -65,6 +65,14 @@ users have to fix their `.gitlab-ci.yml` that could annoy their workflow.
 
 Please read [versioning](#versioning) section for introducing breaking change safely.
 
+### Best practices
+
+- Avoid using [global keywords](../../ci/yaml/README.md#global-keywords),
+  such as `image`, `stages` and `variables` at top-level.
+  When a root `.gitlab-ci.yml` [includes](../../ci/yaml/README.md#include)
+  multiple templates, these global keywords could be overridden by the
+  others and cause an unexpected behavior.
+
 ## Versioning
 
 Versioning allows you to introduce a new template without modifying the existing
