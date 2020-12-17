@@ -6,10 +6,9 @@ RSpec.describe 'Flutter.gitlab-ci.yml' do
   subject(:template) { Gitlab::Template::GitlabCiYmlTemplate.find('Flutter') }
 
   describe 'the created pipeline' do
-    let_it_be(:user) { create(:admin) }
-
     let(:pipeline_branch) { 'master' }
     let(:project) { create(:project, :custom_repo, files: { 'README.md' => '' }) }
+    let(:user) { project.owner }
     let(:service) { Ci::CreatePipelineService.new(project, user, ref: pipeline_branch ) }
     let(:pipeline) { service.execute!(:push) }
     let(:build_names) { pipeline.builds.pluck(:name) }

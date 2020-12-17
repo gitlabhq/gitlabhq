@@ -22,13 +22,25 @@ RSpec.describe Gitlab::VisibilityLevel do
   end
 
   describe '.levels_for_user' do
-    it 'returns all levels for an admin' do
-      user = build(:user, :admin)
+    context 'when admin mode is enabled', :enable_admin_mode do
+      it 'returns all levels for an admin' do
+        user = build(:user, :admin)
 
-      expect(described_class.levels_for_user(user))
-        .to eq([Gitlab::VisibilityLevel::PRIVATE,
-                Gitlab::VisibilityLevel::INTERNAL,
-                Gitlab::VisibilityLevel::PUBLIC])
+        expect(described_class.levels_for_user(user))
+          .to eq([Gitlab::VisibilityLevel::PRIVATE,
+                  Gitlab::VisibilityLevel::INTERNAL,
+                  Gitlab::VisibilityLevel::PUBLIC])
+      end
+    end
+
+    context 'when admin mode is disabled' do
+      it 'returns INTERNAL and PUBLIC for an admin' do
+        user = build(:user, :admin)
+
+        expect(described_class.levels_for_user(user))
+            .to eq([Gitlab::VisibilityLevel::INTERNAL,
+                    Gitlab::VisibilityLevel::PUBLIC])
+      end
     end
 
     it 'returns INTERNAL and PUBLIC for internal users' do

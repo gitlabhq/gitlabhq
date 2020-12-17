@@ -528,7 +528,7 @@ You can use the following fake tokens as examples:
 
 | Usage | Guidance |
 |-----------------------|-----|
-| admin, admin area     | Use **administration**, **administrator**, **administer**, or **Admin Area** instead. |.
+| admin, admin area     | Use **administration**, **administrator**, **administer**, or **Admin Area** instead. |
 | and/or                | Use **or** instead, or another sensible construction. |
 | currently             | Do not use when talking about the product or its features. The documentation describes the product as it is today. |
 | easily                | Do not use. If the user doesn't find the process to be these things, we lose their trust. |

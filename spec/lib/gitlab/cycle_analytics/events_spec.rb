@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'value stream analytics events', :aggregate_failures do
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user) { create(:user, :admin) }
+  let_it_be(:user) { project.owner }
   let(:from_date) { 10.days.ago }
   let!(:context) { create(:issue, project: project, created_at: 2.days.ago) }
 

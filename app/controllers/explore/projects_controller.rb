@@ -9,13 +9,16 @@ class Explore::ProjectsController < Explore::ApplicationController
   include SortingPreference
 
   MIN_SEARCH_LENGTH = 3
+  PAGE_LIMIT = 50
 
   before_action :set_non_archived_param
   before_action :set_sorting
 
-  # Limit taken from https://gitlab.com/gitlab-org/gitlab/issues/38357
+  # For background information on the limit, see:
+  #   https://gitlab.com/gitlab-org/gitlab/-/issues/38357
+  #   https://gitlab.com/gitlab-org/gitlab/-/issues/262682
   before_action only: [:index, :trending, :starred] do
-    limit_pages(200)
+    limit_pages(PAGE_LIMIT)
   end
 
   rescue_from PageOutOfBoundsError, with: :page_out_of_bounds

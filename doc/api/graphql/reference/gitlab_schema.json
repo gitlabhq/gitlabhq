@@ -5901,6 +5901,16 @@
         },
         {
           "kind": "SCALAR",
+          "name": "BoardsEpicListID",
+          "description": "Identifier of Boards::EpicList",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
           "name": "Boolean",
           "description": "Represents `true` or `false` values.",
           "fields": null,
@@ -10961,6 +10971,82 @@
                 "kind": "SCALAR",
                 "name": "Boolean",
                 "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "assigneeId",
+              "description": "The ID of user to be assigned to the board.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "UserID",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "milestoneId",
+              "description": "The ID of milestone to be assigned to the board.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "MilestoneID",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "iterationId",
+              "description": "The ID of iteration to be assigned to the board.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "IterationID",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "weight",
+              "description": "The weight value to be assigned to the board.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "labels",
+              "description": "Labels of the issue",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "labelIds",
+              "description": "The IDs of labels to be added to the board.",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "LabelID",
+                    "ofType": null
+                  }
+                }
               },
               "defaultValue": null
             },
@@ -22557,7 +22643,7 @@
           "fields": [
             {
               "name": "id",
-              "description": "Global ID of the board",
+              "description": "Global ID of the board.",
               "args": [
 
               ],
@@ -22574,8 +22660,61 @@
               "deprecationReason": null
             },
             {
+              "name": "lists",
+              "description": "Epic board lists.",
+              "args": [
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "EpicListConnection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "name",
-              "description": "Name of the board",
+              "description": "Name of the board.",
               "args": [
 
               ],
@@ -24286,6 +24425,213 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "EpicIssue",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "EpicList",
+          "description": "Represents an epic board list",
+          "fields": [
+            {
+              "name": "id",
+              "description": "Global ID of the board list.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "BoardsEpicListID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "label",
+              "description": "Label of the list.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Label",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "listType",
+              "description": "Type of the list.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "position",
+              "description": "Position of the list within the board.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "title",
+              "description": "Title of the list.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "EpicListConnection",
+          "description": "The connection type for EpicList.",
+          "fields": [
+            {
+              "name": "edges",
+              "description": "A list of edges.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "EpicListEdge",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "nodes",
+              "description": "A list of nodes.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "EpicList",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "pageInfo",
+              "description": "Information to aid in pagination.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PageInfo",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "EpicListEdge",
+          "description": "An edge in a connection.",
+          "fields": [
+            {
+              "name": "cursor",
+              "description": "A cursor for use in pagination.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "node",
+              "description": "The item at the end of the edge.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "EpicList",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -28185,7 +28531,7 @@
                 },
                 {
                   "name": "scanner",
-                  "description": "Filter vulnerabilities by scanner",
+                  "description": "Filter vulnerabilities by VulnerabilityScanner.externalId",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -52204,7 +52550,7 @@
                 },
                 {
                   "name": "scanner",
-                  "description": "Filter vulnerabilities by scanner",
+                  "description": "Filter vulnerabilities by VulnerabilityScanner.externalId",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -55577,7 +55923,7 @@
                 },
                 {
                   "name": "scanner",
-                  "description": "Filter vulnerabilities by scanner",
+                  "description": "Filter vulnerabilities by VulnerabilityScanner.externalId",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -68567,6 +68913,82 @@
                   "kind": "SCALAR",
                   "name": "BoardID",
                   "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "assigneeId",
+              "description": "The ID of user to be assigned to the board.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "UserID",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "milestoneId",
+              "description": "The ID of milestone to be assigned to the board.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "MilestoneID",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "iterationId",
+              "description": "The ID of iteration to be assigned to the board.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "IterationID",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "weight",
+              "description": "The weight value to be assigned to the board.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "labels",
+              "description": "Labels of the issue",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "labelIds",
+              "description": "The IDs of labels to be added to the board.",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "LabelID",
+                    "ofType": null
+                  }
                 }
               },
               "defaultValue": null

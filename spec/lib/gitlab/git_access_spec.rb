@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::GitAccess do
   include TermsHelper
   include GitHelpers
+  include AdminModeHelper
 
   let(:user) { create(:user) }
 
@@ -769,19 +770,39 @@ RSpec.describe Gitlab::GitAccess do
       describe 'admin user' do
         let(:user) { create(:admin) }
 
-        context 'when member of the project' do
-          before do
-            project.add_reporter(user)
+        context 'when admin mode enabled', :enable_admin_mode do
+          context 'when member of the project' do
+            before do
+              project.add_reporter(user)
+            end
+
+            context 'pull code' do
+              it { expect { pull_access_check }.not_to raise_error }
+            end
           end
 
-          context 'pull code' do
-            it { expect { pull_access_check }.not_to raise_error }
+          context 'when is not member of the project' do
+            context 'pull code' do
+              it { expect { pull_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:download]) }
+            end
           end
         end
 
-        context 'when is not member of the project' do
-          context 'pull code' do
-            it { expect { pull_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:download]) }
+        context 'when admin mode disabled' do
+          context 'when member of the project' do
+            before do
+              project.add_reporter(user)
+            end
+
+            context 'pull code' do
+              it { expect { pull_access_check }.not_to raise_error }
+            end
+          end
+
+          context 'when is not member of the project' do
+            context 'pull code' do
+              it { expect { pull_access_check }.to raise_not_found }
+            end
           end
         end
       end
@@ -870,8 +891,9 @@ RSpec.describe Gitlab::GitAccess do
         # Expectations are given a custom failure message proc so that it's
         # easier to identify which check(s) failed.
         it "has the correct permissions for #{role}s" do
-          if role == :admin
+          if [:admin_with_admin_mode, :admin_without_admin_mode].include?(role)
             user.update_attribute(:admin, true)
+            enable_admin_mode!(user) if role == :admin_with_admin_mode
             project.add_guest(user)
           else
             project.add_role(user, role)
@@ -897,7 +919,7 @@ RSpec.describe Gitlab::GitAccess do
     end
 
     permissions_matrix = {
-      admin: {
+      admin_with_admin_mode: {
         any: true,
         push_new_branch: true,
         push_master: true,
@@ -907,6 +929,18 @@ RSpec.describe Gitlab::GitAccess do
         push_new_tag: true,
         push_all: true,
         merge_into_protected_branch: true
+      },
+
+      admin_without_admin_mode: {
+        any: false,
+        push_new_branch: false,
+        push_master: false,
+        push_protected_branch: false,
+        push_remove_protected_branch: false,
+        push_tag: false,
+        push_new_tag: false,
+        push_all: false,
+        merge_into_protected_branch: false
       },
 
       maintainer: {
@@ -1009,7 +1043,7 @@ RSpec.describe Gitlab::GitAccess do
 
         run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false },
                                                             maintainer: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false },
-                                                            admin: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false }))
+                                                            admin_with_admin_mode: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false }))
       end
     end
 

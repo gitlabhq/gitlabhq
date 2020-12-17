@@ -6,11 +6,10 @@ RSpec.describe 'npm.latest.gitlab-ci.yml' do
   subject(:template) { Gitlab::Template::GitlabCiYmlTemplate.find('npm.latest') }
 
   describe 'the created pipeline' do
-    let_it_be(:user) { create(:admin) }
-
     let(:repo_files) { { 'package.json' => '{}', 'README.md' => '' } }
     let(:modified_files) { %w[package.json] }
     let(:project) { create(:project, :custom_repo, files: repo_files) }
+    let(:user) { project.owner }
     let(:pipeline_branch) { project.default_branch }
     let(:pipeline_tag) { 'v1.2.1' }
     let(:pipeline_ref) { pipeline_branch }

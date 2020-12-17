@@ -45,9 +45,9 @@ export const getEditorValue = async () => {
   return window.monaco.editor.getModel(uri).getValue();
 };
 
-const findTreeBody = () => screen.findByTestId('ide-tree-body', {}, { timeout: 5000 });
+const findTreeBody = () => screen.findByTestId('ide-tree-body');
 
-const findRootActions = () => screen.findByTestId('ide-root-actions', {}, { timeout: 7000 });
+const findRootActions = () => screen.findByTestId('ide-root-actions');
 
 const findFileRowContainer = (row = null) =>
   row ? Promise.resolve(row.parentElement) : findTreeBody();

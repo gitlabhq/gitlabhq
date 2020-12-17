@@ -172,13 +172,31 @@ RSpec.describe Gitlab::GitAccessSnippet do
         end
       end
 
-      [:guest, :reporter, :maintainer, :author, :admin].each do |membership|
+      [:guest, :reporter, :maintainer, :author].each do |membership|
         context membership.to_s do
           let(:membership) { membership }
 
           it 'cannot perform git pushes' do
             expect { push_access_check }.to raise_error(described_class::ForbiddenError)
             expect { pull_access_check }.not_to raise_error
+          end
+        end
+      end
+
+      context 'admin' do
+        let(:membership) { :admin }
+
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it 'cannot perform git pushes' do
+            expect { push_access_check }.to raise_error(described_class::ForbiddenError)
+            expect { pull_access_check }.not_to raise_error
+          end
+        end
+
+        context 'when admin mode is disabled' do
+          it 'cannot perform git operations' do
+            expect { push_access_check }.to raise_error(described_class::ForbiddenError)
+            expect { pull_access_check }.to raise_error(described_class::ForbiddenError)
           end
         end
       end

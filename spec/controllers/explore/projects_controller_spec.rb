@@ -60,7 +60,7 @@ RSpec.describe Explore::ProjectsController do
   end
 
   shared_examples "blocks high page numbers" do
-    let(:page_limit) { 200 }
+    let(:page_limit) { described_class::PAGE_LIMIT }
 
     context "page number is too high" do
       [:index, :trending, :starred].each do |endpoint|

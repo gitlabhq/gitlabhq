@@ -196,6 +196,9 @@ Arguments:
 - `start`: custom start of the batch counting in order to avoid complex min calculations
 - `end`: custom end of the batch counting in order to avoid complex min calculations
 
+WARNING:
+Counting over non-unique columns can lead to performance issues. Take a look at the [iterating tables in batches](../iterating_tables_in_batches.md) guide for more details.
+
 Examples:
 
 ```ruby

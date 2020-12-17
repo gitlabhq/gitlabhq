@@ -9,48 +9,30 @@ module Gitlab
       included do
         # MergeRequest only quick actions definitions
         desc do
-          if Feature.enabled?(:merge_orchestration_service, quick_action_target.project, default_enabled: true)
-            if preferred_strategy = preferred_auto_merge_strategy(quick_action_target)
-              _("Merge automatically (%{strategy})") % { strategy: preferred_strategy.humanize }
-            else
-              _("Merge immediately")
-            end
+          if preferred_strategy = preferred_auto_merge_strategy(quick_action_target)
+            _("Merge automatically (%{strategy})") % { strategy: preferred_strategy.humanize }
           else
-            _('Merge (when the pipeline succeeds)')
+            _("Merge immediately")
           end
         end
         explanation do
-          if Feature.enabled?(:merge_orchestration_service, quick_action_target.project, default_enabled: true)
-            if preferred_strategy = preferred_auto_merge_strategy(quick_action_target)
-              _("Schedules to merge this merge request (%{strategy}).") % { strategy: preferred_strategy.humanize }
-            else
-              _('Merges this merge request immediately.')
-            end
+          if preferred_strategy = preferred_auto_merge_strategy(quick_action_target)
+            _("Schedules to merge this merge request (%{strategy}).") % { strategy: preferred_strategy.humanize }
           else
-            _('Merges this merge request when the pipeline succeeds.')
+            _('Merges this merge request immediately.')
           end
         end
         execution_message do
-          if Feature.enabled?(:merge_orchestration_service, quick_action_target.project, default_enabled: true)
-            if preferred_strategy = preferred_auto_merge_strategy(quick_action_target)
-              _("Scheduled to merge this merge request (%{strategy}).") % { strategy: preferred_strategy.humanize }
-            else
-              _('Merged this merge request.')
-            end
+          if preferred_strategy = preferred_auto_merge_strategy(quick_action_target)
+            _("Scheduled to merge this merge request (%{strategy}).") % { strategy: preferred_strategy.humanize }
           else
-            _('Scheduled to merge this merge request when the pipeline succeeds.')
+            _('Merged this merge request.')
           end
         end
         types MergeRequest
         condition do
-          if Feature.enabled?(:merge_orchestration_service, quick_action_target.project, default_enabled: true)
-            quick_action_target.persisted? &&
-              merge_orchestration_service.can_merge?(quick_action_target)
-          else
-            last_diff_sha = params && params[:merge_request_diff_head_sha]
-            quick_action_target.persisted? &&
-              quick_action_target.mergeable_with_quick_action?(current_user, autocomplete_precheck: !last_diff_sha, last_diff_sha: last_diff_sha)
-          end
+          quick_action_target.persisted? &&
+            merge_orchestration_service.can_merge?(quick_action_target)
         end
         command :merge do
           @updates[:merge] = params[:merge_request_diff_head_sha]

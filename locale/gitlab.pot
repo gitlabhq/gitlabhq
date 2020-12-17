@@ -17263,9 +17263,6 @@ msgstr ""
 msgid "Merge"
 msgstr ""
 
-msgid "Merge (when the pipeline succeeds)"
-msgstr ""
-
 msgid "Merge Conflicts"
 msgstr ""
 
@@ -17504,9 +17501,6 @@ msgid "Merged: %{merged}"
 msgstr ""
 
 msgid "Merges this merge request immediately."
-msgstr ""
-
-msgid "Merges this merge request when the pipeline succeeds."
 msgstr ""
 
 msgid "Merging immediately isn't recommended as it may negatively impact the existing merge train. Read the %{docsLinkStart}documentation%{docsLinkEnd} for more information."
@@ -24211,9 +24205,6 @@ msgstr ""
 msgid "Scheduled to merge this merge request (%{strategy})."
 msgstr ""
 
-msgid "Scheduled to merge this merge request when the pipeline succeeds."
-msgstr ""
-
 msgid "Schedules"
 msgstr ""
 
@@ -28722,6 +28713,9 @@ msgstr ""
 msgid "ThreatMonitoring|Environment"
 msgstr ""
 
+msgid "ThreatMonitoring|Hide dismissed alerts"
+msgstr ""
+
 msgid "ThreatMonitoring|In review"
 msgstr ""
 
@@ -29929,7 +29923,7 @@ msgstr ""
 msgid "UpdateProject|Project could not be updated!"
 msgstr ""
 
-msgid "UpdateRepositoryStorage|Error moving repository storage for %{project_full_path} - %{message}"
+msgid "UpdateRepositoryStorage|Error moving repository storage for %{container_full_path} - %{message}"
 msgstr ""
 
 msgid "UpdateRepositoryStorage|Failed to verify %{type} repository checksum from %{old} to %{new}"

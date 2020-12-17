@@ -290,14 +290,11 @@ RSpec.configure do |config|
     admin_mode_mock_dirs = %w(
       ./ee/spec/elastic_integration
       ./ee/spec/finders
-      ./ee/spec/lib
       ./ee/spec/serializers
       ./ee/spec/support/shared_examples/finders/geo
       ./ee/spec/support/shared_examples/graphql/geo
       ./spec/finders
-      ./spec/lib
       ./spec/serializers
-      ./spec/support/shared_examples/lib/gitlab
       ./spec/workers
     )
 

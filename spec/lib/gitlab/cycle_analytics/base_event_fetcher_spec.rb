@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::CycleAnalytics::BaseEventFetcher do
   let(:max_events) { 2 }
   let(:project) { create(:project, :repository) }
-  let(:user) { create(:user, :admin) }
+  let(:user) { project.owner }
   let(:start_time_attrs) { Issue.arel_table[:created_at] }
   let(:end_time_attrs) { [Issue::Metrics.arel_table[:first_associated_with_milestone_at]] }
   let(:options) do

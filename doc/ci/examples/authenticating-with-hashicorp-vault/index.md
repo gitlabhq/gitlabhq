@@ -47,6 +47,7 @@ The JWT's payload looks like this:
   "project_id": "22",                            #
   "project_path": "mygroup/myproject",           #
   "user_id": "42",                               # Id of the user executing the job
+  "user_login": "myuser"                         # GitLab @username
   "user_email": "myuser@example.com",            # Email of the user executing the job
   "pipeline_id": "1212",                         #
   "job_id": "1212",                              #

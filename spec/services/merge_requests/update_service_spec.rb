@@ -431,14 +431,6 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
 
     describe 'merge' do
       it_behaves_like 'correct merge behavior'
-
-      context 'when merge_orchestration_service feature flag is disabled' do
-        before do
-          stub_feature_flags(merge_orchestration_service: false)
-        end
-
-        it_behaves_like 'correct merge behavior'
-      end
     end
 
     context 'todos' do

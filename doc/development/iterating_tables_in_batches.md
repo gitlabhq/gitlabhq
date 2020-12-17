@@ -42,6 +42,29 @@ The API of this method is similar to `in_batches`, though it doesn't support
 all of the arguments that `in_batches` supports. You should always use
 `each_batch` _unless_ you have a specific need for `in_batches`.
 
+## Avoid iterating over non-unique columns
+
+One should proceed with extra caution, and possibly avoid iterating over a column that can contain duplicate values.
+When you iterate over an attribute that is not unique, even with the applied max batch size, there is no guarantee that the resulting batches will not surpass it.
+The following snippet demonstrates this situation, whe one attempt to select `Ci::Build` entries for users with `id` between `1` and `10,s000`, database returns `1 215 178`
+matching rows
+
+```ruby
+[ gstg ] production> Ci::Build.where(user_id: (1..10_000)).size
+=> 1215178
+```
+
+This happens because built relation is translated into following query
+
+```ruby
+[ gstg ] production> puts Ci::Build.where(user_id: (1..10_000)).to_sql
+SELECT "ci_builds".* FROM "ci_builds" WHERE "ci_builds"."type" = 'Ci::Build' AND "ci_builds"."user_id" BETWEEN 1 AND 10000
+=> nil
+```
+
+And queries which filters non-unique column by range `WHERE "ci_builds"."user_id" BETWEEN ? AND ?`, even though the range size is limited to certain threshold (`10,000` in previous example) this threshold does not translates to the size of returned dataset. That happens because when taking `n` possible values of attributes,
+one can't tell for sure that the number of records that contains them will be less than `n`.
+
 ## Column definition
 
 `EachBatch` uses the primary key of the model by default for the iteration. This works most of the cases, however in some cases, you might want to use a different column for the iteration.
@@ -55,7 +78,7 @@ end
 The query above iterates over the project creators and prints them out without duplications.
 
 NOTE:
-In case the column is not unique (no unique index definition), calling the `distinct` method on the relation is necessary.
+In case the column is not unique (no unique index definition), calling the `distinct` method on the relation is necessary. Using not unique column without `distinct` may result in `each_batch` falling into endless loop as described at following [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/285097)
 
 ## `EachBatch` in data migrations
 

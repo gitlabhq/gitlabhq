@@ -1,3 +1,15 @@
+---
+# This file is not meant to store permanent exclusions.
+# - for permanent lists, place them in the .rubocop.yml.
+# - for short (less than 15 lines line) temporary lists, place them in the .rubocop_todo.yml file (run auto-generation).
+#
+# Purpose of this file:
+# - show long exclusion lists that are hidden in generic auto-generation of .rubocop_todo.yml.
+# - provide an 'in-flight' list of exclusions being worked on when qualifying as a long list
+#   as mentioned above.
+# - guidelines for use found in
+#   https://docs.gitlab.com/ee/development/contributing/style_guides.html#resolving-rubocop-exceptions.
+
 FactoryBot/InlineAssociation:
   Exclude:
     - 'ee/spec/factories/analytics/cycle_analytics/group_stages.rb'
@@ -16,25 +28,6 @@ FactoryBot/InlineAssociation:
     - 'spec/factories/notes.rb'
     - 'spec/factories/uploads.rb'
     - 'spec/factories/wiki_pages.rb'
-
-Graphql/IDType:
-  Exclude:
-    - 'ee/app/graphql/ee/mutations/issues/update.rb'
-    - 'app/graphql/mutations/boards/issues/issue_move_list.rb'
-    - 'app/graphql/resolvers/design_management/design_at_version_resolver.rb'
-    - 'app/graphql/resolvers/design_management/design_resolver.rb'
-    - 'app/graphql/resolvers/design_management/designs_resolver.rb'
-    - 'app/graphql/resolvers/design_management/version/design_at_version_resolver.rb'
-    - 'app/graphql/resolvers/design_management/version_in_collection_resolver.rb'
-    - 'app/graphql/resolvers/design_management/version_resolver.rb'
-    - 'app/graphql/resolvers/design_management/versions_resolver.rb'
-    - 'app/graphql/resolvers/error_tracking/sentry_detailed_error_resolver.rb'
-    - 'app/graphql/resolvers/error_tracking/sentry_error_stack_trace_resolver.rb'
-    - 'app/graphql/resolvers/user_merge_requests_resolver.rb'
-
-Gitlab/PolicyRuleBoolean:
-  Exclude:
-    - 'ee/app/policies/ee/identity_provider_policy.rb'
 
 Rails/SaveBang:
   Exclude:

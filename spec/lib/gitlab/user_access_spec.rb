@@ -45,10 +45,20 @@ RSpec.describe Gitlab::UserAccess do
       let(:empty_project) { create(:project_empty_repo) }
       let(:project_access) { described_class.new(user, container: empty_project) }
 
-      it 'returns true for admins' do
-        user.update!(admin: true)
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it 'returns true for admins' do
+          user.update!(admin: true)
 
-        expect(access.can_push_to_branch?('master')).to be_truthy
+          expect(access.can_push_to_branch?('master')).to be_truthy
+        end
+      end
+
+      context 'when admin mode is disabled' do
+        it 'returns false for admins' do
+          user.update!(admin: true)
+
+          expect(access.can_push_to_branch?('master')).to be_falsey
+        end
       end
 
       it 'returns true if user is maintainer' do
@@ -85,10 +95,20 @@ RSpec.describe Gitlab::UserAccess do
       let(:branch) { create :protected_branch, project: project, name: "test" }
       let(:not_existing_branch) { create :protected_branch, :developers_can_merge, project: project }
 
-      it 'returns true for admins' do
-        user.update!(admin: true)
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it 'returns true for admins' do
+          user.update!(admin: true)
 
-        expect(access.can_push_to_branch?(branch.name)).to be_truthy
+          expect(access.can_push_to_branch?(branch.name)).to be_truthy
+        end
+      end
+
+      context 'when admin mode is disabled' do
+        it 'returns false for admins' do
+          user.update!(admin: true)
+
+          expect(access.can_push_to_branch?(branch.name)).to be_falsey
+        end
       end
 
       it 'returns true if user is a maintainer' do

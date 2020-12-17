@@ -507,13 +507,6 @@ describe('Issuable output', () => {
       expect(wrapper.vm.issueChanged).toBe(false);
     });
 
-    it('returns false when `initialTitleText` is null and `formState.title` is empty string', () => {
-      wrapper.vm.store.formState.title = '';
-      wrapper.setProps({ initialTitleText: null });
-
-      expect(wrapper.vm.issueChanged).toBe(false);
-    });
-
     it('returns true when description is changed', () => {
       wrapper.vm.store.formState.description = 'RandomText';
 

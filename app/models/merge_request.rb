@@ -1639,18 +1639,6 @@ class MergeRequest < ApplicationRecord
     !has_commits?
   end
 
-  def mergeable_with_quick_action?(current_user, autocomplete_precheck: false, last_diff_sha: nil)
-    return false unless can_be_merged_by?(current_user)
-
-    return true if autocomplete_precheck
-
-    return false unless mergeable?(skip_ci_check: true)
-    return false if actual_head_pipeline && !(actual_head_pipeline.success? || actual_head_pipeline.active?)
-    return false if last_diff_sha != diff_head_sha
-
-    true
-  end
-
   def pipeline_coverage_delta
     if base_pipeline&.coverage && head_pipeline&.coverage
       '%.2f' % (head_pipeline.coverage.to_f - base_pipeline.coverage.to_f)

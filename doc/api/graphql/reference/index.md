@@ -1377,8 +1377,9 @@ Represents an epic board.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `id` | BoardsEpicBoardID! | Global ID of the board |
-| `name` | String | Name of the board |
+| `id` | BoardsEpicBoardID! | Global ID of the board. |
+| `lists` | EpicListConnection | Epic board lists. |
+| `name` | String | Name of the board. |
 
 ### EpicDescendantCount
 
@@ -1471,6 +1472,18 @@ Relationship between an epic and an issue.
 | `webPath` | String! | Web path of the issue |
 | `webUrl` | String! | Web URL of the issue |
 | `weight` | Int | Weight of the issue. |
+
+### EpicList
+
+Represents an epic board list.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `id` | BoardsEpicListID! | Global ID of the board list. |
+| `label` | Label | Label of the list. |
+| `listType` | String! | Type of the list. |
+| `position` | Int | Position of the list within the board. |
+| `title` | String! | Title of the list. |
 
 ### EpicPermissions
 

@@ -64,13 +64,13 @@ RSpec.describe Ci::DailyBuildGroupReportResultsFinder do
       end
     end
 
-    context 'when ref_path is not present' do
+    context 'when ref_path query parameter is not present' do
       let(:ref_path) { nil }
 
-      context 'when coverages exist for the default branch' do
+      context 'when records with cover data from the default branch exist' do
         let(:default_branch) { true }
 
-        it 'returns coverage for the default branch' do
+        it 'returns records with default_branch:true, irrespective of ref_path' do
           rspec_coverage_4 = create_daily_coverage('rspec', 66.0, '2020-03-10')
 
           expect(coverages).to contain_exactly(rspec_coverage_4)

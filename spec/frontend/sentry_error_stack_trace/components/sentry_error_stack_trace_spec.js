@@ -78,10 +78,5 @@ describe('Sentry Error Stack Trace', () => {
       expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
       expect(wrapper.find(Stacktrace).exists()).toBe(true);
     });
-
-    it('should not show stacktrace if it does not exist', () => {
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
-      expect(wrapper.find(Stacktrace).exists()).toBe(false);
-    });
   });
 });
