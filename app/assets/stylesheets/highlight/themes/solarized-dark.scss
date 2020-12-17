@@ -202,6 +202,8 @@ $solarized-dark-il: #2aa198;
     }
   }
 
+  @include conflict-colors('solarized-dark');
+
   // highlight line via anchor
   pre .hll {
     background-color: $solarized-dark-hll-bg !important;

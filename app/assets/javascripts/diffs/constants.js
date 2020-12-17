@@ -109,3 +109,9 @@ export const EVT_PERF_MARK_FILE_TREE_END = 'mr:diffs:perf:fileTreeEnd';
 export const EVT_PERF_MARK_DIFF_FILES_START = 'mr:diffs:perf:filesStart';
 export const EVT_PERF_MARK_FIRST_DIFF_FILE_SHOWN = 'mr:diffs:perf:firstFileShown';
 export const EVT_PERF_MARK_DIFF_FILES_END = 'mr:diffs:perf:filesEnd';
+
+export const CONFLICT_OUR = 'conflict_our';
+export const CONFLICT_THEIR = 'conflict_their';
+export const CONFLICT_MARKER = 'conflict_marker';
+export const CONFLICT_MARKER_OUR = 'conflict_marker_our';
+export const CONFLICT_MARKER_THEIR = 'conflict_marker_their';

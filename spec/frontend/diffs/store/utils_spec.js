@@ -1119,6 +1119,42 @@ describe('DiffsStoreUtils', () => {
     });
   });
 
+  describe('isConflictMarker', () => {
+    it.each`
+      type                       | expected
+      ${'conflict_marker_our'}   | ${true}
+      ${'conflict_marker_their'} | ${true}
+      ${'conflict_their'}        | ${false}
+      ${'conflict_our'}          | ${false}
+    `('returns $expected when type is $type', ({ type, expected }) => {
+      expect(utils.isConflictMarker({ type })).toBe(expected);
+    });
+  });
+
+  describe('isConflictOur', () => {
+    it.each`
+      type                       | expected
+      ${'conflict_marker_our'}   | ${false}
+      ${'conflict_marker_their'} | ${false}
+      ${'conflict_their'}        | ${false}
+      ${'conflict_our'}          | ${true}
+    `('returns $expected when type is $type', ({ type, expected }) => {
+      expect(utils.isConflictOur({ type })).toBe(expected);
+    });
+  });
+
+  describe('isConflictTheir', () => {
+    it.each`
+      type                       | expected
+      ${'conflict_marker_our'}   | ${false}
+      ${'conflict_marker_their'} | ${false}
+      ${'conflict_their'}        | ${true}
+      ${'conflict_our'}          | ${false}
+    `('returns $expected when type is $type', ({ type, expected }) => {
+      expect(utils.isConflictTheir({ type })).toBe(expected);
+    });
+  });
+
   describe('parallelizeDiffLines', () => {
     it('converts inline diff lines to parallel diff lines', () => {
       const file = getDiffFileMock();
@@ -1126,6 +1162,34 @@ describe('DiffsStoreUtils', () => {
       expect(utils.parallelizeDiffLines(file[INLINE_DIFF_LINES_KEY])).toEqual(
         file.parallel_diff_lines,
       );
+    });
+
+    it('converts conflicted diffs line', () => {
+      const lines = [
+        { type: 'new' },
+        { type: 'conflict_marker_our' },
+        { type: 'conflict_our' },
+        { type: 'conflict_marker' },
+        { type: 'conflict_their' },
+        { type: 'conflict_marker_their' },
+      ];
+
+      expect(utils.parallelizeDiffLines(lines)).toEqual([
+        {
+          left: null,
+          right: {
+            type: 'new',
+          },
+        },
+        {
+          left: { type: 'conflict_marker_our' },
+          right: { type: 'conflict_marker_their' },
+        },
+        {
+          left: { type: 'conflict_our' },
+          right: { type: 'conflict_their' },
+        },
+      ]);
     });
 
     it('converts inline diff lines', () => {

@@ -69,7 +69,8 @@ RSpec.describe 'Batch diffs', :js do
     end
 
     context 'which is in at least page 2 of the batched pages of diffs' do
-      it 'scrolls to the correct discussion' do
+      it 'scrolls to the correct discussion',
+         quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/293814' } do
         page.within('.diff-file.file-holder:last-of-type') do
           click_link('just now')
         end

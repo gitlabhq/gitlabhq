@@ -15,6 +15,11 @@ import {
   INLINE_DIFF_LINES_KEY,
   SHOW_WHITESPACE,
   NO_SHOW_WHITESPACE,
+  CONFLICT_OUR,
+  CONFLICT_THEIR,
+  CONFLICT_MARKER,
+  CONFLICT_MARKER_OUR,
+  CONFLICT_MARKER_THEIR,
 } from '../constants';
 import { prepareRawDiffFile } from '../utils/diff_file';
 
@@ -22,6 +27,11 @@ export const isAdded = line => ['new', 'new-nonewline'].includes(line.type);
 export const isRemoved = line => ['old', 'old-nonewline'].includes(line.type);
 export const isUnchanged = line => !line.type;
 export const isMeta = line => ['match', 'new-nonewline', 'old-nonewline'].includes(line.type);
+export const isConflictMarker = line =>
+  [CONFLICT_MARKER_OUR, CONFLICT_MARKER_THEIR].includes(line.type);
+export const isConflictSeperator = line => line.type === CONFLICT_MARKER;
+export const isConflictOur = line => line.type === CONFLICT_OUR;
+export const isConflictTheir = line => line.type === CONFLICT_THEIR;
 
 /**
  * Pass in the inline diff lines array which gets converted
@@ -42,12 +52,13 @@ export const isMeta = line => ['match', 'new-nonewline', 'old-nonewline'].includ
 
 export const parallelizeDiffLines = (diffLines, inline) => {
   let freeRightIndex = null;
+  let conflictStartIndex = -1;
   const lines = [];
 
   for (let i = 0, diffLinesLength = diffLines.length, index = 0; i < diffLinesLength; i += 1) {
     const line = diffLines[i];
 
-    if (isRemoved(line) || inline) {
+    if (isRemoved(line) || isConflictOur(line) || inline) {
       lines.push({
         [LINE_POSITION_LEFT]: line,
         [LINE_POSITION_RIGHT]: null,
@@ -58,7 +69,7 @@ export const parallelizeDiffLines = (diffLines, inline) => {
         freeRightIndex = index;
       }
       index += 1;
-    } else if (isAdded(line)) {
+    } else if (isAdded(line) || isConflictTheir(line)) {
       if (freeRightIndex !== null) {
         // If an old line came before this without a line on the right, this
         // line can be put to the right of it.
@@ -77,15 +88,28 @@ export const parallelizeDiffLines = (diffLines, inline) => {
         freeRightIndex = null;
         index += 1;
       }
-    } else if (isMeta(line) || isUnchanged(line)) {
-      // line in the right panel is the same as in the left one
-      lines.push({
-        [LINE_POSITION_LEFT]: line,
-        [LINE_POSITION_RIGHT]: line,
-      });
+    } else if (
+      isMeta(line) ||
+      isUnchanged(line) ||
+      isConflictMarker(line) ||
+      (isConflictSeperator(line) && inline)
+    ) {
+      if (conflictStartIndex <= 0) {
+        // line in the right panel is the same as in the left one
+        lines.push({
+          [LINE_POSITION_LEFT]: line,
+          [LINE_POSITION_RIGHT]: !inline && line,
+        });
 
-      freeRightIndex = null;
-      index += 1;
+        if (!inline && isConflictMarker(line)) {
+          conflictStartIndex = index;
+        }
+        freeRightIndex = null;
+        index += 1;
+      } else {
+        lines[conflictStartIndex][LINE_POSITION_RIGHT] = line;
+        conflictStartIndex = -1;
+      }
     }
   }
 

@@ -378,6 +378,18 @@ You can also enable a feature flag for a given gate:
 Feature.enable(:feature_flag_name, Project.find_by_full_path("root/my-project"))
 ```
 
+### Removing a feature flag locally (in development)
+
+When manually enabling or disabling a feature flag from the Rails console, its default value gets overwritten. 
+This can cause confusion when changing the flag's `default_enabled` attribute.
+
+To reset the feature flag to the default status, you can remove it in the rails console (`rails c`) 
+as follows:
+
+```ruby
+Feature.remove(:feature_flag_name)
+```
+
 ## Feature flags in tests
 
 Introducing a feature flag into the codebase creates an additional code path that should be tested.

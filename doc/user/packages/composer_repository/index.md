@@ -132,6 +132,13 @@ A more detailed Composer CI/CD file is also available as a `.gitlab-ci.yml` temp
 WARNING:
 Do not save unless you want to overwrite the existing CI/CD file.
 
+## Publishing packages with the same name or version
+
+When you publish:
+
+- The same package with different data, it overwrites the existing package.
+- The same package with the same data, a `404 Bad request` error occurs.
+
 ## Install a Composer package
 
 Install a package from the Package Registry so you can use it as a dependency.

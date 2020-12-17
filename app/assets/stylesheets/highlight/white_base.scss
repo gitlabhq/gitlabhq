@@ -81,6 +81,17 @@ $white-gc-bg: #eaf2f5;
 .line-numbers,
 .diff-line-num {
   background-color: $gray-light;
+
+  &.conflict_marker,
+  &.conflict_our {
+    background-color: map-get($conflict-colors, 'white-header-head-neutral');
+    border-color: map-get($conflict-colors, 'white-header-head-neutral');
+  }
+
+  &.conflict_their {
+    background-color: map-get($conflict-colors, 'white-header-origin-neutral');
+    border-color: map-get($conflict-colors, 'white-header-origin-neutral');
+  }
 }
 
 .diff-line-num,
@@ -115,7 +126,7 @@ pre.code,
 
   .diff-grid-left:hover,
   .diff-grid-right:hover {
-    .diff-line-num:not(.empty-cell) {
+    .diff-line-num:not(.empty-cell):not(.conflict_marker_their):not(.conflict_marker_our) {
       @include line-number-hover($white-over-bg);
     }
   }

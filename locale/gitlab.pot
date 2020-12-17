@@ -8617,6 +8617,9 @@ msgstr ""
 msgid "DastProfiles|Active"
 msgstr ""
 
+msgid "DastProfiles|Additional request headers (Optional)"
+msgstr ""
+
 msgid "DastProfiles|Are you sure you want to delete this profile?"
 msgstr ""
 
@@ -8684,6 +8687,9 @@ msgid "DastProfiles|Error Details"
 msgstr ""
 
 msgid "DastProfiles|Excluded URLs"
+msgstr ""
+
+msgid "DastProfiles|Excluded URLs (Optional)"
 msgstr ""
 
 msgid "DastProfiles|Hide debug messages"

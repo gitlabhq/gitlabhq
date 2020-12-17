@@ -1,4 +1,5 @@
 @import '../framework/variables';
+@import './conflict_colors';
 
 @mixin diff-background($background, $idiff, $border) {
   background: $background;
@@ -49,5 +50,46 @@
 
   a {
     color: darken($color, 15%);
+  }
+}
+
+@mixin conflict-colors($theme) {
+  .diff-line-num {
+    &.conflict_marker_our,
+    &.conflict_our {
+      background-color: map-get($conflict-colors, #{$theme}-header-head-neutral);
+      border-color: map-get($conflict-colors, #{$theme}-header-head-neutral);
+    }
+
+    &.conflict_marker_their,
+    &.conflict_their {
+      background-color: map-get($conflict-colors, #{$theme}-header-origin-neutral);
+      border-color: map-get($conflict-colors, #{$theme}-header-origin-neutral);
+    }
+  }
+
+  .line_holder {
+    .line_content,
+    .line-coverage {
+      &.conflict_marker_our {
+        background-color: map-get($conflict-colors, #{$theme}-header-head-neutral);
+        border-color: map-get($conflict-colors, #{$theme}-header-head-neutral);
+      }
+
+      &.conflict_marker_their {
+        background-color: map-get($conflict-colors, #{$theme}-header-origin-neutral);
+        border-color: map-get($conflict-colors, #{$theme}-header-origin-neutral);
+      }
+
+      &.conflict_our {
+        background-color: map-get($conflict-colors, #{$theme}-line-head-neutral);
+        border-color: map-get($conflict-colors, #{$theme}-line-head-neutral);
+      }
+
+      &.conflict_their {
+        background-color: map-get($conflict-colors, #{$theme}-line-origin-neutral);
+        border-color: map-get($conflict-colors, #{$theme}-line-origin-neutral);
+      }
+    }
   }
 }

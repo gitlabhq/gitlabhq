@@ -1,3 +1,5 @@
 .code.white {
   @import '../white_base';
+
+  @include conflict-colors('white');
 }

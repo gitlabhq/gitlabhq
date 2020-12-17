@@ -943,6 +943,16 @@ standby nodes.
    gitlab-ctl repmgr standby follow NEW_MASTER
    ```
 
+#### Geo secondary site considerations
+
+When a Geo secondary site is replicating from a primary site that uses `repmgr` and `PgBouncer`, [replicating through PgBouncer is not supported](https://github.com/pgbouncer/pgbouncer/issues/382#issuecomment-517911529) and the secondary must replicate directly from the leader node in the `repmgr` cluster. Therefore, when there is a failover in the `repmgr` cluster, you will need to manually re-point your secondary site to replicate from the new leader with:
+
+```shell
+sudo gitlab-ctl replicate-geo-database --host=<new_leader_ip> --replication-slot=<slot_name>
+```
+
+Otherwise, the replication will not happen anymore, even if the original node gets re-added as a follower node. This will re-sync your secondary site database and may take a long time depending on the amount of data to sync.
+
 ### Restore procedure
 
 If a node fails, it can be removed from the cluster, or added back as a standby

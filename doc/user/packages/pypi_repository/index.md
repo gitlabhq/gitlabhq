@@ -301,6 +301,12 @@ python -m twine upload --repository <source_name> dist/<package_file>
 - `<package_file>` is your package filename, ending in `.tar.gz` or `.whl`.
 - `<source_name>` is the [source name used during setup](#authenticate-with-the-package-registry).
 
+### Publishing packages with the same name or version
+
+You cannot publish a package if a package of the same name and version already exists.
+You must delete the existing package first. If you attempt to publish the same package
+more than once, a `404 Bad request` error occurs.
+
 ## Install a PyPI package
 
 To install the latest version of a package, use the following command:

@@ -198,6 +198,8 @@ $dark-il: #de935f;
     }
   }
 
+  @include conflict-colors('dark');
+
   // highlight line via anchor
   pre .hll {
     background-color: $dark-pre-hll-bg !important;
