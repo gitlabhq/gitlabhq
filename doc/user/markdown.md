@@ -431,7 +431,7 @@ GFM recognizes the following:
 | merge request                   | `!123`                     | `namespace/project!123`                 | `project!123`                  |
 | snippet                         | `$123`                     | `namespace/project$123`                 | `project$123`                  |
 | epic **(ULTIMATE)**             | `&123`                     | `group1/subgroup&123`                   |                                |
-| vulnerability **(ULTIMATE)**    | `[vulnerability:123]`      | `[vulnerability:namespace/project/123]` | `[vulnerability:project/123]`  |
+| vulnerability **(ULTIMATE)** (1)| `[vulnerability:123]`      | `[vulnerability:namespace/project/123]` | `[vulnerability:project/123]`  |
 | label by ID                     | `~123`                     | `namespace/project~123`                 | `project~123`                  |
 | one-word label by name          | `~bug`                     | `namespace/project~bug`                 | `project~bug`                  |
 | multi-word label by name        | `~"feature request"`       | `namespace/project~"feature request"`   | `project~"feature request"`    |
@@ -441,9 +441,11 @@ GFM recognizes the following:
 | multi-word milestone by name    | `%"release candidate"`     | `namespace/project%"release candidate"` | `project%"release candidate"`  |
 | specific commit                 | `9ba12248`                 | `namespace/project@9ba12248`            | `project@9ba12248`             |
 | commit range comparison         | `9ba12248...b19a04f5`      | `namespace/project@9ba12248...b19a04f5` | `project@9ba12248...b19a04f5`  |
-| repository file references      | `[README](doc/README)`     |                                         |                                |
-| repository file line references | `[README](doc/README#L13)` |                                         |                                |
+| repository file references      | `[README](doc/README.md)`  |                                         |                                |
+| repository file line references | `[README](doc/README.md#L13)` |                                      |                                |
 | [alert](../operations/incident_management/alerts.md) | `^alert#123` | `namespace/project^alert#123`    | `project^alert#123`            |
+
+1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/222483) in GitLab 13.7.
 
 For example, referencing an issue by using `#123` will format the output as a link
 to issue number 123 with text `#123`. Likewise, a link to issue number 123 will be

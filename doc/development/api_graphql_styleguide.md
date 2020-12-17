@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GraphQL API style guide
 
-This document outlines the style guide for GitLab's [GraphQL API](../api/graphql/index.md).
+This document outlines the style guide for the GitLab [GraphQL API](../api/graphql/index.md).
 
 ## How GitLab implements GraphQL
 
@@ -19,7 +19,7 @@ which is exposed as an API endpoint at `/api/graphql`.
 ## Deep Dive
 
 In March 2019, Nick Thomas hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/issues/1`)
-on GitLab's [GraphQL API](../api/graphql/index.md) to share his domain specific knowledge
+on the GitLab [GraphQL API](../api/graphql/index.md) to share his domain specific knowledge
 with anyone who may work in this part of the codebase in the future. You can find the
 [recording on YouTube](https://www.youtube.com/watch?v=-9L_1MWrjkg), and the slides on
 [Google Slides](https://docs.google.com/presentation/d/1qOTxpkTdHIp1CRjuTvO-aXg0_rUtzE3ETfLUdnBB5uQ/edit)
@@ -44,7 +44,7 @@ add a `HTTP_PRIVATE_TOKEN` header.
 
 ## Global IDs
 
-GitLab's GraphQL API uses Global IDs (i.e: `"gid://gitlab/MyObject/123"`)
+The GitLab GraphQL API uses Global IDs (i.e: `"gid://gitlab/MyObject/123"`)
 and never database primary key IDs.
 
 Global ID is [a convention](https://graphql.org/learn/global-object-identification/)
@@ -154,7 +154,7 @@ Further reading:
 
 ### Exposing Global IDs
 
-In keeping with GitLab's use of [Global IDs](#global-ids), always convert
+In keeping with the GitLab use of [Global IDs](#global-ids), always convert
 database primary key IDs into Global IDs when you expose them.
 
 All fields named `id` are
@@ -403,11 +403,11 @@ end
 
 ## Deprecating fields and enum values
 
-GitLab's GraphQL API is versionless, which means we maintain backwards
+The GitLab GraphQL API is versionless, which means we maintain backwards
 compatibility with older versions of the API with every change. Rather
 than removing a field or [enum value](#enums), we need to _deprecate_ it instead.
 The deprecated parts of the schema can then be removed in a future release
-in accordance with [GitLab's deprecation process](../api/graphql/index.md#deprecation-process).
+in accordance with the [GitLab deprecation process](../api/graphql/index.md#deprecation-process).
 
 Fields and enum values are deprecated using the `deprecated` property.
 The value of the property is a `Hash` of:
@@ -1106,7 +1106,7 @@ are returned as the result of the mutation.
 
 #### Update mutation granularity
 
-GitLab's service-oriented architecture means that most mutations call a Create, Delete, or Update
+The service-oriented architecture in GitLab means that most mutations call a Create, Delete, or Update
 service, for example `UpdateMergeRequestService`.
 For Update mutations, a you might want to only update one aspect of an object, and thus only need a
 _fine-grained_ mutation, for example `MergeRequest::SetWip`.
@@ -1233,7 +1233,7 @@ These arguments automatically generate an input type called
 
 ### Object identifier arguments
 
-In keeping with GitLab's use of [Global IDs](#global-ids), mutation
+In keeping with the GitLab use of [Global IDs](#global-ids), mutation
 arguments should use Global IDs to identify an object and never database
 primary key IDs.
 
@@ -1530,7 +1530,7 @@ In the future this may be able to be done using `InputUnions` if
 [this RFC](https://github.com/graphql/graphql-spec/blob/master/rfcs/InputUnion.md)
 is merged.
 
-## GitLab's custom scalars
+## GitLab custom scalars
 
 ### `Types::TimeType`
 
@@ -1695,7 +1695,7 @@ end
 
 ## Notes about Query flow and GraphQL infrastructure
 
-GitLab's GraphQL infrastructure can be found in `lib/gitlab/graphql`.
+The GitLab GraphQL infrastructure can be found in `lib/gitlab/graphql`.
 
 [Instrumentation](https://graphql-ruby.org/queries/instrumentation.html) is functionality
 that wraps around a query being executed. It is implemented as a module that uses the `Instrumentation` class.

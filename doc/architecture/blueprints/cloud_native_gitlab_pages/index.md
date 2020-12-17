@@ -72,7 +72,7 @@ of complexity, maintenance cost and enormous, negative impact on availability.
 
 ## New GitLab Pages Architecture
 
-- GitLab Pages sources domains' configuration from GitLab's internal
+- GitLab Pages sources domains' configuration from the GitLab internal
   API, instead of reading `config.json` files from a local shared storage.
 - GitLab Pages serves static content from Object Storage.
 
@@ -90,7 +90,7 @@ too.
 
 ## Iterations
 
-1. ✓ Redesign GitLab Pages configuration source to use GitLab's API
+1. ✓ Redesign GitLab Pages configuration source to use the GitLab API
 1. ✓ Evaluate performance and build reliable caching mechanisms
 1. ✓ Incrementally rollout the new source on GitLab.com
 1. ✓ Make GitLab Pages API domains configuration source enabled by default

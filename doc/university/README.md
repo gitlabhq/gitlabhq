@@ -51,7 +51,7 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 1. [Creating a Project in GitLab - Video](https://www.youtube.com/watch?v=7p0hrpNaJ14)
 1. [How to Create Files and Directories](https://about.gitlab.com/blog/2016/02/10/feature-highlight-create-files-and-directories-from-files-page/)
 1. [GitLab To-Do List](https://about.gitlab.com/blog/2016/03/02/gitlab-todos-feature-highlight/)
-1. [GitLab's Work in Progress (WIP) Flag](https://about.gitlab.com/blog/2016/01/08/feature-highlight-wip/)
+1. [GitLab Work in Progress (WIP) Flag](https://about.gitlab.com/blog/2016/01/08/feature-highlight-wip/)
 
 ### 1.5. Migrating from other Source Control
 

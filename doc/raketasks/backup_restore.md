@@ -627,7 +627,7 @@ backups are copied to, and is created if it does not exist. If the
 directory that you want to copy the tarballs to is the root of your mounted
 directory, use `.` instead.
 
-Because file system performance may affect GitLab's overall performance,
+Because file system performance may affect overall GitLab performance,
 [GitLab doesn't recommend using EFS for storage](../administration/nfs.md#avoid-using-awss-elastic-file-system-efs).
 
 For Omnibus GitLab packages:
@@ -671,7 +671,7 @@ For installations from source:
 
 The backup archives created by GitLab (`1393513186_2014_02_27_gitlab_backup.tar`)
 have the owner/group `git`/`git` and 0600 permissions by default. This is
-meant to avoid other system users reading GitLab's data. If you need the backup
+meant to avoid other system users reading GitLab data. If you need the backup
 archives to have different permissions, you can use the `archive_permissions`
 setting.
 

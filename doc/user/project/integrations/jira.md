@@ -83,7 +83,7 @@ Enter the further details on the page as described in the following table.
 | `Jira API URL` | The base URL to the Jira instance API. Web URL value is used if not set. For example, `https://jira-api.example.com`. Leave this field blank (or use the same value of `Web URL`) if using **Jira Cloud**. |
 | `Username or Email` | Created in [configuring Jira](#configuring-jira) step. Use `username` for **Jira Server** or `email` for **Jira Cloud**. |
 | `Password/API token` |Created in [configuring Jira](#configuring-jira) step. Use `password` for **Jira Server** or `API token` for **Jira Cloud**. |
-| `Transition ID` | Required for closing Jira issues via commits or merge requests. This is the ID of a transition in Jira that moves issues to a desired state. (See [Obtaining a transition ID](#obtaining-a-transition-id).) If you insert multiple transition IDs separated by `,` or `;`, the issue is moved to each state, one after another, using the given order. |
+| `Jira workflow transition IDs` | Required for closing Jira issues via commits or merge requests. These are the IDs of transitions in Jira that move issues to a particular state. (See [Obtaining a transition ID](#obtaining-a-transition-id).) If you insert multiple transition IDs separated by `,` or `;`, the issue is moved to each state, one after another, using the given order. In GitLab 13.6 and earlier, field was called `Transition ID`. |
 
 To enable users to view Jira issues inside the GitLab project, select **Enable Jira issues** and enter a Jira project key. **(PREMIUM)**
 

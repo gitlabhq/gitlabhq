@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Frontend Development Guidelines
 
 This document describes various guidelines to ensure consistency and quality
-across GitLab's frontend team.
+across the GitLab frontend team.
 
 ## Overview
 
@@ -24,7 +24,7 @@ Working with our frontend assets requires Node (v10.13.0 or greater) and Yarn
 For our currently-supported browsers, see our [requirements](../../install/requirements.md#supported-web-browsers).
 
 Use [BrowserStack](https://www.browserstack.com/) to test with our supported browsers.
-Sign in to BrowserStack with the credentials saved in the **Engineering** vault of GitLab's
+Sign in to BrowserStack with the credentials saved in the **Engineering** vault of the GitLab
 [shared 1Password account](https://about.gitlab.com/handbook/security/#1password-guide).
 
 ## Initiatives
@@ -41,7 +41,7 @@ How we [plan and execute](development_process.md) the work on the frontend.
 
 ## Architecture
 
-How we go about [making fundamental design decisions](architecture.md) in GitLab's frontend team
+How we go about [making fundamental design decisions](architecture.md) in the GitLab frontend team
 or make changes to our frontend development guidelines.
 
 ## Testing
@@ -56,7 +56,7 @@ Reusable components with technical and usage guidelines can be found in our
 
 ## Design Patterns
 
-Common JavaScript [design patterns](design_patterns.md) in GitLab's codebase.
+Common JavaScript [design patterns](design_patterns.md) in the GitLab codebase.
 
 ## Vue.js Best Practices
 

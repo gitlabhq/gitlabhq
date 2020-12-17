@@ -305,7 +305,7 @@ bundle exec stackprof --stackcollapse /tmp/stackprof.55769.c6c3906452.profile | 
 
 ## RSpec profiling
 
-GitLab's development environment also includes the
+The GitLab development environment also includes the
 [rspec_profiling](https://github.com/foraker/rspec_profiling) gem, which is used
 to collect data on spec execution times. This is useful for analyzing the
 performance of the test suite itself, or seeing how the performance of a spec
@@ -358,7 +358,7 @@ We can use two approaches, often in combination, to track down memory issues:
 
 We can use `memory_profiler` for profiling.
 
-The [`memory_profiler`](https://github.com/SamSaffron/memory_profiler) gem is already present in GitLab's `Gemfile`,
+The [`memory_profiler`](https://github.com/SamSaffron/memory_profiler) gem is already present in the GitLab `Gemfile`,
 you just need to require it:
 
 ```ruby

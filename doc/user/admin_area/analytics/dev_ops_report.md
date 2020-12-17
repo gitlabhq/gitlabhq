@@ -20,9 +20,9 @@ To see DevOps Report, go to **Admin Area > Analytics > DevOps Report**.
 NOTE:
 Your GitLab instance's [usage ping](../settings/usage_statistics.md#usage-ping) must be activated in order to use this feature.
 
-The DevOps Score tab displays the usage of GitLab's major features on your instance over
+The DevOps Score tab displays the usage of major GitLab features on your instance over
 the last 30 days, averaged over the number of billable users in that time period. It also
-provides a Lead score per feature, which is calculated based on GitLab's analysis
+provides a Lead score per feature, which is calculated based on GitLab analysis
 of top-performing instances based on [usage ping data](../settings/usage_statistics.md#usage-ping) that GitLab has
 collected. Your score is compared to the lead score of each feature and then expressed as a percentage at the bottom of said feature.
 Your overall **DevOps Score** is an average of your feature scores. You can use this score to compare your DevOps status to other organizations.
@@ -32,7 +32,7 @@ Your overall **DevOps Score** is an average of your feature scores. You can use 
 The page also provides helpful links to articles and GitLab docs, to help you
 improve your scores.
 
-Usage ping data is aggregated on GitLab's servers for analysis. Your usage
+Usage ping data is aggregated on GitLab servers for analysis. Your usage
 information is **not sent** to any other GitLab instances. If you have just started using GitLab, it may take a few weeks for data to be
 collected before this feature is available.
 
@@ -40,7 +40,7 @@ collected before this feature is available.
 
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247112) in GitLab 13.7.
 
-The DevOps Adoption tab shows you which segments of your organization are using GitLab's most essential features:
+The DevOps Adoption tab shows you which segments of your organization are using the most essential features of GitLab:
 
 - Issues
 - Merge Requests

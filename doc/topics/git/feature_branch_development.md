@@ -15,7 +15,7 @@ Once work on the development branch is complete, then the feature branch can be 
 
 GitLab frequently implements this process whenever there is an MVC that requires multiple MRs.
 
-## Use case: GitLab's release posts
+## Use case: GitLab release posts
 
 This section describes the use case with GitLab [release posts](https://about.gitlab.com/handbook/marketing/blog/release-posts/).
 Dozens of GitLab team members contribute to each monthly release post.

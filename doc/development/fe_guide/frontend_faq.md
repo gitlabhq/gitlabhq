@@ -182,7 +182,7 @@ we're using that our target browsers don't support. You don't need to add `core-
 polyfills manually.
 
 GitLab adds non-`core-js` polyfills for extending browser features (such as
-GitLab's SVG polyfill), which allow us to reference SVGs by using `<use xlink:href>`.
+the GitLab SVG polyfill), which allow us to reference SVGs by using `<use xlink:href>`.
 Be sure to add these polyfills to `app/assets/javascripts/commons/polyfills.js`.
 
 To see what polyfills are being used:

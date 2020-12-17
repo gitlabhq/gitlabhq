@@ -457,7 +457,7 @@ Consult the [Review Apps](testing_guide/review_apps.md) dedicated page for more 
 
 ### As-if-FOSS jobs
 
-The `* as-if-foss` jobs allows to run GitLab's test suite "as-if-FOSS", meaning as if the jobs would run in the context
+The `* as-if-foss` jobs allows the GitLab test suite "as-if-FOSS", meaning as if the jobs would run in the context
 of the `gitlab-org/gitlab-foss` project. These jobs are only created in the following cases:
 
 - `gitlab-org/security/gitlab` merge requests.

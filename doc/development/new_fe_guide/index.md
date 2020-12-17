@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Frontend Development Guidelines
 
-This guide contains all the information to successfully contribute to GitLab's frontend.
+This guide contains all the information to successfully contribute to the GitLab frontend.
 This is a living document, and we welcome contributions, feedback, and suggestions.
 
 ## [Development](development/index.md)

@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GraphQL development guidelines
 
-This guide contains all the information to successfully contribute to GitLab's
+This guide contains all the information to successfully contribute to the GitLab
 GraphQL API. This is a living document, and we welcome contributions,
 feedback, and suggestions.
 

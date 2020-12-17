@@ -15684,6 +15684,9 @@ msgstr ""
 msgid "JiraService|Events for %{noteable_model_name} are disabled."
 msgstr ""
 
+msgid "JiraService|For example, 12, 24"
+msgstr ""
+
 msgid "JiraService|If different from Web URL"
 msgstr ""
 
@@ -15708,19 +15711,19 @@ msgstr ""
 msgid "JiraService|Jira project key"
 msgstr ""
 
+msgid "JiraService|Jira workflow transition IDs"
+msgstr ""
+
 msgid "JiraService|Open Jira"
 msgstr ""
 
 msgid "JiraService|Password or API token"
 msgstr ""
 
+msgid "JiraService|Set transition IDs for Jira workflow transitions. %{link_start}Learn more%{link_end}"
+msgstr ""
+
 msgid "JiraService|This feature requires a Premium plan."
-msgstr ""
-
-msgid "JiraService|Transition ID(s)"
-msgstr ""
-
-msgid "JiraService|Use , or ; to separate multiple transition IDs"
 msgstr ""
 
 msgid "JiraService|Use a password for server version and an API token for cloud version"

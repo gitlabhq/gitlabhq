@@ -46,7 +46,7 @@ bin/rake danger_local
 ## Operation
 
 On startup, Danger reads a [`Dangerfile`](https://gitlab.com/gitlab-org/gitlab/blob/master/Dangerfile)
-from the project root. GitLab's Danger code is decomposed into a set of helpers
+from the project root. Danger code in GitLab is decomposed into a set of helpers
 and plugins, all within the [`danger/`](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/danger/)
 subdirectory, so ours just tells Danger to load it all. Danger then runs
 each plugin against the merge request, collecting the output from each. A plugin
@@ -66,7 +66,7 @@ continue to apply. However, there are a few things that deserve special emphasis
 Danger is a powerful tool and flexible tool, but not always the most appropriate
 way to solve a given problem or workflow.
 
-First, be aware of GitLab's [commitment to dogfooding](https://about.gitlab.com/handbook/engineering/#dogfooding).
+First, be aware of the GitLab [commitment to dogfooding](https://about.gitlab.com/handbook/engineering/#dogfooding).
 The code we write for Danger is GitLab-specific, and it **may not** be most
 appropriate place to implement functionality that addresses a need we encounter.
 Our users, customers, and even our own satellite projects, such as [Gitaly](https://gitlab.com/gitlab-org/gitaly),

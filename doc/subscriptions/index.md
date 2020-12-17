@@ -27,7 +27,7 @@ When choosing a subscription, there are two factors to consider:
 There are some differences in how a subscription applies, depending if you use
 GitLab.com or a self-managed instance:
 
-- [GitLab.com](gitlab_com/index.md): GitLab's software-as-a-service offering.
+- [GitLab.com](gitlab_com/index.md): The GitLab software-as-a-service offering.
   You don't need to install anything to use GitLab.com, you only need to
   [sign up](https://gitlab.com/users/sign_up) and start using GitLab straight away.
 - [GitLab self-managed](self_managed/index.md): Install, administer, and maintain

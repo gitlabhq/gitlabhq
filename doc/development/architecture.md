@@ -94,7 +94,7 @@ The simplest way to ensure this, is to add support for your feature or service t
 ### Simplified component overview
 
 This is a simplified architecture diagram that can be used to
-understand GitLab's architecture.
+understand the GitLab architecture.
 
 A complete architecture diagram is available in our
 [component diagram](#component-diagram) below.

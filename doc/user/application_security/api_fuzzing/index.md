@@ -488,24 +488,24 @@ increases as the numbers go up. To use a configuration file, add it to your repo
 
 | Environment variable        | Description        |
 |-----------------------------|--------------------|
-| `FUZZAPI_VERSION`           |Specify API Fuzzing container version. Defaults to `latest`. |
-| `FUZZAPI_TARGET_URL`        |Base URL of API testing target. |
-|[`FUZZAPI_CONFIG`](#configuration-files)|API Fuzzing configuration file. Defaults to `.gitlab-apifuzzer.yml`. |
-|[`FUZZAPI_PROFILE`](#configuration-files)|Configuration profile to use during testing. Defaults to `Quick`. |
-| `FUZZAPI_REPORT`            |Scan report filename. Defaults to `gl-api_fuzzing-report.xml`. |
-|[`FUZZAPI_OPENAPI`](#openapi-specification)|OpenAPI specification file or URL. |
-|[`FUZZAPI_HAR`](#http-archive-har)|HTTP Archive (HAR) file. |
-|[`FUZZAPI_POSTMAN_COLLECTION`](#postman-collection)|Postman Collection file. |
-|[`FUZZAPI_OVERRIDES_FILE`](#overrides)     |Path to a JSON file containing overrides. |
-|[`FUZZAPI_OVERRIDES_ENV`](#overrides)      |JSON string containing headers to override. |
-|[`FUZZAPI_OVERRIDES_CMD`](#overrides)      |Overrides command. |
-|[`FUZZAPI_OVERRIDES_INTERVAL`](#overrides) |How often to run overrides command in seconds. Defaults to `0` (once). |
-|[`FUZZAPI_HTTP_USERNAME`](#http-basic-authentication) |Username for HTTP authentication. |
-|[`FUZZAPI_HTTP_PASSWORD`](#http-basic-authentication) |Password for HTTP authentication. |
+| `FUZZAPI_VERSION`           | Specify API Fuzzing container version. Defaults to `latest`. |
+| `FUZZAPI_TARGET_URL`        | Base URL of API testing target. |
+|[`FUZZAPI_CONFIG`](#configuration-files) | API Fuzzing configuration file. Defaults to `.gitlab-apifuzzer.yml`. |
+|[`FUZZAPI_PROFILE`](#configuration-files) | Configuration profile to use during testing. Defaults to `Quick`. |
+| `FUZZAPI_REPORT`            | Scan report filename. Defaults to `gl-api_fuzzing-report.xml`. |
+|[`FUZZAPI_OPENAPI`](#openapi-specification) | OpenAPI specification file or URL. |
+|[`FUZZAPI_HAR`](#http-archive-har) | HTTP Archive (HAR) file. |
+|[`FUZZAPI_POSTMAN_COLLECTION`](#postman-collection) | Postman Collection file. |
+|[`FUZZAPI_OVERRIDES_FILE`](#overrides)     | Path to a JSON file containing overrides. |
+|[`FUZZAPI_OVERRIDES_ENV`](#overrides)      | JSON string containing headers to override. |
+|[`FUZZAPI_OVERRIDES_CMD`](#overrides)      | Overrides command. |
+|[`FUZZAPI_OVERRIDES_INTERVAL`](#overrides) | How often to run overrides command in seconds. Defaults to `0` (once). |
+|[`FUZZAPI_HTTP_USERNAME`](#http-basic-authentication) | Username for HTTP authentication. |
+|[`FUZZAPI_HTTP_PASSWORD`](#http-basic-authentication) | Password for HTTP authentication. |
 
 <!--|[`FUZZAPI_D_TARGET_IMAGE`](#target-container) |API target docker image |
 |[`FUZZAPI_D_TARGET_ENV`](#target-container)   |Docker environment options |
-|[`FUZZAPI_D_TARGET_VOLUME`](#target-container)|Docker volume options |
+|[`FUZZAPI_D_TARGET_VOLUME`](#target-container) | Docker volume options |
 |[`FUZZAPI_D_TARGET_PORTS`](#target-container) |Docker port options |
 | `FUZZAPI_D_WORKER_IMAGE`    |Custom worker docker image |
 | `FUZZAPI_D_WORKER_ENV`      |Custom worker docker environment options |
@@ -734,7 +734,7 @@ faults it reports.
 ## Viewing fuzzing faults
 
 The API Fuzzing analyzer produces a JSON report that is collected and used
-[to populate the faults into GitLab's vulnerability screens](../index.md#view-details-of-an-api-fuzzing-vulnerability).
+[to populate the faults into GitLab vulnerability screens](../index.md#view-details-of-an-api-fuzzing-vulnerability).
 Fuzzing faults show up as vulnerabilities with a severity of Unknown.
 
 The faults that API fuzzing finds require manual investigation and aren't associated with a specific
@@ -754,7 +754,7 @@ pipelines. For more information, see the [Security Dashboard documentation](../s
 
 ### Interacting with the vulnerabilities
 
-Fuzzing faults show up as vulnerabilities with a severity of Unknown. 
+Fuzzing faults show up as vulnerabilities with a severity of Unknown.
 Once a fault is found, you can interact with it. Read more on how to
 [interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).
 

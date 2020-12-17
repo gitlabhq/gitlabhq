@@ -66,13 +66,13 @@ Complementary reads:
 - [Guidelines for implementing Enterprise Edition features](ee_features.md)
 - [Danger bot](dangerbot.md)
 - [Generate a changelog entry with `bin/changelog`](changelog.md)
-- [Requesting access to Chatops on GitLab.com](chatops_on_gitlabcom.md#requesting-access) (for GitLab team members)
+- [Requesting access to ChatOps on GitLab.com](chatops_on_gitlabcom.md#requesting-access) (for GitLab team members)
 - [Patch release process for developers](https://gitlab.com/gitlab-org/release/docs/blob/master/general/patch/process.md#process-for-developers)
 - [Adding a new service component to GitLab](adding_service_component.md)
 
 ### Development guidelines review
 
-When you submit a change to GitLab's development guidelines, who 
+When you submit a change to the GitLab development guidelines, who
 you ask for reviews depends on the level of change.
 
 #### Wording, style, or link changes
@@ -132,7 +132,7 @@ In these cases, use the following workflow:
 
 1. After completing the reviews, consult with the EM/Staff Engineer
    author / approver of the MR.
-   
+
    If this is a significant change across multiple areas, request final review
    and approval from the VP of Development, the DRI for Development Guidelines,
    @clefelhocz1.

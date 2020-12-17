@@ -29,7 +29,7 @@ No matter how you use GitLab, we have documentation for you.
 | [**Contributing to GitLab**](#contributing-to-gitlab)<br/>At GitLab, everyone can contribute!                        | [**New to Git and GitLab?**](#new-to-git-and-gitlab)<br/>We have the resources to get you started.                         |
 | [**Build an integration with GitLab**](#build-an-integration-with-gitlab)<br/>Consult our integration documentation. | [**Coming to GitLab from another platform?**](#coming-to-gitlab-from-another-platform)<br/>Consult our guides.             |
 | [**Install GitLab**](https://about.gitlab.com/install/)<br/>Installation options for different platforms.            | [**Customers**](subscriptions/index.md)<br/>Information for new and existing customers.                                    |
-| [**Update GitLab**](update/README.md)<br/>Update your GitLab self-managed instance to the latest version.            | [**Reference Architectures**](administration/reference_architectures/index.md)<br/>GitLab's reference architectures        |
+| [**Update GitLab**](update/README.md)<br/>Update your GitLab self-managed instance to the latest version.            | [**Reference Architectures**](administration/reference_architectures/index.md)<br/>GitLab reference architectures        |
 | [**GitLab releases**](https://about.gitlab.com/releases/)<br/>What's new in GitLab.                                  |                                                                                                                            |
 
 ## Popular topics
@@ -69,8 +69,8 @@ We have the following documentation to rapidly uplift your GitLab knowledge:
 | [GitLab basics guides](gitlab-basics/README.md)                                                   | Start working on the command line and with GitLab.             |
 | [GitLab workflow overview](https://about.gitlab.com/blog/2016/10/25/gitlab-workflow-an-overview/) | Enhance your workflow with the best of GitLab Workflow.        |
 | [Get started with GitLab CI/CD](ci/quick_start/README.md)                                         | Quickly implement GitLab CI/CD.                                |
-| [Auto DevOps](topics/autodevops/index.md)                                                         | Learn more about GitLab's Auto DevOps.                         |
-| [GitLab Markdown](user/markdown.md)                                                               | GitLab's advanced formatting system (GitLab Flavored Markdown) |
+| [Auto DevOps](topics/autodevops/index.md)                                                         | Learn more about Auto DevOps in GitLab.                         |
+| [GitLab Markdown](user/markdown.md)                                                               | Advanced formatting system (GitLab Flavored Markdown) |
 
 ### User account
 

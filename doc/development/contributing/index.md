@@ -144,7 +144,7 @@ Keep the following in mind when submitting merge requests:
 
 - When reviewers are reading through a merge request they may request guidance from other
   reviewers.
-- If the code quality is found to not meet GitLab’s standards, the merge request reviewer will
+- If the code quality is found to not meet GitLab standards, the merge request reviewer will
   provide guidance and refer the author to our:
   - [Documentation](../documentation/styleguide/index.md) style guide.
   - [Code style guides](style_guides.md).

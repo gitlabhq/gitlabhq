@@ -22,7 +22,7 @@ fields.
 ## Why do we need that?
 
 We need page objects because we need to reduce duplication and avoid problems
-whenever someone changes some selectors in GitLab's source code.
+whenever someone changes some selectors in the GitLab source code.
 
 Imagine that we have a hundred specs in GitLab QA, and we need to sign into
 GitLab each time, before we make assertions. Without a page object, one would

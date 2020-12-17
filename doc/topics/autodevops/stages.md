@@ -12,7 +12,7 @@ Read them carefully to understand how each one works.
 ## Auto Build
 
 NOTE:
-Auto Build is not supported if Docker in Docker is not available for your GitLab Runners, like in OpenShift clusters. GitLab's OpenShift support is tracked [in a dedicated epic](https://gitlab.com/groups/gitlab-org/-/epics/2068).
+Auto Build is not supported if Docker in Docker is not available for your GitLab Runners, like in OpenShift clusters. The OpenShift support in GitLab is tracked [in a dedicated epic](https://gitlab.com/groups/gitlab-org/-/epics/2068).
 
 Auto Build creates a build of the application using an existing `Dockerfile` or
 Heroku buildpacks. The resulting Docker image is pushed to the

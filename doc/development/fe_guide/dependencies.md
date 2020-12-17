@@ -32,7 +32,7 @@ updated using renovate are:
 
 We discourage installing some dependencies in [GitLab repository](https://gitlab.com/gitlab-org/gitlab)
 because they can create conflicts in the dependency tree. Blocked dependencies are declared in the
-`blockDependencies` property of GitLab’s [`package.json` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/package.json).
+`blockDependencies` property of the GitLab [`package.json` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/package.json).
 
 ## Dependency notes
 

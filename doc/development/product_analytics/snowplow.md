@@ -475,3 +475,142 @@ Snowplow Micro is a Docker-based solution for testing frontend and backend event
 Snowplow Mini can be used for testing frontend and backend events on a production, staging and local development environment.
 
 For GitLab.com, we're setting up a [QA and Testing environment](https://gitlab.com/gitlab-org/telemetry/-/issues/266) using Snowplow Mini.
+
+## Snowplow Schemas
+
+### Default Schema
+
+| Field Name               | Required            | Type      | Description                                                                                                                      |
+|--------------------------|---------------------|-----------|----------------------------------------------------------------------------------------------------------------------------------|
+| app_id                   | **{check-circle}**  | string    | Unique identifier for website / application                                                                                      |
+| base_currency            | **{dotted-circle}** | string    | Reporting currency                                                                                                               |
+| br_colordepth            | **{dotted-circle}** | integer   | Browser color depth                                                                                                              |
+| br_cookies               | **{dotted-circle}** | boolean   | Does the browser permit cookies?                                                                                                 |
+| br_family                | **{dotted-circle}** | string    | Browser family                                                                                                                   |
+| br_features_director     | **{dotted-circle}** | boolean   | Director plugin installed?                                                                                                       |
+| br_features_flash        | **{dotted-circle}** | boolean   | Flash plugin installed?                                                                                                          |
+| br_features_gears        | **{dotted-circle}** | boolean   | Google gears installed?                                                                                                          |
+| br_features_java         | **{dotted-circle}** | boolean   | Java plugin installed?                                                                                                           |
+| br_features_pdf          | **{dotted-circle}** | boolean   | Adobe PDF plugin installed?                                                                                                      |
+| br_features_quicktime    | **{dotted-circle}** | boolean   | Quicktime plugin installed?                                                                                                      |
+| br_features_realplayer   | **{dotted-circle}** | boolean   | Realplayer plugin installed?                                                                                                     |
+| br_features_silverlight  | **{dotted-circle}** | boolean   | Silverlight plugin installed?                                                                                                    |
+| br_features_windowsmedia | **{dotted-circle}** | boolean   | Windows media plugin installed?                                                                                                  |
+| br_lang                  | **{dotted-circle}** | string    | Language the browser is set to                                                                                                   |
+| br_name                  | **{dotted-circle}** | string    | Browser name                                                                                                                     |
+| br_renderengine          | **{dotted-circle}** | string    | Browser rendering engine                                                                                                         |
+| br_type                  | **{dotted-circle}** | string    | Browser type                                                                                                                     |
+| br_version               | **{dotted-circle}** | string    | Browser version                                                                                                                  |
+| br_viewheight            | **{dotted-circle}** | string    | Browser viewport height                                                                                                          |
+| br_viewwidth             | **{dotted-circle}** | string    | Browser viewport width                                                                                                           |
+| collector_tstamp         | **{dotted-circle}** | timestamp | Time stamp for the event recorded by the collector                                                                               |
+| contexts                 | **{dotted-circle}** |           |                                                                                                                                  |
+| derived_contexts         | **{dotted-circle}** |           | Contexts derived in the Enrich process                                                                                           |
+| derived_tstamp           | **{dotted-circle}** | timestamp | Timestamp making allowance for innaccurate device clock                                                                          |
+| doc_charset              | **{dotted-circle}** | string    | Web page’s character encoding                                                                                                    |
+| doc_height               | **{dotted-circle}** | string    | Web page height                                                                                                                  |
+| doc_width                | **{dotted-circle}** | string    | Web page width                                                                                                                   |
+| domain_sessionid         | **{dotted-circle}** | string    | Unique identifier (UUID) for this visit of this user_id to this domain                                                           |
+| domain_sessionidx        | **{dotted-circle}** | integer   | Index of number of visits that this user_id has made to this domain (The first visit is `1`)                                        |
+| domain_userid            | **{dotted-circle}** | string    | Unique identifier for a user, based on a first party cookie (so domain specific)                                                 |
+| dvce_created_tstamp      | **{dotted-circle}** | timestamp | Timestamp when event occurred, as recorded by client device                                                                      |
+| dvce_ismobile            | **{dotted-circle}** | boolean   | Indicates whether device is mobile                                                                                               |
+| dvce_screenheight        | **{dotted-circle}** | string    | Screen / monitor resolution                                                                                                      |
+| dvce_screenwidth         | **{dotted-circle}** | string    | Screen / monitor resolution                                                                                                      |
+| dvce_sent_tstamp         | **{dotted-circle}** | timestamp | Timestamp when event was sent by client device to collector                                                                      |
+| dvce_type                | **{dotted-circle}** | string    | Type of device                                                                                                                   |
+| etl_tags                 | **{dotted-circle}** | string    | JSON of tags for this ETL run                                                                                                    |
+| etl_tstamp               | **{dotted-circle}** | timestamp | Timestamp event began ETL                                                                                                        |
+| event                    | **{dotted-circle}** | string    | Event type                                                                                                                       |
+| event_fingerprint        | **{dotted-circle}** | string    | Hash client-set event fields                                                                                                     |
+| event_format             | **{dotted-circle}** | string    | Format for event                                                                                                                 |
+| event_id                 | **{dotted-circle}** | string    | Event UUID                                                                                                                       |
+| event_name               | **{dotted-circle}** | string    | Event name                                                                                                                       |
+| event_vendor             | **{dotted-circle}** | string    | The company who developed the event model                                                                                        |
+| event_version            | **{dotted-circle}** | string    | Version of event schema                                                                                                          |
+| geo_city                 | **{dotted-circle}** | string    | City of IP origin                                                                                                                |
+| geo_country              | **{dotted-circle}** | string    | Country of IP origin                                                                                                             |
+| geo_latitude             | **{dotted-circle}** | string    | An approximate latitude                                                                                                          |
+| geo_longitude            | **{dotted-circle}** | string    | An approximate longitude                                                                                                         |
+| geo_region               | **{dotted-circle}** | string    | Region of IP origin                                                                                                              |
+| geo_region_name          | **{dotted-circle}** | string    | Region of IP origin                                                                                                              |
+| geo_timezone             | **{dotted-circle}** | string    | Timezone of IP origin                                                                                                            |
+| geo_zipcode              | **{dotted-circle}** | string    | Zip (postal) code of IP origin                                                                                                   |
+| ip_domain                | **{dotted-circle}** | string    | Second level domain name associated with the visitor’s IP address                                                                |
+| ip_isp                   | **{dotted-circle}** | string    | Visitor’s ISP                                                                                                                    |
+| ip_netspeed              | **{dotted-circle}** | string    | Visitor’s connection type                                                                                                        |
+| ip_organization          | **{dotted-circle}** | string    | Organization associated with the visitor’s IP address – defaults to ISP name if none is found                                    |
+| mkt_campaign             | **{dotted-circle}** | string    | The campaign ID                                                                                                                  |
+| mkt_clickid              | **{dotted-circle}** | string    | The click ID                                                                                                                     |
+| mkt_content              | **{dotted-circle}** | string    | The content or ID of the ad.                                                                   |
+| mkt_medium               | **{dotted-circle}** | string    | Type of traffic source                                                                                                           |
+| mkt_network              | **{dotted-circle}** | string    | The ad network to which the click ID belongs                                                                                     |
+| mkt_source               | **{dotted-circle}** | string    | The company / website where the traffic came from                                                                                |
+| mkt_term                 | **{dotted-circle}** | string    | Keywords associated with the referrer                                                                                        |
+| name_tracker             | **{dotted-circle}** | string    | The tracker namespace                                                                                                            |
+| network_userid           | **{dotted-circle}** | string    | Unique identifier for a user, based on a cookie from the collector (so set at a network level and shouldn’t be set by a tracker) |
+| os_family                | **{dotted-circle}** | string    | Operating system family                                                                                                          |
+| os_manufacturer          | **{dotted-circle}** | string    | Manufacturers of operating system                                                                                                |
+| os_name                  | **{dotted-circle}** | string    | Name of operating system                                                                                                         |
+| os_timezone              | **{dotted-circle}** | string    | Client operating system timezone                                                                                                 |
+| page_referrer            | **{dotted-circle}** | string    | Referrer URL                                                                                                                     |
+| page_title               | **{dotted-circle}** | string    | Page title                                                                                                                       |
+| page_url                 | **{dotted-circle}** | string    | Page URL                                                                                                                         |
+| page_urlfragment         | **{dotted-circle}** | string    | Fragment aka anchor                                                                                                              |
+| page_urlhost             | **{dotted-circle}** | string    | Host aka domain                                                                                                                  |
+| page_urlpath             | **{dotted-circle}** | string    | Path to page                                                                                                                     |
+| page_urlport             | **{dotted-circle}** | integer   | Port if specified, 80 if not                                                                                                     |
+| page_urlquery            | **{dotted-circle}** | string    | Query string                                                                                                                      |
+| page_urlscheme           | **{dotted-circle}** | string    | Scheme (protocol name)                                                                                                              |
+| platform                 | **{dotted-circle}** | string    | The platform the app runs on                                                                                                     |
+| pp_xoffset_max           | **{dotted-circle}** | integer   | Maximum page x offset seen in the last ping period                                                                               |
+| pp_xoffset_min           | **{dotted-circle}** | integer   | Minimum page x offset seen in the last ping period                                                                               |
+| pp_yoffset_max           | **{dotted-circle}** | integer   | Maximum page y offset seen in the last ping period                                                                               |
+| pp_yoffset_min           | **{dotted-circle}** | integer   | Minimum page y offset seen in the last ping period                                                                               |
+| refr_domain_userid       | **{dotted-circle}** | string    | The Snowplow domain_userid of the referring website                                                                              |
+| refr_dvce_tstamp         | **{dotted-circle}** | timestamp | The time of attaching the domain_userid to the inbound link                                                                      |
+| refr_medium              | **{dotted-circle}** | string    | Type of referer                                                                                                                  |
+| refr_source              | **{dotted-circle}** | string    | Name of referer if recognised                                                                                                    |
+| refr_term                | **{dotted-circle}** | string    | Keywords if source is a search engine                                                                                            |
+| refr_urlfragment         | **{dotted-circle}** | string    | Referer URL fragment                                                                                                             |
+| refr_urlhost             | **{dotted-circle}** | string    | Referer host                                                                                                                     |
+| refr_urlpath             | **{dotted-circle}** | string    | Referer page path                                                                                                                |
+| refr_urlport             | **{dotted-circle}** | integer   | Referer port                                                                                                                     |
+| refr_urlquery            | **{dotted-circle}** | string    | Referer URL querystring                                                                                                          |
+| refr_urlscheme           | **{dotted-circle}** | string    | Referer scheme                                                                                                                   |
+| se_action                | **{dotted-circle}** | string    | The action / event itself                                                                                                        |
+| se_category              | **{dotted-circle}** | string    | The category of event                                                                                                            |
+| se_label                 | **{dotted-circle}** | string    | A label often used to refer to the ‘object’ the action is performed on                                                           |
+| se_property              | **{dotted-circle}** | string    | A property associated with either the action or the object                                                                       |
+| se_value                 | **{dotted-circle}** | decimal   | A value associated with the user action                                                                                          |
+| ti_category              | **{dotted-circle}** | string    | Item category                                                                                                                    |
+| ti_currency              | **{dotted-circle}** | string    | Currency                                                                                                                         |
+| ti_name                  | **{dotted-circle}** | string    | Item name                                                                                                                        |
+| ti_orderid               | **{dotted-circle}** | string    | Order ID                                                                                                                         |
+| ti_price                 | **{dotted-circle}** | decimal   | Item price                                                                                                                       |
+| ti_price_base            | **{dotted-circle}** | decimal   | Item price in base currency                                                                                                      |
+| ti_quantity              | **{dotted-circle}** | integer   | Item quantity                                                                                                                    |
+| ti_sku                   | **{dotted-circle}** | string    | Item SKU                                                                                                                         |
+| tr_affiliation           | **{dotted-circle}** | string    | Transaction affiliation (such as channel)                                                                                           |
+| tr_city                  | **{dotted-circle}** | string    | Delivery address: city                                                                                                           |
+| tr_country               | **{dotted-circle}** | string    | Delivery address: country                                                                                                        |
+| tr_currency              | **{dotted-circle}** | string    | Transaction Currency                                                                                                             |
+| tr_orderid               | **{dotted-circle}** | string    | Order ID                                                                                                                         |
+| tr_shipping              | **{dotted-circle}** | decimal   | Delivery cost charged                                                                                                            |
+| tr_shipping_base         | **{dotted-circle}** | decimal   | Shipping cost in base currency                                                                                                   |
+| tr_state                 | **{dotted-circle}** | string    | Delivery address: state                                                                                                          |
+| tr_tax                   | **{dotted-circle}** | decimal   | Transaction tax value (such as amount of VAT included)                                                                              |
+| tr_tax_base              | **{dotted-circle}** | decimal   | Tax applied in base currency                                                                                                     |
+| tr_total                 | **{dotted-circle}** | decimal   | Transaction total value                                                                                                          |
+| tr_total_base            | **{dotted-circle}** | decimal   | Total amount of transaction in base currency                                                                                     |
+| true_tstamp              | **{dotted-circle}** | timestamp | User-set exact timestamp                                                                                                         |
+| txn_id                   | **{dotted-circle}** | string    | Transaction ID                                                                                                                   |
+| unstruct_event           | **{dotted-circle}** | JSON      | The properties of the event                                                                                                      |
+| uploaded_at              | **{dotted-circle}** |           |                                                                                                                                  |
+| user_fingerprint         | **{dotted-circle}** | integer   | User identifier based on (hopefully unique) browser features                                                                     |
+| user_id                  | **{dotted-circle}** | string    | Unique identifier for user, set by the business using setUserId                                                                  |
+| user_ipaddress           | **{dotted-circle}** | string    | IP address                                                                                                                       |
+| useragent                | **{dotted-circle}** | string    | User agent (expressed as a browser string)                                                                                                |
+| v_collector              | **{dotted-circle}** | string    | Collector version                                                                                                                |
+| v_etl                    | **{dotted-circle}** | string    | ETL version                                                                                                                      |
+| v_tracker                | **{dotted-circle}** | string    | Identifier for Snowplow tracker                                                                                                  |
