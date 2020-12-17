@@ -83,6 +83,10 @@ export function fullBoardId(boardId) {
   return `gid://gitlab/Board/${boardId}`;
 }
 
+export function fullIterationId(id) {
+  return `gid://gitlab/Iteration/${id}`;
+}
+
 export function fullLabelId(label) {
   if (label.project_id !== null) {
     return `gid://gitlab/ProjectLabel/${label.id}`;
@@ -141,6 +145,7 @@ export default {
   formatListIssues,
   fullBoardId,
   fullLabelId,
+  fullIterationId,
   getBoardsPath,
   isListDraggable,
 };

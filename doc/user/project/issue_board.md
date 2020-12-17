@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Issue Boards
+# Issue Boards **(CORE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5554) in [GitLab 8.11](https://about.gitlab.com/releases/2016/08/22/gitlab-8-11-released/#issue-board).
 
@@ -233,17 +233,18 @@ advanced functionality is present in [higher tiers only](https://about.gitlab.co
 
 ### Configurable issue boards **(STARTER)**
 
-> [Introduced](https://about.gitlab.com/releases/2017/11/22/gitlab-10-2-released/#issue-boards-configuration) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.2.
+> - [Introduced](https://about.gitlab.com/releases/2017/11/22/gitlab-10-2-released/#issue-boards-configuration) in GitLab 10.2.
+> - Setting current iteration as scope [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196804) in GitLab 13.7.
 
-An issue board can be associated with a GitLab [Milestone](milestones/index.md#milestones),
-[Labels](labels.md), Assignee and Weight
+An issue board can be associated with a [milestone](milestones/index.md#milestones),
+[labels](labels.md), assignee, weight, and current [iteration](../group/iterations/index.md),
 which automatically filter the board issues accordingly.
 This allows you to create unique boards according to your team's need.
 
 ![Create scoped board](img/issue_board_creation_v13_6.png)
 
 You can define the scope of your board when creating it or by clicking the **Edit board** button.
-After a milestone, assignee or weight is assigned to an issue board, you can no longer
+After a milestone, iteration, assignee, or weight is assigned to an issue board, you can no longer
 filter through these in the search bar. In order to do that, you need to remove the desired scope
 (for example, milestone, assignee, or weight) from the issue board.
 

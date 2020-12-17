@@ -15,6 +15,7 @@ const boardDefaults = {
   name: '',
   labels: [],
   milestone_id: undefined,
+  iteration_id: undefined,
   assignee: {},
   assignee_id: undefined,
   weight: null,
@@ -171,6 +172,9 @@ export default {
     }
   },
   methods: {
+    setIteration(iterationId) {
+      this.board.iteration_id = iterationId;
+    },
     callBoardMutation(id) {
       return this.$apollo.mutate({
         mutation: createBoardMutation,
@@ -289,6 +293,7 @@ export default {
         :project-id="projectId"
         :group-id="groupId"
         :weights="weights"
+        @set-iteration="setIteration"
       />
     </form>
   </gl-modal>

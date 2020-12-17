@@ -24208,6 +24208,9 @@ msgstr ""
 msgid "Scope"
 msgstr ""
 
+msgid "Scope board to current iteration"
+msgstr ""
+
 msgid "Scopes"
 msgstr ""
 
