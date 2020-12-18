@@ -297,7 +297,7 @@ When the user is authenticated and `simple` is not set this returns something li
 
 NOTE:
 For users of GitLab [Silver, Premium, or higher](https://about.gitlab.com/pricing/),
-the `marked_for_deletion_at` attribute has been deprecated, and will be removed
+the `marked_for_deletion_at` attribute has been deprecated, and is removed
 in API v5 in favor of the `marked_for_deletion_on` attribute.
 
 Users of GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/)
@@ -2250,7 +2250,7 @@ POST /projects/:id/push_rule
 | `id`                                          | integer/string | **{check-circle}** Yes | The ID of the project or NAMESPACE/PROJECT_NAME. |
 | `max_file_size` **(STARTER)**                 | integer        | **{dotted-circle}** No | Maximum file size (MB). |
 | `member_check` **(STARTER)**                  | boolean        | **{dotted-circle}** No | Restrict commits by author (email) to existing GitLab users. |
-| `prevent_secrets` **(STARTER)**               | boolean        | **{dotted-circle}** No | GitLab will reject any files that are likely to contain secrets. |
+| `prevent_secrets` **(STARTER)**               | boolean        | **{dotted-circle}** No | GitLab rejects any files that are likely to contain secrets. |
 | `reject_unsigned_commits` **(PREMIUM)**       | boolean        | **{dotted-circle}** No | Reject commit when it's not signed through GPG. |
 
 ### Edit project push rule
@@ -2273,7 +2273,7 @@ PUT /projects/:id/push_rule
 | `id`                                          | integer/string | **{check-circle}** Yes | The ID of the project or NAMESPACE/PROJECT_NAME. |
 | `max_file_size` **(STARTER)**                 | integer        | **{dotted-circle}** No | Maximum file size (MB). |
 | `member_check` **(STARTER)**                  | boolean        | **{dotted-circle}** No | Restrict commits by author (email) to existing GitLab users. |
-| `prevent_secrets` **(STARTER)**               | boolean        | **{dotted-circle}** No | GitLab will reject any files that are likely to contain secrets. |
+| `prevent_secrets` **(STARTER)**               | boolean        | **{dotted-circle}** No | GitLab rejects any files that are likely to contain secrets. |
 | `reject_unsigned_commits` **(PREMIUM)**       | boolean        | **{dotted-circle}** No | Reject commits when they are not GPG signed. |
 
 ### Delete project push rule

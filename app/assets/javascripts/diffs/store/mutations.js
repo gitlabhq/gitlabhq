@@ -37,6 +37,7 @@ export default {
       dismissEndpoint,
       showSuggestPopover,
       viewDiffsFileByFile,
+      mrReviews,
     } = options;
     Object.assign(state, {
       endpoint,
@@ -47,6 +48,7 @@ export default {
       dismissEndpoint,
       showSuggestPopover,
       viewDiffsFileByFile,
+      mrReviews,
     });
   },
 
@@ -352,5 +354,8 @@ export default {
   },
   [types.SET_FILE_BY_FILE](state, fileByFile) {
     state.viewDiffsFileByFile = fileByFile;
+  },
+  [types.SET_MR_FILE_REVIEWS](state, newReviews) {
+    state.mrReviews = newReviews;
   },
 };

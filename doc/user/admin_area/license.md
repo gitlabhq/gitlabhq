@@ -120,6 +120,11 @@ You can upload and view more than one license, but only the latest license in th
 range is used as the active license. When you upload a future-dated license, it
 doesn't take effect until its applicable date.
 
+NOTE:
+In GitLab 13.6 and earlier, a notification banner about an expiring license may continue to be displayed even after a new license has been uploaded.
+This happens when the newly uploaded license's start date is in the future and the expiring one is still active.
+The banner disappears after the new license becomes active.
+
 ## Troubleshooting
 
 ### There is no License tab in the Admin Area

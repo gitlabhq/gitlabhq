@@ -1,5 +1,6 @@
 import { __, n__ } from '~/locale';
 import { parallelizeDiffLines } from './utils';
+import { isFileReviewed } from '../utils/file_reviews';
 import {
   PARALLEL_DIFF_VIEW_TYPE,
   INLINE_DIFF_VIEW_TYPE,
@@ -149,3 +150,7 @@ export const diffLines = state => (file, unifiedDiffComponents) => {
     state.diffViewType === INLINE_DIFF_VIEW_TYPE,
   );
 };
+
+export function fileReviews(state) {
+  return state.diffFiles.map(file => isFileReviewed(state.mrReviews, file));
+}

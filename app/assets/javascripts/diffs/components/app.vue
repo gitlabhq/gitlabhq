@@ -124,6 +124,11 @@ export default {
       required: false,
       default: false,
     },
+    mrReviews: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   data() {
     const treeWidth =
@@ -161,7 +166,12 @@ export default {
       'hasConflicts',
       'viewDiffsFileByFile',
     ]),
-    ...mapGetters('diffs', ['whichCollapsedTypes', 'isParallelView', 'currentDiffIndex']),
+    ...mapGetters('diffs', [
+      'whichCollapsedTypes',
+      'isParallelView',
+      'currentDiffIndex',
+      'fileReviews',
+    ]),
     ...mapGetters(['isNotesFetched', 'getNoteableData']),
     diffs() {
       if (!this.viewDiffsFileByFile) {
@@ -261,6 +271,7 @@ export default {
       dismissEndpoint: this.dismissEndpoint,
       showSuggestPopover: this.showSuggestPopover,
       viewDiffsFileByFile: fileByFile(this.fileByFileUserPreference),
+      mrReviews: this.mrReviews || {},
     });
 
     if (this.shouldShow) {
@@ -519,6 +530,7 @@ export default {
               v-for="(file, index) in diffs"
               :key="file.newPath"
               :file="file"
+              :reviewed="fileReviews[index]"
               :is-first-file="index === 0"
               :is-last-file="index === diffs.length - 1"
               :help-page-path="helpPagePath"

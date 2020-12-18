@@ -117,6 +117,21 @@ describe('IDE services', () => {
 
       it('sends a request to file.rawPath', () => {
         return services.getRawFileData(file).then(raw => {
+          expect(axios.get).toHaveBeenCalledWith(file.rawPath, {
+            transformResponse: [expect.any(Function)],
+          });
+          expect(raw).toEqual('raw content');
+        });
+      });
+
+      it('returns arraybuffer for binary files', () => {
+        file.binary = true;
+
+        return services.getRawFileData(file).then(raw => {
+          expect(axios.get).toHaveBeenCalledWith(file.rawPath, {
+            transformResponse: [expect.any(Function)],
+            responseType: 'arraybuffer',
+          });
           expect(raw).toEqual('raw content');
         });
       });

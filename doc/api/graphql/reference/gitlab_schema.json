@@ -72962,6 +72962,20 @@
               "deprecationReason": null
             },
             {
+              "name": "confirmedBy",
+              "description": "The user that confirmed the vulnerability.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "User",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "description",
               "description": "Description of the vulnerability",
               "args": [

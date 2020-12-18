@@ -11,7 +11,7 @@ export default {
   },
   props: {
     content: {
-      type: String,
+      type: [String, ArrayBuffer],
       default: '',
       required: false,
     },

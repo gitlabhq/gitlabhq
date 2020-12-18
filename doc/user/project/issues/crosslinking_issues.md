@@ -31,10 +31,9 @@ git commit -m "this is my commit message. Related to https://gitlab.com/<usernam
 
 Of course, you can replace `gitlab.com` with the URL of your own GitLab instance.
 
-NOTE:
-Linking your first commit to your issue is going to be relevant
+Linking your first commit to your issue is relevant
 for tracking your process with [GitLab Value Stream Analytics](https://about.gitlab.com/stages-devops-lifecycle/value-stream-analytics/).
-It will measure the time taken for planning the implementation of that issue,
+It measures the time taken for planning the implementation of that issue,
 which is the time between creating an issue and making the first commit.
 
 ## From Related Issues
@@ -45,7 +44,7 @@ issues regarding the same topic.
 
 You do that as explained above, when [mentioning an issue from a commit message](#from-commit-messages).
 
-When mentioning issue `#111` in issue `#222`, issue `#111` will also display a notification
+When mentioning issue `#111` in issue `#222`, issue `#111` also displays a notification
 in its tracker. That is, you only need to mention the relationship once for it to
 display in both issues. The same is valid when mentioning issues in [merge requests](#from-merge-requests).
 
@@ -56,8 +55,8 @@ display in both issues. The same is valid when mentioning issues in [merge reque
 Mentioning issues in merge request comments works exactly the same way as
 they do for [related issues](#from-related-issues).
 
-When you mention an issue in a merge request description, it will simply
-[link the issue and merge request together](#from-related-issues). Additionally,
+When you mention an issue in a merge request description, it
+[links the issue and merge request together](#from-related-issues). Additionally,
 you can also [set an issue to close automatically](managing_issues.md#closing-issues-automatically)
 as soon as the merge request is merged.
 

@@ -3776,6 +3776,7 @@ Represents a vulnerability.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | `confirmedAt` | Time | Timestamp of when the vulnerability state was changed to confirmed |
+| `confirmedBy` | User | The user that confirmed the vulnerability. |
 | `description` | String | Description of the vulnerability |
 | `detectedAt` | Time! | Timestamp of when the vulnerability was first detected |
 | `discussions` | DiscussionConnection! | All discussions on this noteable |

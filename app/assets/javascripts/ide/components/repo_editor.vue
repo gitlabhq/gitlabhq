@@ -74,8 +74,11 @@ export default {
     fileEditor() {
       return getFileEditorOrDefault(this.fileEditors, this.file.path);
     },
+    isBinaryFile() {
+      return !isTextFile(this.file);
+    },
     shouldHideEditor() {
-      return this.file && !this.file.loading && !isTextFile(this.file);
+      return this.file && !this.file.loading && this.isBinaryFile;
     },
     showContentViewer() {
       return (
@@ -244,6 +247,10 @@ export default {
       );
     },
     createEditorInstance() {
+      if (this.isBinaryFile) {
+        return;
+      }
+
       this.editor.dispose();
 
       this.$nextTick(() => {

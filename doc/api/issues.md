@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Issues API
 
-If a user is not a member of a project and the project is private, a `GET`
+If a user is not a member of a private project, a `GET`
 request on that project results in a `404` status code.
 
 ## Issues pagination
@@ -22,8 +22,8 @@ Introduced in [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/merge_request
 
 NOTE:
 The `references.relative` attribute is relative to the group or project of the issue being requested.
-When an issue is fetched from its project, the `relative` format is the same as the `short` format,
-and when requested across groups or projects it's expected to be the same as the `full` format.
+When an issue is fetched from its project, the `relative` format is the same as the `short` format.
+When requested across groups or projects, it's expected to be the same as the `full` format.
 
 ## List issues
 
@@ -57,7 +57,7 @@ GET /issues?state=opened
 | `confidential`      | boolean          | no         | Filter confidential or public issues.                                                                                                               |
 | `created_after`     | datetime         | no         | Return issues created on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `created_before`    | datetime         | no         | Return issues created on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
-| `due_date`          | string           | no         | Return issues that have no due date (`0`) or whose due date is this week, this month, between two weeks ago and next month, or which are overdue. Accepts: `0` (no due date), `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. _(Introduced in [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/233420))_ |
+| `due_date`          | string           | no         | Return issues that have no due date, are overdue, or whose due date is this week, this month, or between two weeks ago and next month. Accepts: `0` (no due date), `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. _(Introduced in [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/233420))_ |
 | `iids[]`            | integer array    | no         | Return only the issues having the given `iid`                                                                                                       |
 | `in`                | string           | no         | Modify the scope of the `search` attribute. `title`, `description`, or a string joining them with comma. Default is `title,description`             |
 | `iteration_id` **(STARTER)** | integer | no         | Return issues assigned to the given iteration ID. `None` returns issues that do not belong to an iteration. `Any` returns issues that belong to an iteration. Mutually exclusive with `iteration_title`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.6)_ |
@@ -239,7 +239,7 @@ GET /groups/:id/issues?state=opened
 | `confidential`     | boolean          | no         | Filter confidential or public issues.                                                                                         |
 | `created_after`     | datetime         | no         | Return issues created on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `created_before`    | datetime         | no         | Return issues created on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
-| `due_date`          | string           | no         | Return issues that have no due date (`0`) or whose due date is this week, this month, between two weeks ago and next month, or which are overdue. Accepts: `0` (no due date), `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. _(Introduced in [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/233420))_ |
+| `due_date`          | string           | no         | Return issues that have no due date, are overdue, or whose due date is this week, this month, or between two weeks ago and next month. Accepts: `0` (no due date), `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. _(Introduced in [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/233420))_ |
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                 |
 | `iids[]`            | integer array    | no         | Return only the issues having the given `iid`                                                                                 |
 | `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
@@ -416,7 +416,7 @@ GET /projects/:id/issues?state=opened
 | `confidential`     | boolean          | no         | Filter confidential or public issues.                                                                                         |
 | `created_after`     | datetime         | no         | Return issues created on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `created_before`    | datetime         | no         | Return issues created on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
-| `due_date`          | string           | no         | Return issues that have no due date (`0`) or whose due date is this week, this month, between two weeks ago and next month, or which are overdue. Accepts: `0` (no due date), `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. _(Introduced in [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/233420))_ |
+| `due_date`          | string           | no         | Return issues that have no due date, are overdue, or whose due date is this week, this month, or between two weeks ago and next month. Accepts: `0` (no due date), `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. _(Introduced in [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/233420))_ |
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user               |
 | `iids[]`            | integer array    | no         | Return only the issues having the given `iid`                                                                              |
 | `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
@@ -424,7 +424,7 @@ GET /projects/:id/issues?state=opened
 | `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14016) in GitLab 10.0)_ |
 | `not`               | Hash             | no         | Return issues that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `my_reaction_emoji`, `search`, `in` |
 | `order_by`          | string           | no         | Return issues ordered by `created_at`, `updated_at`, `priority`, `due_date`, `relative_position`, `label_priority`, `milestone_due`, `popularity`, `weight` fields. Default is `created_at`                                                               |
-| `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13004) in GitLab 9.5. [Changed to snake_case](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18935) in GitLab 11.0)_ |
+| `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br> For versions before 11.0, use the deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13004) in GitLab 9.5. [Changed to snake_case](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18935) in GitLab 11.0)_ |
 | `search`            | string           | no         | Search project issues against their `title` and `description`                                                                 |
 | `sort`              | string           | no         | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                              |
 | `state`             | string           | no         | Return all issues or just those that are `opened` or `closed`                                                                 |
@@ -721,7 +721,7 @@ The `assignee` column is deprecated. We now show it as a single-sized array `ass
 to the GitLab EE API.
 
 WARNING:
-The `epic_iid` attribute is deprecated, and [will be removed in version 5](https://gitlab.com/gitlab-org/gitlab/-/issues/35157).
+The `epic_iid` attribute is deprecated, and [scheduled for removal in API version 5](https://gitlab.com/gitlab-org/gitlab/-/issues/35157).
 Please use `iid` of the `epic` attribute instead.
 
 NOTE:
@@ -882,7 +882,7 @@ WARNING:
 The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 WARNING:
-The `epic_iid` attribute is deprecated and [will be removed in version 5](https://gitlab.com/gitlab-org/gitlab/-/issues/35157).
+The `epic_iid` attribute is deprecated and [scheduled for removal in API version 5](https://gitlab.com/gitlab-org/gitlab/-/issues/35157).
 Please use `iid` of the `epic` attribute instead.
 
 NOTE:
@@ -904,9 +904,9 @@ POST /projects/:id/issues
 | `created_at`                              | string         | no       | When the issue was created. Date time string, ISO 8601 formatted, for example `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
 | `description`                             | string         | no       | The description of an issue. Limited to 1,048,576 characters. |
 | `discussion_to_resolve`                   | string         | no       | The ID of a discussion to resolve. This fills out the issue with a default description and mark the discussion as resolved. Use in combination with `merge_request_to_resolve_discussions_of`. |
-| `due_date`                                | string         | no       | The due date. Date time string in the format YEAR-MONTH-DAY, for example `2016-03-11` |
+| `due_date`                                | string         | no       | The due date. Date time string in the format `YYYY-MM-DD`, for example `2016-03-11` |
 | `epic_id` **(PREMIUM)** | integer | no | ID of the epic to add the issue to. Valid values are greater than or equal to 0. |
-| `epic_iid` **(PREMIUM)** | integer | no | IID of the epic to add the issue to. Valid values are greater than or equal to 0. (deprecated, [will be removed in version 5](https://gitlab.com/gitlab-org/gitlab/-/issues/35157)) |
+| `epic_iid` **(PREMIUM)** | integer | no | IID of the epic to add the issue to. Valid values are greater than or equal to 0. (deprecated, [scheduled for removal in API version 5](https://gitlab.com/gitlab-org/gitlab/-/issues/35157)) |
 | `id`                                      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `iid`                                     | integer/string | no       | The internal ID of the project's issue (requires administrator or project owner rights) |
 | `labels`                                  | string         | no       | Comma-separated label names for an issue  |
@@ -1048,9 +1048,9 @@ PUT /projects/:id/issues/:issue_iid
 | `confidential` | boolean | no       | Updates an issue to be confidential                                                                        |
 | `description`  | string  | no       | The description of an issue. Limited to 1,048,576 characters.        |
 | `discussion_locked` | boolean | no  | Flag indicating if the issue's discussion is locked. If the discussion is locked only project members can add or edit comments. |
-| `due_date`     | string  | no       | The due date. Date time string in the format YEAR-MONTH-DAY, for example `2016-03-11`                                           |
+| `due_date`     | string  | no       | The due date. Date time string in the format `YYYY-MM-DD`, for example `2016-03-11`                                           |
 | `epic_id` **(PREMIUM)** | integer | no | ID of the epic to add the issue to. Valid values are greater than or equal to 0. |
-| `epic_iid` **(PREMIUM)** | integer | no | IID of the epic to add the issue to. Valid values are greater than or equal to 0. (deprecated, [will be removed in version 5](https://gitlab.com/gitlab-org/gitlab/-/issues/35157)) |
+| `epic_iid` **(PREMIUM)** | integer | no | IID of the epic to add the issue to. Valid values are greater than or equal to 0. (deprecated, [scheduled for removal in API version 5](https://gitlab.com/gitlab-org/gitlab/-/issues/35157)) |
 | `id`           | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `issue_iid`    | integer | yes      | The internal ID of a project's issue                                                                       |
 | `labels`       | string  | no       | Comma-separated label names for an issue. Set to an empty string to unassign all labels.                   |
@@ -1168,7 +1168,7 @@ WARNING:
 
 ## Delete an issue
 
-Only for admins and project owners. Deletes the issue in question.
+Only for administrators and project owners. Deletes an issue.
 
 ```plaintext
 DELETE /projects/:id/issues/:issue_iid
@@ -1207,8 +1207,8 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 ## Move an issue
 
 Moves an issue to a different project. If the target project
-equals the source project or the user has insufficient permissions to move an
-issue, status code `400` and an error message is returned.
+is the source project or the user has insufficient permissions,
+an error message with status code `400` is returned.
 
 If a given label or milestone with the same name also exists in the target
 project, it's then assigned to the issue being moved.
@@ -1987,9 +1987,9 @@ Example response:
 ]
 ```
 
-## List merge requests that will close issue on merge
+## List merge requests that close a particular issue on merge
 
-Get all the merge requests that will close an issue when merged.
+Get all merge requests that close a particular issue when merged.
 
 If the project is private or the issue is confidential, you need to provide credentials to authorize.
 The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
@@ -2112,7 +2112,7 @@ Comments are done via the [notes](notes.md) resource.
 
 ## Get user agent details
 
-Available only for admins.
+Available only for administrators.
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/user_agent_detail

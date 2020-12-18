@@ -205,12 +205,24 @@ describe('RepoEditor', () => {
       beforeEach(done => {
         vm.file.name = 'file.dat';
         vm.file.content = '🐱'; // non-ascii binary content
+        jest.spyOn(vm.editor, 'createInstance').mockImplementation();
+        jest.spyOn(vm.editor, 'createDiffInstance').mockImplementation();
 
         vm.$nextTick(done);
       });
 
       it('does not render the IDE', () => {
         expect(vm.shouldHideEditor).toBeTruthy();
+      });
+
+      it('does not call createInstance', async () => {
+        // Mirror the act's in the `createEditorInstance`
+        vm.createEditorInstance();
+
+        await vm.$nextTick();
+
+        expect(vm.editor.createInstance).not.toHaveBeenCalled();
+        expect(vm.editor.createDiffInstance).not.toHaveBeenCalled();
       });
     });
 
