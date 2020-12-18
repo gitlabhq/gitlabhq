@@ -1,6 +1,6 @@
 <script>
 import { debounce } from 'lodash';
-import { GlDeprecatedButton, GlSearchBoxByType } from '@gitlab/ui';
+import { GlButton, GlSearchBoxByType } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
@@ -28,7 +28,7 @@ import { deprecatedCreateFlash as createFlash } from '~/flash';
 export default {
   name: 'EnvironmentsSearchableInput',
   components: {
-    GlDeprecatedButton,
+    GlButton,
     GlSearchBoxByType,
   },
   props: {
@@ -159,19 +159,20 @@ export default {
         <div class="dropdown-content">
           <ul v-if="results.length">
             <li v-for="(result, i) in results" :key="i">
-              <gl-deprecated-button class="btn-transparent" @click="selectEnvironment(result)">{{
+              <gl-button category="tertiary" @click="selectEnvironment(result)">{{
                 result
-              }}</gl-deprecated-button>
+              }}</gl-button>
             </li>
           </ul>
           <div v-else-if="!results.length" class="text-secondary gl-p-3">
             {{ __('No matching results') }}
           </div>
           <div v-if="shouldRenderCreateButton" class="dropdown-footer">
-            <gl-deprecated-button
-              class="js-create-button btn-blank dropdown-item"
+            <gl-button
+              category="tertiary"
+              class="js-create-button dropdown-item"
               @click="createClicked"
-              >{{ composedCreateButtonLabel }}</gl-deprecated-button
+              >{{ composedCreateButtonLabel }}</gl-button
             >
           </div>
         </div>

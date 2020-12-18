@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import { shallowMount } from '@vue/test-utils';
-import { GlLoadingIcon, GlDeprecatedButton, GlSearchBoxByType } from '@gitlab/ui';
+import { GlLoadingIcon, GlButton, GlSearchBoxByType } from '@gitlab/ui';
 import { TEST_HOST } from 'spec/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import EnvironmentsDropdown from '~/feature_flags/components/environments_dropdown.vue';
@@ -99,7 +99,7 @@ describe('Feature flags > Environments dropdown ', () => {
 
         it('emits event when a suggestion is clicked', async () => {
           const button = wrapper
-            .findAll(GlDeprecatedButton)
+            .findAll(GlButton)
             .filter(b => b.text() === 'production')
             .at(0);
           button.vm.$emit('click');
@@ -110,7 +110,7 @@ describe('Feature flags > Environments dropdown ', () => {
 
       describe('on click clear button', () => {
         beforeEach(async () => {
-          wrapper.find(GlDeprecatedButton).vm.$emit('click');
+          wrapper.find(GlButton).vm.$emit('click');
           await wrapper.vm.$nextTick();
         });
 
@@ -137,7 +137,7 @@ describe('Feature flags > Environments dropdown ', () => {
 
     it('emits create event', async () => {
       wrapper
-        .findAll(GlDeprecatedButton)
+        .findAll(GlButton)
         .at(0)
         .vm.$emit('click');
       await wrapper.vm.$nextTick();
