@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers do
-  include TriggerHelpers
+  include Database::TriggerHelpers
 
   let(:model) do
     ActiveRecord::Migration.new.extend(described_class)

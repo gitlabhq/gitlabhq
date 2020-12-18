@@ -13,6 +13,7 @@ export const GfmAutocompleteType = {
   Members: 'members',
   MergeRequests: 'mergeRequests',
   Milestones: 'milestones',
+  QuickActions: 'commands',
   Snippets: 'snippets',
 };
 
@@ -139,6 +140,34 @@ export const tributeConfig = {
       lookup: 'title',
       menuItemTemplate: ({ original }) => escape(original.title),
       selectTemplate: ({ original }) => `%"${escape(original.title)}"`,
+    },
+  },
+
+  [GfmAutocompleteType.QuickActions]: {
+    config: {
+      trigger: '/',
+      fillAttr: 'name',
+      lookup: value => `${value.name}${value.aliases.join()}`,
+      menuItemTemplate: ({ original }) => {
+        const aliases = original.aliases.length
+          ? `<small>(or /${original.aliases.join(', /')})</small>`
+          : '';
+
+        const params = original.params.length ? `<small>${original.params.join(' ')}</small>` : '';
+
+        let description = '';
+
+        if (original.warning) {
+          const confidentialIcon =
+            original.icon === 'confidential' ? spriteIcon('eye-slash', 's16 gl-mr-2') : '';
+          description = `<small>${confidentialIcon}<em>${original.warning}</em></small>`;
+        } else if (original.description) {
+          description = `<small><em>${original.description}</em></small>`;
+        }
+
+        return `<div>/${original.name} ${aliases} ${params}</div>
+          <div>${description}</div>`;
+      },
     },
   },
 

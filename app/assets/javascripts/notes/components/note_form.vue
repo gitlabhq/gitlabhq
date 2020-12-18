@@ -3,8 +3,9 @@
 import { mapGetters, mapActions, mapState } from 'vuex';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import eventHub from '../event_hub';
-import NoteableWarning from '../../vue_shared/components/notes/noteable_warning.vue';
-import markdownField from '../../vue_shared/components/markdown/field.vue';
+import NoteableWarning from '~/vue_shared/components/notes/noteable_warning.vue';
+import markdownField from '~/vue_shared/components/markdown/field.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import issuableStateMixin from '../mixins/issuable_state';
 import resolvable from '../mixins/resolvable';
 import { __, sprintf } from '~/locale';
@@ -16,7 +17,7 @@ export default {
     NoteableWarning,
     markdownField,
   },
-  mixins: [issuableStateMixin, resolvable],
+  mixins: [glFeatureFlagsMixin(), issuableStateMixin, resolvable],
   props: {
     noteBody: {
       type: String,
@@ -342,7 +343,7 @@ export default {
           ref="textarea"
           slot="textarea"
           v-model="updatedNoteBody"
-          :data-supports-quick-actions="!isEditing"
+          :data-supports-quick-actions="!isEditing && !glFeatures.tributeAutocomplete"
           name="note[note]"
           class="note-textarea js-gfm-input js-note-text js-autosize markdown-area js-vue-issue-note-form"
           data-qa-selector="reply_field"

@@ -20,6 +20,7 @@ import eventHub from '../event_hub';
 import NoteableWarning from '~/vue_shared/components/notes/noteable_warning.vue';
 import markdownField from '~/vue_shared/components/markdown/field.vue';
 import userAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import noteSignedOutWidget from './note_signed_out_widget.vue';
 import discussionLockedWidget from './discussion_locked_widget.vue';
 import issuableStateMixin from '../mixins/issuable_state';
@@ -36,7 +37,7 @@ export default {
     TimelineEntryItem,
     GlIcon,
   },
-  mixins: [issuableStateMixin],
+  mixins: [glFeatureFlagsMixin(), issuableStateMixin],
   props: {
     noteableType: {
       type: String,
@@ -339,7 +340,7 @@ export default {
                 class="note-textarea js-vue-comment-form js-note-text js-gfm-input js-autosize markdown-area"
                 data-qa-selector="comment_field"
                 data-testid="comment-field"
-                data-supports-quick-actions="true"
+                :data-supports-quick-actions="!glFeatures.tributeAutocomplete"
                 :aria-label="__('Description')"
                 :placeholder="__('Write a comment or drag your files here…')"
                 @keydown.up="editCurrentUserLastNote()"

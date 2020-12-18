@@ -723,20 +723,15 @@ RSpec.describe 'GFM autocomplete', :js do
         expect(page).not_to have_selector('.tribute-container')
       end
 
-      it 'triggers autocomplete after selecting a quick action' do
+      it 'autocompletes for quick actions' do
         note = find('#note-body')
         page.within '.timeline-content-form' do
           note.native.send_keys('/as')
+          wait_for_requests
+          note.native.send_keys(:tab)
         end
 
-        find('.atwho-view li', text: '/assign')
-        note.native.send_keys(:tab)
-        note.native.send_keys(:right)
-
-        wait_for_requests
-
-        user_item = find('.tribute-container ul', text: user.username, visible: true)
-        expect(user_item).to have_content(user.username)
+        expect(note.value).to have_text('/assign')
       end
     end
 
@@ -755,14 +750,13 @@ RSpec.describe 'GFM autocomplete', :js do
 
         note = find('#note-body')
         page.within '.timeline-content-form' do
-          note.native.send_keys('/as')
+          note.native.send_keys('/assign ')
+          # The `/assign` ajax response might replace the one by `@` below causing a failed test
+          # so we need to wait for the `/assign` ajax request to finish first
+          wait_for_requests
+          note.native.send_keys('@')
+          wait_for_requests
         end
-
-        find('.atwho-view li', text: '/assign')
-        note.native.send_keys(:tab)
-        note.native.send_keys(:right)
-
-        wait_for_requests
 
         expect(find('.tribute-container ul', visible: true)).not_to have_content(user.username)
         expect(find('.tribute-container ul', visible: true)).to have_content(unassigned_user.username)
@@ -775,11 +769,13 @@ RSpec.describe 'GFM autocomplete', :js do
         page.within '.timeline-content-form' do
           note.native.send_keys('/assign @user2')
           note.native.send_keys(:enter)
-          note.native.send_keys('/assign @')
-          note.native.send_keys(:right)
+          note.native.send_keys('/assign ')
+          # The `/assign` ajax response might replace the one by `@` below causing a failed test
+          # so we need to wait for the `/assign` ajax request to finish first
+          wait_for_requests
+          note.native.send_keys('@')
+          wait_for_requests
         end
-
-        wait_for_requests
 
         expect(find('.tribute-container ul', visible: true)).not_to have_content(user.username)
         expect(find('.tribute-container ul', visible: true)).to have_content(unassigned_user.username)

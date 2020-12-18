@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Partitioning::ReplaceTable, '#perform' do
-  include TableSchemaHelpers
+  include Database::TableSchemaHelpers
 
   subject(:replace_table) { described_class.new(original_table, replacement_table, archived_table, 'id').perform }
 

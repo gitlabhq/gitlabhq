@@ -100,6 +100,7 @@ class GlobalPolicy < BasePolicy
     enable :update_custom_attribute
     enable :approve_user
     enable :reject_user
+    enable :read_instance_statistics_measurements
   end
 
   # We can't use `read_statistics` because the user may have different permissions for different projects

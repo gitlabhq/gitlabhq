@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'factories' do
-  include DatabaseHelpers
+  include Database::DatabaseHelpers
 
   shared_examples 'factory' do |factory|
     describe "#{factory.name} factory" do

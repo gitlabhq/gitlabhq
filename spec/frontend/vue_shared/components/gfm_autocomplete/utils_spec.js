@@ -339,6 +339,36 @@ describe('gfm_autocomplete/utils', () => {
     });
   });
 
+  describe('quick actions config', () => {
+    const quickActionsConfig = tributeConfig[GfmAutocompleteType.QuickActions].config;
+    const quickAction = {
+      name: 'unlabel',
+      aliases: ['remove_label'],
+      description: 'Remove all or specific label(s)',
+      warning: '',
+      icon: '',
+      params: ['~label1 ~"label 2"'],
+    };
+
+    it('uses / as the trigger', () => {
+      expect(quickActionsConfig.trigger).toBe('/');
+    });
+
+    it('inserts the name on autocomplete selection', () => {
+      expect(quickActionsConfig.fillAttr).toBe('name');
+    });
+
+    it('searches using both the name and aliases', () => {
+      expect(quickActionsConfig.lookup(quickAction)).toBe(
+        `${quickAction.name}${quickAction.aliases.join(', /')}`,
+      );
+    });
+
+    it('shows the name, aliases, params and description in the menu item', () => {
+      expect(quickActionsConfig.menuItemTemplate({ original: quickAction })).toMatchSnapshot();
+    });
+  });
+
   describe('snippets config', () => {
     const snippetsConfig = tributeConfig[GfmAutocompleteType.Snippets].config;
     const snippet = {

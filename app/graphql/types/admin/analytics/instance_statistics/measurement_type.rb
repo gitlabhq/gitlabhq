@@ -1,13 +1,15 @@
 # frozen_string_literal: true
-# rubocop:disable Graphql/AuthorizeTypes
 
 module Types
   module Admin
     module Analytics
       module InstanceStatistics
         class MeasurementType < BaseObject
+          include Gitlab::Graphql::Authorize::AuthorizeResource
           graphql_name 'InstanceStatisticsMeasurement'
           description 'Represents a recorded measurement (object count) for the Admins'
+
+          authorize :read_instance_statistics_measurements
 
           field :recorded_at, Types::TimeType, null: true,
                 description: 'The time the measurement was recorded'

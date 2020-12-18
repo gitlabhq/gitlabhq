@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHelpers do
-  include PartitioningHelpers
-  include TriggerHelpers
-  include TableSchemaHelpers
+  include Database::PartitioningHelpers
+  include Database::TriggerHelpers
+  include Database::TableSchemaHelpers
 
   let(:migration) do
     ActiveRecord::Migration.new.extend(described_class)

@@ -52,4 +52,9 @@ exports[`gfm_autocomplete/utils merge requests config shows the reference and ti
 
 exports[`gfm_autocomplete/utils milestones config shows the title in the menu item 1`] = `"13.2 &lt;script&gt;alert(&#39;hi&#39;)&lt;/script&gt;"`;
 
+exports[`gfm_autocomplete/utils quick actions config shows the name, aliases, params and description in the menu item 1`] = `
+"<div>/unlabel <small>(or /remove_label)</small> <small>~label1 ~\\"label 2\\"</small></div>
+          <div><small><em>Remove all or specific label(s)</em></small></div>"
+`;
+
 exports[`gfm_autocomplete/utils snippets config shows the id and title in the menu item 1`] = `"<small>123456</small> Snippet title &lt;script&gt;alert(&#39;hi&#39;)&lt;/script&gt;"`;
