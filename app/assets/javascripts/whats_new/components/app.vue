@@ -90,6 +90,7 @@ export default {
       ref="drawer"
       v-gl-resize-observer="handleResize"
       class="whats-new-drawer"
+      :z-index="700"
       :open="open"
       @close="closeDrawer"
     >
