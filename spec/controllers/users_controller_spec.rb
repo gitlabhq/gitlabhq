@@ -337,22 +337,12 @@ RSpec.describe UsersController do
     end
 
     describe "user with no keys" do
-      it "does generally work" do
+      it "responds the empty body with text/plain content type" do
         get :gpg_keys, params: { username: user.username }
 
         expect(response).to be_successful
-      end
-
-      it "renders all keys separated with a new line" do
-        get :gpg_keys, params: { username: user.username }
-
-        expect(response.body).to eq("")
-      end
-
-      it "responds with text/plain content type" do
-        get :gpg_keys, params: { username: user.username }
-
         expect(response.content_type).to eq("text/plain")
+        expect(response.body).to eq("")
       end
     end
 
@@ -371,20 +361,16 @@ RSpec.describe UsersController do
           expect(response).to be_successful
         end
 
-        it "renders all verified keys separated with a new line" do
+        it "renders all verified keys separated with a new line with text/plain content type" do
           get :gpg_keys, params: { username: user.username }
+
+          expect(response.content_type).to eq("text/plain")
 
           expect(response.body).not_to eq('')
           expect(response.body).to eq(user.gpg_keys.select(&:verified?).map(&:key).join("\n"))
 
           expect(response.body).to include(gpg_key.key)
           expect(response.body).to include(another_gpg_key.key)
-        end
-
-        it "responds with text/plain content type" do
-          get :gpg_keys, params: { username: user.username }
-
-          expect(response.content_type).to eq("text/plain")
         end
       end
 
@@ -399,20 +385,16 @@ RSpec.describe UsersController do
           expect(response).to be_successful
         end
 
-        it "renders all verified keys separated with a new line" do
+        it "renders all verified keys separated with a new line with text/plain content type" do
           get :gpg_keys, params: { username: user.username }
+
+          expect(response.content_type).to eq("text/plain")
 
           expect(response.body).not_to eq('')
           expect(response.body).to eq(user.gpg_keys.map(&:key).join("\n"))
 
           expect(response.body).to include(gpg_key.key)
           expect(response.body).to include(another_gpg_key.key)
-        end
-
-        it "responds with text/plain content type" do
-          get :gpg_keys, params: { username: user.username }
-
-          expect(response.content_type).to eq("text/plain")
         end
       end
 
