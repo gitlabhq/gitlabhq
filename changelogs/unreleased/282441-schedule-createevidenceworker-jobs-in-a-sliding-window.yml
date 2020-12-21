@@ -1,5 +1,0 @@
----
-title: Schedule CreateEvidenceWorker jobs in a sliding window
-merge_request: 47638
-author:
-type: added

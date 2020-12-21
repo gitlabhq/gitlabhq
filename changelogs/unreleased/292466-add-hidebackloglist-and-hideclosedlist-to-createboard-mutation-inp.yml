@@ -1,5 +1,0 @@
----
-title: Allow updating `hideBacklogList` and `hideClosedList` board attributes
-merge_request: 49947
-author:
-type: changed

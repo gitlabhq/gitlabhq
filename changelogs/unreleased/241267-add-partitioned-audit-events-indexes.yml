@@ -1,5 +1,0 @@
----
-title: Add secondary indexes to partitioned audit_events
-merge_request: 48270
-author:
-type: added

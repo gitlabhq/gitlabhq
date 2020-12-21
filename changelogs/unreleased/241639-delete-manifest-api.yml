@@ -1,5 +1,0 @@
----
-title: Delete manifests when purging the dependency proxy using the API
-merge_request: 49056
-author:
-type: changed

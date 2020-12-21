@@ -1,5 +1,0 @@
----
-title: Fix bug in ProjectRepositoryStorageMove transition to scheduled
-merge_request: 49105
-author:
-type: fixed

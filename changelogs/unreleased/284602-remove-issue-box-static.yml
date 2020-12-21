@@ -1,5 +1,0 @@
----
-title: Remove .issue-box from static (classic) Issuable list
-merge_request: 47998
-author: Takuya Noguchi
-type: performance

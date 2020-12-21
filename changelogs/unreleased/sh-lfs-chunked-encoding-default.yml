@@ -1,5 +1,0 @@
----
-title: Enable LFS chunked encoding by default
-merge_request: 49649
-author:
-type: changed

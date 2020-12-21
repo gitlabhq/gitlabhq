@@ -1,5 +1,0 @@
----
-title: Avoid branch name checking when creating a new snippet
-merge_request: 48995
-author:
-type: fixed

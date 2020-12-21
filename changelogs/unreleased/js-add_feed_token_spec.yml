@@ -1,5 +1,0 @@
----
-title: Add feed_token specs to spec/features/profiles/personal_access_tokens_spec.rb
-merge_request: 50059
-author:
-type: other

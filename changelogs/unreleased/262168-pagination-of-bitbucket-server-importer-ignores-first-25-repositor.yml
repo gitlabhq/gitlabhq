@@ -1,5 +1,0 @@
----
-title: Remove unneeded pagination code for project importers.
-merge_request: 49589
-author:
-type: changed

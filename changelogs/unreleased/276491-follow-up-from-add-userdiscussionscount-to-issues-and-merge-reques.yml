@@ -1,5 +1,0 @@
----
-title: Move IssueType notes and discussions count logic to resolvers
-merge_request: 49160
-author:
-type: changed

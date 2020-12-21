@@ -1,5 +1,0 @@
----
-title: Set Retry-After header when RackAttack throttling
-merge_request: 48310
-author:
-type: fixed

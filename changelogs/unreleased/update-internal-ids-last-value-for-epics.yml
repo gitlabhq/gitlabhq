@@ -1,5 +1,0 @@
----
-title: Fix last_value record in internal_ids for epics
-merge_request: 48988
-author:
-type: fixed

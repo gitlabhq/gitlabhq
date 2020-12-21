@@ -1,5 +1,0 @@
----
-title: Fix bug in snippets mark as spam mutation
-merge_request: 49912
-author:
-type: fixed

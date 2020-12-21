@@ -1,5 +1,0 @@
----
-title: Fix vulnerability deduplication logic for the "pipeline security tab"
-merge_request: 48704
-author:
-type: fixed

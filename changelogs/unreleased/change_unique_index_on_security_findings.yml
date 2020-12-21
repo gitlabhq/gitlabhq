@@ -1,5 +1,0 @@
----
-title: Change the unique index on `security_findings` table
-merge_request: 50046
-author:
-type: changed
