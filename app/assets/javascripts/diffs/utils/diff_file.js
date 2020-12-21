@@ -4,6 +4,7 @@ import {
   DIFF_FILE_MANUAL_COLLAPSE,
   DIFF_FILE_AUTOMATIC_COLLAPSE,
 } from '../constants';
+import { getDerivedMergeRequestInformation } from './merge_request';
 import { uuids } from './uuids';
 
 function fileSymlinkInformation(file, fileList) {
@@ -34,8 +35,12 @@ function collapsed(file) {
 }
 
 function identifier(file) {
+  const { userOrGroup, project, id } = getDerivedMergeRequestInformation({
+    endpoint: file.load_collapsed_diff_url,
+  });
+
   return uuids({
-    seeds: [file.file_identifier_hash, file.blob?.id],
+    seeds: [userOrGroup, project, id, file.file_identifier_hash, file.blob?.id],
   })[0];
 }
 
@@ -48,10 +53,10 @@ export function prepareRawDiffFile({ file, allFiles, meta = false }) {
     },
   };
 
-  // It's possible, but not confirmed, that `content_sha` isn't available sometimes
+  // It's possible, but not confirmed, that `blob.id` isn't available sometimes
   // See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49506#note_464692057
   // We don't want duplicate IDs if that's the case, so we just don't assign an ID
-  if (!meta && file.blob?.id) {
+  if (!meta && file.blob?.id && file.load_collapsed_diff_url) {
     additionalProperties.id = identifier(file);
   }
 

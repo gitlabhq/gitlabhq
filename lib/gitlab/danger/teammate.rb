@@ -94,6 +94,7 @@ module Gitlab
         when :engineering_productivity
           return false unless role[/Engineering Productivity/]
           return true if kind == :reviewer
+          return true if capabilities(project).include?("#{kind} engineering_productivity")
 
           capabilities(project).include?("#{kind} backend")
         else

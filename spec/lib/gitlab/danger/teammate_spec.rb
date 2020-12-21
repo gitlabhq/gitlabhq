@@ -121,6 +121,14 @@ RSpec.describe Gitlab::Danger::Teammate do
           end
         end
 
+        context 'when capabilities include maintainer engineering productivity' do
+          let(:capabilities) { ['maintainer engineering_productivity'] }
+
+          it '#maintainer? returns true' do
+            expect(subject.maintainer?(project, :engineering_productivity, labels)).to be_truthy
+          end
+        end
+
         context 'when capabilities include trainee_maintainer backend' do
           let(:capabilities) { ['trainee_maintainer backend'] }
 
