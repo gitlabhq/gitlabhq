@@ -36,6 +36,14 @@ RSpec.describe Gitlab::Ci::Config::Entry::Artifacts do
           expect(entry.value).to eq config
         end
       end
+
+      context "when value includes 'public' keyword" do
+        let(:config) { { paths: %w[results.txt], public: false } }
+
+        it 'returns general artifact and report-type artifacts configuration' do
+          expect(entry.value).to eq config
+        end
+      end
     end
 
     context 'when entry value is not correct' do
@@ -64,6 +72,15 @@ RSpec.describe Gitlab::Ci::Config::Entry::Artifacts do
           it 'reports error' do
             expect(entry.errors)
               .to include 'artifacts reports should be a hash'
+          end
+        end
+
+        context "when 'public' is not a boolean" do
+          let(:config) { { paths: %w[results.txt], public: 'false' } }
+
+          it 'reports error' do
+            expect(entry.errors)
+              .to include 'artifacts public should be a boolean value'
           end
         end
 

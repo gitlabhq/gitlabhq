@@ -37,6 +37,10 @@ module Ci
       @subject.archived?
     end
 
+    condition(:artifacts_public, scope: :subject) do
+      @subject.artifacts_public?
+    end
+
     condition(:terminal, scope: :subject) do
       @subject.has_terminal?
     end
@@ -55,6 +59,10 @@ module Ci
 
     condition(:project_update_build, scope: :subject) do
       can?(:update_build, @subject.project)
+    end
+
+    condition(:project_developer) do
+      can?(:developer_access, @subject.project)
     end
 
     rule { project_read_build }.enable :read_build_trace
@@ -94,6 +102,9 @@ module Ci
     rule { ~can?(:build_service_proxy_enabled) }.policy do
       prevent :create_build_service_proxy
     end
+
+    rule { project_read_build }.enable :read_job_artifacts
+    rule { ~artifacts_public & ~project_developer }.prevent :read_job_artifacts
   end
 end
 

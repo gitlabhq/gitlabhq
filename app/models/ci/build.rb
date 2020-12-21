@@ -146,6 +146,12 @@ module Ci
         .includes(:metadata, :job_artifacts_metadata)
     end
 
+    scope :with_project_and_metadata, -> do
+      if Feature.enabled?(:non_public_artifacts, type: :development)
+        joins(:metadata).includes(:project, :metadata)
+      end
+    end
+
     scope :with_artifacts_not_expired, -> { with_downloadable_artifacts.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.current) }
     scope :with_expired_artifacts, -> { with_downloadable_artifacts.where('artifacts_expire_at < ?', Time.current) }
     scope :last_month, -> { where('created_at > ?', Date.today - 1.month) }
@@ -739,6 +745,16 @@ module Ci
 
     def browsable_artifacts?
       artifacts_metadata?
+    end
+
+    def artifacts_public?
+      return true unless Feature.enabled?(:non_public_artifacts, type: :development)
+
+      artifacts_public = options.dig(:artifacts, :public)
+
+      return true if artifacts_public.nil? # Default artifacts:public to true
+
+      options.dig(:artifacts, :public)
     end
 
     def artifacts_metadata_entry(path, **options)

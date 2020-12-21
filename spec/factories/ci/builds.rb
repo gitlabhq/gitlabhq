@@ -486,6 +486,14 @@ FactoryBot.define do
       end
     end
 
+    trait :non_public_artifacts do
+      options do
+        {
+          artifacts: { public: false }
+        }
+      end
+    end
+
     trait :non_playable do
       status { 'created' }
       self.when { 'manual' }

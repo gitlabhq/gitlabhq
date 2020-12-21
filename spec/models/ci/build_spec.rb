@@ -717,6 +717,22 @@ RSpec.describe Ci::Build do
     end
   end
 
+  describe '#artifacts_public?' do
+    subject { build.artifacts_public? }
+
+    context 'artifacts with defaults' do
+      let(:build) { create(:ci_build, :artifacts) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'non public artifacts' do
+      let(:build) { create(:ci_build, :artifacts, :non_public_artifacts) }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '#artifacts_expired?' do
     subject { build.artifacts_expired? }
 

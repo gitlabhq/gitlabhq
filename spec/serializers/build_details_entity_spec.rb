@@ -225,5 +225,36 @@ RSpec.describe BuildDetailsEntity do
         expect(subject[:artifact].keys).to include(:download_path, :browse_path, :keep_path, :expire_at, :expired, :locked)
       end
     end
+
+    context 'when the project is public and the user is a guest' do
+      let(:project) { create(:project, :repository, :public) }
+      let(:user) { create(:project_member, :guest, project: project).user }
+
+      context 'when the build has public archive type artifacts' do
+        let(:build) { create(:ci_build, :artifacts) }
+
+        it 'exposes public artifact details' do
+          expect(subject[:artifact].keys).to include(:download_path, :browse_path, :locked)
+        end
+      end
+
+      context 'when the build has non public archive type artifacts' do
+        let(:build) { create(:ci_build, :artifacts, :non_public_artifacts, pipeline: pipeline) }
+
+        it 'does not expose non public artifacts' do
+          expect(subject.keys).not_to include(:artifact)
+        end
+
+        context 'with the non_public_artifacts feature flag disabled' do
+          before do
+            stub_feature_flags(non_public_artifacts: false)
+          end
+
+          it 'exposes artifact details' do
+            expect(subject[:artifact].keys).to include(:download_path, :browse_path, :locked)
+          end
+        end
+      end
+    end
   end
 end

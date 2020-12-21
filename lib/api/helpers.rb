@@ -275,6 +275,10 @@ module API
       authorize! :read_build_trace, build
     end
 
+    def authorize_read_job_artifacts!(build)
+      authorize! :read_job_artifacts, build
+    end
+
     def authorize_destroy_artifacts!
       authorize! :destroy_artifacts, user_project
     end
