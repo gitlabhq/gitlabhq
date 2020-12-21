@@ -36,11 +36,11 @@
   transition: border-left 0.1s ease-out;
 
   &.coverage {
-    border-left: 3px solid $coverage;
+    border-left: 4px solid $coverage;
   }
 
   &.no-coverage {
-    border-left: 3px solid $no-coverage;
+    border-left: 2px solid $no-coverage;
   }
 }
 

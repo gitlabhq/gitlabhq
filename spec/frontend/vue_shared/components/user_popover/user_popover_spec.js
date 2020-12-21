@@ -81,6 +81,7 @@ describe('User Popover Component', () => {
     });
 
     it('shows icon for location', () => {
+      createWrapper();
       const iconEl = wrapper.find(GlIcon);
 
       expect(iconEl.props('name')).toEqual('location');

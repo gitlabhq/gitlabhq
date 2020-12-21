@@ -116,6 +116,8 @@ describe('Design management toolbar component', () => {
   });
 
   it('renders download button with correct link', () => {
+    createComponent();
+
     expect(wrapper.find(GlButton).attributes('href')).toBe(
       '/-/designs/306/7f747adcd4693afadbe968d7ba7d983349b9012d',
     );

@@ -23,9 +23,7 @@ RSpec.describe 'getting merge request listings nested in a project' do
     graphql_query_for(
       :project,
       { full_path: project.full_path },
-      query_graphql_field(:merge_requests, search_params, [
-        query_graphql_field(:nodes, nil, fields)
-      ])
+      query_nodes(:merge_requests, fields, args: search_params)
     )
   end
 
@@ -50,24 +48,22 @@ RSpec.describe 'getting merge request listings nested in a project' do
       project.repository.expire_branches_cache
     end
 
+    let(:graphql_data) do
+      GitlabSchema.execute(query, context: { current_user: current_user }).to_h['data']
+    end
+
     context 'selecting any single scalar field' do
       where(:field) do
         scalar_fields_of('MergeRequest').map { |name| [name] }
       end
 
       with_them do
-        it_behaves_like 'a working graphql query' do
-          let(:query) do
-            query_merge_requests([:iid, field].uniq)
-          end
+        let(:query) do
+          query_merge_requests([:iid, field].uniq)
+        end
 
-          before do
-            post_graphql(query, current_user: current_user)
-          end
-
-          it 'selects the correct MR' do
-            expect(results).to contain_exactly(a_hash_including('iid' => fresh_mr.iid.to_s))
-          end
+        it 'selects the correct MR' do
+          expect(results).to contain_exactly(a_hash_including('iid' => fresh_mr.iid.to_s))
         end
       end
     end
@@ -87,19 +83,13 @@ RSpec.describe 'getting merge request listings nested in a project' do
       end
 
       with_them do
-        it_behaves_like 'a working graphql query' do
-          let(:query) do
-            fld = is_connection ? query_graphql_field(:nodes, nil, [subfield]) : subfield
-            query_merge_requests([:iid, query_graphql_field(field, nil, [fld])])
-          end
+        let(:query) do
+          fld = is_connection ? query_graphql_field(:nodes, nil, [subfield]) : subfield
+          query_merge_requests([:iid, query_graphql_field(field, nil, [fld])])
+        end
 
-          before do
-            post_graphql(query, current_user: current_user)
-          end
-
-          it 'selects the correct MR' do
-            expect(results).to contain_exactly(a_hash_including('iid' => fresh_mr.iid.to_s))
-          end
+        it 'selects the correct MR' do
+          expect(results).to contain_exactly(a_hash_including('iid' => fresh_mr.iid.to_s))
         end
       end
     end
@@ -253,6 +243,115 @@ RSpec.describe 'getting merge request listings nested in a project' do
       end
 
       include_examples 'N+1 query check'
+    end
+
+    context 'when requesting reviewers' do
+      let(:requested_fields) { ['reviewers { nodes { username } }'] }
+
+      before do
+        merge_request_a.reviewers << create(:user)
+        merge_request_a.reviewers << create(:user)
+        merge_request_c.reviewers << create(:user)
+      end
+
+      it 'returns the reviewers' do
+        execute_query
+
+        expect(results).to include a_hash_including('reviewers' => {
+          'nodes' => match_array(merge_request_a.reviewers.map do |r|
+            a_hash_including('username' => r.username)
+          end)
+        })
+      end
+
+      context 'the feature flag is disabled' do
+        before do
+          stub_feature_flags(merge_request_reviewers: false)
+        end
+
+        it 'does not return reviewers' do
+          execute_query
+
+          expect(results).to all(match a_hash_including('reviewers' => be_nil))
+        end
+      end
+
+      include_examples 'N+1 query check'
+    end
+  end
+
+  describe 'performance' do
+    let(:mr_fields) do
+      <<~SELECT
+      assignees { nodes { username } }
+      reviewers { nodes { username } }
+      participants { nodes { username } }
+      headPipeline { status }
+      SELECT
+    end
+
+    let(:query) do
+      <<~GQL
+        query($first: Int) {
+          project(fullPath: "#{project.full_path}") {
+            mergeRequests(first: $first) {
+              nodes { #{mr_fields} }
+            }
+          }
+        }
+      GQL
+    end
+
+    before_all do
+      project.add_developer(current_user)
+      mrs = create_list(:merge_request, 10, :closed, :with_head_pipeline,
+                        source_project: project,
+                        author: current_user)
+      mrs.each do |mr|
+        mr.assignees << create(:user)
+        mr.assignees << current_user
+        mr.reviewers << create(:user)
+        mr.reviewers << current_user
+      end
+    end
+
+    before do
+      # Confounding factor: makes DB calls in EE
+      allow(Gitlab::Database).to receive(:read_only?).and_return(false)
+    end
+
+    def run_query(number)
+      # Ensure that we have a fresh request store and batch-context between runs
+      result = run_with_clean_state(query,
+        context: { current_user: current_user },
+        variables: { first: number }
+      )
+
+      graphql_dig_at(result.to_h, :data, :project, :merge_requests, :nodes)
+    end
+
+    def user_collection
+      { 'nodes' => all(match(a_hash_including('username' => be_present))) }
+    end
+
+    it 'returns appropriate results' do
+      mrs = run_query(2)
+
+      expect(mrs.size).to eq(2)
+      expect(mrs).to all(
+        match(
+          a_hash_including(
+            'assignees' => user_collection,
+            'reviewers' => user_collection,
+            'participants' => user_collection,
+            'headPipeline' => { 'status' => be_present }
+          )))
+    end
+
+    it 'can lookahead to eliminate N+1 queries' do
+      baseline = ActiveRecord::QueryRecorder.new { run_query(1) }
+
+      expect { run_query(10) }.not_to exceed_query_limit(baseline)
     end
   end
 

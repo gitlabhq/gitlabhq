@@ -98,6 +98,8 @@ describe('Commits header component', () => {
     });
 
     it('does has merge commit part of the message', () => {
+      createComponent();
+
       expect(findHeaderWrapper().text()).toContain('1 merge commit');
     });
   });

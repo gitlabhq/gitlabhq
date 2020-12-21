@@ -94,6 +94,8 @@ describe('MrWidgetPipelineContainer', () => {
 
   describe('with artifacts path', () => {
     it('renders the artifacts app', () => {
+      factory();
+
       expect(wrapper.find(ArtifactsApp).isVisible()).toBe(true);
     });
   });

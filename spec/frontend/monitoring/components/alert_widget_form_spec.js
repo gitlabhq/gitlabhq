@@ -76,11 +76,15 @@ describe('AlertWidgetForm', () => {
   });
 
   it('shows correct title and button text', () => {
+    createComponent();
+
     expect(modalTitle()).toBe('Add alert');
     expect(submitButton().text()).toBe('Add');
   });
 
   it('sets tracking options for create alert', () => {
+    createComponent();
+
     expect(submitButtonTrackingOpts()).toEqual(dataTrackingOptions.create);
   });
 

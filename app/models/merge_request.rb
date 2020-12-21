@@ -493,6 +493,10 @@ class MergeRequest < ApplicationRecord
     work_in_progress?(title) ? title : "Draft: #{title}"
   end
 
+  def self.participant_includes
+    [:reviewers, :award_emoji] + super
+  end
+
   def committers
     @committers ||= commits.committers
   end

@@ -67,14 +67,16 @@ module GraphqlHelpers
     end
   end
 
+  def with_clean_batchloader_executor(&block)
+    BatchLoader::Executor.ensure_current
+    yield
+  ensure
+    BatchLoader::Executor.clear_current
+  end
+
   # Runs a block inside a BatchLoader::Executor wrapper
   def batch(max_queries: nil, &blk)
-    wrapper = proc do
-      BatchLoader::Executor.ensure_current
-      yield
-    ensure
-      BatchLoader::Executor.clear_current
-    end
+    wrapper = -> { with_clean_batchloader_executor(&blk) }
 
     if max_queries
       result = nil
@@ -83,6 +85,32 @@ module GraphqlHelpers
     else
       wrapper.call
     end
+  end
+
+  # Use this when writing N+1 tests.
+  #
+  # It does not use the controller, so it avoids confounding factors due to
+  # authentication (token set-up, license checks)
+  # It clears the request store, rails cache, and BatchLoader Executor between runs.
+  def run_with_clean_state(query, **args)
+    ::Gitlab::WithRequestStore.with_request_store do
+      with_clean_rails_cache do
+        with_clean_batchloader_executor do
+          ::GitlabSchema.execute(query, **args)
+        end
+      end
+    end
+  end
+
+  # Basically a combination of use_sql_query_cache and use_clean_rails_memory_store_caching,
+  # but more fine-grained, suitable for comparing two runs in the same example.
+  def with_clean_rails_cache(&blk)
+    caching_store = Rails.cache
+    Rails.cache = ActiveSupport::Cache::MemoryStore.new
+
+    ActiveRecord::Base.cache(&blk)
+  ensure
+    Rails.cache = caching_store
   end
 
   # BatchLoader::GraphQL returns a wrapper, so we need to :sync in order
@@ -245,7 +273,7 @@ module GraphqlHelpers
     return if max_depth <= 0
 
     allow_unlimited_graphql_complexity
-    allow_unlimited_graphql_depth
+    allow_unlimited_graphql_depth if max_depth > 1
     allow_high_graphql_recursion
     allow_high_graphql_transaction_threshold
 

@@ -61,6 +61,7 @@ describe('operation settings external dashboard component', () => {
 
   describe('expand/collapse button', () => {
     it('renders as an expand button by default', () => {
+      mountComponent();
       const button = wrapper.find(GlButton);
 
       expect(button.text()).toBe('Expand');

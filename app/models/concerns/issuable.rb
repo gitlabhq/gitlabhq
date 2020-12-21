@@ -216,6 +216,10 @@ module Issuable
   end
 
   class_methods do
+    def participant_includes
+      [:assignees, :author, { notes: [:author, :award_emoji] }]
+    end
+
     # Searches for records with a matching title.
     #
     # This method uses ILIKE on PostgreSQL.

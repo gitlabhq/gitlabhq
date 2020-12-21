@@ -159,6 +159,12 @@ class CommitStatus < ApplicationRecord
       commit_status.failure_reason = CommitStatus.failure_reasons[failure_reason]
     end
 
+    before_transition [:skipped, :manual] => :created do |commit_status, transition|
+      transition.args.first.try do |user|
+        commit_status.user = user
+      end
+    end
+
     after_transition do |commit_status, transition|
       next if transition.loopback?
       next if commit_status.processed?

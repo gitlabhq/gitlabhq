@@ -206,6 +206,22 @@ RSpec.describe Ci::RetryBuildService do
           expect(subsequent_build.reload).to be_created
           expect(subsequent_bridge.reload).to be_created
         end
+
+        it 'updates ownership for subsequent builds' do
+          expect { service.execute(build) }.to change { subsequent_build.reload.user }.to(user)
+        end
+
+        it 'updates ownership for subsequent bridges' do
+          expect { service.execute(build) }.to change { subsequent_bridge.reload.user }.to(user)
+        end
+
+        it 'does not cause n+1 when updaing build ownership' do
+          control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { service.execute(build) }.count
+
+          create_list(:ci_build, 2, :skipped, stage_idx: build.stage_idx + 1, pipeline: pipeline, stage: 'deploy')
+
+          expect { service.execute(build) }.not_to exceed_all_query_limit(control_count)
+        end
       end
 
       context 'when pipeline has other builds' do

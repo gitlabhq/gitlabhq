@@ -126,10 +126,12 @@ module Types
           description: 'The milestone of the merge request'
     field :assignees, Types::UserType.connection_type, null: true, complexity: 5,
           description: 'Assignees of the merge request'
+    field :reviewers, Types::UserType.connection_type, null: true, complexity: 5,
+          description: 'Users from whom a review has been requested.'
     field :author, Types::UserType, null: true,
           description: 'User who created this merge request'
     field :participants, Types::UserType.connection_type, null: true, complexity: 5,
-          description: 'Participants in the merge request'
+          description: 'Participants in the merge request. This includes the author, assignees, reviewers, and users mentioned in notes.'
     field :subscribed, GraphQL::BOOLEAN_TYPE, method: :subscribed?, null: false, complexity: 5,
           description: 'Indicates if the currently logged in user is subscribed to this merge request'
     field :labels, Types::LabelType.connection_type, null: true, complexity: 5,
@@ -234,6 +236,10 @@ module Types
 
     def security_auto_fix
       object.author == User.security_bot
+    end
+
+    def reviewers
+      object.reviewers if object.allows_reviewers?
     end
   end
 end

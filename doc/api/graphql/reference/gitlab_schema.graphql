@@ -13491,7 +13491,7 @@ type MergeRequest implements CurrentUserTodos & Noteable {
   ): NoteConnection!
 
   """
-  Participants in the merge request
+  Participants in the merge request. This includes the author, assignees, reviewers, and users mentioned in notes.
   """
   participants(
     """
@@ -13585,6 +13585,31 @@ type MergeRequest implements CurrentUserTodos & Noteable {
     """
     full: Boolean = false
   ): String!
+
+  """
+  Users from whom a review has been requested.
+  """
+  reviewers(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): UserConnection
 
   """
   Indicates if the merge request is created by @GitLab-Security-Bot.

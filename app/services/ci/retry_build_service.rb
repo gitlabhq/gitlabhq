@@ -2,6 +2,8 @@
 
 module Ci
   class RetryBuildService < ::BaseService
+    include Gitlab::OptimisticLocking
+
     def self.clone_accessors
       %i[pipeline project ref tag options name
          allow_failure stage stage_id stage_idx trigger_request
@@ -65,8 +67,8 @@ module Ci
     end
 
     def mark_subsequent_stages_as_processable(build)
-      build.pipeline.processables.skipped.after_stage(build.stage_idx).find_each do |processable|
-        Gitlab::OptimisticLocking.retry_lock(processable, &:process)
+      build.pipeline.processables.skipped.after_stage(build.stage_idx).find_each do |skipped|
+        retry_optimistic_lock(skipped) { |build| build.process(current_user) }
       end
     end
   end

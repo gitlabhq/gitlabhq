@@ -32,6 +32,8 @@ module AlertManagement
     attr_reader :current_user, :project, :params
 
     def by_domain(collection)
+      return collection if params[:iid].present?
+
       collection.with_operations_alerts
     end
 

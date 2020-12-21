@@ -73,6 +73,8 @@ describe('LogAdvancedFilters', () => {
   });
 
   it('displays search tokens', () => {
+    initWrapper();
+
     expect(getSearchToken(TOKEN_TYPE_POD_NAME)).toMatchObject({
       title: 'Pod name',
       unique: true,

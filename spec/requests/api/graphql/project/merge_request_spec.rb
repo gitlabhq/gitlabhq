@@ -9,12 +9,13 @@ RSpec.describe 'getting merge request information nested in a project' do
   let(:current_user) { create(:user) }
   let(:merge_request_graphql_data) { graphql_data['project']['mergeRequest'] }
   let!(:merge_request) { create(:merge_request, source_project: project) }
+  let(:mr_fields) { all_graphql_fields_for('MergeRequest') }
 
   let(:query) do
     graphql_query_for(
       'project',
       { 'fullPath' => project.full_path },
-      query_graphql_field('mergeRequest', iid: merge_request.iid.to_s)
+      query_graphql_field('mergeRequest', { iid: merge_request.iid.to_s }, mr_fields)
     )
   end
 
@@ -41,6 +42,38 @@ RSpec.describe 'getting merge request information nested in a project' do
     post_graphql(query, current_user: current_user)
 
     expect(merge_request_graphql_data['author']['username']).to eq(merge_request.author.username)
+  end
+
+  context 'the merge_request has reviewers' do
+    let(:mr_fields) do
+      <<~SELECT
+      reviewers { nodes { id username } }
+      participants { nodes { id username } }
+      SELECT
+    end
+
+    before do
+      merge_request.reviewers << create_list(:user, 2)
+    end
+
+    it 'includes reviewers' do
+      expected = merge_request.reviewers.map do |r|
+        a_hash_including('id' => global_id_of(r), 'username' => r.username)
+      end
+
+      post_graphql(query, current_user: current_user)
+
+      expect(graphql_data_at(:project, :merge_request, :reviewers, :nodes)).to match_array(expected)
+      expect(graphql_data_at(:project, :merge_request, :participants, :nodes)).to include(*expected)
+    end
+
+    it 'suppresses reviewers if reviewers are not allowed' do
+      stub_feature_flags(merge_request_reviewers: false)
+
+      post_graphql(query, current_user: current_user)
+
+      expect(graphql_data_at(:project, :merge_request, :reviewers)).to be_nil
+    end
   end
 
   it 'includes diff stats' do
