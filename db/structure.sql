@@ -14646,6 +14646,18 @@ CREATE SEQUENCE packages_conan_metadata_id_seq
 
 ALTER SEQUENCE packages_conan_metadata_id_seq OWNED BY packages_conan_metadata.id;
 
+CREATE TABLE packages_debian_file_metadata (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    package_file_id bigint NOT NULL,
+    file_type smallint NOT NULL,
+    component text,
+    architecture text,
+    fields jsonb,
+    CONSTRAINT check_2ebedda4b6 CHECK ((char_length(component) <= 255)),
+    CONSTRAINT check_e6e1fffcca CHECK ((char_length(architecture) <= 255))
+);
+
 CREATE TABLE packages_dependencies (
     id bigint NOT NULL,
     name character varying(255) NOT NULL,
@@ -19909,6 +19921,9 @@ ALTER TABLE ONLY packages_conan_file_metadata
 ALTER TABLE ONLY packages_conan_metadata
     ADD CONSTRAINT packages_conan_metadata_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY packages_debian_file_metadata
+    ADD CONSTRAINT packages_debian_file_metadata_pkey PRIMARY KEY (package_file_id);
+
 ALTER TABLE ONLY packages_dependencies
     ADD CONSTRAINT packages_dependencies_pkey PRIMARY KEY (id);
 
@@ -24146,6 +24161,9 @@ ALTER TABLE ONLY incident_management_oncall_schedules
 
 ALTER TABLE ONLY vulnerability_user_mentions
     ADD CONSTRAINT fk_rails_1a41c485cd FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY packages_debian_file_metadata
+    ADD CONSTRAINT fk_rails_1ae85be112 FOREIGN KEY (package_file_id) REFERENCES packages_package_files(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issuable_slas
     ADD CONSTRAINT fk_rails_1b8768cd63 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;

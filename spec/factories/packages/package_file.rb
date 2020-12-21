@@ -92,6 +92,97 @@ FactoryBot.define do
       end
     end
 
+    factory :debian_package_file do
+      package { association(:debian_package, without_package_files: true) }
+      file_name { 'libsample0_1.2.3~alpha2_amd64.deb' }
+      file_fixture { "spec/fixtures/packages/debian/#{file_name}" }
+      file_sha1 { 'be93151dc23ac34a82752444556fe79b32c7a1ad' }
+      file_md5 { '12345abcde' }
+      size { 400.kilobytes }
+
+      transient do
+        without_loaded_metadatum { false }
+        file_metadatum_trait { :deb }
+      end
+
+      after :create do |package_file, evaluator|
+        unless evaluator.without_loaded_metadatum
+          create :debian_file_metadatum, evaluator.file_metadatum_trait, package_file: package_file
+        end
+      end
+
+      trait(:unknown) do
+        package { association(:debian_incoming, without_package_files: true) }
+
+        transient do
+          file_metadatum_trait { :unknown }
+        end
+      end
+
+      trait(:invalid) do
+        file_name { 'README.md' }
+      end
+
+      trait(:source) do
+        file_name { 'sample_1.2.3~alpha2.tar.xz' }
+
+        transient do
+          file_metadatum_trait { :source }
+        end
+      end
+
+      trait(:dsc) do
+        file_name { 'sample_1.2.3~alpha2.dsc' }
+
+        transient do
+          file_metadatum_trait { :dsc }
+        end
+      end
+
+      trait(:deb) do
+        file_name { 'libsample0_1.2.3~alpha2_amd64.deb' }
+
+        transient do
+          file_metadatum_trait { :deb }
+        end
+      end
+
+      trait(:deb2) do
+        file_name { 'sample-dev_1.2.3~binary_amd64.deb' }
+
+        transient do
+          file_metadatum_trait { :deb }
+        end
+      end
+
+      trait(:udeb) do
+        file_name { 'sample-udeb_1.2.3~alpha2_amd64.udeb' }
+
+        transient do
+          file_metadatum_trait { :udeb }
+        end
+      end
+
+      trait(:buildinfo) do
+        file_name { 'sample_1.2.3~alpha2_amd64.buildinfo' }
+
+        transient do
+          file_metadatum_trait { :buildinfo }
+        end
+      end
+
+      trait(:changes) do
+        file_name { 'sample_1.2.3~alpha2_amd64.changes' }
+
+        transient do
+          file_metadatum_trait { :changes }
+        end
+      end
+
+      trait(:keep) do
+      end
+    end
+
     trait(:jar) do
       file_fixture { 'spec/fixtures/packages/maven/my-app-1.0-20180724.124855-1.jar' }
       file_name { 'my-app-1.0-20180724.124855-1.jar' }

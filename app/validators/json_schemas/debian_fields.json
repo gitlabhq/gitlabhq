@@ -1,0 +1,9 @@
+{
+  "description": "Debian fields",
+  "type": "object",
+  "patternProperties": {
+    ".*": {
+      "type": "string"
+    }
+  }
+}

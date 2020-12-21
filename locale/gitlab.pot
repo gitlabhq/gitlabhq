@@ -19777,6 +19777,9 @@ msgstr ""
 msgid "Package type must be Conan"
 msgstr ""
 
+msgid "Package type must be Debian"
+msgstr ""
+
 msgid "Package type must be Maven"
 msgstr ""
 

@@ -26,9 +26,31 @@ FactoryBot.define do
       sequence(:version) { |n| "1.0-#{n}" }
       package_type { :debian }
 
+      transient do
+        without_package_files { false }
+        file_metadatum_trait { :keep }
+      end
+
+      after :create do |package, evaluator|
+        unless evaluator.without_package_files
+          create :debian_package_file, :source, evaluator.file_metadatum_trait, package: package
+          create :debian_package_file, :dsc, evaluator.file_metadatum_trait, package: package
+          create :debian_package_file, :deb, evaluator.file_metadatum_trait, package: package
+          create :debian_package_file, :deb2, evaluator.file_metadatum_trait, package: package
+          create :debian_package_file, :udeb, evaluator.file_metadatum_trait, package: package
+          create :debian_package_file, :buildinfo, evaluator.file_metadatum_trait, package: package
+          create :debian_package_file, :changes, evaluator.file_metadatum_trait, package: package
+        end
+      end
+
       factory :debian_incoming do
         name { 'incoming' }
         version { nil }
+
+        transient do
+          without_package_files { false }
+          file_metadatum_trait { :unknown }
+        end
       end
     end
 
