@@ -19,7 +19,7 @@ module Resolvers
                                  milestone_due_asc milestone_due_desc].freeze
 
     def continue_issue_resolve(parent, finder, **args)
-      issues = apply_lookahead(Gitlab::Graphql::Loaders::IssuableLoader.new(parent, finder).batching_find_all)
+      issues = Gitlab::Graphql::Loaders::IssuableLoader.new(parent, finder).batching_find_all { |q| apply_lookahead(q) }
 
       if non_stable_cursor_sort?(args[:sort])
         # Certain complex sorts are not supported by the stable cursor pagination yet.
@@ -31,6 +31,14 @@ module Resolvers
     end
 
     private
+
+    def unconditional_includes
+      [
+        {
+          project: [:project_feature]
+        }
+      ]
+    end
 
     def preloads
       {
