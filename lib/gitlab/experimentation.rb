@@ -93,6 +93,9 @@ module Gitlab
       },
       ci_syntax_templates: {
         tracking_category: 'Growth::Activation::Experiment::CiSyntaxTemplates'
+      },
+      pipelines_empty_state: {
+        tracking_category: 'Growth::Activation::Experiment::PipelinesEmptyState'
       }
     }.freeze
 

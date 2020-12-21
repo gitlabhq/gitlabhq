@@ -156,6 +156,16 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
         is_expected.to eq(true)
       end
     end
+
+    context 'Cookie parameter to force enable experiment' do
+      it 'returns true unconditionally' do
+        cookies[:force_experiment] = 'test_experiment,another_experiment'
+        get :index
+
+        expect(check_experiment(:test_experiment)).to eq(true)
+        expect(check_experiment(:another_experiment)).to eq(true)
+      end
+    end
   end
 
   describe '#track_experiment_event', :snowplow do

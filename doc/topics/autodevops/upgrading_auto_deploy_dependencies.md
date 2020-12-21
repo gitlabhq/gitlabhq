@@ -161,7 +161,7 @@ For example, if the template is bundled in GitLab v13.3, change your `.gitlab-ci
 ```yaml
 include:
   - template: Auto-DevOps.gitlab-ci.yml
-  - remote: https://gitlab.com/gitlab-org/gitlab/-/blob/v13.3.0-ee/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml
+  - remote: https://gitlab.com/gitlab-org/gitlab/-/raw/v13.3.0-ee/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml
 ```
 
 ### Ignore warnings and continue deploying
@@ -181,7 +181,7 @@ the latest Auto Deploy template into your `.gitlab-ci.yml`:
 ```yaml
 include:
   - template: Auto-DevOps.gitlab-ci.yml
-  - remote: https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.latest.gitlab-ci.yml
+  - remote: https://gitlab.com/gitlab-org/gitlab/-/raw/master/lib/gitlab/ci/templates/Jobs/Deploy.latest.gitlab-ci.yml
 ```
 
 WARNING:

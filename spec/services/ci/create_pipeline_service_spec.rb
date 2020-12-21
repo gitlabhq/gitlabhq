@@ -94,6 +94,7 @@ RSpec.describe Ci::CreatePipelineService do
       describe 'recording a conversion event' do
         it 'schedules a record conversion event worker' do
           expect(Experiments::RecordConversionEventWorker).to receive(:perform_async).with(:ci_syntax_templates, user.id)
+          expect(Experiments::RecordConversionEventWorker).to receive(:perform_async).with(:pipelines_empty_state, user.id)
 
           pipeline
         end

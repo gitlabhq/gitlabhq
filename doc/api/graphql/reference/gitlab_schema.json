@@ -73469,6 +73469,20 @@
               "deprecationReason": null
             },
             {
+              "name": "resolvedBy",
+              "description": "The user that resolved the vulnerability.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "User",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "resolvedOnDefaultBranch",
               "description": "Indicates whether the vulnerability is fixed on the default branch or not",
               "args": [

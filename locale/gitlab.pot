@@ -20458,7 +20458,13 @@ msgstr ""
 msgid "Pipelines|Editor"
 msgstr ""
 
+msgid "Pipelines|Get started with CI/CD"
+msgstr ""
+
 msgid "Pipelines|Get started with Pipelines"
+msgstr ""
+
+msgid "Pipelines|GitLab CI/CD can automatically build, test, and deploy your code. Let GitLab take care of time consuming tasks, so you can spend more time creating."
 msgstr ""
 
 msgid "Pipelines|Group %{namespace_name} has %{percentage}%% or less Shared Runner Pipeline minutes remaining.  Once it runs out, no new jobs or pipelines in its projects will run."

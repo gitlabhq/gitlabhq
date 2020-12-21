@@ -12,10 +12,14 @@ RSpec.describe Experiments::RecordConversionEventWorker, '#perform' do
   context 'when the experiment is active' do
     let(:experiment_active) { true }
 
-    it 'records the event' do
-      expect(Experiment).to receive(:record_conversion_event).with(:experiment_key, 1234)
+    include_examples 'an idempotent worker' do
+      subject { perform }
 
-      perform
+      it 'records the event' do
+        expect(Experiment).to receive(:record_conversion_event).with(:experiment_key, 1234)
+
+        perform
+      end
     end
   end
 

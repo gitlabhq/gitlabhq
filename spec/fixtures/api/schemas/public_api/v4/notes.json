@@ -31,6 +31,7 @@
       "resolved": { "type": "boolean" },
       "resolvable": { "type": "boolean" },
       "resolved_by": { "type": ["string", "null"] },
+      "resolved_at": { "type": ["date", "null"] },
       "confidential": { "type": ["boolean", "null"] }
     },
     "required": [

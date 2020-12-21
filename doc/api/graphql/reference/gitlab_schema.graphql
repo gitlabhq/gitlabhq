@@ -25249,6 +25249,11 @@ type Vulnerability implements Noteable {
   resolvedAt: Time
 
   """
+  The user that resolved the vulnerability.
+  """
+  resolvedBy: User
+
+  """
   Indicates whether the vulnerability is fixed on the default branch or not
   """
   resolvedOnDefaultBranch: Boolean!

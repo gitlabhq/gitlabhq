@@ -104,7 +104,7 @@ and the CI YAML file:
    ```
 
 1. In the root directory of your project repository, configure a
-   `.gitlab-ci.yaml` file. This example uses a pre-built image which includes a
+   `.gitlab-ci.yml` file. This example uses a pre-built image which includes a
    `gitlab-terraform` helper. For supported Terraform versions, see the [GitLab
    Terraform Images project](https://gitlab.com/gitlab-org/terraform-images).
 
@@ -112,7 +112,7 @@ and the CI YAML file:
    image: registry.gitlab.com/gitlab-org/terraform-images/stable:latest
    ```
 
-1. In the `.gitlab-ci.yaml` file, define some environment variables to ease
+1. In the `.gitlab-ci.yml` file, define some environment variables to ease
    development. In this example, `TF_ROOT` is the directory where the Terraform
    commands must be executed, `TF_ADDRESS` is the URL to the state on the GitLab
    instance where this pipeline runs, and the final path segment in `TF_ADDRESS`

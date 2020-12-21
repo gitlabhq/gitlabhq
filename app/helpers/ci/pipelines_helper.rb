@@ -26,6 +26,10 @@ module Ci
       _("%{message} showing first %{warnings_displayed}") % { message: message, warnings_displayed: MAX_LIMIT }
     end
 
+    def has_gitlab_ci?(project)
+      project.has_ci? && project.builds_enabled?
+    end
+
     private
 
     def warning_markdown(pipeline)

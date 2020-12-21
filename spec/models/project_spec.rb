@@ -6002,6 +6002,43 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#set_first_pages_deployment!' do
+    let(:project) { create(:project) }
+    let(:deployment) { create(:pages_deployment, project: project) }
+
+    it "creates new metadata record if none exists yet and sets deployment" do
+      project.pages_metadatum.destroy!
+      project.reload
+
+      project.set_first_pages_deployment!(deployment)
+
+      expect(project.pages_metadatum.reload.pages_deployment).to eq(deployment)
+    end
+
+    it "updates the existing metadara record with deployment" do
+      expect do
+        project.set_first_pages_deployment!(deployment)
+      end.to change { project.pages_metadatum.reload.pages_deployment }.from(nil).to(deployment)
+    end
+
+    it 'only updates metadata for this project' do
+      other_project = create(:project)
+
+      expect do
+        project.set_first_pages_deployment!(deployment)
+      end.not_to change { other_project.pages_metadatum.reload.pages_deployment }.from(nil)
+    end
+
+    it 'does nothing if metadata already references some deployment' do
+      existing_deployment = create(:pages_deployment, project: project)
+      project.set_first_pages_deployment!(existing_deployment)
+
+      expect do
+        project.set_first_pages_deployment!(deployment)
+      end.not_to change { project.pages_metadatum.reload.pages_deployment }.from(existing_deployment)
+    end
+  end
+
   describe '#has_pool_repsitory?' do
     it 'returns false when it does not have a pool repository' do
       subject = create(:project, :repository)

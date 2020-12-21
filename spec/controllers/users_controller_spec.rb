@@ -12,7 +12,7 @@ RSpec.describe UsersController do
     context 'with rendered views' do
       render_views
 
-      describe 'when logged in' do
+      context 'when logged in' do
         before do
           sign_in(user)
         end
@@ -25,7 +25,7 @@ RSpec.describe UsersController do
         end
       end
 
-      describe 'when logged out' do
+      context 'when logged out' do
         it 'renders the show template' do
           get :show, params: { username: user.username }
 
@@ -119,7 +119,7 @@ RSpec.describe UsersController do
     context 'with rendered views' do
       render_views
 
-      describe 'when logged in' do
+      context 'when logged in' do
         before do
           sign_in(user)
         end
@@ -132,7 +132,7 @@ RSpec.describe UsersController do
         end
       end
 
-      describe 'when logged out' do
+      context 'when logged out' do
         it 'renders the show template' do
           get :activity, params: { username: user.username }
 
@@ -222,146 +222,131 @@ RSpec.describe UsersController do
     end
   end
 
-  describe "#ssh_keys" do
-    describe "non existent user" do
-      it "does not generally work" do
+  describe 'GET #ssh_keys' do
+    context 'non existent user' do
+      it 'does not generally work' do
         get :ssh_keys, params: { username: 'not-existent' }
 
         expect(response).not_to be_successful
       end
     end
 
-    describe "user with no keys" do
-      it "does generally work" do
+    context 'user with no keys' do
+      it 'does generally work' do
         get :ssh_keys, params: { username: user.username }
 
         expect(response).to be_successful
       end
 
-      it "renders all keys separated with a new line" do
+      it 'renders all keys separated with a new line' do
         get :ssh_keys, params: { username: user.username }
 
         expect(response.body).to eq("")
       end
 
-      it "responds with text/plain content type" do
+      it 'responds with text/plain content type' do
         get :ssh_keys, params: { username: user.username }
         expect(response.content_type).to eq("text/plain")
       end
     end
 
-    describe "user with keys" do
+    context 'user with keys' do
       let!(:key) { create(:key, user: user) }
       let!(:another_key) { create(:another_key, user: user) }
       let!(:deploy_key) { create(:deploy_key, user: user) }
 
-      describe "while signed in" do
+      shared_examples_for 'renders all public keys' do
+        it 'does generally work' do
+          get :ssh_keys, params: { username: user.username }
+
+          expect(response).to be_successful
+        end
+
+        it 'renders all non deploy keys separated with a new line' do
+          get :ssh_keys, params: { username: user.username }
+
+          expect(response.body).not_to eq('')
+          expect(response.body).to eq(user.all_ssh_keys.join("\n"))
+
+          expect(response.body).to include(key.key.sub(' dummy@gitlab.com', ''))
+          expect(response.body).to include(another_key.key.sub(' dummy@gitlab.com', ''))
+
+          expect(response.body).not_to include(deploy_key.key)
+        end
+
+        it 'does not render the comment of the key' do
+          get :ssh_keys, params: { username: user.username }
+
+          expect(response.body).not_to match(/dummy@gitlab.com/)
+        end
+
+        it 'responds with text/plain content type' do
+          get :ssh_keys, params: { username: user.username }
+
+          expect(response.content_type).to eq("text/plain")
+        end
+      end
+
+      context 'while signed in' do
         before do
           sign_in(user)
         end
 
-        it "does generally work" do
-          get :ssh_keys, params: { username: user.username }
-
-          expect(response).to be_successful
-        end
-
-        it "renders all non deploy keys separated with a new line" do
-          get :ssh_keys, params: { username: user.username }
-
-          expect(response.body).not_to eq('')
-          expect(response.body).to eq(user.all_ssh_keys.join("\n"))
-
-          expect(response.body).to include(key.key.sub(' dummy@gitlab.com', ''))
-          expect(response.body).to include(another_key.key.sub(' dummy@gitlab.com', ''))
-
-          expect(response.body).not_to include(deploy_key.key)
-        end
-
-        it "does not render the comment of the key" do
-          get :ssh_keys, params: { username: user.username }
-          expect(response.body).not_to match(/dummy@gitlab.com/)
-        end
-
-        it "responds with text/plain content type" do
-          get :ssh_keys, params: { username: user.username }
-
-          expect(response.content_type).to eq("text/plain")
-        end
+        it_behaves_like 'renders all public keys'
       end
 
-      describe 'when logged out' do
+      context 'when logged out' do
         before do
           sign_out(user)
         end
 
-        it "still does generally work" do
-          get :ssh_keys, params: { username: user.username }
-
-          expect(response).to be_successful
-        end
-
-        it "renders all non deploy keys separated with a new line" do
-          get :ssh_keys, params: { username: user.username }
-
-          expect(response.body).not_to eq('')
-          expect(response.body).to eq(user.all_ssh_keys.join("\n"))
-
-          expect(response.body).to include(key.key.sub(' dummy@gitlab.com', ''))
-          expect(response.body).to include(another_key.key.sub(' dummy@gitlab.com', ''))
-
-          expect(response.body).not_to include(deploy_key.key)
-        end
-
-        it "does not render the comment of the key" do
-          get :ssh_keys, params: { username: user.username }
-          expect(response.body).not_to match(/dummy@gitlab.com/)
-        end
-
-        it "responds with text/plain content type" do
-          get :ssh_keys, params: { username: user.username }
-
-          expect(response.content_type).to eq("text/plain")
-        end
+        it_behaves_like 'renders all public keys'
       end
     end
   end
 
-  describe "#gpg_keys" do
-    describe "non existent user" do
-      it "does not generally work" do
+  describe 'GET #gpg_keys' do
+    context 'non existent user' do
+      it 'does not generally work' do
         get :gpg_keys, params: { username: 'not-existent' }
 
         expect(response).not_to be_successful
       end
     end
 
-    describe "user with no keys" do
-      it "responds the empty body with text/plain content type" do
+    context 'user with no keys' do
+      it 'does generally work' do
         get :gpg_keys, params: { username: user.username }
 
         expect(response).to be_successful
+      end
+
+      it 'renders all keys separated with a new line' do
+        get :gpg_keys, params: { username: user.username }
+
+        expect(response.body).to eq("")
+      end
+
+      it 'responds with text/plain content type' do
+        get :gpg_keys, params: { username: user.username }
+
         expect(response.content_type).to eq("text/plain")
         expect(response.body).to eq("")
       end
     end
 
-    describe "user with keys" do
+    context 'user with keys' do
       let!(:gpg_key) { create(:gpg_key, user: user) }
       let!(:another_gpg_key) { create(:another_gpg_key, user: user) }
 
-      describe "while signed in" do
-        before do
-          sign_in(user)
-        end
-
-        it "does generally work" do
+      shared_examples_for 'renders all verified GPG keys' do
+        it 'does generally work' do
           get :gpg_keys, params: { username: user.username }
 
           expect(response).to be_successful
         end
 
-        it "renders all verified keys separated with a new line with text/plain content type" do
+        it 'renders all verified keys separated with a new line with text/plain content type' do
           get :gpg_keys, params: { username: user.username }
 
           expect(response.content_type).to eq("text/plain")
@@ -374,37 +359,29 @@ RSpec.describe UsersController do
         end
       end
 
-      describe 'when logged out' do
+      context 'while signed in' do
+        before do
+          sign_in(user)
+        end
+
+        it_behaves_like 'renders all verified GPG keys'
+      end
+
+      context 'when logged out' do
         before do
           sign_out(user)
         end
 
-        it "still does generally work" do
-          get :gpg_keys, params: { username: user.username }
-
-          expect(response).to be_successful
-        end
-
-        it "renders all verified keys separated with a new line with text/plain content type" do
-          get :gpg_keys, params: { username: user.username }
-
-          expect(response.content_type).to eq("text/plain")
-
-          expect(response.body).not_to eq('')
-          expect(response.body).to eq(user.gpg_keys.map(&:key).join("\n"))
-
-          expect(response.body).to include(gpg_key.key)
-          expect(response.body).to include(another_gpg_key.key)
-        end
+        it_behaves_like 'renders all verified GPG keys'
       end
 
-      describe 'when revoked' do
+      context 'when revoked' do
         before do
           sign_in(user)
           another_gpg_key.revoke
         end
 
-        it "doesn't render revoked keys" do
+        it 'doesn\'t render revoked keys' do
           get :gpg_keys, params: { username: user.username }
 
           expect(response.body).not_to eq('')
@@ -413,7 +390,7 @@ RSpec.describe UsersController do
           expect(response.body).not_to include(another_gpg_key.key)
         end
 
-        it "doesn't render revoked keys for non-authorized users" do
+        it 'doesn\'t render revoked keys for non-authorized users' do
           sign_out(user)
           get :gpg_keys, params: { username: user.username }
 

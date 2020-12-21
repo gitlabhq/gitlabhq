@@ -130,7 +130,10 @@ module Gitlab
       end
 
       def forced_enabled?(experiment_key)
-        params.has_key?(:force_experiment) && params[:force_experiment] == experiment_key.to_s
+        return true if params.has_key?(:force_experiment) && params[:force_experiment] == experiment_key.to_s
+        return false if cookies[:force_experiment].blank?
+
+        cookies[:force_experiment].to_s.split(',').any? { |experiment| experiment.strip == experiment_key.to_s }
       end
 
       def tracking_label(subject)

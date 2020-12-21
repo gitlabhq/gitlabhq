@@ -15,7 +15,7 @@ The SCIM API implements the [RFC7644 protocol](https://tools.ietf.org/html/rfc76
 To use this API, [Group SSO](../user/group/saml_sso/index.md) must be enabled for the group.
 This API is only in use where [SCIM for Group SSO](../user/group/saml_sso/scim_setup.md) is enabled. It's a prerequisite to the creation of SCIM identities.
 
-## Get a list of SAML users
+## Get a list of SCIM provisioned users
 
 This endpoint is used as part of the SCIM syncing mechanism. It only returns
 a single user based on a unique ID which should match the `extern_uid` of the user.
@@ -74,7 +74,7 @@ Example response:
 }
 ```
 
-## Get a single SAML user
+## Get a single SCIM provisioned user
 
 ```plaintext
 GET /api/scim/v2/groups/:group_path/Users/:id
@@ -115,7 +115,7 @@ Example response:
 }
 ```
 
-## Create a SAML user
+## Create a SCIM provisioned user
 
 ```plaintext
 POST /api/scim/v2/groups/:group_path/Users/
@@ -161,7 +161,7 @@ Example response:
 
 Returns a `201` status code if successful.
 
-## Update a single SAML user
+## Update a single SCIM provisioned user
 
 Fields that can be updated are:
 
@@ -193,7 +193,7 @@ curl --verbose --request PATCH "https://gitlab.example.com/api/scim/v2/groups/te
 
 Returns an empty response with a `204` status code if successful.
 
-## Remove a single SAML user
+## Remove a single SCIM provisioned user
 
 Removes the user's SSO identity and group membership.
 
