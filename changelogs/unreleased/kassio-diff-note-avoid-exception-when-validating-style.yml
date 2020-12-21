@@ -1,5 +1,0 @@
----
-title: Avoid exception when validating diff_note support
-merge_request: 48187
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Truncate the `security_findings` table
-merge_request: 49385
-author:
-type: added

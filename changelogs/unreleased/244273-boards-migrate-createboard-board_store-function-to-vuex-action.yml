@@ -1,5 +1,0 @@
----
-title: Migrate `createBoard` away from boardStore
-merge_request: 49450
-author:
-type: changed

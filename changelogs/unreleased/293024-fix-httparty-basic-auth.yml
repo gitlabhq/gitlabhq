@@ -1,5 +1,0 @@
----
-title: Add custom cop to prevent invalid HTTParty usage
-merge_request: 49878
-author: Ethan Reesor (@firelizzard)
-type: fixed

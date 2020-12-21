@@ -5352,6 +5352,20 @@
               "deprecationReason": null
             },
             {
+              "name": "iteration",
+              "description": "Iteration of the list",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Iteration",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "label",
               "description": "Label of the list",
               "args": [

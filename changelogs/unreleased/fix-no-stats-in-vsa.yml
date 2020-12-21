@@ -1,5 +1,0 @@
----
-title: Remove initial data check on project level value stream page
-merge_request: 49936
-author:
-type: performance

@@ -1,5 +1,0 @@
----
-title: Remove Bootstrap 4's Cards components from Issuables and Todos
-merge_request: 48004
-author: Takuya Noguchi
-type: performance

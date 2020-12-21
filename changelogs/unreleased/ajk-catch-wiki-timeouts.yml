@@ -1,5 +1,0 @@
----
-title: Catch wiki timeouts when rendering pages
-merge_request: 46627
-author:
-type: fixed

@@ -4,6 +4,7 @@ class AuditEvent < ApplicationRecord
   include CreatedAtFilterable
   include BulkInsertSafe
   include EachBatch
+  include PartitionedTable
 
   PARALLEL_PERSISTENCE_COLUMNS = [
     :author_name,
@@ -14,6 +15,8 @@ class AuditEvent < ApplicationRecord
   ].freeze
 
   self.primary_key = :id
+
+  partitioned_by :created_at, strategy: :monthly
 
   serialize :details, Hash # rubocop:disable Cop/ActiveRecordSerialize
 

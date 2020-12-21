@@ -1,6 +1,0 @@
----
-title: Remove Feature Flag that controls data limit on Deploy Boards, thus making
-  10MB limits mandatory
-merge_request: 47950
-author:
-type: changed

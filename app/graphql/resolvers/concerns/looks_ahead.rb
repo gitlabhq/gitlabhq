@@ -20,11 +20,11 @@ module LooksAhead
     includes = preloads.each.flat_map do |name, requirements|
       selection&.selects?(name) ? requirements : []
     end
-    preloads = (unconditional_includes + includes).uniq
+    all_preloads = (unconditional_includes + includes).uniq
 
-    return query if preloads.empty?
+    return query if all_preloads.empty?
 
-    query.preload(*preloads) # rubocop: disable CodeReuse/ActiveRecord
+    query.preload(*all_preloads) # rubocop: disable CodeReuse/ActiveRecord
   end
 
   private

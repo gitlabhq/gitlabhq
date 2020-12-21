@@ -16726,6 +16726,9 @@ msgstr ""
 msgid "MERGED"
 msgstr ""
 
+msgid "MERGED (REVERTED)"
+msgstr ""
+
 msgid "MR widget|Back to the Merge request"
 msgstr ""
 
@@ -17488,7 +17491,13 @@ msgstr ""
 msgid "MergeRequest|Search files (%{modifier_key}P)"
 msgstr ""
 
+msgid "MergeRequest|reverted"
+msgstr ""
+
 msgid "Merged"
+msgstr ""
+
+msgid "Merged (%{reverted})"
 msgstr ""
 
 msgid "Merged MRs"

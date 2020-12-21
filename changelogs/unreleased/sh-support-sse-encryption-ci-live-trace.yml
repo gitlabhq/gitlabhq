@@ -1,5 +1,0 @@
----
-title: Support S3 server side encryption in CI cloud native job logs
-merge_request: 47536
-author:
-type: fixed

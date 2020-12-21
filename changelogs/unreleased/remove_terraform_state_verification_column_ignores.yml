@@ -1,5 +1,0 @@
----
-title: Finish removing unused replication columns from terraform state
-merge_request: 48839
-author:
-type: changed

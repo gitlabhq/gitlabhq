@@ -1,5 +1,0 @@
----
-title: Move Terraform state versioning default to database
-merge_request: 48194
-author:
-type: other

@@ -1,5 +1,0 @@
----
-title: Drop unused feature_filter_type experiment column
-merge_request: 48221
-author:
-type: deprecated

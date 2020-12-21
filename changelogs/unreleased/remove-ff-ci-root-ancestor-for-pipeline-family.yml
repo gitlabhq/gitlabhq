@@ -1,5 +1,0 @@
----
-title: Improve query that finds all pipelines in the same family
-merge_request: 49240
-author:
-type: performance

@@ -325,6 +325,7 @@ Represents a list for an issue board.
 | `id` | ID! | ID (global ID) of the list |
 | `issues` | IssueConnection | Board issues |
 | `issuesCount` | Int | Count of issues in the list |
+| `iteration` | Iteration | Iteration of the list |
 | `label` | Label | Label of the list |
 | `limitMetric` | ListLimitMetric | The current limit metric for the list |
 | `listType` | String! | Type of the list |

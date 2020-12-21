@@ -1,5 +1,0 @@
----
-title: Detect corrupted build logs and report them by incrementing Prometheus counter
-merge_request: 49004
-author:
-type: added

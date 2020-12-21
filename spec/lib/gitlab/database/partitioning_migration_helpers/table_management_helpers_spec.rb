@@ -12,16 +12,27 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
   end
 
   let_it_be(:connection) { ActiveRecord::Base.connection }
-  let(:source_table) { :audit_events }
+  let(:source_table) { :_test_original_table }
   let(:partitioned_table) { '_test_migration_partitioned_table' }
   let(:function_name) { '_test_migration_function_name' }
   let(:trigger_name) { '_test_migration_trigger_name' }
   let(:partition_column) { 'created_at' }
   let(:min_date) { Date.new(2019, 12) }
   let(:max_date) { Date.new(2020, 3) }
+  let(:source_model) { Class.new(ActiveRecord::Base) }
 
   before do
     allow(migration).to receive(:puts)
+
+    migration.create_table source_table do |t|
+      t.string :name, null: false
+      t.integer :age, null: false
+      t.datetime partition_column
+      t.datetime :updated_at
+    end
+
+    source_model.table_name = source_table
+
     allow(migration).to receive(:transaction_open?).and_return(false)
     allow(migration).to receive(:make_partitioned_table_name).and_return(partitioned_table)
     allow(migration).to receive(:make_sync_function_name).and_return(function_name)
@@ -81,14 +92,11 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
     end
 
     context 'when the given table does not have a primary key' do
-      let(:source_table) { :_partitioning_migration_helper_test_table }
-      let(:partition_column) { :some_field }
-
       it 'raises an error' do
-        migration.create_table source_table, id: false do |t|
-          t.integer :id
-          t.datetime partition_column
-        end
+        migration.execute(<<~SQL)
+          ALTER TABLE #{source_table}
+          DROP CONSTRAINT #{source_table}_pkey
+        SQL
 
         expect do
           migration.partition_table_by_date source_table, partition_column, min_date: min_date, max_date: max_date
@@ -97,12 +105,12 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
     end
 
     context 'when an invalid partition column is given' do
-      let(:partition_column) { :_this_is_not_real }
+      let(:invalid_column) { :_this_is_not_real }
 
       it 'raises an error' do
         expect do
-          migration.partition_table_by_date source_table, partition_column, min_date: min_date, max_date: max_date
-        end.to raise_error(/partition column #{partition_column} does not exist/)
+          migration.partition_table_by_date source_table, invalid_column, min_date: min_date, max_date: max_date
+        end.to raise_error(/partition column #{invalid_column} does not exist/)
       end
     end
 
@@ -126,19 +134,19 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
 
       context 'with a non-integer primary key datatype' do
         before do
-          connection.create_table :another_example, id: false do |t|
+          connection.create_table non_int_table, id: false do |t|
             t.string :identifier, primary_key: true
             t.timestamp :created_at
           end
         end
 
-        let(:source_table) { :another_example }
+        let(:non_int_table) { :another_example }
         let(:old_primary_key) { 'identifier' }
 
         it 'does not change the primary key datatype' do
-          migration.partition_table_by_date source_table, partition_column, min_date: min_date, max_date: max_date
+          migration.partition_table_by_date non_int_table, partition_column, min_date: min_date, max_date: max_date
 
-          original_pk_column = connection.columns(source_table).find { |c| c.name == old_primary_key }
+          original_pk_column = connection.columns(non_int_table).find { |c| c.name == old_primary_key }
           pk_column = connection.columns(partitioned_table).find { |c| c.name == old_primary_key }
 
           expect(pk_column).not_to be_nil
@@ -176,11 +184,9 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
       end
 
       context 'when min_date is not given' do
-        let(:source_table) { :todos }
-
         context 'with records present already' do
           before do
-            create(:todo, created_at: Date.parse('2019-11-05'))
+            source_model.create!(name: 'Test', age: 10, created_at: Date.parse('2019-11-05'))
           end
 
           it 'creates a partition spanning over each month from the first record' do
@@ -248,13 +254,12 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
     end
 
     describe 'keeping data in sync with the partitioned table' do
-      let(:source_table) { :todos }
-      let(:model) { Class.new(ActiveRecord::Base) }
+      let(:partitioned_model) { Class.new(ActiveRecord::Base) }
       let(:timestamp) { Time.utc(2019, 12, 1, 12).round }
 
       before do
-        model.primary_key = :id
-        model.table_name = partitioned_table
+        partitioned_model.primary_key = :id
+        partitioned_model.table_name = partitioned_table
       end
 
       it 'creates a trigger function on the original table' do
@@ -270,50 +275,50 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
       it 'syncs inserts to the partitioned tables' do
         migration.partition_table_by_date source_table, partition_column, min_date: min_date, max_date: max_date
 
-        expect(model.count).to eq(0)
+        expect(partitioned_model.count).to eq(0)
 
-        first_todo = create(:todo, created_at: timestamp, updated_at: timestamp)
-        second_todo = create(:todo, created_at: timestamp, updated_at: timestamp)
+        first_record = source_model.create!(name: 'Bob', age: 20, created_at: timestamp, updated_at: timestamp)
+        second_record = source_model.create!(name: 'Alice', age: 30, created_at: timestamp, updated_at: timestamp)
 
-        expect(model.count).to eq(2)
-        expect(model.find(first_todo.id).attributes).to eq(first_todo.attributes)
-        expect(model.find(second_todo.id).attributes).to eq(second_todo.attributes)
+        expect(partitioned_model.count).to eq(2)
+        expect(partitioned_model.find(first_record.id).attributes).to eq(first_record.attributes)
+        expect(partitioned_model.find(second_record.id).attributes).to eq(second_record.attributes)
       end
 
       it 'syncs updates to the partitioned tables' do
         migration.partition_table_by_date source_table, partition_column, min_date: min_date, max_date: max_date
 
-        first_todo = create(:todo, :pending, commit_id: nil, created_at: timestamp, updated_at: timestamp)
-        second_todo = create(:todo, created_at: timestamp, updated_at: timestamp)
+        first_record = source_model.create!(name: 'Bob', age: 20, created_at: timestamp, updated_at: timestamp)
+        second_record = source_model.create!(name: 'Alice', age: 30, created_at: timestamp, updated_at: timestamp)
 
-        expect(model.count).to eq(2)
+        expect(partitioned_model.count).to eq(2)
 
-        first_copy = model.find(first_todo.id)
-        second_copy = model.find(second_todo.id)
+        first_copy = partitioned_model.find(first_record.id)
+        second_copy = partitioned_model.find(second_record.id)
 
-        expect(first_copy.attributes).to eq(first_todo.attributes)
-        expect(second_copy.attributes).to eq(second_todo.attributes)
+        expect(first_copy.attributes).to eq(first_record.attributes)
+        expect(second_copy.attributes).to eq(second_record.attributes)
 
-        first_todo.update(state_event: 'done', commit_id: 'abc123', updated_at: timestamp + 1.second)
+        first_record.update!(age: 21, updated_at: timestamp + 1.hour)
 
-        expect(model.count).to eq(2)
-        expect(first_copy.reload.attributes).to eq(first_todo.attributes)
-        expect(second_copy.reload.attributes).to eq(second_todo.attributes)
+        expect(partitioned_model.count).to eq(2)
+        expect(first_copy.reload.attributes).to eq(first_record.attributes)
+        expect(second_copy.reload.attributes).to eq(second_record.attributes)
       end
 
       it 'syncs deletes to the partitioned tables' do
         migration.partition_table_by_date source_table, partition_column, min_date: min_date, max_date: max_date
 
-        first_todo = create(:todo, created_at: timestamp, updated_at: timestamp)
-        second_todo = create(:todo, created_at: timestamp, updated_at: timestamp)
+        first_record = source_model.create!(name: 'Bob', age: 20, created_at: timestamp, updated_at: timestamp)
+        second_record = source_model.create!(name: 'Alice', age: 30, created_at: timestamp, updated_at: timestamp)
 
-        expect(model.count).to eq(2)
+        expect(partitioned_model.count).to eq(2)
 
-        first_todo.destroy
+        first_record.destroy!
 
-        expect(model.count).to eq(1)
-        expect(model.find_by_id(first_todo.id)).to be_nil
-        expect(model.find(second_todo.id).attributes).to eq(second_todo.attributes)
+        expect(partitioned_model.count).to eq(1)
+        expect(partitioned_model.find_by_id(first_record.id)).to be_nil
+        expect(partitioned_model.find(second_record.id).attributes).to eq(second_record.attributes)
       end
     end
   end
@@ -388,13 +393,12 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
     end
 
     context 'when records exist in the source table' do
-      let(:source_table) { 'todos' }
       let(:migration_class) { '::Gitlab::Database::PartitioningMigrationHelpers::BackfillPartitionedTable' }
       let(:sub_batch_size) { described_class::SUB_BATCH_SIZE }
       let(:pause_seconds) { described_class::PAUSE_SECONDS }
-      let!(:first_id) { create(:todo).id }
-      let!(:second_id) { create(:todo).id }
-      let!(:third_id) { create(:todo).id }
+      let!(:first_id) { source_model.create!(name: 'Bob', age: 20).id }
+      let!(:second_id) { source_model.create!(name: 'Alice', age: 30).id }
+      let!(:third_id) { source_model.create!(name: 'Sam', age: 40).id }
 
       before do
         stub_const("#{described_class.name}::BATCH_SIZE", 2)
@@ -410,10 +414,10 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
 
           expect(BackgroundMigrationWorker.jobs.size).to eq(2)
 
-          first_job_arguments = [first_id, second_id, source_table, partitioned_table, 'id']
+          first_job_arguments = [first_id, second_id, source_table.to_s, partitioned_table, 'id']
           expect(BackgroundMigrationWorker.jobs[0]['args']).to eq([migration_class, first_job_arguments])
 
-          second_job_arguments = [third_id, third_id, source_table, partitioned_table, 'id']
+          second_job_arguments = [third_id, third_id, source_table.to_s, partitioned_table, 'id']
           expect(BackgroundMigrationWorker.jobs[1]['args']).to eq([migration_class, second_job_arguments])
         end
       end
@@ -482,7 +486,6 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
   end
 
   describe '#finalize_backfilling_partitioned_table' do
-    let(:source_table) { 'todos' }
     let(:source_column) { 'id' }
 
     context 'when the table is not allowed' do
@@ -536,27 +539,27 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
     context 'when there is missed data' do
       let(:partitioned_model) { Class.new(ActiveRecord::Base) }
       let(:timestamp) { Time.utc(2019, 12, 1, 12).round }
-      let!(:todo1) { create(:todo, created_at: timestamp, updated_at: timestamp) }
-      let!(:todo2) { create(:todo, created_at: timestamp, updated_at: timestamp) }
-      let!(:todo3) { create(:todo, created_at: timestamp, updated_at: timestamp) }
-      let!(:todo4) { create(:todo, created_at: timestamp, updated_at: timestamp) }
+      let!(:record1) { source_model.create!(name: 'Bob', age: 20, created_at: timestamp, updated_at: timestamp) }
+      let!(:record2) { source_model.create!(name: 'Alice', age: 30, created_at: timestamp, updated_at: timestamp) }
+      let!(:record3) { source_model.create!(name: 'Sam', age: 40, created_at: timestamp, updated_at: timestamp) }
+      let!(:record4) { source_model.create!(name: 'Sue', age: 50, created_at: timestamp, updated_at: timestamp) }
 
       let!(:pending_job1) do
         create(:background_migration_job,
                class_name: described_class::MIGRATION_CLASS_NAME,
-               arguments: [todo1.id, todo2.id, source_table, partitioned_table, source_column])
+               arguments: [record1.id, record2.id, source_table, partitioned_table, source_column])
       end
 
       let!(:pending_job2) do
         create(:background_migration_job,
                class_name: described_class::MIGRATION_CLASS_NAME,
-               arguments: [todo3.id, todo3.id, source_table, partitioned_table, source_column])
+               arguments: [record3.id, record3.id, source_table, partitioned_table, source_column])
       end
 
       let!(:succeeded_job) do
         create(:background_migration_job, :succeeded,
                class_name: described_class::MIGRATION_CLASS_NAME,
-               arguments: [todo4.id, todo4.id, source_table, partitioned_table, source_column])
+               arguments: [record4.id, record4.id, source_table, partitioned_table, source_column])
       end
 
       before do
@@ -575,17 +578,17 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
       it 'idempotently cleans up after failed background migrations' do
         expect(partitioned_model.count).to eq(0)
 
-        partitioned_model.insert!(todo2.attributes)
+        partitioned_model.insert!(record2.attributes)
 
         expect_next_instance_of(Gitlab::Database::PartitioningMigrationHelpers::BackfillPartitionedTable) do |backfill|
           allow(backfill).to receive(:transaction_open?).and_return(false)
 
           expect(backfill).to receive(:perform)
-            .with(todo1.id, todo2.id, source_table, partitioned_table, source_column)
+            .with(record1.id, record2.id, source_table, partitioned_table, source_column)
             .and_call_original
 
           expect(backfill).to receive(:perform)
-            .with(todo3.id, todo3.id, source_table, partitioned_table, source_column)
+            .with(record3.id, record3.id, source_table, partitioned_table, source_column)
             .and_call_original
         end
 
@@ -593,12 +596,12 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
 
         expect(partitioned_model.count).to eq(3)
 
-        [todo1, todo2, todo3].each do |original|
+        [record1, record2, record3].each do |original|
           copy = partitioned_model.find(original.id)
           expect(copy.attributes).to eq(original.attributes)
         end
 
-        expect(partitioned_model.find_by_id(todo4.id)).to be_nil
+        expect(partitioned_model.find_by_id(record4.id)).to be_nil
 
         [pending_job1, pending_job2].each do |job|
           expect(job.reload).to be_succeeded

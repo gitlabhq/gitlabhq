@@ -1,5 +1,0 @@
----
-title: Fix get endpoint not returning members with minimal access
-merge_request: 49996
-author:
-type: fixed

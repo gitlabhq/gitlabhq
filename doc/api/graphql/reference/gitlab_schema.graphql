@@ -2030,6 +2030,11 @@ type BoardList {
   issuesCount: Int
 
   """
+  Iteration of the list
+  """
+  iteration: Iteration
+
+  """
   Label of the list
   """
   label: Label

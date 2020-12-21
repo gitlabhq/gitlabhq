@@ -1,5 +1,0 @@
----
-title: Remove unnecessary queries in milestone page
-merge_request: 49662
-author:
-type: performance

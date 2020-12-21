@@ -15,7 +15,10 @@
     .issuable-status-box.status-box{ class: status_box_class(@merge_request) }
       = sprite_icon(state_icon_name, css_class: 'd-block d-sm-none')
       %span.d-none.d-sm-block
-        = state_human_name
+        - if @merge_request.reverted_by_merge_request?(current_user)
+          = _('Merged (%{reverted})').html_safe % { reverted: link_to(s_('MergeRequest|reverted'), merge_request_path(@merge_request.reverting_merge_request(current_user)), class: 'gl-reset-color! gl-text-decoration-underline') }
+        - else
+          = state_human_name
 
     .issuable-meta
       #js-issuable-header-warnings
