@@ -9,7 +9,7 @@ module Types
 
         field :name, GraphQL::STRING_TYPE, null: true,
               description: 'Name of the job group'
-        field :jobs, [Types::Ci::Config::JobType], null: true,
+        field :jobs, Types::Ci::Config::JobType.connection_type, null: true,
               description: 'Jobs in group'
         field :size, GraphQL::INT_TYPE, null: true,
               description: 'Size of the job group'

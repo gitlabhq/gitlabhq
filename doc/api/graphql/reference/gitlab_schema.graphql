@@ -2291,7 +2291,27 @@ type CiConfig {
   """
   Stages of the pipeline
   """
-  stages: [CiConfigStage!]
+  stages(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): CiConfigStageConnection
 
   """
   Status of linting, can be either valid or invalid
@@ -2303,7 +2323,27 @@ type CiConfigGroup {
   """
   Jobs in group
   """
-  jobs: [CiConfigJob!]
+  jobs(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): CiConfigJobConnection
 
   """
   Name of the job group
@@ -2314,6 +2354,41 @@ type CiConfigGroup {
   Size of the job group
   """
   size: Int
+}
+
+"""
+The connection type for CiConfigGroup.
+"""
+type CiConfigGroupConnection {
+  """
+  A list of edges.
+  """
+  edges: [CiConfigGroupEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [CiConfigGroup]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type CiConfigGroupEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: CiConfigGroup
 }
 
 type CiConfigJob {
@@ -2330,12 +2405,67 @@ type CiConfigJob {
   """
   Builds that must complete before the jobs run
   """
-  needs: [CiConfigNeed!]
+  needs(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): CiConfigNeedConnection
 
   """
   Name of the job stage
   """
   stage: String
+}
+
+"""
+The connection type for CiConfigJob.
+"""
+type CiConfigJobConnection {
+  """
+  A list of edges.
+  """
+  edges: [CiConfigJobEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [CiConfigJob]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type CiConfigJobEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: CiConfigJob
 }
 
 type CiConfigNeed {
@@ -2345,16 +2475,106 @@ type CiConfigNeed {
   name: String
 }
 
+"""
+The connection type for CiConfigNeed.
+"""
+type CiConfigNeedConnection {
+  """
+  A list of edges.
+  """
+  edges: [CiConfigNeedEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [CiConfigNeed]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type CiConfigNeedEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: CiConfigNeed
+}
+
 type CiConfigStage {
   """
   Groups of jobs for the stage
   """
-  groups: [CiConfigGroup!]
+  groups(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): CiConfigGroupConnection
 
   """
   Name of the stage
   """
   name: String
+}
+
+"""
+The connection type for CiConfigStage.
+"""
+type CiConfigStageConnection {
+  """
+  A list of edges.
+  """
+  edges: [CiConfigStageEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [CiConfigStage]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type CiConfigStageEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: CiConfigStage
 }
 
 """

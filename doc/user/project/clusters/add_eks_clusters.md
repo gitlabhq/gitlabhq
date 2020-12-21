@@ -41,13 +41,31 @@ For example, the following policy document allows assuming a role whose name sta
 }
 ```
 
+### Administration settings
+
 Generate an access key for the IAM user, and configure GitLab with the credentials:
 
 1. Navigate to **Admin Area > Settings > General** and expand the **Amazon EKS** section.
 1. Check **Enable Amazon EKS integration**.
-1. Enter the account ID and access key credentials into the respective
-   `Account ID`, `Access key ID` and `Secret access key` fields.
+1. Enter your **Account ID**.
+1. Depending on your configuration, enter your access key and ID:
+
+   - _GitLab 13.7 and later, and using an instance profile_: You may leave
+     **Access key ID** and **Secret access key** blank.
+     Read [Instance profiles](#instance-profiles) for more information.
+   - _All GitLab versions_: Enter your access key credentials into
+     **Access key ID** and **Secret access key**.
+
 1. Click **Save changes**.
+
+#### Instance profiles
+
+> Introduced in [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/issues/291015).
+
+You may leave `Access key ID` and `Secret access key` fields blank if
+you are using an instance profile
+[to pass an IAM role to an EC2 instance](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2_instance-profiles.html).
+Instance profiles dynamically retrieve temporary credentials from AWS when needed.
 
 ## New EKS cluster
 
@@ -175,17 +193,96 @@ You must add your AWS external ID to the
 [IAM Role in the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-role.html#cli-configure-role-xaccount)
 to manage your cluster using `kubectl`.
 
+### Cluster creation flow
+
+The following sequence illustrates how GitLab works with AWS to create an EKS cluster:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant G as GitLab
+    participant A as AWS
+    participant E as EKS cluster
+    alt static credentials
+      G->>G: Load AWS Access and secret key
+    end
+    alt IAM instance profile
+      G->>A: Fetch temporary credentials
+      A->>G: Temporary access credentials
+    end
+    G->>A: AssumeRole: EKS Provision Role
+    A->>A: Check account, external IDs
+    A->>A: Check permissions
+    A->>G: New access credentials
+    note over G: user selects EKS cluster options
+    note over G,A: Use Service Role credentials
+    G->>A: CreateStack (CloudFormation)
+    A->>G: Received
+    G->>G: Wait 5 minutes
+    loop Poll for cluster creation
+      G->>A: DescribeStacks
+      A->>G: CREATE_IN_PROGRESS
+    end
+    note over G,E: EKS Cluster Created
+    G->>A: DescribeStacks
+    A->>G: CREATE_COMPLETE
+    G->>E: kubectl create role (service account)
+    E->>G: OK
+```
+
+First, GitLab must obtain an initial set of credentials to communicate with the AWS API.
+These credentials can be retrieved in one of two ways:
+
+- Statically through the [Administration settings](#administration-settings).
+- Dynamically via an IAM instance profile ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291015) in GitLab 13.7).
+
+After GitLab retrieves the AWS credentials, it makes an
+[AssumeRole](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html)
+API call to obtain credentials for the Provision Role. AWS confirms
+the request has the correct account ID, external ID, and permissions.
+
+If the request is valid, AWS returns a new set of temporary credentials GitLab
+uses to load the **Create cluster** options page.
+
+On the **Create cluster** page, the user must select a **Service Role**, which is
+the IAM role that is actually used to create the cluster, and other options
+such as the Kubernetes cluster name, Kubernetes version, and region.
+After the user clicks the **Create Kubernetes cluster** button, GitLab
+submits a CloudFormation API request to create an EKS cluster with the given parameters
+from the user. GitLab waits 5 minutes before checking whether the cluster was created,
+and polls once a minute for up to 30 minutes.
+
+After GitLab receives a `CREATE_COMPLETE` message from AWS, GitLab talks
+to the EKS cluster to create a Kubernetes service account with `cluster-admin`
+privileges, and updates its internal database to reflect the newly-created
+Kubernetes cluster. From this point forward, GitLab uses this service account to
+interact with the cluster.
+
 ### Troubleshooting creating a new cluster
 
 The following errors are commonly encountered when creating a new cluster.
 
-#### Error: Request failed with status code 422
+#### Validation failed: Role ARN must be a valid Amazon Resource Name
 
-When submitting the initial authentication form, GitLab returns a status code 422
-error when it can't determine the role or region you've provided. Make sure you've
-correctly configured your role with the **Account ID** and **External ID**
-provided by GitLab. In GitLab, make sure to enter the correct **Role ARN**.
-Make sure you also have access to the chosen region.
+Check that the `Provision Role ARN` is correct. An example of a valid ARN:
+
+```plaintext
+arn:aws:iam::123456789012:role/gitlab-eks-provision'
+```
+
+#### Access denied: User `arn:aws:iam::x` is not authorized to perform: `sts:AssumeRole` on resource: `arn:aws:iam::y`
+
+This error occurs when the credentials defined in the
+[Administration settings](#administration-settings) cannot assume the role defined by the
+Provision Role ARN. Check that:
+
+1. The initial set of AWS credentials [has the AssumeRole policy](#additional-requirements-for-self-managed-instances).
+1. The Provision Role has access to create clusters in the given region.
+1. The account ID and
+   [external ID](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html)
+   match the value defined in the **Trust relationships** tab in AWS:
+
+   ![AWS IAM Trust relationships](img/aws_iam_role_trust.png)
 
 #### Could not load Security Groups for this VPC
 

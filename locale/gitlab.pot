@@ -24364,6 +24364,9 @@ msgstr ""
 msgid "Search requirements"
 msgstr ""
 
+msgid "Search settings"
+msgstr ""
+
 msgid "Search users"
 msgstr ""
 

@@ -20,16 +20,24 @@ RSpec.describe 'Query.ciConfig' do
           status
           errors
           stages {
-            name
-            groups {
+            nodes {
               name
-              size
-              jobs {
-                name
-                groupName
-                stage
-                needs {
+              groups {
+                nodes {
                   name
+                  size
+                  jobs {
+                    nodes {
+                      name
+                      groupName
+                      stage
+                      needs {
+                        nodes {
+                          name
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -50,42 +58,60 @@ RSpec.describe 'Query.ciConfig' do
       "status" => "VALID",
       "errors" => [],
       "stages" =>
-      [
-        {
-          "name" => "build",
-          "groups" =>
-          [
+      {
+        "nodes" =>
+        [
+          {
+            "name" => "build",
+            "groups" =>
             {
-              "name" => "rspec",
-              "size" => 2,
-              "jobs" =>
+              "nodes" =>
               [
-                { "name" => "rspec 0 1", "groupName" => "rspec", "stage" => "build", "needs" => [] },
-                { "name" => "rspec 0 2", "groupName" => "rspec", "stage" => "build", "needs" => [] }
-              ]
-            },
-            {
-              "name" => "spinach", "size" => 1, "jobs" =>
-              [
-                { "name" => "spinach", "groupName" => "spinach", "stage" => "build", "needs" => [] }
+                {
+                  "name" => "rspec",
+                  "size" => 2,
+                  "jobs" =>
+                  {
+                    "nodes" =>
+                    [
+                      { "name" => "rspec 0 1", "groupName" => "rspec", "stage" => "build", "needs" => { "nodes" => [] } },
+                      { "name" => "rspec 0 2", "groupName" => "rspec", "stage" => "build", "needs" => { "nodes" => [] } }
+                    ]
+                  }
+                },
+                {
+                  "name" => "spinach", "size" => 1, "jobs" =>
+                {
+                  "nodes" =>
+                    [
+                      { "name" => "spinach", "groupName" => "spinach", "stage" => "build", "needs" => { "nodes" => [] } }
+                    ]
+                  }
+                }
               ]
             }
-          ]
-        },
-        {
-          "name" => "test",
-          "groups" =>
-          [
+          },
+          {
+            "name" => "test",
+            "groups" =>
             {
-              "name" => "docker",
-              "size" => 1,
-              "jobs" => [
-                { "name" => "docker", "groupName" => "docker", "stage" => "test", "needs" => [{ "name" => "spinach" }, { "name" => "rspec 0 1" }] }
+              "nodes" =>
+              [
+                {
+                  "name" => "docker",
+                  "size" => 1,
+                    "jobs" =>
+                    {
+                      "nodes" => [
+                      { "name" => "docker", "groupName" => "docker", "stage" => "test", "needs" => { "nodes" => [{ "name" => "spinach" }, { "name" => "rspec 0 1" }] } }
+                    ]
+                  }
+                }
               ]
             }
-          ]
-        }
-      ]
+          }
+        ]
+      }
     )
   end
 end
