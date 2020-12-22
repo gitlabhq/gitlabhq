@@ -63,7 +63,7 @@ must meet one of the following conditions prior to the import:
 - Have previously logged in to a GitLab account using the GitHub icon.
 - Have a GitHub account with a publicly visible
   [primary email address](https://docs.github.com/en/free-pro-team@latest/rest/reference/users#get-a-user)
-  on their profile that matches their GitLab account's email address.
+  on their profile that matches their GitLab account's primary or secondary email address.
 
 If a user referenced in the project is not found in the GitLab database, the project creator (typically the user
 that initiated the import process) is set as the author/assignee, but a note on the issue mentioning the original

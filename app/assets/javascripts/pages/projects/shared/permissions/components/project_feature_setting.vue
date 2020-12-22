@@ -33,6 +33,11 @@ export default {
       required: false,
       default: false,
     },
+    showToggle: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   computed: {
     featureEnabled() {
@@ -74,6 +79,7 @@ export default {
   >
     <input v-if="name" :name="name" :value="value" type="hidden" />
     <project-feature-toggle
+      v-if="showToggle"
       class="gl-flex-grow-0 gl-mr-3"
       :value="featureEnabled"
       :disabled-input="disabledInput"

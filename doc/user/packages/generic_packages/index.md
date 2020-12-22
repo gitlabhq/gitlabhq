@@ -27,6 +27,8 @@ or [CI job token](../../../api/README.md#gitlab-ci-job-token).
 
 When you publish a package file, if the package does not exist, it is created.
 
+If a package with the same name, version, and filename already exists, it is also created. It does not overwrite the existing package.
+
 Prerequisites:
 
 - You need to [authenticate with the API](../../../api/README.md#authentication).
@@ -62,7 +64,9 @@ Example response:
 
 ## Download package file
 
-Install a package file.
+Download a package file.
+
+If multiple packages have the same name, version, and filename, then the most recent one is retrieved.
 
 Prerequisites:
 

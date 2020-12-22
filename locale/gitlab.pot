@@ -1268,6 +1268,9 @@ msgstr ""
 msgid "A group represents your organization in GitLab. Groups allow you to manage users and collaborate across multiple projects."
 msgstr ""
 
+msgid "A maximum of %{count} participants can be added"
+msgstr ""
+
 msgid "A member of the abuse team will review your report as soon as possible."
 msgstr ""
 
@@ -1329,6 +1332,9 @@ msgid "A sign-in to your account has been made from the following IP address: %{
 msgstr ""
 
 msgid "A subscription will trigger a new pipeline on the default branch of this project when a pipeline successfully completes for a new tag on the %{default_branch_docs} of the subscribed project."
+msgstr ""
+
+msgid "A user can only participate in a rotation once"
 msgstr ""
 
 msgid "A user with write access to the source branch selected this option"
@@ -19121,6 +19127,9 @@ msgstr ""
 msgid "Not started"
 msgstr ""
 
+msgid "Not supported"
+msgstr ""
+
 msgid "Note"
 msgstr ""
 
@@ -20318,6 +20327,9 @@ msgid "Pipeline Schedules"
 msgstr ""
 
 msgid "Pipeline minutes quota"
+msgstr ""
+
+msgid "Pipeline minutes quota:"
 msgstr ""
 
 msgid "Pipeline ran in fork of project"
@@ -21862,6 +21874,9 @@ msgstr ""
 msgid "ProjectSettings|Encourage"
 msgstr ""
 
+msgid "ProjectSettings|Environments, logs, cluster management, and more"
+msgstr ""
+
 msgid "ProjectSettings|Every merge creates a merge commit"
 msgstr ""
 
@@ -21944,6 +21959,9 @@ msgid "ProjectSettings|Note: the container registry is always visible when a pro
 msgstr ""
 
 msgid "ProjectSettings|Only signed commits can be pushed to this repository."
+msgstr ""
+
+msgid "ProjectSettings|Operations"
 msgstr ""
 
 msgid "ProjectSettings|Packages"
@@ -31966,6 +31984,9 @@ msgstr ""
 msgid "You have insufficient permissions to create an HTTP integration for this project"
 msgstr ""
 
+msgid "You have insufficient permissions to create an on-call rotation for this project"
+msgstr ""
+
 msgid "You have insufficient permissions to create an on-call schedule for this project"
 msgstr ""
 
@@ -32348,6 +32369,9 @@ msgid "Your issues are being imported. Once finished, you'll get a confirmation 
 msgstr ""
 
 msgid "Your issues will be imported in the background. Once finished, you'll get a confirmation email."
+msgstr ""
+
+msgid "Your license does not support on-call rotations"
 msgstr ""
 
 msgid "Your license does not support on-call schedules"

@@ -25,7 +25,7 @@ comments: false
 
 - To instantiate a central repository a `--bare` flag is required.
 - Bare repositories don't allow file editing or committing changes.
-- Create a bare repo with:
+- Create a bare repository with:
 
   ```shell
   git init --bare project-name.git

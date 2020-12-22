@@ -9,6 +9,7 @@ describe('Project Feature Settings', () => {
     options: [[1, 1], [2, 2], [3, 3], [4, 4], [5, 5]],
     value: 1,
     disabledInput: false,
+    showToggle: true,
   };
   let wrapper;
 
@@ -40,6 +41,14 @@ describe('Project Feature Settings', () => {
   });
 
   describe('Feature toggle', () => {
+    it('should be hidden if "showToggle" is passed false', async () => {
+      wrapper.setProps({ showToggle: false });
+
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.find(projectFeatureToggle).element).toBeUndefined();
+    });
+
     it('should enable the feature toggle if the value is not 0', () => {
       expect(wrapper.find(projectFeatureToggle).props().value).toBe(true);
     });

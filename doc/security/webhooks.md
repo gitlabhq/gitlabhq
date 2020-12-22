@@ -26,7 +26,7 @@ sent.
 
 Webhook requests are made by the GitLab server itself and use a single
 (optional) secret token per hook for authorization (instead of a user or
-repo-specific token). As a result, these may have broader access than
+repository-specific token). As a result, these may have broader access than
 intended to everything running on the server hosting the webhook (which
 may include the GitLab server or API itself, e.g., `http://localhost:123`).
 Depending on the called webhook, this may also result in network access

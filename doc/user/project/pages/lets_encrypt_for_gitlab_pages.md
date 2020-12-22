@@ -103,7 +103,7 @@ might be slightly different. Follow the
    `http://example.com/.well-known/acme-challenge/Rxnv6WKo95hsuLVX3osmT6LgmzsJKSaK9htlPToohOP`
    to allow Let's Encrypt to verify the ownership of your domain,
    therefore, it needs to be part of the website content under the
-   repo's [`public`](index.md#how-it-works) folder.
+   repository's [`public`](index.md#how-it-works) folder.
 
 1. Add, commit, and push the file into your repository in GitLab. Once the pipeline
    passes, press **Enter** on your terminal to continue issuing your

@@ -468,6 +468,7 @@ class ApplicationController < ActionController::Base
       project: -> { @project if @project&.persisted? },
       namespace: -> { @group if @group&.persisted? },
       caller_id: caller_id,
+      remote_ip: request.ip,
       feature_category: feature_category) do
       yield
     ensure

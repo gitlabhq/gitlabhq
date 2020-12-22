@@ -20,6 +20,7 @@ const defaultProps = {
     buildsAccessLevel: 20,
     wikiAccessLevel: 20,
     snippetsAccessLevel: 20,
+    operationsAccessLevel: 20,
     pagesAccessLevel: 10,
     analyticsAccessLevel: 20,
     containerRegistryEnabled: true,
@@ -68,8 +69,12 @@ describe('Settings Panel', () => {
     });
   };
 
-  const overrideCurrentSettings = (currentSettingsProps, extraProps = {}) => {
-    return mountComponent({ ...extraProps, currentSettings: currentSettingsProps });
+  const overrideCurrentSettings = (
+    currentSettingsProps,
+    extraProps = {},
+    mountFn = shallowMount,
+  ) => {
+    return mountComponent({ ...extraProps, currentSettings: currentSettingsProps }, mountFn);
   };
 
   const findLFSSettingsRow = () => wrapper.find({ ref: 'git-lfs-settings' });
@@ -523,28 +528,30 @@ describe('Settings Panel', () => {
       });
     });
 
-    it('should set the visibility level description based upon the selected visibility level', () => {
-      wrapper
-        .find('[name="project[project_feature_attributes][metrics_dashboard_access_level]"]')
-        .setValue(visibilityOptions.PUBLIC);
-
-      expect(wrapper.vm.metricsDashboardAccessLevel).toBe(visibilityOptions.PUBLIC);
-    });
-
     it('should contain help text', () => {
       expect(wrapper.find({ ref: 'metrics-visibility-settings' }).props().helpText).toBe(
         'With Metrics Dashboard you can visualize this project performance metrics',
       );
     });
 
-    it('should disable the metrics visibility dropdown when the project visibility level changes to private', () => {
-      wrapper = overrideCurrentSettings({ visibilityLevel: visibilityOptions.PRIVATE });
+    it.each`
+      scenario                                                     | selectedOption                                | selectedOptionLabel
+      ${{ visibilityLevel: visibilityOptions.PRIVATE }}            | ${String(featureAccessLevel.PROJECT_MEMBERS)} | ${'Only Project Members'}
+      ${{ operationsAccessLevel: featureAccessLevel.NOT_ENABLED }} | ${String(featureAccessLevel.NOT_ENABLED)}     | ${'Enable feature to choose access level'}
+    `(
+      'should disable the metrics visibility dropdown when #scenario',
+      ({ scenario, selectedOption, selectedOptionLabel }) => {
+        wrapper = overrideCurrentSettings(scenario, {}, mount);
 
-      const metricsSettingsRow = wrapper.find({ ref: 'metrics-visibility-settings' });
+        const select = wrapper.find({ ref: 'metrics-visibility-settings' }).find('select');
+        const option = select.find('option');
 
-      expect(wrapper.vm.metricsOptionsDropdownEnabled).toBe(true);
-      expect(metricsSettingsRow.find('select').attributes('disabled')).toBe('disabled');
-    });
+        expect(select.attributes('disabled')).toBe('disabled');
+        expect(select.element.value).toBe(selectedOption);
+        expect(option.attributes('value')).toBe(selectedOption);
+        expect(option.text()).toBe(selectedOptionLabel);
+      },
+    );
   });
 
   describe('Settings panel with feature flags', () => {
@@ -566,6 +573,14 @@ describe('Settings Panel', () => {
       await wrapper.vm.$nextTick();
 
       expect(findAnalyticsRow().exists()).toBe(true);
+    });
+  });
+
+  describe('Operations', () => {
+    it('should show the operations toggle', async () => {
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.find({ ref: 'operations-settings' }).exists()).toBe(true);
     });
   });
 });

@@ -372,6 +372,16 @@
               "defaultValue": null
             },
             {
+              "name": "remoteIp",
+              "description": "Delete jobs matching remote_ip in the context metadata",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
               "name": "relatedClass",
               "description": "Delete jobs matching related_class in the context metadata",
               "type": {

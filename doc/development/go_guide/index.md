@@ -171,7 +171,7 @@ sure to use at least this version to avoid `checksum mismatch` errors.
 We don't use object-relational mapping libraries (ORMs) at GitLab (except
 [ActiveRecord](https://guides.rubyonrails.org/active_record_basics.html) in
 Ruby on Rails). Projects can be structured with services to avoid them.
-[PQ](https://github.com/lib/pq) should be enough to interact with PostgreSQL
+[pgx](https://github.com/jackc/pgx) should be enough to interact with PostgreSQL
 databases.
 
 ### Migrations

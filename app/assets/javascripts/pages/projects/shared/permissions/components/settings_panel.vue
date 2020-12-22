@@ -12,6 +12,7 @@ import {
   featureAccessLevelMembers,
   featureAccessLevelEveryone,
   featureAccessLevel,
+  featureAccessLevelNone,
 } from '../constants';
 import { toggleHiddenClassBySelector } from '../external';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -140,6 +141,7 @@ export default {
       metricsDashboardAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
       analyticsAccessLevel: featureAccessLevel.EVERYONE,
       requirementsAccessLevel: featureAccessLevel.EVERYONE,
+      operationsAccessLevel: featureAccessLevel.EVERYONE,
       containerRegistryEnabled: true,
       lfsEnabled: true,
       requestAccessEnabled: true,
@@ -167,6 +169,14 @@ export default {
       );
     },
 
+    operationsFeatureAccessLevelOptions() {
+      if (!this.operationsEnabled) return [featureAccessLevelNone];
+
+      return this.featureAccessLevelOptions.filter(
+        ([value]) => value <= this.operationsAccessLevel,
+      );
+    },
+
     pagesFeatureAccessLevelOptions() {
       const options = [featureAccessLevelMembers];
 
@@ -186,8 +196,12 @@ export default {
       return options;
     },
 
-    metricsOptionsDropdownEnabled() {
-      return this.featureAccessLevelOptions.length < 2;
+    metricsOptionsDropdownDisabled() {
+      return this.operationsFeatureAccessLevelOptions.length < 2 || !this.operationsEnabled;
+    },
+
+    operationsEnabled() {
+      return this.operationsAccessLevel > featureAccessLevel.NOT_ENABLED;
     },
 
     repositoryEnabled() {
@@ -250,6 +264,10 @@ export default {
           featureAccessLevel.PROJECT_MEMBERS,
           this.requirementsAccessLevel,
         );
+        this.operationsAccessLevel = Math.min(
+          featureAccessLevel.PROJECT_MEMBERS,
+          this.operationsAccessLevel,
+        );
         if (this.pagesAccessLevel === featureAccessLevel.EVERYONE) {
           // When from Internal->Private narrow access for only members
           this.pagesAccessLevel = featureAccessLevel.PROJECT_MEMBERS;
@@ -277,6 +295,8 @@ export default {
           this.metricsDashboardAccessLevel = featureAccessLevel.EVERYONE;
         if (this.requirementsAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
           this.requirementsAccessLevel = featureAccessLevel.EVERYONE;
+        if (this.operationsAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
+          this.operationsAccessLevel = featureAccessLevel.EVERYONE;
 
         this.highlightChanges();
       }
@@ -562,41 +582,34 @@ export default {
         />
       </project-setting-row>
       <project-setting-row
-        ref="metrics-visibility-settings"
-        :label="__('Metrics Dashboard')"
-        :help-text="
-          s__(
-            'ProjectSettings|With Metrics Dashboard you can visualize this project performance metrics',
-          )
-        "
+        ref="operations-settings"
+        :label="s__('ProjectSettings|Operations')"
+        :help-text="s__('ProjectSettings|Environments, logs, cluster management, and more')"
       >
-        <div class="project-feature-controls gl-display-flex gl-align-items-center gl-my-3 gl-mx-0">
-          <div class="select-wrapper gl-flex-fill-1">
-            <select
-              v-model="metricsDashboardAccessLevel"
-              :disabled="metricsOptionsDropdownEnabled"
-              name="project[project_feature_attributes][metrics_dashboard_access_level]"
-              class="form-control project-repo-select select-control"
-            >
-              <option
-                :value="featureAccessLevelMembers[0]"
-                :disabled="!visibilityAllowed(visibilityOptions.INTERNAL)"
-                >{{ featureAccessLevelMembers[1] }}</option
-              >
-              <option
-                :value="featureAccessLevelEveryone[0]"
-                :disabled="!visibilityAllowed(visibilityOptions.PUBLIC)"
-                >{{ featureAccessLevelEveryone[1] }}</option
-              >
-            </select>
-            <gl-icon
-              name="chevron-down"
-              data-hidden="true"
-              class="gl-absolute gl-top-3 gl-right-3 gl-text-gray-500"
-            />
-          </div>
-        </div>
+        <project-feature-setting
+          v-model="operationsAccessLevel"
+          :options="featureAccessLevelOptions"
+          name="project[project_feature_attributes][operations_access_level]"
+        />
       </project-setting-row>
+      <div class="project-feature-setting-group gl-pl-7 gl-sm-pl-5">
+        <project-setting-row
+          ref="metrics-visibility-settings"
+          :label="__('Metrics Dashboard')"
+          :help-text="
+            s__(
+              'ProjectSettings|With Metrics Dashboard you can visualize this project performance metrics',
+            )
+          "
+        >
+          <project-feature-setting
+            v-model="metricsDashboardAccessLevel"
+            :show-toggle="false"
+            :options="operationsFeatureAccessLevelOptions"
+            name="project[project_feature_attributes][metrics_dashboard_access_level]"
+          />
+        </project-setting-row>
+      </div>
     </div>
     <project-setting-row v-if="canDisableEmails" ref="email-settings" class="mb-3">
       <label class="js-emails-disabled">

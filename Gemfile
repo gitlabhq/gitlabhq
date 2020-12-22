@@ -306,12 +306,12 @@ gem 'rack-attack', '~> 6.3.0'
 gem 'sentry-raven', '~> 3.0'
 
 # PostgreSQL query parsing
-gem 'gitlab-pg_query', '~> 1.3', require: 'pg_query'
+gem 'gitlab-pg_query', '~> 1.3.1', require: 'pg_query'
 
 gem 'premailer-rails', '~> 1.10.3'
 
 # LabKit: Tracing and Correlation
-gem 'gitlab-labkit', '0.13.3'
+gem 'gitlab-labkit', '0.13.5'
 
 # I18n
 gem 'ruby_parser', '~> 3.15', require: false

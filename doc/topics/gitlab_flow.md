@@ -22,7 +22,7 @@ It offers a simple, transparent, and effective way to work with Git.
 
 When converting to Git, you have to get used to the fact that it takes three steps to share a commit with colleagues.
 Most version control systems have only one step: committing from the working copy to a shared server.
-In Git, you add files from the working copy to the staging area. After that, you commit them to your local repo.
+In Git, you add files from the working copy to the staging area. After that, you commit them to your local repository.
 The third step is pushing to a shared remote repository.
 After getting used to these three steps, the next challenge is the branching model.
 

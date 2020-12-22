@@ -135,6 +135,11 @@ input AdminSidekiqQueuesDeleteJobsInput {
   relatedClass: String
 
   """
+  Delete jobs matching remote_ip in the context metadata
+  """
+  remoteIp: String
+
+  """
   Delete jobs matching root_namespace in the context metadata
   """
   rootNamespace: String

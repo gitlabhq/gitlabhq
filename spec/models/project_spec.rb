@@ -4548,6 +4548,24 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#predefined_project_variables' do
+    let_it_be(:project) { create(:project, :repository) }
+
+    subject { project.predefined_project_variables.to_runner_variables }
+
+    specify do
+      expect(subject).to include({ key: 'CI_PROJECT_CONFIG_PATH', value: Ci::Pipeline::DEFAULT_CONFIG_PATH, public: true, masked: false })
+    end
+
+    context 'when ci config path is overridden' do
+      before do
+        project.update!(ci_config_path: 'random.yml')
+      end
+
+      it { expect(subject).to include({ key: 'CI_PROJECT_CONFIG_PATH', value: 'random.yml', public: true, masked: false }) }
+    end
+  end
+
   describe '#auto_devops_enabled?' do
     before do
       Feature.enable_percentage_of_actors(:force_autodevops_on_by_default, 0)

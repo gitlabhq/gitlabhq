@@ -63,11 +63,10 @@ sequenceDiagram
 
 See [Usage Ping guide](../../../development/product_analytics/usage_ping.md).
 
-## Instance-level statistics **(CORE ONLY)**
+## Instance-level analytics availability
 
 After usage ping is enabled, GitLab gathers data from other instances and
-can show [usage statistics](../analytics/index.md)
-of your instance to your admins in **Admin Area > Analytics**.
+enables certain [instance-level analytics features](../analytics/index.md) that are dependent on usage ping.
 
 <!-- ## Troubleshooting
 
