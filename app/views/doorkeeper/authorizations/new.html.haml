@@ -38,6 +38,8 @@
             = hidden_field_tag :response_type, @pre_auth.response_type
             = hidden_field_tag :scope, @pre_auth.scope
             = hidden_field_tag :nonce, @pre_auth.nonce
+            = hidden_field_tag :code_challenge, @pre_auth.code_challenge
+            = hidden_field_tag :code_challenge_method, @pre_auth.code_challenge_method
             = submit_tag _("Deny"), class: "gl-button btn btn-danger"
           = form_tag oauth_authorization_path, method: :post, class: 'inline' do
             = hidden_field_tag :client_id, @pre_auth.client.uid
@@ -46,4 +48,6 @@
             = hidden_field_tag :response_type, @pre_auth.response_type
             = hidden_field_tag :scope, @pre_auth.scope
             = hidden_field_tag :nonce, @pre_auth.nonce
+            = hidden_field_tag :code_challenge, @pre_auth.code_challenge
+            = hidden_field_tag :code_challenge_method, @pre_auth.code_challenge_method
             = submit_tag _("Authorize"), class: "gl-button btn btn-success gl-ml-3", data: { qa_selector: 'authorization_button' }

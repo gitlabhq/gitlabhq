@@ -6,6 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Getting started with the Web Application Firewall
 
+WARNING:
+The Web Application Firewall is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/271276)
+in GitLab 13.6, and planned for [removal](https://gitlab.com/gitlab-org/gitlab/-/issues/271349)
+in GitLab 14.0.
+
 This is a step-by-step guide to help you use the GitLab [Web Application Firewall](index.md) after
 deploying a project hosted on GitLab.com to Google Kubernetes Engine using [Auto DevOps](../../../../../topics/autodevops/index.md).
 

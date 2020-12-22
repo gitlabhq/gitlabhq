@@ -320,6 +320,8 @@
   - 1
 - - set_user_status_based_on_user_cap_setting
   - 1
+- - snippet_update_repository_storage
+  - 1
 - - status_page_publish
   - 1
 - - sync_seat_link_request

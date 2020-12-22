@@ -1031,7 +1031,6 @@ the following Apollo Client warning when passing only handlers:
 
 ```shell
 Unexpected call of console.warn() with:
-
 Warning: mock-apollo-client - The query is entirely client-side (using @client directives) and resolvers have been configured. The request handler will not be called.
 ```
 

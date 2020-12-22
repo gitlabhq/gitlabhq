@@ -46,7 +46,8 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         'container_packages',
         'tag_packages',
         'snippets',
-        'code_review'
+        'code_review',
+        'terraform'
       )
     end
   end

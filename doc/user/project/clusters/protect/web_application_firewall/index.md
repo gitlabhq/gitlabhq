@@ -6,6 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Web Application Firewall
 
+WARNING:
+The Web Application Firewall is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/271276)
+in GitLab 13.6, and planned for [removal](https://gitlab.com/gitlab-org/gitlab/-/issues/271349)
+in GitLab 14.0.
+
 A web application firewall (or WAF) filters, monitors, and blocks HTTP traffic to
 and from a web application. By inspecting HTTP traffic, it can prevent attacks
 stemming from web application security flaws. It can be used to detect SQL injection,

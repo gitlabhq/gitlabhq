@@ -2,7 +2,7 @@
 type: reference, howto
 stage: Manage
 group: Access
-info: To determine the technical writer assigned to the Stage/Group associated   with this page, see https://about.gitlab.com/handbook/engineering/ux/technica  l-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated   with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
 # GitLab as an OAuth2 provider
@@ -19,17 +19,26 @@ documentation. This functionality is based on the
 
 GitLab currently supports the following authorization flows:
 
-- **Web application flow:** Most secure and common type of flow, designed for
-  applications with secure server-side.
-- **Implicit grant flow:** This flow is designed for user-agent only apps (e.g., single
-  page web application running on GitLab Pages).
-- **Resource owner password credentials flow:** To be used **only** for securely
-  hosted, first-party services.
+- **Authorization code with [Proof Key for Code Exchange (PKCE)](https://tools.ietf.org/html/rfc7636):** 
+  Most secure. Without PKCE, you'd have to include client secrets on mobile clients,
+  and is recommended for both client and server aoos.
+- **Authorization code:** Secure and common flow. Recommended option for secure 
+  server-side apps.
+- **Implicit grant:** Originally designed for user-agent only apps, such as 
+  single page web apps running on GitLab Pages).
+  The [IETF](https://tools.ietf.org/html/draft-ietf-oauth-security-topics-09#section-2.1.2)
+  recommends against Implicit grant flow.
+- **Resource owner password credentials:** To be used **only** for securely
+  hosted, first-party services. GitLab recommends against use of this flow.
+
+The draft specification for [OAuth 2.1](https://oauth.net/2.1/) specifically omits both the
+Implicit grant and Resource Owner Password Credentials flows.
+  it will be deprecated in the next OAuth specification version.
 
 Refer to the [OAuth RFC](https://tools.ietf.org/html/rfc6749) to find out
 how all those flows work and pick the right one for your use case.
 
-Both **web application** and **implicit grant** flows require `application` to be
+Both **authorization code** (with or without PKCE) and **implicit grant** flows require `application` to be
 registered first via the `/profile/applications` page in your user's account.
 During registration, by enabling proper scopes, you can limit the range of
 resources which the `application` can access. Upon creation, you'll obtain the
@@ -57,19 +66,84 @@ These factors are particularly important when using the
 In the following sections you will find detailed instructions on how to obtain
 authorization with each flow.
 
-### Web application flow
+### Authorization code with Proof Key for Code Exchange (PKCE)
+
+The [PKCE RFC](https://tools.ietf.org/html/rfc7636#section-1.1) includes a
+detailed flow description, from authorization request through access token.
+The following steps describe our implementation of the flow.
+
+The Authorization code with PKCE flow, PKCE for short, makes it possible to securely perform
+the OAuth exchange of client credentials for access tokens on public clients.
+
+Before starting the flow, generate the `STATE`, the `CODE_VERIFIER` and the `CODE_CHALLENGE`.
+
+- The `STATE` a value that can't be predicted used by the client to maintain
+  state between the request and callback. It should also be used as a CSRF token.
+- The `CODE_VERIFIER` is a random string, between 43 and 128 characters in length,
+  which use the characters `A-Z`, `a-z`, `0-9`, `-`, `.`, `_`, and `~`.
+- The `CODE_CHALLENGE` is an URL-safe base64-encoded string of the SHA256 hash of the
+  `CODE_VERIFIER`
+  - In Ruby, you can set that up with `Base64.urlsafe_encode64(Digest::SHA256.digest(CODE_VERIFIER))`.
+
+1. Request authorization code. To do that, you should redirect the user to the
+   `/oauth/authorize` page with the following query parameters:
+
+   ```plaintext
+   https://gitlab.example.com/oauth/authorize?client_id=APP_ID&redirect_uri=REDIRECT_URI&response_type=code&state=YOUR_UNIQUE_STATE_HASH&scope=REQUESTED_SCOPES&code_challenge=CODE_CHALLENGE&code_challenge_method=S256
+   ```
+
+   This page asks the user to approve the request from the app to access their
+   account based on the scopes specified in `REQUESTED_SCOPES`. The user is then
+   redirected back to the specified `REDIRECT_URI`. The [scope parameter](https://github.com/doorkeeper-gem/doorkeeper/wiki/Using-Scopes#requesting-particular-scopes)
+   is a space separated list of scopes associated with the user.
+   For example,`scope=read_user+profile` requests the `read_user` and `profile` scopes.
+   The redirect includes the authorization `code`, for example:
+
+   ```plaintext
+   https://example.com/oauth/redirect?code=1234567890&state=YOUR_UNIQUE_STATE_HASH
+   ```
+
+1. With the authorization `code` returned from the previous request (denoted as
+   `RETURNED_CODE` in the following example), you can request an `access_token`, with
+   any HTTP client. The following example uses Ruby's `rest-client`:
+
+   ```ruby
+   parameters = 'client_id=APP_ID&client_secret=APP_SECRET&code=RETURNED_CODE&grant_type=authorization_code&redirect_uri=REDIRECT_URI&code_verifier=CODE_VERIFIER'
+   RestClient.post 'https://gitlab.example.com/oauth/token', parameters
+   ```
+
+   Example response:
+
+   ```json
+   {
+    "access_token": "de6780bc506a0446309bd9362820ba8aed28aa506c71eedbe1c5c4f9dd350e54",
+    "token_type": "bearer",
+    "expires_in": 7200,
+    "refresh_token": "8257e65c97202ed1726cf9571600918f3bffb2544b26e00a61df9897668c33a1",
+    "created_at": 1607635748
+   }
+   ```
+
+NOTE:
+The `redirect_uri` must match the `redirect_uri` used in the original
+authorization request.
+
+You can now make requests to the API with the access token.
+
+### Authorization code flow
 
 NOTE:
 Check the [RFC spec](https://tools.ietf.org/html/rfc6749#section-4.1) for a
 detailed flow description.
 
-The web application flow is:
+The authorization code flow is essentially the same as
+[authorization code flow with PKCE](#authorization-code-with-proof-key-for-code-exchange-pkce),
 
 1. Request authorization code. To do that, you should redirect the user to the
    `/oauth/authorize` endpoint with the following GET parameters:
 
    ```plaintext
-   https://gitlab.example.com/oauth/authorize?client_id=APP_ID&redirect_uri=REDIRECT_URI&response_type=code&state=YOUR_UNIQUE_STATE_HASH&scope=REQUESTED_SCOPES
+   https://gitlab.example.com/oauth/authorize?client_id=APP_ID&redirect_uri=REDIRECT_URI&response_type=code&state=STATE&scope=REQUESTED_SCOPES
    ```
 
    This will ask the user to approve the applications access to their account
@@ -80,7 +154,7 @@ The web application flow is:
    include the GET `code` parameter, for example:
 
    ```plaintext
-   https://example.com/oauth/redirect?code=1234567890&state=YOUR_UNIQUE_STATE_HASH
+   https://example.com/oauth/redirect?code=1234567890&state=STATE
    ```
 
    You should then use `code` to request an access token.
@@ -101,7 +175,8 @@ The web application flow is:
     "access_token": "de6780bc506a0446309bd9362820ba8aed28aa506c71eedbe1c5c4f9dd350e54",
     "token_type": "bearer",
     "expires_in": 7200,
-    "refresh_token": "8257e65c97202ed1726cf9571600918f3bffb2544b26e00a61df9897668c33a1"
+    "refresh_token": "8257e65c97202ed1726cf9571600918f3bffb2544b26e00a61df9897668c33a1",
+    "created_at": 1607635748
    }
    ```
 
@@ -114,19 +189,20 @@ You can now make requests to the API with the access token returned.
 ### Implicit grant flow
 
 NOTE:
-Check the [RFC spec](https://tools.ietf.org/html/rfc6749#section-4.2) for a
-detailed flow description.
+For a detailed flow diagram, see the [RFC specification](https://tools.ietf.org/html/rfc6749#section-4.2). 
 
 WARNING:
-Avoid using this flow for applications that store data outside of the GitLab
-instance. If you do, make sure to verify `application id` associated with the
-access token before granting access to the data
-(see [`/oauth/token/info`](#retrieving-the-token-information)).
+The Implicit grant flow is inherently insecure. The IETF plans to remove it in
+[OAuth 2.1](https://oauth.net/2.1/).
 
-Unlike the web flow, the client receives an `access token` immediately as a
-result of the authorization request. The flow does not use the client secret
-or the authorization code because all of the application code and storage is
-easily accessible, therefore secrets can leak easily.
+We recommend that you use [Authorization code with PKCE](#authorization-code-with-proof-key-for-code-exchange-pkce) instead. If you choose to use Implicit flow, be sure to verify the
+`application id` (or `client_id`) associated with the access token before granting
+access to the data, as described in [Retrieving the token information](#retrieving-the-token-information)).
+
+Unlike the authorization code flow, the client receives an `access token`
+immediately as a result of the authorization request. The flow does not use
+the client secret or the authorization code because all of the application code
+and storage is easily accessible on client browsers and mobile devices.
 
 To request the access token, you should redirect the user to the
 `/oauth/authorize` endpoint using `token` response type:

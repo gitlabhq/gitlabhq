@@ -91,10 +91,15 @@ module Repositories
     def upload_actions(object)
       {
         upload: {
-          href: "#{project.http_url_to_repo}/gitlab-lfs/objects/#{object[:oid]}/#{object[:size]}",
+          href: "#{upload_http_url_to_repo}/gitlab-lfs/objects/#{object[:oid]}/#{object[:size]}",
           header: upload_headers
         }
       }
+    end
+
+    # Overridden in EE
+    def upload_http_url_to_repo
+      project.http_url_to_repo
     end
 
     def upload_headers

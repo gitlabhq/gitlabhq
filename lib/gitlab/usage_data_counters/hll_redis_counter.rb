@@ -123,7 +123,7 @@ module Gitlab
           Gitlab::Redis::HLL.add(key: redis_key(event, time, context), value: value, expiry: expiry(event))
         end
 
-        # The aray of valid context on which we allow tracking
+        # The array of valid context on which we allow tracking
         def valid_context_list
           Plan.all_plans
         end

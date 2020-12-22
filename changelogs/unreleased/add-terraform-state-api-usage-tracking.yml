@@ -1,0 +1,5 @@
+---
+title: Track usage for Terraform State API
+merge_request: 50224
+author:
+type: added

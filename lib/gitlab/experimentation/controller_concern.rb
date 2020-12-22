@@ -15,7 +15,7 @@ module Gitlab
 
       included do
         before_action :set_experimentation_subject_id_cookie, unless: :dnt_enabled?
-        helper_method :experiment_enabled?, :experiment_tracking_category_and_group
+        helper_method :experiment_enabled?, :experiment_tracking_category_and_group, :tracking_label
       end
 
       def set_experimentation_subject_id_cookie

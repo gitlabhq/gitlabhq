@@ -14373,7 +14373,11 @@ CREATE TABLE oauth_access_grants (
     redirect_uri text NOT NULL,
     created_at timestamp without time zone NOT NULL,
     revoked_at timestamp without time zone,
-    scopes character varying
+    scopes character varying,
+    code_challenge text,
+    code_challenge_method text,
+    CONSTRAINT oauth_access_grants_code_challenge CHECK ((char_length(code_challenge) <= 128)),
+    CONSTRAINT oauth_access_grants_code_challenge_method CHECK ((char_length(code_challenge_method) <= 5))
 );
 
 CREATE SEQUENCE oauth_access_grants_id_seq

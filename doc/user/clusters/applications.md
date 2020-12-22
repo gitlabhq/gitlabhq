@@ -1268,6 +1268,11 @@ record.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21966) in GitLab 12.7.
 
+WARNING:
+The Web Application Firewall is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/271276)
+in GitLab 13.6, and planned for [removal](https://gitlab.com/gitlab-org/gitlab/-/issues/271349)
+in GitLab 14.0.
+
 A Web Application Firewall (WAF) examines traffic being sent or received,
 and can block malicious traffic before it reaches your application. The benefits
 of a WAF are:

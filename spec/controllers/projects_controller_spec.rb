@@ -232,7 +232,7 @@ RSpec.describe ProjectsController do
       before do
         sign_in(user)
 
-        allow(controller).to receive(:record_experiment_user).with(:invite_members_empty_project_version_a)
+        allow(controller).to receive(:record_experiment_user)
       end
 
       User.project_views.keys.each do |project_view|

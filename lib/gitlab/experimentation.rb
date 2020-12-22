@@ -96,6 +96,9 @@ module Gitlab
       },
       pipelines_empty_state: {
         tracking_category: 'Growth::Activation::Experiment::PipelinesEmptyState'
+      },
+      invite_members_new_dropdown: {
+        tracking_category: 'Growth::Expansion::Experiment::InviteMembersNewDropdown'
       }
     }.freeze
 

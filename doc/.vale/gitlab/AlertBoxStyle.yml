@@ -17,5 +17,5 @@ nonword: true
 scope: raw
 raw:
   - '(\n *\> *(?:NOTE|WARNING)|'
-  - '\n(NOTE):[^\n]|'  # Adding "WARNING" here causes a false positive
-  - '\n *(?:> )?\**(Note|note|TIP|Tip|tip|CAUTION|Caution|caution|DANGER|Danger|danger|warning):.*)'  ## Adding "Warning" here causes a false positive
+  - '\n\n(NOTE|WARNING):[^\n]|'
+  - '\n\n *(?:> )?\**(Note|note|TIP|Tip|tip|CAUTION|Caution|caution|DANGER|Danger|danger|Warning|warning):.*)'
