@@ -615,10 +615,33 @@ job:
 ```
 
 Sometimes, `script` commands must be wrapped in single or double quotes.
-For example, commands that contain a colon (`:`) must be wrapped in quotes.
+For example, commands that contain a colon (`:`) must be wrapped in single quotes (`'`).
 The YAML parser needs to interpret the text as a string rather than
-a "key: value" pair. Be careful when using special characters:
-`:`, `{`, `}`, `[`, `]`, `,`, `&`, `*`, `#`, `?`, `|`, `-`, `<`, `>`, `=`, `!`, `%`, `@`, `` ` ``.
+a "key: value" pair.
+
+For example, this script uses a colon:
+
+```yaml
+job:
+  script:
+    - curl --request POST --header 'Content-Type: application/json' "https://gitlab/api/v4/projects"
+```
+
+To be considered valid YAML, you must wrap the entire command in single quotes. If
+the command already uses single quotes, you should change them to double quotes (`"`)
+if possible:
+
+```yaml
+job:
+  script:
+    - 'curl --request POST --header "Content-Type: application/json" "https://gitlab/api/v4/projects"'
+```
+
+You can verify the syntax is valid with the [CI Lint](../lint.md) tool.
+
+Be careful when using these special characters as well:
+
+- `{`, `}`, `[`, `]`, `,`, `&`, `*`, `#`, `?`, `|`, `-`, `<`, `>`, `=`, `!`, `%`, `@`, `` ` ``.
 
 If any of the script commands return an exit code other than zero, the job
 fails and further commands are not executed. Store the exit code in a variable to
