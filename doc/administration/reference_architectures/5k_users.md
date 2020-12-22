@@ -1841,6 +1841,12 @@ to use GitLab Pages, this currently [requires NFS](troubleshooting.md#gitlab-pag
 
 See how to [configure NFS](../nfs.md).
 
+WARNING:
+From GitLab 13.0, using NFS for Git repositories is deprecated.
+From GitLab 14.0, technical support for NFS for Git repositories
+will no longer be provided. Upgrade to [Gitaly Cluster](../gitaly/praefect.md)
+as soon as possible.
+
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">
     Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>

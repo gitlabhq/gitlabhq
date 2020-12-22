@@ -45,7 +45,8 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         'debian_packages',
         'container_packages',
         'tag_packages',
-        'snippets'
+        'snippets',
+        'code_review'
       )
     end
   end

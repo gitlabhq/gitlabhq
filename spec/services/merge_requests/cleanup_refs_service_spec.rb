@@ -91,6 +91,26 @@ RSpec.describe MergeRequests::CleanupRefsService do
         it_behaves_like 'service that does not clean up merge request refs'
       end
 
+      context 'when a git error is raised' do
+        context 'Gitlab::Git::Repository::GitError' do
+          before do
+            allow(merge_request.project.repository).to receive(:delete_refs).and_raise(Gitlab::Git::Repository::GitError)
+          end
+
+          it_behaves_like 'service that does not clean up merge request refs'
+        end
+
+        context 'Gitlab::Git::CommandError' do
+          before do
+            allow_next_instance_of(Gitlab::Git::KeepAround) do |keep_around|
+              expect(keep_around).to receive(:kept_around?).and_raise(Gitlab::Git::CommandError)
+            end
+          end
+
+          it_behaves_like 'service that does not clean up merge request refs'
+        end
+      end
+
       context 'when cleanup schedule fails to update' do
         before do
           allow(merge_request.cleanup_schedule).to receive(:update).and_return(false)

@@ -7,7 +7,7 @@ module QA
         Resource::Snippet.fabricate! do |snippet|
           snippet.title = 'Shared snippet'
           snippet.visibility = 'Public'
-          snippet.file_content = 'code.py'
+          snippet.file_name = 'code.py'
           snippet.file_content = 'code to be shared'
         end
       end

@@ -113,6 +113,7 @@ class Gitlab::Seeder::Projects
       group.save!
 
       group.add_owner(User.first)
+      group.create_namespace_settings
     end
 
     project_path.gsub!(".git", "")

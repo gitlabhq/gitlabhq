@@ -50,7 +50,7 @@ export default {
 };
 </script>
 <template>
-  <gl-button-group>
+  <gl-button-group data-qa-selector="default_actions_container">
     <gl-button
       v-if="!hasRenderError"
       v-gl-tooltip.hover
@@ -59,6 +59,7 @@ export default {
       :disabled="copyDisabled"
       :data-clipboard-target="getBlobHashTarget"
       data-testid="copyContentsButton"
+      data-qa-selector="copy_contents_button"
       icon="copy-to-clipboard"
       category="primary"
       variant="default"

@@ -18,6 +18,6 @@
 - unless group.has_parent?
   .form-group
     .form-check
-      = f.check_box :allow_mfa_for_subgroups, class: 'form-check-input', checked: group.namespace_settings.allow_mfa_for_subgroups
+      = f.check_box :allow_mfa_for_subgroups, class: 'form-check-input', checked: group.namespace_settings&.allow_mfa_for_subgroups
       = f.label :allow_mfa_for_subgroups, class: 'form-check-label' do
         = _('Allow subgroups to set up their own two-factor authentication rules')
