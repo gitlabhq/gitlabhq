@@ -54,4 +54,23 @@ RSpec.describe Ci::Artifactable do
       end
     end
   end
+
+  context 'ActiveRecord scopes' do
+    let_it_be(:recently_expired_artifact) { create(:ci_job_artifact, expire_at: 1.day.ago) }
+    let_it_be(:later_expired_artifact) { create(:ci_job_artifact, expire_at: 2.days.ago) }
+    let_it_be(:not_expired_artifact) { create(:ci_job_artifact, expire_at: 1.day.from_now) }
+
+    describe '.expired_before' do
+      it 'returns expired artifacts' do
+        expect(Ci::JobArtifact.expired_before(1.hour.ago))
+          .to match_array([recently_expired_artifact, later_expired_artifact])
+      end
+    end
+
+    describe '.expired' do
+      it 'returns a limited number of expired artifacts' do
+        expect(Ci::JobArtifact.expired(1).order_id_asc).to eq([recently_expired_artifact])
+      end
+    end
+  end
 end

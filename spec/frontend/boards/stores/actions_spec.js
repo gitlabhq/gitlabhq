@@ -108,10 +108,8 @@ describe('setActiveId', () => {
 
 describe('fetchLists', () => {
   const state = {
-    endpoints: {
-      fullPath: 'gitlab-org',
-      boardId: 1,
-    },
+    fullPath: 'gitlab-org',
+    boardId: '1',
     filterParams: {},
     boardType: 'group',
   };
@@ -201,7 +199,8 @@ describe('createList', () => {
     );
 
     const state = {
-      endpoints: { fullPath: 'gitlab-org', boardId: '1' },
+      fullPath: 'gitlab-org',
+      boardId: '1',
       boardType: 'group',
       disabled: false,
       boardLists: [{ type: 'closed' }],
@@ -230,7 +229,8 @@ describe('createList', () => {
     );
 
     const state = {
-      endpoints: { fullPath: 'gitlab-org', boardId: '1' },
+      fullPath: 'gitlab-org',
+      boardId: '1',
       boardType: 'group',
       disabled: false,
       boardLists: [{ type: 'closed' }],
@@ -255,7 +255,8 @@ describe('moveList', () => {
     };
 
     const state = {
-      endpoints: { fullPath: 'gitlab-org', boardId: '1' },
+      fullPath: 'gitlab-org',
+      boardId: '1',
       boardType: 'group',
       disabled: false,
       boardLists: initialBoardListsState,
@@ -297,7 +298,8 @@ describe('moveList', () => {
     };
 
     const state = {
-      endpoints: { fullPath: 'gitlab-org', boardId: '1' },
+      fullPath: 'gitlab-org',
+      boardId: '1',
       boardType: 'group',
       disabled: false,
       boardLists: initialBoardListsState,
@@ -330,7 +332,8 @@ describe('updateList', () => {
     });
 
     const state = {
-      endpoints: { fullPath: 'gitlab-org', boardId: '1' },
+      fullPath: 'gitlab-org',
+      boardId: '1',
       boardType: 'group',
       disabled: false,
       boardLists: [{ type: 'closed' }],
@@ -429,10 +432,8 @@ describe('fetchIssuesForList', () => {
   const listId = mockLists[0].id;
 
   const state = {
-    endpoints: {
-      fullPath: 'gitlab-org',
-      boardId: 1,
-    },
+    fullPath: 'gitlab-org',
+    boardId: '1',
     filterParams: {},
     boardType: 'group',
   };
@@ -530,7 +531,8 @@ describe('moveIssue', () => {
   };
 
   const state = {
-    endpoints: { fullPath: 'gitlab-org', boardId: '1' },
+    fullPath: 'gitlab-org',
+    boardId: '1',
     boardType: 'group',
     disabled: false,
     boardLists: mockLists,
@@ -582,7 +584,7 @@ describe('moveIssue', () => {
       mutation: issueMoveListMutation,
       variables: {
         projectPath: getProjectPath(mockIssue.referencePath),
-        boardId: fullBoardId(state.endpoints.boardId),
+        boardId: fullBoardId(state.boardId),
         iid: mockIssue.iid,
         fromListId: 1,
         toListId: 2,
@@ -724,9 +726,7 @@ describe('setAssignees', () => {
 describe('createNewIssue', () => {
   const state = {
     boardType: 'group',
-    endpoints: {
-      fullPath: 'gitlab-org/gitlab',
-    },
+    fullPath: 'gitlab-org/gitlab',
   };
 
   it('should return issue from API on success', async () => {

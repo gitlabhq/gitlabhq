@@ -1,17 +1,15 @@
 <script>
 import { sortBy } from 'lodash';
-import { mapActions, mapState } from 'vuex';
+import { mapState } from 'vuex';
 import { GlLabel, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import issueCardInner from 'ee_else_ce/boards/mixins/issue_card_inner';
 import { sprintf, __, n__ } from '~/locale';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import IssueDueDate from './issue_due_date.vue';
-import IssueTimeEstimate from './issue_time_estimate.vue';
-import eventHub from '../eventhub';
+import IssueTimeEstimate from './issue_time_estimate_deprecated.vue';
+import boardsStore from '../stores/boards_store';
 import { isScopedLabel } from '~/lib/utils/common_utils';
-import { ListType } from '../constants';
-import { updateHistory } from '~/lib/utils/url_utility';
 
 export default {
   components: {
@@ -43,7 +41,7 @@ export default {
       default: false,
     },
   },
-  inject: ['groupId', 'rootPath', 'scopedLabelsAvailable'],
+  inject: ['groupId', 'rootPath'],
   data() {
     return {
       limitBeforeCounter: 2,
@@ -53,16 +51,6 @@ export default {
   },
   computed: {
     ...mapState(['isShowingLabels']),
-    cappedAssignees() {
-      // e.g. maxRender is 4,
-      // Render up to all 4 assignees if there are only 4 assigness
-      // Otherwise render up to the limitBeforeCounter
-      if (this.issue.assignees.length <= this.maxRender) {
-        return this.issue.assignees.slice(0, this.maxRender);
-      }
-
-      return this.issue.assignees.slice(0, this.limitBeforeCounter);
-    },
     numberOverLimit() {
       return this.issue.assignees.length - this.limitBeforeCounter;
     },
@@ -109,8 +97,17 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['performSearch']),
     isIndexLessThanlimit(index) {
+      return index < this.limitBeforeCounter;
+    },
+    shouldRenderAssignee(index) {
+      // Eg. maxRender is 4,
+      // Render up to all 4 assignees if there are only 4 assigness
+      // Otherwise render up to the limitBeforeCounter
+      if (this.issue.assignees.length <= this.maxRender) {
+        return index < this.maxRender;
+      }
+
       return index < this.limitBeforeCounter;
     },
     assigneeUrl(assignee) {
@@ -120,37 +117,22 @@ export default {
     avatarUrlTitle(assignee) {
       return sprintf(__(`Avatar for %{assigneeName}`), { assigneeName: assignee.name });
     },
-    avatarUrl(assignee) {
-      return assignee.avatarUrl || assignee.avatar || gon.default_avatar_url;
-    },
     showLabel(label) {
       if (!label.id) return false;
       return true;
     },
     isNonListLabel(label) {
-      return (
-        label.id &&
-        !(
-          (this.list.type || this.list.listType) === ListType.label &&
-          this.list.title === label.title
-        )
-      );
+      return label.id && !(this.list.type === 'label' && this.list.title === label.title);
     },
     filterByLabel(label) {
       if (!this.updateFilters) return;
-      const filterPath = window.location.search ? `${window.location.search}&` : '?';
-      const filter = `label_name[]=${encodeURIComponent(label.title)}`;
+      const labelTitle = encodeURIComponent(label.title);
+      const filter = `label_name[]=${labelTitle}`;
 
-      if (!filterPath.includes(filter)) {
-        updateHistory({
-          url: `${filterPath}${filter}`,
-        });
-        this.performSearch();
-        eventHub.$emit('updateTokens');
-      }
+      boardsStore.toggleFilter(filter);
     },
     showScopedLabel(label) {
-      return this.scopedLabelsAvailable && isScopedLabel(label);
+      return boardsStore.scopedLabels.enabled && isScopedLabel(label);
     },
   },
 };
@@ -233,11 +215,12 @@ export default {
       </div>
       <div class="board-card-assignee gl-display-flex">
         <user-avatar-link
-          v-for="assignee in cappedAssignees"
+          v-for="(assignee, index) in issue.assignees"
+          v-if="shouldRenderAssignee(index)"
           :key="assignee.id"
           :link-href="assigneeUrl(assignee)"
           :img-alt="avatarUrlTitle(assignee)"
-          :img-src="avatarUrl(assignee)"
+          :img-src="assignee.avatarUrl || assignee.avatar || assignee.avatar_url"
           :img-size="24"
           class="js-no-trigger"
           tooltip-placement="bottom"

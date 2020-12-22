@@ -45,6 +45,7 @@ describe('BoardCard', () => {
       provide: {
         groupId: null,
         rootPath: '/',
+        scopedLabelsAvailable: false,
       },
     });
   };

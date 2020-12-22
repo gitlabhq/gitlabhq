@@ -3559,7 +3559,8 @@ job split into three separate jobs.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15356) in GitLab 13.3.
 
-Use `matrix:` to configure different variables for jobs that are running in parallel.
+Use `matrix:` to run a job multiple times in parallel in a single pipeline,
+but with different variable values for each instance of the job.
 There can be from 2 to 50 jobs.
 
 Jobs can only run in parallel if there are multiple runners, or a single runner is

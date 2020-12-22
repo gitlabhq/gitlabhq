@@ -117,16 +117,9 @@ export default () => {
       },
     },
     created() {
-      const endpoints = {
-        boardsEndpoint: this.boardsEndpoint,
-        recentBoardsEndpoint: this.recentBoardsEndpoint,
-        listsEndpoint: this.listsEndpoint,
-        bulkUpdatePath: this.bulkUpdatePath,
+      this.setInitialBoardData({
         boardId: $boardApp.dataset.boardId,
         fullPath: $boardApp.dataset.fullPath,
-      };
-      this.setInitialBoardData({
-        ...endpoints,
         boardType: this.parent,
         disabled: this.disabled,
         boardConfig: {
@@ -141,7 +134,14 @@ export default () => {
             : null,
         },
       });
-      boardsStore.setEndpoints(endpoints);
+      boardsStore.setEndpoints({
+        boardsEndpoint: this.boardsEndpoint,
+        recentBoardsEndpoint: this.recentBoardsEndpoint,
+        listsEndpoint: this.listsEndpoint,
+        bulkUpdatePath: this.bulkUpdatePath,
+        boardId: $boardApp.dataset.boardId,
+        fullPath: $boardApp.dataset.fullPath,
+      });
       boardsStore.rootPath = this.boardsEndpoint;
 
       eventHub.$on('updateTokens', this.updateTokens);

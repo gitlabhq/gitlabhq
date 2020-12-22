@@ -17244,22 +17244,6 @@ type Project {
   ): DastSiteProfileConnection
 
   """
-  DAST Site Validation associated with the project. Will always return `null` if
-  `security_on_demand_scans_site_validation` is disabled
-  """
-  dastSiteValidation(
-    """
-    Normalized URL of the target to be scanned
-    """
-    normalizedTargetUrls: [String!]
-
-    """
-    URL of the target to be scanned
-    """
-    targetUrl: String!
-  ): DastSiteValidation
-
-  """
   DAST Site Validations associated with the project. Will always return no nodes
   if `security_on_demand_scans_site_validation` is disabled
   """

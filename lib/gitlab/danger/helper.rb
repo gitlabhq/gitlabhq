@@ -128,7 +128,7 @@ module Gitlab
       }.freeze
       # First-match win, so be sure to put more specific regex at the top...
       CATEGORIES = {
-        [%r{usage_data\.rb}, %r{^(\+|-).*(count|distinct_count)\(.*\)(.*)$}] => [:database, :backend],
+        [%r{usage_data\.rb}, %r{^(\+|-).*\s+(count|distinct_count|estimate_batch_distinct_count)\(.*\)(.*)$}] => [:database, :backend],
 
         %r{\Adoc/.*(\.(md|png|gif|jpg))\z} => :docs,
         %r{\A(CONTRIBUTING|LICENSE|MAINTENANCE|PHILOSOPHY|PROCESS|README)(\.md)?\z} => :docs,

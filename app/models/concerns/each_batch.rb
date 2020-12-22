@@ -47,7 +47,7 @@ module EachBatch
     #   order_hint does not affect the search results. For example,
     #   `ORDER BY id ASC, updated_at ASC` means the same thing as `ORDER
     #   BY id ASC`.
-    def each_batch(of: 1000, column: primary_key, order_hint: nil)
+    def each_batch(of: 1000, column: primary_key, order: :asc, order_hint: nil)
       unless column
         raise ArgumentError,
           'the column: argument must be set to a column name to use for ordering rows'
@@ -55,7 +55,7 @@ module EachBatch
 
       start = except(:select)
         .select(column)
-        .reorder(column => :asc)
+        .reorder(column => order)
 
       start = start.order(order_hint) if order_hint
       start = start.take
@@ -66,10 +66,12 @@ module EachBatch
       arel_table = self.arel_table
 
       1.step do |index|
+        start_cond = arel_table[column].gteq(start_id)
+        start_cond = arel_table[column].lteq(start_id) if order == :desc
         stop = except(:select)
           .select(column)
-          .where(arel_table[column].gteq(start_id))
-          .reorder(column => :asc)
+          .where(start_cond)
+          .reorder(column => order)
 
         stop = stop.order(order_hint) if order_hint
         stop = stop
@@ -77,12 +79,14 @@ module EachBatch
           .limit(1)
           .take
 
-        relation = where(arel_table[column].gteq(start_id))
+        relation = where(start_cond)
 
         if stop
           stop_id = stop[column]
           start_id = stop_id
-          relation = relation.where(arel_table[column].lt(stop_id))
+          stop_cond = arel_table[column].lt(stop_id)
+          stop_cond = arel_table[column].gt(stop_id) if order == :desc
+          relation = relation.where(stop_cond)
         end
 
         # Any ORDER BYs are useless for this relation and can lead to less

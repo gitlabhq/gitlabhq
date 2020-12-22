@@ -18,7 +18,8 @@ import {
   mockCiConfigPath,
   mockCiConfigQueryResponse,
   mockCiYml,
-  mockCommitId,
+  mockCommitSha,
+  mockCommitNextSha,
   mockCommitMessage,
   mockDefaultBranch,
   mockProjectPath,
@@ -65,7 +66,9 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
       data: {
         commitCreate: {
           errors: [],
-          commit: {},
+          commit: {
+            sha: mockCommitNextSha,
+          },
         },
       },
     });
@@ -73,7 +76,7 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
     wrapper = mountFn(PipelineEditorApp, {
       propsData: {
         ciConfigPath: mockCiConfigPath,
-        commitId: mockCommitId,
+        commitSha: mockCommitSha,
         defaultBranch: mockDefaultBranch,
         projectPath: mockProjectPath,
         newMergeRequestPath: mockNewMergeRequestPath,
@@ -239,7 +242,7 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
       const mockVariables = {
         content: mockCiYml,
         filePath: mockCiConfigPath,
-        lastCommitId: mockCommitId,
+        lastCommitId: mockCommitSha,
         message: mockCommitMessage,
         projectPath: mockProjectPath,
         startBranch: mockDefaultBranch,

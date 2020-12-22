@@ -43,7 +43,7 @@ export default {
       required: false,
       default: null,
     },
-    commitId: {
+    commitSha: {
       type: String,
       required: false,
       default: null,
@@ -62,6 +62,7 @@ export default {
       ciConfigData: {},
       content: '',
       contentModel: '',
+      lastCommitSha: this.commitSha,
       currentTabIndex: 0,
       editorIsReady: false,
       failureType: null,
@@ -209,7 +210,7 @@ export default {
       try {
         const {
           data: {
-            commitCreate: { errors },
+            commitCreate: { errors, commit },
           },
         } = await this.$apollo.mutate({
           mutation: commitCiFileMutation,
@@ -220,7 +221,7 @@ export default {
             message,
             filePath: this.ciConfigPath,
             content: this.contentModel,
-            lastCommitId: this.commitId,
+            lastCommitId: this.lastCommitSha,
           },
         });
 
@@ -232,7 +233,12 @@ export default {
         if (openMergeRequest) {
           this.redirectToNewMergeRequest(branch);
         } else {
-          // Refresh the page to ensure commit is updated
+          this.lastCommitSha = commit.sha;
+
+          // Note: The page should not be refreshed, and we
+          // would display an alert to notify users the
+          // commit was succesful. See:
+          // https://gitlab.com/gitlab-org/gitlab/-/issues/292229
           refreshCurrentPage();
         }
       } catch (error) {

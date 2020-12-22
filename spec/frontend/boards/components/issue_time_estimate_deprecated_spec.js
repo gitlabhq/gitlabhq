@@ -1,8 +1,13 @@
 import { shallowMount } from '@vue/test-utils';
-import IssueTimeEstimate from '~/boards/components/issue_time_estimate.vue';
+import IssueTimeEstimate from '~/boards/components/issue_time_estimate_deprecated.vue';
+import boardsStore from '~/boards/stores/boards_store';
 
 describe('Issue Time Estimate component', () => {
   let wrapper;
+
+  beforeEach(() => {
+    boardsStore.create();
+  });
 
   afterEach(() => {
     wrapper.destroy();
@@ -10,12 +15,10 @@ describe('Issue Time Estimate component', () => {
 
   describe('when limitToHours is false', () => {
     beforeEach(() => {
+      boardsStore.timeTracking.limitToHours = false;
       wrapper = shallowMount(IssueTimeEstimate, {
         propsData: {
           estimate: 374460,
-        },
-        provide: {
-          timeTrackingLimitToHours: false,
         },
       });
     });
@@ -52,12 +55,10 @@ describe('Issue Time Estimate component', () => {
 
   describe('when limitToHours is true', () => {
     beforeEach(() => {
+      boardsStore.timeTracking.limitToHours = true;
       wrapper = shallowMount(IssueTimeEstimate, {
         propsData: {
           estimate: 374460,
-        },
-        provide: {
-          timeTrackingLimitToHours: true,
         },
       });
     });

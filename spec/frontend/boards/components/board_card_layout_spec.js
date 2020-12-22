@@ -38,6 +38,7 @@ describe('Board card layout', () => {
       provide: {
         groupId: null,
         rootPath: '/',
+        scopedLabelsAvailable: false,
       },
     });
   };

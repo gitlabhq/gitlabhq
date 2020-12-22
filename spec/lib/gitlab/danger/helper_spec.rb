@@ -351,33 +351,23 @@ RSpec.describe Gitlab::Danger::Helper do
     end
 
     context 'having specific changes' do
-      it 'has database and backend categories' do
-        changed_files = ['usage_data.rb', 'lib/gitlab/usage_data.rb', 'ee/lib/ee/gitlab/usage_data.rb']
+      where(:expected_categories, :patch, :changed_files) do
+        [:database, :backend] | '+ count(User.active)'                         | ['usage_data.rb', 'lib/gitlab/usage_data.rb', 'ee/lib/ee/gitlab/usage_data.rb']
+        [:database, :backend] | '+ estimate_batch_distinct_count(User.active)' | ['usage_data.rb']
+        [:backend]            | '+ alt_usage_data(User.active)'                | ['usage_data.rb']
+        [:backend]            | '+ count(User.active)'                         | ['user.rb']
+        [:backend]            | '+ count(User.active)'                         | ['usage_data/topology.rb']
+        [:backend]            | '+ foo_count(User.active)'                     | ['usage_data.rb']
+      end
 
-        changed_files.each do |file|
-          allow(fake_git).to receive(:diff_for_file).with(file) { double(:diff, patch: "+ count(User.active)") }
+      with_them do
+        it 'has the correct categories' do
+          changed_files.each do |file|
+            allow(fake_git).to receive(:diff_for_file).with(file) { double(:diff, patch: patch) }
 
-          expect(helper.categories_for_file(file)).to eq([:database, :backend])
+            expect(helper.categories_for_file(file)).to eq(expected_categories)
+          end
         end
-      end
-
-      it 'has backend category' do
-        allow(fake_git).to receive(:diff_for_file).with('usage_data.rb') { double(:diff, patch: "+ alt_usage_data(User.active)") }
-
-        expect(helper.categories_for_file('usage_data.rb')).to eq([:backend])
-      end
-
-      it 'has backend category for changes outside usage_data files' do
-        allow(fake_git).to receive(:diff_for_file).with('user.rb') { double(:diff, patch: "+ count(User.active)") }
-
-        expect(helper.categories_for_file('user.rb')).to eq([:backend])
-      end
-
-      it 'has backend category for files that are not usage_data.rb' do
-        changed_file = 'usage_data/topology.rb'
-        allow(fake_git).to receive(:diff_for_file).with(changed_file) { double(:diff, patch: "+ count(User.active)") }
-
-        expect(helper.categories_for_file(changed_file)).to eq([:backend])
       end
     end
   end

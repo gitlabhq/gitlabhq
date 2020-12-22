@@ -30,14 +30,16 @@ RSpec.describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared
         it 'performs the smallest number of queries for job_artifacts' do
           log = ActiveRecord::QueryRecorder.new { subject }
 
-          # SELECT expired ci_job_artifacts
+          # SELECT expired ci_job_artifacts - 3 queries from each_batch
           # PRELOAD projects, routes, project_statistics
           # BEGIN
           # INSERT into ci_deleted_objects
           # DELETE loaded ci_job_artifacts
           # DELETE security_findings  -- for EE
           # COMMIT
-          expect(log.count).to be_within(1).of(8)
+          # SELECT next expired ci_job_artifacts
+
+          expect(log.count).to be_within(1).of(11)
         end
       end
 
@@ -164,7 +166,7 @@ RSpec.describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared
     context 'when timeout happens' do
       before do
         stub_const('Ci::DestroyExpiredJobArtifactsService::LOOP_TIMEOUT', 1.second)
-        allow_any_instance_of(described_class).to receive(:destroy_artifacts_batch) { true }
+        allow_any_instance_of(described_class).to receive(:destroy_pipeline_artifacts_batch) { true }
       end
 
       it 'returns false and does not continue destroying' do
@@ -181,10 +183,6 @@ RSpec.describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared
       end
 
       let!(:second_artifact) { create(:ci_job_artifact, expire_at: 1.day.ago) }
-
-      it 'raises an error and does not continue destroying' do
-        is_expected.to be_falsy
-      end
 
       it 'destroys one artifact' do
         expect { subject }.to change { Ci::JobArtifact.count }.by(-1)

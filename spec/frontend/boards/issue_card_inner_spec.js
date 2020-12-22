@@ -1,62 +1,75 @@
-/* global ListAssignee, ListLabel, ListIssue */
 import { mount } from '@vue/test-utils';
 import { range } from 'lodash';
-import '~/boards/models/label';
-import '~/boards/models/assignee';
-import '~/boards/models/issue';
-import '~/boards/models/list';
 import { GlLabel } from '@gitlab/ui';
 import IssueCardInner from '~/boards/components/issue_card_inner.vue';
-import { listObj } from './mock_data';
-import store from '~/boards/stores';
+import { mockLabelList } from './mock_data';
+import defaultStore from '~/boards/stores';
+import eventHub from '~/boards/eventhub';
+import { updateHistory } from '~/lib/utils/url_utility';
+
+jest.mock('~/lib/utils/url_utility');
+jest.mock('~/boards/eventhub');
 
 describe('Issue card component', () => {
-  const user = new ListAssignee({
+  const user = {
     id: 1,
     name: 'testing 123',
     username: 'test',
-    avatar: 'test_image',
-  });
+    avatarUrl: 'test_image',
+  };
 
-  const label1 = new ListLabel({
+  const label1 = {
     id: 3,
     title: 'testing 123',
     color: '#000CFF',
-    text_color: 'white',
+    textColor: 'white',
     description: 'test',
-  });
+  };
 
   let wrapper;
   let issue;
   let list;
 
-  beforeEach(() => {
-    list = { ...listObj, type: 'label' };
-    issue = new ListIssue({
-      title: 'Testing',
-      id: 1,
-      iid: 1,
-      confidential: false,
-      labels: [list.label],
-      assignees: [],
-      reference_path: '#1',
-      real_path: '/test/1',
-      weight: 1,
-    });
+  const createWrapper = (props = {}, store = defaultStore) => {
     wrapper = mount(IssueCardInner, {
+      store,
       propsData: {
         list,
         issue,
+        ...props,
       },
-      store,
       stubs: {
         GlLabel: true,
       },
       provide: {
         groupId: null,
         rootPath: '/',
+        scopedLabelsAvailable: false,
       },
     });
+  };
+
+  beforeEach(() => {
+    list = mockLabelList;
+    issue = {
+      title: 'Testing',
+      id: 1,
+      iid: 1,
+      confidential: false,
+      labels: [list.label],
+      assignees: [],
+      referencePath: '#1',
+      webUrl: '/test/1',
+      weight: 1,
+    };
+
+    createWrapper({ issue, list });
+  });
+
+  afterEach(() => {
+    wrapper.destroy();
+    wrapper = null;
+    jest.clearAllMocks();
   });
 
   it('renders issue title', () => {
@@ -79,30 +92,32 @@ describe('Issue card component', () => {
     expect(wrapper.find('.issue-blocked-icon').exists()).toBe(false);
   });
 
-  it('renders confidential icon', done => {
-    wrapper.setProps({
-      issue: {
-        ...wrapper.props('issue'),
-        confidential: true,
-      },
-    });
-    wrapper.vm.$nextTick(() => {
-      expect(wrapper.find('.confidential-icon').exists()).toBe(true);
-      done();
-    });
-  });
-
   it('renders issue ID with #', () => {
     expect(wrapper.find('.board-card-number').text()).toContain(`#${issue.id}`);
   });
 
-  describe('assignee', () => {
-    it('does not render assignee', () => {
-      expect(wrapper.find('.board-card-assignee .avatar').exists()).toBe(false);
+  it('does not render assignee', () => {
+    expect(wrapper.find('.board-card-assignee .avatar').exists()).toBe(false);
+  });
+
+  describe('confidential issue', () => {
+    beforeEach(() => {
+      wrapper.setProps({
+        issue: {
+          ...wrapper.props('issue'),
+          confidential: true,
+        },
+      });
     });
 
-    describe('exists', () => {
-      beforeEach(done => {
+    it('renders confidential icon', () => {
+      expect(wrapper.find('.confidential-icon').exists()).toBe(true);
+    });
+  });
+
+  describe('with assignee', () => {
+    describe('with avatar', () => {
+      beforeEach(() => {
         wrapper.setProps({
           issue: {
             ...wrapper.props('issue'),
@@ -112,8 +127,6 @@ describe('Issue card component', () => {
             },
           },
         });
-
-        wrapper.vm.$nextTick(done);
       });
 
       it('renders assignee', () => {
@@ -132,7 +145,7 @@ describe('Issue card component', () => {
         expect(wrapper.find('.board-card-assignee img').exists()).toBe(true);
       });
 
-      it('renders the avatar using avatar_url property', done => {
+      it('renders the avatar using avatarUrl property', async () => {
         wrapper.props('issue').updateData({
           ...wrapper.props('issue'),
           assignees: [
@@ -141,38 +154,35 @@ describe('Issue card component', () => {
               name: 'test',
               state: 'active',
               username: 'test_name',
-              avatar_url: 'test_image_from_avatar_url',
+              avatarUrl: 'test_image_from_avatar_url',
             },
           ],
         });
 
-        wrapper.vm.$nextTick(() => {
-          expect(wrapper.find('.board-card-assignee img').attributes('src')).toBe(
-            'test_image_from_avatar_url?width=24',
-          );
-          done();
-        });
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.find('.board-card-assignee img').attributes('src')).toBe(
+          'test_image_from_avatar_url?width=24',
+        );
       });
     });
 
-    describe('assignee default avatar', () => {
-      beforeEach(done => {
+    describe('with default avatar', () => {
+      beforeEach(() => {
         global.gon.default_avatar_url = 'default_avatar';
 
         wrapper.setProps({
           issue: {
             ...wrapper.props('issue'),
             assignees: [
-              new ListAssignee({
+              {
                 id: 1,
                 name: 'testing 123',
                 username: 'test',
-              }),
+              },
             ],
           },
         });
-
-        wrapper.vm.$nextTick(done);
       });
 
       afterEach(() => {
@@ -189,34 +199,32 @@ describe('Issue card component', () => {
   });
 
   describe('multiple assignees', () => {
-    beforeEach(done => {
+    beforeEach(() => {
       wrapper.setProps({
         issue: {
           ...wrapper.props('issue'),
           assignees: [
-            new ListAssignee({
+            {
               id: 2,
               name: 'user2',
               username: 'user2',
-              avatar: 'test_image',
-            }),
-            new ListAssignee({
+              avatarUrl: 'test_image',
+            },
+            {
               id: 3,
               name: 'user3',
               username: 'user3',
-              avatar: 'test_image',
-            }),
-            new ListAssignee({
+              avatarUrl: 'test_image',
+            },
+            {
               id: 4,
               name: 'user4',
               username: 'user4',
-              avatar: 'test_image',
-            }),
+              avatarUrl: 'test_image',
+            },
           ],
         },
       });
-
-      wrapper.vm.$nextTick(done);
     });
 
     it('renders all three assignees', () => {
@@ -224,16 +232,14 @@ describe('Issue card component', () => {
     });
 
     describe('more than three assignees', () => {
-      beforeEach(done => {
+      beforeEach(() => {
         const { assignees } = wrapper.props('issue');
-        assignees.push(
-          new ListAssignee({
-            id: 5,
-            name: 'user5',
-            username: 'user5',
-            avatar: 'test_image',
-          }),
-        );
+        assignees.push({
+          id: 5,
+          name: 'user5',
+          username: 'user5',
+          avatarUrl: 'test_image',
+        });
 
         wrapper.setProps({
           issue: {
@@ -241,7 +247,6 @@ describe('Issue card component', () => {
             assignees,
           },
         });
-        wrapper.vm.$nextTick(done);
       });
 
       it('renders more avatar counter', () => {
@@ -257,18 +262,15 @@ describe('Issue card component', () => {
         expect(wrapper.findAll('.board-card-assignee .avatar').length).toEqual(2);
       });
 
-      it('renders 99+ avatar counter', done => {
+      it('renders 99+ avatar counter', async () => {
         const assignees = [
           ...wrapper.props('issue').assignees,
-          ...range(5, 103).map(
-            i =>
-              new ListAssignee({
-                id: i,
-                name: 'name',
-                username: 'username',
-                avatar: 'test_image',
-              }),
-          ),
+          ...range(5, 103).map(i => ({
+            id: i,
+            name: 'name',
+            username: 'username',
+            avatarUrl: 'test_image',
+          })),
         ];
         wrapper.setProps({
           issue: {
@@ -277,25 +279,21 @@ describe('Issue card component', () => {
           },
         });
 
-        wrapper.vm.$nextTick(() => {
-          expect(
-            wrapper
-              .find('.board-card-assignee .avatar-counter')
-              .text()
-              .trim(),
-          ).toEqual('99+');
-          done();
-        });
+        await wrapper.vm.$nextTick();
+
+        expect(
+          wrapper
+            .find('.board-card-assignee .avatar-counter')
+            .text()
+            .trim(),
+        ).toEqual('99+');
       });
     });
   });
 
   describe('labels', () => {
-    beforeEach(done => {
-      issue.addLabel(label1);
-      wrapper.setProps({ issue: { ...issue } });
-
-      wrapper.vm.$nextTick(done);
+    beforeEach(() => {
+      wrapper.setProps({ issue: { ...issue, labels: [list.label, label1] } });
     });
 
     it('does not render list label but renders all other labels', () => {
@@ -306,37 +304,79 @@ describe('Issue card component', () => {
       expect(label.props('backgroundColor')).toEqual(label1.color);
     });
 
-    it('does not render label if label does not have an ID', done => {
-      issue.addLabel(
-        new ListLabel({
-          title: 'closed',
-        }),
-      );
-      wrapper.setProps({ issue: { ...issue } });
-      wrapper.vm
-        .$nextTick()
-        .then(() => {
-          expect(wrapper.findAll(GlLabel).length).toBe(1);
-          expect(wrapper.text()).not.toContain('closed');
-          done();
-        })
-        .catch(done.fail);
+    it('does not render label if label does not have an ID', async () => {
+      wrapper.setProps({ issue: { ...issue, labels: [label1, { title: 'closed' }] } });
+
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.findAll(GlLabel).length).toBe(1);
+      expect(wrapper.text()).not.toContain('closed');
     });
   });
 
   describe('blocked', () => {
-    beforeEach(done => {
+    beforeEach(() => {
       wrapper.setProps({
         issue: {
           ...wrapper.props('issue'),
           blocked: true,
         },
       });
-      wrapper.vm.$nextTick(done);
     });
 
     it('renders blocked icon if issue is blocked', () => {
       expect(wrapper.find('.issue-blocked-icon').exists()).toBe(true);
+    });
+  });
+
+  describe('filterByLabel method', () => {
+    beforeEach(() => {
+      delete window.location;
+
+      wrapper.setProps({
+        updateFilters: true,
+      });
+    });
+
+    describe('when selected label is not in the filter', () => {
+      beforeEach(() => {
+        jest.spyOn(wrapper.vm, 'performSearch').mockImplementation(() => {});
+        window.location = { search: '' };
+        wrapper.vm.filterByLabel(label1);
+      });
+
+      it('calls updateHistory', () => {
+        expect(updateHistory).toHaveBeenCalledTimes(1);
+      });
+
+      it('dispatches performSearch vuex action', () => {
+        expect(wrapper.vm.performSearch).toHaveBeenCalledTimes(1);
+      });
+
+      it('emits updateTokens event', () => {
+        expect(eventHub.$emit).toHaveBeenCalledTimes(1);
+        expect(eventHub.$emit).toHaveBeenCalledWith('updateTokens');
+      });
+    });
+
+    describe('when selected label is already in the filter', () => {
+      beforeEach(() => {
+        jest.spyOn(wrapper.vm, 'performSearch').mockImplementation(() => {});
+        window.location = { search: '?label_name[]=testing%20123' };
+        wrapper.vm.filterByLabel(label1);
+      });
+
+      it('does not call updateHistory', () => {
+        expect(updateHistory).not.toHaveBeenCalled();
+      });
+
+      it('does not dispatch performSearch vuex action', () => {
+        expect(wrapper.vm.performSearch).not.toHaveBeenCalled();
+      });
+
+      it('does not emit updateTokens event', () => {
+        expect(eventHub.$emit).not.toHaveBeenCalled();
+      });
     });
   });
 });

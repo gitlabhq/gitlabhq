@@ -1,0 +1,84 @@
+# This template is on early stage of development.
+# Use it with caution. For usage instruction please read
+# https://gitlab.com/gitlab-org/5-minute-production-app/deploy-template/-/blob/v2.3.0/README.md
+
+include:
+  # workflow rules to prevent duplicate detached pipelines
+  - template: 'Workflows/Branch-Pipelines.gitlab-ci.yml'
+  # auto devops build
+  - template: 'Jobs/Build.gitlab-ci.yml'
+
+stages:
+  - build
+  - test
+  - provision
+  - deploy
+  - destroy
+
+variables:
+  TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${CI_COMMIT_REF_SLUG}
+  TF_VAR_ENVIRONMENT_NAME: ${CI_PROJECT_PATH_SLUG}_${CI_PROJECT_ID}_${CI_COMMIT_REF_SLUG}
+  TF_VAR_SERVICE_DESK_EMAIL: incoming+${CI_PROJECT_PATH_SLUG}-${CI_PROJECT_ID}-issue-@incoming.gitlab.com
+  TF_VAR_SHORT_ENVIRONMENT_NAME: ${CI_PROJECT_ID}-${CI_COMMIT_REF_SLUG}
+  TF_VAR_SMTP_FROM: ${SMTP_FROM}
+
+cache:
+  paths:
+    - .terraform
+
+.needs_aws_vars:
+  rules:
+    - if: '$AWS_ACCESS_KEY_ID && $AWS_SECRET_ACCESS_KEY && $AWS_DEFAULT_REGION'
+      when: on_success
+    - when: never
+
+terraform_apply:
+  stage: provision
+  image: registry.gitlab.com/gitlab-org/5-minute-production-app/deploy-template/stable
+  extends: .needs_aws_vars
+  resource_group: terraform
+  before_script:
+    - cp /*.tf .
+    - cp /deploy.sh .
+  script:
+    - gitlab-terraform init
+    - gitlab-terraform plan
+    - gitlab-terraform plan-json
+    - gitlab-terraform apply
+
+deploy:
+  stage: deploy
+  image: registry.gitlab.com/gitlab-org/5-minute-production-app/deploy-template/stable
+  extends: .needs_aws_vars
+  resource_group: deploy
+  before_script:
+    - cp /*.tf .
+    - cp /deploy.sh .
+    - cp /conf.nginx .
+  script:
+    - ./deploy.sh
+  artifacts:
+    reports:
+      dotenv: deploy.env
+  environment:
+    name: $CI_COMMIT_REF_SLUG
+    url: $DYNAMIC_ENVIRONMENT_URL
+    on_stop: terraform_destroy
+
+terraform_destroy:
+  variables:
+    GIT_STRATEGY: none
+  stage: destroy
+  image: registry.gitlab.com/gitlab-org/5-minute-production-app/deploy-template/stable
+  before_script:
+    - cp /*.tf .
+    - cp /deploy.sh .
+  script:
+    - gitlab-terraform destroy -auto-approve
+  environment:
+    name: $CI_COMMIT_REF_SLUG
+    action: stop
+  rules:
+    - if: '$AWS_ACCESS_KEY_ID && $AWS_SECRET_ACCESS_KEY && $AWS_DEFAULT_REGION && $CI_COMMIT_REF_PROTECTED == "false"'
+      when: manual
+    - when: never

@@ -78,8 +78,7 @@ export default {
   },
 
   fetchLists: ({ commit, state, dispatch }) => {
-    const { endpoints, boardType, filterParams } = state;
-    const { fullPath, boardId } = endpoints;
+    const { boardType, filterParams, fullPath, boardId } = state;
 
     const variables = {
       fullPath,
@@ -106,7 +105,7 @@ export default {
   },
 
   createList: ({ state, commit, dispatch }, { backlog, labelId, milestoneId, assigneeId }) => {
-    const { boardId } = state.endpoints;
+    const { boardId } = state;
 
     gqlClient
       .mutate({
@@ -135,8 +134,7 @@ export default {
   },
 
   fetchLabels: ({ state, commit }, searchTerm) => {
-    const { endpoints, boardType } = state;
-    const { fullPath } = endpoints;
+    const { fullPath, boardType } = state;
 
     const variables = {
       fullPath,
@@ -227,8 +225,7 @@ export default {
   fetchIssuesForList: ({ state, commit }, { listId, fetchNext = false }) => {
     commit(types.REQUEST_ISSUES_FOR_LIST, { listId, fetchNext });
 
-    const { endpoints, boardType, filterParams } = state;
-    const { fullPath, boardId } = endpoints;
+    const { fullPath, boardId, boardType, filterParams } = state;
 
     const variables = {
       fullPath,
@@ -271,7 +268,7 @@ export default {
     const originalIndex = fromList.indexOf(Number(issueId));
     commit(types.MOVE_ISSUE, { originalIssue, fromListId, toListId, moveBeforeId, moveAfterId });
 
-    const { boardId } = state.endpoints;
+    const { boardId } = state;
     const [fullProjectPath] = issuePath.split(/[#]/);
 
     gqlClient
@@ -357,9 +354,9 @@ export default {
 
   createNewIssue: ({ commit, state }, issueInput) => {
     const input = issueInput;
-    const { boardType, endpoints } = state;
+    const { boardType, fullPath } = state;
     if (boardType === BoardType.project) {
-      input.projectPath = endpoints.fullPath;
+      input.projectPath = fullPath;
     }
 
     return gqlClient

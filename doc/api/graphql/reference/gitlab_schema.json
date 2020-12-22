@@ -50904,51 +50904,6 @@
               "deprecationReason": null
             },
             {
-              "name": "dastSiteValidation",
-              "description": "DAST Site Validation associated with the project. Will always return `null` if `security_on_demand_scans_site_validation` is disabled",
-              "args": [
-                {
-                  "name": "normalizedTargetUrls",
-                  "description": "Normalized URL of the target to be scanned",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "targetUrl",
-                  "description": "URL of the target to be scanned",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "DastSiteValidation",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "dastSiteValidations",
               "description": "DAST Site Validations associated with the project. Will always return no nodes if `security_on_demand_scans_site_validation` is disabled",
               "args": [

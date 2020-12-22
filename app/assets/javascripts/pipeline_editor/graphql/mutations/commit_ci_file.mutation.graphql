@@ -19,7 +19,7 @@ mutation commitCIFileMutation(
     }
   ) {
     commit {
-      id
+      sha
     }
     errors
   }

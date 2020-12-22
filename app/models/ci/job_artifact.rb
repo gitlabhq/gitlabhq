@@ -9,6 +9,7 @@ module Ci
     include Sortable
     include Artifactable
     include FileStoreMounter
+    include EachBatch
     extend Gitlab::Ci::Model
 
     TEST_REPORT_FILE_TYPES = %w[junit].freeze
@@ -176,7 +177,8 @@ module Ci
     end
 
     scope :downloadable, -> { where(file_type: DOWNLOADABLE_TYPES) }
-    scope :unlocked, -> { joins(job: :pipeline).merge(::Ci::Pipeline.unlocked).order(expire_at: :desc) }
+    scope :unlocked, -> { joins(job: :pipeline).merge(::Ci::Pipeline.unlocked) }
+    scope :order_expired_desc, -> { order(expire_at: :desc) }
     scope :with_destroy_preloads, -> { includes(project: [:route, :statistics]) }
 
     scope :scoped_project, -> { where('ci_job_artifacts.project_id = projects.id') }
