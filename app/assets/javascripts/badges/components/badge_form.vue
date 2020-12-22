@@ -51,7 +51,7 @@ export default {
         .map(placeholder => `<code>%{${placeholder}}</code>`)
         .join(', ');
       return sprintf(
-        s__('Badges|The %{docsLinkStart}variables%{docsLinkEnd} GitLab supports: %{placeholders}'),
+        s__('Badges|Supported %{docsLinkStart}variables%{docsLinkEnd}: %{placeholders}'),
         {
           docsLinkEnd: '</a>',
           docsLinkStart: `<a href="${escape(this.docsUrl)}">`,
@@ -105,13 +105,13 @@ export default {
     badgeImageUrlExample() {
       const exampleUrl =
         'https://example.gitlab.com/%{project_path}/badges/%{default_branch}/pipeline.svg';
-      return sprintf(s__('Badges|e.g. %{exampleUrl}'), {
+      return sprintf(s__('Badges|Example: %{exampleUrl}'), {
         exampleUrl,
       });
     },
     badgeLinkUrlExample() {
       const exampleUrl = 'https://example.gitlab.com/%{project_path}';
-      return sprintf(s__('Badges|e.g. %{exampleUrl}'), {
+      return sprintf(s__('Badges|Example: %{exampleUrl}'), {
         exampleUrl,
       });
     },
@@ -134,7 +134,7 @@ export default {
       if (this.isEditing) {
         return this.saveBadge()
           .then(() => {
-            createFlash(s__('Badges|The badge was saved.'), 'notice');
+            createFlash(s__('Badges|Badge saved.'), 'notice');
             this.wasValidated = false;
           })
           .catch(error => {
@@ -147,7 +147,7 @@ export default {
 
       return this.addBadge()
         .then(() => {
-          createFlash(s__('Badges|A new badge was added.'), 'notice');
+          createFlash(s__('Badges|New badge added.'), 'notice');
           this.wasValidated = false;
         })
         .catch(error => {
@@ -183,7 +183,7 @@ export default {
         required
         @input="debouncedPreview"
       />
-      <div class="invalid-feedback">{{ s__('Badges|Please fill in a valid URL') }}</div>
+      <div class="invalid-feedback">{{ s__('Badges|Enter a valid URL') }}</div>
       <span class="form-text text-muted">{{ badgeLinkUrlExample }}</span>
     </div>
 
@@ -198,7 +198,7 @@ export default {
         required
         @input="debouncedPreview"
       />
-      <div class="invalid-feedback">{{ s__('Badges|Please fill in a valid URL') }}</div>
+      <div class="invalid-feedback">{{ s__('Badges|Enter a valid URL') }}</div>
       <span class="form-text text-muted">{{ badgeImageUrlExample }}</span>
     </div>
 

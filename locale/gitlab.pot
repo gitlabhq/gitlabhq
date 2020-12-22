@@ -4175,10 +4175,13 @@ msgstr ""
 msgid "AutoDevOps|The Auto DevOps pipeline has been enabled and will be used if no alternative CI configuration file is found."
 msgstr ""
 
+msgid "AutoRemediation| 1 Merge Request"
+msgstr ""
+
 msgid "AutoRemediation|%{mrsCount} ready for review"
 msgstr ""
 
-msgid "AutoRemediation|Auto-fix solution available"
+msgid "AutoRemediation|: Auto-fix"
 msgstr ""
 
 msgid "AutoRemediation|Auto-fix solutions"
@@ -4283,9 +4286,6 @@ msgstr ""
 msgid "Badges"
 msgstr ""
 
-msgid "Badges|A new badge was added."
-msgstr ""
-
 msgid "Badges|Add badge"
 msgstr ""
 
@@ -4298,10 +4298,19 @@ msgstr ""
 msgid "Badges|Badge image preview"
 msgstr ""
 
+msgid "Badges|Badge saved."
+msgstr ""
+
 msgid "Badges|Delete badge?"
 msgstr ""
 
 msgid "Badges|Deleting the badge failed, please try again."
+msgstr ""
+
+msgid "Badges|Enter a valid URL"
+msgstr ""
+
+msgid "Badges|Example: %{exampleUrl}"
 msgstr ""
 
 msgid "Badges|Group Badge"
@@ -4313,13 +4322,13 @@ msgstr ""
 msgid "Badges|Name"
 msgstr ""
 
+msgid "Badges|New badge added."
+msgstr ""
+
 msgid "Badges|No badge image"
 msgstr ""
 
 msgid "Badges|No image to preview"
-msgstr ""
-
-msgid "Badges|Please fill in a valid URL"
 msgstr ""
 
 msgid "Badges|Project Badge"
@@ -4334,13 +4343,10 @@ msgstr ""
 msgid "Badges|Saving the badge failed, please check the entered URLs and try again."
 msgstr ""
 
-msgid "Badges|The %{docsLinkStart}variables%{docsLinkEnd} GitLab supports: %{placeholders}"
+msgid "Badges|Supported %{docsLinkStart}variables%{docsLinkEnd}: %{placeholders}"
 msgstr ""
 
 msgid "Badges|The badge was deleted."
-msgstr ""
-
-msgid "Badges|The badge was saved."
 msgstr ""
 
 msgid "Badges|This group has no badges"
@@ -4353,9 +4359,6 @@ msgid "Badges|You are going to delete this badge. Deleted badges %{strongStart}c
 msgstr ""
 
 msgid "Badges|Your badges"
-msgstr ""
-
-msgid "Badges|e.g. %{exampleUrl}"
 msgstr ""
 
 msgid "Balsamiq file could not be loaded."
@@ -13793,7 +13796,7 @@ msgstr ""
 msgid "GroupSettings|Custom project templates"
 msgstr ""
 
-msgid "GroupSettings|Customize your group badges."
+msgid "GroupSettings|Customize this group's badges."
 msgstr ""
 
 msgid "GroupSettings|Default to Auto DevOps pipeline for all projects within this group"
@@ -13815,9 +13818,6 @@ msgid "GroupSettings|If the parent group's visibility is lower than the group cu
 msgstr ""
 
 msgid "GroupSettings|Integrations configured here will automatically apply to all projects in this group."
-msgstr ""
-
-msgid "GroupSettings|Learn more about badges."
 msgstr ""
 
 msgid "GroupSettings|Learn more about group-level project templates."
@@ -13878,6 +13878,9 @@ msgid "GroupSettings|This setting will prevent group members from forking projec
 msgstr ""
 
 msgid "GroupSettings|Transfer group"
+msgstr ""
+
+msgid "GroupSettings|What are badges?"
 msgstr ""
 
 msgid "GroupSettings|You can only transfer the group to a group you manage."
@@ -21832,7 +21835,7 @@ msgstr ""
 msgid "ProjectSettings|Container registry"
 msgstr ""
 
-msgid "ProjectSettings|Customize your project badges."
+msgid "ProjectSettings|Customize this project's badges."
 msgstr ""
 
 msgid "ProjectSettings|Disable email notifications"
@@ -21899,9 +21902,6 @@ msgid "ProjectSettings|Issues"
 msgstr ""
 
 msgid "ProjectSettings|LFS objects from this repository are still available to forks. %{linkStart}How do I remove them?%{linkEnd}"
-msgstr ""
-
-msgid "ProjectSettings|Learn more about badges."
 msgstr ""
 
 msgid "ProjectSettings|Lightweight issue tracking system for this project"
@@ -22049,6 +22049,9 @@ msgid "ProjectSettings|View and edit files in this project. Non-project members 
 msgstr ""
 
 msgid "ProjectSettings|View project analytics"
+msgstr ""
+
+msgid "ProjectSettings|What are badges?"
 msgstr ""
 
 msgid "ProjectSettings|When approved for merge, merge requests are queued and pipelines validate the combined results of the source and target branches before merge."

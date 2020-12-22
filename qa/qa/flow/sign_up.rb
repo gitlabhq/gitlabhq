@@ -37,6 +37,19 @@ module QA
 
         raise "Failed to register the user" unless success
       end
+
+      def disable_sign_ups
+        Flow::Login.sign_in_as_admin
+        Page::Main::Menu.perform(&:go_to_admin_area)
+        Page::Admin::Menu.perform(&:go_to_general_settings)
+
+        Page::Admin::Settings::General.perform do |general_settings|
+          general_settings.expand_sign_up_restrictions do |signup_settings|
+            signup_settings.disable_signups
+            signup_settings.save_changes
+          end
+        end
+      end
     end
   end
 end

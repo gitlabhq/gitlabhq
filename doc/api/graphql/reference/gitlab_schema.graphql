@@ -5926,6 +5926,96 @@ enum DastSiteValidationStrategyEnum {
 }
 
 """
+Color of the data visualization palette
+"""
+enum DataVisualizationColorEnum {
+  """
+  Aqua color
+  """
+  AQUA
+
+  """
+  Blue color
+  """
+  BLUE
+
+  """
+  Green color
+  """
+  GREEN
+
+  """
+  Magenta color
+  """
+  MAGENTA
+
+  """
+  Orange color
+  """
+  ORANGE
+}
+
+"""
+Weight of the data visualization palette
+"""
+enum DataVisualizationWeightEnum {
+  """
+  100 weight
+  """
+  WEIGHT_100
+
+  """
+  200 weight
+  """
+  WEIGHT_200
+
+  """
+  300 weight
+  """
+  WEIGHT_300
+
+  """
+  400 weight
+  """
+  WEIGHT_400
+
+  """
+  50 weight
+  """
+  WEIGHT_50
+
+  """
+  500 weight
+  """
+  WEIGHT_500
+
+  """
+  600 weight
+  """
+  WEIGHT_600
+
+  """
+  700 weight
+  """
+  WEIGHT_700
+
+  """
+  800 weight
+  """
+  WEIGHT_800
+
+  """
+  900 weight
+  """
+  WEIGHT_900
+
+  """
+  950 weight
+  """
+  WEIGHT_950
+}
+
+"""
 Date represented in ISO 8601
 """
 scalar Date
@@ -11096,6 +11186,106 @@ An ISO 8601-encoded date
 scalar ISO8601Date
 
 """
+Identifier of IncidentManagement::OncallParticipant
+"""
+scalar IncidentManagementOncallParticipantID
+
+"""
+Describes an incident management on-call rotation
+"""
+type IncidentManagementOncallRotation {
+  """
+  ID of the on-call rotation.
+  """
+  id: IncidentManagementOncallRotationID!
+
+  """
+  Length of the on-call schedule, in the units specified by lengthUnit.
+  """
+  length: Int
+
+  """
+  Unit of the on-call rotation length.
+  """
+  lengthUnit: OncallRotationUnitEnum
+
+  """
+  Name of the on-call rotation.
+  """
+  name: String!
+
+  """
+  Participants of the on-call rotation.
+  """
+  participants(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): OncallParticipantTypeConnection
+
+  """
+  Start date of the on-call rotation.
+  """
+  startsAt: Time
+}
+
+"""
+The connection type for IncidentManagementOncallRotation.
+"""
+type IncidentManagementOncallRotationConnection {
+  """
+  A list of edges.
+  """
+  edges: [IncidentManagementOncallRotationEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [IncidentManagementOncallRotation]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type IncidentManagementOncallRotationEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: IncidentManagementOncallRotation
+}
+
+"""
+Identifier of IncidentManagement::OncallRotation
+"""
+scalar IncidentManagementOncallRotationID
+
+"""
 Describes an incident management on-call schedule
 """
 type IncidentManagementOncallSchedule {
@@ -11113,6 +11303,31 @@ type IncidentManagementOncallSchedule {
   Name of the on-call schedule
   """
   name: String!
+
+  """
+  On-call rotations for the on-call schedule
+  """
+  rotations(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): IncidentManagementOncallRotationConnection!
 
   """
   Time zone of the on-call schedule
@@ -15044,6 +15259,7 @@ type Mutation {
   """
   mergeRequestUpdate(input: MergeRequestUpdateInput!): MergeRequestUpdatePayload
   namespaceIncreaseStorageTemporarily(input: NamespaceIncreaseStorageTemporarilyInput!): NamespaceIncreaseStorageTemporarilyPayload
+  oncallRotationCreate(input: OncallRotationCreateInput!): OncallRotationCreatePayload
   oncallScheduleCreate(input: OncallScheduleCreateInput!): OncallScheduleCreatePayload
   oncallScheduleDestroy(input: OncallScheduleDestroyInput!): OncallScheduleDestroyPayload
   oncallScheduleUpdate(input: OncallScheduleUpdateInput!): OncallScheduleUpdatePayload
@@ -15655,6 +15871,176 @@ Identifier of Noteable
 scalar NoteableID
 
 """
+The rotation participant and color palette
+"""
+type OncallParticipantType {
+  """
+  The color palette to assign to the on-call user. For example "blue".
+  """
+  colorPalette: String
+
+  """
+  The color weight to assign to for the on-call user, for example "500". Max 4 chars. For easy identification of the user.
+  """
+  colorWeight: String
+
+  """
+  ID of the on-call participant.
+  """
+  id: IncidentManagementOncallParticipantID!
+
+  """
+  The user who is participating.
+  """
+  user: User!
+}
+
+"""
+The connection type for OncallParticipantType.
+"""
+type OncallParticipantTypeConnection {
+  """
+  A list of edges.
+  """
+  edges: [OncallParticipantTypeEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [OncallParticipantType]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type OncallParticipantTypeEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: OncallParticipantType
+}
+
+"""
+Autogenerated input type of OncallRotationCreate
+"""
+input OncallRotationCreateInput {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  The name of the on-call rotation.
+  """
+  name: String!
+
+  """
+  The usernames of users participating in the on-call rotation.
+  """
+  participants: [OncallUserInputType!]!
+
+  """
+  The project to create the on-call schedule in.
+  """
+  projectPath: ID!
+
+  """
+  The rotation length of the on-call rotation.
+  """
+  rotationLength: OncallRotationLengthInputType!
+
+  """
+  The IID of the on-call schedule to create the on-call rotation in.
+  """
+  scheduleIid: String!
+
+  """
+  The start date and time of the on-call rotation, in the timezone of the on-call schedule.
+  """
+  startsAt: OncallRotationDateInputType!
+}
+
+"""
+Autogenerated return type of OncallRotationCreate
+"""
+type OncallRotationCreatePayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Errors encountered during execution of the mutation.
+  """
+  errors: [String!]!
+
+  """
+  The on-call rotation.
+  """
+  oncallRotation: IncidentManagementOncallRotation
+}
+
+"""
+Date input type for on-call rotation
+"""
+input OncallRotationDateInputType {
+  """
+  The date component of the date in YYYY-MM-DD format.
+  """
+  date: String!
+
+  """
+  The time component of the date in 24hr HH:MM format.
+  """
+  time: String!
+}
+
+"""
+The rotation length of the on-call rotation
+"""
+input OncallRotationLengthInputType {
+  """
+  The rotation length of the on-call rotation.
+  """
+  length: Int!
+
+  """
+  The unit of the rotation length of the on-call rotation.
+  """
+  unit: OncallRotationUnitEnum!
+}
+
+"""
+Rotation length unit of an on-call rotation
+"""
+enum OncallRotationUnitEnum {
+  """
+  Days
+  """
+  DAYS
+
+  """
+  Hours
+  """
+  HOURS
+
+  """
+  Weeks
+  """
+  WEEKS
+}
+
+"""
 Autogenerated input type of OncallScheduleCreate
 """
 input OncallScheduleCreateInput {
@@ -15797,6 +16183,26 @@ type OncallScheduleUpdatePayload {
   The on-call schedule
   """
   oncallSchedule: IncidentManagementOncallSchedule
+}
+
+"""
+The rotation user and color palette
+"""
+input OncallUserInputType {
+  """
+  A value of DataVisualizationColorEnum. The color from the palette to assign to the on-call user.
+  """
+  colorPalette: DataVisualizationColorEnum
+
+  """
+  A value of DataVisualizationWeightEnum. The color weight to assign to for the on-call user.
+  """
+  colorWeight: DataVisualizationWeightEnum
+
+  """
+  The username of the user to participate in the on-call rotation, such as `user_one`.
+  """
+  username: String!
 }
 
 """
