@@ -23,7 +23,7 @@ RSpec.describe 'PagerDuty webhook' do
     it 'calls PagerDuty webhook processor with correct parameters' do
       make_request
 
-      expect(webhook_processor_class).to have_received(:new).with(project, nil, payload)
+      expect(webhook_processor_class).to have_received(:new).with(project, payload)
       expect(webhook_processor).to have_received(:execute).with('VALID-TOKEN')
     end
 

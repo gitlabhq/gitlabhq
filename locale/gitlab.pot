@@ -1238,6 +1238,9 @@ msgstr ""
 msgid "A basic page and serverless function that uses AWS Lambda, AWS API Gateway, and GitLab Pages"
 msgstr ""
 
+msgid "A basic template for developing Linux programs using Kotlin Native"
+msgstr ""
+
 msgid "A complete DevOps platform"
 msgstr ""
 
@@ -20485,6 +20488,9 @@ msgstr ""
 msgid "Pipelines|Last Used"
 msgstr ""
 
+msgid "Pipelines|Lint"
+msgstr ""
+
 msgid "Pipelines|Loading Pipelines"
 msgstr ""
 
@@ -22091,6 +22097,9 @@ msgid "ProjectTemplates|Go Micro"
 msgstr ""
 
 msgid "ProjectTemplates|HIPAA Audit Protocol"
+msgstr ""
+
+msgid "ProjectTemplates|Kotlin Native for Linux"
 msgstr ""
 
 msgid "ProjectTemplates|Netlify/GitBook"
@@ -27036,6 +27045,12 @@ msgid "Synchronization settings"
 msgstr ""
 
 msgid "Syncing…"
+msgstr ""
+
+msgid "Syntax is correct."
+msgstr ""
+
+msgid "Syntax is incorrect."
 msgstr ""
 
 msgid "System"
@@ -33808,12 +33823,6 @@ msgid "suggestPipeline|The template is ready! You can now commit it to create yo
 msgstr ""
 
 msgid "suggestPipeline|We’re adding a GitLab CI configuration file to add a pipeline to the project. You could create it manually, but we recommend that you start with a GitLab template that works out of the box."
-msgstr ""
-
-msgid "syntax is correct."
-msgstr ""
-
-msgid "syntax is incorrect."
 msgstr ""
 
 msgid "tag name"

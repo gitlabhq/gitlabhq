@@ -2,7 +2,7 @@
 
 module IncidentManagement
   module PagerDuty
-    class ProcessWebhookService < BaseService
+    class ProcessWebhookService
       include Gitlab::Utils::StrongMemoize
       include IncidentManagement::Settings
 
@@ -11,6 +11,11 @@ module IncidentManagement
 
       # https://developer.pagerduty.com/docs/webhooks/v2-overview/#webhook-types
       PAGER_DUTY_PROCESSABLE_EVENT_TYPES = %w(incident.trigger).freeze
+
+      def initialize(project, payload)
+        @project = project
+        @payload = payload
+      end
 
       def execute(token)
         return forbidden unless webhook_setting_active?
@@ -24,6 +29,8 @@ module IncidentManagement
 
       private
 
+      attr_reader :project, :payload
+
       def process_incidents
         pager_duty_processable_events.each do |event|
           ::IncidentManagement::PagerDuty::ProcessIncidentWorker.perform_async(project.id, event['incident'])
@@ -33,7 +40,7 @@ module IncidentManagement
       def pager_duty_processable_events
         strong_memoize(:pager_duty_processable_events) do
           ::PagerDuty::WebhookPayloadParser
-            .call(params.to_h)
+            .call(payload.to_h)
             .filter { |msg| msg['event'].to_s.in?(PAGER_DUTY_PROCESSABLE_EVENT_TYPES) }
         end
       end
@@ -47,7 +54,7 @@ module IncidentManagement
       end
 
       def valid_payload_size?
-        Gitlab::Utils::DeepSize.new(params, max_size: PAGER_DUTY_PAYLOAD_SIZE_LIMIT).valid?
+        Gitlab::Utils::DeepSize.new(payload, max_size: PAGER_DUTY_PAYLOAD_SIZE_LIMIT).valid?
       end
 
       def accepted

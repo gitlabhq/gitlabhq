@@ -14,7 +14,7 @@ export default {
   },
   computed: {
     tagList() {
-      return this.item.tagList.join(', ');
+      return this.item.tagList?.join(', ');
     },
     onlyPolicy() {
       return this.item.only ? this.item.only.refs.join(', ') : this.item.only;
@@ -26,15 +26,15 @@ export default {
       return {
         beforeScript: {
           show: !isEmpty(this.item.beforeScript),
-          content: this.item.beforeScript.join('\n'),
+          content: this.item.beforeScript?.join('\n'),
         },
         script: {
           show: !isEmpty(this.item.script),
-          content: this.item.script.join('\n'),
+          content: this.item.script?.join('\n'),
         },
         afterScript: {
           show: !isEmpty(this.item.afterScript),
-          content: this.item.afterScript.join('\n'),
+          content: this.item.afterScript?.join('\n'),
         },
       };
     },
@@ -43,7 +43,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div data-testid="ci-lint-value">
     <pre v-if="scripts.beforeScript.show" data-testid="ci-lint-before-script">{{
       scripts.beforeScript.content
     }}</pre>
@@ -53,25 +53,25 @@ export default {
     }}</pre>
 
     <ul class="gl-list-style-none gl-pl-0 gl-mb-0">
-      <li>
+      <li v-if="tagList">
         <b>{{ __('Tag list:') }}</b>
         {{ tagList }}
       </li>
       <div v-if="!dryRun" data-testid="ci-lint-only-except">
-        <li>
+        <li v-if="onlyPolicy">
           <b>{{ __('Only policy:') }}</b>
           {{ onlyPolicy }}
         </li>
-        <li>
+        <li v-if="exceptPolicy">
           <b>{{ __('Except policy:') }}</b>
           {{ exceptPolicy }}
         </li>
       </div>
-      <li>
+      <li v-if="item.environment">
         <b>{{ __('Environment:') }}</b>
         {{ item.environment }}
       </li>
-      <li>
+      <li v-if="item.when">
         <b>{{ __('When:') }}</b>
         {{ item.when }}
         <b v-if="item.allowFailure">{{ __('Allowed to fail') }}</b>

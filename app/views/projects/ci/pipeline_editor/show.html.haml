@@ -5,4 +5,5 @@
   "default-branch" => @project.default_branch,
   "commit-sha" => @project.commit ? @project.commit.sha : '',
   "new-merge-request-path" => namespace_project_new_merge_request_path,
+  "lint-help-page-path" => help_page_path('ci/lint', anchor: 'validate-basic-logic-and-syntax'),
 } }

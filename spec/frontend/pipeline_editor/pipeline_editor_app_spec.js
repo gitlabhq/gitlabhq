@@ -27,7 +27,7 @@ import {
 } from './mock_data';
 
 import CommitForm from '~/pipeline_editor/components/commit/commit_form.vue';
-import getCiConfig from '~/pipeline_editor/graphql/queries/ci_config.graphql';
+import getCiConfigData from '~/pipeline_editor/graphql/queries/ci_config.graphql';
 import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
 import PipelineEditorApp from '~/pipeline_editor/pipeline_editor_app.vue';
 import TextEditor from '~/pipeline_editor/components/text_editor.vue';
@@ -112,7 +112,7 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
   };
 
   const createComponentWithApollo = ({ props = {}, mountFn = shallowMount } = {}) => {
-    const handlers = [[getCiConfig, mockCiConfigData]];
+    const handlers = [[getCiConfigData, mockCiConfigData]];
     const resolvers = {
       Query: {
         blobContent() {
@@ -137,7 +137,6 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
 
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
   const findAlert = () => wrapper.find(GlAlert);
-  const findBlobFailureAlert = () => wrapper.find(GlAlert);
   const findTabAt = i => wrapper.findAll(GlTab).at(i);
   const findVisualizationTab = () => wrapper.find('[data-testid="visualization-tab"]');
   const findTextEditor = () => wrapper.find(TextEditor);
@@ -227,10 +226,12 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
     beforeEach(async () => {
       createComponent({ mountFn: mount });
 
-      await wrapper.setData({
+      wrapper.setData({
         content: mockCiYml,
         contentModel: mockCiYml,
       });
+
+      await waitForPromises();
     });
 
     it('displays content after the query loads', () => {
@@ -352,7 +353,7 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
       });
 
       describe('when the commit fails', () => {
-        it('shows a the error message', async () => {
+        it('shows an error message', async () => {
           mockMutate.mockRejectedValueOnce(new Error('commit failed'));
 
           await submitCommit();
@@ -401,7 +402,7 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
 
       await waitForPromises();
 
-      expect(findBlobFailureAlert().exists()).toBe(false);
+      expect(findAlert().exists()).toBe(false);
       expect(findTextEditor().attributes('value')).toBe(mockCiYml);
     });
 
@@ -415,9 +416,7 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
 
       await waitForPromises();
 
-      expect(findBlobFailureAlert().text()).toBe(
-        'No CI file found in this repository, please add one.',
-      );
+      expect(findAlert().text()).toBe('No CI file found in this repository, please add one.');
     });
 
     it('shows a 400 error message', async () => {
@@ -430,9 +429,7 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
 
       await waitForPromises();
 
-      expect(findBlobFailureAlert().text()).toBe(
-        'Repository does not have a default branch, please set one.',
-      );
+      expect(findAlert().text()).toBe('Repository does not have a default branch, please set one.');
     });
 
     it('shows a unkown error message', async () => {
@@ -440,9 +437,7 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
       createComponentWithApollo();
       await waitForPromises();
 
-      expect(findBlobFailureAlert().text()).toBe(
-        'The CI configuration was not loaded, please try again.',
-      );
+      expect(findAlert().text()).toBe('The CI configuration was not loaded, please try again.');
     });
   });
 });

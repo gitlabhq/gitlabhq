@@ -757,6 +757,43 @@ functional or does not have a leader, Patroni and by extension PostgreSQL will n
 API which can be accessed via its [default port](https://docs.gitlab.com/omnibus/package-information/defaults.html#patroni)
 on each node.
 
+### Selecting the appropriate Patroni replication method
+
+[Review the Patroni documentation carefully](https://patroni.readthedocs.io/en/latest/SETTINGS.html#postgresql)
+before making changes as **_some of the options carry a risk of potential data
+loss if not fully understood_**. The [replication mode](https://patroni.readthedocs.io/en/latest/replication_modes.html)
+configured determines the amount of tolerable data loss.
+
+WARNING:
+Replication is not a backup strategy! There is no replacement for a well-considered and tested backup solution.
+
+Omnibus GitLab defaults [`synchronous_commit`](https://www.postgresql.org/docs/11/runtime-config-wal.html#GUC-SYNCHRONOUS-COMMIT) to `on`.
+
+```ruby
+postgresql['synchronous_commit'] = 'on'
+gitlab['geo-postgresql']['synchronous_commit'] = 'on'
+```
+
+#### Customizing Patroni failover behavior
+
+Omnibus GitLab exposes several options allowing more control over the [Patroni restoration process](#recovering-the-patroni-cluster).
+
+Each option is shown below with its default value in `/etc/gitlab/gitlab.rb`.
+
+```ruby
+patroni['use_pg_rewind'] = true
+patroni['remove_data_directory_on_rewind_failure'] = false
+patroni['remove_data_directory_on_diverged_timelines'] = false
+```
+
+[The upstream documentation will always be more up to date](https://patroni.readthedocs.io/en/latest/SETTINGS.html#postgresql), but the table below should provide a minimal overview of functionality.
+
+|Setting|Overview|
+|-|-|
+|`use_pg_rewind`|Try running `pg_rewind` on the former cluster leader before it rejoins the database cluster.|
+|`remove_data_directory_on_rewind_failure`|If `pg_rewind` fails, remove the local PostgreSQL data directory and re-replicate from the current cluster leader.|
+|`remove_data_directory_on_diverged_timelines`|If `pg_rewind` cannot be used and the former leader's timeline has diverged from the current one, then delete the local data directory and re-replicate from the current cluster leader.|
+
 ### Database authorization for Patroni
 
 Patroni uses Unix socket to manage PostgreSQL instance. Therefore, the connection from the `local` socket must be trusted.

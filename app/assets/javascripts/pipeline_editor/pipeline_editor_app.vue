@@ -5,6 +5,7 @@ import { mergeUrlParams, redirectTo, refreshCurrentPage } from '~/lib/utils/url_
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
+import CiLint from './components/lint/ci_lint.vue';
 import CommitForm from './components/commit/commit_form.vue';
 import TextEditor from './components/text_editor.vue';
 
@@ -25,6 +26,7 @@ const LOAD_FAILURE_UNKNOWN = 'LOAD_FAILURE_UNKNOWN';
 export default {
   components: {
     CommitForm,
+    CiLint,
     GlAlert,
     GlLoadingIcon,
     GlTab,
@@ -118,7 +120,7 @@ export default {
     isBlobContentLoading() {
       return this.$apollo.queries.content.loading;
     },
-    isVisualizationTabLoading() {
+    isCiConfigDataLoading() {
       return this.$apollo.queries.ciConfigData.loading;
     },
     isVisualizeTabActive() {
@@ -161,6 +163,7 @@ export default {
     defaultCommitMessage: __('Update %{sourcePath} file'),
     tabEdit: s__('Pipelines|Write pipeline configuration'),
     tabGraph: s__('Pipelines|Visualize'),
+    tabLint: s__('Pipelines|Lint'),
   },
   errorTexts: {
     [LOAD_FAILURE_NO_REF]: s__(
@@ -283,8 +286,13 @@ export default {
             :lazy="!isVisualizeTabActive"
             data-testid="visualization-tab"
           >
-            <gl-loading-icon v-if="isVisualizationTabLoading" size="lg" class="gl-m-3" />
+            <gl-loading-icon v-if="isCiConfigDataLoading" size="lg" class="gl-m-3" />
             <pipeline-graph v-else :pipeline-data="ciConfigData" />
+          </gl-tab>
+
+          <gl-tab :title="$options.i18n.tabLint">
+            <gl-loading-icon v-if="isCiConfigDataLoading" size="lg" class="gl-m-3" />
+            <ci-lint v-else :ci-config="ciConfigData" />
           </gl-tab>
         </gl-tabs>
       </div>

@@ -33,6 +33,7 @@ describe('CI Lint Results', () => {
   const findStatus = findByTestId('status');
   const findOnlyExcept = findByTestId('only-except');
   const findLintParameters = findAllByTestId('parameter');
+  const findLintValues = findAllByTestId('value');
   const findBeforeScripts = findAllByTestId('before-script');
   const findScripts = findAllByTestId('script');
   const findAfterScripts = findAllByTestId('after-script');
@@ -41,6 +42,31 @@ describe('CI Lint Results', () => {
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
+  });
+
+  describe('Empty results', () => {
+    it('renders with no jobs, errors or warnings defined', () => {
+      createComponent({ jobs: undefined, errors: undefined, warnings: undefined }, shallowMount);
+      expect(findTable().exists()).toBe(true);
+    });
+
+    it('renders when job has no properties defined', () => {
+      // job with no attributes such as `tagList` or `environment`
+      const job = {
+        stage: 'Stage Name',
+        name: 'test job',
+      };
+      createComponent({ jobs: [job] }, mount);
+
+      const param = findLintParameters().at(0);
+      const value = findLintValues().at(0);
+
+      expect(param.text()).toBe(`${job.stage} Job - ${job.name}`);
+
+      // This test should be updated once properties of each job are shown
+      // See https://gitlab.com/gitlab-org/gitlab/-/issues/291031
+      expect(value.text()).toBe('');
+    });
   });
 
   describe('Invalid results', () => {

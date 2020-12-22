@@ -17,7 +17,7 @@ RSpec.describe IncidentManagement::PagerDuty::ProcessWebhookService do
     let(:webhook_payload) { Gitlab::Json.parse(fixture_file('pager_duty/webhook_incident_trigger.json')) }
     let(:token) { nil }
 
-    subject(:execute) { described_class.new(project, nil, webhook_payload).execute(token) }
+    subject(:execute) { described_class.new(project, webhook_payload).execute(token) }
 
     context 'when PagerDuty webhook setting is active' do
       let_it_be(:incident_management_setting) { create(:project_incident_management_setting, project: project, pagerduty_active: true) }

@@ -25732,6 +25732,11 @@ type Vulnerability implements Noteable {
   dismissedAt: Time
 
   """
+  The user that dismissed the vulnerability.
+  """
+  dismissedBy: User
+
+  """
   List of external issue links related to the vulnerability
   """
   externalIssueLinks(

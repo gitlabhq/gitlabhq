@@ -1,24 +1,110 @@
+import { CI_CONFIG_STATUS_VALID } from '~/pipeline_editor/constants';
+
 export const mockProjectPath = 'user1/project1';
 export const mockDefaultBranch = 'master';
 export const mockNewMergeRequestPath = '/-/merge_requests/new';
 export const mockCommitSha = 'aabbccdd';
 export const mockCommitNextSha = 'eeffgghh';
+export const mockLintHelpPagePath = '/-/lint-help';
 export const mockCommitMessage = 'My commit message';
 
 export const mockCiConfigPath = '.gitlab-ci.yml';
 export const mockCiYml = `
-job1:
+stages:
+  - test
+  - build
+
+job_test_1:
   stage: test
+  script:
+    - echo "test 1"
+
+job_test_2:
+  stage: test
+  script:
+    - echo "test 2"
+
+job_build:
+  stage: build
   script: 
-    - echo 'test'
+    - echo "build"
+  needs: ["job_test_2"]
 `;
 
 export const mockCiConfigQueryResponse = {
   data: {
     ciConfig: {
       errors: [],
-      stages: [],
-      status: '',
+      status: CI_CONFIG_STATUS_VALID,
+      stages: {
+        __typename: 'CiConfigStageConnection',
+        nodes: [
+          {
+            name: 'test',
+            groups: {
+              nodes: [
+                {
+                  name: 'job_test_1',
+                  jobs: {
+                    nodes: [
+                      {
+                        name: 'job_test_1',
+                        needs: { nodes: [], __typename: 'CiConfigNeedConnection' },
+                        __typename: 'CiConfigJob',
+                      },
+                    ],
+                    __typename: 'CiConfigJobConnection',
+                  },
+                  __typename: 'CiConfigGroup',
+                },
+                {
+                  name: 'job_test_2',
+                  jobs: {
+                    nodes: [
+                      {
+                        name: 'job_test_2',
+                        needs: { nodes: [], __typename: 'CiConfigNeedConnection' },
+                        __typename: 'CiConfigJob',
+                      },
+                    ],
+                    __typename: 'CiConfigJobConnection',
+                  },
+                  __typename: 'CiConfigGroup',
+                },
+              ],
+              __typename: 'CiConfigGroupConnection',
+            },
+            __typename: 'CiConfigStage',
+          },
+          {
+            name: 'build',
+            groups: {
+              nodes: [
+                {
+                  name: 'job_build',
+                  jobs: {
+                    nodes: [
+                      {
+                        name: 'job_build',
+                        needs: {
+                          nodes: [{ name: 'job_test_2', __typename: 'CiConfigNeed' }],
+                          __typename: 'CiConfigNeedConnection',
+                        },
+                        __typename: 'CiConfigJob',
+                      },
+                    ],
+                    __typename: 'CiConfigJobConnection',
+                  },
+                  __typename: 'CiConfigGroup',
+                },
+              ],
+              __typename: 'CiConfigGroupConnection',
+            },
+            __typename: 'CiConfigStage',
+          },
+        ],
+      },
+      __typename: 'CiConfig',
     },
   },
 };

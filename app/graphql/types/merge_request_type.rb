@@ -130,7 +130,7 @@ module Types
           description: 'Users from whom a review has been requested.'
     field :author, Types::UserType, null: true,
           description: 'User who created this merge request'
-    field :participants, Types::UserType.connection_type, null: true, complexity: 5,
+    field :participants, Types::UserType.connection_type, null: true, complexity: 15,
           description: 'Participants in the merge request. This includes the author, assignees, reviewers, and users mentioned in notes.'
     field :subscribed, GraphQL::BOOLEAN_TYPE, method: :subscribed?, null: false, complexity: 5,
           description: 'Indicates if the currently logged in user is subscribed to this merge request'

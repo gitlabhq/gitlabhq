@@ -100,6 +100,7 @@ module Gitlab
           end
 
           final_delay = 0
+          batch_counter = 0
 
           model_class.each_batch(of: batch_size) do |relation, index|
             start_id, end_id = relation.pluck(Arel.sql("MIN(#{primary_column_name}), MAX(#{primary_column_name})")).first
@@ -112,7 +113,16 @@ module Gitlab
 
             track_in_database(job_class_name, full_job_arguments) if track_jobs
             migrate_in(final_delay, job_class_name, full_job_arguments)
+
+            batch_counter += 1
           end
+
+          duration = initial_delay + delay_interval * batch_counter
+          say <<~SAY
+            Scheduled #{batch_counter} #{job_class_name} jobs with a maximum of #{batch_size} records per batch and an interval of #{delay_interval} seconds.
+
+            The migration is expected to take at least #{duration} seconds. Expect all jobs to have completed after #{Time.zone.now + duration}."
+          SAY
 
           final_delay
         end

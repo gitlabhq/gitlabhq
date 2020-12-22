@@ -119,7 +119,8 @@ Please check this [rules](https://github.com/vuejs/eslint-plugin-vue#bulb-rules)
 
 ## Naming
 
-1. **Extensions**: Use `.vue` extension for Vue components. Do not use `.js` as file extension ([#34371](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/34371)).
+1. **Extensions**: Use `.vue` extension for Vue components. Do not use `.js` as file extension 
+([#34371](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/34371)).
 1. **Reference Naming**: Use PascalCase for their instances:
 
    ```javascript
@@ -402,7 +403,8 @@ When using `v-for` you need to provide a *unique* `:key` attribute for each item
    </div>
    ```
 
-1. When using `v-for` with `template` and there is more than one child element, the `:key` values must be unique. It's advised to use `kebab-case` namespaces.
+1. When using `v-for` with `template` and there is more than one child element, the `:key` values 
+must be unique. It's advised to use `kebab-case` namespaces.
 
    ```html
    <template v-for="(item, index) in items">
@@ -468,9 +470,10 @@ Useful links:
 
 ## Vue testing
 
-Over time, a number of programming patterns and style preferences have emerged in our efforts to effectively test Vue components.
-The following guide describes some of these. **These are not strict guidelines**, but rather a collection of suggestions and
-good practices that aim to provide insight into how we write Vue tests at GitLab.
+Over time, a number of programming patterns and style preferences have emerged in our efforts to 
+effectively test Vue components. The following guide describes some of these. 
+**These are not strict guidelines**, but rather a collection of suggestions and good practices that
+aim to provide insight into how we write Vue tests at GitLab.
 
 ### Mounting a component
 
@@ -479,8 +482,10 @@ Typically, when testing a Vue component, the component should be "re-mounted" in
 To achieve this:
 
 1. Create a mutable `wrapper` variable inside the top-level `describe` block.
-1. Mount the component using [`mount`](https://vue-test-utils.vuejs.org/api/#mount)/[`shallowMount`](https://vue-test-utils.vuejs.org/api/#shallowMount).
-1. Reassign the resulting [`Wrapper`](https://vue-test-utils.vuejs.org/api/wrapper/#wrapper) instance to our `wrapper` variable.
+1. Mount the component using [`mount`](https://vue-test-utils.vuejs.org/api/#mount)/
+[`shallowMount`](https://vue-test-utils.vuejs.org/api/#shallowMount).
+1. Reassign the resulting [`Wrapper`](https://vue-test-utils.vuejs.org/api/wrapper/#wrapper) 
+instance to our `wrapper` variable.
 
 Creating a global, mutable wrapper provides a number of advantages, including the ability to:
 
@@ -497,14 +502,16 @@ Creating a global, mutable wrapper provides a number of advantages, including th
   })
   ```
 
-- Use a `beforeEach` block to mount the component (see [the `createComponent` factory](#the-createcomponent-factory) for more information).
+- Use a `beforeEach` block to mount the component (see 
+[the `createComponent` factory](#the-createcomponent-factory) for more information).
 - Use an `afterEach` block to destroy the component, for example, `wrapper.destroy()`.
 
 #### The `createComponent` factory
 
 To avoid duplicating our mounting logic, it's useful to define a `createComponent` factory function
 that we can reuse in each test block. This is a closure which should reassign our `wrapper` variable
-to the result of [`mount`](https://vue-test-utils.vuejs.org/api/#mount) and [`shallowMount`](https://vue-test-utils.vuejs.org/api/#shallowMount):
+to the result of [`mount`](https://vue-test-utils.vuejs.org/api/#mount) and 
+[`shallowMount`](https://vue-test-utils.vuejs.org/api/#shallowMount):
 
 ```javascript
 import MyComponent from '~/path/to/my_component.vue';
@@ -568,7 +575,8 @@ describe('MyComponent', () => {
 
 1. Consider using a single (or a limited number of) object arguments over many arguments.
   Defining single parameters for common data like `props` is okay,
-  but keep in mind our [JavaScript style guide](javascript.md#limit-number-of-parameters) and stay within the parameter number limit:
+  but keep in mind our [JavaScript style guide](javascript.md#limit-number-of-parameters) and 
+  stay within the parameter number limit:
 
     ```javascript
     // bad
@@ -591,6 +599,19 @@ the mounting function (`mount` or `shallowMount`) to be used to mount the compon
     function createComponent({ mountFn = shallowMount } = {}) { }
     ```
 
+1. Wrap calls to `mount` and `shallowMount` in `extendedWrapper`, this exposes `wrapper.findByTestId()`:
+
+    ```javascript
+    import { shallowMount } from '@vue/test-utils';
+    import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+    import { SomeComponent } from 'components/some_component.vue';
+
+    let wrapper;
+
+    const createWrapper = () => { wrapper = extendedWrapper(shallowMount(SomeComponent)); };
+    const someButton = () => wrapper.findByTestId('someButtonTestId');
+    ```
+
 ### Setting component state
 
 1. Avoid using [`setProps`](https://vue-test-utils.vuejs.org/api/wrapper/#setprops) to set
@@ -609,12 +630,13 @@ component state wherever possible. Instead, set the component's
     ```
 
     The exception here is when you wish to test component reactivity in some way.
-    For example, you may want to test the output of a component when after a particular watcher has executed.
-    Using `setProps` to test such behavior is okay.
+    For example, you may want to test the output of a component when after a particular watcher has 
+    executed. Using `setProps` to test such behavior is okay.
 
 ### Accessing component state
 
-1. When accessing props or attributes, prefer the `wrapper.props('myProp')` syntax over `wrapper.props().myProp`:
+1. When accessing props or attributes, prefer the `wrapper.props('myProp')` syntax over 
+`wrapper.props().myProp` or `wrapper.vm.myProp`:
 
     ```javascript
     // good
@@ -626,7 +648,8 @@ component state wherever possible. Instead, set the component's
     expect(wrapper.attributes('myAttr')).toBe(true);
     ```
 
-1. When asserting multiple props, check the deep equality of the `props()` object with [`toEqual`](https://jestjs.io/docs/en/expect#toequalvalue):
+1. When asserting multiple props, check the deep equality of the `props()` object with 
+[`toEqual`](https://jestjs.io/docs/en/expect#toequalvalue):
 
     ```javascript
     // good
@@ -642,8 +665,9 @@ component state wherever possible. Instead, set the component's
     });
     ```
 
-1. If you are only interested in some of the props, you can use [`toMatchObject`](https://jestjs.io/docs/en/expect#tomatchobjectobject).
-Prefer `toMatchObject` over [`expect.objectContaining`](https://jestjs.io/docs/en/expect#expectobjectcontainingobject):
+1. If you are only interested in some of the props, you can use 
+[`toMatchObject`](https://jestjs.io/docs/en/expect#tomatchobjectobject). Prefer `toMatchObject` 
+over [`expect.objectContaining`](https://jestjs.io/docs/en/expect#expectobjectcontainingobject):
 
     ```javascript
     // good
@@ -664,12 +688,24 @@ Prefer `toMatchObject` over [`expect.objectContaining`](https://jestjs.io/docs/e
 The goal of this accord is to make sure we are all on the same page.
 
 1. When writing Vue, you may not use jQuery in your application.
-   1. If you need to grab data from the DOM, you may query the DOM 1 time while bootstrapping your application to grab data attributes using `dataset`. You can do this without jQuery.
+   1. If you need to grab data from the DOM, you may query the DOM 1 time while bootstrapping your 
+   application to grab data attributes using `dataset`. You can do this without jQuery.
    1. You may use a jQuery dependency in Vue.js following [this example from the docs](https://vuejs.org/v2/examples/select2.html).
-   1. If an outside jQuery Event needs to be listen to inside the Vue application, you may use jQuery event listeners.
-   1. We avoid adding new jQuery events when they are not required. Instead of adding new jQuery events take a look at [different methods to do the same task](https://vuejs.org/v2/api/#vm-emit).
-1. You may query the `window` object one time, while bootstrapping your application for application specific data (e.g. `scrollTo` is ok to access anytime). Do this access during the bootstrapping of your application.
-1. You may have a temporary but immediate need to create technical debt by writing code that does not follow our standards, to be refactored later. Maintainers need to be ok with the tech debt in the first place. An issue should be created for that tech debt to evaluate it further and discuss. In the coming months you should fix that tech debt, with its priority to be determined by maintainers.
-1. When creating tech debt you must write the tests for that code before hand and those tests may not be rewritten. e.g. jQuery tests rewritten to Vue tests.
-1. You may choose to use VueX as a centralized state management. If you choose not to use VueX, you must use the *store pattern* which can be found in the [Vue.js documentation](https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch).
-1. Once you have chosen a centralized state-management solution you must use it for your entire application. i.e. Don't mix and match your state-management solutions.
+   1. If an outside jQuery Event needs to be listen to inside the Vue application, you may use 
+   jQuery event listeners.
+   1. We avoid adding new jQuery events when they are not required. Instead of adding new jQuery 
+   events take a look at [different methods to do the same task](https://vuejs.org/v2/api/#vm-emit).
+1. You may query the `window` object one time, while bootstrapping your application for application 
+specific data (for example, `scrollTo` is ok to access anytime). Do this access during the 
+bootstrapping of your application.
+1. You may have a temporary but immediate need to create technical debt by writing code that does 
+not follow our standards, to be refactored later. Maintainers need to be ok with the tech debt in 
+the first place. An issue should be created for that tech debt to evaluate it further and discuss. 
+In the coming months you should fix that tech debt, with its priority to be determined by maintainers.
+1. When creating tech debt you must write the tests for that code before hand and those tests may 
+not be rewritten. For example, jQuery tests rewritten to Vue tests.
+1. You may choose to use VueX as a centralized state management. If you choose not to use VueX, you 
+must use the *store pattern* which can be found in the 
+[Vue.js documentation](https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch).
+1. Once you have chosen a centralized state-management solution you must use it for your entire 
+application. Don't mix and match your state-management solutions.

@@ -26,7 +26,7 @@ module Projects
       end
 
       def webhook_processor
-        ::IncidentManagement::PagerDuty::ProcessWebhookService.new(project, nil, payload)
+        ::IncidentManagement::PagerDuty::ProcessWebhookService.new(project, payload)
       end
 
       def payload

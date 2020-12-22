@@ -57,7 +57,7 @@ and edit labels.
 
 ### Project labels
 
-> Showing all inherited labels [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241990) in 13.5.
+> Showing all inherited labels [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241990) in GitLab 13.5.
 
 To view the project labels list, navigate to the project and click **Issues > Labels**.
 The list includes all labels that are defined at the project level, as well as all

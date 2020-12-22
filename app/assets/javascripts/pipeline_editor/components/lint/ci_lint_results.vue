@@ -10,11 +10,11 @@ const thBorderColor = 'gl-border-gray-100!';
 export default {
   correct: {
     variant: 'success',
-    text: __('syntax is correct.'),
+    text: __('Syntax is correct.'),
   },
   incorrect: {
     variant: 'danger',
-    text: __('syntax is incorrect.'),
+    text: __('Syntax is incorrect.'),
   },
   includesText: __(
     'CI configuration validated, including all configuration added with the %{codeStart}includes%{codeEnd} keyword. %{link}',
@@ -48,19 +48,23 @@ export default {
     },
     jobs: {
       type: Array,
-      required: true,
+      required: false,
+      default: () => [],
     },
     errors: {
       type: Array,
-      required: true,
+      required: false,
+      default: () => [],
     },
     warnings: {
       type: Array,
-      required: true,
+      required: false,
+      default: () => [],
     },
     dryRun: {
       type: Boolean,
-      required: true,
+      required: false,
+      default: false,
     },
     lintHelpPagePath: {
       type: String,

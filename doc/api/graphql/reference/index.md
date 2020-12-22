@@ -3817,6 +3817,7 @@ Represents a vulnerability.
 | `detectedAt` | Time! | Timestamp of when the vulnerability was first detected |
 | `discussions` | DiscussionConnection! | All discussions on this noteable |
 | `dismissedAt` | Time | Timestamp of when the vulnerability state was changed to dismissed |
+| `dismissedBy` | User | The user that dismissed the vulnerability. |
 | `externalIssueLinks` | VulnerabilityExternalIssueLinkConnection! | List of external issue links related to the vulnerability |
 | `hasSolutions` | Boolean | Indicates whether there is a solution available for this vulnerability. |
 | `id` | ID! | GraphQL ID of the vulnerability |

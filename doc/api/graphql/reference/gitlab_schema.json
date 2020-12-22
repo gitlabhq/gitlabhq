@@ -74672,6 +74672,20 @@
               "deprecationReason": null
             },
             {
+              "name": "dismissedBy",
+              "description": "The user that dismissed the vulnerability.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "User",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "externalIssueLinks",
               "description": "List of external issue links related to the vulnerability",
               "args": [
