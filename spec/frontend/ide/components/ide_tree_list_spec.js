@@ -41,7 +41,7 @@ describe('IDE tree list', () => {
       vm.$mount();
     });
 
-    it('renders loading indicator', done => {
+    it('renders loading indicator', (done) => {
       store.state.trees['abcproject/master'].loading = true;
 
       vm.$nextTick(() => {

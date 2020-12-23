@@ -61,7 +61,7 @@ export default class DropdownUtils {
     const { lastToken, tokens } = FilteredSearchTokenizer.processTokens(searchInput, allowedKeys);
     const lastKey = lastToken.key || lastToken || '';
     const allowMultiple = item.type === 'array';
-    const itemInExistingTokens = tokens.some(t => t.key === item.hint);
+    const itemInExistingTokens = tokens.some((t) => t.key === item.hint);
     const isSearchItem = updatedItem.hint === 'search';
 
     if (isSearchItem) {
@@ -77,7 +77,7 @@ export default class DropdownUtils {
       const tokenName = last(split[0].split(' '));
 
       const match = isSearchItem
-        ? allowedKeys.some(key => key.startsWith(tokenName.toLowerCase()))
+        ? allowedKeys.some((key) => key.startsWith(tokenName.toLowerCase()))
         : updatedItem.hint.indexOf(tokenName.toLowerCase()) === -1;
 
       updatedItem.droplab_hidden = tokenName ? match : false;
@@ -129,12 +129,12 @@ export default class DropdownUtils {
     const values = [];
 
     if (untilInput) {
-      const inputIndex = tokens.findIndex(t => t.classList.contains('input-token'));
+      const inputIndex = tokens.findIndex((t) => t.classList.contains('input-token'));
       // Add one to include input-token to the tokens array
       tokens.splice(inputIndex + 1);
     }
 
-    tokens.forEach(token => {
+    tokens.forEach((token) => {
       if (token.classList.contains('js-visual-token')) {
         const name = token.querySelector('.name');
         const operatorContainer = token.querySelector('.operator');
@@ -176,7 +176,7 @@ export default class DropdownUtils {
       }
     });
 
-    return values.map(value => value.trim()).join(' ');
+    return values.map((value) => value.trim()).join(' ');
   }
 
   static getSearchInput(filteredSearchInput) {
@@ -192,7 +192,7 @@ export default class DropdownUtils {
     // Replace all spaces inside quote marks with underscores
     // (will continue to match entire string until an end quote is found if any)
     // This helps with matching the beginning & end of a token:key
-    inputValue = inputValue.replace(/(('[^']*'{0,1})|("[^"]*"{0,1})|:\s+)/g, str =>
+    inputValue = inputValue.replace(/(('[^']*'{0,1})|("[^"]*"{0,1})|:\s+)/g, (str) =>
       str.replace(/\s/g, '_'),
     );
 

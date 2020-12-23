@@ -98,7 +98,7 @@ export default {
   },
   methods: {
     updateIcon() {
-      return document.querySelectorAll('.js-service-active-status').forEach(icon => {
+      return document.querySelectorAll('.js-service-active-status').forEach((icon) => {
         if (icon.dataset.value === this.activated.toString()) {
           icon.classList.remove('d-none');
         } else {
@@ -109,7 +109,7 @@ export default {
     resetKey() {
       return axios
         .put(this.formPath, { service: { token: '' } })
-        .then(res => {
+        .then((res) => {
           this.authorizationKey = res.data.token;
         })
         .catch(() => {

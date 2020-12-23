@@ -57,7 +57,7 @@ describe('CopyAsGFM', () => {
           const fragment = document.createDocumentFragment();
           const node = document.createElement('div');
           node.innerHTML = html;
-          Array.from(node.childNodes).forEach(item => fragment.appendChild(item));
+          Array.from(node.childNodes).forEach((item) => fragment.appendChild(item));
           return fragment;
         },
       }),
@@ -80,7 +80,7 @@ describe('CopyAsGFM', () => {
       return clipboardData;
     };
 
-    beforeAll(done => {
+    beforeAll((done) => {
       initCopyAsGFM();
 
       // Fake call to nodeToGfm so the import of lazy bundle happened
@@ -94,7 +94,7 @@ describe('CopyAsGFM', () => {
     beforeEach(() => jest.spyOn(clipboardData, 'setData'));
 
     describe('list handling', () => {
-      it('uses correct gfm for unordered lists', done => {
+      it('uses correct gfm for unordered lists', (done) => {
         const selection = stubSelection('<li>List Item1</li><li>List Item2</li>\n', 'UL');
 
         window.getSelection = jest.fn(() => selection);
@@ -108,7 +108,7 @@ describe('CopyAsGFM', () => {
         });
       });
 
-      it('uses correct gfm for ordered lists', done => {
+      it('uses correct gfm for ordered lists', (done) => {
         const selection = stubSelection('<li>List Item1</li><li>List Item2</li>\n', 'OL');
 
         window.getSelection = jest.fn(() => selection);
@@ -127,7 +127,7 @@ describe('CopyAsGFM', () => {
   describe('CopyAsGFM.quoted', () => {
     const sampleGFM = '* List 1\n* List 2\n\n`Some code`';
 
-    it('adds quote char `> ` to each line', done => {
+    it('adds quote char `> ` to each line', (done) => {
       const expectedQuotedGFM = '> * List 1\n> * List 2\n> \n> `Some code`';
       expect(CopyAsGFM.quoted(sampleGFM)).toEqual(expectedQuotedGFM);
       done();

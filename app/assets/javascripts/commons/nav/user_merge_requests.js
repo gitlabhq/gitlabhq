@@ -27,7 +27,7 @@ export function refreshUserMergeRequestCounts() {
       updateUserMergeRequestCounts(count);
       broadcastCount(count);
     })
-    .catch(ex => {
+    .catch((ex) => {
       console.error(ex); // eslint-disable-line no-console
     });
 }
@@ -59,7 +59,7 @@ export function openUserCountsBroadcast() {
     const currentUserId = typeof gon !== 'undefined' && gon && gon.current_user_id;
     if (currentUserId) {
       channel = new BroadcastChannel(`mr_count_channel_${currentUserId}`);
-      channel.onmessage = ev => {
+      channel.onmessage = (ev) => {
         updateUserMergeRequestCounts(ev.data);
       };
     }

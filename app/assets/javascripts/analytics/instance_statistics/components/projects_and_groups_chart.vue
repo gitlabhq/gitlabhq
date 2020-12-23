@@ -11,7 +11,7 @@ import latestGroupsQuery from '../graphql/queries/groups.query.graphql';
 import latestProjectsQuery from '../graphql/queries/projects.query.graphql';
 import { getAverageByMonth } from '../utils';
 
-const sortByDate = data => sortBy(data, item => new Date(item[0]).getTime());
+const sortByDate = (data) => sortBy(data, (item) => new Date(item[0]).getTime());
 
 const averageAndSortData = (data = [], maxDataPoints) => {
   const averaged = getAverageByMonth(
@@ -148,7 +148,7 @@ export default {
           name: this.$options.i18n.xAxisTitle,
           type: 'category',
           axisLabel: {
-            formatter: value => {
+            formatter: (value) => {
               return formatDateAsMonth(value);
             },
           },
@@ -189,7 +189,7 @@ export default {
           .fetchMore({
             variables: { first: this.totalDataPoints, after: pageInfo.endCursor },
             updateQuery: (previousResult, { fetchMoreResult }) => {
-              const results = produce(fetchMoreResult, newData => {
+              const results = produce(fetchMoreResult, (newData) => {
                 // eslint-disable-next-line no-param-reassign
                 newData[dataKey].nodes = [
                   ...previousResult[dataKey].nodes,
@@ -199,7 +199,7 @@ export default {
               return results;
             },
           })
-          .catch(error => {
+          .catch((error) => {
             this.handleError({ error, message: errorMessage, dataKey });
           });
       }

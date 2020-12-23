@@ -39,7 +39,7 @@ describe('MembersTable', () => {
     });
   };
 
-  const createComponent = state => {
+  const createComponent = (state) => {
     wrapper = mount(MembersTable, {
       localVue,
       store: createStore(state),

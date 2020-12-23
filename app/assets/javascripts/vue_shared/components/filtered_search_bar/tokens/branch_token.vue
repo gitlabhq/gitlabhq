@@ -43,7 +43,7 @@ export default {
       return this.value.data.toLowerCase();
     },
     activeBranch() {
-      return this.branches.find(branch => branch.name.toLowerCase() === this.currentValue);
+      return this.branches.find((branch) => branch.name.toLowerCase() === this.currentValue);
     },
   },
   watch: {

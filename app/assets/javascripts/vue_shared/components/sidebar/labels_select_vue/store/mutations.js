@@ -33,7 +33,7 @@ export default {
     // Iterate over every label and add a `set` prop
     // to determine whether it is already a part of
     // selectedLabels array.
-    const selectedLabelIds = state.selectedLabels.map(label => label.id);
+    const selectedLabelIds = state.selectedLabels.map((label) => label.id);
     state.labelsFetchInProgress = false;
     state.labels = labels.reduce((allLabels, label) => {
       allLabels.push({
@@ -61,7 +61,7 @@ export default {
     // Find the label to update from all the labels
     // and change `set` prop value to represent their current state.
     const labelId = labels.pop()?.id;
-    const candidateLabel = state.labels.find(label => labelId === label.id);
+    const candidateLabel = state.labels.find((label) => labelId === label.id);
     if (candidateLabel) {
       candidateLabel.touched = true;
       candidateLabel.set = !candidateLabel.set;

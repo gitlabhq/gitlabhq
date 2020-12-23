@@ -93,7 +93,7 @@ describe('TaskList', () => {
   });
 
   describe('update', () => {
-    it('should disable task list items and make a patch request then enable them again', done => {
+    it('should disable task list items and make a patch request then enable them again', (done) => {
       const response = { data: { lock_version: 3 } };
       jest.spyOn(taskList, 'enableTaskListItems').mockImplementation(() => {});
       jest.spyOn(taskList, 'disableTaskListItems').mockImplementation(() => {});
@@ -137,7 +137,7 @@ describe('TaskList', () => {
     });
   });
 
-  it('should handle request error and enable task list items', done => {
+  it('should handle request error and enable task list items', (done) => {
     const response = { data: { error: 1 } };
     jest.spyOn(taskList, 'enableTaskListItems').mockImplementation(() => {});
     jest.spyOn(taskList, 'onError').mockImplementation(() => {});

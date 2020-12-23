@@ -21,7 +21,7 @@ export const saveChanges = ({ state, dispatch }) =>
       },
     })
     .then(() => dispatch('receiveSaveChangesSuccess'))
-    .catch(error => dispatch('receiveSaveChangesError', error));
+    .catch((error) => dispatch('receiveSaveChangesError', error));
 
 export const receiveSaveChangesSuccess = () => {
   /**

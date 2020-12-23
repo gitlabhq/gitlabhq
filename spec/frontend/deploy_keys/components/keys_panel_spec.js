@@ -8,7 +8,7 @@ describe('Deploy keys panel', () => {
 
   const findTableRowHeader = () => wrapper.find('.table-row-header');
 
-  const mountComponent = props => {
+  const mountComponent = (props) => {
     const store = new DeployKeysStore();
     store.keys = data;
     wrapper = mount(deployKeysPanel, {

@@ -11,7 +11,7 @@ describe('list item', () => {
   const findRightPrimarySlot = () => wrapper.find('[data-testid="right-primary"]');
   const findRightSecondarySlot = () => wrapper.find('[data-testid="right-secondary"]');
   const findRightActionSlot = () => wrapper.find('[data-testid="right-action"]');
-  const findDetailsSlot = name => wrapper.find(`[data-testid="${name}"]`);
+  const findDetailsSlot = (name) => wrapper.find(`[data-testid="${name}"]`);
   const findToggleDetailsButton = () => wrapper.find(GlButton);
 
   const mountComponent = (propsData, slots) => {
@@ -74,14 +74,14 @@ describe('list item', () => {
       findToggleDetailsButton().vm.$emit('click');
 
       await wrapper.vm.$nextTick();
-      slotNames.forEach(name => {
+      slotNames.forEach((name) => {
         expect(findDetailsSlot(name).exists()).toBe(true);
       });
     });
     it('are not visible when details are not shown', () => {
       mountComponent({}, slotMocks);
 
-      slotNames.forEach(name => {
+      slotNames.forEach((name) => {
         expect(findDetailsSlot(name).exists()).toBe(false);
       });
     });

@@ -4,7 +4,7 @@ const IS_DEBUGGING = process.execArgv.join(' ').includes('--inspect-brk');
 
 let testTimeoutNS;
 
-export const setTestTimeout = newTimeoutMS => {
+export const setTestTimeout = (newTimeoutMS) => {
   const newTimeoutNS = newTimeoutMS * NS_PER_MS;
   // never accept a smaller timeout than the default
   if (newTimeoutNS < testTimeoutNS) {
@@ -18,7 +18,7 @@ export const setTestTimeout = newTimeoutMS => {
 // Allows slow tests to set their own timeout.
 // Useful for tests with jQuery, which is very slow in big DOMs.
 let temporaryTimeoutNS = null;
-export const setTestTimeoutOnce = newTimeoutMS => {
+export const setTestTimeoutOnce = (newTimeoutMS) => {
   const newTimeoutNS = newTimeoutMS * NS_PER_MS;
   // never accept a smaller timeout than the default
   if (newTimeoutNS < testTimeoutNS) {
@@ -28,7 +28,7 @@ export const setTestTimeoutOnce = newTimeoutMS => {
   temporaryTimeoutNS = newTimeoutNS;
 };
 
-export const initializeTestTimeout = defaultTimeoutMS => {
+export const initializeTestTimeout = (defaultTimeoutMS) => {
   setTestTimeout(defaultTimeoutMS);
 
   let testStartTime;

@@ -3,7 +3,7 @@ import { GlFormGroup, GlFormInput, GlFormRadioGroup, GlFormTextarea } from '@git
 import { escape as esc } from 'lodash';
 import { __, s__, sprintf } from '~/locale';
 
-const defaultFileName = dashboard => dashboard.path.split('/').reverse()[0];
+const defaultFileName = (dashboard) => dashboard.path.split('/').reverse()[0];
 
 export default {
   components: {

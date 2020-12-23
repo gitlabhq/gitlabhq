@@ -21,11 +21,11 @@ export default class GroupPathValidator extends InputValidator {
     const container = opts.container || '';
     const validateElements = document.querySelectorAll(`${container} .js-validate-group-path`);
 
-    this.debounceValidateInput = debounce(inputDomElement => {
+    this.debounceValidateInput = debounce((inputDomElement) => {
       GroupPathValidator.validateGroupPathInput(inputDomElement);
     }, debounceTimeoutDuration);
 
-    validateElements.forEach(element =>
+    validateElements.forEach((element) =>
       element.addEventListener('input', this.eventHandler.bind(this)),
     );
   }
@@ -45,7 +45,7 @@ export default class GroupPathValidator extends InputValidator {
 
       fetchGroupPathAvailability(groupPath)
         .then(({ data }) => data)
-        .then(data => {
+        .then((data) => {
           GroupPathValidator.setInputState(inputDomElement, !data.exists);
           GroupPathValidator.setMessageVisibility(inputDomElement, pendingMessageSelector, false);
           GroupPathValidator.setMessageVisibility(

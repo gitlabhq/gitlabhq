@@ -20,7 +20,7 @@ describe('User Avatar Link Component', () => {
     username: 'username',
   };
 
-  const createWrapper = props => {
+  const createWrapper = (props) => {
     wrapper = shallowMount(UserAvatarLink, {
       propsData: {
         ...defaultProps,

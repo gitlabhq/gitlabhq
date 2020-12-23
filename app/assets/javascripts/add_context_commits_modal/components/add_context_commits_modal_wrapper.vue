@@ -61,14 +61,14 @@ export default {
       },
     },
     selectedCommitsCount() {
-      return this.selectedCommits.filter(selectedCommit => selectedCommit.isSelected).length;
+      return this.selectedCommits.filter((selectedCommit) => selectedCommit.isSelected).length;
     },
     shouldPurge() {
       return this.selectedCommitsCount !== this.selectedCommits.length;
     },
     uniqueCommits() {
       return this.selectedCommits.filter(
-        selectedCommit =>
+        (selectedCommit) =>
           selectedCommit.isSelected &&
           findCommitIndex(this.contextCommits, selectedCommit.short_id) === -1,
       );
@@ -126,7 +126,7 @@ export default {
         this.focusSearch();
         if (this.shouldPurge) {
           this.setSelectedCommits(
-            [...this.commits, ...this.selectedCommits].filter(commit => commit.isSelected),
+            [...this.commits, ...this.selectedCommits].filter((commit) => commit.isSelected),
           );
         }
       }
@@ -178,7 +178,7 @@ export default {
       this.setCommits({ commits: tempCommits });
       this.setSelectedCommits([
         ...tempSelectedCommits,
-        ...tempCommits.filter(commit => commit.isSelected),
+        ...tempCommits.filter((commit) => commit.isSelected),
       ]);
     },
     handleCreateContextCommits() {
@@ -186,7 +186,7 @@ export default {
         return Promise.all([
           this.createContextCommits({ commits: this.uniqueCommits }),
           this.removeContextCommits(),
-        ]).then(values => {
+        ]).then((values) => {
           if (values[0] || values[1]) {
             window.location.reload();
           }

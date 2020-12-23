@@ -379,7 +379,7 @@ describe('AlertsSettingsWrapper', () => {
 
   // TODO: Will be removed in 13.7 as part of: https://gitlab.com/gitlab-org/gitlab/-/issues/273657
   describe('Opsgenie integration', () => {
-    it.each([true, false])('it shows/hides the alert when opsgenie is %s', active => {
+    it.each([true, false])('it shows/hides the alert when opsgenie is %s', (active) => {
       createComponent({
         data: { integrations: { list: mockIntegrations }, currentIntegration: mockIntegrations[0] },
         provide: { opsgenie: { active } },

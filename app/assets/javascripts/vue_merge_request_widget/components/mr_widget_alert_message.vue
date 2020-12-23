@@ -13,7 +13,7 @@ export default {
       type: String,
       required: false,
       default: DANGER,
-      validator: value => [WARNING, DANGER].includes(value),
+      validator: (value) => [WARNING, DANGER].includes(value),
     },
     helpPath: {
       type: String,

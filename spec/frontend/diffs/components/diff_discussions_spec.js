@@ -15,7 +15,7 @@ describe('DiffDiscussions', () => {
   let wrapper;
   const getDiscussionsMockData = () => [{ ...discussionsMockData }];
 
-  const createComponent = props => {
+  const createComponent = (props) => {
     store = createStore();
     wrapper = mount(localVue.extend(DiffDiscussions), {
       store,

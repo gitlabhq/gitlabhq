@@ -6,7 +6,7 @@ describe('Edit Form Dropdown', () => {
   const toggleForm = () => {};
   const updateConfidentialAttribute = () => {};
 
-  const createComponent = props => {
+  const createComponent = (props) => {
     wrapper = shallowMount(EditForm, {
       propsData: {
         ...props,

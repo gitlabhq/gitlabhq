@@ -27,7 +27,7 @@ export const tributeConfig = {
   [GfmAutocompleteType.Emojis]: {
     config: {
       trigger: ':',
-      lookup: value => value,
+      lookup: (value) => value,
       menuItemTemplate: ({ original }) => `${original} ${Emoji.glEmojiTag(original)}`,
       selectTemplate: ({ original }) => `:${original}:`,
     },
@@ -36,7 +36,7 @@ export const tributeConfig = {
   [GfmAutocompleteType.Issues]: {
     config: {
       trigger: '#',
-      lookup: value => `${value.iid}${value.title}`,
+      lookup: (value) => `${value.iid}${value.title}`,
       menuItemTemplate: ({ original }) =>
         `<small>${original.reference || original.iid}</small> ${escape(original.title)}`,
       selectTemplate: ({ original }) => original.reference || `#${original.iid}`,
@@ -57,11 +57,11 @@ export const tributeConfig = {
     },
     filterValues({ collection, fullText, selectionStart }) {
       if (doesCurrentLineStartWith('/label', fullText, selectionStart)) {
-        return collection.filter(label => !label.set);
+        return collection.filter((label) => !label.set);
       }
 
       if (doesCurrentLineStartWith('/unlabel', fullText, selectionStart)) {
-        return collection.filter(label => label.set);
+        return collection.filter((label) => label.set);
       }
 
       return collection;
@@ -72,7 +72,7 @@ export const tributeConfig = {
     config: {
       trigger: '@',
       fillAttr: 'username',
-      lookup: value =>
+      lookup: (value) =>
         value.type === groupType ? last(value.name.split(' / ')) : `${value.name}${value.username}`,
       menuItemTemplate: ({ original }) => {
         const commonClasses = 'gl-avatar gl-avatar-s24 gl-flex-shrink-0';
@@ -113,11 +113,11 @@ export const tributeConfig = {
     },
     filterValues({ assignees, collection, fullText, selectionStart }) {
       if (doesCurrentLineStartWith('/assign', fullText, selectionStart)) {
-        return collection.filter(member => !assignees.includes(member.username));
+        return collection.filter((member) => !assignees.includes(member.username));
       }
 
       if (doesCurrentLineStartWith('/unassign', fullText, selectionStart)) {
-        return collection.filter(member => assignees.includes(member.username));
+        return collection.filter((member) => assignees.includes(member.username));
       }
 
       return collection;
@@ -127,7 +127,7 @@ export const tributeConfig = {
   [GfmAutocompleteType.MergeRequests]: {
     config: {
       trigger: '!',
-      lookup: value => `${value.iid}${value.title}`,
+      lookup: (value) => `${value.iid}${value.title}`,
       menuItemTemplate: ({ original }) =>
         `<small>${original.reference || original.iid}</small> ${escape(original.title)}`,
       selectTemplate: ({ original }) => original.reference || `!${original.iid}`,
@@ -147,7 +147,7 @@ export const tributeConfig = {
     config: {
       trigger: '/',
       fillAttr: 'name',
-      lookup: value => `${value.name}${value.aliases.join()}`,
+      lookup: (value) => `${value.name}${value.aliases.join()}`,
       menuItemTemplate: ({ original }) => {
         const aliases = original.aliases.length
           ? `<small>(or /${original.aliases.join(', /')})</small>`
@@ -175,7 +175,7 @@ export const tributeConfig = {
     config: {
       trigger: '$',
       fillAttr: 'id',
-      lookup: value => `${value.id}${value.title}`,
+      lookup: (value) => `${value.id}${value.title}`,
       menuItemTemplate: ({ original }) => `<small>${original.id}</small> ${escape(original.title)}`,
     },
   },

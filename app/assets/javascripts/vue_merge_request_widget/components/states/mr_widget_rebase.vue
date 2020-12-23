@@ -65,7 +65,7 @@ export default {
         .then(() => {
           simplePoll(this.checkRebaseStatus);
         })
-        .catch(error => {
+        .catch((error) => {
           this.isMakingRequest = false;
 
           if (error.response && error.response.data && error.response.data.merge_error) {
@@ -78,8 +78,8 @@ export default {
     checkRebaseStatus(continuePolling, stopPolling) {
       this.service
         .poll()
-        .then(res => res.data)
-        .then(res => {
+        .then((res) => res.data)
+        .then((res) => {
           if (res.rebase_in_progress) {
             continuePolling();
           } else {

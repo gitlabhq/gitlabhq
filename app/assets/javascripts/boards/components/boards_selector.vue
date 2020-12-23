@@ -118,7 +118,7 @@ export default {
       return this.state.currentPage;
     },
     filteredBoards() {
-      return this.boards.filter(board =>
+      return this.boards.filter((board) =>
         board.name.toLowerCase().includes(this.filterTerm.toLowerCase()),
       );
     },
@@ -181,10 +181,10 @@ export default {
       this.loadingRecentBoards = true;
       boardsStore
         .recentBoards()
-        .then(res => {
+        .then((res) => {
           this.recentBoards = res.data;
         })
-        .catch(err => {
+        .catch((err) => {
           /**
            *  If user is unauthorized we'd still want to resolve the
            *  request to display all boards.

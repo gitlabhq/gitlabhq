@@ -15,7 +15,7 @@ describe('branches delete modal', () => {
         </div>
       `);
       $deleteButton = $('.js-delete-branch');
-      submitSpy = jest.fn(event => event.preventDefault());
+      submitSpy = jest.fn((event) => event.preventDefault());
       $('#modal-delete-branch form').on('submit', submitSpy);
       // eslint-disable-next-line no-new
       new DeleteModal();

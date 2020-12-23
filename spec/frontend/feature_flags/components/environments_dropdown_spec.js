@@ -11,7 +11,7 @@ describe('Feature flags > Environments dropdown ', () => {
   let wrapper;
   let mock;
   const results = ['production', 'staging'];
-  const factory = props => {
+  const factory = (props) => {
     wrapper = shallowMount(EnvironmentsDropdown, {
       propsData: {
         ...props,
@@ -100,7 +100,7 @@ describe('Feature flags > Environments dropdown ', () => {
         it('emits event when a suggestion is clicked', async () => {
           const button = wrapper
             .findAll(GlButton)
-            .filter(b => b.text() === 'production')
+            .filter((b) => b.text() === 'production')
             .at(0);
           button.vm.$emit('click');
           await wrapper.vm.$nextTick();

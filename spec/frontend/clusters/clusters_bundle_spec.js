@@ -279,7 +279,7 @@ describe('Clusters', () => {
   });
 
   describe('uninstallApplication', () => {
-    it.each(APPLICATIONS)('tries to uninstall %s', applicationId => {
+    it.each(APPLICATIONS)('tries to uninstall %s', (applicationId) => {
       jest.spyOn(cluster.service, 'uninstallApplication').mockResolvedValueOnce();
 
       cluster.store.state.applications[applicationId].status = INSTALLED;

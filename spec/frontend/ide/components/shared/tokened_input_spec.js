@@ -44,9 +44,9 @@ describe('IDE shared/TokenedInput', () => {
   });
 
   it('renders tokens', () => {
-    const renderedTokens = getTokenElements(vm).map(x => x.textContent.trim());
+    const renderedTokens = getTokenElements(vm).map((x) => x.textContent.trim());
 
-    expect(renderedTokens).toEqual(TEST_TOKENS.map(x => x.label));
+    expect(renderedTokens).toEqual(TEST_TOKENS.map((x) => x.label));
   });
 
   it('renders input', () => {
@@ -54,7 +54,7 @@ describe('IDE shared/TokenedInput', () => {
     expect(vm.$refs.input).toHaveValue(TEST_VALUE);
   });
 
-  it('renders placeholder, when tokens are empty', done => {
+  it('renders placeholder, when tokens are empty', (done) => {
     vm.tokens = [];
 
     vm.$nextTick()

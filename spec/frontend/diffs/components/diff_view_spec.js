@@ -11,7 +11,7 @@ describe('DiffView', () => {
   const DiffRow = { template: `<div/>` };
   const DiffCommentCell = { template: `<div/>` };
   const DraftNote = { template: `<div/>` };
-  const createWrapper = props => {
+  const createWrapper = (props) => {
     const localVue = createLocalVue();
     localVue.use(Vuex);
 

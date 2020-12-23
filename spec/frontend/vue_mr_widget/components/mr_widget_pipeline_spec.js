@@ -122,7 +122,7 @@ describe('MRWidgetPipeline', () => {
 
       it.each(mockData.buildsWithCoverage)(
         'should have name and coverage for build %s listed in tooltip',
-        build => {
+        (build) => {
           const tooltipText = findPipelineCoverageTooltipText();
 
           expect(tooltipText).toContain(`${build.name} (${build.coverage}%)`);

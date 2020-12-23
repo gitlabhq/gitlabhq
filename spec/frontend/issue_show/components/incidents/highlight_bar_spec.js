@@ -17,7 +17,7 @@ describe('Highlight Bar', () => {
     title: 'Alert 1',
   };
 
-  const mountComponent = options => {
+  const mountComponent = (options) => {
     wrapper = shallowMount(
       HighlightBar,
       merge(

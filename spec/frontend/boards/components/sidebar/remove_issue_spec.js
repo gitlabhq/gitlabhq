@@ -8,7 +8,7 @@ describe('boards sidebar remove issue', () => {
 
   const findButton = () => wrapper.find(GlButton);
 
-  const createComponent = propsData => {
+  const createComponent = (propsData) => {
     wrapper = shallowMount(RemoveIssue, {
       propsData: {
         issue: {},

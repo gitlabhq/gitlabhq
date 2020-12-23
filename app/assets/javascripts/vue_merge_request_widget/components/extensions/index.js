@@ -3,7 +3,7 @@ import ExtensionBase from './base.vue';
 // Holds all the currently registered extensions
 export const extensions = [];
 
-export const registerExtension = extension => {
+export const registerExtension = (extension) => {
   // Pushes into the extenions array a dynamically created Vue component
   // that gets exteneded from `base.vue`
   extensions.push({

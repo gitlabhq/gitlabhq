@@ -20,7 +20,7 @@ describe('tooltips/index.js', () => {
       title: 'default title',
     };
 
-    Object.keys(attributes).forEach(name => {
+    Object.keys(attributes).forEach((name) => {
       target.setAttribute(name, attributes[name]);
     });
 
@@ -46,7 +46,7 @@ describe('tooltips/index.js', () => {
   });
 
   afterEach(() => {
-    document.body.childNodes.forEach(node => node.remove());
+    document.body.childNodes.forEach((node) => node.remove());
     destroy();
   });
 

@@ -63,7 +63,7 @@ describe('AwardsHandler', () => {
 
     const $menu = $('.emoji-menu');
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       $menu.one('build-emoji-menu-finish', () => {
         resolve();
       });
@@ -356,7 +356,7 @@ describe('AwardsHandler', () => {
       await openAndWaitForEmojiMenu();
 
       const emojiMenu = document.querySelector('.emoji-menu');
-      Array.prototype.forEach.call(emojiMenu.querySelectorAll('.emoji-menu-title'), title => {
+      Array.prototype.forEach.call(emojiMenu.querySelectorAll('.emoji-menu-title'), (title) => {
         expect(title.textContent.trim().toLowerCase()).not.toBe('frequently used');
       });
     });
@@ -369,7 +369,7 @@ describe('AwardsHandler', () => {
       const emojiMenu = document.querySelector('.emoji-menu');
       const hasFrequentlyUsedHeading = Array.prototype.some.call(
         emojiMenu.querySelectorAll('.emoji-menu-title'),
-        title => title.textContent.trim().toLowerCase() === 'frequently used',
+        (title) => title.textContent.trim().toLowerCase() === 'frequently used',
       );
 
       expect(hasFrequentlyUsedHeading).toBe(true);

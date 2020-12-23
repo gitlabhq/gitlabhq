@@ -76,7 +76,7 @@ export class EditorMarkdownExtension extends EditorLiteExtension {
 
     if (textLines.length > 1) {
       // Multi-line selection
-      lineShift = textLines.findIndex(line => line.indexOf(toSelect) !== -1);
+      lineShift = textLines.findIndex((line) => line.indexOf(toSelect) !== -1);
       newStartLineNumber = currentSelection.startLineNumber + lineShift;
       newStartColumn = textLines[lineShift].indexOf(toSelect) + 1;
     } else {

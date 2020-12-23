@@ -5,7 +5,7 @@ import { setHTMLFixture } from './helpers/fixtures';
 
 describe('Wikis', () => {
   describe('setting the commit message when the title changes', () => {
-    const editFormHtmlFixture = args => `<form class="wiki-form ${
+    const editFormHtmlFixture = (args) => `<form class="wiki-form ${
       args.newPage ? 'js-new-wiki-page' : ''
     }">
         <input type="text" id="wiki_title" value="My title" />

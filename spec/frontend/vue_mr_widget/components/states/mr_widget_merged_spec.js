@@ -123,9 +123,9 @@ describe('MRWidgetMerged', () => {
 
   describe('methods', () => {
     describe('removeSourceBranch', () => {
-      it('should set flag and call service then request main component to update the widget', done => {
+      it('should set flag and call service then request main component to update the widget', (done) => {
         jest.spyOn(vm.service, 'removeSourceBranch').mockReturnValue(
-          new Promise(resolve => {
+          new Promise((resolve) => {
             resolve({
               data: {
                 message: 'Branch was deleted',
@@ -173,7 +173,7 @@ describe('MRWidgetMerged', () => {
     );
   });
 
-  it('hides button to copy commit SHA if SHA does not exist', done => {
+  it('hides button to copy commit SHA if SHA does not exist', (done) => {
     vm.mr.mergeCommitSha = null;
 
     Vue.nextTick(() => {
@@ -189,7 +189,7 @@ describe('MRWidgetMerged', () => {
     expect(selectors.mergeCommitShaLink.href).toBe(vm.mr.mergeCommitPath);
   });
 
-  it('should not show source branch deleted text', done => {
+  it('should not show source branch deleted text', (done) => {
     vm.mr.sourceBranchRemoved = false;
 
     Vue.nextTick(() => {
@@ -199,7 +199,7 @@ describe('MRWidgetMerged', () => {
     });
   });
 
-  it('should show source branch deleting text', done => {
+  it('should show source branch deleting text', (done) => {
     vm.mr.isRemovingSourceBranch = true;
     vm.mr.sourceBranchRemoved = false;
 

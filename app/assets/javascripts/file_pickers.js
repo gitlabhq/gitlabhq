@@ -1,7 +1,7 @@
 export default function initFilePickers() {
   const filePickers = document.querySelectorAll('.js-filepicker');
 
-  filePickers.forEach(filePicker => {
+  filePickers.forEach((filePicker) => {
     const button = filePicker.querySelector('.js-filepicker-button');
 
     button.addEventListener('click', () => {

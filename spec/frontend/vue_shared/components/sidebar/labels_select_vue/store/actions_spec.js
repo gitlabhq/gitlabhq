@@ -19,7 +19,7 @@ describe('LabelsSelect Actions', () => {
   });
 
   describe('setInitialState', () => {
-    it('sets initial store state', done => {
+    it('sets initial store state', (done) => {
       testAction(
         actions.setInitialState,
         mockInitialState,
@@ -32,7 +32,7 @@ describe('LabelsSelect Actions', () => {
   });
 
   describe('toggleDropdownButton', () => {
-    it('toggles dropdown button', done => {
+    it('toggles dropdown button', (done) => {
       testAction(
         actions.toggleDropdownButton,
         {},
@@ -45,7 +45,7 @@ describe('LabelsSelect Actions', () => {
   });
 
   describe('toggleDropdownContents', () => {
-    it('toggles dropdown contents', done => {
+    it('toggles dropdown contents', (done) => {
       testAction(
         actions.toggleDropdownContents,
         {},
@@ -58,7 +58,7 @@ describe('LabelsSelect Actions', () => {
   });
 
   describe('toggleDropdownContentsCreateView', () => {
-    it('toggles dropdown create view', done => {
+    it('toggles dropdown create view', (done) => {
       testAction(
         actions.toggleDropdownContentsCreateView,
         {},
@@ -71,13 +71,13 @@ describe('LabelsSelect Actions', () => {
   });
 
   describe('requestLabels', () => {
-    it('sets value of `state.labelsFetchInProgress` to `true`', done => {
+    it('sets value of `state.labelsFetchInProgress` to `true`', (done) => {
       testAction(actions.requestLabels, {}, state, [{ type: types.REQUEST_LABELS }], [], done);
     });
   });
 
   describe('receiveLabelsSuccess', () => {
-    it('sets provided labels to `state.labels`', done => {
+    it('sets provided labels to `state.labels`', (done) => {
       const labels = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }];
 
       testAction(
@@ -96,7 +96,7 @@ describe('LabelsSelect Actions', () => {
       setFixtures('<div class="flash-container"></div>');
     });
 
-    it('sets value `state.labelsFetchInProgress` to `false`', done => {
+    it('sets value `state.labelsFetchInProgress` to `false`', (done) => {
       testAction(
         actions.receiveLabelsFailure,
         {},
@@ -129,7 +129,7 @@ describe('LabelsSelect Actions', () => {
     });
 
     describe('on success', () => {
-      it('dispatches `requestLabels` & `receiveLabelsSuccess` actions', done => {
+      it('dispatches `requestLabels` & `receiveLabelsSuccess` actions', (done) => {
         const labels = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }];
         mock.onGet(/labels.json/).replyOnce(200, labels);
 
@@ -145,7 +145,7 @@ describe('LabelsSelect Actions', () => {
     });
 
     describe('on failure', () => {
-      it('dispatches `requestLabels` & `receiveLabelsFailure` actions', done => {
+      it('dispatches `requestLabels` & `receiveLabelsFailure` actions', (done) => {
         mock.onGet(/labels.json/).replyOnce(500, {});
 
         testAction(
@@ -161,7 +161,7 @@ describe('LabelsSelect Actions', () => {
   });
 
   describe('requestCreateLabel', () => {
-    it('sets value `state.labelCreateInProgress` to `true`', done => {
+    it('sets value `state.labelCreateInProgress` to `true`', (done) => {
       testAction(
         actions.requestCreateLabel,
         {},
@@ -174,7 +174,7 @@ describe('LabelsSelect Actions', () => {
   });
 
   describe('receiveCreateLabelSuccess', () => {
-    it('sets value `state.labelCreateInProgress` to `false`', done => {
+    it('sets value `state.labelCreateInProgress` to `false`', (done) => {
       testAction(
         actions.receiveCreateLabelSuccess,
         {},
@@ -191,7 +191,7 @@ describe('LabelsSelect Actions', () => {
       setFixtures('<div class="flash-container"></div>');
     });
 
-    it('sets value `state.labelCreateInProgress` to `false`', done => {
+    it('sets value `state.labelCreateInProgress` to `false`', (done) => {
       testAction(
         actions.receiveCreateLabelFailure,
         {},
@@ -224,7 +224,7 @@ describe('LabelsSelect Actions', () => {
     });
 
     describe('on success', () => {
-      it('dispatches `requestCreateLabel`, `receiveCreateLabelSuccess` & `toggleDropdownContentsCreateView` actions', done => {
+      it('dispatches `requestCreateLabel`, `receiveCreateLabelSuccess` & `toggleDropdownContentsCreateView` actions', (done) => {
         const label = { id: 1 };
         mock.onPost(/labels.json/).replyOnce(200, label);
 
@@ -244,7 +244,7 @@ describe('LabelsSelect Actions', () => {
     });
 
     describe('on failure', () => {
-      it('dispatches `requestCreateLabel` & `receiveCreateLabelFailure` actions', done => {
+      it('dispatches `requestCreateLabel` & `receiveCreateLabelFailure` actions', (done) => {
         mock.onPost(/labels.json/).replyOnce(500, {});
 
         testAction(
@@ -260,7 +260,7 @@ describe('LabelsSelect Actions', () => {
   });
 
   describe('updateSelectedLabels', () => {
-    it('updates `state.labels` based on provided `labels` param', done => {
+    it('updates `state.labels` based on provided `labels` param', (done) => {
       const labels = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }];
 
       testAction(

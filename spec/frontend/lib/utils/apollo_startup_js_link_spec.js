@@ -58,9 +58,9 @@ describe('StartupJSLink', () => {
     link = ApolloLink.from([startupLink, new ApolloLink(() => Observable.of(FORWARDED_RESPONSE))]);
   };
 
-  it('forwards requests if no calls are set up', done => {
+  it('forwards requests if no calls are set up', (done) => {
     setupLink();
-    link.request(mockOperation()).subscribe(result => {
+    link.request(mockOperation()).subscribe((result) => {
       expect(result).toEqual(FORWARDED_RESPONSE);
       expect(startupLink.startupCalls).toBe(null);
       expect(startupLink.request).toEqual(StartupJSLink.noopRequest);
@@ -68,7 +68,7 @@ describe('StartupJSLink', () => {
     });
   });
 
-  it('forwards requests if the operation is not pre-loaded', done => {
+  it('forwards requests if the operation is not pre-loaded', (done) => {
     window.gl = {
       startup_graphql_calls: [
         {
@@ -79,7 +79,7 @@ describe('StartupJSLink', () => {
       ],
     };
     setupLink();
-    link.request(mockOperation({ operationName: 'notLoaded' })).subscribe(result => {
+    link.request(mockOperation({ operationName: 'notLoaded' })).subscribe((result) => {
       expect(result).toEqual(FORWARDED_RESPONSE);
       expect(startupLink.startupCalls.size).toBe(1);
       done();
@@ -87,7 +87,7 @@ describe('StartupJSLink', () => {
   });
 
   describe('variable match errors: ', () => {
-    it('forwards requests if the variables are not matching', done => {
+    it('forwards requests if the variables are not matching', (done) => {
       window.gl = {
         startup_graphql_calls: [
           {
@@ -98,14 +98,14 @@ describe('StartupJSLink', () => {
         ],
       };
       setupLink();
-      link.request(mockOperation()).subscribe(result => {
+      link.request(mockOperation()).subscribe((result) => {
         expect(result).toEqual(FORWARDED_RESPONSE);
         expect(startupLink.startupCalls.size).toBe(0);
         done();
       });
     });
 
-    it('forwards requests if more variables are set in the operation', done => {
+    it('forwards requests if more variables are set in the operation', (done) => {
       window.gl = {
         startup_graphql_calls: [
           {
@@ -115,14 +115,14 @@ describe('StartupJSLink', () => {
         ],
       };
       setupLink();
-      link.request(mockOperation()).subscribe(result => {
+      link.request(mockOperation()).subscribe((result) => {
         expect(result).toEqual(FORWARDED_RESPONSE);
         expect(startupLink.startupCalls.size).toBe(0);
         done();
       });
     });
 
-    it('forwards requests if less variables are set in the operation', done => {
+    it('forwards requests if less variables are set in the operation', (done) => {
       window.gl = {
         startup_graphql_calls: [
           {
@@ -133,14 +133,14 @@ describe('StartupJSLink', () => {
         ],
       };
       setupLink();
-      link.request(mockOperation({ variables: { id: 3 } })).subscribe(result => {
+      link.request(mockOperation({ variables: { id: 3 } })).subscribe((result) => {
         expect(result).toEqual(FORWARDED_RESPONSE);
         expect(startupLink.startupCalls.size).toBe(0);
         done();
       });
     });
 
-    it('forwards requests if different variables are set', done => {
+    it('forwards requests if different variables are set', (done) => {
       window.gl = {
         startup_graphql_calls: [
           {
@@ -151,14 +151,14 @@ describe('StartupJSLink', () => {
         ],
       };
       setupLink();
-      link.request(mockOperation({ variables: { id: 3 } })).subscribe(result => {
+      link.request(mockOperation({ variables: { id: 3 } })).subscribe((result) => {
         expect(result).toEqual(FORWARDED_RESPONSE);
         expect(startupLink.startupCalls.size).toBe(0);
         done();
       });
     });
 
-    it('forwards requests if array variables have a different order', done => {
+    it('forwards requests if array variables have a different order', (done) => {
       window.gl = {
         startup_graphql_calls: [
           {
@@ -169,7 +169,7 @@ describe('StartupJSLink', () => {
         ],
       };
       setupLink();
-      link.request(mockOperation({ variables: { id: [4, 3] } })).subscribe(result => {
+      link.request(mockOperation({ variables: { id: [4, 3] } })).subscribe((result) => {
         expect(result).toEqual(FORWARDED_RESPONSE);
         expect(startupLink.startupCalls.size).toBe(0);
         done();
@@ -178,7 +178,7 @@ describe('StartupJSLink', () => {
   });
 
   describe('error handling', () => {
-    it('forwards the call if the fetchCall is failing with a HTTP Error', done => {
+    it('forwards the call if the fetchCall is failing with a HTTP Error', (done) => {
       window.gl = {
         startup_graphql_calls: [
           {
@@ -189,14 +189,14 @@ describe('StartupJSLink', () => {
         ],
       };
       setupLink();
-      link.request(mockOperation()).subscribe(result => {
+      link.request(mockOperation()).subscribe((result) => {
         expect(result).toEqual(FORWARDED_RESPONSE);
         expect(startupLink.startupCalls.size).toBe(0);
         done();
       });
     });
 
-    it('forwards the call if it errors (e.g. failing JSON)', done => {
+    it('forwards the call if it errors (e.g. failing JSON)', (done) => {
       window.gl = {
         startup_graphql_calls: [
           {
@@ -207,14 +207,14 @@ describe('StartupJSLink', () => {
         ],
       };
       setupLink();
-      link.request(mockOperation()).subscribe(result => {
+      link.request(mockOperation()).subscribe((result) => {
         expect(result).toEqual(FORWARDED_RESPONSE);
         expect(startupLink.startupCalls.size).toBe(0);
         done();
       });
     });
 
-    it('forwards the call if the response contains an error', done => {
+    it('forwards the call if the response contains an error', (done) => {
       window.gl = {
         startup_graphql_calls: [
           {
@@ -225,14 +225,14 @@ describe('StartupJSLink', () => {
         ],
       };
       setupLink();
-      link.request(mockOperation()).subscribe(result => {
+      link.request(mockOperation()).subscribe((result) => {
         expect(result).toEqual(FORWARDED_RESPONSE);
         expect(startupLink.startupCalls.size).toBe(0);
         done();
       });
     });
 
-    it("forwards the call if the response doesn't contain a data object", done => {
+    it("forwards the call if the response doesn't contain a data object", (done) => {
       window.gl = {
         startup_graphql_calls: [
           {
@@ -243,7 +243,7 @@ describe('StartupJSLink', () => {
         ],
       };
       setupLink();
-      link.request(mockOperation()).subscribe(result => {
+      link.request(mockOperation()).subscribe((result) => {
         expect(result).toEqual(FORWARDED_RESPONSE);
         expect(startupLink.startupCalls.size).toBe(0);
         done();
@@ -251,7 +251,7 @@ describe('StartupJSLink', () => {
     });
   });
 
-  it('resolves the request if the operation is matching', done => {
+  it('resolves the request if the operation is matching', (done) => {
     window.gl = {
       startup_graphql_calls: [
         {
@@ -262,14 +262,14 @@ describe('StartupJSLink', () => {
       ],
     };
     setupLink();
-    link.request(mockOperation()).subscribe(result => {
+    link.request(mockOperation()).subscribe((result) => {
       expect(result).toEqual(STARTUP_JS_RESPONSE);
       expect(startupLink.startupCalls.size).toBe(0);
       done();
     });
   });
 
-  it('resolves the request exactly once', done => {
+  it('resolves the request exactly once', (done) => {
     window.gl = {
       startup_graphql_calls: [
         {
@@ -280,17 +280,17 @@ describe('StartupJSLink', () => {
       ],
     };
     setupLink();
-    link.request(mockOperation()).subscribe(result => {
+    link.request(mockOperation()).subscribe((result) => {
       expect(result).toEqual(STARTUP_JS_RESPONSE);
       expect(startupLink.startupCalls.size).toBe(0);
-      link.request(mockOperation()).subscribe(result2 => {
+      link.request(mockOperation()).subscribe((result2) => {
         expect(result2).toEqual(FORWARDED_RESPONSE);
         done();
       });
     });
   });
 
-  it('resolves the request if the variables have a different order', done => {
+  it('resolves the request if the variables have a different order', (done) => {
     window.gl = {
       startup_graphql_calls: [
         {
@@ -301,14 +301,14 @@ describe('StartupJSLink', () => {
       ],
     };
     setupLink();
-    link.request(mockOperation({ variables: { name: 'foo', id: 3 } })).subscribe(result => {
+    link.request(mockOperation({ variables: { name: 'foo', id: 3 } })).subscribe((result) => {
       expect(result).toEqual(STARTUP_JS_RESPONSE);
       expect(startupLink.startupCalls.size).toBe(0);
       done();
     });
   });
 
-  it('resolves the request if the variables have undefined values', done => {
+  it('resolves the request if the variables have undefined values', (done) => {
     window.gl = {
       startup_graphql_calls: [
         {
@@ -321,14 +321,14 @@ describe('StartupJSLink', () => {
     setupLink();
     link
       .request(mockOperation({ variables: { name: 'foo', undef: undefined } }))
-      .subscribe(result => {
+      .subscribe((result) => {
         expect(result).toEqual(STARTUP_JS_RESPONSE);
         expect(startupLink.startupCalls.size).toBe(0);
         done();
       });
   });
 
-  it('resolves the request if the variables are of an array format', done => {
+  it('resolves the request if the variables are of an array format', (done) => {
     window.gl = {
       startup_graphql_calls: [
         {
@@ -339,14 +339,14 @@ describe('StartupJSLink', () => {
       ],
     };
     setupLink();
-    link.request(mockOperation({ variables: { id: [3, 4] } })).subscribe(result => {
+    link.request(mockOperation({ variables: { id: [3, 4] } })).subscribe((result) => {
       expect(result).toEqual(STARTUP_JS_RESPONSE);
       expect(startupLink.startupCalls.size).toBe(0);
       done();
     });
   });
 
-  it('resolves multiple requests correctly', done => {
+  it('resolves multiple requests correctly', (done) => {
     window.gl = {
       startup_graphql_calls: [
         {
@@ -362,10 +362,10 @@ describe('StartupJSLink', () => {
       ],
     };
     setupLink();
-    link.request(mockOperation({ operationName: OPERATION_NAME_TWO })).subscribe(result => {
+    link.request(mockOperation({ operationName: OPERATION_NAME_TWO })).subscribe((result) => {
       expect(result).toEqual(STARTUP_JS_RESPONSE_TWO);
       expect(startupLink.startupCalls.size).toBe(1);
-      link.request(mockOperation({ operationName: OPERATION_NAME })).subscribe(result2 => {
+      link.request(mockOperation({ operationName: OPERATION_NAME })).subscribe((result2) => {
         expect(result2).toEqual(STARTUP_JS_RESPONSE);
         expect(startupLink.startupCalls.size).toBe(0);
         done();

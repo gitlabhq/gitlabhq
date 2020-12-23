@@ -19,14 +19,14 @@ export default class InlineHTML extends Mark {
       parseDOM: [
         {
           tag: 'sup, sub, kbd, q, samp, var',
-          getAttrs: el => ({ tag: el.nodeName.toLowerCase() }),
+          getAttrs: (el) => ({ tag: el.nodeName.toLowerCase() }),
         },
         {
           tag: 'abbr',
-          getAttrs: el => ({ tag: 'abbr', title: el.getAttribute('title') }),
+          getAttrs: (el) => ({ tag: 'abbr', title: el.getAttribute('title') }),
         },
       ],
-      toDOM: node => [node.attrs.tag, { title: node.attrs.title }, 0],
+      toDOM: (node) => [node.attrs.tag, { title: node.attrs.title }, 0],
     };
   }
 

@@ -47,7 +47,7 @@ describe('Editor Lite component', () => {
     wrapper.destroy();
   });
 
-  const triggerChangeContent = val => {
+  const triggerChangeContent = (val) => {
     mockInstance.getValue.mockReturnValue(val);
     const [cb] = mockInstance.onDidChangeModelContent.mock.calls[0];
 

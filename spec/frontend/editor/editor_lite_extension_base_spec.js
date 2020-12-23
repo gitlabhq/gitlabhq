@@ -16,7 +16,7 @@ describe('The basis for an Editor Lite extension', () => {
 
     if (instance) {
       if (options) {
-        Object.entries(options).forEach(prop => {
+        Object.entries(options).forEach((prop) => {
           expect(instance[prop]).toBeUndefined();
         });
         // Both instance and options are passed

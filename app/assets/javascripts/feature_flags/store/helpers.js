@@ -17,16 +17,16 @@ import {
  * objects that is easier/nicer to bind to in Vue.
  * @param {Array} scopesFromRails An array of scope objects fetched from the API
  */
-export const mapToScopesViewModel = scopesFromRails =>
-  (scopesFromRails || []).map(s => {
+export const mapToScopesViewModel = (scopesFromRails) =>
+  (scopesFromRails || []).map((s) => {
     const percentStrategy = (s.strategies || []).find(
-      strat => strat.name === ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
+      (strat) => strat.name === ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
     );
 
     const rolloutPercentage = fetchPercentageParams(percentStrategy) || DEFAULT_PERCENT_ROLLOUT;
 
     const userStrategy = (s.strategies || []).find(
-      strat => strat.name === ROLLOUT_STRATEGY_USER_ID,
+      (strat) => strat.name === ROLLOUT_STRATEGY_USER_ID,
     );
 
     const rolloutStrategy =
@@ -36,7 +36,7 @@ export const mapToScopesViewModel = scopesFromRails =>
 
     const rolloutUserIds = (fetchUserIdParams(userStrategy) || '')
       .split(',')
-      .filter(id => id)
+      .filter((id) => id)
       .join(', ');
 
     return {
@@ -59,8 +59,8 @@ export const mapToScopesViewModel = scopesFromRails =>
  * the shape that the Rails API expects.
  * @param {Array} scopesFromVue An array of scope objects from the Vue component
  */
-export const mapFromScopesViewModel = params => {
-  const scopes = (params.scopes || []).map(s => {
+export const mapFromScopesViewModel = (params) => {
+  const scopes = (params.scopes || []).map((s) => {
     const parameters = {};
     if (s.rolloutStrategy === ROLLOUT_STRATEGY_PERCENT_ROLLOUT) {
       parameters.groupId = PERCENT_ROLLOUT_GROUP_ID;
@@ -145,32 +145,32 @@ export const createNewEnvironmentScope = (overrides = {}, featureFlagPermissions
   return newScope;
 };
 
-const mapStrategyScopesToRails = scopes =>
+const mapStrategyScopesToRails = (scopes) =>
   scopes.length === 0
     ? [{ environment_scope: '*' }]
-    : scopes.map(s => ({
+    : scopes.map((s) => ({
         id: s.id,
         _destroy: s.shouldBeDestroyed,
         environment_scope: s.environmentScope,
       }));
 
-const mapStrategyScopesToView = scopes =>
-  scopes.map(s => ({
+const mapStrategyScopesToView = (scopes) =>
+  scopes.map((s) => ({
     id: s.id,
     // eslint-disable-next-line no-underscore-dangle
     shouldBeDestroyed: Boolean(s._destroy),
     environmentScope: s.environment_scope,
   }));
 
-const mapStrategiesParametersToViewModel = params => {
+const mapStrategiesParametersToViewModel = (params) => {
   if (params.userIds) {
     return { ...params, userIds: params.userIds.split(',').join(', ') };
   }
   return params;
 };
 
-export const mapStrategiesToViewModel = strategiesFromRails =>
-  (strategiesFromRails || []).map(s => ({
+export const mapStrategiesToViewModel = (strategiesFromRails) =>
+  (strategiesFromRails || []).map((s) => ({
     id: s.id,
     name: s.name,
     parameters: mapStrategiesParametersToViewModel(s.parameters),
@@ -180,14 +180,14 @@ export const mapStrategiesToViewModel = strategiesFromRails =>
     scopes: mapStrategyScopesToView(s.scopes),
   }));
 
-const mapStrategiesParametersToRails = params => {
+const mapStrategiesParametersToRails = (params) => {
   if (params.userIds) {
     return { ...params, userIds: params.userIds.replace(/\s*,\s*/g, ',') };
   }
   return params;
 };
 
-const mapStrategyToRails = strategy => {
+const mapStrategyToRails = (strategy) => {
   const mappedStrategy = {
     id: strategy.id,
     name: strategy.name,
@@ -202,7 +202,7 @@ const mapStrategyToRails = strategy => {
   return mappedStrategy;
 };
 
-export const mapStrategiesToRails = params => ({
+export const mapStrategiesToRails = (params) => ({
   operations_feature_flag: {
     name: params.name,
     description: params.description,

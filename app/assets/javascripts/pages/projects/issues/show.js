@@ -37,7 +37,7 @@ export default function () {
   initRelatedMergeRequestsApp();
 
   import(/* webpackChunkName: 'design_management' */ '~/design_management')
-    .then(module => module.default())
+    .then((module) => module.default())
     .catch(() => {});
 
   new ZenMode(); // eslint-disable-line no-new

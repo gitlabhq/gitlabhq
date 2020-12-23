@@ -24,7 +24,7 @@ describe('Clusters store actions', () => {
       captureException.mockRestore();
     });
 
-    it('should report sentry error', done => {
+    it('should report sentry error', (done) => {
       const sentryError = new Error('New Sentry Error');
       const tag = 'sentryErrorTag';
 
@@ -62,7 +62,7 @@ describe('Clusters store actions', () => {
 
     afterEach(() => mock.restore());
 
-    it('should commit SET_CLUSTERS_DATA with received response', done => {
+    it('should commit SET_CLUSTERS_DATA with received response', (done) => {
       mock.onGet().reply(200, apiData, headers);
 
       testAction(
@@ -79,7 +79,7 @@ describe('Clusters store actions', () => {
       );
     });
 
-    it('should show flash on API error', done => {
+    it('should show flash on API error', (done) => {
       mock.onGet().reply(400, 'Not Found');
 
       testAction(
@@ -126,7 +126,7 @@ describe('Clusters store actions', () => {
         pollStop.mockRestore();
       });
 
-      it('should stop polling after MAX Requests', done => {
+      it('should stop polling after MAX Requests', (done) => {
         testAction(
           actions.fetchClusters,
           { endpoint: apiData.endpoint },
@@ -173,7 +173,7 @@ describe('Clusters store actions', () => {
         );
       });
 
-      it('should stop polling and report to Sentry when data is invalid', done => {
+      it('should stop polling and report to Sentry when data is invalid', (done) => {
         const badApiResponse = { clusters: {} };
         mock.onGet().reply(200, badApiResponse, pollHeaders);
 

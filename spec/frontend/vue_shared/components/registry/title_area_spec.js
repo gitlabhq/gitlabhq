@@ -9,7 +9,7 @@ describe('title area', () => {
 
   const findSubHeaderSlot = () => wrapper.find('[data-testid="sub-header"]');
   const findRightActionsSlot = () => wrapper.find('[data-testid="right-actions"]');
-  const findMetadataSlot = name => wrapper.find(`[data-testid="${name}"]`);
+  const findMetadataSlot = (name) => wrapper.find(`[data-testid="${name}"]`);
   const findTitle = () => wrapper.find('[data-testid="title"]');
   const findAvatar = () => wrapper.find(GlAvatar);
   const findInfoMessages = () => wrapper.findAll('[data-testid="info-message"]');
@@ -97,7 +97,7 @@ describe('title area', () => {
       mountComponent({ slots: slotMocks });
 
       await wrapper.vm.$nextTick();
-      slotNames.forEach(name => {
+      slotNames.forEach((name) => {
         expect(findMetadataSlot(name).exists()).toBe(true);
       });
     });
@@ -106,7 +106,7 @@ describe('title area', () => {
       mountComponent({ slots: slotMocks, propsData: { title: 'foo', metadataLoading: true } });
 
       await wrapper.vm.$nextTick();
-      slotNames.forEach(name => {
+      slotNames.forEach((name) => {
         expect(findMetadataSlot(name).exists()).toBe(false);
       });
     });

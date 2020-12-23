@@ -93,8 +93,8 @@ describe('BoardCardAssigneeDropdown', () => {
     await wrapper.vm.$nextTick();
   };
 
-  const findByText = text => {
-    return wrapper.findAll(GlDropdownItem).wrappers.find(node => node.text().indexOf(text) === 0);
+  const findByText = (text) => {
+    return wrapper.findAll(GlDropdownItem).wrappers.find((node) => node.text().indexOf(text) === 0);
   };
 
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);

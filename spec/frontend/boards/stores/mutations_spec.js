@@ -3,7 +3,7 @@ import * as types from '~/boards/stores/mutation_types';
 import defaultState from '~/boards/stores/state';
 import { mockLists, rawIssue, mockIssue, mockIssue2 } from '../mock_data';
 
-const expectNotImplemented = action => {
+const expectNotImplemented = (action) => {
   it('is not implemented', () => {
     expect(action).toThrow(new Error('Not implemented!'));
   });

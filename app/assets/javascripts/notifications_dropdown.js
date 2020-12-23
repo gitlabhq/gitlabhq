@@ -23,7 +23,7 @@ export default function notificationsDropdown() {
     Rails.fire(form[0], 'submit');
   });
 
-  $(document).on('ajax:success', '.notification-form', e => {
+  $(document).on('ajax:success', '.notification-form', (e) => {
     const data = e.detail[0];
 
     if (data.saved) {

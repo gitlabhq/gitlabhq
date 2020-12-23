@@ -29,7 +29,7 @@ describe('Ordered Layout', () => {
   const verifyOrder = () =>
     wrapper
       .findAll('footer,header')
-      .wrappers.map(x => (x.element.tagName === 'FOOTER' ? 'footer' : 'header'));
+      .wrappers.map((x) => (x.element.tagName === 'FOOTER' ? 'footer' : 'header'));
 
   const createComponent = (props = {}) => {
     wrapper = mount(TestComponent, {

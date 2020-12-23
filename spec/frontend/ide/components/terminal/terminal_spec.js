@@ -31,7 +31,7 @@ describe('IDE Terminal', () => {
   let wrapper;
   let state;
 
-  const factory = propsData => {
+  const factory = (propsData) => {
     const store = new Vuex.Store({
       state,
       mutations: {
@@ -63,7 +63,7 @@ describe('IDE Terminal', () => {
   });
 
   describe('loading text', () => {
-    [STARTING, PENDING].forEach(status => {
+    [STARTING, PENDING].forEach((status) => {
       it(`shows when starting (${status})`, () => {
         factory({ status });
 
@@ -79,7 +79,7 @@ describe('IDE Terminal', () => {
       expect(wrapper.find('.top-bar').text()).toBe('Stopping...');
     });
 
-    [RUNNING, STOPPED].forEach(status => {
+    [RUNNING, STOPPED].forEach((status) => {
       it('hides when not loading', () => {
         factory({ status });
 

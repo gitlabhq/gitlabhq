@@ -5,7 +5,7 @@ export class GitLabDropdownInput {
     this.fieldName = this.options.fieldName || 'field-name';
     const $inputContainer = this.input.parent();
     const $clearButton = $inputContainer.find('.js-dropdown-input-clear');
-    $clearButton.on('click', e => {
+    $clearButton.on('click', (e) => {
       // Clear click
       e.preventDefault();
       e.stopPropagation();
@@ -13,13 +13,13 @@ export class GitLabDropdownInput {
     });
 
     this.input
-      .on('keydown', e => {
+      .on('keydown', (e) => {
         const keyCode = e.which;
         if (keyCode === 13 && !options.elIsInput) {
           e.preventDefault();
         }
       })
-      .on('input', e => {
+      .on('input', (e) => {
         let val = e.currentTarget.value || this.options.inputFieldName;
         val = val
           .split(' ')

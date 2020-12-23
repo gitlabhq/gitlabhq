@@ -29,7 +29,7 @@ describe('BoardCard', () => {
   const findUserAvatarLink = () => wrapper.find(userAvatarLink);
 
   // this particular mount component needs to be used after the root beforeEach because it depends on list being initialized
-  const mountComponent = propsData => {
+  const mountComponent = (propsData) => {
     wrapper = mount(BoardCard, {
       stubs: {
         issueCardInner,

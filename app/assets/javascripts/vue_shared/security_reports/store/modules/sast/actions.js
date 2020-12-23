@@ -15,7 +15,7 @@ export const fetchDiff = ({ state, rootState, dispatch }) => {
   dispatch('requestDiff');
 
   return fetchDiffData(rootState, state.paths.diffEndpoint, 'sast')
-    .then(data => {
+    .then((data) => {
       dispatch('receiveDiffSuccess', data);
     })
     .catch(() => {

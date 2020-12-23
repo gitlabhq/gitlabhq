@@ -6,14 +6,14 @@ const gapiResourceListRequest = ({ resource, params, commit, mutation, payloadKe
     const request = resource.list(params);
 
     return request.then(
-      resp => {
+      (resp) => {
         const { result } = resp;
 
         commit(mutation, result[payloadKey]);
 
         resolve();
       },
-      resp => {
+      (resp) => {
         reject(resp);
       },
     );
@@ -54,14 +54,14 @@ export const validateProjectBilling = ({ dispatch, commit, state }) =>
     commit(types.SET_MACHINE_TYPE, '');
 
     return request.then(
-      resp => {
+      (resp) => {
         const { billingEnabled } = resp.result;
 
         commit(types.SET_PROJECT_BILLING_STATUS, Boolean(billingEnabled));
         dispatch('setIsValidatingProjectBilling', false);
         resolve();
       },
-      resp => {
+      (resp) => {
         dispatch('setIsValidatingProjectBilling', false);
         reject(resp);
       },

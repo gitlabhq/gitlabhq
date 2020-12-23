@@ -134,7 +134,7 @@ class List {
   updateMultipleIssues(issues, listFrom, moveBeforeId, moveAfterId) {
     boardsStore
       .moveMultipleIssues({
-        ids: issues.map(issue => issue.id),
+        ids: issues.map((issue) => issue.id),
         fromListId: listFrom.id,
         toListId: this.id,
         moveBeforeId,

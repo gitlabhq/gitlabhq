@@ -19,7 +19,7 @@ const resolvers = {
     updateActiveDiscussion: (_, { id = null, source }, { cache }) => {
       const sourceData = cache.readQuery({ query: activeDiscussionQuery });
 
-      const data = produce(sourceData, draftData => {
+      const data = produce(sourceData, (draftData) => {
         // eslint-disable-next-line no-param-reassign
         draftData.activeDiscussion = {
           __typename: 'ActiveDiscussion',
@@ -74,7 +74,7 @@ const defaultClient = createDefaultClient(
   // Should be removed as soon as https://gitlab.com/gitlab-org/gitlab/issues/13495 is resolved
   {
     cacheConfig: {
-      dataIdFromObject: object => {
+      dataIdFromObject: (object) => {
         // eslint-disable-next-line no-underscore-dangle, @gitlab/require-i18n-strings
         if (object.__typename === 'Design') {
           return object.id && object.image ? `${object.id}-${object.image}` : uniqueId();

@@ -4,7 +4,7 @@ import state from './state';
 
 Vue.use(Vuex);
 
-export const createStore = initialState =>
+export const createStore = (initialState) =>
   new Vuex.Store({
     state: state(initialState),
   });

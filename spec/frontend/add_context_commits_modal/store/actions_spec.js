@@ -42,7 +42,7 @@ describe('AddContextCommitsModalStoreActions', () => {
   });
 
   describe('setBaseConfig', () => {
-    it('commits SET_BASE_CONFIG', done => {
+    it('commits SET_BASE_CONFIG', (done) => {
       const options = { contextCommitsPath, mergeRequestIid, projectId };
       testAction(
         setBaseConfig,
@@ -65,7 +65,7 @@ describe('AddContextCommitsModalStoreActions', () => {
   });
 
   describe('setTabIndex', () => {
-    it('commits SET_TABINDEX', done => {
+    it('commits SET_TABINDEX', (done) => {
       testAction(
         setTabIndex,
         { tabIndex: 1 },
@@ -78,7 +78,7 @@ describe('AddContextCommitsModalStoreActions', () => {
   });
 
   describe('setCommits', () => {
-    it('commits SET_COMMITS', done => {
+    it('commits SET_COMMITS', (done) => {
       testAction(
         setCommits,
         { commits: [], silentAddition: false },
@@ -89,7 +89,7 @@ describe('AddContextCommitsModalStoreActions', () => {
       );
     });
 
-    it('commits SET_COMMITS_SILENT', done => {
+    it('commits SET_COMMITS_SILENT', (done) => {
       testAction(
         setCommits,
         { commits: [], silentAddition: true },
@@ -102,7 +102,7 @@ describe('AddContextCommitsModalStoreActions', () => {
   });
 
   describe('createContextCommits', () => {
-    it('calls API to create context commits', done => {
+    it('calls API to create context commits', (done) => {
       mock.onPost(contextCommitEndpoint).reply(200, {});
 
       testAction(createContextCommits, { commits: [] }, {}, [], [], done);
@@ -126,7 +126,7 @@ describe('AddContextCommitsModalStoreActions', () => {
         )
         .reply(200, [dummyCommit]);
     });
-    it('commits FETCH_CONTEXT_COMMITS', done => {
+    it('commits FETCH_CONTEXT_COMMITS', (done) => {
       const contextCommit = { ...dummyCommit, isSelected: true };
       testAction(
         fetchContextCommits,
@@ -150,7 +150,7 @@ describe('AddContextCommitsModalStoreActions', () => {
   });
 
   describe('setContextCommits', () => {
-    it('commits SET_CONTEXT_COMMITS', done => {
+    it('commits SET_CONTEXT_COMMITS', (done) => {
       testAction(
         setContextCommits,
         { data: [] },
@@ -168,7 +168,7 @@ describe('AddContextCommitsModalStoreActions', () => {
         .onDelete('/api/v4/projects/gitlab-org%2Fgitlab/merge_requests/1/context_commits')
         .reply(204);
     });
-    it('calls API to remove context commits', done => {
+    it('calls API to remove context commits', (done) => {
       testAction(
         removeContextCommits,
         { forceReload: false },
@@ -181,7 +181,7 @@ describe('AddContextCommitsModalStoreActions', () => {
   });
 
   describe('setSelectedCommits', () => {
-    it('commits SET_SELECTED_COMMITS', done => {
+    it('commits SET_SELECTED_COMMITS', (done) => {
       testAction(
         setSelectedCommits,
         [dummyCommit],
@@ -194,7 +194,7 @@ describe('AddContextCommitsModalStoreActions', () => {
   });
 
   describe('setSearchText', () => {
-    it('commits SET_SEARCH_TEXT', done => {
+    it('commits SET_SEARCH_TEXT', (done) => {
       const searchText = 'Dummy Text';
       testAction(
         setSearchText,
@@ -208,7 +208,7 @@ describe('AddContextCommitsModalStoreActions', () => {
   });
 
   describe('setToRemoveCommits', () => {
-    it('commits SET_TO_REMOVE_COMMITS', done => {
+    it('commits SET_TO_REMOVE_COMMITS', (done) => {
       const commitId = 'abcde';
 
       testAction(
@@ -223,7 +223,7 @@ describe('AddContextCommitsModalStoreActions', () => {
   });
 
   describe('resetModalState', () => {
-    it('commits RESET_MODAL_STATE', done => {
+    it('commits RESET_MODAL_STATE', (done) => {
       const commitId = 'abcde';
 
       testAction(

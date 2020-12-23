@@ -74,7 +74,7 @@ export default {
       return this.mr.approvals || {};
     },
     approvedBy() {
-      return this.approvals.approved_by ? this.approvals.approved_by.map(x => x.user) : [];
+      return this.approvals.approved_by ? this.approvals.approved_by.map((x) => x.user) : [];
     },
     userHasApproved() {
       return Boolean(this.approvals.user_has_approved);
@@ -136,7 +136,7 @@ export default {
     approveWithAuth(data) {
       this.updateApproval(
         () => this.service.approveMergeRequestWithAuth(data),
-        error => {
+        (error) => {
           if (error && error.response && error.response.status === 401) {
             this.hasApprovalAuthError = true;
             return;
@@ -155,7 +155,7 @@ export default {
       this.isApproving = true;
       this.clearError();
       return serviceFn()
-        .then(data => {
+        .then((data) => {
           this.mr.setApprovals(data);
           eventHub.$emit('MRWidgetUpdateRequested');
           this.$emit('updated');

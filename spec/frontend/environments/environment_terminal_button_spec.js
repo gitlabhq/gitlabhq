@@ -5,7 +5,7 @@ describe('Stop Component', () => {
   let wrapper;
   const terminalPath = '/path';
 
-  const mountWithProps = props => {
+  const mountWithProps = (props) => {
     wrapper = shallowMount(TerminalComponent, {
       propsData: props,
     });

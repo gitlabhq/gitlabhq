@@ -18,7 +18,7 @@ function generateValueMarkup(
 function generateFixtureMarkup(secrets, isRevealed, valueClass, placeholderClass) {
   return `
   <div class="js-secret-container">
-    ${secrets.map(secret => generateValueMarkup(secret, valueClass, placeholderClass)).join('')}
+    ${secrets.map((secret) => generateValueMarkup(secret, valueClass, placeholderClass)).join('')}
     <button
       class="js-secret-value-reveal-button"
       data-secret-reveal-status="${isRevealed}"
@@ -122,12 +122,12 @@ describe('setupSecretValues', () => {
       const placeholders = wrapper.querySelectorAll('.js-secret-value-placeholder');
 
       expect(values.length).toEqual(3);
-      values.forEach(value => {
+      values.forEach((value) => {
         expect(value.classList.contains('hide')).toEqual(true);
       });
 
       expect(placeholders.length).toEqual(3);
-      placeholders.forEach(placeholder => {
+      placeholders.forEach((placeholder) => {
         expect(placeholder.classList.contains('hide')).toEqual(false);
       });
     });
@@ -141,24 +141,24 @@ describe('setupSecretValues', () => {
       revealButton.click();
 
       expect(values.length).toEqual(3);
-      values.forEach(value => {
+      values.forEach((value) => {
         expect(value.classList.contains('hide')).toEqual(false);
       });
 
       expect(placeholders.length).toEqual(3);
-      placeholders.forEach(placeholder => {
+      placeholders.forEach((placeholder) => {
         expect(placeholder.classList.contains('hide')).toEqual(true);
       });
 
       revealButton.click();
 
       expect(values.length).toEqual(3);
-      values.forEach(value => {
+      values.forEach((value) => {
         expect(value.classList.contains('hide')).toEqual(true);
       });
 
       expect(placeholders.length).toEqual(3);
-      placeholders.forEach(placeholder => {
+      placeholders.forEach((placeholder) => {
         expect(placeholder.classList.contains('hide')).toEqual(false);
       });
     });
@@ -181,24 +181,24 @@ describe('setupSecretValues', () => {
       revealButton.click();
 
       expect(values.length).toEqual(4);
-      values.forEach(value => {
+      values.forEach((value) => {
         expect(value.classList.contains('hide')).toEqual(false);
       });
 
       expect(placeholders.length).toEqual(4);
-      placeholders.forEach(placeholder => {
+      placeholders.forEach((placeholder) => {
         expect(placeholder.classList.contains('hide')).toEqual(true);
       });
 
       revealButton.click();
 
       expect(values.length).toEqual(4);
-      values.forEach(value => {
+      values.forEach((value) => {
         expect(value.classList.contains('hide')).toEqual(true);
       });
 
       expect(placeholders.length).toEqual(4);
-      placeholders.forEach(placeholder => {
+      placeholders.forEach((placeholder) => {
         expect(placeholder.classList.contains('hide')).toEqual(false);
       });
     });

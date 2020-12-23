@@ -6,7 +6,7 @@ describe('IssueCount', () => {
   let maxIssueCount;
   let issuesSize;
 
-  const createComponent = props => {
+  const createComponent = (props) => {
     vm = shallowMount(IssueCount, { propsData: props });
   };
 

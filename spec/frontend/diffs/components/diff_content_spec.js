@@ -102,7 +102,7 @@ describe('DiffContent', () => {
 
   describe('with text based files', () => {
     afterEach(() => {
-      [isParallelViewGetterMock, isInlineViewGetterMock].forEach(m => m.mockRestore());
+      [isParallelViewGetterMock, isInlineViewGetterMock].forEach((m) => m.mockRestore());
     });
 
     const textDiffFile = { ...defaultProps.diffFile, viewer: { name: diffViewerModes.text } };

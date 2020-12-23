@@ -10,7 +10,7 @@ describe('toolbar_button', () => {
     tag: 'test tag',
   };
 
-  const createComponent = propUpdates => {
+  const createComponent = (propUpdates) => {
     wrapper = shallowMount(ToolbarButton, {
       propsData: {
         ...defaultProps,

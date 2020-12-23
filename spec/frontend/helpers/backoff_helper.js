@@ -16,9 +16,9 @@
  *
  * @param {Function} callback
  */
-export const backoffMockImplementation = callback => {
+export const backoffMockImplementation = (callback) => {
   const q = new Promise((resolve, reject) => {
-    const stop = arg => (arg instanceof Error ? reject(arg) : resolve(arg));
+    const stop = (arg) => (arg instanceof Error ? reject(arg) : resolve(arg));
     const next = () => callback(next, stop);
     // Define a timeout based on a mock timer
     setTimeout(() => {

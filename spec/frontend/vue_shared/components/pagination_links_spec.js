@@ -49,7 +49,7 @@ describe('Pagination links component', () => {
   });
 
   it('should provide translated text to GitLab UI pagination', () => {
-    Object.entries(translations).forEach(entry => {
+    Object.entries(translations).forEach((entry) => {
       expect(glPagination.vm[entry[0]]).toBe(entry[1]);
     });
   });

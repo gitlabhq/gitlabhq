@@ -14,7 +14,7 @@ describe('TerraformPlan', () => {
   const findIcon = () => wrapper.find('[data-testid="change-type-icon"]');
   const findLogButton = () => wrapper.find('[data-testid="terraform-report-link"]');
 
-  const mountWrapper = propsData => {
+  const mountWrapper = (propsData) => {
     wrapper = shallowMount(TerraformPlan, { stubs: { GlLink, GlSprintf }, propsData });
   };
 

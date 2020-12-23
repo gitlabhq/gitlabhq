@@ -18,7 +18,7 @@ describe('tooltips/components/tooltips.vue', () => {
       ...attributes,
     };
 
-    Object.keys(defaults).forEach(name => {
+    Object.keys(defaults).forEach((name) => {
       target.setAttribute(name, defaults[name]);
     });
 

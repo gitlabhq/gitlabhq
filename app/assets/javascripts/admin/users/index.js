@@ -11,7 +11,7 @@ export default function (el = document.querySelector('#js-admin-users-app')) {
 
   return new Vue({
     el,
-    render: createElement =>
+    render: (createElement) =>
       createElement(AdminUsersApp, {
         props: {
           users: convertObjectPropsToCamelCase(JSON.parse(users), { deep: true }),

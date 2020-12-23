@@ -9,7 +9,7 @@ export default class LengthValidator extends InputValidator {
     const container = opts.container || '';
     const validateLengthElements = document.querySelectorAll(`${container} .js-validate-length`);
 
-    validateLengthElements.forEach(element =>
+    validateLengthElements.forEach((element) =>
       element.addEventListener('input', this.eventHandler.bind(this)),
     );
   }

@@ -11,6 +11,6 @@ export default () => {
   return new Vue({
     el,
     provide: { ...el.dataset },
-    render: createElement => createElement(CustomizeHomepageBanner),
+    render: (createElement) => createElement(CustomizeHomepageBanner),
   });
 };

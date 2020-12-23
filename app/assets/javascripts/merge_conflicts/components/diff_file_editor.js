@@ -6,7 +6,7 @@ import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as flash } from '~/flash';
 import { __ } from '~/locale';
 
-(global => {
+((global) => {
   global.mergeConflicts = global.mergeConflicts || {};
 
   global.mergeConflicts.diffFileEditor = Vue.extend({

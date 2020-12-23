@@ -25,7 +25,7 @@ describe('ExpirationDatepicker', () => {
     actions = {
       updateMemberExpiration: jest.fn(
         () =>
-          new Promise(resolve => {
+          new Promise((resolve) => {
             resolveUpdateMemberExpiration = resolve;
           }),
       ),

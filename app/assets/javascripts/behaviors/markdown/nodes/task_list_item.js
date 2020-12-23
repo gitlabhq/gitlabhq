@@ -23,7 +23,7 @@ export default class TaskListItem extends Node {
         {
           priority: HIGHER_PARSE_RULE_PRIORITY,
           tag: 'li.task-list-item',
-          getAttrs: el => {
+          getAttrs: (el) => {
             const checkbox = el.querySelector('input[type=checkbox].task-list-item-checkbox');
             return { done: checkbox && checkbox.checked };
           },

@@ -23,7 +23,7 @@ describe('Badge component', () => {
   const createComponent = (props, el = null) => {
     vm = mountComponent(Component, props, el);
     const { badgeImage } = findElements();
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       badgeImage.addEventListener('load', resolve);
       // Manually dispatch load event as it is not triggered
       badgeImage.dispatchEvent(new Event('load'));
@@ -36,7 +36,7 @@ describe('Badge component', () => {
 
   describe('watchers', () => {
     describe('imageUrl', () => {
-      it('sets isLoading and resets numRetries and hasError', done => {
+      it('sets isLoading and resets numRetries and hasError', (done) => {
         const props = { ...dummyProps };
         createComponent(props)
           .then(() => {
@@ -60,7 +60,7 @@ describe('Badge component', () => {
   });
 
   describe('methods', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       createComponent({ ...dummyProps })
         .then(done)
         .catch(done.fail);
@@ -98,7 +98,7 @@ describe('Badge component', () => {
   });
 
   describe('behavior', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       setFixtures('<div id="dummy-element"></div>');
       createComponent({ ...dummyProps }, '#dummy-element')
         .then(done)
@@ -116,7 +116,7 @@ describe('Badge component', () => {
       expect(vm.$el.querySelector('.btn-group')).toBeHidden();
     });
 
-    it('shows a loading icon when loading', done => {
+    it('shows a loading icon when loading', (done) => {
       vm.isLoading = true;
 
       Vue.nextTick()
@@ -132,7 +132,7 @@ describe('Badge component', () => {
         .catch(done.fail);
     });
 
-    it('shows an error and reload button if loading failed', done => {
+    it('shows an error and reload button if loading failed', (done) => {
       vm.hasError = true;
 
       Vue.nextTick()

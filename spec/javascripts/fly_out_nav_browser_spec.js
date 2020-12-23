@@ -157,7 +157,7 @@ describe('Fly out sidebar navigation', () => {
         '<div class="sidebar-sub-level-items" style="position: absolute; top: 0; left: 100px; height: 200px;"></div>';
     });
 
-    it('shows sub-items after 0ms if no menu is open', done => {
+    it('shows sub-items after 0ms if no menu is open', (done) => {
       mouseEnterTopItems(el);
 
       expect(getHideSubItemsInterval()).toBe(0);
@@ -169,7 +169,7 @@ describe('Fly out sidebar navigation', () => {
       });
     });
 
-    it('shows sub-items after 300ms if a menu is currently open', done => {
+    it('shows sub-items after 300ms if a menu is currently open', (done) => {
       documentMouseMove({
         clientX: el.getBoundingClientRect().left,
         clientY: el.getBoundingClientRect().top,

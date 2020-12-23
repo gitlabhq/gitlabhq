@@ -1,5 +1,5 @@
 export const findCommitIndex = (commits, commitShortId) => {
-  return commits.findIndex(commit => commit.short_id === commitShortId);
+  return commits.findIndex((commit) => commit.short_id === commitShortId);
 };
 
 export const setCommitStatus = (commits, commitIndex, selected) => {

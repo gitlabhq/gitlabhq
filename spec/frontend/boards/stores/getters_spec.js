@@ -84,7 +84,7 @@ describe('Boards - Getters', () => {
       issues,
     };
     it('returns issues for a given listId', () => {
-      const getIssueById = issueId => [mockIssue, mockIssue2].find(({ id }) => id === issueId);
+      const getIssueById = (issueId) => [mockIssue, mockIssue2].find(({ id }) => id === issueId);
 
       expect(getters.getIssuesByList(boardsState, { getIssueById })('gid://gitlab/List/2')).toEqual(
         mockIssues,

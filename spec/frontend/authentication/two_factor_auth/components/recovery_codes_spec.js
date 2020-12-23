@@ -34,8 +34,8 @@ describe('RecoveryCodes', () => {
   const findAlert = () => wrapper.find(GlAlert);
   const findRecoveryCodes = () => wrapper.findByTestId('recovery-codes');
   const findCopyButton = () => wrapper.find(ClipboardButton);
-  const findButtonByText = text =>
-    wrapper.findAll(GlButton).wrappers.find(buttonWrapper => buttonWrapper.text() === text);
+  const findButtonByText = (text) =>
+    wrapper.findAll(GlButton).wrappers.find((buttonWrapper) => buttonWrapper.text() === text);
   const findDownloadButton = () => findButtonByText('Download codes');
   const findPrintButton = () => findButtonByText('Print codes');
   const findProceedButton = () => findButtonByText('Proceed');
@@ -59,7 +59,7 @@ describe('RecoveryCodes', () => {
   it('renders codes', () => {
     const recoveryCodes = findRecoveryCodes().text();
 
-    codes.forEach(code => {
+    codes.forEach((code) => {
       expect(recoveryCodes).toContain(code);
     });
   });

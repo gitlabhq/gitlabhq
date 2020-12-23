@@ -39,7 +39,7 @@ describe('diff_stats', () => {
   });
 
   describe('line changes', () => {
-    const findFileLine = name => wrapper.find(name);
+    const findFileLine = (name) => wrapper.find(name);
 
     it('shows the amount of lines added', () => {
       expect(findFileLine('.js-file-addition-line').text()).toBe(TEST_ADDED_LINES.toString());
@@ -51,10 +51,10 @@ describe('diff_stats', () => {
   });
 
   describe('files changes', () => {
-    const findIcon = name =>
+    const findIcon = (name) =>
       wrapper
         .findAll(GlIcon)
-        .filter(c => c.attributes('name') === name)
+        .filter((c) => c.attributes('name') === name)
         .at(0).element.parentNode;
 
     it('shows amount of file changed with plural "files" when 0 files has changed', () => {

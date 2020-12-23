@@ -11,7 +11,7 @@ export default class Milestone {
   }
 
   bindTabsSwitching() {
-    return $('a[data-toggle="tab"]').on('show.bs.tab', e => {
+    return $('a[data-toggle="tab"]').on('show.bs.tab', (e) => {
       const $target = $(e.target);
 
       window.location.hash = $target.attr('href');

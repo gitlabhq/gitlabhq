@@ -172,25 +172,31 @@ describe('tags list row', () => {
     });
 
     it('contains the totalSize and layers', () => {
-      mountComponent({ ...defaultProps, tag: { ...tag, totalSize: 1024, layers: 10 } });
+      mountComponent({ ...defaultProps, tag: { ...tag, totalSize: '1024', layers: 10 } });
 
       expect(findSize().text()).toMatchInterpolatedText('1.00 KiB · 10 layers');
     });
 
+    it('when totalSize is giantic', () => {
+      mountComponent({ ...defaultProps, tag: { ...tag, totalSize: '1099511627776', layers: 2 } });
+
+      expect(findSize().text()).toMatchInterpolatedText('1024.00 GiB · 2 layers');
+    });
+
     it('when totalSize is missing', () => {
-      mountComponent({ ...defaultProps, tag: { ...tag, totalSize: 0, layers: 10 } });
+      mountComponent({ ...defaultProps, tag: { ...tag, totalSize: '0', layers: 10 } });
 
       expect(findSize().text()).toMatchInterpolatedText(`${NOT_AVAILABLE_SIZE} · 10 layers`);
     });
 
     it('when layers are missing', () => {
-      mountComponent({ ...defaultProps, tag: { ...tag, totalSize: 1024 } });
+      mountComponent({ ...defaultProps, tag: { ...tag, totalSize: '1024' } });
 
       expect(findSize().text()).toMatchInterpolatedText('1.00 KiB');
     });
 
     it('when there is 1 layer', () => {
-      mountComponent({ ...defaultProps, tag: { ...tag, totalSize: 0, layers: 1 } });
+      mountComponent({ ...defaultProps, tag: { ...tag, totalSize: '0', layers: 1 } });
 
       expect(findSize().text()).toMatchInterpolatedText(`${NOT_AVAILABLE_SIZE} · 1 layer`);
     });

@@ -17,7 +17,7 @@ describe('GlCountdown', () => {
   });
 
   describe('when there is time remaining', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       vm = mountComponent(Component, {
         endDateString: '2000-01-01T01:02:03Z',
       });
@@ -29,7 +29,7 @@ describe('GlCountdown', () => {
       expect(vm.$el.textContent).toContain('01:02:03');
     });
 
-    it('updates remaining time', done => {
+    it('updates remaining time', (done) => {
       now = '2000-01-01T00:00:01Z';
       jest.advanceTimersByTime(1000);
 
@@ -43,7 +43,7 @@ describe('GlCountdown', () => {
   });
 
   describe('when there is no time remaining', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       vm = mountComponent(Component, {
         endDateString: '1900-01-01T00:00:00Z',
       });

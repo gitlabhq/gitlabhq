@@ -91,7 +91,7 @@ describe('UsersCache', () => {
       jest.spyOn(Api, 'users').mockImplementation((query, options) => apiSpy(query, options));
     });
 
-    it('stores and returns data from API call if cache is empty', done => {
+    it('stores and returns data from API call if cache is empty', (done) => {
       apiSpy = (query, options) => {
         expect(query).toBe('');
         expect(options).toEqual({
@@ -104,7 +104,7 @@ describe('UsersCache', () => {
       };
 
       UsersCache.retrieve(dummyUsername)
-        .then(user => {
+        .then((user) => {
           expect(user).toBe(dummyUser);
           expect(UsersCache.internalStorage[dummyUsername]).toBe(dummyUser);
         })
@@ -112,7 +112,7 @@ describe('UsersCache', () => {
         .catch(done.fail);
     });
 
-    it('returns undefined if Ajax call fails and cache is empty', done => {
+    it('returns undefined if Ajax call fails and cache is empty', (done) => {
       const dummyError = new Error('server exploded');
 
       apiSpy = (query, options) => {
@@ -125,21 +125,21 @@ describe('UsersCache', () => {
       };
 
       UsersCache.retrieve(dummyUsername)
-        .then(user => done.fail(`Received unexpected user: ${JSON.stringify(user)}`))
-        .catch(error => {
+        .then((user) => done.fail(`Received unexpected user: ${JSON.stringify(user)}`))
+        .catch((error) => {
           expect(error).toBe(dummyError);
         })
         .then(done)
         .catch(done.fail);
     });
 
-    it('makes no Ajax call if matching data exists', done => {
+    it('makes no Ajax call if matching data exists', (done) => {
       UsersCache.internalStorage[dummyUsername] = dummyUser;
 
       apiSpy = () => done.fail(new Error('expected no Ajax call!'));
 
       UsersCache.retrieve(dummyUsername)
-        .then(user => {
+        .then((user) => {
           expect(user).toBe(dummyUser);
         })
         .then(done)
@@ -151,11 +151,11 @@ describe('UsersCache', () => {
     let apiSpy;
 
     beforeEach(() => {
-      jest.spyOn(Api, 'user').mockImplementation(id => apiSpy(id));
+      jest.spyOn(Api, 'user').mockImplementation((id) => apiSpy(id));
     });
 
-    it('stores and returns data from API call if cache is empty', done => {
-      apiSpy = id => {
+    it('stores and returns data from API call if cache is empty', (done) => {
+      apiSpy = (id) => {
         expect(id).toBe(dummyUserId);
 
         return Promise.resolve({
@@ -164,7 +164,7 @@ describe('UsersCache', () => {
       };
 
       UsersCache.retrieveById(dummyUserId)
-        .then(user => {
+        .then((user) => {
           expect(user).toBe(dummyUser);
           expect(UsersCache.internalStorage[dummyUserId]).toBe(dummyUser);
         })
@@ -172,31 +172,31 @@ describe('UsersCache', () => {
         .catch(done.fail);
     });
 
-    it('returns undefined if Ajax call fails and cache is empty', done => {
+    it('returns undefined if Ajax call fails and cache is empty', (done) => {
       const dummyError = new Error('server exploded');
 
-      apiSpy = id => {
+      apiSpy = (id) => {
         expect(id).toBe(dummyUserId);
 
         return Promise.reject(dummyError);
       };
 
       UsersCache.retrieveById(dummyUserId)
-        .then(user => done.fail(`Received unexpected user: ${JSON.stringify(user)}`))
-        .catch(error => {
+        .then((user) => done.fail(`Received unexpected user: ${JSON.stringify(user)}`))
+        .catch((error) => {
           expect(error).toBe(dummyError);
         })
         .then(done)
         .catch(done.fail);
     });
 
-    it('makes no Ajax call if matching data exists', done => {
+    it('makes no Ajax call if matching data exists', (done) => {
       UsersCache.internalStorage[dummyUserId] = dummyUser;
 
       apiSpy = () => done.fail(new Error('expected no Ajax call!'));
 
       UsersCache.retrieveById(dummyUserId)
-        .then(user => {
+        .then((user) => {
           expect(user).toBe(dummyUser);
         })
         .then(done)
@@ -208,11 +208,11 @@ describe('UsersCache', () => {
     let apiSpy;
 
     beforeEach(() => {
-      jest.spyOn(Api, 'userStatus').mockImplementation(id => apiSpy(id));
+      jest.spyOn(Api, 'userStatus').mockImplementation((id) => apiSpy(id));
     });
 
-    it('stores and returns data from API call if cache is empty', done => {
-      apiSpy = id => {
+    it('stores and returns data from API call if cache is empty', (done) => {
+      apiSpy = (id) => {
         expect(id).toBe(dummyUserId);
 
         return Promise.resolve({
@@ -221,7 +221,7 @@ describe('UsersCache', () => {
       };
 
       UsersCache.retrieveStatusById(dummyUserId)
-        .then(userStatus => {
+        .then((userStatus) => {
           expect(userStatus).toBe(dummyUserStatus);
           expect(UsersCache.internalStorage[dummyUserId].status).toBe(dummyUserStatus);
         })
@@ -229,25 +229,25 @@ describe('UsersCache', () => {
         .catch(done.fail);
     });
 
-    it('returns undefined if Ajax call fails and cache is empty', done => {
+    it('returns undefined if Ajax call fails and cache is empty', (done) => {
       const dummyError = new Error('server exploded');
 
-      apiSpy = id => {
+      apiSpy = (id) => {
         expect(id).toBe(dummyUserId);
 
         return Promise.reject(dummyError);
       };
 
       UsersCache.retrieveStatusById(dummyUserId)
-        .then(userStatus => done.fail(`Received unexpected user: ${JSON.stringify(userStatus)}`))
-        .catch(error => {
+        .then((userStatus) => done.fail(`Received unexpected user: ${JSON.stringify(userStatus)}`))
+        .catch((error) => {
           expect(error).toBe(dummyError);
         })
         .then(done)
         .catch(done.fail);
     });
 
-    it('makes no Ajax call if matching data exists', done => {
+    it('makes no Ajax call if matching data exists', (done) => {
       UsersCache.internalStorage[dummyUserId] = {
         status: dummyUserStatus,
       };
@@ -255,7 +255,7 @@ describe('UsersCache', () => {
       apiSpy = () => done.fail(new Error('expected no Ajax call!'));
 
       UsersCache.retrieveStatusById(dummyUserId)
-        .then(userStatus => {
+        .then((userStatus) => {
           expect(userStatus).toBe(dummyUserStatus);
         })
         .then(done)

@@ -43,7 +43,7 @@ const Ajax = {
 
     return AjaxCache.retrieve(config.endpoint)
       .then(self.preprocessing.bind(null, config))
-      .then(data => self._loadData(data, config, self))
+      .then((data) => self._loadData(data, config, self))
       .catch(config.onError);
   },
   destroy: function () {

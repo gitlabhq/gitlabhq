@@ -82,7 +82,7 @@ const createComponent = ({
 
 describe('Board list component', () => {
   let wrapper;
-  const findByTestId = testId => wrapper.find(`[data-testid="${testId}"]`);
+  const findByTestId = (testId) => wrapper.find(`[data-testid="${testId}"]`);
   useFakeRequestAnimationFrame();
 
   afterEach(() => {

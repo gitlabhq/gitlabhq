@@ -24,7 +24,7 @@ const createComponent = (propsData = issuableHeaderProps) =>
 
 describe('IssuableHeader', () => {
   let wrapper;
-  const findByTestId = testId => wrapper.find(`[data-testid="${testId}"]`);
+  const findByTestId = (testId) => wrapper.find(`[data-testid="${testId}"]`);
 
   beforeEach(() => {
     wrapper = createComponent();

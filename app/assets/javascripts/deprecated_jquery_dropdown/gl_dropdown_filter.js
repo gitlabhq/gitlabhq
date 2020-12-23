@@ -18,7 +18,7 @@ export class GitLabDropdownFilter {
     this.filterInputBlur = (ref = this.options.filterInputBlur) != null ? ref : true;
     const $inputContainer = this.input.parent();
     const $clearButton = $inputContainer.find('.js-dropdown-input-clear');
-    $clearButton.on('click', e => {
+    $clearButton.on('click', (e) => {
       // Clear click
       e.preventDefault();
       e.stopPropagation();
@@ -27,7 +27,7 @@ export class GitLabDropdownFilter {
     // Key events
     timeout = '';
     this.input
-      .on('keydown', e => {
+      .on('keydown', (e) => {
         const keyCode = e.which;
         if (keyCode === 13 && !options.elIsInput) {
           e.preventDefault();
@@ -46,7 +46,7 @@ export class GitLabDropdownFilter {
           return (timeout = setTimeout(() => {
             $inputContainer.parent().addClass('is-loading');
 
-            return this.options.query(this.input.val(), data => {
+            return this.options.query(this.input.val(), (data) => {
               $inputContainer.parent().removeClass('is-loading');
               return this.options.callback(data);
             });
@@ -94,13 +94,13 @@ export class GitLabDropdownFilter {
         // }
         else if (isObject(data)) {
           results = {};
-          Object.keys(data).forEach(key => {
+          Object.keys(data).forEach((key) => {
             group = data[key];
             tmp = fuzzaldrinPlus.filter(group, searchText, {
               key: this.options.keys,
             });
             if (tmp.length) {
-              results[key] = tmp.map(item => item);
+              results[key] = tmp.map((item) => item);
             }
           });
         }

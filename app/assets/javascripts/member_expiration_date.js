@@ -24,8 +24,8 @@ export default function memberExpirationDate(selector = '.js-access-expiration-d
       format: 'yyyy-mm-dd',
       minDate: new Date(),
       container: $input.parent().get(0),
-      parse: dateString => parsePikadayDate(dateString),
-      toString: date => pikadayToString(date),
+      parse: (dateString) => parsePikadayDate(dateString),
+      toString: (date) => pikadayToString(date),
       onSelect(dateText) {
         $input.val(calendar.toString(dateText));
 

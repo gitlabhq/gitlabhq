@@ -298,7 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (flashContainer && flashContainer.children.length) {
     flashContainer
       .querySelectorAll('.flash-alert, .flash-notice, .flash-success')
-      .forEach(flashEl => {
+      .forEach((flashEl) => {
         removeFlashClickListener(flashEl);
       });
   }

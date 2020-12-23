@@ -2,7 +2,7 @@ import Vue from 'vue';
 import BadgeSettings from '~/badges/components/badge_settings.vue';
 import store from '~/badges/store';
 
-export default kind => {
+export default (kind) => {
   const badgeSettingsElement = document.getElementById('badge-settings');
 
   store.dispatch('loadBadges', {

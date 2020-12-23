@@ -45,12 +45,12 @@ export default {
     loadFile() {
       axios
         .get(this.endpoint)
-        .then(res => res.data)
-        .then(data => {
+        .then((res) => res.data)
+        .then((data) => {
           this.json = data;
           this.loading = false;
         })
-        .catch(e => {
+        .catch((e) => {
           if (e.status !== 200) {
             this.loadError = true;
           }

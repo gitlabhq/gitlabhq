@@ -75,7 +75,7 @@ describe('waitForCSSLoaded', () => {
       const events = waitForCSSLoaded(mockedCallback);
       document
         .querySelectorAll('[data-startupcss="loading"]')
-        .forEach(elem => elem.setAttribute('data-startupcss', 'loaded'));
+        .forEach((elem) => elem.setAttribute('data-startupcss', 'loaded'));
       document.dispatchEvent(new CustomEvent('CSSStartupLinkLoaded'));
       await events;
 

@@ -59,7 +59,7 @@ describe('IDE activity bar', () => {
       expect(vm.$el.querySelector('.js-ide-edit-mode').classList).toContain('active');
     });
 
-    it('sets commit item active', done => {
+    it('sets commit item active', (done) => {
       vm.$store.state.currentActivityView = leftSidebarViews.commit.name;
 
       vm.$nextTick(() => {

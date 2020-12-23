@@ -143,7 +143,7 @@ export default {
               // For each list we check if the destination list is
               // a the list were we should clone the issue
               const shouldClone = Object.entries(cloneActions).some(
-                entry => fromBoardType === entry[0] && entry[1].includes(toBoardType),
+                (entry) => fromBoardType === entry[0] && entry[1].includes(toBoardType),
               );
 
               if (shouldClone) {
@@ -156,7 +156,7 @@ export default {
         },
         revertClone: true,
       },
-      onStart: e => {
+      onStart: (e) => {
         const card = this.$refs.issue[e.oldIndex];
 
         card.showDetail = false;
@@ -171,15 +171,15 @@ export default {
 
         sortableStart();
       },
-      onAdd: e => {
+      onAdd: (e) => {
         const { items = [], newIndicies = [] } = e;
         if (items.length) {
           // Not using e.newIndex here instead taking a min of all
           // the newIndicies. Basically we have to find that during
           // a drop what is the index we're going to start putting
           // all the dropped elements from.
-          const newIndex = Math.min(...newIndicies.map(obj => obj.index).filter(i => i !== -1));
-          const issues = items.map(item =>
+          const newIndex = Math.min(...newIndicies.map((obj) => obj.index).filter((i) => i !== -1));
+          const issues = items.map((item) =>
             boardsStore.moving.list.findIssue(Number(item.dataset.issueId)),
           );
 
@@ -201,23 +201,23 @@ export default {
           });
         }
       },
-      onUpdate: e => {
-        const sortedArray = this.sortable.toArray().filter(id => id !== '-1');
+      onUpdate: (e) => {
+        const sortedArray = this.sortable.toArray().filter((id) => id !== '-1');
 
         const { items = [], newIndicies = [], oldIndicies = [] } = e;
         if (items.length) {
-          const newIndex = Math.min(...newIndicies.map(obj => obj.index));
-          const issues = items.map(item =>
+          const newIndex = Math.min(...newIndicies.map((obj) => obj.index));
+          const issues = items.map((item) =>
             boardsStore.moving.list.findIssue(Number(item.dataset.issueId)),
           );
           boardsStore.moveMultipleIssuesInList({
             list: this.list,
             issues,
-            oldIndicies: oldIndicies.map(obj => obj.index),
+            oldIndicies: oldIndicies.map((obj) => obj.index),
             newIndex,
             idArray: sortedArray,
           });
-          e.items.forEach(el => {
+          e.items.forEach((el) => {
             Sortable.utils.deselect(el);
           });
           boardsStore.clearMultiSelect();
@@ -232,7 +232,7 @@ export default {
           sortedArray,
         );
       },
-      onEnd: e => {
+      onEnd: (e) => {
         const { items = [], clones = [], to } = e;
 
         // This is not a multi select operation
@@ -253,14 +253,14 @@ export default {
          */
         const isSameList = toList && toList.id === this.list.id;
         if (toList && !isSameList && boardsStore.shouldRemoveIssue(this.list, toList)) {
-          const issues = items.map(item => this.list.findIssue(Number(item.dataset.issueId)));
+          const issues = items.map((item) => this.list.findIssue(Number(item.dataset.issueId)));
           if (
             issues.filter(Boolean).length &&
             !boardsStore.issuesAreContiguous(this.list, issues)
           ) {
             const indexes = [];
-            const ids = this.list.issues.map(i => i.id);
-            issues.forEach(issue => {
+            const ids = this.list.issues.map((i) => i.id);
+            issues.forEach((issue) => {
               const index = ids.indexOf(issue.id);
               if (index > -1) {
                 indexes.push(index);
@@ -270,7 +270,7 @@ export default {
             // Descending sort because splice would cause index discrepancy otherwise
             const sortedIndexes = indexes.sort((a, b) => (a < b ? 1 : -1));
 
-            sortedIndexes.forEach(i => {
+            sortedIndexes.forEach((i) => {
               /**
                * **setTimeout and splice each element one-by-one in a loop
                * is intended.**
@@ -301,14 +301,14 @@ export default {
           // Since Vue's list does not re-render the same keyed item, we'll
           // remove `multi-select` class to express it's unselected
           if (clones && clones.length) {
-            clones.forEach(el => el.classList.remove('multi-select'));
+            clones.forEach((el) => el.classList.remove('multi-select'));
           }
 
           // Due to some bug which I am unable to figure out
           // Sortable does not deselect some pending items from the
           // source list.
           // We'll just do it forcefully here.
-          Array.from(document.querySelectorAll('.js-multi-select') || []).forEach(item => {
+          Array.from(document.querySelectorAll('.js-multi-select') || []).forEach((item) => {
             Sortable.utils.deselect(item);
           });
 
@@ -322,7 +322,7 @@ export default {
            */
           this.$nextTick(() => {
             if (items && items.length) {
-              items.forEach(item => {
+              items.forEach((item) => {
                 item.remove();
               });
             }
@@ -346,7 +346,7 @@ export default {
           Sortable.utils.deselect(e.item);
         }
       },
-      onDeselect: e => {
+      onDeselect: (e) => {
         const {
           item: { dataset, classList },
         } = e;

@@ -481,7 +481,7 @@ describe('DiffsStoreUtils', () => {
       });
 
       it('adds the `.brokenSymlink` property to each diff file', () => {
-        preparedDiff.diff_files.forEach(file => {
+        preparedDiff.diff_files.forEach((file) => {
           expect(file).toEqual(expect.objectContaining({ brokenSymlink: false }));
         });
       });
@@ -492,9 +492,9 @@ describe('DiffsStoreUtils', () => {
           ...splitInlineDiff.diff_files,
           ...splitParallelDiff.diff_files,
           ...completedDiff.diff_files,
-        ].flatMap(file => [...file[INLINE_DIFF_LINES_KEY]]);
+        ].flatMap((file) => [...file[INLINE_DIFF_LINES_KEY]]);
 
-        lines.forEach(line => {
+        lines.forEach((line) => {
           expect(line.commentsDisabled).toBe(false);
         });
       });
@@ -560,7 +560,7 @@ describe('DiffsStoreUtils', () => {
       });
 
       it('adds the `.brokenSymlink` property to each meta diff file', () => {
-        preparedDiffFiles.forEach(file => {
+        preparedDiffFiles.forEach((file) => {
           expect(file).toMatchObject({ brokenSymlink: false });
         });
       });

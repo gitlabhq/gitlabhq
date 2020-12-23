@@ -8,7 +8,7 @@
  *
  * @param {() => any} fn Function that returns the object to use for window.location
  */
-const useMockLocation = fn => {
+const useMockLocation = (fn) => {
   const origWindowLocation = window.location;
   let currentWindowLocation;
 

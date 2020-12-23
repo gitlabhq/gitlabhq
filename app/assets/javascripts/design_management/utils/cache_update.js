@@ -11,14 +11,14 @@ import {
   designDeletionError,
 } from './error_messages';
 
-const designsOf = data => data.project.issue.designCollection.designs;
+const designsOf = (data) => data.project.issue.designCollection.designs;
 
 const deleteDesignsFromStore = (store, query, selectedDesigns) => {
   const sourceData = store.readQuery(query);
 
-  const data = produce(sourceData, draftData => {
+  const data = produce(sourceData, (draftData) => {
     const changedDesigns = designsOf(sourceData).nodes.filter(
-      design => !selectedDesigns.includes(design.filename),
+      (design) => !selectedDesigns.includes(design.filename),
     );
     designsOf(draftData).nodes = [...changedDesigns];
   });
@@ -40,7 +40,7 @@ const addNewVersionToStore = (store, query, version) => {
   if (!version) return;
   const sourceData = store.readQuery(query);
 
-  const data = produce(sourceData, draftData => {
+  const data = produce(sourceData, (draftData) => {
     // eslint-disable-next-line no-param-reassign
     draftData.project.issue.designCollection.versions.nodes = [
       version,
@@ -74,14 +74,14 @@ const addImageDiffNoteToStore = (store, createImageDiffNote, query, variables) =
     },
   };
 
-  const data = produce(sourceData, draftData => {
+  const data = produce(sourceData, (draftData) => {
     const design = extractDesign(draftData);
     design.notesCount += 1;
     design.discussions.nodes = [...design.discussions.nodes, newDiscussion];
 
     if (
       !design.issue.participants.nodes.some(
-        participant => participant.username === createImageDiffNote.note.author.username,
+        (participant) => participant.username === createImageDiffNote.note.author.username,
       )
     ) {
       design.issue.participants.nodes = [
@@ -107,7 +107,7 @@ const updateImageDiffNoteInStore = (store, repositionImageDiffNote, query, varia
     variables,
   });
 
-  const data = produce(sourceData, draftData => {
+  const data = produce(sourceData, (draftData) => {
     const design = extractDesign(draftData);
     const discussion = extractCurrentDiscussion(
       design.discussions,
@@ -130,18 +130,18 @@ const updateImageDiffNoteInStore = (store, repositionImageDiffNote, query, varia
 const addNewDesignToStore = (store, designManagementUpload, query) => {
   const sourceData = store.readQuery(query);
 
-  const data = produce(sourceData, draftData => {
+  const data = produce(sourceData, (draftData) => {
     const currentDesigns = extractDesigns(draftData);
     const difference = differenceBy(designManagementUpload.designs, currentDesigns, 'filename');
 
     const newDesigns = currentDesigns
-      .map(design => {
-        return designManagementUpload.designs.find(d => d.filename === design.filename) || design;
+      .map((design) => {
+        return designManagementUpload.designs.find((d) => d.filename === design.filename) || design;
       })
       .concat(difference);
 
     let newVersionNode;
-    const findNewVersions = designManagementUpload.designs.find(design => design.versions);
+    const findNewVersions = designManagementUpload.designs.find((design) => design.versions);
 
     if (findNewVersions) {
       const findNewVersionsNodes = findNewVersions.versions.nodes;
@@ -181,7 +181,7 @@ const addNewDesignToStore = (store, designManagementUpload, query) => {
 const moveDesignInStore = (store, designManagementMove, query) => {
   const sourceData = store.readQuery(query);
 
-  const data = produce(sourceData, draftData => {
+  const data = produce(sourceData, (draftData) => {
     // eslint-disable-next-line no-param-reassign
     draftData.project.issue.designCollection.designs =
       designManagementMove.designCollection.designs;
@@ -199,7 +199,7 @@ export const addPendingTodoToStore = (store, pendingTodo, query, queryVariables)
     variables: queryVariables,
   });
 
-  const data = produce(sourceData, draftData => {
+  const data = produce(sourceData, (draftData) => {
     const design = extractDesign(draftData);
     const existingTodos = design.currentUserTodos?.nodes || [];
     const newTodoNodes = [...existingTodos, { ...pendingTodo, __typename: 'Todo' }];
@@ -226,7 +226,7 @@ export const deletePendingTodoFromStore = (store, todoMarkDone, query, queryVari
   const {
     todo: { id: todoId },
   } = todoMarkDone;
-  const data = produce(sourceData, draftData => {
+  const data = produce(sourceData, (draftData) => {
     const design = extractDesign(draftData);
     const existingTodos = design.currentUserTodos?.nodes || [];
 

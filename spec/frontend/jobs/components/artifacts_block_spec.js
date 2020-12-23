@@ -6,7 +6,7 @@ import { trimText } from '../../helpers/text_helper';
 describe('Artifacts block', () => {
   let wrapper;
 
-  const createWrapper = propsData =>
+  const createWrapper = (propsData) =>
     mount(ArtifactsBlock, {
       propsData: {
         helpUrl: 'help-url',

@@ -53,7 +53,7 @@ export default class ShortcutsBlob extends Shortcuts {
 
   shortcircuitPermalinkButton() {
     const button = this.options.fileBlobPermalinkUrlElement;
-    const handleButton = e => {
+    const handleButton = (e) => {
       if (!eventHasModifierKeys(e)) {
         e.preventDefault();
         this.moveToFilePermalink();

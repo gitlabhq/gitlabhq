@@ -1,6 +1,6 @@
 const identifierRegex = /(^\[.+\]: .+)/;
 
-const isIdentifier = text => {
+const isIdentifier = (text) => {
   return identifierRegex.test(text);
 };
 

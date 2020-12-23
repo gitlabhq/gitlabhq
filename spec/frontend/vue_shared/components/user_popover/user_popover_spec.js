@@ -33,7 +33,7 @@ describe('User Popover Component', () => {
     wrapper.destroy();
   });
 
-  const findByTestId = testid => wrapper.find(`[data-testid="${testid}"]`);
+  const findByTestId = (testid) => wrapper.find(`[data-testid="${testid}"]`);
   const findUserStatus = () => wrapper.find('.js-user-status');
   const findTarget = () => document.querySelector('.js-user-link');
   const findAvailabilityStatus = () => wrapper.find(UserAvailabilityStatus);
@@ -148,7 +148,7 @@ describe('User Popover Component', () => {
       createWrapper({ user });
 
       expect(
-        wrapper.findAll(GlIcon).filter(icon => icon.props('name') === 'profile').length,
+        wrapper.findAll(GlIcon).filter((icon) => icon.props('name') === 'profile').length,
       ).toEqual(1);
     });
 
@@ -160,9 +160,9 @@ describe('User Popover Component', () => {
 
       createWrapper({ user });
 
-      expect(wrapper.findAll(GlIcon).filter(icon => icon.props('name') === 'work').length).toEqual(
-        1,
-      );
+      expect(
+        wrapper.findAll(GlIcon).filter((icon) => icon.props('name') === 'work').length,
+      ).toEqual(1);
     });
   });
 

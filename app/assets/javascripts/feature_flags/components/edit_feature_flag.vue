@@ -122,7 +122,7 @@ export default {
         :submit-text="__('Save changes')"
         :active="active"
         :version="version"
-        @handleSubmit="data => updateFeatureFlag(data)"
+        @handleSubmit="(data) => updateFeatureFlag(data)"
       />
     </template>
   </div>

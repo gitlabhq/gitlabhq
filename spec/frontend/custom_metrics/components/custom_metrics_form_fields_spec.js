@@ -11,7 +11,7 @@ describe('custom metrics form fields component', () => {
   let component;
   let mockAxios;
 
-  const getNamedInput = name => component.element.querySelector(`input[name="${name}"]`);
+  const getNamedInput = (name) => component.element.querySelector(`input[name="${name}"]`);
   const validateQueryPath = `${TEST_HOST}/mock/path`;
   const validQueryResponse = { data: { success: true, query: { valid: true, error: '' } } };
   const csrfToken = 'mockToken';
@@ -50,7 +50,7 @@ describe('custom metrics form fields component', () => {
     mockAxios.restore();
   });
 
-  it('checks form validity', done => {
+  it('checks form validity', (done) => {
     mountComponent({
       metricPersisted: true,
       ...makeFormData({
@@ -157,7 +157,7 @@ describe('custom metrics form fields component', () => {
           {
             requestValidation: jest.fn().mockImplementation(
               () =>
-                new Promise(resolve =>
+                new Promise((resolve) =>
                   setTimeout(() => {
                     resolve(validQueryResponse);
                   }, 4000),
@@ -171,7 +171,7 @@ describe('custom metrics form fields component', () => {
         jest.clearAllTimers();
       });
 
-      it('expect queryValidateInFlight is in flight', done => {
+      it('expect queryValidateInFlight is in flight', (done) => {
         const queryInput = component.find(`input[name="${queryInputName}"]`);
         queryInput.setValue('query');
         queryInput.trigger('input');
@@ -191,7 +191,7 @@ describe('custom metrics form fields component', () => {
         });
       });
 
-      it('expect loading message to display', done => {
+      it('expect loading message to display', (done) => {
         const queryInput = component.find(`input[name="${queryInputName}"]`);
         queryInput.setValue('query');
         queryInput.trigger('input');
@@ -202,7 +202,7 @@ describe('custom metrics form fields component', () => {
         });
       });
 
-      it('expect loading message to disappear', done => {
+      it('expect loading message to disappear', (done) => {
         const queryInput = component.find(`input[name="${queryInputName}"]`);
         queryInput.setValue('query');
         queryInput.trigger('input');
@@ -239,7 +239,7 @@ describe('custom metrics form fields component', () => {
         );
       });
 
-      it('sets queryIsValid to false', done => {
+      it('sets queryIsValid to false', (done) => {
         component.vm.$nextTick(() => {
           expect(component.vm.queryValidateInFlight).toBe(false);
           expect(component.vm.queryIsValid).toBe(false);
@@ -247,7 +247,7 @@ describe('custom metrics form fields component', () => {
         });
       });
 
-      it('shows invalid query message', done => {
+      it('shows invalid query message', (done) => {
         component.vm.$nextTick(() => {
           expect(component.text()).toContain(errorMessage);
           done();
@@ -267,7 +267,7 @@ describe('custom metrics form fields component', () => {
         );
       });
 
-      it('sets queryIsValid to true when query is valid', done => {
+      it('sets queryIsValid to true when query is valid', (done) => {
         component.vm.$nextTick(() => {
           expect(component.vm.queryIsValid).toBe(true);
           done();

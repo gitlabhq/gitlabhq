@@ -23,7 +23,7 @@ $.fn.requiresInput = function requiresInput() {
 
   function requireInput() {
     // Collect the input values of *all* required fields
-    const values = Array.from($(fieldSelector, $form)).map(field => field.value);
+    const values = Array.from($(fieldSelector, $form)).map((field) => field.value);
 
     // Disable the button if any required fields are empty
     if (values.length && values.some(isEmpty)) {

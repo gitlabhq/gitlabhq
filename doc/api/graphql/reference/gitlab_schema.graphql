@@ -1149,6 +1149,12 @@ type BaseService implements Service {
   type: String
 }
 
+"""
+Represents non-fractional signed whole numeric values. Since the value may
+exceed the size of a 32-bit integer, it's encoded as a string.
+"""
+scalar BigInt
+
 type Blob implements Entry {
   """
   Flat path of the entry
@@ -4075,7 +4081,7 @@ type ContainerRepositoryTag {
   """
   The size of the tag.
   """
-  totalSize: Int
+  totalSize: BigInt
 }
 
 """
@@ -9500,11 +9506,6 @@ type GeoNode {
     first: Int
 
     """
-    Global ID of a specific compliance framework to return.
-    """
-    id: ComplianceManagementFrameworkID
-
-    """
     Returns the last _n_ elements from the list.
     """
     last: Int
@@ -9738,6 +9739,11 @@ type Group {
     Returns the first _n_ elements from the list.
     """
     first: Int
+
+    """
+    Global ID of a specific compliance framework to return.
+    """
+    id: ComplianceManagementFrameworkID
 
     """
     Returns the last _n_ elements from the list.

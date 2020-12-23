@@ -151,8 +151,8 @@ describe('IDE merge requests list', () => {
 
       it('shows search types', () => {
         const buttons = findSearchTypeButtons();
-        expect(buttons.wrappers.map(x => x.text().trim())).toEqual(
-          wrapper.vm.$options.searchTypes.map(x => x.label),
+        expect(buttons.wrappers.map((x) => x.text().trim())).toEqual(
+          wrapper.vm.$options.searchTypes.map((x) => x.label),
         );
       });
 

@@ -11,7 +11,7 @@ export default {
     return h(
       'div',
       {},
-      extensions.map(extension =>
+      extensions.map((extension) =>
         h(extension, {
           props: extensions[0].props.reduce(
             (acc, key) => ({

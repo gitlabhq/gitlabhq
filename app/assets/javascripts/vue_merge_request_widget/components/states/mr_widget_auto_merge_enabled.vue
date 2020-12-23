@@ -51,8 +51,8 @@ export default {
       this.isCancellingAutoMerge = true;
       this.service
         .cancelAutomaticMerge()
-        .then(res => res.data)
-        .then(data => {
+        .then((res) => res.data)
+        .then((data) => {
           eventHub.$emit('UpdateWidgetData', data);
         })
         .catch(() => {
@@ -70,8 +70,8 @@ export default {
       this.isRemovingSourceBranch = true;
       this.service
         .merge(options)
-        .then(res => res.data)
-        .then(data => {
+        .then((res) => res.data)
+        .then((data) => {
           if (AUTO_MERGE_STRATEGIES.includes(data.status)) {
             eventHub.$emit('MRWidgetUpdateRequested');
           }

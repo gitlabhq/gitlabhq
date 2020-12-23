@@ -20,7 +20,7 @@ jest.mock('~/commons/nav/user_merge_requests', () => ({
 const commitMessage = 'This is the commit message';
 const squashCommitMessage = 'This is the squash commit message';
 const commitMessageWithDescription = 'This is the commit message description';
-const createTestMr = customConfig => {
+const createTestMr = (customConfig) => {
   const mr = {
     isPipelineActive: false,
     pipeline: null,
@@ -346,8 +346,8 @@ describe('ReadyToMerge', () => {
     });
 
     describe('handleMergeButtonClick', () => {
-      const returnPromise = status =>
-        new Promise(resolve => {
+      const returnPromise = (status) =>
+        new Promise((resolve) => {
           resolve({
             data: {
               status,
@@ -355,7 +355,7 @@ describe('ReadyToMerge', () => {
           });
         });
 
-      it('should handle merge when pipeline succeeds', done => {
+      it('should handle merge when pipeline succeeds', (done) => {
         jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
         jest
           .spyOn(vm.service, 'merge')
@@ -381,7 +381,7 @@ describe('ReadyToMerge', () => {
         });
       });
 
-      it('should handle merge failed', done => {
+      it('should handle merge failed', (done) => {
         jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
         jest.spyOn(vm.service, 'merge').mockReturnValue(returnPromise('failed'));
         vm.handleMergeButtonClick(false, true);
@@ -398,7 +398,7 @@ describe('ReadyToMerge', () => {
         });
       });
 
-      it('should handle merge action accepted case', done => {
+      it('should handle merge action accepted case', (done) => {
         jest.spyOn(vm.service, 'merge').mockReturnValue(returnPromise('success'));
         jest.spyOn(vm, 'initiateMergePolling').mockImplementation(() => {});
         vm.handleMergeButtonClick();
@@ -433,8 +433,8 @@ describe('ReadyToMerge', () => {
     });
 
     describe('handleMergePolling', () => {
-      const returnPromise = state =>
-        new Promise(resolve => {
+      const returnPromise = (state) =>
+        new Promise((resolve) => {
           resolve({
             data: {
               state,
@@ -447,7 +447,7 @@ describe('ReadyToMerge', () => {
         loadFixtures('merge_requests/merge_request_of_current_user.html');
       });
 
-      it('should call start and stop polling when MR merged', done => {
+      it('should call start and stop polling when MR merged', (done) => {
         jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
         jest.spyOn(vm.service, 'poll').mockReturnValue(returnPromise('merged'));
         jest.spyOn(vm, 'initiateRemoveSourceBranchPolling').mockImplementation(() => {});
@@ -476,7 +476,7 @@ describe('ReadyToMerge', () => {
         });
       });
 
-      it('updates status box', done => {
+      it('updates status box', (done) => {
         jest.spyOn(vm.service, 'poll').mockReturnValue(returnPromise('merged'));
         jest.spyOn(vm, 'initiateRemoveSourceBranchPolling').mockImplementation(() => {});
 
@@ -495,7 +495,7 @@ describe('ReadyToMerge', () => {
         });
       });
 
-      it('updates merge request count badge', done => {
+      it('updates merge request count badge', (done) => {
         jest.spyOn(vm.service, 'poll').mockReturnValue(returnPromise('merged'));
         jest.spyOn(vm, 'initiateRemoveSourceBranchPolling').mockImplementation(() => {});
 
@@ -511,7 +511,7 @@ describe('ReadyToMerge', () => {
         });
       });
 
-      it('should continue polling until MR is merged', done => {
+      it('should continue polling until MR is merged', (done) => {
         jest.spyOn(vm.service, 'poll').mockReturnValue(returnPromise('some_other_state'));
         jest.spyOn(vm, 'initiateRemoveSourceBranchPolling').mockImplementation(() => {});
 
@@ -547,8 +547,8 @@ describe('ReadyToMerge', () => {
     });
 
     describe('handleRemoveBranchPolling', () => {
-      const returnPromise = state =>
-        new Promise(resolve => {
+      const returnPromise = (state) =>
+        new Promise((resolve) => {
           resolve({
             data: {
               source_branch_exists: state,
@@ -556,7 +556,7 @@ describe('ReadyToMerge', () => {
           });
         });
 
-      it('should call start and stop polling when MR merged', done => {
+      it('should call start and stop polling when MR merged', (done) => {
         jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
         jest.spyOn(vm.service, 'poll').mockReturnValue(returnPromise(false));
 
@@ -589,7 +589,7 @@ describe('ReadyToMerge', () => {
         });
       });
 
-      it('should continue polling until MR is merged', done => {
+      it('should continue polling until MR is merged', (done) => {
         jest.spyOn(vm.service, 'poll').mockReturnValue(returnPromise(true));
 
         let cpc = false; // continuePollingCalled

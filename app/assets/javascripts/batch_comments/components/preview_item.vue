@@ -47,7 +47,7 @@ export default {
       }
 
       return sprintf(__("%{authorsName}'s thread"), {
-        authorsName: this.discussion.notes.find(note => !note.system).author.name,
+        authorsName: this.discussion.notes.find((note) => !note.system).author.name,
       });
     },
     linePosition() {

@@ -375,7 +375,7 @@ describe('Job App', () => {
     });
 
     describe('sidebar', () => {
-      it('has no blank blocks', done => {
+      it('has no blank blocks', (done) => {
         setupAndMount({
           jobData: {
             duration: null,
@@ -392,7 +392,7 @@ describe('Job App', () => {
             const blocks = wrapper.findAll('.blocks-container > *').wrappers;
             expect(blocks.length).toBeGreaterThan(0);
 
-            blocks.forEach(block => {
+            blocks.forEach((block) => {
               expect(block.text().trim()).not.toBe('');
             });
           })

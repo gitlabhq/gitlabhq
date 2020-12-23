@@ -118,7 +118,7 @@ describe('GlModalVuex', () => {
     expect(actions.hide).toHaveBeenCalledTimes(1);
   });
 
-  it('calls bootstrap show when isVisible changes', done => {
+  it('calls bootstrap show when isVisible changes', (done) => {
     state.isVisible = false;
 
     factory();
@@ -135,7 +135,7 @@ describe('GlModalVuex', () => {
       .catch(done.fail);
   });
 
-  it('calls bootstrap hide when isVisible changes', done => {
+  it('calls bootstrap hide when isVisible changes', (done) => {
     state.isVisible = true;
 
     factory();
@@ -154,7 +154,7 @@ describe('GlModalVuex', () => {
 
   it.each(['ok', 'cancel'])(
     'passes an "%s" handler to the "modal-footer" slot scope',
-    handlerName => {
+    (handlerName) => {
       state.isVisible = true;
 
       const modalFooterSlotContent = jest.fn();

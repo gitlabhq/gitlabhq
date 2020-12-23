@@ -78,7 +78,7 @@ export default () => {
         $dropdown
           .find('li a')
           .off('click')
-          .on('click', e => {
+          .on('click', (e) => {
             e.preventDefault();
             const $target = $(e.currentTarget);
             this.startDate = $target.data('value');
@@ -94,7 +94,7 @@ export default () => {
 
         this.service
           .fetchCycleAnalyticsData(fetchOptions)
-          .then(response => {
+          .then((response) => {
             this.store.setCycleAnalyticsData(response);
             this.selectDefaultStage();
             this.initDropdown();
@@ -128,7 +128,7 @@ export default () => {
             startDate: this.startDate,
             projectIds: this.selectedProjectIds,
           })
-          .then(response => {
+          .then((response) => {
             this.isEmptyStage = !response.events.length;
             this.store.setStageEvents(response.events, stage);
             this.isLoadingStage = false;

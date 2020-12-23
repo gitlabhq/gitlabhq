@@ -26,7 +26,7 @@ export default class TreeView {
   initKeyNav() {
     const li = $('tr.tree-item');
     let liSelected = null;
-    return $('body').keydown(e => {
+    return $('body').keydown((e) => {
       let next, path;
       if ($('input:focus').length > 0 && (e.which === 38 || e.which === 40)) {
         return false;

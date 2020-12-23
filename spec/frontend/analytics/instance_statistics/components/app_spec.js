@@ -25,11 +25,11 @@ describe('InstanceStatisticsApp', () => {
     expect(wrapper.find(InstanceCounts).exists()).toBe(true);
   });
 
-  ['Pipelines', 'Issues & Merge Requests'].forEach(instance => {
+  ['Pipelines', 'Issues & Merge Requests'].forEach((instance) => {
     it(`displays the ${instance} chart`, () => {
       const chartTitles = wrapper
         .findAll(InstanceStatisticsCountChart)
-        .wrappers.map(chartComponent => chartComponent.props('chartTitle'));
+        .wrappers.map((chartComponent) => chartComponent.props('chartTitle'));
 
       expect(chartTitles).toContain(instance);
     });

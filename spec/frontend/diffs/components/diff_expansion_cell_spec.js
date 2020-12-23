@@ -14,7 +14,7 @@ const lineSources = {
   [INLINE_DIFF_VIEW_TYPE]: 'highlighted_diff_lines',
 };
 const lineHandlers = {
-  [INLINE_DIFF_VIEW_TYPE]: line => line,
+  [INLINE_DIFF_VIEW_TYPE]: (line) => line,
 };
 
 function makeLoadMoreLinesPayload({

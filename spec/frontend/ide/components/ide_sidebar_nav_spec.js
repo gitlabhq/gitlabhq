@@ -48,7 +48,7 @@ describe('ide/components/ide_sidebar_nav', () => {
 
   const findButtons = () => wrapper.findAll('li button');
   const findButtonsData = () =>
-    findButtons().wrappers.map(button => {
+    findButtons().wrappers.map((button) => {
       return {
         title: button.attributes('title'),
         ariaLabel: button.attributes('aria-label'),

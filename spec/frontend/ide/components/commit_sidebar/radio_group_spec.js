@@ -7,7 +7,7 @@ describe('IDE commit sidebar radio group', () => {
   let vm;
   let store;
 
-  beforeEach(done => {
+  beforeEach((done) => {
     store = createStore();
 
     const Component = Vue.extend(radioGroup);
@@ -33,7 +33,7 @@ describe('IDE commit sidebar radio group', () => {
     expect(vm.$el.textContent).toContain('test');
   });
 
-  it('uses slot if label is not present', done => {
+  it('uses slot if label is not present', (done) => {
     vm.$destroy();
 
     vm = new Vue({
@@ -41,7 +41,7 @@ describe('IDE commit sidebar radio group', () => {
         radioGroup,
       },
       store,
-      render: createElement =>
+      render: (createElement) =>
         createElement('radio-group', { props: { value: '1' } }, 'Testing slot'),
     });
 
@@ -54,7 +54,7 @@ describe('IDE commit sidebar radio group', () => {
     });
   });
 
-  it('updates store when changing radio button', done => {
+  it('updates store when changing radio button', (done) => {
     vm.$el.querySelector('input').dispatchEvent(new Event('change'));
 
     Vue.nextTick(() => {
@@ -65,7 +65,7 @@ describe('IDE commit sidebar radio group', () => {
   });
 
   describe('with input', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       vm.$destroy();
 
       const Component = Vue.extend(radioGroup);
@@ -89,7 +89,7 @@ describe('IDE commit sidebar radio group', () => {
       expect(vm.$el.querySelector('.form-control')).not.toBeNull();
     });
 
-    it('hides input when commitAction doesnt match value', done => {
+    it('hides input when commitAction doesnt match value', (done) => {
       store.state.commit.commitAction = '2';
 
       Vue.nextTick(() => {
@@ -98,7 +98,7 @@ describe('IDE commit sidebar radio group', () => {
       });
     });
 
-    it('updates branch name in store on input', done => {
+    it('updates branch name in store on input', (done) => {
       const input = vm.$el.querySelector('.form-control');
       input.value = 'testing-123';
       input.dispatchEvent(new Event('input'));

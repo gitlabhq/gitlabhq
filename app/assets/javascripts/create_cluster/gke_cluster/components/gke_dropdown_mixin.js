@@ -42,13 +42,13 @@ export default {
         return [];
       }
 
-      return this.items.filter(item => item.name.toLowerCase().indexOf(this.searchQuery) > -1);
+      return this.items.filter((item) => item.name.toLowerCase().indexOf(this.searchQuery) > -1);
     },
   },
   methods: {
     fetchSuccessHandler() {
       if (this.defaultValue) {
-        const itemToSelect = this.items.find(item => item.name === this.defaultValue);
+        const itemToSelect = this.items.find((item) => item.name === this.defaultValue);
 
         if (itemToSelect) {
           this.setItem(itemToSelect.name);

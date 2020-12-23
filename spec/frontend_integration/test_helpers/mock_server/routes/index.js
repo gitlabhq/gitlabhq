@@ -1,5 +1,5 @@
 /* eslint-disable global-require */
-export default server => {
+export default (server) => {
   [
     require('./graphql'),
     require('./projects'),

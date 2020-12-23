@@ -8,8 +8,8 @@ export const fetchChartData = ({ commit }, endpoint) => {
 
   return service
     .fetchChartData(endpoint)
-    .then(res => res.data)
-    .then(data => {
+    .then((res) => res.data)
+    .then((data) => {
       commit(types.SET_CHART_DATA, data);
       commit(types.SET_LOADING_STATE, false);
     })

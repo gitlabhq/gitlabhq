@@ -407,7 +407,7 @@ describe('IDE store getters', () => {
     ${'canCreateMergeRequests'} | ${'createMergeRequestIn'}
     ${'canPushCode'}            | ${'pushCode'}
   `('$getterName', ({ getterName, permissionKey }) => {
-    it.each([true, false])('finds permission for current project (%s)', val => {
+    it.each([true, false])('finds permission for current project (%s)', (val) => {
       localState.projects[TEST_PROJECT_ID] = {
         userPermissions: {
           [permissionKey]: val,

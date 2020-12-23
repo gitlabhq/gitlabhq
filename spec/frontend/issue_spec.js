@@ -41,7 +41,7 @@ describe('Issue', () => {
     expect($boxOpen).toHaveText('Open');
   }
 
-  [true, false].forEach(isIssueInitiallyOpen => {
+  [true, false].forEach((isIssueInitiallyOpen) => {
     describe(`with ${isIssueInitiallyOpen ? 'open' : 'closed'} issue`, () => {
       const action = isIssueInitiallyOpen ? 'close' : 'reopen';
       let mock;

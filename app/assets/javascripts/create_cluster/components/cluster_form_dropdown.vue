@@ -6,9 +6,9 @@ import DropdownSearchInput from '~/vue_shared/components/dropdown/dropdown_searc
 import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidden_input.vue';
 import DropdownButton from '~/vue_shared/components/dropdown/dropdown_button.vue';
 
-const toArray = value => (isNil(value) ? [] : [].concat(value));
-const itemsProp = (items, prop) => items.map(item => item[prop]);
-const defaultSearchFn = (searchQuery, labelProp) => item =>
+const toArray = (value) => (isNil(value) ? [] : [].concat(value));
+const itemsProp = (items, prop) => items.map((item) => item[prop]);
+const defaultSearchFn = (searchQuery, labelProp) => (item) =>
   item[labelProp].toLowerCase().indexOf(searchQuery) > -1;
 
 export default {
@@ -135,7 +135,7 @@ export default {
       const valueList = toArray(this.value);
       const items = this.getItemsOrEmptyList();
 
-      return items.filter(item => valueList.some(value => item[valueProp] === value));
+      return items.filter((item) => valueList.some((value) => item[valueProp] === value));
     },
     selectedItemsLabels() {
       return itemsProp(this.selectedItems, this.labelProperty).join(', ');

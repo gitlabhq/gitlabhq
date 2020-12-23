@@ -3,7 +3,7 @@ describe('Custom jest matchers', () => {
     describe('malformed input', () => {
       it.each([null, 1, Symbol, Array, Object])(
         'fails graciously if the expected value is %s',
-        expected => {
+        (expected) => {
           expect(expected).not.toMatchInterpolatedText('null');
         },
       );
@@ -11,7 +11,7 @@ describe('Custom jest matchers', () => {
     describe('malformed matcher', () => {
       it.each([null, 1, Symbol, Array, Object])(
         'fails graciously if the matcher is %s',
-        matcher => {
+        (matcher) => {
           expect('null').not.toMatchInterpolatedText(matcher);
         },
       );

@@ -28,7 +28,7 @@ describe('MergeRequest', () => {
       mock.restore();
     });
 
-    it('modifies the Markdown field', done => {
+    it('modifies the Markdown field', (done) => {
       jest.spyOn($, 'ajax').mockImplementation();
       const changeEvent = document.createEvent('HTMLEvents');
       changeEvent.initEvent('change', true, true);
@@ -41,7 +41,7 @@ describe('MergeRequest', () => {
       });
     });
 
-    it('ensure that task with only spaces does not get checked incorrectly', done => {
+    it('ensure that task with only spaces does not get checked incorrectly', (done) => {
       // fixed in 'deckar01-task_list', '2.2.1' gem
       jest.spyOn($, 'ajax').mockImplementation();
       const changeEvent = document.createEvent('HTMLEvents');
@@ -61,7 +61,7 @@ describe('MergeRequest', () => {
       const index = 3;
       const checked = true;
 
-      it('submits an ajax request on tasklist:changed', done => {
+      it('submits an ajax request on tasklist:changed', (done) => {
         $('.js-task-list-field').trigger({
           type: 'tasklist:changed',
           detail: { lineNumber, lineSource, index, checked },
@@ -83,7 +83,7 @@ describe('MergeRequest', () => {
         });
       });
 
-      it('shows an error notification when tasklist update failed', done => {
+      it('shows an error notification when tasklist update failed', (done) => {
         mock
           .onPatch(`${TEST_HOST}/frontend-fixtures/merge-requests-project/-/merge_requests/1.json`)
           .reply(409, {});

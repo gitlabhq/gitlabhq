@@ -28,7 +28,7 @@ export default {
   },
   computed: {
     config() {
-      return this.autocompleteTypes.map(type => ({
+      return this.autocompleteTypes.map((type) => ({
         ...tributeConfig[type].config,
         loadingItemTemplate: `<span class="gl-spinner gl-vertical-align-text-bottom gl-ml-3 gl-mr-2"></span>${__(
           'Loading',
@@ -56,7 +56,7 @@ export default {
 
       if (!this.assignees || !isAssigneesLengthSame) {
         this.assignees =
-          SidebarMediator.singleton?.store?.assignees?.map(assignee => assignee.username) || [];
+          SidebarMediator.singleton?.store?.assignees?.map((assignee) => assignee.username) || [];
       }
     },
     filterValues(type) {
@@ -88,7 +88,7 @@ export default {
         } else if (this.dataSources[type]) {
           axios
             .get(this.dataSources[type])
-            .then(response => {
+            .then((response) => {
               this.cache[type] = response.data;
               processValues(this.filterValues(type));
             })

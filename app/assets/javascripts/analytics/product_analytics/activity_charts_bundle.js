@@ -8,7 +8,7 @@ export default () => {
     return false;
   }
 
-  return containers.forEach(container => {
+  return containers.forEach((container) => {
     const { chartData } = container.dataset;
     const formattedData = JSON.parse(chartData);
 

@@ -39,21 +39,21 @@ export default class ZenMode {
   constructor() {
     this.active_backdrop = null;
     this.active_textarea = null;
-    $(document).on('click', '.js-zen-enter', e => {
+    $(document).on('click', '.js-zen-enter', (e) => {
       e.preventDefault();
       return $(e.currentTarget).trigger('zen_mode:enter');
     });
-    $(document).on('click', '.js-zen-leave', e => {
+    $(document).on('click', '.js-zen-leave', (e) => {
       e.preventDefault();
       return $(e.currentTarget).trigger('zen_mode:leave');
     });
-    $(document).on('zen_mode:enter', e => {
+    $(document).on('zen_mode:enter', (e) => {
       this.enter($(e.target).closest('.md-area').find('.zen-backdrop'));
     });
     $(document).on('zen_mode:leave', () => {
       this.exit();
     });
-    $(document).on('keydown', e => {
+    $(document).on('keydown', (e) => {
       // Esc
       if (e.keyCode === 27) {
         e.preventDefault();

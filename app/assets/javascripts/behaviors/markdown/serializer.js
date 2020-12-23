@@ -2,7 +2,7 @@ import { MarkdownSerializer } from 'prosemirror-markdown';
 import editorExtensions from './editor_extensions';
 
 const nodes = editorExtensions
-  .filter(extension => extension.type === 'node')
+  .filter((extension) => extension.type === 'node')
   .reduce(
     (ns, { name, toMarkdown }) => ({
       ...ns,
@@ -12,7 +12,7 @@ const nodes = editorExtensions
   );
 
 const marks = editorExtensions
-  .filter(extension => extension.type === 'mark')
+  .filter((extension) => extension.type === 'mark')
   .reduce(
     (ms, { name, toMarkdown }) => ({
       ...ms,

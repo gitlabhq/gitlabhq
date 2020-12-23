@@ -85,7 +85,7 @@ describe('Batch comments draft preview item component', () => {
 
   describe('for thread', () => {
     beforeEach(() => {
-      createComponent(false, { discussion_id: '1', resolve_discussion: true }, store => {
+      createComponent(false, { discussion_id: '1', resolve_discussion: true }, (store) => {
         store.state.notes.discussions.push({
           id: '1',
           notes: [

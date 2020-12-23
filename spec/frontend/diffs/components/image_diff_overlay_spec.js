@@ -114,7 +114,7 @@ describe('Diffs image diff overlay component', () => {
   describe('comment form', () => {
     const getCommentIndicator = () => wrapper.find('.comment-indicator');
     beforeEach(() => {
-      createComponent({ canComment: true }, store => {
+      createComponent({ canComment: true }, (store) => {
         store.state.diffs.commentForms.push({
           fileHash: 'ABC',
           x: 20,

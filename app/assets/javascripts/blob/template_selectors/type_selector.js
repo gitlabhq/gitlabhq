@@ -17,8 +17,8 @@ export default class FileTemplateTypeSelector extends FileTemplateSelector {
       data: this.config.dropdownData,
       filterable: false,
       selectable: true,
-      clicked: options => this.mediator.selectTemplateTypeOptions(options),
-      text: item => item.name,
+      clicked: (options) => this.mediator.selectTemplateTypeOptions(options),
+      text: (item) => item.name,
     });
   }
 }

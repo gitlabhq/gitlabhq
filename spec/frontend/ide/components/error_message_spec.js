@@ -10,7 +10,7 @@ describe('IDE error message component', () => {
   let wrapper;
 
   const setErrorMessageMock = jest.fn();
-  const createComponent = messageProps => {
+  const createComponent = (messageProps) => {
     const fakeStore = new Vuex.Store({
       actions: { setErrorMessage: setErrorMessageMock },
     });
@@ -103,7 +103,7 @@ describe('IDE error message component', () => {
       let resolveAction;
       actionMock.mockImplementation(
         () =>
-          new Promise(resolve => {
+          new Promise((resolve) => {
             resolveAction = resolve;
           }),
       );

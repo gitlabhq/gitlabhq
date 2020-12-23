@@ -57,7 +57,7 @@ export default {
         .post(this.calloutsPath, {
           feature_name: this.calloutsFeatureId,
         })
-        .catch(e => {
+        .catch((e) => {
           // eslint-disable-next-line @gitlab/require-i18n-strings, no-console
           console.error('Failed to dismiss banner.', e);
         });

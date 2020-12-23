@@ -49,7 +49,7 @@ describe('Issuable', () => {
       mock.restore();
     });
 
-    it('should send request to reset email token', done => {
+    it('should send request to reset email token', (done) => {
       jest.spyOn(axios, 'put');
       document.querySelector('.incoming-email-token-reset').click();
 

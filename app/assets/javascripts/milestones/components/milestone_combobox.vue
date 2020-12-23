@@ -112,7 +112,7 @@ export default {
     value: {
       immediate: true,
       handler() {
-        const milestoneTitles = this.value.map(milestone =>
+        const milestoneTitles = this.value.map((milestone) =>
           milestone.title ? milestone.title : milestone,
         );
         if (!isEqual(milestoneTitles, this.selectedMilestones)) {

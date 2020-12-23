@@ -92,7 +92,7 @@ export default {
     },
     sortedUsers() {
       return this.users
-        .map(user => ({ ...user, active: this.isActive(user.username) }))
+        .map((user) => ({ ...user, active: this.isActive(user.username) }))
         .sort((a, b) => (a.active === b.active ? 0 : a.active ? -1 : 1)); // eslint-disable-line no-nested-ternary
     },
     dropdownClass() {

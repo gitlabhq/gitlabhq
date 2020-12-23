@@ -281,7 +281,7 @@ describe('IDE store terminal session controls actions', () => {
       );
     });
 
-    [httpStatus.NOT_FOUND, httpStatus.UNPROCESSABLE_ENTITY].forEach(status => {
+    [httpStatus.NOT_FOUND, httpStatus.UNPROCESSABLE_ENTITY].forEach((status) => {
       it(`dispatches request and startSession on ${status}`, () => {
         mock
           .onPost(state.session.retryPath, { branch: rootState.currentBranchId, format: 'json' })

@@ -87,7 +87,7 @@ export default {
         };
       },
       pollInterval: 2000,
-      update: data => data.project.sentryErrors.detailedError,
+      update: (data) => data.project.sentryErrors.detailedError,
       error: () => createFlash(__('Failed to load error details from Sentry.')),
       result(res) {
         if (res.data.project?.sentryErrors?.detailedError) {
@@ -213,7 +213,7 @@ export default {
         this.errorStatus === errorStatus.RESOLVED ? errorStatus.UNRESOLVED : errorStatus.RESOLVED;
 
       // eslint-disable-next-line promise/catch-or-return
-      this.updateResolveStatus({ endpoint: this.issueUpdatePath, status }).then(res => {
+      this.updateResolveStatus({ endpoint: this.issueUpdatePath, status }).then((res) => {
         this.closedIssueId = res.closed_issue_iid;
         if (this.closedIssueId) {
           this.isAlertVisible = true;

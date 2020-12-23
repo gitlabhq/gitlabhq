@@ -2,7 +2,7 @@ import pixelmatch from 'pixelmatch';
 
 export default {
   toImageDiffEqual: () => {
-    const getImageData = img => {
+    const getImageData = (img) => {
       const canvas = document.createElement('canvas');
       canvas.width = img.width;
       canvas.height = img.height;

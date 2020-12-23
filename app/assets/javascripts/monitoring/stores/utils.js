@@ -40,7 +40,7 @@ export const uniqMetricsId = ({ metric_id, id }) => `${metric_id || NOT_IN_DB_PR
  * @param {String} str String with leading slash
  * @returns {String}
  */
-export const removeLeadingSlash = str => (str || '').replace(/^\/+/, '');
+export const removeLeadingSlash = (str) => (str || '').replace(/^\/+/, '');
 
 /**
  * GraphQL environments API returns only id and name.
@@ -52,7 +52,7 @@ export const removeLeadingSlash = str => (str || '').replace(/^\/+/, '');
  * @returns {Array}
  */
 export const parseEnvironmentsResponse = (response = [], projectPath) =>
-  (response || []).map(env => {
+  (response || []).map((env) => {
     const id = getIdFromGraphQLId(env.id);
     return {
       ...env,
@@ -75,11 +75,11 @@ export const parseEnvironmentsResponse = (response = [], projectPath) =>
  * @param {Array} response annotations response
  * @returns {Array} parsed responses
  */
-export const parseAnnotationsResponse = response => {
+export const parseAnnotationsResponse = (response) => {
   if (!response) {
     return [];
   }
-  return response.map(annotation => ({
+  return response.map((annotation) => ({
     ...annotation,
     startingAt: new Date(annotation.startingAt),
     endingAt: annotation.endingAt ? new Date(annotation.endingAt) : null,
@@ -99,7 +99,7 @@ export const parseAnnotationsResponse = response => {
  * @param {Array} metrics - Array of prometheus metrics
  * @returns {Object}
  */
-const mapToMetricsViewModel = metrics =>
+const mapToMetricsViewModel = (metrics) =>
   metrics.map(({ label, id, metric_id, query_range, prometheus_endpoint_path, ...metric }) => ({
     label,
     queryRange: query_range,
@@ -230,7 +230,7 @@ const mapToPanelGroupViewModel = ({ group = '', panels = [] }, i) => {
  * @param {Object} timeRange
  * @returns {Object}
  */
-export const convertToGrafanaTimeRange = timeRange => {
+export const convertToGrafanaTimeRange = (timeRange) => {
   const timeRangeType = getRangeType(timeRange);
   if (timeRangeType === DATETIME_RANGE_TYPES.fixed) {
     return {
@@ -272,7 +272,7 @@ export const convertTimeRanges = (timeRange, type) => {
  * @param {Object} metadata
  * @returns {Function}
  */
-export const addDashboardMetaDataToLink = metadata => link => {
+export const addDashboardMetaDataToLink = (metadata) => (link) => {
   let modifiedLink = { ...link };
   if (metadata.timeRange) {
     modifiedLink = {
@@ -307,7 +307,7 @@ export const mapToDashboardViewModel = ({
 
 // Prometheus Results Parsing
 
-const dateTimeFromUnixTime = unixTime => new Date(unixTime * 1000).toISOString();
+const dateTimeFromUnixTime = (unixTime) => new Date(unixTime * 1000).toISOString();
 
 const mapScalarValue = ([unixTime, value]) => [dateTimeFromUnixTime(unixTime), Number(value)];
 
@@ -324,7 +324,7 @@ const mapStringValue = ([unixTime, value]) => [dateTimeFromUnixTime(unixTime), v
  * @param {array} result
  * @returns {array}
  */
-const normalizeScalarResult = result => [
+const normalizeScalarResult = (result) => [
   {
     metric: {},
     value: mapScalarValue(result),
@@ -344,7 +344,7 @@ const normalizeScalarResult = result => [
  * @param {array} result
  * @returns {array}
  */
-const normalizeStringResult = result => [
+const normalizeStringResult = (result) => [
   {
     metric: {},
     value: mapStringValue(result),
@@ -379,7 +379,7 @@ const normalizeStringResult = result => [
  * @param {array} result
  * @returns {array}
  */
-const normalizeVectorResult = result =>
+const normalizeVectorResult = (result) =>
   result.map(({ metric, value }) => {
     const scalar = mapScalarValue(value);
     // Add a single element to `values`, to support matrix
@@ -407,7 +407,7 @@ const normalizeVectorResult = result =>
  * @param {array} result
  * @returns {object} Normalized result.
  */
-const normalizeResultMatrix = result =>
+const normalizeResultMatrix = (result) =>
   result.map(({ metric, values }) => {
     const mappedValues = values.map(mapScalarValue);
     return {
@@ -440,7 +440,7 @@ const normalizeResultMatrix = result =>
  * ]
  *
  */
-export const normalizeQueryResponseData = data => {
+export const normalizeQueryResponseData = (data) => {
   const { resultType, result } = data;
   if (resultType === 'vector') {
     return normalizeVectorResult(result);
@@ -466,7 +466,7 @@ export const normalizeQueryResponseData = data => {
  * @param {String} name Variable key that needs to be prefixed
  * @returns {String}
  */
-export const addPrefixToCustomVariableParams = name => `variables[${name}]`;
+export const addPrefixToCustomVariableParams = (name) => `variables[${name}]`;
 
 /**
  * Normalize custom dashboard paths. This method helps support

@@ -6,7 +6,7 @@ describe('Pagination component', () => {
   let wrapper;
   let spy;
 
-  const mountComponent = props => {
+  const mountComponent = (props) => {
     wrapper = shallowMount(TablePagination, {
       propsData: props,
     });

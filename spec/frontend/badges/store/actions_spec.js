@@ -33,7 +33,7 @@ describe('Badges store actions', () => {
   });
 
   describe('requestNewBadge', () => {
-    it('commits REQUEST_NEW_BADGE', done => {
+    it('commits REQUEST_NEW_BADGE', (done) => {
       testAction(
         actions.requestNewBadge,
         null,
@@ -46,7 +46,7 @@ describe('Badges store actions', () => {
   });
 
   describe('receiveNewBadge', () => {
-    it('commits RECEIVE_NEW_BADGE', done => {
+    it('commits RECEIVE_NEW_BADGE', (done) => {
       const newBadge = createDummyBadge();
       testAction(
         actions.receiveNewBadge,
@@ -60,7 +60,7 @@ describe('Badges store actions', () => {
   });
 
   describe('receiveNewBadgeError', () => {
-    it('commits RECEIVE_NEW_BADGE_ERROR', done => {
+    it('commits RECEIVE_NEW_BADGE_ERROR', (done) => {
       testAction(
         actions.receiveNewBadgeError,
         null,
@@ -87,10 +87,10 @@ describe('Badges store actions', () => {
       };
     });
 
-    it('dispatches requestNewBadge and receiveNewBadge for successful response', done => {
+    it('dispatches requestNewBadge and receiveNewBadge for successful response', (done) => {
       const dummyResponse = createDummyBadgeResponse();
 
-      endpointMock.replyOnce(req => {
+      endpointMock.replyOnce((req) => {
         expect(req.data).toBe(
           JSON.stringify({
             name: 'TestBadge',
@@ -114,8 +114,8 @@ describe('Badges store actions', () => {
         .catch(done.fail);
     });
 
-    it('dispatches requestNewBadge and receiveNewBadgeError for error response', done => {
-      endpointMock.replyOnce(req => {
+    it('dispatches requestNewBadge and receiveNewBadgeError for error response', (done) => {
+      endpointMock.replyOnce((req) => {
         expect(req.data).toBe(
           JSON.stringify({
             name: 'TestBadge',
@@ -141,7 +141,7 @@ describe('Badges store actions', () => {
   });
 
   describe('requestDeleteBadge', () => {
-    it('commits REQUEST_DELETE_BADGE', done => {
+    it('commits REQUEST_DELETE_BADGE', (done) => {
       testAction(
         actions.requestDeleteBadge,
         badgeId,
@@ -154,7 +154,7 @@ describe('Badges store actions', () => {
   });
 
   describe('receiveDeleteBadge', () => {
-    it('commits RECEIVE_DELETE_BADGE', done => {
+    it('commits RECEIVE_DELETE_BADGE', (done) => {
       testAction(
         actions.receiveDeleteBadge,
         badgeId,
@@ -167,7 +167,7 @@ describe('Badges store actions', () => {
   });
 
   describe('receiveDeleteBadgeError', () => {
-    it('commits RECEIVE_DELETE_BADGE_ERROR', done => {
+    it('commits RECEIVE_DELETE_BADGE_ERROR', (done) => {
       testAction(
         actions.receiveDeleteBadgeError,
         badgeId,
@@ -188,7 +188,7 @@ describe('Badges store actions', () => {
       dispatch = jest.fn();
     });
 
-    it('dispatches requestDeleteBadge and receiveDeleteBadge for successful response', done => {
+    it('dispatches requestDeleteBadge and receiveDeleteBadge for successful response', (done) => {
       endpointMock.replyOnce(() => {
         expect(dispatch.mock.calls).toEqual([['requestDeleteBadge', badgeId]]);
         dispatch.mockClear();
@@ -204,7 +204,7 @@ describe('Badges store actions', () => {
         .catch(done.fail);
     });
 
-    it('dispatches requestDeleteBadge and receiveDeleteBadgeError for error response', done => {
+    it('dispatches requestDeleteBadge and receiveDeleteBadgeError for error response', (done) => {
       endpointMock.replyOnce(() => {
         expect(dispatch.mock.calls).toEqual([['requestDeleteBadge', badgeId]]);
         dispatch.mockClear();
@@ -223,7 +223,7 @@ describe('Badges store actions', () => {
   });
 
   describe('editBadge', () => {
-    it('commits START_EDITING', done => {
+    it('commits START_EDITING', (done) => {
       const dummyBadge = createDummyBadge();
       testAction(
         actions.editBadge,
@@ -237,7 +237,7 @@ describe('Badges store actions', () => {
   });
 
   describe('requestLoadBadges', () => {
-    it('commits REQUEST_LOAD_BADGES', done => {
+    it('commits REQUEST_LOAD_BADGES', (done) => {
       const dummyData = 'this is not real data';
       testAction(
         actions.requestLoadBadges,
@@ -251,7 +251,7 @@ describe('Badges store actions', () => {
   });
 
   describe('receiveLoadBadges', () => {
-    it('commits RECEIVE_LOAD_BADGES', done => {
+    it('commits RECEIVE_LOAD_BADGES', (done) => {
       const badges = dummyBadges;
       testAction(
         actions.receiveLoadBadges,
@@ -265,7 +265,7 @@ describe('Badges store actions', () => {
   });
 
   describe('receiveLoadBadgesError', () => {
-    it('commits RECEIVE_LOAD_BADGES_ERROR', done => {
+    it('commits RECEIVE_LOAD_BADGES_ERROR', (done) => {
       testAction(
         actions.receiveLoadBadgesError,
         null,
@@ -286,7 +286,7 @@ describe('Badges store actions', () => {
       dispatch = jest.fn();
     });
 
-    it('dispatches requestLoadBadges and receiveLoadBadges for successful response', done => {
+    it('dispatches requestLoadBadges and receiveLoadBadges for successful response', (done) => {
       const dummyData = 'this is just some data';
       const dummyReponse = [
         createDummyBadgeResponse(),
@@ -310,7 +310,7 @@ describe('Badges store actions', () => {
         .catch(done.fail);
     });
 
-    it('dispatches requestLoadBadges and receiveLoadBadgesError for error response', done => {
+    it('dispatches requestLoadBadges and receiveLoadBadgesError for error response', (done) => {
       const dummyData = 'this is just some data';
       endpointMock.replyOnce(() => {
         expect(dispatch.mock.calls).toEqual([['requestLoadBadges', dummyData]]);
@@ -330,7 +330,7 @@ describe('Badges store actions', () => {
   });
 
   describe('requestRenderedBadge', () => {
-    it('commits REQUEST_RENDERED_BADGE', done => {
+    it('commits REQUEST_RENDERED_BADGE', (done) => {
       testAction(
         actions.requestRenderedBadge,
         null,
@@ -343,7 +343,7 @@ describe('Badges store actions', () => {
   });
 
   describe('receiveRenderedBadge', () => {
-    it('commits RECEIVE_RENDERED_BADGE', done => {
+    it('commits RECEIVE_RENDERED_BADGE', (done) => {
       const dummyBadge = createDummyBadge();
       testAction(
         actions.receiveRenderedBadge,
@@ -357,7 +357,7 @@ describe('Badges store actions', () => {
   });
 
   describe('receiveRenderedBadgeError', () => {
-    it('commits RECEIVE_RENDERED_BADGE_ERROR', done => {
+    it('commits RECEIVE_RENDERED_BADGE_ERROR', (done) => {
       testAction(
         actions.receiveRenderedBadgeError,
         null,
@@ -388,7 +388,7 @@ describe('Badges store actions', () => {
       dispatch = jest.fn();
     });
 
-    it('returns immediately if imageUrl is empty', done => {
+    it('returns immediately if imageUrl is empty', (done) => {
       jest.spyOn(axios, 'get').mockImplementation(() => {});
       badgeInForm.imageUrl = '';
 
@@ -401,7 +401,7 @@ describe('Badges store actions', () => {
         .catch(done.fail);
     });
 
-    it('returns immediately if linkUrl is empty', done => {
+    it('returns immediately if linkUrl is empty', (done) => {
       jest.spyOn(axios, 'get').mockImplementation(() => {});
       badgeInForm.linkUrl = '';
 
@@ -414,7 +414,7 @@ describe('Badges store actions', () => {
         .catch(done.fail);
     });
 
-    it('escapes user input', done => {
+    it('escapes user input', (done) => {
       jest
         .spyOn(axios, 'get')
         .mockImplementation(() => Promise.resolve({ data: createDummyBadgeResponse() }));
@@ -437,7 +437,7 @@ describe('Badges store actions', () => {
         .catch(done.fail);
     });
 
-    it('dispatches requestRenderedBadge and receiveRenderedBadge for successful response', done => {
+    it('dispatches requestRenderedBadge and receiveRenderedBadge for successful response', (done) => {
       const dummyReponse = createDummyBadgeResponse();
       endpointMock.replyOnce(() => {
         expect(dispatch.mock.calls).toEqual([['requestRenderedBadge']]);
@@ -456,7 +456,7 @@ describe('Badges store actions', () => {
         .catch(done.fail);
     });
 
-    it('dispatches requestRenderedBadge and receiveRenderedBadgeError for error response', done => {
+    it('dispatches requestRenderedBadge and receiveRenderedBadgeError for error response', (done) => {
       endpointMock.replyOnce(() => {
         expect(dispatch.mock.calls).toEqual([['requestRenderedBadge']]);
         dispatch.mockClear();
@@ -475,7 +475,7 @@ describe('Badges store actions', () => {
   });
 
   describe('requestUpdatedBadge', () => {
-    it('commits REQUEST_UPDATED_BADGE', done => {
+    it('commits REQUEST_UPDATED_BADGE', (done) => {
       testAction(
         actions.requestUpdatedBadge,
         null,
@@ -488,7 +488,7 @@ describe('Badges store actions', () => {
   });
 
   describe('receiveUpdatedBadge', () => {
-    it('commits RECEIVE_UPDATED_BADGE', done => {
+    it('commits RECEIVE_UPDATED_BADGE', (done) => {
       const updatedBadge = createDummyBadge();
       testAction(
         actions.receiveUpdatedBadge,
@@ -502,7 +502,7 @@ describe('Badges store actions', () => {
   });
 
   describe('receiveUpdatedBadgeError', () => {
-    it('commits RECEIVE_UPDATED_BADGE_ERROR', done => {
+    it('commits RECEIVE_UPDATED_BADGE_ERROR', (done) => {
       testAction(
         actions.receiveUpdatedBadgeError,
         null,
@@ -529,10 +529,10 @@ describe('Badges store actions', () => {
       dispatch = jest.fn();
     });
 
-    it('dispatches requestUpdatedBadge and receiveUpdatedBadge for successful response', done => {
+    it('dispatches requestUpdatedBadge and receiveUpdatedBadge for successful response', (done) => {
       const dummyResponse = createDummyBadgeResponse();
 
-      endpointMock.replyOnce(req => {
+      endpointMock.replyOnce((req) => {
         expect(req.data).toBe(
           JSON.stringify({
             name: 'TestBadge',
@@ -556,8 +556,8 @@ describe('Badges store actions', () => {
         .catch(done.fail);
     });
 
-    it('dispatches requestUpdatedBadge and receiveUpdatedBadgeError for error response', done => {
-      endpointMock.replyOnce(req => {
+    it('dispatches requestUpdatedBadge and receiveUpdatedBadgeError for error response', (done) => {
+      endpointMock.replyOnce((req) => {
         expect(req.data).toBe(
           JSON.stringify({
             name: 'TestBadge',
@@ -583,7 +583,7 @@ describe('Badges store actions', () => {
   });
 
   describe('stopEditing', () => {
-    it('commits STOP_EDITING', done => {
+    it('commits STOP_EDITING', (done) => {
       testAction(
         actions.stopEditing,
         null,
@@ -596,7 +596,7 @@ describe('Badges store actions', () => {
   });
 
   describe('updateBadgeInForm', () => {
-    it('commits UPDATE_BADGE_IN_FORM', done => {
+    it('commits UPDATE_BADGE_IN_FORM', (done) => {
       const dummyBadge = createDummyBadge();
       testAction(
         actions.updateBadgeInForm,
@@ -609,7 +609,7 @@ describe('Badges store actions', () => {
     });
 
     describe('updateBadgeInModal', () => {
-      it('commits UPDATE_BADGE_IN_MODAL', done => {
+      it('commits UPDATE_BADGE_IN_MODAL', (done) => {
         const dummyBadge = createDummyBadge();
         testAction(
           actions.updateBadgeInModal,

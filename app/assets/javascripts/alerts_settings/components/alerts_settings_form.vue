@@ -197,7 +197,7 @@ export default {
       return options;
     },
     options() {
-      return integrationTypesNew.map(el => ({
+      return integrationTypesNew.map((el) => ({
         ...el,
         disabled: this.disabledIntegrations.includes(el.value),
       }));
@@ -390,10 +390,10 @@ export default {
       // TODO: replace with real BE mutation when ready;
       this.parsingPayload = true;
 
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         setTimeout(() => resolve(mockedCustomMapping), 1000);
       })
-        .then(res => {
+        .then((res) => {
           const mapping = { ...res };
           delete mapping.storedMapping;
           this.customMapping = res;
@@ -408,7 +408,7 @@ export default {
     },
     getIntegrationMapping() {
       // TODO: replace with real BE mutation when ready;
-      return Promise.resolve(mockedCustomMapping).then(res => {
+      return Promise.resolve(mockedCustomMapping).then((res) => {
         this.customMapping = res;
         this.integrationTestPayload.json = res?.samplePayload.body;
       });

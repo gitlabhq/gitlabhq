@@ -2,14 +2,14 @@ import { flattenDeep, clone } from 'lodash';
 import * as constants from '../constants';
 import { collapseSystemNotes } from './collapse_utils';
 
-export const discussions = state => {
+export const discussions = (state) => {
   let discussionsInState = clone(state.discussions);
   // NOTE: not testing bc will be removed when backend is finished.
 
   if (state.isTimelineEnabled) {
     discussionsInState = discussionsInState
       .reduce((acc, discussion) => {
-        const transformedToIndividualNotes = discussion.notes.map(note => ({
+        const transformedToIndividualNotes = discussion.notes.map((note) => ({
           ...discussion,
           id: note.id,
           created_at: note.created_at,
@@ -29,52 +29,52 @@ export const discussions = state => {
   return collapseSystemNotes(discussionsInState);
 };
 
-export const convertedDisscussionIds = state => state.convertedDisscussionIds;
+export const convertedDisscussionIds = (state) => state.convertedDisscussionIds;
 
-export const targetNoteHash = state => state.targetNoteHash;
+export const targetNoteHash = (state) => state.targetNoteHash;
 
-export const getNotesData = state => state.notesData;
+export const getNotesData = (state) => state.notesData;
 
-export const isNotesFetched = state => state.isNotesFetched;
+export const isNotesFetched = (state) => state.isNotesFetched;
 
 /*
  * WARNING: This is an example of an "unnecessary" getter
  * more info found here: https://gitlab.com/groups/gitlab-org/-/epics/2913.
  */
 
-export const sortDirection = state => state.discussionSortOrder;
+export const sortDirection = (state) => state.discussionSortOrder;
 
-export const persistSortOrder = state => state.persistSortOrder;
+export const persistSortOrder = (state) => state.persistSortOrder;
 
-export const timelineEnabled = state => state.isTimelineEnabled;
+export const timelineEnabled = (state) => state.isTimelineEnabled;
 
-export const isLoading = state => state.isLoading;
+export const isLoading = (state) => state.isLoading;
 
-export const getNotesDataByProp = state => prop => state.notesData[prop];
+export const getNotesDataByProp = (state) => (prop) => state.notesData[prop];
 
-export const getNoteableData = state => state.noteableData;
+export const getNoteableData = (state) => state.noteableData;
 
-export const getNoteableDataByProp = state => prop => state.noteableData[prop];
+export const getNoteableDataByProp = (state) => (prop) => state.noteableData[prop];
 
-export const getBlockedByIssues = state => state.noteableData.blocked_by_issues;
+export const getBlockedByIssues = (state) => state.noteableData.blocked_by_issues;
 
-export const userCanReply = state => Boolean(state.noteableData.current_user.can_create_note);
+export const userCanReply = (state) => Boolean(state.noteableData.current_user.can_create_note);
 
-export const openState = state => state.noteableData.state;
+export const openState = (state) => state.noteableData.state;
 
-export const getUserData = state => state.userData || {};
+export const getUserData = (state) => state.userData || {};
 
-export const getUserDataByProp = state => prop => state.userData && state.userData[prop];
+export const getUserDataByProp = (state) => (prop) => state.userData && state.userData[prop];
 
-export const descriptionVersions = state => state.descriptionVersions;
+export const descriptionVersions = (state) => state.descriptionVersions;
 
-export const notesById = state =>
+export const notesById = (state) =>
   state.discussions.reduce((acc, note) => {
-    note.notes.every(n => Object.assign(acc, { [n.id]: n }));
+    note.notes.every((n) => Object.assign(acc, { [n.id]: n }));
     return acc;
   }, {});
 
-export const noteableType = state => {
+export const noteableType = (state) => {
   const { ISSUE_NOTEABLE_TYPE, MERGE_REQUEST_NOTEABLE_TYPE, EPIC_NOTEABLE_TYPE } = constants;
 
   if (state.noteableData.noteableType === EPIC_NOTEABLE_TYPE) {
@@ -84,21 +84,21 @@ export const noteableType = state => {
   return state.noteableData.merge_params ? MERGE_REQUEST_NOTEABLE_TYPE : ISSUE_NOTEABLE_TYPE;
 };
 
-const reverseNotes = array => array.slice(0).reverse();
+const reverseNotes = (array) => array.slice(0).reverse();
 
 const isLastNote = (note, state) =>
   !note.system && state.userData && note.author && note.author.id === state.userData.id;
 
-export const getCurrentUserLastNote = state =>
-  flattenDeep(reverseNotes(state.discussions).map(note => reverseNotes(note.notes))).find(el =>
+export const getCurrentUserLastNote = (state) =>
+  flattenDeep(reverseNotes(state.discussions).map((note) => reverseNotes(note.notes))).find((el) =>
     isLastNote(el, state),
   );
 
-export const getDiscussionLastNote = state => discussion =>
-  reverseNotes(discussion.notes).find(el => isLastNote(el, state));
+export const getDiscussionLastNote = (state) => (discussion) =>
+  reverseNotes(discussion.notes).find((el) => isLastNote(el, state));
 
-export const unresolvedDiscussionsCount = state => state.unresolvedDiscussionsCount;
-export const resolvableDiscussionsCount = state => state.resolvableDiscussionsCount;
+export const unresolvedDiscussionsCount = (state) => state.unresolvedDiscussionsCount;
+export const resolvableDiscussionsCount = (state) => state.resolvableDiscussionsCount;
 
 export const showJumpToNextDiscussion = (state, getters) => (mode = 'discussion') => {
   const orderedDiffs =
@@ -109,20 +109,20 @@ export const showJumpToNextDiscussion = (state, getters) => (mode = 'discussion'
   return orderedDiffs.length > 1;
 };
 
-export const isDiscussionResolved = (state, getters) => discussionId =>
+export const isDiscussionResolved = (state, getters) => (discussionId) =>
   getters.resolvedDiscussionsById[discussionId] !== undefined;
 
-export const allResolvableDiscussions = state =>
-  state.discussions.filter(d => !d.individual_note && d.resolvable);
+export const allResolvableDiscussions = (state) =>
+  state.discussions.filter((d) => !d.individual_note && d.resolvable);
 
-export const resolvedDiscussionsById = state => {
+export const resolvedDiscussionsById = (state) => {
   const map = {};
 
   state.discussions
-    .filter(d => d.resolvable)
-    .forEach(n => {
+    .filter((d) => d.resolvable)
+    .forEach((n) => {
       if (n.notes) {
-        const resolved = n.notes.filter(note => note.resolvable).every(note => note.resolved);
+        const resolved = n.notes.filter((note) => note.resolvable).every((note) => note.resolved);
 
         if (resolved) {
           map[n.id] = n;
@@ -136,7 +136,7 @@ export const resolvedDiscussionsById = state => {
 // Gets Discussions IDs ordered by the date of their initial note
 export const unresolvedDiscussionsIdsByDate = (state, getters) =>
   getters.allResolvableDiscussions
-    .filter(d => !d.resolved)
+    .filter((d) => !d.resolved)
     .sort((a, b) => {
       const aDate = new Date(a.notes[0].created_at);
       const bDate = new Date(b.notes[0].created_at);
@@ -147,7 +147,7 @@ export const unresolvedDiscussionsIdsByDate = (state, getters) =>
 
       return aDate === bDate ? 0 : 1;
     })
-    .map(d => d.id);
+    .map((d) => d.id);
 
 // Gets Discussions IDs ordered by their position in the diff
 //
@@ -156,7 +156,7 @@ export const unresolvedDiscussionsIdsByDate = (state, getters) =>
 // line numbers.
 export const unresolvedDiscussionsIdsByDiff = (state, getters) =>
   getters.allResolvableDiscussions
-    .filter(d => !d.resolved && d.active)
+    .filter((d) => !d.resolved && d.active)
     .sort((a, b) => {
       if (!a.diff_file || !b.diff_file) {
         return 0;
@@ -176,7 +176,7 @@ export const unresolvedDiscussionsIdsByDiff = (state, getters) =>
         ? -1
         : 1;
     })
-    .map(d => d.id);
+    .map((d) => d.id);
 
 export const resolvedDiscussionCount = (state, getters) => {
   const resolvedMap = getters.resolvedDiscussionsById;
@@ -184,16 +184,16 @@ export const resolvedDiscussionCount = (state, getters) => {
   return Object.keys(resolvedMap).length;
 };
 
-export const discussionTabCounter = state =>
+export const discussionTabCounter = (state) =>
   state.discussions.reduce(
     (acc, discussion) =>
-      acc + discussion.notes.filter(note => !note.system && !note.placeholder).length,
+      acc + discussion.notes.filter((note) => !note.system && !note.placeholder).length,
     0,
   );
 
 // Returns the list of discussion IDs ordered according to given parameter
 // @param {Boolean} diffOrder - is ordered by diff?
-export const unresolvedDiscussionsIdsOrdered = (state, getters) => diffOrder => {
+export const unresolvedDiscussionsIdsOrdered = (state, getters) => (diffOrder) => {
   if (diffOrder) {
     return getters.unresolvedDiscussionsIdsByDiff;
   }
@@ -241,17 +241,17 @@ export const previousUnresolvedDiscussionId = (state, getters) => (discussionId,
   getters.findUnresolvedDiscussionIdNeighbor({ discussionId, diffOrder, step: -1 });
 
 // @param {Boolean} diffOrder - is ordered by diff?
-export const firstUnresolvedDiscussionId = (state, getters) => diffOrder => {
+export const firstUnresolvedDiscussionId = (state, getters) => (diffOrder) => {
   if (diffOrder) {
     return getters.unresolvedDiscussionsIdsByDiff[0];
   }
   return getters.unresolvedDiscussionsIdsByDate[0];
 };
 
-export const getDiscussion = state => discussionId =>
-  state.discussions.find(discussion => discussion.id === discussionId);
+export const getDiscussion = (state) => (discussionId) =>
+  state.discussions.find((discussion) => discussion.id === discussionId);
 
-export const commentsDisabled = state => state.commentsDisabled;
+export const commentsDisabled = (state) => state.commentsDisabled;
 
 export const suggestionsCount = (state, getters) =>
-  Object.values(getters.notesById).filter(n => n.suggestions.length).length;
+  Object.values(getters.notesById).filter((n) => n.suggestions.length).length;

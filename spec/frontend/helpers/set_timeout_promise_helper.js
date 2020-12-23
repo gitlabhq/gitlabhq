@@ -1,4 +1,4 @@
 export default (time = 0) =>
-  new Promise(resolve => {
+  new Promise((resolve) => {
     setTimeout(resolve, time);
   });

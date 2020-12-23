@@ -84,7 +84,7 @@ export default {
       try {
         const projects = await Api.groupProjects(this.groupId, this.searchTerm, this.fetchOptions);
 
-        this.projects = projects.map(project => {
+        this.projects = projects.map((project) => {
           return {
             id: project.id,
             name: project.name,
@@ -99,7 +99,7 @@ export default {
       }
     },
     selectProject(projectId) {
-      this.selectedProject = this.projects.find(project => project.id === projectId);
+      this.selectedProject = this.projects.find((project) => project.id === projectId);
 
       /*
         TODO Remove eventhub, use Vuex for BoardNewIssue and GraphQL for BoardNewIssueNew

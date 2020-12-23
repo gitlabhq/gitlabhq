@@ -4,11 +4,11 @@ import PersistentUserCallout from '~/persistent_user_callout';
 
 const newClusterViews = [':clusters:new', ':clusters:create_gcp', ':clusters:create_user'];
 
-const isProjectLevelCluster = page => page.startsWith('project:clusters');
+const isProjectLevelCluster = (page) => page.startsWith('project:clusters');
 
-export default document => {
+export default (document) => {
   const { page } = document.body.dataset;
-  const isNewClusterView = newClusterViews.some(view => page.endsWith(view));
+  const isNewClusterView = newClusterViews.some((view) => page.endsWith(view));
 
   if (!isNewClusterView) {
     return;

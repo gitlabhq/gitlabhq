@@ -21,7 +21,7 @@ export default class EditBlob {
           this.editor.use(new MarkdownExtension());
           addEditorMarkdownListeners(this.editor);
         })
-        .catch(e => createFlash(`${BLOB_EDITOR_ERROR}: ${e}`));
+        .catch((e) => createFlash(`${BLOB_EDITOR_ERROR}: ${e}`));
     }
 
     this.initModePanesAndLinks();
@@ -66,7 +66,7 @@ export default class EditBlob {
   initModePanesAndLinks() {
     this.$editModePanes = $('.js-edit-mode-pane');
     this.$editModeLinks = $('.js-edit-mode a');
-    this.$editModeLinks.on('click', e => this.editModeLinkClickHandler(e));
+    this.$editModeLinks.on('click', (e) => this.editModeLinkClickHandler(e));
   }
 
   editModeLinkClickHandler(e) {

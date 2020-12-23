@@ -63,10 +63,10 @@ export default {
       return extractParticipants(this.issue.participants.nodes);
     },
     resolvedDiscussions() {
-      return this.discussions.filter(discussion => discussion.resolved);
+      return this.discussions.filter((discussion) => discussion.resolved);
     },
     unresolvedDiscussions() {
-      return this.discussions.filter(discussion => !discussion.resolved);
+      return this.discussions.filter((discussion) => !discussion.resolved);
     },
     resolvedCommentsToggleIcon() {
       return this.resolvedDiscussionsExpanded ? 'chevron-down' : 'chevron-right';

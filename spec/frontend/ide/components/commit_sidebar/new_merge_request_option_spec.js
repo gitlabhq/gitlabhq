@@ -17,7 +17,7 @@ describe('create new MR checkbox', () => {
     ] = { foo: 'bar' };
   };
 
-  const setPermissions = permissions => {
+  const setPermissions = (permissions) => {
     store.state.projects[store.state.currentProjectId].userPermissions = permissions;
   };
 
@@ -33,7 +33,7 @@ describe('create new MR checkbox', () => {
     vm.$store.state.currentBranchId = currentBranchId;
 
     store.state.projects.abcproject.branches[currentBranchId] = branches.find(
-      branch => branch.name === currentBranchId,
+      (branch) => branch.name === currentBranchId,
     );
 
     return vm.$mount();
@@ -69,7 +69,7 @@ describe('create new MR checkbox', () => {
         expect(vm.$el.textContent).not.toBe('');
       });
 
-      it('has new MR', done => {
+      it('has new MR', (done) => {
         setMR();
 
         vm.$nextTick()
@@ -93,7 +93,7 @@ describe('create new MR checkbox', () => {
         expect(vm.$el.textContent).toBe('');
       });
 
-      it('has new MR', done => {
+      it('has new MR', (done) => {
         setMR();
 
         vm.$nextTick()
@@ -118,7 +118,7 @@ describe('create new MR checkbox', () => {
         expect(vm.$el.textContent).not.toBe('');
       });
 
-      it('is rendered if MR exists', done => {
+      it('is rendered if MR exists', (done) => {
         setMR();
 
         vm.$nextTick()
@@ -141,7 +141,7 @@ describe('create new MR checkbox', () => {
         expect(vm.$el.textContent).not.toBe('');
       });
 
-      it('is hidden if MR exists', done => {
+      it('is hidden if MR exists', (done) => {
         setMR();
 
         vm.$nextTick()
@@ -165,7 +165,7 @@ describe('create new MR checkbox', () => {
       expect(vm.$el.textContent).not.toBe('');
     });
 
-    it('is hidden if MR exists', done => {
+    it('is hidden if MR exists', (done) => {
       setMR();
 
       vm.$nextTick()

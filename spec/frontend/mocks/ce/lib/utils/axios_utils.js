@@ -5,7 +5,7 @@ const axios = jest.requireActual('~/lib/utils/axios_utils').default;
 axios.isMock = true;
 
 // Fail tests for unmocked requests
-axios.defaults.adapter = config => {
+axios.defaults.adapter = (config) => {
   const message =
     `Unexpected unmocked request: ${JSON.stringify(config, null, 2)}\n` +
     'Consider using the `axios-mock-adapter` module in tests.';
@@ -23,7 +23,7 @@ const onRequest = () => {
 };
 
 // Use setImmediate to alloow the response interceptor to finish
-const onResponse = config => {
+const onResponse = (config) => {
   activeRequests -= 1;
   setImmediate(() => {
     events.emit('response', config);
@@ -31,7 +31,7 @@ const onResponse = config => {
 };
 
 const subscribeToResponse = (predicate = () => true) =>
-  new Promise(resolve => {
+  new Promise((resolve) => {
     const listener = (config = {}) => {
       if (predicate(config)) {
         events.off('response', listener);
@@ -49,7 +49,7 @@ const subscribeToResponse = (predicate = () => true) =>
 /**
  * Registers a callback function to be run after a request to the given URL finishes.
  */
-axios.waitFor = url => subscribeToResponse(({ url: configUrl }) => configUrl === url);
+axios.waitFor = (url) => subscribeToResponse(({ url: configUrl }) => configUrl === url);
 
 /**
  * Registers a callback function to be run after all requests have finished. If there are no requests waiting, the callback is executed immediately.
@@ -58,18 +58,18 @@ axios.waitForAll = () => subscribeToResponse(() => activeRequests === 0);
 
 axios.countActiveRequests = () => activeRequests;
 
-axios.interceptors.request.use(config => {
+axios.interceptors.request.use((config) => {
   onRequest();
   return config;
 });
 
 // Remove the global counter
 axios.interceptors.response.use(
-  response => {
+  (response) => {
     onResponse(response.config);
     return response;
   },
-  err => {
+  (err) => {
     onResponse(err.config);
     return Promise.reject(err);
   },

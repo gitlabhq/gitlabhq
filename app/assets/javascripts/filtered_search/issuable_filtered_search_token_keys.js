@@ -150,7 +150,7 @@ export const conditions = flattenDeep(
       tokenKey: 'my-reaction',
       value: __('Any'),
     },
-  ].map(condition => {
+  ].map((condition) => {
     const [keyPart, valuePart] = condition.url.split('=');
     const hasBrackets = keyPart.includes('[]');
 

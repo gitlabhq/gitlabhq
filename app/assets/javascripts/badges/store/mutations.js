@@ -1,7 +1,7 @@
 import types from './mutation_types';
 import { PROJECT_BADGE } from '../constants';
 
-const reorderBadges = badges =>
+const reorderBadges = (badges) =>
   badges.sort((a, b) => {
     if (a.kind !== b.kind) {
       return a.kind === PROJECT_BADGE ? 1 : -1;
@@ -31,7 +31,7 @@ export default {
   },
 
   [types.RECEIVE_UPDATED_BADGE](state, updatedBadge) {
-    const badges = state.badges.map(badge => {
+    const badges = state.badges.map((badge) => {
       if (badge.id === updatedBadge.id) {
         return updatedBadge;
       }
@@ -77,13 +77,13 @@ export default {
   },
 
   [types.RECEIVE_DELETE_BADGE](state, badgeId) {
-    const badges = state.badges.filter(badge => badge.id !== badgeId);
+    const badges = state.badges.filter((badge) => badge.id !== badgeId);
     Object.assign(state, {
       badges,
     });
   },
   [types.RECEIVE_DELETE_BADGE_ERROR](state, badgeId) {
-    const badges = state.badges.map(badge => {
+    const badges = state.badges.map((badge) => {
       if (badge.id === badgeId) {
         return {
           ...badge,
@@ -98,7 +98,7 @@ export default {
     });
   },
   [types.REQUEST_DELETE_BADGE](state, badgeId) {
-    const badges = state.badges.map(badge => {
+    const badges = state.badges.map((badge) => {
       if (badge.id === badgeId) {
         return {
           ...badge,

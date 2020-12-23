@@ -1,13 +1,13 @@
 import Vue from 'vue';
 import DiscussionFilter from './components/discussion_filter.vue';
 
-export default store => {
+export default (store) => {
   const discussionFilterEl = document.getElementById('js-vue-discussion-filter');
 
   if (discussionFilterEl) {
     const { defaultFilter, notesFilters } = discussionFilterEl.dataset;
     const filterValues = notesFilters ? JSON.parse(notesFilters) : {};
-    const filters = Object.keys(filterValues).map(entry => ({
+    const filters = Object.keys(filterValues).map((entry) => ({
       title: entry,
       value: filterValues[entry],
     }));

@@ -106,7 +106,7 @@ export default {
     ...mapActions({ setItem: 'setProject' }),
     fetchSuccessHandler() {
       if (this.defaultValue) {
-        const projectToSelect = this.items.find(item => item.projectId === this.defaultValue);
+        const projectToSelect = this.items.find((item) => item.projectId === this.defaultValue);
 
         if (projectToSelect) {
           this.setItem(projectToSelect);

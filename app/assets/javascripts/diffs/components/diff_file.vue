@@ -210,7 +210,7 @@ export default {
 
       await this.$nextTick();
 
-      eventsForThisFile.forEach(event => {
+      eventsForThisFile.forEach((event) => {
         eventHub.$emit(event);
       });
     },

@@ -17,7 +17,7 @@ function loadModalsConfigurationFromHtml(modalsElement) {
     throw new Error('Modals content element not found!');
   }
 
-  Array.from(modalsElement.children).forEach(node => {
+  Array.from(modalsElement.children).forEach((node) => {
     const { modal, ...config } = node.dataset;
     modalsConfiguration[modal] = {
       title: node.dataset.title,

@@ -83,7 +83,7 @@ describe('AlertWidget', () => {
     },
   };
 
-  const createComponent = propsData => {
+  const createComponent = (propsData) => {
     wrapper = shallowMount(AlertWidget, {
       stubs: { GlTooltip, GlSprintf },
       propsData: {
@@ -108,7 +108,7 @@ describe('AlertWidget', () => {
   it('displays a loading spinner and disables form when fetching alerts', () => {
     let resolveReadAlert;
     mockReadAlert.mockReturnValue(
-      new Promise(resolve => {
+      new Promise((resolve) => {
         resolveReadAlert = resolve;
       }),
     );
@@ -131,7 +131,7 @@ describe('AlertWidget', () => {
   it('does not render loading spinner if showLoadingState is false', () => {
     let resolveReadAlert;
     mockReadAlert.mockReturnValue(
-      new Promise(resolve => {
+      new Promise((resolve) => {
         resolveReadAlert = resolve;
       }),
     );

@@ -62,7 +62,7 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
     ).toBe('Add a to do');
   });
 
-  it('toggle todo state', done => {
+  it('toggle todo state', (done) => {
     document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').click();
 
     setImmediate(() => {
@@ -80,7 +80,7 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
     });
   });
 
-  it('toggle todo state of expanded todo toggle', done => {
+  it('toggle todo state of expanded todo toggle', (done) => {
     document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').click();
 
     setImmediate(() => {
@@ -92,7 +92,7 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
     });
   });
 
-  it('toggles todo button tooltip', done => {
+  it('toggles todo button tooltip', (done) => {
     document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').click();
 
     setImmediate(() => {
@@ -106,7 +106,7 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
     });
   });
 
-  it('marks todo as done', done => {
+  it('marks todo as done', (done) => {
     document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').click();
 
     waitForPromises()
@@ -131,7 +131,7 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
       .catch(done.fail);
   });
 
-  it('updates aria-label to Mark as done', done => {
+  it('updates aria-label to Mark as done', (done) => {
     document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').click();
 
     setImmediate(() => {
@@ -145,7 +145,7 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
     });
   });
 
-  it('updates aria-label to add todo', done => {
+  it('updates aria-label to add todo', (done) => {
     document.querySelector('.js-issuable-todo.sidebar-collapsed-icon').click();
 
     waitForPromises()

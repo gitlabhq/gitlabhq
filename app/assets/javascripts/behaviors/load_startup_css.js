@@ -8,7 +8,7 @@ export const loadStartupCSS = () => {
     () => {
       document
         .querySelectorAll('link[media=print]')
-        .forEach(x => x.dispatchEvent(new Event('load')));
+        .forEach((x) => x.dispatchEvent(new Event('load')));
     },
     { once: true },
   );

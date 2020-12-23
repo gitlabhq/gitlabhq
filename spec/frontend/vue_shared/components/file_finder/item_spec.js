@@ -37,7 +37,7 @@ describe('File finder item spec', () => {
       expect(vm.$el.classList).toContain('is-focused');
     });
 
-    it('does not have is-focused class when not focused', done => {
+    it('does not have is-focused class when not focused', (done) => {
       vm.focused = false;
 
       vm.$nextTick(() => {
@@ -53,7 +53,7 @@ describe('File finder item spec', () => {
       expect(vm.$el.querySelector('.diff-changed-stats')).toBe(null);
     });
 
-    it('renders when a changed file', done => {
+    it('renders when a changed file', (done) => {
       vm.file.changed = true;
 
       vm.$nextTick(() => {
@@ -63,7 +63,7 @@ describe('File finder item spec', () => {
       });
     });
 
-    it('renders when a temp file', done => {
+    it('renders when a temp file', (done) => {
       vm.file.tempFile = true;
 
       vm.$nextTick(() => {
@@ -85,7 +85,7 @@ describe('File finder item spec', () => {
   describe('path', () => {
     let el;
 
-    beforeEach(done => {
+    beforeEach((done) => {
       vm.searchText = 'file';
 
       el = vm.$el.querySelector('.diff-changed-file-path');
@@ -97,7 +97,7 @@ describe('File finder item spec', () => {
       expect(el.querySelectorAll('.highlighted').length).toBe(4);
     });
 
-    it('adds ellipsis to long text', done => {
+    it('adds ellipsis to long text', (done) => {
       vm.file.path = new Array(70)
         .fill()
         .map((_, i) => `${i}-`)
@@ -113,7 +113,7 @@ describe('File finder item spec', () => {
   describe('name', () => {
     let el;
 
-    beforeEach(done => {
+    beforeEach((done) => {
       vm.searchText = 'file';
 
       el = vm.$el.querySelector('.diff-changed-file-name');
@@ -125,7 +125,7 @@ describe('File finder item spec', () => {
       expect(el.querySelectorAll('.highlighted').length).toBe(4);
     });
 
-    it('does not add ellipsis to long text', done => {
+    it('does not add ellipsis to long text', (done) => {
       vm.file.name = new Array(70)
         .fill()
         .map((_, i) => `${i}-`)

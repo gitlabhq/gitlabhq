@@ -33,7 +33,7 @@ export default {
           });
           this.metricEmbedComponent = MetricEmbed;
         })
-        .catch(e => Sentry.captureException(e));
+        .catch((e) => Sentry.captureException(e));
     }
   },
 };

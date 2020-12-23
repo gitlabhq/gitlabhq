@@ -33,8 +33,8 @@ export default {
 
     if (this.userCanCreateNote) {
       $diffFile
-        .on('mouseover', LINE_COLUMN_CLASSES, e => this.showButton(this.isParallelView, e))
-        .on('mouseleave', LINE_COLUMN_CLASSES, e => this.hideButton(this.isParallelView, e));
+        .on('mouseover', LINE_COLUMN_CLASSES, (e) => this.showButton(this.isParallelView, e))
+        .on('mouseleave', LINE_COLUMN_CLASSES, (e) => this.hideButton(this.isParallelView, e));
     }
   },
 

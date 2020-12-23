@@ -97,7 +97,7 @@ export default {
         const { lists, hideBacklogList } = data[boardType]?.board;
         commit(types.RECEIVE_BOARD_LISTS_SUCCESS, formatBoardLists(lists));
         // Backlog list needs to be created if it doesn't exist and it's not hidden
-        if (!lists.nodes.find(l => l.listType === ListType.backlog) && !hideBacklogList) {
+        if (!lists.nodes.find((l) => l.listType === ListType.backlog) && !hideBacklogList) {
           dispatch('createList', { backlog: true });
         }
       })
@@ -390,7 +390,7 @@ export default {
     commit(types.ADD_ISSUE_TO_LIST, { list, issue, position: 0 });
 
     dispatch('createNewIssue', issueInput)
-      .then(res => {
+      .then((res) => {
         commit(types.ADD_ISSUE_TO_LIST, {
           list,
           issue: formatIssue({ ...res, id: getIdFromGraphQLId(res.id) }),

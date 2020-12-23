@@ -32,7 +32,7 @@
                 "type": "string"
               },
               "totalSize": {
-                "type": "integer"
+                "type": "string"
               },
               "createdAt": {
                 "type": "string"

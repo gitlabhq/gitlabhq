@@ -15,7 +15,7 @@ export default {
           ...this.cursor,
         };
       },
-      update: data => data,
+      update: (data) => data,
       error() {
         this.states = null;
       },

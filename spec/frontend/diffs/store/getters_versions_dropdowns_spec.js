@@ -49,7 +49,7 @@ describe('Compare diff version dropdowns', () => {
     let expectedHeadVersion;
     const originalLocation = window.location;
 
-    const setupTest = includeDiffHeadParam => {
+    const setupTest = (includeDiffHeadParam) => {
       const diffHeadParam = includeDiffHeadParam ? '?diff_head=true' : '';
 
       Object.defineProperty(window, 'location', {
@@ -81,7 +81,7 @@ describe('Compare diff version dropdowns', () => {
       };
     };
 
-    const assertVersions = targetVersions => {
+    const assertVersions = (targetVersions) => {
       // base and head should be the last two versions in that order
       const targetBaseVersion = targetVersions[targetVersions.length - 2];
       const targetHeadVersion = targetVersions[targetVersions.length - 1];

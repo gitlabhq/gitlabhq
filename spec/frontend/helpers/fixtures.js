@@ -20,7 +20,7 @@ Did you run bin/rake frontend:fixtures?`,
   return fs.readFileSync(absolutePath, 'utf8');
 }
 
-export const getJSONFixture = relativePath => JSON.parse(getFixture(relativePath));
+export const getJSONFixture = (relativePath) => JSON.parse(getFixture(relativePath));
 
 export const resetHTMLFixture = () => {
   document.head.innerHTML = '';

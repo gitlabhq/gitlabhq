@@ -32,20 +32,20 @@ export const buildUneditableCloseTokens = (token, tagType = TAG_TYPES.block) => 
 
 // Complete helpers (open plus close)
 
-export const buildTextToken = content => buildToken('text', null, { content });
+export const buildTextToken = (content) => buildToken('text', null, { content });
 
-export const buildUneditableBlockTokens = token => {
+export const buildUneditableBlockTokens = (token) => {
   return [...buildUneditableOpenTokens(token), buildUneditableCloseToken()];
 };
 
-export const buildUneditableInlineTokens = token => {
+export const buildUneditableInlineTokens = (token) => {
   return [
     ...buildUneditableOpenTokens(token, TAG_TYPES.inline),
     buildUneditableCloseToken(TAG_TYPES.inline),
   ];
 };
 
-export const buildUneditableHtmlAsTextTokens = node => {
+export const buildUneditableHtmlAsTextTokens = (node) => {
   /*
   Toast UI internally appends ' data-tomark-pass ' attribute flags so it can target certain
   nested nodes for internal use during Markdown <=> WYSIWYG conversions. In our case, we want

@@ -81,15 +81,15 @@ export const graphDataValidatorForValues = (isValues, graphData) => {
   const responseValueKeyName = isValues ? 'value' : 'values';
   return (
     Array.isArray(graphData.metrics) &&
-    graphData.metrics.filter(query => {
+    graphData.metrics.filter((query) => {
       if (Array.isArray(query.result)) {
         return (
-          query.result.filter(res => Array.isArray(res[responseValueKeyName])).length ===
+          query.result.filter((res) => Array.isArray(res[responseValueKeyName])).length ===
           query.result.length
         );
       }
       return false;
-    }).length === graphData.metrics.filter(query => query.result).length
+    }).length === graphData.metrics.filter((query) => query.result).length
   );
 };
 
@@ -106,7 +106,7 @@ const isClusterHealthBoard = () => (document.body.dataset.page || '').includes('
  * @param {String}  chart link that will be sent as a property for the event
  * @return {Object} config object for event tracking
  */
-export const generateLinkToChartOptions = chartLink => {
+export const generateLinkToChartOptions = (chartLink) => {
   const isCLusterHealthBoard = isClusterHealthBoard();
 
   const category = isCLusterHealthBoard
@@ -124,7 +124,7 @@ export const generateLinkToChartOptions = chartLink => {
  * @param {String}  chart title that will be sent as a property for the event
  * @return {Object} config object for event tracking
  */
-export const downloadCSVOptions = title => {
+export const downloadCSVOptions = (title) => {
   const isCLusterHealthBoard = isClusterHealthBoard();
 
   const category = isCLusterHealthBoard
@@ -157,7 +157,7 @@ export const getAddMetricTrackingOptions = () => ({
  * @param {Object} graphData  the graph data response from a prometheus request
  * @returns {boolean} true if the data is valid
  */
-export const graphDataValidatorForAnomalyValues = graphData => {
+export const graphDataValidatorForAnomalyValues = (graphData) => {
   const anomalySeriesCount = 3; // metric, upper, lower
   return (
     graphData.metrics &&
@@ -186,7 +186,7 @@ export const timeRangeFromUrl = (search = window.location.search) => {
  * @param {String} label label for the template variable
  * @returns {String}
  */
-export const addPrefixToLabel = label => `${VARIABLE_PREFIX}${label}`;
+export const addPrefixToLabel = (label) => `${VARIABLE_PREFIX}${label}`;
 
 /**
  * Before the templating variables are passed to the backend the
@@ -197,7 +197,7 @@ export const addPrefixToLabel = label => `${VARIABLE_PREFIX}${label}`;
  * @param {String} label label to remove prefix from
  * @returns {String}
  */
-export const removePrefixFromLabel = label =>
+export const removePrefixFromLabel = (label) =>
   (label || '').replace(new RegExp(`^${VARIABLE_PREFIX}`), '');
 
 /**
@@ -210,7 +210,7 @@ export const removePrefixFromLabel = label =>
  * @param {Object} variables
  * @returns {Object}
  */
-export const convertVariablesForURL = variables =>
+export const convertVariablesForURL = (variables) =>
   variables.reduce((acc, { name, value }) => {
     if (value !== null) {
       acc[addPrefixToLabel(name)] = value;
@@ -241,7 +241,7 @@ export const templatingVariablesFromUrl = (search = window.location.search) => {
  *
  * @param {Object} variables user defined variables
  */
-export const setCustomVariablesFromUrl = variables => {
+export const setCustomVariablesFromUrl = (variables) => {
   // prep the variables to append to URL
   const parsedVariables = convertVariablesForURL(variables);
   // update the URL
@@ -353,7 +353,7 @@ export const panelToUrl = (
  * @param {Array} values data points
  * @returns {Number}
  */
-const metricValueMapper = values => values[0]?.[1];
+const metricValueMapper = (values) => values[0]?.[1];
 
 /**
  * Get the metric name from metric object
@@ -364,7 +364,7 @@ const metricValueMapper = values => values[0]?.[1];
  * @param {Object} metric metric object
  * @returns {String}
  */
-const metricNameMapper = metric => Object.values(metric)?.[0];
+const metricNameMapper = (metric) => Object.values(metric)?.[0];
 
 /**
  * Parse metric object to extract metric value and name in

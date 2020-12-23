@@ -42,7 +42,7 @@ describe('Multi-file store actions', () => {
   });
 
   describe('redirectToUrl', () => {
-    it('calls visitUrl', done => {
+    it('calls visitUrl', (done) => {
       store
         .dispatch('redirectToUrl', 'test')
         .then(() => {
@@ -55,7 +55,7 @@ describe('Multi-file store actions', () => {
   });
 
   describe('setInitialData', () => {
-    it('commits initial data', done => {
+    it('commits initial data', (done) => {
       store
         .dispatch('setInitialData', { canCommit: true })
         .then(() => {
@@ -70,7 +70,7 @@ describe('Multi-file store actions', () => {
     const paths = ['to_discard', 'another_one_to_discard'];
 
     beforeEach(() => {
-      paths.forEach(path => {
+      paths.forEach((path) => {
         const f = file(path);
         f.changed = true;
 
@@ -81,14 +81,14 @@ describe('Multi-file store actions', () => {
     });
 
     it('discards all changes in file', () => {
-      const expectedCalls = paths.map(path => ['restoreOriginalFile', path]);
+      const expectedCalls = paths.map((path) => ['restoreOriginalFile', path]);
 
       discardAllChanges(store);
 
       expect(store.dispatch.mock.calls).toEqual(expect.arrayContaining(expectedCalls));
     });
 
-    it('removes all files from changedFiles state', done => {
+    it('removes all files from changedFiles state', (done) => {
       store
         .dispatch('discardAllChanges')
         .then(() => {
@@ -120,7 +120,7 @@ describe('Multi-file store actions', () => {
     });
 
     describe('tree', () => {
-      it('creates temp tree', done => {
+      it('creates temp tree', (done) => {
         store
           .dispatch('createTempEntry', {
             name: 'test',
@@ -137,7 +137,7 @@ describe('Multi-file store actions', () => {
           .catch(done.fail);
       });
 
-      it('creates new folder inside another tree', done => {
+      it('creates new folder inside another tree', (done) => {
         const tree = {
           type: 'tree',
           name: 'testing',
@@ -162,7 +162,7 @@ describe('Multi-file store actions', () => {
           .catch(done.fail);
       });
 
-      it('does not create new tree if already exists', done => {
+      it('does not create new tree if already exists', (done) => {
         const tree = {
           type: 'tree',
           path: 'testing',
@@ -188,7 +188,7 @@ describe('Multi-file store actions', () => {
     });
 
     describe('blob', () => {
-      it('creates temp file', done => {
+      it('creates temp file', (done) => {
         const name = 'test';
 
         store
@@ -209,7 +209,7 @@ describe('Multi-file store actions', () => {
           .catch(done.fail);
       });
 
-      it('adds tmp file to open files', done => {
+      it('adds tmp file to open files', (done) => {
         const name = 'test';
 
         store
@@ -228,7 +228,7 @@ describe('Multi-file store actions', () => {
           .catch(done.fail);
       });
 
-      it('adds tmp file to staged files', done => {
+      it('adds tmp file to staged files', (done) => {
         const name = 'test';
 
         store
@@ -250,7 +250,7 @@ describe('Multi-file store actions', () => {
         expect(store.dispatch).toHaveBeenCalledWith('setFileActive', 'test');
       });
 
-      it('creates flash message if file already exists', done => {
+      it('creates flash message if file already exists', (done) => {
         const f = file('test', '1', 'blob');
         store.state.trees['abcproject/mybranch'].tree = [f];
         store.state.entries[f.path] = f;
@@ -273,7 +273,7 @@ describe('Multi-file store actions', () => {
   });
 
   describe('scrollToTab', () => {
-    it('focuses the current active element', done => {
+    it('focuses the current active element', (done) => {
       document.body.innerHTML +=
         '<div id="tabs"><div class="active"><div class="repo-tab"></div></div></div>';
       const el = document.querySelector('.repo-tab');
@@ -378,7 +378,7 @@ describe('Multi-file store actions', () => {
   });
 
   describe('updateViewer', () => {
-    it('updates viewer state', done => {
+    it('updates viewer state', (done) => {
       store
         .dispatch('updateViewer', 'diff')
         .then(() => {
@@ -390,7 +390,7 @@ describe('Multi-file store actions', () => {
   });
 
   describe('updateActivityBarView', () => {
-    it('commits UPDATE_ACTIVITY_BAR_VIEW', done => {
+    it('commits UPDATE_ACTIVITY_BAR_VIEW', (done) => {
       testAction(
         updateActivityBarView,
         'test',
@@ -403,7 +403,7 @@ describe('Multi-file store actions', () => {
   });
 
   describe('setEmptyStateSvgs', () => {
-    it('commits setEmptyStateSvgs', done => {
+    it('commits setEmptyStateSvgs', (done) => {
       testAction(
         setEmptyStateSvgs,
         'svg',
@@ -416,7 +416,7 @@ describe('Multi-file store actions', () => {
   });
 
   describe('updateTempFlagForEntry', () => {
-    it('commits UPDATE_TEMP_FLAG', done => {
+    it('commits UPDATE_TEMP_FLAG', (done) => {
       const f = {
         ...file(),
         path: 'test',
@@ -434,7 +434,7 @@ describe('Multi-file store actions', () => {
       );
     });
 
-    it('commits UPDATE_TEMP_FLAG and dispatches for parent', done => {
+    it('commits UPDATE_TEMP_FLAG and dispatches for parent', (done) => {
       const parent = {
         ...file(),
         path: 'testing',
@@ -457,7 +457,7 @@ describe('Multi-file store actions', () => {
       );
     });
 
-    it('does not dispatch for parent, if parent does not exist', done => {
+    it('does not dispatch for parent, if parent does not exist', (done) => {
       const f = {
         ...file(),
         path: 'test',
@@ -477,7 +477,7 @@ describe('Multi-file store actions', () => {
   });
 
   describe('setCurrentBranchId', () => {
-    it('commits setCurrentBranchId', done => {
+    it('commits setCurrentBranchId', (done) => {
       testAction(
         setCurrentBranchId,
         'branchId',
@@ -490,7 +490,7 @@ describe('Multi-file store actions', () => {
   });
 
   describe('toggleFileFinder', () => {
-    it('commits TOGGLE_FILE_FINDER', done => {
+    it('commits TOGGLE_FILE_FINDER', (done) => {
       testAction(
         toggleFileFinder,
         true,
@@ -503,7 +503,7 @@ describe('Multi-file store actions', () => {
   });
 
   describe('setErrorMessage', () => {
-    it('commis error messsage', done => {
+    it('commis error messsage', (done) => {
       testAction(
         setErrorMessage,
         'error',
@@ -516,7 +516,7 @@ describe('Multi-file store actions', () => {
   });
 
   describe('deleteEntry', () => {
-    it('commits entry deletion', done => {
+    it('commits entry deletion', (done) => {
       store.state.entries.path = 'testing';
 
       testAction(
@@ -529,7 +529,7 @@ describe('Multi-file store actions', () => {
       );
     });
 
-    it('does not delete a folder after it is emptied', done => {
+    it('does not delete a folder after it is emptied', (done) => {
       const testFolder = {
         type: 'tree',
         tree: [],
@@ -575,7 +575,7 @@ describe('Multi-file store actions', () => {
       });
 
       describe('and previous does not exist', () => {
-        it('reverts the rename before deleting', done => {
+        it('reverts the rename before deleting', (done) => {
           testAction(
             deleteEntry,
             testEntry.path,
@@ -610,7 +610,7 @@ describe('Multi-file store actions', () => {
           store.state.entries[oldEntry.path] = oldEntry;
         });
 
-        it('does not revert rename before deleting', done => {
+        it('does not revert rename before deleting', (done) => {
           testAction(
             deleteEntry,
             testEntry.path,
@@ -621,7 +621,7 @@ describe('Multi-file store actions', () => {
           );
         });
 
-        it('when previous is deleted, it reverts rename before deleting', done => {
+        it('when previous is deleted, it reverts rename before deleting', (done) => {
           store.state.entries[testEntry.prevPath].deleted = true;
 
           testAction(
@@ -656,7 +656,7 @@ describe('Multi-file store actions', () => {
         jest.spyOn(eventHub, '$emit').mockImplementation();
       });
 
-      it('does not purge model cache for temporary entries that got renamed', done => {
+      it('does not purge model cache for temporary entries that got renamed', (done) => {
         Object.assign(store.state.entries, {
           test: {
             ...file('test'),
@@ -678,7 +678,7 @@ describe('Multi-file store actions', () => {
           .catch(done.fail);
       });
 
-      it('purges model cache for renamed entry', done => {
+      it('purges model cache for renamed entry', (done) => {
         Object.assign(store.state.entries, {
           test: {
             ...file('test'),
@@ -737,7 +737,7 @@ describe('Multi-file store actions', () => {
         ]);
       });
 
-      it('if not changed, completely unstages and discards entry if renamed to original', done => {
+      it('if not changed, completely unstages and discards entry if renamed to original', (done) => {
         testAction(
           renameEntry,
           { path: 'renamed', name: 'orig' },
@@ -761,7 +761,7 @@ describe('Multi-file store actions', () => {
         );
       });
 
-      it('if already in changed, does not add to change', done => {
+      it('if already in changed, does not add to change', (done) => {
         store.state.changedFiles.push(renamedEntry);
 
         testAction(
@@ -774,7 +774,7 @@ describe('Multi-file store actions', () => {
         );
       });
 
-      it('routes to the renamed file if the original file has been opened', done => {
+      it('routes to the renamed file if the original file has been opened', (done) => {
         store.state.currentProjectId = 'test/test';
         store.state.currentBranchId = 'master';
 
@@ -815,7 +815,7 @@ describe('Multi-file store actions', () => {
         });
       });
 
-      it('updates entries in a folder correctly, when folder is renamed', done => {
+      it('updates entries in a folder correctly, when folder is renamed', (done) => {
         store
           .dispatch('renameEntry', {
             path: 'folder',
@@ -833,7 +833,7 @@ describe('Multi-file store actions', () => {
           .catch(done.fail);
       });
 
-      it('discards renaming of an entry if the root folder is renamed back to a previous name', done => {
+      it('discards renaming of an entry if the root folder is renamed back to a previous name', (done) => {
         const rootFolder = file('old-folder', 'old-folder', 'tree');
         const testEntry = file('test', 'test', 'blob', rootFolder);
 
@@ -925,7 +925,7 @@ describe('Multi-file store actions', () => {
           });
         });
 
-        it('creates new directory', done => {
+        it('creates new directory', (done) => {
           expect(store.state.entries[newParentPath]).toBeUndefined();
 
           store
@@ -955,7 +955,7 @@ describe('Multi-file store actions', () => {
             rootDir.tree.push(newDir);
           });
 
-          it('inserts in new directory', done => {
+          it('inserts in new directory', (done) => {
             expect(newDir.tree).toEqual([]);
 
             store
@@ -971,11 +971,11 @@ describe('Multi-file store actions', () => {
               .catch(done.fail);
           });
 
-          it('when new directory is deleted, it undeletes it', done => {
+          it('when new directory is deleted, it undeletes it', (done) => {
             store.dispatch('deleteEntry', newParentPath);
 
             expect(store.state.entries[newParentPath].deleted).toBe(true);
-            expect(rootDir.tree.some(x => x.path === newParentPath)).toBe(false);
+            expect(rootDir.tree.some((x) => x.path === newParentPath)).toBe(false);
 
             store
               .dispatch('renameEntry', {
@@ -985,7 +985,7 @@ describe('Multi-file store actions', () => {
               })
               .then(() => {
                 expect(store.state.entries[newParentPath].deleted).toBe(false);
-                expect(rootDir.tree.some(x => x.path === newParentPath)).toBe(true);
+                expect(rootDir.tree.some((x) => x.path === newParentPath)).toBe(true);
               })
               .then(done)
               .catch(done.fail);
@@ -1029,12 +1029,12 @@ describe('Multi-file store actions', () => {
         document.querySelector('.flash-container').remove();
       });
 
-      it('passes the error further unchanged without dispatching any action when response is 404', done => {
+      it('passes the error further unchanged without dispatching any action when response is 404', (done) => {
         mock.onGet(/(.*)/).replyOnce(404);
 
         getBranchData(...callParams)
           .then(done.fail)
-          .catch(e => {
+          .catch((e) => {
             expect(dispatch.mock.calls).toHaveLength(0);
             expect(e.response.status).toEqual(404);
             expect(document.querySelector('.flash-alert')).toBeNull();
@@ -1042,12 +1042,12 @@ describe('Multi-file store actions', () => {
           });
       });
 
-      it('does not pass the error further and flashes an alert if error is not 404', done => {
+      it('does not pass the error further and flashes an alert if error is not 404', (done) => {
         mock.onGet(/(.*)/).replyOnce(418);
 
         getBranchData(...callParams)
           .then(done.fail)
-          .catch(e => {
+          .catch((e) => {
             expect(dispatch.mock.calls).toHaveLength(0);
             expect(e.response).toBeUndefined();
             expect(document.querySelector('.flash-alert')).not.toBeNull();

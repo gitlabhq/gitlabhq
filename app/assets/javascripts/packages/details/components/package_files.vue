@@ -25,14 +25,14 @@ export default {
   },
   computed: {
     filesTableRows() {
-      return this.packageFiles.map(pf => ({
+      return this.packageFiles.map((pf) => ({
         ...pf,
         size: this.formatSize(pf.size),
         pipeline: last(pf.pipelines),
       }));
     },
     showCommitColumn() {
-      return this.filesTableRows.some(row => Boolean(row.pipeline?.id));
+      return this.filesTableRows.some((row) => Boolean(row.pipeline?.id));
     },
     filesTableHeaderFields() {
       return [
@@ -55,7 +55,7 @@ export default {
           label: __('Created'),
           class: 'gl-text-right',
         },
-      ].filter(c => !c.hide);
+      ].filter((c) => !c.hide);
     },
   },
   methods: {

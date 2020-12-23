@@ -76,12 +76,12 @@ export default {
         this.openedBacktraces = [...this.openedBacktraces, toggledIndex];
       } else {
         this.openedBacktraces = this.openedBacktraces.filter(
-          openedIndex => openedIndex !== toggledIndex,
+          (openedIndex) => openedIndex !== toggledIndex,
         );
       }
     },
     itemHasOpenedBacktrace(toggledIndex) {
-      return this.openedBacktraces.find(openedIndex => openedIndex === toggledIndex) >= 0;
+      return this.openedBacktraces.find((openedIndex) => openedIndex === toggledIndex) >= 0;
     },
   },
 };

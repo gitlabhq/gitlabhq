@@ -5,7 +5,7 @@ import ImportTableRow from '~/import_entities/import_groups/components/import_ta
 import { STATUSES } from '~/import_entities/constants';
 import { availableNamespacesFixture } from '../graphql/fixtures';
 
-const getFakeGroup = status => ({
+const getFakeGroup = (status) => ({
   web_url: 'https://fake.host/',
   full_path: 'fake_group_1',
   full_name: 'fake_name_1',
@@ -22,13 +22,13 @@ describe('import table row', () => {
   let group;
 
   const findByText = (cmp, text) => {
-    return wrapper.findAll(cmp).wrappers.find(node => node.text().indexOf(text) === 0);
+    return wrapper.findAll(cmp).wrappers.find((node) => node.text().indexOf(text) === 0);
   };
   const findImportButton = () => findByText(GlButton, 'Import');
   const findNameInput = () => wrapper.find(GlFormInput);
   const findNamespaceDropdown = () => wrapper.find(Select2Select);
 
-  const createComponent = props => {
+  const createComponent = (props) => {
     wrapper = shallowMount(ImportTableRow, {
       propsData: {
         availableNamespaces: availableNamespacesFixture,

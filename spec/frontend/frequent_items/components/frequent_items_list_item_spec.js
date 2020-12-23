@@ -114,7 +114,7 @@ describe('FrequentItemsListItemComponent', () => {
       const link = wrapper.find('a');
       // NOTE: this listener is required to prevent the click from going through and causing:
       //   `Error: Not implemented: navigation ...`
-      link.element.addEventListener('click', e => {
+      link.element.addEventListener('click', (e) => {
         e.preventDefault();
       });
       link.trigger('click');

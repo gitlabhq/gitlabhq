@@ -29,8 +29,8 @@ describe('Applications', () => {
     });
   };
 
-  const createShallowApp = options => createApp(options, true);
-  const findByTestId = id => wrapper.find(`[data-testid="${id}"]`);
+  const createShallowApp = (options) => createApp(options, true);
+  const findByTestId = (id) => wrapper.find(`[data-testid="${id}"]`);
   afterEach(() => {
     wrapper.destroy();
   });

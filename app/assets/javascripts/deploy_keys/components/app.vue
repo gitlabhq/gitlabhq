@@ -39,7 +39,7 @@ export default {
   },
   computed: {
     tabs() {
-      return Object.keys(this.$options.scopes).map(scope => {
+      return Object.keys(this.$options.scopes).map((scope) => {
         const count = Array.isArray(this.keys[scope]) ? this.keys[scope].length : null;
 
         return {
@@ -81,7 +81,7 @@ export default {
 
       return this.service
         .getKeys()
-        .then(data => {
+        .then((data) => {
           this.isLoading = false;
           this.store.keys = data;
         })

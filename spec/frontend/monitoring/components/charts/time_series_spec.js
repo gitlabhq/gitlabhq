@@ -23,14 +23,14 @@ import { timeSeriesGraphData } from '../../graph_data';
 
 jest.mock('lodash/throttle', () =>
   // this throttle mock executes immediately
-  jest.fn(func => {
+  jest.fn((func) => {
     // eslint-disable-next-line no-param-reassign
     func.cancel = jest.fn();
     return func;
   }),
 );
 jest.mock('~/lib/utils/icon_utils', () => ({
-  getSvgIconPathContent: jest.fn().mockImplementation(icon => Promise.resolve(`${icon}-content`)),
+  getSvgIconPathContent: jest.fn().mockImplementation((icon) => Promise.resolve(`${icon}-content`)),
 }));
 
 describe('Time series component', () => {
@@ -122,7 +122,7 @@ describe('Time series component', () => {
                   },
                 ],
               }),
-              off: jest.fn(eChartEvent => {
+              off: jest.fn((eChartEvent) => {
                 delete eChartMock.handlers[eChartEvent];
               }),
               on: jest.fn((eChartEvent, fn) => {
@@ -193,7 +193,7 @@ describe('Time series component', () => {
           it('does not throw error if data point is outside the zoom range', () => {
             const seriesDataWithoutValue = {
               ...mockLineSeriesData(),
-              seriesData: mockLineSeriesData().seriesData.map(data => ({
+              seriesData: mockLineSeriesData().seriesData.map((data) => ({
                 ...data,
                 value: undefined,
               })),
@@ -270,7 +270,7 @@ describe('Time series component', () => {
             beforeEach(() => {
               wrapper.vm.formatTooltipText({
                 ...mockAnnotationsSeriesData,
-                seriesData: mockAnnotationsSeriesData.seriesData.map(data => ({
+                seriesData: mockAnnotationsSeriesData.seriesData.map((data) => ({
                   ...data,
                   data: annotationsMetadata,
                 })),
@@ -546,7 +546,7 @@ describe('Time series component', () => {
         describe('xAxisLabel', () => {
           const mockDate = Date.UTC(2020, 4, 26, 20); // 8:00 PM in GMT
 
-          const useXAxisFormatter = date => {
+          const useXAxisFormatter = (date) => {
             const { xAxis } = getChartOptions();
             const { formatter } = xAxis.axisLabel;
             return formatter(date);
@@ -620,7 +620,7 @@ describe('Time series component', () => {
         },
       ];
 
-      glChartComponents.forEach(dynamicComponent => {
+      glChartComponents.forEach((dynamicComponent) => {
         describe(`GitLab UI: ${dynamicComponent.chartType}`, () => {
           const findChartComponent = () => wrapper.find(dynamicComponent.component);
 
@@ -705,7 +705,7 @@ describe('Time series component', () => {
         let lineColors;
 
         beforeEach(() => {
-          lineColors = wrapper.find(GlAreaChart).vm.series.map(item => item.lineStyle.color);
+          lineColors = wrapper.find(GlAreaChart).vm.series.map((item) => item.lineStyle.color);
         });
 
         it('should contain different colors for contiguous time series', () => {
@@ -727,7 +727,7 @@ describe('Time series component', () => {
           const legendColors = wrapper
             .find(GlChartLegend)
             .props('seriesInfo')
-            .map(item => item.color);
+            .map((item) => item.color);
 
           lineColors.forEach((color, index) => {
             expect(color).toBe(legendColors[index]);

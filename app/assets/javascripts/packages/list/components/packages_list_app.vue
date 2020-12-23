@@ -25,12 +25,12 @@ export default {
   },
   computed: {
     ...mapState({
-      emptyListIllustration: state => state.config.emptyListIllustration,
-      emptyListHelpUrl: state => state.config.emptyListHelpUrl,
-      filterQuery: state => state.filterQuery,
-      selectedType: state => state.selectedType,
-      packageHelpUrl: state => state.config.packageHelpUrl,
-      packagesCount: state => state.pagination?.total,
+      emptyListIllustration: (state) => state.config.emptyListIllustration,
+      emptyListHelpUrl: (state) => state.config.emptyListHelpUrl,
+      filterQuery: (state) => state.filterQuery,
+      selectedType: (state) => state.selectedType,
+      packageHelpUrl: (state) => state.config.packageHelpUrl,
+      packagesCount: (state) => state.pagination?.total,
     }),
     tabsToRender() {
       return PACKAGE_REGISTRY_TABS;

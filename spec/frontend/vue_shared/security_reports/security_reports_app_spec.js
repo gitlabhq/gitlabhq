@@ -42,7 +42,7 @@ describe('Security reports app', () => {
     discoverProjectSecurityPath: '/discoverProjectSecurityPath',
   };
 
-  const createComponent = options => {
+  const createComponent = (options) => {
     wrapper = mount(
       SecurityReportsApp,
       merge(
@@ -61,7 +61,7 @@ describe('Security reports app', () => {
   const pendingHandler = () => new Promise(() => {});
   const successHandler = () => Promise.resolve({ data: securityReportDownloadPathsQueryResponse });
   const failureHandler = () => Promise.resolve({ errors: [{ message: 'some error' }] });
-  const createMockApolloProvider = handler => {
+  const createMockApolloProvider = (handler) => {
     localVue.use(VueApollo);
 
     const requestHandlers = [[securityReportDownloadPathsQuery, handler]];
@@ -74,7 +74,7 @@ describe('Security reports app', () => {
   const findDownloadDropdown = () => wrapper.find(SecurityReportDownloadDropdown);
   const findPipelinesTabAnchor = () => wrapper.find('[data-testid="show-pipelines"]');
   const findHelpIconComponent = () => wrapper.find(HelpIcon);
-  const setupMockJobArtifact = reportType => {
+  const setupMockJobArtifact = (reportType) => {
     jest
       .spyOn(Api, 'pipelineJobs')
       .mockResolvedValue({ data: [{ artifacts: [{ file_type: reportType }] }] });
@@ -93,8 +93,8 @@ describe('Security reports app', () => {
 
   describe.each([false, true])(
     'given the coreSecurityMrWidgetCounts feature flag is %p',
-    coreSecurityMrWidgetCounts => {
-      const createComponentWithFlag = options =>
+    (coreSecurityMrWidgetCounts) => {
+      const createComponentWithFlag = (options) =>
         createComponent(
           merge(
             {
@@ -108,7 +108,7 @@ describe('Security reports app', () => {
           ),
         );
 
-      describe.each(SecurityReportsApp.reportTypes)('given a report type %p', reportType => {
+      describe.each(SecurityReportsApp.reportTypes)('given a report type %p', (reportType) => {
         beforeEach(() => {
           window.mrTabs = { tabShown: jest.fn() };
           setupMockJobArtifact(reportType);
@@ -245,7 +245,7 @@ describe('Security reports app', () => {
   describe('given the coreSecurityMrWidgetCounts feature flag is enabled', () => {
     let mock;
 
-    const createComponentWithFlagEnabled = options =>
+    const createComponentWithFlagEnabled = (options) =>
       createComponent(
         merge(options, {
           provide: {
@@ -350,7 +350,7 @@ describe('Security reports app', () => {
   });
 
   describe('given coreSecurityMrWidgetDownloads feature flag is enabled', () => {
-    const createComponentWithFlagEnabled = options =>
+    const createComponentWithFlagEnabled = (options) =>
       createComponent(
         merge(options, {
           provide: {

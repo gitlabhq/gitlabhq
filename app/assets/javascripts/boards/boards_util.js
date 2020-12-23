@@ -41,14 +41,14 @@ export function formatListIssues(listIssues) {
 
   const listData = listIssues.nodes.reduce((map, list) => {
     listIssuesCount = list.issues.count;
-    let sortedIssues = list.issues.edges.map(issueNode => ({
+    let sortedIssues = list.issues.edges.map((issueNode) => ({
       ...issueNode.node,
     }));
     sortedIssues = sortBy(sortedIssues, 'relativePosition');
 
     return {
       ...map,
-      [list.id]: sortedIssues.map(i => {
+      [list.id]: sortedIssues.map((i) => {
         const id = getIdFromGraphQLId(i.id);
 
         const listIssue = {
@@ -97,23 +97,23 @@ export function moveIssueListHelper(issue, fromList, toList) {
   const updatedIssue = issue;
   if (
     toList.listType === ListType.label &&
-    !updatedIssue.labels.find(label => label.id === toList.label.id)
+    !updatedIssue.labels.find((label) => label.id === toList.label.id)
   ) {
     updatedIssue.labels.push(toList.label);
   }
   if (fromList?.label && fromList.listType === ListType.label) {
-    updatedIssue.labels = updatedIssue.labels.filter(label => fromList.label.id !== label.id);
+    updatedIssue.labels = updatedIssue.labels.filter((label) => fromList.label.id !== label.id);
   }
 
   if (
     toList.listType === ListType.assignee &&
-    !updatedIssue.assignees.find(assignee => assignee.id === toList.assignee.id)
+    !updatedIssue.assignees.find((assignee) => assignee.id === toList.assignee.id)
   ) {
     updatedIssue.assignees.push(toList.assignee);
   }
   if (fromList?.assignee && fromList.listType === ListType.assignee) {
     updatedIssue.assignees = updatedIssue.assignees.filter(
-      assignee => assignee.id !== fromList.assignee.id,
+      (assignee) => assignee.id !== fromList.assignee.id,
     );
   }
 

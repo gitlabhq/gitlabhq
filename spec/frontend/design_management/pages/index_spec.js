@@ -572,7 +572,7 @@ describe('Design management index page', () => {
       return wrapper.vm.$nextTick().then(() => {
         expect(findDeleteButton().props().hasSelectedDesigns).toBe(true);
         expect(findSelectAllButton().text()).toBe('Deselect all');
-        expect(wrapper.vm.selectedDesigns).toEqual(mockDesigns.map(design => design.filename));
+        expect(wrapper.vm.selectedDesigns).toEqual(mockDesigns.map((design) => design.filename));
       });
     });
 

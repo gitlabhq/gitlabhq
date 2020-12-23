@@ -18,10 +18,10 @@ describe('LogAdvancedFilters', () => {
 
   const findFilteredSearch = () => wrapper.find(GlFilteredSearch);
   const findTimeRangePicker = () => wrapper.find({ ref: 'dateTimePicker' });
-  const getSearchToken = type =>
+  const getSearchToken = (type) =>
     findFilteredSearch()
       .props('availableTokens')
-      .filter(token => token.type === type)[0];
+      .filter((token) => token.type === type)[0];
 
   const mockStateLoading = () => {
     state.timeRange.selected = defaultTimeRange;

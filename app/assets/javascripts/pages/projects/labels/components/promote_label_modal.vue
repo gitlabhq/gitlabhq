@@ -58,14 +58,14 @@ export default {
       eventHub.$emit('promoteLabelModal.requestStarted', this.url);
       return axios
         .post(this.url, { params: { format: 'json' } })
-        .then(response => {
+        .then((response) => {
           eventHub.$emit('promoteLabelModal.requestFinished', {
             labelUrl: this.url,
             successful: true,
           });
           visitUrl(response.data.url);
         })
-        .catch(error => {
+        .catch((error) => {
           eventHub.$emit('promoteLabelModal.requestFinished', {
             labelUrl: this.url,
             successful: false,

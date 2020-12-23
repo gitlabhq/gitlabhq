@@ -96,13 +96,13 @@ function createComponent({ file, first = false, last = false }) {
   };
 }
 
-const findDiffHeader = wrapper => wrapper.find(DiffFileHeaderComponent);
-const findDiffContentArea = wrapper => wrapper.find('[data-testid="content-area"]');
-const findLoader = wrapper => wrapper.find('[data-testid="loader-icon"]');
-const findToggleButton = wrapper => wrapper.find('[data-testid="expand-button"]');
+const findDiffHeader = (wrapper) => wrapper.find(DiffFileHeaderComponent);
+const findDiffContentArea = (wrapper) => wrapper.find('[data-testid="content-area"]');
+const findLoader = (wrapper) => wrapper.find('[data-testid="loader-icon"]');
+const findToggleButton = (wrapper) => wrapper.find('[data-testid="expand-button"]');
 
-const toggleFile = wrapper => findDiffHeader(wrapper).vm.$emit('toggleFile');
-const isDisplayNone = element => element.style.display === 'none';
+const toggleFile = (wrapper) => findDiffHeader(wrapper).vm.$emit('toggleFile');
+const isDisplayNone = (element) => element.style.display === 'none';
 const getReadableFile = () => JSON.parse(JSON.stringify(diffFileMockDataReadable));
 const getUnreadableFile = () => JSON.parse(JSON.stringify(diffFileMockDataUnreadable));
 
@@ -157,7 +157,7 @@ describe('DiffFile', () => {
           await wrapper.vm.$nextTick();
 
           expect(eventHub.$emit).toHaveBeenCalledTimes(events.length);
-          events.forEach(event => {
+          events.forEach((event) => {
             expect(eventHub.$emit).toHaveBeenCalledWith(event);
           });
         },
@@ -174,7 +174,7 @@ describe('DiffFile', () => {
         }));
 
         jest.spyOn(wrapper.vm, 'loadCollapsedDiff').mockResolvedValue(getReadableFile());
-        jest.spyOn(window, 'requestIdleCallback').mockImplementation(fn => fn());
+        jest.spyOn(window, 'requestIdleCallback').mockImplementation((fn) => fn());
 
         makeFileAutomaticallyCollapsed(store);
 
@@ -247,7 +247,7 @@ describe('DiffFile', () => {
       it('should not have any content at all', async () => {
         await wrapper.vm.$nextTick();
 
-        Array.from(findDiffContentArea(wrapper).element.children).forEach(child => {
+        Array.from(findDiffContentArea(wrapper).element.children).forEach((child) => {
           expect(isDisplayNone(child)).toBe(true);
         });
       });

@@ -37,7 +37,7 @@ describe('Multi-file editor library dirty diff controller', () => {
   });
 
   describe('getDiffChangeType', () => {
-    ['added', 'removed', 'modified'].forEach(type => {
+    ['added', 'removed', 'modified'].forEach((type) => {
       it(`returns ${type}`, () => {
         const change = {
           [type]: true,
@@ -49,7 +49,7 @@ describe('Multi-file editor library dirty diff controller', () => {
   });
 
   describe('getDecorator', () => {
-    ['added', 'removed', 'modified'].forEach(type => {
+    ['added', 'removed', 'modified'].forEach((type) => {
       it(`returns with linesDecorationsClassName for ${type}`, () => {
         const change = {
           [type]: true,

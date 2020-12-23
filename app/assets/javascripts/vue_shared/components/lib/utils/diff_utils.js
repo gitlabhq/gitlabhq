@@ -15,5 +15,5 @@ function cleanSuggestionLine(line = {}) {
 }
 
 export function selectDiffLines(lines) {
-  return lines.filter(line => line.type !== 'match').map(line => cleanSuggestionLine(line));
+  return lines.filter((line) => line.type !== 'match').map((line) => cleanSuggestionLine(line));
 }

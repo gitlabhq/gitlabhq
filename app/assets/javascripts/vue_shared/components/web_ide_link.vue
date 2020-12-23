@@ -72,7 +72,7 @@ export default {
   },
   computed: {
     actions() {
-      return [this.webIdeAction, this.editAction, this.gitpodAction].filter(action => action);
+      return [this.webIdeAction, this.editAction, this.gitpodAction].filter((action) => action);
     },
     editAction() {
       if (!this.showEditButton) {

@@ -7,7 +7,7 @@ describe('Filtered Search Visual Tokens', () => {
   let mock;
   const subject = FilteredSearchVisualTokens;
 
-  const findElements = tokenElement => {
+  const findElements = (tokenElement) => {
     const tokenNameElement = tokenElement.querySelector('.name');
     const tokenOperatorElement = tokenElement.querySelector('.operator');
     const tokenValueContainer = tokenElement.querySelector('.value-container');

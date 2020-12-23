@@ -11,7 +11,7 @@ describe('Ci variable table', () => {
   let store;
   let isGroup;
 
-  const createComponent = groupState => {
+  const createComponent = (groupState) => {
     store = createStore();
     store.state.isGroup = groupState;
     jest.spyOn(store, 'dispatch').mockImplementation();

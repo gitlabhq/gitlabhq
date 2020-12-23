@@ -15,8 +15,8 @@ const absoluteGon = {
 const expectedSanitized = '<svg><use></use></svg>';
 
 const safeUrls = {
-  root: Object.values(rootGon).map(url => `${url}#ellipsis_h`),
-  absolute: Object.values(absoluteGon).map(url => `${url}#ellipsis_h`),
+  root: Object.values(rootGon).map((url) => `${url}#ellipsis_h`),
+  absolute: Object.values(absoluteGon).map((url) => `${url}#ellipsis_h`),
 };
 
 const unsafeUrls = [
@@ -60,7 +60,7 @@ describe('~/lib/dompurify', () => {
       expect(sanitize(htmlHref)).toBe(htmlHref);
     });
 
-    it.each(safeUrls[type])('allows safe URL %s', url => {
+    it.each(safeUrls[type])('allows safe URL %s', (url) => {
       const htmlHref = `<svg><use href="${url}"></use></svg>`;
       expect(sanitize(htmlHref)).toBe(htmlHref);
 
@@ -68,7 +68,7 @@ describe('~/lib/dompurify', () => {
       expect(sanitize(htmlXlink)).toBe(htmlXlink);
     });
 
-    it.each(unsafeUrls)('sanitizes unsafe URL %s', url => {
+    it.each(unsafeUrls)('sanitizes unsafe URL %s', (url) => {
       const htmlHref = `<svg><use href="${url}"></use></svg>`;
       const htmlXlink = `<svg><use xlink:href="${url}"></use></svg>`;
 
@@ -87,7 +87,7 @@ describe('~/lib/dompurify', () => {
       window.gon = originalGon;
     });
 
-    it.each([...safeUrls.root, ...safeUrls.absolute, ...unsafeUrls])('sanitizes URL %s', url => {
+    it.each([...safeUrls.root, ...safeUrls.absolute, ...unsafeUrls])('sanitizes URL %s', (url) => {
       const htmlHref = `<svg><use href="${url}"></use></svg>`;
       const htmlXlink = `<svg><use xlink:href="${url}"></use></svg>`;
 

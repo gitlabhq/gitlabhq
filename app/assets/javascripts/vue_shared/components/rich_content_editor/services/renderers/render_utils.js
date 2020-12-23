@@ -11,9 +11,9 @@ export const renderUneditableBranch = (_, { entering, origin }) =>
 
 const attributeDefinitionRegexp = /(^{:.+}$)/;
 
-export const isAttributeDefinition = text => attributeDefinitionRegexp.test(text);
+export const isAttributeDefinition = (text) => attributeDefinitionRegexp.test(text);
 
-const findAttributeDefinition = node => {
+const findAttributeDefinition = (node) => {
   const literal =
     node?.next?.firstChild?.literal || node?.firstChild?.firstChild?.next?.next?.literal; // for headings // for list items;
 

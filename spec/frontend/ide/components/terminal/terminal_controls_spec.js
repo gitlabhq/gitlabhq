@@ -17,7 +17,7 @@ describe('IDE TerminalControls', () => {
   it('shows an up and down scroll button', () => {
     factory();
 
-    expect(buttons.wrappers.map(x => x.props())).toEqual([
+    expect(buttons.wrappers.map((x) => x.props())).toEqual([
       expect.objectContaining({ direction: 'up', disabled: true }),
       expect.objectContaining({ direction: 'down', disabled: true }),
     ]);

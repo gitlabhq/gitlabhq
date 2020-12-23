@@ -22,7 +22,7 @@ describe('Board card layout', () => {
   let list;
 
   // this particular mount component needs to be used after the root beforeEach because it depends on list being initialized
-  const mountComponent = propsData => {
+  const mountComponent = (propsData) => {
     wrapper = shallowMount(BoardCardLayout, {
       stubs: {
         issueCardInner,

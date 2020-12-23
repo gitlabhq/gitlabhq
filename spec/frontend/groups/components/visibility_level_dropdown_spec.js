@@ -11,7 +11,7 @@ describe('Visibility Level Dropdown', () => {
   ];
   const defaultLevel = 0;
 
-  const createComponent = propsData => {
+  const createComponent = (propsData) => {
     wrapper = shallowMount(Component, {
       propsData,
     });
@@ -33,7 +33,7 @@ describe('Visibility Level Dropdown', () => {
     wrapper.find("input[name='group[visibility_level]']").attributes('value');
   const dropdownText = () => wrapper.find(GlDropdown).props('text');
   const findDropdownItems = () =>
-    wrapper.findAll(GlDropdownItem).wrappers.map(option => ({
+    wrapper.findAll(GlDropdownItem).wrappers.map((option) => ({
       text: option.text(),
       secondaryText: option.props('secondaryText'),
     }));

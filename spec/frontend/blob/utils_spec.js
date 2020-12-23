@@ -26,7 +26,7 @@ describe('Blob utilities', () => {
 
       it.each([[{}], [{ blobPath, blobContent, blobGlobalId }]])(
         'creates the instance with the passed parameters %s',
-        extraParams => {
+        (extraParams) => {
           const params = {
             el: editorEl,
             ...extraParams,

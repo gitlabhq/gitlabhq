@@ -31,7 +31,7 @@ describe('CompareDropdownLayout', () => {
 
   const findListItems = () => wrapper.findAll('li');
   const findListItemsData = () =>
-    findListItems().wrappers.map(listItem => ({
+    findListItems().wrappers.map((listItem) => ({
       href: listItem.find('a').attributes('href'),
       text: trimText(listItem.text()),
       createdAt: listItem.findAll(TimeAgo).wrappers[0]?.props('time'),

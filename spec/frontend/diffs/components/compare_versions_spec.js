@@ -13,7 +13,7 @@ describe('CompareVersions', () => {
   let wrapper;
   const targetBranchName = 'tmp-wine-dev';
 
-  const createWrapper = props => {
+  const createWrapper = (props) => {
     const store = createStore();
     const mergeRequestDiff = diffsMockData[0];
 
@@ -121,7 +121,7 @@ describe('CompareVersions', () => {
   });
 
   describe('commit', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       wrapper.vm.$store.state.diffs.commit = getDiffWithCommit().commit;
       wrapper.mergeRequestDiffs = [];
 

@@ -10,7 +10,7 @@ localVue.use(Vuex);
 describe('MembersFilteredSearchBar', () => {
   let wrapper;
 
-  const createComponent = state => {
+  const createComponent = (state) => {
     const store = new Vuex.Store({
       state: {
         sourceId: 1,

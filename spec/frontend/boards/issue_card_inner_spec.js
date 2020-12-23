@@ -260,7 +260,7 @@ describe('Issue card component', () => {
       it('renders 99+ avatar counter', async () => {
         const assignees = [
           ...wrapper.props('issue').assignees,
-          ...range(5, 103).map(i => ({
+          ...range(5, 103).map((i) => ({
             id: i,
             name: 'name',
             username: 'username',

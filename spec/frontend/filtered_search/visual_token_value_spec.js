@@ -7,7 +7,7 @@ import DropdownUtils from '~/filtered_search//dropdown_utils';
 import FilteredSearchSpecHelper from '../helpers/filtered_search_spec_helper';
 
 describe('Filtered Search Visual Tokens', () => {
-  const findElements = tokenElement => {
+  const findElements = (tokenElement) => {
     const tokenNameElement = tokenElement.querySelector('.name');
     const tokenValueContainer = tokenElement.querySelector('.value-container');
     const tokenValueElement = tokenValueContainer.querySelector('.value');
@@ -39,15 +39,15 @@ describe('Filtered Search Visual Tokens', () => {
     let usersCacheSpy;
 
     beforeEach(() => {
-      jest.spyOn(UsersCache, 'retrieve').mockImplementation(username => usersCacheSpy(username));
+      jest.spyOn(UsersCache, 'retrieve').mockImplementation((username) => usersCacheSpy(username));
     });
 
-    it('ignores error if UsersCache throws', done => {
+    it('ignores error if UsersCache throws', (done) => {
       jest.spyOn(window, 'Flash').mockImplementation(() => {});
       const dummyError = new Error('Earth rotated backwards');
       const { subject, tokenValueContainer, tokenValueElement } = findElements(authorToken);
       const tokenValue = tokenValueElement.innerText;
-      usersCacheSpy = username => {
+      usersCacheSpy = (username) => {
         expect(`@${username}`).toBe(tokenValue);
         return Promise.reject(dummyError);
       };
@@ -61,10 +61,10 @@ describe('Filtered Search Visual Tokens', () => {
         .catch(done.fail);
     });
 
-    it('does nothing if user cannot be found', done => {
+    it('does nothing if user cannot be found', (done) => {
       const { subject, tokenValueContainer, tokenValueElement } = findElements(authorToken);
       const tokenValue = tokenValueElement.innerText;
-      usersCacheSpy = username => {
+      usersCacheSpy = (username) => {
         expect(`@${username}`).toBe(tokenValue);
         return Promise.resolve(undefined);
       };
@@ -78,14 +78,14 @@ describe('Filtered Search Visual Tokens', () => {
         .catch(done.fail);
     });
 
-    it('replaces author token with avatar and display name', done => {
+    it('replaces author token with avatar and display name', (done) => {
       const dummyUser = {
         name: 'Important Person',
         avatar_url: 'https://host.invalid/mypics/avatar.png',
       };
       const { subject, tokenValueContainer, tokenValueElement } = findElements(authorToken);
       const tokenValue = tokenValueElement.innerText;
-      usersCacheSpy = username => {
+      usersCacheSpy = (username) => {
         expect(`@${username}`).toBe(tokenValue);
         return Promise.resolve(dummyUser);
       };
@@ -104,14 +104,14 @@ describe('Filtered Search Visual Tokens', () => {
         .catch(done.fail);
     });
 
-    it('escapes user name when creating token', done => {
+    it('escapes user name when creating token', (done) => {
       const dummyUser = {
         name: '<script>',
         avatar_url: `${TEST_HOST}/mypics/avatar.png`,
       };
       const { subject, tokenValueContainer, tokenValueElement } = findElements(authorToken);
       const tokenValue = tokenValueElement.innerText;
-      usersCacheSpy = username => {
+      usersCacheSpy = (username) => {
         expect(`@${username}`).toBe(tokenValue);
         return Promise.resolve(dummyUser);
       };
@@ -168,7 +168,7 @@ describe('Filtered Search Visual Tokens', () => {
       AjaxCache.internalStorage[`${filteredSearchInput.dataset.labelsEndpoint}.json`] = labelData;
     });
 
-    const parseColor = color => {
+    const parseColor = (color) => {
       const dummyElement = document.createElement('div');
       dummyElement.style.color = color;
       return dummyElement.style.color;
@@ -180,10 +180,10 @@ describe('Filtered Search Visual Tokens', () => {
       expect(tokenValueContainer.style.color).toBe(parseColor(label.text_color));
     };
 
-    const findLabel = tokenValue =>
-      labelData.find(label => tokenValue === `~${DropdownUtils.getEscapedText(label.title)}`);
+    const findLabel = (tokenValue) =>
+      labelData.find((label) => tokenValue === `~${DropdownUtils.getEscapedText(label.title)}`);
 
-    it('updates the color of a label token', done => {
+    it('updates the color of a label token', (done) => {
       const { subject, tokenValueContainer, tokenValueElement } = findElements(bugLabelToken);
       const tokenValue = tokenValueElement.innerText;
       const matchingLabel = findLabel(tokenValue);
@@ -197,7 +197,7 @@ describe('Filtered Search Visual Tokens', () => {
         .catch(done.fail);
     });
 
-    it('updates the color of a label token with spaces', done => {
+    it('updates the color of a label token with spaces', (done) => {
       const { subject, tokenValueContainer, tokenValueElement } = findElements(spaceLabelToken);
       const tokenValue = tokenValueElement.innerText;
       const matchingLabel = findLabel(tokenValue);
@@ -211,7 +211,7 @@ describe('Filtered Search Visual Tokens', () => {
         .catch(done.fail);
     });
 
-    it('does not change color of a missing label', done => {
+    it('does not change color of a missing label', (done) => {
       const { subject, tokenValueContainer, tokenValueElement } = findElements(missingLabelToken);
       const tokenValue = tokenValueElement.innerText;
       const matchingLabel = findLabel(tokenValue);
@@ -260,7 +260,7 @@ describe('Filtered Search Visual Tokens', () => {
   });
 
   describe('render', () => {
-    const setupSpies = subject => {
+    const setupSpies = (subject) => {
       jest.spyOn(subject, 'updateLabelTokenColor').mockImplementation(() => {});
       const updateLabelTokenColorSpy = subject.updateLabelTokenColor;
 

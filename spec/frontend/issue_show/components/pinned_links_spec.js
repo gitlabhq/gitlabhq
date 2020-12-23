@@ -11,7 +11,7 @@ describe('PinnedLinks', () => {
 
   const findButtons = () => wrapper.findAll(GlButton);
 
-  const createComponent = props => {
+  const createComponent = (props) => {
     wrapper = shallowMount(PinnedLinks, {
       propsData: {
         zoomMeetingUrl: '',

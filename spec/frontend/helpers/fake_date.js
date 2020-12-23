@@ -3,9 +3,9 @@ export const DEFAULT_ARGS = [2020, 6, 6];
 
 const RealDate = Date;
 
-const isMocked = val => Boolean(val.mock);
+const isMocked = (val) => Boolean(val.mock);
 
-export const createFakeDateClass = ctorDefault => {
+export const createFakeDateClass = (ctorDefault) => {
   const FakeDate = new Proxy(RealDate, {
     construct: (target, argArray) => {
       const ctorArgs = argArray.length ? argArray : ctorDefault;
@@ -25,7 +25,7 @@ export const createFakeDateClass = ctorDefault => {
 
       return target[prop];
     },
-    getPrototypeOf: target => {
+    getPrototypeOf: (target) => {
       return target.prototype;
     },
     // We need to be able to set props so that `jest.spyOn` will work.

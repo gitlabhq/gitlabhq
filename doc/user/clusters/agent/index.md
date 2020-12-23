@@ -20,7 +20,7 @@ tasks in a secure and cloud-native way. It enables:
   (network address translation).
 - Pull-based GitOps deployments by leveraging the
   [GitOps Engine](https://github.com/argoproj/gitops-engine).
-- Real-time access to API endpoints within a cluster.
+- Real-time access to API endpoints in a cluster.
 
 Many more features are planned. Please [review our roadmap](https://gitlab.com/groups/gitlab-org/-/epics/3329).
 
@@ -169,7 +169,7 @@ gitops:
 GitLab [versions 13.7 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/259669) also
 supports manifest projects containing
 multiple directories (or subdirectories) of YAML files. For more information see our
-documentation on the [Kubernetes Agent configuration respository](repository.md).
+documentation on the [Kubernetes Agent configuration repository](repository.md).
 
 ### Create an Agent record in GitLab
 
@@ -266,7 +266,7 @@ example [`resources.yml` file](#example-resourcesyml-file) in the following ways
     [Support TLS for gRPC communication issue](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/7)
     for progress updates.
   - When deploying KAS through the [GitLab chart](https://docs.gitlab.com/charts/), it's possible to customize the `kas-address` for `wss` and `ws` schemes to whatever you need.
-    Check the [chart's KAS Ingress docs](https://docs.gitlab.com/charts/charts/gitlab/kas/#ingress)
+    Check the [chart's KAS Ingress documentation](https://docs.gitlab.com/charts/charts/gitlab/kas/#ingress)
     to learn more about it.
   - In the near future, Omnibus GitLab intends to provision `gitlab-kas` under a sub-domain by default, instead of the `/-/kubernetes-agent` path. Please follow [this issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5784) for details.
 - If you defined your own secret name, replace `gitlab-agent-token` with your
@@ -436,12 +436,9 @@ spec:
 
 The following example projects can help you get started with the Kubernetes Agent.
 
-### Simple NGINX deployment
-
-This basic GitOps example deploys NGINX:
-
 - [Configuration repository](https://gitlab.com/gitlab-org/configure/examples/kubernetes-agent)
-- [Manifest repository](https://gitlab.com/gitlab-org/configure/examples/gitops-project)
+- This basic GitOps example deploys NGINX: [Manifest repository](https://gitlab.com/gitlab-org/configure/examples/gitops-project)
+- [Install GitLab Runner](runner.md)
 
 ### Deploying GitLab Runner with the Agent
 

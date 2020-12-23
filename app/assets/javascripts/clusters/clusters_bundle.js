@@ -128,7 +128,7 @@ export default class Clusters {
 
       this.initPolling(
         'fetchClusterEnvironments',
-        data => this.handleClusterEnvironmentsSuccess(data),
+        (data) => this.handleClusterEnvironmentsSuccess(data),
         () => this.handleEnvironmentsPollError(),
       );
     }
@@ -139,7 +139,7 @@ export default class Clusters {
     if (statusPath && !this.environments) {
       this.initPolling(
         'fetchClusterStatus',
-        data => this.handleClusterStatusSuccess(data),
+        (data) => this.handleClusterStatusSuccess(data),
         () => this.handlePollError(),
       );
     }
@@ -248,15 +248,15 @@ export default class Clusters {
 
   addListeners() {
     eventHub.$on('installApplication', this.installApplication);
-    eventHub.$on('updateApplication', data => this.updateApplication(data));
-    eventHub.$on('saveKnativeDomain', data => this.saveKnativeDomain(data));
-    eventHub.$on('setKnativeDomain', data => this.setKnativeDomain(data));
-    eventHub.$on('uninstallApplication', data => this.uninstallApplication(data));
-    eventHub.$on('setCrossplaneProviderStack', data => this.setCrossplaneProviderStack(data));
-    eventHub.$on('setIngressModSecurityEnabled', data => this.setIngressModSecurityEnabled(data));
-    eventHub.$on('setIngressModSecurityMode', data => this.setIngressModSecurityMode(data));
-    eventHub.$on('resetIngressModSecurityChanges', id => this.resetIngressModSecurityChanges(id));
-    eventHub.$on('setFluentdSettings', data => this.setFluentdSettings(data));
+    eventHub.$on('updateApplication', (data) => this.updateApplication(data));
+    eventHub.$on('saveKnativeDomain', (data) => this.saveKnativeDomain(data));
+    eventHub.$on('setKnativeDomain', (data) => this.setKnativeDomain(data));
+    eventHub.$on('uninstallApplication', (data) => this.uninstallApplication(data));
+    eventHub.$on('setCrossplaneProviderStack', (data) => this.setCrossplaneProviderStack(data));
+    eventHub.$on('setIngressModSecurityEnabled', (data) => this.setIngressModSecurityEnabled(data));
+    eventHub.$on('setIngressModSecurityMode', (data) => this.setIngressModSecurityMode(data));
+    eventHub.$on('resetIngressModSecurityChanges', (id) => this.resetIngressModSecurityChanges(id));
+    eventHub.$on('setFluentdSettings', (data) => this.setFluentdSettings(data));
     // Add event listener to all the banner close buttons
     this.addBannerCloseHandler(this.unreachableContainer, 'unreachable');
     this.addBannerCloseHandler(this.authenticationFailureContainer, 'authentication_failure');
@@ -343,12 +343,12 @@ export default class Clusters {
   checkForNewInstalls(prevApplicationMap, newApplicationMap) {
     const appTitles = Object.keys(newApplicationMap)
       .filter(
-        appId =>
+        (appId) =>
           newApplicationMap[appId].status === APPLICATION_STATUS.INSTALLED &&
           prevApplicationMap[appId].status !== APPLICATION_STATUS.INSTALLED &&
           prevApplicationMap[appId].status !== null,
       )
-      .map(appId => newApplicationMap[appId].title);
+      .map((appId) => newApplicationMap[appId].title);
 
     if (appTitles.length > 0) {
       const text = sprintf(
@@ -450,7 +450,7 @@ export default class Clusters {
           );
         });
       })
-      .catch(error => this.store.updateAppProperty(appId, 'validationError', error));
+      .catch((error) => this.store.updateAppProperty(appId, 'validationError', error));
   }
 
   static validateInstallation(appId, params) {

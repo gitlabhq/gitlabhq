@@ -29,7 +29,7 @@ export const updateFeatureFlag = ({ state, dispatch }, params) => {
       dispatch('receiveUpdateFeatureFlagSuccess');
       visitUrl(state.path);
     })
-    .catch(error => dispatch('receiveUpdateFeatureFlagError', error.response.data));
+    .catch((error) => dispatch('receiveUpdateFeatureFlagError', error.response.data));
 };
 
 export const requestUpdateFeatureFlag = ({ commit }) => commit(types.REQUEST_UPDATE_FEATURE_FLAG);

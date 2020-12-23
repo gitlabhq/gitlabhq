@@ -44,7 +44,7 @@ describe('feature highlight helper', () => {
   });
 
   describe('inserted', () => {
-    it('registers click event callback', done => {
+    it('registers click event callback', (done) => {
       const context = {
         getAttribute: () => 'popoverId',
         dataset: {
@@ -52,7 +52,7 @@ describe('feature highlight helper', () => {
         },
       };
 
-      jest.spyOn($.fn, 'on').mockImplementation(event => {
+      jest.spyOn($.fn, 'on').mockImplementation((event) => {
         expect(event).toEqual('click');
         done();
       });

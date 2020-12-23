@@ -158,7 +158,7 @@ export default {
       const mediaInPreview = this.$refs['markdown-preview'].querySelectorAll('video, audio');
 
       if (mediaInPreview) {
-        mediaInPreview.forEach(media => {
+        mediaInPreview.forEach((media) => {
           media.pause();
         });
       }
@@ -199,7 +199,7 @@ export default {
         this.markdownPreview = __('Loading…');
         axios
           .post(this.markdownPreviewPath, { text: this.textareaValue })
-          .then(response => this.renderMarkdown(response.data))
+          .then((response) => this.renderMarkdown(response.data))
           .catch(() => new Flash(__('Error loading markdown preview')));
       } else {
         this.renderMarkdown();

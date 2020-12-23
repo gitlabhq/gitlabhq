@@ -70,7 +70,7 @@ describe('pollUntilComplete', () => {
     });
 
     it('rejects with the error response', () =>
-      pollUntilComplete(endpoint).catch(error => {
+      pollUntilComplete(endpoint).catch((error) => {
         expect(error.response.data).toBe(errorMessage);
       }));
   });

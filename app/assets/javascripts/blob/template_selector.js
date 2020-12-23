@@ -26,12 +26,12 @@ export default class TemplateSelector {
       data,
       filterable: true,
       selectable: true,
-      toggleLabel: item => item.name,
+      toggleLabel: (item) => item.name,
       search: {
         fields: ['name'],
       },
-      clicked: options => this.onDropdownClicked(options),
-      text: item => item.name,
+      clicked: (options) => this.onDropdownClicked(options),
+      text: (item) => item.name,
     });
   }
 
@@ -46,7 +46,7 @@ export default class TemplateSelector {
   }
 
   listenForFilenameInput() {
-    return this.$filenameInput.on('keyup blur', e => this.renderMatchedDropdown(e));
+    return this.$filenameInput.on('keyup blur', (e) => this.renderMatchedDropdown(e));
   }
 
   renderMatchedDropdown() {

@@ -8,7 +8,7 @@ describe('GLForm', () => {
   const testContext = {};
 
   describe('when instantiated', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       window.gl = window.gl || {};
 
       testContext.form = $('<form class="gfm-form"><textarea class="js-gfm-input"></form>');
@@ -28,7 +28,7 @@ describe('GLForm', () => {
     });
 
     describe('setupAutosize', () => {
-      beforeEach(done => {
+      beforeEach((done) => {
         testContext.glForm.setupAutosize();
 
         setImmediate(() => {

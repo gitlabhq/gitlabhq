@@ -77,11 +77,11 @@ function renderKatex(t) {
   }
   return [text, numInline > 0];
 }
-renderer.paragraph = t => {
+renderer.paragraph = (t) => {
   const [text, inline] = renderKatex(t);
   return `<p class="${inline ? 'inline-katex' : ''}">${text}</p>`;
 };
-renderer.listitem = t => {
+renderer.listitem = (t) => {
   const [text, inline] = renderKatex(t);
   return `<li class="${inline ? 'inline-katex' : ''}">${text}</li>`;
 };

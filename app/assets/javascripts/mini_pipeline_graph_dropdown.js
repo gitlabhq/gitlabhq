@@ -47,7 +47,7 @@ export default class MiniPipelineGraph {
     $(document).on(
       'click',
       `${this.container} .js-builds-dropdown-list a.mini-pipeline-graph-dropdown-item`,
-      e => {
+      (e) => {
         e.stopPropagation();
       },
     );

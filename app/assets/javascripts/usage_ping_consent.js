@@ -5,7 +5,7 @@ import { parseBoolean } from './lib/utils/common_utils';
 import { __ } from './locale';
 
 export default () => {
-  $('body').on('click', '.js-usage-consent-action', e => {
+  $('body').on('click', '.js-usage-consent-action', (e) => {
     e.preventDefault();
     e.stopImmediatePropagation(); // overwrite rails listener
 

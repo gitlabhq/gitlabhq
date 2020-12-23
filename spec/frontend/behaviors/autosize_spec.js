@@ -6,7 +6,7 @@ function load() {
 
 jest.mock('~/helpers/startup_css_helper', () => {
   return {
-    waitForCSSLoaded: jest.fn().mockImplementation(cb => cb.apply()),
+    waitForCSSLoaded: jest.fn().mockImplementation((cb) => cb.apply()),
   };
 });
 

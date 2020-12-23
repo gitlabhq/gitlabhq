@@ -74,7 +74,7 @@ describe('SidebarMoveIssue', () => {
       expect(test.sidebarMoveIssue.$dropdownToggle.data('deprecatedJQueryDropdown')).toBeTruthy();
     });
 
-    it('escapes html from project name', done => {
+    it('escapes html from project name', (done) => {
       test.$toggleButton.dropdown('toggle');
 
       setImmediate(() => {
@@ -98,7 +98,7 @@ describe('SidebarMoveIssue', () => {
       expect(test.$confirmButton.hasClass('is-loading')).toBe(true);
     });
 
-    it('should remove loading state from confirm button on failure', done => {
+    it('should remove loading state from confirm button on failure', (done) => {
       jest.spyOn(window, 'Flash').mockImplementation(() => {});
       jest.spyOn(test.mediator, 'moveIssue').mockReturnValue(Promise.reject());
       test.mediator.setMoveToProjectId(7);
@@ -125,7 +125,7 @@ describe('SidebarMoveIssue', () => {
     });
   });
 
-  it('should set moveToProjectId on dropdown item "No project" click', done => {
+  it('should set moveToProjectId on dropdown item "No project" click', (done) => {
     jest.spyOn(test.mediator, 'setMoveToProjectId').mockImplementation(() => {});
 
     // Open the dropdown
@@ -141,7 +141,7 @@ describe('SidebarMoveIssue', () => {
     });
   });
 
-  it('should set moveToProjectId on dropdown item click', done => {
+  it('should set moveToProjectId on dropdown item click', (done) => {
     jest.spyOn(test.mediator, 'setMoveToProjectId').mockImplementation(() => {});
 
     // Open the dropdown

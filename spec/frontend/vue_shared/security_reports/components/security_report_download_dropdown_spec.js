@@ -6,7 +6,7 @@ describe('SecurityReportDownloadDropdown component', () => {
   let wrapper;
   let artifacts;
 
-  const createComponent = props => {
+  const createComponent = (props) => {
     wrapper = shallowMount(SecurityReportDownloadDropdown, {
       propsData: { ...props },
     });

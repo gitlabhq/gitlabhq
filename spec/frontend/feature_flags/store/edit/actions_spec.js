@@ -44,7 +44,7 @@ describe('Feature flags Edit Module actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestUpdateFeatureFlag and receiveUpdateFeatureFlagSuccess ', done => {
+      it('dispatches requestUpdateFeatureFlag and receiveUpdateFeatureFlagSuccess ', (done) => {
         const featureFlag = {
           name: 'feature_flag',
           description: 'feature flag',
@@ -80,7 +80,7 @@ describe('Feature flags Edit Module actions', () => {
           done,
         );
       });
-      it('handles new version flags as well', done => {
+      it('handles new version flags as well', (done) => {
         const featureFlag = {
           name: 'name',
           description: 'description',
@@ -117,7 +117,7 @@ describe('Feature flags Edit Module actions', () => {
     });
 
     describe('error', () => {
-      it('dispatches requestUpdateFeatureFlag and receiveUpdateFeatureFlagError ', done => {
+      it('dispatches requestUpdateFeatureFlag and receiveUpdateFeatureFlagError ', (done) => {
         mock.onPut(`${TEST_HOST}/endpoint.json`).replyOnce(500, { message: [] });
 
         testAction(
@@ -145,7 +145,7 @@ describe('Feature flags Edit Module actions', () => {
   });
 
   describe('requestUpdateFeatureFlag', () => {
-    it('should commit REQUEST_UPDATE_FEATURE_FLAG mutation', done => {
+    it('should commit REQUEST_UPDATE_FEATURE_FLAG mutation', (done) => {
       testAction(
         requestUpdateFeatureFlag,
         null,
@@ -158,7 +158,7 @@ describe('Feature flags Edit Module actions', () => {
   });
 
   describe('receiveUpdateFeatureFlagSuccess', () => {
-    it('should commit RECEIVE_UPDATE_FEATURE_FLAG_SUCCESS mutation', done => {
+    it('should commit RECEIVE_UPDATE_FEATURE_FLAG_SUCCESS mutation', (done) => {
       testAction(
         receiveUpdateFeatureFlagSuccess,
         null,
@@ -175,7 +175,7 @@ describe('Feature flags Edit Module actions', () => {
   });
 
   describe('receiveUpdateFeatureFlagError', () => {
-    it('should commit RECEIVE_UPDATE_FEATURE_FLAG_ERROR mutation', done => {
+    it('should commit RECEIVE_UPDATE_FEATURE_FLAG_ERROR mutation', (done) => {
       testAction(
         receiveUpdateFeatureFlagError,
         'There was an error',
@@ -200,7 +200,7 @@ describe('Feature flags Edit Module actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestFeatureFlag and receiveFeatureFlagSuccess ', done => {
+      it('dispatches requestFeatureFlag and receiveFeatureFlagSuccess ', (done) => {
         mock.onGet(`${TEST_HOST}/endpoint.json`).replyOnce(200, { id: 1 });
 
         testAction(
@@ -223,7 +223,7 @@ describe('Feature flags Edit Module actions', () => {
     });
 
     describe('error', () => {
-      it('dispatches requestFeatureFlag and receiveUpdateFeatureFlagError ', done => {
+      it('dispatches requestFeatureFlag and receiveUpdateFeatureFlagError ', (done) => {
         mock.onGet(`${TEST_HOST}/endpoint.json`, {}).replyOnce(500, {});
 
         testAction(
@@ -246,7 +246,7 @@ describe('Feature flags Edit Module actions', () => {
   });
 
   describe('requestFeatureFlag', () => {
-    it('should commit REQUEST_FEATURE_FLAG mutation', done => {
+    it('should commit REQUEST_FEATURE_FLAG mutation', (done) => {
       testAction(
         requestFeatureFlag,
         null,
@@ -259,7 +259,7 @@ describe('Feature flags Edit Module actions', () => {
   });
 
   describe('receiveFeatureFlagSuccess', () => {
-    it('should commit RECEIVE_FEATURE_FLAG_SUCCESS mutation', done => {
+    it('should commit RECEIVE_FEATURE_FLAG_SUCCESS mutation', (done) => {
       testAction(
         receiveFeatureFlagSuccess,
         { id: 1 },
@@ -272,7 +272,7 @@ describe('Feature flags Edit Module actions', () => {
   });
 
   describe('receiveFeatureFlagError', () => {
-    it('should commit RECEIVE_FEATURE_FLAG_ERROR mutation', done => {
+    it('should commit RECEIVE_FEATURE_FLAG_ERROR mutation', (done) => {
       testAction(
         receiveFeatureFlagError,
         null,
@@ -289,7 +289,7 @@ describe('Feature flags Edit Module actions', () => {
   });
 
   describe('toggelActive', () => {
-    it('should commit TOGGLE_ACTIVE mutation', done => {
+    it('should commit TOGGLE_ACTIVE mutation', (done) => {
       testAction(
         toggleActive,
         true,

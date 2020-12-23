@@ -40,11 +40,11 @@ export default {
           cMapPacked: true,
         })
         .promise.then(this.renderPages)
-        .then(pages => {
+        .then((pages) => {
           this.pages = pages;
           this.$emit('pdflabload');
         })
-        .catch(error => {
+        .catch((error) => {
           this.$emit('pdflaberror', error);
         });
     },

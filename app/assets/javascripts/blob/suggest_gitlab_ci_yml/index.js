@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Popover from './components/popover.vue';
 
-export default el =>
+export default (el) =>
   new Vue({
     el,
     render(createElement) {

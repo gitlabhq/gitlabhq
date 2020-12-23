@@ -135,7 +135,7 @@ describe('IssuableBody', () => {
 
       it.each(['keydown-title', 'keydown-description'])(
         'component emits `%s` event with event object and issuableMeta params via issuable-edit-form',
-        async eventName => {
+        async (eventName) => {
           const eventObj = {
             preventDefault: jest.fn(),
             stopPropagation: jest.fn(),

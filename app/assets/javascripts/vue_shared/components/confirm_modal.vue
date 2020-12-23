@@ -30,8 +30,8 @@ export default {
     };
   },
   mounted() {
-    document.querySelectorAll(this.selector).forEach(button => {
-      button.addEventListener('click', e => {
+    document.querySelectorAll(this.selector).forEach((button) => {
+      button.addEventListener('click', (e) => {
         e.preventDefault();
 
         this.path = button.dataset.path;

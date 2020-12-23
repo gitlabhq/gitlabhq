@@ -130,8 +130,8 @@ describe('RelatedIssuesBlock', () => {
   describe('showCategorizedIssues prop', () => {
     const issueList = () => wrapper.findAll('.js-related-issues-token-list-item');
     const categorizedHeadings = () => wrapper.findAll('h4');
-    const headingTextAt = index => categorizedHeadings().at(index).text();
-    const mountComponent = showCategorizedIssues => {
+    const headingTextAt = (index) => categorizedHeadings().at(index).text();
+    const mountComponent = (showCategorizedIssues) => {
       wrapper = mount(RelatedIssuesBlock, {
         propsData: {
           pathIdSeparator: PathIdSeparator.Issue,

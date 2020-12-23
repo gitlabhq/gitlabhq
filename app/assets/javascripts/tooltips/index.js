@@ -81,12 +81,12 @@ const tooltipApiInvoker = ({ glHandler, bsHandler }) => (elements, ...params) =>
 export const initTooltips = (config = {}) => {
   if (isGlTooltipsEnabled()) {
     const triggers = config?.triggers || DEFAULT_TRIGGER;
-    const events = triggers.split(' ').map(trigger => EVENTS_MAP[trigger]);
+    const events = triggers.split(' ').map((trigger) => EVENTS_MAP[trigger]);
 
-    events.forEach(event => {
+    events.forEach((event) => {
       document.addEventListener(
         event,
-        e => handleTooltipEvent(document, e, config.selector, config),
+        (e) => handleTooltipEvent(document, e, config.selector, config),
         true,
       );
     });
@@ -103,28 +103,28 @@ export const add = (elements, config = {}) => {
   return invokeBootstrapApi(elements, config);
 };
 export const dispose = tooltipApiInvoker({
-  glHandler: element => tooltipsApp().dispose(element),
-  bsHandler: elements => invokeBootstrapApi(elements, 'dispose'),
+  glHandler: (element) => tooltipsApp().dispose(element),
+  bsHandler: (elements) => invokeBootstrapApi(elements, 'dispose'),
 });
 export const fixTitle = tooltipApiInvoker({
-  glHandler: element => tooltipsApp().fixTitle(element),
-  bsHandler: elements => invokeBootstrapApi(elements, '_fixTitle'),
+  glHandler: (element) => tooltipsApp().fixTitle(element),
+  bsHandler: (elements) => invokeBootstrapApi(elements, '_fixTitle'),
 });
 export const enable = tooltipApiInvoker({
-  glHandler: element => tooltipsApp().triggerEvent(element, 'enable'),
-  bsHandler: elements => invokeBootstrapApi(elements, 'enable'),
+  glHandler: (element) => tooltipsApp().triggerEvent(element, 'enable'),
+  bsHandler: (elements) => invokeBootstrapApi(elements, 'enable'),
 });
 export const disable = tooltipApiInvoker({
-  glHandler: element => tooltipsApp().triggerEvent(element, 'disable'),
-  bsHandler: elements => invokeBootstrapApi(elements, 'disable'),
+  glHandler: (element) => tooltipsApp().triggerEvent(element, 'disable'),
+  bsHandler: (elements) => invokeBootstrapApi(elements, 'disable'),
 });
 export const hide = tooltipApiInvoker({
-  glHandler: element => tooltipsApp().triggerEvent(element, 'close'),
-  bsHandler: elements => invokeBootstrapApi(elements, 'hide'),
+  glHandler: (element) => tooltipsApp().triggerEvent(element, 'close'),
+  bsHandler: (elements) => invokeBootstrapApi(elements, 'hide'),
 });
 export const show = tooltipApiInvoker({
-  glHandler: element => tooltipsApp().triggerEvent(element, 'open'),
-  bsHandler: elements => invokeBootstrapApi(elements, 'show'),
+  glHandler: (element) => tooltipsApp().triggerEvent(element, 'open'),
+  bsHandler: (elements) => invokeBootstrapApi(elements, 'show'),
 });
 export const destroy = () => {
   tooltipsApp().$destroy();

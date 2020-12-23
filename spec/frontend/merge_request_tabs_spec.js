@@ -14,7 +14,7 @@ jest.mock('~/lib/utils/webpack', () => ({
 describe('MergeRequestTabs', () => {
   const testContext = {};
   const stubLocation = {};
-  const setLocation = stubs => {
+  const setLocation = (stubs) => {
     const defaults = {
       pathname: '',
       search: '',
@@ -265,7 +265,7 @@ describe('MergeRequestTabs', () => {
     beforeEach(() => {
       jest.spyOn(mainContent, 'getBoundingClientRect').mockReturnValue({ top: 10 });
       jest.spyOn(tabContent, 'getBoundingClientRect').mockReturnValue({ top: 100 });
-      jest.spyOn(document, 'querySelector').mockImplementation(selector => {
+      jest.spyOn(document, 'querySelector').mockImplementation((selector) => {
         return selector === '.content-wrapper' ? mainContent : tabContent;
       });
       testContext.class.currentAction = 'commits';

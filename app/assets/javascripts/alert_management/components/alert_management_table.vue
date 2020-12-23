@@ -138,7 +138,7 @@ export default {
           data.project || {};
         const now = new Date();
 
-        const listWithData = list.map(alert => {
+        const listWithData = list.map((alert) => {
           const then = new Date(alert.startedAt);
           const diff = now - then;
 

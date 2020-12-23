@@ -94,7 +94,7 @@ describe('SidebarSeverity', () => {
       let resolvePromise;
       wrapper.vm.$apollo.mutate = jest.fn(
         () =>
-          new Promise(resolve => {
+          new Promise((resolve) => {
             resolvePromise = resolve;
           }),
       );

@@ -15,7 +15,7 @@ Try not to use these in new tests - this module is provided primarily for conven
  */
 export function createSpyObj(baseName, methods) {
   const obj = {};
-  methods.forEach(method => {
+  methods.forEach((method) => {
     obj[method] = jest.fn().mockName(`${baseName}#${method}`);
   });
   return obj;

@@ -10,7 +10,7 @@ describe('U2FRegister', () => {
 
   preloadFixtures('u2f/register.html');
 
-  beforeEach(done => {
+  beforeEach((done) => {
     loadFixtures('u2f/register.html');
     u2fDevice = new MockU2FDevice();
     container = $('#js-register-token-2fa');

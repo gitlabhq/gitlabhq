@@ -36,7 +36,7 @@ describe('Render Identifier Instance Text renderer', () => {
     `(
       'should return inline editable, uneditable, and editable tokens in sequence',
       ({ start, middle, end }) => {
-        const buildMockTextToken = content => ({ type: 'text', tagName: null, content });
+        const buildMockTextToken = (content) => ({ type: 'text', tagName: null, content });
 
         const startToken = buildMockTextToken(start);
         const middleToken = buildMockTextToken(middle);

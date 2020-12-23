@@ -176,8 +176,8 @@ describe('ReplacedImageDiff', () => {
       expect(ImageDiff.prototype.bindEvents).toHaveBeenCalled();
     });
 
-    it('should register click eventlistener to 2-up view mode', done => {
-      jest.spyOn(ReplacedImageDiff.prototype, 'changeView').mockImplementation(viewMode => {
+    it('should register click eventlistener to 2-up view mode', (done) => {
+      jest.spyOn(ReplacedImageDiff.prototype, 'changeView').mockImplementation((viewMode) => {
         expect(viewMode).toEqual(viewTypes.TWO_UP);
         done();
       });
@@ -186,8 +186,8 @@ describe('ReplacedImageDiff', () => {
       replacedImageDiff.viewModesEls[viewTypes.TWO_UP].click();
     });
 
-    it('should register click eventlistener to swipe view mode', done => {
-      jest.spyOn(ReplacedImageDiff.prototype, 'changeView').mockImplementation(viewMode => {
+    it('should register click eventlistener to swipe view mode', (done) => {
+      jest.spyOn(ReplacedImageDiff.prototype, 'changeView').mockImplementation((viewMode) => {
         expect(viewMode).toEqual(viewTypes.SWIPE);
         done();
       });
@@ -196,8 +196,8 @@ describe('ReplacedImageDiff', () => {
       replacedImageDiff.viewModesEls[viewTypes.SWIPE].click();
     });
 
-    it('should register click eventlistener to onion skin view mode', done => {
-      jest.spyOn(ReplacedImageDiff.prototype, 'changeView').mockImplementation(viewMode => {
+    it('should register click eventlistener to onion skin view mode', (done) => {
+      jest.spyOn(ReplacedImageDiff.prototype, 'changeView').mockImplementation((viewMode) => {
         expect(viewMode).toEqual(viewTypes.SWIPE);
         done();
       });
@@ -325,7 +325,7 @@ describe('ReplacedImageDiff', () => {
         setupImageFrameEls();
       });
 
-      it('should pass showCommentIndicator normalized indicator values', done => {
+      it('should pass showCommentIndicator normalized indicator values', (done) => {
         jest.spyOn(imageDiffHelper, 'showCommentIndicator').mockImplementation(() => {});
         jest
           .spyOn(imageDiffHelper, 'resizeCoordinatesToImageElement')
@@ -339,7 +339,7 @@ describe('ReplacedImageDiff', () => {
         replacedImageDiff.renderNewView(indicator);
       });
 
-      it('should call showCommentIndicator', done => {
+      it('should call showCommentIndicator', (done) => {
         const normalized = {
           normalized: true,
         };

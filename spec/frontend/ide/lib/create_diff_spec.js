@@ -145,12 +145,12 @@ new file mode 100644
 --- /dev/null
 +++ b/${PATH_LOREM}
 @@ -0,0 +1,${LINES.length} @@
-${LINES.map(line => `+${line}`).join('\n')}
+${LINES.map((line) => `+${line}`).join('\n')}
 diff --git "a/${PATH_IPSUM}" "b/${PATH_IPSUM}"
 --- a/${PATH_IPSUM}
 +++ b/${PATH_IPSUM}
 @@ -1,${LINES.length} +1,1 @@
-${LINES.map(line => `-${line}`).join('\n')}
+${LINES.map((line) => `-${line}`).join('\n')}
 +That's all folks!
 \\ No newline at end of file
 `;
@@ -167,10 +167,10 @@ ${LINES.map(line => `-${line}`).join('\n')}
     const deletedFiles = ['foo/bar/zed/test.md', 'foo/bar/zed/test2.md'];
     const entries = deletedFiles.reduce((acc, path) => Object.assign(acc, createEntries(path)), {});
     const allDeleted = [...deletedFiles, 'foo/bar/zed', 'foo/bar'];
-    allDeleted.forEach(path => {
+    allDeleted.forEach((path) => {
       entries[path].deleted = true;
     });
-    const changedFiles = deletedFiles.map(x => entries[x]);
+    const changedFiles = deletedFiles.map((x) => entries[x]);
 
     const result = createDiff({ changedFiles, entries });
 

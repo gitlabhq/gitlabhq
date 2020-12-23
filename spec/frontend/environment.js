@@ -37,7 +37,7 @@ class CustomEnvironment extends JSDOMEnvironment {
 
     this.rejectedPromises = [];
 
-    this.global.promiseRejectionHandler = error => {
+    this.global.promiseRejectionHandler = (error) => {
       this.rejectedPromises.push(error);
     };
 

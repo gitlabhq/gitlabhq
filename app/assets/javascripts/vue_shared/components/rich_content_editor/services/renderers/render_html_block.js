@@ -2,7 +2,7 @@ import { buildUneditableHtmlAsTextTokens } from './build_uneditable_token';
 import { ALLOWED_VIDEO_ORIGINS } from '../../constants';
 import { getURLOrigin } from '~/lib/utils/url_utility';
 
-const isVideoFrame = html => {
+const isVideoFrame = (html) => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
   const {
@@ -18,6 +18,6 @@ const canRender = ({ type, literal }) => {
   return type === 'htmlBlock' && !isVideoFrame(literal);
 };
 
-const render = node => buildUneditableHtmlAsTextTokens(node);
+const render = (node) => buildUneditableHtmlAsTextTokens(node);
 
 export default { canRender, render };

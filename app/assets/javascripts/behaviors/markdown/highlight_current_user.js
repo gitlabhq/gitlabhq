@@ -9,7 +9,7 @@ export default function highlightCurrentUser(elements) {
     return;
   }
 
-  elements.forEach(element => {
+  elements.forEach((element) => {
     if (parseInt(element.dataset.user, 10) === currentUserId) {
       element.classList.add('current-user');
     }

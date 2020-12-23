@@ -11,7 +11,7 @@
  */
 export const mapComputed = (list, defaultUpdateFn, root) => {
   const result = {};
-  list.forEach(item => {
+  list.forEach((item) => {
     const [getter, key, updateFn] =
       typeof item === 'string'
         ? [false, item, defaultUpdateFn]

@@ -32,7 +32,7 @@ const createImageActions = (images, markdown) => {
   }
 
   images.forEach((imageContent, filePath) => {
-    const imageExistsInMarkdown = path => new RegExp(`!\\[([^[\\]\\n]*)\\](\\(${path})\\)`); // matches the image markdown syntax: ![<any-string-except-newline>](<path>)
+    const imageExistsInMarkdown = (path) => new RegExp(`!\\[([^[\\]\\n]*)\\](\\(${path})\\)`); // matches the image markdown syntax: ![<any-string-except-newline>](<path>)
 
     if (imageExistsInMarkdown(filePath).test(markdown)) {
       actions.push(

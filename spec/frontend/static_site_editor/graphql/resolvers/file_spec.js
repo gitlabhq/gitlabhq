@@ -14,7 +14,7 @@ describe('static_site_editor/graphql/resolvers/file', () => {
   it('returns file content and title when fetching file successfully', () => {
     loadSourceContent.mockResolvedValueOnce({ title, content });
 
-    return fileResolver({ fullPath: projectId }, { path: sourcePath }).then(file => {
+    return fileResolver({ fullPath: projectId }, { path: sourcePath }).then((file) => {
       expect(file).toEqual({
         __typename: 'File',
         title,

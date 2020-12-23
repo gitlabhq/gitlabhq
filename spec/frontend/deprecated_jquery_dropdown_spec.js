@@ -56,8 +56,8 @@ describe('deprecatedJQueryDropdown', () => {
       search: {
         fields: ['name'],
       },
-      text: project => project.name_with_namespace || project.name,
-      id: project => project.id,
+      text: (project) => project.name_with_namespace || project.name,
+      id: (project) => project.id,
       ...extraOpts,
     };
     test.dropdownButtonElement = $('#js-project-dropdown', test.dropdownContainerElement);

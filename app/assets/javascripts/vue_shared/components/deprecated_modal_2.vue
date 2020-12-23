@@ -21,7 +21,7 @@ export default {
       type: String,
       required: false,
       default: 'md',
-      validator: value => sizeVariants.includes(value),
+      validator: (value) => sizeVariants.includes(value),
     },
     headerTitleText: {
       type: String,
@@ -32,7 +32,7 @@ export default {
       type: String,
       required: false,
       default: 'primary',
-      validator: value => buttonVariants.includes(value),
+      validator: (value) => buttonVariants.includes(value),
     },
     footerPrimaryButtonText: {
       type: String,

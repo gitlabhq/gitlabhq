@@ -40,7 +40,7 @@ describe('Job State actions', () => {
   });
 
   describe('setJobEndpoint', () => {
-    it('should commit SET_JOB_ENDPOINT mutation', done => {
+    it('should commit SET_JOB_ENDPOINT mutation', (done) => {
       testAction(
         setJobEndpoint,
         'job/872324.json',
@@ -53,7 +53,7 @@ describe('Job State actions', () => {
   });
 
   describe('setTraceOptions', () => {
-    it('should commit SET_TRACE_OPTIONS mutation', done => {
+    it('should commit SET_TRACE_OPTIONS mutation', (done) => {
       testAction(
         setTraceOptions,
         { pagePath: 'job/872324/trace.json' },
@@ -66,26 +66,26 @@ describe('Job State actions', () => {
   });
 
   describe('hideSidebar', () => {
-    it('should commit HIDE_SIDEBAR mutation', done => {
+    it('should commit HIDE_SIDEBAR mutation', (done) => {
       testAction(hideSidebar, null, mockedState, [{ type: types.HIDE_SIDEBAR }], [], done);
     });
   });
 
   describe('showSidebar', () => {
-    it('should commit HIDE_SIDEBAR mutation', done => {
+    it('should commit HIDE_SIDEBAR mutation', (done) => {
       testAction(showSidebar, null, mockedState, [{ type: types.SHOW_SIDEBAR }], [], done);
     });
   });
 
   describe('toggleSidebar', () => {
     describe('when isSidebarOpen is true', () => {
-      it('should dispatch hideSidebar', done => {
+      it('should dispatch hideSidebar', (done) => {
         testAction(toggleSidebar, null, mockedState, [], [{ type: 'hideSidebar' }], done);
       });
     });
 
     describe('when isSidebarOpen is false', () => {
-      it('should dispatch showSidebar', done => {
+      it('should dispatch showSidebar', (done) => {
         mockedState.isSidebarOpen = false;
 
         testAction(toggleSidebar, null, mockedState, [], [{ type: 'showSidebar' }], done);
@@ -94,7 +94,7 @@ describe('Job State actions', () => {
   });
 
   describe('requestJob', () => {
-    it('should commit REQUEST_JOB mutation', done => {
+    it('should commit REQUEST_JOB mutation', (done) => {
       testAction(requestJob, null, mockedState, [{ type: types.REQUEST_JOB }], [], done);
     });
   });
@@ -114,7 +114,7 @@ describe('Job State actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestJob and receiveJobSuccess ', done => {
+      it('dispatches requestJob and receiveJobSuccess ', (done) => {
         mock.onGet(`${TEST_HOST}/endpoint.json`).replyOnce(200, { id: 121212, name: 'karma' });
 
         testAction(
@@ -141,7 +141,7 @@ describe('Job State actions', () => {
         mock.onGet(`${TEST_HOST}/endpoint.json`).reply(500);
       });
 
-      it('dispatches requestJob and receiveJobError ', done => {
+      it('dispatches requestJob and receiveJobError ', (done) => {
         testAction(
           fetchJob,
           null,
@@ -160,7 +160,7 @@ describe('Job State actions', () => {
       });
     });
 
-    it('fetchTrace is called only if the job has started or has a trace', done => {
+    it('fetchTrace is called only if the job has started or has a trace', (done) => {
       mock.onGet(`${TEST_HOST}/endpoint.json`).replyOnce(200, { id: 121212, name: 'karma' });
 
       mockedState.job.started = true;
@@ -188,7 +188,7 @@ describe('Job State actions', () => {
   });
 
   describe('receiveJobSuccess', () => {
-    it('should commit RECEIVE_JOB_SUCCESS mutation', done => {
+    it('should commit RECEIVE_JOB_SUCCESS mutation', (done) => {
       testAction(
         receiveJobSuccess,
         { id: 121232132 },
@@ -201,25 +201,25 @@ describe('Job State actions', () => {
   });
 
   describe('receiveJobError', () => {
-    it('should commit RECEIVE_JOB_ERROR mutation', done => {
+    it('should commit RECEIVE_JOB_ERROR mutation', (done) => {
       testAction(receiveJobError, null, mockedState, [{ type: types.RECEIVE_JOB_ERROR }], [], done);
     });
   });
 
   describe('scrollTop', () => {
-    it('should dispatch toggleScrollButtons action', done => {
+    it('should dispatch toggleScrollButtons action', (done) => {
       testAction(scrollTop, null, mockedState, [], [{ type: 'toggleScrollButtons' }], done);
     });
   });
 
   describe('scrollBottom', () => {
-    it('should dispatch toggleScrollButtons action', done => {
+    it('should dispatch toggleScrollButtons action', (done) => {
       testAction(scrollBottom, null, mockedState, [], [{ type: 'toggleScrollButtons' }], done);
     });
   });
 
   describe('requestTrace', () => {
-    it('should commit REQUEST_TRACE mutation', done => {
+    it('should commit REQUEST_TRACE mutation', (done) => {
       testAction(requestTrace, null, mockedState, [{ type: types.REQUEST_TRACE }], [], done);
     });
   });
@@ -239,7 +239,7 @@ describe('Job State actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestTrace, receiveTraceSuccess and stopPollingTrace when job is complete', done => {
+      it('dispatches requestTrace, receiveTraceSuccess and stopPollingTrace when job is complete', (done) => {
         mock.onGet(`${TEST_HOST}/endpoint/trace.json`).replyOnce(200, {
           html: 'I, [2018-08-17T22:57:45.707325 #1841]  INFO -- :',
           complete: true,
@@ -282,7 +282,7 @@ describe('Job State actions', () => {
           mock.onGet(`${TEST_HOST}/endpoint/trace.json`).replyOnce(200, tracePayload);
         });
 
-        it('dispatches startPollingTrace', done => {
+        it('dispatches startPollingTrace', (done) => {
           testAction(
             fetchTrace,
             null,
@@ -297,7 +297,7 @@ describe('Job State actions', () => {
           );
         });
 
-        it('does not dispatch startPollingTrace when timeout is non-empty', done => {
+        it('does not dispatch startPollingTrace when timeout is non-empty', (done) => {
           mockedState.traceTimeout = 1;
 
           testAction(
@@ -320,7 +320,7 @@ describe('Job State actions', () => {
         mock.onGet(`${TEST_HOST}/endpoint/trace.json`).reply(500);
       });
 
-      it('dispatches requestTrace and receiveTraceError ', done => {
+      it('dispatches requestTrace and receiveTraceError ', (done) => {
         testAction(
           fetchTrace,
           null,
@@ -385,7 +385,7 @@ describe('Job State actions', () => {
       window.clearTimeout = origTimeout;
     });
 
-    it('should commit STOP_POLLING_TRACE mutation ', done => {
+    it('should commit STOP_POLLING_TRACE mutation ', (done) => {
       const traceTimeout = 7;
 
       testAction(
@@ -404,7 +404,7 @@ describe('Job State actions', () => {
   });
 
   describe('receiveTraceSuccess', () => {
-    it('should commit RECEIVE_TRACE_SUCCESS mutation ', done => {
+    it('should commit RECEIVE_TRACE_SUCCESS mutation ', (done) => {
       testAction(
         receiveTraceSuccess,
         'hello world',
@@ -417,13 +417,13 @@ describe('Job State actions', () => {
   });
 
   describe('receiveTraceError', () => {
-    it('should commit stop polling trace', done => {
+    it('should commit stop polling trace', (done) => {
       testAction(receiveTraceError, null, mockedState, [], [{ type: 'stopPollingTrace' }], done);
     });
   });
 
   describe('toggleCollapsibleLine', () => {
-    it('should commit TOGGLE_COLLAPSIBLE_LINE mutation ', done => {
+    it('should commit TOGGLE_COLLAPSIBLE_LINE mutation ', (done) => {
       testAction(
         toggleCollapsibleLine,
         { isClosed: true },
@@ -436,7 +436,7 @@ describe('Job State actions', () => {
   });
 
   describe('requestJobsForStage', () => {
-    it('should commit REQUEST_JOBS_FOR_STAGE mutation ', done => {
+    it('should commit REQUEST_JOBS_FOR_STAGE mutation ', (done) => {
       testAction(
         requestJobsForStage,
         { name: 'deploy' },
@@ -460,7 +460,7 @@ describe('Job State actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestJobsForStage and receiveJobsForStageSuccess ', done => {
+      it('dispatches requestJobsForStage and receiveJobsForStageSuccess ', (done) => {
         mock
           .onGet(`${TEST_HOST}/jobs.json`)
           .replyOnce(200, { latest_statuses: [{ id: 121212, name: 'build' }], retried: [] });
@@ -490,7 +490,7 @@ describe('Job State actions', () => {
         mock.onGet(`${TEST_HOST}/jobs.json`).reply(500);
       });
 
-      it('dispatches requestJobsForStage and receiveJobsForStageError', done => {
+      it('dispatches requestJobsForStage and receiveJobsForStageError', (done) => {
         testAction(
           fetchJobsForStage,
           { dropdown_path: `${TEST_HOST}/jobs.json` },
@@ -512,7 +512,7 @@ describe('Job State actions', () => {
   });
 
   describe('receiveJobsForStageSuccess', () => {
-    it('should commit RECEIVE_JOBS_FOR_STAGE_SUCCESS mutation ', done => {
+    it('should commit RECEIVE_JOBS_FOR_STAGE_SUCCESS mutation ', (done) => {
       testAction(
         receiveJobsForStageSuccess,
         [{ id: 121212, name: 'karma' }],
@@ -525,7 +525,7 @@ describe('Job State actions', () => {
   });
 
   describe('receiveJobsForStageError', () => {
-    it('should commit RECEIVE_JOBS_FOR_STAGE_ERROR mutation ', done => {
+    it('should commit RECEIVE_JOBS_FOR_STAGE_ERROR mutation ', (done) => {
       testAction(
         receiveJobsForStageError,
         null,
@@ -548,7 +548,7 @@ describe('Job State actions', () => {
       mock.restore();
     });
 
-    it('should dispatch fetchTrace', done => {
+    it('should dispatch fetchTrace', (done) => {
       const playManualJobEndpoint = `${TEST_HOST}/manual-job/jobs/1000/play`;
 
       mock.onPost(playManualJobEndpoint).reply(200);

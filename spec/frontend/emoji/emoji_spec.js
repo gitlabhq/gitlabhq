@@ -369,11 +369,11 @@ describe('gl_emoji', () => {
   describe('searchEmoji', () => {
     const { atom, grey_question } = emojiFixtureMap;
     const search = (query, opts) => searchEmoji(query, opts).map(({ name }) => name);
-    const mangle = str => str.slice(0, 1) + str.slice(-1);
-    const partial = str => str.slice(0, 2);
+    const mangle = (str) => str.slice(0, 1) + str.slice(-1);
+    const partial = (str) => str.slice(0, 2);
 
     describe('with default options', () => {
-      const subject = query => search(query);
+      const subject = (query) => search(query);
 
       describeEmojiFields('with $field', ({ accessor }) => {
         it(`should match by lower case: ${accessor(atom)}`, () => {
@@ -403,7 +403,7 @@ describe('gl_emoji', () => {
     });
 
     describe('with fuzzy match', () => {
-      const subject = query => search(query, { match: 'fuzzy' });
+      const subject = (query) => search(query, { match: 'fuzzy' });
 
       describeEmojiFields('with $field', ({ accessor }) => {
         it(`should match by lower case: ${accessor(atom)}`, () => {
@@ -421,7 +421,7 @@ describe('gl_emoji', () => {
     });
 
     describe('with contains match', () => {
-      const subject = query => search(query, { match: 'contains' });
+      const subject = (query) => search(query, { match: 'contains' });
 
       describeEmojiFields('with $field', ({ accessor }) => {
         it(`should match by lower case: ${accessor(atom)}`, () => {
@@ -443,7 +443,7 @@ describe('gl_emoji', () => {
     });
 
     describe('with fallback', () => {
-      const subject = query => search(query, { fallback: true });
+      const subject = (query) => search(query, { fallback: true });
 
       it.each`
         query
@@ -454,7 +454,7 @@ describe('gl_emoji', () => {
     });
 
     describe('with name and alias fields', () => {
-      const subject = query => search(query, { fields: ['name', 'alias'] });
+      const subject = (query) => search(query, { fields: ['name', 'alias'] });
 
       it(`should match by name: ${atom.name}`, () => {
         expect(subject(atom.name)).toContain(atom.name);

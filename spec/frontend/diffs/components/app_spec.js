@@ -102,13 +102,13 @@ describe('diffs/components/app', () => {
   });
 
   describe('fetch diff methods', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       const fetchResolver = () => {
         store.state.diffs.retrievingBatches = false;
         store.state.notes.discussions = 'test';
         return Promise.resolve({ real_size: 100 });
       };
-      jest.spyOn(window, 'requestIdleCallback').mockImplementation(fn => fn());
+      jest.spyOn(window, 'requestIdleCallback').mockImplementation((fn) => fn());
       createComponent();
       jest.spyOn(wrapper.vm, 'fetchDiffFilesMeta').mockImplementation(fetchResolver);
       jest.spyOn(wrapper.vm, 'fetchDiffFilesBatch').mockImplementation(fetchResolver);
@@ -122,7 +122,7 @@ describe('diffs/components/app', () => {
       wrapper.vm.$nextTick(done);
     });
 
-    it('calls batch methods if diffsBatchLoad is enabled, and not latest version', done => {
+    it('calls batch methods if diffsBatchLoad is enabled, and not latest version', (done) => {
       expect(wrapper.vm.diffFilesLength).toEqual(0);
       wrapper.vm.isLatestVersion = () => false;
       wrapper.vm.fetchData(false);
@@ -139,7 +139,7 @@ describe('diffs/components/app', () => {
       });
     });
 
-    it('calls batch methods if diffsBatchLoad is enabled, and latest version', done => {
+    it('calls batch methods if diffsBatchLoad is enabled, and latest version', (done) => {
       expect(wrapper.vm.diffFilesLength).toEqual(0);
       wrapper.vm.fetchData(false);
 
@@ -216,7 +216,7 @@ describe('diffs/components/app', () => {
       window.location.hash = 'ABC_123';
     });
 
-    it('sets highlighted row if hash exists in location object', done => {
+    it('sets highlighted row if hash exists in location object', (done) => {
       createComponent({
         shouldShow: true,
       });
@@ -267,7 +267,7 @@ describe('diffs/components/app', () => {
     });
   });
 
-  it('marks current diff file based on currently highlighted row', done => {
+  it('marks current diff file based on currently highlighted row', (done) => {
     createComponent({
       shouldShow: true,
     });
@@ -439,7 +439,7 @@ describe('diffs/components/app', () => {
       wrapper.destroy();
     });
 
-    it('jumps to next and previous files in the list', done => {
+    it('jumps to next and previous files in the list', (done) => {
       wrapper.vm
         .$nextTick()
         .then(() => {
@@ -459,7 +459,7 @@ describe('diffs/components/app', () => {
         .catch(done.fail);
     });
 
-    it('does not jump to previous file from the first one', done => {
+    it('does not jump to previous file from the first one', (done) => {
       wrapper.vm
         .$nextTick()
         .then(() => {
@@ -476,7 +476,7 @@ describe('diffs/components/app', () => {
         .catch(done.fail);
     });
 
-    it('does not jump to next file from the last one', done => {
+    it('does not jump to next file from the last one', (done) => {
       wrapper.vm
         .$nextTick()
         .then(() => {

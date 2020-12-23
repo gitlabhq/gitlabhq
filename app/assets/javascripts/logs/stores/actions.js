@@ -11,14 +11,14 @@ const requestUntilData = (url, params) =>
   backOff((next, stop) => {
     axios
       .get(url, { params })
-      .then(res => {
+      .then((res) => {
         if (res.status === httpStatusCodes.ACCEPTED) {
           next();
           return;
         }
         stop(res);
       })
-      .catch(err => {
+      .catch((err) => {
         stop(err);
       });
   });
@@ -66,12 +66,12 @@ const requestLogsUntilData = ({ commit, state }) => {
 const filtersToParams = (filters = []) => {
   // Strings become part of the `search`
   const search = filters
-    .filter(f => typeof f === 'string')
+    .filter((f) => typeof f === 'string')
     .join(' ')
     .trim();
 
   // null podName to show all pods
-  const podName = filters.find(f => f?.type === TOKEN_TYPE_POD_NAME)?.value?.data ?? null;
+  const podName = filters.find((f) => f?.type === TOKEN_TYPE_POD_NAME)?.value?.data ?? null;
 
   return { search, podName };
 };

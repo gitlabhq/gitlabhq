@@ -73,7 +73,7 @@ describe('Diff settings dropdown component', () => {
     });
 
     it('sets list button as selected when renderTreeList is false', () => {
-      createComponent(store => {
+      createComponent((store) => {
         Object.assign(store.state.diffs, {
           renderTreeList: false,
         });
@@ -84,7 +84,7 @@ describe('Diff settings dropdown component', () => {
     });
 
     it('sets tree button as selected when renderTreeList is true', () => {
-      createComponent(store => {
+      createComponent((store) => {
         Object.assign(store.state.diffs, {
           renderTreeList: true,
         });
@@ -97,7 +97,7 @@ describe('Diff settings dropdown component', () => {
 
   describe('compare changes', () => {
     it('sets inline button as selected', () => {
-      createComponent(store => {
+      createComponent((store) => {
         Object.assign(store.state.diffs, {
           diffViewType: INLINE_DIFF_VIEW_TYPE,
         });
@@ -108,7 +108,7 @@ describe('Diff settings dropdown component', () => {
     });
 
     it('sets parallel button as selected', () => {
-      createComponent(store => {
+      createComponent((store) => {
         Object.assign(store.state.diffs, {
           diffViewType: PARALLEL_DIFF_VIEW_TYPE,
         });
@@ -137,7 +137,7 @@ describe('Diff settings dropdown component', () => {
 
   describe('whitespace toggle', () => {
     it('does not set as checked when showWhitespace is false', () => {
-      createComponent(store => {
+      createComponent((store) => {
         Object.assign(store.state.diffs, {
           showWhitespace: false,
         });
@@ -147,7 +147,7 @@ describe('Diff settings dropdown component', () => {
     });
 
     it('sets as checked when showWhitespace is true', () => {
-      createComponent(store => {
+      createComponent((store) => {
         Object.assign(store.state.diffs, {
           showWhitespace: true,
         });
@@ -183,7 +183,7 @@ describe('Diff settings dropdown component', () => {
     `(
       'sets the checkbox to { checked: $checked } if the fileByFile setting is $fileByFile',
       async ({ fileByFile, checked }) => {
-        createComponent(store => {
+        createComponent((store) => {
           Object.assign(store.state.diffs, {
             viewDiffsFileByFile: fileByFile,
           });
@@ -202,7 +202,7 @@ describe('Diff settings dropdown component', () => {
     `(
       'when the file by file setting starts as $start, toggling the checkbox should emit an event set to $emit',
       async ({ start, emit }) => {
-        createComponent(store => {
+        createComponent((store) => {
           Object.assign(store.state.diffs, {
             viewDiffsFileByFile: start,
           });

@@ -71,7 +71,7 @@ describe('date time picker lib', () => {
       '2019-19-23',
       '2019-09-23 x',
       '2019-09-29 24:24:24',
-    ].forEach(input => {
+    ].forEach((input) => {
       it(`throws error for invalid input like ${input}`, () => {
         expect(() => inputStringToIsoDate(input)).toThrow();
       });

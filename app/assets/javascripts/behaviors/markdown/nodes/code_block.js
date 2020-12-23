@@ -25,7 +25,7 @@ export default class CodeBlock extends BaseCodeBlock {
         {
           tag: 'pre.code.highlight',
           preserveWhitespace: 'full',
-          getAttrs: el => {
+          getAttrs: (el) => {
             const lang = el.getAttribute('lang');
             if (!lang || lang === '') return {};
 
@@ -62,13 +62,13 @@ export default class CodeBlock extends BaseCodeBlock {
           tag: '.md-suggestion-diff',
           preserveWhitespace: 'full',
           getContent: (el, schema) =>
-            [...el.querySelectorAll('.line_content.new span')].map(span =>
+            [...el.querySelectorAll('.line_content.new span')].map((span) =>
               schema.text(span.innerText),
             ),
           attrs: { lang: 'suggestion' },
         },
       ],
-      toDOM: node => ['pre', { class: 'code highlight', lang: node.attrs.lang }, ['code', 0]],
+      toDOM: (node) => ['pre', { class: 'code highlight', lang: node.attrs.lang }, ['code', 0]],
     };
   }
 

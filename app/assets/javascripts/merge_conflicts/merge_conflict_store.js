@@ -5,7 +5,7 @@ import Vue from 'vue';
 import Cookies from 'js-cookie';
 import { s__ } from '~/locale';
 
-(global => {
+((global) => {
   global.mergeConflicts = global.mergeConflicts || {};
 
   const diffViewType = Cookies.get('diff_view');
@@ -48,7 +48,7 @@ import { s__ } from '~/locale';
     },
 
     decorateFiles(files) {
-      files.forEach(file => {
+      files.forEach((file) => {
         file.content = '';
         file.resolutionData = {};
         file.promptDiscardConfirmation = false;
@@ -72,7 +72,7 @@ import { s__ } from '~/locale';
     setInlineLine(file) {
       file.inlineLines = [];
 
-      file.sections.forEach(section => {
+      file.sections.forEach((section) => {
         let currentLineType = 'new';
         const { conflict, lines, id } = section;
 
@@ -80,7 +80,7 @@ import { s__ } from '~/locale';
           file.inlineLines.push(this.getHeadHeaderLine(id));
         }
 
-        lines.forEach(line => {
+        lines.forEach((line) => {
           const { type } = line;
 
           if ((type === 'new' || type === 'old') && currentLineType !== type) {
@@ -102,7 +102,7 @@ import { s__ } from '~/locale';
       file.parallelLines = [];
       const linesObj = { left: [], right: [] };
 
-      file.sections.forEach(section => {
+      file.sections.forEach((section) => {
         const { conflict, lines, id } = section;
 
         if (conflict) {
@@ -110,7 +110,7 @@ import { s__ } from '~/locale';
           linesObj.right.push(this.getHeadHeaderLine(id));
         }
 
-        lines.forEach(line => {
+        lines.forEach((line) => {
           const { type } = line;
 
           if (conflict) {
@@ -156,9 +156,9 @@ import { s__ } from '~/locale';
       const { files } = this.state.conflictsData;
       let count = 0;
 
-      files.forEach(file => {
+      files.forEach((file) => {
         if (file.type === CONFLICT_TYPES.TEXT) {
-          file.sections.forEach(section => {
+          file.sections.forEach((section) => {
             if (section.conflict) {
               count += 1;
             }
@@ -287,14 +287,14 @@ import { s__ } from '~/locale';
     },
 
     restoreFileLinesState(file) {
-      file.inlineLines.forEach(line => {
+      file.inlineLines.forEach((line) => {
         if (line.hasConflict || line.isHeader) {
           line.isSelected = false;
           line.isUnselected = false;
         }
       });
 
-      file.parallelLines.forEach(lines => {
+      file.parallelLines.forEach((lines) => {
         const left = lines[0];
         const right = lines[1];
         const isLeftMatch = left.hasConflict || left.isHeader;
@@ -362,7 +362,7 @@ import { s__ } from '~/locale';
         files: [],
       };
 
-      this.state.conflictsData.files.forEach(file => {
+      this.state.conflictsData.files.forEach((file) => {
         const addFile = {
           old_path: file.old_path,
           new_path: file.new_path,
@@ -388,13 +388,13 @@ import { s__ } from '~/locale';
     handleSelected(file, sectionId, selection) {
       Vue.set(file.resolutionData, sectionId, selection);
 
-      file.inlineLines.forEach(line => {
+      file.inlineLines.forEach((line) => {
         if (line.id === sectionId && (line.hasConflict || line.isHeader)) {
           this.markLine(line, selection);
         }
       });
 
-      file.parallelLines.forEach(lines => {
+      file.parallelLines.forEach((lines) => {
         const left = lines[0];
         const right = lines[1];
         const hasSameId = right.id === sectionId || left.id === sectionId;
@@ -426,7 +426,7 @@ import { s__ } from '~/locale';
     },
 
     fileTextTypePresent() {
-      return this.state.conflictsData.files.some(f => f.type === CONFLICT_TYPES.TEXT);
+      return this.state.conflictsData.files.some((f) => f.type === CONFLICT_TYPES.TEXT);
     },
   };
 })(window.gl || (window.gl = {}));

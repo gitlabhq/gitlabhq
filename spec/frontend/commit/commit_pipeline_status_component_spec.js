@@ -105,7 +105,7 @@ describe('Commit pipeline status component', () => {
   describe('when polling', () => {
     let pollConfig;
     beforeEach(() => {
-      Poll.mockImplementation(config => {
+      Poll.mockImplementation((config) => {
         pollConfig = config;
         return { makeRequest: jest.fn(), restart: jest.fn(), stop: jest.fn() };
       });

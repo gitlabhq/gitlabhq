@@ -118,7 +118,7 @@ export default {
             },
           },
         })
-        .catch(e => {
+        .catch((e) => {
           this.submitChangesError = e.message;
         })
         .finally(() => {

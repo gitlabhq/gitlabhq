@@ -263,7 +263,7 @@ export const BoardsMockData = {
   },
 };
 
-export const boardsMockInterceptor = config => {
+export const boardsMockInterceptor = (config) => {
   const body = BoardsMockData[config.method.toUpperCase()][config.url];
   return [200, body];
 };
@@ -318,7 +318,7 @@ export const mockLists = [mockList, mockLabelList];
 
 export const mockListsById = keyBy(mockLists, 'id');
 
-export const mockListsWithModel = mockLists.map(listMock =>
+export const mockListsWithModel = mockLists.map((listMock) =>
   Vue.observable(new List({ ...listMock, doNotFetchIssues: true })),
 );
 

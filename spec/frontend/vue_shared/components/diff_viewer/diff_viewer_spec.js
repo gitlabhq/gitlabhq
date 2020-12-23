@@ -26,7 +26,7 @@ describe('DiffViewer', () => {
     vm.$destroy();
   });
 
-  it('renders image diff', done => {
+  it('renders image diff', (done) => {
     window.gon = {
       relative_url_root: '',
     };
@@ -46,7 +46,7 @@ describe('DiffViewer', () => {
     });
   });
 
-  it('renders fallback download diff display', done => {
+  it('renders fallback download diff display', (done) => {
     createComponent({
       ...requiredProps,
       diffViewerMode: 'added',

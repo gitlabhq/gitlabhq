@@ -29,7 +29,7 @@ describe('Frequent Items Dropdown Store Actions', () => {
   });
 
   describe('setNamespace', () => {
-    it('should set namespace', done => {
+    it('should set namespace', (done) => {
       testAction(
         actions.setNamespace,
         mockNamespace,
@@ -42,7 +42,7 @@ describe('Frequent Items Dropdown Store Actions', () => {
   });
 
   describe('setStorageKey', () => {
-    it('should set storage key', done => {
+    it('should set storage key', (done) => {
       testAction(
         actions.setStorageKey,
         mockStorageKey,
@@ -55,7 +55,7 @@ describe('Frequent Items Dropdown Store Actions', () => {
   });
 
   describe('requestFrequentItems', () => {
-    it('should request frequent items', done => {
+    it('should request frequent items', (done) => {
       testAction(
         actions.requestFrequentItems,
         null,
@@ -68,7 +68,7 @@ describe('Frequent Items Dropdown Store Actions', () => {
   });
 
   describe('receiveFrequentItemsSuccess', () => {
-    it('should set frequent items', done => {
+    it('should set frequent items', (done) => {
       testAction(
         actions.receiveFrequentItemsSuccess,
         mockFrequentProjects,
@@ -81,7 +81,7 @@ describe('Frequent Items Dropdown Store Actions', () => {
   });
 
   describe('receiveFrequentItemsError', () => {
-    it('should set frequent items error state', done => {
+    it('should set frequent items error state', (done) => {
       testAction(
         actions.receiveFrequentItemsError,
         null,
@@ -94,7 +94,7 @@ describe('Frequent Items Dropdown Store Actions', () => {
   });
 
   describe('fetchFrequentItems', () => {
-    it('should dispatch `receiveFrequentItemsSuccess`', done => {
+    it('should dispatch `receiveFrequentItemsSuccess`', (done) => {
       mockedState.namespace = mockNamespace;
       mockedState.storageKey = mockStorageKey;
 
@@ -108,7 +108,7 @@ describe('Frequent Items Dropdown Store Actions', () => {
       );
     });
 
-    it('should dispatch `receiveFrequentItemsError`', done => {
+    it('should dispatch `receiveFrequentItemsError`', (done) => {
       jest.spyOn(AccessorUtilities, 'isLocalStorageAccessSafe').mockReturnValue(false);
       mockedState.namespace = mockNamespace;
       mockedState.storageKey = mockStorageKey;
@@ -125,7 +125,7 @@ describe('Frequent Items Dropdown Store Actions', () => {
   });
 
   describe('requestSearchedItems', () => {
-    it('should request searched items', done => {
+    it('should request searched items', (done) => {
       testAction(
         actions.requestSearchedItems,
         null,
@@ -138,7 +138,7 @@ describe('Frequent Items Dropdown Store Actions', () => {
   });
 
   describe('receiveSearchedItemsSuccess', () => {
-    it('should set searched items', done => {
+    it('should set searched items', (done) => {
       testAction(
         actions.receiveSearchedItemsSuccess,
         mockSearchedProjects,
@@ -151,7 +151,7 @@ describe('Frequent Items Dropdown Store Actions', () => {
   });
 
   describe('receiveSearchedItemsError', () => {
-    it('should set searched items error state', done => {
+    it('should set searched items error state', (done) => {
       testAction(
         actions.receiveSearchedItemsError,
         null,
@@ -168,7 +168,7 @@ describe('Frequent Items Dropdown Store Actions', () => {
       gon.api_version = 'v4';
     });
 
-    it('should dispatch `receiveSearchedItemsSuccess`', done => {
+    it('should dispatch `receiveSearchedItemsSuccess`', (done) => {
       mock.onGet(/\/api\/v4\/projects.json(.*)$/).replyOnce(200, mockSearchedProjects, {});
 
       testAction(
@@ -187,7 +187,7 @@ describe('Frequent Items Dropdown Store Actions', () => {
       );
     });
 
-    it('should dispatch `receiveSearchedItemsError`', done => {
+    it('should dispatch `receiveSearchedItemsError`', (done) => {
       gon.api_version = 'v4';
       mock.onGet(/\/api\/v4\/projects.json(.*)$/).replyOnce(500);
 
@@ -203,7 +203,7 @@ describe('Frequent Items Dropdown Store Actions', () => {
   });
 
   describe('setSearchQuery', () => {
-    it('should commit query and dispatch `fetchSearchedItems` when query is present', done => {
+    it('should commit query and dispatch `fetchSearchedItems` when query is present', (done) => {
       testAction(
         actions.setSearchQuery,
         { query: 'test' },
@@ -214,7 +214,7 @@ describe('Frequent Items Dropdown Store Actions', () => {
       );
     });
 
-    it('should commit query and dispatch `fetchFrequentItems` when query is empty', done => {
+    it('should commit query and dispatch `fetchFrequentItems` when query is empty', (done) => {
       testAction(
         actions.setSearchQuery,
         null,

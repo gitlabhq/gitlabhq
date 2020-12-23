@@ -4,7 +4,7 @@ export default {
   render(h, context) {
     const { slotKeys } = context.props;
     const slots = context.slots();
-    const children = slotKeys.map(key => slots[key]).filter(x => x);
+    const children = slotKeys.map((key) => slots[key]).filter((x) => x);
 
     return children;
   },

@@ -25,7 +25,7 @@ export default {
       variables() {
         return this.mergeRequestQueryVariables;
       },
-      update: data => data.project.mergeRequest,
+      update: (data) => data.project.mergeRequest,
     },
   },
   props: {

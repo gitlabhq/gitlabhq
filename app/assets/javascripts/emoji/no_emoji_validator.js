@@ -9,7 +9,7 @@ export default class NoEmojiValidator extends InputValidator {
     const container = opts.container || '';
     this.noEmojiEmelents = document.querySelectorAll(`${container} .js-block-emoji`);
 
-    this.noEmojiEmelents.forEach(element =>
+    this.noEmojiEmelents.forEach((element) =>
       element.addEventListener('input', this.eventHandler.bind(this)),
     );
   }

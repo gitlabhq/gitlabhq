@@ -4,7 +4,7 @@ import App from './components/app.vue';
 import createRouter from './router';
 import createApolloProvider from './graphql';
 
-const initStaticSiteEditor = el => {
+const initStaticSiteEditor = (el) => {
   const {
     isSupportedContent,
     path: sourcePath,

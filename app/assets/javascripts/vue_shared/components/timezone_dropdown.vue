@@ -36,14 +36,14 @@ export default {
   },
   computed: {
     timezones() {
-      return this.timezoneData.map(timezone => ({
+      return this.timezoneData.map((timezone) => ({
         formattedTimezone: this.formatTimezone(timezone),
         identifier: timezone.identifier,
       }));
     },
     filteredResults() {
       const lowerCasedSearchTerm = this.searchTerm.toLowerCase();
-      return this.timezones.filter(timezone =>
+      return this.timezones.filter((timezone) =>
         timezone.formattedTimezone.toLowerCase().includes(lowerCasedSearchTerm),
       );
     },

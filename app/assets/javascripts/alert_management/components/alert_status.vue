@@ -57,7 +57,7 @@ export default {
             projectPath: this.projectPath,
           },
         })
-        .then(resp => {
+        .then((resp) => {
           this.trackStatusUpdate(status);
           const errors = resp.data?.updateAlertStatus?.errors || [];
 

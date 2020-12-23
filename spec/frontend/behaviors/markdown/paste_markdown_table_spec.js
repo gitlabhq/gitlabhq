@@ -8,7 +8,7 @@ describe('PasteMarkdownTable', () => {
 
     Object.defineProperty(event, 'dataTransfer', {
       value: {
-        getData: jest.fn().mockImplementation(type => {
+        getData: jest.fn().mockImplementation((type) => {
           if (type === 'text/html') {
             return '<table><tr><td>First</td><td>Second</td></tr></table>';
           }
@@ -48,7 +48,7 @@ describe('PasteMarkdownTable', () => {
 
     it('returns false when the number of rows are not consistent', () => {
       data.types = ['text/html', 'text/plain'];
-      data.getData = jest.fn().mockImplementation(mimeType => {
+      data.getData = jest.fn().mockImplementation((mimeType) => {
         if (mimeType === 'text/html') {
           return '<table><tr><td>def test<td></tr></table>';
         }
@@ -60,7 +60,7 @@ describe('PasteMarkdownTable', () => {
 
     it('returns false when the table copy comes from a diff', () => {
       data.types = ['text/html', 'text/plain'];
-      data.getData = jest.fn().mockImplementation(mimeType => {
+      data.getData = jest.fn().mockImplementation((mimeType) => {
         if (mimeType === 'text/html') {
           return '<table class="diff-wrap-lines"><tr><td>First</td><td>Second</td></tr></table>';
         }
@@ -74,7 +74,7 @@ describe('PasteMarkdownTable', () => {
   describe('convertToTableMarkdown', () => {
     it('returns a Markdown table', () => {
       data.types = ['text/html', 'text/plain'];
-      data.getData = jest.fn().mockImplementation(type => {
+      data.getData = jest.fn().mockImplementation((type) => {
         if (type === 'text/html') {
           return '<table><tr><td>First</td><td>Last</td><tr><td>John</td><td>Doe</td><tr><td>Jane</td><td>Doe</td></table>';
         } else if (type === 'text/plain') {
@@ -99,7 +99,7 @@ describe('PasteMarkdownTable', () => {
 
     it('returns a Markdown table with rows normalized', () => {
       data.types = ['text/html', 'text/plain'];
-      data.getData = jest.fn().mockImplementation(type => {
+      data.getData = jest.fn().mockImplementation((type) => {
         if (type === 'text/html') {
           return '<table><tr><td>First</td><td>Last</td><tr><td>John</td><td>Doe</td><tr><td>Jane</td><td>/td></table>';
         } else if (type === 'text/plain') {

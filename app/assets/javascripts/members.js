@@ -46,7 +46,7 @@ export default class Members {
           return $el.data('id');
         },
         toggleLabel: (selected, $el) => this.dropdownToggleLabel(selected, $el, $btn),
-        clicked: options => this.dropdownClicked(options),
+        clicked: (options) => this.dropdownClicked(options),
       });
     });
   }

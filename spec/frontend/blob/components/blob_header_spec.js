@@ -75,7 +75,7 @@ describe('Blob Header Default Actions', () => {
       expect(wrapper.find(DefaultActions).exists()).toBe(false);
     });
 
-    Object.keys(slots).forEach(slot => {
+    Object.keys(slots).forEach((slot) => {
       it('renders the slots', () => {
         const slotContent = slots[slot];
         createComponent(

@@ -156,12 +156,12 @@ describe('DeprecatedModal2', () => {
   describe('slots', () => {
     const slotContent = 'this should go into the slot';
 
-    const modalWithSlot = slot => {
+    const modalWithSlot = (slot) => {
       return Vue.extend({
         components: {
           DeprecatedModal2,
         },
-        render: h =>
+        render: (h) =>
           h('deprecated-modal-2', [slot ? h('template', { slot }, slotContent) : slotContent]),
       });
     };

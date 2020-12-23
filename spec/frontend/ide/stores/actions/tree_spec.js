@@ -68,7 +68,7 @@ describe('Multi-file store tree actions', () => {
         );
       });
 
-      it('adds data into tree', done => {
+      it('adds data into tree', (done) => {
         store
           .dispatch('getFiles', basicCallParameters)
           .then(() => {
@@ -93,7 +93,7 @@ describe('Multi-file store tree actions', () => {
     });
 
     describe('error', () => {
-      it('dispatches error action', done => {
+      it('dispatches error action', (done) => {
         const dispatch = jest.fn();
 
         store.state.projects = {
@@ -148,7 +148,7 @@ describe('Multi-file store tree actions', () => {
       store.state.entries[tree.path] = tree;
     });
 
-    it('toggles the tree open', done => {
+    it('toggles the tree open', (done) => {
       store
         .dispatch('toggleTreeOpen', tree.path)
         .then(() => {
@@ -174,7 +174,7 @@ describe('Multi-file store tree actions', () => {
       Object.assign(store.state.entries, createEntriesFromPaths(paths));
     });
 
-    it('opens the parents', done => {
+    it('opens the parents', (done) => {
       testAction(
         showTreeEntry,
         'grandparent/parent/child.txt',
@@ -187,7 +187,7 @@ describe('Multi-file store tree actions', () => {
   });
 
   describe('setDirectoryData', () => {
-    it('sets tree correctly if there are no opened files yet', done => {
+    it('sets tree correctly if there are no opened files yet', (done) => {
       const treeFile = file({ name: 'README.md' });
       store.state.trees['abcproject/master'] = {};
 

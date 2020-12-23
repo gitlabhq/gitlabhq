@@ -33,7 +33,7 @@ export default {
     },
     filteredResults() {
       const lowerCasedSearchTerm = this.searchTerm.toLowerCase();
-      return this.joinedEnvironments.filter(resultString =>
+      return this.joinedEnvironments.filter((resultString) =>
         resultString.toLowerCase().includes(lowerCasedSearchTerm),
       );
     },

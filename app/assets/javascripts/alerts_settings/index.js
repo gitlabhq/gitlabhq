@@ -11,7 +11,7 @@ apolloProvider.clients.defaultClient.cache.writeData({
 });
 Vue.use(GlToast);
 
-export default el => {
+export default (el) => {
   if (!el) {
     return null;
   }

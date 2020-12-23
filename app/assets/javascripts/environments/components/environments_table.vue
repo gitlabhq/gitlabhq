@@ -67,7 +67,7 @@ export default {
   },
   computed: {
     sortedEnvironments() {
-      return this.sortEnvironments(this.environments).map(env =>
+      return this.sortEnvironments(this.environments).map((env) =>
         this.shouldRenderFolderContent(env)
           ? { ...env, children: this.sortEnvironments(env.children) }
           : env,
@@ -144,11 +144,11 @@ export default {
        * 5. Put folders first.
        */
       return flow(
-        sortBy(env => (env.isFolder ? env.folderName : env.name)),
+        sortBy((env) => (env.isFolder ? env.folderName : env.name)),
         reverse,
-        sortBy(env => (env.last_deployment ? env.last_deployment.created_at : '0000')),
+        sortBy((env) => (env.last_deployment ? env.last_deployment.created_at : '0000')),
         reverse,
-        sortBy(env => (env.isFolder ? -1 : 1)),
+        sortBy((env) => (env.isFolder ? -1 : 1)),
       )(environments);
     },
     changeCanaryWeight(model, weight) {

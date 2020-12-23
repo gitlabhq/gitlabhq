@@ -70,14 +70,14 @@ export default {
           document.body,
       });
       this.clipboard
-        .on('success', e => {
+        .on('success', (e) => {
           this.$root.$emit('bv::hide::tooltip', this.id);
           this.$emit('success', e);
           // Clear the selection and blur the trigger so it loses its border
           e.clearSelection();
           e.trigger.blur();
         })
-        .on('error', e => this.$emit('error', e));
+        .on('error', (e) => this.$emit('error', e));
     });
   },
   destroyed() {

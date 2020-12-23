@@ -12,7 +12,7 @@ describe('IssuableLockForm', () => {
   let store;
   let issuableType; // Either ISSUABLE_TYPE_ISSUE or ISSUABLE_TYPE_MR
 
-  const setIssuableType = pageType => {
+  const setIssuableType = (pageType) => {
     issuableType = pageType;
   };
 
@@ -23,7 +23,7 @@ describe('IssuableLockForm', () => {
   const findSidebarLockStatusTooltip = () =>
     getBinding(findSidebarCollapseIcon().element, 'gl-tooltip');
 
-  const initStore = isLocked => {
+  const initStore = (isLocked) => {
     if (issuableType === ISSUABLE_TYPE_ISSUE) {
       store = createStore();
       store.getters.getNoteableData.targetType = 'issue';

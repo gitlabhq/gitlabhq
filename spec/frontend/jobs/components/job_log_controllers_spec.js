@@ -21,7 +21,7 @@ describe('Job log controllers', () => {
     isTraceSizeVisible: true,
   };
 
-  const createWrapper = props => {
+  const createWrapper = (props) => {
     wrapper = mount(JobLogControllers, {
       propsData: {
         ...defaultProps,

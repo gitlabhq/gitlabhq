@@ -12,9 +12,9 @@ export default class SketchLoader {
 
   load() {
     return this.getZipFile()
-      .then(data => JSZip.loadAsync(data))
-      .then(asyncResult => asyncResult.files['previews/preview.png'].async('uint8array'))
-      .then(content => {
+      .then((data) => JSZip.loadAsync(data))
+      .then((asyncResult) => asyncResult.files['previews/preview.png'].async('uint8array'))
+      .then((content) => {
         const url = window.URL || window.webkitURL;
         const blob = new Blob([new Uint8Array(content)], {
           type: 'image/png',

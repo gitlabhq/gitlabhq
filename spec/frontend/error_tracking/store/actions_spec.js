@@ -28,7 +28,7 @@ describe('Sentry common store actions', () => {
   const params = { endpoint, redirectUrl, status };
 
   describe('updateStatus', () => {
-    it('should handle successful status update', done => {
+    it('should handle successful status update', (done) => {
       mock.onPut().reply(200, {});
       testAction(
         actions.updateStatus,
@@ -48,7 +48,7 @@ describe('Sentry common store actions', () => {
       );
     });
 
-    it('should handle unsuccessful status update', done => {
+    it('should handle unsuccessful status update', (done) => {
       mock.onPut().reply(400, {});
       testAction(actions.updateStatus, params, {}, [], [], () => {
         expect(visitUrl).not.toHaveBeenCalled();

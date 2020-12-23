@@ -94,7 +94,7 @@ describe('EKS Cluster Store Actions', () => {
     ${'setNodeCount'}               | ${SET_NODE_COUNT}                | ${{ nodeCount }}           | ${'node count'}
     ${'setGitlabManagedCluster'}    | ${SET_GITLAB_MANAGED_CLUSTER}    | ${gitlabManagedCluster}    | ${'gitlab managed cluster'}
     ${'setNamespacePerEnvironment'} | ${SET_NAMESPACE_PER_ENVIRONMENT} | ${namespacePerEnvironment} | ${'namespace per environment'}
-  `(`$action commits $mutation with $payloadDescription payload`, data => {
+  `(`$action commits $mutation with $payloadDescription payload`, (data) => {
     const { action, mutation, payload } = data;
 
     testAction(actions[action], payload, state, [{ type: mutation, payload }]);

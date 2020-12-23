@@ -12,7 +12,7 @@ const setDisabled = (el, isDisabled) => {
   }
 };
 
-const setState = glManagedCheckbox => {
+const setState = (glManagedCheckbox) => {
   const glManaged = document.querySelector('.js-namespace-prefixed');
   const selfManaged = document.querySelector('.js-namespace');
 

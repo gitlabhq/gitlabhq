@@ -33,7 +33,7 @@ describe('GL Style Field Errors', () => {
 
     expect(customErrorElem.length).toBe(1);
 
-    const customErrors = testContext.fieldErrors.state.inputs.filter(input => {
+    const customErrors = testContext.fieldErrors.state.inputs.filter((input) => {
       return input.inputElement.hasClass(customErrorFlag);
     });
 

@@ -151,7 +151,7 @@ describe('DropLab DropDown', () => {
       };
 
       testContext.dummyListItem = document.createElement('li');
-      jest.spyOn(testContext.event.target, 'closest').mockImplementation(selector => {
+      jest.spyOn(testContext.event.target, 'closest').mockImplementation((selector) => {
         if (selector === 'li') {
           return testContext.dummyListItem;
         }
@@ -402,7 +402,7 @@ describe('DropLab DropDown', () => {
     beforeEach(() => {
       testContext.renderableList = {};
       testContext.list = {
-        querySelector: q => {
+        querySelector: (q) => {
           if (q === '.filter-dropdown-loading') {
             return false;
           }
@@ -414,7 +414,7 @@ describe('DropLab DropDown', () => {
       testContext.data = [0, 1];
       testContext.customEvent = {};
 
-      jest.spyOn(testContext.dropdown, 'renderChildren').mockImplementation(data => data);
+      jest.spyOn(testContext.dropdown, 'renderChildren').mockImplementation((data) => data);
       jest.spyOn(testContext.list, 'dispatchEvent').mockImplementation(() => {});
       jest.spyOn(testContext.data, 'map');
       jest.spyOn(window, 'CustomEvent').mockReturnValue(testContext.customEvent);
@@ -465,7 +465,7 @@ describe('DropLab DropDown', () => {
         testContext.dropdown = { renderChildren: () => {}, list: testContext.list };
         testContext.data = [0, 1];
 
-        jest.spyOn(testContext.dropdown, 'renderChildren').mockImplementation(data => data);
+        jest.spyOn(testContext.dropdown, 'renderChildren').mockImplementation((data) => data);
         jest.spyOn(testContext.list, 'querySelector').mockImplementation(() => {});
         jest.spyOn(testContext.data, 'map');
 

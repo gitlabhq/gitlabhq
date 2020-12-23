@@ -1,4 +1,4 @@
-export const getKey = name => `$_gl_jest_${name}`;
+export const getKey = (name) => `$_gl_jest_${name}`;
 
 export const getBinding = (el, name) => el[getKey(name)];
 

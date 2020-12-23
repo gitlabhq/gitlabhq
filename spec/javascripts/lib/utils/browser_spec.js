@@ -21,8 +21,8 @@ const PIXEL_TOLERANCE = 0.2;
  * @param url
  * @returns {Promise}
  */
-const urlToImage = url =>
-  new Promise(resolve => {
+const urlToImage = (url) =>
+  new Promise((resolve) => {
     const img = new Image();
     img.onload = function () {
       resolve(img);
@@ -64,10 +64,10 @@ describe('common_utils browser specific specs', () => {
   });
 
   describe('createOverlayIcon', () => {
-    it('should return the favicon with the overlay', done => {
+    it('should return the favicon with the overlay', (done) => {
       commonUtils
         .createOverlayIcon(faviconDataUrl, overlayDataUrl)
-        .then(url => Promise.all([urlToImage(url), urlToImage(faviconWithOverlayDataUrl)]))
+        .then((url) => Promise.all([urlToImage(url), urlToImage(faviconWithOverlayDataUrl)]))
         .then(([actual, expected]) => {
           expect(actual).toImageDiffEqual(expected, PIXEL_TOLERANCE);
           done();
@@ -88,11 +88,11 @@ describe('common_utils browser specific specs', () => {
       document.body.removeChild(document.getElementById('favicon'));
     });
 
-    it('should set page favicon to provided favicon overlay', done => {
+    it('should set page favicon to provided favicon overlay', (done) => {
       commonUtils
         .setFaviconOverlay(overlayDataUrl)
         .then(() => document.getElementById('favicon').getAttribute('href'))
-        .then(url => Promise.all([urlToImage(url), urlToImage(faviconWithOverlayDataUrl)]))
+        .then((url) => Promise.all([urlToImage(url), urlToImage(faviconWithOverlayDataUrl)]))
         .then(([actual, expected]) => {
           expect(actual).toImageDiffEqual(expected, PIXEL_TOLERANCE);
           done();
@@ -119,7 +119,7 @@ describe('common_utils browser specific specs', () => {
       document.body.removeChild(document.getElementById('favicon'));
     });
 
-    it('should reset favicon in case of error', done => {
+    it('should reset favicon in case of error', (done) => {
       mock.onGet(BUILD_URL).replyOnce(500);
 
       commonUtils.setCiStatusFavicon(BUILD_URL).catch(() => {
@@ -130,7 +130,7 @@ describe('common_utils browser specific specs', () => {
       });
     });
 
-    it('should set page favicon to CI status favicon based on provided status', done => {
+    it('should set page favicon to CI status favicon based on provided status', (done) => {
       mock.onGet(BUILD_URL).reply(200, {
         favicon: overlayDataUrl,
       });
@@ -138,7 +138,7 @@ describe('common_utils browser specific specs', () => {
       commonUtils
         .setCiStatusFavicon(BUILD_URL)
         .then(() => document.getElementById('favicon').getAttribute('href'))
-        .then(url => Promise.all([urlToImage(url), urlToImage(faviconWithOverlayDataUrl)]))
+        .then((url) => Promise.all([urlToImage(url), urlToImage(faviconWithOverlayDataUrl)]))
         .then(([actual, expected]) => {
           expect(actual).toImageDiffEqual(expected, PIXEL_TOLERANCE);
           done();

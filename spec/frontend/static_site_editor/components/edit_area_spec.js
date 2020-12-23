@@ -22,7 +22,7 @@ import {
   imageRoot,
 } from '../mock_data';
 
-jest.mock('~/static_site_editor/services/formatter', () => jest.fn(str => `${str} format-pass`));
+jest.mock('~/static_site_editor/services/formatter', () => jest.fn((str) => `${str} format-pass`));
 
 describe('~/static_site_editor/components/edit_area.vue', () => {
   let wrapper;
@@ -126,7 +126,7 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
   describe('when the mode changes', () => {
     let resetInitialValue;
 
-    const setInitialMode = mode => {
+    const setInitialMode = (mode) => {
       wrapper.setData({ editorMode: mode });
     };
 

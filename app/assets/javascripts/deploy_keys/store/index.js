@@ -4,6 +4,6 @@ export default class DeployKeysStore {
   }
 
   isEnabled(id) {
-    return this.keys.enabled_keys.some(key => key.id === id);
+    return this.keys.enabled_keys.some((key) => key.id === id);
   }
 }

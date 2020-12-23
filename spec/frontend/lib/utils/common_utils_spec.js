@@ -267,7 +267,7 @@ describe('common_utils', () => {
   });
 
   describe('debounceByAnimationFrame', () => {
-    it('debounces a function to allow a maximum of one call per animation frame', done => {
+    it('debounces a function to allow a maximum of one call per animation frame', (done) => {
       const spy = jest.fn();
       const debouncedSpy = commonUtils.debounceByAnimationFrame(spy);
       window.requestAnimationFrame(() => {
@@ -404,54 +404,54 @@ describe('common_utils', () => {
   describe('backOff', () => {
     beforeEach(() => {
       // shortcut our timeouts otherwise these tests will take a long time to finish
-      jest.spyOn(window, 'setTimeout').mockImplementation(cb => setImmediate(cb, 0));
+      jest.spyOn(window, 'setTimeout').mockImplementation((cb) => setImmediate(cb, 0));
     });
 
-    it('solves the promise from the callback', done => {
+    it('solves the promise from the callback', (done) => {
       const expectedResponseValue = 'Success!';
       commonUtils
         .backOff((next, stop) =>
-          new Promise(resolve => {
+          new Promise((resolve) => {
             resolve(expectedResponseValue);
           })
-            .then(resp => {
+            .then((resp) => {
               stop(resp);
             })
             .catch(done.fail),
         )
-        .then(respBackoff => {
+        .then((respBackoff) => {
           expect(respBackoff).toBe(expectedResponseValue);
           done();
         })
         .catch(done.fail);
     });
 
-    it('catches the rejected promise from the callback ', done => {
+    it('catches the rejected promise from the callback ', (done) => {
       const errorMessage = 'Mistakes were made!';
       commonUtils
         .backOff((next, stop) => {
           new Promise((resolve, reject) => {
             reject(new Error(errorMessage));
           })
-            .then(resp => {
+            .then((resp) => {
               stop(resp);
             })
-            .catch(err => stop(err));
+            .catch((err) => stop(err));
         })
-        .catch(errBackoffResp => {
+        .catch((errBackoffResp) => {
           expect(errBackoffResp instanceof Error).toBe(true);
           expect(errBackoffResp.message).toBe(errorMessage);
           done();
         });
     });
 
-    it('solves the promise correctly after retrying a third time', done => {
+    it('solves the promise correctly after retrying a third time', (done) => {
       let numberOfCalls = 1;
       const expectedResponseValue = 'Success!';
       commonUtils
         .backOff((next, stop) =>
           Promise.resolve(expectedResponseValue)
-            .then(resp => {
+            .then((resp) => {
               if (numberOfCalls < 3) {
                 numberOfCalls += 1;
                 next();
@@ -461,7 +461,7 @@ describe('common_utils', () => {
             })
             .catch(done.fail),
         )
-        .then(respBackoff => {
+        .then((respBackoff) => {
           const timeouts = window.setTimeout.mock.calls.map(([, timeout]) => timeout);
 
           expect(timeouts).toEqual([2000, 4000]);
@@ -471,10 +471,10 @@ describe('common_utils', () => {
         .catch(done.fail);
     });
 
-    it('rejects the backOff promise after timing out', done => {
+    it('rejects the backOff promise after timing out', (done) => {
       commonUtils
-        .backOff(next => next(), 64000)
-        .catch(errBackoffResp => {
+        .backOff((next) => next(), 64000)
+        .catch((errBackoffResp) => {
           const timeouts = window.setTimeout.mock.calls.map(([, timeout]) => timeout);
 
           expect(timeouts).toEqual([2000, 4000, 8000, 16000, 32000, 32000]);
@@ -533,8 +533,8 @@ describe('common_utils', () => {
   });
 
   describe('convertObjectProps*', () => {
-    const mockConversionFunction = prop => `${prop}_converted`;
-    const isEmptyObject = obj =>
+    const mockConversionFunction = (prop) => `${prop}_converted`;
+    const isEmptyObject = (obj) =>
       typeof obj === 'object' && obj !== null && Object.keys(obj).length === 0;
 
     const mockObjects = {

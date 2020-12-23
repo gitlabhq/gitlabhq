@@ -42,7 +42,7 @@ describe('IDE branches actions', () => {
   });
 
   describe('requestBranches', () => {
-    it('should commit request', done => {
+    it('should commit request', (done) => {
       testAction(
         requestBranches,
         null,
@@ -55,7 +55,7 @@ describe('IDE branches actions', () => {
   });
 
   describe('receiveBranchesError', () => {
-    it('should commit error', done => {
+    it('should commit error', (done) => {
       testAction(
         receiveBranchesError,
         { search: TEST_SEARCH },
@@ -78,7 +78,7 @@ describe('IDE branches actions', () => {
   });
 
   describe('receiveBranchesSuccess', () => {
-    it('should commit received data', done => {
+    it('should commit received data', (done) => {
       testAction(
         receiveBranchesSuccess,
         branches,
@@ -110,7 +110,7 @@ describe('IDE branches actions', () => {
         });
       });
 
-      it('dispatches success with received data', done => {
+      it('dispatches success with received data', (done) => {
         testAction(
           fetchBranches,
           { search: TEST_SEARCH },
@@ -131,7 +131,7 @@ describe('IDE branches actions', () => {
         mock.onGet(/\/api\/v4\/projects\/\d+\/repository\/branches(.*)$/).replyOnce(500);
       });
 
-      it('dispatches error', done => {
+      it('dispatches error', (done) => {
         testAction(
           fetchBranches,
           { search: TEST_SEARCH },
@@ -148,7 +148,7 @@ describe('IDE branches actions', () => {
     });
 
     describe('resetBranches', () => {
-      it('commits reset', done => {
+      it('commits reset', (done) => {
         testAction(
           resetBranches,
           null,

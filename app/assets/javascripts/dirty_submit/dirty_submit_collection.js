@@ -6,7 +6,7 @@ class DirtySubmitCollection {
 
     this.dirtySubmits = [];
 
-    this.forms.forEach(form => this.dirtySubmits.push(new DirtySubmitForm(form)));
+    this.forms.forEach((form) => this.dirtySubmits.push(new DirtySubmitForm(form)));
   }
 }
 

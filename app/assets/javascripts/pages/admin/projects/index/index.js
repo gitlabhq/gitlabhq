@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     mounted() {
       const deleteProjectButtons = document.querySelectorAll('.delete-project-button');
-      deleteProjectButtons.forEach(button => {
+      deleteProjectButtons.forEach((button) => {
         button.addEventListener('click', () => {
           const buttonProps = button.dataset;
           deleteModal.deleteProjectUrl = buttonProps.deleteProjectUrl;

@@ -116,7 +116,7 @@ describe('Deployment component', () => {
 
         if (actionButtons.length > 0) {
           describe('renders the expected button group', () => {
-            actionButtons.forEach(button => {
+            actionButtons.forEach((button) => {
               it(`renders ${button}`, () => {
                 expect(wrapper.find(button).exists()).toBe(true);
               });
@@ -126,7 +126,7 @@ describe('Deployment component', () => {
 
         if (actionButtons.length === 0) {
           describe('does not render the button group', () => {
-            defaultGroup.forEach(button => {
+            defaultGroup.forEach((button) => {
               it(`does not render ${button}`, () => {
                 expect(wrapper.find(button).exists()).toBe(false);
               });

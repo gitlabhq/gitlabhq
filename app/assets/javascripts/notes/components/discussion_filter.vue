@@ -42,7 +42,7 @@ export default {
     ...mapGetters(['getNotesDataByProp', 'timelineEnabled']),
     currentFilter() {
       if (!this.currentValue) return this.filters[0];
-      return this.filters.find(filter => filter.value === this.currentValue);
+      return this.filters.find((filter) => filter.value === this.currentValue);
     },
   },
   created() {

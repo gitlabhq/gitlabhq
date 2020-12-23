@@ -128,7 +128,7 @@ export default class MergeRequestTabs {
 
   bindEvents() {
     $('.merge-request-tabs a[data-toggle="tabvue"]').on('click', this.clickTab);
-    window.addEventListener('popstate', event => {
+    window.addEventListener('popstate', (event) => {
       if (event.state && event.state.action) {
         this.tabShown(event.state.action, event.target.location);
         this.currentAction = event.state.action;
@@ -177,14 +177,14 @@ export default class MergeRequestTabs {
       this.currentTab = action;
 
       if (this.mergeRequestTabPanesAll) {
-        this.mergeRequestTabPanesAll.forEach(el => {
+        this.mergeRequestTabPanesAll.forEach((el) => {
           const tabPane = el;
           tabPane.style.display = 'none';
         });
       }
 
       if (this.mergeRequestTabsAll) {
-        this.mergeRequestTabsAll.forEach(el => {
+        this.mergeRequestTabsAll.forEach((el) => {
           el.classList.remove('active');
         });
       }

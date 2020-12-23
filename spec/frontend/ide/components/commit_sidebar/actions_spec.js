@@ -30,7 +30,7 @@ describe('IDE commit sidebar actions', () => {
     vm.$store.state.currentProjectId = 'abcproject';
 
     const proj = { ...projectData };
-    proj.branches[currentBranchId] = branches.find(branch => branch.name === currentBranchId);
+    proj.branches[currentBranchId] = branches.find((branch) => branch.name === currentBranchId);
     proj.empty_repo = emptyRepo;
 
     Vue.set(vm.$store.state.projects, 'abcproject', proj);
@@ -72,7 +72,7 @@ describe('IDE commit sidebar actions', () => {
     expect(findText()).toContain('Commit to master branch');
   });
 
-  it('hides merge request option when project merge requests are disabled', done => {
+  it('hides merge request option when project merge requests are disabled', (done) => {
     createComponent({ hasMR: false });
 
     vm.$nextTick(() => {
@@ -106,7 +106,7 @@ describe('IDE commit sidebar actions', () => {
       expect(vm.$store.dispatch).not.toHaveBeenCalled();
     });
 
-    it('calls again after staged changes', done => {
+    it('calls again after staged changes', (done) => {
       createComponent({ currentBranchId: null });
 
       vm.$store.state.currentBranchId = 'master';

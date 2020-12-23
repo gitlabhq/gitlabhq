@@ -46,7 +46,7 @@ export default class Project {
 
   static projectSelectDropdown() {
     projectSelect();
-    $('.project-item-select').on('click', e => Project.changeProject($(e.currentTarget).val()));
+    $('.project-item-select').on('click', (e) => Project.changeProject($(e.currentTarget).val()));
   }
 
   static changeProject(url) {
@@ -124,7 +124,7 @@ export default class Project {
 
             if (loc.includes('/-/')) {
               const refs = this.fullData.Branches.concat(this.fullData.Tags);
-              const currentRef = refs.find(ref => loc.indexOf(ref) > -1);
+              const currentRef = refs.find((ref) => loc.indexOf(ref) > -1);
               if (currentRef) {
                 const targetPath = loc.split(currentRef)[1].slice(1);
                 selectedUrl.searchParams.set('path', targetPath);

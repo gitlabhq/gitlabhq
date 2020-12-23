@@ -75,7 +75,7 @@ export default () => {
         });
         initPopovers();
       })
-      .catch(e => createFlash(e));
+      .catch((e) => createFlash(e));
 
     cancelLink.on('click', () => {
       window.onbeforeunload = null;

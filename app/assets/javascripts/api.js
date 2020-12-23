@@ -374,8 +374,8 @@ const Api = {
       .post(url, {
         label: data,
       })
-      .then(res => callback(res.data))
-      .catch(e => callback(e.response.data));
+      .then((res) => callback(res.data))
+      .catch((e) => callback(e.response.data));
   },
 
   // Return group projects list. Filtered by query
@@ -431,7 +431,7 @@ const Api = {
   commitPipelines(projectId, sha) {
     const encodedProjectId = projectId
       .split('/')
-      .map(fragment => encodeURIComponent(fragment))
+      .map((fragment) => encodeURIComponent(fragment))
       .join('/');
 
     const url = Api.buildUrl(Api.commitPipelinesPath)
@@ -455,7 +455,7 @@ const Api = {
       .replace(':type', type)
       .replace(':key', encodeURIComponent(key));
 
-    return axios.get(url, { params: options }).then(res => {
+    return axios.get(url, { params: options }).then((res) => {
       if (callback) callback(res.data);
 
       return res;
@@ -467,7 +467,7 @@ const Api = {
       .replace(':id', encodeURIComponent(id))
       .replace(':type', type);
 
-    return axios.get(url, { params }).then(res => {
+    return axios.get(url, { params }).then((res) => {
       if (callback) callback(res.data);
 
       return res;

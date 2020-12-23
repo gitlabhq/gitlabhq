@@ -102,7 +102,7 @@ export default {
     loadMetrics() {
       backOff((next, stop) => {
         MRWidgetService.fetchMetrics(this.metricsUrl)
-          .then(res => {
+          .then((res) => {
             if (res.status === statusCodes.NO_CONTENT) {
               this.backOffRequestCounter += 1;
               /* eslint-disable no-unused-expressions */
@@ -113,14 +113,14 @@ export default {
           })
           .catch(stop);
       })
-        .then(res => {
+        .then((res) => {
           if (res.status === statusCodes.NO_CONTENT) {
             return res;
           }
 
           return res.data;
         })
-        .then(data => {
+        .then((data) => {
           this.computeGraphData(data.metrics, data.deployment_time);
           return data;
         })

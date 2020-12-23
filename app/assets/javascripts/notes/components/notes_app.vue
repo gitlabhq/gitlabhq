@@ -130,7 +130,7 @@ export default {
 
     const { parentElement } = this.$el;
     if (parentElement && parentElement.classList.contains('js-vue-notes-event')) {
-      parentElement.addEventListener('toggleAward', event => {
+      parentElement.addEventListener('toggleAward', (event) => {
         const { awardName, noteId } = event.detail;
         this.toggleAward({ awardName, noteId });
       });
@@ -217,7 +217,7 @@ export default {
       const noteId = hash && hash.replace(/^note_/, '');
 
       if (noteId) {
-        const discussion = this.discussions.find(d => d.notes.some(({ id }) => id === noteId));
+        const discussion = this.discussions.find((d) => d.notes.some(({ id }) => id === noteId));
 
         if (discussion) {
           this.expandDiscussion({ discussionId: discussion.id });

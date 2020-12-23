@@ -4,7 +4,7 @@
  * Tracks snowplow event when User clicks on error link to Sentry
  * @param {String}  externalUrl that will be send as a property for the event
  */
-export const trackClickErrorLinkToSentryOptions = url => ({
+export const trackClickErrorLinkToSentryOptions = (url) => ({
   category: 'Error Tracking',
   action: 'click_error_link_to_sentry',
   label: 'Error Link',
@@ -30,7 +30,7 @@ export const trackErrorDetailsViewsOptions = {
 /**
  * Tracks snowplow event when error status is updated
  */
-export const trackErrorStatusUpdateOptions = status => ({
+export const trackErrorStatusUpdateOptions = (status) => ({
   category: 'Error Tracking',
   action: `update_${status}_status`,
 });

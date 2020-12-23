@@ -15,10 +15,10 @@ import eventHub from '~/vue_merge_request_widget/event_hub';
 jest.mock('~/flash');
 
 const TEST_HELP_PATH = 'help/path';
-const testApprovedBy = () => [1, 7, 10].map(id => ({ id }));
+const testApprovedBy = () => [1, 7, 10].map((id) => ({ id }));
 const testApprovals = () => ({
   approved: false,
-  approved_by: testApprovedBy().map(user => ({ user })),
+  approved_by: testApprovedBy().map((user) => ({ user })),
   approval_rules_left: [],
   approvals_left: 4,
   suggested_approvers: [],
@@ -31,7 +31,7 @@ const testApprovalRulesResponse = () => ({ rules: [{ id: 2 }] });
 // For some reason, the `Promise.resolve()` needs to be deferred
 // or the timing doesn't work.
 const tick = () => Promise.resolve();
-const waitForTick = done => tick().then(done).catch(done.fail);
+const waitForTick = (done) => tick().then(done).catch(done.fail);
 
 describe('MRWidget approvals', () => {
   let wrapper;
@@ -114,7 +114,7 @@ describe('MRWidget approvals', () => {
   });
 
   describe('when fetch approvals error', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       jest.spyOn(service, 'fetchApprovals').mockReturnValue(Promise.reject());
       createComponent();
       waitForTick(done);
@@ -131,7 +131,7 @@ describe('MRWidget approvals', () => {
 
   describe('action button', () => {
     describe('when mr is closed', () => {
-      beforeEach(done => {
+      beforeEach((done) => {
         mr.isOpen = false;
         mr.approvals.user_has_approved = false;
         mr.approvals.user_can_approve = true;
@@ -146,7 +146,7 @@ describe('MRWidget approvals', () => {
     });
 
     describe('when user cannot approve', () => {
-      beforeEach(done => {
+      beforeEach((done) => {
         mr.approvals.user_has_approved = false;
         mr.approvals.user_can_approve = false;
 
@@ -166,7 +166,7 @@ describe('MRWidget approvals', () => {
       });
 
       describe('and MR is unapproved', () => {
-        beforeEach(done => {
+        beforeEach((done) => {
           createComponent();
           waitForTick(done);
         });
@@ -186,7 +186,7 @@ describe('MRWidget approvals', () => {
         });
 
         describe('with no approvers', () => {
-          beforeEach(done => {
+          beforeEach((done) => {
             mr.approvals.approved_by = [];
             createComponent();
             waitForTick(done);
@@ -202,7 +202,7 @@ describe('MRWidget approvals', () => {
         });
 
         describe('with approvers', () => {
-          beforeEach(done => {
+          beforeEach((done) => {
             mr.approvals.approved_by = [{ user: { id: 7 } }];
             createComponent();
             waitForTick(done);
@@ -219,7 +219,7 @@ describe('MRWidget approvals', () => {
       });
 
       describe('when approve action is clicked', () => {
-        beforeEach(done => {
+        beforeEach((done) => {
           createComponent();
           waitForTick(done);
         });
@@ -238,7 +238,7 @@ describe('MRWidget approvals', () => {
         });
 
         describe('and after loading', () => {
-          beforeEach(done => {
+          beforeEach((done) => {
             findAction().vm.$emit('click');
             waitForTick(done);
           });
@@ -257,7 +257,7 @@ describe('MRWidget approvals', () => {
         });
 
         describe('and error', () => {
-          beforeEach(done => {
+          beforeEach((done) => {
             jest.spyOn(service, 'approveMergeRequest').mockReturnValue(Promise.reject());
             findAction().vm.$emit('click');
             waitForTick(done);
@@ -271,7 +271,7 @@ describe('MRWidget approvals', () => {
     });
 
     describe('when user has approved', () => {
-      beforeEach(done => {
+      beforeEach((done) => {
         mr.approvals.user_has_approved = true;
         mr.approvals.user_can_approve = false;
 
@@ -289,7 +289,7 @@ describe('MRWidget approvals', () => {
 
       describe('when revoke action is clicked', () => {
         describe('and successful', () => {
-          beforeEach(done => {
+          beforeEach((done) => {
             findAction().vm.$emit('click');
             waitForTick(done);
           });
@@ -308,7 +308,7 @@ describe('MRWidget approvals', () => {
         });
 
         describe('and error', () => {
-          beforeEach(done => {
+          beforeEach((done) => {
             jest.spyOn(service, 'unapproveMergeRequest').mockReturnValue(Promise.reject());
             findAction().vm.$emit('click');
             waitForTick(done);
@@ -331,7 +331,7 @@ describe('MRWidget approvals', () => {
       });
 
       describe('and can approve', () => {
-        beforeEach(done => {
+        beforeEach((done) => {
           mr.approvals.user_can_approve = true;
 
           createComponent();
@@ -348,7 +348,7 @@ describe('MRWidget approvals', () => {
       });
 
       describe('and cannot approve', () => {
-        beforeEach(done => {
+        beforeEach((done) => {
           mr.approvals.user_can_approve = false;
 
           createComponent();
@@ -367,7 +367,7 @@ describe('MRWidget approvals', () => {
   });
 
   describe('approvals summary', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       createComponent();
       waitForTick(done);
     });

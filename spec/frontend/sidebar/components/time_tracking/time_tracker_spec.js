@@ -6,7 +6,7 @@ import TimeTracker from '~/sidebar/components/time_tracking/time_tracker.vue';
 describe('Issuable Time Tracker', () => {
   let wrapper;
 
-  const findByTestId = testId => wrapper.find(`[data-testid=${testId}]`);
+  const findByTestId = (testId) => wrapper.find(`[data-testid=${testId}]`);
   const findComparisonMeter = () => findByTestId('compareMeter').attributes('title');
   const findCollapsedState = () => findByTestId('collapsedState');
   const findTimeRemainingProgress = () => findByTestId('timeRemainingProgress');

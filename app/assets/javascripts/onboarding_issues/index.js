@@ -57,7 +57,7 @@ const showPopover = (el, path, footer, options) => {
     .popover('show');
 
   // The previous popover actions have been taken, don't show those popovers anymore.
-  Object.keys(settings).forEach(pathSetting => {
+  Object.keys(settings).forEach((pathSetting) => {
     if (path !== pathSetting) {
       settings[pathSetting] = false;
     } else {
@@ -71,7 +71,7 @@ const showPopover = (el, path, footer, options) => {
   }
 };
 
-export const showLearnGitLabGroupItemPopover = id => {
+export const showLearnGitLabGroupItemPopover = (id) => {
   const el = document.querySelector(`#group-${id} .group-text a`);
 
   if (!el) return;

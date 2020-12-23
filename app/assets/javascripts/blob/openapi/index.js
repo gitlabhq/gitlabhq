@@ -12,7 +12,7 @@ export default () => {
         dom_id: '#js-openapi-viewer',
       });
     })
-    .catch(error => {
+    .catch((error) => {
       flash(__('Something went wrong while initializing the OpenAPI viewer'));
       throw error;
     });

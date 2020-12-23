@@ -19,7 +19,7 @@ RSpec.describe 'container repository details' do
 
   let(:user) { project.owner }
   let(:variables) { {} }
-  let(:tags) { %w(latest tag1 tag2 tag3 tag4 tag5) }
+  let(:tags) { %w[latest tag1 tag2 tag3 tag4 tag5] }
   let(:container_repository_global_id) { container_repository.to_global_id.to_s }
   let(:container_repository_details_response) { graphql_data.dig('containerRepository') }
 
@@ -77,6 +77,37 @@ RSpec.describe 'container repository details' do
     end
   end
 
+  context 'with a giant size tag' do
+    let(:tags) { %w[latest] }
+    let(:giant_size) { 1.terabyte }
+    let(:tag_sizes_response) { graphql_data_at('containerRepository', 'tags', 'nodes', 'totalSize') }
+    let(:fields) do
+      <<~GQL
+        tags {
+          nodes {
+            totalSize
+          }
+        }
+      GQL
+    end
+
+    let(:query) do
+      graphql_query_for(
+        'containerRepository',
+        { id: container_repository_global_id },
+        fields
+      )
+    end
+
+    it 'returns the expected value as a string' do
+      stub_next_container_registry_tags_call(:total_size, giant_size)
+
+      subject
+
+      expect(tag_sizes_response.first).to eq(giant_size.to_s)
+    end
+  end
+
   context 'limiting the number of tags' do
     let(:limit) { 2 }
     let(:tags_response) { container_repository_details_response.dig('tags', 'edges') }
@@ -107,7 +138,7 @@ RSpec.describe 'container repository details' do
     end
   end
 
-  context 'with tags without a manifest' do
+  context 'with tags with a manifest containing nil fields' do
     let(:tags_response) { container_repository_details_response.dig('tags', 'nodes') }
     let(:errors) { container_repository_details_response.dig('errors') }
 

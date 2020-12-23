@@ -19,7 +19,7 @@ describe('new file modal component', () => {
     ${'tree'} | ${'Create new directory'} | ${'Create directory'} | ${false}
     ${'blob'} | ${'Create new file'}      | ${'Create file'}      | ${true}
   `('$entryType', ({ entryType, modalTitle, btnTitle, showsFileTemplates }) => {
-    beforeEach(done => {
+    beforeEach((done) => {
       const store = createStore();
 
       vm = createComponentWithStore(Component, store).$mount();

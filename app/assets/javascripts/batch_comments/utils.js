@@ -1,11 +1,11 @@
 import { getFormData } from '~/diffs/store/utils';
 
-export const getDraftReplyFormData = data => ({
+export const getDraftReplyFormData = (data) => ({
   endpoint: data.notesData.draftsPath,
   data,
 });
 
-export const getDraftFormData = params => ({
+export const getDraftFormData = (params) => ({
   endpoint: params.notesData.draftsPath,
   data: getFormData(params),
 });

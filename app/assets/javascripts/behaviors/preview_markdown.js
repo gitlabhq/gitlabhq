@@ -41,7 +41,7 @@ MarkdownPreview.prototype.showPreview = function ($form) {
     this.hideReferencedUsers($form);
   } else {
     preview.addClass('md-preview-loading').text(__('Loading...'));
-    this.fetchMarkdownPreview(mdText, url, response => {
+    this.fetchMarkdownPreview(mdText, url, (response) => {
       let body;
       if (response.body.length > 0) {
         ({ body } = response);

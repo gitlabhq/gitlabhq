@@ -52,7 +52,7 @@ export default {
       return this.getDiscussion(this.note.discussion_id);
     },
     ...mapState({
-      batchSuggestionsInfo: state => state.notes.batchSuggestionsInfo,
+      batchSuggestionsInfo: (state) => state.notes.batchSuggestionsInfo,
     }),
     noteBody() {
       return this.note.note;

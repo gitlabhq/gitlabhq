@@ -114,7 +114,7 @@ describe('Markdown Extension for Editor Lite', () => {
   });
 
   describe('moveCursor', () => {
-    const setPosition = endCol => {
+    const setPosition = (endCol) => {
       const currentPos = new Position(2, endCol);
       instance.setPosition(currentPos);
     };

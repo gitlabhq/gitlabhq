@@ -85,7 +85,7 @@ describe('Feature flags', () => {
   describe('when limit exceeded', () => {
     const provideData = { ...mockData, featureFlagsLimitExceeded: true };
 
-    beforeEach(done => {
+    beforeEach((done) => {
       mock
         .onGet(`${TEST_HOST}/endpoint.json`, { params: { scope: FEATURE_FLAG_SCOPE, page: '1' } })
         .reply(200, getRequestData, {});
@@ -132,7 +132,7 @@ describe('Feature flags', () => {
       newUserListPath: null,
     };
 
-    beforeEach(done => {
+    beforeEach((done) => {
       mock
         .onGet(`${TEST_HOST}/endpoint.json`, { params: { scope: FEATURE_FLAG_SCOPE, page: '1' } })
         .reply(200, getRequestData, {});
@@ -217,7 +217,7 @@ describe('Feature flags', () => {
     });
 
     describe('with paginated feature flags', () => {
-      beforeEach(done => {
+      beforeEach((done) => {
         mock
           .onGet(mockState.endpoint, { params: { scope: FEATURE_FLAG_SCOPE, page: '1' } })
           .replyOnce(200, getRequestData, {
@@ -297,7 +297,7 @@ describe('Feature flags', () => {
     });
 
     describe('in user lists tab', () => {
-      beforeEach(done => {
+      beforeEach((done) => {
         factory();
         setImmediate(done);
       });
@@ -317,7 +317,7 @@ describe('Feature flags', () => {
   });
 
   describe('unsuccessful request', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       mock
         .onGet(mockState.endpoint, { params: { scope: FEATURE_FLAG_SCOPE, page: '1' } })
         .replyOnce(500, {});
@@ -350,7 +350,7 @@ describe('Feature flags', () => {
   });
 
   describe('rotate instance id', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       mock
         .onGet(`${TEST_HOST}/endpoint.json`, { params: { scope: FEATURE_FLAG_SCOPE, page: '1' } })
         .reply(200, getRequestData, {});

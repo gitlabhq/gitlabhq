@@ -20,7 +20,7 @@ export default {
   components: {
     ToastEditor: () =>
       import(/* webpackChunkName: 'toast_editor' */ '@toast-ui/vue-editor').then(
-        toast => toast.Editor,
+        (toast) => toast.Editor,
       ),
     AddImageModal,
     InsertVideoModal,

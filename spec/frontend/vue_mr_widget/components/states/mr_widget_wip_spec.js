@@ -47,12 +47,12 @@ describe('Wip', () => {
     };
 
     describe('handleRemoveWIP', () => {
-      it('should make a request to service and handle response', done => {
+      it('should make a request to service and handle response', (done) => {
         const vm = createComponent();
 
         jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
         jest.spyOn(vm.service, 'removeWIP').mockReturnValue(
-          new Promise(resolve => {
+          new Promise((resolve) => {
             resolve({
               data: mrObj,
             });
@@ -92,7 +92,7 @@ describe('Wip', () => {
       );
     });
 
-    it('should not show removeWIP button is user cannot update MR', done => {
+    it('should not show removeWIP button is user cannot update MR', (done) => {
       vm.mr.removeWIPPath = '';
 
       Vue.nextTick(() => {

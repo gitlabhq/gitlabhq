@@ -80,7 +80,7 @@ export default class BlobFileDropzone {
       },
     });
 
-    submitButton.on('click', e => {
+    submitButton.on('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
       if (dropzone[0].dropzone.getQueuedFiles().length === 0) {

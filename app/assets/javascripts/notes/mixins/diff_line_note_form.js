@@ -9,9 +9,9 @@ import { formatLineRange } from '~/notes/components/multiline_comment_utils';
 export default {
   computed: {
     ...mapState({
-      noteableData: state => state.notes.noteableData,
-      notesData: state => state.notes.notesData,
-      withBatchComments: state => state.batchComments?.withBatchComments,
+      noteableData: (state) => state.notes.noteableData,
+      notesData: (state) => state.notes.notesData,
+      withBatchComments: (state) => state.batchComments?.withBatchComments,
     }),
     ...mapGetters('diffs', ['getDiffFileByHash']),
     ...mapGetters('batchComments', ['shouldRenderDraftRowInDiscussion', 'draftForDiscussion']),

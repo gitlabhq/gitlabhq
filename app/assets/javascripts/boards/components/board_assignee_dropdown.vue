@@ -119,7 +119,7 @@ export default {
       this.selected = this.selected.concat(name);
     },
     unselect(name) {
-      this.selected = this.selected.filter(user => user.username !== name);
+      this.selected = this.selected.filter((user) => user.username !== name);
     },
     saveAssignees() {
       this.setAssignees(this.selectedUserNames);

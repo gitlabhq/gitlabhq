@@ -41,7 +41,7 @@ describe('Milestone combobox component', () => {
       attrs,
       listeners: {
         // simulate a parent component v-model binding
-        input: selectedMilestone => {
+        input: (selectedMilestone) => {
           wrapper.setProps({ value: selectedMilestone });
         },
       },
@@ -71,13 +71,13 @@ describe('Milestone combobox component', () => {
 
     mock
       .onGet(`/api/v4/projects/${projectId}/milestones`)
-      .reply(config => projectMilestonesApiCallSpy(config));
+      .reply((config) => projectMilestonesApiCallSpy(config));
 
     mock
       .onGet(`/api/v4/groups/${groupId}/milestones`)
-      .reply(config => groupMilestonesApiCallSpy(config));
+      .reply((config) => groupMilestonesApiCallSpy(config));
 
-    mock.onGet(`/api/v4/projects/${projectId}/search`).reply(config => searchApiCallSpy(config));
+    mock.onGet(`/api/v4/projects/${projectId}/search`).reply((config) => searchApiCallSpy(config));
   });
 
   afterEach(() => {
@@ -129,7 +129,7 @@ describe('Milestone combobox component', () => {
   //
   // Convenience methods
   //
-  const updateQuery = newQuery => {
+  const updateQuery = (newQuery) => {
     findSearchBox().vm.$emit('input', newQuery);
   };
 

@@ -22,7 +22,7 @@ export default class BlobLicenseSelector extends FileTemplateSelector {
       search: {
         fields: ['name'],
       },
-      clicked: options => {
+      clicked: (options) => {
         const { e } = options;
         const el = options.$el;
         const query = options.selectedObj;
@@ -39,7 +39,7 @@ export default class BlobLicenseSelector extends FileTemplateSelector {
           data,
         });
       },
-      text: item => item.name,
+      text: (item) => item.name,
     });
   }
 }

@@ -24,7 +24,7 @@ const createComponent = (initialState = mockConfig) => {
 
 describe('DropdownContentsCreateView', () => {
   let wrapper;
-  const colors = Object.keys(mockSuggestedColors).map(color => ({
+  const colors = Object.keys(mockSuggestedColors).map((color) => ({
     [color]: mockSuggestedColors[color],
   }));
 

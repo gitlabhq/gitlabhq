@@ -60,13 +60,13 @@ export default {
       return Object.values(this.errors);
     },
     isLoading() {
-      return some(this.$apollo.queries, query => query?.loading);
+      return some(this.$apollo.queries, (query) => query?.loading);
     },
     allQueriesFailed() {
-      return every(this.errorMessages, message => message.length);
+      return every(this.errorMessages, (message) => message.length);
     },
     hasLoadingErrors() {
-      return some(this.errorMessages, message => message.length);
+      return some(this.errorMessages, (message) => message.length);
     },
     errorMessage() {
       // show the generic loading message if all requests fail
@@ -179,7 +179,7 @@ export default {
             };
           },
         })
-        .catch(error => this.handleError({ identifier, error, message: errorMessage }));
+        .catch((error) => this.handleError({ identifier, error, message: errorMessage }));
     },
   },
 };

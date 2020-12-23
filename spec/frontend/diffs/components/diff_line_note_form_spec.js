@@ -51,7 +51,7 @@ describe('DiffLineNoteForm', () => {
         expect(window.confirm).not.toHaveBeenCalled();
       });
 
-      it('should call cancelCommentForm with lineCode', done => {
+      it('should call cancelCommentForm with lineCode', (done) => {
         jest.spyOn(window, 'confirm').mockImplementation(() => {});
         jest.spyOn(wrapper.vm, 'cancelCommentForm').mockImplementation(() => {});
         jest.spyOn(wrapper.vm, 'resetAutoSave').mockImplementation(() => {});
@@ -72,7 +72,7 @@ describe('DiffLineNoteForm', () => {
     });
 
     describe('saveNoteForm', () => {
-      it('should call saveNote action with proper params', done => {
+      it('should call saveNote action with proper params', (done) => {
         const saveDiffDiscussionSpy = jest
           .spyOn(wrapper.vm, 'saveDiffDiscussion')
           .mockReturnValue(Promise.resolve());

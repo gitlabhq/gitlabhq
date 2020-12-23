@@ -7,18 +7,18 @@ describe('IDE pane module actions', () => {
   const TEST_VIEW_KEEP_ALIVE = { name: 'test-keep-alive', keepAlive: true };
 
   describe('toggleOpen', () => {
-    it('dispatches open if closed', done => {
+    it('dispatches open if closed', (done) => {
       testAction(actions.toggleOpen, TEST_VIEW, { isOpen: false }, [], [{ type: 'open' }], done);
     });
 
-    it('dispatches close if opened', done => {
+    it('dispatches close if opened', (done) => {
       testAction(actions.toggleOpen, TEST_VIEW, { isOpen: true }, [], [{ type: 'close' }], done);
     });
   });
 
   describe('open', () => {
     describe('with a view specified', () => {
-      it('commits SET_OPEN and SET_CURRENT_VIEW', done => {
+      it('commits SET_OPEN and SET_CURRENT_VIEW', (done) => {
         testAction(
           actions.open,
           TEST_VIEW,
@@ -32,7 +32,7 @@ describe('IDE pane module actions', () => {
         );
       });
 
-      it('commits KEEP_ALIVE_VIEW if keepAlive is true', done => {
+      it('commits KEEP_ALIVE_VIEW if keepAlive is true', (done) => {
         testAction(
           actions.open,
           TEST_VIEW_KEEP_ALIVE,
@@ -49,7 +49,7 @@ describe('IDE pane module actions', () => {
     });
 
     describe('without a view specified', () => {
-      it('commits SET_OPEN', done => {
+      it('commits SET_OPEN', (done) => {
         testAction(
           actions.open,
           undefined,
@@ -63,7 +63,7 @@ describe('IDE pane module actions', () => {
   });
 
   describe('close', () => {
-    it('commits SET_OPEN', done => {
+    it('commits SET_OPEN', (done) => {
       testAction(actions.close, null, {}, [{ type: types.SET_OPEN, payload: false }], [], done);
     });
   });

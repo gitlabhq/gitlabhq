@@ -19,7 +19,7 @@ const updateCommitList = (url, $loadingIndicator, $commitList, params) => {
     });
 };
 
-export default mrNewCompareNode => {
+export default (mrNewCompareNode) => {
   const { sourceBranchUrl, targetBranchUrl } = mrNewCompareNode.dataset;
   initTargetProjectDropdown();
 
@@ -44,7 +44,7 @@ export default mrNewCompareNode => {
         ref: $(mrNewCompareNode).find("input[name='merge_request[target_branch]']").val(),
       },
     );
-  initCompareAutocomplete('branches', $dropdown => {
+  initCompareAutocomplete('branches', ($dropdown) => {
     if ($dropdown.is('.js-target-branch')) {
       updateTargetBranchCommitList();
     } else if ($dropdown.is('.js-source-branch')) {

@@ -324,13 +324,13 @@ describe('Base editor', () => {
         ${'multiple simple objects'}                | ${[FooObjExt, BarObjExt]} | ${['foo', 'bar']}    | ${[fooRes, barRes]}
         ${'combination of ES6 classes and objects'} | ${[AlphaExt, BarObjExt]}  | ${['alpha', 'bar']}  | ${[alphaRes, barRes]}
       `('is extensible with $type', ({ extensions, methods, expectations } = {}) => {
-        methods.forEach(method => {
+        methods.forEach((method) => {
           expect(instance[method]).toBeUndefined();
         });
 
         instance.use(extensions);
 
-        methods.forEach(method => {
+        methods.forEach((method) => {
           expect(instance[method]).toBeDefined();
         });
 
@@ -359,7 +359,7 @@ describe('Base editor', () => {
 
       it.each([WithStaticMethod, WithStaticMethodExtended])(
         'properly resolves data for an extension with private data',
-        ExtClass => {
+        (ExtClass) => {
           const base = 1;
           expect(instance.base).toBeUndefined();
           expect(instance.boo).toBeUndefined();
@@ -408,7 +408,7 @@ describe('Base editor', () => {
       };
 
       beforeEach(() => {
-        editorExtensionSpy = jest.spyOn(Editor, 'pushToImportsArray').mockImplementation(arr => {
+        editorExtensionSpy = jest.spyOn(Editor, 'pushToImportsArray').mockImplementation((arr) => {
           arr.push(
             Promise.resolve({
               default: {},
@@ -524,7 +524,7 @@ describe('Base editor', () => {
     });
 
     it('sets default syntax highlighting theme', () => {
-      const expectedTheme = themes.find(t => t.name === DEFAULT_THEME);
+      const expectedTheme = themes.find((t) => t.name === DEFAULT_THEME);
 
       editor = new Editor();
 
@@ -533,7 +533,7 @@ describe('Base editor', () => {
     });
 
     it('sets correct theme if it is set in users preferences', () => {
-      const expectedTheme = themes.find(t => t.name !== DEFAULT_THEME);
+      const expectedTheme = themes.find((t) => t.name !== DEFAULT_THEME);
 
       expect(expectedTheme.name).not.toBe(DEFAULT_THEME);
 

@@ -66,7 +66,7 @@ describe('Create EKS cluster store mutations', () => {
     ${SET_INSTANCE_TYPE}          | ${'selectedInstanceType'}  | ${{ instanceType }}         | ${instanceType}         | ${'selected instance type payload'}
     ${SET_NODE_COUNT}             | ${'nodeCount'}             | ${{ nodeCount }}            | ${nodeCount}            | ${'node count payload'}
     ${SET_GITLAB_MANAGED_CLUSTER} | ${'gitlabManagedCluster'}  | ${{ gitlabManagedCluster }} | ${gitlabManagedCluster} | ${'gitlab managed cluster'}
-  `(`$mutation sets $mutatedProperty to $expectedValueDescription`, data => {
+  `(`$mutation sets $mutatedProperty to $expectedValueDescription`, (data) => {
     const { mutation, mutatedProperty, payload, expectedValue } = data;
 
     mutations[mutation](state, payload);

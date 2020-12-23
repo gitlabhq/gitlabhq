@@ -51,7 +51,7 @@ describe('IDE lib/create_file_diff', () => {
     const expectedHead = `diff --git "a/${PATH}" "b/${PATH}"
 new file mode 100644`;
 
-    const expectedChunkHead = lineCount => `--- /dev/null
+    const expectedChunkHead = (lineCount) => `--- /dev/null
 +++ b/${PATH}
 @@ -0,0 +1,${lineCount} @@`;
 
@@ -86,7 +86,7 @@ ${expectedChunkHead(1)}
 
       expect(result).toBe(`${expectedHead}
 ${expectedChunkHead(TEXT_LINE_COUNT)}
-${mapLines(TEXT, line => `+${line}`)}
+${mapLines(TEXT, (line) => `+${line}`)}
 `);
     });
   });
@@ -95,7 +95,7 @@ ${mapLines(TEXT, line => `+${line}`)}
     const expectedHead = `diff --git "a/${PATH}" "b/${PATH}"
 deleted file mode 100644`;
 
-    const expectedChunkHead = lineCount => `--- a/${PATH}
+    const expectedChunkHead = (lineCount) => `--- a/${PATH}
 +++ /dev/null
 @@ -1,${lineCount} +0,0 @@`;
 
@@ -111,7 +111,7 @@ deleted file mode 100644`;
 
       expect(result).toBe(`${expectedHead}
 ${expectedChunkHead(TEXT_LINE_COUNT)}
-${mapLines(TEXT, line => `-${line}`)}
+${mapLines(TEXT, (line) => `-${line}`)}
 `);
     });
   });

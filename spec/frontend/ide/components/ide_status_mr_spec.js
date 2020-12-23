@@ -9,7 +9,7 @@ const TEST_URL = `${TEST_HOST}merge-requests/9001`;
 describe('ide/components/ide_status_mr', () => {
   let wrapper;
 
-  const createComponent = props => {
+  const createComponent = (props) => {
     wrapper = shallowMount(IdeStatusMr, {
       propsData: props,
     });

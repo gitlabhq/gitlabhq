@@ -153,7 +153,7 @@ export default {
       let moveBeforeId;
       let moveAfterId;
 
-      const getIssueId = el => Number(el.dataset.issueId);
+      const getIssueId = (el) => Number(el.dataset.issueId);
 
       // If issue is being moved within the same list
       if (from === to) {

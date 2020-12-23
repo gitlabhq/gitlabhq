@@ -18,7 +18,7 @@ export default {
   },
   created() {
     const rawLabelsColors = gon.suggested_label_colors;
-    this.suggestedColors = Object.keys(rawLabelsColors).map(colorCode => ({
+    this.suggestedColors = Object.keys(rawLabelsColors).map((colorCode) => ({
       colorCode,
       title: rawLabelsColors[colorCode],
     }));

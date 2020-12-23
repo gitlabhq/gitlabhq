@@ -6,7 +6,7 @@ import { getStorageKey, setNotification } from './utils/notification';
 
 let whatsNewApp;
 
-export default el => {
+export default (el) => {
   if (whatsNewApp) {
     store.dispatch('openDrawer');
   } else {

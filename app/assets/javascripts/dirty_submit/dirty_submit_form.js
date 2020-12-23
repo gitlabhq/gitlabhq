@@ -22,10 +22,10 @@ class DirtySubmitForm {
 
   registerListeners() {
     const getThrottledHandlerForInput = memoize(() =>
-      throttle(event => this.updateDirtyInput(event), DirtySubmitForm.THROTTLE_DURATION),
+      throttle((event) => this.updateDirtyInput(event), DirtySubmitForm.THROTTLE_DURATION),
     );
 
-    const throttledUpdateDirtyInput = event => {
+    const throttledUpdateDirtyInput = (event) => {
       const throttledHandler = getThrottledHandlerForInput(event.target.name);
       throttledHandler(event);
     };
@@ -33,7 +33,7 @@ class DirtySubmitForm {
     this.form.addEventListener('input', throttledUpdateDirtyInput);
     this.form.addEventListener('change', throttledUpdateDirtyInput);
     $(this.form).on('change.select2', throttledUpdateDirtyInput);
-    this.form.addEventListener('submit', event => this.formSubmit(event));
+    this.form.addEventListener('submit', (event) => this.formSubmit(event));
   }
 
   updateDirtyInput(event) {
@@ -58,7 +58,7 @@ class DirtySubmitForm {
 
   toggleSubmission() {
     this.isDisabled = this.dirtyInputs.length === 0;
-    this.submits.forEach(element => {
+    this.submits.forEach((element) => {
       element.disabled = this.isDisabled;
     });
   }

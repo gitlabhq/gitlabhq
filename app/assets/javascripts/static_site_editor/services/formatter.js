@@ -24,7 +24,7 @@ const nestedLineRegexp = /^\s+/;
  * This function attempts to correct this problem before the content is loaded
  * by Toast UI.
  */
-const correctNestedContentIndenation = source => {
+const correctNestedContentIndenation = (source) => {
   const lines = source.split('\n');
   let topLevelOrderedListDetected = false;
 
@@ -40,7 +40,7 @@ const correctNestedContentIndenation = source => {
     .join('\n');
 };
 
-const removeOrphanedBrTags = source => {
+const removeOrphanedBrTags = (source) => {
   /* Until the underlying Squire editor of Toast UI Editor resolves duplicate `<br>` tags, this
     `replace` solution will clear out orphaned `<br>` tags that it generates. Additionally,
     it cleans up orphaned `<br>` tags in the source markdown document that should be new lines.
@@ -49,7 +49,7 @@ const removeOrphanedBrTags = source => {
   return source.replace(/\n^<br>$/gm, '');
 };
 
-const format = source => {
+const format = (source) => {
   return correctNestedContentIndenation(removeOrphanedBrTags(source));
 };
 

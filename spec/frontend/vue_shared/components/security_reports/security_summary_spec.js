@@ -6,7 +6,7 @@ import { groupedTextBuilder } from '~/vue_shared/security_reports/store/utils';
 describe('SecuritySummary component', () => {
   let wrapper;
 
-  const createWrapper = message => {
+  const createWrapper = (message) => {
     wrapper = shallowMount(SecuritySummary, {
       propsData: { message },
       stubs: {
@@ -26,7 +26,7 @@ describe('SecuritySummary component', () => {
     groupedTextBuilder({ reportType: 'Security scanning', critical: 1, high: 0, total: 1 }),
     groupedTextBuilder({ reportType: 'Security scanning', critical: 0, high: 1, total: 1 }),
     groupedTextBuilder({ reportType: 'Security scanning', critical: 1, high: 2, total: 3 }),
-  ])('given the message %p', message => {
+  ])('given the message %p', (message) => {
     beforeEach(() => {
       createWrapper(message);
     });

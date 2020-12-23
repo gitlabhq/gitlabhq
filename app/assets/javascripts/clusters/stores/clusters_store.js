@@ -17,7 +17,7 @@ import {
 } from '../constants';
 import transitionApplicationState from '../services/application_state_machine';
 
-const isApplicationInstalled = appStatus => APPLICATION_INSTALLED_STATUSES.includes(appStatus);
+const isApplicationInstalled = (appStatus) => APPLICATION_INSTALLED_STATUSES.includes(appStatus);
 
 const applicationInitialState = {
   status: null,
@@ -195,7 +195,7 @@ export default class ClusterStore {
     this.state.status = serverState.status;
     this.state.statusReason = serverState.status_reason;
 
-    serverState.applications.forEach(serverAppEntry => {
+    serverState.applications.forEach((serverAppEntry) => {
       const {
         name: appId,
         status,
@@ -284,7 +284,7 @@ export default class ClusterStore {
   }
 
   updateEnvironments(environments = []) {
-    this.state.environments = environments.map(environment => ({
+    this.state.environments = environments.map((environment) => ({
       name: environment.name,
       project: environment.project,
       environmentPath: environment.environment_path,

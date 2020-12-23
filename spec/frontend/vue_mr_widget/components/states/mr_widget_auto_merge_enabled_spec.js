@@ -108,12 +108,12 @@ describe('MRWidgetAutoMergeEnabled', () => {
 
   describe('methods', () => {
     describe('cancelAutomaticMerge', () => {
-      it('should set flag and call service then tell main component to update the widget with data', done => {
+      it('should set flag and call service then tell main component to update the widget with data', (done) => {
         const mrObj = {
           is_new_mr_data: true,
         };
         jest.spyOn(vm.service, 'cancelAutomaticMerge').mockReturnValue(
-          new Promise(resolve => {
+          new Promise((resolve) => {
             resolve({
               data: mrObj,
             });
@@ -130,7 +130,7 @@ describe('MRWidgetAutoMergeEnabled', () => {
     });
 
     describe('removeSourceBranch', () => {
-      it('should set flag and call service then request main component to update the widget', done => {
+      it('should set flag and call service then request main component to update the widget', (done) => {
         jest.spyOn(vm.service, 'merge').mockReturnValue(
           Promise.resolve({
             data: {
@@ -173,7 +173,7 @@ describe('MRWidgetAutoMergeEnabled', () => {
       expect(vm.$el.querySelector('.js-remove-source-branch').getAttribute('disabled')).toBeFalsy();
     });
 
-    it('should disable cancel auto merge button when the action is in progress', done => {
+    it('should disable cancel auto merge button when the action is in progress', (done) => {
       vm.isCancellingAutoMerge = true;
 
       Vue.nextTick(() => {
@@ -182,7 +182,7 @@ describe('MRWidgetAutoMergeEnabled', () => {
       });
     });
 
-    it('should show source branch will be deleted text when it source branch set to remove', done => {
+    it('should show source branch will be deleted text when it source branch set to remove', (done) => {
       vm.mr.shouldRemoveSourceBranch = true;
 
       Vue.nextTick(() => {
@@ -194,7 +194,7 @@ describe('MRWidgetAutoMergeEnabled', () => {
       });
     });
 
-    it('should not show delete source branch button when user not able to delete source branch', done => {
+    it('should not show delete source branch button when user not able to delete source branch', (done) => {
       vm.mr.currentUserId = 4;
 
       Vue.nextTick(() => {
@@ -203,7 +203,7 @@ describe('MRWidgetAutoMergeEnabled', () => {
       });
     });
 
-    it('should disable delete source branch button when the action is in progress', done => {
+    it('should disable delete source branch button when the action is in progress', (done) => {
       vm.isRemovingSourceBranch = true;
 
       Vue.nextTick(() => {
@@ -214,7 +214,7 @@ describe('MRWidgetAutoMergeEnabled', () => {
       });
     });
 
-    it('should render the status text as "...to merged automatically" if MWPS is selected', done => {
+    it('should render the status text as "...to merged automatically" if MWPS is selected', (done) => {
       Vue.set(vm.mr, 'autoMergeStrategy', MWPS_MERGE_STRATEGY);
 
       Vue.nextTick(() => {
@@ -225,7 +225,7 @@ describe('MRWidgetAutoMergeEnabled', () => {
       });
     });
 
-    it('should render the cancel button as "Cancel automatic merge" if MWPS is selected', done => {
+    it('should render the cancel button as "Cancel automatic merge" if MWPS is selected', (done) => {
       Vue.set(vm.mr, 'autoMergeStrategy', MWPS_MERGE_STRATEGY);
 
       Vue.nextTick(() => {

@@ -12,19 +12,19 @@ import { s__ } from '~/locale';
  */
 const defaultFeedbackMap = {
   valueMissing: {
-    isInvalid: el => el.validity?.valueMissing,
+    isInvalid: (el) => el.validity?.valueMissing,
     message: s__('Please fill out this field.'),
   },
   urlTypeMismatch: {
-    isInvalid: el => el.type === 'url' && el.validity?.typeMismatch,
+    isInvalid: (el) => el.type === 'url' && el.validity?.typeMismatch,
     message: s__('Please enter a valid URL format, ex: http://www.example.com/home'),
   },
 };
 
 const getFeedbackForElement = (feedbackMap, el) =>
-  Object.values(feedbackMap).find(f => f.isInvalid(el))?.message || el.validationMessage;
+  Object.values(feedbackMap).find((f) => f.isInvalid(el))?.message || el.validationMessage;
 
-const focusFirstInvalidInput = e => {
+const focusFirstInvalidInput = (e) => {
   const { target: formEl } = e;
   const invalidInput = formEl.querySelector('input:invalid');
 
@@ -33,7 +33,7 @@ const focusFirstInvalidInput = e => {
   }
 };
 
-const isEveryFieldValid = form => Object.values(form.fields).every(({ state }) => state === true);
+const isEveryFieldValid = (form) => Object.values(form.fields).every(({ state }) => state === true);
 
 const createValidator = (context, feedbackMap) => ({ el, reportInvalidInput = false }) => {
   const { form } = context;

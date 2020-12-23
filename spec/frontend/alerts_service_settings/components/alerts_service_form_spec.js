@@ -35,7 +35,7 @@ describe('AlertsServiceForm', () => {
   const findUrl = () => wrapper.find('#url');
   const findAuthorizationKey = () => wrapper.find('#authorization-key');
   const findDescription = () => wrapper.find('[data-testid="description"');
-  const findActiveStatusIcon = val =>
+  const findActiveStatusIcon = (val) =>
     document.querySelector(`.js-service-active-status[data-value=${val.toString()}]`);
 
   beforeEach(() => {

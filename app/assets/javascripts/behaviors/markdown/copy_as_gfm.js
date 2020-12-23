@@ -10,10 +10,10 @@ export class CopyAsGFM {
     const isIOS = /\b(iPad|iPhone|iPod)(?=;)/.test(userAgent);
     if (isIOS) return;
 
-    $(document).on('copy', '.md', e => {
+    $(document).on('copy', '.md', (e) => {
       CopyAsGFM.copyAsGFM(e, CopyAsGFM.transformGFMSelection);
     });
-    $(document).on('copy', 'pre.code.highlight, table.code td.line_content', e => {
+    $(document).on('copy', 'pre.code.highlight, table.code td.line_content', (e) => {
       CopyAsGFM.copyAsGFM(e, CopyAsGFM.transformCodeSelection);
     });
     $(document).on('paste', '.js-gfm-input', CopyAsGFM.pasteGFM);
@@ -42,7 +42,7 @@ export class CopyAsGFM {
     clipboardData.setData('text/x-gfm-html', html);
 
     CopyAsGFM.nodeToGFM(el)
-      .then(res => {
+      .then((res) => {
         clipboardData.setData('text/x-gfm', res);
       })
       .catch(() => {
@@ -71,7 +71,7 @@ export class CopyAsGFM {
       const div = document.createElement('div');
       div.innerHTML = gfmHtml;
       CopyAsGFM.nodeToGFM(div)
-        .then(transformedGfm => {
+        .then((transformedGfm) => {
           CopyAsGFM.insertPastedText(e.target, text, transformedGfm);
         })
         .catch(() => {});
@@ -79,7 +79,7 @@ export class CopyAsGFM {
   }
 
   static insertPastedText(target, text, gfm) {
-    insertText(target, textBefore => {
+    insertText(target, (textBefore) => {
       // If the text before the cursor contains an odd number of backticks,
       // we are either inside an inline code span that starts with 1 backtick
       // or a code block that starts with 3 backticks.
@@ -125,7 +125,7 @@ export class CopyAsGFM {
     let lineSelector = '.line';
 
     if (target) {
-      const lineClass = ['left-side', 'right-side'].filter(name =>
+      const lineClass = ['left-side', 'right-side'].filter((name) =>
         target.classList.contains(name),
       )[0];
       if (lineClass) {

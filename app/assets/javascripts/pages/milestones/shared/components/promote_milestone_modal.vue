@@ -43,14 +43,14 @@ export default {
       eventHub.$emit('promoteMilestoneModal.requestStarted', this.url);
       return axios
         .post(this.url, { params: { format: 'json' } })
-        .then(response => {
+        .then((response) => {
           eventHub.$emit('promoteMilestoneModal.requestFinished', {
             milestoneUrl: this.url,
             successful: true,
           });
           visitUrl(response.data.url);
         })
-        .catch(error => {
+        .catch((error) => {
           eventHub.$emit('promoteMilestoneModal.requestFinished', {
             milestoneUrl: this.url,
             successful: false,

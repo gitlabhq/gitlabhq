@@ -11,5 +11,5 @@ export const createUserList = ({ commit, state }, userList) => {
     ...userList,
   })
     .then(({ data }) => redirectTo(data.path))
-    .catch(response => commit(types.RECEIVE_CREATE_USER_LIST_ERROR, getErrorMessages(response)));
+    .catch((response) => commit(types.RECEIVE_CREATE_USER_LIST_ERROR, getErrorMessages(response)));
 };

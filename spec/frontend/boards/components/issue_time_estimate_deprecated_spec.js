@@ -31,7 +31,7 @@ describe('Issue Time Estimate component', () => {
       expect(wrapper.find('.js-issue-time-estimate').text()).toContain('2 weeks 3 days 1 minute');
     });
 
-    it('prevents tooltip xss', done => {
+    it('prevents tooltip xss', (done) => {
       const alertSpy = jest.spyOn(window, 'alert');
       wrapper.setProps({ estimate: 'Foo <script>alert("XSS")</script>' });
       wrapper.vm.$nextTick(() => {

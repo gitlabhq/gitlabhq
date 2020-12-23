@@ -55,9 +55,9 @@ class DueDateSelect {
       field: $dueDateInput.get(0),
       theme: 'gitlab-theme',
       format: 'yyyy-mm-dd',
-      parse: dateString => parsePikadayDate(dateString),
-      toString: date => pikadayToString(date),
-      onSelect: dateText => {
+      parse: (dateString) => parsePikadayDate(dateString),
+      toString: (date) => pikadayToString(date),
+      onSelect: (dateText) => {
         $dueDateInput.val(calendar.toString(dateText));
 
         if (this.$dropdown.hasClass('js-issue-boards-due-date')) {
@@ -76,7 +76,7 @@ class DueDateSelect {
   }
 
   initRemoveDueDate() {
-    this.$block.on('click', '.js-remove-due-date', e => {
+    this.$block.on('click', '.js-remove-due-date', (e) => {
       const calendar = this.$datePicker.data('pikaday');
       e.preventDefault();
 
@@ -103,7 +103,7 @@ class DueDateSelect {
 
     if (this.rawSelectedDate.length) {
       // Construct Date object manually to avoid buggy dateString support within Date constructor
-      const dateArray = this.rawSelectedDate.split('-').map(v => parseInt(v, 10));
+      const dateArray = this.rawSelectedDate.split('-').map((v) => parseInt(v, 10));
       const dateObj = new Date(dateArray[0], dateArray[1] - 1, dateArray[2]);
       this.displayedDate = dateFormat(dateObj, 'mmm d, yyyy');
     } else {
@@ -182,8 +182,8 @@ export default class DueDateSelectors {
         theme: 'gitlab-theme animate-picker',
         format: 'yyyy-mm-dd',
         container: $datePicker.parent().get(0),
-        parse: dateString => parsePikadayDate(dateString),
-        toString: date => pikadayToString(date),
+        parse: (dateString) => parsePikadayDate(dateString),
+        toString: (date) => pikadayToString(date),
         onSelect(dateText) {
           $datePicker.val(calendar.toString(dateText));
         },
@@ -195,7 +195,7 @@ export default class DueDateSelectors {
       $datePicker.data('pikaday', calendar);
     });
 
-    $('.js-clear-due-date,.js-clear-start-date').on('click', e => {
+    $('.js-clear-due-date,.js-clear-start-date').on('click', (e) => {
       e.preventDefault();
       const calendar = $(e.target).siblings('.datepicker').data('pikaday');
       calendar.setDate(null);

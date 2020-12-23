@@ -63,7 +63,7 @@ export default function initCompareAutocomplete(limitTo = null, clickHandler = (
       },
       clicked: () => clickHandler($dropdown),
     });
-    $filterInput.on('keyup', e => {
+    $filterInput.on('keyup', (e) => {
       const keyCode = e.keyCode || e.which;
       if (keyCode !== 13) return;
       const text = $filterInput.val();
@@ -72,7 +72,7 @@ export default function initCompareAutocomplete(limitTo = null, clickHandler = (
       $dropdownContainer.removeClass('open');
     });
 
-    $dropdownContainer.on('click', '.dropdown-content a', e => {
+    $dropdownContainer.on('click', '.dropdown-content a', (e) => {
       $dropdown.prop('title', e.target.text.replace(/_+?/g, '-'));
       if ($dropdown.hasClass('has-tooltip')) {
         fixTitle($dropdown);

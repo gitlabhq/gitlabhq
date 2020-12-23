@@ -69,8 +69,8 @@ describe('new dropdown upload', () => {
       jest.spyOn(FileReader.prototype, 'readAsText');
     });
 
-    it('calls readAsText and creates file in plain text (without encoding) if the file content is plain text', done => {
-      const waitForCreate = new Promise(resolve => vm.$on('create', resolve));
+    it('calls readAsText and creates file in plain text (without encoding) if the file content is plain text', (done) => {
+      const waitForCreate = new Promise((resolve) => vm.$on('create', resolve));
 
       vm.createFile(textTarget, textFile);
 

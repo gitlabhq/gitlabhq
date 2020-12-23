@@ -1,12 +1,12 @@
 import { parallelLineKey, showDraftOnSide } from '../../../utils';
 
-export const draftsCount = state => state.drafts.length;
+export const draftsCount = (state) => state.drafts.length;
 
 export const getNotesData = (state, getters, rootState, rootGetters) => rootGetters.getNotesData;
 
-export const hasDrafts = state => state.drafts.length > 0;
+export const hasDrafts = (state) => state.drafts.length > 0;
 
-export const draftsPerDiscussionId = state =>
+export const draftsPerDiscussionId = (state) =>
   state.drafts.reduce((acc, draft) => {
     if (draft.discussion_id) {
       acc[draft.discussion_id] = draft;
@@ -15,7 +15,7 @@ export const draftsPerDiscussionId = state =>
     return acc;
   }, {});
 
-export const draftsPerFileHashAndLine = state =>
+export const draftsPerFileHashAndLine = (state) =>
   state.drafts.reduce((acc, draft) => {
     if (draft.file_hash) {
       if (!acc[draft.file_hash]) {
@@ -55,10 +55,10 @@ export const hasParallelDraftRight = (state, getters) => (diffFileSha, line) => 
   return draftsForFile ? Boolean(draftsForFile[rkey]) : false;
 };
 
-export const shouldRenderDraftRowInDiscussion = (state, getters) => discussionId =>
+export const shouldRenderDraftRowInDiscussion = (state, getters) => (discussionId) =>
   typeof getters.draftsPerDiscussionId[discussionId] !== 'undefined';
 
-export const draftForDiscussion = (state, getters) => discussionId =>
+export const draftForDiscussion = (state, getters) => (discussionId) =>
   getters.draftsPerDiscussionId[discussionId] || {};
 
 export const draftForLine = (state, getters) => (diffFileSha, line, side = null) => {
@@ -75,10 +75,10 @@ export const draftForLine = (state, getters) => (diffFileSha, line, side = null)
   return {};
 };
 
-export const draftsForFile = state => diffFileSha =>
-  state.drafts.filter(draft => draft.file_hash === diffFileSha);
+export const draftsForFile = (state) => (diffFileSha) =>
+  state.drafts.filter((draft) => draft.file_hash === diffFileSha);
 
-export const isPublishingDraft = state => draftId =>
+export const isPublishingDraft = (state) => (draftId) =>
   state.currentlyPublishingDrafts.indexOf(draftId) !== -1;
 
-export const sortedDrafts = state => [...state.drafts].sort((a, b) => a.id > b.id);
+export const sortedDrafts = (state) => [...state.drafts].sort((a, b) => a.id > b.id);

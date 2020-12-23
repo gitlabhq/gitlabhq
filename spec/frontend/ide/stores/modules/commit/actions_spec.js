@@ -41,7 +41,7 @@ describe('IDE commit module actions', () => {
   });
 
   describe('updateCommitMessage', () => {
-    it('updates store with new commit message', done => {
+    it('updates store with new commit message', (done) => {
       store
         .dispatch('commit/updateCommitMessage', 'testing')
         .then(() => {
@@ -53,7 +53,7 @@ describe('IDE commit module actions', () => {
   });
 
   describe('discardDraft', () => {
-    it('resets commit message to blank', done => {
+    it('resets commit message to blank', (done) => {
       store.state.commit.commitMessage = 'testing';
 
       store
@@ -67,7 +67,7 @@ describe('IDE commit module actions', () => {
   });
 
   describe('updateCommitAction', () => {
-    it('updates store with new commit action', done => {
+    it('updates store with new commit action', (done) => {
       store
         .dispatch('commit/updateCommitAction', '1')
         .then(() => {
@@ -123,7 +123,7 @@ describe('IDE commit module actions', () => {
       });
     });
 
-    it('updates commit message with short_id', done => {
+    it('updates commit message with short_id', (done) => {
       store
         .dispatch('commit/setLastCommitMessage', { short_id: '123' })
         .then(() => {
@@ -135,7 +135,7 @@ describe('IDE commit module actions', () => {
         .catch(done.fail);
     });
 
-    it('updates commit message with stats', done => {
+    it('updates commit message with stats', (done) => {
       store
         .dispatch('commit/setLastCommitMessage', {
           short_id: '123',
@@ -200,12 +200,12 @@ describe('IDE commit module actions', () => {
       });
 
       store.state.openFiles = store.state.stagedFiles;
-      store.state.stagedFiles.forEach(stagedFile => {
+      store.state.stagedFiles.forEach((stagedFile) => {
         store.state.entries[stagedFile.path] = stagedFile;
       });
     });
 
-    it('updates stores working reference', done => {
+    it('updates stores working reference', (done) => {
       store
         .dispatch('commit/updateFilesAfterCommit', {
           data,
@@ -218,14 +218,14 @@ describe('IDE commit module actions', () => {
         .catch(done.fail);
     });
 
-    it('resets all files changed status', done => {
+    it('resets all files changed status', (done) => {
       store
         .dispatch('commit/updateFilesAfterCommit', {
           data,
           branch,
         })
         .then(() => {
-          store.state.openFiles.forEach(entry => {
+          store.state.openFiles.forEach((entry) => {
             expect(entry.changed).toBeFalsy();
           });
         })
@@ -233,7 +233,7 @@ describe('IDE commit module actions', () => {
         .catch(done.fail);
     });
 
-    it('sets files commit data', done => {
+    it('sets files commit data', (done) => {
       store
         .dispatch('commit/updateFilesAfterCommit', {
           data,
@@ -246,7 +246,7 @@ describe('IDE commit module actions', () => {
         .catch(done.fail);
     });
 
-    it('updates raw content for changed file', done => {
+    it('updates raw content for changed file', (done) => {
       store
         .dispatch('commit/updateFilesAfterCommit', {
           data,
@@ -259,7 +259,7 @@ describe('IDE commit module actions', () => {
         .catch(done.fail);
     });
 
-    it('emits changed event for file', done => {
+    it('emits changed event for file', (done) => {
       store
         .dispatch('commit/updateFilesAfterCommit', {
           data,
@@ -319,7 +319,7 @@ describe('IDE commit module actions', () => {
       store.state.commit.commitAction = '2';
       store.state.commit.commitMessage = 'testing 123';
 
-      store.state.openFiles.forEach(localF => {
+      store.state.openFiles.forEach((localF) => {
         store.state.entries[localF.path] = localF;
       });
     });
@@ -345,7 +345,7 @@ describe('IDE commit module actions', () => {
         jest.spyOn(service, 'commit').mockResolvedValue({ data: COMMIT_RESPONSE });
       });
 
-      it('calls service', done => {
+      it('calls service', (done) => {
         store
           .dispatch('commit/commitChanges')
           .then(() => {
@@ -370,7 +370,7 @@ describe('IDE commit module actions', () => {
           .catch(done.fail);
       });
 
-      it('sends lastCommit ID when not creating new branch', done => {
+      it('sends lastCommit ID when not creating new branch', (done) => {
         store.state.commit.commitAction = '1';
 
         store
@@ -397,7 +397,7 @@ describe('IDE commit module actions', () => {
           .catch(done.fail);
       });
 
-      it('sets last Commit Msg', done => {
+      it('sets last Commit Msg', (done) => {
         store
           .dispatch('commit/commitChanges')
           .then(() => {
@@ -410,7 +410,7 @@ describe('IDE commit module actions', () => {
           .catch(done.fail);
       });
 
-      it('adds commit data to files', done => {
+      it('adds commit data to files', (done) => {
         store
           .dispatch('commit/commitChanges')
           .then(() => {
@@ -423,7 +423,7 @@ describe('IDE commit module actions', () => {
           .catch(done.fail);
       });
 
-      it('resets stores commit actions', done => {
+      it('resets stores commit actions', (done) => {
         store.state.commit.commitAction = consts.COMMIT_TO_NEW_BRANCH;
 
         store
@@ -435,7 +435,7 @@ describe('IDE commit module actions', () => {
           .catch(done.fail);
       });
 
-      it('removes all staged files', done => {
+      it('removes all staged files', (done) => {
         store
           .dispatch('commit/commitChanges')
           .then(() => {
@@ -446,7 +446,7 @@ describe('IDE commit module actions', () => {
       });
 
       describe('merge request', () => {
-        it('redirects to new merge request page', done => {
+        it('redirects to new merge request page', (done) => {
           jest.spyOn(eventHub, '$on').mockImplementation();
 
           store.state.commit.commitAction = consts.COMMIT_TO_NEW_BRANCH;
@@ -464,7 +464,7 @@ describe('IDE commit module actions', () => {
             .catch(done.fail);
         });
 
-        it('does not redirect to new merge request page when shouldCreateMR is not checked', done => {
+        it('does not redirect to new merge request page when shouldCreateMR is not checked', (done) => {
           jest.spyOn(eventHub, '$on').mockImplementation();
 
           store.state.commit.commitAction = consts.COMMIT_TO_NEW_BRANCH;
@@ -510,7 +510,7 @@ describe('IDE commit module actions', () => {
         });
       });
 
-      it('shows failed message', done => {
+      it('shows failed message', (done) => {
         store
           .dispatch('commit/commitChanges')
           .then(() => {
@@ -556,7 +556,7 @@ describe('IDE commit module actions', () => {
         },
       };
 
-      it('commits TOGGLE_EMPTY_STATE mutation on empty repo', done => {
+      it('commits TOGGLE_EMPTY_STATE mutation on empty repo', (done) => {
         jest.spyOn(service, 'commit').mockResolvedValue({ data: COMMIT_RESPONSE });
         jest.spyOn(store, 'commit');
 
@@ -573,7 +573,7 @@ describe('IDE commit module actions', () => {
           .catch(done.fail);
       });
 
-      it('does not commmit TOGGLE_EMPTY_STATE mutation on existing project', done => {
+      it('does not commmit TOGGLE_EMPTY_STATE mutation on existing project', (done) => {
         COMMIT_RESPONSE.parent_ids.push('1234');
         jest.spyOn(service, 'commit').mockResolvedValue({ data: COMMIT_RESPONSE });
         jest.spyOn(store, 'commit');
@@ -594,7 +594,7 @@ describe('IDE commit module actions', () => {
   });
 
   describe('toggleShouldCreateMR', () => {
-    it('commits both toggle and interacting with MR checkbox actions', done => {
+    it('commits both toggle and interacting with MR checkbox actions', (done) => {
       testAction(
         actions.toggleShouldCreateMR,
         {},

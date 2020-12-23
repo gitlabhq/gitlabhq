@@ -173,17 +173,17 @@ export default class ActivityCalendar {
         return `translate(${this.daySizeWithSpace * i + 1 + this.daySizeWithSpace}, 18)`;
       })
       .selectAll('rect')
-      .data(stamp => stamp)
+      .data((stamp) => stamp)
       .enter()
       .append('rect')
       .attr('x', '0')
-      .attr('y', stamp => this.dayYPos(stamp.day))
+      .attr('y', (stamp) => this.dayYPos(stamp.day))
       .attr('width', this.daySize)
       .attr('height', this.daySize)
-      .attr('fill', stamp =>
+      .attr('fill', (stamp) =>
         stamp.count !== 0 ? this.color(Math.min(stamp.count, 40)) : '#ededed',
       )
-      .attr('title', stamp => formatTooltipText(stamp))
+      .attr('title', (stamp) => formatTooltipText(stamp))
       .attr('class', 'user-contrib-cell has-tooltip')
       .attr('data-html', true)
       .attr('data-container', 'body')
@@ -226,8 +226,8 @@ export default class ActivityCalendar {
       .append('text')
       .attr('text-anchor', 'middle')
       .attr('x', 8)
-      .attr('y', day => day.y)
-      .text(day => day.text)
+      .attr('y', (day) => day.y)
+      .text((day) => day.text)
       .attr('class', 'user-contrib-text');
   }
 
@@ -239,10 +239,10 @@ export default class ActivityCalendar {
       .data(this.months)
       .enter()
       .append('text')
-      .attr('x', date => date.x)
+      .attr('x', (date) => date.x)
       .attr('y', 10)
       .attr('class', 'user-contrib-text')
-      .text(date => this.monthNames[date.month]);
+      .text((date) => this.monthNames[date.month]);
   }
 
   renderKey() {
@@ -272,7 +272,7 @@ export default class ActivityCalendar {
       .attr('height', this.daySize)
       .attr('x', (color, i) => this.daySizeWithSpace * i)
       .attr('y', 0)
-      .attr('fill', color => color)
+      .attr('fill', (color) => color)
       .attr('class', 'has-tooltip')
       .attr('title', (color, i) => keyValues[i])
       .attr('data-container', 'body')

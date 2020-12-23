@@ -54,7 +54,7 @@ export default {
       type: Object,
       required: false,
       default: undefined,
-      validator: ref =>
+      validator: (ref) =>
         ref === undefined || (Number.isFinite(ref.iid) && isString(ref.path) && !isEmpty(ref.path)),
     },
 

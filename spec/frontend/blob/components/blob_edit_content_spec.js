@@ -40,7 +40,7 @@ describe('Blob Header Editing', () => {
     wrapper.destroy();
   });
 
-  const triggerChangeContent = val => {
+  const triggerChangeContent = (val) => {
     getValue.mockReturnValue(val);
     const [cb] = onDidChangeModelContent.mock.calls[0];
 

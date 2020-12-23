@@ -93,7 +93,7 @@ describe('event bus factory', () => {
 
   describe('$off', () => {
     beforeEach(() => {
-      otherHandlers.forEach(x => eventBus.$on(TEST_EVENT, x));
+      otherHandlers.forEach((x) => eventBus.$on(TEST_EVENT, x));
       eventBus.$on(TEST_EVENT, handler);
     });
 
@@ -115,7 +115,7 @@ describe('event bus factory', () => {
       eventBus.$emit(TEST_EVENT);
 
       expect(handler).not.toHaveBeenCalled();
-      expect(otherHandlers.map(x => x.mock.calls.length)).toEqual(otherHandlers.map(() => 1));
+      expect(otherHandlers.map((x) => x.mock.calls.length)).toEqual(otherHandlers.map(() => 1));
     });
 
     it('without a handler, will no longer call any handlers', () => {
@@ -124,13 +124,13 @@ describe('event bus factory', () => {
       eventBus.$emit(TEST_EVENT);
 
       expect(handler).not.toHaveBeenCalled();
-      expect(otherHandlers.map(x => x.mock.calls.length)).toEqual(otherHandlers.map(() => 0));
+      expect(otherHandlers.map((x) => x.mock.calls.length)).toEqual(otherHandlers.map(() => 0));
     });
   });
 
   describe('$emit', () => {
     beforeEach(() => {
-      otherHandlers.forEach(x => eventBus.$on(TEST_EVENT_2, x));
+      otherHandlers.forEach((x) => eventBus.$on(TEST_EVENT_2, x));
       eventBus.$on(TEST_EVENT, handler);
     });
 
@@ -138,7 +138,7 @@ describe('event bus factory', () => {
       eventBus.$emit(TEST_EVENT, 'arg1');
 
       expect(handler).toHaveBeenCalledWith('arg1');
-      expect(otherHandlers.map(x => x.mock.calls.length)).toEqual(otherHandlers.map(() => 0));
+      expect(otherHandlers.map((x) => x.mock.calls.length)).toEqual(otherHandlers.map(() => 0));
     });
   });
 });

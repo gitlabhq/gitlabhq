@@ -68,7 +68,7 @@ export default Vue.extend({
         : __('Label');
     },
     selectedLabels() {
-      return this.hasLabels ? this.issue.labels.map(l => l.title).join(',') : '';
+      return this.hasLabels ? this.issue.labels.map((l) => l.title).join(',') : '';
     },
   },
   watch: {

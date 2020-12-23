@@ -35,7 +35,7 @@ console.log(
   `Loading all ${allFiles ? '' : 'staged '}files ${globDir ? `within ${globDir} ` : ''}...`,
 );
 
-const globPatterns = matchExtensions.map(ext => `${globDir}**/*.${ext}`);
+const globPatterns = matchExtensions.map((ext) => `${globDir}**/*.${ext}`);
 const matchedFiles = allFiles
   ? glob.sync(`{${globPatterns.join(',')}}`, { ignore: globIgnore })
   : getStagedFiles(globPatterns);
@@ -62,7 +62,7 @@ Please format each file listed below or run "${fixCommand}"
 `;
 
 const checkFileWithOptions = (filePath, options) =>
-  readFileAsync(filePath, 'utf8').then(input => {
+  readFileAsync(filePath, 'utf8').then((input) => {
     if (shouldSave) {
       const output = prettier.format(input, options);
       if (input === output) {
@@ -92,7 +92,7 @@ const checkFileWithOptions = (filePath, options) =>
     }
   });
 
-const checkFileWithPrettierConfig = filePath =>
+const checkFileWithPrettierConfig = (filePath) =>
   prettier
     .getFileInfo(filePath, { ignorePath: '.prettierignore' })
     .then(({ ignored, inferredParser }) => {
@@ -100,7 +100,7 @@ const checkFileWithPrettierConfig = filePath =>
         ignoredCount += 1;
         return;
       }
-      return prettier.resolveConfig(filePath).then(fileOptions => {
+      return prettier.resolveConfig(filePath).then((fileOptions) => {
         const options = { ...fileOptions, parser: inferredParser };
         return checkFileWithOptions(filePath, options);
       });
@@ -115,7 +115,7 @@ Promise.all(matchedFiles.map(checkFileWithPrettierConfig))
 
     if (didWarn) process.exit(1);
   })
-  .catch(e => {
+  .catch((e) => {
     console.log(`\nAn error occurred while processing files with prettier: ${e.message}\n`);
     process.exit(1);
   });

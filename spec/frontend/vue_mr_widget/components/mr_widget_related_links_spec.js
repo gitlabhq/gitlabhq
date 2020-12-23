@@ -5,7 +5,7 @@ import relatedLinksComponent from '~/vue_merge_request_widget/components/mr_widg
 describe('MRWidgetRelatedLinks', () => {
   let vm;
 
-  const createComponent = data => {
+  const createComponent = (data) => {
     const Component = Vue.extend(relatedLinksComponent);
 
     return mountComponent(Component, data);

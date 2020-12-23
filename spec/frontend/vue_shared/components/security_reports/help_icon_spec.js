@@ -8,7 +8,7 @@ const discoverProjectSecurityPath = '/discoverProjectSecurityPath';
 describe('HelpIcon component', () => {
   let wrapper;
 
-  const createWrapper = props => {
+  const createWrapper = (props) => {
     wrapper = shallowMount(HelpIcon, {
       propsData: {
         helpPath,

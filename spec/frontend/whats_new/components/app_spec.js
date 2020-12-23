@@ -103,7 +103,7 @@ describe('App', () => {
       expect(actions.closeDrawer).toHaveBeenCalled();
     });
 
-    it.each([true, false])('passes open property', async openState => {
+    it.each([true, false])('passes open property', async (openState) => {
       wrapper.vm.$store.state.open = openState;
 
       await wrapper.vm.$nextTick();
@@ -183,7 +183,7 @@ describe('App', () => {
     const clickSecondTab = async () => {
       const secondTab = wrapper.findAll('.nav-link').at(1);
       await secondTab.trigger('click');
-      await new Promise(resolve => requestAnimationFrame(resolve));
+      await new Promise((resolve) => requestAnimationFrame(resolve));
     };
 
     beforeEach(() => {

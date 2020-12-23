@@ -139,7 +139,7 @@ describe('TooltipOnTruncate component', () => {
       createComponent({
         propsData: {
           title: DUMMY_TEXT,
-          truncateTarget: el => el.childNodes[1],
+          truncateTarget: (el) => el.childNodes[1],
         },
         slots: {
           default: [createChildElement(), createChildElement()],

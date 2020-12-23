@@ -70,7 +70,7 @@ class ListIssue {
   }
 
   getLists() {
-    return boardsStore.state.lists.filter(list => list.findIssue(this.id));
+    return boardsStore.state.lists.filter((list) => list.findIssue(this.id));
   }
 
   updateData(newData) {

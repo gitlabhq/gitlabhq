@@ -47,7 +47,7 @@ export const addVariable = ({ state, dispatch }) => {
       dispatch('receiveAddVariableSuccess');
       dispatch('fetchVariables');
     })
-    .catch(error => {
+    .catch((error) => {
       createFlash(error.response.data[0]);
       dispatch('receiveAddVariableError', error);
     });
@@ -77,7 +77,7 @@ export const updateVariable = ({ state, dispatch }) => {
       dispatch('receiveUpdateVariableSuccess');
       dispatch('fetchVariables');
     })
-    .catch(error => {
+    .catch((error) => {
       createFlash(error.response.data[0]);
       dispatch('receiveUpdateVariableError', error);
     });
@@ -132,7 +132,7 @@ export const deleteVariable = ({ dispatch, state }) => {
       dispatch('receiveDeleteVariableSuccess');
       dispatch('fetchVariables');
     })
-    .catch(error => {
+    .catch((error) => {
       createFlash(error.response.data[0]);
       dispatch('receiveDeleteVariableError', error);
     });
@@ -150,7 +150,7 @@ export const fetchEnvironments = ({ dispatch, state }) => {
   dispatch('requestEnvironments');
 
   return Api.environments(state.projectId)
-    .then(res => {
+    .then((res) => {
       dispatch('receiveEnvironmentsSuccess', prepareEnvironments(res.data));
     })
     .catch(() => {

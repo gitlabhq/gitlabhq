@@ -14,7 +14,7 @@ const TEST_BLOBS = [
   createBlobFromTestEntry(testEntries.deleted),
 ];
 
-const TEST_BLOBS_UNLOADED = TEST_BLOBS.map(blob => ({ ...blob, content: '', isLoaded: false }));
+const TEST_BLOBS_UNLOADED = TEST_BLOBS.map((blob) => ({ ...blob, content: '', isLoaded: false }));
 
 describe('snippets/components/snippet_blob_actions_edit', () => {
   let wrapper;
@@ -31,7 +31,7 @@ describe('snippets/components/snippet_blob_actions_edit', () => {
   const findLabel = () => wrapper.find('label');
   const findBlobEdits = () => wrapper.findAll(SnippetBlobEdit);
   const findBlobsData = () =>
-    findBlobEdits().wrappers.map(x => ({
+    findBlobEdits().wrappers.map((x) => ({
       blob: x.props('blob'),
       classes: x.classes(),
     }));
@@ -42,7 +42,7 @@ describe('snippets/components/snippet_blob_actions_edit', () => {
 
     return events[events.length - 1]?.[0];
   };
-  const buildBlobsDataExpectation = blobs =>
+  const buildBlobsDataExpectation = (blobs) =>
     blobs.map((blob, index) => ({
       blob: {
         ...blob,
@@ -50,7 +50,7 @@ describe('snippets/components/snippet_blob_actions_edit', () => {
       },
       classes: index > 0 ? ['gl-mt-3'] : [],
     }));
-  const triggerBlobDelete = idx => findBlobEdits().at(idx).vm.$emit('delete');
+  const triggerBlobDelete = (idx) => findBlobEdits().at(idx).vm.$emit('delete');
   const triggerBlobUpdate = (idx, props) => findBlobEdits().at(idx).vm.$emit('blob-updated', props);
 
   afterEach(() => {

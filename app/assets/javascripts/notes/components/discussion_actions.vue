@@ -42,10 +42,10 @@ export default {
       return this.glFeatures.hideJumpToNextUnresolvedInThreads;
     },
     resolvableNotes() {
-      return this.discussion.notes.filter(x => x.resolvable);
+      return this.discussion.notes.filter((x) => x.resolvable);
     },
     userCanResolveDiscussion() {
-      return this.resolvableNotes.every(note => note.current_user?.can_resolve_discussion);
+      return this.resolvableNotes.every((note) => note.current_user?.can_resolve_discussion);
     },
   },
 };

@@ -73,7 +73,7 @@ describe('ideStatusBar', () => {
     });
 
     describe('pipeline status', () => {
-      it('opens right sidebar on clicking icon', done => {
+      it('opens right sidebar on clicking icon', (done) => {
         jest.spyOn(vm, 'openRightPane').mockImplementation(() => {});
         Vue.set(vm.$store.state.pipelines, 'latestPipeline', {
           details: {

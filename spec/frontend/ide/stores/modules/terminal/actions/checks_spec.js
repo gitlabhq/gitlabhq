@@ -102,7 +102,7 @@ describe('IDE store terminal check actions', () => {
       );
     });
 
-    [httpStatus.FORBIDDEN, httpStatus.NOT_FOUND].forEach(status => {
+    [httpStatus.FORBIDDEN, httpStatus.NOT_FOUND].forEach((status) => {
       it(`hides tab, when status is ${status}`, () => {
         const payload = { response: { status } };
 

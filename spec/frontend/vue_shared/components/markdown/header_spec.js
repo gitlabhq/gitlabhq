@@ -6,7 +6,7 @@ import ToolbarButton from '~/vue_shared/components/markdown/toolbar_button.vue';
 describe('Markdown field header component', () => {
   let wrapper;
 
-  const createWrapper = props => {
+  const createWrapper = (props) => {
     wrapper = shallowMount(HeaderComponent, {
       propsData: {
         previewMarkdown: false,
@@ -18,7 +18,7 @@ describe('Markdown field header component', () => {
   const findToolbarButtons = () => wrapper.findAll(ToolbarButton);
   const findToolbarButtonByProp = (prop, value) =>
     findToolbarButtons()
-      .filter(button => button.props(prop) === value)
+      .filter((button) => button.props(prop) === value)
       .at(0);
 
   beforeEach(() => {

@@ -89,7 +89,7 @@ export default class MilestoneSelect {
           return getMilestones(contextId, reqParams)
             .then(({ data }) =>
               data
-                .map(m => ({
+                .map((m) => ({
                   ...m,
                   // Public API includes `title` instead of `name`.
                   name: m.title,
@@ -105,7 +105,7 @@ export default class MilestoneSelect {
                   return 0;
                 }),
             )
-            .then(data => {
+            .then((data) => {
               const extraOptions = [];
               if (showAny) {
                 extraOptions.push({
@@ -146,7 +146,7 @@ export default class MilestoneSelect {
               $(`[data-milestone-id="${selectedMilestone}"] > a`).addClass('is-active');
             });
         },
-        renderRow: milestone => {
+        renderRow: (milestone) => {
           const milestoneName = milestone.title || milestone.name;
           let milestoneDisplayName = escape(milestoneName);
 
@@ -178,8 +178,8 @@ export default class MilestoneSelect {
         },
         defaultLabel,
         fieldName: $dropdown.data('fieldName'),
-        text: milestone => escape(milestone.title),
-        id: milestone => {
+        text: (milestone) => escape(milestone.title),
+        id: (milestone) => {
           if (milestone !== undefined) {
             if (!useId && !$dropdown.is('.js-issuable-form-dropdown')) {
               return milestone.name;
@@ -193,7 +193,7 @@ export default class MilestoneSelect {
           // display:block overrides the hide-collapse rule
           return $value.css('display', '');
         },
-        opened: e => {
+        opened: (e) => {
           const $el = $(e.currentTarget);
           if ($dropdown.hasClass('js-issue-board-sidebar') || options.handleClick) {
             selectedMilestone = $dropdown[0].dataset.selected || selectedMilestoneDefault;
@@ -202,7 +202,7 @@ export default class MilestoneSelect {
           $(`[data-milestone-id="${selectedMilestone}"] > a`, $el).addClass('is-active');
         },
         vue: $dropdown.hasClass('js-issue-board-sidebar'),
-        clicked: clickEvent => {
+        clicked: (clickEvent) => {
           const { e } = clickEvent;
           let selected = clickEvent.selectedObj;
 

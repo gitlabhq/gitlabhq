@@ -15,7 +15,7 @@ export default class UserCallout {
 
   init() {
     if (!this.isCalloutDismissed || this.isCalloutDismissed === 'false') {
-      this.userCalloutBody.find('.js-close-callout').on('click', e => this.dismissCallout(e));
+      this.userCalloutBody.find('.js-close-callout').on('click', (e) => this.dismissCallout(e));
     }
   }
 

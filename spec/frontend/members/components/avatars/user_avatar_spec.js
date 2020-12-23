@@ -22,7 +22,7 @@ describe('UserAvatar', () => {
   const getByText = (text, options) =>
     createWrapper(within(wrapper.element).findByText(text, options));
 
-  const findStatusEmoji = emoji => wrapper.find(`gl-emoji[data-name="${emoji}"]`);
+  const findStatusEmoji = (emoji) => wrapper.find(`gl-emoji[data-name="${emoji}"]`);
 
   afterEach(() => {
     wrapper.destroy();

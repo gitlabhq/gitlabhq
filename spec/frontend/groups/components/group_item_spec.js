@@ -31,7 +31,7 @@ describe('GroupItemComponent', () => {
     vm.$destroy();
   });
 
-  const withMicrodata = group => ({
+  const withMicrodata = (group) => ({
     ...group,
     microdata: getGroupItemMicrodata(group),
   });
@@ -49,7 +49,7 @@ describe('GroupItemComponent', () => {
         const { rowClass } = vm;
 
         expect(Object.keys(rowClass).length).toBe(classes.length);
-        Object.keys(rowClass).forEach(className => {
+        Object.keys(rowClass).forEach((className) => {
           expect(classes.indexOf(className)).toBeGreaterThan(-1);
         });
       });
@@ -220,13 +220,13 @@ describe('GroupItemComponent', () => {
   });
   describe('schema.org props', () => {
     describe('when showSchemaMarkup is disabled on the group', () => {
-      it.each(['itemprop', 'itemtype', 'itemscope'], 'it does not set %s', attr => {
+      it.each(['itemprop', 'itemtype', 'itemscope'], 'it does not set %s', (attr) => {
         expect(vm.$el.getAttribute(attr)).toBeNull();
       });
       it.each(
         ['.js-group-avatar', '.js-group-name', '.js-group-description'],
         'it does not set `itemprop` on sub-nodes',
-        selector => {
+        (selector) => {
           expect(vm.$el.querySelector(selector).getAttribute('itemprop')).toBeNull();
         },
       );

@@ -8,7 +8,7 @@ import Tracking from '~/tracking';
  * 3. Change the time range
  * 4. Use the search bar
  */
-const trackLogs = label =>
+const trackLogs = (label) =>
   Tracking.event(document.body.dataset.page, 'logs_view', {
     label,
     property: 'count',

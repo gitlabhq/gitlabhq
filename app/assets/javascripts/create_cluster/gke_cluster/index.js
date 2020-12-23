@@ -22,7 +22,7 @@ const mountComponent = (entryPoint, component, componentName, extraProps = {}) =
     components: {
       [componentName]: component,
     },
-    render: createElement =>
+    render: (createElement) =>
       createElement(componentName, {
         props: {
           fieldName: hiddenInput.getAttribute('name'),

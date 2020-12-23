@@ -36,7 +36,7 @@ describe('CreateMergeRequestDropdown', () => {
   });
 
   describe('getRef', () => {
-    it('escapes branch names correctly', done => {
+    it('escapes branch names correctly', (done) => {
       const endpoint = `${dropdown.refsPath}contains%23hash`;
       jest.spyOn(axios, 'get');
       axiosMock.onGet(endpoint).replyOnce({});

@@ -6,7 +6,7 @@ import { illustration, jiraIntegrationPath } from '../mock_data';
 describe('JiraImportSetup', () => {
   let wrapper;
 
-  const getGlEmptyStateProp = attribute => wrapper.find(GlEmptyState).props(attribute);
+  const getGlEmptyStateProp = (attribute) => wrapper.find(GlEmptyState).props(attribute);
 
   beforeEach(() => {
     wrapper = shallowMount(JiraImportSetup, {

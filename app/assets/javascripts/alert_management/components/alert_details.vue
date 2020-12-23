@@ -140,7 +140,7 @@ export default {
     },
     currentTabIndex: {
       get() {
-        return this.$options.tabsConfig.findIndex(tab => tab.id === this.activeTab);
+        return this.$options.tabsConfig.findIndex((tab) => tab.id === this.activeTab);
       },
       set(tabIdx) {
         const tabId = this.$options.tabsConfig[tabIdx].id;
@@ -208,7 +208,7 @@ export default {
             }
           },
         )
-        .catch(error => {
+        .catch((error) => {
           this.createIncidentError = error;
           this.incidentCreationInProgress = false;
         });

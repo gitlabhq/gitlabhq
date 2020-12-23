@@ -48,7 +48,7 @@ export default {
     },
     helpText() {
       const placeholders = ['project_path', 'project_id', 'default_branch', 'commit_sha']
-        .map(placeholder => `<code>%{${placeholder}}</code>`)
+        .map((placeholder) => `<code>%{${placeholder}}</code>`)
         .join(', ');
       return sprintf(
         s__('Badges|Supported %{docsLinkStart}variables%{docsLinkEnd}: %{placeholders}'),
@@ -137,7 +137,7 @@ export default {
             createFlash(s__('Badges|Badge saved.'), 'notice');
             this.wasValidated = false;
           })
-          .catch(error => {
+          .catch((error) => {
             createFlash(
               s__('Badges|Saving the badge failed, please check the entered URLs and try again.'),
             );
@@ -150,7 +150,7 @@ export default {
           createFlash(s__('Badges|New badge added.'), 'notice');
           this.wasValidated = false;
         })
-        .catch(error => {
+        .catch((error) => {
           createFlash(
             s__('Badges|Adding the badge failed, please check the entered URLs and try again.'),
           );

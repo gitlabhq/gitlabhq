@@ -63,7 +63,7 @@ describe('Bulk import resolvers', () => {
       });
 
       it('mirrors REST endpoint response fields', () => {
-        const extractRelevantFields = obj => ({ id: obj.id, full_path: obj.full_path });
+        const extractRelevantFields = (obj) => ({ id: obj.id, full_path: obj.full_path });
 
         expect(results.map(extractRelevantFields)).toStrictEqual(
           availableNamespacesFixture.map(extractRelevantFields),
@@ -89,20 +89,20 @@ describe('Bulk import resolvers', () => {
         expect(
           results.every((r, idx) =>
             MIRRORED_FIELDS.every(
-              field => r[field] === statusEndpointFixture.importable_data[idx][field],
+              (field) => r[field] === statusEndpointFixture.importable_data[idx][field],
             ),
           ),
         ).toBe(true);
       });
 
       it('populates each result instance with status field default to none', () => {
-        expect(results.every(r => r.status === STATUSES.NONE)).toBe(true);
+        expect(results.every((r) => r.status === STATUSES.NONE)).toBe(true);
       });
 
       it('populates each result instance with import_target defaulted to first available namespace', () => {
         expect(
           results.every(
-            r => r.import_target.target_namespace === availableNamespacesFixture[0].full_path,
+            (r) => r.import_target.target_namespace === availableNamespacesFixture[0].full_path,
           ),
         ).toBe(true);
       });

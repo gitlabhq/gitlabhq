@@ -12,7 +12,7 @@ export default function simulateInput(target, text) {
   }
 
   if (text.length > 0) {
-    Array.prototype.forEach.call(text, char => {
+    Array.prototype.forEach.call(text, (char) => {
       input.value += char;
       triggerEvents(input);
     });

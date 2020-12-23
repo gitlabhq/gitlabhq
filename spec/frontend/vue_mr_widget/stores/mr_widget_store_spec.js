@@ -156,7 +156,7 @@ describe('MergeRequestStore', () => {
 
     it.each(['sast_comparison_path', 'secret_scanning_comparison_path'])(
       'should set %s path',
-      property => {
+      (property) => {
         // Ensure something is set in the mock data
         expect(property in mockData).toBe(true);
         const expectedValue = mockData[property];

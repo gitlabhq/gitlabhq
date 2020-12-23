@@ -35,7 +35,7 @@ async function prepareEmojiMap() {
 
   validEmojiNames = [...Object.keys(emojiMap), ...Object.keys(emojiAliases)];
 
-  Object.keys(emojiMap).forEach(name => {
+  Object.keys(emojiMap).forEach((name) => {
     emojiMap[name].aliases = [];
     emojiMap[name].name = name;
   });
@@ -122,23 +122,23 @@ const searchMatchers = {
 
 const searchPredicates = {
   // Search by name
-  name: (matcher, query) => emoji => {
+  name: (matcher, query) => (emoji) => {
     const m = matcher(emoji.name, query);
     return [{ ...m, emoji, field: emoji.name }];
   },
   // Search by alias
-  alias: (matcher, query) => emoji =>
-    emoji.aliases.map(alias => {
+  alias: (matcher, query) => (emoji) =>
+    emoji.aliases.map((alias) => {
       const m = matcher(alias, query);
       return { ...m, emoji, field: alias };
     }),
   // Search by description
-  description: (matcher, query) => emoji => {
+  description: (matcher, query) => (emoji) => {
     const m = matcher(emoji.d, query);
     return [{ ...m, emoji, field: emoji.d }];
   },
   // Search by unicode value (always exact)
-  unicode: (matcher, query) => emoji => {
+  unicode: (matcher, query) => (emoji) => {
     return [{ emoji, field: emoji.e, success: emoji.e === query }];
   },
 };
@@ -196,18 +196,18 @@ export function searchEmoji(query, opts) {
   }
 
   const matcher = searchMatchers[match] || searchMatchers.exact;
-  const predicates = fields.map(f => searchPredicates[f](matcher, query));
+  const predicates = fields.map((f) => searchPredicates[f](matcher, query));
 
   const results = Object.values(emojiMap)
-    .flatMap(emoji => predicates.flatMap(predicate => predicate(emoji)))
-    .filter(r => r.success);
+    .flatMap((emoji) => predicates.flatMap((predicate) => predicate(emoji)))
+    .filter((r) => r.success);
 
   // Fallback to question mark for unknown emojis
   if (fallback && results.length === 0) {
     return raw ? [{ emoji: fallbackEmoji }] : [fallbackEmoji];
   }
 
-  return raw ? results : results.map(r => r.emoji);
+  return raw ? results : results.map((r) => r.emoji);
 }
 
 let emojiCategoryMap;
@@ -223,7 +223,7 @@ export function getEmojiCategoryMap() {
       symbols: [],
       flags: [],
     };
-    Object.keys(emojiMap).forEach(name => {
+    Object.keys(emojiMap).forEach((name) => {
       const emoji = emojiMap[name];
       if (emojiCategoryMap[emoji.c]) {
         emojiCategoryMap[emoji.c].push(name);

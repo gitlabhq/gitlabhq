@@ -63,7 +63,7 @@ describe('AlertMappingBuilder', () => {
       const dropdownItems = dropdown.findAll(GlDropdownItem);
       const { nodes } = parsedMapping.samplePayload.payloadAlerFields;
       const numberOfMappingOptions = nodes.filter(({ type }) =>
-        type.some(t => compatibleTypes.includes(t)),
+        type.some((t) => compatibleTypes.includes(t)),
       );
 
       expect(dropdown.exists()).toBe(true);
@@ -82,7 +82,7 @@ describe('AlertMappingBuilder', () => {
         const dropdownItems = dropdown.findAll(GlDropdownItem);
         const { nodes } = parsedMapping.samplePayload.payloadAlerFields;
         const numberOfMappingOptions = nodes.filter(({ type }) =>
-          type.some(t => compatibleTypes.includes(t)),
+          type.some((t) => compatibleTypes.includes(t)),
         );
 
         expect(searchBox.exists()).toBe(Boolean(numberOfFallbacks));

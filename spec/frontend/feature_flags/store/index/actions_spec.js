@@ -40,7 +40,7 @@ describe('Feature flags actions', () => {
   });
 
   describe('setFeatureFlagsOptions', () => {
-    it('should commit SET_FEATURE_FLAGS_OPTIONS mutation', done => {
+    it('should commit SET_FEATURE_FLAGS_OPTIONS mutation', (done) => {
       testAction(
         setFeatureFlagsOptions,
         { page: '1', scope: 'all' },
@@ -65,7 +65,7 @@ describe('Feature flags actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestFeatureFlags and receiveFeatureFlagsSuccess ', done => {
+      it('dispatches requestFeatureFlags and receiveFeatureFlagsSuccess ', (done) => {
         mock.onGet(`${TEST_HOST}/endpoint.json`).replyOnce(200, getRequestData, {});
 
         testAction(
@@ -88,7 +88,7 @@ describe('Feature flags actions', () => {
     });
 
     describe('error', () => {
-      it('dispatches requestFeatureFlags and receiveFeatureFlagsError ', done => {
+      it('dispatches requestFeatureFlags and receiveFeatureFlagsError ', (done) => {
         mock.onGet(`${TEST_HOST}/endpoint.json`, {}).replyOnce(500, {});
 
         testAction(
@@ -111,7 +111,7 @@ describe('Feature flags actions', () => {
   });
 
   describe('requestFeatureFlags', () => {
-    it('should commit RECEIVE_FEATURE_FLAGS_SUCCESS mutation', done => {
+    it('should commit RECEIVE_FEATURE_FLAGS_SUCCESS mutation', (done) => {
       testAction(
         requestFeatureFlags,
         null,
@@ -124,7 +124,7 @@ describe('Feature flags actions', () => {
   });
 
   describe('receiveFeatureFlagsSuccess', () => {
-    it('should commit RECEIVE_FEATURE_FLAGS_SUCCESS mutation', done => {
+    it('should commit RECEIVE_FEATURE_FLAGS_SUCCESS mutation', (done) => {
       testAction(
         receiveFeatureFlagsSuccess,
         { data: getRequestData, headers: {} },
@@ -142,7 +142,7 @@ describe('Feature flags actions', () => {
   });
 
   describe('receiveFeatureFlagsError', () => {
-    it('should commit RECEIVE_FEATURE_FLAGS_ERROR mutation', done => {
+    it('should commit RECEIVE_FEATURE_FLAGS_ERROR mutation', (done) => {
       testAction(
         receiveFeatureFlagsError,
         null,
@@ -160,7 +160,7 @@ describe('Feature flags actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestUserLists and receiveUserListsSuccess ', done => {
+      it('dispatches requestUserLists and receiveUserListsSuccess ', (done) => {
         testAction(
           fetchUserLists,
           null,
@@ -181,7 +181,7 @@ describe('Feature flags actions', () => {
     });
 
     describe('error', () => {
-      it('dispatches requestUserLists and receiveUserListsError ', done => {
+      it('dispatches requestUserLists and receiveUserListsError ', (done) => {
         Api.fetchFeatureFlagUserLists.mockRejectedValue();
 
         testAction(
@@ -204,7 +204,7 @@ describe('Feature flags actions', () => {
   });
 
   describe('requestUserLists', () => {
-    it('should commit RECEIVE_USER_LISTS_SUCCESS mutation', done => {
+    it('should commit RECEIVE_USER_LISTS_SUCCESS mutation', (done) => {
       testAction(
         requestUserLists,
         null,
@@ -217,7 +217,7 @@ describe('Feature flags actions', () => {
   });
 
   describe('receiveUserListsSuccess', () => {
-    it('should commit RECEIVE_USER_LISTS_SUCCESS mutation', done => {
+    it('should commit RECEIVE_USER_LISTS_SUCCESS mutation', (done) => {
       testAction(
         receiveUserListsSuccess,
         { data: [userList], headers: {} },
@@ -235,7 +235,7 @@ describe('Feature flags actions', () => {
   });
 
   describe('receiveUserListsError', () => {
-    it('should commit RECEIVE_USER_LISTS_ERROR mutation', done => {
+    it('should commit RECEIVE_USER_LISTS_ERROR mutation', (done) => {
       testAction(
         receiveUserListsError,
         null,
@@ -260,7 +260,7 @@ describe('Feature flags actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestRotateInstanceId and receiveRotateInstanceIdSuccess ', done => {
+      it('dispatches requestRotateInstanceId and receiveRotateInstanceIdSuccess ', (done) => {
         mock.onPost(`${TEST_HOST}/endpoint.json`).replyOnce(200, rotateData, {});
 
         testAction(
@@ -283,7 +283,7 @@ describe('Feature flags actions', () => {
     });
 
     describe('error', () => {
-      it('dispatches requestRotateInstanceId and receiveRotateInstanceIdError ', done => {
+      it('dispatches requestRotateInstanceId and receiveRotateInstanceIdError ', (done) => {
         mock.onGet(`${TEST_HOST}/endpoint.json`, {}).replyOnce(500, {});
 
         testAction(
@@ -306,7 +306,7 @@ describe('Feature flags actions', () => {
   });
 
   describe('requestRotateInstanceId', () => {
-    it('should commit REQUEST_ROTATE_INSTANCE_ID mutation', done => {
+    it('should commit REQUEST_ROTATE_INSTANCE_ID mutation', (done) => {
       testAction(
         requestRotateInstanceId,
         null,
@@ -319,7 +319,7 @@ describe('Feature flags actions', () => {
   });
 
   describe('receiveRotateInstanceIdSuccess', () => {
-    it('should commit RECEIVE_ROTATE_INSTANCE_ID_SUCCESS mutation', done => {
+    it('should commit RECEIVE_ROTATE_INSTANCE_ID_SUCCESS mutation', (done) => {
       testAction(
         receiveRotateInstanceIdSuccess,
         { data: rotateData, headers: {} },
@@ -337,7 +337,7 @@ describe('Feature flags actions', () => {
   });
 
   describe('receiveRotateInstanceIdError', () => {
-    it('should commit RECEIVE_ROTATE_INSTANCE_ID_ERROR mutation', done => {
+    it('should commit RECEIVE_ROTATE_INSTANCE_ID_ERROR mutation', (done) => {
       testAction(
         receiveRotateInstanceIdError,
         null,
@@ -353,7 +353,7 @@ describe('Feature flags actions', () => {
     let mock;
 
     beforeEach(() => {
-      mockedState.featureFlags = getRequestData.feature_flags.map(flag => ({
+      mockedState.featureFlags = getRequestData.feature_flags.map((flag) => ({
         ...flag,
         scopes: mapToScopesViewModel(flag.scopes || []),
       }));
@@ -364,7 +364,7 @@ describe('Feature flags actions', () => {
       mock.restore();
     });
     describe('success', () => {
-      it('dispatches updateFeatureFlag and receiveUpdateFeatureFlagSuccess', done => {
+      it('dispatches updateFeatureFlag and receiveUpdateFeatureFlagSuccess', (done) => {
         mock.onPut(featureFlag.update_path).replyOnce(200, featureFlag, {});
 
         testAction(
@@ -387,7 +387,7 @@ describe('Feature flags actions', () => {
       });
     });
     describe('error', () => {
-      it('dispatches updateFeatureFlag and receiveUpdateFeatureFlagSuccess', done => {
+      it('dispatches updateFeatureFlag and receiveUpdateFeatureFlagSuccess', (done) => {
         mock.onPut(featureFlag.update_path).replyOnce(500);
 
         testAction(
@@ -412,13 +412,13 @@ describe('Feature flags actions', () => {
   });
   describe('updateFeatureFlag', () => {
     beforeEach(() => {
-      mockedState.featureFlags = getRequestData.feature_flags.map(f => ({
+      mockedState.featureFlags = getRequestData.feature_flags.map((f) => ({
         ...f,
         scopes: mapToScopesViewModel(f.scopes || []),
       }));
     });
 
-    it('commits UPDATE_FEATURE_FLAG with the given flag', done => {
+    it('commits UPDATE_FEATURE_FLAG with the given flag', (done) => {
       testAction(
         updateFeatureFlag,
         featureFlag,
@@ -436,13 +436,13 @@ describe('Feature flags actions', () => {
   });
   describe('receiveUpdateFeatureFlagSuccess', () => {
     beforeEach(() => {
-      mockedState.featureFlags = getRequestData.feature_flags.map(f => ({
+      mockedState.featureFlags = getRequestData.feature_flags.map((f) => ({
         ...f,
         scopes: mapToScopesViewModel(f.scopes || []),
       }));
     });
 
-    it('commits RECEIVE_UPDATE_FEATURE_FLAG_SUCCESS with the given flag', done => {
+    it('commits RECEIVE_UPDATE_FEATURE_FLAG_SUCCESS with the given flag', (done) => {
       testAction(
         receiveUpdateFeatureFlagSuccess,
         featureFlag,
@@ -460,13 +460,13 @@ describe('Feature flags actions', () => {
   });
   describe('receiveUpdateFeatureFlagError', () => {
     beforeEach(() => {
-      mockedState.featureFlags = getRequestData.feature_flags.map(f => ({
+      mockedState.featureFlags = getRequestData.feature_flags.map((f) => ({
         ...f,
         scopes: mapToScopesViewModel(f.scopes || []),
       }));
     });
 
-    it('commits RECEIVE_UPDATE_FEATURE_FLAG_ERROR with the given flag id', done => {
+    it('commits RECEIVE_UPDATE_FEATURE_FLAG_ERROR with the given flag id', (done) => {
       testAction(
         receiveUpdateFeatureFlagError,
         featureFlag.id,
@@ -492,7 +492,7 @@ describe('Feature flags actions', () => {
         Api.deleteFeatureFlagUserList.mockResolvedValue();
       });
 
-      it('should refresh the user lists', done => {
+      it('should refresh the user lists', (done) => {
         testAction(
           deleteUserList,
           userList,
@@ -509,7 +509,7 @@ describe('Feature flags actions', () => {
         Api.deleteFeatureFlagUserList.mockRejectedValue({ response: { data: 'some error' } });
       });
 
-      it('should dispatch receiveDeleteUserListError', done => {
+      it('should dispatch receiveDeleteUserListError', (done) => {
         testAction(
           deleteUserList,
           userList,
@@ -529,7 +529,7 @@ describe('Feature flags actions', () => {
   });
 
   describe('receiveDeleteUserListError', () => {
-    it('should commit RECEIVE_DELETE_USER_LIST_ERROR with the given list', done => {
+    it('should commit RECEIVE_DELETE_USER_LIST_ERROR with the given list', (done) => {
       testAction(
         receiveDeleteUserListError,
         { list: userList, error: 'mock error' },
@@ -547,7 +547,7 @@ describe('Feature flags actions', () => {
   });
 
   describe('clearAlert', () => {
-    it('should commit RECEIVE_CLEAR_ALERT', done => {
+    it('should commit RECEIVE_CLEAR_ALERT', (done) => {
       const alertIndex = 3;
 
       testAction(

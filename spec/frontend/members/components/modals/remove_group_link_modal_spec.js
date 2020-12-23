@@ -31,7 +31,7 @@ describe('RemoveGroupLinkModal', () => {
     });
   };
 
-  const createComponent = state => {
+  const createComponent = (state) => {
     wrapper = mount(RemoveGroupLinkModal, {
       localVue,
       store: createStore(state),

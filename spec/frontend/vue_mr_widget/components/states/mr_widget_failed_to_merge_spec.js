@@ -49,7 +49,7 @@ describe('MRWidgetFailedToMerge', () => {
     });
 
     describe('mergeError', () => {
-      it('removes forced line breaks', done => {
+      it('removes forced line breaks', (done) => {
         mr.mergeError = 'contains<br />line breaks<br />';
 
         Vue.nextTick()
@@ -98,7 +98,7 @@ describe('MRWidgetFailedToMerge', () => {
   });
 
   describe('while it is refreshing', () => {
-    it('renders Refresing now', done => {
+    it('renders Refresing now', (done) => {
       vm.isRefreshing = true;
 
       Vue.nextTick(() => {
@@ -139,7 +139,7 @@ describe('MRWidgetFailedToMerge', () => {
     });
   });
 
-  it('should just generic merge failed message if merge_error is not available', done => {
+  it('should just generic merge failed message if merge_error is not available', (done) => {
     vm.mr.mergeError = null;
 
     Vue.nextTick(() => {
@@ -149,7 +149,7 @@ describe('MRWidgetFailedToMerge', () => {
     });
   });
 
-  it('should show refresh label when refresh requested', done => {
+  it('should show refresh label when refresh requested', (done) => {
     vm.refresh();
     Vue.nextTick(() => {
       expect(vm.$el.innerText).not.toContain('Merge failed. Refreshing');

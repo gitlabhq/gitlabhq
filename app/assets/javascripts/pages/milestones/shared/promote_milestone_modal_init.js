@@ -16,7 +16,7 @@ export default () => {
     }
   };
 
-  const onRequestStarted = milestoneUrl => {
+  const onRequestStarted = (milestoneUrl) => {
     const button = document.querySelector(
       `.js-promote-project-milestone-button[data-url="${milestoneUrl}"]`,
     );
@@ -24,7 +24,7 @@ export default () => {
     eventHub.$once('promoteMilestoneModal.requestFinished', onRequestFinished);
   };
 
-  const onDeleteButtonClick = event => {
+  const onDeleteButtonClick = (event) => {
     const button = event.currentTarget;
     const modalProps = {
       milestoneTitle: button.dataset.milestoneTitle,
@@ -36,12 +36,12 @@ export default () => {
   };
 
   const promoteMilestoneButtons = document.querySelectorAll('.js-promote-project-milestone-button');
-  promoteMilestoneButtons.forEach(button => {
+  promoteMilestoneButtons.forEach((button) => {
     button.addEventListener('click', onDeleteButtonClick);
   });
 
   eventHub.$once('promoteMilestoneModal.mounted', () => {
-    promoteMilestoneButtons.forEach(button => {
+    promoteMilestoneButtons.forEach((button) => {
       button.removeAttribute('disabled');
     });
   });

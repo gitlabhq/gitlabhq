@@ -63,7 +63,9 @@ export default {
   },
   computed: {
     formattedSize() {
-      return this.tag.totalSize ? numberToHumanSize(this.tag.totalSize) : NOT_AVAILABLE_SIZE;
+      return this.tag.totalSize
+        ? numberToHumanSize(Number(this.tag.totalSize))
+        : NOT_AVAILABLE_SIZE;
     },
     layers() {
       return this.tag.layers ? n__('%d layer', '%d layers', this.tag.layers) : '';

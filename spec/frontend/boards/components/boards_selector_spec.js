@@ -26,7 +26,7 @@ describe('BoardsSelector', () => {
   const boards = boardGenerator(20);
   const recentBoards = boardGenerator(5);
 
-  const fillSearchBox = filterTerm => {
+  const fillSearchBox = (filterTerm) => {
     const searchBox = wrapper.find({ ref: 'searchBox' });
     const searchBoxInput = searchBox.find('input');
     searchBoxInput.setValue(filterTerm);
@@ -59,7 +59,7 @@ describe('BoardsSelector', () => {
       data: {
         group: {
           boards: {
-            edges: boards.map(board => ({ node: board })),
+            edges: boards.map((board) => ({ node: board })),
           },
         },
       },
@@ -152,7 +152,7 @@ describe('BoardsSelector', () => {
 
       it('shows only matching boards when filtering', () => {
         const filterTerm = 'board1';
-        const expectedCount = boards.filter(board => board.name.includes(filterTerm)).length;
+        const expectedCount = boards.filter((board) => board.name.includes(filterTerm)).length;
 
         fillSearchBox(filterTerm);
 

@@ -9,9 +9,9 @@ describe('Deploy keys key', () => {
 
   const data = getJSONFixture('deploy_keys/keys.json');
 
-  const findTextAndTrim = selector => wrapper.find(selector).text().trim();
+  const findTextAndTrim = (selector) => wrapper.find(selector).text().trim();
 
-  const createComponent = propsData => {
+  const createComponent = (propsData) => {
     wrapper = mount(key, {
       propsData: {
         store,

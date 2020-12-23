@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   import(
     /* webpackChunkName: 'experiment_new_project_creation' */ '../../../projects/experiment_new_project_creation'
   )
-    .then(m => {
+    .then((m) => {
       const el = document.querySelector('.js-experiment-new-project-creation');
 
       if (!el) {

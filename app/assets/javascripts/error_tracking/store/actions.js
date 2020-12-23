@@ -11,7 +11,7 @@ export const setStatus = ({ commit }, status) => {
 export const updateStatus = ({ commit }, { endpoint, redirectUrl, status }) =>
   service
     .updateErrorStatus(endpoint, status)
-    .then(resp => {
+    .then((resp) => {
       commit(types.SET_ERROR_STATUS, status);
       if (redirectUrl) visitUrl(redirectUrl);
 

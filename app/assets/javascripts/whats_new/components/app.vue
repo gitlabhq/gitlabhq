@@ -71,7 +71,7 @@ export default {
       this.setDrawerBodyHeight(height);
     },
     featuresForVersion(version) {
-      return this.features.filter(feature => {
+      return this.features.filter((feature) => {
         return feature.release === parseFloat(version);
       });
     },

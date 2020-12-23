@@ -104,7 +104,7 @@ describe('AjaxCache', () => {
     it('stores and returns data from Ajax call if cache is empty', () => {
       mock.onGet(dummyEndpoint).reply(200, dummyResponse);
 
-      return AjaxCache.retrieve(dummyEndpoint).then(data => {
+      return AjaxCache.retrieve(dummyEndpoint).then((data) => {
         expect(data).toEqual(dummyResponse);
         expect(AjaxCache.internalStorage[dummyEndpoint]).toEqual(dummyResponse);
       });
@@ -126,7 +126,7 @@ describe('AjaxCache', () => {
       mock.onGet(dummyEndpoint).networkError();
 
       expect.assertions(2);
-      return AjaxCache.retrieve(dummyEndpoint).catch(error => {
+      return AjaxCache.retrieve(dummyEndpoint).catch((error) => {
         expect(error.message).toBe(`${dummyEndpoint}: ${errorMessage}`);
         expect(error.textStatus).toBe(errorMessage);
       });
@@ -135,7 +135,7 @@ describe('AjaxCache', () => {
     it('makes no Ajax call if matching data exists', () => {
       AjaxCache.internalStorage[dummyEndpoint] = dummyResponse;
 
-      return AjaxCache.retrieve(dummyEndpoint).then(data => {
+      return AjaxCache.retrieve(dummyEndpoint).then((data) => {
         expect(data).toBe(dummyResponse);
         expect(axios.get).not.toHaveBeenCalled();
       });
@@ -153,7 +153,7 @@ describe('AjaxCache', () => {
       return Promise.all([
         AjaxCache.retrieve(dummyEndpoint),
         AjaxCache.retrieve(dummyEndpoint, true),
-      ]).then(data => {
+      ]).then((data) => {
         expect(data).toEqual([oldDummyResponse, dummyResponse]);
       });
     });

@@ -8,7 +8,7 @@
 // [2]: https://gitlab.com/gitlab-org/gitlab/-/issues/213378
 // Further reference: https://github.com/facebook/jest/issues/3465
 
-export default fn => {
+export default (fn) => {
   const debouncedFn = jest.fn().mockImplementation(fn);
   debouncedFn.cancel = jest.fn();
   debouncedFn.flush = jest.fn().mockImplementation(() => {

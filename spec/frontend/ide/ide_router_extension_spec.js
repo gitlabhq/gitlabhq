@@ -4,7 +4,7 @@ import IdeRouter from '~/ide/ide_router_extension';
 jest.mock('vue-router');
 
 describe('IDE overrides of VueRouter', () => {
-  const paths = branch => [
+  const paths = (branch) => [
     `${branch}`,
     `/${branch}`,
     `/${branch}/-/`,
@@ -35,7 +35,7 @@ describe('IDE overrides of VueRouter', () => {
     ${'test-#-hash'}   | ${'test-%23-hash'}
     ${'test/hash#123'} | ${'test/hash%23123'}
   `('finds project path when route is $path', ({ path, expected }) => {
-    paths(path).forEach(route => {
+    paths(path).forEach((route) => {
       const expectedPath = route.replace(path, expected);
 
       router.push(route);

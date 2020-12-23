@@ -33,7 +33,7 @@ export default class DropdownAjaxFilter extends FilteredSearchDropdown {
   }
 
   itemClicked(e) {
-    super.itemClicked(e, selected => {
+    super.itemClicked(e, (selected) => {
       const title = selected.querySelector('.dropdown-light-content').innerText.trim();
 
       return DropdownUtils.getEscapedText(title);

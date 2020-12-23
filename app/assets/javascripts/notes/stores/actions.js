@@ -141,7 +141,7 @@ export const updateNote = ({ commit, dispatch }, { endpoint, note }) =>
 
 export const updateOrCreateNotes = ({ commit, state, getters, dispatch }, notes) => {
   const { notesById } = getters;
-  const debouncedFetchDiscussions = isFetching => {
+  const debouncedFetchDiscussions = (isFetching) => {
     if (!isFetching) {
       commit(types.SET_FETCHING_DISCUSSIONS, true);
       dispatch('fetchDiscussions', { path: state.notesData.discussionsPath });
@@ -159,7 +159,7 @@ export const updateOrCreateNotes = ({ commit, state, getters, dispatch }, notes)
     }
   };
 
-  notes.forEach(note => {
+  notes.forEach((note) => {
     if (notesById[note.id]) {
       commit(types.UPDATE_NOTE, note);
     } else if (note.type === constants.DISCUSSION_NOTE || note.type === constants.DIFF_NOTE) {
@@ -329,7 +329,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
     }
   }
 
-  const processQuickActions = res => {
+  const processQuickActions = (res) => {
     const { errors: { commands_only: message } = { commands_only: null } } = res;
     /*
      The following reply means that quick actions have been successfully applied:
@@ -347,7 +347,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
     return res;
   };
 
-  const processEmojiAward = res => {
+  const processEmojiAward = (res) => {
     const { commands_changes: commandsChanges } = res;
     const { emoji_award: emojiAward } = commandsChanges || {};
     if (!emojiAward) {
@@ -357,7 +357,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
     const votesBlock = $('.js-awards-block').eq(0);
 
     return loadAwardsHandler()
-      .then(awardsHandler => {
+      .then((awardsHandler) => {
         awardsHandler.addAwardToEmojiBar(votesBlock, emojiAward);
         awardsHandler.scrollToAwards();
       })
@@ -371,7 +371,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
       .then(() => res);
   };
 
-  const processTimeTracking = res => {
+  const processTimeTracking = (res) => {
     const { commands_changes: commandsChanges } = res;
     const { spend_time: spendTime, time_estimate: timeEstimate } = commandsChanges || {};
     if (spendTime != null || timeEstimate != null) {
@@ -383,7 +383,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
     return res;
   };
 
-  const removePlaceholder = res => {
+  const removePlaceholder = (res) => {
     if (replyId) {
       commit(types.REMOVE_PLACEHOLDER_NOTES);
     }
@@ -391,7 +391,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
     return res;
   };
 
-  const processErrors = error => {
+  const processErrors = (error) => {
     if (error.response) {
       const {
         response: { data = {} },
@@ -435,7 +435,7 @@ const pollSuccessCallBack = (resp, commit, state, getters, dispatch) => {
   return resp;
 };
 
-const getFetchDataParams = state => {
+const getFetchDataParams = (state) => {
   const endpoint = state.notesData.notesPath;
   const options = {
     headers: {
@@ -570,7 +570,7 @@ export const submitSuggestion = (
   return Api.applySuggestion(suggestionId)
     .then(() => commit(types.APPLY_SUGGESTION, { discussionId, noteId, suggestionId }))
     .then(dispatchResolveDiscussion)
-    .catch(err => {
+    .catch((err) => {
       const defaultMessage = __(
         'Something went wrong while applying the suggestion. Please try again.',
       );
@@ -591,12 +591,12 @@ export const submitSuggestionBatch = ({ commit, dispatch, state }, { flashContai
   const suggestionIds = state.batchSuggestionsInfo.map(({ suggestionId }) => suggestionId);
 
   const applyAllSuggestions = () =>
-    state.batchSuggestionsInfo.map(suggestionInfo =>
+    state.batchSuggestionsInfo.map((suggestionInfo) =>
       commit(types.APPLY_SUGGESTION, suggestionInfo),
     );
 
   const resolveAllDiscussions = () =>
-    state.batchSuggestionsInfo.map(suggestionInfo => {
+    state.batchSuggestionsInfo.map((suggestionInfo) => {
       const { discussionId } = suggestionInfo;
       return dispatch('resolveDiscussion', { discussionId }).catch(() => {});
     });
@@ -609,7 +609,7 @@ export const submitSuggestionBatch = ({ commit, dispatch, state }, { flashContai
     .then(() => Promise.all(applyAllSuggestions()))
     .then(() => Promise.all(resolveAllDiscussions()))
     .then(() => commit(types.CLEAR_SUGGESTION_BATCH))
-    .catch(err => {
+    .catch((err) => {
       const defaultMessage = __(
         'Something went wrong while applying the batch of suggestions. Please try again.',
       );
@@ -652,10 +652,10 @@ export const fetchDescriptionVersion = ({ dispatch }, { endpoint, startingVersio
 
   return axios
     .get(requestUrl)
-    .then(res => {
+    .then((res) => {
       dispatch('receiveDescriptionVersion', { descriptionVersion: res.data, versionId });
     })
-    .catch(error => {
+    .catch((error) => {
       dispatch('receiveDescriptionVersionError', error);
       Flash(__('Something went wrong while fetching description changes. Please try again.'));
     });
@@ -687,7 +687,7 @@ export const softDeleteDescriptionVersion = (
     .then(() => {
       dispatch('receiveDeleteDescriptionVersion', versionId);
     })
-    .catch(error => {
+    .catch((error) => {
       dispatch('receiveDeleteDescriptionVersionError', error);
       Flash(__('Something went wrong while deleting description changes. Please try again.'));
 

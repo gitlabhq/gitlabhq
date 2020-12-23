@@ -48,11 +48,11 @@ export function getLineClasses(line) {
 export function commentLineOptions(diffLines, startingLine, lineCode, side = 'left') {
   const preferredSide = side === 'left' ? 'old_line' : 'new_line';
   const fallbackSide = preferredSide === 'new_line' ? 'old_line' : 'new_line';
-  const notMatchType = l => l.type !== 'match';
+  const notMatchType = (l) => l.type !== 'match';
   const linesCopy = [...diffLines]; // don't mutate the argument
   const startingLineCode = startingLine.line_code;
 
-  const currentIndex = linesCopy.findIndex(line => line.line_code === lineCode);
+  const currentIndex = linesCopy.findIndex((line) => line.line_code === lineCode);
 
   // We're limiting adding comments to only lines above the current line
   // to make rendering simpler. Future interations will use a more
@@ -66,10 +66,10 @@ export function commentLineOptions(diffLines, startingLine, lineCode, side = 'le
   // If the selected line is "hidden" in an unchanged line block
   // or "above" the current group of lines add it to the array so
   // that the drop down is not defaulted to empty
-  const selectedIndex = lines.findIndex(line => line.line_code === startingLineCode);
+  const selectedIndex = lines.findIndex((line) => line.line_code === startingLineCode);
   if (selectedIndex < 0) lines.unshift(startingLine);
 
-  return lines.map(l => {
+  return lines.map((l) => {
     const { line_code, type, old_line, new_line } = l;
     return {
       value: { line_code, type, old_line, new_line },
@@ -103,7 +103,7 @@ export function getCommentedLines(selectedCommentPosition, diffLines) {
     };
   }
 
-  const findLineCodeIndex = line => position => {
+  const findLineCodeIndex = (line) => (position) => {
     return [position.line_code, position.left?.line_code, position.right?.line_code].includes(
       line.line_code,
     );

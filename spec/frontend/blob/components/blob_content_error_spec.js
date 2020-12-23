@@ -32,7 +32,7 @@ describe('Blob Content Error component', () => {
         viewerError: error.id,
       });
       expect(wrapper.text()).toContain(reason);
-      options.forEach(option => {
+      options.forEach((option) => {
         expect(wrapper.text()).toContain(option);
       });
     });
@@ -52,7 +52,7 @@ describe('Blob Content Error component', () => {
         },
       });
       expect(wrapper.text()).toContain(reason);
-      options.forEach(option => {
+      options.forEach((option) => {
         expect(wrapper.text()).toContain(option);
       });
     });

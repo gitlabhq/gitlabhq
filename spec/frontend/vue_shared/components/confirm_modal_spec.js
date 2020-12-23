@@ -53,7 +53,7 @@ describe('vue_shared/components/confirm_modal', () => {
   const findFormData = () =>
     findForm()
       .findAll('input')
-      .wrappers.map(x => ({ name: x.attributes('name'), value: x.attributes('value') }));
+      .wrappers.map((x) => ({ name: x.attributes('name'), value: x.attributes('value') }));
 
   describe('template', () => {
     describe('when modal data is set', () => {

@@ -56,8 +56,8 @@ export default {
   },
   computed: {
     ...mapState({
-      noteableData: state => state.notes.noteableData,
-      diffViewType: state => state.diffs.diffViewType,
+      noteableData: (state) => state.notes.noteableData,
+      diffViewType: (state) => state.diffs.diffViewType,
     }),
     ...mapState('diffs', ['showSuggestPopover']),
     ...mapGetters('diffs', ['getDiffFileByHash', 'diffLines']),

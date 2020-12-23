@@ -115,7 +115,7 @@ export default {
       'getUserDataByProp',
     ]),
     ...mapState({
-      withBatchComments: state => state.batchComments?.withBatchComments,
+      withBatchComments: (state) => state.batchComments?.withBatchComments,
     }),
     ...mapGetters('batchComments', ['hasDrafts']),
     showBatchCommentsActions() {
@@ -126,8 +126,8 @@ export default {
 
       return (
         this.discussion?.notes
-          .filter(n => n.resolvable)
-          .some(n => n.current_user?.can_resolve_discussion) || this.isDraft
+          .filter((n) => n.resolvable)
+          .some((n) => n.current_user?.can_resolve_discussion) || this.isDraft
       );
     },
     noteHash() {

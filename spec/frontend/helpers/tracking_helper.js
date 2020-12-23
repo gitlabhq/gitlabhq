@@ -14,7 +14,7 @@ export function mockTracking(category = '_category_', documentOverride, spyMetho
 
 export function unmockTracking() {
   window.snowplow = undefined;
-  handlers.forEach(event => document.removeEventListener(event.name, event.func));
+  handlers.forEach((event) => document.removeEventListener(event.name, event.func));
 }
 
 export function triggerEvent(selectorOrEl, eventName = 'click') {

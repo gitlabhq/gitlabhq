@@ -30,7 +30,7 @@ export default () => {
       {},
       {
         cacheConfig: {
-          dataIdFromObject: object => {
+          dataIdFromObject: (object) => {
             // eslint-disable-next-line no-underscore-dangle
             if (object.__typename === 'AlertManagementAlert') {
               return object.iid;

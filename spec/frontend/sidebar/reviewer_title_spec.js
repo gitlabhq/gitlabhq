@@ -6,7 +6,7 @@ import Component from '~/sidebar/components/reviewers/reviewer_title.vue';
 describe('ReviewerTitle component', () => {
   let wrapper;
 
-  const createComponent = props => {
+  const createComponent = (props) => {
     return shallowMount(Component, {
       propsData: {
         numberOfReviewers: 0,

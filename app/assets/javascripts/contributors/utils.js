@@ -9,7 +9,7 @@ import { getMonthNames } from '~/lib/utils/datetime_utility';
  * xAxisLabelFormatter('02-12-2019') will return 'Feb'
  * xAxisLabelFormatter('07-12-2019') will return 'Jul'
  */
-export const xAxisLabelFormatter = val => {
+export const xAxisLabelFormatter = (val) => {
   const date = new Date(val);
   const month = date.getUTCMonth();
   const year = date.getUTCFullYear();
@@ -21,7 +21,7 @@ export const xAxisLabelFormatter = val => {
  * @param {Date}
  * @returns {String}  - formatted value
  */
-export const dateFormatter = date => {
+export const dateFormatter = (date) => {
   const year = date.getUTCFullYear();
   const month = date.getUTCMonth();
   const day = date.getUTCDate();

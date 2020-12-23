@@ -10,7 +10,7 @@ const testActionFnWithOptionsArg = (...args) => {
 
 describe.each([testActionFn, testActionFnWithOptionsArg])(
   'VueX test helper (testAction)',
-  testAction => {
+  (testAction) => {
     let originalExpect;
     let assertion;
     let mock;
@@ -25,7 +25,7 @@ describe.each([testActionFn, testActionFnWithOptionsArg])(
        */
       originalExpect = expect;
       assertion = null;
-      global.expect = actual => ({
+      global.expect = (actual) => ({
         toEqual: () => {
           originalExpect(actual).toEqual(assertion);
         },
@@ -72,13 +72,13 @@ describe.each([testActionFn, testActionFnWithOptionsArg])(
         testAction(action, null, {}, assertion.mutations, assertion.actions, noop);
       });
 
-      it('works with done callback once finished', done => {
+      it('works with done callback once finished', (done) => {
         assertion = { mutations: [], actions: [] };
 
         testAction(noop, null, {}, assertion.mutations, assertion.actions, done);
       });
 
-      it('returns a promise', done => {
+      it('returns a promise', (done) => {
         assertion = { mutations: [], actions: [] };
 
         testAction(noop, null, {}, assertion.mutations, assertion.actions)
@@ -96,7 +96,7 @@ describe.each([testActionFn, testActionFnWithOptionsArg])(
 
         return axios
           .get(TEST_HOST)
-          .catch(error => {
+          .catch((error) => {
             commit('ERROR');
             lastError = error;
             throw error;
@@ -111,7 +111,7 @@ describe.each([testActionFn, testActionFnWithOptionsArg])(
         lastError = null;
       });
 
-      it('works with done callback once finished', done => {
+      it('works with done callback once finished', (done) => {
         mock.onGet(TEST_HOST).replyOnce(200, 42);
 
         assertion = { mutations: [{ type: 'SUCCESS' }], actions: [{ type: 'ACTION' }] };
@@ -119,34 +119,34 @@ describe.each([testActionFn, testActionFnWithOptionsArg])(
         testAction(asyncAction, null, {}, assertion.mutations, assertion.actions, done);
       });
 
-      it('returns original data of successful promise while checking actions/mutations', done => {
+      it('returns original data of successful promise while checking actions/mutations', (done) => {
         mock.onGet(TEST_HOST).replyOnce(200, 42);
 
         assertion = { mutations: [{ type: 'SUCCESS' }], actions: [{ type: 'ACTION' }] };
 
         testAction(asyncAction, null, {}, assertion.mutations, assertion.actions)
-          .then(res => {
+          .then((res) => {
             originalExpect(res).toEqual(data);
             done();
           })
           .catch(done.fail);
       });
 
-      it('returns original error of rejected promise while checking actions/mutations', done => {
+      it('returns original error of rejected promise while checking actions/mutations', (done) => {
         mock.onGet(TEST_HOST).replyOnce(500, '');
 
         assertion = { mutations: [{ type: 'ERROR' }], actions: [{ type: 'ACTION' }] };
 
         testAction(asyncAction, null, {}, assertion.mutations, assertion.actions)
           .then(done.fail)
-          .catch(error => {
+          .catch((error) => {
             originalExpect(error).toBe(lastError);
             done();
           });
       });
     });
 
-    it('works with async actions not returning promises', done => {
+    it('works with async actions not returning promises', (done) => {
       const data = { FOO: 'BAR' };
 
       const asyncAction = ({ commit, dispatch }) => {
@@ -158,7 +158,7 @@ describe.each([testActionFn, testActionFnWithOptionsArg])(
             commit('SUCCESS');
             return data;
           })
-          .catch(error => {
+          .catch((error) => {
             commit('ERROR');
             throw error;
           });

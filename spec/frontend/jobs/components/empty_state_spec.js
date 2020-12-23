@@ -12,7 +12,7 @@ describe('Empty State', () => {
     variablesSettingsUrl: '',
   };
 
-  const createWrapper = props => {
+  const createWrapper = (props) => {
     wrapper = mount(EmptyState, {
       propsData: {
         ...defaultProps,

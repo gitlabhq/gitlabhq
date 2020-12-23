@@ -100,13 +100,13 @@ export default {
           page: this.page,
           per: this.perPage,
         })
-        .then(res => res.data)
-        .then(data => {
+        .then((res) => res.data)
+        .then((data) => {
           if (clearIssues) {
             this.issues = [];
           }
 
-          data.issues.forEach(issueObj => {
+          data.issues.forEach((issueObj) => {
             const issue = new ListIssue(issueObj);
             const foundSelectedIssue = ModalStore.findSelectedIssue(issue);
             issue.selected = Boolean(foundSelectedIssue);

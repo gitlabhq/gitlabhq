@@ -1,4 +1,4 @@
-const convertFromStyle = style => {
+const convertFromStyle = (style) => {
   if (style.match(/[0-9](px|rem)/g)) {
     return Number(style.replace(/[^0-9]/g, ''));
   }

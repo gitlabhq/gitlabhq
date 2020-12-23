@@ -31,7 +31,7 @@ describe('Multi-file editor commit sidebar list', () => {
   });
 
   describe('with a list of files', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       const f = file('file name');
       f.changed = true;
       vm.fileList.push(f);

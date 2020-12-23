@@ -31,7 +31,7 @@ describe('Blob Editing', () => {
     FileTemplateExtension.mockClear();
   });
 
-  const editorInst = isMarkdown => {
+  const editorInst = (isMarkdown) => {
     return new EditBlob({
       isMarkdown,
     });

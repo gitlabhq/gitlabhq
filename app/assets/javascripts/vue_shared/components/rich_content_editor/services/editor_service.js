@@ -6,7 +6,7 @@ import buildCustomHTMLRenderer from './build_custom_renderer';
 import { TOOLBAR_ITEM_CONFIGS, VIDEO_ATTRIBUTES } from '../constants';
 import sanitizeHTML from './sanitize_html';
 
-const buildWrapper = propsData => {
+const buildWrapper = (propsData) => {
   const instance = new Vue({
     render(createElement) {
       return createElement(ToolbarItem, propsData);
@@ -17,7 +17,7 @@ const buildWrapper = propsData => {
   return instance.$el;
 };
 
-const buildVideoIframe = src => {
+const buildVideoIframe = (src) => {
   const wrapper = document.createElement('figure');
   const iframe = document.createElement('iframe');
   const videoAttributes = { ...VIDEO_ATTRIBUTES, src };
@@ -48,7 +48,7 @@ const buildImg = (alt, originalSrc, file) => {
   return img;
 };
 
-export const generateToolbarItem = config => {
+export const generateToolbarItem = (config) => {
   const { icon, classes, event, command, tooltip, isDivider } = config;
 
   if (isDivider) {
@@ -92,14 +92,14 @@ export const insertVideo = ({ editor }, url) => {
   }
 };
 
-export const getMarkdown = editorInstance => editorInstance.invoke('getMarkdown');
+export const getMarkdown = (editorInstance) => editorInstance.invoke('getMarkdown');
 
 /**
  * This function allow us to extend Toast UI HTML to Markdown renderer. It is
  * a temporary measure because Toast UI does not provide an API
  * to achieve this goal.
  */
-export const registerHTMLToMarkdownRenderer = editorApi => {
+export const registerHTMLToMarkdownRenderer = (editorApi) => {
   const { renderer } = editorApi.toMarkOptions;
 
   Object.assign(editorApi.toMarkOptions, {
@@ -107,10 +107,10 @@ export const registerHTMLToMarkdownRenderer = editorApi => {
   });
 };
 
-export const getEditorOptions = externalOptions => {
+export const getEditorOptions = (externalOptions) => {
   return defaults({
     customHTMLRenderer: buildCustomHTMLRenderer(externalOptions?.customRenderers),
-    toolbarItems: TOOLBAR_ITEM_CONFIGS.map(toolbarItem => generateToolbarItem(toolbarItem)),
-    customHTMLSanitizer: html => sanitizeHTML(html),
+    toolbarItems: TOOLBAR_ITEM_CONFIGS.map((toolbarItem) => generateToolbarItem(toolbarItem)),
+    customHTMLSanitizer: (html) => sanitizeHTML(html),
   });
 };

@@ -8,7 +8,7 @@ describe('Merge Request Collapsible Extension', () => {
     title: 'View artifacts',
   };
 
-  const mountComponent = props => {
+  const mountComponent = (props) => {
     wrapper = mount(MrCollapsibleSection, {
       propsData: {
         ...props,

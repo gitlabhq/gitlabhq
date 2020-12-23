@@ -28,7 +28,7 @@ describe('Batch comments store actions', () => {
   });
 
   describe('addDraftToDiscussion', () => {
-    it('commits ADD_NEW_DRAFT if no errors returned', done => {
+    it('commits ADD_NEW_DRAFT if no errors returned', (done) => {
       res = { id: 1 };
       mock.onAny().reply(200, res);
 
@@ -42,7 +42,7 @@ describe('Batch comments store actions', () => {
       );
     });
 
-    it('does not commit ADD_NEW_DRAFT if errors returned', done => {
+    it('does not commit ADD_NEW_DRAFT if errors returned', (done) => {
       mock.onAny().reply(500);
 
       testAction(
@@ -57,7 +57,7 @@ describe('Batch comments store actions', () => {
   });
 
   describe('createNewDraft', () => {
-    it('commits ADD_NEW_DRAFT if no errors returned', done => {
+    it('commits ADD_NEW_DRAFT if no errors returned', (done) => {
       res = { id: 1 };
       mock.onAny().reply(200, res);
 
@@ -71,7 +71,7 @@ describe('Batch comments store actions', () => {
       );
     });
 
-    it('does not commit ADD_NEW_DRAFT if errors returned', done => {
+    it('does not commit ADD_NEW_DRAFT if errors returned', (done) => {
       mock.onAny().reply(500);
 
       testAction(actions.createNewDraft, { endpoint: TEST_HOST, data: 'test' }, null, [], [], done);
@@ -89,7 +89,7 @@ describe('Batch comments store actions', () => {
       };
     });
 
-    it('commits DELETE_DRAFT if no errors returned', done => {
+    it('commits DELETE_DRAFT if no errors returned', (done) => {
       const commit = jest.fn();
       const context = {
         getters,
@@ -107,7 +107,7 @@ describe('Batch comments store actions', () => {
         .catch(done.fail);
     });
 
-    it('does not commit DELETE_DRAFT if errors returned', done => {
+    it('does not commit DELETE_DRAFT if errors returned', (done) => {
       const commit = jest.fn();
       const context = {
         getters,
@@ -136,7 +136,7 @@ describe('Batch comments store actions', () => {
       };
     });
 
-    it('commits SET_BATCH_COMMENTS_DRAFTS with returned data', done => {
+    it('commits SET_BATCH_COMMENTS_DRAFTS with returned data', (done) => {
       const commit = jest.fn();
       const context = {
         getters,
@@ -170,7 +170,7 @@ describe('Batch comments store actions', () => {
       rootGetters = { discussionsStructuredByLineCode: 'discussions' };
     });
 
-    it('dispatches actions & commits', done => {
+    it('dispatches actions & commits', (done) => {
       mock.onAny().reply(200);
 
       actions
@@ -185,7 +185,7 @@ describe('Batch comments store actions', () => {
         .catch(done.fail);
     });
 
-    it('dispatches error commits', done => {
+    it('dispatches error commits', (done) => {
       mock.onAny().reply(500);
 
       actions
@@ -210,7 +210,7 @@ describe('Batch comments store actions', () => {
       };
     });
 
-    it('commits RECEIVE_DRAFT_UPDATE_SUCCESS with returned data', done => {
+    it('commits RECEIVE_DRAFT_UPDATE_SUCCESS with returned data', (done) => {
       const commit = jest.fn();
       const context = {
         getters,
@@ -228,7 +228,7 @@ describe('Batch comments store actions', () => {
         .catch(done.fail);
     });
 
-    it('calls passed callback', done => {
+    it('calls passed callback', (done) => {
       const commit = jest.fn();
       const context = {
         getters,
@@ -249,7 +249,7 @@ describe('Batch comments store actions', () => {
   });
 
   describe('expandAllDiscussions', () => {
-    it('dispatches expandDiscussion for all drafts', done => {
+    it('dispatches expandDiscussion for all drafts', (done) => {
       const state = {
         drafts: [
           {

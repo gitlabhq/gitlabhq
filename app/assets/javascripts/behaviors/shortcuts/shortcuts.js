@@ -197,7 +197,7 @@ export default class Shortcuts {
     $textarea.data(LOCAL_MOUSETRAP_DATA_KEY, localMousetrap);
 
     toolbarBtnToShortcutsMap.forEach((keyboardShortcuts, $toolbarBtn) => {
-      localMousetrap.bind(keyboardShortcuts, e => {
+      localMousetrap.bind(keyboardShortcuts, (e) => {
         e.preventDefault();
 
         handler($toolbarBtn);
@@ -231,7 +231,7 @@ export default class Shortcuts {
     const localMousetrap = $textarea.data(LOCAL_MOUSETRAP_DATA_KEY);
 
     if (localMousetrap) {
-      getToolbarBtnToShortcutsMap($textarea).forEach(keyboardShortcuts => {
+      getToolbarBtnToShortcutsMap($textarea).forEach((keyboardShortcuts) => {
         localMousetrap.unbind(keyboardShortcuts);
       });
     }

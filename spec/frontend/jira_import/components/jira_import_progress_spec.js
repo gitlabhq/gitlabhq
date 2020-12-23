@@ -8,7 +8,7 @@ describe('JiraImportProgress', () => {
 
   const importProject = 'JIRAPROJECT';
 
-  const getGlEmptyStateProp = attribute => wrapper.find(GlEmptyState).props(attribute);
+  const getGlEmptyStateProp = (attribute) => wrapper.find(GlEmptyState).props(attribute);
 
   const getParagraphText = () => wrapper.find('p').text();
 

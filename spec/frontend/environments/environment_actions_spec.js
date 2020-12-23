@@ -38,9 +38,9 @@ describe('EnvironmentActions Component', () => {
     return createComponent({ actions: [scheduledJobAction, expiredJobAction] }, opts);
   }
 
-  const findDropdownItem = action => {
+  const findDropdownItem = (action) => {
     const buttons = wrapper.findAll(GlDropdownItem);
-    return buttons.filter(button => button.text().startsWith(action.name)).at(0);
+    return buttons.filter((button) => button.text().startsWith(action.name)).at(0);
   };
 
   afterEach(() => {

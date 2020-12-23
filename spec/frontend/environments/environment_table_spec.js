@@ -266,7 +266,7 @@ describe('Environment table', () => {
         },
       });
 
-      expect(wrapper.vm.sortedEnvironments.map(env => env.name)).toEqual([
+      expect(wrapper.vm.sortedEnvironments.map((env) => env.name)).toEqual([
         review.name,
         staging.name,
         production.name,

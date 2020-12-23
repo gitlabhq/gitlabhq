@@ -83,7 +83,7 @@ describe('~/boards/components/sidebar/board_sidebar_subscription_spec.vue', () =
   });
 
   describe('Board sidebar subscription component `behavior`', () => {
-    const mockSetActiveIssueSubscribed = subscribedState => {
+    const mockSetActiveIssueSubscribed = (subscribedState) => {
       jest.spyOn(wrapper.vm, 'setActiveIssueSubscribed').mockImplementation(async () => {
         store.commit(types.UPDATE_ISSUE_BY_ID, {
           issueId: mockActiveIssue.id,

@@ -54,7 +54,7 @@ describe('MRWidgetConflicts', () => {
     vm.destroy();
   });
 
-  [false, true].forEach(featureEnabled => {
+  [false, true].forEach((featureEnabled) => {
     describe(`with GraphQL feature flag ${featureEnabled ? 'enabled' : 'disabled'}`, () => {
       beforeEach(() => {
         mergeRequestWidgetGraphql = featureEnabled;

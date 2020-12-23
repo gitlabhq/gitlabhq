@@ -19,9 +19,9 @@ localVue.use(Vuex);
 describe('user_lists/components/edit_user_list', () => {
   let wrapper;
 
-  const setInputValue = value => wrapper.find('[data-testid="user-list-name"]').setValue(value);
+  const setInputValue = (value) => wrapper.find('[data-testid="user-list-name"]').setValue(value);
 
-  const click = button => wrapper.find(`[data-testid="${button}"]`).trigger('click');
+  const click = (button) => wrapper.find(`[data-testid="${button}"]`).trigger('click');
   const clickSave = () => click('save-user-list');
 
   const destroy = () => wrapper?.destroy();

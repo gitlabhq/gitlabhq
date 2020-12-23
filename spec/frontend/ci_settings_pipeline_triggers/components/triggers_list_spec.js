@@ -16,14 +16,14 @@ describe('TriggersList', () => {
   };
 
   const findTable = () => wrapper.find(GlTable);
-  const findHeaderAt = i => wrapper.findAll('thead th').at(i);
+  const findHeaderAt = (i) => wrapper.findAll('thead th').at(i);
   const findRows = () => wrapper.findAll('tbody tr');
-  const findRowAt = i => findRows().at(i);
+  const findRowAt = (i) => findRows().at(i);
   const findCell = (i, col) => findRowAt(i).findAll('td').at(col);
-  const findClipboardBtn = i => findCell(i, 0).find(ClipboardButton);
-  const findInvalidBadge = i => findCell(i, 0).find(GlBadge);
-  const findEditBtn = i => findRowAt(i).find('[data-testid="edit-btn"]');
-  const findRevokeBtn = i => findRowAt(i).find('[data-testid="trigger_revoke_button"]');
+  const findClipboardBtn = (i) => findCell(i, 0).find(ClipboardButton);
+  const findInvalidBadge = (i) => findCell(i, 0).find(GlBadge);
+  const findEditBtn = (i) => findRowAt(i).find('[data-testid="edit-btn"]');
+  const findRevokeBtn = (i) => findRowAt(i).find('[data-testid="trigger_revoke_button"]');
 
   beforeEach(() => {
     createComponent();

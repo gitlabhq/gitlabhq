@@ -10,7 +10,7 @@ describe('Artifacts List', () => {
     artifacts: artifactsList,
   };
 
-  const mountComponent = props => {
+  const mountComponent = (props) => {
     wrapper = shallowMount(ArtifactsList, {
       propsData: {
         ...props,

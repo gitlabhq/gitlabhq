@@ -2,7 +2,7 @@ import { cloneDeep } from 'lodash';
 import { decorateBlob, createBlob, diffAll } from '~/snippets/utils/blob';
 import { testEntries, createBlobsFromTestEntries } from '../test_utils';
 
-jest.mock('lodash/uniqueId', () => arg => `${arg}fakeUniqueId`);
+jest.mock('lodash/uniqueId', () => (arg) => `${arg}fakeUniqueId`);
 
 const TEST_RAW_BLOB = {
   rawPath: '/test/blob/7/raw',

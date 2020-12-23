@@ -13,11 +13,11 @@ const allNodesPresent = (clusters, retryCount) => {
     They may fail for reasons GitLab cannot control.
     MAX_REQUESTS will ensure this poll stops at some point.
   */
-  return retryCount > MAX_REQUESTS || clusters.every(cluster => cluster.nodes != null);
+  return retryCount > MAX_REQUESTS || clusters.every((cluster) => cluster.nodes != null);
 };
 
 export const reportSentryError = (_store, { error, tag }) => {
-  Sentry.withScope(scope => {
+  Sentry.withScope((scope) => {
     scope.setTag('javascript_clusters_list', tag);
     Sentry.captureException(error);
   });
@@ -30,7 +30,7 @@ export const fetchClusters = ({ state, commit, dispatch }) => {
 
   const poll = new Poll({
     resource: {
-      fetchClusters: paginatedEndPoint => axios.get(paginatedEndPoint),
+      fetchClusters: (paginatedEndPoint) => axios.get(paginatedEndPoint),
     },
     data: `${state.endpoint}?page=${state.page}`,
     method: 'fetchClusters',
@@ -59,7 +59,7 @@ export const fetchClusters = ({ state, commit, dispatch }) => {
         dispatch('reportSentryError', { error, tag: 'fetchClustersSuccessCallback' });
       }
     },
-    errorCallback: response => {
+    errorCallback: (response) => {
       poll.stop();
 
       commit(types.SET_LOADING_CLUSTERS, false);

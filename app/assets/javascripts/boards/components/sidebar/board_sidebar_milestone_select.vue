@@ -50,7 +50,7 @@ export default {
       },
       update(data) {
         const edges = data?.group?.milestones?.edges ?? [];
-        return edges.map(item => item.node);
+        return edges.map((item) => item.node);
       },
       error() {
         createFlash({ message: this.$options.i18n.fetchMilestonesError });

@@ -1,7 +1,7 @@
 const IS_EE = require('./config/helpers/is_ee_env');
 const isESLint = require('./config/helpers/is_eslint');
 
-module.exports = path => {
+module.exports = (path) => {
   const reporters = ['default'];
 
   // To have consistent date time parsing both in local and CI environments we set
@@ -27,7 +27,7 @@ module.exports = path => {
   // workaround for eslint-import-resolver-jest only resolving in test files
   // see https://github.com/JoinColony/eslint-import-resolver-jest#note
   if (isESLint(module)) {
-    testMatch = testMatch.map(path => path.replace('_spec.js', ''));
+    testMatch = testMatch.map((path) => path.replace('_spec.js', ''));
   }
 
   const TEST_FIXTURES_PATTERN = 'test_fixtures(/.*)$';

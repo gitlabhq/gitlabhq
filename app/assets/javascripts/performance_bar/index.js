@@ -10,7 +10,7 @@ import initPerformanceBarLog from './performance_bar_log';
 
 Vue.use(Translate);
 
-const initPerformanceBar = el => {
+const initPerformanceBar = (el) => {
   const performanceBarData = el.dataset;
 
   return new Vue({
@@ -55,7 +55,7 @@ const initPerformanceBar = el => {
         this.store.addRequest(requestId, requestUrl);
 
         PerformanceBarService.fetchRequestDetails(this.peekUrl, requestId)
-          .then(res => {
+          .then((res) => {
             this.store.addRequestDetails(requestId, res.data);
 
             if (this.requestId === requestId) this.collectFrontendPerformanceMetrics();
@@ -84,7 +84,7 @@ const initPerformanceBar = el => {
 
           if ('PerformanceObserver' in window) {
             // We start observing for more incoming timings
-            const observer = new PerformanceObserver(list => {
+            const observer = new PerformanceObserver((list) => {
               newEntries = newEntries.concat(list.getEntries().map(this.transformResourceEntry));
               this.updateFrontendPerformanceMetrics(durationString, newEntries);
             });

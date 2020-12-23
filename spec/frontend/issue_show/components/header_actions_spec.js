@@ -62,7 +62,7 @@ describe('HeaderActions component', () => {
 
   const findToggleIssueStateButton = () => wrapper.find(GlButton);
 
-  const findDropdownAt = index => wrapper.findAll(GlDropdown).at(index);
+  const findDropdownAt = (index) => wrapper.findAll(GlDropdown).at(index);
 
   const findMobileDropdownItems = () => findDropdownAt(0).findAll(GlDropdownItem);
 
@@ -70,7 +70,7 @@ describe('HeaderActions component', () => {
 
   const findModal = () => wrapper.find(GlModal);
 
-  const findModalLinkAt = index => findModal().findAll(GlLink).at(index);
+  const findModalLinkAt = (index) => findModal().findAll(GlLink).at(index);
 
   const mountComponent = ({
     props = {},
@@ -205,7 +205,7 @@ describe('HeaderActions component', () => {
           it(`${isItemVisible ? 'shows' : 'hides'} "${itemText}" item`, () => {
             expect(
               findDropdownItems()
-                .filter(item => item.text() === itemText)
+                .filter((item) => item.text() === itemText)
                 .exists(),
             ).toBe(isItemVisible);
           });

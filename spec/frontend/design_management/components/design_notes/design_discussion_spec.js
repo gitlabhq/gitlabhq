@@ -108,7 +108,7 @@ describe('Design discussions component', () => {
 
     it('renders correct amount of discussion notes', () => {
       expect(findDesignNotes()).toHaveLength(2);
-      expect(findDesignNotes().wrappers.every(w => w.isVisible())).toBe(true);
+      expect(findDesignNotes().wrappers.every((w) => w.isVisible())).toBe(true);
     });
 
     it('renders reply placeholder', () => {
@@ -251,7 +251,7 @@ describe('Design discussions component', () => {
   describe('when any note from a discussion is active', () => {
     it.each([notes[0], notes[0].discussion.notes.nodes[1]])(
       'applies correct class to all notes in the active discussion',
-      note => {
+      (note) => {
         createComponent(
           { discussion: mockDiscussion },
           {
@@ -265,7 +265,7 @@ describe('Design discussions component', () => {
         expect(
           wrapper
             .findAll(DesignNote)
-            .wrappers.every(designNote => designNote.classes('gl-bg-blue-50')),
+            .wrappers.every((designNote) => designNote.classes('gl-bg-blue-50')),
         ).toBe(true);
       },
     );

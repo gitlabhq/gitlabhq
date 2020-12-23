@@ -4,7 +4,7 @@ import query from '../queries/app_data.query.graphql';
 const hasSubmittedChangesResolver = (_, { input: { hasSubmittedChanges } }, { cache }) => {
   const oldData = cache.readQuery({ query });
 
-  const data = produce(oldData, draftState => {
+  const data = produce(oldData, (draftState) => {
     // punctually modifying draftState as per immer docs upsets our linters
     return {
       ...draftState,

@@ -60,7 +60,7 @@ export default class NewBranchForm {
       return values;
     };
     const formatter = function (values, restriction) {
-      const formatted = values.map(value => {
+      const formatted = values.map((value) => {
         switch (false) {
           case !/\s/.test(value):
             return 'spaces';

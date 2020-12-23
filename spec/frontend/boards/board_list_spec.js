@@ -72,7 +72,7 @@ describe('Board list component', () => {
   }
 
   describe('When Expanded', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       getIssues = jest.spyOn(List.prototype, 'getIssues').mockReturnValue(new Promise(() => {}));
       ({ mock, component } = createComponent({ done }));
     });
@@ -204,7 +204,7 @@ describe('Board list component', () => {
   });
 
   describe('When Collapsed', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       getIssues = jest.spyOn(List.prototype, 'getIssues').mockReturnValue(new Promise(() => {}));
       ({ mock, component } = createComponent({
         done,
@@ -228,7 +228,7 @@ describe('Board list component', () => {
   });
 
   describe('max issue count warning', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       ({ mock, component } = createComponent({
         done,
         listProps: { type: 'closed', collapsed: true, issuesSize: 50 },

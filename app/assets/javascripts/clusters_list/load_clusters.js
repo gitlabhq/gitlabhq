@@ -1,7 +1,7 @@
 import Clusters from './components/clusters.vue';
 import { createStore } from './store';
 
-export default Vue => {
+export default (Vue) => {
   const el = document.querySelector('#js-clusters-list-app');
 
   if (!el) {

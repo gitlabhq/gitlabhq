@@ -45,13 +45,13 @@ describe('AlertDetails', () => {
 
   const findTableComponent = () => wrapper.find(GlTable);
   const findTableKeys = () => findTableComponent().findAll('tbody td:first-child');
-  const findTableFieldValueByKey = fieldKey =>
+  const findTableFieldValueByKey = (fieldKey) =>
     findTableComponent()
       .findAll('tbody tr')
-      .filter(row => row.text().includes(fieldKey))
+      .filter((row) => row.text().includes(fieldKey))
       .at(0)
       .find('td:nth-child(2)');
-  const findTableField = (fields, fieldName) => fields.filter(row => row.text() === fieldName);
+  const findTableField = (fields, fieldName) => fields.filter((row) => row.text() === fieldName);
 
   describe('Alert details', () => {
     describe('empty state', () => {

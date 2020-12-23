@@ -80,13 +80,13 @@ describe('Board List Header Component', () => {
     const hasNoAddButton = [ListType.closed];
     const hasAddButton = [ListType.backlog, ListType.label, ListType.milestone, ListType.assignee];
 
-    it.each(hasNoAddButton)('does not render when List Type is `%s`', listType => {
+    it.each(hasNoAddButton)('does not render when List Type is `%s`', (listType) => {
       createComponent({ listType });
 
       expect(findAddIssueButton().exists()).toBe(false);
     });
 
-    it.each(hasAddButton)('does render when List Type is `%s`', listType => {
+    it.each(hasAddButton)('does render when List Type is `%s`', (listType) => {
       createComponent({ listType });
 
       expect(findAddIssueButton().exists()).toBe(true);
@@ -95,7 +95,7 @@ describe('Board List Header Component', () => {
     it('has a test for each list type', () => {
       createComponent();
 
-      Object.values(ListType).forEach(value => {
+      Object.values(ListType).forEach((value) => {
         expect([...hasAddButton, ...hasNoAddButton]).toContain(value);
       });
     });
@@ -171,14 +171,14 @@ describe('Board List Header Component', () => {
 
     it.each(cannotDragList)(
       'does not have user-can-drag-class so user cannot drag list',
-      listType => {
+      (listType) => {
         createComponent({ listType });
 
         expect(findTitle().classes()).not.toContain('user-can-drag');
       },
     );
 
-    it.each(canDragList)('has user-can-drag-class so user can drag list', listType => {
+    it.each(canDragList)('has user-can-drag-class so user can drag list', (listType) => {
       createComponent({ listType });
 
       expect(findTitle().classes()).toContain('user-can-drag');

@@ -15,7 +15,7 @@ describe('Application Row', () => {
     wrapper.destroy();
   });
 
-  const mountComponent = data => {
+  const mountComponent = (data) => {
     wrapper = shallowMount(ApplicationRow, {
       stubs: { GlSprintf },
       propsData: {

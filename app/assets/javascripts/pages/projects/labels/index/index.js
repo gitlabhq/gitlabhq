@@ -19,7 +19,7 @@ const initLabelIndex = () => {
     }
   };
 
-  const onRequestStarted = labelUrl => {
+  const onRequestStarted = (labelUrl) => {
     const button = document.querySelector(
       `.js-promote-project-label-button[data-url="${labelUrl}"]`,
     );
@@ -46,7 +46,7 @@ const initLabelIndex = () => {
       eventHub.$on('promoteLabelModal.props', this.setModalProps);
       eventHub.$emit('promoteLabelModal.mounted');
 
-      promoteLabelButtons.forEach(button => {
+      promoteLabelButtons.forEach((button) => {
         button.removeAttribute('disabled');
         button.addEventListener('click', () => {
           this.$root.$emit('bv::show::modal', 'promote-label-modal');

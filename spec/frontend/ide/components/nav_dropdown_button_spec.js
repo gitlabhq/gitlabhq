@@ -23,7 +23,7 @@ describe('NavDropdown', () => {
     vm.$mount();
   };
 
-  const findIcon = name => vm.$el.querySelector(`[data-testid="${name}-icon"]`);
+  const findIcon = (name) => vm.$el.querySelector(`[data-testid="${name}-icon"]`);
   const findMRIcon = () => findIcon('merge-request');
   const findBranchIcon = () => findIcon('branch');
 
@@ -36,7 +36,7 @@ describe('NavDropdown', () => {
       expect(trimText(vm.$el.textContent)).toEqual('- -');
     });
 
-    it('renders branch name, if state has currentBranchId', done => {
+    it('renders branch name, if state has currentBranchId', (done) => {
       vm.$store.state.currentBranchId = TEST_BRANCH_ID;
 
       vm.$nextTick()
@@ -47,7 +47,7 @@ describe('NavDropdown', () => {
         .catch(done.fail);
     });
 
-    it('renders mr id, if state has currentMergeRequestId', done => {
+    it('renders mr id, if state has currentMergeRequestId', (done) => {
       vm.$store.state.currentMergeRequestId = TEST_MR_ID;
 
       vm.$nextTick()
@@ -58,7 +58,7 @@ describe('NavDropdown', () => {
         .catch(done.fail);
     });
 
-    it('renders branch and mr, if state has both', done => {
+    it('renders branch and mr, if state has both', (done) => {
       vm.$store.state.currentBranchId = TEST_BRANCH_ID;
       vm.$store.state.currentMergeRequestId = TEST_MR_ID;
 

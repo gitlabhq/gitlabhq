@@ -188,7 +188,7 @@ describe('submitContentChanges', () => {
     let result;
 
     beforeEach(() => {
-      return submitContentChanges(buildPayload()).then(_result => {
+      return submitContentChanges(buildPayload()).then((_result) => {
         result = _result;
       });
     });

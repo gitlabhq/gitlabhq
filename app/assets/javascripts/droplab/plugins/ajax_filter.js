@@ -63,7 +63,7 @@ const AjaxFilter = {
     params[config.searchKey] = searchValue;
     var url = config.endpoint + this.buildParams(params);
     return AjaxCache.retrieve(url)
-      .then(data => {
+      .then((data) => {
         this._loadData(data, config);
         if (config.onLoadingFinished) {
           config.onLoadingFinished(data);

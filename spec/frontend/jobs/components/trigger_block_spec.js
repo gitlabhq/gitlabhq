@@ -32,7 +32,7 @@ describe('Trigger block', () => {
 
   describe('with variables', () => {
     describe('hide/reveal variables', () => {
-      it('should toggle variables on click', done => {
+      it('should toggle variables on click', (done) => {
         vm = mountComponent(Component, {
           trigger: {
             short_token: 'bd7e',

@@ -23,7 +23,7 @@ describe('IDE commit message field', () => {
     vm.$destroy();
   });
 
-  it('adds is-focused class on focus', done => {
+  it('adds is-focused class on focus', (done) => {
     vm.$el.querySelector('textarea').focus();
 
     vm.$nextTick(() => {
@@ -33,7 +33,7 @@ describe('IDE commit message field', () => {
     });
   });
 
-  it('removed is-focused class on blur', done => {
+  it('removed is-focused class on blur', (done) => {
     vm.$el.querySelector('textarea').focus();
 
     vm.$nextTick()
@@ -66,7 +66,7 @@ describe('IDE commit message field', () => {
 
   describe('highlights', () => {
     describe('subject line', () => {
-      it('does not highlight less than 50 characters', done => {
+      it('does not highlight less than 50 characters', (done) => {
         vm.text = 'text less than 50 chars';
 
         vm.$nextTick()
@@ -81,7 +81,7 @@ describe('IDE commit message field', () => {
           .catch(done.fail);
       });
 
-      it('highlights characters over 50 length', done => {
+      it('highlights characters over 50 length', (done) => {
         vm.text =
           'text less than 50 chars that should not highlighted. text more than 50 should be highlighted';
 
@@ -102,7 +102,7 @@ describe('IDE commit message field', () => {
     });
 
     describe('body text', () => {
-      it('does not highlight body text less tan 72 characters', done => {
+      it('does not highlight body text less tan 72 characters', (done) => {
         vm.text = 'subject line\nbody content';
 
         vm.$nextTick()
@@ -114,7 +114,7 @@ describe('IDE commit message field', () => {
           .catch(done.fail);
       });
 
-      it('highlights body text more than 72 characters', done => {
+      it('highlights body text more than 72 characters', (done) => {
         vm.text =
           'subject line\nbody content that will be highlighted when it is more than 72 characters in length';
 
@@ -128,7 +128,7 @@ describe('IDE commit message field', () => {
           .catch(done.fail);
       });
 
-      it('highlights body text & subject line', done => {
+      it('highlights body text & subject line', (done) => {
         vm.text =
           'text less than 50 chars that should not highlighted\nbody content that will be highlighted when it is more than 72 characters in length';
 
@@ -147,7 +147,7 @@ describe('IDE commit message field', () => {
   });
 
   describe('scrolling textarea', () => {
-    it('updates transform of highlights', done => {
+    it('updates transform of highlights', (done) => {
       vm.text = 'subject line\n\n\n\n\n\n\n\n\n\n\nbody content';
 
       vm.$nextTick()

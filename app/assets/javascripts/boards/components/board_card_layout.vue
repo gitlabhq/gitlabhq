@@ -43,7 +43,7 @@ export default {
   },
   computed: {
     multiSelectVisible() {
-      return this.multiSelect.list.findIndex(issue => issue.id === this.issue.id) > -1;
+      return this.multiSelect.list.findIndex((issue) => issue.id === this.issue.id) > -1;
     },
   },
   methods: {

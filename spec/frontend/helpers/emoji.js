@@ -55,7 +55,7 @@ export const emojiFixtureMap = {
   },
 };
 
-Object.keys(emojiFixtureMap).forEach(k => {
+Object.keys(emojiFixtureMap).forEach((k) => {
   emojiFixtureMap[k].name = k;
   if (!emojiFixtureMap[k].aliases) {
     emojiFixtureMap[k].aliases = [];
@@ -64,7 +64,7 @@ Object.keys(emojiFixtureMap).forEach(k => {
 
 export async function initEmojiMock() {
   const emojiData = Object.fromEntries(
-    Object.values(emojiFixtureMap).map(m => {
+    Object.values(emojiFixtureMap).map((m) => {
       const { name: n, moji: e, unicodeVersion: u, category: c, description: d } = m;
       return [n, { c, e, d, u }];
     }),
@@ -81,8 +81,8 @@ export async function initEmojiMock() {
 export function describeEmojiFields(label, tests) {
   describe.each`
     field            | accessor
-    ${'name'}        | ${e => e.name}
-    ${'alias'}       | ${e => e.aliases[0]}
-    ${'description'} | ${e => e.description}
+    ${'name'}        | ${(e) => e.name}
+    ${'alias'}       | ${(e) => e.aliases[0]}
+    ${'description'} | ${(e) => e.description}
   `(label, tests);
 }

@@ -578,7 +578,7 @@ module Gitlab
       # type_cast_function - Required if the conversion back to the original type is not automatic
       # batch_column_name - option for tables without a primary key, in this case
       #            another unique integer column can be used. Example: :user_id
-      def undo_cleanup_concurrent_column_type_change(table, column, old_type, type_cast_function: nil, batch_column_name: :id)
+      def undo_cleanup_concurrent_column_type_change(table, column, old_type, type_cast_function: nil, batch_column_name: :id, limit: nil)
         temp_column = "#{column}_for_type_change"
 
         # Using a descriptive name that includes orinal column's name risks
@@ -604,7 +604,8 @@ module Gitlab
             temp_undo_cleanup_column,
             type: old_type,
             batch_column_name: batch_column_name,
-            type_cast_function: type_cast_function
+            type_cast_function: type_cast_function,
+            limit: limit
           )
 
           transaction do
@@ -1489,12 +1490,13 @@ into similar problems in the future (e.g. when new tables are created).
         "ON DELETE #{on_delete.upcase}"
       end
 
-      def create_column_from(table, old, new, type: nil, batch_column_name: :id, type_cast_function: nil)
+      def create_column_from(table, old, new, type: nil, batch_column_name: :id, type_cast_function: nil, limit: nil)
         old_col = column_for(table, old)
         new_type = type || old_col.type
+        new_limit = limit || old_col.limit
 
         add_column(table, new, new_type,
-                   limit: old_col.limit,
+                   limit: new_limit,
                    precision: old_col.precision,
                    scale: old_col.scale)
 

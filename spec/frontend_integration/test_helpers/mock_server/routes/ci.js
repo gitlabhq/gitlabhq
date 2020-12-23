@@ -1,6 +1,6 @@
 import { getPipelinesEmptyResponse } from 'test_helpers/fixtures';
 
-export default server => {
+export default (server) => {
   server.get('*/commit/:id/pipelines', () => {
     return getPipelinesEmptyResponse();
   });

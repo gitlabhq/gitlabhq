@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const { codeNavigationPath, blobPath, definitionPathPrefix } = codeNavEl.dataset;
 
     // eslint-disable-next-line promise/catch-or-return
-    import('~/code_navigation').then(m =>
+    import('~/code_navigation').then((m) =>
       m.default({
         blobs: [{ path: blobPath, codeNavigationPath }],
         definitionPathPrefix,

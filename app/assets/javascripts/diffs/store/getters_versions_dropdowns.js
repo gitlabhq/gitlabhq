@@ -2,10 +2,10 @@ import { __, n__, sprintf } from '~/locale';
 import { getParameterByName, parseBoolean } from '~/lib/utils/common_utils';
 import { DIFF_COMPARE_BASE_VERSION_INDEX, DIFF_COMPARE_HEAD_VERSION_INDEX } from '../constants';
 
-export const selectedTargetIndex = state =>
+export const selectedTargetIndex = (state) =>
   state.startVersion?.version_index || DIFF_COMPARE_BASE_VERSION_INDEX;
 
-export const selectedSourceIndex = state => state.mergeRequestDiff.version_index;
+export const selectedSourceIndex = (state) => state.mergeRequestDiff.version_index;
 
 export const diffCompareDropdownTargetVersions = (state, getters) => {
   // startVersion only exists if the user has selected a version other
@@ -40,7 +40,7 @@ export const diffCompareDropdownTargetVersions = (state, getters) => {
     selected: isHeadSelected,
   };
   // Appended properties here are to make the compare_dropdown_layout easier to reason about
-  const formatVersion = v => {
+  const formatVersion = (v) => {
     return {
       href: v.compare_path,
       versionName: sprintf(__(`version %{versionIndex}`), { versionIndex: v.version_index }),
@@ -53,7 +53,7 @@ export const diffCompareDropdownTargetVersions = (state, getters) => {
     ...state.mergeRequestDiffs.slice(1).map(formatVersion),
     baseVersion,
     state.mergeRequestDiff.head_version_path && headVersion,
-  ].filter(a => a);
+  ].filter((a) => a);
 };
 
 export const diffCompareDropdownSourceVersions = (state, getters) => {

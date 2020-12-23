@@ -28,7 +28,7 @@ export default class ImageFile {
   initViewModes() {
     const viewMode = viewModes[0];
     $('.view-modes', this.file).removeClass('gl-display-none');
-    $('.view-modes-menu', this.file).on('click', 'li', event => {
+    $('.view-modes-menu', this.file).on('click', 'li', (event) => {
       if (!$(event.currentTarget).hasClass('active')) {
         return this.activateViewMode(event.currentTarget.className);
       }

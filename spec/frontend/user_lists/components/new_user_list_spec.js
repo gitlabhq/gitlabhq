@@ -18,9 +18,9 @@ localVue.use(Vuex);
 describe('user_lists/components/new_user_list', () => {
   let wrapper;
 
-  const setInputValue = value => wrapper.find('[data-testid="user-list-name"]').setValue(value);
+  const setInputValue = (value) => wrapper.find('[data-testid="user-list-name"]').setValue(value);
 
-  const click = button => wrapper.find(`[data-testid="${button}"]`).trigger('click');
+  const click = (button) => wrapper.find(`[data-testid="${button}"]`).trigger('click');
 
   beforeEach(() => {
     wrapper = mount(NewUserList, {

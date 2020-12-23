@@ -1,9 +1,9 @@
 import { createNewCommit, createCommitIdGenerator } from 'test_helpers/factories';
 
-export default server => {
+export default (server) => {
   const commitIdGenerator = createCommitIdGenerator();
 
-  server.get('/api/v4/projects/:id/repository/branches', schema => {
+  server.get('/api/v4/projects/:id/repository/branches', (schema) => {
     return schema.db.branches;
   });
 
@@ -15,7 +15,7 @@ export default server => {
     return branch.attrs;
   });
 
-  server.get('*/-/files/:id', schema => {
+  server.get('*/-/files/:id', (schema) => {
     return schema.db.files.map(({ path }) => path);
   });
 

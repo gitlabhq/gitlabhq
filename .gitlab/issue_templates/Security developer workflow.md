@@ -9,6 +9,7 @@ Set the title to: `Description of the original issue`
 ## Prior to starting the security release work
 
 - [ ] Read the [security process for developers] if you are not familiar with it.
+  - Verify if the issue you're working on `gitlab-org/gitlab` is confidential, if it's public fix should be placed on GitLab canonical and no backports are required.
 - [ ] Mark this [issue as related] to the Security Release Tracking Issue. You can find it on the topic of the `#releases` Slack channel.
 - Fill out the [Links section](#links):
   - [ ] Next to **Issue on GitLab**, add a link to the `gitlab-org/gitlab` issue that describes the security vulnerability.

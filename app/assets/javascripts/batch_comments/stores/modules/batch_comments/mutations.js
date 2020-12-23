@@ -1,6 +1,6 @@
 import * as types from './mutation_types';
 
-const processDraft = draft => ({
+const processDraft = (draft) => ({
   ...draft,
   isDraft: true,
 });
@@ -11,7 +11,7 @@ export default {
   },
 
   [types.DELETE_DRAFT](state, draftId) {
-    state.drafts = state.drafts.filter(draft => draft.id !== draftId);
+    state.drafts = state.drafts.filter((draft) => draft.id !== draftId);
   },
 
   [types.SET_BATCH_COMMENTS_DRAFTS](state, drafts) {
@@ -23,13 +23,13 @@ export default {
   },
   [types.RECEIVE_PUBLISH_DRAFT_SUCCESS](state, draftId) {
     state.currentlyPublishingDrafts = state.currentlyPublishingDrafts.filter(
-      publishingDraftId => publishingDraftId !== draftId,
+      (publishingDraftId) => publishingDraftId !== draftId,
     );
-    state.drafts = state.drafts.filter(d => d.id !== draftId);
+    state.drafts = state.drafts.filter((d) => d.id !== draftId);
   },
   [types.RECEIVE_PUBLISH_DRAFT_ERROR](state, draftId) {
     state.currentlyPublishingDrafts = state.currentlyPublishingDrafts.filter(
-      publishingDraftId => publishingDraftId !== draftId,
+      (publishingDraftId) => publishingDraftId !== draftId,
     );
   },
 
@@ -44,14 +44,14 @@ export default {
     state.isPublishing = false;
   },
   [types.RECEIVE_DRAFT_UPDATE_SUCCESS](state, data) {
-    const index = state.drafts.findIndex(draft => draft.id === data.id);
+    const index = state.drafts.findIndex((draft) => draft.id === data.id);
 
     if (index >= 0) {
       state.drafts.splice(index, 1, processDraft(data));
     }
   },
   [types.TOGGLE_RESOLVE_DISCUSSION](state, draftId) {
-    state.drafts = state.drafts.map(draft => {
+    state.drafts = state.drafts.map((draft) => {
       if (draft.id === draftId) {
         return {
           ...draft,

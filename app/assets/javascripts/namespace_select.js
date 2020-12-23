@@ -25,7 +25,7 @@ export default class NamespaceSelect {
         return `${selected.kind}: ${selected.full_path}`;
       },
       data(term, dataCallback) {
-        return Api.namespaces(term, namespaces => {
+        return Api.namespaces(term, (namespaces) => {
           if (isFilter) {
             const anyNamespace = {
               text: __('Any namespace'),

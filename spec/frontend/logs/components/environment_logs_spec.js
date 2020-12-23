@@ -20,7 +20,7 @@ jest.mock('~/lib/utils/scroll_utils');
 const module = 'environmentLogs';
 
 jest.mock('lodash/throttle', () =>
-  jest.fn(func => {
+  jest.fn((func) => {
     return func;
   }),
 );
@@ -59,7 +59,7 @@ describe('EnvironmentLogs', () => {
   const findInfiniteScroll = () => wrapper.find({ ref: 'infiniteScroll' });
   const findLogTrace = () => wrapper.find({ ref: 'logTrace' });
   const findLogFooter = () => wrapper.find({ ref: 'logFooter' });
-  const getInfiniteScrollAttr = attr => parseInt(findInfiniteScroll().attributes(attr), 10);
+  const getInfiniteScrollAttr = (attr) => parseInt(findInfiniteScroll().attributes(attr), 10);
 
   const mockSetInitData = () => {
     state.pods.options = mockPods;
@@ -213,7 +213,7 @@ describe('EnvironmentLogs', () => {
 
   describe('state with data', () => {
     beforeEach(() => {
-      dispatch.mockImplementation(actionName => {
+      dispatch.mockImplementation((actionName) => {
         if (actionName === `${module}/setInitData`) {
           mockSetInitData();
         } else if (actionName === `${module}/showPodLogs`) {

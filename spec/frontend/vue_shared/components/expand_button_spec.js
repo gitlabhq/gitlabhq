@@ -66,7 +66,7 @@ describe('Expand button', () => {
   });
 
   describe('on click', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       expanderPrependEl().trigger('click');
       Vue.nextTick(done);
     });
@@ -85,7 +85,7 @@ describe('Expand button', () => {
     });
 
     describe('when short text is provided', () => {
-      beforeEach(done => {
+      beforeEach((done) => {
         factory({
           slots: {
             expanded: `<p>${text.expanded}</p>`,
@@ -110,7 +110,7 @@ describe('Expand button', () => {
   });
 
   describe('append button', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       expanderPrependEl().trigger('click');
       Vue.nextTick(done);
     });
@@ -134,7 +134,7 @@ describe('Expand button', () => {
     });
 
     describe('when short text is provided', () => {
-      beforeEach(done => {
+      beforeEach((done) => {
         factory({
           slots: {
             expanded: `<p>${text.expanded}</p>`,

@@ -54,7 +54,7 @@ export const TOGGLE_TODO_ERROR = __('Failed to toggle To-Do for the design.');
 
 const MAX_SKIPPED_FILES_LISTINGS = 5;
 
-const oneDesignSkippedMessage = filename =>
+const oneDesignSkippedMessage = (filename) =>
   `${DESIGN_UPLOAD_SKIPPED_MESSAGE} ${sprintf(s__('DesignManagement|%{filename} did not change.'), {
     filename,
   })}`;
@@ -64,7 +64,7 @@ const oneDesignSkippedMessage = filename =>
  * files were skipped.
  * @param {Array<{ filename }>} skippedFiles
  */
-const someDesignsSkippedMessage = skippedFiles => {
+const someDesignsSkippedMessage = (skippedFiles) => {
   const designsSkippedMessage = `${DESIGN_UPLOAD_SKIPPED_MESSAGE} ${s__(
     'Some of the designs you tried uploading did not change:',
   )}`;

@@ -14,7 +14,7 @@ export default {
       return parseSortParam(this.tableSortableFields);
     },
     activeOption() {
-      return FIELDS.find(field => field.key === this.sort.sortByKey);
+      return FIELDS.find((field) => field.key === this.sort.sortByKey);
     },
     activeOptionLabel() {
       return this.activeOption?.label;
@@ -23,18 +23,18 @@ export default {
       return !this.sort.sortDesc;
     },
     filteredOptions() {
-      return FIELDS.filter(field => this.tableSortableFields.includes(field.key) && field.sort).map(
-        field => ({
-          key: field.key,
-          label: field.label,
-          href: buildSortHref({
-            sortBy: field.key,
-            sortDesc: false,
-            filteredSearchBarTokens: this.filteredSearchBar.tokens,
-            filteredSearchBarSearchParam: this.filteredSearchBar.searchParam,
-          }),
+      return FIELDS.filter(
+        (field) => this.tableSortableFields.includes(field.key) && field.sort,
+      ).map((field) => ({
+        key: field.key,
+        label: field.label,
+        href: buildSortHref({
+          sortBy: field.key,
+          sortDesc: false,
+          filteredSearchBarTokens: this.filteredSearchBar.tokens,
+          filteredSearchBarSearchParam: this.filteredSearchBar.searchParam,
         }),
-      );
+      }));
     },
   },
   methods: {

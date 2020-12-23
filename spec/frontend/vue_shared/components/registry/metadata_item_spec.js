@@ -25,7 +25,7 @@ describe('Metadata Item', () => {
   const findText = () => wrapper.find('[data-testid="metadata-item-text"]');
   const findTooltipOnTruncate = (w = wrapper) => w.find(TooltipOnTruncate);
 
-  describe.each(['xs', 's', 'm', 'l', 'xl'])('size class', size => {
+  describe.each(['xs', 's', 'm', 'l', 'xl'])('size class', (size) => {
     const className = `mw-${size}`;
 
     it(`${size} is assigned correctly to text`, () => {

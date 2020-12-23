@@ -640,7 +640,7 @@ A tag from a container repository.
 | `path` | String! | Path of the tag. |
 | `revision` | String | Revision of the tag. |
 | `shortRevision` | String | Short revision of the tag. |
-| `totalSize` | Int | The size of the tag. |
+| `totalSize` | BigInt | The size of the tag. |
 
 ### CreateAlertIssuePayload
 

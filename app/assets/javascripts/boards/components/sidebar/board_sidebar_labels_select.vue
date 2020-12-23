@@ -25,7 +25,7 @@ export default {
     selectedLabels() {
       const { labels = [] } = this.activeIssue;
 
-      return labels.map(label => ({
+      return labels.map((label) => ({
         ...label,
         id: getIdFromGraphQLId(label.id),
       }));
@@ -33,7 +33,7 @@ export default {
     issueLabels() {
       const { labels = [] } = this.activeIssue;
 
-      return labels.map(label => ({
+      return labels.map((label) => ({
         ...label,
         scoped: isScopedLabel(label),
       }));
@@ -46,10 +46,10 @@ export default {
       this.$refs.sidebarItem.collapse();
 
       try {
-        const addLabelIds = payload.filter(label => label.set).map(label => label.id);
+        const addLabelIds = payload.filter((label) => label.set).map((label) => label.id);
         const removeLabelIds = this.selectedLabels
-          .filter(label => !payload.find(selected => selected.id === label.id))
-          .map(label => label.id);
+          .filter((label) => !payload.find((selected) => selected.id === label.id))
+          .map((label) => label.id);
 
         const input = { addLabelIds, removeLabelIds, projectPath: this.projectPathForActiveIssue };
         await this.setActiveIssueLabels(input);

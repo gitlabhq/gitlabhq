@@ -46,7 +46,7 @@ describe('MrWidgetPipelineContainer', () => {
     });
 
     it('renders deployments', () => {
-      const expectedProps = mockStore.deployments.map(dep =>
+      const expectedProps = mockStore.deployments.map((dep) =>
         expect.objectContaining({
           deployment: dep,
           showMetrics: false,
@@ -55,7 +55,7 @@ describe('MrWidgetPipelineContainer', () => {
 
       const deployments = wrapper.findAll('.mr-widget-extension .js-pre-deployment');
 
-      expect(deployments.wrappers.map(x => x.props())).toEqual(expectedProps);
+      expect(deployments.wrappers.map((x) => x.props())).toEqual(expectedProps);
     });
   });
 
@@ -79,7 +79,7 @@ describe('MrWidgetPipelineContainer', () => {
     });
 
     it('renders deployments', () => {
-      const expectedProps = mockStore.postMergeDeployments.map(dep =>
+      const expectedProps = mockStore.postMergeDeployments.map((dep) =>
         expect.objectContaining({
           deployment: dep,
           showMetrics: true,
@@ -88,7 +88,7 @@ describe('MrWidgetPipelineContainer', () => {
 
       const deployments = wrapper.findAll('.mr-widget-extension .js-post-deployment');
 
-      expect(deployments.wrappers.map(x => x.props())).toEqual(expectedProps);
+      expect(deployments.wrappers.map((x) => x.props())).toEqual(expectedProps);
     });
   });
 

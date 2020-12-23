@@ -5,7 +5,7 @@ import { __ } from '~/locale';
 import CodeCoverage from '../components/code_coverage.vue';
 import SeriesDataMixin from './series_data_mixin';
 
-const seriesDataToBarData = raw => Object.entries(raw).map(([name, data]) => ({ name, data }));
+const seriesDataToBarData = (raw) => Object.entries(raw).map(([name, data]) => ({ name, data }));
 
 document.addEventListener('DOMContentLoaded', () => {
   waitForCSSLoaded(() => {
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
       },
       computed: {
         seriesData() {
-          return [{ name: 'full', data: this.chartData.map(d => [d.label, d.value]) }];
+          return [{ name: 'full', data: this.chartData.map((d) => [d.label, d.value]) }];
         },
       },
       render(h) {

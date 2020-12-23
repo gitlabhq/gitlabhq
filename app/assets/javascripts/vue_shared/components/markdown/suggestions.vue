@@ -98,11 +98,11 @@ export default {
         this.$emit('applyBatch', { flashContainer: this.$el });
       });
 
-      suggestionDiff.$on('addToBatch', suggestionId => {
+      suggestionDiff.$on('addToBatch', (suggestionId) => {
         this.$emit('addToBatch', suggestionId);
       });
 
-      suggestionDiff.$on('removeFromBatch', suggestionId => {
+      suggestionDiff.$on('removeFromBatch', (suggestionId) => {
         this.$emit('removeFromBatch', suggestionId);
       });
 

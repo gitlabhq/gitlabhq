@@ -9,7 +9,7 @@ describe('LogControlButtons', () => {
   const findScrollToBottom = () => wrapper.find('.js-scroll-to-bottom');
   const findRefreshBtn = () => wrapper.find('.js-refresh-log');
 
-  const initWrapper = opts => {
+  const initWrapper = (opts) => {
     wrapper = shallowMount(LogControlButtons, {
       listeners: {
         scrollUp: () => {},

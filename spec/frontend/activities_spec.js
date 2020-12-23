@@ -44,14 +44,14 @@ describe('Activities', () => {
   });
 
   for (let i = 0; i < filters.length; i += 1) {
-    (i => {
+    ((i) => {
       describe(`when selecting ${getEventName(i)}`, () => {
         beforeEach(() => {
           $(getSelector(i)).click();
         });
 
         for (let x = 0; x < filters.length; x += 1) {
-          (x => {
+          ((x) => {
             const shouldHighlight = i === x;
             const testName = shouldHighlight ? 'should highlight' : 'should not highlight';
 

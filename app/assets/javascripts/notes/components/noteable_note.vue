@@ -296,7 +296,7 @@ export default {
           this.updateSuccess();
           callback();
         })
-        .catch(response => {
+        .catch((response) => {
           if (response.status === httpStatusCodes.GONE) {
             this.removeNote(this.note);
             this.updateSuccess();

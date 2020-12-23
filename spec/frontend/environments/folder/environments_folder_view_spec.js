@@ -23,7 +23,7 @@ describe('Environments Folder View', () => {
     helpCanaryDeploymentsPath: 'help/canary-deployments',
   };
 
-  const mockEnvironments = environmentList => {
+  const mockEnvironments = (environmentList) => {
     mock.onGet(mockData.endpoint).reply(
       200,
       {

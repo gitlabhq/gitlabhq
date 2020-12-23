@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { hide } from '~/tooltips';
 
-export const addTooltipToEl = el => {
+export const addTooltipToEl = (el) => {
   const textEl = el.querySelector('.js-breadcrumb-item-text');
 
   if (textEl && textEl.scrollWidth > textEl.offsetWidth) {
@@ -16,14 +16,14 @@ export default () => {
 
   if (breadcrumbs) {
     const topLevelLinks = [...breadcrumbs.children]
-      .filter(el => !el.classList.contains('dropdown'))
-      .map(el => el.querySelector('a'))
-      .filter(el => el);
+      .filter((el) => !el.classList.contains('dropdown'))
+      .map((el) => el.querySelector('a'))
+      .filter((el) => el);
     const $expander = $('.js-breadcrumbs-collapsed-expander');
 
-    topLevelLinks.forEach(el => addTooltipToEl(el));
+    topLevelLinks.forEach((el) => addTooltipToEl(el));
 
-    $expander.closest('.dropdown').on('show.bs.dropdown hide.bs.dropdown', e => {
+    $expander.closest('.dropdown').on('show.bs.dropdown hide.bs.dropdown', (e) => {
       const $el = $('.js-breadcrumbs-collapsed-expander', e.currentTarget);
 
       $el.toggleClass('open');

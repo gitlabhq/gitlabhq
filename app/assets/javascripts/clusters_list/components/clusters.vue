@@ -79,7 +79,7 @@ export default {
         {
           key: 'cluster_type',
           label: __('Cluster level'),
-          formatter: value => CLUSTER_TYPES[value],
+          formatter: (value) => CLUSTER_TYPES[value],
         },
       ];
     },

@@ -6,7 +6,7 @@ describe('Apply Suggestion component', () => {
   const propsData = { fileName: 'test.js', disabled: false };
   let wrapper;
 
-  const createWrapper = props => {
+  const createWrapper = (props) => {
     wrapper = shallowMount(ApplySuggestionComponent, { propsData: { ...propsData, ...props } });
   };
 

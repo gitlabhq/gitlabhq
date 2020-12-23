@@ -32,7 +32,7 @@ describe('setWindowLocation', () => {
 
   it.each([null, 1, undefined, false, '', 'gitlab.com'])(
     'throws an error when called with an invalid url: "%s"',
-    invalidUrl => {
+    (invalidUrl) => {
       expect(() => setWindowLocation(invalidUrl)).toThrow(/Invalid URL/);
       expect(window.location).toBe(originalLocation);
     },

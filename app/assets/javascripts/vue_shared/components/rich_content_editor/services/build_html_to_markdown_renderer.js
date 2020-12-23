@@ -9,7 +9,7 @@ const DEFAULTS = {
   emphasis: '_',
 };
 
-const countIndentSpaces = text => {
+const countIndentSpaces = (text) => {
   const matches = text.match(/^\s+/m);
 
   return matches ? matches[0].length : 0;
@@ -52,7 +52,7 @@ const buildHTMLToMarkdownRender = (baseRenderer, formattingPreferences = {}) => 
       const firstLevelIndentSpacesCount = countIndentSpaces(baseResult) || 1;
       const reindentedList = baseResult
         .split('\n')
-        .map(line => {
+        .map((line) => {
           const itemIndentSpacesCount = countIndentSpaces(line);
           const nestingLevel = Math.ceil(itemIndentSpacesCount / firstLevelIndentSpacesCount);
           const indentSpaces = repeat(' ', subListIndentSpaces * nestingLevel);

@@ -8,8 +8,8 @@ import { getDerivedMergeRequestInformation } from './merge_request';
 import { uuids } from './uuids';
 
 function fileSymlinkInformation(file, fileList) {
-  const duplicates = fileList.filter(iteratedFile => iteratedFile.file_hash === file.file_hash);
-  const includesSymlink = duplicates.some(iteratedFile => {
+  const duplicates = fileList.filter((iteratedFile) => iteratedFile.file_hash === file.file_hash);
+  const includesSymlink = duplicates.some((iteratedFile) => {
     return [iteratedFile.a_mode, iteratedFile.b_mode].includes(DIFF_FILE_SYMLINK_MODE);
   });
   const brokenSymlinkScenario = duplicates.length > 1 && includesSymlink;

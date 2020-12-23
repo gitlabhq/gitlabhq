@@ -1,7 +1,7 @@
 /**
  * Returns true if the given module is required from eslint
  */
-const isESLint = mod => {
+const isESLint = (mod) => {
   let parent = mod.parent;
 
   while (parent) {

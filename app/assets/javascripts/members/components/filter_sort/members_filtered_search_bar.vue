@@ -45,7 +45,7 @@ export default {
   computed: {
     ...mapState(['sourceId', 'filteredSearchBar', 'canManageMembers']),
     tokens() {
-      return this.$options.availableTokens.filter(token => {
+      return this.$options.availableTokens.filter((token) => {
         if (
           Object.prototype.hasOwnProperty.call(token, 'requiredPermissions') &&
           !this[token.requiredPermissions]
@@ -61,8 +61,8 @@ export default {
     const query = queryToObject(window.location.search);
 
     const tokens = this.tokens
-      .filter(token => query[token.type])
-      .map(token => ({
+      .filter((token) => query[token.type])
+      .map((token) => ({
         type: token.type,
         value: {
           data: query[token.type],

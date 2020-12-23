@@ -345,7 +345,7 @@ export default class Notes {
         votesBlock = $('.js-awards-block').eq(0);
 
         loadAwardsHandler()
-          .then(awardsHandler => {
+          .then((awardsHandler) => {
             awardsHandler.addAwardToEmojiBar(votesBlock, noteEntity.commands_changes.emoji_award);
             awardsHandler.scrollToAwards();
           })
@@ -1396,7 +1396,7 @@ export default class Notes {
     let tempFormContent;
 
     // Identify executed quick actions from `formContent`
-    const executedCommands = availableQuickActions.filter(command => {
+    const executedCommands = availableQuickActions.filter((command) => {
       const commandRegex = new RegExp(`/${command.name}`);
       return commandRegex.test(formContent);
     });
@@ -1583,7 +1583,7 @@ export default class Notes {
     // Make request to submit comment on server
     return axios
       .post(`${formAction}?html=true`, formData)
-      .then(res => {
+      .then((res) => {
         const note = res.data;
 
         $submitBtn.prop('disabled', false);

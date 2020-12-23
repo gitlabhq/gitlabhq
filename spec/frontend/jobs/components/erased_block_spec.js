@@ -10,7 +10,7 @@ describe('Erased block', () => {
   const timeago = getTimeago();
   const formattedDate = timeago.format(erasedAt);
 
-  const createComponent = props => {
+  const createComponent = (props) => {
     wrapper = mount(ErasedBlock, {
       propsData: props,
     });

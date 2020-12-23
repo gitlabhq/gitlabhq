@@ -10,7 +10,7 @@ describe('Recent Searches Dropdown Content', () => {
   const findDropdownItems = () => wrapper.findAll({ ref: 'dropdownItem' });
   const findDropdownNote = () => wrapper.find({ ref: 'dropdownNote' });
 
-  const createComponent = props => {
+  const createComponent = (props) => {
     wrapper = shallowMount(RecentSearchesDropdownContent, {
       propsData: {
         allowedKeys: IssuableFilteredSearchTokenKeys.getKeys(),

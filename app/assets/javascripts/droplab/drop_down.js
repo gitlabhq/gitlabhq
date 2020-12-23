@@ -68,7 +68,7 @@ class DropDown {
   removeSelectedClasses() {
     const items = this.items || this.getItems();
 
-    items.forEach(item => item.classList.remove(SELECTED_CLASS));
+    items.forEach((item) => item.classList.remove(SELECTED_CLASS));
   }
 
   addEvents() {
@@ -162,7 +162,7 @@ class DropDown {
   static setImagesSrc(template) {
     const images = [...template.querySelectorAll('img[data-src]')];
 
-    images.forEach(image => {
+    images.forEach((image) => {
       const img = image;
 
       img.src = img.getAttribute('data-src');

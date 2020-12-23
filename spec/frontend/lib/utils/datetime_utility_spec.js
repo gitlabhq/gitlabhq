@@ -566,7 +566,7 @@ describe('getDatesInRange', () => {
   it('applies mapper function if provided fro each item in range', () => {
     const d1 = new Date('2019-01-01');
     const d2 = new Date('2019-01-31');
-    const formatter = date => date.getDate();
+    const formatter = (date) => date.getDate();
 
     const range = datetimeUtility.getDatesInRange(d1, d2, formatter);
 

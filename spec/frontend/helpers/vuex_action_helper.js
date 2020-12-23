@@ -116,12 +116,12 @@ export default (
     payload,
   );
 
-  return (result || new Promise(resolve => setImmediate(resolve)))
-    .catch(error => {
+  return (result || new Promise((resolve) => setImmediate(resolve)))
+    .catch((error) => {
       validateResults();
       throw error;
     })
-    .then(data => {
+    .then((data) => {
       validateResults();
       return data;
     });

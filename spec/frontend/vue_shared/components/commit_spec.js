@@ -7,14 +7,14 @@ describe('Commit component', () => {
   let props;
   let wrapper;
 
-  const findIcon = name => {
-    const icons = wrapper.findAll(GlIcon).filter(c => c.attributes('name') === name);
+  const findIcon = (name) => {
+    const icons = wrapper.findAll(GlIcon).filter((c) => c.attributes('name') === name);
     return icons.length ? icons.at(0) : icons;
   };
 
   const findUserAvatar = () => wrapper.find(UserAvatarLink);
 
-  const createComponent = propsData => {
+  const createComponent = (propsData) => {
     wrapper = shallowMount(CommitComponent, {
       propsData,
     });

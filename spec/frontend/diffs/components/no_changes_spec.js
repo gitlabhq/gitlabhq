@@ -28,7 +28,7 @@ describe('Diff no changes empty state', () => {
   });
 
   it('prevents XSS', () => {
-    createComponent(store => {
+    createComponent((store) => {
       // eslint-disable-next-line no-param-reassign
       store.state.notes.noteableData = {
         source_branch: '<script>alert("test");</script>',

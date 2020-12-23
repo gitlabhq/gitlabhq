@@ -3,7 +3,7 @@ import { decorateData } from '~/ide/stores/utils';
 
 const TEST_BLOB_DATA = { mimeType: 'test/mime' };
 
-const createEntries = paths => {
+const createEntries = (paths) => {
   const createEntry = (acc, { path, type, children }) => {
     const { name, parent } = splitParent(path);
 
@@ -15,7 +15,7 @@ const createEntries = paths => {
         type,
         parentPath: parent,
       }),
-      tree: children.map(childName => expect.objectContaining({ name: childName })),
+      tree: children.map((childName) => expect.objectContaining({ name: childName })),
       ...(type === 'blob' ? TEST_BLOB_DATA : {}),
     };
 
@@ -53,7 +53,7 @@ describe('IDE lib decorate files', () => {
     const entryKeys = Object.keys(entries);
 
     expect(entryKeys).toEqual(Object.keys(expectedEntries));
-    entryKeys.forEach(key => {
+    entryKeys.forEach((key) => {
       expect(entries[key]).toEqual(expectedEntries[key]);
     });
 

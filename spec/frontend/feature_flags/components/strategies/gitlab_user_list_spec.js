@@ -66,7 +66,7 @@ describe('~/feature_flags/components/strategies/gitlab_user_list.vue', () => {
     it('should search when the filter changes', async () => {
       let r;
       Api.searchFeatureFlagUserLists.mockReturnValue(
-        new Promise(resolve => {
+        new Promise((resolve) => {
           r = resolve;
         }),
       );

@@ -19,13 +19,13 @@ export default class TableCell extends Node {
       parseDOM: [
         {
           tag: 'td, th',
-          getAttrs: el => ({
+          getAttrs: (el) => ({
             header: el.tagName === 'TH',
             align: el.getAttribute('align') || el.style.textAlign,
           }),
         },
       ],
-      toDOM: node => [node.attrs.header ? 'th' : 'td', { align: node.attrs.align }, 0],
+      toDOM: (node) => [node.attrs.header ? 'th' : 'td', { align: node.attrs.align }, 0],
     };
   }
 

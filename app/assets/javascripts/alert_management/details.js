@@ -9,7 +9,7 @@ import createRouter from './router';
 
 Vue.use(VueApollo);
 
-export default selector => {
+export default (selector) => {
   const domEl = document.querySelector(selector);
   const { alertId, projectPath, projectIssuesPath, projectId } = domEl.dataset;
   const router = createRouter();
@@ -18,7 +18,7 @@ export default selector => {
     Mutation: {
       toggleSidebarStatus: (_, __, { cache }) => {
         const sourceData = cache.readQuery({ query: sidebarStatusQuery });
-        const data = produce(sourceData, draftData => {
+        const data = produce(sourceData, (draftData) => {
           // eslint-disable-next-line no-param-reassign
           draftData.sidebarStatus = !draftData.sidebarStatus;
         });
@@ -30,7 +30,7 @@ export default selector => {
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(resolvers, {
       cacheConfig: {
-        dataIdFromObject: object => {
+        dataIdFromObject: (object) => {
           // eslint-disable-next-line no-underscore-dangle
           if (object.__typename === 'AlertManagementAlert') {
             return object.iid;

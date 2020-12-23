@@ -226,7 +226,7 @@ export default {
         { deep: true },
       );
       const combinedActions = (manualActions || []).concat(scheduledActions || []);
-      return combinedActions.map(action => ({
+      return combinedActions.map((action) => ({
         ...action,
         name: action.name,
       }));

@@ -22,8 +22,8 @@ export default class BlobGitignoreSelector extends FileTemplateSelector {
       search: {
         fields: ['name'],
       },
-      clicked: options => this.reportSelectionName(options),
-      text: item => item.name,
+      clicked: (options) => this.reportSelectionName(options),
+      text: (item) => item.name,
     });
   }
 }

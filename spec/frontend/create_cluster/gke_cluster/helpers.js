@@ -8,7 +8,7 @@ const cloudbilling = {
   projects: {
     getBillingInfo: jest.fn(
       () =>
-        new Promise(resolve => {
+        new Promise((resolve) => {
           resolve({
             result: { billingEnabled: true },
           });
@@ -21,7 +21,7 @@ const cloudresourcemanager = {
   projects: {
     list: jest.fn(
       () =>
-        new Promise(resolve => {
+        new Promise((resolve) => {
           resolve({
             result: { ...gapiProjectsResponseMock },
           });
@@ -34,7 +34,7 @@ const compute = {
   zones: {
     list: jest.fn(
       () =>
-        new Promise(resolve => {
+        new Promise((resolve) => {
           resolve({
             result: { ...gapiZonesResponseMock },
           });
@@ -44,7 +44,7 @@ const compute = {
   machineTypes: {
     list: jest.fn(
       () =>
-        new Promise(resolve => {
+        new Promise((resolve) => {
           resolve({
             result: { ...gapiMachineTypesResponseMock },
           });

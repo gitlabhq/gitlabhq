@@ -27,7 +27,7 @@ const InputSetter = {
 
     if (!Array.isArray(this.config)) this.config = [this.config];
 
-    this.config.forEach(config => this.setInput(config, selectedItem));
+    this.config.forEach((config) => this.setInput(config, selectedItem));
   },
 
   setInput(config, selectedItem) {

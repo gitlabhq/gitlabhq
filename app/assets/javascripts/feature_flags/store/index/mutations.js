@@ -4,7 +4,7 @@ import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 import { FEATURE_FLAG_SCOPE, USER_LIST_SCOPE } from '../../constants';
 import { mapToScopesViewModel } from '../helpers';
 
-const mapFlag = flag => ({ ...flag, scopes: mapToScopesViewModel(flag.scopes || []) });
+const mapFlag = (flag) => ({ ...flag, scopes: mapToScopesViewModel(flag.scopes || []) });
 
 const updateFlag = (state, flag) => {
   const index = state[FEATURE_FLAG_SCOPE].findIndex(({ id }) => id === flag.id);
@@ -94,7 +94,7 @@ export default {
     updateFlag(state, { ...flag, active: !flag.active });
   },
   [types.REQUEST_DELETE_USER_LIST](state, list) {
-    state.userLists = state.userLists.filter(l => l !== list);
+    state.userLists = state.userLists.filter((l) => l !== list);
   },
   [types.RECEIVE_DELETE_USER_LIST_ERROR](state, { error, list }) {
     state.isLoading = false;

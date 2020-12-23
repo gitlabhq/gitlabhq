@@ -56,7 +56,7 @@ export default class CreateLabelDropdown {
 
     this.$dropdownBack.on('click', this.resetForm.bind(this));
 
-    this.$cancelButton.on('click', e => {
+    this.$cancelButton.on('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
 
@@ -105,7 +105,7 @@ export default class CreateLabelDropdown {
         title: this.$newLabelField.val(),
         color: this.$newColorField.val(),
       },
-      label => {
+      (label) => {
         this.$newLabelCreateButton.enable();
 
         if (label.message) {
@@ -115,7 +115,7 @@ export default class CreateLabelDropdown {
             errors = label.message;
           } else {
             errors = Object.keys(label.message)
-              .map(key => `${humanize(key)} ${label.message[key].join(', ')}`)
+              .map((key) => `${humanize(key)} ${label.message[key].join(', ')}`)
               .join('<br/>');
           }
 

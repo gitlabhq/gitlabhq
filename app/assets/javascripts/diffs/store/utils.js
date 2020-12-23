@@ -23,15 +23,15 @@ import {
 } from '../constants';
 import { prepareRawDiffFile } from '../utils/diff_file';
 
-export const isAdded = line => ['new', 'new-nonewline'].includes(line.type);
-export const isRemoved = line => ['old', 'old-nonewline'].includes(line.type);
-export const isUnchanged = line => !line.type;
-export const isMeta = line => ['match', 'new-nonewline', 'old-nonewline'].includes(line.type);
-export const isConflictMarker = line =>
+export const isAdded = (line) => ['new', 'new-nonewline'].includes(line.type);
+export const isRemoved = (line) => ['old', 'old-nonewline'].includes(line.type);
+export const isUnchanged = (line) => !line.type;
+export const isMeta = (line) => ['match', 'new-nonewline', 'old-nonewline'].includes(line.type);
+export const isConflictMarker = (line) =>
   [CONFLICT_MARKER_OUR, CONFLICT_MARKER_THEIR].includes(line.type);
-export const isConflictSeperator = line => line.type === CONFLICT_MARKER;
-export const isConflictOur = line => line.type === CONFLICT_OUR;
-export const isConflictTheir = line => line.type === CONFLICT_THEIR;
+export const isConflictSeperator = (line) => line.type === CONFLICT_MARKER;
+export const isConflictOur = (line) => line.type === CONFLICT_OUR;
+export const isConflictTheir = (line) => line.type === CONFLICT_THEIR;
 
 /**
  * Pass in the inline diff lines array which gets converted
@@ -117,10 +117,10 @@ export const parallelizeDiffLines = (diffLines, inline) => {
 };
 
 export function findDiffFile(files, match, matchKey = 'file_hash') {
-  return files.find(file => file[matchKey] === match);
+  return files.find((file) => file[matchKey] === match);
 }
 
-export const getReversePosition = linePosition => {
+export const getReversePosition = (linePosition) => {
   if (linePosition === LINE_POSITION_RIGHT) {
     return LINE_POSITION_LEFT;
   }
@@ -197,7 +197,7 @@ export const findIndexInInlineLines = (lines, lineNumbers) => {
   const { oldLineNumber, newLineNumber } = lineNumbers;
 
   return lines.findIndex(
-    line => line.old_line === oldLineNumber && line.new_line === newLineNumber,
+    (line) => line.old_line === oldLineNumber && line.new_line === newLineNumber,
   );
 };
 
@@ -370,7 +370,7 @@ export function prepareLineForRenamedFile({ line, diffFile, index = 0 }) {
 function prepareDiffFileLines(file) {
   const inlineLines = file[INLINE_DIFF_LINES_KEY];
 
-  inlineLines.forEach(line => prepareLine(line, file)); // WARNING: In-Place Mutations!
+  inlineLines.forEach((line) => prepareLine(line, file)); // WARNING: In-Place Mutations!
 
   Object.assign(file, {
     inlineLinesCount: inlineLines.length,
@@ -424,7 +424,7 @@ export function getDiffPositionByLineCode(diffFiles) {
   let lines = [];
 
   lines = diffFiles.reduce((acc, diffFile) => {
-    diffFile[INLINE_DIFF_LINES_KEY].forEach(line => {
+    diffFile[INLINE_DIFF_LINES_KEY].forEach((line) => {
       acc.push({ file: diffFile, line });
     });
 
@@ -471,21 +471,21 @@ export function isDiscussionApplicableToLine({ discussion, diffPosition, latestD
       ...(discussion.positions || []),
     ];
 
-    const removeLineRange = position => {
+    const removeLineRange = (position) => {
       const { line_range: pNotUsed, ...positionNoLineRange } = position;
       return positionNoLineRange;
     };
 
     return discussionPositions
       .map(removeLineRange)
-      .some(position => isEqual(position, diffPositionCopy));
+      .some((position) => isEqual(position, diffPositionCopy));
   }
 
   // eslint-disable-next-line
   return latestDiff && discussion.active && line_code === discussion.line_code;
 }
 
-export const getLowestSingleFolder = folder => {
+export const getLowestSingleFolder = (folder) => {
   const getFolder = (blob, start = []) =>
     blob.tree.reduce(
       (acc, file) => {
@@ -517,8 +517,8 @@ export const getLowestSingleFolder = folder => {
   };
 };
 
-export const flattenTree = tree => {
-  const flatten = blobTree =>
+export const flattenTree = (tree) => {
+  const flatten = (blobTree) =>
     blobTree.reduce((acc, file) => {
       const blob = file;
       let treeToFlatten = blob.tree;
@@ -540,7 +540,7 @@ export const flattenTree = tree => {
   return flatten(tree);
 };
 
-export const generateTreeList = files => {
+export const generateTreeList = (files) => {
   const { treeEntries, tree } = files.reduce(
     (acc, file) => {
       const split = file.new_path.split('/');
@@ -590,8 +590,8 @@ export const generateTreeList = files => {
   return { treeEntries, tree: flattenTree(tree) };
 };
 
-export const getDiffMode = diffFile => {
-  const diffModeKey = Object.keys(diffModes).find(key => diffFile[`${key}_file`]);
+export const getDiffMode = (diffFile) => {
+  const diffModeKey = Object.keys(diffModes).find((key) => diffFile[`${key}_file`]);
   return (
     diffModes[diffModeKey] ||
     (diffFile.viewer &&
@@ -639,11 +639,11 @@ export const convertExpandLines = ({
   return lines;
 };
 
-export const idleCallback = cb => requestIdleCallback(cb);
+export const idleCallback = (cb) => requestIdleCallback(cb);
 
 function getLinesFromFileByLineCode(file, lineCode) {
   const inlineLines = file[INLINE_DIFF_LINES_KEY];
-  const matchesCode = line => line.line_code === lineCode;
+  const matchesCode = (line) => line.line_code === lineCode;
 
   return inlineLines.filter(matchesCode);
 }
@@ -652,15 +652,15 @@ export const updateLineInFile = (selectedFile, lineCode, updateFn) => {
   getLinesFromFileByLineCode(selectedFile, lineCode).forEach(updateFn);
 };
 
-export const allDiscussionWrappersExpanded = diff => {
+export const allDiscussionWrappersExpanded = (diff) => {
   let discussionsExpanded = true;
-  const changeExpandedResult = line => {
+  const changeExpandedResult = (line) => {
     if (line && line.discussions.length) {
       discussionsExpanded = discussionsExpanded && line.discussionsExpanded;
     }
   };
 
-  diff[INLINE_DIFF_LINES_KEY].forEach(line => {
+  diff[INLINE_DIFF_LINES_KEY].forEach((line) => {
     changeExpandedResult(line);
   });
 

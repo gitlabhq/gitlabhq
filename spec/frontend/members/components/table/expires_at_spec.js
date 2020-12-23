@@ -10,7 +10,7 @@ describe('ExpiresAt', () => {
 
   let wrapper;
 
-  const createComponent = propsData => {
+  const createComponent = (propsData) => {
     wrapper = mount(ExpiresAt, {
       propsData,
       directives: {
@@ -22,7 +22,7 @@ describe('ExpiresAt', () => {
   const getByText = (text, options) =>
     createWrapper(within(wrapper.element).getByText(text, options));
 
-  const getTooltipDirective = elementWrapper => getBinding(elementWrapper.element, 'gl-tooltip');
+  const getTooltipDirective = (elementWrapper) => getBinding(elementWrapper.element, 'gl-tooltip');
 
   afterEach(() => {
     wrapper.destroy();

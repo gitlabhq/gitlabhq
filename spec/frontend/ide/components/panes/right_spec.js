@@ -14,7 +14,7 @@ describe('ide/components/panes/right.vue', () => {
   let wrapper;
   let store;
 
-  const createComponent = props => {
+  const createComponent = (props) => {
     extendStore(store, document.createElement('div'));
 
     wrapper = shallowMount(RightPane, {

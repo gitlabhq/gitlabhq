@@ -20,7 +20,7 @@ describe('error tracking actions', () => {
   });
 
   describe('startPolling', () => {
-    it('should start polling for data', done => {
+    it('should start polling for data', (done) => {
       const payload = { errors: [{ id: 1 }, { id: 2 }] };
 
       mock.onGet().reply(httpStatusCodes.OK, payload);
@@ -41,7 +41,7 @@ describe('error tracking actions', () => {
       );
     });
 
-    it('should show flash on API error', done => {
+    it('should show flash on API error', (done) => {
       mock.onGet().reply(httpStatusCodes.BAD_REQUEST);
 
       testAction(

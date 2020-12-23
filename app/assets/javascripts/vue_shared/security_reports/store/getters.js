@@ -3,7 +3,7 @@ import { countVulnerabilities, groupedTextBuilder } from './utils';
 import { LOADING, ERROR, SUCCESS } from '~/reports/constants';
 import { TRANSLATION_IS_LOADING } from './messages';
 
-export const summaryCounts = state =>
+export const summaryCounts = (state) =>
   countVulnerabilities(
     state.reportTypes.reduce((acc, reportType) => {
       acc.push(...state[reportType].newIssues);
@@ -50,17 +50,17 @@ export const summaryStatus = (state, getters) => {
   return SUCCESS;
 };
 
-export const areReportsLoading = state =>
-  state.reportTypes.some(reportType => state[reportType].isLoading);
+export const areReportsLoading = (state) =>
+  state.reportTypes.some((reportType) => state[reportType].isLoading);
 
-export const areAllReportsLoading = state =>
-  state.reportTypes.every(reportType => state[reportType].isLoading);
+export const areAllReportsLoading = (state) =>
+  state.reportTypes.every((reportType) => state[reportType].isLoading);
 
-export const allReportsHaveError = state =>
-  state.reportTypes.every(reportType => state[reportType].hasError);
+export const allReportsHaveError = (state) =>
+  state.reportTypes.every((reportType) => state[reportType].hasError);
 
-export const anyReportHasError = state =>
-  state.reportTypes.some(reportType => state[reportType].hasError);
+export const anyReportHasError = (state) =>
+  state.reportTypes.some((reportType) => state[reportType].hasError);
 
-export const anyReportHasIssues = state =>
-  state.reportTypes.some(reportType => state[reportType].newIssues.length > 0);
+export const anyReportHasIssues = (state) =>
+  state.reportTypes.some((reportType) => state[reportType].newIssues.length > 0);

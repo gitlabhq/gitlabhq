@@ -45,7 +45,7 @@ function printJson() {
       text += `\u0000${message.textPlural}`;
     }
 
-    message.references.forEach(reference => {
+    message.references.forEach((reference) => {
       const filename = reference.replace(/:\d+$/, '');
 
       if (!Array.isArray(result[filename])) {

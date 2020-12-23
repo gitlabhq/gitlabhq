@@ -8,7 +8,7 @@
  *
  * @param {() => any} fn Function that returns the object to use for localStorage
  */
-const useLocalStorage = fn => {
+const useLocalStorage = (fn) => {
   const origLocalStorage = window.localStorage;
   let currentLocalStorage = origLocalStorage;
 
@@ -35,11 +35,11 @@ export const createLocalStorageSpy = () => {
     clear: jest.fn(() => {
       storage = {};
     }),
-    getItem: jest.fn(key => (key in storage ? storage[key] : null)),
+    getItem: jest.fn((key) => (key in storage ? storage[key] : null)),
     setItem: jest.fn((key, value) => {
       storage[key] = value;
     }),
-    removeItem: jest.fn(key => delete storage[key]),
+    removeItem: jest.fn((key) => delete storage[key]),
   };
 };
 

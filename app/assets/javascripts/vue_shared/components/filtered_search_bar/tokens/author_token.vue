@@ -43,7 +43,7 @@ export default {
       return this.value.data.toLowerCase();
     },
     activeAuthor() {
-      return this.authors.find(author => author.username.toLowerCase() === this.currentValue);
+      return this.authors.find((author) => author.username.toLowerCase() === this.currentValue);
     },
   },
   watch: {
@@ -63,7 +63,7 @@ export default {
         : this.config.fetchAuthors(searchTerm);
 
       fetchPromise
-        .then(res => {
+        .then((res) => {
           // We'd want to avoid doing this check but
           // users.json and /groups/:id/members & /projects/:id/users
           // return response differently.

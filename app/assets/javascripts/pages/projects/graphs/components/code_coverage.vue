@@ -74,7 +74,7 @@ export default {
       );
     },
     formattedData() {
-      return this.sortedData.map(value => [dateFormat(value.date, 'mmm dd'), value.coverage]);
+      return this.sortedData.map((value) => [dateFormat(value.date, 'mmm dd'), value.coverage]);
     },
     chartData() {
       return [
