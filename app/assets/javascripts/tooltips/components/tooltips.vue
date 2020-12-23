@@ -50,7 +50,8 @@ export default {
     addTooltips(elements, config) {
       const newTooltips = elements
         .filter(element => !this.tooltipExists(element))
-        .map(element => newTooltip(element, config));
+        .map(element => newTooltip(element, config))
+        .filter(tooltip => tooltip.title);
 
       newTooltips.forEach(tooltip => this.observe(tooltip));
 
@@ -93,6 +94,9 @@ export default {
       return this.tooltips.find(tooltip => tooltip.target === element);
     },
   },
+  safeHtmlConfig: {
+    ADD_TAGS: ['gl-emoji'],
+  },
 };
 </script>
 <template>
@@ -110,7 +114,7 @@ export default {
       :disabled="tooltip.disabled"
       :show="tooltip.show"
     >
-      <span v-if="tooltip.html" v-safe-html="tooltip.title"></span>
+      <span v-if="tooltip.html" v-safe-html:[$options.safeHtmlConfig]="tooltip.title"></span>
       <span v-else>{{ tooltip.title }}</span>
     </gl-tooltip>
   </div>

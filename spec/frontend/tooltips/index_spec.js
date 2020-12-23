@@ -42,7 +42,7 @@ describe('tooltips/index.js', () => {
   };
 
   beforeEach(() => {
-    window.gon.glTooltipsEnabled = true;
+    window.gon.features = { glTooltips: true };
   });
 
   afterEach(() => {
@@ -149,7 +149,7 @@ describe('tooltips/index.js', () => {
 
   describe('when glTooltipsEnabled feature flag is disabled', () => {
     beforeEach(() => {
-      window.gon.glTooltipsEnabled = false;
+      window.gon.features.glTooltips = false;
     });
 
     it.each`

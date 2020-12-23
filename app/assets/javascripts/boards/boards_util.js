@@ -1,5 +1,4 @@
 import { sortBy } from 'lodash';
-import axios from '~/lib/utils/axios_utils';
 import { ListType } from './constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
@@ -121,15 +120,6 @@ export function moveIssueListHelper(issue, fromList, toList) {
   return updatedIssue;
 }
 
-export function getBoardsPath(endpoint, board) {
-  const path = `${endpoint}${board.id ? `/${board.id}` : ''}.json`;
-
-  if (board.id) {
-    return axios.put(path, { board });
-  }
-  return axios.post(path, { board });
-}
-
 export function isListDraggable(list) {
   return list.listType !== ListType.backlog && list.listType !== ListType.closed;
 }
@@ -146,6 +136,5 @@ export default {
   fullBoardId,
   fullLabelId,
   fullIterationId,
-  getBoardsPath,
   isListDraggable,
 };

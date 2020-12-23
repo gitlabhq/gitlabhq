@@ -1,4 +1,5 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { GlLoadingIcon, GlTab } from '@gitlab/ui';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -8,8 +9,7 @@ import JobsList from '~/ide/components/jobs/list.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import IDEServices from '~/ide/services';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 jest.mock('~/ide/services', () => ({
   pingUsage: jest.fn(),
@@ -59,9 +59,6 @@ describe('IDE pipelines list', () => {
             failedStages: failedStagesGetterMock,
             pipelineFailed: () => false,
           },
-          methods: {
-            fetchLatestPipeline: jest.fn(),
-          },
         },
       },
     });
@@ -69,7 +66,6 @@ describe('IDE pipelines list', () => {
 
   const createComponent = (state = {}, pipelinesState = {}) => {
     wrapper = shallowMount(List, {
-      localVue,
       store: createStore(state, pipelinesState),
     });
   };

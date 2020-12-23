@@ -4478,7 +4478,7 @@ msgstr ""
 msgid "BillingPlan|Upgrade"
 msgstr ""
 
-msgid "Billing|An email address is only visible for users managed through Group Managed Accounts."
+msgid "Billing|An email address is only visible for users with public emails."
 msgstr ""
 
 msgid "Billing|An error occurred while loading billable members list"
@@ -8180,6 +8180,84 @@ msgstr ""
 msgid "CreateTokenToCloneLink|create a personal access token"
 msgstr ""
 
+msgid "CreateValueStreamForm|%{name} (default)"
+msgstr ""
+
+msgid "CreateValueStreamForm|Add stage"
+msgstr ""
+
+msgid "CreateValueStreamForm|All default stages are currently visible"
+msgstr ""
+
+msgid "CreateValueStreamForm|Default stages"
+msgstr ""
+
+msgid "CreateValueStreamForm|Editing stage"
+msgstr ""
+
+msgid "CreateValueStreamForm|End event"
+msgstr ""
+
+msgid "CreateValueStreamForm|End event label"
+msgstr ""
+
+msgid "CreateValueStreamForm|End event: "
+msgstr ""
+
+msgid "CreateValueStreamForm|Enter a name for the stage"
+msgstr ""
+
+msgid "CreateValueStreamForm|Enter stage name"
+msgstr ""
+
+msgid "CreateValueStreamForm|Maximum length %{maxLength} characters"
+msgstr ""
+
+msgid "CreateValueStreamForm|Name"
+msgstr ""
+
+msgid "CreateValueStreamForm|Name is required"
+msgstr ""
+
+msgid "CreateValueStreamForm|New stage"
+msgstr ""
+
+msgid "CreateValueStreamForm|Please select a start event first"
+msgstr ""
+
+msgid "CreateValueStreamForm|Recover hidden stage"
+msgstr ""
+
+msgid "CreateValueStreamForm|Restore stage"
+msgstr ""
+
+msgid "CreateValueStreamForm|Select end event"
+msgstr ""
+
+msgid "CreateValueStreamForm|Select start event"
+msgstr ""
+
+msgid "CreateValueStreamForm|Stage %{index}"
+msgstr ""
+
+msgid "CreateValueStreamForm|Stage name already exists"
+msgstr ""
+
+msgid "CreateValueStreamForm|Start event"
+msgstr ""
+
+msgid "CreateValueStreamForm|Start event changed, please select a valid end event"
+msgstr ""
+
+msgid "CreateValueStreamForm|Start event label"
+msgstr ""
+
+msgid "CreateValueStreamForm|Start event: "
+msgstr ""
+
+msgid "CreateValueStreamForm|Update stage"
+msgstr ""
+
 msgid "Created"
 msgstr ""
 
@@ -8357,55 +8435,19 @@ msgstr ""
 msgid "CustomCycleAnalytics|Add stage"
 msgstr ""
 
-msgid "CustomCycleAnalytics|All default stages are currently visible"
-msgstr ""
-
-msgid "CustomCycleAnalytics|Default stages"
-msgstr ""
-
 msgid "CustomCycleAnalytics|Editing stage"
-msgstr ""
-
-msgid "CustomCycleAnalytics|End event"
 msgstr ""
 
 msgid "CustomCycleAnalytics|End event label"
 msgstr ""
 
-msgid "CustomCycleAnalytics|Enter a name for the stage"
-msgstr ""
-
-msgid "CustomCycleAnalytics|Name"
-msgstr ""
-
 msgid "CustomCycleAnalytics|New stage"
-msgstr ""
-
-msgid "CustomCycleAnalytics|Please select a start event first"
-msgstr ""
-
-msgid "CustomCycleAnalytics|Recover hidden stage"
-msgstr ""
-
-msgid "CustomCycleAnalytics|Select end event"
-msgstr ""
-
-msgid "CustomCycleAnalytics|Select start event"
 msgstr ""
 
 msgid "CustomCycleAnalytics|Stage name already exists"
 msgstr ""
 
-msgid "CustomCycleAnalytics|Start event"
-msgstr ""
-
-msgid "CustomCycleAnalytics|Start event changed, please select a valid end event"
-msgstr ""
-
 msgid "CustomCycleAnalytics|Start event label"
-msgstr ""
-
-msgid "CustomCycleAnalytics|Update stage"
 msgstr ""
 
 msgid "Customer Portal"
@@ -10282,6 +10324,9 @@ msgid "Edit iteration"
 msgstr ""
 
 msgid "Edit public deploy key"
+msgstr ""
+
+msgid "Edit sidebar"
 msgstr ""
 
 msgid "Edit stage"

@@ -68,7 +68,7 @@ const invokeBootstrapApi = (elements, method) => {
   }
 };
 
-const isGlTooltipsEnabled = () => Boolean(window.gon.glTooltipsEnabled);
+const isGlTooltipsEnabled = () => Boolean(window.gon.features?.glTooltips);
 
 const tooltipApiInvoker = ({ glHandler, bsHandler }) => (elements, ...params) => {
   if (isGlTooltipsEnabled()) {

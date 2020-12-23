@@ -1,0 +1,7 @@
+mutation createBoard($input: CreateBoardInput!) {
+  createBoard(input: $input) {
+    board {
+      id
+    }
+  }
+}

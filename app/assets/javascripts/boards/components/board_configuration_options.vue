@@ -6,36 +6,13 @@ export default {
     GlFormCheckbox,
   },
   props: {
-    currentBoard: {
-      type: Object,
-      required: true,
-    },
-    board: {
-      type: Object,
-      required: true,
-    },
-    isNewForm: {
+    hideBacklogList: {
       type: Boolean,
-      required: false,
-      default: false,
+      required: true,
     },
-  },
-  data() {
-    const { hide_backlog_list: hideBacklogList, hide_closed_list: hideClosedList } = this.isNewForm
-      ? this.board
-      : this.currentBoard;
-
-    return {
-      hideClosedList,
-      hideBacklogList,
-    };
-  },
-  methods: {
-    changeClosedList(checked) {
-      this.board.hideClosedList = !checked;
-    },
-    changeBacklogList(checked) {
-      this.board.hideBacklogList = !checked;
+    hideClosedList: {
+      type: Boolean,
+      required: true,
     },
   },
 };
@@ -52,13 +29,13 @@ export default {
     <gl-form-checkbox
       :checked="!hideBacklogList"
       data-testid="backlog-list-checkbox"
-      @change="changeBacklogList"
+      @change="$emit('update:hideBacklogList', !hideBacklogList)"
       >{{ __('Show the Open list') }}
     </gl-form-checkbox>
     <gl-form-checkbox
       :checked="!hideClosedList"
       data-testid="closed-list-checkbox"
-      @change="changeClosedList"
+      @change="$emit('update:hideClosedList', !hideClosedList)"
       >{{ __('Show the Closed list') }}
     </gl-form-checkbox>
   </div>

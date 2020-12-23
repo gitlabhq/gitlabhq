@@ -17,7 +17,13 @@ RSpec.describe 'Getting starredProjects of the user' do
   let_it_be(:user, reload: true) { create(:user) }
 
   let(:user_fields) { 'starredProjects { nodes { id } }' }
-  let(:starred_projects) { graphql_data_at(:user, :starred_projects, :nodes) }
+  let(:current_user) { nil }
+
+  let(:starred_projects) do
+    post_graphql(query, current_user: current_user)
+
+    graphql_data_at(:user, :starred_projects, :nodes)
+  end
 
   before do
     project_b.add_reporter(user)
@@ -26,11 +32,13 @@ RSpec.describe 'Getting starredProjects of the user' do
     user.toggle_star(project_a)
     user.toggle_star(project_b)
     user.toggle_star(project_c)
-
-    post_graphql(query)
   end
 
-  it_behaves_like 'a working graphql query'
+  it_behaves_like 'a working graphql query' do
+    before do
+      post_graphql(query)
+    end
+  end
 
   it 'found only public project' do
     expect(starred_projects).to contain_exactly(
@@ -40,10 +48,6 @@ RSpec.describe 'Getting starredProjects of the user' do
 
   context 'the current user is the user' do
     let(:current_user) { user }
-
-    before do
-      post_graphql(query, current_user: current_user)
-    end
 
     it 'found all projects' do
       expect(starred_projects).to contain_exactly(
@@ -56,11 +60,10 @@ RSpec.describe 'Getting starredProjects of the user' do
 
   context 'the current user is a member of a private project the user starred' do
     let_it_be(:other_user) { create(:user) }
+    let(:current_user) { other_user }
 
     before do
       project_b.add_reporter(other_user)
-
-      post_graphql(query, current_user: other_user)
     end
 
     it 'finds public and member projects' do
@@ -74,7 +77,6 @@ RSpec.describe 'Getting starredProjects of the user' do
   context 'the user has a private profile' do
     before do
       user.update!(private_profile: true)
-      post_graphql(query, current_user: current_user)
     end
 
     context 'the current user does not have access to view the private profile of the user' do

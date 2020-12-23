@@ -1,13 +1,23 @@
+- editing ||= false
+
 %aside.right-sidebar.right-sidebar-expanded.wiki-sidebar.js-wiki-sidebar.js-right-sidebar{ data: { "offset-top" => "50", "spy" => "affix" } }
   .sidebar-container
     .block.wiki-sidebar-header.gl-mb-3.w-100
       %a.gutter-toggle.float-right.d-block.d-md-none.js-sidebar-wiki-toggle{ href: "#" }
         = sprite_icon('chevron-double-lg-right', css_class: 'gl-icon')
 
-      - git_access_url = wiki_path(@wiki, action: :git_access)
-      = link_to git_access_url, class: active_nav_link?(path: 'wikis#git_access') ? 'active' : '', data: { qa_selector: 'clone_repository_link' } do
-        = sprite_icon('download', css_class: 'gl-mr-2')
-        %span= _("Clone repository")
+      .gl-display-flex.gl-flex-wrap
+        - git_access_url = wiki_path(@wiki, action: :git_access)
+        = link_to git_access_url, class: 'gl-mr-5' + (active_nav_link?(path: 'wikis#git_access') ? ' active' : ''), data: { qa_selector: 'clone_repository_link' } do
+          = sprite_icon('download', css_class: 'gl-mr-2')
+          %span= _("Clone repository")
+
+        - if can?(current_user, :create_wiki, @wiki)
+          - edit_sidebar_url = wiki_page_path(@wiki, Wiki::SIDEBAR, action: :edit)
+          - link_class = (editing && @page&.slug == Wiki::SIDEBAR) ? 'active' : ''
+          = link_to edit_sidebar_url, class: link_class, data: { qa_selector: 'edit_sidebar_link' } do
+            = sprite_icon('pencil-square', css_class: 'gl-mr-2')
+            %span= _("Edit sidebar")
 
     - if @sidebar_error.present?
       = render 'shared/alert_info', body: s_('Wiki|The sidebar failed to load. You can reload the page to try again.')

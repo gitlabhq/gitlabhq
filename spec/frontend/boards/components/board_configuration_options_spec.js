@@ -3,38 +3,30 @@ import BoardConfigurationOptions from '~/boards/components/board_configuration_o
 
 describe('BoardConfigurationOptions', () => {
   let wrapper;
-  const board = { hide_backlog_list: false, hide_closed_list: false };
 
   const defaultProps = {
-    currentBoard: board,
-    board,
-    isNewForm: false,
+    hideBacklogList: false,
+    hideClosedList: false,
   };
 
-  const createComponent = () => {
+  const createComponent = (props = {}) => {
     wrapper = shallowMount(BoardConfigurationOptions, {
-      propsData: { ...defaultProps },
+      propsData: { ...defaultProps, ...props },
     });
   };
-
-  beforeEach(() => {
-    createComponent();
-  });
 
   afterEach(() => {
     wrapper.destroy();
   });
 
-  const backlogListCheckbox = el => el.find('[data-testid="backlog-list-checkbox"]');
-  const closedListCheckbox = el => el.find('[data-testid="closed-list-checkbox"]');
+  const backlogListCheckbox = () => wrapper.find('[data-testid="backlog-list-checkbox"]');
+  const closedListCheckbox = () => wrapper.find('[data-testid="closed-list-checkbox"]');
 
   const checkboxAssert = (backlogCheckbox, closedCheckbox) => {
-    expect(backlogListCheckbox(wrapper).attributes('checked')).toEqual(
+    expect(backlogListCheckbox().attributes('checked')).toEqual(
       backlogCheckbox ? undefined : 'true',
     );
-    expect(closedListCheckbox(wrapper).attributes('checked')).toEqual(
-      closedCheckbox ? undefined : 'true',
-    );
+    expect(closedListCheckbox().attributes('checked')).toEqual(closedCheckbox ? undefined : 'true');
   };
 
   it.each`
@@ -45,15 +37,28 @@ describe('BoardConfigurationOptions', () => {
     ${false}             | ${false}
   `(
     'renders two checkbox when one is $backlogCheckboxValue and other is $closedCheckboxValue',
-    async ({ backlogCheckboxValue, closedCheckboxValue }) => {
-      await wrapper.setData({
+    ({ backlogCheckboxValue, closedCheckboxValue }) => {
+      createComponent({
         hideBacklogList: backlogCheckboxValue,
         hideClosedList: closedCheckboxValue,
       });
-
-      return wrapper.vm.$nextTick().then(() => {
-        checkboxAssert(backlogCheckboxValue, closedCheckboxValue);
-      });
+      checkboxAssert(backlogCheckboxValue, closedCheckboxValue);
     },
   );
+
+  it('emits a correct value on backlog checkbox change', () => {
+    createComponent();
+
+    backlogListCheckbox().vm.$emit('change');
+
+    expect(wrapper.emitted('update:hideBacklogList')).toEqual([[true]]);
+  });
+
+  it('emits a correct value on closed checkbox change', () => {
+    createComponent();
+
+    closedListCheckbox().vm.$emit('change');
+
+    expect(wrapper.emitted('update:hideClosedList')).toEqual([[true]]);
+  });
 });

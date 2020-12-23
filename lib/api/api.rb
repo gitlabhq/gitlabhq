@@ -251,6 +251,7 @@ module API
       mount ::API::Services
       mount ::API::Settings
       mount ::API::SidekiqMetrics
+      mount ::API::SnippetRepositoryStorageMoves
       mount ::API::Snippets
       mount ::API::Statistics
       mount ::API::Submodules

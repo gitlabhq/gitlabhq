@@ -1,0 +1,8 @@
+---
+name: gl_tooltips
+introduced_by_url: 
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/292972
+milestone: '13.8'
+type: development
+group: group::editor
+default_enabled: false

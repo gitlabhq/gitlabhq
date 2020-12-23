@@ -335,7 +335,6 @@ export default () => {
   }
 
   mountMultipleBoardsSwitcher({
-    boardsEndpoint: $boardApp.dataset.boardsEndpoint,
-    recentBoardsEndpoint: $boardApp.dataset.recentBoardsEndpoint,
+    fullPath: $boardApp.dataset.fullPath,
   });
 };
