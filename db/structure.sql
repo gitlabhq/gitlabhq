@@ -12949,6 +12949,13 @@ CREATE SEQUENCE group_import_states_group_id_seq
 
 ALTER SEQUENCE group_import_states_group_id_seq OWNED BY group_import_states.group_id;
 
+CREATE TABLE group_merge_request_approval_settings (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    group_id bigint NOT NULL,
+    allow_author_approval boolean DEFAULT false NOT NULL
+);
+
 CREATE TABLE group_wiki_repositories (
     shard_id bigint NOT NULL,
     group_id bigint NOT NULL,
@@ -19680,6 +19687,9 @@ ALTER TABLE ONLY group_group_links
 ALTER TABLE ONLY group_import_states
     ADD CONSTRAINT group_import_states_pkey PRIMARY KEY (group_id);
 
+ALTER TABLE ONLY group_merge_request_approval_settings
+    ADD CONSTRAINT group_merge_request_approval_settings_pkey PRIMARY KEY (group_id);
+
 ALTER TABLE ONLY group_wiki_repositories
     ADD CONSTRAINT group_wiki_repositories_pkey PRIMARY KEY (group_id);
 
@@ -24344,6 +24354,9 @@ ALTER TABLE ONLY merge_request_blocks
 
 ALTER TABLE ONLY merge_request_reviewers
     ADD CONSTRAINT fk_rails_3704a66140 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY group_merge_request_approval_settings
+    ADD CONSTRAINT fk_rails_37b6b4cdba FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY analytics_cycle_analytics_project_stages
     ADD CONSTRAINT fk_rails_3829e49b66 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

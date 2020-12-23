@@ -17341,6 +17341,9 @@ msgstr ""
 msgid "Merge request %{mr_link} was reviewed by %{mr_author}"
 msgstr ""
 
+msgid "Merge request (MR) approvals"
+msgstr ""
+
 msgid "Merge request approvals"
 msgstr ""
 
@@ -17354,9 +17357,6 @@ msgid "Merge request was scheduled to merge after pipeline succeeds"
 msgstr ""
 
 msgid "Merge requests"
-msgstr ""
-
-msgid "Merge requests approvals"
 msgstr ""
 
 msgid "Merge requests are a place to propose changes you've made to a project and discuss those changes with others"
@@ -21019,6 +21019,9 @@ msgstr ""
 msgid "Prev"
 msgstr ""
 
+msgid "Prevent MR approvals by author."
+msgstr ""
+
 msgid "Prevent MR approvals by the author."
 msgstr ""
 
@@ -21026,12 +21029,6 @@ msgid "Prevent MR approvals from users who make commits to the MR."
 msgstr ""
 
 msgid "Prevent adding new members to project membership within this group"
-msgstr ""
-
-msgid "Prevent approval of merge requests by merge request author"
-msgstr ""
-
-msgid "Prevent approval of merge requests by merge request committers"
 msgstr ""
 
 msgid "Prevent environment from auto-stopping"
@@ -21043,7 +21040,7 @@ msgstr ""
 msgid "Prevent users from changing their profile name"
 msgstr ""
 
-msgid "Prevent users from modifying merge request approvers list"
+msgid "Prevent users from modifying MR approval rules."
 msgstr ""
 
 msgid "Prevent users from performing write operations on GitLab while performing maintenance."
@@ -23023,6 +23020,9 @@ msgid "Registration|Your profile"
 msgstr ""
 
 msgid "Registry setup"
+msgstr ""
+
+msgid "Regulate approvals by authors/committers. Affects all projects."
 msgstr ""
 
 msgid "Reindexing status"
@@ -25463,9 +25463,6 @@ msgid "Settings"
 msgstr ""
 
 msgid "Settings related to the use and experience of using GitLab's Package Registry."
-msgstr ""
-
-msgid "Settings to prevent self-approval across all projects in the instance. Only an administrator can modify these settings."
 msgstr ""
 
 msgid "Setup"

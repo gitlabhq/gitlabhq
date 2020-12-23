@@ -9,9 +9,13 @@ RSpec.describe Pages::MigrateLegacyStorageToDeploymentService do
   it 'marks pages as not deployed if public directory is absent' do
     project.mark_pages_as_deployed
 
+    expect(project.pages_metadatum.reload.deployed).to eq(true)
+
     expect do
       service.execute
-    end.to change { project.pages_metadatum.reload.deployed }.from(true).to(false)
+    end.to raise_error(described_class::FailedToCreateArchiveError)
+
+    expect(project.pages_metadatum.reload.deployed).to eq(false)
   end
 
   it 'does not mark pages as not deployed if public directory is absent but pages_deployment exists' do
@@ -19,9 +23,13 @@ RSpec.describe Pages::MigrateLegacyStorageToDeploymentService do
     project.update_pages_deployment!(deployment)
     project.mark_pages_as_deployed
 
+    expect(project.pages_metadatum.reload.deployed).to eq(true)
+
     expect do
       service.execute
-    end.not_to change { project.pages_metadatum.reload.deployed }.from(true)
+    end.to raise_error(described_class::FailedToCreateArchiveError)
+
+    expect(project.pages_metadatum.reload.deployed).to eq(true)
   end
 
   it 'does not mark pages as not deployed if public directory is absent but feature is disabled' do
@@ -29,9 +37,13 @@ RSpec.describe Pages::MigrateLegacyStorageToDeploymentService do
 
     project.mark_pages_as_deployed
 
+    expect(project.pages_metadatum.reload.deployed).to eq(true)
+
     expect do
       service.execute
-    end.not_to change { project.pages_metadatum.reload.deployed }.from(true)
+    end.to raise_error(described_class::FailedToCreateArchiveError)
+
+    expect(project.pages_metadatum.reload.deployed).to eq(true)
   end
 
   it 'removes pages archive when can not save deployment' do
@@ -94,7 +106,7 @@ RSpec.describe Pages::MigrateLegacyStorageToDeploymentService do
       described_class.new(project).try_obtain_lease do
         expect do
           described_class.new(project).execute
-        end.to raise_error(described_class::ExclusiveLeaseTaken)
+        end.to raise_error(described_class::ExclusiveLeaseTakenError)
       end
     end
   end

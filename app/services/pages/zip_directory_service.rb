@@ -4,8 +4,9 @@ module Pages
   class ZipDirectoryService
     include Gitlab::Utils::StrongMemoize
 
-    InvalidArchiveError = Class.new(RuntimeError)
-    InvalidEntryError = Class.new(RuntimeError)
+    Error = Class.new(::StandardError)
+    InvalidArchiveError = Class.new(Error)
+    InvalidEntryError = Class.new(Error)
 
     PUBLIC_DIR = 'public'
 
@@ -14,7 +15,7 @@ module Pages
     end
 
     def execute
-      raise InvalidArchiveError unless valid_work_directory?
+      raise InvalidArchiveError, "Invalid work directory: #{@input_dir}" unless valid_work_directory?
 
       output_file = File.join(real_dir, "@migrated.zip") # '@' to avoid any name collision with groups or projects
 
@@ -39,7 +40,7 @@ module Pages
 
       unless valid_path?(disk_file_path)
         # archive without public directory is completelly unusable
-        raise InvalidArchiveError if zipfile_path == PUBLIC_DIR
+        raise InvalidArchiveError, "Invalid public directory: #{disk_file_path}" if zipfile_path == PUBLIC_DIR
 
         # archive with invalid entry will just have this entry missing
         raise InvalidEntryError

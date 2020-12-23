@@ -1,6 +1,8 @@
 import { CI_CONFIG_STATUS_VALID } from '~/pipeline_editor/constants';
 
-export const mockProjectPath = 'user1/project1';
+export const mockNamespace = 'user1';
+export const mockProjectName = 'project1';
+export const mockProjectPath = `${mockNamespace}/${mockProjectName}`;
 export const mockDefaultBranch = 'master';
 export const mockNewMergeRequestPath = '/-/merge_requests/new';
 export const mockCommitSha = 'aabbccdd';

@@ -2,7 +2,8 @@
 
 module Pages
   class MigrateLegacyStorageToDeploymentService
-    ExclusiveLeaseTaken = Class.new(StandardError)
+    ExclusiveLeaseTakenError = Class.new(StandardError)
+    FailedToCreateArchiveError = Class.new(StandardError)
 
     include ::Pages::LegacyStorageLease
 
@@ -19,7 +20,7 @@ module Pages
         true
       end
 
-      raise ExclusiveLeaseTaken, "Can't migrate pages for project #{project.id}: exclusive lease taken" unless migrated
+      raise ExclusiveLeaseTakenError, "Can't migrate pages for project #{project.id}: exclusive lease taken" unless migrated
     end
 
     private
@@ -38,13 +39,12 @@ module Pages
 
       project.set_first_pages_deployment!(deployment)
     rescue ::Pages::ZipDirectoryService::InvalidArchiveError => e
-      Gitlab::ErrorTracking.track_exception(e, project_id: project.id)
-
       if !project.pages_metadatum&.reload&.pages_deployment &&
          Feature.enabled?(:pages_migration_mark_as_not_deployed, project)
         project.mark_pages_as_not_deployed
       end
 
+      raise FailedToCreateArchiveError, e
     ensure
       FileUtils.rm_f(archive_path) if archive_path
     end

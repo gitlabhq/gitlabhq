@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { delay } from 'lodash';
 import axios from '../lib/utils/axios_utils';
 import { __, s__ } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
@@ -43,7 +44,9 @@ export default class IntegrationSettingsForm {
     const formValid = this.$form.get(0).checkValidity() || this.formActive === false;
 
     if (formValid) {
-      this.$form.submit();
+      delay(() => {
+        this.$form.trigger('submit');
+      }, 100);
     } else {
       eventHub.$emit('validateForm');
       this.vue.$store.dispatch('setIsSaving', false);

@@ -1,8 +1,0 @@
----
-name: show_inherited_labels
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42960
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/267547
-milestone: '13.5'
-type: development
-group: group::project management
-default_enabled: true
