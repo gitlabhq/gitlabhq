@@ -2,6 +2,7 @@
 require 'spec_helper'
 
 RSpec.describe 'container repository details' do
+  include_context 'container registry tags'
   using RSpec::Parameterized::TableSyntax
   include GraphqlHelpers
 
@@ -103,6 +104,22 @@ RSpec.describe 'container repository details' do
       subject
 
       expect(tags_response.size).to eq(limit)
+    end
+  end
+
+  context 'with tags without a manifest' do
+    let(:tags_response) { container_repository_details_response.dig('tags', 'nodes') }
+    let(:errors) { container_repository_details_response.dig('errors') }
+
+    %i[digest revision short_revision total_size created_at].each do |nilable_field|
+      it "returns a list of tags with a nil #{nilable_field}" do
+        stub_next_container_registry_tags_call(nilable_field, nil)
+
+        subject
+
+        expect(tags_response.size).to eq(tags.size)
+        expect(graphql_errors).to eq(nil)
+      end
     end
   end
 end

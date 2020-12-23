@@ -302,6 +302,8 @@ RSpec.describe API::Todos do
     end
 
     it 'returns 304 there already exist a todo on that issuable' do
+      stub_feature_flags(multiple_todos: false)
+
       create(:todo, project: project_1, author: author_1, user: john_doe, target: issuable)
 
       post api("/projects/#{project_1.id}/#{issuable_type}/#{issuable.iid}/todo", john_doe)

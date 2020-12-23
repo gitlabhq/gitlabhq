@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Container Registry', :js do
+  include_context 'container registry tags'
+
   let(:user) { create(:user) }
   let(:project) { create(:project) }
 
@@ -97,6 +99,20 @@ RSpec.describe 'Container Registry', :js do
         visit_next_page
 
         expect(page).to have_content '20'
+      end
+    end
+
+    describe 'with a tag missing digest' do
+      before do
+        stub_container_registry_tags(repository: %r{my/image}, tags: %w[latest stable])
+        stub_next_container_registry_tags_call(:digest, nil)
+        visit_container_registry_details 'my/image'
+      end
+
+      it 'renders the tags list correctly' do
+        expect(page).to have_content('latest')
+        expect(page).to have_content('stable')
+        expect(page).to have_content('Digest: N/A')
       end
     end
   end

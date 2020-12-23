@@ -1,0 +1,5 @@
+---
+title: Fix viewing container repositories with tags with corrupted manifest
+merge_request: 50362
+author:
+type: fixed

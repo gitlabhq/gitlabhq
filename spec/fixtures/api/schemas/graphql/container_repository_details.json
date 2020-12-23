@@ -11,7 +11,7 @@
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["name", "path", "location", "digest", "revision", "shortRevision", "totalSize", "createdAt", "canDelete"],
+            "required": ["name", "path", "location", "canDelete"],
             "properties": {
               "name": {
                 "type": "string"

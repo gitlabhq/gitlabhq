@@ -216,7 +216,7 @@ class TodoService
 
   def create_todos(users, attributes)
     Array(users).map do |user|
-      next if pending_todos(user, attributes).exists?
+      next if pending_todos(user, attributes).exists? && Feature.disabled?(:multiple_todos, user)
 
       issue_type = attributes.delete(:issue_type)
       track_todo_creation(user, issue_type)
@@ -278,7 +278,7 @@ class TodoService
     create_todos(directly_addressed_users, attributes)
 
     # Create Todos for mentioned users
-    mentioned_users = filter_mentioned_users(parent, note || target, author, skip_users)
+    mentioned_users = filter_mentioned_users(parent, note || target, author, skip_users + directly_addressed_users)
     attributes = attributes_for_todo(parent, target, author, Todo::MENTIONED, note)
     create_todos(mentioned_users, attributes)
   end

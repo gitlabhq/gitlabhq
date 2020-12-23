@@ -100,17 +100,18 @@ RSpec.describe TodoService do
   end
 
   describe 'Issues' do
-    let(:issue) { create(:issue, project: project, assignees: [john_doe], author: author, description: "- [ ] Task 1\n- [ ] Task 2 #{mentions}") }
-    let(:addressed_issue) { create(:issue, project: project, assignees: [john_doe], author: author, description: "#{directly_addressed}\n- [ ] Task 1\n- [ ] Task 2") }
+    let(:issue) { create(:issue, project: project, author: author, description: "- [ ] Task 1\n- [ ] Task 2 #{mentions}") }
+    let(:addressed_issue) { create(:issue, project: project, author: author, description: "#{directly_addressed}\n- [ ] Task 1\n- [ ] Task 2") }
+    let(:assigned_issue) { create(:issue, project: project, assignees: [john_doe]) }
     let(:unassigned_issue) { create(:issue, project: project, assignees: []) }
     let(:confidential_issue) { create(:issue, :confidential, project: project, author: author, assignees: [assignee], description: mentions) }
     let(:addressed_confident_issue) { create(:issue, :confidential, project: project, author: author, assignees: [assignee], description: directly_addressed) }
 
     describe '#new_issue' do
       it 'creates a todo if assigned' do
-        service.new_issue(issue, author)
+        service.new_issue(assigned_issue, author)
 
-        should_create_todo(user: john_doe, target: issue, action: Todo::ASSIGNED)
+        should_create_todo(user: john_doe, target: assigned_issue, action: Todo::ASSIGNED)
       end
 
       it 'does not create a todo if unassigned' do
@@ -130,7 +131,7 @@ RSpec.describe TodoService do
         should_create_todo(user: member, target: issue, action: Todo::MENTIONED)
         should_create_todo(user: guest, target: issue, action: Todo::MENTIONED)
         should_create_todo(user: author, target: issue, action: Todo::MENTIONED)
-        should_not_create_todo(user: john_doe, target: issue, action: Todo::MENTIONED)
+        should_create_todo(user: john_doe, target: issue, action: Todo::MENTIONED)
         should_not_create_todo(user: non_member, target: issue, action: Todo::MENTIONED)
       end
 
@@ -140,7 +141,7 @@ RSpec.describe TodoService do
         should_create_todo(user: member, target: addressed_issue, action: Todo::DIRECTLY_ADDRESSED)
         should_create_todo(user: guest, target: addressed_issue, action: Todo::DIRECTLY_ADDRESSED)
         should_create_todo(user: author, target: addressed_issue, action: Todo::DIRECTLY_ADDRESSED)
-        should_not_create_todo(user: john_doe, target: addressed_issue, action: Todo::DIRECTLY_ADDRESSED)
+        should_create_todo(user: john_doe, target: addressed_issue, action: Todo::DIRECTLY_ADDRESSED)
         should_not_create_todo(user: non_member, target: addressed_issue, action: Todo::DIRECTLY_ADDRESSED)
       end
 
@@ -244,6 +245,8 @@ RSpec.describe TodoService do
       end
 
       it 'does not create a todo if user was already mentioned and todo is pending' do
+        stub_feature_flags(multiple_todos: false)
+
         create(:todo, :mentioned, user: member, project: project, target: issue, author: author)
 
         expect { service.update_issue(issue, author, skip_users) }.not_to change(member.todos, :count)
@@ -256,6 +259,8 @@ RSpec.describe TodoService do
       end
 
       it 'does not create a directly addressed todo if user was already mentioned or addressed and todo is pending' do
+        stub_feature_flags(multiple_todos: false)
+
         create(:todo, :directly_addressed, user: member, project: project, target: addressed_issue, author: author)
 
         expect { service.update_issue(addressed_issue, author, skip_users) }.not_to change(member.todos, :count)
@@ -622,6 +627,26 @@ RSpec.describe TodoService do
         expect(service.todo_exist?(unassigned_issue, author)).to be_truthy
       end
     end
+
+    context 'when multiple_todos are enabled' do
+      before do
+        stub_feature_flags(multiple_todos: true)
+      end
+
+      it 'creates a todo even if user already has a pending todo' do
+        create(:todo, :mentioned, user: member, project: project, target: issue, author: author)
+
+        expect { service.update_issue(issue, author) }.to change(member.todos, :count)
+      end
+
+      it 'creates multiple todos if a user is assigned and mentioned in a new issue' do
+        assigned_issue.description = mentions
+        service.new_issue(assigned_issue, author)
+
+        should_create_todo(user: john_doe, target: assigned_issue, action: Todo::ASSIGNED)
+        should_create_todo(user: john_doe, target: assigned_issue, action: Todo::MENTIONED)
+      end
+    end
   end
 
   describe '#reassigned_assignable' do
@@ -664,154 +689,161 @@ RSpec.describe TodoService do
   end
 
   describe 'Merge Requests' do
-    let(:mr_assigned) { create(:merge_request, source_project: project, author: author, assignees: [john_doe], description: "- [ ] Task 1\n- [ ] Task 2 #{mentions}") }
-    let(:addressed_mr_assigned) { create(:merge_request, source_project: project, author: author, assignees: [john_doe], description: "#{directly_addressed}\n- [ ] Task 1\n- [ ] Task 2") }
-    let(:mr_unassigned) { create(:merge_request, source_project: project, author: author, assignees: []) }
+    let(:mentioned_mr) { create(:merge_request, source_project: project, author: author, description: "- [ ] Task 1\n- [ ] Task 2 #{mentions}") }
+    let(:addressed_mr) { create(:merge_request, source_project: project, author: author, description: "#{directly_addressed}\n- [ ] Task 1\n- [ ] Task 2") }
+    let(:assigned_mr) { create(:merge_request, source_project: project, author: author, assignees: [john_doe]) }
+    let(:unassigned_mr) { create(:merge_request, source_project: project, author: author, assignees: []) }
 
     describe '#new_merge_request' do
       it 'creates a pending todo if assigned' do
-        service.new_merge_request(mr_assigned, author)
+        service.new_merge_request(assigned_mr, author)
 
-        should_create_todo(user: john_doe, target: mr_assigned, action: Todo::ASSIGNED)
+        should_create_todo(user: john_doe, target: assigned_mr, action: Todo::ASSIGNED)
       end
 
       it 'does not create a todo if unassigned' do
-        should_not_create_any_todo { service.new_merge_request(mr_unassigned, author) }
+        should_not_create_any_todo { service.new_merge_request(unassigned_mr, author) }
       end
 
-      it 'does not create a todo if assignee is the current user' do
-        should_not_create_any_todo { service.new_merge_request(mr_unassigned, john_doe) }
+      it 'creates a todo if assignee is the current user' do
+        service.new_merge_request(assigned_mr, john_doe)
+
+        should_create_todo(user: john_doe, target: assigned_mr, author: john_doe, action: Todo::ASSIGNED)
       end
 
       it 'creates a todo for each valid mentioned user' do
-        service.new_merge_request(mr_assigned, author)
+        service.new_merge_request(mentioned_mr, author)
 
-        should_create_todo(user: member, target: mr_assigned, action: Todo::MENTIONED)
-        should_not_create_todo(user: guest, target: mr_assigned, action: Todo::MENTIONED)
-        should_create_todo(user: author, target: mr_assigned, action: Todo::MENTIONED)
-        should_not_create_todo(user: john_doe, target: mr_assigned, action: Todo::MENTIONED)
-        should_not_create_todo(user: non_member, target: mr_assigned, action: Todo::MENTIONED)
+        should_create_todo(user: member, target: mentioned_mr, action: Todo::MENTIONED)
+        should_not_create_todo(user: guest, target: mentioned_mr, action: Todo::MENTIONED)
+        should_create_todo(user: author, target: mentioned_mr, action: Todo::MENTIONED)
+        should_create_todo(user: john_doe, target: mentioned_mr, action: Todo::MENTIONED)
+        should_not_create_todo(user: non_member, target: mentioned_mr, action: Todo::MENTIONED)
       end
 
       it 'creates a todo for each valid user based on the type of mention' do
-        mr_assigned.update!(description: directly_addressed_and_mentioned)
+        mentioned_mr.update!(description: directly_addressed_and_mentioned)
 
-        service.new_merge_request(mr_assigned, author)
+        service.new_merge_request(mentioned_mr, author)
 
-        should_create_todo(user: member, target: mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
-        should_not_create_todo(user: admin, target: mr_assigned, action: Todo::MENTIONED)
+        should_create_todo(user: member, target: mentioned_mr, action: Todo::DIRECTLY_ADDRESSED)
+        should_not_create_todo(user: admin, target: mentioned_mr, action: Todo::MENTIONED)
       end
 
       it 'creates a directly addressed todo for each valid addressed user' do
-        service.new_merge_request(addressed_mr_assigned, author)
+        service.new_merge_request(addressed_mr, author)
 
-        should_create_todo(user: member, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
-        should_not_create_todo(user: guest, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
-        should_create_todo(user: author, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
-        should_not_create_todo(user: john_doe, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
-        should_not_create_todo(user: non_member, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
+        should_create_todo(user: member, target: addressed_mr, action: Todo::DIRECTLY_ADDRESSED)
+        should_not_create_todo(user: guest, target: addressed_mr, action: Todo::DIRECTLY_ADDRESSED)
+        should_create_todo(user: author, target: addressed_mr, action: Todo::DIRECTLY_ADDRESSED)
+        should_create_todo(user: john_doe, target: addressed_mr, action: Todo::DIRECTLY_ADDRESSED)
+        should_not_create_todo(user: non_member, target: addressed_mr, action: Todo::DIRECTLY_ADDRESSED)
       end
     end
 
     describe '#update_merge_request' do
       it 'creates a todo for each valid mentioned user not included in skip_users' do
-        service.update_merge_request(mr_assigned, author, skip_users)
+        service.update_merge_request(mentioned_mr, author, skip_users)
 
-        should_create_todo(user: member, target: mr_assigned, action: Todo::MENTIONED)
-        should_not_create_todo(user: guest, target: mr_assigned, action: Todo::MENTIONED)
-        should_create_todo(user: john_doe, target: mr_assigned, action: Todo::MENTIONED)
-        should_create_todo(user: author, target: mr_assigned, action: Todo::MENTIONED)
-        should_not_create_todo(user: non_member, target: mr_assigned, action: Todo::MENTIONED)
-        should_not_create_todo(user: skipped, target: mr_assigned, action: Todo::MENTIONED)
+        should_create_todo(user: member, target: mentioned_mr, action: Todo::MENTIONED)
+        should_not_create_todo(user: guest, target: mentioned_mr, action: Todo::MENTIONED)
+        should_create_todo(user: john_doe, target: mentioned_mr, action: Todo::MENTIONED)
+        should_create_todo(user: author, target: mentioned_mr, action: Todo::MENTIONED)
+        should_not_create_todo(user: non_member, target: mentioned_mr, action: Todo::MENTIONED)
+        should_not_create_todo(user: skipped, target: mentioned_mr, action: Todo::MENTIONED)
       end
 
       it 'creates a todo for each valid user not included in skip_users based on the type of mention' do
-        mr_assigned.update!(description: directly_addressed_and_mentioned)
+        mentioned_mr.update!(description: directly_addressed_and_mentioned)
 
-        service.update_merge_request(mr_assigned, author, skip_users)
+        service.update_merge_request(mentioned_mr, author, skip_users)
 
-        should_create_todo(user: member, target: mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
-        should_not_create_todo(user: admin, target: mr_assigned, action: Todo::MENTIONED)
-        should_not_create_todo(user: skipped, target: mr_assigned)
+        should_create_todo(user: member, target: mentioned_mr, action: Todo::DIRECTLY_ADDRESSED)
+        should_not_create_todo(user: admin, target: mentioned_mr, action: Todo::MENTIONED)
+        should_not_create_todo(user: skipped, target: mentioned_mr)
       end
 
       it 'creates a directly addressed todo for each valid addressed user not included in skip_users' do
-        service.update_merge_request(addressed_mr_assigned, author, skip_users)
+        service.update_merge_request(addressed_mr, author, skip_users)
 
-        should_create_todo(user: member, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
-        should_not_create_todo(user: guest, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
-        should_create_todo(user: john_doe, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
-        should_create_todo(user: author, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
-        should_not_create_todo(user: non_member, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
-        should_not_create_todo(user: skipped, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
+        should_create_todo(user: member, target: addressed_mr, action: Todo::DIRECTLY_ADDRESSED)
+        should_not_create_todo(user: guest, target: addressed_mr, action: Todo::DIRECTLY_ADDRESSED)
+        should_create_todo(user: john_doe, target: addressed_mr, action: Todo::DIRECTLY_ADDRESSED)
+        should_create_todo(user: author, target: addressed_mr, action: Todo::DIRECTLY_ADDRESSED)
+        should_not_create_todo(user: non_member, target: addressed_mr, action: Todo::DIRECTLY_ADDRESSED)
+        should_not_create_todo(user: skipped, target: addressed_mr, action: Todo::DIRECTLY_ADDRESSED)
       end
 
       it 'does not create a todo if user was already mentioned and todo is pending' do
-        create(:todo, :mentioned, user: member, project: project, target: mr_assigned, author: author)
+        stub_feature_flags(multiple_todos: false)
 
-        expect { service.update_merge_request(mr_assigned, author) }.not_to change(member.todos, :count)
+        create(:todo, :mentioned, user: member, project: project, target: mentioned_mr, author: author)
+
+        expect { service.update_merge_request(mentioned_mr, author) }.not_to change(member.todos, :count)
       end
 
       it 'does not create a todo if user was already mentioned and todo is done' do
-        create(:todo, :mentioned, :done, user: skipped, project: project, target: mr_assigned, author: author)
+        create(:todo, :mentioned, :done, user: skipped, project: project, target: mentioned_mr, author: author)
 
-        expect { service.update_merge_request(mr_assigned, author, skip_users) }.not_to change(skipped.todos, :count)
+        expect { service.update_merge_request(mentioned_mr, author, skip_users) }.not_to change(skipped.todos, :count)
       end
 
       it 'does not create a directly addressed todo if user was already mentioned or addressed and todo is pending' do
-        create(:todo, :directly_addressed, user: member, project: project, target: addressed_mr_assigned, author: author)
+        stub_feature_flags(multiple_todos: false)
 
-        expect { service.update_merge_request(addressed_mr_assigned, author) }.not_to change(member.todos, :count)
+        create(:todo, :directly_addressed, user: member, project: project, target: addressed_mr, author: author)
+
+        expect { service.update_merge_request(addressed_mr, author) }.not_to change(member.todos, :count)
       end
 
       it 'does not create a directly addressed todo if user was already mentioned or addressed and todo is done' do
-        create(:todo, :directly_addressed, user: skipped, project: project, target: addressed_mr_assigned, author: author)
+        create(:todo, :directly_addressed, user: skipped, project: project, target: addressed_mr, author: author)
 
-        expect { service.update_merge_request(addressed_mr_assigned, author, skip_users) }.not_to change(skipped.todos, :count)
+        expect { service.update_merge_request(addressed_mr, author, skip_users) }.not_to change(skipped.todos, :count)
       end
 
       context 'with a task list' do
         it 'does not create todo when tasks are marked as completed' do
-          mr_assigned.update!(description: "- [x] Task 1\n- [X] Task 2 #{mentions}")
+          mentioned_mr.update!(description: "- [x] Task 1\n- [X] Task 2 #{mentions}")
 
-          service.update_merge_request(mr_assigned, author)
+          service.update_merge_request(mentioned_mr, author)
 
-          should_not_create_todo(user: admin, target: mr_assigned, action: Todo::MENTIONED)
-          should_not_create_todo(user: assignee, target: mr_assigned, action: Todo::MENTIONED)
-          should_not_create_todo(user: author, target: mr_assigned, action: Todo::MENTIONED)
-          should_not_create_todo(user: john_doe, target: mr_assigned, action: Todo::MENTIONED)
-          should_not_create_todo(user: member, target: mr_assigned, action: Todo::MENTIONED)
-          should_not_create_todo(user: non_member, target: mr_assigned, action: Todo::MENTIONED)
-          should_not_create_todo(user: guest, target: mr_assigned, action: Todo::MENTIONED)
+          should_not_create_todo(user: admin, target: mentioned_mr, action: Todo::MENTIONED)
+          should_not_create_todo(user: assignee, target: mentioned_mr, action: Todo::MENTIONED)
+          should_not_create_todo(user: author, target: mentioned_mr, action: Todo::MENTIONED)
+          should_not_create_todo(user: john_doe, target: mentioned_mr, action: Todo::MENTIONED)
+          should_not_create_todo(user: member, target: mentioned_mr, action: Todo::MENTIONED)
+          should_not_create_todo(user: non_member, target: mentioned_mr, action: Todo::MENTIONED)
+          should_not_create_todo(user: guest, target: mentioned_mr, action: Todo::MENTIONED)
         end
 
         it 'does not create directly addressed todo when tasks are marked as completed' do
-          addressed_mr_assigned.update!(description: "#{directly_addressed}\n- [x] Task 1\n- [X] Task 2")
+          addressed_mr.update!(description: "#{directly_addressed}\n- [x] Task 1\n- [X] Task 2")
 
-          service.update_merge_request(addressed_mr_assigned, author)
+          service.update_merge_request(addressed_mr, author)
 
-          should_not_create_todo(user: admin, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
-          should_not_create_todo(user: assignee, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
-          should_not_create_todo(user: author, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
-          should_not_create_todo(user: john_doe, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
-          should_not_create_todo(user: member, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
-          should_not_create_todo(user: non_member, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
-          should_not_create_todo(user: guest, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
+          should_not_create_todo(user: admin, target: addressed_mr, action: Todo::DIRECTLY_ADDRESSED)
+          should_not_create_todo(user: assignee, target: addressed_mr, action: Todo::DIRECTLY_ADDRESSED)
+          should_not_create_todo(user: author, target: addressed_mr, action: Todo::DIRECTLY_ADDRESSED)
+          should_not_create_todo(user: john_doe, target: addressed_mr, action: Todo::DIRECTLY_ADDRESSED)
+          should_not_create_todo(user: member, target: addressed_mr, action: Todo::DIRECTLY_ADDRESSED)
+          should_not_create_todo(user: non_member, target: addressed_mr, action: Todo::DIRECTLY_ADDRESSED)
+          should_not_create_todo(user: guest, target: addressed_mr, action: Todo::DIRECTLY_ADDRESSED)
         end
 
         it 'does not raise an error when description not change' do
-          mr_assigned.update!(title: 'Sample')
+          mentioned_mr.update!(title: 'Sample')
 
-          expect { service.update_merge_request(mr_assigned, author) }.not_to raise_error
+          expect { service.update_merge_request(mentioned_mr, author) }.not_to raise_error
         end
       end
     end
 
     describe '#close_merge_request' do
       it 'marks related pending todos to the target for the user as done' do
-        first_todo = create(:todo, :assigned, user: john_doe, project: project, target: mr_assigned, author: author)
-        second_todo = create(:todo, :assigned, user: john_doe, project: project, target: mr_assigned, author: author)
-        service.close_merge_request(mr_assigned, john_doe)
+        first_todo = create(:todo, :assigned, user: john_doe, project: project, target: mentioned_mr, author: author)
+        second_todo = create(:todo, :assigned, user: john_doe, project: project, target: mentioned_mr, author: author)
+        service.close_merge_request(mentioned_mr, john_doe)
 
         expect(first_todo.reload).to be_done
         expect(second_todo.reload).to be_done
@@ -820,55 +852,55 @@ RSpec.describe TodoService do
 
     describe '#merge_merge_request' do
       it 'marks related pending todos to the target for the user as done' do
-        first_todo = create(:todo, :assigned, user: john_doe, project: project, target: mr_assigned, author: author)
-        second_todo = create(:todo, :assigned, user: john_doe, project: project, target: mr_assigned, author: author)
-        service.merge_merge_request(mr_assigned, john_doe)
+        first_todo = create(:todo, :assigned, user: john_doe, project: project, target: mentioned_mr, author: author)
+        second_todo = create(:todo, :assigned, user: john_doe, project: project, target: mentioned_mr, author: author)
+        service.merge_merge_request(mentioned_mr, john_doe)
 
         expect(first_todo.reload).to be_done
         expect(second_todo.reload).to be_done
       end
 
       it 'does not create todo for guests' do
-        service.merge_merge_request(mr_assigned, john_doe)
-        should_not_create_todo(user: guest, target: mr_assigned, action: Todo::MENTIONED)
+        service.merge_merge_request(mentioned_mr, john_doe)
+        should_not_create_todo(user: guest, target: mentioned_mr, action: Todo::MENTIONED)
       end
 
       it 'does not create directly addressed todo for guests' do
-        service.merge_merge_request(addressed_mr_assigned, john_doe)
-        should_not_create_todo(user: guest, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
+        service.merge_merge_request(addressed_mr, john_doe)
+        should_not_create_todo(user: guest, target: addressed_mr, action: Todo::DIRECTLY_ADDRESSED)
       end
     end
 
     describe '#new_award_emoji' do
       it 'marks related pending todos to the target for the user as done' do
-        todo = create(:todo, user: john_doe, project: project, target: mr_assigned, author: author)
-        service.new_award_emoji(mr_assigned, john_doe)
+        todo = create(:todo, user: john_doe, project: project, target: mentioned_mr, author: author)
+        service.new_award_emoji(mentioned_mr, john_doe)
 
         expect(todo.reload).to be_done
       end
     end
 
     describe '#merge_request_build_failed' do
-      let(:merge_participants) { [mr_unassigned.author, admin] }
+      let(:merge_participants) { [unassigned_mr.author, admin] }
 
       before do
-        allow(mr_unassigned).to receive(:merge_participants).and_return(merge_participants)
+        allow(unassigned_mr).to receive(:merge_participants).and_return(merge_participants)
       end
 
       it 'creates a pending todo for each merge_participant' do
-        service.merge_request_build_failed(mr_unassigned)
+        service.merge_request_build_failed(unassigned_mr)
 
         merge_participants.each do |participant|
-          should_create_todo(user: participant, author: participant, target: mr_unassigned, action: Todo::BUILD_FAILED)
+          should_create_todo(user: participant, author: participant, target: unassigned_mr, action: Todo::BUILD_FAILED)
         end
       end
     end
 
     describe '#merge_request_push' do
       it 'marks related pending todos to the target for the user as done' do
-        first_todo = create(:todo, :build_failed, user: author, project: project, target: mr_assigned, author: john_doe)
-        second_todo = create(:todo, :build_failed, user: john_doe, project: project, target: mr_assigned, author: john_doe)
-        service.merge_request_push(mr_assigned, author)
+        first_todo = create(:todo, :build_failed, user: author, project: project, target: mentioned_mr, author: john_doe)
+        second_todo = create(:todo, :build_failed, user: john_doe, project: project, target: mentioned_mr, author: john_doe)
+        service.merge_request_push(mentioned_mr, author)
 
         expect(first_todo.reload).to be_done
         expect(second_todo.reload).not_to be_done
@@ -879,24 +911,24 @@ RSpec.describe TodoService do
       let(:merge_participants) { [admin, create(:user)] }
 
       before do
-        allow(mr_unassigned).to receive(:merge_participants).and_return(merge_participants)
+        allow(unassigned_mr).to receive(:merge_participants).and_return(merge_participants)
       end
 
       it 'creates a pending todo for each merge_participant' do
-        mr_unassigned.update!(merge_when_pipeline_succeeds: true, merge_user: admin)
-        service.merge_request_became_unmergeable(mr_unassigned)
+        unassigned_mr.update!(merge_when_pipeline_succeeds: true, merge_user: admin)
+        service.merge_request_became_unmergeable(unassigned_mr)
 
         merge_participants.each do |participant|
-          should_create_todo(user: participant, author: participant, target: mr_unassigned, action: Todo::UNMERGEABLE)
+          should_create_todo(user: participant, author: participant, target: unassigned_mr, action: Todo::UNMERGEABLE)
         end
       end
     end
 
     describe '#mark_todo' do
       it 'creates a todo from a merge request' do
-        service.mark_todo(mr_unassigned, author)
+        service.mark_todo(unassigned_mr, author)
 
-        should_create_todo(user: author, target: mr_unassigned, action: Todo::MARKED)
+        should_create_todo(user: author, target: unassigned_mr, action: Todo::MARKED)
       end
     end
 
@@ -913,33 +945,33 @@ RSpec.describe TodoService do
       end
 
       let(:mention) { john_doe.to_reference }
-      let(:diff_note_on_merge_request) { create(:diff_note_on_merge_request, project: project, noteable: mr_unassigned, author: author, note: "Hey #{mention}") }
-      let(:addressed_diff_note_on_merge_request) { create(:diff_note_on_merge_request, project: project, noteable: mr_unassigned, author: author, note: "#{mention}, hey!") }
-      let(:legacy_diff_note_on_merge_request) { create(:legacy_diff_note_on_merge_request, project: project, noteable: mr_unassigned, author: author, note: "Hey #{mention}") }
+      let(:diff_note_on_merge_request) { create(:diff_note_on_merge_request, project: project, noteable: unassigned_mr, author: author, note: "Hey #{mention}") }
+      let(:addressed_diff_note_on_merge_request) { create(:diff_note_on_merge_request, project: project, noteable: unassigned_mr, author: author, note: "#{mention}, hey!") }
+      let(:legacy_diff_note_on_merge_request) { create(:legacy_diff_note_on_merge_request, project: project, noteable: unassigned_mr, author: author, note: "Hey #{mention}") }
 
       it 'creates a todo for mentioned user on new diff note' do
         service.new_note(diff_note_on_merge_request, author)
 
-        should_create_todo(user: john_doe, target: mr_unassigned, author: author, action: Todo::MENTIONED, note: diff_note_on_merge_request)
+        should_create_todo(user: john_doe, target: unassigned_mr, author: author, action: Todo::MENTIONED, note: diff_note_on_merge_request)
       end
 
       it 'creates a directly addressed todo for addressed user on new diff note' do
         service.new_note(addressed_diff_note_on_merge_request, author)
 
-        should_create_todo(user: john_doe, target: mr_unassigned, author: author, action: Todo::DIRECTLY_ADDRESSED, note: addressed_diff_note_on_merge_request)
+        should_create_todo(user: john_doe, target: unassigned_mr, author: author, action: Todo::DIRECTLY_ADDRESSED, note: addressed_diff_note_on_merge_request)
       end
 
       it 'creates a todo for mentioned user on legacy diff note' do
         service.new_note(legacy_diff_note_on_merge_request, author)
 
-        should_create_todo(user: john_doe, target: mr_unassigned, author: author, action: Todo::MENTIONED, note: legacy_diff_note_on_merge_request)
+        should_create_todo(user: john_doe, target: unassigned_mr, author: author, action: Todo::MENTIONED, note: legacy_diff_note_on_merge_request)
       end
 
       it 'does not create todo for guests' do
-        note_on_merge_request = create :note_on_merge_request, project: project, noteable: mr_assigned, note: mentions
+        note_on_merge_request = create :note_on_merge_request, project: project, noteable: mentioned_mr, note: mentions
         service.new_note(note_on_merge_request, author)
 
-        should_not_create_todo(user: guest, target: mr_assigned, action: Todo::MENTIONED)
+        should_not_create_todo(user: guest, target: mentioned_mr, action: Todo::MENTIONED)
       end
     end
   end
@@ -1013,6 +1045,8 @@ RSpec.describe TodoService do
     end
 
     it 'does not create a todo if user was already mentioned and todo is pending' do
+      stub_feature_flags(multiple_todos: false)
+
       create(:todo, :mentioned, user: member, project: project, target: noteable, author: author)
 
       expect { service.update_note(note, author, skip_users) }.not_to change(member.todos, :count)
@@ -1025,6 +1059,8 @@ RSpec.describe TodoService do
     end
 
     it 'does not create a directly addressed todo if user was already mentioned or addressed and todo is pending' do
+      stub_feature_flags(multiple_todos: false)
+
       create(:todo, :directly_addressed, user: member, project: project, target: noteable, author: author)
 
       expect { service.update_note(addressed_note, author, skip_users) }.not_to change(member.todos, :count)
@@ -1038,7 +1074,7 @@ RSpec.describe TodoService do
   end
 
   it 'updates cached counts when a todo is created' do
-    issue = create(:issue, project: project, assignees: [john_doe], author: author, description: mentions)
+    issue = create(:issue, project: project, assignees: [john_doe], author: author)
 
     expect(john_doe.todos_pending_count).to eq(0)
     expect(john_doe).to receive(:update_todos_count_cache).and_call_original
