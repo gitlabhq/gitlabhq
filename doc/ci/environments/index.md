@@ -561,7 +561,7 @@ A list of environments and deployment statuses is available on each project's **
 
 For example:
 
-![Environment view](../img/environments_available.png)
+![Environment view](../img/environments_available_13_7.png)
 
 This example shows:
 
@@ -571,10 +571,16 @@ This example shows:
 - The commit information of the last deployment, such as who committed it, to what
   branch, and the Git SHA of the commit.
 - The exact time the last deployment was performed.
+- The upcoming deployment, if a deployment for the environment is in progress.
+- When the environment stops automatically.
 - A button that takes you to the URL that you defined under the `environment` keyword
   in `.gitlab-ci.yml`.
-- A button that re-deploys the latest deployment, meaning it runs the job
-  defined by the environment name for that specific commit.
+- A number of deployment actions, including:
+  - Prevent the environment from [stopping automatically](#automatically-stopping-an-environment).
+  - [Open the live environment](#using-the-environment-url).
+  - Trigger [a manual deployment to a different environment](#configuring-manual-deployments).
+  - [Retry the deployment](#retrying-and-rolling-back).
+  - [Stop the environment](#stopping-an-environment).
 
 The information shown in the **Environments** page is limited to the latest
 deployments, but an environment can have multiple deployments.
@@ -633,7 +639,7 @@ places within GitLab:
 - In a merge request widget as a link:
   ![Environment URL in merge request](../img/environments_mr_review_app.png)
 - In the Environments view as a button:
-  ![Environment URL in environments](../img/environments_available.png)
+  ![Environment URL in environments](../img/environments_available_13_7.png)
 - In the Deployments view as a button:
   ![Environment URL in deployments](../img/deployments_view.png)
 
