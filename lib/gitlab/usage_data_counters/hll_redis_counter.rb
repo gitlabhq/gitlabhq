@@ -336,12 +336,10 @@ module Gitlab
         end
 
         def weekly_redis_keys(events:, start_date:, end_date:, context: '')
-          weeks = end_date.to_date.cweek - start_date.to_date.cweek
-          weeks = 1 if weeks == 0
-
-          (0..(weeks - 1)).map do |week_increment|
-            events.map { |event| redis_key(event, start_date + week_increment * 7.days, context) }
-          end.flatten
+          end_date = end_date.end_of_week - 1.week
+          (start_date.to_date..end_date.to_date).map do |date|
+            events.map { |event| redis_key(event, date, context) }
+          end.flatten.uniq
         end
       end
     end
