@@ -7,17 +7,17 @@ type: concepts, howto
 
 # Building Docker images with GitLab CI/CD
 
-GitLab CI/CD allows you to use Docker Engine to build and test Docker-based projects.
+You can use GitLab CI/CD with Docker Engine to build and test Docker-based projects.
 
-One of the new trends in Continuous Integration/Deployment is to:
+For example, you might want to:
 
 1. Create an application image.
 1. Run tests against the created image.
 1. Push image to a remote registry.
 1. Deploy to a server from the pushed image.
 
-It's also useful when your application already has the `Dockerfile` that can be
-used to create and test an image:
+Or, if your application already has a `Dockerfile`, you can
+use it to create and test an image:
 
 ```shell
 docker build -t my-image dockerfiles/
@@ -26,29 +26,37 @@ docker tag my-image my-registry:5000/my-image
 docker push my-registry:5000/my-image
 ```
 
-This requires special configuration of GitLab Runner to enable `docker` support
-during jobs.
+To run Docker commands in your CI/CD jobs, you must configure
+GitLab Runner to enable `docker` support.
 
-## Runner Configuration
+## Enable Docker commands in your CI/CD jobs
 
-There are three methods to enable the use of `docker build` and `docker run`
-during jobs, each with their own tradeoffs.
+There are three ways to enable the use of `docker build` and `docker run`
+during jobs, each with their own tradeoffs. You can use:
 
-An alternative to using `docker build` is to [use kaniko](using_kaniko.md).
-This avoids having to execute a runner in privileged mode.
+- [The shell executor](#use-the-shell-executor)
+- [The Docker executor with the Docker image (Docker-in-Docker)](#use-the-docker-executor-with-the-docker-image-docker-in-docker)
+- [Docker socket binding](#use-docker-socket-binding)
 
-NOTE:
-To see how Docker and GitLab Runner are configured for shared runners on
-GitLab.com, see [GitLab.com shared
-runners](../../user/gitlab_com/index.md#shared-runners).
+If you don't want to execute a runner in privileged mode,
+but want to use `docker build`, you can also [use kaniko](using_kaniko.md).
 
-### Use shell executor
+If you are using shared runners on GitLab.com, see
+[GitLab.com shared runners](../../user/gitlab_com/index.md#shared-runners)
+to learn more about how these runners are configured.
 
-The simplest approach is to install GitLab Runner in `shell` execution mode.
-GitLab Runner then executes job scripts as the `gitlab-runner` user.
+### Use the shell executor
 
-1. Install [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/#installation).
-1. During GitLab Runner installation select `shell` as method of executing job scripts or use command:
+One way to configure GitLab Runner for `docker` support is to use the
+`shell` executor.
+
+After you register a runner and select the `shell` executor,
+your job scripts are executed as the `gitlab-runner` user.
+This user needs permission to run Docker commands.
+
+1. [Install](https://gitlab.com/gitlab-org/gitlab-runner/#installation) GitLab Runner.
+1. [Register](https://docs.gitlab.com/runner/register/) a runner.
+   Select the `shell` executor. For example:
 
    ```shell
    sudo gitlab-runner register -n \
@@ -58,12 +66,10 @@ GitLab Runner then executes job scripts as the `gitlab-runner` user.
      --description "My Runner"
    ```
 
-1. Install Docker Engine on server.
+1. On the server where GitLab Runner is installed, install Docker Engine.
+   View a list of [supported platforms](https://docs.docker.com/engine/installation/).
 
-   For more information how to install Docker Engine on different systems,
-   check out the [Supported installations](https://docs.docker.com/engine/installation/).
-
-1. Add `gitlab-runner` user to `docker` group:
+1. Add the `gitlab-runner` user to the `docker` group:
 
    ```shell
    sudo usermod -aG docker gitlab-runner
@@ -75,7 +81,7 @@ GitLab Runner then executes job scripts as the `gitlab-runner` user.
    sudo -u gitlab-runner -H docker info
    ```
 
-   You can now verify that everything works by adding `docker info` to `.gitlab-ci.yml`:
+1. In GitLab, to verify that everything works, add `docker info` to `.gitlab-ci.yml`:
 
    ```yaml
    before_script:
@@ -87,28 +93,30 @@ GitLab Runner then executes job scripts as the `gitlab-runner` user.
        - docker run my-docker-image /script/to/run/tests
    ```
 
-1. You can now use `docker` command (and **install** `docker-compose` if needed).
+You can now use `docker` commands (and install `docker-compose` if needed).
 
-By adding `gitlab-runner` to the `docker` group you are effectively granting `gitlab-runner` full root permissions.
-For more information please read [On Docker security: `docker` group considered harmful](https://blog.zopyx.com/on-docker-security-docker-group-considered-harmful/).
+When you add `gitlab-runner` to the `docker` group, you are effectively granting `gitlab-runner` full root permissions.
+Learn more about the [security of the `docker` group](https://blog.zopyx.com/on-docker-security-docker-group-considered-harmful/).
 
-### Use Docker-in-Docker workflow with Docker executor
+### Use the Docker executor with the Docker image (Docker-in-Docker)
 
-The second approach is to use the special Docker-in-Docker (dind)
-[Docker image](https://hub.docker.com/_/docker/) with all tools installed
-(`docker`) and run the job script in context of that
-image in privileged mode.
+Another way to configure GitLab Runner for `docker` support is to
+register a runner with the Docker executor and use the [Docker image](https://hub.docker.com/_/docker/)
+to run your job scripts. This configuration is referred to as "Docker-in-Docker."
 
-`docker-compose` is not part of Docker-in-Docker (dind). To use `docker-compose` in your
-CI builds, follow the `docker-compose`
+The Docker image has all of the `docker` tools installed
+and can run the job script in context of the image in privileged mode.
+
+The `docker-compose` command is not available in this configuration by default.
+To use `docker-compose` in your job scripts, follow the `docker-compose`
 [installation instructions](https://docs.docker.com/compose/install/).
 
 WARNING:
-By enabling `--docker-privileged`, you are effectively disabling all of
+When you enable `--docker-privileged`, you are effectively disabling all of
 the security mechanisms of containers and exposing your host to privilege
 escalation which can lead to container breakout. For more information, check
 out the official Docker documentation on
-[Runtime privilege and Linux capabilities](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities).
+[runtime privilege and Linux capabilities](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities).
 
 Docker-in-Docker works well, and is the recommended configuration, but it is
 not without its own challenges:
@@ -363,10 +371,11 @@ build:
     - docker run my-docker-image /script/to/run/tests
 ```
 
-#### Use Docker socket binding
+### Use Docker socket binding
 
-The third approach is to bind-mount `/var/run/docker.sock` into the
-container so that Docker is available in the context of that image.
+Another way to configure GitLab Runner for `docker` support is to
+bind-mount `/var/run/docker.sock` into the
+container so that Docker is available in the context of the image.
 
 NOTE:
 If you bind the Docker socket and you are
@@ -854,13 +863,13 @@ After you've built a Docker image, you can push it up to the built-in
 ### `docker: Cannot connect to the Docker daemon at tcp://docker:2375. Is the docker daemon running?`
 
 This is a common error when you are using
-[Docker in Docker](#use-docker-in-docker-workflow-with-docker-executor)
+[Docker in Docker](#use-the-docker-executor-with-the-docker-image-docker-in-docker)
 v19.03 or higher.
 
 This occurs because Docker starts on TLS automatically, so you need to do some setup.
 If:
 
 - This is the first time setting it up, carefully read
-  [using Docker in Docker workflow](#use-docker-in-docker-workflow-with-docker-executor).
+  [using Docker in Docker workflow](#use-the-docker-executor-with-the-docker-image-docker-in-docker).
 - You are upgrading from v18.09 or earlier, read our
   [upgrade guide](https://about.gitlab.com/releases/2019/07/31/docker-in-docker-with-docker-19-dot-03/).

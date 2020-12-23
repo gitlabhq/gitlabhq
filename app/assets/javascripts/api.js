@@ -389,10 +389,12 @@ const Api = {
       .get(url, {
         params: { ...defaults, ...options },
       })
-      .then(({ data }) => callback(data))
+      .then(({ data }) => (callback ? callback(data) : data))
       .catch(() => {
         flash(__('Something went wrong while fetching projects'));
-        callback();
+        if (callback) {
+          callback();
+        }
       });
   },
 

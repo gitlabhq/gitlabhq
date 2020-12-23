@@ -4190,7 +4190,7 @@ msgstr ""
 msgid "AutoRemediation|%{mrsCount} ready for review"
 msgstr ""
 
-msgid "AutoRemediation|: Auto-fix"
+msgid "AutoRemediation|Auto-fix"
 msgstr ""
 
 msgid "AutoRemediation|Auto-fix solutions"
@@ -4532,6 +4532,18 @@ msgid "Blog"
 msgstr ""
 
 msgid "Board scope affects which issues are displayed for anyone who visits this board"
+msgstr ""
+
+msgid "BoardNewIssue|No matching results"
+msgstr ""
+
+msgid "BoardNewIssue|Projects"
+msgstr ""
+
+msgid "BoardNewIssue|Search projects"
+msgstr ""
+
+msgid "BoardNewIssue|Select a project"
 msgstr ""
 
 msgid "Boards"

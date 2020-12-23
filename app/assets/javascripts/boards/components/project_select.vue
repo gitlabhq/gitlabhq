@@ -1,19 +1,37 @@
 <script>
-import $ from 'jquery';
-import { escape } from 'lodash';
-import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
-import { __ } from '~/locale';
+import {
+  GlDropdown,
+  GlDropdownItem,
+  GlDropdownText,
+  GlSearchBoxByType,
+  GlLoadingIcon,
+} from '@gitlab/ui';
 import eventHub from '../eventhub';
+import { s__ } from '~/locale';
 import Api from '../../api';
 import { featureAccessLevel } from '~/pages/projects/shared/permissions/constants';
-import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import { ListType } from '../constants';
 
 export default {
-  name: 'BoardProjectSelect',
+  name: 'ProjectSelect',
+  i18n: {
+    headerTitle: s__(`BoardNewIssue|Projects`),
+    dropdownText: s__(`BoardNewIssue|Select a project`),
+    searchPlaceholder: s__(`BoardNewIssue|Search projects`),
+    emptySearchResult: s__(`BoardNewIssue|No matching results`),
+  },
+  defaultFetchOptions: {
+    with_issues_enabled: true,
+    with_shared: false,
+    include_subgroups: true,
+    order_by: 'similarity',
+  },
   components: {
-    GlIcon,
     GlLoadingIcon,
+    GlDropdown,
+    GlDropdownItem,
+    GlDropdownText,
+    GlSearchBoxByType,
   },
   props: {
     list: {
@@ -24,97 +42,108 @@ export default {
   inject: ['groupId'],
   data() {
     return {
-      loading: true,
+      initialLoading: true,
+      isFetching: false,
+      projects: [],
       selectedProject: {},
+      searchTerm: '',
     };
   },
   computed: {
     selectedProjectName() {
-      return this.selectedProject.name || __('Select a project');
+      return this.selectedProject.name || this.$options.i18n.dropdownText;
+    },
+    fetchOptions() {
+      const additionalAttrs = {};
+      if (this.list.type && this.list.type !== ListType.backlog) {
+        additionalAttrs.min_access_level = featureAccessLevel.EVERYONE;
+      }
+
+      return {
+        ...this.$options.defaultFetchOptions,
+        ...additionalAttrs,
+      };
+    },
+    isFetchResultEmpty() {
+      return this.projects.length === 0;
     },
   },
-  mounted() {
-    initDeprecatedJQueryDropdown($(this.$refs.projectsDropdown), {
-      filterable: true,
-      filterRemote: true,
-      search: {
-        fields: ['name_with_namespace'],
-      },
-      clicked: ({ $el, e }) => {
-        e.preventDefault();
-        this.selectedProject = {
-          id: $el.data('project-id'),
-          name: $el.data('project-name'),
-          path: $el.data('project-path'),
-        };
-        eventHub.$emit('setSelectedProject', this.selectedProject);
-      },
-      selectable: true,
-      data: (term, callback) => {
-        this.loading = true;
-        const additionalAttrs = {};
+  watch: {
+    searchTerm() {
+      this.fetchProjects();
+    },
+  },
+  async mounted() {
+    await this.fetchProjects();
 
-        if ((this.list.type || this.list.listType) !== ListType.backlog) {
-          additionalAttrs.min_access_level = featureAccessLevel.EVERYONE;
-        }
+    this.initialLoading = false;
+  },
+  methods: {
+    async fetchProjects() {
+      this.isFetching = true;
+      try {
+        const projects = await Api.groupProjects(this.groupId, this.searchTerm, this.fetchOptions);
 
-        return Api.groupProjects(
-          this.groupId,
-          term,
-          {
-            with_issues_enabled: true,
-            with_shared: false,
-            include_subgroups: true,
-            order_by: 'similarity',
-            ...additionalAttrs,
-          },
-          projects => {
-            this.loading = false;
-            callback(projects);
-          },
-        );
-      },
-      renderRow(project) {
-        return `
-            <li>
-              <a href='#' class='dropdown-menu-link'
-                data-project-id="${project.id}"
-                data-project-name="${project.name}"
-                data-project-name-with-namespace="${project.name_with_namespace}"
-                data-project-path="${project.path_with_namespace}"
-              >
-                ${escape(project.name_with_namespace)}
-              </a>
-            </li>
-          `;
-      },
-      text: project => project.name_with_namespace,
-    });
+        this.projects = projects.map(project => {
+          return {
+            id: project.id,
+            name: project.name,
+            namespacedName: project.name_with_namespace,
+            path: project.path_with_namespace,
+          };
+        });
+      } catch (err) {
+        /* Handled in Api.groupProjects */
+      } finally {
+        this.isFetching = false;
+      }
+    },
+    selectProject(projectId) {
+      this.selectedProject = this.projects.find(project => project.id === projectId);
+
+      /*
+        TODO Remove eventhub, use Vuex for BoardNewIssue and GraphQL for BoardNewIssueNew
+        https://gitlab.com/gitlab-org/gitlab/-/issues/276173
+      */
+      eventHub.$emit('setSelectedProject', this.selectedProject);
+    },
   },
 };
 </script>
 
 <template>
   <div>
-    <label class="label-bold gl-mt-3">{{ __('Project') }}</label>
-    <div ref="projectsDropdown" class="dropdown dropdown-projects">
-      <button
-        class="dropdown-menu-toggle wide"
-        type="button"
-        data-toggle="dropdown"
-        aria-expanded="false"
+    <label class="gl-font-weight-bold gl-mt-3" data-testid="header-label">{{
+      $options.i18n.headerTitle
+    }}</label>
+    <gl-dropdown
+      data-testid="project-select-dropdown"
+      :text="selectedProjectName"
+      :header-text="$options.i18n.headerTitle"
+      block
+      menu-class="gl-w-full!"
+      :loading="initialLoading"
+    >
+      <gl-search-box-by-type
+        v-model.trim="searchTerm"
+        debounce="250"
+        :placeholder="$options.i18n.searchPlaceholder"
+      />
+      <gl-dropdown-item
+        v-for="project in projects"
+        v-show="!isFetching"
+        :key="project.id"
+        :name="project.name"
+        @click="selectProject(project.id)"
       >
-        {{ selectedProjectName }} <gl-icon name="chevron-down" class="dropdown-menu-toggle-icon" />
-      </button>
-      <div class="dropdown-menu dropdown-menu-selectable dropdown-menu-full-width">
-        <div class="dropdown-title">{{ __('Projects') }}</div>
-        <div class="dropdown-input">
-          <input class="dropdown-input-field" type="search" :placeholder="__('Search projects')" />
-          <gl-icon name="search" class="dropdown-input-search" data-hidden="true" />
-        </div>
-        <div class="dropdown-content"></div>
-        <div class="dropdown-loading"><gl-loading-icon /></div>
-      </div>
-    </div>
+        {{ project.namespacedName }}
+      </gl-dropdown-item>
+      <gl-dropdown-text v-show="isFetching" data-testid="dropdown-text-loading-icon">
+        <gl-loading-icon class="gl-mx-auto" />
+      </gl-dropdown-text>
+      <gl-dropdown-text v-if="isFetchResultEmpty && !isFetching" data-testid="empty-result-message">
+        <span class="gl-text-gray-500">{{ $options.i18n.emptySearchResult }}</span>
+      </gl-dropdown-text>
+    </gl-dropdown>
   </div>
 </template>

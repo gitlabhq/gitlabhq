@@ -20,14 +20,19 @@ RSpec.describe 'Group Boards' do
       page.within(find('.board', match: :first)) do
         issue_title = 'New Issue'
         find(:css, '.issue-count-badge-add-button').click
-        expect(find('.board-new-issue-form')).to be_visible
-
-        fill_in 'issue_title', with: issue_title
-        find('.dropdown-menu-toggle').click
 
         wait_for_requests
 
-        click_link(project.name)
+        expect(find('.board-new-issue-form')).to be_visible
+
+        fill_in 'issue_title', with: issue_title
+
+        page.within("[data-testid='project-select-dropdown']") do
+          find('button.gl-dropdown-toggle').click
+
+          find('.gl-new-dropdown-item button').click
+        end
+
         click_button 'Submit issue'
 
         expect(page).to have_content(issue_title)

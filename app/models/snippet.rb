@@ -20,6 +20,7 @@ class Snippet < ApplicationRecord
   extend ::Gitlab::Utils::Override
 
   MAX_FILE_COUNT = 10
+  MASTER_BRANCH = 'master'
 
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :description
@@ -311,11 +312,25 @@ class Snippet < ApplicationRecord
 
   override :default_branch
   def default_branch
-    super || 'master'
+    super || MASTER_BRANCH
   end
 
   def repository_storage
     snippet_repository&.shard_name || self.class.pick_repository_storage
+  end
+
+  # Repositories are created by default with the `master` branch.
+  # This method changes the `HEAD` file to point to the existing
+  # default branch in case it's not master.
+  def change_head_to_default_branch
+    return unless repository.exists?
+    return if default_branch == MASTER_BRANCH
+    # All snippets must have at least 1 file. Therefore, if
+    # `HEAD` is empty is because it's pointing to the wrong
+    # default branch
+    return unless repository.empty? || list_files('HEAD').empty?
+
+    repository.raw_repository.write_ref('HEAD', "refs/heads/#{default_branch}")
   end
 
   def create_repository

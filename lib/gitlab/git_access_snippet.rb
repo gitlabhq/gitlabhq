@@ -30,7 +30,10 @@ module Gitlab
     def check(cmd, changes)
       check_snippet_accessibility!
 
-      super
+      super.tap do |_|
+        # Ensure HEAD points to the default branch in case it is not master
+        snippet.change_head_to_default_branch
+      end
     end
 
     override :download_ability

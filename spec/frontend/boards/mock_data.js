@@ -350,3 +350,18 @@ export const issues = {
   [mockIssue3.id]: mockIssue3,
   [mockIssue4.id]: mockIssue4,
 };
+
+export const mockRawGroupProjects = [
+  {
+    id: 0,
+    name: 'Example Project',
+    name_with_namespace: 'Awesome Group / Example Project',
+    path_with_namespace: 'awesome-group/example-project',
+  },
+  {
+    id: 1,
+    name: 'Foobar Project',
+    name_with_namespace: 'Awesome Group / Foobar Project',
+    path_with_namespace: 'awesome-group/foobar-project',
+  },
+];

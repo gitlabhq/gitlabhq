@@ -74,7 +74,7 @@ GitLab 11.4 or earlier, you can view the deprecated job definitions in the
 
 First, you need GitLab Runner configured:
 
-- For the [Docker-in-Docker workflow](../../../ci/docker/using_docker_build.md#use-docker-in-docker-workflow-with-docker-executor).
+- For the [Docker-in-Docker workflow](../../../ci/docker/using_docker_build.md#use-the-docker-executor-with-the-docker-image-docker-in-docker).
 - With enough disk space to handle generated Code Quality files. For example on the [GitLab project](https://gitlab.com/gitlab-org/gitlab) the files are approximately 7 GB.
 
 Once you set up GitLab Runner, include the Code Quality template in your CI configuration:
