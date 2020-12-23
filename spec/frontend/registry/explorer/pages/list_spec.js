@@ -116,6 +116,7 @@ describe('List Page', () => {
     expect(findRegistryHeader().exists()).toBe(true);
     expect(findRegistryHeader().props()).toMatchObject({
       imagesCount: 2,
+      metadataLoading: false,
     });
   });
 
@@ -169,6 +170,12 @@ describe('List Page', () => {
       mountComponent();
 
       expect(findCliCommands().exists()).toBe(false);
+    });
+
+    it('title has the metadataLoading props set to true', () => {
+      mountComponent();
+
+      expect(findRegistryHeader().props('metadataLoading')).toBe(true);
     });
   });
 

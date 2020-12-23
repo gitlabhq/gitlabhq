@@ -1,4 +1,5 @@
-const maxColumnWidth = (rows, columnIndex) => Math.max(...rows.map(row => row[columnIndex].length));
+const maxColumnWidth = (rows, columnIndex) =>
+  Math.max(...rows.map((row) => row[columnIndex].length));
 
 export default class PasteMarkdownTable {
   constructor(clipboardData) {
@@ -16,7 +17,7 @@ export default class PasteMarkdownTable {
     this.calculateColumnWidths();
 
     const markdownRows = this.rows.map(
-      row =>
+      (row) =>
         // | Name         | Title | Email Address  |
         // |--------------|-------|----------------|
         // | Jane Atler   | CEO   | jane@acme.com  |
@@ -66,7 +67,7 @@ export default class PasteMarkdownTable {
       return false;
     }
 
-    this.rows = splitRows.map(row => row.split('\t'));
+    this.rows = splitRows.map((row) => row.split('\t'));
     this.normalizeRows();
 
     // Check that the max number of columns in the HTML matches the number of
@@ -81,10 +82,10 @@ export default class PasteMarkdownTable {
 
   // Ensure each row has the same number of columns
   normalizeRows() {
-    const rowLengths = this.rows.map(row => row.length);
+    const rowLengths = this.rows.map((row) => row.length);
     const maxLength = Math.max(...rowLengths);
 
-    this.rows.forEach(row => {
+    this.rows.forEach((row) => {
       while (row.length < maxLength) {
         row.push('');
       }
@@ -101,7 +102,7 @@ export default class PasteMarkdownTable {
     const textColumnCount = this.rows[0].length;
     let htmlColumnCount = 0;
 
-    this.doc.querySelectorAll('table tr').forEach(row => {
+    this.doc.querySelectorAll('table tr').forEach((row) => {
       htmlColumnCount = Math.max(row.cells.length, htmlColumnCount);
     });
 

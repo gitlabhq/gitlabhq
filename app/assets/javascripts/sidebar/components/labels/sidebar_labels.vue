@@ -50,9 +50,13 @@ export default {
       $(this.$el).trigger('hidden.gl.dropdown');
     },
     getUpdateVariables(dropdownLabels) {
-      const currentLabelIds = this.selectedLabels.map(label => label.id);
-      const userAddedLabelIds = dropdownLabels.filter(label => label.set).map(label => label.id);
-      const userRemovedLabelIds = dropdownLabels.filter(label => !label.set).map(label => label.id);
+      const currentLabelIds = this.selectedLabels.map((label) => label.id);
+      const userAddedLabelIds = dropdownLabels
+        .filter((label) => label.set)
+        .map((label) => label.id);
+      const userRemovedLabelIds = dropdownLabels
+        .filter((label) => !label.set)
+        .map((label) => label.id);
 
       const labelIds = difference(union(currentLabelIds, userAddedLabelIds), userRemovedLabelIds);
 
@@ -116,7 +120,7 @@ export default {
           }
 
           const issuableType = camelCase(this.issuableType);
-          this.selectedLabels = data[mutationName]?.[issuableType]?.labels?.nodes?.map(label => ({
+          this.selectedLabels = data[mutationName]?.[issuableType]?.labels?.nodes?.map((label) => ({
             ...label,
             id: getIdFromGraphQLId(label.id),
           }));

@@ -9,7 +9,9 @@ const fetchpromises = {};
 const resolvers = {};
 
 export function resolveCommit(commits, path, { resolve, entry }) {
-  const commit = commits.find(c => c.filePath === `${path}/${entry.name}` && c.type === entry.type);
+  const commit = commits.find(
+    (c) => c.filePath === `${path}/${entry.name}` && c.type === entry.type,
+  );
 
   if (commit) {
     resolve(commit);
@@ -42,7 +44,7 @@ export function fetchLogsTree(client, path, offset, resolver = null) {
     .then(({ data: newData, headers }) => {
       const headerLogsOffset = headers['more-logs-offset'];
       const sourceData = client.readQuery({ query: commitsQuery });
-      const data = produce(sourceData, draftState => {
+      const data = produce(sourceData, (draftState) => {
         draftState.commits.push(...normalizeData(newData, path));
       });
       client.writeQuery({
@@ -50,7 +52,7 @@ export function fetchLogsTree(client, path, offset, resolver = null) {
         data,
       });
 
-      resolvers[path].forEach(r => resolveCommit(data.commits, path, r));
+      resolvers[path].forEach((r) => resolveCommit(data.commits, path, r));
 
       delete fetchpromises[path];
 

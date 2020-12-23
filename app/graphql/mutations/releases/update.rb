@@ -51,17 +51,17 @@ module Mutations
 
         params = scalars.with_indifferent_access
 
-        release_result = ::Releases::UpdateService.new(project, current_user, params).execute
+        result = ::Releases::UpdateService.new(project, current_user, params).execute
 
-        if release_result[:status] == :success
+        if result[:status] == :success
           {
-            release: release_result[:release],
+            release: result[:release],
             errors: []
           }
         else
           {
             release: nil,
-            errors: [release_result[:message]]
+            errors: [result[:message]]
           }
         end
       end

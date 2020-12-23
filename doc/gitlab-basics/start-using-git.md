@@ -167,14 +167,13 @@ original repository if you'd like.
 
 ### Download vs clone
 
-To create a copy of a remote repository files on your computer, you can either
-**download** or **clone** it. If you download it, you cannot sync it with the
+To create a copy of a remote repository's files on your computer, you can either
+**download** or **clone**. If you download, you cannot sync it with the
 remote repository on GitLab.
 
-On the other hand, by cloning a repository, you'll download a copy of its
-files to your local computer, but preserve the Git connection with the remote
-repository, so that you can work on the its files on your computer and then
-upload the changes to GitLab.
+Cloning a repository is the same as downloading, except it preserves the Git connection
+with the remote repository. This allows you to modify the files locally and
+upload the changes to the remote repository on GitLab.
 
 ### Pull and push
 

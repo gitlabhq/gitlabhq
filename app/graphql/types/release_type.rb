@@ -35,7 +35,8 @@ module Types
     field :links, Types::ReleaseLinksType, null: true, method: :itself,
           description: 'Links of the release'
     field :milestones, Types::MilestoneType.connection_type, null: true,
-          description: 'Milestones associated to the release'
+          description: 'Milestones associated to the release',
+          resolver: ::Resolvers::ReleaseMilestonesResolver
     field :evidences, Types::EvidenceType.connection_type, null: true,
           description: 'Evidence for the release'
 

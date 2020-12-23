@@ -2,8 +2,13 @@
 stage: Verify
 group: Continuous Integration
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+author: Ryan Hall
+author_gitlab: blitzgren
 type: tutorial
+date: 2018-03-07
 ---
+
+<!-- vale off -->
 
 # DevOps and Game Dev with GitLab CI/CD
 

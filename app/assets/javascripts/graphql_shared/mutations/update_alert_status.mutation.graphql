@@ -1,4 +1,4 @@
-#import "../fragments/alert_note.fragment.graphql"
+#import "~/graphql_shared/fragments/alert_note.fragment.graphql"
 
 mutation updateAlertStatus($projectPath: ID!, $status: AlertManagementStatus!, $iid: String!) {
   updateAlertStatus(input: { iid: $iid, status: $status, projectPath: $projectPath }) {

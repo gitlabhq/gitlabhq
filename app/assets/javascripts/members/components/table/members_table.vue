@@ -34,7 +34,9 @@ export default {
   computed: {
     ...mapState(['members', 'tableFields', 'tableAttrs', 'currentUserId', 'sourceId']),
     filteredFields() {
-      return FIELDS.filter(field => this.tableFields.includes(field.key) && this.showField(field));
+      return FIELDS.filter(
+        (field) => this.tableFields.includes(field.key) && this.showField(field),
+      );
     },
     userIsLoggedIn() {
       return this.currentUserId !== null;
@@ -56,7 +58,7 @@ export default {
         return false;
       }
 
-      return this.members.some(member => {
+      return this.members.some((member) => {
         return (
           canRemove(member, this.sourceId) ||
           canResend(member) ||

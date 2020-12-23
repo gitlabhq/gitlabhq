@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.7.1 (2020-12-23)
+
+### Fixed (1 change)
+
+- Fix project transfer corrupting shared runners state. !47316
+
+
 ## 13.7.0 (2020-12-22)
 
 ### Security (1 change)

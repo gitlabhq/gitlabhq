@@ -115,7 +115,9 @@ export default {
       const table = line.closest('.diff-table');
 
       table.classList.remove('left-side-selected', 'right-side-selected');
-      const [lineClass] = ['left-side', 'right-side'].filter(name => line.classList.contains(name));
+      const [lineClass] = ['left-side', 'right-side'].filter((name) =>
+        line.classList.contains(name),
+      );
 
       if (lineClass) {
         table.classList.add(`${lineClass}-selected`);

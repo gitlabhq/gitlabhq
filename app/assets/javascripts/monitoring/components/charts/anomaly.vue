@@ -1,4 +1,5 @@
 <script>
+import produce from 'immer';
 import { flattenDeep, isNumber } from 'lodash';
 import { GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import { roundOffFloat } from '~/lib/utils/common_utils';
@@ -84,11 +85,13 @@ export default {
     metricData() {
       const originalMetricQuery = this.graphData.metrics[0];
 
-      const metricQuery = { ...originalMetricQuery };
-      metricQuery.result[0].values = metricQuery.result[0].values.map(([x, y]) => [
-        x,
-        y + this.yOffset,
-      ]);
+      const metricQuery = produce(originalMetricQuery, draftQuery => {
+        // eslint-disable-next-line no-param-reassign
+        draftQuery.result[0].values = draftQuery.result[0].values.map(([x, y]) => [
+          x,
+          y + this.yOffset,
+        ]);
+      });
       return {
         ...this.graphData,
         type: panelTypes.LINE_CHART,

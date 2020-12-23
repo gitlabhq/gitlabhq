@@ -2,8 +2,13 @@
 stage: Verify
 group: Continuous Integration
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+author: Alexandre S Hostert
+author_gitlab: Hostert
 type: tutorial
+date: 2018-02-20
 ---
+
+<!-- vale off -->
 
 # Testing a Phoenix application with GitLab CI/CD
 

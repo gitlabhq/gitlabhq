@@ -54,17 +54,7 @@ describe('Release block milestone info', () => {
     });
 
     it('renders a list of links to all associated milestones', () => {
-      // The API currently returns the milestones in a non-deterministic order,
-      // which causes the frontend fixture used by this test to return the
-      // milestones in one order locally and a different order in the CI pipeline.
-      // This is a bug and is tracked here: https://gitlab.com/gitlab-org/gitlab/-/issues/259012
-      // When this bug is fixed this expectation should be updated to
-      // assert the expected order.
-      const containerText = trimText(milestoneListContainer().text());
-      expect(
-        containerText.includes('Milestones 12.4 • 12.3') ||
-          containerText.includes('Milestones 12.3 • 12.4'),
-      ).toBe(true);
+      expect(milestoneListContainer().text()).toMatchInterpolatedText('Milestones 12.3 • 12.4');
 
       milestones.forEach((m, i) => {
         const milestoneLink = milestoneListContainer().findAll(GlLink).at(i);

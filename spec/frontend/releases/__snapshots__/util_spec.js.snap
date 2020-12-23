@@ -89,18 +89,6 @@ Object {
       ],
       "milestones": Array [
         Object {
-          "description": "The 12.4 milestone",
-          "id": "gid://gitlab/Milestone/124",
-          "issueStats": Object {
-            "closed": 1,
-            "total": 4,
-          },
-          "stats": undefined,
-          "title": "12.4",
-          "webPath": undefined,
-          "webUrl": "/releases-namespace/releases-project/-/milestones/2",
-        },
-        Object {
           "description": "The 12.3 milestone",
           "id": "gid://gitlab/Milestone/123",
           "issueStats": Object {
@@ -111,6 +99,18 @@ Object {
           "title": "12.3",
           "webPath": undefined,
           "webUrl": "/releases-namespace/releases-project/-/milestones/1",
+        },
+        Object {
+          "description": "The 12.4 milestone",
+          "id": "gid://gitlab/Milestone/124",
+          "issueStats": Object {
+            "closed": 1,
+            "total": 4,
+          },
+          "stats": undefined,
+          "title": "12.4",
+          "webPath": undefined,
+          "webUrl": "/releases-namespace/releases-project/-/milestones/2",
         },
       ],
       "name": "The first release",
@@ -217,18 +217,6 @@ Object {
     ],
     "milestones": Array [
       Object {
-        "description": "The 12.4 milestone",
-        "id": "gid://gitlab/Milestone/124",
-        "issueStats": Object {
-          "closed": 1,
-          "total": 4,
-        },
-        "stats": undefined,
-        "title": "12.4",
-        "webPath": undefined,
-        "webUrl": "/releases-namespace/releases-project/-/milestones/2",
-      },
-      Object {
         "description": "The 12.3 milestone",
         "id": "gid://gitlab/Milestone/123",
         "issueStats": Object {
@@ -239,6 +227,18 @@ Object {
         "title": "12.3",
         "webPath": undefined,
         "webUrl": "/releases-namespace/releases-project/-/milestones/1",
+      },
+      Object {
+        "description": "The 12.4 milestone",
+        "id": "gid://gitlab/Milestone/124",
+        "issueStats": Object {
+          "closed": 1,
+          "total": 4,
+        },
+        "stats": undefined,
+        "title": "12.4",
+        "webPath": undefined,
+        "webUrl": "/releases-namespace/releases-project/-/milestones/2",
       },
     ],
     "name": "The first release",

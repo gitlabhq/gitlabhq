@@ -242,6 +242,7 @@ export default {
 
     <template v-else>
       <registry-header
+        :metadata-loading="isLoading"
         :images-count="containerRepositoriesCount"
         :expiration-policy="config.expirationPolicy"
         :help-page-path="config.helpPagePath"

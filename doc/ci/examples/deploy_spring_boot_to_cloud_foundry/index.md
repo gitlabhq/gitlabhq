@@ -2,8 +2,14 @@
 stage: Release
 group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+author: Dylan Griffith
+author_gitlab: DylanGriffith
 type: tutorial
+date: 2018-06-07
+description: "Continuous Deployment of a Spring Boot application to Cloud Foundry with GitLab CI/CD"
 ---
+
+<!-- vale off -->
 
 # Deploy a Spring Boot application to Cloud Foundry with GitLab CI/CD
 

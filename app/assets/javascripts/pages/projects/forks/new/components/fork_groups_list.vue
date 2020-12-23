@@ -31,7 +31,9 @@ export default {
   },
   computed: {
     filteredNamespaces() {
-      return this.namespaces.filter(n => n.name.toLowerCase().includes(this.filter.toLowerCase()));
+      return this.namespaces.filter((n) =>
+        n.name.toLowerCase().includes(this.filter.toLowerCase()),
+      );
     },
   },
 
@@ -43,7 +45,7 @@ export default {
     loadGroups() {
       axios
         .get(this.endpoint)
-        .then(response => {
+        .then((response) => {
           this.namespaces = response.data.namespaces;
         })
         .catch(() => createFlash(__('There was a problem fetching groups.')));

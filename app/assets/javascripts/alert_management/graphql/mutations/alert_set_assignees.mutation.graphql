@@ -1,4 +1,4 @@
-#import "../fragments/alert_note.fragment.graphql"
+#import "~/graphql_shared/fragments/alert_note.fragment.graphql"
 
 mutation alertSetAssignees($projectPath: ID!, $assigneeUsernames: [String!]!, $iid: String!) {
   alertSetAssignees(

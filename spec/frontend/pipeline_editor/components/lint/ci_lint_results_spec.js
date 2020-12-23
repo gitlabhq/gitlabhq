@@ -25,8 +25,9 @@ describe('CI Lint Results', () => {
   };
 
   const findTable = () => wrapper.find(GlTable);
-  const findByTestId = selector => () => wrapper.find(`[data-testid="ci-lint-${selector}"]`);
-  const findAllByTestId = selector => () => wrapper.findAll(`[data-testid="ci-lint-${selector}"]`);
+  const findByTestId = (selector) => () => wrapper.find(`[data-testid="ci-lint-${selector}"]`);
+  const findAllByTestId = (selector) => () =>
+    wrapper.findAll(`[data-testid="ci-lint-${selector}"]`);
   const findLinkToDoc = () => wrapper.find(GlLink);
   const findErrors = findByTestId('errors');
   const findWarnings = findByTestId('warnings');
@@ -37,7 +38,7 @@ describe('CI Lint Results', () => {
   const findBeforeScripts = findAllByTestId('before-script');
   const findScripts = findAllByTestId('script');
   const findAfterScripts = findAllByTestId('after-script');
-  const filterEmptyScripts = property => mockJobs.filter(job => job[property].length !== 0);
+  const filterEmptyScripts = (property) => mockJobs.filter((job) => job[property].length !== 0);
 
   afterEach(() => {
     wrapper.destroy();

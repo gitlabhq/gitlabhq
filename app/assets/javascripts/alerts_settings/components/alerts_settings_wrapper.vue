@@ -243,7 +243,9 @@ export default {
         });
     },
     editIntegration({ id }) {
-      const currentIntegration = this.integrations.list.find(integration => integration.id === id);
+      const currentIntegration = this.integrations.list.find(
+        (integration) => integration.id === id,
+      );
       this.$apollo.mutate({
         mutation: updateCurrentIntergrationMutation,
         variables: {

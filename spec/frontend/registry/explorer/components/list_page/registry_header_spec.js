@@ -41,9 +41,12 @@ describe('registry_header', () => {
 
   describe('header', () => {
     it('has a title', () => {
-      mountComponent();
+      mountComponent({ metadataLoading: true });
 
-      expect(findTitleArea().props('title')).toBe(CONTAINER_REGISTRY_TITLE);
+      expect(findTitleArea().props()).toMatchObject({
+        title: CONTAINER_REGISTRY_TITLE,
+        metadataLoading: true,
+      });
     });
 
     it('has a commands slot', () => {

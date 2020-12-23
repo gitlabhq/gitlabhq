@@ -743,6 +743,8 @@ available in the Admin UI.
 
 #### Releasing the feature
 
+1. In `ee/config/feature_flags/development/geo_widget_replication.yml`, set `default_enabled: true`
+
 1. In `ee/app/replicators/geo/widget_replicator.rb`, delete the `self.replication_enabled_by_default?` method:
 
    ```ruby
@@ -770,3 +772,260 @@ available in the Admin UI.
          description: 'Find widget registries on this Geo node',
          feature_flag: :geo_widget_replication # REMOVE THIS LINE
    ```
+
+### Repository Replicator Strategy
+
+Models that refer to any repository on the disk
+can be easily supported by Geo with the `Geo::RepositoryReplicatorStrategy` module.
+
+For example, to add support for files referenced by a `Gizmos` model with a
+`gizmos` table, you would perform the following steps.
+
+#### Replication
+
+1. Include `Gitlab::Geo::ReplicableModel` in the `Gizmo` class, and specify
+   the Replicator class `with_replicator Geo::GizmoReplicator`.
+
+   At this point the `Gizmo` class should look like this:
+
+   ```ruby
+   # frozen_string_literal: true
+
+   class Gizmo < ApplicationRecord
+     include ::Gitlab::Geo::ReplicableModel
+
+     with_replicator Geo::GizmoReplicator
+
+     # @param primary_key_in [Range, Gizmo] arg to pass to primary_key_in scope
+     # @return [ActiveRecord::Relation<Gizmo>] everything that should be synced to this node, restricted by primary key
+     def self.replicables_for_current_secondary(primary_key_in)
+       # Should be implemented. The idea of the method is to restrict
+       # the set of synced items depending on synchronization settings
+     end
+
+     # Geo checks this method in FrameworkRepositorySyncService to avoid
+     # snapshotting repositories using object pools
+     def pool_repository
+       nil
+     end
+     ...
+   end
+   ```
+
+   Pay some attention to method `pool_repository`. Not every repository type uses
+   repository pooling. As Geo prefers to use repository snapshotting, it can lead to data loss.
+   Make sure to overwrite `pool_repository` so it returns nil for repositories that do not
+   have pools.
+
+   If there is a common constraint for records to be available for replication,
+   make sure to also overwrite the `available_replicables` scope.
+
+1. Create `ee/app/replicators/geo/gizmo_replicator.rb`. Implement the
+   `#repository` method which should return a `<Repository>` instance,
+   and implement the class method `.model` to return the `Gizmo` class:
+
+   ```ruby
+   # frozen_string_literal: true
+
+   module Geo
+     class GizmoReplicator < Gitlab::Geo::Replicator
+       include ::Geo::RepositoryReplicatorStrategy
+
+       def self.model
+         ::Gizmo
+       end
+
+       def repository
+         model_record.repository
+       end
+
+       def self.git_access_class
+         ::Gitlab::GitAccessGizmo
+       end
+
+       # The feature flag follows the format `geo_#{replicable_name}_replication`,
+       # so here it would be `geo_gizmo_replication`
+       def self.replication_enabled_by_default?
+         false
+       end
+     end
+   end
+   ```
+
+1. Generate the feature flag definition file by running the feature flag command
+   and running through the steps:
+
+   ```shell
+   bin/feature-flag --ee geo_gizmo_replication --type development --group 'group::geo'
+   ```
+
+1. Make sure Geo push events are created. Usually it needs some
+   change in the `app/workers/post_receive.rb` file. Example:
+
+   ```ruby
+   def replicate_gizmo_changes(gizmo)
+     if ::Gitlab::Geo.primary?
+       gizmo.replicator.handle_after_update if gizmo
+     end
+   end
+   ```
+
+   See `app/workers/post_receive.rb` for more examples.
+
+1. Make sure the repository removal is also handled. You may need to add something
+   like the following in the destroy service of the repository:
+
+   ```ruby
+   gizmo.replicator.handle_after_destroy if gizmo.repository
+   ```
+
+1. Add this replicator class to the method `replicator_classes` in
+   `ee/lib/gitlab/geo.rb`:
+
+   ```ruby
+   REPLICATOR_CLASSES = [
+      ...
+      ::Geo::PackageFileReplicator,
+      ::Geo::GizmoReplicator
+   ]
+   end
+   ```
+
+1. Create `ee/spec/replicators/geo/gizmo_replicator_spec.rb` and perform
+   the necessary setup to define the `model_record` variable for the shared
+   examples:
+
+   ```ruby
+   # frozen_string_literal: true
+
+   require 'spec_helper'
+
+   RSpec.describe Geo::GizmoReplicator do
+     let(:model_record) { build(:gizmo) }
+
+     include_examples 'a repository replicator'
+   end
+   ```
+
+1. Create the `gizmo_registry` table, with columns ordered according to [our guidelines](../ordering_table_columns.md) so Geo secondaries can track the sync and
+   verification state of each Gizmo. This migration belongs in `ee/db/geo/migrate`:
+
+   ```ruby
+   # frozen_string_literal: true
+
+   class CreateGizmoRegistry < ActiveRecord::Migration[6.0]
+     include Gitlab::Database::MigrationHelpers
+
+     DOWNTIME = false
+
+     disable_ddl_transaction!
+
+     def up
+       create_table :gizmo_registry, id: :bigserial, force: :cascade do |t|
+         t.datetime_with_timezone :retry_at
+         t.datetime_with_timezone :last_synced_at
+         t.datetime_with_timezone :created_at, null: false
+         t.bigint :gizmo_id, null: false
+         t.integer :state, default: 0, null: false, limit: 2
+         t.integer :retry_count, default: 0, limit: 2
+         t.text :last_sync_failure
+         t.boolean :force_to_redownload
+         t.boolean :missing_on_primary
+
+         t.index :gizmo_id, name: :index_gizmo_registry_on_gizmo_id, unique: true
+         t.index :retry_at
+         t.index :state
+        end
+
+        add_text_limit :gizmo_registry, :last_sync_failure, 255
+      end
+
+      def down
+        drop_table :gizmo_registry
+      end
+   end
+   ```
+
+1. Create `ee/app/models/geo/gizmo_registry.rb`:
+
+   ```ruby
+   # frozen_string_literal: true
+
+   class Geo::GizmoRegistry < Geo::BaseRegistry
+     include Geo::ReplicableRegistry
+
+     MODEL_CLASS = ::Gizmo
+     MODEL_FOREIGN_KEY = :gizmo_id
+
+     belongs_to :gizmo, class_name: 'Gizmo'
+   end
+   ```
+
+1. Update `REGISTRY_CLASSES` in `ee/app/workers/geo/secondary/registry_consistency_worker.rb`.
+1. Add `gizmo_registry` to `ActiveSupport::Inflector.inflections` in `config/initializers_before_autoloader/000_inflections.rb`.
+1. Create `ee/spec/factories/geo/gizmo_registry.rb`:
+
+   ```ruby
+   # frozen_string_literal: true
+
+   FactoryBot.define do
+     factory :geo_gizmo_registry, class: 'Geo::GizmoRegistry' do
+       gizmo
+       state { Geo::GizmoRegistry.state_value(:pending) }
+
+       trait :synced do
+         state { Geo::GizmoRegistry.state_value(:synced) }
+         last_synced_at { 5.days.ago }
+       end
+
+       trait :failed do
+         state { Geo::GizmoRegistry.state_value(:failed) }
+         last_synced_at { 1.day.ago }
+         retry_count { 2 }
+         last_sync_failure { 'Random error' }
+       end
+
+       trait :started do
+         state { Geo::GizmoRegistry.state_value(:started) }
+         last_synced_at { 1.day.ago }
+         retry_count { 0 }
+       end
+     end
+   end
+   ```
+
+1. Create `ee/spec/models/geo/gizmo_registry_spec.rb`:
+
+   ```ruby
+   # frozen_string_literal: true
+
+   require 'spec_helper'
+
+   RSpec.describe Geo::GizmoRegistry, :geo, type: :model do
+     let_it_be(:registry) { create(:geo_gizmo_registry) }
+
+     specify 'factory is valid' do
+       expect(registry).to be_valid
+     end
+
+     include_examples 'a Geo framework registry'
+   end
+   ```
+
+1. Make sure the newly added repository type can be accessed by a secondary.
+   You may need to make some changes to one of the Git access classes.
+
+   Gizmos should now be replicated by Geo.
+
+#### Metrics
+
+You need to make the same changes as for Blob Replicator Strategy.
+You need to make the same changes for the [metrics as in the Blob Replicator Strategy](#metrics).
+
+#### GraphQL API
+
+You need to make the same changes for the GraphQL API [as in the Blob Replicator Strategy](#graphql-api).
+
+#### Releasing the feature
+
+You need to make the same changes for [releasing the feature as in the Blob Replicator Strategy](#releasing-the-feature).

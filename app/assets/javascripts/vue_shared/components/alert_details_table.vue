@@ -49,7 +49,8 @@ export default {
       label: s__('AlertManagement|Key'),
       thClass,
       tdClass,
-      formatter: string => capitalizeFirstCharacter(convertToSentenceCase(splitCamelCase(string))),
+      formatter: (string) =>
+        capitalizeFirstCharacter(convertToSentenceCase(splitCamelCase(string))),
     },
     {
       key: 'value',

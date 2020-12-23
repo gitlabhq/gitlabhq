@@ -43,6 +43,11 @@ export default {
       required: false,
       default: false,
     },
+    metadataLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   loader: {
     repeat: 10,
@@ -92,7 +97,11 @@ export default {
 </script>
 
 <template>
-  <title-area :title="$options.i18n.CONTAINER_REGISTRY_TITLE" :info-messages="infoMessages">
+  <title-area
+    :title="$options.i18n.CONTAINER_REGISTRY_TITLE"
+    :info-messages="infoMessages"
+    :metadata-loading="metadataLoading"
+  >
     <template #right-actions>
       <slot name="commands"></slot>
     </template>

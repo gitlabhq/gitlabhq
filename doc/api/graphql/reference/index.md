@@ -1579,7 +1579,7 @@ Represents an external issue.
 | `board` | Board | A single board of the group |
 | `boards` | BoardConnection | Boards of the group |
 | `codeCoverageActivities` | CodeCoverageActivityConnection | Represents the code coverage activity for this group |
-| `complianceFrameworks` | ComplianceFrameworkConnection | Compliance frameworks available to projects in this namespace Available only when feature flag `ff_custom_compliance_frameworks` is enabled. |
+| `complianceFrameworks` | ComplianceFrameworkConnection | Compliance frameworks available to projects in this namespace. Available only when feature flag `ff_custom_compliance_frameworks` is enabled. |
 | `containerRepositories` | ContainerRepositoryConnection | Container repositories of the group |
 | `containerRepositoriesCount` | Int! | Number of container repositories in the group |
 | `containsLockedProjects` | Boolean! | Includes at least one project where the repository size exceeds the limit |
@@ -2329,7 +2329,7 @@ Contains statistics about a milestone.
 | ----- | ---- | ----------- |
 | `actualRepositorySizeLimit` | Float | Size limit for repositories in the namespace in bytes |
 | `additionalPurchasedStorageSize` | Float | Additional storage purchased for the root namespace in bytes |
-| `complianceFrameworks` | ComplianceFrameworkConnection | Compliance frameworks available to projects in this namespace Available only when feature flag `ff_custom_compliance_frameworks` is enabled. |
+| `complianceFrameworks` | ComplianceFrameworkConnection | Compliance frameworks available to projects in this namespace. Available only when feature flag `ff_custom_compliance_frameworks` is enabled. |
 | `containsLockedProjects` | Boolean! | Includes at least one project where the repository size exceeds the limit |
 | `description` | String | Description of the namespace |
 | `descriptionHtml` | String | The GitLab Flavored Markdown rendering of `description` |

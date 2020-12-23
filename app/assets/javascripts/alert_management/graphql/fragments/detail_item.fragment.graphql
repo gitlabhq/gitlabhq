@@ -1,5 +1,5 @@
-#import "./list_item.fragment.graphql"
-#import "./alert_note.fragment.graphql"
+#import "~/graphql_shared/fragments/alert.fragment.graphql"
+#import "~/graphql_shared/fragments/alert_note.fragment.graphql"
 
 fragment AlertDetailItem on AlertManagementAlert {
   ...AlertListItem

@@ -9,13 +9,13 @@ import {
 
 export * from './getters_versions_dropdowns';
 
-export const isParallelView = state => state.diffViewType === PARALLEL_DIFF_VIEW_TYPE;
+export const isParallelView = (state) => state.diffViewType === PARALLEL_DIFF_VIEW_TYPE;
 
-export const isInlineView = state => state.diffViewType === INLINE_DIFF_VIEW_TYPE;
+export const isInlineView = (state) => state.diffViewType === INLINE_DIFF_VIEW_TYPE;
 
-export const whichCollapsedTypes = state => {
-  const automatic = state.diffFiles.some(file => file.viewer?.automaticallyCollapsed);
-  const manual = state.diffFiles.some(file => file.viewer?.manuallyCollapsed);
+export const whichCollapsedTypes = (state) => {
+  const automatic = state.diffFiles.some((file) => file.viewer?.automaticallyCollapsed);
+  const manual = state.diffFiles.some((file) => file.viewer?.manuallyCollapsed);
 
   return {
     any: automatic || manual,
@@ -24,18 +24,18 @@ export const whichCollapsedTypes = state => {
   };
 };
 
-export const commitId = state => (state.commit && state.commit.id ? state.commit.id : null);
+export const commitId = (state) => (state.commit && state.commit.id ? state.commit.id : null);
 
 /**
  * Checks if the diff has all discussions expanded
  * @param {Object} diff
  * @returns {Boolean}
  */
-export const diffHasAllExpandedDiscussions = (state, getters) => diff => {
+export const diffHasAllExpandedDiscussions = (state, getters) => (diff) => {
   const discussions = getters.getDiffFileDiscussions(diff);
 
   return (
-    (discussions && discussions.length && discussions.every(discussion => discussion.expanded)) ||
+    (discussions && discussions.length && discussions.every((discussion) => discussion.expanded)) ||
     false
   );
 };
@@ -45,11 +45,13 @@ export const diffHasAllExpandedDiscussions = (state, getters) => diff => {
  * @param {Object} diff
  * @returns {Boolean}
  */
-export const diffHasAllCollapsedDiscussions = (state, getters) => diff => {
+export const diffHasAllCollapsedDiscussions = (state, getters) => (diff) => {
   const discussions = getters.getDiffFileDiscussions(diff);
 
   return (
-    (discussions && discussions.length && discussions.every(discussion => !discussion.expanded)) ||
+    (discussions &&
+      discussions.length &&
+      discussions.every((discussion) => !discussion.expanded)) ||
     false
   );
 };
@@ -59,9 +61,9 @@ export const diffHasAllCollapsedDiscussions = (state, getters) => diff => {
  * @param {Object} diff
  * @returns {Boolean}
  */
-export const diffHasExpandedDiscussions = () => diff => {
-  return diff[INLINE_DIFF_LINES_KEY].filter(l => l.discussions.length >= 1).some(
-    l => l.discussionsExpanded,
+export const diffHasExpandedDiscussions = () => (diff) => {
+  return diff[INLINE_DIFF_LINES_KEY].filter((l) => l.discussions.length >= 1).some(
+    (l) => l.discussionsExpanded,
   );
 };
 
@@ -70,8 +72,8 @@ export const diffHasExpandedDiscussions = () => diff => {
  * @param {Boolean} diff
  * @returns {Boolean}
  */
-export const diffHasDiscussions = () => diff => {
-  return diff[INLINE_DIFF_LINES_KEY].some(l => l.discussions.length >= 1);
+export const diffHasDiscussions = () => (diff) => {
+  return diff[INLINE_DIFF_LINES_KEY].some((l) => l.discussions.length >= 1);
 };
 
 /**
@@ -79,22 +81,22 @@ export const diffHasDiscussions = () => diff => {
  * @param {Object} diff
  * @returns {Array}
  */
-export const getDiffFileDiscussions = (state, getters, rootState, rootGetters) => diff =>
+export const getDiffFileDiscussions = (state, getters, rootState, rootGetters) => (diff) =>
   rootGetters.discussions.filter(
-    discussion => discussion.diff_discussion && discussion.diff_file.file_hash === diff.file_hash,
+    (discussion) => discussion.diff_discussion && discussion.diff_file.file_hash === diff.file_hash,
   ) || [];
 
-export const getDiffFileByHash = state => fileHash =>
-  state.diffFiles.find(file => file.file_hash === fileHash);
+export const getDiffFileByHash = (state) => (fileHash) =>
+  state.diffFiles.find((file) => file.file_hash === fileHash);
 
-export const flatBlobsList = state =>
-  Object.values(state.treeEntries).filter(f => f.type === 'blob');
+export const flatBlobsList = (state) =>
+  Object.values(state.treeEntries).filter((f) => f.type === 'blob');
 
 export const allBlobs = (state, getters) =>
   getters.flatBlobsList.reduce((acc, file) => {
     const { parentPath } = file;
 
-    if (parentPath && !acc.some(f => f.path === parentPath)) {
+    if (parentPath && !acc.some((f) => f.path === parentPath)) {
       acc.push({
         path: parentPath,
         isHeader: true,
@@ -102,13 +104,13 @@ export const allBlobs = (state, getters) =>
       });
     }
 
-    acc.find(f => f.path === parentPath).tree.push(file);
+    acc.find((f) => f.path === parentPath).tree.push(file);
 
     return acc;
   }, []);
 
-export const getCommentFormForDiffFile = state => fileHash =>
-  state.commentForms.find(form => form.fileHash === fileHash);
+export const getCommentFormForDiffFile = (state) => (fileHash) =>
+  state.commentForms.find((form) => form.fileHash === fileHash);
 
 /**
  * Returns the test coverage hits for a specific line of a given file
@@ -116,7 +118,7 @@ export const getCommentFormForDiffFile = state => fileHash =>
  * @param {number} line
  * @returns {number}
  */
-export const fileLineCoverage = state => (file, line) => {
+export const fileLineCoverage = (state) => (file, line) => {
   if (!state.coverageFiles.files) return {};
   const fileCoverage = state.coverageFiles.files[file];
   if (!fileCoverage) return {};
@@ -137,13 +139,13 @@ export const fileLineCoverage = state => (file, line) => {
  * Returns index of a currently selected diff in diffFiles
  * @returns {number}
  */
-export const currentDiffIndex = state =>
+export const currentDiffIndex = (state) =>
   Math.max(
     0,
-    state.diffFiles.findIndex(diff => diff.file_hash === state.currentDiffFileId),
+    state.diffFiles.findIndex((diff) => diff.file_hash === state.currentDiffFileId),
   );
 
-export const diffLines = state => (file, unifiedDiffComponents) => {
+export const diffLines = (state) => (file, unifiedDiffComponents) => {
   if (!unifiedDiffComponents && state.diffViewType === INLINE_DIFF_VIEW_TYPE) {
     return null;
   }
@@ -155,5 +157,5 @@ export const diffLines = state => (file, unifiedDiffComponents) => {
 };
 
 export function fileReviews(state) {
-  return state.diffFiles.map(file => isFileReviewed(state.mrReviews, file));
+  return state.diffFiles.map((file) => isFileReviewed(state.mrReviews, file));
 }

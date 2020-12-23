@@ -26,13 +26,15 @@ describe('HiddenFilesWarning', () => {
   });
 
   it('has a correct plain diff URL', () => {
-    const plainDiffLink = wrapper.findAll('a').wrappers.filter(x => x.text() === 'Plain diff')[0];
+    const plainDiffLink = wrapper.findAll('a').wrappers.filter((x) => x.text() === 'Plain diff')[0];
 
     expect(plainDiffLink.attributes('href')).toBe(propsData.plainDiffPath);
   });
 
   it('has a correct email patch URL', () => {
-    const emailPatchLink = wrapper.findAll('a').wrappers.filter(x => x.text() === 'Email patch')[0];
+    const emailPatchLink = wrapper
+      .findAll('a')
+      .wrappers.filter((x) => x.text() === 'Email patch')[0];
 
     expect(emailPatchLink.attributes('href')).toBe(propsData.emailPatchPath);
   });

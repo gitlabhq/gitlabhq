@@ -47,7 +47,7 @@ Conan version 1.20.5
 ### Install CMake
 
 When you develop with C++ and Conan, you can select from many available
-compilers. This example uses the CMake compiler.
+compilers. This example uses the CMake build system generator.
 
 To install CMake:
 

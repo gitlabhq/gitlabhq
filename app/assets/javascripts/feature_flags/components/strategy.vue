@@ -83,7 +83,7 @@ export default {
       );
     },
     filteredEnvironments() {
-      return this.environments.filter(e => !e.shouldBeDestroyed);
+      return this.environments.filter((e) => !e.shouldBeDestroyed);
     },
     isPercentUserRollout() {
       return this.formStrategy.name === ROLLOUT_STRATEGY_PERCENT_ROLLOUT;
@@ -91,7 +91,9 @@ export default {
   },
   methods: {
     addEnvironment(environment) {
-      const allEnvironmentsScope = this.environments.find(scope => scope.environmentScope === '*');
+      const allEnvironmentsScope = this.environments.find(
+        (scope) => scope.environmentScope === '*',
+      );
       if (allEnvironmentsScope) {
         allEnvironmentsScope.shouldBeDestroyed = true;
       }
@@ -113,7 +115,7 @@ export default {
       if (isNumber(environment.id)) {
         Vue.set(environment, 'shouldBeDestroyed', true);
       } else {
-        this.environments = this.environments.filter(e => e !== environment);
+        this.environments = this.environments.filter((e) => e !== environment);
       }
       if (this.filteredEnvironments.length === 0) {
         this.environments.push({ environmentScope: '*' });

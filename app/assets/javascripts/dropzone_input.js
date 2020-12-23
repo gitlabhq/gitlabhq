@@ -46,7 +46,7 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
   let uploadFile;
 
   formTextarea.wrap('<div class="div-dropzone"></div>');
-  formTextarea.on('paste', event => handlePaste(event));
+  formTextarea.on('paste', (event) => handlePaste(event));
 
   // Add dropzone area to the form.
   const $mdArea = formTextarea.closest('.md-area');
@@ -139,7 +139,7 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
 
   // removeAllFiles(true) stops uploading files (if any)
   // and remove them from dropzone files queue.
-  $cancelButton.on('click', e => {
+  $cancelButton.on('click', (e) => {
     e.preventDefault();
     e.stopPropagation();
     Dropzone.forElement($formDropzone.get(0)).removeAllFiles(true);
@@ -149,7 +149,7 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
   // clear dropzone files queue, change status of failed files to undefined,
   // and add that files to the dropzone files queue again.
   // addFile() adds file to dropzone files queue and upload it.
-  $retryLink.on('click', e => {
+  $retryLink.on('click', (e) => {
     const dropzoneInstance = Dropzone.forElement(
       e.target.closest('.js-main-target-form').querySelector('.div-dropzone'),
     );
@@ -161,7 +161,7 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
     // uploading of files that are being uploaded at the moment.
     dropzoneInstance.removeAllFiles(true);
 
-    failedFiles.map(failedFile => {
+    failedFiles.map((failedFile) => {
       const file = failedFile;
 
       if (file.status === Dropzone.ERROR) {
@@ -173,7 +173,7 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
     });
   });
   // eslint-disable-next-line consistent-return
-  handlePaste = event => {
+  handlePaste = (event) => {
     const pasteEvent = event.originalEvent;
     const { clipboardData } = pasteEvent;
     if (clipboardData && clipboardData.items) {
@@ -198,7 +198,7 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
     }
   };
 
-  isImage = data => {
+  isImage = (data) => {
     let i = 0;
     while (i < data.clipboardData.items.length) {
       const item = data.clipboardData.items[i];
@@ -228,7 +228,7 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
     return formTextarea.trigger('input');
   };
 
-  addFileToForm = path => {
+  addFileToForm = (path) => {
     $(form).append(`<input type="hidden" name="files[]" value="${escape(path)}">`);
   };
 
@@ -236,7 +236,7 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
 
   const closeSpinner = () => $uploadingProgressContainer.addClass('hide');
 
-  const showError = message => {
+  const showError = (message) => {
     $uploadingErrorContainer.removeClass('hide');
     $uploadingErrorMessage.html(message);
   };
@@ -269,15 +269,16 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
         insertToTextArea(filename, md);
         closeSpinner();
       })
-      .catch(e => {
+      .catch((e) => {
         showError(e.response.data.message);
         closeSpinner();
       });
   };
 
   updateAttachingMessage = (files, messageContainer) => {
-    const filesCount = files.filter(file => file.status === 'uploading' || file.status === 'queued')
-      .length;
+    const filesCount = files.filter(
+      (file) => file.status === 'uploading' || file.status === 'queued',
+    ).length;
     const attachingMessage = n__('Attaching a file', 'Attaching %d files', filesCount);
 
     messageContainer.text(`${attachingMessage} -`);

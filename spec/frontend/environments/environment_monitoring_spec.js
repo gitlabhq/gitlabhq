@@ -16,7 +16,8 @@ describe('Monitoring Component', () => {
   };
 
   const findButtons = () => wrapper.findAll(GlButton);
-  const findButtonsByIcon = icon => findButtons().filter(button => button.props('icon') === icon);
+  const findButtonsByIcon = (icon) =>
+    findButtons().filter((button) => button.props('icon') === icon);
 
   beforeEach(() => {
     createWrapper();

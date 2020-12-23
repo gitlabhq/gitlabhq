@@ -1,5 +1,5 @@
 <script>
-import { GlAvatar, GlSprintf, GlLink } from '@gitlab/ui';
+import { GlAvatar, GlSprintf, GlLink, GlSkeletonLoader } from '@gitlab/ui';
 
 export default {
   name: 'TitleArea',
@@ -7,6 +7,7 @@ export default {
     GlAvatar,
     GlSprintf,
     GlLink,
+    GlSkeletonLoader,
   },
   props: {
     avatar: {
@@ -23,6 +24,11 @@ export default {
       type: Array,
       default: () => [],
       required: false,
+    },
+    metadataLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -68,13 +74,23 @@ export default {
         </div>
 
         <div class="gl-display-flex gl-flex-wrap gl-align-items-center gl-mt-3">
-          <div
-            v-for="(row, metadataIndex) in metadataSlots"
-            :key="metadataIndex"
-            class="gl-display-flex gl-align-items-center gl-mr-5"
-          >
-            <slot :name="row"></slot>
-          </div>
+          <template v-if="!metadataLoading">
+            <div
+              v-for="(row, metadataIndex) in metadataSlots"
+              :key="metadataIndex"
+              class="gl-display-flex gl-align-items-center gl-mr-5"
+            >
+              <slot :name="row"></slot>
+            </div>
+          </template>
+          <template v-else>
+            <div class="gl-w-full">
+              <gl-skeleton-loader :width="200" :height="16" preserve-aspect-ratio="xMinYMax meet">
+                <circle cx="6" cy="8" r="6" />
+                <rect x="16" y="4" width="200" height="8" rx="4" />
+              </gl-skeleton-loader>
+            </div>
+          </template>
         </div>
       </div>
       <div v-if="$slots['right-actions']" class="gl-mt-3">

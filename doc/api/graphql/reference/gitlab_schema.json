@@ -26177,6 +26177,16 @@
                     "ofType": null
                   },
                   "defaultValue": null
+                },
+                {
+                  "name": "id",
+                  "description": "Global ID of a specific compliance framework to return.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ComplianceManagementFrameworkID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
                 }
               ],
               "type": {
@@ -26928,7 +26938,7 @@
             },
             {
               "name": "complianceFrameworks",
-              "description": "Compliance frameworks available to projects in this namespace Available only when feature flag `ff_custom_compliance_frameworks` is enabled.",
+              "description": "Compliance frameworks available to projects in this namespace. Available only when feature flag `ff_custom_compliance_frameworks` is enabled.",
               "args": [
                 {
                   "name": "after",
@@ -45542,7 +45552,7 @@
             },
             {
               "name": "complianceFrameworks",
-              "description": "Compliance frameworks available to projects in this namespace Available only when feature flag `ff_custom_compliance_frameworks` is enabled.",
+              "description": "Compliance frameworks available to projects in this namespace. Available only when feature flag `ff_custom_compliance_frameworks` is enabled.",
               "args": [
                 {
                   "name": "after",
@@ -45580,6 +45590,16 @@
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "id",
+                  "description": "Global ID of a specific compliance framework to return.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ComplianceManagementFrameworkID",
                     "ofType": null
                   },
                   "defaultValue": null

@@ -237,19 +237,22 @@ describe('Clusters Store', () => {
       });
     });
 
-    describe.each(APPLICATION_INSTALLED_STATUSES)('given the current app status is %s', status => {
-      it('marks application as installed', () => {
-        const mockResponseData =
-          CLUSTERS_MOCK_DATA.GET['/gitlab-org/gitlab-shell/clusters/2/status.json'].data;
-        const runnerAppIndex = 2;
+    describe.each(APPLICATION_INSTALLED_STATUSES)(
+      'given the current app status is %s',
+      (status) => {
+        it('marks application as installed', () => {
+          const mockResponseData =
+            CLUSTERS_MOCK_DATA.GET['/gitlab-org/gitlab-shell/clusters/2/status.json'].data;
+          const runnerAppIndex = 2;
 
-        mockResponseData.applications[runnerAppIndex].status = status;
+          mockResponseData.applications[runnerAppIndex].status = status;
 
-        store.updateStateFromServer(mockResponseData);
+          store.updateStateFromServer(mockResponseData);
 
-        expect(store.state.applications[RUNNER].installed).toBe(true);
-      });
-    });
+          expect(store.state.applications[RUNNER].installed).toBe(true);
+        });
+      },
+    );
 
     it('sets default hostname for jupyter when ingress has a ip address', () => {
       const mockResponseData =

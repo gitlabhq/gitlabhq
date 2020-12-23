@@ -185,7 +185,9 @@ describe('ServiceDeskSetting', () => {
         const expectedTemplates = [''].concat(templates);
 
         const dropdown = findTemplateDropdown();
-        const dropdownList = Array.from(dropdown.element.children).map(option => option.innerText);
+        const dropdownList = Array.from(dropdown.element.children).map(
+          (option) => option.innerText,
+        );
 
         expect(dropdown.element.children).toHaveLength(expectedTemplates.length);
         expect(dropdownList.includes('Bug')).toEqual(true);

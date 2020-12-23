@@ -88,12 +88,9 @@ RSpec.describe Mutations::Releases::Create do
 
       it 'creates the release with the correct milestone associations' do
         expected_milestone_titles = [milestone_12_3.title, milestone_12_4.title]
-        actual_milestone_titles = new_release.milestones.map { |m| m.title }
+        actual_milestone_titles = new_release.milestones.order_by_dates_and_title.map { |m| m.title }
 
-        # Right now the milestones are returned in a non-deterministic order.
-        # `match_array` should be updated to `eq` once
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/259012 is addressed.
-        expect(actual_milestone_titles).to match_array(expected_milestone_titles)
+        expect(actual_milestone_titles).to eq(expected_milestone_titles)
       end
 
       describe 'asset links' do

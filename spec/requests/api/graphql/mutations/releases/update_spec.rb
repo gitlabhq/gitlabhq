@@ -116,15 +116,7 @@ RSpec.describe 'Updating an existing release' do
     it 'updates the correct field and returns the release' do
       update_release
 
-      expect(mutation_response[:release]).to include(expected_attributes.merge(updates).except(:milestones))
-
-      # Right now the milestones are returned in a non-deterministic order.
-      # Because of this, we need to test milestones separately to allow
-      # for them to be returned in any order.
-      # Once https://gitlab.com/gitlab-org/gitlab/-/issues/259012 has been
-      # fixed, this special milestone handling can be removed.
-      expected_milestones = expected_attributes.merge(updates)[:milestones]
-      expect(mutation_response[:release][:milestones][:nodes]).to match_array(expected_milestones[:nodes])
+      expect(mutation_response[:release]).to eq(expected_attributes.merge(updates))
     end
   end
 

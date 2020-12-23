@@ -62,7 +62,9 @@ export default {
       return files.every(this.isFileValid);
     },
     isValidDragDataType({ dataTransfer }) {
-      return Boolean(dataTransfer && dataTransfer.types.some(t => t === VALID_DATA_TRANSFER_TYPE));
+      return Boolean(
+        dataTransfer && dataTransfer.types.some((t) => t === VALID_DATA_TRANSFER_TYPE),
+      );
     },
     ondrop({ dataTransfer = {} }) {
       this.dragCounter = 0;

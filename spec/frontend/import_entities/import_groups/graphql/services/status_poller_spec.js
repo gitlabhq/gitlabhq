@@ -23,7 +23,7 @@ describe('Bulk import status poller', () => {
   let clientMock;
 
   const listQueryCacheCalls = () =>
-    clientMock.readQuery.mock.calls.filter(call => call[0].query === bulkImportSourceGroupsQuery);
+    clientMock.readQuery.mock.calls.filter((call) => call[0].query === bulkImportSourceGroupsQuery);
 
   beforeEach(() => {
     clientMock = createMockClient({
@@ -142,9 +142,11 @@ describe('Bulk import status poller', () => {
       clientMock.cache.writeQuery({
         query: bulkImportSourceGroupsQuery,
         data: {
-          bulkImportSourceGroups: [STARTED_GROUP_1, NOT_STARTED_GROUP, STARTED_GROUP_2].map(group =>
-            generateFakeEntry(group),
-          ),
+          bulkImportSourceGroups: [
+            STARTED_GROUP_1,
+            NOT_STARTED_GROUP,
+            STARTED_GROUP_2,
+          ].map((group) => generateFakeEntry(group)),
         },
       });
 
@@ -155,9 +157,9 @@ describe('Bulk import status poller', () => {
       await waitForPromises();
       const [[doc]] = clientMock.query.mock.calls;
       const { selections } = doc.query.definitions[0].selectionSet;
-      expect(selections.every(field => field.name.value === 'group')).toBeTruthy();
+      expect(selections.every((field) => field.name.value === 'group')).toBeTruthy();
       expect(selections).toHaveLength(2);
-      expect(selections.map(sel => sel.arguments[0].value.value)).toStrictEqual([
+      expect(selections.map((sel) => sel.arguments[0].value.value)).toStrictEqual([
         `${TARGET_NAMESPACE}/${STARTED_GROUP_1.import_target.new_name}`,
         `${TARGET_NAMESPACE}/${STARTED_GROUP_2.import_target.new_name}`,
       ]);
@@ -167,7 +169,7 @@ describe('Bulk import status poller', () => {
       clientMock.cache.writeQuery({
         query: bulkImportSourceGroupsQuery,
         data: {
-          bulkImportSourceGroups: [STARTED_GROUP_1, STARTED_GROUP_2].map(group =>
+          bulkImportSourceGroups: [STARTED_GROUP_1, STARTED_GROUP_2].map((group) =>
             generateFakeEntry(group),
           ),
         },
@@ -189,7 +191,7 @@ describe('Bulk import status poller', () => {
         clientMock.cache.writeQuery({
           query: bulkImportSourceGroupsQuery,
           data: {
-            bulkImportSourceGroups: [STARTED_GROUP_1, STARTED_GROUP_2].map(group =>
+            bulkImportSourceGroups: [STARTED_GROUP_1, STARTED_GROUP_2].map((group) =>
               generateFakeEntry(group),
             ),
           },

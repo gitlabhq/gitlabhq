@@ -48,12 +48,7 @@ RSpec.describe Mutations::Releases::Update do
       expect(updated_release.name).to eq(name) unless except_for == :name
       expect(updated_release.description).to eq(description) unless except_for == :description
       expect(updated_release.released_at).to eq(released_at) unless except_for == :released_at
-
-      # Right now the milestones are returned in a non-deterministic order.
-      # Because of this, we need to allow for milestones to be returned in any order.
-      # Once https://gitlab.com/gitlab-org/gitlab/-/issues/259012 has been
-      # fixed, this can be updated to expect a specific order.
-      expect(updated_release.milestones).to match_array([milestone_12_3, milestone_12_4]) unless except_for == :milestones
+      expect(updated_release.milestones.order_by_dates_and_title).to eq([milestone_12_3, milestone_12_4]) unless except_for == :milestones
     end
   end
 

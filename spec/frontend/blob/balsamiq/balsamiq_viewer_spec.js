@@ -49,7 +49,7 @@ describe('BalsamiqViewer', () => {
       );
     });
 
-    it('should call `renderFile` on request success', done => {
+    it('should call `renderFile` on request success', (done) => {
       jest.spyOn(axios, 'get').mockReturnValue(requestSuccess);
       jest.spyOn(bv, 'renderFile').mockImplementation(() => {});
 
@@ -61,7 +61,7 @@ describe('BalsamiqViewer', () => {
         .catch(done.fail);
     });
 
-    it('should not call `renderFile` on request failure', done => {
+    it('should not call `renderFile` on request failure', (done) => {
       jest.spyOn(axios, 'get').mockReturnValue(Promise.reject());
       jest.spyOn(bv, 'renderFile').mockImplementation(() => {});
 
@@ -95,8 +95,8 @@ describe('BalsamiqViewer', () => {
       balsamiqViewer.viewer = viewer;
 
       balsamiqViewer.getPreviews.mockReturnValue(previews);
-      balsamiqViewer.renderPreview.mockImplementation(preview => preview);
-      viewer.appendChild.mockImplementation(containerElement => {
+      balsamiqViewer.renderPreview.mockImplementation((preview) => preview);
+      viewer.appendChild.mockImplementation((containerElement) => {
         container = containerElement;
       });
 
@@ -177,7 +177,9 @@ describe('BalsamiqViewer', () => {
         database,
       };
 
-      jest.spyOn(BalsamiqViewer, 'parsePreview').mockImplementation(preview => preview.toString());
+      jest
+        .spyOn(BalsamiqViewer, 'parsePreview')
+        .mockImplementation((preview) => preview.toString());
       database.exec.mockReturnValue(thumbnails);
 
       getPreviews = BalsamiqViewer.prototype.getPreviews.call(balsamiqViewer);
