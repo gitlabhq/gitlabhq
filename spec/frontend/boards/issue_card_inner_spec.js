@@ -250,12 +250,7 @@ describe('Issue card component', () => {
       });
 
       it('renders more avatar counter', () => {
-        expect(
-          wrapper
-            .find('.board-card-assignee .avatar-counter')
-            .text()
-            .trim(),
-        ).toEqual('+2');
+        expect(wrapper.find('.board-card-assignee .avatar-counter').text().trim()).toEqual('+2');
       });
 
       it('renders two assignees', () => {
@@ -281,12 +276,7 @@ describe('Issue card component', () => {
 
         await wrapper.vm.$nextTick();
 
-        expect(
-          wrapper
-            .find('.board-card-assignee .avatar-counter')
-            .text()
-            .trim(),
-        ).toEqual('99+');
+        expect(wrapper.find('.board-card-assignee .avatar-counter').text().trim()).toEqual('99+');
       });
     });
   });

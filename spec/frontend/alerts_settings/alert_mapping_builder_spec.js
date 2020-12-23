@@ -28,11 +28,7 @@ describe('AlertMappingBuilder', () => {
   });
 
   const findColumnInRow = (row, column) =>
-    wrapper
-      .findAll('.gl-display-table-row')
-      .at(row)
-      .findAll('.gl-display-table-cell ')
-      .at(column);
+    wrapper.findAll('.gl-display-table-row').at(row).findAll('.gl-display-table-cell ').at(column);
 
   it('renders column captions', () => {
     expect(findColumnInRow(0, 0).text()).toContain(i18n.columns.gitlabKeyTitle);

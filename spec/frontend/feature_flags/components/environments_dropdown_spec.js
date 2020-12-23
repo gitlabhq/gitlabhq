@@ -136,10 +136,7 @@ describe('Feature flags > Environments dropdown ', () => {
     });
 
     it('emits create event', async () => {
-      wrapper
-        .findAll(GlButton)
-        .at(0)
-        .vm.$emit('click');
+      wrapper.findAll(GlButton).at(0).vm.$emit('click');
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted('createClicked')).toEqual([['production']]);
     });

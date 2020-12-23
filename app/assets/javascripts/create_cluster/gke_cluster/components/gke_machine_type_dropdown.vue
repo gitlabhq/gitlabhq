@@ -57,9 +57,7 @@ export default {
       if (this.hasZone) {
         this.isLoading = true;
 
-        this.fetchMachineTypes()
-          .then(this.fetchSuccessHandler)
-          .catch(this.fetchFailureHandler);
+        this.fetchMachineTypes().then(this.fetchSuccessHandler).catch(this.fetchFailureHandler);
       }
     },
   },

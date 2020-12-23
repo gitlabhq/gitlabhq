@@ -82,9 +82,7 @@ describe.skip('Old Notes (~/notes.js)', () => {
     it('modifies the Markdown field', () => {
       const changeEvent = document.createEvent('HTMLEvents');
       changeEvent.initEvent('change', true, true);
-      $('input[type=checkbox]')
-        .attr('checked', true)[0]
-        .dispatchEvent(changeEvent);
+      $('input[type=checkbox]').attr('checked', true)[0].dispatchEvent(changeEvent);
 
       expect($('.js-task-list-field.original-task-list').val()).toBe('- [x] Task List Item');
     });
@@ -746,12 +744,7 @@ describe.skip('Old Notes (~/notes.js)', () => {
           .find(`#note_${note.id}`)
           .find('.js-task-list-container');
 
-        expect(
-          $updatedNoteEl
-            .find('.note-text')
-            .text()
-            .trim(),
-        ).toEqual('');
+        expect($updatedNoteEl.find('.note-text').text().trim()).toEqual('');
 
         done();
       });
@@ -912,26 +905,15 @@ describe.skip('Old Notes (~/notes.js)', () => {
 
       expect($tempNote.find('.timeline-icon .avatar').attr('src')).toEqual(currentUserAvatar);
       expect($tempNote.find('.timeline-content').hasClass('discussion')).toBeFalsy();
-      expect(
-        $tempNoteHeader
-          .find('.d-none.d-sm-inline-block')
-          .text()
-          .trim(),
-      ).toEqual(currentUserFullname);
+      expect($tempNoteHeader.find('.d-none.d-sm-inline-block').text().trim()).toEqual(
+        currentUserFullname,
+      );
 
-      expect(
-        $tempNoteHeader
-          .find('.note-headline-light')
-          .text()
-          .trim(),
-      ).toEqual(`@${currentUsername}`);
+      expect($tempNoteHeader.find('.note-headline-light').text().trim()).toEqual(
+        `@${currentUsername}`,
+      );
 
-      expect(
-        $tempNote
-          .find('.note-body .note-text p')
-          .text()
-          .trim(),
-      ).toEqual(sampleComment);
+      expect($tempNote.find('.note-body .note-text p').text().trim()).toEqual(sampleComment);
     });
 
     it('should return constructed placeholder element for discussion note based on form contents', () => {
@@ -959,12 +941,9 @@ describe.skip('Old Notes (~/notes.js)', () => {
       });
       const $tempNoteHeader = $tempNote.find('.note-header');
 
-      expect(
-        $tempNoteHeader
-          .find('.d-none.d-sm-inline-block')
-          .text()
-          .trim(),
-      ).toEqual('Foo &lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;');
+      expect($tempNoteHeader.find('.d-none.d-sm-inline-block').text().trim()).toEqual(
+        'Foo &lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;',
+      );
     });
   });
 
@@ -987,12 +966,7 @@ describe.skip('Old Notes (~/notes.js)', () => {
       expect($tempNote.attr('id')).toEqual(uniqueId);
       expect($tempNote.hasClass('being-posted')).toBeTruthy();
       expect($tempNote.hasClass('fade-in-half')).toBeTruthy();
-      expect(
-        $tempNote
-          .find('.timeline-content i')
-          .text()
-          .trim(),
-      ).toEqual(sampleCommandDescription);
+      expect($tempNote.find('.timeline-content i').text().trim()).toEqual(sampleCommandDescription);
     });
   });
 

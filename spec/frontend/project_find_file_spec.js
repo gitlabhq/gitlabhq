@@ -58,7 +58,10 @@ describe('ProjectFindFile', () => {
     mock = new MockAdapter(axios);
 
     element = $(TEMPLATE);
-    mock.onGet(FILE_FIND_URL).replyOnce(200, files.map(x => x.path));
+    mock.onGet(FILE_FIND_URL).replyOnce(
+      200,
+      files.map(x => x.path),
+    );
     getProjectFindFileInstance(); // This triggers a load / axios call + subsequent render in the constructor
 
     setImmediate(done);

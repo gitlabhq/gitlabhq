@@ -42,7 +42,7 @@ export default {
       <gl-toggle id="expiration-policy-toggle" v-model="enabled" :disabled="disabled" />
       <span class="gl-ml-5 gl-line-height-24" data-testid="description">
         <gl-sprintf :message="toggleText">
-          <template #strong="{content}">
+          <template #strong="{ content }">
             <strong>{{ content }}</strong>
           </template>
         </gl-sprintf>

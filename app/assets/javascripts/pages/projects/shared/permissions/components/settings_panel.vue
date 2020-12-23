@@ -354,18 +354,21 @@ export default {
               <option
                 :value="visibilityOptions.PRIVATE"
                 :disabled="!visibilityAllowed(visibilityOptions.PRIVATE)"
-                >{{ s__('ProjectSettings|Private') }}</option
               >
+                {{ s__('ProjectSettings|Private') }}
+              </option>
               <option
                 :value="visibilityOptions.INTERNAL"
                 :disabled="!visibilityAllowed(visibilityOptions.INTERNAL)"
-                >{{ s__('ProjectSettings|Internal') }}</option
               >
+                {{ s__('ProjectSettings|Internal') }}
+              </option>
               <option
                 :value="visibilityOptions.PUBLIC"
                 :disabled="!visibilityAllowed(visibilityOptions.PUBLIC)"
-                >{{ s__('ProjectSettings|Public') }}</option
               >
+                {{ s__('ProjectSettings|Public') }}
+              </option>
             </select>
             <gl-icon
               name="chevron-down"

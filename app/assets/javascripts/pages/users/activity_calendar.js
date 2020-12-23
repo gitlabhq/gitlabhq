@@ -42,11 +42,7 @@ function formatTooltipText({ date, count }) {
   return `${contribText}<br />${dateDayName} ${dateText}`;
 }
 
-const initColorKey = () =>
-  d3
-    .scaleLinear()
-    .range(['#acd5f2', '#254e77'])
-    .domain([0, 3]);
+const initColorKey = () => d3.scaleLinear().range(['#acd5f2', '#254e77']).domain([0, 3]);
 
 export default class ActivityCalendar {
   constructor(
@@ -291,10 +287,7 @@ export default class ActivityCalendar {
       this.colorKey(2),
       this.colorKey(3),
     ];
-    return d3
-      .scaleThreshold()
-      .domain([0, 10, 20, 30])
-      .range(colorRange);
+    return d3.scaleThreshold().domain([0, 10, 20, 30]).range(colorRange);
   }
 
   clickDay(stamp) {

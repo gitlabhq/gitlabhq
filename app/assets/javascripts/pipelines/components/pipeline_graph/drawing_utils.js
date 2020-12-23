@@ -36,16 +36,10 @@ export const generateLinksData = ({ links }, containerID) => {
     // positioned in the center of the job node by adding half the height
     // of the job pill.
     const paddingLeft = Number(
-      window
-        .getComputedStyle(containerEl, null)
-        .getPropertyValue('padding-left')
-        .replace('px', ''),
+      window.getComputedStyle(containerEl, null).getPropertyValue('padding-left').replace('px', ''),
     );
     const paddingTop = Number(
-      window
-        .getComputedStyle(containerEl, null)
-        .getPropertyValue('padding-top')
-        .replace('px', ''),
+      window.getComputedStyle(containerEl, null).getPropertyValue('padding-top').replace('px', ''),
     );
 
     const sourceNodeX = sourceNodeCoordinates.right - containerCoordinates.x - paddingLeft;

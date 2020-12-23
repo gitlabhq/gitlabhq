@@ -86,7 +86,7 @@ const createValidator = (context, feedbackMap) => ({ el, reportInvalidInput = fa
  * @param {Object<string, { message: string, isValid: ?function}>} customFeedbackMap
  * @returns {{ inserted: function, update: function }} validateDirective
  */
-export default function(customFeedbackMap = {}) {
+export default function (customFeedbackMap = {}) {
   const feedbackMap = merge(defaultFeedbackMap, customFeedbackMap);
   const elDataMap = new WeakMap();
 

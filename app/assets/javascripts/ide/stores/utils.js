@@ -254,12 +254,7 @@ export function extractMarkdownImagesFromEntries(mdFile, entries) {
     const imageContent = entries[imagePath]?.content || entries[imagePath]?.raw;
 
     if (!isAbsolute(path) && imageContent) {
-      const ext = path.includes('.')
-        ? path
-            .split('.')
-            .pop()
-            .trim()
-        : 'jpeg';
+      const ext = path.includes('.') ? path.split('.').pop().trim() : 'jpeg';
       const src = `data:image/${ext};base64,${imageContent}`;
       i += 1;
       const key = `{{${prefix}${i}}}`;

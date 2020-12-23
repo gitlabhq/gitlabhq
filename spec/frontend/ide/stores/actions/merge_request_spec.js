@@ -71,7 +71,7 @@ describe('IDE store merge request actions', () => {
             .dispatch('getMergeRequestsForBranch', { projectId: TEST_PROJECT, branchId: 'bar' })
             .then(() => {
               expect(store.state.projects.abcproject.mergeRequests).toEqual({
-                '2': expect.objectContaining(mrData),
+                2: expect.objectContaining(mrData),
               });
               done();
             })

@@ -78,16 +78,10 @@ export default {
     },
     // following 2 methods taken from code in `collapseLongCommitList` of notes.js:
     actionTextHtml() {
-      return $(this.note.note_html)
-        .unwrap()
-        .html();
+      return $(this.note.note_html).unwrap().html();
     },
     hasMoreCommits() {
-      return (
-        $(this.note.note_html)
-          .filter('ul')
-          .children().length > MAX_VISIBLE_COMMIT_LIST_COUNT
-      );
+      return $(this.note.note_html).filter('ul').children().length > MAX_VISIBLE_COMMIT_LIST_COUNT;
     },
     descriptionVersion() {
       return this.descriptionVersions[this.note.description_version_id];

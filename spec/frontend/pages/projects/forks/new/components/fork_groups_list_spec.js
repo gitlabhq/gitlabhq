@@ -104,12 +104,10 @@ describe('Fork groups list component', () => {
     expect(wrapper.findAll(ForkGroupsListItem)).toHaveLength(namespaces.length);
 
     namespaces.forEach((namespace, idx) => {
-      expect(
-        wrapper
-          .findAll(ForkGroupsListItem)
-          .at(idx)
-          .props(),
-      ).toStrictEqual({ group: namespace, hasReachedProjectLimit });
+      expect(wrapper.findAll(ForkGroupsListItem).at(idx).props()).toStrictEqual({
+        group: namespace,
+        hasReachedProjectLimit,
+      });
     });
   });
 
@@ -123,11 +121,6 @@ describe('Fork groups list component', () => {
     await nextTick();
 
     expect(wrapper.findAll(ForkGroupsListItem)).toHaveLength(1);
-    expect(
-      wrapper
-        .findAll(ForkGroupsListItem)
-        .at(0)
-        .props().group.name,
-    ).toBe('otherdummy');
+    expect(wrapper.findAll(ForkGroupsListItem).at(0).props().group.name).toBe('otherdummy');
   });
 });

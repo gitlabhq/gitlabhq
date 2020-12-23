@@ -61,11 +61,7 @@ describe('SuggestionDiffRow', () => {
       });
 
       expect(wrapper.classes()).toContain('line_holder');
-      expect(
-        findSuggestionContent()
-          .find('span')
-          .classes(),
-      ).toContain('line');
+      expect(findSuggestionContent().find('span').classes()).toContain('line');
     });
 
     it('renders the rich text when it is available', () => {

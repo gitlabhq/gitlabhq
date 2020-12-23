@@ -104,7 +104,7 @@ if (specFilters.length) {
 }
 
 // Karma configuration
-module.exports = function(config) {
+module.exports = function (config) {
   process.env.TZ = 'Etc/UTC';
 
   const fixturesPath = `tmp/tests/frontend/fixtures${IS_EE ? '-ee' : ''}`;

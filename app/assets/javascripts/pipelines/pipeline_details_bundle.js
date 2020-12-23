@@ -125,7 +125,7 @@ const createTestDetails = () => {
   });
 };
 
-export default async function() {
+export default async function () {
   createTestDetails();
   createDagApp();
 

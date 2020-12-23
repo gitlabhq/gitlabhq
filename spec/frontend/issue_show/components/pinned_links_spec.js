@@ -26,11 +26,7 @@ describe('PinnedLinks', () => {
       zoomMeetingUrl: `<a href="${plainZoomUrl}">Zoom</a>`,
     });
 
-    expect(
-      findButtons()
-        .at(0)
-        .text(),
-    ).toBe(JOIN_ZOOM_MEETING);
+    expect(findButtons().at(0).text()).toBe(JOIN_ZOOM_MEETING);
   });
 
   it('displays Status link', () => {
@@ -38,11 +34,7 @@ describe('PinnedLinks', () => {
       publishedIncidentUrl: `<a href="${plainStatusUrl}">Status</a>`,
     });
 
-    expect(
-      findButtons()
-        .at(0)
-        .text(),
-    ).toBe(STATUS_PAGE_PUBLISHED);
+    expect(findButtons().at(0).text()).toBe(STATUS_PAGE_PUBLISHED);
   });
 
   it('does not render if there are no links', () => {

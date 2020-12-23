@@ -50,19 +50,11 @@ describe('MRWidgetHowToMerge', () => {
 
   it('should render different instructions based on if the user can merge', () => {
     mountComponent({ props: { canMerge: true } });
-    expect(
-      findInstructionsFields()
-        .at(2)
-        .text(),
-    ).toContain('git push origin');
+    expect(findInstructionsFields().at(2).text()).toContain('git push origin');
   });
 
   it('should render different instructions based on if the merge is based off a fork', () => {
     mountComponent({ props: { isFork: true } });
-    expect(
-      findInstructionsFields()
-        .at(0)
-        .text(),
-    ).toContain('FETCH_HEAD');
+    expect(findInstructionsFields().at(0).text()).toContain('FETCH_HEAD');
   });
 });

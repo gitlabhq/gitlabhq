@@ -9,7 +9,10 @@ import { createDummyBadge, createDummyBadgeResponse } from '../dummy_badge';
 
 describe('Badges store actions', () => {
   const dummyEndpointUrl = `${TEST_HOST}/badges/endpoint`;
-  const dummyBadges = [{ ...createDummyBadge(), id: 5 }, { ...createDummyBadge(), id: 6 }];
+  const dummyBadges = [
+    { ...createDummyBadge(), id: 5 },
+    { ...createDummyBadge(), id: 6 },
+  ];
 
   let axiosMock;
   let badgeId;

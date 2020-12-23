@@ -10,7 +10,7 @@ import { deprecatedCreateFlash as flash } from '~/flash';
 import { __ } from '~/locale';
 
 // highlight text(awefwbwgtc -> <b>a</b>wefw<b>b</b>wgt<b>c</b> )
-const highlighter = function(element, text, matches) {
+const highlighter = function (element, text, matches) {
   let j = 0;
   let len = 0;
   let lastIndex = 0;
@@ -65,11 +65,7 @@ export default class ProjectFindFile {
       if (value !== oldValue) {
         target.data('oldValue', value);
         this.findFile();
-        return this.element
-          .find('tr.tree-item')
-          .eq(0)
-          .addClass('selected')
-          .focus();
+        return this.element.find('tr.tree-item').eq(0).addClass('selected').focus();
       }
     });
   }
@@ -90,11 +86,7 @@ export default class ProjectFindFile {
         this.element.find('.loading').hide();
         this.filePaths = data;
         this.findFile();
-        this.element
-          .find('.files-slider tr.tree-item')
-          .eq(0)
-          .addClass('selected')
-          .focus();
+        this.element.find('.files-slider tr.tree-item').eq(0).addClass('selected').focus();
       })
       .catch(() => flash(__('An error occurred while loading filenames')));
   }

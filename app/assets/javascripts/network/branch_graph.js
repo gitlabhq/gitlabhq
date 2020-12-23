@@ -243,11 +243,11 @@ export default class BranchGraph {
       })
       .click(() => window.open(options.commit_url.replace('%s', commit.id), '_blank'))
       .hover(
-        function() {
+        function () {
           this.tooltip = r.commitTooltip(x + 5, y, commit);
           return top.push(this.tooltip.insertBefore(this));
         },
-        function() {
+        function () {
           return this.tooltip && this.tooltip.remove() && delete this.tooltip;
         },
       );

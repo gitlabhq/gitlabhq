@@ -133,13 +133,9 @@ describe('Job App', () => {
         });
 
         it('should render provided job information', () => {
-          expect(
-            wrapper
-              .find('.header-main-content')
-              .text()
-              .replace(/\s+/g, ' ')
-              .trim(),
-          ).toContain('passed Job #4757 triggered 1 year ago by Root');
+          expect(wrapper.find('.header-main-content').text().replace(/\s+/g, ' ').trim()).toContain(
+            'passed Job #4757 triggered 1 year ago by Root',
+          );
         });
 
         it('should render new issue link', () => {
@@ -151,11 +147,7 @@ describe('Job App', () => {
         it('should render created key', () =>
           setupAndMount().then(() => {
             expect(
-              wrapper
-                .find('.header-main-content')
-                .text()
-                .replace(/\s+/g, ' ')
-                .trim(),
+              wrapper.find('.header-main-content').text().replace(/\s+/g, ' ').trim(),
             ).toContain('passed Job #4757 created 3 weeks ago by Root');
           }));
       });

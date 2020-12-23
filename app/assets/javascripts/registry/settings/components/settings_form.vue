@@ -214,10 +214,10 @@ export default {
         <div>
           <p>
             <gl-sprintf :message="$options.i18n.KEEP_INFO_TEXT">
-              <template #strong="{content}">
+              <template #strong="{ content }">
                 <strong>{{ content }}</strong>
               </template>
-              <template #secondStrong="{content}">
+              <template #secondStrong="{ content }">
                 <strong>{{ content }}</strong>
               </template>
             </gl-sprintf>
@@ -253,10 +253,10 @@ export default {
         <div>
           <p>
             <gl-sprintf :message="$options.i18n.REMOVE_INFO_TEXT">
-              <template #strong="{content}">
+              <template #strong="{ content }">
                 <strong>{{ content }}</strong>
               </template>
-              <template #secondStrong="{content}">
+              <template #secondStrong="{ content }">
                 <strong>{{ content }}</strong>
               </template>
             </gl-sprintf>

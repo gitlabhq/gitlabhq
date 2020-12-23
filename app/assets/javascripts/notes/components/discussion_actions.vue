@@ -77,8 +77,8 @@ export default {
     <div
       v-if="
         !hideJumpToNextUnresolvedInThreads &&
-          discussion.resolvable &&
-          shouldShowJumpToNextDiscussion
+        discussion.resolvable &&
+        shouldShowJumpToNextDiscussion
       "
       class="btn-group discussion-actions ml-sm-2"
     >

@@ -82,7 +82,10 @@ describe('prepareTokens', () => {
     ],
     [
       'assignees',
-      [{ value: 'krillin', operator: '=' }, { value: 'piccolo', operator: '!=' }],
+      [
+        { value: 'krillin', operator: '=' },
+        { value: 'piccolo', operator: '!=' },
+      ],
       [
         { type: 'assignees', value: { data: 'krillin', operator: '=' } },
         { type: 'assignees', value: { data: 'piccolo', operator: '!=' } },
@@ -90,7 +93,10 @@ describe('prepareTokens', () => {
     ],
     [
       'foo',
-      [{ value: 'bar', operator: '!=' }, { value: 'baz', operator: '!=' }],
+      [
+        { value: 'bar', operator: '!=' },
+        { value: 'baz', operator: '!=' },
+      ],
       [
         { type: 'foo', value: { data: 'bar', operator: '!=' } },
         { type: 'foo', value: { data: 'baz', operator: '!=' } },
@@ -112,7 +118,10 @@ describe('processFilters', () => {
 
     expect(result).toStrictEqual({
       foo: [{ value: 'foo', operator: '=' }],
-      bar: [{ value: 'bar1', operator: '=' }, { value: 'bar2', operator: '!=' }],
+      bar: [
+        { value: 'bar1', operator: '=' },
+        { value: 'bar2', operator: '!=' },
+      ],
     });
   });
 
@@ -164,17 +173,26 @@ describe('filterToQueryObject', () => {
     ],
     [
       'foo',
-      [{ value: 'bar', operator: '=' }, { value: 'baz', operator: '=' }],
+      [
+        { value: 'bar', operator: '=' },
+        { value: 'baz', operator: '=' },
+      ],
       { foo: ['bar', 'baz'], 'not[foo]': null },
     ],
     [
       'foo',
-      [{ value: 'bar', operator: '!=' }, { value: 'baz', operator: '!=' }],
+      [
+        { value: 'bar', operator: '!=' },
+        { value: 'baz', operator: '!=' },
+      ],
       { foo: null, 'not[foo]': ['bar', 'baz'] },
     ],
     [
       'foo',
-      [{ value: 'bar', operator: '!=' }, { value: 'baz', operator: '=' }],
+      [
+        { value: 'bar', operator: '!=' },
+        { value: 'baz', operator: '=' },
+      ],
       { foo: ['baz'], 'not[foo]': ['bar'] },
     ],
   ])('gathers filter values %s=%j into query object=%j', (token, value, result) => {
@@ -200,15 +218,30 @@ describe('urlQueryToFilter', () => {
     ['not[foo]=bar&foo=baz', { foo: { value: 'baz', operator: '=' } }],
     [
       'foo[]=bar&foo[]=baz&not[foo]=',
-      { foo: [{ value: 'bar', operator: '=' }, { value: 'baz', operator: '=' }] },
+      {
+        foo: [
+          { value: 'bar', operator: '=' },
+          { value: 'baz', operator: '=' },
+        ],
+      },
     ],
     [
       'foo[]=&not[foo][]=bar&not[foo][]=baz',
-      { foo: [{ value: 'bar', operator: '!=' }, { value: 'baz', operator: '!=' }] },
+      {
+        foo: [
+          { value: 'bar', operator: '!=' },
+          { value: 'baz', operator: '!=' },
+        ],
+      },
     ],
     [
       'foo[]=baz&not[foo][]=bar',
-      { foo: [{ value: 'baz', operator: '=' }, { value: 'bar', operator: '!=' }] },
+      {
+        foo: [
+          { value: 'baz', operator: '=' },
+          { value: 'bar', operator: '!=' },
+        ],
+      },
     ],
     ['not[foo][]=bar', { foo: [{ value: 'bar', operator: '!=' }] }],
   ])('gathers filter values %s into query object=%j', (query, result) => {

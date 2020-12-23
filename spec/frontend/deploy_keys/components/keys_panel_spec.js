@@ -48,12 +48,9 @@ describe('Deploy keys panel', () => {
 
     expect(wrapper.find('.settings-message').exists()).toBe(true);
 
-    expect(
-      wrapper
-        .find('.settings-message')
-        .text()
-        .trim(),
-    ).toBe('No deploy keys found. Create one with the form above.');
+    expect(wrapper.find('.settings-message').text().trim()).toBe(
+      'No deploy keys found. Create one with the form above.',
+    );
   });
 
   it('renders no table header if keys are empty', () => {

@@ -480,7 +480,10 @@ describe('ReadyToMerge', () => {
         jest.spyOn(vm.service, 'poll').mockReturnValue(returnPromise('merged'));
         jest.spyOn(vm, 'initiateRemoveSourceBranchPolling').mockImplementation(() => {});
 
-        vm.handleMergePolling(() => {}, () => {});
+        vm.handleMergePolling(
+          () => {},
+          () => {},
+        );
 
         setImmediate(() => {
           const statusBox = document.querySelector('.status-box');
@@ -496,7 +499,10 @@ describe('ReadyToMerge', () => {
         jest.spyOn(vm.service, 'poll').mockReturnValue(returnPromise('merged'));
         jest.spyOn(vm, 'initiateRemoveSourceBranchPolling').mockImplementation(() => {});
 
-        vm.handleMergePolling(() => {}, () => {});
+        vm.handleMergePolling(
+          () => {},
+          () => {},
+        );
 
         setImmediate(() => {
           expect(document.querySelector('.js-merge-counter').textContent).toBe('0');
@@ -657,10 +663,7 @@ describe('ReadyToMerge', () => {
     const findCommitsHeaderElement = () => wrapper.find(CommitsHeader);
     const findCommitEditElements = () => wrapper.findAll(CommitEdit);
     const findCommitDropdownElement = () => wrapper.find(CommitMessageDropdown);
-    const findFirstCommitEditLabel = () =>
-      findCommitEditElements()
-        .at(0)
-        .props('label');
+    const findFirstCommitEditLabel = () => findCommitEditElements().at(0).props('label');
 
     describe('squash checkbox', () => {
       it('should be rendered when squash before merge is enabled and there is more than 1 commit', () => {

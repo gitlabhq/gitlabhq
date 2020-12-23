@@ -25,7 +25,7 @@ export default {
             )
           "
         >
-          <template #docLink="{content}">
+          <template #docLink="{ content }">
             <gl-link :href="config.helpPagePath" target="_blank">{{ content }}</gl-link>
           </template>
         </gl-sprintf>

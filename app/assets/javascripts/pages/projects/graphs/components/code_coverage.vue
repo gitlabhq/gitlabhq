@@ -161,9 +161,7 @@ export default {
           <template #coveragePercentage>
             {{ coveragePercentage }}
           </template>
-          <template #percentSymbol>
-            %
-          </template>
+          <template #percentSymbol> % </template>
         </gl-sprintf>
       </template>
     </gl-area-chart>

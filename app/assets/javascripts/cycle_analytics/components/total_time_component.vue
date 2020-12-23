@@ -30,8 +30,6 @@ export default {
         {{ time.seconds }} <span> {{ s__('Time|s') }} </span>
       </template>
     </template>
-    <template v-else>
-      --
-    </template>
+    <template v-else> -- </template>
   </span>
 </template>

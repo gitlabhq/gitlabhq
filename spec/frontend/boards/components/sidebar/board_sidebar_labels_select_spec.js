@@ -84,7 +84,10 @@ describe('~/boards/components/sidebar/board_sidebar_labels_select.vue', () => {
   });
 
   describe('when labels are updated over existing labels', () => {
-    const testLabelsPayload = [{ id: 5, set: true }, { id: 7, set: true }];
+    const testLabelsPayload = [
+      { id: 5, set: true },
+      { id: 7, set: true },
+    ];
     const expectedLabels = [{ id: 5 }, { id: 7 }];
 
     beforeEach(async () => {

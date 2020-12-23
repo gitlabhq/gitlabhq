@@ -73,10 +73,7 @@ describe('RelatedMergeRequests', () => {
       expect(wrapper.find('.js-items-count').text()).toEqual('2');
       expect(wrapper.findAll(RelatedIssuableItem).length).toEqual(2);
 
-      const props = wrapper
-        .findAll(RelatedIssuableItem)
-        .at(1)
-        .props();
+      const props = wrapper.findAll(RelatedIssuableItem).at(1).props();
       const data = mockData[1];
 
       expect(props.idKey).toEqual(data.id);

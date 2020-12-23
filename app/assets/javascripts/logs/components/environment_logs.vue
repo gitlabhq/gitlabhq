@@ -246,9 +246,7 @@ export default {
         </div>{{trace}}
           </code></pre>
       </template>
-      <template #default
-        ><div></div
-      ></template>
+      <template #default><div></div></template>
     </gl-infinite-scroll>
 
     <div ref="logFooter" class="py-2 px-3 text-white bg-secondary-900">
@@ -262,9 +260,7 @@ export default {
       >
         <template #fetched>{{ logs.lines.length }}</template>
       </gl-sprintf>
-      <template v-else>
-        {{ s__('Environments|Currently showing all results.') }}</template
-      >
+      <template v-else> {{ s__('Environments|Currently showing all results.') }}</template>
     </div>
   </div>
 </template>

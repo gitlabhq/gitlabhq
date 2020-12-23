@@ -50,14 +50,8 @@ describe('snippets/components/snippet_blob_actions_edit', () => {
       },
       classes: index > 0 ? ['gl-mt-3'] : [],
     }));
-  const triggerBlobDelete = idx =>
-    findBlobEdits()
-      .at(idx)
-      .vm.$emit('delete');
-  const triggerBlobUpdate = (idx, props) =>
-    findBlobEdits()
-      .at(idx)
-      .vm.$emit('blob-updated', props);
+  const triggerBlobDelete = idx => findBlobEdits().at(idx).vm.$emit('delete');
+  const triggerBlobUpdate = (idx, props) => findBlobEdits().at(idx).vm.$emit('blob-updated', props);
 
   afterEach(() => {
     wrapper.destroy();
@@ -213,11 +207,7 @@ describe('snippets/components/snippet_blob_actions_edit', () => {
 
     it('disables delete button', () => {
       expect(findBlobEdits()).toHaveLength(1);
-      expect(
-        findBlobEdits()
-          .at(0)
-          .props(),
-      ).toMatchObject({
+      expect(findBlobEdits().at(0).props()).toMatchObject({
         showDelete: true,
         canDelete: false,
       });

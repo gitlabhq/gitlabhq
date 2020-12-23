@@ -151,8 +151,7 @@ export default {
       :href="detailsPath"
       :title="tooltipText"
       :class="jobClasses"
-      class="js-pipeline-graph-job-link qa-job-link menu-item gl-text-gray-900 gl-active-text-decoration-none
-      gl-focus-text-decoration-none gl-hover-text-decoration-none"
+      class="js-pipeline-graph-job-link qa-job-link menu-item gl-text-gray-900 gl-active-text-decoration-none gl-focus-text-decoration-none gl-hover-text-decoration-none"
       data-testid="job-with-link"
       @click.stop="hideTooltips"
       @mouseout="hideTooltips"

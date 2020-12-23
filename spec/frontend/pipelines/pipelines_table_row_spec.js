@@ -82,10 +82,7 @@ describe('Pipelines Table Row', () => {
         ).toEqual(pipeline.user.path);
 
         expect(
-          wrapper
-            .find('.table-section:nth-child(3) .js-user-avatar-image-toolip')
-            .text()
-            .trim(),
+          wrapper.find('.table-section:nth-child(3) .js-user-avatar-image-toolip').text().trim(),
         ).toEqual(pipeline.user.name);
       });
     });

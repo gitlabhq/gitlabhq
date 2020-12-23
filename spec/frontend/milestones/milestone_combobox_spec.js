@@ -336,9 +336,7 @@ describe('Milestone combobox component', () => {
           await localVue.nextTick();
 
           expect(
-            findFirstProjectMilestonesDropdownItem()
-              .find('span')
-              .classes('selected-item'),
+            findFirstProjectMilestonesDropdownItem().find('span').classes('selected-item'),
           ).toBe(false);
 
           selectFirstProjectMilestone();
@@ -346,9 +344,7 @@ describe('Milestone combobox component', () => {
           await localVue.nextTick();
 
           expect(
-            findFirstProjectMilestonesDropdownItem()
-              .find('span')
-              .classes('selected-item'),
+            findFirstProjectMilestonesDropdownItem().find('span').classes('selected-item'),
           ).toBe(true);
         });
 
@@ -465,21 +461,17 @@ describe('Milestone combobox component', () => {
 
           await localVue.nextTick();
 
-          expect(
-            findFirstGroupMilestonesDropdownItem()
-              .find('span')
-              .classes('selected-item'),
-          ).toBe(false);
+          expect(findFirstGroupMilestonesDropdownItem().find('span').classes('selected-item')).toBe(
+            false,
+          );
 
           selectFirstGroupMilestone();
 
           await localVue.nextTick();
 
-          expect(
-            findFirstGroupMilestonesDropdownItem()
-              .find('span')
-              .classes('selected-item'),
-          ).toBe(true);
+          expect(findFirstGroupMilestonesDropdownItem().find('span').classes('selected-item')).toBe(
+            true,
+          );
         });
 
         describe('when a group milestones is selected', () => {

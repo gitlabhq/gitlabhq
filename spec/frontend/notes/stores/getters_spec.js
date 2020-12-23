@@ -298,17 +298,18 @@ describe('Getters Notes Store', () => {
         };
       });
 
-      [{ step: 1, id: '123', expected: '123' }, { step: -1, id: '123', expected: '123' }].forEach(
-        ({ step, id, expected }) => {
-          it(`with step ${step} and match, returns only value`, () => {
-            const params = createDiscussionNeighborParams(id, true, step);
+      [
+        { step: 1, id: '123', expected: '123' },
+        { step: -1, id: '123', expected: '123' },
+      ].forEach(({ step, id, expected }) => {
+        it(`with step ${step} and match, returns only value`, () => {
+          const params = createDiscussionNeighborParams(id, true, step);
 
-            expect(getters.findUnresolvedDiscussionIdNeighbor(state, localGetters)(params)).toBe(
-              expected,
-            );
-          });
-        },
-      );
+          expect(getters.findUnresolvedDiscussionIdNeighbor(state, localGetters)(params)).toBe(
+            expected,
+          );
+        });
+      });
 
       it('with no match, returns only value', () => {
         const params = createDiscussionNeighborParams('bogus', true, 1);

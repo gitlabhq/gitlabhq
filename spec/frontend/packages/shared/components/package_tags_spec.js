@@ -75,11 +75,7 @@ describe('PackageTags', () => {
 
       const expectedStyle = [...defaultStyle, 'gl-display-flex', 'gl-ml-3'];
 
-      expect(
-        tagBadges()
-          .at(0)
-          .classes(),
-      ).toEqual(expect.arrayContaining(expectedStyle));
+      expect(tagBadges().at(0).classes()).toEqual(expect.arrayContaining(expectedStyle));
     });
 
     it('shows tag badge for medium or heigher resolutions', () => {
@@ -87,11 +83,7 @@ describe('PackageTags', () => {
 
       const expectedStyle = [...defaultStyle, 'd-md-flex'];
 
-      expect(
-        tagBadges()
-          .at(1)
-          .classes(),
-      ).toEqual(expect.arrayContaining(expectedStyle));
+      expect(tagBadges().at(1).classes()).toEqual(expect.arrayContaining(expectedStyle));
     });
 
     it('correctly prepends left and appends right when there is more than one tag', () => {

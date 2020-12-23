@@ -15,10 +15,7 @@ describe('U2FRegister', () => {
     u2fDevice = new MockU2FDevice();
     container = $('#js-register-token-2fa');
     component = new U2FRegister(container, {});
-    component
-      .start()
-      .then(done)
-      .catch(done.fail);
+    component.start().then(done).catch(done.fail);
   });
 
   it('allows registering a U2F device', () => {

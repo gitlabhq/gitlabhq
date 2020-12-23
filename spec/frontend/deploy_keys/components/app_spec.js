@@ -64,12 +64,7 @@ describe('Deploy keys app component', () => {
       expect(element.exists()).toBe(true);
       expect(element.text().trim()).toContain(label);
 
-      expect(
-        element
-          .find('.badge')
-          .text()
-          .trim(),
-      ).toBe(count.toString());
+      expect(element.find('.badge').text().trim()).toBe(count.toString());
     });
   });
 

@@ -68,7 +68,7 @@ export const disableButtonIfEmptyField = (fieldSelector, buttonSelector, eventNa
     closestSubmit.disable();
   }
   // eslint-disable-next-line func-names
-  return field.on(eventName, function() {
+  return field.on(eventName, function () {
     if (rstrip($(this).val()) === '') {
       return closestSubmit.disable();
     }

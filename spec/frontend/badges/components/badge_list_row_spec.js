@@ -91,9 +91,7 @@ describe('BadgeListRow component', () => {
     beforeEach(done => {
       badge.kind = GROUP_BADGE;
 
-      Vue.nextTick()
-        .then(done)
-        .catch(done.fail);
+      Vue.nextTick().then(done).catch(done.fail);
     });
 
     it('renders the badge kind', () => {

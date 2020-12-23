@@ -194,16 +194,8 @@ describe('Pipelines', () => {
       });
 
       it('renders empty state', () => {
-        expect(
-          findEmptyState()
-            .find('h4')
-            .text(),
-        ).toBe('Build with confidence');
-        expect(
-          findEmptyState()
-            .find(GlButton)
-            .attributes('href'),
-        ).toBe(paths.helpPagePath);
+        expect(findEmptyState().find('h4').text()).toBe('Build with confidence');
+        expect(findEmptyState().find(GlButton).attributes('href')).toBe(paths.helpPagePath);
       });
 
       it('does not render tabs nor buttons', () => {
@@ -320,11 +312,7 @@ describe('Pipelines', () => {
           'This project is not currently set up to run pipelines.',
         );
 
-        expect(
-          findEmptyState()
-            .find(GlButton)
-            .exists(),
-        ).toBeFalsy();
+        expect(findEmptyState().find(GlButton).exists()).toBeFalsy();
       });
 
       it('does not render tabs or buttons', () => {

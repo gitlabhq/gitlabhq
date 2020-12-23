@@ -4824,4 +4824,107 @@ RSpec.describe Ci::Build do
       it { is_expected.to eq false }
     end
   end
+
+  describe '#drop_with_exit_code!' do
+    let(:exit_code) { 1 }
+    let(:options) { {} }
+
+    before do
+      build.options.merge!(options)
+      build.save!
+    end
+
+    subject(:drop_with_exit_code) do
+      build.drop_with_exit_code!(:unknown_failure, exit_code)
+    end
+
+    shared_examples 'drops the build without changing allow_failure' do
+      it 'does not change allow_failure' do
+        expect { drop_with_exit_code }
+          .not_to change { build.reload.allow_failure }
+      end
+
+      it 'drops the build' do
+        expect { drop_with_exit_code }
+          .to change { build.reload.failed? }
+      end
+    end
+
+    context 'when exit_codes are not defined' do
+      it_behaves_like 'drops the build without changing allow_failure'
+    end
+
+    context 'when allow_failure_criteria is nil' do
+      let(:options) { { allow_failure_criteria: nil } }
+
+      it_behaves_like 'drops the build without changing allow_failure'
+    end
+
+    context 'when exit_codes is nil' do
+      let(:options) do
+        {
+          allow_failure_criteria: {
+            exit_codes: nil
+          }
+        }
+      end
+
+      it_behaves_like 'drops the build without changing allow_failure'
+    end
+
+    context 'when exit_codes do not match' do
+      let(:options) do
+        {
+          allow_failure_criteria: {
+            exit_codes: [2, 3, 4]
+          }
+        }
+      end
+
+      it_behaves_like 'drops the build without changing allow_failure'
+    end
+
+    context 'with matching exit codes' do
+      let(:options) do
+        { allow_failure_criteria: { exit_codes: [1, 2, 3] } }
+      end
+
+      it 'changes allow_failure' do
+        expect { drop_with_exit_code }
+          .to change { build.reload.allow_failure }
+      end
+
+      it 'drops the build' do
+        expect { drop_with_exit_code }
+          .to change { build.reload.failed? }
+      end
+
+      it 'is executed inside a transaction' do
+        expect(build).to receive(:drop!)
+          .with(:unknown_failure)
+          .and_raise(ActiveRecord::Rollback)
+
+        expect(build).to receive(:conditionally_allow_failure!)
+          .with(1)
+          .and_call_original
+
+        expect { drop_with_exit_code }
+          .not_to change { build.reload.allow_failure }
+      end
+
+      context 'when exit_code is nil' do
+        let(:exit_code) {}
+
+        it_behaves_like 'drops the build without changing allow_failure'
+      end
+
+      context 'when ci_allow_failure_with_exit_codes is disabled' do
+        before do
+          stub_feature_flags(ci_allow_failure_with_exit_codes: false)
+        end
+
+        it_behaves_like 'drops the build without changing allow_failure'
+      end
+    end
+  end
 end

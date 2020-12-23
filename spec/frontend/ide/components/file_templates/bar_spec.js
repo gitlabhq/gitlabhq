@@ -67,10 +67,7 @@ describe('IDE file templates bar component', () => {
     it('calls fetchTemplate on click', () => {
       jest.spyOn(vm, 'fetchTemplate').mockImplementation();
 
-      vm.$el
-        .querySelectorAll('.dropdown-content')[1]
-        .querySelector('button')
-        .click();
+      vm.$el.querySelectorAll('.dropdown-content')[1].querySelector('button').click();
 
       expect(vm.fetchTemplate).toHaveBeenCalledWith({
         name: 'test',

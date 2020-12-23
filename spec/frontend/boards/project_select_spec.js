@@ -39,9 +39,7 @@ describe('ProjectSelect component', () => {
   const findLabel = () => wrapper.find("[data-testid='header-label']");
   const findGlDropdown = () => wrapper.find(GlDropdown);
   const findGlDropdownLoadingIcon = () =>
-    findGlDropdown()
-      .find('button:first-child')
-      .find(GlLoadingIcon);
+    findGlDropdown().find('button:first-child').find(GlLoadingIcon);
   const findGlSearchBoxByType = () => wrapper.find(GlSearchBoxByType);
   const findGlDropdownItems = () => wrapper.findAll(GlDropdownItem);
   const findFirstGlDropdownItem = () => findGlDropdownItems().at(0);
@@ -159,9 +157,7 @@ describe('ProjectSelect component', () => {
 
         await createWrapper();
 
-        await findFirstGlDropdownItem()
-          .find('button')
-          .trigger('click');
+        await findFirstGlDropdownItem().find('button').trigger('click');
       });
 
       it('emits setSelectedProject with correct project metadata', () => {
@@ -174,11 +170,9 @@ describe('ProjectSelect component', () => {
       });
 
       it('renders the name of the selected project', () => {
-        expect(
-          findGlDropdown()
-            .find('.gl-new-dropdown-button-text')
-            .text(),
-        ).toBe(mockProjectsList1[0].name);
+        expect(findGlDropdown().find('.gl-new-dropdown-button-text').text()).toBe(
+          mockProjectsList1[0].name,
+        );
       });
     });
 

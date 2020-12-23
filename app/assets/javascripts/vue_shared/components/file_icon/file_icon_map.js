@@ -593,15 +593,6 @@ const fileNameIcons = {
 
 export default function getIconForFile(name) {
   return (
-    fileNameIcons[name] ||
-    fileExtensionIcons[
-      name
-        ? name
-            .split('.')
-            .pop()
-            .toLowerCase()
-        : ''
-    ] ||
-    ''
+    fileNameIcons[name] || fileExtensionIcons[name ? name.split('.').pop().toLowerCase() : ''] || ''
   );
 }

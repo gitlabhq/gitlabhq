@@ -103,7 +103,7 @@ export default {
       data-testid="ci-lint-status"
       >{{ status.text }}
       <gl-sprintf :message="$options.includesText">
-        <template #code="{content}">
+        <template #code="{ content }">
           <code>
             {{ content }}
           </code>

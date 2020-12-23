@@ -65,9 +65,7 @@ export default {
           this.loading = false;
         };
 
-        this.loadIssues()
-          .then(loadingDone)
-          .catch(loadingDone);
+        this.loadIssues().then(loadingDone).catch(loadingDone);
       } else if (!this.showAddIssuesModal) {
         this.issues = [];
         this.selectedIssues = [];
@@ -83,9 +81,7 @@ export default {
             this.filterLoading = false;
           };
 
-          this.loadIssues(true)
-            .then(loadingDone)
-            .catch(loadingDone);
+          this.loadIssues(true).then(loadingDone).catch(loadingDone);
         }
       },
       deep: true,

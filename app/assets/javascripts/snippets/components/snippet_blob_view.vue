@@ -53,9 +53,7 @@ export default {
   },
   provide() {
     return {
-      blobHash: Math.random()
-        .toString()
-        .split('.')[1],
+      blobHash: Math.random().toString().split('.')[1],
     };
   },
   data() {

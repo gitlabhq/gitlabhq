@@ -135,9 +135,7 @@ describe('vue_shared/components/awards_list', () => {
     it('with award clicked, it emits award', () => {
       expect(wrapper.emitted().award).toBeUndefined();
 
-      findAwardButtons()
-        .at(2)
-        .vm.$emit('click');
+      findAwardButtons().at(2).vm.$emit('click');
 
       expect(wrapper.emitted().award).toEqual([[EMOJI_SMILE]]);
     });
@@ -162,9 +160,7 @@ describe('vue_shared/components/awards_list', () => {
     it('when clicked, it emits award as number', () => {
       expect(wrapper.emitted().award).toBeUndefined();
 
-      findAwardButtons()
-        .at(0)
-        .vm.$emit('click');
+      findAwardButtons().at(0).vm.$emit('click');
 
       expect(wrapper.emitted().award).toEqual([[Number(EMOJI_100)]]);
     });

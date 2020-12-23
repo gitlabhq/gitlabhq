@@ -44,10 +44,7 @@ describe('Pipeline New Form', () => {
   const findWarnings = () => wrapper.findAll('[data-testid="run-pipeline-warning"]');
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
   const getExpectedPostParams = () => JSON.parse(mock.history.post[0].data);
-  const changeRef = i =>
-    findDropdownItems()
-      .at(i)
-      .vm.$emit('click');
+  const changeRef = i => findDropdownItems().at(i).vm.$emit('click');
 
   const createComponent = (term = '', props = {}, method = shallowMount) => {
     wrapper = method(PipelineNewForm, {
@@ -99,11 +96,7 @@ describe('Pipeline New Form', () => {
       createComponent('master');
 
       expect(findDropdownItems()).toHaveLength(1);
-      expect(
-        findDropdownItems()
-          .at(0)
-          .text(),
-      ).toBe('master');
+      expect(findDropdownItems().at(0).text()).toBe('master');
     });
   });
 
@@ -136,9 +129,7 @@ describe('Pipeline New Form', () => {
     });
 
     it('removes ci variable row on remove icon button click', async () => {
-      findRemoveIcons()
-        .at(1)
-        .trigger('click');
+      findRemoveIcons().at(1).trigger('click');
 
       await wrapper.vm.$nextTick();
 
@@ -298,26 +289,16 @@ describe('Pipeline New Form', () => {
       });
 
       it('adds a description to the first variable from yml', () => {
-        expect(
-          findVariableRows()
-            .at(0)
-            .text(),
-        ).toContain(mockYmlDesc);
+        expect(findVariableRows().at(0).text()).toContain(mockYmlDesc);
       });
 
       it('removes the description when a variable key changes', async () => {
         findKeyInputs().at(0).element.value = 'yml_var_modified';
-        findKeyInputs()
-          .at(0)
-          .trigger('change');
+        findKeyInputs().at(0).trigger('change');
 
         await wrapper.vm.$nextTick();
 
-        expect(
-          findVariableRows()
-            .at(0)
-            .text(),
-        ).not.toContain(mockYmlDesc);
+        expect(findVariableRows().at(0).text()).not.toContain(mockYmlDesc);
       });
     });
 

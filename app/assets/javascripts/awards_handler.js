@@ -98,10 +98,7 @@ export class AwardsHandler {
 
   showEmojiMenu($addBtn) {
     if ($addBtn.hasClass('js-note-emoji')) {
-      $addBtn
-        .closest('.note')
-        .find('.js-awards-block')
-        .addClass('current');
+      $addBtn.closest('.note').find('.js-awards-block').addClass('current');
     } else {
       $addBtn.closest('.js-awards-block').addClass('current');
     }
@@ -531,9 +528,7 @@ export class AwardsHandler {
     const $search = $('.js-emoji-menu-search');
 
     this.registerEventListener('on', $search, 'input', e => {
-      const term = $(e.target)
-        .val()
-        .trim();
+      const term = $(e.target).val().trim();
       this.searchEmojis(term);
     });
 
@@ -556,17 +551,11 @@ export class AwardsHandler {
       // Generate a search result block
       const h5 = $('<h5 class="emoji-search-title"/>').text('Search results');
       const foundEmojis = this.findMatchingEmojiElements(term).show();
-      const ul = $('<ul>')
-        .addClass('emoji-menu-list emoji-menu-search')
-        .append(foundEmojis);
+      const ul = $('<ul>').addClass('emoji-menu-list emoji-menu-search').append(foundEmojis);
       $('.emoji-menu-content ul, .emoji-menu-content h5').hide();
-      $('.emoji-menu-content')
-        .append(h5)
-        .append(ul);
+      $('.emoji-menu-content').append(h5).append(ul);
     } else {
-      $('.emoji-menu-content')
-        .children()
-        .show();
+      $('.emoji-menu-content').children().show();
     }
   }
 

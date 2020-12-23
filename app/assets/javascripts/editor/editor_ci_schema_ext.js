@@ -22,9 +22,7 @@ export class CiSchemaExtension extends EditorLiteExtension {
       .replace(':project_path', projectPath)
       .replace(':ref', ref)
       .replace(':filename', EXTENSION_CI_SCHEMA_FILE_NAME_MATCH);
-    const modelFileName = this.getModel()
-      .uri.path.split('/')
-      .pop();
+    const modelFileName = this.getModel().uri.path.split('/').pop();
 
     registerSchema({
       uri: ciSchemaUri,

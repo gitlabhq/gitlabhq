@@ -78,18 +78,14 @@ describe('Tags List', () => {
 
     it('is enabled when at least one item is selected', async () => {
       mountComponent();
-      findTagsListRow()
-        .at(0)
-        .vm.$emit('select');
+      findTagsListRow().at(0).vm.$emit('select');
       await wrapper.vm.$nextTick();
       expect(findDeleteButton().attributes('disabled')).toBe(undefined);
     });
 
     it('click event emits a deleted event with selected items', () => {
       mountComponent();
-      findTagsListRow()
-        .at(0)
-        .vm.$emit('select');
+      findTagsListRow().at(0).vm.$emit('select');
 
       findDeleteButton().vm.$emit('click');
       expect(wrapper.emitted('delete')).toEqual([[{ 'beta-24753': true }]]);
@@ -116,22 +112,14 @@ describe('Tags List', () => {
     describe('events', () => {
       it('select event update the selected items', async () => {
         mountComponent();
-        findTagsListRow()
-          .at(0)
-          .vm.$emit('select');
+        findTagsListRow().at(0).vm.$emit('select');
         await wrapper.vm.$nextTick();
-        expect(
-          findTagsListRow()
-            .at(0)
-            .attributes('selected'),
-        ).toBe('true');
+        expect(findTagsListRow().at(0).attributes('selected')).toBe('true');
       });
 
       it('delete event emit a delete event', () => {
         mountComponent();
-        findTagsListRow()
-          .at(0)
-          .vm.$emit('delete');
+        findTagsListRow().at(0).vm.$emit('delete');
         expect(wrapper.emitted('delete')).toEqual([[{ 'beta-24753': true }]]);
       });
     });

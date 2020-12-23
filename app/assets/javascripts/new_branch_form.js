@@ -53,13 +53,13 @@ export default class NewBranchForm {
     const { indexOf } = [];
 
     this.branchNameError.empty();
-    const unique = function(values, value) {
+    const unique = function (values, value) {
       if (indexOf.call(values, value) === -1) {
         values.push(value);
       }
       return values;
     };
-    const formatter = function(values, restriction) {
+    const formatter = function (values, restriction) {
       const formatted = values.map(value => {
         switch (false) {
           case !/\s/.test(value):

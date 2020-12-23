@@ -60,19 +60,28 @@ import { __ } from '~/locale';
         const DataPromise = axios.get(this.file.content_path);
 
         Promise.all([EditorPromise, DataPromise])
-          .then(([{ default: EditorLite }, { data: { content, new_path: path } }]) => {
-            const contentEl = this.$el.querySelector('.editor');
+          .then(
+            ([
+              { default: EditorLite },
+              {
+                data: { content, new_path: path },
+              },
+            ]) => {
+              const contentEl = this.$el.querySelector('.editor');
 
-            this.originalContent = content;
-            this.fileLoaded = true;
+              this.originalContent = content;
+              this.fileLoaded = true;
 
-            this.editor = new EditorLite().createInstance({
-              el: contentEl,
-              blobPath: path,
-              blobContent: content,
-            });
-            this.editor.onDidChangeModelContent(debounce(this.saveDiffResolution.bind(this), 250));
-          })
+              this.editor = new EditorLite().createInstance({
+                el: contentEl,
+                blobPath: path,
+                blobContent: content,
+              });
+              this.editor.onDidChangeModelContent(
+                debounce(this.saveDiffResolution.bind(this), 250),
+              );
+            },
+          )
           .catch(() => {
             flash(__('An error occurred while loading the file'));
           });

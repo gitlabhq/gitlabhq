@@ -187,12 +187,7 @@ export default {
         .then(res => this.onUploadDesignDone(res))
         .catch(() => this.onUploadDesignError());
     },
-    afterUploadDesign(
-      store,
-      {
-        data: { designManagementUpload },
-      },
-    ) {
+    afterUploadDesign(store, { data: { designManagementUpload } }) {
       updateStoreAfterUploadDesign(store, designManagementUpload, this.projectQueryBody);
     },
     onUploadDesignDone(res) {

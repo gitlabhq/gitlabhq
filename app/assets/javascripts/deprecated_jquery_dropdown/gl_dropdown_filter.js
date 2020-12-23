@@ -22,10 +22,7 @@ export class GitLabDropdownFilter {
       // Clear click
       e.preventDefault();
       e.stopPropagation();
-      return this.input
-        .val('')
-        .trigger('input')
-        .focus();
+      return this.input.val('').trigger('input').focus();
     });
     // Key events
     timeout = '';
@@ -113,7 +110,7 @@ export class GitLabDropdownFilter {
     const elements = this.options.elements();
     if (searchText) {
       // eslint-disable-next-line func-names
-      elements.each(function() {
+      elements.each(function () {
         const $el = $(this);
         const matches = fuzzaldrinPlus.match($el.text().trim(), searchText);
         if (!$el.is('.dropdown-header')) {

@@ -49,7 +49,7 @@ export default class LabelsSelect {
       const fieldName = $dropdown.data('fieldName');
       let initialSelected = $selectbox
         .find(`input[name="${$dropdown.data('fieldName')}"]`)
-        .map(function() {
+        .map(function () {
           return this.value;
         })
         .get();
@@ -64,11 +64,11 @@ export default class LabelsSelect {
         );
       }
 
-      const saveLabelData = function() {
+      const saveLabelData = function () {
         const selected = $dropdown
           .closest('.selectbox')
           .find(`input[name='${fieldName}']`)
-          .map(function() {
+          .map(function () {
             return this.value;
           })
           .get();
@@ -210,9 +210,7 @@ export default class LabelsSelect {
             }
           } else {
             if (this.id(label)) {
-              const dropdownValue = this.id(label)
-                .toString()
-                .replace(/'/g, "\\'");
+              const dropdownValue = this.id(label).toString().replace(/'/g, "\\'");
 
               if (
                 $form.find(
@@ -346,10 +344,7 @@ export default class LabelsSelect {
           const isMRIndex = page === 'projects:merge_requests:index';
 
           if ($dropdown.parent().find('.is-active:not(.dropdown-clear-active)').length) {
-            $dropdown
-              .parent()
-              .find('.dropdown-clear-active')
-              .removeClass('is-active');
+            $dropdown.parent().find('.dropdown-clear-active').removeClass('is-active');
           }
 
           if ($dropdown.hasClass('js-issuable-form-dropdown')) {
@@ -559,7 +554,7 @@ export default class LabelsSelect {
   // eslint-disable-next-line class-methods-use-this
   setOriginalDropdownData($container, $dropdown) {
     const labels = [];
-    $container.find('[name="label_name[]"]').map(function() {
+    $container.find('[name="label_name[]"]').map(function () {
       return labels.push(this.value);
     });
     $dropdown.data('marked', labels);

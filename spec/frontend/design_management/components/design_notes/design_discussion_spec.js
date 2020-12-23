@@ -150,16 +150,8 @@ describe('Design discussions component', () => {
     });
 
     it('shows only the first note', () => {
-      expect(
-        findDesignNotes()
-          .at(0)
-          .isVisible(),
-      ).toBe(true);
-      expect(
-        findDesignNotes()
-          .at(1)
-          .isVisible(),
-      ).toBe(false);
+      expect(findDesignNotes().at(0).isVisible()).toBe(true);
+      expect(findDesignNotes().at(1).isVisible()).toBe(false);
     });
 
     it('renders resolved message', () => {
@@ -193,11 +185,7 @@ describe('Design discussions component', () => {
       });
 
       it('renders the second note', () => {
-        expect(
-          findDesignNotes()
-            .at(1)
-            .isVisible(),
-        ).toBe(true);
+        expect(findDesignNotes().at(1).isVisible()).toBe(true);
       });
 
       it('renders a reply placeholder', () => {

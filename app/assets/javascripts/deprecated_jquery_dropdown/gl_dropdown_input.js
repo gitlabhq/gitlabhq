@@ -9,10 +9,7 @@ export class GitLabDropdownInput {
       // Clear click
       e.preventDefault();
       e.stopPropagation();
-      return this.input
-        .val('')
-        .trigger('input')
-        .focus();
+      return this.input.val('').trigger('input').focus();
     });
 
     this.input
@@ -31,10 +28,7 @@ export class GitLabDropdownInput {
           .toLowerCase() // replace non alphanumeric
           .replace(/(-)\1+/g, '-'); // replace repeated dashes
         this.cb(this.options.fieldName, val, {}, true);
-        this.input
-          .closest('.dropdown')
-          .find('.dropdown-toggle-text')
-          .text(val);
+        this.input.closest('.dropdown').find('.dropdown-toggle-text').text(val);
       });
   }
 

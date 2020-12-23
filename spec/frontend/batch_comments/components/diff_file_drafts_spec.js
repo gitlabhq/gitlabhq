@@ -44,18 +44,8 @@ describe('Batch comments diff file drafts component', () => {
 
     expect(vm.findAll('.js-diff-notes-index').length).toEqual(2);
 
-    expect(
-      vm
-        .findAll('.js-diff-notes-index')
-        .at(0)
-        .text(),
-    ).toEqual('1');
+    expect(vm.findAll('.js-diff-notes-index').at(0).text()).toEqual('1');
 
-    expect(
-      vm
-        .findAll('.js-diff-notes-index')
-        .at(1)
-        .text(),
-    ).toEqual('2');
+    expect(vm.findAll('.js-diff-notes-index').at(1).text()).toEqual('2');
   });
 });

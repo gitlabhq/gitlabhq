@@ -65,23 +65,11 @@ describe('noteActions', () => {
     });
 
     it('should render noteable author badge', () => {
-      expect(
-        wrapper
-          .findAll('.note-role')
-          .at(0)
-          .text()
-          .trim(),
-      ).toEqual('Author');
+      expect(wrapper.findAll('.note-role').at(0).text().trim()).toEqual('Author');
     });
 
     it('should render access level badge', () => {
-      expect(
-        wrapper
-          .findAll('.note-role')
-          .at(1)
-          .text()
-          .trim(),
-      ).toEqual(props.accessLevel);
+      expect(wrapper.findAll('.note-role').at(1).text().trim()).toEqual(props.accessLevel);
     });
 
     it('should render contributor badge', () => {
@@ -91,13 +79,7 @@ describe('noteActions', () => {
       });
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(
-          wrapper
-            .findAll('.note-role')
-            .at(1)
-            .text()
-            .trim(),
-        ).toBe('Contributor');
+        expect(wrapper.findAll('.note-role').at(1).text().trim()).toBe('Contributor');
       });
     });
 

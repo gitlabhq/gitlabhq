@@ -212,11 +212,17 @@ export default {
           listId,
         },
       })
-      .then(({ data: { destroyBoardList: { errors } } }) => {
-        if (errors.length > 0) {
-          commit(types.REMOVE_LIST_FAILURE, listsBackup);
-        }
-      })
+      .then(
+        ({
+          data: {
+            destroyBoardList: { errors },
+          },
+        }) => {
+          if (errors.length > 0) {
+            commit(types.REMOVE_LIST_FAILURE, listsBackup);
+          }
+        },
+      )
       .catch(() => {
         commit(types.REMOVE_LIST_FAILURE, listsBackup);
       });

@@ -182,12 +182,7 @@ describe('RelatedIssuesList', () => {
     });
 
     it('shows due date', () => {
-      expect(
-        wrapper
-          .find(IssueDueDate)
-          .find('.board-card-info-text')
-          .text(),
-      ).toBe('Nov 22, 2010');
+      expect(wrapper.find(IssueDueDate).find('.board-card-info-text').text()).toBe('Nov 22, 2010');
     });
   });
 });

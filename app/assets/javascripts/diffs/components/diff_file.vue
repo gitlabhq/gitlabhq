@@ -139,7 +139,7 @@ export default {
       return !this.isCollapsed || this.automaticallyCollapsed;
     },
     showWarning() {
-      return this.isCollapsed && (this.automaticallyCollapsed && !this.viewDiffsFileByFile);
+      return this.isCollapsed && this.automaticallyCollapsed && !this.viewDiffsFileByFile;
     },
     showContent() {
       return !this.isCollapsed && !this.isFileTooLarge;

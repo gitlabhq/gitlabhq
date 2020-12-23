@@ -82,8 +82,9 @@ RSpec.describe Ci::UpdateBuildStateService do
     let(:params) do
       {
         output: { checksum: 'crc32:12345678', bytesize: 123 },
+        state: 'failed',
         failure_reason: 'script_failure',
-        state: 'failed'
+        exit_code: 42
       }
     end
 
@@ -93,6 +94,15 @@ RSpec.describe Ci::UpdateBuildStateService do
 
         expect(build).to be_failed
         expect(result.status).to eq 200
+      end
+
+      it 'updates the allow_failure flag' do
+        expect(build)
+          .to receive(:drop_with_exit_code!)
+          .with('script_failure', 42)
+          .and_call_original
+
+        subject.execute
       end
 
       it 'does not increment invalid trace metric' do
@@ -113,6 +123,15 @@ RSpec.describe Ci::UpdateBuildStateService do
         subject.execute
 
         expect(build).to be_failed
+      end
+
+      it 'updates the allow_failure flag' do
+        expect(build)
+          .to receive(:drop_with_exit_code!)
+          .with('script_failure', 42)
+          .and_call_original
+
+        subject.execute
       end
 
       it 'responds with 200 OK status' do

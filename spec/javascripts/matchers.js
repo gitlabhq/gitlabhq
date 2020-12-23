@@ -32,8 +32,9 @@ export default {
 
         return {
           pass: differentPixels < 20,
-          message: `${differentPixels} pixels differ more than ${threshold *
-            100} percent between input and output.`,
+          message: `${differentPixels} pixels differ more than ${
+            threshold * 100
+          } percent between input and output.`,
         };
       },
     };

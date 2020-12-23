@@ -208,7 +208,7 @@
     "nodemon": "^2.0.4",
     "pixelmatch": "^4.0.2",
     "postcss": "^7.0.14",
-    "prettier": "1.18.2",
+    "prettier": "2.2.1",
     "readdir-enhanced": "^2.2.4",
     "stylelint": "^10.1.0",
     "stylelint-config-recommended": "^2.2.0",

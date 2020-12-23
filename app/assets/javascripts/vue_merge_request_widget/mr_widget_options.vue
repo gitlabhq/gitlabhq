@@ -166,7 +166,8 @@ export default {
       return (
         !this.mr.canRemoveSourceBranch &&
         this.mr.shouldRemoveSourceBranch &&
-        (!this.mr.isNothingToMergeState && !this.mr.isMergedState)
+        !this.mr.isNothingToMergeState &&
+        !this.mr.isMergedState
       );
     },
     shouldRenderCollaborationStatus() {

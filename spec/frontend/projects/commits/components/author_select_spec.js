@@ -139,11 +139,7 @@ describe('Author Select', () => {
     });
 
     it('has a "Any Author" as the first list item', () => {
-      expect(
-        findDropdownItems()
-          .at(0)
-          .text(),
-      ).toBe('Any Author');
+      expect(findDropdownItems().at(0).text()).toBe('Any Author');
     });
 
     it('displays the project authors', () => {
@@ -163,21 +159,13 @@ describe('Author Select', () => {
       wrapper.setData({ currentAuthor });
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(
-          findDropdownItems()
-            .at(1)
-            .props(),
-        ).toEqual(expect.objectContaining(result));
+        expect(findDropdownItems().at(1).props()).toEqual(expect.objectContaining(result));
       });
     });
 
     it("display the author's name", () => {
       return wrapper.vm.$nextTick().then(() => {
-        expect(
-          findDropdownItems()
-            .at(1)
-            .text(),
-        ).toBe(currentAuthor);
+        expect(findDropdownItems().at(1).text()).toBe(currentAuthor);
       });
     });
 
@@ -186,9 +174,7 @@ describe('Author Select', () => {
       const spy = jest.spyOn(urlUtility, 'redirectTo');
       spy.mockImplementation(() => 'mock');
 
-      findDropdownItems()
-        .at(1)
-        .vm.$emit('click');
+      findDropdownItems().at(1).vm.$emit('click');
 
       expect(spy).toHaveBeenCalledWith(redirectToUrl);
     });
@@ -198,9 +184,7 @@ describe('Author Select', () => {
       const spy = jest.spyOn(urlUtility, 'redirectTo');
       spy.mockImplementation();
 
-      findDropdownItems()
-        .at(0)
-        .vm.$emit('click');
+      findDropdownItems().at(0).vm.$emit('click');
       expect(spy).toHaveBeenCalledWith(redirectToUrl);
     });
   });

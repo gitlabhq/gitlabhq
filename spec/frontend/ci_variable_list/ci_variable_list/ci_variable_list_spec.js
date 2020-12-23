@@ -31,10 +31,7 @@ describe('VariableList', () => {
 
       it('should add another row when editing the last rows key input', () => {
         const $row = $wrapper.find('.js-row');
-        $row
-          .find('.js-ci-variable-input-key')
-          .val('foo')
-          .trigger('input');
+        $row.find('.js-ci-variable-input-key').val('foo').trigger('input');
 
         expect($wrapper.find('.js-row').length).toBe(2);
 
@@ -46,10 +43,7 @@ describe('VariableList', () => {
 
       it('should add another row when editing the last rows value textarea', () => {
         const $row = $wrapper.find('.js-row');
-        $row
-          .find('.js-ci-variable-input-value')
-          .val('foo')
-          .trigger('input');
+        $row.find('.js-ci-variable-input-value').val('foo').trigger('input');
 
         expect($wrapper.find('.js-row').length).toBe(2);
 
@@ -61,18 +55,11 @@ describe('VariableList', () => {
 
       it('should remove empty row after blurring', () => {
         const $row = $wrapper.find('.js-row');
-        $row
-          .find('.js-ci-variable-input-key')
-          .val('foo')
-          .trigger('input');
+        $row.find('.js-ci-variable-input-key').val('foo').trigger('input');
 
         expect($wrapper.find('.js-row').length).toBe(2);
 
-        $row
-          .find('.js-ci-variable-input-key')
-          .val('')
-          .trigger('input')
-          .trigger('blur');
+        $row.find('.js-ci-variable-input-key').val('').trigger('input').trigger('blur');
 
         expect($wrapper.find('.js-row').length).toBe(1);
       });

@@ -56,11 +56,7 @@ describe('Activities', () => {
             const testName = shouldHighlight ? 'should highlight' : 'should not highlight';
 
             it(`${testName} ${getEventName(x)}`, () => {
-              expect(
-                $(getSelector(x))
-                  .parent()
-                  .hasClass('active'),
-              ).toEqual(shouldHighlight);
+              expect($(getSelector(x)).parent().hasClass('active')).toEqual(shouldHighlight);
             });
           })(x);
         }

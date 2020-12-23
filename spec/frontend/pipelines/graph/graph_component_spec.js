@@ -47,9 +47,7 @@ describe('graph component', () => {
 
     describe('when column requests a refresh', () => {
       beforeEach(() => {
-        findStageColumns()
-          .at(0)
-          .vm.$emit('refreshPipelineGraph');
+        findStageColumns().at(0).vm.$emit('refreshPipelineGraph');
       });
 
       it('refreshPipelineGraph is emitted', () => {

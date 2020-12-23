@@ -223,10 +223,7 @@ export default class VariableList {
   getAllData() {
     // Ignore the last empty row because we don't want to try persist
     // a blank variable and run into validation problems.
-    const validRows = this.$container
-      .find('.js-row')
-      .toArray()
-      .slice(0, -1);
+    const validRows = this.$container.find('.js-row').toArray().slice(0, -1);
 
     return validRows.map(rowEl => {
       const resultant = {};

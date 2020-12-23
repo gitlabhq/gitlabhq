@@ -39,7 +39,7 @@ describe('Boards - Getters', () => {
   });
 
   describe('getIssueById', () => {
-    const state = { issues: { '1': 'issue' } };
+    const state = { issues: { 1: 'issue' } };
 
     it.each`
       id     | expected
@@ -56,7 +56,7 @@ describe('Boards - Getters', () => {
       ${'1'} | ${'issue'}
       ${''}  | ${{}}
     `('returns $expected when $id is passed to state', ({ id, expected }) => {
-      const state = { issues: { '1': 'issue' }, activeId: id };
+      const state = { issues: { 1: 'issue' }, activeId: id };
 
       expect(getters.activeIssue(state)).toEqual(expected);
     });

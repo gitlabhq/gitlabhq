@@ -93,7 +93,10 @@ export default {
       this.secretValue = '';
     },
     deleteVariable(id) {
-      this.variables.splice(this.variables.findIndex(el => el.id === id), 1);
+      this.variables.splice(
+        this.variables.findIndex(el => el.id === id),
+        1,
+      );
     },
   },
 };

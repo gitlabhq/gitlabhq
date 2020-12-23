@@ -29,17 +29,12 @@ export default class SingleFileDiff {
     this.isOpen = !this.diffForPath;
     if (this.diffForPath) {
       this.collapsedContent = this.content;
-      this.loadingContent = $(WRAPPER)
-        .addClass('loading')
-        .html(LOADING_HTML)
-        .hide();
+      this.loadingContent = $(WRAPPER).addClass('loading').html(LOADING_HTML).hide();
       this.content = null;
       this.collapsedContent.after(this.loadingContent);
       this.$chevronRightIcon.removeClass('gl-display-none');
     } else {
-      this.collapsedContent = $(WRAPPER)
-        .html(COLLAPSED_HTML)
-        .hide();
+      this.collapsedContent = $(WRAPPER).html(COLLAPSED_HTML).hide();
       this.content.after(this.collapsedContent);
       this.$chevronDownIcon.removeClass('gl-display-none');
     }

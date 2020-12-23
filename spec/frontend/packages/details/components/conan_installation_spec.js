@@ -48,21 +48,13 @@ describe('ConanInstallation', () => {
 
   describe('installation commands', () => {
     it('renders the correct command', () => {
-      expect(
-        findCodeInstructions()
-          .at(0)
-          .props('instruction'),
-      ).toBe(conanInstallationCommandStr);
+      expect(findCodeInstructions().at(0).props('instruction')).toBe(conanInstallationCommandStr);
     });
   });
 
   describe('setup commands', () => {
     it('renders the correct command', () => {
-      expect(
-        findCodeInstructions()
-          .at(1)
-          .props('instruction'),
-      ).toBe(conanSetupCommandStr);
+      expect(findCodeInstructions().at(1).props('instruction')).toBe(conanSetupCommandStr);
     });
   });
 });

@@ -82,9 +82,7 @@ describe('IDE merge requests list', () => {
     return wrapper.vm
       .$nextTick()
       .then(() => {
-        findSearchTypeButtons()
-          .at(0)
-          .trigger('click');
+        findSearchTypeButtons().at(0).trigger('click');
         return wrapper.vm.$nextTick();
       })
       .then(() => {
@@ -168,9 +166,7 @@ describe('IDE merge requests list', () => {
 
       describe('with search type', () => {
         beforeEach(() => {
-          findSearchTypeButtons()
-            .at(0)
-            .trigger('click');
+          findSearchTypeButtons().at(0).trigger('click');
 
           return wrapper.vm
             .$nextTick()

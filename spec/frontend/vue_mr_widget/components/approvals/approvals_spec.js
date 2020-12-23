@@ -31,10 +31,7 @@ const testApprovalRulesResponse = () => ({ rules: [{ id: 2 }] });
 // For some reason, the `Promise.resolve()` needs to be deferred
 // or the timing doesn't work.
 const tick = () => Promise.resolve();
-const waitForTick = done =>
-  tick()
-    .then(done)
-    .catch(done.fail);
+const waitForTick = done => tick().then(done).catch(done.fail);
 
 describe('MRWidget approvals', () => {
   let wrapper;

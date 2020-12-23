@@ -123,10 +123,7 @@ export class GitLabDropdown {
             if ($(this.el).is('input')) {
               currentIndex = -1;
             } else {
-              $(selector, this.dropdown)
-                .first()
-                .find('a')
-                .addClass('is-focused');
+              $(selector, this.dropdown).first().find('a').addClass('is-focused');
               currentIndex = 0;
             }
           }
@@ -493,10 +490,7 @@ export class GitLabDropdown {
       if (!this.options.multiSelect || el.hasClass('dropdown-clear-active')) {
         this.dropdown.find(`.${ACTIVE_CLASS}`).removeClass(ACTIVE_CLASS);
         if (!isInput) {
-          this.dropdown
-            .parent()
-            .find(`input[name='${fieldName}']`)
-            .remove();
+          this.dropdown.parent().find(`input[name='${fieldName}']`).remove();
         }
       }
       if (field && field.length && value == null) {
@@ -536,10 +530,7 @@ export class GitLabDropdown {
       $(`input[name="${fieldName}"]`).remove();
     }
 
-    const $input = $('<input>')
-      .attr('type', 'hidden')
-      .attr('name', fieldName)
-      .val(value);
+    const $input = $('<input>').attr('type', 'hidden').attr('name', fieldName).val(value);
     if (this.options.inputId != null) {
       $input.attr('id', this.options.inputId);
     }
@@ -678,9 +669,7 @@ export class GitLabDropdown {
       toggleText = this.options.updateLabel;
     }
 
-    return $(this.el)
-      .find('.dropdown-toggle-text')
-      .text(toggleText);
+    return $(this.el).find('.dropdown-toggle-text').text(toggleText);
   }
 
   // eslint-disable-next-line class-methods-use-this

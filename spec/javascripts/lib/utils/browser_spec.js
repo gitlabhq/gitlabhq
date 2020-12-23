@@ -24,7 +24,7 @@ const PIXEL_TOLERANCE = 0.2;
 const urlToImage = url =>
   new Promise(resolve => {
     const img = new Image();
-    img.onload = function() {
+    img.onload = function () {
       resolve(img);
     };
     img.src = url;

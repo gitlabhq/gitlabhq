@@ -58,10 +58,7 @@ describe('ide/components/ide_sidebar_nav', () => {
         tooltip: getBinding(button.element, 'tooltip').value,
       };
     });
-  const clickTab = () =>
-    findButtons()
-      .at(TEST_CURRENT_INDEX)
-      .trigger('click');
+  const clickTab = () => findButtons().at(TEST_CURRENT_INDEX).trigger('click');
 
   describe.each`
     isOpen   | side          | otherSide     | classes         | classesObj                              | emitEvent  | emitArg

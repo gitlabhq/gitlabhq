@@ -135,7 +135,7 @@ export default class LabelManager {
 
   getSortedLabelsIds() {
     const sortedIds = [];
-    this.prioritizedLabels.find('> li').each(function() {
+    this.prioritizedLabels.find('> li').each(function () {
       const id = $(this).data('id');
 
       if (id) {

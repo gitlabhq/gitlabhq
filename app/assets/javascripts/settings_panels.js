@@ -4,10 +4,7 @@ import { __ } from './locale';
 function expandSection($section) {
   $section.find('.js-settings-toggle:not(.js-settings-toggle-trigger-only)').text(__('Collapse'));
   // eslint-disable-next-line @gitlab/no-global-event-off
-  $section
-    .find('.settings-content')
-    .off('scroll.expandSection')
-    .scrollTop(0);
+  $section.find('.settings-content').off('scroll.expandSection').scrollTop(0);
   $section.addClass('expanded');
   if (!$section.hasClass('no-animate')) {
     $section

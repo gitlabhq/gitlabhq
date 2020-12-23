@@ -32,7 +32,7 @@ import 'vendor/jquery.scrollTo';
 //   </div>
 //
 
-const LineHighlighter = function(options = {}) {
+const LineHighlighter = function (options = {}) {
   options.highlightLineClass = options.highlightLineClass || 'hll';
   options.fileHolderSelector = options.fileHolderSelector || '.file-holder';
   options.scrollFileHolder = options.scrollFileHolder || false;
@@ -50,7 +50,7 @@ const LineHighlighter = function(options = {}) {
   this.highlightHash();
 };
 
-LineHighlighter.prototype.bindEvents = function() {
+LineHighlighter.prototype.bindEvents = function () {
   const $fileHolder = $(this.options.fileHolderSelector);
 
   $fileHolder.on('click', 'a[data-line-number]', this.clickHandler);
@@ -58,7 +58,7 @@ LineHighlighter.prototype.bindEvents = function() {
   window.addEventListener('hashchange', e => this.highlightHash(e.target.location.hash));
 };
 
-LineHighlighter.prototype.highlightHash = function(newHash) {
+LineHighlighter.prototype.highlightHash = function (newHash) {
   let range;
   if (newHash && typeof newHash === 'string') this._hash = newHash;
 
@@ -83,13 +83,11 @@ LineHighlighter.prototype.highlightHash = function(newHash) {
   }
 };
 
-LineHighlighter.prototype.clickHandler = function(event) {
+LineHighlighter.prototype.clickHandler = function (event) {
   let range;
   event.preventDefault();
   this.clearHighlight();
-  const lineNumber = $(event.target)
-    .closest('a')
-    .data('lineNumber');
+  const lineNumber = $(event.target).closest('a').data('lineNumber');
   const current = this.hashToRange(this._hash);
   if (!(current[0] && event.shiftKey)) {
     // If there's no current selection, or there is but Shift wasn't held,
@@ -107,7 +105,7 @@ LineHighlighter.prototype.clickHandler = function(event) {
   }
 };
 
-LineHighlighter.prototype.clearHighlight = function() {
+LineHighlighter.prototype.clearHighlight = function () {
   return $(`.${this.highlightLineClass}`).removeClass(this.highlightLineClass);
 };
 
@@ -122,7 +120,7 @@ LineHighlighter.prototype.clearHighlight = function() {
 //   hashToRange('#foo')   # => [null, null]
 //
 // Returns an Array
-LineHighlighter.prototype.hashToRange = function(hash) {
+LineHighlighter.prototype.hashToRange = function (hash) {
   // ?L(\d+)(?:-(\d+))?$/)
   const matches = hash.match(/^#?L(\d+)(?:-(\d+))?$/);
   if (matches && matches.length) {
@@ -136,14 +134,14 @@ LineHighlighter.prototype.hashToRange = function(hash) {
 // Highlight a single line
 //
 // lineNumber - Line number to highlight
-LineHighlighter.prototype.highlightLine = function(lineNumber) {
+LineHighlighter.prototype.highlightLine = function (lineNumber) {
   return $(`#LC${lineNumber}`).addClass(this.highlightLineClass);
 };
 
 // Highlight all lines within a range
 //
 // range - Array containing the starting and ending line numbers
-LineHighlighter.prototype.highlightRange = function(range) {
+LineHighlighter.prototype.highlightRange = function (range) {
   if (range[1]) {
     const results = [];
     const ref = range[0] <= range[1] ? range : range.reverse();
@@ -158,7 +156,7 @@ LineHighlighter.prototype.highlightRange = function(range) {
 };
 
 // Set the URL hash string
-LineHighlighter.prototype.setHash = function(firstLineNumber, lastLineNumber) {
+LineHighlighter.prototype.setHash = function (firstLineNumber, lastLineNumber) {
   let hash;
   if (lastLineNumber) {
     hash = `#L${firstLineNumber}-${lastLineNumber}`;
@@ -172,7 +170,7 @@ LineHighlighter.prototype.setHash = function(firstLineNumber, lastLineNumber) {
 // Make the actual hash change in the browser
 //
 // This method is stubbed in tests.
-LineHighlighter.prototype.__setLocationHash__ = function(value) {
+LineHighlighter.prototype.__setLocationHash__ = function (value) {
   return window.history.pushState(
     {
       url: value,

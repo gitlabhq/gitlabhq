@@ -115,9 +115,7 @@ describe('RelatedIssuableItem', () => {
     const tokenMetadata = () => wrapper.find('.item-meta');
 
     it('renders item path and ID', () => {
-      const pathAndID = tokenMetadata()
-        .find('.item-path-id')
-        .text();
+      const pathAndID = tokenMetadata().find('.item-path-id').text();
 
       expect(pathAndID).toContain('gitlab-org/gitlab-test');
       expect(pathAndID).toContain('#1');

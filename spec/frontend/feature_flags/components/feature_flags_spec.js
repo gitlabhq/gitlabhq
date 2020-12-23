@@ -101,11 +101,9 @@ describe('Feature flags', () => {
 
     it('shows a feature flags limit reached alert', () => {
       expect(limitAlert().exists()).toBe(true);
-      expect(
-        limitAlert()
-          .find(GlSprintf)
-          .attributes('message'),
-      ).toContain('Feature flags limit reached');
+      expect(limitAlert().find(GlSprintf).attributes('message')).toContain(
+        'Feature flags limit reached',
+      );
     });
 
     describe('when the alert is dismissed', () => {

@@ -83,7 +83,7 @@ export default {
     <template #label>
       <span data-testid="label">
         <gl-sprintf :message="label">
-          <template #italic="{content}">
+          <template #italic="{ content }">
             <i>{{ content }}</i>
           </template>
         </gl-sprintf>
@@ -100,7 +100,7 @@ export default {
     <template #description>
       <span data-testid="description" class="gl-text-gray-400">
         <gl-sprintf :message="description">
-          <template #link="{content}">
+          <template #link="{ content }">
             <gl-link :href="tagsRegexHelpPagePath" target="_blank">{{ content }}</gl-link>
           </template>
         </gl-sprintf>

@@ -198,6 +198,9 @@ export default class PipelineStore {
   }
 
   removeExpandedPipelineToRequestData(id) {
-    this.state.expandedPipelines.splice(this.state.expandedPipelines.findIndex(el => el === id), 1);
+    this.state.expandedPipelines.splice(
+      this.state.expandedPipelines.findIndex(el => el === id),
+      1,
+    );
   }
 }

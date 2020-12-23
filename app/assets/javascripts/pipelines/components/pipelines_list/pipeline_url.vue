@@ -113,7 +113,7 @@ export default {
                 )
               "
             >
-              <template #strong="{content}">
+              <template #strong="{ content }">
                 <b>{{ content }}</b>
               </template>
             </gl-sprintf>

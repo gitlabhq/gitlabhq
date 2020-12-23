@@ -181,12 +181,9 @@ describe('LabelToken', () => {
 
       expect(tokenSegments).toHaveLength(3); // Label, =, "Foo Label"
       expect(tokenSegments.at(2).text()).toBe(`~${mockRegularLabel.title}`); // "Foo Label"
-      expect(
-        tokenSegments
-          .at(2)
-          .find('.gl-token')
-          .attributes('style'),
-      ).toBe('background-color: rgb(186, 218, 85); color: rgb(255, 255, 255);');
+      expect(tokenSegments.at(2).find('.gl-token').attributes('style')).toBe(
+        'background-color: rgb(186, 218, 85); color: rgb(255, 255, 255);',
+      );
     });
 
     it('renders provided defaultLabels as suggestions', async () => {

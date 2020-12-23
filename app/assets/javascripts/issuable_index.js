@@ -21,9 +21,7 @@ export default class IssuableIndex {
       axios
         .put($resetToken.attr('href'))
         .then(({ data }) => {
-          $('#issuable_email')
-            .val(data.new_address)
-            .focus();
+          $('#issuable_email').val(data.new_address).focus();
 
           $resetToken.text(s__('EmailToken|reset it'));
         })

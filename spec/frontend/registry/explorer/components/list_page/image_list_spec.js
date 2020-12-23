@@ -35,9 +35,7 @@ describe('Image List', () => {
     it('when delete event is emitted on the row it emits up a delete event', () => {
       mountComponent();
 
-      findRow()
-        .at(0)
-        .vm.$emit('delete', 'foo');
+      findRow().at(0).vm.$emit('delete', 'foo');
       expect(wrapper.emitted('delete')).toEqual([['foo']]);
     });
   });

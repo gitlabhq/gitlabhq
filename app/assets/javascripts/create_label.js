@@ -46,7 +46,7 @@ export default class CreateLabelDropdown {
   addBinding() {
     const self = this;
 
-    this.$colorSuggestions.on('click', function(e) {
+    this.$colorSuggestions.on('click', function (e) {
       const $this = $(this);
       self.addColorValue(e, $this);
     });
@@ -72,10 +72,7 @@ export default class CreateLabelDropdown {
     e.stopPropagation();
 
     this.$newColorField.val($this.data('color')).trigger('change');
-    this.$colorPreview
-      .css('background-color', $this.data('color'))
-      .parent()
-      .addClass('is-active');
+    this.$colorPreview.css('background-color', $this.data('color')).parent().addClass('is-active');
   }
 
   enableLabelCreateButton() {
@@ -94,10 +91,7 @@ export default class CreateLabelDropdown {
 
     this.$addList.prop('checked', this.addListDefault);
 
-    this.$colorPreview
-      .css('background-color', '')
-      .parent()
-      .removeClass('is-active');
+    this.$colorPreview.css('background-color', '').parent().removeClass('is-active');
   }
 
   saveLabel(e) {

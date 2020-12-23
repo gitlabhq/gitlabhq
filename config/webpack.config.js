@@ -344,7 +344,7 @@ module.exports = {
     // webpack-rails only needs assetsByChunkName to function properly
     new StatsWriterPlugin({
       filename: 'manifest.json',
-      transform: function(data, opts) {
+      transform: function (data, opts) {
         const stats = opts.compiler.getStats().toJson({
           chunkModules: false,
           source: false,

@@ -46,9 +46,7 @@ export default {
       if (!isValidating && this.projectHasBillingEnabled) {
         this.isLoading = true;
 
-        this.fetchZones()
-          .then(this.fetchSuccessHandler)
-          .catch(this.fetchFailureHandler);
+        this.fetchZones().then(this.fetchSuccessHandler).catch(this.fetchFailureHandler);
       }
     },
   },

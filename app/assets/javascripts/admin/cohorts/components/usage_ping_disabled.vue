@@ -36,7 +36,7 @@ export default {
           )
         "
       >
-        <template #docLink="{content}">
+        <template #docLink="{ content }">
           <gl-link :href="docsLink" target="_blank">{{ content }}</gl-link>
         </template>
         <template #strong="{ content }"

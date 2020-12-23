@@ -29,10 +29,7 @@ describe('Deploy freeze modal', () => {
   });
 
   const findModal = () => wrapper.find(GlModal);
-  const addDeployFreezeButton = () =>
-    findModal()
-      .findAll(GlButton)
-      .at(1);
+  const addDeployFreezeButton = () => findModal().findAll(GlButton).at(1);
 
   const setInput = (freezeStartCron, freezeEndCron, selectedTimezone) => {
     store.state.freezeStartCron = freezeStartCron;

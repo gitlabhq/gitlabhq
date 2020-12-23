@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe NamespaceOnboardingAction do
-  let(:namespace) { build(:namespace) }
+  let(:namespace) { create(:namespace) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:namespace).required }
@@ -44,6 +44,32 @@ RSpec.describe NamespaceOnboardingAction do
       expect { create_action }.to change { count_namespace_actions }.by(1)
 
       expect { create_action }.to change { count_namespace_actions }.by(0)
+    end
+
+    context 'when the namespace is created outside the monitoring window' do
+      let(:namespace) { create(:namespace, created_at: (NamespaceOnboardingAction::MONITORING_WINDOW + 1.day).ago) }
+
+      it 'does not create an action for the namespace' do
+        expect { create_action }.not_to change { count_namespace_actions }
+      end
+
+      context 'when an action has already been recorded for the namespace' do
+        before do
+          described_class.create!(namespace: namespace, action: :git_write)
+        end
+
+        it 'creates an action for the namespace' do
+          expect { create_action }.to change { count_namespace_actions }.by(1)
+        end
+      end
+    end
+
+    context 'when the namespace is not a root' do
+      let(:namespace) { create(:namespace, parent: build(:namespace)) }
+
+      it 'does not create an action for the namespace' do
+        expect { create_action }.not_to change { count_namespace_actions }
+      end
     end
 
     def count_namespace_actions

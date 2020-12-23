@@ -19,7 +19,7 @@ describe('VersionCheckImage', () => {
     it('registers an error event', () => {
       jest.spyOn($.prototype, 'on').mockImplementation(() => {});
       // eslint-disable-next-line func-names
-      jest.spyOn($.prototype, 'off').mockImplementation(function() {
+      jest.spyOn($.prototype, 'off').mockImplementation(function () {
         return this;
       });
 

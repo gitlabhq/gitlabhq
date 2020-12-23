@@ -28,12 +28,7 @@ describe('CollapsedAssignee assignee component', () => {
   it('has author name', () => {
     createComponent();
 
-    expect(
-      wrapper
-        .find('.author')
-        .text()
-        .trim(),
-    ).toEqual(TEST_USER.name);
+    expect(wrapper.find('.author').text().trim()).toEqual(TEST_USER.name);
   });
 
   it('has assignee avatar', () => {

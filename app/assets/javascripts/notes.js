@@ -108,10 +108,7 @@ export default class Notes {
 
     // We are in the Merge Requests page so we need another edit form for Changes tab
     if (getPagePath(1) === 'merge_requests') {
-      $('.note-edit-form')
-        .clone()
-        .addClass('mr-note-edit-form')
-        .insertAfter('.note-edit-form');
+      $('.note-edit-form').clone().addClass('mr-note-edit-form').insertAfter('.note-edit-form');
     }
 
     const hash = getLocationHash();
@@ -427,12 +424,7 @@ export default class Notes {
     } else if (Notes.isUpdatedNote(noteEntity, $note)) {
       // The server can send the same update multiple times so we need to make sure to only update once per actual update.
       const isEditing = $note.hasClass('is-editing');
-      const initialContent = normalizeNewlines(
-        $note
-          .find('.original-note-content')
-          .text()
-          .trim(),
-      );
+      const initialContent = normalizeNewlines($note.find('.original-note-content').text().trim());
       const $textarea = $note.find('.js-note-text');
       const currentContent = $textarea.val();
       // There can be CRLF vs LF mismatches if we don't sanitize and compare the same way
@@ -541,14 +533,8 @@ export default class Notes {
     form.find('.js-errors').remove();
     // reset text and preview
     form.find('.js-md-write-button').click();
-    form
-      .find('.js-note-text')
-      .val('')
-      .trigger('input');
-    form
-      .find('.js-note-text')
-      .data('autosave')
-      .reset();
+    form.find('.js-note-text').val('').trigger('input');
+    form.find('.js-note-text').data('autosave').reset();
 
     const event = document.createEvent('Event');
     event.initEvent('autosize:update', true, false);
@@ -690,10 +676,7 @@ export default class Notes {
   }
 
   checkContentToAllowEditing($el) {
-    const initialContent = $el
-      .find('.original-note-content')
-      .text()
-      .trim();
+    const initialContent = $el.find('.original-note-content').text().trim();
     const currentContent = $el.find('.js-note-text').val();
     let isAllowed = true;
 
@@ -877,10 +860,7 @@ export default class Notes {
     const form = this.cleanForm(this.formClone.clone());
     const replyLink = $(target).closest('.js-discussion-reply-button');
     // insert the form after the button
-    replyLink
-      .closest('.discussion-reply-holder')
-      .hide()
-      .after(form);
+    replyLink.closest('.discussion-reply-holder').hide().after(form);
     // show the form
     return this.setupDiscussionNoteForm(replyLink, form);
   }
@@ -1069,10 +1049,7 @@ export default class Notes {
     const row = form.closest('tr');
     const glForm = form.data('glForm');
     glForm.destroy();
-    form
-      .find('.js-note-text')
-      .data('autosave')
-      .reset();
+    form.find('.js-note-text').data('autosave').reset();
     // show the reply button (will only work for replies)
     form.prev('.discussion-reply-holder').show();
     if (row.is('.js-temp-notes-holder')) {
@@ -1181,16 +1158,10 @@ export default class Notes {
 
     this.glForm = new GLForm($editForm.find('form'), this.enableGFM);
 
-    $editForm
-      .find('form')
-      .attr('action', `${postUrl}?html=true`)
-      .attr('data-remote', 'true');
+    $editForm.find('form').attr('action', `${postUrl}?html=true`).attr('data-remote', 'true');
     $editForm.find('.js-form-target-id').val(targetId);
     $editForm.find('.js-form-target-type').val(targetType);
-    $editForm
-      .find('.js-note-text')
-      .focus()
-      .val(originalContent);
+    $editForm.find('.js-note-text').focus().val(originalContent);
     $editForm.find('.js-md-write-button').trigger('click');
     $editForm.find('.referenced-users').hide();
   }
@@ -1306,9 +1277,7 @@ export default class Notes {
    * intrusive.
    */
   collapseLongCommitList() {
-    const systemNotes = $('#notes-list')
-      .find('li.system-note')
-      .has('ul');
+    const systemNotes = $('#notes-list').find('li.system-note').has('ul');
 
     $.each(systemNotes, (index, systemNote) => {
       const $systemNote = $(systemNote);
@@ -1365,11 +1334,7 @@ export default class Notes {
     // There can be CRLF vs LF mismatches if we don't sanitize and compare the same way
     const sanitizedNoteEntityText = normalizeNewlines(noteEntity.note.trim());
     const currentNoteText = normalizeNewlines(
-      $note
-        .find('.original-note-content')
-        .first()
-        .text()
-        .trim(),
+      $note.find('.original-note-content').first().text().trim(),
     );
     return sanitizedNoteEntityText !== currentNoteText;
   }
@@ -1545,10 +1510,7 @@ export default class Notes {
     let $form = $submitBtn.parents('form');
     const $closeBtn = $form.find('.js-note-target-close');
     const isDiscussionNote =
-      $submitBtn
-        .parent()
-        .find('li.droplab-item-selected')
-        .attr('id') === 'discussion';
+      $submitBtn.parent().find('li.droplab-item-selected').attr('id') === 'discussion';
     const isMainForm = $form.hasClass('js-main-target-form');
     const isDiscussionForm = $form.hasClass('js-discussion-note-form');
     const isDiscussionResolve = $submitBtn.hasClass('js-comment-resolve-button');

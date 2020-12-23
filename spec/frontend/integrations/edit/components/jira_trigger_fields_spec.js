@@ -57,9 +57,7 @@ describe('JiraTriggerFields', () => {
       // browsers don't include unchecked boxes in form submissions.
       it('includes comment settings as false even if unchecked', () => {
         expect(
-          findCommentSettings()
-            .find('input[name="service[comment_on_event_enabled]"]')
-            .exists(),
+          findCommentSettings().find('input[name="service[comment_on_event_enabled]"]').exists(),
         ).toBe(true);
       });
 

@@ -113,10 +113,18 @@ export default {
             },
           },
         })
-        .then(({ data: { mergeRequestSetWip: { mergeRequest: { title } } } }) => {
-          createFlash(__('The merge request can now be merged.'), 'notice');
-          $('.merge-request .detail-page-description .title').text(title);
-        })
+        .then(
+          ({
+            data: {
+              mergeRequestSetWip: {
+                mergeRequest: { title },
+              },
+            },
+          }) => {
+            createFlash(__('The merge request can now be merged.'), 'notice');
+            $('.merge-request .detail-page-description .title').text(title);
+          },
+        )
         .catch(() => createFlash(__('Something went wrong. Please try again.')))
         .finally(() => {
           this.isMakingRequest = false;

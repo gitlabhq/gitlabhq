@@ -142,16 +142,8 @@ describe('title area', () => {
 
       await wrapper.vm.$nextTick();
 
-      expect(
-        findSlotOrderElements()
-          .at(0)
-          .attributes('data-testid'),
-      ).toBe(DYNAMIC_SLOT);
-      expect(
-        findSlotOrderElements()
-          .at(1)
-          .attributes('data-testid'),
-      ).toBe('metadata-foo');
+      expect(findSlotOrderElements().at(0).attributes('data-testid')).toBe(DYNAMIC_SLOT);
+      expect(findSlotOrderElements().at(1).attributes('data-testid')).toBe('metadata-foo');
     });
   });
 

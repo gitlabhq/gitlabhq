@@ -110,7 +110,7 @@ export default {
               <template #description>
                 <gl-sprintf v-if="filterQuery" :message="$options.i18n.widenFilters" />
                 <gl-sprintf v-else :message="$options.i18n.noResults">
-                  <template #noPackagesLink="{content}">
+                  <template #noPackagesLink="{ content }">
                     <gl-link :href="emptyListHelpUrl" target="_blank">{{ content }}</gl-link>
                   </template>
                 </gl-sprintf>

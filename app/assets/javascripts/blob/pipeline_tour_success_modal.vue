@@ -98,7 +98,7 @@ export default {
     </template>
     <p>
       <gl-sprintf :message="$options.i18n.bodyMessage">
-        <template #codeQualityLink="{content}">
+        <template #codeQualityLink="{ content }">
           <gl-link :href="codeQualityLink" target="_blank" class="font-size-inherit">{{
             content
           }}</gl-link>
@@ -106,12 +106,12 @@ export default {
       </gl-sprintf>
     </p>
     <gl-sprintf :message="$options.i18n.helpMessage">
-      <template #beginnerLink="{content}">
+      <template #beginnerLink="{ content }">
         <gl-link :href="$options.beginnerLink" target="_blank">
           {{ content }}
         </gl-link>
       </template>
-      <template #exampleLink="{content}">
+      <template #exampleLink="{ content }">
         <gl-link :href="exampleLink" target="_blank">
           {{ content }}
         </gl-link>

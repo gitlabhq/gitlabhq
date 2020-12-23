@@ -88,10 +88,7 @@ describe('Timezone Dropdown', () => {
           onSelectTimezone,
         });
 
-        $wrapper
-          .find(tzListSel)
-          .first()
-          .trigger('click');
+        $wrapper.find(tzListSel).first().trigger('click');
 
         expect(onSelectTimezone).toHaveBeenCalled();
       });
@@ -118,10 +115,7 @@ describe('Timezone Dropdown', () => {
           displayFormat,
         });
 
-        $wrapper
-          .find(tzListSel)
-          .first()
-          .trigger('click');
+        $wrapper.find(tzListSel).first().trigger('click');
 
         expect(displayFormat).toHaveBeenCalled();
       });

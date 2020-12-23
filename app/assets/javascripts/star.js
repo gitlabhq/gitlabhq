@@ -16,10 +16,7 @@ export default class Star {
         .post($this.data('endpoint'))
         .then(({ data }) => {
           const isStarred = $starSpan.hasClass('starred');
-          $this
-            .parent()
-            .find('.count')
-            .text(data.star_count);
+          $this.parent().find('.count').text(data.star_count);
 
           if (isStarred) {
             $starSpan.removeClass('starred').text(s__('StarProject|Star'));

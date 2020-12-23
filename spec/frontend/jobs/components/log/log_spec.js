@@ -62,11 +62,7 @@ describe('Job Log', () => {
     });
 
     it('renders an icon with the open state', () => {
-      expect(
-        findCollapsibleLine()
-          .find('[data-testid="angle-down-icon"]')
-          .exists(),
-      ).toBe(true);
+      expect(findCollapsibleLine().find('[data-testid="angle-down-icon"]').exists()).toBe(true);
     });
 
     describe('on click header section', () => {

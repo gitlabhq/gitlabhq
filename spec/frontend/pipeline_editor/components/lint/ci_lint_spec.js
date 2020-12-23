@@ -49,11 +49,7 @@ describe('~/pipeline_editor/components/lint/ci_lint.vue', () => {
     });
 
     it('displays link to the right help page', () => {
-      expect(
-        findAlert()
-          .find(GlLink)
-          .attributes('href'),
-      ).toBe(mockLintHelpPagePath);
+      expect(findAlert().find(GlLink).attributes('href')).toBe(mockLintHelpPagePath);
     });
 
     it('displays jobs', () => {

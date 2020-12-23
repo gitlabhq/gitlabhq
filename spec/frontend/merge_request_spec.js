@@ -32,10 +32,7 @@ describe('MergeRequest', () => {
       jest.spyOn($, 'ajax').mockImplementation();
       const changeEvent = document.createEvent('HTMLEvents');
       changeEvent.initEvent('change', true, true);
-      $('input[type=checkbox]')
-        .first()
-        .attr('checked', true)[0]
-        .dispatchEvent(changeEvent);
+      $('input[type=checkbox]').first().attr('checked', true)[0].dispatchEvent(changeEvent);
       setImmediate(() => {
         expect($('.js-task-list-field').val()).toBe(
           '- [x] Task List Item\n- [ ]\n- [ ] Task List Item 2\n',
@@ -49,10 +46,7 @@ describe('MergeRequest', () => {
       jest.spyOn($, 'ajax').mockImplementation();
       const changeEvent = document.createEvent('HTMLEvents');
       changeEvent.initEvent('change', true, true);
-      $('input[type=checkbox]')
-        .last()
-        .attr('checked', true)[0]
-        .dispatchEvent(changeEvent);
+      $('input[type=checkbox]').last().attr('checked', true)[0].dispatchEvent(changeEvent);
       setImmediate(() => {
         expect($('.js-task-list-field').val()).toBe(
           '- [ ] Task List Item\n- [ ]\n- [x] Task List Item 2\n',

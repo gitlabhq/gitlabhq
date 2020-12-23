@@ -40,10 +40,7 @@ export default {
     let clearMatch;
 
     try {
-      clearReceived = received
-        .replace(/\s\s+/gm, ' ')
-        .replace(/\s\./gm, '.')
-        .trim();
+      clearReceived = received.replace(/\s\s+/gm, ' ').replace(/\s\./gm, '.').trim();
     } catch (e) {
       return { actual: received, message: 'The received value is not a string', pass: false };
     }

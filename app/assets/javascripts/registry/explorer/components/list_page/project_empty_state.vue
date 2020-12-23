@@ -45,7 +45,7 @@ export default {
     <template #description>
       <p>
         <gl-sprintf :message="$options.i18n.introText">
-          <template #docLink="{content}">
+          <template #docLink="{ content }">
             <gl-link :href="config.helpPagePath" target="_blank">{{ content }}</gl-link>
           </template>
         </gl-sprintf>
@@ -53,10 +53,10 @@ export default {
       <h5>{{ $options.i18n.quickStart }}</h5>
       <p>
         <gl-sprintf :message="$options.i18n.notLoggedInMessage">
-          <template #twofaDocLink="{content}">
+          <template #twofaDocLink="{ content }">
             <gl-link :href="config.twoFactorAuthHelpLink" target="_blank">{{ content }}</gl-link>
           </template>
-          <template #personalAccessTokensDocLink="{content}">
+          <template #personalAccessTokensDocLink="{ content }">
             <gl-link :href="config.personalAccessTokensHelpLink" target="_blank">{{
               content
             }}</gl-link>
@@ -81,7 +81,7 @@ export default {
       <p class="gl-mb-4">
         {{ $options.i18n.addImageText }}
       </p>
-      <gl-form-input-group class="gl-mb-4 ">
+      <gl-form-input-group class="gl-mb-4">
         <gl-form-input
           :value="dockerBuildCommand"
           readonly

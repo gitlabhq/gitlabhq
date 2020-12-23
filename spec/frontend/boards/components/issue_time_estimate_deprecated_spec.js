@@ -24,12 +24,7 @@ describe('Issue Time Estimate component', () => {
     });
 
     it('renders the correct time estimate', () => {
-      expect(
-        wrapper
-          .find('time')
-          .text()
-          .trim(),
-      ).toEqual('2w 3d 1m');
+      expect(wrapper.find('time').text().trim()).toEqual('2w 3d 1m');
     });
 
     it('renders expanded time estimate in tooltip', () => {
@@ -41,12 +36,7 @@ describe('Issue Time Estimate component', () => {
       wrapper.setProps({ estimate: 'Foo <script>alert("XSS")</script>' });
       wrapper.vm.$nextTick(() => {
         expect(alertSpy).not.toHaveBeenCalled();
-        expect(
-          wrapper
-            .find('time')
-            .text()
-            .trim(),
-        ).toEqual('0m');
+        expect(wrapper.find('time').text().trim()).toEqual('0m');
         expect(wrapper.find('.js-issue-time-estimate').text()).toContain('0m');
         done();
       });
@@ -64,12 +54,7 @@ describe('Issue Time Estimate component', () => {
     });
 
     it('renders the correct time estimate', () => {
-      expect(
-        wrapper
-          .find('time')
-          .text()
-          .trim(),
-      ).toEqual('104h 1m');
+      expect(wrapper.find('time').text().trim()).toEqual('104h 1m');
     });
 
     it('renders expanded time estimate in tooltip', () => {

@@ -19,18 +19,9 @@ describe('ErrorTrackingList', () => {
   const findErrorListTable = () => wrapper.find('table');
   const findErrorListRows = () => wrapper.findAll('tbody tr');
   const dropdownsArray = () => wrapper.findAll(GlDropdown);
-  const findRecentSearchesDropdown = () =>
-    dropdownsArray()
-      .at(0)
-      .find(GlDropdown);
-  const findStatusFilterDropdown = () =>
-    dropdownsArray()
-      .at(1)
-      .find(GlDropdown);
-  const findSortDropdown = () =>
-    dropdownsArray()
-      .at(2)
-      .find(GlDropdown);
+  const findRecentSearchesDropdown = () => dropdownsArray().at(0).find(GlDropdown);
+  const findStatusFilterDropdown = () => dropdownsArray().at(1).find(GlDropdown);
+  const findSortDropdown = () => dropdownsArray().at(2).find(GlDropdown);
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
   const findPagination = () => wrapper.find(GlPagination);
   const findErrorActions = () => wrapper.find(ErrorTrackingActions);

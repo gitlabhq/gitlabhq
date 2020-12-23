@@ -2,12 +2,7 @@ let id = 1;
 
 // Code taken from: https://gist.github.com/6174/6062387
 const getRandomString = () =>
-  Math.random()
-    .toString(36)
-    .substring(2, 15) +
-  Math.random()
-    .toString(36)
-    .substring(2, 15);
+  Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 
 const getRandomUrl = () => `https://${getRandomString()}.com/${getRandomString()}`;
 

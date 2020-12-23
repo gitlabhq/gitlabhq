@@ -45,15 +45,16 @@ describe('IDE extra file row component', () => {
       expect(vm.folderChangesTooltip).toBe(undefined);
     });
 
-    [{ input: 1, output: '1 changed file' }, { input: 2, output: '2 changed files' }].forEach(
-      ({ input, output }) => {
-        it('returns changed files count if changes count is not 0', () => {
-          changesCount = input;
+    [
+      { input: 1, output: '1 changed file' },
+      { input: 2, output: '2 changed files' },
+    ].forEach(({ input, output }) => {
+      it('returns changed files count if changes count is not 0', () => {
+        changesCount = input;
 
-          expect(vm.folderChangesTooltip).toBe(output);
-        });
-      },
-    );
+        expect(vm.folderChangesTooltip).toBe(output);
+      });
+    });
   });
 
   describe('show tree changes count', () => {

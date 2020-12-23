@@ -42,7 +42,10 @@ describe('Actions Package details store', () => {
         fetchPackageVersions,
         undefined,
         { packageEntity },
-        [{ type: types.SET_LOADING, payload: true }, { type: types.SET_LOADING, payload: false }],
+        [
+          { type: types.SET_LOADING, payload: true },
+          { type: types.SET_LOADING, payload: false },
+        ],
         [],
         () => {
           expect(Api.projectPackage).toHaveBeenCalledWith(
@@ -61,7 +64,10 @@ describe('Actions Package details store', () => {
         fetchPackageVersions,
         undefined,
         { packageEntity },
-        [{ type: types.SET_LOADING, payload: true }, { type: types.SET_LOADING, payload: false }],
+        [
+          { type: types.SET_LOADING, payload: true },
+          { type: types.SET_LOADING, payload: false },
+        ],
         [],
         () => {
           expect(Api.projectPackage).toHaveBeenCalledWith(

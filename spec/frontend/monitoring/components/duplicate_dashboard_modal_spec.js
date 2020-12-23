@@ -101,9 +101,7 @@ describe('duplicate dashboard modal', () => {
       commitMessage: 'A commit message',
     };
 
-    findModal()
-      .find(DuplicateDashboardForm)
-      .vm.$emit('change', formVals);
+    findModal().find(DuplicateDashboardForm).vm.$emit('change', formVals);
 
     // Binding's second argument contains the modal id
     expect(wrapper.vm.form).toEqual(formVals);

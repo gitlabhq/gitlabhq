@@ -230,7 +230,7 @@ export default {
       <template #description>
         <p>
           <gl-sprintf :message="$options.i18n.CONNECTION_ERROR_MESSAGE">
-            <template #docLink="{content}">
+            <template #docLink="{ content }">
               <gl-link :href="`${config.helpPagePath}#docker-connection-error`" target="_blank">
                 {{ content }}
               </gl-link>

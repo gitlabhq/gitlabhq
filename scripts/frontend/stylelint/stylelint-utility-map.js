@@ -42,7 +42,7 @@ sass.render(
           prettierOptions,
         );
 
-        fs.writeFile(hashMapPath, prettyHashmap, function(err) {
+        fs.writeFile(hashMapPath, prettyHashmap, function (err) {
           if (err) {
             return console.log(err);
           }

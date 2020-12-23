@@ -32,12 +32,7 @@ describe('Blob Header Filepath', () => {
 
     it('renders regular name', () => {
       createComponent();
-      expect(
-        wrapper
-          .find('.js-blob-header-filepath')
-          .text()
-          .trim(),
-      ).toBe(MockBlob.path);
+      expect(wrapper.find('.js-blob-header-filepath').text().trim()).toBe(MockBlob.path);
     });
 
     it('does not fail if the name is empty', () => {
@@ -71,12 +66,7 @@ describe('Blob Header Filepath', () => {
       );
 
       expect(wrapper.text()).toContain(slotContent);
-      expect(
-        wrapper
-          .text()
-          .trim()
-          .substring(0, slotContent.length),
-      ).toBe(slotContent);
+      expect(wrapper.text().trim().substring(0, slotContent.length)).toBe(slotContent);
     });
   });
 

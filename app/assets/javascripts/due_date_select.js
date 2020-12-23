@@ -197,9 +197,7 @@ export default class DueDateSelectors {
 
     $('.js-clear-due-date,.js-clear-start-date').on('click', e => {
       e.preventDefault();
-      const calendar = $(e.target)
-        .siblings('.datepicker')
-        .data('pikaday');
+      const calendar = $(e.target).siblings('.datepicker').data('pikaday');
       calendar.setDate(null);
     });
   }

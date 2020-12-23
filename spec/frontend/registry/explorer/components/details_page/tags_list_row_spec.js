@@ -306,11 +306,7 @@ describe('tags list row', () => {
         });
 
         it(`is ${clipboard} that clipboard button exist`, () => {
-          expect(
-            finderFunction()
-              .find(ClipboardButton)
-              .exists(),
-          ).toBe(clipboard);
+          expect(finderFunction().find(ClipboardButton).exists()).toBe(clipboard);
         });
       });
     });

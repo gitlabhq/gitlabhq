@@ -9,7 +9,7 @@ import { fixTitle } from '~/tooltips';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
 export default function initCompareAutocomplete(limitTo = null, clickHandler = () => {}) {
-  $('.js-compare-dropdown').each(function() {
+  $('.js-compare-dropdown').each(function () {
     const $dropdown = $(this);
     const selected = $dropdown.data('selected');
     const $dropdownContainer = $dropdown.closest('.dropdown');
@@ -51,9 +51,7 @@ export default function initCompareAutocomplete(limitTo = null, clickHandler = (
           .text(ref)
           .attr('data-ref', ref);
         if (ref.header != null) {
-          return $('<li />')
-            .addClass('dropdown-header')
-            .text(ref.header);
+          return $('<li />').addClass('dropdown-header').text(ref.header);
         }
         return $('<li />').append(link);
       },

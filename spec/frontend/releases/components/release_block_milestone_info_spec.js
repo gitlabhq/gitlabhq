@@ -67,9 +67,7 @@ describe('Release block milestone info', () => {
       ).toBe(true);
 
       milestones.forEach((m, i) => {
-        const milestoneLink = milestoneListContainer()
-          .findAll(GlLink)
-          .at(i);
+        const milestoneLink = milestoneListContainer().findAll(GlLink).at(i);
 
         expect(milestoneLink.text()).toBe(m.title);
         expect(milestoneLink.attributes('href')).toBe(m.webUrl);
@@ -118,9 +116,7 @@ describe('Release block milestone info', () => {
     });
 
     const clickShowMoreFewerButton = () => {
-      milestoneListContainer()
-        .find(GlButton)
-        .trigger('click');
+      milestoneListContainer().find(GlButton).trigger('click');
 
       return wrapper.vm.$nextTick();
     };

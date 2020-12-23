@@ -53,8 +53,7 @@ export default {
           id="issue-description"
           ref="textarea"
           v-model="formState.description"
-          class="note-textarea js-gfm-input js-autosize markdown-area
-          qa-description-textarea"
+          class="note-textarea js-gfm-input js-autosize markdown-area qa-description-textarea"
           dir="auto"
           :data-supports-quick-actions="!glFeatures.tributeAutocomplete"
           :aria-label="__('Description')"

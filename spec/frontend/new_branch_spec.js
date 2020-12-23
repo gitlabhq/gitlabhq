@@ -12,9 +12,7 @@ describe('Branch', () => {
     preloadFixtures('branches/new_branch.html');
 
     function fillNameWith(value) {
-      $('.js-branch-name')
-        .val(value)
-        .trigger('blur');
+      $('.js-branch-name').val(value).trigger('blur');
     }
 
     function expectToHaveError(error) {

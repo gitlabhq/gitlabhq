@@ -21,7 +21,10 @@ describe('Pipelines Store', () => {
     });
 
     it('should store the provided array', () => {
-      const array = [{ id: 1, status: 'running' }, { id: 2, status: 'success' }];
+      const array = [
+        { id: 1, status: 'running' },
+        { id: 2, status: 'success' },
+      ];
       store.storePipelines(array);
 
       expect(store.state.pipelines).toEqual(array);

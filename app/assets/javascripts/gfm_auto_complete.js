@@ -285,10 +285,7 @@ class GfmAutoComplete {
         ...this.getDefaultCallbacks(),
         beforeSave: membersBeforeSave,
         matcher(flag, subtext) {
-          const subtextNodes = subtext
-            .split(/\n+/g)
-            .pop()
-            .split(GfmAutoComplete.regexSubtext);
+          const subtextNodes = subtext.split(/\n+/g).pop().split(GfmAutoComplete.regexSubtext);
 
           // Check if @ is followed by '/assign', '/reassign', '/unassign' or '/cc' commands.
           command = subtextNodes.find(node => {
@@ -465,10 +462,7 @@ class GfmAutoComplete {
           }));
         },
         matcher(flag, subtext) {
-          const subtextNodes = subtext
-            .split(/\n+/g)
-            .pop()
-            .split(GfmAutoComplete.regexSubtext);
+          const subtextNodes = subtext.split(/\n+/g).pop().split(GfmAutoComplete.regexSubtext);
 
           // Check if ~ is followed by '/label', '/relabel' or '/unlabel' commands.
           command = subtextNodes.find(node => {

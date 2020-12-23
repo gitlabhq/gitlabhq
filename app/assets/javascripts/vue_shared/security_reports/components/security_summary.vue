@@ -34,13 +34,13 @@ export default {
 <template>
   <span>
     <gl-sprintf :message="message.message">
-      <template #total="{content}">
+      <template #total="{ content }">
         <strong>{{ content }}</strong>
       </template>
     </gl-sprintf>
     <span v-if="shouldShowCountMessage" class="gl-font-sm">
       <gl-sprintf :message="message.countMessage">
-        <template v-for="slotName in $options.slotNames" #[slotName]="{content}">
+        <template v-for="slotName in $options.slotNames" #[slotName]="{ content }">
           <span :key="slotName">
             <strong
               v-if="message[slotName] > 0"

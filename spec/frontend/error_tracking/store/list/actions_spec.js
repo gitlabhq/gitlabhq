@@ -48,7 +48,10 @@ describe('error tracking actions', () => {
         actions.startPolling,
         {},
         {},
-        [{ type: types.SET_LOADING, payload: true }, { type: types.SET_LOADING, payload: false }],
+        [
+          { type: types.SET_LOADING, payload: true },
+          { type: types.SET_LOADING, payload: false },
+        ],
         [],
         () => {
           expect(createFlash).toHaveBeenCalledTimes(1);
@@ -64,7 +67,10 @@ describe('error tracking actions', () => {
         actions.restartPolling,
         {},
         {},
-        [{ type: types.SET_ERRORS, payload: [] }, { type: types.SET_LOADING, payload: true }],
+        [
+          { type: types.SET_ERRORS, payload: [] },
+          { type: types.SET_LOADING, payload: true },
+        ],
         [],
       );
     });
@@ -110,7 +116,10 @@ describe('error tracking actions', () => {
         actions.sortByField,
         field,
         {},
-        [{ type: types.SET_CURSOR, payload: null }, { type: types.SET_SORT_FIELD, payload: field }],
+        [
+          { type: types.SET_CURSOR, payload: null },
+          { type: types.SET_SORT_FIELD, payload: field },
+        ],
         [{ type: 'stopPolling' }, { type: 'startPolling' }],
       );
     });

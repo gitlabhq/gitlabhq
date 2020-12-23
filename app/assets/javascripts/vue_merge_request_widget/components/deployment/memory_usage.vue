@@ -145,7 +145,7 @@ export default {
         <template #metricsLink="{ content }">
           <gl-link :href="metricsMonitoringUrl">{{ content }}</gl-link>
         </template>
-        <template #emphasis="{content}">
+        <template #emphasis="{ content }">
           <strong>{{ content }}</strong>
         </template>
         <template #memoryFrom>{{ memoryFrom }}</template>

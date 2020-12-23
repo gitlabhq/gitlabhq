@@ -102,7 +102,7 @@ describe('BoardCardAssigneeDropdown', () => {
   beforeEach(() => {
     store.state.activeId = '1';
     store.state.issues = {
-      '1': {
+      1: {
         iid,
         assignees: [{ username: activeIssueName, name: activeIssueName, id: activeIssueName }],
       },
@@ -145,12 +145,7 @@ describe('BoardCardAssigneeDropdown', () => {
     it('renders gl-avatar-labeled in gl-avatar-link', () => {
       const item = findByText('hello');
 
-      expect(
-        item
-          .find(GlAvatarLink)
-          .find(GlAvatarLabeled)
-          .exists(),
-      ).toBe(true);
+      expect(item.find(GlAvatarLink).find(GlAvatarLabeled).exists()).toBe(true);
     });
   });
 

@@ -138,7 +138,10 @@ export const fileLineCoverage = state => (file, line) => {
  * @returns {number}
  */
 export const currentDiffIndex = state =>
-  Math.max(0, state.diffFiles.findIndex(diff => diff.file_hash === state.currentDiffFileId));
+  Math.max(
+    0,
+    state.diffFiles.findIndex(diff => diff.file_hash === state.currentDiffFileId),
+  );
 
 export const diffLines = state => (file, unifiedDiffComponents) => {
   if (!unifiedDiffComponents && state.diffViewType === INLINE_DIFF_VIEW_TYPE) {

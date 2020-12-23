@@ -272,7 +272,7 @@ describe('DiffsStoreActions', () => {
     afterEach(() => mock.restore());
 
     it('should commit SET_COVERAGE_DATA with received response', done => {
-      const data = { files: { 'app.js': { '1': 0, '2': 1 } } };
+      const data = { files: { 'app.js': { 1: 0, 2: 1 } } };
 
       mock.onGet(endpointCoverage).reply(200, { data });
 
@@ -1410,7 +1410,7 @@ describe('DiffsStoreActions', () => {
       const state = { diffFiles: [{ file_hash: '123' }] };
       const rootGetters = {
         getDiscussion: () => ({ diff_file: { file_hash: '123' } }),
-        notesById: { '1': { discussion_id: '2' } },
+        notesById: { 1: { discussion_id: '2' } },
       };
 
       setCurrentDiffFileIdFromNote({ commit, state, rootGetters }, '1');
@@ -1423,7 +1423,7 @@ describe('DiffsStoreActions', () => {
       const state = { diffFiles: [{ file_hash: '123' }] };
       const rootGetters = {
         getDiscussion: () => ({ id: '1' }),
-        notesById: { '1': { discussion_id: '2' } },
+        notesById: { 1: { discussion_id: '2' } },
       };
 
       setCurrentDiffFileIdFromNote({ commit, state, rootGetters }, '1');
@@ -1436,7 +1436,7 @@ describe('DiffsStoreActions', () => {
       const state = { diffFiles: [{ file_hash: '123' }] };
       const rootGetters = {
         getDiscussion: () => ({ diff_file: { file_hash: '124' } }),
-        notesById: { '1': { discussion_id: '2' } },
+        notesById: { 1: { discussion_id: '2' } },
       };
 
       setCurrentDiffFileIdFromNote({ commit, state, rootGetters }, '1');

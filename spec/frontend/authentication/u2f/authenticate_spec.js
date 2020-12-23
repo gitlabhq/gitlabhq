@@ -55,10 +55,7 @@ describe('U2FAuthenticate', () => {
       jest.spyOn(component, 'renderAuthenticated').mockReturnValue(true);
       u2fDevice = new MockU2FDevice();
 
-      component
-        .start()
-        .then(done)
-        .catch(done.fail);
+      component.start().then(done).catch(done.fail);
     });
 
     it('allows authenticating via a U2F device', () => {

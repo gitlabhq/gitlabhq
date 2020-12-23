@@ -51,11 +51,7 @@ describe('MavenInstallation', () => {
 
   describe('installation commands', () => {
     it('renders the correct xml block', () => {
-      expect(
-        findCodeInstructions()
-          .at(0)
-          .props(),
-      ).toMatchObject({
+      expect(findCodeInstructions().at(0).props()).toMatchObject({
         instruction: xmlCodeBlock,
         multiline: true,
         trackingAction: TrackingActions.COPY_MAVEN_XML,
@@ -63,11 +59,7 @@ describe('MavenInstallation', () => {
     });
 
     it('renders the correct maven command', () => {
-      expect(
-        findCodeInstructions()
-          .at(1)
-          .props(),
-      ).toMatchObject({
+      expect(findCodeInstructions().at(1).props()).toMatchObject({
         instruction: mavenCommandStr,
         multiline: false,
         trackingAction: TrackingActions.COPY_MAVEN_COMMAND,
@@ -77,11 +69,7 @@ describe('MavenInstallation', () => {
 
   describe('setup commands', () => {
     it('renders the correct xml block', () => {
-      expect(
-        findCodeInstructions()
-          .at(2)
-          .props(),
-      ).toMatchObject({
+      expect(findCodeInstructions().at(2).props()).toMatchObject({
         instruction: mavenSetupXml,
         multiline: true,
         trackingAction: TrackingActions.COPY_MAVEN_SETUP,

@@ -46,11 +46,7 @@ describe('Empty State', () => {
     });
 
     it('renders provided title', () => {
-      expect(
-        findTitle()
-          .text()
-          .trim(),
-      ).toBe(defaultProps.title);
+      expect(findTitle().text().trim()).toBe(defaultProps.title);
     });
   });
 
@@ -60,11 +56,7 @@ describe('Empty State', () => {
     });
 
     it('renders content', () => {
-      expect(
-        findContent()
-          .text()
-          .trim(),
-      ).toBe(content);
+      expect(findContent().text().trim()).toBe(content);
     });
   });
 

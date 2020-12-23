@@ -465,7 +465,10 @@ describe('Monitoring mutations', () => {
       });
 
       expect(variable.options).toEqual({
-        values: [{ text: 'prometheus', value: 'prometheus' }, { text: 'node', value: 'node' }],
+        values: [
+          { text: 'prometheus', value: 'prometheus' },
+          { text: 'node', value: 'node' },
+        ],
       });
     });
   });

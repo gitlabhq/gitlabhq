@@ -251,9 +251,12 @@ describe('Diffs Module Getters', () => {
       discussionMock.diff_file.file_hash = diffFileMock.file_hash;
 
       expect(
-        getters.getDiffFileDiscussions(localState, {}, {}, { discussions: [discussionMock] })(
-          diffFileMock,
-        ).length,
+        getters.getDiffFileDiscussions(
+          localState,
+          {},
+          {},
+          { discussions: [discussionMock] },
+        )(diffFileMock).length,
       ).toEqual(1);
     });
 
@@ -345,7 +348,7 @@ describe('Diffs Module Getters', () => {
 
   describe('fileLineCoverage', () => {
     beforeEach(() => {
-      Object.assign(localState.coverageFiles, { files: { 'app.js': { '1': 0, '2': 5 } } });
+      Object.assign(localState.coverageFiles, { files: { 'app.js': { 1: 0, 2: 5 } } });
     });
 
     it('returns empty object when no coverage data is available', () => {

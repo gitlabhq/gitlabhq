@@ -55,11 +55,7 @@ describe('Pipelines Actions dropdown', () => {
     });
 
     it("renders a disabled action when it's not playable", () => {
-      expect(
-        findAllDropdownItems()
-          .at(1)
-          .attributes('disabled'),
-      ).toBe('true');
+      expect(findAllDropdownItems().at(1).attributes('disabled')).toBe('true');
     });
 
     describe('on click', () => {
@@ -100,9 +96,7 @@ describe('Pipelines Actions dropdown', () => {
       mock.onPost(scheduledJobAction.path).reply(200);
       jest.spyOn(window, 'confirm').mockReturnValue(true);
 
-      findAllDropdownItems()
-        .at(0)
-        .vm.$emit('click');
+      findAllDropdownItems().at(0).vm.$emit('click');
 
       expect(window.confirm).toHaveBeenCalled();
 
@@ -115,28 +109,20 @@ describe('Pipelines Actions dropdown', () => {
       mock.onPost(scheduledJobAction.path).reply(200);
       jest.spyOn(window, 'confirm').mockReturnValue(false);
 
-      findAllDropdownItems()
-        .at(0)
-        .vm.$emit('click');
+      findAllDropdownItems().at(0).vm.$emit('click');
 
       expect(window.confirm).toHaveBeenCalled();
       expect(mock.history.post.length).toBe(0);
     });
 
     it('displays the remaining time in the dropdown', () => {
-      expect(
-        findAllCountdowns()
-          .at(0)
-          .props('endDateString'),
-      ).toBe(scheduledJobAction.scheduled_at);
+      expect(findAllCountdowns().at(0).props('endDateString')).toBe(
+        scheduledJobAction.scheduled_at,
+      );
     });
 
     it('displays 00:00:00 for expired jobs in the dropdown', () => {
-      expect(
-        findAllCountdowns()
-          .at(1)
-          .props('endDateString'),
-      ).toBe(expiredJobAction.scheduled_at);
+      expect(findAllCountdowns().at(1).props('endDateString')).toBe(expiredJobAction.scheduled_at);
     });
   });
 });

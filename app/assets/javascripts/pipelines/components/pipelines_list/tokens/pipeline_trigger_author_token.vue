@@ -80,7 +80,7 @@ export default {
     v-on="$listeners"
     @input="searchAuthors"
   >
-    <template #view="{inputValue}">
+    <template #view="{ inputValue }">
       <gl-avatar
         v-if="activeUser"
         :size="16"

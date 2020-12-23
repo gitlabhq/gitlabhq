@@ -91,12 +91,7 @@ describe('PrometheusMetrics', () => {
       );
 
       expect($metricsListLi.length).toEqual(metrics.length);
-      expect(
-        $metricsListLi
-          .first()
-          .find('.badge')
-          .text(),
-      ).toEqual(`${metrics[0].active_metrics}`);
+      expect($metricsListLi.first().find('.badge').text()).toEqual(`${metrics[0].active_metrics}`);
     });
 
     it('should show missing environment variables list', () => {

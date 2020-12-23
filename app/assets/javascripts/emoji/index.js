@@ -242,8 +242,9 @@ export function getEmojiInfo(query) {
 
 export function emojiFallbackImageSrc(inputName) {
   const { name } = getEmojiInfo(inputName);
-  return `${gon.asset_host || ''}${gon.relative_url_root ||
-    ''}/-/emojis/${EMOJI_VERSION}/${name}.png`;
+  return `${gon.asset_host || ''}${
+    gon.relative_url_root || ''
+  }/-/emojis/${EMOJI_VERSION}/${name}.png`;
 }
 
 export function emojiImageTag(name, src) {

@@ -98,9 +98,7 @@ export default {
           {{ titleText }}
         </span>
         <template v-if="showLinePosition">
-          <template v-if="!glFeatures.multilineComments"
-            >:{{ linePosition }}</template
-          >
+          <template v-if="!glFeatures.multilineComments">:{{ linePosition }}</template>
           <template v-else-if="startLineNumber === endLineNumber">
             :<span :class="getLineClasses(startLineNumber)">{{ startLineNumber }}</span>
           </template>

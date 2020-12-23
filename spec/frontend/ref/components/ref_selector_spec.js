@@ -313,9 +313,7 @@ describe('Ref selector component', () => {
 
         it('renders the "Branches" heading with a total number indicator', () => {
           expect(
-            findBranchesSection()
-              .find('[data-testid="section-header"]')
-              .text(),
+            findBranchesSection().find('[data-testid="section-header"]').text(),
           ).toMatchInterpolatedText('Branches 123');
         });
 
@@ -392,9 +390,7 @@ describe('Ref selector component', () => {
 
         it('renders the "Tags" heading with a total number indicator', () => {
           expect(
-            findTagsSection()
-              .find('[data-testid="section-header"]')
-              .text(),
+            findTagsSection().find('[data-testid="section-header"]').text(),
           ).toMatchInterpolatedText('Tags 456');
         });
 
@@ -460,9 +456,7 @@ describe('Ref selector component', () => {
 
         it('renders the "Commits" heading with a total number indicator', () => {
           expect(
-            findCommitsSection()
-              .find('[data-testid="section-header"]')
-              .text(),
+            findCommitsSection().find('[data-testid="section-header"]').text(),
           ).toMatchInterpolatedText('Commits 1');
         });
 

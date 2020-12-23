@@ -656,10 +656,7 @@ describe('GfmAutoComplete', () => {
     });
 
     const triggerDropdown = text => {
-      $textarea
-        .trigger('focus')
-        .val(text)
-        .caret('pos', -1);
+      $textarea.trigger('focus').val(text).caret('pos', -1);
       $textarea.trigger('keyup');
 
       return new Promise(window.requestAnimationFrame);

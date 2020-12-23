@@ -91,12 +91,7 @@ describe('DiffDiscussions', () => {
       const noteableDiscussion = wrapper.find(NoteableDiscussion);
 
       expect(noteableDiscussion.find('.badge-pill').exists()).toBe(true);
-      expect(
-        noteableDiscussion
-          .find('.badge-pill')
-          .text()
-          .trim(),
-      ).toBe('1');
+      expect(noteableDiscussion.find('.badge-pill').text().trim()).toBe('1');
     });
   });
 });

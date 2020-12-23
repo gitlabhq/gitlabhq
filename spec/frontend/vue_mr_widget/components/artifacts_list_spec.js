@@ -39,20 +39,10 @@ describe('Artifacts List', () => {
   });
 
   it('renders job url', () => {
-    expect(
-      wrapper
-        .findAll(GlLink)
-        .at(1)
-        .attributes('href'),
-    ).toEqual(data.artifacts[0].job_path);
+    expect(wrapper.findAll(GlLink).at(1).attributes('href')).toEqual(data.artifacts[0].job_path);
   });
 
   it('renders job name', () => {
-    expect(
-      wrapper
-        .findAll(GlLink)
-        .at(1)
-        .text(),
-    ).toEqual(data.artifacts[0].job_name);
+    expect(wrapper.findAll(GlLink).at(1).text()).toEqual(data.artifacts[0].job_name);
   });
 });

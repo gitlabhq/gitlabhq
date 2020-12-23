@@ -86,7 +86,10 @@ describe('MembersFilteredSearchBar', () => {
             token: GlFilteredSearchToken,
             unique: true,
             operators: [{ value: '=', description: 'is' }],
-            options: [{ value: 'exclude', title: 'Direct' }, { value: 'only', title: 'Inherited' }],
+            options: [
+              { value: 'exclude', title: 'Direct' },
+              { value: 'only', title: 'Inherited' },
+            ],
           },
         ]);
       });

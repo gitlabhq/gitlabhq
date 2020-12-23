@@ -70,10 +70,7 @@ describe('HeaderActions component', () => {
 
   const findModal = () => wrapper.find(GlModal);
 
-  const findModalLinkAt = index =>
-    findModal()
-      .findAll(GlLink)
-      .at(index);
+  const findModalLinkAt = index => findModal().findAll(GlLink).at(index);
 
   const mountComponent = ({
     props = {},

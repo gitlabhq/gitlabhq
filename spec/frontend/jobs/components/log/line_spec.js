@@ -34,10 +34,7 @@ describe('Job Log Line', () => {
   const findLine = () => wrapper.find('span');
   const findLink = () => findLine().find('a');
   const findLinks = () => findLine().findAll('a');
-  const findLinkAttributeByIndex = i =>
-    findLinks()
-      .at(i)
-      .attributes();
+  const findLinkAttributeByIndex = i => findLinks().at(i).attributes();
 
   beforeEach(() => {
     data = mockProps();

@@ -64,12 +64,7 @@ describe('DiffView', () => {
         inline: type === 'inline',
       });
       expect(wrapper.findAll(DiffCommentCell).length).toBe(total);
-      expect(
-        wrapper
-          .find(container)
-          .find(DiffCommentCell)
-          .exists(),
-      ).toBe(true);
+      expect(wrapper.find(container).find(DiffCommentCell).exists()).toBe(true);
     },
   );
 

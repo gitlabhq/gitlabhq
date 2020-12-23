@@ -177,11 +177,7 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
       });
 
       it('displays the tab and its content', async () => {
-        expect(
-          findTabAt(0)
-            .find(TextEditor)
-            .exists(),
-        ).toBe(true);
+        expect(findTabAt(0).find(TextEditor).exists()).toBe(true);
       });
 
       it('displays tab lazily, until editor is ready', async () => {

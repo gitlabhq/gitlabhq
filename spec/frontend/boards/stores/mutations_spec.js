@@ -236,7 +236,7 @@ describe('Board Store Mutations', () => {
         'gid://gitlab/List/1': [mockIssue.id],
       };
       const issues = {
-        '1': mockIssue,
+        1: mockIssue,
       };
 
       state = {
@@ -345,8 +345,8 @@ describe('Board Store Mutations', () => {
       };
 
       const issues = {
-        '1': mockIssue,
-        '2': mockIssue2,
+        1: mockIssue,
+        2: mockIssue2,
       };
 
       state = {
@@ -374,7 +374,7 @@ describe('Board Store Mutations', () => {
   describe('MOVE_ISSUE_SUCCESS', () => {
     it('updates issue in issues state', () => {
       const issues = {
-        '436': { id: rawIssue.id },
+        436: { id: rawIssue.id },
       };
 
       state = {
@@ -386,7 +386,7 @@ describe('Board Store Mutations', () => {
         issue: rawIssue,
       });
 
-      expect(state.issues).toEqual({ '436': { ...mockIssue, id: 436 } });
+      expect(state.issues).toEqual({ 436: { ...mockIssue, id: 436 } });
     });
   });
 
@@ -446,7 +446,7 @@ describe('Board Store Mutations', () => {
         'gid://gitlab/List/1': [mockIssue.id],
       };
       const issues = {
-        '1': mockIssue,
+        1: mockIssue,
       };
 
       state = {
@@ -472,8 +472,8 @@ describe('Board Store Mutations', () => {
         'gid://gitlab/List/1': [mockIssue.id, mockIssue2.id],
       };
       const issues = {
-        '1': mockIssue,
-        '2': mockIssue2,
+        1: mockIssue,
+        2: mockIssue2,
       };
 
       state = {
@@ -496,8 +496,8 @@ describe('Board Store Mutations', () => {
         'gid://gitlab/List/1': [mockIssue.id, mockIssue2.id],
       };
       const issues = {
-        '1': mockIssue,
-        '2': mockIssue2,
+        1: mockIssue,
+        2: mockIssue2,
       };
 
       state = {

@@ -28,12 +28,20 @@ describe('AlertWidget', () => {
 
   const nonFiringAlertResult = [
     {
-      values: [[0, 1], [1, 42], [2, 41]],
+      values: [
+        [0, 1],
+        [1, 42],
+        [2, 41],
+      ],
     },
   ];
   const firingAlertResult = [
     {
-      values: [[0, 42], [1, 43], [2, 44]],
+      values: [
+        [0, 42],
+        [1, 43],
+        [2, 44],
+      ],
     },
   ];
   const metricId = '5';
@@ -88,10 +96,7 @@ describe('AlertWidget', () => {
   const findWidgetForm = () => wrapper.find({ ref: 'widgetForm' });
   const findAlertErrorMessage = () => wrapper.find({ ref: 'alertErrorMessage' });
   const findCurrentSettingsText = () =>
-    wrapper
-      .find({ ref: 'alertCurrentSetting' })
-      .text()
-      .replace(/\s\s+/g, ' ');
+    wrapper.find({ ref: 'alertCurrentSetting' }).text().replace(/\s\s+/g, ' ');
   const findBadge = () => wrapper.find(GlBadge);
   const findTooltip = () => wrapper.find(GlTooltip);
 
@@ -300,11 +305,7 @@ describe('AlertWidget', () => {
       createComponent(propsWithManyAlerts);
 
       return waitForPromises().then(() => {
-        expect(
-          findTooltip()
-            .text()
-            .replace(/\s\s+/g, ' '),
-        ).toEqual('Firing: alert-label > 42');
+        expect(findTooltip().text().replace(/\s\s+/g, ' ')).toEqual('Firing: alert-label > 42');
       });
     });
   });

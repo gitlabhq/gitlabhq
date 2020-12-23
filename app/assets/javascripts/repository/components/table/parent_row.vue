@@ -48,9 +48,7 @@ export default {
         inline
         class="d-inline-block align-text-bottom"
       />
-      <router-link v-else :to="parentRoute" :aria-label="__('Go to parent')">
-        ..
-      </router-link>
+      <router-link v-else :to="parentRoute" :aria-label="__('Go to parent')"> .. </router-link>
     </td>
   </tr>
 </template>

@@ -232,11 +232,9 @@ describe('Grouped test reports app', () => {
     });
 
     it('renders resolved errors', () => {
-      expect(
-        findAllIssueDescriptions()
-          .at(2)
-          .text(),
-      ).toContain(resolvedFailures.suites[0].resolved_errors[0].name);
+      expect(findAllIssueDescriptions().at(2).text()).toContain(
+        resolvedFailures.suites[0].resolved_errors[0].name,
+      );
     });
   });
 

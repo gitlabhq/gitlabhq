@@ -42,12 +42,7 @@ describe('SidebarTodo', () => {
     ({ isTodo, iconClass, label, icon }) => {
       createComponent({ isTodo });
 
-      expect(
-        wrapper
-          .find(GlIcon)
-          .classes()
-          .join(' '),
-      ).toStrictEqual(iconClass);
+      expect(wrapper.find(GlIcon).classes().join(' ')).toStrictEqual(iconClass);
       expect(wrapper.find(GlIcon).props('name')).toStrictEqual(icon);
       expect(wrapper.find('button').text()).toBe(label);
     },

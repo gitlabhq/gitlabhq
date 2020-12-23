@@ -92,11 +92,7 @@ export default class MiniPipelineGraph {
       })
       .catch(() => {
         this.toggleLoading(button);
-        if (
-          $(button)
-            .parent()
-            .hasClass('open')
-        ) {
+        if ($(button).parent().hasClass('open')) {
           $(button).dropdown('toggle');
         }
         flash(__('An error occurred while fetching the builds.'), 'alert');

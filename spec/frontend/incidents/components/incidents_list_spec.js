@@ -158,17 +158,11 @@ describe('Incidents List', () => {
 
     describe('Assignees', () => {
       it('shows Unassigned when there are no assignees', () => {
-        expect(
-          findAssignees()
-            .at(0)
-            .text(),
-        ).toBe(I18N.unassigned);
+        expect(findAssignees().at(0).text()).toBe(I18N.unassigned);
       });
 
       it('renders an avatar component when there is an assignee', () => {
-        const avatar = findAssignees()
-          .at(1)
-          .find(GlAvatar);
+        const avatar = findAssignees().at(1).find(GlAvatar);
         const { src, label } = avatar.attributes();
         const { name, avatarUrl } = mockIncidents[1].assignees.nodes[0];
 
@@ -189,9 +183,7 @@ describe('Incidents List', () => {
     });
 
     it('contains a link to the incident details page', async () => {
-      findTableRows()
-        .at(0)
-        .trigger('click');
+      findTableRows().at(0).trigger('click');
       expect(visitUrl).toHaveBeenCalledWith(
         joinPaths(`/project/issues/incident`, mockIncidents[0].iid),
       );

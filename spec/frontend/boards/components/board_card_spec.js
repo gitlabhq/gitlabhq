@@ -134,9 +134,7 @@ describe('BoardCard', () => {
 
     it('does not set detail issue if link is clicked', () => {
       mountComponent();
-      findIssueCardInner()
-        .find('a')
-        .trigger('mouseup');
+      findIssueCardInner().find('a').trigger('mouseup');
 
       expect(boardsStore.detail.issue).toEqual({});
     });

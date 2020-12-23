@@ -89,7 +89,7 @@ export default {
         data-testid="info-message"
       >
         <gl-sprintf :message="message.text">
-          <template #docLink="{content}">
+          <template #docLink="{ content }">
             <gl-link :href="message.link" target="_blank">{{ content }}</gl-link>
           </template>
         </gl-sprintf>

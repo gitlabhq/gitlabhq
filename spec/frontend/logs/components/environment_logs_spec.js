@@ -181,11 +181,7 @@ describe('EnvironmentLogs', () => {
 
     it('shows a logs trace', () => {
       expect(findLogTrace().text()).toBe('');
-      expect(
-        findLogTrace()
-          .find('.js-build-loader-animation')
-          .isVisible(),
-      ).toBe(true);
+      expect(findLogTrace().find('.js-build-loader-animation').isVisible()).toBe(true);
     });
   });
 

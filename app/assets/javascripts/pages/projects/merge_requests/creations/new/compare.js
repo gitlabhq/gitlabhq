@@ -29,9 +29,7 @@ export default mrNewCompareNode => {
       $(mrNewCompareNode).find('.js-source-loading'),
       $(mrNewCompareNode).find('.mr_source_commit'),
       {
-        ref: $(mrNewCompareNode)
-          .find("input[name='merge_request[source_branch]']")
-          .val(),
+        ref: $(mrNewCompareNode).find("input[name='merge_request[source_branch]']").val(),
       },
     );
   const updateTargetBranchCommitList = () =>
@@ -43,9 +41,7 @@ export default mrNewCompareNode => {
         target_project_id: $(mrNewCompareNode)
           .find("input[name='merge_request[target_project_id]']")
           .val(),
-        ref: $(mrNewCompareNode)
-          .find("input[name='merge_request[target_branch]']")
-          .val(),
+        ref: $(mrNewCompareNode).find("input[name='merge_request[target_branch]']").val(),
       },
     );
   initCompareAutocomplete('branches', $dropdown => {

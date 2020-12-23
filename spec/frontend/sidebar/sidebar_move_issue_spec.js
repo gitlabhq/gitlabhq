@@ -133,10 +133,7 @@ describe('SidebarMoveIssue', () => {
 
     // Wait for the autocomplete request to finish
     setImmediate(() => {
-      test.$content
-        .find('.js-move-issue-dropdown-item')
-        .eq(0)
-        .trigger('click');
+      test.$content.find('.js-move-issue-dropdown-item').eq(0).trigger('click');
 
       expect(test.mediator.setMoveToProjectId).toHaveBeenCalledWith(0);
       expect(test.$confirmButton.prop('disabled')).toBeTruthy();
@@ -152,10 +149,7 @@ describe('SidebarMoveIssue', () => {
 
     // Wait for the autocomplete request to finish
     setImmediate(() => {
-      test.$content
-        .find('.js-move-issue-dropdown-item')
-        .eq(1)
-        .trigger('click');
+      test.$content.find('.js-move-issue-dropdown-item').eq(1).trigger('click');
 
       expect(test.mediator.setMoveToProjectId).toHaveBeenCalledWith(20);
       expect(test.$confirmButton.attr('disabled')).toBe(undefined);

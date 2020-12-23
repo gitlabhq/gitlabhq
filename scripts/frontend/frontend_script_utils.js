@@ -9,12 +9,7 @@ const exec = (command, args) => {
   return execFileSync(command, args, options);
 };
 
-const execGitCmd = args =>
-  exec('git', args)
-    .trim()
-    .toString()
-    .split('\n')
-    .filter(Boolean);
+const execGitCmd = args => exec('git', args).trim().toString().split('\n').filter(Boolean);
 
 module.exports = {
   getStagedFiles: fileExtensionFilter => {

@@ -42,16 +42,9 @@ describe('IncidentsSettingTabs', () => {
     const activeTabs = wrapper.vm.$options.tabs.filter(tab => tab.active);
     expect(findIntegrationTabs().length).toBe(activeTabs.length);
     activeTabs.forEach((tab, index) => {
+      expect(findIntegrationTabs().at(index).attributes('title')).toBe(tab.title);
       expect(
-        findIntegrationTabs()
-          .at(index)
-          .attributes('title'),
-      ).toBe(tab.title);
-      expect(
-        findIntegrationTabs()
-          .at(index)
-          .find(`[data-testid="${tab.component}-tab"]`)
-          .exists(),
+        findIntegrationTabs().at(index).find(`[data-testid="${tab.component}-tab"]`).exists(),
       ).toBe(true);
     });
   });

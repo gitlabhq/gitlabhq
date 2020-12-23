@@ -16,9 +16,9 @@ module Gitlab
       # Grouped relations are NOT supported yet.
       #
       # @example Usage
-      #  ::Gitlab::Database::PostgresHllBatchDistinctCount.new(::Project, :creator_id).estimate_distinct_count
+      #  ::Gitlab::Database::PostgresHllBatchDistinctCount.new(::Project, :creator_id).execute
       #  ::Gitlab::Database::PostgresHllBatchDistinctCount.new(::Project.with_active_services.service_desk_enabled.where(time_period))
-      #    .estimate_distinct_count(
+      #    .execute(
       #      batch_size: 1_000,
       #      start: ::Project.with_active_services.service_desk_enabled.where(time_period).minimum(:id),
       #      finish: ::Project.with_active_services.service_desk_enabled.where(time_period).maximum(:id)
@@ -30,7 +30,6 @@ module Gitlab
       #  for the most of a cases this value is lower. However, if the exact value is necessary other tools has to be used.
       class BatchDistinctCounter
         ERROR_RATE = 4.9 # max encountered empirical error rate, used in tests
-        FALLBACK = -1
         MIN_REQUIRED_BATCH_SIZE = 750
         SLEEP_TIME_IN_SECONDS = 0.01 # 10 msec sleep
         MAX_DATA_VOLUME = 4_000_000_000
@@ -38,8 +37,10 @@ module Gitlab
         # Each query should take < 500ms https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22705
         DEFAULT_BATCH_SIZE = 10_000
 
+        ZERO_OFFSET = 1
+        BUCKET_ID_MASK = (Buckets::TOTAL_BUCKETS - ZERO_OFFSET).to_s(2)
         BIT_31_MASK = "B'0#{'1' * 31}'"
-        BIT_9_MASK = "B'#{'0' * 23}#{'1' * 9}'"
+        BIT_32_NORMALIZED_BUCKET_ID_MASK = "B'#{'0' * (32 - BUCKET_ID_MASK.size)}#{BUCKET_ID_MASK}'"
         # @example source_query
         #   SELECT CAST(('X' || md5(CAST(%{column} as text))) as bit(32)) attr_hash_32_bits
         #   FROM %{relation}
@@ -48,73 +49,58 @@ module Gitlab
         #   AND %{column} IS NOT NULL
         BUCKETED_DATA_SQL = <<~SQL
           WITH hashed_attributes AS (%{source_query})
-          SELECT (attr_hash_32_bits & #{BIT_9_MASK})::int AS bucket_num,
+          SELECT (attr_hash_32_bits & #{BIT_32_NORMALIZED_BUCKET_ID_MASK})::int AS bucket_num,
             (31 - floor(log(2, min((attr_hash_32_bits & #{BIT_31_MASK})::int))))::int as bucket_hash
           FROM hashed_attributes
           GROUP BY 1
         SQL
 
-        TOTAL_BUCKETS_NUMBER = 512
+        WRONG_CONFIGURATION_ERROR = Class.new(ActiveRecord::StatementInvalid)
 
         def initialize(relation, column = nil)
           @relation = relation
           @column = column || relation.primary_key
         end
 
-        def unwanted_configuration?(finish, batch_size, start)
-          batch_size <= MIN_REQUIRED_BATCH_SIZE ||
-            (finish - start) >= MAX_DATA_VOLUME ||
-            start > finish
-        end
-
-        def estimate_distinct_count(batch_size: nil, start: nil, finish: nil)
+        # Executes counter that iterates over database source and return Gitlab::Database::PostgresHll::Buckets
+        # that can be used to estimation of number of uniq elements in analysed set
+        #
+        # @param batch_size maximal number of rows that will be analysed by single database query
+        # @param start initial pkey range
+        # @param finish final pkey range
+        # @return [Gitlab::Database::PostgresHll::Buckets] HyperLogLog data structure instance that can estimate number of unique elements
+        def execute(batch_size: nil, start: nil, finish: nil)
           raise 'BatchCount can not be run inside a transaction' if ActiveRecord::Base.connection.transaction_open?
 
           batch_size ||= DEFAULT_BATCH_SIZE
-
           start = actual_start(start)
           finish = actual_finish(finish)
 
-          raise "Batch counting expects positive values only for #{@column}" if start < 0 || finish < 0
-          return FALLBACK if unwanted_configuration?(finish, batch_size, start)
+          raise WRONG_CONFIGURATION_ERROR if unwanted_configuration?(start, finish, batch_size)
 
           batch_start = start
-          hll_blob = {}
+          hll_buckets = Buckets.new
 
           while batch_start <= finish
             begin
-              hll_blob.merge!(hll_blob_for_batch(batch_start, batch_start + batch_size)) {|_key, old, new| new > old ? new : old }
+              hll_buckets.merge_hash!(hll_buckets_for_batch(batch_start, batch_start + batch_size))
               batch_start += batch_size
             end
             sleep(SLEEP_TIME_IN_SECONDS)
           end
 
-          estimate_cardinality(hll_blob)
+          hll_buckets
         end
 
         private
 
-        # arbitrary values that are present in #estimate_cardinality
-        # are sourced from https://www.sisense.com/blog/hyperloglog-in-pure-sql/
-        # article, they are not representing any entity and serves as tune value
-        # for the whole equation
-        def estimate_cardinality(hll_blob)
-          num_zero_buckets = TOTAL_BUCKETS_NUMBER - hll_blob.size
-
-          num_uniques = (
-            ((TOTAL_BUCKETS_NUMBER**2) * (0.7213 / (1 + 1.079 / TOTAL_BUCKETS_NUMBER))) /
-              (num_zero_buckets + hll_blob.values.sum { |bucket_hash| 2**(-1 * bucket_hash)} )
-          ).to_i
-
-          if num_zero_buckets > 0 && num_uniques < 2.5 * TOTAL_BUCKETS_NUMBER
-            ((0.7213 / (1 + 1.079 / TOTAL_BUCKETS_NUMBER)) * (TOTAL_BUCKETS_NUMBER *
-              Math.log2(TOTAL_BUCKETS_NUMBER.to_f / num_zero_buckets)))
-          else
-            num_uniques
-          end
+        def unwanted_configuration?(start, finish, batch_size)
+          batch_size <= MIN_REQUIRED_BATCH_SIZE ||
+            (finish - start) >= MAX_DATA_VOLUME ||
+            start > finish || start < 0 || finish < 0
         end
 
-        def hll_blob_for_batch(start, finish)
+        def hll_buckets_for_batch(start, finish)
           @relation
             .connection
             .execute(BUCKETED_DATA_SQL % { source_query: source_query(start, finish) })

@@ -61,7 +61,7 @@ import { loadCSSFile } from '../lib/utils/css_utils';
 
     bindEvents() {
       const _this = this;
-      this.fileInput.on('change', function(e) {
+      this.fileInput.on('change', function (e) {
         _this.onFileInputChange(e, this);
         this.value = null;
       });
@@ -69,7 +69,7 @@ import { loadCSSFile } from '../lib/utils/css_utils';
       this.modalCrop.on('shown.bs.modal', this.onModalShow);
       this.modalCrop.on('hidden.bs.modal', this.onModalHide);
       this.uploadImageBtn.on('click', this.onUploadImageBtnClick);
-      this.cropActionsBtn.on('click', function() {
+      this.cropActionsBtn.on('click', function () {
         const btn = this;
         return _this.onActionBtnClick(btn);
       });
@@ -184,8 +184,8 @@ import { loadCSSFile } from '../lib/utils/css_utils';
   const cropModal = document.querySelector('.modal-profile-crop');
   if (cropModal) loadCSSFile(cropModal.dataset.cropperCssPath);
 
-  $.fn.glCrop = function(opts) {
-    return this.each(function() {
+  $.fn.glCrop = function (opts) {
+    return this.each(function () {
       return $(this).data('glcrop', new GitLabCrop(this, opts));
     });
   };

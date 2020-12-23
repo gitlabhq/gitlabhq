@@ -46,7 +46,7 @@ const Ajax = {
       .then(data => self._loadData(data, config, self))
       .catch(config.onError);
   },
-  destroy: function() {
+  destroy: function () {
     this.destroyed = true;
   },
 };

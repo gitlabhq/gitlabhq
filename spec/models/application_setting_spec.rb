@@ -850,12 +850,13 @@ RSpec.describe ApplicationSetting do
     end
   end
 
-  describe '#instance_review_permitted?', :request_store do
+  describe '#instance_review_permitted?', :request_store, :use_clean_rails_memory_store_caching do
     subject { setting.instance_review_permitted? }
 
     before do
-      RequestStore.store[:current_license] = nil
-      expect(Rails.cache).to receive(:fetch).and_return(
+      allow(License).to receive(:current).and_return(nil) if Gitlab.ee?
+      allow(Rails.cache).to receive(:fetch).and_call_original
+      expect(Rails.cache).to receive(:fetch).with('limited_users_count', anything).and_return(
         ::ApplicationSetting::INSTANCE_REVIEW_MIN_USERS + users_over_minimum
       )
     end

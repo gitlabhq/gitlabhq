@@ -32,30 +32,18 @@ describe('requiresInput', () => {
 
   it('enables submit when all required fields receive input', () => {
     $('.js-requires-input').requiresInput();
-    $('#required1')
-      .val('input1')
-      .change();
+    $('#required1').val('input1').change();
 
     expect(submitButton).toBeDisabled();
 
-    $('#optional1')
-      .val('input1')
-      .change();
+    $('#optional1').val('input1').change();
 
     expect(submitButton).toBeDisabled();
 
-    $('#required2')
-      .val('input2')
-      .change();
-    $('#required3')
-      .val('input3')
-      .change();
-    $('#required4')
-      .val('input4')
-      .change();
-    $('#required5')
-      .val('1')
-      .change();
+    $('#required2').val('input2').change();
+    $('#required3').val('input3').change();
+    $('#required4').val('input4').change();
+    $('#required5').val('1').change();
 
     expect($('.submit')).not.toBeDisabled();
   });

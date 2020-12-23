@@ -83,10 +83,7 @@ export default {
       });
     },
     fetchPipelineCommitData() {
-      this.service
-        .fetchData()
-        .then(this.successCallback)
-        .catch(this.errorCallback);
+      this.service.fetchData().then(this.successCallback).catch(this.errorCallback);
     },
   },
 };

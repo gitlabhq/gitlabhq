@@ -82,12 +82,9 @@ describe('DiscussionFilter component', () => {
   });
 
   it('renders the default selected item', () => {
-    expect(
-      wrapper
-        .find('#discussion-filter-dropdown .dropdown-item')
-        .text()
-        .trim(),
-    ).toBe(discussionFiltersMock[0].title);
+    expect(wrapper.find('#discussion-filter-dropdown .dropdown-item').text().trim()).toBe(
+      discussionFiltersMock[0].title,
+    );
   });
 
   it('updates to the selected item', () => {

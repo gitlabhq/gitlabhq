@@ -48,11 +48,7 @@ export default class ZenMode {
       return $(e.currentTarget).trigger('zen_mode:leave');
     });
     $(document).on('zen_mode:enter', e => {
-      this.enter(
-        $(e.target)
-          .closest('.md-area')
-          .find('.zen-backdrop'),
-      );
+      this.enter($(e.target).closest('.md-area').find('.zen-backdrop'));
     });
     $(document).on('zen_mode:leave', () => {
       this.exit();

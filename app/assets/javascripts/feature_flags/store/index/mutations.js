@@ -74,12 +74,7 @@ export default {
     state.isRotating = true;
     state.hasRotateError = false;
   },
-  [types.RECEIVE_ROTATE_INSTANCE_ID_SUCCESS](
-    state,
-    {
-      data: { token },
-    },
-  ) {
+  [types.RECEIVE_ROTATE_INSTANCE_ID_SUCCESS](state, { data: { token } }) {
     state.isRotating = false;
     state.instanceId = token;
     state.hasRotateError = false;

@@ -130,9 +130,7 @@ describe('ColorPicker', () => {
 
     it('has preset color selected', async () => {
       createComponent();
-      await presetColors()
-        .at(0)
-        .trigger('click');
+      await presetColors().at(0).trigger('click');
 
       expect(wrapper.vm.$data.selectedColor).toBe(setColor);
     });

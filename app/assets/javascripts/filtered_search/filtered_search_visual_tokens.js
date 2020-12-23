@@ -193,7 +193,8 @@ export default class FilteredSearchVisualTokens {
       });
     } else if (
       !isLastVisualTokenValid &&
-      (lastVisualToken && !lastVisualToken.querySelector('.operator'))
+      lastVisualToken &&
+      !lastVisualToken.querySelector('.operator')
     ) {
       const tokensContainer = FilteredSearchContainer.container.querySelector('.tokens-container');
       tokensContainer.removeChild(lastVisualToken);

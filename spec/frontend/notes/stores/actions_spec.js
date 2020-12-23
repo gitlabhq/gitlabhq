@@ -302,10 +302,7 @@ describe('Actions Notes Store', () => {
         .onGet(notesDataMock.notesPath)
         .reply(200, { notes: [], last_fetched_at: '123456' }, { 'poll-interval': '1000' });
 
-      store
-        .dispatch('setNotesData', notesDataMock)
-        .then(done)
-        .catch(done.fail);
+      store.dispatch('setNotesData', notesDataMock).then(done).catch(done.fail);
     });
 
     it('calls service with last fetched state', done => {

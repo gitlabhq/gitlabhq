@@ -105,7 +105,7 @@ describe('DiffsStoreMutations', () => {
   describe('SET_COVERAGE_DATA', () => {
     it('should set coverage data properly', () => {
       const state = { coverageFiles: {} };
-      const coverage = { 'app.js': { '1': 0, '2': 1 } };
+      const coverage = { 'app.js': { 1: 0, 2: 1 } };
 
       mutations[types.SET_COVERAGE_DATA](state, coverage);
 

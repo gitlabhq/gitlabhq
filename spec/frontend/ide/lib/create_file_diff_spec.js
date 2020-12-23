@@ -21,11 +21,7 @@ const spliceLines = (content, lineNumber, deleteCount = 0, newLines = []) => {
   return lines.join('\n');
 };
 
-const mapLines = (content, mapFn) =>
-  content
-    .split('\n')
-    .map(mapFn)
-    .join('\n');
+const mapLines = (content, mapFn) => content.split('\n').map(mapFn).join('\n');
 
 describe('IDE lib/create_file_diff', () => {
   it('returns empty string with "garbage" action', () => {

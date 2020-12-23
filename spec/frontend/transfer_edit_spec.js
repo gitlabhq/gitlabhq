@@ -13,41 +13,19 @@ describe('setupTransferEdit', () => {
   });
 
   it('disables submit button on load', () => {
-    expect(
-      $(formSelector)
-        .find(':submit')
-        .prop('disabled'),
-    ).toBe(true);
+    expect($(formSelector).find(':submit').prop('disabled')).toBe(true);
   });
 
   it('enables submit button when selection changes to non-empty value', () => {
-    const nonEmptyValue = $(formSelector)
-      .find(targetSelector)
-      .find('option')
-      .not(':empty')
-      .val();
-    $(formSelector)
-      .find(targetSelector)
-      .val(nonEmptyValue)
-      .trigger('change');
+    const nonEmptyValue = $(formSelector).find(targetSelector).find('option').not(':empty').val();
+    $(formSelector).find(targetSelector).val(nonEmptyValue).trigger('change');
 
-    expect(
-      $(formSelector)
-        .find(':submit')
-        .prop('disabled'),
-    ).toBeFalsy();
+    expect($(formSelector).find(':submit').prop('disabled')).toBeFalsy();
   });
 
   it('disables submit button when selection changes to empty value', () => {
-    $(formSelector)
-      .find(targetSelector)
-      .val('')
-      .trigger('change');
+    $(formSelector).find(targetSelector).val('').trigger('change');
 
-    expect(
-      $(formSelector)
-        .find(':submit')
-        .prop('disabled'),
-    ).toBe(true);
+    expect($(formSelector).find(':submit').prop('disabled')).toBe(true);
   });
 });

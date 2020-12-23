@@ -142,7 +142,7 @@ export default {
         data-testid="ci-error-message"
       >
         <gl-sprintf :message="$options.errorText">
-          <template #link="{content}">
+          <template #link="{ content }">
             <gl-link :href="mrTroubleshootingDocsPath">{{ content }}</gl-link>
           </template>
         </gl-sprintf>

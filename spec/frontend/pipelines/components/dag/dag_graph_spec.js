@@ -88,11 +88,7 @@ describe('The DAG graph', () => {
       });
 
       it('renders the title as text', () => {
-        expect(
-          getAllLabels()
-            .at(0)
-            .text(),
-        ).toBe(parsedData.nodes[0].name);
+        expect(getAllLabels().at(0).text()).toBe(parsedData.nodes[0].name);
       });
     });
   });

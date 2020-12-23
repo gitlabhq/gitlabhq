@@ -38,10 +38,7 @@ describe('New Project', () => {
 
     beforeEach(() => {
       projectNew.bindEvents();
-      $projectPath
-        .val('')
-        .keyup()
-        .val(dummyImportUrl);
+      $projectPath.val('').keyup().val(dummyImportUrl);
     });
 
     it('does not change project path for disabled $projectImportUrl', () => {

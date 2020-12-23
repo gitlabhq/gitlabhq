@@ -192,7 +192,7 @@ export default {
 </script>
 
 <template>
-  <div class="block alert-assignees ">
+  <div class="block alert-assignees">
     <div ref="assignees" class="sidebar-collapsed-icon" @click="$emit('toggle-sidebar')">
       <gl-icon name="user" :size="14" />
       <gl-loading-icon v-if="isUpdating" />

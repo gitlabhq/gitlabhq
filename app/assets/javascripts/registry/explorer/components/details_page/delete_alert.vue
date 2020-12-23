@@ -60,7 +60,7 @@ export default {
     @dismiss="$emit('change', null)"
   >
     <gl-sprintf :message="deleteAlertConfig.message">
-      <template #docLink="{content}">
+      <template #docLink="{ content }">
         <gl-link :href="garbageCollectionHelpPagePath" target="_blank">
           {{ content }}
         </gl-link>

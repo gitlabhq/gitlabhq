@@ -219,12 +219,8 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
     const caretStart = textarea.selectionStart;
     const caretEnd = textarea.selectionEnd;
     const textEnd = $(child).val().length;
-    const beforeSelection = $(child)
-      .val()
-      .substring(0, caretStart);
-    const afterSelection = $(child)
-      .val()
-      .substring(caretEnd, textEnd);
+    const beforeSelection = $(child).val().substring(0, caretStart);
+    const afterSelection = $(child).val().substring(caretEnd, textEnd);
     $(child).val(beforeSelection + formattedText + afterSelection);
     textarea.setSelectionRange(caretStart + formattedText.length, caretEnd + formattedText.length);
     textarea.style.height = `${textarea.scrollHeight}px`;
@@ -289,10 +285,7 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
 
   form.find('.markdown-selector').click(function onMarkdownClick(e) {
     e.preventDefault();
-    $(this)
-      .closest('.gfm-form')
-      .find('.div-dropzone')
-      .click();
+    $(this).closest('.gfm-form').find('.div-dropzone').click();
     formTextarea.focus();
   });
 

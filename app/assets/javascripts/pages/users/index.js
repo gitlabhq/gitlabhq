@@ -11,9 +11,7 @@ function initUserProfile(action) {
   $('.hide-project-limit-message').on('click', e => {
     e.preventDefault();
     Cookies.set('hide_project_limit_message', 'false');
-    $(this)
-      .parents('.project-limit-message')
-      .remove();
+    $(this).parents('.project-limit-message').remove();
   });
 }
 

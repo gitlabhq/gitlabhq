@@ -56,10 +56,7 @@ describe('Visibility Level Dropdown', () => {
 
   describe('Selecting an option', () => {
     beforeEach(() => {
-      wrapper
-        .findAll(GlDropdownItem)
-        .at(1)
-        .vm.$emit('click');
+      wrapper.findAll(GlDropdownItem).at(1).vm.$emit('click');
     });
 
     it('sets the value of the hidden input to the selected value', () => {

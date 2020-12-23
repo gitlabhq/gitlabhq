@@ -54,11 +54,7 @@ export default class Issue {
       $(document).trigger('issuable:change', isClosed);
 
       let numProjectIssues = Number(
-        projectIssuesCounter
-          .first()
-          .text()
-          .trim()
-          .replace(/[^\d]/, ''),
+        projectIssuesCounter.first().text().trim().replace(/[^\d]/, ''),
       );
       numProjectIssues = isClosed ? numProjectIssues - 1 : numProjectIssues + 1;
       projectIssuesCounter.text(addDelimiter(numProjectIssues));

@@ -116,12 +116,7 @@ export default {
           variables: {
             id,
           },
-          update(
-            store,
-            {
-              data: { todoMarkDone },
-            },
-          ) {
+          update(store, { data: { todoMarkDone } }) {
             const todoMarkDoneFirstError = (todoMarkDone.errors || [])[0];
             if (todoMarkDoneFirstError) {
               this.$emit('error', Error(todoMarkDoneFirstError));

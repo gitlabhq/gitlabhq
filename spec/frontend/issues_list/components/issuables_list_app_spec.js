@@ -238,15 +238,15 @@ describe('Issuables list component', () => {
       wrapper.vm.onSelectIssuable({ issuable: i0, selected: false });
       expect(wrapper.vm.selection).toEqual({});
       wrapper.vm.onSelectIssuable({ issuable: i1, selected: true });
-      expect(wrapper.vm.selection).toEqual({ '1': true });
+      expect(wrapper.vm.selection).toEqual({ 1: true });
       wrapper.vm.onSelectIssuable({ issuable: i0, selected: true });
-      expect(wrapper.vm.selection).toEqual({ '1': true, '0': true });
+      expect(wrapper.vm.selection).toEqual({ 1: true, 0: true });
       wrapper.vm.onSelectIssuable({ issuable: i2, selected: true });
-      expect(wrapper.vm.selection).toEqual({ '1': true, '0': true, '2': true });
+      expect(wrapper.vm.selection).toEqual({ 1: true, 0: true, 2: true });
       wrapper.vm.onSelectIssuable({ issuable: i2, selected: true });
-      expect(wrapper.vm.selection).toEqual({ '1': true, '0': true, '2': true });
+      expect(wrapper.vm.selection).toEqual({ 1: true, 0: true, 2: true });
       wrapper.vm.onSelectIssuable({ issuable: i0, selected: false });
-      expect(wrapper.vm.selection).toEqual({ '1': true, '2': true });
+      expect(wrapper.vm.selection).toEqual({ 1: true, 2: true });
     });
 
     it('broadcasts a message to the bulk edit sidebar when a value is added to selection', () => {

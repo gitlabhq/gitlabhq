@@ -76,8 +76,8 @@ export class SearchAutocomplete {
     this.wrap = wrap || $('.search');
     this.optsEl = optsEl || this.wrap.find('.search-autocomplete-opts');
     this.autocompletePath = autocompletePath || this.optsEl.data('autocompletePath');
-    this.projectId = projectId || (this.optsEl.data('autocompleteProjectId') || '');
-    this.projectRef = projectRef || (this.optsEl.data('autocompleteProjectRef') || '');
+    this.projectId = projectId || this.optsEl.data('autocompleteProjectId') || '';
+    this.projectRef = projectRef || this.optsEl.data('autocompleteProjectRef') || '';
     this.dropdown = this.wrap.find('.dropdown');
     this.dropdownToggle = this.wrap.find('.js-dropdown-search-toggle');
     this.dropdownMenu = this.dropdown.find('.dropdown-menu');

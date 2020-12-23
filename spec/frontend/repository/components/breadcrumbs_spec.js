@@ -36,23 +36,15 @@ describe('Repository breadcrumbs component', () => {
   it('escapes hash in directory path', () => {
     factory('app/assets/javascripts#');
 
-    expect(
-      vm
-        .findAll(RouterLinkStub)
-        .at(3)
-        .props('to'),
-    ).toEqual('/-/tree/app/assets/javascripts%23');
+    expect(vm.findAll(RouterLinkStub).at(3).props('to')).toEqual(
+      '/-/tree/app/assets/javascripts%23',
+    );
   });
 
   it('renders last link as active', () => {
     factory('app/assets');
 
-    expect(
-      vm
-        .findAll(RouterLinkStub)
-        .at(2)
-        .attributes('aria-current'),
-    ).toEqual('page');
+    expect(vm.findAll(RouterLinkStub).at(2).attributes('aria-current')).toEqual('page');
   });
 
   it('does not render add to tree dropdown when permissions are false', () => {

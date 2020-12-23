@@ -100,10 +100,7 @@ describe('MembersTable', () => {
 
       if (expectedComponent) {
         expect(
-          wrapper
-            .find(`[data-label="${label}"][role="cell"]`)
-            .find(expectedComponent)
-            .exists(),
+          wrapper.find(`[data-label="${label}"][role="cell"]`).find(expectedComponent).exists(),
         ).toBe(true);
       }
     });
@@ -117,10 +114,7 @@ describe('MembersTable', () => {
         expect(actionField.exists()).toBe(true);
         expect(actionField.classes('gl-sr-only')).toBe(true);
         expect(
-          wrapper
-            .find(`[data-label="Actions"][role="cell"]`)
-            .find(MemberActionButtons)
-            .exists(),
+          wrapper.find(`[data-label="Actions"][role="cell"]`).find(MemberActionButtons).exists(),
         ).toBe(true);
       });
 
@@ -177,12 +171,9 @@ describe('MembersTable', () => {
     it('renders badge in "Max role" field', () => {
       createComponent({ members: [memberMock], tableFields: ['maxRole'] });
 
-      expect(
-        wrapper
-          .find(`[data-label="Max role"][role="cell"]`)
-          .find(GlBadge)
-          .text(),
-      ).toBe(memberMock.accessLevel.stringValue);
+      expect(wrapper.find(`[data-label="Max role"][role="cell"]`).find(GlBadge).text()).toBe(
+        memberMock.accessLevel.stringValue,
+      );
     });
   });
 
@@ -203,10 +194,6 @@ describe('MembersTable', () => {
   it('adds QA selector to table row', () => {
     createComponent();
 
-    expect(
-      findTable()
-        .find('tbody tr')
-        .attributes('data-qa-selector'),
-    ).toBe('member_row');
+    expect(findTable().find('tbody tr').attributes('data-qa-selector')).toBe('member_row');
   });
 });

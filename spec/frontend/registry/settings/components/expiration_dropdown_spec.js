@@ -8,7 +8,10 @@ describe('ExpirationDropdown', () => {
   const defaultProps = {
     name: 'foo',
     label: 'label-bar',
-    formOptions: [{ key: 'foo', label: 'bar' }, { key: 'baz', label: 'zab' }],
+    formOptions: [
+      { key: 'foo', label: 'bar' },
+      { key: 'baz', label: 'zab' },
+    ],
   };
 
   const findFormSelect = () => wrapper.find(GlFormSelect);

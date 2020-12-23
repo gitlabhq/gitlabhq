@@ -140,7 +140,10 @@ describe('MilestoneToken', () => {
   });
 
   describe('template', () => {
-    const defaultMilestones = [{ text: 'foo', value: 'foo' }, { text: 'bar', value: 'baz' }];
+    const defaultMilestones = [
+      { text: 'foo', value: 'foo' },
+      { text: 'bar', value: 'baz' },
+    ];
 
     beforeEach(async () => {
       wrapper = createComponent({ value: { data: `"${mockRegularMilestone.title}"` } });

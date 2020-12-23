@@ -254,9 +254,7 @@ export default {
             <template #freeSpacePercentage>{{
               totalCpuAndUsage(item.nodes).freeSpacePercentage
             }}</template>
-            <template #percentSymbol
-              >%</template
-            >
+            <template #percentSymbol>%</template>
           </gl-sprintf>
         </span>
 
@@ -277,9 +275,7 @@ export default {
             <template #freeSpacePercentage>{{
               totalMemoryAndUsage(item.nodes).freeSpacePercentage
             }}</template>
-            <template #percentSymbol
-              >%</template
-            >
+            <template #percentSymbol>%</template>
           </gl-sprintf>
         </span>
 
@@ -293,7 +289,7 @@ export default {
         />
       </template>
 
-      <template #cell(cluster_type)="{value}">
+      <template #cell(cluster_type)="{ value }">
         <gl-badge variant="muted">
           {{ value }}
         </gl-badge>

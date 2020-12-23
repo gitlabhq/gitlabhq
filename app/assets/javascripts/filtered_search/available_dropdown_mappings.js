@@ -200,8 +200,9 @@ export default class AvailableDropdownMappings {
   }
 
   getMergeRequestTargetBranchesEndpoint() {
-    const endpoint = `${gon.relative_url_root ||
-      ''}/autocomplete/merge_request_target_branches.json`;
+    const endpoint = `${
+      gon.relative_url_root || ''
+    }/autocomplete/merge_request_target_branches.json`;
 
     const params = {
       group_id: this.getGroupId(),

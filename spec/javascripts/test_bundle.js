@@ -40,7 +40,7 @@ Vue.config.warnHandler = (msg, vm, trace) => {
 };
 
 let hasVueErrors = false;
-Vue.config.errorHandler = function(err) {
+Vue.config.errorHandler = function (err) {
   hasVueErrors = true;
   fail(err);
 };
@@ -118,8 +118,8 @@ testContexts.forEach(context => {
     } catch (err) {
       console.log(err);
       console.error('[GL SPEC RUNNER ERROR] Unable to load spec: ', path);
-      describe('Test bundle', function() {
-        it(`includes '${path}'`, function() {
+      describe('Test bundle', function () {
+        it(`includes '${path}'`, function () {
           expect(err).toBeNull();
         });
       });

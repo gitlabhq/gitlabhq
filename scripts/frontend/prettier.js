@@ -11,7 +11,7 @@ const globIgnore = ['**/node_modules/**', 'vendor/**', 'public/**'];
 
 const readFileAsync = (file, options) =>
   new Promise((resolve, reject) => {
-    fs.readFile(file, options, function(err, data) {
+    fs.readFile(file, options, function (err, data) {
       if (err) reject(err);
       else resolve(data);
     });
@@ -19,7 +19,7 @@ const readFileAsync = (file, options) =>
 
 const writeFileAsync = (file, data, options) =>
   new Promise((resolve, reject) => {
-    fs.writeFile(file, data, options, function(err) {
+    fs.writeFile(file, data, options, function (err) {
       if (err) reject(err);
       else resolve();
     });

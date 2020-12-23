@@ -167,12 +167,7 @@ export default {
     next();
   },
   methods: {
-    addImageDiffNoteToStore(
-      store,
-      {
-        data: { createImageDiffNote },
-      },
-    ) {
+    addImageDiffNoteToStore(store, { data: { createImageDiffNote } }) {
       updateStoreAfterAddImageDiffNote(
         store,
         createImageDiffNote,
@@ -180,12 +175,7 @@ export default {
         this.designVariables,
       );
     },
-    updateImageDiffNoteInStore(
-      store,
-      {
-        data: { repositionImageDiffNote },
-      },
-    ) {
+    updateImageDiffNoteInStore(store, { data: { repositionImageDiffNote } }) {
       return updateStoreAfterRepositionImageDiffNote(
         store,
         repositionImageDiffNote,

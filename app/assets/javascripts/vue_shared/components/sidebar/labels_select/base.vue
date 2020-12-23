@@ -143,7 +143,7 @@ export default {
     >
       <slot></slot>
     </dropdown-value>
-    <div v-if="canEdit" class="selectbox js-selectbox" style="display: none;">
+    <div v-if="canEdit" class="selectbox js-selectbox" style="display: none">
       <dropdown-hidden-input
         v-for="label in context.labels"
         :key="label.id"

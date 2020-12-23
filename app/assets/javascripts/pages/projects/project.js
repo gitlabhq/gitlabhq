@@ -18,34 +18,26 @@ export default class Project {
     // Ref switcher
     if (document.querySelector('.js-project-refs-dropdown')) {
       Project.initRefSwitcher();
-      $('.project-refs-select').on('change', function() {
-        return $(this)
-          .parents('form')
-          .trigger('submit');
+      $('.project-refs-select').on('change', function () {
+        return $(this).parents('form').trigger('submit');
       });
     }
 
-    $('.hide-no-ssh-message').on('click', function(e) {
+    $('.hide-no-ssh-message').on('click', function (e) {
       Cookies.set('hide_no_ssh_message', 'false');
-      $(this)
-        .parents('.no-ssh-key-message')
-        .remove();
+      $(this).parents('.no-ssh-key-message').remove();
       return e.preventDefault();
     });
-    $('.hide-no-password-message').on('click', function(e) {
+    $('.hide-no-password-message').on('click', function (e) {
       Cookies.set('hide_no_password_message', 'false');
-      $(this)
-        .parents('.no-password-message')
-        .remove();
+      $(this).parents('.no-password-message').remove();
       return e.preventDefault();
     });
-    $('.hide-auto-devops-implicitly-enabled-banner').on('click', function(e) {
+    $('.hide-auto-devops-implicitly-enabled-banner').on('click', function (e) {
       const projectId = $(this).data('project-id');
       const cookieKey = `hide_auto_devops_implicitly_enabled_banner_${projectId}`;
       Cookies.set(cookieKey, 'false');
-      $(this)
-        .parents('.auto-devops-implicitly-enabled-banner')
-        .remove();
+      $(this).parents('.auto-devops-implicitly-enabled-banner').remove();
       return e.preventDefault();
     });
 
@@ -67,7 +59,7 @@ export default class Project {
 
     refLink.href = '#';
 
-    return $('.js-project-refs-dropdown').each(function() {
+    return $('.js-project-refs-dropdown').each(function () {
       const $dropdown = $(this);
       const selected = $dropdown.data('selected');
       const fieldName = $dropdown.data('fieldName');

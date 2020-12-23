@@ -24,7 +24,7 @@ export default class BuildArtifacts {
 
   // eslint-disable-next-line class-methods-use-this
   setupEntryClick() {
-    return $('.tree-holder').on('click', 'tr[data-link]', function() {
+    return $('.tree-holder').on('click', 'tr[data-link]', function () {
       visitUrl(this.dataset.link, parseBoolean(this.dataset.externalLink));
     });
   }

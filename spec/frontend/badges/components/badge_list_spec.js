@@ -76,9 +76,7 @@ describe('BadgeList component', () => {
     beforeEach(done => {
       store.state.kind = GROUP_BADGE;
 
-      Vue.nextTick()
-        .then(done)
-        .catch(done.fail);
+      Vue.nextTick().then(done).catch(done.fail);
     });
 
     it('renders a message if no badges exist', done => {

@@ -33,9 +33,7 @@ export default class Profile {
       uploadImageBtn: '.js-upload-user-avatar',
       modalCropImg: '.modal-profile-crop-image',
     };
-    this.avatarGlCrop = $('.js-user-avatar-input')
-      .glCrop(cropOpts)
-      .data('glcrop');
+    this.avatarGlCrop = $('.js-user-avatar-input').glCrop(cropOpts).data('glcrop');
   }
 
   bindEvents() {

@@ -49,10 +49,10 @@ export default {
             )
           "
         >
-          <template #markdownDocsLink="{content}">
+          <template #markdownDocsLink="{ content }">
             <gl-link :href="markdownDocsPath" target="_blank">{{ content }}</gl-link>
           </template>
-          <template #quickActionsDocsLink="{content}">
+          <template #quickActionsDocsLink="{ content }">
             <gl-link :href="quickActionsDocsPath" target="_blank">{{ content }}</gl-link>
           </template>
         </gl-sprintf>
@@ -81,7 +81,7 @@ export default {
             )
           "
         >
-          <template #retryButton="{content}">
+          <template #retryButton="{ content }">
             <gl-button
               variant="link"
               category="primary"
@@ -90,7 +90,7 @@ export default {
               {{ content }}
             </gl-button>
           </template>
-          <template #newFileButton="{content}">
+          <template #newFileButton="{ content }">
             <gl-button
               variant="link"
               category="primary"

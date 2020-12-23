@@ -88,16 +88,8 @@ describe('Diffs tree list component', () => {
 
     it('renders tree', () => {
       expect(getFileRows()).toHaveLength(2);
-      expect(
-        getFileRows()
-          .at(0)
-          .html(),
-      ).toContain('index.js');
-      expect(
-        getFileRows()
-          .at(1)
-          .html(),
-      ).toContain('app');
+      expect(getFileRows().at(0).html()).toContain('index.js');
+      expect(getFileRows().at(1).html()).toContain('app');
     });
 
     it('hides file stats', () => {
@@ -111,9 +103,7 @@ describe('Diffs tree list component', () => {
     it('calls toggleTreeOpen when clicking folder', () => {
       jest.spyOn(wrapper.vm.$store, 'dispatch').mockReturnValue(undefined);
 
-      getFileRows()
-        .at(1)
-        .trigger('click');
+      getFileRows().at(1).trigger('click');
 
       expect(wrapper.vm.$store.dispatch).toHaveBeenCalledWith('diffs/toggleTreeOpen', 'app');
     });

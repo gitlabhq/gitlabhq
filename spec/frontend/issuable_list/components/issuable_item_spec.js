@@ -252,12 +252,9 @@ describe('IssuableItem', () => {
 
       await wrapper.vm.$nextTick();
 
-      expect(
-        wrapper
-          .find('[data-testid="issuable-title"]')
-          .find(GlLink)
-          .attributes('target'),
-      ).toBe('_blank');
+      expect(wrapper.find('[data-testid="issuable-title"]').find(GlLink).attributes('target')).toBe(
+        '_blank',
+      );
     });
 
     it('renders issuable reference', () => {

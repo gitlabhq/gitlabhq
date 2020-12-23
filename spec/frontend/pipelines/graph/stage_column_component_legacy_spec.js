@@ -40,12 +40,7 @@ describe('stage column component', () => {
   });
 
   it('should render provided title', () => {
-    expect(
-      wrapper
-        .find('.stage-name')
-        .text()
-        .trim(),
-    ).toBe('foo');
+    expect(wrapper.find('.stage-name').text().trim()).toBe('foo');
   });
 
   it('should render the provided groups', () => {

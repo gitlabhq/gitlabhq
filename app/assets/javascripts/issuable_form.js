@@ -52,12 +52,12 @@ export default class IssuableForm {
     /* eslint-disable @gitlab/require-i18n-strings */
     this.wipRegex = new RegExp(
       '^\\s*(' + // Line start, then any amount of leading whitespace
-      'draft\\s-\\s' + // Draft_-_ where "_" are *exactly* one whitespace
-      '|\\[(draft|wip)\\]\\s*' + // [Draft] or [WIP] and any following whitespace
-      '|(draft|wip):\\s*' + // Draft: or WIP: and any following whitespace
-      '|(draft|wip)\\s+' + // Draft_ or WIP_ where "_" is at least one whitespace
-      '|\\(draft\\)\\s*' + // (Draft) and any following whitespace
-      ')+' + // At least one repeated match of the preceding parenthetical
+        'draft\\s-\\s' + // Draft_-_ where "_" are *exactly* one whitespace
+        '|\\[(draft|wip)\\]\\s*' + // [Draft] or [WIP] and any following whitespace
+        '|(draft|wip):\\s*' + // Draft: or WIP: and any following whitespace
+        '|(draft|wip)\\s+' + // Draft_ or WIP_ where "_" is at least one whitespace
+        '|\\(draft\\)\\s*' + // (Draft) and any following whitespace
+        ')+' + // At least one repeated match of the preceding parenthetical
         '\\s*', // Any amount of trailing whitespace
       'i', // Match any case(s)
     );

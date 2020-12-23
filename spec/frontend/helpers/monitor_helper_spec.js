@@ -3,7 +3,11 @@ import { getSeriesLabel, makeDataSeries } from '~/helpers/monitor_helper';
 describe('monitor helper', () => {
   const defaultConfig = { default: true, name: 'default name' };
   const name = 'data name';
-  const series = [[1, 1], [2, 2], [3, 3]];
+  const series = [
+    [1, 1],
+    [2, 2],
+    [3, 3],
+  ];
 
   describe('getSeriesLabel', () => {
     const metricAttributes = { __name__: 'up', app: 'prometheus' };

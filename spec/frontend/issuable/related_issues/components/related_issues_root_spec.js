@@ -315,9 +315,7 @@ describe('RelatedIssuesRoot', () => {
         const input = 23;
 
         wrapper.vm.onInput({
-          untouchedRawReferences: String(input)
-            .trim()
-            .split(/\s/),
+          untouchedRawReferences: String(input).trim().split(/\s/),
           touchedReference: input,
         });
 

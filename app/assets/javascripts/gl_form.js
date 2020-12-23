@@ -108,14 +108,10 @@ export default class GLForm {
 
   addEventListeners() {
     this.textarea.on('focus', function focusTextArea() {
-      $(this)
-        .closest('.md-area')
-        .addClass('is-focused');
+      $(this).closest('.md-area').addClass('is-focused');
     });
     this.textarea.on('blur', function blurTextArea() {
-      $(this)
-        .closest('.md-area')
-        .removeClass('is-focused');
+      $(this).closest('.md-area').removeClass('is-focused');
     });
   }
 

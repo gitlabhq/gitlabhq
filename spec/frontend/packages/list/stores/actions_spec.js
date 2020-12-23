@@ -109,7 +109,10 @@ describe('Actions Package list store', () => {
         undefined,
         { config: { isGroupPage: false, resourceId: 2 }, sorting },
         [],
-        [{ type: 'setLoading', payload: true }, { type: 'setLoading', payload: false }],
+        [
+          { type: 'setLoading', payload: true },
+          { type: 'setLoading', payload: false },
+        ],
         () => {
           expect(createFlash).toHaveBeenCalled();
           done();
@@ -192,7 +195,10 @@ describe('Actions Package list store', () => {
         payload,
         null,
         [],
-        [{ type: 'setLoading', payload: true }, { type: 'setLoading', payload: false }],
+        [
+          { type: 'setLoading', payload: true },
+          { type: 'setLoading', payload: false },
+        ],
         () => {
           expect(createFlash).toHaveBeenCalled();
           done();

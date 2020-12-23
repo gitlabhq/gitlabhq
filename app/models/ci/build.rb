@@ -1031,6 +1031,13 @@ module Ci
       variables.any? { |variable| variable[:key] == 'CI_DEBUG_TRACE' && variable[:value].casecmp('true') == 0 }
     end
 
+    def drop_with_exit_code!(failure_reason, exit_code)
+      transaction do
+        conditionally_allow_failure!(exit_code)
+        drop!(failure_reason)
+      end
+    end
+
     protected
 
     def run_status_commit_hooks!
@@ -1113,6 +1120,22 @@ module Ci
       rescue OpenSSL::PKey::RSAError, Gitlab::Ci::Jwt::NoSigningKeyError => e
         Gitlab::ErrorTracking.track_exception(e)
       end
+    end
+
+    def conditionally_allow_failure!(exit_code)
+      return unless ::Gitlab::Ci::Features.allow_failure_with_exit_codes_enabled?
+      return unless exit_code
+
+      if allowed_to_fail_with_code?(exit_code)
+        update_columns(allow_failure: true)
+      end
+    end
+
+    def allowed_to_fail_with_code?(exit_code)
+      options
+        .dig(:allow_failure_criteria, :exit_codes)
+        .to_a
+        .include?(exit_code)
     end
   end
 end

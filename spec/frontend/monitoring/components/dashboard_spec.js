@@ -587,12 +587,9 @@ describe('Dashboard', () => {
     });
 
     it('group empty area displays a NO_DATA state', () => {
-      expect(
-        wrapper
-          .findAll({ ref: 'empty-group' })
-          .at(0)
-          .props('selectedState'),
-      ).toEqual(metricStates.NO_DATA);
+      expect(wrapper.findAll({ ref: 'empty-group' }).at(0).props('selectedState')).toEqual(
+        metricStates.NO_DATA,
+      );
     });
   });
 
@@ -634,9 +631,7 @@ describe('Dashboard', () => {
 
       describe('when rearrange button is clicked', () => {
         const findFirstDraggableRemoveButton = () =>
-          findDraggablePanels()
-            .at(0)
-            .find('.js-draggable-remove');
+          findDraggablePanels().at(0).find('.js-draggable-remove');
 
         beforeEach(() => {
           findRearrangeButton().vm.$emit('click');
@@ -668,11 +663,7 @@ describe('Dashboard', () => {
         });
 
         it('shows a remove button, which removes a panel', () => {
-          expect(
-            findFirstDraggableRemoveButton()
-              .find('a')
-              .exists(),
-          ).toBe(true);
+          expect(findFirstDraggableRemoveButton().find('a').exists()).toBe(true);
 
           expect(findDraggablePanels().length).toEqual(metricsDashboardPanelCount);
           findFirstDraggableRemoveButton().trigger('click');
@@ -772,10 +763,7 @@ describe('Dashboard', () => {
     const panelIndex = 1; // skip expanded panel
 
     const getClipboardTextFirstPanel = () =>
-      wrapper
-        .findAll(DashboardPanel)
-        .at(panelIndex)
-        .props('clipboardText');
+      wrapper.findAll(DashboardPanel).at(panelIndex).props('clipboardText');
 
     beforeEach(() => {
       setupStoreWithData(store);

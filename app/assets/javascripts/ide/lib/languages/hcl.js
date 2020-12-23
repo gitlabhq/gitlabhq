@@ -11,7 +11,11 @@ const conf = {
     lineComment: '//',
     blockComment: ['/*', '*/'],
   },
-  brackets: [['{', '}'], ['[', ']'], ['(', ')']],
+  brackets: [
+    ['{', '}'],
+    ['[', ']'],
+    ['(', ')'],
+  ],
   autoClosingPairs: [
     { open: '{', close: '}' },
     { open: '[', close: ']' },
@@ -161,7 +165,11 @@ const language = {
       [/\/\/.*$/, 'comment'],
       [/#.*$/, 'comment'],
     ],
-    comment: [[/[^\/*]+/, 'comment'], [/\*\//, 'comment', '@pop'], [/[\/*]/, 'comment']],
+    comment: [
+      [/[^\/*]+/, 'comment'],
+      [/\*\//, 'comment', '@pop'],
+      [/[\/*]/, 'comment'],
+    ],
     string: [
       [/\$\{/, { token: 'delimiter', next: '@stringExpression' }],
       [/[^\\"\$]+/, 'string'],

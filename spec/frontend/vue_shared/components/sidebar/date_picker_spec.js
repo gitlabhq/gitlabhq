@@ -46,12 +46,7 @@ describe('SidebarDatePicker', () => {
   it('should render None if there is no selectedDate', () => {
     mountComponent();
 
-    expect(
-      wrapper
-        .find('.value-content span')
-        .text()
-        .trim(),
-    ).toEqual('None');
+    expect(wrapper.find('.value-content span').text().trim()).toEqual('None');
   });
 
   it('should render date-picker when editing', () => {
@@ -63,12 +58,7 @@ describe('SidebarDatePicker', () => {
   it('should render label', () => {
     const label = 'label';
     mountComponent({ label });
-    expect(
-      wrapper
-        .find('.title')
-        .text()
-        .trim(),
-    ).toEqual(label);
+    expect(wrapper.find('.title').text().trim()).toEqual(label);
   });
 
   it('should render loading-icon when isLoading', () => {
@@ -82,12 +72,7 @@ describe('SidebarDatePicker', () => {
     });
 
     it('should render edit button', () => {
-      expect(
-        wrapper
-          .find('.title .btn-blank')
-          .text()
-          .trim(),
-      ).toEqual('Edit');
+      expect(wrapper.find('.title .btn-blank').text().trim()).toEqual('Edit');
     });
 
     it('should enable editing when edit button is clicked', async () => {
@@ -102,12 +87,7 @@ describe('SidebarDatePicker', () => {
   it('should render date if selectedDate', () => {
     mountComponent({ selectedDate: new Date('07/07/2017') });
 
-    expect(
-      wrapper
-        .find('.value-content strong')
-        .text()
-        .trim(),
-    ).toEqual('Jul 7, 2017');
+    expect(wrapper.find('.value-content strong').text().trim()).toEqual('Jul 7, 2017');
   });
 
   describe('selectedDate and editable', () => {
@@ -116,12 +96,7 @@ describe('SidebarDatePicker', () => {
     });
 
     it('should render remove button if selectedDate and editable', () => {
-      expect(
-        wrapper
-          .find('.value-content .btn-blank')
-          .text()
-          .trim(),
-      ).toEqual('remove');
+      expect(wrapper.find('.value-content .btn-blank').text().trim()).toEqual('remove');
     });
 
     it('should emit saveDate with null when remove button is clicked', () => {

@@ -526,8 +526,8 @@ describe('moveIssue', () => {
   };
 
   const issues = {
-    '436': mockIssue,
-    '437': mockIssue2,
+    436: mockIssue,
+    437: mockIssue2,
   };
 
   const state = {

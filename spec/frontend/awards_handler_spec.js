@@ -57,9 +57,7 @@ describe('AwardsHandler', () => {
   preloadFixtures('snippets/show.html');
 
   const openAndWaitForEmojiMenu = (sel = '.js-add-award') => {
-    $(sel)
-      .eq(0)
-      .click();
+    $(sel).eq(0).click();
 
     jest.runOnlyPendingTimers();
 
@@ -337,9 +335,7 @@ describe('AwardsHandler', () => {
     it('should remove already selected emoji', async () => {
       await openEmojiMenuAndAddEmoji();
 
-      $('.js-add-award')
-        .eq(0)
-        .click();
+      $('.js-add-award').eq(0).click();
       const $block = $('.js-awards-block');
       const $emoji = $('.emoji-menu').find(
         `.emoji-menu-list:not(.frequent-emojis) ${emojiSelector}`,

@@ -165,21 +165,9 @@ describe('Alert Details Sidebar Assignees', () => {
         },
       });
 
-      expect(
-        findAssigned()
-          .find('img')
-          .attributes('src'),
-      ).toBe('/url');
-      expect(
-        findAssigned()
-          .find('.dropdown-menu-user-full-name')
-          .text(),
-      ).toBe('root');
-      expect(
-        findAssigned()
-          .find('.dropdown-menu-user-username')
-          .text(),
-      ).toBe('@root');
+      expect(findAssigned().find('img').attributes('src')).toBe('/url');
+      expect(findAssigned().find('.dropdown-menu-user-full-name').text()).toBe('root');
+      expect(findAssigned().find('.dropdown-menu-user-username').text()).toBe('@root');
     });
   });
 });

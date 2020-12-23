@@ -117,19 +117,13 @@ describe('DiscussionActions', () => {
 
     it('emits showReplyForm event when clicking on reply placeholder', () => {
       jest.spyOn(wrapper.vm, '$emit');
-      wrapper
-        .find(ReplyPlaceholder)
-        .find('button')
-        .trigger('click');
+      wrapper.find(ReplyPlaceholder).find('button').trigger('click');
       expect(wrapper.vm.$emit).toHaveBeenCalledWith('showReplyForm');
     });
 
     it('emits resolve event when clicking on resolve button', () => {
       jest.spyOn(wrapper.vm, '$emit');
-      wrapper
-        .find(ResolveDiscussionButton)
-        .find('button')
-        .trigger('click');
+      wrapper.find(ResolveDiscussionButton).find('button').trigger('click');
       expect(wrapper.vm.$emit).toHaveBeenCalledWith('resolve');
     });
   });

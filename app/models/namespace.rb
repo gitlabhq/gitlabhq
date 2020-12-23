@@ -438,6 +438,10 @@ class Namespace < ApplicationRecord
     end
   end
 
+  def root?
+    !has_parent?
+  end
+
   private
 
   def all_projects_with_pages

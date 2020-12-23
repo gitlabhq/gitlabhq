@@ -82,9 +82,7 @@ export default Vue.extend({
             });
 
           $('.js-issue-board-sidebar', this.$el).each((i, el) => {
-            $(el)
-              .data('deprecatedJQueryDropdown')
-              .clearMenu();
+            $(el).data('deprecatedJQueryDropdown').clearMenu();
           });
         }
 

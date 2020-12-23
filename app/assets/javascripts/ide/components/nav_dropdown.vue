@@ -31,9 +31,7 @@ export default {
     },
     removeDropdownListeners() {
       // eslint-disable-next-line @gitlab/no-global-event-off
-      $(this.$refs.dropdown)
-        .off('show.bs.dropdown')
-        .off('hide.bs.dropdown');
+      $(this.$refs.dropdown).off('show.bs.dropdown').off('hide.bs.dropdown');
     },
     showDropdown() {
       this.isVisibleDropdown = true;

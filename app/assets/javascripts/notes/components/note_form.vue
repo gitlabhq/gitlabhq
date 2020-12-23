@@ -193,8 +193,7 @@ export default {
     },
     canSuggest() {
       return (
-        this.getNoteableData.can_receive_suggestion &&
-        (this.line && this.line.can_receive_suggestion)
+        this.getNoteableData.can_receive_suggestion && this.line && this.line.can_receive_suggestion
       );
     },
     changedCommentText() {

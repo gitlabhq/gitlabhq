@@ -77,18 +77,8 @@ describe('RepoCommitSection', () => {
     });
 
     it('renders no changes text', () => {
-      expect(
-        wrapper
-          .find(EmptyState)
-          .text()
-          .trim(),
-      ).toContain('No changes');
-      expect(
-        wrapper
-          .find(EmptyState)
-          .find('img')
-          .attributes('src'),
-      ).toBe(TEST_NO_CHANGES_SVG);
+      expect(wrapper.find(EmptyState).text().trim()).toContain('No changes');
+      expect(wrapper.find(EmptyState).find('img').attributes('src')).toBe(TEST_NO_CHANGES_SVG);
     });
   });
 

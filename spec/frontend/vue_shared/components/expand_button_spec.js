@@ -41,12 +41,7 @@ describe('Expand button', () => {
   });
 
   it('does not render expanded text', () => {
-    expect(
-      wrapper
-        .find(ExpandButton)
-        .text()
-        .trim(),
-    ).not.toBe(text.short);
+    expect(wrapper.find(ExpandButton).text().trim()).not.toBe(text.short);
   });
 
   describe('when short text is provided', () => {
@@ -60,12 +55,7 @@ describe('Expand button', () => {
     });
 
     it('renders short text', () => {
-      expect(
-        wrapper
-          .find(ExpandButton)
-          .text()
-          .trim(),
-      ).toBe(text.short);
+      expect(wrapper.find(ExpandButton).text().trim()).toBe(text.short);
     });
 
     it('renders button before text', () => {
@@ -108,12 +98,7 @@ describe('Expand button', () => {
       });
 
       it('only renders expanded text', () => {
-        expect(
-          wrapper
-            .find(ExpandButton)
-            .text()
-            .trim(),
-        ).toBe(text.expanded);
+        expect(wrapper.find(ExpandButton).text().trim()).toBe(text.expanded);
       });
 
       it('renders button after text', () => {
@@ -140,21 +125,11 @@ describe('Expand button', () => {
     });
 
     it('clicking hides expanded text', () => {
-      expect(
-        wrapper
-          .find(ExpandButton)
-          .text()
-          .trim(),
-      ).toBe(text.expanded);
+      expect(wrapper.find(ExpandButton).text().trim()).toBe(text.expanded);
       expanderAppendEl().trigger('click');
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(
-          wrapper
-            .find(ExpandButton)
-            .text()
-            .trim(),
-        ).not.toBe(text.expanded);
+        expect(wrapper.find(ExpandButton).text().trim()).not.toBe(text.expanded);
       });
     });
 
@@ -172,21 +147,11 @@ describe('Expand button', () => {
       });
 
       it('clicking reveals short text', () => {
-        expect(
-          wrapper
-            .find(ExpandButton)
-            .text()
-            .trim(),
-        ).toBe(text.expanded);
+        expect(wrapper.find(ExpandButton).text().trim()).toBe(text.expanded);
         expanderAppendEl().trigger('click');
 
         return wrapper.vm.$nextTick().then(() => {
-          expect(
-            wrapper
-              .find(ExpandButton)
-              .text()
-              .trim(),
-          ).toBe(text.short);
+          expect(wrapper.find(ExpandButton).text().trim()).toBe(text.short);
         });
       });
     });

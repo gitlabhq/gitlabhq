@@ -122,10 +122,7 @@ export const waitForTabToOpen = fileName =>
   findByText(document.querySelector('.multi-file-edit-pane'), fileName);
 
 export const createFile = async (path, content) => {
-  const parentPath = path
-    .split('/')
-    .slice(0, -1)
-    .join('/');
+  const parentPath = path.split('/').slice(0, -1).join('/');
 
   const parentRow = await findAndTraverseToPath(parentPath);
 

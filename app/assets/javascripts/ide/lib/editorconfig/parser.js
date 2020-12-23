@@ -50,5 +50,10 @@ export function getRulesWithTraversal(filePath, getFileContent) {
 
   return Promise.all(
     editorconfigPaths.map(path => getFileContent(path).then(content => ({ path, content }))),
-  ).then(results => getRulesWithConfigs(filePath, results.filter(x => x.content)));
+  ).then(results =>
+    getRulesWithConfigs(
+      filePath,
+      results.filter(x => x.content),
+    ),
+  );
 }

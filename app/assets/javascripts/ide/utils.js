@@ -154,12 +154,7 @@ export function getFileEOL(content = '') {
  */
 export function addNumericSuffix(filename, randomize = false) {
   return filename.replace(/([ _-]?)(\d*)(\..+?$|$)/, (_, before, number, after) => {
-    const n = randomize
-      ? Math.random()
-          .toString()
-          .substring(2, 7)
-          .slice(-5)
-      : Number(number) + 1;
+    const n = randomize ? Math.random().toString().substring(2, 7).slice(-5) : Number(number) + 1;
     return `${before || '-'}${n}${after}`;
   });
 }

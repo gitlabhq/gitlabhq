@@ -200,6 +200,8 @@
   - 1
 - - namespaceless_project_destroy
   - 1
+- - namespaces_onboarding_pipeline_created
+  - 1
 - - namespaces_onboarding_user_added
   - 1
 - - new_epic
@@ -319,6 +321,8 @@
 - - service_desk_email_receiver
   - 1
 - - set_user_status_based_on_user_cap_setting
+  - 1
+- - snippet_schedule_bulk_repository_shard_moves
   - 1
 - - snippet_update_repository_storage
   - 1

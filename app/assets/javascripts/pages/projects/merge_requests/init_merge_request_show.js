@@ -8,7 +8,7 @@ import loadAwardsHandler from '~/awards_handler';
 import initInviteMemberTrigger from '~/invite_member/init_invite_member_trigger';
 import initInviteMemberModal from '~/invite_member/init_invite_member_modal';
 
-export default function() {
+export default function () {
   new ZenMode(); // eslint-disable-line no-new
   initIssuableSidebar();
   initPipelines();

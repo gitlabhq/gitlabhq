@@ -66,9 +66,7 @@ describe('DiffGutterAvatars', () => {
     });
 
     it('should emit toggleDiscussions event on avatars click', () => {
-      findUserAvatars()
-        .at(0)
-        .trigger('click');
+      findUserAvatars().at(0).trigger('click');
 
       return wrapper.vm.$nextTick().then(() => {
         expect(wrapper.emitted().toggleLineDiscussions).toBeTruthy();

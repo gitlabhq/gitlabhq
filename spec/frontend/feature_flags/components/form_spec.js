@@ -347,10 +347,7 @@ describe('feature flag form', () => {
             return wrapper.vm.$nextTick();
           })
           .then(() => {
-            wrapper
-              .find('.js-add-new-scope')
-              .find(ToggleButton)
-              .vm.$emit('change', true);
+            wrapper.find('.js-add-new-scope').find(ToggleButton).vm.$emit('change', true);
           })
           .then(() => {
             wrapper.find(ToggleButton).vm.$emit('change', true);

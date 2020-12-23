@@ -44,10 +44,7 @@ describe('ClusterFormDropdown', () => {
       wrapper.setProps({ items });
 
       return wrapper.vm.$nextTick().then(() => {
-        wrapper
-          .findAll('.js-dropdown-item')
-          .at(1)
-          .trigger('click');
+        wrapper.findAll('.js-dropdown-item').at(1).trigger('click');
         return wrapper.vm.$nextTick();
       });
     });
@@ -65,17 +62,11 @@ describe('ClusterFormDropdown', () => {
       return wrapper.vm
         .$nextTick()
         .then(() => {
-          wrapper
-            .findAll('.js-dropdown-item')
-            .at(0)
-            .trigger('click');
+          wrapper.findAll('.js-dropdown-item').at(0).trigger('click');
           return wrapper.vm.$nextTick();
         })
         .then(() => {
-          wrapper
-            .findAll('.js-dropdown-item')
-            .at(1)
-            .trigger('click');
+          wrapper.findAll('.js-dropdown-item').at(1).trigger('click');
           return wrapper.vm.$nextTick();
         });
     });
@@ -102,10 +93,7 @@ describe('ClusterFormDropdown', () => {
       wrapper.setProps({ items, multiple: true, value: null });
 
       return wrapper.vm.$nextTick().then(() => {
-        wrapper
-          .findAll('.js-dropdown-item')
-          .at(0)
-          .trigger('click');
+        wrapper.findAll('.js-dropdown-item').at(0).trigger('click');
 
         expect(wrapper.emitted('input')[0]).toEqual([[firstItem.value]]);
       });

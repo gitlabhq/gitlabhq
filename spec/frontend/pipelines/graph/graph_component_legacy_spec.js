@@ -104,11 +104,9 @@ describe('graph component', () => {
       });
 
       it('should include the left-connector class in the build of the second child', () => {
-        expect(
-          findStageColumnAt(1)
-            .find('.build:nth-child(1)')
-            .classes('left-connector'),
-        ).toBe(true);
+        expect(findStageColumnAt(1).find('.build:nth-child(1)').classes('left-connector')).toBe(
+          true,
+        );
       });
 
       it('should include the js-has-linked-pipelines flag', () => {
@@ -119,12 +117,7 @@ describe('graph component', () => {
     describe('computeds and methods', () => {
       describe('capitalizeStageName', () => {
         it('it capitalizes the stage name', () => {
-          expect(
-            wrapper
-              .findAll('.stage-column .stage-name')
-              .at(1)
-              .text(),
-          ).toBe('Prebuild');
+          expect(wrapper.findAll('.stage-column .stage-name').at(1).text()).toBe('Prebuild');
         });
       });
 

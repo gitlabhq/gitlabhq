@@ -194,7 +194,10 @@ export default {
     updated_at: '2017-04-07T15:28:44.800Z',
   },
   pipelineCoverageDelta: '15.25',
-  buildsWithCoverage: [{ name: 'karma', coverage: '40.2' }, { name: 'rspec', coverage: '80.4' }],
+  buildsWithCoverage: [
+    { name: 'karma', coverage: '40.2' },
+    { name: 'rspec', coverage: '80.4' },
+  ],
   work_in_progress: false,
   source_branch_exists: false,
   mergeable_discussions_state: true,

@@ -65,18 +65,8 @@ describe('Merge Request Collapsible Extension', () => {
     });
 
     it('renders the buttons disabled', () => {
-      expect(
-        wrapper
-          .findAll('button')
-          .at(0)
-          .attributes('disabled'),
-      ).toEqual('disabled');
-      expect(
-        wrapper
-          .findAll('button')
-          .at(1)
-          .attributes('disabled'),
-      ).toEqual('disabled');
+      expect(wrapper.findAll('button').at(0).attributes('disabled')).toEqual('disabled');
+      expect(wrapper.findAll('button').at(1).attributes('disabled')).toEqual('disabled');
     });
 
     it('renders loading spinner', () => {

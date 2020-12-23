@@ -490,6 +490,7 @@ RSpec.describe Ci::CreatePipelineService do
 
       expect(execute_service).not_to be_persisted
       expect(Ci::Pipeline.count).to eq(0)
+      expect(Namespaces::OnboardingPipelineCreatedWorker).not_to receive(:perform_async)
     end
 
     shared_examples 'a failed pipeline' do
@@ -1423,6 +1424,13 @@ RSpec.describe Ci::CreatePipelineService do
             it 'schedules update for the head pipeline of the merge request' do
               expect(UpdateHeadPipelineForMergeRequestWorker)
                 .to receive(:perform_async).with(merge_request.id)
+
+              pipeline
+            end
+
+            it 'schedules a namespace onboarding create action worker' do
+              expect(Namespaces::OnboardingPipelineCreatedWorker)
+                .to receive(:perform_async).with(project.namespace_id)
 
               pipeline
             end

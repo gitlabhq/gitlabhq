@@ -90,7 +90,7 @@ export default {
         </gl-link>
       </template>
 
-      <template #cell(commit)="{item}">
+      <template #cell(commit)="{ item }">
         <gl-link
           :href="item.pipeline.project.commit_url"
           class="gl-text-gray-500"

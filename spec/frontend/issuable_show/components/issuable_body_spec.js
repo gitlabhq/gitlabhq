@@ -98,10 +98,7 @@ describe('IssuableBody', () => {
 
     it('renders issuable edit info', () => {
       const editedEl = wrapper.find('small');
-      const sanitizedText = editedEl
-        .text()
-        .replace(/\n/g, ' ')
-        .replace(/\s+/g, ' ');
+      const sanitizedText = editedEl.text().replace(/\n/g, ' ').replace(/\s+/g, ' ');
 
       expect(sanitizedText).toContain('Edited');
       expect(sanitizedText).toContain('ago');

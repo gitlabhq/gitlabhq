@@ -13,13 +13,7 @@ export default [
     name: DESIGN_ROUTE_NAME,
     path: '/designs/:id',
     component: DesignDetail,
-    beforeEnter(
-      {
-        params: { id },
-      },
-      _,
-      next,
-    ) {
+    beforeEnter({ params: { id } }, _, next) {
       if (typeof id === 'string') {
         next();
       }

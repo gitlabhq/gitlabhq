@@ -194,14 +194,20 @@ export default {
             projectPath: this.projectPath,
           },
         })
-        .then(({ data: { createAlertIssue: { errors, issue } } }) => {
-          if (errors?.length) {
-            [this.createIncidentError] = errors;
-            this.incidentCreationInProgress = false;
-          } else if (issue) {
-            visitUrl(this.incidentPath(issue.iid));
-          }
-        })
+        .then(
+          ({
+            data: {
+              createAlertIssue: { errors, issue },
+            },
+          }) => {
+            if (errors?.length) {
+              [this.createIncidentError] = errors;
+              this.incidentCreationInProgress = false;
+            } else if (issue) {
+              visitUrl(this.incidentPath(issue.iid));
+            }
+          },
+        )
         .catch(error => {
           this.createIncidentError = error;
           this.incidentCreationInProgress = false;

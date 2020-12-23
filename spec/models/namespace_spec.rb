@@ -1500,4 +1500,24 @@ RSpec.describe Namespace do
       end
     end
   end
+
+  describe '#root?' do
+    subject { namespace.root? }
+
+    context 'when is subgroup' do
+      before do
+        namespace.parent = build(:group)
+      end
+
+      it 'returns false' do
+        is_expected.to eq(false)
+      end
+    end
+
+    context 'when is root' do
+      it 'returns true' do
+        is_expected.to eq(true)
+      end
+    end
+  end
 end

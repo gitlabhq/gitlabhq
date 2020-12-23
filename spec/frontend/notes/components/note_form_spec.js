@@ -91,12 +91,7 @@ describe('issue_note_form component', () => {
         const conflictWarning = wrapper.find('.js-conflict-edit-warning');
 
         expect(conflictWarning.exists()).toBe(true);
-        expect(
-          conflictWarning
-            .text()
-            .replace(/\s+/g, ' ')
-            .trim(),
-        ).toBe(message);
+        expect(conflictWarning.text().replace(/\s+/g, ' ').trim()).toBe(message);
       });
     });
   });

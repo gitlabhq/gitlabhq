@@ -307,7 +307,8 @@ export const startRenderDiffsQueue = ({ state, commit }) => {
       const nextFile = state.diffFiles.find(
         file =>
           !file.renderIt &&
-          (file.viewer && (!isCollapsed(file) || file.viewer.name !== diffViewerModes.text)),
+          file.viewer &&
+          (!isCollapsed(file) || file.viewer.name !== diffViewerModes.text),
       );
 
       if (nextFile) {

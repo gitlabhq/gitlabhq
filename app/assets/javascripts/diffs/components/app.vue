@@ -281,12 +281,7 @@ export default {
     const id = window?.location?.hash;
 
     if (id && id.indexOf('#note') !== 0) {
-      this.setHighlightedRow(
-        id
-          .split('diff-content')
-          .pop()
-          .slice(1),
-      );
+      this.setHighlightedRow(id.split('diff-content').pop().slice(1));
     }
   },
   beforeCreate() {
@@ -404,10 +399,7 @@ export default {
     },
     setDiscussions() {
       requestIdleCallback(
-        () =>
-          this.assignDiscussionsToDiff()
-            .then(this.$nextTick)
-            .then(this.startTaskList),
+        () => this.assignDiscussionsToDiff().then(this.$nextTick).then(this.startTaskList),
         { timeout: 1000 },
       );
     },

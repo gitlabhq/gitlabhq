@@ -41,16 +41,8 @@ describe('Error Tracking Actions', () => {
       expect(findButtons().exists()).toBe(true);
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(
-          findButtons()
-            .at(0)
-            .attributes('title'),
-        ).toBe('Ignore');
-        expect(
-          findButtons()
-            .at(1)
-            .attributes('title'),
-        ).toBe('Resolve');
+        expect(findButtons().at(0).attributes('title')).toBe('Ignore');
+        expect(findButtons().at(1).attributes('title')).toBe('Resolve');
       });
     });
   });
@@ -64,11 +56,7 @@ describe('Error Tracking Actions', () => {
       expect(findButtons().exists()).toBe(true);
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(
-          findButtons()
-            .at(0)
-            .attributes('title'),
-        ).toBe('Undo Ignore');
+        expect(findButtons().at(0).attributes('title')).toBe('Undo Ignore');
       });
     });
   });
@@ -82,11 +70,7 @@ describe('Error Tracking Actions', () => {
       expect(findButtons().exists()).toBe(true);
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(
-          findButtons()
-            .at(1)
-            .attributes('title'),
-        ).toBe('Unresolve');
+        expect(findButtons().at(1).attributes('title')).toBe('Unresolve');
       });
     });
   });

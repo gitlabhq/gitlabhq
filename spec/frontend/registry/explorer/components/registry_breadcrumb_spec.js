@@ -119,11 +119,7 @@ describe('Registry Breadcrumb', () => {
     });
 
     it('has the same classes as the last children of the crumbs', () => {
-      expect(
-        findLastCrumb()
-          .classes()
-          .join(' '),
-      ).toEqual(lastChildren.className);
+      expect(findLastCrumb().classes().join(' ')).toEqual(lastChildren.className);
     });
 
     it('has a link to the current route', () => {

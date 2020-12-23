@@ -91,9 +91,7 @@ const bindEvents = () => {
 
   $('.how_to_import_link').on('click', e => {
     e.preventDefault();
-    $(e.currentTarget)
-      .next('.modal')
-      .show();
+    $(e.currentTarget).next('.modal').show();
   });
 
   $('.modal-header .close').on('click', () => {
@@ -151,10 +149,7 @@ const bindEvents = () => {
 
     const selectedTemplate = DEFAULT_PROJECT_TEMPLATES[value];
     $selectedTemplateText.text(selectedTemplate.text);
-    $(selectedTemplate.icon)
-      .clone()
-      .addClass('d-block')
-      .appendTo($selectedIcon);
+    $(selectedTemplate.icon).clone().addClass('d-block').appendTo($selectedIcon);
 
     const $activeTabProjectName = $('.tab-pane.active #project_name');
     const $activeTabProjectPath = $('.tab-pane.active #project_path');

@@ -255,8 +255,9 @@ describe('Fly out sidebar navigation', () => {
       showSubLevelItems(el);
 
       expect(subItems.style.transform).toBe(
-        `translate3d(200px, ${Math.floor(el.getBoundingClientRect().top) -
-          getHeaderHeight()}px, 0px)`,
+        `translate3d(200px, ${
+          Math.floor(el.getBoundingClientRect().top) - getHeaderHeight()
+        }px, 0px)`,
       );
     });
 

@@ -78,9 +78,7 @@ describe('ConfirmModal', () => {
   describe('when button clicked', () => {
     beforeEach(() => {
       initConfirmModal();
-      findJsHooks()
-        .item(0)
-        .click();
+      findJsHooks().item(0).click();
     });
 
     it('does not replace JsHook with GlModal', () => {
@@ -116,9 +114,7 @@ describe('ConfirmModal', () => {
   `(`when multiple buttons exist`, ({ index }) => {
     beforeEach(() => {
       initConfirmModal();
-      findJsHooks()
-        .item(index)
-        .click();
+      findJsHooks().item(index).click();
     });
 
     it('correct props are passed to gl-modal', () => {

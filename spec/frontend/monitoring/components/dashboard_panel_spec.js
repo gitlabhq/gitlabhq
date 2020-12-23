@@ -777,11 +777,7 @@ describe('Dashboard Panel', () => {
         await wrapper.vm.$nextTick();
 
         expect(findRunbookLinks().length).toBe(1);
-        expect(
-          findRunbookLinks()
-            .at(0)
-            .attributes('href'),
-        ).toBe(invalidUrl);
+        expect(findRunbookLinks().at(0).attributes('href')).toBe(invalidUrl);
       });
     });
   });

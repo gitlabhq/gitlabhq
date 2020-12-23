@@ -96,9 +96,7 @@ export default class SmartInterval {
     window.removeEventListener('focus', this.onWindowVisibilityChange);
     this.cancel();
     // eslint-disable-next-line @gitlab/no-global-event-off
-    $(document)
-      .off('visibilitychange')
-      .off('beforeunload');
+    $(document).off('visibilitychange').off('beforeunload');
   }
 
   /* private */

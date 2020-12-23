@@ -43,12 +43,7 @@ describe('Commit component', () => {
       },
     });
 
-    expect(
-      wrapper
-        .find('.icon-container')
-        .find(GlIcon)
-        .exists(),
-    ).toBe(true);
+    expect(wrapper.find('.icon-container').find(GlIcon).exists()).toBe(true);
   });
 
   describe('Given all the props', () => {

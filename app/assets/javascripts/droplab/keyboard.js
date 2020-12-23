@@ -2,7 +2,7 @@
 
 import { ACTIVE_CLASS } from './constants';
 
-const Keyboard = function() {
+const Keyboard = function () {
   var currentKey;
   var currentFocus;
   var isUpArrow = false;

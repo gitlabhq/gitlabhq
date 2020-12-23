@@ -49,18 +49,8 @@ describe('Diffs image diff overlay component', () => {
     createComponent();
     const imageBadges = getAllImageBadges();
 
-    expect(
-      imageBadges
-        .at(0)
-        .text()
-        .trim(),
-    ).toBe('1');
-    expect(
-      imageBadges
-        .at(1)
-        .text()
-        .trim(),
-    ).toBe('2');
+    expect(imageBadges.at(0).text().trim()).toBe('1');
+    expect(imageBadges.at(1).text().trim()).toBe('2');
   });
 
   it('renders icon when showCommentIcon is true', () => {

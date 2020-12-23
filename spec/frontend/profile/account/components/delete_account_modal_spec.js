@@ -65,9 +65,7 @@ describe('DeleteAccountModal component', () => {
 
       vm.isOpen = true;
 
-      Vue.nextTick()
-        .then(done)
-        .catch(done.fail);
+      Vue.nextTick().then(done).catch(done.fail);
     });
 
     it('does not accept empty password', done => {
@@ -117,9 +115,7 @@ describe('DeleteAccountModal component', () => {
 
       vm.isOpen = true;
 
-      Vue.nextTick()
-        .then(done)
-        .catch(done.fail);
+      Vue.nextTick().then(done).catch(done.fail);
     });
 
     it('does not accept wrong username', done => {

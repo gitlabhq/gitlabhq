@@ -95,9 +95,7 @@ export default {
       <template v-if="hasFileSize">
         {{ fileSizeReadable }}
       </template>
-      <template v-if="hasFileSize && hasDimensions">
-        |
-      </template>
+      <template v-if="hasFileSize && hasDimensions"> | </template>
       <template v-if="hasDimensions">
         <strong>{{ s__('ImageViewerDimensions|W') }}</strong
         >: {{ width }} | <strong>{{ s__('ImageViewerDimensions|H') }}</strong
