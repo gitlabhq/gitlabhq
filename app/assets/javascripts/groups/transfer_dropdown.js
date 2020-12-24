@@ -20,11 +20,11 @@ export default class TransferDropdown {
     initDeprecatedJQueryDropdown(this.groupDropdown, {
       selectable: true,
       filterable: true,
-      toggleLabel: item => item.text,
+      toggleLabel: (item) => item.text,
       search: { fields: ['text'] },
       data: extraOptions.concat(this.data),
-      text: item => item.text,
-      clicked: options => {
+      text: (item) => item.text,
+      clicked: (options) => {
         const { e } = options;
         e.preventDefault();
         this.assignSelected(options.selectedObj);

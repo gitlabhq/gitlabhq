@@ -44,7 +44,7 @@ describe('Pipeline New Form', () => {
   const findWarnings = () => wrapper.findAll('[data-testid="run-pipeline-warning"]');
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
   const getExpectedPostParams = () => JSON.parse(mock.history.post[0].data);
-  const changeRef = i => findDropdownItems().at(i).vm.$emit('click');
+  const changeRef = (i) => findDropdownItems().at(i).vm.$emit('click');
 
   const createComponent = (term = '', props = {}, method = shallowMount) => {
     wrapper = method(PipelineNewForm, {

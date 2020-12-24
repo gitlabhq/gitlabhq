@@ -158,7 +158,7 @@ export const tagsMock = [
   },
 ];
 
-export const graphQLImageDetailsMock = override => ({
+export const graphQLImageDetailsMock = (override) => ({
   data: {
     containerRepository: {
       ...containerRepositoryMock,

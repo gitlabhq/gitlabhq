@@ -119,7 +119,7 @@ export default class SmartInterval {
       .then(() => {
         this.isLoading = false;
       })
-      .catch(err => {
+      .catch((err) => {
         this.isLoading = false;
         throw err;
       });

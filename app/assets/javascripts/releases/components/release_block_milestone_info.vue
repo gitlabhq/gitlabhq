@@ -64,7 +64,7 @@ export default {
     },
     issueCounts() {
       return this.milestones
-        .map(m => m.issueStats || {})
+        .map((m) => m.issueStats || {})
         .reduce(
           (acc, current) => {
             acc.total += current.total || 0;
@@ -79,11 +79,11 @@ export default {
         );
     },
     showMergeRequestStats() {
-      return this.milestones.some(m => m.mrStats);
+      return this.milestones.some((m) => m.mrStats);
     },
     mergeRequestCounts() {
       return this.milestones
-        .map(m => m.mrStats || {})
+        .map((m) => m.mrStats || {})
         .reduce(
           (acc, current) => {
             acc.total += current.total || 0;

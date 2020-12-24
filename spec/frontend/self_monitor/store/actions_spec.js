@@ -16,7 +16,7 @@ describe('self monitor actions', () => {
   });
 
   describe('setSelfMonitor', () => {
-    it('commits the SET_ENABLED mutation', done => {
+    it('commits the SET_ENABLED mutation', (done) => {
       testAction(
         actions.setSelfMonitor,
         null,
@@ -29,7 +29,7 @@ describe('self monitor actions', () => {
   });
 
   describe('resetAlert', () => {
-    it('commits the SET_ENABLED mutation', done => {
+    it('commits the SET_ENABLED mutation', (done) => {
       testAction(
         actions.resetAlert,
         null,
@@ -54,7 +54,7 @@ describe('self monitor actions', () => {
         });
       });
 
-      it('dispatches status request with job data', done => {
+      it('dispatches status request with job data', (done) => {
         testAction(
           actions.requestCreateProject,
           null,
@@ -75,7 +75,7 @@ describe('self monitor actions', () => {
         );
       });
 
-      it('dispatches success with project path', done => {
+      it('dispatches success with project path', (done) => {
         testAction(
           actions.requestCreateProjectStatus,
           null,
@@ -98,7 +98,7 @@ describe('self monitor actions', () => {
         mock.onPost(state.createProjectEndpoint).reply(500);
       });
 
-      it('dispatches error', done => {
+      it('dispatches error', (done) => {
         testAction(
           actions.requestCreateProject,
           null,
@@ -121,7 +121,7 @@ describe('self monitor actions', () => {
     });
 
     describe('requestCreateProjectSuccess', () => {
-      it('should commit the received data', done => {
+      it('should commit the received data', (done) => {
         testAction(
           actions.requestCreateProjectSuccess,
           { project_full_path: '/self-monitor-url' },
@@ -165,7 +165,7 @@ describe('self monitor actions', () => {
         });
       });
 
-      it('dispatches status request with job data', done => {
+      it('dispatches status request with job data', (done) => {
         testAction(
           actions.requestDeleteProject,
           null,
@@ -186,7 +186,7 @@ describe('self monitor actions', () => {
         );
       });
 
-      it('dispatches success with status', done => {
+      it('dispatches success with status', (done) => {
         testAction(
           actions.requestDeleteProjectStatus,
           null,
@@ -209,7 +209,7 @@ describe('self monitor actions', () => {
         mock.onDelete(state.deleteProjectEndpoint).reply(500);
       });
 
-      it('dispatches error', done => {
+      it('dispatches error', (done) => {
         testAction(
           actions.requestDeleteProject,
           null,
@@ -232,7 +232,7 @@ describe('self monitor actions', () => {
     });
 
     describe('requestDeleteProjectSuccess', () => {
-      it('should commit mutations to remove previously set data', done => {
+      it('should commit mutations to remove previously set data', (done) => {
         testAction(
           actions.requestDeleteProjectSuccess,
           null,

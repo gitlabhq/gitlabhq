@@ -35,7 +35,7 @@ export default {
 
     select2Options() {
       return {
-        data: this.availableNamespaces.map(namespace => ({
+        data: this.availableNamespaces.map((namespace) => ({
           id: namespace.full_path,
           text: namespace.full_path,
         })),

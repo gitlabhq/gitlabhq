@@ -40,5 +40,5 @@ const searchableDropdowns = [
   },
 ];
 
-export const initTopbar = store =>
-  searchableDropdowns.map(dropdown => mountSearchableDropdown(store, dropdown));
+export const initTopbar = (store) =>
+  searchableDropdowns.map((dropdown) => mountSearchableDropdown(store, dropdown));

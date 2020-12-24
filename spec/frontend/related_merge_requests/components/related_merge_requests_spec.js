@@ -14,7 +14,7 @@ describe('RelatedMergeRequests', () => {
   let mock;
   let mockData;
 
-  beforeEach(done => {
+  beforeEach((done) => {
     loadFixtures(FIXTURE_PATH);
     mockData = getJSONFixture(FIXTURE_PATH);
 

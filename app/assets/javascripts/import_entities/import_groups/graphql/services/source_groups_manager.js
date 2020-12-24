@@ -37,7 +37,7 @@ export class SourceGroupsManager {
   }
 
   setImportStatus(group, status) {
-    this.update(group, sourceGroup => {
+    this.update(group, (sourceGroup) => {
       // eslint-disable-next-line no-param-reassign
       sourceGroup.status = status;
     });

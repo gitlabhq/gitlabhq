@@ -23,13 +23,13 @@ const handleStartupEvents = () => {
 /* For `waitForCSSLoaded` methods, see docs.gitlab.com/ee/development/fe_guide/performance.html#important-considerations */
 export const waitForCSSLoaded = (action = () => {}) => {
   if (!gon?.features?.startupCss || allLinksLoaded()) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       action();
       resolve();
     });
   }
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     document.addEventListener(CSS_LOADED_EVENT, resolve, { once: true });
     document.addEventListener(STARTUP_LINK_LOADED_EVENT, handleStartupEvents);
   }).then(action);

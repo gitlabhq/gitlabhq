@@ -1,1 +1,1 @@
-export const hasSearchQuery = state => state.searchQuery !== '';
+export const hasSearchQuery = (state) => state.searchQuery !== '';

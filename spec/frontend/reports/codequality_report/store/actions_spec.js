@@ -33,7 +33,7 @@ describe('Codequality Reports actions', () => {
   });
 
   describe('setPaths', () => {
-    it('should commit SET_PATHS mutation', done => {
+    it('should commit SET_PATHS mutation', (done) => {
       const paths = {
         basePath: 'basePath',
         headPath: 'headPath',
@@ -67,7 +67,7 @@ describe('Codequality Reports actions', () => {
     });
 
     describe('on success', () => {
-      it('commits REQUEST_REPORTS and dispatches receiveReportsSuccess', done => {
+      it('commits REQUEST_REPORTS and dispatches receiveReportsSuccess', (done) => {
         mock.onGet(`${TEST_HOST}/head.json`).reply(200, headIssues);
         mock.onGet(`${TEST_HOST}/base.json`).reply(200, baseIssues);
 
@@ -91,7 +91,7 @@ describe('Codequality Reports actions', () => {
     });
 
     describe('on error', () => {
-      it('commits REQUEST_REPORTS and dispatches receiveReportsError', done => {
+      it('commits REQUEST_REPORTS and dispatches receiveReportsError', (done) => {
         mock.onGet(`${TEST_HOST}/head.json`).reply(500);
 
         testAction(
@@ -106,7 +106,7 @@ describe('Codequality Reports actions', () => {
     });
 
     describe('with no base path', () => {
-      it('commits REQUEST_REPORTS and dispatches receiveReportsError', done => {
+      it('commits REQUEST_REPORTS and dispatches receiveReportsError', (done) => {
         localState.basePath = null;
 
         testAction(
@@ -122,7 +122,7 @@ describe('Codequality Reports actions', () => {
   });
 
   describe('receiveReportsSuccess', () => {
-    it('commits RECEIVE_REPORTS_SUCCESS', done => {
+    it('commits RECEIVE_REPORTS_SUCCESS', (done) => {
       const data = { issues: [] };
 
       testAction(
@@ -137,7 +137,7 @@ describe('Codequality Reports actions', () => {
   });
 
   describe('receiveReportsError', () => {
-    it('commits RECEIVE_REPORTS_ERROR', done => {
+    it('commits RECEIVE_REPORTS_ERROR', (done) => {
       testAction(
         actions.receiveReportsError,
         null,

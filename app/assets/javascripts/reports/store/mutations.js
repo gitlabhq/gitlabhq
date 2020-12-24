@@ -9,7 +9,7 @@ export default {
     state.isLoading = true;
   },
   [types.RECEIVE_REPORTS_SUCCESS](state, response) {
-    state.hasError = response.suites.some(suite => suite.status === 'error');
+    state.hasError = response.suites.some((suite) => suite.status === 'error');
 
     state.isLoading = false;
 
@@ -44,7 +44,7 @@ export default {
   [types.SET_ISSUE_MODAL_DATA](state, payload) {
     state.modal.title = payload.issue.name;
 
-    Object.keys(payload.issue).forEach(key => {
+    Object.keys(payload.issue).forEach((key) => {
       if (Object.prototype.hasOwnProperty.call(state.modal.data, key)) {
         state.modal.data[key] = {
           ...state.modal.data[key],

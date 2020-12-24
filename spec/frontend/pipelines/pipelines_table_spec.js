@@ -24,7 +24,7 @@ describe('Pipelines Table', () => {
 
   beforeEach(() => {
     const { pipelines } = getJSONFixture(jsonFixtureName);
-    pipeline = pipelines.find(p => p.user !== null && p.commit !== null);
+    pipeline = pipelines.find((p) => p.user !== null && p.commit !== null);
 
     createComponent();
   });

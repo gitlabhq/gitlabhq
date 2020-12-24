@@ -20,7 +20,7 @@ export default class Profile {
     this.timezoneDropdown = new TimezoneDropdown({
       $inputEl: this.$inputEl,
       $dropdownEl: $('.js-timezone-dropdown'),
-      displayFormat: selectedItem => formatTimezone(selectedItem),
+      displayFormat: (selectedItem) => formatTimezone(selectedItem),
     });
   }
 
@@ -39,7 +39,7 @@ export default class Profile {
   bindEvents() {
     $('.js-preferences-form').on('change.preference', 'input[type=radio]', this.submitForm);
     $('.js-group-notification-email').on('change', this.submitForm);
-    $('#user_notification_email').on('select2-selecting', event => {
+    $('#user_notification_email').on('select2-selecting', (event) => {
       setTimeout(this.submitForm.bind(event.currentTarget));
     });
     $('#user_notified_of_own_activity').on('change', this.submitForm);
@@ -89,7 +89,7 @@ export default class Profile {
         // Enable submit button after requests ends
         self.form.find(':input[disabled]').enable();
       })
-      .catch(error => flash(error.message));
+      .catch((error) => flash(error.message));
   }
 
   updateHeaderAvatar() {

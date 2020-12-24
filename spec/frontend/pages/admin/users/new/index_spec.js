@@ -20,7 +20,7 @@ describe('UserInternalRegexHandler', () => {
   });
 
   describe('Behaviour of userExternal checkbox when', () => {
-    it('matches email as internal', done => {
+    it('matches email as internal', (done) => {
       expect($warningMessage.hasClass('hidden')).toBeTruthy();
 
       $userEmail.val('test@').trigger('input');
@@ -30,7 +30,7 @@ describe('UserInternalRegexHandler', () => {
       done();
     });
 
-    it('matches email as external', done => {
+    it('matches email as external', (done) => {
       expect($warningMessage.hasClass('hidden')).toBeTruthy();
 
       $userEmail.val('test.ext@').trigger('input');

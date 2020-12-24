@@ -94,7 +94,7 @@ describe('The DAG graph', () => {
   });
 
   describe('interactions', () => {
-    const strokeOpacity = opacity => `stroke-opacity: ${opacity};`;
+    const strokeOpacity = (opacity) => `stroke-opacity: ${opacity};`;
     const baseOpacity = () => wrapper.vm.$options.viewOptions.baseOpacity;
 
     describe('links', () => {
@@ -164,10 +164,10 @@ describe('The DAG graph', () => {
     describe('nodes', () => {
       const liveNode = () => getAllNodes().at(10);
       const anotherLiveNode = () => getAllNodes().at(5);
-      const nodesNotHighlighted = () => getAllNodes().filter(n => !n.classes(IS_HIGHLIGHTED));
-      const linksNotHighlighted = () => getAllLinks().filter(n => !n.classes(IS_HIGHLIGHTED));
-      const nodesHighlighted = () => getAllNodes().filter(n => n.classes(IS_HIGHLIGHTED));
-      const linksHighlighted = () => getAllLinks().filter(n => n.classes(IS_HIGHLIGHTED));
+      const nodesNotHighlighted = () => getAllNodes().filter((n) => !n.classes(IS_HIGHLIGHTED));
+      const linksNotHighlighted = () => getAllLinks().filter((n) => !n.classes(IS_HIGHLIGHTED));
+      const nodesHighlighted = () => getAllNodes().filter((n) => n.classes(IS_HIGHLIGHTED));
+      const linksHighlighted = () => getAllLinks().filter((n) => n.classes(IS_HIGHLIGHTED));
 
       describe('on click', () => {
         it('highlights the clicked node and predecessors', () => {
@@ -176,19 +176,19 @@ describe('The DAG graph', () => {
           expect(nodesNotHighlighted().length < getAllNodes().length).toBe(true);
           expect(linksNotHighlighted().length < getAllLinks().length).toBe(true);
 
-          linksHighlighted().wrappers.forEach(link => {
+          linksHighlighted().wrappers.forEach((link) => {
             expect(link.attributes('style')).toBe(strokeOpacity(highlightIn));
           });
 
-          nodesHighlighted().wrappers.forEach(node => {
+          nodesHighlighted().wrappers.forEach((node) => {
             expect(node.attributes('stroke')).not.toBe('#f2f2f2');
           });
 
-          linksNotHighlighted().wrappers.forEach(link => {
+          linksNotHighlighted().wrappers.forEach((link) => {
             expect(link.attributes('style')).toBe(strokeOpacity(highlightOut));
           });
 
-          nodesNotHighlighted().wrappers.forEach(node => {
+          nodesNotHighlighted().wrappers.forEach((node) => {
             expect(node.attributes('stroke')).toBe('#f2f2f2');
           });
         });

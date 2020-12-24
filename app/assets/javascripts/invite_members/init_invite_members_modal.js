@@ -13,7 +13,7 @@ export default function initInviteMembersModal() {
 
   return new Vue({
     el,
-    render: createElement =>
+    render: (createElement) =>
       createElement(InviteMembersModal, {
         props: {
           ...el.dataset,

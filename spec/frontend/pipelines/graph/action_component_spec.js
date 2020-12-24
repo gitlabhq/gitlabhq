@@ -33,7 +33,7 @@ describe('pipeline graph action component', () => {
     expect(wrapper.attributes('title')).toBe('bar');
   });
 
-  it('should update bootstrap tooltip when title changes', done => {
+  it('should update bootstrap tooltip when title changes', (done) => {
     wrapper.setProps({ tooltipText: 'changed' });
 
     wrapper.vm
@@ -51,7 +51,7 @@ describe('pipeline graph action component', () => {
   });
 
   describe('on click', () => {
-    it('emits `pipelineActionRequestComplete` after a successful request', done => {
+    it('emits `pipelineActionRequestComplete` after a successful request', (done) => {
       jest.spyOn(wrapper.vm, '$emit');
 
       findButton().trigger('click');
@@ -64,7 +64,7 @@ describe('pipeline graph action component', () => {
         .catch(done.fail);
     });
 
-    it('renders a loading icon while waiting for request', done => {
+    it('renders a loading icon while waiting for request', (done) => {
       findButton().trigger('click');
 
       wrapper.vm.$nextTick(() => {

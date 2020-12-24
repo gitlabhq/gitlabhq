@@ -12,7 +12,7 @@ export default class AddSshKeyValidation {
   }
 
   register() {
-    this.form.addEventListener('submit', event => this.submit(event));
+    this.form.addEventListener('submit', (event) => this.submit(event));
 
     this.confirmSubmitElement.addEventListener('click', () => {
       this.isValid = true;

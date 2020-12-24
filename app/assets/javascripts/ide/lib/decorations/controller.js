@@ -11,7 +11,7 @@ export default class DecorationsController {
     const modelDecorations = this.decorations.get(model.url);
     const decorations = [];
 
-    modelDecorations.forEach(val => decorations.push(...val));
+    modelDecorations.forEach((val) => decorations.push(...val));
 
     return decorations;
   }

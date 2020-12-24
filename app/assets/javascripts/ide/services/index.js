@@ -4,9 +4,9 @@ import Api from '~/api';
 import getUserPermissions from '../queries/getUserPermissions.query.graphql';
 import { query } from './gql';
 
-const fetchApiProjectData = projectPath => Api.project(projectPath).then(({ data }) => data);
+const fetchApiProjectData = (projectPath) => Api.project(projectPath).then(({ data }) => data);
 
-const fetchGqlProjectData = projectPath =>
+const fetchGqlProjectData = (projectPath) =>
   query({
     query: getUserPermissions,
     variables: { projectPath },
@@ -31,7 +31,7 @@ export default {
 
     return axios
       .get(file.rawPath, {
-        transformResponse: [f => f],
+        transformResponse: [(f) => f],
         ...options,
       })
       .then(({ data }) => data);
@@ -54,7 +54,7 @@ export default {
           escapeFileUrl(filePath),
         ),
         {
-          transformResponse: [f => f],
+          transformResponse: [(f) => f],
         },
       )
       .then(({ data }) => data);

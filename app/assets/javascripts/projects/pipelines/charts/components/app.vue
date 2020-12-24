@@ -252,7 +252,7 @@ export default {
   },
   get chartTitles() {
     const today = dateFormat(new Date(), CHART_DATE_FORMAT);
-    const pastDate = timeScale =>
+    const pastDate = (timeScale) =>
       dateFormat(getDateInPast(new Date(), timeScale), CHART_DATE_FORMAT);
     return {
       lastWeek: sprintf(__('Pipelines for last week (%{oneWeekAgo} - %{today})'), {

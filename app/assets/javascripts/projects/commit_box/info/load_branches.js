@@ -2,7 +2,7 @@ import axios from 'axios';
 import { sanitize } from '~/lib/dompurify';
 import { __ } from '~/locale';
 
-export const loadBranches = containerEl => {
+export const loadBranches = (containerEl) => {
   if (!containerEl) {
     return;
   }

@@ -39,7 +39,7 @@ const EmptyRouterComponent = {
   },
 };
 
-export const createRouter = store => {
+export const createRouter = (store) => {
   const router = new IdeRouter({
     mode: 'history',
     base: joinPaths(gon.relative_url_root || '', '/-/ide/'),
@@ -54,11 +54,11 @@ export const createRouter = store => {
           },
           {
             path: ':targetmode(edit|tree|blob)/:branchid+/',
-            redirect: to => joinPaths(to.path, '/-/'),
+            redirect: (to) => joinPaths(to.path, '/-/'),
           },
           {
             path: ':targetmode(edit|tree|blob)',
-            redirect: to => joinPaths(to.path, '/master/-/'),
+            redirect: (to) => joinPaths(to.path, '/master/-/'),
           },
           {
             path: 'merge_requests/:mrid',
@@ -66,7 +66,7 @@ export const createRouter = store => {
           },
           {
             path: '',
-            redirect: to => joinPaths(to.path, '/edit/master/-/'),
+            redirect: (to) => joinPaths(to.path, '/edit/master/-/'),
           },
         ],
       },
@@ -110,7 +110,7 @@ export const createRouter = store => {
             });
           }
         })
-        .catch(e => {
+        .catch((e) => {
           flash(
             __('Error while loading the project data. Please try again.'),
             'alert',

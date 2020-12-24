@@ -68,7 +68,7 @@ export default class LinkedTabs {
     // since this is a custom event we need jQuery :(
     $(document)
       .off('shown.bs.tab', tabSelector)
-      .on('shown.bs.tab', tabSelector, e => this.tabShown(e));
+      .on('shown.bs.tab', tabSelector, (e) => this.tabShown(e));
 
     this.activateTab(this.action);
   }

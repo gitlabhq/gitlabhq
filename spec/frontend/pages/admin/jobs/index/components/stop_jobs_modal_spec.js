@@ -26,9 +26,9 @@ describe('stop_jobs_modal.vue', () => {
   });
 
   describe('onSubmit', () => {
-    it('stops jobs and redirects to overview page', done => {
+    it('stops jobs and redirects to overview page', (done) => {
       const responseURL = `${TEST_HOST}/stop_jobs_modal.vue/jobs`;
-      jest.spyOn(axios, 'post').mockImplementation(url => {
+      jest.spyOn(axios, 'post').mockImplementation((url) => {
         expect(url).toBe(props.url);
         return Promise.resolve({
           request: {
@@ -45,16 +45,16 @@ describe('stop_jobs_modal.vue', () => {
         .catch(done.fail);
     });
 
-    it('displays error if stopping jobs failed', done => {
+    it('displays error if stopping jobs failed', (done) => {
       const dummyError = new Error('stopping jobs failed');
-      jest.spyOn(axios, 'post').mockImplementation(url => {
+      jest.spyOn(axios, 'post').mockImplementation((url) => {
         expect(url).toBe(props.url);
         return Promise.reject(dummyError);
       });
 
       vm.onSubmit()
         .then(done.fail)
-        .catch(error => {
+        .catch((error) => {
           expect(error).toBe(dummyError);
           expect(redirectTo).not.toHaveBeenCalled();
         })

@@ -8,7 +8,7 @@ import { tagsMock } from '../../mock_data';
 describe('Tags List', () => {
   let wrapper;
   const tags = [...tagsMock];
-  const readOnlyTags = tags.map(t => ({ ...t, canDelete: false }));
+  const readOnlyTags = tags.map((t) => ({ ...t, canDelete: false }));
 
   const findTagsListRow = () => wrapper.findAll(TagsListRow);
   const findDeleteButton = () => wrapper.find(GlButton);

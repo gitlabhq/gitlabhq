@@ -7,7 +7,7 @@ import axios from '~/lib/utils/axios_utils';
 
 jest.mock('~/lib/dompurify', () => ({
   addHook: jest.fn(),
-  sanitize: jest.fn(val => val),
+  sanitize: jest.fn((val) => val),
 }));
 
 const BLOB_URL_TEMPLATE = `${TEST_HOST}/namespace/project/blob/master`;
@@ -39,7 +39,7 @@ describe('ProjectFindFile', () => {
     element
       .find('.tree-table tr')
       .toArray()
-      .map(el => ({
+      .map((el) => ({
         text: el.textContent,
         href: el.querySelector('a').href,
       }));
@@ -53,14 +53,14 @@ describe('ProjectFindFile', () => {
     { path: 'folde?rC/fil#F.txt', escaped: 'folde%3FrC/fil%23F.txt' },
   ];
 
-  beforeEach(done => {
+  beforeEach((done) => {
     // Create a mock adapter for stubbing axios API requests
     mock = new MockAdapter(axios);
 
     element = $(TEMPLATE);
     mock.onGet(FILE_FIND_URL).replyOnce(
       200,
-      files.map(x => x.path),
+      files.map((x) => x.path),
     );
     getProjectFindFileInstance(); // This triggers a load / axios call + subsequent render in the constructor
 

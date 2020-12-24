@@ -20,7 +20,7 @@ const SELECTORS = {
   PIPELINE_TESTS: '#js-pipeline-tests-detail',
 };
 
-const createLegacyPipelinesDetailApp = mediator => {
+const createLegacyPipelinesDetailApp = (mediator) => {
   if (!document.querySelector(SELECTORS.PIPELINE_GRAPH)) {
     return;
   }
@@ -47,15 +47,15 @@ const createLegacyPipelinesDetailApp = mediator => {
           refreshPipelineGraph: this.requestRefreshPipelineGraph,
           onResetDownstream: (parentPipeline, pipeline) =>
             this.resetDownstreamPipelines(parentPipeline, pipeline),
-          onClickUpstreamPipeline: pipeline => this.clickUpstreamPipeline(pipeline),
-          onClickDownstreamPipeline: pipeline => this.clickDownstreamPipeline(pipeline),
+          onClickUpstreamPipeline: (pipeline) => this.clickUpstreamPipeline(pipeline),
+          onClickDownstreamPipeline: (pipeline) => this.clickDownstreamPipeline(pipeline),
         },
       });
     },
   });
 };
 
-const createLegacyPipelineHeaderApp = mediator => {
+const createLegacyPipelineHeaderApp = (mediator) => {
   if (!document.querySelector(SELECTORS.PIPELINE_HEADER)) {
     return;
   }

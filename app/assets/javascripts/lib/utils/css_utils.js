@@ -1,5 +1,5 @@
 export function loadCSSFile(path) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     if (!path) resolve();
 
     if (document.querySelector(`link[href="${path}"]`)) {

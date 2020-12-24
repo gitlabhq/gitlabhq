@@ -23,7 +23,7 @@ export default class IntegrationSettingsForm {
       document.querySelector('.js-vue-integration-settings'),
       document.querySelector('.js-vue-default-integration-settings'),
     );
-    eventHub.$on('toggle', active => {
+    eventHub.$on('toggle', (active) => {
       this.formActive = active;
       this.toggleServiceState();
     });

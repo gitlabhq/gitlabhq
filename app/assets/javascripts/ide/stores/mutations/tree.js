@@ -45,7 +45,7 @@ export default {
       ? state.entries[entry.parentPath]
       : state.trees[`${state.currentProjectId}/${state.currentBranchId}`];
 
-    if (!parent.tree.find(f => f.path === path)) {
+    if (!parent.tree.find((f) => f.path === path)) {
       parent.tree = sortTree(parent.tree.concat(entry));
     }
   },

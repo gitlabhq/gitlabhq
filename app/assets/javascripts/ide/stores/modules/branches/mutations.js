@@ -9,7 +9,7 @@ export default {
   },
   [types.RECEIVE_BRANCHES_SUCCESS](state, data) {
     state.isLoading = false;
-    state.branches = data.map(branch => ({
+    state.branches = data.map((branch) => ({
       name: branch.name,
       committedDate: branch.commit.committed_date,
     }));

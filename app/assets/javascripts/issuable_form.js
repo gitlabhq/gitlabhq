@@ -89,9 +89,9 @@ export default class IssuableForm {
         theme: 'gitlab-theme animate-picker',
         format: 'yyyy-mm-dd',
         container: $issuableDueDate.parent().get(0),
-        parse: dateString => parsePikadayDate(dateString),
-        toString: date => pikadayToString(date),
-        onSelect: dateText => $issuableDueDate.val(calendar.toString(dateText)),
+        parse: (dateString) => parsePikadayDate(dateString),
+        toString: (date) => pikadayToString(date),
+        onSelect: (dateText) => $issuableDueDate.val(calendar.toString(dateText)),
         firstDay: gon.first_day_of_week,
       });
       calendar.setDate(parsePikadayDate($issuableDueDate.val()));
@@ -202,7 +202,7 @@ export default class IssuableForm {
                 results(data) {
                   return {
                     // `data` keys are translated so we can't just access them with a string based key
-                    results: data[Object.keys(data)[0]].map(name => ({
+                    results: data[Object.keys(data)[0]].map((name) => ({
                       id: name,
                       text: name,
                     })),

@@ -13,7 +13,7 @@ export default function initSentryErrorStacktrace() {
         SentryErrorStackTrace,
       },
       store,
-      render: createElement =>
+      render: (createElement) =>
         createElement('sentry-error-stack-trace', {
           props: { issueStackTracePath },
         }),

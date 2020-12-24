@@ -78,11 +78,11 @@ export default {
       return (
         this.pipeline.triggered_by &&
         Array.isArray(this.pipeline.triggered_by) &&
-        this.pipeline.triggered_by.find(el => el.isExpanded)
+        this.pipeline.triggered_by.find((el) => el.isExpanded)
       );
     },
     expandedDownstream() {
-      return this.pipeline.triggered && this.pipeline.triggered.find(el => el.isExpanded);
+      return this.pipeline.triggered && this.pipeline.triggered.find((el) => el.isExpanded);
     },
     pipelineTypeUpstream() {
       return this.type !== this.$options.downstream && this.expandedUpstream;

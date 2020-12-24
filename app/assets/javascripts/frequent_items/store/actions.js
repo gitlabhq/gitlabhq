@@ -59,7 +59,7 @@ export const fetchSearchedItems = ({ state, dispatch }, searchQuery) => {
   }
 
   return Api[state.namespace](searchQuery, params)
-    .then(results => {
+    .then((results) => {
       dispatch('receiveSearchedItemsSuccess', results);
     })
     .catch(() => {

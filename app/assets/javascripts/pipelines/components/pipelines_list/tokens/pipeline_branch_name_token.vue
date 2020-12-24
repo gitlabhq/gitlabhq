@@ -34,10 +34,10 @@ export default {
     fetchBranches(searchterm) {
       Api.branches(this.config.projectId, searchterm)
         .then(({ data }) => {
-          this.branches = data.map(branch => branch.name);
+          this.branches = data.map((branch) => branch.name);
           this.loading = false;
         })
-        .catch(err => {
+        .catch((err) => {
           createFlash(FETCH_BRANCH_ERROR_MESSAGE);
           this.loading = false;
           throw err;

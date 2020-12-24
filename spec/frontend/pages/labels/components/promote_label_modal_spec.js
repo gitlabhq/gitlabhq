@@ -50,9 +50,9 @@ describe('Promote label modal', () => {
       vm.$destroy();
     });
 
-    it('redirects when a label is promoted', done => {
+    it('redirects when a label is promoted', (done) => {
       const responseURL = `${TEST_HOST}/dummy/endpoint`;
-      jest.spyOn(axios, 'post').mockImplementation(url => {
+      jest.spyOn(axios, 'post').mockImplementation((url) => {
         expect(url).toBe(labelMockData.url);
         expect(eventHub.$emit).toHaveBeenCalledWith(
           'promoteLabelModal.requestStarted',
@@ -76,10 +76,10 @@ describe('Promote label modal', () => {
         .catch(done.fail);
     });
 
-    it('displays an error if promoting a label failed', done => {
+    it('displays an error if promoting a label failed', (done) => {
       const dummyError = new Error('promoting label failed');
       dummyError.response = { status: 500 };
-      jest.spyOn(axios, 'post').mockImplementation(url => {
+      jest.spyOn(axios, 'post').mockImplementation((url) => {
         expect(url).toBe(labelMockData.url);
         expect(eventHub.$emit).toHaveBeenCalledWith(
           'promoteLabelModal.requestStarted',
@@ -89,7 +89,7 @@ describe('Promote label modal', () => {
       });
 
       vm.onSubmit()
-        .catch(error => {
+        .catch((error) => {
           expect(error).toBe(dummyError);
           expect(eventHub.$emit).toHaveBeenCalledWith('promoteLabelModal.requestFinished', {
             labelUrl: labelMockData.url,

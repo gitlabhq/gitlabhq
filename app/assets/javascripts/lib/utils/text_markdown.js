@@ -220,7 +220,7 @@ export function insertMarkdownText({
         : blockTagText(text, textArea, blockTag, selected);
     } else {
       textToInsert = selectedSplit
-        .map(val => {
+        .map((val) => {
           if (tag.indexOf(textPlaceholder) > -1) {
             return tag.replace(textPlaceholder, val);
           }
@@ -349,7 +349,7 @@ export function addEditorMarkdownListeners(editor) {
   // eslint-disable-next-line @gitlab/no-global-event-off
   $('.js-md')
     .off('click')
-    .on('click', e => {
+    .on('click', (e) => {
       const { mdTag, mdBlock, mdPrepend, mdSelect } = $(e.currentTarget).data();
 
       insertMarkdownText({

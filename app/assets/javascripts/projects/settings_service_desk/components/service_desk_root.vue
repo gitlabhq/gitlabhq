@@ -110,7 +110,7 @@ export default {
           this.updatedCustomEmail = data?.service_desk_address;
           this.showAlert(__('Changes were successfully made.'), 'success');
         })
-        .catch(err => {
+        .catch((err) => {
           this.showAlert(
             sprintf(__('An error occured while making the changes: %{error}'), {
               error: err?.response?.data?.message,

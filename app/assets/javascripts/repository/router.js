@@ -10,7 +10,7 @@ Vue.use(VueRouter);
 export default function createRouter(base, baseRef) {
   const treePathRoute = {
     component: TreePage,
-    props: route => ({
+    props: (route) => ({
       path: route.params.path?.replace(/^\//, '') || '/',
     }),
   };

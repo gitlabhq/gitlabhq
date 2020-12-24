@@ -23,7 +23,7 @@ describe('pipeline graph component', () => {
   const findAlert = () => wrapper.find(GlAlert);
   const findAllStagePills = () => wrapper.findAll(StagePill);
   const findAllStageBackgroundElements = () => wrapper.findAll('[data-testid="stage-background"]');
-  const findStageBackgroundElementAt = index => findAllStageBackgroundElements().at(index);
+  const findStageBackgroundElementAt = (index) => findAllStageBackgroundElements().at(index);
   const findAllJobPills = () => wrapper.findAll(JobPill);
 
   afterEach(() => {

@@ -40,7 +40,7 @@ export default {
   },
   data() {
     return {
-      selected: dropdownOptions.find(x => x.value === this.override),
+      selected: dropdownOptions.find((x) => x.value === this.override),
     };
   },
   computed: {

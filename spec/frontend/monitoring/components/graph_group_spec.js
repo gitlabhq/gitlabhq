@@ -11,7 +11,7 @@ describe('Graph group component', () => {
   const findCaretIcon = () => wrapper.find(GlIcon);
   const findToggleButton = () => wrapper.find('[data-testid="group-toggle-button"]');
 
-  const createComponent = propsData => {
+  const createComponent = (propsData) => {
     wrapper = shallowMount(GraphGroup, {
       propsData,
     });

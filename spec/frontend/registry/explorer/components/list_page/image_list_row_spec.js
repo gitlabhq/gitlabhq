@@ -28,7 +28,7 @@ describe('Image List Row', () => {
   const findClipboardButton = () => wrapper.find(ClipboardButton);
   const findWarningIcon = () => wrapper.find('[data-testid="warning-icon"]');
 
-  const mountComponent = props => {
+  const mountComponent = (props) => {
     wrapper = shallowMount(Component, {
       stubs: {
         RouterLink,

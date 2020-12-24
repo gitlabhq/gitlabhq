@@ -11,8 +11,8 @@ export const getProjectData = ({ commit, state }, { namespace, projectId, force 
       commit(types.TOGGLE_LOADING, { entry: state });
       service
         .getProjectData(namespace, projectId)
-        .then(res => res.data)
-        .then(data => {
+        .then((res) => res.data)
+        .then((data) => {
           commit(types.TOGGLE_LOADING, { entry: state });
           commit(types.SET_PROJECT, { projectPath: `${namespace}/${projectId}`, project: data });
           commit(types.SET_CURRENT_PROJECT, `${namespace}/${projectId}`);
@@ -61,7 +61,7 @@ export const createNewBranchFromDefault = ({ state, dispatch, getters }, branch)
     .catch(() => {
       dispatch('setErrorMessage', {
         text: __('An error occurred creating the new branch.'),
-        action: payload => dispatch('createNewBranchFromDefault', payload),
+        action: (payload) => dispatch('createNewBranchFromDefault', payload),
         actionText: __('Please try again'),
         actionPayload: branch,
       });
@@ -76,7 +76,7 @@ export const showBranchNotFoundError = ({ dispatch }, branchId) => {
       },
       false,
     ),
-    action: payload => dispatch('createNewBranchFromDefault', payload),
+    action: (payload) => dispatch('createNewBranchFromDefault', payload),
     actionText: __('Create branch'),
     actionPayload: branchId,
   });
@@ -102,7 +102,7 @@ export const loadFile = ({ dispatch, state }, { basePath }) => {
   if (basePath) {
     const path = basePath.slice(-1) === '/' ? basePath.slice(0, -1) : basePath;
     const treeEntryKey = Object.keys(state.entries).find(
-      key => key === path && !state.entries[key].pending,
+      (key) => key === path && !state.entries[key].pending,
     );
     const treeEntry = state.entries[treeEntryKey];
 
@@ -144,7 +144,7 @@ export const loadBranch = ({ dispatch, getters, state }, { projectId, branchId }
         ref: branch.commit.id,
       });
     })
-    .catch(err => {
+    .catch((err) => {
       dispatch('showBranchNotFoundError', branchId);
       throw err;
     });

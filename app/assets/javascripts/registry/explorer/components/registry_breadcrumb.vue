@@ -14,10 +14,10 @@ export default {
   },
   computed: {
     parsedCrumbs() {
-      return this.crumbs.map(c => ({ ...c, innerHTML: sanitize(c.innerHTML) }));
+      return this.crumbs.map((c) => ({ ...c, innerHTML: sanitize(c.innerHTML) }));
     },
     rootRoute() {
-      return this.$router.options.routes.find(r => r.meta.root);
+      return this.$router.options.routes.find((r) => r.meta.root);
     },
     isRootRoute() {
       return this.$route.name === this.rootRoute.name;

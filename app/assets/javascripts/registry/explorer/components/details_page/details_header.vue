@@ -7,6 +7,7 @@ import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { DETAILS_PAGE_TITLE, UPDATED_AT } from '../../constants/index';
 
 export default {
+  name: 'DetailsHeader',
   components: { GlSprintf, TitleArea, MetadataItem },
   mixins: [timeagoMixin],
   props: {

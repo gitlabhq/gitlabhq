@@ -27,7 +27,7 @@ const initJiraFormHandlers = () => {
     alert(error);
   };
 
-  AP.getLocation(location => {
+  AP.getLocation((location) => {
     $('.js-jira-connect-sign-in').each(function updateSignInLink() {
       const updatedLink = `${$(this).attr('href')}?return_to=${location}`;
       $(this).attr('href', updatedLink);
@@ -38,7 +38,7 @@ const initJiraFormHandlers = () => {
     const actionUrl = $(this).attr('action');
     e.preventDefault();
 
-    AP.context.getToken(token => {
+    AP.context.getToken((token) => {
       // eslint-disable-next-line no-jquery/no-ajax
       $.post(actionUrl, {
         jwt: token,
@@ -46,7 +46,7 @@ const initJiraFormHandlers = () => {
         format: 'json',
       })
         .done(reqComplete)
-        .fail(err => reqFailed(err, 'Failed to add namespace. Please try again.'));
+        .fail((err) => reqFailed(err, 'Failed to add namespace. Please try again.'));
     });
   });
 
@@ -54,7 +54,7 @@ const initJiraFormHandlers = () => {
     const href = $(this).attr('href');
     e.preventDefault();
 
-    AP.context.getToken(token => {
+    AP.context.getToken((token) => {
       // eslint-disable-next-line no-jquery/no-ajax
       $.ajax({
         url: href,
@@ -65,7 +65,7 @@ const initJiraFormHandlers = () => {
         },
       })
         .done(reqComplete)
-        .fail(err => reqFailed(err, 'Failed to remove namespace. Please try again.'));
+        .fail((err) => reqFailed(err, 'Failed to remove namespace. Please try again.'));
     });
   });
 };

@@ -22,7 +22,7 @@ You can also view a list of [recent updates to this guide](https://gitlab.com/da
 If you can't find what you need:
 
 - View the GitLab Handbook for [writing style guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines) that apply to all GitLab content.
-- Refer to one of the following:
+- Refer to:
 
   - [Microsoft Style Guide](https://docs.microsoft.com/en-us/style-guide/welcome/).
   - [Google Developer Documentation Style Guide](https://developers.google.com/style).
@@ -161,7 +161,7 @@ Markdown rendering engine. For a complete Kramdown reference, see the
 The [`gitlab-kramdown`](https://gitlab.com/gitlab-org/gitlab_kramdown) Ruby gem
 plans to support all [GitLab Flavored Markdown](../../../user/markdown.md) in the future, which is
 all Markdown supported for display in the GitLab application itself. For now, use
-regular Markdown, following the rules in the linked style guide.
+regular Markdown and follow the rules in the linked style guide.
 
 Kramdown-specific markup (for example, `{:.class}`) doesn't render
 properly on GitLab instances under [`/help`](../index.md#gitlab-help).
@@ -252,7 +252,7 @@ Put files for a specific product area into the related folder:
 
 ### Work with directories and files
 
-Refer to the following items when working with directories and files:
+When working with directories and files:
 
 1. When you create a new directory, always start with an `index.md` file.
    Don't use another filename and _do not_ create `README.md` files.
@@ -412,7 +412,7 @@ references to user interface elements. For example:
 ### Inclusive language
 
 We strive to create documentation that's inclusive. This section includes
-guidance and examples for the following categories:
+guidance and examples for these categories:
 
 - [Gender-specific wording](#avoid-gender-specific-wording).
   (Tested in [`InclusionGender.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionGender.yml).)
@@ -481,7 +481,7 @@ more precise and functional, such as `primary` and `secondary`.
 
 <!-- vale gitlab.InclusionCultural = YES -->
 
-For more information see the following [Internet Draft specification](https://tools.ietf.org/html/draft-knodel-terminology-02).
+For more information see the [Internet Draft specification](https://tools.ietf.org/html/draft-knodel-terminology-02).
 
 ### Fake user information
 
@@ -507,7 +507,7 @@ There may be times where a token is needed to demonstrate an API call using
 cURL or a variable used in CI. It is strongly advised not to use real tokens in
 documentation even if the probability of a token being exploited is low.
 
-You can use the following fake tokens as examples:
+You can use these fake tokens as examples:
 
 | Token type            | Token value                                                        |
 |:----------------------|:-------------------------------------------------------------------|
@@ -526,10 +526,12 @@ You can use the following fake tokens as examples:
 ### Usage list
 <!-- vale off -->
 
-| Usage | Guidance |
-|-----------------------|-----|
+| Usage                 | Guidance |
+|-----------------------|----------|
+| above                 | Try to avoid extra words when referring to an example or table in a documentation page, but if required, use **previously** instead. |
 | admin, admin area     | Use **administration**, **administrator**, **administer**, or **Admin Area** instead. |
 | and/or                | Use **or** instead, or another sensible construction. |
+| below                 | Try to avoid extra words when referring to an example or table in a documentation page, but if required, use **following** instead. |
 | currently             | Do not use when talking about the product or its features. The documentation describes the product as it is today. |
 | easily                | Do not use. If the user doesn't find the process to be these things, we lose their trust. |
 | e.g.                  | Do not use Latin abbreviations. Use **for example**, **such as**, **for instance**, or **like** instead. ([Vale](../testing.md#vale) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml)) |
@@ -865,7 +867,7 @@ Consider installing a plugin or extension in your editor for formatting tables:
 
 When creating tables of lists of features (such the features
 available to each role on the [Permissions](../../../user/permissions.md#project-members-permissions)
-page), use the following phrases:
+page), use these phrases:
 
 | Option | Markdown                 | Displayed result       |
 |--------|--------------------------|------------------------|
@@ -967,7 +969,7 @@ Links are important in GitLab documentation. They allow you to [link instead of
 summarizing](#link-instead-of-summarize) to help preserve a [single source of truth](#why-a-single-source-of-truth)
 in GitLab documentation.
 
-We include guidance for links in the following categories:
+We include guidance for links in these categories:
 
 - How to set up [anchor links](#anchor-links) for headings.
 - How to set up [criteria](#basic-link-criteria) for configuring a link.
@@ -1144,7 +1146,7 @@ When documenting navigation through the user interface:
 
 ### Navigational elements
 
-Use the following terms when referring to the main GitLab user interface
+Use these terms when referring to the main GitLab user interface
 elements:
 
 - **Top menu**: This is the top menu that spans the width of the user interface.
@@ -1183,7 +1185,7 @@ When you take screenshots:
 
 - Save the image with a lowercase filename that's descriptive of the feature
   or concept in the image. If the image is of the GitLab interface, append the
-  GitLab version to the filename, based on the following format:
+  GitLab version to the filename, based on this format:
   `image_name_vX_Y.png`. For example, for a screenshot taken from the pipelines
   page of GitLab 11.1, a valid name is `pipelines_v11_1.png`. If you're adding an
   illustration that doesn't include parts of the user interface, add the release
@@ -1365,7 +1367,7 @@ hidden on the documentation site, but is displayed by `/help`.
   <!-- vale on -->
 
 Syntax highlighting is required for fenced code blocks added to the GitLab
-documentation. Refer to the following table for the most common language classes,
+documentation. Refer to this table for the most common language classes,
 or check the [complete list](https://github.com/rouge-ruby/rouge/wiki/List-of-supported-languages-and-lexers)
 of available language classes:
 
@@ -1433,7 +1435,7 @@ Usage examples:
 Icons should be used sparingly, and only in ways that aid and do not hinder the
 readability of the text.
 
-For example, the following adds little to the accompanying text:
+For example, this Markdown adds little to the accompanying text:
 
 ```markdown
 1. Go to **{home}** **Project overview > Details**.
@@ -1441,7 +1443,7 @@ For example, the following adds little to the accompanying text:
 
 1. Go to **{home}** **Project overview > Details**.
 
-However, the following might help the reader connect the text to the user
+However, these tables might help the reader connect the text to the user
 interface:
 
 ```markdown
@@ -1555,14 +1557,12 @@ It renders on the GitLab documentation site as:
 
 ## Terms
 
-To maintain consistency through GitLab documentation, the following guides
-documentation authors on agreed styles and usage of terms.
+To maintain consistency through GitLab documentation, use these styles and terms.
 
 ### Merge requests (MRs)
 
 Merge requests allow you to exchange changes you made to source code and
-collaborate with other people on the same project. This term is used in
-the following ways:
+collaborate with other people on the same project.
 
 - Use lowercase _merge requests_ regardless of whether referring to the feature
   or individual merge requests.
@@ -1580,7 +1580,7 @@ Examples:
 
 ### Describe UI elements
 
-The following are styles to follow when describing user interface elements in an
+Follow these styles when you're describing user interface elements in an
 application:
 
 - For elements with a visible label, use that label in bold with matching case.
@@ -1590,7 +1590,7 @@ application:
 
 ### Verbs for UI elements
 
-The following are recommended verbs for specific uses with user interface
+Use these verbs for specific uses with user interface
 elements:
 
 | Recommended         | Used for                              | Replaces                   |
@@ -1637,7 +1637,7 @@ displayed for the page or feature.
 
 #### Version text in the **Version History**
 
-If all content in a section is related, add version text following the header
+If all content in a section is related, add version text after the header
 for the section. The version information must be surrounded by blank lines, and
 each entry should be on its own line.
 
@@ -1709,7 +1709,7 @@ voters to agree.
 #### End-of-life for features or products
 
 When a feature or product enters its end-of-life, indicate its status by
-creating a [warning alert](#alert-boxes) directly following its relevant header.
+creating a [warning alert](#alert-boxes) directly after its relevant header.
 If possible, link to its deprecation and removal issues.
 
 For example:

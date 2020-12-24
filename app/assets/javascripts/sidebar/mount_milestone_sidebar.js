@@ -16,7 +16,7 @@ export default class SidebarMilestone {
       components: {
         timeTracker,
       },
-      render: createElement =>
+      render: (createElement) =>
         createElement('timeTracker', {
           props: {
             timeEstimate: parseInt(timeEstimate, 10),

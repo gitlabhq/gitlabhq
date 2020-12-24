@@ -16,7 +16,7 @@ import { sprintf, s__ } from '~/locale';
  *
  * @param {String[]} items
  */
-export const toNounSeriesText = items => {
+export const toNounSeriesText = (items) => {
   if (items.length === 0) {
     return '';
   } else if (items.length === 1) {

@@ -19,7 +19,7 @@ class RelatedIssuesStore {
   }
 
   removeRelatedIssue(issue) {
-    this.state.relatedIssues = this.state.relatedIssues.filter(x => x.id !== issue.id);
+    this.state.relatedIssues = this.state.relatedIssues.filter((x) => x.id !== issue.id);
   }
 
   updateIssueOrder(oldIndex, newIndex) {

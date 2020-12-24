@@ -219,7 +219,7 @@ export default {
         .then(() => {
           this.createEditorInstance();
         })
-        .catch(err => {
+        .catch((err) => {
           flash(
             __('Error setting up editor. Please try again.'),
             'alert',
@@ -281,7 +281,7 @@ export default {
 
       this.model.updateOptions(this.rules);
 
-      this.model.onChange(model => {
+      this.model.onChange((model) => {
         const { file } = model;
         if (!file.active) return;
 
@@ -329,7 +329,7 @@ export default {
       }
     },
     fetchEditorconfigRules() {
-      return getRulesWithTraversal(this.file.path, path => {
+      return getRulesWithTraversal(this.file.path, (path) => {
         const entry = this.entries[path];
         if (!entry) return Promise.resolve(null);
 
@@ -339,7 +339,7 @@ export default {
         return this.getFileData({ path: entry.path, makeFileActive: false }).then(() =>
           this.getRawFileData({ path: entry.path }),
         );
-      }).then(rules => {
+      }).then((rules) => {
         this.rules = mapRulesToMonaco(rules);
       });
     },
@@ -353,7 +353,7 @@ export default {
         event.preventDefault();
         event.stopImmediatePropagation();
 
-        return readFileAsDataURL(file).then(content => {
+        return readFileAsDataURL(file).then((content) => {
           const parentPath = getPathParent(this.file.path);
           const path = `${parentPath ? `${parentPath}/` : ''}${file.name}`;
 

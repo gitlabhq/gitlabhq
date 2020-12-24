@@ -46,9 +46,9 @@ describe('Promote milestone modal', () => {
       vm.$destroy();
     });
 
-    it('redirects when a milestone is promoted', done => {
+    it('redirects when a milestone is promoted', (done) => {
       const responseURL = `${TEST_HOST}/dummy/endpoint`;
-      jest.spyOn(axios, 'post').mockImplementation(url => {
+      jest.spyOn(axios, 'post').mockImplementation((url) => {
         expect(url).toBe(milestoneMockData.url);
         expect(eventHub.$emit).toHaveBeenCalledWith(
           'promoteMilestoneModal.requestStarted',
@@ -72,10 +72,10 @@ describe('Promote milestone modal', () => {
         .catch(done.fail);
     });
 
-    it('displays an error if promoting a milestone failed', done => {
+    it('displays an error if promoting a milestone failed', (done) => {
       const dummyError = new Error('promoting milestone failed');
       dummyError.response = { status: 500 };
-      jest.spyOn(axios, 'post').mockImplementation(url => {
+      jest.spyOn(axios, 'post').mockImplementation((url) => {
         expect(url).toBe(milestoneMockData.url);
         expect(eventHub.$emit).toHaveBeenCalledWith(
           'promoteMilestoneModal.requestStarted',
@@ -85,7 +85,7 @@ describe('Promote milestone modal', () => {
       });
 
       vm.onSubmit()
-        .catch(error => {
+        .catch((error) => {
           expect(error).toBe(dummyError);
           expect(eventHub.$emit).toHaveBeenCalledWith('promoteMilestoneModal.requestFinished', {
             milestoneUrl: milestoneMockData.url,

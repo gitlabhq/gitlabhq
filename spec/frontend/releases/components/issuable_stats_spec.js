@@ -7,7 +7,7 @@ describe('~/releases/components/issuable_stats.vue', () => {
   let wrapper;
   let defaultProps;
 
-  const createComponent = propUpdates => {
+  const createComponent = (propUpdates) => {
     wrapper = mount(IssuableStats, {
       propsData: {
         ...defaultProps,

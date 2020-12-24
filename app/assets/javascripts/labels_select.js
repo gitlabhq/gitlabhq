@@ -124,15 +124,15 @@ export default class LabelsSelect {
                 const toRemoveIds = Array.from(
                   $form.find(`input[type="hidden"][name="${fieldName}"]`),
                 )
-                  .map(el => el.value)
+                  .map((el) => el.value)
                   .map(Number);
 
-                data.labels.forEach(label => {
+                data.labels.forEach((label) => {
                   const index = toRemoveIds.indexOf(label.id);
                   toRemoveIds.splice(index, 1);
                 });
 
-                toRemoveIds.forEach(id => {
+                toRemoveIds.forEach((id) => {
                   $form
                     .find(`input[type="hidden"][name="${fieldName}"][value="${id}"]`)
                     .last()
@@ -157,7 +157,7 @@ export default class LabelsSelect {
           const labelUrl = $dropdown.attr('data-labels');
           axios
             .get(labelUrl)
-            .then(res => {
+            .then((res) => {
               let { data } = res;
               if ($dropdown.hasClass('js-extra-options')) {
                 const extraData = [];
@@ -390,7 +390,7 @@ export default class LabelsSelect {
               );
             } else {
               let { labels } = boardsStore.detail.issue;
-              labels = labels.filter(selectedLabel => selectedLabel.id !== label.id);
+              labels = labels.filter((selectedLabel) => selectedLabel.id !== label.id);
               boardsStore.detail.issue.labels = labels;
             }
 
@@ -401,12 +401,12 @@ export default class LabelsSelect {
               .update($dropdown.attr('data-issue-update'))
               .then(() => {
                 if (isScopedLabel(label)) {
-                  const prevIds = oldLabels.map(label => label.id);
-                  const newIds = boardsStore.detail.issue.labels.map(label => label.id);
-                  const differentIds = prevIds.filter(x => !newIds.includes(x));
+                  const prevIds = oldLabels.map((label) => label.id);
+                  const newIds = boardsStore.detail.issue.labels.map((label) => label.id);
+                  const differentIds = prevIds.filter((x) => !newIds.includes(x));
                   $dropdown.data('marked', newIds);
                   $dropdownMenu
-                    .find(differentIds.map(id => `[data-label-id="${id}"]`).join(','))
+                    .find(differentIds.map((id) => `[data-label-id="${id}"]`).join(','))
                     .removeClass('is-active');
                 }
               })

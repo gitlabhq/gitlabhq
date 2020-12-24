@@ -9,7 +9,7 @@ export default {
   },
   [types.RECEIVE_MERGE_REQUESTS_SUCCESS](state, data) {
     state.isLoading = false;
-    state.mergeRequests = data.map(mergeRequest => ({
+    state.mergeRequests = data.map((mergeRequest) => ({
       id: mergeRequest.id,
       iid: mergeRequest.iid,
       title: mergeRequest.title,

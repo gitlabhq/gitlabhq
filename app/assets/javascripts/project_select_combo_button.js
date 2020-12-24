@@ -17,9 +17,9 @@ export default class ProjectSelectComboButton {
   bindEvents() {
     this.projectSelectInput
       .siblings('.new-project-item-select-button')
-      .on('click', e => this.openDropdown(e));
+      .on('click', (e) => this.openDropdown(e));
 
-    this.newItemBtn.on('click', e => {
+    this.newItemBtn.on('click', (e) => {
       if (!this.getProjectFromLocalStorage()) {
         e.preventDefault();
         this.openDropdown(e);

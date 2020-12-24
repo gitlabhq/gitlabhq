@@ -40,7 +40,7 @@ describe('SetStatusModalWrapper', () => {
   };
 
   const findModal = () => wrapper.find(GlModal);
-  const findFormField = field => wrapper.find(`[name="user[status][${field}]"]`);
+  const findFormField = (field) => wrapper.find(`[name="user[status][${field}]"]`);
   const findClearStatusButton = () => wrapper.find('.js-clear-user-status-button');
   const findNoEmojiPlaceholder = () => wrapper.find('.js-no-emoji-placeholder');
   const findToggleEmojiButton = () => wrapper.find('.js-toggle-emoji-menu');

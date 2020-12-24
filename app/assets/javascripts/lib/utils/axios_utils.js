@@ -9,7 +9,7 @@ axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 // Maintain a global counter for active requests
 // see: spec/support/wait_for_requests.rb
-axios.interceptors.request.use(config => {
+axios.interceptors.request.use((config) => {
   window.pendingRequests = window.pendingRequests || 0;
   window.pendingRequests += 1;
   return config;
@@ -19,11 +19,11 @@ setupAxiosStartupCalls(axios);
 
 // Remove the global counter
 axios.interceptors.response.use(
-  response => {
+  (response) => {
     window.pendingRequests -= 1;
     return response;
   },
-  err => {
+  (err) => {
     window.pendingRequests -= 1;
     return Promise.reject(err);
   },
@@ -37,8 +37,8 @@ window.addEventListener('beforeunload', () => {
 // Ignore AJAX errors caused by requests
 // being cancelled due to browser navigation
 axios.interceptors.response.use(
-  response => response,
-  err => suppressAjaxErrorsDuringNavigation(err, isUserNavigating),
+  (response) => response,
+  (err) => suppressAjaxErrorsDuringNavigation(err, isUserNavigating),
 );
 
 export default axios;

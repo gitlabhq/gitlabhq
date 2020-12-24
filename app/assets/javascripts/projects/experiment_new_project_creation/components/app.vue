@@ -83,11 +83,11 @@ export default {
         return PANELS;
       }
 
-      return PANELS.filter(p => p.name !== CI_CD_PANEL);
+      return PANELS.filter((p) => p.name !== CI_CD_PANEL);
     },
 
     activePanel() {
-      return PANELS.find(p => p.name === this.activeTab);
+      return PANELS.find((p) => p.name === this.activeTab);
     },
 
     breadcrumbs() {
@@ -113,7 +113,7 @@ export default {
       this.handleLocationHashChange();
       this.resetProjectErrors();
     });
-    this.$root.$on('clicked::link', e => {
+    this.$root.$on('clicked::link', (e) => {
       window.location = e.target.href;
     });
   },

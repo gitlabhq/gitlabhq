@@ -1,7 +1,7 @@
 import { pickBy } from 'lodash';
 import { SUPPORTED_FILTER_PARAMETERS } from './constants';
 
-export const validateParams = params => {
+export const validateParams = (params) => {
   return pickBy(params, (val, key) => SUPPORTED_FILTER_PARAMETERS.includes(key) && val);
 };
 
@@ -17,10 +17,10 @@ export const createUniqueLinkId = (stageName, jobName) => `${stageName}-${jobNam
 export const createJobsHash = (stages = []) => {
   const jobsHash = {};
 
-  stages.forEach(stage => {
+  stages.forEach((stage) => {
     if (stage.groups.length > 0) {
-      stage.groups.forEach(group => {
-        group.jobs.forEach(job => {
+      stage.groups.forEach((group) => {
+        group.jobs.forEach((job) => {
           jobsHash[job.name] = job;
         });
       });
@@ -44,13 +44,13 @@ export const generateJobNeedsDict = (jobs = {}) => {
   const arrOfJobNames = Object.keys(jobs);
 
   return arrOfJobNames.reduce((acc, value) => {
-    const recursiveNeeds = jobName => {
+    const recursiveNeeds = (jobName) => {
       if (!jobs[jobName]?.needs) {
         return [];
       }
 
       return jobs[jobName].needs
-        .map(job => {
+        .map((job) => {
           // If we already have the needs of a job in the accumulator,
           // then we use the memoized data instead of the recursive call
           // to save some performance.

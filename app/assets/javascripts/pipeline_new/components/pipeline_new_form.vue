@@ -121,12 +121,12 @@ export default {
       return this.searchTerm.toLowerCase();
     },
     filteredBranches() {
-      return this.branches.filter(branch =>
+      return this.branches.filter((branch) =>
         branch.shortName.toLowerCase().includes(this.lowerCasedSearchTerm),
       );
     },
     filteredTags() {
-      return this.tags.filter(tag =>
+      return this.tags.filter((tag) =>
         tag.shortName.toLowerCase().includes(this.lowerCasedSearchTerm),
       );
     },
@@ -187,7 +187,7 @@ export default {
     setVariable(refValue, type, key, value) {
       const { variables } = this.form[refValue];
 
-      const variable = variables.find(v => v.key === key);
+      const variable = variables.find((v) => v.key === key);
       if (variable) {
         variable.type = type;
         variable.value = value;
@@ -270,11 +270,11 @@ export default {
               stop(data);
             }
           })
-          .catch(error => {
+          .catch((error) => {
             stop(error);
           });
       }, CONFIG_VARIABLES_TIMEOUT)
-        .then(data => {
+        .then((data) => {
           const params = {};
           const descriptions = {};
 
@@ -287,7 +287,7 @@ export default {
 
           return { params, descriptions };
         })
-        .catch(error => {
+        .catch((error) => {
           this.isLoading = false;
 
           Sentry.captureException(error);
@@ -314,7 +314,7 @@ export default {
         .then(({ data }) => {
           redirectTo(`${this.pipelinesPath}/${data.id}`);
         })
-        .catch(err => {
+        .catch((err) => {
           const { errors, warnings, total_warnings: totalWarnings } = err.response.data;
           const [error] = errors;
           this.error = error;

@@ -18,7 +18,7 @@ export default {
   render(h, { props }) {
     const { line, path } = props;
 
-    const chars = line.content.map(content => {
+    const chars = line.content.map((content) => {
       return h(
         'span',
         {
@@ -26,7 +26,7 @@ export default {
         },
         // Simple "tokenization": Split text in chunks of text
         // which alternate between text and urls.
-        content.text.split(linkRegex).map(chunk => {
+        content.text.split(linkRegex).map((chunk) => {
           // Return normal string for non-links
           if (!chunk.match(linkRegex)) {
             return chunk;

@@ -34,7 +34,7 @@ const hideFlash = (flashEl, fadeTransition = true) => {
   if (!fadeTransition) flashEl.dispatchEvent(new Event('transitionend'));
 };
 
-const createAction = config => `
+const createAction = (config) => `
   <a
     href="${config.href || '#'}"
     class="flash-action"
@@ -97,7 +97,7 @@ const deprecatedCreateFlash = function deprecatedCreateFlash(
     if (actionConfig.clickHandler) {
       flashEl
         .querySelector('.flash-action')
-        .addEventListener('click', e => actionConfig.clickHandler(e));
+        .addEventListener('click', (e) => actionConfig.clickHandler(e));
     }
   }
 
@@ -151,7 +151,7 @@ const createFlash = function createFlash({
     if (actionConfig.clickHandler) {
       flashEl
         .querySelector('.flash-action')
-        .addEventListener('click', e => actionConfig.clickHandler(e));
+        .addEventListener('click', (e) => actionConfig.clickHandler(e));
     }
   }
 

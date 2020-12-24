@@ -11,7 +11,7 @@ export default function initRelatedIssues() {
       components: {
         relatedIssuesRoot: RelatedIssuesRoot,
       },
-      render: createElement =>
+      render: (createElement) =>
         createElement('related-issues-root', {
           props: {
             endpoint: relatedIssuesRootElement.dataset.endpoint,

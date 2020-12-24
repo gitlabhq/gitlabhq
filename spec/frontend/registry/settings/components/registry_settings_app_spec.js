@@ -59,7 +59,7 @@ describe('Registry Settings App', () => {
       apolloProvider: fakeApollo,
     });
 
-    return requestHandlers.map(request => request[1]);
+    return requestHandlers.map((request) => request[1]);
   };
 
   afterEach(() => {

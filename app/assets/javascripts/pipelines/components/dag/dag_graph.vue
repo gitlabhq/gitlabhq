@@ -173,7 +173,7 @@ export default {
     createClip(link) {
       return link
         .append('clipPath')
-        .attr('id', d => {
+        .attr('id', (d) => {
           return this.createAndAssignId(d, 'clipId', 'dag-clip');
         })
         .append('path')
@@ -183,7 +183,7 @@ export default {
     createGradient(link) {
       const gradient = link
         .append('linearGradient')
-        .attr('id', d => {
+        .attr('id', (d) => {
           return this.createAndAssignId(d, 'gradId', 'dag-grad');
         })
         .attr('gradientUnits', 'userSpaceOnUse')
@@ -251,7 +251,7 @@ export default {
         .data(linksData)
         .enter()
         .append('g')
-        .attr('id', d => {
+        .attr('id', (d) => {
           return this.createAndAssignId(d, 'uid', LINK_SELECTOR);
         })
         .classed(
@@ -273,10 +273,10 @@ export default {
           `${NODE_SELECTOR} gl-transition-property-stroke ${this.$options.viewOptions.hoverFadeClasses}`,
           true,
         )
-        .attr('id', d => {
+        .attr('id', (d) => {
           return this.createAndAssignId(d, 'uid', NODE_SELECTOR);
         })
-        .attr('stroke', d => {
+        .attr('stroke', (d) => {
           const color = this.color(d);
           /* eslint-disable-next-line no-param-reassign */
           d.color = color;
@@ -284,10 +284,10 @@ export default {
         })
         .attr('stroke-width', nodeWidth)
         .attr('stroke-linecap', 'round')
-        .attr('x1', d => Math.floor((d.x1 + d.x0) / 2))
-        .attr('x2', d => Math.floor((d.x1 + d.x0) / 2))
-        .attr('y1', d => d.y0 + 4)
-        .attr('y2', d => d.y1 - 4);
+        .attr('x1', (d) => Math.floor((d.x1 + d.x0) / 2))
+        .attr('x2', (d) => Math.floor((d.x1 + d.x0) / 2))
+        .attr('y1', (d) => d.y0 + 4)
+        .attr('y2', (d) => d.y1 - 4);
     },
 
     initColors() {

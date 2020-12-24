@@ -11,9 +11,9 @@ const defaultConfig = {
 const getAllowedIconUrls = (gon = window.gon) =>
   [gon.sprite_file_icons, gon.sprite_icons].filter(Boolean);
 
-const isUrlAllowed = url => getAllowedIconUrls().some(allowedUrl => url.startsWith(allowedUrl));
+const isUrlAllowed = (url) => getAllowedIconUrls().some((allowedUrl) => url.startsWith(allowedUrl));
 
-const isHrefSafe = url =>
+const isHrefSafe = (url) =>
   isUrlAllowed(url) || isUrlAllowed(relativePathToAbsolute(url, getBaseURL()));
 
 const removeUnsafeHref = (node, attr) => {
@@ -36,7 +36,7 @@ const removeUnsafeHref = (node, attr) => {
  *
  * @param {Object} node - Node to sanitize
  */
-const sanitizeSvgIcon = node => {
+const sanitizeSvgIcon = (node) => {
   removeUnsafeHref(node, 'href');
 
   // Note: `xlink:href` is deprecated, but still in use
@@ -44,7 +44,7 @@ const sanitizeSvgIcon = node => {
   removeUnsafeHref(node, 'xlink:href');
 };
 
-addHook('afterSanitizeAttributes', node => {
+addHook('afterSanitizeAttributes', (node) => {
   if (node.tagName.toLowerCase() === 'use') {
     sanitizeSvgIcon(node);
   }

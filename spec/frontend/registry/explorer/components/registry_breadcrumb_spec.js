@@ -37,7 +37,7 @@ describe('Registry Breadcrumb', () => {
   const findChildRoute = () => wrapper.find({ ref: 'childRouteLink' });
   const findLastCrumb = () => wrapper.find({ ref: 'lastCrumb' });
 
-  const mountComponent = $route => {
+  const mountComponent = ($route) => {
     wrapper = shallowMount(component, {
       propsData: {
         crumbs,

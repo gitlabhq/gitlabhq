@@ -11,14 +11,14 @@ export default {
   },
   computed: {
     ...mapState('list', {
-      orderBy: state => state.sorting.orderBy,
-      sort: state => state.sorting.sort,
+      orderBy: (state) => state.sorting.orderBy,
+      sort: (state) => state.sorting.sort,
     }),
     sortOptions() {
       return SORT_OPTIONS;
     },
     sortText() {
-      const option = this.sortOptions.find(s => s.orderBy === this.orderBy);
+      const option = this.sortOptions.find((s) => s.orderBy === this.orderBy);
       return option.label;
     },
     isSortAscending() {

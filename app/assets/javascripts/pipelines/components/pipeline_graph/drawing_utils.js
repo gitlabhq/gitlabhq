@@ -14,7 +14,7 @@ import { createUniqueLinkId } from '../../utils';
 
 export const generateLinksData = ({ links }, containerID) => {
   const containerEl = document.getElementById(containerID);
-  return links.map(link => {
+  return links.map((link) => {
     const path = d3.path();
 
     const sourceId = link.source;

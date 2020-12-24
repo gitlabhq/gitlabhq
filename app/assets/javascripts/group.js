@@ -12,7 +12,7 @@ export default class Group {
     this.resetHandler = this.reset.bind(this);
     this.updateGroupPathSlugHandler = this.updateGroupPathSlug.bind(this);
 
-    this.groupNames.forEach(groupName => {
+    this.groupNames.forEach((groupName) => {
       if (groupName.value === '') {
         groupName.addEventListener('keyup', this.updateHandler);
 
@@ -22,7 +22,7 @@ export default class Group {
       }
     });
 
-    this.groupPaths.forEach(groupPath => {
+    this.groupPaths.forEach((groupPath) => {
       groupPath.addEventListener('keydown', this.resetHandler);
     });
   }
@@ -30,21 +30,21 @@ export default class Group {
   update({ currentTarget: { value: updatedValue } }) {
     const slug = slugify(updatedValue);
 
-    this.groupNames.forEach(element => {
+    this.groupNames.forEach((element) => {
       element.value = updatedValue;
     });
-    this.groupPaths.forEach(element => {
+    this.groupPaths.forEach((element) => {
       element.value = slug;
     });
   }
 
   reset() {
-    this.groupNames.forEach(groupName => {
+    this.groupNames.forEach((groupName) => {
       groupName.removeEventListener('keyup', this.updateHandler);
       groupName.removeEventListener('blur', this.checkPathHandler);
     });
 
-    this.groupPaths.forEach(groupPath => {
+    this.groupPaths.forEach((groupPath) => {
       groupPath.removeEventListener('keydown', this.resetHandler);
     });
   }
@@ -59,7 +59,7 @@ export default class Group {
         if (exists && suggests.length) {
           const [suggestedSlug] = suggests;
 
-          this.groupPaths.forEach(element => {
+          this.groupPaths.forEach((element) => {
             element.value = suggestedSlug;
           });
         } else if (exists && !suggests.length) {

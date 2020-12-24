@@ -13,6 +13,7 @@ import {
 } from '../../constants/index';
 
 export default {
+  name: 'ListHeader',
   components: {
     TitleArea,
     MetadataItem,

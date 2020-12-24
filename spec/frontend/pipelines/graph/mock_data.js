@@ -656,7 +656,7 @@ export const wrappedPipelineReturn = {
 
 export const generateResponse = (raw, mockPath) => unwrapPipelineData(mockPath, raw.data);
 
-export const pipelineWithUpstreamDownstream = base => {
+export const pipelineWithUpstreamDownstream = (base) => {
   const pip = { ...base };
   pip.data.project.pipeline.downstream = downstream;
   pip.data.project.pipeline.upstream = upstream;

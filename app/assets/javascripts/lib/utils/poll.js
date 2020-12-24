@@ -102,11 +102,11 @@ export default class Poll {
     notificationCallback(true);
 
     return resource[method](data)
-      .then(response => {
+      .then((response) => {
         this.checkConditions(response);
         notificationCallback(false);
       })
-      .catch(error => {
+      .catch((error) => {
         notificationCallback(false);
         if (error.status === httpStatusCodes.ABORTED) {
           return;

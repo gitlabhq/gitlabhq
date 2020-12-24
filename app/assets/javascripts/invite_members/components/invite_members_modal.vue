@@ -93,7 +93,7 @@ export default {
     },
     selectedRoleName() {
       return Object.keys(this.accessLevels).find(
-        key => this.accessLevels[key] === Number(this.selectedAccessLevel),
+        (key) => this.accessLevels[key] === Number(this.selectedAccessLevel),
       );
     },
   },

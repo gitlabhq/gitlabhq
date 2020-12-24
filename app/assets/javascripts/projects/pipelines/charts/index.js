@@ -10,7 +10,7 @@ const apolloProvider = new VueApollo({
   defaultClient: createDefaultClient(),
 });
 
-const mountPipelineChartsApp = el => {
+const mountPipelineChartsApp = (el) => {
   // Not all of the values will be defined since some them will be
   // empty depending on the value of the graphql_pipeline_analytics
   // feature flag, once the rollout of the feature flag is completed
@@ -62,7 +62,7 @@ const mountPipelineChartsApp = el => {
       provide: {
         projectPath,
       },
-      render: createElement => createElement(ProjectPipelinesCharts, {}),
+      render: (createElement) => createElement(ProjectPipelinesCharts, {}),
     });
   }
 
@@ -72,7 +72,7 @@ const mountPipelineChartsApp = el => {
     components: {
       ProjectPipelinesChartsLegacy,
     },
-    render: createElement =>
+    render: (createElement) =>
       createElement(ProjectPipelinesChartsLegacy, {
         props: {
           counts: {

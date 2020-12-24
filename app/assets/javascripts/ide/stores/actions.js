@@ -20,7 +20,7 @@ export const redirectToUrl = (self, url) => visitUrl(url);
 export const setInitialData = ({ commit }, data) => commit(types.SET_INITIAL_DATA, data);
 
 export const discardAllChanges = ({ state, commit, dispatch }) => {
-  state.changedFiles.forEach(file => dispatch('restoreOriginalFile', file.path));
+  state.changedFiles.forEach((file) => dispatch('restoreOriginalFile', file.path));
 
   commit(types.REMOVE_ALL_CHANGES_FILES);
 };
@@ -106,7 +106,7 @@ export const stageAllChanges = ({ state, commit, dispatch, getters }) => {
 
   commit(types.SET_LAST_COMMIT_MSG, '');
 
-  state.changedFiles.forEach(file =>
+  state.changedFiles.forEach((file) =>
     commit(types.STAGE_CHANGE, { path: file.path, diffInfo: getters.getDiffInfo(file.path) }),
   );
 
@@ -123,7 +123,7 @@ export const stageAllChanges = ({ state, commit, dispatch, getters }) => {
 export const unstageAllChanges = ({ state, commit, dispatch, getters }) => {
   const openFile = state.openFiles[0];
 
-  state.stagedFiles.forEach(file =>
+  state.stagedFiles.forEach((file) =>
     commit(types.UNSTAGE_CHANGE, { path: file.path, diffInfo: getters.getDiffInfo(file.path) }),
   );
 
@@ -194,7 +194,7 @@ export const deleteEntry = ({ commit, dispatch, state }, path) => {
   if (entry.opened) dispatch('closeFile', entry);
 
   if (isTree) {
-    entry.tree.forEach(f => dispatch('deleteEntry', f.path));
+    entry.tree.forEach((f) => dispatch('deleteEntry', f.path));
   }
 
   commit(types.DELETE_ENTRY, path);
@@ -221,7 +221,7 @@ export const renameEntry = ({ dispatch, commit, state, getters }, { path, name, 
   commit(types.RENAME_ENTRY, { path, name, parentPath });
 
   if (entry.type === 'tree') {
-    state.entries[newPath].tree.forEach(f => {
+    state.entries[newPath].tree.forEach((f) => {
       dispatch('renameEntry', {
         path: f.path,
         name: f.name,
@@ -280,7 +280,7 @@ export const getBranchData = ({ commit, state }, { projectId, branchId, force = 
           commit(types.SET_BRANCH_WORKING_REFERENCE, { projectId, branchId, reference: id });
           resolve(data);
         })
-        .catch(e => {
+        .catch((e) => {
           if (e.response.status === 404) {
             reject(e);
           } else {

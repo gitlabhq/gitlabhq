@@ -12,15 +12,15 @@ export default class GroupsStore {
 
   setGroups(rawGroups) {
     if (rawGroups && rawGroups.length) {
-      this.state.groups = rawGroups.map(rawGroup => this.formatGroupItem(rawGroup));
+      this.state.groups = rawGroups.map((rawGroup) => this.formatGroupItem(rawGroup));
     } else {
       this.state.groups = [];
     }
   }
 
   setSearchedGroups(rawGroups) {
-    const formatGroups = groups =>
-      groups.map(group => {
+    const formatGroups = (groups) =>
+      groups.map((group) => {
         const formattedGroup = this.formatGroupItem(group);
         if (formattedGroup.children && formattedGroup.children.length) {
           formattedGroup.children = formatGroups(formattedGroup.children);
@@ -37,7 +37,7 @@ export default class GroupsStore {
 
   setGroupChildren(parentGroup, children) {
     const updatedParentGroup = parentGroup;
-    updatedParentGroup.children = children.map(rawChild => this.formatGroupItem(rawChild));
+    updatedParentGroup.children = children.map((rawChild) => this.formatGroupItem(rawChild));
     updatedParentGroup.isOpen = true;
     updatedParentGroup.isChildrenLoading = false;
   }
@@ -103,9 +103,9 @@ export default class GroupsStore {
   removeGroup(group, parentGroup) {
     const updatedParentGroup = parentGroup;
     if (updatedParentGroup.children && updatedParentGroup.children.length) {
-      updatedParentGroup.children = parentGroup.children.filter(child => group.id !== child.id);
+      updatedParentGroup.children = parentGroup.children.filter((child) => group.id !== child.id);
     } else {
-      this.state.groups = this.state.groups.filter(child => group.id !== child.id);
+      this.state.groups = this.state.groups.filter((child) => group.id !== child.id);
     }
   }
 }

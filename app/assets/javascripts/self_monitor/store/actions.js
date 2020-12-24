@@ -9,7 +9,7 @@ const TWO_MINUTES = 120000;
 function backOffRequest(makeRequestCallback) {
   return backOff((next, stop) => {
     makeRequestCallback()
-      .then(resp => {
+      .then((resp) => {
         if (resp.status === statusCodes.ACCEPTED) {
           next();
         } else {
@@ -30,24 +30,24 @@ export const requestCreateProject = ({ dispatch, state, commit }) => {
   commit(types.SET_LOADING, true);
   axios
     .post(state.createProjectEndpoint)
-    .then(resp => {
+    .then((resp) => {
       if (resp.status === statusCodes.ACCEPTED) {
         dispatch('requestCreateProjectStatus', resp.data.job_id);
       }
     })
-    .catch(error => {
+    .catch((error) => {
       dispatch('requestCreateProjectError', error);
     });
 };
 
 export const requestCreateProjectStatus = ({ dispatch, state }, jobId) => {
   backOffRequest(() => axios.get(state.createProjectStatusEndpoint, { params: { job_id: jobId } }))
-    .then(resp => {
+    .then((resp) => {
       if (resp.status === statusCodes.OK) {
         dispatch('requestCreateProjectSuccess', resp.data);
       }
     })
-    .catch(error => {
+    .catch((error) => {
       dispatch('requestCreateProjectError', error);
     });
 };
@@ -82,24 +82,24 @@ export const requestDeleteProject = ({ dispatch, state, commit }) => {
   commit(types.SET_LOADING, true);
   axios
     .delete(state.deleteProjectEndpoint)
-    .then(resp => {
+    .then((resp) => {
       if (resp.status === statusCodes.ACCEPTED) {
         dispatch('requestDeleteProjectStatus', resp.data.job_id);
       }
     })
-    .catch(error => {
+    .catch((error) => {
       dispatch('requestDeleteProjectError', error);
     });
 };
 
 export const requestDeleteProjectStatus = ({ dispatch, state }, jobId) => {
   backOffRequest(() => axios.get(state.deleteProjectStatusEndpoint, { params: { job_id: jobId } }))
-    .then(resp => {
+    .then((resp) => {
       if (resp.status === statusCodes.OK) {
         dispatch('requestDeleteProjectSuccess', resp.data);
       }
     })
-    .catch(error => {
+    .catch((error) => {
       dispatch('requestDeleteProjectError', error);
     });
 };

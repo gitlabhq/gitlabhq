@@ -96,7 +96,7 @@ export default {
       return this.isLoading || this.mutationLoading;
     },
     fieldsAreValid() {
-      return Object.values(this.localErrors).every(error => error);
+      return Object.values(this.localErrors).every((error) => error);
     },
     isSubmitButtonDisabled() {
       return !this.fieldsAreValid || this.showLoadingIcon;
@@ -121,7 +121,7 @@ export default {
   },
   methods: {
     findDefaultOption(option) {
-      return this.value[option] || this.$options.formOptions[option].find(f => f.default)?.key;
+      return this.value[option] || this.$options.formOptions[option].find((f) => f.default)?.key;
     },
     reset() {
       this.track('reset_form');
@@ -131,7 +131,7 @@ export default {
     },
     setApiErrors(response) {
       this.apiErrors = response.graphQLErrors.reduce((acc, curr) => {
-        curr.extensions.problems.forEach(item => {
+        curr.extensions.problems.forEach((item) => {
           acc[item.path[0]] = item.message;
         });
         return acc;
@@ -163,7 +163,7 @@ export default {
             this.$toast.show(UPDATE_SETTINGS_SUCCESS_MESSAGE, { type: 'success' });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           this.setApiErrors(error);
           this.$toast.show(UPDATE_SETTINGS_ERROR_MESSAGE, { type: 'error' });
         })

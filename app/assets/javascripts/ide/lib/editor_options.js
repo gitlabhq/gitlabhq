@@ -31,7 +31,7 @@ export const defaultModelOptions = {
 
 export const editorOptions = [
   {
-    readOnly: model => Boolean(model.file.file_lock),
-    quickSuggestions: model => !(model.language === 'markdown'),
+    readOnly: (model) => Boolean(model.file.file_lock),
+    quickSuggestions: (model) => !(model.language === 'markdown'),
   },
 ];

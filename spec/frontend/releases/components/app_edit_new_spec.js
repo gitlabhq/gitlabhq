@@ -71,7 +71,7 @@ describe('Release edit/new component', () => {
 
     await wrapper.vm.$nextTick();
 
-    wrapper.element.querySelectorAll('input').forEach(input => jest.spyOn(input, 'focus'));
+    wrapper.element.querySelectorAll('input').forEach((input) => jest.spyOn(input, 'focus'));
   };
 
   beforeEach(() => {
@@ -104,7 +104,7 @@ describe('Release edit/new component', () => {
       const firstEnabledInput = wrapper.element.querySelector('input:enabled');
       const allInputs = wrapper.element.querySelectorAll('input');
 
-      allInputs.forEach(input => {
+      allInputs.forEach((input) => {
         const expectedFocusCalls = input === firstEnabledInput ? 1 : 0;
         expect(input.focus).toHaveBeenCalledTimes(expectedFocusCalls);
       });
@@ -152,7 +152,7 @@ describe('Release edit/new component', () => {
     beforeEach(async () => {
       commonUtils.getParameterByName = jest
         .fn()
-        .mockImplementation(paramToGet => ({ [BACK_URL_PARAM]: backUrl }[paramToGet]));
+        .mockImplementation((paramToGet) => ({ [BACK_URL_PARAM]: backUrl }[paramToGet]));
 
       await factory();
     });

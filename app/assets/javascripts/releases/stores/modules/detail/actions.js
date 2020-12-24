@@ -36,12 +36,12 @@ export const fetchRelease = ({ commit, state, rootState }) => {
           tagName: state.tagName,
         },
       })
-      .then(response => {
+      .then((response) => {
         const { data: release } = convertOneReleaseGraphQLResponse(response);
 
         commit(types.RECEIVE_RELEASE_SUCCESS, release);
       })
-      .catch(error => {
+      .catch((error) => {
         commit(types.RECEIVE_RELEASE_ERROR, error);
         createFlash(s__('Release|Something went wrong while getting the release details'));
       });
@@ -52,7 +52,7 @@ export const fetchRelease = ({ commit, state, rootState }) => {
     .then(({ data }) => {
       commit(types.RECEIVE_RELEASE_SUCCESS, apiJsonToRelease(data));
     })
-    .catch(error => {
+    .catch((error) => {
       commit(types.RECEIVE_RELEASE_ERROR, error);
       createFlash(s__('Release|Something went wrong while getting the release details'));
     });
@@ -121,7 +121,7 @@ export const createRelease = ({ commit, dispatch, state, getters }) => {
     .then(({ data }) => {
       dispatch('receiveSaveReleaseSuccess', apiJsonToRelease(data));
     })
-    .catch(error => {
+    .catch((error) => {
       commit(types.RECEIVE_SAVE_RELEASE_ERROR, error);
       createFlash(s__('Release|Something went wrong while creating a new release'));
     });
@@ -163,7 +163,7 @@ export const updateRelease = ({ commit, dispatch, state, getters }) => {
 
         // Delete all links currently associated with this Release
         return Promise.all(
-          getters.releaseLinksToDelete.map(l =>
+          getters.releaseLinksToDelete.map((l) =>
             api.deleteReleaseLink(state.projectId, state.release.tagName, l.id),
           ),
         );
@@ -171,7 +171,7 @@ export const updateRelease = ({ commit, dispatch, state, getters }) => {
       .then(() => {
         // Create a new link for each link in the form
         return Promise.all(
-          apiJson.assets.links.map(l =>
+          apiJson.assets.links.map((l) =>
             api.createReleaseLink(state.projectId, state.release.tagName, l),
           ),
         );
@@ -179,7 +179,7 @@ export const updateRelease = ({ commit, dispatch, state, getters }) => {
       .then(() => {
         dispatch('receiveSaveReleaseSuccess', apiJsonToRelease(updatedRelease));
       })
-      .catch(error => {
+      .catch((error) => {
         commit(types.RECEIVE_SAVE_RELEASE_ERROR, error);
         createFlash(s__('Release|Something went wrong while saving the release details'));
       })

@@ -8,10 +8,10 @@ describe('Abuse Reports', () => {
 
   let $messages;
 
-  const assertMaxLength = $message => {
+  const assertMaxLength = ($message) => {
     expect($message.text().length).toEqual(MAX_MESSAGE_LENGTH);
   };
-  const findMessage = searchText =>
+  const findMessage = (searchText) =>
     $messages.filter((index, element) => element.innerText.indexOf(searchText) > -1).first();
 
   preloadFixtures(FIXTURE);

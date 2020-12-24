@@ -101,7 +101,7 @@ export default {
     // Collect unique label IDs for all checked issues
     this.getElement('.selected-issuable:checked').each((i, el) => {
       issuableLabels = this.getElement(`#${this.prefixId}${el.dataset.id}`).data('labels');
-      issuableLabels.forEach(labelId => {
+      issuableLabels.forEach((labelId) => {
         // Store unique IDs
         if (uniqueIds.indexOf(labelId) === -1) {
           uniqueIds.push(labelId);
@@ -113,7 +113,7 @@ export default {
     // Add uniqueIds to add it as argument for _.intersection
     labelIds.unshift(uniqueIds);
     // Return IDs that are present but not in all selected issueables
-    return uniqueIds.filter(x => !intersection.apply(this, labelIds).includes(x));
+    return uniqueIds.filter((x) => !intersection.apply(this, labelIds).includes(x));
   },
 
   getElement(selector) {

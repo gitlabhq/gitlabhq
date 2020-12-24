@@ -8,7 +8,7 @@ import { adjustMetricQuery } from '../utils';
 
 describe('ServerlessActions', () => {
   describe('fetchFunctions', () => {
-    it('should successfully fetch functions', done => {
+    it('should successfully fetch functions', (done) => {
       const endpoint = '/functions';
       const mock = new MockAdapter(axios);
       mock.onGet(endpoint).reply(statusCodes.OK, JSON.stringify(mockServerlessFunctions));
@@ -29,12 +29,12 @@ describe('ServerlessActions', () => {
       );
     });
 
-    it('should successfully retry', done => {
+    it('should successfully retry', (done) => {
       const endpoint = '/functions';
       const mock = new MockAdapter(axios);
       mock
         .onGet(endpoint)
-        .reply(() => new Promise(resolve => setTimeout(() => resolve(200), Infinity)));
+        .reply(() => new Promise((resolve) => setTimeout(() => resolve(200), Infinity)));
 
       testAction(
         fetchFunctions,
@@ -51,7 +51,7 @@ describe('ServerlessActions', () => {
   });
 
   describe('fetchMetrics', () => {
-    it('should return no prometheus', done => {
+    it('should return no prometheus', (done) => {
       const endpoint = '/metrics';
       const mock = new MockAdapter(axios);
       mock.onGet(endpoint).reply(statusCodes.NO_CONTENT);
@@ -69,7 +69,7 @@ describe('ServerlessActions', () => {
       );
     });
 
-    it('should successfully fetch metrics', done => {
+    it('should successfully fetch metrics', (done) => {
       const endpoint = '/metrics';
       const mock = new MockAdapter(axios);
       mock.onGet(endpoint).reply(statusCodes.OK, JSON.stringify(mockMetrics));

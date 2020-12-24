@@ -94,7 +94,7 @@ export default {
     },
     deleteVariable(id) {
       this.variables.splice(
-        this.variables.findIndex(el => el.id === id),
+        this.variables.findIndex((el) => el.id === id),
         1,
       );
     },

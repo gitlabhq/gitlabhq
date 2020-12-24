@@ -9,7 +9,7 @@ const addMulti = (mainPipelineProjectPath, linkedPipeline) => {
   };
 };
 
-const transformId = linkedPipeline => {
+const transformId = (linkedPipeline) => {
   return { ...linkedPipeline, id: getIdFromGraphQLId(linkedPipeline.id) };
 };
 
@@ -42,7 +42,7 @@ const unwrapPipelineData = (mainPipelineProjectPath, data) => {
 };
 
 const toggleQueryPollingByVisibility = (queryRef, interval = 10000) => {
-  const stopStartQuery = query => {
+  const stopStartQuery = (query) => {
     if (!Visibility.hidden()) {
       query.startPolling(interval);
     } else {

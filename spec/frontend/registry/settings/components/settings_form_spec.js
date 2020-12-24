@@ -103,7 +103,7 @@ describe('Settings Form', () => {
       },
     });
 
-    return requestHandlers.map(resolvers => resolvers[1]);
+    return requestHandlers.map((resolvers) => resolvers[1]);
   };
 
   beforeEach(() => {

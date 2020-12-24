@@ -21,8 +21,8 @@ export const syncRouterAndStore = (router, store) => {
   // sync store to router
   disposables.push(
     store.watch(
-      state => state.router.fullPath,
-      fullPath => {
+      (state) => state.router.fullPath,
+      (fullPath) => {
         if (currentPath === fullPath) {
           return;
         }
@@ -36,7 +36,7 @@ export const syncRouterAndStore = (router, store) => {
 
   // sync router to store
   disposables.push(
-    router.afterEach(to => {
+    router.afterEach((to) => {
       if (currentPath === to.fullPath) {
         return;
       }
@@ -47,7 +47,7 @@ export const syncRouterAndStore = (router, store) => {
   );
 
   const unsync = () => {
-    disposables.forEach(fn => fn());
+    disposables.forEach((fn) => fn());
   };
 
   return unsync;

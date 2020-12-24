@@ -40,7 +40,7 @@ describe('Getters TestReports Store', () => {
       setupState();
 
       const suites = getters.getTestSuites(state);
-      const expected = testReports.test_suites.map(x => ({
+      const expected = testReports.test_suites.map((x) => ({
         ...x,
         formattedTime: formattedTime(x.total_time),
       }));
@@ -72,7 +72,7 @@ describe('Getters TestReports Store', () => {
 
       const cases = getters.getSuiteTests(state);
       const expected = testReports.test_suites[0].test_cases
-        .map(x => ({
+        .map((x) => ({
           ...x,
           formattedTime: formattedTime(x.execution_time),
           icon: iconForTestStatus(x.status),

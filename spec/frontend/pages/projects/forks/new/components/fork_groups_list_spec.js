@@ -21,7 +21,7 @@ describe('Fork groups list component', () => {
 
   const replyWith = (...args) => axiosMock.onGet(DEFAULT_PROPS.endpoint).reply(...args);
 
-  const createWrapper = propsData => {
+  const createWrapper = (propsData) => {
     wrapper = shallowMount(ForkGroupsList, {
       propsData: {
         ...DEFAULT_PROPS,

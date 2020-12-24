@@ -51,4 +51,4 @@ export const convertToGraphQLId = (type, id) => {
  * @param {Array} ids An array of id values
  * @returns {Array}
  */
-export const convertToGraphQLIds = (type, ids) => ids.map(id => convertToGraphQLId(type, id));
+export const convertToGraphQLIds = (type, ids) => ids.map((id) => convertToGraphQLId(type, id));

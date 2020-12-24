@@ -8,15 +8,15 @@
 export const unwrapArrayOfJobs = (stages = []) => {
   return stages
     .map(({ name, groups }) => {
-      return groups.map(group => {
+      return groups.map((group) => {
         return { category: name, ...group };
       });
     })
     .flat(2);
 };
 
-const unwrapGroups = stages => {
-  return stages.map(stage => {
+const unwrapGroups = (stages) => {
+  return stages.map((stage) => {
     const {
       groups: { nodes: groups },
     } = stage;
@@ -25,21 +25,21 @@ const unwrapGroups = stages => {
 };
 
 const unwrapNodesWithName = (jobArray, prop, field = 'name') => {
-  return jobArray.map(job => {
-    return { ...job, [prop]: job[prop].nodes.map(item => item[field]) };
+  return jobArray.map((job) => {
+    return { ...job, [prop]: job[prop].nodes.map((item) => item[field]) };
   });
 };
 
-const unwrapJobWithNeeds = denodedJobArray => {
+const unwrapJobWithNeeds = (denodedJobArray) => {
   return unwrapNodesWithName(denodedJobArray, 'needs');
 };
 
-const unwrapStagesWithNeeds = denodedStages => {
+const unwrapStagesWithNeeds = (denodedStages) => {
   const unwrappedNestedGroups = unwrapGroups(denodedStages);
 
-  const nodes = unwrappedNestedGroups.map(node => {
+  const nodes = unwrappedNestedGroups.map((node) => {
     const { groups } = node;
-    const groupsWithJobs = groups.map(group => {
+    const groupsWithJobs = groups.map((group) => {
       const jobs = unwrapJobWithNeeds(group.jobs.nodes);
       return { ...group, jobs };
     });

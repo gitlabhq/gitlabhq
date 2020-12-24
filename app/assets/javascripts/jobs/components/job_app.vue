@@ -134,7 +134,7 @@ export default {
       if (isEmpty(oldVal) && !isEmpty(newVal.pipeline)) {
         const stages = this.job.pipeline.details.stages || [];
 
-        const defaultStage = stages.find(stage => stage && stage.name === this.selectedStage);
+        const defaultStage = stages.find((stage) => stage && stage.name === this.selectedStage);
 
         if (defaultStage) {
           this.fetchJobsForStage(defaultStage);

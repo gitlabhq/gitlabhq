@@ -30,7 +30,7 @@ describe('Release edit component', () => {
       updateAssetLinkName: jest.fn(),
       updateAssetLinkType: jest.fn(),
       removeAssetLink: jest.fn().mockImplementation((_context, linkId) => {
-        state.release.assets.links = state.release.assets.links.filter(l => l.id !== linkId);
+        state.release.assets.links = state.release.assets.links.filter((l) => l.id !== linkId);
       }),
     };
 
@@ -104,7 +104,7 @@ describe('Release edit component', () => {
         expect(actions.updateAssetLinkUrl).not.toHaveBeenCalled();
       };
 
-      const dispatchKeydowEvent = eventParams => {
+      const dispatchKeydowEvent = (eventParams) => {
         const event = new KeyboardEvent('keydown', eventParams);
 
         input.dispatchEvent(event);
@@ -162,7 +162,7 @@ describe('Release edit component', () => {
         expect(actions.updateAssetLinkUrl).not.toHaveBeenCalled();
       };
 
-      const dispatchKeydowEvent = eventParams => {
+      const dispatchKeydowEvent = (eventParams) => {
         const event = new KeyboardEvent('keydown', eventParams);
 
         input.dispatchEvent(event);

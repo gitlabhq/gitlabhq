@@ -11,17 +11,17 @@ jest.mock('~/reports/codequality_report/workers/codequality_comparison_worker', 
       addEventListener: (_, callback) => {
         mockPostMessageCallback = callback;
       },
-      postMessage: data => {
+      postMessage: (data) => {
         if (!data.headIssues) return mockPostMessageCallback({ data: {} });
         if (!data.baseIssues) throw new Error();
         const key = 'fingerprint';
         return mockPostMessageCallback({
           data: {
             newIssues: data.headIssues.filter(
-              item => !data.baseIssues.find(el => el[key] === item[key]),
+              (item) => !data.baseIssues.find((el) => el[key] === item[key]),
             ),
             resolvedIssues: data.baseIssues.filter(
-              item => !data.headIssues.find(el => el[key] === item[key]),
+              (item) => !data.headIssues.find((el) => el[key] === item[key]),
             ),
           },
         });

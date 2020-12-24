@@ -108,7 +108,7 @@ export default {
     fetchGroups({ parentId, page, filterGroupsBy, sortBy, archived, updatePagination }) {
       return this.service
         .getGroups(parentId, page, filterGroupsBy, sortBy, archived)
-        .then(res => {
+        .then((res) => {
           if (updatePagination) {
             this.updatePagination(res.headers);
           }
@@ -135,7 +135,7 @@ export default {
         sortBy,
         archived,
         updatePagination: true,
-      }).then(res => {
+      }).then((res) => {
         this.isLoading = false;
         this.updateGroups(res, Boolean(filterGroupsBy));
       });
@@ -149,7 +149,7 @@ export default {
         sortBy,
         archived,
         updatePagination: true,
-      }).then(res => {
+      }).then((res) => {
         this.isLoading = false;
         $.scrollTo(0);
 
@@ -173,7 +173,7 @@ export default {
           this.fetchGroups({
             parentId: parentGroup.id,
           })
-            .then(res => {
+            .then((res) => {
               this.store.setGroupChildren(parentGroup, res);
             })
             .catch(() => {
@@ -194,12 +194,12 @@ export default {
       this.targetGroup.isBeingRemoved = true;
       this.service
         .leaveGroup(this.targetGroup.leavePath)
-        .then(res => {
+        .then((res) => {
           $.scrollTo(0);
           this.store.removeGroup(this.targetGroup, this.targetParentGroup);
           this.$toast.show(res.data.notice);
         })
-        .catch(err => {
+        .catch((err) => {
           let message = COMMON_STR.FAILURE;
           if (err.status === 403) {
             message = COMMON_STR.LEAVE_FORBIDDEN;

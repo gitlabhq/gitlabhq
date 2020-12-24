@@ -63,7 +63,7 @@ export default {
       return this.openPendingTab({
         file: this.file,
         keyPrefix: this.keyPrefix,
-      }).then(changeViewer => {
+      }).then((changeViewer) => {
         if (changeViewer) {
           this.updateViewer(viewerTypes.diff);
         }

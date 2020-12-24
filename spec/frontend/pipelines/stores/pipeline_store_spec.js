@@ -32,14 +32,14 @@ describe('EE Pipeline store', () => {
 
     describe('triggered', () => {
       it('adds isExpanding & isLoading keys set to false for each triggered pipeline', () => {
-        store.state.pipeline.triggered.forEach(pipeline => {
+        store.state.pipeline.triggered.forEach((pipeline) => {
           expect(pipeline.isExpanded).toEqual(false);
           expect(pipeline.isLoading).toEqual(false);
         });
       });
 
       it('parses nested triggered pipelines', () => {
-        store.state.pipeline.triggered[1].triggered.forEach(pipeline => {
+        store.state.pipeline.triggered[1].triggered.forEach((pipeline) => {
           expect(pipeline.isExpanded).toEqual(false);
           expect(pipeline.isLoading).toEqual(false);
         });

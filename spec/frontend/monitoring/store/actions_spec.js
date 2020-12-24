@@ -88,7 +88,7 @@ describe('Monitoring store actions', () => {
   // Setup
 
   describe('setGettingStartedEmptyState', () => {
-    it('should commit SET_GETTING_STARTED_EMPTY_STATE mutation', done => {
+    it('should commit SET_GETTING_STARTED_EMPTY_STATE mutation', (done) => {
       testAction(
         setGettingStartedEmptyState,
         null,
@@ -105,7 +105,7 @@ describe('Monitoring store actions', () => {
   });
 
   describe('setInitialState', () => {
-    it('should commit SET_INITIAL_STATE mutation', done => {
+    it('should commit SET_INITIAL_STATE mutation', (done) => {
       testAction(
         setInitialState,
         {
@@ -233,7 +233,7 @@ describe('Monitoring store actions', () => {
         };
       });
 
-      it('dispatches a failure', done => {
+      it('dispatches a failure', (done) => {
         result()
           .then(() => {
             expect(commit).toHaveBeenCalledWith(
@@ -250,7 +250,7 @@ describe('Monitoring store actions', () => {
           .catch(done.fail);
       });
 
-      it('dispatches a failure action when a message is returned', done => {
+      it('dispatches a failure action when a message is returned', (done) => {
         result()
           .then(() => {
             expect(dispatch).toHaveBeenCalledWith(
@@ -265,7 +265,7 @@ describe('Monitoring store actions', () => {
           .catch(done.fail);
       });
 
-      it('does not show a flash error when showErrorBanner is disabled', done => {
+      it('does not show a flash error when showErrorBanner is disabled', (done) => {
         state.showErrorBanner = false;
 
         result()
@@ -322,7 +322,7 @@ describe('Monitoring store actions', () => {
       state.timeRange = defaultTimeRange;
     });
 
-    it('commits empty state when state.groups is empty', done => {
+    it('commits empty state when state.groups is empty', (done) => {
       const localGetters = {
         metricsWithData: () => [],
       };
@@ -353,7 +353,7 @@ describe('Monitoring store actions', () => {
         .catch(done.fail);
     });
 
-    it('dispatches fetchPrometheusMetric for each panel query', done => {
+    it('dispatches fetchPrometheusMetric for each panel query', (done) => {
       state.dashboard.panelGroups = convertObjectPropsToCamelCase(
         metricsDashboardResponse.dashboard.panel_groups,
       );
@@ -390,7 +390,7 @@ describe('Monitoring store actions', () => {
       done();
     });
 
-    it('dispatches fetchPrometheusMetric for each panel query, handles an error', done => {
+    it('dispatches fetchPrometheusMetric for each panel query, handles an error', (done) => {
       state.dashboard.panelGroups = metricsDashboardViewModel.panelGroups;
       const metric = state.dashboard.panelGroups[0].panels[0].metrics[0];
 
@@ -449,7 +449,7 @@ describe('Monitoring store actions', () => {
       };
     });
 
-    it('commits result', done => {
+    it('commits result', (done) => {
       mock.onGet(prometheusEndpointPath).reply(200, { data }); // One attempt
 
       testAction(
@@ -485,7 +485,7 @@ describe('Monitoring store actions', () => {
         step: 60,
       };
 
-      it('uses calculated step', done => {
+      it('uses calculated step', (done) => {
         mock.onGet(prometheusEndpointPath).reply(200, { data }); // One attempt
 
         testAction(
@@ -527,7 +527,7 @@ describe('Monitoring store actions', () => {
         step: 7,
       };
 
-      it('uses metric step', done => {
+      it('uses metric step', (done) => {
         mock.onGet(prometheusEndpointPath).reply(200, { data }); // One attempt
 
         testAction(
@@ -558,7 +558,7 @@ describe('Monitoring store actions', () => {
       });
     });
 
-    it('commits failure, when waiting for results and getting a server error', done => {
+    it('commits failure, when waiting for results and getting a server error', (done) => {
       mock.onGet(prometheusEndpointPath).reply(500);
 
       const error = new Error('Request failed with status code 500');
@@ -583,7 +583,7 @@ describe('Monitoring store actions', () => {
           },
         ],
         [],
-      ).catch(e => {
+      ).catch((e) => {
         expect(e).toEqual(error);
         done();
       });
@@ -991,7 +991,7 @@ describe('Monitoring store actions', () => {
       state.dashboardsEndpoint = '/dashboards.json';
     });
 
-    it('Succesful POST request resolves', done => {
+    it('Succesful POST request resolves', (done) => {
       mock.onPost(state.dashboardsEndpoint).reply(statusCodes.CREATED, {
         dashboard: dashboardGitResponse[1],
       });
@@ -1004,7 +1004,7 @@ describe('Monitoring store actions', () => {
         .catch(done.fail);
     });
 
-    it('Succesful POST request resolves to a dashboard', done => {
+    it('Succesful POST request resolves to a dashboard', (done) => {
       const mockCreatedDashboard = dashboardGitResponse[1];
 
       const params = {
@@ -1026,7 +1026,7 @@ describe('Monitoring store actions', () => {
       });
 
       testAction(duplicateSystemDashboard, params, state, [], [])
-        .then(result => {
+        .then((result) => {
           expect(mock.history.post).toHaveLength(1);
           expect(mock.history.post[0].data).toEqual(expectedPayload);
           expect(result).toEqual(mockCreatedDashboard);
@@ -1036,10 +1036,10 @@ describe('Monitoring store actions', () => {
         .catch(done.fail);
     });
 
-    it('Failed POST request throws an error', done => {
+    it('Failed POST request throws an error', (done) => {
       mock.onPost(state.dashboardsEndpoint).reply(statusCodes.BAD_REQUEST);
 
-      testAction(duplicateSystemDashboard, {}, state, [], []).catch(err => {
+      testAction(duplicateSystemDashboard, {}, state, [], []).catch((err) => {
         expect(mock.history.post).toHaveLength(1);
         expect(err).toEqual(expect.any(String));
 
@@ -1047,14 +1047,14 @@ describe('Monitoring store actions', () => {
       });
     });
 
-    it('Failed POST request throws an error with a description', done => {
+    it('Failed POST request throws an error with a description', (done) => {
       const backendErrorMsg = 'This file already exists!';
 
       mock.onPost(state.dashboardsEndpoint).reply(statusCodes.BAD_REQUEST, {
         error: backendErrorMsg,
       });
 
-      testAction(duplicateSystemDashboard, {}, state, [], []).catch(err => {
+      testAction(duplicateSystemDashboard, {}, state, [], []).catch((err) => {
         expect(mock.history.post).toHaveLength(1);
         expect(err).toEqual(expect.any(String));
         expect(err).toEqual(expect.stringContaining(backendErrorMsg));
@@ -1067,7 +1067,7 @@ describe('Monitoring store actions', () => {
   // Variables manipulation
 
   describe('updateVariablesAndFetchData', () => {
-    it('should commit UPDATE_VARIABLE_VALUE mutation and fetch data', done => {
+    it('should commit UPDATE_VARIABLE_VALUE mutation and fetch data', (done) => {
       testAction(
         updateVariablesAndFetchData,
         { pod: 'POD' },

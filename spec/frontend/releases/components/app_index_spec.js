@@ -13,7 +13,7 @@ import ReleasesPagination from '~/releases/components/releases_pagination.vue';
 
 jest.mock('~/lib/utils/common_utils', () => ({
   ...jest.requireActual('~/lib/utils/common_utils'),
-  getParameterByName: jest.fn().mockImplementation(paramName => {
+  getParameterByName: jest.fn().mockImplementation((paramName) => {
     return `${paramName}_param_value`;
   }),
 }));
@@ -28,7 +28,7 @@ describe('Releases App ', () => {
   let wrapper;
   let fetchReleaseSpy;
 
-  const paginatedReleases = rge(21).map(index => ({
+  const paginatedReleases = rge(21).map((index) => ({
     ...convertObjectPropsToCamelCase(release, { deep: true }),
     tagName: `${index}.00`,
   }));

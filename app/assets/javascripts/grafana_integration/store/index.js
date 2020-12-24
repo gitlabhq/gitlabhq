@@ -6,7 +6,7 @@ import mutations from './mutations';
 
 Vue.use(Vuex);
 
-export const createStore = initialState =>
+export const createStore = (initialState) =>
   new Vuex.Store({
     state: createState(initialState),
     actions,

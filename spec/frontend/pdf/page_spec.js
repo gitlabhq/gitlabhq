@@ -14,7 +14,7 @@ describe('Page component', () => {
     vm.$destroy();
   });
 
-  it('renders the page when mounting', done => {
+  it('renders the page when mounting', (done) => {
     const promise = Promise.resolve();
     const testPage = {
       render: jest.fn().mockReturnValue({ promise: Promise.resolve() }),

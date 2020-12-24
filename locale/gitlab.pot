@@ -4160,10 +4160,10 @@ msgstr ""
 msgid "Auto-close referenced issues on default branch"
 msgstr ""
 
-msgid "AutoDevOps|Auto DevOps"
+msgid "AutoDevOps|%{auto_devops_start}Automate building, testing, and deploying%{auto_devops_end} your applications based on your continuous integration and delivery configuration. %{quickstart_start}How do I get started?%{quickstart_end}"
 msgstr ""
 
-msgid "AutoDevOps|Auto DevOps can automatically build, test, and deploy applications based on predefined continuous integration and delivery configuration. %{auto_devops_start}Learn more about Auto DevOps%{auto_devops_end} or use our %{quickstart_start}quick start guide%{quickstart_end} to get started right away."
+msgid "AutoDevOps|Auto DevOps"
 msgstr ""
 
 msgid "AutoDevOps|Auto DevOps documentation"
@@ -4930,7 +4930,10 @@ msgstr ""
 msgid "CI/CD settings"
 msgstr ""
 
-msgid "CICD|Add a %{kubernetes_cluster_link_start}Kubernetes cluster integration%{link_end} with a domain or create an AUTO_DEVOPS_PLATFORM_TARGET CI variable."
+msgid "CICD|Add a %{base_domain_link_start}base domain%{link_end} to your %{kubernetes_cluster_link_start}Kubernetes cluster%{link_end} for your deployment strategy to work."
+msgstr ""
+
+msgid "CICD|Add a %{kubernetes_cluster_link_start}Kubernetes cluster integration%{link_end} with a domain, or create an AUTO_DEVOPS_PLATFORM_TARGET CI variable."
 msgstr ""
 
 msgid "CICD|Auto DevOps"
@@ -4957,10 +4960,10 @@ msgstr ""
 msgid "CICD|Jobs"
 msgstr ""
 
-msgid "CICD|The Auto DevOps pipeline will run if no alternative CI configuration file is found."
+msgid "CICD|The Auto DevOps pipeline runs if no alternative CI configuration file is found."
 msgstr ""
 
-msgid "CICD|You must add a %{base_domain_link_start}base domain%{link_end} to your %{kubernetes_cluster_link_start}Kubernetes cluster%{link_end} in order for your deployment strategy to work."
+msgid "CICD|The Auto DevOps pipeline will run if no alternative CI configuration file is found."
 msgstr ""
 
 msgid "CICD|group enabled"
@@ -13913,7 +13916,7 @@ msgstr ""
 msgid "GroupSettings|Select a sub-group as the custom project template source for this group."
 msgstr ""
 
-msgid "GroupSettings|The Auto DevOps pipeline will run if no alternative CI configuration file is found."
+msgid "GroupSettings|The Auto DevOps pipeline runs if no alternative CI configuration file is found."
 msgstr ""
 
 msgid "GroupSettings|There was a problem updating Auto DevOps pipeline: %{error_messages}."

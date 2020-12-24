@@ -16,14 +16,14 @@ export default class GlFieldErrors {
   initValidators() {
     // register selectors here as needed
     const validateSelectors = [':text', ':password', '[type=email]', '[type=url]', '[type=number]']
-      .map(selector => `input${selector}`)
+      .map((selector) => `input${selector}`)
       .join(',');
 
     this.state.inputs = this.form
       .find(validateSelectors)
       .toArray()
-      .filter(input => !input.classList.contains(customValidationFlag))
-      .map(input => new GlFieldError({ input, formErrors: this }));
+      .filter((input) => !input.classList.contains(customValidationFlag))
+      .map((input) => new GlFieldError({ input, formErrors: this }));
 
     this.form.on('submit', GlFieldErrors.catchInvalidFormSubmit);
   }
@@ -45,7 +45,7 @@ export default class GlFieldErrors {
 
   /* Public method for triggering validity updates manually  */
   updateFormValidityState() {
-    this.state.inputs.forEach(field => {
+    this.state.inputs.forEach((field) => {
       if (field.state.submitted) {
         field.updateValidity();
       }

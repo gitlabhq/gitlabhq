@@ -11,7 +11,7 @@ describe('Package Additional Metadata', () => {
     packageEntity: { ...mavenPackage },
   };
 
-  const mountComponent = props => {
+  const mountComponent = (props) => {
     wrapper = shallowMount(component, {
       propsData: { ...defaultProps, ...props },
       stubs: {
@@ -33,7 +33,7 @@ describe('Package Additional Metadata', () => {
   const findConanRecipe = () => wrapper.find('[data-testid="conan-recipe"]');
   const findMavenApp = () => wrapper.find('[data-testid="maven-app"]');
   const findMavenGroup = () => wrapper.find('[data-testid="maven-group"]');
-  const findElementLink = container => container.find(GlLink);
+  const findElementLink = (container) => container.find(GlLink);
 
   it('has the correct title', () => {
     mountComponent();

@@ -172,7 +172,7 @@ export class SearchAutocomplete {
           term,
         },
       })
-      .then(response => {
+      .then((response) => {
         const options = this.scopedSearchOptions(term);
 
         // List results
@@ -345,7 +345,7 @@ export class SearchAutocomplete {
     this.clearInput.on('click', this.onClearInputClick);
     this.dropdownContent.on('scroll', throttle(this.setScrollFade, 250));
 
-    this.searchInput.on('click', e => {
+    this.searchInput.on('click', (e) => {
       e.stopPropagation();
     });
   }

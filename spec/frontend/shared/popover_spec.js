@@ -22,14 +22,14 @@ describe('popover', () => {
         expect(togglePopover.call(context, true)).toEqual(false);
       });
 
-      it('shows popover', done => {
+      it('shows popover', (done) => {
         const context = {
           hasClass: () => false,
           popover: () => {},
           toggleClass: () => {},
         };
 
-        jest.spyOn(context, 'popover').mockImplementation(method => {
+        jest.spyOn(context, 'popover').mockImplementation((method) => {
           expect(method).toEqual('show');
           done();
         });
@@ -37,7 +37,7 @@ describe('popover', () => {
         togglePopover.call(context, true);
       });
 
-      it('adds disable-animation and js-popover-show class', done => {
+      it('adds disable-animation and js-popover-show class', (done) => {
         const context = {
           hasClass: () => false,
           popover: () => {},
@@ -73,14 +73,14 @@ describe('popover', () => {
         expect(togglePopover.call(context, false)).toEqual(false);
       });
 
-      it('hides popover', done => {
+      it('hides popover', (done) => {
         const context = {
           hasClass: () => true,
           popover: () => {},
           toggleClass: () => {},
         };
 
-        jest.spyOn(context, 'popover').mockImplementation(method => {
+        jest.spyOn(context, 'popover').mockImplementation((method) => {
           expect(method).toEqual('hide');
           done();
         });
@@ -88,7 +88,7 @@ describe('popover', () => {
         togglePopover.call(context, false);
       });
 
-      it('removes disable-animation and js-popover-show class', done => {
+      it('removes disable-animation and js-popover-show class', (done) => {
         const context = {
           hasClass: () => true,
           popover: () => {},
@@ -114,7 +114,7 @@ describe('popover', () => {
 
       jest
         .spyOn($.fn, 'init')
-        .mockImplementation(selector => (selector === '.popover:hover' ? fakeJquery : $.fn));
+        .mockImplementation((selector) => (selector === '.popover:hover' ? fakeJquery : $.fn));
       jest.spyOn(togglePopover, 'call').mockImplementation(() => {});
       mouseleave();
 
@@ -128,7 +128,7 @@ describe('popover', () => {
 
       jest
         .spyOn($.fn, 'init')
-        .mockImplementation(selector => (selector === '.popover:hover' ? fakeJquery : $.fn));
+        .mockImplementation((selector) => (selector === '.popover:hover' ? fakeJquery : $.fn));
       jest.spyOn(togglePopover, 'call').mockImplementation(() => {});
       mouseleave();
 
@@ -146,9 +146,9 @@ describe('popover', () => {
       expect(togglePopover.call).toHaveBeenCalledWith(expect.any(Object), true);
     });
 
-    it('registers mouseleave event if popover is showed', done => {
+    it('registers mouseleave event if popover is showed', (done) => {
       jest.spyOn(togglePopover, 'call').mockReturnValue(true);
-      jest.spyOn($.fn, 'on').mockImplementation(eventName => {
+      jest.spyOn($.fn, 'on').mockImplementation((eventName) => {
         expect(eventName).toEqual('mouseleave');
         done();
       });

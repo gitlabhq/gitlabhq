@@ -246,7 +246,7 @@ export default {
     filterPipelines(filters) {
       this.resetRequestData();
 
-      filters.forEach(filter => {
+      filters.forEach((filter) => {
         // do not add Any for username query param, so we
         // can fetch all trigger authors
         if (

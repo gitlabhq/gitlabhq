@@ -106,7 +106,7 @@ describe('note_awards_list component', () => {
       awardsMock = [...new Array(1)].map(createAwardEmoji);
       mountComponent();
 
-      awardsMock.forEach(award => {
+      awardsMock.forEach((award) => {
         expect(findTooltip()).toContain(award.user.name);
       });
     });
@@ -115,7 +115,7 @@ describe('note_awards_list component', () => {
       awardsMock = [...new Array(2)].map(createAwardEmoji);
       mountComponent();
 
-      awardsMock.forEach(award => {
+      awardsMock.forEach((award) => {
         expect(findTooltip()).toContain(award.user.name);
       });
     });
@@ -125,7 +125,7 @@ describe('note_awards_list component', () => {
       mountComponent();
 
       // Testing only the first 10 awards since 11 onward will not be displayed.
-      awardsMock.slice(0, 10).forEach(award => {
+      awardsMock.slice(0, 10).forEach((award) => {
         expect(findTooltip()).toContain(award.user.name);
       });
     });

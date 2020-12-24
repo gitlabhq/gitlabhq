@@ -33,7 +33,7 @@ const projectSelect = () => {
         $(select).select2({
           placeholder,
           minimumInputLength: 0,
-          query: query => {
+          query: (query) => {
             let projectsCallback;
             const finalCallback = function (projects) {
               const data = {

@@ -34,11 +34,11 @@ describe('DashboardsDropdown', () => {
   }
 
   const findItems = () => wrapper.findAll(GlDropdownItem);
-  const findItemAt = i => wrapper.findAll(GlDropdownItem).at(i);
+  const findItemAt = (i) => wrapper.findAll(GlDropdownItem).at(i);
   const findSearchInput = () => wrapper.find({ ref: 'monitorDashboardsDropdownSearch' });
   const findNoItemsMsg = () => wrapper.find({ ref: 'monitorDashboardsDropdownMsg' });
   const findStarredListDivider = () => wrapper.find({ ref: 'starredListDivider' });
-  const setSearchTerm = searchTerm => wrapper.setData({ searchTerm });
+  const setSearchTerm = (searchTerm) => wrapper.setData({ searchTerm });
 
   beforeEach(() => {
     mockDashboards = dashboardGitResponse;
@@ -105,7 +105,7 @@ describe('DashboardsDropdown', () => {
 
   describe('when the dashboard is missing a display name', () => {
     beforeEach(() => {
-      mockDashboards = dashboardGitResponse.map(d => ({ ...d, display_name: undefined }));
+      mockDashboards = dashboardGitResponse.map((d) => ({ ...d, display_name: undefined }));
       createComponent();
     });
 

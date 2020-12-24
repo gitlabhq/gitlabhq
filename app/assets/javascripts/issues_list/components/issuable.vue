@@ -110,7 +110,7 @@ export default {
       return getDayDifference(new Date(this.issuable.created_at), new Date()) < 1;
     },
     labelIdsString() {
-      return JSON.stringify(this.issuable.labels.map(l => l.id));
+      return JSON.stringify(this.issuable.labels.map((l) => l.id));
     },
     milestoneDueDate() {
       const { due_date: dueDate } = this.issuable.milestone || {};

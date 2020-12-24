@@ -36,7 +36,7 @@ export const fetchConfigCheck = ({ dispatch, rootState, rootGetters }) => {
     .then(() => {
       dispatch('receiveConfigCheckSuccess');
     })
-    .catch(e => {
+    .catch((e) => {
       dispatch('receiveConfigCheckError', e);
     });
 };
@@ -92,7 +92,7 @@ export const fetchRunnersCheck = ({ dispatch, rootGetters }, options = {}) => {
     .then(({ data }) => {
       dispatch('receiveRunnersCheckSuccess', data);
     })
-    .catch(e => {
+    .catch((e) => {
       dispatch('receiveRunnersCheckError', e);
     });
 };

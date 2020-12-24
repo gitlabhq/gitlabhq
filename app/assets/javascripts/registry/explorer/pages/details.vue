@@ -25,6 +25,7 @@ import {
 } from '../constants/index';
 
 export default {
+  name: 'RegistryDetailsPage',
   components: {
     DeleteAlert,
     PartialCleanupAlert,
@@ -97,7 +98,7 @@ export default {
   },
   methods: {
     deleteTags(toBeDeleted) {
-      this.itemsToBeDeleted = this.tags.filter(tag => toBeDeleted[tag.name]);
+      this.itemsToBeDeleted = this.tags.filter((tag) => toBeDeleted[tag.name]);
       this.track('click_button');
       this.$refs.deleteModal.show();
     },
@@ -111,7 +112,7 @@ export default {
           mutation: deleteContainerRepositoryTagsMutation,
           variables: {
             id: this.queryVariables.id,
-            tagNames: itemsToBeDeleted.map(i => i.name),
+            tagNames: itemsToBeDeleted.map((i) => i.name),
           },
           awaitRefetchQueries: true,
           refetchQueries: [

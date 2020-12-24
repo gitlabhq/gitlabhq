@@ -40,7 +40,7 @@ function mountAssigneesComponent(mediator) {
     components: {
       SidebarAssignees,
     },
-    render: createElement =>
+    render: (createElement) =>
       createElement('sidebar-assignees', {
         props: {
           mediator,
@@ -70,7 +70,7 @@ function mountReviewersComponent(mediator) {
     components: {
       SidebarReviewers,
     },
-    render: createElement =>
+    render: (createElement) =>
       createElement('sidebar-reviewers', {
         props: {
           mediator,
@@ -105,7 +105,7 @@ export function mountSidebarLabels() {
       allowScopedLabels: parseBoolean(el.dataset.allowScopedLabels),
       initiallySelectedLabels: JSON.parse(el.dataset.selectedLabels),
     },
-    render: createElement => createElement(SidebarLabels),
+    render: (createElement) => createElement(SidebarLabels),
   });
 }
 
@@ -128,7 +128,7 @@ function mountConfidentialComponent(mediator) {
           components: {
             ConfidentialIssueSidebar,
           },
-          render: createElement =>
+          render: (createElement) =>
             createElement('confidential-issue-sidebar', {
               props: {
                 iid: String(iid),
@@ -163,20 +163,20 @@ function mountLockComponent() {
     );
   } else {
     importStore = import(/* webpackChunkName: 'mrNotesStore' */ '~/mr_notes/stores').then(
-      store => store.default,
+      (store) => store.default,
     );
   }
 
   importStore
     .then(
-      store =>
+      (store) =>
         new Vue({
           el,
           store,
           provide: {
             fullPath,
           },
-          render: createElement =>
+          render: (createElement) =>
             createElement(IssuableLockForm, {
               props: {
                 isEditable: initialData.is_editable,
@@ -200,7 +200,7 @@ function mountParticipantsComponent(mediator) {
     components: {
       sidebarParticipants,
     },
-    render: createElement =>
+    render: (createElement) =>
       createElement('sidebar-participants', {
         props: {
           mediator,
@@ -220,7 +220,7 @@ function mountSubscriptionsComponent(mediator) {
     components: {
       sidebarSubscriptions,
     },
-    render: createElement =>
+    render: (createElement) =>
       createElement('sidebar-subscriptions', {
         props: {
           mediator,
@@ -240,7 +240,7 @@ function mountTimeTrackingComponent() {
     components: {
       SidebarTimeTracking,
     },
-    render: createElement => createElement('sidebar-time-tracking', {}),
+    render: (createElement) => createElement('sidebar-time-tracking', {}),
   });
 }
 
@@ -262,7 +262,7 @@ function mountSeverityComponent() {
     components: {
       SidebarSeverity,
     },
-    render: createElement =>
+    render: (createElement) =>
       createElement('sidebar-severity', {
         props: {
           projectPath: fullPath,

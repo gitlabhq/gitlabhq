@@ -23,7 +23,7 @@ export default {
 
   [types.RECEIVE_BRANCHES_SUCCESS](state, response) {
     state.matches.branches = {
-      list: convertObjectPropsToCamelCase(response.data).map(b => ({
+      list: convertObjectPropsToCamelCase(response.data).map((b) => ({
         name: b.name,
         default: b.default,
       })),
@@ -41,7 +41,7 @@ export default {
 
   [types.RECEIVE_TAGS_SUCCESS](state, response) {
     state.matches.tags = {
-      list: convertObjectPropsToCamelCase(response.data).map(b => ({
+      list: convertObjectPropsToCamelCase(response.data).map((b) => ({
         name: b.name,
       })),
       totalCount: parseInt(response.headers[X_TOTAL_HEADER], 10),

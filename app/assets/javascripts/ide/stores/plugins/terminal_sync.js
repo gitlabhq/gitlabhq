@@ -12,7 +12,7 @@ const UPLOAD_DEBOUNCE = 200;
  * - Listens for file change event to control upload.
  */
 export default function createMirrorPlugin() {
-  return store => {
+  return (store) => {
     store.registerModule('terminalSync', terminalSyncModule());
 
     const upload = debounce(() => {
@@ -36,8 +36,8 @@ export default function createMirrorPlugin() {
     };
 
     store.watch(
-      x => x.terminal && x.terminal.session && x.terminal.session.status,
-      val => {
+      (x) => x.terminal && x.terminal.session && x.terminal.session.status,
+      (val) => {
         if (isRunningStatus(val)) {
           start();
         } else if (isEndingStatus(val)) {

@@ -12,9 +12,9 @@ import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 
 let eTagPoll;
 
-const hasRedirectInError = e => e?.response?.data?.error?.redirect;
-const redirectToUrlInError = e => visitUrl(e.response.data.error.redirect);
-const tooManyRequests = e => e.response.status === httpStatusCodes.TOO_MANY_REQUESTS;
+const hasRedirectInError = (e) => e?.response?.data?.error?.redirect;
+const redirectToUrlInError = (e) => visitUrl(e.response.data.error.redirect);
+const tooManyRequests = (e) => e.response.status === httpStatusCodes.TOO_MANY_REQUESTS;
 const pathWithParams = ({ path, ...params }) => {
   const filteredParams = Object.fromEntries(
     Object.entries(params).filter(([, value]) => value !== ''),
@@ -47,7 +47,7 @@ const importAll = ({ state, dispatch }) => {
   return Promise.all(
     state.repositories
       .filter(isProjectImportable)
-      .map(r => dispatch('fetchImport', r.importSource.id)),
+      .map((r) => dispatch('fetchImport', r.importSource.id)),
   );
 };
 
@@ -69,7 +69,7 @@ const fetchReposFactory = ({ reposPath = isRequired() }) => ({ state, commit }) 
     .then(({ data }) => {
       commit(types.RECEIVE_REPOS_SUCCESS, convertObjectPropsToCamelCase(data, { deep: true }));
     })
-    .catch(e => {
+    .catch((e) => {
       commit(types.SET_PAGE, nextPage - 1);
 
       if (hasRedirectInError(e)) {
@@ -114,7 +114,7 @@ const fetchImportFactory = (importPath = isRequired()) => ({ state, commit, gett
         repoId,
       });
     })
-    .catch(e => {
+    .catch((e) => {
       const serverErrorMessage = e?.response?.data?.errors;
       const flashMessage = serverErrorMessage
         ? sprintf(
@@ -145,7 +145,7 @@ export const fetchJobsFactory = (jobsPath = isRequired()) => ({ state, commit, d
     method: 'fetchJobs',
     successCallback: ({ data }) =>
       commit(types.RECEIVE_JOBS_SUCCESS, convertObjectPropsToCamelCase(data, { deep: true })),
-    errorCallback: e => {
+    errorCallback: (e) => {
       if (hasRedirectInError(e)) {
         redirectToUrlInError(e);
       } else {

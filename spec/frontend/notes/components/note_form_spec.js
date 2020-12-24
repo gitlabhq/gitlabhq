@@ -28,7 +28,7 @@ describe('issue_note_form component', () => {
   };
 
   beforeEach(() => {
-    getDraft.mockImplementation(key => {
+    getDraft.mockImplementation((key) => {
       if (key === dummyAutosaveKey) {
         return dummyDraft;
       }
@@ -294,7 +294,7 @@ describe('issue_note_form component', () => {
         discussion: {
           ...discussionMock,
           notes: [
-            ...discussionMock.notes.map(n => ({
+            ...discussionMock.notes.map((n) => ({
               ...n,
               resolvable: true,
               current_user: { ...n.current_user, can_resolve_discussion: false },

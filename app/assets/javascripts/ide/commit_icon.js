@@ -1,6 +1,6 @@
 import { commitItemIconMap } from './constants';
 
-export default file => {
+export default (file) => {
   if (file.deleted) {
     return commitItemIconMap.deleted;
   } else if (file.tempFile && !file.prevPath) {

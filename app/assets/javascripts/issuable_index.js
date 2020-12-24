@@ -13,7 +13,7 @@ export default class IssuableIndex {
   static resetIncomingEmailToken() {
     const $resetToken = $('.incoming-email-token-reset');
 
-    $resetToken.on('click', e => {
+    $resetToken.on('click', (e) => {
       e.preventDefault();
 
       $resetToken.text(s__('EmailToken|resetting...'));

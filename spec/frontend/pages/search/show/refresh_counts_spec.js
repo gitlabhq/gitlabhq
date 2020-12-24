@@ -4,7 +4,7 @@ import axios from '~/lib/utils/axios_utils';
 import refreshCounts from '~/pages/search/show/refresh_counts';
 
 const URL = `${TEST_HOST}/search/count?search=lorem+ipsum&project_id=3`;
-const urlWithScope = scope => `${URL}&scope=${scope}`;
+const urlWithScope = (scope) => `${URL}&scope=${scope}`;
 const counts = [
   { scope: 'issues', count: 4 },
   { scope: 'merge_requests', count: 5 },

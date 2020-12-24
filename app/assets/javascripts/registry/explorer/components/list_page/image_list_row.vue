@@ -18,7 +18,7 @@ import {
 } from '../../constants/index';
 
 export default {
-  name: 'ImageListrow',
+  name: 'ImageListRow',
   components: {
     ClipboardButton,
     DeleteButton,

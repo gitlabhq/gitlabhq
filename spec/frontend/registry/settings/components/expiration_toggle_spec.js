@@ -13,7 +13,7 @@ describe('ExpirationToggle', () => {
   const findToggle = () => wrapper.find(GlToggle);
   const findDescription = () => wrapper.find('[data-testid="description"]');
 
-  const mountComponent = propsData => {
+  const mountComponent = (propsData) => {
     wrapper = shallowMount(component, {
       stubs: {
         GlFormGroup,

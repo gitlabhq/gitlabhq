@@ -46,7 +46,7 @@ describe('Details Page', () => {
     updateName: jest.fn(),
   };
 
-  const cleanTags = tagsMock.map(t => {
+  const cleanTags = tagsMock.map((t) => {
     const result = { ...t };
     // eslint-disable-next-line no-underscore-dangle
     delete result.__typename;
@@ -58,7 +58,7 @@ describe('Details Page', () => {
     await wrapper.vm.$nextTick();
   };
 
-  const tagsArrayToSelectedTags = tags =>
+  const tagsArrayToSelectedTags = (tags) =>
     tags.reduce((acc, c) => {
       acc[c.name] = true;
       return acc;
@@ -334,7 +334,7 @@ describe('Details Page', () => {
           findDeleteModal().vm.$emit('confirmDelete');
 
           expect(mutationResolver).toHaveBeenCalledWith(
-            expect.objectContaining({ tagNames: tagsMock.map(t => t.name) }),
+            expect.objectContaining({ tagNames: tagsMock.map((t) => t.name) }),
           );
         });
       });

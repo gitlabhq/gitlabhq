@@ -16,6 +16,26 @@ module Types
       def detailed_status
         object.detailed_status(context[:current_user])
       end
+
+      # Issues one query per pipeline
+      def groups
+        BatchLoader::GraphQL.for([object.pipeline, object]).batch(default_value: []) do |keys, loader|
+          by_pipeline = keys.group_by(&:first)
+
+          by_pipeline.each do |pl, key_group|
+            project = pl.project
+            stages = key_group.map(&:second).uniq
+            indexed = stages.index_by(&:id)
+            results = pl.latest_statuses.where(stage_id: stages.map(&:id)) # rubocop: disable CodeReuse/ActiveRecord
+
+            results.group_by(&:stage_id).each do |stage_id, statuses|
+              stage = indexed[stage_id]
+              groups = ::Ci::Group.fabricate(project, stage, statuses)
+              loader.call([pl, stage], groups)
+            end
+          end
+        end
+      end
     end
   end
 end

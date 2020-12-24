@@ -39,7 +39,7 @@ export default {
       return this.users.length > 2;
     },
     allAssigneesCanMerge() {
-      return this.users.every(user => user.can_merge);
+      return this.users.every((user) => user.can_merge);
     },
     sidebarAvatarCounter() {
       if (this.users.length > DEFAULT_MAX_COUNTER) {
@@ -58,7 +58,7 @@ export default {
         return '';
       }
 
-      const mergeLength = this.users.filter(u => u.can_merge).length;
+      const mergeLength = this.users.filter((u) => u.can_merge).length;
 
       if (mergeLength === this.users.length) {
         return '';
@@ -74,7 +74,7 @@ export default {
     tooltipTitle() {
       const maxRender = Math.min(DEFAULT_RENDER_COUNT, this.users.length);
       const renderUsers = this.users.slice(0, maxRender);
-      const names = renderUsers.map(u => u.name);
+      const names = renderUsers.map((u) => u.name);
 
       if (!this.users.length) {
         return __('Assignee(s)');

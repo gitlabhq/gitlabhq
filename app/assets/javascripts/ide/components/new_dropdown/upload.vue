@@ -30,7 +30,7 @@ export default {
       const rawContent = encodedContent ? atob(encodedContent) : '';
       const isText = isTextFile({ content: rawContent, mimeType, name });
 
-      const emitCreateEvent = content =>
+      const emitCreateEvent = (content) =>
         this.$emit('create', {
           name: `${this.path ? `${this.path}/` : ''}${name}`,
           type: 'blob',
@@ -42,7 +42,7 @@ export default {
       if (isText) {
         const reader = new FileReader();
 
-        reader.addEventListener('load', e => emitCreateEvent(e.target.result), { once: true });
+        reader.addEventListener('load', (e) => emitCreateEvent(e.target.result), { once: true });
         reader.readAsText(file);
       } else {
         emitCreateEvent(rawContent);
@@ -51,11 +51,11 @@ export default {
     readFile(file) {
       const reader = new FileReader();
 
-      reader.addEventListener('load', e => this.createFile(e.target, file), { once: true });
+      reader.addEventListener('load', (e) => this.createFile(e.target, file), { once: true });
       reader.readAsDataURL(file);
     },
     openFile() {
-      Array.from(this.$refs.fileUpload.files).forEach(file => this.readFile(file));
+      Array.from(this.$refs.fileUpload.files).forEach((file) => this.readFile(file));
     },
     startFileUpload() {
       this.$refs.fileUpload.click();

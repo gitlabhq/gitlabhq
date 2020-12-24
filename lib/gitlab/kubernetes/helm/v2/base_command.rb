@@ -7,7 +7,7 @@ module Gitlab
         class BaseCommand
           attr_reader :name, :files
 
-          HELM_VERSION = '2.16.9'
+          HELM_VERSION = '2.17.0'
 
           def initialize(rbac:, name:, files:)
             @rbac = rbac

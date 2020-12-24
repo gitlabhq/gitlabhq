@@ -46,7 +46,7 @@ describe('RadioFilter', () => {
 
   const findGlRadioButtonGroup = () => wrapper.find(GlFormRadioGroup);
   const findGlRadioButtons = () => findGlRadioButtonGroup().findAll(GlFormRadio);
-  const findGlRadioButtonsText = () => findGlRadioButtons().wrappers.map(w => w.text());
+  const findGlRadioButtonsText = () => findGlRadioButtons().wrappers.map((w) => w.text());
 
   describe('template', () => {
     beforeEach(() => {
@@ -61,7 +61,7 @@ describe('RadioFilter', () => {
       describe('Status Filter', () => {
         it('renders a radio button for each filterOption', () => {
           expect(findGlRadioButtonsText()).toStrictEqual(
-            stateFilterData.filterByScope[stateFilterData.scopes.ISSUES].map(f => {
+            stateFilterData.filterByScope[stateFilterData.scopes.ISSUES].map((f) => {
               return f.value === stateFilterData.filters.ANY.value
                 ? `Any ${stateFilterData.header.toLowerCase()}`
                 : f.label;
@@ -87,7 +87,7 @@ describe('RadioFilter', () => {
 
         it('renders a radio button for each filterOption', () => {
           expect(findGlRadioButtonsText()).toStrictEqual(
-            confidentialFilterData.filterByScope[confidentialFilterData.scopes.ISSUES].map(f => {
+            confidentialFilterData.filterByScope[confidentialFilterData.scopes.ISSUES].map((f) => {
               return f.value === confidentialFilterData.filters.ANY.value
                 ? `Any ${confidentialFilterData.header.toLowerCase()}`
                 : f.label;

@@ -3,7 +3,7 @@ import { spriteIcon } from '~/lib/utils/common_utils';
 export function createImageBadge(noteId, { x, y }, classNames = []) {
   const buttonEl = document.createElement('button');
   const classList = classNames.concat(['js-image-badge']);
-  classList.forEach(className => buttonEl.classList.add(className));
+  classList.forEach((className) => buttonEl.classList.add(className));
   buttonEl.setAttribute('type', 'button');
   buttonEl.setAttribute('disabled', true);
   buttonEl.dataset.noteId = noteId;

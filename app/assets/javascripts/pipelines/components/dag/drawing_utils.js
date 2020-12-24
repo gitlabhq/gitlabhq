@@ -92,8 +92,8 @@ export const createSankey = ({
     ]);
   return ({ nodes, links }) =>
     sankeyGenerator({
-      nodes: nodes.map(d => ({ ...d })),
-      links: links.map(d => ({ ...d })),
+      nodes: nodes.map((d) => ({ ...d })),
+      links: links.map((d) => ({ ...d })),
     });
 };
 

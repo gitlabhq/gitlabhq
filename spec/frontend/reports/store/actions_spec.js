@@ -24,7 +24,7 @@ describe('Reports Store Actions', () => {
   });
 
   describe('setEndpoint', () => {
-    it('should commit SET_ENDPOINT mutation', done => {
+    it('should commit SET_ENDPOINT mutation', (done) => {
       testAction(
         setEndpoint,
         'endpoint.json',
@@ -37,7 +37,7 @@ describe('Reports Store Actions', () => {
   });
 
   describe('requestReports', () => {
-    it('should commit REQUEST_REPORTS mutation', done => {
+    it('should commit REQUEST_REPORTS mutation', (done) => {
       testAction(requestReports, null, mockedState, [{ type: types.REQUEST_REPORTS }], [], done);
     });
   });
@@ -57,7 +57,7 @@ describe('Reports Store Actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestReports and receiveReportsSuccess ', done => {
+      it('dispatches requestReports and receiveReportsSuccess ', (done) => {
         mock
           .onGet(`${TEST_HOST}/endpoint.json`)
           .replyOnce(200, { summary: {}, suites: [{ name: 'rspec' }] });
@@ -86,7 +86,7 @@ describe('Reports Store Actions', () => {
         mock.onGet(`${TEST_HOST}/endpoint.json`).reply(500);
       });
 
-      it('dispatches requestReports and receiveReportsError ', done => {
+      it('dispatches requestReports and receiveReportsError ', (done) => {
         testAction(
           fetchReports,
           null,
@@ -107,7 +107,7 @@ describe('Reports Store Actions', () => {
   });
 
   describe('receiveReportsSuccess', () => {
-    it('should commit RECEIVE_REPORTS_SUCCESS mutation with 200', done => {
+    it('should commit RECEIVE_REPORTS_SUCCESS mutation with 200', (done) => {
       testAction(
         receiveReportsSuccess,
         { data: { summary: {} }, status: 200 },
@@ -118,7 +118,7 @@ describe('Reports Store Actions', () => {
       );
     });
 
-    it('should not commit RECEIVE_REPORTS_SUCCESS mutation with 204', done => {
+    it('should not commit RECEIVE_REPORTS_SUCCESS mutation with 204', (done) => {
       testAction(
         receiveReportsSuccess,
         { data: { summary: {} }, status: 204 },
@@ -131,7 +131,7 @@ describe('Reports Store Actions', () => {
   });
 
   describe('receiveReportsError', () => {
-    it('should commit RECEIVE_REPORTS_ERROR mutation', done => {
+    it('should commit RECEIVE_REPORTS_ERROR mutation', (done) => {
       testAction(
         receiveReportsError,
         null,
@@ -144,7 +144,7 @@ describe('Reports Store Actions', () => {
   });
 
   describe('openModal', () => {
-    it('should dispatch setModalData', done => {
+    it('should dispatch setModalData', (done) => {
       testAction(
         openModal,
         { name: 'foo' },
@@ -157,7 +157,7 @@ describe('Reports Store Actions', () => {
   });
 
   describe('setModalData', () => {
-    it('should commit SET_ISSUE_MODAL_DATA', done => {
+    it('should commit SET_ISSUE_MODAL_DATA', (done) => {
       testAction(
         setModalData,
         { name: 'foo' },

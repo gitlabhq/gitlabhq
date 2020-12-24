@@ -34,8 +34,8 @@ export default {
       return !this.users.length;
     },
     sortedAssigness() {
-      const canMergeUsers = this.users.filter(user => user.can_merge);
-      const canNotMergeUsers = this.users.filter(user => !user.can_merge);
+      const canMergeUsers = this.users.filter((user) => user.can_merge);
+      const canNotMergeUsers = this.users.filter((user) => !user.can_merge);
 
       return [...canMergeUsers, ...canNotMergeUsers];
     },

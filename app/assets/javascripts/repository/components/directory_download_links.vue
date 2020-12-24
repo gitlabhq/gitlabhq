@@ -18,7 +18,7 @@ export default {
   },
   computed: {
     normalizedLinks() {
-      return this.links.map(link => ({
+      return this.links.map((link) => ({
         text: link.text,
         path: `${link.path}?path=${this.currentPath}`,
       }));

@@ -18,7 +18,7 @@ module Clusters
       include ::Clusters::Concerns::ApplicationStatus
       include ::Gitlab::Utils::StrongMemoize
 
-      default_value_for :version, Gitlab::Kubernetes::Helm::HELM_VERSION
+      default_value_for :version, Gitlab::Kubernetes::Helm::V2::BaseCommand::HELM_VERSION
 
       before_create :create_keys_and_certs
 

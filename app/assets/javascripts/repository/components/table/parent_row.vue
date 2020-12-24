@@ -25,7 +25,7 @@ export default {
       const splitArray = this.path.split('/');
       splitArray.pop();
 
-      return splitArray.map(p => encodeURIComponent(p)).join('/');
+      return splitArray.map((p) => encodeURIComponent(p)).join('/');
     },
     parentRoute() {
       return { path: `/-/tree/${this.commitRef}/${this.parentPath}` };

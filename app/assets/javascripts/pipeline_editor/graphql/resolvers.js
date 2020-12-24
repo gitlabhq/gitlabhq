@@ -18,7 +18,7 @@ export const resolvers = {
         valid: data.valid,
         errors: data.errors,
         warnings: data.warnings,
-        jobs: data.jobs.map(job => {
+        jobs: data.jobs.map((job) => {
           const only = job.only ? { refs: job.only.refs, __typename: 'CiLintJobOnlyPolicy' } : null;
 
           return {

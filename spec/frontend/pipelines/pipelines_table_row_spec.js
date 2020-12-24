@@ -5,7 +5,7 @@ import eventHub from '~/pipelines/event_hub';
 describe('Pipelines Table Row', () => {
   const jsonFixtureName = 'pipelines/pipelines.json';
 
-  const createWrapper = pipeline =>
+  const createWrapper = (pipeline) =>
     mount(PipelinesTableRowComponent, {
       propsData: {
         pipeline,
@@ -24,9 +24,9 @@ describe('Pipelines Table Row', () => {
   beforeEach(() => {
     const { pipelines } = getJSONFixture(jsonFixtureName);
 
-    pipeline = pipelines.find(p => p.user !== null && p.commit !== null);
-    pipelineWithoutAuthor = pipelines.find(p => p.user === null && p.commit !== null);
-    pipelineWithoutCommit = pipelines.find(p => p.user === null && p.commit === null);
+    pipeline = pipelines.find((p) => p.user !== null && p.commit !== null);
+    pipelineWithoutAuthor = pipelines.find((p) => p.user === null && p.commit !== null);
+    pipelineWithoutCommit = pipelines.find((p) => p.user === null && p.commit === null);
   });
 
   afterEach(() => {
@@ -187,7 +187,7 @@ describe('Pipelines Table Row', () => {
     });
 
     it('emits `retryPipeline` event when retry button is clicked and toggles loading', () => {
-      eventHub.$on('retryPipeline', endpoint => {
+      eventHub.$on('retryPipeline', (endpoint) => {
         expect(endpoint).toBe('/retry');
       });
 
@@ -196,7 +196,7 @@ describe('Pipelines Table Row', () => {
     });
 
     it('emits `openConfirmationModal` event when cancel button is clicked and toggles loading', () => {
-      eventHub.$once('openConfirmationModal', data => {
+      eventHub.$once('openConfirmationModal', (data) => {
         const { id, ref, commit } = pipeline;
 
         expect(data.endpoint).toBe('/cancel');
@@ -212,7 +212,7 @@ describe('Pipelines Table Row', () => {
       wrapper.find('.js-pipelines-cancel-button').trigger('click');
     });
 
-    it('renders a loading icon when `cancelingPipeline` matches pipeline id', done => {
+    it('renders a loading icon when `cancelingPipeline` matches pipeline id', (done) => {
       wrapper.setProps({ cancelingPipeline: pipeline.id });
       wrapper.vm
         .$nextTick()

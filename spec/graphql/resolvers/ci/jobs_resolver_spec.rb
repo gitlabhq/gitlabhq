@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe Resolvers::Ci::JobsResolver do
   include GraphqlHelpers
 
-  let_it_be(:pipeline) { create(:ci_pipeline) }
+  let_it_be(:project) { create(:project, :repository, :public) }
+  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
   before_all do
     create(:ci_build, name: 'Normal job', pipeline: pipeline)

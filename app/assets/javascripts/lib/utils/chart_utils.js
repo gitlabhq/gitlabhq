@@ -34,7 +34,7 @@ const commonChartOptions = () => ({
   legend: false,
 });
 
-export const barChartOptions = shouldAdjustFontSize => ({
+export const barChartOptions = (shouldAdjustFontSize) => ({
   ...commonChartOptions(),
   scales: {
     ...yAxesConfig(shouldAdjustFontSize),
@@ -89,7 +89,7 @@ export const lineChartOptions = ({ width, numberOfPoints, shouldAdjustFontSize }
  * @param {Array} data
  * @returns {[*, *]}
  */
-export const firstAndLastY = data => {
+export const firstAndLastY = (data) => {
   const [firstEntry] = data;
   const [lastEntry] = data.slice(-1);
 

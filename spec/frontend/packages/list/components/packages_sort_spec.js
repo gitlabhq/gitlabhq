@@ -16,7 +16,7 @@ describe('packages_sort', () => {
   const findPackageListSorting = () => wrapper.find(GlSorting);
   const findSortingItems = () => wrapper.findAll(GlSortingItem);
 
-  const createStore = isGroupPage => {
+  const createStore = (isGroupPage) => {
     const state = {
       config: {
         isGroupPage,

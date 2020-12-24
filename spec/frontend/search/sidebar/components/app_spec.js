@@ -17,7 +17,7 @@ describe('GlobalSearchSidebar', () => {
     resetQuery: jest.fn(),
   };
 
-  const createComponent = initialState => {
+  const createComponent = (initialState) => {
     const store = new Vuex.Store({
       state: {
         query: MOCK_QUERY,

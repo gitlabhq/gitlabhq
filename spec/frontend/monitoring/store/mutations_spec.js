@@ -512,7 +512,7 @@ describe('Monitoring mutations', () => {
   });
 
   describe('panel preview metric', () => {
-    const getPreviewMetricAt = i => stateCopy.panelPreviewGraphData.metrics[i];
+    const getPreviewMetricAt = (i) => stateCopy.panelPreviewGraphData.metrics[i];
 
     beforeEach(() => {
       stateCopy.panelPreviewGraphData = {

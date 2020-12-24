@@ -208,7 +208,7 @@ describe('issue_note', () => {
     expect(noteBodyProps.helpPagePath).toBe('');
   });
 
-  it('prevents note preview xss', done => {
+  it('prevents note preview xss', (done) => {
     const imgSrc = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
     const noteBody = `<img src="${imgSrc}" onload="alert(1)" />`;
     const alertSpy = jest.spyOn(window, 'alert');
@@ -230,7 +230,7 @@ describe('issue_note', () => {
   });
 
   describe('cancel edit', () => {
-    it('restores content of updated note', done => {
+    it('restores content of updated note', (done) => {
       const updatedText = 'updated note text';
       store.hotUpdate({
         actions: {

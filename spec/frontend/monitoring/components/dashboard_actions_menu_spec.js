@@ -107,7 +107,7 @@ describe('Actions menu', () => {
     describe('adding new metric from modal', () => {
       let origPage;
 
-      beforeEach(done => {
+      beforeEach((done) => {
         jest.spyOn(Tracking, 'event').mockReturnValue();
         createShallowWrapper();
 
@@ -123,7 +123,7 @@ describe('Actions menu', () => {
         document.body.dataset.page = origPage;
       });
 
-      it('is tracked', done => {
+      it('is tracked', (done) => {
         const submitButton = findAddMetricModalSubmitButton().vm;
 
         wrapper.vm.$nextTick(() => {
@@ -219,7 +219,7 @@ describe('Actions menu', () => {
       });
     });
 
-    describe.each(ootbDashboards)('when current dashboard is OOTB', dashboard => {
+    describe.each(ootbDashboards)('when current dashboard is OOTB', (dashboard) => {
       beforeEach(() => {
         setupAllDashboards(store, dashboard.path);
       });
@@ -240,7 +240,7 @@ describe('Actions menu', () => {
       createShallowWrapper();
     });
 
-    describe.each(ootbDashboards)('when current dashboard is OOTB', dashboard => {
+    describe.each(ootbDashboards)('when current dashboard is OOTB', (dashboard) => {
       beforeEach(() => {
         setupAllDashboards(store, dashboard.path);
       });

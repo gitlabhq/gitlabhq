@@ -17,7 +17,7 @@ describe('Release show component', () => {
     release = convertObjectPropsToCamelCase(originalRelease);
   });
 
-  const factory = state => {
+  const factory = (state) => {
     actions = {
       fetchRelease: jest.fn(),
     };

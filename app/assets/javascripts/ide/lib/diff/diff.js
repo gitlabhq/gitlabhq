@@ -11,7 +11,7 @@ export const computeDiff = (originalContent, newContent) => {
 
   let lineNumber = 1;
   return changes.reduce((acc, change) => {
-    const findOnLine = acc.find(c => c.lineNumber === lineNumber);
+    const findOnLine = acc.find((c) => c.lineNumber === lineNumber);
 
     if (findOnLine) {
       Object.assign(findOnLine, change, {

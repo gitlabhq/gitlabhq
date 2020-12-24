@@ -26,7 +26,7 @@ export default {
         },
       })
       .then(({ data }) => dispatch('receiveAuthorsSuccess', data))
-      .catch(error => {
+      .catch((error) => {
         Sentry.captureException(error);
         dispatch('receiveAuthorsError');
       });

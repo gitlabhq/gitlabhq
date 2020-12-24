@@ -68,7 +68,7 @@ export const receiveTemplateError = ({ dispatch }, template) => {
     'setErrorMessage',
     {
       text: __('Error loading template.'),
-      action: payload =>
+      action: (payload) =>
         dispatch('fetchTemplateTypes', payload).then(() =>
           dispatch('setErrorMessage', null, { root: true }),
         ),

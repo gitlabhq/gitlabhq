@@ -83,7 +83,7 @@ describe('releases/components/tag_field_new', () => {
        * @param {'shown' | 'hidden'} state The expected state of the validation message.
        * Should be passed either 'shown' or 'hidden'
        */
-      const expectValidationMessageToBe = state => {
+      const expectValidationMessageToBe = (state) => {
         return wrapper.vm.$nextTick().then(() => {
           expect(findTagNameFormGroup().element).toHaveClass(
             state === 'shown' ? 'is-invalid' : 'is-valid',

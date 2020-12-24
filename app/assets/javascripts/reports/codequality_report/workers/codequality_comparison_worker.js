@@ -3,7 +3,7 @@ import { differenceBy } from 'lodash';
 const KEY_TO_FILTER_BY = 'fingerprint';
 
 // eslint-disable-next-line no-restricted-globals
-self.addEventListener('message', e => {
+self.addEventListener('message', (e) => {
   const { data } = e;
 
   if (data === undefined) {

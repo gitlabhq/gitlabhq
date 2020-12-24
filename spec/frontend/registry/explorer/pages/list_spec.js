@@ -281,7 +281,7 @@ describe('List Page', () => {
 
           const updatedImage = findImageList()
             .props('images')
-            .find(i => i.id === deletedContainerRepository.id);
+            .find((i) => i.id === deletedContainerRepository.id);
 
           expect(updatedImage.status).toBe(deletedContainerRepository.status);
         });
@@ -418,7 +418,7 @@ describe('List Page', () => {
       mountComponent();
     });
 
-    const testTrackingCall = action => {
+    const testTrackingCall = (action) => {
       expect(Tracking.event).toHaveBeenCalledWith(undefined, action, {
         label: 'registry_repository_delete',
       });

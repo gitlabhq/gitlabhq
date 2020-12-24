@@ -367,7 +367,7 @@ describe('Settings Panel', () => {
 
       const repositoryFeatureToggleButton = findRepositoryFeatureSetting().find('button');
       const lfsFeatureToggleButton = findLFSFeatureToggle().find('button');
-      const isToggleButtonChecked = toggleButton => toggleButton.classes('is-checked');
+      const isToggleButtonChecked = (toggleButton) => toggleButton.classes('is-checked');
 
       // assert the initial state
       expect(isToggleButtonChecked(lfsFeatureToggleButton)).toBe(true);

@@ -24,7 +24,7 @@ describe('~/releases/components/releases_pagination_graphql.vue', () => {
 
   const projectPath = 'my/project';
 
-  const createComponent = pageInfo => {
+  const createComponent = (pageInfo) => {
     listModule = createListModule({ projectPath });
 
     listModule.state.graphQlPageInfo = pageInfo;

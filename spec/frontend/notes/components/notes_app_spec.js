@@ -36,16 +36,16 @@ describe('note_app', () => {
   const getComponentOrder = () => {
     return wrapper
       .findAll('#notes-list,.js-comment-form')
-      .wrappers.map(node => (node.is(CommentForm) ? TYPE_COMMENT_FORM : TYPE_NOTES_LIST));
+      .wrappers.map((node) => (node.is(CommentForm) ? TYPE_COMMENT_FORM : TYPE_NOTES_LIST));
   };
 
   /**
    * waits for fetchNotes() to complete
    */
   const waitForDiscussionsRequest = () =>
-    new Promise(resolve => {
+    new Promise((resolve) => {
       const { vm } = wrapper.find(NotesApp);
-      const unwatch = vm.$watch('isFetching', isFetching => {
+      const unwatch = vm.$watch('isFetching', (isFetching) => {
         if (isFetching) {
           return;
         }

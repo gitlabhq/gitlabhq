@@ -47,7 +47,7 @@ describe('Timezone Dropdown', () => {
         const data = $dropdownEl.data('data');
         const formatted = $wrapper.find(tzListSel).text();
 
-        data.forEach(item => {
+        data.forEach((item) => {
           expect(formatted).toContain(formatTimezone(item));
         });
       });
@@ -100,7 +100,7 @@ describe('Timezone Dropdown', () => {
         new TimezoneDropdown({
           $inputEl,
           $dropdownEl,
-          displayFormat: selectedItem => formatTimezone(selectedItem),
+          displayFormat: (selectedItem) => formatTimezone(selectedItem),
         });
 
         expect($wrapper.find(tzDropdownToggleText).html()).toEqual('[UTC - 2.5] Newfoundland');

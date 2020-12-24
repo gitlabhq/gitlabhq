@@ -23,7 +23,7 @@ export default {
   },
   methods: {
     getDefaultOption() {
-      return this.visibilityLevelOptions.find(option => option.level === this.defaultLevel);
+      return this.visibilityLevelOptions.find((option) => option.level === this.defaultLevel);
     },
     onClick(option) {
       this.selectedOption = option;

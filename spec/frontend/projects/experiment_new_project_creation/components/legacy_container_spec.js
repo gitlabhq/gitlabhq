@@ -6,7 +6,7 @@ describe('Legacy container component', () => {
   let wrapper;
   let dummy;
 
-  const createComponent = propsData => {
+  const createComponent = (propsData) => {
     wrapper = shallowMount(LegacyContainer, { propsData });
   };
 

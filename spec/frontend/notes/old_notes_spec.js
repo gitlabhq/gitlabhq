@@ -127,7 +127,7 @@ describe.skip('Old Notes (~/notes.js)', () => {
 
       jest.spyOn(notes, 'renderNote');
 
-      $('.js-comment-button').on('click', e => {
+      $('.js-comment-button').on('click', (e) => {
         const $form = $(this);
         e.preventDefault();
         notes.addNote($form, {});
@@ -550,7 +550,7 @@ describe.skip('Old Notes (~/notes.js)', () => {
       expect($notesContainer.find('.note.being-posted').length).toBeGreaterThan(0);
     });
 
-    it('should remove placeholder note when new comment is done posting', done => {
+    it('should remove placeholder note when new comment is done posting', (done) => {
       mockNotesPost();
 
       $('.js-comment-button').click();
@@ -562,7 +562,7 @@ describe.skip('Old Notes (~/notes.js)', () => {
     });
 
     describe('postComment', () => {
-      it('disables the submit button', done => {
+      it('disables the submit button', (done) => {
         const $submitButton = $form.find('.js-comment-submit-button');
 
         expect($submitButton).not.toBeDisabled();
@@ -585,7 +585,7 @@ describe.skip('Old Notes (~/notes.js)', () => {
       });
     });
 
-    it('should show actual note element when new comment is done posting', done => {
+    it('should show actual note element when new comment is done posting', (done) => {
       mockNotesPost();
 
       $('.js-comment-button').click();
@@ -596,7 +596,7 @@ describe.skip('Old Notes (~/notes.js)', () => {
       });
     });
 
-    it('should reset Form when new comment is done posting', done => {
+    it('should reset Form when new comment is done posting', (done) => {
       mockNotesPost();
 
       $('.js-comment-button').click();
@@ -607,7 +607,7 @@ describe.skip('Old Notes (~/notes.js)', () => {
       });
     });
 
-    it('should show flash error message when new comment failed to be posted', done => {
+    it('should show flash error message when new comment failed to be posted', (done) => {
       mockNotesPostError();
       jest.spyOn(notes, 'addFlash');
 
@@ -658,7 +658,7 @@ describe.skip('Old Notes (~/notes.js)', () => {
       $form.find('textarea.js-note-text').val(sampleComment);
     });
 
-    it('should remove quick action placeholder when comment with quick actions is done posting', done => {
+    it('should remove quick action placeholder when comment with quick actions is done posting', (done) => {
       jest.spyOn(gl.awardsHandler, 'addAwardToEmojiBar');
       $('.js-comment-button').click();
 
@@ -693,7 +693,7 @@ describe.skip('Old Notes (~/notes.js)', () => {
       $form.find('textarea.js-note-text').val(sampleComment);
     });
 
-    it('should show message placeholder including lines starting with slash', done => {
+    it('should show message placeholder including lines starting with slash', (done) => {
       $('.js-comment-button').click();
 
       expect($notesContainer.find('.note.being-posted').length).toEqual(1); // Placeholder shown
@@ -731,7 +731,7 @@ describe.skip('Old Notes (~/notes.js)', () => {
       $form.find('textarea.js-note-text').html(sampleComment);
     });
 
-    it('should not render a script tag', done => {
+    it('should not render a script tag', (done) => {
       $('.js-comment-button').click();
 
       setImmediate(() => {

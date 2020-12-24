@@ -3,9 +3,9 @@ import { mergeUrlParams } from './url_utility';
 
 // We should probably not couple this utility to `gon.gitlab_url`
 // Also, this would replace occurrences that aren't at the beginning of the string
-const removeGitLabUrl = url => url.replace(gon.gitlab_url, '');
+const removeGitLabUrl = (url) => url.replace(gon.gitlab_url, '');
 
-const getFullUrl = req => {
+const getFullUrl = (req) => {
   const url = removeGitLabUrl(req.url);
   return mergeUrlParams(req.params || {}, url, { sort: true });
 };
@@ -36,7 +36,7 @@ const handleStartupCall = async ({ fetchCall }, req) => {
   });
 };
 
-const setupAxiosStartupCalls = axios => {
+const setupAxiosStartupCalls = (axios) => {
   const { startup_calls: startupCalls } = window.gl || {};
 
   if (!startupCalls || isEmpty(startupCalls)) {
@@ -45,7 +45,7 @@ const setupAxiosStartupCalls = axios => {
 
   const remainingCalls = new Map(Object.entries(startupCalls));
 
-  const interceptor = axios.interceptors.request.use(async req => {
+  const interceptor = axios.interceptors.request.use(async (req) => {
     const fullUrl = getFullUrl(req);
 
     const startupCall = remainingCalls.get(fullUrl);

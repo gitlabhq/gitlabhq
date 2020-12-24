@@ -27,7 +27,7 @@ export default {
       return this.showVariableValues ? __('Hide values') : __('Reveal values');
     },
     hasValues() {
-      return this.trigger.variables.some(v => v.value);
+      return this.trigger.variables.some((v) => v.value);
     },
   },
   methods: {

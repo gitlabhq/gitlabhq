@@ -12,23 +12,23 @@ export const MSG_CONNECTION_ERROR = __('Could not connect to Web IDE file mirror
 const noop = () => {};
 export const SERVICE_DELAY = 8000;
 
-const cancellableWait = time => {
+const cancellableWait = (time) => {
   let timeoutId = 0;
 
   const cancel = () => clearTimeout(timeoutId);
 
-  const promise = new Promise(resolve => {
+  const promise = new Promise((resolve) => {
     timeoutId = setTimeout(resolve, time);
   });
 
   return [promise, cancel];
 };
 
-const isErrorResponse = error => error && error.code !== 0;
+const isErrorResponse = (error) => error && error.code !== 0;
 
-const isErrorPayload = payload => payload && payload.status_code !== 200;
+const isErrorPayload = (payload) => payload && payload.status_code !== 200;
 
-const getErrorFromResponse = data => {
+const getErrorFromResponse = (data) => {
   if (isErrorResponse(data.error)) {
     return { message: data.error.Message };
   } else if (isErrorPayload(data.payload)) {
@@ -38,9 +38,9 @@ const getErrorFromResponse = data => {
   return null;
 };
 
-const getFullPath = path => mergeUrlParams({ service: SERVICE_NAME }, getWebSocketUrl(path));
+const getFullPath = (path) => mergeUrlParams({ service: SERVICE_NAME }, getWebSocketUrl(path));
 
-const createWebSocket = fullPath =>
+const createWebSocket = (fullPath) =>
   new Promise((resolve, reject) => {
     const socket = new WebSocket(fullPath, [PROTOCOL]);
     const resetCallbacks = () => {
@@ -59,7 +59,7 @@ const createWebSocket = fullPath =>
     };
   });
 
-export const canConnect = ({ services = [] }) => services.some(name => name === SERVICE_NAME);
+export const canConnect = ({ services = [] }) => services.some((name) => name === SERVICE_NAME);
 
 export const createMirror = () => {
   let socket = null;
@@ -71,23 +71,23 @@ export const createMirror = () => {
     cancelHandler = noop;
   };
 
-  const onCancelConnect = fn => {
+  const onCancelConnect = (fn) => {
     cancelHandler = fn;
   };
 
-  const receiveMessage = ev => {
+  const receiveMessage = (ev) => {
     const handle = nextMessageHandler;
     nextMessageHandler = noop;
     handle(JSON.parse(ev.data));
   };
 
-  const onNextMessage = fn => {
+  const onNextMessage = (fn) => {
     nextMessageHandler = fn;
   };
 
   const waitForNextMessage = () =>
     new Promise((resolve, reject) => {
-      onNextMessage(data => {
+      onNextMessage((data) => {
         const err = getErrorFromResponse(data);
 
         if (err) {
@@ -133,7 +133,7 @@ export const createMirror = () => {
 
       return wait
         .then(() => createWebSocket(fullPath))
-        .then(newSocket => {
+        .then((newSocket) => {
           socket = newSocket;
           socket.onmessage = receiveMessage;
         });

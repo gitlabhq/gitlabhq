@@ -28,10 +28,10 @@ export default class LazyLoader {
         const lazyImages = [].slice.call(document.querySelectorAll('.lazy'));
 
         if (LazyLoader.supportsNativeLazyLoading()) {
-          lazyImages.forEach(img => LazyLoader.loadImage(img));
+          lazyImages.forEach((img) => LazyLoader.loadImage(img));
         } else if (LazyLoader.supportsIntersectionObserver()) {
           if (this.intersectionObserver) {
-            lazyImages.forEach(img => this.intersectionObserver.observe(img));
+            lazyImages.forEach((img) => this.intersectionObserver.observe(img));
           }
         } else if (lazyImages.length) {
           this.lazyImages = lazyImages;
@@ -98,8 +98,8 @@ export default class LazyLoader {
     });
   };
 
-  onIntersection = entries => {
-    entries.forEach(entry => {
+  onIntersection = (entries) => {
+    entries.forEach((entry) => {
       // We are using `intersectionRatio > 0` over `isIntersecting`, as some browsers did not ship the latter
       // See: https://gitlab.com/gitlab-org/gitlab-foss/issues/54407
       if (entry.intersectionRatio > 0) {
@@ -126,7 +126,7 @@ export default class LazyLoader {
     const visHeight = scrollTop + window.innerHeight + SCROLL_THRESHOLD;
 
     // Loading Images which are in the current viewport or close to them
-    this.lazyImages = this.lazyImages.filter(selectedImage => {
+    this.lazyImages = this.lazyImages.filter((selectedImage) => {
       if (selectedImage.getAttribute('data-src')) {
         const imgBoundRect = selectedImage.getBoundingClientRect();
         const imgTop = scrollTop + imgBoundRect.top;

@@ -2,6 +2,7 @@ import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
 import Translate from '~/vue_shared/translate';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import PerformancePlugin from '~/performance/vue_performance_plugin';
 import RegistryExplorer from './pages/index.vue';
 import RegistryBreadcrumb from './components/registry_breadcrumb.vue';
 import createRouter from './router';
@@ -9,6 +10,17 @@ import { apolloProvider } from './graphql/index';
 
 Vue.use(Translate);
 Vue.use(GlToast);
+
+Vue.use(PerformancePlugin, {
+  components: [
+    'RegistryListPage',
+    'ListHeader',
+    'ImageListRow',
+    'RegistryDetailsPage',
+    'DetailsHeader',
+    'TagsList',
+  ],
+});
 
 export default () => {
   const el = document.getElementById('js-container-registry');

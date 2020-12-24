@@ -139,7 +139,7 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
 
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
   const findAlert = () => wrapper.find(GlAlert);
-  const findTabAt = i => wrapper.findAll(GlTab).at(i);
+  const findTabAt = (i) => wrapper.findAll(GlTab).at(i);
   const findVisualizationTab = () => wrapper.find('[data-testid="visualization-tab"]');
   const findTextEditor = () => wrapper.find(TextEditor);
   const findEditorLite = () => wrapper.find(MockEditorLite);
@@ -255,7 +255,7 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
         startBranch: mockDefaultBranch,
       };
 
-      const findInForm = selector => findCommitForm().find(selector);
+      const findInForm = (selector) => findCommitForm().find(selector);
 
       const submitCommit = async ({
         message = mockCommitMessage,

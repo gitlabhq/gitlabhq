@@ -7,7 +7,7 @@ import LegacyContainer from '~/projects/experiment_new_project_creation/componen
 describe('Experimental new project creation app', () => {
   let wrapper;
 
-  const createComponent = propsData => {
+  const createComponent = (propsData) => {
     wrapper = shallowMount(App, { propsData });
   };
 

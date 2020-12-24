@@ -18,6 +18,6 @@ export default function initInviteMembersBanner() {
       isDismissedKey,
       trackLabel,
     },
-    render: createElement => createElement(InviteMembersBanner),
+    render: (createElement) => createElement(InviteMembersBanner),
   });
 }

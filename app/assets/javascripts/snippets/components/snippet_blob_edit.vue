@@ -55,12 +55,12 @@ export default {
       axios
         .get(url, {
           // This prevents axios from automatically JSON.parse response
-          transformResponse: [f => f],
+          transformResponse: [(f) => f],
         })
-        .then(res => {
+        .then((res) => {
           this.notifyAboutUpdates({ content: res.data });
         })
-        .catch(e => this.flashAPIFailure(e));
+        .catch((e) => this.flashAPIFailure(e));
     },
     flashAPIFailure(err) {
       Flash(sprintf(SNIPPET_BLOB_CONTENT_FETCH_ERROR, { err }));

@@ -5,7 +5,7 @@ import { CI_CONFIG_STATUS_INVALID } from '~/pipeline_editor/constants';
 import { mockCiConfigQueryResponse, mockLintHelpPagePath } from '../../mock_data';
 import { unwrapStagesWithNeeds } from '~/pipelines/components/unwrapping_utils';
 
-const getCiConfig = mergedConfig => {
+const getCiConfig = (mergedConfig) => {
   const { ciConfig } = mockCiConfigQueryResponse.data;
   return {
     ...ciConfig,
@@ -29,10 +29,10 @@ describe('~/pipeline_editor/components/lint/ci_lint.vue', () => {
     });
   };
 
-  const findAllByTestId = selector => wrapper.findAll(`[data-testid="${selector}"]`);
+  const findAllByTestId = (selector) => wrapper.findAll(`[data-testid="${selector}"]`);
   const findAlert = () => wrapper.find(GlAlert);
   const findLintParameters = () => findAllByTestId('ci-lint-parameter');
-  const findLintParameterAt = i => findLintParameters().at(i);
+  const findLintParameterAt = (i) => findLintParameters().at(i);
 
   afterEach(() => {
     wrapper.destroy();

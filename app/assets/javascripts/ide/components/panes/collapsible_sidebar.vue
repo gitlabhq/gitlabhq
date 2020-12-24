@@ -35,13 +35,13 @@ export default {
       return `${this.side}Pane`;
     },
     tabs() {
-      return this.extensionTabs.filter(tab => tab.show);
+      return this.extensionTabs.filter((tab) => tab.show);
     },
     tabViews() {
-      return this.tabs.map(tab => tab.views).flat();
+      return this.tabs.map((tab) => tab.views).flat();
     },
     aliveTabViews() {
-      return this.tabViews.filter(view => this.isAliveView(view.name));
+      return this.tabViews.filter((view) => this.isAliveView(view.name));
     },
   },
   methods: {

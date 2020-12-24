@@ -7,48 +7,50 @@ RSpec.describe 'Query.project.pipeline' do
   let_it_be(:project) { create(:project, :repository, :public) }
   let_it_be(:user) { create(:user) }
 
-  def first(field)
-    [field.pluralize, 'nodes', 0]
+  def all(*fields)
+    fields.flat_map { |f| [f, :nodes] }
   end
 
   describe '.stages.groups.jobs' do
     let(:pipeline) do
       pipeline = create(:ci_pipeline, project: project, user: user)
-      stage = create(:ci_stage_entity, pipeline: pipeline, name: 'first')
+      stage = create(:ci_stage_entity, project: project, pipeline: pipeline, name: 'first')
       create(:commit_status, stage_id: stage.id, pipeline: pipeline, name: 'my test job')
 
       pipeline
     end
 
-    let(:jobs_graphql_data) { graphql_data.dig(*%w[project pipeline], *first('stage'), *first('group'), 'jobs', 'nodes') }
+    let(:jobs_graphql_data) { graphql_data_at(:project, :pipeline, *all(:stages, :groups, :jobs)) }
+
+    let(:first_n) { var('Int') }
 
     let(:query) do
-      %(
-        query {
-          project(fullPath: "#{project.full_path}") {
-            pipeline(iid: "#{pipeline.iid}") {
-              stages {
-                nodes {
-                  name
-                  groups {
-                    nodes {
-                      name
-                      jobs {
-                        nodes {
-                          name
-                          pipeline {
-                            id
-                          }
-                        }
-                      }
-                    }
-                  }
+      with_signature([first_n], wrap_fields(query_graphql_path([
+        [:project,  { full_path: project.full_path }],
+        [:pipeline, { iid: pipeline.iid.to_s }],
+        [:stages,   { first: first_n }]
+      ], stage_fields)))
+    end
+
+    let(:stage_fields) do
+      <<~FIELDS
+      nodes {
+        name
+        groups {
+          nodes {
+            name
+            jobs {
+              nodes {
+                name
+                pipeline {
+                  id
                 }
               }
             }
           }
         }
-      )
+      }
+      FIELDS
     end
 
     it 'returns the jobs of a pipeline stage' do
@@ -57,60 +59,43 @@ RSpec.describe 'Query.project.pipeline' do
       expect(jobs_graphql_data).to contain_exactly(a_hash_including('name' => 'my test job'))
     end
 
-    it 'avoids N+1 queries', :aggregate_failures do
-      control_count = ActiveRecord::QueryRecorder.new do
-        post_graphql(query, current_user: user)
+    describe 'performance' do
+      before do
+        build_stage = create(:ci_stage_entity, position: 2, name: 'build', project: project, pipeline: pipeline)
+        test_stage = create(:ci_stage_entity, position: 3, name: 'test', project: project, pipeline: pipeline)
+        create(:commit_status, pipeline: pipeline, stage_id: build_stage.id, name: 'docker 1 2')
+        create(:commit_status, pipeline: pipeline, stage_id: build_stage.id, name: 'docker 2 2')
+        create(:commit_status, pipeline: pipeline, stage_id: test_stage.id, name: 'rspec 1 2')
+        create(:commit_status, pipeline: pipeline, stage_id: test_stage.id, name: 'rspec 2 2')
       end
 
-      build_stage = create(:ci_stage_entity, name: 'build', pipeline: pipeline)
-      test_stage = create(:ci_stage_entity, name: 'test', pipeline: pipeline)
-      create(:commit_status, pipeline: pipeline, stage_id: build_stage.id, name: 'docker 1 2')
-      create(:commit_status, pipeline: pipeline, stage_id: build_stage.id, name: 'docker 2 2')
-      create(:commit_status, pipeline: pipeline, stage_id: test_stage.id, name: 'rspec 1 2')
-      create(:commit_status, pipeline: pipeline, stage_id: test_stage.id, name: 'rspec 2 2')
+      it 'can find the first stage' do
+        post_graphql(query, current_user: user, variables: first_n.with(1))
 
-      expect do
-        post_graphql(query, current_user: user)
-      end.not_to exceed_query_limit(control_count)
-
-      expect(response).to have_gitlab_http_status(:ok)
-
-      build_stage = graphql_data.dig('project', 'pipeline', 'stages', 'nodes').find do |stage|
-        stage['name'] == 'build'
+        expect(jobs_graphql_data).to contain_exactly(a_hash_including('name' => 'my test job'))
       end
-      test_stage = graphql_data.dig('project', 'pipeline', 'stages', 'nodes').find do |stage|
-        stage['name'] == 'test'
+
+      it 'can find all stages' do
+        post_graphql(query, current_user: user, variables: first_n.with(3))
+
+        expect(jobs_graphql_data).to contain_exactly(
+          a_hash_including('name' => 'my test job'),
+          a_hash_including('name' => 'docker 1 2'),
+          a_hash_including('name' => 'docker 2 2'),
+          a_hash_including('name' => 'rspec 1 2'),
+          a_hash_including('name' => 'rspec 2 2')
+        )
       end
-      docker_group = build_stage.dig('groups', 'nodes').first
-      rspec_group = test_stage.dig('groups', 'nodes').first
 
-      expect(docker_group['name']).to eq('docker')
-      expect(rspec_group['name']).to eq('rspec')
+      it 'avoids N+1 queries' do
+        control_count = ActiveRecord::QueryRecorder.new do
+          post_graphql(query, current_user: user, variables: first_n.with(1))
+        end
 
-      docker_jobs = docker_group.dig('jobs', 'nodes')
-      rspec_jobs = rspec_group.dig('jobs', 'nodes')
-
-      expect(docker_jobs).to eq([
-        {
-          'name' => 'docker 1 2',
-          'pipeline' => { 'id' => pipeline.to_global_id.to_s }
-        },
-        {
-          'name' => 'docker 2 2',
-          'pipeline' => { 'id' => pipeline.to_global_id.to_s }
-        }
-      ])
-
-      expect(rspec_jobs).to eq([
-        {
-          'name' => 'rspec 1 2',
-          'pipeline' => { 'id' => pipeline.to_global_id.to_s }
-        },
-        {
-          'name' => 'rspec 2 2',
-          'pipeline' => { 'id' => pipeline.to_global_id.to_s }
-        }
-      ])
+        expect do
+          post_graphql(query, current_user: user, variables: first_n.with(3))
+        end.not_to exceed_query_limit(control_count)
+      end
     end
   end
 

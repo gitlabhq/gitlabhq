@@ -57,6 +57,6 @@ export function initIssueHeaderActions(store) {
       reportAbusePath: el.dataset.reportAbusePath,
       submitAsSpamPath: el.dataset.submitAsSpamPath,
     },
-    render: createElement => createElement(HeaderActions),
+    render: (createElement) => createElement(HeaderActions),
   });
 }

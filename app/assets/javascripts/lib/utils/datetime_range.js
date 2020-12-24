@@ -7,7 +7,7 @@ const MINIMUM_DATE = new Date(0);
 
 const DEFAULT_DIRECTION = 'before';
 
-const durationToMillis = duration => {
+const durationToMillis = (duration) => {
   if (Object.entries(duration).length === 1 && Number.isFinite(duration.seconds)) {
     return secondsToMilliseconds(duration.seconds);
   }
@@ -19,9 +19,9 @@ const dateMinusDuration = (date, duration) => new Date(date.getTime() - duration
 
 const datePlusDuration = (date, duration) => new Date(date.getTime() + durationToMillis(duration));
 
-const isValidDuration = duration => Boolean(duration && Number.isFinite(duration.seconds));
+const isValidDuration = (duration) => Boolean(duration && Number.isFinite(duration.seconds));
 
-const isValidDateString = dateString => {
+const isValidDateString = (dateString) => {
   if (typeof dateString !== 'string' || !dateString.trim()) {
     return false;
   }
@@ -225,7 +225,7 @@ export function getRangeType(range) {
  *
  * @returns {FixedRange} An object with a start and end in ISO8601 format.
  */
-export const convertToFixedRange = dateTimeRange =>
+export const convertToFixedRange = (dateTimeRange) =>
   handlers[getRangeType(dateTimeRange)](dateTimeRange);
 
 /**
@@ -242,7 +242,7 @@ export const convertToFixedRange = dateTimeRange =>
  * @param {Object} timeRange - A time range object
  * @returns Copy of time range
  */
-const pruneTimeRange = timeRange => {
+const pruneTimeRange = (timeRange) => {
   const res = pick(timeRange, ['start', 'end', 'anchor', 'duration', 'direction']);
   if (res.direction === DEFAULT_DIRECTION) {
     return omit(res, 'direction');
@@ -272,7 +272,7 @@ export const isEqualTimeRanges = (timeRange, other) => {
  * @param {Array} timeRanges - Array of time tanges (haystack)
  */
 export const findTimeRange = (timeRange, timeRanges) =>
-  timeRanges.find(element => isEqualTimeRanges(element, timeRange));
+  timeRanges.find((element) => isEqualTimeRanges(element, timeRange));
 
 // Time Ranges as URL Parameters Utils
 
@@ -289,11 +289,11 @@ export const timeRangeParamNames = ['start', 'end', 'anchor', 'duration_seconds'
  * @param {Object} A time range
  * @returns key-value pairs object that can be used as parameters in a URL.
  */
-export const timeRangeToParams = timeRange => {
+export const timeRangeToParams = (timeRange) => {
   let params = pruneTimeRange(timeRange);
   if (timeRange.duration) {
     const durationParms = {};
-    Object.keys(timeRange.duration).forEach(key => {
+    Object.keys(timeRange.duration).forEach((key) => {
       durationParms[`duration_${key}`] = timeRange.duration[key].toString();
     });
     params = { ...durationParms, ...params };
@@ -309,7 +309,7 @@ export const timeRangeToParams = timeRange => {
  *
  * @param {params} params - key-value pairs object.
  */
-export const timeRangeFromParams = params => {
+export const timeRangeFromParams = (params) => {
   const timeRangeParams = pick(params, timeRangeParamNames);
   let range = Object.entries(timeRangeParams).reduce((acc, [key, val]) => {
     // unflatten duration

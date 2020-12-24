@@ -5,7 +5,7 @@ import store from './store';
 
 Vue.use(Vuex);
 
-export default el => {
+export default (el) => {
   if (!el) {
     return null;
   }

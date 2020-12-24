@@ -19,7 +19,7 @@ describe('Project Feature Settings', () => {
   };
   let wrapper;
 
-  const mountComponent = customProps => {
+  const mountComponent = (customProps) => {
     const propsData = { ...defaultProps, ...customProps };
     return shallowMount(projectFeatureSetting, { propsData });
   };

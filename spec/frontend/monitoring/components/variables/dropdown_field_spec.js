@@ -17,7 +17,7 @@ describe('Custom variable component', () => {
     },
   };
 
-  const createShallowWrapper = props => {
+  const createShallowWrapper = (props) => {
     wrapper = shallowMount(DropdownField, {
       propsData: {
         ...defaultProps,

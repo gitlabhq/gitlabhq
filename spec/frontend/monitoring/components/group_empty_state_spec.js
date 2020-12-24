@@ -35,7 +35,7 @@ describe('GroupEmptyState', () => {
     metricStates.LOADING,
     metricStates.UNKNOWN_ERROR,
     'FOO STATE', // does not fail with unknown states
-  ])('given state %s', selectedState => {
+  ])('given state %s', (selectedState) => {
     beforeEach(() => {
       wrapper = createComponent({ selectedState });
     });

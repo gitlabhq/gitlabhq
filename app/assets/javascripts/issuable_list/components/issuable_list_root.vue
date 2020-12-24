@@ -200,7 +200,7 @@ export default {
       this.checkedIssuables[this.issuableId(issuable)].checked = value;
     },
     handleAllIssuablesCheckedInput(value) {
-      Object.keys(this.checkedIssuables).forEach(issuableId => {
+      Object.keys(this.checkedIssuables).forEach((issuableId) => {
         this.checkedIssuables[issuableId].checked = value;
       });
     },

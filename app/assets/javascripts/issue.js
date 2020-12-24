@@ -23,7 +23,7 @@ export default class Issue {
     }
 
     // Listen to state changes in the Vue app
-    document.addEventListener('issuable_vue_app:change', event => {
+    document.addEventListener('issuable_vue_app:change', (event) => {
       this.updateTopState(event.detail.isClosed, event.detail.data);
     });
   }
@@ -80,7 +80,7 @@ export default class Issue {
       alertMovedFromServiceDeskWarning.show();
     }
 
-    alertMovedFromServiceDeskWarning.on('click', '.js-close', e => {
+    alertMovedFromServiceDeskWarning.on('click', '.js-close', (e) => {
       e.preventDefault();
       e.stopImmediatePropagation();
       alertMovedFromServiceDeskWarning.remove();

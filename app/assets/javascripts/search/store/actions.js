@@ -7,7 +7,7 @@ import * as types from './mutation_types';
 export const fetchGroups = ({ commit }, search) => {
   commit(types.REQUEST_GROUPS);
   Api.groups(search)
-    .then(data => {
+    .then((data) => {
       commit(types.RECEIVE_GROUPS_SUCCESS, data);
     })
     .catch(() => {
@@ -19,7 +19,7 @@ export const fetchGroups = ({ commit }, search) => {
 export const fetchProjects = ({ commit, state }, search) => {
   commit(types.REQUEST_PROJECTS);
   const groupId = state.query?.group_id;
-  const callback = data => {
+  const callback = (data) => {
     if (data) {
       commit(types.RECEIVE_PROJECTS_SUCCESS, data);
     } else {

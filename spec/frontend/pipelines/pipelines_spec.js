@@ -57,10 +57,10 @@ describe('Pipelines', () => {
   };
 
   const findFilteredSearch = () => wrapper.find(GlFilteredSearch);
-  const findByTestId = id => wrapper.find(`[data-testid="${id}"]`);
+  const findByTestId = (id) => wrapper.find(`[data-testid="${id}"]`);
   const findNavigationTabs = () => wrapper.find(NavigationTabs);
   const findNavigationControls = () => wrapper.find(NavigationControls);
-  const findTab = tab => findByTestId(`pipelines-tab-${tab}`);
+  const findTab = (tab) => findByTestId(`pipelines-tab-${tab}`);
 
   const findRunPipelineButton = () => findByTestId('run-pipeline-button');
   const findCiLintButton = () => findByTestId('ci-lint-button');

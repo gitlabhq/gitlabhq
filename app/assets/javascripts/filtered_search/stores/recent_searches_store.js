@@ -19,7 +19,7 @@ class RecentSearchesStore {
   }
 
   setRecentSearches(searches = []) {
-    const trimmedSearches = searches.map(search =>
+    const trimmedSearches = searches.map((search) =>
       typeof search === 'string' ? search.trim() : search,
     );
 

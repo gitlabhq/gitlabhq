@@ -132,7 +132,7 @@ describe('noteable_discussion component', () => {
         ...getJSONFixture(discussionWithTwoUnresolvedNotes)[0],
         expanded: true,
       };
-      discussion.notes = discussion.notes.map(note => ({
+      discussion.notes = discussion.notes.map((note) => ({
         ...note,
         resolved: false,
         current_user: {

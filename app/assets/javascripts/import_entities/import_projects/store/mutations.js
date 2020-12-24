@@ -2,7 +2,7 @@ import Vue from 'vue';
 import * as types from './mutation_types';
 import { STATUSES } from '../../constants';
 
-const makeNewImportedProject = importedProject => ({
+const makeNewImportedProject = (importedProject) => ({
   importSource: {
     id: importedProject.id,
     fullName: importedProject.importSource,
@@ -12,15 +12,15 @@ const makeNewImportedProject = importedProject => ({
   importedProject,
 });
 
-const makeNewIncompatibleProject = project => ({
+const makeNewIncompatibleProject = (project) => ({
   importSource: { ...project, incompatible: true },
   importedProject: null,
 });
 
 const processLegacyEntries = ({ newRepositories, existingRepositories, factory }) => {
   const newEntries = [];
-  newRepositories.forEach(project => {
-    const existingProject = existingRepositories.find(p => p.importSource.id === project.id);
+  newRepositories.forEach((project) => {
+    const existingProject = existingRepositories.find((p) => p.importSource.id === project.id);
     const importedProjectShape = factory(project);
 
     if (existingProject) {
@@ -66,7 +66,7 @@ export default {
       state.repositories = [
         ...newImportedProjects,
         ...state.repositories,
-        ...repositories.providerRepos.map(project => ({
+        ...repositories.providerRepos.map((project) => ({
           importSource: project,
           importedProject: null,
         })),
@@ -91,7 +91,7 @@ export default {
   },
 
   [types.REQUEST_IMPORT](state, { repoId, importTarget }) {
-    const existingRepo = state.repositories.find(r => r.importSource.id === repoId);
+    const existingRepo = state.repositories.find((r) => r.importSource.id === repoId);
     existingRepo.importedProject = {
       importStatus: STATUSES.SCHEDULING,
       fullPath: `/${importTarget.targetNamespace}/${importTarget.newName}`,
@@ -99,18 +99,18 @@ export default {
   },
 
   [types.RECEIVE_IMPORT_SUCCESS](state, { importedProject, repoId }) {
-    const existingRepo = state.repositories.find(r => r.importSource.id === repoId);
+    const existingRepo = state.repositories.find((r) => r.importSource.id === repoId);
     existingRepo.importedProject = importedProject;
   },
 
   [types.RECEIVE_IMPORT_ERROR](state, repoId) {
-    const existingRepo = state.repositories.find(r => r.importSource.id === repoId);
+    const existingRepo = state.repositories.find((r) => r.importSource.id === repoId);
     existingRepo.importedProject = null;
   },
 
   [types.RECEIVE_JOBS_SUCCESS](state, updatedProjects) {
-    updatedProjects.forEach(updatedProject => {
-      const repo = state.repositories.find(p => p.importedProject?.id === updatedProject.id);
+    updatedProjects.forEach((updatedProject) => {
+      const repo = state.repositories.find((p) => p.importedProject?.id === updatedProject.id);
       if (repo?.importedProject) {
         repo.importedProject.importStatus = updatedProject.importStatus;
       }
@@ -131,7 +131,7 @@ export default {
   },
 
   [types.SET_IMPORT_TARGET](state, { repoId, importTarget }) {
-    const existingRepo = state.repositories.find(r => r.importSource.id === repoId);
+    const existingRepo = state.repositories.find((r) => r.importSource.id === repoId);
 
     if (
       importTarget.targetNamespace === state.defaultTargetNamespace &&

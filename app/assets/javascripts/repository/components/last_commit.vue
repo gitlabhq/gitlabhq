@@ -39,7 +39,7 @@ export default {
           path: this.currentPath.replace(/^\//, ''),
         };
       },
-      update: data => {
+      update: (data) => {
         const pipelines = data.project?.repository?.tree?.lastCommit?.pipelines?.edges;
 
         return {

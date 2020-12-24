@@ -6,7 +6,7 @@ describe('Welcome page', () => {
   let wrapper;
   let trackingSpy;
 
-  const createComponent = propsData => {
+  const createComponent = (propsData) => {
     wrapper = shallowMount(WelcomePage, { propsData });
   };
 

@@ -12,7 +12,7 @@ describe('Release block milestone info', () => {
   let wrapper;
   let milestones;
 
-  const factory = props => {
+  const factory = (props) => {
     wrapper = mount(ReleaseBlockMilestoneInfo, {
       propsData: props,
     });
@@ -96,10 +96,10 @@ describe('Release block milestone info', () => {
         });
       }
 
-      fullListString = lotsOfMilestones.map(m => m.title).join(' • ');
+      fullListString = lotsOfMilestones.map((m) => m.title).join(' • ');
       abbreviatedListString = lotsOfMilestones
         .slice(0, MAX_MILESTONES_TO_DISPLAY)
-        .map(m => m.title)
+        .map((m) => m.title)
         .join(' • ');
 
       return factory({ milestones: lotsOfMilestones });
@@ -147,7 +147,7 @@ describe('Release block milestone info', () => {
   /** Ensures we don't have any issues with dividing by zero when computing percentages */
   describe('when all issue counts are zero', () => {
     beforeEach(() => {
-      milestones = milestones.map(m => ({
+      milestones = milestones.map((m) => ({
         ...m,
         issueStats: {
           ...m.issueStats,
@@ -164,7 +164,7 @@ describe('Release block milestone info', () => {
 
   describe('if the API response is missing the "issue_stats" property', () => {
     beforeEach(() => {
-      milestones = milestones.map(m => ({
+      milestones = milestones.map((m) => ({
         ...m,
         issueStats: undefined,
       }));
@@ -185,7 +185,7 @@ describe('Release block milestone info', () => {
 
   describe('if the API response includes the "mr_stats" property', () => {
     beforeEach(() => {
-      milestones = milestones.map(m => ({
+      milestones = milestones.map((m) => ({
         ...m,
         mrStats: {
           total: 15,

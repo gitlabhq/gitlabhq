@@ -7,7 +7,7 @@ import {
   GROUP_LINK_ACCESS_LEVEL_PROPERTY_NAME,
 } from './constants';
 
-export const parseDataAttributes = el => {
+export const parseDataAttributes = (el) => {
   const { members, groupId, memberPath, canManageMembers } = el.dataset;
 
   return {

@@ -45,7 +45,7 @@ export default {
       return this.value.data.toLowerCase();
     },
     activeUser() {
-      return this.users.find(user => {
+      return this.users.find((user) => {
         return user.username.toLowerCase() === this.currentValue;
       });
     },
@@ -56,11 +56,11 @@ export default {
   methods: {
     fetchProjectUsers(searchTerm) {
       Api.projectUsers(this.config.projectId, searchTerm)
-        .then(users => {
+        .then((users) => {
           this.users = users;
           this.loading = false;
         })
-        .catch(err => {
+        .catch((err) => {
           createFlash(FETCH_AUTHOR_ERROR_MESSAGE);
           this.loading = false;
           throw err;

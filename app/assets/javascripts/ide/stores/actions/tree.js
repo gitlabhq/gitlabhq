@@ -87,10 +87,10 @@ export const getFiles = ({ state, commit, dispatch }, payload = {}) => {
 
           resolve();
         })
-        .catch(e => {
+        .catch((e) => {
           dispatch('setErrorMessage', {
             text: __('An error occurred while loading all the files.'),
-            action: actionPayload =>
+            action: (actionPayload) =>
               dispatch('getFiles', actionPayload).then(() => dispatch('setErrorMessage', null)),
             actionText: __('Please try again'),
             actionPayload: { projectId, branchId },

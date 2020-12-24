@@ -118,7 +118,7 @@ export default {
     this.getJiraUserMapping();
 
     this.searchUsers()
-      .then(data => {
+      .then((data) => {
         this.initialUsers = data;
       })
       .catch(() => {});
@@ -219,7 +219,7 @@ export default {
       }
     },
     updateMapping(jiraAccountId, gitlabId, gitlabUsername) {
-      this.userMappings = this.userMappings.map(userMapping =>
+      this.userMappings = this.userMappings.map((userMapping) =>
         userMapping.jiraAccountId === jiraAccountId
           ? {
               ...userMapping,

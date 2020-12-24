@@ -18,11 +18,11 @@ const createMountedWrapper = (props = {}) => {
 describe('DuplicateDashboardForm', () => {
   const defaultBranch = 'master';
 
-  const findByRef = ref => wrapper.find({ ref });
+  const findByRef = (ref) => wrapper.find({ ref });
   const setValue = (ref, val) => {
     findByRef(ref).setValue(val);
   };
-  const setChecked = value => {
+  const setChecked = (value) => {
     const input = wrapper.find(`.form-check-input[value="${value}"]`);
     input.element.checked = true;
     input.trigger('click');

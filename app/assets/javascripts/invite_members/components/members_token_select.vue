@@ -34,7 +34,7 @@ export default {
   computed: {
     newUsersToInvite() {
       return this.selectedTokens
-        .map(obj => {
+        .map((obj) => {
           return obj.id;
         })
         .join(',');
@@ -55,8 +55,8 @@ export default {
     },
     retrieveUsers: debounce(function debouncedRetrieveUsers() {
       return Api.users(this.query, this.$options.queryOptions)
-        .then(response => {
-          this.users = response.data.map(token => ({
+        .then((response) => {
+          this.users = response.data.map((token) => ({
             id: token.id,
             name: token.name,
             username: token.username,

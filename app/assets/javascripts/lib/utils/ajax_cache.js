@@ -25,7 +25,7 @@ class AjaxCache extends Cache {
           this.internalStorage[endpoint] = data;
           delete this.pendingRequests[endpoint];
         })
-        .catch(e => {
+        .catch((e) => {
           const error = new Error(`${endpoint}: ${e.message}`);
           error.textStatus = e.message;
 

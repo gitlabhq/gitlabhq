@@ -23,7 +23,7 @@ describe('RelatedMergeRequest store actions', () => {
   });
 
   describe('setInitialState', () => {
-    it('commits types.SET_INITIAL_STATE with given props', done => {
+    it('commits types.SET_INITIAL_STATE with given props', (done) => {
       const props = { a: 1, b: 2 };
 
       testAction(
@@ -38,13 +38,13 @@ describe('RelatedMergeRequest store actions', () => {
   });
 
   describe('requestData', () => {
-    it('commits types.REQUEST_DATA', done => {
+    it('commits types.REQUEST_DATA', (done) => {
       testAction(actions.requestData, null, {}, [{ type: types.REQUEST_DATA }], [], done);
     });
   });
 
   describe('receiveDataSuccess', () => {
-    it('commits types.RECEIVE_DATA_SUCCESS with data', done => {
+    it('commits types.RECEIVE_DATA_SUCCESS with data', (done) => {
       const data = { a: 1, b: 2 };
 
       testAction(
@@ -59,7 +59,7 @@ describe('RelatedMergeRequest store actions', () => {
   });
 
   describe('receiveDataError', () => {
-    it('commits types.RECEIVE_DATA_ERROR', done => {
+    it('commits types.RECEIVE_DATA_ERROR', (done) => {
       testAction(
         actions.receiveDataError,
         null,
@@ -73,7 +73,7 @@ describe('RelatedMergeRequest store actions', () => {
 
   describe('fetchMergeRequests', () => {
     describe('for a successful request', () => {
-      it('should dispatch success action', done => {
+      it('should dispatch success action', (done) => {
         const data = { a: 1 };
         mock.onGet(`${state.apiEndpoint}?per_page=100`).replyOnce(200, data, { 'x-total': 2 });
 
@@ -89,7 +89,7 @@ describe('RelatedMergeRequest store actions', () => {
     });
 
     describe('for a failing request', () => {
-      it('should dispatch error action', done => {
+      it('should dispatch error action', (done) => {
         mock.onGet(`${state.apiEndpoint}?per_page=100`).replyOnce(400);
 
         testAction(

@@ -295,7 +295,7 @@ describe('monitoring/utils', () => {
       ${'NOT_A_GROUP'} | ${title}         | ${yLabel}          | ${'group'}
       ${group}         | ${'NOT_A_TITLE'} | ${yLabel}          | ${'title'}
       ${group}         | ${title}         | ${'NOT_A_Y_LABEL'} | ${'y_label'}
-    `('throws an error when $missingField is incorrect', params => {
+    `('throws an error when $missingField is incorrect', (params) => {
       const search = `?group=${params.group}&title=${params.title}&y_label=${params.yLabel}`;
       expect(() => expandedPanelPayloadFromUrl(metricsDashboardViewModel, search)).toThrow();
     });
@@ -308,7 +308,7 @@ describe('monitoring/utils', () => {
     const [panelGroup] = metricsDashboardViewModel.panelGroups;
     const [panel] = panelGroup.panels;
 
-    const getUrlParams = url => urlUtils.queryToObject(url.split('?')[1]);
+    const getUrlParams = (url) => urlUtils.queryToObject(url.split('?')[1]);
 
     it('returns URL for a panel when query parameters are given', () => {
       const params = getUrlParams(panelToUrl(dashboard, {}, panelGroup.group, panel));

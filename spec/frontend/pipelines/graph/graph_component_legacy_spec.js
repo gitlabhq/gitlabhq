@@ -18,7 +18,7 @@ describe('graph component', () => {
   const findExpandPipelineBtn = () => wrapper.find('[data-testid="expand-pipeline-button"]');
   const findAllExpandPipelineBtns = () => wrapper.findAll('[data-testid="expand-pipeline-button"]');
   const findStageColumns = () => wrapper.findAll(StageColumnComponentLegacy);
-  const findStageColumnAt = i => findStageColumns().at(i);
+  const findStageColumnAt = (i) => findStageColumns().at(i);
 
   beforeEach(() => {
     mediator = new PipelinesMediator({ endpoint: '' });
@@ -167,7 +167,7 @@ describe('graph component', () => {
         });
 
         describe('with expanded pipeline', () => {
-          it('should render expanded pipeline', done => {
+          it('should render expanded pipeline', (done) => {
             // expand the pipeline
             store.state.pipeline.triggered_by[0].isExpanded = true;
 
@@ -212,7 +212,7 @@ describe('graph component', () => {
         });
 
         describe('with expanded pipeline', () => {
-          it('should render expanded pipeline', done => {
+          it('should render expanded pipeline', (done) => {
             // expand the pipeline
             store.state.pipeline.triggered[0].isExpanded = true;
 

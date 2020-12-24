@@ -63,7 +63,7 @@ export default {
       this.poll = new Poll({
         resource: this.service,
         method: 'fetchData',
-        successCallback: response => this.successCallback(response),
+        successCallback: (response) => this.successCallback(response),
         errorCallback: this.errorCallback,
       });
 

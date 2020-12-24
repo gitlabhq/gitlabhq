@@ -69,7 +69,7 @@ export default {
   },
   computed: {
     snippetHasBinary() {
-      return Boolean(this.snippet.blobs.find(blob => blob.binary));
+      return Boolean(this.snippet.blobs.find((blob) => blob.binary));
     },
     authoredMessage() {
       return this.snippet.author
@@ -164,7 +164,7 @@ export default {
           this.closeDeleteModal();
           this.redirectToSnippets();
         })
-        .catch(err => {
+        .catch((err) => {
           this.isDeleting = false;
           this.errorMessage = err.message;
         });

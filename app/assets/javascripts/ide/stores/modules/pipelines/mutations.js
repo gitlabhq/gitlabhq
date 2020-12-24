@@ -23,7 +23,7 @@ export default {
         yamlError: pipeline.yaml_errors,
       };
       state.stages = pipeline.details.stages.map((stage, i) => {
-        const foundStage = state.stages.find(s => s.id === i);
+        const foundStage = state.stages.find((s) => s.id === i);
         return {
           id: i,
           dropdownPath: stage.dropdown_path,
@@ -39,26 +39,26 @@ export default {
     }
   },
   [types.REQUEST_JOBS](state, id) {
-    state.stages = state.stages.map(stage => ({
+    state.stages = state.stages.map((stage) => ({
       ...stage,
       isLoading: stage.id === id ? true : stage.isLoading,
     }));
   },
   [types.RECEIVE_JOBS_ERROR](state, id) {
-    state.stages = state.stages.map(stage => ({
+    state.stages = state.stages.map((stage) => ({
       ...stage,
       isLoading: stage.id === id ? false : stage.isLoading,
     }));
   },
   [types.RECEIVE_JOBS_SUCCESS](state, { id, data }) {
-    state.stages = state.stages.map(stage => ({
+    state.stages = state.stages.map((stage) => ({
       ...stage,
       isLoading: stage.id === id ? false : stage.isLoading,
       jobs: stage.id === id ? data.latest_statuses.map(normalizeJob) : stage.jobs,
     }));
   },
   [types.TOGGLE_STAGE_COLLAPSE](state, id) {
-    state.stages = state.stages.map(stage => ({
+    state.stages = state.stages.map((stage) => ({
       ...stage,
       isCollapsed: stage.id === id ? !stage.isCollapsed : stage.isCollapsed,
     }));

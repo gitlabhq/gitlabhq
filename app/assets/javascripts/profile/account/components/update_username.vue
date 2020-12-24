@@ -84,12 +84,12 @@ Please update your Git repository remotes as soon as possible.`),
 
       return axios
         .put(this.actionUrl, putData)
-        .then(result => {
+        .then((result) => {
           Flash(result.data.message, 'notice');
           this.username = username;
           this.isRequestPending = false;
         })
-        .catch(error => {
+        .catch((error) => {
           Flash(error.response.data.message);
           this.isRequestPending = false;
           throw error;

@@ -35,7 +35,7 @@ const firstPanel = metricsDashboardViewModel.panelGroups[0].panels[0];
 
 export const graphData = {
   ...firstPanel,
-  metrics: firstPanel.metrics.map(metric => ({
+  metrics: firstPanel.metrics.map((metric) => ({
     ...metric,
     result: metricsResult,
     state: metricStates.OK,
@@ -44,7 +44,7 @@ export const graphData = {
 
 export const graphDataEmpty = {
   ...firstPanel,
-  metrics: firstPanel.metrics.map(metric => ({
+  metrics: firstPanel.metrics.map((metric) => ({
     ...metric,
     result: [],
     state: metricStates.NO_DATA,

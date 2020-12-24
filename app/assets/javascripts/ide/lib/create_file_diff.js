@@ -12,13 +12,13 @@ const NEW_LINE = '\n';
  *
  * - Removes "=======" separator added at the beginning
  */
-const cleanTwoFilesPatch = text => text.replace(/^(=+\s*)/, '');
+const cleanTwoFilesPatch = (text) => text.replace(/^(=+\s*)/, '');
 
-const endsWithNewLine = val => !val || val[val.length - 1] === NEW_LINE;
+const endsWithNewLine = (val) => !val || val[val.length - 1] === NEW_LINE;
 
-const addEndingNewLine = val => (endsWithNewLine(val) ? val : val + NEW_LINE);
+const addEndingNewLine = (val) => (endsWithNewLine(val) ? val : val + NEW_LINE);
 
-const removeEndingNewLine = val => (endsWithNewLine(val) ? val.substr(0, val.length - 1) : val);
+const removeEndingNewLine = (val) => (endsWithNewLine(val) ? val.substr(0, val.length - 1) : val);
 
 const diffHead = (prevPath, newPath = '') =>
   `diff --git "a/${prevPath}" "b/${newPath || prevPath}"`;
@@ -37,7 +37,7 @@ const createDiffBody = (path, content, isCreate) => {
 
   const chunkHead = isCreate ? `@@ -0,0 +1,${lines.length} @@` : `@@ -1,${lines.length} +0,0 @@`;
   const chunk = lines
-    .map(line => `${prefix}${line}`)
+    .map((line) => `${prefix}${line}`)
     .concat(!hasNewLine ? [NO_NEW_LINE] : [])
     .join(NEW_LINE);
 

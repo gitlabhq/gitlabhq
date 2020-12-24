@@ -7,7 +7,7 @@ describe('Output component', () => {
   let vm;
   let json;
 
-  const createComponent = output => {
+  const createComponent = (output) => {
     vm = new Component({
       propsData: {
         outputs: [].concat(output),
@@ -22,7 +22,7 @@ describe('Output component', () => {
   });
 
   describe('text output', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       createComponent(json.cells[2].outputs[0]);
 
       setImmediate(() => {
@@ -40,7 +40,7 @@ describe('Output component', () => {
   });
 
   describe('image output', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       createComponent(json.cells[3].outputs[0]);
 
       setImmediate(() => {
@@ -70,7 +70,7 @@ describe('Output component', () => {
   });
 
   describe('svg output', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       createComponent(json.cells[5].outputs[0]);
 
       setImmediate(() => {
@@ -84,7 +84,7 @@ describe('Output component', () => {
   });
 
   describe('default to plain text', () => {
-    beforeEach(done => {
+    beforeEach((done) => {
       createComponent(json.cells[6].outputs[0]);
 
       setImmediate(() => {
@@ -101,7 +101,7 @@ describe('Output component', () => {
       expect(vm.$el.querySelector('.prompt span')).not.toBeNull();
     });
 
-    it("renders as plain text when doesn't recognise other types", done => {
+    it("renders as plain text when doesn't recognise other types", (done) => {
       createComponent(json.cells[7].outputs[0]);
 
       setImmediate(() => {

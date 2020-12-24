@@ -46,7 +46,7 @@ describe('EmojiMenu', () => {
     const dummyEmoji = 'tropical_fish';
     const dummyVotesBlock = () => $('<div />');
 
-    it('calls selectEmojiCallback', done => {
+    it('calls selectEmojiCallback', (done) => {
       expect(dummySelectEmojiCallback).not.toHaveBeenCalled();
 
       emojiMenu.addAward(dummyVotesBlock(), dummyAwardUrl, dummyEmoji, false, () => {
@@ -55,7 +55,7 @@ describe('EmojiMenu', () => {
       });
     });
 
-    it('does not make an axios request', done => {
+    it('does not make an axios request', (done) => {
       jest.spyOn(axios, 'request').mockReturnValue();
 
       emojiMenu.addAward(dummyVotesBlock(), dummyAwardUrl, dummyEmoji, false, () => {

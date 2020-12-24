@@ -108,7 +108,7 @@ export default {
         .then(() => {
           this.initManager();
 
-          this.listener = listen(e => {
+          this.listener = listen((e) => {
             switch (e.type) {
               case 'done':
                 this.sandpackReady = true;
@@ -139,8 +139,8 @@ export default {
 
       const settings = {
         fileResolver: {
-          isFile: p => Promise.resolve(Boolean(this.entries[createPathWithExt(p)])),
-          readFile: p => this.loadFileContent(createPathWithExt(p)).then(content => content),
+          isFile: (p) => Promise.resolve(Boolean(this.entries[createPathWithExt(p)])),
+          readFile: (p) => this.loadFileContent(createPathWithExt(p)).then((content) => content),
         },
         ...(bundlerURL ? { bundlerURL } : {}),
       };

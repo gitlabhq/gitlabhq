@@ -11,13 +11,13 @@ export const fetchReports = ({ state, dispatch, commit }) => {
     return dispatch('receiveReportsError');
   }
   return Promise.all([axios.get(state.headPath), axios.get(state.basePath)])
-    .then(results =>
+    .then((results) =>
       doCodeClimateComparison(
         parseCodeclimateMetrics(results[0].data, state.headBlobPath),
         parseCodeclimateMetrics(results[1].data, state.baseBlobPath),
       ),
     )
-    .then(data => dispatch('receiveReportsSuccess', data))
+    .then((data) => dispatch('receiveReportsSuccess', data))
     .catch(() => dispatch('receiveReportsError'));
 };
 

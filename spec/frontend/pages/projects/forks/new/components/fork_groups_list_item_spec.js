@@ -30,7 +30,7 @@ describe('Fork groups list item component', () => {
 
   const DUMMY_PATH = '/dummy/path';
 
-  const createWrapper = propsData => {
+  const createWrapper = (propsData) => {
     wrapper = shallowMount(ForkGroupsListItem, {
       propsData: {
         ...DEFAULT_PROPS,
@@ -70,7 +70,7 @@ describe('Fork groups list item component', () => {
     expect(
       wrapper
         .findAll(GlLink)
-        .filter(w => w.text() === DUMMY_FULL_NAME)
+        .filter((w) => w.text() === DUMMY_FULL_NAME)
         .at(0)
         .attributes().href,
     ).toBe(DUMMY_PATH);

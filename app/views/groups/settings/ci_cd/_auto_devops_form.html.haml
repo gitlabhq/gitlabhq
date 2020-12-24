@@ -10,6 +10,6 @@
               %strong= s_('GroupSettings|Default to Auto DevOps pipeline for all projects within this group')
               %span.badge.badge-info#auto-devops-badge= badge_for_auto_devops_scope(group)
             .form-text.text-muted
-              = s_('GroupSettings|The Auto DevOps pipeline will run if no alternative CI configuration file is found.')
-              = link_to _('More information'), help_page_path('topics/autodevops/index.md'), target: '_blank'
+              = s_('GroupSettings|The Auto DevOps pipeline runs if no alternative CI configuration file is found.')
+              = link_to _('Learn more.'), help_page_path('topics/autodevops/index.md'), target: '_blank'
       = f.submit _('Save changes'), class: 'btn btn-success gl-mt-5'

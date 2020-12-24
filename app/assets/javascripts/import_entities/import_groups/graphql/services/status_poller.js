@@ -5,7 +5,7 @@ import bulkImportSourceGroupsQuery from '../queries/bulk_import_source_groups.qu
 import { STATUSES } from '../../../constants';
 import { SourceGroupsManager } from './source_groups_manager';
 
-const groupId = i => `group${i}`;
+const groupId = (i) => `group${i}`;
 
 function generateGroupsQuery(groups) {
   return gql`{
@@ -46,14 +46,14 @@ export class StatusPoller {
       const { bulkImportSourceGroups } = this.client.readQuery({
         query: bulkImportSourceGroupsQuery,
       });
-      const groupsInProgress = bulkImportSourceGroups.filter(g => g.status === STATUSES.STARTED);
+      const groupsInProgress = bulkImportSourceGroups.filter((g) => g.status === STATUSES.STARTED);
       if (groupsInProgress.length) {
         const { data: results } = await this.client.query({
           query: generateGroupsQuery(groupsInProgress),
           fetchPolicy: 'no-cache',
         });
         const completedGroups = groupsInProgress.filter((_, idx) => Boolean(results[groupId(idx)]));
-        completedGroups.forEach(group => {
+        completedGroups.forEach((group) => {
           this.groupManager.setImportStatus(group, STATUSES.FINISHED);
         });
       }

@@ -39,7 +39,7 @@ describe('Grouped test reports app', () => {
     });
   };
 
-  const setReports = reports => {
+  const setReports = (reports) => {
     mockStore.state.status = reports.status;
     mockStore.state.summary = reports.summary;
     mockStore.state.reports = reports.suites;

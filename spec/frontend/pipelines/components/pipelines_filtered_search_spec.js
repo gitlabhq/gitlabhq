@@ -11,10 +11,10 @@ describe('Pipelines filtered search', () => {
   let mock;
 
   const findFilteredSearch = () => wrapper.find(GlFilteredSearch);
-  const getSearchToken = type =>
+  const getSearchToken = (type) =>
     findFilteredSearch()
       .props('availableTokens')
-      .find(token => token.type === type);
+      .find((token) => token.type === type);
   const findBranchToken = () => getSearchToken('ref');
   const findTagToken = () => getSearchToken('tag');
   const findUserToken = () => getSearchToken('username');

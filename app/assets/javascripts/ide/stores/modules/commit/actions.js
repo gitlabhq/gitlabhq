@@ -78,8 +78,8 @@ export const updateFilesAfterCommit = ({ commit, dispatch, rootState, rootGetter
     { root: true },
   );
 
-  rootState.stagedFiles.forEach(file => {
-    const changedFile = rootState.changedFiles.find(f => f.path === file.path);
+  rootState.stagedFiles.forEach((file) => {
+    const changedFile = rootState.changedFiles.find((f) => f.path === file.path);
 
     commit(
       rootTypes.UPDATE_FILE_AFTER_COMMIT,
@@ -133,7 +133,7 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
 
       return service.commit(rootState.currentProjectId, payload);
     })
-    .catch(e => {
+    .catch((e) => {
       commit(types.UPDATE_LOADING, false);
       commit(types.SET_ERROR, parseCommitError(e));
 
@@ -193,12 +193,12 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
               },
               { root: true },
             )
-              .then(changeViewer => {
+              .then((changeViewer) => {
                 if (changeViewer) {
                   dispatch('updateViewer', 'diff', { root: true });
                 }
               })
-              .catch(e => {
+              .catch((e) => {
                 throw e;
               });
           } else {

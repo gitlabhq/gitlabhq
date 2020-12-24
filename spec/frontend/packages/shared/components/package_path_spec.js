@@ -21,8 +21,8 @@ describe('PackagePath', () => {
   const ELLIPSIS_CHEVRON = 'ellipsis-chevron';
   const LEAF_LINK = 'leaf-link';
 
-  const findItem = name => wrapper.find(`[data-testid="${name}"]`);
-  const findTooltip = w => getBinding(w.element, 'gl-tooltip');
+  const findItem = (name) => wrapper.find(`[data-testid="${name}"]`);
+  const findTooltip = (w) => getBinding(w.element, 'gl-tooltip');
 
   afterEach(() => {
     wrapper.destroy();
@@ -64,13 +64,13 @@ describe('PackagePath', () => {
     }
 
     if (shouldExist.length) {
-      it.each(shouldExist)(`should have %s`, element => {
+      it.each(shouldExist)(`should have %s`, (element) => {
         expect(findItem(element).exists()).toBe(true);
       });
     }
 
     if (shouldNotExist.length) {
-      it.each(shouldNotExist)(`should not have %s`, element => {
+      it.each(shouldNotExist)(`should not have %s`, (element) => {
         expect(findItem(element).exists()).toBe(false);
       });
     }

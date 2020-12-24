@@ -20,7 +20,7 @@ export default class GLForm {
 
     // Disable autocomplete for keywords which do not have dataSources available
     const dataSources = (gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources) || {};
-    Object.keys(this.enableGFM).forEach(item => {
+    Object.keys(this.enableGFM).forEach((item) => {
       if (item !== 'emojis' && !dataSources[item]) {
         this.enableGFM[item] = false;
       }

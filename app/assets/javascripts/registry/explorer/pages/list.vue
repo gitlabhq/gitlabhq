@@ -38,7 +38,7 @@ import {
 } from '../constants/index';
 
 export default {
-  name: 'RegistryListApp',
+  name: 'RegistryListPage',
   components: {
     GlEmptyState,
     ProjectEmptyState,

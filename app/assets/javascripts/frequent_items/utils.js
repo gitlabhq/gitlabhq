@@ -5,7 +5,7 @@ import { FREQUENT_ITEMS, HOUR_IN_MS } from './constants';
 
 export const isMobile = () => ['md', 'sm', 'xs'].includes(bp.getBreakpointSize());
 
-export const getTopFrequentItems = items => {
+export const getTopFrequentItems = (items) => {
   if (!items) {
     return [];
   }
@@ -13,7 +13,7 @@ export const getTopFrequentItems = items => {
     ? FREQUENT_ITEMS.LIST_COUNT_MOBILE
     : FREQUENT_ITEMS.LIST_COUNT_DESKTOP;
 
-  const frequentItems = items.filter(item => item.frequency >= FREQUENT_ITEMS.ELIGIBLE_FREQUENCY);
+  const frequentItems = items.filter((item) => item.frequency >= FREQUENT_ITEMS.ELIGIBLE_FREQUENCY);
 
   if (!frequentItems || frequentItems.length === 0) {
     return [];
@@ -45,9 +45,9 @@ export const updateExistingFrequentItem = (frequentItem, item) => {
   };
 };
 
-export const sanitizeItem = item => {
+export const sanitizeItem = (item) => {
   // Only sanitize if the key exists on the item
-  const maybeSanitize = key => {
+  const maybeSanitize = (key) => {
     if (!Object.prototype.hasOwnProperty.call(item, key)) {
       return {};
     }

@@ -10,7 +10,7 @@ export default function initInviteMembersTrigger() {
 
   return new Vue({
     el,
-    render: createElement =>
+    render: (createElement) =>
       createElement(InviteMembersTrigger, {
         props: {
           ...el.dataset,

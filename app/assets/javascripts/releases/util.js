@@ -17,7 +17,7 @@ export const releaseToApiJson = (release, createFrom = null) => {
 
   // Milestones may be either a list of milestone objects OR just a list
   // of milestone titles. The API requires only the titles be sent.
-  const milestones = (release.milestones || []).map(m => m.title || m);
+  const milestones = (release.milestones || []).map((m) => m.title || m);
 
   return convertObjectPropsToSnakeCase(
     {
@@ -37,7 +37,7 @@ export const releaseToApiJson = (release, createFrom = null) => {
  * into the structure this Vue application can work with.
  * @param {Object} json The JSON object received from the release API
  */
-export const apiJsonToRelease = json => {
+export const apiJsonToRelease = (json) => {
   const release = convertObjectPropsToCamelCase(json, { deep: true });
 
   release.milestones = release.milestones || [];
@@ -47,7 +47,7 @@ export const apiJsonToRelease = json => {
 
 export const gqClient = createGqClient({}, { fetchPolicy: fetchPolicies.NO_CACHE });
 
-const convertScalarProperties = graphQLRelease =>
+const convertScalarProperties = (graphQLRelease) =>
   pick(graphQLRelease, [
     'name',
     'tagName',
@@ -57,29 +57,29 @@ const convertScalarProperties = graphQLRelease =>
     'upcomingRelease',
   ]);
 
-const convertAssets = graphQLRelease => ({
+const convertAssets = (graphQLRelease) => ({
   assets: {
     count: graphQLRelease.assets.count,
     sources: [...graphQLRelease.assets.sources.nodes],
-    links: graphQLRelease.assets.links.nodes.map(l => ({
+    links: graphQLRelease.assets.links.nodes.map((l) => ({
       ...l,
       linkType: l.linkType?.toLowerCase(),
     })),
   },
 });
 
-const convertEvidences = graphQLRelease => ({
-  evidences: graphQLRelease.evidences.nodes.map(e => e),
+const convertEvidences = (graphQLRelease) => ({
+  evidences: graphQLRelease.evidences.nodes.map((e) => e),
 });
 
-const convertLinks = graphQLRelease => ({
+const convertLinks = (graphQLRelease) => ({
   _links: {
     ...graphQLRelease.links,
     self: graphQLRelease.links?.selfUrl,
   },
 });
 
-const convertCommit = graphQLRelease => {
+const convertCommit = (graphQLRelease) => {
   if (!graphQLRelease.commit) {
     return {};
   }
@@ -93,10 +93,10 @@ const convertCommit = graphQLRelease => {
   };
 };
 
-const convertAuthor = graphQLRelease => ({ author: graphQLRelease.author });
+const convertAuthor = (graphQLRelease) => ({ author: graphQLRelease.author });
 
-const convertMilestones = graphQLRelease => ({
-  milestones: graphQLRelease.milestones.nodes.map(m => ({
+const convertMilestones = (graphQLRelease) => ({
+  milestones: graphQLRelease.milestones.nodes.map((m) => ({
     ...m,
     webUrl: m.webPath,
     webPath: undefined,
@@ -115,7 +115,7 @@ const convertMilestones = graphQLRelease => ({
  *
  * @param graphQLRelease The release object returned from a GraphQL query
  */
-export const convertGraphQLRelease = graphQLRelease => ({
+export const convertGraphQLRelease = (graphQLRelease) => ({
   ...convertScalarProperties(graphQLRelease),
   ...convertAssets(graphQLRelease),
   ...convertEvidences(graphQLRelease),
@@ -134,7 +134,7 @@ export const convertGraphQLRelease = graphQLRelease => ({
  *
  * @param response The response received from the GraphQL endpoint
  */
-export const convertAllReleasesGraphQLResponse = response => {
+export const convertAllReleasesGraphQLResponse = (response) => {
   const releases = response.data.project.releases.nodes.map(convertGraphQLRelease);
 
   const paginationInfo = {
@@ -153,7 +153,7 @@ export const convertAllReleasesGraphQLResponse = response => {
  *
  * @param response The response received from the GraphQL endpoint
  */
-export const convertOneReleaseGraphQLResponse = response => {
+export const convertOneReleaseGraphQLResponse = (response) => {
   const release = convertGraphQLRelease(response.data.project.release);
 
   return { data: release };

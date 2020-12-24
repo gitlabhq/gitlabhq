@@ -32,7 +32,7 @@ function notifyMe(message, body, icon, onclick) {
     // If it's okay let's create a notification
     return notificationGranted(message, opts, onclick);
   } else if (Notification.permission !== 'denied') {
-    return Notification.requestPermission(permission => {
+    return Notification.requestPermission((permission) => {
       // If the user accepts, let's create a notification
       if (permission === 'granted') {
         return notificationGranted(message, opts, onclick);

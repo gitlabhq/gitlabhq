@@ -30,7 +30,7 @@ export default class SidebarMediator {
   }
 
   saveAssignees(field) {
-    const selected = this.store.assignees.map(u => u.id);
+    const selected = this.store.assignees.map((u) => u.id);
 
     // If there are no ids, that means we have to unassign (which is id = 0)
     // And it only accepts an array, hence [0]
@@ -41,7 +41,7 @@ export default class SidebarMediator {
   }
 
   saveReviewers(field) {
-    const selected = this.store.reviewers.map(u => u.id);
+    const selected = this.store.reviewers.map((u) => u.id);
 
     // If there are no ids, that means we have to unassign (which is id = 0)
     // And it only accepts an array, hence [0]
@@ -80,7 +80,7 @@ export default class SidebarMediator {
         this.store.setSubscribedState(!this.store.subscribed);
         this.store.setFetchingState('subscriptions', false);
       })
-      .catch(err => {
+      .catch((err) => {
         this.store.setFetchingState('subscriptions', false);
         throw err;
       });

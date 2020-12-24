@@ -90,7 +90,7 @@ export default {
       // fetch new data
       return this.service
         .getPipelines(this.requestData)
-        .then(response => {
+        .then((response) => {
           this.isLoading = false;
           this.successCallback(response);
 
@@ -124,8 +124,8 @@ export default {
     getPipelines() {
       return this.service
         .getPipelines(this.requestData)
-        .then(response => this.successCallback(response))
-        .catch(error => this.errorCallback(error));
+        .then((response) => this.successCallback(response))
+        .catch((error) => this.errorCallback(error));
     },
     setCommonData(pipelines) {
       this.store.storePipelines(pipelines);

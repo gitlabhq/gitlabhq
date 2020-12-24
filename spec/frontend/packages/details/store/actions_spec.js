@@ -12,7 +12,7 @@ jest.mock('~/api.js');
 
 describe('Actions Package details store', () => {
   describe('fetchPackageVersions', () => {
-    it('should fetch the package versions', done => {
+    it('should fetch the package versions', (done) => {
       Api.projectPackage = jest.fn().mockResolvedValue({ data: packageEntity });
 
       testAction(
@@ -35,7 +35,7 @@ describe('Actions Package details store', () => {
       );
     });
 
-    it("does not set the versions if they don't exist", done => {
+    it("does not set the versions if they don't exist", (done) => {
       Api.projectPackage = jest.fn().mockResolvedValue({ data: { packageEntity, versions: null } });
 
       testAction(
@@ -57,7 +57,7 @@ describe('Actions Package details store', () => {
       );
     });
 
-    it('should create flash on API error', done => {
+    it('should create flash on API error', (done) => {
       Api.projectPackage = jest.fn().mockRejectedValue();
 
       testAction(
@@ -82,7 +82,7 @@ describe('Actions Package details store', () => {
   });
 
   describe('deletePackage', () => {
-    it('should call Api.deleteProjectPackage', done => {
+    it('should call Api.deleteProjectPackage', (done) => {
       Api.deleteProjectPackage = jest.fn().mockResolvedValue();
       testAction(deletePackage, undefined, { packageEntity }, [], [], () => {
         expect(Api.deleteProjectPackage).toHaveBeenCalledWith(
@@ -92,7 +92,7 @@ describe('Actions Package details store', () => {
         done();
       });
     });
-    it('should create flash on API error', done => {
+    it('should create flash on API error', (done) => {
       Api.deleteProjectPackage = jest.fn().mockRejectedValue();
 
       testAction(deletePackage, undefined, { packageEntity }, [], [], () => {

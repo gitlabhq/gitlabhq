@@ -17,7 +17,7 @@ export default {
       type: String,
       required: false,
       default: '',
-      validator: value => value === '' || Object.values(componentNames).includes(value),
+      validator: (value) => value === '' || Object.values(componentNames).includes(value),
     },
     // failed || success
     status: {

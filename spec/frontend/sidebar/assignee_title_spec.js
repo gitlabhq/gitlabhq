@@ -6,7 +6,7 @@ import Component from '~/sidebar/components/assignees/assignee_title.vue';
 describe('AssigneeTitle component', () => {
   let wrapper;
 
-  const createComponent = props => {
+  const createComponent = (props) => {
     return shallowMount(Component, {
       propsData: {
         numberOfAssignees: 0,
