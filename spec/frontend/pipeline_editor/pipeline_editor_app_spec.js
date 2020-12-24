@@ -1,14 +1,6 @@
 import { nextTick } from 'vue';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import {
-  GlAlert,
-  GlButton,
-  GlFormInput,
-  GlFormTextarea,
-  GlLoadingIcon,
-  GlTabs,
-  GlTab,
-} from '@gitlab/ui';
+import { GlAlert, GlButton, GlFormInput, GlFormTextarea, GlLoadingIcon, GlTabs } from '@gitlab/ui';
 import waitForPromises from 'helpers/wait_for_promises';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'jest/helpers/mock_apollo_helper';
@@ -28,6 +20,7 @@ import {
 
 import CommitForm from '~/pipeline_editor/components/commit/commit_form.vue';
 import getCiConfigData from '~/pipeline_editor/graphql/queries/ci_config.graphql';
+import EditorTab from '~/pipeline_editor/components/ui/editor_tab.vue';
 import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
 import PipelineEditorApp from '~/pipeline_editor/pipeline_editor_app.vue';
 import TextEditor from '~/pipeline_editor/components/text_editor.vue';
@@ -139,7 +132,7 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
 
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
   const findAlert = () => wrapper.find(GlAlert);
-  const findTabAt = (i) => wrapper.findAll(GlTab).at(i);
+  const findTabAt = i => wrapper.findAll(EditorTab).at(i);
   const findVisualizationTab = () => wrapper.find('[data-testid="visualization-tab"]');
   const findTextEditor = () => wrapper.find(TextEditor);
   const findEditorLite = () => wrapper.find(MockEditorLite);
@@ -172,22 +165,14 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
 
   describe('tabs', () => {
     describe('editor tab', () => {
-      beforeEach(() => {
-        createComponent();
-      });
+      it('displays editor only after the tab is mounted', async () => {
+        createComponent({ mountFn: mount });
 
-      it('displays the tab and its content', async () => {
-        expect(findTabAt(0).find(TextEditor).exists()).toBe(true);
-      });
-
-      it('displays tab lazily, until editor is ready', async () => {
-        expect(findTabAt(0).attributes('lazy')).toBe('true');
-
-        findTextEditor().vm.$emit('editor-ready');
+        expect(findTabAt(0).find(TextEditor).exists()).toBe(false);
 
         await nextTick();
 
-        expect(findTabAt(0).attributes('lazy')).toBe(undefined);
+        expect(findTabAt(0).find(TextEditor).exists()).toBe(true);
       });
     });
 
@@ -206,6 +191,21 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
 
           expect(findLoadingIcon().exists()).toBe(true);
           expect(findPipelineGraph().exists()).toBe(false);
+        });
+
+        it('displays the graph only after the tab is mounted and selected', async () => {
+          createComponent({ mountFn: mount });
+
+          expect(findTabAt(1).find(PipelineGraph).exists()).toBe(false);
+
+          await nextTick();
+
+          // Select visualization tab
+          wrapper.find('[data-testid="visualization-tab-btn"]').trigger('click');
+
+          await nextTick();
+
+          expect(findTabAt(1).find(PipelineGraph).exists()).toBe(true);
         });
       });
 

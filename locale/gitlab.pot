@@ -20611,6 +20611,12 @@ msgstr ""
 msgid "Pipelines|There was an error fetching the pipelines. Try again in a few moments or contact your support team."
 msgstr ""
 
+msgid "Pipelines|This GitLab CI configuration is invalid:"
+msgstr ""
+
+msgid "Pipelines|This GitLab CI configuration is valid."
+msgstr ""
+
 msgid "Pipelines|This is a child pipeline within the parent pipeline"
 msgstr ""
 
@@ -20624,6 +20630,9 @@ msgid "Pipelines|Token"
 msgstr ""
 
 msgid "Pipelines|Trigger user has insufficient permissions to project"
+msgstr ""
+
+msgid "Pipelines|Validating GitLab CI configuration…"
 msgstr ""
 
 msgid "Pipelines|Visualize"

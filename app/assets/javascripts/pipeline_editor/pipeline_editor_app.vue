@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlLoadingIcon, GlTab, GlTabs } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon, GlTabs } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import { mergeUrlParams, redirectTo } from '~/lib/utils/url_utility';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -7,6 +7,7 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
 import CiLint from './components/lint/ci_lint.vue';
 import CommitForm from './components/commit/commit_form.vue';
+import EditorTab from './components/ui/editor_tab.vue';
 import TextEditor from './components/text_editor.vue';
 
 import commitCiFileMutation from './graphql/mutations/commit_ci_file.mutation.graphql';
@@ -28,9 +29,9 @@ export default {
   components: {
     CommitForm,
     CiLint,
+    EditorTab,
     GlAlert,
     GlLoadingIcon,
-    GlTab,
     GlTabs,
     PipelineGraph,
     TextEditor,
@@ -66,8 +67,6 @@ export default {
       content: '',
       contentModel: '',
       lastCommitSha: this.commitSha,
-      currentTabIndex: 0,
-      editorIsReady: false,
       isSaving: false,
 
       // Success and failure state
@@ -127,9 +126,6 @@ export default {
     },
     isCiConfigDataLoading() {
       return this.$apollo.queries.ciConfigData.loading;
-    },
-    isVisualizeTabActive() {
-      return this.currentTabIndex === 1;
     },
     defaultCommitMessage() {
       return sprintf(this.$options.i18n.defaultCommitMessage, { sourcePath: this.ciConfigPath });
@@ -305,33 +301,30 @@ export default {
     <div class="gl-mt-4">
       <gl-loading-icon v-if="isBlobContentLoading" size="lg" class="gl-m-3" />
       <div v-else class="file-editor gl-mb-3">
-        <gl-tabs v-model="currentTabIndex">
-          <!-- editor should be mounted when its tab is visible, so the container has a size -->
-          <gl-tab :title="$options.i18n.tabEdit" :lazy="!editorIsReady">
-            <!-- editor should be mounted only once, when the tab is displayed -->
+        <gl-tabs>
+          <editor-tab :lazy="true" :title="$options.i18n.tabEdit">
             <text-editor
               v-model="contentModel"
               :ci-config-path="ciConfigPath"
               :commit-sha="lastCommitSha"
               :project-path="projectPath"
-              @editor-ready="editorIsReady = true"
             />
-          </gl-tab>
-
-          <gl-tab
+          </editor-tab>
+          <editor-tab
             v-if="glFeatures.ciConfigVisualizationTab"
+            :lazy="true"
             :title="$options.i18n.tabGraph"
-            :lazy="!isVisualizeTabActive"
+            :title-link-attributes="{ 'data-testid': 'visualization-tab-btn' }"
             data-testid="visualization-tab"
           >
             <gl-loading-icon v-if="isCiConfigDataLoading" size="lg" class="gl-m-3" />
             <pipeline-graph v-else :pipeline-data="ciConfigData" />
-          </gl-tab>
+          </editor-tab>
 
-          <gl-tab :title="$options.i18n.tabLint">
+          <editor-tab :title="$options.i18n.tabLint">
             <gl-loading-icon v-if="isCiConfigDataLoading" size="lg" class="gl-m-3" />
             <ci-lint v-else :ci-config="ciConfigData" />
-          </gl-tab>
+          </editor-tab>
         </gl-tabs>
       </div>
       <commit-form
