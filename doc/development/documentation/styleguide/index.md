@@ -1670,8 +1670,8 @@ the blockquote to use a bulleted list:
 If a feature is moved to another tier:
 
 ```markdown
-> - [Moved](<link-to-issue>) from [GitLab Premium](https://about.gitlab.com/pricing/) to [GitLab Starter](https://about.gitlab.com/pricing/) in 11.8.
-> - [Moved](<link-to-issue>) from [GitLab Starter](https://about.gitlab.com/pricing/) to GitLab Core in 12.0.
+> - [Moved](<link-to-issue>) from GitLab Premium to GitLab Starter in 11.8.
+> - [Moved](<link-to-issue>) from GitLab Starter to GitLab Core in 12.0.
 ```
 
 If a feature is deprecated, include a link to a replacement (when available):
