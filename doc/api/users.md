@@ -1480,19 +1480,13 @@ Parameters:
 | `user_id`                | integer | yes      | The ID of the user                |
 | `impersonation_token_id` | integer | yes      | The ID of the impersonation token |
 
-## Create a personal access token (admin only)
+## Create a personal access token **(CORE ONLY)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17176) in GitLab 13.6.
-> - It's [deployed behind a feature flag](../user/feature_flags.md), disabled by default.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-an-administrators-ability-to-use-the-api-to-create-personal-access-tokens). **(CORE)**
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/267553) in GitLab 13.8.
 
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
-
-> Requires admin permissions.
-> Token values are returned once. Make sure you save it - you can't access it again.
-
-It creates a new personal access token.
+Use this API to create a new personal access token. Token values are returned once.
+Make sure you save it as you can't access it again.
 
 ```plaintext
 POST /users/:user_id/personal_access_tokens
@@ -1631,23 +1625,4 @@ Example response:
     "access_level": "20"
   },
 ]
-```
-
-## Enable or disable an administrator's ability to use the API to create personal access tokens **(CORE)**
-
-An administrator's ability to create personal access tokens through the API is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:pat_creation_api_for_admin)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:pat_creation_api_for_admin)
 ```

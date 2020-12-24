@@ -2853,115 +2853,91 @@ RSpec.describe API::Users do
     let(:expires_at) { 3.days.from_now.to_date.to_s }
     let(:scopes) { %w(api read_user) }
 
-    context 'when feature flag is enabled' do
-      before do
-        stub_feature_flags(pat_creation_api_for_admin: true)
-      end
+    it 'returns error if required attributes are missing' do
+      post api("/users/#{user.id}/personal_access_tokens", admin)
 
-      it 'returns error if required attributes are missing' do
-        post api("/users/#{user.id}/personal_access_tokens", admin)
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['error']).to eq('name is missing, scopes is missing, scopes does not have a valid value')
-      end
-
-      it 'returns a 404 error if user not found' do
-        post api("/users/#{non_existing_record_id}/personal_access_tokens", admin),
-          params: {
-            name: name,
-            scopes: scopes,
-            expires_at: expires_at
-          }
-
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(json_response['message']).to eq('404 User Not Found')
-      end
-
-      it 'returns a 401 error when not authenticated' do
-        post api("/users/#{user.id}/personal_access_tokens"),
-          params: {
-            name: name,
-            scopes: scopes,
-            expires_at: expires_at
-          }
-
-        expect(response).to have_gitlab_http_status(:unauthorized)
-        expect(json_response['message']).to eq('401 Unauthorized')
-      end
-
-      it 'returns a 403 error when authenticated as normal user' do
-        post api("/users/#{user.id}/personal_access_tokens", user),
-          params: {
-            name: name,
-            scopes: scopes,
-            expires_at: expires_at
-          }
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-        expect(json_response['message']).to eq('403 Forbidden')
-      end
-
-      it 'creates a personal access token when authenticated as admin' do
-        post api("/users/#{user.id}/personal_access_tokens", admin),
-          params: {
-            name: name,
-            expires_at: expires_at,
-            scopes: scopes
-          }
-
-        expect(response).to have_gitlab_http_status(:created)
-        expect(json_response['name']).to eq(name)
-        expect(json_response['scopes']).to eq(scopes)
-        expect(json_response['expires_at']).to eq(expires_at)
-        expect(json_response['id']).to be_present
-        expect(json_response['created_at']).to be_present
-        expect(json_response['active']).to be_truthy
-        expect(json_response['revoked']).to be_falsey
-        expect(json_response['token']).to be_present
-      end
-
-      context 'when an error is thrown by the model' do
-        let!(:admin_personal_access_token) { create(:personal_access_token, user: admin) }
-        let(:error_message) { 'error message' }
-
-        before do
-          allow_next_instance_of(PersonalAccessToken) do |personal_access_token|
-            allow(personal_access_token).to receive_message_chain(:errors, :full_messages)
-                                                .and_return([error_message])
-
-            allow(personal_access_token).to receive(:save).and_return(false)
-          end
-        end
-
-        it 'returns the error' do
-          post api("/users/#{user.id}/personal_access_tokens", personal_access_token: admin_personal_access_token),
-              params: {
-                  name: name,
-                  expires_at: expires_at,
-                  scopes: scopes
-              }
-
-          expect(response).to have_gitlab_http_status(:unprocessable_entity)
-          expect(json_response['message']).to eq(error_message)
-        end
-      end
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['error']).to eq('name is missing, scopes is missing, scopes does not have a valid value')
     end
 
-    context 'when feature flag is disabled' do
+    it 'returns a 404 error if user not found' do
+      post api("/users/#{non_existing_record_id}/personal_access_tokens", admin),
+        params: {
+          name: name,
+          scopes: scopes,
+          expires_at: expires_at
+        }
+
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(json_response['message']).to eq('404 User Not Found')
+    end
+
+    it 'returns a 401 error when not authenticated' do
+      post api("/users/#{user.id}/personal_access_tokens"),
+        params: {
+          name: name,
+          scopes: scopes,
+          expires_at: expires_at
+        }
+
+      expect(response).to have_gitlab_http_status(:unauthorized)
+      expect(json_response['message']).to eq('401 Unauthorized')
+    end
+
+    it 'returns a 403 error when authenticated as normal user' do
+      post api("/users/#{user.id}/personal_access_tokens", user),
+        params: {
+          name: name,
+          scopes: scopes,
+          expires_at: expires_at
+        }
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+      expect(json_response['message']).to eq('403 Forbidden')
+    end
+
+    it 'creates a personal access token when authenticated as admin' do
+      post api("/users/#{user.id}/personal_access_tokens", admin),
+        params: {
+          name: name,
+          expires_at: expires_at,
+          scopes: scopes
+        }
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(json_response['name']).to eq(name)
+      expect(json_response['scopes']).to eq(scopes)
+      expect(json_response['expires_at']).to eq(expires_at)
+      expect(json_response['id']).to be_present
+      expect(json_response['created_at']).to be_present
+      expect(json_response['active']).to be_truthy
+      expect(json_response['revoked']).to be_falsey
+      expect(json_response['token']).to be_present
+    end
+
+    context 'when an error is thrown by the model' do
+      let!(:admin_personal_access_token) { create(:personal_access_token, user: admin) }
+      let(:error_message) { 'error message' }
+
       before do
-        stub_feature_flags(pat_creation_api_for_admin: false)
+        allow_next_instance_of(PersonalAccessToken) do |personal_access_token|
+          allow(personal_access_token).to receive_message_chain(:errors, :full_messages)
+                                            .and_return([error_message])
+
+          allow(personal_access_token).to receive(:save).and_return(false)
+        end
       end
 
-      it 'returns a 404' do
-        post api("/users/#{user.id}/personal_access_tokens", admin),
+      it 'returns the error' do
+        post api("/users/#{user.id}/personal_access_tokens", personal_access_token: admin_personal_access_token),
           params: {
             name: name,
             expires_at: expires_at,
             scopes: scopes
           }
 
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(json_response['message']).to eq('404 Not Found')
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']).to eq(error_message)
       end
     end
   end

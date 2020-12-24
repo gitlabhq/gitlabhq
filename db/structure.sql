@@ -9003,7 +9003,8 @@ CREATE TABLE analytics_devops_adoption_snapshots (
     runner_configured boolean NOT NULL,
     pipeline_succeeded boolean NOT NULL,
     deploy_succeeded boolean NOT NULL,
-    security_scan_succeeded boolean NOT NULL
+    security_scan_succeeded boolean NOT NULL,
+    end_time timestamp with time zone NOT NULL
 );
 
 CREATE SEQUENCE analytics_devops_adoption_snapshots_id_seq
@@ -22101,6 +22102,8 @@ CREATE UNIQUE INDEX index_on_segment_selections_group_id_segment_id ON analytics
 CREATE UNIQUE INDEX index_on_segment_selections_project_id_segment_id ON analytics_devops_adoption_segment_selections USING btree (project_id, segment_id);
 
 CREATE INDEX index_on_segment_selections_segment_id ON analytics_devops_adoption_segment_selections USING btree (segment_id);
+
+CREATE INDEX index_on_snapshots_segment_id_end_time ON analytics_devops_adoption_snapshots USING btree (segment_id, end_time);
 
 CREATE INDEX index_on_snapshots_segment_id_recorded_at ON analytics_devops_adoption_snapshots USING btree (segment_id, recorded_at);
 

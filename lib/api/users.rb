@@ -745,8 +745,6 @@ module API
             optional :expires_at, type: Date, desc: 'The expiration date in the format YEAR-MONTH-DAY of the personal access token'
           end
           post feature_category: :authentication_and_authorization do
-            not_found! unless Feature.enabled?(:pat_creation_api_for_admin)
-
             response = ::PersonalAccessTokens::CreateService.new(
               current_user: current_user, target_user: target_user, params: declared_params(include_missing: false)
             ).execute

@@ -96,4 +96,4 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 ## Create a personal access token (admin only)
 
-See the [Users API documentation](users.md#create-a-personal-access-token-admin-only) for information on creating a personal access token.
+See the [Users API documentation](users.md#create-a-personal-access-token) for information on creating a personal access token.
