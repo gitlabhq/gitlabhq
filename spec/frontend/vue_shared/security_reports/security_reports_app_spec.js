@@ -371,7 +371,7 @@ describe('Security reports app', () => {
       // TODO: Remove this assertion as part of
       // https://gitlab.com/gitlab-org/gitlab/-/issues/273431
       it('initially renders nothing', () => {
-        expect(wrapper.isEmpty()).toBe(true);
+        expect(wrapper.html()).toBe('');
       });
     });
 
@@ -415,7 +415,7 @@ describe('Security reports app', () => {
       // TODO: Remove this assertion as part of
       // https://gitlab.com/gitlab-org/gitlab/-/issues/273431
       it('renders nothing', () => {
-        expect(wrapper.isEmpty()).toBe(true);
+        expect(wrapper.html()).toBe('');
       });
     });
   });

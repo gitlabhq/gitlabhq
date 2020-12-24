@@ -162,21 +162,27 @@ export default {
     mutationVariables() {
       const { board } = this;
       /* eslint-disable @gitlab/require-i18n-strings */
-      const baseMutationVariables = {
+      let baseMutationVariables = {
         name: board.name,
-        weight: board.weight,
-        assigneeId: board.assignee?.id ? convertToGraphQLId('User', board.assignee.id) : null,
-        milestoneId:
-          board.milestone?.id || board.milestone?.id === 0
-            ? convertToGraphQLId('Milestone', board.milestone.id)
-            : null,
-        labelIds: board.labels.map(fullLabelId),
         hideBacklogList: board.hide_backlog_list,
         hideClosedList: board.hide_closed_list,
-        iterationId: board.iteration_id
-          ? convertToGraphQLId('Iteration', board.iteration_id)
-          : null,
       };
+
+      if (this.scopedIssueBoardFeatureEnabled) {
+        baseMutationVariables = {
+          ...baseMutationVariables,
+          weight: board.weight,
+          assigneeId: board.assignee?.id ? convertToGraphQLId('User', board.assignee.id) : null,
+          milestoneId:
+            board.milestone?.id || board.milestone?.id === 0
+              ? convertToGraphQLId('Milestone', board.milestone.id)
+              : null,
+          labelIds: board.labels.map(fullLabelId),
+          iterationId: board.iteration_id
+            ? convertToGraphQLId('Iteration', board.iteration_id)
+            : null,
+        };
+      }
       /* eslint-enable @gitlab/require-i18n-strings */
       return board.id
         ? {

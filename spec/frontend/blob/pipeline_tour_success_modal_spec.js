@@ -10,13 +10,14 @@ describe('PipelineTourSuccessModal', () => {
   let cookieSpy;
   let trackingSpy;
 
+  const GlEmoji = { template: '<img/>' };
   const createComponent = () => {
     wrapper = shallowMount(pipelineTourSuccess, {
       propsData: modalProps,
       stubs: {
         GlModal,
         GlSprintf,
-        'gl-emoji': '<img/>',
+        GlEmoji,
       },
     });
   };
@@ -67,7 +68,7 @@ describe('PipelineTourSuccessModal', () => {
   it('has expected structure', () => {
     const modal = wrapper.find(GlModal);
     const sprintf = modal.find(GlSprintf);
-    const emoji = modal.find('img');
+    const emoji = modal.find(GlEmoji);
 
     expect(wrapper.text()).toContain("That's it, well done!");
     expect(sprintf.exists()).toBe(true);

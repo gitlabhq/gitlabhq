@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { GlLoadingIcon, GlPagination } from '@gitlab/ui';
@@ -53,7 +54,7 @@ describe('diffs/components/app', () => {
 
     extendStore(store);
 
-    wrapper = shallowMount(localVue.extend(App), {
+    wrapper = shallowMount(App, {
       localVue,
       propsData: {
         endpoint: TEST_ENDPOINT,
@@ -70,11 +71,6 @@ describe('diffs/components/app', () => {
       },
       provide,
       store,
-      methods: {
-        isLatestVersion() {
-          return true;
-        },
-      },
     });
   }
 
@@ -102,7 +98,7 @@ describe('diffs/components/app', () => {
   });
 
   describe('fetch diff methods', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       const fetchResolver = () => {
         store.state.diffs.retrievingBatches = false;
         store.state.notes.discussions = 'test';
@@ -119,40 +115,37 @@ describe('diffs/components/app', () => {
       jest.spyOn(wrapper.vm, 'unwatchRetrievingBatches').mockImplementation(() => {});
       store.state.diffs.retrievingBatches = true;
       store.state.diffs.diffFiles = [];
-      wrapper.vm.$nextTick(done);
+      return nextTick();
     });
 
-    it('calls batch methods if diffsBatchLoad is enabled, and not latest version', (done) => {
-      expect(wrapper.vm.diffFilesLength).toEqual(0);
-      wrapper.vm.isLatestVersion = () => false;
-      wrapper.vm.fetchData(false);
-
-      setImmediate(() => {
-        expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
-        expect(wrapper.vm.fetchDiffFilesMeta).toHaveBeenCalled();
-        expect(wrapper.vm.fetchDiffFilesBatch).toHaveBeenCalled();
-        expect(wrapper.vm.fetchCoverageFiles).toHaveBeenCalled();
-        expect(wrapper.vm.unwatchDiscussions).toHaveBeenCalled();
-        expect(wrapper.vm.diffFilesLength).toEqual(100);
-        expect(wrapper.vm.unwatchRetrievingBatches).toHaveBeenCalled();
-        done();
-      });
-    });
-
-    it('calls batch methods if diffsBatchLoad is enabled, and latest version', (done) => {
+    it('calls batch methods if diffsBatchLoad is enabled, and not latest version', async () => {
       expect(wrapper.vm.diffFilesLength).toEqual(0);
       wrapper.vm.fetchData(false);
 
-      setImmediate(() => {
-        expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
-        expect(wrapper.vm.fetchDiffFilesMeta).toHaveBeenCalled();
-        expect(wrapper.vm.fetchDiffFilesBatch).toHaveBeenCalled();
-        expect(wrapper.vm.fetchCoverageFiles).toHaveBeenCalled();
-        expect(wrapper.vm.unwatchDiscussions).toHaveBeenCalled();
-        expect(wrapper.vm.diffFilesLength).toEqual(100);
-        expect(wrapper.vm.unwatchRetrievingBatches).toHaveBeenCalled();
-        done();
-      });
+      await nextTick();
+
+      expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
+      expect(wrapper.vm.fetchDiffFilesMeta).toHaveBeenCalled();
+      expect(wrapper.vm.fetchDiffFilesBatch).toHaveBeenCalled();
+      expect(wrapper.vm.fetchCoverageFiles).toHaveBeenCalled();
+      expect(wrapper.vm.unwatchDiscussions).toHaveBeenCalled();
+      expect(wrapper.vm.diffFilesLength).toBe(100);
+      expect(wrapper.vm.unwatchRetrievingBatches).toHaveBeenCalled();
+    });
+
+    it('calls batch methods if diffsBatchLoad is enabled, and latest version', async () => {
+      expect(wrapper.vm.diffFilesLength).toEqual(0);
+      wrapper.vm.fetchData(false);
+
+      await nextTick();
+
+      expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
+      expect(wrapper.vm.fetchDiffFilesMeta).toHaveBeenCalled();
+      expect(wrapper.vm.fetchDiffFilesBatch).toHaveBeenCalled();
+      expect(wrapper.vm.fetchCoverageFiles).toHaveBeenCalled();
+      expect(wrapper.vm.unwatchDiscussions).toHaveBeenCalled();
+      expect(wrapper.vm.diffFilesLength).toBe(100);
+      expect(wrapper.vm.unwatchRetrievingBatches).toHaveBeenCalled();
     });
   });
 
@@ -216,28 +209,25 @@ describe('diffs/components/app', () => {
       window.location.hash = 'ABC_123';
     });
 
-    it('sets highlighted row if hash exists in location object', (done) => {
+    it('sets highlighted row if hash exists in location object', async () => {
       createComponent({
         shouldShow: true,
       });
 
       // Component uses $nextTick so we wait until that has finished
-      setImmediate(() => {
-        expect(store.state.diffs.highlightedRow).toBe('ABC_123');
+      await nextTick();
 
-        done();
-      });
+      expect(store.state.diffs.highlightedRow).toBe('ABC_123');
     });
 
-    it('marks current diff file based on currently highlighted row', () => {
+    it('marks current diff file based on currently highlighted row', async () => {
       createComponent({
         shouldShow: true,
       });
 
       // Component uses $nextTick so we wait until that has finished
-      return wrapper.vm.$nextTick().then(() => {
-        expect(store.state.diffs.currentDiffFileId).toBe('ABC');
-      });
+      await nextTick();
+      expect(store.state.diffs.currentDiffFileId).toBe('ABC');
     });
   });
 
@@ -267,17 +257,15 @@ describe('diffs/components/app', () => {
     });
   });
 
-  it('marks current diff file based on currently highlighted row', (done) => {
+  it('marks current diff file based on currently highlighted row', async () => {
     createComponent({
       shouldShow: true,
     });
 
     // Component uses $nextTick so we wait until that has finished
-    setImmediate(() => {
-      expect(store.state.diffs.currentDiffFileId).toBe('ABC');
+    await nextTick();
 
-      done();
-    });
+    expect(store.state.diffs.currentDiffFileId).toBe('ABC');
   });
 
   describe('empty state', () => {
@@ -341,16 +329,15 @@ describe('diffs/components/app', () => {
         ${'c'} | ${'moveToNeighboringCommit'} | ${1} | ${[{ direction: 'next' }]}     | ${{ mrCommitNeighborNav: true }}
       `(
         'calls `$name()` with correct parameters whenever the "$key" key is pressed',
-        ({ key, spy, args, featureFlags }) => {
+        async ({ key, spy, args, featureFlags }) => {
           setup({ shouldShow: true }, featureFlags);
 
-          return wrapper.vm.$nextTick().then(() => {
-            expect(spies[spy]).not.toHaveBeenCalled();
+          await nextTick();
+          expect(spies[spy]).not.toHaveBeenCalled();
 
-            Mousetrap.trigger(key);
+          Mousetrap.trigger(key);
 
-            expect(spies[spy]).toHaveBeenCalledWith(...args);
-          });
+          expect(spies[spy]).toHaveBeenCalledWith(...args);
         },
       );
 
@@ -360,16 +347,15 @@ describe('diffs/components/app', () => {
         ${'c'} | ${'moveToNeighboringCommit'} | ${1} | ${{ mrCommitNeighborNav: false }}
       `(
         'does not call `$name()` even when the correct key is pressed if the feature flag is disabled',
-        ({ key, spy, featureFlags }) => {
+        async ({ key, spy, featureFlags }) => {
           setup({ shouldShow: true }, featureFlags);
 
-          return wrapper.vm.$nextTick().then(() => {
-            expect(spies[spy]).not.toHaveBeenCalled();
+          await nextTick();
+          expect(spies[spy]).not.toHaveBeenCalled();
 
-            Mousetrap.trigger(key);
+          Mousetrap.trigger(key);
 
-            expect(spies[spy]).not.toHaveBeenCalled();
-          });
+          expect(spies[spy]).not.toHaveBeenCalled();
         },
       );
 
@@ -379,25 +365,23 @@ describe('diffs/components/app', () => {
         ${'r'} | ${'moveToNeighboringCommit'} | ${1} | ${['x', 'c']}
       `(
         `does not call \`$name()\` when a key that is not one of \`$allowed\` is pressed`,
-        ({ key, spy }) => {
+        async ({ key, spy }) => {
           setup({ shouldShow: true }, { mrCommitNeighborNav: true });
 
-          return wrapper.vm.$nextTick().then(() => {
-            Mousetrap.trigger(key);
+          await nextTick();
+          Mousetrap.trigger(key);
 
-            expect(spies[spy]).not.toHaveBeenCalled();
-          });
+          expect(spies[spy]).not.toHaveBeenCalled();
         },
       );
     });
 
     describe('hidden app', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         setup({ shouldShow: false }, { mrCommitNeighborNav: true });
 
-        return wrapper.vm.$nextTick().then(() => {
-          Mousetrap.reset();
-        });
+        await nextTick();
+        Mousetrap.reset();
       });
 
       it.each`
@@ -439,56 +423,42 @@ describe('diffs/components/app', () => {
       wrapper.destroy();
     });
 
-    it('jumps to next and previous files in the list', (done) => {
-      wrapper.vm
-        .$nextTick()
-        .then(() => {
-          wrapper.vm.jumpToFile(+1);
+    it('jumps to next and previous files in the list', async () => {
+      await nextTick();
 
-          expect(spy.mock.calls[spy.mock.calls.length - 1]).toEqual(['222.js']);
-          store.state.diffs.currentDiffFileId = '222';
-          wrapper.vm.jumpToFile(+1);
+      wrapper.vm.jumpToFile(+1);
 
-          expect(spy.mock.calls[spy.mock.calls.length - 1]).toEqual(['333.js']);
-          store.state.diffs.currentDiffFileId = '333';
-          wrapper.vm.jumpToFile(-1);
+      expect(spy.mock.calls[spy.mock.calls.length - 1]).toEqual(['222.js']);
+      store.state.diffs.currentDiffFileId = '222';
+      wrapper.vm.jumpToFile(+1);
 
-          expect(spy.mock.calls[spy.mock.calls.length - 1]).toEqual(['222.js']);
-        })
-        .then(done)
-        .catch(done.fail);
+      expect(spy.mock.calls[spy.mock.calls.length - 1]).toEqual(['333.js']);
+      store.state.diffs.currentDiffFileId = '333';
+      wrapper.vm.jumpToFile(-1);
+
+      expect(spy.mock.calls[spy.mock.calls.length - 1]).toEqual(['222.js']);
     });
 
-    it('does not jump to previous file from the first one', (done) => {
-      wrapper.vm
-        .$nextTick()
-        .then(() => {
-          store.state.diffs.currentDiffFileId = '333';
+    it('does not jump to previous file from the first one', async () => {
+      await nextTick();
+      store.state.diffs.currentDiffFileId = '333';
 
-          expect(wrapper.vm.currentDiffIndex).toEqual(2);
+      expect(wrapper.vm.currentDiffIndex).toBe(2);
 
-          wrapper.vm.jumpToFile(+1);
+      wrapper.vm.jumpToFile(+1);
 
-          expect(wrapper.vm.currentDiffIndex).toEqual(2);
-          expect(spy).not.toHaveBeenCalled();
-        })
-        .then(done)
-        .catch(done.fail);
+      expect(wrapper.vm.currentDiffIndex).toBe(2);
+      expect(spy).not.toHaveBeenCalled();
     });
 
-    it('does not jump to next file from the last one', (done) => {
-      wrapper.vm
-        .$nextTick()
-        .then(() => {
-          expect(wrapper.vm.currentDiffIndex).toEqual(0);
+    it('does not jump to next file from the last one', async () => {
+      await nextTick();
+      expect(wrapper.vm.currentDiffIndex).toBe(0);
 
-          wrapper.vm.jumpToFile(-1);
+      wrapper.vm.jumpToFile(-1);
 
-          expect(wrapper.vm.currentDiffIndex).toEqual(0);
-          expect(spy).not.toHaveBeenCalled();
-        })
-        .then(done)
-        .catch(done.fail);
+      expect(wrapper.vm.currentDiffIndex).toBe(0);
+      expect(spy).not.toHaveBeenCalled();
     });
   });
 
@@ -514,7 +484,7 @@ describe('diffs/components/app', () => {
       window.location = location;
     });
 
-    it('when the commit changes and the app is not loading it should update the history, refetch the diff data, and update the view', () => {
+    it('when the commit changes and the app is not loading it should update the history, refetch the diff data, and update the view', async () => {
       createComponent({}, ({ state }) => {
         state.diffs.commit = { ...state.diffs.commit, id: 'OLD' };
       });
@@ -522,14 +492,13 @@ describe('diffs/components/app', () => {
 
       store.state.diffs.commit = { id: 'NEW' };
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(urlUtils.updateHistory).toHaveBeenCalledWith({
-          title: document.title,
-          url: UPDATED_COMMIT_URL,
-        });
-        expect(wrapper.vm.refetchDiffData).toHaveBeenCalled();
-        expect(wrapper.vm.adjustView).toHaveBeenCalled();
+      await nextTick();
+      expect(urlUtils.updateHistory).toHaveBeenCalledWith({
+        title: document.title,
+        url: UPDATED_COMMIT_URL,
       });
+      expect(wrapper.vm.refetchDiffData).toHaveBeenCalled();
+      expect(wrapper.vm.adjustView).toHaveBeenCalled();
     });
 
     it.each`
@@ -538,7 +507,7 @@ describe('diffs/components/app', () => {
       ${false}  | ${'NEW'} | ${'NEW'}
     `(
       'given `{ "isLoading": $isLoading, "oldSha": "$oldSha", "newSha": "$newSha" }`, nothing should happen',
-      ({ isLoading, oldSha, newSha }) => {
+      async ({ isLoading, oldSha, newSha }) => {
         createComponent({}, ({ state }) => {
           state.diffs.isLoading = isLoading;
           state.diffs.commit = { ...state.diffs.commit, id: oldSha };
@@ -547,11 +516,10 @@ describe('diffs/components/app', () => {
 
         store.state.diffs.commit = { id: newSha };
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(urlUtils.updateHistory).not.toHaveBeenCalled();
-          expect(wrapper.vm.refetchDiffData).not.toHaveBeenCalled();
-          expect(wrapper.vm.adjustView).not.toHaveBeenCalled();
-        });
+        await nextTick();
+        expect(urlUtils.updateHistory).not.toHaveBeenCalled();
+        expect(wrapper.vm.refetchDiffData).not.toHaveBeenCalled();
+        expect(wrapper.vm.adjustView).not.toHaveBeenCalled();
       },
     );
   });
@@ -710,7 +678,7 @@ describe('diffs/components/app', () => {
         state.diffs.diffFiles.push({ file_hash: '312' });
       });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.findAll(DiffFile).length).toBe(1);
     });
@@ -724,7 +692,7 @@ describe('diffs/components/app', () => {
           state.diffs.diffFiles.push({ file_hash: '123' }, { file_hash: '312' });
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(paginator().attributes('prevpage')).toBe(undefined);
         expect(paginator().attributes('nextpage')).toBe('2');
@@ -736,7 +704,7 @@ describe('diffs/components/app', () => {
           state.diffs.currentDiffFileId = '312';
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(paginator().attributes('prevpage')).toBe('1');
         expect(paginator().attributes('nextpage')).toBe(undefined);
@@ -748,7 +716,7 @@ describe('diffs/components/app', () => {
           state.diffs.currentDiffFileId = '123';
         });
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(fileByFileNav().exists()).toBe(false);
       });
@@ -765,13 +733,13 @@ describe('diffs/components/app', () => {
             state.diffs.currentDiffFileId = currentDiffFileId;
           });
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           jest.spyOn(wrapper.vm, 'navigateToDiffFileIndex');
 
           paginator().vm.$emit('input', targetFile);
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           expect(wrapper.vm.navigateToDiffFileIndex).toHaveBeenCalledWith(targetFile - 1);
         },
@@ -787,10 +755,10 @@ describe('diffs/components/app', () => {
         'triggers the action with the new fileByFile setting - $setting - when the event with that setting is received',
         async ({ setting }) => {
           createComponent();
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           eventHub.$emit(EVT_VIEW_FILE_BY_FILE, { setting });
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           expect(store.state.diffs.viewDiffsFileByFile).toBe(setting);
         },

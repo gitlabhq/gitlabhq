@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlDropdown, GlDropdownItem, GlDatepicker, GlSprintf, GlLink } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlDatepicker, GlSprintf, GlLink, GlModal } from '@gitlab/ui';
+import { stubComponent } from 'helpers/stub_component';
 import Api from '~/api';
 import InviteMembersModal from '~/invite_members/components/invite_members_modal.vue';
 
@@ -24,9 +25,12 @@ const createComponent = (data = {}) => {
       return data;
     },
     stubs: {
-      'gl-modal': '<div><slot name="modal-footer"></slot><slot></slot></div>',
-      'gl-dropdown': true,
-      'gl-dropdown-item': true,
+      GlModal: stubComponent(GlModal, {
+        template:
+          '<div><slot name="modal-title"></slot><slot></slot><slot name="modal-footer"></slot></div>',
+      }),
+      GlDropdown: true,
+      GlDropdownItem: true,
       GlSprintf,
     },
   });

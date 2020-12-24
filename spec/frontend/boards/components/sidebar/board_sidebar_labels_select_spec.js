@@ -37,8 +37,8 @@ describe('~/boards/components/sidebar/board_sidebar_labels_select.vue', () => {
         labelsFilterBasePath: TEST_HOST,
       },
       stubs: {
-        'board-editable-item': BoardEditableItem,
-        'labels-select': '<div></div>',
+        BoardEditableItem,
+        LabelsSelect: true,
       },
     });
   };

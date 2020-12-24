@@ -1,3 +1,5 @@
+import Vuex from 'vuex';
+import Vue from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import { GlAlert, GlLoadingIcon, GlModal } from '@gitlab/ui';
 
@@ -8,6 +10,8 @@ import DuplicateDashboardForm from '~/monitoring/components/duplicate_dashboard_
 
 import { dashboardGitResponse } from '../mock_data';
 
+Vue.use(Vuex);
+
 describe('duplicate dashboard modal', () => {
   let wrapper;
   let mockDashboards;
@@ -15,25 +19,28 @@ describe('duplicate dashboard modal', () => {
   let duplicateDashboardAction;
   let okEvent;
 
-  function createComponent(opts = {}) {
-    const storeOpts = {
-      methods: {
-        duplicateSystemDashboard: jest.fn(),
+  function createComponent() {
+    const store = new Vuex.Store({
+      modules: {
+        monitoringDashboard: {
+          namespaced: true,
+          actions: {
+            duplicateSystemDashboard: duplicateDashboardAction,
+          },
+          getters: {
+            allDashboards: () => mockDashboards,
+            selectedDashboard: () => mockSelectedDashboard,
+          },
+        },
       },
-      computed: {
-        allDashboards: () => mockDashboards,
-        selectedDashboard: () => mockSelectedDashboard,
-      },
-    };
+    });
 
     return shallowMount(DuplicateDashboardModal, {
       propsData: {
         defaultBranch: 'master',
         modalId: 'id',
       },
-      sync: false,
-      ...storeOpts,
-      ...opts,
+      store,
     });
   }
 
@@ -51,12 +58,7 @@ describe('duplicate dashboard modal', () => {
       preventDefault: jest.fn(),
     };
 
-    wrapper = createComponent({
-      methods: {
-        // Mock vuex actions
-        duplicateSystemDashboard: duplicateDashboardAction,
-      },
-    });
+    wrapper = createComponent();
 
     wrapper.vm.$refs.duplicateDashboardModal.hide = jest.fn();
   });
@@ -65,34 +67,33 @@ describe('duplicate dashboard modal', () => {
     expect(findDuplicateDashboardForm().exists()).toBe(true);
   });
 
-  it('saves a new dashboard', () => {
+  it('saves a new dashboard', async () => {
     findModal().vm.$emit('ok', okEvent);
 
-    return waitForPromises().then(() => {
-      expect(okEvent.preventDefault).toHaveBeenCalled();
-      expect(wrapper.emitted().dashboardDuplicated).toBeTruthy();
-      expect(wrapper.emitted().dashboardDuplicated[0]).toEqual([dashboardGitResponse[0]]);
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
-      expect(wrapper.vm.$refs.duplicateDashboardModal.hide).toHaveBeenCalled();
-      expect(findAlert().exists()).toBe(false);
-    });
+    await waitForPromises();
+    expect(okEvent.preventDefault).toHaveBeenCalled();
+    expect(wrapper.emitted().dashboardDuplicated).toBeTruthy();
+    expect(wrapper.emitted().dashboardDuplicated[0]).toEqual([dashboardGitResponse[0]]);
+    expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+    expect(wrapper.vm.$refs.duplicateDashboardModal.hide).toHaveBeenCalled();
+    expect(findAlert().exists()).toBe(false);
   });
 
-  it('handles error when a new dashboard is not saved', () => {
+  it('handles error when a new dashboard is not saved', async () => {
     const errMsg = 'An error occurred';
 
     duplicateDashboardAction.mockRejectedValueOnce(errMsg);
     findModal().vm.$emit('ok', okEvent);
 
-    return waitForPromises().then(() => {
-      expect(okEvent.preventDefault).toHaveBeenCalled();
+    await waitForPromises();
 
-      expect(findAlert().exists()).toBe(true);
-      expect(findAlert().text()).toBe(errMsg);
+    expect(okEvent.preventDefault).toHaveBeenCalled();
 
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
-      expect(wrapper.vm.$refs.duplicateDashboardModal.hide).not.toHaveBeenCalled();
-    });
+    expect(findAlert().exists()).toBe(true);
+    expect(findAlert().text()).toBe(errMsg);
+
+    expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+    expect(wrapper.vm.$refs.duplicateDashboardModal.hide).not.toHaveBeenCalled();
   });
 
   it('updates the form on changes', () => {

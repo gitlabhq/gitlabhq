@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import { GlDropdownItem, GlIcon } from '@gitlab/ui';
 
@@ -27,7 +28,6 @@ describe('DashboardsDropdown', () => {
         ...props,
         defaultBranch,
       },
-      sync: false,
       ...storeOpts,
       ...opts,
     });
@@ -72,22 +72,20 @@ describe('DashboardsDropdown', () => {
       expect(findNoItemsMsg().isVisible()).toBe(false);
     });
 
-    it('filters dropdown items when searched for item exists in the list', () => {
+    it('filters dropdown items when searched for item exists in the list', async () => {
       const searchTerm = 'Overview';
       setSearchTerm(searchTerm);
+      await nextTick();
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findItems()).toHaveLength(1);
-      });
+      expect(findItems()).toHaveLength(1);
     });
 
-    it('shows no items found message when searched for item does not exists in the list', () => {
+    it('shows no items found message when searched for item does not exists in the list', async () => {
       const searchTerm = 'does-not-exist';
       setSearchTerm(searchTerm);
+      await nextTick();
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findNoItemsMsg().isVisible()).toBe(true);
-      });
+      expect(findNoItemsMsg().isVisible()).toBe(true);
     });
   });
 

@@ -20,7 +20,7 @@ describe('MrWidgetIcon', () => {
   });
 
   it('renders icon and container', () => {
-    expect(wrapper.is('.circle-icon-container')).toBe(true);
+    expect(wrapper.element.className).toContain('circle-icon-container');
     expect(wrapper.find(GlIcon).props('name')).toEqual(TEST_ICON);
   });
 });

@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { shallowMount } from '@vue/test-utils';
@@ -22,13 +23,12 @@ describe('AlertsServiceForm', () => {
   let wrapper;
   let mockAxios;
 
-  const createComponent = (props = defaultProps, { methods } = {}) => {
+  const createComponent = (props = defaultProps) => {
     wrapper = shallowMount(AlertsServiceForm, {
       propsData: {
         ...defaultProps,
         ...props,
       },
-      methods,
     });
   };
 
@@ -75,25 +75,16 @@ describe('AlertsServiceForm', () => {
   });
 
   describe('reset key', () => {
-    it('triggers resetKey method', () => {
-      const resetKey = jest.fn();
-      const methods = { resetKey };
-      createComponent(defaultProps, { methods });
-
-      wrapper.find(GlModal).vm.$emit('ok');
-
-      expect(resetKey).toHaveBeenCalled();
-    });
-
-    it('updates the authorization key on success', () => {
+    it('updates the authorization key on success', async () => {
       const formPath = 'some/path';
-      mockAxios.onPut(formPath, { service: { token: '' } }).replyOnce(200, { token: 'newToken' });
+      mockAxios.onPut(formPath).replyOnce(200, { token: 'newToken' });
 
       createComponent({ formPath });
 
-      return wrapper.vm.resetKey().then(() => {
-        expect(findAuthorizationKey().attributes('value')).toBe('newToken');
-      });
+      wrapper.find(GlModal).vm.$emit('ok');
+      await axios.waitForAll();
+
+      expect(findAuthorizationKey().attributes('value')).toBe('newToken');
     });
 
     it('shows flash message on error', () => {
@@ -112,16 +103,6 @@ describe('AlertsServiceForm', () => {
   });
 
   describe('activate toggle', () => {
-    it('triggers toggleActivated method', () => {
-      const toggleActivated = jest.fn();
-      const methods = { toggleActivated };
-      createComponent(defaultProps, { methods });
-
-      wrapper.find(ToggleButton).vm.$emit('change', true);
-
-      expect(toggleActivated).toHaveBeenCalled();
-    });
-
     describe('successfully completes', () => {
       describe.each`
         initialActivated | value
@@ -175,7 +156,7 @@ describe('AlertsServiceForm', () => {
 
     it('cannot be toggled', () => {
       wrapper.find(ToggleButton).vm.$emit('change');
-      return wrapper.vm.$nextTick().then(() => {
+      return nextTick().then(() => {
         expect(wrapper.find(ToggleButton).props('disabledInput')).toBe(true);
       });
     });

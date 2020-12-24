@@ -21,15 +21,17 @@ describe('Diffs image diff overlay component', () => {
 
     wrapper = shallowMount(ImageDiffOverlay, {
       store,
+      parentComponent: {
+        data() {
+          return dimensions;
+        },
+      },
       propsData: {
         discussions: [...imageDiffDiscussions],
         fileHash: 'ABC',
         renderedWidth: 200,
         renderedHeight: 200,
         ...props,
-      },
-      methods: {
-        getImageDimensions: jest.fn().mockReturnValue(dimensions),
       },
     });
   }

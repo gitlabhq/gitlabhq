@@ -1,18 +1,22 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlLink } from '@gitlab/ui';
+import { GlLink, GlModal } from '@gitlab/ui';
 import { mockTracking, unmockTracking, triggerEvent } from 'helpers/tracking_helper';
+import { stubComponent } from 'helpers/stub_component';
 import InviteMemberModal from '~/invite_member/components/invite_member_modal.vue';
 
 const memberPath = 'member_path';
 
+const GlEmoji = { template: '<img />' };
 const createComponent = () => {
   return shallowMount(InviteMemberModal, {
     provide: {
       membersPath: memberPath,
     },
     stubs: {
-      'gl-emoji': '<img/>',
-      'gl-modal': '<div><slot name="modal-title"></slot><slot></slot></div>',
+      GlEmoji,
+      GlModal: stubComponent(GlModal, {
+        template: '<div><slot name="modal-title"></slot><slot></slot></div>',
+      }),
     },
   });
 };

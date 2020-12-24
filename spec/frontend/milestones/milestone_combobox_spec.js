@@ -1,9 +1,9 @@
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { GlLoadingIcon, GlSearchBoxByType, GlDropdownItem } from '@gitlab/ui';
-import { s__ } from '~/locale';
 import { ENTER_KEY } from '~/lib/utils/keys';
 import MilestoneCombobox from '~/milestones/components/milestone_combobox.vue';
 import { projectMilestones, groupMilestones } from './mock_data';
@@ -14,8 +14,7 @@ const extraLinks = [
   { text: 'Manage milestones', url: '/h5bp/html5-boilerplate/-/milestones' },
 ];
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('Milestone combobox component', () => {
   const projectId = '8';
@@ -29,26 +28,31 @@ describe('Milestone combobox component', () => {
   let searchApiCallSpy;
 
   const createComponent = (props = {}, attrs = {}) => {
+    const propsData = {
+      projectId,
+      groupId,
+      groupMilestonesAvailable,
+      extraLinks,
+      value: [],
+      ...props,
+    };
+
     wrapper = mount(MilestoneCombobox, {
-      propsData: {
-        projectId,
-        groupId,
-        groupMilestonesAvailable,
-        extraLinks,
-        value: [],
-        ...props,
-      },
+      propsData,
       attrs,
       listeners: {
         // simulate a parent component v-model binding
         input: (selectedMilestone) => {
+          // ugly hack because setProps plays bad with immediate watchers
+          // see https://github.com/vuejs/vue-test-utils/issues/1140 and
+          // https://github.com/vuejs/vue-test-utils/pull/1752
+          propsData.value = selectedMilestone;
           wrapper.setProps({ value: selectedMilestone });
         },
       },
       stubs: {
         GlSearchBoxByType: true,
       },
-      localVue,
       store: createStore(),
     });
   };
@@ -115,7 +119,7 @@ describe('Milestone combobox component', () => {
 
     return projectMilestoneSection
       .text()
-      .includes(s__('MilestoneCombobox|An error occurred while searching for milestones'));
+      .includes('An error occurred while searching for milestones');
   };
 
   const groupMilestoneSectionContainsErrorMessage = () => {
@@ -123,7 +127,7 @@ describe('Milestone combobox component', () => {
 
     return groupMilestoneSection
       .text()
-      .includes(s__('MilestoneCombobox|An error occurred while searching for milestones'));
+      .includes('An error occurred while searching for milestones');
   };
 
   //
@@ -141,13 +145,13 @@ describe('Milestone combobox component', () => {
     findFirstGroupMilestonesDropdownItem().vm.$emit('click');
   };
 
-  const waitForRequests = ({ andClearMocks } = { andClearMocks: false }) =>
-    axios.waitForAll().then(() => {
-      if (andClearMocks) {
-        projectMilestonesApiCallSpy.mockClear();
-        groupMilestonesApiCallSpy.mockClear();
-      }
-    });
+  const waitForRequests = async ({ andClearMocks } = { andClearMocks: false }) => {
+    await axios.waitForAll();
+    if (andClearMocks) {
+      projectMilestonesApiCallSpy.mockClear();
+      groupMilestonesApiCallSpy.mockClear();
+    }
+  };
 
   describe('initialization behavior', () => {
     beforeEach(createComponent);
@@ -250,7 +254,7 @@ describe('Milestone combobox component', () => {
 
       describe('when the search query is empty', () => {
         it('renders a "no results" message', () => {
-          expect(findNoResults().text()).toBe(s__('MilestoneCombobox|No matching results'));
+          expect(findNoResults().text()).toBe('No matching results');
         });
       });
     });
@@ -333,19 +337,19 @@ describe('Milestone combobox component', () => {
         it('renders a checkmark by the selected item', async () => {
           selectFirstProjectMilestone();
 
-          await localVue.nextTick();
-
-          expect(
-            findFirstProjectMilestonesDropdownItem().find('span').classes('selected-item'),
-          ).toBe(false);
-
-          selectFirstProjectMilestone();
-
-          await localVue.nextTick();
+          await nextTick();
 
           expect(
             findFirstProjectMilestonesDropdownItem().find('span').classes('selected-item'),
           ).toBe(true);
+
+          selectFirstProjectMilestone();
+
+          await nextTick();
+
+          expect(
+            findFirstProjectMilestonesDropdownItem().find('span').classes('selected-item'),
+          ).toBe(false);
         });
 
         describe('when a project milestones is selected', () => {
@@ -360,22 +364,21 @@ describe('Milestone combobox component', () => {
 
           it("displays the project milestones name in the dropdown's button", async () => {
             selectFirstProjectMilestone();
-            await localVue.nextTick();
+            await nextTick();
 
-            expect(findButtonContent().text()).toBe(s__('MilestoneCombobox|No milestone'));
+            expect(findButtonContent().text()).toBe('v1.0');
 
             selectFirstProjectMilestone();
+            await nextTick();
 
-            await localVue.nextTick();
-            expect(findButtonContent().text()).toBe('v1.0');
+            expect(findButtonContent().text()).toBe('No milestone');
           });
 
-          it('updates the v-model binding with the project milestone title', () => {
-            expect(wrapper.vm.value).toEqual([]);
-
+          it('updates the v-model binding with the project milestone title', async () => {
             selectFirstProjectMilestone();
+            await nextTick();
 
-            expect(wrapper.vm.value).toEqual(['v1.0']);
+            expect(wrapper.emitted().input[0][0]).toStrictEqual(['v1.0']);
           });
         });
       });
@@ -459,18 +462,18 @@ describe('Milestone combobox component', () => {
         it('renders a checkmark by the selected item', async () => {
           selectFirstGroupMilestone();
 
-          await localVue.nextTick();
+          await nextTick();
 
           expect(findFirstGroupMilestonesDropdownItem().find('span').classes('selected-item')).toBe(
-            false,
+            true,
           );
 
           selectFirstGroupMilestone();
 
-          await localVue.nextTick();
+          await nextTick();
 
           expect(findFirstGroupMilestonesDropdownItem().find('span').classes('selected-item')).toBe(
-            true,
+            false,
           );
         });
 
@@ -486,22 +489,21 @@ describe('Milestone combobox component', () => {
 
           it("displays the group milestones name in the dropdown's button", async () => {
             selectFirstGroupMilestone();
-            await localVue.nextTick();
+            await nextTick();
 
-            expect(findButtonContent().text()).toBe(s__('MilestoneCombobox|No milestone'));
+            expect(findButtonContent().text()).toBe('group-v1.0');
 
             selectFirstGroupMilestone();
+            await nextTick();
 
-            await localVue.nextTick();
-            expect(findButtonContent().text()).toBe('group-v1.0');
+            expect(findButtonContent().text()).toBe('No milestone');
           });
 
-          it('updates the v-model binding with the group milestone title', () => {
-            expect(wrapper.vm.value).toEqual([]);
-
+          it('updates the v-model binding with the group milestone title', async () => {
             selectFirstGroupMilestone();
+            await nextTick();
 
-            expect(wrapper.vm.value).toEqual(['group-v1.0']);
+            expect(wrapper.emitted().input[0][0]).toStrictEqual(['group-v1.0']);
           });
         });
       });

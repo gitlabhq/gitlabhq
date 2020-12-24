@@ -1,22 +1,20 @@
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
-import waitForPromises from 'helpers/wait_for_promises';
 import CustomMetricsFormFields from '~/custom_metrics/components/custom_metrics_form_fields.vue';
 import axios from '~/lib/utils/axios_utils';
 
 const { CancelToken } = axios;
 
 describe('custom metrics form fields component', () => {
-  let component;
+  let wrapper;
   let mockAxios;
 
-  const getNamedInput = (name) => component.element.querySelector(`input[name="${name}"]`);
+  const getNamedInput = (name) => wrapper.element.querySelector(`input[name="${name}"]`);
   const validateQueryPath = `${TEST_HOST}/mock/path`;
-  const validQueryResponse = { data: { success: true, query: { valid: true, error: '' } } };
+  const validQueryResponse = { success: true, query: { valid: true, error: '' } };
   const csrfToken = 'mockToken';
   const formOperation = 'post';
-  const debouncedValidateQueryMock = jest.fn();
   const makeFormData = (data = {}) => ({
     formData: {
       title: '',
@@ -28,43 +26,42 @@ describe('custom metrics form fields component', () => {
       ...data,
     },
   });
-  const mountComponent = (props, methods = {}) => {
-    component = mount(CustomMetricsFormFields, {
+  const mountComponent = (props) => {
+    wrapper = mount(CustomMetricsFormFields, {
       propsData: {
         formOperation,
         validateQueryPath,
         ...props,
       },
       csrfToken,
-      methods,
     });
   };
 
   beforeEach(() => {
     mockAxios = new MockAdapter(axios);
-    mockAxios.onPost(validateQueryPath).reply(validQueryResponse);
   });
 
   afterEach(() => {
-    component.destroy();
+    wrapper.destroy();
     mockAxios.restore();
   });
 
-  it('checks form validity', (done) => {
+  it('checks form validity', async () => {
+    mockAxios.onPost(validateQueryPath).reply(200, validQueryResponse);
     mountComponent({
       metricPersisted: true,
       ...makeFormData({
-        title: 'title',
+        title: 'title-old',
         yLabel: 'yLabel',
         unit: 'unit',
         group: 'group',
       }),
     });
 
-    component.vm.$nextTick(() => {
-      expect(component.vm.formIsValid).toBe(false);
-      done();
-    });
+    wrapper.find(`input[name="prometheus_metric[query]"]`).setValue('query');
+    await axios.waitForAll();
+
+    expect(wrapper.emitted('formValidation')).toStrictEqual([[true]]);
   });
 
   describe('hidden inputs', () => {
@@ -110,9 +107,6 @@ describe('custom metrics form fields component', () => {
 
   describe('query input', () => {
     const queryInputName = 'prometheus_metric[query]';
-    beforeEach(() => {
-      mockAxios.onPost(validateQueryPath).reply(validQueryResponse);
-    });
 
     it('is empty by default', () => {
       mountComponent();
@@ -135,147 +129,65 @@ describe('custom metrics form fields component', () => {
       jest.runAllTimers();
     });
 
-    it('checks validity on user input', () => {
+    it('checks validity on user input', async () => {
       const query = 'changedQuery';
-      mountComponent(
-        {},
-        {
-          debouncedValidateQuery: debouncedValidateQueryMock,
-        },
-      );
-      const queryInput = component.find(`input[name="${queryInputName}"]`);
-      queryInput.setValue(query);
-      queryInput.trigger('input');
+      mountComponent();
 
-      expect(debouncedValidateQueryMock).toHaveBeenCalledWith(query);
+      expect(mockAxios.history.post).toHaveLength(0);
+      const queryInput = wrapper.find(`input[name="${queryInputName}"]`);
+      queryInput.setValue(query);
+
+      await axios.waitForAll();
+      expect(mockAxios.history.post).toHaveLength(1);
     });
 
     describe('when query validation is in flight', () => {
       beforeEach(() => {
-        mountComponent(
-          { metricPersisted: true, ...makeFormData({ query: 'validQuery' }) },
-          {
-            requestValidation: jest.fn().mockImplementation(
-              () =>
-                new Promise((resolve) =>
-                  setTimeout(() => {
-                    resolve(validQueryResponse);
-                  }, 4000),
-                ),
-            ),
-          },
-        );
+        mountComponent({ metricPersisted: true, ...makeFormData({ query: 'validQuery' }) });
+        mockAxios.onPost(validateQueryPath).reply(200, validQueryResponse);
       });
 
-      afterEach(() => {
-        jest.clearAllTimers();
-      });
-
-      it('expect queryValidateInFlight is in flight', (done) => {
-        const queryInput = component.find(`input[name="${queryInputName}"]`);
+      it('expect loading message to display', async () => {
+        const queryInput = wrapper.find(`input[name="${queryInputName}"]`);
         queryInput.setValue('query');
-        queryInput.trigger('input');
 
-        component.vm.$nextTick(() => {
-          expect(component.vm.queryValidateInFlight).toBe(true);
-          jest.runOnlyPendingTimers();
-          waitForPromises()
-            .then(() => {
-              component.vm.$nextTick(() => {
-                expect(component.vm.queryValidateInFlight).toBe(false);
-                expect(component.vm.queryIsValid).toBe(true);
-                done();
-              });
-            })
-            .catch(done.fail);
-        });
+        expect(wrapper.text()).toContain('Validating query');
       });
 
-      it('expect loading message to display', (done) => {
-        const queryInput = component.find(`input[name="${queryInputName}"]`);
+      it('expect loading message to disappear', async () => {
+        const queryInput = wrapper.find(`input[name="${queryInputName}"]`);
         queryInput.setValue('query');
-        queryInput.trigger('input');
-        component.vm.$nextTick(() => {
-          expect(component.text()).toContain('Validating query');
-          jest.runOnlyPendingTimers();
-          done();
-        });
-      });
 
-      it('expect loading message to disappear', (done) => {
-        const queryInput = component.find(`input[name="${queryInputName}"]`);
-        queryInput.setValue('query');
-        queryInput.trigger('input');
-        component.vm.$nextTick(() => {
-          jest.runOnlyPendingTimers();
-          waitForPromises()
-            .then(() => {
-              component.vm.$nextTick(() => {
-                expect(component.vm.queryValidateInFlight).toBe(false);
-                expect(component.vm.queryIsValid).toBe(true);
-                expect(component.vm.errorMessage).toBe('');
-                done();
-              });
-            })
-            .catch(done.fail);
-        });
+        await axios.waitForAll();
+        expect(wrapper.text()).not.toContain('Validating query');
       });
     });
 
     describe('when query is invalid', () => {
       const errorMessage = 'mockErrorMessage';
-      const invalidQueryResponse = {
-        data: { success: true, query: { valid: false, error: errorMessage } },
-      };
+      const invalidQueryResponse = { success: true, query: { valid: false, error: errorMessage } };
 
       beforeEach(() => {
-        mountComponent(
-          { metricPersisted: true, ...makeFormData({ query: 'invalidQuery' }) },
-          {
-            requestValidation: jest
-              .fn()
-              .mockImplementation(() => Promise.resolve(invalidQueryResponse)),
-          },
-        );
+        mockAxios.onPost(validateQueryPath).reply(200, invalidQueryResponse);
+        mountComponent({ metricPersisted: true, ...makeFormData({ query: 'invalidQuery' }) });
+        return axios.waitForAll();
       });
 
-      it('sets queryIsValid to false', (done) => {
-        component.vm.$nextTick(() => {
-          expect(component.vm.queryValidateInFlight).toBe(false);
-          expect(component.vm.queryIsValid).toBe(false);
-          done();
-        });
-      });
-
-      it('shows invalid query message', (done) => {
-        component.vm.$nextTick(() => {
-          expect(component.text()).toContain(errorMessage);
-          done();
-        });
+      it('shows invalid query message', async () => {
+        expect(wrapper.text()).toContain(errorMessage);
       });
     });
 
     describe('when query is valid', () => {
       beforeEach(() => {
-        mountComponent(
-          { metricPersisted: true, ...makeFormData({ query: 'validQuery' }) },
-          {
-            requestValidation: jest
-              .fn()
-              .mockImplementation(() => Promise.resolve(validQueryResponse)),
-          },
-        );
+        mockAxios.onPost(validateQueryPath).reply(200, validQueryResponse);
+        mountComponent({ metricPersisted: true, ...makeFormData({ query: 'validQuery' }) });
       });
 
-      it('sets queryIsValid to true when query is valid', (done) => {
-        component.vm.$nextTick(() => {
-          expect(component.vm.queryIsValid).toBe(true);
-          done();
-        });
-      });
+      it('shows valid query message', async () => {
+        await axios.waitForAll();
 
-      it('shows valid query message', () => {
-        expect(component.text()).toContain('PromQL query is valid');
+        expect(wrapper.text()).toContain('PromQL query is valid');
       });
     });
   });

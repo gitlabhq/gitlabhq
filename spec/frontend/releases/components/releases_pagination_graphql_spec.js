@@ -72,7 +72,7 @@ describe('~/releases/components/releases_pagination_graphql.vue', () => {
     });
 
     it('does not render anything', () => {
-      expect(wrapper.isEmpty()).toBe(true);
+      expect(wrapper.html()).toBe('');
     });
   });
 

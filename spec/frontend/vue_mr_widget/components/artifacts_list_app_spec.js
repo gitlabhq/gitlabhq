@@ -1,19 +1,20 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import Vuex from 'vuex';
+import Vue, { nextTick } from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import { GlLoadingIcon } from '@gitlab/ui';
-import { TEST_HOST } from 'helpers/test_constants';
+import { TEST_HOST as FAKE_ENDPOINT } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import ArtifactsListApp from '~/vue_merge_request_widget/components/artifacts_list_app.vue';
-import createStore from '~/vue_merge_request_widget/stores/artifacts_list';
+import { getStoreConfig } from '~/vue_merge_request_widget/stores/artifacts_list';
 import { artifactsList } from './mock_data';
+
+Vue.use(Vuex);
 
 describe('Merge Requests Artifacts list app', () => {
   let wrapper;
+  let store;
   let mock;
-  const store = createStore();
-  const localVue = createLocalVue();
-  localVue.use(Vuex);
 
   const actionSpies = {
     fetchArtifacts: jest.fn(),
@@ -29,15 +30,20 @@ describe('Merge Requests Artifacts list app', () => {
   });
 
   const createComponent = () => {
-    wrapper = mount(ArtifactsListApp, {
-      propsData: {
-        endpoint: TEST_HOST,
-      },
-      store,
-      methods: {
+    const storeConfig = getStoreConfig();
+    store = new Vuex.Store({
+      ...storeConfig,
+      actions: {
+        ...storeConfig.actions,
         ...actionSpies,
       },
-      localVue,
+    });
+
+    wrapper = mount(ArtifactsListApp, {
+      propsData: {
+        endpoint: FAKE_ENDPOINT,
+      },
+      store,
     });
   };
 
@@ -50,7 +56,7 @@ describe('Merge Requests Artifacts list app', () => {
     beforeEach(() => {
       createComponent();
       store.dispatch('requestArtifacts');
-      return wrapper.vm.$nextTick();
+      return nextTick();
     });
 
     it('renders a loading icon', () => {
@@ -72,12 +78,12 @@ describe('Merge Requests Artifacts list app', () => {
   describe('with results', () => {
     beforeEach(() => {
       createComponent();
-      mock.onGet(wrapper.vm.$store.state.endpoint).reply(200, artifactsList, {});
+      mock.onGet(FAKE_ENDPOINT).reply(200, artifactsList, {});
       store.dispatch('receiveArtifactsSuccess', {
         data: artifactsList,
         status: 200,
       });
-      return wrapper.vm.$nextTick();
+      return nextTick();
     });
 
     it('renders a title with the number of artifacts', () => {
@@ -91,11 +97,11 @@ describe('Merge Requests Artifacts list app', () => {
     });
 
     describe('on click', () => {
-      it('renders the list of artifacts', () => {
+      it('renders the list of artifacts', async () => {
         findTitle().trigger('click');
-        wrapper.vm.$nextTick(() => {
-          expect(findTableRows().length).toEqual(2);
-        });
+        await nextTick();
+
+        expect(findTableRows().length).toEqual(2);
       });
     });
   });
@@ -103,9 +109,9 @@ describe('Merge Requests Artifacts list app', () => {
   describe('with error', () => {
     beforeEach(() => {
       createComponent();
-      mock.onGet(wrapper.vm.$store.state.endpoint).reply(500, {}, {});
+      mock.onGet(FAKE_ENDPOINT).reply(500, {}, {});
       store.dispatch('receiveArtifactsError');
-      return wrapper.vm.$nextTick();
+      return nextTick();
     });
 
     it('renders the error state', () => {

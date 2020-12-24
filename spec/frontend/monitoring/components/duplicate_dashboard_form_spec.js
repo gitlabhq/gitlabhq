@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
 import DuplicateDashboardForm from '~/monitoring/components/duplicate_dashboard_form.vue';
 
@@ -9,7 +10,6 @@ const createMountedWrapper = (props = {}) => {
   // Use `mount` to render native input elements
   wrapper = mount(DuplicateDashboardForm, {
     propsData: { ...props },
-    sync: false,
     // We need to attach to document, so that `document.activeElement` is properly set in jsdom
     attachToDocument: true,
   });
@@ -47,34 +47,34 @@ describe('DuplicateDashboardForm', () => {
   describe('validates the file name', () => {
     const findInvalidFeedback = () => findByRef('fileNameFormGroup').find('.invalid-feedback');
 
-    it('when is empty', () => {
+    it('when is empty', async () => {
       setValue('fileName', '');
-      return wrapper.vm.$nextTick(() => {
-        expect(findByRef('fileNameFormGroup').classes()).toContain('is-valid');
-        expect(findInvalidFeedback().exists()).toBe(false);
-      });
+      await nextTick();
+
+      expect(findByRef('fileNameFormGroup').classes()).toContain('is-valid');
+      expect(findInvalidFeedback().exists()).toBe(false);
     });
 
-    it('when is valid', () => {
+    it('when is valid', async () => {
       setValue('fileName', 'my_dashboard.yml');
-      return wrapper.vm.$nextTick(() => {
-        expect(findByRef('fileNameFormGroup').classes()).toContain('is-valid');
-        expect(findInvalidFeedback().exists()).toBe(false);
-      });
+      await nextTick();
+
+      expect(findByRef('fileNameFormGroup').classes()).toContain('is-valid');
+      expect(findInvalidFeedback().exists()).toBe(false);
     });
 
-    it('when is not valid', () => {
+    it('when is not valid', async () => {
       setValue('fileName', 'my_dashboard.exe');
-      return wrapper.vm.$nextTick(() => {
-        expect(findByRef('fileNameFormGroup').classes()).toContain('is-invalid');
-        expect(findInvalidFeedback().text()).toBeTruthy();
-      });
+      await nextTick();
+
+      expect(findByRef('fileNameFormGroup').classes()).toContain('is-invalid');
+      expect(findInvalidFeedback().text()).toBeTruthy();
     });
   });
 
   describe('emits `change` event', () => {
     const lastChange = () =>
-      wrapper.vm.$nextTick().then(() => {
+      nextTick().then(() => {
         wrapper.find('form').trigger('change');
 
         // Resolves to the last emitted change
@@ -133,19 +133,19 @@ describe('DuplicateDashboardForm', () => {
         expect(lastChange()).resolves.toMatchObject({
           branch: defaultBranch,
         }),
-        wrapper.vm.$nextTick(() => {
+        nextTick(() => {
           expect(findByRef('branchName').isVisible()).toBe(false);
         }),
       ]);
     });
 
-    it('when `new` branch option is chosen, focuses on the branch name input', () => {
+    it('when `new` branch option is chosen, focuses on the branch name input', async () => {
       setChecked(wrapper.vm.$options.radioVals.NEW);
 
-      return wrapper.vm.$nextTick().then(() => {
-        wrapper.find('form').trigger('change');
-        expect(document.activeElement).toBe(findByRef('branchName').element);
-      });
+      await nextTick();
+
+      wrapper.find('form').trigger('change');
+      expect(document.activeElement).toBe(findByRef('branchName').element);
     });
   });
 });

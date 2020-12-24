@@ -238,11 +238,15 @@ RSpec.describe 'Merge request > User sees pipelines', :js do
         threads = []
 
         threads << Thread.new do
-          @merge_request = MergeRequests::CreateService.new(project, user, merge_request_params).execute
+          Sidekiq::Worker.skipping_transaction_check do
+            @merge_request = MergeRequests::CreateService.new(project, user, merge_request_params).execute
+          end
         end
 
         threads << Thread.new do
-          @pipeline = Ci::CreatePipelineService.new(project, user, build_push_data).execute(:push)
+          Sidekiq::Worker.skipping_transaction_check do
+            @pipeline = Ci::CreatePipelineService.new(project, user, build_push_data).execute(:push)
+          end
         end
 
         threads.each { |thr| thr.join }
