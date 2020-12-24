@@ -137,7 +137,7 @@ describe('note_app', () => {
     });
 
     it('should render form', () => {
-      expect(wrapper.find('.js-main-target-form').name()).toEqual('form');
+      expect(wrapper.find('.js-main-target-form').element.tagName).toBe('FORM');
       expect(wrapper.find('.js-main-target-form textarea').attributes('placeholder')).toEqual(
         'Write a comment or drag your files here…',
       );
@@ -202,7 +202,7 @@ describe('note_app', () => {
     });
 
     it('should render form', () => {
-      expect(wrapper.find('.js-main-target-form').name()).toEqual('form');
+      expect(wrapper.find('.js-main-target-form').element.tagName).toBe('FORM');
       expect(wrapper.find('.js-main-target-form textarea').attributes('placeholder')).toEqual(
         'Write a comment or drag your files here…',
       );

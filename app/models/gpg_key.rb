@@ -127,3 +127,5 @@ class GpgKey < ApplicationRecord
     end
   end
 end
+
+GpgKey.prepend_if_ee('EE::GpgKey')

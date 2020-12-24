@@ -124,10 +124,9 @@ describe('DiscussionNotes', () => {
     describe('with groupped notes and replies expanded', () => {
       const findNoteAtIndex = (index) => {
         const noteComponents = [NoteableNote, SystemNote, PlaceholderNote, PlaceholderSystemNote];
-        const allowedNames = noteComponents.map((c) => c.name);
         return wrapper
           .findAll('.notes *')
-          .filter((w) => allowedNames.includes(w.name()))
+          .filter((w) => noteComponents.some((Component) => w.is(Component)))
           .at(index);
       };
 

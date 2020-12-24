@@ -1485,8 +1485,9 @@ Parameters:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17176) in GitLab 13.6.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/267553) in GitLab 13.8.
 
-Use this API to create a new personal access token. Token values are returned once.
-Make sure you save it as you can't access it again.
+Use this API to create a new personal access token. Token values are returned once so,
+make sure you save it as you can't access it again. This API can only be used by
+GitLab administrators.
 
 ```plaintext
 POST /users/:user_id/personal_access_tokens

@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -72,7 +73,7 @@ describe('Pipelines', () => {
 
   const findTablePagination = () => wrapper.find(TablePagination);
 
-  const createComponent = (props = defaultProps, methods) => {
+  const createComponent = (props = defaultProps) => {
     wrapper = mount(PipelinesComponent, {
       propsData: {
         store: new Store(),
@@ -80,13 +81,15 @@ describe('Pipelines', () => {
         params: {},
         ...props,
       },
-      methods: {
-        ...methods,
-      },
     });
   };
 
   beforeEach(() => {
+    delete window.location;
+  });
+
+  beforeEach(() => {
+    window.location = { search: '' };
     mock = new MockAdapter(axios);
     pipelines = getJSONFixture(jsonFixtureName);
 
@@ -170,7 +173,7 @@ describe('Pipelines', () => {
       it('renders tab empty state finished scope', () => {
         wrapper.vm.scope = 'finished';
 
-        return wrapper.vm.$nextTick().then(() => {
+        return nextTick().then(() => {
           expect(findBlankState().text()).toBe('There are currently no finished pipelines.');
         });
       });
@@ -382,30 +385,23 @@ describe('Pipelines', () => {
       });
 
       it('should make an API request when using tabs', () => {
-        const updateContentMock = jest.fn(() => {});
-        createComponent(
-          { hasGitlabCi: true, canCreatePipeline: true, ...paths },
-          {
-            updateContent: updateContentMock,
-          },
-        );
+        createComponent({ hasGitlabCi: true, canCreatePipeline: true, ...paths });
+        jest.spyOn(wrapper.vm.service, 'getPipelines');
 
         return waitForPromises().then(() => {
           findTab('finished').trigger('click');
 
-          expect(updateContentMock).toHaveBeenCalledWith({ scope: 'finished', page: '1' });
+          expect(wrapper.vm.service.getPipelines).toHaveBeenCalledWith({
+            scope: 'finished',
+            page: '1',
+          });
         });
       });
 
       describe('with pagination', () => {
         it('should make an API request when using pagination', () => {
-          const updateContentMock = jest.fn(() => {});
-          createComponent(
-            { hasGitlabCi: true, canCreatePipeline: true, ...paths },
-            {
-              updateContent: updateContentMock,
-            },
-          );
+          createComponent({ hasGitlabCi: true, canCreatePipeline: true, ...paths });
+          jest.spyOn(wrapper.vm.service, 'getPipelines');
 
           return waitForPromises()
             .then(() => {
@@ -418,12 +414,14 @@ describe('Pipelines', () => {
                 totalPages: 5,
               };
 
-              return wrapper.vm.$nextTick();
+              return nextTick();
             })
             .then(() => {
               wrapper.find('.next-page-item').trigger('click');
-
-              expect(updateContentMock).toHaveBeenCalledWith({ scope: 'all', page: '2' });
+              expect(wrapper.vm.service.getPipelines).toHaveBeenCalledWith({
+                scope: 'all',
+                page: '2',
+              });
             });
         });
       });
@@ -542,7 +540,7 @@ describe('Pipelines', () => {
         wrapper.vm.hasError = true;
         wrapper.vm.isLoading = false;
 
-        return wrapper.vm.$nextTick().then(() => {
+        return nextTick().then(() => {
           expect(findBlankState().props('message')).toBe(
             'There was an error fetching the pipelines. Try again in a few moments or contact your support team.',
           );
@@ -554,7 +552,7 @@ describe('Pipelines', () => {
         wrapper.vm.hasError = false;
         wrapper.vm.state.pipelines = pipelines.pipelines;
 
-        return wrapper.vm.$nextTick().then(() => {
+        return nextTick().then(() => {
           expect(wrapper.find(PipelinesTableComponent).exists()).toBe(true);
         });
       });
@@ -563,7 +561,7 @@ describe('Pipelines', () => {
         wrapper.vm.state.count.all = 10;
         wrapper.vm.isLoading = false;
 
-        return wrapper.vm.$nextTick().then(() => {
+        return nextTick().then(() => {
           expect(findBlankState().exists()).toBe(true);
           expect(findBlankState().props('message')).toBe('There are currently no pipelines.');
         });
@@ -572,7 +570,7 @@ describe('Pipelines', () => {
       it('shows empty tab when project has CI', () => {
         wrapper.vm.isLoading = false;
 
-        return wrapper.vm.$nextTick().then(() => {
+        return nextTick().then(() => {
           expect(findBlankState().exists()).toBe(true);
           expect(findBlankState().props('message')).toBe('There are currently no pipelines.');
         });
@@ -583,7 +581,7 @@ describe('Pipelines', () => {
 
         wrapper.vm.isLoading = false;
 
-        return wrapper.vm.$nextTick().then(() => {
+        return nextTick().then(() => {
           expect(wrapper.find(EmptyState).exists()).toBe(true);
         });
       });
@@ -594,7 +592,7 @@ describe('Pipelines', () => {
         wrapper.vm.isLoading = true;
         wrapper.vm.hasMadeRequest = true;
 
-        return wrapper.vm.$nextTick().then(() => {
+        return nextTick().then(() => {
           expect(findNavigationTabs().exists()).toBe(true);
         });
       });
@@ -604,7 +602,7 @@ describe('Pipelines', () => {
         wrapper.vm.state.pipelines = pipelines.pipelines;
         wrapper.vm.hasMadeRequest = true;
 
-        return wrapper.vm.$nextTick().then(() => {
+        return nextTick().then(() => {
           expect(findNavigationTabs().exists()).toBe(true);
         });
       });
@@ -614,7 +612,7 @@ describe('Pipelines', () => {
         wrapper.vm.hasError = true;
         wrapper.vm.hasMadeRequest = true;
 
-        return wrapper.vm.$nextTick().then(() => {
+        return nextTick().then(() => {
           expect(findNavigationTabs().exists()).toBe(true);
         });
       });
@@ -624,7 +622,7 @@ describe('Pipelines', () => {
         wrapper.vm.state.count.all = 10;
         wrapper.vm.hasMadeRequest = true;
 
-        return wrapper.vm.$nextTick().then(() => {
+        return nextTick().then(() => {
           expect(findNavigationTabs().exists()).toBe(true);
         });
       });
@@ -632,7 +630,7 @@ describe('Pipelines', () => {
       it('returns false when has not made first request', () => {
         wrapper.vm.hasMadeRequest = false;
 
-        return wrapper.vm.$nextTick().then(() => {
+        return nextTick().then(() => {
           expect(findNavigationTabs().exists()).toBe(false);
         });
       });
@@ -643,7 +641,7 @@ describe('Pipelines', () => {
         wrapper.vm.isLoading = false;
         wrapper.vm.hasMadeRequest = true;
 
-        return wrapper.vm.$nextTick().then(() => {
+        return nextTick().then(() => {
           expect(findNavigationTabs().exists()).toBe(false);
         });
       });
@@ -653,7 +651,7 @@ describe('Pipelines', () => {
       it('returns true when it has paths & has made the first request', () => {
         wrapper.vm.hasMadeRequest = true;
 
-        return wrapper.vm.$nextTick().then(() => {
+        return nextTick().then(() => {
           expect(findNavigationControls().exists()).toBe(true);
         });
       });
@@ -661,7 +659,7 @@ describe('Pipelines', () => {
       it('returns false when it has not made the first request', () => {
         wrapper.vm.hasMadeRequest = false;
 
-        return wrapper.vm.$nextTick().then(() => {
+        return nextTick().then(() => {
           expect(findNavigationControls().exists()).toBe(false);
         });
       });
@@ -680,7 +678,7 @@ describe('Pipelines', () => {
       return waitForPromises();
     });
 
-    it('updates request data and query params on filter submit', () => {
+    it('updates request data and query params on filter submit', async () => {
       const expectedQueryParams = {
         page: '1',
         scope: 'all',
@@ -690,15 +688,17 @@ describe('Pipelines', () => {
       };
 
       findFilteredSearch().vm.$emit('submit', mockSearch);
+      await nextTick();
 
       expect(wrapper.vm.requestData).toEqual(expectedQueryParams);
       expect(updateContentMock).toHaveBeenCalledWith(expectedQueryParams);
     });
 
-    it('does not add query params if raw text search is used', () => {
+    it('does not add query params if raw text search is used', async () => {
       const expectedQueryParams = { page: '1', scope: 'all' };
 
       findFilteredSearch().vm.$emit('submit', ['rawText']);
+      await nextTick();
 
       expect(wrapper.vm.requestData).toEqual(expectedQueryParams);
       expect(updateContentMock).toHaveBeenCalledWith(expectedQueryParams);
