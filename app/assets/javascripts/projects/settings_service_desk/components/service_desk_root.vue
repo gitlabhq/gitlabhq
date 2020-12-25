@@ -108,11 +108,11 @@ export default {
         .updateTemplate({ selectedTemplate, outgoingName, projectKey }, this.isEnabled)
         .then(({ data }) => {
           this.updatedCustomEmail = data?.service_desk_address;
-          this.showAlert(__('Changes were successfully made.'), 'success');
+          this.showAlert(__('Changes saved.'), 'success');
         })
         .catch((err) => {
           this.showAlert(
-            sprintf(__('An error occured while making the changes: %{error}'), {
+            sprintf(__('An error occured while saving changes: %{error}'), {
               error: err?.response?.data?.message,
             }),
           );

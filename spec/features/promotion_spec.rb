@@ -20,7 +20,7 @@ RSpec.describe 'Promotions', :js do
       it 'appears in project edit page' do
         visit edit_project_path(project)
 
-        expect(find('#promote_service_desk')).to have_content 'Improve customer support with GitLab Service Desk.'
+        expect(find('#promote_service_desk')).to have_content 'Improve customer support with Service Desk'
       end
 
       it 'does not show when cookie is set' do

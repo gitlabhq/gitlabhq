@@ -137,7 +137,7 @@ describe('ServiceDeskRoot', () => {
       .$nextTick()
       .then(waitForPromises)
       .then(() => {
-        expect(wrapper.html()).toContain('Changes were successfully made.');
+        expect(wrapper.html()).toContain('Changes saved.');
       });
   });
 
@@ -160,7 +160,7 @@ describe('ServiceDeskRoot', () => {
       .$nextTick()
       .then(waitForPromises)
       .then(() => {
-        expect(wrapper.html()).toContain('An error occured while making the changes:');
+        expect(wrapper.html()).toContain('An error occured while saving changes:');
       });
   });
 

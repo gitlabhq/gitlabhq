@@ -25,7 +25,14 @@ the cycle time from feedback to software update.
 
 For an overview, check the video demonstration on [GitLab Service Desk](https://about.gitlab.com/blog/2017/05/09/demo-service-desk/).
 
-## Use cases
+## How it works
+
+GitLab Service Desk enables people to create issues in your
+GitLab instance without needing their own user account.
+
+It provides a unique email address for end users to create issues in a project.
+Follow-up notes can be sent either through the GitLab interface or by email. End
+users only see the thread through email.
 
 For instance, let's assume you develop a game for iOS or Android.
 The codebase is hosted in your GitLab instance, built and deployed
@@ -47,27 +54,17 @@ Here's how Service Desk works for you:
 1. Your team saved time by not having to leave GitLab (or setup any integrations) to follow up with
    your customer.
 
-## How it works
-
-GitLab Service Desk enables people to create issues in your
-GitLab instance without needing their own user account.
-
-It provides a unique email address for end users to create issues in a project.
-Follow-up notes can be sent either through the GitLab interface or by email. End
-users only see the thread through email.
-
 ## Configuring Service Desk
 
 NOTE:
 Service Desk is enabled on GitLab.com.
 You can skip step 1 below; you only need to enable it per project.
 
-If you have project maintainer access you have the option to set up Service Desk.
-Follow these steps to do so:
+If you have project maintainer access you have the option to set up Service Desk. Follow these steps:
 
 1. [Set up incoming email](../../administration/incoming_email.md#set-it-up) for the GitLab instance.
-     - We recommend using [email sub-addressing](../../administration/incoming_email.md#email-sub-addressing),
-     but in GitLab 11.7 and later you can also use [catch-all mailboxes](../../administration/incoming_email.md#catch-all-mailbox).
+   We recommend using [email sub-addressing](../../administration/incoming_email.md#email-sub-addressing),
+   but in GitLab 11.7 and later you can also use [catch-all mailboxes](../../administration/incoming_email.md#catch-all-mailbox).
 1. Navigate to your project's **Settings > General** and locate the **Service Desk** section.
 1. Enable the **Activate Service Desk** toggle. This reveals a unique email address to email issues
    to the project. These issues are [confidential](issues/confidential_issues.md), so they are
@@ -85,10 +82,8 @@ Follow these steps to do so:
    If you have [templates](description_templates.md) in your repository, you can optionally select
    one from the selector menu to append it to all Service Desk issues.
 
-   ![Service Desk enabled](img/service_desk_enabled.png)
-
-Service Desk is now enabled for this project! You should be able to access it from your project
-navigation's **Issues** menu.
+Service Desk is now enabled for this project! You should be able to access it from your project's
+**Issues** menu.
 
 ![Service Desk Navigation Item](img/service_desk_nav_item.png)
 
@@ -156,53 +151,51 @@ The `%{key}` part is used to find the project where the issue should be created.
 You can set the project name suffix in your project's Service Desk settings.
 It can contain only lowercase letters (`a-z`), numbers (`0-9`), or underscores (`_`).
 
-![Setting custom Service Desk email address](img/service_desk_custom_email_address_v13_0.png)
+You can add the following snippets to your configuration:
 
-You can add the following snippets to your configuration.
+- Example for installations from source:
 
-Example for installations from source:
+  ```yaml
+  service_desk_email:
+    enabled: true
+    address: "project_contact+%{key}@example.com"
+    user: "project_support@example.com"
+    password: "[REDACTED]"
+    host: "imap.gmail.com"
+    port: 993
+    ssl: true
+    start_tls: false
+    log_path: "log/mailroom.log"
+    mailbox: "inbox"
+    idle_timeout: 60
+    expunge_deleted: true
+  ```
 
-```yaml
-service_desk_email:
-  enabled: true
-  address: "project_contact+%{key}@example.com"
-  user: "project_support@example.com"
-  password: "[REDACTED]"
-  host: "imap.gmail.com"
-  port: 993
-  ssl: true
-  start_tls: false
-  log_path: "log/mailroom.log"
-  mailbox: "inbox"
-  idle_timeout: 60
-  expunge_deleted: true
-```
+- Example for Omnibus GitLab installations:
 
-Example for Omnibus GitLab installations:
+  ```ruby
+  gitlab_rails['service_desk_email_enabled'] = true
 
-```ruby
-gitlab_rails['service_desk_email_enabled'] = true
+  gitlab_rails['service_desk_email_address'] = "project_contact+%{key}@gmail.com"
 
-gitlab_rails['service_desk_email_address'] = "project_contact+%{key}@gmail.com"
+  gitlab_rails['service_desk_email_email'] = "project_support@gmail.com"
 
-gitlab_rails['service_desk_email_email'] = "project_support@gmail.com"
+  gitlab_rails['service_desk_email_password'] = "[REDACTED]"
 
-gitlab_rails['service_desk_email_password'] = "[REDACTED]"
+  gitlab_rails['service_desk_email_mailbox_name'] = "inbox"
 
-gitlab_rails['service_desk_email_mailbox_name'] = "inbox"
+  gitlab_rails['service_desk_email_idle_timeout'] = 60
 
-gitlab_rails['service_desk_email_idle_timeout'] = 60
+  gitlab_rails['service_desk_email_log_file'] = "/var/log/gitlab/mailroom/mail_room_json.log"
 
-gitlab_rails['service_desk_email_log_file'] = "/var/log/gitlab/mailroom/mail_room_json.log"
+  gitlab_rails['service_desk_email_host'] = "imap.gmail.com"
 
-gitlab_rails['service_desk_email_host'] = "imap.gmail.com"
+  gitlab_rails['service_desk_email_port'] = 993
 
-gitlab_rails['service_desk_email_port'] = 993
+  gitlab_rails['service_desk_email_ssl'] = true
 
-gitlab_rails['service_desk_email_ssl'] = true
-
-gitlab_rails['service_desk_email_start_tls'] = false
-```
+  gitlab_rails['service_desk_email_start_tls'] = false
+  ```
 
 In this case, suppose the `mygroup/myproject` project Service Desk settings has the project name
 suffix set to `support`, and a user sends an email to `project_contact+mygroup-myproject-support@example.com`.
@@ -215,14 +208,6 @@ The configuration options are the same as for configuring
 
 Service Desk custom email is under development but ready for production use.
 It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:service_desk_custom_address)
-```
 
 To disable it:
 
@@ -230,7 +215,15 @@ To disable it:
 Feature.disable(:service_desk_custom_address)
 ```
 
+To enable it:
+
+```ruby
+Feature.enable(:service_desk_custom_address)
+```
+
 ## Using Service Desk
+
+There are a few ways Service Desk can be used.
 
 ### As an end user (issue creator)
 
