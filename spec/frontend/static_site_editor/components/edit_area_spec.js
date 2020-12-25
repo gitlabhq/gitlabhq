@@ -1,4 +1,6 @@
+import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
+import { stubComponent } from 'helpers/stub_component';
 
 import RichContentEditor from '~/vue_shared/components/rich_content_editor/rich_content_editor.vue';
 import { EDITOR_TYPES } from '~/vue_shared/components/rich_content_editor/constants';
@@ -30,6 +32,12 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
   const savingChanges = true;
   const newBody = `new ${body}`;
 
+  const RichContentEditorStub = stubComponent(RichContentEditor, {
+    methods: {
+      resetInitialValue: jest.fn(),
+    },
+  });
+
   const buildWrapper = (propsData = {}) => {
     wrapper = shallowMount(EditArea, {
       propsData: {
@@ -44,6 +52,7 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
         savingChanges,
         ...propsData,
       },
+      stubs: { RichContentEditor: RichContentEditorStub },
     });
   };
 
@@ -94,7 +103,7 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
     beforeEach(() => {
       findRichContentEditor().vm.$emit('input', newBody);
 
-      return wrapper.vm.$nextTick();
+      return nextTick();
     });
 
     it('updates parsedSource with new content', () => {
@@ -114,30 +123,21 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
       expect(findUnsavedChangesConfirmDialog().props('modified')).toBe(true);
     });
 
-    it('sets publish toolbar as not saveable when content changes are rollback', () => {
+    it('sets publish toolbar as not saveable when content changes are rollback', async () => {
       findRichContentEditor().vm.$emit('input', formattedBody);
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findPublishToolbar().props('saveable')).toBe(false);
-      });
+      await nextTick();
+      expect(findPublishToolbar().props('saveable')).toBe(false);
     });
   });
 
   describe('when the mode changes', () => {
-    let resetInitialValue;
-
     const setInitialMode = (mode) => {
       wrapper.setData({ editorMode: mode });
     };
 
-    const buildResetInitialValue = () => {
-      resetInitialValue = jest.fn();
-      findRichContentEditor().setMethods({ resetInitialValue });
-    };
-
     afterEach(() => {
       setInitialMode(EDITOR_TYPES.wysiwyg);
-      resetInitialValue = null;
     });
 
     it.each`
@@ -148,21 +148,20 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
       'sets editorMode from $initialMode to $targetMode',
       ({ initialMode, targetMode, resetValue }) => {
         setInitialMode(initialMode);
-        buildResetInitialValue();
 
         findRichContentEditor().vm.$emit('modeChange', targetMode);
 
-        expect(resetInitialValue).toHaveBeenCalledWith(resetValue);
+        expect(RichContentEditorStub.methods.resetInitialValue).toHaveBeenCalledWith(resetValue);
         expect(wrapper.vm.editorMode).toBe(targetMode);
       },
     );
 
     it('should format the content', () => {
-      buildResetInitialValue();
-
       findRichContentEditor().vm.$emit('modeChange', EDITOR_TYPES.markdown);
 
-      expect(resetInitialValue).toHaveBeenCalledWith(`${content} format-pass format-pass`);
+      expect(RichContentEditorStub.methods.resetInitialValue).toHaveBeenCalledWith(
+        `${content} format-pass format-pass`,
+      );
     });
   });
 
@@ -172,30 +171,27 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
       expect(findEditDrawer().props('isOpen')).toBe(false);
     });
 
-    it('opens the edit drawer', () => {
+    it('opens the edit drawer', async () => {
       findPublishToolbar().vm.$emit('editSettings');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findEditDrawer().props('isOpen')).toBe(true);
-      });
+      await nextTick();
+      expect(findEditDrawer().props('isOpen')).toBe(true);
     });
 
-    it('closes the edit drawer', () => {
+    it('closes the edit drawer', async () => {
       findEditDrawer().vm.$emit('close');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findEditDrawer().props('isOpen')).toBe(false);
-      });
+      await nextTick();
+      expect(findEditDrawer().props('isOpen')).toBe(false);
     });
 
-    it('forwards the matter settings when the drawer is open', () => {
+    it('forwards the matter settings when the drawer is open', async () => {
       findPublishToolbar().vm.$emit('editSettings');
 
       jest.spyOn(wrapper.vm.parsedSource, 'matter').mockReturnValueOnce(headerSettings);
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findEditDrawer().props('settings')).toEqual(headerSettings);
-      });
+      await nextTick();
+      expect(findEditDrawer().props('settings')).toEqual(headerSettings);
     });
 
     it('enables toolbar submit button', () => {
@@ -211,16 +207,15 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
       expect(spySyncParsedSource).toHaveBeenCalledWith(newSettings);
     });
 
-    it('syncs matter changes to content in markdown mode', () => {
+    it('syncs matter changes to content in markdown mode', async () => {
       wrapper.setData({ editorMode: EDITOR_TYPES.markdown });
 
       const newSettings = { title: 'test' };
 
       findEditDrawer().vm.$emit('updateSettings', newSettings);
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findRichContentEditor().props('content')).toContain('title: test');
-      });
+      await nextTick();
+      expect(findRichContentEditor().props('content')).toContain('title: test');
     });
   });
 

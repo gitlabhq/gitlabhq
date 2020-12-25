@@ -19387,6 +19387,11 @@ type Query {
     Contents of .gitlab-ci.yml
     """
     content: String!
+
+    """
+    The project of the CI config
+    """
+    projectPath: ID!
   ): CiConfig
 
   """

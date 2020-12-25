@@ -1,4 +1,5 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
+import { shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
 import Terminal from '~/ide/components/terminal/terminal.vue';
@@ -14,17 +15,18 @@ import GLTerminal from '~/terminal/terminal';
 
 const TEST_TERMINAL_PATH = 'terminal/path';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 jest.mock('~/terminal/terminal', () =>
-  jest.fn().mockImplementation(() => ({
-    dispose: jest.fn(),
-    disable: jest.fn(),
-    addScrollListener: jest.fn(),
-    scrollToTop: jest.fn(),
-    scrollToBottom: jest.fn(),
-  })),
+  jest.fn().mockImplementation(function FakeTerminal() {
+    Object.assign(this, {
+      dispose: jest.fn(),
+      disable: jest.fn(),
+      addScrollListener: jest.fn(),
+      scrollToTop: jest.fn(),
+      scrollToBottom: jest.fn(),
+    });
+  }),
 );
 
 describe('IDE Terminal', () => {
@@ -41,13 +43,12 @@ describe('IDE Terminal', () => {
       },
     });
 
-    wrapper = shallowMount(localVue.extend(Terminal), {
+    wrapper = shallowMount(Terminal, {
       propsData: {
         status: RUNNING,
         terminalPath: TEST_TERMINAL_PATH,
         ...propsData,
       },
-      localVue,
       store,
     });
   };
@@ -102,7 +103,7 @@ describe('IDE Terminal', () => {
       factory();
       wrapper.vm.createTerminal();
 
-      return localVue.nextTick();
+      return nextTick();
     });
 
     it('is visible if terminal is created', () => {
@@ -129,7 +130,7 @@ describe('IDE Terminal', () => {
 
       wrapper.setData({ canScrollUp: true, canScrollDown: true });
 
-      return localVue.nextTick().then(() => {
+      return nextTick().then(() => {
         expect(wrapper.find(TerminalControls).props()).toEqual({
           canScrollUp: true,
           canScrollDown: true,
@@ -139,30 +140,24 @@ describe('IDE Terminal', () => {
   });
 
   describe('refresh', () => {
-    let createTerminal;
-    let stopTerminal;
-
-    beforeEach(() => {
-      createTerminal = jest.fn().mockName('createTerminal');
-      stopTerminal = jest.fn().mockName('stopTerminal');
-    });
-
     it('creates the terminal if running', () => {
       factory({ status: RUNNING, terminalPath: TEST_TERMINAL_PATH });
 
-      wrapper.setMethods({ createTerminal });
       wrapper.vm.refresh();
 
-      expect(createTerminal).toHaveBeenCalled();
+      expect(GLTerminal.mock.instances).toHaveLength(1);
     });
 
-    it('stops the terminal if stopping', () => {
-      factory({ status: STOPPING });
+    it('stops the terminal if stopping', async () => {
+      factory({ status: RUNNING, terminalPath: TEST_TERMINAL_PATH });
 
-      wrapper.setMethods({ stopTerminal });
       wrapper.vm.refresh();
 
-      expect(stopTerminal).toHaveBeenCalled();
+      const terminal = GLTerminal.mock.instances[0];
+      wrapper.setProps({ status: STOPPING });
+      await nextTick();
+
+      expect(terminal.disable).toHaveBeenCalled();
     });
   });
 

@@ -1,6 +1,6 @@
+import 'bootstrap/js/dist/dropdown';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import StageComponent from '~/pipelines/components/pipelines_list/stage.vue';
 import eventHub from '~/pipelines/event_hub';
@@ -22,8 +22,11 @@ describe('Pipelines stage component', () => {
     updateDropdown: false,
   };
 
+  const isDropdownOpen = () => wrapper.classes('show');
+
   const createComponent = (props = {}) => {
     wrapper = mount(StageComponent, {
+      attachToDocument: true,
       propsData: {
         ...defaultProps,
         ...props,
@@ -60,38 +63,29 @@ describe('Pipelines stage component', () => {
       createComponent();
     });
 
-    it('should render the received data and emit `clickedDropdown` event', () => {
+    it('should render the received data and emit `clickedDropdown` event', async () => {
       jest.spyOn(eventHub, '$emit');
       wrapper.find('button').trigger('click');
 
-      return waitForPromises().then(() => {
-        expect(wrapper.find('.js-builds-dropdown-container ul').text()).toContain(
-          stageReply.latest_statuses[0].name,
-        );
+      await axios.waitForAll();
+      expect(wrapper.find('.js-builds-dropdown-container ul').text()).toContain(
+        stageReply.latest_statuses[0].name,
+      );
 
-        expect(eventHub.$emit).toHaveBeenCalledWith('clickedDropdown');
-      });
+      expect(eventHub.$emit).toHaveBeenCalledWith('clickedDropdown');
     });
   });
 
-  describe('when request fails', () => {
-    beforeEach(() => {
-      mock.onGet('path.json').reply(500);
-      createComponent();
-    });
+  it('when request fails should close the dropdown', async () => {
+    mock.onGet('path.json').reply(500);
+    createComponent();
+    wrapper.find({ ref: 'dropdown' }).trigger('click');
+    expect(isDropdownOpen()).toBe(true);
 
-    it('should close the dropdown', () => {
-      wrapper.setMethods({
-        closeDropdown: jest.fn(),
-        isDropdownOpen: jest.fn().mockReturnValue(false),
-      });
+    wrapper.find('button').trigger('click');
+    await axios.waitForAll();
 
-      wrapper.find('button').trigger('click');
-
-      return waitForPromises().then(() => {
-        expect(wrapper.vm.closeDropdown).toHaveBeenCalled();
-      });
-    });
+    expect(isDropdownOpen()).toBe(false);
   });
 
   describe('update endpoint correctly', () => {
@@ -109,47 +103,38 @@ describe('Pipelines stage component', () => {
           dropdown_path: 'bar.json',
         },
       });
+      return axios.waitForAll();
     });
 
-    it('should update the stage to request the new endpoint provided', () => {
-      return wrapper.vm
-        .$nextTick()
-        .then(() => {
-          wrapper.find('button').trigger('click');
-          return waitForPromises();
-        })
-        .then(() => {
-          expect(wrapper.find('.js-builds-dropdown-container ul').text()).toContain(
-            'this is the updated content',
-          );
-        });
+    it('should update the stage to request the new endpoint provided', async () => {
+      wrapper.find('button').trigger('click');
+      await axios.waitForAll();
+
+      expect(wrapper.find('.js-builds-dropdown-container ul').text()).toContain(
+        'this is the updated content',
+      );
     });
   });
 
   describe('pipelineActionRequestComplete', () => {
     beforeEach(() => {
       mock.onGet('path.json').reply(200, stageReply);
-
       mock.onPost(`${stageReply.latest_statuses[0].status.action.path}.json`).reply(200);
 
       createComponent({ type: 'PIPELINES_TABLE' });
     });
 
     describe('within pipeline table', () => {
-      it('emits `refreshPipelinesTable` event when `pipelineActionRequestComplete` is triggered', () => {
+      it('emits `refreshPipelinesTable` event when `pipelineActionRequestComplete` is triggered', async () => {
         jest.spyOn(eventHub, '$emit');
 
         wrapper.find('button').trigger('click');
+        await axios.waitForAll();
 
-        return waitForPromises()
-          .then(() => {
-            wrapper.find('.js-ci-action').trigger('click');
+        wrapper.find('.js-ci-action').trigger('click');
+        await axios.waitForAll();
 
-            return waitForPromises();
-          })
-          .then(() => {
-            expect(eventHub.$emit).toHaveBeenCalledWith('refreshPipelinesTable');
-          });
+        expect(eventHub.$emit).toHaveBeenCalledWith('refreshPipelinesTable');
       });
     });
   });

@@ -3,14 +3,27 @@
 module Resolvers
   module Ci
     class ConfigResolver < BaseResolver
+      include Gitlab::Graphql::Authorize::AuthorizeResource
+      include ResolvesProject
+
       type Types::Ci::Config::ConfigType, null: true
+
+      authorize :read_pipeline
+
+      argument :project_path, GraphQL::ID_TYPE,
+               required: true,
+               description: 'The project of the CI config'
 
       argument :content, GraphQL::STRING_TYPE,
                required: true,
                description: 'Contents of .gitlab-ci.yml'
 
-      def resolve(content:)
-        result = ::Gitlab::Ci::YamlProcessor.new(content).execute
+      def resolve(project_path:, content:)
+        project = authorized_find!(project_path: project_path)
+
+        result = ::Gitlab::Ci::YamlProcessor.new(content, project: project,
+                                                          user:    current_user,
+                                                          sha:     project.repository.commit.sha).execute
 
         response = if result.errors.empty?
                      {
@@ -54,6 +67,10 @@ module Resolvers
         make_groups(jobs)
           .group_by { |group| group[:stage] }
           .map { |name, groups| { name: name, groups: groups } }
+      end
+
+      def find_object(project_path:)
+        resolve_project(full_path: project_path)
       end
     end
   end

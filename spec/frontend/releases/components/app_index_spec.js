@@ -98,10 +98,10 @@ describe('Releases App ', () => {
     });
 
     it('renders loading icon', () => {
-      expect(wrapper.contains('.js-loading')).toBe(true);
-      expect(wrapper.contains('.js-empty-state')).toBe(false);
-      expect(wrapper.contains('.js-success-state')).toBe(false);
-      expect(wrapper.contains(ReleasesPagination)).toBe(false);
+      expect(wrapper.find('.js-loading').exists()).toBe(true);
+      expect(wrapper.find('.js-empty-state').exists()).toBe(false);
+      expect(wrapper.find('.js-success-state').exists()).toBe(false);
+      expect(wrapper.find(ReleasesPagination).exists()).toBe(false);
     });
   });
 
@@ -115,10 +115,10 @@ describe('Releases App ', () => {
     });
 
     it('renders success state', () => {
-      expect(wrapper.contains('.js-loading')).toBe(false);
-      expect(wrapper.contains('.js-empty-state')).toBe(false);
-      expect(wrapper.contains('.js-success-state')).toBe(true);
-      expect(wrapper.contains(ReleasesPagination)).toBe(true);
+      expect(wrapper.find('.js-loading').exists()).toBe(false);
+      expect(wrapper.find('.js-empty-state').exists()).toBe(false);
+      expect(wrapper.find('.js-success-state').exists()).toBe(true);
+      expect(wrapper.find(ReleasesPagination).exists()).toBe(true);
     });
   });
 
@@ -132,10 +132,10 @@ describe('Releases App ', () => {
     });
 
     it('renders success state', () => {
-      expect(wrapper.contains('.js-loading')).toBe(false);
-      expect(wrapper.contains('.js-empty-state')).toBe(false);
-      expect(wrapper.contains('.js-success-state')).toBe(true);
-      expect(wrapper.contains(ReleasesPagination)).toBe(true);
+      expect(wrapper.find('.js-loading').exists()).toBe(false);
+      expect(wrapper.find('.js-empty-state').exists()).toBe(false);
+      expect(wrapper.find('.js-success-state').exists()).toBe(true);
+      expect(wrapper.find(ReleasesPagination).exists()).toBe(true);
     });
   });
 
@@ -147,9 +147,9 @@ describe('Releases App ', () => {
     });
 
     it('renders empty state', () => {
-      expect(wrapper.contains('.js-loading')).toBe(false);
-      expect(wrapper.contains('.js-empty-state')).toBe(true);
-      expect(wrapper.contains('.js-success-state')).toBe(false);
+      expect(wrapper.find('.js-loading').exists()).toBe(false);
+      expect(wrapper.find('.js-empty-state').exists()).toBe(true);
+      expect(wrapper.find('.js-success-state').exists()).toBe(false);
     });
   });
 

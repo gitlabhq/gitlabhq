@@ -1,4 +1,5 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { nextTick } from 'vue';
+import { shallowMount } from '@vue/test-utils';
 import createStore from '~/notes/stores';
 import NoteForm from '~/notes/components/note_form.vue';
 import batchComments from '~/batch_comments/stores/modules/batch_comments';
@@ -18,12 +19,9 @@ describe('issue_note_form component', () => {
   let props;
 
   const createComponentWrapper = () => {
-    const localVue = createLocalVue();
-    return shallowMount(localVue.extend(NoteForm), {
+    return shallowMount(NoteForm, {
       store,
       propsData: props,
-      // see https://gitlab.com/gitlab-org/gitlab-foss/issues/56317 for the following
-      localVue,
     });
   };
 
@@ -60,15 +58,14 @@ describe('issue_note_form component', () => {
       expect(wrapper.vm.noteHash).toBe(`#note_${props.noteId}`);
     });
 
-    it('return note hash as `#` when `noteId` is empty', () => {
+    it('return note hash as `#` when `noteId` is empty', async () => {
       wrapper.setProps({
         ...props,
         noteId: '',
       });
+      await nextTick();
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.vm.noteHash).toBe('#');
-      });
+      expect(wrapper.vm.noteHash).toBe('#');
     });
   });
 
@@ -77,7 +74,7 @@ describe('issue_note_form component', () => {
       wrapper = createComponentWrapper();
     });
 
-    it('should show conflict message if note changes outside the component', () => {
+    it('should show conflict message if note changes outside the component', async () => {
       wrapper.setProps({
         ...props,
         isEditing: true,
@@ -87,12 +84,12 @@ describe('issue_note_form component', () => {
       const message =
         'This comment has changed since you started editing, please review the updated comment to ensure information is not lost.';
 
-      return wrapper.vm.$nextTick().then(() => {
-        const conflictWarning = wrapper.find('.js-conflict-edit-warning');
+      await nextTick();
 
-        expect(conflictWarning.exists()).toBe(true);
-        expect(conflictWarning.text().replace(/\s+/g, ' ').trim()).toBe(message);
-      });
+      const conflictWarning = wrapper.find('.js-conflict-edit-warning');
+
+      expect(conflictWarning.exists()).toBe(true);
+      expect(conflictWarning.text().replace(/\s+/g, ' ').trim()).toBe(message);
     });
   });
 
@@ -156,36 +153,33 @@ describe('issue_note_form component', () => {
     });
 
     describe('actions', () => {
-      it('should be possible to cancel', () => {
-        const cancelHandler = jest.fn();
+      it('should be possible to cancel', async () => {
         wrapper.setProps({
           ...props,
           isEditing: true,
         });
-        wrapper.setMethods({ cancelHandler });
+        await nextTick();
 
-        return wrapper.vm.$nextTick().then(() => {
-          const cancelButton = wrapper.find('[data-testid="cancel"]');
-          cancelButton.trigger('click');
+        const cancelButton = wrapper.find('[data-testid="cancel"]');
+        cancelButton.trigger('click');
+        await nextTick();
 
-          expect(cancelHandler).toHaveBeenCalledWith(true);
-        });
+        expect(wrapper.emitted().cancelForm).toHaveLength(1);
       });
 
-      it('should be possible to update the note', () => {
+      it('should be possible to update the note', async () => {
         wrapper.setProps({
           ...props,
           isEditing: true,
         });
+        await nextTick();
 
-        return wrapper.vm.$nextTick().then(() => {
-          const textarea = wrapper.find('textarea');
-          textarea.setValue('Foo');
-          const saveButton = wrapper.find('.js-vue-issue-save');
-          saveButton.trigger('click');
+        const textarea = wrapper.find('textarea');
+        textarea.setValue('Foo');
+        const saveButton = wrapper.find('.js-vue-issue-save');
+        saveButton.trigger('click');
 
-          expect(wrapper.vm.isSubmitting).toBe(true);
-        });
+        expect(wrapper.vm.isSubmitting).toBe(true);
       });
     });
   });
@@ -199,7 +193,7 @@ describe('issue_note_form component', () => {
         });
         wrapper = createComponentWrapper();
 
-        return wrapper.vm.$nextTick();
+        return nextTick();
       });
 
       it('displays the draft in textarea', () => {
@@ -217,7 +211,7 @@ describe('issue_note_form component', () => {
         });
         wrapper = createComponentWrapper();
 
-        return wrapper.vm.$nextTick();
+        return nextTick();
       });
 
       it('leaves the textarea empty', () => {
@@ -273,15 +267,14 @@ describe('issue_note_form component', () => {
       });
     });
 
-    it('should be possible to cancel', () => {
+    it('should be possible to cancel', async () => {
       jest.spyOn(wrapper.vm, 'cancelHandler');
 
-      return wrapper.vm.$nextTick().then(() => {
-        const cancelButton = wrapper.find('[data-testid="cancelBatchCommentsEnabled"]');
-        cancelButton.trigger('click');
+      await nextTick();
+      const cancelButton = wrapper.find('[data-testid="cancelBatchCommentsEnabled"]');
+      cancelButton.trigger('click');
 
-        expect(wrapper.vm.cancelHandler).toHaveBeenCalledWith(true);
-      });
+      expect(wrapper.vm.cancelHandler).toHaveBeenCalledWith(true);
     });
 
     it('shows resolve checkbox', () => {
@@ -304,7 +297,7 @@ describe('issue_note_form component', () => {
         },
       });
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(wrapper.find('.js-resolve-checkbox').exists()).toBe(false);
     });
@@ -312,7 +305,7 @@ describe('issue_note_form component', () => {
     it('hides actions for commits', () => {
       wrapper.setProps({ discussion: { for_commit: true } });
 
-      return wrapper.vm.$nextTick(() => {
+      return nextTick(() => {
         expect(wrapper.find('.note-form-actions').text()).not.toContain('Start a review');
       });
     });
@@ -326,7 +319,7 @@ describe('issue_note_form component', () => {
         textarea.setValue('Foo');
         textarea.trigger('keydown.enter', { metaKey: true });
 
-        return wrapper.vm.$nextTick(() => {
+        return nextTick(() => {
           expect(wrapper.vm.handleAddToReview).toHaveBeenCalled();
         });
       });

@@ -142,7 +142,7 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
 
   beforeEach(() => {
     mockBlobContentData = jest.fn();
-    mockCiConfigData = jest.fn().mockResolvedValue(mockCiConfigQueryResponse);
+    mockCiConfigData = jest.fn();
   });
 
   afterEach(() => {
@@ -413,15 +413,30 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
     });
   });
 
-  describe('displays fetch content errors', () => {
-    it('no error is shown when data is set', async () => {
+  describe('when queries are called', () => {
+    beforeEach(() => {
       mockBlobContentData.mockResolvedValue(mockCiYml);
+      mockCiConfigData.mockResolvedValue(mockCiConfigQueryResponse);
+    });
+
+    it('no error is shown when data is set', async () => {
       createComponentWithApollo();
 
       await waitForPromises();
 
       expect(findAlert().exists()).toBe(false);
       expect(findEditorLite().attributes('value')).toBe(mockCiYml);
+    });
+
+    it('ci config query is called with correct variables', async () => {
+      createComponentWithApollo();
+
+      await waitForPromises();
+
+      expect(mockCiConfigData).toHaveBeenCalledWith({
+        content: mockCiYml,
+        projectPath: mockProjectPath,
+      });
     });
 
     it('shows a 404 error message', async () => {

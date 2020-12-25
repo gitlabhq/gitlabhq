@@ -138,7 +138,7 @@ describe('InviteMembersBanner', () => {
     });
 
     it('does not render the banner', () => {
-      expect(wrapper.contains(GlBanner)).toBe(false);
+      expect(wrapper.find(GlBanner).exists()).toBe(false);
     });
   });
 });

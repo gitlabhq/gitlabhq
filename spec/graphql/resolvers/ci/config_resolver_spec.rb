@@ -13,6 +13,15 @@ RSpec.describe Resolvers::Ci::ConfigResolver do
       allow(::Gitlab::Ci::YamlProcessor).to receive(:new).and_return(yaml_processor_double)
     end
 
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :repository, creator: user, namespace: user.namespace) }
+
+    subject(:response) do
+      resolve(described_class,
+              args: { project_path: project.full_path, content: content },
+              ctx:  { current_user: user })
+    end
+
     context 'with a valid .gitlab-ci.yml' do
       let(:fake_result) do
         ::Gitlab::Ci::YamlProcessor::Result.new(
@@ -27,8 +36,6 @@ RSpec.describe Resolvers::Ci::ConfigResolver do
       end
 
       it 'lints the ci config file' do
-        response = resolve(described_class, args: { content: content }, ctx: {})
-
         expect(response[:status]).to eq(:valid)
         expect(response[:errors]).to be_empty
       end
@@ -46,8 +53,6 @@ RSpec.describe Resolvers::Ci::ConfigResolver do
       end
 
       it 'responds with errors about invalid syntax' do
-        response = resolve(described_class, args: { content: content }, ctx: {})
-
         expect(response[:status]).to eq(:invalid)
         expect(response[:errors]).to eq(['Invalid configuration format'])
       end

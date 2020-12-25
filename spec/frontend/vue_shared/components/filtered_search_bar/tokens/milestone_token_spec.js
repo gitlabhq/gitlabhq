@@ -196,8 +196,8 @@ describe('MilestoneToken', () => {
       suggestionsSegment.vm.$emit('activate');
       await wrapper.vm.$nextTick();
 
-      expect(wrapper.contains(GlFilteredSearchSuggestion)).toBe(false);
-      expect(wrapper.contains(GlDropdownDivider)).toBe(false);
+      expect(wrapper.find(GlFilteredSearchSuggestion).exists()).toBe(false);
+      expect(wrapper.find(GlDropdownDivider).exists()).toBe(false);
     });
 
     it('renders `DEFAULT_MILESTONES` as default suggestions', async () => {

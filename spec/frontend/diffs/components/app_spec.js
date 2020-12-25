@@ -1,6 +1,6 @@
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import { GlLoadingIcon, GlPagination } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'spec/test_constants';
@@ -27,6 +27,8 @@ const TEST_ENDPOINT = `${TEST_HOST}/diff/endpoint`;
 const COMMIT_URL = `${TEST_HOST}/COMMIT/OLD`;
 const UPDATED_COMMIT_URL = `${TEST_HOST}/COMMIT/NEW`;
 
+Vue.use(Vuex);
+
 function getCollapsedFilesWarning(wrapper) {
   return wrapper.find(CollapsedFilesWarning);
 }
@@ -38,15 +40,12 @@ describe('diffs/components/app', () => {
   let mock;
 
   function createComponent(props = {}, extendStore = () => {}, provisions = {}) {
-    const localVue = createLocalVue();
     const provide = {
       ...provisions,
       glFeatures: {
         ...(provisions.glFeatures || {}),
       },
     };
-
-    localVue.use(Vuex);
 
     store = createDiffsStore();
     store.state.diffs.isLoading = false;
@@ -55,7 +54,6 @@ describe('diffs/components/app', () => {
     extendStore(store);
 
     wrapper = shallowMount(App, {
-      localVue,
       propsData: {
         endpoint: TEST_ENDPOINT,
         endpointMetadata: `${TEST_HOST}/diff/endpointMetadata`,
@@ -262,7 +260,7 @@ describe('diffs/components/app', () => {
       shouldShow: true,
     });
 
-    // Component uses $nextTick so we wait until that has finished
+    // Component uses nextTick so we wait until that has finished
     await nextTick();
 
     expect(store.state.diffs.currentDiffFileId).toBe('ABC');
@@ -298,8 +296,8 @@ describe('diffs/components/app', () => {
 
   describe('keyboard shortcut navigation', () => {
     let spies = [];
-    let jumpSpy;
     let moveSpy;
+    let jumpSpy;
 
     function setup(componentProps, featureFlags) {
       createComponent(
@@ -311,11 +309,8 @@ describe('diffs/components/app', () => {
       );
 
       moveSpy = jest.spyOn(wrapper.vm, 'moveToNeighboringCommit').mockImplementation(() => {});
-      jumpSpy = jest.fn();
+      jumpSpy = jest.spyOn(wrapper.vm, 'jumpToFile').mockImplementation(() => {});
       spies = [jumpSpy, moveSpy];
-      wrapper.setMethods({
-        jumpToFile: jumpSpy,
-      });
     }
 
     describe('visible app', () => {
@@ -404,8 +399,6 @@ describe('diffs/components/app', () => {
     let spy;
 
     beforeEach(() => {
-      spy = jest.fn();
-
       createComponent({}, () => {
         store.state.diffs.diffFiles = [
           { file_hash: '111', file_path: '111.js' },
@@ -413,10 +406,7 @@ describe('diffs/components/app', () => {
           { file_hash: '333', file_path: '333.js' },
         ];
       });
-
-      wrapper.setMethods({
-        scrollToFile: spy,
-      });
+      spy = jest.spyOn(store, 'dispatch');
     });
 
     afterEach(() => {
@@ -428,15 +418,15 @@ describe('diffs/components/app', () => {
 
       wrapper.vm.jumpToFile(+1);
 
-      expect(spy.mock.calls[spy.mock.calls.length - 1]).toEqual(['222.js']);
+      expect(spy.mock.calls[spy.mock.calls.length - 1]).toEqual(['diffs/scrollToFile', '222.js']);
       store.state.diffs.currentDiffFileId = '222';
       wrapper.vm.jumpToFile(+1);
 
-      expect(spy.mock.calls[spy.mock.calls.length - 1]).toEqual(['333.js']);
+      expect(spy.mock.calls[spy.mock.calls.length - 1]).toEqual(['diffs/scrollToFile', '333.js']);
       store.state.diffs.currentDiffFileId = '333';
       wrapper.vm.jumpToFile(-1);
 
-      expect(spy.mock.calls[spy.mock.calls.length - 1]).toEqual(['222.js']);
+      expect(spy.mock.calls[spy.mock.calls.length - 1]).toEqual(['diffs/scrollToFile', '222.js']);
     });
 
     it('does not jump to previous file from the first one', async () => {
@@ -611,12 +601,6 @@ describe('diffs/components/app', () => {
   });
 
   describe('setTreeDisplay', () => {
-    let setShowTreeList;
-
-    beforeEach(() => {
-      setShowTreeList = jest.fn();
-    });
-
     afterEach(() => {
       localStorage.removeItem('mr_tree_show');
     });
@@ -625,14 +609,13 @@ describe('diffs/components/app', () => {
       createComponent({}, ({ state }) => {
         state.diffs.diffFiles.push({ sha: '123' });
       });
-
-      wrapper.setMethods({
-        setShowTreeList,
-      });
-
+      jest.spyOn(store, 'dispatch');
       wrapper.vm.setTreeDisplay();
 
-      expect(setShowTreeList).toHaveBeenCalledWith({ showTreeList: false, saving: false });
+      expect(store.dispatch).toHaveBeenCalledWith('diffs/setShowTreeList', {
+        showTreeList: false,
+        saving: false,
+      });
     });
 
     it('calls setShowTreeList with true when more than 1 file is in diffs array', () => {
@@ -640,14 +623,14 @@ describe('diffs/components/app', () => {
         state.diffs.diffFiles.push({ sha: '123' });
         state.diffs.diffFiles.push({ sha: '124' });
       });
-
-      wrapper.setMethods({
-        setShowTreeList,
-      });
+      jest.spyOn(store, 'dispatch');
 
       wrapper.vm.setTreeDisplay();
 
-      expect(setShowTreeList).toHaveBeenCalledWith({ showTreeList: true, saving: false });
+      expect(store.dispatch).toHaveBeenCalledWith('diffs/setShowTreeList', {
+        showTreeList: true,
+        saving: false,
+      });
     });
 
     it.each`
@@ -660,14 +643,14 @@ describe('diffs/components/app', () => {
       createComponent({}, ({ state }) => {
         state.diffs.diffFiles.push({ sha: '123' });
       });
-
-      wrapper.setMethods({
-        setShowTreeList,
-      });
+      jest.spyOn(store, 'dispatch');
 
       wrapper.vm.setTreeDisplay();
 
-      expect(setShowTreeList).toHaveBeenCalledWith({ showTreeList, saving: false });
+      expect(store.dispatch).toHaveBeenCalledWith('diffs/setShowTreeList', {
+        showTreeList,
+        saving: false,
+      });
     });
   });
 

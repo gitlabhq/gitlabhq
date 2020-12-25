@@ -56518,6 +56518,20 @@
               "description": "Get linted and processed contents of a CI config. Should not be requested more than once per request.",
               "args": [
                 {
+                  "name": "projectPath",
+                  "description": "The project of the CI config",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "content",
                   "description": "Contents of .gitlab-ci.yml",
                   "type": {

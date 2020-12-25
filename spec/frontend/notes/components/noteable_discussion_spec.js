@@ -1,8 +1,10 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { nextTick } from 'vue';
+import { mount } from '@vue/test-utils';
 import mockDiffFile from 'jest/diffs/mock_data/diff_file';
 import { trimText } from 'helpers/text_helper';
 import createStore from '~/notes/stores';
-import noteableDiscussion from '~/notes/components/noteable_discussion.vue';
+import NoteableDiscussion from '~/notes/components/noteable_discussion.vue';
+import DiscussionNotes from '~/notes/components/discussion_notes.vue';
 import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import ResolveWithIssueButton from '~/notes/components/discussion_resolve_with_issue_button.vue';
 import NoteForm from '~/notes/components/note_form.vue';
@@ -17,8 +19,6 @@ import {
 
 const discussionWithTwoUnresolvedNotes = 'merge_requests/resolved_diff_discussion.json';
 
-const localVue = createLocalVue();
-
 describe('noteable_discussion component', () => {
   let store;
   let wrapper;
@@ -32,10 +32,9 @@ describe('noteable_discussion component', () => {
     store.dispatch('setNoteableData', noteableDataMock);
     store.dispatch('setNotesData', notesDataMock);
 
-    wrapper = mount(localVue.extend(noteableDiscussion), {
+    wrapper = mount(NoteableDiscussion, {
       store,
       propsData: { discussion: discussionMock },
-      localVue,
     });
   });
 
@@ -47,63 +46,58 @@ describe('noteable_discussion component', () => {
     expect(wrapper.find('.discussion-header').exists()).toBe(false);
   });
 
-  it('should render thread header', () => {
+  it('should render thread header', async () => {
     const discussion = { ...discussionMock };
     discussion.diff_file = mockDiffFile;
     discussion.diff_discussion = true;
     discussion.expanded = false;
 
     wrapper.setProps({ discussion });
+    await nextTick();
 
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.find('.discussion-header').exists()).toBe(true);
-    });
+    expect(wrapper.find('.discussion-header').exists()).toBe(true);
   });
 
   describe('actions', () => {
-    it('should toggle reply form', () => {
+    it('should toggle reply form', async () => {
+      await nextTick();
+
+      expect(wrapper.vm.isReplying).toEqual(false);
+
       const replyPlaceholder = wrapper.find(ReplyPlaceholder);
+      replyPlaceholder.vm.$emit('onClick');
+      await nextTick();
 
-      return wrapper.vm
-        .$nextTick()
-        .then(() => {
-          expect(wrapper.vm.isReplying).toEqual(false);
+      expect(wrapper.vm.isReplying).toEqual(true);
 
-          replyPlaceholder.vm.$emit('onClick');
-        })
-        .then(() => wrapper.vm.$nextTick())
-        .then(() => {
-          expect(wrapper.vm.isReplying).toEqual(true);
+      const noteForm = wrapper.find(NoteForm);
 
-          const noteForm = wrapper.find(NoteForm);
+      expect(noteForm.exists()).toBe(true);
 
-          expect(noteForm.exists()).toBe(true);
+      const noteFormProps = noteForm.props();
 
-          const noteFormProps = noteForm.props();
-
-          expect(noteFormProps.discussion).toBe(discussionMock);
-          expect(noteFormProps.isEditing).toBe(false);
-          expect(noteFormProps.line).toBe(null);
-          expect(noteFormProps.saveButtonTitle).toBe('Comment');
-          expect(noteFormProps.autosaveKey).toBe(`Note/Issue/${discussionMock.id}/Reply`);
-        });
+      expect(noteFormProps.discussion).toBe(discussionMock);
+      expect(noteFormProps.isEditing).toBe(false);
+      expect(noteFormProps.line).toBe(null);
+      expect(noteFormProps.saveButtonTitle).toBe('Comment');
+      expect(noteFormProps.autosaveKey).toBe(`Note/Issue/${discussionMock.id}/Reply`);
     });
 
     it('should expand discussion', async () => {
-      const expandDiscussion = jest.fn();
-      const discussion = { ...discussionMock };
-      discussion.expanded = false;
+      const discussion = { ...discussionMock, expanded: false };
 
       wrapper.setProps({ discussion });
-      wrapper.setMethods({ expandDiscussion });
+      store.dispatch = jest.fn();
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
-      wrapper.vm.showReplyForm();
+      wrapper.find(DiscussionNotes).vm.$emit('startReplying');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
-      expect(expandDiscussion).toHaveBeenCalledWith({ discussionId: discussion.id });
+      expect(store.dispatch).toHaveBeenCalledWith('expandDiscussion', {
+        discussionId: discussion.id,
+      });
     });
 
     it('does not render jump to thread button', () => {
@@ -143,7 +137,7 @@ describe('noteable_discussion component', () => {
 
       wrapper.setProps({ discussion });
 
-      return wrapper.vm.$nextTick();
+      return nextTick();
     });
 
     it('displays a button to resolve with issue', () => {
@@ -169,10 +163,9 @@ describe('noteable_discussion component', () => {
         window.gon.current_user_id = userDataMock.id;
         store.dispatch('setUserData', userDataMock);
 
-        wrapper = mount(localVue.extend(noteableDiscussion), {
+        wrapper = mount(NoteableDiscussion, {
           store,
           propsData: { discussion: discussionMock },
-          localVue,
         });
       });
 
@@ -188,10 +181,9 @@ describe('noteable_discussion component', () => {
         store.dispatch('setNoteableData', loggedOutnoteableData);
         store.dispatch('setNotesData', notesDataMock);
 
-        wrapper = mount(localVue.extend(noteableDiscussion), {
+        wrapper = mount(NoteableDiscussion, {
           store,
           propsData: { discussion: discussionMock },
-          localVue,
         });
       });
 

@@ -8,9 +8,9 @@ import DropdownSearchInput from '~/vue_shared/components/dropdown/dropdown_searc
 
 describe('ClusterFormDropdown', () => {
   let wrapper;
-  const firstItem = { name: 'item 1', value: 1 };
-  const secondItem = { name: 'item 2', value: 2 };
-  const items = [firstItem, secondItem, { name: 'item 3', value: 3 }];
+  const firstItem = { name: 'item 1', value: '1' };
+  const secondItem = { name: 'item 2', value: '2' };
+  const items = [firstItem, secondItem, { name: 'item 3', value: '3' }];
 
   beforeEach(() => {
     wrapper = shallowMount(ClusterFormDropdown);
@@ -55,7 +55,7 @@ describe('ClusterFormDropdown', () => {
   });
 
   describe('when multiple items are selected', () => {
-    const value = [1];
+    const value = ['1'];
 
     beforeEach(() => {
       wrapper.setProps({ items, multiple: true, value });
@@ -104,7 +104,7 @@ describe('ClusterFormDropdown', () => {
     it('displays selected item custom label', () => {
       const labelProperty = 'customLabel';
       const label = 'Name';
-      const currentValue = 1;
+      const currentValue = '1';
       const customLabelItems = [{ [labelProperty]: label, value: currentValue }];
 
       wrapper.setProps({ labelProperty, items: customLabelItems, value: currentValue });
@@ -116,12 +116,9 @@ describe('ClusterFormDropdown', () => {
   });
 
   describe('when loading', () => {
-    it('dropdown button isLoading', () => {
-      wrapper.setProps({ loading: true });
-
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.find(DropdownButton).props('isLoading')).toBe(true);
-      });
+    it('dropdown button isLoading', async () => {
+      await wrapper.setProps({ loading: true });
+      expect(wrapper.find(DropdownButton).props('isLoading')).toBe(true);
     });
   });
 

@@ -13,7 +13,8 @@ describe('JumpToNextDiscussionButton', () => {
     wrapper = shallowMount(JumpToNextDiscussionButton, {
       propsData: { fromDiscussionId },
     });
-    wrapper.setMethods({ jumpToNextRelativeDiscussion: jumpFn });
+
+    jest.spyOn(wrapper.vm, 'jumpToNextRelativeDiscussion').mockImplementation(jumpFn);
 
     trackingSpy = mockTracking('_category_', wrapper.element, jest.spyOn);
   });
