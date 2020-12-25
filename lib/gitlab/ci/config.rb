@@ -98,7 +98,8 @@ module Gitlab
           project: project,
           sha: sha || project&.repository&.root_ref_sha,
           user: user,
-          parent_pipeline: parent_pipeline)
+          parent_pipeline: parent_pipeline,
+          variables: project&.predefined_variables&.to_runner_variables)
       end
 
       def track_and_raise_for_dev_exception(error)
