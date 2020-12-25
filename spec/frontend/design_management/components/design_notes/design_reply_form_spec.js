@@ -36,7 +36,7 @@ describe('Design reply form component', () => {
 
   it('textarea has focus after component mount', () => {
     // We need to attach to document, so that `document.activeElement` is properly set in jsdom
-    createComponent({}, { attachToDocument: true });
+    createComponent({}, { attachTo: document.body });
 
     expect(findTextarea().element).toEqual(document.activeElement);
   });

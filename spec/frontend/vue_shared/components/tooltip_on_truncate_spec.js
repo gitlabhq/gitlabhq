@@ -18,7 +18,7 @@ describe('TooltipOnTruncate component', () => {
 
   const createComponent = ({ propsData, ...options } = {}) => {
     wrapper = shallowMount(TooltipOnTruncate, {
-      attachToDocument: true,
+      attachTo: document.body,
       propsData: {
         ...propsData,
       },
@@ -44,7 +44,7 @@ describe('TooltipOnTruncate component', () => {
       },
       {
         propsData: { ...propsData },
-        attachToDocument: true,
+        attachTo: document.body,
         ...options,
       },
     );

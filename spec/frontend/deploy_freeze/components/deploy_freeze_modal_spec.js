@@ -19,7 +19,7 @@ describe('Deploy freeze modal', () => {
       timezoneData: timezoneDataFixture,
     });
     wrapper = shallowMount(DeployFreezeModal, {
-      attachToDocument: true,
+      attachTo: document.body,
       stubs: {
         GlModal,
       },

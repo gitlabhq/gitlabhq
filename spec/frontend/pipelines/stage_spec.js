@@ -26,7 +26,7 @@ describe('Pipelines stage component', () => {
 
   const createComponent = (props = {}) => {
     wrapper = mount(StageComponent, {
-      attachToDocument: true,
+      attachTo: document.body,
       propsData: {
         ...defaultProps,
         ...props,

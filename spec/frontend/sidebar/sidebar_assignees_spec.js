@@ -29,7 +29,7 @@ describe('sidebar assignees', () => {
         },
       },
       // Attaching to document is required because this component emits something from the parent element :/
-      attachToDocument: true,
+      attachTo: document.body,
     });
   };
 

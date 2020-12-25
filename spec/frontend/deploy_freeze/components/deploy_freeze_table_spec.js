@@ -18,7 +18,7 @@ describe('Deploy freeze table', () => {
     });
     jest.spyOn(store, 'dispatch').mockImplementation();
     wrapper = mount(DeployFreezeTable, {
-      attachToDocument: true,
+      attachTo: document.body,
       localVue,
       store,
     });

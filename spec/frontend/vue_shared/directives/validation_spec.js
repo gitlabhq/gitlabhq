@@ -36,7 +36,7 @@ describe('validation directive', () => {
       `,
     };
 
-    wrapper = shallowMount(component, { attachToDocument: true });
+    wrapper = shallowMount(component, { attachTo: document.body });
   };
 
   afterEach(() => {

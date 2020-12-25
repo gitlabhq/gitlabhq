@@ -100,8 +100,8 @@ describe('~/pipeline_editor/pipeline_editor_app.vue', () => {
           mutate: mockMutate,
         },
       },
-      // attachToDocument is required for input/submit events
-      attachToDocument: mountFn === mount,
+      // attachTo is required for input/submit events
+      attachTo: mountFn === mount ? document.body : null,
       ...options,
     });
   };

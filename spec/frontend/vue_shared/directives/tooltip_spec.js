@@ -19,7 +19,7 @@ describe('Tooltip directive', () => {
         data: () => ({ tooltip: text }),
         template,
       },
-      { attachToDocument: true },
+      { attachTo: document.body },
     );
   }
 

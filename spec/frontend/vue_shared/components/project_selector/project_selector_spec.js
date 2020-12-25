@@ -31,7 +31,7 @@ describe('ProjectSelector component', () => {
         showSearchErrorMessage: false,
         totalResults: searchResults.length,
       },
-      attachToDocument: true,
+      attachTo: document.body,
     });
 
     ({ vm } = wrapper);

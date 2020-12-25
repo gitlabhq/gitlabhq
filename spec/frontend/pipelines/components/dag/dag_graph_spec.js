@@ -20,7 +20,7 @@ describe('The DAG graph', () => {
     }
 
     wrapper = shallowMount(DagGraph, {
-      attachToDocument: true,
+      attachTo: document.body,
       propsData,
       data() {
         return {

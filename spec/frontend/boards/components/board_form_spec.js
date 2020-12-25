@@ -71,7 +71,7 @@ describe('BoardForm', () => {
           mutate,
         },
       },
-      attachToDocument: true,
+      attachTo: document.body,
     });
   };
 

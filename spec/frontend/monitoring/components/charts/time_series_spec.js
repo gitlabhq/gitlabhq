@@ -53,7 +53,7 @@ describe('Time series component', () => {
       stubs: {
         GlPopover: true,
       },
-      attachToDocument: true,
+      attachTo: document.body,
     });
   };
 

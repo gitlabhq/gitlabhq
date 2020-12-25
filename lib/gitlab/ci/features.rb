@@ -72,7 +72,7 @@ module Gitlab
       end
 
       def self.rules_variables_enabled?(project)
-        ::Feature.enabled?(:ci_rules_variables, project, default_enabled: false)
+        ::Feature.enabled?(:ci_rules_variables, project, default_enabled: true)
       end
     end
   end

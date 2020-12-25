@@ -160,7 +160,7 @@ describe('Design management index page', () => {
       localVue,
       router,
       stubs: { DesignDestroyer, ApolloMutation, VueDraggable, ...stubs },
-      attachToDocument: true,
+      attachTo: document.body,
       provide: {
         projectPath: 'project-path',
         issueIid: '1',

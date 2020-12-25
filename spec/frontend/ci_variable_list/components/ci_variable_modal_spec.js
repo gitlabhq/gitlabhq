@@ -17,7 +17,7 @@ describe('Ci variable modal', () => {
   const createComponent = (method, options = {}) => {
     store = createStore();
     wrapper = method(CiVariableModal, {
-      attachToDocument: true,
+      attachTo: document.body,
       stubs: {
         GlModal: ModalStub,
       },

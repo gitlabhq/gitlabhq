@@ -17,7 +17,7 @@ describe('Ci variable table', () => {
     store.state.isGroup = true;
     jest.spyOn(store, 'dispatch').mockImplementation();
     wrapper = mount(CiVariableTable, {
-      attachToDocument: true,
+      attachTo: document.body,
       localVue,
       store,
     });
