@@ -9,29 +9,26 @@ RSpec.describe UsersController do
   let(:public_user) { create(:user) }
 
   describe 'GET #show' do
-    context 'with rendered views' do
-      render_views
+    shared_examples_for 'renders the show template' do
+      it 'renders the show template' do
+        get user_url user.username
 
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template('show')
+      end
+    end
+
+    context 'when the user exists and has public visibility' do
       context 'when logged in' do
         before do
           sign_in(user)
         end
 
-        it 'renders the show template' do
-          get :show, params: { username: user.username }
-
-          expect(response).to be_successful
-          expect(response).to render_template('show')
-        end
+        it_behaves_like 'renders the show template'
       end
 
       context 'when logged out' do
-        it 'renders the show template' do
-          get :show, params: { username: user.username }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to render_template('show')
-        end
+        it_behaves_like 'renders the show template'
       end
     end
 
@@ -42,7 +39,8 @@ RSpec.describe UsersController do
 
       context 'when logged out' do
         it 'redirects to login page' do
-          get :show, params: { username: user.username }
+          get user_url user.username
+
           expect(response).to redirect_to new_user_session_path
         end
       end
@@ -52,18 +50,15 @@ RSpec.describe UsersController do
           sign_in(user)
         end
 
-        it 'renders show' do
-          get :show, params: { username: user.username }
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to render_template('show')
-        end
+        it_behaves_like 'renders the show template'
       end
     end
 
     context 'when a user by that username does not exist' do
       context 'when logged out' do
         it 'redirects to login page' do
-          get :show, params: { username: 'nonexistent' }
+          get user_url 'nonexistent'
+
           expect(response).to redirect_to new_user_session_path
         end
       end
@@ -74,7 +69,8 @@ RSpec.describe UsersController do
         end
 
         it 'renders 404' do
-          get :show, params: { username: 'nonexistent' }
+          get user_url 'nonexistent'
+
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
@@ -91,54 +87,55 @@ RSpec.describe UsersController do
       end
 
       it 'loads events' do
-        get :show, params: { username: user }, format: :json
+        # Requesting "/username?format=json" instead of "/username.json"
+        get user_url user.username, params: { format: :json }
 
-        expect(assigns(:events)).not_to be_empty
+        expect(response.media_type).to eq('application/json')
+        expect(Gitlab::Json.parse(response.body)['count']).to eq(1)
       end
 
       it 'hides events if the user cannot read cross project' do
         allow(Ability).to receive(:allowed?).and_call_original
         expect(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
 
-        get :show, params: { username: user }, format: :json
+        get user_url user.username, params: { format: :json }
 
-        expect(assigns(:events)).to be_empty
+        expect(response.media_type).to eq('application/json')
+        expect(Gitlab::Json.parse(response.body)['count']).to eq(0)
       end
 
       it 'hides events if the user has a private profile' do
         Gitlab::DataBuilder::Push.build_sample(project, private_user)
 
-        get :show, params: { username: private_user.username }, format: :json
+        get user_url private_user.username, params: { format: :json }
 
-        expect(assigns(:events)).to be_empty
+        expect(response.media_type).to eq('application/json')
+        expect(Gitlab::Json.parse(response.body)['count']).to eq(0)
       end
     end
   end
 
   describe 'GET #activity' do
-    context 'with rendered views' do
-      render_views
+    shared_examples_for 'renders the show template' do
+      it 'renders the show template' do
+        get user_activity_url user.username
 
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template('show')
+      end
+    end
+
+    context 'when the user exists and has public visibility' do
       context 'when logged in' do
         before do
           sign_in(user)
         end
 
-        it 'renders the show template' do
-          get :show, params: { username: user.username }
-
-          expect(response).to be_successful
-          expect(response).to render_template('show')
-        end
+        it_behaves_like 'renders the show template'
       end
 
       context 'when logged out' do
-        it 'renders the show template' do
-          get :activity, params: { username: user.username }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to render_template('show')
-        end
+        it_behaves_like 'renders the show template'
       end
     end
 
@@ -149,7 +146,8 @@ RSpec.describe UsersController do
 
       context 'when logged out' do
         it 'redirects to login page' do
-          get :activity, params: { username: user.username }
+          get user_activity_url user.username
+
           expect(response).to redirect_to new_user_session_path
         end
       end
@@ -159,18 +157,15 @@ RSpec.describe UsersController do
           sign_in(user)
         end
 
-        it 'renders show' do
-          get :activity, params: { username: user.username }
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to render_template('show')
-        end
+        it_behaves_like 'renders the show template'
       end
     end
 
     context 'when a user by that username does not exist' do
       context 'when logged out' do
         it 'redirects to login page' do
-          get :activity, params: { username: 'nonexistent' }
+          get user_activity_url 'nonexistent'
+
           expect(response).to redirect_to new_user_session_path
         end
       end
@@ -181,7 +176,8 @@ RSpec.describe UsersController do
         end
 
         it 'renders 404' do
-          get :activity, params: { username: 'nonexistent' }
+          get user_activity_url 'nonexistent'
+
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
@@ -198,26 +194,29 @@ RSpec.describe UsersController do
       end
 
       it 'loads events' do
-        get :activity, params: { username: user }, format: :json
+        get user_activity_url user.username, format: :json
 
-        expect(assigns(:events)).not_to be_empty
+        expect(response.media_type).to eq('application/json')
+        expect(Gitlab::Json.parse(response.body)['count']).to eq(1)
       end
 
       it 'hides events if the user cannot read cross project' do
         allow(Ability).to receive(:allowed?).and_call_original
         expect(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
 
-        get :activity, params: { username: user }, format: :json
+        get user_activity_url user.username, format: :json
 
-        expect(assigns(:events)).to be_empty
+        expect(response.media_type).to eq('application/json')
+        expect(Gitlab::Json.parse(response.body)['count']).to eq(0)
       end
 
       it 'hides events if the user has a private profile' do
         Gitlab::DataBuilder::Push.build_sample(project, private_user)
 
-        get :activity, params: { username: private_user.username }, format: :json
+        get user_activity_url private_user.username, format: :json
 
-        expect(assigns(:events)).to be_empty
+        expect(response.media_type).to eq('application/json')
+        expect(Gitlab::Json.parse(response.body)['count']).to eq(0)
       end
     end
   end
@@ -225,28 +224,19 @@ RSpec.describe UsersController do
   describe 'GET #ssh_keys' do
     context 'non existent user' do
       it 'does not generally work' do
-        get :ssh_keys, params: { username: 'not-existent' }
+        get '/not-existent.keys'
 
         expect(response).not_to be_successful
       end
     end
 
     context 'user with no keys' do
-      it 'does generally work' do
-        get :ssh_keys, params: { username: user.username }
+      it 'responds the empty body with text/plain content type' do
+        get "/#{user.username}.keys"
 
         expect(response).to be_successful
-      end
-
-      it 'renders all keys separated with a new line' do
-        get :ssh_keys, params: { username: user.username }
-
+        expect(response.media_type).to eq("text/plain")
         expect(response.body).to eq("")
-      end
-
-      it 'responds with text/plain content type' do
-        get :ssh_keys, params: { username: user.username }
-        expect(response.content_type).to eq("text/plain")
       end
     end
 
@@ -256,14 +246,11 @@ RSpec.describe UsersController do
       let!(:deploy_key) { create(:deploy_key, user: user) }
 
       shared_examples_for 'renders all public keys' do
-        it 'does generally work' do
-          get :ssh_keys, params: { username: user.username }
+        it 'renders all non-deploy keys separated with a new line with text/plain content type without the comment key' do
+          get "/#{user.username}.keys"
 
           expect(response).to be_successful
-        end
-
-        it 'renders all non deploy keys separated with a new line' do
-          get :ssh_keys, params: { username: user.username }
+          expect(response.media_type).to eq("text/plain")
 
           expect(response.body).not_to eq('')
           expect(response.body).to eq(user.all_ssh_keys.join("\n"))
@@ -271,19 +258,9 @@ RSpec.describe UsersController do
           expect(response.body).to include(key.key.sub(' dummy@gitlab.com', ''))
           expect(response.body).to include(another_key.key.sub(' dummy@gitlab.com', ''))
 
-          expect(response.body).not_to include(deploy_key.key)
-        end
-
-        it 'does not render the comment of the key' do
-          get :ssh_keys, params: { username: user.username }
-
           expect(response.body).not_to match(/dummy@gitlab.com/)
-        end
 
-        it 'responds with text/plain content type' do
-          get :ssh_keys, params: { username: user.username }
-
-          expect(response.content_type).to eq("text/plain")
+          expect(response.body).not_to include(deploy_key.key)
         end
       end
 
@@ -308,29 +285,18 @@ RSpec.describe UsersController do
   describe 'GET #gpg_keys' do
     context 'non existent user' do
       it 'does not generally work' do
-        get :gpg_keys, params: { username: 'not-existent' }
+        get '/not-existent.keys'
 
         expect(response).not_to be_successful
       end
     end
 
     context 'user with no keys' do
-      it 'does generally work' do
-        get :gpg_keys, params: { username: user.username }
+      it 'responds the empty body with text/plain content type' do
+        get "/#{user.username}.gpg"
 
         expect(response).to be_successful
-      end
-
-      it 'renders all keys separated with a new line' do
-        get :gpg_keys, params: { username: user.username }
-
-        expect(response.body).to eq("")
-      end
-
-      it 'responds with text/plain content type' do
-        get :gpg_keys, params: { username: user.username }
-
-        expect(response.content_type).to eq("text/plain")
+        expect(response.media_type).to eq("text/plain")
         expect(response.body).to eq("")
       end
     end
@@ -340,16 +306,12 @@ RSpec.describe UsersController do
       let!(:another_gpg_key) { create(:another_gpg_key, user: user) }
 
       shared_examples_for 'renders all verified GPG keys' do
-        it 'does generally work' do
-          get :gpg_keys, params: { username: user.username }
+        it 'renders all verified keys separated with a new line with text/plain content type' do
+          get "/#{user.username}.gpg"
 
           expect(response).to be_successful
-        end
 
-        it 'renders all verified keys separated with a new line with text/plain content type' do
-          get :gpg_keys, params: { username: user.username }
-
-          expect(response.content_type).to eq("text/plain")
+          expect(response.media_type).to eq("text/plain")
 
           expect(response.body).not_to eq('')
           expect(response.body).to eq(user.gpg_keys.select(&:verified?).map(&:key).join("\n"))
@@ -376,28 +338,32 @@ RSpec.describe UsersController do
       end
 
       context 'when revoked' do
+        shared_examples_for 'doesn\'t render revoked keys' do
+          it 'doesn\'t render revoked keys' do
+            get "/#{user.username}.gpg"
+
+            expect(response.body).not_to eq('')
+
+            expect(response.body).to include(gpg_key.key)
+            expect(response.body).not_to include(another_gpg_key.key)
+          end
+        end
+
         before do
           sign_in(user)
           another_gpg_key.revoke
         end
 
-        it 'doesn\'t render revoked keys' do
-          get :gpg_keys, params: { username: user.username }
-
-          expect(response.body).not_to eq('')
-
-          expect(response.body).to include(gpg_key.key)
-          expect(response.body).not_to include(another_gpg_key.key)
+        context 'while signed in' do
+          it_behaves_like 'doesn\'t render revoked keys'
         end
 
-        it 'doesn\'t render revoked keys for non-authorized users' do
-          sign_out(user)
-          get :gpg_keys, params: { username: user.username }
+        context 'when logged out' do
+          before do
+            sign_out(user)
+          end
 
-          expect(response.body).not_to eq('')
-
-          expect(response.body).to include(gpg_key.key)
-          expect(response.body).not_to include(another_gpg_key.key)
+          it_behaves_like 'doesn\'t render revoked keys'
         end
       end
     end
@@ -417,7 +383,7 @@ RSpec.describe UsersController do
           push_data = Gitlab::DataBuilder::Push.build_sample(project, public_user)
           EventCreateService.new.push(project, public_user, push_data)
 
-          get :calendar, params: { username: public_user.username }, format: :json
+          get user_calendar_url public_user.username, format: :json
 
           expect(response).to have_gitlab_http_status(:ok)
         end
@@ -428,7 +394,7 @@ RSpec.describe UsersController do
           push_data = Gitlab::DataBuilder::Push.build_sample(project, private_user)
           EventCreateService.new.push(project, private_user, push_data)
 
-          get :calendar, params: { username: private_user.username }, format: :json
+          get user_calendar_url private_user.username, format: :json
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -453,7 +419,8 @@ RSpec.describe UsersController do
       end
 
       it 'includes forked projects' do
-        get :calendar, params: { username: user.username }
+        get user_calendar_url user.username
+
         expect(assigns(:contributions_calendar).projects.count).to eq(2)
       end
     end
@@ -472,9 +439,11 @@ RSpec.describe UsersController do
       project.add_developer(user)
     end
 
-    it 'assigns @calendar_date' do
-      get :calendar_activities, params: { username: user.username, date: '2014-07-31' }
-      expect(assigns(:calendar_date)).to eq(Date.parse('2014-07-31'))
+    it 'renders activities on the specified day' do
+      get user_calendar_activities_url user.username, date: '2014-07-31'
+
+      expect(response.media_type).to eq('text/html')
+      expect(response.body).to include('Jul 31, 2014')
     end
 
     context 'for user' do
@@ -482,28 +451,26 @@ RSpec.describe UsersController do
         let(:issue) { create(:issue, project: project, author: user) }
         let(:note) { create(:note, noteable: issue, author: user, project: project) }
 
-        render_views
-
         before do
           create_push_event
           create_note_event
         end
 
         it 'renders calendar_activities' do
-          get :calendar_activities, params: { username: public_user.username }
+          get user_calendar_activities_url public_user.username
 
-          expect(assigns[:events]).not_to be_empty
+          expect(response.body).not_to be_empty
         end
 
         it 'avoids N+1 queries', :request_store do
-          get :calendar_activities, params: { username: public_user.username }
+          get user_calendar_activities_url public_user.username
 
-          control = ActiveRecord::QueryRecorder.new { get :calendar_activities, params: { username: public_user.username } }
+          control = ActiveRecord::QueryRecorder.new { get user_calendar_activities_url public_user.username }
 
           create_push_event
           create_note_event
 
-          expect { get :calendar_activities, params: { username: public_user.username } }.not_to exceed_query_limit(control)
+          expect { get user_calendar_activities_url public_user.username }.not_to exceed_query_limit(control)
         end
       end
 
@@ -512,13 +479,14 @@ RSpec.describe UsersController do
           push_data = Gitlab::DataBuilder::Push.build_sample(project, private_user)
           EventCreateService.new.push(project, private_user, push_data)
 
-          get :calendar_activities, params: { username: private_user.username }
+          get user_calendar_activities_url private_user.username
+
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
       context 'external authorization' do
-        subject { get :calendar_activities, params: { username: user.username } }
+        subject { get user_calendar_activities_url user.username }
 
         it_behaves_like 'disabled when using an external authorization service'
       end
@@ -538,7 +506,7 @@ RSpec.describe UsersController do
     let(:project) { create(:project, :public) }
 
     subject do
-      get :contributed, params: { username: author.username }, format: format
+      get user_contributed_projects_url author.username, format: format
     end
 
     before do
@@ -553,8 +521,8 @@ RSpec.describe UsersController do
 
     shared_examples_for 'renders contributed projects' do
       it 'renders contributed projects' do
-        expect(assigns[:contributed_projects]).not_to be_empty
         expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).not_to be_empty
       end
     end
 
@@ -589,7 +557,7 @@ RSpec.describe UsersController do
     let(:project) { create(:project, :public) }
 
     subject do
-      get :starred, params: { username: author.username }, format: format
+      get user_starred_projects_url author.username, format: format
     end
 
     before do
@@ -602,7 +570,7 @@ RSpec.describe UsersController do
     shared_examples_for 'renders starred projects' do
       it 'renders starred projects' do
         expect(response).to have_gitlab_http_status(:ok)
-        expect(assigns[:starred_projects]).not_to be_empty
+        expect(response.body).not_to be_empty
       end
     end
 
@@ -640,7 +608,8 @@ RSpec.describe UsersController do
 
     context 'format html' do
       it 'renders snippets page' do
-        get :snippets, params: { username: user.username }
+        get user_snippets_url user.username
+
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template('show')
       end
@@ -648,14 +617,15 @@ RSpec.describe UsersController do
 
     context 'format json' do
       it 'response with snippets json data' do
-        get :snippets, params: { username: user.username }, format: :json
+        get user_snippets_url user.username, format: :json
+
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to have_key('html')
       end
     end
 
     context 'external authorization' do
-      subject { get :snippets, params: { username: user.username } }
+      subject { get user_snippets_url user.username }
 
       it_behaves_like 'disabled when using an external authorization service'
     end
@@ -668,7 +638,7 @@ RSpec.describe UsersController do
 
     context 'when user exists' do
       it 'returns JSON indicating the user exists' do
-        get :exists, params: { username: user.username }
+        get user_exists_url user.username
 
         expected_json = { exists: true }.to_json
         expect(response.body).to eq(expected_json)
@@ -678,7 +648,7 @@ RSpec.describe UsersController do
         let(:user) { create(:user, username: 'CamelCaseUser') }
 
         it 'returns JSON indicating the user exists' do
-          get :exists, params: { username: user.username.downcase }
+          get user_exists_url user.username.downcase
 
           expected_json = { exists: true }.to_json
           expect(response.body).to eq(expected_json)
@@ -688,7 +658,7 @@ RSpec.describe UsersController do
 
     context 'when the user does not exist' do
       it 'returns JSON indicating the user does not exist' do
-        get :exists, params: { username: 'foo' }
+        get user_exists_url 'foo'
 
         expected_json = { exists: false }.to_json
         expect(response.body).to eq(expected_json)
@@ -698,7 +668,7 @@ RSpec.describe UsersController do
         let(:redirect_route) { user.namespace.redirect_routes.create(path: 'old-username') }
 
         it 'returns JSON indicating a user by that username does not exist' do
-          get :exists, params: { username: 'old-username' }
+          get user_exists_url 'old-username'
 
           expected_json = { exists: false }.to_json
           expect(response.body).to eq(expected_json)
@@ -710,7 +680,7 @@ RSpec.describe UsersController do
   describe 'GET #suggests' do
     context 'when user exists' do
       it 'returns JSON indicating the user exists and a suggestion' do
-        get :suggests, params: { username: user.username }
+        get user_suggests_url user.username
 
         expected_json = { exists: true, suggests: ["#{user.username}1"] }.to_json
         expect(response.body).to eq(expected_json)
@@ -720,7 +690,7 @@ RSpec.describe UsersController do
         let(:user) { create(:user, username: 'CamelCaseUser') }
 
         it 'returns JSON indicating the user exists and a suggestion' do
-          get :suggests, params: { username: user.username.downcase }
+          get user_suggests_url user.username.downcase
 
           expected_json = { exists: true, suggests: ["#{user.username.downcase}1"] }.to_json
           expect(response.body).to eq(expected_json)
@@ -730,7 +700,7 @@ RSpec.describe UsersController do
 
     context 'when the user does not exist' do
       it 'returns JSON indicating the user does not exist' do
-        get :suggests, params: { username: 'foo' }
+        get user_suggests_url 'foo'
 
         expected_json = { exists: false, suggests: [] }.to_json
         expect(response.body).to eq(expected_json)
@@ -740,7 +710,7 @@ RSpec.describe UsersController do
         let(:redirect_route) { user.namespace.redirect_routes.create(path: 'old-username') }
 
         it 'returns JSON indicating a user by that username does not exist' do
-          get :suggests, params: { username: 'old-username' }
+          get user_suggests_url 'old-username'
 
           expected_json = { exists: false, suggests: [] }.to_json
           expect(response.body).to eq(expected_json)
@@ -761,7 +731,7 @@ RSpec.describe UsersController do
 
           context 'with exactly matching casing' do
             it 'responds with success' do
-              get :show, params: { username: user.username }
+              get user_url user.username
 
               expect(response).to be_successful
             end
@@ -769,44 +739,39 @@ RSpec.describe UsersController do
 
           context 'with different casing' do
             it 'redirects to the correct casing' do
-              get :show, params: { username: user.username.downcase }
+              get user_url user.username.downcase
 
               expect(response).to redirect_to(user)
-              expect(controller).not_to set_flash[:notice]
+              expect(flash[:notice]).to be_nil
             end
+          end
+        end
+
+        shared_examples_for 'redirects to the canonical path' do
+          it 'redirects to the canonical path' do
+            get user_url redirect_route.path
+
+            expect(response).to redirect_to(user)
+            expect(flash[:notice]).to eq(user_moved_message(redirect_route, user))
           end
         end
 
         context 'when requesting a redirected path' do
           let(:redirect_route) { user.namespace.redirect_routes.create(path: 'old-path') }
 
-          it 'redirects to the canonical path' do
-            get :show, params: { username: redirect_route.path }
-
-            expect(response).to redirect_to(user)
-            expect(controller).to set_flash[:notice].to(user_moved_message(redirect_route, user))
-          end
+          it_behaves_like 'redirects to the canonical path'
 
           context 'when the old path is a substring of the scheme or host' do
             let(:redirect_route) { user.namespace.redirect_routes.create(path: 'http') }
 
-            it 'does not modify the requested host' do
-              get :show, params: { username: redirect_route.path }
-
-              expect(response).to redirect_to(user)
-              expect(controller).to set_flash[:notice].to(user_moved_message(redirect_route, user))
-            end
+            # it does not modify the requested host and ...
+            it_behaves_like 'redirects to the canonical path'
           end
 
           context 'when the old path is substring of users' do
             let(:redirect_route) { user.namespace.redirect_routes.create(path: 'ser') }
 
-            it 'redirects to the canonical path' do
-              get :show, params: { username: redirect_route.path }
-
-              expect(response).to redirect_to(user)
-              expect(controller).to set_flash[:notice].to(user_moved_message(redirect_route, user))
-            end
+            it_behaves_like 'redirects to the canonical path'
           end
         end
       end
@@ -817,7 +782,7 @@ RSpec.describe UsersController do
 
           context 'with exactly matching casing' do
             it 'responds with success' do
-              get :projects, params: { username: user.username }
+              get user_projects_url user.username
 
               expect(response).to be_successful
             end
@@ -825,45 +790,41 @@ RSpec.describe UsersController do
 
           context 'with different casing' do
             it 'redirects to the correct casing' do
-              get :projects, params: { username: user.username.downcase }
+              get user_projects_url user.username.downcase
 
               expect(response).to redirect_to(user_projects_path(user))
-              expect(controller).not_to set_flash[:notice]
+              expect(flash[:notice]).to be_nil
             end
+          end
+        end
+
+        shared_examples_for 'redirects to the canonical path' do
+          it 'redirects to the canonical path' do
+            get user_projects_url redirect_route.path
+
+            expect(response).to redirect_to(user_projects_path(user))
+            expect(flash[:notice]).to eq(user_moved_message(redirect_route, user))
           end
         end
 
         context 'when requesting a redirected path' do
           let(:redirect_route) { user.namespace.redirect_routes.create(path: 'old-path') }
 
-          it 'redirects to the canonical path' do
-            get :projects, params: { username: redirect_route.path }
-
-            expect(response).to redirect_to(user_projects_path(user))
-            expect(controller).to set_flash[:notice].to(user_moved_message(redirect_route, user))
-          end
+          it_behaves_like 'redirects to the canonical path'
 
           context 'when the old path is a substring of the scheme or host' do
             let(:redirect_route) { user.namespace.redirect_routes.create(path: 'http') }
 
-            it 'does not modify the requested host' do
-              get :projects, params: { username: redirect_route.path }
-
-              expect(response).to redirect_to(user_projects_path(user))
-              expect(controller).to set_flash[:notice].to(user_moved_message(redirect_route, user))
-            end
+            # it does not modify the requested host and ...
+            it_behaves_like 'redirects to the canonical path'
           end
 
           context 'when the old path is substring of users' do
             let(:redirect_route) { user.namespace.redirect_routes.create(path: 'ser') }
 
-            # I.e. /users/ser should not become /ufoos/ser
-            it 'does not modify the /users part of the path' do
-              get :projects, params: { username: redirect_route.path }
-
-              expect(response).to redirect_to(user_projects_path(user))
-              expect(controller).to set_flash[:notice].to(user_moved_message(redirect_route, user))
-            end
+            # it does not modify the /users part of the path
+            # (i.e. /users/ser should not become /ufoos/ser) and ...
+            it_behaves_like 'redirects to the canonical path'
           end
         end
       end
@@ -871,11 +832,9 @@ RSpec.describe UsersController do
   end
 
   context 'token authentication' do
-    it_behaves_like 'authenticates sessionless user', :show, :atom, public: true do
-      before do
-        default_params.merge!(username: user.username)
-      end
-    end
+    let(:url) { user_url(user.username, format: :atom) }
+
+    it_behaves_like 'authenticates sessionless user for the request spec', public: true
   end
 
   def user_moved_message(redirect_route, user)

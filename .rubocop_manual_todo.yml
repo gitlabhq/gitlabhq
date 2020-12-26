@@ -197,7 +197,6 @@ Rails/SaveBang:
     - 'spec/controllers/projects_controller_spec.rb'
     - 'spec/controllers/sent_notifications_controller_spec.rb'
     - 'spec/controllers/sessions_controller_spec.rb'
-    - 'spec/controllers/users_controller_spec.rb'
     - 'spec/factories_spec.rb'
     - 'spec/features/admin/admin_appearance_spec.rb'
     - 'spec/features/admin/admin_labels_spec.rb'
@@ -399,6 +398,7 @@ Rails/SaveBang:
     - 'spec/requests/api/labels_spec.rb'
     - 'spec/requests/api/project_import_spec.rb'
     - 'spec/requests/projects/cycle_analytics_events_spec.rb'
+    - 'spec/requests/users_controller_spec.rb'
 
 Rails/TimeZone:
   Enabled: true

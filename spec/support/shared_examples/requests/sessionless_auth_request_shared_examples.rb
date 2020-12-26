@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-# This controller shared examples will be migrated to
-# spec/support/shared_examples/requests/sessionless_auth_request_shared_examples.rb
-# See also https://gitlab.com/groups/gitlab-org/-/epics/5076
-
-RSpec.shared_examples 'authenticates sessionless user' do |path, format, params|
+RSpec.shared_examples 'authenticates sessionless user for the request spec' do |params|
   params ||= {}
 
   before do
@@ -13,7 +9,7 @@ RSpec.shared_examples 'authenticates sessionless user' do |path, format, params|
 
   let(:user) { create(:user) }
   let(:personal_access_token) { create(:personal_access_token, user: user) }
-  let(:default_params) { { format: format }.merge(params.except(:public) || {}) }
+  let(:default_params) { params.except(:public) || {} }
 
   context "when the 'personal_access_token' param is populated with the personal access token" do
     it 'logs the user in' do
@@ -22,14 +18,14 @@ RSpec.shared_examples 'authenticates sessionless user' do |path, format, params|
               .and increment(:user_session_override_counter)
                      .and increment(:user_sessionless_authentication_counter)
 
-      get path, params: default_params.merge(private_token: personal_access_token.token)
+      get url, params: default_params.merge(private_token: personal_access_token.token)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(controller.current_user).to eq(user)
     end
 
     it 'does not log the user in if page is public', if: params[:public] do
-      get path, params: default_params
+      get url, params: default_params
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(controller.current_user).to be_nil
@@ -50,7 +46,7 @@ RSpec.shared_examples 'authenticates sessionless user' do |path, format, params|
 
       personal_access_token.update!(scopes: [:read_user])
 
-      get path, params: default_params.merge(private_token: personal_access_token.token)
+      get url, params: default_params.merge(private_token: personal_access_token.token)
 
       expect(response).not_to have_gitlab_http_status(:ok)
     end
@@ -63,34 +59,10 @@ RSpec.shared_examples 'authenticates sessionless user' do |path, format, params|
               .and increment(:user_session_override_counter)
                      .and increment(:user_sessionless_authentication_counter)
 
-      @request.headers['PRIVATE-TOKEN'] = personal_access_token.token
-      get path, params: default_params
+      headers = { 'PRIVATE-TOKEN': personal_access_token.token }
+      get url, params: default_params, headers: headers
 
       expect(response).to have_gitlab_http_status(:ok)
-    end
-  end
-
-  context "when the 'feed_token' param is populated with the feed token", if: format == :rss do
-    it "logs the user in" do
-      expect(authentication_metrics)
-        .to increment(:user_authenticated_counter)
-              .and increment(:user_session_override_counter)
-                     .and increment(:user_sessionless_authentication_counter)
-
-      get path, params: default_params.merge(feed_token: user.feed_token)
-
-      expect(response).to have_gitlab_http_status(:ok)
-    end
-  end
-
-  context "when the 'feed_token' param is populated with an invalid feed token", if: format == :rss, unless: params[:public] do
-    it "logs the user" do
-      expect(authentication_metrics)
-        .to increment(:user_unauthenticated_counter)
-
-      get path, params: default_params.merge(feed_token: 'token')
-
-      expect(response).not_to have_gitlab_http_status(:ok)
     end
   end
 
@@ -105,7 +77,7 @@ RSpec.shared_examples 'authenticates sessionless user' do |path, format, params|
         .to increment(:user_unauthenticated_counter)
     end
 
-    get path, params: default_params.merge(private_token: 'token')
+    get url, params: default_params.merge(private_token: 'token')
 
     expect(response).not_to have_gitlab_http_status(:ok)
   end
