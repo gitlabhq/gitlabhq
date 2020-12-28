@@ -99,6 +99,9 @@ module Gitlab
       },
       invite_members_new_dropdown: {
         tracking_category: 'Growth::Expansion::Experiment::InviteMembersNewDropdown'
+      },
+      trial_onboarding_issues: {
+        tracking_category: 'Growth::Conversion::Experiment::TrialOnboardingIssues'
       }
     }.freeze
 

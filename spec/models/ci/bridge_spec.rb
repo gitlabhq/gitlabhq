@@ -356,14 +356,6 @@ RSpec.describe Ci::Bridge do
   describe '#dependency_variables' do
     subject { bridge.dependency_variables }
 
-    shared_context 'when ci_bridge_dependency_variables is disabled' do
-      before do
-        stub_feature_flags(ci_bridge_dependency_variables: false)
-      end
-
-      it { is_expected.to be_empty }
-    end
-
     context 'when downloading from previous stages' do
       let!(:prepare1) { create(:ci_build, name: 'prepare1', pipeline: pipeline, stage_idx: 0) }
       let!(:bridge) { create(:ci_bridge, pipeline: pipeline, stage_idx: 1) }
@@ -374,8 +366,6 @@ RSpec.describe Ci::Bridge do
       it 'inherits only dependent variables' do
         expect(subject.to_hash).to eq(job_variable_1.key => job_variable_1.value)
       end
-
-      it_behaves_like 'when ci_bridge_dependency_variables is disabled'
     end
 
     context 'when using needs' do
@@ -397,8 +387,6 @@ RSpec.describe Ci::Bridge do
       it 'inherits only needs with artifacts variables' do
         expect(subject.to_hash).to eq(job_variable_1.key => job_variable_1.value)
       end
-
-      it_behaves_like 'when ci_bridge_dependency_variables is disabled'
     end
   end
 end

@@ -1,0 +1,5 @@
+---
+title: Migrate runner_setup_controller_spec.rb to request spec
+merge_request: 50600
+author: Takuya Noguchi
+type: other

@@ -12995,6 +12995,9 @@ msgstr ""
 msgid "Get started"
 msgstr ""
 
+msgid "Get started with GitLab"
+msgstr ""
+
 msgid "Get started with a project that follows best practices for setting up GitLab for your own organization, including sample Issues, Merge Requests, and Milestones"
 msgstr ""
 
@@ -16304,6 +16307,9 @@ msgstr ""
 msgid "Learn GitLab"
 msgstr ""
 
+msgid "Learn GitLab - Gold trial"
+msgstr ""
+
 msgid "Learn how to %{link_start}contribute to the built-in templates%{link_end}"
 msgstr ""
 
@@ -19425,6 +19431,9 @@ msgid "Off"
 msgstr ""
 
 msgid "Oh no!"
+msgstr ""
+
+msgid "Ok, let's go"
 msgstr ""
 
 msgid "Oldest first"
@@ -31167,6 +31176,9 @@ msgid "We couldn't find any %{scope} matching %{term} in project %{project}"
 msgstr ""
 
 msgid "We couldn't reach the Prometheus server. Either the server no longer exists or the configuration details need updating."
+msgstr ""
+
+msgid "We created a sandbox project that will help you learn the basics of GitLab. You’ll be guided by issues in an issue board. You can go through the issues at your own pace."
 msgstr ""
 
 msgid "We detected potential spam in the %{humanized_resource_name}. Please solve the reCAPTCHA to proceed."

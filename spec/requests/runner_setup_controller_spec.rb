@@ -9,9 +9,9 @@ RSpec.describe RunnerSetupController do
     sign_in(user)
   end
 
-  describe 'GET #platforms' do
+  describe 'GET /-/runner_setup/platforms' do
     it 'renders the platforms' do
-      get :platforms
+      get runner_setup_platforms_url
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response).to have_key("windows")

@@ -7,7 +7,6 @@ module Ci
     include Importable
     include AfterCommitQueue
     include Ci::HasRef
-    extend ::Gitlab::Utils::Override
 
     InvalidBridgeTypeError = Class.new(StandardError)
     InvalidTransitionError = Class.new(StandardError)
@@ -198,13 +197,6 @@ module Ci
           { key: hash[:key], value: ::ExpandVariables.expand(hash[:value], all_variables) }
         end
       end
-    end
-
-    override :dependency_variables
-    def dependency_variables
-      return [] unless ::Feature.enabled?(:ci_bridge_dependency_variables, project, default_enabled: true)
-
-      super
     end
 
     def target_revision_ref
