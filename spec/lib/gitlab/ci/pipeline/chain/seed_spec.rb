@@ -20,6 +20,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
   describe '#perform!' do
     before do
       stub_ci_pipeline_yaml_file(YAML.dump(config))
+      run_chain
     end
 
     let(:config) do
@@ -36,20 +37,14 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
     end
 
     it 'allocates next IID' do
-      run_chain
-
       expect(pipeline.iid).to be_present
     end
 
     it 'ensures ci_ref' do
-      run_chain
-
       expect(pipeline.ci_ref).to be_present
     end
 
     it 'sets the seeds in the command object' do
-      run_chain
-
       expect(command.pipeline_seed).to be_a(Gitlab::Ci::Pipeline::Seed::Pipeline)
       expect(command.pipeline_seed.size).to eq 1
     end
@@ -64,8 +59,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
       end
 
       it 'correctly fabricates stages and builds' do
-        run_chain
-
         seed = command.pipeline_seed
 
         expect(seed.stages.size).to eq 2
@@ -91,8 +84,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
       end
 
       it 'returns pipeline seed with jobs only assigned to master' do
-        run_chain
-
         seed = command.pipeline_seed
 
         expect(seed.size).to eq 1
@@ -112,8 +103,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
       end
 
       it 'returns pipeline seed with jobs only assigned to schedules' do
-        run_chain
-
         seed = command.pipeline_seed
 
         expect(seed.size).to eq 1
@@ -141,8 +130,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
           let(:pipeline) { build(:ci_pipeline, project: project) }
 
           it 'returns seeds for kubernetes dependent job' do
-            run_chain
-
             seed = command.pipeline_seed
 
             expect(seed.size).to eq 2
@@ -154,8 +141,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
 
       context 'when kubernetes is not active' do
         it 'does not return seeds for kubernetes dependent job' do
-          run_chain
-
           seed = command.pipeline_seed
 
           expect(seed.size).to eq 1
@@ -173,8 +158,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
       end
 
       it 'returns stage seeds only when variables expression is truthy' do
-        run_chain
-
         seed = command.pipeline_seed
 
         expect(seed.size).to eq 1
@@ -187,24 +170,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
         ->(pipeline) { pipeline.variables.build(key: 'VAR', value: '123') }
       end
 
-      context 'when FF ci_seed_block_run_before_workflow_rules is enabled' do
-        it 'does not execute the block' do
-          run_chain
-
-          expect(pipeline.variables.size).to eq(0)
-        end
-      end
-
-      context 'when FF ci_seed_block_run_before_workflow_rules is disabled' do
-        before do
-          stub_feature_flags(ci_seed_block_run_before_workflow_rules: false)
-        end
-
-        it 'executes the block' do
-          run_chain
-
-          expect(pipeline.variables.size).to eq(1)
-        end
+      it 'does not execute the block' do
+        expect(pipeline.variables.size).to eq(0)
       end
     end
   end

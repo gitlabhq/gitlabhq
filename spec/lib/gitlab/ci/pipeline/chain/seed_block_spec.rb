@@ -51,18 +51,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::SeedBlock do
 
         expect(pipeline.variables.size).to eq(1)
       end
-
-      context 'when FF ci_seed_block_run_before_workflow_rules is disabled' do
-        before do
-          stub_feature_flags(ci_seed_block_run_before_workflow_rules: false)
-        end
-
-        it 'does not execute the block' do
-          run_chain
-
-          expect(pipeline.variables.size).to eq(0)
-        end
-      end
     end
 
     context 'when the seeds_block tries to save the pipelie' do

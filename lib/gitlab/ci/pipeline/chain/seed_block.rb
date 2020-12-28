@@ -9,8 +9,6 @@ module Gitlab
           include Gitlab::Utils::StrongMemoize
 
           def perform!
-            return unless ::Gitlab::Ci::Features.seed_block_run_before_workflow_rules_enabled?(project)
-
             ##
             # Populate pipeline with block argument of CreatePipelineService#execute.
             #
@@ -20,8 +18,6 @@ module Gitlab
           end
 
           def break?
-            return false unless ::Gitlab::Ci::Features.seed_block_run_before_workflow_rules_enabled?(project)
-
             pipeline.errors.any?
           end
         end

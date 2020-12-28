@@ -2402,16 +2402,6 @@ RSpec.describe Ci::CreatePipelineService do
             expect(build_names).to contain_exactly('regular-job')
           end
 
-          context 'when FF ci_seed_block_run_before_workflow_rules is disabled' do
-            before do
-              stub_feature_flags(ci_seed_block_run_before_workflow_rules: false)
-            end
-
-            it 'does not a pipeline' do
-              expect(pipeline).not_to be_persisted
-            end
-          end
-
           context 'when a job requires the same variable' do
             let(:config) do
               <<-EOY
@@ -2440,16 +2430,6 @@ RSpec.describe Ci::CreatePipelineService do
               expect(pipeline).to be_persisted
               expect(build_names).to contain_exactly('build', 'test1', 'test2')
             end
-
-            context 'when FF ci_seed_block_run_before_workflow_rules is disabled' do
-              before do
-                stub_feature_flags(ci_seed_block_run_before_workflow_rules: false)
-              end
-
-              it 'does not a pipeline' do
-                expect(pipeline).not_to be_persisted
-              end
-            end
           end
         end
 
@@ -2458,16 +2438,6 @@ RSpec.describe Ci::CreatePipelineService do
 
           it 'does not create a pipeline' do
             expect(pipeline).not_to be_persisted
-          end
-
-          context 'when FF ci_seed_block_run_before_workflow_rules is disabled' do
-            before do
-              stub_feature_flags(ci_seed_block_run_before_workflow_rules: false)
-            end
-
-            it 'does not create a pipeline' do
-              expect(pipeline).not_to be_persisted
-            end
           end
 
           context 'when a job requires the same variable' do
@@ -2496,16 +2466,6 @@ RSpec.describe Ci::CreatePipelineService do
 
             it 'does not create a pipeline' do
               expect(pipeline).not_to be_persisted
-            end
-
-            context 'when FF ci_seed_block_run_before_workflow_rules is disabled' do
-              before do
-                stub_feature_flags(ci_seed_block_run_before_workflow_rules: false)
-              end
-
-              it 'does not create a pipeline' do
-                expect(pipeline).not_to be_persisted
-              end
             end
           end
         end

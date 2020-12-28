@@ -59,10 +59,6 @@ module Gitlab
         ::Feature.enabled?(:ci_pipeline_open_merge_requests, project, default_enabled: false)
       end
 
-      def self.seed_block_run_before_workflow_rules_enabled?(project)
-        ::Feature.enabled?(:ci_seed_block_run_before_workflow_rules, project, default_enabled: true)
-      end
-
       def self.ci_pipeline_editor_page_enabled?(project)
         ::Feature.enabled?(:ci_pipeline_editor_page, project, default_enabled: false)
       end
