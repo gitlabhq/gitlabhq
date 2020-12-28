@@ -100,7 +100,7 @@ include:
   - template: Managed-Cluster-Applications.gitlab-ci.yml
 
 apply:
-  image: "registry.gitlab.com/gitlab-org/cluster-integration/cluster-applications:v0.34.1"
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/cluster-applications:v0.37.0"
 ```
 
 ### Use the template with a custom environment

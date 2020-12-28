@@ -56,7 +56,6 @@ module Gitlab
           end
 
           def expand_project_files(location)
-            return location unless ::Feature.enabled?(:ci_include_multiple_files_from_project, context.project, default_enabled: true)
             return location unless location[:project]
 
             Array.wrap(location[:file]).map do |file|

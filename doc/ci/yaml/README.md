@@ -445,10 +445,7 @@ You can use local (relative to target project), project, remote, or template inc
 ##### Multiple files from a project
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26793) in GitLab 13.6.
-> - It's [deployed behind a feature flag](../../user/feature_flags.md), enabled by default.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to disable it. **(CORE ONLY)**
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/271560) in GitLab 13.8.
 
 You can include multiple files from the same project:
 
@@ -459,23 +456,6 @@ include:
     file:
       - '/templates/.builds.yml'
       - '/templates/.tests.yml'
-```
-
-Including multiple files from the same project is under development but ready for production use. It is
-deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:ci_include_multiple_files_from_project)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:ci_include_multiple_files_from_project)
 ```
 
 #### `include:remote`

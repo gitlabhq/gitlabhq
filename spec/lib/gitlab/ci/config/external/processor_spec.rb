@@ -365,19 +365,6 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
         output = processor.perform
         expect(output.keys).to match_array([:image, :my_build, :my_test])
       end
-
-      context 'when FF ci_include_multiple_files_from_project is disabled' do
-        before do
-          stub_feature_flags(ci_include_multiple_files_from_project: false)
-        end
-
-        it 'raises an error' do
-          expect { processor.perform }.to raise_error(
-            described_class::IncludeError,
-            'Included file `["/templates/my-build.yml", "/templates/my-test.yml"]` needs to be a string'
-          )
-        end
-      end
     end
   end
 end

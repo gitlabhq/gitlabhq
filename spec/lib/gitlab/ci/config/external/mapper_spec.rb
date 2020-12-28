@@ -124,17 +124,6 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
             an_instance_of(Gitlab::Ci::Config::External::File::Project),
             an_instance_of(Gitlab::Ci::Config::External::File::Project))
         end
-
-        context 'when FF ci_include_multiple_files_from_project is disabled' do
-          before do
-            stub_feature_flags(ci_include_multiple_files_from_project: false)
-          end
-
-          it 'returns a File instance' do
-            expect(subject).to contain_exactly(
-              an_instance_of(Gitlab::Ci::Config::External::File::Project))
-          end
-        end
       end
     end
 
