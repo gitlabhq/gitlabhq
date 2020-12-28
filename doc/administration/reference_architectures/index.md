@@ -95,7 +95,6 @@ have more actual perceived uptime for your users.
 
 > - Level of complexity: **Low**
 > - Required domain knowledge: PostgreSQL, GitLab configurations, Git
-> - Supported tiers: [GitLab Core, Starter, Premium, and Ultimate](https://about.gitlab.com/pricing/)
 
 This solution is appropriate for many teams that have the default GitLab installation.
 With automatic backups of the GitLab repositories, configuration, and the database,
@@ -107,7 +106,6 @@ is the least complex to setup. This provides a point-in-time recovery of a prede
 
 > - Level of complexity: **Medium**
 > - Required domain knowledge: HAProxy, shared storage, distributed systems
-> - Supported tiers: [GitLab Starter, Premium, and Ultimate](https://about.gitlab.com/pricing/)
 
 This requires separating out GitLab into multiple application nodes with an added
 [load balancer](../load_balancer.md). The load balancer will distribute traffic
@@ -127,7 +125,6 @@ to the default installation:
 
 > - Level of complexity: **Medium**
 > - Required domain knowledge: PostgreSQL, HAProxy, shared storage, distributed systems
-> - Supported tiers: [GitLab Starter, Premium, and Ultimate](https://about.gitlab.com/pricing/)
 
 GitLab supports [zero-downtime updates](https://docs.gitlab.com/omnibus/update/#zero-downtime-updates).
 Single GitLab nodes can be updated with only a [few minutes of downtime](https://docs.gitlab.com/omnibus/update/README.html#single-node-deployment).
@@ -138,7 +135,6 @@ As long as at least one of each component is online and capable of handling the 
 
 > - Level of complexity: **High**
 > - Required domain knowledge: PgBouncer, Repmgr or Patroni, shared storage, distributed systems
-> - Supported tiers: [GitLab Premium and Ultimate](https://about.gitlab.com/pricing/)
 
 By adding automatic failover for database systems, you can enable higher uptime
 with additional database nodes. This extends the default database with
@@ -150,7 +146,6 @@ is recommended.
 
 > - Level of complexity: **Very High**
 > - Required domain knowledge: Storage replication
-> - Supported tiers: [GitLab Premium and Ultimate](https://about.gitlab.com/pricing/)
 
 [GitLab Geo](../geo/index.md) allows you to replicate your GitLab
 instance to other geographical locations as a read-only fully operational instance

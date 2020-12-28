@@ -50,7 +50,7 @@ these steps to move the logs to a new location without losing any data.
    Jobs in progress are not affected, based on how [data flow](#data-flow) works.
 
    ```ruby
-   sidekiq['experimental_queue_selector'] = true
+   sidekiq['queue_selector'] = true
    sidekiq['queue_groups'] = [
      "feature_category!=continuous_integration"
    ]

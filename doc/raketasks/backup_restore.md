@@ -890,7 +890,7 @@ Restoring repositories:
 Deleting tmp directories...[DONE]
 ```
 
-Next, restore `/home/git/gitlab/.secret` if necessary, as previously mentioned.
+Next, restore `/home/git/gitlab/.secret` if necessary, [as previously mentioned](#restore-prerequisites).
 
 Restart GitLab:
 
@@ -943,8 +943,16 @@ permissions on your Registry directory. This is a [known issue](https://gitlab.c
 On GitLab 12.2 or later, you can use `gitlab-backup restore` to avoid this
 issue.
 
-Next, restore `/etc/gitlab/gitlab-secrets.json` if necessary, as previously
-mentioned.
+If there's a GitLab version mismatch between your backup tar file and the
+installed version of GitLab, the restore command aborts with an error
+message. Install the [correct GitLab version](https://packages.gitlab.com/gitlab/),
+and then try again.
+
+NOTE:
+There is a known issue with restore not working with `pgbouncer`. [Read more about backup and restore with `pgbouncer`](#backup-and-restore-for-installations-using-pgbouncer).
+
+Next, restore `/etc/gitlab/gitlab-secrets.json` if necessary,
+[as previously mentioned](#restore-prerequisites).
 
 Reconfigure, restart and check GitLab:
 
@@ -954,13 +962,13 @@ sudo gitlab-ctl restart
 sudo gitlab-rake gitlab:check SANITIZE=true
 ```
 
-If there's a GitLab version mismatch between your backup tar file and the
-installed version of GitLab, the restore command aborts with an error
-message. Install the [correct GitLab version](https://packages.gitlab.com/gitlab/),
-and then try again.
+On GitLab 13.1 and later, check [database values can be decrypted](../administration/raketasks/doctor.md)
+especially if `/etc/gitlab/gitlab-secrets.json` was restored, or if a different server is
+the target for the restore.
 
-NOTE:
-There is a known issue with restore not working with `pgbouncer`. [Read more about backup and restore with `pgbouncer`](#backup-and-restore-for-installations-using-pgbouncer).
+```shell
+sudo gitlab-rake gitlab:doctor:secrets
+```
 
 ### Restore for Docker image and GitLab Helm chart installations
 
@@ -1066,6 +1074,13 @@ following error message is shown:
 
 ```ruby
 ActiveRecord::StatementInvalid: PG::UndefinedTable
+```
+
+Each time the GitLab backup runs, GitLab will start generating 500 errors and errors about missing
+tables will [be logged by PostgreSQL](../administration/logs.md#postgresql-logs):
+
+```plaintext
+ERROR: relation "tablename" does not exist at character 123
 ```
 
 This happens because the task uses `pg_dump`, which [sets a null search

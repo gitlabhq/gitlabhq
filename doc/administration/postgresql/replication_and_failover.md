@@ -447,6 +447,12 @@ PostgreSQL's `trust_auth_cidr_addresses` in `gitlab.rb` on your database nodes. 
 [PgBouncer error `ERROR:  pgbouncer cannot connect to server`](#pgbouncer-error-error-pgbouncer-cannot-connect-to-server)
 in the Troubleshooting section before proceeding.
 
+### Backups
+
+Do not backup or restore GitLab through a PgBouncer connection: this will cause a GitLab outage.
+
+[Read more about this and how to reconfigure backups](../../raketasks/backup_restore.md#backup-and-restore-for-installations-using-pgbouncer).
+
 ### Ensure GitLab is running
 
 At this point, your GitLab instance should be up and running. Verify you're able

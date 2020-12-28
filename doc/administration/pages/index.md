@@ -501,7 +501,7 @@ the below steps to do a no downtime transfer to a new storage location.
 1. Pause Pages deployments by setting the following in `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   sidekiq['experimental_queue_selector'] = true
+   sidekiq['queue_selector'] = true
    sidekiq['queue_groups'] = [
      "feature_category!=pages"
    ]

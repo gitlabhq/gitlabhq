@@ -195,7 +195,7 @@ However, for this to work there are the following requirements:
    9.3.
 - You have to use [post-deployment
    migrations](../development/post_deployment_migrations.md) (included in
-   zero downtime update steps below).
+   [zero downtime update steps below](#steps)).
 - You are using PostgreSQL. Starting from GitLab 12.1, MySQL is not supported.
 - Multi-node GitLab instance. Single-node instances may experience brief interruptions
   [as services restart (Puma in particular)](https://docs.gitlab.com/omnibus/update/README.html#single-node-deployment).
