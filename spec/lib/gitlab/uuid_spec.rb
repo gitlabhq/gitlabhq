@@ -49,4 +49,23 @@ RSpec.describe Gitlab::UUID do
       it { is_expected.to eq(production_proper_uuid) }
     end
   end
+
+  describe 'v5?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:test_string, :is_uuid_v5) do
+      'not even a uuid'                      | false
+      'this-seems-like-a-uuid'               | false
+      'thislook-more-5lik-eava-liduuidbutno' | false
+      '9f470438-db0f-37b7-9ca9-1d47104c339a' | false
+      '9f470438-db0f-47b7-9ca9-1d47104c339a' | false
+      '9f470438-db0f-57b7-9ca9-1d47104c339a' | true
+    end
+
+    with_them do
+      subject { described_class.v5?(test_string) }
+
+      it { is_expected.to be(is_uuid_v5) }
+    end
+  end
 end
