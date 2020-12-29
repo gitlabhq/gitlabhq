@@ -825,7 +825,7 @@ For the same reasons that removing workers is dangerous, care should be taken
 when renaming queues.
 
 When renaming queues, use the `sidekiq_queue_migrate` helper migration method,
-as show in this example:
+as shown in this example:
 
 ```ruby
 class MigrateTheRenamedSidekiqQueue < ActiveRecord::Migration[5.0]
