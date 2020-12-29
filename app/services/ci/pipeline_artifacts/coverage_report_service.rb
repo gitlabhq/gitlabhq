@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module Ci
-  module Pipelines
-    class CreateArtifactService
+  module PipelineArtifacts
+    class CoverageReportService
       def execute(pipeline)
         return unless pipeline.can_generate_coverage_reports?
         return if pipeline.has_coverage_reports?

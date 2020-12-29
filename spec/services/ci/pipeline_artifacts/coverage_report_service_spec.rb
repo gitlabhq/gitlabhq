@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ci::Pipelines::CreateArtifactService do
+RSpec.describe ::Ci::PipelineArtifacts::CoverageReportService do
   describe '#execute' do
     subject { described_class.new.execute(pipeline) }
 

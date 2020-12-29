@@ -1,0 +1,5 @@
+---
+title: Rename coverage report sidekiq queue
+merge_request: 50424
+author:
+type: changed
