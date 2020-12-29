@@ -5,6 +5,8 @@
 # These API endpoints are not meant to be consumed directly by users. They are
 # called by the NuGet package manager client when users run commands
 # like `nuget install` or `nuget push`.
+#
+# This is the project level API.
 module API
   class NugetProjectPackages < ::API::Base
     helpers ::API::Helpers::PackagesManagerClientsHelpers
@@ -20,8 +22,14 @@ module API
       render_api_error!(e.message, 400)
     end
 
-    before do
+    after_validation do
       require_packages_enabled!
+    end
+
+    helpers do
+      def project_or_group
+        authorized_user_project
+      end
     end
 
     params do
@@ -31,10 +39,6 @@ module API
     route_setting :authentication, deploy_token_allowed: true, job_token_allowed: :basic_auth, basic_auth_personal_access_token: true
 
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      before do
-        authorized_user_project
-      end
-
       namespace ':id/packages/nuget' do
         include ::API::Concerns::Packages::NugetEndpoints
 
@@ -50,24 +54,19 @@ module API
         route_setting :authentication, deploy_token_allowed: true, job_token_allowed: :basic_auth, basic_auth_personal_access_token: true
 
         put do
-          authorize_upload!(authorized_user_project)
-          bad_request!('File is too large') if authorized_user_project.actual_limits.exceeded?(:nuget_max_file_size, params[:package].size)
+          authorize_upload!(project_or_group)
+          bad_request!('File is too large') if project_or_group.actual_limits.exceeded?(:nuget_max_file_size, params[:package].size)
 
           file_params = params.merge(
             file: params[:package],
             file_name: PACKAGE_FILENAME
           )
 
-          package = ::Packages::Nuget::CreatePackageService.new(
-            authorized_user_project,
-            current_user,
-            declared_params.merge(build: current_authenticated_job)
-          ).execute
+          package = ::Packages::Nuget::CreatePackageService.new(project_or_group, current_user, declared_params.merge(build: current_authenticated_job))
+                                                           .execute
 
-          package_file = ::Packages::CreatePackageFileService.new(
-            package,
-            file_params.merge(build: current_authenticated_job)
-          ).execute
+          package_file = ::Packages::CreatePackageFileService.new(package, file_params.merge(build: current_authenticated_job))
+                                                             .execute
 
           track_package_event('push_package', :nuget, category: 'API::NugetPackages')
 
@@ -75,7 +74,7 @@ module API
 
           created!
         rescue ObjectStorage::RemoteStoreError => e
-          Gitlab::ErrorTracking.track_exception(e, extra: { file_name: params[:file_name], project_id: authorized_user_project.id })
+          Gitlab::ErrorTracking.track_exception(e, extra: { file_name: params[:file_name], project_id: project_or_group.id })
 
           forbidden!
         end
@@ -84,9 +83,9 @@ module API
 
         put 'authorize' do
           authorize_workhorse!(
-            subject: authorized_user_project,
+            subject: project_or_group,
             has_length: false,
-            maximum_size: authorized_user_project.actual_limits.nuget_max_file_size
+            maximum_size: project_or_group.actual_limits.nuget_max_file_size
           )
         end
 
@@ -95,8 +94,8 @@ module API
           requires :package_name, type: String, desc: 'The NuGet package name', regexp: API::NO_SLASH_URL_PART_REGEX
         end
         namespace '/download/*package_name' do
-          before do
-            authorize_read_package!(authorized_user_project)
+          after_validation do
+            authorize_read_package!(project_or_group)
           end
 
           desc 'The NuGet Content Service - index request' do
@@ -106,7 +105,7 @@ module API
           route_setting :authentication, deploy_token_allowed: true, job_token_allowed: :basic_auth, basic_auth_personal_access_token: true
 
           get 'index', format: :json do
-            present ::Packages::Nuget::PackagesVersionsPresenter.new(find_packages),
+            present ::Packages::Nuget::PackagesVersionsPresenter.new(find_packages(params[:package_name])),
                     with: ::API::Entities::Nuget::PackagesVersions
           end
 
@@ -122,7 +121,7 @@ module API
 
           get '*package_version/*package_filename', format: :nupkg do
             filename = "#{params[:package_filename]}.#{params[:format]}"
-            package_file = ::Packages::PackageFileFinder.new(find_package, filename, with_file_name_like: true)
+            package_file = ::Packages::PackageFileFinder.new(find_package(params[:package_name], params[:package_version]), filename, with_file_name_like: true)
                                                         .execute
 
             not_found!('Package') unless package_file

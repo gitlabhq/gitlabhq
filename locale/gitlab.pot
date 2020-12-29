@@ -19556,6 +19556,9 @@ msgstr ""
 msgid "OnDemandScans|Create a new site profile"
 msgstr ""
 
+msgid "OnDemandScans|Edit on-demand DAST scan"
+msgstr ""
+
 msgid "OnDemandScans|Manage profiles"
 msgstr ""
 
@@ -22975,6 +22978,12 @@ msgstr ""
 msgid "Rebase in progress"
 msgstr ""
 
+msgid "Rebase source branch"
+msgstr ""
+
+msgid "Rebase source branch on the target branch."
+msgstr ""
+
 msgid "Receive alerts from manually configured Prometheus servers."
 msgstr ""
 
@@ -24326,6 +24335,9 @@ msgid "Scheduled"
 msgstr ""
 
 msgid "Scheduled Deletion At - %{permanent_deletion_time}"
+msgstr ""
+
+msgid "Scheduled a rebase of branch %{branch}."
 msgstr ""
 
 msgid "Scheduled to merge this merge request (%{strategy})."

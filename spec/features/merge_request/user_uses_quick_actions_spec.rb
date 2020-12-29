@@ -41,5 +41,6 @@ RSpec.describe 'Merge request > User uses quick actions', :js do
     end
 
     it_behaves_like 'merge quick action'
+    it_behaves_like 'rebase quick action'
   end
 end

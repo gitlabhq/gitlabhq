@@ -38,6 +38,32 @@ module Gitlab
           @updates[:merge] = params[:merge_request_diff_head_sha]
         end
 
+        types MergeRequest
+        desc do
+          _('Rebase source branch')
+        end
+        explanation do
+          _('Rebase source branch on the target branch.')
+        end
+        condition do
+          merge_request = quick_action_target
+
+          next false unless merge_request.source_branch_exists?
+
+          access_check = ::Gitlab::UserAccess
+                           .new(current_user, container: merge_request.source_project)
+
+          access_check.can_push_to_branch?(merge_request.source_branch)
+        end
+        command :rebase do
+          # This will be used to avoid simultaneous "/merge" and "/rebase" actions
+          @updates[:rebase] = true
+
+          branch = quick_action_target.source_branch
+
+          @execution_message[:rebase] = _('Scheduled a rebase of branch %{branch}.') % { branch: branch }
+        end
+
         desc 'Toggle the Draft status'
         explanation do
           noun = quick_action_target.to_ability_name.humanize(capitalize: false)

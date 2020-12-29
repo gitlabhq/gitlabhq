@@ -12,6 +12,7 @@ module API
         end
 
         include Constants
+        include Gitlab::Utils::StrongMemoize
 
         def unauthorized_user_project
           @unauthorized_user_project ||= find_project(params[:id])
@@ -33,6 +34,18 @@ module API
           end
 
           project
+        end
+
+        def find_authorized_group!
+          strong_memoize(:authorized_group) do
+            group = find_group(params[:id])
+
+            unless group && can?(current_user, :read_group, group)
+              next unauthorized_or! { not_found! }
+            end
+
+            group
+          end
         end
 
         def authorize!(action, subject = :global, reason = nil)

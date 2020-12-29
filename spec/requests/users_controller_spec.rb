@@ -76,7 +76,7 @@ RSpec.describe UsersController do
       end
     end
 
-    context 'json with events' do
+    context 'requested in json format' do
       let(:project) { create(:project) }
 
       before do
@@ -86,31 +86,13 @@ RSpec.describe UsersController do
         sign_in(user)
       end
 
-      it 'loads events' do
+      it 'returns 404 with deprecation message' do
         # Requesting "/username?format=json" instead of "/username.json"
         get user_url user.username, params: { format: :json }
 
+        expect(response).to have_gitlab_http_status(:not_found)
         expect(response.media_type).to eq('application/json')
-        expect(Gitlab::Json.parse(response.body)['count']).to eq(1)
-      end
-
-      it 'hides events if the user cannot read cross project' do
-        allow(Ability).to receive(:allowed?).and_call_original
-        expect(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
-
-        get user_url user.username, params: { format: :json }
-
-        expect(response.media_type).to eq('application/json')
-        expect(Gitlab::Json.parse(response.body)['count']).to eq(0)
-      end
-
-      it 'hides events if the user has a private profile' do
-        Gitlab::DataBuilder::Push.build_sample(project, private_user)
-
-        get user_url private_user.username, params: { format: :json }
-
-        expect(response.media_type).to eq('application/json')
-        expect(Gitlab::Json.parse(response.body)['count']).to eq(0)
+        expect(Gitlab::Json.parse(response.body)['message']).to include('This endpoint is deprecated.')
       end
     end
   end
@@ -183,7 +165,7 @@ RSpec.describe UsersController do
       end
     end
 
-    context 'json with events' do
+    context 'requested in json format' do
       let(:project) { create(:project) }
 
       before do

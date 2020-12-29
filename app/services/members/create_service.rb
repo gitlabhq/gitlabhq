@@ -54,7 +54,8 @@ module Members
     end
 
     def enqueue_onboarding_progress_action(source)
-      Namespaces::OnboardingUserAddedWorker.perform_async(source.id)
+      namespace_id = source.is_a?(Project) ? source.namespace_id : source.id
+      Namespaces::OnboardingUserAddedWorker.perform_async(namespace_id)
     end
   end
 end

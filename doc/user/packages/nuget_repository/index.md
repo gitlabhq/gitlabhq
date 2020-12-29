@@ -60,6 +60,21 @@ NuGet CLI.
    mono nuget.exe
    ```
 
+## Use the GitLab endpoint for NuGet Packages
+
+To use the GitLab endpoint for NuGet Packages, choose an option:
+
+- **Project-level**: Use when you have few NuGet packages and they are not in
+  the same GitLab group.
+- **Group-level**: Use when you have many NuGet packages in different within the
+  same GitLab group.
+
+Some features such as [publishing](#publish-a-nuget-package) a package are only available on the project-level endpoint.
+
+WARNING:
+Because of how NuGet handles credentials, the Package Registry rejects anonymous requests on the group-level endpoint. 
+To work around this limitation, set up [authentication](#add-the-package-registry-as-a-source-for-nuget-packages).
+
 ## Add the Package Registry as a source for NuGet packages
 
 To publish and install packages to the Package Registry, you must add the
@@ -75,7 +90,9 @@ Prerequisites:
     with the scope set to `read_package_registry`, `write_package_registry`, or
     both.
 - A name for your source.
-- Your project ID, which is found on your project's home page.
+- Depending on the [endpoint level](#use-the-gitlab-endpoint-for-nuget-packages) you use, either: 
+  - Your project ID, which is found on your project's home page.
+  - Your group ID, which is found on your group's home page.
 
 You can now add a new source to NuGet with:
 
@@ -85,7 +102,9 @@ You can now add a new source to NuGet with:
 
 ### Add a source with the NuGet CLI
 
-To add the Package Registry as a source with `nuget`:
+#### Project-level endpoint
+
+To use the [project-level](#use-the-gitlab-endpoint-for-nuget-packages) NuGet endpoint, add the Package Registry as a source with `nuget`:
 
 ```shell
 nuget source Add -Name <source_name> -Source "https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/nuget/index.json" -UserName <gitlab_username or deploy_token_username> -Password <gitlab_personal_access_token or deploy_token>
@@ -99,9 +118,27 @@ For example:
 nuget source Add -Name "GitLab" -Source "https://gitlab.example.com/api/v4/projects/10/packages/nuget/index.json" -UserName carol -Password 12345678asdf
 ```
 
+#### Group-level endpoint
+
+To use the [group-level](#use-the-gitlab-endpoint-for-nuget-packages) NuGet endpoint, add the Package Registry as a source with `nuget`:
+
+```shell
+nuget source Add -Name <source_name> -Source "https://gitlab.example.com/api/v4/groups/<your_group_id>/packages/nuget/index.json" -UserName <gitlab_username or deploy_token_username> -Password <gitlab_personal_access_token or deploy_token>
+```
+
+- `<source_name>` is the desired source name.
+
+For example:
+
+```shell
+nuget source Add -Name "GitLab" -Source "https://gitlab.example.com/api/v4/groups/23/packages/nuget/index.json" -UserName carol -Password 12345678asdf
+```
+
 ### Add a source with Visual Studio
 
-To add the Package Registry as a source with Visual Studio:
+#### Project-level endpoint
+
+To use the [project-level](#use-the-gitlab-endpoint-for-nuget-packages) NuGet endpoint, add the Package Registry as a source with Visual Studio:
 
 1. Open [Visual Studio](https://visualstudio.microsoft.com/vs/).
 1. In Windows, select **File > Options**. On macOS, select **Visual Studio > Preferences**.
@@ -126,9 +163,38 @@ The source is displayed in your list.
 If you get a warning, ensure that the **Location**, **Username**, and
 **Password** are correct.
 
+#### Group-level endpoint
+
+To use the [group-level](#use-the-gitlab-endpoint-for-nuget-packages) NuGet endpoint, add the Package Registry as a source with Visual Studio:
+
+1. Open [Visual Studio](https://visualstudio.microsoft.com/vs/).
+1. In Windows, select **File > Options**. On macOS, select **Visual Studio > Preferences**.
+1. In the **NuGet** section, select **Sources** to view a list of all your NuGet sources.
+1. Select **Add**.
+1. Complete the following fields:
+   - **Name**: Name for the source.
+   - **Location**: `https://gitlab.example.com/api/v4/group/<your_group_id>/packages/nuget/index.json`,
+     where `<your_group_id>` is your group ID, and `gitlab.example.com` is
+     your domain name.
+   - **Username**: Your GitLab username or deploy token username.
+   - **Password**: Your personal access token or deploy token.
+
+   ![Visual Studio Adding a NuGet source](img/visual_studio_adding_nuget_source.png)
+
+1. Click **Save**.
+
+The source is displayed in your list.
+
+![Visual Studio NuGet source added](img/visual_studio_nuget_source_added.png)
+
+If you get a warning, ensure that the **Location**, **Username**, and
+**Password** are correct.
+
 ### Add a source with the .NET CLI
 
-To add the Package Registry as a source for .NET:
+#### Project-level endpoint
+
+To use the [project-level](#use-the-gitlab-endpoint-for-nuget-packages) Package Registry as a source for .NET:
 
 1. In the root of your project, create a file named `nuget.config`.
 1. Add this content:
@@ -138,7 +204,30 @@ To add the Package Registry as a source for .NET:
    <configuration>
     <packageSources>
         <clear />
-        <add key="gitlab" value="https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/nuget/index.json" />
+        <add key="gitlab" value="https://gitlab.example.com/api/v4/project/<your_project_id>/packages/nuget/index.json" />
+    </packageSources>
+    <packageSourceCredentials>
+        <gitlab>
+            <add key="Username" value="<gitlab_username or deploy_token_username>" />
+            <add key="ClearTextPassword" value="<gitlab_personal_access_token or deploy_token>" />
+        </gitlab>
+    </packageSourceCredentials>
+   </configuration>
+   ```
+
+#### Group-level endpoint
+
+To use the [group-level](#use-the-gitlab-endpoint-for-nuget-packages) Package Registry as a source for .NET:
+
+1. In the root of your project, create a file named `nuget.config`.
+1. Add this content:
+
+   ```xml
+   <?xml version="1.0" encoding="utf-8"?>
+   <configuration>
+    <packageSources>
+        <clear />
+        <add key="gitlab" value="https://gitlab.example.com/api/v4/group/<your_group_id>/packages/nuget/index.json" />
     </packageSources>
     <packageSourceCredentials>
         <gitlab>
@@ -150,6 +239,10 @@ To add the Package Registry as a source for .NET:
    ```
 
 ## Publish a NuGet package
+
+Prerequisite:
+
+- Set up the [source](#https://docs.gitlab.com/ee/user/packages/nuget_repository/#add-the-package-registry-as-a-source-for-nuget-packages) with a [project-level endpoint](#use-the-gitlab-endpoint-for-nuget-packages).
 
 When publishing packages:
 
@@ -164,9 +257,10 @@ When publishing packages:
 
 ### Publish a package with the NuGet CLI
 
-Prerequisite:
+Prerequisites:
 
 - [A NuGet package created with NuGet CLI](https://docs.microsoft.com/en-us/nuget/create-packages/creating-a-package).
+- Set a [project-level endpoint](#use-the-gitlab-endpoint-for-nuget-packages).
 
 Publish a package by running this command:
 
@@ -179,9 +273,10 @@ nuget push <package_file> -Source <source_name>
 
 ### Publish a package with the .NET CLI
 
-Prerequisite:
+Prerequisites:
 
 - [A NuGet package created with .NET CLI](https://docs.microsoft.com/en-us/nuget/create-packages/creating-a-package-dotnet-cli).
+- Set a [project-level endpoint](#use-the-gitlab-endpoint-for-nuget-packages).
 
 Publish a package by running this command:
 

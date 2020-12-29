@@ -212,6 +212,7 @@ module API
       mount ::API::GroupPackages
       mount ::API::PackageFiles
       mount ::API::NugetProjectPackages
+      mount ::API::NugetGroupPackages
       mount ::API::PypiPackages
       mount ::API::ComposerPackages
       mount ::API::ConanProjectPackages

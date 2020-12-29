@@ -3,7 +3,7 @@
 RSpec.shared_examples 'rejects nuget packages access' do |user_type, status, add_member = true|
   context "for user type #{user_type}" do
     before do
-      project.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+      target.send("add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
     it_behaves_like 'returning response status', status
@@ -21,7 +21,7 @@ end
 RSpec.shared_examples 'process nuget service index request' do |user_type, status, add_member = true|
   context "for user type #{user_type}" do
     before do
-      project.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+      target.send("add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
     it_behaves_like 'returning response status', status
@@ -37,7 +37,7 @@ RSpec.shared_examples 'process nuget service index request' do |user_type, statu
     end
 
     context 'with invalid format' do
-      let(:url) { "/projects/#{project.id}/packages/nuget/index.xls" }
+      let(:url) { "/#{target_type}/#{target.id}/packages/nuget/index.xls" }
 
       it_behaves_like 'rejects nuget packages access', :anonymous, :not_found
     end
@@ -57,7 +57,7 @@ end
 RSpec.shared_examples 'process nuget metadata request at package name level' do |user_type, status, add_member = true|
   context "for user type #{user_type}" do
     before do
-      project.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+      target.send("add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
     it_behaves_like 'returning response status', status
@@ -65,7 +65,7 @@ RSpec.shared_examples 'process nuget metadata request at package name level' do 
     it_behaves_like 'returning nuget metadata json response with json schema', 'public_api/v4/packages/nuget/packages_metadata'
 
     context 'with invalid format' do
-      let(:url) { "/projects/#{project.id}/packages/nuget/metadata/#{package_name}/index.xls" }
+      let(:url) { "/#{target_type}/#{target.id}/packages/nuget/metadata/#{package_name}/index.xls" }
 
       it_behaves_like 'rejects nuget packages access', :anonymous, :not_found
     end
@@ -83,7 +83,7 @@ end
 RSpec.shared_examples 'process nuget metadata request at package name and package version level' do |user_type, status, add_member = true|
   context "for user type #{user_type}" do
     before do
-      project.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+      target.send("add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
     it_behaves_like 'returning response status', status
@@ -91,7 +91,7 @@ RSpec.shared_examples 'process nuget metadata request at package name and packag
     it_behaves_like 'returning nuget metadata json response with json schema', 'public_api/v4/packages/nuget/package_metadata'
 
     context 'with invalid format' do
-      let(:url) { "/projects/#{project.id}/packages/nuget/metadata/#{package_name}/#{package.version}.xls" }
+      let(:url) { "/#{target_type}/#{target.id}/packages/nuget/metadata/#{package_name}/#{package.version}.xls" }
 
       it_behaves_like 'rejects nuget packages access', :anonymous, :not_found
     end
@@ -109,7 +109,7 @@ end
 RSpec.shared_examples 'process nuget workhorse authorization' do |user_type, status, add_member = true|
   context "for user type #{user_type}" do
     before do
-      project.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+      target.send("add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
     it_behaves_like 'returning response status', status
@@ -128,7 +128,7 @@ RSpec.shared_examples 'process nuget workhorse authorization' do |user_type, sta
       end
 
       before do
-        project.add_maintainer(user)
+        target.add_maintainer(user)
       end
 
       it_behaves_like 'returning response status', :forbidden
@@ -141,18 +141,18 @@ RSpec.shared_examples 'process nuget upload' do |user_type, status, add_member =
     it 'creates package files' do
       expect(::Packages::Nuget::ExtractionWorker).to receive(:perform_async).once
       expect { subject }
-          .to change { project.packages.count }.by(1)
+          .to change { target.packages.count }.by(1)
           .and change { Packages::PackageFile.count }.by(1)
       expect(response).to have_gitlab_http_status(status)
 
-      package_file = project.packages.last.package_files.reload.last
+      package_file = target.packages.last.package_files.reload.last
       expect(package_file.file_name).to eq('package.nupkg')
     end
   end
 
   context "for user type #{user_type}" do
     before do
-      project.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+      target.send("add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
     context 'with object storage disabled' do
@@ -206,7 +206,7 @@ RSpec.shared_examples 'process nuget upload' do |user_type, status, add_member =
 
         context 'with crafted package.path param' do
           let(:crafted_file) { Tempfile.new('nuget.crafted.package.path') }
-          let(:url) { "/projects/#{project.id}/packages/nuget?package.path=#{crafted_file.path}" }
+          let(:url) { "/#{target_type}/#{target.id}/packages/nuget?package.path=#{crafted_file.path}" }
           let(:params) { { file: temp_file(file_name) } }
           let(:file_key) { :file }
 
@@ -255,7 +255,7 @@ RSpec.shared_examples 'process nuget download versions request' do |user_type, s
 
   context "for user type #{user_type}" do
     before do
-      project.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+      target.send("add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
     it_behaves_like 'returning response status', status
@@ -263,7 +263,7 @@ RSpec.shared_examples 'process nuget download versions request' do |user_type, s
     it_behaves_like 'returns a valid nuget download versions json response'
 
     context 'with invalid format' do
-      let(:url) { "/projects/#{project.id}/packages/nuget/download/#{package_name}/index.xls" }
+      let(:url) { "/#{target_type}/#{target.id}/packages/nuget/download/#{package_name}/index.xls" }
 
       it_behaves_like 'rejects nuget packages access', :anonymous, :not_found
     end
@@ -281,7 +281,7 @@ end
 RSpec.shared_examples 'process nuget download content request' do |user_type, status, add_member = true|
   context "for user type #{user_type}" do
     before do
-      project.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+      target.send("add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
     it_behaves_like 'returning response status', status
@@ -295,7 +295,7 @@ RSpec.shared_examples 'process nuget download content request' do |user_type, st
     end
 
     context 'with invalid format' do
-      let(:url) { "/projects/#{project.id}/packages/nuget/download/#{package.name}/#{package.version}/#{package.name}.#{package.version}.xls" }
+      let(:url) { "/#{target_type}/#{target.id}/packages/nuget/download/#{package.name}/#{package.version}/#{package.name}.#{package.version}.xls" }
 
       it_behaves_like 'rejects nuget packages access', :anonymous, :not_found
     end
@@ -331,7 +331,7 @@ RSpec.shared_examples 'process nuget search request' do |user_type, status, add_
 
   context "for user type #{user_type}" do
     before do
-      project.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+      target.send("add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
     it_behaves_like 'returns a valid json search response', status, 4, [1, 5, 5, 1]
@@ -370,20 +370,20 @@ RSpec.shared_examples 'process nuget search request' do |user_type, status, add_
   end
 end
 
-RSpec.shared_examples 'rejects nuget access with invalid project id' do
-  context 'with a project id with invalid integers' do
+RSpec.shared_examples 'rejects nuget access with invalid target id' do
+  context 'with a target id with invalid integers' do
     using RSpec::Parameterized::TableSyntax
 
-    let(:project) { OpenStruct.new(id: id) }
+    let(:target) { OpenStruct.new(id: id) }
 
     where(:id, :status) do
-      '/../'       | :unauthorized
+      '/../'       | :bad_request
       ''           | :not_found
-      '%20'        | :unauthorized
-      '%2e%2e%2f'  | :unauthorized
-      'NaN'        | :unauthorized
+      '%20'        | :bad_request
+      '%2e%2e%2f'  | :bad_request
+      'NaN'        | :bad_request
       00002345     | :unauthorized
-      'anything25' | :unauthorized
+      'anything25' | :bad_request
     end
 
     with_them do
@@ -392,9 +392,9 @@ RSpec.shared_examples 'rejects nuget access with invalid project id' do
   end
 end
 
-RSpec.shared_examples 'rejects nuget access with unknown project id' do
-  context 'with an unknown project' do
-    let(:project) { OpenStruct.new(id: 1234567890) }
+RSpec.shared_examples 'rejects nuget access with unknown target id' do
+  context 'with an unknown target' do
+    let(:target) { OpenStruct.new(id: 1234567890) }
 
     context 'as anonymous' do
       it_behaves_like 'rejects nuget packages access', :anonymous, :unauthorized

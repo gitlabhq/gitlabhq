@@ -126,7 +126,21 @@ module MergeRequests
     override :handle_quick_actions
     def handle_quick_actions(merge_request)
       super
+
+      # Ensure this parameter does not get used as an attribute
+      rebase = params.delete(:rebase)
+
+      if rebase
+        rebase_from_quick_action(merge_request)
+        # Ignore "/merge" if "/rebase" is used to avoid an unexpected race
+        params.delete(:merge)
+      end
+
       merge_from_quick_action(merge_request) if params[:merge]
+    end
+
+    def rebase_from_quick_action(merge_request)
+      merge_request.rebase_async(current_user.id)
     end
 
     def merge_from_quick_action(merge_request)

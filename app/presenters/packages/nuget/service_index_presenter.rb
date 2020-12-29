@@ -21,8 +21,11 @@ module Packages
 
       VERSION = '3.0.0'.freeze
 
-      def initialize(project)
-        @project = project
+      PROJECT_LEVEL_SERVICES = %i[download publish].freeze
+      GROUP_LEVEL_SERVICES = %i[search metadata].freeze
+
+      def initialize(project_or_group)
+        @project_or_group = project_or_group
       end
 
       def version
@@ -30,15 +33,20 @@ module Packages
       end
 
       def resources
-        [
-          build_service(:download),
-          build_service(:search),
-          build_service(:publish),
-          build_service(:metadata)
-        ].flatten
+        available_services.map { |service| build_service(service) }
+                          .flatten
       end
 
       private
+
+      def available_services
+        case scope
+        when :group
+          GROUP_LEVEL_SERVICES
+        when :project
+          (GROUP_LEVEL_SERVICES + PROJECT_LEVEL_SERVICES).flatten
+        end
+      end
 
       def build_service(service_type)
         url = build_service_url(service_type)
@@ -50,35 +58,71 @@ module Packages
       end
 
       def build_service_url(service_type)
-        base_path = api_v4_projects_packages_nuget_path(id: @project.id)
-
         full_path = case service_type
                     when :download
-                      api_v4_projects_packages_nuget_download_package_name_package_version_package_filename_path(
-                        {
-                          id: @project.id,
-                          package_name: nil,
-                          package_version: nil,
-                          package_filename: nil
-                        },
-                        true
-                      )
+                      download_service_url
                     when :search
-                      "#{base_path}/query"
+                      search_service_url
                     when :metadata
-                      api_v4_projects_packages_nuget_metadata_package_name_package_version_path(
-                        {
-                          id: @project.id,
-                          package_name: nil,
-                          package_version: nil
-                        },
-                        true
-                      )
+                      metadata_service_url
                     when :publish
-                      base_path
+                      publish_service_url
                     end
 
         expose_url(full_path)
+      end
+
+      def scope
+        return :project if @project_or_group.is_a?(::Project)
+        return :group if @project_or_group.is_a?(::Group)
+      end
+
+      def download_service_url
+        params = {
+          id: @project_or_group.id,
+          package_name: nil,
+          package_version: nil,
+          package_filename: nil
+        }
+
+        api_v4_projects_packages_nuget_download_package_name_package_version_package_filename_path(
+          params,
+          true
+        )
+      end
+
+      def metadata_service_url
+        params = {
+          id: @project_or_group.id,
+          package_name: nil,
+          package_version: nil
+        }
+
+        case scope
+        when :group
+          api_v4_groups_packages_nuget_metadata_package_name_package_version_path(
+            params,
+            true
+          )
+        when :project
+          api_v4_projects_packages_nuget_metadata_package_name_package_version_path(
+            params,
+            true
+          )
+        end
+      end
+
+      def search_service_url
+        case scope
+        when :group
+          api_v4_groups_packages_nuget_query_path(id: @project_or_group.id)
+        when :project
+          api_v4_projects_packages_nuget_query_path(id: @project_or_group.id)
+        end
+      end
+
+      def publish_service_url
+        api_v4_projects_packages_nuget_path(id: @project_or_group.id)
       end
     end
   end

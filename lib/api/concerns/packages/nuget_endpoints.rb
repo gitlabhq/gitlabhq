@@ -19,28 +19,36 @@ module API
 
         included do
           helpers do
-            def find_packages
-              packages = package_finder.execute
+            def find_packages(package_name)
+              packages = package_finder(package_name).execute
 
               not_found!('Packages') unless packages.exists?
 
               packages
             end
 
-            def find_package
-              package = package_finder(package_version: params[:package_version]).execute
-                                                                                 .first
+            def find_package(package_name, package_version)
+              package = package_finder(package_name, package_version).execute
+                                                                     .first
 
               not_found!('Package') unless package
 
               package
             end
 
-            def package_finder(finder_params = {})
+            def package_finder(package_name, package_version = nil)
               ::Packages::Nuget::PackageFinder.new(
-                authorized_user_project,
-                **finder_params.merge(package_name: params[:package_name])
+                current_user,
+                project_or_group,
+                package_name: package_name,
+                package_version: package_version
               )
+            end
+
+            def search_packages(search_term, search_options)
+              ::Packages::Nuget::SearchService
+                .new(current_user, project_or_group, params[:q], search_options)
+                .execute
             end
           end
 
@@ -52,11 +60,11 @@ module API
           route_setting :authentication, deploy_token_allowed: true, job_token_allowed: :basic_auth, basic_auth_personal_access_token: true
 
           get 'index', format: :json do
-            authorize_read_package!(authorized_user_project)
+            authorize_read_package!(project_or_group)
             track_package_event('cli_metadata', :nuget, category: 'API::NugetPackages')
 
-            present ::Packages::Nuget::ServiceIndexPresenter.new(authorized_user_project),
-              with: ::API::Entities::Nuget::ServiceIndex
+            present ::Packages::Nuget::ServiceIndexPresenter.new(project_or_group),
+                    with: ::API::Entities::Nuget::ServiceIndex
           end
 
           # https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource
@@ -64,8 +72,8 @@ module API
             requires :package_name, type: String, desc: 'The NuGet package name', regexp: API::NO_SLASH_URL_PART_REGEX
           end
           namespace '/metadata/*package_name' do
-            before do
-              authorize_read_package!(authorized_user_project)
+            after_validation do
+              authorize_read_package!(project_or_group)
             end
 
             desc 'The NuGet Metadata Service - Package name level' do
@@ -75,7 +83,7 @@ module API
             route_setting :authentication, deploy_token_allowed: true, job_token_allowed: :basic_auth, basic_auth_personal_access_token: true
 
             get 'index', format: :json do
-              present ::Packages::Nuget::PackagesMetadataPresenter.new(find_packages),
+              present ::Packages::Nuget::PackagesMetadataPresenter.new(find_packages(params[:package_name])),
                       with: ::API::Entities::Nuget::PackagesMetadata
             end
 
@@ -89,7 +97,7 @@ module API
             route_setting :authentication, deploy_token_allowed: true, job_token_allowed: :basic_auth, basic_auth_personal_access_token: true
 
             get '*package_version', format: :json do
-              present ::Packages::Nuget::PackageMetadataPresenter.new(find_package),
+              present ::Packages::Nuget::PackageMetadataPresenter.new(find_package(params[:package_name], params[:package_version])),
                       with: ::API::Entities::Nuget::PackageMetadata
             end
           end
@@ -102,8 +110,8 @@ module API
             optional :prerelease, type: ::Grape::API::Boolean, desc: 'Include prerelease versions', default: true
           end
           namespace '/query' do
-            before do
-              authorize_read_package!(authorized_user_project)
+            after_validation do
+              authorize_read_package!(project_or_group)
             end
 
             desc 'The NuGet Search Service' do
@@ -118,14 +126,13 @@ module API
                 per_page: params[:take],
                 padding: params[:skip]
               }
-              search = ::Packages::Nuget::SearchService
-                .new(authorized_user_project, params[:q], search_options)
-                .execute
+
+              results = search_packages(params[:q], search_options)
 
               track_package_event('search_package', :nuget, category: 'API::NugetPackages')
 
-              present ::Packages::Nuget::SearchResultsPresenter.new(search),
-                with: ::API::Entities::Nuget::SearchResults
+              present ::Packages::Nuget::SearchResultsPresenter.new(results),
+                      with: ::API::Entities::Nuget::SearchResults
             end
           end
         end
