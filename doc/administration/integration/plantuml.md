@@ -37,7 +37,7 @@ A simple `docker-compose.yml` file would be:
 version: "3"
 services:
   gitlab:
-    image: 'gitlab/gitlab-ce:12.2.5-ce.0'
+    image: 'gitlab/gitlab-ee:12.2.5-ee.0'
     environment:
       GITLAB_OMNIBUS_CONFIG: |
         nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n    proxy_cache off; \n    proxy_pass  http://plantuml:8080/; \n}\n"

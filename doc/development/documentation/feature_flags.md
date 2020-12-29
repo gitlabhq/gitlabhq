@@ -37,12 +37,10 @@ therefore, it indicates that it cannot be done by regular users of GitLab.com.
 
 ### Features disabled by default
 
-For features disabled by default, if they cannot be used yet due to lack of
-completeness, or if they're still under internal evaluation (for example, for
-performance implications) do **not document them**: add (or merge) the docs
-only when the feature is safe and ready to use and test by end-users.
+For features disabled by default, add or improve the docs with every change in line with the
+[definition of done](../contributing/merge_request_workflow.md#definition-of-done).
 
-For feature flags disabled by default, if they can be used by end users:
+Include details of the feature flag in the documentation:
 
 - Say that it's disabled by default.
 - Say whether it's enabled on GitLab.com.

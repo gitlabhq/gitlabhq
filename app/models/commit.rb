@@ -80,7 +80,7 @@ class Commit
 
     def diff_hard_limit_files(project: nil)
       if Feature.enabled?(:increased_diff_limits, project)
-        2000
+        3000
       else
         1000
       end
@@ -88,7 +88,7 @@ class Commit
 
     def diff_hard_limit_lines(project: nil)
       if Feature.enabled?(:increased_diff_limits, project)
-        75000
+        100000
       else
         50000
       end

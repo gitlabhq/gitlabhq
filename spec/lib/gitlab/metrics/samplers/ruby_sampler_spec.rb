@@ -10,21 +10,13 @@ RSpec.describe Gitlab::Metrics::Samplers::RubySampler do
     allow(Gitlab::Metrics::NullMetric).to receive(:instance).and_return(null_metric)
   end
 
+  it_behaves_like 'metrics sampler', 'RUBY_SAMPLER'
+
   describe '#initialize' do
     it 'sets process_start_time_seconds' do
       freeze_time do
         expect(sampler.metrics[:process_start_time_seconds].get).to eq(Time.now.to_i)
       end
-    end
-  end
-
-  describe '#interval' do
-    it 'samples every sixty seconds by default' do
-      expect(subject.interval).to eq(60)
-    end
-
-    it 'samples at other intervals if requested' do
-      expect(described_class.new(11).interval).to eq(11)
     end
   end
 

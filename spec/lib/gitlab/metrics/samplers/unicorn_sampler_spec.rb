@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe Gitlab::Metrics::Samplers::UnicornSampler do
   subject { described_class.new(1.second) }
 
+  it_behaves_like 'metrics sampler', 'UNICORN_SAMPLER'
+
   describe '#sample' do
     let(:unicorn) { Module.new }
     let(:raindrops) { double('raindrops') }

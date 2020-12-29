@@ -9,7 +9,9 @@ module Gitlab
         attr_reader :interval
 
         # interval - The sampling interval in seconds.
-        def initialize(interval = self.class::SAMPLING_INTERVAL_SECONDS)
+        def initialize(interval = nil)
+          interval ||= ENV[interval_env_key]&.to_i
+          interval ||= self.class::DEFAULT_SAMPLING_INTERVAL_SECONDS
           interval_half = interval.to_f / 2
 
           @interval = interval
@@ -49,6 +51,14 @@ module Gitlab
         private
 
         attr_reader :running
+
+        def sampler_class
+          self.class.name.demodulize
+        end
+
+        def interval_env_key
+          "#{sampler_class.underscore.upcase}_INTERVAL_SECONDS"
+        end
 
         def start_working
           @running = true

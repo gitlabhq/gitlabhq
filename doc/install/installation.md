@@ -1056,31 +1056,30 @@ sudo yum groupinstall 'Development Tools'
 
 ### Error compiling GitLab assets
 
-While compiling assets, you might get the following error:
+While compiling assets, you may receive the following error message:
 
 ```plaintext 
 Killed
 error Command failed with exit code 137.
 ```
 
-This happens because when a container runs out of memory, YARN automatically kills it.
+This can occur when Yarn kills a container that runs out of memory. To fix this:
 
-To fix this, first make sure you increase your machine's memory (8GB of memory should be good),
-and then run the following commands:
+1. Increase your system's memory to at least 8 GB.
 
-1. Clean the assets:
+1. Run this command to clean the assets:
 
    ```shell
    sudo -u git -H bundle exec rake gitlab:assets:clean RAILS_ENV=production NODE_ENV=production
    ```
 
-1. Run the `yarn` command again to ensure any conflicts are resolved:
+1. Run the `yarn` command again to resolve any conflicts:
 
    ```shell
    sudo -u git -H yarn install --production --pure-lockfile
    ```
 
-1. Recompile assets:
+1. Recompile the assets:
 
    ```shell
    sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production NODE_ENV=production

@@ -7,15 +7,7 @@ RSpec.describe Gitlab::Metrics::Samplers::ActionCableSampler do
 
   subject { described_class.new(action_cable: action_cable) }
 
-  describe '#interval' do
-    it 'samples every five seconds by default' do
-      expect(subject.interval).to eq(5)
-    end
-
-    it 'samples at other intervals if requested' do
-      expect(described_class.new(11).interval).to eq(11)
-    end
-  end
+  it_behaves_like 'metrics sampler', 'ACTION_CABLE_SAMPLER'
 
   describe '#sample' do
     let(:pool) { instance_double(Concurrent::ThreadPoolExecutor) }

@@ -4,6 +4,8 @@ module Gitlab
   module Metrics
     module Samplers
       class UnicornSampler < BaseSampler
+        DEFAULT_SAMPLING_INTERVAL_SECONDS = 5
+
         def metrics
           @metrics ||= init_metrics
         end

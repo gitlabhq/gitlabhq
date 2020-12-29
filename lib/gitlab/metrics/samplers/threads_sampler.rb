@@ -4,7 +4,7 @@ module Gitlab
   module Metrics
     module Samplers
       class ThreadsSampler < BaseSampler
-        SAMPLING_INTERVAL_SECONDS = 5
+        DEFAULT_SAMPLING_INTERVAL_SECONDS = 5
         KNOWN_PUMA_THREAD_NAMES = ['puma worker check pipe', 'puma server',
                                    'puma threadpool reaper', 'puma threadpool trimmer',
                                    'puma worker check pipe', 'puma stat payload'].freeze
