@@ -2,6 +2,7 @@
 
 import $ from 'jquery';
 import LineHighlighter from '~/line_highlighter';
+import * as utils from '~/lib/utils/common_utils';
 
 describe('LineHighlighter', () => {
   const testContext = {};
@@ -50,10 +51,10 @@ describe('LineHighlighter', () => {
     });
 
     it('scrolls to the first highlighted line on initial load', () => {
-      const spy = jest.spyOn($, 'scrollTo');
+      jest.spyOn(utils, 'scrollToElement');
       new LineHighlighter({ hash: '#L5-25' });
 
-      expect(spy).toHaveBeenCalledWith('#L5', expect.anything());
+      expect(utils.scrollToElement).toHaveBeenCalledWith('#L5', expect.anything());
     });
 
     it('discards click events', () => {

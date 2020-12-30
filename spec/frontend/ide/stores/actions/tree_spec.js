@@ -57,25 +57,14 @@ describe('Multi-file store tree actions', () => {
       });
 
       it('calls service getFiles', () => {
-        return (
-          store
-            .dispatch('getFiles', basicCallParameters)
-            // getFiles actions calls lodash.defer
-            .then(() => jest.runOnlyPendingTimers())
-            .then(() => {
-              expect(service.getFiles).toHaveBeenCalledWith('foo/abcproject', '12345678');
-            })
-        );
+        return store.dispatch('getFiles', basicCallParameters).then(() => {
+          expect(service.getFiles).toHaveBeenCalledWith('foo/abcproject', '12345678');
+        });
       });
 
       it('adds data into tree', (done) => {
         store
           .dispatch('getFiles', basicCallParameters)
-          .then(() => {
-            // The populating of the tree is deferred for performance reasons.
-            // See this merge request for details: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/25700
-            jest.advanceTimersByTime(1);
-          })
           .then(() => {
             projectTree = store.state.trees['abcproject/master'];
 

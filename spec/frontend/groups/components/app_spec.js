@@ -1,5 +1,4 @@
 import '~/flash';
-import $ from 'jquery';
 import Vue from 'vue';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { GlModal, GlLoadingIcon } from '@gitlab/ui';
@@ -123,12 +122,12 @@ describe('AppComponent', () => {
       it('should show flash error when request fails', () => {
         mock.onGet('/dashboard/groups.json').reply(400);
 
-        jest.spyOn($, 'scrollTo').mockImplementation(() => {});
+        jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
         jest.spyOn(window, 'Flash').mockImplementation(() => {});
 
         return vm.fetchGroups({}).then(() => {
           expect(vm.isLoading).toBe(false);
-          expect($.scrollTo).toHaveBeenCalledWith(0);
+          expect(window.scrollTo).toHaveBeenCalledWith({ behavior: 'smooth', top: 0 });
           expect(window.Flash).toHaveBeenCalledWith('An error occurred. Please try again.');
         });
       });
@@ -180,7 +179,7 @@ describe('AppComponent', () => {
       it('should fetch groups for provided page details and update window state', () => {
         jest.spyOn(urlUtilities, 'mergeUrlParams');
         jest.spyOn(window.history, 'replaceState').mockImplementation(() => {});
-        jest.spyOn($, 'scrollTo').mockImplementation(() => {});
+        jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
 
         const fetchPagePromise = vm.fetchPage(2, null, null, true);
 
@@ -195,7 +194,7 @@ describe('AppComponent', () => {
 
         return fetchPagePromise.then(() => {
           expect(vm.isLoading).toBe(false);
-          expect($.scrollTo).toHaveBeenCalledWith(0);
+          expect(window.scrollTo).toHaveBeenCalledWith({ behavior: 'smooth', top: 0 });
           expect(urlUtilities.mergeUrlParams).toHaveBeenCalledWith({ page: 2 }, expect.any(String));
           expect(window.history.replaceState).toHaveBeenCalledWith(
             {
@@ -308,14 +307,14 @@ describe('AppComponent', () => {
         const notice = `You left the "${childGroupItem.fullName}" group.`;
         jest.spyOn(vm.service, 'leaveGroup').mockResolvedValue({ data: { notice } });
         jest.spyOn(vm.store, 'removeGroup');
-        jest.spyOn($, 'scrollTo').mockImplementation(() => {});
+        jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
 
         vm.leaveGroup();
 
         expect(vm.targetGroup.isBeingRemoved).toBe(true);
         expect(vm.service.leaveGroup).toHaveBeenCalledWith(vm.targetGroup.leavePath);
         return waitForPromises().then(() => {
-          expect($.scrollTo).toHaveBeenCalledWith(0);
+          expect(window.scrollTo).toHaveBeenCalledWith({ behavior: 'smooth', top: 0 });
           expect(vm.store.removeGroup).toHaveBeenCalledWith(vm.targetGroup, vm.targetParentGroup);
           expect($toast.show).toHaveBeenCalledWith(notice);
         });

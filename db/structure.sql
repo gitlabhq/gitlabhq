@@ -17645,7 +17645,8 @@ CREATE TABLE vulnerability_feedback (
     comment_author_id integer,
     comment text,
     comment_timestamp timestamp with time zone,
-    finding_uuid uuid
+    finding_uuid uuid,
+    dismissal_reason smallint
 );
 
 CREATE SEQUENCE vulnerability_feedback_id_seq

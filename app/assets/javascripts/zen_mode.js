@@ -1,4 +1,4 @@
-/* eslint-disable consistent-return, class-methods-use-this */
+/* eslint-disable consistent-return */
 
 // Zen Mode (full screen) textarea
 //
@@ -6,10 +6,10 @@
 /*= provides zen_mode:leave */
 
 import $ from 'jquery';
-import 'vendor/jquery.scrollTo';
 import Dropzone from 'dropzone';
 import Mousetrap from 'mousetrap';
 import 'mousetrap/plugins/pause/mousetrap-pause';
+import { scrollToElement } from '~/lib/utils/common_utils';
 
 Dropzone.autoDiscover = false;
 
@@ -76,7 +76,7 @@ export default class ZenMode {
     if (this.active_textarea) {
       Mousetrap.unpause();
       this.active_textarea.closest('.zen-backdrop').removeClass('fullscreen');
-      this.scrollTo(this.active_textarea);
+      scrollToElement(this.active_textarea, { duration: 0, offset: -100 });
       this.active_textarea = null;
       this.active_backdrop = null;
 
@@ -85,11 +85,5 @@ export default class ZenMode {
         Dropzone.forElement('.div-dropzone').enable();
       }
     }
-  }
-
-  scrollTo(zenArea) {
-    return $.scrollTo(zenArea, 0, {
-      offset: -150,
-    });
   }
 }

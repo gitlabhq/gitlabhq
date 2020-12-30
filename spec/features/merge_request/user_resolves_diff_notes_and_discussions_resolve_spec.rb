@@ -228,6 +228,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
           page.find('.discussion-next-btn').click
         end
 
+        expect(page).to have_button('Resolve thread', visible: true)
         expect(page.evaluate_script("window.pageYOffset")).to be > 0
       end
 

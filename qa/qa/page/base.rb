@@ -135,8 +135,11 @@ module QA
       def check_element(name)
         retry_until(sleep_interval: 1) do
           find_element(name).set(true)
+          checked = find_element(name).checked?
 
-          find_element(name).checked?
+          QA::Runtime::Logger.debug(checked ? "#{name} was checked" :  "#{name} was not checked")
+
+          checked
         end
       end
 

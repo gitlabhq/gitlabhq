@@ -1,7 +1,7 @@
 /* eslint-disable func-names, no-underscore-dangle, no-param-reassign, consistent-return */
 
 import $ from 'jquery';
-import 'vendor/jquery.scrollTo';
+import { scrollToElement } from '~/lib/utils/common_utils';
 
 // LineHighlighter
 //
@@ -69,16 +69,12 @@ LineHighlighter.prototype.highlightHash = function (newHash) {
     if (range[0]) {
       this.highlightRange(range);
       const lineSelector = `#L${range[0]}`;
-      const scrollOptions = {
+
+      scrollToElement(lineSelector, {
         // Scroll to the first highlighted line on initial load
-        // Offset -50 for the sticky top bar, and another -100 for some context
-        offset: -150,
-      };
-      if (this.options.scrollFileHolder) {
-        $(this.options.fileHolderSelector).scrollTo(lineSelector, scrollOptions);
-      } else {
-        $.scrollTo(lineSelector, scrollOptions);
-      }
+        // Add an offset of -100 for some context
+        offset: -100,
+      });
     }
   }
 };

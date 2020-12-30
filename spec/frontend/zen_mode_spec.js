@@ -3,6 +3,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import Dropzone from 'dropzone';
 import Mousetrap from 'mousetrap';
+import * as utils from '~/lib/utils/common_utils';
 import ZenMode from '~/zen_mode';
 import initNotes from '~/init_notes';
 
@@ -103,10 +104,10 @@ describe('ZenMode', () => {
     });
 
     it('restores the scroll position', () => {
-      jest.spyOn(zen, 'scrollTo').mockImplementation(() => {});
+      jest.spyOn(utils, 'scrollToElement');
       exitZen();
 
-      expect(zen.scrollTo).toHaveBeenCalled();
+      expect(utils.scrollToElement).toHaveBeenCalled();
     });
   });
 });

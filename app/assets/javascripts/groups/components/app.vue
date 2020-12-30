@@ -1,8 +1,6 @@
 <script>
 /* global Flash */
 
-import $ from 'jquery';
-import 'vendor/jquery.scrollTo';
 import { GlLoadingIcon, GlModal } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import { HIDDEN_CLASS } from '~/lib/utils/constants';
@@ -116,7 +114,7 @@ export default {
         })
         .catch(() => {
           this.isLoading = false;
-          $.scrollTo(0);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
 
           Flash(COMMON_STR.FAILURE);
         });
@@ -151,7 +149,7 @@ export default {
         updatePagination: true,
       }).then((res) => {
         this.isLoading = false;
-        $.scrollTo(0);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
 
         const currentPath = mergeUrlParams({ page }, window.location.href);
         window.history.replaceState(
@@ -195,7 +193,7 @@ export default {
       this.service
         .leaveGroup(this.targetGroup.leavePath)
         .then((res) => {
-          $.scrollTo(0);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
           this.store.removeGroup(this.targetGroup, this.targetParentGroup);
           this.$toast.show(res.data.notice);
         })

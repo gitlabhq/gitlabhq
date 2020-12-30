@@ -4,7 +4,7 @@
 
 import { GlBreakpointInstance as breakpointInstance } from '@gitlab/ui/dist/utils';
 import $ from 'jquery';
-import { isFunction } from 'lodash';
+import { isFunction, defer } from 'lodash';
 import Cookies from 'js-cookie';
 import axios from './axios_utils';
 import { getLocationHash } from './url_utility';
@@ -261,20 +261,23 @@ export const contentTop = () => {
 };
 
 export const scrollToElement = (element, options = {}) => {
-  let $el = element;
-  if (!(element instanceof $)) {
-    $el = $(element);
+  let el = element;
+  if (element instanceof $) {
+    // eslint-disable-next-line prefer-destructuring
+    el = element[0];
+  } else if (typeof el === 'string') {
+    el = document.querySelector(element);
   }
-  const { top } = $el.offset();
-  const { offset = 0 } = options;
 
-  // eslint-disable-next-line no-jquery/no-animate
-  return $('body, html').animate(
-    {
-      scrollTop: top - contentTop() + offset,
-    },
-    200,
-  );
+  if (el && el.getBoundingClientRect) {
+    // In the previous implementation, jQuery naturally deferred this scrolling.
+    // Unfortunately, we're quite coupled to this implementation detail now.
+    defer(() => {
+      const { duration = 200, offset = 0 } = options;
+      const y = el.getBoundingClientRect().top + window.pageYOffset + offset - contentTop();
+      window.scrollTo({ top: y, behavior: duration ? 'smooth' : 'auto' });
+    });
+  }
 };
 
 export const scrollToElementWithContext = (element) => {

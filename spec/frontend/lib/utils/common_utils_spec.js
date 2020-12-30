@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import * as commonUtils from '~/lib/utils/common_utils';
 
 describe('common_utils', () => {
@@ -214,54 +213,84 @@ describe('common_utils', () => {
 
   describe('scrollToElement*', () => {
     let elem;
-    const windowHeight = 1000;
+    const windowHeight = 550;
     const elemTop = 100;
+    const id = 'scroll_test';
 
     beforeEach(() => {
       elem = document.createElement('div');
+      elem.id = id;
+      document.body.appendChild(elem);
       window.innerHeight = windowHeight;
       window.mrTabs = { currentAction: 'show' };
-      jest.spyOn($.fn, 'animate');
-      jest.spyOn($.fn, 'offset').mockReturnValue({ top: elemTop });
+      jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
+      jest.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({ top: elemTop });
     });
 
     afterEach(() => {
-      $.fn.animate.mockRestore();
-      $.fn.offset.mockRestore();
+      window.scrollTo.mockRestore();
+      Element.prototype.getBoundingClientRect.mockRestore();
+      elem.remove();
     });
 
-    describe('scrollToElement', () => {
+    describe('scrollToElement with HTMLElement', () => {
       it('scrolls to element', () => {
         commonUtils.scrollToElement(elem);
-        expect($.fn.animate).toHaveBeenCalledWith(
-          {
-            scrollTop: elemTop,
-          },
-          expect.any(Number),
-        );
+        expect(window.scrollTo).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          top: elemTop,
+        });
       });
 
       it('scrolls to element with offset', () => {
         const offset = 50;
         commonUtils.scrollToElement(elem, { offset });
-        expect($.fn.animate).toHaveBeenCalledWith(
-          {
-            scrollTop: elemTop + offset,
-          },
-          expect.any(Number),
-        );
+        expect(window.scrollTo).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          top: elemTop + offset,
+        });
+      });
+    });
+
+    describe('scrollToElement with Selector', () => {
+      it('scrolls to element', () => {
+        commonUtils.scrollToElement(`#${id}`);
+        expect(window.scrollTo).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          top: elemTop,
+        });
+      });
+
+      it('scrolls to element with offset', () => {
+        const offset = 50;
+        commonUtils.scrollToElement(`#${id}`, { offset });
+        expect(window.scrollTo).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          top: elemTop + offset,
+        });
       });
     });
 
     describe('scrollToElementWithContext', () => {
-      it('scrolls with context', () => {
-        commonUtils.scrollToElementWithContext();
-        expect($.fn.animate).toHaveBeenCalledWith(
-          {
-            scrollTop: elemTop - windowHeight * 0.1,
-          },
-          expect.any(Number),
-        );
+      // This is what the implementation of scrollToElementWithContext
+      // scrolls to, in case we change tha implementation
+      // it needs to be adjusted
+      const elementTopWithContext = elemTop - windowHeight * 0.1;
+
+      it('with HTMLElement scrolls with context', () => {
+        commonUtils.scrollToElementWithContext(elem);
+        expect(window.scrollTo).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          top: elementTopWithContext,
+        });
+      });
+
+      it('with Selector scrolls with context', () => {
+        commonUtils.scrollToElementWithContext(`#${id}`);
+        expect(window.scrollTo).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          top: elementTopWithContext,
+        });
       });
     });
   });
