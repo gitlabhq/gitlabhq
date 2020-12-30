@@ -137,7 +137,7 @@ module QA
           find_element(name).set(true)
           checked = find_element(name).checked?
 
-          QA::Runtime::Logger.debug(checked ? "#{name} was checked" :  "#{name} was not checked")
+          QA::Runtime::Logger.debug(checked ? "#{name} was checked" : "#{name} was not checked")
 
           checked
         end

@@ -28,12 +28,12 @@ module QA
         Page::Registration::Welcome.perform(&:click_get_started_button_if_available)
 
         success = if user.expect_fabrication_success
-          Page::Main::Menu.perform(&:has_personal_area?)
-        else
-          Page::Main::Menu.perform(&:not_signed_in?)
-        end
+                    Page::Main::Menu.perform(&:has_personal_area?)
+                  else
+                    Page::Main::Menu.perform(&:not_signed_in?)
+                  end
 
-        raise "Failed user registration attempt. Registration was expected to #{ user.expect_fabrication_success ? 'succeed' : 'fail'} but #{success ? 'succeeded' : 'failed'}." unless success
+        raise "Failed user registration attempt. Registration was expected to #{user.expect_fabrication_success ? 'succeed' : 'fail'} but #{success ? 'succeeded' : 'failed'}." unless success
       end
 
       def disable_sign_ups
