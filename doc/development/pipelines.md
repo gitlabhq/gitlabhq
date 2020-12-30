@@ -671,7 +671,7 @@ and included in `rules` definitions via [YAML anchors](../ci/yaml/README.md#anch
 | `if-master-refs`                                             | Matches if the current branch is `master`. | |
 | `if-master-push`                                             | Matches if the current branch is `master` and pipeline source is `push`. | |
 | `if-master-schedule-2-hourly`                                | Matches if the current branch is `master` and pipeline runs on a 2-hourly schedule. | |
-| `if-master-schedule-2-nightly`                               | Matches if the current branch is `master` and pipeline runs on a nightly schedule. | |
+| `if-master-schedule-nightly`                                 | Matches if the current branch is `master` and pipeline runs on a nightly schedule. | |
 | `if-auto-deploy-branches`                                    | Matches if the current branch is an auto-deploy one. | |
 | `if-master-or-tag`                                           | Matches if the pipeline is for the `master` branch or for a tag. | |
 | `if-merge-request`                                           | Matches if the pipeline is for a merge request. | |

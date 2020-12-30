@@ -376,6 +376,24 @@ db:backup_and_restore:
   rules:
     - changes: ["lib/backup/**/*"]
 
+rspec:deprecations:
+  extends:
+    - .default-retry
+    - .default-before_script
+    - .static-analysis-cache
+    - .rails:rules:deprecations
+  stage: post-test
+  allow_failure: true
+  variables:
+    SETUP_DB: "false"
+  script:
+    - bundle exec rubocop --only Lint/LastKeywordArgument --parallel
+  artifacts:
+    expire_in: 31d
+    when: always
+    paths:
+      - deprecations/
+
 rspec:coverage:
   extends:
     - .coverage-base
