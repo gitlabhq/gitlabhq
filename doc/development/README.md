@@ -292,6 +292,7 @@ See [database guidelines](database/index.md).
 - [Reference processing](reference_processing.md)
 - [Compatibility with multiple versions of the application running at the same time](multi_version_compatibility.md)
 - [Features inside `.gitlab/`](features_inside_dot_gitlab.md)
+- [Dashboards for stage groups](stage_group_dashboards.md)
 
 ## Other GitLab Development Kit (GDK) guides
 

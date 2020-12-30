@@ -17,8 +17,6 @@ module Packages
         padding: 0
       }.freeze
 
-      RESULT = Struct.new(:results, :total_count, keyword_init: true).freeze
-
       def initialize(current_user, project_or_group, search_term, options = {})
         @current_user = current_user
         @project_or_group = project_or_group
@@ -30,7 +28,7 @@ module Packages
       end
 
       def execute
-        RESULT.new(
+        Result.new(
           total_count: non_paginated_matching_package_names.count,
           results: search_packages
         )
@@ -151,6 +149,12 @@ module Packages
 
       def per_page
         [@options[:per_page], MAX_PER_PAGE].min
+      end
+
+      class Result
+        include ActiveModel::Model
+
+        attr_accessor :results, :total_count
       end
     end
   end
