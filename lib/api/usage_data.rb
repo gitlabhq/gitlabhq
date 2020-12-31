@@ -4,7 +4,7 @@ module API
   class UsageData < ::API::Base
     before { authenticate! }
 
-    feature_category :collection
+    feature_category :usage_ping
 
     namespace 'usage_data' do
       before do

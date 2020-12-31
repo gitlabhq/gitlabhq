@@ -1,5 +1,5 @@
 %p.details
-  #{link_to @issue.author_name, user_url(@issue.author)}'s issue is due soon.
+  #{link_to @issue.author_name, user_url(@issue.author)}'s issue #{issue_reference_link(@issue)} is due soon.
 
 - if @issue.assignees.any?
   %p

@@ -188,7 +188,7 @@
   :idempotent:
   :tags: []
 - :name: cronjob:gitlab_usage_ping
-  :feature_category: :collection
+  :feature_category: :usage_ping
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
