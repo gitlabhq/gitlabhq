@@ -12,25 +12,43 @@ module Gitlab
         # statement timeouts).
         TIMEOUT_PER_ACTION = 1.day
 
-        attr_reader :indexes
+        attr_reader :index, :notifier
 
-        def initialize(indexes)
-          @indexes = indexes
+        def initialize(index, notifier = GrafanaNotifier.new)
+          @index = index
+          @notifier = notifier
         end
 
         def perform
-          indexes.each do |index|
-            # This obtains a global lease such that there's
-            # only one live reindexing process at a time.
-            try_obtain_lease do
-              ReindexAction.keep_track_of(index) do
-                ConcurrentReindex.new(index).perform
-              end
+          # This obtains a global lease such that there's
+          # only one live reindexing process at a time.
+          try_obtain_lease do
+            action = ReindexAction.create_for(index)
+
+            with_notifications(action) do
+              perform_for(index, action)
             end
           end
         end
 
         private
+
+        def with_notifications(action)
+          notifier.notify_start(action)
+          yield
+        ensure
+          notifier.notify_end(action)
+        end
+
+        def perform_for(index, action)
+          ConcurrentReindex.new(index).perform
+        rescue
+          action.state = :failed
+
+          raise
+        ensure
+          action.finish
+        end
 
         def lease_timeout
           TIMEOUT_PER_ACTION

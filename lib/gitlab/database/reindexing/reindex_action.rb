@@ -14,27 +14,23 @@ module Gitlab
 
         scope :recent, -> { where(state: :finished).where('action_end > ?', Time.zone.now - RECENT_THRESHOLD) }
 
-        def self.keep_track_of(index, &block)
-          action = create!(
+        def self.create_for(index)
+          create!(
             index_identifier: index.identifier,
             action_start: Time.zone.now,
             ondisk_size_bytes_start: index.ondisk_size_bytes,
             bloat_estimate_bytes_start: index.bloat_size
           )
+        end
 
-          yield
-
-          action.state = :finished
-        rescue
-          action.state = :failed
-          raise
-        ensure
+        def finish
           index.reload # rubocop:disable Cop/ActiveRecordAssociationReload
 
-          action.action_end = Time.zone.now
-          action.ondisk_size_bytes_end = index.ondisk_size_bytes
+          self.state = :finished unless failed?
+          self.action_end = Time.zone.now
+          self.ondisk_size_bytes_end = index.ondisk_size_bytes
 
-          action.save!
+          save!
         end
       end
     end
