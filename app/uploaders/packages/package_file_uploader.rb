@@ -22,6 +22,8 @@ class Packages::PackageFileUploader < GitlabUploader
   def dynamic_segment
     raise ObjectNotReadyError, "Package model not ready" unless model.id
 
-    Gitlab::HashedPath.new('packages', model.package.id, 'files', model.id, root_hash: model.package.project_id)
+    package_segment = model.package.debian? ? 'debian' : model.package.id
+
+    Gitlab::HashedPath.new('packages', package_segment, 'files', model.id, root_hash: model.package.project_id)
   end
 end
