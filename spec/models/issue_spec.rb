@@ -1260,15 +1260,4 @@ RSpec.describe Issue do
       expect { issue.issue_type_supports?(:unkown_feature) }.to raise_error(ArgumentError)
     end
   end
-
-  describe '#email_participants_emails' do
-    let_it_be(:issue) { create(:issue) }
-
-    it 'returns a list of emails' do
-      participant1 = issue.issue_email_participants.create(email: 'a@gitlab.com')
-      participant2 = issue.issue_email_participants.create(email: 'b@gitlab.com')
-
-      expect(issue.email_participants_emails).to contain_exactly(participant1.email, participant2.email)
-    end
-  end
 end

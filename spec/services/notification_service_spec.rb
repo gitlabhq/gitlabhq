@@ -297,17 +297,17 @@ RSpec.describe NotificationService, :mailer do
   describe 'Notes' do
     context 'issue note' do
       let_it_be(:project) { create(:project, :private) }
-      let_it_be_with_reload(:issue) { create(:issue, project: project, assignees: [assignee]) }
+      let_it_be(:issue) { create(:issue, project: project, assignees: [assignee]) }
       let_it_be(:mentioned_issue) { create(:issue, assignees: issue.assignees) }
       let_it_be_with_reload(:author) { create(:user) }
       let(:note) { create(:note_on_issue, author: author, noteable: issue, project_id: issue.project_id, note: '@mention referenced, @unsubscribed_mentioned and @outsider also') }
 
       subject { notification.new_note(note) }
 
-      context 'issue_email_participants' do
+      context 'on service desk issue' do
         before do
           allow(Notify).to receive(:service_desk_new_note_email)
-                             .with(Integer, Integer, String).and_return(mailer)
+                             .with(Integer, Integer).and_return(mailer)
 
           allow(::Gitlab::IncomingEmail).to receive(:enabled?) { true }
           allow(::Gitlab::IncomingEmail).to receive(:supports_wildcard?) { true }
@@ -318,7 +318,7 @@ RSpec.describe NotificationService, :mailer do
 
         def should_email!
           expect(Notify).to receive(:service_desk_new_note_email)
-            .with(issue.id, note.id, issue.external_author)
+            .with(issue.id, note.id)
         end
 
         def should_not_email!
@@ -347,19 +347,33 @@ RSpec.describe NotificationService, :mailer do
         let(:project) { issue.project }
         let(:note) { create(:note, noteable: issue, project: project) }
 
-        context 'do not exist' do
+        context 'a non-service-desk issue' do
           it_should_not_email!
         end
 
-        context 'do exist' do
-          let!(:issue_email_participant) { issue.issue_email_participants.create!(email: 'service.desk@example.com') }
-
+        context 'a service-desk issue' do
           before do
             issue.update!(external_author: 'service.desk@example.com')
             project.update!(service_desk_enabled: true)
           end
 
           it_should_email!
+
+          context 'where the project has disabled the feature' do
+            before do
+              project.update!(service_desk_enabled: false)
+            end
+
+            it_should_not_email!
+          end
+
+          context 'when the support bot has unsubscribed' do
+            before do
+              issue.unsubscribe(User.support_bot, project)
+            end
+
+            it_should_not_email!
+          end
         end
       end
 

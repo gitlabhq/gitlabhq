@@ -1285,7 +1285,6 @@ RSpec.describe Notify do
     context 'for service desk issues' do
       before do
         issue.update!(external_author: 'service.desk@example.com')
-        issue.issue_email_participants.create!(email: 'service.desk@example.com')
       end
 
       def expect_sender(username)
@@ -1334,7 +1333,7 @@ RSpec.describe Notify do
       describe 'new note email' do
         let_it_be(:first_note) { create(:discussion_note_on_issue, note: 'Hello world') }
 
-        subject { described_class.service_desk_new_note_email(issue.id, first_note.id, 'service.desk@example.com') }
+        subject { described_class.service_desk_new_note_email(issue.id, first_note.id) }
 
         it_behaves_like 'an unsubscribeable thread'
 
