@@ -42,12 +42,18 @@ RSpec.describe 'rendering project pipeline statistics' do
     expect(graphql_data_at(:project, :pipelineAnalytics, :weekPipelinesLabels).length).to eq(8)
   end
 
-  it "contains two arrays of 31 elements each for the month pipelines" do
-    post_graphql(query, current_user: user)
+  shared_examples 'monthly statistics' do |timestamp, expected_quantity|
+    it "contains two arrays of #{expected_quantity} elements each for the month pipelines" do
+      travel_to(timestamp) { post_graphql(query, current_user: user) }
 
-    expect(graphql_data_at(:project, :pipelineAnalytics, :monthPipelinesTotals).length).to eq(31)
-    expect(graphql_data_at(:project, :pipelineAnalytics, :monthPipelinesLabels).length).to eq(31)
+      expect(graphql_data_at(:project, :pipelineAnalytics, :monthPipelinesTotals).length).to eq(expected_quantity)
+      expect(graphql_data_at(:project, :pipelineAnalytics, :monthPipelinesLabels).length).to eq(expected_quantity)
+    end
   end
+
+  it_behaves_like 'monthly statistics', Time.zone.local(2019, 2, 28), 32
+  it_behaves_like 'monthly statistics', Time.zone.local(2020, 12, 30), 31
+  it_behaves_like 'monthly statistics', Time.zone.local(2020, 12, 31), 32
 
   it "contains two arrays of 13 elements each for the year pipelines" do
     post_graphql(query, current_user: user)
