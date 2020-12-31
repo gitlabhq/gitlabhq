@@ -58,7 +58,7 @@ RSpec.describe Gitlab::Utils::UsageData do
       expect(described_class.estimate_batch_distinct_count(relation, 'column')).to eq(5)
     end
 
-    context 'quasi integration test for different counting parameters' do
+    context 'quasi integration test for different counting parameters', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/296169' } do
       let_it_be(:user) { create(:user, email: 'email1@domain.com') }
       let_it_be(:another_user) { create(:user, email: 'email2@domain.com') }
 

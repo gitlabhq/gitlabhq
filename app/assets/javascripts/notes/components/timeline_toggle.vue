@@ -50,7 +50,6 @@ export default {
     v-gl-tooltip
     v-track-event="trackToggleTimelineView(timelineEnabled)"
     icon="comments"
-    size="small"
     :selected="timelineEnabled"
     :title="tooltip"
     :aria-label="tooltip"
