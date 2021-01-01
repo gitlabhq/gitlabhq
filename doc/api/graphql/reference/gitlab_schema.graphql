@@ -7742,9 +7742,14 @@ input DismissVulnerabilityInput {
   clientMutationId: String
 
   """
-  Reason why vulnerability should be dismissed
+  Comment why vulnerability should be dismissed
   """
   comment: String
+
+  """
+  Reason why vulnerability should be dismissed
+  """
+  dismissalReason: VulnerabilityDismissalReason
 
   """
   ID of the vulnerability to be dismissed
@@ -25997,9 +26002,14 @@ input VulnerabilityDismissInput {
   clientMutationId: String
 
   """
-  Reason why vulnerability should be dismissed
+  Comment why vulnerability should be dismissed
   """
   comment: String
+
+  """
+  Reason why vulnerability should be dismissed
+  """
+  dismissalReason: VulnerabilityDismissalReason
 
   """
   ID of the vulnerability to be dismissed
@@ -26025,6 +26035,17 @@ type VulnerabilityDismissPayload {
   The vulnerability after dismissal
   """
   vulnerability: Vulnerability
+}
+
+"""
+The dismissal reason of the Vulnerability
+"""
+enum VulnerabilityDismissalReason {
+  ACCEPTABLE_RISK
+  FALSE_POSITIVE
+  MITIGATING_CONTROL
+  NOT_APPLICABLE
+  USED_IN_TESTS
 }
 
 """

@@ -21435,10 +21435,20 @@
             },
             {
               "name": "comment",
-              "description": "Reason why vulnerability should be dismissed",
+              "description": "Comment why vulnerability should be dismissed",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "dismissalReason",
+              "description": "Reason why vulnerability should be dismissed",
+              "type": {
+                "kind": "ENUM",
+                "name": "VulnerabilityDismissalReason",
                 "ofType": null
               },
               "defaultValue": null
@@ -75380,10 +75390,20 @@
             },
             {
               "name": "comment",
-              "description": "Reason why vulnerability should be dismissed",
+              "description": "Comment why vulnerability should be dismissed",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "dismissalReason",
+              "description": "Reason why vulnerability should be dismissed",
+              "type": {
+                "kind": "ENUM",
+                "name": "VulnerabilityDismissalReason",
                 "ofType": null
               },
               "defaultValue": null
@@ -75468,6 +75488,47 @@
 
           ],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "VulnerabilityDismissalReason",
+          "description": "The dismissal reason of the Vulnerability",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "ACCEPTABLE_RISK",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FALSE_POSITIVE",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MITIGATING_CONTROL",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "USED_IN_TESTS",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "NOT_APPLICABLE",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {

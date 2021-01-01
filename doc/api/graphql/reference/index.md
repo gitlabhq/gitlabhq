@@ -4935,6 +4935,18 @@ Possible states of a user.
 | `private` |  |
 | `public` |  |
 
+### VulnerabilityDismissalReason
+
+The dismissal reason of the Vulnerability.
+
+| Value | Description |
+| ----- | ----------- |
+| `ACCEPTABLE_RISK` |  |
+| `FALSE_POSITIVE` |  |
+| `MITIGATING_CONTROL` |  |
+| `NOT_APPLICABLE` |  |
+| `USED_IN_TESTS` |  |
+
 ### VulnerabilityExternalIssueLinkExternalTracker
 
 The external tracker of the external issue link related to a vulnerability.
