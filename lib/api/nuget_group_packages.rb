@@ -9,12 +9,18 @@
 # This is the group level API.
 module API
   class NugetGroupPackages < ::API::Base
-    helpers ::API::Helpers::PackagesManagerClientsHelpers
+    helpers ::API::Helpers::PackagesHelpers
     helpers ::API::Helpers::Packages::BasicAuthHelpers
+    include ::API::Helpers::Authentication
 
     feature_category :package_registry
 
     default_format :json
+
+    authenticate_with do |accept|
+      accept.token_types(:personal_access_token, :deploy_token, :job_token)
+            .sent_through(:http_basic_auth)
+    end
 
     rescue_from ArgumentError do |e|
       render_api_error!(e.message, 400)
@@ -37,8 +43,6 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a group', regexp: ::API::Concerns::Packages::NugetEndpoints::POSITIVE_INTEGER_REGEX
     end
-
-    route_setting :authentication, deploy_token_allowed: true, job_token_allowed: :basic_auth, basic_auth_personal_access_token: true
 
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       namespace ':id/packages/nuget' do

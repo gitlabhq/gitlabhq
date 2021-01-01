@@ -194,11 +194,15 @@ module Gitlab
 
       def access_token
         strong_memoize(:access_token) do
-          # The token can be a PAT or an OAuth (doorkeeper) token
-          # It is also possible that a PAT is encapsulated in a `Bearer` OAuth token
-          # (e.g. NPM client registry auth), this case will be properly handled
-          # by find_personal_access_token
-          find_oauth_access_token || find_personal_access_token
+          if try(:namespace_inheritable, :authentication)
+            access_token_from_namespace_inheritable
+          else
+            # The token can be a PAT or an OAuth (doorkeeper) token
+            # It is also possible that a PAT is encapsulated in a `Bearer` OAuth token
+            # (e.g. NPM client registry auth), this case will be properly handled
+            # by find_personal_access_token
+            find_oauth_access_token || find_personal_access_token
+          end
         end
       end
 

@@ -56,9 +56,6 @@ module API
           desc 'The NuGet Service Index' do
             detail 'This feature was introduced in GitLab 12.6'
           end
-
-          route_setting :authentication, deploy_token_allowed: true, job_token_allowed: :basic_auth, basic_auth_personal_access_token: true
-
           get 'index', format: :json do
             authorize_read_package!(project_or_group)
             track_package_event('cli_metadata', :nuget, category: 'API::NugetPackages')
@@ -79,9 +76,6 @@ module API
             desc 'The NuGet Metadata Service - Package name level' do
               detail 'This feature was introduced in GitLab 12.8'
             end
-
-            route_setting :authentication, deploy_token_allowed: true, job_token_allowed: :basic_auth, basic_auth_personal_access_token: true
-
             get 'index', format: :json do
               present ::Packages::Nuget::PackagesMetadataPresenter.new(find_packages(params[:package_name])),
                       with: ::API::Entities::Nuget::PackagesMetadata
@@ -93,9 +87,6 @@ module API
             params do
               requires :package_version, type: String, desc: 'The NuGet package version', regexp: API::NO_SLASH_URL_PART_REGEX
             end
-
-            route_setting :authentication, deploy_token_allowed: true, job_token_allowed: :basic_auth, basic_auth_personal_access_token: true
-
             get '*package_version', format: :json do
               present ::Packages::Nuget::PackageMetadataPresenter.new(find_package(params[:package_name], params[:package_version])),
                       with: ::API::Entities::Nuget::PackageMetadata
@@ -117,9 +108,6 @@ module API
             desc 'The NuGet Search Service' do
               detail 'This feature was introduced in GitLab 12.8'
             end
-
-            route_setting :authentication, deploy_token_allowed: true, job_token_allowed: :basic_auth, basic_auth_personal_access_token: true
-
             get format: :json do
               search_options = {
                 include_prerelease_versions: params[:prerelease],

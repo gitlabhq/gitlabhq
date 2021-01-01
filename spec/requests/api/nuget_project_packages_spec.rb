@@ -49,12 +49,12 @@ RSpec.describe API::NugetProjectPackages do
       where(:visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
         'PUBLIC'  | :developer  | true  | true  | 'process nuget download versions request'   | :success
         'PUBLIC'  | :guest      | true  | true  | 'process nuget download versions request'   | :success
-        'PUBLIC'  | :developer  | true  | false | 'process nuget download versions request'   | :success
-        'PUBLIC'  | :guest      | true  | false | 'process nuget download versions request'   | :success
+        'PUBLIC'  | :developer  | true  | false | 'rejects nuget packages access'             | :unauthorized
+        'PUBLIC'  | :guest      | true  | false | 'rejects nuget packages access'             | :unauthorized
         'PUBLIC'  | :developer  | false | true  | 'process nuget download versions request'   | :success
         'PUBLIC'  | :guest      | false | true  | 'process nuget download versions request'   | :success
-        'PUBLIC'  | :developer  | false | false | 'process nuget download versions request'   | :success
-        'PUBLIC'  | :guest      | false | false | 'process nuget download versions request'   | :success
+        'PUBLIC'  | :developer  | false | false | 'rejects nuget packages access'             | :unauthorized
+        'PUBLIC'  | :guest      | false | false | 'rejects nuget packages access'             | :unauthorized
         'PUBLIC'  | :anonymous  | false | true  | 'process nuget download versions request'   | :success
         'PRIVATE' | :developer  | true  | true  | 'process nuget download versions request'   | :success
         'PRIVATE' | :guest      | true  | true  | 'rejects nuget packages access'             | :forbidden
@@ -100,12 +100,12 @@ RSpec.describe API::NugetProjectPackages do
       where(:visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
         'PUBLIC'  | :developer  | true  | true  | 'process nuget download content request'   | :success
         'PUBLIC'  | :guest      | true  | true  | 'process nuget download content request'   | :success
-        'PUBLIC'  | :developer  | true  | false | 'process nuget download content request'   | :success
-        'PUBLIC'  | :guest      | true  | false | 'process nuget download content request'   | :success
+        'PUBLIC'  | :developer  | true  | false | 'rejects nuget packages access'            | :unauthorized
+        'PUBLIC'  | :guest      | true  | false | 'rejects nuget packages access'            | :unauthorized
         'PUBLIC'  | :developer  | false | true  | 'process nuget download content request'   | :success
         'PUBLIC'  | :guest      | false | true  | 'process nuget download content request'   | :success
-        'PUBLIC'  | :developer  | false | false | 'process nuget download content request'   | :success
-        'PUBLIC'  | :guest      | false | false | 'process nuget download content request'   | :success
+        'PUBLIC'  | :developer  | false | false | 'rejects nuget packages access'            | :unauthorized
+        'PUBLIC'  | :guest      | false | false | 'rejects nuget packages access'            | :unauthorized
         'PUBLIC'  | :anonymous  | false | true  | 'process nuget download content request'   | :success
         'PRIVATE' | :developer  | true  | true  | 'process nuget download content request'   | :success
         'PRIVATE' | :guest      | true  | true  | 'rejects nuget packages access'            | :forbidden

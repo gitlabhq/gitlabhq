@@ -10,12 +10,12 @@ RSpec.shared_examples 'handling nuget service requests' do |anonymous_requests_e
       where(:visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
         'PUBLIC'  | :developer  | true  | true  | 'process nuget service index request' | :success
         'PUBLIC'  | :guest      | true  | true  | 'process nuget service index request' | :success
-        'PUBLIC'  | :developer  | true  | false | anonymous_requests_example_name       | anonymous_requests_status
-        'PUBLIC'  | :guest      | true  | false | anonymous_requests_example_name       | anonymous_requests_status
+        'PUBLIC'  | :developer  | true  | false | 'rejects nuget packages access'       | :unauthorized
+        'PUBLIC'  | :guest      | true  | false | 'rejects nuget packages access'       | :unauthorized
         'PUBLIC'  | :developer  | false | true  | 'process nuget service index request' | :success
         'PUBLIC'  | :guest      | false | true  | 'process nuget service index request' | :success
-        'PUBLIC'  | :developer  | false | false | anonymous_requests_example_name       | anonymous_requests_status
-        'PUBLIC'  | :guest      | false | false | anonymous_requests_example_name       | anonymous_requests_status
+        'PUBLIC'  | :developer  | false | false | 'rejects nuget packages access'       | :unauthorized
+        'PUBLIC'  | :guest      | false | false | 'rejects nuget packages access'       | :unauthorized
         'PUBLIC'  | :anonymous  | false | true  | anonymous_requests_example_name       | anonymous_requests_status
         'PRIVATE' | :developer  | true  | true  | 'process nuget service index request' | :success
         'PRIVATE' | :guest      | true  | true  | 'rejects nuget packages access'       | :forbidden
@@ -109,12 +109,12 @@ RSpec.shared_examples 'handling nuget metadata requests with package name' do |a
     where(:visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
       'PUBLIC'  | :developer  | true  | true  | 'process nuget metadata request at package name level' | :success
       'PUBLIC'  | :guest      | true  | true  | 'process nuget metadata request at package name level' | :success
-      'PUBLIC'  | :developer  | true  | false | anonymous_requests_example_name                        | anonymous_requests_status
-      'PUBLIC'  | :guest      | true  | false | anonymous_requests_example_name                        | anonymous_requests_status
+      'PUBLIC'  | :developer  | true  | false | 'rejects nuget packages access'                        | :unauthorized
+      'PUBLIC'  | :guest      | true  | false | 'rejects nuget packages access'                        | :unauthorized
       'PUBLIC'  | :developer  | false | true  | 'process nuget metadata request at package name level' | :success
       'PUBLIC'  | :guest      | false | true  | 'process nuget metadata request at package name level' | :success
-      'PUBLIC'  | :developer  | false | false | anonymous_requests_example_name                        | anonymous_requests_status
-      'PUBLIC'  | :guest      | false | false | anonymous_requests_example_name                        | anonymous_requests_status
+      'PUBLIC'  | :developer  | false | false | 'rejects nuget packages access'                        | :unauthorized
+      'PUBLIC'  | :guest      | false | false | 'rejects nuget packages access'                        | :unauthorized
       'PUBLIC'  | :anonymous  | false | true  | anonymous_requests_example_name                        | anonymous_requests_status
       'PRIVATE' | :developer  | true  | true  | 'process nuget metadata request at package name level' | :success
       'PRIVATE' | :guest      | true  | true  | 'rejects nuget packages access'                        | :forbidden
@@ -171,12 +171,12 @@ RSpec.shared_examples 'handling nuget metadata requests with package name and pa
     where(:visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
       'PUBLIC'  | :developer  | true  | true  | 'process nuget metadata request at package name and package version level' | :success
       'PUBLIC'  | :guest      | true  | true  | 'process nuget metadata request at package name and package version level' | :success
-      'PUBLIC'  | :developer  | true  | false | anonymous_requests_example_name                                            | anonymous_requests_status
-      'PUBLIC'  | :guest      | true  | false | anonymous_requests_example_name                                            | anonymous_requests_status
+      'PUBLIC'  | :developer  | true  | false | 'rejects nuget packages access'                                            | :unauthorized
+      'PUBLIC'  | :guest      | true  | false | 'rejects nuget packages access'                                            | :unauthorized
       'PUBLIC'  | :developer  | false | true  | 'process nuget metadata request at package name and package version level' | :success
       'PUBLIC'  | :guest      | false | true  | 'process nuget metadata request at package name and package version level' | :success
-      'PUBLIC'  | :developer  | false | false | anonymous_requests_example_name                                            | anonymous_requests_status
-      'PUBLIC'  | :guest      | false | false | anonymous_requests_example_name                                            | anonymous_requests_status
+      'PUBLIC'  | :developer  | false | false | 'rejects nuget packages access'                                            | :unauthorized
+      'PUBLIC'  | :guest      | false | false | 'rejects nuget packages access'                                            | :unauthorized
       'PUBLIC'  | :anonymous  | false | true  | anonymous_requests_example_name                                            | anonymous_requests_status
       'PRIVATE' | :developer  | true  | true  | 'process nuget metadata request at package name and package version level' | :success
       'PRIVATE' | :guest      | true  | true  | 'rejects nuget packages access'                                            | :forbidden
@@ -235,12 +235,12 @@ RSpec.shared_examples 'handling nuget search requests' do |anonymous_requests_ex
     where(:visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
       'PUBLIC'  | :developer  | true  | true  | 'process nuget search request'  | :success
       'PUBLIC'  | :guest      | true  | true  | 'process nuget search request'  | :success
-      'PUBLIC'  | :developer  | true  | false | anonymous_requests_example_name | anonymous_requests_status
-      'PUBLIC'  | :guest      | true  | false | anonymous_requests_example_name | anonymous_requests_status
+      'PUBLIC'  | :developer  | true  | false | 'rejects nuget packages access' | :unauthorized
+      'PUBLIC'  | :guest      | true  | false | 'rejects nuget packages access' | :unauthorized
       'PUBLIC'  | :developer  | false | true  | 'process nuget search request'  | :success
       'PUBLIC'  | :guest      | false | true  | 'process nuget search request'  | :success
-      'PUBLIC'  | :developer  | false | false | anonymous_requests_example_name | anonymous_requests_status
-      'PUBLIC'  | :guest      | false | false | anonymous_requests_example_name | anonymous_requests_status
+      'PUBLIC'  | :developer  | false | false | 'rejects nuget packages access' | :unauthorized
+      'PUBLIC'  | :guest      | false | false | 'rejects nuget packages access' | :unauthorized
       'PUBLIC'  | :anonymous  | false | true  | anonymous_requests_example_name | anonymous_requests_status
       'PRIVATE' | :developer  | true  | true  | 'process nuget search request'  | :success
       'PRIVATE' | :guest      | true  | true  | 'rejects nuget packages access' | :forbidden
