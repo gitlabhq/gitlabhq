@@ -1248,6 +1248,7 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
+    webrick (1.6.1)
     websocket-driver (0.7.3)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
@@ -1531,6 +1532,7 @@ DEPENDENCIES
   vmstat (~> 2.3.0)
   webauthn (~> 2.3)
   webmock (~> 3.9.1)
+  webrick (~> 1.6.1)
   wikicloth (= 0.8.1)
   yajl-ruby (~> 1.4.1)
 

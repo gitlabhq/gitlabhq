@@ -331,6 +331,7 @@ gem 'snowplow-tracker', '~> 0.6.1'
 # Metrics
 group :metrics do
   gem 'method_source', '~> 1.0', require: false
+  gem 'webrick', '~> 1.6.1', require: false
 
   # Prometheus
   gem 'prometheus-client-mmap', '~> 0.12.0'
