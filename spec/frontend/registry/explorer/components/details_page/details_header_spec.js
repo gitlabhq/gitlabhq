@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlSprintf } from '@gitlab/ui';
+import { useFakeDate } from 'helpers/fake_date';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import component from '~/registry/explorer/components/details_page/details_header.vue';
 import { DETAILS_PAGE_TITLE } from '~/registry/explorer/constants';
@@ -14,6 +15,9 @@ describe('Details Header', () => {
       visibility: 'public',
     },
   };
+
+  // set the date to Dec 4, 2020
+  useFakeDate(2020, 11, 4);
 
   const findLastUpdatedAndVisibility = () => wrapper.find('[data-testid="updated-and-visibility"]');
 
