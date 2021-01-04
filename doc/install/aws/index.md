@@ -44,22 +44,21 @@ Below is a diagram of the recommended architecture.
 
 ## AWS costs
 
-Here's a list of the AWS services we will use, with links to pricing information:
+GitLab uses the following AWS services, with links to pricing information:
 
-- **EC2**: GitLab will deployed on shared hardware which means
-  [on-demand pricing](https://aws.amazon.com/ec2/pricing/on-demand/)
-  will apply. If you want to run it on a dedicated or reserved instance,
-  consult the [EC2 pricing page](https://aws.amazon.com/ec2/pricing/) for more
-  information on the cost.
-- **S3**: We will use S3 to store backups, artifacts, LFS objects, etc. See the
-  [Amazon S3 pricing](https://aws.amazon.com/s3/pricing/).
-- **ELB**: A Classic Load Balancer will be used to route requests to the
-  GitLab instances. See the [Amazon ELB pricing](https://aws.amazon.com/elasticloadbalancing/pricing/).
-- **RDS**: An Amazon Relational Database Service using PostgreSQL will be used. See the
-  [Amazon RDS pricing](https://aws.amazon.com/rds/postgresql/pricing/).
-- **ElastiCache**: An in-memory cache environment will be used to provide a
-  Redis configuration. See the
-  [Amazon ElastiCache pricing](https://aws.amazon.com/elasticache/pricing/).
+- **EC2**: GitLab is deployed on shared hardware, for which
+  [on-demand pricing](https://aws.amazon.com/ec2/pricing/on-demand/) applies.
+  If you want to run GitLab on a dedicated or reserved instance, see the
+  [EC2 pricing page](https://aws.amazon.com/ec2/pricing/) for information about
+  its cost.
+- **S3**: GitLab uses S3 ([pricing page](https://aws.amazon.com/s3/pricing/)) to
+  store backups, artifacts, and LFS objects.
+- **ELB**: A Classic Load Balancer ([pricing page](https://aws.amazon.com/elasticloadbalancing/pricing/)),
+  used to route requests to the GitLab instances.
+- **RDS**: An Amazon Relational Database Service using PostgreSQL
+  ([pricing page](https://aws.amazon.com/rds/postgresql/pricing/)).
+- **ElastiCache**: An in-memory cache environment ([pricing page](https://aws.amazon.com/elasticache/pricing/)),
+  used to provide a Redis configuration.
 
 ## Create an IAM EC2 instance role and profile
 

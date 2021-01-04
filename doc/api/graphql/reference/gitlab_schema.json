@@ -49465,7 +49465,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "The ID of the pipeline to mutate",
+              "description": "The ID of the pipeline to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -49697,7 +49697,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "The ID of the pipeline to mutate",
+              "description": "The ID of the pipeline to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -49897,7 +49897,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "The ID of the pipeline to mutate",
+              "description": "The ID of the pipeline to mutate.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -49971,7 +49971,7 @@
             },
             {
               "name": "pipeline",
-              "description": "The pipeline after mutation",
+              "description": "The pipeline after mutation.",
               "args": [
 
               ],

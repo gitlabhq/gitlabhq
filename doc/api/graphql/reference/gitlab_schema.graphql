@@ -16732,7 +16732,7 @@ input PipelineCancelInput {
   clientMutationId: String
 
   """
-  The ID of the pipeline to mutate
+  The ID of the pipeline to mutate.
   """
   id: CiPipelineID!
 }
@@ -16798,7 +16798,7 @@ input PipelineDestroyInput {
   clientMutationId: String
 
   """
-  The ID of the pipeline to mutate
+  The ID of the pipeline to mutate.
   """
   id: CiPipelineID!
 }
@@ -16860,7 +16860,7 @@ input PipelineRetryInput {
   clientMutationId: String
 
   """
-  The ID of the pipeline to mutate
+  The ID of the pipeline to mutate.
   """
   id: CiPipelineID!
 }
@@ -16880,7 +16880,7 @@ type PipelineRetryPayload {
   errors: [String!]!
 
   """
-  The pipeline after mutation
+  The pipeline after mutation.
   """
   pipeline: Pipeline
 }
