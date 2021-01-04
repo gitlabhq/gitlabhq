@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 require_relative 'teammate'
+require_relative 'title_linting'
 
 module Gitlab
   module Danger
     module Helper
       RELEASE_TOOLS_BOT = 'gitlab-release-tools-bot'
-      DRAFT_REGEX = /\A*#{Regexp.union(/(?i)(\[WIP\]\s*|WIP:\s*|WIP$)/, /(?i)(\[draft\]|\(draft\)|draft:|draft\s\-\s|draft$)/)}+\s*/i.freeze
 
       # Returns a list of all files that have been added, modified or renamed.
       # `git.modified_files` might contain paths that already have been renamed,
@@ -216,14 +216,10 @@ module Gitlab
         usernames.map { |u| Gitlab::Danger::Teammate.new('username' => u) }
       end
 
-      def sanitize_mr_title(title)
-        title.gsub(DRAFT_REGEX, '').gsub(/`/, '\\\`')
-      end
-
       def draft_mr?
         return false unless gitlab_helper
 
-        DRAFT_REGEX.match?(gitlab_helper.mr_json['title'])
+        TitleLinting.has_draft_flag?(gitlab_helper.mr_json['title'])
       end
 
       def security_mr?

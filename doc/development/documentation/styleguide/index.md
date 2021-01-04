@@ -499,7 +499,8 @@ addresses and names, do use:
 When including sample URLs in the documentation, use:
 
 - `example.com` when the domain name is generic.
-- `gitlab.example.com` when referring to self-managed instances of GitLab.
+- `gitlab.example.com` when referring only to self-managed GitLab instances.
+  Use `gitlab.com` for GitLab SaaS instances.
 
 ### Fake tokens
 
@@ -530,6 +531,7 @@ You can use these fake tokens as examples:
 |-----------------------|----------|
 | above                 | Try to avoid extra words when referring to an example or table in a documentation page, but if required, use **previously** instead. |
 | admin, admin area     | Use **administration**, **administrator**, **administer**, or **Admin Area** instead. |
+| allow, enable         | Try to avoid, unless you are talking about security-related features. For example, instead of "This feature allows you to create a pipeline," use "Use this feature to create a pipeline." This phrasing is more active and is from the user perspective, rather than the person who implemented the feature. [View details](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/a/allow-allows). |
 | and/or                | Use **or** instead, or another sensible construction. |
 | below                 | Try to avoid extra words when referring to an example or table in a documentation page, but if required, use **following** instead. |
 | currently             | Do not use when talking about the product or its features. The documentation describes the product as it is today. |

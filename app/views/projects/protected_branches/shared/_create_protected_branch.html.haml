@@ -13,7 +13,7 @@
           .form-text.text-muted
             - wildcards_url = help_page_url('user/project/protected_branches', anchor: 'wildcard-protected-branches')
             - wildcards_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: wildcards_url }
-            = (s_("ProtectedBranch|%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}*-stable%{code_tag_end} or %{code_tag_start}production/*%{code_tag_end} are supported") % { wildcards_link_start: wildcards_link_start, wildcards_link_end: '</a>', code_tag_start: '<code>', code_tag_end: '</code>' }).html_safe
+            = (s_("ProtectedBranch|%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}*-stable%{code_tag_end} or %{code_tag_start}production/*%{code_tag_end} are supported.") % { wildcards_link_start: wildcards_link_start, wildcards_link_end: '</a>', code_tag_start: '<code>', code_tag_end: '</code>' }).html_safe
       .form-group.row
         %label.col-md-2.text-right{ for: 'merge_access_levels_attributes' }
           = s_("ProtectedBranch|Allowed to merge:")

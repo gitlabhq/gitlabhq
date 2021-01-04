@@ -356,6 +356,9 @@ If you ever need to disable 2FA:
 This clears all your two-factor authentication registrations, including mobile
 applications and U2F / WebAuthn devices.
 
+Support for disabling 2FA is limited, depending on your subscription level. For more information, see the
+[Account Recovery](https://about.gitlab.com/support/#account-recovery) section of our website.
+
 ## Personal access tokens
 
 When 2FA is enabled, you can no longer use your normal account password to
@@ -393,8 +396,12 @@ a new set of recovery codes with SSH:
 1. Run:
 
    ```shell
-   ssh git@gitlab.example.com 2fa_recovery_codes
+   ssh git@gitlab.com 2fa_recovery_codes
    ```
+   
+   NOTE:
+   On self-managed instances, replace **`gitlab.com`** in the command above
+   with the GitLab server hostname (`gitlab.example.com`).
 
 1. You are prompted to confirm that you want to generate new codes.
    Continuing this process invalidates previously saved codes:

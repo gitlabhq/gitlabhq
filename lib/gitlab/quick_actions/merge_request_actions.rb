@@ -48,6 +48,7 @@ module Gitlab
         condition do
           merge_request = quick_action_target
 
+          next false unless merge_request.open?
           next false unless merge_request.source_branch_exists?
 
           access_check = ::Gitlab::UserAccess
@@ -56,6 +57,11 @@ module Gitlab
           access_check.can_push_to_branch?(merge_request.source_branch)
         end
         command :rebase do
+          if quick_action_target.rebase_in_progress?
+            @execution_message[:rebase] = _('A rebase is already in progress.')
+            next
+          end
+
           # This will be used to avoid simultaneous "/merge" and "/rebase" actions
           @updates[:rebase] = true
 

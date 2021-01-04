@@ -97,6 +97,14 @@ RSpec.describe UsersController do
     end
   end
 
+  describe 'GET /users/:username (deprecated user top)' do
+    it 'redirects to /user1' do
+      get '/users/user1'
+
+      expect(response).to redirect_to user_path('user1')
+    end
+  end
+
   describe 'GET #activity' do
     shared_examples_for 'renders the show template' do
       it 'renders the show template' do

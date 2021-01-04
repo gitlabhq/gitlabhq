@@ -96,6 +96,8 @@ module Types
           description: 'Default merge commit message of the merge request'
     field :default_merge_commit_message_with_description, GraphQL::STRING_TYPE, null: true,
           description: 'Default merge commit message of the merge request with description'
+    field :default_squash_commit_message, GraphQL::STRING_TYPE, null: true, calls_gitaly: true,
+          description: 'Default squash commit message of the merge request'
     field :merge_ongoing, GraphQL::BOOLEAN_TYPE, method: :merge_ongoing?, null: false,
           description: 'Indicates if a merge is currently occurring'
     field :source_branch_exists, GraphQL::BOOLEAN_TYPE,
@@ -160,6 +162,8 @@ module Types
     field :approved_by, Types::UserType.connection_type, null: true,
           description: 'Users who approved the merge request'
     field :squash_on_merge, GraphQL::BOOLEAN_TYPE, null: false, method: :squash_on_merge?,
+          description: 'Indicates if squash on merge is enabled'
+    field :squash, GraphQL::BOOLEAN_TYPE, null: false,
           description: 'Indicates if squash on merge is enabled'
     field :available_auto_merge_strategies, [GraphQL::STRING_TYPE], null: true, calls_gitaly: true,
           description: 'Array of available auto merge strategies'

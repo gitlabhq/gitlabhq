@@ -29,7 +29,7 @@ RSpec.describe GitlabSchema.types['MergeRequest'] do
       total_time_spent reference author merged_at commit_count current_user_todos
       conflicts auto_merge_enabled approved_by source_branch_protected
       default_merge_commit_message_with_description squash_on_merge available_auto_merge_strategies
-      has_ci mergeable commits_without_merge_commits security_auto_fix
+      has_ci mergeable commits_without_merge_commits squash security_auto_fix default_squash_commit_message
     ]
 
     if Gitlab.ee?

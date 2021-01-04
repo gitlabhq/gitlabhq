@@ -1325,6 +1325,9 @@ msgstr ""
 msgid "A ready-to-go template for use with iOS Swift apps"
 msgstr ""
 
+msgid "A rebase is already in progress."
+msgstr ""
+
 msgid "A regular expression that will be used to find the test coverage output in the job log. Leave blank to disable"
 msgstr ""
 
@@ -3307,9 +3310,6 @@ msgid "An error occurred while retrieving diff files"
 msgstr ""
 
 msgid "An error occurred while retrieving projects."
-msgstr ""
-
-msgid "An error occurred while saving LDAP override status. Please try again."
 msgstr ""
 
 msgid "An error occurred while saving assignees"
@@ -15576,7 +15576,7 @@ msgstr ""
 msgid "IssueAnalytics|Weight"
 msgstr ""
 
-msgid "IssueBoards|An error occurred while setting notifications status."
+msgid "IssueBoards|An error occurred while setting notifications status. Please try again."
 msgstr ""
 
 msgid "IssueBoards|Board"
@@ -22681,7 +22681,7 @@ msgstr ""
 msgid "Protected branches"
 msgstr ""
 
-msgid "ProtectedBranch|%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}*-stable%{code_tag_end} or %{code_tag_start}production/*%{code_tag_end} are supported"
+msgid "ProtectedBranch|%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}*-stable%{code_tag_end} or %{code_tag_start}production/*%{code_tag_end} are supported."
 msgstr ""
 
 msgid "ProtectedBranch|Allowed to merge"
@@ -22714,7 +22714,7 @@ msgstr ""
 msgid "ProtectedBranch|Protected branch (%{protected_branches_count})"
 msgstr ""
 
-msgid "ProtectedBranch|Pushes that change filenames matched by the CODEOWNERS file will be rejected"
+msgid "ProtectedBranch|Reject code pushes that change files listed in the CODEOWNERS file."
 msgstr ""
 
 msgid "ProtectedBranch|Require approval from code owners:"
@@ -32003,9 +32003,6 @@ msgid "You do not have permission to update the environment."
 msgstr ""
 
 msgid "You do not have permissions to run the import."
-msgstr ""
-
-msgid "You do not have the correct permissions to override the settings from the LDAP group sync."
 msgstr ""
 
 msgid "You don't have any U2F devices registered yet."

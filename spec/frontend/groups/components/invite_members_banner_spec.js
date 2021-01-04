@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlBanner } from '@gitlab/ui';
+import { GlBanner, GlButton } from '@gitlab/ui';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { setCookie, parseBoolean } from '~/lib/utils/common_utils';
 import InviteMembersBanner from '~/groups/components/invite_members_banner.vue';
@@ -107,14 +107,12 @@ describe('InviteMembersBanner', () => {
   });
 
   describe('dismissing', () => {
-    const findButton = () => {
-      return wrapper.find('button');
-    };
+    const findButton = () => wrapper.findAll(GlButton).at(1);
 
     beforeEach(() => {
       wrapper = createComponent({ GlBanner });
 
-      findButton().trigger('click');
+      findButton().vm.$emit('click');
     });
 
     it('sets iDismissed to true', () => {

@@ -19,7 +19,7 @@ describe('Submit Changes Error', () => {
     });
   };
 
-  const findRetryButton = () => wrapper.find(GlButton);
+  const findRetryButton = () => wrapper.findAll(GlButton).at(1);
   const findAlert = () => wrapper.find(GlAlert);
 
   beforeEach(() => {

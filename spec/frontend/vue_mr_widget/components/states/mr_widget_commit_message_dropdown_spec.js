@@ -47,7 +47,8 @@ describe('Commits message dropdown component', () => {
   });
 
   it('should have correct message for the first dropdown list element', () => {
-    expect(findFirstDropdownElement().text()).toBe('78d5b7 Commit 1');
+    expect(findFirstDropdownElement().text()).toContain('78d5b7');
+    expect(findFirstDropdownElement().text()).toContain('Commit 1');
   });
 
   it('should emit a commit title on selecting commit', () => {

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'title_linting'
+
 module Gitlab
   module Danger
     module Changelog
@@ -75,7 +77,7 @@ module Gitlab
       end
 
       def sanitized_mr_title
-        helper.sanitize_mr_title(gitlab.mr_json["title"])
+        TitleLinting.sanitize_mr_title(gitlab.mr_json["title"])
       end
 
       def categories_need_changelog?

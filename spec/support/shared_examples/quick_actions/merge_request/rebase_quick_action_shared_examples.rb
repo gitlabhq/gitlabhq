@@ -36,6 +36,33 @@ RSpec.shared_examples 'rebase quick action' do
 
         expect(page).to have_content "Scheduled a rebase of branch #{merge_request.source_branch}."
       end
+
+      context 'when the merge request is closed' do
+        before do
+          merge_request.close!
+        end
+
+        it 'does not rebase the MR', :sidekiq_inline do
+          add_note("/rebase")
+
+          expect(page).not_to have_content 'Scheduled a rebase'
+        end
+      end
+
+      context 'when a rebase is in progress', :sidekiq_inline, :clean_gitlab_redis_shared_state do
+        before do
+          jid = SecureRandom.hex
+          merge_request.update!(rebase_jid: jid)
+          Gitlab::SidekiqStatus.set(jid)
+        end
+
+        it 'tells the user a rebase is in progress' do
+          add_note('/rebase')
+
+          expect(page).to have_content 'A rebase is already in progress.'
+          expect(page).not_to have_content 'Scheduled a rebase'
+        end
+      end
     end
 
     context 'when the current user cannot rebase the MR' do
@@ -48,7 +75,7 @@ RSpec.shared_examples 'rebase quick action' do
       it 'does not rebase the MR' do
         add_note("/rebase")
 
-        expect(page).not_to have_content 'Your commands have been executed!'
+        expect(page).not_to have_content 'Scheduled a rebase'
       end
     end
   end

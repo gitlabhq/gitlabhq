@@ -3,10 +3,7 @@
 - show_invited_members = can_manage_members && @invited_members.exists?
 - show_access_requests = can_manage_members && @requesters.exists?
 - invited_active = params[:search_invited].present? || params[:invited_members_page].present?
-- vue_members_list_enabled = Feature.enabled?(:vue_group_members_list, @group, default_enabled: true)
 - filtered_search_enabled = Feature.enabled?(:group_members_filtered_search, @group, default_enabled: true)
-- current_user_is_group_owner = @group && @group.has_owner?(current_user)
-
 - form_item_label_css_class = 'label-bold gl-mr-2 gl-mb-0 gl-py-2 align-self-md-center'
 
 .js-remove-member-modal
@@ -70,17 +67,9 @@
               = render 'groups/group_members/tab_pane/form_item' do
                 = label_tag :sort_by, _('Sort by'), class: form_item_label_css_class
                 = render 'shared/members/sort_dropdown'
-        - if vue_members_list_enabled
-          .js-group-members-list{ data: group_members_list_data_attributes(@group, @members) }
-            .loading
-              .spinner.spinner-md
-        - else
-          %ul.content-list.members-list{ data: { qa_selector: 'members_list' } }
-            = render partial: 'shared/members/member',
-                     collection: @members, as: :member,
-                     locals: { membership_source: @group,
-                               group: @group,
-                               current_user_is_group_owner: current_user_is_group_owner }
+        .js-group-members-list{ data: group_members_list_data_attributes(@group, @members) }
+          .loading
+            .spinner.spinner-md
         = paginate @members, theme: 'gitlab', params: { invited_members_page: nil, search_invited: nil }
     - if @group.shared_with_group_links.any?
       #tab-groups.tab-pane
@@ -89,14 +78,9 @@
             = render 'groups/group_members/tab_pane/header' do
               = render 'groups/group_members/tab_pane/title' do
                 = html_escape(_('Groups with access to %{strong_start}%{group_name}%{strong_end}')) % { group_name: @group.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
-          - if vue_members_list_enabled
-            .js-group-linked-list{ data: linked_groups_list_data_attributes(@group) }
-              .loading
-                .spinner.spinner-md
-          - else
-            %ul.content-list.members-list{ data: { qa_selector: 'groups_list' } }
-              - @group.shared_with_group_links.each do |group_link|
-                = render 'shared/members/group', group_link: group_link, can_admin_member: can_manage_members, group_link_path: group_group_link_path(@group, group_link)
+          .js-group-linked-list{ data: linked_groups_list_data_attributes(@group) }
+            .loading
+              .spinner.spinner-md
     - if show_invited_members
       #tab-invited-members.tab-pane{ class: ('active' if invited_active) }
         .card.card-without-border
@@ -106,17 +90,9 @@
                 = html_escape(_('Members invited to %{strong_start}%{group_name}%{strong_end}')) % { group_name: @group.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
               = form_tag group_group_members_path(@group), method: :get, class: 'user-search-form', data: { testid: 'user-search-form' } do
                 = render 'shared/members/search_field', name: 'search_invited'
-          - if vue_members_list_enabled
-            .js-group-invited-members-list{ data: group_members_list_data_attributes(@group, @invited_members) }
-              .loading
-                .spinner.spinner-md
-          - else
-            %ul.content-list.members-list
-              = render partial: 'shared/members/member',
-                       collection: @invited_members, as: :member,
-                       locals: { membership_source: @group,
-                                 group: @group,
-                                 current_user_is_group_owner: current_user_is_group_owner }
+          .js-group-invited-members-list{ data: group_members_list_data_attributes(@group, @invited_members) }
+            .loading
+              .spinner.spinner-md
           = paginate @invited_members, param_name: 'invited_members_page', theme: 'gitlab', params: { page: nil }
     - if show_access_requests
       #tab-access-requests.tab-pane
@@ -125,14 +101,6 @@
             = render 'groups/group_members/tab_pane/header' do
               = render 'groups/group_members/tab_pane/title' do
                 = html_escape(_('Users requesting access to %{strong_start}%{group_name}%{strong_end}')) % { group_name: @group.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
-          - if vue_members_list_enabled
-            .js-group-access-requests-list{ data: group_members_list_data_attributes(@group, @requesters) }
-              .loading
-                .spinner.spinner-md
-          - else
-            %ul.content-list.members-list
-              = render partial: 'shared/members/member',
-                       collection: @requesters, as: :member,
-                       locals: { membership_source: @group,
-                                 group: @group,
-                                 current_user_is_group_owner: current_user_is_group_owner }
+          .js-group-access-requests-list{ data: group_members_list_data_attributes(@group, @requesters) }
+            .loading
+              .spinner.spinner-md

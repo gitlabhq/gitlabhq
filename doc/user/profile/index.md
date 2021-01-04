@@ -288,7 +288,7 @@ git config --global user.email <your email address>
 When signing in to the main GitLab application, a `_gitlab_session` cookie is
 set. `_gitlab_session` is cleared client-side when you close your browser
 and expires after "Application settings -> Session duration (minutes)"/`session_expire_delay`
-(defaults to `10080` minutes = 7 days).
+(defaults to `10080` minutes = 7 days) of no activity.
 
 When signing in to the main GitLab application, you can also check the
 "Remember me" option which sets the `remember_user_token`
@@ -316,7 +316,9 @@ The `remember_user_token` lifetime of a cookie can now extend beyond the deadlin
 
 GitLab uses both session and persistent cookies:
 
-- Session cookie: Session cookies are normally removed at the end of the browser session when the browser is closed. The `_gitlab_session` cookie has no expiration date.
+- Session cookie: Session cookies are normally removed at the end of the browser session when
+  the browser is closed. The `_gitlab_session` cookie has no fixed expiration date. However,
+  it expires based on its [`session_expire_delay`](#why-do-i-keep-getting-signed-out).
 - Persistent cookie: The `remember_user_token` is a cookie with an expiration date of two weeks. GitLab activates this cookie if you click Remember Me when you sign in.
 
 By default, the server sets a time-to-live (TTL) of 1-week on any session that is used.

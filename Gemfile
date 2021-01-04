@@ -189,7 +189,7 @@ group :puma do
 end
 
 # State machine
-gem 'state_machines-activerecord', '~> 0.6.0'
+gem 'state_machines-activerecord', '~> 0.8.0'
 
 # Issue tags
 gem 'acts-as-taggable-on', '~> 6.0'

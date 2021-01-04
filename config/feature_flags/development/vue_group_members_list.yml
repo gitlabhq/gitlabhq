@@ -1,8 +1,0 @@
----
-name: vue_group_members_list
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40548
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/241194
-milestone: '13.4'
-type: development
-group: group::access
-default_enabled: true

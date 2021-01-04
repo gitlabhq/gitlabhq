@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import Members from 'ee_else_ce/members';
+import Members from '~/members';
 import memberExpirationDate from '~/member_expiration_date';
 import UsersSelect from '~/users_select';
 import groupsSelect from '~/groups_select';

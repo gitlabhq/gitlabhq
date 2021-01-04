@@ -13755,6 +13755,11 @@ type MergeRequest implements CurrentUserTodos & Noteable {
   defaultMergeCommitMessageWithDescription: String
 
   """
+  Default squash commit message of the merge request
+  """
+  defaultSquashCommitMessage: String
+
+  """
   Description of the merge request (Markdown rendered as HTML for caching)
   """
   description: String
@@ -14113,6 +14118,11 @@ type MergeRequest implements CurrentUserTodos & Noteable {
   ID of the merge request source project
   """
   sourceProjectId: Int
+
+  """
+  Indicates if squash on merge is enabled
+  """
+  squash: Boolean!
 
   """
   Indicates if squash on merge is enabled

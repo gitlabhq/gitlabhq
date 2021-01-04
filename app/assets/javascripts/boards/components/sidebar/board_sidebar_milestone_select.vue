@@ -58,20 +58,20 @@ export default {
     },
   },
   computed: {
-    ...mapGetters({ issue: 'activeIssue' }),
+    ...mapGetters(['activeIssue']),
     hasMilestone() {
-      return this.issue.milestone !== null;
+      return this.activeIssue.milestone !== null;
     },
     groupFullPath() {
-      const { referencePath = '' } = this.issue;
+      const { referencePath = '' } = this.activeIssue;
       return referencePath.slice(0, referencePath.indexOf('/'));
     },
     projectPath() {
-      const { referencePath = '' } = this.issue;
+      const { referencePath = '' } = this.activeIssue;
       return referencePath.slice(0, referencePath.indexOf('#'));
     },
     dropdownText() {
-      return this.issue.milestone?.title ?? this.$options.i18n.noMilestone;
+      return this.activeIssue.milestone?.title ?? this.$options.i18n.noMilestone;
     },
   },
   mounted() {
@@ -120,7 +120,7 @@ export default {
     @close="edit = false"
   >
     <template v-if="hasMilestone" #collapsed>
-      <strong class="gl-text-gray-900">{{ issue.milestone.title }}</strong>
+      <strong class="gl-text-gray-900">{{ activeIssue.milestone.title }}</strong>
     </template>
     <template>
       <gl-dropdown
@@ -133,7 +133,7 @@ export default {
         <gl-dropdown-item
           data-testid="no-milestone-item"
           :is-check-item="true"
-          :is-checked="!issue.milestone"
+          :is-checked="!activeIssue.milestone"
           @click="setMilestone(null)"
         >
           {{ $options.i18n.noMilestone }}
@@ -145,7 +145,7 @@ export default {
             v-for="milestone in milestones"
             :key="milestone.id"
             :is-check-item="true"
-            :is-checked="issue.milestone && milestone.id === issue.milestone.id"
+            :is-checked="activeIssue.milestone && milestone.id === activeIssue.milestone.id"
             data-testid="milestone-item"
             @click="setMilestone(milestone.id)"
           >

@@ -402,24 +402,6 @@ RSpec.describe Gitlab::Danger::Helper do
     end
   end
 
-  describe '#sanitize_mr_title' do
-    where(:mr_title, :expected_mr_title) do
-      'My MR title'      | 'My MR title'
-      'WIP: My MR title' | 'My MR title'
-      'Draft: My MR title' | 'My MR title'
-      '(Draft) My MR title' | 'My MR title'
-      '[Draft] My MR title' | 'My MR title'
-      '[DRAFT] My MR title' | 'My MR title'
-      'DRAFT: My MR title' | 'My MR title'
-    end
-
-    with_them do
-      subject { helper.sanitize_mr_title(mr_title) }
-
-      it { is_expected.to eq(expected_mr_title) }
-    end
-  end
-
   describe '#security_mr?' do
     it 'returns false when `gitlab_helper` is unavailable' do
       expect(helper).to receive(:gitlab_helper).and_return(nil)

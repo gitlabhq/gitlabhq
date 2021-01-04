@@ -94,11 +94,11 @@ host that GitLab runs. For example, an entry would look like this:
 
 ```plaintext
 *.example.io. 1800 IN A    192.0.2.1
-*.example.io. 1800 IN AAAA 2001::1
+*.example.io. 1800 IN AAAA 2001:db8::1
 ```
 
 Where `example.io` is the domain GitLab Pages is served from,
-`192.0.2.1` is the IPv4 address of your GitLab instance, and `2001::1` is the
+`192.0.2.1` is the IPv4 address of your GitLab instance, and `2001:db8::1` is the
 IPv6 address. If you don't have IPv6, you can omit the AAAA record.
 
 NOTE:
@@ -274,11 +274,11 @@ world. Custom domains are supported, but no TLS.
    pages_external_url "http://example.io"
    nginx['listen_addresses'] = ['192.0.2.1']
    pages_nginx['enable'] = false
-   gitlab_pages['external_http'] = ['192.0.2.2:80', '[2001::2]:80']
+   gitlab_pages['external_http'] = ['192.0.2.2:80', '[2001:db8::2]:80']
    ```
 
    where `192.0.2.1` is the primary IP address that GitLab is listening to and
-   `192.0.2.2` and `2001::2` are the secondary IPs the GitLab Pages daemon
+   `192.0.2.2` and `2001:db8::2` are the secondary IPs the GitLab Pages daemon
    listens on. If you don't have IPv6, you can omit the IPv6 address.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
@@ -307,12 +307,12 @@ world. Custom domains and TLS are supported.
    pages_nginx['enable'] = false
    gitlab_pages['cert'] = "/etc/gitlab/ssl/example.io.crt"
    gitlab_pages['cert_key'] = "/etc/gitlab/ssl/example.io.key"
-   gitlab_pages['external_http'] = ['192.0.2.2:80', '[2001::2]:80']
-   gitlab_pages['external_https'] = ['192.0.2.2:443', '[2001::2]:443']
+   gitlab_pages['external_http'] = ['192.0.2.2:80', '[2001:db8::2]:80']
+   gitlab_pages['external_https'] = ['192.0.2.2:443', '[2001:db8::2]:443']
    ```
 
    where `192.0.2.1` is the primary IP address that GitLab is listening to and
-   `192.0.2.2` and `2001::2` are the secondary IPs where the GitLab Pages daemon
+   `192.0.2.2` and `2001:db8::2` are the secondary IPs where the GitLab Pages daemon
    listens on. If you don't have IPv6, you can omit the IPv6 address.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).

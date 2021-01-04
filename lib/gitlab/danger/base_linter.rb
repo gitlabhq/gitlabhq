@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
+require_relative 'title_linting'
+
 module Gitlab
   module Danger
     class BaseLinter
       MIN_SUBJECT_WORDS_COUNT = 3
       MAX_LINE_LENGTH = 72
-      WIP_PREFIX = 'WIP: '
 
       attr_reader :commit, :problems
 
@@ -58,7 +59,7 @@ module Gitlab
       private
 
       def subject
-        message_parts[0].delete_prefix(WIP_PREFIX)
+        TitleLinting.remove_draft_flag(message_parts[0])
       end
 
       def subject_too_short?

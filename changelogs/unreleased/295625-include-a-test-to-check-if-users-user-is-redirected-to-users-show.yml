@@ -1,0 +1,5 @@
+---
+title: Add test to check if /users/User is redirected to /User
+merge_request: 50651
+author: Takuya Noguchi
+type: other

@@ -600,6 +600,28 @@ on how to achieve that.
 If you use an external container registry, some features associated with the
 container registry may be unavailable or have [inherent risks](../../user/packages/container_registry/index.md#use-with-external-container-registries).
 
+For the integration to work, the external registry must be configured to
+use a JSON Web Token to authenticate with GitLab. The 
+[external registry's runtime configuration](https://docs.docker.com/registry/configuration/#token)
+**must** have the following entries:
+
+```yaml
+auth:
+  token:
+    realm: https://gitlab.example.com/jwt/auth
+    service: container_registry
+    issuer: gitlab-issuer
+    rootcertbundle: /root/certs/certbundle
+```
+
+Without these entries, the registry logins cannot authenticate with GitLab.
+GitLab also remains unaware of
+[nested image names](../../user/packages/container_registry/#image-naming-convention)
+under the project hierarchy, like
+`registry.example.com/group/project/image-name:tag` or
+`registry.example.com/group/project/my/image-name:tag`, and only recognizes
+`registry.example.com/group/project:tag`.
+
 **Omnibus GitLab**
 
 You can use GitLab as an auth endpoint with an external container registry.
@@ -609,18 +631,23 @@ You can use GitLab as an auth endpoint with an external container registry.
    ```ruby
    gitlab_rails['registry_enabled'] = true
    gitlab_rails['registry_api_url'] = "http://localhost:5000"
-   gitlab_rails['registry_issuer'] = "omnibus-gitlab-issuer"
+   gitlab_rails['registry_issuer'] = "gitlab-issuer"
    ```
 
    `gitlab_rails['registry_enabled'] = true` is needed to enable GitLab
    Container Registry features and authentication endpoint. The GitLab bundled
    Container Registry service does not start, even with this enabled.
 
+   `gitlab_rails['registry_api_url'] = "http://localhost:5000"` can
+   carry a different hostname and port depending on where the external registry
+   is hosted. It must also specify `https` if the external registry is
+   configured to use TLS.
+
 1. A certificate-key pair is required for GitLab and the external container
    registry to communicate securely. You need to create a certificate-key
    pair, configuring the external container registry with the public
-   certificate and configuring GitLab with the private key. To do that, add
-   the following to `/etc/gitlab/gitlab.rb`:
+   certificate (`rootcertbundle`) and configuring GitLab with the private key.
+   To do that, add the following to `/etc/gitlab/gitlab.rb`:
 
    ```ruby
    # registry['internal_key'] should contain the contents of the custom key
@@ -664,7 +691,7 @@ You can use GitLab as an auth endpoint with an external container registry.
      api_url: "http://localhost:5000"
      path: /var/opt/gitlab/gitlab-rails/shared/registry
      key: /var/opt/gitlab/gitlab-rails/certificate.key
-     issuer: omnibus-gitlab-issuer
+     issuer: gitlab-issuer
    ```
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.

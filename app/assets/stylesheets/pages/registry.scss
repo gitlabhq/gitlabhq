@@ -1,0 +1,8 @@
+// Workaround for gl-breadcrumb at the last child of the handwritten breadcrumb
+// until this gitlab-ui issue is resolved: https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1079
+//
+// See app/assets/javascripts/registry/explorer/components/registry_breadcrumb.vue when this is changed.
+.breadcrumbs-container .gl-breadcrumbs {
+  padding: 0;
+  box-shadow: none;
+}

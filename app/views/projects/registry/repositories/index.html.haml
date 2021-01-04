@@ -2,22 +2,20 @@
 - @content_class = "limit-container-width" unless fluid_layout
 
 %section
-  .row.registry-placeholder.prepend-bottom-10
-    .col-12
-      #js-container-registry{ data: { endpoint: project_container_registry_index_path(@project),
-        expiration_policy: @project.container_expiration_policy.to_json,
-        "help_page_path" => help_page_path('user/packages/container_registry/index'),
-        "two_factor_auth_help_link" => help_page_path('user/profile/account/two_factor_authentication'),
-        "personal_access_tokens_help_link" => help_page_path('user/profile/personal_access_tokens'),
-        "no_containers_image" => image_path('illustrations/docker-empty-state.svg'),
-        "containers_error_image" => image_path('illustrations/docker-error-state.svg'),
-        "repository_url" => escape_once(@project.container_registry_url),
-        "registry_host_url_with_port" => escape_once(registry_config.host_port),
-        "expiration_policy_help_page_path" => help_page_path('user/packages/container_registry/index', anchor: 'expiration-policy'),
-        "garbage_collection_help_page_path" => help_page_path('administration/packages/container_registry', anchor: 'container-registry-garbage-collection'),
-        "run_cleanup_policies_help_page_path" => help_page_path('administration/packages/container_registry', anchor: 'run-the-cleanup-policy-now'),
-        "cleanup_policies_help_page_path" => help_page_path('user/packages/container_registry/index', anchor: 'how-the-cleanup-policy-works'),
-        "project_path": @project.full_path,
-        "gid_prefix": container_repository_gid_prefix,
-        "is_admin": current_user&.admin.to_s,
-        character_error: @character_error.to_s } }
+  #js-container-registry{ data: { endpoint: project_container_registry_index_path(@project),
+    expiration_policy: @project.container_expiration_policy.to_json,
+    "help_page_path" => help_page_path('user/packages/container_registry/index'),
+    "two_factor_auth_help_link" => help_page_path('user/profile/account/two_factor_authentication'),
+    "personal_access_tokens_help_link" => help_page_path('user/profile/personal_access_tokens'),
+    "no_containers_image" => image_path('illustrations/docker-empty-state.svg'),
+    "containers_error_image" => image_path('illustrations/docker-error-state.svg'),
+    "repository_url" => escape_once(@project.container_registry_url),
+    "registry_host_url_with_port" => escape_once(registry_config.host_port),
+    "expiration_policy_help_page_path" => help_page_path('user/packages/container_registry/index', anchor: 'expiration-policy'),
+    "garbage_collection_help_page_path" => help_page_path('administration/packages/container_registry', anchor: 'container-registry-garbage-collection'),
+    "run_cleanup_policies_help_page_path" => help_page_path('administration/packages/container_registry', anchor: 'run-the-cleanup-policy-now'),
+    "cleanup_policies_help_page_path" => help_page_path('user/packages/container_registry/index', anchor: 'how-the-cleanup-policy-works'),
+    "project_path": @project.full_path,
+    "gid_prefix": container_repository_gid_prefix,
+    "is_admin": current_user&.admin.to_s,
+    character_error: @character_error.to_s } }

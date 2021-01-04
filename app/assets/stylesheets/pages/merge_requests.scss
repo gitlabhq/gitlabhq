@@ -1016,3 +1016,11 @@ $mr-widget-min-height: 69px;
     vertical-align: middle;
   }
 }
+
+.mr-ready-to-merge-loader {
+  max-width: 418px;
+
+  > svg {
+    vertical-align: middle;
+  }
+}
