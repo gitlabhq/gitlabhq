@@ -47,6 +47,10 @@ RSpec.describe Gitlab::Ci::Charts do
 
     subject { chart.to }
 
+    before do
+      create(:ci_empty_pipeline, project: project, duration: 120)
+    end
+
     it 'includes the whole current day' do
       is_expected.to eq(Date.today.end_of_day)
     end
@@ -57,6 +61,37 @@ RSpec.describe Gitlab::Ci::Charts do
 
     it 'uses %d %B as labels format' do
       expect(chart.labels).to include(chart.from.strftime('%d %B'))
+    end
+
+    it 'returns count of pipelines run each day in the current week' do
+      expect(chart.total).to contain_exactly(0, 0, 0, 0, 0, 0, 0, 1)
+    end
+  end
+
+  context 'weekchart_non_utc' do
+    today = Date.today
+    end_of_today = Time.use_zone(Time.find_zone('Asia/Dubai')) { today.end_of_day }
+
+    let(:project) { create(:project) }
+    let(:chart) do
+      allow(Date).to receive(:today).and_return(today)
+      allow(today).to receive(:end_of_day).and_return(end_of_today)
+      Gitlab::Ci::Charts::WeekChart.new(project)
+    end
+
+    subject { chart.total }
+
+    before do
+      create(:ci_empty_pipeline, project: project, duration: 120)
+    end
+
+    it 'uses a non-utc time zone for range times' do
+      expect(chart.to.zone).to eq(end_of_today.zone)
+      expect(chart.from.zone).to eq(end_of_today.zone)
+    end
+
+    it 'returns count of pipelines run each day in the current week' do
+      is_expected.to contain_exactly(0, 0, 0, 0, 0, 0, 0, 1)
     end
   end
 

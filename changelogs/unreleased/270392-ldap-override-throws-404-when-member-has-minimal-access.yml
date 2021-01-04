@@ -1,0 +1,5 @@
+---
+title: Fix LDAP override throws 404 when member has Minimal access
+merge_request: 50680
+author:
+type: fixed

@@ -31,9 +31,10 @@ module Gitlab
 
           current = @from
           while current <= @to
-            @labels  << current.strftime(@format)
-            @total   << (totals_count[current] || 0)
-            @success << (success_count[current] || 0)
+            label = current.strftime(@format)
+            @labels  << label
+            @total   << (totals_count[label] || 0)
+            @success << (success_count[label] || 0)
 
             current += interval_step
           end
@@ -45,6 +46,7 @@ module Gitlab
           query
             .group("date_trunc('#{interval}', #{::Ci::Pipeline.table_name}.created_at)")
             .count(:created_at)
+            .transform_keys { |date| date.strftime(@format) }
         end
         # rubocop: enable CodeReuse/ActiveRecord
 

@@ -47,7 +47,10 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator do
     let!(:job_token_user) { build(:user) }
 
     it 'returns access_token user first' do
-      allow_any_instance_of(described_class).to receive(:find_user_from_web_access_token).and_return(access_token_user)
+      allow_any_instance_of(described_class).to receive(:find_user_from_web_access_token)
+                                                  .with(anything, scopes: [:api, :read_api])
+                                                  .and_return(access_token_user)
+
       allow_any_instance_of(described_class).to receive(:find_user_from_feed_token).and_return(feed_token_user)
 
       expect(subject.find_sessionless_user(:api)).to eq access_token_user

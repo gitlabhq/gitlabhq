@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'default whitelist' do
-  it 'sanitizes tags that are not whitelisted' do
+RSpec.shared_examples 'default allowlist' do
+  it 'sanitizes tags that are not allowed' do
     act = %q{<textarea>no inputs</textarea> and <blink>no blinks</blink>}
     exp = 'no inputs and no blinks'
     expect(filter(act).to_html).to eq exp

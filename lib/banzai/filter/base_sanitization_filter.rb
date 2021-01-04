@@ -16,42 +16,42 @@ module Banzai
 
       UNSAFE_PROTOCOLS = %w(data javascript vbscript).freeze
 
-      def whitelist
-        strong_memoize(:whitelist) do
-          whitelist = super.deep_dup
+      def allowlist
+        strong_memoize(:allowlist) do
+          allowlist = super.deep_dup
 
           # Allow span elements
-          whitelist[:elements].push('span')
+          allowlist[:elements].push('span')
 
           # Allow data-math-style attribute in order to support LaTeX formatting
-          whitelist[:attributes]['code'] = %w(data-math-style)
-          whitelist[:attributes]['pre'] = %w(data-math-style data-mermaid-style data-kroki-style)
+          allowlist[:attributes]['code'] = %w(data-math-style)
+          allowlist[:attributes]['pre'] = %w(data-math-style data-mermaid-style data-kroki-style)
 
           # Allow html5 details/summary elements
-          whitelist[:elements].push('details')
-          whitelist[:elements].push('summary')
+          allowlist[:elements].push('details')
+          allowlist[:elements].push('summary')
 
           # Allow abbr elements with title attribute
-          whitelist[:elements].push('abbr')
-          whitelist[:attributes]['abbr'] = %w(title)
+          allowlist[:elements].push('abbr')
+          allowlist[:attributes]['abbr'] = %w(title)
 
           # Disallow `name` attribute globally, allow on `a`
-          whitelist[:attributes][:all].delete('name')
-          whitelist[:attributes]['a'].push('name')
+          allowlist[:attributes][:all].delete('name')
+          allowlist[:attributes]['a'].push('name')
 
           # Allow any protocol in `a` elements
           # and then remove links with unsafe protocols
-          whitelist[:protocols].delete('a')
-          whitelist[:transformers].push(self.class.method(:remove_unsafe_links))
+          allowlist[:protocols].delete('a')
+          allowlist[:transformers].push(self.class.method(:remove_unsafe_links))
 
           # Remove `rel` attribute from `a` elements
-          whitelist[:transformers].push(self.class.remove_rel)
+          allowlist[:transformers].push(self.class.remove_rel)
 
-          customize_whitelist(whitelist)
+          customize_allowlist(allowlist)
         end
       end
 
-      def customize_whitelist(whitelist)
+      def customize_allowlist(allowlist)
         raise NotImplementedError
       end
 

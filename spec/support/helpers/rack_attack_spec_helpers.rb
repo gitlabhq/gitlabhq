@@ -21,6 +21,11 @@ module RackAttackSpecHelpers
     { 'AUTHORIZATION' => "Bearer #{oauth_access_token.token}" }
   end
 
+  def basic_auth_headers(user, personal_access_token)
+    encoded_login = ["#{user.username}:#{personal_access_token.token}"].pack('m0')
+    { 'AUTHORIZATION' => "Basic #{encoded_login}" }
+  end
+
   def expect_rejection(&block)
     yield
 

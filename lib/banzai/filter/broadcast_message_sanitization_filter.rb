@@ -6,14 +6,14 @@ module Banzai
     #
     # Extends Banzai::Filter::BaseSanitizationFilter with specific rules.
     class BroadcastMessageSanitizationFilter < Banzai::Filter::BaseSanitizationFilter
-      def customize_whitelist(whitelist)
-        whitelist[:elements].push('br')
+      def customize_allowlist(allowlist)
+        allowlist[:elements].push('br')
 
-        whitelist[:attributes]['a'].push('class', 'style')
+        allowlist[:attributes]['a'].push('class', 'style')
 
-        whitelist[:css] = { properties: %w(color border background padding margin text-decoration) }
+        allowlist[:css] = { properties: %w(color border background padding margin text-decoration) }
 
-        whitelist
+        allowlist
       end
     end
   end

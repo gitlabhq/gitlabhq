@@ -188,10 +188,10 @@ RSpec.describe 'Rack Attack global throttles' do
   end
 
   describe 'API requests authenticated with personal access token', :api do
-    let(:user) { create(:user) }
-    let(:token) { create(:personal_access_token, user: user) }
-    let(:other_user) { create(:user) }
-    let(:other_user_token) { create(:personal_access_token, user: other_user) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:token) { create(:personal_access_token, user: user) }
+    let_it_be(:other_user) { create(:user) }
+    let_it_be(:other_user_token) { create(:personal_access_token, user: other_user) }
     let(:throttle_setting_prefix) { 'throttle_authenticated_api' }
     let(:api_partial_url) { '/todos' }
 
@@ -207,6 +207,41 @@ RSpec.describe 'Rack Attack global throttles' do
       let(:other_user_request_args) { api_get_args_with_token_headers(api_partial_url, personal_access_token_headers(other_user_token)) }
 
       it_behaves_like 'rate-limited token-authenticated requests'
+    end
+
+    context 'with the token in the OAuth headers' do
+      let(:request_args) { api_get_args_with_token_headers(api_partial_url, oauth_token_headers(token)) }
+      let(:other_user_request_args) { api_get_args_with_token_headers(api_partial_url, oauth_token_headers(other_user_token)) }
+
+      it_behaves_like 'rate-limited token-authenticated requests'
+    end
+
+    context 'with the token in basic auth' do
+      let(:request_args) { api_get_args_with_token_headers(api_partial_url, basic_auth_headers(user, token)) }
+      let(:other_user_request_args) { api_get_args_with_token_headers(api_partial_url, basic_auth_headers(other_user, other_user_token)) }
+
+      it_behaves_like 'rate-limited token-authenticated requests'
+    end
+
+    context 'with a read_api scope' do
+      before do
+        token.update!(scopes: ['read_api'])
+        other_user_token.update!(scopes: ['read_api'])
+      end
+
+      context 'with the token in the headers' do
+        let(:request_args) { api_get_args_with_token_headers(api_partial_url, personal_access_token_headers(token)) }
+        let(:other_user_request_args) { api_get_args_with_token_headers(api_partial_url, personal_access_token_headers(other_user_token)) }
+
+        it_behaves_like 'rate-limited token-authenticated requests'
+      end
+
+      context 'with the token in the OAuth headers' do
+        let(:request_args) { api_get_args_with_token_headers(api_partial_url, oauth_token_headers(token)) }
+        let(:other_user_request_args) { api_get_args_with_token_headers(api_partial_url, oauth_token_headers(other_user_token)) }
+
+        it_behaves_like 'rate-limited token-authenticated requests'
+      end
     end
   end
 
@@ -232,6 +267,15 @@ RSpec.describe 'Rack Attack global throttles' do
     context 'with the token in the headers' do
       let(:request_args) { api_get_args_with_token_headers(api_partial_url, oauth_token_headers(token)) }
       let(:other_user_request_args) { api_get_args_with_token_headers(api_partial_url, oauth_token_headers(other_user_token)) }
+
+      it_behaves_like 'rate-limited token-authenticated requests'
+    end
+
+    context 'with a read_api scope' do
+      let(:read_token) { Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: "read_api") }
+      let(:other_user_read_token) { Doorkeeper::AccessToken.create!(application_id: other_user_application.id, resource_owner_id: other_user.id, scopes: "read_api") }
+      let(:request_args) { api_get_args_with_token_headers(api_partial_url, oauth_token_headers(read_token)) }
+      let(:other_user_request_args) { api_get_args_with_token_headers(api_partial_url, oauth_token_headers(other_user_read_token)) }
 
       it_behaves_like 'rate-limited token-authenticated requests'
     end

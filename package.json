@@ -146,7 +146,7 @@
     "visibilityjs": "^1.2.4",
     "vue": "^2.6.12",
     "vue-apollo": "^3.0.3",
-    "vue-loader": "^15.9.5",
+    "vue-loader": "^15.9.6",
     "vue-router": "3.4.9",
     "vue-template-compiler": "^2.6.12",
     "vue-virtual-scroll-list": "^1.4.4",

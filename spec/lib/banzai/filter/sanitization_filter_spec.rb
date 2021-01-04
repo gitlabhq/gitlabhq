@@ -5,31 +5,31 @@ require 'spec_helper'
 RSpec.describe Banzai::Filter::SanitizationFilter do
   include FilterSpecHelper
 
-  it_behaves_like 'default whitelist'
+  it_behaves_like 'default allowlist'
 
-  describe 'custom whitelist' do
+  describe 'custom allowlist' do
     it_behaves_like 'XSS prevention'
     it_behaves_like 'sanitize link'
 
-    it 'customizes the whitelist only once' do
+    it 'customizes the allowlist only once' do
       instance = described_class.new('Foo')
-      control_count = instance.whitelist[:transformers].size
+      control_count = instance.allowlist[:transformers].size
 
-      3.times { instance.whitelist }
+      3.times { instance.allowlist }
 
-      expect(instance.whitelist[:transformers].size).to eq control_count
+      expect(instance.allowlist[:transformers].size).to eq control_count
     end
 
-    it 'customizes the whitelist only once for different instances' do
+    it 'customizes the allowlist only once for different instances' do
       instance1 = described_class.new('Foo1')
       instance2 = described_class.new('Foo2')
-      control_count = instance1.whitelist[:transformers].size
+      control_count = instance1.allowlist[:transformers].size
 
-      instance1.whitelist
-      instance2.whitelist
+      instance1.allowlist
+      instance2.allowlist
 
-      expect(instance1.whitelist[:transformers].size).to eq control_count
-      expect(instance2.whitelist[:transformers].size).to eq control_count
+      expect(instance1.allowlist[:transformers].size).to eq control_count
+      expect(instance2.allowlist[:transformers].size).to eq control_count
     end
 
     it 'sanitizes `class` attribute from all elements' do

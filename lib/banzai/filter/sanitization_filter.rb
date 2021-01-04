@@ -9,26 +9,26 @@ module Banzai
       # Styles used by Markdown for table alignment
       TABLE_ALIGNMENT_PATTERN = /text-align: (?<alignment>center|left|right)/.freeze
 
-      def customize_whitelist(whitelist)
-        # Allow table alignment; we whitelist specific text-align values in a
+      def customize_allowlist(allowlist)
+        # Allow table alignment; we allow specific text-align values in a
         # transformer below
-        whitelist[:attributes]['th'] = %w(style)
-        whitelist[:attributes]['td'] = %w(style)
-        whitelist[:css] = { properties: ['text-align'] }
+        allowlist[:attributes]['th'] = %w(style)
+        allowlist[:attributes]['td'] = %w(style)
+        allowlist[:css] = { properties: ['text-align'] }
 
         # Allow the 'data-sourcepos' from CommonMark on all elements
-        whitelist[:attributes][:all].push('data-sourcepos')
+        allowlist[:attributes][:all].push('data-sourcepos')
 
         # Remove any `style` properties not required for table alignment
-        whitelist[:transformers].push(self.class.remove_unsafe_table_style)
+        allowlist[:transformers].push(self.class.remove_unsafe_table_style)
 
         # Allow `id` in a and li elements for footnotes
         # and remove any `id` properties not matching for footnotes
-        whitelist[:attributes]['a'].push('id')
-        whitelist[:attributes]['li'] = %w(id)
-        whitelist[:transformers].push(self.class.remove_non_footnote_ids)
+        allowlist[:attributes]['a'].push('id')
+        allowlist[:attributes]['li'] = %w(id)
+        allowlist[:transformers].push(self.class.remove_non_footnote_ids)
 
-        whitelist
+        allowlist
       end
 
       class << self
