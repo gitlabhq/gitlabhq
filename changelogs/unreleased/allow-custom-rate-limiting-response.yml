@@ -1,0 +1,5 @@
+---
+title: Allow custom response to be set when rate limits are exceeded
+merge_request: 50693
+author:
+type: added

@@ -18,12 +18,14 @@ describe('Output component', () => {
   };
 
   beforeEach(() => {
+    // This is the output after rendering a jupyter notebook
     json = getJSONFixture('blob/notebook/basic.json');
   });
 
   describe('text output', () => {
     beforeEach((done) => {
-      createComponent(json.cells[2].outputs[0]);
+      const textType = json.cells[2];
+      createComponent(textType.outputs[0]);
 
       setImmediate(() => {
         done();
@@ -41,7 +43,8 @@ describe('Output component', () => {
 
   describe('image output', () => {
     beforeEach((done) => {
-      createComponent(json.cells[3].outputs[0]);
+      const imageType = json.cells[3];
+      createComponent(imageType.outputs[0]);
 
       setImmediate(() => {
         done();
@@ -55,23 +58,42 @@ describe('Output component', () => {
 
   describe('html output', () => {
     it('renders raw HTML', () => {
-      createComponent(json.cells[4].outputs[0]);
+      const htmlType = json.cells[4];
+      createComponent(htmlType.outputs[0]);
 
       expect(vm.$el.querySelector('p')).not.toBeNull();
-      expect(vm.$el.querySelectorAll('p').length).toBe(1);
+      expect(vm.$el.querySelectorAll('p')).toHaveLength(1);
       expect(vm.$el.textContent.trim()).toContain('test');
     });
 
     it('renders multiple raw HTML outputs', () => {
-      createComponent([json.cells[4].outputs[0], json.cells[4].outputs[0]]);
+      const htmlType = json.cells[4];
+      createComponent([htmlType.outputs[0], htmlType.outputs[0]]);
 
-      expect(vm.$el.querySelectorAll('p').length).toBe(2);
+      expect(vm.$el.querySelectorAll('p')).toHaveLength(2);
+    });
+  });
+
+  describe('LaTeX output', () => {
+    it('renders LaTeX', () => {
+      const output = {
+        data: {
+          'text/latex': ['$$F(k) = \\int_{-\\infty}^{\\infty} f(x) e^{2\\pi i k} dx$$'],
+          'text/plain': ['<IPython.core.display.Latex object>'],
+        },
+        metadata: {},
+        output_type: 'display_data',
+      };
+      createComponent(output);
+
+      expect(vm.$el.querySelector('.MathJax')).not.toBeNull();
     });
   });
 
   describe('svg output', () => {
     beforeEach((done) => {
-      createComponent(json.cells[5].outputs[0]);
+      const svgType = json.cells[5];
+      createComponent(svgType.outputs[0]);
 
       setImmediate(() => {
         done();
@@ -85,7 +107,8 @@ describe('Output component', () => {
 
   describe('default to plain text', () => {
     beforeEach((done) => {
-      createComponent(json.cells[6].outputs[0]);
+      const unknownType = json.cells[6];
+      createComponent(unknownType.outputs[0]);
 
       setImmediate(() => {
         done();
@@ -102,7 +125,8 @@ describe('Output component', () => {
     });
 
     it("renders as plain text when doesn't recognise other types", (done) => {
-      createComponent(json.cells[7].outputs[0]);
+      const unknownType = json.cells[7];
+      createComponent(unknownType.outputs[0]);
 
       setImmediate(() => {
         expect(vm.$el.querySelector('pre')).not.toBeNull();

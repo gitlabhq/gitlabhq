@@ -1,6 +1,9 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+import MockAdapter from 'axios-mock-adapter';
 
+import axios from '~/lib/utils/axios_utils';
+import httpStatus from '~/lib/utils/http_status';
 import createDiffsStore from '~/diffs/store/modules';
 import createNotesStore from '~/notes/stores/modules';
 import diffFileMockDataReadable from '../mock_data/diff_file';
@@ -118,14 +121,17 @@ const changeViewerType = (store, newType, index = 0) =>
 describe('DiffFile', () => {
   let wrapper;
   let store;
+  let axiosMock;
 
   beforeEach(() => {
+    axiosMock = new MockAdapter(axios);
     ({ wrapper, store } = createComponent({ file: getReadableFile() }));
   });
 
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
+    axiosMock.restore();
   });
 
   describe('bus events', () => {
@@ -353,8 +359,10 @@ describe('DiffFile', () => {
 
     describe('loading', () => {
       it('should have loading icon while loading a collapsed diffs', async () => {
+        const { load_collapsed_diff_url } = store.state.diffs.diffFiles[0];
+        axiosMock.onGet(load_collapsed_diff_url).reply(httpStatus.OK, getReadableFile());
         makeFileAutomaticallyCollapsed(store);
-        wrapper.vm.isLoadingCollapsedDiff = true;
+        wrapper.vm.requestDiff();
 
         await wrapper.vm.$nextTick();
 

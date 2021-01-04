@@ -1304,6 +1304,9 @@ msgstr ""
 msgid "A plain HTML site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features"
 msgstr ""
 
+msgid "A plain-text response to show to clients that hit the rate limit."
+msgstr ""
+
 msgid "A platform value can be web, mob or app."
 msgstr ""
 
@@ -23926,6 +23929,9 @@ msgid "Response metrics (NGINX Ingress)"
 msgstr ""
 
 msgid "Response metrics (NGINX)"
+msgstr ""
+
+msgid "Response text"
 msgstr ""
 
 msgid "Restart Terminal"

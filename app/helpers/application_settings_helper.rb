@@ -335,7 +335,8 @@ module ApplicationSettingsHelper
       :group_export_limit,
       :group_download_export_limit,
       :wiki_page_max_content_bytes,
-      :container_registry_delete_tags_service_timeout
+      :container_registry_delete_tags_service_timeout,
+      :rate_limiting_response_text
     ]
   end
 

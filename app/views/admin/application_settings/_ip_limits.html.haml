@@ -49,5 +49,12 @@
     .form-group
       = f.label :throttle_authenticated_web_period_in_seconds, 'Authenticated web rate limit period in seconds', class: 'label-bold'
       = f.number_field :throttle_authenticated_web_period_in_seconds, class: 'form-control'
+    %hr
+    %h5
+      = _('Response text')
+    .form-group
+      = f.label :rate_limiting_response_text, class: 'label-bold' do
+        = _('A plain-text response to show to clients that hit the rate limit.')
+      = f.text_area :rate_limiting_response_text, placeholder: ::Gitlab::Throttle::DEFAULT_RATE_LIMITING_RESPONSE_TEXT, class: 'form-control', rows: 5
 
   = f.submit 'Save changes', class: "gl-button btn btn-success", data: { qa_selector: 'save_changes_button' }

@@ -60,6 +60,24 @@ RSpec.describe 'Rack Attack global throttles' do
         expect_rejection { get url_that_does_not_require_authentication }
       end
 
+      context 'with custom response text' do
+        before do
+          stub_application_setting(rate_limiting_response_text: 'Custom response')
+        end
+
+        it 'rejects requests over the rate limit' do
+          # At first, allow requests under the rate limit.
+          requests_per_period.times do
+            get url_that_does_not_require_authentication
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+
+          # the last straw
+          expect_rejection { get url_that_does_not_require_authentication }
+          expect(response.body).to eq("Custom response\n")
+        end
+      end
+
       it 'allows requests after throttling and then waiting for the next period' do
         requests_per_period.times do
           get url_that_does_not_require_authentication

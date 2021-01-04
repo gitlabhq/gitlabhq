@@ -25,6 +25,17 @@ By default, all Git operations are first tried unathenticated. Because of this, 
 
 ![user-and-ip-rate-limits](img/user_and_ip_rate_limits.png)
 
+## Response text
+
+A request that exceeds a rate limit will get a 429 response code and a
+plain-text body, which by default is:
+
+```plaintext
+Retry later
+```
+
+It is possible to customize this response text in the admin area.
+
 ## Use an HTTP header to bypass rate limiting
 
 > [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/622) in GitLab 13.6.

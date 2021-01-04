@@ -172,7 +172,8 @@ module ApplicationSettingImplementation
         container_registry_delete_tags_service_timeout: 250,
         container_registry_expiration_policies_worker_capacity: 0,
         kroki_enabled: false,
-        kroki_url: nil
+        kroki_url: nil,
+        rate_limiting_response_text: nil
       }
     end
 

@@ -16,7 +16,7 @@ as the hardware requirements that are needed to install and use GitLab.
 
 - Ubuntu (16.04/18.04/20.04)
 - Debian (9/10)
-- CentOS (6/7/8)
+- CentOS (7/8)
 - openSUSE (Leap 15.1/Enterprise Server 12.2)
 - Red Hat Enterprise Linux (please use the CentOS packages and instructions)
 - Scientific Linux (please use the CentOS packages and instructions)
@@ -34,6 +34,9 @@ For the installation options, see [the main installation page](README.md).
 
 Installation of GitLab on these operating systems is possible, but not supported.
 Please see the [installation from source guide](installation.md) and the [installation guides](https://about.gitlab.com/install/) for more information.
+
+Please see [OS versions that are no longer supported](https://docs.gitlab.com/omnibus/package-information/deprecated_os.html) for Omnibus installs page
+for a list of supported and unsupported OS versions as well as the last support GitLab version for that OS.
 
 ### Microsoft Windows
 
@@ -163,11 +166,11 @@ Support for [PostgreSQL 9.6 and 10 has been removed in GitLab 13.0](https://abou
 
 #### Additional requirements for GitLab Geo
 
-If you're using [GitLab Geo](../administration/geo/index.md):
-
-- We strongly recommend running Omnibus-managed instances as they are actively
-  developed and tested. We aim to be compatible with most external (not managed
-  by Omnibus) databases (for example, [AWS Relational Database Service (RDS)](https://aws.amazon.com/rds/)) but we don't guarantee compatibility.
+If you're using [GitLab Geo](../administration/geo/index.md), we strongly
+recommend running Omnibus GitLab-managed instances, as we actively develop and
+test based on those. We try to be compatible with most external (not managed by
+Omnibus GitLab) databases (for example, [AWS Relational Database Service (RDS)](https://aws.amazon.com/rds/)),
+but we can't guarantee compatibility.
 
 ## Puma settings
 

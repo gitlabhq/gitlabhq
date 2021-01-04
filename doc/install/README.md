@@ -79,9 +79,10 @@ package.
 
 ## Installing GitLab from source
 
-If the Omnibus GitLab package is not available in your distribution, you can
-install GitLab from source: Useful for unsupported systems like \*BSD. For an
-overview of the directory structure, read the [structure documentation](installation.md#gitlab-directory-structure).
+If the Omnibus GitLab package isn't available for your distribution, you can
+install GitLab from source. This can be useful with unsupported systems, like
+\*BSD. For an overview of the directory structure, see the
+[structure documentation](installation.md#gitlab-directory-structure).
 
 [**> Install GitLab from source.**](installation.md)
 

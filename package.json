@@ -108,6 +108,7 @@
     "katex": "^0.10.0",
     "lodash": "^4.17.20",
     "marked": "^0.3.12",
+    "mathjax": "3",
     "mermaid": "^8.5.2",
     "mersenne-twister": "1.1.0",
     "minimatch": "^3.0.4",

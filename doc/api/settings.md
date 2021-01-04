@@ -83,7 +83,8 @@ Example response:
   "raw_blob_request_limit": 300,
   "wiki_page_max_content_bytes": 52428800,
   "require_admin_approval_after_user_signup": false,
-  "personal_access_token_prefix": "GL-"
+  "personal_access_token_prefix": "GL-",
+  "rate_limiting_response_text": null
 }
 ```
 
@@ -176,7 +177,8 @@ Example response:
   "raw_blob_request_limit": 300,
   "wiki_page_max_content_bytes": 52428800,
   "require_admin_approval_after_user_signup": false,
-  "personal_access_token_prefix": "GL-"
+  "personal_access_token_prefix": "GL-",
+  "rate_limiting_response_text": null
 }
 ```
 
@@ -330,6 +332,7 @@ listed in the descriptions of the relevant settings.
 | `pseudonymizer_enabled`                  | boolean          | no                                   | **(PREMIUM)** When enabled, GitLab runs a background job that produces pseudonymized CSVs of the GitLab database to upload to your configured object storage directory.
 | `push_event_activities_limit`            | integer          | no                                   | Number of changes (branches or tags) in a single push to determine whether individual push events or bulk push events are created. [Bulk push events are created](../user/admin_area/settings/push_event_activities_limit.md) if it surpasses that value. |
 | `push_event_hooks_limit`                 | integer          | no                                   | Number of changes (branches or tags) in a single push to determine whether webhooks and services fire or not. Webhooks and services aren't submitted if it surpasses that value. |
+| `rate_limiting_response_text`            | string           | no                                   | When rate limiting is enabled via the `throttle_*` settings, send this plain text response when a rate limit is exceeded. 'Retry later' is sent if this is blank. |
 | `raw_blob_request_limit`                 | integer          | no                                   | Max number of requests per minute for each raw path. Default: 300. To disable throttling set to 0.|
 | `recaptcha_enabled`                      | boolean          | no                                   | (**If enabled, requires:** `recaptcha_private_key` and `recaptcha_site_key`) Enable reCAPTCHA. |
 | `recaptcha_private_key`                  | string           | required by: `recaptcha_enabled`     | Private key for reCAPTCHA. |

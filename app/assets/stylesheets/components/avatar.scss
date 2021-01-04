@@ -68,7 +68,7 @@ $avatar-sizes: (
 );
 
 $identicon-backgrounds: $identicon-red, $identicon-purple, $identicon-indigo, $identicon-blue, $identicon-teal,
-  $identicon-orange, $gray-darker;
+  $identicon-orange, $identicon-gray;
 
 %avatar-circle {
   float: left;
@@ -125,8 +125,8 @@ $identicon-backgrounds: $identicon-red, $identicon-purple, $identicon-indigo, $i
 .identicon {
   text-align: center;
   vertical-align: top;
-  color: $gray-700;
-  background-color: $gray-darker;
+  color: $identicon-text-color;
+  background-color: $identicon-gray;
 
   // Sizes
   @each $size, $size-config in $avatar-sizes {

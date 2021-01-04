@@ -400,6 +400,10 @@ class ApplicationSetting < ApplicationRecord
   validates :ci_jwt_signing_key,
             rsa_key: true, allow_nil: true
 
+  validates :rate_limiting_response_text,
+            length: { maximum: 255, message: _('is too long (maximum is %{count} characters)') },
+            allow_blank: true
+
   attr_encrypted :asset_proxy_secret_key,
                  mode: :per_attribute_iv,
                  key: Settings.attr_encrypted_db_key_base_truncated,

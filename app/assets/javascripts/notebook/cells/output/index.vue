@@ -2,6 +2,7 @@
 import CodeOutput from '../code/index.vue';
 import HtmlOutput from './html.vue';
 import ImageOutput from './image.vue';
+import LatexOutput from './latex.vue';
 
 export default {
   props: {
@@ -35,6 +36,8 @@ export default {
         return 'image/jpeg';
       } else if (output.data['text/html']) {
         return 'text/html';
+      } else if (output.data['text/latex']) {
+        return 'text/latex';
       } else if (output.data['image/svg+xml']) {
         return 'image/svg+xml';
       }
@@ -59,6 +62,8 @@ export default {
         return ImageOutput;
       } else if (output.data['text/html']) {
         return HtmlOutput;
+      } else if (output.data['text/latex']) {
+        return LatexOutput;
       } else if (output.data['image/svg+xml']) {
         return HtmlOutput;
       }

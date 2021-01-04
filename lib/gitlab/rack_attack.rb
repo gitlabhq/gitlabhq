@@ -10,8 +10,17 @@ module Gitlab
     def self.configure(rack_attack)
       # This adds some methods used by our throttles to the `Rack::Request`
       rack_attack::Request.include(Gitlab::RackAttack::Request)
-      # Send the Retry-After header so clients (e.g. python-gitlab) can make good choices about delays
-      Rack::Attack.throttled_response_retry_after_header = true
+
+      # This is Rack::Attack::DEFAULT_THROTTLED_RESPONSE, modified to allow a custom response
+      Rack::Attack.throttled_response = lambda do |env|
+        # Send the Retry-After header so clients (e.g. python-gitlab) can make good choices about delays
+        match_data = env['rack.attack.match_data']
+        now = match_data[:epoch_time]
+        retry_after = match_data[:period] - (now % match_data[:period])
+
+        [429, { 'Content-Type' => 'text/plain', 'Retry-After' => retry_after.to_s }, [Gitlab::Throttle.rate_limiting_response_text]]
+      end
+
       # Configure the throttles
       configure_throttles(rack_attack)
 

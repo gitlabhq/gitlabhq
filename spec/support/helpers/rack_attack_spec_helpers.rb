@@ -25,6 +25,7 @@ module RackAttackSpecHelpers
     yield
 
     expect(response).to have_gitlab_http_status(:too_many_requests)
+    expect(response).to have_header('Retry-After')
   end
 
   def expect_ok(&block)

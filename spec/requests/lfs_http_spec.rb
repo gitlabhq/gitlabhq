@@ -193,10 +193,8 @@ RSpec.describe 'Git LFS API and storage' do
         subject(:request) { post_lfs_json batch_url(project), body, headers }
 
         let(:response) { request && super() }
-        let(:lfs_chunked_encoding) { true }
 
         before do
-          stub_feature_flags(lfs_chunked_encoding: lfs_chunked_encoding)
           project.lfs_objects << lfs_object
         end
 
@@ -478,20 +476,6 @@ RSpec.describe 'Git LFS API and storage' do
               headers = json_response['objects'].first['actions']['upload']['header']
               expect(headers['Content-Type']).to eq('application/octet-stream')
               expect(headers['Transfer-Encoding']).to eq('chunked')
-            end
-
-            context 'when lfs_chunked_encoding feature is disabled' do
-              let(:lfs_chunked_encoding) { false }
-
-              it 'responds with upload hypermedia link' do
-                expect(json_response['objects']).to be_kind_of(Array)
-                expect(json_response['objects'].first).to include(sample_object)
-                expect(json_response['objects'].first['actions']['upload']['href']).to eq(objects_url(project, sample_oid, sample_size))
-
-                headers = json_response['objects'].first['actions']['upload']['header']
-                expect(headers['Content-Type']).to eq('application/octet-stream')
-                expect(headers['Transfer-Encoding']).to be_nil
-              end
             end
 
             it_behaves_like 'process authorization header', renew_authorization: renew_authorization
