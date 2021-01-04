@@ -1,0 +1,5 @@
+---
+title: Auto-assign merge request author when creating from issue
+merge_request: 50263
+author:
+type: added

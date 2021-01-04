@@ -85,7 +85,8 @@ module MergeRequests
         source_project_id: target_project.id,
         source_branch: branch_name,
         target_project_id: target_project.id,
-        target_branch: target_branch
+        target_branch: target_branch,
+        assignee_ids: [current_user.id]
       }
     end
 
