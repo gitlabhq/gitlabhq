@@ -50,6 +50,32 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
       expect { described_class.uncached_data }.to raise_error('Stopped calculating recorded_at')
     end
+
+    context 'when generating usage ping in critical weeks' do
+      it 'does not raise error when generated in last week of the year' do
+        travel_to(DateTime.parse('2020-12-29')) do
+          expect { subject }.not_to raise_error
+        end
+      end
+
+      it 'does not raise error when generated in first week of the year' do
+        travel_to(DateTime.parse('2021-01-01')) do
+          expect { subject }.not_to raise_error
+        end
+      end
+
+      it 'does not raise error when generated in second week of the year' do
+        travel_to(DateTime.parse('2021-01-07')) do
+          expect { subject }.not_to raise_error
+        end
+      end
+
+      it 'does not raise error when generated in 3rd week of the year' do
+        travel_to(DateTime.parse('2021-01-14')) do
+          expect { subject }.not_to raise_error
+        end
+      end
+    end
   end
 
   describe 'usage_activity_by_stage_package' do
