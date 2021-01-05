@@ -145,4 +145,25 @@ describe('Issues Filtered Search Token Keys', () => {
       expect(result).toEqual(conditions[0]);
     });
   });
+
+  describe('removeTokensForKeys', () => {
+    let initTokenKeys;
+
+    beforeEach(() => {
+      initTokenKeys = [...IssuableFilteredSearchTokenKeys.get()];
+    });
+
+    it('should remove the tokenKeys corresponding to the given keys', () => {
+      const [firstTokenKey, secondTokenKey, ...restTokens] = initTokenKeys;
+      IssuableFilteredSearchTokenKeys.removeTokensForKeys(firstTokenKey.key, secondTokenKey.key);
+
+      expect(IssuableFilteredSearchTokenKeys.get()).toEqual(restTokens);
+    });
+
+    it('should do nothing when key is not found', () => {
+      IssuableFilteredSearchTokenKeys.removeTokensForKeys('bogus');
+
+      expect(IssuableFilteredSearchTokenKeys.get()).toEqual(initTokenKeys);
+    });
+  });
 });

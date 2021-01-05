@@ -337,3 +337,48 @@ cluster.routing.allocation.disk.watermark.high: 10gb
 Restart Elasticsearch, and the `read_only_allow_delete` will clear on it's own.
 
 _from "Disk-based Shard Allocation | Elasticsearch Reference" [5.6](https://www.elastic.co/guide/en/elasticsearch/reference/5.6/disk-allocator.html#disk-allocator) and [6.x](https://www.elastic.co/guide/en/elasticsearch/reference/6.7/disk-allocator.html)_
+
+### Disaster recovery/data loss/backups
+
+The use of Elasticsearch in GitLab is only ever as a secondary data store.
+This means that all of the data stored in Elasticsearch can always be derived
+again from other data sources, specifically PostgreSQL and Gitaly. Therefore if
+the Elasticsearch data store is ever corrupted for whatever reason you can
+simply reindex everything from scratch.
+
+If your Elasticsearch index is incredibly large it may be too time consuming or
+cause too much downtime to reindex from scratch. There aren't any built in
+mechanisms for automatically finding discrepencies and resyncing an
+Elasticsearch index if it gets out of sync but one tool that may be useful is
+looking at the logs for all the updates that occurred in a time range you
+believe may have been missed. This information is very low level and only
+useful for operators that are familiar with the GitLab codebase. It is
+documented here in case it is useful for others. The relevant logs that could
+theoretically be used to figure out what needs to be replayed are:
+
+1. All non-repository updates that were synced can be found in
+   [`elasticsearch.log`](../administration/logs.md#elasticsearchlog) by
+   searching for
+   [`track_items`](https://gitlab.com/gitlab-org/gitlab/-/blob/1e60ea99bd8110a97d8fc481e2f41cab14e63d31/ee/app/services/elastic/process_bookkeeping_service.rb#L25)
+   and these can be replayed by sending these items again through
+   `::Elastic::ProcessBookkeepingService.track!`
+1. All repository updates that occurred can be found in
+   [`elasticsearch.log`](../administration/logs.md#elasticsearchlog) by
+   searching for
+   [`indexing_commit_range`](https://gitlab.com/gitlab-org/gitlab/-/blob/6f9d75dd3898536b9ec2fb206e0bd677ab59bd6d/ee/lib/gitlab/elastic/indexer.rb#L41).
+   Replaying these requires resetting the
+   [`IndexStatus#last_commit/last_wiki_commit`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/index_status.rb)
+   to the oldest `from_sha` in the logs and then triggering another index of
+   the project using
+   [`ElasticCommitIndexerWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/elastic_commit_indexer_worker.rb)
+1. All project deletes that occurred can be found in
+   [`sidekiq.log`](../administration/logs.md#sidekiqlog) by searching for
+   [`ElasticDeleteProjectWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/elastic_delete_project_worker.rb).
+   These updates can be replayed by triggering another
+   `ElasticDeleteProjectWorker`.
+
+With the above methods and taking regular [Elasticsearch
+snapshots](https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshot-restore.html)
+we should be able to recover from different kinds of data loss issues in a
+relatively short period of time compared to indexing everything from
+scratch.

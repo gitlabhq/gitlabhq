@@ -980,3 +980,11 @@ results and assuming that basic search is supported in that scope. This "basic
 search" will behave as though you don't have Advanced Search enabled at all for
 your instance and search using other data sources (ie. PostgreSQL data and Git
 data).
+
+### Data recovery: Elasticsearch is a secondary data store only
+
+The use of Elasticsearch in GitLab is only ever as a secondary data store.
+This means that all of the data stored in Elasticsearch can always be derived
+again from other data sources, specifically PostgreSQL and Gitaly. Therefore, if
+the Elasticsearch data store is ever corrupted for whatever reason, you can
+simply reindex everything from scratch.
