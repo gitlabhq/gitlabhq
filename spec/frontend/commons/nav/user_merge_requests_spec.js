@@ -8,7 +8,7 @@ import Api from '~/api';
 jest.mock('~/api');
 
 const TEST_COUNT = 1000;
-const MR_COUNT_CLASS = 'merge-requests-count';
+const MR_COUNT_CLASS = 'js-merge-requests-count';
 
 describe('User Merge Requests', () => {
   let channelMock;
@@ -24,7 +24,9 @@ describe('User Merge Requests', () => {
     newBroadcastChannelMock = jest.fn().mockImplementation(() => channelMock);
 
     global.BroadcastChannel = newBroadcastChannelMock;
-    setFixtures(`<div class="${MR_COUNT_CLASS}">0</div>`);
+    setFixtures(
+      `<div><div class="${MR_COUNT_CLASS}">0</div><div class="js-assigned-mr-count"></div><div class="js-reviewer-mr-count"></div></div>`,
+    );
   });
 
   const findMRCountText = () => document.body.querySelector(`.${MR_COUNT_CLASS}`).textContent;
@@ -33,7 +35,10 @@ describe('User Merge Requests', () => {
     beforeEach(() => {
       Api.userCounts.mockReturnValue(
         Promise.resolve({
-          data: { merge_requests: TEST_COUNT },
+          data: {
+            assigned_merge_requests: TEST_COUNT,
+            review_requested_merge_requests: TEST_COUNT,
+          },
         }),
       );
     });
@@ -46,7 +51,7 @@ describe('User Merge Requests', () => {
       });
 
       it('updates the top count of merge requests', () => {
-        expect(findMRCountText()).toEqual(TEST_COUNT.toLocaleString());
+        expect(findMRCountText()).toEqual(Number(TEST_COUNT + TEST_COUNT).toLocaleString());
       });
 
       it('calls the API', () => {
@@ -54,7 +59,7 @@ describe('User Merge Requests', () => {
       });
 
       it('posts count to BroadcastChannel', () => {
-        expect(channelMock.postMessage).toHaveBeenCalledWith(TEST_COUNT);
+        expect(channelMock.postMessage).toHaveBeenCalledWith(TEST_COUNT + TEST_COUNT);
       });
     });
 

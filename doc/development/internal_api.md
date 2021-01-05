@@ -459,11 +459,11 @@ Cluster.
 | `alert` | Hash | yes | Alerts detail. Currently same format as [3rd party alert](../operations/incident_management/alert_integrations.md#customize-the-alert-payload-outside-of-gitlab). |
 
 ```plaintext
-POST internal/kubernetes/modules/cilium/network_alert
+POST internal/kubernetes/modules/cilium_alert
 ```
 
 Example Request:
 
 ```shell
-curl --request POST   --header "Gitlab-Kas-Api-Request: <JWT token>" --header "Authorization: Bearer <agent token>" --header "Content-Type: application/json" --data '"{\"alert\":{\"title\":\"minimal\",\"message\":\"network problem\",\"evalMatches\":[{\"value\":1,\"metric\":\"Count\",\"tags\":{}}]}}"' "http://localhost:3000/api/v4/internal/kubernetes/modules/cilium/network_alert"
+curl --request POST   --header "Gitlab-Kas-Api-Request: <JWT token>" --header "Authorization: Bearer <agent token>" --header "Content-Type: application/json" --data '"{\"alert\":{\"title\":\"minimal\",\"message\":\"network problem\",\"evalMatches\":[{\"value\":1,\"metric\":\"Count\",\"tags\":{}}]}}"' "http://localhost:3000/api/v4/internal/kubernetes/modules/cilium_alert"
 ```

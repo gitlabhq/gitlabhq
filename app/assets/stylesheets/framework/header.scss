@@ -172,7 +172,7 @@
       }
 
       li {
-        .badge.badge-pill {
+        .badge.badge-pill:not(.merge-request-badge) {
           box-shadow: none;
           font-weight: $gl-font-weight-bold;
         }
@@ -438,7 +438,7 @@
 
 .title-container,
 .navbar-nav {
-  .badge.badge-pill {
+  .badge.badge-pill:not(.merge-request-badge) {
     position: inherit;
     font-weight: $gl-font-weight-normal;
     margin-left: -6px;

@@ -521,6 +521,19 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
           should_email(user2)
           should_email(user3)
         end
+
+        it 'updates open merge request counter for reviewers', :use_clean_rails_memory_store_caching do
+          merge_request.reviewers = [user3]
+
+          # Cache them to ensure the cache gets invalidated on update
+          expect(user2.review_requested_open_merge_requests_count).to eq(0)
+          expect(user3.review_requested_open_merge_requests_count).to eq(1)
+
+          update_merge_request(reviewer_ids: [user2.id])
+
+          expect(user2.review_requested_open_merge_requests_count).to eq(1)
+          expect(user3.review_requested_open_merge_requests_count).to eq(0)
+        end
       end
 
       context 'when the milestone is removed' do

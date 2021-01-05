@@ -3943,6 +3943,9 @@ msgstr ""
 msgid "Assigned to me"
 msgstr ""
 
+msgid "Assigned to you"
+msgstr ""
+
 msgid "Assignee"
 msgid_plural "%d Assignees"
 msgstr[0] ""
@@ -24030,6 +24033,9 @@ msgid "Review App|View latest app"
 msgstr ""
 
 msgid "Review requested from %{name}"
+msgstr ""
+
+msgid "Review requests for you"
 msgstr ""
 
 msgid "Review the changes locally"

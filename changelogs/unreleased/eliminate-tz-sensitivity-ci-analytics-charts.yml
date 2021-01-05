@@ -1,5 +1,0 @@
----
-title: Fix empty pipeline analytics charts when time_zone is non-UTC
-merge_request: 50760
-author:
-type: fixed

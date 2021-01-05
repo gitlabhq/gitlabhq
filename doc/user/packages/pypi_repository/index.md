@@ -235,9 +235,12 @@ password = ${env.CI_JOB_TOKEN}
 
 When publishing packages, note that:
 
-- The maximum allowed size is 50 MB.
+- You must [authenticate with the Package Registry](#authenticate-with-the-package-registry).
+- Your [version string must be valid](#ensure-your-version-string-is-valid).
+- The maximum allowed package size is 5 GB.
 - You can't upload the same version of a package multiple times. If you try,
   you receive the error `Validation failed: File name has already been taken`.
+- You cannot publish PyPI packages to a group, only to a project.
 
 ### Ensure your version string is valid
 

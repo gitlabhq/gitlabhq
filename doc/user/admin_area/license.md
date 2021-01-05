@@ -42,18 +42,21 @@ Otherwise, you can:
 
 1. Navigate to the **License** tab, and click **Upload New License**.
 
-   ![License Admin Area](img/license_admin_area.png)
+   - *If you've received a `.gitlab-license` file:*
+     1. Download the license file to your local machine.
+     1. Select **Upload `.gitlab-license` file**.
+     1. Select **Choose File** and select the license file.
+        In this example the license file is named `GitLab.gitlab-license`.
+     1. Check the **Subscription Agreement** checkbox.
+     1. Select **Upload License**.
 
-   - *If you've received a `.gitlab-license` file,* you should have already downloaded
-     it in your local machine. You can then upload it directly by choosing the
-     license file and clicking the **Upload license** button. In the image below,
-     the selected license file is named `GitLab.gitlab-license`.
+     ![Upload license](img/license_upload_v13_8.png)
 
-     ![Upload license](img/license_upload.png)
-
-   - *If you've received your license as plain text,* select the
-     **Enter license key** option, copy the license, paste it into the **License key**
-     field, and click **Upload license**.
+   - *If you've received your license as plain text:*
+    1. Select **Enter license key**.
+    1. Copy the license and paste it into the **License key** field.
+    1. Check the **Subscription Agreement** checkbox.
+    1. Select **Upload License**.
 
 ## Add your license at install time
 

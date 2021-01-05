@@ -1564,6 +1564,12 @@ class User < ApplicationRecord
     end
   end
 
+  def review_requested_open_merge_requests_count(force: false)
+    Rails.cache.fetch(['users', id, 'review_requested_open_merge_requests_count'], force: force, expires_in: 20.minutes) do
+      MergeRequestsFinder.new(self, reviewer_id: id, state: 'opened', non_archived: true).execute.count
+    end
+  end
+
   def assigned_open_issues_count(force: false)
     Rails.cache.fetch(['users', id, 'assigned_open_issues_count'], force: force, expires_in: 20.minutes) do
       IssuesFinder.new(self, assignee_id: self.id, state: 'opened', non_archived: true).execute.count
@@ -1607,6 +1613,7 @@ class User < ApplicationRecord
 
   def invalidate_merge_request_cache_counts
     Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count'])
+    Rails.cache.delete(['users', id, 'review_requested_open_merge_requests_count'])
   end
 
   def invalidate_todos_done_count

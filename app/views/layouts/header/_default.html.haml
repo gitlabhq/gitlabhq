@@ -47,17 +47,36 @@
                 %span.badge.badge-pill.issues-count.green-badge{ class: ('hidden' if issues_count == 0) }
                   = number_with_delimiter(issues_count)
           - if header_link?(:merge_requests)
-            = nav_link(path: 'dashboard#merge_requests', html_options: { class: "user-counter" }) do
-              = link_to assigned_mrs_dashboard_path, title: _('Merge requests'), class: 'dashboard-shortcuts-merge_requests', aria: { label: _('Merge requests') },
-                data: { qa_selector: 'merge_requests_shortcut_button', toggle: 'tooltip', placement: 'bottom',
+            - reviewers_enabled = merge_request_reviewers_enabled?
+            = nav_link(path: 'dashboard#merge_requests', html_options: { class: "user-counter #{reviewers_enabled ? 'dropdown' : ''}" }) do
+              = link_to assigned_mrs_dashboard_path, class: 'dashboard-shortcuts-merge_requests', title: _('Merge requests'), aria: { label: _('Merge requests') },
+                data: { qa_selector: 'merge_requests_shortcut_button',
+                toggle: reviewers_enabled ? "dropdown" : "tooltip",
+                placement: 'bottom',
                 track_label: 'main_navigation',
                 track_event: 'click_merge_link',
                 track_property: 'navigation',
                 container: 'body' } do
                 = sprite_icon('git-merge')
-                - merge_requests_count = assigned_issuables_count(:merge_requests)
-                %span.badge.badge-pill.merge-requests-count{ class: ('hidden' if merge_requests_count == 0) }
-                  = number_with_delimiter(merge_requests_count)
+                %span.badge.badge-pill.merge-requests-count.js-merge-requests-count{ class: ('hidden' if user_merge_requests_counts[:total] == 0) }
+                  = number_with_delimiter(user_merge_requests_counts[:total])
+                - if reviewers_enabled
+                  = sprite_icon('chevron-down', css_class: 'caret-down gl-mx-0!')
+              - if reviewers_enabled
+                .dropdown-menu.dropdown-menu-right
+                  %ul
+                    %li.dropdown-header
+                      = _('Merge requests')
+                    %li
+                      = link_to assigned_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center' do
+                        = _('Assigned to you')
+                        %span.badge.gl-badge.badge-pill.badge-muted.merge-request-badge.gl-ml-auto.js-assigned-mr-count{ class: "" }
+                          = user_merge_requests_counts[:assigned]
+                    %li
+                      = link_to reviewer_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center' do
+                        = _('Review requests for you')
+                        %span.badge.gl-badge.badge-pill.badge-muted.merge-request-badge.gl-ml-auto.js-reviewer-mr-count{ class: "" }
+                          = user_merge_requests_counts[:review_requested]
           - if header_link?(:todos)
             = nav_link(controller: 'dashboard/todos', html_options: { class: "user-counter" }) do
               = link_to dashboard_todos_path, title: _('To-Do List'), aria: { label: _('To-Do List') }, class: 'shortcuts-todos',

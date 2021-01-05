@@ -159,6 +159,32 @@ module MergeRequestsHelper
 
     issuable_path(issuable, { merge_request: { wip_event: wip_event } })
   end
+
+  def user_merge_requests_counts
+    @user_merge_requests_counts ||= begin
+      assigned_count = assigned_issuables_count(:merge_requests)
+      review_requested_count = review_requested_merge_requests_count
+      total_count = assigned_count + review_requested_count
+
+      {
+        assigned: assigned_count,
+        review_requested: review_requested_count,
+        total: total_count
+      }
+    end
+  end
+
+  def merge_request_reviewers_enabled?
+    Feature.enabled?(:merge_request_reviewers, default_enabled: :yaml)
+  end
+
+  private
+
+  def review_requested_merge_requests_count
+    return 0 unless merge_request_reviewers_enabled?
+
+    current_user.review_requested_open_merge_requests_count
+  end
 end
 
 MergeRequestsHelper.prepend_if_ee('EE::MergeRequestsHelper')

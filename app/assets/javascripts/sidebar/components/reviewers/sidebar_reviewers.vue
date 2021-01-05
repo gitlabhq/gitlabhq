@@ -2,6 +2,7 @@
 // NOTE! For the first iteration, we are simply copying the implementation of Assignees
 // It will soon be overhauled in Issue https://gitlab.com/gitlab-org/gitlab/-/issues/233736
 import { deprecatedCreateFlash as Flash } from '~/flash';
+import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import eventHub from '~/sidebar/event_hub';
 import Store from '~/sidebar/stores/sidebar_store';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -80,8 +81,7 @@ export default {
         .saveReviewers(this.field)
         .then(() => {
           this.loading = false;
-          // Uncomment once this issue has been addressed > https://gitlab.com/gitlab-org/gitlab/-/issues/237922
-          // refreshUserMergeRequestCounts();
+          refreshUserMergeRequestCounts();
         })
         .catch(() => {
           this.loading = false;
