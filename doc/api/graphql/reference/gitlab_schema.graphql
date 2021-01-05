@@ -26061,10 +26061,29 @@ type VulnerabilityDismissPayload {
 The dismissal reason of the Vulnerability
 """
 enum VulnerabilityDismissalReason {
+  """
+  The likelihood of the Vulnerability occurring and its impact are deemed acceptable
+  """
   ACCEPTABLE_RISK
+
+  """
+  The Vulnerability was incorrectly identified as being present
+  """
   FALSE_POSITIVE
+
+  """
+  There is a mitigating control that eliminates the Vulnerability or makes its risk acceptable
+  """
   MITIGATING_CONTROL
+
+  """
+  Other reasons for dismissal
+  """
   NOT_APPLICABLE
+
+  """
+  The Vulnerability is used in tests and does not pose an actual risk
+  """
   USED_IN_TESTS
 }
 

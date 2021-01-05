@@ -3,11 +3,13 @@
 module Packages
   class CreateEventService < BaseService
     def execute
-      if Feature.enabled?(:collect_package_events_redis) && redis_event_name
-        if guest?
-          ::Gitlab::UsageDataCounters::GuestPackageEventCounter.count(redis_event_name)
-        else
-          ::Gitlab::UsageDataCounters::HLLRedisCounter.track_event(current_user.id, redis_event_name)
+      if Feature.enabled?(:collect_package_events_redis)
+        ::Packages::Event.unique_counters_for(event_scope, event_name, originator_type).each do |event_name|
+          ::Gitlab::UsageDataCounters::HLLRedisCounter.track_event(current_user.id, event_name)
+        end
+
+        ::Packages::Event.counters_for(event_scope, event_name, originator_type).each do |event_name|
+          ::Gitlab::UsageDataCounters::PackageEventCounter.count(event_name)
         end
       end
 
@@ -22,10 +24,6 @@ module Packages
     end
 
     private
-
-    def redis_event_name
-      @redis_event_name ||= ::Packages::Event.allowed_event_name(event_scope, event_name, originator_type)
-    end
 
     def event_scope
       @event_scope ||= scope.is_a?(::Packages::Package) ? scope.package_type : scope

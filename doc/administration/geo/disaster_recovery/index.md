@@ -15,7 +15,7 @@ See [Geo limitations](../index.md#limitations) for more information.
 
 WARNING:
 Disaster recovery for multi-secondary configurations is in **Alpha**.
-For the latest updates, check the [Disaster Recovery epic for complete maturity](https://gitlab.com/groups/gitlab-org/-/epics/590).
+For the latest updates, check the [Disaster Recovery epic for complete maturity](https://gitlab.com/groups/gitlab-org/-/epics/3574).
 Multi-secondary configurations require the complete re-synchronization and re-configuration of all non-promoted secondaries and
 will cause downtime.
 

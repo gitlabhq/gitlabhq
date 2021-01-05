@@ -1191,25 +1191,25 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
     let(:commit_3) { '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9' }
     let(:commit_1_files) do
       [
-        OpenStruct.new(status: :ADDED, path: "files/executables/ls"),
-        OpenStruct.new(status: :ADDED, path: "files/executables/touch"),
-        OpenStruct.new(status: :ADDED, path: "files/links/regex.rb"),
-        OpenStruct.new(status: :ADDED, path: "files/links/ruby-style-guide.md"),
-        OpenStruct.new(status: :ADDED, path: "files/links/touch"),
-        OpenStruct.new(status: :MODIFIED, path: ".gitmodules"),
-        OpenStruct.new(status: :ADDED, path: "deeper/nested/six"),
-        OpenStruct.new(status: :ADDED, path: "nested/six")
+        Gitlab::Git::ChangedPath.new(status: :ADDED, path: "files/executables/ls"),
+        Gitlab::Git::ChangedPath.new(status: :ADDED, path: "files/executables/touch"),
+        Gitlab::Git::ChangedPath.new(status: :ADDED, path: "files/links/regex.rb"),
+        Gitlab::Git::ChangedPath.new(status: :ADDED, path: "files/links/ruby-style-guide.md"),
+        Gitlab::Git::ChangedPath.new(status: :ADDED, path: "files/links/touch"),
+        Gitlab::Git::ChangedPath.new(status: :MODIFIED, path: ".gitmodules"),
+        Gitlab::Git::ChangedPath.new(status: :ADDED, path: "deeper/nested/six"),
+        Gitlab::Git::ChangedPath.new(status: :ADDED, path: "nested/six")
       ]
     end
 
     let(:commit_2_files) do
-      [OpenStruct.new(status: :ADDED, path: "bin/executable")]
+      [Gitlab::Git::ChangedPath.new(status: :ADDED, path: "bin/executable")]
     end
 
     let(:commit_3_files) do
       [
-        OpenStruct.new(status: :MODIFIED, path: ".gitmodules"),
-        OpenStruct.new(status: :ADDED, path: "gitlab-shell")
+        Gitlab::Git::ChangedPath.new(status: :MODIFIED, path: ".gitmodules"),
+        Gitlab::Git::ChangedPath.new(status: :ADDED, path: "gitlab-shell")
       ]
     end
 
@@ -1217,7 +1217,7 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
       collection = repository.find_changed_paths([commit_1, commit_2, commit_3])
 
       expect(collection).to be_a(Enumerable)
-      expect(collection.to_a).to eq(commit_1_files + commit_2_files + commit_3_files)
+      expect(collection.as_json).to eq((commit_1_files + commit_2_files + commit_3_files).as_json)
     end
 
     it 'returns no paths when SHAs are invalid' do
@@ -1231,7 +1231,7 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
       collection = repository.find_changed_paths([nil, commit_1])
 
       expect(collection).to be_a(Enumerable)
-      expect(collection.to_a).to eq(commit_1_files)
+      expect(collection.as_json).to eq(commit_1_files.as_json)
     end
 
     it 'returns no paths when the commits are nil' do

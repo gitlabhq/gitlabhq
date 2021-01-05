@@ -34,11 +34,6 @@ module Projects
       new_project = CreateService.new(current_user, new_fork_params).execute
       return new_project unless new_project.persisted?
 
-      # Set the forked_from_project relation after saving to avoid having to
-      # reload the project to reset the association information and cause an
-      # extra query.
-      new_project.forked_from_project = @project
-
       builds_access_level = @project.project_feature.builds_access_level
       new_project.project_feature.update(builds_access_level: builds_access_level)
 
@@ -47,6 +42,7 @@ module Projects
 
     def new_fork_params
       new_params = {
+        forked_from_project:       @project,
         visibility_level:          allowed_visibility_level,
         description:               @project.description,
         name:                      target_name,

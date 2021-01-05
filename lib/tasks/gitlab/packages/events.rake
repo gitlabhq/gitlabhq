@@ -5,18 +5,18 @@ namespace :gitlab do
   namespace :packages do
     namespace :events do
       task generate: :environment do
-        Rake::Task["gitlab:packages:events:generate_guest"].invoke
+        Rake::Task["gitlab:packages:events:generate_counts"].invoke
         Rake::Task["gitlab:packages:events:generate_unique"].invoke
       rescue => e
         logger.error("Error building events list: #{e}")
       end
 
-      task generate_guest: :environment do
+      task generate_counts: :environment do
         logger = Logger.new(STDOUT)
         logger.info('Building list of package events...')
 
-        path = Gitlab::UsageDataCounters::GuestPackageEventCounter::KNOWN_EVENTS_PATH
-        File.open(path, "w") { |file| file << guest_events_list.to_yaml }
+        path = Gitlab::UsageDataCounters::PackageEventCounter::KNOWN_EVENTS_PATH
+        File.open(path, "w") { |file| file << counter_events_list.to_yaml }
 
         logger.info("Events file `#{path}` generated successfully")
       rescue => e
@@ -43,26 +43,32 @@ namespace :gitlab do
 
       def generate_unique_events_list
         events = event_pairs.each_with_object([]) do |(event_type, event_scope), events|
-          Packages::Event.originator_types.keys.excluding('guest').each do |originator|
-            if name = Packages::Event.allowed_event_name(event_scope, event_type, originator)
-              events << {
-                "name" => name,
-                "category" => "#{event_scope}_packages",
+          Packages::Event.originator_types.keys.excluding('guest').each do |originator_type|
+            events_definition = Packages::Event.unique_counters_for(event_scope, event_type, originator_type).map do |event_name|
+              {
+                "name" => event_name,
+                "category" => "#{originator_type}_packages",
                 "aggregation" => "weekly",
                 "redis_slot" => "package",
                 "feature_flag" => "collect_package_events_redis"
               }
             end
+
+            events.concat(events_definition)
           end
         end
 
-        events.sort_by { |event| event["name"] }
+        events.sort_by { |event| event["name"] }.uniq
       end
 
-      def guest_events_list
-        event_pairs.map do |event_type, event_scope|
-          Packages::Event.allowed_event_name(event_scope, event_type, "guest")
-        end.compact.sort
+      def counter_events_list
+        counters = event_pairs.flat_map do |event_type, event_scope|
+          Packages::Event.originator_types.keys.flat_map do |originator_type|
+            Packages::Event.counters_for(event_scope, event_type, originator_type)
+          end
+        end
+
+        counters.compact.sort.uniq
       end
     end
   end

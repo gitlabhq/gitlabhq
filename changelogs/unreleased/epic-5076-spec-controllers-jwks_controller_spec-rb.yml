@@ -1,0 +1,5 @@
+---
+title: Migrate jwks_controller specs to request specs of them
+merge_request: 50767
+author: Takuya Noguchi @tnir
+type: other

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe JwksController do
-  describe 'GET #index' do
+  describe 'GET /-/jwks' do
     let(:ci_jwt_signing_key) { OpenSSL::PKey::RSA.generate(1024) }
     let(:ci_jwk) { ci_jwt_signing_key.to_jwk }
     let(:oidc_jwk) { OpenSSL::PKey::RSA.new(Rails.application.secrets.openid_connect_signing_key).to_jwk }
@@ -13,7 +13,7 @@ RSpec.describe JwksController do
     end
 
     it 'returns signing keys used to sign CI_JOB_JWT' do
-      get :index
+      get jwks_url
 
       expect(response).to have_gitlab_http_status(:ok)
 
@@ -22,7 +22,7 @@ RSpec.describe JwksController do
     end
 
     it 'does not leak private key data' do
-      get :index
+      get jwks_url
 
       aggregate_failures do
         json_response['keys'].each do |jwk|

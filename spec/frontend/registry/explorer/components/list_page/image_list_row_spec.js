@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlIcon, GlSprintf } from '@gitlab/ui';
+import { GlIcon, GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -23,10 +23,11 @@ describe('Image List Row', () => {
   const [item] = imagesListResponse;
 
   const findDetailsLink = () => wrapper.find('[data-testid="details-link"]');
-  const findTagsCount = () => wrapper.find('[data-testid="tagsCount"]');
+  const findTagsCount = () => wrapper.find('[data-testid="tags-count"]');
   const findDeleteBtn = () => wrapper.find(DeleteButton);
   const findClipboardButton = () => wrapper.find(ClipboardButton);
   const findWarningIcon = () => wrapper.find('[data-testid="warning-icon"]');
+  const findSkeletonLoader = () => wrapper.find(GlSkeletonLoader);
 
   const mountComponent = (props) => {
     wrapper = shallowMount(Component, {
@@ -162,6 +163,20 @@ describe('Image List Row', () => {
       const icon = findTagsCount().find(GlIcon);
       expect(icon.exists()).toBe(true);
       expect(icon.props('name')).toBe('tag');
+    });
+
+    describe('loading state', () => {
+      it('shows a loader when metadataLoading is true', () => {
+        mountComponent({ metadataLoading: true });
+
+        expect(findSkeletonLoader().exists()).toBe(true);
+      });
+
+      it('hides the tags count while loading', () => {
+        mountComponent({ metadataLoading: true });
+
+        expect(findTagsCount().exists()).toBe(false);
+      });
     });
 
     describe('tags count text', () => {

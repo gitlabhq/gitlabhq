@@ -1,5 +1,6 @@
 - page_title _("Container Registry")
 - @content_class = "limit-container-width" unless fluid_layout
+- add_page_startup_graphql_call('container_registry/get_container_repositories', { fullPath: @group.full_path, first: 10, name: nil, isGroupPage: true} )
 
 %section
   #js-container-registry{ data: { endpoint: group_container_registries_path(@group),

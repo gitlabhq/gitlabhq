@@ -6,6 +6,8 @@ class Packages::Event < ApplicationRecord
   UNIQUE_EVENTS_ALLOWED = %i[push_package delete_package pull_package].freeze
   EVENT_SCOPES = ::Packages::Package.package_types.merge(container: 1000, tag: 1001).freeze
 
+  EVENT_PREFIX = "i_package"
+
   enum event_scope: EVENT_SCOPES
 
   enum event_type: {
@@ -24,18 +26,30 @@ class Packages::Event < ApplicationRecord
 
   enum originator_type: { user: 0, deploy_token: 1, guest: 2 }
 
-  def self.allowed_event_name(event_scope, event_type, originator)
-    return unless event_allowed?(event_type)
-
-    # remove `package` from the event name to avoid issues with HLLRedisCounter class parsing
-    "i_package_#{event_scope}_#{originator}_#{event_type.gsub(/_packages?/, "")}"
-  end
-
   # Remove some of the events, for now, so we don't hammer Redis too hard.
   # See: https://gitlab.com/gitlab-org/gitlab/-/issues/280770
   def self.event_allowed?(event_type)
     return true if UNIQUE_EVENTS_ALLOWED.include?(event_type.to_sym)
 
     false
+  end
+
+  # counter names for unique user tracking (for MAU)
+  def self.unique_counters_for(event_scope, event_type, originator_type)
+    return [] unless event_allowed?(event_type)
+    return [] if originator_type.to_s == 'guest'
+
+    ["#{EVENT_PREFIX}_#{event_scope}_#{originator_type}"]
+  end
+
+  # total counter names for tracking number of events
+  def self.counters_for(event_scope, event_type, originator_type)
+    return [] unless event_allowed?(event_type)
+
+    [
+      "#{EVENT_PREFIX}_#{event_type}",
+      "#{EVENT_PREFIX}_#{event_type}_by_#{originator_type}",
+      "#{EVENT_PREFIX}_#{event_scope}_#{event_type}"
+    ]
   end
 end

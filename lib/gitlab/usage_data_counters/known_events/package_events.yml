@@ -1,331 +1,111 @@
 ---
-- name: i_package_composer_deploy_token_delete
-  category: composer_packages
+- name: i_package_composer_deploy_token
+  category: deploy_token_packages
   aggregation: weekly
   redis_slot: package
   feature_flag: collect_package_events_redis
-- name: i_package_composer_deploy_token_pull
-  category: composer_packages
+- name: i_package_composer_user
+  category: user_packages
   aggregation: weekly
   redis_slot: package
   feature_flag: collect_package_events_redis
-- name: i_package_composer_deploy_token_push
-  category: composer_packages
+- name: i_package_conan_deploy_token
+  category: deploy_token_packages
   aggregation: weekly
   redis_slot: package
   feature_flag: collect_package_events_redis
-- name: i_package_composer_user_delete
-  category: composer_packages
+- name: i_package_conan_user
+  category: user_packages
   aggregation: weekly
   redis_slot: package
   feature_flag: collect_package_events_redis
-- name: i_package_composer_user_pull
-  category: composer_packages
+- name: i_package_container_deploy_token
+  category: deploy_token_packages
   aggregation: weekly
   redis_slot: package
   feature_flag: collect_package_events_redis
-- name: i_package_composer_user_push
-  category: composer_packages
+- name: i_package_container_user
+  category: user_packages
   aggregation: weekly
   redis_slot: package
   feature_flag: collect_package_events_redis
-- name: i_package_conan_deploy_token_delete
-  category: conan_packages
+- name: i_package_debian_deploy_token
+  category: deploy_token_packages
   aggregation: weekly
   redis_slot: package
   feature_flag: collect_package_events_redis
-- name: i_package_conan_deploy_token_pull
-  category: conan_packages
+- name: i_package_debian_user
+  category: user_packages
   aggregation: weekly
   redis_slot: package
   feature_flag: collect_package_events_redis
-- name: i_package_conan_deploy_token_push
-  category: conan_packages
+- name: i_package_generic_deploy_token
+  category: deploy_token_packages
   aggregation: weekly
   redis_slot: package
   feature_flag: collect_package_events_redis
-- name: i_package_conan_user_delete
-  category: conan_packages
+- name: i_package_generic_user
+  category: user_packages
   aggregation: weekly
   redis_slot: package
   feature_flag: collect_package_events_redis
-- name: i_package_conan_user_pull
-  category: conan_packages
+- name: i_package_golang_deploy_token
+  category: deploy_token_packages
   aggregation: weekly
   redis_slot: package
   feature_flag: collect_package_events_redis
-- name: i_package_conan_user_push
-  category: conan_packages
+- name: i_package_golang_user
+  category: user_packages
   aggregation: weekly
   redis_slot: package
   feature_flag: collect_package_events_redis
-- name: i_package_container_deploy_token_delete
-  category: container_packages
+- name: i_package_maven_deploy_token
+  category: deploy_token_packages
   aggregation: weekly
   redis_slot: package
   feature_flag: collect_package_events_redis
-- name: i_package_container_deploy_token_pull
-  category: container_packages
+- name: i_package_maven_user
+  category: user_packages
   aggregation: weekly
   redis_slot: package
   feature_flag: collect_package_events_redis
-- name: i_package_container_deploy_token_push
-  category: container_packages
+- name: i_package_npm_deploy_token
+  category: deploy_token_packages
   aggregation: weekly
   redis_slot: package
   feature_flag: collect_package_events_redis
-- name: i_package_container_user_delete
-  category: container_packages
+- name: i_package_npm_user
+  category: user_packages
   aggregation: weekly
   redis_slot: package
   feature_flag: collect_package_events_redis
-- name: i_package_container_user_pull
-  category: container_packages
+- name: i_package_nuget_deploy_token
+  category: deploy_token_packages
   aggregation: weekly
   redis_slot: package
   feature_flag: collect_package_events_redis
-- name: i_package_container_user_push
-  category: container_packages
+- name: i_package_nuget_user
+  category: user_packages
   aggregation: weekly
   redis_slot: package
   feature_flag: collect_package_events_redis
-- name: i_package_debian_deploy_token_delete
-  category: debian_packages
+- name: i_package_pypi_deploy_token
+  category: deploy_token_packages
   aggregation: weekly
   redis_slot: package
   feature_flag: collect_package_events_redis
-- name: i_package_debian_deploy_token_pull
-  category: debian_packages
+- name: i_package_pypi_user
+  category: user_packages
   aggregation: weekly
   redis_slot: package
   feature_flag: collect_package_events_redis
-- name: i_package_debian_deploy_token_push
-  category: debian_packages
+- name: i_package_tag_deploy_token
+  category: deploy_token_packages
   aggregation: weekly
   redis_slot: package
   feature_flag: collect_package_events_redis
-- name: i_package_debian_user_delete
-  category: debian_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_debian_user_pull
-  category: debian_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_debian_user_push
-  category: debian_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_generic_deploy_token_delete
-  category: generic_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_generic_deploy_token_pull
-  category: generic_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_generic_deploy_token_push
-  category: generic_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_generic_user_delete
-  category: generic_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_generic_user_pull
-  category: generic_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_generic_user_push
-  category: generic_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_golang_deploy_token_delete
-  category: golang_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_golang_deploy_token_pull
-  category: golang_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_golang_deploy_token_push
-  category: golang_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_golang_user_delete
-  category: golang_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_golang_user_pull
-  category: golang_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_golang_user_push
-  category: golang_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_maven_deploy_token_delete
-  category: maven_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_maven_deploy_token_pull
-  category: maven_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_maven_deploy_token_push
-  category: maven_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_maven_user_delete
-  category: maven_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_maven_user_pull
-  category: maven_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_maven_user_push
-  category: maven_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_npm_deploy_token_delete
-  category: npm_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_npm_deploy_token_pull
-  category: npm_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_npm_deploy_token_push
-  category: npm_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_npm_user_delete
-  category: npm_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_npm_user_pull
-  category: npm_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_npm_user_push
-  category: npm_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_nuget_deploy_token_delete
-  category: nuget_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_nuget_deploy_token_pull
-  category: nuget_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_nuget_deploy_token_push
-  category: nuget_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_nuget_user_delete
-  category: nuget_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_nuget_user_pull
-  category: nuget_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_nuget_user_push
-  category: nuget_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_pypi_deploy_token_delete
-  category: pypi_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_pypi_deploy_token_pull
-  category: pypi_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_pypi_deploy_token_push
-  category: pypi_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_pypi_user_delete
-  category: pypi_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_pypi_user_pull
-  category: pypi_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_pypi_user_push
-  category: pypi_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_tag_deploy_token_delete
-  category: tag_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_tag_deploy_token_pull
-  category: tag_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_tag_deploy_token_push
-  category: tag_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_tag_user_delete
-  category: tag_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_tag_user_pull
-  category: tag_packages
-  aggregation: weekly
-  redis_slot: package
-  feature_flag: collect_package_events_redis
-- name: i_package_tag_user_push
-  category: tag_packages
+- name: i_package_tag_user
+  category: user_packages
   aggregation: weekly
   redis_slot: package
   feature_flag: collect_package_events_redis

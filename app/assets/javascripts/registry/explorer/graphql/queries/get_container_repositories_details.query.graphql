@@ -1,0 +1,26 @@
+query getContainerRepositoriesDetails(
+  $fullPath: ID!
+  $name: String
+  $first: Int
+  $last: Int
+  $after: String
+  $before: String
+  $isGroupPage: Boolean!
+) {
+  project(fullPath: $fullPath) @skip(if: $isGroupPage) {
+    containerRepositories(name: $name, after: $after, before: $before, first: $first, last: $last) {
+      nodes {
+        id
+        tagsCount
+      }
+    }
+  }
+  group(fullPath: $fullPath) @include(if: $isGroupPage) {
+    containerRepositories(name: $name, after: $after, before: $before, first: $first, last: $last) {
+      nodes {
+        id
+        tagsCount
+      }
+    }
+  }
+}

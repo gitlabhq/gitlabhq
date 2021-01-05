@@ -785,7 +785,9 @@ Feature.enable(:ci_if_parenthesis_enabled)
 
 ### Storing regular expressions in variables
 
-It is possible to store a regular expression in a variable, to be used for pattern matching:
+It is possible to store a regular expression in a variable, to be used for pattern matching.
+The following example tests whether `$RELEASE` contains either the
+string `staging0` or the string `staging1`:
 
 ```yaml
 variables:

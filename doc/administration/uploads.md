@@ -42,12 +42,12 @@ Feature.disable(:upload_middleware_jwt_params_handler)
 This is the default configuration. To change the location where the uploads are
 stored locally, use the steps in this section based on your installation method:
 
-**In Omnibus GitLab installations:**
-
 NOTE:
-For historical reasons, uploads are stored into a base directory, which by
-default is `uploads/-/system`. It's strongly discouraged to change this
-configuration option for an existing GitLab installation.
+For historical reasons, instance level uploads (for example the [favicon](../user/admin_area/appearance.md#favicon)) are stored into a base directory,
+which by default is `uploads/-/system`. It is strongly discouraged to change the base
+directory on an existing GitLab installation.
+
+**In Omnibus GitLab installations:**
 
 _The uploads are stored by default in `/var/opt/gitlab/gitlab-rails/uploads`._
 
@@ -55,16 +55,17 @@ _The uploads are stored by default in `/var/opt/gitlab/gitlab-rails/uploads`._
    `/etc/gitlab/gitlab.rb` and add the following line:
 
    ```ruby
-   gitlab_rails['uploads_storage_path'] = "/mnt/storage/"
-   gitlab_rails['uploads_base_dir'] = "uploads"
+   gitlab_rails['uploads_directory'] = "/mnt/storage/uploads"
    ```
+
+   This setting only applies if you haven't changed the `gitlab_rails['uploads_storage_path']` directory.
 
 1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 **In installations from source:**
 
 _The uploads are stored by default in
-`/home/git/gitlab/public/uploads/-/system`._
+`/home/git/gitlab/public/uploads`._
 
 1. To change the storage path for example to `/mnt/storage/uploads`, edit
    `/home/git/gitlab/config/gitlab.yml` and add or amend the following lines:
@@ -93,7 +94,7 @@ This configuration relies on valid AWS credentials to be configured already.
 
 We recommend using the [consolidated object storage settings](object_storage.md#consolidated-object-storage-configuration). The following instructions apply to the original configuration format.
 
-## Object Storage Settings
+### Object Storage Settings
 
 For source installations the following settings are nested under `uploads:` and then `object_store:`. On Omnibus GitLab installs they are prefixed by `uploads_object_store_`.
 
@@ -106,14 +107,14 @@ For source installations the following settings are nested under `uploads:` and 
 | `proxy_download` | Set to `true` to enable proxying all files served. Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data | `false` |
 | `connection` | Various connection options described below | |
 
-### Connection settings
+#### Connection settings
 
 See [the available connection settings for different providers](object_storage.md#connection-settings).
 
 **In Omnibus installations:**
 
 _The uploads are stored by default in
-`/var/opt/gitlab/gitlab-rails/public/uploads/-/system`._
+`/var/opt/gitlab/gitlab-rails/uploads`._
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following lines by replacing with
    the values you want:
@@ -145,7 +146,7 @@ _The uploads are stored by default in
 **In installations from source:**
 
 _The uploads are stored by default in
-`/home/git/gitlab/public/uploads/-/system`._
+`/home/git/gitlab/public/uploads`._
 
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
    lines:
@@ -165,12 +166,12 @@ _The uploads are stored by default in
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 1. Migrate any existing local uploads to the object storage using [`gitlab:uploads:migrate:all` Rake task](raketasks/uploads/migrate.md).
 
-### OpenStack example
+#### OpenStack example
 
 **In Omnibus installations:**
 
 _The uploads are stored by default in
-`/var/opt/gitlab/gitlab-rails/public/uploads/-/system`._
+`/var/opt/gitlab/gitlab-rails/uploads`._
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following lines by replacing with
    the values you want:
@@ -196,7 +197,7 @@ _The uploads are stored by default in
 **In installations from source:**
 
 _The uploads are stored by default in
-`/home/git/gitlab/public/uploads/-/system`._
+`/home/git/gitlab/public/uploads`._
 
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
    lines:

@@ -75560,31 +75560,31 @@
           "enumValues": [
             {
               "name": "ACCEPTABLE_RISK",
-              "description": null,
+              "description": "The likelihood of the Vulnerability occurring and its impact are deemed acceptable",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "FALSE_POSITIVE",
-              "description": null,
+              "description": "The Vulnerability was incorrectly identified as being present",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "MITIGATING_CONTROL",
-              "description": null,
+              "description": "There is a mitigating control that eliminates the Vulnerability or makes its risk acceptable",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "USED_IN_TESTS",
-              "description": null,
+              "description": "The Vulnerability is used in tests and does not pose an actual risk",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "NOT_APPLICABLE",
-              "description": null,
+              "description": "Other reasons for dismissal",
               "isDeprecated": false,
               "deprecationReason": null
             }

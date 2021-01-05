@@ -32,7 +32,7 @@ is locked.
 
 ## Uploading your license
 
-The very first time you visit your GitLab EE installation signed in as an administrator,
+The first time you visit your GitLab EE installation signed in as an administrator,
 you should see a note urging you to upload a license with a link that takes you
 to **Admin Area > License**.
 

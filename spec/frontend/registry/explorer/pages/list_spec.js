@@ -3,6 +3,7 @@ import VueApollo from 'vue-apollo';
 import { GlSkeletonLoader, GlSprintf, GlAlert, GlSearchBoxByClick } from '@gitlab/ui';
 import createMockApollo from 'jest/helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import getContainerRepositoriesQuery from 'shared_queries/container_registry/get_container_repositories.query.graphql';
 import Tracking from '~/tracking';
 import component from '~/registry/explorer/pages/list.vue';
 import CliCommands from '~/registry/explorer/components/list_page/cli_commands.vue';
@@ -19,8 +20,7 @@ import {
   SEARCH_PLACEHOLDER_TEXT,
 } from '~/registry/explorer/constants';
 
-import getProjectContainerRepositoriesQuery from '~/registry/explorer/graphql/queries/get_project_container_repositories.query.graphql';
-import getGroupContainerRepositoriesQuery from '~/registry/explorer/graphql/queries/get_group_container_repositories.query.graphql';
+import getContainerRepositoriesDetails from '~/registry/explorer/graphql/queries/get_container_repositories_details.query.graphql';
 import deleteContainerRepositoryMutation from '~/registry/explorer/graphql/mutations/delete_container_repository.mutation.graphql';
 
 import {
@@ -31,6 +31,8 @@ import {
   graphQLEmptyImageListMock,
   graphQLEmptyGroupImageListMock,
   pageInfo,
+  graphQLProjectImageRepositoriesDetailsMock,
+  dockerCommands,
 } from '../mock_data';
 import { GlModal, GlEmptyState } from '../stubs';
 import { $toast } from '../../shared/mocks';
@@ -58,6 +60,7 @@ describe('List Page', () => {
   const findEmptySearchMessage = () => wrapper.find('[data-testid="emptySearch"]');
 
   const waitForApolloRequestRender = async () => {
+    jest.runOnlyPendingTimers();
     await waitForPromises();
     await wrapper.vm.$nextTick();
   };
@@ -65,15 +68,15 @@ describe('List Page', () => {
   const mountComponent = ({
     mocks,
     resolver = jest.fn().mockResolvedValue(graphQLImageListMock),
-    groupResolver = jest.fn().mockResolvedValue(graphQLImageListMock),
+    detailsResolver = jest.fn().mockResolvedValue(graphQLProjectImageRepositoriesDetailsMock),
     mutationResolver = jest.fn().mockResolvedValue(graphQLImageDeleteMock),
-    config = {},
+    config = { isGroupPage: false },
   } = {}) => {
     localVue.use(VueApollo);
 
     const requestHandlers = [
-      [getProjectContainerRepositoriesQuery, resolver],
-      [getGroupContainerRepositoriesQuery, groupResolver],
+      [getContainerRepositoriesQuery, resolver],
+      [getContainerRepositoriesDetails, detailsResolver],
       [deleteContainerRepositoryMutation, mutationResolver],
     ];
 
@@ -99,6 +102,7 @@ describe('List Page', () => {
       provide() {
         return {
           config,
+          ...dockerCommands,
         };
       },
     });
@@ -125,6 +129,7 @@ describe('List Page', () => {
       characterError: true,
       containersErrorImage: 'foo',
       helpPagePath: 'bar',
+      isGroupPage: false,
     };
 
     it('should show an empty state', () => {
@@ -199,15 +204,16 @@ describe('List Page', () => {
         expect(findProjectEmptyState().exists()).toBe(true);
       });
     });
+
     describe('group page', () => {
-      const groupResolver = jest.fn().mockResolvedValue(graphQLEmptyGroupImageListMock);
+      const resolver = jest.fn().mockResolvedValue(graphQLEmptyGroupImageListMock);
 
       const config = {
         isGroupPage: true,
       };
 
       it('group empty state is visible', async () => {
-        mountComponent({ groupResolver, config });
+        mountComponent({ resolver, config });
 
         await waitForApolloRequestRender();
 
@@ -215,7 +221,7 @@ describe('List Page', () => {
       });
 
       it('cli commands is not visible', async () => {
-        mountComponent({ groupResolver, config });
+        mountComponent({ resolver, config });
 
         await waitForApolloRequestRender();
 
@@ -223,7 +229,7 @@ describe('List Page', () => {
       });
 
       it('list header is not visible', async () => {
-        mountComponent({ groupResolver, config });
+        mountComponent({ resolver, config });
 
         await waitForApolloRequestRender();
 
@@ -258,6 +264,39 @@ describe('List Page', () => {
         const header = findListHeader();
         expect(header.exists()).toBe(true);
         expect(header.text()).toBe(IMAGE_REPOSITORY_LIST_LABEL);
+      });
+
+      describe('additional metadata', () => {
+        it('is called on component load', async () => {
+          const detailsResolver = jest
+            .fn()
+            .mockResolvedValue(graphQLProjectImageRepositoriesDetailsMock);
+          mountComponent({ detailsResolver });
+
+          jest.runOnlyPendingTimers();
+          await waitForPromises();
+
+          expect(detailsResolver).toHaveBeenCalled();
+        });
+
+        it('does not block the list ui to show', async () => {
+          const detailsResolver = jest.fn().mockRejectedValue();
+          mountComponent({ detailsResolver });
+
+          await waitForApolloRequestRender();
+
+          expect(findImageList().exists()).toBe(true);
+        });
+
+        it('loading state is passed to list component', async () => {
+          // this is a promise that never resolves, to trick apollo to think that this request is still loading
+          const detailsResolver = jest.fn().mockImplementation(() => new Promise(() => {}));
+
+          mountComponent({ detailsResolver });
+          await waitForApolloRequestRender();
+
+          expect(findImageList().props('metadataLoading')).toBe(true);
+        });
       });
 
       describe('delete image', () => {
@@ -357,9 +396,15 @@ describe('List Page', () => {
 
       it('when search result is empty displays an empty search message', async () => {
         const resolver = jest.fn().mockResolvedValue(graphQLImageListMock);
-        mountComponent({ resolver });
+        const detailsResolver = jest
+          .fn()
+          .mockResolvedValue(graphQLProjectImageRepositoriesDetailsMock);
+        mountComponent({ resolver, detailsResolver });
+
+        await waitForApolloRequestRender();
 
         resolver.mockResolvedValue(graphQLEmptyImageListMock);
+        detailsResolver.mockResolvedValue(graphQLEmptyImageListMock);
 
         await doSearch();
 
@@ -370,26 +415,40 @@ describe('List Page', () => {
     describe('pagination', () => {
       it('prev-page event triggers a fetchMore request', async () => {
         const resolver = jest.fn().mockResolvedValue(graphQLImageListMock);
-        mountComponent({ resolver });
+        const detailsResolver = jest
+          .fn()
+          .mockResolvedValue(graphQLProjectImageRepositoriesDetailsMock);
+        mountComponent({ resolver, detailsResolver });
 
         await waitForApolloRequestRender();
 
         findImageList().vm.$emit('prev-page');
+        await wrapper.vm.$nextTick();
 
         expect(resolver).toHaveBeenCalledWith(
-          expect.objectContaining({ first: null, before: pageInfo.startCursor }),
+          expect.objectContaining({ before: pageInfo.startCursor }),
+        );
+        expect(detailsResolver).toHaveBeenCalledWith(
+          expect.objectContaining({ before: pageInfo.startCursor }),
         );
       });
 
       it('next-page event triggers a fetchMore request', async () => {
         const resolver = jest.fn().mockResolvedValue(graphQLImageListMock);
-        mountComponent({ resolver });
+        const detailsResolver = jest
+          .fn()
+          .mockResolvedValue(graphQLProjectImageRepositoriesDetailsMock);
+        mountComponent({ resolver, detailsResolver });
 
         await waitForApolloRequestRender();
 
         findImageList().vm.$emit('next-page');
+        await wrapper.vm.$nextTick();
 
         expect(resolver).toHaveBeenCalledWith(
+          expect.objectContaining({ after: pageInfo.endCursor }),
+        );
+        expect(detailsResolver).toHaveBeenCalledWith(
           expect.objectContaining({ after: pageInfo.endCursor }),
         );
       });

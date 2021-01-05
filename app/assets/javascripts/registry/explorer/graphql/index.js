@@ -8,6 +8,7 @@ export const apolloProvider = new VueApollo({
   defaultClient: createDefaultClient(
     {},
     {
+      batchMax: 1,
       assumeImmutableResults: true,
     },
   ),

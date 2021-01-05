@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective, GlIcon, GlSprintf } from '@gitlab/ui';
+import { GlTooltipDirective, GlIcon, GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
 import { n__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
@@ -25,6 +25,7 @@ export default {
     GlSprintf,
     GlIcon,
     ListItem,
+    GlSkeletonLoader,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -33,6 +34,11 @@ export default {
     item: {
       type: Object,
       required: true,
+    },
+    metadataLoading: {
+      type: Boolean,
+      default: false,
+      required: false,
     },
   },
   i18n: {
@@ -107,7 +113,11 @@ export default {
       />
     </template>
     <template #left-secondary>
-      <span class="gl-display-flex gl-align-items-center" data-testid="tagsCount">
+      <span
+        v-if="!metadataLoading"
+        class="gl-display-flex gl-align-items-center"
+        data-testid="tags-count"
+      >
         <gl-icon name="tag" class="gl-mr-2" />
         <gl-sprintf :message="tagsCountText">
           <template #count>
@@ -115,6 +125,13 @@ export default {
           </template>
         </gl-sprintf>
       </span>
+
+      <div v-else class="gl-w-full">
+        <gl-skeleton-loader :width="900" :height="16" preserve-aspect-ratio="xMinYMax meet">
+          <circle cx="6" cy="8" r="6" />
+          <rect x="16" y="4" width="100" height="8" rx="4" />
+        </gl-skeleton-loader>
+      </div>
     </template>
     <template #right-action>
       <delete-button

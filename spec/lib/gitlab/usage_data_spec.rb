@@ -680,7 +680,9 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
     it { is_expected.to include(:kubernetes_agent_gitops_sync) }
     it { is_expected.to include(:static_site_editor_views) }
-    it { is_expected.to include(:package_guest_i_package_composer_guest_pull) }
+    it { is_expected.to include(:package_events_i_package_pull_package) }
+    it { is_expected.to include(:package_events_i_package_delete_package_by_user) }
+    it { is_expected.to include(:package_events_i_package_conan_push_package) }
   end
 
   describe '.usage_data_counters' do

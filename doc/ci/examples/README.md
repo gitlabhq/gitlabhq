@@ -72,6 +72,7 @@ choose one of these templates:
 - [dotNET (`dotNET.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/dotNET.gitlab-ci.yml)
 - [dotNET Core (`dotNET-Core.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/dotNET-Core.yml)
 - [Elixir (`Elixir.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Elixir.gitlab-ci.yml)
+- [Flutter (`Flutter.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Flutter.gitlab-ci.yml)
 - [goLang (`Go.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Go.gitlab-ci.yml)
 - [Gradle (`Gradle.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Gradle.gitlab-ci.yml)
 - [Grails (`Grails.gitlab-ci.yml`)](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Grails.gitlab-ci.yml)

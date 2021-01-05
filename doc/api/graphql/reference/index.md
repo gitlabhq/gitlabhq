@@ -4945,11 +4945,11 @@ The dismissal reason of the Vulnerability.
 
 | Value | Description |
 | ----- | ----------- |
-| `ACCEPTABLE_RISK` |  |
-| `FALSE_POSITIVE` |  |
-| `MITIGATING_CONTROL` |  |
-| `NOT_APPLICABLE` |  |
-| `USED_IN_TESTS` |  |
+| `ACCEPTABLE_RISK` | The likelihood of the Vulnerability occurring and its impact are deemed acceptable |
+| `FALSE_POSITIVE` | The Vulnerability was incorrectly identified as being present |
+| `MITIGATING_CONTROL` | There is a mitigating control that eliminates the Vulnerability or makes its risk acceptable |
+| `NOT_APPLICABLE` | Other reasons for dismissal |
+| `USED_IN_TESTS` | The Vulnerability is used in tests and does not pose an actual risk |
 
 ### VulnerabilityExternalIssueLinkExternalTracker
 

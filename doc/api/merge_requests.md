@@ -87,8 +87,8 @@ Parameters:
 | `updated_after`                 | datetime       | no       | Return merge requests updated on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `updated_before`                | datetime       | no       | Return merge requests updated on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `scope`                         | string         | no       | Return merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`. Defaults to `created_by_me`<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead. |
-| `author_id`                     | integer        | no       | Returns merge requests created by the given user `id`. Mutually exclusive with `author_username`. Combine with `scope=all` or `scope=assigned_to_me`.
-| `author_username`               | string         | no       | Returns merge requests created by the given `username`. Mutually exclusive with `author_id`.             |           |
+| `author_id`                     | integer        | no       | Returns merge requests created by the given user `id`. Mutually exclusive with `author_username`. Combine with `scope=all` or `scope=assigned_to_me`. |
+| `author_username`               | string         | no       | Returns merge requests created by the given `username`. Mutually exclusive with `author_id`.             |
 | `assignee_id`                   | integer        | no       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. |
 | `approver_ids` **(STARTER)**    | integer array  | no       | Returns merge requests which have specified all the users with the given `id`s as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
 | `approved_by_ids` **(STARTER)** | integer array  | no       | Returns merge requests which have been approved by all the users with the given `id`s (Max: 5). `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. |
@@ -248,7 +248,7 @@ Parameters:
 
 | Attribute                       | Type           | Required | Description                                                                                                                    |
 | ------------------------------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `id`                            | integer        | yes      | The ID of a project.                                                                                                            |
+| `id`                            | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.                |
 | `iids[]`                        | integer array  | no       | Return the request having the given `iid`.                                                                                      |
 | `state`                         | string         | no       | Return all merge requests or just those that are `opened`, `closed`, `locked`, or `merged`.                                     |
 | `order_by`                      | string         | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`.                                        |
@@ -413,7 +413,7 @@ Parameters:
 
 | Attribute                       | Type           | Required | Description                                                                                                                    |
 | ------------------------------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `id`                            | integer        | yes      | The ID of a group.                                                                                                              |
+| `id`                            | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user.                  |
 | `state`                         | string         | no       | Return all merge requests or just those that are `opened`, `closed`, `locked`, or `merged`.                                     |
 | `order_by`                      | string         | no       | Return merge requests ordered by `created_at` or `updated_at` fields. Default is `created_at`.                                  |
 | `sort`                          | string         | no       | Return merge requests sorted in `asc` or `desc` order. Default is `desc`.                                                       |
@@ -427,8 +427,8 @@ Parameters:
 | `updated_after`                 | datetime       | no       | Return merge requests updated on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `updated_before`                | datetime       | no       | Return merge requests updated on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `scope`                         | string         | no       | Return merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`.                                     |
-| `author_id`                     | integer        | no       | Returns merge requests created by the given user `id`. Mutually exclusive with `author_username`. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13060) in GitLab 9.5)_.
-| `author_username`               | string         | no       | Returns merge requests created by the given `username`. Mutually exclusive with `author_id`. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13060) in GitLab 12.10)_.             |                              |
+| `author_id`                     | integer        | no       | Returns merge requests created by the given user `id`. Mutually exclusive with `author_username`. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13060) in GitLab 9.5)_. |
+| `author_username`               | string         | no       | Returns merge requests created by the given `username`. Mutually exclusive with `author_id`. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13060) in GitLab 12.10)_. |
 | `assignee_id`                   | integer        | no       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13060) in GitLab 9.5)_. |
 | `approver_ids` **(STARTER)**    | integer array  | no       | Returns merge requests which have specified all the users with the given `id`s as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
 | `approved_by_ids` **(STARTER)** | integer array  | no       | Returns merge requests which have been approved by all the users with the given `id`s (Max: 5). `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. |
@@ -569,11 +569,13 @@ GET /projects/:id/merge_requests/:merge_request_iid
 
 Parameters:
 
-- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.
-- `merge_request_iid` (required) - The internal ID of the merge request.
-- `render_html` (optional) - If `true` response includes rendered HTML for title and description.
-- `include_diverged_commits_count` (optional) - If `true` response includes the commits behind the target branch.
-- `include_rebase_in_progress` (optional) - If `true` response includes whether a rebase operation is in progress.
+| Attribute                        | Type           | Required | Description                                                                                                      |
+|----------------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
+| `id`                             | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid`              | integer        | yes      | The internal ID of the merge request.                                                                            |
+| `render_html`                    | integer        | no       | If `true` response includes rendered HTML for title and description.                                             |
+| `include_diverged_commits_count` | boolean        | no       | If `true` response includes the commits behind the target branch.                                                |
+| `include_rebase_in_progress`     | boolean        | no       | If `true` response includes whether a rebase operation is in progress.                                           |
 
 ```json
 {
@@ -723,8 +725,10 @@ GET /projects/:id/merge_requests/:merge_request_iid/participants
 
 Parameters:
 
-- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.
-- `merge_request_iid` (required) - The internal ID of the merge request.
+| Attribute                        | Type           | Required | Description                                                                                                      |
+|----------------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
+| `id`                             | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid`              | integer        | yes      | The internal ID of the merge request.                                                                            |
 
 ```json
 [
@@ -757,8 +761,10 @@ GET /projects/:id/merge_requests/:merge_request_iid/commits
 
 Parameters:
 
-- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.
-- `merge_request_iid` (required) - The internal ID of the merge request.
+| Attribute                        | Type           | Required | Description                                                                                                      |
+|----------------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
+| `id`                             | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid`              | integer        | yes      | The internal ID of the merge request.                                                                            |
 
 ```json
 [
@@ -793,9 +799,11 @@ GET /projects/:id/merge_requests/:merge_request_iid/changes
 
 Parameters:
 
-- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.
-- `merge_request_iid` (required) - The internal ID of the merge request.
-- `access_raw_diffs` (optional) - Retrieve change diffs without size limitations.
+| Attribute                        | Type           | Required | Description                                                                                                      |
+|----------------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
+| `id`                             | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid`              | integer        | yes      | The internal ID of the merge request.                                                                            |
+| `access_raw_diffs`               | boolean        | no       | Retrieve change diffs without size limitations.                                                                  |
 
 ```json
 {
@@ -906,8 +914,10 @@ GET /projects/:id/merge_requests/:merge_request_iid/pipelines
 
 Parameters:
 
-- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.
-- `merge_request_iid` (required) - The internal ID of the merge request.
+| Attribute                        | Type           | Required | Description                                                                                                      |
+|----------------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
+| `id`                             | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid`              | integer        | yes      | The internal ID of the merge request.                                                                            |
 
 ```json
 [
@@ -940,8 +950,10 @@ POST /projects/:id/merge_requests/:merge_request_iid/pipelines
 
 Parameters:
 
-- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding).
-- `merge_request_iid` (required) - The internal ID of the merge request.
+| Attribute                        | Type           | Required | Description                                                                                                      |
+|----------------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
+| `id`                             | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid`              | integer        | yes      | The internal ID of the merge request.                                                                            |
 
 ```json
 {
@@ -1326,14 +1338,16 @@ PUT /projects/:id/merge_requests/:merge_request_iid/merge
 
 Parameters:
 
-- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.
-- `merge_request_iid` (required) - Internal ID of MR.
-- `merge_commit_message` (optional) - Custom merge commit message.
-- `squash_commit_message` (optional) - Custom squash commit message.
-- `squash` (optional) - if `true` the commits are squashed into a single commit on merge.
-- `should_remove_source_branch` (optional) - if `true` removes the source branch.
-- `merge_when_pipeline_succeeds` (optional) - if `true` the MR is merged when the pipeline succeeds.
-- `sha` (optional) - if present, then this SHA must match the HEAD of the source branch, otherwise the merge fails.
+| Attribute                      | Type           | Required | Description                                                                                                      |
+|--------------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
+| `id`                           | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid`            | integer        | yes      | The internal ID of the merge request.                                                                            |
+| `merge_commit_message`         | string         | no       | Custom merge commit message.                                                                                     |
+| `squash_commit_message`        | string         | no       | Custom squash commit message.                                                                                    |
+| `squash`                       | boolean        | no       | If `true` the commits the commits are squashed into a single commit on merge.                                    |
+| `should_remove_source_branch`  | boolean        | no       | If `true` removes the source branch.                                                                             |
+| `merge_when_pipeline_succeeds` | boolean        | no       | If `true` the MR is merged when the pipeline succeeds.                                                           |
+| `sha`                          | string         | no       | If present, then this SHA must match the HEAD of the source branch, otherwise the merge fails.                   |
 
 ```json
 {
@@ -1487,8 +1501,10 @@ GET /projects/:id/merge_requests/:merge_request_iid/merge_ref
 
 Parameters:
 
-- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.
-- `merge_request_iid` (required) - Internal ID of MR.
+| Attribute                      | Type           | Required | Description                                                                                                      |
+|--------------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
+| `id`                           | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid`            | integer        | yes      | The internal ID of the merge request.                                                                            |
 
 ```json
 {
@@ -1508,8 +1524,10 @@ POST /projects/:id/merge_requests/:merge_request_iid/cancel_merge_when_pipeline_
 
 Parameters:
 
-- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.
-- `merge_request_iid` (required) - Internal ID of the merge request.
+| Attribute                      | Type           | Required | Description                                                                                                      |
+|--------------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
+| `id`                           | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid`            | integer        | yes      | The internal ID of the merge request.                                                                            |
 
 ```json
 {
