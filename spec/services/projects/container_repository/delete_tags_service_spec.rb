@@ -119,9 +119,9 @@ RSpec.describe Projects::ContainerRepository::DeleteTagsService do
           end
         end
 
-        it { is_expected.to include(status: :error, message: 'timeout while deleting tags') }
+        it { is_expected.to include(status: :error, message: 'error while deleting tags') }
 
-        it_behaves_like 'logging an error response', message: 'timeout while deleting tags', extra_log: { deleted_tags_count: 0 }
+        it_behaves_like 'logging an error response', message: 'error while deleting tags', extra_log: { deleted_tags_count: 0 }
       end
     end
   end

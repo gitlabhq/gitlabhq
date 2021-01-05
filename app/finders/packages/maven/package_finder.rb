@@ -27,17 +27,12 @@ module Packages
         elsif group
           packages_for_multiple_projects
         else
-          packages
+          ::Packages::Package.none
         end
       end
 
       def packages_with_path
         base.only_maven_packages_with_path(path)
-      end
-
-      # Produces a query that returns all packages.
-      def packages
-        ::Packages::Package.all
       end
 
       # Produces a query that retrieves packages from a single project.

@@ -22,6 +22,7 @@ import {
   ALERT_DANGER_TAGS,
   GRAPHQL_PAGE_SIZE,
   FETCH_IMAGES_LIST_ERROR_MESSAGE,
+  UNFINISHED_STATUS,
 } from '../constants/index';
 
 export default {
@@ -84,7 +85,10 @@ export default {
       return this.image?.tags?.nodes || [];
     },
     showPartialCleanupWarning() {
-      return this.image?.expirationPolicyStartedAt && !this.dismissPartialCleanupWarning;
+      return (
+        this.image?.expirationPolicyCleanupStatus === UNFINISHED_STATUS &&
+        !this.dismissPartialCleanupWarning
+      );
     },
     tracking() {
       return {
@@ -184,7 +188,7 @@ export default {
       @dismiss="dismissPartialCleanupWarning = true"
     />
 
-    <details-header :image="image" />
+    <details-header :image="image" :metadata-loading="isLoading" />
 
     <tags-loader v-if="isLoading" />
     <template v-else>

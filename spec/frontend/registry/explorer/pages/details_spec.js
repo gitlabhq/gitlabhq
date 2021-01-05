@@ -15,6 +15,8 @@ import EmptyTagsState from '~/registry/explorer/components/details_page/empty_ta
 import getContainerRepositoryDetailsQuery from '~/registry/explorer/graphql/queries/get_container_repository_details.query.graphql';
 import deleteContainerRepositoryTagsMutation from '~/registry/explorer/graphql/mutations/delete_container_repository_tags.mutation.graphql';
 
+import { UNFINISHED_STATUS } from '~/registry/explorer/constants/index';
+
 import {
   graphQLImageDetailsMock,
   graphQLImageDetailsEmptyTagsMock,
@@ -353,10 +355,13 @@ describe('Details Page', () => {
       mountComponent();
 
       await waitForApolloRequestRender();
-      expect(findDetailsHeader().props('image')).toMatchObject({
-        name: containerRepositoryMock.name,
-        project: {
-          visibility: containerRepositoryMock.project.visibility,
+      expect(findDetailsHeader().props()).toMatchObject({
+        metadataLoading: false,
+        image: {
+          name: containerRepositoryMock.name,
+          project: {
+            visibility: containerRepositoryMock.project.visibility,
+          },
         },
       });
     });
@@ -398,13 +403,13 @@ describe('Details Page', () => {
       cleanupPoliciesHelpPagePath: 'bar',
     };
 
-    describe('when expiration_policy_started is not null', () => {
+    describe(`when expirationPolicyCleanupStatus is ${UNFINISHED_STATUS}`, () => {
       let resolver;
 
       beforeEach(() => {
         resolver = jest.fn().mockResolvedValue(
           graphQLImageDetailsMock({
-            expirationPolicyStartedAt: Date.now().toString(),
+            expirationPolicyCleanupStatus: UNFINISHED_STATUS,
           }),
         );
       });
@@ -439,7 +444,7 @@ describe('Details Page', () => {
       });
     });
 
-    describe('when expiration_policy_started is null', () => {
+    describe(`when expirationPolicyCleanupStatus is not ${UNFINISHED_STATUS}`, () => {
       it('the component is hidden', async () => {
         mountComponent();
         await waitForApolloRequestRender();

@@ -50,7 +50,7 @@ export default {
 <template>
   <div class="gl-display-flex gl-flex-direction-column">
     <div class="gl-display-flex gl-justify-content-space-between gl-py-3">
-      <div class="gl-flex-direction-column">
+      <div class="gl-flex-direction-column gl-flex-grow-1">
         <div class="gl-display-flex">
           <gl-avatar
             v-if="avatar"
@@ -85,7 +85,7 @@ export default {
           </template>
           <template v-else>
             <div class="gl-w-full">
-              <gl-skeleton-loader :width="200" :height="16" preserve-aspect-ratio="xMinYMax meet">
+              <gl-skeleton-loader :width="960" :height="16" preserve-aspect-ratio="xMinYMax meet">
                 <circle cx="6" cy="8" r="6" />
                 <rect x="16" y="4" width="200" height="8" rx="4" />
               </gl-skeleton-loader>

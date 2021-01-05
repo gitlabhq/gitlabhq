@@ -3,7 +3,7 @@
  */
 import { isEqual, isFunction, omitBy } from 'lodash';
 import Visibility from 'visibilityjs';
-import EnvironmentsStore from 'ee_else_ce/environments/stores/environments_store';
+import EnvironmentsStore from '../stores/environments_store';
 import Poll from '../../lib/utils/poll';
 import { getParameterByName } from '../../lib/utils/common_utils';
 import { s__ } from '../../locale';

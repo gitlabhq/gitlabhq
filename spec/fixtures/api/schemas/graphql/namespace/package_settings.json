@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "required": ["mavenDuplicatesAllowed", "mavenDuplicateExceptionRegex"],
+  "properties": {
+    "mavenDuplicatesAllowed": {
+      "type": "boolean"
+    },
+    "mavenDuplicateExceptionRegex": {
+      "type": "string"
+    }
+  }
+}

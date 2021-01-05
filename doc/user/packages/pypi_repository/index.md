@@ -233,14 +233,16 @@ password = ${env.CI_JOB_TOKEN}
 
 ## Publish a PyPI package
 
-When publishing packages, note that:
+Prerequisites:
 
 - You must [authenticate with the Package Registry](#authenticate-with-the-package-registry).
 - Your [version string must be valid](#ensure-your-version-string-is-valid).
 - The maximum allowed package size is 5 GB.
 - You can't upload the same version of a package multiple times. If you try,
-  you receive the error `Validation failed: File name has already been taken`.
+  you receive the error `400 Bad Request`.
 - You cannot publish PyPI packages to a group, only to a project.
+
+You can then [publish a package by using twine](#publish-a-pypi-package-by-using-twine).
 
 ### Ensure your version string is valid
 
@@ -308,7 +310,7 @@ python -m twine upload --repository <source_name> dist/<package_file>
 
 You cannot publish a package if a package of the same name and version already exists.
 You must delete the existing package first. If you attempt to publish the same package
-more than once, a `404 Bad request` error occurs.
+more than once, a `404 Bad Request` error occurs.
 
 ## Install a PyPI package
 

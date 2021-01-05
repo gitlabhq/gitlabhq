@@ -30,4 +30,4 @@ module TrustedProxyMonkeyPatch
   end
 end
 
-ActionDispatch::Request.send(:include, TrustedProxyMonkeyPatch)
+ActionDispatch::Request.include TrustedProxyMonkeyPatch

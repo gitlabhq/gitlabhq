@@ -4493,16 +4493,22 @@ msgstr ""
 msgid "Billing|An error occurred while loading billable members list"
 msgstr ""
 
+msgid "Billing|Enter at least three characters to search."
+msgstr ""
+
+msgid "Billing|Group"
+msgstr ""
+
 msgid "Billing|No users to display."
 msgstr ""
 
 msgid "Billing|Private"
 msgstr ""
 
-msgid "Billing|Updated live"
+msgid "Billing|Type to search"
 msgstr ""
 
-msgid "Billing|Users occupying seats in %{namespaceName} Group (%{total})"
+msgid "Billing|Users occupying seats in"
 msgstr ""
 
 msgid "Bitbucket Server Import"
@@ -7471,13 +7477,40 @@ msgstr ""
 msgid "ContainerRegistry|CLI Commands"
 msgstr ""
 
+msgid "ContainerRegistry|Cleanup disabled"
+msgstr ""
+
+msgid "ContainerRegistry|Cleanup in progress"
+msgstr ""
+
+msgid "ContainerRegistry|Cleanup incomplete"
+msgstr ""
+
+msgid "ContainerRegistry|Cleanup is currently removing tags"
+msgstr ""
+
+msgid "ContainerRegistry|Cleanup is disabled for this project"
+msgstr ""
+
+msgid "ContainerRegistry|Cleanup pending"
+msgstr ""
+
 msgid "ContainerRegistry|Cleanup policy for tags is disabled"
 msgstr ""
 
 msgid "ContainerRegistry|Cleanup policy successfully saved."
 msgstr ""
 
+msgid "ContainerRegistry|Cleanup ran but some tags were not removed"
+msgstr ""
+
 msgid "ContainerRegistry|Cleanup timed out before it could delete all tags"
+msgstr ""
+
+msgid "ContainerRegistry|Cleanup will run %{time}"
+msgstr ""
+
+msgid "ContainerRegistry|Cleanup will run soon"
 msgstr ""
 
 msgid "ContainerRegistry|Configuration digest: %{digest}"
@@ -9040,9 +9073,6 @@ msgstr ""
 msgid "Default initial branch name"
 msgstr ""
 
-msgid "Default issue template"
-msgstr ""
-
 msgid "Default project deletion protection"
 msgstr ""
 
@@ -9584,6 +9614,9 @@ msgid "Description (optional)"
 msgstr ""
 
 msgid "Description parsed with %{link_start}GitLab Flavored Markdown%{link_end}"
+msgstr ""
+
+msgid "Description parsed with %{link_start}GitLab Flavored Markdown%{link_end}."
 msgstr ""
 
 msgid "Description template"
@@ -18480,6 +18513,9 @@ msgstr ""
 msgid "NetworkPolicies|%{ifLabelStart}if%{ifLabelEnd} %{ruleType} %{isLabelStart}is%{isLabelEnd} %{ruleDirection} %{ruleSelector} %{directionLabelStart}and is outbound to a%{directionLabelEnd} %{rule} %{portsLabelStart}on%{portsLabelEnd} %{ports}"
 msgstr ""
 
+msgid "NetworkPolicies|%{labelStart}And%{labelEnd} %{spanStart}send an Alert to GitLab.%{spanEnd}"
+msgstr ""
+
 msgid "NetworkPolicies|%{labelStart}Then%{labelEnd} %{action} %{spanStart}the network traffic.%{spanEnd}"
 msgstr ""
 
@@ -18492,6 +18528,9 @@ msgstr ""
 msgid "NetworkPolicies|%{strongOpen}any%{strongClose} port"
 msgstr ""
 
+msgid "NetworkPolicies|+ Add alert"
+msgstr ""
+
 msgid "NetworkPolicies|.yaml"
 msgstr ""
 
@@ -18499,6 +18538,9 @@ msgid "NetworkPolicies|.yaml mode"
 msgstr ""
 
 msgid "NetworkPolicies|Actions"
+msgstr ""
+
+msgid "NetworkPolicies|Alerts are intended to be selectively used for a limited number of events that are potentially concerning and warrant a manual review. Alerts should not be used as a substitute for a SIEM or a logging tool. High volume alerts are likely to be dropped so as to preserve the stability of GitLab's integration with Kubernetes."
 msgstr ""
 
 msgid "NetworkPolicies|All selected"
@@ -23465,6 +23507,9 @@ msgstr ""
 msgid "Rename/Move"
 msgstr ""
 
+msgid "Renew subscription"
+msgstr ""
+
 msgid "Reopen"
 msgstr ""
 
@@ -25402,7 +25447,7 @@ msgstr ""
 msgid "Set .gitlab-ci.yml to enable or configure SAST security scanning using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings) to customize SAST settings."
 msgstr ""
 
-msgid "Set a default template for issue descriptions."
+msgid "Set a default description template to be used for new issues. %{link_start}What are description templates?%{link_end}"
 msgstr ""
 
 msgid "Set a password on your account to pull or push via %{protocol}."
@@ -27648,6 +27693,9 @@ msgid "Thank you for your support request! We are tracking your request as ticke
 msgstr ""
 
 msgid "Thanks for your purchase!"
+msgstr ""
+
+msgid "That is ok, I do not want to renew"
 msgstr ""
 
 msgid "That's it, well done!"

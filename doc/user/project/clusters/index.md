@@ -308,7 +308,7 @@ combined with either
 
 ### Integrations
 
-#### Canary Deployments **(PREMIUM)**
+#### Canary Deployments
 
 Leverage [Kubernetes' Canary deployments](https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#canary-deployments)
 and visualize your canary deployments right inside the Deploy Board, without

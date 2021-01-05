@@ -1548,6 +1548,69 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     end
   end
 
+  describe '#initialize_conversion_of_integer_to_bigint' do
+    let(:user) { create(:user) }
+    let(:project) { create(:project, :repository) }
+    let(:issue) { create(:issue, project: project) }
+    let!(:event) do
+      create(:event, :created, project: project, target: issue, author: user)
+    end
+
+    context 'in a transaction' do
+      it 'raises RuntimeError' do
+        allow(model).to receive(:transaction_open?).and_return(true)
+
+        expect { model.initialize_conversion_of_integer_to_bigint(:events, :id) }
+          .to raise_error(RuntimeError)
+      end
+    end
+
+    context 'outside a transaction' do
+      before do
+        allow(model).to receive(:transaction_open?).and_return(false)
+      end
+
+      it 'creates a bigint column and starts backfilling it' do
+        expect(model)
+          .to receive(:add_column)
+          .with(
+            :events,
+            'id_convert_to_bigint',
+            :bigint,
+            default: 0,
+            null: false
+          )
+
+        expect(model)
+          .to receive(:install_rename_triggers)
+          .with(:events, :id, 'id_convert_to_bigint')
+
+        expect(model).to receive(:queue_background_migration_jobs_by_range_at_intervals).and_call_original
+
+        expect(BackgroundMigrationWorker)
+          .to receive(:perform_in)
+          .ordered
+          .with(
+            2.minutes,
+            'CopyColumnUsingBackgroundMigrationJob',
+            [event.id, event.id, :events, :id, :id, 'id_convert_to_bigint', 100]
+          )
+
+        expect(Gitlab::BackgroundMigration)
+          .to receive(:steal)
+          .ordered
+          .with('CopyColumnUsingBackgroundMigrationJob')
+
+        model.initialize_conversion_of_integer_to_bigint(
+          :events,
+          :id,
+          batch_size: 300,
+          sub_batch_size: 100
+        )
+      end
+    end
+  end
+
   describe '#index_exists_by_name?' do
     it 'returns true if an index exists' do
       ActiveRecord::Base.connection.execute(

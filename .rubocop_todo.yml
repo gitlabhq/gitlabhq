@@ -182,12 +182,6 @@ Lint/SelfAssignment:
   Exclude:
     - 'spec/lib/gitlab/search_context/builder_spec.rb'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-Lint/SendWithMixinArgument:
-  Exclude:
-    - 'config/initializers/trusted_proxies.rb'
-
 # Offense count: 3
 Lint/StructNewOverride:
   Exclude:

@@ -115,8 +115,13 @@ export const containerRepositoryMock = {
   updatedAt: '2020-11-03T13:29:21Z',
   tagsCount: 13,
   expirationPolicyStartedAt: null,
+  expirationPolicyCleanupStatus: 'UNSCHEDULED',
   project: {
     visibility: 'public',
+    containerExpirationPolicy: {
+      enabled: false,
+      nextRunAt: '2020-11-27T08:59:27Z',
+    },
     __typename: 'Project',
   },
 };

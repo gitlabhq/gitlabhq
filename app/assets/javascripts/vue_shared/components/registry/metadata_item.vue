@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlLink } from '@gitlab/ui';
+import { GlIcon, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 
 export default {
@@ -8,6 +8,9 @@ export default {
     GlIcon,
     GlLink,
     TooltipOnTruncate,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     icon: {
@@ -32,6 +35,11 @@ export default {
         return !value || ['xs', 's', 'm', 'l', 'xl'].includes(value);
       },
     },
+    textTooltip: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     sizeClass() {
@@ -55,9 +63,12 @@ export default {
       class="gl-font-weight-bold gl-display-inline-flex"
       :class="sizeClass"
     >
-      <tooltip-on-truncate :title="text" class="gl-text-truncate">
+      <tooltip-on-truncate v-if="!textTooltip" :title="text" class="gl-text-truncate">
         {{ text }}
       </tooltip-on-truncate>
+      <span v-else v-gl-tooltip="{ title: textTooltip }" data-testid="text-tooltip-container">
+        {{ text }}</span
+      >
     </div>
   </div>
 </template>

@@ -858,6 +858,120 @@ module Gitlab
         end
       end
 
+      # Initializes the conversion of an integer column to bigint
+      #
+      # It can be used for converting both a Primary Key and any Foreign Keys
+      # that may reference it or any other integer column that we may want to
+      # upgrade (e.g. columns that store IDs, but are not set as FKs).
+      #
+      # - For primary keys and Foreign Keys (or other columns) defined as NOT NULL,
+      #    the new bigint column is added with a hardcoded NOT NULL DEFAULT 0
+      #    which allows us to skip a very costly verification step once we
+      #    are ready to switch it.
+      #   This is crucial for Primary Key conversions, because setting a column
+      #    as the PK converts even check constraints to NOT NULL constraints
+      #    and forces an inline re-verification of the whole table.
+      # - It backfills the new column with the values of the existing primary key
+      #    by scheduling background jobs.
+      # - It tracks the scheduled background jobs through the use of
+      #    Gitlab::Database::BackgroundMigrationJob
+      #   which allows a more thorough check that all jobs succeeded in the
+      #   cleanup migration and is way faster for very large tables.
+      # - It sets up a trigger to keep the two columns in sync
+      # - It does not schedule a cleanup job: we have to do that with followup
+      #    post deployment migrations in the next release.
+      #
+      #   This needs to be done manually by using the
+      #    `cleanup_initialize_conversion_of_integer_to_bigint`
+      #   (not yet implemented - check #288005)
+      #
+      # table - The name of the database table containing the column
+      # column - The name of the column that we want to convert to bigint.
+      # primary_key - The name of the primary key column (most often :id)
+      # batch_size - The number of rows to schedule in a single background migration
+      # sub_batch_size - The smaller batches that will be used by each scheduled job
+      #   to update the table. Useful to keep each update at ~100ms while executing
+      #   more updates per interval (2.minutes)
+      #   Note that each execution of a sub-batch adds a constant 100ms sleep
+      #    time in between the updates, which must be taken into account
+      #    while calculating the batch, sub_batch and interval values.
+      # interval - The time interval between every background migration
+      #
+      # example:
+      # Assume that we have figured out that updating 200 records of the events
+      #  table takes ~100ms on average.
+      # We can set the sub_batch_size to 200, leave the interval to the default
+      #  and set the batch_size to 50_000 which will require
+      #  ~50s = (50000 / 200) * (0.1 + 0.1) to complete and leaves breathing space
+      #  between the scheduled jobs
+      def initialize_conversion_of_integer_to_bigint(
+        table,
+        column,
+        primary_key: :id,
+        batch_size: 20_000,
+        sub_batch_size: 1000,
+        interval: 2.minutes
+      )
+
+        if transaction_open?
+          raise 'initialize_conversion_of_integer_to_bigint can not be run inside a transaction'
+        end
+
+        unless table_exists?(table)
+          raise "Table #{table} does not exist"
+        end
+
+        unless column_exists?(table, primary_key)
+          raise "Column #{primary_key} does not exist on #{table}"
+        end
+
+        unless column_exists?(table, column)
+          raise "Column #{column} does not exist on #{table}"
+        end
+
+        check_trigger_permissions!(table)
+
+        old_column = column_for(table, column)
+        tmp_column = "#{column}_convert_to_bigint"
+
+        with_lock_retries do
+          if (column.to_s == primary_key.to_s) || !old_column.null
+            # If the column to be converted is either a PK or is defined as NOT NULL,
+            # set it to `NOT NULL DEFAULT 0` and we'll copy paste the correct values bellow
+            # That way, we skip the expensive validation step required to add
+            #  a NOT NULL constraint at the end of the process
+            add_column(table, tmp_column, :bigint, default: old_column.default || 0, null: false)
+          else
+            add_column(table, tmp_column, :bigint, default: old_column.default)
+          end
+
+          install_rename_triggers(table, column, tmp_column)
+        end
+
+        source_model = Class.new(ActiveRecord::Base) do
+          include EachBatch
+
+          self.table_name = table
+          self.inheritance_column = :_type_disabled
+        end
+
+        queue_background_migration_jobs_by_range_at_intervals(
+          source_model,
+          'CopyColumnUsingBackgroundMigrationJob',
+          interval,
+          batch_size: batch_size,
+          other_job_arguments: [table, primary_key, column, tmp_column, sub_batch_size],
+          track_jobs: true,
+          primary_column_name: primary_key
+        )
+
+        if perform_background_migration_inline?
+          # To ensure the schema is up to date immediately we perform the
+          # migration inline in dev / test environments.
+          Gitlab::BackgroundMigration.steal('CopyColumnUsingBackgroundMigrationJob')
+        end
+      end
+
       # Performs a concurrent column rename when using PostgreSQL.
       def install_rename_triggers_for_postgresql(trigger, table, old, new)
         execute <<-EOF.strip_heredoc

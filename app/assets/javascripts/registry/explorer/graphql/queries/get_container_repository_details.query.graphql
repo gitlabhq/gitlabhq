@@ -18,6 +18,7 @@ query getContainerRepositoryDetails(
     updatedAt
     tagsCount
     expirationPolicyStartedAt
+    expirationPolicyCleanupStatus
     tags(after: $after, before: $before, first: $first, last: $last) {
       nodes {
         digest
@@ -36,6 +37,10 @@ query getContainerRepositoryDetails(
     }
     project {
       visibility
+      containerExpirationPolicy {
+        enabled
+        nextRunAt
+      }
     }
   }
 }

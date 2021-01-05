@@ -6,16 +6,18 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { flow, reverse, sortBy } from 'lodash/fp';
 import { s__ } from '~/locale';
 import EnvironmentItem from './environment_item.vue';
+import DeployBoard from './deploy_board.vue';
+import CanaryUpdateModal from './canary_update_modal.vue';
+import CanaryDeploymentCallout from './canary_deployment_callout.vue';
 
 export default {
   components: {
     EnvironmentItem,
     GlLoadingIcon,
-    DeployBoard: () => import('ee_component/environments/components/deploy_board_component.vue'),
-    CanaryDeploymentCallout: () =>
-      import('ee_component/environments/components/canary_deployment_callout.vue'),
+    DeployBoard,
+    CanaryDeploymentCallout,
     EnvironmentAlert: () => import('ee_component/environments/components/environment_alert.vue'),
-    CanaryUpdateModal: () => import('ee_component/environments/components/canary_update_modal.vue'),
+    CanaryUpdateModal,
   },
   props: {
     environments: {

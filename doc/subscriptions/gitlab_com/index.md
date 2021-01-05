@@ -106,15 +106,30 @@ to the **Billing** section of the relevant namespace:
 
   The following table describes details of your subscription for groups:
 
-  | Field                   | Description                                                                                                                             |
-  |-------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
-  | **Seats in subscription**   | If this is a paid plan, represents the number of seats you've paid to support in your group.                                            |
-  | **Seats currently in use** | Number of seats in use.                                                                                                |
-  | **Max seats used**          | Highest number of seats you've used. If this exceeds the seats in subscription, you may owe an additional fee for the additional users. |
-  | **Seats owed**              | If your maximum seats used exceeds the seats in your subscription, you owe an additional fee for the users you've added.             |
-  | **Subscription start date** | Date your subscription started. If this is for a Free plan, is the date you transitioned off your group's paid plan.                    |
-  | **Subscription end date**   | Date your current subscription ends. Does not apply to Free plans.                                                                  |
-  | **Billable users list**   | List of users that belong to your group subscription. Does not apply to Free plans.                                                       |
+  | Field                       | Description |
+  |-----------------------------|-------------|
+  | **Seats in subscription**   | If this is a paid plan, represents the number of seats you've bought for this group. |
+  | **Seats currently in use**  | Number of seats in use. Select **See usage** to see a list of the users using these seats. For more details, see [Seat usage](#seat-usage). |
+  | **Max seats used**          | Highest number of seats you've used. |
+  | **Seats owed**              | _Seats owed_ = _Max seats used_ - _Seats in subscription_. |
+  | **Subscription start date** | Date your subscription started. If this is for a Free plan, it's the date you transitioned off your group's paid plan. |
+  | **Subscription end date**   | Date your current subscription ends. Does not apply to Free plans. |
+
+## Seat usage
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216899) in GitLab 13.5.
+> - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/292086) in GitLab 13.8 to include public
+    email address.
+
+The **Seat usage** page lists all users occupying seats. Details for each user include:
+
+- Full name
+- Username
+- Public email address (if they have provided one in their [profile settings](../../user/profile/index.md#profile-settings))
+
+The Seat usage listing is updated live, but the usage statistics on the billing page are updated
+only once per day. For this reason there can be a minor difference between the seat usage listing
+and the billing page.
 
 ## Renew your GitLab.com subscription
 

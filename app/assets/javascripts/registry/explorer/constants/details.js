@@ -60,6 +60,22 @@ export const UPDATED_AT = s__('ContainerRegistry|Last updated %{time}');
 
 export const NOT_AVAILABLE_TEXT = __('N/A');
 export const NOT_AVAILABLE_SIZE = __('0 bytes');
+
+export const CLEANUP_UNSCHEDULED_TEXT = s__('ContainerRegistry|Cleanup will run %{time}');
+export const CLEANUP_SCHEDULED_TEXT = s__('ContainerRegistry|Cleanup pending');
+export const CLEANUP_ONGOING_TEXT = s__('ContainerRegistry|Cleanup in progress');
+export const CLEANUP_UNFINISHED_TEXT = s__('ContainerRegistry|Cleanup incomplete');
+export const CLEANUP_DISABLED_TEXT = s__('ContainerRegistry|Cleanup disabled');
+
+export const CLEANUP_SCHEDULED_TOOLTIP = s__('ContainerRegistry|Cleanup will run soon');
+export const CLEANUP_ONGOING_TOOLTIP = s__('ContainerRegistry|Cleanup is currently removing tags');
+export const CLEANUP_UNFINISHED_TOOLTIP = s__(
+  'ContainerRegistry|Cleanup ran but some tags were not removed',
+);
+export const CLEANUP_DISABLED_TOOLTIP = s__(
+  'ContainerRegistry|Cleanup is disabled for this project',
+);
+
 // Parameters
 
 export const DEFAULT_PAGE = 1;
@@ -76,3 +92,8 @@ export const ALERT_MESSAGES = {
   [ALERT_SUCCESS_TAGS]: DELETE_TAGS_SUCCESS_MESSAGE,
   [ALERT_DANGER_TAGS]: DELETE_TAGS_ERROR_MESSAGE,
 };
+
+export const UNFINISHED_STATUS = 'UNFINISHED';
+export const UNSCHEDULED_STATUS = 'UNSCHEDULED';
+export const SCHEDULED_STATUS = 'SCHEDULED';
+export const ONGOING_STATUS = 'ONGOING';

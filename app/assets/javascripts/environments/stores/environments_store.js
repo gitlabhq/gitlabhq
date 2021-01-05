@@ -1,4 +1,4 @@
-import { setDeployBoard } from 'ee_else_ce/environments/stores/helpers';
+import { setDeployBoard } from './helpers';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 
 /**
@@ -81,6 +81,17 @@ export default class EnvironmentsStore {
 
     this.state.environments = filteredEnvironments;
 
+    /**
+     * Add the canary callout banner underneath the second environment listed.
+     *
+     * If there is only one environment, then add to it underneath the first.
+     */
+    if (this.state.environments.length >= 2) {
+      this.state.environments[1].showCanaryCallout = true;
+    } else if (this.state.environments.length === 1) {
+      this.state.environments[0].showCanaryCallout = true;
+    }
+
     return filteredEnvironments;
   }
 
@@ -135,12 +146,22 @@ export default class EnvironmentsStore {
 
   /**
    * Toggles deploy board visibility for the provided environment ID.
-   * Currently only works on EE.
    *
    * @param  {Object} environment
    * @return {Array}
    */
-  toggleDeployBoard() {
+  toggleDeployBoard(environmentID) {
+    const environments = this.state.environments.slice();
+
+    this.state.environments = environments.map((env) => {
+      let updated = { ...env };
+
+      if (env.id === environmentID) {
+        updated = { ...updated, isDeployBoardVisible: !env.isDeployBoardVisible };
+      }
+      return updated;
+    });
+
     return this.state.environments;
   }
 

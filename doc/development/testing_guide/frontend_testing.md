@@ -834,6 +834,44 @@ The `response` variable gets automatically set if the test is marked as `type: :
 When creating a new fixture, it often makes sense to take a look at the corresponding tests for the
 endpoint in `(ee/)spec/controllers/` or `(ee/)spec/requests/`.
 
+##### GraphQL query fixtures
+
+You can create a fixture that represents the result of a GraphQL query using the `get_graphql_query_as_string`
+helper method. For example:
+
+```ruby
+# spec/frontend/fixtures/releases.rb
+
+describe GraphQL::Query, type: :request do
+  include GraphqlHelpers
+
+  all_releases_query_path = 'releases/queries/all_releases.query.graphql'
+  fragment_paths = ['releases/queries/release.fragment.graphql']
+
+  before(:all) do
+    clean_frontend_fixtures('graphql/releases/')
+  end
+
+  it "graphql/#{all_releases_query_path}.json" do
+    query = get_graphql_query_as_string(all_releases_query_path, fragment_paths)
+
+    post_graphql(query, current_user: admin, variables: { fullPath: project.full_path })
+
+    expect_graphql_errors_to_be_empty
+  end
+end
+```
+
+This will create a new fixture located at
+`tmp/tests/frontend/fixtures-ee/graphql/releases/queries/all_releases.query.graphql.json`.
+
+Note that you will need to provide the paths to all fragments used by the query.
+`get_graphql_query_as_string` reads all of the provided file paths and returns
+the result as a single, concatenated string.
+
+You can import the JSON fixture in a Jest test using the `getJSONFixture` method
+[as described below](#use-fixtures).
+
 ### Use fixtures
 
 Jest and Karma test suites import fixtures in different ways:

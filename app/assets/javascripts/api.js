@@ -836,11 +836,18 @@ const Api = {
       page: 1,
     };
 
+    const passedOptions = options;
+
+    // calling search API with empty string will not return results
+    if (!passedOptions.search) {
+      passedOptions.search = undefined;
+    }
+
     return axios
       .get(url, {
         params: {
           ...defaults,
-          ...options,
+          ...passedOptions,
         },
       })
       .then(({ data, headers }) => {

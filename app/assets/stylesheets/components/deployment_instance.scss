@@ -1,0 +1,91 @@
+.deployment-instance {
+  width: $gl-padding;
+  height: $gl-padding;
+  margin: 1px;
+  border: 1px solid;
+  border-radius: $border-radius-small;
+  position: relative;
+
+  &-succeeded {
+    background-color: $green-600;
+    border-color: $green-800;
+
+    &.link:hover {
+      background-color: $green-800;
+      border-color: $green-950;
+    }
+  }
+
+  &-running {
+    background-color: $green-300;
+    border-color: $green-600;
+
+    &.link:hover {
+      background-color: $green-500;
+      border-color: $green-800;
+    }
+  }
+
+  &-failed {
+    background-color: $red-600;
+    border-color: $red-800;
+
+    &::before {
+      content: '';
+      border: 1px solid $white;
+      background: $white;
+      transform: rotate(45deg);
+      position: absolute;
+      border-radius: 1px;
+      top: -2px;
+      bottom: -2px;
+    }
+
+    &.link:hover {
+      background-color: $red-800;
+      border-color: $red-950;
+    }
+  }
+
+  &-pending {
+    background-color: $gray-200;
+    border-color: $gray-500;
+
+    &.link:hover {
+      background-color: $gray-300;
+      border-color: $gray-900;
+    }
+  }
+
+  &-unknown {
+    background-color: $white;
+    border-color: $gray-500;
+
+    &.link:hover {
+      background-color: $white;
+      border-color: $gray-900;
+    }
+  }
+
+  &.deployment-instance-canary {
+    &::after {
+      width: 7px;
+      height: 7px;
+      border: 1px solid $white;
+      background-color: $orange-300;
+      border-radius: 50%;
+      content: '';
+      z-index: 1;
+    }
+  }
+
+  &-canary-icon {
+    background-color: transparent;
+    border: 0;
+
+    &::after {
+      width: $gl-padding !important;
+      height: $gl-padding !important;
+    }
+  }
+}

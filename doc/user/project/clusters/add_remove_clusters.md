@@ -189,7 +189,7 @@ To add a Kubernetes cluster to your project, group, or instance:
       Get the API URL by running this command:
 
       ```shell
-      kubectl cluster-info | grep 'Kubernetes master' | awk '/http/ {print $NF}'
+      kubectl cluster-info | grep -E 'Kubernetes master|Kubernetes control plane' | awk '/http/ {print $NF}'
       ```
 
    1. **CA certificate** (required) - A valid Kubernetes certificate is needed to authenticate to the cluster. We use the certificate created by default.

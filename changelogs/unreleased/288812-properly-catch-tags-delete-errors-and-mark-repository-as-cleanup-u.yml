@@ -1,0 +1,5 @@
+---
+title: Add error handling in the container registry delete tags service
+merge_request: 50763
+author:
+type: changed

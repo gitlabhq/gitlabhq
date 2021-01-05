@@ -322,7 +322,7 @@ project and should only have access to that project.
 
 External users:
 
-- Cannot create groups, projects, or personal snippets.
+- Cannot create projects (including forks), groups, or personal snippets.
 - Can only access public projects and projects to which they are explicitly granted access,
   thus hiding all other internal or private ones from them (like being
   logged out).

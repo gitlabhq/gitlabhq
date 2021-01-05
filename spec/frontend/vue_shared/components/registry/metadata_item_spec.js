@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlIcon, GlLink } from '@gitlab/ui';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import component from '~/vue_shared/components/registry/metadata_item.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 
@@ -12,6 +13,9 @@ describe('Metadata Item', () => {
   const mountComponent = (propsData = defaultProps) => {
     wrapper = shallowMount(component, {
       propsData,
+      directives: {
+        GlTooltip: createMockDirective(),
+      },
     });
   };
 
@@ -24,6 +28,7 @@ describe('Metadata Item', () => {
   const findLink = (w = wrapper) => w.find(GlLink);
   const findText = () => wrapper.find('[data-testid="metadata-item-text"]');
   const findTooltipOnTruncate = (w = wrapper) => w.find(TooltipOnTruncate);
+  const findTextTooltip = () => wrapper.find('[data-testid="text-tooltip-container"]');
 
   describe.each(['xs', 's', 'm', 'l', 'xl'])('size class', (size) => {
     const className = `mw-${size}`;
@@ -54,6 +59,22 @@ describe('Metadata Item', () => {
       const tooltip = findTooltipOnTruncate(findText());
       expect(tooltip.exists()).toBe(true);
       expect(tooltip.attributes('title')).toBe(defaultProps.text);
+    });
+
+    describe('with tooltip prop set to something', () => {
+      const textTooltip = 'foo';
+      it('hides tooltip_on_truncate', () => {
+        mountComponent({ ...defaultProps, textTooltip });
+
+        expect(findTooltipOnTruncate(findText()).exists()).toBe(false);
+      });
+
+      it('set the tooltip on the text', () => {
+        mountComponent({ ...defaultProps, textTooltip });
+
+        const tooltip = getBinding(findTextTooltip().element, 'gl-tooltip');
+        expect(tooltip.value.title).toBe(textTooltip);
+      });
     });
   });
 

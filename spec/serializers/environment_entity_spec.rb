@@ -3,9 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe EnvironmentEntity do
+  include KubernetesHelpers
   include Gitlab::Routing.url_helpers
 
-  let(:request) { double('request') }
+  let(:request) { double('request', current_user: user, project: project) }
   let(:entity) do
     described_class.new(environment, request: request)
   end
@@ -165,6 +166,25 @@ RSpec.describe EnvironmentEntity do
 
         expect(subject[:logs_api_path]).to eq(elasticsearch_project_logs_path(project, environment_name: environment.name, format: :json))
       end
+    end
+  end
+
+  context 'with deployment service ready' do
+    before do
+      allow(environment).to receive(:has_terminals?).and_return(true)
+      allow(environment).to receive(:rollout_status).and_return(kube_deployment_rollout_status)
+    end
+
+    it 'exposes rollout_status' do
+      expect(subject).to include(:rollout_status)
+    end
+  end
+
+  context 'with deployment service not ready' do
+    let(:user) { create(:user) }
+
+    it 'does not expose rollout_status' do
+      expect(subject).not_to include(:rollout_status)
     end
   end
 end
