@@ -115,16 +115,6 @@ class MergeRequestWidgetEntity < Grape::Entity
     end
   end
 
-  expose :blob_path do
-    expose :head_path, if: -> (mr, _) { mr.source_branch_sha } do |merge_request|
-      project_blob_path(merge_request.project, merge_request.source_branch_sha)
-    end
-
-    expose :base_path, if: -> (mr, _) { mr.diff_base_sha } do |merge_request|
-      project_blob_path(merge_request.project, merge_request.diff_base_sha)
-    end
-  end
-
   expose :codeclimate, if: -> (mr, _) { head_pipeline_downloadable_path_for_report_type(:codequality) } do
     expose :head_path do |merge_request|
       head_pipeline_downloadable_path_for_report_type(:codequality)

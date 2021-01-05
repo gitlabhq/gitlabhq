@@ -59,21 +59,3 @@ DevOps Adoption allows you to:
 - Find the groups that have adopted certain features and can provide guidance to other groups on how to use those features.
 
 ![DevOps Report](img/dev_ops_adoption_v13_7.png)
-
-### Disable or enable DevOps Adoption
-
-DevOps Adoption is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can opt to disable it.
-
-To disable it:
-
-```ruby
-Feature.disable(:devops_adoption_feature)
-```
-
-To enable it:
-
-```ruby
-Feature.enable(:devops_adoption_feature)
-```

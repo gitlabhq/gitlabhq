@@ -3,7 +3,7 @@
 
 .container
   .gl-mt-3
-    - if Gitlab.ee? && Feature.enabled?(:devops_adoption_feature, default_enabled: true) && License.feature_available?(:devops_adoption)
+    - if Gitlab.ee? && License.feature_available?(:devops_adoption)
       = render_if_exists 'admin/dev_ops_report/devops_tabs'
     - else
       = render 'report'

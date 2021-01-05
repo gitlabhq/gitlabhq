@@ -6,9 +6,9 @@
 
 .wiki-page-header.top-area.flex-column.flex-lg-row
 
-  .nav-text.flex-fill
-    %h2.wiki-page-title
-      = s_("Wiki|Wiki Pages")
+
+  %h3.page-title.gl-flex-fill-1
+    = s_("Wiki|Wiki Pages")
 
   .nav-controls.pb-md-3.pb-lg-0
     = link_to wiki_path(@wiki, action: :git_access), class: 'btn gl-button' do

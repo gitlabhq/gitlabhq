@@ -7,16 +7,14 @@
     %button.btn.js-settings-toggle{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
     %p
-      Limit access to creating and updating tags.
+      Limit access to creating and updating tags. #{link_to "What are protected tags?", help_page_path("user/project/protected_tags")}
   .settings-content
     %p
-      By default, protected tags are designed to:
+      By default, protected tags protect your code and:
       %ul
-        %li Prevent tag creation by everybody except Maintainers
-        %li Prevent <strong>anyone</strong> from updating the tag
-        %li Prevent <strong>anyone</strong> from deleting the tag
-
-    %p Read more about #{link_to "protected tags", help_page_path("user/project/protected_tags")}.
+        %li Allow only users with Maintainer #{link_to "permissions", help_page_path("user/permissions")} to create tags.
+        %li Prevent <strong>anyone</strong> from updating tags.
+        %li Prevent <strong>anyone</strong> from deleting tags.
 
     - if can? current_user, :admin_project, @project
       = yield :create_protected_tag

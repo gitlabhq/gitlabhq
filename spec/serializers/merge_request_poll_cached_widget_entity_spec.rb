@@ -8,6 +8,7 @@ RSpec.describe MergeRequestPollCachedWidgetEntity do
   let_it_be(:project, refind: true)  { create :project, :repository }
   let_it_be(:resource, refind: true) { create(:merge_request, source_project: project, target_project: project) }
   let_it_be(:user)     { create(:user) }
+  let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
   let(:request) { double('request', current_user: user, project: project) }
 
@@ -23,6 +24,17 @@ RSpec.describe MergeRequestPollCachedWidgetEntity do
     expect(resource).to receive(:public_merge_status).and_return('checking')
 
     expect(subject[:merge_status]).to eq 'checking'
+  end
+
+  it 'has blob path data' do
+    allow(resource).to receive_messages(
+      base_pipeline: pipeline,
+      head_pipeline: pipeline
+    )
+
+    expect(subject).to include(:blob_path)
+    expect(subject[:blob_path]).to include(:base_path)
+    expect(subject[:blob_path]).to include(:head_path)
   end
 
   describe 'diverged_commits_count' do

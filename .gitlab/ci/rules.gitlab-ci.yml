@@ -507,6 +507,12 @@
     - <<: *if-merge-request
       changes: *db-patterns
 
+.rails:rules:ee-and-foss-mr-with-migration:
+  rules:
+    - <<: *if-merge-request
+      changes: *db-patterns
+    - <<: *if-merge-request-title-run-all-rspec
+
 .rails:rules:ee-and-foss-unit:
   rules:
     - changes: *backend-patterns

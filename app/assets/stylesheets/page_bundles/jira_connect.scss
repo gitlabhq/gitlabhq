@@ -2,6 +2,11 @@
 // We should only import styles that we actually use.
 // @import '@gitlab/ui/src/scss/gitlab_ui';
 
+@import '@gitlab/ui/src/scss/bootstrap';
+@import 'bootstrap-vue/src/index';
+
+@import '@gitlab/ui/src/scss/utilities';
+
 $atlaskit-border-color: #dfe1e6;
 
 .ac-content {
@@ -40,14 +45,16 @@ $header-height: 40px;
 }
 
 .jira-connect-user {
-  float: right;
-  position: relative;
-  top: -30px;
+  font-size: $gl-font-size;
+  position: fixed;
+  top: 10px;
+  right: 20px;
 }
 
 .jira-connect-app {
   margin-top: $header-height;
   max-width: 600px;
+  min-height: 95vh;
   padding-top: 48px;
   padding-left: 16px;
   padding-right: 16px;
@@ -108,5 +115,6 @@ svg {
 }
 
 .browser-limitations-notice {
+  font-size: $gl-font-size;
   margin-top: 32px;
 }

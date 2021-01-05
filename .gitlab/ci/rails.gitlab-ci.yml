@@ -311,6 +311,14 @@ db:check-schema:
   script:
     - source scripts/schema_changed.sh
 
+db:check-migrations:
+  extends:
+    - .db-job-base
+    - .rails:rules:ee-and-foss-mr-with-migration
+  script:
+    - scripts/validate_migration_schema
+  allow_failure: true
+
 db:migrate-from-v12.10.0:
   extends: .db-job-base
   variables:

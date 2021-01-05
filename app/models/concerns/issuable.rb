@@ -196,6 +196,10 @@ module Issuable
       is_a?(Issue)
     end
 
+    def supports_assignee?
+      false
+    end
+
     def severity
       return IssuableSeverity::DEFAULT unless supports_severity?
 

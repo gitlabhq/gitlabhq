@@ -1,6 +1,11 @@
 import Vue from 'vue';
 import $ from 'jquery';
+import setConfigs from '@gitlab/ui/dist/config';
+import Translate from '~/vue_shared/translate';
+import GlFeatureFlagsPlugin from '~/vue_shared/gl_feature_flags_plugin';
+
 import App from './components/app.vue';
+import { addSubscription, removeSubscription } from '~/jira_connect/api';
 
 const store = {
   state: {
@@ -27,46 +32,35 @@ const initJiraFormHandlers = () => {
     alert(error);
   };
 
-  AP.getLocation((location) => {
-    $('.js-jira-connect-sign-in').each(function updateSignInLink() {
-      const updatedLink = `${$(this).attr('href')}?return_to=${location}`;
-      $(this).attr('href', updatedLink);
+  if (typeof AP.getLocation === 'function') {
+    AP.getLocation((location) => {
+      $('.js-jira-connect-sign-in').each(function updateSignInLink() {
+        const updatedLink = `${$(this).attr('href')}?return_to=${location}`;
+        $(this).attr('href', updatedLink);
+      });
     });
-  });
+  }
 
   $('#add-subscription-form').on('submit', function onAddSubscriptionForm(e) {
-    const actionUrl = $(this).attr('action');
+    const addPath = $(this).attr('action');
+    const namespace = $('#namespace-input').val();
+
     e.preventDefault();
 
-    AP.context.getToken((token) => {
-      // eslint-disable-next-line no-jquery/no-ajax
-      $.post(actionUrl, {
-        jwt: token,
-        namespace_path: $('#namespace-input').val(),
-        format: 'json',
-      })
-        .done(reqComplete)
-        .fail((err) => reqFailed(err, 'Failed to add namespace. Please try again.'));
-    });
+    addSubscription(addPath, namespace)
+      .then(reqComplete)
+      .catch((err) => reqFailed(err.response.data, 'Failed to add namespace. Please try again.'));
   });
 
   $('.remove-subscription').on('click', function onRemoveSubscriptionClick(e) {
-    const href = $(this).attr('href');
+    const removePath = $(this).attr('href');
     e.preventDefault();
 
-    AP.context.getToken((token) => {
-      // eslint-disable-next-line no-jquery/no-ajax
-      $.ajax({
-        url: href,
-        method: 'DELETE',
-        data: {
-          jwt: token,
-          format: 'json',
-        },
-      })
-        .done(reqComplete)
-        .fail((err) => reqFailed(err, 'Failed to remove namespace. Please try again.'));
-    });
+    removeSubscription(removePath)
+      .then(reqComplete)
+      .catch((err) =>
+        reqFailed(err.response.data, 'Failed to remove namespace. Please try again.'),
+      );
   });
 };
 
@@ -74,6 +68,14 @@ function initJiraConnect() {
   const el = document.querySelector('.js-jira-connect-app');
 
   initJiraFormHandlers();
+
+  if (!el) {
+    return null;
+  }
+
+  setConfigs();
+  Vue.use(Translate);
+  Vue.use(GlFeatureFlagsPlugin);
 
   return new Vue({
     el,

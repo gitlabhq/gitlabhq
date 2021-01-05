@@ -26,7 +26,7 @@ module Gitlab
         end
         types Issue, MergeRequest
         condition do
-          current_user.can?(:"admin_#{quick_action_target.to_ability_name}", project)
+          quick_action_target.supports_assignee? && current_user.can?(:"admin_#{quick_action_target.to_ability_name}", project)
         end
         parse_params do |assignee_param|
           extract_users(assignee_param)

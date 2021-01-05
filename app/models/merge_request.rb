@@ -1774,6 +1774,10 @@ class MergeRequest < ApplicationRecord
     false
   end
 
+  def supports_assignee?
+    true
+  end
+
   private
 
   def with_rebase_lock

@@ -23,15 +23,16 @@
   - else
     .js-jira-connect-app
 
-    %form#add-subscription-form.subscription-form{ action: jira_connect_subscriptions_path }
-      .ak-field-group
-        %label
-          GitLab namespace
+    - unless new_jira_connect_ui?
+      %form#add-subscription-form.subscription-form{ action: jira_connect_subscriptions_path }
+        .ak-field-group
+          %label
+            GitLab namespace
 
-      .ak-field-group.field-group-input
-        %input#namespace-input.ak-field-text{ type: 'text', required: true, placeholder: 'e.g. "MyCompany" or "MyCompany/GroupName"' }
-        %button.ak-button.ak-button__appearance-primary{ type: 'submit' }
-          Link namespace to Jira
+        .ak-field-group.field-group-input
+          %input#namespace-input.ak-field-text{ type: 'text', required: true, placeholder: 'e.g. "MyCompany" or "MyCompany/GroupName"' }
+          %button.ak-button.ak-button__appearance-primary{ type: 'submit' }
+            Link namespace to Jira
 
     - if @subscriptions.present?
       %table.subscriptions
@@ -49,6 +50,7 @@
     - else
       %h4.empty-subscriptions
         No linked namespaces
+      %p= s_('Integrations|Namespaces are your GitLab groups and subgroups that will be linked to this Jira instance.')
 
   %p.browser-limitations-notice
     %strong Browser limitations:

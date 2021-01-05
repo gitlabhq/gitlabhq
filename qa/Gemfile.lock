@@ -2,7 +2,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     abstract_type (0.0.7)
-    activesupport (6.0.3.3)
+    activesupport (6.0.3.4)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 0.7, < 2)
       minitest (~> 5.1)
@@ -127,7 +127,7 @@ GEM
       rubyzip (>= 1.2.2)
     thread_safe (0.3.6)
     timecop (0.9.1)
-    tzinfo (1.2.7)
+    tzinfo (1.2.9)
       thread_safe (~> 0.1)
     unf (0.1.4)
       unf_ext
@@ -142,7 +142,7 @@ GEM
       procto (~> 0.0.2)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.4.0)
+    zeitwerk (2.4.2)
 
 PLATFORMS
   ruby

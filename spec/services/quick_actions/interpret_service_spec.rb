@@ -779,6 +779,11 @@ RSpec.describe QuickActions::InterpretService do
 
       it_behaves_like 'assign command' do
         let(:content) { "/assign @#{developer.username}" }
+        let(:issuable) { create(:incident, project: project) }
+      end
+
+      it_behaves_like 'assign command' do
+        let(:content) { "/assign @#{developer.username}" }
         let(:issuable) { merge_request }
       end
     end

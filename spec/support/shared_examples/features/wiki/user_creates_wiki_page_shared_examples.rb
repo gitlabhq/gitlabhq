@@ -79,7 +79,7 @@ RSpec.shared_examples 'User creates wiki page' do
 
       expect(current_path).to eq(wiki_page_path(wiki, "test"))
 
-      page.within(:css, ".nav-text") do
+      page.within(:css, ".wiki-page-header") do
         expect(page).to have_content("Create New Page")
       end
 
@@ -91,7 +91,7 @@ RSpec.shared_examples 'User creates wiki page' do
 
       expect(current_path).to eq(wiki_page_path(wiki, "api"))
 
-      page.within(:css, ".nav-text") do
+      page.within(:css, ".wiki-page-header") do
         expect(page).to have_content("Create")
       end
 
@@ -103,7 +103,7 @@ RSpec.shared_examples 'User creates wiki page' do
 
       expect(current_path).to eq(wiki_page_path(wiki, "raketasks"))
 
-      page.within(:css, ".nav-text") do
+      page.within(:css, ".wiki-page-header") do
         expect(page).to have_content("Create")
       end
     end

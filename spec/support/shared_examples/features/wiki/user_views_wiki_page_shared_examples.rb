@@ -44,7 +44,7 @@ RSpec.shared_examples 'User views a wiki page' do
 
       expect(current_path).to include('one/two/three-test')
 
-      page.within(:css, '.nav-text') do
+      page.within(:css, '.wiki-page-header') do
         expect(page).to have_content('History')
       end
     end
@@ -69,7 +69,7 @@ RSpec.shared_examples 'User views a wiki page' do
 
       click_on('Page history')
 
-      within('.nav-text') do
+      within('.wiki-page-header') do
         expect(page).to have_content('History')
       end
 

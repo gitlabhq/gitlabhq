@@ -7,12 +7,12 @@ NO_SPECS_LABELS = [
   'documentation',
   'QA'
 ].freeze
-NO_NEW_SPEC_MESSAGE = <<~MSG
+NO_NEW_SPEC_MESSAGE = <<~MSG.freeze
 You've made some app changes, but didn't add any tests.
 That's OK as long as you're refactoring existing code,
 but please consider adding any of the %<labels>s labels.
 MSG
-EE_CHANGE_WITH_FOSS_SPEC_CHANGE_MESSAGE = <<~MSG
+EE_CHANGE_WITH_FOSS_SPEC_CHANGE_MESSAGE = <<~MSG.freeze
 You've made some EE-specific changes, but only made changes to FOSS tests.
 This could be a sign that you're testing an EE-specific behavior in a FOSS test.
 
@@ -22,6 +22,14 @@ Please make sure the spec files pass in AS-IF-FOSS mode either:
 1. In the MR pipeline by verifying that the `rspec foss-impact` job has passed.
 1. In the MR pipelines by including `RUN AS-IF-FOSS` in the MR title (you can do it with the ``/title %<mr_title>s [RUN AS-IF-FOSS]`` quick action) and start a new MR pipeline.
 
+MSG
+
+CONTROLLER_SPEC_DEPRECATION_MESSAGE = <<~MSG.freeze
+Do not add new controller specs. We are moving from controller specs to
+request specs (and/or feature specs). Please add request specs under
+`/spec/requests` and/or `/ee/spec/requests` instead.
+
+See https://gitlab.com/groups/gitlab-org/-/epics/5076 for information.
 MSG
 
 has_app_changes = helper.all_changed_files.grep(%r{\A(app|lib|db/(geo/)?(post_)?migrate)/}).any?
@@ -38,4 +46,9 @@ end
 # The only changes outside `ee/` are in `spec/`
 if has_ee_app_changes && has_spec_changes && !(has_app_changes || has_ee_spec_changes)
   warn format(EE_CHANGE_WITH_FOSS_SPEC_CHANGE_MESSAGE, spec_files: spec_changes.join(" "), mr_title: gitlab.mr_json['title']), sticky: false
+end
+
+# Forbidding a new file addition under `/spec/controllers` or `/ee/spec/controllers`
+if git.added_files.grep(%r{^(ee/)?spec/controllers/}).any?
+  warn CONTROLLER_SPEC_DEPRECATION_MESSAGE
 end
