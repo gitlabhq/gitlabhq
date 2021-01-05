@@ -8666,6 +8666,11 @@ type EpicIssue implements CurrentUserTodos & Noteable {
   confidential: Boolean!
 
   """
+  User specific email address for the issue
+  """
+  createNoteEmail: String
+
+  """
   Timestamp of when the issue was created
   """
   createdAt: Time!
@@ -11635,6 +11640,11 @@ type Issue implements CurrentUserTodos & Noteable {
   Indicates the issue is confidential
   """
   confidential: Boolean!
+
+  """
+  User specific email address for the issue
+  """
+  createNoteEmail: String
 
   """
   Timestamp of when the issue was created

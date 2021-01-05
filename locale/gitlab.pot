@@ -18935,7 +18935,7 @@ msgstr ""
 msgid "No changes"
 msgstr ""
 
-msgid "No changes between %{sourceBranch} and %{targetBranch}"
+msgid "No changes between %{source} and %{target}"
 msgstr ""
 
 msgid "No child epics match applied filters"

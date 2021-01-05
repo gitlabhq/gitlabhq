@@ -43,7 +43,7 @@ billable user, with the following exceptions:
   count toward overages in the subscribed seat count.
 - Users who are [pending approval](../../user/admin_area/approving_users.md).
 - Members with Guest permissions on an Ultimate subscription.
-- GitLab-created service accounts: `Ghost User` and bots (`Support Bot`, [`Project bot users`](../../user/project/settings/project_access_tokens.md#project-bot-users), and so on).
+- GitLab-created service accounts: `Ghost User` and bots [(`Support Bot`](../../user/project/service_desk.md#support-bot-user), [`Project bot users`](../../user/project/settings/project_access_tokens.md#project-bot-users), and so on).
 
 ### Tips for managing users and subscription seats
 

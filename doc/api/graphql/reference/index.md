@@ -1425,6 +1425,7 @@ Relationship between an epic and an issue.
 | `blockedByCount` | Int | Count of issues blocking this issue. |
 | `closedAt` | Time | Timestamp of when the issue was closed |
 | `confidential` | Boolean! | Indicates the issue is confidential |
+| `createNoteEmail` | String | User specific email address for the issue |
 | `createdAt` | Time! | Timestamp of when the issue was created |
 | `currentUserTodos` | TodoConnection! | Todos for the current user |
 | `description` | String | Description of the issue |
@@ -1768,6 +1769,7 @@ Represents a recorded measurement (object count) for the Admins.
 | `blockedByCount` | Int | Count of issues blocking this issue. |
 | `closedAt` | Time | Timestamp of when the issue was closed |
 | `confidential` | Boolean! | Indicates the issue is confidential |
+| `createNoteEmail` | String | User specific email address for the issue |
 | `createdAt` | Time! | Timestamp of when the issue was created |
 | `currentUserTodos` | TodoConnection! | Todos for the current user |
 | `description` | String | Description of the issue |

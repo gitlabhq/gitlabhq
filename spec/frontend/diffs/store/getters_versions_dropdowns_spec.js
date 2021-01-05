@@ -136,6 +136,7 @@ describe('Compare diff version dropdowns', () => {
       ...firstDiff,
       href: firstDiff.version_path,
       commitsText: `${firstDiff.commits_count} commits,`,
+      isLatestVersion: true,
       versionName: 'latest version',
       selected: true,
     };
@@ -144,6 +145,9 @@ describe('Compare diff version dropdowns', () => {
       selectedSourceIndex: expectedShape.version_index,
     });
     expect(sourceVersions[0]).toEqual(expectedShape);
-    expect(sourceVersions[1].selected).toBe(false);
+    expect(sourceVersions[1]).toMatchObject({
+      selected: false,
+      isLatestVersion: false,
+    });
   });
 });

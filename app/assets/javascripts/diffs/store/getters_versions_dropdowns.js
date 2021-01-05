@@ -58,14 +58,18 @@ export const diffCompareDropdownTargetVersions = (state, getters) => {
 
 export const diffCompareDropdownSourceVersions = (state, getters) => {
   // Appended properties here are to make the compare_dropdown_layout easier to reason about
-  return state.mergeRequestDiffs.map((v, i) => ({
-    ...v,
-    href: v.version_path,
-    commitsText: n__(`%d commit,`, `%d commits,`, v.commits_count),
-    versionName:
-      i === 0
+  return state.mergeRequestDiffs.map((v, i) => {
+    const isLatestVersion = i === 0;
+
+    return {
+      ...v,
+      href: v.version_path,
+      commitsText: n__(`%d commit,`, `%d commits,`, v.commits_count),
+      isLatestVersion,
+      versionName: isLatestVersion
         ? __('latest version')
         : sprintf(__(`version %{versionIndex}`), { versionIndex: v.version_index }),
-    selected: v.version_index === getters.selectedSourceIndex,
-  }));
+      selected: v.version_index === getters.selectedSourceIndex,
+    };
+  });
 };

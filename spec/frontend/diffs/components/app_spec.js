@@ -147,31 +147,21 @@ describe('diffs/components/app', () => {
     });
   });
 
-  it('adds container-limiting classes when showFileTree is false with inline diffs', () => {
-    createComponent({}, ({ state }) => {
-      state.diffs.showTreeList = false;
-      state.diffs.isParallelView = false;
-    });
+  it.each`
+    props                      | state                                                              | expected
+    ${{ isFluidLayout: true }} | ${{ isParallelView: false }}                                       | ${false}
+    ${{}}                      | ${{ isParallelView: false }}                                       | ${true}
+    ${{}}                      | ${{ showTreeList: true, diffFiles: [{}], isParallelView: false }}  | ${false}
+    ${{}}                      | ${{ showTreeList: false, diffFiles: [{}], isParallelView: false }} | ${true}
+    ${{}}                      | ${{ showTreeList: false, diffFiles: [], isParallelView: false }}   | ${true}
+  `(
+    'uses container-limiting classes ($expected) with state ($state) and props ($props)',
+    ({ props, state, expected }) => {
+      createComponent(props, ({ state: origState }) => Object.assign(origState.diffs, state));
 
-    expect(wrapper.find('.container-limited.limit-container-width').exists()).toBe(true);
-  });
-
-  it('does not add container-limiting classes when showFileTree is false with inline diffs', () => {
-    createComponent({}, ({ state }) => {
-      state.diffs.showTreeList = true;
-      state.diffs.isParallelView = false;
-    });
-
-    expect(wrapper.find('.container-limited.limit-container-width').exists()).toBe(false);
-  });
-
-  it('does not add container-limiting classes when isFluidLayout', () => {
-    createComponent({ isFluidLayout: true }, ({ state }) => {
-      state.diffs.isParallelView = false;
-    });
-
-    expect(wrapper.find('.container-limited.limit-container-width').exists()).toBe(false);
-  });
+      expect(wrapper.find('.container-limited.limit-container-width').exists()).toBe(expected);
+    },
+  );
 
   it('displays loading icon on loading', () => {
     createComponent({}, ({ state }) => {
@@ -249,7 +239,9 @@ describe('diffs/components/app', () => {
     });
 
     it('sets width of tree list', () => {
-      createComponent();
+      createComponent({}, ({ state }) => {
+        state.diffs.diffFiles = [{ file_hash: '111', file_path: '111.js' }];
+      });
 
       expect(wrapper.find('.js-diff-tree-list').element.style.width).toEqual('320px');
     });
@@ -282,15 +274,6 @@ describe('diffs/components/app', () => {
 
       expect(wrapper.find(NoChanges).exists()).toBe(false);
       expect(wrapper.findAll(DiffFile).length).toBe(1);
-    });
-
-    it('does not render empty state when versions match', () => {
-      createComponent({}, ({ state }) => {
-        state.diffs.startVersion = mergeRequestDiff;
-        state.diffs.mergeRequestDiff = mergeRequestDiff;
-      });
-
-      expect(wrapper.find(NoChanges).exists()).toBe(false);
     });
   });
 
@@ -517,6 +500,7 @@ describe('diffs/components/app', () => {
   describe('diffs', () => {
     it('should render compare versions component', () => {
       createComponent({}, ({ state }) => {
+        state.diffs.diffFiles = [{ file_hash: '111', file_path: '111.js' }];
         state.diffs.mergeRequestDiffs = diffsMockData;
         state.diffs.targetBranchName = 'target-branch';
         state.diffs.mergeRequestDiff = mergeRequestDiff;
@@ -525,7 +509,8 @@ describe('diffs/components/app', () => {
       expect(wrapper.find(CompareVersions).exists()).toBe(true);
       expect(wrapper.find(CompareVersions).props()).toEqual(
         expect.objectContaining({
-          mergeRequestDiffs: diffsMockData,
+          isLimitedContainer: false,
+          diffFilesCountText: null,
         }),
       );
     });
@@ -593,8 +578,16 @@ describe('diffs/components/app', () => {
       expect(wrapper.find(DiffFile).exists()).toBe(true);
     });
 
-    it('should render tree list', () => {
+    it("doesn't render tree list when no changes exist", () => {
       createComponent();
+
+      expect(wrapper.find(TreeList).exists()).toBe(false);
+    });
+
+    it('should render tree list', () => {
+      createComponent({}, ({ state }) => {
+        state.diffs.diffFiles = [{ file_hash: '111', file_path: '111.js' }];
+      });
 
       expect(wrapper.find(TreeList).exists()).toBe(true);
     });
