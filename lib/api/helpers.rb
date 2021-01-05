@@ -220,6 +220,10 @@ module API
       user_project.builds.find(id.to_i)
     end
 
+    def find_job!(id)
+      user_project.processables.find(id.to_i)
+    end
+
     def authenticate!
       unauthorized! unless current_user
     end

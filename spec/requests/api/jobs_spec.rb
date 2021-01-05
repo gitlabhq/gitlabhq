@@ -1007,15 +1007,32 @@ RSpec.describe API::Jobs do
       post api("/projects/#{project.id}/jobs/#{job.id}/play", api_user)
     end
 
-    context 'on an playable job' do
-      let(:job) { create(:ci_build, :manual, project: project, pipeline: pipeline) }
+    context 'on a playable job' do
+      let_it_be(:job) { create(:ci_bridge, :playable, pipeline: pipeline, downstream: project) }
+
+      before do
+        project.add_developer(user)
+      end
 
       context 'when user is authorized to trigger a manual action' do
-        it 'plays the job' do
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['user']['id']).to eq(user.id)
-          expect(json_response['id']).to eq(job.id)
-          expect(job.reload).to be_pending
+        context 'that is a bridge' do
+          it 'plays the job' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['user']['id']).to eq(user.id)
+            expect(json_response['id']).to eq(job.id)
+            expect(job.reload).to be_pending
+          end
+        end
+
+        context 'that is a build' do
+          let_it_be(:job) { create(:ci_build, :manual, project: project, pipeline: pipeline) }
+
+          it 'plays the job' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['user']['id']).to eq(user.id)
+            expect(json_response['id']).to eq(job.id)
+            expect(job.reload).to be_pending
+          end
         end
       end
 

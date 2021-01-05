@@ -59,6 +59,7 @@ module API
         project: -> { @project },
         namespace: -> { @group },
         caller_id: route.origin,
+        remote_ip: request.ip,
         feature_category: feature_category
       )
     end
