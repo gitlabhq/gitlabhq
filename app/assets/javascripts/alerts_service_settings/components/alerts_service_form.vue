@@ -91,21 +91,7 @@ export default {
       ];
     },
   },
-  watch: {
-    activated() {
-      this.updateIcon();
-    },
-  },
   methods: {
-    updateIcon() {
-      return document.querySelectorAll('.js-service-active-status').forEach((icon) => {
-        if (icon.dataset.value === this.activated.toString()) {
-          icon.classList.remove('d-none');
-        } else {
-          icon.classList.add('d-none');
-        }
-      });
-    },
     resetKey() {
       return axios
         .put(this.formPath, { service: { token: '' } })

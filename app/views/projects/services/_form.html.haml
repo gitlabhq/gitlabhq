@@ -5,10 +5,8 @@
   .col-lg-4
     %h3.page-title.gl-mt-0
       = @service.title
-      - [true, false].each do |value|
-        - hide_class = 'd-none' if @service.operating? != value
-        %span.js-service-active-status{ class: hide_class, data: { value: value.to_s } }
-          = boolean_to_icon value
+      - if @service.operating?
+        = sprite_icon('check', css_class: 'gl-text-green-500')
 
     - if @service.respond_to?(:detailed_description)
       %p= @service.detailed_description

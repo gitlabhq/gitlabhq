@@ -1,0 +1,15 @@
+name: deployments
+description: Total deployments count
+value_type: integer
+stage: release
+status: data_available
+default_generation: generation_1
+full_path:
+  generation_1: counts.deployments
+milestone: 8.12
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/735
+group: 'group::ops release'
+time_frame: all
+data_source: database
+distribution: [ee, ce]
+tier: ['free', 'starter', 'premium', 'ultimate', 'bronze', 'silver', 'gold']

@@ -284,7 +284,7 @@ RSpec.describe Gitlab::Utils::UsageData do
     context 'when Prometheus server address is available from settings' do
       before do
         expect(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(true)
-        expect(Gitlab::Prometheus::Internal).to receive(:server_address).and_return('prom:9090')
+        expect(Gitlab::Prometheus::Internal).to receive(:uri).and_return('http://prom:9090')
       end
 
       it_behaves_like 'try to query Prometheus with given address'

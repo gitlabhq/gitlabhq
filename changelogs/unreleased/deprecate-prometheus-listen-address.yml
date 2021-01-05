@@ -1,0 +1,5 @@
+---
+title: Deprecate prometheus.listen_address and prometheus.enable
+merge_request: 50500
+author:
+type: deprecated

@@ -145,7 +145,8 @@ module Gitlab
 
       def prometheus_server_address
         if Gitlab::Prometheus::Internal.prometheus_enabled?
-          Gitlab::Prometheus::Internal.server_address
+          # Stripping protocol from URI
+          Gitlab::Prometheus::Internal.uri&.strip&.sub(%r{^https?://}, '')
         elsif Gitlab::Consul::Internal.api_url
           Gitlab::Consul::Internal.discover_prometheus_server_address
         end

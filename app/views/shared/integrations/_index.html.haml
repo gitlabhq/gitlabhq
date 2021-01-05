@@ -16,7 +16,8 @@
       - activated_label = (integration.activated? ? s_("ProjectService|%{service_title}: status on") : s_("ProjectService|%{service_title}: status off")) % { service_title: integration.title }
       %tr{ role: 'row' }
         %td{ role: 'cell', 'aria-colindex': 1, 'aria-label': activated_label, title: activated_label }
-          = boolean_to_icon integration.operating?
+          - if integration.operating?
+            = sprite_icon('check', css_class: 'gl-text-green-500')
         %td{ role: 'cell', 'aria-colindex': 2 }
           = link_to integration.title, scoped_edit_integration_path(integration), class: 'gl-font-weight-bold', data: { qa_selector: "#{integration.to_param}_link" }
         %td.d-none.d-sm-table-cell{ role: 'cell', 'aria-colindex': 3 }

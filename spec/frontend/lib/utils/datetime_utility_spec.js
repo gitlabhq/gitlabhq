@@ -731,3 +731,28 @@ describe('datesMatch', () => {
     expect(datetimeUtility.datesMatch(date1, date2)).toBe(expected);
   });
 });
+
+describe('format24HourTimeStringFromInt', () => {
+  const expectedFormattedTimes = [
+    [0, '00:00'],
+    [2, '02:00'],
+    [6, '06:00'],
+    [9, '09:00'],
+    [10, '10:00'],
+    [16, '16:00'],
+    [22, '22:00'],
+    [32, ''],
+    [NaN, ''],
+    ['Invalid Int', ''],
+    [null, ''],
+    [undefined, ''],
+  ];
+
+  expectedFormattedTimes.forEach(([timeInt, expectedTimeStringIn24HourNotation]) => {
+    it(`formats ${timeInt} as ${expectedTimeStringIn24HourNotation}`, () => {
+      expect(datetimeUtility.format24HourTimeStringFromInt(timeInt)).toBe(
+        expectedTimeStringIn24HourNotation,
+      );
+    });
+  });
+});

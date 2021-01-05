@@ -22,7 +22,6 @@ RSpec.describe 'User activates Alerts', :js do
       click_link(service_title)
 
       expect(page).to have_callout_message
-      expect(page).not_to have_active_service
       expect(page).to have_toggle_active_disabled
     end
   end
@@ -38,7 +37,6 @@ RSpec.describe 'User activates Alerts', :js do
 
     it 'user cannot change settings' do
       expect(page).to have_callout_message
-      expect(page).to have_active_service
       expect(page).to have_toggle_active_disabled
       expect(page).to have_button_reset_key_disabled
     end
@@ -58,10 +56,6 @@ RSpec.describe 'User activates Alerts', :js do
     within('.gl-alert') do
       have_content('You can now manage alert endpoint configuration in the Alerts section on the Operations settings page.')
     end
-  end
-
-  def have_active_service
-    have_selector('.js-service-active-status[data-value="true"]')
   end
 
   def have_toggle_active_disabled

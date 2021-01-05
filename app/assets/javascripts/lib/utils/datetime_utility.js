@@ -806,3 +806,20 @@ export const dateAtFirstDayOfMonth = (date) => new Date(newDate(date).setDate(1)
  * @return {Boolean} true if the dates match
  */
 export const datesMatch = (date1, date2) => differenceInMilliseconds(date1, date2) === 0;
+
+/**
+ * A utility function which computes a formatted 24 hour
+ * time string from a positive int in the range 0 - 24.
+ *
+ * @param {Int} time a positive Int between 0 and 24
+ *
+ * @returns {String} formatted 24 hour time String
+ */
+export const format24HourTimeStringFromInt = (time) => {
+  if (!Number.isInteger(time) || time < 0 || time > 24) {
+    return '';
+  }
+
+  const formatted24HourString = time > 9 ? `${time}:00` : `0${time}:00`;
+  return formatted24HourString;
+};

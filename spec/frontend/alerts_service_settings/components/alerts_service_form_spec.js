@@ -35,16 +35,9 @@ describe('AlertsServiceForm', () => {
   const findUrl = () => wrapper.find('#url');
   const findAuthorizationKey = () => wrapper.find('#authorization-key');
   const findDescription = () => wrapper.find('[data-testid="description"');
-  const findActiveStatusIcon = (val) =>
-    document.querySelector(`.js-service-active-status[data-value=${val.toString()}]`);
 
   beforeEach(() => {
     mockAxios = new MockAdapter(axios);
-    setFixtures(`
-    <div>
-      <span class="js-service-active-status" data-value="true"><svg class="s16 cgreen" data-testid="check-icon"><use xlink:href="icons.svg#check" /></svg></span>
-      <span class="js-service-active-status" data-value="false"><svg class="s16 clgray" data-testid="power-icon"><use xlink:href="icons.svg#power" /></svg></span>
-    </div>`);
   });
 
   afterEach(() => {
@@ -123,11 +116,6 @@ describe('AlertsServiceForm', () => {
 
           it(`updates toggle button value to ${value}`, () => {
             expect(wrapper.find(ToggleButton).props('value')).toBe(value);
-          });
-
-          it('updates visible status icons', () => {
-            expect(findActiveStatusIcon(!value)).toHaveClass('d-none');
-            expect(findActiveStatusIcon(value)).not.toHaveClass('d-none');
           });
         },
       );

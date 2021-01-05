@@ -1207,10 +1207,7 @@ production: &base
   # yourself, and then update the values here.
   # https://docs.gitlab.com/ee/administration/monitoring/prometheus/
   prometheus:
-    # Do not use `enable` and `listen_address` in any new code, as they are deprecated. Use `server_address` instead.
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/227111
-    # enable: true
-    # listen_address: 'localhost:9090'
+    # enabled: true
     # server_address: 'localhost:9090'
 
   ## Consul settings
@@ -1499,8 +1496,8 @@ test:
         group_base: 'ou=groups,dc=example,dc=com'
         admin_group: ''
   prometheus:
-    enable: true
-    listen_address: 'localhost:9090'
+    enabled: true
+    server_address: 'localhost:9090'
 
 staging:
   <<: *base

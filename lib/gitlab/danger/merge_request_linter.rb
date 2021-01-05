@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
-require_relative 'base_linter'
+base_linter_path = File.expand_path('base_linter', __dir__)
+
+if defined?(Rails)
+  require_dependency(base_linter_path)
+else
+  require_relative(base_linter_path)
+end
 
 module Gitlab
   module Danger
