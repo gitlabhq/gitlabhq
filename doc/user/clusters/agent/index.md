@@ -22,7 +22,8 @@ tasks in a secure and cloud-native way. It enables:
   [GitOps Engine](https://github.com/argoproj/gitops-engine).
 - Real-time access to API endpoints in a cluster.
 
-Many more features are planned. Please [review our roadmap](https://gitlab.com/groups/gitlab-org/-/epics/3329).
+Many more features are planned. Please review [our roadmap](https://gitlab.com/groups/gitlab-org/-/epics/3329)
+and [our development documentation](../../../development/agent/index.md).
 
 ## GitLab Agent GitOps workflow
 

@@ -20,11 +20,8 @@ These locations can be configured using the options described below.
 
 ## Using local storage
 
-NOTE:
-This is the default configuration
-
-To change the location where Terraform state files are stored locally, follow the steps
-below.
+The default configuration uses local storage. To change the location where
+Terraform state files are stored locally, follow the steps below.
 
 **In Omnibus installations:**
 
