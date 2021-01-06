@@ -24,6 +24,17 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
     end
   end
 
+  def create
+    # Confidential apps require the client_secret to be sent with the request.
+    # Doorkeeper allows implicit grant flow requests (response_type=token) to
+    # work without client_secret regardless of the confidential setting.
+    if pre_auth.authorizable? && pre_auth.response_type == 'token' && pre_auth.client.application.confidential
+      render "doorkeeper/authorizations/error"
+    else
+      super
+    end
+  end
+
   private
 
   def verify_confirmed_email!
