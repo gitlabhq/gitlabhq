@@ -53,18 +53,18 @@
     #tab-members.tab-pane{ class: ('active' unless invited_active) }
       .card.card-without-border
         - unless filtered_search_enabled
-          = render 'groups/group_members/tab_pane/header' do
-            = render 'groups/group_members/tab_pane/title' do
+          = render 'shared/members/tab_pane/header' do
+            = render 'shared/members/tab_pane/title' do
               = html_escape(_('Members with access to %{strong_start}%{group_name}%{strong_end}')) % { group_name: @group.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
             = form_tag group_group_members_path(@group), method: :get, class: 'user-search-form gl-display-flex gl-md-align-items-center gl-flex-wrap gl-flex-direction-column gl-md-flex-direction-row gl-mx-n3 gl-my-n3', data: { testid: 'user-search-form' } do
               .gl-px-3.gl-py-2
                 .search-control-wrap.gl-relative
                   = render 'shared/members/search_field'
               - if can_manage_members
-                = render 'groups/group_members/tab_pane/form_item' do
+                = render 'shared/members/tab_pane/form_item' do
                   = label_tag '2fa', _('2FA'), class: form_item_label_css_class
                   = render 'shared/members/filter_2fa_dropdown'
-              = render 'groups/group_members/tab_pane/form_item' do
+              = render 'shared/members/tab_pane/form_item' do
                 = label_tag :sort_by, _('Sort by'), class: form_item_label_css_class
                 = render 'shared/members/sort_dropdown'
         .js-group-members-list{ data: group_members_list_data_attributes(@group, @members) }
@@ -75,8 +75,8 @@
       #tab-groups.tab-pane
         .card.card-without-border
           - unless filtered_search_enabled
-            = render 'groups/group_members/tab_pane/header' do
-              = render 'groups/group_members/tab_pane/title' do
+            = render 'shared/members/tab_pane/header' do
+              = render 'shared/members/tab_pane/title' do
                 = html_escape(_('Groups with access to %{strong_start}%{group_name}%{strong_end}')) % { group_name: @group.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
           .js-group-linked-list{ data: linked_groups_list_data_attributes(@group) }
             .loading
@@ -85,8 +85,8 @@
       #tab-invited-members.tab-pane{ class: ('active' if invited_active) }
         .card.card-without-border
           - unless filtered_search_enabled
-            = render 'groups/group_members/tab_pane/header' do
-              = render 'groups/group_members/tab_pane/title' do
+            = render 'shared/members/tab_pane/header' do
+              = render 'shared/members/tab_pane/title' do
                 = html_escape(_('Members invited to %{strong_start}%{group_name}%{strong_end}')) % { group_name: @group.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
               = form_tag group_group_members_path(@group), method: :get, class: 'user-search-form', data: { testid: 'user-search-form' } do
                 = render 'shared/members/search_field', name: 'search_invited'
@@ -98,8 +98,8 @@
       #tab-access-requests.tab-pane
         .card.card-without-border
           - unless filtered_search_enabled
-            = render 'groups/group_members/tab_pane/header' do
-              = render 'groups/group_members/tab_pane/title' do
+            = render 'shared/members/tab_pane/header' do
+              = render 'shared/members/tab_pane/title' do
                 = html_escape(_('Users requesting access to %{strong_start}%{group_name}%{strong_end}')) % { group_name: @group.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
           .js-group-access-requests-list{ data: group_members_list_data_attributes(@group, @requesters) }
             .loading

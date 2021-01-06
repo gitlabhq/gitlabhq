@@ -11559,9 +11559,6 @@ msgstr ""
 msgid "Existing branch name, tag, or commit SHA"
 msgstr ""
 
-msgid "Existing members and groups"
-msgstr ""
-
 msgid "Existing projects may be moved into a group"
 msgstr ""
 
@@ -12426,9 +12423,6 @@ msgid "Find bugs in your code with coverage-guided fuzzing."
 msgstr ""
 
 msgid "Find by path"
-msgstr ""
-
-msgid "Find existing members by name"
 msgstr ""
 
 msgid "Find file"
@@ -17270,6 +17264,9 @@ msgid "Members can be added by project %{i_open}Maintainers%{i_close} or %{i_ope
 msgstr ""
 
 msgid "Members invited to %{strong_start}%{group_name}%{strong_end}"
+msgstr ""
+
+msgid "Members invited to %{strong_start}%{project_name}%{strong_end}"
 msgstr ""
 
 msgid "Members listed as CODEOWNERS of affected files."
@@ -30731,6 +30728,9 @@ msgid "Users requesting access to"
 msgstr ""
 
 msgid "Users requesting access to %{strong_start}%{group_name}%{strong_end}"
+msgstr ""
+
+msgid "Users requesting access to %{strong_start}%{project_name}%{strong_end}"
 msgstr ""
 
 msgid "Users were successfully added."

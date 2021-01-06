@@ -12,9 +12,7 @@ RSpec.shared_examples 'Maintainer manages access requests' do
     sign_in(maintainer)
     visit members_page_path
 
-    if has_tabs
-      click_on 'Access requests'
-    end
+    click_on 'Access requests'
   end
 
   it 'maintainer can see access requests', :js do
@@ -48,11 +46,7 @@ RSpec.shared_examples 'Maintainer manages access requests' do
   end
 
   def expect_visible_access_request(entity, user)
-    if has_tabs
-      expect(page).to have_content "Access requests 1"
-    else
-      expect(page).to have_content "Users requesting access to #{entity.name} 1"
-    end
+    expect(page).to have_content "Access requests 1"
 
     expect(page).to have_content user.name
   end

@@ -82,7 +82,9 @@ RSpec.describe 'Project members list' do
 
     add_user('test@example.com', 'Reporter')
 
-    page.within(second_row) do
+    click_link 'Invited'
+
+    page.within(first_row) do
       expect(page).to have_content('test@example.com')
       expect(page).to have_content('Invited')
       expect(page).to have_button('Reporter')

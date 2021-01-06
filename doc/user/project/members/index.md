@@ -21,7 +21,7 @@ project's **Members**.
 When your project belongs to the group, group members inherit the membership and permission
 level for the project from the group.
 
-![Project members page](img/project_members.png)
+![Project members page](img/project_members_13_8.png)
 
 From the image above, we can deduce the following things:
 
@@ -46,17 +46,17 @@ using the dropdown on the right side:
 Right next to **People**, start typing the name or username of the user you
 want to add.
 
-![Search for people](img/add_user_search_people.png)
+![Search for people](img/add_user_search_people_13_8.png)
 
 Select the user and the [permission level](../../permissions.md)
 that you'd like to give the user. Note that you can select more than one user.
 
-![Give user permissions](img/add_user_give_permissions.png)
+![Give user permissions](img/add_user_give_permissions_13_8.png)
 
 Once done, select **Add users to project** and they are immediately added to
 your project with the permissions you gave them above.
 
-![List members](img/add_user_list_members.png)
+![List members](img/add_user_list_members_13_8.png)
 
 From there on, you can either remove an existing user or change their access
 level to the project.
@@ -68,14 +68,14 @@ You can import another project's users in your own project by hitting the
 
 In the dropdown menu, you can see only the projects you are Maintainer on.
 
-![Import members from another project](img/add_user_import_members_from_another_project.png)
+![Import members from another project](img/add_user_import_members_from_another_project_13_8.png)
 
 Select the one you want and hit **Import project members**. A flash message
 displays, notifying you that the import was successful, and the new members
 are now in the project's members list. Notice that the permissions that they
 had on the project you imported from are retained.
 
-![Members list of new members](img/add_user_imported_members.png)
+![Members list of new members](img/add_user_imported_members_13_8.png)
 
 ## Invite people using their e-mail address
 
@@ -83,18 +83,18 @@ If a user you want to give access to doesn't have an account on your GitLab
 instance, you can invite them just by typing their e-mail address in the
 user search field.
 
-![Invite user by mail](img/add_user_email_search.png)
+![Invite user by mail](img/add_user_email_search_13_8.png)
 
 As you can imagine, you can mix inviting multiple people and adding existing
 GitLab users to the project.
 
-![Invite user by mail ready to submit](img/add_user_email_ready.png)
+![Invite user by mail ready to submit](img/add_user_email_ready_13_8.png)
 
 Once done, hit **Add users to project** and watch that there is a new member
 with the e-mail address we used above. From there on, you can resend the
 invitation, change their access level, or even delete them.
 
-![Invite user members list](img/add_user_email_accept.png)
+![Invite user members list](img/add_user_email_accept_13_8.png)
 
 While unaccepted, the system automatically sends reminder emails on the second, fifth,
 and tenth day after the invitation was initially sent.
@@ -130,7 +130,7 @@ NOTE:
 If a project does not have any maintainers, the notification is sent to the
 most recently active owners of the project's group.
 
-![Manage access requests](img/access_requests_management.png)
+![Manage access requests](img/access_requests_management_13_8.png)
 
 If you change your mind before your request is approved, just click the
 **Withdraw Access Request** button.

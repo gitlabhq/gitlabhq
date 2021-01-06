@@ -111,8 +111,8 @@ module Gitlab
       private
 
       def before_send(event, hint)
-        event = add_context_from_exception_type(event, hint)
-        event = custom_fingerprinting(event, hint)
+        inject_context_for_exception(event, hint[:exception])
+        custom_fingerprinting(event, hint[:exception])
 
         event
       end
@@ -123,7 +123,6 @@ module Gitlab
         end
 
         extra = sanitize_request_parameters(extra)
-        inject_sql_query_into_extra(exception, extra)
 
         if sentry && Raven.configuration.server
           Raven.capture_exception(exception, tags: default_tags, extra: extra)
@@ -148,12 +147,6 @@ module Gitlab
       def sanitize_request_parameters(parameters)
         filter = ActiveSupport::ParameterFilter.new(::Rails.application.config.filter_parameters)
         filter.filter(parameters)
-      end
-
-      def inject_sql_query_into_extra(exception, extra)
-        return unless exception.is_a?(ActiveRecord::StatementInvalid)
-
-        extra[:sql] = PgQuery.normalize(exception.sql.to_s)
       end
 
       def sentry_dsn
@@ -183,9 +176,17 @@ module Gitlab
         {}
       end
 
-      # Debugging for https://gitlab.com/gitlab-org/gitlab-foss/issues/57727
-      def add_context_from_exception_type(event, hint)
-        if ActiveModel::MissingAttributeError === hint[:exception]
+      # Group common, mostly non-actionable exceptions by type and message,
+      # rather than cause
+      def custom_fingerprinting(event, ex)
+        return event unless CUSTOM_FINGERPRINTING.include?(ex.class.name)
+
+        event.fingerprint = [ex.class.name, ex.message]
+      end
+
+      def inject_context_for_exception(event, ex)
+        case ex
+        when ActiveModel::MissingAttributeError # Debugging for https://gitlab.com/gitlab-org/gitlab/-/issues/26751
           columns_hash = ActiveRecord::Base
                             .connection
                             .schema_cache
@@ -193,21 +194,11 @@ module Gitlab
                             .transform_values { |v| v.map(&:first) }
 
           event.extra.merge!(columns_hash)
+        when ActiveRecord::StatementInvalid
+          event.extra[:sql] = PgQuery.normalize(ex.sql.to_s)
+        else
+          inject_context_for_exception(event, ex.cause) if ex.cause.present?
         end
-
-        event
-      end
-
-      # Group common, mostly non-actionable exceptions by type and message,
-      # rather than cause
-      def custom_fingerprinting(event, hint)
-        ex = hint[:exception]
-
-        return event unless CUSTOM_FINGERPRINTING.include?(ex.class.name)
-
-        event.fingerprint = [ex.class.name, ex.message]
-
-        event
       end
     end
   end

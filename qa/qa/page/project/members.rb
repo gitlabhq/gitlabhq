@@ -17,6 +17,7 @@ module QA
 
         view 'app/views/projects/project_members/index.html.haml' do
           element :invite_group_tab
+          element :groups_list_tab
         end
 
         view 'app/views/shared/members/_invite_group.html.haml' do
@@ -48,6 +49,7 @@ module QA
 
         def remove_group(group_name)
           click_element :invite_group_tab
+          click_element :groups_list_tab
           page.accept_alert do
             within_element(:group_row, text: group_name) do
               click_element :delete_group_access_link

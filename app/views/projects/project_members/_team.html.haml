@@ -1,20 +1,18 @@
 - project = local_assigns.fetch(:project)
 - members = local_assigns.fetch(:members)
 - group = local_assigns.fetch(:group)
-- current_user_is_group_owner = group && group.has_owner?(current_user)
+- current_user_is_group_owner = local_assigns.fetch(:current_user_is_group_owner)
 
-.card
-  .card-header.flex-project-members-panel
-    %span.flex-project-title
+.card.card-without-border
+  = render 'shared/members/tab_pane/header' do
+    = render 'shared/members/tab_pane/title' do
       = html_escape(_("Members of %{strong_open}%{project_name}%{strong_close}")) % { project_name: sanitize(project.name, tags: []), strong_open: '<strong>'.html_safe, strong_close: '</strong>'.html_safe }
-    %span.badge.badge-pill= members.total_count
-    = form_tag project_project_members_path(project), method: :get, class: 'form-inline user-search-form flex-users-form' do
-      .form-group
-        .position-relative
-          = search_field_tag :search, params[:search], { placeholder: _('Find existing members by name'), class: 'form-control', spellcheck: false }
-          %button.user-search-btn{ type: "submit", "aria-label" => _("Submit search") }
-            = sprite_icon('search', css_class: 'gl-vertical-align-middle!')
-        = label_tag :sort_by, _('Sort by'), class: 'col-form-label label-bold px-2'
+    = form_tag project_project_members_path(project), method: :get, class: 'user-search-form gl-display-flex gl-md-align-items-center gl-flex-wrap gl-flex-direction-column gl-md-flex-direction-row gl-mx-n3 gl-my-n3', data: { testid: 'user-search-form' } do
+      .gl-px-3.gl-py-2
+        .search-control-wrap.gl-relative
+          = render 'shared/members/search_field'
+      = render 'shared/members/tab_pane/form_item' do
+        = label_tag :sort_by, _('Sort by'), class: 'label-bold gl-mr-2 gl-mb-0 gl-py-2 align-self-md-center'
         = render 'shared/members/sort_dropdown'
   %ul.content-list.members-list{ data: { qa_selector: 'members_list', testid: 'members-table' } }
     = render partial: 'shared/members/member',
