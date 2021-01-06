@@ -200,7 +200,7 @@ If the job that's executing is within a freeze period, GitLab CI/CD creates an e
 variable named `$CI_DEPLOY_FREEZE`.
 
 To prevent the deployment job from executing, create a `rules` entry in your
-`gitlab-ci.yaml`, for example:
+`gitlab-ci.yml`, for example:
 
 ```yaml
 deploy_to_production:

@@ -1,20 +1,3 @@
-/**
- * This function takes the stages and add the stage name
- * at the group level as `category` to have an easier
- * implementation while constructions nodes with D3
- * @param {Array} stages
- * @returns {Array} - Array of stages with stage name at the group level as `category`
- */
-export const unwrapArrayOfJobs = (stages = []) => {
-  return stages
-    .map(({ name, groups }) => {
-      return groups.map((group) => {
-        return { category: name, ...group };
-      });
-    })
-    .flat(2);
-};
-
 const unwrapGroups = (stages) => {
   return stages.map((stage) => {
     const {

@@ -53,10 +53,10 @@ Otherwise, you can:
      ![Upload license](img/license_upload_v13_8.png)
 
    - *If you've received your license as plain text:*
-    1. Select **Enter license key**.
-    1. Copy the license and paste it into the **License key** field.
-    1. Check the **Subscription Agreement** checkbox.
-    1. Select **Upload License**.
+     1. Select **Enter license key**.
+     1. Copy the license and paste it into the **License key** field.
+     1. Check the **Subscription Agreement** checkbox.
+     1. Select **Upload License**.
 
 ## Add your license at install time
 

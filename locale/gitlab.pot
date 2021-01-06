@@ -29638,6 +29638,11 @@ msgstr ""
 msgid "Trending"
 msgstr ""
 
+msgid "Trials|%{plan} Trial %{en_dash} %{num} day left"
+msgid_plural "Trials|%{plan} Trial %{en_dash} %{num} days left"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Trials|Create a new group to start your GitLab Gold trial."
 msgstr ""
 

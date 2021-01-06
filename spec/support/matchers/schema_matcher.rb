@@ -2,6 +2,8 @@
 
 module SchemaPath
   def self.expand(schema, dir = nil)
+    return schema unless schema.is_a?(String)
+
     if Gitlab.ee? && dir.nil?
       ee_path = expand(schema, 'ee')
 

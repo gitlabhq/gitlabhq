@@ -170,7 +170,8 @@ module Gitlab
         end
         types Issue
         condition do
-          !quick_action_target.confidential? &&
+          quick_action_target.issue_type_supports?(:confidentiality) &&
+            !quick_action_target.confidential? &&
             current_user.can?(:"admin_#{quick_action_target.to_ability_name}", quick_action_target)
         end
         command :confidential do

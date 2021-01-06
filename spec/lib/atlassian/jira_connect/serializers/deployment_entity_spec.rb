@@ -23,7 +23,7 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity do
       end
 
       it 'is invalid, since it has no issue keys' do
-        expect(subject.to_json).not_to be_valid_json.according_to_schema(Atlassian::Schemata.deployment_info)
+        expect(subject.to_json).not_to match_schema(Atlassian::Schemata.deployment_info)
       end
     end
   end
@@ -86,7 +86,7 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity do
 
         describe '#to_json' do
           it 'is valid according to the deployment info schema' do
-            expect(subject.to_json).to be_valid_json.according_to_schema(Atlassian::Schemata.deployment_info)
+            expect(subject.to_json).to be_valid_json.and match_schema(Atlassian::Schemata.deployment_info)
           end
         end
       end

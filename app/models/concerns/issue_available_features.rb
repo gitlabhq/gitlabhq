@@ -10,7 +10,8 @@ module IssueAvailableFeatures
     # EE only features are listed on EE::IssueAvailableFeatures
     def available_features_for_issue_types
       {
-        assignee: %w(issue incident)
+        assignee: %w(issue incident),
+        confidentiality: %(issue incident)
       }.with_indifferent_access
     end
   end

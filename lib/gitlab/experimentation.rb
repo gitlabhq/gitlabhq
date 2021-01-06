@@ -100,6 +100,9 @@ module Gitlab
       invite_members_new_dropdown: {
         tracking_category: 'Growth::Expansion::Experiment::InviteMembersNewDropdown'
       },
+      show_trial_status_in_sidebar: {
+        tracking_category: 'Growth::Conversion::Experiment::ShowTrialStatusInSidebar'
+      },
       trial_onboarding_issues: {
         tracking_category: 'Growth::Conversion::Experiment::TrialOnboardingIssues'
       }

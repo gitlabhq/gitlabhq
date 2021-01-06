@@ -72,10 +72,10 @@ To manually configure a GitLab Terraform Report artifact requires the following 
          terraform: $PLAN_JSON
    ```
 
-   For a full example using the pre-built image, see [Example `.gitlab-ci.yaml`
-   file](#example-gitlab-ciyaml-file).
+   For a full example using the pre-built image, see [Example `.gitlab-ci.yml`
+   file](#example-gitlab-ciyml-file).
 
-   For an example displaying multiple reports, see [`.gitlab-ci.yaml` multiple reports file](#multiple-terraform-plan-reports).
+   For an example displaying multiple reports, see [`.gitlab-ci.yml` multiple reports file](#multiple-terraform-plan-reports).
 
 1. Running the pipeline displays the widget in the merge request, like this:
 
@@ -86,7 +86,7 @@ To manually configure a GitLab Terraform Report artifact requires the following 
 
    ![Terraform plan logs](img/terraform_plan_log_v13_0.png)
 
-### Example `.gitlab-ci.yaml` file
+### Example `.gitlab-ci.yml` file
 
 ```yaml
 default:
