@@ -1,0 +1,5 @@
+---
+title: Deny implicit flow for confidential apps
+merge_request:
+author:
+type: security
