@@ -225,6 +225,25 @@ RSpec.describe Projects::RawController do
         end
       end
     end
+
+    describe 'caching' do
+      def request_file
+        get(:show, params: { namespace_id: project.namespace, project_id: project, id: 'master/README.md' })
+      end
+
+      context 'when a public project has private repo' do
+        let(:project) { create(:project, :public, :repository, :repository_private) }
+        let(:user) { create(:user, maintainer_projects: [project]) }
+
+        it 'does not set public caching header' do
+          sign_in user
+          request_file
+
+          expect(response.cache_control[:public]).to eq(false)
+          expect(response.cache_control[:max_age]).to eq(60)
+        end
+      end
+    end
   end
 
   def execute_raw_requests(requests:, project:, file_path:, **params)
