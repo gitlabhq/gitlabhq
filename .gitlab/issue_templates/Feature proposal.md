@@ -77,6 +77,15 @@ Please list the test areas (unit, integration and end-to-end) that needs to be a
 
 See the test engineering planning process and reach out to your counterpart Software Engineer in Test for assistance: https://about.gitlab.com/handbook/engineering/quality/test-engineering/#test-planning -->
 
+### Available Tier
+
+<!-- This section should be used for setting the appropriate tier that this feature will belong to. Pricing can be found here: https://about.gitlab.com/pricing/
+
+* Free
+* Premium/Silver
+* Ultimate/Gold
+-->
+
 ### What does success look like, and how can we measure that?
 
 <!--
