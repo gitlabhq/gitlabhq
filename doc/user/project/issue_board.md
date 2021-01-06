@@ -321,7 +321,8 @@ As in other list types, click the trash icon to remove a list.
 
 ### Group issues in swimlanes **(PREMIUM)**
 
-> Grouping by epic [introduced](https://gitlab.com/groups/gitlab-org/-/epics/3352) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.6.
+> - Grouping by epic [introduced](https://gitlab.com/groups/gitlab-org/-/epics/3352) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.6.
+> - Editing issue titles in the issue sidebar [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232745) in GitLab 13.8.
 
 With swimlanes you can visualize issues grouped by epic.
 Your issue board keeps all the other features, but with a different visual organization of issues.
@@ -336,6 +337,19 @@ To group issues by epic in an issue board:
 1. Select **Epic**.
 
 ![Epics Swimlanes](img/epics_swimlanes_v13.6.png)
+
+To edit an issue without leaving this view, select the issue card (not its title), and a sidebar
+appears on the right. There you can see and edit the issue's:
+
+- Title
+- Assignees
+- Epic **PREMIUM**
+- Milestone
+- Time tracking value (view only)
+- Due date
+- Labels
+- Weight
+- Notifications setting
 
 You can also [drag issues](#drag-issues-between-lists) to change their position and epic assignment:
 

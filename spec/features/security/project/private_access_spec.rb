@@ -423,7 +423,7 @@ RSpec.describe "Private Project Access" do
 
   describe 'GET /:project_path/builds/:id/trace' do
     let(:pipeline) { create(:ci_pipeline, project: project) }
-    let(:build) { create(:ci_build, pipeline: pipeline) }
+    let(:build) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
 
     subject { trace_project_job_path(project, build.id) }
 

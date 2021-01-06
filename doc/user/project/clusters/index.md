@@ -248,9 +248,17 @@ Deployment variables require a valid [Deploy Token](../deploy_tokens/index.md) n
 [`gitlab-deploy-token`](../deploy_tokens/index.md#gitlab-deploy-token), and the
 following command in your deployment job script, for Kubernetes to access the registry:
 
-```plaintext
-kubectl create secret docker-registry gitlab-registry --docker-server="$CI_REGISTRY" --docker-username="$CI_DEPLOY_USER" --docker-password="$CI_DEPLOY_PASSWORD" --docker-email="$GITLAB_USER_EMAIL" -o yaml --dry-run | kubectl apply -f -
-```
+- Using Kubernetes 1.18+:
+
+  ```shell
+  kubectl create secret docker-registry gitlab-registry --docker-server="$CI_REGISTRY" --docker-username="$CI_DEPLOY_USER" --docker-password="$CI_DEPLOY_PASSWORD" --docker-email="$GITLAB_USER_EMAIL" -o yaml --dry-run=client | kubectl apply -f -
+  ```
+
+- Using Kubernetes <1.18:
+
+  ```shell
+  kubectl create secret docker-registry gitlab-registry --docker-server="$CI_REGISTRY" --docker-username="$CI_DEPLOY_USER" --docker-password="$CI_DEPLOY_PASSWORD" --docker-email="$GITLAB_USER_EMAIL" -o yaml --dry-run | kubectl apply -f -
+  ```
 
 The Kubernetes cluster integration exposes the following
 [deployment variables](../../../ci/variables/README.md#deployment-environment-variables) in the

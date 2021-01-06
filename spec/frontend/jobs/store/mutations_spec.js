@@ -153,7 +153,6 @@ describe('Jobs Store Mutations', () => {
       mutations[types.SET_TRACE_TIMEOUT](stateCopy, id);
 
       expect(stateCopy.traceTimeout).toEqual(id);
-      expect(stateCopy.isTraceComplete).toBe(false);
     });
   });
 

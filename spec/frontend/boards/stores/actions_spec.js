@@ -986,6 +986,57 @@ describe('setActiveIssueMilestone', () => {
   });
 });
 
+describe('setActiveIssueTitle', () => {
+  const state = { issues: { [mockIssue.id]: mockIssue } };
+  const getters = { activeIssue: mockIssue };
+  const testTitle = 'Test Title';
+  const input = {
+    title: testTitle,
+    projectPath: 'h/b',
+  };
+
+  it('should commit title after setting the issue', (done) => {
+    jest.spyOn(gqlClient, 'mutate').mockResolvedValue({
+      data: {
+        updateIssue: {
+          issue: {
+            title: testTitle,
+          },
+          errors: [],
+        },
+      },
+    });
+
+    const payload = {
+      issueId: getters.activeIssue.id,
+      prop: 'title',
+      value: testTitle,
+    };
+
+    testAction(
+      actions.setActiveIssueTitle,
+      input,
+      { ...state, ...getters },
+      [
+        {
+          type: types.UPDATE_ISSUE_BY_ID,
+          payload,
+        },
+      ],
+      [],
+      done,
+    );
+  });
+
+  it('throws error if fails', async () => {
+    jest
+      .spyOn(gqlClient, 'mutate')
+      .mockResolvedValue({ data: { updateIssue: { errors: ['failed mutation'] } } });
+
+    await expect(actions.setActiveIssueTitle({ getters }, input)).rejects.toThrow(Error);
+  });
+});
+
 describe('fetchBacklog', () => {
   expectNotImplemented(actions.fetchBacklog);
 });

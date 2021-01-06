@@ -9,20 +9,10 @@ ENV CHROME_DEB="google-chrome-stable_${CHROME_VERSION}_amd64.deb"
 ENV CHROME_URL="https://s3.amazonaws.com/gitlab-google-chrome-stable/${CHROME_DEB}"
 
 ##
-# Add support for stretch-backports
-#
-RUN echo "deb http://ftp.debian.org/debian stretch-backports main" >> /etc/apt/sources.list
-
-##
-# Update APT sources and install some dependencies
+# Update APT sources and install dependencies
 #
 RUN sed -i "s/httpredir.debian.org/ftp.us.debian.org/" /etc/apt/sources.list
-RUN apt-get update && apt-get install -y wget unzip xvfb lsb-release
-
-##
-# Install some packages from backports
-#
-RUN apt-get -y -t stretch-backports install git git-lfs
+RUN apt-get update && apt-get install -y wget unzip xvfb lsb-release git git-lfs
 
 ##
 # Install Docker

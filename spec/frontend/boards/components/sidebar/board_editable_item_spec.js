@@ -33,6 +33,14 @@ describe('boards sidebar remove issue', () => {
       expect(findTitle().text()).toBe(title);
     });
 
+    it('renders provided title slot', () => {
+      const title = 'Sidebar item title on slot';
+      const slots = { title: `<strong>${title}</strong>` };
+      createComponent({ slots });
+
+      expect(wrapper.text()).toContain(title);
+    });
+
     it('hides edit button, loader and expanded content by default', () => {
       createComponent();
 
@@ -74,8 +82,18 @@ describe('boards sidebar remove issue', () => {
       return wrapper.vm.$nextTick().then(() => {
         expect(findCollapsed().isVisible()).toBe(false);
         expect(findExpanded().isVisible()).toBe(true);
-        expect(findExpanded().text()).toBe('Select item');
       });
+    });
+
+    it('hides the header while editing if `toggleHeader` is true', async () => {
+      createComponent({ canUpdate: true, props: { toggleHeader: true } });
+      findEditButton().vm.$emit('click');
+
+      await wrapper.vm.$nextTick();
+
+      expect(findEditButton().isVisible()).toBe(false);
+      expect(findTitle().isVisible()).toBe(false);
+      expect(findExpanded().isVisible()).toBe(true);
     });
   });
 
@@ -96,12 +114,13 @@ describe('boards sidebar remove issue', () => {
       expect(findExpanded().isVisible()).toBe(false);
     });
 
-    it('emits close event', async () => {
+    it('emits events', async () => {
       document.body.click();
 
       await wrapper.vm.$nextTick();
 
-      expect(wrapper.emitted().close.length).toBe(1);
+      expect(wrapper.emitted().close).toHaveLength(1);
+      expect(wrapper.emitted()['off-click']).toHaveLength(1);
     });
   });
 

@@ -14,21 +14,33 @@ RSpec.describe ProtectableDropdown do
   end
 
   describe '#protectable_ref_names' do
-    before do
-      project.protected_branches.create(name: 'master')
+    context 'when project repository is not empty' do
+      before do
+        project.protected_branches.create(name: 'master')
+      end
+
+      it { expect(subject.protectable_ref_names).to include('feature') }
+      it { expect(subject.protectable_ref_names).not_to include('master') }
+
+      it "includes branches matching a protected branch wildcard" do
+        expect(subject.protectable_ref_names).to include('feature')
+
+        create(:protected_branch, name: 'feat*', project: project)
+
+        subject = described_class.new(project.reload, :branches)
+
+        expect(subject.protectable_ref_names).to include('feature')
+      end
     end
 
-    it { expect(subject.protectable_ref_names).to include('feature') }
-    it { expect(subject.protectable_ref_names).not_to include('master') }
+    context 'when project repository is empty' do
+      let(:project) { create(:project) }
 
-    it "includes branches matching a protected branch wildcard" do
-      expect(subject.protectable_ref_names).to include('feature')
+      it "returns empty list" do
+        subject = described_class.new(project, :branches)
 
-      create(:protected_branch, name: 'feat*', project: project)
-
-      subject = described_class.new(project.reload, :branches)
-
-      expect(subject.protectable_ref_names).to include('feature')
+        expect(subject.protectable_ref_names).to be_empty
+      end
     end
   end
 end

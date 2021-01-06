@@ -104,14 +104,13 @@ you to use.
            url: 'https://bitbucket.org/' }
    ```
 
-   ---
-
    Where `BITBUCKET_APP_KEY` is the Key and `BITBUCKET_APP_SECRET` the Secret
    from the Bitbucket application page.
 
 1. Save the configuration file.
-1. For the changes to take effect, [reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) if you installed via
-   Omnibus GitLab, or [restart](../administration/restart_gitlab.md#installations-from-source) if installed from source.
+1. For the changes to take effect, [reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+   if you installed using Omnibus GitLab, or [restart](../administration/restart_gitlab.md#installations-from-source)
+   if you installed from source.
 
 On the sign-in page there should now be a Bitbucket icon below the regular
 sign-in form. Click the icon to begin the authentication process. Bitbucket asks

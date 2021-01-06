@@ -12,6 +12,8 @@ class ProtectableDropdown
 
   # Tags/branches which are yet to be individually protected
   def protectable_ref_names
+    return [] if @project.empty_repo?
+
     @protectable_ref_names ||= ref_names - non_wildcard_protected_ref_names
   end
 

@@ -14,6 +14,16 @@ export default {
       required: false,
       default: false,
     },
+    toggleHeader: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    handleOffClick: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   inject: ['canUpdate'],
   data() {
@@ -21,13 +31,25 @@ export default {
       edit: false,
     };
   },
+  computed: {
+    showHeader() {
+      if (!this.toggleHeader) {
+        return true;
+      }
+
+      return !this.edit;
+    },
+  },
   destroyed() {
     window.removeEventListener('click', this.collapseWhenOffClick);
   },
   methods: {
     collapseWhenOffClick({ target }) {
       if (!this.$el.contains(target)) {
-        this.collapse();
+        this.$emit('off-click');
+        if (this.handleOffClick) {
+          this.collapse();
+        }
       }
     },
     expand() {
@@ -63,21 +85,26 @@ export default {
 
 <template>
   <div>
-    <div class="gl-display-flex gl-justify-content-space-between gl-mb-3">
+    <header
+      v-show="showHeader"
+      class="gl-display-flex gl-justify-content-space-between gl-align-items-flex-start gl-mb-3"
+    >
       <span class="gl-vertical-align-middle">
-        <span data-testid="title">{{ title }}</span>
+        <slot name="title">
+          <span data-testid="title">{{ title }}</span>
+        </slot>
         <gl-loading-icon v-if="loading" inline class="gl-ml-2" />
       </span>
       <gl-button
         v-if="canUpdate"
         variant="link"
-        class="gl-text-gray-900! js-sidebar-dropdown-toggle"
+        class="gl-text-gray-900! gl-ml-5 js-sidebar-dropdown-toggle"
         data-testid="edit-button"
         @click="toggle"
       >
         {{ __('Edit') }}
       </gl-button>
-    </div>
+    </header>
     <div v-show="!edit" class="gl-text-gray-500" data-testid="collapsed-content">
       <slot name="collapsed">{{ __('None') }}</slot>
     </div>

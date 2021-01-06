@@ -3075,6 +3075,9 @@ msgstr ""
 msgid "An error occurred when updating the issue due date"
 msgstr ""
 
+msgid "An error occurred when updating the issue title"
+msgstr ""
+
 msgid "An error occurred when updating the issue weight"
 msgstr ""
 
@@ -3379,6 +3382,9 @@ msgid "An issue already exists"
 msgstr ""
 
 msgid "An issue can be a bug, a todo or a feature request that needs to be discussed in a project. Besides, issues are searchable and filterable."
+msgstr ""
+
+msgid "An issue title is required"
 msgstr ""
 
 msgid "An unauthenticated user"
@@ -5270,6 +5276,9 @@ msgid "Changes suppressed. Click to show."
 msgstr ""
 
 msgid "Changes the title to \"%{title_param}\"."
+msgstr ""
+
+msgid "Changes to the title have not been saved"
 msgstr ""
 
 msgid "Changes won't take place until the index is %{link_start}recreated%{link_end}."
@@ -15567,6 +15576,9 @@ msgstr ""
 msgid "Issue created from vulnerability %{vulnerability_link}"
 msgstr ""
 
+msgid "Issue details"
+msgstr ""
+
 msgid "Issue events"
 msgstr ""
 
@@ -15580,6 +15592,9 @@ msgid "Issue or Merge Request ID is required"
 msgstr ""
 
 msgid "Issue published on status page."
+msgstr ""
+
+msgid "Issue title"
 msgstr ""
 
 msgid "Issue update failed"

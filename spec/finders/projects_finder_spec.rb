@@ -353,7 +353,7 @@ RSpec.describe ProjectsFinder, :do_not_mock_admin_mode do
           end
 
           before do
-            stub_feature_flags(project_finder_similarity_sort: true)
+            stub_feature_flags(project_finder_similarity_sort: current_user)
           end
 
           it { is_expected.to eq([internal_project2, internal_project4, internal_project3]) }
