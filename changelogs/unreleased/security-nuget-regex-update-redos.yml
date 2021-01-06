@@ -1,0 +1,5 @@
+---
+title: Update NuGet regular expression to protect against ReDoS
+merge_request:
+author:
+type: security
